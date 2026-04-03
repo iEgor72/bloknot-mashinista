@@ -4066,9 +4066,10 @@
         body: JSON.stringify({ shifts: cloneShiftsForServer(pending.shifts) })
       }).then(function(result) {
         if (result.ok) {
+          var committedShifts = clearPendingFlags(pending.shifts);
           clearPendingSnapshot();
-          allShifts = clearPendingFlags(pending.shifts);
-          writeShiftsCache(allShifts, {
+          allShifts = committedShifts;
+          writeShiftsCache(committedShifts, {
             isOffline: false,
             isSyncing: false,
             hasPending: false,
@@ -4078,7 +4079,7 @@
           });
           updateOfflineUiState({ isOffline: false, isSyncing: false, hasPending: false, lastSyncStatus: 'synced', lastError: '' });
           if (callback) callback(null);
-          if (shouldRender) render();
+          render();
           return;
         }
 
