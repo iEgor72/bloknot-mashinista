@@ -605,58 +605,11 @@
     footerEl.textContent = 'Часовой пояс: ' + deviceTimezone;
 
     var API_BASE_URL = window.SHIFT_API_BASE_URL || '';
-    function getTelegramUserId() {
-      try {
-        if (window.Telegram && Telegram.WebApp && Telegram.WebApp.initDataUnsafe &&
-            Telegram.WebApp.initDataUnsafe.user && Telegram.WebApp.initDataUnsafe.user.id) {
-          return String(Telegram.WebApp.initDataUnsafe.user.id);
-        }
-      } catch (e) {}
-      return '';
-    }
+    var SHIFTS_API_URL = API_BASE_URL + '/api/shifts';
+    var FALLBACK_STORAGE_KEY = STORAGE_KEY;
 
-    function getStoredBrowserSid() {
-      try { return localStorage.getItem('shift_tracker_sid') || ''; } catch (e) { return ''; }
-    }
-
-    function setStoredBrowserSid(sid) {
-      try { localStorage.setItem('shift_tracker_sid', sid); } catch (e) {}
-    }
-
-    function createRandomSid() {
-      return 'web-' + Date.now().toString(36) + '-' + Math.random().toString(36).substring(2, 10);
-    }
-
-    function getSyncSid() {
-      try {
-        var params = new URLSearchParams(window.location.search);
-        var sid = params.get('sid');
-        if (sid) return sid;
-      } catch (e) {}
-
-      var tgUserId = getTelegramUserId();
-      if (tgUserId) return 'tg-' + tgUserId;
-
-      var storedSid = getStoredBrowserSid();
-      if (storedSid) return storedSid;
-
-      var generatedSid = createRandomSid();
-      setStoredBrowserSid(generatedSid);
-      return generatedSid;
-    }
-
-    var APP_SYNC_SID = getSyncSid();
-    var SHIFTS_API_URL = API_BASE_URL + '/api/shifts?sid=' + encodeURIComponent(APP_SYNC_SID);
-    var FALLBACK_STORAGE_KEY = STORAGE_KEY + ':' + APP_SYNC_SID;
-
-    function getAppUrlWithSid() {
-      try {
-        var url = new URL(window.location.href);
-        url.searchParams.set('sid', APP_SYNC_SID);
-        return url.toString();
-      } catch (e) {
-        return window.location.href;
-      }
+    function getAppUrl() {
+      return window.location.origin + window.location.pathname;
     }
 
     function getLocalFallbackShifts() {
@@ -1123,7 +1076,7 @@
 
     // ── Add to Screen ──
     document.getElementById('btnAddToScreen').addEventListener('click', function() {
-      document.getElementById('appUrl').textContent = getAppUrlWithSid();
+      document.getElementById('appUrl').textContent = getAppUrl();
       openOverlay('overlayAddScreen');
     });
 
@@ -1132,7 +1085,7 @@
     });
 
     document.getElementById('btnCopyUrl').addEventListener('click', function() {
-      var url = getAppUrlWithSid();
+      var url = getAppUrl();
       var btn = document.getElementById('btnCopyUrl');
 
       if (navigator.clipboard && navigator.clipboard.writeText) {

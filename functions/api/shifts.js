@@ -13,11 +13,7 @@ function json(status, payload) {
   });
 }
 
-function normalizeSid(rawSid) {
-  const sid = String(rawSid || 'default').trim();
-  const safe = sid.replace(/[^a-zA-Z0-9_-]/g, '_');
-  return safe.length > 0 ? safe : 'default';
-}
+const GLOBAL_SID = 'global';
 
 async function ensureSchema(db) {
   await db.exec(`
@@ -31,8 +27,6 @@ async function ensureSchema(db) {
 
 export async function onRequest(context) {
   const { request, env } = context;
-  const url = new URL(request.url);
-  const sid = normalizeSid(url.searchParams.get('sid'));
 
   if (request.method === 'OPTIONS') {
     return new Response(null, {
@@ -49,13 +43,46 @@ export async function onRequest(context) {
 
   await ensureSchema(env.DB);
 
-  if (request.method === 'GET') {
-    const row = await env.DB.prepare(
-      'SELECT shifts_json FROM shift_sets WHERE sid = ? LIMIT 1'
-    ).bind(sid).first();
+  async function readMergedShifts() {
+    const rows = await env.DB.prepare(
+      'SELECT sid, shifts_json FROM shift_sets ORDER BY updated_at DESC'
+    ).all();
 
-    const shifts = row && row.shifts_json ? JSON.parse(row.shifts_json) : [];
-    return json(200, { sid, shifts: Array.isArray(shifts) ? shifts : [] });
+    const merged = [];
+    const seen = new Set();
+    const items = Array.isArray(rows && rows.results) ? rows.results : [];
+
+    for (const row of items) {
+      let parsed = [];
+      try {
+        parsed = row && row.shifts_json ? JSON.parse(row.shifts_json) : [];
+      } catch (e) {
+        parsed = [];
+      }
+
+      for (const shift of Array.isArray(parsed) ? parsed : []) {
+        if (!shift || !shift.id || seen.has(shift.id)) continue;
+        seen.add(shift.id);
+        merged.push(shift);
+      }
+    }
+
+    return merged;
+  }
+
+  if (request.method === 'GET') {
+    const merged = await readMergedShifts();
+    await env.DB.prepare(
+      `
+        INSERT INTO shift_sets (sid, shifts_json, updated_at)
+        VALUES (?, ?, CURRENT_TIMESTAMP)
+        ON CONFLICT(sid) DO UPDATE SET
+          shifts_json = excluded.shifts_json,
+          updated_at = CURRENT_TIMESTAMP
+      `
+    ).bind(GLOBAL_SID, JSON.stringify(merged)).run();
+
+    return json(200, { sid: GLOBAL_SID, shifts: merged });
   }
 
   if (request.method === 'PUT') {
@@ -75,9 +102,9 @@ export async function onRequest(context) {
             shifts_json = excluded.shifts_json,
             updated_at = CURRENT_TIMESTAMP
         `
-      ).bind(sid, JSON.stringify(shifts)).run();
+      ).bind(GLOBAL_SID, JSON.stringify(shifts)).run();
 
-      return json(200, { ok: true, sid, shifts });
+      return json(200, { ok: true, sid: GLOBAL_SID, shifts });
     } catch (err) {
       return json(400, { error: err.message || 'Invalid payload' });
     }
