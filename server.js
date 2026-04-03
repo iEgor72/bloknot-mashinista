@@ -42,7 +42,17 @@ function readShifts(sid) {
 
 function writeShifts(sid, shifts) {
   const file = getUserFile(sid);
-  fs.writeFileSync(file, JSON.stringify(shifts, null, 2), 'utf8');
+  const sanitized = Array.isArray(shifts)
+    ? shifts.map(shift => {
+        const copy = {};
+        Object.keys(shift || {}).forEach(key => {
+          if (key === 'pending') return;
+          copy[key] = shift[key];
+        });
+        return copy;
+      })
+    : [];
+  fs.writeFileSync(file, JSON.stringify(sanitized, null, 2), 'utf8');
 }
 
 function sendJson(res, statusCode, payload) {

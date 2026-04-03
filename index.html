@@ -3893,6 +3893,13 @@
       return list;
     }
 
+    function normalizeShiftsForDisplay(shifts) {
+      var normalized = clearPendingFlags(shifts);
+      var pendingMap = getPendingShiftIdMap();
+      var pendingIds = Object.keys(pendingMap);
+      return pendingIds.length ? applyPendingFlags(normalized, pendingIds) : normalized;
+    }
+
     function getPendingShiftIdMap() {
       var pending = readPendingSnapshot();
       var map = {};
@@ -4875,7 +4882,7 @@
       var cached = readShiftsCache();
       var servedFromCache = false;
       if (cached && Array.isArray(cached.shifts)) {
-        allShifts = cloneShiftsForCache(cached.shifts);
+        allShifts = normalizeShiftsForDisplay(cached.shifts);
         updateOfflineUiState({ isOffline: !navigator.onLine, hasPending: !!readPendingSnapshot() });
         servedFromCache = true;
         if (callback) callback();
