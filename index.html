@@ -25,6 +25,21 @@
       --radius-sm: 8px;
     }
 
+    :root[data-theme="light"] {
+      --bg: #eef1f6;
+      --bg-card: #ffffff;
+      --bg-input: #f4f6fb;
+      --bg-item: #f7f8fc;
+      --accent: #3c77e8;
+      --accent-hover: #5b8df0;
+      --danger: #d65252;
+      --text: #182033;
+      --text-muted: #6e7485;
+      --border: #d9deea;
+      --success: #2f995e;
+      --warn: #c9851d;
+    }
+
     html, body {
       height: 100%;
       background: var(--bg);
@@ -372,6 +387,240 @@
       font-size: 13px;
       color: var(--text-muted);
       text-align: right;
+    }
+
+    .settings-page-title {
+      font-size: 26px;
+      font-weight: 800;
+      line-height: 1.15;
+      margin: 8px 0 14px;
+      letter-spacing: -0.02em;
+    }
+
+    .settings-section-title {
+      font-size: 13px;
+      color: var(--text-muted);
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      font-weight: 700;
+      margin: 14px 0 10px;
+    }
+
+    .settings-note {
+      font-size: 12px;
+      color: var(--text-muted);
+      line-height: 1.35;
+      margin-top: 4px;
+    }
+
+    .settings-row-stack {
+      align-items: flex-start;
+    }
+
+    .settings-input-wrap,
+    .settings-inline-field {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      width: auto;
+      max-width: 100%;
+    }
+
+    .settings-input {
+      width: min(100%, 240px);
+      background: var(--bg-input);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-sm);
+      color: var(--text);
+      font-size: 14px;
+      padding: 10px 12px;
+      outline: none;
+      transition: border-color 0.15s, box-shadow 0.15s;
+      -webkit-appearance: none;
+      appearance: none;
+    }
+
+    .settings-input:focus {
+      border-color: var(--accent);
+      box-shadow: 0 0 0 3px rgba(79, 142, 247, 0.14);
+    }
+
+    .settings-input.compact {
+      width: 100px;
+      text-align: right;
+      font-variant-numeric: tabular-nums;
+    }
+
+    .settings-unit {
+      color: var(--text-muted);
+      font-size: 13px;
+      white-space: nowrap;
+    }
+
+    .segmented {
+      width: 100%;
+      display: grid;
+      gap: 0;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      background: var(--bg-input);
+      border: 1px solid var(--border);
+      border-radius: 14px;
+      overflow: hidden;
+    }
+
+    .segmented.two {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+
+    .segmented-btn {
+      appearance: none;
+      border: none;
+      background: transparent;
+      color: var(--text-muted);
+      padding: 11px 12px;
+      min-height: 44px;
+      font-size: 14px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: background 0.15s, color 0.15s;
+      -webkit-tap-highlight-color: transparent;
+    }
+
+    .segmented-btn + .segmented-btn {
+      border-left: 1px solid var(--border);
+    }
+
+    .segmented-btn.active {
+      background: rgba(79, 142, 247, 0.18);
+      color: var(--text);
+    }
+
+    .salary-summary-card {
+      padding: 18px 16px;
+    }
+
+    .salary-chip {
+      text-transform: uppercase;
+      letter-spacing: 0.4px;
+      font-size: 12px;
+    }
+
+    .salary-total-amount {
+      margin-top: 12px;
+      font-size: 34px;
+      line-height: 1;
+      font-weight: 900;
+      color: var(--success);
+      letter-spacing: -0.03em;
+    }
+
+    .salary-total-caption {
+      margin-top: 8px;
+      color: var(--text-muted);
+      font-size: 14px;
+    }
+
+    .salary-list {
+      display: grid;
+      gap: 10px;
+      margin-bottom: 12px;
+    }
+
+    .salary-row {
+      display: grid;
+      grid-template-columns: 58px minmax(0, 1fr) auto;
+      gap: 10px;
+      align-items: start;
+    }
+
+    .salary-code {
+      color: var(--text-muted);
+      font-size: 12px;
+      font-weight: 700;
+      letter-spacing: 0.04em;
+      padding-top: 4px;
+    }
+
+    .salary-main {
+      min-width: 0;
+    }
+
+    .salary-name {
+      font-size: 15px;
+      font-weight: 600;
+      line-height: 1.35;
+    }
+
+    .salary-name span {
+      color: var(--text-muted);
+      font-weight: 500;
+    }
+
+    .salary-note {
+      color: var(--text-muted);
+      font-size: 12px;
+      line-height: 1.35;
+      margin-top: 3px;
+    }
+
+    .salary-value {
+      font-size: 15px;
+      font-weight: 700;
+      white-space: nowrap;
+      text-align: right;
+    }
+
+    .salary-subtotal-row,
+    .salary-summary-row,
+    .salary-net-row {
+      display: flex;
+      align-items: baseline;
+      justify-content: space-between;
+      gap: 12px;
+    }
+
+    .salary-subtotal-row {
+      margin-top: 12px;
+      padding-top: 12px;
+      border-top: 1px solid var(--border);
+      font-size: 14px;
+    }
+
+    .salary-subtotal-label,
+    .salary-summary-row span:first-child {
+      color: var(--text);
+      font-weight: 500;
+    }
+
+    .salary-subtotal-value,
+    .salary-summary-row span:last-child {
+      font-weight: 700;
+      white-space: nowrap;
+    }
+
+    .salary-summary-list {
+      display: grid;
+      gap: 10px;
+    }
+
+    .salary-summary-row {
+      font-size: 14px;
+    }
+
+    .salary-net-row {
+      margin-top: 14px;
+      padding-top: 14px;
+      border-top: 1px solid var(--border);
+      font-size: 16px;
+      font-weight: 800;
+      color: var(--success);
+    }
+
+    .settings-help-block {
+      color: var(--text-muted);
+      font-size: 12px;
+      line-height: 1.5;
+      margin-top: 10px;
     }
 
     .bottom-nav {
@@ -1032,40 +1281,187 @@
       </section>
 
       <section class="tab-panel" data-tab="salary">
+        <div class="salary-card salary-summary-card">
+          <div class="salary-chip" id="salaryMonthChip">Расчёт за апрель 2026</div>
+          <div class="salary-total-amount" id="salaryNetTop">0 ₽</div>
+          <div class="salary-total-caption">на руки (после НДФЛ)</div>
+        </div>
+
+        <div class="section-header">Основные начисления</div>
         <div class="salary-card">
-          <div class="salary-hero">
-            <div class="salary-chip">₽ Р‘СѓРґСѓС‰РёР№ расчет</div>
-            <div class="salary-title">Зарплата</div>
-            <div class="salary-text">
-              Здесь появится расчет по категориям: дневные, ночные, праздничные и переработка.
-            </div>
+          <div class="salary-list" id="salaryBaseList"></div>
+          <div class="salary-subtotal-row">
+            <span class="salary-subtotal-label">Итого база</span>
+            <span class="salary-subtotal-value" id="salaryBaseTotal">0 ₽</span>
           </div>
         </div>
 
+        <div class="section-header">Коэффициенты</div>
         <div class="salary-card">
-          <div class="section-header">Пока что</div>
-          <div class="salary-text">
-            Мы уже собираем базу по часам, чтобы потом добавить коэффициенты и прогноз зарплаты без ручного пересчета.
+          <div class="salary-list" id="salaryCoeffList"></div>
+        </div>
+
+        <div class="section-header">Итого</div>
+        <div class="salary-card">
+          <div class="salary-summary-list">
+            <div class="salary-summary-row">
+              <span>Начислено</span>
+              <span id="salaryAccrued">0 ₽</span>
+            </div>
+            <div class="salary-summary-row">
+              <span>НДФЛ основной (13%)</span>
+              <span id="salaryNdflBase">0 ₽</span>
+            </div>
+            <div class="salary-summary-row">
+              <span>НДФЛ на РК и СН (13%)</span>
+              <span id="salaryNdflCoeffs">0 ₽</span>
+            </div>
+          </div>
+          <div class="salary-net-row">
+            <span>НА РУКИ</span>
+            <span id="salaryNetBottom">0 ₽</span>
           </div>
         </div>
       </section>
 
       <section class="tab-panel" data-tab="settings">
+        <div class="settings-page-title">Настройки</div>
+
+        <div class="settings-section-title">Основные</div>
         <div class="settings-card">
-          <div class="section-header">РќР°СЃС‚СЂРѕР№ки</div>
-          <div class="settings-list">
-            <div class="settings-row">
-              <div class="settings-label">Р§Р°СЃРѕРІРѕР№ пояс</div>
-              <div class="settings-value" id="timezoneValue">—</div>
+          <div class="settings-row settings-row-stack">
+            <div>
+              <div class="settings-label">Регион</div>
+              <div class="settings-note">Для коэффициентов и локальных правил</div>
             </div>
-            <div class="settings-row">
-              <div class="settings-label">Время ввода</div>
-              <div class="settings-value">МСК, расчет ночных и праздников - локально</div>
+            <input class="settings-input" id="settingRegion" type="text" />
+          </div>
+
+          <div class="settings-row">
+            <div>
+              <div class="settings-label">Часовой пояс</div>
+              <div class="settings-note">Ночные считаются по местному</div>
             </div>
-            <div class="settings-row">
-              <div class="settings-label">Добавить на экран</div>
-              <div class="settings-value">Telegram / браузер / ярлык</div>
+            <div class="settings-value" id="timezoneValue">—</div>
+          </div>
+
+          <div class="settings-row settings-row-stack">
+            <div>
+              <div class="settings-label">Депо</div>
+              <div class="settings-note">Как в расчётном листке</div>
             </div>
+            <input class="settings-input" id="settingDepot" type="text" />
+          </div>
+
+          <div class="settings-row settings-row-stack">
+            <div>
+              <div class="settings-label">Тип тяги</div>
+            </div>
+            <div class="segmented two" id="tractionSegmented" data-setting-group="traction">
+              <button type="button" class="segmented-btn" data-value="electric">Электровоз</button>
+              <button type="button" class="segmented-btn" data-value="diesel">Тепловоз</button>
+            </div>
+          </div>
+        </div>
+
+        <div class="settings-section-title">Тариф</div>
+        <div class="settings-card">
+          <div class="settings-row settings-row-stack">
+            <div>
+              <div class="settings-label">Тарифная ставка</div>
+              <div class="settings-note">Строка "Оклад/Тариф" в расчётном листке</div>
+            </div>
+            <div class="settings-inline-field">
+              <input class="settings-input compact" id="settingTariff" type="number" min="0" step="1" />
+              <span class="settings-unit">₽/час</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="settings-section-title">Доплаты (% от тарифа)</div>
+        <div class="settings-card">
+          <div class="settings-row settings-row-stack">
+            <div>
+              <div class="settings-label">Ночные</div>
+              <div class="settings-note">Код 023L. Обычно 40%</div>
+            </div>
+            <div class="settings-inline-field">
+              <input class="settings-input compact" id="settingNightPercent" type="number" min="0" step="1" />
+              <span class="settings-unit">%</span>
+            </div>
+          </div>
+
+          <div class="settings-row settings-row-stack">
+            <div>
+              <div class="settings-label">Классная квалификация</div>
+              <div class="settings-note">Код 025L. 1кл=25%, 2кл=10%, 3кл=5%</div>
+            </div>
+            <div class="settings-inline-field">
+              <input class="settings-input compact" id="settingClassPercent" type="number" min="0" step="1" />
+              <span class="settings-unit">%</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="settings-section-title">Региональные коэффициенты</div>
+        <div class="settings-card">
+          <div class="settings-row settings-row-stack">
+            <div>
+              <div class="settings-label">Районный коэфф. РФ</div>
+              <div class="settings-note">Код 026A</div>
+            </div>
+            <div class="settings-inline-field">
+              <input class="settings-input compact" id="settingDistrictPercent" type="number" min="0" step="1" />
+              <span class="settings-unit">%</span>
+            </div>
+          </div>
+
+          <div class="settings-row settings-row-stack">
+            <div>
+              <div class="settings-label">Северная надбавка</div>
+              <div class="settings-note">Код 027A. Зависит от стажа в районе</div>
+            </div>
+            <div class="settings-inline-field">
+              <input class="settings-input compact" id="settingNorthPercent" type="number" min="0" step="1" />
+              <span class="settings-unit">%</span>
+            </div>
+          </div>
+
+          <div class="settings-row settings-row-stack">
+            <div>
+              <div class="settings-label">Местный коэфф.</div>
+              <div class="settings-note">Код 028A. 0% если нет</div>
+            </div>
+            <div class="settings-inline-field">
+              <input class="settings-input compact" id="settingLocalPercent" type="number" min="0" step="1" />
+              <span class="settings-unit">%</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="settings-help-block">Все значения можно найти в вашем расчётном листке (форма ФТУ-69).</div>
+
+        <div class="settings-section-title">Тема</div>
+        <div class="settings-card">
+          <div class="settings-row settings-row-stack">
+            <div>
+              <div class="settings-label">Оформление</div>
+            </div>
+            <div class="segmented" id="themeSegmented" data-setting-group="theme">
+              <button type="button" class="segmented-btn" data-value="auto">Авто</button>
+              <button type="button" class="segmented-btn" data-value="light">Светлая</button>
+              <button type="button" class="segmented-btn" data-value="dark">Тёмная</button>
+            </div>
+          </div>
+        </div>
+
+        <div class="settings-section-title">О приложении</div>
+        <div class="settings-card">
+          <div class="settings-row">
+            <div>
+              <div class="settings-label">Версия</div>
+            </div>
+            <div class="settings-value" id="appVersionValue">1.0.0 (1)</div>
           </div>
         </div>
 
@@ -1153,13 +1549,13 @@
 
     // ── Constants ──
     var MONTH_NAMES = [
-      'Январь','Февраль','Март','Апрель','РњР°Р№','Рюнь',
-      'Рюль','Август','Сентябрь','Октябрь','Ноябрь','Декабрь'
+      'Январь','Февраль','Март','Апрель','Май','Июнь',
+      'Июль','Август','Сентябрь','Октябрь','Ноябрь','Декабрь'
     ];
 
-    // РџСЂРѕРёР·РІРѕРґСЃС‚РІРµРЅРЅС‹Р№ календарь РФ, 40-часовая неделя
-    // 2025: КонсультантПлюс, 2026: Минтруд СѓС‚РІРµСЂР¶РґС‘РЅРЅС‹Р№
-    // 2027: РїСЂРµРґРІР°СЂРёС‚РµР»СЊРЅС‹Р№ (переносы не утверждены)
+    // Производственный календарь РФ, 40-часовая неделя
+    // 2025: КонсультантПлюс, 2026: Минтруд утвержденный
+    // 2027: предварительный (переносы не утверждены)
     var WORK_NORMS = {
       '2025-01': 136, '2025-02': 160, '2025-03': 167,
       '2025-04': 175, '2025-05': 144, '2025-06': 151,
@@ -1208,12 +1604,348 @@
     var footerEl = document.getElementById('timezoneFooter');
     function updateFooter() {
       var userLabel = CURRENT_USER ? (' · ' + (CURRENT_USER.display_name || CURRENT_USER.username || ('ID ' + CURRENT_USER.id))) : '';
-      var text = 'Р§Р°СЃРѕРІРѕР№ пояс: ' + deviceTimezone + userLabel;
+      var text = 'Часовой пояс: ' + deviceTimezone + userLabel;
       if (footerEl) footerEl.textContent = text;
-      var tzValueEl = document.getElementById('timezoneValue');
-      if (tzValueEl) tzValueEl.textContent = deviceTimezone;
     }
     updateFooter();
+
+    var APP_VERSION = '1.0.0 (1)';
+    var SETTINGS_STORAGE_KEY = 'shift_tracker_settings_v1';
+    var DEFAULT_APP_SETTINGS = {
+      region: 'Хабаровский край',
+      depot: 'ТЧЭ-9 Комсомольск-на-Амуре',
+      tractionType: 'diesel',
+      tariffRate: 380,
+      nightPercent: 40,
+      classPercent: 5,
+      districtPercent: 30,
+      northPercent: 50,
+      localPercent: 20,
+      theme: 'dark'
+    };
+    var appSettings = loadAppSettings();
+    var themeMediaQuery = null;
+
+    function loadAppSettings() {
+      var settings = {};
+      try {
+        settings = JSON.parse(localStorage.getItem(SETTINGS_STORAGE_KEY) || '{}') || {};
+      } catch (e) {
+        settings = {};
+      }
+
+      var merged = {};
+      var keys = Object.keys(DEFAULT_APP_SETTINGS);
+      for (var i = 0; i < keys.length; i++) {
+        var key = keys[i];
+        merged[key] = settings[key] !== undefined && settings[key] !== null && settings[key] !== '' ? settings[key] : DEFAULT_APP_SETTINGS[key];
+      }
+
+      merged.tariffRate = parseFloat(merged.tariffRate);
+      merged.nightPercent = parseFloat(merged.nightPercent);
+      merged.classPercent = parseFloat(merged.classPercent);
+      merged.districtPercent = parseFloat(merged.districtPercent);
+      merged.northPercent = parseFloat(merged.northPercent);
+      merged.localPercent = parseFloat(merged.localPercent);
+
+      if (isNaN(merged.tariffRate)) merged.tariffRate = DEFAULT_APP_SETTINGS.tariffRate;
+      if (isNaN(merged.nightPercent)) merged.nightPercent = DEFAULT_APP_SETTINGS.nightPercent;
+      if (isNaN(merged.classPercent)) merged.classPercent = DEFAULT_APP_SETTINGS.classPercent;
+      if (isNaN(merged.districtPercent)) merged.districtPercent = DEFAULT_APP_SETTINGS.districtPercent;
+      if (isNaN(merged.northPercent)) merged.northPercent = DEFAULT_APP_SETTINGS.northPercent;
+      if (isNaN(merged.localPercent)) merged.localPercent = DEFAULT_APP_SETTINGS.localPercent;
+      if (merged.tractionType !== 'electric' && merged.tractionType !== 'diesel') merged.tractionType = DEFAULT_APP_SETTINGS.tractionType;
+      if (merged.theme !== 'auto' && merged.theme !== 'light' && merged.theme !== 'dark') merged.theme = DEFAULT_APP_SETTINGS.theme;
+
+      return merged;
+    }
+
+    function saveAppSettings() {
+      try {
+        localStorage.setItem(SETTINGS_STORAGE_KEY, JSON.stringify(appSettings));
+      } catch (e) {}
+    }
+
+    function getThemePreference() {
+      if (appSettings.theme === 'auto') {
+        if (!themeMediaQuery) {
+          try {
+            themeMediaQuery = window.matchMedia('(prefers-color-scheme: light)');
+          } catch (e) {
+            themeMediaQuery = null;
+          }
+        }
+        return themeMediaQuery && themeMediaQuery.matches ? 'light' : 'dark';
+      }
+      return appSettings.theme;
+    }
+
+    function applyThemePreference() {
+      document.documentElement.setAttribute('data-theme', getThemePreference());
+    }
+
+    function getMskOffsetLabel(timeZoneName) {
+      var moscowOffset = 3 * 60;
+      var localOffset = -new Date().getTimezoneOffset();
+      var diff = Math.round((localOffset - moscowOffset) / 60);
+      if (!diff) return 'МСК';
+      return diff > 0 ? 'МСК+' + diff : 'МСК' + diff;
+    }
+
+    function formatRub(value) {
+      var rounded = Math.round(value || 0);
+      return rounded.toLocaleString('ru-RU') + ' ₽';
+    }
+
+    function formatPercent(value) {
+      var rounded = Math.round((value || 0) * 10) / 10;
+      return String(rounded).replace(/\.0$/, '') + '%';
+    }
+
+    function setSettingsInputValue(id, value) {
+      var el = document.getElementById(id);
+      if (!el) return;
+      if (el.value !== String(value)) {
+        el.value = String(value);
+      }
+    }
+
+    function updateSettingsControls() {
+      setSettingsInputValue('settingRegion', appSettings.region);
+      setSettingsInputValue('settingDepot', appSettings.depot);
+      setSettingsInputValue('settingTariff', appSettings.tariffRate);
+      setSettingsInputValue('settingNightPercent', appSettings.nightPercent);
+      setSettingsInputValue('settingClassPercent', appSettings.classPercent);
+      setSettingsInputValue('settingDistrictPercent', appSettings.districtPercent);
+      setSettingsInputValue('settingNorthPercent', appSettings.northPercent);
+      setSettingsInputValue('settingLocalPercent', appSettings.localPercent);
+
+      var tractionButtons = document.querySelectorAll('#tractionSegmented .segmented-btn');
+      for (var i = 0; i < tractionButtons.length; i++) {
+        tractionButtons[i].classList.toggle('active', tractionButtons[i].getAttribute('data-value') === appSettings.tractionType);
+      }
+
+      var themeButtons = document.querySelectorAll('#themeSegmented .segmented-btn');
+      for (var t = 0; t < themeButtons.length; t++) {
+        themeButtons[t].classList.toggle('active', themeButtons[t].getAttribute('data-value') === appSettings.theme);
+      }
+
+      var versionValue = document.getElementById('appVersionValue');
+      if (versionValue) versionValue.textContent = APP_VERSION;
+      var timezoneValue = document.getElementById('timezoneValue');
+      if (timezoneValue) timezoneValue.textContent = getMskOffsetLabel(deviceTimezone);
+      updateFooter();
+    }
+
+    function syncSettingsFromInputs() {
+      var regionEl = document.getElementById('settingRegion');
+      var depotEl = document.getElementById('settingDepot');
+      var tariffEl = document.getElementById('settingTariff');
+      var nightEl = document.getElementById('settingNightPercent');
+      var classEl = document.getElementById('settingClassPercent');
+      var districtEl = document.getElementById('settingDistrictPercent');
+      var northEl = document.getElementById('settingNorthPercent');
+      var localEl = document.getElementById('settingLocalPercent');
+
+      if (regionEl) appSettings.region = regionEl.value.trim() || DEFAULT_APP_SETTINGS.region;
+      if (depotEl) appSettings.depot = depotEl.value.trim() || DEFAULT_APP_SETTINGS.depot;
+
+      var tariff = tariffEl ? parseFloat(tariffEl.value) : NaN;
+      var night = nightEl ? parseFloat(nightEl.value) : NaN;
+      var klass = classEl ? parseFloat(classEl.value) : NaN;
+      var district = districtEl ? parseFloat(districtEl.value) : NaN;
+      var north = northEl ? parseFloat(northEl.value) : NaN;
+      var local = localEl ? parseFloat(localEl.value) : NaN;
+
+      appSettings.tariffRate = isNaN(tariff) ? DEFAULT_APP_SETTINGS.tariffRate : tariff;
+      appSettings.nightPercent = isNaN(night) ? DEFAULT_APP_SETTINGS.nightPercent : night;
+      appSettings.classPercent = isNaN(klass) ? DEFAULT_APP_SETTINGS.classPercent : klass;
+      appSettings.districtPercent = isNaN(district) ? DEFAULT_APP_SETTINGS.districtPercent : district;
+      appSettings.northPercent = isNaN(north) ? DEFAULT_APP_SETTINGS.northPercent : north;
+      appSettings.localPercent = isNaN(local) ? DEFAULT_APP_SETTINGS.localPercent : local;
+
+      saveAppSettings();
+      applyThemePreference();
+      render();
+    }
+
+    function setThemePreference(theme) {
+      appSettings.theme = theme;
+      saveAppSettings();
+      applyThemePreference();
+      updateSettingsControls();
+    }
+
+    function setTractionPreference(value) {
+      appSettings.tractionType = value;
+      saveAppSettings();
+      updateSettingsControls();
+    }
+
+    function bindSettingsControls() {
+      var settingsInputIds = [
+        'settingRegion',
+        'settingDepot',
+        'settingTariff',
+        'settingNightPercent',
+        'settingClassPercent',
+        'settingDistrictPercent',
+        'settingNorthPercent',
+        'settingLocalPercent'
+      ];
+
+      for (var i = 0; i < settingsInputIds.length; i++) {
+        var el = document.getElementById(settingsInputIds[i]);
+        if (!el) continue;
+        el.addEventListener('change', syncSettingsFromInputs);
+        el.addEventListener('blur', syncSettingsFromInputs);
+      }
+
+      var tractionButtons = document.querySelectorAll('#tractionSegmented .segmented-btn');
+      for (var tb = 0; tb < tractionButtons.length; tb++) {
+        tractionButtons[tb].addEventListener('click', function(e) {
+          setTractionPreference(e.currentTarget.getAttribute('data-value'));
+        });
+      }
+
+      var themeButtons = document.querySelectorAll('#themeSegmented .segmented-btn');
+      for (var th = 0; th < themeButtons.length; th++) {
+        themeButtons[th].addEventListener('click', function(e) {
+          setThemePreference(e.currentTarget.getAttribute('data-value'));
+        });
+      }
+
+      if (themeMediaQuery && themeMediaQuery.addEventListener) {
+        themeMediaQuery.addEventListener('change', function() {
+          if (appSettings.theme === 'auto') {
+            applyThemePreference();
+          }
+        });
+      }
+    }
+
+    function moneyFromHours(hours, rate, percent) {
+      return (hours || 0) * (rate || 0) * ((percent || 0) / 100);
+    }
+
+    function createSalaryRowHtml(code, title, detail, value) {
+      var detailHtml = detail ? '<div class="salary-note">' + detail + '</div>' : '';
+      return '<div class="salary-row">' +
+        '<div class="salary-code">' + code + '</div>' +
+        '<div class="salary-main">' +
+          '<div class="salary-name">' + title + '</div>' +
+          detailHtml +
+        '</div>' +
+        '<div class="salary-value">' + value + '</div>' +
+      '</div>';
+    }
+
+    function buildSalarySummary(monthShifts, bounds) {
+      var totalMin = 0;
+      var nightMin = 0;
+      var holidayMin = 0;
+      for (var i = 0; i < monthShifts.length; i++) {
+        totalMin += shiftMinutesInRange(monthShifts[i], bounds.start, bounds.end);
+        nightMin += shiftNightMinutesInRange(monthShifts[i], bounds.start, bounds.end);
+        holidayMin += shiftHolidayMinutesInRange(monthShifts[i], bounds.start, bounds.end);
+      }
+
+      var workedHours = totalMin / 60;
+      var nightHours = nightMin / 60;
+      var holidayHours = holidayMin / 60;
+      var tariffRate = appSettings.tariffRate;
+      var tariffAmount = workedHours * tariffRate;
+      var nightAmount = moneyFromHours(nightHours, tariffRate, appSettings.nightPercent);
+      var classAmount = moneyFromHours(workedHours, tariffRate, appSettings.classPercent);
+      var holidayAmount = holidayHours > 0 ? moneyFromHours(holidayHours, tariffRate, 100) : 0;
+      var baseAmount = tariffAmount + nightAmount + classAmount + holidayAmount;
+      var districtAmount = baseAmount * (appSettings.districtPercent / 100);
+      var northAmount = baseAmount * (appSettings.northPercent / 100);
+      var localAmount = baseAmount * (appSettings.localPercent / 100);
+      var coeffTotal = districtAmount + northAmount + localAmount;
+      var accruedAmount = baseAmount + coeffTotal;
+      var ndflBase = baseAmount * 0.13;
+      var ndflCoeffs = coeffTotal * 0.13;
+      var netAmount = accruedAmount - ndflBase - ndflCoeffs;
+
+      return {
+        workedHours: workedHours,
+        nightHours: nightHours,
+        holidayHours: holidayHours,
+        tariffAmount: tariffAmount,
+        nightAmount: nightAmount,
+        classAmount: classAmount,
+        holidayAmount: holidayAmount,
+        baseAmount: baseAmount,
+        districtAmount: districtAmount,
+        northAmount: northAmount,
+        localAmount: localAmount,
+        coeffTotal: coeffTotal,
+        accruedAmount: accruedAmount,
+        ndflBase: ndflBase,
+        ndflCoeffs: ndflCoeffs,
+        netAmount: netAmount
+      };
+    }
+
+    function renderSalaryPanel(monthShifts, bounds) {
+      var summary = buildSalarySummary(monthShifts, bounds);
+      var monthLabel = MONTH_NAMES[currentMonth] ? MONTH_NAMES[currentMonth].toLowerCase() : '';
+      var salaryMonthChip = document.getElementById('salaryMonthChip');
+      if (salaryMonthChip) salaryMonthChip.textContent = 'РАСЧЁТ ЗА ' + monthLabel + ' ' + currentYear;
+
+      var salaryNetTop = document.getElementById('salaryNetTop');
+      var salaryNetBottom = document.getElementById('salaryNetBottom');
+      var salaryAccrued = document.getElementById('salaryAccrued');
+      var salaryNdflBase = document.getElementById('salaryNdflBase');
+      var salaryNdflCoeffs = document.getElementById('salaryNdflCoeffs');
+      var salaryBaseTotal = document.getElementById('salaryBaseTotal');
+      if (salaryNetTop) salaryNetTop.textContent = formatRub(summary.netAmount);
+      if (salaryNetBottom) salaryNetBottom.textContent = formatRub(summary.netAmount);
+      if (salaryAccrued) salaryAccrued.textContent = formatRub(summary.accruedAmount);
+      if (salaryNdflBase) salaryNdflBase.textContent = '-' + formatRub(summary.ndflBase);
+      if (salaryNdflCoeffs) salaryNdflCoeffs.textContent = '-' + formatRub(summary.ndflCoeffs);
+      if (salaryBaseTotal) salaryBaseTotal.textContent = formatRub(summary.baseAmount);
+
+      var baseRows = [];
+      baseRows.push(createSalaryRowHtml(
+        '004L',
+        'Тариф <span>(' + summary.workedHours.toFixed(2).replace('.', ',') + ' ч × ' + appSettings.tariffRate.toFixed(2).replace('.', ',') + ' ₽)</span>',
+        '',
+        formatRub(summary.tariffAmount)
+      ));
+      baseRows.push(createSalaryRowHtml(
+        '023L',
+        'Ночные <span>(' + summary.nightHours.toFixed(2).replace('.', ',') + ' ч × ' + formatPercent(appSettings.nightPercent) + ')</span>',
+        '',
+        formatRub(summary.nightAmount)
+      ));
+      baseRows.push(createSalaryRowHtml(
+        '025L',
+        'Классная квалификация <span>(' + formatPercent(appSettings.classPercent) + ')</span>',
+        '',
+        formatRub(summary.classAmount)
+      ));
+      if (summary.holidayHours > 0) {
+        baseRows.push(createSalaryRowHtml(
+          '024L',
+          'Праздничные <span>(' + summary.holidayHours.toFixed(2).replace('.', ',') + ' ч × 100%)</span>',
+          '',
+          formatRub(summary.holidayAmount)
+        ));
+      }
+
+      var coeffRows = [
+        createSalaryRowHtml('026A', 'Районный коэфф. РФ <span>(' + formatPercent(appSettings.districtPercent) + ')</span>', '', formatRub(summary.districtAmount)),
+        createSalaryRowHtml('027A', 'Северная надбавка <span>(' + formatPercent(appSettings.northPercent) + ')</span>', '', formatRub(summary.northAmount)),
+        createSalaryRowHtml('028A', 'Местный коэфф. <span>(' + formatPercent(appSettings.localPercent) + ')</span>', '', formatRub(summary.localAmount))
+      ];
+
+      var baseList = document.getElementById('salaryBaseList');
+      var coeffList = document.getElementById('salaryCoeffList');
+      if (baseList) baseList.innerHTML = baseRows.join('');
+      if (coeffList) coeffList.innerHTML = coeffRows.join('');
+    }
 
     var API_BASE_URL = window.SHIFT_API_BASE_URL || '';
     var AUTH_API_URL = API_BASE_URL + '/api/auth';
@@ -1282,6 +2014,8 @@
       if (AUTH_GATE) AUTH_GATE.classList.add('hidden');
       if (APP_SHELL) APP_SHELL.classList.remove('hidden');
       repairUiText();
+      applyThemePreference();
+      updateSettingsControls();
       setActiveTab(activeTab || 'home');
       updateFooter();
     }
@@ -1373,45 +2107,16 @@
       var btnGoToShifts = document.getElementById('btnGoToShifts');
       if (btnGoToShifts) btnGoToShifts.textContent = 'Все';
 
-      var formTitle = document.getElementById('formTitle');
-      if (formTitle) formTitle.textContent = 'Добавить смену';
-      var editBadge = document.getElementById('editBadge');
-      if (editBadge) editBadge.textContent = 'Режим редактирования';
-      var formHint = document.querySelector('#shiftFormSection .form-hint');
-      if (formHint) formHint.textContent = 'Время указывается в МСК, ночные часы считаются по локальному времени';
-
-      var fieldLabels = document.querySelectorAll('#shiftFormSection .field label');
-      if (fieldLabels[0]) fieldLabels[0].textContent = 'Начало смены';
-      if (fieldLabels[1]) fieldLabels[1].textContent = 'Конец смены';
-
-      var btnAdd = document.getElementById('btnAdd');
-      if (btnAdd) btnAdd.textContent = 'Добавить смену';
-      var btnCancelEdit = document.getElementById('btnCancelEdit');
-      if (btnCancelEdit) btnCancelEdit.textContent = 'Отменить редактирование';
-
       var shiftsHeader = document.getElementById('shiftsHeader');
       if (shiftsHeader) shiftsHeader.textContent = 'Смены';
 
-      var salaryTitle = document.querySelector('.salary-title');
-      if (salaryTitle) salaryTitle.textContent = 'Зарплата';
       var salaryChip = document.querySelector('.salary-chip');
-      if (salaryChip) salaryChip.textContent = '₽ Будущий расчет';
-      var salarySectionHeader = document.querySelector('.tab-panel[data-tab="salary"] .section-header');
-      if (salarySectionHeader) salarySectionHeader.textContent = 'Пока что';
-      var salaryText = document.querySelectorAll('.salary-text');
-      if (salaryText[0]) salaryText[0].textContent = 'Здесь появится расчет по категориям: дневные, ночные, праздничные и переработка.';
-      if (salaryText[1]) salaryText[1].textContent = 'Мы уже собираем базу по часам, чтобы потом добавить коэффициенты и прогноз зарплаты без ручного пересчета.';
+      if (salaryChip) salaryChip.textContent = 'РАСЧЁТ ЗА ' + (MONTH_NAMES[currentMonth] ? MONTH_NAMES[currentMonth].toLowerCase() : '') + ' ' + currentYear;
 
-      var settingsLabels = document.querySelectorAll('.settings-label');
-      if (settingsLabels[0]) settingsLabels[0].textContent = 'Часовой пояс';
-      if (settingsLabels[1]) settingsLabels[1].textContent = 'Время ввода';
-      if (settingsLabels[2]) settingsLabels[2].textContent = 'Добавить на экран';
-      var settingsHeader = document.querySelector('.tab-panel[data-tab="settings"] .section-header');
-      if (settingsHeader) settingsHeader.textContent = 'Настройки';
-
-      var settingsValues = document.querySelectorAll('.settings-value');
-      if (settingsValues[1]) settingsValues[1].textContent = 'МСК, расчет ночных и праздников - локально';
-      if (settingsValues[2]) settingsValues[2].textContent = 'Telegram / браузер / ярлык';
+      var settingsPageTitle = document.querySelector('.settings-page-title');
+      if (settingsPageTitle) settingsPageTitle.textContent = 'Настройки';
+      var appVersionValue = document.getElementById('appVersionValue');
+      if (appVersionValue) appVersionValue.textContent = APP_VERSION;
 
       var addScreenBtn = document.getElementById('btnAddToScreen');
       if (addScreenBtn) addScreenBtn.textContent = '📲 Добавить на экран';
@@ -1959,6 +2664,8 @@
         'Нет смен за этот месяц',
         'Смены'
       );
+
+      renderSalaryPanel(monthShifts, bounds);
     }
     function clearRecentAddHighlight() {
       recentAddedShiftId = null;
@@ -2310,6 +3017,9 @@
     });
 
     repairUiText();
+    bindSettingsControls();
+    updateSettingsControls();
+    applyThemePreference();
 
     document.getElementById('btnAuthRetry').addEventListener('click', function() {
       authBootstrapPromise = null;
