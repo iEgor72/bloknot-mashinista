@@ -5250,7 +5250,9 @@
         metaHtml += '</div>';
       }
 
-      var html = '<div class="' + itemClass + '" data-shift-id="' + sh.id + '">' +
+      var debugHtml = shiftIsPending ? '<div style="margin:10px 0 0;padding:10px 12px;border:3px solid #ffeb3b;background:#ff1744;color:#ffffff;font-size:14px;font-weight:900;line-height:1;text-transform:uppercase;letter-spacing:0.08em;">PENDING DEBUG</div>' : '';
+
+      var html = '<div class="' + itemClass + '" data-shift-id="' + sh.id + '" data-pending="' + (shiftIsPending ? '1' : '0') + '">' +
         '<div class="shift-card-top">' +
           '<div class="shift-title-col">' +
             '<div class="shift-title-row">' +
@@ -5279,6 +5281,7 @@
               '<span class="shift-schedule-date-value">' + escapeHtml(p.endDate) + '</span>' +
             '</div>' +
           '</div>' +
+          debugHtml +
           metaHtml +
         '</div>';
 
