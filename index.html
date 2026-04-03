@@ -3972,9 +3972,16 @@
     }
 
     function clearPendingSnapshot() {
-      console.log('[clearPending] BEFORE — allShifts pending:', Array.isArray(allShifts) ? allShifts.filter(function(s){return s.pending;}).map(function(s){return s.id;}) : 'not array');
+      // Remove ALL keys matching the pending pattern (any userId suffix),
+      // so stale keys written under a different userId never linger.
       try {
-        localStorage.removeItem(getOfflineStorageKey(SHIFTS_PENDING_STORAGE_KEY));
+        var toRemove = [];
+        for (var ki = 0; ki < localStorage.length; ki++) {
+          var k = localStorage.key(ki);
+          if (k && k.indexOf(SHIFTS_PENDING_STORAGE_KEY) === 0) toRemove.push(k);
+        }
+        console.log('[clearPending] removing keys:', toRemove);
+        for (var ri = 0; ri < toRemove.length; ri++) localStorage.removeItem(toRemove[ri]);
       } catch (e) {}
       writeOfflineMeta({
         isOffline: !navigator.onLine,
@@ -3987,7 +3994,6 @@
       if (Array.isArray(allShifts)) {
         allShifts = clearPendingFlags(allShifts);
       }
-      console.log('[clearPending] AFTER  — allShifts pending:', allShifts.filter(function(s){return s.pending;}).map(function(s){return s.id;}));
     }
 
     function updateOfflineUiState(state) {
