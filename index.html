@@ -3893,6 +3893,15 @@
       return list;
     }
 
+    function normalizeShiftsForUi(shifts) {
+      var pendingMap = getPendingShiftIdMap();
+      var pendingIds = Object.keys(pendingMap);
+      if (!pendingIds.length) {
+        return clearPendingFlags(shifts);
+      }
+      return applyPendingFlags(shifts, pendingIds);
+    }
+
     function getPendingShiftIdMap() {
       var pending = readPendingSnapshot();
       var map = {};
@@ -4872,7 +4881,7 @@
       var cached = readShiftsCache();
       var servedFromCache = false;
       if (cached && Array.isArray(cached.shifts)) {
-        allShifts = applyPendingFlags(cached.shifts, Object.keys(getPendingShiftIdMap()));
+        allShifts = normalizeShiftsForUi(cached.shifts);
         updateOfflineUiState({ isOffline: !navigator.onLine, hasPending: !!readPendingSnapshot() });
         servedFromCache = true;
         if (callback) callback();
@@ -5361,6 +5370,7 @@
       });
 
       var bounds = getMonthBounds(currentYear, currentMonth);
+      allShifts = normalizeShiftsForUi(allShifts);
 
       // Filter shifts that have at least 1 minute in this month
       var monthShifts = [];
