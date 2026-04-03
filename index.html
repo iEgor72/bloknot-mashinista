@@ -3913,10 +3913,7 @@
     }
 
     function isShiftPending(shift) {
-      if (!shift) return false;
-      if (shift.pending) return true;
-      var pendingMap = getPendingShiftIdMap();
-      return !!pendingMap[String(shift.id)];
+      return !!(shift && shift.pending);
     }
 
     function readShiftsCache() {
