@@ -727,6 +727,24 @@
     var APP_SHELL = document.getElementById('appShell');
     var AUTH_WIDGET_READY = false;
     var authBootstrapPromise = null;
+    var SESSION_STORAGE_KEY = 'shift_tracker_session_token';
+
+    function getStoredSessionToken() {
+      try {
+        return localStorage.getItem(SESSION_STORAGE_KEY) || '';
+      } catch(e) {
+        return '';
+      }
+    }
+
+    function setStoredSessionToken(token) {
+      try {
+        if (token) localStorage.setItem(SESSION_STORAGE_KEY, token);
+        else localStorage.removeItem(SESSION_STORAGE_KEY);
+      } catch(e) {}
+    }
+
+    var CURRENT_SESSION_TOKEN = getStoredSessionToken();
 
     function getAppUrl() {
       return window.location.origin + window.location.pathname;
@@ -771,6 +789,10 @@
     function fetchJson(url, options) {
       var reqOptions = options || {};
       reqOptions.credentials = 'include';
+      reqOptions.headers = reqOptions.headers || {};
+      if (CURRENT_SESSION_TOKEN) {
+        reqOptions.headers['Authorization'] = 'Bearer ' + CURRENT_SESSION_TOKEN;
+      }
       return fetch(url, reqOptions).then(function(res) {
         return res.json().catch(function() { return {}; }).then(function(body) {
           return { ok: res.ok, status: res.status, body: body };
@@ -791,6 +813,8 @@
         body: JSON.stringify({ initData: Telegram.WebApp.initData })
       }).then(function(result) {
         if (result.ok && result.body && result.body.user) {
+          CURRENT_SESSION_TOKEN = result.body.sessionToken || '';
+          setStoredSessionToken(CURRENT_SESSION_TOKEN);
           return result.body.user;
         }
         throw new Error((result.body && result.body.error) || 'Не удалось войти через Telegram');
@@ -803,6 +827,8 @@
         headers: { 'Accept': 'application/json' }
       }).then(function(result) {
         if (result.ok && result.body && result.body.user) {
+          CURRENT_SESSION_TOKEN = result.body.sessionToken || CURRENT_SESSION_TOKEN || '';
+          setStoredSessionToken(CURRENT_SESSION_TOKEN);
           return result.body.user;
         }
         return null;
@@ -815,6 +841,8 @@
         headers: { 'Accept': 'application/json' }
       }).then(function() {
         CURRENT_USER = null;
+        CURRENT_SESSION_TOKEN = '';
+        setStoredSessionToken('');
         allShifts = [];
         authBootstrapPromise = null;
         AUTH_WIDGET_READY = false;

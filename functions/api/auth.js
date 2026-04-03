@@ -1,6 +1,7 @@
 import {
   buildSessionCookie,
   clearSessionCookie,
+  createSessionToken,
   getSessionUser,
   safeRedirectTarget,
   verifyTelegramLoginParams,
@@ -66,6 +67,7 @@ export async function onRequest(context) {
           return json(401, { error: 'Telegram login verification failed' });
         }
 
+        var sessionToken = await createSessionToken(user, botToken);
         var sessionCookie = await buildSessionCookie(user, botToken);
         var target = safeRedirectTarget(url.searchParams.get('return'));
         return redirect(target, sessionCookie);
@@ -76,7 +78,10 @@ export async function onRequest(context) {
         return json(401, { error: 'Unauthorized' });
       }
 
-      return json(200, { user: sessionUser });
+      return json(200, {
+        user: sessionUser,
+        sessionToken: await createSessionToken(sessionUser, botToken),
+      });
     }
 
     if (request.method === 'POST') {
@@ -92,8 +97,12 @@ export async function onRequest(context) {
           return json(401, { error: 'Telegram WebApp verification failed' });
         }
 
+        var sessionTokenFromWebApp = await createSessionToken(userFromWebApp, botToken);
         var cookie = await buildSessionCookie(userFromWebApp, botToken);
-        return json(200, { user: userFromWebApp }, {
+        return json(200, {
+          user: userFromWebApp,
+          sessionToken: sessionTokenFromWebApp,
+        }, {
           'Set-Cookie': cookie,
         });
       } catch (err) {

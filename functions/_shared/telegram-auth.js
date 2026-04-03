@@ -194,6 +194,10 @@ function createSessionValue(user, botToken) {
   });
 }
 
+async function createSessionToken(user, botToken) {
+  return createSessionValue(user, botToken);
+}
+
 async function readSessionValue(cookieValue, botToken) {
   if (!cookieValue || cookieValue.indexOf('.') === -1) return null;
   var parts = cookieValue.split('.');
@@ -246,6 +250,19 @@ function clearSessionCookie() {
 }
 
 async function getSessionUser(request, botToken) {
+  var authHeader = request.headers.get('Authorization') || '';
+  if (authHeader.toLowerCase().indexOf('bearer ') === 0) {
+    var token = authHeader.slice(7).trim();
+    var bearerUser = await readSessionValue(token, botToken);
+    if (bearerUser) return bearerUser;
+  }
+
+  var sessionHeader = request.headers.get('X-Shift-Session') || '';
+  if (sessionHeader) {
+    var headerUser = await readSessionValue(sessionHeader.trim(), botToken);
+    if (headerUser) return headerUser;
+  }
+
   var cookies = parseCookies(request.headers.get('Cookie'));
   return readSessionValue(cookies[SESSION_COOKIE], botToken);
 }
@@ -260,6 +277,7 @@ function safeRedirectTarget(rawValue) {
 
 export {
   SESSION_COOKIE,
+  createSessionToken,
   buildSessionCookie,
   clearSessionCookie,
   getSessionUser,
