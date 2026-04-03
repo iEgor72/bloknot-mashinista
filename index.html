@@ -682,7 +682,9 @@
       var endEl = document.getElementById('inputEnd');
 
       if (!startEl.value) {
-        startEl.value = formatMskDateTime(new Date());
+        var startValue = formatMskDateTime(new Date());
+        startEl.value = startValue;
+        startEl.defaultValue = startValue;
       }
 
       if (!endEl.value) {
@@ -697,7 +699,9 @@
       if (!startDate) return;
 
       var endDate = new Date(startDate.getTime() + 12 * 60 * 60 * 1000);
-      endEl.value = formatMskDateTime(endDate);
+      var endValue = formatMskDateTime(endDate);
+      endEl.value = endValue;
+      endEl.defaultValue = endValue;
     }
 
     // Get UTC timestamp for start of a day in device timezone
@@ -934,6 +938,9 @@
     var inputEndEl = document.getElementById('inputEnd');
 
     setDefaultShiftTimeInputs();
+    window.addEventListener('load', setDefaultShiftTimeInputs);
+    setTimeout(setDefaultShiftTimeInputs, 0);
+    setTimeout(setDefaultShiftTimeInputs, 250);
 
     inputStartEl.addEventListener('pointerdown', setDefaultShiftTimeInputs);
     inputStartEl.addEventListener('touchstart', setDefaultShiftTimeInputs, { passive: true });
