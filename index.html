@@ -98,6 +98,10 @@
       background: #f9fbff;
     }
 
+    :root[data-theme="light"] .optional-summary-chevron {
+      color: #6f7e9c;
+    }
+
     :root[data-theme="light"] .shift-pill {
       background: rgba(60, 119, 232, 0.06);
       color: #24324d;
@@ -754,9 +758,9 @@
     .bottom-nav {
       position: fixed;
       left: 50%;
-      bottom: 10px;
+      bottom: 12px;
       transform: translateX(-50%);
-      width: min(480px, calc(100vw - 16px));
+      width: min(500px, calc(100vw - 14px));
       z-index: 30;
       pointer-events: none;
     }
@@ -765,13 +769,13 @@
       pointer-events: auto;
       display: grid;
       grid-template-columns: repeat(5, minmax(0, 1fr));
-      gap: 8px;
-      background: rgba(18, 18, 30, 0.9);
-      border: 1px solid rgba(133, 146, 214, 0.14);
-      border-radius: 22px;
-      padding: 8px;
-      backdrop-filter: blur(16px);
-      box-shadow: 0 20px 40px rgba(0, 0, 0, 0.28);
+      gap: 6px;
+      background: rgba(15, 18, 30, 0.92);
+      border: 1px solid rgba(133, 146, 214, 0.16);
+      border-radius: 24px;
+      padding: 8px 8px 10px;
+      backdrop-filter: blur(18px);
+      box-shadow: 0 18px 34px rgba(0, 0, 0, 0.26);
     }
 
     .tab-btn {
@@ -779,46 +783,47 @@
       border: none;
       background: transparent;
       color: var(--text-muted);
-      border-radius: 16px;
-      padding: 8px 4px;
+      border-radius: 17px;
+      padding: 7px 4px 8px;
       display: flex;
       flex-direction: column;
       align-items: center;
       justify-content: center;
-      gap: 2px;
+      gap: 3px;
       cursor: pointer;
-      min-height: 48px;
-      transition: background 0.15s, color 0.15s, transform 0.15s;
+      min-height: 50px;
+      transition: background 0.18s, color 0.18s, transform 0.18s, box-shadow 0.18s;
       -webkit-tap-highlight-color: transparent;
     }
 
     .tab-btn:active { transform: translateY(1px); }
 
     .tab-btn.active {
-      background: rgba(79, 142, 247, 0.14);
+      background: rgba(79, 142, 247, 0.12);
       color: var(--text);
     }
 
     .tab-btn.center {
-      background: linear-gradient(180deg, var(--accent-hover), var(--accent));
+      background: linear-gradient(180deg, #7aa8ff 0%, var(--accent) 100%);
       color: #fff;
-      box-shadow: 0 10px 18px rgba(79, 142, 247, 0.24);
-      transform: translateY(-12px);
-      min-height: 58px;
+      box-shadow: 0 12px 24px rgba(79, 142, 247, 0.28);
+      transform: translateY(-14px);
+      min-height: 62px;
+      border-radius: 19px;
     }
 
-    .tab-btn.center:active { transform: translateY(-10px); }
+    .tab-btn.center:active { transform: translateY(-12px); }
 
     .tab-icon {
-      font-size: 16px;
+      font-size: 17px;
       line-height: 1;
     }
 
     .tab-label {
-      font-size: 11px;
+      font-size: 10.5px;
       line-height: 1.1;
       font-weight: 700;
-      letter-spacing: 0.2px;
+      letter-spacing: 0.15px;
     }
 
     /* ── Stats Grid ── */
@@ -1013,14 +1018,63 @@
       background: var(--bg-item);
       border: 1px solid var(--border);
       border-radius: 16px;
-      padding: 14px;
       margin-bottom: 12px;
+      overflow: hidden;
     }
 
-    .optional-card-title {
+    .optional-details {
+      display: block;
+    }
+
+    .optional-summary {
+      list-style: none;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      padding: 14px;
+      cursor: pointer;
+      -webkit-tap-highlight-color: transparent;
+      user-select: none;
+    }
+
+    .optional-summary::-webkit-details-marker {
+      display: none;
+    }
+
+    .optional-summary-main {
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+      min-width: 0;
+    }
+
+    .optional-summary-title {
       font-size: 15px;
       font-weight: 700;
-      margin-bottom: 12px;
+      line-height: 1.3;
+    }
+
+    .optional-summary-subtitle {
+      font-size: 12px;
+      color: var(--text-muted);
+      line-height: 1.35;
+    }
+
+    .optional-summary-chevron {
+      flex-shrink: 0;
+      color: var(--text-muted);
+      transition: transform 0.18s ease;
+      font-size: 18px;
+      line-height: 1;
+    }
+
+    .optional-card[open] .optional-summary-chevron {
+      transform: rotate(180deg);
+    }
+
+    .optional-card-body {
+      padding: 0 14px 14px;
     }
 
     .optional-grid {
@@ -1593,68 +1647,92 @@
 
           <div class="optional-section-title">Необязательные данные</div>
 
-          <div class="optional-card">
-            <div class="optional-card-title">Локомотив</div>
-            <div class="optional-grid optional-grid-two">
-              <div class="field">
-                <label>Серия локомотива</label>
-                <select class="optional-control" id="inputLocoSeries">
-                  <option value="">Выберите</option>
-                  <option value="ТЭ10">ТЭ10</option>
-                  <option value="ТЭ25">ТЭ25</option>
-                  <option value="ТЭМ">ТЭМ</option>
-                  <option value="ЭС5">ЭС5</option>
-                </select>
+          <details class="optional-card" id="optionalLocoCard">
+            <summary class="optional-summary">
+              <div class="optional-summary-main">
+                <div class="optional-summary-title">Локомотив</div>
+                <div class="optional-summary-subtitle">Серия и номер локомотива, если нужно указать состав</div>
               </div>
-              <div class="field">
-                <label>Номер локомотива</label>
-                <input class="optional-control" type="text" id="inputLocoNumber" inputmode="numeric" maxlength="4" placeholder="3248" />
-              </div>
-            </div>
-          </div>
-
-          <div class="optional-card">
-            <div class="optional-card-title">Поезд</div>
-            <div class="optional-grid optional-grid-two">
-              <div class="field">
-                <label>Номер поезда</label>
-                <input class="optional-control" type="text" id="inputTrainNumber" inputmode="numeric" maxlength="4" placeholder="1234" />
-              </div>
-              <div class="field">
-                <label>Вес</label>
-                <input class="optional-control" type="text" id="inputTrainWeight" inputmode="numeric" maxlength="4" placeholder="8000" />
-              </div>
-              <div class="field">
-                <label>Оси</label>
-                <input class="optional-control" type="text" id="inputTrainAxles" inputmode="numeric" maxlength="3" placeholder="060" />
-              </div>
-              <div class="field">
-                <label>Условная длина</label>
-                <input class="optional-control" type="text" id="inputTrainLength" inputmode="numeric" maxlength="3" placeholder="300" />
-              </div>
-            </div>
-          </div>
-
-          <div class="optional-card">
-            <div class="optional-card-title">Участок и вид следования</div>
-            <div class="segmented two" id="routeTypeSegmented" data-setting-group="routeType">
-              <button type="button" class="segmented-btn" data-value="trip">Поездка</button>
-              <button type="button" class="segmented-btn" data-value="depot">Под депо</button>
-            </div>
-            <div class="route-fields" id="routeFields">
+              <div class="optional-summary-chevron">⌄</div>
+            </summary>
+            <div class="optional-card-body">
               <div class="optional-grid optional-grid-two">
                 <div class="field">
-                  <label>Станция отправления</label>
-                  <input class="optional-control" type="text" id="inputRouteFrom" maxlength="64" placeholder="КМС" />
+                  <label>Серия локомотива</label>
+                  <select class="optional-control" id="inputLocoSeries">
+                    <option value="">Выберите</option>
+                    <option value="ТЭ10">ТЭ10</option>
+                    <option value="ТЭ25">ТЭ25</option>
+                    <option value="ТЭМ">ТЭМ</option>
+                    <option value="ЭС5">ЭС5</option>
+                  </select>
                 </div>
                 <div class="field">
-                  <label>Станция прибытия</label>
-                  <input class="optional-control" type="text" id="inputRouteTo" maxlength="64" placeholder="ПСТ" />
+                  <label>Номер локомотива</label>
+                  <input class="optional-control" type="text" id="inputLocoNumber" inputmode="numeric" maxlength="4" placeholder="0010" />
                 </div>
               </div>
-              <div class="optional-note">Для режима «Под депо» дополнительные поля не нужны.</div>
             </div>
-          </div>
+          </details>
+
+          <details class="optional-card" id="optionalTrainCard">
+            <summary class="optional-summary">
+              <div class="optional-summary-main">
+                <div class="optional-summary-title">Поезд</div>
+                <div class="optional-summary-subtitle">Номер, вес, оси и условная длина</div>
+              </div>
+              <div class="optional-summary-chevron">⌄</div>
+            </summary>
+            <div class="optional-card-body">
+              <div class="optional-grid optional-grid-two">
+                <div class="field">
+                  <label>Номер поезда</label>
+                  <input class="optional-control" type="text" id="inputTrainNumber" inputmode="numeric" maxlength="4" placeholder="1234" />
+                </div>
+                <div class="field">
+                  <label>Вес</label>
+                  <input class="optional-control" type="text" id="inputTrainWeight" inputmode="numeric" maxlength="4" placeholder="8000" />
+                </div>
+                <div class="field">
+                  <label>Оси</label>
+                  <input class="optional-control" type="text" id="inputTrainAxles" inputmode="numeric" maxlength="3" placeholder="060" />
+                </div>
+                <div class="field">
+                  <label>Условная длина</label>
+                  <input class="optional-control" type="text" id="inputTrainLength" inputmode="numeric" maxlength="3" placeholder="300" />
+                </div>
+              </div>
+            </div>
+          </details>
+
+          <details class="optional-card" id="optionalRouteCard">
+            <summary class="optional-summary">
+              <div class="optional-summary-main">
+                <div class="optional-summary-title">Участок и вид следования</div>
+                <div class="optional-summary-subtitle">Выбор между поездкой и под депо</div>
+              </div>
+              <div class="optional-summary-chevron">⌄</div>
+            </summary>
+            <div class="optional-card-body">
+              <div class="segmented two" id="routeTypeSegmented" data-setting-group="routeType">
+                <button type="button" class="segmented-btn" data-value="trip">Поездка</button>
+                <button type="button" class="segmented-btn" data-value="depot">Под депо</button>
+              </div>
+              <div class="route-fields" id="routeFields">
+                <div class="optional-grid optional-grid-two">
+                  <div class="field">
+                    <label>Станция отправления</label>
+                    <input class="optional-control" type="text" id="inputRouteFrom" maxlength="64" placeholder="Станция отправления" />
+                  </div>
+                  <div class="field">
+                    <label>Станция прибытия</label>
+                    <input class="optional-control" type="text" id="inputRouteTo" maxlength="64" placeholder="Станция прибытия" />
+                  </div>
+                </div>
+                <div class="optional-note">Для режима «Под депо» дополнительные поля не нужны.</div>
+              </div>
+            </div>
+          </details>
 
           <button class="btn-primary" id="btnAdd">Добавить смену</button>
           <button class="btn-link hidden" id="btnCancelEdit" type="button">Отменить редактирование</button>
@@ -1842,8 +1920,8 @@
           <span class="tab-label">Зарплата</span>
         </button>
         <button class="tab-btn" type="button" data-tab="settings">
-          <span class="tab-icon">вљ™</span>
-          <span class="tab-label">РќР°СЃС‚СЂРѕР№ки</span>
+          <span class="tab-icon">⚙</span>
+          <span class="tab-label">Настройки</span>
         </button>
       </div>
     </nav>
@@ -2367,7 +2445,7 @@
 
     function openAddTabAndFocusForm() {
       if (editingShiftId) {
-        exitEditMode();
+        exitEditMode('add');
       } else {
         setFormMode('add');
       }
@@ -3068,6 +3146,11 @@
       routeFields.classList.toggle('hidden', getRouteType() !== 'trip');
     }
 
+    function setOptionalCardOpen(cardId, open) {
+      var card = document.getElementById(cardId);
+      if (card) card.open = !!open;
+    }
+
     function getFieldValue(id) {
       var el = document.getElementById(id);
       return el ? el.value.trim() : '';
@@ -3144,6 +3227,9 @@
       setFieldValue('inputRouteFrom', shift.route_from || '');
       setFieldValue('inputRouteTo', shift.route_to || '');
       setRouteType(shift.route_kind === 'trip' ? 'trip' : 'depot');
+      setOptionalCardOpen('optionalLocoCard', !!(shift.locomotive_series || shift.locomotive_number));
+      setOptionalCardOpen('optionalTrainCard', !!(shift.train_number || shift.train_weight || shift.train_axles || shift.train_length));
+      setOptionalCardOpen('optionalRouteCard', !!(shift.route_kind === 'trip' || shift.route_from || shift.route_to));
       renderDraftShiftSummary();
     }
 
@@ -3198,9 +3284,6 @@
 
     function getShiftDetailLines(shift) {
       var lines = [];
-      if (shift.route_kind === 'trip') {
-        lines.push('Вид следования: Поездка');
-      }
       var loco = getLocoSummary(shift);
       if (loco) lines.push('Локомотив: ' + loco);
       var train = getTrainSummary(shift);
@@ -3266,7 +3349,7 @@
       render();
     }
 
-    function exitEditMode() {
+    function exitEditMode(nextTab) {
       editingShiftId = null;
       setFormMode('add');
       document.getElementById('formTitle').textContent = 'Добавить смену';
@@ -3281,6 +3364,7 @@
       clearOptionalShiftData();
       setDefaultShiftTimeInputs();
       renderDraftShiftSummary();
+      setActiveTab(nextTab || 'add');
       render();
     }
 
@@ -3299,7 +3383,7 @@
       }
       allShifts = newShifts;
       if (editingShiftId === pendingDeleteId) {
-        exitEditMode();
+        exitEditMode('shifts');
       }
       pendingDeleteId = null;
       closeOverlay('overlayConfirm');
@@ -3504,7 +3588,7 @@
         }
 
         if (isEditing) {
-          exitEditMode();
+          exitEditMode('shifts');
           clearRecentAddHighlight();
         } else {
           inputStartDateEl.value = '';
@@ -3591,7 +3675,7 @@
     }
 
     document.getElementById('btnCancelEdit').addEventListener('click', function() {
-      exitEditMode();
+      exitEditMode('shifts');
     });
 
     document.getElementById('btnCloseAddScreen').addEventListener('click', function() {
