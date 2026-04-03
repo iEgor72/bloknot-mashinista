@@ -1309,6 +1309,10 @@
         if (section && section.scrollIntoView) {
           section.scrollIntoView({ behavior: 'smooth', block: 'start' });
         }
+        var startDate = document.getElementById('inputStartDate');
+        if (startDate && startDate.focus) {
+          startDate.focus();
+        }
       }, 40);
     }
 
@@ -1383,6 +1387,10 @@
 
       var salaryTitle = document.querySelector('.salary-title');
       if (salaryTitle) salaryTitle.textContent = 'Зарплата';
+      var salaryChip = document.querySelector('.salary-chip');
+      if (salaryChip) salaryChip.textContent = '₽ Будущий расчет';
+      var salarySectionHeader = document.querySelector('.tab-panel[data-tab="salary"] .section-header');
+      if (salarySectionHeader) salarySectionHeader.textContent = 'Пока что';
       var salaryText = document.querySelectorAll('.salary-text');
       if (salaryText[0]) salaryText[0].textContent = 'Здесь появится расчет по категориям: дневные, ночные, праздничные и переработка.';
       if (salaryText[1]) salaryText[1].textContent = 'Мы уже собираем базу по часам, чтобы потом добавить коэффициенты и прогноз зарплаты без ручного пересчета.';
@@ -1391,6 +1399,8 @@
       if (settingsLabels[0]) settingsLabels[0].textContent = 'Часовой пояс';
       if (settingsLabels[1]) settingsLabels[1].textContent = 'Время ввода';
       if (settingsLabels[2]) settingsLabels[2].textContent = 'Добавить на экран';
+      var settingsHeader = document.querySelector('.tab-panel[data-tab="settings"] .section-header');
+      if (settingsHeader) settingsHeader.textContent = 'Настройки';
 
       var settingsValues = document.querySelectorAll('.settings-value');
       if (settingsValues[1]) settingsValues[1].textContent = 'МСК, расчет ночных и праздников - локально';
