@@ -933,11 +933,29 @@
     var inputStartEl = document.getElementById('inputStart');
     var inputEndEl = document.getElementById('inputEnd');
 
+    setDefaultShiftTimeInputs();
+
+    inputStartEl.addEventListener('pointerdown', setDefaultShiftTimeInputs);
+    inputStartEl.addEventListener('touchstart', setDefaultShiftTimeInputs, { passive: true });
     inputStartEl.addEventListener('focus', setDefaultShiftTimeInputs);
     inputStartEl.addEventListener('click', setDefaultShiftTimeInputs);
     inputStartEl.addEventListener('input', syncEndFromStart);
     inputStartEl.addEventListener('change', syncEndFromStart);
 
+    inputEndEl.addEventListener('pointerdown', function() {
+      if (!inputStartEl.value) {
+        setDefaultShiftTimeInputs();
+      } else if (!inputEndEl.value) {
+        syncEndFromStart();
+      }
+    });
+    inputEndEl.addEventListener('touchstart', function() {
+      if (!inputStartEl.value) {
+        setDefaultShiftTimeInputs();
+      } else if (!inputEndEl.value) {
+        syncEndFromStart();
+      }
+    }, { passive: true });
     inputEndEl.addEventListener('focus', function() {
       if (!inputEndEl.value) {
         if (!inputStartEl.value) {
