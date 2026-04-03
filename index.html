@@ -1968,7 +1968,6 @@
         </button>
         <button class="tab-btn center" type="button" data-tab="add">
           <span class="tab-icon">＋</span>
-          <span class="tab-label">Добавить</span>
         </button>
         <button class="tab-btn" type="button" data-tab="salary">
           <span class="tab-icon" aria-hidden="true">
@@ -2565,7 +2564,7 @@
       }
 
       var tabLabels = document.querySelectorAll('.bottom-nav .tab-label');
-      var tabText = ['Главная', 'Маршруты', 'Добавить', 'Зарплата', 'Настройки'];
+      var tabText = ['Главная', 'Маршруты', '', 'Зарплата', 'Настройки'];
       for (var t = 0; t < tabLabels.length && t < tabText.length; t++) {
         tabLabels[t].textContent = tabText[t];
       }
@@ -2980,9 +2979,9 @@
       var dur = fmtMin(shiftTotalMinutes(shift));
 
       if (sd === ed) {
-        return { text: startDate + '  ·  ' + st + '–' + et, dur: dur };
+        return { text: startDate + ', ' + st + ' → ' + et, dur: dur };
       } else {
-        return { text: startDate + ' ' + st + ' → ' + endDate + ' ' + et, dur: dur };
+        return { text: startDate + ', ' + st + ' → ' + endDate + ', ' + et, dur: dur };
       }
     }
 
@@ -3349,11 +3348,6 @@
       if (loco) lines.push('Локомотив: ' + loco);
       var train = getTrainSummary(shift);
       if (train) lines.push('Поезд: ' + train);
-      if (shift.route_kind === 'trip' && (shift.route_from || shift.route_to)) {
-        lines.push('Участок: ' + (shift.route_from || '—') + ' → ' + (shift.route_to || '—'));
-      } else if (shift.route_kind === 'depot') {
-        lines.push('Вид следования: Под депо');
-      }
       return lines;
     }
 
