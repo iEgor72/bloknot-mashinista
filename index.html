@@ -3911,7 +3911,7 @@
       if (pending && Array.isArray(pending.shifts)) {
         for (var j = 0; j < pending.shifts.length; j++) {
           var pendingShift = pending.shifts[j];
-          if (pendingShift && pendingShift.id !== undefined && pendingShift.id !== null) {
+          if (pendingShift && pendingShift.pending && pendingShift.id !== undefined && pendingShift.id !== null) {
             map[String(pendingShift.id)] = true;
           }
         }
