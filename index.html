@@ -2690,11 +2690,34 @@
     }
 
     .shift-item.is-pending {
-      border-color: rgba(247, 185, 85, 0.28);
+      border-color: rgba(247, 185, 85, 0.48);
+      background:
+        linear-gradient(180deg, rgba(247, 185, 85, 0.06), rgba(255,255,255,0.02)),
+        radial-gradient(circle at 8% 0%, rgba(247, 185, 85, 0.16), transparent 30%),
+        radial-gradient(circle at 92% 10%, rgba(255, 214, 110, 0.08), transparent 28%),
+        rgba(14, 17, 31, 0.72);
       box-shadow:
-        0 16px 34px rgba(4, 7, 15, 0.22),
-        0 0 0 1px rgba(247, 185, 85, 0.08),
+        0 18px 38px rgba(4, 7, 15, 0.28),
+        0 0 0 1px rgba(247, 185, 85, 0.14),
         inset 0 1px 0 rgba(255,255,255,0.05);
+    }
+
+    .shift-pending-chip {
+      display: inline-flex;
+      align-items: center;
+      margin-left: 8px;
+      padding: 4px 8px;
+      border-radius: 999px;
+      background: rgba(247, 185, 85, 0.16);
+      border: 1px solid rgba(247, 185, 85, 0.34);
+      color: #ffe08a;
+      font-size: 10px;
+      font-weight: 900;
+      line-height: 1;
+      letter-spacing: 0.04em;
+      text-transform: uppercase;
+      vertical-align: middle;
+      flex-shrink: 0;
     }
 
     .btn-action {
@@ -5231,7 +5254,7 @@
         '<div class="shift-card-top">' +
           '<div class="shift-title-col">' +
             '<div class="shift-title-row">' +
-              '<div class="shift-title"><span class="shift-title-icon">' + (sh.route_kind === 'trip' ? '↔' : '→') + '</span><span class="shift-title-text">' + escapeHtml(title) + '</span></div>' +
+              '<div class="shift-title"><span class="shift-title-icon">' + (sh.route_kind === 'trip' ? '↔' : '→') + '</span><span class="shift-title-text">' + escapeHtml(title) + '</span>' + (shiftIsPending ? '<span class="shift-pending-chip">pending</span>' : '') + '</div>' +
             '</div>' +
             (kindLabel ? '<div class="shift-kind-line"><span class="shift-kind-badge">' + escapeHtml(kindLabel) + '</span></div>' : '') +
             (shiftIsPending ? '<div class="shift-kind-line"><span class="shift-pending-badge">pending</span></div>' : '') +
