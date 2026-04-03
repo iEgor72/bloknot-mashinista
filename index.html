@@ -3972,6 +3972,7 @@
     }
 
     function clearPendingSnapshot() {
+      console.log('[clearPending] BEFORE — allShifts pending:', Array.isArray(allShifts) ? allShifts.filter(function(s){return s.pending;}).map(function(s){return s.id;}) : 'not array');
       try {
         localStorage.removeItem(getOfflineStorageKey(SHIFTS_PENDING_STORAGE_KEY));
       } catch (e) {}
@@ -3986,6 +3987,7 @@
       if (Array.isArray(allShifts)) {
         allShifts = clearPendingFlags(allShifts);
       }
+      console.log('[clearPending] AFTER  — allShifts pending:', allShifts.filter(function(s){return s.pending;}).map(function(s){return s.id;}));
     }
 
     function updateOfflineUiState(state) {
@@ -4088,6 +4090,8 @@
             lastSyncAt: new Date().toISOString()
           });
           updateOfflineUiState({ isOffline: false, isSyncing: false, hasPending: false, lastSyncStatus: 'synced', lastError: '' });
+          console.log('[flushPending/success] allShifts pending after clean:', allShifts.filter(function(s){return s.pending;}).map(function(s){return s.id;}));
+          console.log('[flushPending/success] offlineUiState.hasPending:', offlineUiState.hasPending, '| readPendingSnapshot():', readPendingSnapshot());
           if (callback) callback(null);
           render();
           return;
@@ -5256,7 +5260,7 @@
     }
 
     // ── Render ──
-      function buildShiftItemHtml(sh, compact) {
+      function buildShiftItemHtml(sh, compact, pendingMap) {
         var f = fmtShift(sh);
         var p = getShiftDisplayParts(sh);
         var itemClass = 'shift-item' + (compact ? ' compact-shift' : '');
@@ -5269,7 +5273,10 @@
         if (sh.id === pendingDeleteId) itemClass += ' is-delete-target';
         if (sh.id === recentAddedShiftId) itemClass += ' is-adding-target';
         var rawShiftPending = !!(sh && sh.pending);
-        var shiftIsPending = isShiftPending(sh);
+        // Use the authoritative pending snapshot map when available (passed from render);
+        // fall back to sh.pending only if no map was provided.
+        var shiftIsPending = pendingMap ? !!pendingMap[String(sh.id)] : isShiftPending(sh);
+        console.log('[card] id=' + sh.id + ' sh.pending=' + rawShiftPending + ' map=' + (pendingMap ? !!pendingMap[String(sh.id)] : 'n/a') + ' → shiftIsPending=' + shiftIsPending);
         if (shiftIsPending) itemClass += ' is-pending';
 
       var metaHtml = '';
@@ -5323,7 +5330,7 @@
       return html;
     }
 
-    function renderShiftList(listEl, headerEl, shifts, compact, emptyText, headerBase) {
+    function renderShiftList(listEl, headerEl, shifts, compact, emptyText, headerBase, pendingMap) {
       if (headerEl) headerEl.textContent = headerBase || 'Смены';
 
       if (!compact) {
@@ -5348,7 +5355,7 @@
 
       var html = '';
       for (var i = 0; i < shifts.length; i++) {
-        html += buildShiftItemHtml(shifts[i], compact);
+        html += buildShiftItemHtml(shifts[i], compact, pendingMap);
       }
       listEl.innerHTML = html;
 
@@ -5362,6 +5369,8 @@
     function render() {
       syncShiftActionsMenuLifecycle();
       updateOfflineUiState();
+      var _renderPendingMap = getPendingShiftIdMap();
+      console.log('[render] pendingMap keys:', Object.keys(_renderPendingMap), '| allShifts pending:', allShifts.filter(function(s){return s.pending;}).map(function(s){return s.id;}));
 
       // Month title
       renderMonthHeader('monthTitle', 'monthQuarter', 'homeMonthTabs', currentYear, currentMonth, function(targetMonth) {
@@ -5445,7 +5454,8 @@
         monthShifts.slice(0, 3),
         true,
         'Нет смен за этот месяц',
-        false
+        false,
+        _renderPendingMap
       );
 
       renderShiftList(
@@ -5454,7 +5464,8 @@
         monthShifts,
         false,
         'Нет смен за этот месяц',
-        'Смены'
+        'Смены',
+        _renderPendingMap
       );
 
       renderSalaryPanel();
