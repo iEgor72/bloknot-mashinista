@@ -4808,7 +4808,10 @@
       listEl.innerHTML = html;
 
       var actionTriggers = listEl.querySelectorAll('.shift-actions-trigger');
-      for (var a = 0; a < actionTriggers.length; a++) actionTriggers[a].addEventListener('click', handleShiftActionsTriggerClick);
+      for (var a = 0; a < actionTriggers.length; a++) {
+        actionTriggers[a].addEventListener('pointerdown', handleShiftActionsTriggerPointerDown);
+        actionTriggers[a].addEventListener('click', handleShiftActionsTriggerClick);
+      }
     }
 
     function render() {
@@ -5384,9 +5387,22 @@
     function handleShiftActionsTriggerClick(e) {
       e.preventDefault();
       e.stopPropagation();
+      if (e.currentTarget.dataset.shiftTriggerPressed === '1' && e.type === 'click') return;
       var host = e.currentTarget.closest('#homeShiftsList, #shiftsList');
       activeShiftMenuScope = host ? host.id : 'shiftsList';
       toggleShiftActionsMenu(e.currentTarget.getAttribute('data-id'));
+    }
+
+    function handleShiftActionsTriggerPointerDown(e) {
+      e.preventDefault();
+      e.stopPropagation();
+      var trigger = e.currentTarget;
+      if (trigger.dataset.shiftTriggerPressed === '1') return;
+      trigger.dataset.shiftTriggerPressed = '1';
+      window.setTimeout(function() {
+        delete trigger.dataset.shiftTriggerPressed;
+      }, 350);
+      handleShiftActionsTriggerClick(e);
     }
 
     function handleShiftActionsItemClick(item, e) {
