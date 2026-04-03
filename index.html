@@ -141,7 +141,14 @@
       margin-bottom: 5px;
     }
 
-    .field input[type="datetime-local"] {
+    .datetime-row {
+      display: grid;
+      grid-template-columns: 1.2fr 0.8fr;
+      gap: 8px;
+    }
+
+    .field input[type="date"],
+    .field input[type="time"] {
       width: 100%;
       background: var(--bg-input);
       border: 1px solid var(--border);
@@ -473,14 +480,20 @@
       <div class="form-hint">Время указывается в МСК</div>
 
       <div class="field">
-        <label for="inputStart">Начало смены</label>
-        <input type="datetime-local" id="inputStart" />
+        <label>Начало смены</label>
+        <div class="datetime-row">
+          <input type="date" id="inputStartDate" />
+          <input type="time" id="inputStartTime" />
+        </div>
         <div class="field-error" id="errStart"></div>
       </div>
 
       <div class="field">
-        <label for="inputEnd">Конец смены</label>
-        <input type="datetime-local" id="inputEnd" />
+        <label>Конец смены</label>
+        <div class="datetime-row">
+          <input type="date" id="inputEndDate" />
+          <input type="time" id="inputEndTime" />
+        </div>
         <div class="field-error" id="errEnd"></div>
       </div>
 
@@ -666,42 +679,58 @@
       return new Date(Date.UTC(year, month, day, hour - MSK_OFFSET, min, 0));
     }
 
-    // Format a Date as "YYYY-MM-DDTHH:MM" in MSK
-    function formatMskDateTime(date) {
+    function formatMskDatePart(date) {
       var msk = new Date(date.getTime() + MSK_OFFSET * 60 * 60 * 1000);
       var year = msk.getUTCFullYear();
       var month = String(msk.getUTCMonth() + 1).padStart(2, '0');
       var day = String(msk.getUTCDate()).padStart(2, '0');
+      return year + '-' + month + '-' + day;
+    }
+
+    function formatMskTimePart(date) {
+      var msk = new Date(date.getTime() + MSK_OFFSET * 60 * 60 * 1000);
       var hour = String(msk.getUTCHours()).padStart(2, '0');
       var min = String(msk.getUTCMinutes()).padStart(2, '0');
-      return year + '-' + month + '-' + day + 'T' + hour + ':' + min;
+      return hour + ':' + min;
+    }
+
+    function composeMskDateTime(dateValue, timeValue) {
+      if (!dateValue || !timeValue) return null;
+      return dateValue + 'T' + timeValue;
     }
 
     function setDefaultShiftTimeInputs() {
-      var startEl = document.getElementById('inputStart');
-      var endEl = document.getElementById('inputEnd');
+      var startDateEl = document.getElementById('inputStartDate');
+      var startTimeEl = document.getElementById('inputStartTime');
+      var endDateEl = document.getElementById('inputEndDate');
+      var endTimeEl = document.getElementById('inputEndTime');
 
-      if (!startEl.value) {
-        var startValue = formatMskDateTime(new Date());
-        startEl.value = startValue;
-        startEl.defaultValue = startValue;
+      if (!startDateEl.value) {
+        var now = new Date();
+        startDateEl.value = formatMskDatePart(now);
+        startDateEl.defaultValue = startDateEl.value;
+        startTimeEl.value = formatMskTimePart(now);
+        startTimeEl.defaultValue = startTimeEl.value;
       }
 
-      if (!endEl.value) {
+      if (!endDateEl.value || !endTimeEl.value) {
         syncEndFromStart();
       }
     }
 
     function syncEndFromStart() {
-      var startEl = document.getElementById('inputStart');
-      var endEl = document.getElementById('inputEnd');
-      var startDate = parseMsk(startEl.value);
+      var startDateEl = document.getElementById('inputStartDate');
+      var startTimeEl = document.getElementById('inputStartTime');
+      var endDateEl = document.getElementById('inputEndDate');
+      var endTimeEl = document.getElementById('inputEndTime');
+      var startDate = parseMsk(composeMskDateTime(startDateEl.value, startTimeEl.value));
       if (!startDate) return;
 
       var endDate = new Date(startDate.getTime() + 12 * 60 * 60 * 1000);
-      var endValue = formatMskDateTime(endDate);
-      endEl.value = endValue;
-      endEl.defaultValue = endValue;
+      endDateEl.value = formatMskDatePart(endDate);
+      endDateEl.defaultValue = endDateEl.value;
+      endTimeEl.value = formatMskTimePart(endDate);
+      endTimeEl.defaultValue = endTimeEl.value;
     }
 
     // Get UTC timestamp for start of a day in device timezone
@@ -929,66 +958,54 @@
     function clearErrors() {
       document.getElementById('errStart').textContent = '';
       document.getElementById('errEnd').textContent = '';
-      document.getElementById('inputStart').classList.remove('input-error');
-      document.getElementById('inputEnd').classList.remove('input-error');
+      document.getElementById('inputStartDate').classList.remove('input-error');
+      document.getElementById('inputStartTime').classList.remove('input-error');
+      document.getElementById('inputEndDate').classList.remove('input-error');
+      document.getElementById('inputEndTime').classList.remove('input-error');
       document.getElementById('formSuccess').textContent = '';
     }
 
-    var inputStartEl = document.getElementById('inputStart');
-    var inputEndEl = document.getElementById('inputEnd');
+    var inputStartDateEl = document.getElementById('inputStartDate');
+    var inputStartTimeEl = document.getElementById('inputStartTime');
+    var inputEndDateEl = document.getElementById('inputEndDate');
+    var inputEndTimeEl = document.getElementById('inputEndTime');
 
     setDefaultShiftTimeInputs();
     window.addEventListener('load', setDefaultShiftTimeInputs);
     setTimeout(setDefaultShiftTimeInputs, 0);
     setTimeout(setDefaultShiftTimeInputs, 250);
 
-    inputStartEl.addEventListener('pointerdown', setDefaultShiftTimeInputs);
-    inputStartEl.addEventListener('touchstart', setDefaultShiftTimeInputs, { passive: true });
-    inputStartEl.addEventListener('focus', setDefaultShiftTimeInputs);
-    inputStartEl.addEventListener('click', setDefaultShiftTimeInputs);
-    inputStartEl.addEventListener('input', syncEndFromStart);
-    inputStartEl.addEventListener('change', syncEndFromStart);
-
-    inputEndEl.addEventListener('pointerdown', function() {
-      if (!inputStartEl.value) {
-        setDefaultShiftTimeInputs();
-      } else if (!inputEndEl.value) {
-        syncEndFromStart();
-      }
-    });
-    inputEndEl.addEventListener('touchstart', function() {
-      if (!inputStartEl.value) {
-        setDefaultShiftTimeInputs();
-      } else if (!inputEndEl.value) {
-        syncEndFromStart();
-      }
-    }, { passive: true });
-    inputEndEl.addEventListener('focus', function() {
-      if (!inputEndEl.value) {
-        if (!inputStartEl.value) {
-          setDefaultShiftTimeInputs();
-        } else {
-          syncEndFromStart();
-        }
-      }
-    });
+    inputStartDateEl.addEventListener('pointerdown', setDefaultShiftTimeInputs);
+    inputStartTimeEl.addEventListener('pointerdown', setDefaultShiftTimeInputs);
+    inputStartDateEl.addEventListener('touchstart', setDefaultShiftTimeInputs, { passive: true });
+    inputStartTimeEl.addEventListener('touchstart', setDefaultShiftTimeInputs, { passive: true });
+    inputStartDateEl.addEventListener('focus', setDefaultShiftTimeInputs);
+    inputStartTimeEl.addEventListener('focus', setDefaultShiftTimeInputs);
+    inputStartDateEl.addEventListener('click', setDefaultShiftTimeInputs);
+    inputStartTimeEl.addEventListener('click', setDefaultShiftTimeInputs);
+    inputStartDateEl.addEventListener('input', syncEndFromStart);
+    inputStartTimeEl.addEventListener('input', syncEndFromStart);
+    inputStartDateEl.addEventListener('change', syncEndFromStart);
+    inputStartTimeEl.addEventListener('change', syncEndFromStart);
 
     document.getElementById('btnAdd').addEventListener('click', function() {
       clearErrors();
 
-      var startVal = document.getElementById('inputStart').value;
-      var endVal = document.getElementById('inputEnd').value;
+      var startVal = composeMskDateTime(inputStartDateEl.value, inputStartTimeEl.value);
+      var endVal = composeMskDateTime(inputEndDateEl.value, inputEndTimeEl.value);
       var valid = true;
 
       if (!startVal) {
         document.getElementById('errStart').textContent = 'Заполни дату и время начала';
-        document.getElementById('inputStart').classList.add('input-error');
+        inputStartDateEl.classList.add('input-error');
+        inputStartTimeEl.classList.add('input-error');
         valid = false;
       }
 
       if (!endVal) {
         document.getElementById('errEnd').textContent = 'Заполни дату и время окончания';
-        document.getElementById('inputEnd').classList.add('input-error');
+        inputEndDateEl.classList.add('input-error');
+        inputEndTimeEl.classList.add('input-error');
         valid = false;
       }
 
@@ -1004,7 +1021,8 @@
 
       if (endDate.getTime() <= startDate.getTime()) {
         document.getElementById('errEnd').textContent = 'Конец смены не может быть раньше начала';
-        document.getElementById('inputEnd').classList.add('input-error');
+        inputEndDateEl.classList.add('input-error');
+        inputEndTimeEl.classList.add('input-error');
         return;
       }
 
@@ -1022,8 +1040,10 @@
       btn.disabled = true;
 
       saveShifts(function() {
-        document.getElementById('inputStart').value = '';
-        document.getElementById('inputEnd').value = '';
+        inputStartDateEl.value = '';
+        inputStartTimeEl.value = '';
+        inputEndDateEl.value = '';
+        inputEndTimeEl.value = '';
         document.getElementById('formSuccess').textContent = '✓ Смена добавлена';
         btn.disabled = false;
         render();
