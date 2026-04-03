@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
-  <title>РЈС‡С‘С‚ СЃРјРµРЅ</title>
+  <title>Учёт смен</title>
   <script src="https://telegram.org/js/telegram-web-app.js"></script>
   <style>
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
@@ -135,7 +135,7 @@
 
     .hidden { display: none !important; }
 
-    /* в”Ђв”Ђ Month Switcher в”Ђв”Ђ */
+    /* ── Month Switcher ── */
     .month-nav {
       display: flex;
       align-items: center;
@@ -444,7 +444,7 @@
       letter-spacing: 0.2px;
     }
 
-    /* в”Ђв”Ђ Stats Grid в”Ђв”Ђ */
+    /* ── Stats Grid ── */
     .stats-grid {
       display: grid;
       grid-template-columns: repeat(3, minmax(0, 1fr));
@@ -483,7 +483,7 @@
     .stat-value.night { color: var(--accent); }
     .stat-value.holiday { color: var(--success); }
 
-    /* в”Ђв”Ђ Form в”Ђв”Ђ */
+    /* ── Form ── */
     .form-section {
       background: var(--bg-card);
       border: 1px solid var(--border);
@@ -622,7 +622,7 @@
 
     .form-success:empty { display: none; }
 
-    /* в”Ђв”Ђ Shifts List в”Ђв”Ђ */
+    /* ── Shifts List ── */
     .shifts-section { margin-bottom: 20px; }
 
     .section-header {
@@ -771,7 +771,7 @@
 
     .btn-link:active { color: var(--text); }
 
-    /* в”Ђв”Ђ Secondary Button в”Ђв”Ђ */
+    /* ── Secondary Button ── */
     .btn-secondary {
       width: 100%;
       background: transparent;
@@ -788,7 +788,7 @@
 
     .btn-secondary:active { color: var(--text); border-color: var(--text-muted); }
 
-    /* в”Ђв”Ђ Footer в”Ђв”Ђ */
+    /* ── Footer ── */
     .footer {
       text-align: center;
       font-size: 11px;
@@ -798,7 +798,7 @@
       opacity: 0.7;
     }
 
-    /* в”Ђв”Ђ Overlay / Bottom Sheet в”Ђв”Ђ */
+    /* ── Overlay / Bottom Sheet ── */
     .overlay {
       position: fixed;
       inset: 0;
@@ -902,7 +902,7 @@
       -webkit-tap-highlight-color: transparent;
     }
 
-    /* в”Ђв”Ђ Confirm Dialog в”Ђв”Ђ */
+    /* ── Confirm Dialog ── */
     .confirm-btns {
       display: flex;
       gap: 10px;
@@ -937,15 +937,15 @@
 <body>
   <div class="auth-gate" id="authGate">
     <div class="auth-card">
-      <div class="auth-title">Р’РѕР№С‚Рё Рё РѕС‚РєСЂС‹С‚СЊ СЃРІРѕРё СЃРјРµРЅС‹</div>
+      <div class="auth-title">Р’РѕР№ти и открыть свои смены</div>
       <div class="auth-text" id="authMessage">
-        РћС‚РєСЂРѕР№ РїСЂРёР»РѕР¶РµРЅРёРµ С‡РµСЂРµР· Telegram РёР»Рё Р±СЂР°СѓР·РµСЂ Рё РїРѕРґС‚РІРµСЂРґРё РІС…РѕРґ РѕРґРёРЅ СЂР°Р·. Р”Р°Р»СЊС€Рµ С‚РІРѕРё СЃРјРµРЅС‹ Р±СѓРґСѓС‚ СЃРёРЅС…СЂРѕРЅРёР·РёСЂРѕРІР°С‚СЊСЃСЏ РЅР° РІСЃРµС… СѓСЃС‚СЂРѕР№СЃС‚РІР°С….
+        РћС‚РєСЂРѕР№ приложение через Telegram или браузер и подтверди вход один раз. Р”Р°Р»СЊС€е твои смены будут синхронизироваться на всех СѓСЃС‚СЂРѕР№ствах.
       </div>
       <div class="auth-status" id="authStatus"></div>
       <div class="auth-widget" id="telegramLoginWidget"></div>
-      <button class="auth-retry" id="btnAuthRetry" type="button">РџРѕРІС‚РѕСЂРёС‚СЊ РІС…РѕРґ</button>
+      <button class="auth-retry" id="btnAuthRetry" type="button">Повторить вход</button>
       <div class="auth-error" id="authError"></div>
-      <div class="auth-note" id="authNote">РџРѕСЃР»Рµ РІС…РѕРґР° РїРѕСЏРІРёС‚СЃСЏ С‚РІРѕСЏ Р»РёС‡РЅР°СЏ СЃС‚СЂР°РЅРёС†Р° СЃРѕ СЃРјРµРЅР°РјРё.</div>
+      <div class="auth-note" id="authNote">После входа появится твоя личная страница со сменами.</div>
     </div>
   </div>
 
@@ -953,41 +953,41 @@
     <div class="app-content">
       <section class="tab-panel active" data-tab="home">
         <div class="month-nav">
-          <button class="month-btn" id="btnPrevMonth" aria-label="РџСЂРµРґС‹РґСѓС‰РёР№ РјРµСЃСЏС†">вЂ№</button>
+          <button class="month-btn" id="btnPrevMonth" aria-label="РџСЂРµРґС‹РґСѓС‰РёР№ месяц">вЂ№</button>
           <span class="month-title" id="monthTitle"></span>
-          <button class="month-btn" id="btnNextMonth" aria-label="РЎР»РµРґСѓСЋС‰РёР№ РјРµСЃСЏС†">вЂє</button>
+          <button class="month-btn" id="btnNextMonth" aria-label="РЎР»РµРґСѓСЋС‰РёР№ месяц">›</button>
         </div>
 
         <div class="dashboard-card">
           <div class="dashboard-head">
             <div>
-              <div class="dashboard-eyebrow">РћС‚СЂР°Р±РѕС‚Р°РЅРѕ</div>
-              <div class="dashboard-value"><span id="statWorked">0 С‡</span> <span class="dashboard-total">/ <span id="statNorm">вЂ”</span></span></div>
+              <div class="dashboard-eyebrow">Отработано</div>
+              <div class="dashboard-value"><span id="statWorked">0 ч</span> <span class="dashboard-total">/ <span id="statNorm">—</span></span></div>
             </div>
             <div class="dashboard-badge" id="progressBadge">0%</div>
           </div>
           <div class="progress-track"><div class="progress-fill" id="dashboardProgressFill"></div></div>
-          <div class="dashboard-sub" id="statDiff">РћСЃС‚Р°Р»РѕСЃСЊ вЂ”</div>
+          <div class="dashboard-sub" id="statDiff">Осталось —</div>
         </div>
 
         <div class="quick-stats-grid">
           <div class="quick-stat">
-            <span class="stat-label">РќРѕС‡РЅС‹Рµ</span>
-            <span class="quick-stat-value stat-value night" id="statNight">0 С‡</span>
+            <span class="stat-label">Ночные</span>
+            <span class="quick-stat-value stat-value night" id="statNight">0 ч</span>
           </div>
           <div class="quick-stat">
-            <span class="stat-label">РџСЂР°Р·РґРЅРёС‡РЅС‹Рµ</span>
-            <span class="quick-stat-value stat-value holiday" id="statHoliday">0 С‡</span>
+            <span class="stat-label">Праздничные</span>
+            <span class="quick-stat-value stat-value holiday" id="statHoliday">0 ч</span>
           </div>
           <div class="quick-stat">
-            <span class="stat-label">РЎРјРµРЅ</span>
+            <span class="stat-label">Смен</span>
             <span class="quick-stat-value" id="statShifts">0</span>
           </div>
         </div>
 
         <div class="section-header section-header-row">
-          <span>РџРѕСЃР»РµРґРЅРёРµ СЃРјРµРЅС‹</span>
-          <button class="section-link" id="btnGoToShifts" type="button">Р’СЃРµ</button>
+          <span>Последние смены</span>
+          <button class="section-link" id="btnGoToShifts" type="button">Все</button>
         </div>
         <div id="homeShiftsList"></div>
       </section>
@@ -995,13 +995,13 @@
       <section class="tab-panel" data-tab="shifts">
         <div class="form-section is-adding" id="shiftFormSection">
           <div class="form-title-row">
-            <div class="form-title" id="formTitle">Р”РѕР±Р°РІРёС‚СЊ СЃРјРµРЅСѓ</div>
-            <div class="edit-badge" id="editBadge">Р РµР¶РёРј СЂРµРґР°РєС‚РёСЂРѕРІР°РЅРёСЏ</div>
+            <div class="form-title" id="formTitle">Добавить смену</div>
+            <div class="edit-badge" id="editBadge">Режим редактирования</div>
           </div>
-          <div class="form-hint">Р’СЂРµРјСЏ СѓРєР°Р·С‹РІР°РµС‚СЃСЏ РІ РњРЎРљ, РЅРѕС‡РЅС‹Рµ С‡Р°СЃС‹ СЃС‡РёС‚Р°СЋС‚СЃСЏ РїРѕ Р»РѕРєР°Р»СЊРЅРѕРјСѓ РІСЂРµРјРµРЅРё</div>
+          <div class="form-hint">Время указывается в МСК, ночные часы считаются по локальному времени</div>
 
           <div class="field">
-            <label>РќР°С‡Р°Р»Рѕ СЃРјРµРЅС‹</label>
+            <label>Начало смены</label>
             <div class="datetime-row">
               <input type="date" id="inputStartDate" />
               <input type="time" id="inputStartTime" />
@@ -1010,7 +1010,7 @@
           </div>
 
           <div class="field">
-            <label>РљРѕРЅРµС† СЃРјРµРЅС‹</label>
+            <label>Конец смены</label>
             <div class="datetime-row">
               <input type="date" id="inputEndDate" />
               <input type="time" id="inputEndTime" />
@@ -1018,13 +1018,13 @@
             <div class="field-error" id="errEnd"></div>
           </div>
 
-          <button class="btn-primary" id="btnAdd">Р”РѕР±Р°РІРёС‚СЊ СЃРјРµРЅСѓ</button>
-          <button class="btn-link hidden" id="btnCancelEdit" type="button">РћС‚РјРµРЅРёС‚СЊ СЂРµРґР°РєС‚РёСЂРѕРІР°РЅРёРµ</button>
+          <button class="btn-primary" id="btnAdd">Добавить смену</button>
+          <button class="btn-link hidden" id="btnCancelEdit" type="button">Отменить редактирование</button>
           <div class="form-success" id="formSuccess"></div>
         </div>
 
         <div class="shifts-section">
-          <div class="section-header" id="shiftsHeader">РЎРјРµРЅС‹</div>
+          <div class="section-header" id="shiftsHeader">Смены</div>
           <div id="shiftsList"></div>
         </div>
       </section>
@@ -1032,67 +1032,67 @@
       <section class="tab-panel" data-tab="salary">
         <div class="salary-card">
           <div class="salary-hero">
-            <div class="salary-chip">в‚Ѕ Р‘СѓРґСѓС‰РёР№ СЂР°СЃС‡РµС‚</div>
-            <div class="salary-title">Р—Р°СЂРїР»Р°С‚Р°</div>
+            <div class="salary-chip">₽ Р‘СѓРґСѓС‰РёР№ расчет</div>
+            <div class="salary-title">Зарплата</div>
             <div class="salary-text">
-              Р—РґРµСЃСЊ РїРѕСЏРІРёС‚СЃСЏ СЂР°СЃС‡РµС‚ РїРѕ РєР°С‚РµРіРѕСЂРёСЏРј: РґРЅРµРІРЅС‹Рµ, РЅРѕС‡РЅС‹Рµ, РїСЂР°Р·РґРЅРёС‡РЅС‹Рµ Рё РїРµСЂРµСЂР°Р±РѕС‚РєР°.
+              Здесь появится расчет по категориям: дневные, ночные, праздничные и переработка.
             </div>
           </div>
         </div>
 
         <div class="salary-card">
-          <div class="section-header">РџРѕРєР° С‡С‚Рѕ</div>
+          <div class="section-header">Пока что</div>
           <div class="salary-text">
-            РњС‹ СѓР¶Рµ СЃРѕР±РёСЂР°РµРј Р±Р°Р·Сѓ РїРѕ С‡Р°СЃР°Рј, С‡С‚РѕР±С‹ РїРѕС‚РѕРј РґРѕР±Р°РІРёС‚СЊ РєРѕСЌС„С„РёС†РёРµРЅС‚С‹ Рё РїСЂРѕРіРЅРѕР· Р·Р°СЂРїР»Р°С‚С‹ Р±РµР· СЂСѓС‡РЅРѕРіРѕ РїРµСЂРµСЃС‡РµС‚Р°.
+            Мы уже собираем базу по часам, чтобы потом добавить коэффициенты и прогноз зарплаты без ручного пересчета.
           </div>
         </div>
       </section>
 
       <section class="tab-panel" data-tab="settings">
         <div class="settings-card">
-          <div class="section-header">РќР°СЃС‚СЂРѕР№РєРё</div>
+          <div class="section-header">РќР°СЃС‚СЂРѕР№ки</div>
           <div class="settings-list">
             <div class="settings-row">
-              <div class="settings-label">Р§Р°СЃРѕРІРѕР№ РїРѕСЏСЃ</div>
-              <div class="settings-value" id="timezoneValue">вЂ”</div>
+              <div class="settings-label">Р§Р°СЃРѕРІРѕР№ пояс</div>
+              <div class="settings-value" id="timezoneValue">—</div>
             </div>
             <div class="settings-row">
-              <div class="settings-label">Р’СЂРµРјСЏ РІРІРѕРґР°</div>
-              <div class="settings-value">РњРЎРљ, СЂР°СЃС‡РµС‚ РЅРѕС‡РЅС‹С… Рё РїСЂР°Р·РґРЅРёРєРѕРІ - Р»РѕРєР°Р»СЊРЅРѕ</div>
+              <div class="settings-label">Время ввода</div>
+              <div class="settings-value">МСК, расчет ночных и праздников - локально</div>
             </div>
             <div class="settings-row">
-              <div class="settings-label">Р”РѕР±Р°РІРёС‚СЊ РЅР° СЌРєСЂР°РЅ</div>
-              <div class="settings-value">Telegram / Р±СЂР°СѓР·РµСЂ / СЏСЂР»С‹Рє</div>
+              <div class="settings-label">Добавить на экран</div>
+              <div class="settings-value">Telegram / браузер / ярлык</div>
             </div>
           </div>
         </div>
 
-        <button class="btn-secondary" id="btnAddToScreen">рџ“І Р”РѕР±Р°РІРёС‚СЊ РЅР° СЌРєСЂР°РЅ</button>
+        <button class="btn-secondary" id="btnAddToScreen">📲 Добавить на экран</button>
         <div class="footer" id="timezoneFooter"></div>
       </section>
     </div>
 
-    <nav class="bottom-nav" aria-label="РћСЃРЅРѕРІРЅР°СЏ РЅР°РІРёРіР°С†РёСЏ">
+    <nav class="bottom-nav" aria-label="Основная навигация">
       <div class="bottom-nav-inner">
         <button class="tab-btn active" type="button" data-tab="home">
-          <span class="tab-icon">вЊ‚</span>
-          <span class="tab-label">Р“Р»Р°РІРЅР°СЏ</span>
+          <span class="tab-icon">⌂</span>
+          <span class="tab-label">Главная</span>
         </button>
         <button class="tab-btn" type="button" data-tab="shifts">
-          <span class="tab-icon">в‰Ў</span>
-          <span class="tab-label">РЎРјРµРЅС‹</span>
+          <span class="tab-icon">≡</span>
+          <span class="tab-label">Смены</span>
         </button>
         <button class="tab-btn center" type="button" data-action="add">
-          <span class="tab-icon">пј‹</span>
-          <span class="tab-label">Р”РѕР±Р°РІРёС‚СЊ</span>
+          <span class="tab-icon">＋</span>
+          <span class="tab-label">Добавить</span>
         </button>
         <button class="tab-btn" type="button" data-tab="salary">
-          <span class="tab-icon">в‚Ѕ</span>
-          <span class="tab-label">Р—Р°СЂРїР»Р°С‚Р°</span>
+          <span class="tab-icon">₽</span>
+          <span class="tab-label">Зарплата</span>
         </button>
         <button class="tab-btn" type="button" data-tab="settings">
           <span class="tab-icon">вљ™</span>
-          <span class="tab-label">РќР°СЃС‚СЂРѕР№РєРё</span>
+          <span class="tab-label">РќР°СЃС‚СЂРѕР№ки</span>
         </button>
       </div>
     </nav>
@@ -1101,47 +1101,47 @@
   <!-- Add to Screen Bottom Sheet -->
   <div class="overlay" id="overlayAddScreen">
     <div class="bottom-sheet">
-      <div class="sheet-title">Р”РѕР±Р°РІРёС‚СЊ РЅР° СЌРєСЂР°РЅ</div>
-      <div class="sheet-text">Р­С‚Рѕ РѕРґРЅР° Рё С‚Р° Р¶Рµ СЃСЃС‹Р»РєР° РґР»СЏ Telegram, Safari Рё СЏСЂР»С‹РєР° РЅР° СЌРєСЂР°РЅРµ. Р•СЃР»Рё С‚С‹ РѕС‚РєСЂС‹Р» РµС‘ РІРїРµСЂРІС‹Рµ РЅР° РЅРѕРІРѕРј СѓСЃС‚СЂРѕР№СЃС‚РІРµ, РїСЂРѕСЃС‚Рѕ РІРѕР№РґРё С‡РµСЂРµР· Telegram РѕРґРёРЅ СЂР°Р· - РґР°Р»СЊС€Рµ СЃРјРµРЅС‹ Р±СѓРґСѓС‚ РїРѕРґС…РІР°С‚С‹РІР°С‚СЊСЃСЏ Р°РІС‚РѕРјР°С‚РёС‡РµСЃРєРё.</div>
+      <div class="sheet-title">Добавить на экран</div>
+      <div class="sheet-text">Это одна и та же ссылка для Telegram, Safari и ярлыка на экране. Если ты открыл её впервые на новом СѓСЃС‚СЂРѕР№стве, просто РІРѕР№ди через Telegram один раз - РґР°Р»СЊС€е смены будут подхватываться автоматически.</div>
 
-      <div class="sheet-text"><strong>Р”Р»СЏ iPhone:</strong></div>
+      <div class="sheet-text"><strong>Для iPhone:</strong></div>
       <ol class="sheet-steps">
-        <li>РћС‚РєСЂРѕР№ СЃСЃС‹Р»РєСѓ РЅРёР¶Рµ РІ Safari</li>
-        <li>РќР°Р¶РјРё В«РџРѕРґРµР»РёС‚СЊСЃСЏВ»</li>
-        <li>Р’С‹Р±РµСЂРё В«РќР° СЌРєСЂР°РЅ Р”РѕРјРѕР№В»</li>
+        <li>РћС‚РєСЂРѕР№ ссылку ниже в Safari</li>
+        <li>Нажми «Поделиться»</li>
+        <li>Выбери «На экран Р”РѕРјРѕР№»</li>
       </ol>
 
-      <div class="sheet-text"><strong>Р”Р»СЏ Android:</strong></div>
+      <div class="sheet-text"><strong>Для Android:</strong></div>
       <ol class="sheet-steps">
-        <li>РћС‚РєСЂРѕР№ СЃСЃС‹Р»РєСѓ РЅРёР¶Рµ РІ Chrome</li>
-        <li>РћС‚РєСЂРѕР№ РјРµРЅСЋ Р±СЂР°СѓР·РµСЂР°</li>
-        <li>В«Р”РѕР±Р°РІРёС‚СЊ РЅР° РіР»Р°РІРЅС‹Р№ СЌРєСЂР°РЅВ»</li>
+        <li>РћС‚РєСЂРѕР№ ссылку ниже в Chrome</li>
+        <li>РћС‚РєСЂРѕР№ меню браузера</li>
+        <li>«Добавить на РіР»Р°РІРЅС‹Р№ экран»</li>
       </ol>
 
-      <div class="sheet-text" style="font-size:12px; color:var(--text-muted); margin-bottom:6px;">РЎСЃС‹Р»РєР° РЅР° РїСЂРёР»РѕР¶РµРЅРёРµ:</div>
+      <div class="sheet-text" style="font-size:12px; color:var(--text-muted); margin-bottom:6px;">Ссылка на приложение:</div>
       <div class="sheet-url-row">
         <div class="sheet-url-text" id="appUrl"></div>
-        <button class="btn-copy" id="btnCopyUrl">РљРѕРїРёСЂРѕРІР°С‚СЊ</button>
+        <button class="btn-copy" id="btnCopyUrl">Копировать</button>
       </div>
 
-      <button class="btn-sheet-close" id="btnCloseAddScreen">Р—Р°РєСЂС‹С‚СЊ</button>
+      <button class="btn-sheet-close" id="btnCloseAddScreen">Закрыть</button>
     </div>
   </div>
 
   <!-- Confirm Delete Bottom Sheet -->
   <div class="overlay" id="overlayConfirm">
     <div class="bottom-sheet">
-      <div class="sheet-title">РЈРґР°Р»РёС‚СЊ СЃРјРµРЅСѓ?</div>
+      <div class="sheet-title">Удалить смену?</div>
       <div class="sheet-text" id="confirmShiftInfo"></div>
       <div class="confirm-btns">
-        <button class="btn-confirm-cancel" id="btnCancelDelete">РћС‚РјРµРЅР°</button>
-        <button class="btn-confirm-delete" id="btnConfirmDelete">РЈРґР°Р»РёС‚СЊ</button>
+        <button class="btn-confirm-cancel" id="btnCancelDelete">Отмена</button>
+        <button class="btn-confirm-delete" id="btnConfirmDelete">Удалить</button>
       </div>
     </div>
   </div>
 
   <script>
-    // в”Ђв”Ђ Telegram WebApp Init в”Ђв”Ђ
+    // ── Telegram WebApp Init ──
     try {
       if (window.Telegram && Telegram.WebApp) {
         Telegram.WebApp.ready();
@@ -1149,15 +1149,15 @@
       }
     } catch(e) { console.warn('TG SDK init error:', e); }
 
-    // в”Ђв”Ђ Constants в”Ђв”Ђ
+    // ── Constants ──
     var MONTH_NAMES = [
-      'РЇРЅРІР°СЂСЊ','Р¤РµРІСЂР°Р»СЊ','РњР°СЂС‚','РђРїСЂРµР»СЊ','РњР°Р№','РСЋРЅСЊ',
-      'РСЋР»СЊ','РђРІРіСѓСЃС‚','РЎРµРЅС‚СЏР±СЂСЊ','РћРєС‚СЏР±СЂСЊ','РќРѕСЏР±СЂСЊ','Р”РµРєР°Р±СЂСЊ'
+      'Январь','Февраль','Март','Апрель','РњР°Р№','Рюнь',
+      'Рюль','Август','Сентябрь','Октябрь','Ноябрь','Декабрь'
     ];
 
-    // РџСЂРѕРёР·РІРѕРґСЃС‚РІРµРЅРЅС‹Р№ РєР°Р»РµРЅРґР°СЂСЊ Р Р¤, 40-С‡Р°СЃРѕРІР°СЏ РЅРµРґРµР»СЏ
-    // 2025: РљРѕРЅСЃСѓР»СЊС‚Р°РЅС‚РџР»СЋСЃ, 2026: РњРёРЅС‚СЂСѓРґ СѓС‚РІРµСЂР¶РґС‘РЅРЅС‹Р№
-    // 2027: РїСЂРµРґРІР°СЂРёС‚РµР»СЊРЅС‹Р№ (РїРµСЂРµРЅРѕСЃС‹ РЅРµ СѓС‚РІРµСЂР¶РґРµРЅС‹)
+    // РџСЂРѕРёР·РІРѕРґСЃС‚РІРµРЅРЅС‹Р№ календарь РФ, 40-часовая неделя
+    // 2025: КонсультантПлюс, 2026: Минтруд СѓС‚РІРµСЂР¶РґС‘РЅРЅС‹Р№
+    // 2027: РїСЂРµРґРІР°СЂРёС‚РµР»СЊРЅС‹Р№ (переносы не утверждены)
     var WORK_NORMS = {
       '2025-01': 136, '2025-02': 160, '2025-03': 167,
       '2025-04': 175, '2025-05': 144, '2025-06': 151,
@@ -1186,7 +1186,7 @@
     var STORAGE_KEY = 'shifts';
     var MSK_OFFSET = 3; // Moscow = UTC+3
 
-    // в”Ђв”Ђ State в”Ђв”Ђ
+    // ── State ──
     var now = new Date();
     var currentYear = now.getFullYear();
     var currentMonth = now.getMonth(); // 0-indexed
@@ -1197,7 +1197,7 @@
     var recentAddTimer = null;
     var activeTab = 'home';
 
-    // в”Ђв”Ђ Timezone в”Ђв”Ђ
+    // ── Timezone ──
     var deviceTimezone = 'Europe/Moscow';
     try {
       deviceTimezone = Intl.DateTimeFormat().resolvedOptions().timeZone || 'Europe/Moscow';
@@ -1205,8 +1205,8 @@
 
     var footerEl = document.getElementById('timezoneFooter');
     function updateFooter() {
-      var userLabel = CURRENT_USER ? (' В· ' + (CURRENT_USER.display_name || CURRENT_USER.username || ('ID ' + CURRENT_USER.id))) : '';
-      var text = 'Р§Р°СЃРѕРІРѕР№ РїРѕСЏСЃ: ' + deviceTimezone + userLabel;
+      var userLabel = CURRENT_USER ? (' · ' + (CURRENT_USER.display_name || CURRENT_USER.username || ('ID ' + CURRENT_USER.id))) : '';
+      var text = 'Р§Р°СЃРѕРІРѕР№ пояс: ' + deviceTimezone + userLabel;
       if (footerEl) footerEl.textContent = text;
       var tzValueEl = document.getElementById('timezoneValue');
       if (tzValueEl) tzValueEl.textContent = deviceTimezone;
@@ -1262,7 +1262,7 @@
     function setAuthFeedback(message, errorMessage) {
       if (AUTH_STATUS) AUTH_STATUS.textContent = message || '';
       if (AUTH_ERROR) AUTH_ERROR.textContent = errorMessage || '';
-      if (AUTH_NOTE) AUTH_NOTE.textContent = errorMessage ? 'РџСЂРѕРІРµСЂСЊ РІС…РѕРґ Рё РїРѕРїСЂРѕР±СѓР№ РµС‰С‘ СЂР°Р·.' : 'Р’С…РѕРґ РїРѕСЏРІРёС‚СЃСЏ Р·РґРµСЃСЊ, РєРѕРіРґР° Telegram РёР»Рё Р±СЂР°СѓР·РµСЂ РїРѕРґС‚РІРµСЂРґРёС‚ СѓС‡С‘С‚РєСѓ.';
+      if (AUTH_NOTE) AUTH_NOTE.textContent = errorMessage ? 'Проверь вход и РїРѕРїСЂРѕР±СѓР№ ещё раз.' : 'Вход появится здесь, когда Telegram или браузер подтвердит учётку.';
       var retryBtn = document.getElementById('btnAuthRetry');
       if (retryBtn) {
         retryBtn.classList.toggle('visible', !!errorMessage);
@@ -1279,6 +1279,7 @@
     function showAppShell() {
       if (AUTH_GATE) AUTH_GATE.classList.add('hidden');
       if (APP_SHELL) APP_SHELL.classList.remove('hidden');
+      repairUiText();
       setActiveTab(activeTab || 'home');
       updateFooter();
     }
@@ -1309,6 +1310,102 @@
           section.scrollIntoView({ behavior: 'smooth', block: 'start' });
         }
       }, 40);
+    }
+
+    function repairUiText() {
+      document.title = 'Учёт смен';
+
+      var authTitle = document.querySelector('.auth-title');
+      if (authTitle) authTitle.textContent = 'Войти и открыть свои смены';
+      var authMessage = document.getElementById('authMessage');
+      if (authMessage) authMessage.textContent = 'Открой приложение через Telegram или браузер и подтверди вход один раз. Дальше твои смены будут синхронизироваться на всех устройствах.';
+      var authRetry = document.getElementById('btnAuthRetry');
+      if (authRetry) authRetry.textContent = 'Повторить вход';
+      var authNote = document.getElementById('authNote');
+      if (authNote) authNote.textContent = 'После входа появится твоя личная страница со сменами.';
+
+      var monthPrev = document.getElementById('btnPrevMonth');
+      if (monthPrev) {
+        monthPrev.textContent = '‹';
+        monthPrev.setAttribute('aria-label', 'Предыдущий месяц');
+      }
+      var monthNext = document.getElementById('btnNextMonth');
+      if (monthNext) {
+        monthNext.textContent = '›';
+        monthNext.setAttribute('aria-label', 'Следующий месяц');
+      }
+
+      var topLabels = document.querySelectorAll('.stats-grid .stat-card .stat-label');
+      var topLabelText = ['Праздничные', 'Ночные', 'Отработано', 'Смен', 'Норма', 'Осталось'];
+      for (var i = 0; i < topLabels.length && i < topLabelText.length; i++) {
+        topLabels[i].textContent = topLabelText[i];
+      }
+
+      var quickLabels = document.querySelectorAll('.quick-stats-grid .quick-stat .stat-label');
+      var quickLabelText = ['Ночные', 'Праздничные', 'Смен'];
+      for (var q = 0; q < quickLabels.length && q < quickLabelText.length; q++) {
+        quickLabels[q].textContent = quickLabelText[q];
+      }
+
+      var tabLabels = document.querySelectorAll('.bottom-nav .tab-label');
+      var tabText = ['Главная', 'Смены', 'Добавить', 'Зарплата', 'Настройки'];
+      for (var t = 0; t < tabLabels.length && t < tabText.length; t++) {
+        tabLabels[t].textContent = tabText[t];
+      }
+
+      var tabIcons = document.querySelectorAll('.bottom-nav .tab-icon');
+      var tabIconsText = ['⌂', '≡', '+', '₽', '⚙'];
+      for (var ti = 0; ti < tabIcons.length && ti < tabIconsText.length; ti++) {
+        tabIcons[ti].textContent = tabIconsText[ti];
+      }
+
+      var btnGoToShifts = document.getElementById('btnGoToShifts');
+      if (btnGoToShifts) btnGoToShifts.textContent = 'Все';
+
+      var formTitle = document.getElementById('formTitle');
+      if (formTitle) formTitle.textContent = 'Добавить смену';
+      var editBadge = document.getElementById('editBadge');
+      if (editBadge) editBadge.textContent = 'Режим редактирования';
+      var formHint = document.querySelector('#shiftFormSection .form-hint');
+      if (formHint) formHint.textContent = 'Время указывается в МСК, ночные часы считаются по локальному времени';
+
+      var fieldLabels = document.querySelectorAll('#shiftFormSection .field label');
+      if (fieldLabels[0]) fieldLabels[0].textContent = 'Начало смены';
+      if (fieldLabels[1]) fieldLabels[1].textContent = 'Конец смены';
+
+      var btnAdd = document.getElementById('btnAdd');
+      if (btnAdd) btnAdd.textContent = 'Добавить смену';
+      var btnCancelEdit = document.getElementById('btnCancelEdit');
+      if (btnCancelEdit) btnCancelEdit.textContent = 'Отменить редактирование';
+
+      var shiftsHeader = document.getElementById('shiftsHeader');
+      if (shiftsHeader) shiftsHeader.textContent = 'Смены';
+
+      var salaryTitle = document.querySelector('.salary-title');
+      if (salaryTitle) salaryTitle.textContent = 'Зарплата';
+      var salaryText = document.querySelectorAll('.salary-text');
+      if (salaryText[0]) salaryText[0].textContent = 'Здесь появится расчет по категориям: дневные, ночные, праздничные и переработка.';
+      if (salaryText[1]) salaryText[1].textContent = 'Мы уже собираем базу по часам, чтобы потом добавить коэффициенты и прогноз зарплаты без ручного пересчета.';
+
+      var settingsLabels = document.querySelectorAll('.settings-label');
+      if (settingsLabels[0]) settingsLabels[0].textContent = 'Часовой пояс';
+      if (settingsLabels[1]) settingsLabels[1].textContent = 'Время ввода';
+      if (settingsLabels[2]) settingsLabels[2].textContent = 'Добавить на экран';
+
+      var settingsValues = document.querySelectorAll('.settings-value');
+      if (settingsValues[1]) settingsValues[1].textContent = 'МСК, расчет ночных и праздников - локально';
+      if (settingsValues[2]) settingsValues[2].textContent = 'Telegram / браузер / ярлык';
+
+      var addScreenBtn = document.getElementById('btnAddToScreen');
+      if (addScreenBtn) addScreenBtn.textContent = '📲 Добавить на экран';
+
+      var overlays = document.querySelectorAll('.overlay');
+      for (var oi = 0; oi < overlays.length; oi++) {
+        var title = overlays[oi].querySelector('.sheet-title');
+        if (!title) continue;
+        if (overlays[oi].id === 'overlayAddScreen') title.textContent = 'Добавить на экран';
+        if (overlays[oi].id === 'overlayConfirm') title.textContent = 'Удалить смену?';
+      }
     }
 
     function getLoginReturnUrl() {
@@ -1349,7 +1446,7 @@
         return Promise.resolve(null);
       }
 
-      setAuthFeedback('Р’С…РѕРґРёРј С‡РµСЂРµР· Telegram...', '');
+      setAuthFeedback('Входим через Telegram...', '');
 
       return fetchJson(AUTH_API_URL, {
         method: 'POST',
@@ -1361,7 +1458,7 @@
           setStoredSessionToken(CURRENT_SESSION_TOKEN);
           return result.body.user;
         }
-        throw new Error((result.body && result.body.error) || 'РќРµ СѓРґР°Р»РѕСЃСЊ РІРѕР№С‚Рё С‡РµСЂРµР· Telegram');
+        throw new Error((result.body && result.body.error) || 'Не удалось РІРѕР№ти через Telegram');
       });
     }
 
@@ -1430,8 +1527,8 @@
           .catch(function(err) {
             CURRENT_USER = null;
             showAuthGate(
-              'РќРµ СѓРґР°Р»РѕСЃСЊ РІРѕР№С‚Рё',
-              (err && err.message) ? err.message : 'РџСЂРѕРІРµСЂСЊ РґРѕРјРµРЅ Рё РЅР°Р¶РјРё РїРѕРІС‚РѕСЂ.'
+              'Не удалось РІРѕР№ти',
+              (err && err.message) ? err.message : 'Проверь домен и нажми повтор.'
             );
             renderTelegramLoginWidget();
             return null;
@@ -1441,7 +1538,7 @@
       return authBootstrapPromise;
     }
 
-    // в”Ђв”Ђ Load / Save shifts в”Ђв”Ђ
+    // ── Load / Save shifts ──
     function loadShifts(callback) {
       fetchJson(SHIFTS_API_URL, {
         method: 'GET',
@@ -1454,14 +1551,14 @@
         }
 
         if (result.status === 401) {
-          showAuthGate('РЎРЅР°С‡Р°Р»Р° РІРѕР№РґРё С‡РµСЂРµР· Telegram', 'РџРѕСЃР»Рµ РІС…РѕРґР° С‚РІРѕРё СЃРјРµРЅС‹ РѕС‚РєСЂРѕСЋС‚СЃСЏ Р°РІС‚РѕРјР°С‚РёС‡РµСЃРєРё.');
+          showAuthGate('Сначала РІРѕР№ди через Telegram', 'После входа твои смены откроются автоматически.');
           renderTelegramLoginWidget();
           return;
         }
 
         throw new Error((result.body && result.body.error) || 'API load failed');
       }).catch(function(err) {
-        showAuthGate('РќРµ СѓРґР°Р»РѕСЃСЊ Р·Р°РіСЂСѓР·РёС‚СЊ СЃРјРµРЅС‹', (err && err.message) ? err.message : 'РџСЂРѕРІРµСЂСЊ РїРѕРґРєР»СЋС‡РµРЅРёРµ Рє СЃРµСЂРІРµСЂСѓ.');
+        showAuthGate('Не удалось загрузить смены', (err && err.message) ? err.message : 'Проверь подключение к серверу.');
       });
     }
 
@@ -1477,7 +1574,7 @@
         }
 
         if (result.status === 401) {
-          showAuthGate('РЎРЅР°С‡Р°Р»Р° РІРѕР№РґРё С‡РµСЂРµР· Telegram', 'РЎРµСЃСЃРёСЏ РёСЃС‚РµРєР»Р° РёР»Рё РЅРµ СЃРѕР·РґР°РЅР°.');
+          showAuthGate('Сначала РІРѕР№ди через Telegram', 'Сессия истекла или не создана.');
           renderTelegramLoginWidget();
           if (callback) callback(new Error('Unauthorized'));
           return;
@@ -1490,9 +1587,9 @@
       });
     }
 
-    // в”Ђв”Ђ Time helpers в”Ђв”Ђ
+    // ── Time helpers ──
 
-    // Parse "YYYY-MM-DDTHH:MM" as MSK в†’ returns UTC Date
+    // Parse "YYYY-MM-DDTHH:MM" as MSK → returns UTC Date
     function parseMsk(dtStr) {
       if (!dtStr || dtStr.indexOf('T') === -1) return null;
       var parts = dtStr.split('T');
@@ -1667,14 +1764,14 @@
       return Math.round((e.getTime() - s.getTime()) / 60000);
     }
 
-    // Format minutes в†’ "X С‡" or "X С‡ Y Рј"
+    // Format minutes → "X ч" or "X ч Y м"
     function fmtMin(totalMin) {
-      if (totalMin <= 0) return '0 С‡';
+      if (totalMin <= 0) return '0 ч';
       var h = Math.floor(totalMin / 60);
       var m = totalMin % 60;
-      if (h === 0) return m + ' Рј';
-      if (m === 0) return h + ' С‡';
-      return h + ' С‡ ' + m + ' Рј';
+      if (h === 0) return m + ' м';
+      if (m === 0) return h + ' ч';
+      return h + ' ч ' + m + ' м';
     }
 
     // Format shift for display
@@ -1693,13 +1790,13 @@
       var dur = fmtMin(shiftTotalMinutes(shift));
 
       if (sd === ed) {
-        return { text: startDate + '  В·  ' + st + 'вЂ“' + et, dur: dur };
+        return { text: startDate + '  ·  ' + st + '–' + et, dur: dur };
       } else {
-        return { text: startDate + ' ' + st + ' в†’ ' + endDate + ' ' + et, dur: dur };
+        return { text: startDate + ' ' + st + ' → ' + endDate + ' ' + et, dur: dur };
       }
     }
 
-    // в”Ђв”Ђ Render в”Ђв”Ђ
+    // ── Render ──
     function buildShiftItemHtml(sh, compact) {
       var f = fmtShift(sh);
       var itemClass = 'shift-item' + (compact ? ' compact-shift' : '');
@@ -1715,10 +1812,10 @@
 
       if (!compact) {
         html += '<div class="shift-actions">' +
-          '<button class="btn-action btn-edit" data-id="' + sh.id + '" aria-label="Р РµРґР°РєС‚РёСЂРѕРІР°С‚СЊ">' +
+          '<button class="btn-action btn-edit" data-id="' + sh.id + '" aria-label="Редактировать">' +
             '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 20h9"/><path d="M16.5 3.5a2.1 2.1 0 0 1 3 3L7 19l-4 1 1-4 12.5-12.5z"/></svg>' +
           '</button>' +
-          '<button class="btn-action btn-delete" data-id="' + sh.id + '" aria-label="РЈРґР°Р»РёС‚СЊ">' +
+          '<button class="btn-action btn-delete" data-id="' + sh.id + '" aria-label="Удалить">' +
             '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M18 6 6 18"/><path d="M6 6l12 12"/></svg>' +
           '</button>' +
         '</div>';
@@ -1729,7 +1826,7 @@
     }
 
     function renderShiftList(listEl, headerEl, shifts, compact, emptyText, headerBase) {
-      if (headerEl) headerEl.textContent = headerBase || 'РЎРјРµРЅС‹';
+      if (headerEl) headerEl.textContent = headerBase || 'Смены';
 
       if (!shifts.length) {
         listEl.innerHTML = '<div class="shifts-empty">' + emptyText + '</div>';
@@ -1737,7 +1834,7 @@
       }
 
       if (headerEl && headerBase !== false) {
-        headerEl.textContent = (headerBase || 'РЎРјРµРЅС‹') + (compact ? '' : ' В· ' + shifts.length);
+        headerEl.textContent = (headerBase || 'Смены') + (compact ? '' : ' · ' + shifts.length);
       }
 
       var html = '';
@@ -1865,7 +1962,7 @@
       }
     }
 
-    // в”Ђв”Ђ Delete handler в”Ђв”Ђ
+    // ── Delete handler ──
     function handleDeleteClick(e) {
       var id = e.currentTarget.getAttribute('data-id');
       var shift = null;
@@ -1876,7 +1973,7 @@
 
       pendingDeleteId = id;
       var f = fmtShift(shift);
-      document.getElementById('confirmShiftInfo').textContent = f.text + ' В· ' + f.dur;
+      document.getElementById('confirmShiftInfo').textContent = f.text + ' · ' + f.dur;
       render();
       openOverlay('overlayConfirm');
     }
@@ -1894,13 +1991,13 @@
       editingShiftId = shift.id;
       clearRecentAddHighlight();
       setFormMode('edit');
-      document.getElementById('formTitle').textContent = 'Р РµРґР°РєС‚РёСЂРѕРІР°С‚СЊ СЃРјРµРЅСѓ';
+      document.getElementById('formTitle').textContent = 'Редактировать смену';
       document.getElementById('editBadge').classList.add('visible');
       document.getElementById('inputStartDate').value = shift.start_msk.substring(0, 10);
       document.getElementById('inputStartTime').value = shift.start_msk.substring(11, 16);
       document.getElementById('inputEndDate').value = shift.end_msk.substring(0, 10);
       document.getElementById('inputEndTime').value = shift.end_msk.substring(11, 16);
-      document.getElementById('btnAdd').textContent = 'РЎРѕС…СЂР°РЅРёС‚СЊ РёР·РјРµРЅРµРЅРёСЏ';
+      document.getElementById('btnAdd').textContent = 'Сохранить изменения';
       document.getElementById('btnCancelEdit').classList.remove('hidden');
       clearErrors();
       render();
@@ -1909,9 +2006,9 @@
     function exitEditMode() {
       editingShiftId = null;
       setFormMode('add');
-      document.getElementById('formTitle').textContent = 'Р”РѕР±Р°РІРёС‚СЊ СЃРјРµРЅСѓ';
+      document.getElementById('formTitle').textContent = 'Добавить смену';
       document.getElementById('editBadge').classList.remove('visible');
-      document.getElementById('btnAdd').textContent = 'Р”РѕР±Р°РІРёС‚СЊ СЃРјРµРЅСѓ';
+      document.getElementById('btnAdd').textContent = 'Добавить смену';
       document.getElementById('btnCancelEdit').classList.add('hidden');
       clearErrors();
       document.getElementById('inputStartDate').value = '';
@@ -1958,7 +2055,7 @@
       render();
     });
 
-    // в”Ђв”Ђ Month navigation в”Ђв”Ђ
+    // ── Month navigation ──
     document.getElementById('btnPrevMonth').addEventListener('click', function() {
       if (currentMonth === 0) { currentMonth = 11; currentYear--; }
       else currentMonth--;
@@ -1971,7 +2068,7 @@
       render();
     });
 
-    // в”Ђв”Ђ Add shift form в”Ђв”Ђ
+    // ── Add shift form ──
     function clearErrors() {
       document.getElementById('errStart').textContent = '';
       document.getElementById('errEnd').textContent = '';
@@ -2014,14 +2111,14 @@
       var valid = true;
 
       if (!startVal) {
-        document.getElementById('errStart').textContent = 'Р—Р°РїРѕР»РЅРё РґР°С‚Сѓ Рё РІСЂРµРјСЏ РЅР°С‡Р°Р»Р°';
+        document.getElementById('errStart').textContent = 'Заполни дату и время начала';
         inputStartDateEl.classList.add('input-error');
         inputStartTimeEl.classList.add('input-error');
         valid = false;
       }
 
       if (!endVal) {
-        document.getElementById('errEnd').textContent = 'Р—Р°РїРѕР»РЅРё РґР°С‚Сѓ Рё РІСЂРµРјСЏ РѕРєРѕРЅС‡Р°РЅРёСЏ';
+        document.getElementById('errEnd').textContent = 'Заполни дату и время окончания';
         inputEndDateEl.classList.add('input-error');
         inputEndTimeEl.classList.add('input-error');
         valid = false;
@@ -2033,12 +2130,12 @@
       var endDate = parseMsk(endVal);
 
       if (!startDate || !endDate) {
-        document.getElementById('errStart').textContent = 'РќРµРІРµСЂРЅС‹Р№ С„РѕСЂРјР°С‚ РґР°С‚С‹';
+        document.getElementById('errStart').textContent = 'РќРµРІРµСЂРЅС‹Р№ формат даты';
         return;
       }
 
       if (endDate.getTime() <= startDate.getTime()) {
-        document.getElementById('errEnd').textContent = 'РљРѕРЅРµС† СЃРјРµРЅС‹ РЅРµ РјРѕР¶РµС‚ Р±С‹С‚СЊ СЂР°РЅСЊС€Рµ РЅР°С‡Р°Р»Р°';
+        document.getElementById('errEnd').textContent = 'Конец смены не может быть СЂР°РЅСЊС€е начала';
         inputEndDateEl.classList.add('input-error');
         inputEndTimeEl.classList.add('input-error');
         return;
@@ -2079,7 +2176,7 @@
         if (err) {
           allShifts = previousShifts;
           btn.disabled = false;
-          document.getElementById('formSuccess').textContent = 'РќРµ СѓРґР°Р»РѕСЃСЊ СЃРѕС…СЂР°РЅРёС‚СЊ СЃРјРµРЅСѓ';
+          document.getElementById('formSuccess').textContent = 'Не удалось сохранить смену';
           render();
           return;
         }
@@ -2102,7 +2199,7 @@
             render();
           }, 1600);
         }
-        document.getElementById('formSuccess').textContent = isEditing ? 'вњ“ РЎРјРµРЅР° РѕР±РЅРѕРІР»РµРЅР°' : 'вњ“ РЎРјРµРЅР° РґРѕР±Р°РІР»РµРЅР°';
+        document.getElementById('formSuccess').textContent = isEditing ? '✓ Смена обновлена' : '✓ Смена добавлена';
         btn.disabled = false;
         if (!isEditing) {
           var section = document.getElementById('shiftFormSection');
@@ -2122,7 +2219,7 @@
       });
     });
 
-    // в”Ђв”Ђ Overlays в”Ђв”Ђ
+    // ── Overlays ──
     function openOverlay(id) {
       document.getElementById(id).classList.add('visible');
     }
@@ -2145,7 +2242,7 @@
       });
     }
 
-    // в”Ђв”Ђ Add to Screen в”Ђв”Ђ
+    // ── Add to Screen ──
     document.getElementById('btnAddToScreen').addEventListener('click', function() {
       document.getElementById('appUrl').textContent = getAppUrl();
       openOverlay('overlayAddScreen');
@@ -2184,8 +2281,8 @@
 
       if (navigator.clipboard && navigator.clipboard.writeText) {
         navigator.clipboard.writeText(url).then(function() {
-          btn.textContent = 'вњ“';
-          setTimeout(function() { btn.textContent = 'РљРѕРїРёСЂРѕРІР°С‚СЊ'; }, 1500);
+          btn.textContent = '✓';
+          setTimeout(function() { btn.textContent = 'Копировать'; }, 1500);
         }).catch(function() {
           fallbackCopy(url, btn);
         });
@@ -2193,6 +2290,8 @@
         fallbackCopy(url, btn);
       }
     });
+
+    repairUiText();
 
     document.getElementById('btnAuthRetry').addEventListener('click', function() {
       authBootstrapPromise = null;
@@ -2216,16 +2315,16 @@
       ta.select();
       try {
         document.execCommand('copy');
-        btn.textContent = 'вњ“';
-        setTimeout(function() { btn.textContent = 'РљРѕРїРёСЂРѕРІР°С‚СЊ'; }, 1500);
+        btn.textContent = '✓';
+        setTimeout(function() { btn.textContent = 'Копировать'; }, 1500);
       } catch(e) {
-        btn.textContent = 'вњ—';
-        setTimeout(function() { btn.textContent = 'РљРѕРїРёСЂРѕРІР°С‚СЊ'; }, 1500);
+        btn.textContent = '✗';
+        setTimeout(function() { btn.textContent = 'Копировать'; }, 1500);
       }
       document.body.removeChild(ta);
     }
 
-    // в”Ђв”Ђ Init в”Ђв”Ђ
+    // ── Init ──
     ensureAuthenticated().then(function(user) {
       if (!user) return;
       loadShifts(function() {
