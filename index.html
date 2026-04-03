@@ -3870,6 +3870,32 @@
       return list;
     }
 
+    function getPendingShiftIdMap() {
+      var pending = readPendingSnapshot();
+      var map = {};
+      if (pending && Array.isArray(pending.pendingIds)) {
+        for (var i = 0; i < pending.pendingIds.length; i++) {
+          map[String(pending.pendingIds[i])] = true;
+        }
+      }
+      if (pending && Array.isArray(pending.shifts)) {
+        for (var j = 0; j < pending.shifts.length; j++) {
+          var pendingShift = pending.shifts[j];
+          if (pendingShift && pendingShift.id !== undefined && pendingShift.id !== null) {
+            map[String(pendingShift.id)] = true;
+          }
+        }
+      }
+      return map;
+    }
+
+    function isShiftPending(shift) {
+      if (!shift) return false;
+      if (shift.pending) return true;
+      var pendingMap = getPendingShiftIdMap();
+      return !!pendingMap[String(shift.id)];
+    }
+
     function readShiftsCache() {
       return readStoredJson(getOfflineStorageKey(SHIFTS_CACHE_STORAGE_KEY), null);
     }
@@ -4825,7 +4851,7 @@
       var cached = readShiftsCache();
       var servedFromCache = false;
       if (cached && Array.isArray(cached.shifts)) {
-        allShifts = cloneShiftsForCache(cached.shifts);
+        allShifts = applyPendingFlags(cached.shifts, Object.keys(getPendingShiftIdMap()));
         updateOfflineUiState({ isOffline: !navigator.onLine, hasPending: !!readPendingSnapshot() });
         servedFromCache = true;
         if (callback) callback();
@@ -4845,7 +4871,7 @@
           headers: { 'Accept': 'application/json' }
         }).then(function(result) {
           if (result.ok) {
-            allShifts = cloneShiftsForCache(Array.isArray(result.body && result.body.shifts) ? result.body.shifts : []);
+            allShifts = clearPendingFlags(Array.isArray(result.body && result.body.shifts) ? result.body.shifts : []);
             writeShiftsCache(allShifts, {
               isOffline: false,
               isSyncing: false,
@@ -5189,7 +5215,8 @@
       if (sh.id === editingShiftId) itemClass += ' is-edit-target';
       if (sh.id === pendingDeleteId) itemClass += ' is-delete-target';
       if (sh.id === recentAddedShiftId) itemClass += ' is-adding-target';
-      if (sh.pending) itemClass += ' is-pending';
+      var shiftIsPending = isShiftPending(sh);
+      if (shiftIsPending) itemClass += ' is-pending';
 
       var metaHtml = '';
       if (details.length) {
@@ -5207,7 +5234,7 @@
               '<div class="shift-title"><span class="shift-title-icon">' + (sh.route_kind === 'trip' ? '↔' : '→') + '</span><span class="shift-title-text">' + escapeHtml(title) + '</span></div>' +
             '</div>' +
             (kindLabel ? '<div class="shift-kind-line"><span class="shift-kind-badge">' + escapeHtml(kindLabel) + '</span></div>' : '') +
-            (sh.pending ? '<div class="shift-kind-line"><span class="shift-pending-badge">pending</span></div>' : '') +
+            (shiftIsPending ? '<div class="shift-kind-line"><span class="shift-pending-badge">pending</span></div>' : '') +
           '</div>' +
           '<div class="shift-status-stack">' +
             '<div class="shift-duration-wrap"><div class="shift-duration">' + escapeHtml(f.dur) + '</div></div>' +
