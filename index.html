@@ -4946,11 +4946,10 @@
       function saveShifts(callback) {
         var snapshot = cloneShiftsForCache(allShifts);
         var pendingSnapshot = applyPendingFlags(snapshot, pendingMutationIds);
-        allShifts = pendingSnapshot;
-        writeShiftsCache(allShifts, {
+        writeShiftsCache(snapshot, {
           isOffline: !navigator.onLine,
           isSyncing: false,
-          hasPending: !!pendingMutationIds.length || !!readPendingSnapshot(),
+          hasPending: !!readPendingSnapshot(),
           lastSyncStatus: navigator.onLine ? 'syncing' : 'local-saved',
           lastError: ''
         });
@@ -4969,18 +4968,18 @@
         return;
       }
 
-      fetchJson(SHIFTS_API_URL, {
-        method: 'PUT',
-        headers: { 'Content-Type': 'application/json', 'Accept': 'application/json' },
-        body: JSON.stringify({ shifts: cloneShiftsForServer(snapshot) })
-      }).then(function(result) {
-        if (result.ok) {
-          clearPendingSnapshot();
-          allShifts = clearPendingFlags(snapshot);
-          writeShiftsCache(allShifts, {
-            isOffline: false,
-            isSyncing: false,
-            hasPending: false,
+        fetchJson(SHIFTS_API_URL, {
+          method: 'PUT',
+          headers: { 'Content-Type': 'application/json', 'Accept': 'application/json' },
+          body: JSON.stringify({ shifts: cloneShiftsForServer(snapshot) })
+        }).then(function(result) {
+          if (result.ok) {
+            allShifts = clearPendingFlags(snapshot);
+            clearPendingSnapshot();
+            writeShiftsCache(allShifts, {
+              isOffline: false,
+              isSyncing: false,
+              hasPending: false,
             lastSyncStatus: 'synced',
             lastError: '',
             lastSyncAt: new Date().toISOString()
