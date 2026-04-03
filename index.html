@@ -350,11 +350,10 @@
       margin-top: 2px;
     }
 
-    .btn-delete {
+    .btn-action {
       background: none;
       border: 1px solid transparent;
       color: var(--text-muted);
-      font-size: 18px;
       width: 40px;
       height: 40px;
       border-radius: var(--radius-sm);
@@ -367,11 +366,53 @@
       -webkit-tap-highlight-color: transparent;
     }
 
+    .btn-action svg {
+      width: 18px;
+      height: 18px;
+      display: block;
+      stroke: currentColor;
+      fill: none;
+      stroke-width: 2;
+      stroke-linecap: round;
+      stroke-linejoin: round;
+    }
+
+    .btn-action:active {
+      background: rgba(255,255,255,0.04);
+    }
+
+    .btn-edit:active {
+      color: var(--accent-hover);
+      border-color: var(--accent);
+      background: rgba(79,142,247,0.1);
+    }
+
     .btn-delete:active {
       color: var(--danger);
       border-color: var(--danger);
       background: rgba(224,85,85,0.1);
     }
+
+    .shift-actions {
+      display: flex;
+      gap: 8px;
+      flex-shrink: 0;
+    }
+
+    .btn-link {
+      width: 100%;
+      margin-top: 10px;
+      background: transparent;
+      color: var(--text-muted);
+      border: none;
+      font-size: 13px;
+      padding: 8px 0 0;
+      cursor: pointer;
+      text-align: center;
+      -webkit-tap-highlight-color: transparent;
+    }
+
+    .btn-link:active { color: var(--text); }
 
     /* ── Secondary Button ── */
     .btn-secondary {
@@ -604,6 +645,7 @@
       </div>
 
       <button class="btn-primary" id="btnAdd">Добавить смену</button>
+      <button class="btn-link hidden" id="btnCancelEdit" type="button">Отменить редактирование</button>
       <div class="form-success" id="formSuccess"></div>
     </div>
 
@@ -700,6 +742,7 @@
     var currentMonth = now.getMonth(); // 0-indexed
     var allShifts = [];
     var pendingDeleteId = null;
+    var editingShiftId = null;
 
     // ── Timezone ──
     var deviceTimezone = 'Europe/Moscow';
@@ -980,6 +1023,8 @@
     }
 
     function setDefaultShiftTimeInputs() {
+      if (editingShiftId) return;
+
       var startDateEl = document.getElementById('inputStartDate');
       var startTimeEl = document.getElementById('inputStartTime');
       var endDateEl = document.getElementById('inputEndDate');
@@ -999,6 +1044,8 @@
     }
 
     function syncEndFromStart() {
+      if (editingShiftId) return;
+
       var startDateEl = document.getElementById('inputStartDate');
       var startTimeEl = document.getElementById('inputStartTime');
       var endDateEl = document.getElementById('inputEndDate');
@@ -1177,13 +1224,24 @@
             '<div class="shift-dates">' + f.text + '</div>' +
             '<div class="shift-duration">' + f.dur + '</div>' +
           '</div>' +
-          '<button class="btn-delete" data-id="' + sh.id + '" aria-label="Удалить">✕</button>' +
+          '<div class="shift-actions">' +
+            '<button class="btn-action btn-edit" data-id="' + sh.id + '" aria-label="Редактировать">' +
+              '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 20h9"/><path d="M16.5 3.5a2.1 2.1 0 0 1 3 3L7 19l-4 1 1-4 12.5-12.5z"/></svg>' +
+            '</button>' +
+            '<button class="btn-action btn-delete" data-id="' + sh.id + '" aria-label="Удалить">' +
+              '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M18 6 6 18"/><path d="M6 6l12 12"/></svg>' +
+            '</button>' +
+          '</div>' +
         '</div>';
       }
       listEl.innerHTML = html;
 
-      // Attach delete handlers
+      // Attach action handlers
+      var editBtns = listEl.querySelectorAll('.btn-edit');
       var deleteBtns = listEl.querySelectorAll('.btn-delete');
+      for (var a = 0; a < editBtns.length; a++) {
+        editBtns[a].addEventListener('click', handleEditClick);
+      }
       for (var b = 0; b < deleteBtns.length; b++) {
         deleteBtns[b].addEventListener('click', handleDeleteClick);
       }
@@ -1204,6 +1262,47 @@
       openOverlay('overlayConfirm');
     }
 
+    function findShiftById(id) {
+      for (var i = 0; i < allShifts.length; i++) {
+        if (allShifts[i].id === id) return allShifts[i];
+      }
+      return null;
+    }
+
+    function enterEditMode(shift) {
+      if (!shift) return;
+
+      editingShiftId = shift.id;
+      document.querySelector('.form-title').textContent = 'Редактировать смену';
+      document.getElementById('inputStartDate').value = shift.start_msk.substring(0, 10);
+      document.getElementById('inputStartTime').value = shift.start_msk.substring(11, 16);
+      document.getElementById('inputEndDate').value = shift.end_msk.substring(0, 10);
+      document.getElementById('inputEndTime').value = shift.end_msk.substring(11, 16);
+      document.getElementById('btnAdd').textContent = 'Сохранить изменения';
+      document.getElementById('btnCancelEdit').classList.remove('hidden');
+      clearErrors();
+    }
+
+    function exitEditMode() {
+      editingShiftId = null;
+      document.querySelector('.form-title').textContent = 'Добавить смену';
+      document.getElementById('btnAdd').textContent = 'Добавить смену';
+      document.getElementById('btnCancelEdit').classList.add('hidden');
+      clearErrors();
+      document.getElementById('inputStartDate').value = '';
+      document.getElementById('inputStartTime').value = '';
+      document.getElementById('inputEndDate').value = '';
+      document.getElementById('inputEndTime').value = '';
+      setDefaultShiftTimeInputs();
+    }
+
+    function handleEditClick(e) {
+      var id = e.currentTarget.getAttribute('data-id');
+      var shift = findShiftById(id);
+      if (!shift) return;
+      enterEditMode(shift);
+    }
+
     document.getElementById('btnConfirmDelete').addEventListener('click', function() {
       if (!pendingDeleteId) return;
       var newShifts = [];
@@ -1211,9 +1310,20 @@
         if (allShifts[i].id !== pendingDeleteId) newShifts.push(allShifts[i]);
       }
       allShifts = newShifts;
+      if (editingShiftId === pendingDeleteId) {
+        exitEditMode();
+      }
       pendingDeleteId = null;
       closeOverlay('overlayConfirm');
-      saveShifts(function() { render(); });
+      saveShifts(function(err) {
+        if (err) {
+          loadShifts(function() {
+            render();
+          });
+          return;
+        }
+        render();
+      });
     });
 
     document.getElementById('btnCancelDelete').addEventListener('click', function() {
@@ -1306,25 +1416,55 @@
         return;
       }
 
+      var previousShifts = allShifts.slice();
+      var isEditing = !!editingShiftId;
+      var shiftId = isEditing ? editingShiftId : (Date.now().toString(36) + Math.random().toString(36).substring(2, 7));
+      var existingShift = isEditing ? findShiftById(shiftId) : null;
       var shift = {
-        id: Date.now().toString(36) + Math.random().toString(36).substring(2, 7),
+        id: shiftId,
         start_msk: startVal,
         end_msk: endVal,
-        created_at: new Date().toISOString()
+        created_at: existingShift && existingShift.created_at ? existingShift.created_at : new Date().toISOString()
       };
 
-      allShifts.push(shift);
+      if (isEditing) {
+        var replaced = false;
+        for (var i = 0; i < allShifts.length; i++) {
+          if (allShifts[i].id === shiftId) {
+            allShifts[i] = shift;
+            replaced = true;
+            break;
+          }
+        }
+        if (!replaced) {
+          allShifts.push(shift);
+        }
+      } else {
+        allShifts.push(shift);
+      }
 
       // Disable button during save
       var btn = document.getElementById('btnAdd');
       btn.disabled = true;
 
-      saveShifts(function() {
-        inputStartDateEl.value = '';
-        inputStartTimeEl.value = '';
-        inputEndDateEl.value = '';
-        inputEndTimeEl.value = '';
-        document.getElementById('formSuccess').textContent = '✓ Смена добавлена';
+      saveShifts(function(err) {
+        if (err) {
+          allShifts = previousShifts;
+          btn.disabled = false;
+          document.getElementById('formSuccess').textContent = 'Не удалось сохранить смену';
+          render();
+          return;
+        }
+
+        if (isEditing) {
+          exitEditMode();
+        } else {
+          inputStartDateEl.value = '';
+          inputStartTimeEl.value = '';
+          inputEndDateEl.value = '';
+          inputEndTimeEl.value = '';
+        }
+        document.getElementById('formSuccess').textContent = isEditing ? '✓ Смена обновлена' : '✓ Смена добавлена';
         btn.disabled = false;
         render();
 
@@ -1358,6 +1498,10 @@
     document.getElementById('btnAddToScreen').addEventListener('click', function() {
       document.getElementById('appUrl').textContent = getAppUrl();
       openOverlay('overlayAddScreen');
+    });
+
+    document.getElementById('btnCancelEdit').addEventListener('click', function() {
+      exitEditMode();
     });
 
     document.getElementById('btnCloseAddScreen').addEventListener('click', function() {
