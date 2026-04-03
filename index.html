@@ -2436,7 +2436,7 @@
       });
 
       var summary = buildSalarySummary(monthShifts, bounds);
-      renderMonthHeader('salary', salaryYear, salaryMonth, function(targetMonth) {
+      renderMonthHeader('salaryMonthTitle', 'salaryMonthQuarter', 'salaryMonthTabs', salaryYear, salaryMonth, function(targetMonth) {
         salaryMonth = targetMonth;
         render();
       });
@@ -2643,12 +2643,12 @@
       }
     }
 
-    function renderMonthHeader(prefix, year, month0, onSelect) {
-      var monthTitle = document.getElementById(prefix + 'MonthTitle');
-      var monthQuarter = document.getElementById(prefix + 'MonthQuarter');
+    function renderMonthHeader(titleId, quarterId, tabsId, year, month0, onSelect) {
+      var monthTitle = document.getElementById(titleId);
+      var monthQuarter = document.getElementById(quarterId);
       if (monthTitle) monthTitle.textContent = MONTH_NAMES[month0] + ' ' + year;
       if (monthQuarter) monthQuarter.textContent = getQuarterLabel(month0);
-      renderQuarterMonthTabs(prefix + 'MonthTabs', year, month0, onSelect);
+      renderQuarterMonthTabs(tabsId, year, month0, onSelect);
     }
 
     function repairUiText() {
@@ -2684,12 +2684,6 @@
       var quickLabelText = ['Ночные', 'Праздничные', 'Смен'];
       for (var q = 0; q < quickLabels.length && q < quickLabelText.length; q++) {
         quickLabels[q].textContent = quickLabelText[q];
-      }
-
-      var tabLabels = document.querySelectorAll('.bottom-nav .tab-label');
-      var tabText = ['Главная', 'Маршруты', '', 'Зарплата', 'Настройки'];
-      for (var t = 0; t < tabLabels.length && t < tabText.length; t++) {
-        tabLabels[t].textContent = tabText[t];
       }
 
       var btnGoToShifts = document.getElementById('btnGoToShifts');
@@ -3183,7 +3177,7 @@
 
     function render() {
       // Month title
-      renderMonthHeader('month', currentYear, currentMonth, function(targetMonth) {
+      renderMonthHeader('monthTitle', 'monthQuarter', 'homeMonthTabs', currentYear, currentMonth, function(targetMonth) {
         currentMonth = targetMonth;
         render();
       });
