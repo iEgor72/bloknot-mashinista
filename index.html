@@ -210,11 +210,21 @@
       border-radius: var(--radius);
       padding: 16px;
       margin-bottom: 20px;
+      transition: border-color 0.18s ease, box-shadow 0.18s ease, transform 0.18s ease;
+    }
+
+    .form-section.is-adding {
+      border-color: rgba(79, 142, 247, 0.45);
+      box-shadow: 0 0 0 1px rgba(79, 142, 247, 0.14), 0 12px 26px rgba(79, 142, 247, 0.05);
     }
 
     .form-section.is-editing {
-      border-color: rgba(79, 142, 247, 0.55);
-      box-shadow: 0 0 0 1px rgba(79, 142, 247, 0.14), 0 14px 28px rgba(0, 0, 0, 0.16);
+      border-color: rgba(247, 185, 85, 0.7);
+      box-shadow: 0 0 0 1px rgba(247, 185, 85, 0.16), 0 14px 28px rgba(247, 185, 85, 0.08);
+    }
+
+    .form-section.add-pulse {
+      animation: addPulse 0.7s ease;
     }
 
     .form-title {
@@ -241,9 +251,9 @@
       font-weight: 700;
       letter-spacing: 0.02em;
       text-transform: uppercase;
-      color: var(--accent-hover);
-      background: rgba(79, 142, 247, 0.12);
-      border: 1px solid rgba(79, 142, 247, 0.2);
+      color: var(--warn);
+      background: rgba(247, 185, 85, 0.12);
+      border: 1px solid rgba(247, 185, 85, 0.24);
       white-space: nowrap;
     }
 
@@ -253,9 +263,9 @@
       display: none;
       font-size: 13px;
       line-height: 1.5;
-      color: #bfd0ff;
-      background: rgba(79, 142, 247, 0.08);
-      border: 1px solid rgba(79, 142, 247, 0.14);
+      color: #f7dba1;
+      background: rgba(247, 185, 85, 0.1);
+      border: 1px solid rgba(247, 185, 85, 0.18);
       border-radius: var(--radius-sm);
       padding: 10px 12px;
       margin-bottom: 12px;
@@ -412,9 +422,9 @@
     }
 
     .btn-edit {
-      color: var(--accent);
-      border-color: rgba(79, 142, 247, 0.28);
-      background: rgba(79, 142, 247, 0.08);
+      color: var(--warn);
+      border-color: rgba(247, 185, 85, 0.3);
+      background: rgba(247, 185, 85, 0.1);
     }
 
     .btn-delete {
@@ -439,15 +449,39 @@
     }
 
     .btn-edit:active {
-      color: var(--accent-hover);
-      border-color: var(--accent);
-      background: rgba(79,142,247,0.16);
+      color: #ffd66e;
+      border-color: var(--warn);
+      background: rgba(247,185,85,0.18);
     }
 
     .btn-delete:active {
       color: var(--danger);
       border-color: var(--danger);
       background: rgba(224,85,85,0.16);
+    }
+
+    .shift-item.is-edit-target {
+      border-color: rgba(247, 185, 85, 0.8);
+      box-shadow: 0 0 0 1px rgba(247, 185, 85, 0.14), 0 12px 24px rgba(247, 185, 85, 0.08);
+      background: rgba(247, 185, 85, 0.06);
+    }
+
+    .shift-item.is-delete-target {
+      border-color: rgba(224, 85, 85, 0.82);
+      box-shadow: 0 0 0 1px rgba(224, 85, 85, 0.14), 0 12px 24px rgba(224, 85, 85, 0.08);
+      background: rgba(224, 85, 85, 0.06);
+    }
+
+    .shift-item.is-adding-target {
+      border-color: rgba(79, 142, 247, 0.8);
+      box-shadow: 0 0 0 1px rgba(79, 142, 247, 0.14), 0 12px 24px rgba(79, 142, 247, 0.08);
+      background: rgba(79, 142, 247, 0.06);
+    }
+
+    @keyframes addPulse {
+      0% { transform: scale(1); box-shadow: 0 0 0 0 rgba(79, 142, 247, 0.22); }
+      45% { transform: scale(1.01); box-shadow: 0 0 0 10px rgba(79, 142, 247, 0); }
+      100% { transform: scale(1); box-shadow: 0 0 0 1px rgba(79, 142, 247, 0.14), 0 12px 26px rgba(79, 142, 247, 0.05); }
     }
 
     .shift-actions {
@@ -679,7 +713,7 @@
     </div>
 
     <!-- Add Shift Form -->
-    <div class="form-section" id="shiftFormSection">
+    <div class="form-section is-adding" id="shiftFormSection">
       <div class="form-title-row">
         <div class="form-title" id="formTitle">Добавить смену</div>
         <div class="edit-badge" id="editBadge">Режим редактирования</div>
@@ -804,6 +838,8 @@
     var allShifts = [];
     var pendingDeleteId = null;
     var editingShiftId = null;
+    var recentAddedShiftId = null;
+    var recentAddTimer = null;
 
     // ── Timezone ──
     var deviceTimezone = 'Europe/Moscow';
@@ -1280,7 +1316,11 @@
       for (var k = 0; k < monthShifts.length; k++) {
         var sh = monthShifts[k];
         var f = fmtShift(sh);
-        html += '<div class="shift-item">' +
+        var itemClass = 'shift-item';
+        if (sh.id === editingShiftId) itemClass += ' is-edit-target';
+        if (sh.id === pendingDeleteId) itemClass += ' is-delete-target';
+        if (sh.id === recentAddedShiftId) itemClass += ' is-adding-target';
+        html += '<div class="' + itemClass + '">' +
           '<div class="shift-info">' +
             '<div class="shift-dates">' + f.text + '</div>' +
             '<div class="shift-duration">' + f.dur + '</div>' +
@@ -1308,6 +1348,25 @@
       }
     }
 
+    function clearRecentAddHighlight() {
+      recentAddedShiftId = null;
+      if (recentAddTimer) {
+        clearTimeout(recentAddTimer);
+        recentAddTimer = null;
+      }
+    }
+
+    function setFormMode(mode) {
+      var section = document.getElementById('shiftFormSection');
+      if (!section) return;
+      section.classList.remove('is-adding', 'is-editing', 'add-pulse');
+      if (mode === 'edit') {
+        section.classList.add('is-editing');
+      } else {
+        section.classList.add('is-adding');
+      }
+    }
+
     // ── Delete handler ──
     function handleDeleteClick(e) {
       var id = e.currentTarget.getAttribute('data-id');
@@ -1320,6 +1379,7 @@
       pendingDeleteId = id;
       var f = fmtShift(shift);
       document.getElementById('confirmShiftInfo').textContent = f.text + ' · ' + f.dur;
+      render();
       openOverlay('overlayConfirm');
     }
 
@@ -1334,7 +1394,8 @@
       if (!shift) return;
 
       editingShiftId = shift.id;
-      document.getElementById('shiftFormSection').classList.add('is-editing');
+      clearRecentAddHighlight();
+      setFormMode('edit');
       document.getElementById('formTitle').textContent = 'Редактировать смену';
       document.getElementById('editBadge').classList.add('visible');
       document.getElementById('editSummary').textContent =
@@ -1347,11 +1408,12 @@
       document.getElementById('btnAdd').textContent = 'Сохранить изменения';
       document.getElementById('btnCancelEdit').classList.remove('hidden');
       clearErrors();
+      render();
     }
 
     function exitEditMode() {
       editingShiftId = null;
-      document.getElementById('shiftFormSection').classList.remove('is-editing');
+      setFormMode('add');
       document.getElementById('formTitle').textContent = 'Добавить смену';
       document.getElementById('editBadge').classList.remove('visible');
       document.getElementById('editSummary').textContent = '';
@@ -1364,6 +1426,7 @@
       document.getElementById('inputEndDate').value = '';
       document.getElementById('inputEndTime').value = '';
       setDefaultShiftTimeInputs();
+      render();
     }
 
     function handleEditClick(e) {
@@ -1399,6 +1462,7 @@
     document.getElementById('btnCancelDelete').addEventListener('click', function() {
       pendingDeleteId = null;
       closeOverlay('overlayConfirm');
+      render();
     });
 
     // ── Month navigation ──
@@ -1429,6 +1493,7 @@
     var inputStartTimeEl = document.getElementById('inputStartTime');
     var inputEndDateEl = document.getElementById('inputEndDate');
     var inputEndTimeEl = document.getElementById('inputEndTime');
+    setFormMode('add');
 
     setDefaultShiftTimeInputs();
     window.addEventListener('load', setDefaultShiftTimeInputs);
@@ -1528,14 +1593,33 @@
 
         if (isEditing) {
           exitEditMode();
+          clearRecentAddHighlight();
         } else {
           inputStartDateEl.value = '';
           inputStartTimeEl.value = '';
           inputEndDateEl.value = '';
           inputEndTimeEl.value = '';
+          setFormMode('add');
+          clearRecentAddHighlight();
+          recentAddedShiftId = shiftId;
+          if (recentAddTimer) clearTimeout(recentAddTimer);
+          recentAddTimer = setTimeout(function() {
+            recentAddedShiftId = null;
+            recentAddTimer = null;
+            render();
+          }, 1600);
         }
         document.getElementById('formSuccess').textContent = isEditing ? '✓ Смена обновлена' : '✓ Смена добавлена';
         btn.disabled = false;
+        if (!isEditing) {
+          var section = document.getElementById('shiftFormSection');
+          section.classList.remove('add-pulse');
+          void section.offsetWidth;
+          section.classList.add('add-pulse');
+          setTimeout(function() {
+            section.classList.remove('add-pulse');
+          }, 750);
+        }
         render();
 
         // Clear success message after 2s
@@ -1552,6 +1636,10 @@
 
     function closeOverlay(id) {
       document.getElementById(id).classList.remove('visible');
+      if (id === 'overlayConfirm' && pendingDeleteId) {
+        pendingDeleteId = null;
+        render();
+      }
     }
 
     // Close on backdrop click
