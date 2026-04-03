@@ -993,6 +993,13 @@
       </section>
 
       <section class="tab-panel" data-tab="shifts">
+        <div class="shifts-section">
+          <div class="section-header" id="shiftsHeader">Смены</div>
+          <div id="shiftsList"></div>
+        </div>
+      </section>
+
+      <section class="tab-panel" data-tab="add">
         <div class="form-section is-adding" id="shiftFormSection">
           <div class="form-title-row">
             <div class="form-title" id="formTitle">Добавить смену</div>
@@ -1021,11 +1028,6 @@
           <button class="btn-primary" id="btnAdd">Добавить смену</button>
           <button class="btn-link hidden" id="btnCancelEdit" type="button">Отменить редактирование</button>
           <div class="form-success" id="formSuccess"></div>
-        </div>
-
-        <div class="shifts-section">
-          <div class="section-header" id="shiftsHeader">Смены</div>
-          <div id="shiftsList"></div>
         </div>
       </section>
 
@@ -1082,7 +1084,7 @@
           <span class="tab-icon">≡</span>
           <span class="tab-label">Смены</span>
         </button>
-        <button class="tab-btn center" type="button" data-action="add">
+        <button class="tab-btn center" type="button" data-tab="add">
           <span class="tab-icon">＋</span>
           <span class="tab-label">Добавить</span>
         </button>
@@ -1302,8 +1304,13 @@
       updateFooter();
     }
 
-    function openShiftTabAndFocusForm() {
-      setActiveTab('shifts');
+    function openAddTabAndFocusForm() {
+      if (editingShiftId) {
+        exitEditMode();
+      } else {
+        setFormMode('add');
+      }
+      setActiveTab('add');
       setTimeout(function() {
         var section = document.getElementById('shiftFormSection');
         if (section && section.scrollIntoView) {
@@ -2000,6 +2007,7 @@
 
       editingShiftId = shift.id;
       clearRecentAddHighlight();
+      setActiveTab('add');
       setFormMode('edit');
       document.getElementById('formTitle').textContent = 'Редактировать смену';
       document.getElementById('editBadge').classList.add('visible');
@@ -2261,20 +2269,20 @@
     var tabButtons = document.querySelectorAll('.tab-btn[data-tab]');
     for (var tb = 0; tb < tabButtons.length; tb++) {
       tabButtons[tb].addEventListener('click', function(e) {
-        setActiveTab(e.currentTarget.getAttribute('data-tab'));
-      });
-    }
-
-    var addTabButton = document.querySelector('.tab-btn[data-action="add"]');
-    if (addTabButton) {
-      addTabButton.addEventListener('click', function() {
-        openShiftTabAndFocusForm();
+        var tab = e.currentTarget.getAttribute('data-tab');
+        if (tab === 'add') {
+          openAddTabAndFocusForm();
+          return;
+        }
+        setActiveTab(tab);
       });
     }
 
     var goToShiftsBtn = document.getElementById('btnGoToShifts');
     if (goToShiftsBtn) {
-      goToShiftsBtn.addEventListener('click', openShiftTabAndFocusForm);
+      goToShiftsBtn.addEventListener('click', function() {
+        setActiveTab('shifts');
+      });
     }
 
     document.getElementById('btnCancelEdit').addEventListener('click', function() {
