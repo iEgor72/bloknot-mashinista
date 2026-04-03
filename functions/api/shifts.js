@@ -20,20 +20,12 @@ function parseShifts(raw) {
 }
 
 async function ensureSchema(db) {
-  await db.exec(
-    'CREATE TABLE IF NOT EXISTS user_shifts (\n' +
-      '  user_id TEXT PRIMARY KEY,\n' +
-      '  shifts_json TEXT NOT NULL,\n' +
-      '  updated_at TEXT NOT NULL DEFAULT CURRENT_TIMESTAMP\n' +
-      ');'
-  );
-  await db.exec(
-    'CREATE TABLE IF NOT EXISTS shift_sets (\n' +
-      '  sid TEXT PRIMARY KEY,\n' +
-      '  shifts_json TEXT NOT NULL,\n' +
-      '  updated_at TEXT NOT NULL DEFAULT CURRENT_TIMESTAMP\n' +
-      ');'
-  );
+  await db.prepare(
+    'CREATE TABLE IF NOT EXISTS user_shifts (user_id TEXT PRIMARY KEY, shifts_json TEXT NOT NULL, updated_at TEXT NOT NULL DEFAULT CURRENT_TIMESTAMP)'
+  ).run();
+  await db.prepare(
+    'CREATE TABLE IF NOT EXISTS shift_sets (sid TEXT PRIMARY KEY, shifts_json TEXT NOT NULL, updated_at TEXT NOT NULL DEFAULT CURRENT_TIMESTAMP)'
+  ).run();
 }
 
 async function readLegacyGlobalShifts(db) {
