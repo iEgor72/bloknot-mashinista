@@ -2627,6 +2627,76 @@
       color: #ffb8c1;
     }
 
+    .offline-banner {
+      display: grid;
+      gap: 6px;
+      margin: 0 0 14px;
+      padding: 12px 14px;
+      border-radius: 18px;
+      border: 1px solid rgba(141, 124, 255, 0.16);
+      background:
+        linear-gradient(180deg, rgba(255,255,255,0.06), rgba(255,255,255,0.03)),
+        rgba(18, 21, 43, 0.72);
+      box-shadow: 0 12px 28px rgba(6, 9, 18, 0.18);
+      backdrop-filter: blur(18px);
+      -webkit-backdrop-filter: blur(18px);
+    }
+
+    .offline-banner.hidden {
+      display: none;
+    }
+
+    .offline-banner-head {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+    }
+
+    .offline-banner-title {
+      font-size: 13px;
+      font-weight: 800;
+      color: var(--text);
+      letter-spacing: -0.01em;
+    }
+
+    .offline-banner-status {
+      font-size: 12px;
+      font-weight: 800;
+      color: #d9d2ff;
+      white-space: nowrap;
+    }
+
+    .offline-banner-text {
+      font-size: 12.5px;
+      line-height: 1.45;
+      color: rgba(244, 247, 255, 0.72);
+    }
+
+    .shift-pending-badge {
+      display: inline-flex;
+      align-items: center;
+      width: fit-content;
+      padding: 5px 8px;
+      border-radius: 999px;
+      border: 1px solid rgba(247, 185, 85, 0.24);
+      background: rgba(247, 185, 85, 0.10);
+      color: #ffd66e;
+      font-size: 10px;
+      font-weight: 800;
+      letter-spacing: 0.03em;
+      text-transform: uppercase;
+      line-height: 1;
+    }
+
+    .shift-item.is-pending {
+      border-color: rgba(247, 185, 85, 0.28);
+      box-shadow:
+        0 16px 34px rgba(4, 7, 15, 0.22),
+        0 0 0 1px rgba(247, 185, 85, 0.08),
+        inset 0 1px 0 rgba(255,255,255,0.05);
+    }
+
     .btn-action {
       background:
         linear-gradient(180deg, rgba(255,255,255,0.05), rgba(255,255,255,0.02)),
@@ -2992,6 +3062,13 @@
 
   <div class="app hidden" id="appShell">
     <div class="app-content">
+      <div class="offline-banner hidden" id="offlineBanner" aria-live="polite">
+        <div class="offline-banner-head">
+          <div class="offline-banner-title" id="offlineBannerTitle"></div>
+          <div class="offline-banner-status" id="offlineSyncStatus"></div>
+        </div>
+        <div class="offline-banner-text" id="offlineBannerText"></div>
+      </div>
       <section class="tab-panel active" data-tab="home">
         <div class="month-nav">
           <div class="month-nav-top">
@@ -3668,6 +3745,311 @@
       localPercent: 20
     };
     var appSettings = loadAppSettings();
+    var SHIFTS_CACHE_STORAGE_KEY = 'shift_tracker_shifts_cache_v1';
+    var SHIFTS_PENDING_STORAGE_KEY = 'shift_tracker_shifts_pending_v1';
+    var SHIFTS_META_STORAGE_KEY = 'shift_tracker_shifts_meta_v1';
+    var pendingMutationIds = [];
+    var offlineUiState = {
+      isOffline: false,
+      isSyncing: false,
+      hasPending: false,
+      lastSyncStatus: 'idle',
+      lastError: ''
+    };
+
+    function getOfflineStorageUserId() {
+      return CURRENT_USER && CURRENT_USER.id !== undefined && CURRENT_USER.id !== null ? String(CURRENT_USER.id) : 'guest';
+    }
+
+    function getOfflineStorageKey(baseKey) {
+      return baseKey + '_' + getOfflineStorageUserId();
+    }
+
+    function readStoredJson(key, fallback) {
+      try {
+        var raw = localStorage.getItem(key);
+        if (!raw) return fallback;
+        var parsed = JSON.parse(raw);
+        return parsed === null || parsed === undefined ? fallback : parsed;
+      } catch (e) {
+        return fallback;
+      }
+    }
+
+    function writeStoredJson(key, value) {
+      try {
+        localStorage.setItem(key, JSON.stringify(value));
+        return true;
+      } catch (e) {
+        return false;
+      }
+    }
+
+    function readOfflineMeta() {
+      return readStoredJson(getOfflineStorageKey(SHIFTS_META_STORAGE_KEY), {});
+    }
+
+    function writeOfflineMeta(patch) {
+      var meta = readOfflineMeta();
+      var keys = Object.keys(patch || {});
+      for (var i = 0; i < keys.length; i++) {
+        meta[keys[i]] = patch[keys[i]];
+      }
+      meta.version = 1;
+      meta.userId = getOfflineStorageUserId();
+      offlineUiState = meta;
+      return writeStoredJson(getOfflineStorageKey(SHIFTS_META_STORAGE_KEY), meta);
+    }
+
+    function cloneShiftForCache(shift) {
+      var copy = {};
+      var keys = Object.keys(shift || {});
+      for (var i = 0; i < keys.length; i++) {
+        copy[keys[i]] = shift[keys[i]];
+      }
+      copy.pending = !!shift.pending;
+      return copy;
+    }
+
+    function cloneShiftsForCache(shifts) {
+      var list = [];
+      for (var i = 0; i < (shifts || []).length; i++) {
+        list.push(cloneShiftForCache(shifts[i]));
+      }
+      return list;
+    }
+
+    function cloneShiftsForServer(shifts) {
+      var list = [];
+      for (var i = 0; i < (shifts || []).length; i++) {
+        var shift = shifts[i] || {};
+        var copy = {};
+        var keys = Object.keys(shift);
+        for (var j = 0; j < keys.length; j++) {
+          if (keys[j] === 'pending') continue;
+          copy[keys[j]] = shift[keys[j]];
+        }
+        list.push(copy);
+      }
+      return list;
+    }
+
+    function normalizePendingIds(pendingIds) {
+      var result = [];
+      var seen = {};
+      for (var i = 0; i < (pendingIds || []).length; i++) {
+        var id = String(pendingIds[i] || '');
+        if (!id || seen[id]) continue;
+        seen[id] = true;
+        result.push(id);
+      }
+      return result;
+    }
+
+    function applyPendingFlags(shifts, pendingIds) {
+      var map = {};
+      for (var i = 0; i < (pendingIds || []).length; i++) {
+        map[String(pendingIds[i])] = true;
+      }
+      var list = [];
+      for (var j = 0; j < (shifts || []).length; j++) {
+        var shift = cloneShiftForCache(shifts[j]);
+        shift.pending = !!shift.pending || !!map[String(shift.id)];
+        list.push(shift);
+      }
+      return list;
+    }
+
+    function clearPendingFlags(shifts) {
+      var list = [];
+      for (var i = 0; i < (shifts || []).length; i++) {
+        var shift = cloneShiftForCache(shifts[i]);
+        shift.pending = false;
+        list.push(shift);
+      }
+      return list;
+    }
+
+    function readShiftsCache() {
+      return readStoredJson(getOfflineStorageKey(SHIFTS_CACHE_STORAGE_KEY), null);
+    }
+
+    function writeShiftsCache(shifts, metaPatch) {
+      var payload = {
+        version: 1,
+        userId: getOfflineStorageUserId(),
+        updatedAt: new Date().toISOString(),
+        shifts: cloneShiftsForCache(shifts)
+      };
+      writeStoredJson(getOfflineStorageKey(SHIFTS_CACHE_STORAGE_KEY), payload);
+      writeOfflineMeta({
+        isOffline: metaPatch && metaPatch.isOffline !== undefined ? !!metaPatch.isOffline : !navigator.onLine,
+        isSyncing: metaPatch && metaPatch.isSyncing !== undefined ? !!metaPatch.isSyncing : false,
+        hasPending: metaPatch && metaPatch.hasPending !== undefined ? !!metaPatch.hasPending : !!readPendingSnapshot(),
+        lastSyncStatus: metaPatch && metaPatch.lastSyncStatus !== undefined ? metaPatch.lastSyncStatus : 'synced',
+        lastError: metaPatch && metaPatch.lastError !== undefined ? metaPatch.lastError : '',
+        lastSyncAt: metaPatch && metaPatch.lastSyncAt !== undefined ? metaPatch.lastSyncAt : payload.updatedAt
+      });
+      return payload;
+    }
+
+    function readPendingSnapshot() {
+      return readStoredJson(getOfflineStorageKey(SHIFTS_PENDING_STORAGE_KEY), null);
+    }
+
+    function writePendingSnapshot(shifts, pendingIds) {
+      var normalizedIds = normalizePendingIds(pendingIds || pendingMutationIds);
+      var payload = {
+        version: 1,
+        userId: getOfflineStorageUserId(),
+        savedAt: new Date().toISOString(),
+        reason: 'offline-save',
+        pendingIds: normalizedIds,
+        shifts: applyPendingFlags(shifts, normalizedIds)
+      };
+      writeStoredJson(getOfflineStorageKey(SHIFTS_PENDING_STORAGE_KEY), payload);
+      writeOfflineMeta({
+        isOffline: !navigator.onLine,
+        isSyncing: false,
+        hasPending: true,
+        lastSyncStatus: 'pending',
+        lastError: ''
+      });
+      return payload;
+    }
+
+    function clearPendingSnapshot() {
+      try {
+        localStorage.removeItem(getOfflineStorageKey(SHIFTS_PENDING_STORAGE_KEY));
+      } catch (e) {}
+      writeOfflineMeta({
+        isOffline: !navigator.onLine,
+        isSyncing: false,
+        hasPending: false,
+        lastSyncStatus: 'synced',
+        lastError: ''
+      });
+      pendingMutationIds = [];
+    }
+
+    function updateOfflineUiState(state) {
+      if (state) {
+        offlineUiState = {
+          isOffline: state.isOffline !== undefined ? !!state.isOffline : !!offlineUiState.isOffline,
+          isSyncing: state.isSyncing !== undefined ? !!state.isSyncing : !!offlineUiState.isSyncing,
+          hasPending: state.hasPending !== undefined ? !!state.hasPending : !!offlineUiState.hasPending,
+          lastSyncStatus: state.lastSyncStatus !== undefined ? state.lastSyncStatus : offlineUiState.lastSyncStatus,
+          lastError: state.lastError !== undefined ? state.lastError : offlineUiState.lastError,
+          lastSyncAt: state.lastSyncAt !== undefined ? state.lastSyncAt : offlineUiState.lastSyncAt
+        };
+        writeOfflineMeta(offlineUiState);
+      } else {
+        var meta = readOfflineMeta();
+        var pending = readPendingSnapshot();
+        offlineUiState = {
+          isOffline: !navigator.onLine || !!meta.isOffline,
+          isSyncing: !!meta.isSyncing,
+          hasPending: !!pending || !!meta.hasPending,
+          lastSyncStatus: meta.lastSyncStatus || 'idle',
+          lastError: meta.lastError || '',
+          lastSyncAt: meta.lastSyncAt || ''
+        };
+      }
+
+      var bannerEl = document.getElementById('offlineBanner');
+      var titleEl = document.getElementById('offlineBannerTitle');
+      var textEl = document.getElementById('offlineBannerText');
+      var syncEl = document.getElementById('offlineSyncStatus');
+      if (!bannerEl || !titleEl || !textEl || !syncEl) return;
+
+      var isOffline = !!offlineUiState.isOffline || !navigator.onLine;
+      var hasPending = !!offlineUiState.hasPending || !!readPendingSnapshot();
+      var isSyncing = !!offlineUiState.isSyncing;
+      var status = offlineUiState.lastSyncStatus || 'idle';
+
+      if (isSyncing) {
+        titleEl.textContent = 'Синхронизация';
+        textEl.textContent = 'Отправляем локальные изменения на сервер.';
+        syncEl.textContent = 'Синхронизация...';
+      } else if (isOffline) {
+        titleEl.textContent = 'Нет сети';
+        textEl.textContent = hasPending ? 'Показываем последние сохранённые данные. Изменения отправятся при появлении сети.' : 'Показываем последние сохранённые данные.';
+        syncEl.textContent = hasPending ? 'Сохранено локально' : 'Оффлайн';
+      } else if (status === 'error') {
+        titleEl.textContent = 'Ошибка синхронизации';
+        textEl.textContent = 'Локальная копия сохранена. Повторим отправку автоматически.';
+        syncEl.textContent = 'Ошибка синхронизации';
+      } else if (hasPending) {
+        titleEl.textContent = 'Есть несинхронизированные изменения';
+        textEl.textContent = 'Данные сохранены локально и будут отправлены при появлении сети.';
+        syncEl.textContent = 'Сохранено локально';
+      } else {
+        titleEl.textContent = 'Данные актуальны';
+        textEl.textContent = 'Локальный кэш и сервер синхронизированы.';
+        syncEl.textContent = 'Синхронизировано';
+      }
+
+      bannerEl.classList.toggle('hidden', !(isOffline || hasPending || isSyncing || status === 'error'));
+      bannerEl.setAttribute('aria-hidden', bannerEl.classList.contains('hidden') ? 'true' : 'false');
+    }
+
+    function flushPendingSnapshot(source, callback, shouldRender) {
+      if (typeof source === 'function') {
+        callback = source;
+        source = 'save';
+      }
+      if (shouldRender === undefined) shouldRender = true;
+      var pending = readPendingSnapshot();
+      if (!pending || !pending.shifts || !pending.shifts.length) {
+        updateOfflineUiState({ isSyncing: false, hasPending: false, lastSyncStatus: 'synced', lastError: '' });
+        if (callback) callback(null);
+        return;
+      }
+
+      if (!navigator.onLine) {
+        updateOfflineUiState({ isOffline: true, isSyncing: false, hasPending: true, lastSyncStatus: 'pending', lastError: '' });
+        if (callback) callback(null);
+        return;
+      }
+
+      updateOfflineUiState({ isSyncing: true, lastSyncStatus: 'syncing', lastError: '' });
+
+      fetchJson(SHIFTS_API_URL, {
+        method: 'PUT',
+        headers: { 'Content-Type': 'application/json', 'Accept': 'application/json' },
+        body: JSON.stringify({ shifts: cloneShiftsForServer(pending.shifts) })
+      }).then(function(result) {
+        if (result.ok) {
+          clearPendingSnapshot();
+          allShifts = clearPendingFlags(pending.shifts);
+          writeShiftsCache(allShifts, {
+            isOffline: false,
+            isSyncing: false,
+            hasPending: false,
+            lastSyncStatus: 'synced',
+            lastError: '',
+            lastSyncAt: new Date().toISOString()
+          });
+          updateOfflineUiState({ isOffline: false, isSyncing: false, hasPending: false, lastSyncStatus: 'synced', lastError: '' });
+          if (callback) callback(null);
+          if (shouldRender) render();
+          return;
+        }
+
+        if (result.status === 401) {
+          updateOfflineUiState({ isSyncing: false, lastSyncStatus: 'error', lastError: 'Unauthorized' });
+          handleAuthUnauthorized(source === 'load' ? 'load' : 'save');
+          if (callback) callback(new Error('Unauthorized'));
+          return;
+        }
+
+        updateOfflineUiState({ isOffline: !navigator.onLine, isSyncing: false, hasPending: true, lastSyncStatus: 'error', lastError: (result.body && result.body.error) || 'API save failed' });
+        if (callback) callback(new Error((result.body && result.body.error) || 'API save failed'));
+      }).catch(function(err) {
+        updateOfflineUiState({ isOffline: true, isSyncing: false, hasPending: true, lastSyncStatus: 'error', lastError: err && err.message ? err.message : 'Network error' });
+        if (callback) callback(err || new Error('Network error'));
+      });
+    }
 
     function loadAppSettings() {
       var settings = {};
@@ -4166,6 +4548,7 @@
       if (APP_SHELL) APP_SHELL.classList.remove('hidden');
       repairUiText();
       updateSettingsControls();
+      updateOfflineUiState();
       setActiveTab(activeTab || 'home');
       updateFooter();
     }
@@ -4439,34 +4822,105 @@
 
     // ── Load / Save shifts ──
     function loadShifts(callback) {
-      fetchJson(SHIFTS_API_URL, {
-        method: 'GET',
-        headers: { 'Accept': 'application/json' }
-      }).then(function(result) {
-        if (result.ok) {
-          allShifts = Array.isArray(result.body && result.body.shifts) ? result.body.shifts : [];
-          callback();
-          return;
-        }
+      var cached = readShiftsCache();
+      var servedFromCache = false;
+      if (cached && Array.isArray(cached.shifts)) {
+        allShifts = cloneShiftsForCache(cached.shifts);
+        updateOfflineUiState({ isOffline: !navigator.onLine, hasPending: !!readPendingSnapshot() });
+        servedFromCache = true;
+        if (callback) callback();
+      }
 
-        if (result.status === 401) {
-          handleAuthUnauthorized('load');
-          return;
-        }
+      if (!navigator.onLine) {
+        if (!cached) allShifts = [];
+        updateOfflineUiState({ isOffline: true, isSyncing: false, hasPending: !!readPendingSnapshot(), lastSyncStatus: cached ? 'cached' : 'offline', lastError: '' });
+        if (!cached && callback) callback();
+        return;
+      }
 
-        throw new Error((result.body && result.body.error) || 'API load failed');
-      }).catch(function(err) {
-        showAuthGate(AUTH_ENV_STATE, 'error');
-      });
+      var pending = readPendingSnapshot();
+      var startLoad = function() {
+        fetchJson(SHIFTS_API_URL, {
+          method: 'GET',
+          headers: { 'Accept': 'application/json' }
+        }).then(function(result) {
+          if (result.ok) {
+            allShifts = cloneShiftsForCache(Array.isArray(result.body && result.body.shifts) ? result.body.shifts : []);
+            writeShiftsCache(allShifts, {
+              isOffline: false,
+              isSyncing: false,
+              hasPending: !!readPendingSnapshot(),
+              lastSyncStatus: 'synced',
+              lastError: '',
+              lastSyncAt: new Date().toISOString()
+            });
+            updateOfflineUiState({ isOffline: false, isSyncing: false, hasPending: !!readPendingSnapshot(), lastSyncStatus: 'synced', lastError: '' });
+            if (!servedFromCache && callback) callback();
+            else render();
+            return;
+          }
+
+          if (result.status === 401) {
+            handleAuthUnauthorized('load');
+            return;
+          }
+
+          updateOfflineUiState({ isOffline: true, isSyncing: false, hasPending: !!readPendingSnapshot(), lastSyncStatus: cached ? 'cached' : 'error', lastError: (result.body && result.body.error) || 'API load failed' });
+          if (!cached) allShifts = [];
+          if (!cached && callback) callback();
+        }).catch(function() {
+          updateOfflineUiState({ isOffline: true, isSyncing: false, hasPending: !!readPendingSnapshot(), lastSyncStatus: cached ? 'cached' : 'error', lastError: 'Network error' });
+          if (!cached) allShifts = [];
+          if (!cached && callback) callback();
+        });
+      };
+
+      if (pending && pending.shifts && pending.shifts.length) {
+        flushPendingSnapshot('load', function(err) {
+          if (!err) {
+            startLoad();
+          }
+        }, false);
+        return;
+      }
+
+      startLoad();
     }
 
     function saveShifts(callback) {
+      var snapshot = cloneShiftsForCache(allShifts);
+      writeShiftsCache(snapshot, {
+        isOffline: !navigator.onLine,
+        isSyncing: false,
+        hasPending: false,
+        lastSyncStatus: navigator.onLine ? 'syncing' : 'local-saved',
+        lastError: ''
+      });
+
+      if (!navigator.onLine) {
+        allShifts = writePendingSnapshot(snapshot, pendingMutationIds).shifts;
+        updateOfflineUiState({ isOffline: true, isSyncing: false, hasPending: true, lastSyncStatus: 'pending', lastError: '' });
+        if (callback) callback(null);
+        return;
+      }
+
       fetchJson(SHIFTS_API_URL, {
         method: 'PUT',
         headers: { 'Content-Type': 'application/json', 'Accept': 'application/json' },
-        body: JSON.stringify({ shifts: allShifts })
+        body: JSON.stringify({ shifts: cloneShiftsForServer(snapshot) })
       }).then(function(result) {
         if (result.ok) {
+          clearPendingSnapshot();
+          allShifts = clearPendingFlags(snapshot);
+          writeShiftsCache(allShifts, {
+            isOffline: false,
+            isSyncing: false,
+            hasPending: false,
+            lastSyncStatus: 'synced',
+            lastError: '',
+            lastSyncAt: new Date().toISOString()
+          });
+          updateOfflineUiState({ isOffline: false, isSyncing: false, hasPending: false, lastSyncStatus: 'synced', lastError: '' });
           if (callback) callback(null);
           return;
         }
@@ -4477,10 +4931,13 @@
           return;
         }
 
-        var err = new Error((result.body && result.body.error) || 'API save failed');
-        if (callback) callback(err);
+        allShifts = writePendingSnapshot(snapshot, pendingMutationIds).shifts;
+        updateOfflineUiState({ isOffline: !navigator.onLine, isSyncing: false, hasPending: true, lastSyncStatus: 'error', lastError: (result.body && result.body.error) || 'API save failed' });
+        if (callback) callback(null);
       }).catch(function(err) {
-        if (callback) callback(err);
+        allShifts = writePendingSnapshot(snapshot, pendingMutationIds).shifts;
+        updateOfflineUiState({ isOffline: true, isSyncing: false, hasPending: true, lastSyncStatus: 'error', lastError: err && err.message ? err.message : 'Network error' });
+        if (callback) callback(null);
       });
     }
 
@@ -4732,6 +5189,7 @@
       if (sh.id === editingShiftId) itemClass += ' is-edit-target';
       if (sh.id === pendingDeleteId) itemClass += ' is-delete-target';
       if (sh.id === recentAddedShiftId) itemClass += ' is-adding-target';
+      if (sh.pending) itemClass += ' is-pending';
 
       var metaHtml = '';
       if (details.length) {
@@ -4749,6 +5207,7 @@
               '<div class="shift-title"><span class="shift-title-icon">' + (sh.route_kind === 'trip' ? '↔' : '→') + '</span><span class="shift-title-text">' + escapeHtml(title) + '</span></div>' +
             '</div>' +
             (kindLabel ? '<div class="shift-kind-line"><span class="shift-kind-badge">' + escapeHtml(kindLabel) + '</span></div>' : '') +
+            (sh.pending ? '<div class="shift-kind-line"><span class="shift-pending-badge">pending</span></div>' : '') +
           '</div>' +
           '<div class="shift-status-stack">' +
             '<div class="shift-duration-wrap"><div class="shift-duration">' + escapeHtml(f.dur) + '</div></div>' +
@@ -4815,6 +5274,7 @@
 
     function render() {
       syncShiftActionsMenuLifecycle();
+      updateOfflineUiState();
 
       // Month title
       renderMonthHeader('monthTitle', 'monthQuarter', 'homeMonthTabs', currentYear, currentMonth, function(targetMonth) {
@@ -5506,6 +5966,7 @@
         if (allShifts[i].id !== pendingDeleteId) newShifts.push(allShifts[i]);
       }
       allShifts = newShifts;
+      pendingMutationIds = [];
       if (editingShiftId === pendingDeleteId) {
         exitEditMode('shifts');
       }
@@ -5698,6 +6159,16 @@
       if (e.key === 'Escape') closeLocoSeriesMenu();
       if (e.key === 'Escape') closeShiftActionsMenu(true);
     });
+    window.addEventListener('online', function() {
+      updateOfflineUiState({ isOffline: false, lastSyncStatus: readPendingSnapshot() ? 'pending' : 'synced' });
+      flushPendingSnapshot();
+    });
+    document.addEventListener('visibilitychange', function() {
+      if (!document.hidden) {
+        updateOfflineUiState({ isOffline: !navigator.onLine, hasPending: !!readPendingSnapshot() });
+        flushPendingSnapshot();
+      }
+    });
     document.getElementById('inputRouteFrom').addEventListener('input', renderDraftShiftSummary);
     document.getElementById('inputRouteTo').addEventListener('input', renderDraftShiftSummary);
     for (var rt = 0; rt < routeTypeButtons.length; rt++) {
@@ -5781,6 +6252,7 @@
       } else {
         allShifts.push(shift);
       }
+      pendingMutationIds = [shiftId];
 
       // Disable button during save
       var btn = document.getElementById('btnAdd');
@@ -5814,7 +6286,7 @@
             render();
           }, 1600);
         }
-        document.getElementById('formSuccess').textContent = isEditing ? '✓ Смена обновлена' : '✓ Смена добавлена';
+        document.getElementById('formSuccess').textContent = (!navigator.onLine || readPendingSnapshot()) ? 'Сохранено локально' : (isEditing ? '✓ Смена обновлена' : '✓ Смена добавлена');
         btn.disabled = false;
         if (!isEditing) {
           var section = document.getElementById('shiftFormSection');
