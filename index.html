@@ -1,0 +1,907 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+  <title>Учёт смен</title>
+  <script src="https://telegram.org/js/telegram-web-app.js"></script>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --bg: #0f0f1a;
+      --bg-card: #1a1a2e;
+      --bg-input: #16213e;
+      --bg-item: #1e1e32;
+      --accent: #4f8ef7;
+      --accent-hover: #6ba3ff;
+      --danger: #e05555;
+      --text: #e8e8f0;
+      --text-muted: #8888aa;
+      --border: #2a2a4a;
+      --success: #4caf7d;
+      --warn: #f7b955;
+      --radius: 12px;
+      --radius-sm: 8px;
+    }
+
+    html, body {
+      height: 100%;
+      background: var(--bg);
+      color: var(--text);
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+      font-size: 15px;
+      line-height: 1.5;
+      overflow-x: hidden;
+    }
+
+    .app {
+      max-width: 480px;
+      margin: 0 auto;
+      padding: 12px 16px 80px;
+      min-height: 100vh;
+    }
+
+    /* ── Month Switcher ── */
+    .month-nav {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 12px 0 16px;
+    }
+
+    .month-btn {
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      color: var(--text);
+      width: 44px;
+      height: 44px;
+      border-radius: var(--radius-sm);
+      font-size: 20px;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: background 0.15s, border-color 0.15s;
+      -webkit-tap-highlight-color: transparent;
+    }
+
+    .month-btn:active { background: var(--bg-input); border-color: var(--accent); }
+
+    .month-title {
+      font-size: 18px;
+      font-weight: 600;
+      letter-spacing: 0.3px;
+    }
+
+    /* ── Stats Grid ── */
+    .stats-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 10px;
+      margin-bottom: 20px;
+    }
+
+    .stat-card {
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 14px 14px 12px;
+      min-height: 80px;
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+    }
+
+    .stat-label {
+      font-size: 12px;
+      color: var(--text-muted);
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      font-weight: 500;
+    }
+
+    .stat-value {
+      font-size: 20px;
+      font-weight: 700;
+      color: var(--text);
+      line-height: 1.2;
+    }
+
+    .stat-value.overtime { color: var(--warn); }
+    .stat-value.ok { color: var(--success); }
+
+    /* ── Form ── */
+    .form-section {
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 16px;
+      margin-bottom: 20px;
+    }
+
+    .form-title {
+      font-size: 15px;
+      font-weight: 600;
+      margin-bottom: 4px;
+    }
+
+    .form-hint {
+      font-size: 12px;
+      color: var(--text-muted);
+      margin-bottom: 14px;
+    }
+
+    .field {
+      margin-bottom: 12px;
+    }
+
+    .field label {
+      display: block;
+      font-size: 13px;
+      color: var(--text-muted);
+      margin-bottom: 5px;
+    }
+
+    .field input[type="datetime-local"] {
+      width: 100%;
+      background: var(--bg-input);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-sm);
+      color: var(--text);
+      font-size: 15px;
+      padding: 10px 12px;
+      outline: none;
+      -webkit-appearance: none;
+      appearance: none;
+      transition: border-color 0.15s;
+      min-height: 44px;
+    }
+
+    .field input[type="datetime-local"]:focus {
+      border-color: var(--accent);
+    }
+
+    .field input[type="datetime-local"]::-webkit-calendar-picker-indicator {
+      filter: invert(0.6);
+      cursor: pointer;
+    }
+
+    .field-error {
+      font-size: 12px;
+      color: var(--danger);
+      margin-top: 4px;
+      min-height: 16px;
+    }
+
+    .btn-primary {
+      width: 100%;
+      background: var(--accent);
+      color: #fff;
+      border: none;
+      border-radius: var(--radius-sm);
+      font-size: 15px;
+      font-weight: 600;
+      padding: 13px;
+      cursor: pointer;
+      min-height: 48px;
+      transition: background 0.15s, opacity 0.15s;
+      -webkit-tap-highlight-color: transparent;
+    }
+
+    .btn-primary:active { background: var(--accent-hover); }
+
+    /* ── Shifts List ── */
+    .shifts-section { margin-bottom: 20px; }
+
+    .section-header {
+      font-size: 13px;
+      color: var(--text-muted);
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      font-weight: 500;
+      margin-bottom: 10px;
+    }
+
+    .shifts-empty {
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 24px 16px;
+      text-align: center;
+      color: var(--text-muted);
+      font-size: 14px;
+    }
+
+    .shift-item {
+      background: var(--bg-item);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-sm);
+      padding: 12px 14px;
+      margin-bottom: 8px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+    }
+
+    .shift-info { flex: 1; min-width: 0; }
+
+    .shift-dates {
+      font-size: 14px;
+      font-weight: 500;
+      color: var(--text);
+      line-height: 1.4;
+    }
+
+    .shift-duration {
+      font-size: 13px;
+      color: var(--accent);
+      margin-top: 2px;
+    }
+
+    .btn-delete {
+      background: none;
+      border: 1px solid transparent;
+      color: var(--text-muted);
+      font-size: 18px;
+      width: 40px;
+      height: 40px;
+      border-radius: var(--radius-sm);
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+      transition: color 0.15s, border-color 0.15s, background 0.15s;
+      -webkit-tap-highlight-color: transparent;
+    }
+
+    .btn-delete:active { color: var(--danger); border-color: var(--danger); background: rgba(224,85,85,0.1); }
+
+    /* ── Add to Screen Button ── */
+    .btn-secondary {
+      width: 100%;
+      background: transparent;
+      color: var(--text-muted);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-sm);
+      font-size: 14px;
+      padding: 12px;
+      cursor: pointer;
+      min-height: 44px;
+      transition: color 0.15s, border-color 0.15s;
+      -webkit-tap-highlight-color: transparent;
+    }
+
+    .btn-secondary:active { color: var(--text); border-color: var(--text-muted); }
+
+    /* ── Footer ── */
+    .footer {
+      text-align: center;
+      font-size: 12px;
+      color: var(--text-muted);
+      margin-top: 12px;
+      padding-bottom: 8px;
+    }
+
+    /* ── Confirm Dialog ── */
+    .overlay {
+      position: fixed;
+      inset: 0;
+      background: rgba(0,0,0,0.65);
+      z-index: 100;
+      display: flex;
+      align-items: flex-end;
+      padding: 16px;
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 0.2s;
+    }
+
+    .overlay.visible {
+      opacity: 1;
+      pointer-events: all;
+    }
+
+    .bottom-sheet {
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: var(--radius) var(--radius) var(--radius-sm) var(--radius-sm);
+      width: 100%;
+      padding: 20px;
+      transform: translateY(20px);
+      transition: transform 0.2s;
+    }
+
+    .overlay.visible .bottom-sheet {
+      transform: translateY(0);
+    }
+
+    .sheet-title {
+      font-size: 17px;
+      font-weight: 700;
+      margin-bottom: 12px;
+    }
+
+    .sheet-text {
+      font-size: 14px;
+      color: var(--text-muted);
+      line-height: 1.6;
+      margin-bottom: 6px;
+    }
+
+    .sheet-text strong { color: var(--text); }
+
+    .sheet-steps {
+      font-size: 14px;
+      color: var(--text-muted);
+      line-height: 1.8;
+      padding-left: 18px;
+      margin-bottom: 10px;
+    }
+
+    .sheet-steps li { margin-bottom: 2px; }
+
+    .sheet-url {
+      background: var(--bg-input);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-sm);
+      padding: 10px 12px;
+      font-size: 13px;
+      color: var(--accent);
+      word-break: break-all;
+      margin-bottom: 16px;
+      cursor: pointer;
+    }
+
+    .sheet-url-hint {
+      font-size: 11px;
+      color: var(--text-muted);
+      margin-bottom: 16px;
+      text-align: center;
+    }
+
+    .btn-sheet-close {
+      width: 100%;
+      background: var(--bg-input);
+      color: var(--text);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-sm);
+      font-size: 15px;
+      font-weight: 500;
+      padding: 13px;
+      cursor: pointer;
+      min-height: 48px;
+      -webkit-tap-highlight-color: transparent;
+    }
+
+    /* ── Confirm dialog ── */
+    .confirm-sheet .confirm-btns {
+      display: flex;
+      gap: 10px;
+      margin-top: 16px;
+    }
+
+    .btn-confirm-cancel {
+      flex: 1;
+      background: var(--bg-input);
+      color: var(--text);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-sm);
+      font-size: 15px;
+      font-weight: 500;
+      padding: 13px;
+      cursor: pointer;
+      min-height: 48px;
+      -webkit-tap-highlight-color: transparent;
+    }
+
+    .btn-confirm-delete {
+      flex: 1;
+      background: var(--danger);
+      color: #fff;
+      border: none;
+      border-radius: var(--radius-sm);
+      font-size: 15px;
+      font-weight: 600;
+      padding: 13px;
+      cursor: pointer;
+      min-height: 48px;
+      -webkit-tap-highlight-color: transparent;
+    }
+
+    .input-error { border-color: var(--danger) !important; }
+  </style>
+</head>
+<body>
+  <div class="app">
+
+    <!-- Month Navigation -->
+    <div class="month-nav">
+      <button class="month-btn" id="btnPrevMonth" aria-label="Предыдущий месяц">‹</button>
+      <span class="month-title" id="monthTitle">Апрель 2026</span>
+      <button class="month-btn" id="btnNextMonth" aria-label="Следующий месяц">›</button>
+    </div>
+
+    <!-- Stats -->
+    <div class="stats-grid">
+      <div class="stat-card">
+        <span class="stat-label">Отработано</span>
+        <span class="stat-value" id="statWorked">0 ч</span>
+      </div>
+      <div class="stat-card">
+        <span class="stat-label">Норма</span>
+        <span class="stat-value" id="statNorm">—</span>
+      </div>
+      <div class="stat-card" style="grid-column: 1 / -1;">
+        <span class="stat-label">Остаток / Переработка</span>
+        <span class="stat-value" id="statDiff">—</span>
+      </div>
+      <div class="stat-card">
+        <span class="stat-label">Смен</span>
+        <span class="stat-value" id="statShifts">0</span>
+      </div>
+    </div>
+
+    <!-- Add Shift Form -->
+    <div class="form-section">
+      <div class="form-title">Добавить смену</div>
+      <div class="form-hint">Время указывается в МСК (московское время)</div>
+
+      <div class="field">
+        <label for="inputStart">Начало смены (МСК)</label>
+        <input type="datetime-local" id="inputStart" />
+        <div class="field-error" id="errStart"></div>
+      </div>
+
+      <div class="field">
+        <label for="inputEnd">Конец смены (МСК)</label>
+        <input type="datetime-local" id="inputEnd" />
+        <div class="field-error" id="errEnd"></div>
+      </div>
+
+      <button class="btn-primary" id="btnAdd">Добавить смену</button>
+    </div>
+
+    <!-- Shifts List -->
+    <div class="shifts-section">
+      <div class="section-header" id="shiftsHeader">Смены</div>
+      <div id="shiftsList">
+        <div class="shifts-empty">Нет смен за этот месяц</div>
+      </div>
+    </div>
+
+    <!-- Add to Screen -->
+    <button class="btn-secondary" id="btnAddToScreen">Добавить на экран</button>
+
+    <!-- Footer -->
+    <div class="footer" id="timezoneFooter">Часовой пояс: определяется…</div>
+
+  </div>
+
+  <!-- Add to Screen Bottom Sheet -->
+  <div class="overlay" id="overlayAddScreen">
+    <div class="bottom-sheet">
+      <div class="sheet-title">Добавить на экран</div>
+      <div class="sheet-text">Чтобы открывать приложение как обычное, добавь его на главный экран.</div>
+      <br>
+      <div class="sheet-text"><strong>Для iPhone:</strong></div>
+      <ol class="sheet-steps">
+        <li>Открой ссылку приложения в Safari.</li>
+        <li>Нажми «Поделиться» (иконка ↑).</li>
+        <li>Выбери «На экран Домой».</li>
+      </ol>
+      <div class="sheet-text"><strong>Для Android:</strong></div>
+      <ol class="sheet-steps">
+        <li>Открой ссылку приложения в Chrome.</li>
+        <li>Открой меню браузера (⋮).</li>
+        <li>Нажми «Добавить на главный экран».</li>
+      </ol>
+      <div class="sheet-text" style="margin-bottom:6px;">Ссылка на приложение:</div>
+      <div class="sheet-url" id="appUrl" onclick="copyAppUrl()" title="Нажми, чтобы скопировать"></div>
+      <div class="sheet-url-hint">Нажми на ссылку, чтобы скопировать</div>
+      <button class="btn-sheet-close" onclick="closeOverlay('overlayAddScreen')">Закрыть</button>
+    </div>
+  </div>
+
+  <!-- Confirm Delete Bottom Sheet -->
+  <div class="overlay" id="overlayConfirm">
+    <div class="bottom-sheet confirm-sheet">
+      <div class="sheet-title">Удалить смену?</div>
+      <div class="sheet-text" id="confirmShiftInfo"></div>
+      <div class="confirm-btns">
+        <button class="btn-confirm-cancel" onclick="closeOverlay('overlayConfirm')">Отмена</button>
+        <button class="btn-confirm-delete" id="btnConfirmDelete">Удалить</button>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    // ── Telegram WebApp Init ────────────────────────────────────────────────
+    if (window.Telegram && window.Telegram.WebApp) {
+      Telegram.WebApp.ready();
+      Telegram.WebApp.expand();
+    }
+
+    // ── Constants ──────────────────────────────────────────────────────────
+    const MONTH_NAMES = [
+      'Январь','Февраль','Март','Апрель','Май','Июнь',
+      'Июль','Август','Сентябрь','Октябрь','Ноябрь','Декабрь'
+    ];
+
+    const WORK_NORMS = {
+      "2025-01": 136, "2025-02": 151, "2025-03": 159,
+      "2025-04": 175, "2025-05": 143, "2025-06": 151,
+      "2025-07": 184, "2025-08": 168, "2025-09": 176,
+      "2025-10": 184, "2025-11": 151, "2025-12": 183,
+
+      "2026-01": 120, "2026-02": 152, "2026-03": 168,
+      "2026-04": 175, "2026-05": 151, "2026-06": 167,
+      "2026-07": 184, "2026-08": 168, "2026-09": 176,
+      "2026-10": 176, "2026-11": 159, "2026-12": 176,
+
+      "2027-01": 120, "2027-02": 151, "2027-03": 176,
+      "2027-04": 175, "2027-05": 152, "2027-06": 167,
+      "2027-07": 176, "2027-08": 176, "2027-09": 176,
+      "2027-10": 168, "2027-11": 159, "2027-12": 176,
+    };
+
+    const STORAGE_KEY = 'shifts';
+
+    // ── State ──────────────────────────────────────────────────────────────
+    const now = new Date();
+    let currentYear = now.getFullYear();
+    let currentMonth = now.getMonth(); // 0-indexed
+    let allShifts = [];
+    let pendingDeleteId = null;
+
+    // ── Timezone ───────────────────────────────────────────────────────────
+    const deviceTimezone = Intl.DateTimeFormat().resolvedOptions().timeZone;
+    document.getElementById('timezoneFooter').textContent =
+      `Часовой пояс: ${deviceTimezone} (определён автоматически)`;
+
+    // ── CloudStorage / localStorage fallback ──────────────────────────────
+    const storage = {
+      _useCloud: () => !!(window.Telegram && window.Telegram.WebApp && window.Telegram.WebApp.CloudStorage),
+
+      getItem(key, cb) {
+        if (this._useCloud()) {
+          Telegram.WebApp.CloudStorage.getItem(key, (err, val) => cb(err ? null : val));
+        } else {
+          cb(localStorage.getItem(key));
+        }
+      },
+
+      setItem(key, value, cb) {
+        if (this._useCloud()) {
+          Telegram.WebApp.CloudStorage.setItem(key, value, (err) => cb && cb(err));
+        } else {
+          localStorage.setItem(key, value);
+          cb && cb(null);
+        }
+      },
+
+      removeItem(key, cb) {
+        if (this._useCloud()) {
+          Telegram.WebApp.CloudStorage.removeItem(key, (err) => cb && cb(err));
+        } else {
+          localStorage.removeItem(key);
+          cb && cb(null);
+        }
+      }
+    };
+
+    // ── Load shifts ────────────────────────────────────────────────────────
+    function loadShifts(cb) {
+      storage.getItem(STORAGE_KEY, (val) => {
+        try {
+          allShifts = val ? JSON.parse(val) : [];
+        } catch { allShifts = []; }
+        cb();
+      });
+    }
+
+    function saveShifts(cb) {
+      storage.setItem(STORAGE_KEY, JSON.stringify(allShifts), cb);
+    }
+
+    // ── Time helpers ───────────────────────────────────────────────────────
+    // Parse "YYYY-MM-DDTHH:MM" (MSK, no timezone) → Date object treating it as UTC+3
+    function parseMsk(dt) {
+      // dt = "2026-04-03T10:00"
+      const [datePart, timePart] = dt.split('T');
+      const [y, mo, d] = datePart.split('-').map(Number);
+      const [h, m] = timePart.split(':').map(Number);
+      // Moscow = UTC+3, so subtract 3 hours to get UTC
+      return new Date(Date.UTC(y, mo - 1, d, h - 3, m));
+    }
+
+    // Convert Date to local time in the device timezone, return start-of-month timestamps
+    function getMonthBoundsLocal(year, month) {
+      // Start = first moment of given month in device local time
+      const startStr = `${year}-${String(month + 1).padStart(2, '0')}-01T00:00:00`;
+      const start = new Date(new Intl.DateTimeFormat('sv-SE', {
+        timeZone: deviceTimezone,
+        year: 'numeric', month: '2-digit', day: '2-digit',
+        hour: '2-digit', minute: '2-digit', second: '2-digit'
+      }).format(new Date(startStr + ' (' + deviceTimezone + ')')));
+
+      // Simpler: use the local midnight of the first day of the month
+      // We build the bounds as UTC timestamps by finding midnight in deviceTimezone
+
+      const s = localMidnightToUTC(year, month + 1, 1);
+      const nextMonth = month === 11 ? { y: year + 1, m: 1 } : { y: year, m: month + 2 };
+      const e = localMidnightToUTC(nextMonth.y, nextMonth.m, 1);
+      return { start: s, end: e };
+    }
+
+    // Get UTC timestamp for midnight of given date in deviceTimezone
+    function localMidnightToUTC(year, month, day) {
+      // Format "YYYY-MM-DDTHH:mm:ss" and parse using Intl to determine UTC offset
+      const isoDate = `${year}-${String(month).padStart(2,'0')}-${String(day).padStart(2,'0')}`;
+      // Create a date and adjust
+      // The trick: create a date at midnight local time using the timezone
+      const dt = new Date(`${isoDate}T00:00:00`);
+      // Use Intl to find offset
+      const parts = new Intl.DateTimeFormat('en-US', {
+        timeZone: deviceTimezone,
+        year: 'numeric', month: 'numeric', day: 'numeric',
+        hour: 'numeric', minute: 'numeric', second: 'numeric',
+        hour12: false
+      }).formatToParts(dt);
+
+      const p = {};
+      parts.forEach(x => { p[x.type] = x.value; });
+      const localHour = parseInt(p.hour === '24' ? '0' : p.hour);
+      const localMin  = parseInt(p.minute);
+      const localSec  = parseInt(p.second);
+      const localDay  = parseInt(p.day);
+      const localMon  = parseInt(p.month);
+      const localYear = parseInt(p.year);
+
+      // Check if local midnight aligns - compute the difference
+      const targetLocal = new Date(year, month - 1, day, 0, 0, 0);
+      const actualLocal = new Date(localYear, localMon - 1, localDay, localHour, localMin, localSec);
+      const diffMs = targetLocal - actualLocal;
+      return dt.getTime() + diffMs;
+    }
+
+    // Get minutes of a shift that fall within [monthStart, monthEnd) UTC timestamps
+    function shiftMinutesInMonth(shift, monthStart, monthEnd) {
+      const s = parseMsk(shift.start_msk).getTime();
+      const e = parseMsk(shift.end_msk).getTime();
+      const effectiveStart = Math.max(s, monthStart);
+      const effectiveEnd   = Math.min(e, monthEnd);
+      if (effectiveEnd > effectiveStart) {
+        return Math.round((effectiveEnd - effectiveStart) / 60000);
+      }
+      return 0;
+    }
+
+    // Format minutes as "X ч Y м" or "X ч"
+    function fmtMinutes(totalMin) {
+      const h = Math.floor(totalMin / 60);
+      const m = totalMin % 60;
+      if (m === 0) return `${h} ч`;
+      return `${h} ч ${m} м`;
+    }
+
+    // Pad number
+    function pad2(n) { return String(n).padStart(2, '0'); }
+
+    // Format shift display string (MSK times)
+    function fmtShift(shift) {
+      const s = shift.start_msk; // "YYYY-MM-DDTHH:MM"
+      const e = shift.end_msk;
+      const [sd, st] = s.split('T');
+      const [ed, et] = e.split('T');
+      const [sy, sm, sday] = sd.split('-');
+      const [ey, em, eday] = ed.split('-');
+
+      const startDate = `${sday}.${sm}.${sy}`;
+      const endDate   = `${eday}.${em}.${ey}`;
+
+      const durationMin = Math.round((parseMsk(e) - parseMsk(s)) / 60000);
+      const dur = fmtMinutes(durationMin);
+
+      if (sd === ed) {
+        return { line1: `${startDate}  ·  ${st}–${et}`, line2: dur };
+      } else {
+        return { line1: `${startDate} ${st} → ${endDate} ${et}`, line2: dur };
+      }
+    }
+
+    // ── Render ─────────────────────────────────────────────────────────────
+    function render() {
+      // Month title
+      document.getElementById('monthTitle').textContent =
+        `${MONTH_NAMES[currentMonth]} ${currentYear}`;
+
+      // Month bounds
+      const { start: mStart, end: mEnd } = getMonthBoundsLocal(currentYear, currentMonth);
+
+      // Filter shifts with at least 1 minute in this month
+      const monthShifts = allShifts.filter(sh => shiftMinutesInMonth(sh, mStart, mEnd) > 0);
+
+      // Sort: newest first
+      monthShifts.sort((a, b) => b.start_msk.localeCompare(a.start_msk));
+
+      // Stats
+      let totalMin = 0;
+      monthShifts.forEach(sh => { totalMin += shiftMinutesInMonth(sh, mStart, mEnd); });
+
+      const monthKey = `${currentYear}-${String(currentMonth + 1).padStart(2, '0')}`;
+      const norm = WORK_NORMS[monthKey];
+
+      document.getElementById('statWorked').textContent = fmtMinutes(totalMin);
+      document.getElementById('statShifts').textContent = monthShifts.length;
+
+      if (norm !== undefined) {
+        document.getElementById('statNorm').textContent = `${norm} ч`;
+        const normMin = norm * 60;
+        const diffMin = totalMin - normMin;
+
+        const diffEl = document.getElementById('statDiff');
+        diffEl.className = 'stat-value';
+
+        if (diffMin === 0) {
+          diffEl.textContent = 'В норме';
+          diffEl.classList.add('ok');
+        } else if (diffMin > 0) {
+          diffEl.textContent = `Переработка: ${fmtMinutes(Math.abs(diffMin))}`;
+          diffEl.classList.add('overtime');
+        } else {
+          diffEl.textContent = `Осталось: ${fmtMinutes(Math.abs(diffMin))}`;
+        }
+      } else {
+        document.getElementById('statNorm').textContent = '—';
+        document.getElementById('statDiff').textContent = '—';
+        document.getElementById('statDiff').className = 'stat-value';
+      }
+
+      // Shifts list
+      const listEl = document.getElementById('shiftsList');
+      document.getElementById('shiftsHeader').textContent =
+        monthShifts.length > 0
+          ? `Смены · ${MONTH_NAMES[currentMonth].toLowerCase()} ${currentYear}`
+          : 'Смены';
+
+      if (monthShifts.length === 0) {
+        listEl.innerHTML = '<div class="shifts-empty">Нет смен за этот месяц</div>';
+        return;
+      }
+
+      listEl.innerHTML = monthShifts.map(sh => {
+        const f = fmtShift(sh);
+        return `
+          <div class="shift-item">
+            <div class="shift-info">
+              <div class="shift-dates">${f.line1}</div>
+              <div class="shift-duration">${f.line2}</div>
+            </div>
+            <button class="btn-delete" onclick="confirmDelete('${sh.id}')" aria-label="Удалить смену">🗑</button>
+          </div>`;
+      }).join('');
+    }
+
+    // ── Month navigation ───────────────────────────────────────────────────
+    document.getElementById('btnPrevMonth').addEventListener('click', () => {
+      if (currentMonth === 0) { currentMonth = 11; currentYear--; }
+      else currentMonth--;
+      render();
+    });
+
+    document.getElementById('btnNextMonth').addEventListener('click', () => {
+      if (currentMonth === 11) { currentMonth = 0; currentYear++; }
+      else currentMonth++;
+      render();
+    });
+
+    // ── Form ───────────────────────────────────────────────────────────────
+    function clearErrors() {
+      document.getElementById('errStart').textContent = '';
+      document.getElementById('errEnd').textContent = '';
+      document.getElementById('inputStart').classList.remove('input-error');
+      document.getElementById('inputEnd').classList.remove('input-error');
+    }
+
+    document.getElementById('btnAdd').addEventListener('click', () => {
+      clearErrors();
+      const startVal = document.getElementById('inputStart').value;
+      const endVal   = document.getElementById('inputEnd').value;
+      let valid = true;
+
+      if (!startVal) {
+        document.getElementById('errStart').textContent = 'Заполни дату и время начала';
+        document.getElementById('inputStart').classList.add('input-error');
+        valid = false;
+      }
+      if (!endVal) {
+        document.getElementById('errEnd').textContent = 'Заполни дату и время окончания';
+        document.getElementById('inputEnd').classList.add('input-error');
+        valid = false;
+      }
+      if (!valid) return;
+
+      const startMs = parseMsk(startVal).getTime();
+      const endMs   = parseMsk(endVal).getTime();
+
+      if (endMs <= startMs) {
+        document.getElementById('errEnd').textContent = 'Конец смены не может быть раньше начала';
+        document.getElementById('inputEnd').classList.add('input-error');
+        return;
+      }
+
+      const shift = {
+        id: `${Date.now()}-${Math.random().toString(36).slice(2,7)}`,
+        start_msk: startVal,
+        end_msk: endVal,
+        created_at: new Date().toISOString()
+      };
+
+      allShifts.push(shift);
+      saveShifts(() => {
+        document.getElementById('inputStart').value = '';
+        document.getElementById('inputEnd').value = '';
+        render();
+      });
+    });
+
+    // ── Delete ─────────────────────────────────────────────────────────────
+    function confirmDelete(id) {
+      const shift = allShifts.find(s => s.id === id);
+      if (!shift) return;
+      pendingDeleteId = id;
+      const f = fmtShift(shift);
+      document.getElementById('confirmShiftInfo').textContent = `${f.line1} · ${f.line2}`;
+      openOverlay('overlayConfirm');
+    }
+
+    document.getElementById('btnConfirmDelete').addEventListener('click', () => {
+      if (!pendingDeleteId) return;
+      allShifts = allShifts.filter(s => s.id !== pendingDeleteId);
+      pendingDeleteId = null;
+      saveShifts(() => render());
+      closeOverlay('overlayConfirm');
+    });
+
+    // ── Overlays ───────────────────────────────────────────────────────────
+    function openOverlay(id) {
+      document.getElementById(id).classList.add('visible');
+    }
+
+    function closeOverlay(id) {
+      document.getElementById(id).classList.remove('visible');
+    }
+
+    // Close overlay on backdrop click
+    document.querySelectorAll('.overlay').forEach(el => {
+      el.addEventListener('click', (e) => {
+        if (e.target === el) closeOverlay(el.id);
+      });
+    });
+
+    // ── Add to Screen ──────────────────────────────────────────────────────
+    document.getElementById('btnAddToScreen').addEventListener('click', () => {
+      document.getElementById('appUrl').textContent = window.location.href;
+      openOverlay('overlayAddScreen');
+    });
+
+    function copyAppUrl() {
+      const url = window.location.href;
+      if (navigator.clipboard) {
+        navigator.clipboard.writeText(url).then(() => {
+          const el = document.getElementById('appUrl');
+          const orig = el.textContent;
+          el.textContent = 'Скопировано!';
+          setTimeout(() => { el.textContent = orig; }, 1500);
+        });
+      }
+    }
+
+    // ── Init ───────────────────────────────────────────────────────────────
+    loadShifts(render);
+  </script>
+</body>
+</html>
