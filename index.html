@@ -690,6 +690,10 @@
         <span class="stat-value night" id="statNight">0 ч</span>
       </div>
       <div class="stat-card">
+        <span class="stat-label">Сверх 12ч</span>
+        <span class="stat-value overtime" id="statOvertime">0 ч</span>
+      </div>
+      <div class="stat-card">
         <span class="stat-label">Норма</span>
         <span class="stat-value" id="statNorm">—</span>
       </div>
@@ -1216,6 +1220,22 @@
       return total;
     }
 
+    // Overtime is counted as the portion of a shift after 12 hours.
+    // For shifts crossing month boundaries, only the overlap inside the month is counted.
+    function shiftOvertimeMinutesInRange(shift, boundsStart, boundsEnd) {
+      var s = parseMsk(shift.start_msk);
+      var e = parseMsk(shift.end_msk);
+      if (!s || !e) return 0;
+
+      var st = s.getTime();
+      var et = e.getTime();
+      if (et <= st) return 0;
+
+      var overtimeStart = st + 12 * 60 * 60 * 1000;
+      if (overtimeStart >= et) return 0;
+      return minutesInOverlap(overtimeStart, et, boundsStart, boundsEnd);
+    }
+
     // Total duration of a shift in minutes
     function shiftTotalMinutes(shift) {
       var s = parseMsk(shift.start_msk);
@@ -1280,9 +1300,11 @@
       // Calculate total worked minutes in this month
       var totalMin = 0;
       var nightMin = 0;
+      var overtimeMin = 0;
       for (var j = 0; j < monthShifts.length; j++) {
         totalMin += shiftMinutesInRange(monthShifts[j], bounds.start, bounds.end);
         nightMin += shiftNightMinutesInRange(monthShifts[j], bounds.start, bounds.end);
+        overtimeMin += shiftOvertimeMinutesInRange(monthShifts[j], bounds.start, bounds.end);
       }
 
       // Norm
@@ -1292,6 +1314,7 @@
       // Update stats
       document.getElementById('statWorked').textContent = fmtMin(totalMin);
       document.getElementById('statNight').textContent = fmtMin(nightMin);
+      document.getElementById('statOvertime').textContent = fmtMin(overtimeMin);
       document.getElementById('statShifts').textContent = String(monthShifts.length);
 
       var normEl = document.getElementById('statNorm');
