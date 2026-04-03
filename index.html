@@ -38,7 +38,7 @@
     .app {
       max-width: 480px;
       margin: 0 auto;
-      padding: 12px 16px 80px;
+      padding: 12px 16px 40px;
       min-height: 100vh;
     }
 
@@ -87,7 +87,6 @@
       border: 1px solid var(--border);
       border-radius: var(--radius);
       padding: 14px 14px 12px;
-      min-height: 80px;
       display: flex;
       flex-direction: column;
       gap: 4px;
@@ -110,6 +109,7 @@
 
     .stat-value.overtime { color: var(--warn); }
     .stat-value.ok { color: var(--success); }
+    .stat-value.remaining { color: var(--text-muted); }
 
     /* ── Form ── */
     .form-section {
@@ -132,9 +132,7 @@
       margin-bottom: 14px;
     }
 
-    .field {
-      margin-bottom: 12px;
-    }
+    .field { margin-bottom: 12px; }
 
     .field label {
       display: block;
@@ -158,11 +156,9 @@
       min-height: 44px;
     }
 
-    .field input[type="datetime-local"]:focus {
-      border-color: var(--accent);
-    }
+    .field input:focus { border-color: var(--accent); }
 
-    .field input[type="datetime-local"]::-webkit-calendar-picker-indicator {
+    .field input::-webkit-calendar-picker-indicator {
       filter: invert(0.6);
       cursor: pointer;
     }
@@ -171,8 +167,12 @@
       font-size: 12px;
       color: var(--danger);
       margin-top: 4px;
-      min-height: 16px;
+      min-height: 0;
     }
+
+    .field-error:empty { display: none; }
+
+    .input-error { border-color: var(--danger) !important; }
 
     .btn-primary {
       width: 100%;
@@ -190,6 +190,17 @@
     }
 
     .btn-primary:active { background: var(--accent-hover); }
+    .btn-primary:disabled { opacity: 0.5; pointer-events: none; }
+
+    .form-success {
+      text-align: center;
+      color: var(--success);
+      font-size: 13px;
+      margin-top: 8px;
+      min-height: 0;
+    }
+
+    .form-success:empty { display: none; }
 
     /* ── Shifts List ── */
     .shifts-section { margin-bottom: 20px; }
@@ -257,9 +268,13 @@
       -webkit-tap-highlight-color: transparent;
     }
 
-    .btn-delete:active { color: var(--danger); border-color: var(--danger); background: rgba(224,85,85,0.1); }
+    .btn-delete:active {
+      color: var(--danger);
+      border-color: var(--danger);
+      background: rgba(224,85,85,0.1);
+    }
 
-    /* ── Add to Screen Button ── */
+    /* ── Secondary Button ── */
     .btn-secondary {
       width: 100%;
       background: transparent;
@@ -279,13 +294,14 @@
     /* ── Footer ── */
     .footer {
       text-align: center;
-      font-size: 12px;
+      font-size: 11px;
       color: var(--text-muted);
       margin-top: 12px;
       padding-bottom: 8px;
+      opacity: 0.7;
     }
 
-    /* ── Confirm Dialog ── */
+    /* ── Overlay / Bottom Sheet ── */
     .overlay {
       position: fixed;
       inset: 0;
@@ -299,36 +315,33 @@
       transition: opacity 0.2s;
     }
 
-    .overlay.visible {
-      opacity: 1;
-      pointer-events: all;
-    }
+    .overlay.visible { opacity: 1; pointer-events: all; }
 
     .bottom-sheet {
       background: var(--bg-card);
       border: 1px solid var(--border);
       border-radius: var(--radius) var(--radius) var(--radius-sm) var(--radius-sm);
       width: 100%;
+      max-height: 85vh;
+      overflow-y: auto;
       padding: 20px;
       transform: translateY(20px);
       transition: transform 0.2s;
     }
 
-    .overlay.visible .bottom-sheet {
-      transform: translateY(0);
-    }
+    .overlay.visible .bottom-sheet { transform: translateY(0); }
 
     .sheet-title {
       font-size: 17px;
       font-weight: 700;
-      margin-bottom: 12px;
+      margin-bottom: 14px;
     }
 
     .sheet-text {
       font-size: 14px;
       color: var(--text-muted);
       line-height: 1.6;
-      margin-bottom: 6px;
+      margin-bottom: 12px;
     }
 
     .sheet-text strong { color: var(--text); }
@@ -337,29 +350,45 @@
       font-size: 14px;
       color: var(--text-muted);
       line-height: 1.8;
-      padding-left: 18px;
-      margin-bottom: 10px;
+      padding-left: 20px;
+      margin-bottom: 14px;
     }
 
     .sheet-steps li { margin-bottom: 2px; }
 
-    .sheet-url {
+    .sheet-url-row {
+      display: flex;
+      gap: 8px;
+      align-items: center;
+      margin-bottom: 16px;
+    }
+
+    .sheet-url-text {
+      flex: 1;
+      min-width: 0;
       background: var(--bg-input);
       border: 1px solid var(--border);
       border-radius: var(--radius-sm);
-      padding: 10px 12px;
-      font-size: 13px;
+      padding: 8px 10px;
+      font-size: 12px;
       color: var(--accent);
       word-break: break-all;
-      margin-bottom: 16px;
-      cursor: pointer;
+      overflow: hidden;
+      max-height: 38px;
     }
 
-    .sheet-url-hint {
-      font-size: 11px;
-      color: var(--text-muted);
-      margin-bottom: 16px;
-      text-align: center;
+    .btn-copy {
+      background: var(--accent);
+      color: #fff;
+      border: none;
+      border-radius: var(--radius-sm);
+      font-size: 13px;
+      font-weight: 600;
+      padding: 8px 14px;
+      cursor: pointer;
+      white-space: nowrap;
+      min-height: 38px;
+      -webkit-tap-highlight-color: transparent;
     }
 
     .btn-sheet-close {
@@ -376,18 +405,15 @@
       -webkit-tap-highlight-color: transparent;
     }
 
-    /* ── Confirm dialog ── */
-    .confirm-sheet .confirm-btns {
+    /* ── Confirm Dialog ── */
+    .confirm-btns {
       display: flex;
       gap: 10px;
       margin-top: 16px;
     }
 
-    .btn-confirm-cancel {
+    .btn-confirm-cancel, .btn-confirm-delete {
       flex: 1;
-      background: var(--bg-input);
-      color: var(--text);
-      border: 1px solid var(--border);
       border-radius: var(--radius-sm);
       font-size: 15px;
       font-weight: 500;
@@ -397,21 +423,18 @@
       -webkit-tap-highlight-color: transparent;
     }
 
+    .btn-confirm-cancel {
+      background: var(--bg-input);
+      color: var(--text);
+      border: 1px solid var(--border);
+    }
+
     .btn-confirm-delete {
-      flex: 1;
       background: var(--danger);
       color: #fff;
       border: none;
-      border-radius: var(--radius-sm);
-      font-size: 15px;
       font-weight: 600;
-      padding: 13px;
-      cursor: pointer;
-      min-height: 48px;
-      -webkit-tap-highlight-color: transparent;
     }
-
-    .input-error { border-color: var(--danger) !important; }
   </style>
 </head>
 <body>
@@ -420,7 +443,7 @@
     <!-- Month Navigation -->
     <div class="month-nav">
       <button class="month-btn" id="btnPrevMonth" aria-label="Предыдущий месяц">‹</button>
-      <span class="month-title" id="monthTitle">Апрель 2026</span>
+      <span class="month-title" id="monthTitle"></span>
       <button class="month-btn" id="btnNextMonth" aria-label="Следующий месяц">›</button>
     </div>
 
@@ -434,8 +457,8 @@
         <span class="stat-label">Норма</span>
         <span class="stat-value" id="statNorm">—</span>
       </div>
-      <div class="stat-card" style="grid-column: 1 / -1;">
-        <span class="stat-label">Остаток / Переработка</span>
+      <div class="stat-card">
+        <span class="stat-label" id="diffLabel">Осталось</span>
         <span class="stat-value" id="statDiff">—</span>
       </div>
       <div class="stat-card">
@@ -447,37 +470,34 @@
     <!-- Add Shift Form -->
     <div class="form-section">
       <div class="form-title">Добавить смену</div>
-      <div class="form-hint">Время указывается в МСК (московское время)</div>
+      <div class="form-hint">Время указывается в МСК</div>
 
       <div class="field">
-        <label for="inputStart">Начало смены (МСК)</label>
+        <label for="inputStart">Начало смены</label>
         <input type="datetime-local" id="inputStart" />
         <div class="field-error" id="errStart"></div>
       </div>
 
       <div class="field">
-        <label for="inputEnd">Конец смены (МСК)</label>
+        <label for="inputEnd">Конец смены</label>
         <input type="datetime-local" id="inputEnd" />
         <div class="field-error" id="errEnd"></div>
       </div>
 
       <button class="btn-primary" id="btnAdd">Добавить смену</button>
+      <div class="form-success" id="formSuccess"></div>
     </div>
 
     <!-- Shifts List -->
     <div class="shifts-section">
       <div class="section-header" id="shiftsHeader">Смены</div>
-      <div id="shiftsList">
-        <div class="shifts-empty">Нет смен за этот месяц</div>
-      </div>
+      <div id="shiftsList"></div>
     </div>
 
     <!-- Add to Screen -->
-    <button class="btn-secondary" id="btnAddToScreen">Добавить на экран</button>
+    <button class="btn-secondary" id="btnAddToScreen">📲 Добавить на экран</button>
 
-    <!-- Footer -->
-    <div class="footer" id="timezoneFooter">Часовой пояс: определяется…</div>
-
+    <div class="footer" id="timezoneFooter"></div>
   </div>
 
   <!-- Add to Screen Bottom Sheet -->
@@ -485,375 +505,461 @@
     <div class="bottom-sheet">
       <div class="sheet-title">Добавить на экран</div>
       <div class="sheet-text">Чтобы открывать приложение как обычное, добавь его на главный экран.</div>
-      <br>
+
       <div class="sheet-text"><strong>Для iPhone:</strong></div>
       <ol class="sheet-steps">
-        <li>Открой ссылку приложения в Safari.</li>
-        <li>Нажми «Поделиться» (иконка ↑).</li>
-        <li>Выбери «На экран Домой».</li>
+        <li>Открой ссылку ниже в Safari</li>
+        <li>Нажми «Поделиться» (↑)</li>
+        <li>Выбери «На экран Домой»</li>
       </ol>
+
       <div class="sheet-text"><strong>Для Android:</strong></div>
       <ol class="sheet-steps">
-        <li>Открой ссылку приложения в Chrome.</li>
-        <li>Открой меню браузера (⋮).</li>
-        <li>Нажми «Добавить на главный экран».</li>
+        <li>Открой ссылку ниже в Chrome</li>
+        <li>Меню браузера (⋮)</li>
+        <li>«Добавить на главный экран»</li>
       </ol>
-      <div class="sheet-text" style="margin-bottom:6px;">Ссылка на приложение:</div>
-      <div class="sheet-url" id="appUrl" onclick="copyAppUrl()" title="Нажми, чтобы скопировать"></div>
-      <div class="sheet-url-hint">Нажми на ссылку, чтобы скопировать</div>
-      <button class="btn-sheet-close" onclick="closeOverlay('overlayAddScreen')">Закрыть</button>
+
+      <div class="sheet-text" style="font-size:12px; color:var(--text-muted); margin-bottom:6px;">Ссылка на приложение:</div>
+      <div class="sheet-url-row">
+        <div class="sheet-url-text" id="appUrl"></div>
+        <button class="btn-copy" id="btnCopyUrl">Копировать</button>
+      </div>
+
+      <button class="btn-sheet-close" id="btnCloseAddScreen">Закрыть</button>
     </div>
   </div>
 
   <!-- Confirm Delete Bottom Sheet -->
   <div class="overlay" id="overlayConfirm">
-    <div class="bottom-sheet confirm-sheet">
+    <div class="bottom-sheet">
       <div class="sheet-title">Удалить смену?</div>
       <div class="sheet-text" id="confirmShiftInfo"></div>
       <div class="confirm-btns">
-        <button class="btn-confirm-cancel" onclick="closeOverlay('overlayConfirm')">Отмена</button>
+        <button class="btn-confirm-cancel" id="btnCancelDelete">Отмена</button>
         <button class="btn-confirm-delete" id="btnConfirmDelete">Удалить</button>
       </div>
     </div>
   </div>
 
   <script>
-    // ── Telegram WebApp Init ────────────────────────────────────────────────
-    if (window.Telegram && window.Telegram.WebApp) {
-      Telegram.WebApp.ready();
-      Telegram.WebApp.expand();
-    }
+    // ── Telegram WebApp Init ──
+    try {
+      if (window.Telegram && Telegram.WebApp) {
+        Telegram.WebApp.ready();
+        Telegram.WebApp.expand();
+      }
+    } catch(e) { console.warn('TG SDK init error:', e); }
 
-    // ── Constants ──────────────────────────────────────────────────────────
-    const MONTH_NAMES = [
+    // ── Constants ──
+    var MONTH_NAMES = [
       'Январь','Февраль','Март','Апрель','Май','Июнь',
       'Июль','Август','Сентябрь','Октябрь','Ноябрь','Декабрь'
     ];
 
-    const WORK_NORMS = {
-      "2025-01": 136, "2025-02": 151, "2025-03": 159,
-      "2025-04": 175, "2025-05": 143, "2025-06": 151,
-      "2025-07": 184, "2025-08": 168, "2025-09": 176,
-      "2025-10": 184, "2025-11": 151, "2025-12": 183,
+    // Производственный календарь РФ, 40-часовая неделя
+    // 2025: КонсультантПлюс, 2026: Минтруд утверждённый
+    // 2027: предварительный (переносы не утверждены)
+    var WORK_NORMS = {
+      '2025-01': 136, '2025-02': 160, '2025-03': 167,
+      '2025-04': 175, '2025-05': 144, '2025-06': 151,
+      '2025-07': 184, '2025-08': 168, '2025-09': 176,
+      '2025-10': 184, '2025-11': 151, '2025-12': 176,
 
-      "2026-01": 120, "2026-02": 152, "2026-03": 168,
-      "2026-04": 175, "2026-05": 151, "2026-06": 167,
-      "2026-07": 184, "2026-08": 168, "2026-09": 176,
-      "2026-10": 176, "2026-11": 159, "2026-12": 176,
-
-      "2027-01": 120, "2027-02": 151, "2027-03": 176,
-      "2027-04": 175, "2027-05": 152, "2027-06": 167,
-      "2027-07": 176, "2027-08": 176, "2027-09": 176,
-      "2027-10": 168, "2027-11": 159, "2027-12": 176,
+      '2026-01': 120, '2026-02': 152, '2026-03': 168,
+      '2026-04': 175, '2026-05': 151, '2026-06': 167,
+      '2026-07': 184, '2026-08': 168, '2026-09': 176,
+      '2026-10': 176, '2026-11': 159, '2026-12': 176
     };
 
-    const STORAGE_KEY = 'shifts';
+    var STORAGE_KEY = 'shifts';
+    var MSK_OFFSET = 3; // Moscow = UTC+3
 
-    // ── State ──────────────────────────────────────────────────────────────
-    const now = new Date();
-    let currentYear = now.getFullYear();
-    let currentMonth = now.getMonth(); // 0-indexed
-    let allShifts = [];
-    let pendingDeleteId = null;
+    // ── State ──
+    var now = new Date();
+    var currentYear = now.getFullYear();
+    var currentMonth = now.getMonth(); // 0-indexed
+    var allShifts = [];
+    var pendingDeleteId = null;
 
-    // ── Timezone ───────────────────────────────────────────────────────────
-    const deviceTimezone = Intl.DateTimeFormat().resolvedOptions().timeZone;
-    document.getElementById('timezoneFooter').textContent =
-      `Часовой пояс: ${deviceTimezone} (определён автоматически)`;
+    // ── Timezone ──
+    var deviceTimezone = 'Europe/Moscow';
+    try {
+      deviceTimezone = Intl.DateTimeFormat().resolvedOptions().timeZone || 'Europe/Moscow';
+    } catch(e) {}
 
-    // ── CloudStorage / localStorage fallback ──────────────────────────────
-    const storage = {
-      _useCloud: () => !!(window.Telegram && window.Telegram.WebApp && window.Telegram.WebApp.CloudStorage),
+    var footerEl = document.getElementById('timezoneFooter');
+    footerEl.textContent = 'Часовой пояс: ' + deviceTimezone;
 
-      getItem(key, cb) {
-        if (this._useCloud()) {
-          Telegram.WebApp.CloudStorage.getItem(key, (err, val) => cb(err ? null : val));
-        } else {
-          cb(localStorage.getItem(key));
-        }
-      },
+    // ── Storage (CloudStorage with localStorage fallback) ──
+    function hasCloudStorage() {
+      try {
+        return !!(window.Telegram && Telegram.WebApp && Telegram.WebApp.CloudStorage &&
+                  typeof Telegram.WebApp.CloudStorage.getItem === 'function');
+      } catch(e) { return false; }
+    }
 
-      setItem(key, value, cb) {
-        if (this._useCloud()) {
-          Telegram.WebApp.CloudStorage.setItem(key, value, (err) => cb && cb(err));
-        } else {
-          localStorage.setItem(key, value);
-          cb && cb(null);
-        }
-      },
-
-      removeItem(key, cb) {
-        if (this._useCloud()) {
-          Telegram.WebApp.CloudStorage.removeItem(key, (err) => cb && cb(err));
-        } else {
-          localStorage.removeItem(key);
-          cb && cb(null);
-        }
-      }
-    };
-
-    // ── Load shifts ────────────────────────────────────────────────────────
-    function loadShifts(cb) {
-      storage.getItem(STORAGE_KEY, (val) => {
+    function storageGet(key, callback) {
+      if (hasCloudStorage()) {
         try {
-          allShifts = val ? JSON.parse(val) : [];
-        } catch { allShifts = []; }
-        cb();
+          Telegram.WebApp.CloudStorage.getItem(key, function(err, val) {
+            callback(err ? null : (val || null));
+          });
+        } catch(e) {
+          callback(localStorage.getItem(key));
+        }
+      } else {
+        callback(localStorage.getItem(key));
+      }
+    }
+
+    function storageSet(key, value, callback) {
+      // Always save to localStorage as backup
+      try { localStorage.setItem(key, value); } catch(e) {}
+
+      if (hasCloudStorage()) {
+        try {
+          Telegram.WebApp.CloudStorage.setItem(key, value, function(err) {
+            if (callback) callback(err);
+          });
+        } catch(e) {
+          if (callback) callback(null);
+        }
+      } else {
+        if (callback) callback(null);
+      }
+    }
+
+    // ── Load / Save shifts ──
+    function loadShifts(callback) {
+      storageGet(STORAGE_KEY, function(val) {
+        if (val) {
+          try { allShifts = JSON.parse(val); } catch(e) { allShifts = []; }
+        } else {
+          allShifts = [];
+        }
+        // Validate array
+        if (!Array.isArray(allShifts)) allShifts = [];
+        callback();
       });
     }
 
-    function saveShifts(cb) {
-      storage.setItem(STORAGE_KEY, JSON.stringify(allShifts), cb);
+    function saveShifts(callback) {
+      var json = JSON.stringify(allShifts);
+      storageSet(STORAGE_KEY, json, callback || function(){});
     }
 
-    // ── Time helpers ───────────────────────────────────────────────────────
-    // Parse "YYYY-MM-DDTHH:MM" (MSK, no timezone) → Date object treating it as UTC+3
-    function parseMsk(dt) {
-      // dt = "2026-04-03T10:00"
-      const [datePart, timePart] = dt.split('T');
-      const [y, mo, d] = datePart.split('-').map(Number);
-      const [h, m] = timePart.split(':').map(Number);
-      // Moscow = UTC+3, so subtract 3 hours to get UTC
-      return new Date(Date.UTC(y, mo - 1, d, h - 3, m));
+    // ── Time helpers ──
+
+    // Parse "YYYY-MM-DDTHH:MM" as MSK → returns UTC Date
+    function parseMsk(dtStr) {
+      if (!dtStr || dtStr.indexOf('T') === -1) return null;
+      var parts = dtStr.split('T');
+      var d = parts[0].split('-');
+      var t = parts[1].split(':');
+      var year = parseInt(d[0], 10);
+      var month = parseInt(d[1], 10) - 1;
+      var day = parseInt(d[2], 10);
+      var hour = parseInt(t[0], 10);
+      var min = parseInt(t[1], 10) || 0;
+      // MSK = UTC+3
+      return new Date(Date.UTC(year, month, day, hour - MSK_OFFSET, min, 0));
     }
 
-    // Returns UTC timestamp for midnight of year/month/day in deviceTimezone
-    function localMidnightToUTC(year, month, day) {
-      const dateStr = `${year}-${String(month).padStart(2,'0')}-${String(day).padStart(2,'0')}`;
-      // Reference: UTC midnight of that date
-      const utcRef = new Date(`${dateStr}T00:00:00Z`);
-      // Find what time UTC midnight displays as in deviceTimezone
-      const parts = new Intl.DateTimeFormat('en-US', {
-        timeZone: deviceTimezone,
-        year: 'numeric', month: '2-digit', day: '2-digit',
-        hour: '2-digit', minute: '2-digit', second: '2-digit',
-        hour12: false
-      }).formatToParts(utcRef);
-      const p = {};
-      parts.forEach(x => p[x.type] = x.value);
-      const h = p.hour === '24' ? 0 : parseInt(p.hour);
-      // Treat local display time as UTC numeric value
-      const localAsUTC = Date.UTC(
-        parseInt(p.year), parseInt(p.month) - 1, parseInt(p.day),
-        h, parseInt(p.minute), parseInt(p.second)
-      );
-      // offset = utcRef - localAsUTC; apply to local midnight
-      const offset = utcRef.getTime() - localAsUTC;
-      return Date.UTC(year, month - 1, day, 0, 0, 0) + offset;
+    // Get UTC timestamp for start of a day in device timezone
+    function getLocalDayStartUTC(year, month0, day) {
+      // Create a date string and parse it in device timezone
+      var m = String(month0 + 1).padStart(2, '0');
+      var dd = String(day).padStart(2, '0');
+      var str = year + '-' + m + '-' + dd + 'T00:00:00';
+
+      // Use the device's local timezone to interpret this
+      // We need to find what UTC time corresponds to midnight local time
+      // Strategy: create Date from components (local timezone)
+      var local = new Date(year, month0, day, 0, 0, 0);
+      return local.getTime();
     }
 
-    // Returns UTC timestamps for start/end of a given month in deviceTimezone
-    function getMonthBoundsLocal(year, month) {
-      const s = localMidnightToUTC(year, month + 1, 1);
-      const nextMonth = month === 11 ? { y: year + 1, m: 1 } : { y: year, m: month + 2 };
-      const e = localMidnightToUTC(nextMonth.y, nextMonth.m, 1);
-      return { start: s, end: e };
+    // Get UTC timestamps for start/end of a month in device timezone
+    function getMonthBounds(year, month0) {
+      var start = getLocalDayStartUTC(year, month0, 1);
+      var nextMonth = month0 + 1;
+      var nextYear = year;
+      if (nextMonth > 11) { nextMonth = 0; nextYear++; }
+      var end = getLocalDayStartUTC(nextYear, nextMonth, 1);
+      return { start: start, end: end };
     }
 
-    // Get minutes of a shift that fall within [monthStart, monthEnd) UTC timestamps
-    function shiftMinutesInMonth(shift, monthStart, monthEnd) {
-      const s = parseMsk(shift.start_msk).getTime();
-      const e = parseMsk(shift.end_msk).getTime();
-      const effectiveStart = Math.max(s, monthStart);
-      const effectiveEnd   = Math.min(e, monthEnd);
-      if (effectiveEnd > effectiveStart) {
-        return Math.round((effectiveEnd - effectiveStart) / 60000);
-      }
-      return 0;
+    // How many minutes of a shift fall within [boundsStart, boundsEnd)
+    function shiftMinutesInRange(shift, boundsStart, boundsEnd) {
+      var s = parseMsk(shift.start_msk);
+      var e = parseMsk(shift.end_msk);
+      if (!s || !e) return 0;
+      var st = s.getTime();
+      var et = e.getTime();
+      var effStart = Math.max(st, boundsStart);
+      var effEnd = Math.min(et, boundsEnd);
+      if (effEnd <= effStart) return 0;
+      return Math.round((effEnd - effStart) / 60000);
     }
 
-    // Format minutes as "X ч Y м" or "X ч"
-    function fmtMinutes(totalMin) {
-      const h = Math.floor(totalMin / 60);
-      const m = totalMin % 60;
-      if (m === 0) return `${h} ч`;
-      return `${h} ч ${m} м`;
+    // Total duration of a shift in minutes
+    function shiftTotalMinutes(shift) {
+      var s = parseMsk(shift.start_msk);
+      var e = parseMsk(shift.end_msk);
+      if (!s || !e) return 0;
+      return Math.round((e.getTime() - s.getTime()) / 60000);
     }
 
-    // Pad number
-    function pad2(n) { return String(n).padStart(2, '0'); }
+    // Format minutes → "X ч" or "X ч Y м"
+    function fmtMin(totalMin) {
+      if (totalMin <= 0) return '0 ч';
+      var h = Math.floor(totalMin / 60);
+      var m = totalMin % 60;
+      if (h === 0) return m + ' м';
+      if (m === 0) return h + ' ч';
+      return h + ' ч ' + m + ' м';
+    }
 
-    // Format shift display string (MSK times)
+    // Format shift for display
     function fmtShift(shift) {
-      const s = shift.start_msk; // "YYYY-MM-DDTHH:MM"
-      const e = shift.end_msk;
-      const [sd, st] = s.split('T');
-      const [ed, et] = e.split('T');
-      const [sy, sm, sday] = sd.split('-');
-      const [ey, em, eday] = ed.split('-');
+      var s = shift.start_msk; // "YYYY-MM-DDTHH:MM"
+      var e = shift.end_msk;
+      var sd = s.substring(0, 10);
+      var st = s.substring(11, 16);
+      var ed = e.substring(0, 10);
+      var et = e.substring(11, 16);
 
-      const startDate = `${sday}.${sm}.${sy}`;
-      const endDate   = `${eday}.${em}.${ey}`;
+      // Format dates as DD.MM.YYYY
+      var startDate = sd.substring(8,10) + '.' + sd.substring(5,7) + '.' + sd.substring(0,4);
+      var endDate = ed.substring(8,10) + '.' + ed.substring(5,7) + '.' + ed.substring(0,4);
 
-      const durationMin = Math.round((parseMsk(e) - parseMsk(s)) / 60000);
-      const dur = fmtMinutes(durationMin);
+      var dur = fmtMin(shiftTotalMinutes(shift));
 
       if (sd === ed) {
-        return { line1: `${startDate}  ·  ${st}–${et}`, line2: dur };
+        return { text: startDate + '  ·  ' + st + '–' + et, dur: dur };
       } else {
-        return { line1: `${startDate} ${st} → ${endDate} ${et}`, line2: dur };
+        return { text: startDate + ' ' + st + ' → ' + endDate + ' ' + et, dur: dur };
       }
     }
 
-    // ── Render ─────────────────────────────────────────────────────────────
+    // ── Render ──
     function render() {
       // Month title
       document.getElementById('monthTitle').textContent =
-        `${MONTH_NAMES[currentMonth]} ${currentYear}`;
+        MONTH_NAMES[currentMonth] + ' ' + currentYear;
 
-      // Month bounds
-      const { start: mStart, end: mEnd } = getMonthBoundsLocal(currentYear, currentMonth);
+      var bounds = getMonthBounds(currentYear, currentMonth);
 
-      // Filter shifts with at least 1 minute in this month
-      const monthShifts = allShifts.filter(sh => shiftMinutesInMonth(sh, mStart, mEnd) > 0);
+      // Filter shifts that have at least 1 minute in this month
+      var monthShifts = [];
+      for (var i = 0; i < allShifts.length; i++) {
+        if (shiftMinutesInRange(allShifts[i], bounds.start, bounds.end) > 0) {
+          monthShifts.push(allShifts[i]);
+        }
+      }
 
-      // Sort: newest first
-      monthShifts.sort((a, b) => b.start_msk.localeCompare(a.start_msk));
+      // Sort newest first
+      monthShifts.sort(function(a, b) {
+        return a.start_msk > b.start_msk ? -1 : a.start_msk < b.start_msk ? 1 : 0;
+      });
 
-      // Stats
-      let totalMin = 0;
-      monthShifts.forEach(sh => { totalMin += shiftMinutesInMonth(sh, mStart, mEnd); });
+      // Calculate total worked minutes in this month
+      var totalMin = 0;
+      for (var j = 0; j < monthShifts.length; j++) {
+        totalMin += shiftMinutesInRange(monthShifts[j], bounds.start, bounds.end);
+      }
 
-      const monthKey = `${currentYear}-${String(currentMonth + 1).padStart(2, '0')}`;
-      const norm = WORK_NORMS[monthKey];
+      // Norm
+      var monthKey = currentYear + '-' + String(currentMonth + 1).padStart(2, '0');
+      var norm = WORK_NORMS[monthKey];
 
-      document.getElementById('statWorked').textContent = fmtMinutes(totalMin);
-      document.getElementById('statShifts').textContent = monthShifts.length;
+      // Update stats
+      document.getElementById('statWorked').textContent = fmtMin(totalMin);
+      document.getElementById('statShifts').textContent = String(monthShifts.length);
+
+      var normEl = document.getElementById('statNorm');
+      var diffEl = document.getElementById('statDiff');
+      var diffLabelEl = document.getElementById('diffLabel');
 
       if (norm !== undefined) {
-        document.getElementById('statNorm').textContent = `${norm} ч`;
-        const normMin = norm * 60;
-        const diffMin = totalMin - normMin;
+        normEl.textContent = norm + ' ч';
+        var normMin = norm * 60;
+        var diffMin = totalMin - normMin;
 
-        const diffEl = document.getElementById('statDiff');
         diffEl.className = 'stat-value';
 
-        if (diffMin === 0) {
+        if (diffMin === 0 && totalMin > 0) {
+          diffLabelEl.textContent = 'Результат';
           diffEl.textContent = 'В норме';
           diffEl.classList.add('ok');
         } else if (diffMin > 0) {
-          diffEl.textContent = `Переработка: ${fmtMinutes(Math.abs(diffMin))}`;
+          diffLabelEl.textContent = 'Переработка';
+          diffEl.textContent = '+' + fmtMin(diffMin);
           diffEl.classList.add('overtime');
         } else {
-          diffEl.textContent = `Осталось: ${fmtMinutes(Math.abs(diffMin))}`;
+          diffLabelEl.textContent = 'Осталось';
+          diffEl.textContent = fmtMin(Math.abs(diffMin));
+          diffEl.classList.add('remaining');
         }
       } else {
-        document.getElementById('statNorm').textContent = '—';
-        document.getElementById('statDiff').textContent = '—';
-        document.getElementById('statDiff').className = 'stat-value';
+        normEl.textContent = '—';
+        diffLabelEl.textContent = 'Осталось';
+        diffEl.textContent = '—';
+        diffEl.className = 'stat-value';
       }
 
       // Shifts list
-      const listEl = document.getElementById('shiftsList');
-      document.getElementById('shiftsHeader').textContent =
-        monthShifts.length > 0
-          ? `Смены · ${MONTH_NAMES[currentMonth].toLowerCase()} ${currentYear}`
-          : 'Смены';
+      var listEl = document.getElementById('shiftsList');
+      var headerEl = document.getElementById('shiftsHeader');
 
       if (monthShifts.length === 0) {
+        headerEl.textContent = 'Смены';
         listEl.innerHTML = '<div class="shifts-empty">Нет смен за этот месяц</div>';
         return;
       }
 
-      listEl.innerHTML = monthShifts.map(sh => {
-        const f = fmtShift(sh);
-        return `
-          <div class="shift-item">
-            <div class="shift-info">
-              <div class="shift-dates">${f.line1}</div>
-              <div class="shift-duration">${f.line2}</div>
-            </div>
-            <button class="btn-delete" onclick="confirmDelete('${sh.id}')" aria-label="Удалить смену">🗑</button>
-          </div>`;
-      }).join('');
+      headerEl.textContent = 'Смены · ' + monthShifts.length;
+
+      var html = '';
+      for (var k = 0; k < monthShifts.length; k++) {
+        var sh = monthShifts[k];
+        var f = fmtShift(sh);
+        html += '<div class="shift-item">' +
+          '<div class="shift-info">' +
+            '<div class="shift-dates">' + f.text + '</div>' +
+            '<div class="shift-duration">' + f.dur + '</div>' +
+          '</div>' +
+          '<button class="btn-delete" data-id="' + sh.id + '" aria-label="Удалить">✕</button>' +
+        '</div>';
+      }
+      listEl.innerHTML = html;
+
+      // Attach delete handlers
+      var deleteBtns = listEl.querySelectorAll('.btn-delete');
+      for (var b = 0; b < deleteBtns.length; b++) {
+        deleteBtns[b].addEventListener('click', handleDeleteClick);
+      }
     }
 
-    // ── Month navigation ───────────────────────────────────────────────────
-    document.getElementById('btnPrevMonth').addEventListener('click', () => {
+    // ── Delete handler ──
+    function handleDeleteClick(e) {
+      var id = e.currentTarget.getAttribute('data-id');
+      var shift = null;
+      for (var i = 0; i < allShifts.length; i++) {
+        if (allShifts[i].id === id) { shift = allShifts[i]; break; }
+      }
+      if (!shift) return;
+
+      pendingDeleteId = id;
+      var f = fmtShift(shift);
+      document.getElementById('confirmShiftInfo').textContent = f.text + ' · ' + f.dur;
+      openOverlay('overlayConfirm');
+    }
+
+    document.getElementById('btnConfirmDelete').addEventListener('click', function() {
+      if (!pendingDeleteId) return;
+      var newShifts = [];
+      for (var i = 0; i < allShifts.length; i++) {
+        if (allShifts[i].id !== pendingDeleteId) newShifts.push(allShifts[i]);
+      }
+      allShifts = newShifts;
+      pendingDeleteId = null;
+      closeOverlay('overlayConfirm');
+      saveShifts(function() { render(); });
+    });
+
+    document.getElementById('btnCancelDelete').addEventListener('click', function() {
+      pendingDeleteId = null;
+      closeOverlay('overlayConfirm');
+    });
+
+    // ── Month navigation ──
+    document.getElementById('btnPrevMonth').addEventListener('click', function() {
       if (currentMonth === 0) { currentMonth = 11; currentYear--; }
       else currentMonth--;
       render();
     });
 
-    document.getElementById('btnNextMonth').addEventListener('click', () => {
+    document.getElementById('btnNextMonth').addEventListener('click', function() {
       if (currentMonth === 11) { currentMonth = 0; currentYear++; }
       else currentMonth++;
       render();
     });
 
-    // ── Form ───────────────────────────────────────────────────────────────
+    // ── Add shift form ──
     function clearErrors() {
       document.getElementById('errStart').textContent = '';
       document.getElementById('errEnd').textContent = '';
       document.getElementById('inputStart').classList.remove('input-error');
       document.getElementById('inputEnd').classList.remove('input-error');
+      document.getElementById('formSuccess').textContent = '';
     }
 
-    document.getElementById('btnAdd').addEventListener('click', () => {
+    document.getElementById('btnAdd').addEventListener('click', function() {
       clearErrors();
-      const startVal = document.getElementById('inputStart').value;
-      const endVal   = document.getElementById('inputEnd').value;
-      let valid = true;
+
+      var startVal = document.getElementById('inputStart').value;
+      var endVal = document.getElementById('inputEnd').value;
+      var valid = true;
 
       if (!startVal) {
         document.getElementById('errStart').textContent = 'Заполни дату и время начала';
         document.getElementById('inputStart').classList.add('input-error');
         valid = false;
       }
+
       if (!endVal) {
         document.getElementById('errEnd').textContent = 'Заполни дату и время окончания';
         document.getElementById('inputEnd').classList.add('input-error');
         valid = false;
       }
+
       if (!valid) return;
 
-      const startMs = parseMsk(startVal).getTime();
-      const endMs   = parseMsk(endVal).getTime();
+      var startDate = parseMsk(startVal);
+      var endDate = parseMsk(endVal);
 
-      if (endMs <= startMs) {
+      if (!startDate || !endDate) {
+        document.getElementById('errStart').textContent = 'Неверный формат даты';
+        return;
+      }
+
+      if (endDate.getTime() <= startDate.getTime()) {
         document.getElementById('errEnd').textContent = 'Конец смены не может быть раньше начала';
         document.getElementById('inputEnd').classList.add('input-error');
         return;
       }
 
-      const shift = {
-        id: `${Date.now()}-${Math.random().toString(36).slice(2,7)}`,
+      var shift = {
+        id: Date.now().toString(36) + Math.random().toString(36).substring(2, 7),
         start_msk: startVal,
         end_msk: endVal,
         created_at: new Date().toISOString()
       };
 
       allShifts.push(shift);
-      saveShifts(() => {
+
+      // Disable button during save
+      var btn = document.getElementById('btnAdd');
+      btn.disabled = true;
+
+      saveShifts(function() {
         document.getElementById('inputStart').value = '';
         document.getElementById('inputEnd').value = '';
+        document.getElementById('formSuccess').textContent = '✓ Смена добавлена';
+        btn.disabled = false;
         render();
+
+        // Clear success message after 2s
+        setTimeout(function() {
+          document.getElementById('formSuccess').textContent = '';
+        }, 2000);
       });
     });
 
-    // ── Delete ─────────────────────────────────────────────────────────────
-    function confirmDelete(id) {
-      const shift = allShifts.find(s => s.id === id);
-      if (!shift) return;
-      pendingDeleteId = id;
-      const f = fmtShift(shift);
-      document.getElementById('confirmShiftInfo').textContent = `${f.line1} · ${f.line2}`;
-      openOverlay('overlayConfirm');
-    }
-
-    document.getElementById('btnConfirmDelete').addEventListener('click', () => {
-      if (!pendingDeleteId) return;
-      allShifts = allShifts.filter(s => s.id !== pendingDeleteId);
-      pendingDeleteId = null;
-      saveShifts(() => render());
-      closeOverlay('overlayConfirm');
-    });
-
-    // ── Overlays ───────────────────────────────────────────────────────────
-    let overlayOpenedAt = 0;
-
+    // ── Overlays ──
     function openOverlay(id) {
-      overlayOpenedAt = Date.now();
       document.getElementById(id).classList.add('visible');
     }
 
@@ -861,36 +967,64 @@
       document.getElementById(id).classList.remove('visible');
     }
 
-    // Close overlay on backdrop click, but ignore clicks within 350ms of opening
-    // (prevents the button tap from immediately closing the just-opened sheet)
-    document.querySelectorAll('.overlay').forEach(el => {
-      el.addEventListener('click', (e) => {
-        if (e.target === el && Date.now() - overlayOpenedAt > 350) {
-          closeOverlay(el.id);
+    // Close on backdrop click
+    var overlays = document.querySelectorAll('.overlay');
+    for (var oi = 0; oi < overlays.length; oi++) {
+      overlays[oi].addEventListener('click', function(e) {
+        if (e.target === e.currentTarget) {
+          closeOverlay(e.currentTarget.id);
         }
       });
-    });
+    }
 
-    // ── Add to Screen ──────────────────────────────────────────────────────
-    document.getElementById('btnAddToScreen').addEventListener('click', () => {
+    // ── Add to Screen ──
+    document.getElementById('btnAddToScreen').addEventListener('click', function() {
       document.getElementById('appUrl').textContent = window.location.href;
       openOverlay('overlayAddScreen');
     });
 
-    function copyAppUrl() {
-      const url = window.location.href;
-      if (navigator.clipboard) {
-        navigator.clipboard.writeText(url).then(() => {
-          const el = document.getElementById('appUrl');
-          const orig = el.textContent;
-          el.textContent = 'Скопировано!';
-          setTimeout(() => { el.textContent = orig; }, 1500);
+    document.getElementById('btnCloseAddScreen').addEventListener('click', function() {
+      closeOverlay('overlayAddScreen');
+    });
+
+    document.getElementById('btnCopyUrl').addEventListener('click', function() {
+      var url = window.location.href;
+      var btn = document.getElementById('btnCopyUrl');
+
+      if (navigator.clipboard && navigator.clipboard.writeText) {
+        navigator.clipboard.writeText(url).then(function() {
+          btn.textContent = '✓';
+          setTimeout(function() { btn.textContent = 'Копировать'; }, 1500);
+        }).catch(function() {
+          fallbackCopy(url, btn);
         });
+      } else {
+        fallbackCopy(url, btn);
       }
+    });
+
+    function fallbackCopy(text, btn) {
+      var ta = document.createElement('textarea');
+      ta.value = text;
+      ta.style.position = 'fixed';
+      ta.style.left = '-9999px';
+      document.body.appendChild(ta);
+      ta.select();
+      try {
+        document.execCommand('copy');
+        btn.textContent = '✓';
+        setTimeout(function() { btn.textContent = 'Копировать'; }, 1500);
+      } catch(e) {
+        btn.textContent = '✗';
+        setTimeout(function() { btn.textContent = 'Копировать'; }, 1500);
+      }
+      document.body.removeChild(ta);
     }
 
-    // ── Init ───────────────────────────────────────────────────────────────
-    loadShifts(render);
+    // ── Init ──
+    loadShifts(function() {
+      render();
+    });
   </script>
 </body>
 </html>
