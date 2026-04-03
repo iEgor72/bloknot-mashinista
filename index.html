@@ -617,54 +617,37 @@
       return new Date(Date.UTC(y, mo - 1, d, h - 3, m));
     }
 
-    // Convert Date to local time in the device timezone, return start-of-month timestamps
-    function getMonthBoundsLocal(year, month) {
-      // Start = first moment of given month in device local time
-      const startStr = `${year}-${String(month + 1).padStart(2, '0')}-01T00:00:00`;
-      const start = new Date(new Intl.DateTimeFormat('sv-SE', {
+    // Returns UTC timestamp for midnight of year/month/day in deviceTimezone
+    function localMidnightToUTC(year, month, day) {
+      const dateStr = `${year}-${String(month).padStart(2,'0')}-${String(day).padStart(2,'0')}`;
+      // Reference: UTC midnight of that date
+      const utcRef = new Date(`${dateStr}T00:00:00Z`);
+      // Find what time UTC midnight displays as in deviceTimezone
+      const parts = new Intl.DateTimeFormat('en-US', {
         timeZone: deviceTimezone,
         year: 'numeric', month: '2-digit', day: '2-digit',
-        hour: '2-digit', minute: '2-digit', second: '2-digit'
-      }).format(new Date(startStr + ' (' + deviceTimezone + ')')));
+        hour: '2-digit', minute: '2-digit', second: '2-digit',
+        hour12: false
+      }).formatToParts(utcRef);
+      const p = {};
+      parts.forEach(x => p[x.type] = x.value);
+      const h = p.hour === '24' ? 0 : parseInt(p.hour);
+      // Treat local display time as UTC numeric value
+      const localAsUTC = Date.UTC(
+        parseInt(p.year), parseInt(p.month) - 1, parseInt(p.day),
+        h, parseInt(p.minute), parseInt(p.second)
+      );
+      // offset = utcRef - localAsUTC; apply to local midnight
+      const offset = utcRef.getTime() - localAsUTC;
+      return Date.UTC(year, month - 1, day, 0, 0, 0) + offset;
+    }
 
-      // Simpler: use the local midnight of the first day of the month
-      // We build the bounds as UTC timestamps by finding midnight in deviceTimezone
-
+    // Returns UTC timestamps for start/end of a given month in deviceTimezone
+    function getMonthBoundsLocal(year, month) {
       const s = localMidnightToUTC(year, month + 1, 1);
       const nextMonth = month === 11 ? { y: year + 1, m: 1 } : { y: year, m: month + 2 };
       const e = localMidnightToUTC(nextMonth.y, nextMonth.m, 1);
       return { start: s, end: e };
-    }
-
-    // Get UTC timestamp for midnight of given date in deviceTimezone
-    function localMidnightToUTC(year, month, day) {
-      // Format "YYYY-MM-DDTHH:mm:ss" and parse using Intl to determine UTC offset
-      const isoDate = `${year}-${String(month).padStart(2,'0')}-${String(day).padStart(2,'0')}`;
-      // Create a date and adjust
-      // The trick: create a date at midnight local time using the timezone
-      const dt = new Date(`${isoDate}T00:00:00`);
-      // Use Intl to find offset
-      const parts = new Intl.DateTimeFormat('en-US', {
-        timeZone: deviceTimezone,
-        year: 'numeric', month: 'numeric', day: 'numeric',
-        hour: 'numeric', minute: 'numeric', second: 'numeric',
-        hour12: false
-      }).formatToParts(dt);
-
-      const p = {};
-      parts.forEach(x => { p[x.type] = x.value; });
-      const localHour = parseInt(p.hour === '24' ? '0' : p.hour);
-      const localMin  = parseInt(p.minute);
-      const localSec  = parseInt(p.second);
-      const localDay  = parseInt(p.day);
-      const localMon  = parseInt(p.month);
-      const localYear = parseInt(p.year);
-
-      // Check if local midnight aligns - compute the difference
-      const targetLocal = new Date(year, month - 1, day, 0, 0, 0);
-      const actualLocal = new Date(localYear, localMon - 1, localDay, localHour, localMin, localSec);
-      const diffMs = targetLocal - actualLocal;
-      return dt.getTime() + diffMs;
     }
 
     // Get minutes of a shift that fall within [monthStart, monthEnd) UTC timestamps
@@ -867,7 +850,10 @@
     });
 
     // ── Overlays ───────────────────────────────────────────────────────────
+    let overlayOpenedAt = 0;
+
     function openOverlay(id) {
+      overlayOpenedAt = Date.now();
       document.getElementById(id).classList.add('visible');
     }
 
@@ -875,10 +861,13 @@
       document.getElementById(id).classList.remove('visible');
     }
 
-    // Close overlay on backdrop click
+    // Close overlay on backdrop click, but ignore clicks within 350ms of opening
+    // (prevents the button tap from immediately closing the just-opened sheet)
     document.querySelectorAll('.overlay').forEach(el => {
       el.addEventListener('click', (e) => {
-        if (e.target === el) closeOverlay(el.id);
+        if (e.target === el && Date.now() - overlayOpenedAt > 350) {
+          closeOverlay(el.id);
+        }
       });
     });
 
