@@ -4936,18 +4936,27 @@
       startLoad();
     }
 
-    function saveShifts(callback) {
-      var snapshot = cloneShiftsForCache(allShifts);
-      writeShiftsCache(snapshot, {
-        isOffline: !navigator.onLine,
-        isSyncing: false,
-        hasPending: false,
-        lastSyncStatus: navigator.onLine ? 'syncing' : 'local-saved',
-        lastError: ''
-      });
+      function saveShifts(callback) {
+        var snapshot = cloneShiftsForCache(allShifts);
+        var pendingSnapshot = applyPendingFlags(snapshot, pendingMutationIds);
+        allShifts = pendingSnapshot;
+        writeShiftsCache(allShifts, {
+          isOffline: !navigator.onLine,
+          isSyncing: false,
+          hasPending: !!pendingMutationIds.length || !!readPendingSnapshot(),
+          lastSyncStatus: navigator.onLine ? 'syncing' : 'local-saved',
+          lastError: ''
+        });
 
       if (!navigator.onLine) {
-        allShifts = writePendingSnapshot(snapshot, pendingMutationIds).shifts;
+        allShifts = writePendingSnapshot(pendingSnapshot, pendingMutationIds).shifts;
+        writeShiftsCache(allShifts, {
+          isOffline: true,
+          isSyncing: false,
+          hasPending: true,
+          lastSyncStatus: 'pending',
+          lastError: ''
+        });
         updateOfflineUiState({ isOffline: true, isSyncing: false, hasPending: true, lastSyncStatus: 'pending', lastError: '' });
         if (callback) callback(null);
         return;
@@ -4980,11 +4989,25 @@
           return;
         }
 
-        allShifts = writePendingSnapshot(snapshot, pendingMutationIds).shifts;
+        allShifts = writePendingSnapshot(pendingSnapshot, pendingMutationIds).shifts;
+        writeShiftsCache(allShifts, {
+          isOffline: true,
+          isSyncing: false,
+          hasPending: true,
+          lastSyncStatus: 'error',
+          lastError: (result.body && result.body.error) || 'API save failed'
+        });
         updateOfflineUiState({ isOffline: !navigator.onLine, isSyncing: false, hasPending: true, lastSyncStatus: 'error', lastError: (result.body && result.body.error) || 'API save failed' });
         if (callback) callback(null);
       }).catch(function(err) {
-        allShifts = writePendingSnapshot(snapshot, pendingMutationIds).shifts;
+        allShifts = writePendingSnapshot(pendingSnapshot, pendingMutationIds).shifts;
+        writeShiftsCache(allShifts, {
+          isOffline: true,
+          isSyncing: false,
+          hasPending: true,
+          lastSyncStatus: 'error',
+          lastError: err && err.message ? err.message : 'Network error'
+        });
         updateOfflineUiState({ isOffline: true, isSyncing: false, hasPending: true, lastSyncStatus: 'error', lastError: err && err.message ? err.message : 'Network error' });
         if (callback) callback(null);
       });
