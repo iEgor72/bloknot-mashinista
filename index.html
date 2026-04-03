@@ -202,6 +202,7 @@
     .stat-value.overtime { color: var(--warn); }
     .stat-value.ok { color: var(--success); }
     .stat-value.remaining { color: var(--text-muted); }
+    .stat-value.night { color: var(--accent); }
 
     /* ── Form ── */
     .form-section {
@@ -685,6 +686,10 @@
         <span class="stat-value" id="statWorked">0 ч</span>
       </div>
       <div class="stat-card">
+        <span class="stat-label">Ночные</span>
+        <span class="stat-value night" id="statNight">0 ч</span>
+      </div>
+      <div class="stat-card">
         <span class="stat-label">Норма</span>
         <span class="stat-value" id="statNorm">—</span>
       </div>
@@ -704,7 +709,7 @@
         <div class="form-title" id="formTitle">Добавить смену</div>
         <div class="edit-badge" id="editBadge">Режим редактирования</div>
       </div>
-      <div class="form-hint">Время указывается в МСК</div>
+      <div class="form-hint">Время указывается в МСК, ночные часы считаются по локальному времени</div>
 
       <div class="field">
         <label>Начало смены</label>
@@ -1179,6 +1184,38 @@
       return Math.round((effEnd - effStart) / 60000);
     }
 
+    function minutesInOverlap(startTs, endTs, boundsStart, boundsEnd) {
+      var effStart = Math.max(startTs, boundsStart);
+      var effEnd = Math.min(endTs, boundsEnd);
+      if (effEnd <= effStart) return 0;
+      return Math.round((effEnd - effStart) / 60000);
+    }
+
+    // Night hours are counted in the user's local timezone, 22:00-06:00
+    function shiftNightMinutesInRange(shift, boundsStart, boundsEnd) {
+      var s = parseMsk(shift.start_msk);
+      var e = parseMsk(shift.end_msk);
+      if (!s || !e) return 0;
+
+      var st = s.getTime();
+      var et = e.getTime();
+      if (et <= st) return 0;
+
+      // Start one local day earlier so shifts that begin before 06:00 are counted correctly.
+      var cursor = new Date(s.getFullYear(), s.getMonth(), s.getDate() - 1, 0, 0, 0);
+      var lastDay = new Date(e.getFullYear(), e.getMonth(), e.getDate(), 0, 0, 0);
+      var total = 0;
+
+      while (cursor.getTime() <= lastDay.getTime()) {
+        var nightStart = new Date(cursor.getFullYear(), cursor.getMonth(), cursor.getDate(), 22, 0, 0).getTime();
+        var nightEnd = new Date(cursor.getFullYear(), cursor.getMonth(), cursor.getDate() + 1, 6, 0, 0).getTime();
+        total += minutesInOverlap(st, et, Math.max(boundsStart, nightStart), Math.min(boundsEnd, nightEnd));
+        cursor = new Date(cursor.getFullYear(), cursor.getMonth(), cursor.getDate() + 1, 0, 0, 0);
+      }
+
+      return total;
+    }
+
     // Total duration of a shift in minutes
     function shiftTotalMinutes(shift) {
       var s = parseMsk(shift.start_msk);
@@ -1242,8 +1279,10 @@
 
       // Calculate total worked minutes in this month
       var totalMin = 0;
+      var nightMin = 0;
       for (var j = 0; j < monthShifts.length; j++) {
         totalMin += shiftMinutesInRange(monthShifts[j], bounds.start, bounds.end);
+        nightMin += shiftNightMinutesInRange(monthShifts[j], bounds.start, bounds.end);
       }
 
       // Norm
@@ -1252,6 +1291,7 @@
 
       // Update stats
       document.getElementById('statWorked').textContent = fmtMin(totalMin);
+      document.getElementById('statNight').textContent = fmtMin(nightMin);
       document.getElementById('statShifts').textContent = String(monthShifts.length);
 
       var normEl = document.getElementById('statNorm');
