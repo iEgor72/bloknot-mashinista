@@ -203,6 +203,7 @@
     .stat-value.ok { color: var(--success); }
     .stat-value.remaining { color: var(--text-muted); }
     .stat-value.night { color: var(--accent); }
+    .stat-value.holiday { color: var(--success); }
 
     /* ── Form ── */
     .form-section {
@@ -694,6 +695,10 @@
         <span class="stat-value overtime" id="statOvertime">0 ч</span>
       </div>
       <div class="stat-card">
+        <span class="stat-label">Праздничные</span>
+        <span class="stat-value holiday" id="statHoliday">0 ч</span>
+      </div>
+      <div class="stat-card">
         <span class="stat-label">Норма</span>
         <span class="stat-value" id="statNorm">—</span>
       </div>
@@ -821,6 +826,19 @@
       '2026-07': 184, '2026-08': 168, '2026-09': 176,
       '2026-10': 176, '2026-11': 159, '2026-12': 176
     };
+
+    function isNonWorkingHolidayLocalDate(date) {
+      var month = date.getMonth();
+      var day = date.getDate();
+
+      if (month === 0) return day >= 1 && day <= 8;
+      if (month === 1) return day === 23;
+      if (month === 2) return day === 8;
+      if (month === 4) return day === 1 || day === 9;
+      if (month === 5) return day === 12;
+      if (month === 10) return day === 4;
+      return false;
+    }
 
     var STORAGE_KEY = 'shifts';
     var MSK_OFFSET = 3; // Moscow = UTC+3
@@ -1236,6 +1254,31 @@
       return minutesInOverlap(overtimeStart, et, boundsStart, boundsEnd);
     }
 
+    function shiftHolidayMinutesInRange(shift, boundsStart, boundsEnd) {
+      var s = parseMsk(shift.start_msk);
+      var e = parseMsk(shift.end_msk);
+      if (!s || !e) return 0;
+
+      var st = s.getTime();
+      var et = e.getTime();
+      if (et <= st) return 0;
+
+      var cursor = new Date(s.getFullYear(), s.getMonth(), s.getDate(), 0, 0, 0);
+      var lastDay = new Date(e.getFullYear(), e.getMonth(), e.getDate(), 0, 0, 0);
+      var total = 0;
+
+      while (cursor.getTime() <= lastDay.getTime()) {
+        if (isNonWorkingHolidayLocalDate(cursor)) {
+          var dayStart = cursor.getTime();
+          var dayEnd = new Date(cursor.getFullYear(), cursor.getMonth(), cursor.getDate() + 1, 0, 0, 0).getTime();
+          total += minutesInOverlap(st, et, Math.max(boundsStart, dayStart), Math.min(boundsEnd, dayEnd));
+        }
+        cursor = new Date(cursor.getFullYear(), cursor.getMonth(), cursor.getDate() + 1, 0, 0, 0);
+      }
+
+      return total;
+    }
+
     // Total duration of a shift in minutes
     function shiftTotalMinutes(shift) {
       var s = parseMsk(shift.start_msk);
@@ -1301,10 +1344,12 @@
       var totalMin = 0;
       var nightMin = 0;
       var overtimeMin = 0;
+      var holidayMin = 0;
       for (var j = 0; j < monthShifts.length; j++) {
         totalMin += shiftMinutesInRange(monthShifts[j], bounds.start, bounds.end);
         nightMin += shiftNightMinutesInRange(monthShifts[j], bounds.start, bounds.end);
         overtimeMin += shiftOvertimeMinutesInRange(monthShifts[j], bounds.start, bounds.end);
+        holidayMin += shiftHolidayMinutesInRange(monthShifts[j], bounds.start, bounds.end);
       }
 
       // Norm
@@ -1315,6 +1360,7 @@
       document.getElementById('statWorked').textContent = fmtMin(totalMin);
       document.getElementById('statNight').textContent = fmtMin(nightMin);
       document.getElementById('statOvertime').textContent = fmtMin(overtimeMin);
+      document.getElementById('statHoliday').textContent = fmtMin(holidayMin);
       document.getElementById('statShifts').textContent = String(monthShifts.length);
 
       var normEl = document.getElementById('statNorm');
