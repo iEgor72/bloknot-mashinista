@@ -38,7 +38,9 @@ After that, send `/start` to the bot and it will answer with a button that opens
 - [`index.html`](/D:/work/bloknot-mashinista-tg/index.html) - app UI and auth gate.
 - [`functions/api/auth.js`](/D:/work/bloknot-mashinista-tg/functions/api/auth.js) - Telegram auth endpoint.
 - [`functions/api/shifts.js`](/D:/work/bloknot-mashinista-tg/functions/api/shifts.js) - per-user shifts API.
-- [`functions/_shared/telegram-auth.js`](/D:/work/bloknot-mashinista-tg/functions/_shared/telegram-auth.js) - shared Telegram verification helpers.
+- [`functions/features/auth/telegram-auth.js`](/D:/work/bloknot-mashinista-tg/functions/features/auth/telegram-auth.js) - Telegram verification and session helpers.
+- [`functions/features/shifts/store.js`](/D:/work/bloknot-mashinista-tg/functions/features/shifts/store.js) - shifts storage and migration logic.
+- [`functions/features/shifts/validation.js`](/D:/work/bloknot-mashinista-tg/functions/features/shifts/validation.js) - shifts payload validation.
 - [`wrangler.toml`](/D:/work/bloknot-mashinista-tg/wrangler.toml) - Cloudflare Pages config.
 
 ## Local note

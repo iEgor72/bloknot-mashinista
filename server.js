@@ -6,7 +6,7 @@ const url = require('url');
 const ROOT = __dirname;
 const PORT = process.env.PORT || 3000;
 const DATA_DIR = path.join(ROOT, 'data');
-const USERS_DIR = path.join(DATA_DIR, 'users');
+const USERS_DIR = path.join(DATA_DIR, 'local-shifts');
 
 function ensureDirs() {
   if (!fs.existsSync(DATA_DIR)) {

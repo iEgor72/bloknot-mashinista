@@ -6,7 +6,7 @@ import {
   safeRedirectTarget,
   verifyTelegramLoginParams,
   verifyTelegramWebAppInitData,
-} from '../_shared/telegram-auth.js';
+} from '../features/auth/telegram-auth.js';
 
 function json(status, payload, extraHeaders) {
   return new Response(JSON.stringify(payload), {

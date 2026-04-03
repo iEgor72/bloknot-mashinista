@@ -1,4 +1,6 @@
-import { getSessionUser } from '../_shared/telegram-auth.js';
+import { getSessionUser } from '../features/auth/telegram-auth.js';
+import { loadShifts, saveShifts } from '../features/shifts/store.js';
+import { parseShiftsPayload } from '../features/shifts/validation.js';
 
 function json(status, payload) {
   return new Response(JSON.stringify(payload), {
@@ -8,70 +10,6 @@ function json(status, payload) {
       'Content-Type': 'application/json; charset=utf-8',
     },
   });
-}
-
-function parseShifts(raw) {
-  try {
-    var parsed = raw ? JSON.parse(raw) : [];
-    return Array.isArray(parsed) ? parsed : [];
-  } catch (err) {
-    return [];
-  }
-}
-
-async function ensureSchema(db) {
-  await db.prepare(
-    'CREATE TABLE IF NOT EXISTS user_shifts (user_id TEXT PRIMARY KEY, shifts_json TEXT NOT NULL, updated_at TEXT NOT NULL DEFAULT CURRENT_TIMESTAMP)'
-  ).run();
-  await db.prepare(
-    'CREATE TABLE IF NOT EXISTS shift_sets (sid TEXT PRIMARY KEY, shifts_json TEXT NOT NULL, updated_at TEXT NOT NULL DEFAULT CURRENT_TIMESTAMP)'
-  ).run();
-}
-
-async function readLegacyGlobalShifts(db) {
-  var row = await db.prepare(
-    'SELECT shifts_json FROM shift_sets WHERE sid = ? LIMIT 1'
-  ).bind('global').first();
-  return row ? parseShifts(row.shifts_json) : [];
-}
-
-async function readUserShifts(db, userId) {
-  var row = await db.prepare(
-    'SELECT shifts_json FROM user_shifts WHERE user_id = ? LIMIT 1'
-  ).bind(userId).first();
-  if (row) {
-    return parseShifts(row.shifts_json);
-  }
-
-  var legacyShifts = await readLegacyGlobalShifts(db);
-  if (legacyShifts.length > 0) {
-    await db.prepare(
-      [
-        'INSERT INTO user_shifts (user_id, shifts_json, updated_at)',
-        'VALUES (?, ?, CURRENT_TIMESTAMP)',
-        'ON CONFLICT(user_id) DO UPDATE SET',
-        '  shifts_json = excluded.shifts_json,',
-        '  updated_at = CURRENT_TIMESTAMP',
-      ].join('\n')
-    ).bind(userId, JSON.stringify(legacyShifts)).run();
-
-    await db.prepare('DELETE FROM shift_sets WHERE sid = ?').bind('global').run();
-    return legacyShifts;
-  }
-
-  return [];
-}
-
-async function writeUserShifts(db, userId, shifts) {
-  await db.prepare(
-    [
-      'INSERT INTO user_shifts (user_id, shifts_json, updated_at)',
-      'VALUES (?, ?, CURRENT_TIMESTAMP)',
-      'ON CONFLICT(user_id) DO UPDATE SET',
-      '  shifts_json = excluded.shifts_json,',
-      '  updated_at = CURRENT_TIMESTAMP',
-    ].join('\n')
-  ).bind(userId, JSON.stringify(shifts)).run();
 }
 
 export async function onRequest(context) {
@@ -101,15 +39,13 @@ export async function onRequest(context) {
       });
     }
 
-    await ensureSchema(env.DB);
-
     var user = await getSessionUser(request, botToken);
     if (!user) {
       return json(401, { error: 'Unauthorized' });
     }
 
     if (request.method === 'GET') {
-      var shifts = await readUserShifts(env.DB, user.id);
+      var shifts = await loadShifts(env.DB, user.id);
       return json(200, {
         user: user,
         shifts: shifts,
@@ -119,17 +55,17 @@ export async function onRequest(context) {
     if (request.method === 'PUT') {
       try {
         var body = await request.json();
-        var shiftsValue = Array.isArray(body && body.shifts) ? body.shifts : null;
+        var parsed = parseShiftsPayload(body);
 
-        if (!shiftsValue) {
-          return json(400, { error: 'Expected { shifts: [] }' });
+        if (!parsed.ok) {
+          return json(400, { error: parsed.error });
         }
 
-        await writeUserShifts(env.DB, user.id, shiftsValue);
+        await saveShifts(env.DB, user.id, parsed.shifts);
         return json(200, {
           ok: true,
           user: user,
-          shifts: shiftsValue,
+          shifts: parsed.shifts,
         });
       } catch (err) {
         return json(400, { error: err.message || 'Invalid payload' });
