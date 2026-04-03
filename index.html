@@ -666,6 +666,40 @@
       return new Date(Date.UTC(year, month, day, hour - MSK_OFFSET, min, 0));
     }
 
+    // Format a Date as "YYYY-MM-DDTHH:MM" in MSK
+    function formatMskDateTime(date) {
+      var msk = new Date(date.getTime() + MSK_OFFSET * 60 * 60 * 1000);
+      var year = msk.getUTCFullYear();
+      var month = String(msk.getUTCMonth() + 1).padStart(2, '0');
+      var day = String(msk.getUTCDate()).padStart(2, '0');
+      var hour = String(msk.getUTCHours()).padStart(2, '0');
+      var min = String(msk.getUTCMinutes()).padStart(2, '0');
+      return year + '-' + month + '-' + day + 'T' + hour + ':' + min;
+    }
+
+    function setDefaultShiftTimeInputs() {
+      var startEl = document.getElementById('inputStart');
+      var endEl = document.getElementById('inputEnd');
+
+      if (!startEl.value) {
+        startEl.value = formatMskDateTime(new Date());
+      }
+
+      if (!endEl.value) {
+        syncEndFromStart();
+      }
+    }
+
+    function syncEndFromStart() {
+      var startEl = document.getElementById('inputStart');
+      var endEl = document.getElementById('inputEnd');
+      var startDate = parseMsk(startEl.value);
+      if (!startDate) return;
+
+      var endDate = new Date(startDate.getTime() + 12 * 60 * 60 * 1000);
+      endEl.value = formatMskDateTime(endDate);
+    }
+
     // Get UTC timestamp for start of a day in device timezone
     function getLocalDayStartUTC(year, month0, day) {
       // Create a date string and parse it in device timezone
@@ -895,6 +929,24 @@
       document.getElementById('inputEnd').classList.remove('input-error');
       document.getElementById('formSuccess').textContent = '';
     }
+
+    var inputStartEl = document.getElementById('inputStart');
+    var inputEndEl = document.getElementById('inputEnd');
+
+    inputStartEl.addEventListener('focus', setDefaultShiftTimeInputs);
+    inputStartEl.addEventListener('click', setDefaultShiftTimeInputs);
+    inputStartEl.addEventListener('input', syncEndFromStart);
+    inputStartEl.addEventListener('change', syncEndFromStart);
+
+    inputEndEl.addEventListener('focus', function() {
+      if (!inputEndEl.value) {
+        if (!inputStartEl.value) {
+          setDefaultShiftTimeInputs();
+        } else {
+          syncEndFromStart();
+        }
+      }
+    });
 
     document.getElementById('btnAdd').addEventListener('click', function() {
       clearErrors();
