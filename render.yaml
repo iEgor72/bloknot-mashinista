@@ -1,7 +1,0 @@
-services:
-  - type: web
-    name: shift-tracker-app
-    env: node
-    plan: free
-    buildCommand: npm install
-    startCommand: npm start
