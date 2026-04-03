@@ -56,6 +56,8 @@
     :root[data-theme="light"] .salary-card,
     :root[data-theme="light"] .settings-card,
     :root[data-theme="light"] .form-section,
+    :root[data-theme="light"] .draft-stat,
+    :root[data-theme="light"] .optional-card,
     :root[data-theme="light"] .quick-stat,
     :root[data-theme="light"] .stat-card,
     :root[data-theme="light"] .shifts-empty,
@@ -85,6 +87,29 @@
 
     :root[data-theme="light"] .salary-chip {
       background: rgba(60, 119, 232, 0.12);
+      color: #3c77e8;
+    }
+
+    :root[data-theme="light"] .draft-stat {
+      background: #f9fbff;
+    }
+
+    :root[data-theme="light"] .optional-card {
+      background: #f9fbff;
+    }
+
+    :root[data-theme="light"] .shift-pill {
+      background: rgba(60, 119, 232, 0.06);
+      color: #24324d;
+    }
+
+    :root[data-theme="light"] .shift-kind-badge {
+      background: rgba(60, 119, 232, 0.11);
+      color: #3c77e8;
+    }
+
+    :root[data-theme="light"] .shift-title-icon {
+      background: rgba(60, 119, 232, 0.1);
       color: #3c77e8;
     }
 
@@ -946,6 +971,93 @@
 
     .input-error { border-color: var(--danger) !important; }
 
+    .draft-stats-grid {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 10px;
+      margin: 4px 0 16px;
+    }
+
+    .draft-stat {
+      background: var(--bg-item);
+      border: 1px solid var(--border);
+      border-radius: 14px;
+      padding: 12px 10px 11px;
+      min-height: 86px;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      gap: 6px;
+    }
+
+    .draft-stat-value {
+      font-size: 20px;
+      font-weight: 900;
+      line-height: 1;
+      letter-spacing: -0.02em;
+    }
+
+    .draft-stat-value.night { color: #8f78ff; }
+    .draft-stat-value.holiday { color: #f5a623; }
+
+    .optional-section-title {
+      font-size: 12px;
+      color: var(--text-muted);
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      font-weight: 700;
+      margin: 4px 0 10px;
+    }
+
+    .optional-card {
+      background: var(--bg-item);
+      border: 1px solid var(--border);
+      border-radius: 16px;
+      padding: 14px;
+      margin-bottom: 12px;
+    }
+
+    .optional-card-title {
+      font-size: 15px;
+      font-weight: 700;
+      margin-bottom: 12px;
+    }
+
+    .optional-grid {
+      display: grid;
+      gap: 10px;
+    }
+
+    .optional-grid-two {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+
+    .optional-control {
+      width: 100%;
+      background: var(--bg-input);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-sm);
+      color: var(--text);
+      font-size: 15px;
+      padding: 10px 12px;
+      outline: none;
+      min-height: 44px;
+      -webkit-appearance: none;
+      appearance: none;
+    }
+
+    .optional-control:focus {
+      border-color: var(--accent);
+      box-shadow: 0 0 0 3px rgba(79, 142, 247, 0.14);
+    }
+
+    .optional-note {
+      margin-top: 10px;
+      font-size: 12px;
+      color: var(--text-muted);
+      line-height: 1.45;
+    }
+
     .btn-primary {
       width: 100%;
       background: var(--accent);
@@ -1010,6 +1122,13 @@
 
     .shift-info { flex: 1; min-width: 0; }
 
+    .shift-main-row {
+      display: flex;
+      align-items: flex-start;
+      justify-content: space-between;
+      gap: 12px;
+    }
+
     .shift-dates {
       font-size: 14px;
       font-weight: 500;
@@ -1021,6 +1140,86 @@
       font-size: 13px;
       color: var(--accent);
       margin-top: 2px;
+    }
+
+    .shift-title {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      font-size: 15px;
+      font-weight: 800;
+      line-height: 1.35;
+      color: var(--text);
+      margin-bottom: 4px;
+    }
+
+    .shift-title-icon {
+      width: 22px;
+      height: 22px;
+      border-radius: 7px;
+      background: rgba(79, 142, 247, 0.12);
+      color: var(--accent);
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+      font-size: 13px;
+    }
+
+    .shift-summary-line {
+      font-size: 13px;
+      color: var(--text-muted);
+      line-height: 1.45;
+      margin-bottom: 6px;
+    }
+
+    .shift-kind-line {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 6px;
+      margin-bottom: 6px;
+    }
+
+    .shift-kind-badge {
+      display: inline-flex;
+      align-items: center;
+      padding: 5px 8px;
+      border-radius: 999px;
+      background: rgba(79, 142, 247, 0.12);
+      border: 1px solid rgba(79, 142, 247, 0.18);
+      color: var(--accent);
+      font-size: 12px;
+      font-weight: 700;
+      line-height: 1;
+      letter-spacing: 0.01em;
+    }
+
+    .shift-meta {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 6px;
+      margin-top: 8px;
+    }
+
+    .shift-pill {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 5px 8px;
+      border-radius: 999px;
+      border: 1px solid var(--border);
+      background: rgba(255,255,255,0.02);
+      color: var(--text-muted);
+      font-size: 12px;
+      line-height: 1;
+      white-space: nowrap;
+    }
+
+    .shift-note {
+      font-size: 12px;
+      color: var(--text-muted);
+      line-height: 1.35;
+      margin-top: 8px;
     }
 
     .btn-action {
@@ -1375,6 +1574,86 @@
               <input type="time" id="inputEndTime" />
             </div>
             <div class="field-error" id="errEnd"></div>
+          </div>
+
+          <div class="draft-stats-grid" aria-label="Предварительный расчёт времени">
+            <div class="draft-stat">
+              <span class="stat-label">Ночные</span>
+              <span class="draft-stat-value night" id="draftNight">0 ч</span>
+            </div>
+            <div class="draft-stat">
+              <span class="stat-label">Общее время</span>
+              <span class="draft-stat-value" id="draftTotal">0 ч</span>
+            </div>
+            <div class="draft-stat">
+              <span class="stat-label">Праздничные</span>
+              <span class="draft-stat-value holiday" id="draftHoliday">0 ч</span>
+            </div>
+          </div>
+
+          <div class="optional-section-title">Необязательные данные</div>
+
+          <div class="optional-card">
+            <div class="optional-card-title">Локомотив</div>
+            <div class="optional-grid optional-grid-two">
+              <div class="field">
+                <label>Серия локомотива</label>
+                <select class="optional-control" id="inputLocoSeries">
+                  <option value="">Выберите</option>
+                  <option value="ТЭ10">ТЭ10</option>
+                  <option value="ТЭ25">ТЭ25</option>
+                  <option value="ТЭМ">ТЭМ</option>
+                  <option value="ЭС5">ЭС5</option>
+                </select>
+              </div>
+              <div class="field">
+                <label>Номер локомотива</label>
+                <input class="optional-control" type="text" id="inputLocoNumber" inputmode="numeric" maxlength="4" placeholder="3248" />
+              </div>
+            </div>
+          </div>
+
+          <div class="optional-card">
+            <div class="optional-card-title">Поезд</div>
+            <div class="optional-grid optional-grid-two">
+              <div class="field">
+                <label>Номер поезда</label>
+                <input class="optional-control" type="text" id="inputTrainNumber" inputmode="numeric" maxlength="4" placeholder="1234" />
+              </div>
+              <div class="field">
+                <label>Вес</label>
+                <input class="optional-control" type="text" id="inputTrainWeight" inputmode="numeric" maxlength="4" placeholder="8000" />
+              </div>
+              <div class="field">
+                <label>Оси</label>
+                <input class="optional-control" type="text" id="inputTrainAxles" inputmode="numeric" maxlength="3" placeholder="060" />
+              </div>
+              <div class="field">
+                <label>Условная длина</label>
+                <input class="optional-control" type="text" id="inputTrainLength" inputmode="numeric" maxlength="3" placeholder="300" />
+              </div>
+            </div>
+          </div>
+
+          <div class="optional-card">
+            <div class="optional-card-title">Участок и вид следования</div>
+            <div class="segmented two" id="routeTypeSegmented" data-setting-group="routeType">
+              <button type="button" class="segmented-btn" data-value="trip">Поездка</button>
+              <button type="button" class="segmented-btn" data-value="depot">Под депо</button>
+            </div>
+            <div class="route-fields" id="routeFields">
+              <div class="optional-grid optional-grid-two">
+                <div class="field">
+                  <label>Станция отправления</label>
+                  <input class="optional-control" type="text" id="inputRouteFrom" maxlength="64" placeholder="КМС" />
+                </div>
+                <div class="field">
+                  <label>Станция прибытия</label>
+                  <input class="optional-control" type="text" id="inputRouteTo" maxlength="64" placeholder="ПСТ" />
+                </div>
+              </div>
+              <div class="optional-note">Для режима «Под депо» дополнительные поля не нужны.</div>
+            </div>
           </div>
 
           <button class="btn-primary" id="btnAdd">Добавить смену</button>
@@ -2413,6 +2692,8 @@
       if (!endDateEl.value || !endTimeEl.value) {
         syncEndFromStart();
       }
+
+      renderDraftShiftSummary();
     }
 
     function syncEndFromStart() {
@@ -2570,14 +2851,35 @@
     function buildShiftItemHtml(sh, compact) {
       var f = fmtShift(sh);
       var itemClass = 'shift-item' + (compact ? ' compact-shift' : '');
+      var title = getShiftTitle(sh);
+      var kindLabel = getShiftKindLabel(sh);
+      var details = getShiftDetailLines(sh);
+      if (details.length) itemClass += ' has-details';
+      if (sh.route_kind === 'trip') itemClass += ' has-trip';
       if (sh.id === editingShiftId) itemClass += ' is-edit-target';
       if (sh.id === pendingDeleteId) itemClass += ' is-delete-target';
       if (sh.id === recentAddedShiftId) itemClass += ' is-adding-target';
 
+      var metaHtml = '';
+      if (details.length) {
+        metaHtml = '<div class="shift-meta">';
+        for (var d = 0; d < details.length; d++) {
+          metaHtml += '<div class="shift-pill">' + escapeHtml(details[d]) + '</div>';
+        }
+        metaHtml += '</div>';
+      }
+
       var html = '<div class="' + itemClass + '">' +
         '<div class="shift-info">' +
-          '<div class="shift-dates">' + f.text + '</div>' +
-          '<div class="shift-duration">' + f.dur + '</div>' +
+          '<div class="shift-main-row">' +
+            '<div>' +
+              '<div class="shift-title"><span class="shift-title-icon">⇄</span><span>' + escapeHtml(title) + '</span></div>' +
+              '<div class="shift-summary-line">' + escapeHtml(f.text) + '</div>' +
+              (kindLabel ? '<div class="shift-kind-line"><span class="shift-kind-badge">' + escapeHtml(kindLabel) + '</span></div>' : '') +
+            '</div>' +
+            '<div class="shift-duration">' + escapeHtml(f.dur) + '</div>' +
+          '</div>' +
+          metaHtml +
         '</div>';
 
       if (!compact) {
@@ -2734,6 +3036,192 @@
       }
     }
 
+    function escapeHtml(text) {
+      return String(text || '')
+        .replace(/&/g, '&amp;')
+        .replace(/</g, '&lt;')
+        .replace(/>/g, '&gt;')
+        .replace(/"/g, '&quot;')
+        .replace(/'/g, '&#39;');
+    }
+
+    function cleanDigits(value, maxLen) {
+      return String(value || '').replace(/\D+/g, '').slice(0, maxLen);
+    }
+
+    function getRouteType() {
+      var active = document.querySelector('#routeTypeSegmented .segmented-btn.active');
+      return active ? active.getAttribute('data-value') : 'depot';
+    }
+
+    function setRouteType(routeType) {
+      var buttons = document.querySelectorAll('#routeTypeSegmented .segmented-btn');
+      for (var i = 0; i < buttons.length; i++) {
+        buttons[i].classList.toggle('active', buttons[i].getAttribute('data-value') === routeType);
+      }
+      updateRouteFieldsVisibility();
+    }
+
+    function updateRouteFieldsVisibility() {
+      var routeFields = document.getElementById('routeFields');
+      if (!routeFields) return;
+      routeFields.classList.toggle('hidden', getRouteType() !== 'trip');
+    }
+
+    function getFieldValue(id) {
+      var el = document.getElementById(id);
+      return el ? el.value.trim() : '';
+    }
+
+    function setFieldValue(id, value) {
+      var el = document.getElementById(id);
+      if (el && el.value !== String(value || '')) {
+        el.value = String(value || '');
+      }
+    }
+
+    function renderDraftShiftSummary() {
+      var startDateEl = document.getElementById('inputStartDate');
+      var startTimeEl = document.getElementById('inputStartTime');
+      var endDateEl = document.getElementById('inputEndDate');
+      var endTimeEl = document.getElementById('inputEndTime');
+      var totalEl = document.getElementById('draftTotal');
+      var nightEl = document.getElementById('draftNight');
+      var holidayEl = document.getElementById('draftHoliday');
+
+      var startVal = composeMskDateTime(startDateEl ? startDateEl.value : '', startTimeEl ? startTimeEl.value : '');
+      var endVal = composeMskDateTime(endDateEl ? endDateEl.value : '', endTimeEl ? endTimeEl.value : '');
+      if (!startVal || !endVal) {
+        if (totalEl) totalEl.textContent = '0 ч';
+        if (nightEl) nightEl.textContent = '0 ч';
+        if (holidayEl) holidayEl.textContent = '0 ч';
+        return;
+      }
+
+      var draftShift = { start_msk: startVal, end_msk: endVal };
+      var totalMin = shiftTotalMinutes(draftShift);
+      var nightMin = shiftNightMinutesInRange(draftShift, -8640000000000000, 8640000000000000);
+      var holidayMin = shiftHolidayMinutesInRange(draftShift, -8640000000000000, 8640000000000000);
+      if (totalEl) totalEl.textContent = fmtMin(totalMin);
+      if (nightEl) nightEl.textContent = fmtMin(nightMin);
+      if (holidayEl) holidayEl.textContent = fmtMin(holidayMin);
+    }
+
+    function wireNumericInput(id, maxLen) {
+      var el = document.getElementById(id);
+      if (!el) return;
+      var handler = function() {
+        var cleaned = cleanDigits(el.value, maxLen);
+        if (el.value !== cleaned) el.value = cleaned;
+      };
+      el.addEventListener('input', handler);
+      el.addEventListener('blur', handler);
+    }
+
+    function collectOptionalShiftData() {
+      var routeKind = getRouteType() === 'trip' ? 'trip' : 'depot';
+      return {
+        locomotive_series: getFieldValue('inputLocoSeries'),
+        locomotive_number: cleanDigits(getFieldValue('inputLocoNumber'), 4),
+        train_number: cleanDigits(getFieldValue('inputTrainNumber'), 4),
+        train_weight: cleanDigits(getFieldValue('inputTrainWeight'), 4),
+        train_axles: cleanDigits(getFieldValue('inputTrainAxles'), 3),
+        train_length: cleanDigits(getFieldValue('inputTrainLength'), 3),
+        route_kind: routeKind,
+        route_from: routeKind === 'trip' ? getFieldValue('inputRouteFrom') : '',
+        route_to: routeKind === 'trip' ? getFieldValue('inputRouteTo') : ''
+      };
+    }
+
+    function applyOptionalShiftData(shift) {
+      shift = shift || {};
+      setFieldValue('inputLocoSeries', shift.locomotive_series || '');
+      setFieldValue('inputLocoNumber', shift.locomotive_number || '');
+      setFieldValue('inputTrainNumber', shift.train_number || '');
+      setFieldValue('inputTrainWeight', shift.train_weight || '');
+      setFieldValue('inputTrainAxles', shift.train_axles || '');
+      setFieldValue('inputTrainLength', shift.train_length || '');
+      setFieldValue('inputRouteFrom', shift.route_from || '');
+      setFieldValue('inputRouteTo', shift.route_to || '');
+      setRouteType(shift.route_kind === 'trip' ? 'trip' : 'depot');
+      renderDraftShiftSummary();
+    }
+
+    function clearOptionalShiftData() {
+      applyOptionalShiftData({
+        locomotive_series: '',
+        locomotive_number: '',
+        train_number: '',
+        train_weight: '',
+        train_axles: '',
+        train_length: '',
+        route_kind: 'depot',
+        route_from: '',
+        route_to: ''
+      });
+    }
+
+    function getLocoSummary(shift) {
+      var parts = [];
+      if (shift.locomotive_series) parts.push(shift.locomotive_series);
+      if (shift.locomotive_number) parts.push('№ ' + shift.locomotive_number);
+      return parts.join(' ');
+    }
+
+    function getTrainSummary(shift) {
+      var parts = [];
+      if (shift.train_number) parts.push('№ ' + shift.train_number);
+      if (shift.train_weight) parts.push(shift.train_weight + ' т');
+      if (shift.train_axles) parts.push(shift.train_axles + ' ос.');
+      if (shift.train_length) parts.push(shift.train_length + ' м');
+      return parts.join(' · ');
+    }
+
+    function getShiftTitle(shift) {
+      var from = shift.route_from ? shift.route_from : '';
+      var to = shift.route_to ? shift.route_to : '';
+      if (shift.route_kind === 'trip' && (from || to)) {
+        return (from || 'Пункт A') + ' → ' + (to || 'Пункт B');
+      }
+      if (shift.route_kind === 'trip') {
+        return 'Поездка';
+      }
+      if (shift.route_kind === 'depot') {
+        return 'Под депо';
+      }
+      var loco = getLocoSummary(shift);
+      if (loco) return 'Локомотив ' + loco;
+      var train = getTrainSummary(shift);
+      if (train) return 'Поезд ' + train;
+      return 'Смена';
+    }
+
+    function getShiftDetailLines(shift) {
+      var lines = [];
+      if (shift.route_kind === 'trip') {
+        lines.push('Вид следования: Поездка');
+      }
+      var loco = getLocoSummary(shift);
+      if (loco) lines.push('Локомотив: ' + loco);
+      var train = getTrainSummary(shift);
+      if (train) lines.push('Поезд: ' + train);
+      if (shift.route_kind === 'trip' && (shift.route_from || shift.route_to)) {
+        lines.push('Участок: ' + (shift.route_from || '—') + ' → ' + (shift.route_to || '—'));
+      } else if (shift.route_kind === 'depot') {
+        lines.push('Вид следования: Под депо');
+      }
+      return lines;
+    }
+
+    function getShiftKindLabel(shift) {
+      if (!shift) return '';
+      if (shift.route_kind === 'trip') return 'Поездка';
+      if (shift.route_kind === 'depot') return 'Под депо';
+      if (getLocoSummary(shift)) return 'Локомотив';
+      if (getTrainSummary(shift)) return 'Поезд';
+      return '';
+    }
+
     // ── Delete handler ──
     function handleDeleteClick(e) {
       var id = e.currentTarget.getAttribute('data-id');
@@ -2770,9 +3258,11 @@
       document.getElementById('inputStartTime').value = shift.start_msk.substring(11, 16);
       document.getElementById('inputEndDate').value = shift.end_msk.substring(0, 10);
       document.getElementById('inputEndTime').value = shift.end_msk.substring(11, 16);
+      applyOptionalShiftData(shift);
       document.getElementById('btnAdd').textContent = 'Сохранить изменения';
       document.getElementById('btnCancelEdit').classList.remove('hidden');
       clearErrors();
+      renderDraftShiftSummary();
       render();
     }
 
@@ -2788,7 +3278,9 @@
       document.getElementById('inputStartTime').value = '';
       document.getElementById('inputEndDate').value = '';
       document.getElementById('inputEndTime').value = '';
+      clearOptionalShiftData();
       setDefaultShiftTimeInputs();
+      renderDraftShiftSummary();
       render();
     }
 
@@ -2868,9 +3360,12 @@
     var inputStartTimeEl = document.getElementById('inputStartTime');
     var inputEndDateEl = document.getElementById('inputEndDate');
     var inputEndTimeEl = document.getElementById('inputEndTime');
+    var routeTypeButtons = document.querySelectorAll('#routeTypeSegmented .segmented-btn');
     setFormMode('add');
+    clearOptionalShiftData();
 
     setDefaultShiftTimeInputs();
+    renderDraftShiftSummary();
     window.addEventListener('load', setDefaultShiftTimeInputs);
     setTimeout(setDefaultShiftTimeInputs, 0);
     setTimeout(setDefaultShiftTimeInputs, 250);
@@ -2883,10 +3378,42 @@
     inputStartTimeEl.addEventListener('focus', setDefaultShiftTimeInputs);
     inputStartDateEl.addEventListener('click', setDefaultShiftTimeInputs);
     inputStartTimeEl.addEventListener('click', setDefaultShiftTimeInputs);
-    inputStartDateEl.addEventListener('input', syncEndFromStart);
-    inputStartTimeEl.addEventListener('input', syncEndFromStart);
-    inputStartDateEl.addEventListener('change', syncEndFromStart);
-    inputStartTimeEl.addEventListener('change', syncEndFromStart);
+    inputStartDateEl.addEventListener('input', function() {
+      syncEndFromStart();
+      renderDraftShiftSummary();
+    });
+    inputStartTimeEl.addEventListener('input', function() {
+      syncEndFromStart();
+      renderDraftShiftSummary();
+    });
+    inputStartDateEl.addEventListener('change', function() {
+      syncEndFromStart();
+      renderDraftShiftSummary();
+    });
+    inputStartTimeEl.addEventListener('change', function() {
+      syncEndFromStart();
+      renderDraftShiftSummary();
+    });
+    inputEndDateEl.addEventListener('input', renderDraftShiftSummary);
+    inputEndTimeEl.addEventListener('input', renderDraftShiftSummary);
+    inputEndDateEl.addEventListener('change', renderDraftShiftSummary);
+    inputEndTimeEl.addEventListener('change', renderDraftShiftSummary);
+
+    wireNumericInput('inputLocoNumber', 4);
+    wireNumericInput('inputTrainNumber', 4);
+    wireNumericInput('inputTrainWeight', 4);
+    wireNumericInput('inputTrainAxles', 3);
+    wireNumericInput('inputTrainLength', 3);
+
+    document.getElementById('inputLocoSeries').addEventListener('change', renderDraftShiftSummary);
+    document.getElementById('inputRouteFrom').addEventListener('input', renderDraftShiftSummary);
+    document.getElementById('inputRouteTo').addEventListener('input', renderDraftShiftSummary);
+    for (var rt = 0; rt < routeTypeButtons.length; rt++) {
+      routeTypeButtons[rt].addEventListener('click', function(e) {
+        setRouteType(e.currentTarget.getAttribute('data-value'));
+        renderDraftShiftSummary();
+      });
+    }
 
     document.getElementById('btnAdd').addEventListener('click', function() {
       clearErrors();
@@ -2915,12 +3442,12 @@
       var endDate = parseMsk(endVal);
 
       if (!startDate || !endDate) {
-        document.getElementById('errStart').textContent = 'РќРµРІРµСЂРЅС‹Р№ формат даты';
+        document.getElementById('errStart').textContent = 'Неверный формат даты';
         return;
       }
 
       if (endDate.getTime() <= startDate.getTime()) {
-        document.getElementById('errEnd').textContent = 'Конец смены не может быть СЂР°РЅСЊС€е начала';
+        document.getElementById('errEnd').textContent = 'Конец смены не может быть раньше начала';
         inputEndDateEl.classList.add('input-error');
         inputEndTimeEl.classList.add('input-error');
         return;
@@ -2930,11 +3457,21 @@
       var isEditing = !!editingShiftId;
       var shiftId = isEditing ? editingShiftId : (Date.now().toString(36) + Math.random().toString(36).substring(2, 7));
       var existingShift = isEditing ? findShiftById(shiftId) : null;
+      var optionalData = collectOptionalShiftData();
       var shift = {
         id: shiftId,
         start_msk: startVal,
         end_msk: endVal,
-        created_at: existingShift && existingShift.created_at ? existingShift.created_at : new Date().toISOString()
+        created_at: existingShift && existingShift.created_at ? existingShift.created_at : new Date().toISOString(),
+        locomotive_series: optionalData.locomotive_series,
+        locomotive_number: optionalData.locomotive_number,
+        train_number: optionalData.train_number,
+        train_weight: optionalData.train_weight,
+        train_axles: optionalData.train_axles,
+        train_length: optionalData.train_length,
+        route_kind: optionalData.route_kind,
+        route_from: optionalData.route_from,
+        route_to: optionalData.route_to
       };
 
       if (isEditing) {
@@ -2974,6 +3511,7 @@
           inputStartTimeEl.value = '';
           inputEndDateEl.value = '';
           inputEndTimeEl.value = '';
+          clearOptionalShiftData();
           setFormMode('add');
           clearRecentAddHighlight();
           recentAddedShiftId = shiftId;
