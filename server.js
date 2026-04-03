@@ -6,21 +6,33 @@ const url = require('url');
 const ROOT = __dirname;
 const PORT = process.env.PORT || 3000;
 const DATA_DIR = path.join(ROOT, 'data');
-const DATA_FILE = path.join(DATA_DIR, 'shifts.json');
+const USERS_DIR = path.join(DATA_DIR, 'users');
 
-function ensureDataFile() {
+function ensureDirs() {
   if (!fs.existsSync(DATA_DIR)) {
     fs.mkdirSync(DATA_DIR, { recursive: true });
   }
-  if (!fs.existsSync(DATA_FILE)) {
-    fs.writeFileSync(DATA_FILE, '[]', 'utf8');
+  if (!fs.existsSync(USERS_DIR)) {
+    fs.mkdirSync(USERS_DIR, { recursive: true });
   }
 }
 
-function readShifts() {
-  ensureDataFile();
+function normalizeSid(rawSid) {
+  const sid = String(rawSid || 'default').trim();
+  const safe = sid.replace(/[^a-zA-Z0-9_-]/g, '_');
+  return safe.length > 0 ? safe : 'default';
+}
+
+function getUserFile(sid) {
+  ensureDirs();
+  return path.join(USERS_DIR, `${normalizeSid(sid)}.json`);
+}
+
+function readShifts(sid) {
+  const file = getUserFile(sid);
   try {
-    const raw = fs.readFileSync(DATA_FILE, 'utf8');
+    if (!fs.existsSync(file)) return [];
+    const raw = fs.readFileSync(file, 'utf8');
     const parsed = JSON.parse(raw || '[]');
     return Array.isArray(parsed) ? parsed : [];
   } catch (err) {
@@ -28,9 +40,9 @@ function readShifts() {
   }
 }
 
-function writeShifts(shifts) {
-  ensureDataFile();
-  fs.writeFileSync(DATA_FILE, JSON.stringify(shifts, null, 2), 'utf8');
+function writeShifts(sid, shifts) {
+  const file = getUserFile(sid);
+  fs.writeFileSync(file, JSON.stringify(shifts, null, 2), 'utf8');
 }
 
 function sendJson(res, statusCode, payload) {
@@ -96,6 +108,7 @@ function readBody(req) {
 const server = http.createServer(async (req, res) => {
   const parsedUrl = url.parse(req.url, true);
   const pathname = parsedUrl.pathname || '/';
+  const sid = normalizeSid(parsedUrl.query && parsedUrl.query.sid);
 
   res.setHeader('Access-Control-Allow-Origin', '*');
   res.setHeader('Access-Control-Allow-Methods', 'GET,PUT,OPTIONS');
@@ -109,7 +122,7 @@ const server = http.createServer(async (req, res) => {
 
   if (pathname === '/api/shifts') {
     if (req.method === 'GET') {
-      sendJson(res, 200, { shifts: readShifts() });
+      sendJson(res, 200, { sid, shifts: readShifts(sid) });
       return;
     }
 
@@ -123,8 +136,8 @@ const server = http.createServer(async (req, res) => {
           return;
         }
 
-        writeShifts(shifts);
-        sendJson(res, 200, { ok: true, shifts });
+        writeShifts(sid, shifts);
+        sendJson(res, 200, { ok: true, sid, shifts });
       } catch (err) {
         sendJson(res, 400, { error: err.message || 'Invalid payload' });
       }
