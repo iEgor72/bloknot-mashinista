@@ -42,6 +42,93 @@
       min-height: 100vh;
     }
 
+    .auth-gate {
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 24px 16px;
+    }
+
+    .auth-card {
+      width: 100%;
+      max-width: 420px;
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 24px 20px;
+      box-shadow: 0 20px 50px rgba(0, 0, 0, 0.25);
+    }
+
+    .auth-title {
+      font-size: 20px;
+      font-weight: 700;
+      margin-bottom: 8px;
+    }
+
+    .auth-text {
+      font-size: 14px;
+      line-height: 1.6;
+      color: var(--text-muted);
+      margin-bottom: 16px;
+    }
+
+    .auth-hint {
+      font-size: 12px;
+      line-height: 1.5;
+      color: var(--text-muted);
+      margin-top: 12px;
+      opacity: 0.85;
+    }
+
+    .auth-status {
+      font-size: 13px;
+      line-height: 1.5;
+      color: var(--text);
+      margin-bottom: 14px;
+    }
+
+    .auth-widget {
+      min-height: 48px;
+      margin: 8px 0 12px;
+    }
+
+    .auth-error {
+      font-size: 13px;
+      line-height: 1.5;
+      color: var(--danger);
+      margin-top: 10px;
+      min-height: 0;
+    }
+
+    .auth-actions {
+      display: flex;
+      gap: 10px;
+      margin-top: 14px;
+      flex-wrap: wrap;
+    }
+
+    .btn-auth-secondary {
+      flex: 1;
+      min-width: 0;
+      background: transparent;
+      color: var(--text);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-sm);
+      font-size: 14px;
+      padding: 12px 14px;
+      cursor: pointer;
+      min-height: 44px;
+      transition: border-color 0.15s, background 0.15s;
+    }
+
+    .btn-auth-secondary:active {
+      border-color: var(--accent);
+      background: rgba(79, 142, 247, 0.1);
+    }
+
+    .hidden { display: none !important; }
+
     /* ── Month Switcher ── */
     .month-nav {
       display: flex;
@@ -445,7 +532,26 @@
   </style>
 </head>
 <body>
-  <div class="app">
+  <div class="auth-gate" id="authGate">
+    <div class="auth-card">
+      <div class="auth-title">Вход через Telegram</div>
+      <div class="auth-text" id="authMessage">
+        Открой мини-апп в Telegram, и он войдет сам. Если открываешь ссылку в Safari, Chrome или на другом устройстве, войди через Telegram один раз - дальше данные будут одинаковыми везде.
+      </div>
+      <div class="auth-status" id="authStatus"></div>
+      <div class="auth-widget" id="telegramLoginWidget"></div>
+      <div class="auth-error" id="authError"></div>
+      <div class="auth-hint">
+        Если вход не появляется, проверь, что домен сайта добавлен в BotFather для Telegram Login.
+      </div>
+      <div class="auth-actions">
+        <button class="btn-auth-secondary" id="btnAuthRetry" type="button">Повторить вход</button>
+        <button class="btn-auth-secondary" id="btnAuthLogout" type="button">Выйти</button>
+      </div>
+    </div>
+  </div>
+
+  <div class="app hidden" id="appShell">
 
     <!-- Month Navigation -->
     <div class="month-nav">
@@ -517,19 +623,19 @@
   <div class="overlay" id="overlayAddScreen">
     <div class="bottom-sheet">
       <div class="sheet-title">Добавить на экран</div>
-      <div class="sheet-text">Чтобы открывать приложение как обычное, добавь его на главный экран.</div>
+      <div class="sheet-text">Это одна и та же ссылка для Telegram, Safari и ярлыка на экране. Если ты открыл её впервые на новом устройстве, просто войди через Telegram один раз - дальше смены будут подхватываться автоматически.</div>
 
       <div class="sheet-text"><strong>Для iPhone:</strong></div>
       <ol class="sheet-steps">
         <li>Открой ссылку ниже в Safari</li>
-        <li>Нажми «Поделиться» (↑)</li>
+        <li>Нажми «Поделиться»</li>
         <li>Выбери «На экран Домой»</li>
       </ol>
 
       <div class="sheet-text"><strong>Для Android:</strong></div>
       <ol class="sheet-steps">
         <li>Открой ссылку ниже в Chrome</li>
-        <li>Меню браузера (⋮)</li>
+        <li>Открой меню браузера</li>
         <li>«Добавить на главный экран»</li>
       </ol>
 
@@ -602,64 +708,203 @@
     } catch(e) {}
 
     var footerEl = document.getElementById('timezoneFooter');
-    footerEl.textContent = 'Часовой пояс: ' + deviceTimezone;
+    function updateFooter() {
+      var userLabel = CURRENT_USER ? (' · ' + (CURRENT_USER.display_name || CURRENT_USER.username || ('ID ' + CURRENT_USER.id))) : '';
+      footerEl.textContent = 'Часовой пояс: ' + deviceTimezone + userLabel;
+    }
+    updateFooter();
 
     var API_BASE_URL = window.SHIFT_API_BASE_URL || '';
+    var AUTH_API_URL = API_BASE_URL + '/api/auth';
     var SHIFTS_API_URL = API_BASE_URL + '/api/shifts';
-    var FALLBACK_STORAGE_KEY = STORAGE_KEY;
+    var TELEGRAM_BOT_USERNAME = 'bloknot_mashinista_bot';
+    var CURRENT_USER = null;
+    var AUTH_GATE = document.getElementById('authGate');
+    var AUTH_MESSAGE = document.getElementById('authMessage');
+    var AUTH_STATUS = document.getElementById('authStatus');
+    var AUTH_ERROR = document.getElementById('authError');
+    var AUTH_WIDGET = document.getElementById('telegramLoginWidget');
+    var APP_SHELL = document.getElementById('appShell');
+    var AUTH_WIDGET_READY = false;
+    var authBootstrapPromise = null;
 
     function getAppUrl() {
       return window.location.origin + window.location.pathname;
     }
 
-    function getLocalFallbackShifts() {
-      try {
-        var val = localStorage.getItem(FALLBACK_STORAGE_KEY);
-        if (!val) return [];
-        var parsed = JSON.parse(val);
-        return Array.isArray(parsed) ? parsed : [];
-      } catch(e) {
-        return [];
-      }
+    function setAuthFeedback(message, errorMessage) {
+      if (AUTH_STATUS) AUTH_STATUS.textContent = message || '';
+      if (AUTH_ERROR) AUTH_ERROR.textContent = errorMessage || '';
     }
 
-    function saveLocalFallbackShifts(shifts) {
-      try { localStorage.setItem(FALLBACK_STORAGE_KEY, JSON.stringify(shifts)); } catch(e) {}
+    function showAuthGate(message, errorMessage) {
+      if (AUTH_GATE) AUTH_GATE.classList.remove('hidden');
+      if (APP_SHELL) APP_SHELL.classList.add('hidden');
+      setAuthFeedback(message || AUTH_MESSAGE.textContent, errorMessage || '');
+    }
+
+    function showAppShell() {
+      if (AUTH_GATE) AUTH_GATE.classList.add('hidden');
+      if (APP_SHELL) APP_SHELL.classList.remove('hidden');
+      updateFooter();
+    }
+
+    function getLoginReturnUrl() {
+      return window.location.pathname + window.location.search + window.location.hash;
+    }
+
+    function renderTelegramLoginWidget() {
+      if (!AUTH_WIDGET || AUTH_WIDGET_READY) return;
+      AUTH_WIDGET_READY = true;
+      AUTH_WIDGET.innerHTML = '';
+
+      var script = document.createElement('script');
+      script.async = true;
+      script.src = 'https://telegram.org/js/telegram-widget.js?22';
+      script.setAttribute('data-telegram-login', TELEGRAM_BOT_USERNAME);
+      script.setAttribute('data-size', 'large');
+      script.setAttribute('data-request-access', 'write');
+      script.setAttribute('data-auth-url', window.location.origin + '/api/auth?mode=telegram-login&return=' + encodeURIComponent(getLoginReturnUrl()));
+      AUTH_WIDGET.appendChild(script);
+    }
+
+    function fetchJson(url, options) {
+      var reqOptions = options || {};
+      reqOptions.credentials = 'include';
+      return fetch(url, reqOptions).then(function(res) {
+        return res.json().catch(function() { return {}; }).then(function(body) {
+          return { ok: res.ok, status: res.status, body: body };
+        });
+      });
+    }
+
+    function authenticateWithTelegramWebApp() {
+      if (!(window.Telegram && Telegram.WebApp && Telegram.WebApp.initData)) {
+        return Promise.resolve(null);
+      }
+
+      setAuthFeedback('Входим через Telegram...', '');
+
+      return fetchJson(AUTH_API_URL, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ initData: Telegram.WebApp.initData })
+      }).then(function(result) {
+        if (result.ok && result.body && result.body.user) {
+          return result.body.user;
+        }
+        throw new Error((result.body && result.body.error) || 'Не удалось войти через Telegram');
+      });
+    }
+
+    function restoreSession() {
+      return fetchJson(AUTH_API_URL, {
+        method: 'GET',
+        headers: { 'Accept': 'application/json' }
+      }).then(function(result) {
+        if (result.ok && result.body && result.body.user) {
+          return result.body.user;
+        }
+        return null;
+      });
+    }
+
+    function logout() {
+      return fetchJson(AUTH_API_URL, {
+        method: 'DELETE',
+        headers: { 'Accept': 'application/json' }
+      }).then(function() {
+        CURRENT_USER = null;
+        allShifts = [];
+        authBootstrapPromise = null;
+        AUTH_WIDGET_READY = false;
+        if (AUTH_WIDGET) AUTH_WIDGET.innerHTML = '';
+        updateFooter();
+        showAuthGate('Вход через Telegram', '');
+        renderTelegramLoginWidget();
+      });
+    }
+
+    function ensureAuthenticated() {
+      if (!authBootstrapPromise) {
+        authBootstrapPromise = authenticateWithTelegramWebApp()
+          .then(function(user) {
+            if (user) return user;
+            return restoreSession();
+          })
+          .then(function(user) {
+            if (user) {
+              CURRENT_USER = user;
+              showAppShell();
+              return user;
+            }
+
+            CURRENT_USER = null;
+            showAuthGate('Вход через Telegram', '');
+            renderTelegramLoginWidget();
+            return null;
+          })
+          .catch(function(err) {
+            CURRENT_USER = null;
+            showAuthGate(
+              'Не удалось войти',
+              (err && err.message) ? err.message : 'Проверь Telegram Bot Token и домен Telegram Login.'
+            );
+            renderTelegramLoginWidget();
+            return null;
+          });
+      }
+
+      return authBootstrapPromise;
     }
 
     // ── Load / Save shifts ──
     function loadShifts(callback) {
-      fetch(SHIFTS_API_URL, { headers: { 'Accept': 'application/json' } })
-        .then(function(res) {
-          if (!res.ok) throw new Error('API load failed');
-          return res.json();
-        })
-        .then(function(data) {
-          allShifts = Array.isArray(data && data.shifts) ? data.shifts : [];
+      fetchJson(SHIFTS_API_URL, {
+        method: 'GET',
+        headers: { 'Accept': 'application/json' }
+      }).then(function(result) {
+        if (result.ok) {
+          allShifts = Array.isArray(result.body && result.body.shifts) ? result.body.shifts : [];
           callback();
-        })
-        .catch(function() {
-          allShifts = getLocalFallbackShifts();
-          callback();
-        });
+          return;
+        }
+
+        if (result.status === 401) {
+          showAuthGate('Сначала войди через Telegram', 'После входа твои смены откроются автоматически.');
+          renderTelegramLoginWidget();
+          return;
+        }
+
+        throw new Error((result.body && result.body.error) || 'API load failed');
+      }).catch(function(err) {
+        showAuthGate('Не удалось загрузить смены', (err && err.message) ? err.message : 'Проверь подключение к серверу.');
+      });
     }
 
     function saveShifts(callback) {
-      var json = JSON.stringify(allShifts);
-      fetch(SHIFTS_API_URL, {
+      fetchJson(SHIFTS_API_URL, {
         method: 'PUT',
-        headers: { 'Content-Type': 'application/json' },
+        headers: { 'Content-Type': 'application/json', 'Accept': 'application/json' },
         body: JSON.stringify({ shifts: allShifts })
-      })
-        .then(function(res) {
-          if (!res.ok) throw new Error('API save failed');
-          saveLocalFallbackShifts(allShifts);
+      }).then(function(result) {
+        if (result.ok) {
           if (callback) callback(null);
-        })
-        .catch(function(err) {
-          saveLocalFallbackShifts(allShifts);
-          if (callback) callback(err);
-        });
+          return;
+        }
+
+        if (result.status === 401) {
+          showAuthGate('Сначала войди через Telegram', 'Сессия истекла или не создана.');
+          renderTelegramLoginWidget();
+          if (callback) callback(new Error('Unauthorized'));
+          return;
+        }
+
+        var err = new Error((result.body && result.body.error) || 'API save failed');
+        if (callback) callback(err);
+      }).catch(function(err) {
+        if (callback) callback(err);
+      });
     }
 
     // ── Time helpers ──
@@ -1100,6 +1345,23 @@
       }
     });
 
+    document.getElementById('btnAuthRetry').addEventListener('click', function() {
+      authBootstrapPromise = null;
+      AUTH_WIDGET_READY = false;
+      if (AUTH_WIDGET) AUTH_WIDGET.innerHTML = '';
+      ensureAuthenticated().then(function(user) {
+        if (user) {
+          loadShifts(function() {
+            render();
+          });
+        }
+      });
+    });
+
+    document.getElementById('btnAuthLogout').addEventListener('click', function() {
+      logout();
+    });
+
     function fallbackCopy(text, btn) {
       var ta = document.createElement('textarea');
       ta.value = text;
@@ -1119,8 +1381,11 @@
     }
 
     // ── Init ──
-    loadShifts(function() {
-      render();
+    ensureAuthenticated().then(function(user) {
+      if (!user) return;
+      loadShifts(function() {
+        render();
+      });
     });
   </script>
 </body>

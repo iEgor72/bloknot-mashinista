@@ -1,110 +1,143 @@
-const CORS_HEADERS = {
-  'Access-Control-Allow-Origin': '*',
-  'Access-Control-Allow-Methods': 'GET,PUT,OPTIONS',
-  'Access-Control-Allow-Headers': 'Content-Type',
-  'Cache-Control': 'no-store',
-  'Content-Type': 'application/json; charset=utf-8',
-};
+import { getSessionUser } from '../_shared/telegram-auth.js';
 
 function json(status, payload) {
   return new Response(JSON.stringify(payload), {
-    status,
-    headers: CORS_HEADERS,
+    status: status,
+    headers: {
+      'Cache-Control': 'no-store',
+      'Content-Type': 'application/json; charset=utf-8',
+    },
   });
 }
 
-const GLOBAL_SID = 'global';
+function parseShifts(raw) {
+  try {
+    var parsed = raw ? JSON.parse(raw) : [];
+    return Array.isArray(parsed) ? parsed : [];
+  } catch (err) {
+    return [];
+  }
+}
 
 async function ensureSchema(db) {
-  await db.exec(`
-    CREATE TABLE IF NOT EXISTS shift_sets (
-      sid TEXT PRIMARY KEY,
-      shifts_json TEXT NOT NULL,
-      updated_at TEXT NOT NULL DEFAULT CURRENT_TIMESTAMP
-    );
-  `);
+  await db.exec(
+    [
+      'CREATE TABLE IF NOT EXISTS user_shifts (',
+      '  user_id TEXT PRIMARY KEY,',
+      '  shifts_json TEXT NOT NULL,',
+      '  updated_at TEXT NOT NULL DEFAULT CURRENT_TIMESTAMP',
+      ');',
+      'CREATE TABLE IF NOT EXISTS shift_sets (',
+      '  sid TEXT PRIMARY KEY,',
+      '  shifts_json TEXT NOT NULL,',
+      '  updated_at TEXT NOT NULL DEFAULT CURRENT_TIMESTAMP',
+      ');',
+    ].join('\n')
+  );
+}
+
+async function readLegacyGlobalShifts(db) {
+  var row = await db.prepare(
+    'SELECT shifts_json FROM shift_sets WHERE sid = ? LIMIT 1'
+  ).bind('global').first();
+  return row ? parseShifts(row.shifts_json) : [];
+}
+
+async function readUserShifts(db, userId) {
+  var row = await db.prepare(
+    'SELECT shifts_json FROM user_shifts WHERE user_id = ? LIMIT 1'
+  ).bind(userId).first();
+  if (row) {
+    return parseShifts(row.shifts_json);
+  }
+
+  var legacyShifts = await readLegacyGlobalShifts(db);
+  if (legacyShifts.length > 0) {
+    await db.prepare(
+      [
+        'INSERT INTO user_shifts (user_id, shifts_json, updated_at)',
+        'VALUES (?, ?, CURRENT_TIMESTAMP)',
+        'ON CONFLICT(user_id) DO UPDATE SET',
+        '  shifts_json = excluded.shifts_json,',
+        '  updated_at = CURRENT_TIMESTAMP',
+      ].join('\n')
+    ).bind(userId, JSON.stringify(legacyShifts)).run();
+
+    await db.prepare('DELETE FROM shift_sets WHERE sid = ?').bind('global').run();
+    return legacyShifts;
+  }
+
+  return [];
+}
+
+async function writeUserShifts(db, userId, shifts) {
+  await db.prepare(
+    [
+      'INSERT INTO user_shifts (user_id, shifts_json, updated_at)',
+      'VALUES (?, ?, CURRENT_TIMESTAMP)',
+      'ON CONFLICT(user_id) DO UPDATE SET',
+      '  shifts_json = excluded.shifts_json,',
+      '  updated_at = CURRENT_TIMESTAMP',
+    ].join('\n')
+  ).bind(userId, JSON.stringify(shifts)).run();
 }
 
 export async function onRequest(context) {
-  const { request, env } = context;
+  var request = context.request;
+  var env = context.env || {};
+  var botToken = env.TELEGRAM_BOT_TOKEN;
 
   if (request.method === 'OPTIONS') {
     return new Response(null, {
       status: 204,
-      headers: CORS_HEADERS,
+      headers: {
+        'Cache-Control': 'no-store',
+      },
     });
   }
 
-  if (!env || !env.DB) {
+  if (!env.DB) {
     return json(500, {
       error: 'D1 database binding is missing. Add DB in the Cloudflare Pages project settings.',
     });
   }
 
+  if (!botToken) {
+    return json(500, {
+      error: 'TELEGRAM_BOT_TOKEN is missing. Add it as a Pages secret.',
+    });
+  }
+
   await ensureSchema(env.DB);
 
-  async function readMergedShifts() {
-    const rows = await env.DB.prepare(
-      'SELECT sid, shifts_json FROM shift_sets ORDER BY updated_at DESC'
-    ).all();
-
-    const merged = [];
-    const seen = new Set();
-    const items = Array.isArray(rows && rows.results) ? rows.results : [];
-
-    for (const row of items) {
-      let parsed = [];
-      try {
-        parsed = row && row.shifts_json ? JSON.parse(row.shifts_json) : [];
-      } catch (e) {
-        parsed = [];
-      }
-
-      for (const shift of Array.isArray(parsed) ? parsed : []) {
-        if (!shift || !shift.id || seen.has(shift.id)) continue;
-        seen.add(shift.id);
-        merged.push(shift);
-      }
-    }
-
-    return merged;
+  var user = await getSessionUser(request, botToken);
+  if (!user) {
+    return json(401, { error: 'Unauthorized' });
   }
 
   if (request.method === 'GET') {
-    const merged = await readMergedShifts();
-    await env.DB.prepare(
-      `
-        INSERT INTO shift_sets (sid, shifts_json, updated_at)
-        VALUES (?, ?, CURRENT_TIMESTAMP)
-        ON CONFLICT(sid) DO UPDATE SET
-          shifts_json = excluded.shifts_json,
-          updated_at = CURRENT_TIMESTAMP
-      `
-    ).bind(GLOBAL_SID, JSON.stringify(merged)).run();
-
-    return json(200, { sid: GLOBAL_SID, shifts: merged });
+    var shifts = await readUserShifts(env.DB, user.id);
+    return json(200, {
+      user: user,
+      shifts: shifts,
+    });
   }
 
   if (request.method === 'PUT') {
     try {
-      const body = await request.json();
-      const shifts = Array.isArray(body && body.shifts) ? body.shifts : null;
+      var body = await request.json();
+      var shiftsValue = Array.isArray(body && body.shifts) ? body.shifts : null;
 
-      if (!shifts) {
+      if (!shiftsValue) {
         return json(400, { error: 'Expected { shifts: [] }' });
       }
 
-      await env.DB.prepare(
-        `
-          INSERT INTO shift_sets (sid, shifts_json, updated_at)
-          VALUES (?, ?, CURRENT_TIMESTAMP)
-          ON CONFLICT(sid) DO UPDATE SET
-            shifts_json = excluded.shifts_json,
-            updated_at = CURRENT_TIMESTAMP
-        `
-      ).bind(GLOBAL_SID, JSON.stringify(shifts)).run();
-
-      return json(200, { ok: true, sid: GLOBAL_SID, shifts });
+      await writeUserShifts(env.DB, user.id, shiftsValue);
+      return json(200, {
+        ok: true,
+        user: user,
+        shifts: shiftsValue,
+      });
     } catch (err) {
       return json(400, { error: err.message || 'Invalid payload' });
     }

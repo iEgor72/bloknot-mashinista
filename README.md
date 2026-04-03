@@ -1,45 +1,37 @@
 # Shift Tracker App
 
-Telegram Web App для учёта смен с общей синхронизацией данных.
+Telegram shift tracker with one shared account per Telegram user.
 
-## Как это работает
+## What this app does
 
-- Telegram, Safari и ярлык на телефоне открывают одну и ту же страницу.
-- Данные хранятся в Cloudflare D1 как один общий список смен.
-- Что добавил в одном месте, сразу видно в другом.
+- Inside Telegram it signs in automatically with `Telegram.WebApp.initData`.
+- In Safari, Chrome, desktop, or from a home-screen shortcut it uses the Telegram login flow.
+- The same Telegram account always opens the same shift list on every device.
+- Different Telegram users get their own separate data.
 
-## Самый простой бесплатный хостинг
+## How the auth flow works
 
-Нужен Cloudflare Pages + D1.
+- Telegram WebApp requests are verified on the server with your bot token.
+- Browser logins are verified through Telegram Login Widget.
+- After login, the server stores a signed session cookie for that browser.
+- Shifts are saved in Cloudflare D1 by Telegram user id.
 
-Это обычно не требует платной подписки, и у Cloudflare есть бесплатные планы для Pages и D1.
+## Required Cloudflare setup
 
-Официальные страницы:
-- [Cloudflare Pages](https://developers.cloudflare.com/pages/)
-- [Cloudflare D1](https://developers.cloudflare.com/d1/)
+1. Deploy the repo to Cloudflare Pages.
+2. Create a Cloudflare D1 database.
+3. Bind the database to the Pages project as `DB`.
+4. Add a Pages secret named `TELEGRAM_BOT_TOKEN` with your bot token.
+5. In BotFather, make sure the bot domain for Telegram Login is set to your Pages domain.
 
-## Что сделать
+## Files
 
-1. Зайди в Cloudflare и создай Pages-проект из этого GitHub-репозитория.
-2. Подключи репозиторий `iEgor72/shift-tracker-app`.
-3. Создай D1 database в Cloudflare.
-4. В настройках Pages добавь binding `DB` на эту D1 database.
-5. После деплоя открой выданный URL.
-6. Этот URL поставь в Telegram-боте как Web App URL.
-7. В Telegram открой приложение и нажми `Добавить на экран`.
+- [`index.html`](/D:/work/bloknot-mashinista-tg/index.html) - app UI and auth gate.
+- [`functions/api/auth.js`](/D:/work/bloknot-mashinista-tg/functions/api/auth.js) - Telegram auth endpoint.
+- [`functions/api/shifts.js`](/D:/work/bloknot-mashinista-tg/functions/api/shifts.js) - per-user shifts API.
+- [`functions/_shared/telegram-auth.js`](/D:/work/bloknot-mashinista-tg/functions/_shared/telegram-auth.js) - shared Telegram verification helpers.
+- [`wrangler.toml`](/D:/work/bloknot-mashinista-tg/wrangler.toml) - Cloudflare Pages config.
 
-## Файлы
+## Local note
 
-- [`index.html`](./index.html) - интерфейс приложения.
-- [`functions/api/shifts.js`](./functions/api/shifts.js) - API для чтения и сохранения смен.
-- [`wrangler.toml`](./wrangler.toml) - базовая конфигурация Cloudflare Pages.
-
-## Локальный запуск
-
-Если хочешь проверить страницу локально:
-
-```bash
-npm start
-```
-
-Тогда будет доступен локальный сервер на `http://localhost:3000`.
+The local `server.js` file is only a simple static/dev server. The real synced auth flow works on Cloudflare Pages with D1 and the Telegram bot token secret.
