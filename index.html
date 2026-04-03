@@ -60,7 +60,7 @@
       background: linear-gradient(180deg, rgba(30, 30, 50, 0.94), rgba(23, 23, 39, 0.98));
       border: 1px solid var(--border);
       border-radius: var(--radius);
-      padding: 22px 18px 18px;
+      padding: 20px 18px 16px;
       box-shadow: 0 24px 60px rgba(0, 0, 0, 0.30);
       position: relative;
       overflow: hidden;
@@ -74,28 +74,11 @@
       pointer-events: none;
     }
 
-    .auth-brand {
-      display: inline-flex;
-      align-items: center;
-      gap: 8px;
-      padding: 6px 10px;
-      border-radius: 999px;
-      background: rgba(79, 142, 247, 0.10);
-      border: 1px solid rgba(79, 142, 247, 0.18);
-      color: #cfe0ff;
-      font-size: 12px;
-      font-weight: 600;
-      letter-spacing: 0.2px;
-      margin-bottom: 14px;
-      position: relative;
-      z-index: 1;
-    }
-
     .auth-title {
-      font-size: 22px;
-      line-height: 1.15;
+      font-size: 20px;
+      line-height: 1.2;
       font-weight: 800;
-      margin-bottom: 10px;
+      margin-bottom: 8px;
       position: relative;
       z-index: 1;
     }
@@ -104,17 +87,18 @@
       font-size: 14px;
       line-height: 1.55;
       color: var(--text-muted);
-      margin-bottom: 12px;
+      margin-bottom: 14px;
       position: relative;
       z-index: 1;
     }
 
-    .auth-hint {
+    .auth-note {
       font-size: 12px;
       line-height: 1.5;
       color: var(--text-muted);
-      margin-top: 12px;
-      opacity: 0.85;
+      margin: 10px 0 12px;
+      min-height: 18px;
+      opacity: 0.9;
       position: relative;
       z-index: 1;
     }
@@ -123,14 +107,15 @@
       font-size: 13px;
       line-height: 1.5;
       color: var(--text);
-      margin-bottom: 10px;
+      margin: 8px 0 6px;
+      min-height: 20px;
       position: relative;
       z-index: 1;
     }
 
     .auth-widget {
-      min-height: 42px;
-      margin: 10px 0 10px;
+      min-height: 44px;
+      margin: 12px 0 8px;
       display: flex;
       justify-content: center;
       position: relative;
@@ -145,38 +130,30 @@
       font-size: 13px;
       line-height: 1.5;
       color: var(--danger);
-      margin-top: 10px;
-      min-height: 0;
+      margin-top: 8px;
+      min-height: 18px;
       position: relative;
       z-index: 1;
     }
 
-    .auth-actions {
-      display: flex;
-      gap: 10px;
-      margin-top: 12px;
-      flex-wrap: wrap;
-      position: relative;
-      z-index: 1;
-    }
-
-    .btn-auth-secondary {
-      flex: 1;
-      min-width: 0;
+    .auth-retry {
+      display: none;
+      margin-top: 6px;
+      font-size: 13px;
+      line-height: 1.4;
+      color: var(--accent-hover);
       background: transparent;
-      color: var(--text);
-      border: 1px solid var(--border);
-      border-radius: var(--radius-sm);
-      font-size: 14px;
-      padding: 11px 14px;
+      border: none;
+      padding: 0;
       cursor: pointer;
-      min-height: 44px;
-      transition: border-color 0.15s, background 0.15s;
+      text-align: left;
+      position: relative;
+      z-index: 1;
+      -webkit-tap-highlight-color: transparent;
     }
 
-    .btn-auth-secondary:active {
-      border-color: var(--accent);
-      background: rgba(79, 142, 247, 0.1);
+    .auth-retry.visible {
+      display: inline-block;
     }
 
     .hidden { display: none !important; }
@@ -586,20 +563,15 @@
 <body>
   <div class="auth-gate" id="authGate">
     <div class="auth-card">
-      <div class="auth-brand">Telegram login</div>
       <div class="auth-title">Войти и открыть свои смены</div>
       <div class="auth-text" id="authMessage">
-        Открой приложение через Telegram, и оно войдет само. Если ты в Safari, Chrome или на домашнем экране, просто подтверди вход один раз, и дальше все смены будут на месте.
+        Открой приложение через Telegram или браузер и подтверди вход один раз. Дальше твои смены будут одинаковыми на всех устройствах.
       </div>
       <div class="auth-status" id="authStatus"></div>
       <div class="auth-widget" id="telegramLoginWidget"></div>
       <div class="auth-error" id="authError"></div>
-      <div class="auth-hint">
-        Если вход не появляется, проверь домен сайта в BotFather и просто нажми «Повторить вход».
-      </div>
-      <div class="auth-actions">
-        <button class="btn-auth-secondary" id="btnAuthRetry" type="button">Повторить вход</button>
-      </div>
+      <div class="auth-note" id="authNote">После входа появится твоя личная страница со сменами.</div>
+      <button class="auth-retry" id="btnAuthRetry" type="button">Повторить вход</button>
     </div>
   </div>
 
@@ -775,6 +747,7 @@
     var AUTH_MESSAGE = document.getElementById('authMessage');
     var AUTH_STATUS = document.getElementById('authStatus');
     var AUTH_ERROR = document.getElementById('authError');
+    var AUTH_NOTE = document.getElementById('authNote');
     var AUTH_WIDGET = document.getElementById('telegramLoginWidget');
     var APP_SHELL = document.getElementById('appShell');
     var AUTH_WIDGET_READY = false;
@@ -805,6 +778,11 @@
     function setAuthFeedback(message, errorMessage) {
       if (AUTH_STATUS) AUTH_STATUS.textContent = message || '';
       if (AUTH_ERROR) AUTH_ERROR.textContent = errorMessage || '';
+      if (AUTH_NOTE) AUTH_NOTE.textContent = errorMessage ? 'Проверь вход и попробуй ещё раз.' : 'Вход появится здесь, когда Telegram или браузер подтвердит учётку.';
+      var retryBtn = document.getElementById('btnAuthRetry');
+      if (retryBtn) {
+        retryBtn.classList.toggle('visible', !!errorMessage);
+      }
     }
 
     function showAuthGate(message, errorMessage) {
