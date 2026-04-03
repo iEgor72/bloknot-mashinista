@@ -3527,7 +3527,6 @@
     var activeTab = 'home';
     var activeShiftMenuId = null;
     var activeShiftMenuScope = null;
-    var activeShiftMenuTab = null;
 
     // ── Timezone ──
     var deviceTimezone = 'Europe/Moscow';
@@ -4913,15 +4912,10 @@
 
       renderSalaryPanel();
 
-      if (activeShiftMenuId !== null && SHIFT_ACTIONS_MENU && isShiftActionsMenuContextValid()) {
+      if (activeShiftMenuId !== null && SHIFT_ACTIONS_MENU) {
         renderShiftActionsMenu(activeShiftMenuId);
       } else if (SHIFT_ACTIONS_MENU) {
-        SHIFT_ACTIONS_MENU.classList.add('hidden');
-        SHIFT_ACTIONS_MENU.setAttribute('aria-hidden', 'true');
-        if (SHIFT_ACTIONS_BACKDROP) {
-          SHIFT_ACTIONS_BACKDROP.classList.add('hidden');
-          SHIFT_ACTIONS_BACKDROP.setAttribute('aria-hidden', 'true');
-        }
+        hideShiftActionsMenuOnly();
       }
     }
     function clearRecentAddHighlight() {
@@ -5275,23 +5269,6 @@
       };
     }
 
-    function getVisibleOverlayEl() {
-      var overlays = document.querySelectorAll('.overlay.visible');
-      return overlays && overlays.length ? overlays[0] : null;
-    }
-
-    function isShiftActionsMenuContextValid() {
-      if (activeShiftMenuId === null) return false;
-      if (activeShiftMenuTab !== activeTab) return false;
-      if (editingShiftId) return false;
-      if (getVisibleOverlayEl()) return false;
-
-      var els = getShiftActionsMenuEls();
-      if (!els.menuEl || els.menuEl.classList.contains('hidden')) return false;
-      if (!els.triggerEl || !els.shiftEl) return false;
-      return true;
-    }
-
     function hideShiftActionsMenuOnly() {
       if (SHIFT_ACTIONS_MENU) {
         SHIFT_ACTIONS_MENU.classList.add('hidden');
@@ -5304,10 +5281,15 @@
     }
 
     function syncShiftActionsMenuLifecycle() {
-      if (activeShiftMenuId !== null && !isShiftActionsMenuContextValid()) {
+      if (activeShiftMenuId === null) {
+        hideShiftActionsMenuOnly();
+        return;
+      }
+
+      var els = getShiftActionsMenuEls();
+      if (editingShiftId || !els.shiftEl || !els.triggerEl) {
         activeShiftMenuId = null;
         activeShiftMenuScope = null;
-        activeShiftMenuTab = null;
         hideShiftActionsMenuOnly();
       }
     }
@@ -5368,7 +5350,6 @@
       hideShiftActionsMenuOnly();
       activeShiftMenuId = null;
       activeShiftMenuScope = null;
-      activeShiftMenuTab = null;
       if (!skipRender) render();
     }
 
@@ -5376,10 +5357,8 @@
       if (activeShiftMenuId === id) {
         activeShiftMenuId = null;
         activeShiftMenuScope = null;
-        activeShiftMenuTab = null;
       } else {
         activeShiftMenuId = id;
-        activeShiftMenuTab = activeTab;
       }
       render();
     }
