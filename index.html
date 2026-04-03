@@ -604,62 +604,57 @@
     var footerEl = document.getElementById('timezoneFooter');
     footerEl.textContent = 'Часовой пояс: ' + deviceTimezone;
 
-    // ── Storage (CloudStorage with localStorage fallback) ──
-    function hasCloudStorage() {
+    var API_BASE_URL = window.SHIFT_API_BASE_URL || '';
+    var SHIFTS_API_URL = API_BASE_URL + '/api/shifts';
+
+    function getLocalFallbackShifts() {
       try {
-        return !!(window.Telegram && Telegram.WebApp && Telegram.WebApp.CloudStorage &&
-                  typeof Telegram.WebApp.CloudStorage.getItem === 'function');
-      } catch(e) { return false; }
-    }
-
-    function storageGet(key, callback) {
-      if (hasCloudStorage()) {
-        try {
-          Telegram.WebApp.CloudStorage.getItem(key, function(err, val) {
-            callback(err ? null : (val || null));
-          });
-        } catch(e) {
-          callback(localStorage.getItem(key));
-        }
-      } else {
-        callback(localStorage.getItem(key));
+        var val = localStorage.getItem(STORAGE_KEY);
+        if (!val) return [];
+        var parsed = JSON.parse(val);
+        return Array.isArray(parsed) ? parsed : [];
+      } catch(e) {
+        return [];
       }
     }
 
-    function storageSet(key, value, callback) {
-      // Always save to localStorage as backup
-      try { localStorage.setItem(key, value); } catch(e) {}
-
-      if (hasCloudStorage()) {
-        try {
-          Telegram.WebApp.CloudStorage.setItem(key, value, function(err) {
-            if (callback) callback(err);
-          });
-        } catch(e) {
-          if (callback) callback(null);
-        }
-      } else {
-        if (callback) callback(null);
-      }
+    function saveLocalFallbackShifts(shifts) {
+      try { localStorage.setItem(STORAGE_KEY, JSON.stringify(shifts)); } catch(e) {}
     }
 
     // ── Load / Save shifts ──
     function loadShifts(callback) {
-      storageGet(STORAGE_KEY, function(val) {
-        if (val) {
-          try { allShifts = JSON.parse(val); } catch(e) { allShifts = []; }
-        } else {
-          allShifts = [];
-        }
-        // Validate array
-        if (!Array.isArray(allShifts)) allShifts = [];
-        callback();
-      });
+      fetch(SHIFTS_API_URL, { headers: { 'Accept': 'application/json' } })
+        .then(function(res) {
+          if (!res.ok) throw new Error('API load failed');
+          return res.json();
+        })
+        .then(function(data) {
+          allShifts = Array.isArray(data && data.shifts) ? data.shifts : [];
+          callback();
+        })
+        .catch(function() {
+          allShifts = getLocalFallbackShifts();
+          callback();
+        });
     }
 
     function saveShifts(callback) {
       var json = JSON.stringify(allShifts);
-      storageSet(STORAGE_KEY, json, callback || function(){});
+      fetch(SHIFTS_API_URL, {
+        method: 'PUT',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ shifts: allShifts })
+      })
+        .then(function(res) {
+          if (!res.ok) throw new Error('API save failed');
+          saveLocalFallbackShifts(allShifts);
+          if (callback) callback(null);
+        })
+        .catch(function(err) {
+          saveLocalFallbackShifts(allShifts);
+          if (callback) callback(err);
+        });
     }
 
     // ── Time helpers ──
