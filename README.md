@@ -23,6 +23,15 @@ Telegram shift tracker with one shared account per Telegram user.
 3. Bind the database to the Pages project as `DB`.
 4. Add a Pages secret named `TELEGRAM_BOT_TOKEN` with your bot token.
 5. In BotFather, make sure the bot domain for Telegram Login is set to your Pages domain.
+6. Point the bot webhook to `https://shift-tracker-app.pages.dev/api/telegram-webhook`.
+
+### One-time webhook setup
+
+Open this URL in a browser, replacing `<BOT_TOKEN>` with your bot token:
+
+`https://api.telegram.org/bot<BOT_TOKEN>/setWebhook?url=https://shift-tracker-app.pages.dev/api/telegram-webhook`
+
+After that, send `/start` to the bot and it will answer with a button that opens the mini-app.
 
 ## Files
 
