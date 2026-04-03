@@ -3528,8 +3528,6 @@
     var activeShiftMenuId = null;
     var activeShiftMenuScope = null;
     var activeShiftMenuTab = null;
-    var activeShiftMenuRenderEpoch = 0;
-    var uiRenderEpoch = 0;
 
     // ── Timezone ──
     var deviceTimezone = 'Europe/Moscow';
@@ -4814,7 +4812,6 @@
     }
 
     function render() {
-      uiRenderEpoch++;
       syncShiftActionsMenuLifecycle();
 
       // Month title
@@ -5283,7 +5280,6 @@
     function isShiftActionsMenuContextValid() {
       if (activeShiftMenuId === null) return false;
       if (activeShiftMenuTab !== activeTab) return false;
-      if (activeShiftMenuRenderEpoch !== uiRenderEpoch) return false;
       if (editingShiftId) return false;
       if (getVisibleOverlayEl()) return false;
 
@@ -5309,7 +5305,6 @@
         activeShiftMenuId = null;
         activeShiftMenuScope = null;
         activeShiftMenuTab = null;
-        activeShiftMenuRenderEpoch = 0;
         hideShiftActionsMenuOnly();
       }
     }
@@ -5371,7 +5366,6 @@
       activeShiftMenuId = null;
       activeShiftMenuScope = null;
       activeShiftMenuTab = null;
-      activeShiftMenuRenderEpoch = 0;
       if (!skipRender) render();
     }
 
@@ -5380,11 +5374,9 @@
         activeShiftMenuId = null;
         activeShiftMenuScope = null;
         activeShiftMenuTab = null;
-        activeShiftMenuRenderEpoch = 0;
       } else {
         activeShiftMenuId = id;
         activeShiftMenuTab = activeTab;
-        activeShiftMenuRenderEpoch = uiRenderEpoch + 1;
       }
       render();
     }
