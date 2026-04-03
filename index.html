@@ -48,57 +48,159 @@
       align-items: center;
       justify-content: center;
       padding: 28px 16px;
+      position: relative;
+      overflow: hidden;
       background:
-        radial-gradient(circle at top, rgba(79, 142, 247, 0.20), transparent 32%),
-        radial-gradient(circle at bottom right, rgba(76, 175, 125, 0.12), transparent 28%),
-        linear-gradient(180deg, #10111d 0%, #0f0f1a 100%);
+        radial-gradient(circle at top, rgba(104, 149, 255, 0.22), transparent 30%),
+        radial-gradient(circle at 20% 80%, rgba(76, 175, 125, 0.10), transparent 28%),
+        radial-gradient(circle at 85% 18%, rgba(128, 101, 255, 0.12), transparent 24%),
+        linear-gradient(180deg, #0d1020 0%, #0a0d18 100%);
     }
 
     .auth-card {
       width: 100%;
-      max-width: 420px;
-      background: linear-gradient(180deg, rgba(30, 30, 50, 0.94), rgba(23, 23, 39, 0.98));
-      border: 1px solid var(--border);
-      border-radius: var(--radius);
-      padding: 20px 18px 16px;
-      box-shadow: 0 24px 60px rgba(0, 0, 0, 0.30);
+      max-width: 480px;
+      background:
+        linear-gradient(180deg, rgba(26, 29, 50, 0.96), rgba(15, 17, 30, 0.98)),
+        var(--bg-card);
+      border: 1px solid rgba(128, 146, 214, 0.22);
+      border-radius: 24px;
+      padding: 24px 22px 20px;
+      box-shadow:
+        0 30px 90px rgba(0, 0, 0, 0.48),
+        inset 0 1px 0 rgba(255, 255, 255, 0.04);
       position: relative;
       overflow: hidden;
+      backdrop-filter: blur(16px);
     }
 
     .auth-card::before {
       content: '';
       position: absolute;
       inset: 0;
-      background: linear-gradient(135deg, rgba(255,255,255,0.08), transparent 28%);
+      background: linear-gradient(145deg, rgba(255,255,255,0.10), transparent 26%);
       pointer-events: none;
     }
 
+    .auth-card::after {
+      content: '';
+      position: absolute;
+      width: 210px;
+      height: 210px;
+      right: -90px;
+      top: -100px;
+      border-radius: 50%;
+      background: radial-gradient(circle, rgba(79, 142, 247, 0.16), transparent 66%);
+      pointer-events: none;
+    }
+
+    .auth-kicker {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      width: fit-content;
+      padding: 7px 12px;
+      margin-bottom: 14px;
+      border-radius: 999px;
+      background: rgba(79, 142, 247, 0.14);
+      border: 1px solid rgba(79, 142, 247, 0.22);
+      color: #dbe7ff;
+      font-size: 11px;
+      font-weight: 700;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      position: relative;
+      z-index: 1;
+    }
+
+    .auth-kicker::before {
+      content: '';
+      width: 7px;
+      height: 7px;
+      border-radius: 50%;
+      background: #77d18f;
+      box-shadow: 0 0 0 4px rgba(119, 209, 143, 0.14);
+    }
+
     .auth-title {
-      font-size: 20px;
-      line-height: 1.2;
-      font-weight: 800;
-      margin-bottom: 8px;
+      font-size: 28px;
+      line-height: 1.06;
+      letter-spacing: -0.03em;
+      font-weight: 850;
+      margin-bottom: 12px;
       position: relative;
       z-index: 1;
     }
 
     .auth-text {
-      font-size: 14px;
-      line-height: 1.55;
-      color: var(--text-muted);
-      margin-bottom: 14px;
+      font-size: 15px;
+      line-height: 1.6;
+      color: #c2c8e3;
+      max-width: 38ch;
+      margin-bottom: 18px;
       position: relative;
       z-index: 1;
+    }
+
+    .auth-pills {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      margin-bottom: 16px;
+      position: relative;
+      z-index: 1;
+    }
+
+    .auth-pill {
+      padding: 8px 11px;
+      border-radius: 999px;
+      background: rgba(255, 255, 255, 0.05);
+      border: 1px solid rgba(255, 255, 255, 0.08);
+      color: #d5daf0;
+      font-size: 12px;
+      line-height: 1.2;
+      white-space: nowrap;
+    }
+
+    .auth-panel {
+      position: relative;
+      z-index: 1;
+      padding: 16px;
+      border-radius: 20px;
+      background: linear-gradient(180deg, rgba(255, 255, 255, 0.06), rgba(255, 255, 255, 0.03));
+      border: 1px solid rgba(255, 255, 255, 0.08);
+      box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.03);
+    }
+
+    .auth-panel-head {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      margin-bottom: 10px;
+    }
+
+    .auth-panel-label {
+      font-size: 11px;
+      line-height: 1.2;
+      font-weight: 700;
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+      color: #97a1c7;
+    }
+
+    .auth-panel-copy {
+      font-size: 12px;
+      line-height: 1.4;
+      color: var(--text-muted);
     }
 
     .auth-note {
       font-size: 12px;
       line-height: 1.5;
-      color: var(--text-muted);
-      margin: 10px 0 12px;
+      color: #a6aed0;
+      margin: 12px 0 0;
       min-height: 18px;
-      opacity: 0.9;
       position: relative;
       z-index: 1;
     }
@@ -106,16 +208,25 @@
     .auth-status {
       font-size: 13px;
       line-height: 1.5;
-      color: var(--text);
-      margin: 8px 0 6px;
-      min-height: 20px;
+      color: #eef2ff;
+      margin: 0 0 10px;
+      min-height: 22px;
+      padding: 10px 12px;
+      border-radius: 14px;
+      background: rgba(79, 142, 247, 0.10);
+      border: 1px solid rgba(79, 142, 247, 0.16);
       position: relative;
       z-index: 1;
     }
 
+    .auth-gate.has-error .auth-status {
+      background: rgba(224, 85, 85, 0.12);
+      border-color: rgba(224, 85, 85, 0.22);
+    }
+
     .auth-widget {
-      min-height: 44px;
-      margin: 12px 0 8px;
+      min-height: 52px;
+      margin: 0;
       display: flex;
       justify-content: center;
       position: relative;
@@ -123,6 +234,7 @@
     }
 
     .auth-widget > * {
+      width: 100%;
       max-width: 100%;
     }
 
@@ -130,7 +242,7 @@
       font-size: 13px;
       line-height: 1.5;
       color: var(--danger);
-      margin-top: 8px;
+      margin-top: 10px;
       min-height: 18px;
       position: relative;
       z-index: 1;
@@ -138,22 +250,32 @@
 
     .auth-retry {
       display: none;
-      margin-top: 6px;
+      margin-top: 0;
+      margin-left: auto;
       font-size: 13px;
-      line-height: 1.4;
-      color: var(--accent-hover);
-      background: transparent;
-      border: none;
-      padding: 0;
+      line-height: 1.2;
+      color: #d7e4ff;
+      background: rgba(79, 142, 247, 0.12);
+      border: 1px solid rgba(79, 142, 247, 0.22);
+      border-radius: 999px;
+      padding: 8px 12px;
       cursor: pointer;
       text-align: left;
       position: relative;
       z-index: 1;
+      transition: transform 0.18s ease, background 0.18s ease, border-color 0.18s ease;
       -webkit-tap-highlight-color: transparent;
     }
 
+    .auth-retry:hover {
+      background: rgba(79, 142, 247, 0.18);
+      border-color: rgba(107, 163, 255, 0.34);
+      transform: translateY(-1px);
+    }
+
     .auth-retry.visible {
-      display: inline-block;
+      display: inline-flex;
+      align-items: center;
     }
 
     .hidden { display: none !important; }
@@ -563,15 +685,27 @@
 <body>
   <div class="auth-gate" id="authGate">
     <div class="auth-card">
+      <div class="auth-kicker">Безопасный вход</div>
       <div class="auth-title">Войти и открыть свои смены</div>
       <div class="auth-text" id="authMessage">
-        Открой приложение через Telegram или браузер и подтверди вход один раз. Дальше твои смены будут одинаковыми на всех устройствах.
+        Открой приложение через Telegram или браузер и подтверди вход один раз. После этого смены будут синхронизироваться на всех устройствах.
       </div>
-      <div class="auth-status" id="authStatus"></div>
-      <div class="auth-widget" id="telegramLoginWidget"></div>
-      <div class="auth-error" id="authError"></div>
-      <div class="auth-note" id="authNote">После входа появится твоя личная страница со сменами.</div>
-      <button class="auth-retry" id="btnAuthRetry" type="button">Повторить вход</button>
+      <div class="auth-pills" aria-hidden="true">
+        <div class="auth-pill">Один вход</div>
+        <div class="auth-pill">Telegram или браузер</div>
+        <div class="auth-pill">Смена сразу подгрузится</div>
+      </div>
+      <div class="auth-panel">
+        <div class="auth-panel-head">
+          <div class="auth-panel-label">Авторизация</div>
+          <button class="auth-retry" id="btnAuthRetry" type="button">Повторить вход</button>
+        </div>
+        <div class="auth-panel-copy">Нажми кнопку ниже и подтверди доступ один раз.</div>
+        <div class="auth-status" id="authStatus"></div>
+        <div class="auth-widget" id="telegramLoginWidget"></div>
+        <div class="auth-error" id="authError"></div>
+      </div>
+      <div class="auth-note" id="authNote">После входа здесь появится твоя личная страница со сменами.</div>
     </div>
   </div>
 
@@ -788,6 +922,7 @@
     function showAuthGate(message, errorMessage) {
       if (AUTH_GATE) AUTH_GATE.classList.remove('hidden');
       if (APP_SHELL) APP_SHELL.classList.add('hidden');
+      if (AUTH_GATE) AUTH_GATE.classList.toggle('has-error', !!errorMessage);
       setAuthFeedback(message || AUTH_MESSAGE.textContent, errorMessage || '');
     }
 
@@ -810,7 +945,7 @@
       script.async = true;
       script.src = 'https://telegram.org/js/telegram-widget.js?22';
       script.setAttribute('data-telegram-login', TELEGRAM_BOT_USERNAME);
-      script.setAttribute('data-size', 'small');
+      script.setAttribute('data-size', 'large');
       script.setAttribute('data-request-access', 'write');
       script.setAttribute('data-auth-url', window.location.origin + '/api/auth?mode=telegram-login&return=' + encodeURIComponent(getLoginReturnUrl()));
       AUTH_WIDGET.appendChild(script);
