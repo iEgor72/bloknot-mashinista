@@ -264,14 +264,19 @@
       font-size: 13px;
       line-height: 1.5;
       color: #f7dba1;
-      background: rgba(247, 185, 85, 0.1);
-      border: 1px solid rgba(247, 185, 85, 0.18);
+      background: rgba(247, 185, 85, 0.08);
+      border: 1px solid rgba(247, 185, 85, 0.14);
       border-radius: var(--radius-sm);
       padding: 10px 12px;
       margin-bottom: 12px;
     }
 
     .edit-summary.visible { display: block; }
+
+    .edit-summary.is-brief {
+      font-size: 12px;
+      color: #ffe7b0;
+    }
 
     .form-hint {
       font-size: 12px;
@@ -718,7 +723,7 @@
         <div class="form-title" id="formTitle">Добавить смену</div>
         <div class="edit-badge" id="editBadge">Режим редактирования</div>
       </div>
-      <div class="edit-summary" id="editSummary"></div>
+      <div class="edit-summary is-brief" id="editSummary"></div>
       <div class="form-hint">Время указывается в МСК</div>
 
       <div class="field">
@@ -1399,7 +1404,7 @@
       document.getElementById('formTitle').textContent = 'Редактировать смену';
       document.getElementById('editBadge').classList.add('visible');
       document.getElementById('editSummary').textContent =
-        'Вы редактируете смену: ' + fmtShift(shift).text + ' · ' + fmtShift(shift).dur;
+        'Ниже подсвечена редактируемая смена в списке';
       document.getElementById('editSummary').classList.add('visible');
       document.getElementById('inputStartDate').value = shift.start_msk.substring(0, 10);
       document.getElementById('inputStartTime').value = shift.start_msk.substring(11, 16);
