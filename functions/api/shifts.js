@@ -83,65 +83,72 @@ async function writeUserShifts(db, userId, shifts) {
 }
 
 export async function onRequest(context) {
-  var request = context.request;
-  var env = context.env || {};
-  var botToken = env.TELEGRAM_BOT_TOKEN;
+  try {
+    var request = context.request;
+    var env = context.env || {};
+    var botToken = env.TELEGRAM_BOT_TOKEN;
 
-  if (request.method === 'OPTIONS') {
-    return new Response(null, {
-      status: 204,
-      headers: {
-        'Cache-Control': 'no-store',
-      },
-    });
-  }
-
-  if (!env.DB) {
-    return json(500, {
-      error: 'D1 database binding is missing. Add DB in the Cloudflare Pages project settings.',
-    });
-  }
-
-  if (!botToken) {
-    return json(500, {
-      error: 'TELEGRAM_BOT_TOKEN is missing. Add it as a Pages secret.',
-    });
-  }
-
-  await ensureSchema(env.DB);
-
-  var user = await getSessionUser(request, botToken);
-  if (!user) {
-    return json(401, { error: 'Unauthorized' });
-  }
-
-  if (request.method === 'GET') {
-    var shifts = await readUserShifts(env.DB, user.id);
-    return json(200, {
-      user: user,
-      shifts: shifts,
-    });
-  }
-
-  if (request.method === 'PUT') {
-    try {
-      var body = await request.json();
-      var shiftsValue = Array.isArray(body && body.shifts) ? body.shifts : null;
-
-      if (!shiftsValue) {
-        return json(400, { error: 'Expected { shifts: [] }' });
-      }
-
-      await writeUserShifts(env.DB, user.id, shiftsValue);
-      return json(200, {
-        ok: true,
-        user: user,
-        shifts: shiftsValue,
+    if (request.method === 'OPTIONS') {
+      return new Response(null, {
+        status: 204,
+        headers: {
+          'Cache-Control': 'no-store',
+        },
       });
-    } catch (err) {
-      return json(400, { error: err.message || 'Invalid payload' });
     }
-  }
 
-  return json(405, { error: 'Method not allowed' });
+    if (!env.DB) {
+      return json(500, {
+        error: 'D1 database binding is missing. Add DB in the Cloudflare Pages project settings.',
+      });
+    }
+
+    if (!botToken) {
+      return json(500, {
+        error: 'TELEGRAM_BOT_TOKEN is missing. Add it as a Pages secret.',
+      });
+    }
+
+    await ensureSchema(env.DB);
+
+    var user = await getSessionUser(request, botToken);
+    if (!user) {
+      return json(401, { error: 'Unauthorized' });
+    }
+
+    if (request.method === 'GET') {
+      var shifts = await readUserShifts(env.DB, user.id);
+      return json(200, {
+        user: user,
+        shifts: shifts,
+      });
+    }
+
+    if (request.method === 'PUT') {
+      try {
+        var body = await request.json();
+        var shiftsValue = Array.isArray(body && body.shifts) ? body.shifts : null;
+
+        if (!shiftsValue) {
+          return json(400, { error: 'Expected { shifts: [] }' });
+        }
+
+        await writeUserShifts(env.DB, user.id, shiftsValue);
+        return json(200, {
+          ok: true,
+          user: user,
+          shifts: shiftsValue,
+        });
+      } catch (err) {
+        return json(400, { error: err.message || 'Invalid payload' });
+      }
+    }
+
+    return json(405, { error: 'Method not allowed' });
+  } catch (err) {
+    return json(500, {
+      error: err && err.message ? err.message : 'Unexpected error',
+      stack: err && err.stack ? String(err.stack) : null,
+    });
+  }
 }
