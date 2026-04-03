@@ -1228,6 +1228,15 @@
     var AUTH_WIDGET_READY = false;
     var authBootstrapPromise = null;
     var SESSION_STORAGE_KEY = 'shift_tracker_session_token';
+    var DEV_BYPASS_AUTH = !!window.SHIFT_DEV_BYPASS_AUTH ||
+      window.location.hostname === 'localhost' ||
+      window.location.hostname === '127.0.0.1' ||
+      window.location.search.indexOf('dev=1') !== -1;
+    var DEV_USER = {
+      id: 'dev-local',
+      display_name: 'Local Preview',
+      username: 'local-preview'
+    };
 
     function getStoredSessionToken() {
       try {
@@ -1389,6 +1398,17 @@
     }
 
     function ensureAuthenticated() {
+      if (DEV_BYPASS_AUTH) {
+        if (!authBootstrapPromise) {
+          authBootstrapPromise = Promise.resolve(DEV_USER).then(function(user) {
+            CURRENT_USER = user;
+            showAppShell();
+            return user;
+          });
+        }
+        return authBootstrapPromise;
+      }
+
       if (!authBootstrapPromise) {
         authBootstrapPromise = authenticateWithTelegramWebApp()
           .then(function(user) {
