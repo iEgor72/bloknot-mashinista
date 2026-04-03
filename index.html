@@ -47,30 +47,66 @@
       display: flex;
       align-items: center;
       justify-content: center;
-      padding: 24px 16px;
+      padding: 28px 16px;
+      background:
+        radial-gradient(circle at top, rgba(79, 142, 247, 0.20), transparent 32%),
+        radial-gradient(circle at bottom right, rgba(76, 175, 125, 0.12), transparent 28%),
+        linear-gradient(180deg, #10111d 0%, #0f0f1a 100%);
     }
 
     .auth-card {
       width: 100%;
       max-width: 420px;
-      background: var(--bg-card);
+      background: linear-gradient(180deg, rgba(30, 30, 50, 0.94), rgba(23, 23, 39, 0.98));
       border: 1px solid var(--border);
       border-radius: var(--radius);
-      padding: 24px 20px;
-      box-shadow: 0 20px 50px rgba(0, 0, 0, 0.25);
+      padding: 22px 18px 18px;
+      box-shadow: 0 24px 60px rgba(0, 0, 0, 0.30);
+      position: relative;
+      overflow: hidden;
+    }
+
+    .auth-card::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(135deg, rgba(255,255,255,0.08), transparent 28%);
+      pointer-events: none;
+    }
+
+    .auth-brand {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 6px 10px;
+      border-radius: 999px;
+      background: rgba(79, 142, 247, 0.10);
+      border: 1px solid rgba(79, 142, 247, 0.18);
+      color: #cfe0ff;
+      font-size: 12px;
+      font-weight: 600;
+      letter-spacing: 0.2px;
+      margin-bottom: 14px;
+      position: relative;
+      z-index: 1;
     }
 
     .auth-title {
-      font-size: 20px;
-      font-weight: 700;
-      margin-bottom: 8px;
+      font-size: 22px;
+      line-height: 1.15;
+      font-weight: 800;
+      margin-bottom: 10px;
+      position: relative;
+      z-index: 1;
     }
 
     .auth-text {
       font-size: 14px;
-      line-height: 1.6;
+      line-height: 1.55;
       color: var(--text-muted);
-      margin-bottom: 16px;
+      margin-bottom: 12px;
+      position: relative;
+      z-index: 1;
     }
 
     .auth-hint {
@@ -79,18 +115,30 @@
       color: var(--text-muted);
       margin-top: 12px;
       opacity: 0.85;
+      position: relative;
+      z-index: 1;
     }
 
     .auth-status {
       font-size: 13px;
       line-height: 1.5;
       color: var(--text);
-      margin-bottom: 14px;
+      margin-bottom: 10px;
+      position: relative;
+      z-index: 1;
     }
 
     .auth-widget {
-      min-height: 48px;
-      margin: 8px 0 12px;
+      min-height: 42px;
+      margin: 10px 0 10px;
+      display: flex;
+      justify-content: center;
+      position: relative;
+      z-index: 1;
+    }
+
+    .auth-widget > * {
+      max-width: 100%;
     }
 
     .auth-error {
@@ -99,13 +147,17 @@
       color: var(--danger);
       margin-top: 10px;
       min-height: 0;
+      position: relative;
+      z-index: 1;
     }
 
     .auth-actions {
       display: flex;
       gap: 10px;
-      margin-top: 14px;
+      margin-top: 12px;
       flex-wrap: wrap;
+      position: relative;
+      z-index: 1;
     }
 
     .btn-auth-secondary {
@@ -116,7 +168,7 @@
       border: 1px solid var(--border);
       border-radius: var(--radius-sm);
       font-size: 14px;
-      padding: 12px 14px;
+      padding: 11px 14px;
       cursor: pointer;
       min-height: 44px;
       transition: border-color 0.15s, background 0.15s;
@@ -534,19 +586,19 @@
 <body>
   <div class="auth-gate" id="authGate">
     <div class="auth-card">
-      <div class="auth-title">Вход через Telegram</div>
+      <div class="auth-brand">Telegram login</div>
+      <div class="auth-title">Войти и открыть свои смены</div>
       <div class="auth-text" id="authMessage">
-        Открой мини-апп в Telegram, и он войдет сам. Если открываешь ссылку в Safari, Chrome или на другом устройстве, войди через Telegram один раз - дальше данные будут одинаковыми везде.
+        Открой приложение через Telegram, и оно войдет само. Если ты в Safari, Chrome или на домашнем экране, просто подтверди вход один раз, и дальше все смены будут на месте.
       </div>
       <div class="auth-status" id="authStatus"></div>
       <div class="auth-widget" id="telegramLoginWidget"></div>
       <div class="auth-error" id="authError"></div>
       <div class="auth-hint">
-        Если вход не появляется, проверь, что домен сайта добавлен в BotFather для Telegram Login.
+        Если вход не появляется, проверь домен сайта в BotFather и просто нажми «Повторить вход».
       </div>
       <div class="auth-actions">
         <button class="btn-auth-secondary" id="btnAuthRetry" type="button">Повторить вход</button>
-        <button class="btn-auth-secondary" id="btnAuthLogout" type="button">Выйти</button>
       </div>
     </div>
   </div>
@@ -780,7 +832,7 @@
       script.async = true;
       script.src = 'https://telegram.org/js/telegram-widget.js?22';
       script.setAttribute('data-telegram-login', TELEGRAM_BOT_USERNAME);
-      script.setAttribute('data-size', 'large');
+      script.setAttribute('data-size', 'small');
       script.setAttribute('data-request-access', 'write');
       script.setAttribute('data-auth-url', window.location.origin + '/api/auth?mode=telegram-login&return=' + encodeURIComponent(getLoginReturnUrl()));
       AUTH_WIDGET.appendChild(script);
@@ -848,7 +900,7 @@
         AUTH_WIDGET_READY = false;
         if (AUTH_WIDGET) AUTH_WIDGET.innerHTML = '';
         updateFooter();
-        showAuthGate('Вход через Telegram', '');
+        showAuthGate('Готово к входу', '');
         renderTelegramLoginWidget();
       });
     }
@@ -868,7 +920,7 @@
             }
 
             CURRENT_USER = null;
-            showAuthGate('Вход через Telegram', '');
+            showAuthGate('Готово к входу', '');
             renderTelegramLoginWidget();
             return null;
           })
@@ -876,7 +928,7 @@
             CURRENT_USER = null;
             showAuthGate(
               'Не удалось войти',
-              (err && err.message) ? err.message : 'Проверь Telegram Bot Token и домен Telegram Login.'
+              (err && err.message) ? err.message : 'Проверь домен и нажми повтор.'
             );
             renderTelegramLoginWidget();
             return null;
@@ -1384,10 +1436,6 @@
           });
         }
       });
-    });
-
-    document.getElementById('btnAuthLogout').addEventListener('click', function() {
-      logout();
     });
 
     function fallbackCopy(text, btn) {
