@@ -765,7 +765,7 @@
       if (AUTH_GATE) AUTH_GATE.classList.remove('hidden');
       if (APP_SHELL) APP_SHELL.classList.add('hidden');
       if (AUTH_GATE) AUTH_GATE.classList.toggle('has-error', !!errorMessage);
-      setAuthFeedback(message || AUTH_MESSAGE.textContent, errorMessage || '');
+      setAuthFeedback(message || '', errorMessage || '');
     }
 
     function showAppShell() {
@@ -855,7 +855,7 @@
         AUTH_WIDGET_READY = false;
         if (AUTH_WIDGET) AUTH_WIDGET.innerHTML = '';
         updateFooter();
-        showAuthGate('Готово к входу', '');
+        showAuthGate('', '');
         renderTelegramLoginWidget();
       });
     }
@@ -875,7 +875,7 @@
             }
 
             CURRENT_USER = null;
-            showAuthGate('Готово к входу', '');
+            showAuthGate('', '');
             renderTelegramLoginWidget();
             return null;
           })
