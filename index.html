@@ -212,11 +212,56 @@
       margin-bottom: 20px;
     }
 
+    .form-section.is-editing {
+      border-color: rgba(79, 142, 247, 0.55);
+      box-shadow: 0 0 0 1px rgba(79, 142, 247, 0.14), 0 14px 28px rgba(0, 0, 0, 0.16);
+    }
+
     .form-title {
       font-size: 15px;
       font-weight: 600;
       margin-bottom: 4px;
     }
+
+    .form-title-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 10px;
+      margin-bottom: 4px;
+    }
+
+    .edit-badge {
+      display: none;
+      align-items: center;
+      gap: 6px;
+      padding: 6px 10px;
+      border-radius: 999px;
+      font-size: 11px;
+      font-weight: 700;
+      letter-spacing: 0.02em;
+      text-transform: uppercase;
+      color: var(--accent-hover);
+      background: rgba(79, 142, 247, 0.12);
+      border: 1px solid rgba(79, 142, 247, 0.2);
+      white-space: nowrap;
+    }
+
+    .edit-badge.visible { display: inline-flex; }
+
+    .edit-summary {
+      display: none;
+      font-size: 13px;
+      line-height: 1.5;
+      color: #bfd0ff;
+      background: rgba(79, 142, 247, 0.08);
+      border: 1px solid rgba(79, 142, 247, 0.14);
+      border-radius: var(--radius-sm);
+      padding: 10px 12px;
+      margin-bottom: 12px;
+    }
+
+    .edit-summary.visible { display: block; }
 
     .form-hint {
       font-size: 12px;
@@ -634,8 +679,12 @@
     </div>
 
     <!-- Add Shift Form -->
-    <div class="form-section">
-      <div class="form-title">Добавить смену</div>
+    <div class="form-section" id="shiftFormSection">
+      <div class="form-title-row">
+        <div class="form-title" id="formTitle">Добавить смену</div>
+        <div class="edit-badge" id="editBadge">Режим редактирования</div>
+      </div>
+      <div class="edit-summary" id="editSummary"></div>
       <div class="form-hint">Время указывается в МСК</div>
 
       <div class="field">
@@ -1285,7 +1334,12 @@
       if (!shift) return;
 
       editingShiftId = shift.id;
-      document.querySelector('.form-title').textContent = 'Редактировать смену';
+      document.getElementById('shiftFormSection').classList.add('is-editing');
+      document.getElementById('formTitle').textContent = 'Редактировать смену';
+      document.getElementById('editBadge').classList.add('visible');
+      document.getElementById('editSummary').textContent =
+        'Вы редактируете смену: ' + fmtShift(shift).text + ' · ' + fmtShift(shift).dur;
+      document.getElementById('editSummary').classList.add('visible');
       document.getElementById('inputStartDate').value = shift.start_msk.substring(0, 10);
       document.getElementById('inputStartTime').value = shift.start_msk.substring(11, 16);
       document.getElementById('inputEndDate').value = shift.end_msk.substring(0, 10);
@@ -1297,7 +1351,11 @@
 
     function exitEditMode() {
       editingShiftId = null;
-      document.querySelector('.form-title').textContent = 'Добавить смену';
+      document.getElementById('shiftFormSection').classList.remove('is-editing');
+      document.getElementById('formTitle').textContent = 'Добавить смену';
+      document.getElementById('editBadge').classList.remove('visible');
+      document.getElementById('editSummary').textContent = '';
+      document.getElementById('editSummary').classList.remove('visible');
       document.getElementById('btnAdd').textContent = 'Добавить смену';
       document.getElementById('btnCancelEdit').classList.add('hidden');
       clearErrors();
