@@ -156,7 +156,23 @@ async function verifyTelegramLoginParams(params, botToken) {
   if (!authDate) return null;
   if (Date.now() / 1000 - authDate > 60 * 60 * 24) return null;
 
-  var checkString = buildDataCheckString(params, new Set(['hash']));
+  var allowedKeys = new Set([
+    'auth_date',
+    'first_name',
+    'hash',
+    'id',
+    'last_name',
+    'photo_url',
+    'username',
+  ]);
+  var filtered = new URLSearchParams();
+  params.forEach(function (value, key) {
+    if (allowedKeys.has(key)) {
+      filtered.append(key, value);
+    }
+  });
+
+  var checkString = buildDataCheckString(filtered, new Set(['hash']));
   var secret = await telegramLoginSecret(botToken);
   var expected = await hmacHex(secret, checkString);
   if (!timingSafeEqual(expected, hash.toLowerCase())) return null;
