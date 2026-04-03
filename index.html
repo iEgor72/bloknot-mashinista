@@ -1,9 +1,9 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html lang="ru">
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
-  <title>Учёт смен</title>
+  <title>РЈС‡С‘С‚ СЃРјРµРЅ</title>
   <script src="https://telegram.org/js/telegram-web-app.js"></script>
   <style>
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
@@ -38,8 +38,9 @@
     .app {
       max-width: 480px;
       margin: 0 auto;
-      padding: 12px 16px 40px;
+      padding: 12px 16px 104px;
       min-height: 100vh;
+      position: relative;
     }
 
     .auth-gate {
@@ -134,7 +135,7 @@
 
     .hidden { display: none !important; }
 
-    /* ── Month Switcher ── */
+    /* в”Ђв”Ђ Month Switcher в”Ђв”Ђ */
     .month-nav {
       display: flex;
       align-items: center;
@@ -166,10 +167,287 @@
       letter-spacing: 0.3px;
     }
 
-    /* ── Stats Grid ── */
+    .tab-panel {
+      display: none;
+      margin-bottom: 18px;
+    }
+
+    .tab-panel.active { display: block; }
+
+    .dashboard-card {
+      background:
+        radial-gradient(circle at top right, rgba(79, 142, 247, 0.18), transparent 34%),
+        linear-gradient(180deg, rgba(28, 30, 52, 0.98), rgba(19, 20, 34, 0.98));
+      border: 1px solid rgba(123, 145, 214, 0.18);
+      border-radius: 18px;
+      padding: 16px;
+      box-shadow: 0 16px 30px rgba(0, 0, 0, 0.22);
+      margin-bottom: 12px;
+    }
+
+    .dashboard-head {
+      display: flex;
+      align-items: flex-start;
+      justify-content: space-between;
+      gap: 12px;
+      margin-bottom: 12px;
+    }
+
+    .dashboard-eyebrow {
+      font-size: 12px;
+      color: var(--text-muted);
+      letter-spacing: 0.5px;
+      font-weight: 700;
+      text-transform: uppercase;
+      margin-bottom: 8px;
+    }
+
+    .dashboard-value {
+      font-size: 30px;
+      font-weight: 800;
+      line-height: 1.05;
+      letter-spacing: -0.02em;
+    }
+
+    .dashboard-total {
+      font-size: 18px;
+      font-weight: 600;
+      color: var(--text-muted);
+    }
+
+    .dashboard-badge {
+      min-width: 52px;
+      padding: 7px 10px;
+      border-radius: 999px;
+      background: rgba(76, 175, 125, 0.18);
+      color: #9af0be;
+      text-align: center;
+      font-size: 13px;
+      font-weight: 700;
+      line-height: 1;
+    }
+
+    .dashboard-sub {
+      margin-top: 12px;
+      color: var(--text-muted);
+      font-size: 13px;
+      line-height: 1.45;
+    }
+
+    .progress-track {
+      margin-top: 14px;
+      background: rgba(255, 255, 255, 0.08);
+      border-radius: 999px;
+      height: 8px;
+      overflow: hidden;
+    }
+
+    .progress-fill {
+      height: 100%;
+      width: 0%;
+      border-radius: inherit;
+      background: linear-gradient(90deg, var(--accent), #8fe38c);
+      transition: width 0.2s ease;
+    }
+
+    .quick-stats-grid {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 10px;
+      margin-bottom: 18px;
+    }
+
+    .quick-stat {
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: 16px;
+      padding: 14px 12px 12px;
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+      min-height: 96px;
+      justify-content: space-between;
+    }
+
+    .quick-stat-value {
+      font-size: 18px;
+      font-weight: 800;
+      line-height: 1.1;
+    }
+
+    .section-header-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 10px;
+    }
+
+    .section-link {
+      background: none;
+      border: none;
+      color: var(--accent-hover);
+      font-size: 13px;
+      font-weight: 700;
+      cursor: pointer;
+      padding: 0;
+    }
+
+    .section-link:active { color: #9abfff; }
+
+    .compact-shift .shift-dates {
+      font-size: 13px;
+    }
+
+    .compact-shift .shift-duration {
+      font-size: 12px;
+    }
+
+    .compact-shift .shift-actions {
+      display: none;
+    }
+
+    .salary-card,
+    .settings-card {
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 16px;
+      margin-bottom: 14px;
+    }
+
+    .salary-hero {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+
+    .salary-title {
+      font-size: 22px;
+      font-weight: 800;
+      line-height: 1.1;
+    }
+
+    .salary-text {
+      color: var(--text-muted);
+      font-size: 14px;
+      line-height: 1.6;
+    }
+
+    .salary-chip {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 8px 10px;
+      border-radius: 999px;
+      background: rgba(79, 142, 247, 0.14);
+      color: #b7ccff;
+      font-size: 13px;
+      font-weight: 700;
+      width: fit-content;
+    }
+
+    .settings-list {
+      display: grid;
+      gap: 10px;
+      margin-top: 12px;
+    }
+
+    .settings-row {
+      display: flex;
+      justify-content: space-between;
+      gap: 12px;
+      align-items: center;
+      padding: 12px 0;
+      border-top: 1px solid rgba(255, 255, 255, 0.04);
+    }
+
+    .settings-row:first-child { border-top: none; padding-top: 0; }
+
+    .settings-label {
+      font-size: 14px;
+      font-weight: 600;
+    }
+
+    .settings-value {
+      font-size: 13px;
+      color: var(--text-muted);
+      text-align: right;
+    }
+
+    .bottom-nav {
+      position: fixed;
+      left: 50%;
+      bottom: 10px;
+      transform: translateX(-50%);
+      width: min(480px, calc(100vw - 16px));
+      z-index: 30;
+      pointer-events: none;
+    }
+
+    .bottom-nav-inner {
+      pointer-events: auto;
+      display: grid;
+      grid-template-columns: repeat(5, minmax(0, 1fr));
+      gap: 8px;
+      background: rgba(18, 18, 30, 0.9);
+      border: 1px solid rgba(133, 146, 214, 0.14);
+      border-radius: 22px;
+      padding: 8px;
+      backdrop-filter: blur(16px);
+      box-shadow: 0 20px 40px rgba(0, 0, 0, 0.28);
+    }
+
+    .tab-btn {
+      appearance: none;
+      border: none;
+      background: transparent;
+      color: var(--text-muted);
+      border-radius: 16px;
+      padding: 8px 4px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 2px;
+      cursor: pointer;
+      min-height: 48px;
+      transition: background 0.15s, color 0.15s, transform 0.15s;
+      -webkit-tap-highlight-color: transparent;
+    }
+
+    .tab-btn:active { transform: translateY(1px); }
+
+    .tab-btn.active {
+      background: rgba(79, 142, 247, 0.14);
+      color: var(--text);
+    }
+
+    .tab-btn.center {
+      background: linear-gradient(180deg, var(--accent-hover), var(--accent));
+      color: #fff;
+      box-shadow: 0 10px 18px rgba(79, 142, 247, 0.24);
+      transform: translateY(-12px);
+      min-height: 58px;
+    }
+
+    .tab-btn.center:active { transform: translateY(-10px); }
+
+    .tab-icon {
+      font-size: 16px;
+      line-height: 1;
+    }
+
+    .tab-label {
+      font-size: 11px;
+      line-height: 1.1;
+      font-weight: 700;
+      letter-spacing: 0.2px;
+    }
+
+    /* в”Ђв”Ђ Stats Grid в”Ђв”Ђ */
     .stats-grid {
       display: grid;
-      grid-template-columns: 1fr 1fr;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
       gap: 10px;
       margin-bottom: 20px;
     }
@@ -193,7 +471,7 @@
     }
 
     .stat-value {
-      font-size: 20px;
+      font-size: 18px;
       font-weight: 700;
       color: var(--text);
       line-height: 1.2;
@@ -205,7 +483,7 @@
     .stat-value.night { color: var(--accent); }
     .stat-value.holiday { color: var(--success); }
 
-    /* ── Form ── */
+    /* в”Ђв”Ђ Form в”Ђв”Ђ */
     .form-section {
       background: var(--bg-card);
       border: 1px solid var(--border);
@@ -344,7 +622,7 @@
 
     .form-success:empty { display: none; }
 
-    /* ── Shifts List ── */
+    /* в”Ђв”Ђ Shifts List в”Ђв”Ђ */
     .shifts-section { margin-bottom: 20px; }
 
     .section-header {
@@ -493,7 +771,7 @@
 
     .btn-link:active { color: var(--text); }
 
-    /* ── Secondary Button ── */
+    /* в”Ђв”Ђ Secondary Button в”Ђв”Ђ */
     .btn-secondary {
       width: 100%;
       background: transparent;
@@ -510,7 +788,7 @@
 
     .btn-secondary:active { color: var(--text); border-color: var(--text-muted); }
 
-    /* ── Footer ── */
+    /* в”Ђв”Ђ Footer в”Ђв”Ђ */
     .footer {
       text-align: center;
       font-size: 11px;
@@ -520,7 +798,7 @@
       opacity: 0.7;
     }
 
-    /* ── Overlay / Bottom Sheet ── */
+    /* в”Ђв”Ђ Overlay / Bottom Sheet в”Ђв”Ђ */
     .overlay {
       position: fixed;
       inset: 0;
@@ -624,7 +902,7 @@
       -webkit-tap-highlight-color: transparent;
     }
 
-    /* ── Confirm Dialog ── */
+    /* в”Ђв”Ђ Confirm Dialog в”Ђв”Ђ */
     .confirm-btns {
       display: flex;
       gap: 10px;
@@ -659,142 +937,211 @@
 <body>
   <div class="auth-gate" id="authGate">
     <div class="auth-card">
-      <div class="auth-title">Войти и открыть свои смены</div>
+      <div class="auth-title">Р’РѕР№С‚Рё Рё РѕС‚РєСЂС‹С‚СЊ СЃРІРѕРё СЃРјРµРЅС‹</div>
       <div class="auth-text" id="authMessage">
-        Открой приложение через Telegram или браузер и подтверди вход один раз. Дальше твои смены будут синхронизироваться на всех устройствах.
+        РћС‚РєСЂРѕР№ РїСЂРёР»РѕР¶РµРЅРёРµ С‡РµСЂРµР· Telegram РёР»Рё Р±СЂР°СѓР·РµСЂ Рё РїРѕРґС‚РІРµСЂРґРё РІС…РѕРґ РѕРґРёРЅ СЂР°Р·. Р”Р°Р»СЊС€Рµ С‚РІРѕРё СЃРјРµРЅС‹ Р±СѓРґСѓС‚ СЃРёРЅС…СЂРѕРЅРёР·РёСЂРѕРІР°С‚СЊСЃСЏ РЅР° РІСЃРµС… СѓСЃС‚СЂРѕР№СЃС‚РІР°С….
       </div>
       <div class="auth-status" id="authStatus"></div>
       <div class="auth-widget" id="telegramLoginWidget"></div>
-      <button class="auth-retry" id="btnAuthRetry" type="button">Повторить вход</button>
+      <button class="auth-retry" id="btnAuthRetry" type="button">РџРѕРІС‚РѕСЂРёС‚СЊ РІС…РѕРґ</button>
       <div class="auth-error" id="authError"></div>
-      <div class="auth-note" id="authNote">После входа появится твоя личная страница со сменами.</div>
+      <div class="auth-note" id="authNote">РџРѕСЃР»Рµ РІС…РѕРґР° РїРѕСЏРІРёС‚СЃСЏ С‚РІРѕСЏ Р»РёС‡РЅР°СЏ СЃС‚СЂР°РЅРёС†Р° СЃРѕ СЃРјРµРЅР°РјРё.</div>
     </div>
   </div>
 
   <div class="app hidden" id="appShell">
-
-    <!-- Month Navigation -->
-    <div class="month-nav">
-      <button class="month-btn" id="btnPrevMonth" aria-label="Предыдущий месяц">‹</button>
-      <span class="month-title" id="monthTitle"></span>
-      <button class="month-btn" id="btnNextMonth" aria-label="Следующий месяц">›</button>
-    </div>
-
-    <!-- Stats -->
-    <div class="stats-grid">
-      <div class="stat-card">
-        <span class="stat-label">Праздничные</span>
-        <span class="stat-value holiday" id="statHoliday">0 ч</span>
-      </div>
-      <div class="stat-card">
-        <span class="stat-label">Ночные</span>
-        <span class="stat-value night" id="statNight">0 ч</span>
-      </div>
-      <div class="stat-card">
-        <span class="stat-label">Отработано</span>
-        <span class="stat-value" id="statWorked">0 ч</span>
-      </div>
-      <div class="stat-card">
-        <span class="stat-label">Смен</span>
-        <span class="stat-value" id="statShifts">0</span>
-      </div>
-      <div class="stat-card">
-        <span class="stat-label">Норма</span>
-        <span class="stat-value" id="statNorm">—</span>
-      </div>
-      <div class="stat-card">
-        <span class="stat-label" id="diffLabel">Осталось</span>
-        <span class="stat-value" id="statDiff">—</span>
-      </div>
-    </div>
-
-    <!-- Add Shift Form -->
-    <div class="form-section is-adding" id="shiftFormSection">
-      <div class="form-title-row">
-        <div class="form-title" id="formTitle">Добавить смену</div>
-        <div class="edit-badge" id="editBadge">Режим редактирования</div>
-      </div>
-      <div class="form-hint">Время указывается в МСК, ночные часы считаются по локальному времени</div>
-
-      <div class="field">
-        <label>Начало смены</label>
-        <div class="datetime-row">
-          <input type="date" id="inputStartDate" />
-          <input type="time" id="inputStartTime" />
+    <div class="app-content">
+      <section class="tab-panel active" data-tab="home">
+        <div class="month-nav">
+          <button class="month-btn" id="btnPrevMonth" aria-label="РџСЂРµРґС‹РґСѓС‰РёР№ РјРµСЃСЏС†">вЂ№</button>
+          <span class="month-title" id="monthTitle"></span>
+          <button class="month-btn" id="btnNextMonth" aria-label="РЎР»РµРґСѓСЋС‰РёР№ РјРµСЃСЏС†">вЂє</button>
         </div>
-        <div class="field-error" id="errStart"></div>
-      </div>
 
-      <div class="field">
-        <label>Конец смены</label>
-        <div class="datetime-row">
-          <input type="date" id="inputEndDate" />
-          <input type="time" id="inputEndTime" />
+        <div class="dashboard-card">
+          <div class="dashboard-head">
+            <div>
+              <div class="dashboard-eyebrow">РћС‚СЂР°Р±РѕС‚Р°РЅРѕ</div>
+              <div class="dashboard-value"><span id="statWorked">0 С‡</span> <span class="dashboard-total">/ <span id="statNorm">вЂ”</span></span></div>
+            </div>
+            <div class="dashboard-badge" id="progressBadge">0%</div>
+          </div>
+          <div class="progress-track"><div class="progress-fill" id="dashboardProgressFill"></div></div>
+          <div class="dashboard-sub" id="statDiff">РћСЃС‚Р°Р»РѕСЃСЊ вЂ”</div>
         </div>
-        <div class="field-error" id="errEnd"></div>
+
+        <div class="quick-stats-grid">
+          <div class="quick-stat">
+            <span class="stat-label">РќРѕС‡РЅС‹Рµ</span>
+            <span class="quick-stat-value stat-value night" id="statNight">0 С‡</span>
+          </div>
+          <div class="quick-stat">
+            <span class="stat-label">РџСЂР°Р·РґРЅРёС‡РЅС‹Рµ</span>
+            <span class="quick-stat-value stat-value holiday" id="statHoliday">0 С‡</span>
+          </div>
+          <div class="quick-stat">
+            <span class="stat-label">РЎРјРµРЅ</span>
+            <span class="quick-stat-value" id="statShifts">0</span>
+          </div>
+        </div>
+
+        <div class="section-header section-header-row">
+          <span>РџРѕСЃР»РµРґРЅРёРµ СЃРјРµРЅС‹</span>
+          <button class="section-link" id="btnGoToShifts" type="button">Р’СЃРµ</button>
+        </div>
+        <div id="homeShiftsList"></div>
+      </section>
+
+      <section class="tab-panel" data-tab="shifts">
+        <div class="form-section is-adding" id="shiftFormSection">
+          <div class="form-title-row">
+            <div class="form-title" id="formTitle">Р”РѕР±Р°РІРёС‚СЊ СЃРјРµРЅСѓ</div>
+            <div class="edit-badge" id="editBadge">Р РµР¶РёРј СЂРµРґР°РєС‚РёСЂРѕРІР°РЅРёСЏ</div>
+          </div>
+          <div class="form-hint">Р’СЂРµРјСЏ СѓРєР°Р·С‹РІР°РµС‚СЃСЏ РІ РњРЎРљ, РЅРѕС‡РЅС‹Рµ С‡Р°СЃС‹ СЃС‡РёС‚Р°СЋС‚СЃСЏ РїРѕ Р»РѕРєР°Р»СЊРЅРѕРјСѓ РІСЂРµРјРµРЅРё</div>
+
+          <div class="field">
+            <label>РќР°С‡Р°Р»Рѕ СЃРјРµРЅС‹</label>
+            <div class="datetime-row">
+              <input type="date" id="inputStartDate" />
+              <input type="time" id="inputStartTime" />
+            </div>
+            <div class="field-error" id="errStart"></div>
+          </div>
+
+          <div class="field">
+            <label>РљРѕРЅРµС† СЃРјРµРЅС‹</label>
+            <div class="datetime-row">
+              <input type="date" id="inputEndDate" />
+              <input type="time" id="inputEndTime" />
+            </div>
+            <div class="field-error" id="errEnd"></div>
+          </div>
+
+          <button class="btn-primary" id="btnAdd">Р”РѕР±Р°РІРёС‚СЊ СЃРјРµРЅСѓ</button>
+          <button class="btn-link hidden" id="btnCancelEdit" type="button">РћС‚РјРµРЅРёС‚СЊ СЂРµРґР°РєС‚РёСЂРѕРІР°РЅРёРµ</button>
+          <div class="form-success" id="formSuccess"></div>
+        </div>
+
+        <div class="shifts-section">
+          <div class="section-header" id="shiftsHeader">РЎРјРµРЅС‹</div>
+          <div id="shiftsList"></div>
+        </div>
+      </section>
+
+      <section class="tab-panel" data-tab="salary">
+        <div class="salary-card">
+          <div class="salary-hero">
+            <div class="salary-chip">в‚Ѕ Р‘СѓРґСѓС‰РёР№ СЂР°СЃС‡РµС‚</div>
+            <div class="salary-title">Р—Р°СЂРїР»Р°С‚Р°</div>
+            <div class="salary-text">
+              Р—РґРµСЃСЊ РїРѕСЏРІРёС‚СЃСЏ СЂР°СЃС‡РµС‚ РїРѕ РєР°С‚РµРіРѕСЂРёСЏРј: РґРЅРµРІРЅС‹Рµ, РЅРѕС‡РЅС‹Рµ, РїСЂР°Р·РґРЅРёС‡РЅС‹Рµ Рё РїРµСЂРµСЂР°Р±РѕС‚РєР°.
+            </div>
+          </div>
+        </div>
+
+        <div class="salary-card">
+          <div class="section-header">РџРѕРєР° С‡С‚Рѕ</div>
+          <div class="salary-text">
+            РњС‹ СѓР¶Рµ СЃРѕР±РёСЂР°РµРј Р±Р°Р·Сѓ РїРѕ С‡Р°СЃР°Рј, С‡С‚РѕР±С‹ РїРѕС‚РѕРј РґРѕР±Р°РІРёС‚СЊ РєРѕСЌС„С„РёС†РёРµРЅС‚С‹ Рё РїСЂРѕРіРЅРѕР· Р·Р°СЂРїР»Р°С‚С‹ Р±РµР· СЂСѓС‡РЅРѕРіРѕ РїРµСЂРµСЃС‡РµС‚Р°.
+          </div>
+        </div>
+      </section>
+
+      <section class="tab-panel" data-tab="settings">
+        <div class="settings-card">
+          <div class="section-header">РќР°СЃС‚СЂРѕР№РєРё</div>
+          <div class="settings-list">
+            <div class="settings-row">
+              <div class="settings-label">Р§Р°СЃРѕРІРѕР№ РїРѕСЏСЃ</div>
+              <div class="settings-value" id="timezoneValue">вЂ”</div>
+            </div>
+            <div class="settings-row">
+              <div class="settings-label">Р’СЂРµРјСЏ РІРІРѕРґР°</div>
+              <div class="settings-value">РњРЎРљ, СЂР°СЃС‡РµС‚ РЅРѕС‡РЅС‹С… Рё РїСЂР°Р·РґРЅРёРєРѕРІ - Р»РѕРєР°Р»СЊРЅРѕ</div>
+            </div>
+            <div class="settings-row">
+              <div class="settings-label">Р”РѕР±Р°РІРёС‚СЊ РЅР° СЌРєСЂР°РЅ</div>
+              <div class="settings-value">Telegram / Р±СЂР°СѓР·РµСЂ / СЏСЂР»С‹Рє</div>
+            </div>
+          </div>
+        </div>
+
+        <button class="btn-secondary" id="btnAddToScreen">рџ“І Р”РѕР±Р°РІРёС‚СЊ РЅР° СЌРєСЂР°РЅ</button>
+        <div class="footer" id="timezoneFooter"></div>
+      </section>
+    </div>
+
+    <nav class="bottom-nav" aria-label="РћСЃРЅРѕРІРЅР°СЏ РЅР°РІРёРіР°С†РёСЏ">
+      <div class="bottom-nav-inner">
+        <button class="tab-btn active" type="button" data-tab="home">
+          <span class="tab-icon">вЊ‚</span>
+          <span class="tab-label">Р“Р»Р°РІРЅР°СЏ</span>
+        </button>
+        <button class="tab-btn" type="button" data-tab="shifts">
+          <span class="tab-icon">в‰Ў</span>
+          <span class="tab-label">РЎРјРµРЅС‹</span>
+        </button>
+        <button class="tab-btn center" type="button" data-action="add">
+          <span class="tab-icon">пј‹</span>
+          <span class="tab-label">Р”РѕР±Р°РІРёС‚СЊ</span>
+        </button>
+        <button class="tab-btn" type="button" data-tab="salary">
+          <span class="tab-icon">в‚Ѕ</span>
+          <span class="tab-label">Р—Р°СЂРїР»Р°С‚Р°</span>
+        </button>
+        <button class="tab-btn" type="button" data-tab="settings">
+          <span class="tab-icon">вљ™</span>
+          <span class="tab-label">РќР°СЃС‚СЂРѕР№РєРё</span>
+        </button>
       </div>
-
-      <button class="btn-primary" id="btnAdd">Добавить смену</button>
-      <button class="btn-link hidden" id="btnCancelEdit" type="button">Отменить редактирование</button>
-      <div class="form-success" id="formSuccess"></div>
-    </div>
-
-    <!-- Shifts List -->
-    <div class="shifts-section">
-      <div class="section-header" id="shiftsHeader">Смены</div>
-      <div id="shiftsList"></div>
-    </div>
-
-    <!-- Add to Screen -->
-    <button class="btn-secondary" id="btnAddToScreen">📲 Добавить на экран</button>
-
-    <div class="footer" id="timezoneFooter"></div>
+    </nav>
   </div>
 
   <!-- Add to Screen Bottom Sheet -->
   <div class="overlay" id="overlayAddScreen">
     <div class="bottom-sheet">
-      <div class="sheet-title">Добавить на экран</div>
-      <div class="sheet-text">Это одна и та же ссылка для Telegram, Safari и ярлыка на экране. Если ты открыл её впервые на новом устройстве, просто войди через Telegram один раз - дальше смены будут подхватываться автоматически.</div>
+      <div class="sheet-title">Р”РѕР±Р°РІРёС‚СЊ РЅР° СЌРєСЂР°РЅ</div>
+      <div class="sheet-text">Р­С‚Рѕ РѕРґРЅР° Рё С‚Р° Р¶Рµ СЃСЃС‹Р»РєР° РґР»СЏ Telegram, Safari Рё СЏСЂР»С‹РєР° РЅР° СЌРєСЂР°РЅРµ. Р•СЃР»Рё С‚С‹ РѕС‚РєСЂС‹Р» РµС‘ РІРїРµСЂРІС‹Рµ РЅР° РЅРѕРІРѕРј СѓСЃС‚СЂРѕР№СЃС‚РІРµ, РїСЂРѕСЃС‚Рѕ РІРѕР№РґРё С‡РµСЂРµР· Telegram РѕРґРёРЅ СЂР°Р· - РґР°Р»СЊС€Рµ СЃРјРµРЅС‹ Р±СѓРґСѓС‚ РїРѕРґС…РІР°С‚С‹РІР°С‚СЊСЃСЏ Р°РІС‚РѕРјР°С‚РёС‡РµСЃРєРё.</div>
 
-      <div class="sheet-text"><strong>Для iPhone:</strong></div>
+      <div class="sheet-text"><strong>Р”Р»СЏ iPhone:</strong></div>
       <ol class="sheet-steps">
-        <li>Открой ссылку ниже в Safari</li>
-        <li>Нажми «Поделиться»</li>
-        <li>Выбери «На экран Домой»</li>
+        <li>РћС‚РєСЂРѕР№ СЃСЃС‹Р»РєСѓ РЅРёР¶Рµ РІ Safari</li>
+        <li>РќР°Р¶РјРё В«РџРѕРґРµР»РёС‚СЊСЃСЏВ»</li>
+        <li>Р’С‹Р±РµСЂРё В«РќР° СЌРєСЂР°РЅ Р”РѕРјРѕР№В»</li>
       </ol>
 
-      <div class="sheet-text"><strong>Для Android:</strong></div>
+      <div class="sheet-text"><strong>Р”Р»СЏ Android:</strong></div>
       <ol class="sheet-steps">
-        <li>Открой ссылку ниже в Chrome</li>
-        <li>Открой меню браузера</li>
-        <li>«Добавить на главный экран»</li>
+        <li>РћС‚РєСЂРѕР№ СЃСЃС‹Р»РєСѓ РЅРёР¶Рµ РІ Chrome</li>
+        <li>РћС‚РєСЂРѕР№ РјРµРЅСЋ Р±СЂР°СѓР·РµСЂР°</li>
+        <li>В«Р”РѕР±Р°РІРёС‚СЊ РЅР° РіР»Р°РІРЅС‹Р№ СЌРєСЂР°РЅВ»</li>
       </ol>
 
-      <div class="sheet-text" style="font-size:12px; color:var(--text-muted); margin-bottom:6px;">Ссылка на приложение:</div>
+      <div class="sheet-text" style="font-size:12px; color:var(--text-muted); margin-bottom:6px;">РЎСЃС‹Р»РєР° РЅР° РїСЂРёР»РѕР¶РµРЅРёРµ:</div>
       <div class="sheet-url-row">
         <div class="sheet-url-text" id="appUrl"></div>
-        <button class="btn-copy" id="btnCopyUrl">Копировать</button>
+        <button class="btn-copy" id="btnCopyUrl">РљРѕРїРёСЂРѕРІР°С‚СЊ</button>
       </div>
 
-      <button class="btn-sheet-close" id="btnCloseAddScreen">Закрыть</button>
+      <button class="btn-sheet-close" id="btnCloseAddScreen">Р—Р°РєСЂС‹С‚СЊ</button>
     </div>
   </div>
 
   <!-- Confirm Delete Bottom Sheet -->
   <div class="overlay" id="overlayConfirm">
     <div class="bottom-sheet">
-      <div class="sheet-title">Удалить смену?</div>
+      <div class="sheet-title">РЈРґР°Р»РёС‚СЊ СЃРјРµРЅСѓ?</div>
       <div class="sheet-text" id="confirmShiftInfo"></div>
       <div class="confirm-btns">
-        <button class="btn-confirm-cancel" id="btnCancelDelete">Отмена</button>
-        <button class="btn-confirm-delete" id="btnConfirmDelete">Удалить</button>
+        <button class="btn-confirm-cancel" id="btnCancelDelete">РћС‚РјРµРЅР°</button>
+        <button class="btn-confirm-delete" id="btnConfirmDelete">РЈРґР°Р»РёС‚СЊ</button>
       </div>
     </div>
   </div>
 
   <script>
-    // ── Telegram WebApp Init ──
+    // в”Ђв”Ђ Telegram WebApp Init в”Ђв”Ђ
     try {
       if (window.Telegram && Telegram.WebApp) {
         Telegram.WebApp.ready();
@@ -802,15 +1149,15 @@
       }
     } catch(e) { console.warn('TG SDK init error:', e); }
 
-    // ── Constants ──
+    // в”Ђв”Ђ Constants в”Ђв”Ђ
     var MONTH_NAMES = [
-      'Январь','Февраль','Март','Апрель','Май','Июнь',
-      'Июль','Август','Сентябрь','Октябрь','Ноябрь','Декабрь'
+      'РЇРЅРІР°СЂСЊ','Р¤РµРІСЂР°Р»СЊ','РњР°СЂС‚','РђРїСЂРµР»СЊ','РњР°Р№','РСЋРЅСЊ',
+      'РСЋР»СЊ','РђРІРіСѓСЃС‚','РЎРµРЅС‚СЏР±СЂСЊ','РћРєС‚СЏР±СЂСЊ','РќРѕСЏР±СЂСЊ','Р”РµРєР°Р±СЂСЊ'
     ];
 
-    // Производственный календарь РФ, 40-часовая неделя
-    // 2025: КонсультантПлюс, 2026: Минтруд утверждённый
-    // 2027: предварительный (переносы не утверждены)
+    // РџСЂРѕРёР·РІРѕРґСЃС‚РІРµРЅРЅС‹Р№ РєР°Р»РµРЅРґР°СЂСЊ Р Р¤, 40-С‡Р°СЃРѕРІР°СЏ РЅРµРґРµР»СЏ
+    // 2025: РљРѕРЅСЃСѓР»СЊС‚Р°РЅС‚РџР»СЋСЃ, 2026: РњРёРЅС‚СЂСѓРґ СѓС‚РІРµСЂР¶РґС‘РЅРЅС‹Р№
+    // 2027: РїСЂРµРґРІР°СЂРёС‚РµР»СЊРЅС‹Р№ (РїРµСЂРµРЅРѕСЃС‹ РЅРµ СѓС‚РІРµСЂР¶РґРµРЅС‹)
     var WORK_NORMS = {
       '2025-01': 136, '2025-02': 160, '2025-03': 167,
       '2025-04': 175, '2025-05': 144, '2025-06': 151,
@@ -839,7 +1186,7 @@
     var STORAGE_KEY = 'shifts';
     var MSK_OFFSET = 3; // Moscow = UTC+3
 
-    // ── State ──
+    // в”Ђв”Ђ State в”Ђв”Ђ
     var now = new Date();
     var currentYear = now.getFullYear();
     var currentMonth = now.getMonth(); // 0-indexed
@@ -848,8 +1195,9 @@
     var editingShiftId = null;
     var recentAddedShiftId = null;
     var recentAddTimer = null;
+    var activeTab = 'home';
 
-    // ── Timezone ──
+    // в”Ђв”Ђ Timezone в”Ђв”Ђ
     var deviceTimezone = 'Europe/Moscow';
     try {
       deviceTimezone = Intl.DateTimeFormat().resolvedOptions().timeZone || 'Europe/Moscow';
@@ -857,8 +1205,11 @@
 
     var footerEl = document.getElementById('timezoneFooter');
     function updateFooter() {
-      var userLabel = CURRENT_USER ? (' · ' + (CURRENT_USER.display_name || CURRENT_USER.username || ('ID ' + CURRENT_USER.id))) : '';
-      footerEl.textContent = 'Часовой пояс: ' + deviceTimezone + userLabel;
+      var userLabel = CURRENT_USER ? (' В· ' + (CURRENT_USER.display_name || CURRENT_USER.username || ('ID ' + CURRENT_USER.id))) : '';
+      var text = 'Р§Р°СЃРѕРІРѕР№ РїРѕСЏСЃ: ' + deviceTimezone + userLabel;
+      if (footerEl) footerEl.textContent = text;
+      var tzValueEl = document.getElementById('timezoneValue');
+      if (tzValueEl) tzValueEl.textContent = deviceTimezone;
     }
     updateFooter();
 
@@ -902,7 +1253,7 @@
     function setAuthFeedback(message, errorMessage) {
       if (AUTH_STATUS) AUTH_STATUS.textContent = message || '';
       if (AUTH_ERROR) AUTH_ERROR.textContent = errorMessage || '';
-      if (AUTH_NOTE) AUTH_NOTE.textContent = errorMessage ? 'Проверь вход и попробуй ещё раз.' : 'Вход появится здесь, когда Telegram или браузер подтвердит учётку.';
+      if (AUTH_NOTE) AUTH_NOTE.textContent = errorMessage ? 'РџСЂРѕРІРµСЂСЊ РІС…РѕРґ Рё РїРѕРїСЂРѕР±СѓР№ РµС‰С‘ СЂР°Р·.' : 'Р’С…РѕРґ РїРѕСЏРІРёС‚СЃСЏ Р·РґРµСЃСЊ, РєРѕРіРґР° Telegram РёР»Рё Р±СЂР°СѓР·РµСЂ РїРѕРґС‚РІРµСЂРґРёС‚ СѓС‡С‘С‚РєСѓ.';
       var retryBtn = document.getElementById('btnAuthRetry');
       if (retryBtn) {
         retryBtn.classList.toggle('visible', !!errorMessage);
@@ -919,7 +1270,36 @@
     function showAppShell() {
       if (AUTH_GATE) AUTH_GATE.classList.add('hidden');
       if (APP_SHELL) APP_SHELL.classList.remove('hidden');
+      setActiveTab(activeTab || 'home');
       updateFooter();
+    }
+
+    function setActiveTab(tab) {
+      activeTab = tab || 'home';
+
+      var panels = document.querySelectorAll('.tab-panel');
+      for (var i = 0; i < panels.length; i++) {
+        var panel = panels[i];
+        panel.classList.toggle('active', panel.getAttribute('data-tab') === activeTab);
+      }
+
+      var navButtons = document.querySelectorAll('.tab-btn[data-tab]');
+      for (var j = 0; j < navButtons.length; j++) {
+        var btn = navButtons[j];
+        btn.classList.toggle('active', btn.getAttribute('data-tab') === activeTab);
+      }
+
+      updateFooter();
+    }
+
+    function openShiftTabAndFocusForm() {
+      setActiveTab('shifts');
+      setTimeout(function() {
+        var section = document.getElementById('shiftFormSection');
+        if (section && section.scrollIntoView) {
+          section.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        }
+      }, 40);
     }
 
     function getLoginReturnUrl() {
@@ -960,7 +1340,7 @@
         return Promise.resolve(null);
       }
 
-      setAuthFeedback('Входим через Telegram...', '');
+      setAuthFeedback('Р’С…РѕРґРёРј С‡РµСЂРµР· Telegram...', '');
 
       return fetchJson(AUTH_API_URL, {
         method: 'POST',
@@ -972,7 +1352,7 @@
           setStoredSessionToken(CURRENT_SESSION_TOKEN);
           return result.body.user;
         }
-        throw new Error((result.body && result.body.error) || 'Не удалось войти через Telegram');
+        throw new Error((result.body && result.body.error) || 'РќРµ СѓРґР°Р»РѕСЃСЊ РІРѕР№С‚Рё С‡РµСЂРµР· Telegram');
       });
     }
 
@@ -1030,8 +1410,8 @@
           .catch(function(err) {
             CURRENT_USER = null;
             showAuthGate(
-              'Не удалось войти',
-              (err && err.message) ? err.message : 'Проверь домен и нажми повтор.'
+              'РќРµ СѓРґР°Р»РѕСЃСЊ РІРѕР№С‚Рё',
+              (err && err.message) ? err.message : 'РџСЂРѕРІРµСЂСЊ РґРѕРјРµРЅ Рё РЅР°Р¶РјРё РїРѕРІС‚РѕСЂ.'
             );
             renderTelegramLoginWidget();
             return null;
@@ -1041,7 +1421,7 @@
       return authBootstrapPromise;
     }
 
-    // ── Load / Save shifts ──
+    // в”Ђв”Ђ Load / Save shifts в”Ђв”Ђ
     function loadShifts(callback) {
       fetchJson(SHIFTS_API_URL, {
         method: 'GET',
@@ -1054,14 +1434,14 @@
         }
 
         if (result.status === 401) {
-          showAuthGate('Сначала войди через Telegram', 'После входа твои смены откроются автоматически.');
+          showAuthGate('РЎРЅР°С‡Р°Р»Р° РІРѕР№РґРё С‡РµСЂРµР· Telegram', 'РџРѕСЃР»Рµ РІС…РѕРґР° С‚РІРѕРё СЃРјРµРЅС‹ РѕС‚РєСЂРѕСЋС‚СЃСЏ Р°РІС‚РѕРјР°С‚РёС‡РµСЃРєРё.');
           renderTelegramLoginWidget();
           return;
         }
 
         throw new Error((result.body && result.body.error) || 'API load failed');
       }).catch(function(err) {
-        showAuthGate('Не удалось загрузить смены', (err && err.message) ? err.message : 'Проверь подключение к серверу.');
+        showAuthGate('РќРµ СѓРґР°Р»РѕСЃСЊ Р·Р°РіСЂСѓР·РёС‚СЊ СЃРјРµРЅС‹', (err && err.message) ? err.message : 'РџСЂРѕРІРµСЂСЊ РїРѕРґРєР»СЋС‡РµРЅРёРµ Рє СЃРµСЂРІРµСЂСѓ.');
       });
     }
 
@@ -1077,7 +1457,7 @@
         }
 
         if (result.status === 401) {
-          showAuthGate('Сначала войди через Telegram', 'Сессия истекла или не создана.');
+          showAuthGate('РЎРЅР°С‡Р°Р»Р° РІРѕР№РґРё С‡РµСЂРµР· Telegram', 'РЎРµСЃСЃРёСЏ РёСЃС‚РµРєР»Р° РёР»Рё РЅРµ СЃРѕР·РґР°РЅР°.');
           renderTelegramLoginWidget();
           if (callback) callback(new Error('Unauthorized'));
           return;
@@ -1090,9 +1470,9 @@
       });
     }
 
-    // ── Time helpers ──
+    // в”Ђв”Ђ Time helpers в”Ђв”Ђ
 
-    // Parse "YYYY-MM-DDTHH:MM" as MSK → returns UTC Date
+    // Parse "YYYY-MM-DDTHH:MM" as MSK в†’ returns UTC Date
     function parseMsk(dtStr) {
       if (!dtStr || dtStr.indexOf('T') === -1) return null;
       var parts = dtStr.split('T');
@@ -1267,14 +1647,14 @@
       return Math.round((e.getTime() - s.getTime()) / 60000);
     }
 
-    // Format minutes → "X ч" or "X ч Y м"
+    // Format minutes в†’ "X С‡" or "X С‡ Y Рј"
     function fmtMin(totalMin) {
-      if (totalMin <= 0) return '0 ч';
+      if (totalMin <= 0) return '0 С‡';
       var h = Math.floor(totalMin / 60);
       var m = totalMin % 60;
-      if (h === 0) return m + ' м';
-      if (m === 0) return h + ' ч';
-      return h + ' ч ' + m + ' м';
+      if (h === 0) return m + ' Рј';
+      if (m === 0) return h + ' С‡';
+      return h + ' С‡ ' + m + ' Рј';
     }
 
     // Format shift for display
@@ -1293,13 +1673,67 @@
       var dur = fmtMin(shiftTotalMinutes(shift));
 
       if (sd === ed) {
-        return { text: startDate + '  ·  ' + st + '–' + et, dur: dur };
+        return { text: startDate + '  В·  ' + st + 'вЂ“' + et, dur: dur };
       } else {
-        return { text: startDate + ' ' + st + ' → ' + endDate + ' ' + et, dur: dur };
+        return { text: startDate + ' ' + st + ' в†’ ' + endDate + ' ' + et, dur: dur };
       }
     }
 
-    // ── Render ──
+    // в”Ђв”Ђ Render в”Ђв”Ђ
+    function buildShiftItemHtml(sh, compact) {
+      var f = fmtShift(sh);
+      var itemClass = 'shift-item' + (compact ? ' compact-shift' : '');
+      if (sh.id === editingShiftId) itemClass += ' is-edit-target';
+      if (sh.id === pendingDeleteId) itemClass += ' is-delete-target';
+      if (sh.id === recentAddedShiftId) itemClass += ' is-adding-target';
+
+      var html = '<div class="' + itemClass + '">' +
+        '<div class="shift-info">' +
+          '<div class="shift-dates">' + f.text + '</div>' +
+          '<div class="shift-duration">' + f.dur + '</div>' +
+        '</div>';
+
+      if (!compact) {
+        html += '<div class="shift-actions">' +
+          '<button class="btn-action btn-edit" data-id="' + sh.id + '" aria-label="Р РµРґР°РєС‚РёСЂРѕРІР°С‚СЊ">' +
+            '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 20h9"/><path d="M16.5 3.5a2.1 2.1 0 0 1 3 3L7 19l-4 1 1-4 12.5-12.5z"/></svg>' +
+          '</button>' +
+          '<button class="btn-action btn-delete" data-id="' + sh.id + '" aria-label="РЈРґР°Р»РёС‚СЊ">' +
+            '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M18 6 6 18"/><path d="M6 6l12 12"/></svg>' +
+          '</button>' +
+        '</div>';
+      }
+
+      html += '</div>';
+      return html;
+    }
+
+    function renderShiftList(listEl, headerEl, shifts, compact, emptyText, headerBase) {
+      if (headerEl) headerEl.textContent = headerBase || 'РЎРјРµРЅС‹';
+
+      if (!shifts.length) {
+        listEl.innerHTML = '<div class="shifts-empty">' + emptyText + '</div>';
+        return;
+      }
+
+      if (headerEl && headerBase !== false) {
+        headerEl.textContent = (headerBase || 'РЎРјРµРЅС‹') + (compact ? '' : ' В· ' + shifts.length);
+      }
+
+      var html = '';
+      for (var i = 0; i < shifts.length; i++) {
+        html += buildShiftItemHtml(shifts[i], compact);
+      }
+      listEl.innerHTML = html;
+
+      if (!compact) {
+        var editBtns = listEl.querySelectorAll('.btn-edit');
+        var deleteBtns = listEl.querySelectorAll('.btn-delete');
+        for (var a = 0; a < editBtns.length; a++) editBtns[a].addEventListener('click', handleEditClick);
+        for (var b = 0; b < deleteBtns.length; b++) deleteBtns[b].addEventListener('click', handleDeleteClick);
+      }
+    }
+
     function render() {
       // Month title
       document.getElementById('monthTitle').textContent =
@@ -1342,83 +1776,56 @@
 
       var normEl = document.getElementById('statNorm');
       var diffEl = document.getElementById('statDiff');
-      var diffLabelEl = document.getElementById('diffLabel');
+      var progressBadgeEl = document.getElementById('progressBadge');
+      var progressFillEl = document.getElementById('dashboardProgressFill');
 
       if (norm !== undefined) {
         normEl.textContent = norm + ' ч';
-        var normMin = norm * 60;
+        var normMin = norm  * 60;
         var diffMin = totalMin - normMin;
+        var diffAbs = Math.abs(diffMin);
+        var progressPct = normMin > 0 ? Math.max(0, Math.min(100, Math.round((totalMin / normMin) * 100))) : 0;
 
-        diffEl.className = 'stat-value';
+        diffEl.className = 'dashboard-sub';
+        if (progressBadgeEl) progressBadgeEl.textContent = progressPct + '%';
+        if (progressFillEl) progressFillEl.style.width = progressPct + '%';
 
         if (diffMin === 0 && totalMin > 0) {
-          diffLabelEl.textContent = 'Результат';
           diffEl.textContent = 'В норме';
           diffEl.classList.add('ok');
         } else if (diffMin > 0) {
-          diffLabelEl.textContent = 'Переработка';
-          diffEl.textContent = '+' + fmtMin(diffMin);
+          diffEl.textContent = 'Переработка +' + fmtMin(diffAbs);
           diffEl.classList.add('overtime');
         } else {
-          diffLabelEl.textContent = 'Осталось';
-          diffEl.textContent = fmtMin(Math.abs(diffMin));
+          diffEl.textContent = 'Осталось ' + fmtMin(diffAbs) + ' до нормы';
           diffEl.classList.add('remaining');
         }
       } else {
         normEl.textContent = '—';
-        diffLabelEl.textContent = 'Осталось';
-        diffEl.textContent = '—';
-        diffEl.className = 'stat-value';
+        if (progressBadgeEl) progressBadgeEl.textContent = '—';
+        if (progressFillEl) progressFillEl.style.width = '0%';
+        diffEl.className = 'dashboard-sub';
+        diffEl.textContent = 'Норма не задана';
       }
 
-      // Shifts list
-      var listEl = document.getElementById('shiftsList');
-      var headerEl = document.getElementById('shiftsHeader');
+      renderShiftList(
+        document.getElementById('homeShiftsList'),
+        null,
+        monthShifts.slice(0, 3),
+        true,
+        'Нет смен за этот месяц',
+        false
+      );
 
-      if (monthShifts.length === 0) {
-        headerEl.textContent = 'Смены';
-        listEl.innerHTML = '<div class="shifts-empty">Нет смен за этот месяц</div>';
-        return;
-      }
-
-      headerEl.textContent = 'Смены · ' + monthShifts.length;
-
-      var html = '';
-      for (var k = 0; k < monthShifts.length; k++) {
-        var sh = monthShifts[k];
-        var f = fmtShift(sh);
-        var itemClass = 'shift-item';
-        if (sh.id === editingShiftId) itemClass += ' is-edit-target';
-        if (sh.id === pendingDeleteId) itemClass += ' is-delete-target';
-        if (sh.id === recentAddedShiftId) itemClass += ' is-adding-target';
-        html += '<div class="' + itemClass + '">' +
-          '<div class="shift-info">' +
-            '<div class="shift-dates">' + f.text + '</div>' +
-            '<div class="shift-duration">' + f.dur + '</div>' +
-          '</div>' +
-          '<div class="shift-actions">' +
-            '<button class="btn-action btn-edit" data-id="' + sh.id + '" aria-label="Редактировать">' +
-              '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 20h9"/><path d="M16.5 3.5a2.1 2.1 0 0 1 3 3L7 19l-4 1 1-4 12.5-12.5z"/></svg>' +
-            '</button>' +
-            '<button class="btn-action btn-delete" data-id="' + sh.id + '" aria-label="Удалить">' +
-              '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M18 6 6 18"/><path d="M6 6l12 12"/></svg>' +
-            '</button>' +
-          '</div>' +
-        '</div>';
-      }
-      listEl.innerHTML = html;
-
-      // Attach action handlers
-      var editBtns = listEl.querySelectorAll('.btn-edit');
-      var deleteBtns = listEl.querySelectorAll('.btn-delete');
-      for (var a = 0; a < editBtns.length; a++) {
-        editBtns[a].addEventListener('click', handleEditClick);
-      }
-      for (var b = 0; b < deleteBtns.length; b++) {
-        deleteBtns[b].addEventListener('click', handleDeleteClick);
-      }
+      renderShiftList(
+        document.getElementById('shiftsList'),
+        document.getElementById('shiftsHeader'),
+        monthShifts,
+        false,
+        'Нет смен за этот месяц',
+        'Смены'
+      );
     }
-
     function clearRecentAddHighlight() {
       recentAddedShiftId = null;
       if (recentAddTimer) {
@@ -1438,7 +1845,7 @@
       }
     }
 
-    // ── Delete handler ──
+    // в”Ђв”Ђ Delete handler в”Ђв”Ђ
     function handleDeleteClick(e) {
       var id = e.currentTarget.getAttribute('data-id');
       var shift = null;
@@ -1449,7 +1856,7 @@
 
       pendingDeleteId = id;
       var f = fmtShift(shift);
-      document.getElementById('confirmShiftInfo').textContent = f.text + ' · ' + f.dur;
+      document.getElementById('confirmShiftInfo').textContent = f.text + ' В· ' + f.dur;
       render();
       openOverlay('overlayConfirm');
     }
@@ -1467,13 +1874,13 @@
       editingShiftId = shift.id;
       clearRecentAddHighlight();
       setFormMode('edit');
-      document.getElementById('formTitle').textContent = 'Редактировать смену';
+      document.getElementById('formTitle').textContent = 'Р РµРґР°РєС‚РёСЂРѕРІР°С‚СЊ СЃРјРµРЅСѓ';
       document.getElementById('editBadge').classList.add('visible');
       document.getElementById('inputStartDate').value = shift.start_msk.substring(0, 10);
       document.getElementById('inputStartTime').value = shift.start_msk.substring(11, 16);
       document.getElementById('inputEndDate').value = shift.end_msk.substring(0, 10);
       document.getElementById('inputEndTime').value = shift.end_msk.substring(11, 16);
-      document.getElementById('btnAdd').textContent = 'Сохранить изменения';
+      document.getElementById('btnAdd').textContent = 'РЎРѕС…СЂР°РЅРёС‚СЊ РёР·РјРµРЅРµРЅРёСЏ';
       document.getElementById('btnCancelEdit').classList.remove('hidden');
       clearErrors();
       render();
@@ -1482,9 +1889,9 @@
     function exitEditMode() {
       editingShiftId = null;
       setFormMode('add');
-      document.getElementById('formTitle').textContent = 'Добавить смену';
+      document.getElementById('formTitle').textContent = 'Р”РѕР±Р°РІРёС‚СЊ СЃРјРµРЅСѓ';
       document.getElementById('editBadge').classList.remove('visible');
-      document.getElementById('btnAdd').textContent = 'Добавить смену';
+      document.getElementById('btnAdd').textContent = 'Р”РѕР±Р°РІРёС‚СЊ СЃРјРµРЅСѓ';
       document.getElementById('btnCancelEdit').classList.add('hidden');
       clearErrors();
       document.getElementById('inputStartDate').value = '';
@@ -1531,7 +1938,7 @@
       render();
     });
 
-    // ── Month navigation ──
+    // в”Ђв”Ђ Month navigation в”Ђв”Ђ
     document.getElementById('btnPrevMonth').addEventListener('click', function() {
       if (currentMonth === 0) { currentMonth = 11; currentYear--; }
       else currentMonth--;
@@ -1544,7 +1951,7 @@
       render();
     });
 
-    // ── Add shift form ──
+    // в”Ђв”Ђ Add shift form в”Ђв”Ђ
     function clearErrors() {
       document.getElementById('errStart').textContent = '';
       document.getElementById('errEnd').textContent = '';
@@ -1587,14 +1994,14 @@
       var valid = true;
 
       if (!startVal) {
-        document.getElementById('errStart').textContent = 'Заполни дату и время начала';
+        document.getElementById('errStart').textContent = 'Р—Р°РїРѕР»РЅРё РґР°С‚Сѓ Рё РІСЂРµРјСЏ РЅР°С‡Р°Р»Р°';
         inputStartDateEl.classList.add('input-error');
         inputStartTimeEl.classList.add('input-error');
         valid = false;
       }
 
       if (!endVal) {
-        document.getElementById('errEnd').textContent = 'Заполни дату и время окончания';
+        document.getElementById('errEnd').textContent = 'Р—Р°РїРѕР»РЅРё РґР°С‚Сѓ Рё РІСЂРµРјСЏ РѕРєРѕРЅС‡Р°РЅРёСЏ';
         inputEndDateEl.classList.add('input-error');
         inputEndTimeEl.classList.add('input-error');
         valid = false;
@@ -1606,12 +2013,12 @@
       var endDate = parseMsk(endVal);
 
       if (!startDate || !endDate) {
-        document.getElementById('errStart').textContent = 'Неверный формат даты';
+        document.getElementById('errStart').textContent = 'РќРµРІРµСЂРЅС‹Р№ С„РѕСЂРјР°С‚ РґР°С‚С‹';
         return;
       }
 
       if (endDate.getTime() <= startDate.getTime()) {
-        document.getElementById('errEnd').textContent = 'Конец смены не может быть раньше начала';
+        document.getElementById('errEnd').textContent = 'РљРѕРЅРµС† СЃРјРµРЅС‹ РЅРµ РјРѕР¶РµС‚ Р±С‹С‚СЊ СЂР°РЅСЊС€Рµ РЅР°С‡Р°Р»Р°';
         inputEndDateEl.classList.add('input-error');
         inputEndTimeEl.classList.add('input-error');
         return;
@@ -1652,7 +2059,7 @@
         if (err) {
           allShifts = previousShifts;
           btn.disabled = false;
-          document.getElementById('formSuccess').textContent = 'Не удалось сохранить смену';
+          document.getElementById('formSuccess').textContent = 'РќРµ СѓРґР°Р»РѕСЃСЊ СЃРѕС…СЂР°РЅРёС‚СЊ СЃРјРµРЅСѓ';
           render();
           return;
         }
@@ -1675,7 +2082,7 @@
             render();
           }, 1600);
         }
-        document.getElementById('formSuccess').textContent = isEditing ? '✓ Смена обновлена' : '✓ Смена добавлена';
+        document.getElementById('formSuccess').textContent = isEditing ? 'вњ“ РЎРјРµРЅР° РѕР±РЅРѕРІР»РµРЅР°' : 'вњ“ РЎРјРµРЅР° РґРѕР±Р°РІР»РµРЅР°';
         btn.disabled = false;
         if (!isEditing) {
           var section = document.getElementById('shiftFormSection');
@@ -1695,7 +2102,7 @@
       });
     });
 
-    // ── Overlays ──
+    // в”Ђв”Ђ Overlays в”Ђв”Ђ
     function openOverlay(id) {
       document.getElementById(id).classList.add('visible');
     }
@@ -1718,11 +2125,30 @@
       });
     }
 
-    // ── Add to Screen ──
+    // в”Ђв”Ђ Add to Screen в”Ђв”Ђ
     document.getElementById('btnAddToScreen').addEventListener('click', function() {
       document.getElementById('appUrl').textContent = getAppUrl();
       openOverlay('overlayAddScreen');
     });
+
+    var tabButtons = document.querySelectorAll('.tab-btn[data-tab]');
+    for (var tb = 0; tb < tabButtons.length; tb++) {
+      tabButtons[tb].addEventListener('click', function(e) {
+        setActiveTab(e.currentTarget.getAttribute('data-tab'));
+      });
+    }
+
+    var addTabButton = document.querySelector('.tab-btn[data-action="add"]');
+    if (addTabButton) {
+      addTabButton.addEventListener('click', function() {
+        openShiftTabAndFocusForm();
+      });
+    }
+
+    var goToShiftsBtn = document.getElementById('btnGoToShifts');
+    if (goToShiftsBtn) {
+      goToShiftsBtn.addEventListener('click', openShiftTabAndFocusForm);
+    }
 
     document.getElementById('btnCancelEdit').addEventListener('click', function() {
       exitEditMode();
@@ -1738,8 +2164,8 @@
 
       if (navigator.clipboard && navigator.clipboard.writeText) {
         navigator.clipboard.writeText(url).then(function() {
-          btn.textContent = '✓';
-          setTimeout(function() { btn.textContent = 'Копировать'; }, 1500);
+          btn.textContent = 'вњ“';
+          setTimeout(function() { btn.textContent = 'РљРѕРїРёСЂРѕРІР°С‚СЊ'; }, 1500);
         }).catch(function() {
           fallbackCopy(url, btn);
         });
@@ -1770,16 +2196,16 @@
       ta.select();
       try {
         document.execCommand('copy');
-        btn.textContent = '✓';
-        setTimeout(function() { btn.textContent = 'Копировать'; }, 1500);
+        btn.textContent = 'вњ“';
+        setTimeout(function() { btn.textContent = 'РљРѕРїРёСЂРѕРІР°С‚СЊ'; }, 1500);
       } catch(e) {
-        btn.textContent = '✗';
-        setTimeout(function() { btn.textContent = 'Копировать'; }, 1500);
+        btn.textContent = 'вњ—';
+        setTimeout(function() { btn.textContent = 'РљРѕРїРёСЂРѕРІР°С‚СЊ'; }, 1500);
       }
       document.body.removeChild(ta);
     }
 
-    // ── Init ──
+    // в”Ђв”Ђ Init в”Ђв”Ђ
     ensureAuthenticated().then(function(user) {
       if (!user) return;
       loadShifts(function() {
@@ -1789,3 +2215,4 @@
   </script>
 </body>
 </html>
+
