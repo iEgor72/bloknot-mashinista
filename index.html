@@ -1209,6 +1209,32 @@
       appearance: none;
     }
 
+    select.optional-control,
+    .optional-select {
+      padding-right: 40px;
+      background-image:
+        linear-gradient(45deg, transparent 50%, var(--text-muted) 50%),
+        linear-gradient(135deg, var(--text-muted) 50%, transparent 50%),
+        linear-gradient(to right, transparent, transparent);
+      background-position:
+        calc(100% - 18px) 56%,
+        calc(100% - 12px) 56%,
+        calc(100% - 44px) 0.5em;
+      background-size: 6px 6px, 6px 6px, 1px 1.8em;
+      background-repeat: no-repeat;
+    }
+
+    select.optional-control.is-placeholder,
+    .optional-select.is-placeholder {
+      color: var(--text-muted);
+      font-weight: 500;
+    }
+
+    select.optional-control:not(.is-placeholder),
+    .optional-select:not(.is-placeholder) {
+      color: var(--text);
+    }
+
     .optional-control:focus {
       border-color: var(--accent);
       box-shadow: 0 0 0 3px rgba(101, 230, 212, 0.14);
@@ -1774,8 +1800,8 @@
               <div class="optional-grid optional-grid-two">
                 <div class="field">
                   <label>Серия локомотива</label>
-                  <select class="optional-control" id="inputLocoSeries">
-                    <option value="">Выберите</option>
+                  <select class="optional-control optional-select" id="inputLocoSeries">
+                    <option value="" selected disabled>Выберите серию</option>
                     <option value="ТЭ10">ТЭ10</option>
                     <option value="ТЭ25">ТЭ25</option>
                     <option value="ТЭМ">ТЭМ</option>
@@ -3337,6 +3363,13 @@
       if (el && el.value !== String(value || '')) {
         el.value = String(value || '');
       }
+      updateSelectPlaceholderState(el);
+    }
+
+    function updateSelectPlaceholderState(elOrId) {
+      var el = typeof elOrId === 'string' ? document.getElementById(elOrId) : elOrId;
+      if (!el || el.tagName !== 'SELECT') return;
+      el.classList.toggle('is-placeholder', !el.value);
     }
 
     function renderDraftShiftSummary() {
@@ -3660,7 +3693,10 @@
     wireNumericInput('inputTrainAxles', 3);
     wireNumericInput('inputTrainLength', 3);
 
-    document.getElementById('inputLocoSeries').addEventListener('change', renderDraftShiftSummary);
+    document.getElementById('inputLocoSeries').addEventListener('change', function(e) {
+      updateSelectPlaceholderState(e.currentTarget);
+      renderDraftShiftSummary();
+    });
     document.getElementById('inputRouteFrom').addEventListener('input', renderDraftShiftSummary);
     document.getElementById('inputRouteTo').addEventListener('input', renderDraftShiftSummary);
     for (var rt = 0; rt < routeTypeButtons.length; rt++) {
