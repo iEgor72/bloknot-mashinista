@@ -1322,6 +1322,7 @@
       pointer-events: none;
       overflow: visible;
       transition: transform 0.18s ease, opacity 0.18s ease;
+      opacity: 0;
     }
 
     .bottom-safe-fill {
@@ -1335,6 +1336,13 @@
       -webkit-backdrop-filter: blur(20px) saturate(140%);
       z-index: calc(var(--layer-floating) - 1);
       pointer-events: none;
+      opacity: 0;
+      transition: opacity 0.18s ease;
+    }
+
+    html.nav-ready .bottom-nav,
+    html.nav-ready .bottom-safe-fill {
+      opacity: 1;
     }
 
     body.is-keyboard-open .bottom-nav {
@@ -3129,6 +3137,22 @@
       var probeEl = null;
       var safeSyncRaf = 0;
       var settleTimers = [];
+      var navSafeBottomLocked = null;
+      var navReadyMarked = false;
+      var ua = window.navigator.userAgent || '';
+      var isiOS =
+        /iP(hone|od|ad)/.test(ua) ||
+        (window.navigator.platform === 'MacIntel' && window.navigator.maxTouchPoints > 1);
+
+      function markNavReady() {
+        if (navReadyMarked) return;
+        navReadyMarked = true;
+        root.classList.add('nav-ready');
+      }
+
+      function unlockNavSafeBottom() {
+        navSafeBottomLocked = null;
+      }
 
       function ensureProbe() {
         if (probeEl) return probeEl;
@@ -3148,7 +3172,14 @@
       function applySafeBottomInset() {
         var safeBottom = readSafeBottomInset();
         root.style.setProperty('--safe-bottom', safeBottom + 'px');
-        root.style.setProperty('--bottom-nav-safe-bottom', safeBottom + 'px');
+        var navSafeBottom = navSafeBottomLocked === null ? safeBottom : navSafeBottomLocked;
+        root.style.setProperty('--bottom-nav-safe-bottom', navSafeBottom + 'px');
+      }
+
+      function lockNavSafeBottomToCurrentInset() {
+        navSafeBottomLocked = readSafeBottomInset();
+        root.style.setProperty('--bottom-nav-safe-bottom', navSafeBottomLocked + 'px');
+        markNavReady();
       }
 
       function syncSafeBottomInset() {
@@ -3169,7 +3200,14 @@
 
         var delays = [0, 80, 220, 520];
         for (var d = 0; d < delays.length; d++) {
-          settleTimers.push(window.setTimeout(syncSafeBottomInset, delays[d]));
+          (function(idx) {
+            settleTimers.push(window.setTimeout(function() {
+              syncSafeBottomInset();
+              if (idx === delays.length - 1) {
+                window.requestAnimationFrame(lockNavSafeBottomToCurrentInset);
+              }
+            }, delays[idx]));
+          })(d);
         }
       }
 
@@ -3181,14 +3219,21 @@
 
       window.__refreshSafeAreaInsets = syncSafeBottomInset;
       window.__settleSafeAreaInsets = settleSafeBottomInset;
+      window.__resetSafeAreaNavLock = unlockNavSafeBottom;
 
       applySafeBottomInset();
+      if (!isiOS) {
+        lockNavSafeBottomToCurrentInset();
+      }
       settleSafeBottomInset();
 
       window.addEventListener('load', settleSafeBottomInset);
       window.addEventListener('pageshow', settleSafeBottomInset);
       window.addEventListener('resize', syncSafeBottomInset);
-      window.addEventListener('orientationchange', settleSafeBottomInset);
+      window.addEventListener('orientationchange', function() {
+        unlockNavSafeBottom();
+        settleSafeBottomInset();
+      });
       document.addEventListener('visibilitychange', function() {
         if (!document.hidden) settleSafeBottomInset();
       });
