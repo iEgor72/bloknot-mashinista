@@ -3119,6 +3119,18 @@
       font-weight: 600;
     }
   </style>
+  <script>
+    // Freeze safe-area-inset-bottom BEFORE first paint so nav never jumps.
+    // Running in <head> ensures this executes synchronously before any rendering.
+    (function() {
+      var el = document.createElement('div');
+      el.style.cssText = 'position:fixed;top:-9999px;left:-9999px;width:0;height:0;padding-bottom:env(safe-area-inset-bottom,0px);visibility:hidden;pointer-events:none;';
+      document.documentElement.appendChild(el);
+      var s = parseFloat(window.getComputedStyle(el).paddingBottom) || 0;
+      document.documentElement.removeChild(el);
+      document.documentElement.style.setProperty('--safe-bottom', s + 'px');
+    })();
+  </script>
 </head>
 <body>
   <div class="auth-gate" id="authGate">
@@ -6332,17 +6344,17 @@
     renderDraftShiftSummary();
     updateViewportMetrics();
 
-    // Freeze safe-area-inset-bottom so it doesn't change on iOS during scroll/rubber-band
-    (function freezeSafeAreaInsets() {
+    // Re-freeze safe-area-inset-bottom after load in case iOS updated it
+    function freezeSafeAreaInsets() {
       var el = document.createElement('div');
-      el.style.cssText = 'position:fixed;top:-9999px;left:-9999px;height:env(safe-area-inset-bottom,0px);pointer-events:none;visibility:hidden;';
+      el.style.cssText = 'position:fixed;top:-9999px;left:-9999px;width:0;height:0;padding-bottom:env(safe-area-inset-bottom,0px);visibility:hidden;pointer-events:none;';
       document.documentElement.appendChild(el);
-      var safeBottom = el.getBoundingClientRect().height;
+      var s = parseFloat(window.getComputedStyle(el).paddingBottom) || 0;
       document.documentElement.removeChild(el);
-      if (safeBottom > 0) {
-        document.documentElement.style.setProperty('--safe-bottom', safeBottom + 'px');
-      }
-    })();
+      document.documentElement.style.setProperty('--safe-bottom', s + 'px');
+    }
+    freezeSafeAreaInsets();
+    window.addEventListener('load', freezeSafeAreaInsets);
 
     scheduleKeyboardSync();
     window.addEventListener('load', setDefaultShiftTimeInputs);
