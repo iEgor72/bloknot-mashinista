@@ -6331,6 +6331,19 @@
     setDefaultShiftTimeInputs();
     renderDraftShiftSummary();
     updateViewportMetrics();
+
+    // Freeze safe-area-inset-bottom so it doesn't change on iOS during scroll/rubber-band
+    (function freezeSafeAreaInsets() {
+      var el = document.createElement('div');
+      el.style.cssText = 'position:fixed;top:-9999px;left:-9999px;height:env(safe-area-inset-bottom,0px);pointer-events:none;visibility:hidden;';
+      document.documentElement.appendChild(el);
+      var safeBottom = el.getBoundingClientRect().height;
+      document.documentElement.removeChild(el);
+      if (safeBottom > 0) {
+        document.documentElement.style.setProperty('--safe-bottom', safeBottom + 'px');
+      }
+    })();
+
     scheduleKeyboardSync();
     window.addEventListener('load', setDefaultShiftTimeInputs);
     setTimeout(setDefaultShiftTimeInputs, 0);
