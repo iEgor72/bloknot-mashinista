@@ -2609,8 +2609,25 @@
       transform: translateZ(0);
     }
 
+    @keyframes shiftMenuIn {
+      from { opacity: 0; transform: scale(0.87); }
+      to   { opacity: 1; transform: scale(1); }
+    }
+    @keyframes shiftMenuOut {
+      from { opacity: 1; transform: scale(1); }
+      to   { opacity: 0; transform: scale(0.87); }
+    }
+
     .shift-actions-menu.hidden {
       display: none;
+    }
+    .shift-actions-menu.is-entering {
+      animation: shiftMenuIn 200ms cubic-bezier(0.34, 1.2, 0.64, 1) both;
+    }
+    .shift-actions-menu.is-leaving {
+      display: grid;
+      animation: shiftMenuOut 130ms ease-in both;
+      pointer-events: none;
     }
 
     .shift-actions-menu[data-placement="top"] {
@@ -5972,8 +5989,18 @@
 
     function hideShiftActionsMenuOnly() {
       if (SHIFT_ACTIONS_MENU) {
-        SHIFT_ACTIONS_MENU.classList.add('hidden');
+        SHIFT_ACTIONS_MENU.classList.remove('is-entering');
         SHIFT_ACTIONS_MENU.setAttribute('aria-hidden', 'true');
+        if (!SHIFT_ACTIONS_MENU.classList.contains('hidden') && !SHIFT_ACTIONS_MENU.classList.contains('is-leaving')) {
+          SHIFT_ACTIONS_MENU.classList.add('is-leaving');
+          var _menu = SHIFT_ACTIONS_MENU;
+          function _onLeaveEnd() {
+            _menu.removeEventListener('animationend', _onLeaveEnd);
+            _menu.classList.remove('is-leaving');
+            _menu.classList.add('hidden');
+          }
+          SHIFT_ACTIONS_MENU.addEventListener('animationend', _onLeaveEnd);
+        }
       }
       if (SHIFT_ACTIONS_BACKDROP) {
         SHIFT_ACTIONS_BACKDROP.classList.add('hidden');
@@ -6041,8 +6068,10 @@
         SHIFT_ACTIONS_BACKDROP.classList.remove('hidden');
         SHIFT_ACTIONS_BACKDROP.setAttribute('aria-hidden', 'false');
       }
-      SHIFT_ACTIONS_MENU.classList.remove('hidden');
+      SHIFT_ACTIONS_MENU.classList.remove('is-leaving', 'is-entering', 'hidden');
       SHIFT_ACTIONS_MENU.setAttribute('aria-hidden', 'false');
+      void SHIFT_ACTIONS_MENU.offsetWidth;
+      SHIFT_ACTIONS_MENU.classList.add('is-entering');
       updateShiftActionsMenuPosition();
     }
 
