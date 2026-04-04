@@ -60,7 +60,7 @@
       --bottom-nav-height: 100px;
       --bottom-nav-safe-bottom: var(--safe-bottom);
       --bottom-nav-offset: calc(14px + var(--bottom-nav-safe-bottom));
-      --bottom-safe-fill-height: calc(14px + var(--safe-bottom));
+      --bottom-safe-fill-height: calc(14px + var(--bottom-nav-safe-bottom));
       --page-padding-x: 16px;
       --page-padding-top: calc(16px + var(--safe-top));
       --page-padding-bottom: calc(168px + var(--safe-bottom));
@@ -3129,13 +3129,6 @@
       var probeEl = null;
       var safeSyncRaf = 0;
       var settleTimers = [];
-      var isStandaloneDisplayMode = false;
-
-      try {
-        isStandaloneDisplayMode =
-          (window.matchMedia && window.matchMedia('(display-mode: standalone)').matches) ||
-          window.navigator.standalone === true;
-      } catch(e) {}
 
       function ensureProbe() {
         if (probeEl) return probeEl;
@@ -3154,11 +3147,8 @@
 
       function applySafeBottomInset() {
         var safeBottom = readSafeBottomInset();
-        // In iOS home-screen mode this inset can oscillate during first paints.
-        // Keep the nav anchored to a stable bottom while still using safe area for content.
-        var navSafeBottom = isStandaloneDisplayMode ? 0 : safeBottom;
         root.style.setProperty('--safe-bottom', safeBottom + 'px');
-        root.style.setProperty('--bottom-nav-safe-bottom', navSafeBottom + 'px');
+        root.style.setProperty('--bottom-nav-safe-bottom', safeBottom + 'px');
       }
 
       function syncSafeBottomInset() {
