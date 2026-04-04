@@ -4505,7 +4505,33 @@
       } catch(e) {}
     }
 
+    var CACHED_USER_STORAGE_KEY = 'shift_tracker_cached_user_v1';
     var CURRENT_SESSION_TOKEN = getStoredSessionToken();
+
+    function getStoredCachedUser() {
+      try {
+        var raw = localStorage.getItem(CACHED_USER_STORAGE_KEY);
+        if (!raw) return null;
+        var parsed = JSON.parse(raw);
+        return parsed && typeof parsed === 'object' ? parsed : null;
+      } catch(e) {
+        return null;
+      }
+    }
+
+    function setStoredCachedUser(user) {
+      try {
+        if (user && typeof user === 'object') {
+          localStorage.setItem(CACHED_USER_STORAGE_KEY, JSON.stringify({
+            id: user.id,
+            display_name: user.display_name || '',
+            username: user.username || ''
+          }));
+        } else {
+          localStorage.removeItem(CACHED_USER_STORAGE_KEY);
+        }
+      } catch(e) {}
+    }
 
     function getAppUrl() {
       return window.location.origin + window.location.pathname;
@@ -4812,6 +4838,7 @@
         if (result.ok && result.body && result.body.user) {
           CURRENT_SESSION_TOKEN = result.body.sessionToken || '';
           setStoredSessionToken(CURRENT_SESSION_TOKEN);
+          setStoredCachedUser(result.body.user);
           return result.body.user;
         }
         throw new Error((result.body && result.body.error) || 'Не удалось войти через Telegram');
@@ -4826,6 +4853,7 @@
         if (result.ok && result.body && result.body.user) {
           CURRENT_SESSION_TOKEN = result.body.sessionToken || CURRENT_SESSION_TOKEN || '';
           setStoredSessionToken(CURRENT_SESSION_TOKEN);
+          setStoredCachedUser(result.body.user);
           return result.body.user;
         }
         return null;
@@ -4840,6 +4868,7 @@
         CURRENT_USER = null;
         CURRENT_SESSION_TOKEN = '';
         setStoredSessionToken('');
+        setStoredCachedUser(null);
         allShifts = [];
         authBootstrapPromise = null;
         AUTH_WIDGET_READY = false;
@@ -4890,6 +4919,27 @@
       }
 
       return authBootstrapPromise;
+    }
+
+    function hydrateOfflineShellFromCache() {
+      if (navigator.onLine) return false;
+
+      var cachedUser = getStoredCachedUser();
+      if (cachedUser && cachedUser.id !== undefined && cachedUser.id !== null) {
+        CURRENT_USER = cachedUser;
+      } else if (AUTH_ENV_STATE === 'dev') {
+        CURRENT_USER = { id: 'guest' };
+      } else if (readShiftsCache() || readPendingSnapshot() || readOfflineMeta()) {
+        CURRENT_USER = { id: 'guest' };
+      } else {
+        return false;
+      }
+
+      showAppShell();
+      loadShifts(function() {
+        render();
+      });
+      return true;
     }
 
     // ── Load / Save shifts ──
@@ -6564,20 +6614,20 @@
     }
 
     // ── Init ──
-    showAuthGate(AUTH_ENV_STATE, 'guest');
-    ensureAuthenticated().then(function(user) {
-      if (!user) return;
-      loadShifts(function() {
-        render();
+    if (!hydrateOfflineShellFromCache()) {
+      showAuthGate(AUTH_ENV_STATE, 'guest');
+      ensureAuthenticated().then(function(user) {
+        if (!user) return;
+        loadShifts(function() {
+          render();
+        });
       });
-    });
+    }
   </script>
   <script>
     if ('serviceWorker' in navigator) {
-      window.addEventListener('load', function () {
-        navigator.serviceWorker.register('/sw.js').catch(function (error) {
-          console.warn('Service worker registration failed:', error);
-        });
+      navigator.serviceWorker.register('/sw.js').catch(function (error) {
+        console.warn('Service worker registration failed:', error);
       });
     }
   </script>
