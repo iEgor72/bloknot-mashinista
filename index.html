@@ -4848,7 +4848,7 @@
       AUTH_WIDGET.appendChild(script);
     }
 
-    function fetchJson(url, options) {
+    function fetchJson(url, options, timeoutMs) {
       var reqOptions = options || {};
       reqOptions.credentials = 'include';
       reqOptions.headers = reqOptions.headers || {};
@@ -4857,7 +4857,8 @@
       }
       var controller = typeof AbortController !== 'undefined' ? new AbortController() : null;
       if (controller) reqOptions.signal = controller.signal;
-      var timeoutId = controller ? setTimeout(function() { controller.abort(); }, 8000) : null;
+      var timeout = typeof timeoutMs === 'number' && timeoutMs > 0 ? timeoutMs : 8000;
+      var timeoutId = controller ? setTimeout(function() { controller.abort(); }, timeout) : null;
       return fetch(url, reqOptions).then(function(res) {
         if (timeoutId) clearTimeout(timeoutId);
         return res.json().catch(function() { return {}; }).then(function(body) {
@@ -4869,7 +4870,7 @@
       });
     }
 
-    function authenticateWithTelegramWebApp() {
+    function authenticateWithTelegramWebApp(timeoutMs) {
       if (!(window.Telegram && Telegram.WebApp && Telegram.WebApp.initData)) {
         return Promise.resolve(null);
       }
@@ -4880,7 +4881,7 @@
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ initData: Telegram.WebApp.initData })
-      }).then(function(result) {
+      }, timeoutMs).then(function(result) {
         if (result.ok && result.body && result.body.user) {
           CURRENT_SESSION_TOKEN = result.body.sessionToken || '';
           setStoredSessionToken(CURRENT_SESSION_TOKEN);
@@ -4891,11 +4892,11 @@
       });
     }
 
-    function restoreSession() {
+    function restoreSession(timeoutMs) {
       return fetchJson(AUTH_API_URL, {
         method: 'GET',
         headers: { 'Accept': 'application/json' }
-      }).then(function(result) {
+      }, timeoutMs).then(function(result) {
         if (result.ok && result.body && result.body.user) {
           CURRENT_SESSION_TOKEN = result.body.sessionToken || CURRENT_SESSION_TOKEN || '';
           setStoredSessionToken(CURRENT_SESSION_TOKEN);
@@ -4925,7 +4926,7 @@
       });
     }
 
-    function ensureAuthenticated() {
+    function ensureAuthenticated(timeoutMs) {
       if (AUTH_ENV_STATE === 'dev') {
         if (!authBootstrapPromise) {
           authBootstrapPromise = Promise.resolve(null).then(function() {
@@ -4939,10 +4940,10 @@
 
       if (!authBootstrapPromise) {
         showAuthGate('prod', 'pending');
-        authBootstrapPromise = authenticateWithTelegramWebApp()
+        authBootstrapPromise = authenticateWithTelegramWebApp(timeoutMs)
           .then(function(user) {
             if (user) return user;
-            return restoreSession();
+            return restoreSession(timeoutMs);
           })
           .then(function(user) {
             if (user) {
@@ -4998,9 +4999,15 @@
       if (cachedShifts && Array.isArray(cachedShifts.shifts)) {
         render();
       } else {
-        loadShifts(function() {
-          render();
-        });
+        allShifts = [];
+        render();
+        if (navigator.onLine) {
+          window.setTimeout(function() {
+            loadShifts(function() {
+              render();
+            });
+          }, 0);
+        }
       }
       return true;
     }
@@ -6718,11 +6725,15 @@
     }
 
     // ── Init ──
-    if (!navigator.onLine) {
+    if (bootstrapCachedShellFromStorage()) {
+      window.setTimeout(function() {
+        ensureAuthenticated(1200);
+      }, 0);
+    } else if (!navigator.onLine) {
       startOfflineModeImmediately();
     } else if (!hydrateOfflineShellFromCache()) {
       showAuthGate(AUTH_ENV_STATE, 'guest');
-      ensureAuthenticated().then(function(user) {
+      ensureAuthenticated(1200).then(function(user) {
         if (!user) return;
         loadShifts(function() {
           render();
