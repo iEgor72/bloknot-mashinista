@@ -35,7 +35,11 @@ After that, send `/start` to the bot and it will answer with a button that opens
 
 ## Files
 
-- [`index.html`](/D:/work/bloknot-mashinista-tg/index.html) - app UI and auth gate.
+- [`index.html`](/D:/work/bloknot-mashinista-tg/index.html) - app markup (tabs, overlays, shells) and asset links.
+- [`styles/README.md`](/D:/work/bloknot-mashinista-tg/styles/README.md) - CSS structure by component groups.
+- [`scripts/README.md`](/D:/work/bloknot-mashinista-tg/scripts/README.md) - JS runtime structure and startup order.
+- [`scripts/nav-debug.js`](/D:/work/bloknot-mashinista-tg/scripts/nav-debug.js) - optional bottom-nav diagnostics (`?navDebug=1`).
+- [`sw.js`](/D:/work/bloknot-mashinista-tg/sw.js) - service worker cache strategy for shell/documents.
 - [`functions/api/auth.js`](/D:/work/bloknot-mashinista-tg/functions/api/auth.js) - Telegram auth endpoint.
 - [`functions/api/shifts.js`](/D:/work/bloknot-mashinista-tg/functions/api/shifts.js) - per-user shifts API.
 - [`functions/features/auth/telegram-auth.js`](/D:/work/bloknot-mashinista-tg/functions/features/auth/telegram-auth.js) - Telegram verification and session helpers.
