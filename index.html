@@ -6344,17 +6344,6 @@
     renderDraftShiftSummary();
     updateViewportMetrics();
 
-    // Re-freeze safe-area-inset-bottom after load in case iOS updated it
-    function freezeSafeAreaInsets() {
-      var el = document.createElement('div');
-      el.style.cssText = 'position:fixed;top:-9999px;left:-9999px;width:0;height:0;padding-bottom:env(safe-area-inset-bottom,0px);visibility:hidden;pointer-events:none;';
-      document.documentElement.appendChild(el);
-      var s = parseFloat(window.getComputedStyle(el).paddingBottom) || 0;
-      document.documentElement.removeChild(el);
-      document.documentElement.style.setProperty('--safe-bottom', s + 'px');
-    }
-    freezeSafeAreaInsets();
-    window.addEventListener('load', freezeSafeAreaInsets);
 
     scheduleKeyboardSync();
     window.addEventListener('load', setDefaultShiftTimeInputs);
