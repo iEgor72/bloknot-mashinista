@@ -11,7 +11,8 @@
     }
 
     .is-standalone-pwa .bottom-nav {
-      padding: 2px 0 calc(4px + var(--bottom-nav-safe-bottom));
+      padding-top: 0;
+      padding-bottom: var(--safe-bottom);
     }
 
     body.is-keyboard-open .bottom-nav {
