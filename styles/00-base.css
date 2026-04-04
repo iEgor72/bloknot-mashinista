@@ -36,16 +36,15 @@
       --safe-bottom: env(safe-area-inset-bottom, 0px);
       --safe-left: env(safe-area-inset-left, 0px);
       --bottom-nav-height: 100px;
-      --bottom-nav-safe-bottom: var(--safe-bottom);
+      --bottom-nav-safe-bottom: 0px;
       --bottom-nav-offset: calc(14px + var(--bottom-nav-safe-bottom));
       --bottom-safe-fill-height: calc(14px + var(--bottom-nav-safe-bottom));
       --page-padding-x: 16px;
       --page-padding-top: calc(16px + var(--safe-top));
-      --page-padding-bottom: calc(168px + var(--safe-bottom));
+      --page-padding-bottom: 20px;
       --select-gap: 10px;
       --app-viewport-height: 100dvh;
       --keyboard-focus-scroll-bottom: 160px;
-      --bottom-nav-hide-offset: 0px;
     }
 
     input[type="number"] {
@@ -59,6 +58,7 @@
     }
 
     html, body {
+      height: 100%;
       min-height: var(--app-viewport-height);
       background:
         radial-gradient(ellipse at 14% 8%, rgba(141, 124, 255, 0.22) 0%, transparent 34%),
@@ -69,20 +69,20 @@
       font-family: "Plus Jakarta Sans", "Inter", -apple-system, BlinkMacSystemFont, sans-serif;
       font-size: 15px;
       line-height: 1.5;
-      overflow-x: hidden;
-      scroll-padding-bottom: calc(var(--page-padding-bottom) + 24px);
+      overflow: hidden;
+      scroll-padding-bottom: 24px;
       color-scheme: dark;
     }
 
     html {
+      height: 100%;
       min-height: 100dvh;
       background-color: #070814;
     }
 
     body {
       position: relative;
-      overflow-x: hidden;
-      overflow-y: auto;
+      overflow: hidden;
     }
 
     body::before,
@@ -112,18 +112,22 @@
     }
 
     .app {
+      width: min(480px, 100%);
       max-width: 480px;
       margin: 0 auto;
       padding:
         var(--page-padding-top)
         var(--page-padding-x)
-        var(--page-padding-bottom)
+        0
         var(--page-padding-x);
       min-height: var(--app-viewport-height);
+      height: var(--app-viewport-height);
+      display: flex;
+      flex-direction: column;
       position: relative;
       z-index: var(--layer-content);
       min-width: 0;
-      overflow: visible;
+      overflow: hidden;
     }
 
     .auth-gate {
@@ -140,7 +144,9 @@
       position: relative;
       z-index: var(--layer-content);
       min-width: 0;
-      overflow: visible;
+      overflow-x: hidden;
+      overflow-y: auto;
+      -webkit-overflow-scrolling: touch;
     }
 
     .auth-card {

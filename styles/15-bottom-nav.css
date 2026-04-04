@@ -1,32 +1,16 @@
-﻿    .bottom-nav {
-      position: fixed;
-      left: 50%;
-      bottom: var(--bottom-nav-offset);
-      transform: translateX(-50%) translateY(var(--bottom-nav-hide-offset));
-      width: min(500px, calc(100vw - 14px));
+    .bottom-nav {
+      position: relative;
+      width: 100%;
+      flex: 0 0 auto;
+      padding: 6px 0 calc(14px + var(--bottom-nav-safe-bottom));
       z-index: var(--layer-floating);
-      pointer-events: none;
       overflow: visible;
-      transition: transform 0.18s ease, opacity 0.18s ease;
-      opacity: 1;
-    }
-
-    .bottom-safe-fill {
-      position: fixed;
-      bottom: 0;
-      left: 0;
-      right: 0;
-      height: var(--bottom-safe-fill-height);
-      background: rgba(7, 8, 20, 0.92);
-      backdrop-filter: blur(20px) saturate(140%);
-      -webkit-backdrop-filter: blur(20px) saturate(140%);
-      z-index: calc(var(--layer-floating) - 1);
-      pointer-events: none;
-      opacity: 1;
       transition: opacity 0.18s ease;
+      opacity: 1;
     }
 
     body.is-keyboard-open .bottom-nav {
+      visibility: hidden;
       opacity: 0;
       pointer-events: none;
     }

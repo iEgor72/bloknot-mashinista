@@ -1,24 +1,11 @@
 // Safe-area policy:
-// - content uses dynamic safe bottom
-// - iOS Home Screen bottom-nav uses fixed value to prevent jumps
+// - keep content inset dynamic
+// - bottom navigation position is handled by app shell layout
 (function() {
   var root = document.documentElement;
   var probeEl = null;
   var safeSyncRaf = 0;
   var settleTimers = [];
-  var ua = window.navigator.userAgent || '';
-  var isiOS =
-    /iP(hone|od|ad)/.test(ua) ||
-    (window.navigator.platform === 'MacIntel' && window.navigator.maxTouchPoints > 1);
-  var isStandalone = false;
-  try {
-    isStandalone =
-      (window.matchMedia && window.matchMedia('(display-mode: standalone)').matches) ||
-      window.navigator.standalone === true;
-  } catch (e) {}
-
-  // Deterministic nav baseline for iPhone Home Screen mode.
-  var FIXED_IOS_STANDALONE_NAV_SAFE_BOTTOM = 34;
 
   function ensureProbe() {
     if (probeEl) return probeEl;
@@ -35,17 +22,9 @@
     return Math.round(value * 100) / 100;
   }
 
-  function resolveNavSafeBottom(currentSafeBottom) {
-    if (isiOS && isStandalone) {
-      return FIXED_IOS_STANDALONE_NAV_SAFE_BOTTOM;
-    }
-    return currentSafeBottom;
-  }
-
   function applySafeInsets() {
     var safeBottom = readSafeBottomInset();
     root.style.setProperty('--safe-bottom', safeBottom + 'px');
-    root.style.setProperty('--bottom-nav-safe-bottom', resolveNavSafeBottom(safeBottom) + 'px');
   }
 
   function syncSafeInsets() {
@@ -72,7 +51,6 @@
 
   window.__refreshSafeAreaInsets = syncSafeInsets;
   window.__settleSafeAreaInsets = settleSafeInsets;
-  window.__lockNavSafeBottom = applySafeInsets;
 
   applySafeInsets();
   settleSafeInsets();

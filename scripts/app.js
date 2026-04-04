@@ -67,6 +67,7 @@
     var footerEl = document.getElementById('timezoneFooter');
     var SHIFT_ACTIONS_BACKDROP = document.getElementById('shiftActionsBackdrop');
     var APP_SHELL = document.querySelector('.app');
+    var APP_CONTENT = document.querySelector('.app-content');
     var BOTTOM_NAV = document.querySelector('.bottom-nav');
     var keyboardFocusField = null;
     var keyboardStateOpen = false;
@@ -198,6 +199,14 @@
       return Math.max(0, baselineViewportHeight - currentHeight);
     }
 
+    function getScrollableAppContentForField(el) {
+      if (!el || !el.closest) return null;
+      var scoped = el.closest('.app-content');
+      if (scoped) return scoped;
+      if (APP_CONTENT && APP_CONTENT.contains(el)) return APP_CONTENT;
+      return null;
+    }
+
     function revealActiveField() {
       var el = document.activeElement;
       if (!isKeyboardInputElement(el) || !isKeyboardFieldEligible(el)) return;
@@ -207,6 +216,30 @@
       var rect = el.getBoundingClientRect();
       var topGap = 16;
       var bottomGap = keyboardInset > 0 ? Math.max(96, keyboardInset + 20) : 24;
+      var scrollContainer = getScrollableAppContentForField(el);
+
+      if (scrollContainer) {
+        var containerRect = scrollContainer.getBoundingClientRect();
+        var currentScrollTop = scrollContainer.scrollTop;
+        var fieldTop = rect.top - containerRect.top + currentScrollTop;
+        var fieldBottom = rect.bottom - containerRect.top + currentScrollTop;
+        var visibleTop = currentScrollTop;
+        var visibleBottom = currentScrollTop + scrollContainer.clientHeight;
+        var shouldScrollContainer = fieldTop < visibleTop + topGap || fieldBottom > visibleBottom - bottomGap;
+        if (!shouldScrollContainer) return;
+
+        var targetScrollTop = fieldTop - 24;
+        if (fieldBottom > visibleBottom - bottomGap) {
+          targetScrollTop = fieldBottom - (scrollContainer.clientHeight - bottomGap) + 24;
+        }
+
+        scrollContainer.scrollTo({
+          top: Math.max(0, targetScrollTop),
+          behavior: 'smooth'
+        });
+        return;
+      }
+
       var shouldScroll = rect.top < topGap || rect.bottom > viewportHeight - bottomGap;
       if (!shouldScroll) return;
 
@@ -244,7 +277,6 @@
       }
 
       setCssVar('--keyboard-focus-scroll-bottom', open ? '280px' : '160px');
-      setCssVar('--bottom-nav-hide-offset', open ? 'calc(100% + 32px)' : '0px');
       updateViewportMetrics();
 
       if (BOTTOM_NAV) {

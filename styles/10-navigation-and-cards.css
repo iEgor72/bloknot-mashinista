@@ -104,7 +104,7 @@
 
     .tab-panel {
       display: none;
-      margin-bottom: 24px;
+      margin-bottom: var(--page-padding-bottom);
       min-width: 0;
       overflow: visible;
     }
@@ -112,8 +112,15 @@
     .tab-panel.active { display: block; }
 
     .app-content {
+      flex: 1 1 auto;
       min-width: 0;
-      overflow: visible;
+      min-height: 0;
+      overflow-x: hidden;
+      overflow-y: auto;
+      -webkit-overflow-scrolling: touch;
+      overscroll-behavior-y: contain;
+      padding-bottom: var(--page-padding-bottom);
+      scroll-padding-bottom: var(--page-padding-bottom);
     }
 
     .ui-overlay-root {

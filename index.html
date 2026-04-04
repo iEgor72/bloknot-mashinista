@@ -448,55 +448,54 @@
       </section>
     </div>
 
+    <nav class="bottom-nav" aria-label="Основная навигация">
+      <div class="bottom-nav-inner">
+        <button class="tab-btn active" type="button" data-tab="home">
+          <span class="tab-icon" aria-hidden="true">
+            <svg viewBox="0 0 24 24">
+              <path d="M4 11.5 12 4l8 7.5"></path>
+              <path d="M6 10.5V20h5v-5h2v5h5v-9.5"></path>
+            </svg>
+          </span>
+          <span class="tab-label">Главная</span>
+        </button>
+        <button class="tab-btn" type="button" data-tab="shifts">
+          <span class="tab-icon" aria-hidden="true">
+            <svg viewBox="0 0 24 24">
+              <path d="M5 17h3"></path>
+              <path d="M5 12h7"></path>
+              <path d="M5 7h11"></path>
+              <path d="M16.5 5.5l2 2-7 7H9.5v-2z"></path>
+            </svg>
+          </span>
+          <span class="tab-label">Смены</span>
+        </button>
+        <button class="tab-btn center" type="button" data-tab="add">
+          <span class="tab-icon">＋</span>
+        </button>
+        <button class="tab-btn" type="button" data-tab="salary">
+          <span class="tab-icon" aria-hidden="true">
+            <svg viewBox="0 0 24 24">
+              <path d="M4 8h16v10H4z"></path>
+              <path d="M8 8V6h8v2"></path>
+              <path d="M7 12h10"></path>
+              <path d="M7 15h6"></path>
+            </svg>
+          </span>
+          <span class="tab-label">Зарплата</span>
+        </button>
+        <button class="tab-btn" type="button" data-tab="settings">
+          <span class="tab-icon" aria-hidden="true">
+            <svg viewBox="0 0 24 24">
+              <path d="M12 8.3a3.7 3.7 0 1 1 0 7.4 3.7 3.7 0 0 1 0-7.4z"></path>
+              <path d="M19 12a7.7 7.7 0 0 0-.1-1l2-1.5-2-3.5-2.4 1a7.8 7.8 0 0 0-1.7-1l-.4-2.6H9.6l-.4 2.6c-.6.2-1.2.6-1.7 1l-2.4-1-2 3.5 2 1.5A7.7 7.7 0 0 0 5 12c0 .3 0 .7.1 1l-2 1.5 2 3.5 2.4-1c.5.4 1.1.7 1.7 1l.4 2.6h4.8l.4-2.6c.6-.2 1.2-.6 1.7-1l2.4 1 2-3.5-2-1.5c.1-.3.1-.7.1-1z"></path>
+            </svg>
+          </span>
+          <span class="tab-label">Настройки</span>
+        </button>
+      </div>
+    </nav>
   </div>
-
-  <nav class="bottom-nav" aria-label="Основная навигация">
-    <div class="bottom-nav-inner">
-      <button class="tab-btn active" type="button" data-tab="home">
-        <span class="tab-icon" aria-hidden="true">
-          <svg viewBox="0 0 24 24">
-            <path d="M4 11.5 12 4l8 7.5"></path>
-            <path d="M6 10.5V20h5v-5h2v5h5v-9.5"></path>
-          </svg>
-        </span>
-        <span class="tab-label">Главная</span>
-      </button>
-      <button class="tab-btn" type="button" data-tab="shifts">
-        <span class="tab-icon" aria-hidden="true">
-          <svg viewBox="0 0 24 24">
-            <path d="M5 17h3"></path>
-            <path d="M5 12h7"></path>
-            <path d="M5 7h11"></path>
-            <path d="M16.5 5.5l2 2-7 7H9.5v-2z"></path>
-          </svg>
-        </span>
-        <span class="tab-label">Смены</span>
-      </button>
-      <button class="tab-btn center" type="button" data-tab="add">
-        <span class="tab-icon">＋</span>
-      </button>
-      <button class="tab-btn" type="button" data-tab="salary">
-        <span class="tab-icon" aria-hidden="true">
-          <svg viewBox="0 0 24 24">
-            <path d="M4 8h16v10H4z"></path>
-            <path d="M8 8V6h8v2"></path>
-            <path d="M7 12h10"></path>
-            <path d="M7 15h6"></path>
-          </svg>
-        </span>
-        <span class="tab-label">Зарплата</span>
-      </button>
-      <button class="tab-btn" type="button" data-tab="settings">
-        <span class="tab-icon" aria-hidden="true">
-          <svg viewBox="0 0 24 24">
-            <path d="M12 8.3a3.7 3.7 0 1 1 0 7.4 3.7 3.7 0 0 1 0-7.4z"></path>
-            <path d="M19 12a7.7 7.7 0 0 0-.1-1l2-1.5-2-3.5-2.4 1a7.8 7.8 0 0 0-1.7-1l-.4-2.6H9.6l-.4 2.6c-.6.2-1.2.6-1.7 1l-2.4-1-2 3.5 2 1.5A7.7 7.7 0 0 0 5 12c0 .3 0 .7.1 1l-2 1.5 2 3.5 2.4-1c.5.4 1.1.7 1.7 1l.4 2.6h4.8l.4-2.6c.6-.2 1.2-.6 1.7-1l2.4 1 2-3.5-2-1.5c.1-.3.1-.7.1-1z"></path>
-          </svg>
-        </span>
-        <span class="tab-label">Настройки</span>
-      </button>
-    </div>
-  </nav>
 
   <!-- Shared Overlay Layer -->
   <div class="ui-overlay-root" id="uiOverlayRoot" aria-hidden="true"></div>
@@ -544,9 +543,6 @@
       </div>
     </div>
   </div>
-
-  <!-- Bottom Fill -->
-  <div class="bottom-safe-fill" aria-hidden="true"></div>
 
   <!-- Runtime Scripts -->
   <script src="/scripts/nav-debug.js"></script>
