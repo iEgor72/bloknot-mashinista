@@ -2,7 +2,8 @@
       position: relative;
       width: 100%;
       flex: 0 0 auto;
-      padding: 6px 0 calc(14px + var(--bottom-nav-safe-bottom));
+      margin-top: auto;
+      padding: 2px 0 calc(4px + var(--bottom-nav-safe-bottom));
       z-index: var(--layer-floating);
       overflow: visible;
       transition: opacity 0.18s ease;
