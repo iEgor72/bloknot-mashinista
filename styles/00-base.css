@@ -80,6 +80,12 @@
       background-color: #070814;
     }
 
+    .is-standalone-pwa,
+    .is-standalone-pwa body {
+      height: 100dvh;
+      min-height: 100dvh;
+    }
+
     body {
       position: relative;
       overflow: hidden;
@@ -128,6 +134,12 @@
       z-index: var(--layer-content);
       min-width: 0;
       overflow: hidden;
+    }
+
+    .is-standalone-pwa .app,
+    .is-standalone-pwa .auth-gate {
+      height: 100dvh;
+      min-height: 100dvh;
     }
 
     .auth-gate {

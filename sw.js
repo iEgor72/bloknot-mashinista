@@ -1,4 +1,4 @@
-const CACHE_VERSION = 'v2';
+const CACHE_VERSION = 'v3';
 const CACHE_NAME = `shift-tracker-shell-${CACHE_VERSION}`;
 const SHELL_URLS = ['/', '/index.html'];
 
@@ -42,6 +42,15 @@ self.addEventListener('fetch', (event) => {
     return;
   }
 
+  if (
+    request.destination === 'style' ||
+    request.destination === 'script' ||
+    request.destination === 'worker'
+  ) {
+    event.respondWith(networkFirstAsset(request));
+    return;
+  }
+
   event.respondWith(cacheFirst(request));
 });
 
@@ -76,6 +85,21 @@ async function networkFirstDocument(request) {
       (await cache.match(request, { ignoreSearch: true })) ||
       (await cache.match('/index.html')) ||
       (await cache.match('/'));
+    if (cached) return cached;
+    throw error;
+  }
+}
+
+async function networkFirstAsset(request) {
+  const cache = await caches.open(CACHE_NAME);
+  try {
+    const response = await fetch(request, { cache: 'no-store' });
+    if (response && response.ok) {
+      cache.put(request, response.clone());
+    }
+    return response;
+  } catch (error) {
+    const cached = await cache.match(request, { ignoreSearch: true });
     if (cached) return cached;
     throw error;
   }
