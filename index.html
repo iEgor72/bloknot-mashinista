@@ -4502,6 +4502,7 @@
           bannerIcon: 'i',
           showBanner: false,
           showWidget: true,
+          showPrimary: false,
           showRetry: false,
           primaryBusy: false
         },
@@ -4673,6 +4674,7 @@
         AUTH_PRIMARY_ACTION.textContent = copy.primary || 'Войти через Telegram';
         AUTH_PRIMARY_ACTION.disabled = !!copy.primaryBusy;
         AUTH_PRIMARY_ACTION.setAttribute('aria-busy', copy.primaryBusy ? 'true' : 'false');
+        AUTH_PRIMARY_ACTION.classList.toggle('hidden', copy.showPrimary === false);
       }
       if (AUTH_PRIMARY_HINT) AUTH_PRIMARY_HINT.textContent = copy.primaryHint || '';
       if (AUTH_ERROR) AUTH_ERROR.textContent = '';
