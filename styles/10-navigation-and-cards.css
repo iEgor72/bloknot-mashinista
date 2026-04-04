@@ -123,6 +123,15 @@
       scroll-padding-bottom: var(--page-padding-bottom);
     }
 
+    .is-standalone-pwa .app-content {
+      padding-bottom: calc(var(--bottom-nav-height) + env(safe-area-inset-bottom, 0px));
+      scroll-padding-bottom: calc(var(--bottom-nav-height) + env(safe-area-inset-bottom, 0px));
+    }
+
+    .is-standalone-pwa .tab-panel {
+      margin-bottom: 0;
+    }
+
     .ui-overlay-root {
       position: fixed;
       inset: 0;

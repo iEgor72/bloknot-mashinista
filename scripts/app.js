@@ -73,6 +73,7 @@
     var keyboardStateOpen = false;
     var keyboardSyncTimer = null;
     var keyboardRevealTimer = null;
+    var navHeightSyncTimer = null;
     var baselineViewportHeight = Math.round(window.innerHeight || document.documentElement.clientHeight || 0);
     var baselineVisualViewportHeight = Math.round(
       (window.visualViewport && window.visualViewport.height) ||
@@ -89,6 +90,25 @@
 
     function setCssVar(name, value) {
       document.documentElement.style.setProperty(name, value);
+    }
+
+    function syncBottomNavHeight() {
+      if (!BOTTOM_NAV || !BOTTOM_NAV.getBoundingClientRect) return;
+      var rect = BOTTOM_NAV.getBoundingClientRect();
+      var navHeight = Math.round(rect.height || 0);
+      if (navHeight > 0) {
+        setCssVar('--bottom-nav-height', navHeight + 'px');
+      }
+    }
+
+    function scheduleBottomNavHeightSync() {
+      if (navHeightSyncTimer) {
+        window.cancelAnimationFrame(navHeightSyncTimer);
+      }
+      navHeightSyncTimer = window.requestAnimationFrame(function() {
+        navHeightSyncTimer = null;
+        syncBottomNavHeight();
+      });
     }
 
     function refreshSafeAreaInsets() {
@@ -1258,6 +1278,7 @@
       updateSettingsControls();
       updateOfflineUiState();
       setActiveTab(activeTab || 'home');
+      scheduleBottomNavHeightSync();
       updateFooter();
     }
 
@@ -1278,6 +1299,7 @@
         btn.classList.toggle('active', btn.getAttribute('data-tab') === activeTab);
       }
 
+      scheduleBottomNavHeightSync();
       updateFooter();
     }
 
@@ -2838,6 +2860,7 @@
     setDefaultShiftTimeInputs();
     renderDraftShiftSummary();
     updateViewportMetrics();
+    scheduleBottomNavHeightSync();
     settleSafeAreaInsets();
 
 
@@ -2849,16 +2872,19 @@
 
     window.addEventListener('resize', function() {
       updateViewportMetrics();
+      scheduleBottomNavHeightSync();
       scheduleKeyboardSync();
     });
     window.addEventListener('orientationchange', function() {
       resetViewportBaselines();
       settleSafeAreaInsets();
+      scheduleBottomNavHeightSync();
       scheduleKeyboardSync();
     });
     if (window.visualViewport) {
       window.visualViewport.addEventListener('resize', function() {
         updateViewportMetrics();
+        scheduleBottomNavHeightSync();
         scheduleKeyboardSync();
       });
       window.visualViewport.addEventListener('scroll', scheduleKeyboardSync);
