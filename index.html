@@ -4096,8 +4096,6 @@
             lastSyncAt: new Date().toISOString()
           });
           updateOfflineUiState({ isOffline: false, isSyncing: false, hasPending: false, lastSyncStatus: 'synced', lastError: '' });
-          console.log('[flushPending/success] allShifts pending after clean:', allShifts.filter(function(s){return s.pending;}).map(function(s){return s.id;}));
-          console.log('[flushPending/success] offlineUiState.hasPending:', offlineUiState.hasPending, '| readPendingSnapshot():', readPendingSnapshot());
           if (callback) callback(null);
           render();
           return;
@@ -5278,11 +5276,7 @@
       if (sh.id === editingShiftId) itemClass += ' is-edit-target';
         if (sh.id === pendingDeleteId) itemClass += ' is-delete-target';
         if (sh.id === recentAddedShiftId) itemClass += ' is-adding-target';
-        var rawShiftPending = !!(sh && sh.pending);
-        // Use the authoritative pending snapshot map when available (passed from render);
-        // fall back to sh.pending only if no map was provided.
         var shiftIsPending = pendingMap ? !!pendingMap[String(sh.id)] : isShiftPending(sh);
-        console.log('[card] id=' + sh.id + ' sh.pending=' + rawShiftPending + ' map=' + (pendingMap ? !!pendingMap[String(sh.id)] : 'n/a') + ' → shiftIsPending=' + shiftIsPending);
         if (shiftIsPending) itemClass += ' is-pending';
 
       var metaHtml = '';
@@ -5294,19 +5288,14 @@
         metaHtml += '</div>';
       }
 
-        var debugHtml = '<div style="margin:12px 0 0;padding:16px;border:5px solid #00ff00;background:#111111;color:#00ff00;font-size:20px;font-weight:900;line-height:1.2;white-space:pre-wrap;word-break:break-word;">' +
-          'PENDING DEBUG raw=' + String(rawShiftPending) + ' computed=' + String(shiftIsPending) +
-          '</div>' +
-          (shiftIsPending ? '<div style="margin:12px 0 0;padding:18px 16px;border:6px solid #ffff00;background:#ff0033;color:#ffffff;font-size:28px;font-weight:900;line-height:1.1;text-transform:uppercase;letter-spacing:0.08em;box-shadow:0 0 0 6px rgba(255,0,51,0.25);">PENDING</div>' : '');
-
       var html = '<div class="' + itemClass + '" data-shift-id="' + sh.id + '" data-pending="' + (shiftIsPending ? '1' : '0') + '">' +
         '<div class="shift-card-top">' +
           '<div class="shift-title-col">' +
             '<div class="shift-title-row">' +
-                '<div class="shift-title"><span class="shift-title-icon">' + (sh.route_kind === 'trip' ? '↔' : '→') + '</span><span class="shift-title-text">' + escapeHtml(title) + '</span>' + (shiftIsPending ? '<span class="shift-pending-chip" style="display:inline-flex !important;visibility:visible !important;opacity:1 !important;background:#ff00ff !important;color:#000 !important;border:4px solid #000 !important;padding:8px 12px !important;font-size:18px !important;font-weight:900 !important;">pending</span>' : '') + '</div>' +
+                '<div class="shift-title"><span class="shift-title-icon">' + (sh.route_kind === 'trip' ? '↔' : '→') + '</span><span class="shift-title-text">' + escapeHtml(title) + '</span>' + (shiftIsPending ? '<span class="shift-pending-chip">pending</span>' : '') + '</div>' +
               '</div>' +
               (kindLabel ? '<div class="shift-kind-line"><span class="shift-kind-badge">' + escapeHtml(kindLabel) + '</span></div>' : '') +
-              (shiftIsPending ? '<div class="shift-kind-line" style="display:block !important;visibility:visible !important;opacity:1 !important;"><span class="shift-pending-badge" style="display:inline-flex !important;visibility:visible !important;opacity:1 !important;background:#00ff00 !important;color:#000 !important;border:4px solid #000 !important;padding:8px 12px !important;font-size:18px !important;font-weight:900 !important;">pending</span></div>' : '') +
+              (shiftIsPending ? '<div class="shift-kind-line"><span class="shift-pending-badge">pending</span></div>' : '') +
             '</div>' +
           '<div class="shift-status-stack">' +
             '<div class="shift-duration-wrap"><div class="shift-duration">' + escapeHtml(f.dur) + '</div></div>' +
@@ -5328,7 +5317,6 @@
               '<span class="shift-schedule-date-value">' + escapeHtml(p.endDate) + '</span>' +
             '</div>' +
           '</div>' +
-          debugHtml +
           metaHtml +
         '</div>';
 
@@ -5376,7 +5364,6 @@
       syncShiftActionsMenuLifecycle();
       updateOfflineUiState();
       var _renderPendingMap = getPendingShiftIdMap();
-      console.log('[render] pendingMap keys:', Object.keys(_renderPendingMap), '| allShifts pending:', allShifts.filter(function(s){return s.pending;}).map(function(s){return s.id;}));
 
       // Month title
       renderMonthHeader('monthTitle', 'monthQuarter', 'homeMonthTabs', currentYear, currentMonth, function(targetMonth) {
