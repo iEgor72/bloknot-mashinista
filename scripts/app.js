@@ -649,7 +649,8 @@
         syncEl.textContent = 'Синхронизировано';
       }
 
-      bannerEl.classList.toggle('hidden', !(isOffline || hasPending || isSyncing || status === 'error'));
+      var shouldShowBanner = status === 'error';
+      bannerEl.classList.toggle('hidden', !shouldShowBanner);
       bannerEl.setAttribute('aria-hidden', bannerEl.classList.contains('hidden') ? 'true' : 'false');
     }
 
@@ -693,7 +694,7 @@
           });
           updateOfflineUiState({ isOffline: false, isSyncing: false, hasPending: false, lastSyncStatus: 'synced', lastError: '' });
           if (callback) callback(null);
-          render();
+          if (shouldRender) render();
           return;
         }
 
@@ -3140,7 +3141,7 @@
             render();
           }, 1600);
         }
-        document.getElementById('formSuccess').textContent = !navigator.onLine ? 'Сохранено локально' : (isEditing ? '✓ Смена обновлена' : '✓ Смена добавлена');
+        document.getElementById('formSuccess').textContent = isEditing ? '✓ Смена обновлена' : '✓ Смена добавлена';
         btn.disabled = false;
         if (!isEditing) {
           var section = document.getElementById('shiftFormSection');

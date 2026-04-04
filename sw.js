@@ -1,11 +1,26 @@
-const CACHE_VERSION = 'v3';
+const CACHE_VERSION = 'v4';
 const CACHE_NAME = `shift-tracker-shell-${CACHE_VERSION}`;
-const SHELL_URLS = ['/', '/index.html'];
+const NAVIGATION_FALLBACK_URL = '/index.html';
+const NETWORK_TIMEOUT_MS = 1200;
+const SHELL_URLS = [
+  '/',
+  '/index.html',
+  '/styles/00-base.css',
+  '/styles/10-navigation-and-cards.css',
+  '/styles/15-bottom-nav.css',
+  '/styles/20-form-and-stats.css',
+  '/styles/30-shifts-and-overlays.css',
+  '/scripts/safe-area.js',
+  '/scripts/nav-debug.js',
+  '/scripts/app.js',
+  '/scripts/app-init.js',
+  '/scripts/sw-register.js',
+  '/sw.js'
+];
 
 self.addEventListener('install', (event) => {
   event.waitUntil((async () => {
-    const cache = await caches.open(CACHE_NAME);
-    await cache.addAll(SHELL_URLS);
+    await warmShellCache();
     await self.skipWaiting();
   })());
 });
@@ -27,6 +42,9 @@ self.addEventListener('message', (event) => {
   if (data && data.type === 'SKIP_WAITING') {
     self.skipWaiting();
   }
+  if (data && data.type === 'WARMUP_CACHE') {
+    event.waitUntil(warmShellCache());
+  }
 });
 
 self.addEventListener('fetch', (event) => {
@@ -42,17 +60,135 @@ self.addEventListener('fetch', (event) => {
     return;
   }
 
-  if (
-    request.destination === 'style' ||
-    request.destination === 'script' ||
-    request.destination === 'worker'
-  ) {
-    event.respondWith(networkFirstAsset(request));
+  if (isStaticAssetRequest(request, url)) {
+    event.respondWith(staleWhileRevalidate(request, event));
     return;
   }
 
   event.respondWith(cacheFirst(request));
 });
+
+async function warmShellCache() {
+  const cache = await caches.open(CACHE_NAME);
+  await Promise.all(
+    SHELL_URLS.map(async (assetUrl) => {
+      try {
+        const response = await fetch(new Request(assetUrl, { cache: 'no-store' }));
+        if (response && response.ok) {
+          await cache.put(assetUrl, response.clone());
+        }
+      } catch (error) {
+        // Keep install/refresh resilient: one failed asset should not block the SW lifecycle.
+      }
+    })
+  );
+}
+
+function isStaticAssetRequest(request, url) {
+  if (
+    request.destination === 'style' ||
+    request.destination === 'script' ||
+    request.destination === 'worker' ||
+    request.destination === 'font' ||
+    request.destination === 'image'
+  ) {
+    return true;
+  }
+
+  return (
+    url.pathname.startsWith('/styles/') ||
+    url.pathname.startsWith('/scripts/') ||
+    url.pathname === '/sw.js'
+  );
+}
+
+function withTimeout(promise, timeoutMs) {
+  return new Promise((resolve) => {
+    let settled = false;
+    const timer = setTimeout(() => {
+      if (settled) return;
+      settled = true;
+      resolve(null);
+    }, timeoutMs);
+
+    promise
+      .then((value) => {
+        if (settled) return;
+        settled = true;
+        clearTimeout(timer);
+        resolve(value);
+      })
+      .catch(() => {
+        if (settled) return;
+        settled = true;
+        clearTimeout(timer);
+        resolve(null);
+      });
+  });
+}
+
+async function networkFirstDocument(request) {
+  const cache = await caches.open(CACHE_NAME);
+
+  const networkPromise = fetch(request, { cache: 'no-store' })
+    .then((response) => {
+      if (response && response.ok) {
+        cache.put(request, response.clone());
+        cache.put(NAVIGATION_FALLBACK_URL, response.clone());
+        cache.put('/', response.clone());
+      }
+      return response;
+    })
+    .catch(() => null);
+
+  const fastResponse = await withTimeout(networkPromise, NETWORK_TIMEOUT_MS);
+  if (fastResponse) {
+    return fastResponse;
+  }
+
+  const cached =
+    (await cache.match(request, { ignoreSearch: true })) ||
+    (await cache.match(NAVIGATION_FALLBACK_URL)) ||
+    (await cache.match('/'));
+  if (cached) return cached;
+
+  const eventualNetwork = await networkPromise;
+  if (eventualNetwork) {
+    return eventualNetwork;
+  }
+
+  throw new Error('Navigation unavailable');
+}
+
+async function staleWhileRevalidate(request, event) {
+  const cache = await caches.open(CACHE_NAME);
+  const cached = await cache.match(request, { ignoreSearch: true });
+
+  const networkPromise = fetch(request, { cache: 'no-store' })
+    .then((response) => {
+      if (response && response.ok) {
+        cache.put(request, response.clone());
+      }
+      return response;
+    })
+    .catch(() => null);
+
+  if (cached) {
+    if (event && event.waitUntil) {
+      event.waitUntil(networkPromise.then(() => undefined));
+    }
+    return cached;
+  }
+
+  const response = await networkPromise;
+  if (response) {
+    return response;
+  }
+
+  const fallback = await cache.match(request, { ignoreSearch: true });
+  if (fallback) return fallback;
+  throw new Error('Asset unavailable');
+}
 
 async function cacheFirst(request) {
   const cache = await caches.open(CACHE_NAME);
@@ -60,47 +196,12 @@ async function cacheFirst(request) {
   if (cached) return cached;
 
   try {
-    const response = await fetch(request);
-    if (response && response.ok) {
-      cache.put(request, response.clone());
-    }
-    return response;
-  } catch (error) {
-    return caches.match(request, { ignoreSearch: true });
-  }
-}
-
-async function networkFirstDocument(request) {
-  const cache = await caches.open(CACHE_NAME);
-  try {
-    const response = await fetch(request, { cache: 'no-store' });
-    if (response && response.ok) {
-      cache.put(request, response.clone());
-      cache.put('/index.html', response.clone());
-      cache.put('/', response.clone());
-    }
-    return response;
-  } catch (error) {
-    const cached =
-      (await cache.match(request, { ignoreSearch: true })) ||
-      (await cache.match('/index.html')) ||
-      (await cache.match('/'));
-    if (cached) return cached;
-    throw error;
-  }
-}
-
-async function networkFirstAsset(request) {
-  const cache = await caches.open(CACHE_NAME);
-  try {
     const response = await fetch(request, { cache: 'no-store' });
     if (response && response.ok) {
       cache.put(request, response.clone());
     }
     return response;
   } catch (error) {
-    const cached = await cache.match(request, { ignoreSearch: true });
-    if (cached) return cached;
-    throw error;
+    return cache.match(request, { ignoreSearch: true });
   }
 }
