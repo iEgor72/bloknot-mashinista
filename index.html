@@ -4064,7 +4064,7 @@
       }
       if (shouldRender === undefined) shouldRender = true;
       var pending = readPendingSnapshot();
-      if (!pending || !pending.shifts || !pending.shifts.length) {
+      if (!pending || !pending.shifts) {
         updateOfflineUiState({ isSyncing: false, hasPending: false, lastSyncStatus: 'synced', lastError: '' });
         if (callback) callback(null);
         return;
@@ -4783,10 +4783,17 @@
       if (CURRENT_SESSION_TOKEN) {
         reqOptions.headers['Authorization'] = 'Bearer ' + CURRENT_SESSION_TOKEN;
       }
+      var controller = typeof AbortController !== 'undefined' ? new AbortController() : null;
+      if (controller) reqOptions.signal = controller.signal;
+      var timeoutId = controller ? setTimeout(function() { controller.abort(); }, 8000) : null;
       return fetch(url, reqOptions).then(function(res) {
+        if (timeoutId) clearTimeout(timeoutId);
         return res.json().catch(function() { return {}; }).then(function(body) {
           return { ok: res.ok, status: res.status, body: body };
         });
+      }).catch(function(err) {
+        if (timeoutId) clearTimeout(timeoutId);
+        throw err;
       });
     }
 
@@ -6063,6 +6070,10 @@
       }
       pendingDeleteId = null;
       closeOverlay('overlayConfirm');
+
+      // Optimistic render — remove shift from UI immediately, before network
+      render();
+
       saveShifts(function(err) {
         if (err) {
           loadShifts(function() {
@@ -6257,9 +6268,17 @@
     document.addEventListener('visibilitychange', function() {
       if (!document.hidden) {
         updateOfflineUiState({ isOffline: !navigator.onLine, hasPending: !!readPendingSnapshot() });
-        flushPendingSnapshot();
+        if (navigator.onLine) flushPendingSnapshot();
       }
     });
+
+    // Auto-retry pending sync every 30s — catches cases where the 'online' event
+    // fired but sync failed (e.g. flaky network), without requiring user action.
+    setInterval(function() {
+      if (navigator.onLine && readPendingSnapshot() && !offlineUiState.isSyncing) {
+        flushPendingSnapshot();
+      }
+    }, 30000);
     document.getElementById('inputRouteFrom').addEventListener('input', renderDraftShiftSummary);
     document.getElementById('inputRouteTo').addEventListener('input', renderDraftShiftSummary);
     for (var rt = 0; rt < routeTypeButtons.length; rt++) {
@@ -6348,6 +6367,9 @@
       // Disable button during save
       var btn = document.getElementById('btnAdd');
       btn.disabled = true;
+
+      // Optimistic render — show change in UI immediately, before network
+      render();
 
       saveShifts(function(err) {
         if (err) {
