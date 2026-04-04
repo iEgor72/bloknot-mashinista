@@ -159,7 +159,6 @@
     function updateViewportMetrics() {
       var height = getViewportHeight();
       if (height > 0) {
-        setCssVar('--app-viewport-height', height + 'px');
         if (!keyboardStateOpen) {
           var innerHeight = Math.round(window.innerHeight || document.documentElement.clientHeight || 0);
           if (innerHeight > baselineViewportHeight) {
@@ -170,7 +169,18 @@
           if (vvHeight > baselineVisualViewportHeight) {
             baselineVisualViewportHeight = vvHeight;
           }
+
+          // Outside keyboard mode, keep app shell height at the largest stable viewport
+          // to prevent iOS standalone visualViewport oscillations from lifting bottom nav.
+          height = Math.max(
+            height,
+            innerHeight,
+            baselineViewportHeight || 0,
+            baselineVisualViewportHeight || 0
+          );
         }
+
+        setCssVar('--app-viewport-height', height + 'px');
       }
     }
 
