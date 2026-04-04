@@ -6,6 +6,23 @@
   var probeEl = null;
   var safeSyncRaf = 0;
   var settleTimers = [];
+  var isStandalone = false;
+
+  function detectStandaloneMode() {
+    try {
+      return (
+        (window.matchMedia && window.matchMedia('(display-mode: standalone)').matches) ||
+        window.navigator.standalone === true
+      );
+    } catch (e) {
+      return false;
+    }
+  }
+
+  function applyDisplayModeClass() {
+    isStandalone = detectStandaloneMode();
+    root.classList.toggle('is-standalone-pwa', isStandalone);
+  }
 
   function ensureProbe() {
     if (probeEl) return probeEl;
@@ -52,15 +69,22 @@
   window.__refreshSafeAreaInsets = syncSafeInsets;
   window.__settleSafeAreaInsets = settleSafeInsets;
 
+  applyDisplayModeClass();
   applySafeInsets();
   settleSafeInsets();
 
   window.addEventListener('load', settleSafeInsets);
-  window.addEventListener('pageshow', settleSafeInsets);
+  window.addEventListener('pageshow', function() {
+    applyDisplayModeClass();
+    settleSafeInsets();
+  });
   window.addEventListener('resize', syncSafeInsets);
   window.addEventListener('orientationchange', settleSafeInsets);
   document.addEventListener('visibilitychange', function() {
-    if (!document.hidden) settleSafeInsets();
+    if (!document.hidden) {
+      applyDisplayModeClass();
+      settleSafeInsets();
+    }
   });
   if (window.visualViewport) {
     window.visualViewport.addEventListener('resize', syncSafeInsets);
