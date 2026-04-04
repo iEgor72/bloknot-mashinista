@@ -4507,6 +4507,7 @@
 
     var CACHED_USER_STORAGE_KEY = 'shift_tracker_cached_user_v1';
     var CURRENT_SESSION_TOKEN = getStoredSessionToken();
+    var STARTED_FROM_CACHED_STATE = false;
 
     function getStoredCachedUser() {
       try {
@@ -4922,8 +4923,6 @@
     }
 
     function hydrateOfflineShellFromCache() {
-      if (navigator.onLine) return false;
-
       var cachedUser = getStoredCachedUser();
       if (cachedUser && cachedUser.id !== undefined && cachedUser.id !== null) {
         CURRENT_USER = cachedUser;
@@ -4935,7 +4934,15 @@
         return false;
       }
 
+      STARTED_FROM_CACHED_STATE = true;
       showAppShell();
+      updateOfflineUiState({
+        isOffline: !navigator.onLine,
+        isSyncing: false,
+        hasPending: !!readPendingSnapshot(),
+        lastSyncStatus: navigator.onLine ? 'cached' : 'offline',
+        lastError: ''
+      });
       loadShifts(function() {
         render();
       });
@@ -4983,6 +4990,17 @@
           }
 
           if (result.status === 401) {
+            updateOfflineUiState({
+              isOffline: !navigator.onLine,
+              isSyncing: false,
+              hasPending: !!readPendingSnapshot(),
+              lastSyncStatus: servedFromCache || STARTED_FROM_CACHED_STATE ? 'cached' : 'error',
+              lastError: 'Unauthorized'
+            });
+            if (STARTED_FROM_CACHED_STATE || servedFromCache) {
+              if (!servedFromCache && callback) callback();
+              return;
+            }
             handleAuthUnauthorized('load');
             return;
           }
@@ -5056,6 +5074,11 @@
         }
 
         if (result.status === 401) {
+          if (STARTED_FROM_CACHED_STATE) {
+            updateOfflineUiState({ isOffline: !navigator.onLine, isSyncing: false, hasPending: true, lastSyncStatus: 'error', lastError: 'Unauthorized' });
+            if (callback) callback(new Error('Unauthorized'));
+            return;
+          }
           handleAuthUnauthorized('save');
           if (callback) callback(new Error('Unauthorized'));
           return;
