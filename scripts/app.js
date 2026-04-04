@@ -73,6 +73,12 @@
     var keyboardSyncTimer = null;
     var keyboardRevealTimer = null;
     var baselineViewportHeight = Math.round(window.innerHeight || document.documentElement.clientHeight || 0);
+    var baselineVisualViewportHeight = Math.round(
+      (window.visualViewport && window.visualViewport.height) ||
+      window.innerHeight ||
+      document.documentElement.clientHeight ||
+      0
+    );
     function updateFooter() {
       var userLabel = CURRENT_USER ? (' · ' + (CURRENT_USER.display_name || CURRENT_USER.username || ('ID ' + CURRENT_USER.id))) : '';
       var text = 'Часовой пояс: ' + deviceTimezone + userLabel;
@@ -113,12 +119,56 @@
       return el.matches('input:not([type="button"]):not([type="submit"]):not([type="reset"]):not([type="checkbox"]):not([type="radio"]):not([type="file"]), textarea, select');
     }
 
+    function isKeyboardFieldEligible(el) {
+      if (!el || el.nodeType !== 1 || !el.isConnected) return false;
+      if (typeof el.disabled === 'boolean' && el.disabled) return false;
+      if (typeof el.readOnly === 'boolean' && el.readOnly) return false;
+      if (el.matches && el.matches('input[type="hidden"]')) return false;
+      if (el.closest && el.closest('.hidden')) return false;
+
+      var panel = el.closest ? el.closest('.tab-panel') : null;
+      if (panel && !panel.classList.contains('active')) return false;
+
+      var authGate = el.closest ? el.closest('.auth-gate') : null;
+      if (authGate && authGate.classList.contains('hidden')) return false;
+
+      var appShell = el.closest ? el.closest('#appShell') : null;
+      if (appShell && appShell.classList.contains('hidden')) return false;
+
+      if (window.getComputedStyle) {
+        var style = window.getComputedStyle(el);
+        if (!style || style.display === 'none' || style.visibility === 'hidden') return false;
+      }
+
+      if (el.getClientRects && !el.getClientRects().length) return false;
+      var rect = el.getBoundingClientRect ? el.getBoundingClientRect() : null;
+      if (rect && (rect.width < 1 || rect.height < 1)) return false;
+      return true;
+    }
+
+    function resetViewportBaselines() {
+      baselineViewportHeight = Math.round(window.innerHeight || document.documentElement.clientHeight || 0);
+      baselineVisualViewportHeight = Math.round(
+        (window.visualViewport && window.visualViewport.height) ||
+        baselineViewportHeight ||
+        0
+      );
+    }
+
     function updateViewportMetrics() {
       var height = getViewportHeight();
       if (height > 0) {
         setCssVar('--app-viewport-height', height + 'px');
-        if (!keyboardStateOpen && !window.visualViewport) {
-          baselineViewportHeight = height;
+        if (!keyboardStateOpen) {
+          var innerHeight = Math.round(window.innerHeight || document.documentElement.clientHeight || 0);
+          if (innerHeight > baselineViewportHeight) {
+            baselineViewportHeight = innerHeight;
+          }
+          var vv = window.visualViewport;
+          var vvHeight = vv && vv.height ? Math.round(vv.height) : 0;
+          if (vvHeight > baselineVisualViewportHeight) {
+            baselineVisualViewportHeight = vvHeight;
+          }
         }
       }
     }
@@ -126,7 +176,19 @@
     function getKeyboardInset() {
       var vv = window.visualViewport;
       if (vv) {
-        return Math.max(0, Math.round((window.innerHeight || 0) - vv.height - vv.offsetTop));
+        var vvHeight = Math.round(vv.height || 0);
+        if (vvHeight <= 0) return 0;
+        if (!baselineVisualViewportHeight) {
+          baselineVisualViewportHeight = vvHeight;
+        }
+        var visualShrink = Math.max(0, baselineVisualViewportHeight - vvHeight);
+
+        var innerHeight = Math.round(window.innerHeight || 0);
+        if (!baselineViewportHeight) {
+          baselineViewportHeight = innerHeight;
+        }
+        var innerShrink = Math.max(0, baselineViewportHeight - innerHeight);
+        return Math.max(visualShrink, innerShrink);
       }
 
       var currentHeight = Math.round(window.innerHeight || 0);
@@ -138,7 +200,7 @@
 
     function revealActiveField() {
       var el = document.activeElement;
-      if (!isKeyboardInputElement(el)) return;
+      if (!isKeyboardInputElement(el) || !isKeyboardFieldEligible(el)) return;
 
       var viewportHeight = getViewportHeight();
       var keyboardInset = getKeyboardInset();
@@ -168,11 +230,11 @@
 
     function syncKeyboardLayout() {
       var el = document.activeElement;
-      var focusRelevant = isKeyboardInputElement(el);
+      var focusRelevant = isKeyboardInputElement(el) && isKeyboardFieldEligible(el);
       keyboardFocusField = focusRelevant ? el : null;
 
       var keyboardInset = getKeyboardInset();
-      var open = !!keyboardFocusField && keyboardInset > 100;
+      var open = !!keyboardFocusField && keyboardInset > 120;
 
       if (open !== keyboardStateOpen) {
         keyboardStateOpen = open;
@@ -2716,23 +2778,34 @@
     settleSafeAreaInsets();
 
 
+    resetViewportBaselines();
     scheduleKeyboardSync();
     window.addEventListener('load', setDefaultShiftTimeInputs);
     setTimeout(setDefaultShiftTimeInputs, 0);
     setTimeout(setDefaultShiftTimeInputs, 250);
 
-    window.addEventListener('resize', scheduleKeyboardSync);
-    window.addEventListener('orientationchange', scheduleKeyboardSync);
+    window.addEventListener('resize', function() {
+      updateViewportMetrics();
+      scheduleKeyboardSync();
+    });
+    window.addEventListener('orientationchange', function() {
+      resetViewportBaselines();
+      settleSafeAreaInsets();
+      scheduleKeyboardSync();
+    });
     if (window.visualViewport) {
-      window.visualViewport.addEventListener('resize', scheduleKeyboardSync);
+      window.visualViewport.addEventListener('resize', function() {
+        updateViewportMetrics();
+        scheduleKeyboardSync();
+      });
       window.visualViewport.addEventListener('scroll', scheduleKeyboardSync);
     }
     document.addEventListener('focusin', function(e) {
-      if (!isKeyboardInputElement(e.target)) return;
+      if (!isKeyboardInputElement(e.target) || !isKeyboardFieldEligible(e.target)) return;
       scheduleKeyboardSync();
     });
     document.addEventListener('focusout', function(e) {
-      if (!isKeyboardInputElement(e.target)) return;
+      if (!isKeyboardInputElement(e.target) || !isKeyboardFieldEligible(e.target)) return;
       window.setTimeout(scheduleKeyboardSync, 80);
     });
 
