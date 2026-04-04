@@ -1203,12 +1203,6 @@
       closeLocoSeriesMenu();
       activeTab = tab || 'home';
 
-      if (activeTab === 'salary' && typeof window.__lockNavSafeBottom === 'function') {
-        window.requestAnimationFrame(function() {
-          window.__lockNavSafeBottom();
-        });
-      }
-
       var panels = document.querySelectorAll('.tab-panel');
       for (var i = 0; i < panels.length; i++) {
         var panel = panels[i];

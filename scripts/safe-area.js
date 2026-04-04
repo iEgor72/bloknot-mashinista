@@ -1,31 +1,24 @@
-// iOS PWA can report unstable safe-area values on first paints.
-// Keep content safe-area responsive, but lock bottom-nav offset early.
+// Safe-area policy:
+// - content uses dynamic safe bottom
+// - iOS Home Screen bottom-nav uses fixed value to prevent jumps
 (function() {
   var root = document.documentElement;
   var probeEl = null;
   var safeSyncRaf = 0;
   var settleTimers = [];
-  var NAV_SAFE_BOTTOM_STORAGE_KEY = 'shift_tracker_nav_safe_bottom_v1';
-  var navSafeBottomLocked = readStoredNavSafeBottom();
+  var ua = window.navigator.userAgent || '';
+  var isiOS =
+    /iP(hone|od|ad)/.test(ua) ||
+    (window.navigator.platform === 'MacIntel' && window.navigator.maxTouchPoints > 1);
+  var isStandalone = false;
+  try {
+    isStandalone =
+      (window.matchMedia && window.matchMedia('(display-mode: standalone)').matches) ||
+      window.navigator.standalone === true;
+  } catch (e) {}
 
-  function readStoredNavSafeBottom() {
-    try {
-      var raw = window.localStorage.getItem(NAV_SAFE_BOTTOM_STORAGE_KEY);
-      if (!raw) return null;
-      var value = parseFloat(raw);
-      if (!isFinite(value) || value < 0 || value > 120) return null;
-      return Math.round(value * 100) / 100;
-    } catch (e) {
-      return null;
-    }
-  }
-
-  function storeNavSafeBottom(value) {
-    if (!isFinite(value) || value <= 0) return;
-    try {
-      window.localStorage.setItem(NAV_SAFE_BOTTOM_STORAGE_KEY, String(value));
-    } catch (e) {}
-  }
+  // Deterministic nav baseline for iPhone Home Screen mode.
+  var FIXED_IOS_STANDALONE_NAV_SAFE_BOTTOM = 34;
 
   function ensureProbe() {
     if (probeEl) return probeEl;
@@ -42,38 +35,30 @@
     return Math.round(value * 100) / 100;
   }
 
-  function lockNavSafeBottom(value) {
-    if (!isFinite(value) || value < 0) return;
-    navSafeBottomLocked = Math.round(value * 100) / 100;
-    root.style.setProperty('--bottom-nav-safe-bottom', navSafeBottomLocked + 'px');
-    storeNavSafeBottom(navSafeBottomLocked);
+  function resolveNavSafeBottom(currentSafeBottom) {
+    if (isiOS && isStandalone) {
+      return FIXED_IOS_STANDALONE_NAV_SAFE_BOTTOM;
+    }
+    return currentSafeBottom;
   }
 
-  function lockNavSafeBottomToCurrentInset() {
-    lockNavSafeBottom(readSafeBottomInset());
-  }
-
-  function applySafeBottomInset() {
+  function applySafeInsets() {
     var safeBottom = readSafeBottomInset();
     root.style.setProperty('--safe-bottom', safeBottom + 'px');
-    if (navSafeBottomLocked === null) {
-      lockNavSafeBottom(safeBottom);
-      return;
-    }
-    root.style.setProperty('--bottom-nav-safe-bottom', navSafeBottomLocked + 'px');
+    root.style.setProperty('--bottom-nav-safe-bottom', resolveNavSafeBottom(safeBottom) + 'px');
   }
 
-  function syncSafeBottomInset() {
+  function syncSafeInsets() {
     if (safeSyncRaf) {
       window.cancelAnimationFrame(safeSyncRaf);
     }
     safeSyncRaf = window.requestAnimationFrame(function() {
       safeSyncRaf = 0;
-      applySafeBottomInset();
+      applySafeInsets();
     });
   }
 
-  function settleSafeBottomInset() {
+  function settleSafeInsets() {
     for (var i = 0; i < settleTimers.length; i++) {
       window.clearTimeout(settleTimers[i]);
     }
@@ -81,40 +66,26 @@
 
     var delays = [0, 80, 220, 520];
     for (var d = 0; d < delays.length; d++) {
-      settleTimers.push(window.setTimeout(syncSafeBottomInset, delays[d]));
+      settleTimers.push(window.setTimeout(syncSafeInsets, delays[d]));
     }
   }
 
-  function handleOrientationChange() {
-    lockNavSafeBottomToCurrentInset();
-    applySafeBottomInset();
-    settleSafeBottomInset();
-  }
+  window.__refreshSafeAreaInsets = syncSafeInsets;
+  window.__settleSafeAreaInsets = settleSafeInsets;
+  window.__lockNavSafeBottom = applySafeInsets;
 
-  window.__refreshSafeAreaInsets = syncSafeBottomInset;
-  window.__settleSafeAreaInsets = settleSafeBottomInset;
-  window.__lockNavSafeBottom = function() {
-    lockNavSafeBottomToCurrentInset();
-    applySafeBottomInset();
-  };
+  applySafeInsets();
+  settleSafeInsets();
 
-  if (navSafeBottomLocked === null) {
-    lockNavSafeBottomToCurrentInset();
-  } else {
-    root.style.setProperty('--bottom-nav-safe-bottom', navSafeBottomLocked + 'px');
-  }
-  applySafeBottomInset();
-  settleSafeBottomInset();
-
-  window.addEventListener('load', settleSafeBottomInset);
-  window.addEventListener('pageshow', settleSafeBottomInset);
-  window.addEventListener('resize', syncSafeBottomInset);
-  window.addEventListener('orientationchange', handleOrientationChange);
+  window.addEventListener('load', settleSafeInsets);
+  window.addEventListener('pageshow', settleSafeInsets);
+  window.addEventListener('resize', syncSafeInsets);
+  window.addEventListener('orientationchange', settleSafeInsets);
   document.addEventListener('visibilitychange', function() {
-    if (!document.hidden) settleSafeBottomInset();
+    if (!document.hidden) settleSafeInsets();
   });
   if (window.visualViewport) {
-    window.visualViewport.addEventListener('resize', syncSafeBottomInset);
-    window.visualViewport.addEventListener('scroll', syncSafeBottomInset);
+    window.visualViewport.addEventListener('resize', syncSafeInsets);
+    window.visualViewport.addEventListener('scroll', syncSafeInsets);
   }
 })();
