@@ -2676,16 +2676,16 @@
     .shift-pending-badge {
       display: inline-flex;
       align-items: center;
+      gap: 4px;
       width: fit-content;
-      padding: 5px 8px;
+      padding: 5px 9px;
       border-radius: 999px;
-      border: 1px solid rgba(247, 185, 85, 0.24);
-      background: rgba(247, 185, 85, 0.10);
+      border: 1px solid rgba(247, 185, 85, 0.42);
+      background: rgba(247, 185, 85, 0.18);
       color: #ffd66e;
       font-size: 10px;
       font-weight: 800;
-      letter-spacing: 0.03em;
-      text-transform: uppercase;
+      letter-spacing: 0.02em;
       line-height: 1;
     }
 
@@ -2705,17 +2705,17 @@
     .shift-pending-chip {
       display: inline-flex;
       align-items: center;
+      gap: 3px;
       margin-left: 8px;
-      padding: 4px 8px;
+      padding: 4px 9px;
       border-radius: 999px;
-      background: rgba(247, 185, 85, 0.16);
-      border: 1px solid rgba(247, 185, 85, 0.34);
+      background: rgba(247, 185, 85, 0.20);
+      border: 1px solid rgba(247, 185, 85, 0.44);
       color: #ffe08a;
       font-size: 10px;
       font-weight: 900;
       line-height: 1;
-      letter-spacing: 0.04em;
-      text-transform: uppercase;
+      letter-spacing: 0.02em;
       vertical-align: middle;
       flex-shrink: 0;
     }
@@ -5292,10 +5292,10 @@
         '<div class="shift-card-top">' +
           '<div class="shift-title-col">' +
             '<div class="shift-title-row">' +
-                '<div class="shift-title"><span class="shift-title-icon">' + (sh.route_kind === 'trip' ? '↔' : '→') + '</span><span class="shift-title-text">' + escapeHtml(title) + '</span>' + (shiftIsPending ? '<span class="shift-pending-chip">pending</span>' : '') + '</div>' +
+                '<div class="shift-title"><span class="shift-title-icon">' + (sh.route_kind === 'trip' ? '↔' : '→') + '</span><span class="shift-title-text">' + escapeHtml(title) + '</span>' + (shiftIsPending ? '<span class="shift-pending-chip">&#8987; Не синхр.</span>' : '') + '</div>' +
               '</div>' +
               (kindLabel ? '<div class="shift-kind-line"><span class="shift-kind-badge">' + escapeHtml(kindLabel) + '</span></div>' : '') +
-              (shiftIsPending ? '<div class="shift-kind-line"><span class="shift-pending-badge">pending</span></div>' : '') +
+              (shiftIsPending ? '<div class="shift-kind-line"><span class="shift-pending-badge">&#8987; Не синхронизировано</span></div>' : '') +
             '</div>' +
           '<div class="shift-status-stack">' +
             '<div class="shift-duration-wrap"><div class="shift-duration">' + escapeHtml(f.dur) + '</div></div>' +
