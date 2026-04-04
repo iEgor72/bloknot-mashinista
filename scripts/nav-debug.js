@@ -69,7 +69,7 @@
     var snap = {
       at: new Date().toISOString().slice(11, 23),
       label: label,
-      navReady: root.classList.contains('nav-ready'),
+      keyboardOpen: document.body.classList.contains('is-keyboard-open'),
       safeBottom: round(toNum(rootCss.getPropertyValue('--safe-bottom'))),
       navSafeBottom: round(toNum(rootCss.getPropertyValue('--bottom-nav-safe-bottom'))),
       navOffsetVar: rootCss.getPropertyValue('--bottom-nav-offset').trim(),
@@ -96,7 +96,7 @@
         h.at + ' [' + h.label + '] ' +
         'safe=' + h.safeBottom + ' navSafe=' + h.navSafeBottom +
         ' bottom=' + h.navBottom + ' gap=' + h.navGap +
-        ' fill=' + h.fillHeight + ' navReady=' + h.navReady +
+        ' fill=' + h.fillHeight + ' kb=' + h.keyboardOpen +
         ' vv=' + h.vvH + '/' + h.vvTop
       );
     }
