@@ -105,6 +105,20 @@
       }
     }
 
+    function isStandalonePwa() {
+      if (document.documentElement.classList.contains('is-standalone-pwa')) {
+        return true;
+      }
+      try {
+        return (
+          (window.matchMedia && window.matchMedia('(display-mode: standalone)').matches) ||
+          window.navigator.standalone === true
+        );
+      } catch (e) {
+        return false;
+      }
+    }
+
     function getViewportHeight() {
       var vv = window.visualViewport;
       if (vv && typeof vv.height === 'number' && vv.height > 0) {
@@ -159,6 +173,13 @@
     function updateViewportMetrics() {
       var height = getViewportHeight();
       if (height > 0) {
+        if (!keyboardStateOpen && isStandalonePwa()) {
+          // In iOS standalone mode rely on native dynamic viewport height.
+          // Manual px measurements may temporarily under-report height and create bottom black bars.
+          setCssVar('--app-viewport-height', '100dvh');
+          return;
+        }
+
         if (!keyboardStateOpen) {
           var innerHeight = Math.round(window.innerHeight || document.documentElement.clientHeight || 0);
           if (innerHeight > baselineViewportHeight) {
