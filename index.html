@@ -3120,15 +3120,80 @@
     }
   </style>
   <script>
-    // Freeze safe-area-inset-bottom BEFORE first paint so nav never jumps.
-    // Running in <head> ensures this executes synchronously before any rendering.
+    // iOS PWA can report unstable safe-area values on the very first frame.
+    // Keep --safe-bottom in sync during startup and viewport changes.
     (function() {
-      var el = document.createElement('div');
-      el.style.cssText = 'position:fixed;top:-9999px;left:-9999px;width:0;height:0;padding-bottom:env(safe-area-inset-bottom,0px);visibility:hidden;pointer-events:none;';
-      document.documentElement.appendChild(el);
-      var s = parseFloat(window.getComputedStyle(el).paddingBottom) || 0;
-      document.documentElement.removeChild(el);
-      document.documentElement.style.setProperty('--safe-bottom', s + 'px');
+      var root = document.documentElement;
+      var probeEl = null;
+      var safeSyncRaf = 0;
+      var settleTimers = [];
+
+      function ensureProbe() {
+        if (probeEl) return probeEl;
+        probeEl = document.createElement('div');
+        probeEl.style.cssText = 'position:fixed;top:-9999px;left:-9999px;width:0;height:0;padding-bottom:env(safe-area-inset-bottom,0px);visibility:hidden;pointer-events:none;';
+        root.appendChild(probeEl);
+        return probeEl;
+      }
+
+      function readSafeBottomInset() {
+        var el = ensureProbe();
+        var value = parseFloat(window.getComputedStyle(el).paddingBottom) || 0;
+        if (!isFinite(value) || value < 0) return 0;
+        return Math.round(value * 100) / 100;
+      }
+
+      function applySafeBottomInset() {
+        root.style.setProperty('--safe-bottom', readSafeBottomInset() + 'px');
+      }
+
+      function syncSafeBottomInset() {
+        if (safeSyncRaf) {
+          window.cancelAnimationFrame(safeSyncRaf);
+        }
+        safeSyncRaf = window.requestAnimationFrame(function() {
+          safeSyncRaf = 0;
+          applySafeBottomInset();
+        });
+      }
+
+      function settleSafeBottomInset() {
+        for (var i = 0; i < settleTimers.length; i++) {
+          window.clearTimeout(settleTimers[i]);
+        }
+        settleTimers = [];
+
+        var delays = [0, 80, 220, 520];
+        for (var d = 0; d < delays.length; d++) {
+          settleTimers.push(window.setTimeout(syncSafeBottomInset, delays[d]));
+        }
+      }
+
+      function handleFirstInteraction() {
+        settleSafeBottomInset();
+        window.removeEventListener('pointerdown', handleFirstInteraction, true);
+        window.removeEventListener('touchstart', handleFirstInteraction, true);
+      }
+
+      window.__refreshSafeAreaInsets = syncSafeBottomInset;
+      window.__settleSafeAreaInsets = settleSafeBottomInset;
+
+      applySafeBottomInset();
+      settleSafeBottomInset();
+
+      window.addEventListener('load', settleSafeBottomInset);
+      window.addEventListener('pageshow', settleSafeBottomInset);
+      window.addEventListener('resize', syncSafeBottomInset);
+      window.addEventListener('orientationchange', settleSafeBottomInset);
+      document.addEventListener('visibilitychange', function() {
+        if (!document.hidden) settleSafeBottomInset();
+      });
+      if (window.visualViewport) {
+        window.visualViewport.addEventListener('resize', syncSafeBottomInset);
+        window.visualViewport.addEventListener('scroll', syncSafeBottomInset);
+      }
+      window.addEventListener('pointerdown', handleFirstInteraction, true);
+      window.addEventListener('touchstart', handleFirstInteraction, true);
     })();
   </script>
 </head>
@@ -3727,6 +3792,20 @@
 
     function setCssVar(name, value) {
       document.documentElement.style.setProperty(name, value);
+    }
+
+    function refreshSafeAreaInsets() {
+      if (typeof window.__refreshSafeAreaInsets === 'function') {
+        window.__refreshSafeAreaInsets();
+      }
+    }
+
+    function settleSafeAreaInsets() {
+      if (typeof window.__settleSafeAreaInsets === 'function') {
+        window.__settleSafeAreaInsets();
+      } else {
+        refreshSafeAreaInsets();
+      }
     }
 
     function getViewportHeight() {
@@ -4759,6 +4838,7 @@
       AUTH_STATE = 'authenticated';
       if (AUTH_GATE) AUTH_GATE.classList.add('hidden');
       if (APP_SHELL) APP_SHELL.classList.remove('hidden');
+      settleSafeAreaInsets();
       repairUiText();
       updateSettingsControls();
       updateOfflineUiState();
@@ -4769,6 +4849,7 @@
     function setActiveTab(tab) {
       closeShiftActionsMenu(true);
       closeLocoSeriesMenu();
+      refreshSafeAreaInsets();
       activeTab = tab || 'home';
 
       var panels = document.querySelectorAll('.tab-panel');
@@ -6343,6 +6424,7 @@
     setDefaultShiftTimeInputs();
     renderDraftShiftSummary();
     updateViewportMetrics();
+    settleSafeAreaInsets();
 
 
     scheduleKeyboardSync();
@@ -6474,6 +6556,7 @@
     });
     document.addEventListener('visibilitychange', function() {
       if (!document.hidden) {
+        settleSafeAreaInsets();
         updateOfflineUiState({ isOffline: !navigator.onLine, hasPending: !!readPendingSnapshot() });
         if (navigator.onLine) flushPendingSnapshot();
       }
