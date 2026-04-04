@@ -4926,12 +4926,13 @@
       });
     }
 
-    function ensureAuthenticated(timeoutMs) {
+    function ensureAuthenticated(timeoutMs, options) {
+      var silent = !!(options && options.silent);
       if (AUTH_ENV_STATE === 'dev') {
         if (!authBootstrapPromise) {
           authBootstrapPromise = Promise.resolve(null).then(function() {
             CURRENT_USER = null;
-            showAuthGate('dev', 'guest');
+            if (!silent) showAuthGate('dev', 'guest');
             return null;
           });
         }
@@ -4939,7 +4940,7 @@
       }
 
       if (!authBootstrapPromise) {
-        showAuthGate('prod', 'pending');
+        if (!silent) showAuthGate('prod', 'pending');
         authBootstrapPromise = authenticateWithTelegramWebApp(timeoutMs)
           .then(function(user) {
             if (user) return user;
@@ -4953,14 +4954,18 @@
             }
 
             CURRENT_USER = null;
-            showAuthGate('prod', 'guest');
-            renderTelegramLoginWidget();
+            if (!silent) {
+              showAuthGate('prod', 'guest');
+              renderTelegramLoginWidget();
+            }
             return null;
           })
           .catch(function(err) {
             CURRENT_USER = null;
-            showAuthGate('prod', 'error');
-            renderTelegramLoginWidget();
+            if (!silent) {
+              showAuthGate('prod', 'error');
+              renderTelegramLoginWidget();
+            }
             return null;
           });
       }
@@ -4976,12 +4981,10 @@
         CURRENT_USER = cachedUser;
       } else if (cachedShifts && cachedShifts.userId !== undefined && cachedShifts.userId !== null) {
         CURRENT_USER = { id: String(cachedShifts.userId) };
-      } else if (AUTH_ENV_STATE === 'dev') {
-        CURRENT_USER = { id: 'guest' };
       } else if (cachedShifts || readPendingSnapshot() || cachedMeta) {
         CURRENT_USER = { id: 'guest' };
       } else {
-        return false;
+        CURRENT_USER = { id: 'guest' };
       }
 
       STARTED_FROM_CACHED_STATE = true;
@@ -4996,45 +4999,26 @@
         lastSyncStatus: cachedShifts ? 'cached' : 'offline',
         lastError: ''
       });
-      if (cachedShifts && Array.isArray(cachedShifts.shifts)) {
-        render();
-      } else {
-        allShifts = [];
-        render();
-        if (navigator.onLine) {
-          window.setTimeout(function() {
-            loadShifts(function() {
-              render();
-            });
-          }, 0);
-        }
-      }
-      return true;
-    }
-
-    function hydrateOfflineShellFromCache() {
-      if (navigator.onLine) return false;
-      return bootstrapCachedShellFromStorage();
-    }
-
-    function startOfflineModeImmediately() {
-      if (bootstrapCachedShellFromStorage()) {
-        return true;
-      }
-
-      CURRENT_USER = { id: 'guest' };
-      STARTED_FROM_CACHED_STATE = true;
-      showAppShell();
-      updateOfflineUiState({
-        isOffline: true,
-        isSyncing: false,
-        hasPending: !!readPendingSnapshot(),
-        lastSyncStatus: 'offline',
-        lastError: ''
-      });
-      allShifts = [];
       render();
       return true;
+    }
+
+    function startBackgroundBootstrap() {
+      if (!navigator.onLine) return;
+
+      ensureAuthenticated(1200, { silent: true }).then(function(user) {
+        if (user) {
+          loadShifts(function() {
+            render();
+          });
+          return;
+        }
+
+        if (!readShiftsCache() && !readAnyShiftsCache()) {
+          showAuthGate(AUTH_ENV_STATE, 'guest');
+          renderTelegramLoginWidget();
+        }
+      });
     }
 
     // ── Load / Save shifts ──
@@ -6725,21 +6709,8 @@
     }
 
     // ── Init ──
-    if (bootstrapCachedShellFromStorage()) {
-      window.setTimeout(function() {
-        ensureAuthenticated(1200);
-      }, 0);
-    } else if (!navigator.onLine) {
-      startOfflineModeImmediately();
-    } else if (!hydrateOfflineShellFromCache()) {
-      showAuthGate(AUTH_ENV_STATE, 'guest');
-      ensureAuthenticated(1200).then(function(user) {
-        if (!user) return;
-        loadShifts(function() {
-          render();
-        });
-      });
-    }
+    bootstrapCachedShellFromStorage();
+    window.setTimeout(startBackgroundBootstrap, 0);
   </script>
   <script>
     if ('serviceWorker' in navigator) {
