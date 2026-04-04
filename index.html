@@ -58,7 +58,9 @@
       --safe-bottom: env(safe-area-inset-bottom, 0px);
       --safe-left: env(safe-area-inset-left, 0px);
       --bottom-nav-height: 100px;
-      --bottom-nav-offset: calc(14px + var(--safe-bottom));
+      --bottom-nav-safe-bottom: var(--safe-bottom);
+      --bottom-nav-offset: calc(14px + var(--bottom-nav-safe-bottom));
+      --bottom-safe-fill-height: calc(14px + var(--safe-bottom));
       --page-padding-x: 16px;
       --page-padding-top: calc(16px + var(--safe-top));
       --page-padding-bottom: calc(168px + var(--safe-bottom));
@@ -1327,7 +1329,7 @@
       bottom: 0;
       left: 0;
       right: 0;
-      height: var(--bottom-nav-offset);
+      height: var(--bottom-safe-fill-height);
       background: rgba(7, 8, 20, 0.92);
       backdrop-filter: blur(20px) saturate(140%);
       -webkit-backdrop-filter: blur(20px) saturate(140%);
@@ -3127,6 +3129,13 @@
       var probeEl = null;
       var safeSyncRaf = 0;
       var settleTimers = [];
+      var isStandaloneDisplayMode = false;
+
+      try {
+        isStandaloneDisplayMode =
+          (window.matchMedia && window.matchMedia('(display-mode: standalone)').matches) ||
+          window.navigator.standalone === true;
+      } catch(e) {}
 
       function ensureProbe() {
         if (probeEl) return probeEl;
@@ -3144,7 +3153,12 @@
       }
 
       function applySafeBottomInset() {
-        root.style.setProperty('--safe-bottom', readSafeBottomInset() + 'px');
+        var safeBottom = readSafeBottomInset();
+        // In iOS home-screen mode this inset can oscillate during first paints.
+        // Keep the nav anchored to a stable bottom while still using safe area for content.
+        var navSafeBottom = isStandaloneDisplayMode ? 0 : safeBottom;
+        root.style.setProperty('--safe-bottom', safeBottom + 'px');
+        root.style.setProperty('--bottom-nav-safe-bottom', navSafeBottom + 'px');
       }
 
       function syncSafeBottomInset() {
@@ -4849,7 +4863,6 @@
     function setActiveTab(tab) {
       closeShiftActionsMenu(true);
       closeLocoSeriesMenu();
-      refreshSafeAreaInsets();
       activeTab = tab || 'home';
 
       var panels = document.querySelectorAll('.tab-panel');
