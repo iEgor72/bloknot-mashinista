@@ -1312,14 +1312,20 @@
 
     .bottom-nav {
       position: fixed;
-      left: 50%;
-      bottom: var(--bottom-nav-offset);
-      transform: translateX(-50%) translateY(var(--bottom-nav-hide-offset));
-      width: min(500px, calc(100vw - 14px));
+      left: 0;
+      right: 0;
+      bottom: 0;
+      transform: translateY(var(--bottom-nav-hide-offset));
+      padding-bottom: var(--bottom-nav-offset);
+      padding-left: 7px;
+      padding-right: 7px;
       z-index: var(--layer-floating);
       pointer-events: none;
       overflow: visible;
       transition: transform 0.18s ease, opacity 0.18s ease;
+      background: rgba(7, 8, 20, 0.85);
+      backdrop-filter: blur(34px) saturate(140%);
+      -webkit-backdrop-filter: blur(34px) saturate(140%);
     }
 
     body.is-keyboard-open .bottom-nav {
@@ -1332,6 +1338,8 @@
       position: relative;
       display: grid;
       grid-template-columns: repeat(4, minmax(0, 1fr));
+      max-width: min(486px, calc(100vw - 14px));
+      margin: 0 auto;
       gap: 4px;
       background:
         radial-gradient(circle at 50% 0%, rgba(255,255,255,0.12), transparent 42%),
