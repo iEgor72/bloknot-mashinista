@@ -3959,7 +3959,14 @@
     }
 
     function writePendingSnapshot(shifts, pendingIds) {
-      var normalizedIds = normalizePendingIds(pendingIds || pendingMutationIds);
+      // Collect IDs from both the explicit list and any shift already flagged pending=true
+      // (pending=true flags come from previous offline sessions loaded via cache)
+      var fromParam = pendingIds || pendingMutationIds || [];
+      var fromShifts = [];
+      for (var psi = 0; psi < (shifts || []).length; psi++) {
+        if (shifts[psi] && shifts[psi].pending) fromShifts.push(String(shifts[psi].id));
+      }
+      var normalizedIds = normalizePendingIds(fromParam.concat(fromShifts));
       var payload = {
         version: 1,
         userId: getOfflineStorageUserId(),
@@ -5102,33 +5109,30 @@
       function saveShifts(callback) {
         var snapshot = cloneShiftsForCache(allShifts);
         var pendingSnapshot = applyPendingFlags(snapshot, pendingMutationIds);
-        writeShiftsCache(snapshot, {
-          isOffline: !navigator.onLine,
-          isSyncing: false,
-          hasPending: !!readPendingSnapshot(),
-          lastSyncStatus: navigator.onLine ? 'syncing' : 'local-saved',
-          lastError: ''
-        });
 
-      if (!navigator.onLine) {
+        // Always persist locally first — synchronous, instant, never fails
         allShifts = writePendingSnapshot(pendingSnapshot, pendingMutationIds).shifts;
         writeShiftsCache(allShifts, {
-          isOffline: true,
+          isOffline: !navigator.onLine,
           isSyncing: false,
           hasPending: true,
           lastSyncStatus: 'pending',
           lastError: ''
         });
-        updateOfflineUiState({ isOffline: true, isSyncing: false, hasPending: true, lastSyncStatus: 'pending', lastError: '' });
-        if (callback) callback(null);
-        return;
-      }
+        updateOfflineUiState({ isOffline: !navigator.onLine, isSyncing: false, hasPending: true, lastSyncStatus: 'pending', lastError: '' });
 
+        // Unblock UI immediately — background sync handles the rest
+        if (callback) callback(null);
+
+        if (!navigator.onLine) return;
+
+        // Background sync — does not block the UI
+        updateOfflineUiState({ isSyncing: true, lastSyncStatus: 'syncing', lastError: '' });
         fetchJson(SHIFTS_API_URL, {
           method: 'PUT',
           headers: { 'Content-Type': 'application/json', 'Accept': 'application/json' },
           body: JSON.stringify({ shifts: cloneShiftsForServer(snapshot) })
-        }).then(function(result) {
+        }, 4000).then(function(result) {
           if (result.ok) {
             allShifts = clearPendingFlags(snapshot);
             clearPendingSnapshot();
@@ -5136,49 +5140,24 @@
               isOffline: false,
               isSyncing: false,
               hasPending: false,
-            lastSyncStatus: 'synced',
-            lastError: '',
-            lastSyncAt: new Date().toISOString()
-          });
-          updateOfflineUiState({ isOffline: false, isSyncing: false, hasPending: false, lastSyncStatus: 'synced', lastError: '' });
-          if (callback) callback(null);
-          return;
-        }
-
-        if (result.status === 401) {
-          if (STARTED_FROM_CACHED_STATE) {
-            updateOfflineUiState({ isOffline: !navigator.onLine, isSyncing: false, hasPending: true, lastSyncStatus: 'error', lastError: 'Unauthorized' });
-            if (callback) callback(new Error('Unauthorized'));
+              lastSyncStatus: 'synced',
+              lastError: '',
+              lastSyncAt: new Date().toISOString()
+            });
+            updateOfflineUiState({ isOffline: false, isSyncing: false, hasPending: false, lastSyncStatus: 'synced', lastError: '' });
+            render();
             return;
           }
-          handleAuthUnauthorized('save');
-          if (callback) callback(new Error('Unauthorized'));
-          return;
-        }
-
-        allShifts = writePendingSnapshot(pendingSnapshot, pendingMutationIds).shifts;
-        writeShiftsCache(allShifts, {
-          isOffline: true,
-          isSyncing: false,
-          hasPending: true,
-          lastSyncStatus: 'error',
-          lastError: (result.body && result.body.error) || 'API save failed'
+          if (result.status === 401) {
+            updateOfflineUiState({ isOffline: !navigator.onLine, isSyncing: false, hasPending: true, lastSyncStatus: 'error', lastError: 'Unauthorized' });
+            if (!STARTED_FROM_CACHED_STATE) handleAuthUnauthorized('save');
+            return;
+          }
+          updateOfflineUiState({ isOffline: !navigator.onLine, isSyncing: false, hasPending: true, lastSyncStatus: 'error', lastError: (result.body && result.body.error) || 'API save failed' });
+        }).catch(function(err) {
+          updateOfflineUiState({ isOffline: true, isSyncing: false, hasPending: true, lastSyncStatus: 'error', lastError: err && err.message ? err.message : 'Network error' });
         });
-        updateOfflineUiState({ isOffline: !navigator.onLine, isSyncing: false, hasPending: true, lastSyncStatus: 'error', lastError: (result.body && result.body.error) || 'API save failed' });
-        if (callback) callback(null);
-      }).catch(function(err) {
-        allShifts = writePendingSnapshot(pendingSnapshot, pendingMutationIds).shifts;
-        writeShiftsCache(allShifts, {
-          isOffline: true,
-          isSyncing: false,
-          hasPending: true,
-          lastSyncStatus: 'error',
-          lastError: err && err.message ? err.message : 'Network error'
-        });
-        updateOfflineUiState({ isOffline: true, isSyncing: false, hasPending: true, lastSyncStatus: 'error', lastError: err && err.message ? err.message : 'Network error' });
-        if (callback) callback(null);
-      });
-    }
+      }
 
     // ── Time helpers ──
 
@@ -6544,7 +6523,7 @@
             render();
           }, 1600);
         }
-        document.getElementById('formSuccess').textContent = (!navigator.onLine || readPendingSnapshot()) ? 'Сохранено локально' : (isEditing ? '✓ Смена обновлена' : '✓ Смена добавлена');
+        document.getElementById('formSuccess').textContent = !navigator.onLine ? 'Сохранено локально' : (isEditing ? '✓ Смена обновлена' : '✓ Смена добавлена');
         btn.disabled = false;
         if (!isEditing) {
           var section = document.getElementById('shiftFormSection');

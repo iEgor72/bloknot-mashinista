@@ -55,17 +55,20 @@ async function cacheFirst(request) {
 async function networkFirstDocument(request) {
   const cache = await caches.open(CACHE_NAME);
 
-  try {
-    const response = await fetch(request);
+  const cached =
+    (await cache.match(request, { ignoreSearch: true })) ||
+    (await cache.match('/index.html')) ||
+    (await cache.match('/'));
+
+  // Update cache in background without blocking the response
+  const networkUpdate = fetch(request).then((response) => {
     if (response && response.ok) {
       cache.put(request, response.clone());
     }
     return response;
-  } catch (error) {
-    return (
-      (await cache.match(request, { ignoreSearch: true })) ||
-      (await cache.match('/index.html')) ||
-      (await cache.match('/'))
-    );
-  }
+  }).catch(() => null);
+
+  // Serve cache immediately if available, otherwise wait for network
+  if (cached) return cached;
+  return networkUpdate;
 }
