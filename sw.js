@@ -1,4 +1,4 @@
-const CACHE_VERSION = 'v1';
+const CACHE_VERSION = 'v2';
 const CACHE_NAME = `shift-tracker-shell-${CACHE_VERSION}`;
 const SHELL_URLS = ['/', '/index.html'];
 
@@ -6,6 +6,7 @@ self.addEventListener('install', (event) => {
   event.waitUntil((async () => {
     const cache = await caches.open(CACHE_NAME);
     await cache.addAll(SHELL_URLS);
+    await self.skipWaiting();
   })());
 });
 
@@ -17,7 +18,15 @@ self.addEventListener('activate', (event) => {
         .filter((name) => name.startsWith('shift-tracker-shell-') && name !== CACHE_NAME)
         .map((name) => caches.delete(name))
     );
+    await self.clients.claim();
   })());
+});
+
+self.addEventListener('message', (event) => {
+  const data = event && event.data;
+  if (data && data.type === 'SKIP_WAITING') {
+    self.skipWaiting();
+  }
 });
 
 self.addEventListener('fetch', (event) => {
@@ -54,21 +63,20 @@ async function cacheFirst(request) {
 
 async function networkFirstDocument(request) {
   const cache = await caches.open(CACHE_NAME);
-
-  const cached =
-    (await cache.match(request, { ignoreSearch: true })) ||
-    (await cache.match('/index.html')) ||
-    (await cache.match('/'));
-
-  // Update cache in background without blocking the response
-  const networkUpdate = fetch(request).then((response) => {
+  try {
+    const response = await fetch(request, { cache: 'no-store' });
     if (response && response.ok) {
       cache.put(request, response.clone());
+      cache.put('/index.html', response.clone());
+      cache.put('/', response.clone());
     }
     return response;
-  }).catch(() => null);
-
-  // Serve cache immediately if available, otherwise wait for network
-  if (cached) return cached;
-  return networkUpdate;
+  } catch (error) {
+    const cached =
+      (await cache.match(request, { ignoreSearch: true })) ||
+      (await cache.match('/index.html')) ||
+      (await cache.match('/'));
+    if (cached) return cached;
+    throw error;
+  }
 }
