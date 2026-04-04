@@ -4534,6 +4534,43 @@
       } catch(e) {}
     }
 
+    function findStoredJsonByPrefix(prefix) {
+      try {
+        var matches = [];
+        for (var i = 0; i < localStorage.length; i++) {
+          var key = localStorage.key(i);
+          if (!key || key.indexOf(prefix) !== 0) continue;
+          var value = readStoredJson(key, null);
+          if (value) matches.push({ key: key, value: value });
+        }
+        return matches;
+      } catch(e) {
+        return [];
+      }
+    }
+
+    function readAnyShiftsCache() {
+      var matches = findStoredJsonByPrefix(SHIFTS_CACHE_STORAGE_KEY + '_');
+      if (!matches.length) return null;
+      matches.sort(function(a, b) {
+        var aTime = a.value && a.value.updatedAt ? Date.parse(a.value.updatedAt) : 0;
+        var bTime = b.value && b.value.updatedAt ? Date.parse(b.value.updatedAt) : 0;
+        return bTime - aTime;
+      });
+      return matches[0] ? matches[0].value : null;
+    }
+
+    function readAnyOfflineMeta() {
+      var matches = findStoredJsonByPrefix(SHIFTS_META_STORAGE_KEY + '_');
+      if (!matches.length) return null;
+      matches.sort(function(a, b) {
+        var aTime = a.value && a.value.lastSyncAt ? Date.parse(a.value.lastSyncAt) : 0;
+        var bTime = b.value && b.value.lastSyncAt ? Date.parse(b.value.lastSyncAt) : 0;
+        return bTime - aTime;
+      });
+      return matches[0] ? matches[0].value : null;
+    }
+
     function getAppUrl() {
       return window.location.origin + window.location.pathname;
     }
@@ -4922,13 +4959,17 @@
       return authBootstrapPromise;
     }
 
-    function hydrateOfflineShellFromCache() {
+    function bootstrapCachedShellFromStorage() {
       var cachedUser = getStoredCachedUser();
+      var cachedShifts = readShiftsCache() || readAnyShiftsCache();
+      var cachedMeta = readOfflineMeta() || readAnyOfflineMeta();
       if (cachedUser && cachedUser.id !== undefined && cachedUser.id !== null) {
         CURRENT_USER = cachedUser;
+      } else if (cachedShifts && cachedShifts.userId !== undefined && cachedShifts.userId !== null) {
+        CURRENT_USER = { id: String(cachedShifts.userId) };
       } else if (AUTH_ENV_STATE === 'dev') {
         CURRENT_USER = { id: 'guest' };
-      } else if (readShiftsCache() || readPendingSnapshot() || readOfflineMeta()) {
+      } else if (cachedShifts || readPendingSnapshot() || cachedMeta) {
         CURRENT_USER = { id: 'guest' };
       } else {
         return false;
@@ -4936,16 +4977,48 @@
 
       STARTED_FROM_CACHED_STATE = true;
       showAppShell();
+      if (cachedShifts && Array.isArray(cachedShifts.shifts)) {
+        allShifts = normalizeShiftsForDisplay(cachedShifts.shifts);
+      }
       updateOfflineUiState({
         isOffline: !navigator.onLine,
         isSyncing: false,
         hasPending: !!readPendingSnapshot(),
-        lastSyncStatus: navigator.onLine ? 'cached' : 'offline',
+        lastSyncStatus: cachedShifts ? 'cached' : 'offline',
         lastError: ''
       });
-      loadShifts(function() {
+      if (cachedShifts && Array.isArray(cachedShifts.shifts)) {
         render();
+      } else {
+        loadShifts(function() {
+          render();
+        });
+      }
+      return true;
+    }
+
+    function hydrateOfflineShellFromCache() {
+      if (navigator.onLine) return false;
+      return bootstrapCachedShellFromStorage();
+    }
+
+    function startOfflineModeImmediately() {
+      if (bootstrapCachedShellFromStorage()) {
+        return true;
+      }
+
+      CURRENT_USER = { id: 'guest' };
+      STARTED_FROM_CACHED_STATE = true;
+      showAppShell();
+      updateOfflineUiState({
+        isOffline: true,
+        isSyncing: false,
+        hasPending: !!readPendingSnapshot(),
+        lastSyncStatus: 'offline',
+        lastError: ''
       });
+      allShifts = [];
+      render();
       return true;
     }
 
@@ -6637,7 +6710,9 @@
     }
 
     // ── Init ──
-    if (!hydrateOfflineShellFromCache()) {
+    if (!navigator.onLine) {
+      startOfflineModeImmediately();
+    } else if (!hydrateOfflineShellFromCache()) {
       showAuthGate(AUTH_ENV_STATE, 'guest');
       ensureAuthenticated().then(function(user) {
         if (!user) return;
