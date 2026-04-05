@@ -295,6 +295,34 @@
       background-clip: text;
     }
 
+    .dashboard-month-income {
+      margin-top: 10px;
+      display: flex;
+      align-items: baseline;
+      justify-content: space-between;
+      gap: 10px;
+      min-height: 20px;
+    }
+
+    .dashboard-month-income-label {
+      font-size: 12px;
+      color: rgba(244, 247, 255, 0.66);
+      font-weight: 700;
+      letter-spacing: 0.02em;
+      text-transform: none;
+    }
+
+    .dashboard-month-income-value {
+      font-size: 18px;
+      font-weight: 800;
+      line-height: 1.1;
+      color: #f4f7ff;
+      font-variant-numeric: tabular-nums;
+      letter-spacing: -0.01em;
+      text-shadow: 0 10px 28px rgba(0, 0, 0, 0.22);
+      white-space: nowrap;
+    }
+
     .dashboard-total {
       font-size: 20px;
       font-weight: 600;

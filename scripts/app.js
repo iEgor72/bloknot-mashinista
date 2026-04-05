@@ -767,6 +767,12 @@
       return rounded.toLocaleString('ru-RU') + ' ₽';
     }
 
+    function formatMonthIncomeLabel(month0) {
+      var monthName = MONTH_NAMES[month0];
+      if (!monthName) return 'За месяц:';
+      return 'За ' + monthName.toLowerCase() + ':';
+    }
+
     function formatPercent(value) {
       var rounded = Math.round((value || 0) * 10) / 10;
       return String(rounded).replace(/\.0$/, '') + '%';
@@ -2454,6 +2460,7 @@
         nightMin += shiftNightMinutesInRange(monthShifts[j], bounds.start, bounds.end);
         holidayMin += shiftHolidayMinutesInRange(monthShifts[j], bounds.start, bounds.end);
       }
+      var monthSalarySummary = calculateSalarySummaryByMinutes(totalMin, nightMin, holidayMin);
 
       // Norm
       var monthKey = currentYear + '-' + String(currentMonth + 1).padStart(2, '0');
@@ -2462,6 +2469,14 @@
       // Update stats
       var statWorkedEl = document.getElementById('statWorked');
       if (statWorkedEl) statWorkedEl.textContent = fmtMin(totalMin);
+      var monthIncomeLabelEl = document.getElementById('dashboardMonthIncomeLabel');
+      var monthIncomeValueEl = document.getElementById('dashboardMonthIncomeValue');
+      if (monthIncomeLabelEl) monthIncomeLabelEl.textContent = formatMonthIncomeLabel(currentMonth);
+      if (monthIncomeValueEl) {
+        monthIncomeValueEl.textContent = monthShifts.length > 0
+          ? formatRub(monthSalarySummary.netAmount)
+          : 'Нет смен';
+      }
       setQuickMetricText('statNight', fmtMin(nightMin));
       setQuickMetricText('statHoliday', fmtMin(holidayMin));
       setQuickMetricText('statShifts', String(monthShifts.length));
