@@ -1547,16 +1547,19 @@
               return user;
             }
 
-            CURRENT_USER = null;
+            // In silent mode keep the cached CURRENT_USER so localStorage keys
+            // remain consistent — resetting to null scatters writes across
+            // different suffixes (_realId vs _guest) and loses pending badges.
             if (!silent) {
+              CURRENT_USER = null;
               showAuthGate('prod', 'guest');
               renderTelegramLoginWidget();
             }
             return null;
           })
           .catch(function(err) {
-            CURRENT_USER = null;
             if (!silent) {
+              CURRENT_USER = null;
               showAuthGate('prod', 'error');
               renderTelegramLoginWidget();
             }
