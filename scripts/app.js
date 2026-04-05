@@ -370,7 +370,17 @@
     };
 
     function getOfflineStorageUserId() {
-      return CURRENT_USER && CURRENT_USER.id !== undefined && CURRENT_USER.id !== null ? String(CURRENT_USER.id) : 'guest';
+      // Prefer CURRENT_USER, then fall back to the persisted cached user so
+      // storage keys stay consistent even while auth is in progress or has
+      // temporarily reset CURRENT_USER to null (e.g. silent background auth).
+      if (CURRENT_USER && CURRENT_USER.id !== undefined && CURRENT_USER.id !== null) {
+        return String(CURRENT_USER.id);
+      }
+      var stored = getStoredCachedUser();
+      if (stored && stored.id !== undefined && stored.id !== null) {
+        return String(stored.id);
+      }
+      return 'guest';
     }
 
     function getOfflineStorageKey(baseKey) {
@@ -1547,28 +1557,19 @@
               return user;
             }
 
-            // Silent auth failure with cached state: keep CURRENT_USER and app shell.
-            // authenticateWithTelegramWebApp may have called showAuthGate() unconditionally,
-            // so we must re-show the app shell here to undo that.
-            if (silent && STARTED_FROM_CACHED_STATE) {
-              showAppShell();
-              return null;
-            }
-
             CURRENT_USER = null;
-            showAuthGate('prod', 'guest');
-            renderTelegramLoginWidget();
+            if (!silent) {
+              showAuthGate('prod', 'guest');
+              renderTelegramLoginWidget();
+            }
             return null;
           })
           .catch(function(err) {
-            if (silent && STARTED_FROM_CACHED_STATE) {
-              showAppShell();
-              return null;
-            }
-
             CURRENT_USER = null;
-            showAuthGate('prod', 'error');
-            renderTelegramLoginWidget();
+            if (!silent) {
+              showAuthGate('prod', 'error');
+              renderTelegramLoginWidget();
+            }
             return null;
           });
       }
