@@ -140,6 +140,17 @@
 
       <!-- Shifts Tab -->
       <section class="tab-panel" data-tab="shifts">
+        <div class="month-nav">
+          <div class="month-nav-top">
+            <button class="month-btn" id="btnPrevShiftsMonth" type="button" aria-label="Предыдущий месяц">‹</button>
+            <div class="month-header">
+              <div class="month-title" id="shiftsMonthTitle"></div>
+              <div class="month-quarter" id="shiftsMonthQuarter"></div>
+            </div>
+            <button class="month-btn" id="btnNextShiftsMonth" type="button" aria-label="Следующий месяц">›</button>
+          </div>
+          <div class="month-tabs" id="shiftsMonthTabs" aria-label="Месяцы квартала"></div>
+        </div>
         <div class="shifts-section">
           <div class="section-header" id="shiftsHeader">Смены</div>
           <div class="shifts-overview" aria-label="Краткая сводка смен">

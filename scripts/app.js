@@ -2496,6 +2496,10 @@
         currentMonth = targetMonth;
         render();
       });
+      renderMonthHeader('shiftsMonthTitle', 'shiftsMonthQuarter', 'shiftsMonthTabs', currentYear, currentMonth, function(targetMonth) {
+        currentMonth = targetMonth;
+        render();
+      });
 
       var bounds = getMonthBounds(currentYear, currentMonth);
 
@@ -3231,18 +3235,31 @@
       render();
     });
 
-    // ── Month navigation ──
-    document.getElementById('btnPrevMonth').addEventListener('click', function() {
+    function shiftCurrentMonthBy(delta) {
+      if (delta === 0) return;
+      if (delta > 0) {
+        if (currentMonth === 11) { currentMonth = 0; currentYear++; }
+        else currentMonth++;
+        return;
+      }
       if (currentMonth === 0) { currentMonth = 11; currentYear--; }
       else currentMonth--;
-      render();
-    });
+    }
 
-    document.getElementById('btnNextMonth').addEventListener('click', function() {
-      if (currentMonth === 11) { currentMonth = 0; currentYear++; }
-      else currentMonth++;
-      render();
-    });
+    function bindCurrentMonthNavButton(buttonId, delta) {
+      var button = document.getElementById(buttonId);
+      if (!button) return;
+      button.addEventListener('click', function() {
+        shiftCurrentMonthBy(delta);
+        render();
+      });
+    }
+
+    // ── Month navigation ──
+    bindCurrentMonthNavButton('btnPrevMonth', -1);
+    bindCurrentMonthNavButton('btnNextMonth', 1);
+    bindCurrentMonthNavButton('btnPrevShiftsMonth', -1);
+    bindCurrentMonthNavButton('btnNextShiftsMonth', 1);
 
     document.getElementById('btnPrevSalaryMonth').addEventListener('click', function() {
       if (salaryMonth === 0) { salaryMonth = 11; salaryYear--; }
