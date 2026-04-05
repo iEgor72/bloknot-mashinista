@@ -43,6 +43,7 @@
     var STORAGE_KEY = 'shifts';
     var MSK_OFFSET = 3; // Moscow = UTC+3
     var SHORT_REST_THRESHOLD_MIN = 8 * 60;
+    var MIN_SHIFTS_FOR_AVERAGE = 2;
 
     // ── State ──
     var now = new Date();
@@ -995,6 +996,65 @@
       }
 
       return incomeMap;
+    }
+
+    function buildAverageShiftSummary(monthShifts, bounds, shiftIncomeMap) {
+      var shifts = monthShifts || [];
+      var totalDurationMin = 0;
+      var durationCount = 0;
+      var totalIncome = 0;
+      var incomeCount = 0;
+
+      for (var i = 0; i < shifts.length; i++) {
+        var shift = shifts[i];
+        var durationMin = shiftMinutesInRange(shift, bounds.start, bounds.end);
+        if (durationMin > 0) {
+          totalDurationMin += durationMin;
+          durationCount++;
+        }
+
+        var incomeData = shiftIncomeMap ? shiftIncomeMap[String(shift.id)] : null;
+        var incomeAmount = incomeData ? Number(incomeData.amount) : NaN;
+        if (isFinite(incomeAmount) && incomeAmount >= 0) {
+          totalIncome += incomeAmount;
+          incomeCount++;
+        }
+      }
+
+      return {
+        shiftCount: shifts.length,
+        durationCount: durationCount,
+        incomeCount: incomeCount,
+        averageDurationMin: durationCount ? (totalDurationMin / durationCount) : 0,
+        averageIncome: incomeCount ? (totalIncome / incomeCount) : 0
+      };
+    }
+
+    function renderAverageShiftSummary(summary) {
+      var incomeEl = document.getElementById('avgShiftIncome');
+      var durationEl = document.getElementById('avgShiftDuration');
+      var metaEl = document.getElementById('avgShiftMeta');
+      if (!incomeEl || !durationEl || !metaEl) return;
+
+      if (!summary || summary.shiftCount < MIN_SHIFTS_FOR_AVERAGE) {
+        incomeEl.textContent = 'Недостаточно данных';
+        durationEl.textContent = 'Недостаточно данных';
+        metaEl.textContent = summary && summary.shiftCount === 0
+          ? 'Нет смен за месяц'
+          : 'Добавьте минимум 2 смены';
+        return;
+      }
+
+      incomeEl.textContent = summary.incomeCount > 0
+        ? formatRub(summary.averageIncome)
+        : 'Недостаточно данных';
+      durationEl.textContent = summary.durationCount > 0
+        ? formatHoursAndMinutes(summary.averageDurationMin)
+        : 'Недостаточно данных';
+
+      metaEl.textContent = (summary.incomeCount > 0 && summary.durationCount > 0)
+        ? ('По ' + summary.shiftCount + ' сменам за месяц')
+        : 'Данные за месяц неполные';
     }
 
     function renderSalaryPanel() {
@@ -2100,6 +2160,17 @@
       return parts.join(' ');
     }
 
+    function formatHoursAndMinutes(totalMin) {
+      var minutes = Math.max(0, Math.round(totalMin || 0));
+      if (minutes === 0) return '0 мин';
+
+      var hours = Math.floor(minutes / 60);
+      var mins = minutes % 60;
+      if (hours === 0) return mins + ' мин';
+      if (mins === 0) return hours + ' ч';
+      return hours + ' ч ' + mins + ' мин';
+    }
+
     function getShiftRangeState(shift) {
       var rawStart = shift && shift.start_msk ? String(shift.start_msk) : '';
       var rawEnd = shift && shift.end_msk ? String(shift.end_msk) : '';
@@ -2394,6 +2465,7 @@
       setQuickMetricText('statNight', fmtMin(nightMin));
       setQuickMetricText('statHoliday', fmtMin(holidayMin));
       setQuickMetricText('statShifts', String(monthShifts.length));
+      renderAverageShiftSummary(buildAverageShiftSummary(monthShifts, bounds, shiftIncomeMap));
 
       var normEl = document.getElementById('statNorm');
       var diffEl = document.getElementById('statDiff');

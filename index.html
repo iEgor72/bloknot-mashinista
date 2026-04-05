@@ -6,7 +6,7 @@
   <meta name="apple-mobile-web-app-capable" content="yes" />
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
   <meta name="theme-color" content="#070814" />
-  <title>Учёт смен</title>
+  <title>Блокнот машиниста</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link rel="preload" href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" as="style" onload="this.onload=null;this.rel='stylesheet'">
@@ -106,6 +106,23 @@
             <div class="quick-stat">
               <span class="quick-stat-value shifts" id="statShifts">0</span>
               <span class="stat-label">Смены</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="average-shift-card" aria-live="polite">
+          <div class="average-shift-head">
+            <div class="average-shift-title">Средняя смена</div>
+            <div class="average-shift-meta" id="avgShiftMeta">Добавьте минимум 2 смены</div>
+          </div>
+          <div class="average-shift-list">
+            <div class="average-shift-row">
+              <span class="average-shift-label">Средний доход</span>
+              <span class="average-shift-value" id="avgShiftIncome">—</span>
+            </div>
+            <div class="average-shift-row">
+              <span class="average-shift-label">Средняя длительность</span>
+              <span class="average-shift-value" id="avgShiftDuration">—</span>
             </div>
           </div>
         </div>
