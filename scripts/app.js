@@ -49,8 +49,6 @@
     var now = new Date();
     var currentYear = now.getFullYear();
     var currentMonth = now.getMonth(); // 0-indexed
-    var salaryYear = now.getFullYear();
-    var salaryMonth = now.getMonth();
     var allShifts = [];
     var pendingDeleteId = null;
     var editingShiftId = null;
@@ -1064,7 +1062,7 @@
     }
 
     function renderSalaryPanel() {
-      var bounds = getMonthBounds(salaryYear, salaryMonth);
+      var bounds = getMonthBounds(currentYear, currentMonth);
       var monthShifts = [];
       for (var i = 0; i < allShifts.length; i++) {
         if (shiftMinutesInRange(allShifts[i], bounds.start, bounds.end) > 0) {
@@ -1074,8 +1072,8 @@
       monthShifts.sort(compareShiftsByStartDesc);
 
       var summary = buildSalarySummary(monthShifts, bounds);
-      renderMonthHeader('salaryMonthTitle', 'salaryMonthQuarter', 'salaryMonthTabs', salaryYear, salaryMonth, function(targetMonth) {
-        salaryMonth = targetMonth;
+      renderMonthHeader('salaryMonthTitle', 'salaryMonthQuarter', 'salaryMonthTabs', currentYear, currentMonth, function(targetMonth) {
+        currentMonth = targetMonth;
         render();
       });
 
@@ -3260,18 +3258,8 @@
     bindCurrentMonthNavButton('btnNextMonth', 1);
     bindCurrentMonthNavButton('btnPrevShiftsMonth', -1);
     bindCurrentMonthNavButton('btnNextShiftsMonth', 1);
-
-    document.getElementById('btnPrevSalaryMonth').addEventListener('click', function() {
-      if (salaryMonth === 0) { salaryMonth = 11; salaryYear--; }
-      else salaryMonth--;
-      render();
-    });
-
-    document.getElementById('btnNextSalaryMonth').addEventListener('click', function() {
-      if (salaryMonth === 11) { salaryMonth = 0; salaryYear++; }
-      else salaryMonth++;
-      render();
-    });
+    bindCurrentMonthNavButton('btnPrevSalaryMonth', -1);
+    bindCurrentMonthNavButton('btnNextSalaryMonth', 1);
 
     // ── Add shift form ──
     function clearErrors() {
