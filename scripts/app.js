@@ -2344,6 +2344,9 @@
 
     function getShiftInlineIconSvg(iconName) {
       var common = 'class="shift-inline-icon" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"';
+      if (iconName === 'calendar') {
+        return '<svg ' + common + '><rect x="3.5" y="5" width="13" height="11" rx="2"></rect><path d="M7 3.8v2.4"></path><path d="M13 3.8v2.4"></path><path d="M3.5 8.5h13"></path></svg>';
+      }
       if (iconName === 'depot') {
         return '<svg ' + common + '><path d="M3.5 16.5h13"></path><path d="M5 16.5V7.8L10 5l5 2.8v8.7"></path><path d="M8 16.5v-3h4v3"></path></svg>';
       }
@@ -2364,6 +2367,9 @@
       }
       if (iconName === 'axles') {
         return '<svg ' + common + '><circle cx="10" cy="10" r="2.7"></circle><path d="M10 4.2v1.6"></path><path d="M10 14.2v1.6"></path><path d="M4.2 10h1.6"></path><path d="M14.2 10h1.6"></path><path d="M5.8 5.8 7 7"></path><path d="M13 13l1.2 1.2"></path><path d="M14.2 5.8 13 7"></path><path d="M7 13l-1.2 1.2"></path></svg>';
+      }
+      if (iconName === 'income') {
+        return '<svg ' + common + '><path d="M4 7.5h12a1.5 1.5 0 0 1 1.5 1.5v4a1.5 1.5 0 0 1-1.5 1.5H4a1.5 1.5 0 0 1-1.5-1.5V9A1.5 1.5 0 0 1 4 7.5Z"></path><circle cx="10" cy="11" r="1.7"></circle><path d="M5.2 11h.1"></path><path d="M14.7 11h.1"></path></svg>';
       }
       return '<svg ' + common + '><rect x="3.5" y="4.5" width="13" height="12" rx="2.2"></rect><path d="M7 3.5v2"></path><path d="M13 3.5v2"></path><path d="M3.5 8h13"></path></svg>';
     }
@@ -2424,6 +2430,24 @@
         '</div>';
     }
 
+    function buildShiftDateTimeHtml(dateTimeText) {
+      return '' +
+        '<div class="shift-datetime-line">' +
+          '<span class="shift-datetime-icon" aria-hidden="true">' + getShiftInlineIconSvg('calendar') + '</span>' +
+          '<span class="shift-datetime-text">' + escapeHtml(dateTimeText || '—') + '</span>' +
+        '</div>';
+    }
+
+    function buildShiftIncomeLabelHtml() {
+      return '' +
+        '<span class="shift-income-row-label">' +
+          '<span class="shift-income-row-label-content">' +
+            '<span class="shift-income-row-label-icon" aria-hidden="true">' + getShiftInlineIconSvg('income') + '</span>' +
+            '<span class="shift-income-row-label-text">Доход за смену</span>' +
+          '</span>' +
+        '</span>';
+    }
+
     function getShiftTechnicalItems(shift) {
       var items = [];
       if (!shift) return items;
@@ -2462,8 +2486,10 @@
       var durationText = getShiftDurationLabelText(f.dur);
       var typeHtml = buildShiftTypeHtml(shift, typeLabel);
       var directionHtml = buildShiftDirectionHtml(directionText);
+      var dateTimeHtml = buildShiftDateTimeHtml(dateTimeText);
       var durationHtml = buildShiftDurationHtml(durationText);
       var technicalHtml = buildShiftTechnicalHtml(shift);
+      var incomeLabelHtml = buildShiftIncomeLabelHtml();
       var incomeVm = getShiftIncomeViewModel(shift, shiftIncomeMap);
       var incomeHtml = getShiftIncomeChipHtml(incomeVm);
       var itemClass = 'shift-item compact-shift shift-item-confirm';
@@ -2478,12 +2504,12 @@
           directionHtml +
           '<div class="shift-card-body">' +
             '<div class="shift-main-row">' +
-              '<div class="shift-datetime-line">' + escapeHtml(dateTimeText) + '</div>' +
+              dateTimeHtml +
               durationHtml +
             '</div>' +
             technicalHtml +
             '<div class="shift-income-row">' +
-              '<span class="shift-income-row-label">Доход за смену</span>' +
+              incomeLabelHtml +
               incomeHtml +
             '</div>' +
           '</div>' +
@@ -2516,8 +2542,10 @@
       var durationText = getShiftDurationLabelText(f.dur);
       var typeHtml = buildShiftTypeHtml(sh, typeLabel);
       var directionHtml = buildShiftDirectionHtml(directionText);
+      var dateTimeHtml = buildShiftDateTimeHtml(dateTimeText);
       var durationHtml = buildShiftDurationHtml(durationText);
       var technicalHtml = buildShiftTechnicalHtml(sh);
+      var incomeLabelHtml = buildShiftIncomeLabelHtml();
       if (sh.route_kind === 'trip') itemClass += ' has-trip';
       if (sh.id === editingShiftId) itemClass += ' is-edit-target';
       if (sh.id === pendingDeleteId) itemClass += ' is-delete-target';
@@ -2541,12 +2569,12 @@
         directionHtml +
         '<div class="shift-card-body">' +
           '<div class="shift-main-row">' +
-            '<div class="shift-datetime-line">' + escapeHtml(dateTimeText) + '</div>' +
+            dateTimeHtml +
             durationHtml +
           '</div>' +
           technicalHtml +
           '<div class="shift-income-row">' +
-            '<span class="shift-income-row-label">Доход за смену</span>' +
+            incomeLabelHtml +
             incomeHtml +
           '</div>' +
         '</div>';

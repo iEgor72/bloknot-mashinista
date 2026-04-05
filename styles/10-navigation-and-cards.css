@@ -600,6 +600,7 @@
 
     .compact-shift .shift-datetime-line {
       font-size: 12px;
+      gap: 4px;
     }
 
     .compact-shift .shift-duration {
@@ -611,6 +612,10 @@
       font-size: 11px;
       column-gap: 4px;
       row-gap: 3px;
+    }
+
+    .compact-shift .shift-income-row-label-content {
+      gap: 3px;
     }
 
     .compact-shift .shift-inline-icon {
