@@ -201,19 +201,43 @@
     }
 
     .dashboard-card {
-      background: linear-gradient(180deg, rgba(20, 24, 42, 0.92), rgba(13, 16, 30, 0.94));
-      border: 1px solid rgba(255, 255, 255, 0.08);
-      border-radius: 24px;
+      background:
+        radial-gradient(circle at 16% 0%, rgba(141, 124, 255, 0.20), transparent 34%),
+        radial-gradient(circle at 92% 12%, rgba(82, 215, 255, 0.16), transparent 34%),
+        linear-gradient(150deg, rgba(27, 31, 54, 0.95) 0%, rgba(15, 18, 34, 0.94) 58%, rgba(22, 19, 42, 0.95) 100%);
+      border: 1px solid rgba(255, 255, 255, 0.09);
+      border-radius: 26px;
       padding: 22px 20px;
-      box-shadow: 0 16px 34px rgba(4, 7, 15, 0.26), inset 0 1px 0 rgba(255, 255, 255, 0.05);
+      box-shadow:
+        0 22px 48px rgba(4, 7, 15, 0.34),
+        inset 0 1px 0 rgba(255, 255, 255, 0.08);
       margin-bottom: 18px;
       position: relative;
       overflow: hidden;
     }
 
-    .dashboard-card::before,
+    .dashboard-card::before {
+      content: '';
+      position: absolute;
+      right: -50px;
+      bottom: -90px;
+      width: 220px;
+      height: 220px;
+      background: radial-gradient(circle, rgba(82, 215, 255, 0.22), transparent 72%);
+      pointer-events: none;
+      opacity: 0.5;
+    }
+
     .dashboard-card::after {
-      content: none;
+      content: '';
+      position: absolute;
+      left: -60px;
+      top: -80px;
+      width: 220px;
+      height: 220px;
+      background: radial-gradient(circle, rgba(141, 124, 255, 0.18), transparent 72%);
+      pointer-events: none;
+      opacity: 0.5;
     }
 
     .dashboard-head {
@@ -224,7 +248,7 @@
 
     .dashboard-eyebrow {
       font-size: 12px;
-      color: rgba(244, 247, 255, 0.82);
+      color: rgba(244, 247, 255, 0.84);
       letter-spacing: 0.04em;
       font-weight: 700;
       text-transform: uppercase;
@@ -267,6 +291,7 @@
       font-variant-numeric: tabular-nums;
       letter-spacing: -0.01em;
       white-space: nowrap;
+      text-shadow: 0 10px 24px rgba(0, 0, 0, 0.24);
     }
 
     .dashboard-total {
@@ -282,9 +307,22 @@
       line-height: 1.45;
     }
 
+    .dashboard-average {
+      margin-top: 6px;
+      font-size: 12px;
+      line-height: 1.35;
+      color: rgba(244, 247, 255, 0.74);
+      font-variant-numeric: tabular-nums;
+      letter-spacing: 0.01em;
+    }
+
+    .dashboard-average.is-muted {
+      color: rgba(244, 247, 255, 0.56);
+    }
+
     .progress-track {
       margin-top: 0;
-      background: rgba(255, 255, 255, 0.12);
+      background: rgba(255, 255, 255, 0.13);
       border-radius: 999px;
       height: 10px;
       overflow: hidden;
@@ -295,9 +333,11 @@
       height: 100%;
       width: 0%;
       border-radius: inherit;
-      background: linear-gradient(90deg, #70dcff 0%, #8d7cff 100%);
+      background: linear-gradient(90deg, #72dcff 0%, #8d7cff 55%, #ea72ff 100%);
       transition: width 0.2s ease;
-      box-shadow: none;
+      box-shadow:
+        0 0 12px rgba(141, 124, 255, 0.45),
+        0 0 22px rgba(82, 215, 255, 0.2);
     }
 
     .quick-stats-grid {
@@ -525,8 +565,15 @@
 
     .section-link:active { color: #fff; background: rgba(141, 124, 255, 0.16); }
 
-    .compact-shift .shift-duration {
-      font-size: 12px;
+    .compact-shift .shift-duration-center {
+      font-size: 11px;
+      gap: 4px;
+      padding: 3px 9px;
+    }
+
+    .compact-shift .shift-inline-icon {
+      width: 13px;
+      height: 13px;
     }
 
     .compact-shift .shift-income-row {
@@ -538,7 +585,7 @@
     }
 
     .compact-shift .shift-income-chip {
-      font-size: 15px;
+      font-size: 14px;
     }
 
     .compact-shift .shift-card-top {
@@ -550,15 +597,34 @@
     }
 
     .compact-shift .shift-schedule-time {
-      font-size: 22px;
+      font-size: 20px;
     }
 
     .compact-shift .shift-schedule-date {
-      font-size: 12px;
+      font-size: 11px;
+    }
+
+    .compact-shift .shift-route-line {
+      font-size: 11px;
+      gap: 5px;
     }
 
     .compact-shift .shift-title {
       font-size: 15px;
+    }
+
+    .compact-shift .shift-tech-grid {
+      grid-template-columns: 1fr;
+      gap: 4px;
+    }
+
+    .compact-shift .shift-tech-item {
+      min-height: 28px;
+      padding: 5px 7px;
+    }
+
+    .compact-shift .shift-tech-value {
+      font-size: 11px;
     }
 
     .compact-shift .shift-actions-trigger {

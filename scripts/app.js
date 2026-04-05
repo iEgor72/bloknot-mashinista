@@ -1035,30 +1035,33 @@
     }
 
     function renderAverageShiftSummary(summary) {
-      var incomeEl = document.getElementById('avgShiftIncome');
-      var durationEl = document.getElementById('avgShiftDuration');
-      var metaEl = document.getElementById('avgShiftMeta');
-      if (!incomeEl || !durationEl || !metaEl) return;
+      var averageEl = document.getElementById('dashboardAverageShift');
+      if (!averageEl) return;
+      averageEl.className = 'dashboard-average';
 
-      if (!summary || summary.shiftCount < MIN_SHIFTS_FOR_AVERAGE) {
-        incomeEl.textContent = 'Недостаточно данных';
-        durationEl.textContent = 'Недостаточно данных';
-        metaEl.textContent = summary && summary.shiftCount === 0
-          ? 'Нет смен за месяц'
-          : 'Добавьте минимум 2 смены';
+      if (!summary || summary.shiftCount === 0) {
+        averageEl.textContent = 'ср. смена: нет данных';
+        averageEl.classList.add('is-muted');
         return;
       }
 
-      incomeEl.textContent = summary.incomeCount > 0
-        ? formatRub(summary.averageIncome)
-        : 'Недостаточно данных';
-      durationEl.textContent = summary.durationCount > 0
-        ? formatHoursAndMinutes(summary.averageDurationMin)
-        : 'Недостаточно данных';
+      if (summary.shiftCount < MIN_SHIFTS_FOR_AVERAGE) {
+        averageEl.textContent = 'ср. смена: нужно больше смен';
+        averageEl.classList.add('is-muted');
+        return;
+      }
 
-      metaEl.textContent = (summary.incomeCount > 0 && summary.durationCount > 0)
-        ? ('По ' + summary.shiftCount + ' сменам за месяц')
-        : 'Данные за месяц неполные';
+      var incomeText = summary.incomeCount > 0
+        ? formatRub(summary.averageIncome)
+        : '—';
+      var durationText = summary.durationCount > 0
+        ? formatHoursAndMinutes(summary.averageDurationMin)
+        : '—';
+
+      averageEl.textContent = 'ср. смена: ' + incomeText + ' · ' + durationText;
+      if (summary.incomeCount === 0 || summary.durationCount === 0) {
+        averageEl.classList.add('is-muted');
+      }
     }
 
     function renderSalaryPanel() {
@@ -2305,13 +2308,31 @@
       };
     }
 
-    function getShiftIncomeChipHtml(shift, shiftIncomeMap) {
+    function getShiftIncomeViewModel(shift, shiftIncomeMap) {
       var incomeData = shiftIncomeMap ? shiftIncomeMap[String(shift.id)] : null;
-      if (!incomeData) return '';
+      if (!incomeData) {
+        return {
+          hasValue: false,
+          level: 'none',
+          amountText: '—'
+        };
+      }
       var incomeLevel = incomeData.level === 'low' || incomeData.level === 'high'
         ? incomeData.level
         : 'medium';
-      return '<div class="shift-income-chip shift-income-chip--' + incomeLevel + '">' + escapeHtml(formatRub(incomeData.amount)) + '</div>';
+      var incomeAmount = Number(incomeData.amount);
+      var hasAmount = isFinite(incomeAmount);
+      return {
+        hasValue: hasAmount,
+        level: hasAmount ? incomeLevel : 'none',
+        amountText: hasAmount ? formatRub(incomeAmount) : '—'
+      };
+    }
+
+    function getShiftIncomeChipHtml(incomeViewModel) {
+      var vm = incomeViewModel || { hasValue: false, level: 'none', amountText: '—' };
+      var chipClass = vm.hasValue ? ('shift-income-chip--' + vm.level) : 'shift-income-chip--empty';
+      return '<div class="shift-income-chip ' + chipClass + '">' + escapeHtml(vm.amountText) + '</div>';
     }
 
     function getShiftDateLineLabel(displayParts) {
@@ -2320,41 +2341,118 @@
       return displayParts.startDate + ' → ' + displayParts.endDate;
     }
 
+    function getShiftInlineIconSvg(iconName) {
+      var common = 'class="shift-inline-icon" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"';
+      if (iconName === 'locomotive') {
+        return '<svg ' + common + '><rect x="3" y="4.5" width="14" height="9" rx="2"></rect><path d="M6 4.5v4h8v-4"></path><path d="M3 11.5h14"></path><circle cx="7" cy="14.5" r="1.2"></circle><circle cx="13" cy="14.5" r="1.2"></circle></svg>';
+      }
+      if (iconName === 'train') {
+        return '<svg ' + common + '><rect x="2.5" y="6" width="15" height="7" rx="2"></rect><path d="M6 6v7"></path><path d="M10 6v7"></path><path d="M14 6v7"></path><circle cx="6" cy="14.8" r="1"></circle><circle cx="14" cy="14.8" r="1"></circle></svg>';
+      }
+      if (iconName === 'wagon') {
+        return '<svg ' + common + '><rect x="3" y="6" width="14" height="7" rx="1.8"></rect><path d="M6 6v7"></path><path d="M14 6v7"></path><circle cx="6" cy="14.8" r="1"></circle><circle cx="14" cy="14.8" r="1"></circle><path d="M1.8 9.5h1.2"></path><path d="M17 9.5h1.2"></path></svg>';
+      }
+      if (iconName === 'axles') {
+        return '<svg ' + common + '><circle cx="10" cy="10" r="3.2"></circle><path d="M10 3.4v2.1"></path><path d="M10 14.5v2.1"></path><path d="M3.4 10h2.1"></path><path d="M14.5 10h2.1"></path><path d="M5.3 5.3l1.5 1.5"></path><path d="M13.2 13.2l1.5 1.5"></path><path d="M14.7 5.3l-1.5 1.5"></path><path d="M6.8 13.2l-1.5 1.5"></path></svg>';
+      }
+      if (iconName === 'station') {
+        return '<svg ' + common + '><path d="M10 17s5-4.5 5-8a5 5 0 1 0-10 0c0 3.5 5 8 5 8Z"></path><circle cx="10" cy="9" r="1.7"></circle></svg>';
+      }
+      return '<svg ' + common + '><circle cx="10" cy="10" r="6.4"></circle><path d="M10 6.8v3.5l2.4 1.4"></path></svg>';
+    }
+
+    function getShiftRouteSummary(shift) {
+      if (!shift) return '';
+      var from = shift.route_from ? String(shift.route_from).trim() : '';
+      var to = shift.route_to ? String(shift.route_to).trim() : '';
+      if (!from && !to) return '';
+      if (from && to) return from + ' → ' + to;
+      return from || to;
+    }
+
+    function getShiftTechnicalItems(shift) {
+      var items = [];
+      var loco = getLocoSummary(shift);
+      if (loco) items.push({ icon: 'locomotive', value: loco });
+      if (shift && shift.train_number) items.push({ icon: 'train', value: '№ ' + shift.train_number });
+      if (shift && shift.train_length) items.push({ icon: 'wagon', value: shift.train_length + ' ваг.' });
+      if (shift && shift.train_axles) items.push({ icon: 'axles', value: shift.train_axles + ' осей' });
+      return items;
+    }
+
+    function buildShiftDurationHtml(durationText) {
+      return '' +
+        '<div class="shift-duration-center">' +
+          '<span class="shift-duration-icon">' + getShiftInlineIconSvg('duration') + '</span>' +
+          '<span class="shift-duration-text">' + escapeHtml(durationText || '—') + '</span>' +
+        '</div>';
+    }
+
+    function buildShiftRouteHtml(shift) {
+      var routeText = getShiftRouteSummary(shift);
+      if (!routeText) return '';
+      return '' +
+        '<div class="shift-route-line">' +
+          '<span class="shift-route-icon">' + getShiftInlineIconSvg('station') + '</span>' +
+          '<span class="shift-route-text">' + escapeHtml(routeText) + '</span>' +
+        '</div>';
+    }
+
+    function buildShiftTechnicalHtml(shift) {
+      var items = getShiftTechnicalItems(shift);
+      if (!items.length) return '';
+
+      var html = '<div class="shift-tech-grid">';
+      for (var i = 0; i < items.length; i++) {
+        html += '' +
+          '<div class="shift-tech-item">' +
+            '<span class="shift-tech-icon">' + getShiftInlineIconSvg(items[i].icon) + '</span>' +
+            '<span class="shift-tech-value">' + escapeHtml(items[i].value) + '</span>' +
+          '</div>';
+      }
+      html += '</div>';
+      return html;
+    }
+
     function buildConfirmShiftCardHtml(shift, shiftIncomeMap) {
       if (!shift) return '';
       var f = fmtShift(shift);
       var p = getShiftDisplayParts(shift);
-      var title = getShiftTitle(shift);
-      var incomeHtml = getShiftIncomeChipHtml(shift, shiftIncomeMap);
+      var title = shift.route_kind === 'trip' ? 'Поездка' : getShiftTitle(shift);
+      var incomeVm = getShiftIncomeViewModel(shift, shiftIncomeMap);
+      var incomeHtml = getShiftIncomeChipHtml(incomeVm);
+      var routeHtml = buildShiftRouteHtml(shift);
+      var technicalHtml = buildShiftTechnicalHtml(shift);
       var itemClass = 'shift-item compact-shift shift-item-confirm';
       if (shift.route_kind === 'trip') itemClass += ' has-trip';
+      itemClass += ' income-' + incomeVm.level;
 
       return '' +
         '<div class="' + itemClass + '" data-shift-id="' + shift.id + '">' +
           '<div class="shift-card-top">' +
             '<div class="shift-title-col">' +
               '<div class="shift-title-row">' +
-                '<div class="shift-title"><span class="shift-title-icon">' + (shift.route_kind === 'trip' ? '↔' : '→') + '</span><span class="shift-title-text">' + escapeHtml(title) + '</span></div>' +
+                '<div class="shift-title"><span class="shift-title-text">' + escapeHtml(title) + '</span></div>' +
               '</div>' +
-            '</div>' +
-            '<div class="shift-top-right">' +
-              '<div class="shift-duration-wrap"><div class="shift-duration">' + escapeHtml(f.dur) + '</div></div>' +
             '</div>' +
           '</div>' +
           '<div class="shift-card-body">' +
             '<div class="shift-schedule">' +
-              '<div class="shift-schedule-row">' +
+              '<div class="shift-schedule-row shift-schedule-main">' +
                 '<span class="shift-schedule-time">' + escapeHtml(p.startTime) + '</span>' +
                 '<span class="shift-schedule-arrow">→</span>' +
                 '<span class="shift-schedule-time">' + escapeHtml(p.endTime) + '</span>' +
               '</div>' +
+              buildShiftDurationHtml(f.dur) +
+              routeHtml +
               '<div class="shift-schedule-row shift-schedule-date">' +
                 '<span class="shift-schedule-date-value">' + escapeHtml(getShiftDateLineLabel(p)) + '</span>' +
               '</div>' +
             '</div>' +
+            technicalHtml +
             '<div class="shift-income-row">' +
               '<span class="shift-income-row-label">Доход за смену</span>' +
-              (incomeHtml || '<div class="shift-income-chip shift-income-chip--empty">—</div>') +
+              incomeHtml +
             '</div>' +
           '</div>' +
         '</div>';
@@ -2380,25 +2478,28 @@
       var f = fmtShift(sh);
       var p = getShiftDisplayParts(sh);
       var itemClass = 'shift-item' + (compact ? ' compact-shift' : '');
-      var title = getShiftTitle(sh);
+      var title = sh.route_kind === 'trip' ? 'Поездка' : getShiftTitle(sh);
       if (sh.route_kind === 'trip') itemClass += ' has-trip';
       if (sh.id === editingShiftId) itemClass += ' is-edit-target';
       if (sh.id === pendingDeleteId) itemClass += ' is-delete-target';
       if (sh.id === recentAddedShiftId) itemClass += ' is-adding-target';
       var shiftIsPending = pendingMap ? !!pendingMap[String(sh.id)] : isShiftPending(sh);
       if (shiftIsPending) itemClass += ' is-pending';
-      var incomeHtml = getShiftIncomeChipHtml(sh, shiftIncomeMap);
+      var incomeVm = getShiftIncomeViewModel(sh, shiftIncomeMap);
+      var incomeHtml = getShiftIncomeChipHtml(incomeVm);
+      var routeHtml = buildShiftRouteHtml(sh);
+      var technicalHtml = buildShiftTechnicalHtml(sh);
+      itemClass += ' income-' + incomeVm.level;
 
       var html = '<div class="' + itemClass + '" data-shift-id="' + sh.id + '" data-pending="' + (shiftIsPending ? '1' : '0') + '">' +
         '<div class="shift-card-top">' +
           '<div class="shift-title-col">' +
             '<div class="shift-title-row">' +
-                '<div class="shift-title"><span class="shift-title-icon">' + (sh.route_kind === 'trip' ? '↔' : '→') + '</span><span class="shift-title-text">' + escapeHtml(title) + '</span></div>' +
+                '<div class="shift-title"><span class="shift-title-text">' + escapeHtml(title) + '</span></div>' +
               '</div>' +
               (shiftIsPending ? '<div class="shift-pending-line">Не синхронизировано</div>' : '') +
             '</div>' +
           '<div class="shift-top-right">' +
-            '<div class="shift-duration-wrap"><div class="shift-duration">' + escapeHtml(f.dur) + '</div></div>' +
             '<div class="shift-actions-wrap">' +
               '<button class="shift-actions-trigger" type="button" data-id="' + sh.id + '" aria-label="Действия" aria-haspopup="menu" aria-expanded="' + (activeShiftMenuId === sh.id ? 'true' : 'false') + '">⋯</button>' +
             '</div>' +
@@ -2406,18 +2507,21 @@
         '</div>' +
         '<div class="shift-card-body">' +
           '<div class="shift-schedule">' +
-            '<div class="shift-schedule-row">' +
+            '<div class="shift-schedule-row shift-schedule-main">' +
               '<span class="shift-schedule-time">' + escapeHtml(p.startTime) + '</span>' +
               '<span class="shift-schedule-arrow">→</span>' +
               '<span class="shift-schedule-time">' + escapeHtml(p.endTime) + '</span>' +
             '</div>' +
+            buildShiftDurationHtml(f.dur) +
+            routeHtml +
             '<div class="shift-schedule-row shift-schedule-date">' +
               '<span class="shift-schedule-date-value">' + escapeHtml(getShiftDateLineLabel(p)) + '</span>' +
             '</div>' +
           '</div>' +
+          technicalHtml +
           '<div class="shift-income-row">' +
             '<span class="shift-income-row-label">Доход за смену</span>' +
-            (incomeHtml || '<div class="shift-income-chip shift-income-chip--empty">—</div>') +
+            incomeHtml +
           '</div>' +
         '</div>';
 
