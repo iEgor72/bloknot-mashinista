@@ -2337,9 +2337,8 @@
                 '<div class="shift-title"><span class="shift-title-icon">' + (shift.route_kind === 'trip' ? '↔' : '→') + '</span><span class="shift-title-text">' + escapeHtml(title) + '</span></div>' +
               '</div>' +
             '</div>' +
-            '<div class="shift-status-stack">' +
+            '<div class="shift-top-right">' +
               '<div class="shift-duration-wrap"><div class="shift-duration">' + escapeHtml(f.dur) + '</div></div>' +
-              (incomeHtml ? '<div class="shift-income-wrap">' + incomeHtml + '</div>' : '') +
             '</div>' +
           '</div>' +
           '<div class="shift-card-body">' +
@@ -2352,6 +2351,10 @@
               '<div class="shift-schedule-row shift-schedule-date">' +
                 '<span class="shift-schedule-date-value">' + escapeHtml(getShiftDateLineLabel(p)) + '</span>' +
               '</div>' +
+            '</div>' +
+            '<div class="shift-income-row">' +
+              '<span class="shift-income-row-label">Доход за смену</span>' +
+              (incomeHtml || '<div class="shift-income-chip shift-income-chip--empty">—</div>') +
             '</div>' +
           '</div>' +
         '</div>';
@@ -2378,9 +2381,6 @@
       var p = getShiftDisplayParts(sh);
       var itemClass = 'shift-item' + (compact ? ' compact-shift' : '');
       var title = getShiftTitle(sh);
-      var kindLabel = getShiftKindLabel(sh);
-      var details = getShiftDetailLines(sh);
-      if (details.length) itemClass += ' has-details';
       if (sh.route_kind === 'trip') itemClass += ' has-trip';
       if (sh.id === editingShiftId) itemClass += ' is-edit-target';
       if (sh.id === pendingDeleteId) itemClass += ' is-delete-target';
@@ -2389,27 +2389,16 @@
       if (shiftIsPending) itemClass += ' is-pending';
       var incomeHtml = getShiftIncomeChipHtml(sh, shiftIncomeMap);
 
-      var metaHtml = '';
-      if (details.length) {
-        metaHtml = '<div class="shift-meta">';
-        for (var d = 0; d < details.length; d++) {
-          metaHtml += '<div class="shift-pill">' + escapeHtml(details[d]) + '</div>';
-        }
-        metaHtml += '</div>';
-      }
-
       var html = '<div class="' + itemClass + '" data-shift-id="' + sh.id + '" data-pending="' + (shiftIsPending ? '1' : '0') + '">' +
         '<div class="shift-card-top">' +
           '<div class="shift-title-col">' +
             '<div class="shift-title-row">' +
                 '<div class="shift-title"><span class="shift-title-icon">' + (sh.route_kind === 'trip' ? '↔' : '→') + '</span><span class="shift-title-text">' + escapeHtml(title) + '</span></div>' +
               '</div>' +
-              (kindLabel ? '<div class="shift-kind-line"><span class="shift-kind-badge">' + escapeHtml(kindLabel) + '</span></div>' : '') +
-              (shiftIsPending ? '<div class="shift-kind-line"><span class="shift-pending-badge">&#8987; Не синхронизировано</span></div>' : '') +
+              (shiftIsPending ? '<div class="shift-pending-line">Не синхронизировано</div>' : '') +
             '</div>' +
-          '<div class="shift-status-stack">' +
+          '<div class="shift-top-right">' +
             '<div class="shift-duration-wrap"><div class="shift-duration">' + escapeHtml(f.dur) + '</div></div>' +
-            (incomeHtml ? '<div class="shift-income-wrap">' + incomeHtml + '</div>' : '') +
             '<div class="shift-actions-wrap">' +
               '<button class="shift-actions-trigger" type="button" data-id="' + sh.id + '" aria-label="Действия" aria-haspopup="menu" aria-expanded="' + (activeShiftMenuId === sh.id ? 'true' : 'false') + '">⋯</button>' +
             '</div>' +
@@ -2423,12 +2412,13 @@
               '<span class="shift-schedule-time">' + escapeHtml(p.endTime) + '</span>' +
             '</div>' +
             '<div class="shift-schedule-row shift-schedule-date">' +
-              '<span class="shift-schedule-date-value">' + escapeHtml(p.startDate) + '</span>' +
-              '<span class="shift-schedule-arrow">→</span>' +
-              '<span class="shift-schedule-date-value">' + escapeHtml(p.endDate) + '</span>' +
+              '<span class="shift-schedule-date-value">' + escapeHtml(getShiftDateLineLabel(p)) + '</span>' +
             '</div>' +
           '</div>' +
-          metaHtml +
+          '<div class="shift-income-row">' +
+            '<span class="shift-income-row-label">Доход за смену</span>' +
+            (incomeHtml || '<div class="shift-income-chip shift-income-chip--empty">—</div>') +
+          '</div>' +
         '</div>';
 
       html += '</div>';
@@ -2547,7 +2537,6 @@
 
       var normEl = document.getElementById('statNorm');
       var diffEl = document.getElementById('statDiff');
-      var progressBadgeEl = document.getElementById('progressBadge');
       var progressFillEl = document.getElementById('dashboardProgressFill');
 
       if (norm !== undefined) {
@@ -2558,7 +2547,6 @@
         var progressPct = normMin > 0 ? Math.max(0, Math.min(100, Math.round((totalMin / normMin) * 100))) : 0;
 
         diffEl.className = 'dashboard-sub';
-        if (progressBadgeEl) progressBadgeEl.textContent = progressPct + '%';
         if (progressFillEl) progressFillEl.style.width = progressPct + '%';
 
         if (diffMin === 0 && totalMin > 0) {
@@ -2573,7 +2561,6 @@
         }
       } else {
         normEl.textContent = '—';
-        if (progressBadgeEl) progressBadgeEl.textContent = '—';
         if (progressFillEl) progressFillEl.style.width = '0%';
         diffEl.className = 'dashboard-sub';
         diffEl.textContent = 'Норма не задана';
@@ -2931,24 +2918,6 @@
       var train = getTrainSummary(shift);
       if (train) return 'Поезд ' + train;
       return 'Смена';
-    }
-
-    function getShiftDetailLines(shift) {
-      var lines = [];
-      var loco = getLocoSummary(shift);
-      if (loco) lines.push(loco);
-      var train = getTrainSummary(shift);
-      if (train) lines.push('Поезд ' + train);
-      return lines;
-    }
-
-    function getShiftKindLabel(shift) {
-      if (!shift) return '';
-      if (shift.route_kind === 'trip') return 'Поездка';
-      if (shift.route_kind === 'depot') return 'Под депо';
-      if (getLocoSummary(shift)) return 'Локомотив';
-      if (getTrainSummary(shift)) return 'Поезд';
-      return '';
     }
 
     function getShiftActionsMenuEls() {
