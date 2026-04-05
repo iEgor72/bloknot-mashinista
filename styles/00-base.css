@@ -82,8 +82,8 @@
 
     .is-standalone-pwa,
     .is-standalone-pwa body {
-      height: 100dvh;
-      min-height: 100dvh;
+      height: 100vh;
+      min-height: 100vh;
     }
 
     body {
@@ -138,8 +138,18 @@
 
     .is-standalone-pwa .app,
     .is-standalone-pwa .auth-gate {
-      height: 100dvh;
-      min-height: 100dvh;
+      height: 100vh;
+      min-height: 100vh;
+    }
+
+    @supports (height: 100lvh) {
+      .is-standalone-pwa,
+      .is-standalone-pwa body,
+      .is-standalone-pwa .app,
+      .is-standalone-pwa .auth-gate {
+        height: 100lvh;
+        min-height: 100lvh;
+      }
     }
 
     .auth-gate {
