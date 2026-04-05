@@ -1547,19 +1547,28 @@
               return user;
             }
 
-            CURRENT_USER = null;
-            if (!silent) {
-              showAuthGate('prod', 'guest');
-              renderTelegramLoginWidget();
+            // Silent auth failure with cached state: keep CURRENT_USER and app shell.
+            // authenticateWithTelegramWebApp may have called showAuthGate() unconditionally,
+            // so we must re-show the app shell here to undo that.
+            if (silent && STARTED_FROM_CACHED_STATE) {
+              showAppShell();
+              return null;
             }
+
+            CURRENT_USER = null;
+            showAuthGate('prod', 'guest');
+            renderTelegramLoginWidget();
             return null;
           })
           .catch(function(err) {
-            CURRENT_USER = null;
-            if (!silent) {
-              showAuthGate('prod', 'error');
-              renderTelegramLoginWidget();
+            if (silent && STARTED_FROM_CACHED_STATE) {
+              showAppShell();
+              return null;
             }
+
+            CURRENT_USER = null;
+            showAuthGate('prod', 'error');
+            renderTelegramLoginWidget();
             return null;
           });
       }
