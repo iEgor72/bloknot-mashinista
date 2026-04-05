@@ -42,6 +42,7 @@
 
     var STORAGE_KEY = 'shifts';
     var MSK_OFFSET = 3; // Moscow = UTC+3
+    var SHORT_REST_THRESHOLD_MIN = 8 * 60;
 
     // ── State ──
     var now = new Date();
@@ -1004,9 +1005,7 @@
           monthShifts.push(allShifts[i]);
         }
       }
-      monthShifts.sort(function(a, b) {
-        return a.start_msk > b.start_msk ? -1 : a.start_msk < b.start_msk ? 1 : 0;
-      });
+      monthShifts.sort(compareShiftsByStartDesc);
 
       var summary = buildSalarySummary(monthShifts, bounds);
       renderMonthHeader('salaryMonthTitle', 'salaryMonthQuarter', 'salaryMonthTabs', salaryYear, salaryMonth, function(targetMonth) {
@@ -1842,17 +1841,74 @@
 
     // Parse "YYYY-MM-DDTHH:MM" as MSK → returns UTC Date
     function parseMsk(dtStr) {
-      if (!dtStr || dtStr.indexOf('T') === -1) return null;
-      var parts = dtStr.split('T');
-      var d = parts[0].split('-');
-      var t = parts[1].split(':');
-      var year = parseInt(d[0], 10);
-      var month = parseInt(d[1], 10) - 1;
-      var day = parseInt(d[2], 10);
-      var hour = parseInt(t[0], 10);
-      var min = parseInt(t[1], 10) || 0;
-      // MSK = UTC+3
-      return new Date(Date.UTC(year, month, day, hour - MSK_OFFSET, min, 0));
+      var raw = typeof dtStr === 'string' ? dtStr.trim() : '';
+      if (!raw) return null;
+
+      var match = raw.match(/^(\d{4})-(\d{2})-(\d{2})T(\d{2}):(\d{2})$/);
+      if (!match) return null;
+
+      var year = parseInt(match[1], 10);
+      var month = parseInt(match[2], 10);
+      var day = parseInt(match[3], 10);
+      var hour = parseInt(match[4], 10);
+      var min = parseInt(match[5], 10);
+      if (
+        !isFinite(year) ||
+        !isFinite(month) ||
+        !isFinite(day) ||
+        !isFinite(hour) ||
+        !isFinite(min) ||
+        month < 1 || month > 12 ||
+        day < 1 || day > 31 ||
+        hour < 0 || hour > 23 ||
+        min < 0 || min > 59
+      ) {
+        return null;
+      }
+
+      var utcTs = Date.UTC(year, month - 1, day, hour - MSK_OFFSET, min, 0, 0);
+      if (!isFinite(utcTs)) return null;
+
+      // Reject impossible dates like 2026-02-30.
+      var check = new Date(utcTs + MSK_OFFSET * 60 * 60 * 1000);
+      if (
+        check.getUTCFullYear() !== year ||
+        check.getUTCMonth() + 1 !== month ||
+        check.getUTCDate() !== day ||
+        check.getUTCHours() !== hour ||
+        check.getUTCMinutes() !== min
+      ) {
+        return null;
+      }
+
+      return new Date(utcTs);
+    }
+
+    function getShiftStartTimestamp(shift) {
+      var start = parseMsk(shift && shift.start_msk);
+      return start ? start.getTime() : NaN;
+    }
+
+    function compareShiftsByStartDesc(a, b) {
+      var aStartTs = getShiftStartTimestamp(a);
+      var bStartTs = getShiftStartTimestamp(b);
+      var aValid = isFinite(aStartTs);
+      var bValid = isFinite(bStartTs);
+
+      if (aValid && bValid) {
+        if (aStartTs > bStartTs) return -1;
+        if (aStartTs < bStartTs) return 1;
+      } else if (aValid) {
+        return -1;
+      } else if (bValid) {
+        return 1;
+      }
+
+      var aRaw = a && a.start_msk ? String(a.start_msk) : '';
+      var bRaw = b && b.start_msk ? String(b.start_msk) : '';
+      if (aRaw > bRaw) return -1;
+      if (aRaw < bRaw) return 1;
+      return 0;
     }
 
     function formatMskDatePart(date) {
@@ -2011,10 +2067,11 @@
 
     // Total duration of a shift in minutes
     function shiftTotalMinutes(shift) {
-      var s = parseMsk(shift.start_msk);
-      var e = parseMsk(shift.end_msk);
+      var s = parseMsk(shift && shift.start_msk);
+      var e = parseMsk(shift && shift.end_msk);
       if (!s || !e) return 0;
-      return Math.round((e.getTime() - s.getTime()) / 60000);
+      var diff = Math.round((e.getTime() - s.getTime()) / 60000);
+      return diff > 0 ? diff : 0;
     }
 
     // Format minutes → "X ч" or "X ч Y м"
@@ -2027,26 +2084,126 @@
       return h + 'ч ' + m + 'м';
     }
 
+    function formatDurationReadable(totalMin) {
+      var minutes = Math.max(0, Math.round(totalMin || 0));
+      if (minutes === 0) return '0 мин';
+
+      var days = Math.floor(minutes / 1440);
+      var dayRemainder = minutes % 1440;
+      var hours = Math.floor(dayRemainder / 60);
+      var mins = dayRemainder % 60;
+      var parts = [];
+
+      if (days > 0) parts.push(days + ' д');
+      if (hours > 0) parts.push(hours + ' ч');
+      if (mins > 0 && (days === 0 || parts.length < 2)) parts.push(mins + ' мин');
+      return parts.join(' ');
+    }
+
+    function getShiftRangeState(shift) {
+      var rawStart = shift && shift.start_msk ? String(shift.start_msk) : '';
+      var rawEnd = shift && shift.end_msk ? String(shift.end_msk) : '';
+      var start = parseMsk(rawStart);
+      var end = parseMsk(rawEnd);
+      var startMs = start ? start.getTime() : NaN;
+      var endMs = end ? end.getTime() : NaN;
+      var hasStart = isFinite(startMs);
+      var hasEnd = isFinite(endMs);
+
+      return {
+        hasStartValue: !!rawStart,
+        hasEndValue: !!rawEnd,
+        hasStart: hasStart,
+        hasEnd: hasEnd,
+        startMs: hasStart ? startMs : 0,
+        endMs: hasEnd ? endMs : 0,
+        hasValidInterval: hasStart && hasEnd && endMs > startMs
+      };
+    }
+
+    function getRestGapInfo(newerShift, olderShift) {
+      if (!newerShift || !olderShift) return null;
+
+      var newer = getShiftRangeState(newerShift);
+      var older = getShiftRangeState(olderShift);
+
+      if (
+        (newer.hasStartValue && !newer.hasStart) ||
+        (newer.hasEndValue && !newer.hasEnd) ||
+        (older.hasStartValue && !older.hasStart) ||
+        (older.hasEndValue && !older.hasEnd)
+      ) {
+        return {
+          kind: 'invalid',
+          label: 'Отдых: ошибка времени'
+        };
+      }
+
+      if ((newer.hasStart && newer.hasEnd && !newer.hasValidInterval) || (older.hasStart && older.hasEnd && !older.hasValidInterval)) {
+        return {
+          kind: 'invalid',
+          label: 'Отдых: ошибка времени'
+        };
+      }
+
+      if (!older.hasEndValue) {
+        return {
+          kind: 'unavailable',
+          label: 'Отдых: нет конца смены'
+        };
+      }
+
+      if (!newer.hasStartValue) {
+        return {
+          kind: 'unavailable',
+          label: 'Отдых: нет начала смены'
+        };
+      }
+
+      var restMin = Math.round((newer.startMs - older.endMs) / 60000);
+      if (!isFinite(restMin)) {
+        return {
+          kind: 'unavailable',
+          label: 'Отдых: нет данных'
+        };
+      }
+
+      if (restMin < 0) {
+        return {
+          kind: 'overlap',
+          label: 'Пересечение ' + formatDurationReadable(Math.abs(restMin))
+        };
+      }
+
+      return {
+        kind: 'ok',
+        isShort: restMin < SHORT_REST_THRESHOLD_MIN,
+        label: 'Отдых ' + formatDurationReadable(restMin)
+      };
+    }
+
     // Format shift for display
     function fmtShift(shift) {
-      var s = shift.start_msk; // "YYYY-MM-DDTHH:MM"
-      var e = shift.end_msk;
-      var sd = s.substring(0, 10);
-      var st = s.substring(11, 16);
-      var ed = e.substring(0, 10);
-      var et = e.substring(11, 16);
+      var s = shift && shift.start_msk ? String(shift.start_msk) : '';
+      var e = shift && shift.end_msk ? String(shift.end_msk) : '';
+      var sd = s.length >= 10 ? s.substring(0, 10) : '';
+      var st = s.length >= 16 ? s.substring(11, 16) : '--:--';
+      var ed = e.length >= 10 ? e.substring(0, 10) : '';
+      var et = e.length >= 16 ? e.substring(11, 16) : '--:--';
 
       // Format dates as DD.MM.YYYY
-      var startDate = sd.substring(8,10) + '.' + sd.substring(5,7) + '.' + sd.substring(0,4);
-      var endDate = ed.substring(8,10) + '.' + ed.substring(5,7) + '.' + ed.substring(0,4);
+      var startDate = sd ? (sd.substring(8,10) + '.' + sd.substring(5,7) + '.' + sd.substring(0,4)) : '—';
+      var endDate = ed ? (ed.substring(8,10) + '.' + ed.substring(5,7) + '.' + ed.substring(0,4)) : '—';
 
-      var dur = fmtMin(shiftTotalMinutes(shift));
+      var range = getShiftRangeState(shift);
+      var dur = range.hasValidInterval ? fmtMin(shiftTotalMinutes(shift)) : '—';
 
-      if (sd === ed) {
+      if (sd && ed && sd === ed) {
         return { text: startDate + ', ' + st + ' → ' + et, dur: dur };
-      } else {
+      } else if (sd && ed) {
         return { text: startDate + ', ' + st + ' → ' + endDate + ', ' + et, dur: dur };
       }
+      return { text: startDate + ', ' + st + ' → ' + et, dur: dur };
     }
 
     function formatMskShortDate(dateStr) {
@@ -2061,16 +2218,31 @@
     function getShiftDisplayParts(shift) {
       var s = shift && shift.start_msk ? shift.start_msk : '';
       var e = shift && shift.end_msk ? shift.end_msk : '';
-      var startTime = s.length >= 16 ? s.substring(11, 16) : '';
-      var endTime = e.length >= 16 ? e.substring(11, 16) : '';
-      var startDate = formatMskShortDate(s.substring(0, 10));
-      var endDate = formatMskShortDate(e.substring(0, 10));
+      var startTime = s.length >= 16 ? s.substring(11, 16) : '--:--';
+      var endTime = e.length >= 16 ? e.substring(11, 16) : '--:--';
+      var startDate = formatMskShortDate(s.substring(0, 10)) || '—';
+      var endDate = formatMskShortDate(e.substring(0, 10)) || '—';
       return {
         startTime: startTime,
         endTime: endTime,
         startDate: startDate,
         endDate: endDate
       };
+    }
+
+    function buildRestGapHtml(restInfo, compact) {
+      if (!restInfo) return '';
+      var classes = 'shift-rest-gap' + (compact ? ' is-compact' : '');
+      if (restInfo.kind === 'ok' && restInfo.isShort) classes += ' is-short';
+      if (restInfo.kind === 'overlap' || restInfo.kind === 'invalid') classes += ' is-problem';
+      if (restInfo.kind === 'unavailable') classes += ' is-muted';
+
+      return '' +
+        '<div class="' + classes + '" aria-label="' + escapeHtml(restInfo.label) + '">' +
+          '<span class="shift-rest-gap-line" aria-hidden="true"></span>' +
+          '<span class="shift-rest-gap-label">' + escapeHtml(restInfo.label) + '</span>' +
+          '<span class="shift-rest-gap-line" aria-hidden="true"></span>' +
+        '</div>';
     }
 
     // ── Render ──
@@ -2164,6 +2336,9 @@
       var html = '';
       for (var i = 0; i < shifts.length; i++) {
         html += buildShiftItemHtml(shifts[i], compact, pendingMap, shiftIncomeMap);
+        if (i < shifts.length - 1) {
+          html += buildRestGapHtml(getRestGapInfo(shifts[i], shifts[i + 1]), compact);
+        }
       }
       listEl.innerHTML = html;
 
@@ -2196,9 +2371,7 @@
       }
 
       // Sort newest first
-      monthShifts.sort(function(a, b) {
-        return a.start_msk > b.start_msk ? -1 : a.start_msk < b.start_msk ? 1 : 0;
-      });
+      monthShifts.sort(compareShiftsByStartDesc);
 
       // Calculate total worked minutes in this month
       var totalMin = 0;
