@@ -130,6 +130,12 @@ function withTimeout(promise, timeoutMs) {
 async function networkFirstDocument(request) {
   const cache = await caches.open(CACHE_NAME);
 
+  const cached =
+    (await cache.match(request, { ignoreSearch: true })) ||
+    (await cache.match(NAVIGATION_FALLBACK_URL)) ||
+    (await cache.match('/'));
+
+  // Always update cache in background (fire-and-forget)
   const networkPromise = fetch(request, { cache: 'no-store' })
     .then((response) => {
       if (response && response.ok) {
@@ -141,23 +147,14 @@ async function networkFirstDocument(request) {
     })
     .catch(() => null);
 
-  const fastResponse = await withTimeout(networkPromise, NETWORK_TIMEOUT_MS);
-  if (fastResponse) {
-    return fastResponse;
-  }
-
-  const cached =
-    (await cache.match(request, { ignoreSearch: true })) ||
-    (await cache.match(NAVIGATION_FALLBACK_URL)) ||
-    (await cache.match('/'));
+  // Serve cache immediately if available — zero latency offline
   if (cached) return cached;
 
-  const eventualNetwork = await networkPromise;
-  if (eventualNetwork) {
-    return eventualNetwork;
-  }
+  // No cache yet (first visit) — wait for network with timeout
+  const fastResponse = await withTimeout(networkPromise, NETWORK_TIMEOUT_MS);
+  if (fastResponse) return fastResponse;
 
-  throw new Error('Navigation unavailable');
+  throw new Error('Navigation unavailable: no cache and no network');
 }
 
 async function staleWhileRevalidate(request, event) {
