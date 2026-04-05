@@ -189,8 +189,8 @@
       justify-items: end;
       align-content: start;
       gap: 6px;
-      min-width: 68px;
-      width: 68px;
+      min-width: 92px;
+      width: 92px;
       padding-top: 0;
     }
 
@@ -219,6 +219,53 @@
         0 4px 10px rgba(6, 9, 18, 0.08);
       white-space: nowrap;
       letter-spacing: 0.01em;
+    }
+
+    .shift-income-wrap {
+      width: 100%;
+      display: flex;
+      justify-content: flex-end;
+    }
+
+    .shift-income-chip {
+      width: 100%;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      padding: 6px 8px;
+      border-radius: 11px;
+      border: 1px solid rgba(255, 255, 255, 0.09);
+      background: rgba(255, 255, 255, 0.03);
+      color: rgba(244, 247, 255, 0.72);
+      font-size: 11px;
+      font-weight: 800;
+      line-height: 1;
+      letter-spacing: 0.01em;
+      white-space: nowrap;
+      font-variant-numeric: tabular-nums;
+      box-shadow: inset 0 1px 0 rgba(255,255,255,0.04);
+    }
+
+    .shift-income-chip--low {
+      border-color: rgba(255, 255, 255, 0.10);
+      background: rgba(255, 255, 255, 0.025);
+      color: rgba(244, 247, 255, 0.58);
+    }
+
+    .shift-income-chip--medium {
+      border-color: rgba(141, 124, 255, 0.22);
+      background:
+        linear-gradient(135deg, rgba(141, 124, 255, 0.12), rgba(255, 255, 255, 0.03)),
+        rgba(255, 255, 255, 0.02);
+      color: #e4deff;
+    }
+
+    .shift-income-chip--high {
+      border-color: rgba(82, 215, 255, 0.26);
+      background:
+        linear-gradient(135deg, rgba(82, 215, 255, 0.16), rgba(141, 124, 255, 0.08)),
+        rgba(255, 255, 255, 0.02);
+      color: #d7f2ff;
     }
 
     .shift-title {

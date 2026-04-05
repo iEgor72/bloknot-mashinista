@@ -854,28 +854,7 @@
       return (hours || 0) * (rate || 0) * ((percent || 0) / 100);
     }
 
-    function createSalaryRowHtml(code, title, detail, value) {
-      var detailHtml = detail ? '<div class="salary-note">' + detail + '</div>' : '';
-      return '<div class="salary-row">' +
-        '<div class="salary-code">' + code + '</div>' +
-        '<div class="salary-main">' +
-          '<div class="salary-name">' + title + '</div>' +
-          detailHtml +
-        '</div>' +
-        '<div class="salary-value">' + value + '</div>' +
-      '</div>';
-    }
-
-    function buildSalarySummary(monthShifts, bounds) {
-      var totalMin = 0;
-      var nightMin = 0;
-      var holidayMin = 0;
-      for (var i = 0; i < monthShifts.length; i++) {
-        totalMin += shiftMinutesInRange(monthShifts[i], bounds.start, bounds.end);
-        nightMin += shiftNightMinutesInRange(monthShifts[i], bounds.start, bounds.end);
-        holidayMin += shiftHolidayMinutesInRange(monthShifts[i], bounds.start, bounds.end);
-      }
-
+    function calculateSalarySummaryByMinutes(totalMin, nightMin, holidayMin) {
       var workedHours = totalMin / 60;
       var nightHours = nightMin / 60;
       var holidayHours = holidayMin / 60;
@@ -912,6 +891,109 @@
         ndflCoeffs: ndflCoeffs,
         netAmount: netAmount
       };
+    }
+
+    function createSalaryRowHtml(code, title, detail, value) {
+      var detailHtml = detail ? '<div class="salary-note">' + detail + '</div>' : '';
+      return '<div class="salary-row">' +
+        '<div class="salary-code">' + code + '</div>' +
+        '<div class="salary-main">' +
+          '<div class="salary-name">' + title + '</div>' +
+          detailHtml +
+        '</div>' +
+        '<div class="salary-value">' + value + '</div>' +
+      '</div>';
+    }
+
+    function buildSalarySummary(monthShifts, bounds) {
+      var totalMin = 0;
+      var nightMin = 0;
+      var holidayMin = 0;
+      for (var i = 0; i < monthShifts.length; i++) {
+        totalMin += shiftMinutesInRange(monthShifts[i], bounds.start, bounds.end);
+        nightMin += shiftNightMinutesInRange(monthShifts[i], bounds.start, bounds.end);
+        holidayMin += shiftHolidayMinutesInRange(monthShifts[i], bounds.start, bounds.end);
+      }
+
+      return calculateSalarySummaryByMinutes(totalMin, nightMin, holidayMin);
+    }
+
+    function buildShiftIncomeLevelStats(incomeValues) {
+      var values = [];
+      for (var i = 0; i < incomeValues.length; i++) {
+        var value = Number(incomeValues[i]);
+        if (!isFinite(value) || value < 0) continue;
+        values.push(value);
+      }
+
+      if (!values.length) {
+        return {
+          count: 0,
+          average: 0,
+          spread: 0,
+          lowThreshold: 0,
+          highThreshold: 0,
+          stableSpread: 0
+        };
+      }
+
+      var min = values[0];
+      var max = values[0];
+      var sum = 0;
+      for (var v = 0; v < values.length; v++) {
+        var current = values[v];
+        sum += current;
+        if (current < min) min = current;
+        if (current > max) max = current;
+      }
+
+      var average = sum / values.length;
+      return {
+        count: values.length,
+        average: average,
+        spread: max - min,
+        lowThreshold: average * 0.85,
+        highThreshold: average * 1.15,
+        stableSpread: Math.max(350, average * 0.08)
+      };
+    }
+
+    function getShiftIncomeLevel(amount, stats) {
+      if (!stats || stats.count < 3) return 'medium';
+      if (stats.spread < stats.stableSpread) return 'medium';
+      if (amount <= stats.lowThreshold) return 'low';
+      if (amount >= stats.highThreshold) return 'high';
+      return 'medium';
+    }
+
+    function buildMonthShiftIncomeMap(monthShifts, bounds) {
+      var incomeMap = {};
+      if (!monthShifts || !monthShifts.length || !bounds) return incomeMap;
+
+      var incomeValues = [];
+      for (var i = 0; i < monthShifts.length; i++) {
+        var shift = monthShifts[i];
+        var totalMin = shiftMinutesInRange(shift, bounds.start, bounds.end);
+        var nightMin = shiftNightMinutesInRange(shift, bounds.start, bounds.end);
+        var holidayMin = shiftHolidayMinutesInRange(shift, bounds.start, bounds.end);
+        var summary = calculateSalarySummaryByMinutes(totalMin, nightMin, holidayMin);
+        var amount = summary.netAmount;
+        var shiftId = String(shift.id);
+        incomeMap[shiftId] = {
+          amount: amount,
+          level: 'medium'
+        };
+        incomeValues.push(amount);
+      }
+
+      var stats = buildShiftIncomeLevelStats(incomeValues);
+      var incomeKeys = Object.keys(incomeMap);
+      for (var k = 0; k < incomeKeys.length; k++) {
+        var key = incomeKeys[k];
+        incomeMap[key].level = getShiftIncomeLevel(incomeMap[key].amount, stats);
+      }
+
+      return incomeMap;
     }
 
     function renderSalaryPanel() {
@@ -1992,7 +2074,7 @@
     }
 
     // ── Render ──
-      function buildShiftItemHtml(sh, compact, pendingMap) {
+      function buildShiftItemHtml(sh, compact, pendingMap, shiftIncomeMap) {
         var f = fmtShift(sh);
         var p = getShiftDisplayParts(sh);
         var itemClass = 'shift-item' + (compact ? ' compact-shift' : '');
@@ -2006,6 +2088,9 @@
         if (sh.id === recentAddedShiftId) itemClass += ' is-adding-target';
         var shiftIsPending = pendingMap ? !!pendingMap[String(sh.id)] : isShiftPending(sh);
         if (shiftIsPending) itemClass += ' is-pending';
+      var incomeData = shiftIncomeMap ? shiftIncomeMap[String(sh.id)] : null;
+      var incomeLevel = incomeData && (incomeData.level === 'low' || incomeData.level === 'high') ? incomeData.level : 'medium';
+      var incomeHtml = incomeData ? '<div class="shift-income-chip shift-income-chip--' + incomeLevel + '">' + escapeHtml(formatRub(incomeData.amount)) + '</div>' : '';
 
       var metaHtml = '';
       if (details.length) {
@@ -2027,6 +2112,7 @@
             '</div>' +
           '<div class="shift-status-stack">' +
             '<div class="shift-duration-wrap"><div class="shift-duration">' + escapeHtml(f.dur) + '</div></div>' +
+            (incomeHtml ? '<div class="shift-income-wrap">' + incomeHtml + '</div>' : '') +
             '<div class="shift-actions-wrap">' +
               '<button class="shift-actions-trigger" type="button" data-id="' + sh.id + '" aria-label="Действия" aria-haspopup="menu" aria-expanded="' + (activeShiftMenuId === sh.id ? 'true' : 'false') + '">⋯</button>' +
             '</div>' +
@@ -2052,7 +2138,7 @@
       return html;
     }
 
-    function renderShiftList(listEl, headerEl, shifts, compact, emptyText, headerBase, pendingMap) {
+    function renderShiftList(listEl, headerEl, shifts, compact, emptyText, headerBase, pendingMap, shiftIncomeMap) {
       if (headerEl) headerEl.textContent = headerBase || 'Смены';
 
       if (!compact) {
@@ -2077,7 +2163,7 @@
 
       var html = '';
       for (var i = 0; i < shifts.length; i++) {
-        html += buildShiftItemHtml(shifts[i], compact, pendingMap);
+        html += buildShiftItemHtml(shifts[i], compact, pendingMap, shiftIncomeMap);
       }
       listEl.innerHTML = html;
 
@@ -2118,6 +2204,7 @@
       var totalMin = 0;
       var nightMin = 0;
       var holidayMin = 0;
+      var shiftIncomeMap = buildMonthShiftIncomeMap(monthShifts, bounds);
       for (var j = 0; j < monthShifts.length; j++) {
         totalMin += shiftMinutesInRange(monthShifts[j], bounds.start, bounds.end);
         nightMin += shiftNightMinutesInRange(monthShifts[j], bounds.start, bounds.end);
@@ -2176,7 +2263,8 @@
         true,
         'Нет смен за этот месяц',
         false,
-        _renderPendingMap
+        _renderPendingMap,
+        shiftIncomeMap
       );
 
       renderShiftList(
@@ -2186,7 +2274,8 @@
         false,
         'Нет смен за этот месяц',
         'Смены',
-        _renderPendingMap
+        _renderPendingMap,
+        shiftIncomeMap
       );
 
       renderSalaryPanel();

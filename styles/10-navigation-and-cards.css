@@ -486,6 +486,12 @@
       font-size: 12px;
     }
 
+    .compact-shift .shift-income-chip {
+      font-size: 10px;
+      padding: 5px 7px;
+      border-radius: 10px;
+    }
+
     .compact-shift .shift-card-top {
       gap: 8px;
     }
@@ -510,7 +516,9 @@
     }
 
     .compact-shift .shift-status-stack {
-      gap: 6px;
+      gap: 5px;
+      min-width: 84px;
+      width: 84px;
     }
 
     .salary-card,
