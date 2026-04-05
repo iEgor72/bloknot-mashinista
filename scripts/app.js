@@ -1572,7 +1572,7 @@
         var title = overlays[oi].querySelector('.sheet-title');
         if (!title) continue;
         if (overlays[oi].id === 'overlayAddScreen') title.textContent = 'Добавить на экран';
-        if (overlays[oi].id === 'overlayConfirm') title.textContent = 'Удалить смену?';
+        if (overlays[oi].id === 'overlayConfirm') title.textContent = 'Удалить смену';
       }
     }
 
@@ -2307,6 +2307,58 @@
       };
     }
 
+    function getShiftIncomeChipHtml(shift, shiftIncomeMap) {
+      var incomeData = shiftIncomeMap ? shiftIncomeMap[String(shift.id)] : null;
+      if (!incomeData) return '';
+      var incomeLevel = incomeData.level === 'low' || incomeData.level === 'high'
+        ? incomeData.level
+        : 'medium';
+      return '<div class="shift-income-chip shift-income-chip--' + incomeLevel + '">' + escapeHtml(formatRub(incomeData.amount)) + '</div>';
+    }
+
+    function getShiftDateLineLabel(displayParts) {
+      if (!displayParts) return '—';
+      if (displayParts.startDate === displayParts.endDate) return displayParts.startDate;
+      return displayParts.startDate + ' → ' + displayParts.endDate;
+    }
+
+    function buildConfirmShiftCardHtml(shift, shiftIncomeMap) {
+      if (!shift) return '';
+      var f = fmtShift(shift);
+      var p = getShiftDisplayParts(shift);
+      var title = getShiftTitle(shift);
+      var incomeHtml = getShiftIncomeChipHtml(shift, shiftIncomeMap);
+      var itemClass = 'shift-item compact-shift shift-item-confirm';
+      if (shift.route_kind === 'trip') itemClass += ' has-trip';
+
+      return '' +
+        '<div class="' + itemClass + '" data-shift-id="' + shift.id + '">' +
+          '<div class="shift-card-top">' +
+            '<div class="shift-title-col">' +
+              '<div class="shift-title-row">' +
+                '<div class="shift-title"><span class="shift-title-icon">' + (shift.route_kind === 'trip' ? '↔' : '→') + '</span><span class="shift-title-text">' + escapeHtml(title) + '</span></div>' +
+              '</div>' +
+            '</div>' +
+            '<div class="shift-status-stack">' +
+              '<div class="shift-duration-wrap"><div class="shift-duration">' + escapeHtml(f.dur) + '</div></div>' +
+              (incomeHtml ? '<div class="shift-income-wrap">' + incomeHtml + '</div>' : '') +
+            '</div>' +
+          '</div>' +
+          '<div class="shift-card-body">' +
+            '<div class="shift-schedule">' +
+              '<div class="shift-schedule-row">' +
+                '<span class="shift-schedule-time">' + escapeHtml(p.startTime) + '</span>' +
+                '<span class="shift-schedule-arrow">→</span>' +
+                '<span class="shift-schedule-time">' + escapeHtml(p.endTime) + '</span>' +
+              '</div>' +
+              '<div class="shift-schedule-row shift-schedule-date">' +
+                '<span class="shift-schedule-date-value">' + escapeHtml(getShiftDateLineLabel(p)) + '</span>' +
+              '</div>' +
+            '</div>' +
+          '</div>' +
+        '</div>';
+    }
+
     function buildRestGapHtml(restInfo, compact) {
       if (!restInfo) return '';
       var classes = 'shift-rest-gap' + (compact ? ' is-compact' : '');
@@ -2323,23 +2375,21 @@
     }
 
     // ── Render ──
-      function buildShiftItemHtml(sh, compact, pendingMap, shiftIncomeMap) {
-        var f = fmtShift(sh);
-        var p = getShiftDisplayParts(sh);
-        var itemClass = 'shift-item' + (compact ? ' compact-shift' : '');
-        var title = getShiftTitle(sh);
+    function buildShiftItemHtml(sh, compact, pendingMap, shiftIncomeMap) {
+      var f = fmtShift(sh);
+      var p = getShiftDisplayParts(sh);
+      var itemClass = 'shift-item' + (compact ? ' compact-shift' : '');
+      var title = getShiftTitle(sh);
       var kindLabel = getShiftKindLabel(sh);
       var details = getShiftDetailLines(sh);
       if (details.length) itemClass += ' has-details';
       if (sh.route_kind === 'trip') itemClass += ' has-trip';
       if (sh.id === editingShiftId) itemClass += ' is-edit-target';
-        if (sh.id === pendingDeleteId) itemClass += ' is-delete-target';
-        if (sh.id === recentAddedShiftId) itemClass += ' is-adding-target';
-        var shiftIsPending = pendingMap ? !!pendingMap[String(sh.id)] : isShiftPending(sh);
-        if (shiftIsPending) itemClass += ' is-pending';
-      var incomeData = shiftIncomeMap ? shiftIncomeMap[String(sh.id)] : null;
-      var incomeLevel = incomeData && (incomeData.level === 'low' || incomeData.level === 'high') ? incomeData.level : 'medium';
-      var incomeHtml = incomeData ? '<div class="shift-income-chip shift-income-chip--' + incomeLevel + '">' + escapeHtml(formatRub(incomeData.amount)) + '</div>' : '';
+      if (sh.id === pendingDeleteId) itemClass += ' is-delete-target';
+      if (sh.id === recentAddedShiftId) itemClass += ' is-adding-target';
+      var shiftIsPending = pendingMap ? !!pendingMap[String(sh.id)] : isShiftPending(sh);
+      if (shiftIsPending) itemClass += ' is-pending';
+      var incomeHtml = getShiftIncomeChipHtml(sh, shiftIncomeMap);
 
       var metaHtml = '';
       if (details.length) {
@@ -2426,6 +2476,16 @@
       }
     }
 
+    function renderDeleteConfirmCard(shiftIncomeMap) {
+      var cardEl = document.getElementById('confirmShiftCard');
+      if (!cardEl) return;
+      if (!pendingDeleteId) {
+        cardEl.innerHTML = '';
+        return;
+      }
+      cardEl.innerHTML = buildConfirmShiftCardHtml(findShiftById(pendingDeleteId), shiftIncomeMap);
+    }
+
     function render() {
       syncShiftActionsMenuLifecycle();
       updateOfflineUiState();
@@ -2461,6 +2521,7 @@
         holidayMin += shiftHolidayMinutesInRange(monthShifts[j], bounds.start, bounds.end);
       }
       var monthSalarySummary = calculateSalarySummaryByMinutes(totalMin, nightMin, holidayMin);
+      renderDeleteConfirmCard(shiftIncomeMap);
 
       // Norm
       var monthKey = currentYear + '-' + String(currentMonth + 1).padStart(2, '0');
@@ -3056,9 +3117,8 @@
 
       if (action === 'delete') {
         pendingDeleteId = id;
-        var f = fmtShift(shift);
-        document.getElementById('confirmShiftInfo').textContent = f.text + ' · ' + f.dur;
         closeShiftActionsMenu(true);
+        render();
         openOverlay('overlayConfirm');
       }
     }
@@ -3079,8 +3139,6 @@
       if (!shift) return;
 
       pendingDeleteId = id;
-      var f = fmtShift(shift);
-      document.getElementById('confirmShiftInfo').textContent = f.text + ' · ' + f.dur;
       render();
       openOverlay('overlayConfirm');
     }
