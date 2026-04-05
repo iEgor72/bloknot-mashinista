@@ -565,17 +565,6 @@
 
     .section-link:active { color: #fff; background: rgba(141, 124, 255, 0.16); }
 
-    .compact-shift .shift-duration-center {
-      font-size: 11px;
-      gap: 4px;
-      padding: 3px 9px;
-    }
-
-    .compact-shift .shift-inline-icon {
-      width: 13px;
-      height: 13px;
-    }
-
     .compact-shift .shift-income-row {
       padding-top: 8px;
     }
@@ -592,38 +581,27 @@
       gap: 8px;
     }
 
-    .compact-shift .shift-schedule {
-      gap: 3px;
+    .compact-shift .shift-type {
+      font-size: 14px;
     }
 
-    .compact-shift .shift-schedule-time {
-      font-size: 20px;
+    .compact-shift .shift-direction-row {
+      font-size: 12px;
     }
 
-    .compact-shift .shift-schedule-date {
+    .compact-shift .shift-main-row {
+      gap: 8px;
+    }
+
+    .compact-shift .shift-datetime-line {
+      font-size: 12px;
+    }
+
+    .compact-shift .shift-duration {
       font-size: 11px;
     }
 
-    .compact-shift .shift-route-line {
-      font-size: 11px;
-      gap: 5px;
-    }
-
-    .compact-shift .shift-title {
-      font-size: 15px;
-    }
-
-    .compact-shift .shift-tech-grid {
-      grid-template-columns: 1fr;
-      gap: 4px;
-    }
-
-    .compact-shift .shift-tech-item {
-      min-height: 28px;
-      padding: 5px 7px;
-    }
-
-    .compact-shift .shift-tech-value {
+    .compact-shift .shift-tech-line {
       font-size: 11px;
     }
 
