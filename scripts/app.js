@@ -2342,11 +2342,43 @@
       return start + ' → ' + end;
     }
 
+    function getShiftInlineIconSvg(iconName) {
+      var common = 'class="shift-inline-icon" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"';
+      if (iconName === 'depot') {
+        return '<svg ' + common + '><path d="M3.5 16.5h13"></path><path d="M5 16.5V7.8L10 5l5 2.8v8.7"></path><path d="M8 16.5v-3h4v3"></path></svg>';
+      }
+      if (iconName === 'route') {
+        return '<svg ' + common + '><path d="M7 16s4-3.4 4-6.5A4 4 0 1 0 3 9.5C3 12.6 7 16 7 16Z"></path><circle cx="7" cy="9" r="1.3"></circle><path d="M12 13h4"></path><path d="M14.5 11.5 16 13l-1.5 1.5"></path></svg>';
+      }
+      if (iconName === 'duration') {
+        return '<svg ' + common + '><circle cx="10" cy="10" r="6"></circle><path d="M10 7.2v3.2l2.1 1.2"></path></svg>';
+      }
+      if (iconName === 'locomotive') {
+        return '<svg ' + common + '><path d="M4 13V6.5A2.5 2.5 0 0 1 6.5 4h6A2.5 2.5 0 0 1 15 6.5V13"></path><path d="M4 11h11"></path><path d="M7 8h3"></path><circle cx="6.5" cy="14.5" r="1"></circle><circle cx="12.5" cy="14.5" r="1"></circle></svg>';
+      }
+      if (iconName === 'train') {
+        return '<svg ' + common + '><rect x="3.5" y="6" width="13" height="7" rx="2"></rect><path d="M6.5 8.5h2"></path><path d="M11.5 8.5h2"></path><path d="M6.5 13v2"></path><path d="M13.5 13v2"></path></svg>';
+      }
+      if (iconName === 'wagon') {
+        return '<svg ' + common + '><rect x="4" y="6.5" width="12" height="6.5" rx="1.8"></rect><path d="M8 6.5v6.5"></path><path d="M12 6.5v6.5"></path><circle cx="7" cy="14.5" r="0.9"></circle><circle cx="13" cy="14.5" r="0.9"></circle></svg>';
+      }
+      if (iconName === 'axles') {
+        return '<svg ' + common + '><circle cx="10" cy="10" r="2.7"></circle><path d="M10 4.2v1.6"></path><path d="M10 14.2v1.6"></path><path d="M4.2 10h1.6"></path><path d="M14.2 10h1.6"></path><path d="M5.8 5.8 7 7"></path><path d="M13 13l1.2 1.2"></path><path d="M14.2 5.8 13 7"></path><path d="M7 13l-1.2 1.2"></path></svg>';
+      }
+      return '<svg ' + common + '><rect x="3.5" y="4.5" width="13" height="12" rx="2.2"></rect><path d="M7 3.5v2"></path><path d="M13 3.5v2"></path><path d="M3.5 8h13"></path></svg>';
+    }
+
     function getShiftTypeLabel(shift) {
       if (!shift) return 'Смена';
       if (shift.route_kind === 'trip') return 'Поездка';
       if (shift.route_kind === 'depot') return 'Под депо';
       return 'Смена';
+    }
+
+    function getShiftTypeIconName(shift) {
+      if (shift && shift.route_kind === 'trip') return 'train';
+      if (shift && shift.route_kind === 'depot') return 'depot';
+      return 'shift';
     }
 
     function getShiftDirectionLineText(shift) {
@@ -2365,15 +2397,59 @@
         .replace(/(\d)\s+мин/g, '$1м');
     }
 
-    function getShiftTechnicalLineText(shift) {
-      if (!shift) return '';
-      var parts = [];
+    function buildShiftTypeHtml(shift, typeLabel) {
+      return '' +
+        '<div class="shift-type">' +
+          '<span class="shift-type-content">' +
+            '<span class="shift-type-icon" aria-hidden="true">' + getShiftInlineIconSvg(getShiftTypeIconName(shift)) + '</span>' +
+            '<span class="shift-type-text">' + escapeHtml(typeLabel) + '</span>' +
+          '</span>' +
+        '</div>';
+    }
+
+    function buildShiftDirectionHtml(directionText) {
+      if (!directionText) return '';
+      return '' +
+        '<div class="shift-direction-row">' +
+          '<span class="shift-direction-icon" aria-hidden="true">' + getShiftInlineIconSvg('route') + '</span>' +
+          '<span class="shift-direction-text">' + escapeHtml(directionText) + '</span>' +
+        '</div>';
+    }
+
+    function buildShiftDurationHtml(durationText) {
+      return '' +
+        '<div class="shift-duration">' +
+          '<span class="shift-duration-icon" aria-hidden="true">' + getShiftInlineIconSvg('duration') + '</span>' +
+          '<span class="shift-duration-text">' + escapeHtml(durationText || '—') + '</span>' +
+        '</div>';
+    }
+
+    function getShiftTechnicalItems(shift) {
+      var items = [];
+      if (!shift) return items;
       var loco = getLocoSummary(shift);
-      if (loco) parts.push(loco.replace('№ ', '№'));
-      if (shift.train_number) parts.push('№' + shift.train_number);
-      if (shift.train_length) parts.push(shift.train_length + ' ваг');
-      if (shift.train_axles) parts.push(shift.train_axles + ' оси');
-      return parts.join(' · ');
+      if (loco) items.push({ icon: 'locomotive', text: loco.replace('№ ', '№') });
+      if (shift.train_number) items.push({ icon: 'train', text: '№' + shift.train_number });
+      if (shift.train_length) items.push({ icon: 'wagon', text: shift.train_length + ' ваг' });
+      if (shift.train_axles) items.push({ icon: 'axles', text: shift.train_axles + ' оси' });
+      return items;
+    }
+
+    function buildShiftTechnicalHtml(shift) {
+      var items = getShiftTechnicalItems(shift);
+      if (!items.length) return '';
+
+      var html = '<div class="shift-tech-line">';
+      for (var i = 0; i < items.length; i++) {
+        if (i > 0) html += '<span class="shift-tech-sep" aria-hidden="true">·</span>';
+        html += '' +
+          '<span class="shift-tech-part">' +
+            '<span class="shift-tech-part-icon" aria-hidden="true">' + getShiftInlineIconSvg(items[i].icon) + '</span>' +
+            '<span class="shift-tech-part-text">' + escapeHtml(items[i].text) + '</span>' +
+          '</span>';
+      }
+      html += '</div>';
+      return html;
     }
 
     function buildConfirmShiftCardHtml(shift, shiftIncomeMap) {
@@ -2384,7 +2460,10 @@
       var directionText = getShiftDirectionLineText(shift);
       var dateTimeText = getShiftDateTimeLineLabel(p);
       var durationText = getShiftDurationLabelText(f.dur);
-      var technicalText = getShiftTechnicalLineText(shift);
+      var typeHtml = buildShiftTypeHtml(shift, typeLabel);
+      var directionHtml = buildShiftDirectionHtml(directionText);
+      var durationHtml = buildShiftDurationHtml(durationText);
+      var technicalHtml = buildShiftTechnicalHtml(shift);
       var incomeVm = getShiftIncomeViewModel(shift, shiftIncomeMap);
       var incomeHtml = getShiftIncomeChipHtml(incomeVm);
       var itemClass = 'shift-item compact-shift shift-item-confirm';
@@ -2394,15 +2473,15 @@
       return '' +
         '<div class="' + itemClass + '" data-shift-id="' + shift.id + '">' +
           '<div class="shift-card-top">' +
-            '<div class="shift-type">' + escapeHtml(typeLabel) + '</div>' +
+            typeHtml +
           '</div>' +
-          (directionText ? '<div class="shift-direction-row">' + escapeHtml(directionText) + '</div>' : '') +
+          directionHtml +
           '<div class="shift-card-body">' +
             '<div class="shift-main-row">' +
               '<div class="shift-datetime-line">' + escapeHtml(dateTimeText) + '</div>' +
-              '<div class="shift-duration">' + escapeHtml(durationText) + '</div>' +
+              durationHtml +
             '</div>' +
-            (technicalText ? '<div class="shift-tech-line">' + escapeHtml(technicalText) + '</div>' : '') +
+            technicalHtml +
             '<div class="shift-income-row">' +
               '<span class="shift-income-row-label">Доход за смену</span>' +
               incomeHtml +
@@ -2435,7 +2514,10 @@
       var directionText = getShiftDirectionLineText(sh);
       var dateTimeText = getShiftDateTimeLineLabel(p);
       var durationText = getShiftDurationLabelText(f.dur);
-      var technicalText = getShiftTechnicalLineText(sh);
+      var typeHtml = buildShiftTypeHtml(sh, typeLabel);
+      var directionHtml = buildShiftDirectionHtml(directionText);
+      var durationHtml = buildShiftDurationHtml(durationText);
+      var technicalHtml = buildShiftTechnicalHtml(sh);
       if (sh.route_kind === 'trip') itemClass += ' has-trip';
       if (sh.id === editingShiftId) itemClass += ' is-edit-target';
       if (sh.id === pendingDeleteId) itemClass += ' is-delete-target';
@@ -2448,7 +2530,7 @@
 
       var html = '<div class="' + itemClass + '" data-shift-id="' + sh.id + '" data-pending="' + (shiftIsPending ? '1' : '0') + '">' +
         '<div class="shift-card-top">' +
-          '<div class="shift-type">' + escapeHtml(typeLabel) + '</div>' +
+          typeHtml +
           '<div class="shift-top-right">' +
             '<div class="shift-actions-wrap">' +
               '<button class="shift-actions-trigger" type="button" data-id="' + sh.id + '" aria-label="Действия" aria-haspopup="menu" aria-expanded="' + (activeShiftMenuId === sh.id ? 'true' : 'false') + '">⋯</button>' +
@@ -2456,13 +2538,13 @@
           '</div>' +
         '</div>' +
         (shiftIsPending ? '<div class="shift-pending-line">Не синхронизировано</div>' : '') +
-        (directionText ? '<div class="shift-direction-row">' + escapeHtml(directionText) + '</div>' : '') +
+        directionHtml +
         '<div class="shift-card-body">' +
           '<div class="shift-main-row">' +
             '<div class="shift-datetime-line">' + escapeHtml(dateTimeText) + '</div>' +
-            '<div class="shift-duration">' + escapeHtml(durationText) + '</div>' +
+            durationHtml +
           '</div>' +
-          (technicalText ? '<div class="shift-tech-line">' + escapeHtml(technicalText) + '</div>' : '') +
+          technicalHtml +
           '<div class="shift-income-row">' +
             '<span class="shift-income-row-label">Доход за смену</span>' +
             incomeHtml +

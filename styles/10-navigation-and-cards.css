@@ -585,8 +585,13 @@
       font-size: 14px;
     }
 
+    .compact-shift .shift-type-content {
+      gap: 5px;
+    }
+
     .compact-shift .shift-direction-row {
       font-size: 12px;
+      gap: 5px;
     }
 
     .compact-shift .shift-main-row {
@@ -599,10 +604,18 @@
 
     .compact-shift .shift-duration {
       font-size: 11px;
+      gap: 4px;
     }
 
     .compact-shift .shift-tech-line {
       font-size: 11px;
+      column-gap: 4px;
+      row-gap: 3px;
+    }
+
+    .compact-shift .shift-inline-icon {
+      width: 12px;
+      height: 12px;
     }
 
     .compact-shift .shift-actions-trigger {

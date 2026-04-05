@@ -269,6 +269,29 @@
       letter-spacing: -0.01em;
     }
 
+    .shift-type-content {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      min-width: 0;
+      max-width: 100%;
+    }
+
+    .shift-type-icon {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+      color: rgba(244, 247, 255, 0.66);
+    }
+
+    .shift-type-text {
+      min-width: 0;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+
     .shift-title-col {
       display: grid;
       gap: 6px;
@@ -291,15 +314,30 @@
     }
 
     .shift-direction-row {
+      display: flex;
+      align-items: center;
+      gap: 6px;
       font-size: 13px;
       line-height: 1.3;
       color: rgba(244, 247, 255, 0.82);
       font-weight: 600;
       min-width: 0;
+      letter-spacing: 0.01em;
+    }
+
+    .shift-direction-icon {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+      color: rgba(244, 247, 255, 0.6);
+    }
+
+    .shift-direction-text {
+      min-width: 0;
       overflow: hidden;
       text-overflow: ellipsis;
       white-space: nowrap;
-      letter-spacing: 0.01em;
     }
 
     .shift-main-row {
@@ -324,6 +362,9 @@
 
     .shift-duration {
       flex-shrink: 0;
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
       font-size: 12px;
       font-weight: 600;
       color: rgba(244, 247, 255, 0.64);
@@ -332,15 +373,65 @@
       font-variant-numeric: tabular-nums;
     }
 
+    .shift-duration-icon {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+      color: rgba(244, 247, 255, 0.56);
+    }
+
+    .shift-duration-text {
+      white-space: nowrap;
+    }
+
     .shift-tech-line {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      column-gap: 5px;
+      row-gap: 3px;
       font-size: 12px;
       line-height: 1.4;
       color: rgba(244, 247, 255, 0.60);
       min-width: 0;
-      white-space: normal;
+      font-variant-numeric: tabular-nums;
+    }
+
+    .shift-tech-part {
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+      min-width: 0;
+      max-width: 100%;
+    }
+
+    .shift-tech-part-icon {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+      color: rgba(244, 247, 255, 0.54);
+    }
+
+    .shift-tech-part-text {
+      min-width: 0;
       overflow-wrap: anywhere;
       word-break: break-word;
-      font-variant-numeric: tabular-nums;
+    }
+
+    .shift-tech-sep {
+      color: rgba(244, 247, 255, 0.42);
+      line-height: 1;
+      transform: translateY(-1px);
+      flex-shrink: 0;
+    }
+
+    .shift-inline-icon {
+      width: 13px;
+      height: 13px;
+      display: block;
+      flex-shrink: 0;
     }
 
     .shift-income-row {
