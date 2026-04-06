@@ -117,6 +117,15 @@
           <button class="section-link" id="btnGoToShifts" type="button">Все</button>
         </div>
         <div id="homeShiftsList"></div>
+
+        <div class="install-prompt-card hidden" id="installPromptCard">
+          <div class="install-prompt-title">Добавить на главный экран</div>
+          <div class="install-prompt-text">Открывайте приложение в один тап, как обычное приложение</div>
+          <div class="install-prompt-actions">
+            <button class="btn-secondary" id="btnShowInstallGuide" type="button">Показать инструкцию</button>
+            <button class="btn-link install-dismiss-btn" id="btnDismissInstallCard" type="button">Позже</button>
+          </div>
+        </div>
       </section>
 
       <!-- Shifts Tab -->
@@ -328,7 +337,15 @@
 
         <div class="salary-disclaimer">* Все суммы примерные. Это ориентир для будущего расчёта, а не точный расчет заработка.</div>
 
-        <div class="section-header">Основные начисления</div>
+        <div class="section-header section-header-row salary-section-header">
+          <span>Основные начисления</span>
+          <button class="icon-glass-btn" id="btnOpenSalarySettings" type="button" aria-label="Открыть параметры расчёта">
+            <svg viewBox="0 0 24 24" aria-hidden="true">
+              <path d="M12 8.3a3.7 3.7 0 1 1 0 7.4 3.7 3.7 0 0 1 0-7.4z"></path>
+              <path d="M19 12a7.7 7.7 0 0 0-.1-1l2-1.5-2-3.5-2.4 1a7.8 7.8 0 0 0-1.7-1l-.4-2.6H9.6l-.4 2.6c-.6.2-1.2.6-1.7 1l-2.4-1-2 3.5 2 1.5A7.7 7.7 0 0 0 5 12c0 .3 0 .7.1 1l-2 1.5 2 3.5 2.4-1c.5.4 1.1.7 1.7 1l.4 2.6h4.8l.4-2.6c.6-.2 1.2-.6 1.7-1l2.4 1 2-3.5-2-1.5c.1-.3.1-.7.1-1z"></path>
+            </svg>
+          </button>
+        </div>
         <div class="salary-card">
           <div class="salary-list" id="salaryBaseList"></div>
           <div class="salary-subtotal-row">
@@ -365,99 +382,63 @@
         </div>
       </section>
 
-      <!-- Settings Tab -->
-      <section class="tab-panel" data-tab="settings">
-        <div class="settings-page-title">Настройки</div>
+      <!-- Instructions Tab -->
+      <section class="tab-panel" data-tab="instructions">
+        <div class="instructions-shell" id="instructionsShell">
+          <div class="instructions-content-layer" id="instructionsContentLayer">
+            <div class="instructions-list-view" id="instructionsListView">
+              <div class="instructions-page-title">Инструкции</div>
+              <div class="instructions-subtitle">Работают без интернета</div>
 
-        <div class="settings-section-title">Тариф</div>
-        <div class="settings-card">
-          <div class="settings-row settings-row-stack">
-            <div>
-              <div class="settings-label">Тарифная ставка</div>
-              <div class="settings-note">Строка "Оклад/Тариф" в расчётном листке</div>
+              <div class="instructions-search-wrap">
+                <input
+                  class="settings-input instructions-search-input"
+                  id="instructionsSearchInput"
+                  type="search"
+                  autocomplete="off"
+                  placeholder="Поиск по инструкциям: сигнал, маневры, стрелка"
+                />
+              </div>
+
+              <div class="instructions-meta-row" id="instructionsMetaRow">Локальная база не загружена</div>
+              <div class="instructions-state hidden" id="instructionsLoadingState">Загружаем инструкции...</div>
+              <div class="instructions-state hidden" id="instructionsOfflineState"></div>
+              <div class="instructions-state hidden" id="instructionsNoResultsState">
+                Ничего не найдено
+                <br />
+                Попробуйте другое слово
+              </div>
+
+              <div class="instructions-list" id="instructionsCards"></div>
+              <div class="instructions-results hidden" id="instructionsSearchResults"></div>
             </div>
-            <div class="settings-inline-field">
-              <input class="settings-input compact" id="settingTariff" type="number" min="0" step="1" />
-              <span class="settings-unit">₽/час</span>
+
+            <div class="instructions-detail-view hidden" id="instructionDetailView">
+              <button class="btn-link instructions-back-btn" id="btnBackToInstructionsList" type="button">← К списку инструкций</button>
+              <div class="instructions-detail-title" id="instructionDetailTitle"></div>
+              <div class="instructions-detail-description" id="instructionDetailDescription"></div>
+              <div class="section-header">Разделы</div>
+              <div class="instructions-sections" id="instructionSectionsList"></div>
+            </div>
+
+            <div class="instructions-section-view hidden" id="instructionSectionView">
+              <button class="btn-link instructions-back-btn" id="btnBackToInstructionDetail" type="button">← К разделам</button>
+              <div class="instructions-detail-title" id="instructionSectionTitle"></div>
+              <div class="instructions-detail-description" id="instructionSectionMeta"></div>
+              <div class="instructions-jump-list" id="instructionQuickJump"></div>
+              <article class="instructions-section-content" id="instructionSectionContent"></article>
+            </div>
+          </div>
+
+          <div class="pro-blur-overlay hidden" id="instructionsPaywallOverlay">
+            <div class="pro-paywall-card">
+              <div class="pro-paywall-title">Инструкции</div>
+              <div class="pro-paywall-subtitle">Работают без интернета</div>
+              <div class="pro-paywall-text">Доступно в PRO версии</div>
+              <button class="btn-primary" id="btnUnlockPro" type="button">Разблокировать</button>
             </div>
           </div>
         </div>
-
-        <div class="settings-section-title">Доплаты (% от тарифа)</div>
-        <div class="settings-card">
-          <div class="settings-row settings-row-stack">
-            <div>
-              <div class="settings-label">Ночные</div>
-              <div class="settings-note">Код 023L. Обычно 40%</div>
-            </div>
-            <div class="settings-inline-field">
-              <input class="settings-input compact" id="settingNightPercent" type="number" min="0" step="1" />
-              <span class="settings-unit">%</span>
-            </div>
-          </div>
-
-          <div class="settings-row settings-row-stack">
-            <div>
-              <div class="settings-label">Классная квалификация</div>
-              <div class="settings-note">Код 025L. 1кл=25%, 2кл=10%, 3кл=5%</div>
-            </div>
-            <div class="settings-inline-field">
-              <input class="settings-input compact" id="settingClassPercent" type="number" min="0" step="1" />
-              <span class="settings-unit">%</span>
-            </div>
-          </div>
-        </div>
-
-        <div class="settings-section-title">Региональные коэффициенты</div>
-        <div class="settings-card">
-          <div class="settings-row settings-row-stack">
-            <div>
-              <div class="settings-label">Районный коэфф. РФ</div>
-              <div class="settings-note">Код 026A</div>
-            </div>
-            <div class="settings-inline-field">
-              <input class="settings-input compact" id="settingDistrictPercent" type="number" min="0" step="1" />
-              <span class="settings-unit">%</span>
-            </div>
-          </div>
-
-          <div class="settings-row settings-row-stack">
-            <div>
-              <div class="settings-label">Северная надбавка</div>
-              <div class="settings-note">Код 027A. Зависит от стажа в районе</div>
-            </div>
-            <div class="settings-inline-field">
-              <input class="settings-input compact" id="settingNorthPercent" type="number" min="0" step="1" />
-              <span class="settings-unit">%</span>
-            </div>
-          </div>
-
-          <div class="settings-row settings-row-stack">
-            <div>
-              <div class="settings-label">Местный коэфф.</div>
-              <div class="settings-note">Код 028A. 0% если нет</div>
-            </div>
-            <div class="settings-inline-field">
-              <input class="settings-input compact" id="settingLocalPercent" type="number" min="0" step="1" />
-              <span class="settings-unit">%</span>
-            </div>
-          </div>
-        </div>
-
-        <div class="settings-help-block">Все значения можно найти в вашем расчётном листке (форма ФТУ-69).</div>
-
-        <div class="settings-section-title">О приложении</div>
-        <div class="settings-card">
-          <div class="settings-row">
-            <div>
-              <div class="settings-label">Версия</div>
-            </div>
-            <div class="settings-value" id="appVersionValue">1.0.0 (1)</div>
-          </div>
-        </div>
-
-        <button class="btn-secondary" id="btnAddToScreen">📲 Добавить на экран</button>
-        <div class="footer" id="timezoneFooter"></div>
       </section>
     </div>
 
@@ -497,14 +478,15 @@
           </span>
           <span class="tab-label">Зарплата</span>
         </button>
-        <button class="tab-btn" type="button" data-tab="settings">
+        <button class="tab-btn" type="button" data-tab="instructions">
           <span class="tab-icon" aria-hidden="true">
             <svg viewBox="0 0 24 24">
-              <path d="M12 8.3a3.7 3.7 0 1 1 0 7.4 3.7 3.7 0 0 1 0-7.4z"></path>
-              <path d="M19 12a7.7 7.7 0 0 0-.1-1l2-1.5-2-3.5-2.4 1a7.8 7.8 0 0 0-1.7-1l-.4-2.6H9.6l-.4 2.6c-.6.2-1.2.6-1.7 1l-2.4-1-2 3.5 2 1.5A7.7 7.7 0 0 0 5 12c0 .3 0 .7.1 1l-2 1.5 2 3.5 2.4-1c.5.4 1.1.7 1.7 1l.4 2.6h4.8l.4-2.6c.6-.2 1.2-.6 1.7-1l2.4 1 2-3.5-2-1.5c.1-.3.1-.7.1-1z"></path>
+              <path d="M6 4h9a3 3 0 0 1 3 3v11a2 2 0 0 1-2 2H7a3 3 0 0 0-3 3V7a3 3 0 0 1 3-3z"></path>
+              <path d="M8 9h7"></path>
+              <path d="M8 13h6"></path>
             </svg>
           </span>
-          <span class="tab-label">Настройки</span>
+          <span class="tab-label">Инструкции</span>
         </button>
       </div>
     </nav>
@@ -515,10 +497,97 @@
   <div class="shift-actions-backdrop hidden" id="shiftActionsBackdrop" aria-hidden="true"></div>
   <div class="shift-actions-menu hidden" id="shiftActionsMenu" role="menu" aria-hidden="true"></div>
 
+  <!-- Salary Settings Bottom Sheet -->
+  <div class="overlay" id="overlaySalarySettings">
+    <div class="bottom-sheet salary-settings-sheet">
+      <div class="sheet-title">Параметры расчёта</div>
+
+      <div class="settings-section-title">Тариф</div>
+      <div class="settings-card">
+        <div class="settings-row settings-row-stack">
+          <div>
+            <div class="settings-label">Тарифная ставка</div>
+            <div class="settings-note">Строка "Оклад/Тариф" в расчётном листке</div>
+          </div>
+          <div class="settings-inline-field">
+            <input class="settings-input compact" id="settingTariff" type="number" min="0" step="1" />
+            <span class="settings-unit">₽/час</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="settings-section-title">Доплаты (% от тарифа)</div>
+      <div class="settings-card">
+        <div class="settings-row settings-row-stack">
+          <div>
+            <div class="settings-label">Ночные (%)</div>
+            <div class="settings-note">Код 023L. Обычно 40%</div>
+          </div>
+          <div class="settings-inline-field">
+            <input class="settings-input compact" id="settingNightPercent" type="number" min="0" step="1" />
+            <span class="settings-unit">%</span>
+          </div>
+        </div>
+
+        <div class="settings-row settings-row-stack">
+          <div>
+            <div class="settings-label">Классная квалификация (%)</div>
+            <div class="settings-note">Код 025L. 1кл=25%, 2кл=10%, 3кл=5%</div>
+          </div>
+          <div class="settings-inline-field">
+            <input class="settings-input compact" id="settingClassPercent" type="number" min="0" step="1" />
+            <span class="settings-unit">%</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="settings-section-title">Коэффициенты</div>
+      <div class="settings-card">
+        <div class="settings-row settings-row-stack">
+          <div>
+            <div class="settings-label">Районный коэффициент РФ (%)</div>
+            <div class="settings-note">Код 026A</div>
+          </div>
+          <div class="settings-inline-field">
+            <input class="settings-input compact" id="settingDistrictPercent" type="number" min="0" step="1" />
+            <span class="settings-unit">%</span>
+          </div>
+        </div>
+
+        <div class="settings-row settings-row-stack">
+          <div>
+            <div class="settings-label">Северная надбавка (%)</div>
+            <div class="settings-note">Код 027A. Зависит от стажа в районе</div>
+          </div>
+          <div class="settings-inline-field">
+            <input class="settings-input compact" id="settingNorthPercent" type="number" min="0" step="1" />
+            <span class="settings-unit">%</span>
+          </div>
+        </div>
+
+        <div class="settings-row settings-row-stack">
+          <div>
+            <div class="settings-label">Местный коэффициент (%)</div>
+            <div class="settings-note">Код 028A. 0% если нет</div>
+          </div>
+          <div class="settings-inline-field">
+            <input class="settings-input compact" id="settingLocalPercent" type="number" min="0" step="1" />
+            <span class="settings-unit">%</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="settings-help-block">Все значения можно найти в вашем расчётном листке (форма ФТУ-69).</div>
+      <div class="footer" id="timezoneFooter"></div>
+      <div class="settings-sheet-version">Версия: <span id="appVersionValue">1.0.0 (1)</span></div>
+      <button class="btn-sheet-close" id="btnCloseSalarySettings" type="button">Готово</button>
+    </div>
+  </div>
+
   <!-- Add to Screen Bottom Sheet -->
   <div class="overlay" id="overlayAddScreen">
     <div class="bottom-sheet">
-      <div class="sheet-title">Добавить на экран</div>
+      <div class="sheet-title">Добавить на главный экран</div>
       <div class="sheet-text">Это одна и та же ссылка для Telegram, Safari и ярлыка на экране. Если ты открыл её впервые на новом устройстве, просто войди через Telegram один раз — дальше смены будут подхватываться автоматически.</div>
 
       <div class="sheet-text"><strong>Для iPhone:</strong></div>

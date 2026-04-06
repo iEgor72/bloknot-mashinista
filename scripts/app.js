@@ -347,8 +347,9 @@
     }
 
     var APP_VERSION = '1.0.0 (1)';
-    var SETTINGS_STORAGE_KEY = 'shift_tracker_settings_v1';
-    var DEFAULT_APP_SETTINGS = {
+    var LEGACY_SETTINGS_STORAGE_KEY = 'shift_tracker_settings_v1';
+    var SALARY_PARAMS_STORAGE_KEY = 'shift_tracker_salary_params_v1';
+    var DEFAULT_SALARY_PARAMS = {
       tariffRate: 380,
       nightPercent: 40,
       classPercent: 5,
@@ -356,7 +357,24 @@
       northPercent: 50,
       localPercent: 20
     };
-    var appSettings = loadAppSettings();
+    var salaryParamsStore = createSalaryParamsStore();
+    var appSettings = salaryParamsStore.values;
+    var INSTALL_PROMPT_STORAGE_KEY = 'hideInstallPrompt';
+    var installPromptDismissed = readInstallPromptDismissed();
+    var PRO_STORAGE_KEY = 'shift_tracker_pro_v1';
+    var proStore = loadProStore();
+    var INSTRUCTIONS_DATA_URL = '/assets/instructions/catalog.v1.json';
+    var INSTRUCTIONS_CACHE_FALLBACK_KEY = 'shift_tracker_instructions_cache_v1';
+    var INSTRUCTIONS_INDEX_FALLBACK_KEY = 'shift_tracker_instructions_index_v1';
+    var INSTRUCTIONS_META_FALLBACK_KEY = 'shift_tracker_instructions_meta_v1';
+    var INSTRUCTIONS_DB_NAME = 'shift_tracker_instructions_v1';
+    var INSTRUCTIONS_DB_VERSION = 1;
+    var INSTRUCTIONS_DB_STORES = {
+      meta: 'instructions_meta',
+      content: 'instructions_content',
+      index: 'instructions_search_index'
+    };
+    var instructionsStore = createInstructionsStore();
     var SHIFTS_CACHE_STORAGE_KEY = 'shift_tracker_shifts_cache_v1';
     var SHIFTS_PENDING_STORAGE_KEY = 'shift_tracker_shifts_pending_v1';
     var SHIFTS_META_STORAGE_KEY = 'shift_tracker_shifts_meta_v1';
@@ -723,19 +741,32 @@
       });
     }
 
-    function loadAppSettings() {
-      var settings = {};
-      try {
-        settings = JSON.parse(localStorage.getItem(SETTINGS_STORAGE_KEY) || '{}') || {};
-      } catch (e) {
-        settings = {};
-      }
+    function createSalaryParamsStore() {
+      return {
+        values: loadSalaryParams(),
+        update: function(patch) {
+          var keys = Object.keys(patch || {});
+          if (!keys.length) return;
+          for (var i = 0; i < keys.length; i++) {
+            this.values[keys[i]] = patch[keys[i]];
+          }
+          this.values = normalizeSalaryParams(this.values);
+          saveSalaryParams(this.values);
+        },
+        reset: function() {
+          this.values = normalizeSalaryParams(DEFAULT_SALARY_PARAMS);
+          saveSalaryParams(this.values);
+        }
+      };
+    }
 
+    function normalizeSalaryParams(raw) {
+      var settings = raw || {};
       var merged = {};
-      var keys = Object.keys(DEFAULT_APP_SETTINGS);
+      var keys = Object.keys(DEFAULT_SALARY_PARAMS);
       for (var i = 0; i < keys.length; i++) {
         var key = keys[i];
-        merged[key] = settings[key] !== undefined && settings[key] !== null && settings[key] !== '' ? settings[key] : DEFAULT_APP_SETTINGS[key];
+        merged[key] = settings[key] !== undefined && settings[key] !== null && settings[key] !== '' ? settings[key] : DEFAULT_SALARY_PARAMS[key];
       }
 
       merged.tariffRate = parseFloat(merged.tariffRate);
@@ -745,19 +776,98 @@
       merged.northPercent = parseFloat(merged.northPercent);
       merged.localPercent = parseFloat(merged.localPercent);
 
-      if (isNaN(merged.tariffRate)) merged.tariffRate = DEFAULT_APP_SETTINGS.tariffRate;
-      if (isNaN(merged.nightPercent)) merged.nightPercent = DEFAULT_APP_SETTINGS.nightPercent;
-      if (isNaN(merged.classPercent)) merged.classPercent = DEFAULT_APP_SETTINGS.classPercent;
-      if (isNaN(merged.districtPercent)) merged.districtPercent = DEFAULT_APP_SETTINGS.districtPercent;
-      if (isNaN(merged.northPercent)) merged.northPercent = DEFAULT_APP_SETTINGS.northPercent;
-      if (isNaN(merged.localPercent)) merged.localPercent = DEFAULT_APP_SETTINGS.localPercent;
+      if (isNaN(merged.tariffRate)) merged.tariffRate = DEFAULT_SALARY_PARAMS.tariffRate;
+      if (isNaN(merged.nightPercent)) merged.nightPercent = DEFAULT_SALARY_PARAMS.nightPercent;
+      if (isNaN(merged.classPercent)) merged.classPercent = DEFAULT_SALARY_PARAMS.classPercent;
+      if (isNaN(merged.districtPercent)) merged.districtPercent = DEFAULT_SALARY_PARAMS.districtPercent;
+      if (isNaN(merged.northPercent)) merged.northPercent = DEFAULT_SALARY_PARAMS.northPercent;
+      if (isNaN(merged.localPercent)) merged.localPercent = DEFAULT_SALARY_PARAMS.localPercent;
       return merged;
     }
 
-    function saveAppSettings() {
+    function loadSalaryParams() {
+      var settings = {};
       try {
-        localStorage.setItem(SETTINGS_STORAGE_KEY, JSON.stringify(appSettings));
+        settings = JSON.parse(localStorage.getItem(SALARY_PARAMS_STORAGE_KEY) || '{}') || {};
+      } catch (e) {
+        settings = {};
+      }
+
+      // Backward compatibility: migrate older settings key used in previous versions.
+      if (!settings || !Object.keys(settings).length) {
+        try {
+          settings = JSON.parse(localStorage.getItem(LEGACY_SETTINGS_STORAGE_KEY) || '{}') || {};
+        } catch (legacyError) {
+          settings = {};
+        }
+      }
+
+      var normalized = normalizeSalaryParams(settings);
+      saveSalaryParams(normalized);
+      return normalized;
+    }
+
+    function saveSalaryParams(params) {
+      try {
+        localStorage.setItem(SALARY_PARAMS_STORAGE_KEY, JSON.stringify(normalizeSalaryParams(params)));
       } catch (e) {}
+    }
+
+    function readInstallPromptDismissed() {
+      try {
+        return localStorage.getItem(INSTALL_PROMPT_STORAGE_KEY) === 'true';
+      } catch (e) {
+        return false;
+      }
+    }
+
+    function persistInstallPromptDismissed(value) {
+      installPromptDismissed = !!value;
+      try {
+        localStorage.setItem(INSTALL_PROMPT_STORAGE_KEY, installPromptDismissed ? 'true' : 'false');
+      } catch (e) {}
+    }
+
+    function loadProStore() {
+      var isActive = false;
+      try {
+        var raw = JSON.parse(localStorage.getItem(PRO_STORAGE_KEY) || '{}') || {};
+        if (typeof raw === 'boolean') {
+          isActive = raw;
+        } else {
+          isActive = !!raw.isActive;
+        }
+      } catch (e) {
+        isActive = false;
+      }
+      return {
+        isActive: isActive
+      };
+    }
+
+    function saveProStore() {
+      try {
+        localStorage.setItem(PRO_STORAGE_KEY, JSON.stringify({ isActive: !!proStore.isActive }));
+      } catch (e) {}
+    }
+
+    function createInstructionsStore() {
+      return {
+        status: 'idle',
+        instructions: [],
+        searchDocs: [],
+        searchResults: [],
+        searchQuery: '',
+        errorMessage: '',
+        lastUpdated: '',
+        hasCache: false,
+        dataSource: 'none',
+        view: 'list',
+        selectedInstructionId: '',
+        selectedSectionId: '',
+        loadPromise: null,
+        searchTimer: null
+      };
     }
 
     function formatRub(value) {
@@ -774,6 +884,30 @@
     function formatPercent(value) {
       var rounded = Math.round((value || 0) * 10) / 10;
       return String(rounded).replace(/\.0$/, '') + '%';
+    }
+
+    function shouldShowInstallPromptCard() {
+      return !isStandalonePwa() && !installPromptDismissed;
+    }
+
+    function renderInstallPromptCard() {
+      var card = document.getElementById('installPromptCard');
+      if (!card) return;
+      card.classList.toggle('hidden', !shouldShowInstallPromptCard());
+    }
+
+    function dismissInstallPromptCard() {
+      persistInstallPromptDismissed(true);
+      renderInstallPromptCard();
+    }
+
+    function setProActive(isActive) {
+      proStore.isActive = !!isActive;
+      saveProStore();
+      if (proStore.isActive) {
+        ensureInstructionsReady(false, false);
+      }
+      renderInstructionsScreen();
     }
 
     function setQuickMetricText(id, value) {
@@ -826,14 +960,15 @@
       var north = northEl ? parseFloat(northEl.value) : NaN;
       var local = localEl ? parseFloat(localEl.value) : NaN;
 
-      appSettings.tariffRate = isNaN(tariff) ? DEFAULT_APP_SETTINGS.tariffRate : tariff;
-      appSettings.nightPercent = isNaN(night) ? DEFAULT_APP_SETTINGS.nightPercent : night;
-      appSettings.classPercent = isNaN(klass) ? DEFAULT_APP_SETTINGS.classPercent : klass;
-      appSettings.districtPercent = isNaN(district) ? DEFAULT_APP_SETTINGS.districtPercent : district;
-      appSettings.northPercent = isNaN(north) ? DEFAULT_APP_SETTINGS.northPercent : north;
-      appSettings.localPercent = isNaN(local) ? DEFAULT_APP_SETTINGS.localPercent : local;
+      appSettings.tariffRate = isNaN(tariff) ? DEFAULT_SALARY_PARAMS.tariffRate : tariff;
+      appSettings.nightPercent = isNaN(night) ? DEFAULT_SALARY_PARAMS.nightPercent : night;
+      appSettings.classPercent = isNaN(klass) ? DEFAULT_SALARY_PARAMS.classPercent : klass;
+      appSettings.districtPercent = isNaN(district) ? DEFAULT_SALARY_PARAMS.districtPercent : district;
+      appSettings.northPercent = isNaN(north) ? DEFAULT_SALARY_PARAMS.northPercent : north;
+      appSettings.localPercent = isNaN(local) ? DEFAULT_SALARY_PARAMS.localPercent : local;
 
-      saveAppSettings();
+      salaryParamsStore.update(appSettings);
+      appSettings = salaryParamsStore.values;
       render();
     }
 
@@ -1131,6 +1266,774 @@
       var coeffList = document.getElementById('salaryCoeffList');
       if (baseList) baseList.innerHTML = baseRows.join('');
       if (coeffList) coeffList.innerHTML = coeffRows.join('');
+    }
+
+    function stripHtmlToText(content) {
+      var temp = document.createElement('div');
+      temp.innerHTML = String(content || '');
+      return String(temp.textContent || temp.innerText || '').replace(/\s+/g, ' ').trim();
+    }
+
+    function normalizeSearchText(value) {
+      return String(value || '')
+        .toLowerCase()
+        .replace(/ё/g, 'е')
+        .replace(/\s+/g, ' ')
+        .trim();
+    }
+
+    function splitSearchTerms(query) {
+      var normalized = normalizeSearchText(query);
+      if (!normalized) return [];
+      var parts = normalized.split(' ');
+      var terms = [];
+      for (var i = 0; i < parts.length; i++) {
+        if (!parts[i]) continue;
+        terms.push(parts[i]);
+      }
+      return terms;
+    }
+
+    function escapeRegExpText(value) {
+      return String(value || '').replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+    }
+
+    function formatIsoDateLabel(isoString) {
+      if (!isoString) return '';
+      var date = new Date(isoString);
+      if (isNaN(date.getTime())) return '';
+      return date.toLocaleDateString('ru-RU', { day: '2-digit', month: '2-digit', year: 'numeric' });
+    }
+
+    function getInstructionsPreviewSeed() {
+      return [
+        {
+          id: 'pte',
+          title: 'ПТЭ',
+          shortDescription: 'Правила технической эксплуатации железных дорог Российской Федерации',
+          sections: []
+        },
+        {
+          id: 'isi',
+          title: 'ИСИ',
+          shortDescription: 'Инструкция по сигнализации на железнодорожном транспорте',
+          sections: []
+        },
+        {
+          id: 'idp',
+          title: 'ИДП',
+          shortDescription: 'Инструкция по движению поездов и маневровой работе на железнодорожном транспорте',
+          sections: []
+        }
+      ];
+    }
+
+    function normalizeInstructionsPayload(payload) {
+      var listSource = [];
+      if (payload && Array.isArray(payload.instructions)) {
+        listSource = payload.instructions;
+      } else if (Array.isArray(payload)) {
+        listSource = payload;
+      }
+
+      var normalizedInstructions = [];
+      for (var i = 0; i < listSource.length; i++) {
+        var rawInstruction = listSource[i] || {};
+        var instructionId = String(rawInstruction.id || ('instruction-' + (i + 1)));
+        var sectionsRaw = Array.isArray(rawInstruction.sections) ? rawInstruction.sections : [];
+        var sections = [];
+        for (var s = 0; s < sectionsRaw.length; s++) {
+          var rawSection = sectionsRaw[s] || {};
+          var sectionId = String(rawSection.id || (instructionId + '-section-' + (s + 1)));
+          var rawContent = rawSection.content !== undefined && rawSection.content !== null
+            ? String(rawSection.content)
+            : String(rawSection.plainText || '');
+          var plainText = rawSection.plainText
+            ? String(rawSection.plainText).replace(/\s+/g, ' ').trim()
+            : stripHtmlToText(rawContent);
+          sections.push({
+            id: sectionId,
+            instructionId: instructionId,
+            title: String(rawSection.title || ('Раздел ' + (s + 1))),
+            parentId: rawSection.parentId !== undefined ? rawSection.parentId : null,
+            level: Math.max(1, parseInt(rawSection.level, 10) || 1),
+            content: rawContent,
+            plainText: plainText
+          });
+        }
+
+        normalizedInstructions.push({
+          id: instructionId,
+          title: String(rawInstruction.title || instructionId.toUpperCase()),
+          shortDescription: String(rawInstruction.shortDescription || ''),
+          version: rawInstruction.version ? String(rawInstruction.version) : '',
+          sourceUrl: rawInstruction.sourceUrl ? String(rawInstruction.sourceUrl) : '',
+          updatedAt: rawInstruction.updatedAt ? String(rawInstruction.updatedAt) : '',
+          sections: sections
+        });
+      }
+
+      return {
+        updatedAt: payload && payload.updatedAt ? String(payload.updatedAt) : new Date().toISOString(),
+        version: payload && payload.version ? String(payload.version) : '1',
+        instructions: normalizedInstructions
+      };
+    }
+
+    function buildInstructionsSearchIndex(instructions) {
+      var docs = [];
+      for (var i = 0; i < (instructions || []).length; i++) {
+        var instruction = instructions[i];
+        for (var s = 0; s < (instruction.sections || []).length; s++) {
+          var section = instruction.sections[s];
+          var joinedText = [
+            instruction.title || '',
+            section.title || '',
+            section.plainText || ''
+          ].join(' ');
+          docs.push({
+            id: instruction.id + '::' + section.id,
+            instructionId: instruction.id,
+            instructionTitle: instruction.title || '',
+            instructionTitleNormalized: normalizeSearchText(instruction.title || ''),
+            sectionId: section.id,
+            sectionTitle: section.title || '',
+            sectionTitleNormalized: normalizeSearchText(section.title || ''),
+            text: section.plainText || '',
+            sectionTextNormalized: normalizeSearchText(section.plainText || ''),
+            normalized: normalizeSearchText(joinedText)
+          });
+        }
+      }
+      return docs;
+    }
+
+    function readInstructionsCacheFallback() {
+      var instructions = [];
+      var searchDocs = [];
+      var meta = {};
+      try {
+        instructions = JSON.parse(localStorage.getItem(INSTRUCTIONS_CACHE_FALLBACK_KEY) || '[]') || [];
+      } catch (e) {
+        instructions = [];
+      }
+      try {
+        searchDocs = JSON.parse(localStorage.getItem(INSTRUCTIONS_INDEX_FALLBACK_KEY) || '[]') || [];
+      } catch (e2) {
+        searchDocs = [];
+      }
+      try {
+        meta = JSON.parse(localStorage.getItem(INSTRUCTIONS_META_FALLBACK_KEY) || '{}') || {};
+      } catch (e3) {
+        meta = {};
+      }
+      return {
+        meta: meta,
+        instructions: instructions,
+        searchDocs: searchDocs
+      };
+    }
+
+    function saveInstructionsCacheFallback(payload) {
+      try {
+        localStorage.setItem(INSTRUCTIONS_CACHE_FALLBACK_KEY, JSON.stringify(payload.instructions || []));
+        localStorage.setItem(INSTRUCTIONS_INDEX_FALLBACK_KEY, JSON.stringify(payload.searchDocs || []));
+        localStorage.setItem(INSTRUCTIONS_META_FALLBACK_KEY, JSON.stringify(payload.meta || {}));
+      } catch (e) {}
+    }
+
+    function openInstructionsDb() {
+      if (!window.indexedDB) return Promise.resolve(null);
+      return new Promise(function(resolve) {
+        var request = window.indexedDB.open(INSTRUCTIONS_DB_NAME, INSTRUCTIONS_DB_VERSION);
+        request.onupgradeneeded = function(event) {
+          var db = event.target.result;
+          if (!db.objectStoreNames.contains(INSTRUCTIONS_DB_STORES.meta)) {
+            db.createObjectStore(INSTRUCTIONS_DB_STORES.meta, { keyPath: 'key' });
+          }
+          if (!db.objectStoreNames.contains(INSTRUCTIONS_DB_STORES.content)) {
+            db.createObjectStore(INSTRUCTIONS_DB_STORES.content, { keyPath: 'id' });
+          }
+          if (!db.objectStoreNames.contains(INSTRUCTIONS_DB_STORES.index)) {
+            db.createObjectStore(INSTRUCTIONS_DB_STORES.index, { keyPath: 'id' });
+          }
+        };
+        request.onsuccess = function() {
+          resolve(request.result);
+        };
+        request.onerror = function() {
+          resolve(null);
+        };
+        request.onblocked = function() {
+          resolve(null);
+        };
+      });
+    }
+
+    function readInstructionsCache() {
+      return openInstructionsDb().then(function(db) {
+        if (!db) {
+          return readInstructionsCacheFallback();
+        }
+
+        return new Promise(function(resolve) {
+          var finished = false;
+          function done(payload) {
+            if (finished) return;
+            finished = true;
+            try { db.close(); } catch (closeErr) {}
+            resolve(payload);
+          }
+
+          try {
+            var tx = db.transaction([INSTRUCTIONS_DB_STORES.meta, INSTRUCTIONS_DB_STORES.content, INSTRUCTIONS_DB_STORES.index], 'readonly');
+            var metaReq = tx.objectStore(INSTRUCTIONS_DB_STORES.meta).get('dataset');
+            var contentReq = tx.objectStore(INSTRUCTIONS_DB_STORES.content).getAll();
+            var indexReq = tx.objectStore(INSTRUCTIONS_DB_STORES.index).getAll();
+            tx.oncomplete = function() {
+              done({
+                meta: metaReq.result || {},
+                instructions: Array.isArray(contentReq.result) ? contentReq.result : [],
+                searchDocs: Array.isArray(indexReq.result) ? indexReq.result : []
+              });
+            };
+            tx.onerror = function() {
+              done(readInstructionsCacheFallback());
+            };
+            tx.onabort = function() {
+              done(readInstructionsCacheFallback());
+            };
+          } catch (err) {
+            done(readInstructionsCacheFallback());
+          }
+        });
+      });
+    }
+
+    function saveInstructionsCache(payload) {
+      var meta = payload.meta || {};
+      var instructions = payload.instructions || [];
+      var searchDocs = payload.searchDocs || [];
+
+      saveInstructionsCacheFallback({
+        meta: meta,
+        instructions: instructions,
+        searchDocs: searchDocs
+      });
+
+      return openInstructionsDb().then(function(db) {
+        if (!db) return false;
+        return new Promise(function(resolve) {
+          var finished = false;
+          function done(result) {
+            if (finished) return;
+            finished = true;
+            try { db.close(); } catch (closeErr) {}
+            resolve(result);
+          }
+
+          try {
+            var tx = db.transaction([INSTRUCTIONS_DB_STORES.meta, INSTRUCTIONS_DB_STORES.content, INSTRUCTIONS_DB_STORES.index], 'readwrite');
+            var metaStore = tx.objectStore(INSTRUCTIONS_DB_STORES.meta);
+            var contentStore = tx.objectStore(INSTRUCTIONS_DB_STORES.content);
+            var indexStore = tx.objectStore(INSTRUCTIONS_DB_STORES.index);
+
+            metaStore.put({
+              key: 'dataset',
+              updatedAt: meta.updatedAt || '',
+              version: meta.version || '1'
+            });
+
+            contentStore.clear();
+            for (var i = 0; i < instructions.length; i++) {
+              contentStore.put(instructions[i]);
+            }
+
+            indexStore.clear();
+            for (var s = 0; s < searchDocs.length; s++) {
+              indexStore.put(searchDocs[s]);
+            }
+
+            tx.oncomplete = function() {
+              done(true);
+            };
+            tx.onerror = function() {
+              done(false);
+            };
+            tx.onabort = function() {
+              done(false);
+            };
+          } catch (err) {
+            done(false);
+          }
+        });
+      });
+    }
+
+    function hydrateInstructionsState(payload, sourceLabel) {
+      var instructions = payload.instructions || [];
+      var searchDocs = payload.searchDocs || [];
+      var meta = payload.meta || {};
+      instructionsStore.instructions = instructions;
+      instructionsStore.searchDocs = searchDocs.length ? searchDocs : buildInstructionsSearchIndex(instructions);
+      instructionsStore.hasCache = instructions.length > 0;
+      instructionsStore.dataSource = sourceLabel || 'cache';
+      instructionsStore.lastUpdated = meta.updatedAt || '';
+      if (normalizeSearchText(instructionsStore.searchQuery)) {
+        instructionsStore.searchResults = performInstructionsSearch(instructionsStore.searchQuery);
+      }
+      if (instructionsStore.status !== 'error') {
+        instructionsStore.status = instructions.length ? 'ready' : instructionsStore.status;
+      }
+      if (!findInstructionById(instructionsStore.selectedInstructionId)) {
+        instructionsStore.selectedInstructionId = '';
+        instructionsStore.selectedSectionId = '';
+        if (instructionsStore.view !== 'list') {
+          instructionsStore.view = 'list';
+        }
+      }
+    }
+
+    function fetchInstructionsFromNetwork() {
+      return fetch(INSTRUCTIONS_DATA_URL, {
+        method: 'GET',
+        cache: 'no-store',
+        headers: { 'Accept': 'application/json' }
+      }).then(function(response) {
+        if (!response.ok) {
+          throw new Error('Не удалось загрузить инструкции');
+        }
+        return response.json();
+      }).then(function(payload) {
+        return normalizeInstructionsPayload(payload);
+      });
+    }
+
+    function ensureInstructionsReady(forceRefresh, silent) {
+      if (instructionsStore.loadPromise) return instructionsStore.loadPromise;
+
+      var shouldForce = !!forceRefresh;
+      if (!silent && (!instructionsStore.instructions.length || shouldForce)) {
+        instructionsStore.status = 'loading';
+        instructionsStore.errorMessage = '';
+        renderInstructionsScreen();
+      }
+
+      instructionsStore.loadPromise = readInstructionsCache()
+        .then(function(cachePayload) {
+          if (cachePayload && Array.isArray(cachePayload.instructions) && cachePayload.instructions.length) {
+            hydrateInstructionsState(cachePayload, 'cache');
+            if (!silent) renderInstructionsScreen();
+          }
+
+          if (!navigator.onLine) {
+            if (!instructionsStore.instructions.length) {
+              instructionsStore.status = 'offline';
+              instructionsStore.errorMessage = 'Нет сети и локальная база ещё не загружена.';
+            }
+            return null;
+          }
+
+          return fetchInstructionsFromNetwork()
+            .then(function(networkPayload) {
+              var instructions = networkPayload.instructions || [];
+              var searchDocs = buildInstructionsSearchIndex(instructions);
+              var meta = {
+                updatedAt: networkPayload.updatedAt || new Date().toISOString(),
+                version: networkPayload.version || '1'
+              };
+              instructionsStore.status = instructions.length ? 'ready' : 'error';
+              instructionsStore.errorMessage = instructions.length ? '' : 'Не удалось подготовить инструкции.';
+              hydrateInstructionsState({
+                meta: meta,
+                instructions: instructions,
+                searchDocs: searchDocs
+              }, 'network');
+              saveInstructionsCache({
+                meta: meta,
+                instructions: instructions,
+                searchDocs: searchDocs
+              });
+            })
+            .catch(function(err) {
+              if (!instructionsStore.instructions.length) {
+                instructionsStore.status = navigator.onLine ? 'error' : 'offline';
+                instructionsStore.errorMessage = err && err.message ? err.message : 'Не удалось загрузить инструкции.';
+              } else {
+                instructionsStore.status = 'ready';
+              }
+            });
+        })
+        .catch(function(err) {
+          if (!instructionsStore.instructions.length) {
+            instructionsStore.status = 'error';
+            instructionsStore.errorMessage = err && err.message ? err.message : 'Ошибка чтения локальной базы.';
+          }
+        })
+        .finally(function() {
+          instructionsStore.loadPromise = null;
+          renderInstructionsScreen();
+        });
+
+      return instructionsStore.loadPromise;
+    }
+
+    function findInstructionById(instructionId) {
+      if (!instructionId) return null;
+      for (var i = 0; i < instructionsStore.instructions.length; i++) {
+        if (instructionsStore.instructions[i].id === instructionId) {
+          return instructionsStore.instructions[i];
+        }
+      }
+      return null;
+    }
+
+    function findSectionById(instruction, sectionId) {
+      if (!instruction || !sectionId) return null;
+      for (var i = 0; i < (instruction.sections || []).length; i++) {
+        if (instruction.sections[i].id === sectionId) return instruction.sections[i];
+      }
+      return null;
+    }
+
+    function buildSearchSnippet(text, queryTerms) {
+      var source = String(text || '').replace(/\s+/g, ' ').trim();
+      if (!source) return '';
+      var normalized = normalizeSearchText(source);
+      var matchIndex = -1;
+      for (var i = 0; i < queryTerms.length; i++) {
+        var index = normalized.indexOf(queryTerms[i]);
+        if (index === -1) continue;
+        if (matchIndex === -1 || index < matchIndex) {
+          matchIndex = index;
+        }
+      }
+
+      if (matchIndex === -1) {
+        return source.length > 160 ? (source.slice(0, 157).trim() + '…') : source;
+      }
+
+      var start = Math.max(0, matchIndex - 44);
+      var end = Math.min(source.length, matchIndex + 132);
+      var snippet = source.slice(start, end).trim();
+      if (start > 0) snippet = '…' + snippet;
+      if (end < source.length) snippet = snippet + '…';
+      return snippet;
+    }
+
+    function highlightSearchText(text, query) {
+      var terms = splitSearchTerms(query);
+      if (!terms.length) return escapeHtml(text);
+      var html = escapeHtml(text);
+      for (var i = 0; i < terms.length; i++) {
+        var term = terms[i];
+        if (term.length < 2) continue;
+        var rx = new RegExp('(' + escapeRegExpText(term) + ')', 'gi');
+        html = html.replace(rx, '<mark class="search-highlight">$1</mark>');
+      }
+      return html;
+    }
+
+    function performInstructionsSearch(query) {
+      var normalizedQuery = normalizeSearchText(query);
+      if (!normalizedQuery) return [];
+      var terms = splitSearchTerms(normalizedQuery);
+      var results = [];
+      for (var i = 0; i < instructionsStore.searchDocs.length; i++) {
+        var doc = instructionsStore.searchDocs[i];
+        var normalizedDoc = doc.normalized || '';
+        var matchesAllTerms = true;
+        for (var t = 0; t < terms.length; t++) {
+          if (normalizedDoc.indexOf(terms[t]) === -1) {
+            matchesAllTerms = false;
+            break;
+          }
+        }
+        if (!matchesAllTerms) continue;
+
+        var score = 0;
+        var instructionNorm = doc.instructionTitleNormalized || '';
+        var sectionNorm = doc.sectionTitleNormalized || '';
+        var textNorm = doc.sectionTextNormalized || '';
+        var textIdx = textNorm.indexOf(normalizedQuery);
+
+        if (instructionNorm.indexOf(normalizedQuery) !== -1) score += 1200;
+        else {
+          for (var it = 0; it < terms.length; it++) {
+            if (instructionNorm.indexOf(terms[it]) !== -1) score += 140;
+          }
+        }
+
+        if (sectionNorm.indexOf(normalizedQuery) !== -1) score += 820;
+        else {
+          for (var st = 0; st < terms.length; st++) {
+            if (sectionNorm.indexOf(terms[st]) !== -1) score += 200;
+          }
+        }
+
+        if (textIdx === 0) score += 520;
+        else if (textIdx > 0) score += Math.max(160, 420 - Math.min(textIdx, 260));
+        else if (textNorm.indexOf(terms[0]) !== -1) score += 120;
+
+        results.push({
+          instructionId: doc.instructionId,
+          instructionTitle: doc.instructionTitle,
+          sectionId: doc.sectionId,
+          sectionTitle: doc.sectionTitle,
+          snippet: buildSearchSnippet(doc.text || '', terms),
+          score: score,
+          textIndex: textIdx < 0 ? 9999 : textIdx
+        });
+      }
+
+      results.sort(function(a, b) {
+        if (b.score !== a.score) return b.score - a.score;
+        if (a.textIndex !== b.textIndex) return a.textIndex - b.textIndex;
+        if (a.instructionTitle !== b.instructionTitle) return a.instructionTitle.localeCompare(b.instructionTitle, 'ru');
+        return a.sectionTitle.localeCompare(b.sectionTitle, 'ru');
+      });
+
+      return results.slice(0, 40);
+    }
+
+    function setInstructionsSearchQuery(query) {
+      instructionsStore.searchQuery = String(query || '');
+      instructionsStore.view = 'list';
+      if (instructionsStore.searchTimer) {
+        window.clearTimeout(instructionsStore.searchTimer);
+      }
+
+      var normalizedQuery = normalizeSearchText(instructionsStore.searchQuery);
+      if (!normalizedQuery) {
+        instructionsStore.searchResults = [];
+        renderInstructionsScreen();
+        return;
+      }
+
+      instructionsStore.searchTimer = window.setTimeout(function() {
+        instructionsStore.searchResults = performInstructionsSearch(instructionsStore.searchQuery);
+        renderInstructionsScreen();
+      }, 190);
+    }
+
+    function formatInstructionContentHtml(content) {
+      var text = String(content || '').trim();
+      if (!text) return '<p>Текст раздела пока недоступен.</p>';
+      var escaped = escapeHtml(text).replace(/\r\n/g, '\n');
+      var paragraphs = escaped.split(/\n{2,}/);
+      var html = [];
+      for (var i = 0; i < paragraphs.length; i++) {
+        var paragraph = paragraphs[i].trim();
+        if (!paragraph) continue;
+        html.push('<p>' + paragraph.replace(/\n/g, '<br />') + '</p>');
+      }
+      return html.join('');
+    }
+
+    function openInstructionDetail(instructionId) {
+      if (!findInstructionById(instructionId)) return;
+      instructionsStore.selectedInstructionId = instructionId;
+      instructionsStore.selectedSectionId = '';
+      instructionsStore.view = 'detail';
+      renderInstructionsScreen();
+    }
+
+    function openInstructionSection(instructionId, sectionId) {
+      var instruction = findInstructionById(instructionId);
+      if (!instruction) return;
+      var section = findSectionById(instruction, sectionId);
+      if (!section) return;
+      instructionsStore.selectedInstructionId = instructionId;
+      instructionsStore.selectedSectionId = sectionId;
+      instructionsStore.view = 'section';
+      renderInstructionsScreen();
+    }
+
+    function renderInstructionsCards(isPaywalled) {
+      var listEl = document.getElementById('instructionsCards');
+      if (!listEl) return;
+      var items = instructionsStore.instructions.length
+        ? instructionsStore.instructions
+        : getInstructionsPreviewSeed();
+      if (!items.length) {
+        listEl.innerHTML = '';
+        return;
+      }
+
+      var html = '';
+      for (var i = 0; i < items.length; i++) {
+        var instruction = items[i];
+        var sectionCount = (instruction.sections && instruction.sections.length) ? instruction.sections.length : 0;
+        var metaText = sectionCount ? (sectionCount + ' разделов') : 'Содержание внутри';
+        html += '<button class="instruction-card" type="button" data-action="open-instruction" data-instruction-id="' + escapeHtml(instruction.id) + '">' +
+          '<div class="instruction-card-title">' + escapeHtml(instruction.title) + '</div>' +
+          '<div class="instruction-card-description">' + escapeHtml(instruction.shortDescription || '') + '</div>' +
+          '<div class="instruction-card-meta">' + escapeHtml(metaText) + '</div>' +
+        '</button>';
+      }
+      listEl.innerHTML = html;
+
+      if (isPaywalled) {
+        var query = document.getElementById('instructionsSearchInput');
+        if (query) query.value = '';
+      }
+    }
+
+    function renderInstructionsSearchResults() {
+      var resultsEl = document.getElementById('instructionsSearchResults');
+      if (!resultsEl) return;
+      if (!instructionsStore.searchResults.length) {
+        resultsEl.innerHTML = '';
+        return;
+      }
+
+      var html = '';
+      for (var i = 0; i < instructionsStore.searchResults.length; i++) {
+        var item = instructionsStore.searchResults[i];
+        html += '<button class="search-result-card" type="button" data-action="open-section" data-instruction-id="' + escapeHtml(item.instructionId) + '" data-section-id="' + escapeHtml(item.sectionId) + '">' +
+          '<div class="search-result-top">' +
+            '<span class="search-result-instruction">' + escapeHtml(item.instructionTitle) + '</span>' +
+          '</div>' +
+          '<div class="search-result-section">' + highlightSearchText(item.sectionTitle, instructionsStore.searchQuery) + '</div>' +
+          '<div class="search-result-snippet">' + highlightSearchText(item.snippet, instructionsStore.searchQuery) + '</div>' +
+        '</button>';
+      }
+      resultsEl.innerHTML = html;
+    }
+
+    function renderInstructionDetailScreen() {
+      var titleEl = document.getElementById('instructionDetailTitle');
+      var descriptionEl = document.getElementById('instructionDetailDescription');
+      var sectionsEl = document.getElementById('instructionSectionsList');
+      if (!titleEl || !descriptionEl || !sectionsEl) return;
+
+      var instruction = findInstructionById(instructionsStore.selectedInstructionId);
+      if (!instruction) {
+        instructionsStore.view = 'list';
+        return;
+      }
+
+      titleEl.textContent = instruction.title || '';
+      descriptionEl.textContent = instruction.shortDescription || '';
+
+      var html = '';
+      var sections = instruction.sections || [];
+      for (var i = 0; i < sections.length; i++) {
+        var section = sections[i];
+        var depthClass = ' instruction-section-depth-' + Math.min(3, Math.max(1, section.level || 1));
+        html += '<button class="instruction-section-item' + depthClass + '" type="button" data-action="open-section" data-instruction-id="' + escapeHtml(instruction.id) + '" data-section-id="' + escapeHtml(section.id) + '">' +
+          '<span class="instruction-section-item-title">' + escapeHtml(section.title || ('Раздел ' + (i + 1))) + '</span>' +
+          '<span class="instruction-section-item-level">Уровень ' + escapeHtml(String(section.level || 1)) + '</span>' +
+        '</button>';
+      }
+
+      sectionsEl.innerHTML = html || '<div class="instructions-state">Разделы пока не загружены.</div>';
+    }
+
+    function renderInstructionSectionScreen() {
+      var sectionTitleEl = document.getElementById('instructionSectionTitle');
+      var sectionMetaEl = document.getElementById('instructionSectionMeta');
+      var quickJumpEl = document.getElementById('instructionQuickJump');
+      var contentEl = document.getElementById('instructionSectionContent');
+      if (!sectionTitleEl || !sectionMetaEl || !quickJumpEl || !contentEl) return;
+
+      var instruction = findInstructionById(instructionsStore.selectedInstructionId);
+      if (!instruction) {
+        instructionsStore.view = 'list';
+        return;
+      }
+      var section = findSectionById(instruction, instructionsStore.selectedSectionId);
+      if (!section) {
+        instructionsStore.view = 'detail';
+        return;
+      }
+
+      sectionTitleEl.textContent = section.title || instruction.title || '';
+      sectionMetaEl.textContent = instruction.title + (instruction.version ? (' · ' + instruction.version) : '');
+      contentEl.innerHTML = formatInstructionContentHtml(section.content || section.plainText || '');
+
+      var jumpHtml = '';
+      var sections = instruction.sections || [];
+      for (var i = 0; i < sections.length; i++) {
+        var jumpSection = sections[i];
+        var activeClass = jumpSection.id === section.id ? ' is-active' : '';
+        jumpHtml += '<button class="instruction-jump-btn' + activeClass + '" type="button" data-action="open-section" data-instruction-id="' + escapeHtml(instruction.id) + '" data-section-id="' + escapeHtml(jumpSection.id) + '">' + escapeHtml(jumpSection.title || ('Раздел ' + (i + 1))) + '</button>';
+      }
+      quickJumpEl.innerHTML = jumpHtml;
+    }
+
+    function renderInstructionsScreen() {
+      var shell = document.getElementById('instructionsShell');
+      if (!shell) return;
+      var contentLayer = document.getElementById('instructionsContentLayer');
+      var paywallOverlay = document.getElementById('instructionsPaywallOverlay');
+      var listView = document.getElementById('instructionsListView');
+      var detailView = document.getElementById('instructionDetailView');
+      var sectionView = document.getElementById('instructionSectionView');
+      var loadingStateEl = document.getElementById('instructionsLoadingState');
+      var offlineStateEl = document.getElementById('instructionsOfflineState');
+      var noResultsStateEl = document.getElementById('instructionsNoResultsState');
+      var metaRowEl = document.getElementById('instructionsMetaRow');
+      var cardsEl = document.getElementById('instructionsCards');
+      var searchResultsEl = document.getElementById('instructionsSearchResults');
+      var searchInputEl = document.getElementById('instructionsSearchInput');
+      if (!contentLayer || !paywallOverlay || !listView || !detailView || !sectionView || !loadingStateEl || !offlineStateEl || !noResultsStateEl || !metaRowEl || !cardsEl || !searchResultsEl) {
+        return;
+      }
+
+      var isPaywalled = !proStore.isActive;
+      contentLayer.classList.toggle('is-paywalled', isPaywalled);
+      paywallOverlay.classList.toggle('hidden', !isPaywalled);
+      if (isPaywalled) {
+        instructionsStore.view = 'list';
+      }
+
+      listView.classList.toggle('hidden', instructionsStore.view !== 'list');
+      detailView.classList.toggle('hidden', instructionsStore.view !== 'detail');
+      sectionView.classList.toggle('hidden', instructionsStore.view !== 'section');
+
+      var queryValue = normalizeSearchText(instructionsStore.searchQuery);
+      var hasQuery = !!queryValue;
+      var canShowSearch = !isPaywalled && hasQuery;
+      var showLoading = instructionsStore.status === 'loading' && !instructionsStore.instructions.length;
+      var showOffline = (instructionsStore.status === 'offline' || instructionsStore.status === 'error') && !instructionsStore.instructions.length;
+      var showNoResults = canShowSearch && instructionsStore.searchResults.length === 0 && !showLoading;
+
+      loadingStateEl.classList.toggle('hidden', !showLoading);
+      offlineStateEl.classList.toggle('hidden', !showOffline);
+      noResultsStateEl.classList.toggle('hidden', !showNoResults);
+      if (showOffline) {
+        offlineStateEl.textContent = instructionsStore.errorMessage || 'Нет сети и нет локальной базы инструкций.';
+      }
+
+      if (metaRowEl) {
+        if (isPaywalled) {
+          metaRowEl.textContent = 'ПТЭ · ИСИ · ИДП доступны в PRO';
+        } else if (instructionsStore.lastUpdated) {
+          var dateLabel = formatIsoDateLabel(instructionsStore.lastUpdated);
+          var sourceLabel = instructionsStore.dataSource === 'network' ? 'обновлено' : 'кэш';
+          metaRowEl.textContent = sourceLabel + ': ' + (dateLabel || 'сейчас');
+        } else if (instructionsStore.status === 'loading') {
+          metaRowEl.textContent = 'Обновляем локальную базу...';
+        } else {
+          metaRowEl.textContent = 'Работает без интернета после первой загрузки';
+        }
+      }
+
+      if (searchInputEl && searchInputEl.value !== instructionsStore.searchQuery) {
+        searchInputEl.value = instructionsStore.searchQuery;
+      }
+
+      renderInstructionsCards(isPaywalled);
+      renderInstructionsSearchResults();
+      cardsEl.classList.toggle('hidden', canShowSearch);
+      searchResultsEl.classList.toggle('hidden', !canShowSearch);
+
+      if (instructionsStore.view === 'detail') {
+        renderInstructionDetailScreen();
+      } else if (instructionsStore.view === 'section') {
+        renderInstructionSectionScreen();
+      }
     }
 
     var API_BASE_URL = window.SHIFT_API_BASE_URL || '';
@@ -1439,6 +2342,14 @@
       setActiveTab(activeTab || 'home');
       scheduleBottomNavHeightSync();
       updateFooter();
+      renderInstallPromptCard();
+      renderInstructionsScreen();
+    }
+
+    function handleTabActivated(tab) {
+      if (tab === 'instructions') {
+        ensureInstructionsReady(false, false);
+      }
     }
 
     function setActiveTab(tab) {
@@ -1460,6 +2371,9 @@
 
       scheduleBottomNavHeightSync();
       updateFooter();
+      renderInstallPromptCard();
+      handleTabActivated(activeTab);
+      renderInstructionsScreen();
     }
 
     function openAddTabAndFocusForm() {
@@ -1560,19 +2474,20 @@
       var shiftsHeader = document.getElementById('shiftsHeader');
       if (shiftsHeader) shiftsHeader.textContent = 'Смены';
 
-      var settingsPageTitle = document.querySelector('.settings-page-title');
-      if (settingsPageTitle) settingsPageTitle.textContent = 'Настройки';
+      var instructionsPageTitle = document.querySelector('.instructions-page-title');
+      if (instructionsPageTitle) instructionsPageTitle.textContent = 'Инструкции';
       var appVersionValue = document.getElementById('appVersionValue');
       if (appVersionValue) appVersionValue.textContent = APP_VERSION;
 
-      var addScreenBtn = document.getElementById('btnAddToScreen');
-      if (addScreenBtn) addScreenBtn.textContent = '📲 Добавить на экран';
+      var addScreenBtn = document.getElementById('btnShowInstallGuide');
+      if (addScreenBtn) addScreenBtn.textContent = 'Показать инструкцию';
 
       var overlays = document.querySelectorAll('.overlay');
       for (var oi = 0; oi < overlays.length; oi++) {
         var title = overlays[oi].querySelector('.sheet-title');
         if (!title) continue;
-        if (overlays[oi].id === 'overlayAddScreen') title.textContent = 'Добавить на экран';
+        if (overlays[oi].id === 'overlayAddScreen') title.textContent = 'Добавить на главный экран';
+        if (overlays[oi].id === 'overlaySalarySettings') title.textContent = 'Параметры расчёта';
         if (overlays[oi].id === 'overlayConfirm') title.textContent = 'Удалить смену';
       }
     }
@@ -2747,6 +3662,8 @@
       );
 
       renderSalaryPanel();
+      renderInstallPromptCard();
+      renderInstructionsScreen();
 
       if (activeShiftMenuId !== null && SHIFT_ACTIONS_MENU) {
         renderShiftActionsMenu(activeShiftMenuId);
@@ -3554,12 +4471,16 @@
     window.addEventListener('online', function() {
       updateOfflineUiState({ isOffline: false, lastSyncStatus: readPendingSnapshot() ? 'pending' : 'synced' });
       flushPendingSnapshot();
+      ensureInstructionsReady(true, true);
+      renderInstructionsScreen();
     });
     document.addEventListener('visibilitychange', function() {
       if (!document.hidden) {
         settleSafeAreaInsets();
         updateOfflineUiState({ isOffline: !navigator.onLine, hasPending: !!readPendingSnapshot() });
         if (navigator.onLine) flushPendingSnapshot();
+        renderInstallPromptCard();
+        renderInstructionsScreen();
       }
     });
 
@@ -3735,11 +4656,95 @@
       });
     }
 
-    // ── Add to Screen ──
-    document.getElementById('btnAddToScreen').addEventListener('click', function() {
+    function openInstallGuideSheet() {
       document.getElementById('appUrl').textContent = getAppUrl();
       openOverlay('overlayAddScreen');
-    });
+    }
+
+    // ── Add to Screen ──
+    var showInstallGuideBtn = document.getElementById('btnShowInstallGuide');
+    if (showInstallGuideBtn) {
+      showInstallGuideBtn.addEventListener('click', function() {
+        openInstallGuideSheet();
+      });
+    }
+    var dismissInstallCardBtn = document.getElementById('btnDismissInstallCard');
+    if (dismissInstallCardBtn) {
+      dismissInstallCardBtn.addEventListener('click', function() {
+        dismissInstallPromptCard();
+      });
+    }
+
+    var openSalarySettingsBtn = document.getElementById('btnOpenSalarySettings');
+    if (openSalarySettingsBtn) {
+      openSalarySettingsBtn.addEventListener('click', function() {
+        updateSettingsControls();
+        openOverlay('overlaySalarySettings');
+      });
+    }
+    var closeSalarySettingsBtn = document.getElementById('btnCloseSalarySettings');
+    if (closeSalarySettingsBtn) {
+      closeSalarySettingsBtn.addEventListener('click', function() {
+        closeOverlay('overlaySalarySettings');
+      });
+    }
+
+    var instructionsShellEl = document.getElementById('instructionsShell');
+    if (instructionsShellEl) {
+      instructionsShellEl.addEventListener('click', function(e) {
+        var trigger = e.target.closest('[data-action]');
+        if (!trigger) return;
+        var action = trigger.getAttribute('data-action');
+        if (action === 'open-instruction') {
+          openInstructionDetail(trigger.getAttribute('data-instruction-id'));
+          return;
+        }
+        if (action === 'open-section') {
+          openInstructionSection(
+            trigger.getAttribute('data-instruction-id'),
+            trigger.getAttribute('data-section-id')
+          );
+        }
+      });
+    }
+
+    var instructionsSearchInputEl = document.getElementById('instructionsSearchInput');
+    if (instructionsSearchInputEl) {
+      instructionsSearchInputEl.addEventListener('input', function(e) {
+        setInstructionsSearchQuery(e.currentTarget.value);
+      });
+      instructionsSearchInputEl.addEventListener('focus', function() {
+        if (!instructionsStore.searchDocs.length) {
+          ensureInstructionsReady(false, true);
+        }
+      });
+    }
+
+    var backToInstructionsListBtn = document.getElementById('btnBackToInstructionsList');
+    if (backToInstructionsListBtn) {
+      backToInstructionsListBtn.addEventListener('click', function() {
+        instructionsStore.view = 'list';
+        instructionsStore.selectedInstructionId = '';
+        instructionsStore.selectedSectionId = '';
+        renderInstructionsScreen();
+      });
+    }
+
+    var backToInstructionDetailBtn = document.getElementById('btnBackToInstructionDetail');
+    if (backToInstructionDetailBtn) {
+      backToInstructionDetailBtn.addEventListener('click', function() {
+        instructionsStore.view = 'detail';
+        instructionsStore.selectedSectionId = '';
+        renderInstructionsScreen();
+      });
+    }
+
+    var unlockProBtn = document.getElementById('btnUnlockPro');
+    if (unlockProBtn) {
+      unlockProBtn.addEventListener('click', function() {
+        setProActive(true);
+      });
+    }
 
     var tabButtons = document.querySelectorAll('.tab-btn[data-tab]');
     for (var tb = 0; tb < tabButtons.length; tb++) {
@@ -3787,6 +4792,9 @@
     repairUiText();
     bindSettingsControls();
     updateSettingsControls();
+    renderInstallPromptCard();
+    renderInstructionsScreen();
+    ensureInstructionsReady(false, true);
 
     (function initOptionalCardAnimations() {
       var cards = document.querySelectorAll('.optional-card');
