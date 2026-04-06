@@ -1267,11 +1267,8 @@
       line-height: 1.5;
       color: rgba(244, 247, 255, 0.84);
       white-space: pre-line;
-      display: -webkit-box;
-      -webkit-line-clamp: 6;
-      -webkit-box-orient: vertical;
-      overflow: hidden;
-      max-height: calc(1.5em * 6);
+      overflow-wrap: anywhere;
+      word-break: break-word;
     }
 
     .search-answer-actions {
@@ -1297,10 +1294,11 @@
     }
 
     .search-result-top {
-      display: flex;
+      display: grid;
+      grid-template-columns: minmax(0, 1fr) auto;
       align-items: baseline;
-      justify-content: space-between;
       gap: 8px;
+      min-width: 0;
     }
 
     .search-result-instruction {
@@ -1309,6 +1307,8 @@
       letter-spacing: 0.05em;
       text-transform: uppercase;
       color: rgba(194, 229, 255, 0.86);
+      min-width: 0;
+      overflow-wrap: anywhere;
     }
 
     .search-result-point {
@@ -1317,6 +1317,7 @@
       color: rgba(244, 247, 255, 0.74);
       letter-spacing: 0.01em;
       white-space: nowrap;
+      justify-self: end;
     }
 
     .search-result-section {
@@ -1324,6 +1325,8 @@
       font-weight: 700;
       line-height: 1.35;
       color: rgba(244, 247, 255, 0.92);
+      overflow-wrap: anywhere;
+      word-break: break-word;
     }
 
     .search-result-snippet {
@@ -1331,6 +1334,8 @@
       line-height: 1.54;
       color: rgba(244, 247, 255, 0.66);
       white-space: pre-line;
+      overflow-wrap: anywhere;
+      word-break: break-word;
     }
 
     .search-result-snippet.is-expanded {

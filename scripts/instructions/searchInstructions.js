@@ -109,9 +109,9 @@
         maxChars: 440
       });
       var previewText = buildSnippet(answerText, queryProfile.tokens || [], {
-        minLines: 3,
-        maxLines: 6,
-        maxChars: 520
+        minLines: 4,
+        maxLines: 10,
+        maxChars: 1600
       });
       var sectionRef = formatSectionRef(entity.number, entity.nodeType);
       var hasMoreText = answerText.length > (previewText || '').length;
@@ -133,7 +133,7 @@
         confidence: ranked[i].confidence,
         isExpandedAnswer: false,
         answerIncludesHeading: false,
-        displayText: previewText || snippet || answerText
+        displayText: snippet || previewText || answerText
       });
     }
 

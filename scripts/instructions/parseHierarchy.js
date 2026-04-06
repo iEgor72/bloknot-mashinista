@@ -83,8 +83,7 @@
     var plain = core.normalizeInstructionBlock ? core.normalizeInstructionBlock(content) : String(content || '').trim();
     if (plain) {
       var line = plain.split('\n')[0] || '';
-      if (line.length > 96) line = line.slice(0, 93).trim() + '...';
-      return line;
+      return line.replace(/\s+/g, ' ').trim();
     }
     if (nodeType === 'chapter') return 'Глава ' + (index + 1);
     if (nodeType === 'section') return 'Раздел ' + (index + 1);
@@ -271,8 +270,7 @@
     var normalized = core.normalizeInstructionBlock ? core.normalizeInstructionBlock(body) : String(body || '').trim();
     var single = normalized.split('\n')[0] || '';
     if (!single) return String(number || '').trim();
-    if (single.length > 112) single = single.slice(0, 109).trim() + '...';
-    return single;
+    return single.replace(/\s+/g, ' ').trim();
   }
 
   function expandInlineItems(nodes, instructionId) {
