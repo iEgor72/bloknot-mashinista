@@ -428,6 +428,10 @@
       z-index: 1;
     }
 
+    #optionalRouteCard .optional-card-body {
+      padding: 12px 16px 16px;
+    }
+
     .optional-grid {
       display: grid;
       gap: 10px;
@@ -443,7 +447,13 @@
     }
 
     .route-segmented {
+      margin-top: 12px;
       margin-bottom: 12px;
+      padding: 4px;
+    }
+
+    .route-segmented .segmented-btn {
+      padding: 10px 12px;
     }
 
     .glass-select {
