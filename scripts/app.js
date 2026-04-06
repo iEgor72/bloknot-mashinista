@@ -840,6 +840,8 @@
         status: 'idle',
         instructions: [],
         searchDocs: [],
+        preparedSearchDocs: [],
+        preparedSearchDocsKey: '',
         searchResults: [],
         searchQuery: '',
         errorMessage: '',
@@ -1269,24 +1271,299 @@
         .trim();
     }
 
+    var SEARCH_STOP_WORDS = {
+      'и': 1, 'в': 1, 'во': 1, 'на': 1, 'по': 1, 'к': 1, 'ко': 1, 'о': 1, 'об': 1, 'обо': 1,
+      'с': 1, 'со': 1, 'у': 1, 'за': 1, 'из': 1, 'от': 1, 'до': 1, 'для': 1, 'при': 1, 'под': 1,
+      'над': 1, 'не': 1, 'ни': 1, 'а': 1, 'но': 1, 'или': 1, 'ли': 1, 'же': 1, 'бы': 1, 'что': 1,
+      'как': 1, 'где': 1, 'когда': 1, 'какой': 1, 'какая': 1, 'какие': 1, 'какое': 1
+    };
+
+    var RU_PERFECTIVEGROUND_1 = /(ив|ивши|ившись|ыв|ывши|ывшись)$/;
+    var RU_PERFECTIVEGROUND_2 = /([ая])(в|вши|вшись)$/;
+    var RU_REFLEXIVE = /(с[яь])$/;
+    var RU_ADJECTIVE = /(ее|ие|ые|ое|ими|ыми|ей|ий|ый|ой|ем|им|ым|ом|его|ого|ему|ому|их|ых|ую|юю|ая|яя|ою|ею)$/;
+    var RU_PARTICIPLE_1 = /([ая])(ем|нн|вш|ющ|щ)$/;
+    var RU_PARTICIPLE_2 = /(ивш|ывш|ующ)$/;
+    var RU_VERB_1 = /([ая])(ла|на|ете|йте|ли|й|л|ем|н|ло|но|ет|ют|ны|ть|ешь|нно)$/;
+    var RU_VERB_2 = /(ила|ыла|ена|ейте|уйте|ите|или|ыли|ей|уй|ил|ыл|им|ым|ен|ило|ыло|ено|ят|ует|уют|ит|ыт|ены|ить|ыть|ишь|ую|ю)$/;
+    var RU_NOUN = /(а|ев|ов|ие|ье|е|иями|ями|ами|еи|ии|и|ией|ей|ой|ий|й|иям|ям|ием|ем|ам|ом|о|у|ах|иях|ях|ию|ью|ю|ия|ья|я)$/;
+    var RU_DERIVATIONAL = /[^аеиоуыэюя]+[аеиоуыэюя].*ость?$/;
+    var RU_SUPERLATIVE = /(ейш|ейше)$/;
+    var RU_VOWELS = 'аеёиоуыэюя';
+
     function normalizeSearchText(value) {
       return String(value || '')
         .toLowerCase()
         .replace(/ё/g, 'е')
+        .replace(/[\u2010-\u2015]/g, '-')
+        .replace(/[«»"“”„`']/g, ' ')
+        .replace(/[_.,;:!?(){}\[\]|<>]+/g, ' ')
+        .replace(/[^a-zа-я0-9%№\/+\-\s]/gi, ' ')
         .replace(/\s+/g, ' ')
         .trim();
     }
 
-    function splitSearchTerms(query) {
+    function splitSearchTerms(query, options) {
+      var opts = options || {};
       var normalized = normalizeSearchText(query);
       if (!normalized) return [];
       var parts = normalized.split(' ');
       var terms = [];
+      var minLength = Math.max(1, parseInt(opts.minLength, 10) || 1);
+      var keepStopWords = opts.keepStopWords !== false;
       for (var i = 0; i < parts.length; i++) {
-        if (!parts[i]) continue;
-        terms.push(parts[i]);
+        var token = String(parts[i] || '').replace(/^[^a-zа-я0-9]+|[^a-zа-я0-9]+$/gi, '');
+        if (!token) continue;
+        var isNumeric = /^\d+$/.test(token);
+        if (!isNumeric && token.length < minLength) continue;
+        if (!keepStopWords && !isNumeric && SEARCH_STOP_WORDS[token]) continue;
+        terms.push(token);
       }
       return terms;
+    }
+
+    function uniqueArray(values) {
+      var seen = {};
+      var result = [];
+      for (var i = 0; i < (values || []).length; i++) {
+        var item = values[i];
+        if (!item || seen[item]) continue;
+        seen[item] = true;
+        result.push(item);
+      }
+      return result;
+    }
+
+    function isCyrillicToken(token) {
+      return /[а-я]/i.test(String(token || ''));
+    }
+
+    function getRussianRvIndex(word) {
+      var value = String(word || '');
+      for (var i = 0; i < value.length; i++) {
+        if (RU_VOWELS.indexOf(value.charAt(i)) !== -1) {
+          return i + 1;
+        }
+      }
+      return -1;
+    }
+
+    function stemRussianToken(token) {
+      var value = String(token || '').toLowerCase().replace(/ё/g, 'е').trim();
+      if (!value || value.length <= 3 || !isCyrillicToken(value)) {
+        return value;
+      }
+
+      var rvIndex = getRussianRvIndex(value);
+      if (rvIndex < 0 || rvIndex >= value.length) return value;
+      var start = value.slice(0, rvIndex);
+      var rv = value.slice(rvIndex);
+
+      var replaced = rv.replace(RU_PERFECTIVEGROUND_1, '');
+      if (replaced === rv) replaced = rv.replace(RU_PERFECTIVEGROUND_2, '$1');
+      if (replaced !== rv) {
+        rv = replaced;
+      } else {
+        rv = rv.replace(RU_REFLEXIVE, '');
+        var adjectiveRemoved = rv.replace(RU_ADJECTIVE, '');
+        if (adjectiveRemoved !== rv) {
+          rv = adjectiveRemoved.replace(RU_PARTICIPLE_1, '$1').replace(RU_PARTICIPLE_2, '');
+        } else {
+          var verbRemoved = rv.replace(RU_VERB_1, '$1');
+          if (verbRemoved === rv) verbRemoved = rv.replace(RU_VERB_2, '');
+          if (verbRemoved !== rv) rv = verbRemoved;
+          else rv = rv.replace(RU_NOUN, '');
+        }
+      }
+
+      rv = rv.replace(/и$/, '');
+      if (RU_DERIVATIONAL.test(rv)) {
+        rv = rv.replace(/ость?$/, '');
+      }
+      if (/ь$/.test(rv)) {
+        rv = rv.replace(/ь$/, '');
+      } else {
+        rv = rv.replace(RU_SUPERLATIVE, '').replace(/нн$/, 'н');
+      }
+
+      var stem = (start + rv).trim();
+      return stem.length >= 3 ? stem : value;
+    }
+
+    function normalizeStemToken(token) {
+      var normalized = normalizeSearchText(token);
+      if (!normalized) return '';
+      var stem = stemRussianToken(normalized);
+      if (!stem) return normalized;
+      if (stem.length >= 3) return stem;
+      return normalized;
+    }
+
+    function buildTokenStems(tokens) {
+      var stems = [];
+      for (var i = 0; i < (tokens || []).length; i++) {
+        var stem = normalizeStemToken(tokens[i]);
+        if (!stem) continue;
+        stems.push(stem);
+      }
+      return uniqueArray(stems);
+    }
+
+    function buildTokenChargrams(token) {
+      var value = String(token || '').trim();
+      if (!value) return [];
+      if (value.length <= 2) return [value];
+      var grams = [];
+      var minGram = value.length >= 5 ? 3 : 2;
+      var maxGram = Math.min(4, value.length);
+      for (var n = minGram; n <= maxGram; n++) {
+        for (var i = 0; i <= value.length - n; i++) {
+          grams.push(value.slice(i, i + n));
+        }
+      }
+      return uniqueArray(grams);
+    }
+
+    function buildTextChargramSet(tokens, maxSize) {
+      var set = {};
+      var limit = Math.max(32, parseInt(maxSize, 10) || 320);
+      var added = 0;
+      for (var i = 0; i < (tokens || []).length; i++) {
+        var grams = buildTokenChargrams(tokens[i]);
+        for (var g = 0; g < grams.length; g++) {
+          var gram = grams[g];
+          if (!gram || set[gram]) continue;
+          set[gram] = 1;
+          added += 1;
+          if (added >= limit) return set;
+        }
+      }
+      return set;
+    }
+
+    function computeChargramOverlapScore(queryGrams, targetGramSet) {
+      if (!queryGrams || !queryGrams.length || !targetGramSet) return 0;
+      var hits = 0;
+      for (var i = 0; i < queryGrams.length; i++) {
+        if (targetGramSet[queryGrams[i]]) hits += 1;
+      }
+      if (!hits) return 0;
+      return hits / queryGrams.length;
+    }
+
+    function hasPrefixMatch(stems, queryStem) {
+      var source = String(queryStem || '');
+      if (!source || source.length < 2) return false;
+      for (var i = 0; i < (stems || []).length; i++) {
+        var candidate = stems[i];
+        if (!candidate) continue;
+        if (candidate.indexOf(source) === 0 || source.indexOf(candidate) === 0) return true;
+      }
+      return false;
+    }
+
+    function boundedLevenshteinDistance(a, b, maxDistance) {
+      var left = String(a || '');
+      var right = String(b || '');
+      var threshold = Math.max(0, parseInt(maxDistance, 10) || 0);
+      if (left === right) return 0;
+      if (!left.length) return right.length;
+      if (!right.length) return left.length;
+      if (Math.abs(left.length - right.length) > threshold) return threshold + 1;
+
+      var prev = [];
+      var curr = [];
+      for (var j = 0; j <= right.length; j++) {
+        prev[j] = j;
+      }
+      for (var i = 1; i <= left.length; i++) {
+        curr[0] = i;
+        var rowMin = curr[0];
+        for (var k = 1; k <= right.length; k++) {
+          var cost = left.charAt(i - 1) === right.charAt(k - 1) ? 0 : 1;
+          curr[k] = Math.min(
+            prev[k] + 1,
+            curr[k - 1] + 1,
+            prev[k - 1] + cost
+          );
+          if (curr[k] < rowMin) rowMin = curr[k];
+        }
+        if (rowMin > threshold) return threshold + 1;
+        var swap = prev;
+        prev = curr;
+        curr = swap;
+      }
+      return prev[right.length];
+    }
+
+    function bestFuzzyStemDistance(queryStem, candidates, maxDistance) {
+      var token = String(queryStem || '');
+      if (!token || token.length < 3) return maxDistance + 1;
+      var threshold = Math.max(1, parseInt(maxDistance, 10) || 1);
+      var best = threshold + 1;
+      var firstChar = token.charAt(0);
+      for (var i = 0; i < (candidates || []).length; i++) {
+        var candidate = candidates[i];
+        if (!candidate) continue;
+        if (candidate.charAt(0) !== firstChar && token.length >= 4) continue;
+        var dist = boundedLevenshteinDistance(token, candidate, threshold);
+        if (dist < best) best = dist;
+        if (best === 1) break;
+      }
+      return best;
+    }
+
+    function inferSearchEntityType(nodeType, title, body) {
+      var sectionType = String(nodeType || '').toLowerCase();
+      var source = normalizeSearchText((title || '') + ' ' + (body || ''));
+      if (/(определен|термин|под\s+.*\s+понима|называется)/.test(source)) return 'definition';
+      if (/(порядок|действи|выполня|производ|следует|необходимо|разрешается|запрещается)/.test(source)) {
+        return 'procedure';
+      }
+      if (sectionType === 'point' || sectionType === 'subpoint') return 'rule';
+      if (sectionType === 'chapter' || sectionType === 'section' || sectionType === 'subsection') return sectionType;
+      return 'section';
+    }
+
+    function buildSearchQueryProfile(query) {
+      var normalized = normalizeSearchText(query);
+      var allTokens = splitSearchTerms(normalized, { minLength: 1, keepStopWords: true });
+      var meaningfulTokens = splitSearchTerms(normalized, { minLength: 2, keepStopWords: false });
+      var tokens = meaningfulTokens.length ? meaningfulTokens : allTokens;
+      tokens = tokens.slice(0, 8);
+      var stems = buildTokenStems(tokens);
+      var tokenProfiles = [];
+      for (var i = 0; i < tokens.length; i++) {
+        var token = tokens[i];
+        var stem = normalizeStemToken(token) || token;
+        tokenProfiles.push({
+          token: token,
+          stem: stem,
+          grams: buildTokenChargrams(stem || token)
+        });
+      }
+      var wantsSpeedNorm = /(скорост|км\/?ч|кмч)/.test(normalized);
+      var wantsDefinition = /(что такое|определен|термин|что значит)/.test(normalized);
+      var wantsProcedure = /(что делать|как|порядок|действия|при\s)/.test(normalized);
+      var wantsRule = wantsProcedure || /(должен|обязан|запрещ|разреш|можно|нельзя)/.test(normalized);
+      var wantsNumericNorm = wantsSpeedNorm || /(норма|огранич|не более|не менее|максимум|минимум)/.test(normalized);
+
+      var chargramSet = buildTextChargramSet(stems.length ? stems : tokens, 196);
+
+      return {
+        normalized: normalized,
+        allTokens: allTokens,
+        tokens: tokens,
+        stems: stems,
+        tokenProfiles: tokenProfiles,
+        chargramSet: chargramSet,
+        chargrams: Object.keys(chargramSet),
+        wantsSpeedNorm: wantsSpeedNorm,
+        wantsDefinition: wantsDefinition,
+        wantsProcedure: wantsProcedure,
+        wantsRule: wantsRule,
+        wantsNumericNorm: wantsNumericNorm
+      };
     }
 
     function escapeRegExpText(value) {
@@ -1627,6 +1904,22 @@
       return clean;
     }
 
+    function buildInstructionNodePath(instruction, node, structure) {
+      if (!instruction || !node || !structure) return '';
+      var path = [];
+      var rootId = structure.root ? structure.root.id : '';
+      var current = node;
+      var guard = 0;
+      while (current && guard < 28 && current.id !== rootId) {
+        path.push(formatInstructionNodeLabel(current, current.title || 'Раздел'));
+        if (!current.parentId || !structure.nodeById[current.parentId]) break;
+        current = structure.nodeById[current.parentId];
+        guard += 1;
+      }
+      path.reverse();
+      return path.join(' > ');
+    }
+
     function buildInstructionsSearchIndex(instructions) {
       var docs = [];
       for (var i = 0; i < (instructions || []).length; i++) {
@@ -1641,16 +1934,24 @@
           var sectionLabel = formatInstructionNodeLabel(node, node.title || '').trim();
           var sectionTitle = sectionLabel || node.title || '';
           var answerText = buildNodeAnswerText(node, structure);
+          var bodyText = normalizeInstructionTextBlock(answerText || nodeText);
+          var path = buildInstructionNodePath(instruction, node, structure);
+          var entityType = inferSearchEntityType(node.type, sectionTitle, bodyText);
+          var hasNumericNorm = /\b\d{1,3}\s*(?:км\/ч|кмч|км ч|процент|%|мм|м|ч)\b/.test(normalizeSearchText(bodyText));
+          var hasSpeedNorm = /\b\d{1,3}\s*(?:км\/ч|кмч|км ч)\b/.test(normalizeSearchText(bodyText));
           var joinedText = [
             instruction.title || '',
             node.number || '',
             node.title || '',
             sectionLabel,
+            path,
             nodeText,
-            answerText
+            answerText,
+            bodyText
           ].join(' ');
 
           docs.push({
+            searchVersion: 3,
             id: instruction.id + '::' + node.id,
             instructionId: instruction.id,
             instructionTitle: instruction.title || '',
@@ -1664,9 +1965,16 @@
             sectionType: node.type || '',
             sectionRef: formatSearchNodeReference(node.type || '', node.number || ''),
             isPointLike: node.type === 'point' || node.type === 'subpoint',
+            path: path,
+            pathNormalized: normalizeSearchText(path),
+            entityType: entityType,
+            hasNumericNorm: hasNumericNorm,
+            hasSpeedNorm: hasSpeedNorm,
             depth: entry.depth || 0,
             text: nodeText,
             answerText: answerText,
+            body: bodyText,
+            bodyNormalized: normalizeSearchText(bodyText),
             answerTextNormalized: normalizeSearchText(answerText),
             sectionTextNormalized: normalizeSearchText(nodeText),
             normalized: normalizeSearchText(joinedText)
@@ -1842,13 +2150,17 @@
       var instructions = payload.instructions || [];
       var searchDocs = payload.searchDocs || [];
       var meta = payload.meta || {};
-      var hasRichSearchIndex = !!(
+      var hasHybridSearchIndex = !!(
         searchDocs.length &&
         searchDocs[0] &&
-        (searchDocs[0].answerText !== undefined || searchDocs[0].sectionRef !== undefined)
+        parseInt(searchDocs[0].searchVersion, 10) >= 3 &&
+        searchDocs[0].answerText !== undefined &&
+        searchDocs[0].body !== undefined
       );
       instructionsStore.instructions = instructions;
-      instructionsStore.searchDocs = hasRichSearchIndex ? searchDocs : buildInstructionsSearchIndex(instructions);
+      instructionsStore.searchDocs = hasHybridSearchIndex ? searchDocs : buildInstructionsSearchIndex(instructions);
+      instructionsStore.preparedSearchDocs = [];
+      instructionsStore.preparedSearchDocsKey = '';
       instructionsStore.hasCache = instructions.length > 0;
       instructionsStore.dataSource = sourceLabel || 'cache';
       instructionsStore.lastUpdated = meta.updatedAt || '';
@@ -2047,107 +2359,302 @@
       return html;
     }
 
-    function performInstructionsSearch(query) {
-      var normalizedQuery = normalizeSearchText(query);
-      if (!normalizedQuery) return [];
-      var terms = splitSearchTerms(normalizedQuery);
-      var results = [];
-      for (var i = 0; i < instructionsStore.searchDocs.length; i++) {
-        var doc = instructionsStore.searchDocs[i];
-        var normalizedDoc = doc.normalized || doc.answerTextNormalized || doc.sectionTextNormalized || '';
-        var matchesAllTerms = true;
-        for (var t = 0; t < terms.length; t++) {
-          if (normalizedDoc.indexOf(terms[t]) === -1) {
-            matchesAllTerms = false;
-            break;
-          }
-        }
-        if (!matchesAllTerms) continue;
+    function createTokenLookup(tokens) {
+      var lookup = {};
+      for (var i = 0; i < (tokens || []).length; i++) {
+        var token = tokens[i];
+        if (!token) continue;
+        lookup[token] = 1;
+      }
+      return lookup;
+    }
 
-        var score = 0;
-        var instructionNorm = doc.instructionTitleNormalized || normalizeSearchText(doc.instructionTitle || '');
-        var sectionNorm = doc.sectionTitleNormalized || normalizeSearchText(doc.sectionTitle || '');
-        var headingNorm = doc.sectionHeadingNormalized || sectionNorm;
-        var sectionNumberNorm = doc.sectionNumberNormalized || normalizeSearchText(doc.sectionNumber || '');
-        var textNorm = doc.answerTextNormalized || doc.sectionTextNormalized || '';
-        var textIdx = textNorm.indexOf(normalizedQuery);
-        var isPointLike = !!doc.isPointLike || doc.sectionType === 'point' || doc.sectionType === 'subpoint';
-        var headingExactMatch = headingNorm.indexOf(normalizedQuery) !== -1 || (sectionNumberNorm && sectionNumberNorm.indexOf(normalizedQuery) !== -1);
-        var headingTermHits = 0;
-        var headingStrongHits = 0;
-        var textTermHits = 0;
-        var headingHasAllTerms = true;
-        for (var tt = 0; tt < terms.length; tt++) {
-          var term = terms[tt];
-          var inHeading = headingNorm.indexOf(term) !== -1 || (sectionNumberNorm && sectionNumberNorm.indexOf(term) !== -1);
-          if (inHeading) {
-            headingTermHits += 1;
-            if (term.length >= 3) headingStrongHits += 1;
-          }
-          else headingHasAllTerms = false;
-          if (textNorm.indexOf(term) !== -1) textTermHits += 1;
-        }
+    function mergeTokenLookups(target, source) {
+      var out = target || {};
+      var keys = Object.keys(source || {});
+      for (var i = 0; i < keys.length; i++) {
+        out[keys[i]] = 1;
+      }
+      return out;
+    }
 
-        if (instructionNorm.indexOf(normalizedQuery) !== -1) score += 980;
-        else {
-          for (var it = 0; it < terms.length; it++) {
-            if (instructionNorm.indexOf(terms[it]) !== -1) score += 120;
-          }
-        }
+    function getPreparedSearchDocsKey(searchDocs) {
+      if (!searchDocs || !searchDocs.length) return 'empty';
+      var first = searchDocs[0];
+      var last = searchDocs[searchDocs.length - 1];
+      return [
+        searchDocs.length,
+        first ? (first.id || '') : '',
+        last ? (last.id || '') : '',
+        first ? (first.searchVersion || '0') : '0'
+      ].join('::');
+    }
 
-        if (headingExactMatch) score += 1520;
-        else score += headingTermHits * 270;
+    function prepareSearchDoc(doc) {
+      var titleText = normalizeInstructionTextBlock(
+        [
+          doc.instructionTitle || '',
+          doc.sectionTitle || '',
+          doc.sectionRef || ''
+        ].join(' ')
+      );
+      var pathText = normalizeInstructionTextBlock(doc.path || '');
+      var bodyText = normalizeInstructionTextBlock(doc.body || doc.answerText || doc.text || '');
+      var titleTokens = splitSearchTerms(titleText, { minLength: 1, keepStopWords: true });
+      var pathTokens = splitSearchTerms(pathText, { minLength: 1, keepStopWords: true });
+      var bodyTokens = splitSearchTerms(bodyText, { minLength: 1, keepStopWords: true });
+      var titleStems = buildTokenStems(titleTokens);
+      var pathStems = buildTokenStems(pathTokens);
+      var bodyStems = buildTokenStems(bodyTokens);
+      var allTokens = uniqueArray(titleTokens.concat(pathTokens, bodyTokens));
+      var allStems = uniqueArray(titleStems.concat(pathStems, bodyStems));
+      var titleTokenLookup = createTokenLookup(titleTokens);
+      var bodyTokenLookup = createTokenLookup(bodyTokens);
+      var pathTokenLookup = createTokenLookup(pathTokens);
+      var titleStemLookup = createTokenLookup(titleStems);
+      var bodyStemLookup = createTokenLookup(bodyStems);
+      var pathStemLookup = createTokenLookup(pathStems);
 
-        if (sectionNumberNorm && sectionNumberNorm.indexOf(normalizedQuery) !== -1) {
-          score += 860;
-        }
+      return {
+        raw: doc,
+        instructionId: doc.instructionId,
+        instructionTitle: doc.instructionTitle || '',
+        sectionId: doc.sectionId,
+        sectionTitle: doc.sectionTitle || '',
+        sectionRef: doc.sectionRef || '',
+        sectionType: doc.sectionType || '',
+        entityType: doc.entityType || inferSearchEntityType(doc.sectionType, doc.sectionTitle, bodyText),
+        isPointLike: !!doc.isPointLike,
+        depth: parseInt(doc.depth, 10) || 0,
+        path: pathText,
+        titleText: titleText,
+        bodyText: bodyText,
+        answerText: normalizeInstructionTextBlock(doc.answerText || bodyText),
+        titleNormalized: normalizeSearchText(titleText),
+        pathNormalized: normalizeSearchText(pathText),
+        bodyNormalized: normalizeSearchText(bodyText),
+        normalized: normalizeSearchText([titleText, pathText, bodyText].join(' ')),
+        titleTokens: titleTokens,
+        pathTokens: pathTokens,
+        bodyTokens: bodyTokens,
+        titleStems: titleStems,
+        pathStems: pathStems,
+        bodyStems: bodyStems,
+        allTokens: allTokens,
+        allStems: allStems,
+        titleTokenLookup: titleTokenLookup,
+        bodyTokenLookup: bodyTokenLookup,
+        pathTokenLookup: pathTokenLookup,
+        titleStemLookup: titleStemLookup,
+        bodyStemLookup: bodyStemLookup,
+        pathStemLookup: pathStemLookup,
+        allTokenLookup: mergeTokenLookups(mergeTokenLookups({}, createTokenLookup(allTokens)), createTokenLookup(allStems)),
+        titleGramSet: buildTextChargramSet(uniqueArray(titleStems.concat(titleTokens)), 220),
+        pathGramSet: buildTextChargramSet(uniqueArray(pathStems.concat(pathTokens)), 180),
+        bodyGramSet: buildTextChargramSet(uniqueArray(bodyStems.concat(bodyTokens)), 380),
+        allGramSet: buildTextChargramSet(uniqueArray(allStems.concat(allTokens)), 520),
+        fuzzyStemCandidates: uniqueArray(titleStems.concat(pathStems, bodyStems)).slice(0, 240),
+        hasNumericNorm: !!doc.hasNumericNorm || /\b\d{1,3}\s*(?:км\/ч|кмч|км ч|процент|%|мм|м|ч)\b/.test(normalizeSearchText(bodyText)),
+        hasSpeedNorm: !!doc.hasSpeedNorm || /\b\d{1,3}\s*(?:км\/ч|кмч|км ч)\b/.test(normalizeSearchText(bodyText))
+      };
+    }
 
-        if (textIdx === 0) score += 700;
-        else if (textIdx > 0) score += Math.max(170, 560 - Math.min(textIdx, 420));
-        score += textTermHits * 95;
-
-        if (isPointLike) score += 220;
-
-        var answerText = normalizeInstructionTextBlock(doc.answerText || doc.text || '');
-        var shouldShowFullByHeading = !!(isPointLike && answerText && (headingExactMatch || headingStrongHits > 0 || headingHasAllTerms));
-        var snippet = buildSearchSnippet(answerText || doc.text || '', terms, { minLines: 2, maxLines: 5 });
-
-        results.push({
-          instructionId: doc.instructionId,
-          instructionTitle: doc.instructionTitle,
-          sectionId: doc.sectionId,
-          sectionTitle: doc.sectionTitle,
-          sectionRef: doc.sectionRef || formatSearchNodeReference(doc.sectionType || '', doc.sectionNumber || ''),
-          sectionType: doc.sectionType || '',
-          isPointLike: isPointLike,
-          answerText: answerText,
-          answerIncludesHeading: isPointLike,
-          snippet: snippet,
-          score: score,
-          headingTermHits: headingTermHits,
-          shouldShowFullByHeading: shouldShowFullByHeading,
-          textIndex: textIdx < 0 ? 9999 : textIdx,
-          depth: parseInt(doc.depth, 10) || 0
-        });
+    function ensurePreparedSearchDocs() {
+      var key = getPreparedSearchDocsKey(instructionsStore.searchDocs);
+      if (
+        instructionsStore.preparedSearchDocsKey === key &&
+        instructionsStore.preparedSearchDocs &&
+        instructionsStore.preparedSearchDocs.length === instructionsStore.searchDocs.length
+      ) {
+        return instructionsStore.preparedSearchDocs;
       }
 
-      results.sort(function(a, b) {
-        if (b.score !== a.score) return b.score - a.score;
-        if (a.depth !== b.depth) return a.depth - b.depth;
-        if (a.textIndex !== b.textIndex) return a.textIndex - b.textIndex;
-        if (a.instructionTitle !== b.instructionTitle) return a.instructionTitle.localeCompare(b.instructionTitle, 'ru');
-        return a.sectionTitle.localeCompare(b.sectionTitle, 'ru');
-      });
+      var prepared = [];
+      for (var i = 0; i < instructionsStore.searchDocs.length; i++) {
+        prepared.push(prepareSearchDoc(instructionsStore.searchDocs[i]));
+      }
+      instructionsStore.preparedSearchDocs = prepared;
+      instructionsStore.preparedSearchDocsKey = key;
+      return prepared;
+    }
 
-      var limited = results.slice(0, 40);
+    function scoreQueryTokenAgainstDoc(doc, tokenProfile) {
+      var token = tokenProfile.token;
+      var stem = tokenProfile.stem || token;
+      var grams = tokenProfile.grams || [];
+      var isNumeric = /^\d+$/.test(token);
+
+      if (doc.titleTokenLookup[token] || doc.titleStemLookup[stem]) {
+        return { matched: true, score: 320, bucket: 'title_exact', strong: true, title: true };
+      }
+      if (doc.pathTokenLookup[token] || doc.pathStemLookup[stem]) {
+        return { matched: true, score: 260, bucket: 'path_exact', strong: true, title: true };
+      }
+      if (doc.bodyTokenLookup[token] || doc.bodyStemLookup[stem]) {
+        return { matched: true, score: 190, bucket: 'body_exact', strong: true, title: false };
+      }
+
+      if (!isNumeric && stem.length >= 2) {
+        if (hasPrefixMatch(doc.titleStems, stem) || hasPrefixMatch(doc.pathStems, stem)) {
+          return { matched: true, score: 180, bucket: 'title_prefix', strong: true, title: true };
+        }
+        if (hasPrefixMatch(doc.bodyStems, stem)) {
+          return { matched: true, score: 130, bucket: 'body_prefix', strong: false, title: false };
+        }
+      }
+
+      if (grams.length) {
+        var titleGramScore = Math.max(
+          computeChargramOverlapScore(grams, doc.titleGramSet),
+          computeChargramOverlapScore(grams, doc.pathGramSet)
+        );
+        var bodyGramScore = computeChargramOverlapScore(grams, doc.bodyGramSet);
+        if (titleGramScore >= 0.62) {
+          return { matched: true, score: Math.round(120 + titleGramScore * 90), bucket: 'title_fuzzy', strong: false, title: true };
+        }
+        if (bodyGramScore >= 0.62) {
+          return { matched: true, score: Math.round(90 + bodyGramScore * 70), bucket: 'body_fuzzy', strong: false, title: false };
+        }
+      }
+
+      if (!isNumeric && stem.length >= 4) {
+        var maxDistance = stem.length >= 7 ? 2 : 1;
+        var bestDist = bestFuzzyStemDistance(stem, doc.fuzzyStemCandidates, maxDistance);
+        if (bestDist <= maxDistance) {
+          return {
+            matched: true,
+            score: bestDist === 1 ? 95 : 70,
+            bucket: 'edit_fuzzy',
+            strong: false,
+            title: false
+          };
+        }
+      }
+
+      return { matched: false, score: 0, bucket: 'none', strong: false, title: false };
+    }
+
+    function getQueryProximityScore(doc, queryProfile) {
+      var stems = queryProfile.stems || [];
+      if (stems.length < 2) return 0;
+      var body = doc.bodyNormalized || '';
+      if (!body) return 0;
+      var positions = [];
+      for (var i = 0; i < stems.length && i < 5; i++) {
+        var idx = body.indexOf(stems[i]);
+        if (idx >= 0) positions.push(idx);
+      }
+      if (positions.length < 2) return 0;
+      positions.sort(function(a, b) { return a - b; });
+      var span = positions[positions.length - 1] - positions[0];
+      if (span <= 100) return 160;
+      if (span <= 220) return 110;
+      if (span <= 360) return 55;
+      return 20;
+    }
+
+    function evaluatePreparedSearchDoc(doc, queryProfile) {
+      var tokenProfiles = queryProfile.tokenProfiles || [];
+      if (!tokenProfiles.length) return null;
+
+      var score = 0;
+      var matchedTokens = 0;
+      var strongMatches = 0;
+      var titleMatches = 0;
+      var fuzzyMatches = 0;
+
+      for (var i = 0; i < tokenProfiles.length; i++) {
+        var tokenResult = scoreQueryTokenAgainstDoc(doc, tokenProfiles[i]);
+        if (!tokenResult.matched) continue;
+        matchedTokens += 1;
+        score += tokenResult.score;
+        if (tokenResult.strong) strongMatches += 1;
+        if (tokenResult.title) titleMatches += 1;
+        if (tokenResult.bucket.indexOf('fuzzy') !== -1) fuzzyMatches += 1;
+      }
+
+      var coverage = matchedTokens / tokenProfiles.length;
+      if (tokenProfiles.length <= 2 && matchedTokens === 0) return null;
+      if (tokenProfiles.length >= 3 && coverage < 0.45 && strongMatches === 0) {
+        var gramCoverage = computeChargramOverlapScore(queryProfile.chargrams || [], doc.allGramSet);
+        if (gramCoverage < 0.4) return null;
+        score += Math.round(gramCoverage * 120);
+      }
+
+      var normalizedQuery = queryProfile.normalized || '';
+      var phraseInTitle = normalizedQuery.length >= 3 && doc.titleNormalized.indexOf(normalizedQuery) !== -1;
+      var phraseInPath = normalizedQuery.length >= 3 && doc.pathNormalized.indexOf(normalizedQuery) !== -1;
+      var phraseInBodyIndex = normalizedQuery.length >= 3 ? doc.bodyNormalized.indexOf(normalizedQuery) : -1;
+
+      if (phraseInTitle) score += 520;
+      if (phraseInPath) score += 360;
+      if (phraseInBodyIndex === 0) score += 330;
+      else if (phraseInBodyIndex > 0) score += Math.max(130, 290 - Math.min(phraseInBodyIndex, 320));
+
+      score += Math.round(coverage * 380);
+      score += strongMatches * 70;
+      score += titleMatches * 95;
+      score -= fuzzyMatches * 6;
+      score += getQueryProximityScore(doc, queryProfile);
+
+      if (queryProfile.wantsSpeedNorm && doc.hasSpeedNorm) score += 230;
+      if (queryProfile.wantsNumericNorm && doc.hasNumericNorm) score += 150;
+      if (queryProfile.wantsDefinition && doc.entityType === 'definition') score += 190;
+      if (queryProfile.wantsProcedure && doc.entityType === 'procedure') score += 140;
+      if (queryProfile.wantsRule && (doc.entityType === 'rule' || doc.entityType === 'procedure')) score += 120;
+      if (doc.isPointLike) score += 55;
+
+      var headingTokenCoverage = tokenProfiles.length
+        ? (titleMatches / tokenProfiles.length)
+        : 0;
+      var confidence = Math.max(0, Math.min(1,
+        coverage * 0.52 +
+        Math.min(0.3, strongMatches * 0.1) +
+        Math.min(0.18, headingTokenCoverage * 0.3) +
+        (phraseInTitle ? 0.2 : 0) +
+        (phraseInBodyIndex >= 0 ? 0.08 : 0)
+      ));
+      var shouldShowFullByHeading = !!(doc.isPointLike && (phraseInTitle || titleMatches >= Math.max(1, Math.ceil(tokenProfiles.length * 0.5))));
+      var snippet = buildSearchSnippet(doc.answerText || doc.bodyText || '', queryProfile.tokens, { minLines: 2, maxLines: 5 });
+
+      return {
+        instructionId: doc.instructionId,
+        instructionTitle: doc.instructionTitle,
+        sectionId: doc.sectionId,
+        sectionTitle: doc.sectionTitle,
+        sectionRef: doc.sectionRef || formatSearchNodeReference(doc.sectionType || '', ''),
+        sectionType: doc.sectionType || '',
+        entityType: doc.entityType || '',
+        isPointLike: doc.isPointLike,
+        path: doc.path || '',
+        answerText: doc.answerText || doc.bodyText || '',
+        answerIncludesHeading: doc.isPointLike,
+        snippet: snippet,
+        score: score,
+        confidence: confidence,
+        shouldShowFullByHeading: shouldShowFullByHeading,
+        matchedTokens: matchedTokens,
+        coverage: coverage,
+        depth: doc.depth || 0,
+        textIndex: phraseInBodyIndex < 0 ? 9999 : phraseInBodyIndex
+      };
+    }
+
+    function markExpandedAnswerResults(results) {
       var expandedCount = 0;
-      for (var r = 0; r < limited.length; r++) {
-        var item = limited[r];
-        var isAnswerCandidate = !!(item.answerText && item.isPointLike && (item.headingTermHits > 0 || item.textIndex <= 180 || item.score >= 1700));
+      for (var i = 0; i < results.length; i++) {
+        var item = results[i];
+        var isStrongAnswer = !!(
+          item.shouldShowFullByHeading ||
+          item.confidence >= 0.67 ||
+          (item.coverage >= 0.72 && item.score >= 900)
+        );
         var isExpandedAnswer = false;
         if (item.shouldShowFullByHeading) {
           isExpandedAnswer = true;
-        } else if (expandedCount < 3 && isAnswerCandidate) {
+        } else if (expandedCount < 3 && isStrongAnswer) {
+          isExpandedAnswer = true;
+        } else if (expandedCount === 0 && i === 0) {
           isExpandedAnswer = true;
         }
         if (isExpandedAnswer) expandedCount += 1;
@@ -2156,8 +2663,31 @@
           ? (item.answerText || item.snippet || item.sectionTitle || '')
           : (item.snippet || item.answerText || item.sectionTitle || '');
       }
+      return results;
+    }
 
-      return limited;
+    function performInstructionsSearch(query) {
+      var queryProfile = buildSearchQueryProfile(query);
+      if (!queryProfile.normalized) return [];
+      var preparedDocs = ensurePreparedSearchDocs();
+      var results = [];
+      for (var i = 0; i < preparedDocs.length; i++) {
+        var ranked = evaluatePreparedSearchDoc(preparedDocs[i], queryProfile);
+        if (!ranked) continue;
+        results.push(ranked);
+      }
+
+      results.sort(function(a, b) {
+        if (b.score !== a.score) return b.score - a.score;
+        if (b.confidence !== a.confidence) return b.confidence - a.confidence;
+        if (b.coverage !== a.coverage) return b.coverage - a.coverage;
+        if (a.depth !== b.depth) return a.depth - b.depth;
+        if (a.textIndex !== b.textIndex) return a.textIndex - b.textIndex;
+        if (a.instructionTitle !== b.instructionTitle) return a.instructionTitle.localeCompare(b.instructionTitle, 'ru');
+        return a.sectionTitle.localeCompare(b.sectionTitle, 'ru');
+      });
+
+      return markExpandedAnswerResults(results.slice(0, 40));
     }
 
     function setInstructionsSearchQuery(query) {
