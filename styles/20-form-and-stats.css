@@ -450,10 +450,21 @@
       margin-top: 12px;
       margin-bottom: 12px;
       padding: 4px;
+      gap: 4px;
+      border-radius: 16px;
     }
 
     .route-segmented .segmented-btn {
       padding: 10px 12px;
+      border-radius: inherit;
+    }
+
+    .route-segmented .segmented-btn + .segmented-btn {
+      border-left: none;
+    }
+
+    .route-segmented .segmented-btn.active {
+      border-radius: inherit;
     }
 
     .glass-select {
