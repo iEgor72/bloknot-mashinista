@@ -804,25 +804,21 @@
     }
 
     function loadProStore() {
-      var isActive = false;
+      // Demo paywall should reset on every app entry.
+      // Keep state only in memory for current runtime.
       try {
-        var raw = JSON.parse(localStorage.getItem(PRO_STORAGE_KEY) || '{}') || {};
-        if (typeof raw === 'boolean') {
-          isActive = raw;
-        } else {
-          isActive = !!raw.isActive;
-        }
+        localStorage.removeItem(PRO_STORAGE_KEY);
       } catch (e) {
-        isActive = false;
+        // ignore storage issues
       }
       return {
-        isActive: isActive
+        isActive: false
       };
     }
 
     function saveProStore() {
       try {
-        localStorage.setItem(PRO_STORAGE_KEY, JSON.stringify({ isActive: !!proStore.isActive }));
+        localStorage.removeItem(PRO_STORAGE_KEY);
       } catch (e) {}
     }
 
