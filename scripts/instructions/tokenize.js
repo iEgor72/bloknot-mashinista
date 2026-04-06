@@ -85,7 +85,38 @@
     if (!normalized) return '';
     var stem = stemRussianToken(normalized);
     if (!stem || stem.length < 3) return normalized;
+
+    // Avoid overly aggressive cuts for short/partial query forms like "манев".
+    // If the stem is too short relative to the source token, keep the source token.
+    if (normalized.length >= 5) {
+      var ratio = stem.length / normalized.length;
+      if (ratio < 0.72) return normalized;
+    }
+
     return stem;
+  }
+
+  function buildIntentRoot(token) {
+    var normalized = core.normalizeText ? core.normalizeText(token) : String(token || '').toLowerCase();
+    if (!normalized) return '';
+    var stem = stemToken(normalized) || normalized;
+    var source = stem.length >= 3 ? stem : normalized;
+    var isRu = /[а-я]/i.test(source);
+    var minLen = isRu ? 3 : 2;
+    if (source.length <= (isRu ? 5 : 4)) return source;
+    var rootLen = isRu ? 5 : 4;
+    if (rootLen < minLen) rootLen = minLen;
+    return source.slice(0, rootLen);
+  }
+
+  function buildIntentRoots(tokens) {
+    var roots = [];
+    for (var i = 0; i < (tokens || []).length; i++) {
+      var root = buildIntentRoot(tokens[i]);
+      if (!root) continue;
+      roots.push(root);
+    }
+    return uniqueArray(roots);
   }
 
   function tokenize(text, options) {
@@ -127,4 +158,6 @@
   core.tokenize = tokenize;
   core.stemToken = stemToken;
   core.buildStems = buildStems;
+  core.buildIntentRoot = buildIntentRoot;
+  core.buildIntentRoots = buildIntentRoots;
 })(window);

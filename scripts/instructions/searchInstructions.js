@@ -37,10 +37,22 @@
     return out;
   }
 
-  function buildSnippet(text, queryTokens) {
+  function truncateText(value, limit) {
+    var source = String(value || '').trim();
+    var max = Math.max(80, parseInt(limit, 10) || 520);
+    if (source.length <= max) return source;
+    return source.slice(0, max - 1).trim() + '…';
+  }
+
+  function buildSnippet(text, queryTokens, options) {
+    var opts = options || {};
+    var minLines = Math.max(2, Math.min(5, parseInt(opts.minLines, 10) || 2));
+    var maxLines = Math.max(minLines, Math.min(10, parseInt(opts.maxLines, 10) || 5));
     var lines = splitLines(text);
     if (!lines.length) return '';
-    if (lines.length <= 5) return lines.join('\n');
+    if (lines.length <= maxLines) {
+      return truncateText(lines.join('\n'), opts.maxChars || 520);
+    }
 
     var start = 0;
     var normalizedTokens = queryTokens || [];
@@ -58,7 +70,9 @@
         break;
       }
     }
-    return lines.slice(start, Math.min(lines.length, start + 5)).join('\n');
+    var end = Math.min(lines.length, start + maxLines);
+    if (end - start < minLines) start = Math.max(0, end - minLines);
+    return truncateText(lines.slice(start, end).join('\n'), opts.maxChars || 520);
   }
 
   function formatSectionRef(rawNumber, nodeType) {
@@ -89,9 +103,18 @@
       var answerText = core.normalizeInstructionBlock
         ? core.normalizeInstructionBlock(entity.body || '')
         : String(entity.body || '').trim();
-      var snippet = buildSnippet(answerText, queryProfile.tokens || []);
+      var snippet = buildSnippet(answerText, queryProfile.tokens || [], {
+        minLines: 2,
+        maxLines: 5,
+        maxChars: 440
+      });
+      var previewText = buildSnippet(answerText, queryProfile.tokens || [], {
+        minLines: 3,
+        maxLines: 6,
+        maxChars: 520
+      });
       var sectionRef = formatSectionRef(entity.number, entity.nodeType);
-      var isAnswer = i === 0;
+      var hasMoreText = answerText.length > (previewText || '').length;
 
       results.push({
         instructionId: entity.instructionId,
@@ -104,11 +127,13 @@
         path: entity.path || '',
         answerText: answerText,
         snippet: snippet || answerText,
+        previewText: previewText || snippet || answerText,
+        hasMoreText: hasMoreText,
         score: ranked[i].score,
         confidence: ranked[i].confidence,
-        isExpandedAnswer: isAnswer,
-        answerIncludesHeading: true,
-        displayText: isAnswer ? answerText : (snippet || answerText)
+        isExpandedAnswer: false,
+        answerIncludesHeading: false,
+        displayText: previewText || snippet || answerText
       });
     }
 

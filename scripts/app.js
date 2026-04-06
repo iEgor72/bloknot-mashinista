@@ -2791,6 +2791,7 @@
 
       var topAnswer = instructionsStore.searchResults[0] || null;
       if (topAnswer) {
+        var topPreview = topAnswer.previewText || topAnswer.snippet || topAnswer.displayText || '';
         var answerSection = topAnswer.sectionTitle
           ? '<div class="search-result-section">' + highlightSearchText(topAnswer.sectionTitle, instructionsStore.searchQuery) + '</div>'
           : '';
@@ -2802,7 +2803,10 @@
               (topAnswer.sectionRef ? '<span class="search-result-point">' + escapeHtml(topAnswer.sectionRef) + '</span>' : '') +
             '</div>' +
             answerSection +
-            '<div class="search-result-snippet is-expanded">' + highlightSearchText(topAnswer.answerText || topAnswer.displayText || topAnswer.snippet || '', instructionsStore.searchQuery) + '</div>' +
+            '<div class="search-answer-preview">' + highlightSearchText(topPreview, instructionsStore.searchQuery) + '</div>' +
+            '<div class="search-answer-actions">' +
+              '<span class="search-answer-action-btn">Открыть пункт</span>' +
+            '</div>' +
           '</button>';
         answerEl.classList.remove('hidden');
       } else {
