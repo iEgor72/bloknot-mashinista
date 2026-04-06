@@ -1327,7 +1327,8 @@
         normalizedType !== 'chapter' &&
         normalizedType !== 'section' &&
         normalizedType !== 'subsection' &&
-        normalizedType !== 'point'
+        normalizedType !== 'point' &&
+        normalizedType !== 'subpoint'
       ) {
         normalizedType = 'section';
       }
@@ -1892,6 +1893,7 @@
       if (type === 'section') return 'раздел';
       if (type === 'subsection') return 'подраздел';
       if (type === 'point') return 'пункт';
+      if (type === 'subpoint') return 'подпункт';
       return '';
     }
 
@@ -2093,6 +2095,38 @@
       target.scrollIntoView({ behavior: 'smooth', block: 'start' });
     }
 
+    function normalizeNodeContentForDisplay(node, options) {
+      var opts = options || {};
+      if (!node) return '';
+      var text = String(node.content || node.plainText || '').trim();
+      if (!text) return '';
+
+      var headingLabel = formatInstructionNodeLabel(node, '').trim();
+      var titleOnly = String(node.title || '').trim();
+      var textNorm = normalizeSearchText(text);
+      var headingNorm = normalizeSearchText(headingLabel);
+      var titleNorm = normalizeSearchText(titleOnly);
+
+      if (opts.suppressDuplicateHeading) {
+        if (titleNorm && textNorm === titleNorm) return '';
+        if (headingNorm && textNorm === headingNorm) return '';
+      }
+      return text;
+    }
+
+    function isNodeContentSameAsHeading(node) {
+      if (!node) return false;
+      var text = String(node.content || node.plainText || '').trim();
+      if (!text) return false;
+      var headingLabel = formatInstructionNodeLabel(node, '').trim();
+      var titleOnly = String(node.title || '').trim();
+      var textNorm = normalizeSearchText(text);
+      if (!textNorm) return false;
+      if (titleOnly && textNorm === normalizeSearchText(titleOnly)) return true;
+      if (headingLabel && textNorm === normalizeSearchText(headingLabel)) return true;
+      return false;
+    }
+
     function openInstructionDetail(instructionId) {
       if (!findInstructionById(instructionId)) return;
       instructionsStore.selectedInstructionId = instructionId;
@@ -2121,7 +2155,7 @@
       for (var i = 0; i < structure.traversal.length; i++) {
         var node = structure.traversal[i].node;
         if (!node || node.type === 'document') continue;
-        if (node.type === 'point') counters.points += 1;
+        if (node.type === 'point' || node.type === 'subpoint') counters.points += 1;
         else counters.structural += 1;
       }
       return counters;
@@ -2207,7 +2241,7 @@
       for (var i = 0; i < structure.traversal.length; i++) {
         var entry = structure.traversal[i];
         var section = entry.node;
-        if (!section || section.id === rootId || section.type === 'point') continue;
+        if (!section || section.id === rootId || section.type === 'point' || section.type === 'subpoint') continue;
         var depthClass = ' instruction-section-depth-' + Math.min(6, Math.max(1, entry.depth));
         var label = formatInstructionNodeLabel(section, 'Раздел');
         var childCount = (structure.childrenByParent[section.id] || []).length;
@@ -2254,7 +2288,20 @@
         return;
       }
 
-      sectionTitleEl.textContent = formatInstructionNodeLabel(section, instruction.title || '');
+      var children = structure.childrenByParent[section.id] || [];
+      var hasChildren = !!children.length;
+      var isHeadingDuplicate = isNodeContentSameAsHeading(section);
+      var headingLabel = formatInstructionNodeLabel(section, instruction.title || '');
+      if (
+        isHeadingDuplicate &&
+        !hasChildren &&
+        (section.type === 'point' || section.type === 'subpoint') &&
+        section.number
+      ) {
+        sectionTitleEl.textContent = String(section.number).trim();
+      } else {
+        sectionTitleEl.textContent = headingLabel;
+      }
       var metaParts = [instruction.title];
       if (section.type) metaParts.push(getInstructionNodeTypeLabel(section.type));
       if (instruction.version) metaParts.push(instruction.version);
@@ -2268,7 +2315,9 @@
       for (var i = 0; i < siblings.length; i++) {
         var jumpSection = siblings[i];
         if (!jumpSection) continue;
-        if (section.type !== 'point' && jumpSection.type === 'point') continue;
+        var currentIsPointLike = section.type === 'point' || section.type === 'subpoint';
+        var siblingIsPointLike = jumpSection.type === 'point' || jumpSection.type === 'subpoint';
+        if (!currentIsPointLike && siblingIsPointLike) continue;
         var activeClass = jumpSection.id === section.id ? ' is-active' : '';
         jumpHtml += '<button class="instruction-jump-btn' + activeClass + '" type="button" data-action="open-section" data-instruction-id="' + escapeHtml(instruction.id) + '" data-section-id="' + escapeHtml(jumpSection.id) + '">' + escapeHtml(formatInstructionNodeLabel(jumpSection, 'Раздел')) + '</button>';
       }
@@ -2276,7 +2325,6 @@
       quickJumpEl.classList.toggle('hidden', !jumpHtml);
 
       if (childNodesEl) {
-        var children = structure.childrenByParent[section.id] || [];
         if (!children.length) {
           childNodesEl.innerHTML = '';
           childNodesEl.classList.add('hidden');
@@ -2294,10 +2342,13 @@
         }
       }
 
-      var hasChildren = childNodesEl && !childNodesEl.classList.contains('hidden');
-      var shouldCompactText = hasChildren && section.type !== 'point';
+      var hasVisibleChildren = childNodesEl && !childNodesEl.classList.contains('hidden');
+      var shouldCompactText = hasChildren && section.type !== 'point' && section.type !== 'subpoint';
+      var contentText = normalizeNodeContentForDisplay(section, {
+        suppressDuplicateHeading: hasVisibleChildren
+      });
       contentEl.innerHTML = formatInstructionContentHtml(
-        section.content || section.plainText || '',
+        contentText,
         shouldCompactText ? { maxParagraphs: 2, forceHint: true } : {}
       );
     }
