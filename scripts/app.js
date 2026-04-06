@@ -359,8 +359,7 @@
     };
     var salaryParamsStore = createSalaryParamsStore();
     var appSettings = salaryParamsStore.values;
-    var INSTALL_PROMPT_STORAGE_KEY = 'hideInstallPrompt';
-    var installPromptDismissed = readInstallPromptDismissed();
+    var installPromptDismissed = false;
     var PRO_STORAGE_KEY = 'shift_tracker_pro_v1';
     var proStore = loadProStore();
     var INSTRUCTIONS_DATA_URL = '/assets/instructions/catalog.v2.json';
@@ -813,21 +812,6 @@
       } catch (e) {}
     }
 
-    function readInstallPromptDismissed() {
-      try {
-        return localStorage.getItem(INSTALL_PROMPT_STORAGE_KEY) === 'true';
-      } catch (e) {
-        return false;
-      }
-    }
-
-    function persistInstallPromptDismissed(value) {
-      installPromptDismissed = !!value;
-      try {
-        localStorage.setItem(INSTALL_PROMPT_STORAGE_KEY, installPromptDismissed ? 'true' : 'false');
-      } catch (e) {}
-    }
-
     function loadProStore() {
       var isActive = false;
       try {
@@ -897,7 +881,7 @@
     }
 
     function dismissInstallPromptCard() {
-      persistInstallPromptDismissed(true);
+      installPromptDismissed = true;
       renderInstallPromptCard();
     }
 
