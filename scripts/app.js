@@ -2022,18 +2022,75 @@
       }, 190);
     }
 
-    function formatInstructionContentHtml(content) {
-      var text = String(content || '').trim();
-      if (!text) return '<p>Текст раздела пока недоступен.</p>';
-      var escaped = escapeHtml(text).replace(/\r\n/g, '\n');
-      var paragraphs = escaped.split(/\n{2,}/);
+    function toDomSafeId(value) {
+      return String(value || '').replace(/[^a-zA-Z0-9_-]/g, '-');
+    }
+
+    function normalizeInstructionParagraphs(content) {
+      var text = String(content || '').replace(/\r\n/g, '\n').replace(/\r/g, '\n').trim();
+      if (!text) return [];
+
+      var chunks = text.split(/\n{2,}/);
+      var paragraphs = [];
+      for (var i = 0; i < chunks.length; i++) {
+        var paragraph = String(chunks[i] || '').replace(/\s+\n/g, '\n').replace(/\n\s+/g, '\n').trim();
+        if (!paragraph) continue;
+        if (/^[-=_—–]{6,}$/.test(paragraph)) continue;
+        paragraphs.push(paragraph);
+      }
+      return paragraphs;
+    }
+
+    function formatInstructionContentHtml(content, options) {
+      var opts = options || {};
+      var paragraphs = normalizeInstructionParagraphs(content);
+      if (!paragraphs.length) {
+        return '<p class="instruction-paragraph instruction-paragraph--muted">Текст раздела пока недоступен.</p>';
+      }
+
+      var isTruncated = false;
+      if (opts.maxParagraphs && paragraphs.length > opts.maxParagraphs) {
+        paragraphs = paragraphs.slice(0, opts.maxParagraphs);
+        isTruncated = true;
+      }
+
       var html = [];
       for (var i = 0; i < paragraphs.length; i++) {
-        var paragraph = paragraphs[i].trim();
-        if (!paragraph) continue;
-        html.push('<p>' + paragraph.replace(/\n/g, '<br />') + '</p>');
+        var paragraph = paragraphs[i];
+        var classes = ['instruction-paragraph'];
+        var pointMatch = paragraph.match(/^(\d+(?:\.\d+)*)[.)]?\s+(.*)$/);
+
+        if (pointMatch) {
+          classes.push('instruction-paragraph--point');
+          var numberLabel = escapeHtml(pointMatch[1] + '.');
+          var pointBody = escapeHtml(pointMatch[2]).replace(/\n/g, '<br />');
+          html.push(
+            '<p class="' + classes.join(' ') + '">' +
+              '<span class="instruction-point-number">' + numberLabel + '</span> ' +
+              '<span class="instruction-point-text">' + pointBody + '</span>' +
+            '</p>'
+          );
+          continue;
+        }
+
+        if (/^(?:Приложение\s+N\s*\d+|[IVXLCDM]+\.)/i.test(paragraph)) {
+          classes.push('instruction-paragraph--heading');
+        }
+        html.push('<p class="' + classes.join(' ') + '">' + escapeHtml(paragraph).replace(/\n/g, '<br />') + '</p>');
       }
+
+      if (isTruncated || opts.forceHint) {
+        html.push('<p class="instruction-paragraph instruction-paragraph--hint">Откройте нужный пункт ниже, чтобы увидеть полный текст без перегруза.</p>');
+      }
+
       return html.join('');
+    }
+
+    function scrollToInstructionNodeAnchor(sectionId) {
+      var targetId = 'instruction-anchor-' + toDomSafeId(sectionId);
+      var target = document.getElementById(targetId);
+      if (!target) return;
+      target.scrollIntoView({ behavior: 'smooth', block: 'start' });
     }
 
     function openInstructionDetail(instructionId) {
@@ -2132,7 +2189,8 @@
       var titleEl = document.getElementById('instructionDetailTitle');
       var descriptionEl = document.getElementById('instructionDetailDescription');
       var sectionsEl = document.getElementById('instructionSectionsList');
-      if (!titleEl || !descriptionEl || !sectionsEl) return;
+      var quickNavEl = document.getElementById('instructionDetailQuickNav');
+      if (!titleEl || !descriptionEl || !sectionsEl || !quickNavEl) return;
 
       var instruction = findInstructionById(instructionsStore.selectedInstructionId);
       if (!instruction) {
@@ -2156,13 +2214,24 @@
         var metaParts = [];
         if (section.type) metaParts.push(getInstructionNodeTypeLabel(section.type));
         if (childCount) metaParts.push(childCount + ' подпунктов');
-        html += '<button class="instruction-section-item' + depthClass + '" type="button" data-action="open-section" data-instruction-id="' + escapeHtml(instruction.id) + '" data-section-id="' + escapeHtml(section.id) + '">' +
+        html += '<button class="instruction-section-item' + depthClass + '" id="instruction-anchor-' + escapeHtml(toDomSafeId(section.id)) + '" data-node-anchor="' + escapeHtml(section.id) + '" type="button" data-action="open-section" data-instruction-id="' + escapeHtml(instruction.id) + '" data-section-id="' + escapeHtml(section.id) + '">' +
           '<span class="instruction-section-item-title">' + escapeHtml(label) + '</span>' +
           '<span class="instruction-section-item-meta">' + escapeHtml(metaParts.join(' · ')) + '</span>' +
         '</button>';
       }
 
       sectionsEl.innerHTML = html || '<div class="instructions-state">Разделы пока не загружены.</div>';
+
+      var topNodes = structure.childrenByParent[rootId] || [];
+      var quickNavHtml = '';
+      for (var q = 0; q < topNodes.length; q++) {
+        var node = topNodes[q];
+        if (!node || node.type === 'point') continue;
+        var chipLabel = node.number || node.title || ('Раздел ' + (q + 1));
+        quickNavHtml += '<button class="instruction-detail-jump-btn" type="button" data-action="scroll-node" data-section-id="' + escapeHtml(node.id) + '">' + escapeHtml(chipLabel) + '</button>';
+      }
+      quickNavEl.innerHTML = quickNavHtml;
+      quickNavEl.classList.toggle('hidden', !quickNavHtml);
     }
 
     function renderInstructionSectionScreen() {
@@ -2190,7 +2259,6 @@
       if (section.type) metaParts.push(getInstructionNodeTypeLabel(section.type));
       if (instruction.version) metaParts.push(instruction.version);
       sectionMetaEl.textContent = metaParts.join(' · ');
-      contentEl.innerHTML = formatInstructionContentHtml(section.content || section.plainText || '');
 
       var parentId = section.parentId && structure.nodeById[section.parentId]
         ? section.parentId
@@ -2205,6 +2273,7 @@
         jumpHtml += '<button class="instruction-jump-btn' + activeClass + '" type="button" data-action="open-section" data-instruction-id="' + escapeHtml(instruction.id) + '" data-section-id="' + escapeHtml(jumpSection.id) + '">' + escapeHtml(formatInstructionNodeLabel(jumpSection, 'Раздел')) + '</button>';
       }
       quickJumpEl.innerHTML = jumpHtml;
+      quickJumpEl.classList.toggle('hidden', !jumpHtml);
 
       if (childNodesEl) {
         var children = structure.childrenByParent[section.id] || [];
@@ -2224,6 +2293,13 @@
           childNodesEl.classList.remove('hidden');
         }
       }
+
+      var hasChildren = childNodesEl && !childNodesEl.classList.contains('hidden');
+      var shouldCompactText = hasChildren && section.type !== 'point';
+      contentEl.innerHTML = formatInstructionContentHtml(
+        section.content || section.plainText || '',
+        shouldCompactText ? { maxParagraphs: 2, forceHint: true } : {}
+      );
     }
 
     function renderInstructionsScreen() {
@@ -4968,6 +5044,10 @@
             trigger.getAttribute('data-instruction-id'),
             trigger.getAttribute('data-section-id')
           );
+          return;
+        }
+        if (action === 'scroll-node') {
+          scrollToInstructionNodeAnchor(trigger.getAttribute('data-section-id'));
         }
       });
     }

@@ -1295,6 +1295,37 @@
       color: rgba(244, 247, 255, 0.66);
     }
 
+    .instructions-detail-jump-list {
+      position: sticky;
+      top: 6px;
+      z-index: 4;
+      display: flex;
+      flex-wrap: nowrap;
+      gap: 8px;
+      overflow-x: auto;
+      padding: 8px 4px 10px;
+      margin: 2px -2px 0;
+      border-radius: 14px;
+      background: linear-gradient(180deg, rgba(10, 13, 27, 0.92), rgba(10, 13, 27, 0.56));
+      backdrop-filter: blur(8px);
+      -webkit-backdrop-filter: blur(8px);
+      scrollbar-width: thin;
+    }
+
+    .instruction-detail-jump-btn {
+      border: 1px solid rgba(255,255,255,0.1);
+      background: rgba(255,255,255,0.05);
+      border-radius: 999px;
+      padding: 6px 10px;
+      font-size: 11px;
+      font-weight: 700;
+      color: rgba(224, 241, 255, 0.9);
+      white-space: nowrap;
+      cursor: pointer;
+      -webkit-tap-highlight-color: transparent;
+      flex: 0 0 auto;
+    }
+
     .instruction-section-item {
       padding: 13px 14px;
       display: grid;
@@ -1302,6 +1333,7 @@
       font-size: 14px;
       font-weight: 700;
       line-height: 1.35;
+      scroll-margin-top: 70px;
     }
 
     .instruction-section-item-title {
@@ -1336,11 +1368,21 @@
     }
 
     .instructions-jump-list {
+      position: sticky;
+      top: 6px;
+      z-index: 4;
       display: flex;
-      flex-wrap: wrap;
+      flex-wrap: nowrap;
       gap: 8px;
       margin-top: 2px;
-      margin-bottom: 4px;
+      margin-bottom: 6px;
+      overflow-x: auto;
+      padding: 8px 4px;
+      border-radius: 14px;
+      background: linear-gradient(180deg, rgba(10, 13, 27, 0.9), rgba(10, 13, 27, 0.5));
+      backdrop-filter: blur(8px);
+      -webkit-backdrop-filter: blur(8px);
+      scrollbar-width: thin;
     }
 
     .instruction-jump-btn {
@@ -1349,10 +1391,12 @@
       border-radius: 999px;
       padding: 7px 10px;
       font-size: 11px;
+      font-weight: 700;
       color: rgba(244, 247, 255, 0.76);
       cursor: pointer;
       white-space: nowrap;
       -webkit-tap-highlight-color: transparent;
+      flex: 0 0 auto;
     }
 
     .instruction-jump-btn:active {
@@ -1373,11 +1417,55 @@
         linear-gradient(180deg, rgba(255,255,255,0.06), rgba(255,255,255,0.02)),
         rgba(18, 21, 43, 0.72);
       box-shadow: 0 14px 28px rgba(6, 9, 18, 0.2), inset 0 1px 0 rgba(255,255,255,0.06);
-      font-size: 15px;
-      line-height: 1.62;
+      font-size: 14.5px;
+      line-height: 1.56;
       color: rgba(244, 247, 255, 0.9);
       white-space: pre-wrap;
       overflow-wrap: break-word;
+    }
+
+    .instruction-paragraph {
+      margin: 0 0 7px;
+      font-size: 14.5px;
+      line-height: 1.56;
+      color: rgba(244, 247, 255, 0.9);
+    }
+
+    .instruction-paragraph:last-child {
+      margin-bottom: 0;
+    }
+
+    .instruction-paragraph--point {
+      margin-bottom: 10px;
+    }
+
+    .instruction-point-number {
+      font-weight: 700;
+      color: rgba(248, 252, 255, 0.98);
+    }
+
+    .instruction-point-text {
+      color: rgba(244, 247, 255, 0.9);
+    }
+
+    .instruction-paragraph--heading {
+      margin-top: 6px;
+      margin-bottom: 8px;
+      font-weight: 700;
+      font-size: 15.5px;
+      line-height: 1.45;
+      color: rgba(248, 252, 255, 0.98);
+    }
+
+    .instruction-paragraph--hint {
+      margin-top: 8px;
+      font-size: 12.5px;
+      color: rgba(202, 233, 255, 0.74);
+    }
+
+    .instruction-paragraph--muted {
+      font-size: 13px;
+      color: rgba(244, 247, 255, 0.62);
     }
 
     .instructions-child-list {
