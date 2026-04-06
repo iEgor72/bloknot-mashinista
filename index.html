@@ -410,6 +410,7 @@
               </div>
 
               <div class="instructions-list" id="instructionsCards"></div>
+              <div class="instructions-answer hidden" id="instructionsAnswerCard"></div>
               <div class="instructions-results hidden" id="instructionsSearchResults"></div>
             </div>
 
@@ -630,6 +631,16 @@
 
   <!-- Runtime Scripts -->
   <script src="/scripts/nav-debug.js"></script>
+  <script src="/scripts/instructions/normalizeText.js"></script>
+  <script src="/scripts/instructions/tokenize.js"></script>
+  <script src="/scripts/instructions/buildChargrams.js"></script>
+  <script src="/scripts/instructions/fuzzy.js"></script>
+  <script src="/scripts/instructions/parseHierarchy.js"></script>
+  <script src="/scripts/instructions/parseInstruction.js"></script>
+  <script src="/scripts/instructions/buildSearchEntities.js"></script>
+  <script src="/scripts/instructions/rankResults.js"></script>
+  <script src="/scripts/instructions/searchInstructions.js"></script>
+  <script src="/scripts/instructions/instructionsDb.js"></script>
   <script src="/scripts/app.js"></script>
   <script src="/scripts/app-init.js"></script>
   <script src="/scripts/sw-register.js"></script>

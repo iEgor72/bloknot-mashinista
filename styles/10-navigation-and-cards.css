@@ -1166,6 +1166,7 @@
     }
 
     .instructions-list,
+    .instructions-answer,
     .instructions-results,
     .instructions-sections {
       display: grid;
@@ -1233,6 +1234,32 @@
       padding: 13px 14px;
       display: grid;
       gap: 7px;
+    }
+
+    .search-answer-card {
+      width: 100%;
+      border: 1px solid rgba(194, 229, 255, 0.48);
+      border-radius: 20px;
+      background:
+        radial-gradient(circle at 12% 0%, rgba(98, 172, 255, 0.2), transparent 34%),
+        linear-gradient(180deg, rgba(255,255,255,0.1), rgba(255,255,255,0.04)),
+        rgba(18, 21, 43, 0.8);
+      box-shadow: 0 18px 34px rgba(80, 146, 255, 0.2), inset 0 1px 0 rgba(255,255,255,0.1);
+      padding: 14px 15px;
+      display: grid;
+      gap: 8px;
+      color: var(--text);
+      text-align: left;
+      cursor: pointer;
+      -webkit-tap-highlight-color: transparent;
+    }
+
+    .search-answer-kicker {
+      font-size: 11px;
+      font-weight: 800;
+      letter-spacing: 0.07em;
+      text-transform: uppercase;
+      color: rgba(194, 229, 255, 0.95);
     }
 
     .search-result-card.is-answer {

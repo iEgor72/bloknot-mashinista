@@ -1,4 +1,4 @@
-const CACHE_VERSION = 'v7';
+const CACHE_VERSION = 'v8';
 const CACHE_NAME = `shift-tracker-shell-${CACHE_VERSION}`;
 const NAVIGATION_FALLBACK_URL = '/index.html';
 const NETWORK_TIMEOUT_MS = 1200;
@@ -12,6 +12,16 @@ const SHELL_URLS = [
   '/styles/30-shifts-and-overlays.css',
   '/scripts/safe-area.js',
   '/scripts/nav-debug.js',
+  '/scripts/instructions/normalizeText.js',
+  '/scripts/instructions/tokenize.js',
+  '/scripts/instructions/buildChargrams.js',
+  '/scripts/instructions/fuzzy.js',
+  '/scripts/instructions/parseHierarchy.js',
+  '/scripts/instructions/parseInstruction.js',
+  '/scripts/instructions/buildSearchEntities.js',
+  '/scripts/instructions/rankResults.js',
+  '/scripts/instructions/searchInstructions.js',
+  '/scripts/instructions/instructionsDb.js',
   '/scripts/app.js',
   '/scripts/app-init.js',
   '/scripts/sw-register.js',

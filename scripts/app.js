@@ -363,16 +363,7 @@
     var PRO_STORAGE_KEY = 'shift_tracker_pro_v1';
     var proStore = loadProStore();
     var INSTRUCTIONS_DATA_URL = '/assets/instructions/catalog.v2.json';
-    var INSTRUCTIONS_CACHE_FALLBACK_KEY = 'shift_tracker_instructions_cache_v2';
-    var INSTRUCTIONS_INDEX_FALLBACK_KEY = 'shift_tracker_instructions_index_v2';
-    var INSTRUCTIONS_META_FALLBACK_KEY = 'shift_tracker_instructions_meta_v2';
-    var INSTRUCTIONS_DB_NAME = 'shift_tracker_instructions_v2';
-    var INSTRUCTIONS_DB_VERSION = 2;
-    var INSTRUCTIONS_DB_STORES = {
-      meta: 'instructions_meta',
-      content: 'instructions_content',
-      index: 'instructions_search_index'
-    };
+    var INSTRUCTIONS_CORE = window.InstructionsCore || {};
     var instructionsStore = createInstructionsStore();
     var SHIFTS_CACHE_STORAGE_KEY = 'shift_tracker_shifts_cache_v1';
     var SHIFTS_PENDING_STORAGE_KEY = 'shift_tracker_shifts_pending_v1';
@@ -843,6 +834,7 @@
         preparedSearchDocs: [],
         preparedSearchDocsKey: '',
         searchResults: [],
+        searchAnswer: null,
         searchQuery: '',
         errorMessage: '',
         lastUpdated: '',
@@ -1520,7 +1512,7 @@
       if (/(порядок|действи|выполня|производ|следует|необходимо|разрешается|запрещается)/.test(source)) {
         return 'procedure';
       }
-      if (sectionType === 'point' || sectionType === 'subpoint') return 'rule';
+      if (sectionType === 'point' || sectionType === 'subpoint' || sectionType === 'item') return 'rule';
       if (sectionType === 'chapter' || sectionType === 'section' || sectionType === 'subsection') return sectionType;
       return 'section';
     }
@@ -1616,7 +1608,8 @@
         normalizedType !== 'section' &&
         normalizedType !== 'subsection' &&
         normalizedType !== 'point' &&
-        normalizedType !== 'subpoint'
+        normalizedType !== 'subpoint' &&
+        normalizedType !== 'item'
       ) {
         normalizedType = 'section';
       }
@@ -1701,104 +1694,14 @@
     }
 
     function normalizeInstructionsPayload(payload) {
-      var listSource = [];
-      if (payload && Array.isArray(payload.instructions)) {
-        listSource = payload.instructions;
-      } else if (Array.isArray(payload)) {
-        listSource = payload;
-      }
-
-      var normalizedInstructions = [];
-      for (var i = 0; i < listSource.length; i++) {
-        var rawInstruction = listSource[i] || {};
-        var instructionId = String(rawInstruction.id || ('instruction-' + (i + 1)));
-        var rawNodes = flattenRawInstructionNodes(rawInstruction.nodes, instructionId);
-
-        if (!rawNodes.length && Array.isArray(rawInstruction.sections)) {
-          for (var s = 0; s < rawInstruction.sections.length; s++) {
-            var legacySection = rawInstruction.sections[s] || {};
-            var legacyLevel = Math.max(1, parseInt(legacySection.level, 10) || 1);
-            rawNodes.push({
-              id: legacySection.id || (instructionId + '-section-' + (s + 1)),
-              instructionId: instructionId,
-              parentId: legacySection.parentId !== undefined ? legacySection.parentId : null,
-              type: legacyLevel === 1 ? 'chapter' : (legacyLevel === 2 ? 'section' : 'subsection'),
-              order: s + 1,
-              number: legacySection.number || '',
-              title: legacySection.title || ('Раздел ' + (s + 1)),
-              content: legacySection.content || '',
-              plainText: legacySection.plainText || ''
-            });
-          }
-        }
-
-        var nodes = [];
-        for (var n = 0; n < rawNodes.length; n++) {
-          nodes.push(normalizeInstructionNode(rawNodes[n], instructionId, n));
-        }
-
-        var documentNodeId = '';
-        for (var dn = 0; dn < nodes.length; dn++) {
-          if (nodes[dn].type === 'document' && !nodes[dn].parentId) {
-            documentNodeId = nodes[dn].id;
-            break;
-          }
-        }
-        if (!documentNodeId) {
-          documentNodeId = instructionId + '-document';
-          nodes.unshift({
-            id: documentNodeId,
-            instructionId: instructionId,
-            parentId: null,
-            type: 'document',
-            order: 0,
-            number: '',
-            title: String(rawInstruction.title || instructionId.toUpperCase()),
-            content: '',
-            plainText: '',
-            source: {
-              url: rawInstruction.sourceUrl ? String(rawInstruction.sourceUrl) : '',
-              path: '',
-              fetchedAt: ''
-            }
-          });
-        }
-
-        var nodeIdMap = {};
-        for (var m = 0; m < nodes.length; m++) {
-          var node = nodes[m];
-          if (nodeIdMap[node.id]) {
-            node.id = node.id + '-' + (m + 1);
-          }
-          nodeIdMap[node.id] = true;
-        }
-
-        for (var p = 0; p < nodes.length; p++) {
-          nodes[p].instructionId = instructionId;
-          if (!nodes[p].parentId || !nodeIdMap[nodes[p].parentId] || nodes[p].parentId === nodes[p].id) {
-            if (nodes[p].id !== documentNodeId) {
-              nodes[p].parentId = documentNodeId;
-            } else {
-              nodes[p].parentId = null;
-            }
-          }
-        }
-
-        normalizedInstructions.push({
-          id: instructionId,
-          title: String(rawInstruction.title || instructionId.toUpperCase()),
-          shortDescription: String(rawInstruction.shortDescription || ''),
-          version: rawInstruction.version ? String(rawInstruction.version) : '',
-          sourceUrl: rawInstruction.sourceUrl ? String(rawInstruction.sourceUrl) : '',
-          updatedAt: rawInstruction.updatedAt ? String(rawInstruction.updatedAt) : '',
-          nodes: nodes
-        });
+      if (INSTRUCTIONS_CORE && typeof INSTRUCTIONS_CORE.parseCatalogPayload === 'function') {
+        return INSTRUCTIONS_CORE.parseCatalogPayload(payload || {});
       }
 
       return {
         updatedAt: payload && payload.updatedAt ? String(payload.updatedAt) : new Date().toISOString(),
         version: payload && payload.version ? String(payload.version) : '1',
-        instructions: normalizedInstructions
+        instructions: []
       };
     }
 
@@ -1919,7 +1822,7 @@
         var children = (structure && structure.childrenByParent && structure.childrenByParent[current.id]) || [];
         for (var i = 0; i < children.length; i++) {
           var child = children[i];
-          if (!child || (child.type !== 'point' && child.type !== 'subpoint')) continue;
+          if (!child || (child.type !== 'point' && child.type !== 'subpoint' && child.type !== 'item')) continue;
           appendPointBlock(child, false);
         }
       }
@@ -1930,7 +1833,7 @@
 
     function buildNodeAnswerText(node, structure) {
       if (!node) return '';
-      var isPointLike = node.type === 'point' || node.type === 'subpoint';
+      var isPointLike = node.type === 'point' || node.type === 'subpoint' || node.type === 'item';
       if (isPointLike) {
         return buildPointAnswerText(node, structure);
       }
@@ -1947,7 +1850,7 @@
       if (!number) return '';
       var clean = number.replace(/\s+/g, ' ').replace(/\.$/, '');
       if (!clean) return '';
-      if (sectionType === 'point' || sectionType === 'subpoint') {
+      if (sectionType === 'point' || sectionType === 'subpoint' || sectionType === 'item') {
         return 'п. ' + clean;
       }
       return clean;
@@ -1970,228 +1873,49 @@
     }
 
     function buildInstructionsSearchIndex(instructions) {
-      var docs = [];
-      for (var i = 0; i < (instructions || []).length; i++) {
-        var instruction = instructions[i];
-        var structure = getInstructionStructure(instruction);
-        var rootId = structure.root ? structure.root.id : '';
-        for (var t = 0; t < structure.traversal.length; t++) {
-          var entry = structure.traversal[t];
-          var node = entry.node;
-          if (!node || node.id === rootId) continue;
-          var nodeText = getNodeSearchText(node);
-          var sectionLabel = formatInstructionNodeLabel(node, node.title || '').trim();
-          var sectionTitle = sectionLabel || node.title || '';
-          var answerText = buildNodeAnswerText(node, structure);
-          var bodyText = normalizeInstructionTextBlock(answerText || nodeText);
-          var path = buildInstructionNodePath(instruction, node, structure);
-          var entityType = inferSearchEntityType(node.type, sectionTitle, bodyText);
-          var hasNumericNorm = /\b\d{1,3}\s*(?:км\/ч|кмч|км ч|процент|%|мм|м|ч)\b/.test(normalizeSearchText(bodyText));
-          var hasSpeedNorm = /\b\d{1,3}\s*(?:км\/ч|кмч|км ч)\b/.test(normalizeSearchText(bodyText));
-          var joinedText = [
-            instruction.title || '',
-            node.number || '',
-            node.title || '',
-            sectionLabel,
-            path,
-            nodeText,
-            answerText,
-            bodyText
-          ].join(' ');
-
-          docs.push({
-            searchVersion: 3,
-            id: instruction.id + '::' + node.id,
-            instructionId: instruction.id,
-            instructionTitle: instruction.title || '',
-            instructionTitleNormalized: normalizeSearchText(instruction.title || ''),
-            sectionId: node.id,
-            sectionTitle: sectionTitle,
-            sectionTitleNormalized: normalizeSearchText(sectionTitle),
-            sectionHeadingNormalized: normalizeSearchText(sectionLabel),
-            sectionNumber: node.number || '',
-            sectionNumberNormalized: normalizeSearchText(node.number || ''),
-            sectionType: node.type || '',
-            sectionRef: formatSearchNodeReference(node.type || '', node.number || ''),
-            isPointLike: node.type === 'point' || node.type === 'subpoint',
-            path: path,
-            pathNormalized: normalizeSearchText(path),
-            entityType: entityType,
-            hasNumericNorm: hasNumericNorm,
-            hasSpeedNorm: hasSpeedNorm,
-            depth: entry.depth || 0,
-            text: nodeText,
-            answerText: answerText,
-            body: bodyText,
-            bodyNormalized: normalizeSearchText(bodyText),
-            answerTextNormalized: normalizeSearchText(answerText),
-            sectionTextNormalized: normalizeSearchText(nodeText),
-            normalized: normalizeSearchText(joinedText)
-          });
-        }
+      if (INSTRUCTIONS_CORE && typeof INSTRUCTIONS_CORE.buildSearchEntities === 'function') {
+        return INSTRUCTIONS_CORE.buildSearchEntities(instructions || []);
       }
-      return docs;
-    }
-
-    function readInstructionsCacheFallback() {
-      var instructions = [];
-      var searchDocs = [];
-      var meta = {};
-      try {
-        instructions = JSON.parse(localStorage.getItem(INSTRUCTIONS_CACHE_FALLBACK_KEY) || '[]') || [];
-      } catch (e) {
-        instructions = [];
-      }
-      try {
-        searchDocs = JSON.parse(localStorage.getItem(INSTRUCTIONS_INDEX_FALLBACK_KEY) || '[]') || [];
-      } catch (e2) {
-        searchDocs = [];
-      }
-      try {
-        meta = JSON.parse(localStorage.getItem(INSTRUCTIONS_META_FALLBACK_KEY) || '{}') || {};
-      } catch (e3) {
-        meta = {};
-      }
-      return {
-        meta: meta,
-        instructions: instructions,
-        searchDocs: searchDocs
-      };
-    }
-
-    function saveInstructionsCacheFallback(payload) {
-      try {
-        localStorage.setItem(INSTRUCTIONS_CACHE_FALLBACK_KEY, JSON.stringify(payload.instructions || []));
-        localStorage.setItem(INSTRUCTIONS_INDEX_FALLBACK_KEY, JSON.stringify(payload.searchDocs || []));
-        localStorage.setItem(INSTRUCTIONS_META_FALLBACK_KEY, JSON.stringify(payload.meta || {}));
-      } catch (e) {}
-    }
-
-    function openInstructionsDb() {
-      if (!window.indexedDB) return Promise.resolve(null);
-      return new Promise(function(resolve) {
-        var request = window.indexedDB.open(INSTRUCTIONS_DB_NAME, INSTRUCTIONS_DB_VERSION);
-        request.onupgradeneeded = function(event) {
-          var db = event.target.result;
-          if (!db.objectStoreNames.contains(INSTRUCTIONS_DB_STORES.meta)) {
-            db.createObjectStore(INSTRUCTIONS_DB_STORES.meta, { keyPath: 'key' });
-          }
-          if (!db.objectStoreNames.contains(INSTRUCTIONS_DB_STORES.content)) {
-            db.createObjectStore(INSTRUCTIONS_DB_STORES.content, { keyPath: 'id' });
-          }
-          if (!db.objectStoreNames.contains(INSTRUCTIONS_DB_STORES.index)) {
-            db.createObjectStore(INSTRUCTIONS_DB_STORES.index, { keyPath: 'id' });
-          }
-        };
-        request.onsuccess = function() {
-          resolve(request.result);
-        };
-        request.onerror = function() {
-          resolve(null);
-        };
-        request.onblocked = function() {
-          resolve(null);
-        };
-      });
+      return [];
     }
 
     function readInstructionsCache() {
-      return openInstructionsDb().then(function(db) {
-        if (!db) {
-          return readInstructionsCacheFallback();
-        }
-
-        return new Promise(function(resolve) {
-          var finished = false;
-          function done(payload) {
-            if (finished) return;
-            finished = true;
-            try { db.close(); } catch (closeErr) {}
-            resolve(payload);
-          }
-
-          try {
-            var tx = db.transaction([INSTRUCTIONS_DB_STORES.meta, INSTRUCTIONS_DB_STORES.content, INSTRUCTIONS_DB_STORES.index], 'readonly');
-            var metaReq = tx.objectStore(INSTRUCTIONS_DB_STORES.meta).get('dataset');
-            var contentReq = tx.objectStore(INSTRUCTIONS_DB_STORES.content).getAll();
-            var indexReq = tx.objectStore(INSTRUCTIONS_DB_STORES.index).getAll();
-            tx.oncomplete = function() {
-              done({
-                meta: metaReq.result || {},
-                instructions: Array.isArray(contentReq.result) ? contentReq.result : [],
-                searchDocs: Array.isArray(indexReq.result) ? indexReq.result : []
-              });
-            };
-            tx.onerror = function() {
-              done(readInstructionsCacheFallback());
-            };
-            tx.onabort = function() {
-              done(readInstructionsCacheFallback());
-            };
-          } catch (err) {
-            done(readInstructionsCacheFallback());
-          }
+      var dbApi = INSTRUCTIONS_CORE && INSTRUCTIONS_CORE.instructionsDb;
+      if (!dbApi || typeof dbApi.readDataset !== 'function') {
+        return Promise.resolve({
+          meta: {},
+          instructions: [],
+          searchDocs: []
         });
+      }
+      return dbApi.readDataset().then(function(payload) {
+        return {
+          meta: payload.meta || {},
+          instructions: payload.instructions || [],
+          searchDocs: payload.searchEntities || []
+        };
+      }).catch(function() {
+        return {
+          meta: {},
+          instructions: [],
+          searchDocs: []
+        };
       });
     }
 
     function saveInstructionsCache(payload) {
-      var meta = payload.meta || {};
-      var instructions = payload.instructions || [];
-      var searchDocs = payload.searchDocs || [];
-
-      saveInstructionsCacheFallback({
-        meta: meta,
-        instructions: instructions,
-        searchDocs: searchDocs
-      });
-
-      return openInstructionsDb().then(function(db) {
-        if (!db) return false;
-        return new Promise(function(resolve) {
-          var finished = false;
-          function done(result) {
-            if (finished) return;
-            finished = true;
-            try { db.close(); } catch (closeErr) {}
-            resolve(result);
-          }
-
-          try {
-            var tx = db.transaction([INSTRUCTIONS_DB_STORES.meta, INSTRUCTIONS_DB_STORES.content, INSTRUCTIONS_DB_STORES.index], 'readwrite');
-            var metaStore = tx.objectStore(INSTRUCTIONS_DB_STORES.meta);
-            var contentStore = tx.objectStore(INSTRUCTIONS_DB_STORES.content);
-            var indexStore = tx.objectStore(INSTRUCTIONS_DB_STORES.index);
-
-            metaStore.put({
-              key: 'dataset',
-              updatedAt: meta.updatedAt || '',
-              version: meta.version || '1'
-            });
-
-            contentStore.clear();
-            for (var i = 0; i < instructions.length; i++) {
-              contentStore.put(instructions[i]);
-            }
-
-            indexStore.clear();
-            for (var s = 0; s < searchDocs.length; s++) {
-              indexStore.put(searchDocs[s]);
-            }
-
-            tx.oncomplete = function() {
-              done(true);
-            };
-            tx.onerror = function() {
-              done(false);
-            };
-            tx.onabort = function() {
-              done(false);
-            };
-          } catch (err) {
-            done(false);
-          }
-        });
+      var dbApi = INSTRUCTIONS_CORE && INSTRUCTIONS_CORE.instructionsDb;
+      if (!dbApi || typeof dbApi.writeDataset !== 'function') {
+        return Promise.resolve(false);
+      }
+      return dbApi.writeDataset({
+        meta: payload.meta || {},
+        instructions: payload.instructions || [],
+        searchEntities: payload.searchDocs || []
+      }).then(function(result) {
+        return !!result;
+      }).catch(function() {
+        return false;
       });
     }
 
@@ -2199,22 +1923,23 @@
       var instructions = payload.instructions || [];
       var searchDocs = payload.searchDocs || [];
       var meta = payload.meta || {};
-      var hasHybridSearchIndex = !!(
-        searchDocs.length &&
-        searchDocs[0] &&
-        parseInt(searchDocs[0].searchVersion, 10) >= 3 &&
-        searchDocs[0].answerText !== undefined &&
-        searchDocs[0].body !== undefined
-      );
       instructionsStore.instructions = instructions;
-      instructionsStore.searchDocs = hasHybridSearchIndex ? searchDocs : buildInstructionsSearchIndex(instructions);
+      instructionsStore.searchDocs = searchDocs.length ? searchDocs : buildInstructionsSearchIndex(instructions);
       instructionsStore.preparedSearchDocs = [];
       instructionsStore.preparedSearchDocsKey = '';
+      instructionsStore.searchAnswer = null;
+      if (INSTRUCTIONS_CORE && typeof INSTRUCTIONS_CORE.resetPreparedSearchEntitiesCache === 'function') {
+        INSTRUCTIONS_CORE.resetPreparedSearchEntitiesCache();
+      }
       instructionsStore.hasCache = instructions.length > 0;
       instructionsStore.dataSource = sourceLabel || 'cache';
       instructionsStore.lastUpdated = meta.updatedAt || '';
       if (normalizeSearchText(instructionsStore.searchQuery)) {
         instructionsStore.searchResults = performInstructionsSearch(instructionsStore.searchQuery);
+        instructionsStore.searchAnswer = instructionsStore.searchResults.length ? instructionsStore.searchResults[0] : null;
+      } else {
+        instructionsStore.searchResults = [];
+        instructionsStore.searchAnswer = null;
       }
       if (instructionsStore.status !== 'error') {
         instructionsStore.status = instructions.length ? 'ready' : instructionsStore.status;
@@ -2343,9 +2068,10 @@
       if (type === 'document') return 'документ';
       if (type === 'chapter') return 'глава';
       if (type === 'section') return 'раздел';
-      if (type === 'subsection') return 'подраздел';
+      if (type === 'subsection') return 'раздел';
       if (type === 'point') return 'пункт';
       if (type === 'subpoint') return 'подпункт';
+      if (type === 'item') return 'элемент';
       return '';
     }
 
@@ -2716,27 +2442,15 @@
     }
 
     function performInstructionsSearch(query) {
-      var queryProfile = buildSearchQueryProfile(query);
-      if (!queryProfile.normalized) return [];
-      var preparedDocs = ensurePreparedSearchDocs();
-      var results = [];
-      for (var i = 0; i < preparedDocs.length; i++) {
-        var ranked = evaluatePreparedSearchDoc(preparedDocs[i], queryProfile);
-        if (!ranked) continue;
-        results.push(ranked);
+      if (!INSTRUCTIONS_CORE || typeof INSTRUCTIONS_CORE.searchInstructions !== 'function') {
+        return [];
       }
-
-      results.sort(function(a, b) {
-        if (b.score !== a.score) return b.score - a.score;
-        if (b.confidence !== a.confidence) return b.confidence - a.confidence;
-        if (b.coverage !== a.coverage) return b.coverage - a.coverage;
-        if (a.depth !== b.depth) return a.depth - b.depth;
-        if (a.textIndex !== b.textIndex) return a.textIndex - b.textIndex;
-        if (a.instructionTitle !== b.instructionTitle) return a.instructionTitle.localeCompare(b.instructionTitle, 'ru');
-        return a.sectionTitle.localeCompare(b.sectionTitle, 'ru');
-      });
-
-      return markExpandedAnswerResults(results.slice(0, 40));
+      var results = INSTRUCTIONS_CORE.searchInstructions(
+        query,
+        instructionsStore.searchDocs || [],
+        { limit: 40 }
+      );
+      return Array.isArray(results) ? results : [];
     }
 
     function setInstructionsSearchQuery(query) {
@@ -2749,12 +2463,14 @@
       var normalizedQuery = normalizeSearchText(instructionsStore.searchQuery);
       if (!normalizedQuery) {
         instructionsStore.searchResults = [];
+        instructionsStore.searchAnswer = null;
         renderInstructionsScreen();
         return;
       }
 
       instructionsStore.searchTimer = window.setTimeout(function() {
         instructionsStore.searchResults = performInstructionsSearch(instructionsStore.searchQuery);
+        instructionsStore.searchAnswer = instructionsStore.searchResults.length ? instructionsStore.searchResults[0] : null;
         renderInstructionsScreen();
       }, 190);
     }
@@ -2953,13 +2669,22 @@
       return html;
     }
 
+    function isPointLikeNode(node) {
+      if (!node) return false;
+      return node.type === 'point' || node.type === 'subpoint' || node.type === 'item';
+    }
+
+    function isInlineChildNode(node) {
+      if (!node) return false;
+      return node.type === 'subpoint' || node.type === 'item';
+    }
+
     function shouldRenderSubpointInline(node, structure) {
-      if (!node || node.type !== 'subpoint') return false;
+      if (!isInlineChildNode(node)) return false;
       var parent = getInstructionNodeParent(structure, node);
       if (!parent) return true;
-      if (parent.type === 'point') return true;
-      var text = normalizeInstructionTextBlock(node.content || node.plainText || '');
-      return text.length <= 220;
+      if (isPointLikeNode(parent)) return true;
+      return true;
     }
 
     function buildFocusedSubpointCalloutHtml(node) {
@@ -2978,7 +2703,7 @@
         }
       }
       return '<div class="instruction-focus-callout">' +
-        '<div class="instruction-focus-kicker">Текущий подпункт</div>' +
+        '<div class="instruction-focus-kicker">' + (node.type === 'item' ? 'Текущий элемент' : 'Текущий подпункт') + '</div>' +
         '<div class="instruction-focus-text">' + escapeHtml(merged).replace(/\n/g, '<br />') + '</div>' +
       '</div>';
     }
@@ -3011,7 +2736,7 @@
       for (var i = 0; i < structure.traversal.length; i++) {
         var node = structure.traversal[i].node;
         if (!node || node.type === 'document') continue;
-        if (node.type === 'point' || node.type === 'subpoint') counters.points += 1;
+        if (isPointLikeNode(node)) counters.points += 1;
         else counters.structural += 1;
       }
       return counters;
@@ -3055,14 +2780,38 @@
 
     function renderInstructionsSearchResults() {
       var resultsEl = document.getElementById('instructionsSearchResults');
-      if (!resultsEl) return;
+      var answerEl = document.getElementById('instructionsAnswerCard');
+      if (!resultsEl || !answerEl) return;
       if (!instructionsStore.searchResults.length) {
         resultsEl.innerHTML = '';
+        answerEl.innerHTML = '';
+        answerEl.classList.add('hidden');
         return;
       }
 
+      var topAnswer = instructionsStore.searchResults[0] || null;
+      if (topAnswer) {
+        var answerSection = topAnswer.sectionTitle
+          ? '<div class="search-result-section">' + highlightSearchText(topAnswer.sectionTitle, instructionsStore.searchQuery) + '</div>'
+          : '';
+        answerEl.innerHTML =
+          '<button class="search-answer-card" type="button" data-action="open-section" data-instruction-id="' + escapeHtml(topAnswer.instructionId) + '" data-section-id="' + escapeHtml(topAnswer.sectionId) + '">' +
+            '<div class="search-answer-kicker">Наиболее вероятный ответ</div>' +
+            '<div class="search-result-top">' +
+              '<span class="search-result-instruction">' + escapeHtml(topAnswer.instructionTitle) + '</span>' +
+              (topAnswer.sectionRef ? '<span class="search-result-point">' + escapeHtml(topAnswer.sectionRef) + '</span>' : '') +
+            '</div>' +
+            answerSection +
+            '<div class="search-result-snippet is-expanded">' + highlightSearchText(topAnswer.answerText || topAnswer.displayText || topAnswer.snippet || '', instructionsStore.searchQuery) + '</div>' +
+          '</button>';
+        answerEl.classList.remove('hidden');
+      } else {
+        answerEl.innerHTML = '';
+        answerEl.classList.add('hidden');
+      }
+
       var html = '';
-      for (var i = 0; i < instructionsStore.searchResults.length; i++) {
+      for (var i = 1; i < instructionsStore.searchResults.length; i++) {
         var item = instructionsStore.searchResults[i];
         var cardClass = 'search-result-card' + (item.isExpandedAnswer ? ' is-answer' : '');
         var showSectionTitle = !!item.sectionTitle && !(item.isExpandedAnswer && item.answerIncludesHeading);
@@ -3102,7 +2851,7 @@
       for (var i = 0; i < structure.traversal.length; i++) {
         var entry = structure.traversal[i];
         var section = entry.node;
-        if (!section || section.id === rootId || section.type === 'point' || section.type === 'subpoint') continue;
+        if (!section || section.id === rootId || isPointLikeNode(section)) continue;
         var depthClass = ' instruction-section-depth-' + Math.min(6, Math.max(1, entry.depth));
         var label = formatInstructionNodeLabel(section, 'Раздел');
         var childCount = (structure.childrenByParent[section.id] || []).length;
@@ -3121,7 +2870,7 @@
       var quickNavHtml = '';
       for (var q = 0; q < topNodes.length; q++) {
         var node = topNodes[q];
-        if (!node || node.type === 'point') continue;
+        if (!node || isPointLikeNode(node)) continue;
         var fullLabel = formatInstructionNodeLabel(node, 'Раздел');
         var chipLabel = buildCompactNodeNavLabel(node, 26) || ('Раздел ' + (q + 1));
         quickNavHtml += '<button class="instruction-detail-jump-btn" type="button" data-action="scroll-node" data-section-id="' + escapeHtml(node.id) + '" title="' + escapeHtml(fullLabel) + '">' + escapeHtml(chipLabel) + '</button>';
@@ -3154,10 +2903,15 @@
       var displaySection = requestedSection;
       var focusedSubpoint = null;
       var requestedParent = getInstructionNodeParent(structure, requestedSection);
-      if (requestedSection.type === 'subpoint' && requestedParent) {
+      if (isInlineChildNode(requestedSection) && requestedParent) {
         focusedSubpoint = requestedSection;
         if (shouldRenderSubpointInline(requestedSection, structure)) {
           displaySection = requestedParent;
+          while (displaySection && isInlineChildNode(displaySection)) {
+            var upperParent = getInstructionNodeParent(structure, displaySection);
+            if (!upperParent) break;
+            displaySection = upperParent;
+          }
         }
       }
 
@@ -3178,7 +2932,7 @@
 
       var metaParts = [instruction.title];
       if (displaySection.type) metaParts.push(getInstructionNodeTypeLabel(displaySection.type));
-      if (focusedSubpoint) metaParts.push('контекст подпункта');
+      if (focusedSubpoint) metaParts.push(focusedSubpoint.type === 'item' ? 'контекст элемента' : 'контекст подпункта');
       if (instruction.version) metaParts.push(instruction.version);
       sectionMetaEl.textContent = metaParts.join(' · ');
 
@@ -3198,7 +2952,7 @@
       if (focusedSubpoint && displaySection.id !== requestedSection.id) {
         for (var c = 0; c < children.length; c++) {
           var childNode = children[c];
-          if (!childNode || (childNode.type !== 'subpoint' && childNode.type !== 'point')) continue;
+          if (!childNode || !isPointLikeNode(childNode)) continue;
           jumpNodes.push(childNode);
         }
       } else {
@@ -3209,8 +2963,8 @@
         for (var i = 0; i < siblings.length; i++) {
           var jumpSection = siblings[i];
           if (!jumpSection) continue;
-          var currentIsPointLike = displaySection.type === 'point' || displaySection.type === 'subpoint';
-          var siblingIsPointLike = jumpSection.type === 'point' || jumpSection.type === 'subpoint';
+          var currentIsPointLike = isPointLikeNode(displaySection);
+          var siblingIsPointLike = isPointLikeNode(jumpSection);
           if (!currentIsPointLike && siblingIsPointLike) continue;
           jumpNodes.push(jumpSection);
         }
@@ -3224,7 +2978,7 @@
         var fullLabel = formatInstructionNodeLabel(navNode, 'Раздел');
         var compactLabel = buildCompactNodeNavLabel(
           navNode,
-          navNode.type === 'subpoint' ? 18 : 24
+          isInlineChildNode(navNode) ? 18 : 24
         );
         jumpHtml += '<button class="instruction-jump-btn' + activeClass + '" type="button" data-action="open-section" data-instruction-id="' + escapeHtml(instruction.id) + '" data-section-id="' + escapeHtml(navNode.id) + '" title="' + escapeHtml(fullLabel) + '">' + escapeHtml(compactLabel) + '</button>';
       }
@@ -3236,14 +2990,14 @@
           childNodesEl.innerHTML = '';
           childNodesEl.classList.add('hidden');
         } else {
-          var showSubpoints = displaySection.type === 'point' || (focusedSubpoint && requestedParent && requestedParent.type === 'point');
-          var childHeader = showSubpoints ? 'Подпункты' : 'Подразделы и пункты';
+          var showSubpoints = isPointLikeNode(displaySection) || (focusedSubpoint && requestedParent && isPointLikeNode(requestedParent));
+          var childHeader = showSubpoints ? 'Подпункты и элементы' : 'Подразделы и пункты';
           var childHtml = '<div class="section-header">' + childHeader + '</div>';
           for (var ch = 0; ch < children.length; ch++) {
             var child = children[ch];
             var isActiveChild = !!(focusedSubpoint && child.id === focusedSubpoint.id);
             var fullChildLabel = formatInstructionNodeLabel(child, 'Пункт');
-            var compactChildLabel = buildCompactNodeNavLabel(child, child.type === 'subpoint' ? 64 : 84);
+            var compactChildLabel = buildCompactNodeNavLabel(child, isInlineChildNode(child) ? 64 : 84);
             childHtml += '<button class="instruction-child-item' + (isActiveChild ? ' is-active' : '') + '" type="button" data-action="open-section" data-instruction-id="' + escapeHtml(instruction.id) + '" data-section-id="' + escapeHtml(child.id) + '" title="' + escapeHtml(fullChildLabel) + '">' +
               '<span class="instruction-child-title">' + escapeHtml(compactChildLabel) + '</span>' +
               '<span class="instruction-child-meta">' + escapeHtml(getInstructionNodeTypeLabel(child.type)) + '</span>' +
@@ -3255,7 +3009,7 @@
       }
 
       var hasVisibleChildren = childNodesEl && !childNodesEl.classList.contains('hidden');
-      var shouldCompactText = hasChildren && displaySection.type !== 'point' && displaySection.type !== 'subpoint';
+      var shouldCompactText = hasChildren && !isPointLikeNode(displaySection);
       if (focusedSubpoint) shouldCompactText = false;
       var contentText = normalizeNodeContentForDisplay(displaySection, {
         suppressDuplicateHeading: hasVisibleChildren
@@ -3293,9 +3047,10 @@
       var noResultsStateEl = document.getElementById('instructionsNoResultsState');
       var metaRowEl = document.getElementById('instructionsMetaRow');
       var cardsEl = document.getElementById('instructionsCards');
+      var answerEl = document.getElementById('instructionsAnswerCard');
       var searchResultsEl = document.getElementById('instructionsSearchResults');
       var searchInputEl = document.getElementById('instructionsSearchInput');
-      if (!contentLayer || !paywallOverlay || !listView || !detailView || !sectionView || !loadingStateEl || !offlineStateEl || !noResultsStateEl || !metaRowEl || !cardsEl || !searchResultsEl) {
+      if (!contentLayer || !paywallOverlay || !listView || !detailView || !sectionView || !loadingStateEl || !offlineStateEl || !noResultsStateEl || !metaRowEl || !cardsEl || !answerEl || !searchResultsEl) {
         return;
       }
 
@@ -3345,6 +3100,7 @@
       renderInstructionsCards(isPaywalled);
       renderInstructionsSearchResults();
       cardsEl.classList.toggle('hidden', canShowSearch);
+      answerEl.classList.toggle('hidden', !canShowSearch || !instructionsStore.searchResults.length);
       searchResultsEl.classList.toggle('hidden', !canShowSearch);
 
       if (instructionsStore.view === 'detail') {
