@@ -76,6 +76,7 @@
       id: String(safe.id || ''),
       title: String(safe.title || ''),
       shortDescription: String(safe.shortDescription || ''),
+      sortOrder: Math.max(0, parseInt(safe.sortOrder, 10) || 0),
       version: String(safe.version || ''),
       sourceUrl: String(safe.sourceUrl || ''),
       updatedAt: String(safe.updatedAt || ''),
@@ -219,6 +220,16 @@
             var nodeRows = Array.isArray(nodesReq.result) ? nodesReq.result : [];
             var searchRows = Array.isArray(searchReq.result) ? searchReq.result : [];
 
+            instructionRows.sort(function(a, b) {
+              var aOrder = Math.max(0, parseInt(a && a.sortOrder, 10) || 0);
+              var bOrder = Math.max(0, parseInt(b && b.sortOrder, 10) || 0);
+              if (aOrder !== bOrder) return aOrder - bOrder;
+              if ((a.title || '') !== (b.title || '')) {
+                return String(a.title || '').localeCompare(String(b.title || ''), 'ru');
+              }
+              return String(a.id || '').localeCompare(String(b.id || ''), 'ru');
+            });
+
             var nodesByInstruction = {};
             for (var i = 0; i < nodeRows.length; i++) {
               var node = nodeRows[i];
@@ -244,10 +255,12 @@
             var instructions = [];
             for (var r = 0; r < instructionRows.length; r++) {
               var row = instructionRows[r];
+              var hasSortOrder = row && row.sortOrder !== undefined && row.sortOrder !== null && String(row.sortOrder) !== '';
               instructions.push({
                 id: row.id,
                 title: row.title || '',
                 shortDescription: row.shortDescription || '',
+                sortOrder: hasSortOrder ? Math.max(0, parseInt(row.sortOrder, 10) || 0) : undefined,
                 version: row.version || '',
                 sourceUrl: row.sourceUrl || '',
                 updatedAt: row.updatedAt || '',

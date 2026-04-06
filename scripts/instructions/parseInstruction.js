@@ -32,6 +32,8 @@
     var safe = rawInstruction || {};
     var instructionId = String(safe.id || ('instruction-' + (index + 1)));
     var title = String(safe.title || instructionId.toUpperCase());
+    var sortOrder = parseInt(safe.sortOrder, 10);
+    if (isNaN(sortOrder) || sortOrder < 0) sortOrder = index;
     var nodesSource = [];
 
     if (Array.isArray(safe.nodes) && safe.nodes.length) {
@@ -52,6 +54,7 @@
       id: instructionId,
       title: title,
       shortDescription: String(safe.shortDescription || ''),
+      sortOrder: Math.max(0, sortOrder),
       version: safe.version ? String(safe.version) : '',
       sourceUrl: safe.sourceUrl ? String(safe.sourceUrl) : '',
       updatedAt: safe.updatedAt ? String(safe.updatedAt) : '',

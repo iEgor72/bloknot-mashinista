@@ -1575,21 +1575,58 @@
           id: 'pte',
           title: 'ПТЭ',
           shortDescription: 'Правила технической эксплуатации железных дорог Российской Федерации',
+          sortOrder: 0,
           nodes: []
         },
         {
           id: 'isi',
           title: 'ИСИ',
           shortDescription: 'Инструкция по сигнализации на железнодорожном транспорте',
+          sortOrder: 1,
           nodes: []
         },
         {
           id: 'idp',
           title: 'ИДП',
           shortDescription: 'Инструкция по организации движения поездов и маневровой работы',
+          sortOrder: 2,
           nodes: []
         }
       ];
+    }
+
+    function getInstructionOrderWeight(instruction) {
+      var item = instruction || {};
+      var explicitOrder = parseInt(item.sortOrder, 10);
+      if (!isNaN(explicitOrder) && explicitOrder >= 0) return explicitOrder;
+
+      var id = normalizeSearchText(item.id || '');
+      if (id === 'pte') return 0;
+      if (id === 'isi') return 1;
+      if (id === 'idp') return 2;
+
+      var title = normalizeSearchText(item.title || '');
+      if (title === 'птэ') return 0;
+      if (title === 'иси') return 1;
+      if (title === 'идп') return 2;
+
+      return 1000;
+    }
+
+    function sortInstructionsForDisplay(instructions) {
+      var source = Array.isArray(instructions) ? instructions : [];
+      if (!source.length) return [];
+      var ordered = source.slice();
+      ordered.sort(function(a, b) {
+        var aWeight = getInstructionOrderWeight(a);
+        var bWeight = getInstructionOrderWeight(b);
+        if (aWeight !== bWeight) return aWeight - bWeight;
+        if ((a.title || '') !== (b.title || '')) {
+          return String(a.title || '').localeCompare(String(b.title || ''), 'ru');
+        }
+        return String(a.id || '').localeCompare(String(b.id || ''), 'ru');
+      });
+      return ordered;
     }
 
     function normalizeInstructionNode(rawNode, instructionId, index) {
@@ -1919,12 +1956,29 @@
       });
     }
 
+    function processInstructionsDataset(payload) {
+      var source = payload || {};
+      var meta = source.meta || {};
+      var instructions = sortInstructionsForDisplay(source.instructions || []);
+      var rawSearchDocs = Array.isArray(source.searchDocs) ? source.searchDocs : [];
+      var searchDocs = rawSearchDocs.length
+        ? rawSearchDocs.slice()
+        : buildInstructionsSearchIndex(instructions);
+
+      return {
+        meta: meta,
+        instructions: instructions,
+        searchDocs: searchDocs
+      };
+    }
+
     function hydrateInstructionsState(payload, sourceLabel) {
-      var instructions = payload.instructions || [];
-      var searchDocs = payload.searchDocs || [];
-      var meta = payload.meta || {};
+      var processed = processInstructionsDataset(payload);
+      var instructions = processed.instructions;
+      var searchDocs = processed.searchDocs;
+      var meta = processed.meta;
       instructionsStore.instructions = instructions;
-      instructionsStore.searchDocs = searchDocs.length ? searchDocs : buildInstructionsSearchIndex(instructions);
+      instructionsStore.searchDocs = searchDocs;
       instructionsStore.preparedSearchDocs = [];
       instructionsStore.preparedSearchDocsKey = '';
       instructionsStore.searchAnswer = null;
