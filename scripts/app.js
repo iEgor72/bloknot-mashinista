@@ -2619,6 +2619,62 @@
       return text;
     }
 
+    function buildPointLineText(node) {
+      if (!node) return '';
+      var number = String(node.number || '').trim();
+      var body = normalizeNodeContentForDisplay(node, { suppressDuplicateHeading: true });
+      var fallback = String(node.title || '').trim();
+      if (!body) body = fallback;
+      if (!body && number) return number;
+      if (!body) return '';
+      var bodyNorm = normalizeSearchText(body);
+      var numberNorm = normalizeSearchText(number);
+      if (!number) return body;
+      if (bodyNorm === numberNorm || bodyNorm.indexOf(numberNorm + ' ') === 0) {
+        return body;
+      }
+      return number + ' ' + body;
+    }
+
+    function appendInlineChildPointLines(node, structure, out, includeSelfHeading) {
+      if (!node || !structure || !out) return;
+
+      if (includeSelfHeading) {
+        var heading = formatInstructionNodeLabel(node, '').trim();
+        var ownContent = normalizeNodeContentForDisplay(node, { suppressDuplicateHeading: true });
+        if (ownContent) {
+          var ownNorm = normalizeSearchText(ownContent);
+          var headingNorm = normalizeSearchText(heading);
+          if (headingNorm && ownNorm.indexOf(headingNorm) === 0) {
+            out.push(ownContent);
+          } else if (heading) {
+            out.push(heading + '\n' + ownContent);
+          } else {
+            out.push(ownContent);
+          }
+        } else if (heading) {
+          out.push(heading);
+        }
+      } else {
+        var pointLine = buildPointLineText(node);
+        if (pointLine) out.push(pointLine);
+      }
+
+      var children = (structure.childrenByParent && structure.childrenByParent[node.id]) || [];
+      for (var i = 0; i < children.length; i++) {
+        var child = children[i];
+        if (!child || !isInlineChildNode(child)) continue;
+        appendInlineChildPointLines(child, structure, out, false);
+      }
+    }
+
+    function buildPointContentWithInlineChildren(node, structure) {
+      if (!node || !structure || !isPointLikeNode(node)) return '';
+      var lines = [];
+      appendInlineChildPointLines(node, structure, lines, true);
+      return normalizeInstructionTextBlock(lines.join('\n'));
+    }
+
     function isNodeContentSameAsHeading(node) {
       if (!node) return false;
       var text = String(node.content || node.plainText || '').trim();
@@ -2970,6 +3026,9 @@
             if (!upperParent) break;
             displaySection = upperParent;
           }
+          if (isPointLikeNode(displaySection)) {
+            focusedSubpoint = null;
+          }
         }
       }
 
@@ -3043,8 +3102,9 @@
       quickJumpEl.innerHTML = jumpHtml;
       quickJumpEl.classList.toggle('hidden', !jumpHtml);
 
+      var shouldInlinePointChildren = isPointLikeNode(displaySection);
       if (childNodesEl) {
-        if (!children.length) {
+        if (!children.length || shouldInlinePointChildren) {
           childNodesEl.innerHTML = '';
           childNodesEl.classList.add('hidden');
         } else {
@@ -3069,9 +3129,11 @@
       var hasVisibleChildren = childNodesEl && !childNodesEl.classList.contains('hidden');
       var shouldCompactText = hasChildren && !isPointLikeNode(displaySection);
       if (focusedSubpoint) shouldCompactText = false;
-      var contentText = normalizeNodeContentForDisplay(displaySection, {
-        suppressDuplicateHeading: hasVisibleChildren
-      });
+      var contentText = shouldInlinePointChildren
+        ? buildPointContentWithInlineChildren(displaySection, structure)
+        : normalizeNodeContentForDisplay(displaySection, {
+            suppressDuplicateHeading: hasVisibleChildren
+          });
       var contentHtml = formatInstructionContentHtml(
         contentText,
         shouldCompactText ? { maxParagraphs: 2, forceHint: true } : {}
