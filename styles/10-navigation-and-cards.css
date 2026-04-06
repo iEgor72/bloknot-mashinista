@@ -1230,14 +1230,19 @@
     }
 
     .search-result-card {
-      padding: 13px;
+      padding: 13px 14px;
       display: grid;
-      gap: 6px;
+      gap: 7px;
+    }
+
+    .search-result-card.is-answer {
+      border-color: rgba(194, 229, 255, 0.42);
+      box-shadow: 0 18px 34px rgba(80, 146, 255, 0.16), inset 0 1px 0 rgba(255,255,255,0.08);
     }
 
     .search-result-top {
       display: flex;
-      align-items: center;
+      align-items: baseline;
       justify-content: space-between;
       gap: 8px;
     }
@@ -1250,6 +1255,14 @@
       color: rgba(194, 229, 255, 0.86);
     }
 
+    .search-result-point {
+      font-size: 11px;
+      font-weight: 700;
+      color: rgba(244, 247, 255, 0.74);
+      letter-spacing: 0.01em;
+      white-space: nowrap;
+    }
+
     .search-result-section {
       font-size: 14px;
       font-weight: 700;
@@ -1258,9 +1271,14 @@
     }
 
     .search-result-snippet {
-      font-size: 12px;
-      line-height: 1.5;
+      font-size: 13px;
+      line-height: 1.54;
       color: rgba(244, 247, 255, 0.66);
+      white-space: pre-line;
+    }
+
+    .search-result-snippet.is-expanded {
+      color: rgba(244, 247, 255, 0.84);
     }
 
     .search-highlight {

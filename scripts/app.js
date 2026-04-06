@@ -1258,6 +1258,17 @@
       return String(temp.textContent || temp.innerText || '').replace(/\s+/g, ' ').trim();
     }
 
+    function normalizeInstructionTextBlock(value) {
+      return String(value || '')
+        .replace(/\u00a0/g, ' ')
+        .replace(/\r\n/g, '\n')
+        .replace(/\r/g, '\n')
+        .replace(/[ \t]+\n/g, '\n')
+        .replace(/\n[ \t]+/g, '\n')
+        .replace(/\n{3,}/g, '\n\n')
+        .trim();
+    }
+
     function normalizeSearchText(value) {
       return String(value || '')
         .toLowerCase()
@@ -1551,6 +1562,71 @@
       return result;
     }
 
+    function getNodeSearchText(node) {
+      if (!node) return '';
+      var raw = node.plainText || '';
+      if (!raw) raw = stripHtmlToText(node.content || '');
+      return normalizeInstructionTextBlock(raw);
+    }
+
+    function buildPointAnswerText(node, structure) {
+      if (!node) return '';
+      var parts = [];
+
+      function appendPointBlock(current, isRoot) {
+        if (!current) return;
+        var heading = formatInstructionNodeLabel(current, '').trim();
+        var content = normalizeInstructionTextBlock(
+          normalizeNodeContentForDisplay(current, { suppressDuplicateHeading: true }) || getNodeSearchText(current)
+        );
+        var block = '';
+        if (isRoot) {
+          if (heading) block = heading;
+          if (content) {
+            block += (block ? '\n' : '') + content;
+          }
+        } else {
+          if (heading && content) block = heading + ' ' + content;
+          else block = heading || content;
+        }
+        if (block) parts.push(block.trim());
+        var children = (structure && structure.childrenByParent && structure.childrenByParent[current.id]) || [];
+        for (var i = 0; i < children.length; i++) {
+          var child = children[i];
+          if (!child || (child.type !== 'point' && child.type !== 'subpoint')) continue;
+          appendPointBlock(child, false);
+        }
+      }
+
+      appendPointBlock(node, true);
+      return normalizeInstructionTextBlock(parts.join('\n'));
+    }
+
+    function buildNodeAnswerText(node, structure) {
+      if (!node) return '';
+      var isPointLike = node.type === 'point' || node.type === 'subpoint';
+      if (isPointLike) {
+        return buildPointAnswerText(node, structure);
+      }
+
+      var content = normalizeInstructionTextBlock(
+        normalizeNodeContentForDisplay(node, { suppressDuplicateHeading: true }) || getNodeSearchText(node)
+      );
+      if (content) return content;
+      return formatInstructionNodeLabel(node, '').trim();
+    }
+
+    function formatSearchNodeReference(sectionType, sectionNumber) {
+      var number = String(sectionNumber || '').trim();
+      if (!number) return '';
+      var clean = number.replace(/\s+/g, ' ').replace(/\.$/, '');
+      if (!clean) return '';
+      if (sectionType === 'point' || sectionType === 'subpoint') {
+        return 'п. ' + clean;
+      }
+      return clean;
+    }
+
     function buildInstructionsSearchIndex(instructions) {
       var docs = [];
       for (var i = 0; i < (instructions || []).length; i++) {
@@ -1561,13 +1637,17 @@
           var entry = structure.traversal[t];
           var node = entry.node;
           if (!node || node.id === rootId) continue;
-          var nodeText = String(node.plainText || stripHtmlToText(node.content || ''));
-          var sectionTitle = ((node.number ? (node.number + ' ') : '') + (node.title || '')).trim();
+          var nodeText = getNodeSearchText(node);
+          var sectionLabel = formatInstructionNodeLabel(node, node.title || '').trim();
+          var sectionTitle = sectionLabel || node.title || '';
+          var answerText = buildNodeAnswerText(node, structure);
           var joinedText = [
             instruction.title || '',
             node.number || '',
             node.title || '',
-            nodeText
+            sectionLabel,
+            nodeText,
+            answerText
           ].join(' ');
 
           docs.push({
@@ -1576,12 +1656,18 @@
             instructionTitle: instruction.title || '',
             instructionTitleNormalized: normalizeSearchText(instruction.title || ''),
             sectionId: node.id,
-            sectionTitle: sectionTitle || node.title || '',
-            sectionTitleNormalized: normalizeSearchText(sectionTitle || node.title || ''),
+            sectionTitle: sectionTitle,
+            sectionTitleNormalized: normalizeSearchText(sectionTitle),
+            sectionHeadingNormalized: normalizeSearchText(sectionLabel),
+            sectionNumber: node.number || '',
             sectionNumberNormalized: normalizeSearchText(node.number || ''),
             sectionType: node.type || '',
+            sectionRef: formatSearchNodeReference(node.type || '', node.number || ''),
+            isPointLike: node.type === 'point' || node.type === 'subpoint',
             depth: entry.depth || 0,
             text: nodeText,
+            answerText: answerText,
+            answerTextNormalized: normalizeSearchText(answerText),
             sectionTextNormalized: normalizeSearchText(nodeText),
             normalized: normalizeSearchText(joinedText)
           });
@@ -1756,8 +1842,13 @@
       var instructions = payload.instructions || [];
       var searchDocs = payload.searchDocs || [];
       var meta = payload.meta || {};
+      var hasRichSearchIndex = !!(
+        searchDocs.length &&
+        searchDocs[0] &&
+        (searchDocs[0].answerText !== undefined || searchDocs[0].sectionRef !== undefined)
+      );
       instructionsStore.instructions = instructions;
-      instructionsStore.searchDocs = searchDocs.length ? searchDocs : buildInstructionsSearchIndex(instructions);
+      instructionsStore.searchDocs = hasRichSearchIndex ? searchDocs : buildInstructionsSearchIndex(instructions);
       instructionsStore.hasCache = instructions.length > 0;
       instructionsStore.dataSource = sourceLabel || 'cache';
       instructionsStore.lastUpdated = meta.updatedAt || '';
@@ -1897,29 +1988,50 @@
       return '';
     }
 
-    function buildSearchSnippet(text, queryTerms) {
-      var source = String(text || '').replace(/\s+/g, ' ').trim();
-      if (!source) return '';
-      var normalized = normalizeSearchText(source);
-      var matchIndex = -1;
-      for (var i = 0; i < queryTerms.length; i++) {
-        var index = normalized.indexOf(queryTerms[i]);
-        if (index === -1) continue;
-        if (matchIndex === -1 || index < matchIndex) {
-          matchIndex = index;
+    function splitTextIntoSearchLines(text) {
+      var source = normalizeInstructionTextBlock(text);
+      if (!source) return [];
+      var rawLines = source.split('\n');
+      var lines = [];
+      for (var i = 0; i < rawLines.length; i++) {
+        var line = String(rawLines[i] || '').replace(/\s+/g, ' ').trim();
+        if (!line) continue;
+        lines.push(line);
+      }
+      return lines;
+    }
+
+    function buildSearchSnippet(text, queryTerms, options) {
+      var opts = options || {};
+      var minLines = Math.max(2, Math.min(5, parseInt(opts.minLines, 10) || 2));
+      var maxLines = Math.max(minLines, Math.min(8, parseInt(opts.maxLines, 10) || 5));
+      var lines = splitTextIntoSearchLines(text);
+      if (!lines.length) return '';
+      if (lines.length <= maxLines) {
+        return lines.join('\n');
+      }
+
+      var matchLineIndex = -1;
+      for (var i = 0; i < lines.length; i++) {
+        var lineNorm = normalizeSearchText(lines[i]);
+        for (var t = 0; t < queryTerms.length; t++) {
+          if (lineNorm.indexOf(queryTerms[t]) !== -1) {
+            matchLineIndex = i;
+            break;
+          }
         }
+        if (matchLineIndex !== -1) break;
       }
 
-      if (matchIndex === -1) {
-        return source.length > 160 ? (source.slice(0, 157).trim() + '…') : source;
+      var start = 0;
+      if (matchLineIndex > 0) {
+        start = Math.max(0, matchLineIndex - 1);
       }
-
-      var start = Math.max(0, matchIndex - 44);
-      var end = Math.min(source.length, matchIndex + 132);
-      var snippet = source.slice(start, end).trim();
-      if (start > 0) snippet = '…' + snippet;
-      if (end < source.length) snippet = snippet + '…';
-      return snippet;
+      var end = Math.min(lines.length, start + maxLines);
+      if ((end - start) < minLines) {
+        start = Math.max(0, end - minLines);
+      }
+      return lines.slice(start, end).join('\n');
     }
 
     function highlightSearchText(text, query) {
@@ -1942,7 +2054,7 @@
       var results = [];
       for (var i = 0; i < instructionsStore.searchDocs.length; i++) {
         var doc = instructionsStore.searchDocs[i];
-        var normalizedDoc = doc.normalized || '';
+        var normalizedDoc = doc.normalized || doc.answerTextNormalized || doc.sectionTextNormalized || '';
         var matchesAllTerms = true;
         for (var t = 0; t < terms.length; t++) {
           if (normalizedDoc.indexOf(terms[t]) === -1) {
@@ -1953,41 +2065,67 @@
         if (!matchesAllTerms) continue;
 
         var score = 0;
-        var instructionNorm = doc.instructionTitleNormalized || '';
-        var sectionNorm = doc.sectionTitleNormalized || '';
-        var sectionNumberNorm = doc.sectionNumberNormalized || '';
-        var textNorm = doc.sectionTextNormalized || '';
+        var instructionNorm = doc.instructionTitleNormalized || normalizeSearchText(doc.instructionTitle || '');
+        var sectionNorm = doc.sectionTitleNormalized || normalizeSearchText(doc.sectionTitle || '');
+        var headingNorm = doc.sectionHeadingNormalized || sectionNorm;
+        var sectionNumberNorm = doc.sectionNumberNormalized || normalizeSearchText(doc.sectionNumber || '');
+        var textNorm = doc.answerTextNormalized || doc.sectionTextNormalized || '';
         var textIdx = textNorm.indexOf(normalizedQuery);
+        var isPointLike = !!doc.isPointLike || doc.sectionType === 'point' || doc.sectionType === 'subpoint';
+        var headingExactMatch = headingNorm.indexOf(normalizedQuery) !== -1 || (sectionNumberNorm && sectionNumberNorm.indexOf(normalizedQuery) !== -1);
+        var headingTermHits = 0;
+        var headingStrongHits = 0;
+        var textTermHits = 0;
+        var headingHasAllTerms = true;
+        for (var tt = 0; tt < terms.length; tt++) {
+          var term = terms[tt];
+          var inHeading = headingNorm.indexOf(term) !== -1 || (sectionNumberNorm && sectionNumberNorm.indexOf(term) !== -1);
+          if (inHeading) {
+            headingTermHits += 1;
+            if (term.length >= 3) headingStrongHits += 1;
+          }
+          else headingHasAllTerms = false;
+          if (textNorm.indexOf(term) !== -1) textTermHits += 1;
+        }
 
-        if (instructionNorm.indexOf(normalizedQuery) !== -1) score += 1200;
+        if (instructionNorm.indexOf(normalizedQuery) !== -1) score += 980;
         else {
           for (var it = 0; it < terms.length; it++) {
-            if (instructionNorm.indexOf(terms[it]) !== -1) score += 140;
+            if (instructionNorm.indexOf(terms[it]) !== -1) score += 120;
           }
         }
 
-        if (sectionNorm.indexOf(normalizedQuery) !== -1) score += 920;
-        else {
-          for (var st = 0; st < terms.length; st++) {
-            if (sectionNorm.indexOf(terms[st]) !== -1) score += 220;
-          }
-        }
+        if (headingExactMatch) score += 1520;
+        else score += headingTermHits * 270;
 
         if (sectionNumberNorm && sectionNumberNorm.indexOf(normalizedQuery) !== -1) {
-          score += 760;
+          score += 860;
         }
 
-        if (textIdx === 0) score += 560;
-        else if (textIdx > 0) score += Math.max(160, 440 - Math.min(textIdx, 280));
-        else if (textNorm.indexOf(terms[0]) !== -1) score += 120;
+        if (textIdx === 0) score += 700;
+        else if (textIdx > 0) score += Math.max(170, 560 - Math.min(textIdx, 420));
+        score += textTermHits * 95;
+
+        if (isPointLike) score += 220;
+
+        var answerText = normalizeInstructionTextBlock(doc.answerText || doc.text || '');
+        var shouldShowFullByHeading = !!(isPointLike && answerText && (headingExactMatch || headingStrongHits > 0 || headingHasAllTerms));
+        var snippet = buildSearchSnippet(answerText || doc.text || '', terms, { minLines: 2, maxLines: 5 });
 
         results.push({
           instructionId: doc.instructionId,
           instructionTitle: doc.instructionTitle,
           sectionId: doc.sectionId,
           sectionTitle: doc.sectionTitle,
-          snippet: buildSearchSnippet(doc.text || '', terms),
+          sectionRef: doc.sectionRef || formatSearchNodeReference(doc.sectionType || '', doc.sectionNumber || ''),
+          sectionType: doc.sectionType || '',
+          isPointLike: isPointLike,
+          answerText: answerText,
+          answerIncludesHeading: isPointLike,
+          snippet: snippet,
           score: score,
+          headingTermHits: headingTermHits,
+          shouldShowFullByHeading: shouldShowFullByHeading,
           textIndex: textIdx < 0 ? 9999 : textIdx,
           depth: parseInt(doc.depth, 10) || 0
         });
@@ -2001,7 +2139,25 @@
         return a.sectionTitle.localeCompare(b.sectionTitle, 'ru');
       });
 
-      return results.slice(0, 40);
+      var limited = results.slice(0, 40);
+      var expandedCount = 0;
+      for (var r = 0; r < limited.length; r++) {
+        var item = limited[r];
+        var isAnswerCandidate = !!(item.answerText && item.isPointLike && (item.headingTermHits > 0 || item.textIndex <= 180 || item.score >= 1700));
+        var isExpandedAnswer = false;
+        if (item.shouldShowFullByHeading) {
+          isExpandedAnswer = true;
+        } else if (expandedCount < 3 && isAnswerCandidate) {
+          isExpandedAnswer = true;
+        }
+        if (isExpandedAnswer) expandedCount += 1;
+        item.isExpandedAnswer = isExpandedAnswer;
+        item.displayText = isExpandedAnswer
+          ? (item.answerText || item.snippet || item.sectionTitle || '')
+          : (item.snippet || item.answerText || item.sectionTitle || '');
+      }
+
+      return limited;
     }
 
     function setInstructionsSearchQuery(query) {
@@ -2208,12 +2364,17 @@
       var html = '';
       for (var i = 0; i < instructionsStore.searchResults.length; i++) {
         var item = instructionsStore.searchResults[i];
-        html += '<button class="search-result-card" type="button" data-action="open-section" data-instruction-id="' + escapeHtml(item.instructionId) + '" data-section-id="' + escapeHtml(item.sectionId) + '">' +
+        var cardClass = 'search-result-card' + (item.isExpandedAnswer ? ' is-answer' : '');
+        var showSectionTitle = !!item.sectionTitle && !(item.isExpandedAnswer && item.answerIncludesHeading);
+        html += '<button class="' + cardClass + '" type="button" data-action="open-section" data-instruction-id="' + escapeHtml(item.instructionId) + '" data-section-id="' + escapeHtml(item.sectionId) + '">' +
           '<div class="search-result-top">' +
             '<span class="search-result-instruction">' + escapeHtml(item.instructionTitle) + '</span>' +
+            (item.sectionRef ? '<span class="search-result-point">' + escapeHtml(item.sectionRef) + '</span>' : '') +
           '</div>' +
-          '<div class="search-result-section">' + highlightSearchText(item.sectionTitle, instructionsStore.searchQuery) + '</div>' +
-          '<div class="search-result-snippet">' + highlightSearchText(item.snippet, instructionsStore.searchQuery) + '</div>' +
+          (showSectionTitle
+            ? '<div class="search-result-section">' + highlightSearchText(item.sectionTitle, instructionsStore.searchQuery) + '</div>'
+            : '') +
+          '<div class="search-result-snippet' + (item.isExpandedAnswer ? ' is-expanded' : '') + '">' + highlightSearchText(item.displayText || item.snippet || '', instructionsStore.searchQuery) + '</div>' +
         '</button>';
       }
       resultsEl.innerHTML = html;
