@@ -1651,6 +1651,55 @@
       return String(a.title || '').localeCompare(String(b.title || ''), 'ru');
     }
 
+    function flattenRawInstructionNodes(rawNodes, instructionId) {
+      var source = Array.isArray(rawNodes) ? rawNodes : [];
+      if (!source.length) return [];
+      var out = [];
+      var autoId = 0;
+
+      function ensureRawNodeId(node, parentId, index) {
+        if (node && node.id !== undefined && node.id !== null && String(node.id).trim()) {
+          return String(node.id);
+        }
+        autoId += 1;
+        var parentPart = parentId ? String(parentId) : (instructionId + '-document');
+        return parentPart + '-auto-' + index + '-' + autoId;
+      }
+
+      function visit(list, parentId) {
+        if (!Array.isArray(list)) return;
+        for (var i = 0; i < list.length; i++) {
+          var rawNode = list[i];
+          if (!rawNode || typeof rawNode !== 'object') continue;
+          var nodeId = ensureRawNodeId(rawNode, parentId, i + 1);
+          var clone = {};
+          var keys = Object.keys(rawNode);
+          for (var k = 0; k < keys.length; k++) {
+            var key = keys[k];
+            if (key === 'children') continue;
+            clone[key] = rawNode[key];
+          }
+          clone.id = nodeId;
+          if (
+            (clone.parentId === undefined || clone.parentId === null || clone.parentId === '') &&
+            parentId
+          ) {
+            clone.parentId = parentId;
+          }
+          if (clone.order === undefined || clone.order === null || isNaN(parseInt(clone.order, 10))) {
+            clone.order = i + 1;
+          }
+          out.push(clone);
+          if (Array.isArray(rawNode.children) && rawNode.children.length) {
+            visit(rawNode.children, nodeId);
+          }
+        }
+      }
+
+      visit(source, null);
+      return out;
+    }
+
     function normalizeInstructionsPayload(payload) {
       var listSource = [];
       if (payload && Array.isArray(payload.instructions)) {
@@ -1663,7 +1712,7 @@
       for (var i = 0; i < listSource.length; i++) {
         var rawInstruction = listSource[i] || {};
         var instructionId = String(rawInstruction.id || ('instruction-' + (i + 1)));
-        var rawNodes = Array.isArray(rawInstruction.nodes) ? rawInstruction.nodes : [];
+        var rawNodes = flattenRawInstructionNodes(rawInstruction.nodes, instructionId);
 
         if (!rawNodes.length && Array.isArray(rawInstruction.sections)) {
           for (var s = 0; s < rawInstruction.sections.length; s++) {

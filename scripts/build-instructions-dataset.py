@@ -1,9 +1,9 @@
 ﻿#!/usr/bin/env python3
-"""Build a full offline instructions dataset for PTE / ISI / IDP.
+"""Build a full offline instructions dataset from configurable legal sources.
 
-Source: open legal text pages on sudact.ru for Mintrans order N 250.
-The script extracts the full table of contents, fetches every node page,
-and writes a normalized tree model suitable for offline navigation/search.
+The builder loads a source definition config, fetches TOC pages, parses document
+structure (chapter/section/point/subpoint), and writes a normalized model for
+offline navigation and hybrid local search.
 """
 
 from __future__ import annotations
@@ -26,16 +26,51 @@ from urllib.parse import urljoin, urlparse
 from urllib.request import Request, urlopen
 
 BASE_URL = "https://sudact.ru"
-TOC_URL = (
-    "https://sudact.ru/law/prikaz-mintransa-rossii-ot-23062022-n-250/"
-    "pravila-tekhnicheskoi-ekspluatatsii-zheleznykh-dorog/i/"
+DEFAULT_TOC_URL = (
+    BASE_URL
+    + "/law/prikaz-mintransa-rossii-ot-23062022-n-250/"
+    + "pravila-tekhnicheskoi-ekspluatatsii-zheleznykh-dorog/i/"
 )
-RULES_PATH = (
+DEFAULT_RULES_PATH = (
     "/law/prikaz-mintransa-rossii-ot-23062022-n-250/"
     "pravila-tekhnicheskoi-ekspluatatsii-zheleznykh-dorog/"
 )
-ISI_PATH = RULES_PATH + "prilozhenie-n-1/"
-IDP_PATH = RULES_PATH + "prilozhenie-n-2/"
+DEFAULT_SOURCE_DEFINITIONS = {
+    "tocUrl": DEFAULT_TOC_URL,
+    "provider": "sudact.ru",
+    "version": "2026.04.06.full.v3",
+    "instructions": [
+        {
+            "id": "pte",
+            "title": "ПТЭ",
+            "shortDescription": "Правила технической эксплуатации железных дорог Российской Федерации",
+            "version": "Приказ Минтранса России от 23.06.2022 N 250",
+            "rootPath": DEFAULT_RULES_PATH,
+            "includePrefixes": [DEFAULT_RULES_PATH],
+            "excludePrefixes": [
+                DEFAULT_RULES_PATH + "prilozhenie-n-1/",
+                DEFAULT_RULES_PATH + "prilozhenie-n-2/",
+            ],
+        },
+        {
+            "id": "isi",
+            "title": "ИСИ",
+            "shortDescription": "Инструкция по сигнализации на железнодорожном транспорте Российской Федерации",
+            "version": "Приложение N 1 к ПТЭ (Приказ Минтранса России N 250)",
+            "rootPath": DEFAULT_RULES_PATH + "prilozhenie-n-1/",
+            "includePrefixes": [DEFAULT_RULES_PATH + "prilozhenie-n-1/"],
+        },
+        {
+            "id": "idp",
+            "title": "ИДП",
+            "shortDescription": "Инструкция по организации движения поездов и маневровой работы",
+            "version": "Приложение N 2 к ПТЭ (Приказ Минтранса России N 250)",
+            "rootPath": DEFAULT_RULES_PATH + "prilozhenie-n-2/",
+            "includePrefixes": [DEFAULT_RULES_PATH + "prilozhenie-n-2/"],
+        },
+    ],
+}
+DEFAULT_SOURCES_CONFIG_PATH = Path("assets/instructions/sources.v2.json")
 
 USER_AGENT = (
     "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 "
@@ -195,6 +230,81 @@ class TocItem:
     parent_href: Optional[str]
 
 
+@dataclass
+class InstructionDefinition:
+    id: str
+    title: str
+    short_description: str
+    version: str
+    root_path: str
+    include_prefixes: List[str]
+    exclude_prefixes: List[str]
+
+
+@dataclass
+class SourceConfig:
+    provider: str
+    toc_url: str
+    version: str
+    instructions: List[InstructionDefinition]
+
+
+def load_source_config(path: Optional[Path] = None) -> SourceConfig:
+    config_path = path or DEFAULT_SOURCES_CONFIG_PATH
+    if config_path.exists():
+        raw = json.loads(config_path.read_text(encoding="utf-8"))
+    else:
+        raw = DEFAULT_SOURCE_DEFINITIONS
+
+    toc_url = str(raw.get("tocUrl") or DEFAULT_TOC_URL).strip()
+    provider = str(raw.get("provider") or "unknown").strip()
+    version = str(raw.get("version") or "local").strip()
+    source_items = raw.get("instructions") or []
+    if not isinstance(source_items, list) or not source_items:
+        raise RuntimeError("Source config must contain a non-empty 'instructions' list.")
+
+    instructions: List[InstructionDefinition] = []
+    seen_ids = set()
+    for item in source_items:
+        if not isinstance(item, dict):
+            continue
+        instruction_id = str(item.get("id") or "").strip().lower()
+        if not instruction_id:
+            raise RuntimeError("Instruction definition is missing 'id'.")
+        if instruction_id in seen_ids:
+            raise RuntimeError(f"Duplicate instruction id in config: {instruction_id}")
+        seen_ids.add(instruction_id)
+
+        root_path = normalize_path(str(item.get("rootPath") or ""))
+        include_prefixes = item.get("includePrefixes") or [root_path]
+        exclude_prefixes = item.get("excludePrefixes") or []
+        normalized_include = [normalize_path(str(prefix)) for prefix in include_prefixes if str(prefix).strip()]
+        normalized_exclude = [normalize_path(str(prefix)) for prefix in exclude_prefixes if str(prefix).strip()]
+        if not normalized_include:
+            normalized_include = [root_path]
+        if not root_path:
+            root_path = normalized_include[0]
+
+        instructions.append(
+            InstructionDefinition(
+                id=instruction_id,
+                title=str(item.get("title") or instruction_id.upper()),
+                short_description=str(item.get("shortDescription") or ""),
+                version=str(item.get("version") or ""),
+                root_path=root_path,
+                include_prefixes=normalized_include,
+                exclude_prefixes=normalized_exclude,
+            )
+        )
+
+    return SourceConfig(
+        provider=provider,
+        toc_url=toc_url,
+        version=version,
+        instructions=instructions,
+    )
+
+
 def request_text(url: str, timeout: int = 35, retries: int = 2) -> str:
     last_error: Optional[Exception] = None
     for attempt in range(retries + 1):
@@ -250,10 +360,10 @@ def split_number_title(value: str) -> Tuple[str, str]:
         return "", ""
 
     patterns = [
-        r"^(РџСЂРёР»РѕР¶РµРЅРёРµ\s+N\s*\d+[Р°-СЏРђ-РЇA-Za-z0-9-]*)\.\s*(.+)$",
+        r"^([A-Za-zА-Яа-яЁё]+(?:\s+[A-Za-zА-Яа-яЁё]+)*\s+N\s*\d+[A-Za-zА-Яа-яЁё0-9-]*)\.?\s*(.+)$",
         r"^([IVXLCDM]+)\.\s+(.+)$",
-        r"^(\d+(?:\.\d+)*)\.\s+(.+)$",
-        r"^(\d+(?:\.\d+)*)\)\s+(.+)$",
+        r"^(\d+(?:\.\d+)*)[.)]\s+(.+)$",
+        r"^((?:пункт|раздел|глава)\s+\d+(?:\.\d+)*)[.)]?\s*(.+)$",
     ]
     for pattern in patterns:
         match = re.match(pattern, text, flags=re.IGNORECASE)
@@ -263,8 +373,11 @@ def split_number_title(value: str) -> Tuple[str, str]:
 
 
 def node_type_for_relative_depth(depth: int, title: str) -> str:
+    normalized_title = normalize_space(title).lower()
     if depth <= 0:
         return "document"
+    if normalized_title.startswith("глава ") or re.match(r"^[ivxlcdm]+\.\s", normalized_title):
+        return "chapter"
     if depth == 1:
         return "chapter"
     if depth == 2:
@@ -279,8 +392,12 @@ def node_type_for_relative_depth(depth: int, title: str) -> str:
 MAIN_POINT_RE = re.compile(r"^(\d+(?:\.\d+)*)\.\s*(.*)$")
 SUBPOINT_DIGIT_RE = re.compile(r"^(\d+)\)\s*(.*)$")
 SUBPOINT_PAREN_DIGIT_RE = re.compile(r"^\((\d+)\)\s*(.*)$")
-SUBPOINT_LETTER_RE = re.compile(r"^([Р°-СЏС‘a-z])\)\s*(.*)$", flags=re.IGNORECASE)
-SUBPOINT_BULLET_RE = re.compile(r"^[\-вЂ”вЂ“]\s*(.*)$")
+SUBPOINT_LETTER_RE = re.compile(r"^([а-яёa-z])\)\s*(.*)$", flags=re.IGNORECASE)
+SUBPOINT_BULLET_RE = re.compile(r"^[-—–]\s*(.*)$")
+LIST_MARKER_RE = re.compile(
+    r"^(?:\d+(?:\.\d+)*[.)]|[а-яёa-z]\)|\(\d+\)|[-—–])\s+",
+    flags=re.IGNORECASE,
+)
 
 
 def split_nonempty_paragraphs(text: str) -> List[str]:
@@ -289,12 +406,34 @@ def split_nonempty_paragraphs(text: str) -> List[str]:
     raw_parts = re.split(r"\n{2,}", text)
     out: List[str] = []
     for part in raw_parts:
-        normalized = normalize_space(part)
-        if not normalized:
+        chunk = str(part or "").replace("\r", "")
+        if not chunk.strip():
             continue
-        if re.fullmatch(r"[-=_]{6,}", normalized):
+        lines = [normalize_space(line) for line in chunk.split("\n")]
+        lines = [line for line in lines if line]
+        if not lines:
             continue
-        out.append(normalized)
+
+        buffer: List[str] = []
+
+        def flush_buffer() -> None:
+            if not buffer:
+                return
+            merged = normalize_space(" ".join(buffer))
+            buffer.clear()
+            if not merged:
+                return
+            if re.fullmatch(r"[-=_]{6,}", merged):
+                return
+            out.append(merged)
+
+        for line in lines:
+            if LIST_MARKER_RE.match(line):
+                flush_buffer()
+                out.append(line)
+            else:
+                buffer.append(line)
+        flush_buffer()
     return out
 
 
@@ -444,14 +583,33 @@ def make_node_id(instruction_id: str, href: str) -> str:
     return f"{instruction_id}-{token}"
 
 
-def classify_instruction(href: str) -> Optional[str]:
-    if href.startswith(IDP_PATH):
-        return "idp"
-    if href.startswith(ISI_PATH):
-        return "isi"
-    if href.startswith(RULES_PATH):
-        return "pte"
-    return None
+def match_instruction_definition(href: str, definitions: List[InstructionDefinition]) -> Optional[InstructionDefinition]:
+    path = normalize_path(href)
+    best: Optional[InstructionDefinition] = None
+    best_match_len = -1
+    for definition in definitions:
+        if any(path.startswith(prefix) for prefix in definition.exclude_prefixes):
+            continue
+        matching_prefixes = [prefix for prefix in definition.include_prefixes if path.startswith(prefix)]
+        if not matching_prefixes:
+            continue
+        prefix_len = max(len(prefix) for prefix in matching_prefixes)
+        if prefix_len > best_match_len:
+            best = definition
+            best_match_len = prefix_len
+    return best
+
+
+def classify_toc_items(
+    toc_items: List[TocItem],
+    definitions: List[InstructionDefinition],
+) -> Dict[str, str]:
+    assignments: Dict[str, str] = {}
+    for item in toc_items:
+        matched = match_instruction_definition(item.href, definitions)
+        if matched:
+            assignments[item.href] = matched.id
+    return assignments
 
 
 def fetch_page_payload(path: str) -> Dict[str, str]:
@@ -467,28 +625,27 @@ def fetch_page_payload(path: str) -> Dict[str, str]:
 
 
 def build_instruction(
-    instruction_id: str,
-    title: str,
-    short_description: str,
-    version: str,
-    root_path: str,
+    definition: InstructionDefinition,
     toc_items: List[TocItem],
+    assignments: Dict[str, str],
     fetched_pages: Dict[str, Dict[str, str]],
     fetched_at: str,
 ) -> Dict[str, object]:
-    branch = [item for item in toc_items if classify_instruction(item.href) == instruction_id]
+    instruction_id = definition.id
+    branch = [item for item in toc_items if assignments.get(item.href) == instruction_id]
     branch.sort(key=lambda item: item.order)
     if not branch:
         raise RuntimeError(f"No TOC entries found for instruction '{instruction_id}'")
 
     by_href = {item.href: item for item in branch}
+    root_path = normalize_path(definition.root_path)
     if root_path not in by_href:
         raise RuntimeError(f"Root path '{root_path}' not found for '{instruction_id}'")
 
     root_item = by_href[root_path]
     root_page = fetched_pages.get(root_path, {})
     root_number, root_title = split_number_title(root_item.title)
-    doc_title = root_title or root_page.get("heading") or title
+    doc_title = root_title or root_page.get("heading") or definition.title
 
     nodes: List[Dict[str, object]] = []
     document_node_id = f"{instruction_id}-document"
@@ -570,29 +727,25 @@ def build_instruction(
 
     return {
         "id": instruction_id,
-        "title": title,
-        "shortDescription": short_description,
-        "version": version,
+        "title": definition.title,
+        "shortDescription": definition.short_description,
+        "version": definition.version,
         "sourceUrl": urljoin(BASE_URL, root_path),
         "nodes": nodes,
     }
 
 
-def build_dataset(max_workers: int = 6) -> Dict[str, object]:
-    toc_html = request_text(TOC_URL)
+def build_dataset(max_workers: int = 6, source_config_path: Optional[Path] = None) -> Dict[str, object]:
+    source_config = load_source_config(source_config_path)
+    toc_html = request_text(source_config.toc_url)
     toc_items = parse_toc_items(toc_html)
-
-    instruction_roots = {
-        "pte": RULES_PATH,
-        "isi": ISI_PATH,
-        "idp": IDP_PATH,
-    }
+    assignments = classify_toc_items(toc_items, source_config.instructions)
 
     target_paths = sorted(
         {
             item.href
             for item in toc_items
-            if classify_instruction(item.href) in {"pte", "isi", "idp"}
+            if item.href in assignments
         }
     )
 
@@ -617,50 +770,38 @@ def build_dataset(max_workers: int = 6) -> Dict[str, object]:
 
     now = datetime.now(timezone.utc).replace(microsecond=0).isoformat().replace("+00:00", "Z")
 
-    instructions = [
-        build_instruction(
-            instruction_id="pte",
-            title="РџРўР­",
-            short_description="РџСЂР°РІРёР»Р° С‚РµС…РЅРёС‡РµСЃРєРѕР№ СЌРєСЃРїР»СѓР°С‚Р°С†РёРё Р¶РµР»РµР·РЅС‹С… РґРѕСЂРѕРі Р РѕСЃСЃРёР№СЃРєРѕР№ Р¤РµРґРµСЂР°С†РёРё",
-            version="РџСЂРёРєР°Р· РњРёРЅС‚СЂР°РЅСЃР° Р РѕСЃСЃРёРё РѕС‚ 23.06.2022 N 250",
-            root_path=instruction_roots["pte"],
-            toc_items=toc_items,
-            fetched_pages=fetched_pages,
-            fetched_at=now,
-        ),
-        build_instruction(
-            instruction_id="isi",
-            title="РРЎР",
-            short_description="РРЅСЃС‚СЂСѓРєС†РёСЏ РїРѕ СЃРёРіРЅР°Р»РёР·Р°С†РёРё РЅР° Р¶РµР»РµР·РЅРѕРґРѕСЂРѕР¶РЅРѕРј С‚СЂР°РЅСЃРїРѕСЂС‚Рµ Р РѕСЃСЃРёР№СЃРєРѕР№ Р¤РµРґРµСЂР°С†РёРё",
-            version="РџСЂРёР»РѕР¶РµРЅРёРµ N 1 Рє РџРўР­ (РџСЂРёРєР°Р· РњРёРЅС‚СЂР°РЅСЃР° Р РѕСЃСЃРёРё N 250)",
-            root_path=instruction_roots["isi"],
-            toc_items=toc_items,
-            fetched_pages=fetched_pages,
-            fetched_at=now,
-        ),
-        build_instruction(
-            instruction_id="idp",
-            title="РР”Рџ",
-            short_description=(
-                "РРЅСЃС‚СЂСѓРєС†РёСЏ РїРѕ РѕСЂРіР°РЅРёР·Р°С†РёРё РґРІРёР¶РµРЅРёСЏ РїРѕРµР·РґРѕРІ Рё РјР°РЅРµРІСЂРѕРІРѕР№ СЂР°Р±РѕС‚С‹ "
-                "РЅР° Р¶РµР»РµР·РЅРѕРґРѕСЂРѕР¶РЅРѕРј С‚СЂР°РЅСЃРїРѕСЂС‚Рµ Р РѕСЃСЃРёР№СЃРєРѕР№ Р¤РµРґРµСЂР°С†РёРё"
-            ),
-            version="РџСЂРёР»РѕР¶РµРЅРёРµ N 2 Рє РџРўР­ (РџСЂРёРєР°Р· РњРёРЅС‚СЂР°РЅСЃР° Р РѕСЃСЃРёРё N 250)",
-            root_path=instruction_roots["idp"],
-            toc_items=toc_items,
-            fetched_pages=fetched_pages,
-            fetched_at=now,
-        ),
-    ]
+    instructions = []
+    for definition in source_config.instructions:
+        if definition.root_path not in assignments:
+            matched_root = match_instruction_definition(definition.root_path, source_config.instructions)
+            if not matched_root or matched_root.id != definition.id:
+                print(
+                    f"Warning: definition '{definition.id}' root path {definition.root_path} is not classified by prefixes.",
+                    file=sys.stderr,
+                )
+        try:
+            instruction_payload = build_instruction(
+                definition=definition,
+                toc_items=toc_items,
+                assignments=assignments,
+                fetched_pages=fetched_pages,
+                fetched_at=now,
+            )
+            instructions.append(instruction_payload)
+        except RuntimeError as err:
+            print(f"Warning: skipped instruction '{definition.id}': {err}", file=sys.stderr)
+
+    if not instructions:
+        raise RuntimeError("No instructions were built. Check source config and TOC mapping.")
 
     return {
-        "version": "2026.04.06.full.v2",
+        "version": source_config.version or "2026.04.06.full.v3",
         "updatedAt": now,
         "source": {
-            "provider": "sudact.ru",
-            "tocUrl": TOC_URL,
+            "provider": source_config.provider,
+            "tocUrl": source_config.toc_url,
             "generatedAt": now,
-            "notes": "РџРѕР»РЅС‹Рµ С‚РµРєСЃС‚С‹ СЃРѕР±СЂР°РЅС‹ СЃ РѕС‚РєСЂС‹С‚С‹С… СЃС‚СЂР°РЅРёС† РЅРѕСЂРјР°С‚РёРІРЅРѕРіРѕ РґРѕРєСѓРјРµРЅС‚Р°.",
+            "notes": "Полные тексты собраны из открытых источников по конфигу инструкций.",
         },
         "instructions": instructions,
     }
@@ -679,6 +820,11 @@ def main() -> int:
         default=6,
         help="Concurrent fetch workers (default: 6).",
     )
+    parser.add_argument(
+        "--sources-config",
+        default=str(DEFAULT_SOURCES_CONFIG_PATH),
+        help="Path to source definitions JSON (default: assets/instructions/sources.v2.json).",
+    )
     args = parser.parse_args()
 
     outputs = args.output or [
@@ -686,7 +832,11 @@ def main() -> int:
         "data/instructions/catalog.v2.json",
     ]
 
-    dataset = build_dataset(max_workers=max(1, args.workers))
+    source_config_path = Path(args.sources_config) if args.sources_config else None
+    dataset = build_dataset(
+        max_workers=max(1, args.workers),
+        source_config_path=source_config_path,
+    )
     payload = json.dumps(dataset, ensure_ascii=False, indent=2)
 
     for output in outputs:
