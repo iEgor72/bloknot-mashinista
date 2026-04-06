@@ -1313,6 +1313,42 @@
       color: rgba(244, 247, 255, 0.66);
     }
 
+    .instructions-breadcrumb {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      flex-wrap: nowrap;
+      overflow-x: auto;
+      padding: 7px 2px 2px;
+      margin-top: 4px;
+      margin-bottom: 2px;
+      scrollbar-width: thin;
+    }
+
+    .instruction-breadcrumb-item {
+      flex: 0 0 auto;
+      max-width: 210px;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      font-size: 11px;
+      font-weight: 600;
+      color: rgba(204, 231, 255, 0.76);
+    }
+
+    .instruction-breadcrumb-item.is-current {
+      color: rgba(246, 250, 255, 0.96);
+      font-weight: 700;
+    }
+
+    .instruction-breadcrumb-sep {
+      flex: 0 0 auto;
+      color: rgba(204, 231, 255, 0.4);
+      font-size: 11px;
+      line-height: 1;
+      margin-top: -1px;
+    }
+
     .instructions-detail-jump-list {
       position: sticky;
       top: 6px;
@@ -1342,6 +1378,9 @@
       cursor: pointer;
       -webkit-tap-highlight-color: transparent;
       flex: 0 0 auto;
+      max-width: 168px;
+      overflow: hidden;
+      text-overflow: ellipsis;
     }
 
     .instruction-section-item {
@@ -1415,6 +1454,9 @@
       white-space: nowrap;
       -webkit-tap-highlight-color: transparent;
       flex: 0 0 auto;
+      max-width: 176px;
+      overflow: hidden;
+      text-overflow: ellipsis;
     }
 
     .instruction-jump-btn:active {
@@ -1513,6 +1555,11 @@
       transform: translateY(1px);
     }
 
+    .instruction-child-item.is-active {
+      border-color: rgba(141, 124, 255, 0.45);
+      box-shadow: 0 12px 24px rgba(141, 124, 255, 0.14), inset 0 1px 0 rgba(255,255,255,0.08);
+    }
+
     .instruction-child-title {
       font-size: 13px;
       font-weight: 700;
@@ -1525,6 +1572,36 @@
       color: rgba(244, 247, 255, 0.52);
       text-transform: uppercase;
       letter-spacing: 0.05em;
+    }
+
+    .instruction-parent-context,
+    .instruction-focus-callout {
+      border-radius: 16px;
+      border: 1px solid rgba(255,255,255,0.1);
+      background:
+        linear-gradient(180deg, rgba(255,255,255,0.07), rgba(255,255,255,0.02)),
+        rgba(15, 19, 38, 0.68);
+      padding: 10px 12px;
+      margin-bottom: 10px;
+      box-shadow: 0 8px 18px rgba(6, 9, 18, 0.16), inset 0 1px 0 rgba(255,255,255,0.06);
+    }
+
+    .instruction-parent-context-label,
+    .instruction-focus-kicker {
+      font-size: 10px;
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+      color: rgba(194, 229, 255, 0.72);
+      margin-bottom: 4px;
+      font-weight: 700;
+    }
+
+    .instruction-parent-context-value,
+    .instruction-focus-text {
+      font-size: 13px;
+      line-height: 1.5;
+      color: rgba(244, 247, 255, 0.92);
+      font-weight: 600;
     }
 
     .pro-blur-overlay {
