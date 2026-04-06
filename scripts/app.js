@@ -363,12 +363,12 @@
     var installPromptDismissed = readInstallPromptDismissed();
     var PRO_STORAGE_KEY = 'shift_tracker_pro_v1';
     var proStore = loadProStore();
-    var INSTRUCTIONS_DATA_URL = '/assets/instructions/catalog.v1.json';
-    var INSTRUCTIONS_CACHE_FALLBACK_KEY = 'shift_tracker_instructions_cache_v1';
-    var INSTRUCTIONS_INDEX_FALLBACK_KEY = 'shift_tracker_instructions_index_v1';
-    var INSTRUCTIONS_META_FALLBACK_KEY = 'shift_tracker_instructions_meta_v1';
-    var INSTRUCTIONS_DB_NAME = 'shift_tracker_instructions_v1';
-    var INSTRUCTIONS_DB_VERSION = 1;
+    var INSTRUCTIONS_DATA_URL = '/assets/instructions/catalog.v2.json';
+    var INSTRUCTIONS_CACHE_FALLBACK_KEY = 'shift_tracker_instructions_cache_v2';
+    var INSTRUCTIONS_INDEX_FALLBACK_KEY = 'shift_tracker_instructions_index_v2';
+    var INSTRUCTIONS_META_FALLBACK_KEY = 'shift_tracker_instructions_meta_v2';
+    var INSTRUCTIONS_DB_NAME = 'shift_tracker_instructions_v2';
+    var INSTRUCTIONS_DB_VERSION = 2;
     var INSTRUCTIONS_DB_STORES = {
       meta: 'instructions_meta',
       content: 'instructions_content',
@@ -1311,21 +1311,71 @@
           id: 'pte',
           title: 'ПТЭ',
           shortDescription: 'Правила технической эксплуатации железных дорог Российской Федерации',
-          sections: []
+          nodes: []
         },
         {
           id: 'isi',
           title: 'ИСИ',
           shortDescription: 'Инструкция по сигнализации на железнодорожном транспорте',
-          sections: []
+          nodes: []
         },
         {
           id: 'idp',
           title: 'ИДП',
-          shortDescription: 'Инструкция по движению поездов и маневровой работе на железнодорожном транспорте',
-          sections: []
+          shortDescription: 'Инструкция по организации движения поездов и маневровой работы',
+          nodes: []
         }
       ];
+    }
+
+    function normalizeInstructionNode(rawNode, instructionId, index) {
+      var safe = rawNode || {};
+      var nodeId = String(safe.id || (instructionId + '-node-' + (index + 1)));
+      var rawContent = safe.content !== undefined && safe.content !== null
+        ? String(safe.content)
+        : String(safe.plainText || '');
+      var plainText = safe.plainText !== undefined && safe.plainText !== null
+        ? String(safe.plainText)
+        : stripHtmlToText(rawContent);
+      var normalizedType = String(safe.type || '').toLowerCase();
+      if (
+        normalizedType !== 'document' &&
+        normalizedType !== 'chapter' &&
+        normalizedType !== 'section' &&
+        normalizedType !== 'subsection' &&
+        normalizedType !== 'point'
+      ) {
+        normalizedType = 'section';
+      }
+      var source = safe.source && typeof safe.source === 'object' ? safe.source : {};
+      return {
+        id: nodeId,
+        instructionId: instructionId,
+        parentId: safe.parentId !== undefined && safe.parentId !== null && String(safe.parentId)
+          ? String(safe.parentId)
+          : null,
+        type: normalizedType,
+        order: Math.max(0, parseInt(safe.order, 10) || 0),
+        number: safe.number !== undefined && safe.number !== null ? String(safe.number) : '',
+        title: String(safe.title || ('Раздел ' + (index + 1))),
+        content: rawContent,
+        plainText: String(plainText || '').replace(/\r\n/g, '\n').trim(),
+        source: {
+          url: source.url ? String(source.url) : (safe.sourceUrl ? String(safe.sourceUrl) : ''),
+          path: source.path ? String(source.path) : '',
+          fetchedAt: source.fetchedAt ? String(source.fetchedAt) : ''
+        }
+      };
+    }
+
+    function compareInstructionNodeOrder(a, b) {
+      var aOrder = parseInt(a.order, 10) || 0;
+      var bOrder = parseInt(b.order, 10) || 0;
+      if (aOrder !== bOrder) return aOrder - bOrder;
+      if ((a.number || '') !== (b.number || '')) {
+        return String(a.number || '').localeCompare(String(b.number || ''), 'ru');
+      }
+      return String(a.title || '').localeCompare(String(b.title || ''), 'ru');
     }
 
     function normalizeInstructionsPayload(payload) {
@@ -1340,26 +1390,76 @@
       for (var i = 0; i < listSource.length; i++) {
         var rawInstruction = listSource[i] || {};
         var instructionId = String(rawInstruction.id || ('instruction-' + (i + 1)));
-        var sectionsRaw = Array.isArray(rawInstruction.sections) ? rawInstruction.sections : [];
-        var sections = [];
-        for (var s = 0; s < sectionsRaw.length; s++) {
-          var rawSection = sectionsRaw[s] || {};
-          var sectionId = String(rawSection.id || (instructionId + '-section-' + (s + 1)));
-          var rawContent = rawSection.content !== undefined && rawSection.content !== null
-            ? String(rawSection.content)
-            : String(rawSection.plainText || '');
-          var plainText = rawSection.plainText
-            ? String(rawSection.plainText).replace(/\s+/g, ' ').trim()
-            : stripHtmlToText(rawContent);
-          sections.push({
-            id: sectionId,
+        var rawNodes = Array.isArray(rawInstruction.nodes) ? rawInstruction.nodes : [];
+
+        if (!rawNodes.length && Array.isArray(rawInstruction.sections)) {
+          for (var s = 0; s < rawInstruction.sections.length; s++) {
+            var legacySection = rawInstruction.sections[s] || {};
+            var legacyLevel = Math.max(1, parseInt(legacySection.level, 10) || 1);
+            rawNodes.push({
+              id: legacySection.id || (instructionId + '-section-' + (s + 1)),
+              instructionId: instructionId,
+              parentId: legacySection.parentId !== undefined ? legacySection.parentId : null,
+              type: legacyLevel === 1 ? 'chapter' : (legacyLevel === 2 ? 'section' : 'subsection'),
+              order: s + 1,
+              number: legacySection.number || '',
+              title: legacySection.title || ('Раздел ' + (s + 1)),
+              content: legacySection.content || '',
+              plainText: legacySection.plainText || ''
+            });
+          }
+        }
+
+        var nodes = [];
+        for (var n = 0; n < rawNodes.length; n++) {
+          nodes.push(normalizeInstructionNode(rawNodes[n], instructionId, n));
+        }
+
+        var documentNodeId = '';
+        for (var dn = 0; dn < nodes.length; dn++) {
+          if (nodes[dn].type === 'document' && !nodes[dn].parentId) {
+            documentNodeId = nodes[dn].id;
+            break;
+          }
+        }
+        if (!documentNodeId) {
+          documentNodeId = instructionId + '-document';
+          nodes.unshift({
+            id: documentNodeId,
             instructionId: instructionId,
-            title: String(rawSection.title || ('Раздел ' + (s + 1))),
-            parentId: rawSection.parentId !== undefined ? rawSection.parentId : null,
-            level: Math.max(1, parseInt(rawSection.level, 10) || 1),
-            content: rawContent,
-            plainText: plainText
+            parentId: null,
+            type: 'document',
+            order: 0,
+            number: '',
+            title: String(rawInstruction.title || instructionId.toUpperCase()),
+            content: '',
+            plainText: '',
+            source: {
+              url: rawInstruction.sourceUrl ? String(rawInstruction.sourceUrl) : '',
+              path: '',
+              fetchedAt: ''
+            }
           });
+        }
+
+        var nodeIdMap = {};
+        for (var m = 0; m < nodes.length; m++) {
+          var node = nodes[m];
+          if (nodeIdMap[node.id]) {
+            node.id = node.id + '-' + (m + 1);
+          }
+          nodeIdMap[node.id] = true;
+        }
+
+        for (var p = 0; p < nodes.length; p++) {
+          nodes[p].instructionId = instructionId;
+          if (!nodes[p].parentId || !nodeIdMap[nodes[p].parentId] || nodes[p].parentId === nodes[p].id) {
+            if (nodes[p].id !== documentNodeId) {
+              nodes[p].parentId = documentNodeId;
+            } else {
+              nodes[p].parentId = null;
+            }
+          }
         }
 
         normalizedInstructions.push({
@@ -1369,7 +1469,7 @@
           version: rawInstruction.version ? String(rawInstruction.version) : '',
           sourceUrl: rawInstruction.sourceUrl ? String(rawInstruction.sourceUrl) : '',
           updatedAt: rawInstruction.updatedAt ? String(rawInstruction.updatedAt) : '',
-          sections: sections
+          nodes: nodes
         });
       }
 
@@ -1380,27 +1480,124 @@
       };
     }
 
+    function getInstructionStructure(instruction) {
+      var emptyStructure = {
+        root: null,
+        nodeById: {},
+        childrenByParent: {},
+        traversal: [],
+        depthById: {}
+      };
+      if (!instruction || !Array.isArray(instruction.nodes) || !instruction.nodes.length) {
+        return emptyStructure;
+      }
+
+      var cacheKey = instruction.nodes.length + '::' + (instruction.nodes[0].id || '') + '::' + (instruction.nodes[instruction.nodes.length - 1].id || '');
+      if (instruction._nodeStructureCache && instruction._nodeStructureCache.key === cacheKey) {
+        return instruction._nodeStructureCache.value;
+      }
+
+      var nodeById = {};
+      for (var i = 0; i < instruction.nodes.length; i++) {
+        nodeById[instruction.nodes[i].id] = instruction.nodes[i];
+      }
+
+      var root = null;
+      for (var r = 0; r < instruction.nodes.length; r++) {
+        if (instruction.nodes[r].type === 'document' && !instruction.nodes[r].parentId) {
+          root = instruction.nodes[r];
+          break;
+        }
+      }
+      if (!root) {
+        for (var rr = 0; rr < instruction.nodes.length; rr++) {
+          if (!instruction.nodes[rr].parentId) {
+            root = instruction.nodes[rr];
+            break;
+          }
+        }
+      }
+      if (!root) root = instruction.nodes[0];
+
+      var childrenByParent = {};
+      for (var c = 0; c < instruction.nodes.length; c++) {
+        var current = instruction.nodes[c];
+        if (current.id === root.id) continue;
+        var parentId = current.parentId && nodeById[current.parentId] ? current.parentId : root.id;
+        if (!childrenByParent[parentId]) {
+          childrenByParent[parentId] = [];
+        }
+        childrenByParent[parentId].push(current);
+      }
+
+      var parentKeys = Object.keys(childrenByParent);
+      for (var pk = 0; pk < parentKeys.length; pk++) {
+        childrenByParent[parentKeys[pk]].sort(compareInstructionNodeOrder);
+      }
+
+      var traversal = [];
+      var depthById = {};
+      function walk(node, depth, seen) {
+        if (!node || seen[node.id]) return;
+        seen[node.id] = true;
+        depthById[node.id] = depth;
+        traversal.push({
+          node: node,
+          depth: depth
+        });
+        var children = childrenByParent[node.id] || [];
+        for (var j = 0; j < children.length; j++) {
+          walk(children[j], depth + 1, seen);
+        }
+      }
+      walk(root, 0, {});
+
+      var result = {
+        root: root,
+        nodeById: nodeById,
+        childrenByParent: childrenByParent,
+        traversal: traversal,
+        depthById: depthById
+      };
+      instruction._nodeStructureCache = {
+        key: cacheKey,
+        value: result
+      };
+      return result;
+    }
+
     function buildInstructionsSearchIndex(instructions) {
       var docs = [];
       for (var i = 0; i < (instructions || []).length; i++) {
         var instruction = instructions[i];
-        for (var s = 0; s < (instruction.sections || []).length; s++) {
-          var section = instruction.sections[s];
+        var structure = getInstructionStructure(instruction);
+        var rootId = structure.root ? structure.root.id : '';
+        for (var t = 0; t < structure.traversal.length; t++) {
+          var entry = structure.traversal[t];
+          var node = entry.node;
+          if (!node || node.id === rootId) continue;
+          var nodeText = String(node.plainText || stripHtmlToText(node.content || ''));
+          var sectionTitle = ((node.number ? (node.number + ' ') : '') + (node.title || '')).trim();
           var joinedText = [
             instruction.title || '',
-            section.title || '',
-            section.plainText || ''
+            node.number || '',
+            node.title || '',
+            nodeText
           ].join(' ');
+
           docs.push({
-            id: instruction.id + '::' + section.id,
+            id: instruction.id + '::' + node.id,
             instructionId: instruction.id,
             instructionTitle: instruction.title || '',
             instructionTitleNormalized: normalizeSearchText(instruction.title || ''),
-            sectionId: section.id,
-            sectionTitle: section.title || '',
-            sectionTitleNormalized: normalizeSearchText(section.title || ''),
-            text: section.plainText || '',
-            sectionTextNormalized: normalizeSearchText(section.plainText || ''),
+            sectionId: node.id,
+            sectionTitle: sectionTitle || node.title || '',
+            sectionTitleNormalized: normalizeSearchText(sectionTitle || node.title || ''),
+            sectionNumberNormalized: normalizeSearchText(node.number || ''),
+            sectionType: node.type || '',
+            depth: entry.depth || 0,
+            text: nodeText,
+            sectionTextNormalized: normalizeSearchText(nodeText),
             normalized: normalizeSearchText(joinedText)
           });
         }
@@ -1688,12 +1885,30 @@
       return null;
     }
 
-    function findSectionById(instruction, sectionId) {
-      if (!instruction || !sectionId) return null;
-      for (var i = 0; i < (instruction.sections || []).length; i++) {
-        if (instruction.sections[i].id === sectionId) return instruction.sections[i];
+    function findInstructionNodeById(instruction, nodeId) {
+      if (!instruction || !nodeId) return null;
+      var structure = getInstructionStructure(instruction);
+      return structure.nodeById[nodeId] || null;
+    }
+
+    function formatInstructionNodeLabel(node, fallbackTitle) {
+      var title = String((node && node.title) || fallbackTitle || '').trim();
+      var number = String((node && node.number) || '').trim();
+      if (!number) return title;
+      if (!title) return number;
+      if (/^приложение/i.test(number) || /^[ivxlcdm]+$/i.test(number) || /^\d+(\.\d+)*$/.test(number)) {
+        return number + '. ' + title;
       }
-      return null;
+      return number + ' ' + title;
+    }
+
+    function getInstructionNodeTypeLabel(type) {
+      if (type === 'document') return 'документ';
+      if (type === 'chapter') return 'глава';
+      if (type === 'section') return 'раздел';
+      if (type === 'subsection') return 'подраздел';
+      if (type === 'point') return 'пункт';
+      return '';
     }
 
     function buildSearchSnippet(text, queryTerms) {
@@ -1754,6 +1969,7 @@
         var score = 0;
         var instructionNorm = doc.instructionTitleNormalized || '';
         var sectionNorm = doc.sectionTitleNormalized || '';
+        var sectionNumberNorm = doc.sectionNumberNormalized || '';
         var textNorm = doc.sectionTextNormalized || '';
         var textIdx = textNorm.indexOf(normalizedQuery);
 
@@ -1764,15 +1980,19 @@
           }
         }
 
-        if (sectionNorm.indexOf(normalizedQuery) !== -1) score += 820;
+        if (sectionNorm.indexOf(normalizedQuery) !== -1) score += 920;
         else {
           for (var st = 0; st < terms.length; st++) {
-            if (sectionNorm.indexOf(terms[st]) !== -1) score += 200;
+            if (sectionNorm.indexOf(terms[st]) !== -1) score += 220;
           }
         }
 
-        if (textIdx === 0) score += 520;
-        else if (textIdx > 0) score += Math.max(160, 420 - Math.min(textIdx, 260));
+        if (sectionNumberNorm && sectionNumberNorm.indexOf(normalizedQuery) !== -1) {
+          score += 760;
+        }
+
+        if (textIdx === 0) score += 560;
+        else if (textIdx > 0) score += Math.max(160, 440 - Math.min(textIdx, 280));
         else if (textNorm.indexOf(terms[0]) !== -1) score += 120;
 
         results.push({
@@ -1782,12 +2002,14 @@
           sectionTitle: doc.sectionTitle,
           snippet: buildSearchSnippet(doc.text || '', terms),
           score: score,
-          textIndex: textIdx < 0 ? 9999 : textIdx
+          textIndex: textIdx < 0 ? 9999 : textIdx,
+          depth: parseInt(doc.depth, 10) || 0
         });
       }
 
       results.sort(function(a, b) {
         if (b.score !== a.score) return b.score - a.score;
+        if (a.depth !== b.depth) return a.depth - b.depth;
         if (a.textIndex !== b.textIndex) return a.textIndex - b.textIndex;
         if (a.instructionTitle !== b.instructionTitle) return a.instructionTitle.localeCompare(b.instructionTitle, 'ru');
         return a.sectionTitle.localeCompare(b.sectionTitle, 'ru');
@@ -1841,12 +2063,27 @@
     function openInstructionSection(instructionId, sectionId) {
       var instruction = findInstructionById(instructionId);
       if (!instruction) return;
-      var section = findSectionById(instruction, sectionId);
+      var section = findInstructionNodeById(instruction, sectionId);
       if (!section) return;
       instructionsStore.selectedInstructionId = instructionId;
       instructionsStore.selectedSectionId = sectionId;
       instructionsStore.view = 'section';
       renderInstructionsScreen();
+    }
+
+    function getInstructionNodeCounters(instruction) {
+      var structure = getInstructionStructure(instruction);
+      var counters = {
+        structural: 0,
+        points: 0
+      };
+      for (var i = 0; i < structure.traversal.length; i++) {
+        var node = structure.traversal[i].node;
+        if (!node || node.type === 'document') continue;
+        if (node.type === 'point') counters.points += 1;
+        else counters.structural += 1;
+      }
+      return counters;
     }
 
     function renderInstructionsCards(isPaywalled) {
@@ -1863,8 +2100,14 @@
       var html = '';
       for (var i = 0; i < items.length; i++) {
         var instruction = items[i];
-        var sectionCount = (instruction.sections && instruction.sections.length) ? instruction.sections.length : 0;
-        var metaText = sectionCount ? (sectionCount + ' разделов') : 'Содержание внутри';
+        var counters = getInstructionNodeCounters(instruction);
+        var metaText = 'Содержание внутри';
+        if (counters.structural || counters.points) {
+          metaText = counters.structural + ' разделов';
+          if (counters.points) {
+            metaText += ' · ' + counters.points + ' пунктов';
+          }
+        }
         html += '<button class="instruction-card" type="button" data-action="open-instruction" data-instruction-id="' + escapeHtml(instruction.id) + '">' +
           '<div class="instruction-card-title">' + escapeHtml(instruction.title) + '</div>' +
           '<div class="instruction-card-description">' + escapeHtml(instruction.shortDescription || '') + '</div>' +
@@ -1916,14 +2159,22 @@
       titleEl.textContent = instruction.title || '';
       descriptionEl.textContent = instruction.shortDescription || '';
 
+      var structure = getInstructionStructure(instruction);
+      var rootId = structure.root ? structure.root.id : '';
       var html = '';
-      var sections = instruction.sections || [];
-      for (var i = 0; i < sections.length; i++) {
-        var section = sections[i];
-        var depthClass = ' instruction-section-depth-' + Math.min(3, Math.max(1, section.level || 1));
+      for (var i = 0; i < structure.traversal.length; i++) {
+        var entry = structure.traversal[i];
+        var section = entry.node;
+        if (!section || section.id === rootId || section.type === 'point') continue;
+        var depthClass = ' instruction-section-depth-' + Math.min(6, Math.max(1, entry.depth));
+        var label = formatInstructionNodeLabel(section, 'Раздел');
+        var childCount = (structure.childrenByParent[section.id] || []).length;
+        var metaParts = [];
+        if (section.type) metaParts.push(getInstructionNodeTypeLabel(section.type));
+        if (childCount) metaParts.push(childCount + ' подпунктов');
         html += '<button class="instruction-section-item' + depthClass + '" type="button" data-action="open-section" data-instruction-id="' + escapeHtml(instruction.id) + '" data-section-id="' + escapeHtml(section.id) + '">' +
-          '<span class="instruction-section-item-title">' + escapeHtml(section.title || ('Раздел ' + (i + 1))) + '</span>' +
-          '<span class="instruction-section-item-level">Уровень ' + escapeHtml(String(section.level || 1)) + '</span>' +
+          '<span class="instruction-section-item-title">' + escapeHtml(label) + '</span>' +
+          '<span class="instruction-section-item-meta">' + escapeHtml(metaParts.join(' · ')) + '</span>' +
         '</button>';
       }
 
@@ -1935,6 +2186,7 @@
       var sectionMetaEl = document.getElementById('instructionSectionMeta');
       var quickJumpEl = document.getElementById('instructionQuickJump');
       var contentEl = document.getElementById('instructionSectionContent');
+      var childNodesEl = document.getElementById('instructionChildNodes');
       if (!sectionTitleEl || !sectionMetaEl || !quickJumpEl || !contentEl) return;
 
       var instruction = findInstructionById(instructionsStore.selectedInstructionId);
@@ -1942,24 +2194,52 @@
         instructionsStore.view = 'list';
         return;
       }
-      var section = findSectionById(instruction, instructionsStore.selectedSectionId);
+      var structure = getInstructionStructure(instruction);
+      var section = findInstructionNodeById(instruction, instructionsStore.selectedSectionId);
       if (!section) {
         instructionsStore.view = 'detail';
         return;
       }
 
-      sectionTitleEl.textContent = section.title || instruction.title || '';
-      sectionMetaEl.textContent = instruction.title + (instruction.version ? (' · ' + instruction.version) : '');
+      sectionTitleEl.textContent = formatInstructionNodeLabel(section, instruction.title || '');
+      var metaParts = [instruction.title];
+      if (section.type) metaParts.push(getInstructionNodeTypeLabel(section.type));
+      if (instruction.version) metaParts.push(instruction.version);
+      sectionMetaEl.textContent = metaParts.join(' · ');
       contentEl.innerHTML = formatInstructionContentHtml(section.content || section.plainText || '');
 
+      var parentId = section.parentId && structure.nodeById[section.parentId]
+        ? section.parentId
+        : (structure.root ? structure.root.id : '');
+      var siblings = structure.childrenByParent[parentId] || [];
       var jumpHtml = '';
-      var sections = instruction.sections || [];
-      for (var i = 0; i < sections.length; i++) {
-        var jumpSection = sections[i];
+      for (var i = 0; i < siblings.length; i++) {
+        var jumpSection = siblings[i];
+        if (!jumpSection) continue;
+        if (section.type !== 'point' && jumpSection.type === 'point') continue;
         var activeClass = jumpSection.id === section.id ? ' is-active' : '';
-        jumpHtml += '<button class="instruction-jump-btn' + activeClass + '" type="button" data-action="open-section" data-instruction-id="' + escapeHtml(instruction.id) + '" data-section-id="' + escapeHtml(jumpSection.id) + '">' + escapeHtml(jumpSection.title || ('Раздел ' + (i + 1))) + '</button>';
+        jumpHtml += '<button class="instruction-jump-btn' + activeClass + '" type="button" data-action="open-section" data-instruction-id="' + escapeHtml(instruction.id) + '" data-section-id="' + escapeHtml(jumpSection.id) + '">' + escapeHtml(formatInstructionNodeLabel(jumpSection, 'Раздел')) + '</button>';
       }
       quickJumpEl.innerHTML = jumpHtml;
+
+      if (childNodesEl) {
+        var children = structure.childrenByParent[section.id] || [];
+        if (!children.length) {
+          childNodesEl.innerHTML = '';
+          childNodesEl.classList.add('hidden');
+        } else {
+          var childHtml = '<div class="section-header">Подразделы и пункты</div>';
+          for (var ch = 0; ch < children.length; ch++) {
+            var child = children[ch];
+            childHtml += '<button class="instruction-child-item" type="button" data-action="open-section" data-instruction-id="' + escapeHtml(instruction.id) + '" data-section-id="' + escapeHtml(child.id) + '">' +
+              '<span class="instruction-child-title">' + escapeHtml(formatInstructionNodeLabel(child, 'Пункт')) + '</span>' +
+              '<span class="instruction-child-meta">' + escapeHtml(getInstructionNodeTypeLabel(child.type)) + '</span>' +
+            '</button>';
+          }
+          childNodesEl.innerHTML = childHtml;
+          childNodesEl.classList.remove('hidden');
+        }
+      }
     }
 
     function renderInstructionsScreen() {

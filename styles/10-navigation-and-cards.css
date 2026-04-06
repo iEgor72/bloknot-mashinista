@@ -1308,7 +1308,7 @@
       color: rgba(244, 247, 255, 0.94);
     }
 
-    .instruction-section-item-level {
+    .instruction-section-item-meta {
       font-size: 11px;
       color: rgba(244, 247, 255, 0.5);
       text-transform: uppercase;
@@ -1316,11 +1316,23 @@
     }
 
     .instruction-section-depth-2 {
-      margin-left: 8px;
+      margin-left: 10px;
     }
 
     .instruction-section-depth-3 {
-      margin-left: 16px;
+      margin-left: 18px;
+    }
+
+    .instruction-section-depth-4 {
+      margin-left: 26px;
+    }
+
+    .instruction-section-depth-5 {
+      margin-left: 34px;
+    }
+
+    .instruction-section-depth-6 {
+      margin-left: 42px;
     }
 
     .instructions-jump-list {
@@ -1366,6 +1378,47 @@
       color: rgba(244, 247, 255, 0.9);
       white-space: pre-wrap;
       overflow-wrap: break-word;
+    }
+
+    .instructions-child-list {
+      display: grid;
+      gap: 8px;
+      margin-top: 6px;
+    }
+
+    .instruction-child-item {
+      width: 100%;
+      border: 1px solid rgba(255,255,255,0.08);
+      border-radius: 18px;
+      background:
+        linear-gradient(180deg, rgba(255,255,255,0.06), rgba(255,255,255,0.02)),
+        rgba(18, 21, 43, 0.68);
+      box-shadow: 0 12px 24px rgba(6, 9, 18, 0.18), inset 0 1px 0 rgba(255,255,255,0.06);
+      color: var(--text);
+      text-align: left;
+      display: grid;
+      gap: 4px;
+      padding: 12px 13px;
+      cursor: pointer;
+      -webkit-tap-highlight-color: transparent;
+    }
+
+    .instruction-child-item:active {
+      transform: translateY(1px);
+    }
+
+    .instruction-child-title {
+      font-size: 13px;
+      font-weight: 700;
+      line-height: 1.4;
+      color: rgba(244, 247, 255, 0.92);
+    }
+
+    .instruction-child-meta {
+      font-size: 11px;
+      color: rgba(244, 247, 255, 0.52);
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
     }
 
     .pro-blur-overlay {

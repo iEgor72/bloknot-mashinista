@@ -1,4 +1,4 @@
-const CACHE_VERSION = 'v5';
+const CACHE_VERSION = 'v6';
 const CACHE_NAME = `shift-tracker-shell-${CACHE_VERSION}`;
 const NAVIGATION_FALLBACK_URL = '/index.html';
 const NETWORK_TIMEOUT_MS = 1200;
@@ -15,7 +15,7 @@ const SHELL_URLS = [
   '/scripts/app.js',
   '/scripts/app-init.js',
   '/scripts/sw-register.js',
-  '/assets/instructions/catalog.v1.json',
+  '/assets/instructions/catalog.v2.json',
   '/sw.js'
 ];
 
