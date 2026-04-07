@@ -8,6 +8,12 @@ import {
   verifyTelegramWebAppInitData,
 } from '../features/auth/telegram-auth.js';
 
+function isAdmin(user, env) {
+  var adminId = env && env.ADMIN_TELEGRAM_ID;
+  if (!adminId) return false;
+  return String(user.id) === String(adminId);
+}
+
 function json(status, payload, extraHeaders) {
   return new Response(JSON.stringify(payload), {
     status,
@@ -78,8 +84,9 @@ export async function onRequest(context) {
         return json(401, { error: 'Unauthorized' });
       }
 
+      var enrichedSessionUser = Object.assign({}, sessionUser, { is_admin: isAdmin(sessionUser, env) });
       return json(200, {
-        user: sessionUser,
+        user: enrichedSessionUser,
         sessionToken: await createSessionToken(sessionUser, botToken),
       });
     }
@@ -99,8 +106,9 @@ export async function onRequest(context) {
 
         var sessionTokenFromWebApp = await createSessionToken(userFromWebApp, botToken);
         var cookie = await buildSessionCookie(userFromWebApp, botToken);
+        var enrichedWebAppUser = Object.assign({}, userFromWebApp, { is_admin: isAdmin(userFromWebApp, env) });
         return json(200, {
-          user: userFromWebApp,
+          user: enrichedWebAppUser,
           sessionToken: sessionTokenFromWebApp,
         }, {
           'Set-Cookie': cookie,

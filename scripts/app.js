@@ -3379,6 +3379,61 @@ var contentHtml = formatInstructionNodeContentHtml(
       for (var j = 0; j < panels.length; j++) {
         panels[j].classList.toggle('hidden', panels[j].getAttribute('data-docs-panel') !== documentationStore.activeTab);
       }
+
+      // Admin upload bar — visible only for the authenticated admin
+      var adminBar = document.getElementById('docsAdminBar');
+      if (adminBar) {
+        var isAdmin = !!(CURRENT_USER && CURRENT_USER.is_admin);
+        adminBar.classList.toggle('hidden', !isAdmin);
+      }
+    }
+
+    function uploadDocFile(file, folder) {
+      var uploadLabel = document.querySelector('.docs-upload-label');
+      var uploadBtn = document.querySelector('.docs-upload-btn');
+
+      function setUploading(on) {
+        if (uploadBtn) {
+          if (on) uploadBtn.setAttribute('data-uploading', '1');
+          else uploadBtn.removeAttribute('data-uploading');
+        }
+        if (uploadLabel) uploadLabel.textContent = on ? 'Загружается…' : 'Загрузить файл';
+      }
+
+      setUploading(true);
+
+      var formData = new FormData();
+      formData.append('file', file);
+
+      var sessionToken = CURRENT_SESSION_TOKEN || getStoredSessionToken();
+      var headers = {};
+      if (sessionToken) headers['Authorization'] = 'Bearer ' + sessionToken;
+
+      fetch(DOCS_API_URL + '?folder=' + encodeURIComponent(folder), {
+        method: 'POST',
+        headers: headers,
+        body: formData,
+        credentials: 'include'
+      })
+        .then(function(resp) { return resp.json(); })
+        .then(function(data) {
+          setUploading(false);
+          if (data && data.ok) {
+            if (uploadLabel) uploadLabel.textContent = '✓ Загружено';
+            setTimeout(function() {
+              if (uploadLabel) uploadLabel.textContent = 'Загрузить файл';
+            }, 2500);
+          } else {
+            throw new Error(data && data.error ? data.error : 'Ошибка загрузки');
+          }
+        })
+        .catch(function() {
+          setUploading(false);
+          if (uploadLabel) uploadLabel.textContent = '⚠ Ошибка';
+          setTimeout(function() {
+            if (uploadLabel) uploadLabel.textContent = 'Загрузить файл';
+          }, 3000);
+        });
     }
 
     // Alias so any leftover internal calls still resolve without throwing.
@@ -3387,6 +3442,7 @@ var contentHtml = formatInstructionNodeContentHtml(
     var API_BASE_URL = window.SHIFT_API_BASE_URL || '';
     var AUTH_API_URL = API_BASE_URL + '/api/auth';
     var SHIFTS_API_URL = API_BASE_URL + '/api/shifts';
+    var DOCS_API_URL = API_BASE_URL + '/api/docs';
     var TELEGRAM_BOT_USERNAME = 'bloknot_mashinista_bot';
     var CURRENT_USER = null;
     var AUTH_GATE = document.getElementById('authGate');
@@ -3533,7 +3589,8 @@ var contentHtml = formatInstructionNodeContentHtml(
           localStorage.setItem(CACHED_USER_STORAGE_KEY, JSON.stringify({
             id: user.id,
             display_name: user.display_name || '',
-            username: user.username || ''
+            username: user.username || '',
+            is_admin: !!user.is_admin
           }));
         } else {
           localStorage.removeItem(CACHED_USER_STORAGE_KEY);
@@ -6076,6 +6133,16 @@ if (action === 'scroll-node') {
           documentationStore.activeTab = tab;
           renderDocumentationScreen();
         }
+      });
+    }
+
+    var docsUploadInput = document.getElementById('docsUploadInput');
+    if (docsUploadInput) {
+      docsUploadInput.addEventListener('change', function(e) {
+        var file = e.target.files && e.target.files[0];
+        if (!file) return;
+        uploadDocFile(file, documentationStore.activeTab);
+        e.target.value = '';
       });
     }
 

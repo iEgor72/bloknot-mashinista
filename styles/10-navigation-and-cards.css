@@ -1158,6 +1158,40 @@
       transform: translateY(1px);
     }
 
+    /* Admin upload bar */
+    .docs-admin-bar {
+      display: flex;
+      justify-content: flex-end;
+      padding: 2px 0 12px;
+    }
+
+    .docs-upload-btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 10px 22px;
+      border-radius: 999px;
+      background: linear-gradient(135deg, rgba(141, 124, 255, 0.22), rgba(82, 215, 255, 0.12));
+      border: 1px solid rgba(141, 124, 255, 0.35);
+      color: #fff;
+      font-size: 14px;
+      font-weight: 700;
+      cursor: pointer;
+      transition: background 0.16s, box-shadow 0.16s, transform 0.16s, opacity 0.16s;
+      -webkit-tap-highlight-color: transparent;
+      user-select: none;
+    }
+
+    .docs-upload-btn:active {
+      transform: translateY(1px);
+      box-shadow: 0 4px 18px rgba(141, 124, 255, 0.32);
+    }
+
+    .docs-upload-btn[data-uploading] {
+      opacity: 0.6;
+      pointer-events: none;
+    }
+
     /* Panel show/hide */
     .docs-panel {
       display: block;
