@@ -386,18 +386,17 @@
       <section class="tab-panel" data-tab="instructions">
         <div class="docs-shell" id="docsShell">
 
-          <div class="docs-header">
-            <div class="docs-page-title">Документация</div>
+          <!-- Nav card — matches month-nav style from other sections -->
+          <div class="month-nav docs-nav-card">
+            <div class="docs-nav-title">Документация</div>
+            <div class="docs-month-tabs" role="navigation" aria-label="Разделы документации">
+              <button class="docs-tab-btn active" data-docs-tab="speeds" type="button">Скорости</button>
+              <button class="docs-tab-btn" data-docs-tab="folders" type="button">Папки</button>
+              <button class="docs-tab-btn" data-docs-tab="memos" type="button">Памятки</button>
+              <button class="docs-tab-btn" data-docs-tab="regimki" type="button">Режимки</button>
+              <button class="docs-tab-btn" data-docs-tab="instructions" type="button">Инструкции</button>
+            </div>
           </div>
-
-          <!-- Sub-tab navigation -->
-          <nav class="docs-tab-nav" aria-label="Разделы документации">
-            <button class="docs-tab-btn active" data-docs-tab="speeds" type="button">Скорости</button>
-            <button class="docs-tab-btn" data-docs-tab="folders" type="button">Папки</button>
-            <button class="docs-tab-btn" data-docs-tab="memos" type="button">Памятки</button>
-            <button class="docs-tab-btn" data-docs-tab="regimki" type="button">Режимки</button>
-            <button class="docs-tab-btn" data-docs-tab="instructions" type="button">Инструкции</button>
-          </nav>
 
           <!-- Folders panel -->
           <div class="docs-panel hidden" data-docs-panel="folders" id="docsPanelFolders">

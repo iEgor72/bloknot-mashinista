@@ -1101,60 +1101,61 @@
       padding-bottom: 20px;
     }
 
-    .docs-header {
-      padding: 8px 0 2px;
-    }
-
-    .docs-page-title {
-      font-size: 30px;
+    /* Nav card title */
+    .docs-nav-title {
+      font-size: 19px;
       font-weight: 800;
-      line-height: 1.08;
-      letter-spacing: -0.05em;
-      margin-top: 8px;
-      background: linear-gradient(135deg, #ffffff 0%, #9edcff 35%, #ff9af0 100%);
-      -webkit-background-clip: text;
-      -webkit-text-fill-color: transparent;
-      background-clip: text;
+      line-height: 1.1;
+      letter-spacing: -0.02em;
+      color: var(--text);
+      text-align: center;
+      margin-bottom: 2px;
     }
 
-    /* Sub-tab pill navigation */
-    .docs-tab-nav {
-      display: flex;
-      gap: 6px;
-      padding: 10px 0 14px;
-      overflow-x: auto;
-      -webkit-overflow-scrolling: touch;
-      scrollbar-width: none;
+    /* Tab grid — 3 cols on row 1, 2 balanced on row 2 */
+    .docs-month-tabs {
+      display: grid;
+      grid-template-columns: repeat(6, 1fr);
+      gap: 8px;
     }
 
-    .docs-tab-nav::-webkit-scrollbar {
-      display: none;
+    /* First 3 tabs: span 2 units each → fills 6 units evenly */
+    .docs-month-tabs .docs-tab-btn {
+      grid-column: span 2;
+    }
+
+    /* Last 2 tabs: span 3 units each → fills 6 units evenly */
+    .docs-month-tabs .docs-tab-btn:nth-child(4),
+    .docs-month-tabs .docs-tab-btn:nth-child(5) {
+      grid-column: span 3;
     }
 
     .docs-tab-btn {
-      flex-shrink: 0;
-      padding: 8px 18px;
-      border-radius: 999px;
+      appearance: none;
       border: none;
+      min-height: 38px;
+      border-radius: 999px;
       background: rgba(255, 255, 255, 0.05);
       color: rgba(244, 247, 255, 0.72);
       font-size: 14px;
       font-weight: 700;
       cursor: pointer;
-      transition: background 0.18s ease, color 0.18s ease, box-shadow 0.18s ease;
-      white-space: nowrap;
+      transition: background 0.16s, color 0.16s, transform 0.16s, box-shadow 0.16s;
       -webkit-tap-highlight-color: transparent;
+      white-space: nowrap;
     }
 
     .docs-tab-btn.active {
       background: linear-gradient(135deg, rgba(141, 124, 255, 0.36), rgba(82, 215, 255, 0.18));
       color: #ffffff;
-      box-shadow: 0 0 0 1px rgba(255, 255, 255, 0.14), 0 10px 24px rgba(141, 124, 255, 0.24), 0 0 20px rgba(141, 124, 255, 0.16);
+      box-shadow:
+        0 0 0 1px rgba(255, 255, 255, 0.14),
+        0 10px 24px rgba(141, 124, 255, 0.24),
+        0 0 20px rgba(141, 124, 255, 0.16);
     }
 
-    .docs-tab-btn:not(.active):active {
-      background: rgba(255, 255, 255, 0.09);
-      color: var(--text);
+    .docs-tab-btn:active {
+      transform: translateY(1px);
     }
 
     /* Panel show/hide */
