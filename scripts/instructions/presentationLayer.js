@@ -129,14 +129,31 @@
       return lines;
     }
 
-    // Strategy 2: split by newline, pick meaningful lines
+    // Strategy 2: split by newline — only for texts that actually look like norm lists.
+    // Prose paragraphs (each line is 80+ chars of regulatory text) return nothing so the
+    // caller can fall back to a clean summary instead of a useless truncated-sentence list.
     var rawLines = cleanText.split('\n');
-    var result = [];
-    for (var l = 0; l < rawLines.length && result.length < maxLines; l++) {
+    var candidateLines = [];
+    for (var l = 0; l < rawLines.length; l++) {
       var line = rawLines[l].replace(/\s+/g, ' ').trim();
       if (!line || line.length < 12) continue;
       if (line.length > 92) line = line.slice(0, 89) + '…';
-      result.push({ marker: assignMarker(line), text: line });
+      candidateLines.push(line);
+    }
+    // Require at least one line that carries a genuine norm/restriction signal.
+    var hasNormSignal = false;
+    for (var n = 0; n < candidateLines.length; n++) {
+      if (/\d{1,3}\s*км\s*[\/\\]?\s*ч/.test(candidateLines[n]) ||
+          /^(не более|не менее|запрещ|разрешается|допускается|осторожн)/i.test(candidateLines[n]) ||
+          /^[-–—•]\s/.test(candidateLines[n])) {
+        hasNormSignal = true;
+        break;
+      }
+    }
+    if (!hasNormSignal) return [];
+    var result = [];
+    for (var r = 0; r < candidateLines.length && result.length < maxLines; r++) {
+      result.push({ marker: assignMarker(candidateLines[r]), text: candidateLines[r] });
     }
     return result;
   }

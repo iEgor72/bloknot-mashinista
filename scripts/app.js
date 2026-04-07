@@ -3083,8 +3083,14 @@ function openInstructionReference(instructionAlias, targetNumber) {
 
       var topAnswer = instructionsStore.searchResults[0] || null;
       if (topAnswer) {
-        var topPreview = topAnswer.previewText || topAnswer.snippet || topAnswer.displayText || '';
-        var answerSection = topAnswer.sectionTitle
+        // Prefer the clean one-sentence summary over the raw multi-paragraph previewText.
+        var topPreview = (topAnswer.summary && topAnswer.summary.length > 20 ? topAnswer.summary : null)
+          || topAnswer.snippet || topAnswer.displayText || '';
+        // Hide sectionTitle when it duplicates what the preview already says.
+        var sectionTitleNorm = (topAnswer.sectionTitle || '').toLowerCase().slice(0, 60);
+        var previewNorm = topPreview.toLowerCase().slice(0, 60);
+        var titleDuplicatesPreview = sectionTitleNorm && previewNorm.indexOf(sectionTitleNorm) !== -1;
+        var answerSection = (topAnswer.sectionTitle && !titleDuplicatesPreview)
           ? '<div class="search-result-section">' + highlightSearchText(topAnswer.sectionTitle, instructionsStore.searchQuery) + '</div>'
           : '';
         // Use previewLines when available — they give the answer at a glance
@@ -3129,8 +3135,10 @@ function openInstructionReference(instructionAlias, targetNumber) {
             buildNormListHtml(item.previewLines.slice(0, 3), instructionsStore.searchQuery) +
             '</div>';
         } else {
+          var snippetText = (item.summary && item.summary.length > 20 ? item.summary : null)
+            || item.snippet || item.displayText || '';
           snippetHtml = '<div class="search-result-snippet' + (item.isExpandedAnswer ? ' is-expanded' : '') + '">' +
-            highlightSearchText(item.displayText || item.snippet || '', instructionsStore.searchQuery) +
+            highlightSearchText(snippetText, instructionsStore.searchQuery) +
             '</div>';
         }
         html += '<button class="' + cardClass + '" type="button" data-action="open-section" data-instruction-id="' + escapeHtml(item.instructionId) + '" data-section-id="' + escapeHtml(item.sectionId) + '">' +
@@ -3375,7 +3383,9 @@ var contentHtml = formatInstructionNodeContentHtml(
         }
       }
 
-      contentEl.innerHTML = contextHtml + presentationHtml + contentHtml + footnotesHtml;
+      // Show norm list OR raw text — not both. Footnotes always appear separately.
+      var bodyHtml = presentationHtml || contentHtml;
+      contentEl.innerHTML = contextHtml + bodyHtml + footnotesHtml;
     }
 
     function renderInstructionsScreen() {

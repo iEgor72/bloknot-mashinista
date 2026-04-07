@@ -1,7 +1,7 @@
 (function(global) {
   var core = global.InstructionsCore = global.InstructionsCore || {};
 
-  var DB_NAME = 'shift_tracker_instructions_v4';
+  var DB_NAME = 'shift_tracker_instructions_v5';
   var DB_VERSION = 1;
   var STORES = {
     instructions: 'instructions',
