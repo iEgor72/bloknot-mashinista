@@ -373,7 +373,8 @@
       folders:      [],
       instructions: [],
       memos:        [],
-      regimki:      []
+      regimki:      [],
+      speeds:       []
     };
     // ── Legacy stubs (keep so unreachable dead code below doesn't throw) ──
     var INSTRUCTIONS_CORE = {};
