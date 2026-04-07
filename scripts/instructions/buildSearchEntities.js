@@ -213,6 +213,10 @@
     var entityType = inferEntityType(nodeType, title, body);
     var sectionRef = String(node.number || '').trim();
 
+    // Presentation layer: pass the fully-assembled body (includes child nodes
+    // for point-type nodes) so that enumerated items inside children are parsed.
+    var presentation = core.buildPresentation ? core.buildPresentation(node, body) : null;
+
     return {
       id: instruction.id + '::' + node.id,
       instructionId: instruction.id,
@@ -229,7 +233,11 @@
       chargrams: chargrams,
       instructionTitle: instruction.title || '',
       nodeType: nodeType,
-      depth: depthById[node.id] === undefined ? 0 : depthById[node.id]
+      depth: depthById[node.id] === undefined ? 0 : depthById[node.id],
+      summary:      presentation ? presentation.summary      : '',
+      previewLines: presentation ? presentation.previewLines : [],
+      footnotes:    presentation ? presentation.footnotes    : [],
+      displayMode:  presentation ? presentation.displayMode  : 'plain'
     };
   }
 

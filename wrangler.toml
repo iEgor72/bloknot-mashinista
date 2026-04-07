@@ -5,5 +5,5 @@ compatibility_flags = ["nodejs_compat"]
 
 [[d1_databases]]
 binding = "DB"
-database_name = "shift_tracker_db"
+database_name = "bloknot_mashinista_db"
 database_id = "26887757-757b-4aa2-8f32-167968a0bdec"

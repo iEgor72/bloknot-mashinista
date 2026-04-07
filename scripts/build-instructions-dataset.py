@@ -438,6 +438,78 @@ def split_nonempty_paragraphs(text: str) -> List[str]:
 
 
 def append_node_content(node: Dict[str, object], paragraph: str) -> None:
+    INSTRUCTION_REF_RE = re.compile(
+    r"\b((?:п\.|пункт)\s*)(\d+(?:\.\d+)*)(\.?)(\s+)(ПТЭ|ИСИ|ИДП)\b",
+    re.IGNORECASE,
+)
+
+INSTRUCTION_ALIASES = {
+    "ПТЭ": "pte",
+    "ИСИ": "isi",
+    "ИДП": "idp",
+}
+
+
+def build_content_blocks(text: str) -> List[Dict[str, str]]:
+    paragraphs = split_nonempty_paragraphs(text)
+    blocks: List[Dict[str, str]] = []
+
+    for paragraph in paragraphs:
+        point_match = re.match(r"^(\d+(?:\.\d+)*)[.)]?\s+(.*)$", paragraph)
+        if point_match:
+            blocks.append(
+                {
+                    "type": "point",
+                    "number": point_match.group(1) + ".",
+                    "text": normalize_space(point_match.group(2)),
+                }
+            )
+            continue
+
+        blocks.append(
+            {
+                "type": "paragraph",
+                "text": paragraph,
+            }
+        )
+
+    return blocks
+
+
+def extract_instruction_references(text: str) -> List[Dict[str, str]]:
+    source = text or ""
+    refs: List[Dict[str, str]] = []
+    seen = set()
+
+    for match in INSTRUCTION_REF_RE.finditer(source):
+        label = normalize_space(match.group(0))
+        target_number = normalize_space(match.group(2))
+        instruction_code = normalize_space(match.group(5)).upper()
+        instruction_id = INSTRUCTION_ALIASES.get(instruction_code)
+        if not instruction_id or not target_number:
+            continue
+
+        key = (instruction_id, target_number, label)
+        if key in seen:
+            continue
+        seen.add(key)
+
+        refs.append(
+            {
+                "type": "instruction_point",
+                "instructionId": instruction_id,
+                "targetNumber": target_number,
+                "label": label,
+            }
+        )
+
+    return refs
+
+
+def decorate_node_text_fields(node: Dict[str, object]) -> None:
+    text = str(node.get("content") or node.get("plainText") or "").strip()
+    node["contentBlocks"] = build_content_blocks(text)
+    node["references"] = extract_instruction_references(text)    
     text = normalize_space(paragraph)
     if not text:
         return
@@ -457,7 +529,7 @@ def build_point_title(number: str, body: str) -> str:
     clean_body = normalize_space(body)
     first_sentence = re.split(r"(?<=[.!?])\s+", clean_body, maxsplit=1)[0].strip()
     if not first_sentence:
-        return f"РџСѓРЅРєС‚ {number}".strip()
+        return f"Пункт {number}".strip()
     if len(first_sentence) > 132:
         first_sentence = first_sentence[:129].rstrip() + "..."
     return first_sentence
@@ -724,7 +796,8 @@ def build_instruction(
             node["content"] = intro_text
             node["plainText"] = intro_text
             nodes.extend(nested_children)
-
+    for node in nodes:
+        decorate_node_text_fields(node)
     return {
         "id": instruction_id,
         "title": definition.title,

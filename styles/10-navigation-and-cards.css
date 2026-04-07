@@ -1723,4 +1723,135 @@
       margin: 8px 0 4px;
     }
 
+    /* ── Presentation Layer ─────────────────────────────────────────────────── */
+
+    /* Norm / fact list — used in section view and search results */
+    .instruction-norm-list {
+      list-style: none;
+      padding: 0;
+      margin: 0;
+    }
+
+    .instruction-norm-item {
+      display: flex;
+      gap: 8px;
+      align-items: flex-start;
+      padding: 7px 0;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+      font-size: 14px;
+      line-height: 1.5;
+      color: var(--text);
+    }
+
+    .instruction-norm-item:last-child {
+      border-bottom: none;
+      padding-bottom: 0;
+    }
+
+    .instruction-norm-item:first-child {
+      padding-top: 0;
+    }
+
+    .instruction-norm-marker {
+      flex-shrink: 0;
+      font-size: 15px;
+      line-height: 1.5;
+      width: 22px;
+      text-align: center;
+    }
+
+    .instruction-norm-text {
+      flex: 1;
+      min-width: 0;
+      word-break: break-word;
+    }
+
+    /* Container shown above the full text in the section view */
+    .instruction-presentation {
+      background: rgba(141, 124, 255, 0.06);
+      border: 1px solid rgba(141, 124, 255, 0.15);
+      border-radius: 12px;
+      padding: 8px 14px 10px;
+      margin-bottom: 16px;
+    }
+
+    /* Footnotes block — shown below the main content */
+    .instruction-footnotes {
+      margin-top: 18px;
+      padding: 11px 14px;
+      background: rgba(255, 255, 255, 0.03);
+      border: 1px solid rgba(255, 255, 255, 0.07);
+      border-radius: 10px;
+    }
+
+    .instruction-footnotes-label {
+      font-size: 10px;
+      font-weight: 700;
+      color: var(--text-muted);
+      text-transform: uppercase;
+      letter-spacing: 0.09em;
+      margin-bottom: 7px;
+      opacity: 0.7;
+    }
+
+    .instruction-footnotes-list {
+      list-style: none;
+      padding: 0;
+      margin: 0;
+    }
+
+    .instruction-footnote-item {
+      display: flex;
+      gap: 6px;
+      padding: 3px 0;
+      font-size: 12px;
+      line-height: 1.55;
+      color: var(--text-muted);
+    }
+
+    .instruction-footnote-marker {
+      flex-shrink: 0;
+      font-size: 11px;
+      opacity: 0.65;
+      margin-top: 1px;
+    }
+
+    .instruction-footnote-text {
+      flex: 1;
+      min-width: 0;
+      word-break: break-word;
+    }
+
+    /* Search result norm lists */
+    .search-answer-norms,
+    .search-result-norms {
+      margin: 0;
+    }
+
+    .search-answer-norms .instruction-norm-list {
+      margin-top: 6px;
+    }
+
+    .search-answer-norms .instruction-norm-item {
+      font-size: 14px;
+      padding: 5px 0;
+    }
+
+    .search-result-norms .instruction-norm-list {
+      margin-top: 4px;
+    }
+
+    .search-result-norms .instruction-norm-item {
+      font-size: 13px;
+      padding: 4px 0;
+      color: rgba(244, 247, 255, 0.82);
+    }
+
+    .search-result-norms .instruction-norm-marker {
+      font-size: 13px;
+      width: 20px;
+    }
+
+    /* ── End Presentation Layer ──────────────────────────────────────────────── */
+
 

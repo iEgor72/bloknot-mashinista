@@ -108,24 +108,26 @@
     if (!title) title = buildFallbackTitle(nodeType, number, normalizedPlain || normalizedContent, index);
     var source = safe.source && typeof safe.source === 'object' ? safe.source : {};
 
-    return {
-      id: String(safe.id || (instructionId + '-node-' + (index + 1))),
-      instructionId: instructionId,
-      parentId: safe.parentId !== undefined && safe.parentId !== null && String(safe.parentId).trim()
-        ? String(safe.parentId)
-        : null,
-      type: nodeType,
-      order: Math.max(0, parseInt(safe.order, 10) || 0),
-      number: number,
-      title: title,
-      content: normalizedContent,
-      plainText: normalizedPlain,
-      source: {
-        url: source.url ? String(source.url) : (safe.sourceUrl ? String(safe.sourceUrl) : ''),
-        path: source.path ? String(source.path) : '',
-        fetchedAt: source.fetchedAt ? String(source.fetchedAt) : ''
-      }
-    };
+return {
+  id: String(safe.id || (instructionId + '-node-' + (index + 1))),
+  instructionId: instructionId,
+  parentId: safe.parentId !== undefined && safe.parentId !== null && String(safe.parentId).trim()
+    ? String(safe.parentId)
+    : null,
+  type: nodeType,
+  order: Math.max(0, parseInt(safe.order, 10) || 0),
+  number: number,
+  title: title,
+  content: normalizedContent,
+  plainText: normalizedPlain,
+  contentBlocks: Array.isArray(safe.contentBlocks) ? safe.contentBlocks : [],
+  references: Array.isArray(safe.references) ? safe.references : [],
+  source: {
+    url: source.url ? String(source.url) : (safe.sourceUrl ? String(safe.sourceUrl) : ''),
+    path: source.path ? String(source.path) : '',
+    fetchedAt: source.fetchedAt ? String(source.fetchedAt) : ''
+  }
+};
   }
 
   function ensureDocumentNode(nodes, instructionId, instructionTitle, sourceUrl) {

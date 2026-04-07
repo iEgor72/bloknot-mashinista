@@ -1,8 +1,8 @@
 {
-  "name": "shift-tracker-app",
+  "name": "bloknot-mashinista",
   "version": "1.0.0",
   "private": true,
-  "description": "Telegram shift tracker with Telegram login sync",
+  "description": "Блокнот машиниста — учёт смен для локомотивных бригад",
   "main": "server.js",
   "scripts": {
     "start": "node server.js"

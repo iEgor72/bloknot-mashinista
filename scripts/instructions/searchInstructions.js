@@ -133,7 +133,11 @@
         confidence: ranked[i].confidence,
         isExpandedAnswer: false,
         answerIncludesHeading: false,
-        displayText: snippet || previewText || answerText
+        displayText: snippet || previewText || answerText,
+        previewLines: entity.previewLines || [],
+        summary:      entity.summary      || '',
+        displayMode:  entity.displayMode  || 'plain',
+        footnotes:    entity.footnotes    || []
       });
     }
 

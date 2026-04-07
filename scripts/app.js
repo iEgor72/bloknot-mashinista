@@ -2097,11 +2097,197 @@
       return null;
     }
 
+    function normalizeInstructionAlias(value) {
+  var raw = String(value || '').trim().toLowerCase();
+  if (!raw) return '';
+  if (raw === 'pte' || raw === 'птэ') return 'pte';
+  if (raw === 'isi' || raw === 'иси') return 'isi';
+  if (raw === 'idp' || raw === 'идп') return 'idp';
+  return raw;
+}
+
+function normalizeInstructionNodeNumber(value) {
+  return String(value || '')
+    .trim()
+    .replace(/[.)]+$/g, '')
+    .replace(/\s+/g, '');
+}
+
+function findInstructionByAlias(alias) {
+  var normalized = normalizeInstructionAlias(alias);
+  if (!normalized) return null;
+
+  for (var i = 0; i < instructionsStore.instructions.length; i++) {
+    var instruction = instructionsStore.instructions[i];
+    if (!instruction) continue;
+
+    var byId = normalizeInstructionAlias(instruction.id);
+    var byTitle = normalizeInstructionAlias(instruction.title);
+
+    if (byId === normalized || byTitle === normalized) {
+      return instruction;
+    }
+  }
+
+  return null;
+}
+
+function findInstructionNodeByNumber(instruction, targetNumber) {
+  if (!instruction || !targetNumber) return null;
+  var structure = getInstructionStructure(instruction);
+  var wanted = normalizeInstructionNodeNumber(targetNumber);
+  if (!wanted) return null;
+
+  for (var i = 0; i < instruction.nodes.length; i++) {
+    var node = instruction.nodes[i];
+    if (!node) continue;
+    var nodeNumber = normalizeInstructionNodeNumber(node.number);
+    if (nodeNumber === wanted) {
+      return node;
+    }
+  }
+
+  return null;
+}
+
+function buildInstructionRefButtonHtml(label, instructionAlias, targetNumber) {
+  return '<button class="instruction-inline-link" type="button" data-action="open-ref" data-instruction-id="' +
+    escapeHtml(String(instructionAlias || '')) +
+    '" data-target-number="' +
+    escapeHtml(String(targetNumber || '')) +
+    '">' +
+    escapeHtml(String(label || '')) +
+    '</button>';
+}
+
+function linkifyInstructionReferences(text) {
+  var source = String(text || '');
+  if (!source) return '';
+
+  var re = /\b((?:п\.|пункт)\s*)(\d+(?:\.\d+)*)(\.?)(\s+)(ПТЭ|ИСИ|ИДП)\b/gi;
+  var html = '';
+  var lastIndex = 0;
+  var match;
+
+  while ((match = re.exec(source))) {
+    html += escapeHtml(source.slice(lastIndex, match.index));
+
+    var label = match[0];
+    var targetNumber = match[2];
+    var instructionAlias = normalizeInstructionAlias(match[5]);
+
+    html += buildInstructionRefButtonHtml(label, instructionAlias, targetNumber);
+    lastIndex = re.lastIndex;
+  }
+
+  html += escapeHtml(source.slice(lastIndex));
+  return html.replace(/\n/g, '<br />');
+}
+
+function formatInstructionNodeContentHtml(node, options) {
+  var opts = options || {};
+  if (!node) {
+    return '<p class="instruction-paragraph instruction-paragraph--muted">Текст раздела пока недоступен.</p>';
+  }
+
+  var blocks = Array.isArray(node.contentBlocks) ? node.contentBlocks : [];
+  if (!blocks.length) {
+    return formatInstructionContentHtml(node.content || node.plainText || '', opts);
+  }
+
+  var isTruncated = false;
+  if (opts.maxParagraphs && blocks.length > opts.maxParagraphs) {
+    blocks = blocks.slice(0, opts.maxParagraphs);
+    isTruncated = true;
+  }
+
+  var html = [];
+  for (var i = 0; i < blocks.length; i++) {
+    var block = blocks[i];
+    if (!block) continue;
+
+    if (block.type === 'point') {
+      html.push(
+        '<p class="instruction-paragraph instruction-paragraph--point">' +
+          '<span class="instruction-point-number">' + escapeHtml(String(block.number || '')) + '</span> ' +
+          '<span class="instruction-point-text">' + linkifyInstructionReferences(String(block.text || '')) + '</span>' +
+        '</p>'
+      );
+      continue;
+    }
+
+    html.push(
+      '<p class="instruction-paragraph">' +
+        linkifyInstructionReferences(String(block.text || '')) +
+      '</p>'
+    );
+  }
+
+  if (isTruncated || opts.forceHint) {
+    html.push('<p class="instruction-paragraph instruction-paragraph--hint">Откройте нужный пункт ниже, чтобы увидеть полный текст без перегруза.</p>');
+  }
+
+  return html.join('');
+}
+
+function openInstructionReference(instructionAlias, targetNumber) {
+  var instruction = findInstructionByAlias(instructionAlias);
+  if (!instruction) return;
+
+  var targetNode = findInstructionNodeByNumber(instruction, targetNumber);
+  if (targetNode) {
+    openInstructionSection(instruction.id, targetNode.id);
+    return;
+  }
+
+  openInstructionDetail(instruction.id);
+}
     function findInstructionNodeById(instruction, nodeId) {
       if (!instruction || !nodeId) return null;
       var structure = getInstructionStructure(instruction);
       return structure.nodeById[nodeId] || null;
     }
+
+    // ── Presentation Layer Helpers ────────────────────────────────────────────
+
+    // Renders a list of previewLines as an emoji-annotated norm list.
+    // query is optional — used for highlight, pass '' when not in search context.
+    function buildNormListHtml(previewLines, query) {
+      if (!previewLines || !previewLines.length) return '';
+      var html = '<ul class="instruction-norm-list">';
+      for (var i = 0; i < previewLines.length; i++) {
+        var line = previewLines[i];
+        var markerHtml = escapeHtml(String(line.marker || ''));
+        var textHtml = query
+          ? highlightSearchText(String(line.text || ''), query)
+          : escapeHtml(String(line.text || ''));
+        html += '<li class="instruction-norm-item">' +
+          '<span class="instruction-norm-marker">' + markerHtml + '</span>' +
+          '<span class="instruction-norm-text">' + textHtml + '</span>' +
+          '</li>';
+      }
+      html += '</ul>';
+      return html;
+    }
+
+    // Renders extracted footnotes as a "Примечания" block.
+    function buildFootnotesHtml(footnotes) {
+      if (!footnotes || !footnotes.length) return '';
+      var html = '<div class="instruction-footnotes">' +
+        '<div class="instruction-footnotes-label">Примечания</div>' +
+        '<ul class="instruction-footnotes-list">';
+      for (var i = 0; i < footnotes.length; i++) {
+        var fn = footnotes[i];
+        html += '<li class="instruction-footnote-item">' +
+          '<span class="instruction-footnote-marker">' + escapeHtml(String(fn.marker || '')) + '</span>' +
+          '<span class="instruction-footnote-text">' + escapeHtml(String(fn.text || '')) + '</span>' +
+          '</li>';
+      }
+      html += '</ul></div>';
+      return html;
+    }
+
+    // ── End Presentation Layer Helpers ────────────────────────────────────────
 
     function formatInstructionNodeLabel(node, fallbackTitle) {
       var title = String((node && node.title) || fallbackTitle || '').trim();
@@ -2901,6 +3087,17 @@
         var answerSection = topAnswer.sectionTitle
           ? '<div class="search-result-section">' + highlightSearchText(topAnswer.sectionTitle, instructionsStore.searchQuery) + '</div>'
           : '';
+        // Use previewLines when available — they give the answer at a glance
+        var answerBodyHtml;
+        if (topAnswer.previewLines && topAnswer.previewLines.length >= 2) {
+          answerBodyHtml = '<div class="search-answer-norms">' +
+            buildNormListHtml(topAnswer.previewLines.slice(0, 6), instructionsStore.searchQuery) +
+            '</div>';
+        } else {
+          answerBodyHtml = '<div class="search-answer-preview">' +
+            highlightSearchText(topPreview, instructionsStore.searchQuery) +
+            '</div>';
+        }
         answerEl.innerHTML =
           '<button class="search-answer-card" type="button" data-action="open-section" data-instruction-id="' + escapeHtml(topAnswer.instructionId) + '" data-section-id="' + escapeHtml(topAnswer.sectionId) + '">' +
             '<div class="search-answer-kicker">Наиболее вероятный ответ</div>' +
@@ -2909,7 +3106,7 @@
               (topAnswer.sectionRef ? '<span class="search-result-point">' + escapeHtml(topAnswer.sectionRef) + '</span>' : '') +
             '</div>' +
             answerSection +
-            '<div class="search-answer-preview">' + highlightSearchText(topPreview, instructionsStore.searchQuery) + '</div>' +
+            answerBodyHtml +
             '<div class="search-answer-actions">' +
               '<span class="search-answer-action-btn">Открыть пункт</span>' +
             '</div>' +
@@ -2925,6 +3122,17 @@
         var item = instructionsStore.searchResults[i];
         var cardClass = 'search-result-card' + (item.isExpandedAnswer ? ' is-answer' : '');
         var showSectionTitle = !!item.sectionTitle && !(item.isExpandedAnswer && item.answerIncludesHeading);
+        // For secondary results: show previewLines (compact, 3 items) or snippet
+        var snippetHtml;
+        if (item.previewLines && item.previewLines.length >= 2) {
+          snippetHtml = '<div class="search-result-norms">' +
+            buildNormListHtml(item.previewLines.slice(0, 3), instructionsStore.searchQuery) +
+            '</div>';
+        } else {
+          snippetHtml = '<div class="search-result-snippet' + (item.isExpandedAnswer ? ' is-expanded' : '') + '">' +
+            highlightSearchText(item.displayText || item.snippet || '', instructionsStore.searchQuery) +
+            '</div>';
+        }
         html += '<button class="' + cardClass + '" type="button" data-action="open-section" data-instruction-id="' + escapeHtml(item.instructionId) + '" data-section-id="' + escapeHtml(item.sectionId) + '">' +
           '<div class="search-result-top">' +
             '<span class="search-result-instruction">' + escapeHtml(item.instructionTitle) + '</span>' +
@@ -2933,7 +3141,7 @@
           (showSectionTitle
             ? '<div class="search-result-section">' + highlightSearchText(item.sectionTitle, instructionsStore.searchQuery) + '</div>'
             : '') +
-          '<div class="search-result-snippet' + (item.isExpandedAnswer ? ' is-expanded' : '') + '">' + highlightSearchText(item.displayText || item.snippet || '', instructionsStore.searchQuery) + '</div>' +
+          snippetHtml +
         '</button>';
       }
       resultsEl.innerHTML = html;
@@ -3130,10 +3338,10 @@
         : normalizeNodeContentForDisplay(displaySection, {
             suppressDuplicateHeading: hasVisibleChildren
           });
-      var contentHtml = formatInstructionContentHtml(
-        contentText,
-        shouldCompactText ? { maxParagraphs: 2, forceHint: true } : {}
-      );
+var contentHtml = formatInstructionNodeContentHtml(
+  displaySection,
+  shouldCompactText ? { maxParagraphs: 2, forceHint: true } : {}
+);
 
       var contextHtml = '';
       if (focusedSubpoint) {
@@ -3147,7 +3355,27 @@
         contextHtml += buildFocusedSubpointCalloutHtml(focusedSubpoint);
       }
 
-      contentEl.innerHTML = contextHtml + contentHtml;
+      // Presentation layer: previewLines block + footnotes
+      // Use the assembled body (includes child node text) for point-type nodes
+      // so that enumerated items stored as child nodes are visible to the parser.
+      var presentationHtml = '';
+      var footnotesHtml = '';
+      if (INSTRUCTIONS_CORE && typeof INSTRUCTIONS_CORE.buildPresentation === 'function') {
+        var assembledBodyForPres = isPointLikeNode(displaySection)
+          ? buildPointAnswerText(displaySection, structure)
+          : getNodeSearchText(displaySection);
+        var pres = INSTRUCTIONS_CORE.buildPresentation(displaySection, assembledBodyForPres);
+        if (pres && pres.previewLines && pres.previewLines.length >= 2 && !focusedSubpoint) {
+          presentationHtml = '<div class="instruction-presentation">' +
+            buildNormListHtml(pres.previewLines, '') +
+            '</div>';
+        }
+        if (pres && pres.footnotes && pres.footnotes.length) {
+          footnotesHtml = buildFootnotesHtml(pres.footnotes);
+        }
+      }
+
+      contentEl.innerHTML = contextHtml + presentationHtml + contentHtml + footnotesHtml;
     }
 
     function renderInstructionsScreen() {
@@ -5886,19 +6114,26 @@
         if (!trigger) return;
         var action = trigger.getAttribute('data-action');
         if (action === 'open-instruction') {
-          openInstructionDetail(trigger.getAttribute('data-instruction-id'));
-          return;
-        }
-        if (action === 'open-section') {
-          openInstructionSection(
-            trigger.getAttribute('data-instruction-id'),
-            trigger.getAttribute('data-section-id')
-          );
-          return;
-        }
-        if (action === 'scroll-node') {
-          scrollToInstructionNodeAnchor(trigger.getAttribute('data-section-id'));
-        }
+  openInstructionDetail(trigger.getAttribute('data-instruction-id'));
+  return;
+}
+if (action === 'open-section') {
+  openInstructionSection(
+    trigger.getAttribute('data-instruction-id'),
+    trigger.getAttribute('data-section-id')
+  );
+  return;
+}
+if (action === 'open-ref') {
+  openInstructionReference(
+    trigger.getAttribute('data-instruction-id'),
+    trigger.getAttribute('data-target-number')
+  );
+  return;
+}
+if (action === 'scroll-node') {
+  scrollToInstructionNodeAnchor(trigger.getAttribute('data-section-id'));
+}
       });
     }
 
