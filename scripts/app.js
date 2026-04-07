@@ -364,7 +364,7 @@
     // ACCESS_UNRESTRICTED = false re-enables gating in the future.
     var ACCESS_UNRESTRICTED = true;
     var documentationStore = {
-      activeTab: 'folders'
+      activeTab: 'speeds'
     };
     // Future document model (populate when remote files are added):
     // { id, title, category: 'folders'|'instructions'|'memos'|'regimki',
