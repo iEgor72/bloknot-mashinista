@@ -3421,7 +3421,7 @@ var contentHtml = formatInstructionNodeContentHtml(
         var date = f.uploaded_at ? f.uploaded_at.slice(0, 10) : '';
         var meta = [size, date].filter(Boolean).join(' · ');
         html +=
-          '<div class="docs-item" data-file-id="' + (f.file_id || '') + '" data-file-name="' + encodeURIComponent(f.name || '') + '" data-mime-type="' + (f.mime_type || '') + '">' +
+          '<div class="docs-item" data-db-id="' + f.id + '" data-file-name="' + encodeURIComponent(f.name || '') + '">' +
             '<div class="docs-item-icon">' + docsFileIcon(f.mime_type) + '</div>' +
             '<div class="docs-item-body">' +
               '<div class="docs-item-title">' + (f.name || 'Файл') + '</div>' +
@@ -3494,85 +3494,53 @@ var contentHtml = formatInstructionNodeContentHtml(
         .catch(function() {});
     }
 
-    // ── In-app file viewer ────────────────────────────────────────────────────
+    // ── Send doc file to user's Telegram chat ────────────────────────────────
+    // Bot sends the file to the user via sendDocument — Telegram's own
+    // viewer handles PDF, images, docs natively. No custom viewer needed.
 
-    var docsViewerBlobUrl = null;
-    var docsViewerExtUrl = null;
-
-    function showDocsViewer(name, bodyHtml, blobUrl, extUrl) {
-      var viewer = document.getElementById('docsViewer');
-      var titleEl = document.getElementById('docsViewerTitle');
-      var bodyEl = document.getElementById('docsViewerBody');
-      if (!viewer) return;
-      if (docsViewerBlobUrl) { URL.revokeObjectURL(docsViewerBlobUrl); docsViewerBlobUrl = null; }
-      docsViewerBlobUrl = blobUrl || null;
-      docsViewerExtUrl = extUrl || null;
-      if (titleEl) titleEl.textContent = name;
-      if (bodyEl) bodyEl.innerHTML = bodyHtml;
-      viewer.classList.remove('hidden');
-    }
-
-    function closeDocsViewer() {
-      var viewer = document.getElementById('docsViewer');
-      if (!viewer) return;
-      if (docsViewerBlobUrl) { URL.revokeObjectURL(docsViewerBlobUrl); docsViewerBlobUrl = null; }
-      docsViewerExtUrl = null;
-      var bodyEl = document.getElementById('docsViewerBody');
-      if (bodyEl) bodyEl.innerHTML = '';
-      viewer.classList.add('hidden');
-    }
-
-    function openDocFile(fileId, fileName, mimeType) {
+    function openDocFile(dbId, fileName) {
       var name = decodeURIComponent(fileName || 'Файл');
-      var mime = mimeType || '';
-
-      // Show loading immediately
-      showDocsViewer(name, '<div class="docs-loading"><div class="docs-loading-spinner"></div><span>Загрузка…</span></div>', null, null);
-
       var sessionToken = CURRENT_SESSION_TOKEN || getStoredSessionToken();
       var headers = { 'Accept': 'application/json' };
       if (sessionToken) headers['Authorization'] = 'Bearer ' + sessionToken;
 
-      fetch(DOCS_API_URL + '?file_id=' + encodeURIComponent(fileId), {
+      // Show toast: sending…
+      showDocsToast('📎 Отправляем файл…', false);
+
+      fetch(DOCS_API_URL + '?action=send&id=' + encodeURIComponent(dbId), {
+        method: 'POST',
         headers: headers,
         credentials: 'include'
       })
         .then(function(r) { return r.json(); })
         .then(function(data) {
-          if (!data || !data.url) throw new Error('no url');
-          // Save original URL for "open in browser" fallback button
-          var originalUrl = data.url;
-          // Fetch the actual file as a blob so we can display it inline
-          return fetch(data.url).then(function(r) {
-            return r.blob();
-          }).then(function(blob) {
-            var blobUrl = URL.createObjectURL(blob);
-            var detectedMime = blob.type || mime;
-            var bodyHtml;
-
-            if (detectedMime.indexOf('image/') === 0) {
-              bodyHtml = '<img src="' + blobUrl + '" alt="' + name + '">';
-            } else if (detectedMime.indexOf('pdf') !== -1) {
-              bodyHtml = '<iframe src="' + blobUrl + '#toolbar=0" title="' + name + '"></iframe>';
-            } else {
-              // Unsupported format — show friendly download card
-              bodyHtml =
-                '<div class="docs-viewer-unsupported">' +
-                  '<div class="docs-viewer-unsupported-icon">📄</div>' +
-                  '<p>' + name + '</p>' +
-                  '<a class="docs-viewer-dl-btn" href="' + blobUrl + '" download="' + name + '">' +
-                    '<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>' +
-                    'Скачать файл' +
-                  '</a>' +
-                '</div>';
-            }
-
-            showDocsViewer(name, bodyHtml, blobUrl, originalUrl);
-          });
+          if (data && data.ok) {
+            showDocsToast('✓ Файл отправлен — откройте чат с ботом', true);
+          } else {
+            throw new Error(data && data.error ? data.error : 'Ошибка');
+          }
         })
-        .catch(function() {
-          showDocsViewer(name, '<div class="docs-loading"><span>⚠ Не удалось открыть файл</span></div>', null, null);
+        .catch(function(err) {
+          showDocsToast('⚠ ' + (err && err.message ? err.message : 'Ошибка отправки'), false);
         });
+    }
+
+    function showDocsToast(text, success) {
+      var existing = document.getElementById('docsToast');
+      if (existing) existing.remove();
+      var toast = document.createElement('div');
+      toast.id = 'docsToast';
+      toast.className = 'docs-toast' + (success ? ' docs-toast-ok' : '');
+      toast.textContent = text;
+      document.body.appendChild(toast);
+      // Animate in
+      requestAnimationFrame(function() {
+        requestAnimationFrame(function() { toast.classList.add('docs-toast-show'); });
+      });
+      setTimeout(function() {
+        toast.classList.remove('docs-toast-show');
+        setTimeout(function() { if (toast.parentNode) toast.parentNode.removeChild(toast); }, 350);
+      }, success ? 3500 : 4000);
     }
 
     function renderDocumentationScreen() {
@@ -6365,32 +6333,12 @@ if (action === 'scroll-node') {
           return;
         }
 
-        // Open file in in-app viewer
-        var item = e.target.closest('.docs-item[data-file-id]');
+        // Send file to user's Telegram chat
+        var item = e.target.closest('.docs-item[data-db-id]');
         if (item) {
-          var fileId = item.getAttribute('data-file-id');
+          var dbId = item.getAttribute('data-db-id');
           var fileName = item.getAttribute('data-file-name') || '';
-          var mimeType = item.getAttribute('data-mime-type') || '';
-          if (fileId) openDocFile(fileId, fileName, mimeType);
-        }
-      });
-    }
-
-    // File viewer close / open-in-browser buttons
-    var docsViewerCloseBtn = document.getElementById('docsViewerClose');
-    if (docsViewerCloseBtn) {
-      docsViewerCloseBtn.addEventListener('click', closeDocsViewer);
-    }
-
-    var docsViewerExtBtn = document.getElementById('docsViewerExt');
-    if (docsViewerExtBtn) {
-      docsViewerExtBtn.addEventListener('click', function() {
-        if (docsViewerExtUrl) {
-          if (window.Telegram && window.Telegram.WebApp && window.Telegram.WebApp.openLink) {
-            window.Telegram.WebApp.openLink(docsViewerExtUrl);
-          } else {
-            window.open(docsViewerExtUrl, '_blank');
-          }
+          if (dbId) openDocFile(dbId, fileName);
         }
       });
     }

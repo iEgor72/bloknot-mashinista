@@ -106,6 +106,30 @@ export async function onRequest(context) {
       });
     }
 
+    // ── POST /api/docs?action=send&id=123 — send file to user's Telegram chat ─
+    if (request.method === 'POST' && url.searchParams.get('action') === 'send') {
+      var sendId = parseInt(url.searchParams.get('id'), 10);
+      if (!sendId) return json(400, { error: 'Missing id' });
+
+      var fileRow = await getDocFile(env.DB, sendId);
+      if (!fileRow) return json(404, { error: 'File not found' });
+
+      var sendResp = await fetch(TG_API + botToken + '/sendDocument', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          chat_id: user.id,
+          document: fileRow.file_id,
+          caption: fileRow.name,
+        }),
+      });
+      var sendData = await sendResp.json();
+      if (!sendData.ok) {
+        throw new Error(sendData.description || 'Telegram error');
+      }
+      return json(200, { ok: true });
+    }
+
     // ── POST /api/docs?folder=speeds — upload file (admin only) ─────────────
     if (request.method === 'POST') {
       if (!isAdmin(user, env)) {
