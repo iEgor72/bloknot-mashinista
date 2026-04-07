@@ -1,6 +1,9 @@
 import { getSessionUser } from '../features/auth/telegram-auth.js';
+import { listDocFiles, saveDocFile, deleteDocFile, getDocFile } from '../features/docs/store.js';
 
 var VALID_FOLDERS = ['speeds', 'folders', 'memos', 'regimki', 'instructions'];
+var TG_API = 'https://api.telegram.org/bot';
+var DOCS_CHAT_ID = '-1003809954655';
 
 function json(status, payload) {
   return new Response(JSON.stringify(payload), {
@@ -8,7 +11,6 @@ function json(status, payload) {
     headers: {
       'Cache-Control': 'no-store',
       'Content-Type': 'application/json; charset=utf-8',
-      'Access-Control-Allow-Origin': '*',
     },
   });
 }
@@ -19,12 +21,43 @@ function isAdmin(user, env) {
   return String(user.id) === String(adminId);
 }
 
-function sanitizeFileName(name) {
-  // Keep Cyrillic, Latin, digits, dots, dashes, underscores — replace everything else
-  return (name || 'file')
-    .replace(/[^a-zA-Z0-9а-яёА-ЯЁ.\-_\s]/g, '_')
-    .replace(/\s+/g, '_')
-    .slice(0, 200);
+// Send file to Telegram storage channel, returns { file_id, file_unique_id, mime_type, file_size }
+async function uploadToTelegram(botToken, fileBlob, fileName) {
+  var form = new FormData();
+  form.append('chat_id', DOCS_CHAT_ID);
+  form.append('document', fileBlob, fileName);
+  // Pin caption so we can find files manually in the channel if needed
+  form.append('caption', fileName);
+
+  var resp = await fetch(TG_API + botToken + '/sendDocument', {
+    method: 'POST',
+    body: form,
+  });
+
+  var data = await resp.json();
+  if (!data.ok) {
+    throw new Error('Telegram upload failed: ' + (data.description || 'unknown error'));
+  }
+
+  var doc = data.result && data.result.document;
+  if (!doc) throw new Error('Telegram did not return document info');
+
+  return {
+    file_id: doc.file_id,
+    file_unique_id: doc.file_unique_id,
+    mime_type: doc.mime_type || 'application/octet-stream',
+    file_size: doc.file_size || 0,
+  };
+}
+
+// Get temporary download URL from Telegram (valid ~1 hour)
+async function getTelegramFileUrl(botToken, file_id) {
+  var resp = await fetch(TG_API + botToken + '/getFile?file_id=' + encodeURIComponent(file_id));
+  var data = await resp.json();
+  if (!data.ok || !data.result || !data.result.file_path) {
+    throw new Error('Cannot get file path from Telegram');
+  }
+  return 'https://api.telegram.org/file/bot' + botToken + '/' + data.result.file_path;
 }
 
 export async function onRequest(context) {
@@ -40,9 +73,8 @@ export async function onRequest(context) {
     if (!botToken) {
       return json(500, { error: 'TELEGRAM_BOT_TOKEN is missing' });
     }
-
-    if (!env.DOCS_BUCKET) {
-      return json(500, { error: 'DOCS_BUCKET binding is missing. Create an R2 bucket and bind it as DOCS_BUCKET in Cloudflare Pages settings.' });
+    if (!env.DB) {
+      return json(500, { error: 'DB binding is missing' });
     }
 
     var user = await getSessionUser(request, botToken);
@@ -51,72 +83,88 @@ export async function onRequest(context) {
     }
 
     var url = new URL(request.url);
-    var folder = url.searchParams.get('folder') || 'general';
-    if (!VALID_FOLDERS.includes(folder)) {
-      return json(400, { error: 'Invalid folder. Use one of: ' + VALID_FOLDERS.join(', ') });
-    }
 
-    // ── GET: list files in folder ───────────────────────────────────────────
+    // ── GET /api/docs?folder=speeds — list files ────────────────────────────
     if (request.method === 'GET') {
-      var prefix = folder + '/';
-      var listed = await env.DOCS_BUCKET.list({ prefix: prefix });
-      var files = (listed.objects || []).map(function(obj) {
-        return {
-          key: obj.key,
-          name: obj.key.slice(prefix.length),
-          size: obj.size,
-          uploaded: obj.uploaded ? obj.uploaded.toISOString() : null,
-        };
-      });
-      return json(200, { files: files, folder: folder });
-    }
-
-    // ── POST: upload file (admin only) ──────────────────────────────────────
-    if (request.method === 'POST') {
-      if (!isAdmin(user, env)) {
-        return json(403, { error: 'Forbidden: admin only' });
+      // Single file download URL: ?file_id=xxx
+      var reqFileId = url.searchParams.get('file_id');
+      if (reqFileId) {
+        var dlUrl = await getTelegramFileUrl(botToken, reqFileId);
+        return json(200, { url: dlUrl });
       }
 
-      var contentType = request.headers.get('Content-Type') || '';
-      if (contentType.indexOf('multipart/form-data') === -1) {
-        return json(400, { error: 'Expected multipart/form-data' });
+      var folder = url.searchParams.get('folder') || 'speeds';
+      if (!VALID_FOLDERS.includes(folder)) {
+        return json(400, { error: 'Invalid folder' });
+      }
+
+      var files = await listDocFiles(env.DB, folder);
+      return json(200, {
+        files: files,
+        folder: folder,
+        is_admin: isAdmin(user, env),
+      });
+    }
+
+    // ── POST /api/docs?folder=speeds — upload file (admin only) ─────────────
+    if (request.method === 'POST') {
+      if (!isAdmin(user, env)) {
+        return json(403, { error: 'Только администратор может загружать файлы' });
+      }
+
+      var folder = url.searchParams.get('folder') || 'speeds';
+      if (!VALID_FOLDERS.includes(folder)) {
+        return json(400, { error: 'Invalid folder' });
       }
 
       var formData = await request.formData();
       var file = formData.get('file');
       if (!file || typeof file === 'string') {
-        return json(400, { error: 'No file provided' });
+        return json(400, { error: 'Файл не передан' });
       }
 
-      var safeName = sanitizeFileName(file.name || 'file');
-      var key = folder + '/' + safeName;
+      var fileName = (file.name || 'file').slice(0, 200);
+      var tgResult = await uploadToTelegram(botToken, file, fileName);
 
-      await env.DOCS_BUCKET.put(key, file.stream(), {
-        httpMetadata: { contentType: file.type || 'application/octet-stream' },
+      var id = await saveDocFile(env.DB, {
+        folder: folder,
+        name: fileName,
+        file_id: tgResult.file_id,
+        file_unique_id: tgResult.file_unique_id,
+        mime_type: tgResult.mime_type,
+        file_size: tgResult.file_size,
+        uploaded_by: String(user.id),
       });
 
-      return json(200, { ok: true, key: key, name: safeName, folder: folder });
+      return json(200, {
+        ok: true,
+        id: id,
+        name: fileName,
+        folder: folder,
+        file_id: tgResult.file_id,
+        mime_type: tgResult.mime_type,
+        file_size: tgResult.file_size,
+      });
     }
 
-    // ── DELETE: remove file (admin only) ───────────────────────────────────
+    // ── DELETE /api/docs?id=123 — delete file (admin only) ──────────────────
     if (request.method === 'DELETE') {
       if (!isAdmin(user, env)) {
-        return json(403, { error: 'Forbidden: admin only' });
+        return json(403, { error: 'Только администратор может удалять файлы' });
       }
 
-      var key = url.searchParams.get('key');
-      if (!key) {
-        return json(400, { error: 'Missing key parameter' });
+      var id = parseInt(url.searchParams.get('id'), 10);
+      if (!id) {
+        return json(400, { error: 'Missing id parameter' });
       }
 
-      // Security: key must start with a valid folder to prevent path traversal
-      var keyFolder = key.split('/')[0];
-      if (!VALID_FOLDERS.includes(keyFolder)) {
-        return json(400, { error: 'Invalid key' });
+      var existing = await getDocFile(env.DB, id);
+      if (!existing) {
+        return json(404, { error: 'Файл не найден' });
       }
 
-      await env.DOCS_BUCKET.delete(key);
-      return json(200, { ok: true, key: key });
+      await deleteDocFile(env.DB, id);
+      return json(200, { ok: true, id: id });
     }
 
     return json(405, { error: 'Method not allowed' });

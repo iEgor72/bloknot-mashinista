@@ -1247,7 +1247,67 @@
       max-width: 220px;
     }
 
-    /* Future: document list items */
+    /* File list container (rendered by JS) */
+    .docs-file-list {
+      display: grid;
+      gap: 8px;
+      margin-top: 4px;
+      min-height: 80px;
+    }
+
+    /* Loading skeleton */
+    .docs-loading {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 10px;
+      padding: 52px 24px;
+      color: var(--text-muted);
+      font-size: 14px;
+    }
+
+    .docs-loading-spinner {
+      width: 28px;
+      height: 28px;
+      border: 2.5px solid rgba(141, 124, 255, 0.18);
+      border-top-color: var(--accent);
+      border-radius: 50%;
+      animation: docs-spin 0.8s linear infinite;
+    }
+
+    @keyframes docs-spin {
+      to { transform: rotate(360deg); }
+    }
+
+    /* Delete button on file item (admin only) */
+    .docs-item-delete {
+      flex-shrink: 0;
+      width: 30px;
+      height: 30px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      border-radius: 8px;
+      background: rgba(255, 80, 80, 0.1);
+      border: none;
+      color: rgba(255, 100, 100, 0.75);
+      cursor: pointer;
+      transition: background 0.15s, color 0.15s;
+      -webkit-tap-highlight-color: transparent;
+    }
+
+    .docs-item-delete:active {
+      background: rgba(255, 80, 80, 0.22);
+      color: #ff6464;
+    }
+
+    .docs-item-delete svg {
+      width: 14px;
+      height: 14px;
+    }
+
+    /* Document list items */
     .docs-item-list {
       display: grid;
       gap: 8px;

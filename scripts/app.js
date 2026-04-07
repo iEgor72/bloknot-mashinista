@@ -3364,6 +3364,162 @@ var contentHtml = formatInstructionNodeContentHtml(
     // Renders the active docs sub-tab. Called whenever the instructions/docs
     // tab is activated or a sub-tab button is pressed.
 
+    // Cache loaded files per folder so switching tabs doesn't re-fetch every time
+    var docsFilesCache = {};
+
+    function docsFolderListId(folder) {
+      var map = { speeds: 'docsListSpeeds', folders: 'docsListFolders', memos: 'docsListMemos', regimki: 'docsListRegimki', instructions: 'docsListInstructions' };
+      return map[folder] || null;
+    }
+
+    function docsFormatSize(bytes) {
+      if (!bytes) return '';
+      if (bytes < 1024) return bytes + ' Б';
+      if (bytes < 1024 * 1024) return Math.round(bytes / 1024) + ' КБ';
+      return (bytes / (1024 * 1024)).toFixed(1) + ' МБ';
+    }
+
+    function docsFileIcon(mimeType) {
+      var mime = String(mimeType || '');
+      if (mime.indexOf('pdf') !== -1) {
+        return '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><path d="M9 15h1.5a1.5 1.5 0 0 0 0-3H9v6"/><path d="M14 12v6"/><path d="M19 12h-2v6"/><path d="M17 15h-1"/></svg>';
+      }
+      if (mime.indexOf('image') !== -1) {
+        return '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><polyline points="21 15 16 10 5 21"/></svg>';
+      }
+      return '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>';
+    }
+
+    function renderDocFileList(folder, files, isAdm) {
+      var listId = docsFolderListId(folder);
+      if (!listId) return;
+      var el = document.getElementById(listId);
+      if (!el) return;
+
+      if (!files || files.length === 0) {
+        el.innerHTML =
+          '<div class="docs-empty-state">' +
+            '<div class="docs-empty-icon" aria-hidden="true">' +
+              '<svg viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg">' +
+                '<rect x="8" y="4" width="32" height="40" rx="4" fill="currentColor" opacity="0.15"/>' +
+                '<rect x="8" y="4" width="32" height="40" rx="4" stroke="currentColor" stroke-width="2.5"/>' +
+                '<path d="M16 16H32" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"/>' +
+                '<path d="M16 24H32" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"/>' +
+                '<path d="M16 32H24" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"/>' +
+              '</svg>' +
+            '</div>' +
+            '<div class="docs-empty-title">Файлов пока нет</div>' +
+            '<div class="docs-empty-text">Файлы будут здесь после загрузки</div>' +
+          '</div>';
+        return;
+      }
+
+      var html = '<div class="docs-item-list">';
+      for (var i = 0; i < files.length; i++) {
+        var f = files[i];
+        var size = docsFormatSize(f.file_size);
+        var date = f.uploaded_at ? f.uploaded_at.slice(0, 10) : '';
+        var meta = [size, date].filter(Boolean).join(' · ');
+        html +=
+          '<div class="docs-item" data-file-id="' + (f.file_id || '') + '" data-file-name="' + encodeURIComponent(f.name || '') + '">' +
+            '<div class="docs-item-icon">' + docsFileIcon(f.mime_type) + '</div>' +
+            '<div class="docs-item-body">' +
+              '<div class="docs-item-title">' + (f.name || 'Файл') + '</div>' +
+              (meta ? '<div class="docs-item-meta">' + meta + '</div>' : '') +
+            '</div>' +
+            '<div class="docs-item-action"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg></div>' +
+            (isAdm ? '<button class="docs-item-delete" data-delete-id="' + f.id + '" aria-label="Удалить файл"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6"/><path d="M10 11v6"/><path d="M14 11v6"/></svg></button>' : '') +
+          '</div>';
+      }
+      html += '</div>';
+      el.innerHTML = html;
+    }
+
+    function renderDocLoading(folder) {
+      var listId = docsFolderListId(folder);
+      if (!listId) return;
+      var el = document.getElementById(listId);
+      if (!el) return;
+      el.innerHTML = '<div class="docs-loading"><div class="docs-loading-spinner"></div><span>Загрузка…</span></div>';
+    }
+
+    function loadDocFiles(folder, forceRefresh) {
+      if (!forceRefresh && docsFilesCache[folder]) {
+        renderDocFileList(folder, docsFilesCache[folder].files, docsFilesCache[folder].is_admin);
+        return;
+      }
+
+      renderDocLoading(folder);
+
+      var sessionToken = CURRENT_SESSION_TOKEN || getStoredSessionToken();
+      var headers = { 'Accept': 'application/json' };
+      if (sessionToken) headers['Authorization'] = 'Bearer ' + sessionToken;
+
+      fetch(DOCS_API_URL + '?folder=' + encodeURIComponent(folder), {
+        method: 'GET',
+        headers: headers,
+        credentials: 'include'
+      })
+        .then(function(resp) { return resp.json(); })
+        .then(function(data) {
+          var files = (data && Array.isArray(data.files)) ? data.files : [];
+          var isAdm = !!(data && data.is_admin);
+          docsFilesCache[folder] = { files: files, is_admin: isAdm };
+          renderDocFileList(folder, files, isAdm);
+        })
+        .catch(function() {
+          var listId = docsFolderListId(folder);
+          var el = listId ? document.getElementById(listId) : null;
+          if (el) el.innerHTML = '<div class="docs-loading"><span>⚠ Не удалось загрузить файлы</span></div>';
+        });
+    }
+
+    function deleteDocFile(id, folder) {
+      var sessionToken = CURRENT_SESSION_TOKEN || getStoredSessionToken();
+      var headers = { 'Accept': 'application/json' };
+      if (sessionToken) headers['Authorization'] = 'Bearer ' + sessionToken;
+
+      fetch(DOCS_API_URL + '?id=' + encodeURIComponent(id), {
+        method: 'DELETE',
+        headers: headers,
+        credentials: 'include'
+      })
+        .then(function(resp) { return resp.json(); })
+        .then(function(data) {
+          if (data && data.ok) {
+            docsFilesCache[folder] = null;
+            loadDocFiles(folder, true);
+          }
+        })
+        .catch(function() {});
+    }
+
+    function openDocFile(fileId, fileName) {
+      var sessionToken = CURRENT_SESSION_TOKEN || getStoredSessionToken();
+      var headers = { 'Accept': 'application/json' };
+      if (sessionToken) headers['Authorization'] = 'Bearer ' + sessionToken;
+
+      fetch(DOCS_API_URL + '?file_id=' + encodeURIComponent(fileId), {
+        method: 'GET',
+        headers: headers,
+        credentials: 'include'
+      })
+        .then(function(resp) { return resp.json(); })
+        .then(function(data) {
+          if (data && data.url) {
+            var a = document.createElement('a');
+            a.href = data.url;
+            a.target = '_blank';
+            a.rel = 'noopener';
+            a.download = decodeURIComponent(fileName || 'file');
+            document.body.appendChild(a);
+            a.click();
+            setTimeout(function() { document.body.removeChild(a); }, 500);
+          }
+        })
+        .catch(function() {});
+    }
+
     function renderDocumentationScreen() {
       var shell = document.getElementById('docsShell');
       if (!shell) return;
@@ -3383,9 +3539,12 @@ var contentHtml = formatInstructionNodeContentHtml(
       // Admin upload bar — visible only for the authenticated admin
       var adminBar = document.getElementById('docsAdminBar');
       if (adminBar) {
-        var isAdmin = !!(CURRENT_USER && CURRENT_USER.is_admin);
-        adminBar.classList.toggle('hidden', !isAdmin);
+        var isAdminUser = !!(CURRENT_USER && CURRENT_USER.is_admin);
+        adminBar.classList.toggle('hidden', !isAdminUser);
       }
+
+      // Load files for the active tab
+      loadDocFiles(documentationStore.activeTab, false);
     }
 
     function uploadDocFile(file, folder) {
@@ -3420,6 +3579,9 @@ var contentHtml = formatInstructionNodeContentHtml(
           setUploading(false);
           if (data && data.ok) {
             if (uploadLabel) uploadLabel.textContent = '✓ Загружено';
+            // Invalidate cache and reload list
+            docsFilesCache[folder] = null;
+            loadDocFiles(folder, true);
             setTimeout(function() {
               if (uploadLabel) uploadLabel.textContent = 'Загрузить файл';
             }, 2500);
@@ -3427,12 +3589,12 @@ var contentHtml = formatInstructionNodeContentHtml(
             throw new Error(data && data.error ? data.error : 'Ошибка загрузки');
           }
         })
-        .catch(function() {
+        .catch(function(err) {
           setUploading(false);
-          if (uploadLabel) uploadLabel.textContent = '⚠ Ошибка';
+          if (uploadLabel) uploadLabel.textContent = '⚠ ' + (err && err.message ? err.message : 'Ошибка');
           setTimeout(function() {
             if (uploadLabel) uploadLabel.textContent = 'Загрузить файл';
-          }, 3000);
+          }, 3500);
         });
     }
 
@@ -6122,16 +6284,38 @@ if (action === 'scroll-node') {
       });
     }
 
-    // ── Documentation sub-tab switching ────────────────────────────────────
+    // ── Documentation sub-tab switching + file actions ─────────────────────
     var docsShellEl = document.getElementById('docsShell');
     if (docsShellEl) {
       docsShellEl.addEventListener('click', function(e) {
+        // Tab switch
         var btn = e.target.closest('.docs-tab-btn[data-docs-tab]');
-        if (!btn) return;
-        var tab = btn.getAttribute('data-docs-tab');
-        if (tab && tab !== documentationStore.activeTab) {
-          documentationStore.activeTab = tab;
-          renderDocumentationScreen();
+        if (btn) {
+          var tab = btn.getAttribute('data-docs-tab');
+          if (tab && tab !== documentationStore.activeTab) {
+            documentationStore.activeTab = tab;
+            renderDocumentationScreen();
+          }
+          return;
+        }
+
+        // Delete file (admin)
+        var delBtn = e.target.closest('.docs-item-delete[data-delete-id]');
+        if (delBtn) {
+          e.stopPropagation();
+          var id = delBtn.getAttribute('data-delete-id');
+          if (id && confirm('Удалить файл?')) {
+            deleteDocFile(id, documentationStore.activeTab);
+          }
+          return;
+        }
+
+        // Open / download file
+        var item = e.target.closest('.docs-item[data-file-id]');
+        if (item) {
+          var fileId = item.getAttribute('data-file-id');
+          var fileName = item.getAttribute('data-file-name') || '';
+          if (fileId) openDocFile(fileId, fileName);
         }
       });
     }
