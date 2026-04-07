@@ -1385,4 +1385,129 @@
       height: 16px;
     }
 
+    /* ── File viewer overlay ─────────────────────────────────────────────────── */
+
+    .docs-viewer {
+      position: fixed;
+      inset: 0;
+      z-index: 300;
+      background: var(--bg);
+      display: flex;
+      flex-direction: column;
+    }
+
+    .docs-viewer.hidden {
+      display: none;
+    }
+
+    .docs-viewer-header {
+      display: grid;
+      grid-template-columns: 44px 1fr 44px;
+      align-items: center;
+      gap: 8px;
+      padding: 12px 12px;
+      border-bottom: 1px solid var(--border);
+      flex-shrink: 0;
+      background: rgba(18, 21, 43, 0.95);
+      backdrop-filter: blur(20px);
+      -webkit-backdrop-filter: blur(20px);
+    }
+
+    .docs-viewer-title {
+      font-size: 15px;
+      font-weight: 700;
+      color: var(--text);
+      text-align: center;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    .docs-viewer-close,
+    .docs-viewer-ext {
+      appearance: none;
+      border: none;
+      background: rgba(255, 255, 255, 0.07);
+      color: var(--text);
+      width: 36px;
+      height: 36px;
+      border-radius: 10px;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      -webkit-tap-highlight-color: transparent;
+      transition: background 0.15s;
+    }
+
+    .docs-viewer-close:active,
+    .docs-viewer-ext:active {
+      background: rgba(255, 255, 255, 0.14);
+    }
+
+    .docs-viewer-ext {
+      justify-self: end;
+    }
+
+    .docs-viewer-body {
+      flex: 1;
+      min-height: 0;
+      overflow: auto;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      position: relative;
+    }
+
+    .docs-viewer-body img {
+      max-width: 100%;
+      max-height: 100%;
+      object-fit: contain;
+      display: block;
+    }
+
+    .docs-viewer-body iframe {
+      width: 100%;
+      height: 100%;
+      border: none;
+      display: block;
+    }
+
+    .docs-viewer-unsupported {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 16px;
+      padding: 40px 24px;
+      text-align: center;
+      color: var(--text-muted);
+    }
+
+    .docs-viewer-unsupported-icon {
+      font-size: 48px;
+      line-height: 1;
+    }
+
+    .docs-viewer-unsupported p {
+      font-size: 15px;
+      line-height: 1.5;
+      max-width: 240px;
+    }
+
+    .docs-viewer-dl-btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 12px 24px;
+      border-radius: 999px;
+      background: linear-gradient(135deg, rgba(141, 124, 255, 0.28), rgba(82, 215, 255, 0.14));
+      border: 1px solid rgba(141, 124, 255, 0.3);
+      color: #fff;
+      font-size: 15px;
+      font-weight: 700;
+      cursor: pointer;
+      text-decoration: none;
+      -webkit-tap-highlight-color: transparent;
+    }
+
     /* ── End Documentation Section ───────────────────────────────────────────── */

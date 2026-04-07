@@ -3421,7 +3421,7 @@ var contentHtml = formatInstructionNodeContentHtml(
         var date = f.uploaded_at ? f.uploaded_at.slice(0, 10) : '';
         var meta = [size, date].filter(Boolean).join(' · ');
         html +=
-          '<div class="docs-item" data-file-id="' + (f.file_id || '') + '" data-file-name="' + encodeURIComponent(f.name || '') + '">' +
+          '<div class="docs-item" data-file-id="' + (f.file_id || '') + '" data-file-name="' + encodeURIComponent(f.name || '') + '" data-mime-type="' + (f.mime_type || '') + '">' +
             '<div class="docs-item-icon">' + docsFileIcon(f.mime_type) + '</div>' +
             '<div class="docs-item-body">' +
               '<div class="docs-item-title">' + (f.name || 'Файл') + '</div>' +
@@ -3494,36 +3494,85 @@ var contentHtml = formatInstructionNodeContentHtml(
         .catch(function() {});
     }
 
-    function openDocFile(fileId, fileName) {
+    // ── In-app file viewer ────────────────────────────────────────────────────
+
+    var docsViewerBlobUrl = null;
+    var docsViewerExtUrl = null;
+
+    function showDocsViewer(name, bodyHtml, blobUrl, extUrl) {
+      var viewer = document.getElementById('docsViewer');
+      var titleEl = document.getElementById('docsViewerTitle');
+      var bodyEl = document.getElementById('docsViewerBody');
+      if (!viewer) return;
+      if (docsViewerBlobUrl) { URL.revokeObjectURL(docsViewerBlobUrl); docsViewerBlobUrl = null; }
+      docsViewerBlobUrl = blobUrl || null;
+      docsViewerExtUrl = extUrl || null;
+      if (titleEl) titleEl.textContent = name;
+      if (bodyEl) bodyEl.innerHTML = bodyHtml;
+      viewer.classList.remove('hidden');
+    }
+
+    function closeDocsViewer() {
+      var viewer = document.getElementById('docsViewer');
+      if (!viewer) return;
+      if (docsViewerBlobUrl) { URL.revokeObjectURL(docsViewerBlobUrl); docsViewerBlobUrl = null; }
+      docsViewerExtUrl = null;
+      var bodyEl = document.getElementById('docsViewerBody');
+      if (bodyEl) bodyEl.innerHTML = '';
+      viewer.classList.add('hidden');
+    }
+
+    function openDocFile(fileId, fileName, mimeType) {
+      var name = decodeURIComponent(fileName || 'Файл');
+      var mime = mimeType || '';
+
+      // Show loading immediately
+      showDocsViewer(name, '<div class="docs-loading"><div class="docs-loading-spinner"></div><span>Загрузка…</span></div>', null, null);
+
       var sessionToken = CURRENT_SESSION_TOKEN || getStoredSessionToken();
       var headers = { 'Accept': 'application/json' };
       if (sessionToken) headers['Authorization'] = 'Bearer ' + sessionToken;
 
       fetch(DOCS_API_URL + '?file_id=' + encodeURIComponent(fileId), {
-        method: 'GET',
         headers: headers,
         credentials: 'include'
       })
-        .then(function(resp) { return resp.json(); })
+        .then(function(r) { return r.json(); })
         .then(function(data) {
-          if (data && data.url) {
-            // Inside Telegram Mini App use WebApp.openLink so the file
-            // downloads through the device browser (first tap = download,
-            // second tap = open locally) — regular <a> clicks are blocked.
-            if (window.Telegram && window.Telegram.WebApp && window.Telegram.WebApp.openLink) {
-              window.Telegram.WebApp.openLink(data.url);
+          if (!data || !data.url) throw new Error('no url');
+          // Save original URL for "open in browser" fallback button
+          var originalUrl = data.url;
+          // Fetch the actual file as a blob so we can display it inline
+          return fetch(data.url).then(function(r) {
+            return r.blob();
+          }).then(function(blob) {
+            var blobUrl = URL.createObjectURL(blob);
+            var detectedMime = blob.type || mime;
+            var bodyHtml;
+
+            if (detectedMime.indexOf('image/') === 0) {
+              bodyHtml = '<img src="' + blobUrl + '" alt="' + name + '">';
+            } else if (detectedMime.indexOf('pdf') !== -1) {
+              bodyHtml = '<iframe src="' + blobUrl + '#toolbar=0" title="' + name + '"></iframe>';
             } else {
-              var a = document.createElement('a');
-              a.href = data.url;
-              a.target = '_blank';
-              a.rel = 'noopener';
-              document.body.appendChild(a);
-              a.click();
-              setTimeout(function() { document.body.removeChild(a); }, 500);
+              // Unsupported format — show friendly download card
+              bodyHtml =
+                '<div class="docs-viewer-unsupported">' +
+                  '<div class="docs-viewer-unsupported-icon">📄</div>' +
+                  '<p>' + name + '</p>' +
+                  '<a class="docs-viewer-dl-btn" href="' + blobUrl + '" download="' + name + '">' +
+                    '<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>' +
+                    'Скачать файл' +
+                  '</a>' +
+                '</div>';
             }
-          }
+
+            showDocsViewer(name, bodyHtml, blobUrl, originalUrl);
+          });
         })
-        .catch(function() {});
+        .catch(function() {
+          showDocsViewer(name, '<div class="docs-loading"><span>⚠ Не удалось открыть файл</span></div>', null, null);
+        });
     }
 
     function renderDocumentationScreen() {
@@ -6316,12 +6365,32 @@ if (action === 'scroll-node') {
           return;
         }
 
-        // Open / download file
+        // Open file in in-app viewer
         var item = e.target.closest('.docs-item[data-file-id]');
         if (item) {
           var fileId = item.getAttribute('data-file-id');
           var fileName = item.getAttribute('data-file-name') || '';
-          if (fileId) openDocFile(fileId, fileName);
+          var mimeType = item.getAttribute('data-mime-type') || '';
+          if (fileId) openDocFile(fileId, fileName, mimeType);
+        }
+      });
+    }
+
+    // File viewer close / open-in-browser buttons
+    var docsViewerCloseBtn = document.getElementById('docsViewerClose');
+    if (docsViewerCloseBtn) {
+      docsViewerCloseBtn.addEventListener('click', closeDocsViewer);
+    }
+
+    var docsViewerExtBtn = document.getElementById('docsViewerExt');
+    if (docsViewerExtBtn) {
+      docsViewerExtBtn.addEventListener('click', function() {
+        if (docsViewerExtUrl) {
+          if (window.Telegram && window.Telegram.WebApp && window.Telegram.WebApp.openLink) {
+            window.Telegram.WebApp.openLink(docsViewerExtUrl);
+          } else {
+            window.open(docsViewerExtUrl, '_blank');
+          }
         }
       });
     }
