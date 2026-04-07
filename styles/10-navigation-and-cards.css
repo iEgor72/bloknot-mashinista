@@ -1083,33 +1083,29 @@
       color: rgba(244, 247, 255, 0.58);
     }
 
-    .instructions-shell {
-      position: relative;
-      min-height: 420px;
-      border-radius: 28px;
+    /* ── Salary Settings Sheet ──────────────────────────────────────────────── */
+
+    .salary-settings-sheet .settings-card {
+      margin-bottom: 10px;
     }
 
-    .instructions-content-layer {
-      display: block;
-      transition: filter 0.24s ease, opacity 0.24s ease;
+    .salary-settings-sheet .settings-help-block {
+      margin: 8px 0 4px;
     }
 
-    .instructions-content-layer.is-paywalled {
-      filter: blur(6px) saturate(0.85);
-      opacity: 0.72;
-      pointer-events: none;
-      user-select: none;
-    }
+    /* ── Documentation Section ──────────────────────────────────────────────── */
 
-    .instructions-list-view,
-    .instructions-detail-view,
-    .instructions-section-view {
+    .docs-shell {
       display: grid;
-      gap: 12px;
-      margin-bottom: 20px;
+      gap: 0;
+      padding-bottom: 20px;
     }
 
-    .instructions-page-title {
+    .docs-header {
+      padding: 8px 0 2px;
+    }
+
+    .docs-page-title {
       font-size: 30px;
       font-weight: 800;
       line-height: 1.08;
@@ -1121,737 +1117,177 @@
       background-clip: text;
     }
 
-    .instructions-subtitle {
-      font-size: 13px;
-      line-height: 1.4;
-      color: rgba(244, 247, 255, 0.6);
-      margin-top: -2px;
-      margin-bottom: 4px;
-    }
-
-    .instructions-search-wrap {
-      margin-top: 6px;
-      margin-bottom: 2px;
-    }
-
-    .instructions-search-input {
-      width: 100%;
-      font-size: 15px;
-      border-radius: 16px;
-      padding: 13px 14px;
-    }
-
-    .instructions-search-input::-webkit-search-cancel-button {
-      cursor: pointer;
-    }
-
-    .instructions-meta-row {
-      font-size: 12px;
-      color: rgba(244, 247, 255, 0.56);
-      min-height: 18px;
-      margin-bottom: 2px;
-    }
-
-    .instructions-state {
-      border-radius: 18px;
-      border: 1px solid rgba(255,255,255,0.07);
-      background:
-        linear-gradient(180deg, rgba(255,255,255,0.06), rgba(255,255,255,0.02)),
-        rgba(18, 21, 43, 0.64);
-      padding: 14px;
-      font-size: 13px;
-      line-height: 1.45;
-      color: rgba(244, 247, 255, 0.74);
-      box-shadow: 0 12px 22px rgba(6, 9, 18, 0.18);
-    }
-
-    .instructions-list,
-    .instructions-answer,
-    .instructions-results,
-    .instructions-sections {
-      display: grid;
-      gap: 10px;
-    }
-
-    .instruction-card,
-    .search-result-card,
-    .instruction-section-item {
-      width: 100%;
-      border: 1px solid rgba(255,255,255,0.08);
-      border-radius: 20px;
-      background:
-        radial-gradient(circle at 12% 0%, rgba(141, 124, 255, 0.14), transparent 34%),
-        linear-gradient(180deg, rgba(255,255,255,0.08), rgba(255,255,255,0.03)),
-        rgba(18, 21, 43, 0.74);
-      box-shadow: 0 16px 30px rgba(6, 9, 18, 0.22), inset 0 1px 0 rgba(255,255,255,0.06);
-      text-align: left;
-      color: var(--text);
-      cursor: pointer;
-      -webkit-tap-highlight-color: transparent;
-      transition: transform 0.16s ease, border-color 0.16s ease, box-shadow 0.16s ease;
-    }
-
-    .instruction-card:active,
-    .search-result-card:active,
-    .instruction-section-item:active {
-      transform: translateY(1px);
-    }
-
-    .instruction-card:hover,
-    .search-result-card:hover,
-    .instruction-section-item:hover {
-      border-color: rgba(141, 124, 255, 0.38);
-      box-shadow: 0 18px 34px rgba(141, 124, 255, 0.14), inset 0 1px 0 rgba(255,255,255,0.07);
-    }
-
-    .instruction-card {
-      padding: 14px;
-      display: grid;
+    /* Sub-tab pill navigation */
+    .docs-tab-nav {
+      display: flex;
       gap: 6px;
+      padding: 10px 0 14px;
+      overflow-x: auto;
+      -webkit-overflow-scrolling: touch;
+      scrollbar-width: none;
     }
 
-    .instruction-card-title {
-      font-size: 16px;
-      font-weight: 800;
-      letter-spacing: -0.01em;
-      color: rgba(244, 247, 255, 0.96);
+    .docs-tab-nav::-webkit-scrollbar {
+      display: none;
     }
 
-    .instruction-card-description {
-      font-size: 13px;
-      line-height: 1.45;
-      color: rgba(244, 247, 255, 0.68);
-    }
-
-    .instruction-card-meta {
-      font-size: 11px;
-      color: rgba(244, 247, 255, 0.52);
-      letter-spacing: 0.03em;
-      text-transform: uppercase;
-    }
-
-    .search-result-card {
-      padding: 13px 14px;
-      display: grid;
-      gap: 7px;
-    }
-
-    .search-answer-card {
-      width: 100%;
-      border: 1px solid rgba(194, 229, 255, 0.48);
+    .docs-tab-btn {
+      flex-shrink: 0;
+      padding: 8px 18px;
       border-radius: 20px;
-      background:
-        radial-gradient(circle at 12% 0%, rgba(98, 172, 255, 0.2), transparent 34%),
-        linear-gradient(180deg, rgba(255,255,255,0.1), rgba(255,255,255,0.04)),
-        rgba(18, 21, 43, 0.8);
-      box-shadow: 0 18px 34px rgba(80, 146, 255, 0.2), inset 0 1px 0 rgba(255,255,255,0.1);
-      padding: 14px 15px;
-      display: grid;
-      gap: 8px;
-      color: var(--text);
-      text-align: left;
-      cursor: pointer;
-      -webkit-tap-highlight-color: transparent;
-    }
-
-    .search-answer-kicker {
-      font-size: 11px;
-      font-weight: 800;
-      letter-spacing: 0.07em;
-      text-transform: uppercase;
-      color: rgba(194, 229, 255, 0.95);
-    }
-
-    .search-answer-preview {
-      font-size: 13px;
-      line-height: 1.5;
-      color: rgba(244, 247, 255, 0.84);
-      white-space: pre-line;
-      overflow-wrap: anywhere;
-      word-break: break-word;
-    }
-
-    .search-answer-actions {
-      display: flex;
-      justify-content: flex-start;
-      margin-top: 2px;
-    }
-
-    .search-answer-action-btn {
-      font-size: 12px;
-      font-weight: 700;
-      letter-spacing: 0.02em;
-      color: rgba(194, 229, 255, 0.98);
-      border: 1px solid rgba(194, 229, 255, 0.34);
-      border-radius: 999px;
-      padding: 6px 11px;
-      background: rgba(80, 146, 255, 0.12);
-    }
-
-    .search-result-card.is-answer {
-      border-color: rgba(194, 229, 255, 0.42);
-      box-shadow: 0 18px 34px rgba(80, 146, 255, 0.16), inset 0 1px 0 rgba(255,255,255,0.08);
-    }
-
-    .search-result-top {
-      display: grid;
-      grid-template-columns: minmax(0, 1fr) auto;
-      align-items: baseline;
-      gap: 8px;
-      min-width: 0;
-    }
-
-    .search-result-instruction {
-      font-size: 11px;
-      font-weight: 800;
-      letter-spacing: 0.05em;
-      text-transform: uppercase;
-      color: rgba(194, 229, 255, 0.86);
-      min-width: 0;
-      overflow-wrap: anywhere;
-    }
-
-    .search-result-point {
-      font-size: 11px;
-      font-weight: 700;
-      color: rgba(244, 247, 255, 0.74);
-      letter-spacing: 0.01em;
-      white-space: nowrap;
-      justify-self: end;
-    }
-
-    .search-result-section {
+      border: 1.5px solid var(--border);
+      background: transparent;
+      color: var(--text-muted);
       font-size: 14px;
-      font-weight: 700;
-      line-height: 1.35;
-      color: rgba(244, 247, 255, 0.92);
-      overflow-wrap: anywhere;
-      word-break: break-word;
+      font-weight: 600;
+      cursor: pointer;
+      transition: background 0.18s ease, border-color 0.18s ease, color 0.18s ease, box-shadow 0.18s ease;
+      white-space: nowrap;
     }
 
-    .search-result-snippet {
-      font-size: 13px;
-      line-height: 1.54;
-      color: rgba(244, 247, 255, 0.66);
-      white-space: pre-line;
-      overflow-wrap: anywhere;
-      word-break: break-word;
-    }
-
-    .search-result-snippet.is-expanded {
-      color: rgba(244, 247, 255, 0.84);
-    }
-
-    .search-highlight {
-      background: rgba(247, 185, 85, 0.28);
-      border-radius: 6px;
-      padding: 1px 3px;
-      color: #fff4d8;
-    }
-
-    .btn-link.instructions-back-btn {
-      width: auto;
-      justify-self: start;
-      margin-top: 0;
-      padding: 8px 0 0;
-      color: rgba(194, 229, 255, 0.84);
-      font-weight: 700;
-      font-size: 13px;
-    }
-
-    .instructions-detail-title {
-      font-size: 22px;
-      line-height: 1.16;
-      font-weight: 800;
-      letter-spacing: -0.03em;
+    .docs-tab-btn.active {
+      background: var(--accent);
+      border-color: var(--accent);
       color: #fff;
-      margin-top: 4px;
+      box-shadow: 0 4px 18px rgba(141, 124, 255, 0.38);
     }
 
-    .instructions-detail-description {
-      font-size: 13px;
-      line-height: 1.5;
-      color: rgba(244, 247, 255, 0.66);
+    .docs-tab-btn:not(.active):active {
+      border-color: var(--accent);
+      color: var(--text);
     }
 
-    .instructions-breadcrumb {
+    /* Panel show/hide */
+    .docs-panel {
+      display: block;
+    }
+
+    .docs-panel.hidden {
+      display: none;
+    }
+
+    /* Empty state card */
+    .docs-empty-state {
       display: flex;
+      flex-direction: column;
       align-items: center;
-      gap: 6px;
-      flex-wrap: nowrap;
-      overflow-x: auto;
-      padding: 7px 2px 2px;
+      justify-content: center;
+      gap: 14px;
+      padding: 52px 24px 48px;
+      text-align: center;
+      border-radius: var(--radius);
+      background: rgba(255, 255, 255, 0.03);
+      border: 1.5px solid var(--border);
       margin-top: 4px;
-      margin-bottom: 2px;
-      scrollbar-width: thin;
+      min-height: 280px;
     }
 
-    .instruction-breadcrumb-item {
-      flex: 0 0 auto;
-      max-width: 210px;
-      white-space: nowrap;
-      overflow: hidden;
-      text-overflow: ellipsis;
-      font-size: 11px;
-      font-weight: 600;
-      color: rgba(204, 231, 255, 0.76);
-    }
-
-    .instruction-breadcrumb-item.is-current {
-      color: rgba(246, 250, 255, 0.96);
-      font-weight: 700;
-    }
-
-    .instruction-breadcrumb-sep {
-      flex: 0 0 auto;
-      color: rgba(204, 231, 255, 0.4);
-      font-size: 11px;
-      line-height: 1;
-      margin-top: -1px;
-    }
-
-    .instructions-detail-jump-list {
-      position: sticky;
-      top: 6px;
-      z-index: 4;
-      display: flex;
-      flex-wrap: nowrap;
-      gap: 8px;
-      overflow-x: auto;
-      padding: 8px 4px 10px;
-      margin: 2px -2px 0;
-      border-radius: 14px;
-      background: linear-gradient(180deg, rgba(10, 13, 27, 0.92), rgba(10, 13, 27, 0.56));
-      backdrop-filter: blur(8px);
-      -webkit-backdrop-filter: blur(8px);
-      scrollbar-width: thin;
-    }
-
-    .instruction-detail-jump-btn {
-      border: 1px solid rgba(255,255,255,0.1);
-      background: rgba(255,255,255,0.05);
-      border-radius: 999px;
-      padding: 6px 10px;
-      font-size: 11px;
-      font-weight: 700;
-      color: rgba(224, 241, 255, 0.9);
-      white-space: nowrap;
-      cursor: pointer;
-      -webkit-tap-highlight-color: transparent;
-      flex: 0 0 auto;
-      max-width: 168px;
-      overflow: hidden;
-      text-overflow: ellipsis;
-    }
-
-    .instruction-section-item {
-      padding: 13px 14px;
-      display: grid;
-      gap: 4px;
-      font-size: 14px;
-      font-weight: 700;
-      line-height: 1.35;
-      scroll-margin-top: 70px;
-    }
-
-    .instruction-section-item-title {
-      color: rgba(244, 247, 255, 0.94);
-    }
-
-    .instruction-section-item-meta {
-      font-size: 11px;
-      color: rgba(244, 247, 255, 0.5);
-      text-transform: uppercase;
-      letter-spacing: 0.05em;
-    }
-
-    .instruction-section-depth-2 {
-      margin-left: 10px;
-    }
-
-    .instruction-section-depth-3 {
-      margin-left: 18px;
-    }
-
-    .instruction-section-depth-4 {
-      margin-left: 26px;
-    }
-
-    .instruction-section-depth-5 {
-      margin-left: 34px;
-    }
-
-    .instruction-section-depth-6 {
-      margin-left: 42px;
-    }
-
-    .instructions-jump-list {
-      position: sticky;
-      top: 6px;
-      z-index: 4;
-      display: flex;
-      flex-wrap: nowrap;
-      gap: 8px;
-      margin-top: 2px;
-      margin-bottom: 6px;
-      overflow-x: auto;
-      padding: 8px 4px;
-      border-radius: 14px;
-      background: linear-gradient(180deg, rgba(10, 13, 27, 0.9), rgba(10, 13, 27, 0.5));
-      backdrop-filter: blur(8px);
-      -webkit-backdrop-filter: blur(8px);
-      scrollbar-width: thin;
-    }
-
-    .instruction-jump-btn {
-      border: 1px solid rgba(255,255,255,0.08);
-      background: rgba(255,255,255,0.04);
-      border-radius: 999px;
-      padding: 7px 10px;
-      font-size: 11px;
-      font-weight: 700;
-      color: rgba(244, 247, 255, 0.76);
-      cursor: pointer;
-      white-space: nowrap;
-      -webkit-tap-highlight-color: transparent;
-      flex: 0 0 auto;
-      max-width: 176px;
-      overflow: hidden;
-      text-overflow: ellipsis;
-    }
-
-    .instruction-jump-btn:active {
-      transform: translateY(1px);
-    }
-
-    .instruction-jump-btn.is-active {
-      border-color: rgba(141, 124, 255, 0.4);
-      background: rgba(141, 124, 255, 0.2);
-      color: #fff;
-    }
-
-    .instructions-section-content {
-      border-radius: 22px;
-      border: 1px solid rgba(255,255,255,0.08);
-      padding: 16px;
-      background:
-        linear-gradient(180deg, rgba(255,255,255,0.06), rgba(255,255,255,0.02)),
-        rgba(18, 21, 43, 0.72);
-      box-shadow: 0 14px 28px rgba(6, 9, 18, 0.2), inset 0 1px 0 rgba(255,255,255,0.06);
-      font-size: 14.5px;
-      line-height: 1.56;
-      color: rgba(244, 247, 255, 0.9);
-      white-space: pre-wrap;
-      overflow-wrap: break-word;
-    }
-
-    .instruction-paragraph {
-      margin: 0 0 7px;
-      font-size: 14.5px;
-      line-height: 1.56;
-      color: rgba(244, 247, 255, 0.9);
-    }
-
-    .instruction-paragraph:last-child {
-      margin-bottom: 0;
-    }
-
-    .instruction-paragraph--point {
-      margin-bottom: 10px;
-    }
-
-    .instruction-point-number {
-      font-weight: 700;
-      color: rgba(248, 252, 255, 0.98);
-    }
-
-    .instruction-point-text {
-      color: rgba(244, 247, 255, 0.9);
-    }
-
-    .instruction-paragraph--heading {
-      margin-top: 6px;
-      margin-bottom: 8px;
-      font-weight: 700;
-      font-size: 15.5px;
-      line-height: 1.45;
-      color: rgba(248, 252, 255, 0.98);
-    }
-
-    .instruction-paragraph--hint {
-      margin-top: 8px;
-      font-size: 12.5px;
-      color: rgba(202, 233, 255, 0.74);
-    }
-
-    .instruction-paragraph--muted {
-      font-size: 13px;
-      color: rgba(244, 247, 255, 0.62);
-    }
-
-    .instructions-child-list {
-      display: grid;
-      gap: 8px;
-      margin-top: 6px;
-    }
-
-    .instruction-child-item {
-      width: 100%;
-      border: 1px solid rgba(255,255,255,0.08);
-      border-radius: 18px;
-      background:
-        linear-gradient(180deg, rgba(255,255,255,0.06), rgba(255,255,255,0.02)),
-        rgba(18, 21, 43, 0.68);
-      box-shadow: 0 12px 24px rgba(6, 9, 18, 0.18), inset 0 1px 0 rgba(255,255,255,0.06);
-      color: var(--text);
-      text-align: left;
-      display: grid;
-      gap: 4px;
-      padding: 12px 13px;
-      cursor: pointer;
-      -webkit-tap-highlight-color: transparent;
-    }
-
-    .instruction-child-item:active {
-      transform: translateY(1px);
-    }
-
-    .instruction-child-item.is-active {
-      border-color: rgba(141, 124, 255, 0.45);
-      box-shadow: 0 12px 24px rgba(141, 124, 255, 0.14), inset 0 1px 0 rgba(255,255,255,0.08);
-    }
-
-    .instruction-child-title {
-      font-size: 13px;
-      font-weight: 700;
-      line-height: 1.4;
-      color: rgba(244, 247, 255, 0.92);
-    }
-
-    .instruction-child-meta {
-      font-size: 11px;
-      color: rgba(244, 247, 255, 0.52);
-      text-transform: uppercase;
-      letter-spacing: 0.05em;
-    }
-
-    .instruction-parent-context,
-    .instruction-focus-callout {
-      border-radius: 16px;
-      border: 1px solid rgba(255,255,255,0.1);
-      background:
-        linear-gradient(180deg, rgba(255,255,255,0.07), rgba(255,255,255,0.02)),
-        rgba(15, 19, 38, 0.68);
-      padding: 10px 12px;
-      margin-bottom: 10px;
-      box-shadow: 0 8px 18px rgba(6, 9, 18, 0.16), inset 0 1px 0 rgba(255,255,255,0.06);
-    }
-
-    .instruction-parent-context-label,
-    .instruction-focus-kicker {
-      font-size: 10px;
-      text-transform: uppercase;
-      letter-spacing: 0.06em;
-      color: rgba(194, 229, 255, 0.72);
-      margin-bottom: 4px;
-      font-weight: 700;
-    }
-
-    .instruction-parent-context-value,
-    .instruction-focus-text {
-      font-size: 13px;
-      line-height: 1.5;
-      color: rgba(244, 247, 255, 0.92);
-      font-weight: 600;
-    }
-
-    .pro-blur-overlay {
-      position: absolute;
-      inset: 0;
-      border-radius: 28px;
+    .docs-empty-icon {
+      width: 52px;
+      height: 52px;
+      color: var(--accent);
+      opacity: 0.75;
       display: flex;
       align-items: center;
       justify-content: center;
-      padding: 16px;
-      background: linear-gradient(180deg, rgba(5, 7, 16, 0.24), rgba(5, 7, 16, 0.68));
-      backdrop-filter: blur(8px);
-      -webkit-backdrop-filter: blur(8px);
-      z-index: 2;
     }
 
-    .pro-paywall-card {
+    .docs-empty-icon svg {
       width: 100%;
-      max-width: 320px;
-      border-radius: 24px;
-      border: 1px solid rgba(255,255,255,0.12);
-      background:
-        radial-gradient(circle at 14% 0%, rgba(141, 124, 255, 0.24), transparent 36%),
-        radial-gradient(circle at 86% 8%, rgba(82, 215, 255, 0.22), transparent 34%),
-        linear-gradient(180deg, rgba(255,255,255,0.11), rgba(255,255,255,0.03)),
-        rgba(17, 20, 39, 0.82);
-      padding: 20px 18px;
-      text-align: center;
-      box-shadow: 0 24px 46px rgba(3, 6, 15, 0.42), inset 0 1px 0 rgba(255,255,255,0.08);
+      height: 100%;
+    }
+
+    .docs-empty-title {
+      font-size: 19px;
+      font-weight: 700;
+      color: var(--text);
+      letter-spacing: -0.03em;
+      line-height: 1.2;
+    }
+
+    .docs-empty-text {
+      font-size: 14px;
+      color: var(--text-muted);
+      line-height: 1.5;
+      max-width: 220px;
+    }
+
+    /* Future: document list items */
+    .docs-item-list {
       display: grid;
       gap: 8px;
-    }
-
-    .pro-paywall-title {
-      font-size: 24px;
-      font-weight: 800;
-      letter-spacing: -0.03em;
-      color: #fff;
-    }
-
-    .pro-paywall-subtitle {
-      font-size: 14px;
-      color: rgba(202, 238, 255, 0.88);
-      font-weight: 600;
-    }
-
-    .pro-paywall-text {
-      font-size: 13px;
-      color: rgba(244, 247, 255, 0.74);
-      margin-bottom: 6px;
-    }
-
-    .salary-settings-sheet .settings-card {
-      margin-bottom: 10px;
-    }
-
-    .salary-settings-sheet .settings-help-block {
-      margin: 8px 0 4px;
-    }
-
-    /* ── Presentation Layer ─────────────────────────────────────────────────── */
-
-    /* Norm / fact list — used in section view and search results */
-    .instruction-norm-list {
-      list-style: none;
-      padding: 0;
-      margin: 0;
-    }
-
-    .instruction-norm-item {
-      display: flex;
-      gap: 8px;
-      align-items: flex-start;
-      padding: 7px 0;
-      border-bottom: 1px solid rgba(255, 255, 255, 0.05);
-      font-size: 14px;
-      line-height: 1.5;
-      color: var(--text);
-    }
-
-    .instruction-norm-item:last-child {
-      border-bottom: none;
-      padding-bottom: 0;
-    }
-
-    .instruction-norm-item:first-child {
-      padding-top: 0;
-    }
-
-    .instruction-norm-marker {
-      flex-shrink: 0;
-      font-size: 15px;
-      line-height: 1.5;
-      width: 22px;
-      text-align: center;
-    }
-
-    .instruction-norm-text {
-      flex: 1;
-      min-width: 0;
-      word-break: break-word;
-    }
-
-    /* Container shown above the full text in the section view */
-    .instruction-presentation {
-      background: rgba(141, 124, 255, 0.06);
-      border: 1px solid rgba(141, 124, 255, 0.15);
-      border-radius: 12px;
-      padding: 8px 14px 10px;
-      margin-bottom: 16px;
-    }
-
-    /* Footnotes block — shown below the main content */
-    .instruction-footnotes {
-      margin-top: 18px;
-      padding: 11px 14px;
-      background: rgba(255, 255, 255, 0.03);
-      border: 1px solid rgba(255, 255, 255, 0.07);
-      border-radius: 10px;
-    }
-
-    .instruction-footnotes-label {
-      font-size: 10px;
-      font-weight: 700;
-      color: var(--text-muted);
-      text-transform: uppercase;
-      letter-spacing: 0.09em;
-      margin-bottom: 7px;
-      opacity: 0.7;
-    }
-
-    .instruction-footnotes-list {
-      list-style: none;
-      padding: 0;
-      margin: 0;
-    }
-
-    .instruction-footnote-item {
-      display: flex;
-      gap: 6px;
-      padding: 3px 0;
-      font-size: 12px;
-      line-height: 1.55;
-      color: var(--text-muted);
-    }
-
-    .instruction-footnote-marker {
-      flex-shrink: 0;
-      font-size: 11px;
-      opacity: 0.65;
-      margin-top: 1px;
-    }
-
-    .instruction-footnote-text {
-      flex: 1;
-      min-width: 0;
-      word-break: break-word;
-    }
-
-    /* Search result norm lists */
-    .search-answer-norms,
-    .search-result-norms {
-      margin: 0;
-    }
-
-    .search-answer-norms .instruction-norm-list {
-      margin-top: 6px;
-    }
-
-    .search-answer-norms .instruction-norm-item {
-      font-size: 14px;
-      padding: 5px 0;
-    }
-
-    .search-result-norms .instruction-norm-list {
       margin-top: 4px;
     }
 
-    .search-result-norms .instruction-norm-item {
-      font-size: 13px;
-      padding: 4px 0;
-      color: rgba(244, 247, 255, 0.82);
+    .docs-item {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      padding: 14px 16px;
+      border-radius: var(--radius-sm);
+      background: rgba(255, 255, 255, 0.04);
+      border: 1.5px solid var(--border);
+      cursor: pointer;
+      transition: border-color 0.15s ease, background 0.15s ease;
     }
 
-    .search-result-norms .instruction-norm-marker {
-      font-size: 13px;
+    .docs-item:active {
+      background: rgba(141, 124, 255, 0.08);
+      border-color: rgba(141, 124, 255, 0.35);
+    }
+
+    .docs-item-icon {
+      width: 36px;
+      height: 36px;
+      flex-shrink: 0;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      border-radius: 10px;
+      background: rgba(141, 124, 255, 0.12);
+      color: var(--accent);
+    }
+
+    .docs-item-icon svg {
       width: 20px;
+      height: 20px;
     }
 
-    /* ── End Presentation Layer ──────────────────────────────────────────────── */
+    .docs-item-body {
+      flex: 1;
+      min-width: 0;
+    }
 
+    .docs-item-title {
+      font-size: 15px;
+      font-weight: 600;
+      color: var(--text);
+      letter-spacing: -0.01em;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
 
+    .docs-item-meta {
+      font-size: 12px;
+      color: var(--text-muted);
+      margin-top: 2px;
+    }
+
+    .docs-item-action {
+      flex-shrink: 0;
+      width: 28px;
+      height: 28px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: var(--text-muted);
+      opacity: 0.6;
+    }
+
+    .docs-item-action svg {
+      width: 16px;
+      height: 16px;
+    }
+
+    /* ── End Documentation Section ───────────────────────────────────────────── */

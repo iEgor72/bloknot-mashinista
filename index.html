@@ -382,66 +382,93 @@
         </div>
       </section>
 
-      <!-- Instructions Tab -->
+      <!-- Documentation Tab -->
       <section class="tab-panel" data-tab="instructions">
-        <div class="instructions-shell" id="instructionsShell">
-          <div class="instructions-content-layer" id="instructionsContentLayer">
-            <div class="instructions-list-view" id="instructionsListView">
-              <div class="instructions-page-title">Инструкции</div>
-              <div class="instructions-subtitle">Работают без интернета</div>
+        <div class="docs-shell" id="docsShell">
 
-              <div class="instructions-search-wrap">
-                <input
-                  class="settings-input instructions-search-input"
-                  id="instructionsSearchInput"
-                  type="search"
-                  autocomplete="off"
-                  placeholder="Поиск по инструкциям: сигнал, маневры, стрелка"
-                />
+          <div class="docs-header">
+            <div class="docs-page-title">Документация</div>
+          </div>
+
+          <!-- Sub-tab navigation -->
+          <nav class="docs-tab-nav" aria-label="Разделы документации">
+            <button class="docs-tab-btn active" data-docs-tab="folders" type="button">Папки</button>
+            <button class="docs-tab-btn" data-docs-tab="instructions" type="button">Инструкции</button>
+            <button class="docs-tab-btn" data-docs-tab="memos" type="button">Памятки</button>
+            <button class="docs-tab-btn" data-docs-tab="regimki" type="button">Режимки</button>
+          </nav>
+
+          <!-- Folders panel -->
+          <div class="docs-panel" data-docs-panel="folders" id="docsPanelFolders">
+            <div class="docs-empty-state">
+              <div class="docs-empty-icon" aria-hidden="true">
+                <svg viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg">
+                  <path d="M6 18C6 15.79 7.79 14 10 14H38C40.21 14 42 15.79 42 18V38C42 40.21 40.21 42 38 42H10C7.79 42 6 40.21 6 38V18Z" fill="currentColor" opacity="0.18"/>
+                  <path d="M6 18C6 15.79 7.79 14 10 14H38C40.21 14 42 15.79 42 18V38C42 40.21 40.21 42 38 42H10C7.79 42 6 40.21 6 38V18Z" stroke="currentColor" stroke-width="2.5"/>
+                  <path d="M6 18C6 15.79 7.79 14 10 14H20.17C21.23 14 22.25 14.42 23 15.17L26 18" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" fill="none"/>
+                  <path d="M6 10C6 7.79 7.79 6 10 6H19.17C20.23 6 21.25 6.42 22 7.17L25 10H6V10Z" fill="currentColor" opacity="0.25"/>
+                </svg>
               </div>
-
-              <div class="instructions-meta-row" id="instructionsMetaRow">Локальная база не загружена</div>
-              <div class="instructions-state hidden" id="instructionsLoadingState">Загружаем инструкции...</div>
-              <div class="instructions-state hidden" id="instructionsOfflineState"></div>
-              <div class="instructions-state hidden" id="instructionsNoResultsState">
-                Ничего не найдено
-                <br />
-                Попробуйте другое слово
-              </div>
-
-              <div class="instructions-list" id="instructionsCards"></div>
-              <div class="instructions-answer hidden" id="instructionsAnswerCard"></div>
-              <div class="instructions-results hidden" id="instructionsSearchResults"></div>
-            </div>
-
-            <div class="instructions-detail-view hidden" id="instructionDetailView">
-              <button class="btn-link instructions-back-btn" id="btnBackToInstructionsList" type="button">← К списку инструкций</button>
-              <div class="instructions-detail-title" id="instructionDetailTitle"></div>
-              <div class="instructions-detail-description" id="instructionDetailDescription"></div>
-              <div class="instructions-detail-jump-list" id="instructionDetailQuickNav"></div>
-              <div class="section-header">Разделы</div>
-              <div class="instructions-sections" id="instructionSectionsList"></div>
-            </div>
-
-            <div class="instructions-section-view hidden" id="instructionSectionView">
-              <button class="btn-link instructions-back-btn" id="btnBackToInstructionDetail" type="button">← К разделам</button>
-              <div class="instructions-breadcrumb" id="instructionSectionBreadcrumb"></div>
-              <div class="instructions-detail-title" id="instructionSectionTitle"></div>
-              <div class="instructions-detail-description" id="instructionSectionMeta"></div>
-              <div class="instructions-jump-list" id="instructionQuickJump"></div>
-              <article class="instructions-section-content" id="instructionSectionContent"></article>
-              <div class="instructions-child-list hidden" id="instructionChildNodes"></div>
+              <div class="docs-empty-title">Папки</div>
+              <div class="docs-empty-text">Файлы пока не добавлены</div>
             </div>
           </div>
 
-          <div class="pro-blur-overlay hidden" id="instructionsPaywallOverlay">
-            <div class="pro-paywall-card">
-              <div class="pro-paywall-title">Инструкции</div>
-              <div class="pro-paywall-subtitle">Работают без интернета</div>
-              <div class="pro-paywall-text">Доступно в PRO версии</div>
-              <button class="btn-primary" id="btnUnlockPro" type="button">Разблокировать</button>
+          <!-- Instructions panel -->
+          <div class="docs-panel hidden" data-docs-panel="instructions" id="docsPanelInstructions">
+            <div class="docs-empty-state">
+              <div class="docs-empty-icon" aria-hidden="true">
+                <svg viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg">
+                  <rect x="8" y="4" width="32" height="40" rx="4" fill="currentColor" opacity="0.15"/>
+                  <rect x="8" y="4" width="32" height="40" rx="4" stroke="currentColor" stroke-width="2.5"/>
+                  <path d="M16 16H32" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"/>
+                  <path d="M16 24H32" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"/>
+                  <path d="M16 32H24" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"/>
+                </svg>
+              </div>
+              <div class="docs-empty-title">Инструкции</div>
+              <div class="docs-empty-text">Раздел в разработке</div>
             </div>
           </div>
+
+          <!-- Memos panel -->
+          <div class="docs-panel hidden" data-docs-panel="memos" id="docsPanelMemos">
+            <div class="docs-empty-state">
+              <div class="docs-empty-icon" aria-hidden="true">
+                <svg viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg">
+                  <path d="M12 4H34C36.21 4 38 5.79 38 8V36L30 44H12C9.79 44 8 42.21 8 40V8C8 5.79 9.79 4 12 4Z" fill="currentColor" opacity="0.15"/>
+                  <path d="M12 4H34C36.21 4 38 5.79 38 8V36L30 44H12C9.79 44 8 42.21 8 40V8C8 5.79 9.79 4 12 4Z" stroke="currentColor" stroke-width="2.5"/>
+                  <path d="M30 36V44L38 36H30Z" fill="currentColor" opacity="0.35" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/>
+                  <path d="M15 17H33" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"/>
+                  <path d="M15 24H33" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"/>
+                  <path d="M15 31H24" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"/>
+                </svg>
+              </div>
+              <div class="docs-empty-title">Памятки</div>
+              <div class="docs-empty-text">Раздел в разработке</div>
+            </div>
+          </div>
+
+          <!-- Regimki panel -->
+          <div class="docs-panel hidden" data-docs-panel="regimki" id="docsPanelRegimki">
+            <div class="docs-empty-state">
+              <div class="docs-empty-icon" aria-hidden="true">
+                <svg viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg">
+                  <rect x="8" y="10" width="32" height="32" rx="4" fill="currentColor" opacity="0.15"/>
+                  <rect x="8" y="10" width="32" height="32" rx="4" stroke="currentColor" stroke-width="2.5"/>
+                  <path d="M16 10V6" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"/>
+                  <path d="M32 10V6" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"/>
+                  <path d="M8 20H40" stroke="currentColor" stroke-width="2.5"/>
+                  <path d="M16 29H22" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"/>
+                  <path d="M26 29H32" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"/>
+                  <path d="M16 35H22" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"/>
+                </svg>
+              </div>
+              <div class="docs-empty-title">Режимки</div>
+              <div class="docs-empty-text">Файлы будут добавлены позже</div>
+            </div>
+          </div>
+
         </div>
       </section>
     </div>
@@ -485,12 +512,11 @@
         <button class="tab-btn" type="button" data-tab="instructions">
           <span class="tab-icon" aria-hidden="true">
             <svg viewBox="0 0 24 24">
-              <path d="M6 4h9a3 3 0 0 1 3 3v11a2 2 0 0 1-2 2H7a3 3 0 0 0-3 3V7a3 3 0 0 1 3-3z"></path>
-              <path d="M8 9h7"></path>
-              <path d="M8 13h6"></path>
+              <path d="M3 7a2 2 0 0 1 2-2h4.17a2 2 0 0 1 1.42.59L12 7h7a2 2 0 0 1 2 2v9a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V7z"></path>
+              <path d="M12 7v11"></path>
             </svg>
           </span>
-          <span class="tab-label">Инструкции</span>
+          <span class="tab-label">Документация</span>
         </button>
       </div>
     </nav>
@@ -631,17 +657,6 @@
 
   <!-- Runtime Scripts -->
   <script src="/scripts/nav-debug.js"></script>
-  <script src="/scripts/instructions/normalizeText.js"></script>
-  <script src="/scripts/instructions/tokenize.js"></script>
-  <script src="/scripts/instructions/buildChargrams.js"></script>
-  <script src="/scripts/instructions/fuzzy.js"></script>
-  <script src="/scripts/instructions/parseHierarchy.js"></script>
-  <script src="/scripts/instructions/parseInstruction.js"></script>
-  <script src="/scripts/instructions/presentationLayer.js?v=3"></script>
-  <script src="/scripts/instructions/buildSearchEntities.js"></script>
-  <script src="/scripts/instructions/rankResults.js"></script>
-  <script src="/scripts/instructions/searchInstructions.js"></script>
-  <script src="/scripts/instructions/instructionsDb.js"></script>
   <script src="/scripts/app.js"></script>
   <script src="/scripts/app-init.js"></script>
   <script src="/scripts/sw-register.js"></script>

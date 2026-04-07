@@ -360,11 +360,27 @@
     var salaryParamsStore = createSalaryParamsStore();
     var appSettings = salaryParamsStore.values;
     var installPromptDismissed = false;
-    var PRO_STORAGE_KEY = 'shift_tracker_pro_v1';
-    var proStore = loadProStore();
-    var INSTRUCTIONS_DATA_URL = '/assets/instructions/catalog.v2.json';
-    var INSTRUCTIONS_CORE = window.InstructionsCore || {};
-    var instructionsStore = createInstructionsStore();
+    // ── Documentation store ──
+    // ACCESS_UNRESTRICTED = false re-enables gating in the future.
+    var ACCESS_UNRESTRICTED = true;
+    var documentationStore = {
+      activeTab: 'folders'
+    };
+    // Future document model (populate when remote files are added):
+    // { id, title, category: 'folders'|'instructions'|'memos'|'regimki',
+    //   remoteUrl, fileName, isDownloaded }
+    var documentationItems = {
+      folders:      [],
+      instructions: [],
+      memos:        [],
+      regimki:      []
+    };
+    // ── Legacy stubs (keep so unreachable dead code below doesn't throw) ──
+    var INSTRUCTIONS_CORE = {};
+    var instructionsStore = { status: 'idle', instructions: [], searchDocs: [],
+      preparedSearchDocs: [], preparedSearchDocsKey: '', searchResults: [],
+      searchAnswer: null, searchQuery: '', view: 'list',
+      selectedInstructionId: '', selectedSectionId: '', loadPromise: null };
     var SHIFTS_CACHE_STORAGE_KEY = 'shift_tracker_shifts_cache_v1';
     var SHIFTS_PENDING_STORAGE_KEY = 'shift_tracker_shifts_pending_v1';
     var SHIFTS_META_STORAGE_KEY = 'shift_tracker_shifts_meta_v1';
@@ -803,46 +819,10 @@
       } catch (e) {}
     }
 
-    function loadProStore() {
-      // Demo paywall should reset on every app entry.
-      // Keep state only in memory for current runtime.
-      try {
-        localStorage.removeItem(PRO_STORAGE_KEY);
-      } catch (e) {
-        // ignore storage issues
-      }
-      return {
-        isActive: false
-      };
-    }
-
-    function saveProStore() {
-      try {
-        localStorage.removeItem(PRO_STORAGE_KEY);
-      } catch (e) {}
-    }
-
-    function createInstructionsStore() {
-      return {
-        status: 'idle',
-        instructions: [],
-        searchDocs: [],
-        preparedSearchDocs: [],
-        preparedSearchDocsKey: '',
-        searchResults: [],
-        searchAnswer: null,
-        searchQuery: '',
-        errorMessage: '',
-        lastUpdated: '',
-        hasCache: false,
-        dataSource: 'none',
-        view: 'list',
-        selectedInstructionId: '',
-        selectedSectionId: '',
-        loadPromise: null,
-        searchTimer: null
-      };
-    }
+    // Stub — retained so any lingering references don't throw.
+    // Re-implement when PRO gating is needed again (flip ACCESS_UNRESTRICTED).
+    function setAccessRestricted(/*isRestricted*/) {}
+    // function loadProStore() { return { isActive: false }; }
 
     function formatRub(value) {
       var rounded = Math.round(value || 0);
@@ -873,15 +853,6 @@
     function dismissInstallPromptCard() {
       installPromptDismissed = true;
       renderInstallPromptCard();
-    }
-
-    function setProActive(isActive) {
-      proStore.isActive = !!isActive;
-      saveProStore();
-      if (proStore.isActive) {
-        ensureInstructionsReady(false, false);
-      }
-      renderInstructionsScreen();
     }
 
     function setQuickMetricText(id, value) {
@@ -3388,81 +3359,29 @@ var contentHtml = formatInstructionNodeContentHtml(
       contentEl.innerHTML = contextHtml + bodyHtml + footnotesHtml;
     }
 
-    function renderInstructionsScreen() {
-      var shell = document.getElementById('instructionsShell');
+    // ── Documentation Section ────────────────────────────────────────────────
+    // Renders the active docs sub-tab. Called whenever the instructions/docs
+    // tab is activated or a sub-tab button is pressed.
+
+    function renderDocumentationScreen() {
+      var shell = document.getElementById('docsShell');
       if (!shell) return;
-      var contentLayer = document.getElementById('instructionsContentLayer');
-      var paywallOverlay = document.getElementById('instructionsPaywallOverlay');
-      var listView = document.getElementById('instructionsListView');
-      var detailView = document.getElementById('instructionDetailView');
-      var sectionView = document.getElementById('instructionSectionView');
-      var loadingStateEl = document.getElementById('instructionsLoadingState');
-      var offlineStateEl = document.getElementById('instructionsOfflineState');
-      var noResultsStateEl = document.getElementById('instructionsNoResultsState');
-      var metaRowEl = document.getElementById('instructionsMetaRow');
-      var cardsEl = document.getElementById('instructionsCards');
-      var answerEl = document.getElementById('instructionsAnswerCard');
-      var searchResultsEl = document.getElementById('instructionsSearchResults');
-      var searchInputEl = document.getElementById('instructionsSearchInput');
-      if (!contentLayer || !paywallOverlay || !listView || !detailView || !sectionView || !loadingStateEl || !offlineStateEl || !noResultsStateEl || !metaRowEl || !cardsEl || !answerEl || !searchResultsEl) {
-        return;
+
+      // Sync active tab button state
+      var tabBtns = shell.querySelectorAll('.docs-tab-btn[data-docs-tab]');
+      for (var i = 0; i < tabBtns.length; i++) {
+        tabBtns[i].classList.toggle('active', tabBtns[i].getAttribute('data-docs-tab') === documentationStore.activeTab);
       }
 
-      var isPaywalled = !proStore.isActive;
-      contentLayer.classList.toggle('is-paywalled', isPaywalled);
-      paywallOverlay.classList.toggle('hidden', !isPaywalled);
-      if (isPaywalled) {
-        instructionsStore.view = 'list';
-      }
-
-      listView.classList.toggle('hidden', instructionsStore.view !== 'list');
-      detailView.classList.toggle('hidden', instructionsStore.view !== 'detail');
-      sectionView.classList.toggle('hidden', instructionsStore.view !== 'section');
-
-      var queryValue = normalizeSearchText(instructionsStore.searchQuery);
-      var hasQuery = !!queryValue;
-      var canShowSearch = !isPaywalled && hasQuery;
-      var showLoading = instructionsStore.status === 'loading' && !instructionsStore.instructions.length;
-      var showOffline = (instructionsStore.status === 'offline' || instructionsStore.status === 'error') && !instructionsStore.instructions.length;
-      var showNoResults = canShowSearch && instructionsStore.searchResults.length === 0 && !showLoading;
-
-      loadingStateEl.classList.toggle('hidden', !showLoading);
-      offlineStateEl.classList.toggle('hidden', !showOffline);
-      noResultsStateEl.classList.toggle('hidden', !showNoResults);
-      if (showOffline) {
-        offlineStateEl.textContent = instructionsStore.errorMessage || 'Нет сети и нет локальной базы инструкций.';
-      }
-
-      if (metaRowEl) {
-        if (isPaywalled) {
-          metaRowEl.textContent = 'ПТЭ · ИСИ · ИДП доступны в PRO';
-        } else if (instructionsStore.lastUpdated) {
-          var dateLabel = formatIsoDateLabel(instructionsStore.lastUpdated);
-          var sourceLabel = instructionsStore.dataSource === 'network' ? 'обновлено' : 'кэш';
-          metaRowEl.textContent = sourceLabel + ': ' + (dateLabel || 'сейчас');
-        } else if (instructionsStore.status === 'loading') {
-          metaRowEl.textContent = 'Обновляем локальную базу...';
-        } else {
-          metaRowEl.textContent = 'Работает без интернета после первой загрузки';
-        }
-      }
-
-      if (searchInputEl && searchInputEl.value !== instructionsStore.searchQuery) {
-        searchInputEl.value = instructionsStore.searchQuery;
-      }
-
-      renderInstructionsCards(isPaywalled);
-      renderInstructionsSearchResults();
-      cardsEl.classList.toggle('hidden', canShowSearch);
-      answerEl.classList.toggle('hidden', !canShowSearch || !instructionsStore.searchResults.length);
-      searchResultsEl.classList.toggle('hidden', !canShowSearch);
-
-      if (instructionsStore.view === 'detail') {
-        renderInstructionDetailScreen();
-      } else if (instructionsStore.view === 'section') {
-        renderInstructionSectionScreen();
+      // Show only the active panel
+      var panels = shell.querySelectorAll('.docs-panel[data-docs-panel]');
+      for (var j = 0; j < panels.length; j++) {
+        panels[j].classList.toggle('hidden', panels[j].getAttribute('data-docs-panel') !== documentationStore.activeTab);
       }
     }
+
+    // Alias so any leftover internal calls still resolve without throwing.
+    function renderInstructionsScreen() { renderDocumentationScreen(); }
 
     var API_BASE_URL = window.SHIFT_API_BASE_URL || '';
     var AUTH_API_URL = API_BASE_URL + '/api/auth';
@@ -3776,7 +3695,7 @@ var contentHtml = formatInstructionNodeContentHtml(
 
     function handleTabActivated(tab) {
       if (tab === 'instructions') {
-        ensureInstructionsReady(false, false);
+        renderDocumentationScreen();
       }
     }
 
@@ -5899,8 +5818,6 @@ var contentHtml = formatInstructionNodeContentHtml(
     window.addEventListener('online', function() {
       updateOfflineUiState({ isOffline: false, lastSyncStatus: readPendingSnapshot() ? 'pending' : 'synced' });
       flushPendingSnapshot();
-      ensureInstructionsReady(true, true);
-      renderInstructionsScreen();
     });
     document.addEventListener('visibilitychange', function() {
       if (!document.hidden) {
@@ -6147,41 +6064,17 @@ if (action === 'scroll-node') {
       });
     }
 
-    var instructionsSearchInputEl = document.getElementById('instructionsSearchInput');
-    if (instructionsSearchInputEl) {
-      instructionsSearchInputEl.addEventListener('input', function(e) {
-        setInstructionsSearchQuery(e.currentTarget.value);
-      });
-      instructionsSearchInputEl.addEventListener('focus', function() {
-        if (!instructionsStore.searchDocs.length) {
-          ensureInstructionsReady(false, true);
+    // ── Documentation sub-tab switching ────────────────────────────────────
+    var docsShellEl = document.getElementById('docsShell');
+    if (docsShellEl) {
+      docsShellEl.addEventListener('click', function(e) {
+        var btn = e.target.closest('.docs-tab-btn[data-docs-tab]');
+        if (!btn) return;
+        var tab = btn.getAttribute('data-docs-tab');
+        if (tab && tab !== documentationStore.activeTab) {
+          documentationStore.activeTab = tab;
+          renderDocumentationScreen();
         }
-      });
-    }
-
-    var backToInstructionsListBtn = document.getElementById('btnBackToInstructionsList');
-    if (backToInstructionsListBtn) {
-      backToInstructionsListBtn.addEventListener('click', function() {
-        instructionsStore.view = 'list';
-        instructionsStore.selectedInstructionId = '';
-        instructionsStore.selectedSectionId = '';
-        renderInstructionsScreen();
-      });
-    }
-
-    var backToInstructionDetailBtn = document.getElementById('btnBackToInstructionDetail');
-    if (backToInstructionDetailBtn) {
-      backToInstructionDetailBtn.addEventListener('click', function() {
-        instructionsStore.view = 'detail';
-        instructionsStore.selectedSectionId = '';
-        renderInstructionsScreen();
-      });
-    }
-
-    var unlockProBtn = document.getElementById('btnUnlockPro');
-    if (unlockProBtn) {
-      unlockProBtn.addEventListener('click', function() {
-        setProActive(true);
       });
     }
 
@@ -6232,8 +6125,7 @@ if (action === 'scroll-node') {
     bindSettingsControls();
     updateSettingsControls();
     renderInstallPromptCard();
-    renderInstructionsScreen();
-    ensureInstructionsReady(false, true);
+    renderDocumentationScreen();
 
     (function initOptionalCardAnimations() {
       var cards = document.querySelectorAll('.optional-card');
