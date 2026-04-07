@@ -3507,14 +3507,20 @@ var contentHtml = formatInstructionNodeContentHtml(
         .then(function(resp) { return resp.json(); })
         .then(function(data) {
           if (data && data.url) {
-            var a = document.createElement('a');
-            a.href = data.url;
-            a.target = '_blank';
-            a.rel = 'noopener';
-            a.download = decodeURIComponent(fileName || 'file');
-            document.body.appendChild(a);
-            a.click();
-            setTimeout(function() { document.body.removeChild(a); }, 500);
+            // Inside Telegram Mini App use WebApp.openLink so the file
+            // downloads through the device browser (first tap = download,
+            // second tap = open locally) — regular <a> clicks are blocked.
+            if (window.Telegram && window.Telegram.WebApp && window.Telegram.WebApp.openLink) {
+              window.Telegram.WebApp.openLink(data.url);
+            } else {
+              var a = document.createElement('a');
+              a.href = data.url;
+              a.target = '_blank';
+              a.rel = 'noopener';
+              document.body.appendChild(a);
+              a.click();
+              setTimeout(function() { document.body.removeChild(a); }, 500);
+            }
           }
         })
         .catch(function() {});
