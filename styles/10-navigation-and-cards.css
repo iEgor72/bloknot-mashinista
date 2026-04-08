@@ -428,8 +428,8 @@
     }
 
     .quick-stat-value {
-      font-size: clamp(17px, 4.6vw, 22px);
-      font-weight: 900;
+      font-size: clamp(15px, 4.1vw, 18px);
+      font-weight: 760;
       line-height: 1;
       color: #fff;
       min-width: 0;
@@ -439,8 +439,12 @@
       overflow: hidden;
       text-overflow: clip;
       font-variant-numeric: tabular-nums;
-      letter-spacing: -0.03em;
+      letter-spacing: -0.02em;
       text-shadow: 0 10px 28px rgba(0, 0, 0, 0.20);
+    }
+
+    .quick-stat:not(.quick-stat-primary) .quick-stat-value {
+      opacity: 0.92;
     }
 
     .quick-stat-value.night { color: #c6a4ff; }
@@ -448,8 +452,16 @@
     .quick-stat-value.shifts { color: #f4f7ff; }
 
     .quick-stat.quick-stat-primary .quick-stat-value {
-      font-size: clamp(20px, 5.2vw, 26px);
-      letter-spacing: -0.04em;
+      font-size: clamp(23px, 6.2vw, 28px);
+      font-weight: 800;
+      line-height: 0.94;
+      letter-spacing: -0.045em;
+      text-shadow: 0 12px 30px rgba(0, 0, 0, 0.24);
+    }
+
+    .quick-stat.quick-stat-primary .stat-label {
+      color: rgba(244, 247, 255, 0.72);
+      letter-spacing: 0.08em;
     }
 
     .quick-stat-value.is-updated {
