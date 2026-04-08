@@ -1,4 +1,4 @@
-const CACHE_VERSION = 'v9';
+const CACHE_VERSION = 'v10';
 const CACHE_NAME = `shift-tracker-shell-${CACHE_VERSION}`;
 const NAVIGATION_FALLBACK_URL = '/index.html';
 const NETWORK_TIMEOUT_MS = 1200;
@@ -10,6 +10,10 @@ const SHELL_URLS = [
   '/styles/15-bottom-nav.css',
   '/styles/20-form-and-stats.css',
   '/styles/30-shifts-and-overlays.css',
+  '/assets/fonts/plus-jakarta-sans/plus-jakarta-sans-cyrillic-ext.woff2',
+  '/assets/fonts/plus-jakarta-sans/plus-jakarta-sans-vietnamese.woff2',
+  '/assets/fonts/plus-jakarta-sans/plus-jakarta-sans-latin-ext.woff2',
+  '/assets/fonts/plus-jakarta-sans/plus-jakarta-sans-latin.woff2',
   '/scripts/safe-area.js',
   '/scripts/nav-debug.js',
   '/scripts/instructions/normalizeText.js',

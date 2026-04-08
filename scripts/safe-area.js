@@ -7,6 +7,7 @@
   var safeSyncRaf = 0;
   var settleTimers = [];
   var isStandalone = false;
+  var lastSafeBottom = null;
 
   function detectStandaloneMode() {
     try {
@@ -39,18 +40,22 @@
     return Math.round(value * 100) / 100;
   }
 
-  function applySafeInsets() {
+  function applySafeInsets(force) {
     var safeBottom = readSafeBottomInset();
+    if (!force && lastSafeBottom !== null && Math.abs(lastSafeBottom - safeBottom) < 0.5) {
+      return;
+    }
+    lastSafeBottom = safeBottom;
     root.style.setProperty('--safe-bottom', safeBottom + 'px');
   }
 
-  function syncSafeInsets() {
+  function syncSafeInsets(force) {
     if (safeSyncRaf) {
       window.cancelAnimationFrame(safeSyncRaf);
     }
     safeSyncRaf = window.requestAnimationFrame(function() {
       safeSyncRaf = 0;
-      applySafeInsets();
+      applySafeInsets(!!force);
     });
   }
 
@@ -60,7 +65,7 @@
     }
     settleTimers = [];
 
-    var delays = [0, 80, 220, 520];
+    var delays = isStandalone ? [0, 180, 420] : [0, 180];
     for (var d = 0; d < delays.length; d++) {
       settleTimers.push(window.setTimeout(syncSafeInsets, delays[d]));
     }
@@ -70,7 +75,7 @@
   window.__settleSafeAreaInsets = settleSafeInsets;
 
   applyDisplayModeClass();
-  applySafeInsets();
+  applySafeInsets(true);
   settleSafeInsets();
 
   window.addEventListener('load', settleSafeInsets);
@@ -88,6 +93,5 @@
   });
   if (window.visualViewport) {
     window.visualViewport.addEventListener('resize', syncSafeInsets);
-    window.visualViewport.addEventListener('scroll', syncSafeInsets);
   }
 })();

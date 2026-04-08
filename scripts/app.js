@@ -74,6 +74,10 @@
     var keyboardSyncTimer = null;
     var keyboardRevealTimer = null;
     var navHeightSyncTimer = null;
+    var viewportMetricsRaf = null;
+    var lastAppViewportHeightValue = '';
+    var viewportStabilityLockUntil = Date.now() + 700;
+    var lockedViewportHeight = 0;
     var baselineViewportHeight = Math.round(window.innerHeight || document.documentElement.clientHeight || 0);
     var baselineVisualViewportHeight = Math.round(
       (window.visualViewport && window.visualViewport.height) ||
@@ -90,6 +94,12 @@
 
     function setCssVar(name, value) {
       document.documentElement.style.setProperty(name, value);
+    }
+
+    function setAppViewportHeight(value) {
+      if (!value || value === lastAppViewportHeightValue) return;
+      lastAppViewportHeightValue = value;
+      setCssVar('--app-viewport-height', value);
     }
 
     function syncBottomNavHeight() {
@@ -188,41 +198,66 @@
         baselineViewportHeight ||
         0
       );
+      viewportStabilityLockUntil = Date.now() + 420;
+      if (!lockedViewportHeight || baselineViewportHeight > lockedViewportHeight) {
+        lockedViewportHeight = baselineViewportHeight;
+      }
     }
 
     function updateViewportMetrics() {
       var height = getViewportHeight();
-      if (height > 0) {
-        if (!keyboardStateOpen && isStandalonePwa()) {
-          // In iOS standalone mode rely on native dynamic viewport height.
-          // Manual px measurements may temporarily under-report height and create bottom black bars.
-          setCssVar('--app-viewport-height', '100dvh');
-          return;
-        }
+      if (height <= 0) return;
 
-        if (!keyboardStateOpen) {
-          var innerHeight = Math.round(window.innerHeight || document.documentElement.clientHeight || 0);
-          if (innerHeight > baselineViewportHeight) {
-            baselineViewportHeight = innerHeight;
-          }
-          var vv = window.visualViewport;
-          var vvHeight = vv && vv.height ? Math.round(vv.height) : 0;
-          if (vvHeight > baselineVisualViewportHeight) {
-            baselineVisualViewportHeight = vvHeight;
-          }
-
-          // Outside keyboard mode, keep app shell height at the largest stable viewport
-          // to prevent iOS standalone visualViewport oscillations from lifting bottom nav.
-          height = Math.max(
-            height,
-            innerHeight,
-            baselineViewportHeight || 0,
-            baselineVisualViewportHeight || 0
-          );
-        }
-
-        setCssVar('--app-viewport-height', height + 'px');
+      if (!keyboardStateOpen && isStandalonePwa()) {
+        // In iOS standalone mode rely on native dynamic viewport height.
+        // Manual px measurements may temporarily under-report height and create bottom black bars.
+        setAppViewportHeight('100dvh');
+        return;
       }
+
+      if (!keyboardStateOpen) {
+        var innerHeight = Math.round(window.innerHeight || document.documentElement.clientHeight || 0);
+        if (innerHeight > baselineViewportHeight) {
+          baselineViewportHeight = innerHeight;
+        }
+        var vv = window.visualViewport;
+        var vvHeight = vv && vv.height ? Math.round(vv.height) : 0;
+        if (vvHeight > baselineVisualViewportHeight) {
+          baselineVisualViewportHeight = vvHeight;
+        }
+
+        // Outside keyboard mode, keep app shell height at the largest stable viewport
+        // to prevent iOS standalone visualViewport oscillations from lifting bottom nav.
+        height = Math.max(
+          height,
+          innerHeight,
+          baselineViewportHeight || 0,
+          baselineVisualViewportHeight || 0
+        );
+
+        // During the first startup frames ignore tiny viewport oscillations.
+        if (Date.now() < viewportStabilityLockUntil) {
+          if (!lockedViewportHeight) {
+            lockedViewportHeight = height;
+          } else if (Math.abs(height - lockedViewportHeight) < 24) {
+            height = lockedViewportHeight;
+          } else {
+            lockedViewportHeight = height;
+          }
+        } else if (!lockedViewportHeight || height > lockedViewportHeight) {
+          lockedViewportHeight = height;
+        }
+      }
+
+      setAppViewportHeight(height + 'px');
+    }
+
+    function scheduleViewportMetricsUpdate() {
+      if (viewportMetricsRaf) return;
+      viewportMetricsRaf = window.requestAnimationFrame(function() {
+        viewportMetricsRaf = null;
+        updateViewportMetrics();
+      });
     }
 
     function getKeyboardInset() {
@@ -319,8 +354,9 @@
 
       var keyboardInset = getKeyboardInset();
       var open = !!keyboardFocusField && keyboardInset > 120;
+      var keyboardStateChanged = open !== keyboardStateOpen;
 
-      if (open !== keyboardStateOpen) {
+      if (keyboardStateChanged) {
         keyboardStateOpen = open;
         document.body.classList.toggle('is-keyboard-open', open);
       } else if (!open) {
@@ -328,7 +364,9 @@
       }
 
       setCssVar('--keyboard-focus-scroll-bottom', open ? '280px' : '160px');
-      updateViewportMetrics();
+      if (keyboardStateChanged || open || !!keyboardFocusField) {
+        updateViewportMetrics();
+      }
 
       if (BOTTOM_NAV) {
         BOTTOM_NAV.setAttribute('aria-hidden', open ? 'true' : 'false');
@@ -6651,31 +6689,30 @@ var contentHtml = formatInstructionNodeContentHtml(
 
     setDefaultShiftTimeInputs();
     renderDraftShiftSummary();
+    resetViewportBaselines();
     updateViewportMetrics();
     scheduleBottomNavHeightSync();
     settleSafeAreaInsets();
-
-
-    resetViewportBaselines();
     scheduleKeyboardSync();
     window.addEventListener('load', setDefaultShiftTimeInputs);
     setTimeout(setDefaultShiftTimeInputs, 0);
     setTimeout(setDefaultShiftTimeInputs, 250);
 
     window.addEventListener('resize', function() {
-      updateViewportMetrics();
+      scheduleViewportMetricsUpdate();
       scheduleBottomNavHeightSync();
       scheduleKeyboardSync();
     });
     window.addEventListener('orientationchange', function() {
       resetViewportBaselines();
       settleSafeAreaInsets();
+      scheduleViewportMetricsUpdate();
       scheduleBottomNavHeightSync();
       scheduleKeyboardSync();
     });
     if (window.visualViewport) {
       window.visualViewport.addEventListener('resize', function() {
-        updateViewportMetrics();
+        scheduleViewportMetricsUpdate();
         scheduleBottomNavHeightSync();
         scheduleKeyboardSync();
       });

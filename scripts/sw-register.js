@@ -1,9 +1,39 @@
     if ('serviceWorker' in navigator) {
       var swReloaded = false;
-      navigator.serviceWorker.addEventListener('controllerchange', function() {
+      var initialController = navigator.serviceWorker.controller;
+
+      function scheduleSoftReload() {
         if (swReloaded) return;
         swReloaded = true;
-        window.location.reload();
+
+        var reload = function() {
+          window.setTimeout(function() {
+            window.location.reload();
+          }, 180);
+        };
+
+        if (document.visibilityState === 'hidden') {
+          var onVisible = function() {
+            if (document.visibilityState !== 'visible') return;
+            document.removeEventListener('visibilitychange', onVisible);
+            reload();
+          };
+          document.addEventListener('visibilitychange', onVisible);
+          return;
+        }
+
+        reload();
+      }
+
+      navigator.serviceWorker.addEventListener('controllerchange', function() {
+        var activeController = navigator.serviceWorker.controller;
+        if (!activeController) return;
+        if (!initialController) {
+          // First-time takeover after initial install: do not disturb startup paint.
+          initialController = activeController;
+          return;
+        }
+        scheduleSoftReload();
       });
 
       navigator.serviceWorker.register('/sw.js').then(function(registration) {
