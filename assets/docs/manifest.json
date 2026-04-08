@@ -5,6 +5,18 @@
       "path": "/assets/docs/speeds/Скоростя БАМ Парк Д Приказ № 161.pdf",
       "mime_type": "application/pdf",
       "size": 424774
+    },
+    {
+      "name": "Скоростя ВСГ Парк Д Приказ № 161",
+      "path": "/assets/docs/speeds/Скоростя ВСГ Парк Д Приказ № 161.pdf",
+      "mime_type": "application/pdf",
+      "size": 490766
+    },
+    {
+      "name": "Скоростя ВЛЧ Приказ № 161",
+      "path": "/assets/docs/speeds/Скоростя ВЛЧ Приказ № 161.pdf",
+      "mime_type": "application/pdf",
+      "size": 819554
     }
   ],
   "folders": [
