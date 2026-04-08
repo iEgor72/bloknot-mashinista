@@ -423,6 +423,9 @@
     var SHIFTS_CACHE_STORAGE_KEY = 'shift_tracker_shifts_cache_v1';
     var SHIFTS_PENDING_STORAGE_KEY = 'shift_tracker_shifts_pending_v1';
     var SHIFTS_META_STORAGE_KEY = 'shift_tracker_shifts_meta_v1';
+    var USER_STATS_CACHE_STORAGE_KEY = 'shift_tracker_user_stats_cache_v1';
+    var USER_STATS_DEVICE_ID_STORAGE_KEY = 'shift_tracker_device_id_v1';
+    var USER_STATS_PING_INTERVAL_MS = 45000;
     var pendingMutationIds = [];
     var offlineUiState = {
       isOffline: false,
@@ -431,6 +434,15 @@
       lastSyncStatus: 'idle',
       lastError: ''
     };
+    var userStatsState = {
+      onlineUsers: null,
+      totalUsers: null,
+      lastUpdatedAt: '',
+      isLoading: false
+    };
+    var userStatsInFlight = null;
+    var userStatsPollTimer = null;
+    var userStatsTrackingStarted = false;
 
     function getOfflineStorageUserId() {
       // Prefer CURRENT_USER, then fall back to the persisted cached user so
@@ -468,6 +480,173 @@
       } catch (e) {
         return false;
       }
+    }
+
+    function isValidUsageDeviceId(value) {
+      return typeof value === 'string' && /^[a-z0-9_-]{12,64}$/i.test(value);
+    }
+
+    function createUsageDeviceId() {
+      var prefix = 'dev_';
+      var bytes = [];
+      if (window.crypto && window.crypto.getRandomValues) {
+        bytes = new Uint8Array(16);
+        window.crypto.getRandomValues(bytes);
+      } else {
+        for (var i = 0; i < 16; i++) {
+          bytes.push(Math.floor(Math.random() * 256));
+        }
+      }
+
+      var hex = '';
+      for (var j = 0; j < bytes.length; j++) {
+        var part = Number(bytes[j]).toString(16);
+        hex += part.length === 1 ? '0' + part : part;
+      }
+      return prefix + hex;
+    }
+
+    function getUsageDeviceId() {
+      try {
+        var stored = localStorage.getItem(USER_STATS_DEVICE_ID_STORAGE_KEY);
+        if (isValidUsageDeviceId(stored)) {
+          return stored;
+        }
+        var created = createUsageDeviceId();
+        localStorage.setItem(USER_STATS_DEVICE_ID_STORAGE_KEY, created);
+        return created;
+      } catch (e) {
+        return '';
+      }
+    }
+
+    function coerceNonNegativeInt(value) {
+      var n = Number(value);
+      if (!isFinite(n) || n < 0) return null;
+      return Math.floor(n);
+    }
+
+    function readUserStatsCache() {
+      var cached = readStoredJson(USER_STATS_CACHE_STORAGE_KEY, null);
+      if (!cached || typeof cached !== 'object') return null;
+      var total = coerceNonNegativeInt(cached.totalUsers);
+      if (total === null) return null;
+      return {
+        totalUsers: total,
+        updatedAt: typeof cached.updatedAt === 'string' ? cached.updatedAt : ''
+      };
+    }
+
+    function writeUserStatsCache(totalUsers, updatedAt) {
+      var total = coerceNonNegativeInt(totalUsers);
+      if (total === null) return false;
+      return writeStoredJson(USER_STATS_CACHE_STORAGE_KEY, {
+        totalUsers: total,
+        updatedAt: typeof updatedAt === 'string' && updatedAt ? updatedAt : new Date().toISOString()
+      });
+    }
+
+    function renderUserStatsFooter() {
+      var el = document.getElementById('userStatsFooter');
+      if (!el) return;
+      var onlineText = navigator.onLine && userStatsState.onlineUsers !== null
+        ? String(userStatsState.onlineUsers)
+        : '—';
+      var totalText = userStatsState.totalUsers !== null
+        ? String(userStatsState.totalUsers)
+        : '—';
+      var nextText = 'Онлайн: ' + onlineText + ' · Всего: ' + totalText;
+      if (el.textContent !== nextText) {
+        el.textContent = nextText;
+      }
+      el.setAttribute('data-state', navigator.onLine ? 'online' : 'offline');
+    }
+
+    function applyUserStatsPayload(payload) {
+      var online = coerceNonNegativeInt(payload && payload.onlineUsers);
+      var total = coerceNonNegativeInt(payload && payload.totalUsers);
+
+      userStatsState.onlineUsers = online;
+      if (total !== null) {
+        userStatsState.totalUsers = total;
+      }
+      if (payload && typeof payload.updatedAt === 'string') {
+        userStatsState.lastUpdatedAt = payload.updatedAt;
+      }
+      if (userStatsState.totalUsers !== null) {
+        writeUserStatsCache(userStatsState.totalUsers, userStatsState.lastUpdatedAt);
+      }
+      renderUserStatsFooter();
+    }
+
+    function applyUserStatsOfflineFallback() {
+      var cached = readUserStatsCache();
+      userStatsState.onlineUsers = null;
+      userStatsState.isLoading = false;
+      if (cached && cached.totalUsers !== null) {
+        userStatsState.totalUsers = cached.totalUsers;
+        if (cached.updatedAt) userStatsState.lastUpdatedAt = cached.updatedAt;
+      }
+      renderUserStatsFooter();
+    }
+
+    function refreshUserStats(reason) {
+      if (!navigator.onLine) {
+        applyUserStatsOfflineFallback();
+        return Promise.resolve(null);
+      }
+      if (userStatsInFlight) return userStatsInFlight;
+
+      var deviceId = getUsageDeviceId();
+      if (!deviceId) {
+        applyUserStatsOfflineFallback();
+        return Promise.resolve(null);
+      }
+
+      userStatsState.isLoading = true;
+      userStatsInFlight = fetchJson(USER_STATS_API_URL, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Accept': 'application/json'
+        },
+        body: JSON.stringify({ deviceId: deviceId, reason: reason || 'heartbeat' })
+      }, 4500).then(function(result) {
+        userStatsInFlight = null;
+        userStatsState.isLoading = false;
+        if (result.ok && result.body) {
+          applyUserStatsPayload(result.body);
+          return result.body;
+        }
+        applyUserStatsOfflineFallback();
+        return null;
+      }).catch(function() {
+        userStatsInFlight = null;
+        userStatsState.isLoading = false;
+        applyUserStatsOfflineFallback();
+        return null;
+      });
+
+      return userStatsInFlight;
+    }
+
+    function startUserStatsTracking() {
+      if (userStatsTrackingStarted) return;
+      userStatsTrackingStarted = true;
+
+      getUsageDeviceId();
+      applyUserStatsOfflineFallback();
+
+      if (navigator.onLine) {
+        window.setTimeout(function() {
+          refreshUserStats('startup');
+        }, 700);
+      }
+
+      userStatsPollTimer = window.setInterval(function() {
+        if (document.hidden || !navigator.onLine) return;
+        refreshUserStats('interval');
+      }, USER_STATS_PING_INTERVAL_MS);
     }
 
     function readOfflineMeta() {
@@ -4400,6 +4579,7 @@ var contentHtml = formatInstructionNodeContentHtml(
     var API_BASE_URL = window.SHIFT_API_BASE_URL || '';
     var AUTH_API_URL = API_BASE_URL + '/api/auth';
     var SHIFTS_API_URL = API_BASE_URL + '/api/shifts';
+    var USER_STATS_API_URL = API_BASE_URL + '/api/stats';
     var DOCS_API_URL = API_BASE_URL + '/api/docs';
     var TELEGRAM_BOT_USERNAME = 'bloknot_mashinista_bot';
     var CURRENT_USER = null;
@@ -5913,6 +6093,7 @@ var contentHtml = formatInstructionNodeContentHtml(
     function render() {
       syncShiftActionsMenuLifecycle();
       updateOfflineUiState();
+      renderUserStatsFooter();
       var _renderPendingMap = getPendingShiftIdMap();
 
       // Month title
@@ -6834,12 +7015,21 @@ var contentHtml = formatInstructionNodeContentHtml(
     window.addEventListener('online', function() {
       updateOfflineUiState({ isOffline: false, lastSyncStatus: readPendingSnapshot() ? 'pending' : 'synced' });
       flushPendingSnapshot();
+      refreshUserStats('online');
+    });
+    window.addEventListener('offline', function() {
+      applyUserStatsOfflineFallback();
     });
     document.addEventListener('visibilitychange', function() {
       if (!document.hidden) {
         settleSafeAreaInsets();
         updateOfflineUiState({ isOffline: !navigator.onLine, hasPending: !!readPendingSnapshot() });
-        if (navigator.onLine) flushPendingSnapshot();
+        if (navigator.onLine) {
+          flushPendingSnapshot();
+          refreshUserStats('visibility');
+        } else {
+          applyUserStatsOfflineFallback();
+        }
         renderInstallPromptCard();
         renderInstructionsScreen();
       }
@@ -7160,6 +7350,7 @@ if (action === 'scroll-node') {
     updateSettingsControls();
     renderInstallPromptCard();
     renderDocumentationScreen();
+    startUserStatsTracking();
 
     (function initOptionalCardAnimations() {
       var cards = document.querySelectorAll('.optional-card');

@@ -1083,6 +1083,18 @@
       color: rgba(244, 247, 255, 0.58);
     }
 
+    .usage-stats-note {
+      margin: 10px 2px 4px;
+      min-height: 16px;
+      font-size: 11px;
+      line-height: 1.45;
+      letter-spacing: 0.01em;
+      text-align: center;
+      color: rgba(244, 247, 255, 0.48);
+      opacity: 0.9;
+      user-select: none;
+    }
+
     /* ── Salary Settings Sheet ──────────────────────────────────────────────── */
 
     .salary-settings-sheet .settings-card {

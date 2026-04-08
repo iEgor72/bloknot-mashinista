@@ -7,6 +7,8 @@ const ROOT = __dirname;
 const PORT = process.env.PORT || 3000;
 const DATA_DIR = path.join(ROOT, 'data');
 const USERS_DIR = path.join(DATA_DIR, 'local-shifts');
+const USER_STATS_FILE = path.join(DATA_DIR, 'user-presence.json');
+const ONLINE_WINDOW_MS = 2 * 60 * 1000;
 
 function ensureDirs() {
   if (!fs.existsSync(DATA_DIR)) {
@@ -53,6 +55,84 @@ function writeShifts(sid, shifts) {
       })
     : [];
   fs.writeFileSync(file, JSON.stringify(sanitized, null, 2), 'utf8');
+}
+
+function isValidDeviceId(rawDeviceId) {
+  return typeof rawDeviceId === 'string' && /^[a-z0-9_-]{12,64}$/i.test(rawDeviceId);
+}
+
+function sanitizeUserPresenceStore(rawStore) {
+  const source = rawStore && typeof rawStore === 'object' ? rawStore : {};
+  const sourceDevices = source.devices && typeof source.devices === 'object' ? source.devices : {};
+  const devices = {};
+  Object.keys(sourceDevices).forEach(deviceId => {
+    if (!isValidDeviceId(deviceId)) return;
+    const row = sourceDevices[deviceId] || {};
+    const firstSeenAt = typeof row.firstSeenAt === 'string' ? row.firstSeenAt : '';
+    const lastSeenAt = typeof row.lastSeenAt === 'string' ? row.lastSeenAt : '';
+    if (!lastSeenAt) return;
+    devices[deviceId] = {
+      firstSeenAt: firstSeenAt || lastSeenAt,
+      lastSeenAt: lastSeenAt,
+    };
+  });
+  return { devices };
+}
+
+function readUserPresenceStore() {
+  ensureDirs();
+  try {
+    if (!fs.existsSync(USER_STATS_FILE)) {
+      return { devices: {} };
+    }
+    const raw = fs.readFileSync(USER_STATS_FILE, 'utf8');
+    const parsed = raw ? JSON.parse(raw) : {};
+    return sanitizeUserPresenceStore(parsed);
+  } catch (err) {
+    return { devices: {} };
+  }
+}
+
+function writeUserPresenceStore(store) {
+  ensureDirs();
+  const sanitized = sanitizeUserPresenceStore(store);
+  fs.writeFileSync(USER_STATS_FILE, JSON.stringify(sanitized, null, 2), 'utf8');
+}
+
+function buildUserPresenceStats(store) {
+  const nowMs = Date.now();
+  const devices = (store && store.devices) || {};
+  const ids = Object.keys(devices);
+  let onlineUsers = 0;
+  ids.forEach(deviceId => {
+    const row = devices[deviceId] || {};
+    const seenMs = Date.parse(row.lastSeenAt || '');
+    if (Number.isFinite(seenMs) && nowMs - seenMs <= ONLINE_WINDOW_MS) {
+      onlineUsers += 1;
+    }
+  });
+  return {
+    totalUsers: ids.length,
+    onlineUsers,
+    onlineWindowSeconds: Math.floor(ONLINE_WINDOW_MS / 1000),
+    updatedAt: new Date().toISOString(),
+  };
+}
+
+function readUserPresenceStats() {
+  return buildUserPresenceStats(readUserPresenceStore());
+}
+
+function touchUserPresence(deviceId) {
+  const store = readUserPresenceStore();
+  const nowIso = new Date().toISOString();
+  const existing = store.devices[deviceId];
+  store.devices[deviceId] = {
+    firstSeenAt: existing && typeof existing.firstSeenAt === 'string' && existing.firstSeenAt ? existing.firstSeenAt : nowIso,
+    lastSeenAt: nowIso,
+  };
+  writeUserPresenceStore(store);
+  return buildUserPresenceStats(store);
 }
 
 function sendJson(res, statusCode, payload) {
@@ -124,8 +204,8 @@ const server = http.createServer(async (req, res) => {
   const sid = normalizeSid(parsedUrl.query && parsedUrl.query.sid);
 
   res.setHeader('Access-Control-Allow-Origin', '*');
-  res.setHeader('Access-Control-Allow-Methods', 'GET,PUT,OPTIONS');
-  res.setHeader('Access-Control-Allow-Headers', 'Content-Type');
+  res.setHeader('Access-Control-Allow-Methods', 'GET,PUT,POST,OPTIONS');
+  res.setHeader('Access-Control-Allow-Headers', 'Content-Type, Authorization');
 
   if (req.method === 'OPTIONS') {
     res.writeHead(204);
@@ -151,6 +231,32 @@ const server = http.createServer(async (req, res) => {
 
         writeShifts(sid, shifts);
         sendJson(res, 200, { ok: true, sid, shifts });
+      } catch (err) {
+        sendJson(res, 400, { error: err.message || 'Invalid payload' });
+      }
+      return;
+    }
+
+    sendJson(res, 405, { error: 'Method not allowed' });
+    return;
+  }
+
+  if (pathname === '/api/stats') {
+    if (req.method === 'GET') {
+      sendJson(res, 200, readUserPresenceStats());
+      return;
+    }
+
+    if (req.method === 'POST') {
+      try {
+        const body = await readBody(req);
+        const payload = body ? JSON.parse(body) : {};
+        const deviceId = typeof payload.deviceId === 'string' ? payload.deviceId.trim() : '';
+        if (!isValidDeviceId(deviceId)) {
+          sendJson(res, 400, { error: 'Invalid deviceId' });
+          return;
+        }
+        sendJson(res, 200, touchUserPresence(deviceId));
       } catch (err) {
         sendJson(res, 400, { error: err.message || 'Invalid payload' });
       }
