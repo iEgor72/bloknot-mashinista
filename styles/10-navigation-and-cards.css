@@ -388,20 +388,20 @@
 
     .quick-stats-row {
       display: grid;
-      grid-template-columns: repeat(3, minmax(0, 1fr));
+      grid-template-columns: minmax(0, 0.92fr) minmax(0, 1.16fr) minmax(0, 0.92fr);
       align-items: stretch;
       gap: 0;
     }
 
     .quick-stat {
       position: relative;
-      padding: 6px 10px 7px;
+      padding: 6px 9px 7px;
       display: flex;
       flex-direction: column;
       align-items: center;
       justify-content: center;
-      gap: 4px;
-      min-height: 66px;
+      gap: 3px;
+      min-height: 64px;
       min-width: 0;
       box-shadow: none;
       border-radius: 18px;
@@ -428,9 +428,9 @@
     }
 
     .quick-stat-value {
-      font-size: clamp(15px, 4.1vw, 18px);
-      font-weight: 760;
-      line-height: 1;
+      font-size: clamp(16px, 4.3vw, 18px);
+      font-weight: 500;
+      line-height: 1.02;
       color: #fff;
       min-width: 0;
       max-width: 100%;
@@ -439,29 +439,38 @@
       overflow: hidden;
       text-overflow: clip;
       font-variant-numeric: tabular-nums;
-      letter-spacing: -0.02em;
-      text-shadow: 0 10px 28px rgba(0, 0, 0, 0.20);
+      letter-spacing: -0.015em;
+      text-shadow: 0 8px 22px rgba(0, 0, 0, 0.17);
     }
 
     .quick-stat:not(.quick-stat-primary) .quick-stat-value {
-      opacity: 0.92;
+      opacity: 0.82;
     }
 
     .quick-stat-value.night { color: #c6a4ff; }
     .quick-stat-value.holiday { color: #7ef0cf; }
     .quick-stat-value.shifts { color: #f4f7ff; }
 
+    .quick-stat.quick-stat-primary {
+      padding: 8px 12px 9px;
+      min-height: 70px;
+      gap: 4px;
+    }
+
     .quick-stat.quick-stat-primary .quick-stat-value {
-      font-size: clamp(23px, 6.2vw, 28px);
-      font-weight: 800;
-      line-height: 0.94;
-      letter-spacing: -0.045em;
+      font-size: clamp(24px, 6.9vw, 28px);
+      font-weight: 700;
+      line-height: 0.92;
+      letter-spacing: -0.05em;
+      color: #ffffff;
+      opacity: 1;
       text-shadow: 0 12px 30px rgba(0, 0, 0, 0.24);
     }
 
     .quick-stat.quick-stat-primary .stat-label {
-      color: rgba(244, 247, 255, 0.72);
-      letter-spacing: 0.08em;
+      font-size: 11.5px;
+      color: rgba(244, 247, 255, 0.76);
+      letter-spacing: 0.09em;
     }
 
     .quick-stat-value.is-updated {
@@ -470,12 +479,12 @@
 
     .quick-stats-grid .stat-label {
       display: block;
-      font-size: 11px;
-      color: rgba(244, 247, 255, 0.58);
+      font-size: 10.5px;
+      color: rgba(244, 247, 255, 0.56);
       text-transform: uppercase;
       letter-spacing: 0.06em;
       font-weight: 700;
-      line-height: 1.2;
+      line-height: 1.15;
       min-width: 0;
       max-width: 100%;
       min-height: 2.35em;
