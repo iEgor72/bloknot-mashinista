@@ -1,4 +1,4 @@
-const CACHE_VERSION = 'v14';
+const CACHE_VERSION = 'v15';
 const CACHE_NAME = `shift-tracker-shell-${CACHE_VERSION}`;
 const NAVIGATION_FALLBACK_URL = '/index.html';
 const NETWORK_TIMEOUT_MS = 1200;
@@ -16,6 +16,7 @@ const SHELL_URLS = [
   '/assets/fonts/plus-jakarta-sans/plus-jakarta-sans-latin.woff2',
   '/scripts/safe-area.js',
   '/scripts/nav-debug.js',
+  '/scripts/utils/haptics.js',
   '/scripts/instructions/normalizeText.js',
   '/scripts/instructions/tokenize.js',
   '/scripts/instructions/buildChargrams.js',

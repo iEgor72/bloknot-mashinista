@@ -224,6 +224,28 @@
       return null;
     }
 
+    function runHaptic(methodName) {
+      try {
+        var haptics = window.BM_HAPTICS;
+        var fn = haptics && haptics[methodName];
+        if (typeof fn === 'function') {
+          fn();
+        }
+      } catch (e) {}
+    }
+
+    function triggerHapticImpactLight() {
+      runHaptic('impactLight');
+    }
+
+    function triggerHapticSelectionChange() {
+      runHaptic('selectionChanged');
+    }
+
+    function triggerHapticSuccess() {
+      runHaptic('success');
+    }
+
     function toPositivePx(value) {
       var number = Number(value);
       if (!isFinite(number) || number <= 0) return 0;
@@ -6906,9 +6928,13 @@ var contentHtml = formatInstructionNodeContentHtml(
       e.preventDefault();
       e.stopPropagation();
       if (e.currentTarget.dataset.shiftTriggerPressed === '1' && e.type === 'click') return;
+      var targetId = e.currentTarget.getAttribute('data-id');
+      if (activeShiftMenuId !== targetId) {
+        triggerHapticImpactLight();
+      }
       var host = e.currentTarget.closest('#homeShiftsList, #shiftsList');
       activeShiftMenuScope = host ? host.id : 'shiftsList';
-      toggleShiftActionsMenu(e.currentTarget.getAttribute('data-id'));
+      toggleShiftActionsMenu(targetId);
     }
 
     function handleShiftActionsTriggerPointerDown(e) {
@@ -6938,6 +6964,7 @@ var contentHtml = formatInstructionNodeContentHtml(
 
       e.preventDefault();
       e.stopPropagation();
+      triggerHapticImpactLight();
 
       var action = item.getAttribute('data-action');
       var id = item.getAttribute('data-id');
@@ -7313,7 +7340,11 @@ var contentHtml = formatInstructionNodeContentHtml(
     document.getElementById('inputRouteTo').addEventListener('input', renderDraftShiftSummary);
     for (var rt = 0; rt < routeTypeButtons.length; rt++) {
       routeTypeButtons[rt].addEventListener('click', function(e) {
-        setRouteType(e.currentTarget.getAttribute('data-value'));
+        var nextRouteType = e.currentTarget.getAttribute('data-value');
+        if (nextRouteType !== getRouteType()) {
+          triggerHapticSelectionChange();
+        }
+        setRouteType(nextRouteType);
         renderDraftShiftSummary();
       });
     }
@@ -7409,6 +7440,8 @@ var contentHtml = formatInstructionNodeContentHtml(
           render();
           return;
         }
+
+        triggerHapticSuccess();
 
         if (isEditing) {
           exitEditMode('shifts');
@@ -7546,6 +7579,7 @@ if (action === 'scroll-node') {
         if (btn) {
           var tab = btn.getAttribute('data-docs-tab');
           if (tab && tab !== documentationStore.activeTab) {
+            triggerHapticSelectionChange();
             documentationStore.activeTab = tab;
             renderDocumentationScreen();
           }
@@ -7573,9 +7607,16 @@ if (action === 'scroll-node') {
     for (var tb = 0; tb < tabButtons.length; tb++) {
       tabButtons[tb].addEventListener('click', function(e) {
         var tab = e.currentTarget.getAttribute('data-tab');
+        var isSameTab = tab === activeTab;
         if (tab === 'add') {
+          if (!isSameTab) {
+            triggerHapticImpactLight();
+          }
           openAddTabAndFocusForm();
           return;
+        }
+        if (!isSameTab) {
+          triggerHapticSelectionChange();
         }
         setActiveTab(tab);
       });
@@ -7584,6 +7625,9 @@ if (action === 'scroll-node') {
     var goToShiftsBtn = document.getElementById('btnGoToShifts');
     if (goToShiftsBtn) {
       goToShiftsBtn.addEventListener('click', function() {
+        if (activeTab !== 'shifts') {
+          triggerHapticSelectionChange();
+        }
         setActiveTab('shifts');
       });
     }
