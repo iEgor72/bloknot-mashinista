@@ -115,34 +115,34 @@
       content: none;
     }
 
-    /* ── Scrollbars ── */
-    .app-content::-webkit-scrollbar,
-    .auth-gate::-webkit-scrollbar,
-    .bottom-sheet::-webkit-scrollbar,
-    .docs-pdf-scroll::-webkit-scrollbar {
-      width: 4px;
-      height: 4px;
+    /* ── Hide scrollbars (keep scroll behavior) ── */
+    *,
+    *::before,
+    *::after {
+      scrollbar-width: none;
+      -ms-overflow-style: none;
     }
-    .app-content::-webkit-scrollbar-track,
-    .auth-gate::-webkit-scrollbar-track,
-    .bottom-sheet::-webkit-scrollbar-track,
-    .docs-pdf-scroll::-webkit-scrollbar-track {
-      background: transparent;
+
+    *::-webkit-scrollbar {
+      display: none;
     }
-    .app-content::-webkit-scrollbar-thumb,
-    .auth-gate::-webkit-scrollbar-thumb,
-    .bottom-sheet::-webkit-scrollbar-thumb,
-    .docs-pdf-scroll::-webkit-scrollbar-thumb {
-      background: var(--accent);
-      border-radius: var(--r-pill);
-      min-height: 32px;
-    }
+
+    /* Explicitly keep scrolling containers scrollable without visible bars */
     .app-content,
     .auth-gate,
     .bottom-sheet,
-    .docs-pdf-scroll {
-      scrollbar-width: thin;
-      scrollbar-color: var(--accent) transparent;
+    .docs-pdf-scroll,
+    .shift-detail-body {
+      -ms-overflow-style: none;
+      scrollbar-width: none;
+    }
+
+    .app-content::-webkit-scrollbar,
+    .auth-gate::-webkit-scrollbar,
+    .bottom-sheet::-webkit-scrollbar,
+    .docs-pdf-scroll::-webkit-scrollbar,
+    .shift-detail-body::-webkit-scrollbar {
+      display: none;
     }
 
     html.fonts-loading #authGate,
