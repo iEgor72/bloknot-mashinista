@@ -3643,22 +3643,17 @@ var contentHtml = formatInstructionNodeContentHtml(
       var headers = { 'Accept': 'application/json' };
       if (sessionToken) headers['Authorization'] = 'Bearer ' + sessionToken;
 
-      // Step 1: resolve Telegram temp download URL
-      fetch(DOCS_API_URL + '?file_id=' + encodeURIComponent(tgFileId), {
+      // Download file bytes via our proxy (avoids Telegram CDN CORS issues)
+      fetch(DOCS_API_URL + '?download=' + encodeURIComponent(tgFileId), {
         method: 'GET',
         headers: headers,
         credentials: 'include'
       })
-        .then(function(r) { return r.json(); })
-        .then(function(data) {
-          if (!data || !data.url) {
-            throw new Error(data && data.error ? data.error : 'Не удалось получить ссылку');
-          }
-          // Step 2: download file bytes
-          return fetch(data.url);
-        })
         .then(function(r) {
           if (!r.ok) throw new Error('HTTP ' + r.status);
+          // Capture content-type from proxy response for mime fallback
+          var ct = r.headers.get('content-type') || '';
+          if (!mime && ct) mime = ct.split(';')[0].trim();
           return r.arrayBuffer();
         })
         .then(function(buf) {

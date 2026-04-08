@@ -86,7 +86,26 @@ export async function onRequest(context) {
 
     // ── GET /api/docs?folder=speeds — list files ────────────────────────────
     if (request.method === 'GET') {
-      // Single file download URL: ?file_id=xxx
+      // Proxy file bytes: ?download=<tg_file_id>
+      var downloadFileId = url.searchParams.get('download');
+      if (downloadFileId) {
+        var dlUrl = await getTelegramFileUrl(botToken, downloadFileId);
+        var fileResp = await fetch(dlUrl);
+        if (!fileResp.ok) {
+          return json(502, { error: 'Telegram fetch failed: ' + fileResp.status });
+        }
+        var contentType = fileResp.headers.get('content-type') || 'application/octet-stream';
+        return new Response(fileResp.body, {
+          status: 200,
+          headers: {
+            'Content-Type': contentType,
+            'Cache-Control': 'private, max-age=3600',
+            'Access-Control-Allow-Origin': '*',
+          },
+        });
+      }
+
+      // Single file temp URL: ?file_id=xxx  (kept for compatibility)
       var reqFileId = url.searchParams.get('file_id');
       if (reqFileId) {
         var dlUrl = await getTelegramFileUrl(botToken, reqFileId);
