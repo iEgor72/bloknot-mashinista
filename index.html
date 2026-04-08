@@ -393,22 +393,7 @@
               <button class="docs-tab-btn active" data-docs-tab="speeds" type="button">Скорости</button>
               <button class="docs-tab-btn" data-docs-tab="folders" type="button">Папки</button>
               <button class="docs-tab-btn" data-docs-tab="memos" type="button">Памятки</button>
-              <button class="docs-tab-btn" data-docs-tab="regimki" type="button">Режимки</button>
-              <button class="docs-tab-btn" data-docs-tab="instructions" type="button">Инструкции</button>
             </div>
-          </div>
-
-          <!-- Admin upload bar (shown via JS only for the authenticated admin) -->
-          <div class="docs-admin-bar hidden" id="docsAdminBar">
-            <label class="docs-upload-btn" for="docsUploadInput">
-              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
-                <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/>
-                <polyline points="17 8 12 3 7 8"/>
-                <line x1="12" y1="3" x2="12" y2="15"/>
-              </svg>
-              <span class="docs-upload-label">Загрузить файл</span>
-            </label>
-            <input type="file" id="docsUploadInput" accept=".pdf,.doc,.docx,.jpg,.jpeg,.png,.xlsx,.xls" style="position:absolute;opacity:0;width:1px;height:1px;pointer-events:none">
           </div>
 
           <!-- Speeds panel -->
@@ -424,16 +409,6 @@
           <!-- Memos panel -->
           <div class="docs-panel hidden" data-docs-panel="memos" id="docsPanelMemos">
             <div class="docs-file-list" id="docsListMemos"></div>
-          </div>
-
-          <!-- Regimki panel -->
-          <div class="docs-panel hidden" data-docs-panel="regimki" id="docsPanelRegimki">
-            <div class="docs-file-list" id="docsListRegimki"></div>
-          </div>
-
-          <!-- Instructions panel -->
-          <div class="docs-panel hidden" data-docs-panel="instructions" id="docsPanelInstructions">
-            <div class="docs-file-list" id="docsListInstructions"></div>
           </div>
 
         </div>

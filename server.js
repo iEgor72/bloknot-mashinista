@@ -91,6 +91,7 @@ function serveFile(res, filePath) {
     '.jpg': 'image/jpeg',
     '.jpeg': 'image/jpeg',
     '.ico': 'image/x-icon',
+    '.pdf': 'application/pdf',
   };
 
   res.writeHead(200, {
@@ -158,7 +159,7 @@ const server = http.createServer(async (req, res) => {
     return;
   }
 
-  const normalized = pathname === '/' ? '/index.html' : pathname;
+  const normalized = decodeURIComponent(pathname === '/' ? '/index.html' : pathname);
   const filePath = path.join(ROOT, normalized);
 
   if (!filePath.startsWith(ROOT)) {

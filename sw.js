@@ -1,4 +1,4 @@
-const CACHE_VERSION = 'v8';
+const CACHE_VERSION = 'v9';
 const CACHE_NAME = `shift-tracker-shell-${CACHE_VERSION}`;
 const NAVIGATION_FALLBACK_URL = '/index.html';
 const NETWORK_TIMEOUT_MS = 1200;
@@ -26,6 +26,9 @@ const SHELL_URLS = [
   '/scripts/app-init.js',
   '/scripts/sw-register.js',
   '/assets/instructions/catalog.v2.json',
+  '/assets/docs/manifest.json',
+  '/assets/pdfjs/pdf.min.js',
+  '/assets/pdfjs/pdf.worker.min.js',
   '/sw.js'
 ];
 
@@ -109,6 +112,7 @@ function isStaticAssetRequest(request, url) {
   return (
     url.pathname.startsWith('/styles/') ||
     url.pathname.startsWith('/scripts/') ||
+    url.pathname.startsWith('/assets/') ||
     url.pathname === '/sw.js'
   );
 }

@@ -3368,7 +3368,7 @@ var contentHtml = formatInstructionNodeContentHtml(
     var docsFilesCache = {};
 
     function docsFolderListId(folder) {
-      var map = { speeds: 'docsListSpeeds', folders: 'docsListFolders', memos: 'docsListMemos', regimki: 'docsListRegimki', instructions: 'docsListInstructions' };
+      var map = { speeds: 'docsListSpeeds', folders: 'docsListFolders', memos: 'docsListMemos' };
       return map[folder] || null;
     }
 
@@ -3390,7 +3390,7 @@ var contentHtml = formatInstructionNodeContentHtml(
       return '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>';
     }
 
-    function renderDocFileList(folder, files, isAdm) {
+    function renderDocFileList(folder, files) {
       var listId = docsFolderListId(folder);
       if (!listId) return;
       var el = document.getElementById(listId);
@@ -3417,18 +3417,16 @@ var contentHtml = formatInstructionNodeContentHtml(
       var html = '<div class="docs-item-list">';
       for (var i = 0; i < files.length; i++) {
         var f = files[i];
-        var size = docsFormatSize(f.file_size);
-        var date = f.uploaded_at ? f.uploaded_at.slice(0, 10) : '';
-        var meta = [size, date].filter(Boolean).join(' · ');
+        var size = docsFormatSize(f.size);
+        var meta = size || '';
         html +=
-          '<div class="docs-item" data-db-id="' + f.id + '" data-file-id="' + encodeURIComponent(f.file_id || '') + '" data-file-name="' + encodeURIComponent(f.name || '') + '" data-mime-type="' + encodeURIComponent(f.mime_type || '') + '">' +
+          '<div class="docs-item" data-file-path="' + encodeURIComponent(f.path || '') + '" data-file-name="' + encodeURIComponent(f.name || '') + '" data-mime-type="' + encodeURIComponent(f.mime_type || '') + '">' +
             '<div class="docs-item-icon">' + docsFileIcon(f.mime_type) + '</div>' +
             '<div class="docs-item-body">' +
               '<div class="docs-item-title">' + (f.name || 'Файл') + '</div>' +
               (meta ? '<div class="docs-item-meta">' + meta + '</div>' : '') +
             '</div>' +
             '<div class="docs-item-action"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg></div>' +
-            (isAdm ? '<button class="docs-item-delete" data-delete-id="' + f.id + '" aria-label="Удалить файл"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6"/><path d="M10 11v6"/><path d="M14 11v6"/></svg></button>' : '') +
           '</div>';
       }
       html += '</div>';
@@ -3443,55 +3441,38 @@ var contentHtml = formatInstructionNodeContentHtml(
       el.innerHTML = '<div class="docs-loading"><div class="docs-loading-spinner"></div><span>Загрузка…</span></div>';
     }
 
-    function loadDocFiles(folder, forceRefresh) {
-      if (!forceRefresh && docsFilesCache[folder]) {
-        renderDocFileList(folder, docsFilesCache[folder].files, docsFilesCache[folder].is_admin);
+    var _docsManifestCache = null;
+
+    function loadDocFiles(folder) {
+      if (docsFilesCache[folder]) {
+        renderDocFileList(folder, docsFilesCache[folder]);
         return;
       }
 
       renderDocLoading(folder);
 
-      var sessionToken = CURRENT_SESSION_TOKEN || getStoredSessionToken();
-      var headers = { 'Accept': 'application/json' };
-      if (sessionToken) headers['Authorization'] = 'Bearer ' + sessionToken;
+      function renderFromManifest(manifest) {
+        var files = (manifest && Array.isArray(manifest[folder])) ? manifest[folder] : [];
+        docsFilesCache[folder] = files;
+        renderDocFileList(folder, files);
+      }
 
-      fetch(DOCS_API_URL + '?folder=' + encodeURIComponent(folder), {
-        method: 'GET',
-        headers: headers,
-        credentials: 'include'
-      })
+      if (_docsManifestCache) {
+        renderFromManifest(_docsManifestCache);
+        return;
+      }
+
+      fetch('/assets/docs/manifest.json', { cache: 'no-store' })
         .then(function(resp) { return resp.json(); })
-        .then(function(data) {
-          var files = (data && Array.isArray(data.files)) ? data.files : [];
-          var isAdm = !!(data && data.is_admin);
-          docsFilesCache[folder] = { files: files, is_admin: isAdm };
-          renderDocFileList(folder, files, isAdm);
+        .then(function(manifest) {
+          _docsManifestCache = manifest;
+          renderFromManifest(manifest);
         })
         .catch(function() {
           var listId = docsFolderListId(folder);
           var el = listId ? document.getElementById(listId) : null;
-          if (el) el.innerHTML = '<div class="docs-loading"><span>⚠ Не удалось загрузить файлы</span></div>';
+          if (el) el.innerHTML = '<div class="docs-loading"><span>⚠ Не удалось загрузить список файлов</span></div>';
         });
-    }
-
-    function deleteDocFile(id, folder) {
-      var sessionToken = CURRENT_SESSION_TOKEN || getStoredSessionToken();
-      var headers = { 'Accept': 'application/json' };
-      if (sessionToken) headers['Authorization'] = 'Bearer ' + sessionToken;
-
-      fetch(DOCS_API_URL + '?id=' + encodeURIComponent(id), {
-        method: 'DELETE',
-        headers: headers,
-        credentials: 'include'
-      })
-        .then(function(resp) { return resp.json(); })
-        .then(function(data) {
-          if (data && data.ok) {
-            docsFilesCache[folder] = null;
-            loadDocFiles(folder, true);
-          }
-        })
-        .catch(function() {});
     }
 
     // ── PDF.js lazy loader ────────────────────────────────────────────────────
@@ -3506,11 +3487,10 @@ var contentHtml = formatInstructionNodeContentHtml(
       if (_pdfJsLoading) return;
       _pdfJsLoading = true;
       var script = document.createElement('script');
-      script.src = 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js';
+      script.src = '/assets/pdfjs/pdf.min.js';
       script.onload = function() {
         if (window.pdfjsLib) {
-          window.pdfjsLib.GlobalWorkerOptions.workerSrc =
-            'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js';
+          window.pdfjsLib.GlobalWorkerOptions.workerSrc = '/assets/pdfjs/pdf.worker.min.js';
         }
         _pdfJsLoaded = true;
         _pdfJsLoading = false;
@@ -3631,24 +3611,16 @@ var contentHtml = formatInstructionNodeContentHtml(
 
     // ── Open doc file — in-app viewer (PDF.js / img) ──────────────────────────
 
-    function openDocFile(tgFileId, fileName, mimeType) {
+    function openDocFile(filePath, fileName, mimeType) {
       var name = decodeURIComponent(fileName || 'Файл');
       var mime = decodeURIComponent(mimeType || '');
+      var localPath = decodeURIComponent(filePath || '');
       var lname = name.toLowerCase();
 
       openDocsViewerUI(name);
       docsViewerSetLoading();
 
-      var sessionToken = CURRENT_SESSION_TOKEN || getStoredSessionToken();
-      var headers = { 'Accept': 'application/json' };
-      if (sessionToken) headers['Authorization'] = 'Bearer ' + sessionToken;
-
-      // Download file bytes via our proxy (avoids Telegram CDN CORS issues)
-      fetch(DOCS_API_URL + '?download=' + encodeURIComponent(tgFileId), {
-        method: 'GET',
-        headers: headers,
-        credentials: 'include'
-      })
+      fetch(localPath)
         .then(function(r) {
           if (!r.ok) throw new Error('HTTP ' + r.status);
           // Capture content-type from proxy response for mime fallback
@@ -3750,66 +3722,8 @@ var contentHtml = formatInstructionNodeContentHtml(
         panels[j].classList.toggle('hidden', panels[j].getAttribute('data-docs-panel') !== documentationStore.activeTab);
       }
 
-      // Admin upload bar — visible only for the authenticated admin
-      var adminBar = document.getElementById('docsAdminBar');
-      if (adminBar) {
-        var isAdminUser = !!(CURRENT_USER && CURRENT_USER.is_admin);
-        adminBar.classList.toggle('hidden', !isAdminUser);
-      }
-
       // Load files for the active tab
-      loadDocFiles(documentationStore.activeTab, false);
-    }
-
-    function uploadDocFile(file, folder) {
-      var uploadLabel = document.querySelector('.docs-upload-label');
-      var uploadBtn = document.querySelector('.docs-upload-btn');
-
-      function setUploading(on) {
-        if (uploadBtn) {
-          if (on) uploadBtn.setAttribute('data-uploading', '1');
-          else uploadBtn.removeAttribute('data-uploading');
-        }
-        if (uploadLabel) uploadLabel.textContent = on ? 'Загружается…' : 'Загрузить файл';
-      }
-
-      setUploading(true);
-
-      var formData = new FormData();
-      formData.append('file', file);
-
-      var sessionToken = CURRENT_SESSION_TOKEN || getStoredSessionToken();
-      var headers = {};
-      if (sessionToken) headers['Authorization'] = 'Bearer ' + sessionToken;
-
-      fetch(DOCS_API_URL + '?folder=' + encodeURIComponent(folder), {
-        method: 'POST',
-        headers: headers,
-        body: formData,
-        credentials: 'include'
-      })
-        .then(function(resp) { return resp.json(); })
-        .then(function(data) {
-          setUploading(false);
-          if (data && data.ok) {
-            if (uploadLabel) uploadLabel.textContent = '✓ Загружено';
-            // Invalidate cache and reload list
-            docsFilesCache[folder] = null;
-            loadDocFiles(folder, true);
-            setTimeout(function() {
-              if (uploadLabel) uploadLabel.textContent = 'Загрузить файл';
-            }, 2500);
-          } else {
-            throw new Error(data && data.error ? data.error : 'Ошибка загрузки');
-          }
-        })
-        .catch(function(err) {
-          setUploading(false);
-          if (uploadLabel) uploadLabel.textContent = '⚠ ' + (err && err.message ? err.message : 'Ошибка');
-          setTimeout(function() {
-            if (uploadLabel) uploadLabel.textContent = 'Загрузить файл';
-          }, 3500);
-        });
+      loadDocFiles(documentationStore.activeTab);
     }
 
     // Alias so any leftover internal calls still resolve without throwing.
@@ -6513,35 +6427,14 @@ if (action === 'scroll-node') {
           return;
         }
 
-        // Delete file (admin)
-        var delBtn = e.target.closest('.docs-item-delete[data-delete-id]');
-        if (delBtn) {
-          e.stopPropagation();
-          var id = delBtn.getAttribute('data-delete-id');
-          if (id && confirm('Удалить файл?')) {
-            deleteDocFile(id, documentationStore.activeTab);
-          }
-          return;
-        }
-
         // Open file in in-app viewer
-        var item = e.target.closest('.docs-item[data-db-id]');
+        var item = e.target.closest('.docs-item[data-file-path]');
         if (item) {
-          var tgFileId = item.getAttribute('data-file-id') || '';
+          var filePath = item.getAttribute('data-file-path') || '';
           var fileName = item.getAttribute('data-file-name') || '';
           var mimeType = item.getAttribute('data-mime-type') || '';
-          if (tgFileId) openDocFile(tgFileId, fileName, mimeType);
+          if (filePath) openDocFile(filePath, fileName, mimeType);
         }
-      });
-    }
-
-    var docsUploadInput = document.getElementById('docsUploadInput');
-    if (docsUploadInput) {
-      docsUploadInput.addEventListener('change', function(e) {
-        var file = e.target.files && e.target.files[0];
-        if (!file) return;
-        uploadDocFile(file, documentationStore.activeTab);
-        e.target.value = '';
       });
     }
 
