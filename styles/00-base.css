@@ -42,8 +42,8 @@
       --accent-hover: #b3a8ff;
       --accent2: #ea72ff;
       --danger: #f43f5e;
-      --text: #f4f7ff;
-      --text-muted: #8c94bc;
+      --text: #fbfdff;
+      --text-muted: #aab5de;
       --border: rgba(255, 255, 255, 0.1);
       --success: #10d9a0;
       --warn: #f59e0b;
@@ -57,23 +57,25 @@
       --layer-overlay: 130;
       --layer-floating: 120;
       --layer-scrim: 140;
-      --surface-bg: linear-gradient(180deg, rgba(255, 255, 255, 0.07), rgba(255, 255, 255, 0.03));
-      --surface-bg-strong: linear-gradient(180deg, rgba(255, 255, 255, 0.09), rgba(255, 255, 255, 0.035));
-      --surface-fill: rgba(18, 21, 43, 0.72);
-      --surface-fill-strong: rgba(17, 20, 39, 0.78);
+      --surface-bg: linear-gradient(180deg, rgba(255, 255, 255, 0.06), rgba(255, 255, 255, 0.02));
+      --surface-bg-strong: linear-gradient(180deg, rgba(255, 255, 255, 0.08), rgba(255, 255, 255, 0.03));
+      --surface-fill: rgba(14, 18, 46, 0.8);
+      --surface-fill-strong: rgba(12, 16, 40, 0.86);
       --surface-border: rgba(255, 255, 255, 0.08);
       --surface-shadow: 0 18px 34px rgba(6, 9, 18, 0.22);
       --surface-shadow-strong: 0 32px 80px rgba(5, 8, 18, 0.54);
-      --glass-top-highlight: linear-gradient(180deg, rgba(255, 255, 255, 0.17) 0%, rgba(255, 255, 255, 0.06) 32%, rgba(255, 255, 255, 0) 72%);
-      --glass-top-highlight-soft: linear-gradient(180deg, rgba(255, 255, 255, 0.12) 0%, rgba(255, 255, 255, 0.04) 28%, rgba(255, 255, 255, 0) 70%);
+      --glass-top-highlight: linear-gradient(180deg, rgba(255, 255, 255, 0.2) 0%, rgba(255, 255, 255, 0.07) 32%, rgba(255, 255, 255, 0) 72%);
+      --glass-top-highlight-soft: linear-gradient(180deg, rgba(255, 255, 255, 0.1) 0%, rgba(255, 255, 255, 0.03) 28%, rgba(255, 255, 255, 0) 70%);
       --glass-depth-inset: inset 0 1px 0 rgba(255, 255, 255, 0.09), inset 0 -1px 0 rgba(101, 118, 158, 0.2), inset 0 -14px 24px rgba(6, 9, 18, 0.2);
       --glass-depth-inset-soft: inset 0 1px 0 rgba(255, 255, 255, 0.07), inset 0 -1px 0 rgba(95, 110, 148, 0.14), inset 0 -10px 18px rgba(6, 9, 18, 0.16);
       --glass-depth-inset-btn: inset 0 1px 0 rgba(255, 255, 255, 0.1), inset 0 -1px 0 rgba(92, 108, 147, 0.18), inset 0 -8px 14px rgba(6, 9, 18, 0.18);
       --glass-glare-top: linear-gradient(180deg, rgba(255, 255, 255, 0.42) 0%, rgba(255, 255, 255, 0.14) 40%, rgba(255, 255, 255, 0) 82%);
-      --glass-core-nav: rgba(15, 19, 35, 0.86);
-      --glass-core-card: rgba(17, 21, 40, 0.8);
-      --glass-edge-light: rgba(255, 255, 255, 0.12);
-      --glass-reflection-soft: 0 10px 20px rgba(8, 12, 24, 0.18);
+      --glass-core-nav: rgba(10, 15, 42, 0.9);
+      --glass-core-card: rgba(12, 18, 44, 0.86);
+      --glass-edge-light: rgba(214, 225, 255, 0.2);
+      --glass-reflection-soft: 0 10px 20px rgba(78, 102, 180, 0.2);
+      --accent-glow: rgba(137, 126, 255, 0.35);
+      --accent-glow-cyan: rgba(96, 206, 255, 0.3);
       --surface-radius: 24px;
       --surface-radius-lg: 32px;
       --safe-top: env(safe-area-inset-top, 0px);
@@ -107,10 +109,10 @@
       height: 100%;
       min-height: var(--app-viewport-height);
       background:
-        radial-gradient(ellipse at 14% 8%, rgba(141, 124, 255, 0.22) 0%, transparent 34%),
-        radial-gradient(ellipse at 84% 14%, rgba(234, 114, 255, 0.18) 0%, transparent 32%),
-        radial-gradient(ellipse at 50% 104%, rgba(82, 215, 255, 0.12) 0%, transparent 38%),
-        linear-gradient(180deg, #0a0c1d 0%, #070814 100%);
+        radial-gradient(ellipse at 14% 8%, rgba(141, 124, 255, 0.34) 0%, transparent 36%),
+        radial-gradient(ellipse at 84% 14%, rgba(234, 114, 255, 0.25) 0%, transparent 34%),
+        radial-gradient(ellipse at 50% 104%, rgba(82, 215, 255, 0.2) 0%, transparent 40%),
+        linear-gradient(180deg, #090b22 0%, #060713 100%);
       color: var(--text);
       font-family: "Plus Jakarta Sans", "Inter", -apple-system, BlinkMacSystemFont, sans-serif;
       font-size: 15px;
@@ -199,8 +201,8 @@
       position: fixed;
       pointer-events: none;
       z-index: var(--layer-bg);
-      filter: blur(24px);
-      opacity: 0.9;
+      filter: blur(22px);
+      opacity: 1;
     }
 
     body::before {
@@ -208,7 +210,7 @@
       height: 360px;
       left: -110px;
       top: 120px;
-      background: radial-gradient(circle, rgba(82, 215, 255, 0.16) 0%, rgba(82, 215, 255, 0.03) 55%, transparent 72%);
+      background: radial-gradient(circle, rgba(82, 215, 255, 0.24) 0%, rgba(82, 215, 255, 0.06) 56%, transparent 74%);
     }
 
     body::after {
@@ -216,7 +218,7 @@
       height: 420px;
       right: -120px;
       bottom: 30px;
-      background: radial-gradient(circle, rgba(234, 114, 255, 0.14) 0%, rgba(234, 114, 255, 0.03) 55%, transparent 72%);
+      background: radial-gradient(circle, rgba(234, 114, 255, 0.22) 0%, rgba(234, 114, 255, 0.06) 56%, transparent 74%);
     }
 
     .app {
