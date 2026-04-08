@@ -930,6 +930,7 @@
       transition: color 0.15s, border-color 0.15s, background 0.15s, transform 0.15s, box-shadow 0.15s;
       -webkit-tap-highlight-color: transparent;
       backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
       box-shadow: 0 10px 18px rgba(6, 9, 18, 0.16), var(--glass-depth-inset-btn);
     }
 
@@ -1082,6 +1083,7 @@
       transition: color 0.15s, border-color 0.15s, box-shadow 0.15s, transform 0.15s;
       -webkit-tap-highlight-color: transparent;
       backdrop-filter: blur(14px);
+      -webkit-backdrop-filter: blur(14px);
       box-shadow: 0 12px 24px rgba(6, 9, 18, 0.18), var(--glass-depth-inset-btn);
     }
 
@@ -1222,6 +1224,7 @@
       min-height: 48px;
       -webkit-tap-highlight-color: transparent;
       backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
       box-shadow: 0 10px 20px rgba(6, 9, 18, 0.16), var(--glass-depth-inset-btn);
     }
 
@@ -1577,5 +1580,97 @@
       .shift-detail-surface,
       .shift-detail-content {
         transition: none !important;
+      }
+    }
+
+    /* ── Glass Fallback (No Backdrop Blur Support) ── */
+    @supports not ((-webkit-backdrop-filter: blur(1px)) or (backdrop-filter: blur(1px))) {
+      .bottom-nav-inner,
+      .bottom-nav-inner::before,
+      .tab-btn.center,
+      .month-nav,
+      .dashboard-card,
+      .quick-stats-grid,
+      .salary-card,
+      .settings-card,
+      .month-btn,
+      .stat-card,
+      .segmented,
+      .glass-select-trigger,
+      .btn-primary,
+      .btn-secondary {
+        -webkit-backdrop-filter: none !important;
+        backdrop-filter: none !important;
+      }
+
+      .bottom-nav-inner {
+        background:
+          linear-gradient(180deg, rgba(255, 255, 255, 0.12), rgba(255, 255, 255, 0.02) 34%, rgba(255, 255, 255, 0) 72%),
+          linear-gradient(180deg, rgba(24, 30, 54, 0.96), rgba(13, 17, 33, 0.95));
+        border-color: rgba(255, 255, 255, 0.14);
+        box-shadow:
+          0 22px 42px rgba(0, 0, 0, 0.44),
+          0 10px 20px rgba(5, 9, 20, 0.26),
+          var(--glass-depth-inset);
+      }
+
+      .bottom-nav-inner::before {
+        background:
+          linear-gradient(180deg, rgba(255, 255, 255, 0.2), rgba(142, 163, 218, 0.18) 58%, rgba(104, 123, 177, 0.11));
+      }
+
+      .tab-btn.center {
+        background:
+          linear-gradient(180deg, rgba(255, 255, 255, 0.2), rgba(255, 255, 255, 0.04) 52%, rgba(255, 255, 255, 0)),
+          linear-gradient(160deg, rgba(146, 166, 218, 0.96) 0%, rgba(153, 144, 199, 0.94) 52%, rgba(116, 152, 195, 0.93) 100%);
+      }
+
+      .month-nav,
+      .dashboard-card,
+      .quick-stats-grid,
+      .salary-card,
+      .settings-card,
+      .stat-card {
+        border-color: rgba(255, 255, 255, 0.12);
+        box-shadow:
+          0 18px 36px rgba(4, 7, 15, 0.34),
+          0 2px 10px rgba(120, 146, 205, 0.12),
+          var(--glass-depth-inset);
+      }
+
+      .month-nav {
+        background:
+          var(--glass-top-highlight-soft),
+          linear-gradient(180deg, rgba(255, 255, 255, 0.09), rgba(255, 255, 255, 0.02) 36%, rgba(255, 255, 255, 0) 74%),
+          linear-gradient(165deg, rgba(24, 29, 52, 0.95), rgba(17, 21, 40, 0.95));
+      }
+
+      .dashboard-card {
+        background:
+          var(--glass-top-highlight-soft),
+          linear-gradient(180deg, rgba(255, 255, 255, 0.1), rgba(255, 255, 255, 0.02) 38%, rgba(255, 255, 255, 0) 78%),
+          linear-gradient(152deg, rgba(26, 31, 54, 0.97) 0%, rgba(15, 19, 35, 0.97) 58%, rgba(22, 21, 40, 0.97) 100%);
+      }
+
+      .quick-stats-grid {
+        background:
+          var(--glass-top-highlight-soft),
+          linear-gradient(180deg, rgba(255, 255, 255, 0.09), rgba(255, 255, 255, 0.02) 38%, rgba(255, 255, 255, 0) 74%),
+          linear-gradient(162deg, rgba(24, 29, 52, 0.95), rgba(16, 20, 38, 0.95));
+      }
+
+      .segmented,
+      .glass-select-trigger {
+        background:
+          var(--glass-top-highlight-soft),
+          linear-gradient(180deg, rgba(255, 255, 255, 0.09), rgba(255, 255, 255, 0.02) 36%, rgba(255, 255, 255, 0) 72%),
+          linear-gradient(162deg, rgba(24, 29, 52, 0.94), rgba(17, 21, 40, 0.94));
+      }
+
+      .btn-primary {
+        box-shadow:
+          0 14px 28px rgba(88, 100, 148, 0.26),
+          0 0 0 1px rgba(255, 255, 255, 0.12),
+          var(--glass-depth-inset-btn);
       }
     }

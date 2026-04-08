@@ -7,18 +7,51 @@
       border-radius: 28px;
       background:
         var(--glass-top-highlight-soft),
+        linear-gradient(180deg, rgba(255, 255, 255, 0.07), rgba(255, 255, 255, 0.01) 36%, rgba(255, 255, 255, 0) 74%),
         radial-gradient(circle at 12% 0%, rgba(82, 215, 255, 0.12), transparent 24%),
         radial-gradient(circle at 92% 10%, rgba(234, 114, 255, 0.14), transparent 26%),
-        linear-gradient(180deg, rgba(255, 255, 255, 0.08), rgba(255, 255, 255, 0.03)),
-        rgba(18, 21, 43, 0.56);
-      border: 1px solid rgba(255, 255, 255, 0.08);
-      backdrop-filter: blur(28px);
-      -webkit-backdrop-filter: blur(28px);
+        linear-gradient(165deg, rgba(24, 29, 52, 0.9), var(--glass-core-card));
+      border: 1px solid var(--glass-edge-light);
+      backdrop-filter: blur(18px) saturate(118%);
+      -webkit-backdrop-filter: blur(18px) saturate(118%);
       box-shadow:
-        0 22px 58px rgba(0, 0, 0, 0.36),
-        0 0 0 1px rgba(141, 124, 255, 0.08),
+        0 20px 42px rgba(0, 0, 0, 0.36),
+        0 1px 8px rgba(126, 145, 198, 0.12),
         var(--glass-depth-inset-soft);
       overflow: visible;
+    }
+
+    .month-nav::before {
+      content: '';
+      position: absolute;
+      left: 2px;
+      right: 2px;
+      top: 2px;
+      height: 44%;
+      border-radius: 24px 24px 16px 16px;
+      background: linear-gradient(180deg, rgba(255, 255, 255, 0.18), rgba(255, 255, 255, 0.03) 62%, rgba(255, 255, 255, 0));
+      pointer-events: none;
+      opacity: 0.62;
+      z-index: 0;
+    }
+
+    .month-nav::after {
+      content: '';
+      position: absolute;
+      left: 8%;
+      right: 8%;
+      bottom: 1px;
+      height: 38%;
+      border-radius: 999px;
+      background: radial-gradient(120% 90% at 50% 100%, rgba(120, 144, 204, 0.2), transparent 72%);
+      pointer-events: none;
+      opacity: 0.36;
+      z-index: 0;
+    }
+
+    .month-nav > * {
+      position: relative;
+      z-index: 1;
     }
 
     .month-nav-top {
@@ -57,10 +90,12 @@
 
     .month-tab {
       appearance: none;
-      border: none;
+      border: 1px solid rgba(255, 255, 255, 0.08);
       min-height: 38px;
       border-radius: 999px;
-      background: rgba(255,255,255,0.05);
+      background:
+        linear-gradient(180deg, rgba(255, 255, 255, 0.09), rgba(255, 255, 255, 0.02) 54%, rgba(255, 255, 255, 0)),
+        rgba(32, 38, 64, 0.6);
       color: rgba(244, 247, 255, 0.72);
       font-size: 14px;
       font-weight: 700;
@@ -69,6 +104,7 @@
       -webkit-tap-highlight-color: transparent;
       position: relative;
       overflow: hidden;
+      box-shadow: var(--glass-depth-inset-soft);
     }
 
     .month-tab.active {
@@ -218,14 +254,16 @@
     .dashboard-card {
       background:
         var(--glass-top-highlight-soft),
-        radial-gradient(circle at 16% 0%, rgba(141, 124, 255, 0.20), transparent 34%),
-        radial-gradient(circle at 92% 12%, rgba(82, 215, 255, 0.16), transparent 34%),
-        linear-gradient(150deg, rgba(27, 31, 54, 0.95) 0%, rgba(15, 18, 34, 0.94) 58%, rgba(22, 19, 42, 0.95) 100%);
-      border: 1px solid rgba(255, 255, 255, 0.09);
+        linear-gradient(180deg, rgba(255, 255, 255, 0.08), rgba(255, 255, 255, 0.015) 40%, rgba(255, 255, 255, 0) 78%),
+        radial-gradient(circle at 16% 0%, rgba(141, 124, 255, 0.16), transparent 36%),
+        radial-gradient(circle at 92% 12%, rgba(82, 215, 255, 0.14), transparent 36%),
+        linear-gradient(152deg, rgba(26, 31, 54, 0.96) 0%, rgba(15, 19, 35, 0.95) 58%, rgba(22, 21, 40, 0.95) 100%);
+      border: 1px solid rgba(255, 255, 255, 0.11);
       border-radius: 26px;
       padding: 22px 20px;
       box-shadow:
-        0 22px 48px rgba(4, 7, 15, 0.34),
+        0 20px 40px rgba(4, 7, 15, 0.34),
+        0 2px 10px rgba(120, 146, 205, 0.12),
         var(--glass-depth-inset);
       margin-bottom: 18px;
       position: relative;
@@ -235,25 +273,34 @@
     .dashboard-card::before {
       content: '';
       position: absolute;
-      right: -50px;
-      bottom: -90px;
-      width: 220px;
-      height: 220px;
-      background: radial-gradient(circle, rgba(82, 215, 255, 0.22), transparent 72%);
+      left: 2px;
+      right: 2px;
+      top: 2px;
+      height: 42%;
+      border-radius: 24px 24px 16px 16px;
+      background: linear-gradient(180deg, rgba(255, 255, 255, 0.18), rgba(255, 255, 255, 0.03) 60%, rgba(255, 255, 255, 0));
       pointer-events: none;
-      opacity: 0.5;
+      opacity: 0.62;
+      z-index: 0;
     }
 
     .dashboard-card::after {
       content: '';
       position: absolute;
-      left: -60px;
-      top: -80px;
-      width: 220px;
-      height: 220px;
-      background: radial-gradient(circle, rgba(141, 124, 255, 0.18), transparent 72%);
+      left: 10%;
+      right: 10%;
+      bottom: 2px;
+      height: 40%;
+      border-radius: 999px;
+      background: radial-gradient(120% 90% at 50% 100%, rgba(120, 144, 204, 0.2), transparent 72%);
       pointer-events: none;
-      opacity: 0.5;
+      opacity: 0.36;
+      z-index: 0;
+    }
+
+    .dashboard-card > * {
+      position: relative;
+      z-index: 1;
     }
 
     .dashboard-head {
@@ -369,17 +416,51 @@
       border-radius: 28px;
       background:
         var(--glass-top-highlight-soft),
-        radial-gradient(circle at 12% 0%, rgba(141, 124, 255, 0.06), transparent 28%),
-        radial-gradient(circle at 90% 100%, rgba(82, 215, 255, 0.05), transparent 26%),
-        linear-gradient(180deg, rgba(255, 255, 255, 0.045), rgba(255, 255, 255, 0.02)),
-        rgba(17, 20, 39, 0.52);
-      border: 1px solid rgba(255, 255, 255, 0.06);
-      backdrop-filter: blur(20px);
-      -webkit-backdrop-filter: blur(20px);
+        linear-gradient(180deg, rgba(255, 255, 255, 0.07), rgba(255, 255, 255, 0.01) 38%, rgba(255, 255, 255, 0) 74%),
+        radial-gradient(circle at 12% 0%, rgba(141, 124, 255, 0.07), transparent 30%),
+        radial-gradient(circle at 90% 100%, rgba(82, 215, 255, 0.06), transparent 28%),
+        linear-gradient(162deg, rgba(24, 29, 52, 0.9), rgba(16, 20, 38, 0.88));
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      backdrop-filter: blur(16px) saturate(118%);
+      -webkit-backdrop-filter: blur(16px) saturate(118%);
       box-shadow:
-        0 14px 30px rgba(6, 9, 18, 0.18),
+        0 14px 28px rgba(6, 9, 18, 0.2),
+        0 2px 10px rgba(120, 146, 205, 0.1),
         var(--glass-depth-inset-soft);
       overflow: visible;
+    }
+
+    .quick-stats-grid::before {
+      content: '';
+      position: absolute;
+      left: 2px;
+      right: 2px;
+      top: 2px;
+      height: 42%;
+      border-radius: 24px 24px 16px 16px;
+      background: linear-gradient(180deg, rgba(255, 255, 255, 0.16), rgba(255, 255, 255, 0.03) 64%, rgba(255, 255, 255, 0));
+      pointer-events: none;
+      opacity: 0.6;
+      z-index: 0;
+    }
+
+    .quick-stats-grid::after {
+      content: '';
+      position: absolute;
+      left: 12%;
+      right: 12%;
+      bottom: 1px;
+      height: 38%;
+      border-radius: 999px;
+      background: radial-gradient(120% 92% at 50% 100%, rgba(120, 144, 204, 0.18), transparent 74%);
+      pointer-events: none;
+      opacity: 0.32;
+      z-index: 0;
+    }
+
+    .quick-stats-grid > * {
+      position: relative;
+      z-index: 1;
     }
 
     .quick-stats-head {
@@ -692,15 +773,15 @@
     .settings-card {
       background:
         var(--glass-top-highlight-soft),
-        linear-gradient(180deg, rgba(255,255,255,0.08), rgba(255,255,255,0.03)),
-        rgba(18, 21, 43, 0.72);
-      backdrop-filter: blur(20px);
-      -webkit-backdrop-filter: blur(20px);
+        linear-gradient(180deg, rgba(255,255,255,0.07), rgba(255,255,255,0.01) 38%, rgba(255,255,255,0) 74%),
+        linear-gradient(162deg, rgba(24, 29, 52, 0.9), rgba(16, 20, 38, 0.88));
+      backdrop-filter: blur(16px) saturate(116%);
+      -webkit-backdrop-filter: blur(16px) saturate(116%);
       border: 1px solid rgba(255, 255, 255, 0.08);
       border-radius: 24px;
       padding: 18px;
       margin-bottom: 14px;
-      box-shadow: 0 18px 34px rgba(6, 9, 18, 0.22), var(--glass-depth-inset-soft);
+      box-shadow: 0 16px 32px rgba(6, 9, 18, 0.24), 0 2px 10px rgba(120, 146, 205, 0.1), var(--glass-depth-inset-soft);
       overflow: visible;
     }
 
@@ -819,6 +900,7 @@
     .settings-input {
       width: min(100%, 240px);
       background:
+        var(--glass-top-highlight-soft),
         linear-gradient(180deg, rgba(255,255,255,0.07), rgba(255,255,255,0.03)),
         rgba(18, 21, 43, 0.72);
       border: 1px solid rgba(255, 255, 255, 0.08);
@@ -831,7 +913,8 @@
       -webkit-appearance: none;
       appearance: none;
       backdrop-filter: blur(12px);
-      box-shadow: inset 0 1px 0 rgba(255,255,255,0.04);
+      -webkit-backdrop-filter: blur(12px);
+      box-shadow: var(--glass-depth-inset-soft);
     }
 
     .settings-input:focus {
@@ -860,13 +943,15 @@
       gap: 0;
       grid-template-columns: repeat(3, minmax(0, 1fr));
       background:
-        linear-gradient(180deg, rgba(255,255,255,0.08), rgba(255,255,255,0.03)),
-        rgba(18, 21, 43, 0.68);
-      border: 1px solid rgba(255, 255, 255, 0.08);
+        var(--glass-top-highlight-soft),
+        linear-gradient(180deg, rgba(255,255,255,0.07), rgba(255,255,255,0.01) 36%, rgba(255,255,255,0) 72%),
+        linear-gradient(162deg, rgba(24, 29, 52, 0.88), rgba(17, 21, 40, 0.86));
+      border: 1px solid rgba(255, 255, 255, 0.1);
       border-radius: 18px;
       overflow: hidden;
-      backdrop-filter: blur(16px);
-      box-shadow: 0 12px 24px rgba(6, 9, 18, 0.2), inset 0 1px 0 rgba(255,255,255,0.05);
+      backdrop-filter: blur(12px) saturate(116%);
+      -webkit-backdrop-filter: blur(12px) saturate(116%);
+      box-shadow: 0 12px 24px rgba(6, 9, 18, 0.2), var(--glass-depth-inset-soft);
     }
 
     .segmented.two {
@@ -885,6 +970,8 @@
       cursor: pointer;
       transition: background 0.15s, color 0.15s, box-shadow 0.15s;
       -webkit-tap-highlight-color: transparent;
+      position: relative;
+      overflow: hidden;
     }
 
     .segmented-btn + .segmented-btn {
@@ -892,9 +979,24 @@
     }
 
     .segmented-btn.active {
-      background: linear-gradient(135deg, rgba(141, 124, 255, 0.22), rgba(82, 215, 255, 0.12));
+      background:
+        var(--glass-top-highlight-soft),
+        linear-gradient(135deg, rgba(134, 127, 208, 0.26), rgba(110, 167, 214, 0.15));
       color: #fff;
-      box-shadow: inset 0 1px 0 rgba(255,255,255,0.08);
+      box-shadow: var(--glass-depth-inset-btn);
+    }
+
+    .segmented-btn.active::before {
+      content: '';
+      position: absolute;
+      left: 18%;
+      right: 18%;
+      top: 4px;
+      height: 36%;
+      border-radius: 999px;
+      background: var(--glass-glare-top);
+      opacity: 0.32;
+      pointer-events: none;
     }
 
     .salary-summary-card {
@@ -1202,10 +1304,12 @@
 
     .docs-tab-btn {
       appearance: none;
-      border: none;
+      border: 1px solid rgba(255, 255, 255, 0.08);
       min-height: 38px;
       border-radius: 999px;
-      background: rgba(255, 255, 255, 0.05);
+      background:
+        linear-gradient(180deg, rgba(255, 255, 255, 0.09), rgba(255, 255, 255, 0.02) 54%, rgba(255, 255, 255, 0)),
+        rgba(32, 38, 64, 0.6);
       color: rgba(244, 247, 255, 0.72);
       font-size: 14px;
       font-weight: 700;
@@ -1215,6 +1319,7 @@
       white-space: nowrap;
       position: relative;
       overflow: hidden;
+      box-shadow: var(--glass-depth-inset-soft);
     }
 
     .docs-tab-btn.active {
