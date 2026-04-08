@@ -119,13 +119,13 @@
       overflow-y: auto;
       -webkit-overflow-scrolling: touch;
       overscroll-behavior-y: contain;
-      padding-bottom: var(--page-padding-bottom);
-      scroll-padding-bottom: var(--page-padding-bottom);
+      padding-bottom: calc(var(--page-padding-bottom) + var(--bottom-nav-safe-bottom));
+      scroll-padding-bottom: calc(var(--page-padding-bottom) + var(--bottom-nav-safe-bottom));
     }
 
     .is-standalone-pwa .app-content {
-      padding-bottom: calc(var(--bottom-nav-height) + env(safe-area-inset-bottom, 0px));
-      scroll-padding-bottom: calc(var(--bottom-nav-height) + env(safe-area-inset-bottom, 0px));
+      padding-bottom: calc(var(--bottom-nav-height) + var(--bottom-nav-safe-bottom));
+      scroll-padding-bottom: calc(var(--bottom-nav-height) + var(--bottom-nav-safe-bottom));
     }
 
     .is-standalone-pwa .tab-panel {

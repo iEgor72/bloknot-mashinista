@@ -7,7 +7,7 @@
   var safeSyncRaf = 0;
   var settleTimers = [];
   var isStandalone = false;
-  var lastSafeBottom = null;
+  var lastAppliedInsets = null;
 
   function detectStandaloneMode() {
     try {
@@ -28,25 +28,109 @@
   function ensureProbe() {
     if (probeEl) return probeEl;
     probeEl = document.createElement('div');
-    probeEl.style.cssText = 'position:fixed;top:-9999px;left:-9999px;width:0;height:0;padding-bottom:env(safe-area-inset-bottom,0px);visibility:hidden;pointer-events:none;';
+    probeEl.style.cssText = [
+      'position:fixed',
+      'top:-9999px',
+      'left:-9999px',
+      'width:0',
+      'height:0',
+      'padding-top:env(safe-area-inset-top,0px)',
+      'padding-right:env(safe-area-inset-right,0px)',
+      'padding-bottom:env(safe-area-inset-bottom,0px)',
+      'padding-left:env(safe-area-inset-left,0px)',
+      'visibility:hidden',
+      'pointer-events:none'
+    ].join(';');
     root.appendChild(probeEl);
     return probeEl;
   }
 
-  function readSafeBottomInset() {
+  function normalizeInset(value) {
+    var number = parseFloat(value);
+    if (!isFinite(number) || number < 0) return 0;
+    return Math.round(number * 100) / 100;
+  }
+
+  function readInsetObject(source) {
+    if (!source || typeof source !== 'object') return null;
+    return {
+      top: normalizeInset(source.top),
+      right: normalizeInset(source.right),
+      bottom: normalizeInset(source.bottom),
+      left: normalizeInset(source.left)
+    };
+  }
+
+  function getTelegramWebApp() {
+    try {
+      if (window.Telegram && Telegram.WebApp) {
+        return Telegram.WebApp;
+      }
+    } catch (e) {}
+    return null;
+  }
+
+  function readTelegramInsets() {
+    var webApp = getTelegramWebApp();
+    if (!webApp) return null;
+
+    var safeInsets = readInsetObject(webApp.safeAreaInset);
+    var contentInsets = readInsetObject(webApp.contentSafeAreaInset);
+    if (!safeInsets && !contentInsets) return null;
+
+    return {
+      top: Math.max((safeInsets && safeInsets.top) || 0, (contentInsets && contentInsets.top) || 0),
+      right: Math.max((safeInsets && safeInsets.right) || 0, (contentInsets && contentInsets.right) || 0),
+      bottom: Math.max((safeInsets && safeInsets.bottom) || 0, (contentInsets && contentInsets.bottom) || 0),
+      left: Math.max((safeInsets && safeInsets.left) || 0, (contentInsets && contentInsets.left) || 0)
+    };
+  }
+
+  function readEnvInsets() {
     var el = ensureProbe();
-    var value = parseFloat(window.getComputedStyle(el).paddingBottom) || 0;
-    if (!isFinite(value) || value < 0) return 0;
-    return Math.round(value * 100) / 100;
+    var computed = window.getComputedStyle(el);
+    return {
+      top: normalizeInset(computed.paddingTop),
+      right: normalizeInset(computed.paddingRight),
+      bottom: normalizeInset(computed.paddingBottom),
+      left: normalizeInset(computed.paddingLeft)
+    };
+  }
+
+  function mergeInsets(baseInsets, extraInsets) {
+    return {
+      top: Math.max(baseInsets.top || 0, (extraInsets && extraInsets.top) || 0),
+      right: Math.max(baseInsets.right || 0, (extraInsets && extraInsets.right) || 0),
+      bottom: Math.max(baseInsets.bottom || 0, (extraInsets && extraInsets.bottom) || 0),
+      left: Math.max(baseInsets.left || 0, (extraInsets && extraInsets.left) || 0)
+    };
+  }
+
+  function insetsEqual(a, b) {
+    if (!a || !b) return false;
+    return (
+      Math.abs(a.top - b.top) < 0.5 &&
+      Math.abs(a.right - b.right) < 0.5 &&
+      Math.abs(a.bottom - b.bottom) < 0.5 &&
+      Math.abs(a.left - b.left) < 0.5
+    );
   }
 
   function applySafeInsets(force) {
-    var safeBottom = readSafeBottomInset();
-    if (!force && lastSafeBottom !== null && Math.abs(lastSafeBottom - safeBottom) < 0.5) {
+    var envInsets = readEnvInsets();
+    var telegramInsets = readTelegramInsets();
+    var insets = mergeInsets(envInsets, telegramInsets);
+
+    if (!force && insetsEqual(lastAppliedInsets, insets)) {
       return;
     }
-    lastSafeBottom = safeBottom;
-    root.style.setProperty('--safe-bottom', safeBottom + 'px');
+
+    lastAppliedInsets = insets;
+    root.style.setProperty('--safe-top', insets.top + 'px');
+    root.style.setProperty('--safe-right', insets.right + 'px');
+    root.style.setProperty('--safe-bottom', insets.bottom + 'px');
+    root.style.setProperty('--safe-left', insets.left + 'px');
+    root.style.setProperty('--bottom-nav-safe-bottom', insets.bottom + 'px');
   }
 
   function syncSafeInsets(force) {
@@ -93,5 +177,6 @@
   });
   if (window.visualViewport) {
     window.visualViewport.addEventListener('resize', syncSafeInsets);
+    window.visualViewport.addEventListener('scroll', syncSafeInsets);
   }
 })();

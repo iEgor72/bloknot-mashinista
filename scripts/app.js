@@ -75,6 +75,9 @@
     var keyboardRevealTimer = null;
     var navHeightSyncTimer = null;
     var viewportMetricsRaf = null;
+    var telegramLayoutBindTimer = null;
+    var telegramLayoutEventsBound = false;
+    var telegramLayoutBindRetries = 0;
     var lastAppViewportHeightValue = '';
     var viewportStabilityLockUntil = Date.now() + 700;
     var lockedViewportHeight = 0;
@@ -149,7 +152,134 @@
       }
     }
 
+    function getTelegramWebApp() {
+      try {
+        if (window.Telegram && Telegram.WebApp) {
+          return Telegram.WebApp;
+        }
+      } catch (e) {}
+      return null;
+    }
+
+    function toPositivePx(value) {
+      var number = Number(value);
+      if (!isFinite(number) || number <= 0) return 0;
+      return Math.round(number);
+    }
+
+    function readTelegramViewportMetrics() {
+      var webApp = getTelegramWebApp();
+      if (!webApp) {
+        return {
+          viewportHeight: 0,
+          stableHeight: 0
+        };
+      }
+
+      return {
+        viewportHeight: toPositivePx(webApp.viewportHeight),
+        stableHeight: toPositivePx(webApp.viewportStableHeight)
+      };
+    }
+
+    function requestTelegramLayoutMetrics() {
+      var webApp = getTelegramWebApp();
+      if (!webApp) return false;
+
+      var didRequest = false;
+      try {
+        if (typeof webApp.requestViewport === 'function') {
+          webApp.requestViewport();
+          didRequest = true;
+        }
+      } catch (e) {}
+      try {
+        if (typeof webApp.requestSafeArea === 'function') {
+          webApp.requestSafeArea();
+          didRequest = true;
+        }
+      } catch (e) {}
+      try {
+        if (typeof webApp.requestContentSafeArea === 'function') {
+          webApp.requestContentSafeArea();
+          didRequest = true;
+        }
+      } catch (e) {}
+
+      return didRequest;
+    }
+
+    function handleTelegramViewportChanged() {
+      scheduleViewportMetricsUpdate();
+      scheduleBottomNavHeightSync();
+      settleSafeAreaInsets();
+      scheduleKeyboardSync();
+    }
+
+    function handleTelegramSafeAreaChanged() {
+      settleSafeAreaInsets();
+      scheduleBottomNavHeightSync();
+      scheduleViewportMetricsUpdate();
+    }
+
+    function bindTelegramLayoutEvents() {
+      if (telegramLayoutEventsBound) return true;
+
+      var webApp = getTelegramWebApp();
+      if (!webApp || typeof webApp.onEvent !== 'function') {
+        return false;
+      }
+
+      try {
+        if (typeof webApp.ready === 'function') {
+          webApp.ready();
+        }
+      } catch (e) {}
+      try {
+        if (typeof webApp.expand === 'function') {
+          webApp.expand();
+        }
+      } catch (e) {}
+
+      try {
+        webApp.onEvent('viewportChanged', handleTelegramViewportChanged);
+      } catch (e) {}
+      try {
+        webApp.onEvent('safeAreaChanged', handleTelegramSafeAreaChanged);
+      } catch (e) {}
+      try {
+        webApp.onEvent('contentSafeAreaChanged', handleTelegramSafeAreaChanged);
+      } catch (e) {}
+
+      telegramLayoutEventsBound = true;
+      telegramLayoutBindRetries = 0;
+      requestTelegramLayoutMetrics();
+      handleTelegramSafeAreaChanged();
+      handleTelegramViewportChanged();
+      return true;
+    }
+
+    function scheduleTelegramLayoutBinding() {
+      if (telegramLayoutEventsBound) return;
+      if (bindTelegramLayoutEvents()) return;
+      if (telegramLayoutBindTimer) return;
+      if (telegramLayoutBindRetries >= 40) return;
+      telegramLayoutBindRetries += 1;
+
+      telegramLayoutBindTimer = window.setTimeout(function() {
+        telegramLayoutBindTimer = null;
+        if (!telegramLayoutEventsBound) {
+          scheduleTelegramLayoutBinding();
+        }
+      }, 220);
+    }
+
     function getViewportHeight() {
+      var telegramViewport = readTelegramViewportMetrics();
+      if (telegramViewport.viewportHeight > 0) {
+        return telegramViewport.viewportHeight;
+      }
+
       var vv = window.visualViewport;
       if (vv && typeof vv.height === 'number' && vv.height > 0) {
         return Math.round(vv.height);
@@ -192,12 +322,18 @@
     }
 
     function resetViewportBaselines() {
-      baselineViewportHeight = Math.round(window.innerHeight || document.documentElement.clientHeight || 0);
-      baselineVisualViewportHeight = Math.round(
-        (window.visualViewport && window.visualViewport.height) ||
-        baselineViewportHeight ||
-        0
-      );
+      var telegramViewport = readTelegramViewportMetrics();
+      if (telegramViewport.stableHeight > 0 || telegramViewport.viewportHeight > 0) {
+        baselineViewportHeight = telegramViewport.stableHeight || telegramViewport.viewportHeight;
+        baselineVisualViewportHeight = telegramViewport.viewportHeight || baselineViewportHeight;
+      } else {
+        baselineViewportHeight = Math.round(window.innerHeight || document.documentElement.clientHeight || 0);
+        baselineVisualViewportHeight = Math.round(
+          (window.visualViewport && window.visualViewport.height) ||
+          baselineViewportHeight ||
+          0
+        );
+      }
       viewportStabilityLockUntil = Date.now() + 420;
       if (!lockedViewportHeight || baselineViewportHeight > lockedViewportHeight) {
         lockedViewportHeight = baselineViewportHeight;
@@ -207,6 +343,19 @@
     function updateViewportMetrics() {
       var height = getViewportHeight();
       if (height <= 0) return;
+
+      var telegramViewport = readTelegramViewportMetrics();
+      if (telegramViewport.stableHeight > 0 || telegramViewport.viewportHeight > 0) {
+        // Telegram Mini Apps open in a BottomSheet, so plain 100vh is unreliable:
+        // viewport height can change during half-screen/fullscreen transitions.
+        var telegramHeight = keyboardStateOpen
+          ? (telegramViewport.viewportHeight || telegramViewport.stableHeight)
+          : (telegramViewport.stableHeight || telegramViewport.viewportHeight);
+        if (telegramHeight > 0) {
+          setAppViewportHeight(telegramHeight + 'px');
+          return;
+        }
+      }
 
       if (!keyboardStateOpen && isStandalonePwa()) {
         // In iOS standalone mode rely on native dynamic viewport height.
@@ -6903,16 +7052,28 @@ var contentHtml = formatInstructionNodeContentHtml(
     scheduleBottomNavHeightSync();
     settleSafeAreaInsets();
     scheduleKeyboardSync();
-    window.addEventListener('load', setDefaultShiftTimeInputs);
+    telegramLayoutBindRetries = 0;
+    scheduleTelegramLayoutBinding();
+    requestTelegramLayoutMetrics();
+    window.addEventListener('load', function() {
+      setDefaultShiftTimeInputs();
+      telegramLayoutBindRetries = 0;
+      scheduleTelegramLayoutBinding();
+      requestTelegramLayoutMetrics();
+      scheduleViewportMetricsUpdate();
+      settleSafeAreaInsets();
+    });
     setTimeout(setDefaultShiftTimeInputs, 0);
     setTimeout(setDefaultShiftTimeInputs, 250);
 
     window.addEventListener('resize', function() {
+      requestTelegramLayoutMetrics();
       scheduleViewportMetricsUpdate();
       scheduleBottomNavHeightSync();
       scheduleKeyboardSync();
     });
     window.addEventListener('orientationchange', function() {
+      requestTelegramLayoutMetrics();
       resetViewportBaselines();
       settleSafeAreaInsets();
       scheduleViewportMetricsUpdate();
@@ -6921,6 +7082,7 @@ var contentHtml = formatInstructionNodeContentHtml(
     });
     if (window.visualViewport) {
       window.visualViewport.addEventListener('resize', function() {
+        requestTelegramLayoutMetrics();
         scheduleViewportMetricsUpdate();
         scheduleBottomNavHeightSync();
         scheduleKeyboardSync();
@@ -7050,7 +7212,12 @@ var contentHtml = formatInstructionNodeContentHtml(
     });
     document.addEventListener('visibilitychange', function() {
       if (!document.hidden) {
+        telegramLayoutBindRetries = 0;
+        scheduleTelegramLayoutBinding();
+        requestTelegramLayoutMetrics();
         settleSafeAreaInsets();
+        scheduleViewportMetricsUpdate();
+        scheduleBottomNavHeightSync();
         updateOfflineUiState({ isOffline: !navigator.onLine, hasPending: !!readPendingSnapshot() });
         if (navigator.onLine) {
           flushPendingSnapshot();

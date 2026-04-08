@@ -8,6 +8,10 @@
       overflow: visible;
       transition: opacity 0.18s ease;
       opacity: 1;
+      isolation: isolate;
+      transform: translateZ(0);
+      -webkit-transform: translateZ(0);
+      backface-visibility: hidden;
     }
 
     .is-standalone-pwa .bottom-nav {
@@ -20,7 +24,7 @@
       margin-top: 0;
       bottom: 0;
       padding-top: 0;
-      padding-bottom: calc(env(safe-area-inset-bottom, 0px) + 8px);
+      padding-bottom: calc(var(--bottom-nav-safe-bottom) + 8px);
     }
 
     body.is-keyboard-open .bottom-nav {
@@ -54,6 +58,9 @@
         inset 0 -1px 0 rgba(255,255,255,0.03);
       overflow: visible;
       isolation: isolate;
+      transform: translateZ(0);
+      -webkit-transform: translateZ(0);
+      backface-visibility: hidden;
     }
 
     .bottom-nav-inner::before {
@@ -79,7 +86,8 @@
         linear-gradient(180deg, rgba(255,255,255,0.08), transparent 20%),
         radial-gradient(circle at 50% 100%, rgba(141, 124, 255, 0.16), transparent 44%);
       pointer-events: none;
-      mix-blend-mode: screen;
+      mix-blend-mode: normal;
+      opacity: 0.78;
     }
 
     .tab-btn {
