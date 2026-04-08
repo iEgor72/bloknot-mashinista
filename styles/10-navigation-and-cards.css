@@ -447,22 +447,30 @@
     .quick-stat-value.holiday { color: #7ef0cf; }
     .quick-stat-value.shifts { color: #f4f7ff; }
 
+    .quick-stat.quick-stat-primary .quick-stat-value {
+      font-size: clamp(20px, 5.2vw, 26px);
+      letter-spacing: -0.04em;
+    }
+
     .quick-stat-value.is-updated {
       animation: quickMetricPulse 0.45s ease;
     }
 
     .quick-stats-grid .stat-label {
-      font-size: 12px;
+      display: block;
+      font-size: 11px;
       color: rgba(244, 247, 255, 0.58);
       text-transform: uppercase;
-      letter-spacing: 0.08em;
+      letter-spacing: 0.06em;
       font-weight: 700;
-      line-height: 1.1;
+      line-height: 1.2;
       min-width: 0;
       max-width: 100%;
-      white-space: nowrap;
-      overflow: hidden;
-      text-overflow: ellipsis;
+      min-height: 2.35em;
+      text-align: center;
+      white-space: normal;
+      overflow: visible;
+      text-overflow: clip;
     }
 
     .average-shift-card {

@@ -5183,9 +5183,15 @@ var contentHtml = formatInstructionNodeContentHtml(
       }
 
       var quickLabels = document.querySelectorAll('.quick-stats-grid .quick-stat .stat-label');
-      var quickLabelText = ['Ночные', 'Праздничные', 'Смены'];
+      var quickLabelText = ['Ночные', 'Смены', 'Праздничные'];
+      var quickLabelByRole = {
+        night: 'Ночные',
+        shifts: 'Смены',
+        holiday: 'Праздничные'
+      };
       for (var q = 0; q < quickLabels.length && q < quickLabelText.length; q++) {
-        quickLabels[q].textContent = quickLabelText[q];
+        var role = quickLabels[q].getAttribute('data-quick-label');
+        quickLabels[q].textContent = quickLabelByRole[role] || quickLabelText[q];
       }
 
       var btnGoToShifts = document.getElementById('btnGoToShifts');
