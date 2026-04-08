@@ -815,23 +815,35 @@
     .docs-item:active { border-color: var(--border-hi); }
 
     .docs-item-icon {
-      width: 40px;
-      height: 40px;
-      border-radius: var(--r-inner);
-      background: var(--accent-dim);
-      color: var(--accent);
       display: flex;
       align-items: center;
       justify-content: center;
       flex-shrink: 0;
-      font-size: 18px;
     }
 
+    .file-icon-wrap {
+      width: 48px;
+      height: 48px;
+      border-radius: 13px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+    }
+
+    .icon-pdf     { background: rgba(239, 68, 68, 0.12); border: 1px solid rgba(239, 68, 68, 0.20); }
+    .icon-doc     { background: rgba(56, 189, 248, 0.10); border: 1px solid rgba(56, 189, 248, 0.18); }
+    .icon-xls     { background: rgba(74, 222, 128, 0.10); border: 1px solid rgba(74, 222, 128, 0.18); }
+    .icon-img     { background: rgba(167, 139, 250, 0.10); border: 1px solid rgba(167, 139, 250, 0.18); }
+    .icon-default { background: rgba(136, 146, 164, 0.08); border: 1px solid rgba(136, 146, 164, 0.14); }
+
+    .docs-item-body,
     .docs-item-info {
       flex: 1;
       min-width: 0;
     }
 
+    .docs-item-title,
     .docs-item-name {
       font-size: 14px;
       font-weight: 700;
@@ -843,8 +855,52 @@
     }
 
     .docs-item-meta {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      flex-wrap: wrap;
       font-size: 11px;
       color: var(--sub);
+    }
+
+    .docs-item-meta > span {
+      white-space: nowrap;
+    }
+
+    .file-size {
+      font-variant-numeric: tabular-nums;
+    }
+
+    .badge {
+      display: inline-flex;
+      align-items: center;
+      padding: 2px 7px;
+      border-radius: var(--r-pill);
+      font-size: 10px;
+      font-weight: 700;
+      font-family: 'Manrope', sans-serif;
+      letter-spacing: 0.02em;
+      text-transform: uppercase;
+    }
+
+    .badge-pdf     { background: rgba(239, 68, 68, 0.12); color: #F87171; }
+    .badge-doc     { background: rgba(56, 189, 248, 0.10); color: #38BDF8; }
+    .badge-xls     { background: rgba(74, 222, 128, 0.10); color: #4ADE80; }
+    .badge-img     { background: rgba(167, 139, 250, 0.10); color: #A78BFA; }
+    .badge-default { background: rgba(136, 146, 164, 0.08); color: #8892A4; }
+
+    .docs-item-action {
+      color: var(--sub);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+    }
+
+    .docs-item-action svg {
+      width: 16px;
+      height: 16px;
+      display: block;
     }
 
     .docs-empty-state {

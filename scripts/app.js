@@ -3859,16 +3859,83 @@ var contentHtml = formatInstructionNodeContentHtml(
       return dd + '.' + mm + '.' + yyyy;
     }
 
-    function docsFileIcon(mimeType) {
-      var mime = String(mimeType || '');
-      if (mime.indexOf('pdf') !== -1) {
-        return '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><path d="M9 15h1.5a1.5 1.5 0 0 0 0-3H9v6"/><path d="M14 12v6"/><path d="M19 12h-2v6"/><path d="M17 15h-1"/></svg>';
-      }
-      if (mime.indexOf('image') !== -1) {
-        return '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><polyline points="21 15 16 10 5 21"/></svg>';
-      }
-      return '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>';
+    function getFileType(filename) {
+      var ext = String(filename || '').split('.').pop().toLowerCase();
+      if (ext === 'pdf') return 'pdf';
+      if (['doc', 'docx'].includes(ext)) return 'doc';
+      if (['xls', 'xlsx'].includes(ext)) return 'xls';
+      if (['jpg', 'jpeg', 'png'].includes(ext)) return 'img';
+      return 'default';
     }
+
+    var iconPdf = `
+<svg width="26" height="28" viewBox="0 0 26 28" fill="none">
+  <rect x="1" y="1" width="19" height="24" rx="3"
+    fill="rgba(239,68,68,0.13)" stroke="rgba(239,68,68,0.32)" stroke-width="1.2"/>
+  <path d="M14 1v6h6"
+    stroke="rgba(239,68,68,0.5)" stroke-width="1.2" fill="none" stroke-linejoin="round"/>
+  <rect x="4" y="9.5" width="13" height="2.5" rx="1.2"
+    fill="rgba(239,68,68,0.28)"/>
+  <path d="M5 14h10M5 17.5h7"
+    stroke="#F87171" stroke-width="1.3" stroke-linecap="round"/>
+  <text x="13" y="25.5" font-size="6.5" font-weight="700"
+    fill="#F87171" font-family="Manrope,sans-serif" text-anchor="middle">PDF</text>
+</svg>`;
+
+    var iconDoc = `
+<svg width="26" height="28" viewBox="0 0 26 28" fill="none">
+  <rect x="1" y="1" width="19" height="24" rx="3"
+    fill="rgba(56,189,248,0.10)" stroke="rgba(56,189,248,0.24)" stroke-width="1.2"/>
+  <path d="M14 1v6h6"
+    stroke="rgba(56,189,248,0.4)" stroke-width="1.2" fill="none" stroke-linejoin="round"/>
+  <path d="M5 11h11M5 14.5h11M5 18h7"
+    stroke="#38BDF8" stroke-width="1.3" stroke-linecap="round"/>
+  <text x="13" y="25.5" font-size="6" font-weight="700"
+    fill="#38BDF8" font-family="Manrope,sans-serif" text-anchor="middle">DOC</text>
+</svg>`;
+
+    var iconXls = `
+<svg width="26" height="28" viewBox="0 0 26 28" fill="none">
+  <rect x="1" y="1" width="19" height="24" rx="3"
+    fill="rgba(74,222,128,0.10)" stroke="rgba(74,222,128,0.22)" stroke-width="1.2"/>
+  <path d="M14 1v6h6"
+    stroke="rgba(74,222,128,0.4)" stroke-width="1.2" fill="none" stroke-linejoin="round"/>
+  <rect x="4.5" y="9.5" width="12" height="10" rx="1"
+    stroke="rgba(74,222,128,0.28)" stroke-width="1" fill="none"/>
+  <path d="M4.5 13h12M4.5 16.5h12M9.5 9.5v10"
+    stroke="rgba(74,222,128,0.38)" stroke-width="0.9"/>
+  <text x="13" y="25.5" font-size="6" font-weight="700"
+    fill="#4ADE80" font-family="Manrope,sans-serif" text-anchor="middle">XLS</text>
+</svg>`;
+
+    var iconImg = `
+<svg width="26" height="28" viewBox="0 0 26 28" fill="none">
+  <rect x="1" y="1" width="19" height="24" rx="3"
+    fill="rgba(167,139,250,0.10)" stroke="rgba(167,139,250,0.24)" stroke-width="1.2"/>
+  <path d="M14 1v6h6"
+    stroke="rgba(167,139,250,0.4)" stroke-width="1.2" fill="none" stroke-linejoin="round"/>
+  <rect x="4.5" y="9.5" width="12" height="9" rx="1.5"
+    stroke="rgba(167,139,250,0.3)" stroke-width="1" fill="none"/>
+  <path d="M4.5 15.5l3-2.5 3 3 2-1.5 3.5 3"
+    stroke="#A78BFA" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round"/>
+  <circle cx="8.5" cy="12" r="1.2" fill="rgba(167,139,250,0.5)"/>
+  <text x="13" y="25.5" font-size="6" font-weight="700"
+    fill="#A78BFA" font-family="Manrope,sans-serif" text-anchor="middle">IMG</text>
+</svg>`;
+
+    var iconDefault = `
+<svg width="26" height="28" viewBox="0 0 26 28" fill="none">
+  <rect x="1" y="1" width="19" height="24" rx="3"
+    fill="rgba(136,146,164,0.08)" stroke="rgba(136,146,164,0.20)" stroke-width="1.2"/>
+  <path d="M14 1v6h6"
+    stroke="rgba(136,146,164,0.35)" stroke-width="1.2" fill="none" stroke-linejoin="round"/>
+  <path d="M5 12h10M5 15.5h10M5 19h6"
+    stroke="#8892A4" stroke-width="1.3" stroke-linecap="round"/>
+</svg>`;
+
+    var icons = { pdf: iconPdf, doc: iconDoc, xls: iconXls, img: iconImg, default: iconDefault };
+    var classes = { pdf: 'icon-pdf', doc: 'icon-doc', xls: 'icon-xls', img: 'icon-img', default: 'icon-default' };
+    var badges = { pdf: 'badge-pdf', doc: 'badge-doc', xls: 'badge-xls', img: 'badge-img', default: 'badge-default' };
 
     function renderDocFileList(folder, files) {
       var listId = docsFolderListId(folder);
@@ -3897,20 +3964,20 @@ var contentHtml = formatInstructionNodeContentHtml(
       var html = '<div class="docs-item-list">';
       for (var i = 0; i < files.length; i++) {
         var f = files[i];
+        var type = getFileType(f.path || f.name || '');
         var size = docsFormatSize(f.size);
         var updatedAt = docsFormatDate(f.updated_at || f.added_at || f.date_added);
-        var mime = String(f.mime_type || '').toLowerCase();
-        var metaParts = [];
-        if (mime.indexOf('pdf') !== -1) metaParts.push('PDF');
-        if (updatedAt) metaParts.push('обновлено ' + updatedAt);
-        if (size) metaParts.push(size);
-        var meta = metaParts.join(' · ');
+        var meta = '<span class="badge ' + badges[type] + '">' + type.toUpperCase() + '</span>';
+        if (updatedAt) meta += '<span>обновлено ' + updatedAt + '</span>';
+        if (size) meta += '<span class="file-size">' + size + '</span>';
         html +=
           '<div class="docs-item" data-file-path="' + encodeURIComponent(f.path || '') + '" data-file-name="' + encodeURIComponent(f.name || '') + '" data-mime-type="' + encodeURIComponent(f.mime_type || '') + '">' +
-            '<div class="docs-item-icon">' + docsFileIcon(f.mime_type) + '</div>' +
+            '<div class="docs-item-icon file-icon-wrap ' + classes[type] + '">' +
+              icons[type] +
+            '</div>' +
             '<div class="docs-item-body">' +
               '<div class="docs-item-title">' + (f.name || 'Файл') + '</div>' +
-              (meta ? '<div class="docs-item-meta">' + meta + '</div>' : '') +
+              '<div class="docs-item-meta">' + meta + '</div>' +
             '</div>' +
             '<div class="docs-item-action" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"/></svg></div>' +
           '</div>';
