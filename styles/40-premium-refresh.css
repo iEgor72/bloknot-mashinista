@@ -1,53 +1,37 @@
-/* Targeted fixes after premium refresh: restore FAB attention + remove nested menu-in-menu locally */
+/* Cleanup: remove all glass/gradient overrides, keep only FAB pulse */
 
+/* Reset any stale variable overrides */
 :root {
-  --bg: #05070f;
+  --bg: #0C0C10;
 }
 
+/* Ensure body background stays clean */
 html,
 body {
-  background:
-    radial-gradient(92% 58% at 8% -10%, rgba(72, 168, 255, 0.26), transparent 55%),
-    radial-gradient(88% 56% at 94% 0%, rgba(181, 92, 255, 0.22), transparent 52%),
-    radial-gradient(82% 62% at 52% 110%, rgba(0, 219, 255, 0.14), transparent 58%),
-    #05070f;
+  background: var(--bg);
 }
 
 html {
-  background-color: #05070f;
+  background-color: var(--bg);
 }
 
-body::before {
-  background: radial-gradient(circle, rgba(70, 177, 255, 0.26) 0%, rgba(70, 177, 255, 0.06) 56%, transparent 74%);
+/* Remove all decorative pseudo-elements that may have leaked through */
+.month-nav::before,
+.month-nav::after,
+.dashboard-card::before,
+.dashboard-card::after,
+.quick-stats-grid::before,
+.quick-stats-grid::after,
+.bottom-nav-inner::before,
+.tab-btn.active:not(.center)::before,
+.month-tab.active::before,
+.docs-tab-btn.active::before,
+.shifts-overview-chip::before {
+  content: none !important;
+  display: none !important;
 }
 
-body::after {
-  background: radial-gradient(circle, rgba(185, 94, 255, 0.24) 0%, rgba(185, 94, 255, 0.06) 56%, transparent 74%);
-}
-
-/* Keep blur only on major/top-level surfaces */
-.card,
-.auth-card,
-.month-nav,
-.dashboard-card,
-.quick-stats-grid,
-.average-shift-card,
-.shifts-section,
-.form-section,
-.salary-card,
-.settings-card,
-.install-prompt-card,
-.bottom-sheet,
-.offline-banner,
-.bottom-nav-inner,
-.docs-viewer-overlay,
-.shift-detail-overlay,
-.shift-detail-header {
-  backdrop-filter: blur(18px) saturate(135%);
-  -webkit-backdrop-filter: blur(18px) saturate(135%);
-}
-
-/* Remove nested blur from inner controls and inner containers */
+/* Remove nested backdrop-filter from inner elements */
 .month-btn,
 .month-tab,
 .section-link,
@@ -80,127 +64,33 @@ body::after {
 .auth-widget-shell,
 .docs-item,
 .docs-empty-state,
-.docs-toast,
-.bottom-nav-inner::before {
+.docs-toast {
   backdrop-filter: none !important;
   -webkit-backdrop-filter: none !important;
 }
 
-/* Local menu-in-menu cleanup only where there are nested panels */
+/* Flatten nested containers */
 .form-section .form-stage,
-.form-section .draft-stats-grid {
-  background:
-    linear-gradient(180deg, rgba(255, 255, 255, 0.03), rgba(255, 255, 255, 0.01)),
-    rgba(12, 18, 44, 0.46);
-  border: 1px solid rgba(154, 178, 255, 0.14);
-  box-shadow: none;
+.form-section .draft-stats-grid,
+.form-section .optional-card,
+.settings-card .settings-row,
+.shifts-section .shifts-overview-chip,
+.auth-card .auth-widget-shell,
+.bottom-sheet .sheet-url-text,
+.salary-card .salary-row {
+  background: transparent !important;
+  border: none !important;
+  box-shadow: none !important;
+  backdrop-filter: none !important;
+  -webkit-backdrop-filter: none !important;
 }
 
 .form-section .optional-card {
-  background:
-    linear-gradient(180deg, rgba(255, 255, 255, 0.028), rgba(255, 255, 255, 0.01)),
-    rgba(13, 20, 46, 0.42);
-  border: 1px solid rgba(154, 178, 255, 0.12);
-  box-shadow: none;
+  background: var(--card-hi) !important;
+  border: 1px solid var(--border) !important;
 }
 
 .form-section .optional-card[open] .optional-summary {
-  background: rgba(255, 255, 255, 0.015);
-}
-
-.bottom-sheet .settings-card {
-  background: rgba(12, 18, 46, 0.42);
-  border: 1px solid rgba(151, 173, 244, 0.14);
-  box-shadow: none;
-}
-
-.settings-card .settings-row {
-  background: rgba(255, 255, 255, 0.015);
-  border-color: rgba(214, 225, 255, 0.11);
-  box-shadow: none;
-}
-
-.shifts-section .shifts-overview-chip {
-  background:
-    linear-gradient(180deg, rgba(255, 255, 255, 0.028), rgba(255, 255, 255, 0.01)),
-    rgba(15, 22, 54, 0.5);
-  border: 1px solid rgba(160, 180, 246, 0.14);
-  box-shadow: none;
-}
-
-.auth-card .auth-widget-shell {
-  background: rgba(255, 255, 255, 0.015);
-  border: 1px solid rgba(214, 225, 255, 0.09);
-  box-shadow: none;
-}
-
-.bottom-sheet .sheet-url-text {
-  box-shadow: none;
-  border-color: rgba(214, 225, 255, 0.12);
-}
-
-/* Restore FAB attention animation (soft pulse + glow breathing) */
-@keyframes fabAttentionPulse {
-  0%,
-  100% {
-    transform: translateX(-50%) translateY(0) scale(1);
-    box-shadow: var(--fab-shadow-rest);
-  }
-  50% {
-    transform: translateX(-50%) translateY(-1px) scale(1.022);
-    box-shadow: var(--fab-shadow-pulse);
-  }
-}
-
-@keyframes fabAttentionGlow {
-  0%,
-  100% {
-    opacity: 0.36;
-    filter: blur(9px);
-  }
-  50% {
-    opacity: 0.52;
-    filter: blur(10px);
-  }
-}
-
-.tab-btn.center {
-  --fab-shadow-rest:
-    0 15px 28px rgba(14, 20, 52, 0.44),
-    0 8px 16px rgba(8, 12, 30, 0.34),
-    0 0 0 1px rgba(255, 255, 255, 0.16),
-    0 0 18px rgba(126, 139, 255, 0.34),
-    0 0 28px rgba(86, 177, 255, 0.24),
-    var(--glass-depth-inset-btn);
-  --fab-shadow-pulse:
-    0 17px 32px rgba(14, 20, 52, 0.5),
-    0 8px 18px rgba(8, 12, 30, 0.34),
-    0 0 0 1px rgba(255, 255, 255, 0.2),
-    0 0 24px rgba(126, 139, 255, 0.42),
-    0 0 36px rgba(92, 181, 255, 0.3),
-    var(--glass-depth-inset-btn);
-  box-shadow: var(--fab-shadow-rest);
-  animation: fabAttentionPulse 2.9s cubic-bezier(0.36, 0, 0.22, 1) infinite;
-  will-change: transform, box-shadow;
-}
-
-.tab-btn.center::before {
-  animation: fabAttentionGlow 2.9s ease-in-out infinite;
-}
-
-.tab-btn.center.active,
-.tab-btn.center:active,
-body.is-keyboard-open .tab-btn.center {
-  animation: none;
-}
-
-.tab-btn.center.active {
-  box-shadow: var(--fab-shadow-pulse);
-}
-
-@media (prefers-reduced-motion: reduce) {
-  .tab-btn.center,
-  .tab-btn.center::before {
-    animation: none !important;
-  }
+  background: transparent !important;
+  border-bottom: 1px solid var(--border) !important;
 }
