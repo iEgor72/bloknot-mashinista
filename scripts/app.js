@@ -61,6 +61,23 @@
     var SHIFT_LIST_REVEAL_DELAY_STEP_MS = 30;
     var shiftListRevealRegistry = Object.create(null);
     var shiftListRevealAutoId = 0;
+    var SHIFT_SHARED_TRANSITION_MS = 300;
+    var SHIFT_SHARED_TRANSITION_EASING = 'cubic-bezier(0.32, 0.72, 0, 1)';
+    var currentMonthShiftIncomeMap = Object.create(null);
+    var shiftDetailState = {
+      isOpen: false,
+      isAnimating: false,
+      shiftId: '',
+      sourceShiftId: '',
+      sourceListId: '',
+      sourceTab: '',
+      sourceCardEl: null,
+      sourceScrollTop: 0,
+      transitionToken: 0,
+      shouldPopOnClose: false,
+      skipNextPopstateClose: false,
+      tapLockUntil: 0
+    };
 
     // ── Timezone ──
     var deviceTimezone = 'Europe/Moscow';
@@ -74,6 +91,12 @@
     var APP_CONTENT = document.querySelector('.app-content');
     var BOTTOM_NAV = document.querySelector('.bottom-nav');
     var BOTTOM_NAV_INNER = document.querySelector('.bottom-nav-inner');
+    var SHIFT_DETAIL_OVERLAY = document.getElementById('shiftDetailOverlay');
+    var SHIFT_DETAIL_SURFACE = document.getElementById('shiftDetailSurface');
+    var SHIFT_DETAIL_HERO_SLOT = document.getElementById('shiftDetailHeroSlot');
+    var SHIFT_DETAIL_CONTENT = document.getElementById('shiftDetailContent');
+    var SHIFT_DETAIL_TITLE = document.getElementById('shiftDetailTitle');
+    var SHIFT_DETAIL_CLOSE_BUTTON = document.getElementById('btnCloseShiftDetail');
     var keyboardFocusField = null;
     var keyboardStateOpen = false;
     var keyboardSyncTimer = null;
@@ -83,6 +106,7 @@
     var telegramLayoutBindTimer = null;
     var telegramLayoutEventsBound = false;
     var telegramLayoutBindRetries = 0;
+    var telegramBackButtonBound = false;
     var lastAppViewportHeightValue = '';
     var viewportStabilityLockUntil = Date.now() + 700;
     var lockedViewportHeight = 0;
@@ -6204,7 +6228,158 @@ var contentHtml = formatInstructionNodeContentHtml(
               incomeHtml +
             '</div>' +
           '</div>' +
+          '</div>';
+    }
+
+    function formatLocalDateTimeFromMsk(mskDateTime) {
+      var parsed = parseMsk(mskDateTime);
+      if (!parsed) return '—';
+      try {
+        var dateText = parsed.toLocaleDateString('ru-RU', {
+          day: '2-digit',
+          month: '2-digit',
+          year: 'numeric'
+        });
+        var timeText = parsed.toLocaleTimeString('ru-RU', {
+          hour: '2-digit',
+          minute: '2-digit'
+        });
+        return dateText + ' ' + timeText;
+      } catch (e) {
+        var fallback = String(mskDateTime || '');
+        if (fallback.length >= 16) {
+          return fallback.substring(8, 10) + '.' + fallback.substring(5, 7) + '.' + fallback.substring(0, 4) + ' ' + fallback.substring(11, 16);
+        }
+        return fallback || '—';
+      }
+    }
+
+    function getShiftDetailValue(value) {
+      if (value === null || value === undefined) return '';
+      var text = String(value).trim();
+      return text;
+    }
+
+    function buildShiftDetailRowHtml(label, value, emptyText) {
+      var prepared = getShiftDetailValue(value);
+      var hasValue = !!prepared;
+      var displayText = hasValue ? prepared : (emptyText || '—');
+      return '' +
+        '<div class="shift-detail-row">' +
+          '<span class="shift-detail-key">' + escapeHtml(label) + '</span>' +
+          '<span class="shift-detail-value' + (hasValue ? '' : ' is-empty') + '">' + escapeHtml(displayText) + '</span>' +
         '</div>';
+    }
+
+    function buildShiftDetailHeroCardHtml(shift, shiftIncomeMap) {
+      if (!shift) return '';
+      var f = fmtShift(shift);
+      var p = getShiftDisplayParts(shift);
+      var typeLabel = getShiftTypeLabel(shift);
+      var directionText = getShiftDirectionLineText(shift);
+      var dateTimeText = getShiftDateTimeLineLabel(p);
+      var durationText = getShiftDurationLabelText(f.dur);
+      var typeHtml = buildShiftTypeHtml(shift, typeLabel);
+      var directionHtml = buildShiftDirectionHtml(directionText);
+      var dateTimeHtml = buildShiftDateTimeHtml(dateTimeText);
+      var durationHtml = buildShiftDurationHtml(durationText);
+      var technicalHtml = buildShiftTechnicalHtml(shift);
+      var incomeLabelHtml = buildShiftIncomeLabelHtml();
+      var incomeVm = getShiftIncomeViewModel(shift, shiftIncomeMap);
+      var incomeHtml = getShiftIncomeChipHtml(incomeVm);
+      var itemClass = 'shift-item shift-item-confirm shift-item-detail';
+      if (shift.route_kind === 'trip') itemClass += ' has-trip';
+      if (isShiftPending(shift)) itemClass += ' is-pending';
+      itemClass += ' income-' + incomeVm.level;
+
+      return '' +
+        '<div class="' + itemClass + '" data-shift-id="' + shift.id + '">' +
+          '<div class="shift-card-top">' +
+            typeHtml +
+          '</div>' +
+          (isShiftPending(shift) ? '<div class="shift-pending-line">Не синхронизировано</div>' : '') +
+          directionHtml +
+          '<div class="shift-card-body">' +
+            '<div class="shift-main-row">' +
+              dateTimeHtml +
+              durationHtml +
+            '</div>' +
+            technicalHtml +
+            '<div class="shift-income-row">' +
+              incomeLabelHtml +
+              incomeHtml +
+            '</div>' +
+          '</div>' +
+        '</div>';
+    }
+
+    function buildShiftDetailContentHtml(shift, shiftIncomeMap) {
+      if (!shift) return '';
+      var parsedStart = parseMsk(shift.start_msk);
+      var parsedEnd = parseMsk(shift.end_msk);
+      var durationLabel = getShiftDurationLabelText(fmtShift(shift).dur);
+      var incomeVm = getShiftIncomeViewModel(shift, shiftIncomeMap);
+      var shiftType = getShiftTypeLabel(shift);
+      var direction = getShiftDirectionLineText(shift);
+      var locoSummary = getLocoSummary(shift);
+      var trainSummary = getTrainSummary(shift);
+      var syncStatus = isShiftPending(shift) ? 'Не синхронизировано' : 'Синхронизировано';
+      var periodLabel = parsedStart && parsedEnd
+        ? formatHoursAndMinutes(Math.max(0, Math.round((parsedEnd.getTime() - parsedStart.getTime()) / 60000)))
+        : '—';
+      var salaryText = incomeVm && incomeVm.hasValue ? incomeVm.amountText : '—';
+
+      var html = '';
+      html += '<section class="shift-detail-section">';
+      html += '<div class="shift-detail-section-title">Время</div>';
+      html += '<div class="shift-detail-list">';
+      html += buildShiftDetailRowHtml('Начало', formatLocalDateTimeFromMsk(shift.start_msk));
+      html += buildShiftDetailRowHtml('Конец', formatLocalDateTimeFromMsk(shift.end_msk));
+      html += buildShiftDetailRowHtml('Длительность', durationLabel === '—' ? periodLabel : durationLabel);
+      html += '</div>';
+      html += '</section>';
+
+      html += '<section class="shift-detail-section">';
+      html += '<div class="shift-detail-section-title">Маршрут</div>';
+      html += '<div class="shift-detail-list">';
+      html += buildShiftDetailRowHtml('Тип', shiftType);
+      html += buildShiftDetailRowHtml('Участок', direction);
+      html += '</div>';
+      html += '</section>';
+
+      html += '<section class="shift-detail-section">';
+      html += '<div class="shift-detail-section-title">Техника</div>';
+      html += '<div class="shift-detail-list">';
+      html += buildShiftDetailRowHtml('Локомотив', locoSummary);
+      html += buildShiftDetailRowHtml('Поезд', trainSummary);
+      html += '</div>';
+      html += '</section>';
+
+      html += '<section class="shift-detail-section">';
+      html += '<div class="shift-detail-section-title">Расчёт</div>';
+      html += '<div class="shift-detail-list">';
+      html += buildShiftDetailRowHtml('Доход за смену', salaryText);
+      html += buildShiftDetailRowHtml('Синхронизация', syncStatus);
+      html += '</div>';
+      html += '<div class="shift-detail-note">Время начала/конца введено в МСК, перерасчёт часов выполняется в локальном часовом поясе устройства.</div>';
+      html += '</section>';
+
+      return html;
+    }
+
+    function renderShiftDetailById(shiftId) {
+      if (!SHIFT_DETAIL_HERO_SLOT || !SHIFT_DETAIL_CONTENT || !SHIFT_DETAIL_TITLE) return;
+      var shift = findShiftById(shiftId);
+      if (!shift) {
+        SHIFT_DETAIL_HERO_SLOT.innerHTML = '';
+        SHIFT_DETAIL_CONTENT.innerHTML = '';
+        SHIFT_DETAIL_TITLE.textContent = 'Смена не найдена';
+        return;
+      }
+      var shiftTitle = getShiftTitle(shift);
+      SHIFT_DETAIL_TITLE.textContent = shiftTitle || 'Детали смены';
+      SHIFT_DETAIL_HERO_SLOT.innerHTML = buildShiftDetailHeroCardHtml(shift, currentMonthShiftIncomeMap);
+      SHIFT_DETAIL_CONTENT.innerHTML = buildShiftDetailContentHtml(shift, currentMonthShiftIncomeMap);
     }
 
     function buildRestGapHtml(restInfo, compact) {
@@ -6237,6 +6412,7 @@ var contentHtml = formatInstructionNodeContentHtml(
       var durationHtml = buildShiftDurationHtml(durationText);
       var technicalHtml = buildShiftTechnicalHtml(sh);
       var incomeLabelHtml = buildShiftIncomeLabelHtml();
+      var shiftTitle = getShiftTitle(sh);
       if (sh.route_kind === 'trip') itemClass += ' has-trip';
       if (sh.id === editingShiftId) itemClass += ' is-edit-target';
       if (sh.id === pendingDeleteId) itemClass += ' is-delete-target';
@@ -6247,7 +6423,7 @@ var contentHtml = formatInstructionNodeContentHtml(
       var incomeHtml = getShiftIncomeChipHtml(incomeVm);
       itemClass += ' income-' + incomeVm.level;
 
-      var html = '<div class="' + itemClass + '" data-shift-id="' + sh.id + '" data-pending="' + (shiftIsPending ? '1' : '0') + '">' +
+      var html = '<div class="' + itemClass + '" data-shift-id="' + sh.id + '" data-pending="' + (shiftIsPending ? '1' : '0') + '" data-shift-open="1" role="button" tabindex="0" aria-label="Открыть детали смены: ' + escapeHtml(shiftTitle || 'Смена') + '">' +
         '<div class="shift-card-top">' +
           typeHtml +
           '<div class="shift-top-right">' +
@@ -6357,9 +6533,365 @@ var contentHtml = formatInstructionNodeContentHtml(
       });
     }
 
+    function getShiftCardRadiusPx(cardEl) {
+      if (!cardEl || !window.getComputedStyle) return 22;
+      try {
+        var style = window.getComputedStyle(cardEl);
+        var radius = parseFloat(style.borderTopLeftRadius || style.borderRadius || '22');
+        return isFinite(radius) ? Math.max(0, radius) : 22;
+      } catch (e) {
+        return 22;
+      }
+    }
+
+    function getShiftSharedTransitionDuration() {
+      return prefersReducedMotion() ? 0 : SHIFT_SHARED_TRANSITION_MS;
+    }
+
+    function findShiftDetailCardById(shiftId, preferredListId) {
+      var id = String(shiftId || '');
+      if (!id) return null;
+      var preferredList = preferredListId ? document.getElementById(preferredListId) : null;
+      if (preferredList) {
+        var preferredCard = preferredList.querySelector('.shift-item[data-shift-open="1"][data-shift-id="' + id + '"]');
+        if (preferredCard) return preferredCard;
+      }
+      var homeList = document.getElementById('homeShiftsList');
+      if (homeList && (!preferredList || preferredList !== homeList)) {
+        var homeCard = homeList.querySelector('.shift-item[data-shift-open="1"][data-shift-id="' + id + '"]');
+        if (homeCard) return homeCard;
+      }
+      var shiftsList = document.getElementById('shiftsList');
+      if (shiftsList && (!preferredList || preferredList !== shiftsList)) {
+        var shiftsCard = shiftsList.querySelector('.shift-item[data-shift-open="1"][data-shift-id="' + id + '"]');
+        if (shiftsCard) return shiftsCard;
+      }
+      return null;
+    }
+
+    function clearShiftDetailSourceCardHidden() {
+      if (shiftDetailState.sourceCardEl && shiftDetailState.sourceCardEl.classList) {
+        shiftDetailState.sourceCardEl.classList.remove('is-shared-source-hidden');
+      }
+      if (shiftDetailState.sourceShiftId) {
+        var maybeCard = findShiftDetailCardById(shiftDetailState.sourceShiftId, shiftDetailState.sourceListId);
+        if (maybeCard) {
+          maybeCard.classList.remove('is-shared-source-hidden');
+          shiftDetailState.sourceCardEl = maybeCard;
+        }
+      }
+    }
+
+    function setShiftDetailSourceCardHidden(shouldHide) {
+      clearShiftDetailSourceCardHidden();
+      if (!shouldHide || !shiftDetailState.sourceShiftId) return null;
+      var cardEl = findShiftDetailCardById(shiftDetailState.sourceShiftId, shiftDetailState.sourceListId) || shiftDetailState.sourceCardEl;
+      if (cardEl && cardEl.classList) {
+        cardEl.classList.add('is-shared-source-hidden');
+        shiftDetailState.sourceCardEl = cardEl;
+      }
+      return cardEl || null;
+    }
+
+    function setShiftDetailContentVisible(visible) {
+      if (!SHIFT_DETAIL_CONTENT) return;
+      if (!visible) {
+        SHIFT_DETAIL_CONTENT.classList.remove('is-visible');
+        SHIFT_DETAIL_CONTENT.classList.add('hidden');
+        return;
+      }
+      SHIFT_DETAIL_CONTENT.classList.remove('hidden');
+      window.requestAnimationFrame(function() {
+        SHIFT_DETAIL_CONTENT.classList.add('is-visible');
+      });
+    }
+
+    function setShiftDetailHeroVisible(visible) {
+      if (!SHIFT_DETAIL_HERO_SLOT) return;
+      SHIFT_DETAIL_HERO_SLOT.style.transition = 'opacity 180ms ease-out';
+      SHIFT_DETAIL_HERO_SLOT.style.opacity = visible ? '1' : '0';
+    }
+
+    function runShiftSharedAnimation(sourceCardEl, fromRect, toRect, fromRadius, toRadius, callback) {
+      var doneCalled = false;
+      function done() {
+        if (doneCalled) return;
+        doneCalled = true;
+        if (typeof callback === 'function') callback();
+      }
+
+      var duration = getShiftSharedTransitionDuration();
+      if (!sourceCardEl || !fromRect || !toRect || duration <= 0) {
+        done();
+        return;
+      }
+
+      var cloneEl = sourceCardEl.cloneNode(true);
+      cloneEl.classList.remove('is-shared-source-hidden');
+      cloneEl.classList.add('shift-shared-clone');
+      cloneEl.style.left = toRect.left + 'px';
+      cloneEl.style.top = toRect.top + 'px';
+      cloneEl.style.width = Math.max(1, toRect.width) + 'px';
+      cloneEl.style.height = Math.max(1, toRect.height) + 'px';
+      cloneEl.style.borderRadius = Math.max(0, toRadius || 0) + 'px';
+      cloneEl.style.transform = 'translate(0px, 0px) scale(1, 1)';
+      cloneEl.style.opacity = '1';
+      document.body.appendChild(cloneEl);
+
+      var dx = fromRect.left - toRect.left;
+      var dy = fromRect.top - toRect.top;
+      var sx = fromRect.width / Math.max(1, toRect.width);
+      var sy = fromRect.height / Math.max(1, toRect.height);
+      if (!isFinite(sx) || sx <= 0) sx = 1;
+      if (!isFinite(sy) || sy <= 0) sy = 1;
+      var startTransform = 'translate(' + dx + 'px, ' + dy + 'px) scale(' + sx + ', ' + sy + ')';
+
+      function cleanupClone() {
+        if (cloneEl && cloneEl.parentNode) {
+          cloneEl.parentNode.removeChild(cloneEl);
+        }
+        done();
+      }
+
+      if (typeof cloneEl.animate === 'function') {
+        try {
+          var animation = cloneEl.animate([
+            {
+              transform: startTransform,
+              borderRadius: Math.max(0, fromRadius || 0) + 'px',
+              opacity: 1
+            },
+            {
+              transform: 'translate(0px, 0px) scale(1, 1)',
+              borderRadius: Math.max(0, toRadius || 0) + 'px',
+              opacity: 1
+            }
+          ], {
+            duration: duration,
+            easing: SHIFT_SHARED_TRANSITION_EASING,
+            fill: 'forwards'
+          });
+          animation.onfinish = cleanupClone;
+          animation.oncancel = cleanupClone;
+          return;
+        } catch (e) {}
+      }
+
+      cloneEl.style.transform = startTransform;
+      cloneEl.style.borderRadius = Math.max(0, fromRadius || 0) + 'px';
+      cloneEl.style.transition =
+        'transform ' + duration + 'ms ' + SHIFT_SHARED_TRANSITION_EASING + ', ' +
+        'border-radius ' + duration + 'ms ' + SHIFT_SHARED_TRANSITION_EASING;
+      window.requestAnimationFrame(function() {
+        cloneEl.style.transform = 'translate(0px, 0px) scale(1, 1)';
+        cloneEl.style.borderRadius = Math.max(0, toRadius || 0) + 'px';
+      });
+      window.setTimeout(cleanupClone, duration + 32);
+    }
+
+    function bindTelegramBackButtonIfNeeded() {
+      if (telegramBackButtonBound) return;
+      var webApp = getTelegramWebApp();
+      if (!webApp || !webApp.BackButton || typeof webApp.BackButton.onClick !== 'function') return;
+      try {
+        webApp.BackButton.onClick(function() {
+          if (shiftDetailState.isOpen || shiftDetailState.isAnimating) {
+            closeShiftDetail({ fromPopstate: true, skipHistoryBack: true });
+          }
+        });
+        telegramBackButtonBound = true;
+      } catch (e) {}
+    }
+
+    function syncTelegramBackButton() {
+      var webApp = getTelegramWebApp();
+      if (!webApp || !webApp.BackButton) return;
+      bindTelegramBackButtonIfNeeded();
+      try {
+        if (shiftDetailState.isOpen || shiftDetailState.isAnimating) {
+          webApp.BackButton.show();
+        } else {
+          webApp.BackButton.hide();
+        }
+      } catch (e) {}
+    }
+
+    function pushShiftDetailHistoryState(shiftId) {
+      shiftDetailState.shouldPopOnClose = false;
+      try {
+        window.history.pushState({ bmView: 'shift-detail', shiftId: String(shiftId || '') }, '');
+        shiftDetailState.shouldPopOnClose = true;
+      } catch (e) {
+        shiftDetailState.shouldPopOnClose = false;
+      }
+    }
+
+    function finalizeShiftDetailOpen(token) {
+      if (token !== shiftDetailState.transitionToken) return;
+      shiftDetailState.isAnimating = false;
+      shiftDetailState.isOpen = true;
+      if (SHIFT_DETAIL_OVERLAY) {
+        SHIFT_DETAIL_OVERLAY.classList.add('is-visible');
+        SHIFT_DETAIL_OVERLAY.classList.remove('hidden');
+        SHIFT_DETAIL_OVERLAY.setAttribute('aria-hidden', 'false');
+      }
+      setShiftDetailSourceCardHidden(true);
+      setShiftDetailHeroVisible(true);
+      setShiftDetailContentVisible(true);
+      syncTelegramBackButton();
+    }
+
+    function openShiftDetailFromCard(cardEl, listId, options) {
+      if (!SHIFT_DETAIL_OVERLAY || !SHIFT_DETAIL_SURFACE) return;
+      if (!cardEl || !cardEl.getAttribute) return;
+      if (shiftDetailState.isAnimating) return;
+      var shiftId = String(cardEl.getAttribute('data-shift-id') || '');
+      if (!shiftId || !findShiftById(shiftId)) return;
+
+      var nowTs = Date.now();
+      if (shiftDetailState.tapLockUntil > nowTs) return;
+      shiftDetailState.tapLockUntil = nowTs + 360;
+
+      var sourceRect = cardEl.getBoundingClientRect ? cardEl.getBoundingClientRect() : null;
+      closeShiftActionsMenu(true);
+      closeLocoSeriesMenu();
+      triggerHapticTapSoft();
+
+      if (shiftDetailState.isOpen && shiftDetailState.shiftId === shiftId) {
+        return;
+      }
+
+      shiftDetailState.transitionToken += 1;
+      var token = shiftDetailState.transitionToken;
+      shiftDetailState.isAnimating = true;
+      shiftDetailState.isOpen = false;
+      shiftDetailState.shiftId = shiftId;
+      shiftDetailState.sourceShiftId = shiftId;
+      shiftDetailState.sourceListId = listId || '';
+      shiftDetailState.sourceTab = activeTab || '';
+      shiftDetailState.sourceCardEl = cardEl;
+      shiftDetailState.sourceScrollTop = APP_CONTENT ? APP_CONTENT.scrollTop : 0;
+
+      renderShiftDetailById(shiftId);
+      setShiftDetailHeroVisible(false);
+      setShiftDetailContentVisible(false);
+
+      if (SHIFT_DETAIL_OVERLAY) {
+        SHIFT_DETAIL_OVERLAY.classList.remove('hidden');
+        SHIFT_DETAIL_OVERLAY.setAttribute('aria-hidden', 'false');
+      }
+      var detailScrollEl = document.getElementById('shiftDetailScroll');
+      if (detailScrollEl) detailScrollEl.scrollTop = 0;
+      var targetRect = SHIFT_DETAIL_SURFACE.getBoundingClientRect ? SHIFT_DETAIL_SURFACE.getBoundingClientRect() : null;
+      var sourceRadius = getShiftCardRadiusPx(cardEl);
+      setShiftDetailSourceCardHidden(true);
+
+      window.requestAnimationFrame(function() {
+        if (token !== shiftDetailState.transitionToken) return;
+        if (SHIFT_DETAIL_OVERLAY) SHIFT_DETAIL_OVERLAY.classList.add('is-visible');
+        runShiftSharedAnimation(cardEl, sourceRect, targetRect, sourceRadius, 0, function() {
+          finalizeShiftDetailOpen(token);
+        });
+      });
+
+      if (!(options && options.skipHistoryPush)) {
+        pushShiftDetailHistoryState(shiftId);
+      }
+    }
+
+    function resetShiftDetailState() {
+      shiftDetailState.isOpen = false;
+      shiftDetailState.isAnimating = false;
+      shiftDetailState.shiftId = '';
+      shiftDetailState.sourceShiftId = '';
+      shiftDetailState.sourceListId = '';
+      shiftDetailState.sourceTab = '';
+      shiftDetailState.sourceCardEl = null;
+      shiftDetailState.sourceScrollTop = 0;
+      shiftDetailState.shouldPopOnClose = false;
+      shiftDetailState.skipNextPopstateClose = false;
+    }
+
+    function closeShiftDetail(options) {
+      if (!SHIFT_DETAIL_OVERLAY || !SHIFT_DETAIL_SURFACE) return;
+      if (!shiftDetailState.isOpen && !shiftDetailState.isAnimating) return;
+      if (shiftDetailState.isAnimating && !(options && options.force)) return;
+
+      var opts = options || {};
+      shiftDetailState.transitionToken += 1;
+      var token = shiftDetailState.transitionToken;
+      shiftDetailState.isAnimating = true;
+
+      if (!opts.fromPopstate && !opts.skipHistoryBack && shiftDetailState.shouldPopOnClose) {
+        shiftDetailState.shouldPopOnClose = false;
+        shiftDetailState.skipNextPopstateClose = true;
+        try { window.history.back(); } catch (e) {}
+      } else {
+        shiftDetailState.shouldPopOnClose = false;
+      }
+
+      setShiftDetailContentVisible(false);
+      setShiftDetailHeroVisible(false);
+      var destinationCard = setShiftDetailSourceCardHidden(true);
+      var fallbackCard = destinationCard || shiftDetailState.sourceCardEl;
+      var fromRect = SHIFT_DETAIL_SURFACE.getBoundingClientRect ? SHIFT_DETAIL_SURFACE.getBoundingClientRect() : null;
+      var toRect = destinationCard && destinationCard.getBoundingClientRect ? destinationCard.getBoundingClientRect() : null;
+      var toRadius = getShiftCardRadiusPx(destinationCard || shiftDetailState.sourceCardEl);
+
+      if (SHIFT_DETAIL_OVERLAY) SHIFT_DETAIL_OVERLAY.classList.remove('is-visible');
+
+      function finishClose() {
+        if (token !== shiftDetailState.transitionToken) return;
+        clearShiftDetailSourceCardHidden();
+        if (SHIFT_DETAIL_OVERLAY) {
+          SHIFT_DETAIL_OVERLAY.classList.add('hidden');
+          SHIFT_DETAIL_OVERLAY.setAttribute('aria-hidden', 'true');
+        }
+        if (SHIFT_DETAIL_HERO_SLOT) SHIFT_DETAIL_HERO_SLOT.innerHTML = '';
+        if (SHIFT_DETAIL_CONTENT) {
+          SHIFT_DETAIL_CONTENT.classList.remove('is-visible');
+          SHIFT_DETAIL_CONTENT.classList.add('hidden');
+          SHIFT_DETAIL_CONTENT.innerHTML = '';
+        }
+        if (SHIFT_DETAIL_TITLE) SHIFT_DETAIL_TITLE.textContent = 'Детали смены';
+        resetShiftDetailState();
+        syncTelegramBackButton();
+      }
+
+      if (opts.immediate || !fallbackCard || !fromRect || !toRect || getShiftSharedTransitionDuration() <= 0) {
+        window.setTimeout(finishClose, opts.immediate ? 0 : getShiftSharedTransitionDuration() + 20);
+        return;
+      }
+
+      runShiftSharedAnimation(fallbackCard, fromRect, toRect, 0, toRadius, finishClose);
+    }
+
+    function bindShiftListDetailHandlers(listEl) {
+      if (!listEl || listEl.dataset.shiftDetailBound === '1') return;
+      listEl.dataset.shiftDetailBound = '1';
+
+      listEl.addEventListener('click', function(e) {
+        if (shiftDetailState.isAnimating) return;
+        var card = e.target && e.target.closest ? e.target.closest('.shift-item[data-shift-open="1"][data-shift-id]') : null;
+        if (!card || !listEl.contains(card)) return;
+        if (e.target.closest('.shift-actions-trigger') || e.target.closest('.shift-actions-wrap')) return;
+        openShiftDetailFromCard(card, listEl.id);
+      });
+
+      listEl.addEventListener('keydown', function(e) {
+        if (shiftDetailState.isAnimating) return;
+        if (!(e.key === 'Enter' || e.key === ' ')) return;
+        var card = e.target && e.target.closest ? e.target.closest('.shift-item[data-shift-open="1"][data-shift-id]') : null;
+        if (!card || !listEl.contains(card)) return;
+        e.preventDefault();
+        openShiftDetailFromCard(card, listEl.id);
+      });
+    }
+
     function renderShiftList(listEl, headerEl, shifts, compact, emptyText, headerBase, pendingMap, shiftIncomeMap) {
       if (!listEl) return;
       if (headerEl) headerEl.textContent = headerBase || 'Смены';
+      bindShiftListDetailHandlers(listEl);
 
       if (!compact) {
         var overviewCountEl = document.getElementById('shiftsOverviewCount');
@@ -6397,6 +6929,9 @@ var contentHtml = formatInstructionNodeContentHtml(
       }
 
       revealShiftListOnFirstMount(listEl);
+      if (shiftDetailState.isOpen && shiftDetailState.sourceListId === listEl.id) {
+        setShiftDetailSourceCardHidden(true);
+      }
     }
 
     function renderDeleteConfirmCard(shiftIncomeMap) {
@@ -6447,6 +6982,7 @@ var contentHtml = formatInstructionNodeContentHtml(
       var nightMin = 0;
       var holidayMin = 0;
       var shiftIncomeMap = buildMonthShiftIncomeMap(monthShifts, bounds);
+      currentMonthShiftIncomeMap = shiftIncomeMap || Object.create(null);
       for (var j = 0; j < monthShifts.length; j++) {
         totalMin += shiftMinutesInRange(monthShifts[j], bounds.start, bounds.end);
         nightMin += shiftNightMinutesInRange(monthShifts[j], bounds.start, bounds.end);
@@ -6532,11 +7068,23 @@ var contentHtml = formatInstructionNodeContentHtml(
       renderInstallPromptCard();
       renderInstructionsScreen();
 
+      if (shiftDetailState.isOpen || shiftDetailState.isAnimating) {
+        if (shiftDetailState.shiftId && findShiftById(shiftDetailState.shiftId)) {
+          renderShiftDetailById(shiftDetailState.shiftId);
+          if (shiftDetailState.isOpen) {
+            setShiftDetailSourceCardHidden(true);
+          }
+        } else {
+          closeShiftDetail({ fromPopstate: true, skipHistoryBack: true, immediate: true, force: true });
+        }
+      }
+
       if (activeShiftMenuId !== null && SHIFT_ACTIONS_MENU) {
         renderShiftActionsMenu(activeShiftMenuId);
       } else if (SHIFT_ACTIONS_MENU) {
         hideShiftActionsMenuOnly();
       }
+      syncTelegramBackButton();
     }
     function clearRecentAddHighlight() {
       recentAddedShiftId = null;
@@ -7362,6 +7910,16 @@ var contentHtml = formatInstructionNodeContentHtml(
       if (e.key === 'Escape') closeLocoSeriesMenu();
       if (e.key === 'Escape') closeShiftActionsMenu(true);
       if (e.key === 'Escape') closeDocsViewerUI();
+      if (e.key === 'Escape') closeShiftDetail();
+    });
+    window.addEventListener('popstate', function() {
+      if (shiftDetailState.skipNextPopstateClose) {
+        shiftDetailState.skipNextPopstateClose = false;
+        return;
+      }
+      if (shiftDetailState.isOpen || shiftDetailState.isAnimating) {
+        closeShiftDetail({ fromPopstate: true, skipHistoryBack: true, force: true });
+      }
     });
     window.addEventListener('online', function() {
       updateOfflineUiState({ isOffline: false, lastSyncStatus: readPendingSnapshot() ? 'pending' : 'synced' });
@@ -7669,6 +8227,18 @@ if (action === 'scroll-node') {
     var docsViewerCloseBtn = document.getElementById('docsViewerClose');
     if (docsViewerCloseBtn) {
       docsViewerCloseBtn.addEventListener('click', closeDocsViewerUI);
+    }
+    if (SHIFT_DETAIL_CLOSE_BUTTON) {
+      SHIFT_DETAIL_CLOSE_BUTTON.addEventListener('click', function() {
+        closeShiftDetail();
+      });
+    }
+    if (SHIFT_DETAIL_OVERLAY) {
+      SHIFT_DETAIL_OVERLAY.addEventListener('click', function(e) {
+        if (e.target === e.currentTarget) {
+          closeShiftDetail();
+        }
+      });
     }
 
     var tabButtons = document.querySelectorAll('.tab-btn[data-tab]');

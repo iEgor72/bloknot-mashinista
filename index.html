@@ -652,6 +652,28 @@
     </div>
   </div>
 
+  <!-- Shift Detail Overlay -->
+  <div class="shift-detail-overlay hidden" id="shiftDetailOverlay" aria-modal="true" role="dialog" aria-hidden="true" aria-label="Детали смены">
+    <div class="shift-detail-surface" id="shiftDetailSurface">
+      <div class="shift-detail-header">
+        <button class="shift-detail-back-btn" id="btnCloseShiftDetail" type="button" aria-label="Назад к списку смен">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+            <path d="M15 18l-6-6 6-6"></path>
+            <path d="M9 12h12"></path>
+          </svg>
+        </button>
+        <div class="shift-detail-header-main">
+          <div class="shift-detail-header-kicker">Смена</div>
+          <div class="shift-detail-header-title" id="shiftDetailTitle">Детали смены</div>
+        </div>
+      </div>
+      <div class="shift-detail-scroll" id="shiftDetailScroll">
+        <div class="shift-detail-hero-slot" id="shiftDetailHeroSlot"></div>
+        <div class="shift-detail-content hidden" id="shiftDetailContent"></div>
+      </div>
+    </div>
+  </div>
+
   <!-- Docs File Viewer Overlay -->
   <div class="docs-viewer-overlay hidden" id="docsViewerOverlay" aria-modal="true" role="dialog" aria-label="Просмотр файла">
     <div class="docs-viewer-header">
