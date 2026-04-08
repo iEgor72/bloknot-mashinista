@@ -179,6 +179,33 @@
       overflow: hidden;
     }
 
+    .shift-list-reveal .shift-item {
+      opacity: 0;
+      transform: translateY(12px);
+      filter: blur(3px);
+      transition:
+        opacity 220ms ease-out,
+        transform 220ms ease-out,
+        filter 220ms ease-out;
+      transition-delay: var(--shift-card-enter-delay, 0ms);
+      will-change: opacity, transform, filter;
+    }
+
+    .shift-list-reveal.is-visible .shift-item {
+      opacity: 1;
+      transform: translateY(0);
+      filter: blur(0);
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      .shift-list-reveal .shift-item {
+        opacity: 1;
+        transform: none;
+        filter: none;
+        transition: none;
+      }
+    }
+
     .shift-item:hover {
       transform: translateY(-1px);
       box-shadow:

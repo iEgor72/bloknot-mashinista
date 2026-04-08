@@ -57,6 +57,10 @@
     var activeTab = 'home';
     var activeShiftMenuId = null;
     var activeShiftMenuScope = null;
+    var SHIFT_LIST_REVEAL_DURATION_MS = 220;
+    var SHIFT_LIST_REVEAL_DELAY_STEP_MS = 30;
+    var shiftListRevealRegistry = Object.create(null);
+    var shiftListRevealAutoId = 0;
 
     // ── Timezone ──
     var deviceTimezone = 'Europe/Moscow';
@@ -5135,6 +5139,11 @@ var contentHtml = formatInstructionNodeContentHtml(
       renderInstallPromptCard();
       handleTabActivated(activeTab);
       renderInstructionsScreen();
+      if (activeTab === 'home') {
+        revealShiftListOnFirstMount(document.getElementById('homeShiftsList'));
+      } else if (activeTab === 'shifts') {
+        revealShiftListOnFirstMount(document.getElementById('shiftsList'));
+      }
     }
 
     function openAddTabAndFocusForm() {
@@ -6265,7 +6274,91 @@ var contentHtml = formatInstructionNodeContentHtml(
       return html;
     }
 
+    function prefersReducedMotion() {
+      try {
+        return !!(window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches);
+      } catch (e) {
+        return false;
+      }
+    }
+
+    function getShiftListRevealKey(listEl) {
+      if (!listEl) return '';
+      if (listEl.id) return listEl.id;
+      if (!listEl.dataset.revealKey) {
+        shiftListRevealAutoId += 1;
+        listEl.dataset.revealKey = 'shift-list-' + shiftListRevealAutoId;
+      }
+      return listEl.dataset.revealKey;
+    }
+
+    function clearShiftListRevealClasses(listEl, state) {
+      if (!listEl) return;
+      listEl.classList.remove('shift-list-reveal', 'is-visible');
+      var cards = listEl.querySelectorAll('.shift-item');
+      for (var i = 0; i < cards.length; i++) {
+        cards[i].style.removeProperty('--shift-card-enter-delay');
+      }
+      if (!state) return;
+      if (state.raf) {
+        window.cancelAnimationFrame(state.raf);
+        state.raf = null;
+      }
+      if (state.timer) {
+        window.clearTimeout(state.timer);
+        state.timer = null;
+      }
+    }
+
+    function isShiftListRevealReady(listEl) {
+      if (!listEl || !listEl.isConnected) return false;
+      var tabPanel = listEl.closest ? listEl.closest('.tab-panel') : null;
+      if (tabPanel && !tabPanel.classList.contains('active')) return false;
+      if (listEl.closest && listEl.closest('.hidden')) return false;
+      if (listEl.getClientRects && listEl.getClientRects().length === 0) return false;
+      return true;
+    }
+
+    function revealShiftListOnFirstMount(listEl) {
+      if (!listEl) return;
+      var key = getShiftListRevealKey(listEl);
+      if (!key) return;
+
+      var state = shiftListRevealRegistry[key];
+      if (!state) {
+        state = { revealed: false, raf: null, timer: null };
+        shiftListRevealRegistry[key] = state;
+      }
+      if (state.revealed) return;
+
+      var cards = listEl.querySelectorAll('.shift-item');
+      if (!cards.length) return;
+      if (!isShiftListRevealReady(listEl)) return;
+
+      state.revealed = true;
+      if (prefersReducedMotion()) return;
+
+      clearShiftListRevealClasses(listEl, state);
+      listEl.classList.add('shift-list-reveal');
+
+      var maxDelay = 0;
+      for (var i = 0; i < cards.length; i++) {
+        var delay = i * SHIFT_LIST_REVEAL_DELAY_STEP_MS;
+        cards[i].style.setProperty('--shift-card-enter-delay', delay + 'ms');
+        if (delay > maxDelay) maxDelay = delay;
+      }
+
+      state.raf = window.requestAnimationFrame(function() {
+        state.raf = null;
+        listEl.classList.add('is-visible');
+        state.timer = window.setTimeout(function() {
+          clearShiftListRevealClasses(listEl, state);
+        }, SHIFT_LIST_REVEAL_DURATION_MS + maxDelay + 40);
+      });
+    }
+
     function renderShiftList(listEl, headerEl, shifts, compact, emptyText, headerBase, pendingMap, shiftIncomeMap) {
+      if (!listEl) return;
       if (headerEl) headerEl.textContent = headerBase || 'Смены';
 
       if (!compact) {
@@ -6302,6 +6395,8 @@ var contentHtml = formatInstructionNodeContentHtml(
         actionTriggers[a].addEventListener('pointerdown', handleShiftActionsTriggerPointerDown);
         actionTriggers[a].addEventListener('click', handleShiftActionsTriggerClick);
       }
+
+      revealShiftListOnFirstMount(listEl);
     }
 
     function renderDeleteConfirmCard(shiftIncomeMap) {
