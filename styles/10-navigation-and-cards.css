@@ -1528,9 +1528,10 @@
       flex: 1;
       min-height: 0;
       overflow-y: auto;
-      overflow-x: hidden;
+      overflow-x: auto;
       -webkit-overflow-scrolling: touch;
       overscroll-behavior-y: contain;
+      overscroll-behavior-x: contain;
       padding: 12px 12px calc(18px + env(safe-area-inset-bottom));
     }
 
@@ -1538,6 +1539,12 @@
       display: grid;
       gap: 12px;
       width: 100%;
+      min-width: 100%;
+      transform-origin: 0 0;
+    }
+
+    .docs-pdf-list.is-live-zoom {
+      will-change: transform;
     }
 
     .docs-pdf-page {
@@ -1565,6 +1572,7 @@
       display: block;
       width: 100%;
       height: auto;
+      flex: 0 0 auto;
       background: #ffffff;
       opacity: 0;
       transition: opacity 0.2s ease;

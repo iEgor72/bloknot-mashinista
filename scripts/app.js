@@ -3483,6 +3483,10 @@ var contentHtml = formatInstructionNodeContentHtml(
 
     var DOCS_PDFJS_SRC = '/assets/pdfjs/pdf.min.js';
     var DOCS_PDFJS_WORKER_SRC = '/assets/pdfjs/pdf.worker.min.js';
+    var DOCS_PDF_MIN_SCALE = 1;
+    var DOCS_PDF_MAX_SCALE = 3;
+    var DOCS_PDF_DOUBLE_TAP_DELAY = 280;
+    var DOCS_PDF_DOUBLE_TAP_DISTANCE = 26;
     var docsPdfJsLoadPromise = null;
     var docsPdfViewerState = null;
 
@@ -3510,6 +3514,112 @@ var contentHtml = formatInstructionNodeContentHtml(
       var statusEl = document.getElementById('docsViewerStatus');
       if (!statusEl) return;
       statusEl.textContent = text || '';
+    }
+
+    function clampDocsPdfScale(scale) {
+      var n = Number(scale || DOCS_PDF_MIN_SCALE);
+      if (!isFinite(n)) return DOCS_PDF_MIN_SCALE;
+      if (n < DOCS_PDF_MIN_SCALE) return DOCS_PDF_MIN_SCALE;
+      if (n > DOCS_PDF_MAX_SCALE) return DOCS_PDF_MAX_SCALE;
+      return n;
+    }
+
+    function formatDocsPdfScale(scale) {
+      var rounded = Math.round(clampDocsPdfScale(scale) * 10) / 10;
+      var text = rounded.toFixed(1);
+      if (text.slice(-2) === '.0') return text.slice(0, -2);
+      return text;
+    }
+
+    function getDocsPdfStatusText(state, scaleForStatus) {
+      if (!state || !state.pageItems || !state.pageItems.length) return '';
+      var page = state.currentPage || 1;
+      var zoom = clampDocsPdfScale(
+        typeof scaleForStatus === 'number' ? scaleForStatus : (state.zoomScale || DOCS_PDF_MIN_SCALE)
+      );
+      var zoomPart = zoom > 1.01 ? (' · ' + formatDocsPdfScale(zoom) + 'x') : '';
+      return page + '/' + state.pageItems.length + zoomPart;
+    }
+
+    function getDocsTouchPoint(scrollEl, touch) {
+      if (!scrollEl || !touch) return { x: 0, y: 0 };
+      var rect = scrollEl.getBoundingClientRect();
+      var x = touch.clientX - rect.left;
+      var y = touch.clientY - rect.top;
+      if (x < 0) x = 0;
+      if (y < 0) y = 0;
+      if (x > rect.width) x = rect.width;
+      if (y > rect.height) y = rect.height;
+      return { x: x, y: y };
+    }
+
+    function getDocsDistance(p1, p2) {
+      var dx = p1.x - p2.x;
+      var dy = p1.y - p2.y;
+      return Math.sqrt(dx * dx + dy * dy);
+    }
+
+    function applyDocsPdfCommittedScale(state) {
+      if (!isDocsPdfViewerActive(state) || !state.listEl) return;
+      state.listEl.style.width = (clampDocsPdfScale(state.zoomScale) * 100) + '%';
+    }
+
+    function clearDocsPdfLiveTransform(state) {
+      if (!isDocsPdfViewerActive(state) || !state.listEl) return;
+      state.previewScale = clampDocsPdfScale(state.zoomScale);
+      state.listEl.style.transform = '';
+      state.listEl.style.transformOrigin = '';
+      state.listEl.classList.remove('is-live-zoom');
+      setDocsViewerStatus(getDocsPdfStatusText(state));
+    }
+
+    function applyDocsPdfLiveTransform(state, scale, originX, originY) {
+      if (!isDocsPdfViewerActive(state) || !state.listEl || !state.scrollEl) return;
+      var baseScale = clampDocsPdfScale(state.zoomScale);
+      var liveScale = clampDocsPdfScale(scale);
+      state.previewScale = liveScale;
+      var ratio = liveScale / baseScale;
+      if (Math.abs(ratio - 1) < 0.001) {
+        clearDocsPdfLiveTransform(state);
+        return;
+      }
+      var x = Math.max(0, Math.min(state.scrollEl.clientWidth, Number(originX || 0)));
+      var y = Math.max(0, Math.min(state.scrollEl.clientHeight, Number(originY || 0)));
+      var originContentX = state.scrollEl.scrollLeft + x;
+      var originContentY = state.scrollEl.scrollTop + y;
+      state.listEl.style.transformOrigin = originContentX + 'px ' + originContentY + 'px';
+      state.listEl.style.transform = 'scale(' + ratio + ')';
+      state.listEl.classList.add('is-live-zoom');
+      setDocsViewerStatus(getDocsPdfStatusText(state, liveScale));
+    }
+
+    function commitDocsPdfScale(state, scale, originX, originY) {
+      if (!isDocsPdfViewerActive(state) || !state.scrollEl || !state.listEl) return;
+      var nextScale = clampDocsPdfScale(scale);
+      var prevScale = clampDocsPdfScale(state.zoomScale);
+      var rawX = originX;
+      var rawY = originY;
+      if (typeof rawX !== 'number' || !isFinite(rawX)) rawX = state.scrollEl.clientWidth / 2;
+      if (typeof rawY !== 'number' || !isFinite(rawY)) rawY = state.scrollEl.clientHeight / 2;
+      var anchorX = Math.max(0, Math.min(state.scrollEl.clientWidth, rawX));
+      var anchorY = Math.max(0, Math.min(state.scrollEl.clientHeight, rawY));
+      var contentX = (state.scrollEl.scrollLeft + anchorX) / prevScale;
+      var contentY = (state.scrollEl.scrollTop + anchorY) / prevScale;
+
+      state.zoomScale = nextScale;
+      state.previewScale = nextScale;
+      state.maxConcurrentRenders = (window.innerWidth <= 640 || nextScale > 1.6) ? 1 : 2;
+      applyDocsPdfCommittedScale(state);
+      clearDocsPdfLiveTransform(state);
+
+      state.scrollEl.scrollLeft = Math.max(0, contentX * nextScale - anchorX);
+      state.scrollEl.scrollTop = Math.max(0, contentY * nextScale - anchorY);
+
+      if (Math.abs(nextScale - prevScale) >= 0.02) {
+        scheduleDocsPdfRelayout(state);
+      } else {
+        updateDocsPdfProgress(state);
+      }
     }
 
     function renderDocsViewerLoading(text) {
@@ -3614,6 +3724,18 @@ var contentHtml = formatInstructionNodeContentHtml(
       if (state.scrollEl && state.onScroll) {
         state.scrollEl.removeEventListener('scroll', state.onScroll);
       }
+      if (state.scrollEl && state.onTouchStart) {
+        state.scrollEl.removeEventListener('touchstart', state.onTouchStart);
+      }
+      if (state.scrollEl && state.onTouchMove) {
+        state.scrollEl.removeEventListener('touchmove', state.onTouchMove);
+      }
+      if (state.scrollEl && state.onTouchEnd) {
+        state.scrollEl.removeEventListener('touchend', state.onTouchEnd);
+      }
+      if (state.scrollEl && state.onTouchCancel) {
+        state.scrollEl.removeEventListener('touchcancel', state.onTouchCancel);
+      }
       if (state.onResize) {
         window.removeEventListener('resize', state.onResize);
         window.removeEventListener('orientationchange', state.onResize);
@@ -3647,7 +3769,7 @@ var contentHtml = formatInstructionNodeContentHtml(
         else break;
       }
       state.currentPage = currentPage;
-      setDocsViewerStatus(currentPage + '/' + state.pageItems.length);
+      setDocsViewerStatus(getDocsPdfStatusText(state));
     }
 
     function queuePdfPageRender(state, pageNumber) {
@@ -3655,7 +3777,8 @@ var contentHtml = formatInstructionNodeContentHtml(
       var idx = pageNumber - 1;
       if (idx < 0 || idx >= state.pageItems.length) return;
       var item = state.pageItems[idx];
-      if (!item || item.status === 'queued' || item.status === 'loading' || item.status === 'rendered') return;
+      if (!item || item.status === 'queued' || item.status === 'loading') return;
+      if (item.status === 'rendered' && !item.needsRerender) return;
       item.status = 'queued';
       item.el.classList.add('is-loading');
       state.renderQueue.push(pageNumber);
@@ -3666,7 +3789,7 @@ var contentHtml = formatInstructionNodeContentHtml(
       if (!isDocsPdfViewerActive(state) || !state.scrollEl) return;
       var scrollTop = state.scrollEl.scrollTop;
       var scrollBottom = scrollTop + state.scrollEl.clientHeight;
-      var margin = Math.max(600, state.scrollEl.clientHeight);
+      var margin = Math.max(600, state.scrollEl.clientHeight * clampDocsPdfScale(state.zoomScale || 1));
       var minY = scrollTop - margin;
       var maxY = scrollBottom + margin;
       for (var i = 0; i < state.pageItems.length; i++) {
@@ -3704,15 +3827,21 @@ var contentHtml = formatInstructionNodeContentHtml(
           var baseViewport = page.getViewport({ scale: 1 });
           var targetCssWidth = Math.max(220, Math.floor(item.canvasWrap.clientWidth || (state.scrollEl ? state.scrollEl.clientWidth - 24 : baseViewport.width)));
           var cssScale = targetCssWidth / baseViewport.width;
+          var cssHeight = Math.max(1, Math.floor(baseViewport.height * cssScale));
           var outputScale = Math.min(window.devicePixelRatio || 1, 2.25);
+          if (state.zoomScale > 2.2) outputScale = Math.min(outputScale, 1.6);
+          else if (state.zoomScale > 1.6) outputScale = Math.min(outputScale, 1.9);
+          var maxPixelBudget = 14000000;
+          var maxOutputScale = Math.sqrt(maxPixelBudget / Math.max(1, targetCssWidth * cssHeight));
+          outputScale = Math.max(1, Math.min(outputScale, maxOutputScale));
           var renderViewport = page.getViewport({ scale: cssScale * outputScale });
 
           var canvas = item.canvas;
           var context = canvas.getContext('2d', { alpha: false });
           canvas.width = Math.max(1, Math.floor(renderViewport.width));
           canvas.height = Math.max(1, Math.floor(renderViewport.height));
-          canvas.style.width = Math.max(1, Math.floor(baseViewport.width * cssScale)) + 'px';
-          canvas.style.height = Math.max(1, Math.floor(baseViewport.height * cssScale)) + 'px';
+          canvas.style.width = '100%';
+          canvas.style.height = 'auto';
           context.setTransform(1, 0, 0, 1, 0, 0);
           context.clearRect(0, 0, canvas.width, canvas.height);
 
@@ -3731,6 +3860,7 @@ var contentHtml = formatInstructionNodeContentHtml(
         .then(function() {
           if (!isDocsPdfViewerActive(state)) return;
           item.status = 'rendered';
+          item.needsRerender = false;
           item.renderTask = null;
           item.el.classList.remove('is-loading', 'is-error');
           item.el.classList.add('is-rendered');
@@ -3741,10 +3871,12 @@ var contentHtml = formatInstructionNodeContentHtml(
           var cancelled = err && (err.name === 'RenderingCancelledException' || err.name === 'AbortException');
           if (cancelled) {
             item.status = 'idle';
+            item.needsRerender = true;
             item.el.classList.remove('is-loading');
             return;
           }
           item.status = 'error';
+          item.needsRerender = false;
           item.el.classList.remove('is-loading', 'is-rendered');
           item.el.classList.add('is-error');
           if (item.errorEl) {
@@ -3770,12 +3902,21 @@ var contentHtml = formatInstructionNodeContentHtml(
         }
         item.renderTask = null;
         item.status = 'idle';
-        item.canvas.width = 0;
-        item.canvas.height = 0;
-        item.canvas.style.width = '';
-        item.canvas.style.height = '';
+        var hasRenderedBitmap = item.canvas && item.canvas.width > 0 && item.canvas.height > 0 && item.el.classList.contains('is-rendered');
+        if (hasRenderedBitmap) {
+          item.needsRerender = true;
+          item.el.classList.remove('is-loading', 'is-error');
+        } else {
+          item.needsRerender = false;
+          if (item.canvas) {
+            item.canvas.width = 0;
+            item.canvas.height = 0;
+            item.canvas.style.width = '';
+            item.canvas.style.height = '';
+          }
+          item.el.classList.remove('is-loading', 'is-rendered', 'is-error');
+        }
         if (item.errorEl) item.errorEl.textContent = '';
-        item.el.classList.remove('is-loading', 'is-rendered', 'is-error');
         if (state.observer) {
           try {
             state.observer.unobserve(item.el);
@@ -3828,8 +3969,115 @@ var contentHtml = formatInstructionNodeContentHtml(
         placeholder: placeholder,
         errorEl: errorEl,
         status: 'idle',
+        needsRerender: false,
         renderTask: null
       };
+    }
+
+    function attachPdfGestureHandlers(state) {
+      if (!isDocsPdfViewerActive(state) || !state.scrollEl) return;
+      var scrollEl = state.scrollEl;
+
+      function finishPinch() {
+        if (!state.pinch || !state.pinch.active) return;
+        var targetScale = state.previewScale || state.zoomScale;
+        var originX = (typeof state.pinch.originX === 'number') ? state.pinch.originX : (scrollEl.clientWidth / 2);
+        var originY = (typeof state.pinch.originY === 'number') ? state.pinch.originY : (scrollEl.clientHeight / 2);
+        state.pinch.active = false;
+        commitDocsPdfScale(state, targetScale, originX, originY);
+      }
+
+      state.onTouchStart = function(e) {
+        if (!isDocsPdfViewerActive(state)) return;
+        if (e.touches.length === 2) {
+          var p1 = getDocsTouchPoint(scrollEl, e.touches[0]);
+          var p2 = getDocsTouchPoint(scrollEl, e.touches[1]);
+          var distance = getDocsDistance(p1, p2);
+          if (distance <= 0) return;
+          state.pinch.active = true;
+          state.pinch.startDistance = distance;
+          state.pinch.startScale = clampDocsPdfScale(state.zoomScale);
+          state.pinch.originX = (p1.x + p2.x) / 2;
+          state.pinch.originY = (p1.y + p2.y) / 2;
+          state.previewScale = state.pinch.startScale;
+          state.tapStart = null;
+          state.lastTapAt = 0;
+          return;
+        }
+        if (e.touches.length === 1 && !state.pinch.active) {
+          var tapPoint = getDocsTouchPoint(scrollEl, e.touches[0]);
+          state.tapStart = {
+            x: tapPoint.x,
+            y: tapPoint.y,
+            moved: false
+          };
+        }
+      };
+
+      state.onTouchMove = function(e) {
+        if (!isDocsPdfViewerActive(state)) return;
+        if (state.pinch.active && e.touches.length >= 2) {
+          e.preventDefault();
+          var p1 = getDocsTouchPoint(scrollEl, e.touches[0]);
+          var p2 = getDocsTouchPoint(scrollEl, e.touches[1]);
+          var distance = getDocsDistance(p1, p2);
+          if (distance <= 0 || !state.pinch.startDistance) return;
+          var nextScale = state.pinch.startScale * (distance / state.pinch.startDistance);
+          applyDocsPdfLiveTransform(state, nextScale, state.pinch.originX, state.pinch.originY);
+          return;
+        }
+        if (state.tapStart && e.touches.length === 1) {
+          var movePoint = getDocsTouchPoint(scrollEl, e.touches[0]);
+          var movedDistance = getDocsDistance(movePoint, state.tapStart);
+          if (movedDistance > 12) state.tapStart.moved = true;
+        }
+      };
+
+      state.onTouchEnd = function(e) {
+        if (!isDocsPdfViewerActive(state)) return;
+        if (state.pinch.active && e.touches.length < 2) {
+          e.preventDefault();
+          finishPinch();
+          return;
+        }
+        if (!state.tapStart || state.tapStart.moved || e.changedTouches.length !== 1 || state.pinch.active) {
+          state.tapStart = null;
+          return;
+        }
+        var now = Date.now();
+        var tapPoint = getDocsTouchPoint(scrollEl, e.changedTouches[0]);
+        var interval = now - (state.lastTapAt || 0);
+        var distFromLast = getDocsDistance(tapPoint, {
+          x: state.lastTapX || 0,
+          y: state.lastTapY || 0
+        });
+        if (state.lastTapAt && interval <= DOCS_PDF_DOUBLE_TAP_DELAY && distFromLast <= DOCS_PDF_DOUBLE_TAP_DISTANCE) {
+          e.preventDefault();
+          state.lastTapAt = 0;
+          var targetScale = Math.abs((state.zoomScale || 1) - 1) < 0.05 ? 2 : 1;
+          applyDocsPdfLiveTransform(state, targetScale, tapPoint.x, tapPoint.y);
+          commitDocsPdfScale(state, targetScale, tapPoint.x, tapPoint.y);
+        } else {
+          state.lastTapAt = now;
+          state.lastTapX = tapPoint.x;
+          state.lastTapY = tapPoint.y;
+        }
+        state.tapStart = null;
+      };
+
+      state.onTouchCancel = function() {
+        if (!isDocsPdfViewerActive(state)) return;
+        if (state.pinch.active) {
+          finishPinch();
+        } else {
+          state.tapStart = null;
+        }
+      };
+
+      scrollEl.addEventListener('touchstart', state.onTouchStart, { passive: true });
+      scrollEl.addEventListener('touchmove', state.onTouchMove, { passive: false });
+      scrollEl.addEventListener('touchend', state.onTouchEnd, { passive: false });
+      scrollEl.addEventListener('touchcancel', state.onTouchCancel, { passive: true });
     }
 
     function attachPdfObserver(state) {
@@ -3871,12 +4119,27 @@ var contentHtml = formatInstructionNodeContentHtml(
       state.renderQueue = [];
       state.renderInFlight = 0;
       state.currentPage = 1;
+      state.zoomScale = clampDocsPdfScale(state.zoomScale || DOCS_PDF_MIN_SCALE);
+      state.previewScale = state.zoomScale;
+      state.pinch = {
+        active: false,
+        startDistance: 0,
+        startScale: state.zoomScale,
+        originX: 0,
+        originY: 0
+      };
+      state.tapStart = null;
+      state.lastTapAt = 0;
+      state.lastTapX = 0;
+      state.lastTapY = 0;
 
       for (var pageNumber = 1; pageNumber <= state.pdfDoc.numPages; pageNumber++) {
         var pageItem = createPdfPageItem(pageNumber);
         state.pageItems.push(pageItem);
         listEl.appendChild(pageItem.el);
       }
+
+      applyDocsPdfCommittedScale(state);
 
       state.onScroll = function() {
         if (!isDocsPdfViewerActive(state)) return;
@@ -3898,6 +4161,7 @@ var contentHtml = formatInstructionNodeContentHtml(
         window.visualViewport.addEventListener('resize', state.onResize);
       }
 
+      attachPdfGestureHandlers(state);
       attachPdfObserver(state);
       queueVisiblePdfPages(state);
       updateDocsPdfProgress(state);
@@ -3917,13 +4181,24 @@ var contentHtml = formatInstructionNodeContentHtml(
         renderInFlight: 0,
         maxConcurrentRenders: window.innerWidth <= 640 ? 1 : 2,
         currentPage: 1,
+        zoomScale: DOCS_PDF_MIN_SCALE,
+        previewScale: DOCS_PDF_MIN_SCALE,
+        pinch: { active: false, startDistance: 0, startScale: DOCS_PDF_MIN_SCALE, originX: 0, originY: 0 },
+        tapStart: null,
+        lastTapAt: 0,
+        lastTapX: 0,
+        lastTapY: 0,
         resizeTimer: null,
         observer: null,
         scrollEl: null,
         listEl: null,
         scrollFrame: null,
         onScroll: null,
-        onResize: null
+        onResize: null,
+        onTouchStart: null,
+        onTouchMove: null,
+        onTouchEnd: null,
+        onTouchCancel: null
       };
       docsPdfViewerState = state;
 
@@ -3950,7 +4225,7 @@ var contentHtml = formatInstructionNodeContentHtml(
           }
           state.pdfDoc = pdfDoc;
           mountPdfPages(state);
-          setDocsViewerStatus('1/' + pdfDoc.numPages);
+          setDocsViewerStatus(getDocsPdfStatusText(state));
         })
         .catch(function(err) {
           if (!isDocsPdfViewerActive(state)) return;
