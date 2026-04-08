@@ -74,6 +74,7 @@
       --bottom-nav-safe-bottom: 0px;
       --bottom-nav-offset: calc(14px + var(--bottom-nav-safe-bottom));
       --bottom-safe-fill-height: calc(14px + var(--bottom-nav-safe-bottom));
+      --app-shell-bottom-reserve: var(--bottom-nav-height);
       --page-padding-x: 16px;
       --page-padding-top: calc(16px + var(--safe-top));
       --page-padding-bottom: 20px;
@@ -109,27 +110,43 @@
       color-scheme: dark;
     }
 
-    /* ── Scrollbar ── */
-    ::-webkit-scrollbar {
+    /* ── Scrollbar (internal containers only) ── */
+    .app-content::-webkit-scrollbar,
+    .auth-gate::-webkit-scrollbar,
+    .bottom-sheet::-webkit-scrollbar,
+    .docs-pdf-scroll::-webkit-scrollbar {
       width: 4px;
       height: 4px;
     }
 
-    ::-webkit-scrollbar-track {
+    .app-content::-webkit-scrollbar-track,
+    .auth-gate::-webkit-scrollbar-track,
+    .bottom-sheet::-webkit-scrollbar-track,
+    .docs-pdf-scroll::-webkit-scrollbar-track {
       background: transparent;
     }
 
-    ::-webkit-scrollbar-thumb {
+    .app-content::-webkit-scrollbar-thumb,
+    .auth-gate::-webkit-scrollbar-thumb,
+    .bottom-sheet::-webkit-scrollbar-thumb,
+    .docs-pdf-scroll::-webkit-scrollbar-thumb {
       background: linear-gradient(180deg, #8d7cff, #ea72ff);
       border-radius: 999px;
       min-height: 32px;
+      border: 1px solid rgba(7, 8, 20, 0.35);
     }
 
-    ::-webkit-scrollbar-thumb:hover {
+    .app-content::-webkit-scrollbar-thumb:hover,
+    .auth-gate::-webkit-scrollbar-thumb:hover,
+    .bottom-sheet::-webkit-scrollbar-thumb:hover,
+    .docs-pdf-scroll::-webkit-scrollbar-thumb:hover {
       background: linear-gradient(180deg, #b3a8ff, #f09fff);
     }
 
-    * {
+    .app-content,
+    .auth-gate,
+    .bottom-sheet,
+    .docs-pdf-scroll {
       scrollbar-width: thin;
       scrollbar-color: #8d7cff transparent;
     }
@@ -160,6 +177,10 @@
     body {
       position: relative;
       overflow: hidden;
+    }
+
+    body.is-keyboard-open {
+      --app-shell-bottom-reserve: 0px;
     }
 
     body::before,
@@ -195,7 +216,7 @@
       padding:
         var(--page-padding-top)
         var(--page-padding-x)
-        0
+        var(--app-shell-bottom-reserve)
         var(--page-padding-x);
       min-height: var(--app-viewport-height);
       height: var(--app-viewport-height);
@@ -520,5 +541,4 @@
     }
 
     .hidden { display: none !important; }
-
 
