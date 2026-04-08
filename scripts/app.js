@@ -69,11 +69,16 @@
     var APP_SHELL = document.querySelector('.app');
     var APP_CONTENT = document.querySelector('.app-content');
     var BOTTOM_NAV = document.querySelector('.bottom-nav');
+    var BOTTOM_NAV_INNER = document.querySelector('.bottom-nav-inner');
+    var BOTTOM_NAV_HIGHLIGHT = document.querySelector('.bottom-nav-highlight');
     var keyboardFocusField = null;
     var keyboardStateOpen = false;
     var keyboardSyncTimer = null;
     var keyboardRevealTimer = null;
     var navHeightSyncTimer = null;
+    var bottomNavHighlightSyncTimer = null;
+    var bottomNavHighlightNeedsImmediate = false;
+    var bottomNavHighlightReady = false;
     var viewportMetricsRaf = null;
     var telegramLayoutBindTimer = null;
     var telegramLayoutEventsBound = false;
@@ -105,6 +110,63 @@
       setCssVar('--app-viewport-height', value);
     }
 
+    function syncBottomNavHighlightPosition(forceImmediate) {
+      if (!BOTTOM_NAV_INNER || !BOTTOM_NAV_HIGHLIGHT || !BOTTOM_NAV_INNER.getBoundingClientRect) return;
+
+      var activeButton = BOTTOM_NAV_INNER.querySelector('.tab-btn.active[data-tab]');
+      if (!activeButton || activeButton.classList.contains('center')) {
+        BOTTOM_NAV_INNER.classList.add('bottom-nav-highlight-hidden');
+        return;
+      }
+
+      var innerRect = BOTTOM_NAV_INNER.getBoundingClientRect();
+      var buttonRect = activeButton.getBoundingClientRect();
+      if (innerRect.width <= 0 || innerRect.height <= 0 || buttonRect.width <= 0 || buttonRect.height <= 0) {
+        return;
+      }
+
+      var horizontalInset = Math.max(2, Math.round(buttonRect.width * 0.06));
+      var verticalInset = 2;
+      var x = buttonRect.left - innerRect.left + horizontalInset;
+      var y = buttonRect.top - innerRect.top + verticalInset;
+      var width = Math.max(40, buttonRect.width - horizontalInset * 2);
+      var height = Math.max(34, buttonRect.height - verticalInset * 2);
+      var immediate = !!forceImmediate || !bottomNavHighlightReady;
+
+      if (immediate) {
+        BOTTOM_NAV_INNER.classList.add('bottom-nav-highlight-no-transition');
+      }
+
+      BOTTOM_NAV_INNER.style.setProperty('--bottom-nav-highlight-x', (Math.round(x * 100) / 100) + 'px');
+      BOTTOM_NAV_INNER.style.setProperty('--bottom-nav-highlight-y', (Math.round(y * 100) / 100) + 'px');
+      BOTTOM_NAV_INNER.style.setProperty('--bottom-nav-highlight-width', (Math.round(width * 100) / 100) + 'px');
+      BOTTOM_NAV_INNER.style.setProperty('--bottom-nav-highlight-height', (Math.round(height * 100) / 100) + 'px');
+      BOTTOM_NAV_INNER.classList.remove('bottom-nav-highlight-hidden');
+      BOTTOM_NAV_INNER.classList.add('bottom-nav-highlight-ready');
+
+      if (immediate) {
+        void BOTTOM_NAV_HIGHLIGHT.offsetWidth;
+        BOTTOM_NAV_INNER.classList.remove('bottom-nav-highlight-no-transition');
+      }
+
+      bottomNavHighlightReady = true;
+    }
+
+    function scheduleBottomNavHighlightSync(options) {
+      if (!BOTTOM_NAV_INNER || !BOTTOM_NAV_HIGHLIGHT) return;
+      if (options && options.immediate) {
+        bottomNavHighlightNeedsImmediate = true;
+      }
+      if (bottomNavHighlightSyncTimer) return;
+
+      bottomNavHighlightSyncTimer = window.requestAnimationFrame(function() {
+        var immediate = bottomNavHighlightNeedsImmediate;
+        bottomNavHighlightNeedsImmediate = false;
+        bottomNavHighlightSyncTimer = null;
+        syncBottomNavHighlightPosition(immediate);
+      });
+    }
+
     function syncBottomNavHeight() {
       if (!BOTTOM_NAV || !BOTTOM_NAV.getBoundingClientRect) return;
       var rect = BOTTOM_NAV.getBoundingClientRect();
@@ -112,6 +174,7 @@
       if (navHeight > 0) {
         setCssVar('--bottom-nav-height', navHeight + 'px');
       }
+      scheduleBottomNavHighlightSync();
     }
 
     function scheduleBottomNavHeightSync() {
@@ -5055,6 +5118,7 @@ var contentHtml = formatInstructionNodeContentHtml(
       updateSettingsControls();
       updateOfflineUiState();
       setActiveTab(activeTab || 'home');
+      scheduleBottomNavHighlightSync({ immediate: true });
       scheduleBottomNavHeightSync();
       updateFooter();
       renderInstallPromptCard();
@@ -5089,6 +5153,7 @@ var contentHtml = formatInstructionNodeContentHtml(
         btn.classList.toggle('active', btn.getAttribute('data-tab') === activeTab);
       }
 
+      scheduleBottomNavHighlightSync();
       scheduleBottomNavHeightSync();
       updateFooter();
       renderInstallPromptCard();
@@ -7056,6 +7121,7 @@ var contentHtml = formatInstructionNodeContentHtml(
     resetViewportBaselines();
     updateViewportMetrics();
     scheduleBottomNavHeightSync();
+    scheduleBottomNavHighlightSync({ immediate: true });
     settleSafeAreaInsets();
     scheduleKeyboardSync();
     telegramLayoutBindRetries = 0;

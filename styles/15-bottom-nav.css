@@ -39,6 +39,10 @@
       display: grid;
       grid-template-columns: repeat(4, minmax(0, 1fr));
       gap: 4px;
+      --bottom-nav-highlight-x: 0px;
+      --bottom-nav-highlight-y: 0px;
+      --bottom-nav-highlight-width: 0px;
+      --bottom-nav-highlight-height: 0px;
       background:
         radial-gradient(circle at 50% 0%, rgba(255,255,255,0.12), transparent 42%),
         radial-gradient(circle at 15% 20%, rgba(141, 124, 255, 0.12), transparent 30%),
@@ -75,6 +79,7 @@
       opacity: 0.55;
       pointer-events: none;
       filter: blur(0.2px);
+      z-index: 0;
     }
 
     .bottom-nav-inner::after {
@@ -88,6 +93,50 @@
       pointer-events: none;
       mix-blend-mode: normal;
       opacity: 0.78;
+      z-index: 0;
+    }
+
+    .bottom-nav-highlight {
+      position: absolute;
+      left: 0;
+      top: 0;
+      width: var(--bottom-nav-highlight-width);
+      height: var(--bottom-nav-highlight-height);
+      transform: translate3d(var(--bottom-nav-highlight-x), var(--bottom-nav-highlight-y), 0);
+      border-radius: 18px;
+      border: 1px solid rgba(255, 255, 255, 0.24);
+      background:
+        radial-gradient(circle at 50% 0%, rgba(255,255,255,0.24), rgba(255,255,255,0.04) 62%),
+        linear-gradient(180deg, rgba(255,255,255,0.18), rgba(255,255,255,0.05)),
+        rgba(188, 201, 230, 0.10);
+      backdrop-filter: blur(20px) saturate(135%);
+      -webkit-backdrop-filter: blur(20px) saturate(135%);
+      box-shadow:
+        inset 0 1px 0 rgba(255,255,255,0.32),
+        inset 0 -1px 0 rgba(255,255,255,0.08),
+        0 10px 24px rgba(4, 8, 20, 0.30),
+        0 2px 10px rgba(255,255,255,0.05);
+      pointer-events: none;
+      opacity: 0;
+      z-index: 1;
+      transition:
+        transform 340ms cubic-bezier(0.22, 1, 0.36, 1),
+        width 340ms cubic-bezier(0.22, 1, 0.36, 1),
+        height 340ms cubic-bezier(0.22, 1, 0.36, 1),
+        opacity 180ms ease;
+      will-change: transform, width, height;
+    }
+
+    .bottom-nav-inner.bottom-nav-highlight-ready .bottom-nav-highlight {
+      opacity: 1;
+    }
+
+    .bottom-nav-inner.bottom-nav-highlight-hidden .bottom-nav-highlight {
+      opacity: 0;
+    }
+
+    .bottom-nav-inner.bottom-nav-highlight-no-transition .bottom-nav-highlight {
+      transition: none;
     }
 
     .tab-btn {
@@ -104,24 +153,27 @@
       gap: 3px;
       cursor: pointer;
       min-height: 48px;
-      transition: background 0.18s, color 0.18s, transform 0.18s, box-shadow 0.18s, border-color 0.18s;
+      transition: color 0.22s ease, transform 0.22s ease, opacity 0.22s ease;
       -webkit-tap-highlight-color: transparent;
       position: relative;
-      z-index: 1;
+      z-index: 2;
     }
 
     .tab-btn:active { transform: translateY(1px); }
 
-    .tab-btn.active {
-      background:
-        linear-gradient(180deg, rgba(255,255,255,0.08), rgba(255,255,255,0.03)),
-        rgba(141, 124, 255, 0.10);
-      border: 1px solid rgba(255,255,255,0.07);
-      color: #fff;
-      box-shadow:
-        inset 0 1px 0 rgba(255,255,255,0.12),
-        0 10px 22px rgba(5, 8, 18, 0.14);
-      transform: translateY(-1px);
+    .tab-btn.active:not(.center) {
+      color: rgba(251, 253, 255, 0.98);
+      transform: translateY(-0.5px);
+    }
+
+    .tab-btn.active:not(.center) .tab-icon {
+      transform: scale(1.04);
+      opacity: 1;
+    }
+
+    .tab-btn.active:not(.center) .tab-label {
+      color: rgba(249, 251, 255, 0.98);
+      opacity: 1;
     }
 
     .tab-btn.center {
@@ -177,6 +229,8 @@
       line-height: 1;
       position: relative;
       z-index: 1;
+      opacity: 0.9;
+      transition: transform 0.32s cubic-bezier(0.22, 1, 0.36, 1), opacity 0.22s ease;
     }
 
     .tab-icon svg {
@@ -194,6 +248,7 @@
       font-size: 32px;
       font-weight: 900;
       text-shadow: 0 0 18px rgba(255, 255, 255, 0.8);
+      opacity: 1;
     }
 
     .tab-btn.center .tab-label {
@@ -207,4 +262,6 @@
       letter-spacing: 0.18px;
       position: relative;
       z-index: 1;
+      opacity: 0.84;
+      transition: color 0.22s ease, opacity 0.22s ease;
     }
