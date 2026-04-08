@@ -45,25 +45,25 @@
       --bottom-nav-highlight-width: 0px;
       --bottom-nav-highlight-height: 0px;
       background:
-        radial-gradient(130% 120% at 50% -48%, rgba(255,255,255,0.20), transparent 56%),
-        radial-gradient(72% 92% at 0% 100%, rgba(122, 156, 255, 0.16), transparent 66%),
-        radial-gradient(76% 88% at 100% 96%, rgba(118, 230, 255, 0.14), transparent 67%),
-        linear-gradient(180deg, rgba(255,255,255,0.12), rgba(255,255,255,0.04) 34%, rgba(255,255,255,0.015) 100%),
-        linear-gradient(136deg, rgba(16, 20, 37, 0.88), rgba(9, 11, 24, 0.90));
-      border: 1px solid rgba(255, 255, 255, 0.17);
-      border-top-color: rgba(255, 255, 255, 0.27);
-      border-bottom-color: rgba(255, 255, 255, 0.08);
+        radial-gradient(128% 116% at 50% -48%, rgba(255,255,255,0.14), transparent 58%),
+        radial-gradient(74% 92% at 0% 100%, rgba(121, 149, 215, 0.09), transparent 69%),
+        radial-gradient(80% 90% at 100% 96%, rgba(95, 160, 205, 0.08), transparent 71%),
+        linear-gradient(180deg, rgba(255,255,255,0.09), rgba(255,255,255,0.03) 32%, rgba(255,255,255,0.01) 100%),
+        linear-gradient(138deg, rgba(14, 18, 34, 0.90), rgba(9, 12, 26, 0.92));
+      border: 1px solid rgba(255, 255, 255, 0.14);
+      border-top-color: rgba(255, 255, 255, 0.22);
+      border-bottom-color: rgba(255, 255, 255, 0.06);
       border-radius: 34px;
       padding: 9px 9px 11px;
-      backdrop-filter: blur(36px) saturate(150%);
-      -webkit-backdrop-filter: blur(36px) saturate(150%);
+      backdrop-filter: blur(30px) saturate(128%);
+      -webkit-backdrop-filter: blur(30px) saturate(128%);
       box-shadow:
-        0 34px 62px rgba(0, 0, 0, 0.48),
-        0 12px 24px rgba(4, 8, 18, 0.26),
-        0 1px 0 rgba(255, 255, 255, 0.08),
-        inset 0 1px 0 rgba(255, 255, 255, 0.24),
-        inset 0 -10px 20px rgba(0, 0, 0, 0.18),
-        inset 0 -1px 0 rgba(255,255,255,0.03);
+        0 28px 54px rgba(0, 0, 0, 0.46),
+        0 10px 20px rgba(5, 9, 20, 0.24),
+        0 1px 0 rgba(255, 255, 255, 0.06),
+        inset 0 1px 0 rgba(255, 255, 255, 0.17),
+        inset 0 -12px 18px rgba(0, 0, 0, 0.24),
+        inset 0 -1px 0 rgba(255,255,255,0.02);
       overflow: visible;
       isolation: isolate;
       transform: translateZ(0);
@@ -80,9 +80,9 @@
       height: 38%;
       border-radius: 24px 24px 16px 16px;
       background:
-        linear-gradient(180deg, rgba(255,255,255,0.36), rgba(255,255,255,0.11) 58%, rgba(255,255,255,0.00)),
-        radial-gradient(88% 140% at 10% 0%, rgba(255,255,255,0.24), transparent 66%);
-      opacity: 0.74;
+        linear-gradient(180deg, rgba(255,255,255,0.24), rgba(255,255,255,0.06) 56%, rgba(255,255,255,0.00)),
+        radial-gradient(86% 132% at 10% 0%, rgba(255,255,255,0.14), transparent 66%);
+      opacity: 0.58;
       pointer-events: none;
       filter: blur(0.25px);
       z-index: 0;
@@ -94,12 +94,11 @@
       inset: 0;
       border-radius: 34px;
       background:
-        linear-gradient(180deg, rgba(255,255,255,0.10), rgba(255,255,255,0.015) 23%, rgba(0,0,0,0.06) 100%),
-        radial-gradient(124% 78% at 50% 118%, rgba(139, 131, 255, 0.22), transparent 61%),
-        radial-gradient(84% 44% at 100% 0%, rgba(117, 222, 255, 0.18), transparent 72%);
+        linear-gradient(180deg, rgba(255,255,255,0.08), rgba(255,255,255,0.015) 24%, rgba(0,0,0,0.08) 100%),
+        radial-gradient(128% 76% at 50% 112%, rgba(137, 160, 209, 0.12), transparent 62%);
       pointer-events: none;
       mix-blend-mode: normal;
-      opacity: 0.88;
+      opacity: 0.74;
       z-index: 0;
     }
 
@@ -111,20 +110,20 @@
       height: var(--bottom-nav-highlight-height);
       transform: translate3d(var(--bottom-nav-highlight-x), var(--bottom-nav-highlight-y), 0);
       border-radius: 20px;
-      border: 1px solid rgba(255, 255, 255, 0.30);
+      border: 1px solid rgba(255, 255, 255, 0.23);
       background:
-        linear-gradient(180deg, rgba(255,255,255,0.24), rgba(255,255,255,0.08) 40%, rgba(255,255,255,0.03)),
-        radial-gradient(140% 88% at 22% 8%, rgba(255,255,255,0.40), rgba(255,255,255,0.08) 42%, rgba(255,255,255,0.00) 72%),
-        radial-gradient(112% 92% at 84% 86%, rgba(126, 201, 255, 0.22), rgba(126, 201, 255, 0.03) 55%, transparent 82%),
-        rgba(208, 219, 255, 0.14);
-      backdrop-filter: blur(24px) saturate(165%) contrast(108%);
-      -webkit-backdrop-filter: blur(24px) saturate(165%) contrast(108%);
+        linear-gradient(180deg, rgba(255,255,255,0.16), rgba(255,255,255,0.06) 40%, rgba(255,255,255,0.02)),
+        radial-gradient(140% 90% at 22% 8%, rgba(255,255,255,0.26), rgba(255,255,255,0.06) 42%, rgba(255,255,255,0.00) 74%),
+        radial-gradient(112% 92% at 84% 86%, rgba(122, 164, 221, 0.12), rgba(122, 164, 221, 0.02) 56%, transparent 84%),
+        rgba(198, 209, 232, 0.10);
+      backdrop-filter: blur(20px) saturate(140%) contrast(104%);
+      -webkit-backdrop-filter: blur(20px) saturate(140%) contrast(104%);
       box-shadow:
-        inset 0 1px 0 rgba(255,255,255,0.42),
-        inset 0 -1px 0 rgba(255,255,255,0.12),
-        inset 0 -10px 18px rgba(80, 118, 187, 0.18),
-        0 14px 26px rgba(4, 8, 22, 0.30),
-        0 2px 10px rgba(255,255,255,0.11);
+        inset 0 1px 0 rgba(255,255,255,0.33),
+        inset 0 -1px 0 rgba(255,255,255,0.10),
+        inset 0 -8px 14px rgba(75, 102, 150, 0.16),
+        0 8px 18px rgba(4, 8, 20, 0.22),
+        0 1px 5px rgba(255,255,255,0.07);
       pointer-events: none;
       opacity: 0;
       z-index: 1;
@@ -143,10 +142,10 @@
       left: 1px;
       right: 1px;
       top: 1px;
-      height: 52%;
+      height: 50%;
       border-radius: 18px 18px 14px 14px;
-      background: linear-gradient(180deg, rgba(255,255,255,0.56), rgba(255,255,255,0.16) 70%, rgba(255,255,255,0.02));
-      opacity: 0.8;
+      background: linear-gradient(180deg, rgba(255,255,255,0.44), rgba(255,255,255,0.10) 68%, rgba(255,255,255,0.01));
+      opacity: 0.62;
       pointer-events: none;
     }
 
@@ -156,14 +155,14 @@
       inset: 0;
       border-radius: inherit;
       background:
-        radial-gradient(122% 120% at 16% 10%, rgba(255,255,255,0.40), rgba(255,255,255,0.03) 42%, transparent 74%),
-        linear-gradient(132deg, rgba(255,255,255,0.24) 0%, rgba(255,255,255,0.05) 30%, rgba(104, 196, 255, 0.20) 60%, rgba(255,255,255,0.03) 86%);
-      opacity: 0.72;
+        radial-gradient(122% 116% at 16% 10%, rgba(255,255,255,0.24), rgba(255,255,255,0.02) 44%, transparent 74%),
+        linear-gradient(132deg, rgba(255,255,255,0.15) 0%, rgba(255,255,255,0.04) 28%, rgba(97, 147, 213, 0.10) 60%, rgba(255,255,255,0.02) 86%);
+      opacity: 0.52;
       pointer-events: none;
     }
 
     .bottom-nav-inner.bottom-nav-highlight-ready .bottom-nav-highlight {
-      opacity: 1;
+      opacity: 0.96;
     }
 
     .bottom-nav-inner.bottom-nav-highlight-hidden .bottom-nav-highlight {
@@ -178,7 +177,7 @@
       appearance: none;
       border: none;
       background: transparent;
-      color: rgba(230, 238, 255, 0.66);
+      color: rgba(220, 229, 247, 0.58);
       border-radius: 20px;
       padding: 8px 6px 10px;
       display: flex;
@@ -201,28 +200,28 @@
     .tab-btn:active { transform: translateY(1px); }
 
     .tab-btn.active:not(.center) {
-      color: rgba(251, 253, 255, 0.98);
-      transform: translateY(-0.6px) scale(1.016);
+      color: rgba(246, 250, 255, 0.95);
+      transform: translateY(-0.4px) scale(1.01);
     }
 
     .tab-btn.active:not(.center) .tab-icon {
-      transform: translateY(-0.5px) scale(1.085);
+      transform: translateY(-0.3px) scale(1.05);
       opacity: 1;
-      filter: drop-shadow(0 3px 8px rgba(167, 193, 255, 0.26));
+      filter: drop-shadow(0 1px 3px rgba(138, 166, 214, 0.12));
     }
 
     .tab-btn.active:not(.center) .tab-label {
-      color: rgba(249, 251, 255, 0.98);
+      color: rgba(244, 248, 255, 0.94);
       opacity: 1;
-      text-shadow: 0 2px 9px rgba(150, 183, 255, 0.22);
+      text-shadow: 0 1px 4px rgba(127, 155, 203, 0.12);
     }
 
     .tab-btn:not(.active):not(.center) .tab-icon {
-      opacity: 0.82;
+      opacity: 0.72;
     }
 
     .tab-btn:not(.active):not(.center) .tab-label {
-      opacity: 0.74;
+      opacity: 0.62;
     }
 
     .tab-btn.center {
@@ -236,19 +235,19 @@
       padding: 0;
       margin: 0;
       background:
-        radial-gradient(84% 56% at 50% 8%, rgba(255,255,255,0.62), rgba(255,255,255,0.12) 52%, rgba(255,255,255,0.00)),
-        radial-gradient(120% 96% at 85% 92%, rgba(106, 220, 255, 0.28), rgba(106, 220, 255, 0.00) 66%),
-        linear-gradient(158deg, rgba(150, 167, 255, 0.96) 0%, rgba(193, 132, 255, 0.95) 48%, rgba(124, 224, 255, 0.88) 100%);
+        radial-gradient(84% 56% at 50% 8%, rgba(255,255,255,0.42), rgba(255,255,255,0.08) 52%, rgba(255,255,255,0.00)),
+        radial-gradient(120% 96% at 85% 92%, rgba(112, 168, 218, 0.14), rgba(112, 168, 218, 0.00) 68%),
+        linear-gradient(158deg, rgba(126, 145, 215, 0.86) 0%, rgba(151, 130, 200, 0.84) 48%, rgba(104, 162, 205, 0.78) 100%);
       color: #fff;
-      border: 1px solid rgba(255, 255, 255, 0.38);
-      backdrop-filter: blur(16px) saturate(138%);
-      -webkit-backdrop-filter: blur(16px) saturate(138%);
+      border: 1px solid rgba(255, 255, 255, 0.28);
+      backdrop-filter: blur(14px) saturate(118%);
+      -webkit-backdrop-filter: blur(14px) saturate(118%);
       box-shadow:
-        0 24px 40px rgba(30, 26, 62, 0.48),
-        0 10px 18px rgba(8, 12, 28, 0.34),
-        0 0 0 1px rgba(255, 255, 255, 0.12),
-        inset 0 1px 0 rgba(255,255,255,0.46),
-        inset 0 -10px 18px rgba(66, 53, 122, 0.34);
+        0 16px 28px rgba(20, 24, 46, 0.38),
+        0 6px 12px rgba(8, 12, 26, 0.24),
+        0 0 0 1px rgba(255, 255, 255, 0.10),
+        inset 0 1px 0 rgba(255,255,255,0.34),
+        inset 0 -8px 14px rgba(44, 52, 88, 0.28);
       border-radius: 23px;
       overflow: visible;
       transition:
@@ -258,13 +257,13 @@
     }
 
     .tab-btn.center.active {
-      transform: translateX(-50%) translateY(-1px);
+      transform: translateX(-50%) translateY(-0.5px);
       box-shadow:
-        0 28px 44px rgba(30, 26, 62, 0.54),
-        0 12px 20px rgba(8, 12, 28, 0.38),
-        0 0 0 1px rgba(255, 255, 255, 0.14),
-        inset 0 1px 0 rgba(255,255,255,0.54),
-        inset 0 -10px 18px rgba(66, 53, 122, 0.40);
+        0 18px 30px rgba(20, 24, 46, 0.42),
+        0 7px 14px rgba(8, 12, 26, 0.28),
+        0 0 0 1px rgba(255, 255, 255, 0.11),
+        inset 0 1px 0 rgba(255,255,255,0.40),
+        inset 0 -9px 14px rgba(44, 52, 88, 0.30);
     }
 
     .tab-btn.center:active { transform: translateX(-50%) translateY(1px) scale(0.974); }
@@ -272,14 +271,14 @@
     .tab-btn.center::before {
       content: '';
       position: absolute;
-      inset: -24px;
-      border-radius: 30px;
+      inset: -18px;
+      border-radius: 26px;
       background:
-        radial-gradient(circle at 50% 50%, rgba(162, 146, 255, 0.54) 0%, rgba(136, 110, 255, 0.24) 44%, rgba(121, 215, 255, 0.18) 68%, transparent 78%);
-      filter: blur(20px);
+        radial-gradient(circle at 50% 50%, rgba(138, 142, 206, 0.30) 0%, rgba(116, 132, 190, 0.12) 46%, transparent 74%);
+      filter: blur(14px);
       z-index: -1;
       pointer-events: none;
-      opacity: 0.78;
+      opacity: 0.46;
     }
 
     .tab-btn.center::after {
@@ -288,14 +287,14 @@
       inset: 2px;
       border-radius: 21px;
       background:
-        linear-gradient(180deg, rgba(255,255,255,0.35), rgba(255,255,255,0.03) 62%),
-        radial-gradient(circle at 50% 22%, rgba(255,255,255,0.22), transparent 46%),
-        radial-gradient(120% 120% at 80% 100%, rgba(90, 181, 255, 0.20), transparent 64%);
+        linear-gradient(180deg, rgba(255,255,255,0.24), rgba(255,255,255,0.03) 62%),
+        radial-gradient(circle at 50% 22%, rgba(255,255,255,0.14), transparent 46%),
+        radial-gradient(120% 120% at 80% 100%, rgba(90, 143, 205, 0.10), transparent 64%);
       box-shadow:
-        inset 0 1px 0 rgba(255,255,255,0.30),
-        inset 0 -6px 10px rgba(70, 48, 120, 0.24);
+        inset 0 1px 0 rgba(255,255,255,0.24),
+        inset 0 -5px 8px rgba(55, 63, 98, 0.20);
       pointer-events: none;
-      opacity: 0.86;
+      opacity: 0.76;
     }
 
     .tab-icon {
@@ -319,11 +318,11 @@
     }
 
     .tab-btn.center .tab-icon {
-      font-size: 33px;
+      font-size: 32px;
       font-weight: 900;
       text-shadow:
-        0 0 18px rgba(255, 255, 255, 0.88),
-        0 6px 14px rgba(90, 68, 163, 0.44);
+        0 0 10px rgba(255, 255, 255, 0.56),
+        0 3px 6px rgba(74, 86, 130, 0.35);
       opacity: 1;
       transform: translateY(-1px);
     }
