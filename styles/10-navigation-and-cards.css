@@ -303,13 +303,18 @@
     .dashboard-sub {
       margin-top: 10px;
       color: rgba(244, 247, 255, 0.9);
-      font-size: 14px;
+      font-size: 15px;
+      font-weight: 600;
       line-height: 1.45;
     }
 
+    .dashboard-sub.ok { color: var(--success); }
+    .dashboard-sub.overtime { color: var(--warn); }
+    .dashboard-sub.remaining { color: rgba(244, 247, 255, 0.9); }
+
     .dashboard-average {
       margin-top: 6px;
-      font-size: 12px;
+      font-size: 13px;
       line-height: 1.35;
       color: rgba(244, 247, 255, 0.74);
       font-variant-numeric: tabular-nums;
@@ -324,7 +329,7 @@
       margin-top: 0;
       background: rgba(255, 255, 255, 0.13);
       border-radius: 999px;
-      height: 10px;
+      height: 12px;
       overflow: hidden;
       box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.05);
     }
@@ -378,7 +383,7 @@
 
     .quick-stats-note {
       font-size: 11px;
-      color: rgba(244, 247, 255, 0.40);
+      color: rgba(244, 247, 255, 0.52);
     }
 
     .quick-stats-row {
@@ -447,7 +452,7 @@
     }
 
     .quick-stats-grid .stat-label {
-      font-size: 11px;
+      font-size: 12px;
       color: rgba(244, 247, 255, 0.58);
       text-transform: uppercase;
       letter-spacing: 0.08em;
