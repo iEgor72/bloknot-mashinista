@@ -1,7 +1,19 @@
 {
-  "speeds": [],
+  "speeds": [
+    {
+      "name": "Скоростя БАМ Парк Д Приказ № 161",
+      "path": "/assets/docs/speeds/Скоростя БАМ Парк Д Приказ № 161.pdf",
+      "mime_type": "application/pdf",
+      "size": 424774
+    }
+  ],
   "folders": [
-    { "name": "Папка №2", "path": "/assets/docs/folders/Папка №2.pdf", "mime_type": "application/pdf", "size": 207872 }
+    {
+      "name": "Папка №2",
+      "path": "/assets/docs/folders/Папка №2.pdf",
+      "mime_type": "application/pdf",
+      "size": 207722
+    }
   ],
   "memos": []
 }
