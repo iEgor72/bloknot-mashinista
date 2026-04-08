@@ -424,7 +424,7 @@
     var SHIFTS_PENDING_STORAGE_KEY = 'shift_tracker_shifts_pending_v1';
     var SHIFTS_META_STORAGE_KEY = 'shift_tracker_shifts_meta_v1';
     var USER_STATS_CACHE_STORAGE_KEY = 'shift_tracker_user_stats_cache_v1';
-    var USER_STATS_DEVICE_ID_STORAGE_KEY = 'shift_tracker_device_id_v1';
+    var USER_STATS_SESSION_ID_STORAGE_KEY = 'shift_tracker_device_id_v1';
     var USER_STATS_PING_INTERVAL_MS = 45000;
     var pendingMutationIds = [];
     var offlineUiState = {
@@ -482,12 +482,29 @@
       }
     }
 
-    function isValidUsageDeviceId(value) {
+    function normalizeStatsUserId(rawUserId) {
+      if (rawUserId === undefined || rawUserId === null) return '';
+      var id = String(rawUserId).trim();
+      if (!id || id === 'guest') return '';
+      return id;
+    }
+
+    function getStatsPrimaryUserId() {
+      var currentId = normalizeStatsUserId(CURRENT_USER && CURRENT_USER.id);
+      if (currentId) return currentId;
+      var stored = getStoredCachedUser();
+      if (stored && stored.id !== undefined && stored.id !== null) {
+        return normalizeStatsUserId(stored.id);
+      }
+      return '';
+    }
+
+    function isValidUsageSessionId(value) {
       return typeof value === 'string' && /^[a-z0-9_-]{12,64}$/i.test(value);
     }
 
-    function createUsageDeviceId() {
-      var prefix = 'dev_';
+    function createUsageSessionId() {
+      var prefix = 'sess_';
       var bytes = [];
       if (window.crypto && window.crypto.getRandomValues) {
         bytes = new Uint8Array(16);
@@ -506,14 +523,14 @@
       return prefix + hex;
     }
 
-    function getUsageDeviceId() {
+    function getUsageSessionId() {
       try {
-        var stored = localStorage.getItem(USER_STATS_DEVICE_ID_STORAGE_KEY);
-        if (isValidUsageDeviceId(stored)) {
+        var stored = localStorage.getItem(USER_STATS_SESSION_ID_STORAGE_KEY);
+        if (isValidUsageSessionId(stored)) {
           return stored;
         }
-        var created = createUsageDeviceId();
-        localStorage.setItem(USER_STATS_DEVICE_ID_STORAGE_KEY, created);
+        var created = createUsageSessionId();
+        localStorage.setItem(USER_STATS_SESSION_ID_STORAGE_KEY, created);
         return created;
       } catch (e) {
         return '';
@@ -597,8 +614,14 @@
       }
       if (userStatsInFlight) return userStatsInFlight;
 
-      var deviceId = getUsageDeviceId();
-      if (!deviceId) {
+      var userId = getStatsPrimaryUserId();
+      if (!userId) {
+        applyUserStatsOfflineFallback();
+        return Promise.resolve(null);
+      }
+
+      var sessionId = getUsageSessionId();
+      if (!sessionId) {
         applyUserStatsOfflineFallback();
         return Promise.resolve(null);
       }
@@ -610,7 +633,7 @@
           'Content-Type': 'application/json',
           'Accept': 'application/json'
         },
-        body: JSON.stringify({ deviceId: deviceId, reason: reason || 'heartbeat' })
+        body: JSON.stringify({ userId: userId, sessionId: sessionId, reason: reason || 'heartbeat' })
       }, 4500).then(function(result) {
         userStatsInFlight = null;
         userStatsState.isLoading = false;
@@ -634,7 +657,7 @@
       if (userStatsTrackingStarted) return;
       userStatsTrackingStarted = true;
 
-      getUsageDeviceId();
+      getUsageSessionId();
       applyUserStatsOfflineFallback();
 
       if (navigator.onLine) {
@@ -4887,6 +4910,11 @@ var contentHtml = formatInstructionNodeContentHtml(
       updateFooter();
       renderInstallPromptCard();
       renderInstructionsScreen();
+      if (navigator.onLine) {
+        refreshUserStats('auth');
+      } else {
+        applyUserStatsOfflineFallback();
+      }
     }
 
     function handleTabActivated(tab) {

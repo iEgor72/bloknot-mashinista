@@ -57,39 +57,77 @@ function writeShifts(sid, shifts) {
   fs.writeFileSync(file, JSON.stringify(sanitized, null, 2), 'utf8');
 }
 
-function isValidDeviceId(rawDeviceId) {
-  return typeof rawDeviceId === 'string' && /^[a-z0-9_-]{12,64}$/i.test(rawDeviceId);
+function normalizeStatsUserId(rawUserId) {
+  if (rawUserId === undefined || rawUserId === null) return '';
+  const id = String(rawUserId).trim();
+  if (!id || id === 'guest') return '';
+  return id;
+}
+
+function isValidSessionId(rawSessionId) {
+  return typeof rawSessionId === 'string' && /^[a-z0-9_-]{12,64}$/i.test(rawSessionId);
 }
 
 function sanitizeUserPresenceStore(rawStore) {
   const source = rawStore && typeof rawStore === 'object' ? rawStore : {};
-  const sourceDevices = source.devices && typeof source.devices === 'object' ? source.devices : {};
-  const devices = {};
-  Object.keys(sourceDevices).forEach(deviceId => {
-    if (!isValidDeviceId(deviceId)) return;
-    const row = sourceDevices[deviceId] || {};
+  const sourceUsers = source.users && typeof source.users === 'object' ? source.users : {};
+  const sourceSessions = source.sessions && typeof source.sessions === 'object' ? source.sessions : {};
+  const users = {};
+  const sessions = {};
+
+  Object.keys(sourceUsers).forEach(userId => {
+    const normalizedUserId = normalizeStatsUserId(userId);
+    if (!normalizedUserId) return;
+    const row = sourceUsers[userId] || {};
     const firstSeenAt = typeof row.firstSeenAt === 'string' ? row.firstSeenAt : '';
     const lastSeenAt = typeof row.lastSeenAt === 'string' ? row.lastSeenAt : '';
     if (!lastSeenAt) return;
-    devices[deviceId] = {
+    users[normalizedUserId] = {
       firstSeenAt: firstSeenAt || lastSeenAt,
       lastSeenAt: lastSeenAt,
     };
   });
-  return { devices };
+
+  Object.keys(sourceSessions).forEach(sessionId => {
+    if (!isValidSessionId(sessionId)) return;
+    const row = sourceSessions[sessionId] || {};
+    const userId = normalizeStatsUserId(row.userId);
+    const firstSeenAt = typeof row.firstSeenAt === 'string' ? row.firstSeenAt : '';
+    const lastSeenAt = typeof row.lastSeenAt === 'string' ? row.lastSeenAt : '';
+    if (!userId || !lastSeenAt) return;
+    sessions[sessionId] = {
+      userId,
+      firstSeenAt: firstSeenAt || lastSeenAt,
+      lastSeenAt,
+    };
+    if (!users[userId]) {
+      users[userId] = {
+        firstSeenAt: firstSeenAt || lastSeenAt,
+        lastSeenAt,
+      };
+    } else {
+      const knownLastSeenMs = Date.parse(users[userId].lastSeenAt || '');
+      const sessionLastSeenMs = Date.parse(lastSeenAt);
+      if (Number.isFinite(sessionLastSeenMs) && (!Number.isFinite(knownLastSeenMs) || sessionLastSeenMs > knownLastSeenMs)) {
+        users[userId].lastSeenAt = lastSeenAt;
+      }
+    }
+  });
+
+  return { users, sessions };
 }
 
 function readUserPresenceStore() {
   ensureDirs();
   try {
     if (!fs.existsSync(USER_STATS_FILE)) {
-      return { devices: {} };
+      return { users: {}, sessions: {} };
     }
     const raw = fs.readFileSync(USER_STATS_FILE, 'utf8');
     const parsed = raw ? JSON.parse(raw) : {};
     return sanitizeUserPresenceStore(parsed);
   } catch (err) {
-    return { devices: {} };
+    return { users: {}, sessions: {} };
   }
 }
 
@@ -101,19 +139,24 @@ function writeUserPresenceStore(store) {
 
 function buildUserPresenceStats(store) {
   const nowMs = Date.now();
-  const devices = (store && store.devices) || {};
-  const ids = Object.keys(devices);
-  let onlineUsers = 0;
-  ids.forEach(deviceId => {
-    const row = devices[deviceId] || {};
+  const users = (store && store.users) || {};
+  const sessions = (store && store.sessions) || {};
+  const userIds = Object.keys(users);
+  const onlineUserMap = {};
+
+  Object.keys(sessions).forEach(sessionId => {
+    const row = sessions[sessionId] || {};
+    const userId = normalizeStatsUserId(row.userId);
+    if (!userId) return;
     const seenMs = Date.parse(row.lastSeenAt || '');
     if (Number.isFinite(seenMs) && nowMs - seenMs <= ONLINE_WINDOW_MS) {
-      onlineUsers += 1;
+      onlineUserMap[userId] = true;
     }
   });
+
   return {
-    totalUsers: ids.length,
-    onlineUsers,
+    totalUsers: userIds.length,
+    onlineUsers: Object.keys(onlineUserMap).length,
     onlineWindowSeconds: Math.floor(ONLINE_WINDOW_MS / 1000),
     updatedAt: new Date().toISOString(),
   };
@@ -123,14 +166,26 @@ function readUserPresenceStats() {
   return buildUserPresenceStats(readUserPresenceStore());
 }
 
-function touchUserPresence(deviceId) {
+function touchUserPresence(userId, sessionId) {
   const store = readUserPresenceStore();
   const nowIso = new Date().toISOString();
-  const existing = store.devices[deviceId];
-  store.devices[deviceId] = {
-    firstSeenAt: existing && typeof existing.firstSeenAt === 'string' && existing.firstSeenAt ? existing.firstSeenAt : nowIso,
+  const existingUser = store.users[userId];
+  const existingSession = store.sessions[sessionId];
+
+  store.users[userId] = {
+    firstSeenAt: existingUser && typeof existingUser.firstSeenAt === 'string' && existingUser.firstSeenAt ? existingUser.firstSeenAt : nowIso,
     lastSeenAt: nowIso,
   };
+  store.sessions[sessionId] = {
+    userId,
+    firstSeenAt: existingSession && typeof existingSession.firstSeenAt === 'string' && existingSession.firstSeenAt ? existingSession.firstSeenAt : nowIso,
+    lastSeenAt: nowIso,
+  };
+
+  if (existingSession && normalizeStatsUserId(existingSession.userId) !== userId) {
+    store.sessions[sessionId].userId = userId;
+  }
+
   writeUserPresenceStore(store);
   return buildUserPresenceStats(store);
 }
@@ -251,12 +306,19 @@ const server = http.createServer(async (req, res) => {
       try {
         const body = await readBody(req);
         const payload = body ? JSON.parse(body) : {};
-        const deviceId = typeof payload.deviceId === 'string' ? payload.deviceId.trim() : '';
-        if (!isValidDeviceId(deviceId)) {
-          sendJson(res, 400, { error: 'Invalid deviceId' });
+        const userId = normalizeStatsUserId(payload && payload.userId);
+        const sessionId = typeof payload.sessionId === 'string'
+          ? payload.sessionId.trim()
+          : (typeof payload.deviceId === 'string' ? payload.deviceId.trim() : '');
+        if (!userId) {
+          sendJson(res, 400, { error: 'Invalid userId' });
           return;
         }
-        sendJson(res, 200, touchUserPresence(deviceId));
+        if (!isValidSessionId(sessionId)) {
+          sendJson(res, 400, { error: 'Invalid sessionId' });
+          return;
+        }
+        sendJson(res, 200, touchUserPresence(userId, sessionId));
       } catch (err) {
         sendJson(res, 400, { error: err.message || 'Invalid payload' });
       }

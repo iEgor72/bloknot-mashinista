@@ -1,4 +1,5 @@
-import { isValidStatsDeviceId, readStats, touchAndReadStats } from '../features/stats/store.js';
+import { getSessionUser } from '../features/auth/telegram-auth.js';
+import { isValidStatsSessionId, normalizeStatsUserId, readStats, touchAndReadStats } from '../features/stats/store.js';
 
 function json(status, payload) {
   return new Response(JSON.stringify(payload), {
@@ -30,6 +31,18 @@ export async function onRequest(context) {
       });
     }
 
+    var botToken = env.TELEGRAM_BOT_TOKEN;
+    if (!botToken) {
+      return json(500, {
+        error: 'TELEGRAM_BOT_TOKEN is missing. Add it as a Pages secret.',
+      });
+    }
+
+    var user = await getSessionUser(request, botToken);
+    if (!user) {
+      return json(401, { error: 'Unauthorized' });
+    }
+
     if (request.method === 'GET') {
       return json(200, await readStats(env.DB));
     }
@@ -37,12 +50,18 @@ export async function onRequest(context) {
     if (request.method === 'POST') {
       try {
         var body = await request.json();
-        var deviceId = body && typeof body.deviceId === 'string' ? body.deviceId.trim() : '';
-        if (!isValidStatsDeviceId(deviceId)) {
-          return json(400, { error: 'Invalid deviceId' });
+        var sessionId = body && typeof body.sessionId === 'string'
+          ? body.sessionId.trim()
+          : (body && typeof body.deviceId === 'string' ? body.deviceId.trim() : '');
+        var userId = normalizeStatsUserId(user.id);
+        if (!userId) {
+          return json(400, { error: 'Invalid user id' });
+        }
+        if (!isValidStatsSessionId(sessionId)) {
+          return json(400, { error: 'Invalid sessionId' });
         }
 
-        return json(200, await touchAndReadStats(env.DB, deviceId));
+        return json(200, await touchAndReadStats(env.DB, userId, sessionId));
       } catch (err) {
         return json(400, { error: err && err.message ? err.message : 'Invalid payload' });
       }
