@@ -57,5 +57,24 @@
       "size": 207722
     }
   ],
-  "memos": []
+  "memos": [
+    {
+      "name": "БАМ кмс-пост-1",
+      "path": "/assets/docs/memos/БАМ кмс-пост-1.pdf",
+      "mime_type": "application/pdf",
+      "size": 4614339
+    },
+    {
+      "name": "ВСКГ- КСМ новый 2 пассажир",
+      "path": "/assets/docs/memos/ВСКГ- КСМ новый 2 пассажир.pdf",
+      "mime_type": "application/pdf",
+      "size": 4322875
+    },
+    {
+      "name": "КСМ-ВЛЧ 2",
+      "path": "/assets/docs/memos/КСМ-ВЛЧ 2.pdf",
+      "mime_type": "application/pdf",
+      "size": 6873310
+    }
+  ]
 }
