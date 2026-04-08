@@ -48,6 +48,11 @@
       backface-visibility: hidden;
     }
 
+    .bottom-nav-inner > .tab-btn {
+      min-width: 0;
+      width: 100%;
+    }
+
     .bottom-nav-inner::before {
       content: '';
       position: absolute;
@@ -95,7 +100,7 @@
         --bottom-nav-lens-opacity: 1;
       }
 
-      .bottom-nav-inner:has(.tab-btn[data-tab='add'].active) {
+      .bottom-nav:has(.tab-btn.center[data-tab='add'].active) .bottom-nav-inner {
         --bottom-nav-lens-opacity: 0;
       }
     }
@@ -136,7 +141,7 @@
       z-index: calc(var(--layer-floating) + 1);
       position: absolute;
       left: 50%;
-      bottom: 35px;
+      bottom: calc(var(--bottom-nav-safe-bottom) + 43px);
       transform: translateX(-50%);
       width: 66px;
       height: 66px;
