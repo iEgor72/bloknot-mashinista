@@ -472,50 +472,56 @@
     </div>
 
     <nav class="bottom-nav" aria-label="Основная навигация">
-      <div class="bottom-nav-inner">
-        <button class="tab-btn active" type="button" data-tab="home">
-          <span class="tab-icon" aria-hidden="true">
-            <svg viewBox="0 0 24 24">
-              <path d="M4 11.5 12 4l8 7.5"></path>
-              <path d="M6 10.5V20h5v-5h2v5h5v-9.5"></path>
-            </svg>
-          </span>
-          <span class="tab-label">Главная</span>
-        </button>
-        <button class="tab-btn" type="button" data-tab="shifts">
-          <span class="tab-icon" aria-hidden="true">
-            <svg viewBox="0 0 24 24">
-              <path d="M5 17h3"></path>
-              <path d="M5 12h7"></path>
-              <path d="M5 7h11"></path>
-              <path d="M16.5 5.5l2 2-7 7H9.5v-2z"></path>
-            </svg>
-          </span>
-          <span class="tab-label">Смены</span>
-        </button>
-        <button class="tab-btn" type="button" data-tab="salary">
-          <span class="tab-icon" aria-hidden="true">
-            <svg viewBox="0 0 24 24">
-              <path d="M4 8h16v10H4z"></path>
-              <path d="M8 8V6h8v2"></path>
-              <path d="M7 12h10"></path>
-              <path d="M7 15h6"></path>
-            </svg>
-          </span>
-          <span class="tab-label">Зарплата</span>
-        </button>
-        <button class="tab-btn" type="button" data-tab="instructions">
-          <span class="tab-icon" aria-hidden="true">
-            <svg viewBox="0 0 24 24">
-              <path d="M3 7a2 2 0 0 1 2-2h4.17a2 2 0 0 1 1.42.59L12 7h7a2 2 0 0 1 2 2v9a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V7z"></path>
-              <path d="M12 7v11"></path>
-            </svg>
-          </span>
-          <span class="tab-label">Документация</span>
-        </button>
-      </div>
-      <button class="tab-btn center bottom-nav-center-btn" type="button" data-tab="add" aria-label="Добавить смену">
-        <span class="tab-icon">＋</span>
+      <button class="tab-btn nav-item active" type="button" data-tab="home">
+        <span class="tab-icon" aria-hidden="true">
+          <svg viewBox="0 0 24 24">
+            <path d="M4 11.5 12 4l8 7.5"></path>
+            <path d="M6 10.5V20h5v-5h2v5h5v-9.5"></path>
+          </svg>
+        </span>
+        <span class="tab-label">Главная</span>
+      </button>
+      <button class="tab-btn nav-item" type="button" data-tab="shifts">
+        <span class="tab-icon" aria-hidden="true">
+          <svg viewBox="0 0 24 24">
+            <path d="M5 17h3"></path>
+            <path d="M5 12h7"></path>
+            <path d="M5 7h11"></path>
+            <path d="M16.5 5.5l2 2-7 7H9.5v-2z"></path>
+          </svg>
+        </span>
+        <span class="tab-label">Смены</span>
+      </button>
+
+      <!-- FAB — inline flex slot, 3rd position -->
+      <button class="tab-btn nav-fab" type="button" data-tab="add" id="fab-add" aria-label="Добавить смену">
+        <div class="fab-btn">
+          <svg viewBox="0 0 24 24" width="24" height="24" stroke="currentColor" fill="none" stroke-width="2.5" stroke-linecap="round">
+            <path d="M12 5v14M5 12h14"></path>
+          </svg>
+        </div>
+        <span class="fab-label">Добавить</span>
+      </button>
+
+      <button class="tab-btn nav-item" type="button" data-tab="salary">
+        <span class="tab-icon" aria-hidden="true">
+          <svg viewBox="0 0 24 24">
+            <path d="M4 8h16v10H4z"></path>
+            <path d="M8 8V6h8v2"></path>
+            <path d="M7 12h10"></path>
+            <path d="M7 15h6"></path>
+          </svg>
+        </span>
+        <span class="tab-label">Зарплата</span>
+      </button>
+      <button class="tab-btn nav-item" type="button" data-tab="instructions">
+        <span class="tab-icon" aria-hidden="true">
+          <svg viewBox="0 0 24 24">
+            <path d="M3 7a2 2 0 0 1 2-2h4.17a2 2 0 0 1 1.42.59L12 7h7a2 2 0 0 1 2 2v9a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V7z"></path>
+            <path d="M12 7v11"></path>
+          </svg>
+        </span>
+        <span class="tab-label">Документы</span>
       </button>
     </nav>
   </div>
