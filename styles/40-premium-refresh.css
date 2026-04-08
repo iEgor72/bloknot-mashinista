@@ -1,43 +1,15 @@
-/* Premium visual refresh: stronger contrast, saturated color, single-layer glass */
+/* Targeted fixes after premium refresh: restore FAB attention + remove nested menu-in-menu locally */
 
 :root {
   --bg: #05070f;
-  --text: #f6f9ff;
-  --text-muted: #b9c5f1;
-  --accent: #7e8fff;
-  --accent-hover: #9fb1ff;
-  --accent2: #ff62d1;
-  --premium-card-border: rgba(147, 183, 255, 0.34);
-  --premium-card-bg:
-    radial-gradient(circle at 10% -20%, rgba(83, 176, 255, 0.35), transparent 44%),
-    radial-gradient(circle at 92% 10%, rgba(174, 91, 255, 0.34), transparent 42%),
-    linear-gradient(154deg, rgba(10, 25, 94, 0.94) 0%, rgba(34, 17, 102, 0.93) 52%, rgba(8, 12, 44, 0.95) 100%);
-  --premium-card-shadow:
-    0 24px 52px rgba(2, 6, 18, 0.66),
-    0 0 0 1px rgba(148, 184, 255, 0.16),
-    0 0 28px rgba(103, 127, 255, 0.36),
-    0 0 58px rgba(182, 104, 255, 0.2);
-  --premium-inner-surface:
-    radial-gradient(circle at 12% -12%, rgba(67, 162, 255, 0.28), transparent 40%),
-    radial-gradient(circle at 90% 14%, rgba(148, 92, 255, 0.25), transparent 40%),
-    linear-gradient(150deg, rgba(9, 19, 76, 0.9), rgba(21, 13, 60, 0.9) 56%, rgba(7, 10, 35, 0.92));
-  --premium-btn-shadow:
-    0 14px 30px rgba(10, 15, 36, 0.52),
-    0 0 0 1px rgba(148, 180, 255, 0.18),
-    0 0 18px rgba(92, 137, 255, 0.32);
-  --premium-btn-shadow-strong:
-    0 16px 34px rgba(8, 13, 34, 0.58),
-    0 0 0 1px rgba(171, 200, 255, 0.28),
-    0 0 24px rgba(109, 148, 255, 0.46),
-    0 0 44px rgba(196, 108, 255, 0.32);
 }
 
 html,
 body {
   background:
-    radial-gradient(92% 58% at 8% -10%, rgba(72, 168, 255, 0.34), transparent 55%),
-    radial-gradient(88% 56% at 94% 0%, rgba(181, 92, 255, 0.3), transparent 52%),
-    radial-gradient(82% 62% at 52% 110%, rgba(0, 219, 255, 0.2), transparent 58%),
+    radial-gradient(92% 58% at 8% -10%, rgba(72, 168, 255, 0.26), transparent 55%),
+    radial-gradient(88% 56% at 94% 0%, rgba(181, 92, 255, 0.22), transparent 52%),
+    radial-gradient(82% 62% at 52% 110%, rgba(0, 219, 255, 0.14), transparent 58%),
     #05070f;
 }
 
@@ -46,21 +18,14 @@ html {
 }
 
 body::before {
-  width: 420px;
-  height: 420px;
-  left: -150px;
-  top: 90px;
-  background: radial-gradient(circle, rgba(70, 177, 255, 0.34) 0%, rgba(70, 177, 255, 0.08) 55%, transparent 74%);
+  background: radial-gradient(circle, rgba(70, 177, 255, 0.26) 0%, rgba(70, 177, 255, 0.06) 56%, transparent 74%);
 }
 
 body::after {
-  width: 460px;
-  height: 460px;
-  right: -140px;
-  bottom: 12px;
-  background: radial-gradient(circle, rgba(185, 94, 255, 0.32) 0%, rgba(185, 94, 255, 0.08) 55%, transparent 74%);
+  background: radial-gradient(circle, rgba(185, 94, 255, 0.24) 0%, rgba(185, 94, 255, 0.06) 56%, transparent 74%);
 }
 
+/* Keep blur only on major/top-level surfaces */
 .card,
 .auth-card,
 .month-nav,
@@ -73,35 +38,16 @@ body::after {
 .settings-card,
 .install-prompt-card,
 .bottom-sheet,
-.offline-banner {
-  background: var(--premium-card-bg);
-  border: 1px solid var(--premium-card-border);
-  box-shadow: var(--premium-card-shadow);
-  backdrop-filter: blur(22px) saturate(150%);
-  -webkit-backdrop-filter: blur(22px) saturate(150%);
+.offline-banner,
+.bottom-nav-inner,
+.docs-viewer-overlay,
+.shift-detail-overlay,
+.shift-detail-header {
+  backdrop-filter: blur(18px) saturate(135%);
+  -webkit-backdrop-filter: blur(18px) saturate(135%);
 }
 
-.shift-item,
-.optional-card,
-.draft-stats-grid,
-.shifts-overview-chip,
-.sheet-url-text,
-.docs-item,
-.docs-empty-state,
-.shifts-empty,
-.form-stage,
-.settings-row,
-.auth-widget-shell {
-  background: var(--premium-inner-surface);
-  border: 1px solid rgba(132, 168, 255, 0.28);
-  box-shadow:
-    0 14px 30px rgba(3, 8, 22, 0.54),
-    0 0 0 1px rgba(120, 153, 255, 0.14),
-    0 0 20px rgba(94, 125, 255, 0.28);
-}
-
-/* Keep blur only on top card-level containers */
-.auth-banner,
+/* Remove nested blur from inner controls and inner containers */
 .month-btn,
 .month-tab,
 .section-link,
@@ -125,143 +71,136 @@ body::after {
 .docs-tab-btn,
 .docs-upload-btn,
 .tab-btn.center,
-.bottom-nav-inner,
 .sheet-url-text,
 .draft-stats-grid,
-.optional-card,
+.form-stage,
+.settings-row,
 .shifts-overview-chip,
 .shifts-empty,
-.docs-toast {
-  backdrop-filter: none !important;
-  -webkit-backdrop-filter: none !important;
-}
-
+.auth-widget-shell,
+.docs-item,
+.docs-empty-state,
+.docs-toast,
 .bottom-nav-inner::before {
   backdrop-filter: none !important;
   -webkit-backdrop-filter: none !important;
 }
 
-.month-nav,
-.dashboard-card,
-.quick-stats-grid,
-.average-shift-card,
-.shifts-section,
-.form-section,
-.salary-card,
-.settings-card,
-.install-prompt-card,
-.shift-item,
-.optional-card,
-.draft-stats-grid,
-.shifts-overview-chip,
-.sheet-url-text {
-  opacity: 1;
-}
-
-.btn-primary,
-.auth-primary,
-.btn-copy,
-.docs-upload-btn {
-  background: linear-gradient(135deg, #2edcff 0%, #4f90ff 34%, #7f71ff 66%, #ff61cf 100%);
-  border: 1px solid rgba(220, 236, 255, 0.34);
-  color: #ffffff;
-  box-shadow: var(--premium-btn-shadow-strong);
-}
-
-.month-btn,
-.section-link,
-.btn-secondary,
-.icon-glass-btn,
-.btn-action,
-.btn-sheet-close,
-.month-tab,
-.docs-tab-btn,
-.segmented-btn,
-.shift-actions-trigger,
-.glass-select-trigger {
-  background: linear-gradient(165deg, rgba(20, 34, 104, 0.9), rgba(34, 18, 97, 0.88));
-  border: 1px solid rgba(151, 183, 255, 0.3);
-  color: rgba(245, 249, 255, 0.96);
-  box-shadow: var(--premium-btn-shadow);
-}
-
-.month-tab.active,
-.docs-tab-btn.active,
-.segmented-btn.active,
-.glass-select-trigger.is-open {
+/* Local menu-in-menu cleanup only where there are nested panels */
+.form-section .form-stage,
+.form-section .draft-stats-grid {
   background:
-    linear-gradient(135deg, rgba(47, 225, 255, 0.24), rgba(154, 99, 255, 0.26)),
-    linear-gradient(165deg, rgba(24, 38, 110, 0.94), rgba(44, 20, 110, 0.92));
-  border-color: rgba(185, 214, 255, 0.48);
-  color: #ffffff;
-  box-shadow: var(--premium-btn-shadow-strong);
+    linear-gradient(180deg, rgba(255, 255, 255, 0.03), rgba(255, 255, 255, 0.01)),
+    rgba(12, 18, 44, 0.46);
+  border: 1px solid rgba(154, 178, 255, 0.14);
+  box-shadow: none;
 }
 
-.btn-primary:active,
-.auth-primary:active,
-.btn-copy:active,
-.docs-upload-btn:active,
-.month-btn:active,
-.section-link:active,
-.btn-secondary:active,
-.icon-glass-btn:active,
-.btn-action:active,
-.btn-sheet-close:active,
-.shift-actions-trigger:active,
-.month-tab:active,
-.docs-tab-btn:active,
-.segmented-btn:active,
-.glass-select-trigger:active {
-  transform: translateY(1px) scale(0.99);
-  box-shadow: var(--premium-btn-shadow-strong);
+.form-section .optional-card {
+  background:
+    linear-gradient(180deg, rgba(255, 255, 255, 0.028), rgba(255, 255, 255, 0.01)),
+    rgba(13, 20, 46, 0.42);
+  border: 1px solid rgba(154, 178, 255, 0.12);
+  box-shadow: none;
+}
+
+.form-section .optional-card[open] .optional-summary {
+  background: rgba(255, 255, 255, 0.015);
+}
+
+.bottom-sheet .settings-card {
+  background: rgba(12, 18, 46, 0.42);
+  border: 1px solid rgba(151, 173, 244, 0.14);
+  box-shadow: none;
+}
+
+.settings-card .settings-row {
+  background: rgba(255, 255, 255, 0.015);
+  border-color: rgba(214, 225, 255, 0.11);
+  box-shadow: none;
+}
+
+.shifts-section .shifts-overview-chip {
+  background:
+    linear-gradient(180deg, rgba(255, 255, 255, 0.028), rgba(255, 255, 255, 0.01)),
+    rgba(15, 22, 54, 0.5);
+  border: 1px solid rgba(160, 180, 246, 0.14);
+  box-shadow: none;
+}
+
+.auth-card .auth-widget-shell {
+  background: rgba(255, 255, 255, 0.015);
+  border: 1px solid rgba(214, 225, 255, 0.09);
+  box-shadow: none;
+}
+
+.bottom-sheet .sheet-url-text {
+  box-shadow: none;
+  border-color: rgba(214, 225, 255, 0.12);
+}
+
+/* Restore FAB attention animation (soft pulse + glow breathing) */
+@keyframes fabAttentionPulse {
+  0%,
+  100% {
+    transform: translateX(-50%) translateY(0) scale(1);
+    box-shadow: var(--fab-shadow-rest);
+  }
+  50% {
+    transform: translateX(-50%) translateY(-1px) scale(1.022);
+    box-shadow: var(--fab-shadow-pulse);
+  }
+}
+
+@keyframes fabAttentionGlow {
+  0%,
+  100% {
+    opacity: 0.36;
+    filter: blur(9px);
+  }
+  50% {
+    opacity: 0.52;
+    filter: blur(10px);
+  }
 }
 
 .tab-btn.center {
-  background: linear-gradient(145deg, #29dfff 0%, #5b90ff 34%, #886eff 66%, #ff5ccb 100%);
-  border-color: rgba(228, 238, 255, 0.4);
-  box-shadow: var(--premium-btn-shadow-strong);
+  --fab-shadow-rest:
+    0 15px 28px rgba(14, 20, 52, 0.44),
+    0 8px 16px rgba(8, 12, 30, 0.34),
+    0 0 0 1px rgba(255, 255, 255, 0.16),
+    0 0 18px rgba(126, 139, 255, 0.34),
+    0 0 28px rgba(86, 177, 255, 0.24),
+    var(--glass-depth-inset-btn);
+  --fab-shadow-pulse:
+    0 17px 32px rgba(14, 20, 52, 0.5),
+    0 8px 18px rgba(8, 12, 30, 0.34),
+    0 0 0 1px rgba(255, 255, 255, 0.2),
+    0 0 24px rgba(126, 139, 255, 0.42),
+    0 0 36px rgba(92, 181, 255, 0.3),
+    var(--glass-depth-inset-btn);
+  box-shadow: var(--fab-shadow-rest);
+  animation: fabAttentionPulse 2.9s cubic-bezier(0.36, 0, 0.22, 1) infinite;
+  will-change: transform, box-shadow;
+}
+
+.tab-btn.center::before {
+  animation: fabAttentionGlow 2.9s ease-in-out infinite;
+}
+
+.tab-btn.center.active,
+.tab-btn.center:active,
+body.is-keyboard-open .tab-btn.center {
+  animation: none;
 }
 
 .tab-btn.center.active {
-  box-shadow:
-    0 20px 38px rgba(10, 16, 38, 0.62),
-    0 0 0 1px rgba(228, 238, 255, 0.3),
-    0 0 30px rgba(93, 151, 255, 0.56),
-    0 0 54px rgba(201, 108, 255, 0.36);
+  box-shadow: var(--fab-shadow-pulse);
 }
 
-.tab-btn.center:active {
-  transform: translateX(-50%) scale(0.94);
-  box-shadow: var(--premium-btn-shadow-strong);
-}
-
-.progress-track {
-  background: linear-gradient(180deg, rgba(6, 11, 32, 0.92), rgba(5, 9, 24, 0.94));
-  border: 1px solid rgba(122, 154, 255, 0.32);
-  box-shadow:
-    inset 0 1px 0 rgba(217, 231, 255, 0.08),
-    inset 0 0 0 1px rgba(23, 35, 88, 0.72),
-    0 0 18px rgba(72, 112, 255, 0.22);
-}
-
-.progress-fill {
-  background: linear-gradient(90deg, #2fe2ff 0%, #4d91ff 32%, #8270ff 66%, #ff5fce 100%);
-  box-shadow:
-    0 0 16px rgba(62, 230, 255, 0.48),
-    0 0 30px rgba(123, 111, 255, 0.5),
-    0 0 44px rgba(255, 98, 214, 0.34);
-}
-
-.quick-stats-note,
-.dashboard-average,
-.dashboard-month-income-label,
-.section-header,
-.sheet-text,
-.install-prompt-text,
-.optional-summary-subtitle,
-.settings-note,
-.settings-help-block,
-.stat-label,
-.salary-text {
-  color: rgba(228, 237, 255, 0.82);
+@media (prefers-reduced-motion: reduce) {
+  .tab-btn.center,
+  .tab-btn.center::before {
+    animation: none !important;
+  }
 }
