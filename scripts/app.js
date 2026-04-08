@@ -3379,6 +3379,28 @@ var contentHtml = formatInstructionNodeContentHtml(
       return (bytes / (1024 * 1024)).toFixed(1) + ' МБ';
     }
 
+    function docsFormatDate(value) {
+      if (!value) return '';
+      var date = null;
+      if (typeof value === 'number') {
+        date = new Date(value);
+      } else {
+        var raw = String(value).trim();
+        if (!raw) return '';
+        if (/^\d{4}-\d{2}-\d{2}$/.test(raw)) {
+          var parts = raw.split('-');
+          date = new Date(Number(parts[0]), Number(parts[1]) - 1, Number(parts[2]));
+        } else {
+          date = new Date(raw);
+        }
+      }
+      if (!date || !isFinite(date.getTime())) return '';
+      var dd = String(date.getDate()).padStart(2, '0');
+      var mm = String(date.getMonth() + 1).padStart(2, '0');
+      var yyyy = date.getFullYear();
+      return dd + '.' + mm + '.' + yyyy;
+    }
+
     function docsFileIcon(mimeType) {
       var mime = String(mimeType || '');
       if (mime.indexOf('pdf') !== -1) {
@@ -3418,9 +3440,11 @@ var contentHtml = formatInstructionNodeContentHtml(
       for (var i = 0; i < files.length; i++) {
         var f = files[i];
         var size = docsFormatSize(f.size);
+        var updatedAt = docsFormatDate(f.updated_at || f.added_at || f.date_added);
         var mime = String(f.mime_type || '').toLowerCase();
         var metaParts = [];
         if (mime.indexOf('pdf') !== -1) metaParts.push('PDF');
+        if (updatedAt) metaParts.push('обновлено ' + updatedAt);
         if (size) metaParts.push(size);
         var meta = metaParts.join(' · ');
         html +=

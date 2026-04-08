@@ -1,22 +1,25 @@
 {
   "speeds": [
     {
-      "name": "Скоростя БАМ Парк Д Приказ № 161",
+      "name": "БАМ",
       "path": "/assets/docs/speeds/Скоростя БАМ Парк Д Приказ № 161.pdf",
       "mime_type": "application/pdf",
-      "size": 424774
+      "size": 424774,
+      "updated_at": "2026-04-08"
     },
     {
-      "name": "Скоростя ВСГ Парк Д Приказ № 161",
+      "name": "ВСГ",
       "path": "/assets/docs/speeds/Скоростя ВСГ Парк Д Приказ № 161.pdf",
       "mime_type": "application/pdf",
-      "size": 490766
+      "size": 490766,
+      "updated_at": "2026-04-08"
     },
     {
-      "name": "Скоростя ВЛЧ Приказ № 161",
+      "name": "ВЛЧ",
       "path": "/assets/docs/speeds/Скоростя ВЛЧ Приказ № 161.pdf",
       "mime_type": "application/pdf",
-      "size": 819554
+      "size": 819554,
+      "updated_at": "2026-04-08"
     }
   ],
   "folders": [
@@ -24,57 +27,66 @@
       "name": "Папка №7",
       "path": "/assets/docs/folders/Папка №7.pdf",
       "mime_type": "application/pdf",
-      "size": 203086
+      "size": 203086,
+      "updated_at": "2026-04-07"
     },
     {
       "name": "Папка №6",
       "path": "/assets/docs/folders/Папка №6.pdf",
       "mime_type": "application/pdf",
-      "size": 202321
+      "size": 202321,
+      "updated_at": "2026-04-08"
     },
     {
       "name": "Папка №5",
       "path": "/assets/docs/folders/Папка №5.pdf",
       "mime_type": "application/pdf",
-      "size": 202648
+      "size": 202648,
+      "updated_at": "2026-04-08"
     },
     {
       "name": "Папка №4",
       "path": "/assets/docs/folders/Папка №4.pdf",
       "mime_type": "application/pdf",
-      "size": 207129
+      "size": 207129,
+      "updated_at": "2026-04-08"
     },
     {
       "name": "Папка №3",
       "path": "/assets/docs/folders/Папка №3.pdf",
       "mime_type": "application/pdf",
-      "size": 202426
+      "size": 202426,
+      "updated_at": "2026-04-08"
     },
     {
       "name": "Папка №2",
       "path": "/assets/docs/folders/Папка №2.pdf",
       "mime_type": "application/pdf",
-      "size": 207722
+      "size": 207722,
+      "updated_at": "2026-04-08"
     }
   ],
   "memos": [
     {
-      "name": "БАМ кмс-пост-1",
+      "name": "БАМ",
       "path": "/assets/docs/memos/БАМ кмс-пост-1.pdf",
       "mime_type": "application/pdf",
-      "size": 4614339
+      "size": 4614339,
+      "updated_at": "2026-04-08"
     },
     {
-      "name": "ВСКГ- КСМ новый 2 пассажир",
+      "name": "ВСГ",
       "path": "/assets/docs/memos/ВСКГ- КСМ новый 2 пассажир.pdf",
       "mime_type": "application/pdf",
-      "size": 4322875
+      "size": 4322875,
+      "updated_at": "2026-04-08"
     },
     {
-      "name": "КСМ-ВЛЧ 2",
+      "name": "ВЛЧ",
       "path": "/assets/docs/memos/КСМ-ВЛЧ 2.pdf",
       "mime_type": "application/pdf",
-      "size": 6873310
+      "size": 6873310,
+      "updated_at": "2026-04-08"
     }
   ]
 }
