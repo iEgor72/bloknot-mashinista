@@ -70,15 +70,11 @@
     var APP_CONTENT = document.querySelector('.app-content');
     var BOTTOM_NAV = document.querySelector('.bottom-nav');
     var BOTTOM_NAV_INNER = document.querySelector('.bottom-nav-inner');
-    var BOTTOM_NAV_HIGHLIGHT = document.querySelector('.bottom-nav-highlight');
     var keyboardFocusField = null;
     var keyboardStateOpen = false;
     var keyboardSyncTimer = null;
     var keyboardRevealTimer = null;
     var navHeightSyncTimer = null;
-    var bottomNavHighlightSyncTimer = null;
-    var bottomNavHighlightNeedsImmediate = false;
-    var bottomNavHighlightReady = false;
     var viewportMetricsRaf = null;
     var telegramLayoutBindTimer = null;
     var telegramLayoutEventsBound = false;
@@ -110,63 +106,6 @@
       setCssVar('--app-viewport-height', value);
     }
 
-    function syncBottomNavHighlightPosition(forceImmediate) {
-      if (!BOTTOM_NAV_INNER || !BOTTOM_NAV_HIGHLIGHT || !BOTTOM_NAV_INNER.getBoundingClientRect) return;
-
-      var activeButton = BOTTOM_NAV_INNER.querySelector('.tab-btn.active[data-tab]');
-      if (!activeButton || activeButton.classList.contains('center')) {
-        BOTTOM_NAV_INNER.classList.add('bottom-nav-highlight-hidden');
-        return;
-      }
-
-      var innerRect = BOTTOM_NAV_INNER.getBoundingClientRect();
-      var buttonRect = activeButton.getBoundingClientRect();
-      if (innerRect.width <= 0 || innerRect.height <= 0 || buttonRect.width <= 0 || buttonRect.height <= 0) {
-        return;
-      }
-
-      var horizontalInset = Math.max(2, Math.round(buttonRect.width * 0.06));
-      var verticalInset = 2;
-      var x = buttonRect.left - innerRect.left + horizontalInset;
-      var y = buttonRect.top - innerRect.top + verticalInset;
-      var width = Math.max(40, buttonRect.width - horizontalInset * 2);
-      var height = Math.max(34, buttonRect.height - verticalInset * 2);
-      var immediate = !!forceImmediate || !bottomNavHighlightReady;
-
-      if (immediate) {
-        BOTTOM_NAV_INNER.classList.add('bottom-nav-highlight-no-transition');
-      }
-
-      BOTTOM_NAV_INNER.style.setProperty('--bottom-nav-highlight-x', (Math.round(x * 100) / 100) + 'px');
-      BOTTOM_NAV_INNER.style.setProperty('--bottom-nav-highlight-y', (Math.round(y * 100) / 100) + 'px');
-      BOTTOM_NAV_INNER.style.setProperty('--bottom-nav-highlight-width', (Math.round(width * 100) / 100) + 'px');
-      BOTTOM_NAV_INNER.style.setProperty('--bottom-nav-highlight-height', (Math.round(height * 100) / 100) + 'px');
-      BOTTOM_NAV_INNER.classList.remove('bottom-nav-highlight-hidden');
-      BOTTOM_NAV_INNER.classList.add('bottom-nav-highlight-ready');
-
-      if (immediate) {
-        void BOTTOM_NAV_HIGHLIGHT.offsetWidth;
-        BOTTOM_NAV_INNER.classList.remove('bottom-nav-highlight-no-transition');
-      }
-
-      bottomNavHighlightReady = true;
-    }
-
-    function scheduleBottomNavHighlightSync(options) {
-      if (!BOTTOM_NAV_INNER || !BOTTOM_NAV_HIGHLIGHT) return;
-      if (options && options.immediate) {
-        bottomNavHighlightNeedsImmediate = true;
-      }
-      if (bottomNavHighlightSyncTimer) return;
-
-      bottomNavHighlightSyncTimer = window.requestAnimationFrame(function() {
-        var immediate = bottomNavHighlightNeedsImmediate;
-        bottomNavHighlightNeedsImmediate = false;
-        bottomNavHighlightSyncTimer = null;
-        syncBottomNavHighlightPosition(immediate);
-      });
-    }
-
     function syncBottomNavHeight() {
       if (!BOTTOM_NAV || !BOTTOM_NAV.getBoundingClientRect) return;
       var rect = BOTTOM_NAV.getBoundingClientRect();
@@ -174,7 +113,6 @@
       if (navHeight > 0) {
         setCssVar('--bottom-nav-height', navHeight + 'px');
       }
-      scheduleBottomNavHighlightSync();
     }
 
     function scheduleBottomNavHeightSync() {
@@ -234,16 +172,32 @@
       } catch (e) {}
     }
 
-    function triggerHapticImpactLight() {
-      runHaptic('impactLight');
+    function triggerHapticSelection() {
+      runHaptic('hapticSelection');
     }
 
-    function triggerHapticSelectionChange() {
-      runHaptic('selectionChanged');
+    function triggerHapticTapLight() {
+      runHaptic('hapticTapLight');
+    }
+
+    function triggerHapticTapSoft() {
+      runHaptic('hapticTapSoft');
+    }
+
+    function triggerHapticActionMedium() {
+      runHaptic('hapticActionMedium');
     }
 
     function triggerHapticSuccess() {
-      runHaptic('success');
+      runHaptic('hapticSuccess');
+    }
+
+    function triggerHapticWarning() {
+      runHaptic('hapticWarning');
+    }
+
+    function triggerHapticError() {
+      runHaptic('hapticError');
     }
 
     function toPositivePx(value) {
@@ -1631,6 +1585,8 @@
 
       var summary = buildSalarySummary(monthShifts, bounds);
       renderMonthHeader('salaryMonthTitle', 'salaryMonthQuarter', 'salaryMonthTabs', currentYear, currentMonth, function(targetMonth) {
+        if (targetMonth === currentMonth) return;
+        triggerHapticSelection();
         currentMonth = targetMonth;
         render();
       });
@@ -5140,7 +5096,6 @@ var contentHtml = formatInstructionNodeContentHtml(
       updateSettingsControls();
       updateOfflineUiState();
       setActiveTab(activeTab || 'home');
-      scheduleBottomNavHighlightSync({ immediate: true });
       scheduleBottomNavHeightSync();
       updateFooter();
       renderInstallPromptCard();
@@ -5175,7 +5130,6 @@ var contentHtml = formatInstructionNodeContentHtml(
         btn.classList.toggle('active', btn.getAttribute('data-tab') === activeTab);
       }
 
-      scheduleBottomNavHighlightSync();
       scheduleBottomNavHeightSync();
       updateFooter();
       renderInstallPromptCard();
@@ -6368,10 +6322,14 @@ var contentHtml = formatInstructionNodeContentHtml(
 
       // Month title
       renderMonthHeader('monthTitle', 'monthQuarter', 'homeMonthTabs', currentYear, currentMonth, function(targetMonth) {
+        if (targetMonth === currentMonth) return;
+        triggerHapticSelection();
         currentMonth = targetMonth;
         render();
       });
       renderMonthHeader('shiftsMonthTitle', 'shiftsMonthQuarter', 'shiftsMonthTabs', currentYear, currentMonth, function(targetMonth) {
+        if (targetMonth === currentMonth) return;
+        triggerHapticSelection();
         currentMonth = targetMonth;
         render();
       });
@@ -6930,7 +6888,7 @@ var contentHtml = formatInstructionNodeContentHtml(
       if (e.currentTarget.dataset.shiftTriggerPressed === '1' && e.type === 'click') return;
       var targetId = e.currentTarget.getAttribute('data-id');
       if (activeShiftMenuId !== targetId) {
-        triggerHapticImpactLight();
+        triggerHapticTapLight();
       }
       var host = e.currentTarget.closest('#homeShiftsList, #shiftsList');
       activeShiftMenuScope = host ? host.id : 'shiftsList';
@@ -6964,7 +6922,6 @@ var contentHtml = formatInstructionNodeContentHtml(
 
       e.preventDefault();
       e.stopPropagation();
-      triggerHapticImpactLight();
 
       var action = item.getAttribute('data-action');
       var id = item.getAttribute('data-id');
@@ -6975,17 +6932,22 @@ var contentHtml = formatInstructionNodeContentHtml(
       }
 
       if (action === 'edit') {
+        triggerHapticTapLight();
         enterEditMode(shift);
         closeShiftActionsMenu(true);
         return;
       }
 
       if (action === 'delete') {
+        triggerHapticWarning();
         pendingDeleteId = id;
         closeShiftActionsMenu(true);
         render();
         openOverlay('overlayConfirm');
+        return;
       }
+
+      triggerHapticTapLight();
     }
 
     function handleShiftActionsBackdropPointerDown(e) {
@@ -7003,6 +6965,7 @@ var contentHtml = formatInstructionNodeContentHtml(
       }
       if (!shift) return;
 
+      triggerHapticWarning();
       pendingDeleteId = id;
       render();
       openOverlay('overlayConfirm');
@@ -7059,11 +7022,13 @@ var contentHtml = formatInstructionNodeContentHtml(
       var id = e.currentTarget.getAttribute('data-id');
       var shift = findShiftById(id);
       if (!shift) return;
+      triggerHapticTapLight();
       enterEditMode(shift);
     }
 
     document.getElementById('btnConfirmDelete').addEventListener('click', function() {
       if (!pendingDeleteId) return;
+      triggerHapticActionMedium();
       var newShifts = [];
       for (var i = 0; i < allShifts.length; i++) {
         if (allShifts[i].id !== pendingDeleteId) newShifts.push(allShifts[i]);
@@ -7081,11 +7046,13 @@ var contentHtml = formatInstructionNodeContentHtml(
 
       saveShifts(function(err) {
         if (err) {
+          triggerHapticError();
           loadShifts(function() {
             render();
           });
           return;
         }
+        triggerHapticSuccess();
         render();
       });
     });
@@ -7111,6 +7078,7 @@ var contentHtml = formatInstructionNodeContentHtml(
       var button = document.getElementById(buttonId);
       if (!button) return;
       button.addEventListener('click', function() {
+        triggerHapticSelection();
         shiftCurrentMonthBy(delta);
         render();
       });
@@ -7148,7 +7116,6 @@ var contentHtml = formatInstructionNodeContentHtml(
     resetViewportBaselines();
     updateViewportMetrics();
     scheduleBottomNavHeightSync();
-    scheduleBottomNavHighlightSync({ immediate: true });
     settleSafeAreaInsets();
     scheduleKeyboardSync();
     telegramLayoutBindRetries = 0;
@@ -7342,7 +7309,7 @@ var contentHtml = formatInstructionNodeContentHtml(
       routeTypeButtons[rt].addEventListener('click', function(e) {
         var nextRouteType = e.currentTarget.getAttribute('data-value');
         if (nextRouteType !== getRouteType()) {
-          triggerHapticSelectionChange();
+          triggerHapticSelection();
         }
         setRouteType(nextRouteType);
         renderDraftShiftSummary();
@@ -7370,13 +7337,17 @@ var contentHtml = formatInstructionNodeContentHtml(
         valid = false;
       }
 
-      if (!valid) return;
+      if (!valid) {
+        triggerHapticError();
+        return;
+      }
 
       var startDate = parseMsk(startVal);
       var endDate = parseMsk(endVal);
 
       if (!startDate || !endDate) {
         document.getElementById('errStart').textContent = 'Неверный формат даты';
+        triggerHapticError();
         return;
       }
 
@@ -7384,6 +7355,7 @@ var contentHtml = formatInstructionNodeContentHtml(
         document.getElementById('errEnd').textContent = 'Конец смены не может быть раньше начала';
         inputEndDateEl.classList.add('input-error');
         inputEndTimeEl.classList.add('input-error');
+        triggerHapticError();
         return;
       }
 
@@ -7434,6 +7406,7 @@ var contentHtml = formatInstructionNodeContentHtml(
 
       saveShifts(function(err) {
         if (err) {
+          triggerHapticError();
           allShifts = previousShifts;
           btn.disabled = false;
           document.getElementById('formSuccess').textContent = 'Не удалось сохранить смену';
@@ -7579,7 +7552,7 @@ if (action === 'scroll-node') {
         if (btn) {
           var tab = btn.getAttribute('data-docs-tab');
           if (tab && tab !== documentationStore.activeTab) {
-            triggerHapticSelectionChange();
+            triggerHapticSelection();
             documentationStore.activeTab = tab;
             renderDocumentationScreen();
           }
@@ -7610,13 +7583,13 @@ if (action === 'scroll-node') {
         var isSameTab = tab === activeTab;
         if (tab === 'add') {
           if (!isSameTab) {
-            triggerHapticImpactLight();
+            triggerHapticTapSoft();
           }
           openAddTabAndFocusForm();
           return;
         }
         if (!isSameTab) {
-          triggerHapticSelectionChange();
+          triggerHapticSelection();
         }
         setActiveTab(tab);
       });
@@ -7626,7 +7599,7 @@ if (action === 'scroll-node') {
     if (goToShiftsBtn) {
       goToShiftsBtn.addEventListener('click', function() {
         if (activeTab !== 'shifts') {
-          triggerHapticSelectionChange();
+          triggerHapticSelection();
         }
         setActiveTab('shifts');
       });
