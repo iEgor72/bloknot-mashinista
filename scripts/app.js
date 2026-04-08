@@ -3421,13 +3421,13 @@ var contentHtml = formatInstructionNodeContentHtml(
         var date = f.uploaded_at ? f.uploaded_at.slice(0, 10) : '';
         var meta = [size, date].filter(Boolean).join(' · ');
         html +=
-          '<div class="docs-item" data-db-id="' + f.id + '" data-file-name="' + encodeURIComponent(f.name || '') + '">' +
+          '<div class="docs-item" data-db-id="' + f.id + '" data-file-id="' + encodeURIComponent(f.file_id || '') + '" data-file-name="' + encodeURIComponent(f.name || '') + '" data-mime-type="' + encodeURIComponent(f.mime_type || '') + '">' +
             '<div class="docs-item-icon">' + docsFileIcon(f.mime_type) + '</div>' +
             '<div class="docs-item-body">' +
               '<div class="docs-item-title">' + (f.name || 'Файл') + '</div>' +
               (meta ? '<div class="docs-item-meta">' + meta + '</div>' : '') +
             '</div>' +
-            '<div class="docs-item-action"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg></div>' +
+            '<div class="docs-item-action"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg></div>' +
             (isAdm ? '<button class="docs-item-delete" data-delete-id="' + f.id + '" aria-label="Удалить файл"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6"/><path d="M10 11v6"/><path d="M14 11v6"/></svg></button>' : '') +
           '</div>';
       }
@@ -3494,34 +3494,230 @@ var contentHtml = formatInstructionNodeContentHtml(
         .catch(function() {});
     }
 
-    // ── Send doc file to user's Telegram chat ────────────────────────────────
-    // Bot sends the file to the user via sendDocument — Telegram's own
-    // viewer handles PDF, images, docs natively. No custom viewer needed.
+    // ── PDF.js lazy loader ────────────────────────────────────────────────────
 
-    function openDocFile(dbId, fileName) {
+    var _pdfJsLoaded = false;
+    var _pdfJsLoading = false;
+    var _pdfJsQueue = [];
+
+    function loadPdfJs(onReady) {
+      if (_pdfJsLoaded) { onReady(null); return; }
+      _pdfJsQueue.push(onReady);
+      if (_pdfJsLoading) return;
+      _pdfJsLoading = true;
+      var script = document.createElement('script');
+      script.src = 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js';
+      script.onload = function() {
+        if (window.pdfjsLib) {
+          window.pdfjsLib.GlobalWorkerOptions.workerSrc =
+            'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js';
+        }
+        _pdfJsLoaded = true;
+        _pdfJsLoading = false;
+        var cbs = _pdfJsQueue.splice(0);
+        for (var i = 0; i < cbs.length; i++) cbs[i](null);
+      };
+      script.onerror = function() {
+        _pdfJsLoading = false;
+        var err = new Error('Не удалось загрузить просмотрщик PDF');
+        var cbs = _pdfJsQueue.splice(0);
+        for (var i = 0; i < cbs.length; i++) cbs[i](err);
+      };
+      document.head.appendChild(script);
+    }
+
+    // ── Viewer state ──────────────────────────────────────────────────────────
+
+    var docsViewer = {
+      pdfDoc: null,
+      currentPage: 1,
+      totalPages: 0,
+      rendering: false
+    };
+
+    function openDocsViewerUI(fileName) {
+      var overlay = document.getElementById('docsViewerOverlay');
+      var titleEl = document.getElementById('docsViewerTitle');
+      var bodyEl = document.getElementById('docsViewerBody');
+      var navEl = document.getElementById('docsViewerPageNav');
+      if (!overlay) return;
+      if (titleEl) titleEl.textContent = fileName;
+      if (bodyEl) bodyEl.innerHTML = '';
+      if (navEl) navEl.classList.add('hidden');
+      overlay.classList.remove('hidden');
+      document.documentElement.style.overflow = 'hidden';
+    }
+
+    function closeDocsViewerUI() {
+      var overlay = document.getElementById('docsViewerOverlay');
+      if (overlay) overlay.classList.add('hidden');
+      document.documentElement.style.overflow = '';
+      if (docsViewer.pdfDoc) {
+        try { docsViewer.pdfDoc.destroy(); } catch(e) {}
+        docsViewer.pdfDoc = null;
+      }
+      docsViewer.currentPage = 1;
+      docsViewer.totalPages = 0;
+      docsViewer.rendering = false;
+      var bodyEl = document.getElementById('docsViewerBody');
+      if (bodyEl) bodyEl.innerHTML = '';
+      var navEl = document.getElementById('docsViewerPageNav');
+      if (navEl) navEl.classList.add('hidden');
+    }
+
+    function docsViewerSetLoading() {
+      var bodyEl = document.getElementById('docsViewerBody');
+      if (bodyEl) {
+        bodyEl.innerHTML =
+          '<div class="docs-viewer-loading">' +
+            '<div class="docs-loading-spinner"></div>' +
+            '<span>Загрузка…</span>' +
+          '</div>';
+      }
+    }
+
+    function docsViewerSetError(msg) {
+      var bodyEl = document.getElementById('docsViewerBody');
+      if (bodyEl) {
+        bodyEl.innerHTML = '<div class="docs-viewer-error">⚠ ' + (msg || 'Ошибка загрузки') + '</div>';
+      }
+    }
+
+    function docsViewerRenderPdfPage(pageNum) {
+      if (!docsViewer.pdfDoc || docsViewer.rendering) return;
+      docsViewer.rendering = true;
+
+      var prevBtn = document.getElementById('docsViewerPrev');
+      var nextBtn = document.getElementById('docsViewerNext');
+      var counter = document.getElementById('docsViewerPageCounter');
+
+      if (counter) counter.textContent = pageNum + ' / ' + docsViewer.totalPages;
+      if (prevBtn) prevBtn.disabled = pageNum <= 1;
+      if (nextBtn) nextBtn.disabled = pageNum >= docsViewer.totalPages;
+
+      docsViewer.pdfDoc.getPage(pageNum).then(function(page) {
+        var bodyEl = document.getElementById('docsViewerBody');
+        if (!bodyEl) { docsViewer.rendering = false; return; }
+
+        var containerWidth = bodyEl.offsetWidth - 32;
+        if (containerWidth < 100) containerWidth = 300;
+
+        var viewport = page.getViewport({ scale: 1 });
+        var scale = containerWidth / viewport.width;
+        var scaledViewport = page.getViewport({ scale: scale });
+
+        var canvas = document.createElement('canvas');
+        canvas.className = 'docs-viewer-canvas';
+        canvas.width = Math.round(scaledViewport.width);
+        canvas.height = Math.round(scaledViewport.height);
+
+        bodyEl.innerHTML = '';
+        bodyEl.appendChild(canvas);
+
+        page.render({
+          canvasContext: canvas.getContext('2d'),
+          viewport: scaledViewport
+        }).promise.then(function() {
+          docsViewer.rendering = false;
+          docsViewer.currentPage = pageNum;
+        }).catch(function() {
+          docsViewer.rendering = false;
+        });
+      }).catch(function(e) {
+        docsViewer.rendering = false;
+        docsViewerSetError(e && e.message ? e.message : 'Ошибка рендера страницы');
+      });
+    }
+
+    // ── Open doc file — in-app viewer (PDF.js / img) ──────────────────────────
+
+    function openDocFile(tgFileId, fileName, mimeType) {
       var name = decodeURIComponent(fileName || 'Файл');
+      var mime = decodeURIComponent(mimeType || '');
+      var lname = name.toLowerCase();
+
+      openDocsViewerUI(name);
+      docsViewerSetLoading();
+
       var sessionToken = CURRENT_SESSION_TOKEN || getStoredSessionToken();
       var headers = { 'Accept': 'application/json' };
       if (sessionToken) headers['Authorization'] = 'Bearer ' + sessionToken;
 
-      // Show toast: sending…
-      showDocsToast('📎 Отправляем файл…', false);
-
-      fetch(DOCS_API_URL + '?action=send&id=' + encodeURIComponent(dbId), {
-        method: 'POST',
+      // Step 1: resolve Telegram temp download URL
+      fetch(DOCS_API_URL + '?file_id=' + encodeURIComponent(tgFileId), {
+        method: 'GET',
         headers: headers,
         credentials: 'include'
       })
         .then(function(r) { return r.json(); })
         .then(function(data) {
-          if (data && data.ok) {
-            showDocsToast('✓ Файл отправлен — откройте чат с ботом', true);
-          } else {
-            throw new Error(data && data.error ? data.error : 'Ошибка');
+          if (!data || !data.url) {
+            throw new Error(data && data.error ? data.error : 'Не удалось получить ссылку');
+          }
+          // Step 2: download file bytes
+          return fetch(data.url);
+        })
+        .then(function(r) {
+          if (!r.ok) throw new Error('HTTP ' + r.status);
+          return r.arrayBuffer();
+        })
+        .then(function(buf) {
+          var isImage = mime.indexOf('image') !== -1;
+          var isPdf = mime.indexOf('pdf') !== -1 || lname.endsWith('.pdf');
+
+          if (isImage) {
+            // Render image in overlay
+            var blob = new Blob([buf], { type: mime || 'image/jpeg' });
+            var objUrl = URL.createObjectURL(blob);
+            var bodyEl = document.getElementById('docsViewerBody');
+            if (bodyEl) {
+              bodyEl.innerHTML = '';
+              var img = document.createElement('img');
+              img.className = 'docs-viewer-image';
+              img.alt = name;
+              img.src = objUrl;
+              img.onload = function() { URL.revokeObjectURL(objUrl); };
+              bodyEl.appendChild(img);
+            }
+            return;
+          }
+
+          if (isPdf) {
+            // Render PDF via PDF.js
+            loadPdfJs(function(err) {
+              if (err) { docsViewerSetError('Не удалось загрузить PDF-просмотрщик'); return; }
+              var pdfjsLib = window.pdfjsLib;
+              if (!pdfjsLib) { docsViewerSetError('PDF.js недоступен'); return; }
+
+              var loadingTask = pdfjsLib.getDocument({ data: buf });
+              loadingTask.promise.then(function(pdfDoc) {
+                docsViewer.pdfDoc = pdfDoc;
+                docsViewer.totalPages = pdfDoc.numPages;
+                docsViewer.currentPage = 1;
+
+                var navEl = document.getElementById('docsViewerPageNav');
+                if (navEl && pdfDoc.numPages > 1) navEl.classList.remove('hidden');
+
+                docsViewerRenderPdfPage(1);
+              }).catch(function(e) {
+                docsViewerSetError('Не удалось открыть PDF: ' + (e && e.message ? e.message : ''));
+              });
+            });
+            return;
+          }
+
+          // Unsupported type
+          var bodyEl = document.getElementById('docsViewerBody');
+          if (bodyEl) {
+            bodyEl.innerHTML =
+              '<div class="docs-viewer-error">' +
+                'Просмотр этого формата недоступен.<br>' +
+                '<span style="opacity:0.6;font-size:12px">' + (mime || lname) + '</span>' +
+              '</div>';
           }
         })
         .catch(function(err) {
-          showDocsToast('⚠ ' + (err && err.message ? err.message : 'Ошибка отправки'), false);
+          docsViewerSetError(err && err.message ? err.message : 'Ошибка загрузки файла');
         });
     }
 
@@ -6333,12 +6529,13 @@ if (action === 'scroll-node') {
           return;
         }
 
-        // Send file to user's Telegram chat
+        // Open file in in-app viewer
         var item = e.target.closest('.docs-item[data-db-id]');
         if (item) {
-          var dbId = item.getAttribute('data-db-id');
+          var tgFileId = item.getAttribute('data-file-id') || '';
           var fileName = item.getAttribute('data-file-name') || '';
-          if (dbId) openDocFile(dbId, fileName);
+          var mimeType = item.getAttribute('data-mime-type') || '';
+          if (tgFileId) openDocFile(tgFileId, fileName, mimeType);
         }
       });
     }
@@ -6350,6 +6547,31 @@ if (action === 'scroll-node') {
         if (!file) return;
         uploadDocFile(file, documentationStore.activeTab);
         e.target.value = '';
+      });
+    }
+
+    // Docs viewer: close
+    var docsViewerCloseBtn = document.getElementById('docsViewerClose');
+    if (docsViewerCloseBtn) {
+      docsViewerCloseBtn.addEventListener('click', closeDocsViewerUI);
+    }
+
+    // Docs viewer: page navigation
+    var docsViewerPrevBtn = document.getElementById('docsViewerPrev');
+    if (docsViewerPrevBtn) {
+      docsViewerPrevBtn.addEventListener('click', function() {
+        if (docsViewer.currentPage > 1 && !docsViewer.rendering) {
+          docsViewerRenderPdfPage(docsViewer.currentPage - 1);
+        }
+      });
+    }
+
+    var docsViewerNextBtn = document.getElementById('docsViewerNext');
+    if (docsViewerNextBtn) {
+      docsViewerNextBtn.addEventListener('click', function() {
+        if (docsViewer.currentPage < docsViewer.totalPages && !docsViewer.rendering) {
+          docsViewerRenderPdfPage(docsViewer.currentPage + 1);
+        }
       });
     }
 
