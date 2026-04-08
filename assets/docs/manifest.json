@@ -21,6 +21,36 @@
   ],
   "folders": [
     {
+      "name": "Папка №7",
+      "path": "/assets/docs/folders/Папка №7.pdf",
+      "mime_type": "application/pdf",
+      "size": 203086
+    },
+    {
+      "name": "Папка №6",
+      "path": "/assets/docs/folders/Папка №6.pdf",
+      "mime_type": "application/pdf",
+      "size": 202321
+    },
+    {
+      "name": "Папка №5",
+      "path": "/assets/docs/folders/Папка №5.pdf",
+      "mime_type": "application/pdf",
+      "size": 202648
+    },
+    {
+      "name": "Папка №4",
+      "path": "/assets/docs/folders/Папка №4.pdf",
+      "mime_type": "application/pdf",
+      "size": 207129
+    },
+    {
+      "name": "Папка №3",
+      "path": "/assets/docs/folders/Папка №3.pdf",
+      "mime_type": "application/pdf",
+      "size": 202426
+    },
+    {
       "name": "Папка №2",
       "path": "/assets/docs/folders/Папка №2.pdf",
       "mime_type": "application/pdf",
