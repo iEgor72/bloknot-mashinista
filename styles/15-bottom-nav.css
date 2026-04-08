@@ -44,26 +44,27 @@
       --bottom-nav-highlight-y: 0px;
       --bottom-nav-highlight-width: 0px;
       --bottom-nav-highlight-height: 0px;
+      /* Base glass layer */
       background:
-        radial-gradient(128% 116% at 50% -48%, rgba(255,255,255,0.14), transparent 58%),
-        radial-gradient(74% 92% at 0% 100%, rgba(121, 149, 215, 0.09), transparent 69%),
-        radial-gradient(80% 90% at 100% 96%, rgba(95, 160, 205, 0.08), transparent 71%),
-        linear-gradient(180deg, rgba(255,255,255,0.09), rgba(255,255,255,0.03) 32%, rgba(255,255,255,0.01) 100%),
-        linear-gradient(138deg, rgba(14, 18, 34, 0.90), rgba(9, 12, 26, 0.92));
-      border: 1px solid rgba(255, 255, 255, 0.14);
-      border-top-color: rgba(255, 255, 255, 0.22);
+        radial-gradient(126% 112% at 50% -52%, rgba(255,255,255,0.16), transparent 58%),
+        radial-gradient(76% 92% at -4% 112%, rgba(114, 145, 206, 0.11), transparent 68%),
+        radial-gradient(82% 88% at 102% 102%, rgba(105, 164, 210, 0.09), transparent 72%),
+        linear-gradient(180deg, rgba(255,255,255,0.08), rgba(255,255,255,0.03) 34%, rgba(255,255,255,0.01) 100%),
+        linear-gradient(140deg, rgba(15, 19, 35, 0.90), rgba(10, 13, 27, 0.93));
+      border: 1px solid rgba(255, 255, 255, 0.15);
+      border-top-color: rgba(255, 255, 255, 0.24);
       border-bottom-color: rgba(255, 255, 255, 0.06);
       border-radius: 34px;
       padding: 9px 9px 11px;
-      backdrop-filter: blur(30px) saturate(128%);
-      -webkit-backdrop-filter: blur(30px) saturate(128%);
+      backdrop-filter: blur(32px) saturate(132%);
+      -webkit-backdrop-filter: blur(32px) saturate(132%);
       box-shadow:
-        0 28px 54px rgba(0, 0, 0, 0.46),
-        0 10px 20px rgba(5, 9, 20, 0.24),
+        0 28px 52px rgba(0, 0, 0, 0.45),
+        0 10px 20px rgba(5, 9, 20, 0.23),
         0 1px 0 rgba(255, 255, 255, 0.06),
-        inset 0 1px 0 rgba(255, 255, 255, 0.17),
-        inset 0 -12px 18px rgba(0, 0, 0, 0.24),
-        inset 0 -1px 0 rgba(255,255,255,0.02);
+        inset 0 1px 0 rgba(255, 255, 255, 0.18),
+        inset 0 -14px 20px rgba(0, 0, 0, 0.27),
+        inset 0 -1px 0 rgba(255,255,255,0.03);
       overflow: visible;
       isolation: isolate;
       transform: translateZ(0);
@@ -76,13 +77,14 @@
       position: absolute;
       left: 12px;
       right: 12px;
-      top: 7px;
-      height: 38%;
+      top: 6px;
+      height: 40%;
       border-radius: 24px 24px 16px 16px;
+      /* Top highlight layer */
       background:
-        linear-gradient(180deg, rgba(255,255,255,0.24), rgba(255,255,255,0.06) 56%, rgba(255,255,255,0.00)),
-        radial-gradient(86% 132% at 10% 0%, rgba(255,255,255,0.14), transparent 66%);
-      opacity: 0.58;
+        linear-gradient(180deg, rgba(255,255,255,0.44) 0px, rgba(255,255,255,0.16) 2px, rgba(255,255,255,0.06) 28%, rgba(255,255,255,0.00) 78%),
+        radial-gradient(86% 132% at 12% 0%, rgba(255,255,255,0.18), transparent 66%);
+      opacity: 0.62;
       pointer-events: none;
       filter: blur(0.25px);
       z-index: 0;
@@ -93,12 +95,16 @@
       position: absolute;
       inset: 0;
       border-radius: 34px;
+      /* Inner depth layer */
       background:
-        linear-gradient(180deg, rgba(255,255,255,0.08), rgba(255,255,255,0.015) 24%, rgba(0,0,0,0.08) 100%),
-        radial-gradient(128% 76% at 50% 112%, rgba(137, 160, 209, 0.12), transparent 62%);
+        linear-gradient(180deg, rgba(255,255,255,0.08), rgba(255,255,255,0.015) 24%, rgba(0,0,0,0.11) 100%),
+        radial-gradient(126% 74% at 50% 114%, rgba(122, 150, 203, 0.15), transparent 64%);
+      box-shadow:
+        inset 0 -15px 22px rgba(4, 8, 18, 0.28),
+        inset 0 9px 10px rgba(255,255,255,0.02);
       pointer-events: none;
       mix-blend-mode: normal;
-      opacity: 0.74;
+      opacity: 0.8;
       z-index: 0;
     }
 
@@ -108,21 +114,21 @@
       top: 0;
       width: var(--bottom-nav-highlight-width);
       height: var(--bottom-nav-highlight-height);
-      transform: translate3d(var(--bottom-nav-highlight-x), var(--bottom-nav-highlight-y), 0);
+      transform: translate3d(var(--bottom-nav-highlight-x), var(--bottom-nav-highlight-y), 0) scale(1.03);
       border-radius: 20px;
-      border: 1px solid rgba(255, 255, 255, 0.23);
+      border: 1px solid rgba(255, 255, 255, 0.24);
       background:
-        linear-gradient(180deg, rgba(255,255,255,0.16), rgba(255,255,255,0.06) 40%, rgba(255,255,255,0.02)),
-        radial-gradient(140% 90% at 22% 8%, rgba(255,255,255,0.26), rgba(255,255,255,0.06) 42%, rgba(255,255,255,0.00) 74%),
-        radial-gradient(112% 92% at 84% 86%, rgba(122, 164, 221, 0.12), rgba(122, 164, 221, 0.02) 56%, transparent 84%),
-        rgba(198, 209, 232, 0.10);
+        linear-gradient(180deg, rgba(255,255,255,0.18), rgba(255,255,255,0.07) 42%, rgba(255,255,255,0.02)),
+        radial-gradient(140% 92% at 22% 8%, rgba(255,255,255,0.30), rgba(255,255,255,0.07) 40%, rgba(255,255,255,0.00) 74%),
+        radial-gradient(108% 92% at 50% 56%, rgba(176, 198, 233, 0.14), rgba(145, 169, 211, 0.04) 58%, transparent 84%),
+        rgba(196, 208, 232, 0.12);
       backdrop-filter: blur(20px) saturate(140%) contrast(104%);
       -webkit-backdrop-filter: blur(20px) saturate(140%) contrast(104%);
       box-shadow:
-        inset 0 1px 0 rgba(255,255,255,0.33),
-        inset 0 -1px 0 rgba(255,255,255,0.10),
-        inset 0 -8px 14px rgba(75, 102, 150, 0.16),
-        0 8px 18px rgba(4, 8, 20, 0.22),
+        inset 0 1px 0 rgba(255,255,255,0.36),
+        inset 0 -1px 0 rgba(255,255,255,0.11),
+        inset 0 -10px 14px rgba(68, 94, 142, 0.19),
+        0 8px 16px rgba(4, 8, 20, 0.22),
         0 1px 5px rgba(255,255,255,0.07);
       pointer-events: none;
       opacity: 0;
@@ -139,13 +145,15 @@
     .bottom-nav-highlight::before {
       content: '';
       position: absolute;
-      left: 1px;
-      right: 1px;
-      top: 1px;
-      height: 50%;
-      border-radius: 18px 18px 14px 14px;
-      background: linear-gradient(180deg, rgba(255,255,255,0.44), rgba(255,255,255,0.10) 68%, rgba(255,255,255,0.01));
-      opacity: 0.62;
+      left: 3px;
+      right: 3px;
+      top: 2px;
+      height: 42%;
+      border-radius: 16px 16px 12px 12px;
+      background:
+        linear-gradient(180deg, rgba(255,255,255,0.50), rgba(255,255,255,0.12) 72%, rgba(255,255,255,0.01)),
+        radial-gradient(88% 120% at 50% 0%, rgba(255,255,255,0.30), transparent 76%);
+      opacity: 0.68;
       pointer-events: none;
     }
 
@@ -155,14 +163,14 @@
       inset: 0;
       border-radius: inherit;
       background:
-        radial-gradient(122% 116% at 16% 10%, rgba(255,255,255,0.24), rgba(255,255,255,0.02) 44%, transparent 74%),
-        linear-gradient(132deg, rgba(255,255,255,0.15) 0%, rgba(255,255,255,0.04) 28%, rgba(97, 147, 213, 0.10) 60%, rgba(255,255,255,0.02) 86%);
-      opacity: 0.52;
+        radial-gradient(122% 116% at 16% 10%, rgba(255,255,255,0.28), rgba(255,255,255,0.03) 44%, transparent 74%),
+        linear-gradient(132deg, rgba(255,255,255,0.17) 0%, rgba(255,255,255,0.04) 28%, rgba(104, 154, 216, 0.12) 60%, rgba(255,255,255,0.02) 86%);
+      opacity: 0.58;
       pointer-events: none;
     }
 
     .bottom-nav-inner.bottom-nav-highlight-ready .bottom-nav-highlight {
-      opacity: 0.96;
+      opacity: 0.97;
     }
 
     .bottom-nav-inner.bottom-nav-highlight-hidden .bottom-nav-highlight {
@@ -177,7 +185,7 @@
       appearance: none;
       border: none;
       background: transparent;
-      color: rgba(220, 229, 247, 0.58);
+      color: rgba(219, 228, 245, 0.60);
       border-radius: 20px;
       padding: 8px 6px 10px;
       display: flex;
@@ -200,28 +208,28 @@
     .tab-btn:active { transform: translateY(1px); }
 
     .tab-btn.active:not(.center) {
-      color: rgba(246, 250, 255, 0.95);
-      transform: translateY(-0.4px) scale(1.01);
+      color: rgba(248, 251, 255, 0.97);
+      transform: translateY(-0.45px) scale(1.018);
     }
 
     .tab-btn.active:not(.center) .tab-icon {
-      transform: translateY(-0.3px) scale(1.05);
+      transform: translateY(-0.35px) scale(1.06);
       opacity: 1;
-      filter: drop-shadow(0 1px 3px rgba(138, 166, 214, 0.12));
+      filter: drop-shadow(0 2px 5px rgba(126, 154, 201, 0.14));
     }
 
     .tab-btn.active:not(.center) .tab-label {
-      color: rgba(244, 248, 255, 0.94);
+      color: rgba(245, 248, 255, 0.95);
       opacity: 1;
-      text-shadow: 0 1px 4px rgba(127, 155, 203, 0.12);
+      text-shadow: 0 1px 5px rgba(124, 151, 198, 0.13);
     }
 
     .tab-btn:not(.active):not(.center) .tab-icon {
-      opacity: 0.72;
+      opacity: 0.68;
     }
 
     .tab-btn:not(.active):not(.center) .tab-label {
-      opacity: 0.62;
+      opacity: 0.58;
     }
 
     .tab-btn.center {
@@ -235,19 +243,19 @@
       padding: 0;
       margin: 0;
       background:
-        radial-gradient(84% 56% at 50% 8%, rgba(255,255,255,0.42), rgba(255,255,255,0.08) 52%, rgba(255,255,255,0.00)),
-        radial-gradient(120% 96% at 85% 92%, rgba(112, 168, 218, 0.14), rgba(112, 168, 218, 0.00) 68%),
-        linear-gradient(158deg, rgba(126, 145, 215, 0.86) 0%, rgba(151, 130, 200, 0.84) 48%, rgba(104, 162, 205, 0.78) 100%);
+        radial-gradient(86% 58% at 50% 8%, rgba(255,255,255,0.46), rgba(255,255,255,0.08) 54%, rgba(255,255,255,0.00)),
+        radial-gradient(120% 96% at 82% 92%, rgba(104, 155, 205, 0.13), rgba(104, 155, 205, 0.00) 70%),
+        linear-gradient(160deg, rgba(132, 150, 213, 0.82) 0%, rgba(146, 130, 188, 0.80) 48%, rgba(106, 155, 198, 0.76) 100%);
       color: #fff;
-      border: 1px solid rgba(255, 255, 255, 0.28);
-      backdrop-filter: blur(14px) saturate(118%);
-      -webkit-backdrop-filter: blur(14px) saturate(118%);
+      border: 1px solid rgba(255, 255, 255, 0.30);
+      backdrop-filter: blur(14px) saturate(120%);
+      -webkit-backdrop-filter: blur(14px) saturate(120%);
       box-shadow:
-        0 16px 28px rgba(20, 24, 46, 0.38),
-        0 6px 12px rgba(8, 12, 26, 0.24),
+        0 15px 26px rgba(20, 24, 46, 0.36),
+        0 6px 12px rgba(8, 12, 26, 0.22),
         0 0 0 1px rgba(255, 255, 255, 0.10),
-        inset 0 1px 0 rgba(255,255,255,0.34),
-        inset 0 -8px 14px rgba(44, 52, 88, 0.28);
+        inset 0 1px 0 rgba(255,255,255,0.36),
+        inset 0 -8px 14px rgba(44, 52, 88, 0.30);
       border-radius: 23px;
       overflow: visible;
       transition:
@@ -259,11 +267,11 @@
     .tab-btn.center.active {
       transform: translateX(-50%) translateY(-0.5px);
       box-shadow:
-        0 18px 30px rgba(20, 24, 46, 0.42),
-        0 7px 14px rgba(8, 12, 26, 0.28),
+        0 18px 30px rgba(20, 24, 46, 0.40),
+        0 7px 14px rgba(8, 12, 26, 0.26),
         0 0 0 1px rgba(255, 255, 255, 0.11),
-        inset 0 1px 0 rgba(255,255,255,0.40),
-        inset 0 -9px 14px rgba(44, 52, 88, 0.30);
+        inset 0 1px 0 rgba(255,255,255,0.42),
+        inset 0 -9px 14px rgba(44, 52, 88, 0.32);
     }
 
     .tab-btn.center:active { transform: translateX(-50%) translateY(1px) scale(0.974); }
@@ -271,14 +279,14 @@
     .tab-btn.center::before {
       content: '';
       position: absolute;
-      inset: -18px;
-      border-radius: 26px;
+      inset: -14px;
+      border-radius: 24px;
       background:
-        radial-gradient(circle at 50% 50%, rgba(138, 142, 206, 0.30) 0%, rgba(116, 132, 190, 0.12) 46%, transparent 74%);
-      filter: blur(14px);
+        radial-gradient(circle at 50% 52%, rgba(126, 145, 198, 0.22) 0%, rgba(104, 122, 176, 0.08) 48%, transparent 74%);
+      filter: blur(11px);
       z-index: -1;
       pointer-events: none;
-      opacity: 0.46;
+      opacity: 0.34;
     }
 
     .tab-btn.center::after {
@@ -287,14 +295,14 @@
       inset: 2px;
       border-radius: 21px;
       background:
-        linear-gradient(180deg, rgba(255,255,255,0.24), rgba(255,255,255,0.03) 62%),
-        radial-gradient(circle at 50% 22%, rgba(255,255,255,0.14), transparent 46%),
-        radial-gradient(120% 120% at 80% 100%, rgba(90, 143, 205, 0.10), transparent 64%);
+        linear-gradient(180deg, rgba(255,255,255,0.28), rgba(255,255,255,0.03) 62%),
+        radial-gradient(circle at 50% 20%, rgba(255,255,255,0.16), transparent 48%),
+        radial-gradient(120% 120% at 80% 100%, rgba(86, 134, 192, 0.11), transparent 64%);
       box-shadow:
-        inset 0 1px 0 rgba(255,255,255,0.24),
-        inset 0 -5px 8px rgba(55, 63, 98, 0.20);
+        inset 0 1px 0 rgba(255,255,255,0.28),
+        inset 0 -5px 8px rgba(55, 63, 98, 0.22);
       pointer-events: none;
-      opacity: 0.76;
+      opacity: 0.8;
     }
 
     .tab-icon {
