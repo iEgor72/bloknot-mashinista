@@ -3475,55 +3475,15 @@ var contentHtml = formatInstructionNodeContentHtml(
         });
     }
 
-    // ── PDF.js lazy loader ────────────────────────────────────────────────────
-
-    var _pdfJsLoaded = false;
-    var _pdfJsLoading = false;
-    var _pdfJsQueue = [];
-
-    function loadPdfJs(onReady) {
-      if (_pdfJsLoaded) { onReady(null); return; }
-      _pdfJsQueue.push(onReady);
-      if (_pdfJsLoading) return;
-      _pdfJsLoading = true;
-      var script = document.createElement('script');
-      script.src = '/assets/pdfjs/pdf.min.js';
-      script.onload = function() {
-        if (window.pdfjsLib) {
-          window.pdfjsLib.GlobalWorkerOptions.workerSrc = '/assets/pdfjs/pdf.worker.min.js';
-        }
-        _pdfJsLoaded = true;
-        _pdfJsLoading = false;
-        var cbs = _pdfJsQueue.splice(0);
-        for (var i = 0; i < cbs.length; i++) cbs[i](null);
-      };
-      script.onerror = function() {
-        _pdfJsLoading = false;
-        var err = new Error('Не удалось загрузить просмотрщик PDF');
-        var cbs = _pdfJsQueue.splice(0);
-        for (var i = 0; i < cbs.length; i++) cbs[i](err);
-      };
-      document.head.appendChild(script);
-    }
-
-    // ── Viewer state ──────────────────────────────────────────────────────────
-
-    var docsViewer = {
-      pdfDoc: null,
-      currentPage: 1,
-      totalPages: 0,
-      rendering: false
-    };
+    // ── Viewer ────────────────────────────────────────────────────────────────
 
     function openDocsViewerUI(fileName) {
       var overlay = document.getElementById('docsViewerOverlay');
       var titleEl = document.getElementById('docsViewerTitle');
       var bodyEl = document.getElementById('docsViewerBody');
-      var navEl = document.getElementById('docsViewerPageNav');
       if (!overlay) return;
       if (titleEl) titleEl.textContent = fileName;
       if (bodyEl) bodyEl.innerHTML = '';
-      if (navEl) navEl.classList.add('hidden');
       overlay.classList.remove('hidden');
       document.documentElement.style.overflow = 'hidden';
     }
@@ -3532,84 +3492,11 @@ var contentHtml = formatInstructionNodeContentHtml(
       var overlay = document.getElementById('docsViewerOverlay');
       if (overlay) overlay.classList.add('hidden');
       document.documentElement.style.overflow = '';
-      if (docsViewer.pdfDoc) {
-        try { docsViewer.pdfDoc.destroy(); } catch(e) {}
-        docsViewer.pdfDoc = null;
-      }
-      docsViewer.currentPage = 1;
-      docsViewer.totalPages = 0;
-      docsViewer.rendering = false;
       var bodyEl = document.getElementById('docsViewerBody');
       if (bodyEl) bodyEl.innerHTML = '';
-      var navEl = document.getElementById('docsViewerPageNav');
-      if (navEl) navEl.classList.add('hidden');
     }
 
-    function docsViewerSetLoading() {
-      var bodyEl = document.getElementById('docsViewerBody');
-      if (bodyEl) {
-        bodyEl.innerHTML =
-          '<div class="docs-viewer-loading">' +
-            '<div class="docs-loading-spinner"></div>' +
-            '<span>Загрузка…</span>' +
-          '</div>';
-      }
-    }
-
-    function docsViewerSetError(msg) {
-      var bodyEl = document.getElementById('docsViewerBody');
-      if (bodyEl) {
-        bodyEl.innerHTML = '<div class="docs-viewer-error">⚠ ' + (msg || 'Ошибка загрузки') + '</div>';
-      }
-    }
-
-    function docsViewerRenderPdfPage(pageNum) {
-      if (!docsViewer.pdfDoc || docsViewer.rendering) return;
-      docsViewer.rendering = true;
-
-      var prevBtn = document.getElementById('docsViewerPrev');
-      var nextBtn = document.getElementById('docsViewerNext');
-      var counter = document.getElementById('docsViewerPageCounter');
-
-      if (counter) counter.textContent = pageNum + ' / ' + docsViewer.totalPages;
-      if (prevBtn) prevBtn.disabled = pageNum <= 1;
-      if (nextBtn) nextBtn.disabled = pageNum >= docsViewer.totalPages;
-
-      docsViewer.pdfDoc.getPage(pageNum).then(function(page) {
-        var bodyEl = document.getElementById('docsViewerBody');
-        if (!bodyEl) { docsViewer.rendering = false; return; }
-
-        var containerWidth = bodyEl.offsetWidth - 32;
-        if (containerWidth < 100) containerWidth = 300;
-
-        var viewport = page.getViewport({ scale: 1 });
-        var scale = containerWidth / viewport.width;
-        var scaledViewport = page.getViewport({ scale: scale });
-
-        var canvas = document.createElement('canvas');
-        canvas.className = 'docs-viewer-canvas';
-        canvas.width = Math.round(scaledViewport.width);
-        canvas.height = Math.round(scaledViewport.height);
-
-        bodyEl.innerHTML = '';
-        bodyEl.appendChild(canvas);
-
-        page.render({
-          canvasContext: canvas.getContext('2d'),
-          viewport: scaledViewport
-        }).promise.then(function() {
-          docsViewer.rendering = false;
-          docsViewer.currentPage = pageNum;
-        }).catch(function() {
-          docsViewer.rendering = false;
-        });
-      }).catch(function(e) {
-        docsViewer.rendering = false;
-        docsViewerSetError(e && e.message ? e.message : 'Ошибка рендера страницы');
-      });
-    }
-
-    // ── Open doc file — in-app viewer (PDF.js / img) ──────────────────────────
+    // ── Open doc file — native iframe viewer ─────────────────────────────────
 
     function openDocFile(filePath, fileName, mimeType) {
       var name = decodeURIComponent(fileName || 'Файл');
@@ -3618,74 +3505,35 @@ var contentHtml = formatInstructionNodeContentHtml(
       var lname = name.toLowerCase();
 
       openDocsViewerUI(name);
-      docsViewerSetLoading();
 
-      fetch(localPath)
-        .then(function(r) {
-          if (!r.ok) throw new Error('HTTP ' + r.status);
-          // Capture content-type from proxy response for mime fallback
-          var ct = r.headers.get('content-type') || '';
-          if (!mime && ct) mime = ct.split(';')[0].trim();
-          return r.arrayBuffer();
-        })
-        .then(function(buf) {
-          var isImage = mime.indexOf('image') !== -1;
-          var isPdf = mime.indexOf('pdf') !== -1 || lname.endsWith('.pdf');
+      var bodyEl = document.getElementById('docsViewerBody');
+      if (!bodyEl) return;
 
-          if (isImage) {
-            // Render image in overlay
-            var blob = new Blob([buf], { type: mime || 'image/jpeg' });
-            var objUrl = URL.createObjectURL(blob);
-            var bodyEl = document.getElementById('docsViewerBody');
-            if (bodyEl) {
-              bodyEl.innerHTML = '';
-              var img = document.createElement('img');
-              img.className = 'docs-viewer-image';
-              img.alt = name;
-              img.src = objUrl;
-              img.onload = function() { URL.revokeObjectURL(objUrl); };
-              bodyEl.appendChild(img);
-            }
-            return;
-          }
+      var isImage = mime.indexOf('image') !== -1;
+      var isPdf = mime.indexOf('pdf') !== -1 || lname.endsWith('.pdf');
 
-          if (isPdf) {
-            // Render PDF via PDF.js
-            loadPdfJs(function(err) {
-              if (err) { docsViewerSetError('Не удалось загрузить PDF-просмотрщик'); return; }
-              var pdfjsLib = window.pdfjsLib;
-              if (!pdfjsLib) { docsViewerSetError('PDF.js недоступен'); return; }
+      if (isPdf) {
+        var iframe = document.createElement('iframe');
+        iframe.src = localPath;
+        iframe.style.cssText = 'width:100%;height:100%;border:none;display:block;';
+        bodyEl.appendChild(iframe);
+        return;
+      }
 
-              var loadingTask = pdfjsLib.getDocument({ data: buf });
-              loadingTask.promise.then(function(pdfDoc) {
-                docsViewer.pdfDoc = pdfDoc;
-                docsViewer.totalPages = pdfDoc.numPages;
-                docsViewer.currentPage = 1;
+      if (isImage) {
+        var img = document.createElement('img');
+        img.className = 'docs-viewer-image';
+        img.alt = name;
+        img.src = localPath;
+        bodyEl.appendChild(img);
+        return;
+      }
 
-                var navEl = document.getElementById('docsViewerPageNav');
-                if (navEl && pdfDoc.numPages > 1) navEl.classList.remove('hidden');
-
-                docsViewerRenderPdfPage(1);
-              }).catch(function(e) {
-                docsViewerSetError('Не удалось открыть PDF: ' + (e && e.message ? e.message : ''));
-              });
-            });
-            return;
-          }
-
-          // Unsupported type
-          var bodyEl = document.getElementById('docsViewerBody');
-          if (bodyEl) {
-            bodyEl.innerHTML =
-              '<div class="docs-viewer-error">' +
-                'Просмотр этого формата недоступен.<br>' +
-                '<span style="opacity:0.6;font-size:12px">' + (mime || lname) + '</span>' +
-              '</div>';
-          }
-        })
-        .catch(function(err) {
-          docsViewerSetError(err && err.message ? err.message : 'Ошибка загрузки файла');
-        });
+      bodyEl.innerHTML =
+        '<div class="docs-viewer-error">' +
+          'Просмотр этого формата недоступен.<br>' +
+          '<span style="opacity:0.6;font-size:12px">' + (mime || lname) + '</span>' +
+        '</div>';
     }
 
     function showDocsToast(text, success) {
@@ -6442,25 +6290,6 @@ if (action === 'scroll-node') {
     var docsViewerCloseBtn = document.getElementById('docsViewerClose');
     if (docsViewerCloseBtn) {
       docsViewerCloseBtn.addEventListener('click', closeDocsViewerUI);
-    }
-
-    // Docs viewer: page navigation
-    var docsViewerPrevBtn = document.getElementById('docsViewerPrev');
-    if (docsViewerPrevBtn) {
-      docsViewerPrevBtn.addEventListener('click', function() {
-        if (docsViewer.currentPage > 1 && !docsViewer.rendering) {
-          docsViewerRenderPdfPage(docsViewer.currentPage - 1);
-        }
-      });
-    }
-
-    var docsViewerNextBtn = document.getElementById('docsViewerNext');
-    if (docsViewerNextBtn) {
-      docsViewerNextBtn.addEventListener('click', function() {
-        if (docsViewer.currentPage < docsViewer.totalPages && !docsViewer.rendering) {
-          docsViewerRenderPdfPage(docsViewer.currentPage + 1);
-        }
-      });
     }
 
     var tabButtons = document.querySelectorAll('.tab-btn[data-tab]');
