@@ -3418,7 +3418,11 @@ var contentHtml = formatInstructionNodeContentHtml(
       for (var i = 0; i < files.length; i++) {
         var f = files[i];
         var size = docsFormatSize(f.size);
-        var meta = size || '';
+        var mime = String(f.mime_type || '').toLowerCase();
+        var metaParts = [];
+        if (mime.indexOf('pdf') !== -1) metaParts.push('PDF');
+        if (size) metaParts.push(size);
+        var meta = metaParts.join(' · ');
         html +=
           '<div class="docs-item" data-file-path="' + encodeURIComponent(f.path || '') + '" data-file-name="' + encodeURIComponent(f.name || '') + '" data-mime-type="' + encodeURIComponent(f.mime_type || '') + '">' +
             '<div class="docs-item-icon">' + docsFileIcon(f.mime_type) + '</div>' +
@@ -3426,7 +3430,7 @@ var contentHtml = formatInstructionNodeContentHtml(
               '<div class="docs-item-title">' + (f.name || 'Файл') + '</div>' +
               (meta ? '<div class="docs-item-meta">' + meta + '</div>' : '') +
             '</div>' +
-            '<div class="docs-item-action"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg></div>' +
+            '<div class="docs-item-action" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"/></svg></div>' +
           '</div>';
       }
       html += '</div>';
@@ -3477,31 +3481,514 @@ var contentHtml = formatInstructionNodeContentHtml(
 
     // ── Viewer ────────────────────────────────────────────────────────────────
 
+    var DOCS_PDFJS_SRC = '/assets/pdfjs/pdf.min.js';
+    var DOCS_PDFJS_WORKER_SRC = '/assets/pdfjs/pdf.worker.min.js';
+    var docsPdfJsLoadPromise = null;
+    var docsPdfViewerState = null;
+
+    function decodeDocAttr(value) {
+      if (value === undefined || value === null) return '';
+      var raw = String(value);
+      try {
+        return decodeURIComponent(raw);
+      } catch (e) {
+        return raw;
+      }
+    }
+
+    function normalizeDocPath(path) {
+      var decoded = decodeDocAttr(path);
+      if (!decoded) return '';
+      try {
+        return encodeURI(decoded);
+      } catch (e) {
+        return decoded;
+      }
+    }
+
+    function setDocsViewerStatus(text) {
+      var statusEl = document.getElementById('docsViewerStatus');
+      if (!statusEl) return;
+      statusEl.textContent = text || '';
+    }
+
+    function renderDocsViewerLoading(text) {
+      var bodyEl = document.getElementById('docsViewerBody');
+      if (!bodyEl) return;
+      bodyEl.innerHTML =
+        '<div class="docs-viewer-media-wrap">' +
+          '<div class="docs-viewer-loading">' +
+            '<div class="docs-loading-spinner"></div>' +
+            '<span>' + escapeHtml(text || 'Загрузка…') + '</span>' +
+          '</div>' +
+        '</div>';
+    }
+
+    function renderDocsViewerError(message, details) {
+      var bodyEl = document.getElementById('docsViewerBody');
+      if (!bodyEl) return;
+      bodyEl.innerHTML =
+        '<div class="docs-viewer-media-wrap">' +
+          '<div class="docs-viewer-error">' +
+            escapeHtml(message || 'Не удалось открыть файл') +
+            (details ? '<span class="docs-viewer-error-meta">' + escapeHtml(details) + '</span>' : '') +
+          '</div>' +
+        '</div>';
+    }
+
+    function isDocsPdfViewerActive(state) {
+      return !!(state && !state.destroyed && docsPdfViewerState === state);
+    }
+
+    function ensurePdfJsReady() {
+      if (window.pdfjsLib && typeof window.pdfjsLib.getDocument === 'function') {
+        if (window.pdfjsLib.GlobalWorkerOptions) {
+          window.pdfjsLib.GlobalWorkerOptions.workerSrc = DOCS_PDFJS_WORKER_SRC;
+        }
+        return Promise.resolve(window.pdfjsLib);
+      }
+      if (docsPdfJsLoadPromise) return docsPdfJsLoadPromise;
+
+      docsPdfJsLoadPromise = new Promise(function(resolve, reject) {
+        function onReady() {
+          if (!window.pdfjsLib || typeof window.pdfjsLib.getDocument !== 'function') {
+            docsPdfJsLoadPromise = null;
+            reject(new Error('pdf.js не инициализирован'));
+            return;
+          }
+          if (window.pdfjsLib.GlobalWorkerOptions) {
+            window.pdfjsLib.GlobalWorkerOptions.workerSrc = DOCS_PDFJS_WORKER_SRC;
+          }
+          resolve(window.pdfjsLib);
+        }
+
+        function onError() {
+          docsPdfJsLoadPromise = null;
+          reject(new Error('Не удалось загрузить pdf.js'));
+        }
+
+        var existingScript = document.querySelector('script[data-pdfjs-local="1"]');
+        if (existingScript) {
+          if (existingScript.getAttribute('data-loaded') === '1') {
+            onReady();
+            return;
+          }
+          existingScript.addEventListener('load', onReady, { once: true });
+          existingScript.addEventListener('error', onError, { once: true });
+          return;
+        }
+
+        var script = document.createElement('script');
+        script.src = DOCS_PDFJS_SRC;
+        script.async = true;
+        script.setAttribute('data-pdfjs-local', '1');
+        script.onload = function() {
+          script.setAttribute('data-loaded', '1');
+          onReady();
+        };
+        script.onerror = onError;
+        document.head.appendChild(script);
+      });
+
+      return docsPdfJsLoadPromise;
+    }
+
+    function destroyDocsPdfViewer() {
+      var state = docsPdfViewerState;
+      if (!state) return;
+      docsPdfViewerState = null;
+      state.destroyed = true;
+
+      if (state.resizeTimer) {
+        clearTimeout(state.resizeTimer);
+        state.resizeTimer = null;
+      }
+      if (state.scrollFrame) {
+        window.cancelAnimationFrame(state.scrollFrame);
+        state.scrollFrame = null;
+      }
+      if (state.observer) {
+        try { state.observer.disconnect(); } catch (e) {}
+        state.observer = null;
+      }
+      if (state.scrollEl && state.onScroll) {
+        state.scrollEl.removeEventListener('scroll', state.onScroll);
+      }
+      if (state.onResize) {
+        window.removeEventListener('resize', state.onResize);
+        window.removeEventListener('orientationchange', state.onResize);
+        if (window.visualViewport) {
+          window.visualViewport.removeEventListener('resize', state.onResize);
+        }
+      }
+
+      for (var i = 0; i < state.pageItems.length; i++) {
+        var item = state.pageItems[i];
+        if (item && item.renderTask && typeof item.renderTask.cancel === 'function') {
+          try { item.renderTask.cancel(); } catch (e) {}
+        }
+      }
+
+      if (state.loadingTask && typeof state.loadingTask.destroy === 'function') {
+        try { state.loadingTask.destroy(); } catch (e) {}
+      }
+      if (state.pdfDoc && typeof state.pdfDoc.destroy === 'function') {
+        try { state.pdfDoc.destroy(); } catch (e) {}
+      }
+    }
+
+    function updateDocsPdfProgress(state) {
+      if (!isDocsPdfViewerActive(state) || !state.scrollEl || !state.pageItems.length) return;
+      var threshold = state.scrollEl.scrollTop + state.scrollEl.clientHeight * 0.35;
+      var currentPage = 1;
+      for (var i = 0; i < state.pageItems.length; i++) {
+        var top = state.pageItems[i].el.offsetTop;
+        if (top <= threshold) currentPage = state.pageItems[i].pageNumber;
+        else break;
+      }
+      state.currentPage = currentPage;
+      setDocsViewerStatus(currentPage + '/' + state.pageItems.length);
+    }
+
+    function queuePdfPageRender(state, pageNumber) {
+      if (!isDocsPdfViewerActive(state)) return;
+      var idx = pageNumber - 1;
+      if (idx < 0 || idx >= state.pageItems.length) return;
+      var item = state.pageItems[idx];
+      if (!item || item.status === 'queued' || item.status === 'loading' || item.status === 'rendered') return;
+      item.status = 'queued';
+      item.el.classList.add('is-loading');
+      state.renderQueue.push(pageNumber);
+      pumpPdfRenderQueue(state);
+    }
+
+    function queueVisiblePdfPages(state) {
+      if (!isDocsPdfViewerActive(state) || !state.scrollEl) return;
+      var scrollTop = state.scrollEl.scrollTop;
+      var scrollBottom = scrollTop + state.scrollEl.clientHeight;
+      var margin = Math.max(600, state.scrollEl.clientHeight);
+      var minY = scrollTop - margin;
+      var maxY = scrollBottom + margin;
+      for (var i = 0; i < state.pageItems.length; i++) {
+        var item = state.pageItems[i];
+        var top = item.el.offsetTop;
+        var bottom = top + item.el.offsetHeight;
+        if (bottom >= minY && top <= maxY) {
+          queuePdfPageRender(state, item.pageNumber);
+        }
+      }
+    }
+
+    function pumpPdfRenderQueue(state) {
+      if (!isDocsPdfViewerActive(state) || !state.pdfDoc) return;
+      while (state.renderInFlight < state.maxConcurrentRenders && state.renderQueue.length) {
+        var pageNumber = state.renderQueue.shift();
+        var item = state.pageItems[pageNumber - 1];
+        if (!item || item.status !== 'queued') continue;
+        renderPdfPage(state, item);
+      }
+    }
+
+    function renderPdfPage(state, item) {
+      if (!isDocsPdfViewerActive(state) || !state.pdfDoc) return;
+      item.status = 'loading';
+      item.el.classList.add('is-loading');
+      item.el.classList.remove('is-error');
+      if (item.errorEl) item.errorEl.textContent = '';
+      state.renderInFlight += 1;
+
+      state.pdfDoc.getPage(item.pageNumber)
+        .then(function(page) {
+          if (!isDocsPdfViewerActive(state)) return null;
+
+          var baseViewport = page.getViewport({ scale: 1 });
+          var targetCssWidth = Math.max(220, Math.floor(item.canvasWrap.clientWidth || (state.scrollEl ? state.scrollEl.clientWidth - 24 : baseViewport.width)));
+          var cssScale = targetCssWidth / baseViewport.width;
+          var outputScale = Math.min(window.devicePixelRatio || 1, 2.25);
+          var renderViewport = page.getViewport({ scale: cssScale * outputScale });
+
+          var canvas = item.canvas;
+          var context = canvas.getContext('2d', { alpha: false });
+          canvas.width = Math.max(1, Math.floor(renderViewport.width));
+          canvas.height = Math.max(1, Math.floor(renderViewport.height));
+          canvas.style.width = Math.max(1, Math.floor(baseViewport.width * cssScale)) + 'px';
+          canvas.style.height = Math.max(1, Math.floor(baseViewport.height * cssScale)) + 'px';
+          context.setTransform(1, 0, 0, 1, 0, 0);
+          context.clearRect(0, 0, canvas.width, canvas.height);
+
+          var renderTask = page.render({
+            canvasContext: context,
+            viewport: renderViewport,
+            intent: 'display'
+          });
+          item.renderTask = renderTask;
+          return renderTask.promise.then(function() {
+            if (typeof page.cleanup === 'function') {
+              try { page.cleanup(); } catch (e) {}
+            }
+          });
+        })
+        .then(function() {
+          if (!isDocsPdfViewerActive(state)) return;
+          item.status = 'rendered';
+          item.renderTask = null;
+          item.el.classList.remove('is-loading', 'is-error');
+          item.el.classList.add('is-rendered');
+        })
+        .catch(function(err) {
+          if (!isDocsPdfViewerActive(state)) return;
+          item.renderTask = null;
+          var cancelled = err && (err.name === 'RenderingCancelledException' || err.name === 'AbortException');
+          if (cancelled) {
+            item.status = 'idle';
+            item.el.classList.remove('is-loading');
+            return;
+          }
+          item.status = 'error';
+          item.el.classList.remove('is-loading', 'is-rendered');
+          item.el.classList.add('is-error');
+          if (item.errorEl) {
+            item.errorEl.textContent = 'Не удалось отрисовать страницу ' + item.pageNumber;
+          }
+        })
+        .finally(function() {
+          if (!isDocsPdfViewerActive(state)) return;
+          state.renderInFlight = Math.max(0, state.renderInFlight - 1);
+          pumpPdfRenderQueue(state);
+        });
+    }
+
+    function resetPdfRenderedPages(state) {
+      if (!isDocsPdfViewerActive(state)) return;
+      state.renderQueue.length = 0;
+      state.renderInFlight = 0;
+
+      for (var i = 0; i < state.pageItems.length; i++) {
+        var item = state.pageItems[i];
+        if (item.renderTask && typeof item.renderTask.cancel === 'function') {
+          try { item.renderTask.cancel(); } catch (e) {}
+        }
+        item.renderTask = null;
+        item.status = 'idle';
+        item.canvas.width = 0;
+        item.canvas.height = 0;
+        item.canvas.style.width = '';
+        item.canvas.style.height = '';
+        if (item.errorEl) item.errorEl.textContent = '';
+        item.el.classList.remove('is-loading', 'is-rendered', 'is-error');
+        if (state.observer) {
+          try {
+            state.observer.unobserve(item.el);
+            state.observer.observe(item.el);
+          } catch (e) {}
+        }
+      }
+
+      queueVisiblePdfPages(state);
+      updateDocsPdfProgress(state);
+    }
+
+    function scheduleDocsPdfRelayout(state) {
+      if (!isDocsPdfViewerActive(state)) return;
+      if (state.resizeTimer) clearTimeout(state.resizeTimer);
+      state.resizeTimer = setTimeout(function() {
+        state.resizeTimer = null;
+        resetPdfRenderedPages(state);
+      }, 180);
+    }
+
+    function createPdfPageItem(pageNumber) {
+      var pageEl = document.createElement('article');
+      pageEl.className = 'docs-pdf-page';
+      pageEl.setAttribute('data-page-number', String(pageNumber));
+
+      var canvasWrap = document.createElement('div');
+      canvasWrap.className = 'docs-pdf-canvas-wrap';
+
+      var canvas = document.createElement('canvas');
+      canvas.className = 'docs-viewer-canvas';
+      canvas.setAttribute('aria-label', 'Страница ' + pageNumber);
+      canvasWrap.appendChild(canvas);
+
+      var placeholder = document.createElement('div');
+      placeholder.className = 'docs-pdf-placeholder';
+
+      var errorEl = document.createElement('div');
+      errorEl.className = 'docs-pdf-page-error';
+
+      pageEl.appendChild(canvasWrap);
+      pageEl.appendChild(placeholder);
+      pageEl.appendChild(errorEl);
+
+      return {
+        pageNumber: pageNumber,
+        el: pageEl,
+        canvasWrap: canvasWrap,
+        canvas: canvas,
+        placeholder: placeholder,
+        errorEl: errorEl,
+        status: 'idle',
+        renderTask: null
+      };
+    }
+
+    function attachPdfObserver(state) {
+      if (!window.IntersectionObserver || !state.scrollEl) return;
+      state.observer = new IntersectionObserver(function(entries) {
+        if (!isDocsPdfViewerActive(state)) return;
+        for (var i = 0; i < entries.length; i++) {
+          var entry = entries[i];
+          if (!entry.isIntersecting) continue;
+          var pageNumber = parseInt(entry.target.getAttribute('data-page-number') || '0', 10);
+          if (pageNumber > 0) queuePdfPageRender(state, pageNumber);
+        }
+      }, {
+        root: state.scrollEl,
+        rootMargin: '900px 0px',
+        threshold: 0.01
+      });
+
+      for (var j = 0; j < state.pageItems.length; j++) {
+        state.observer.observe(state.pageItems[j].el);
+      }
+    }
+
+    function mountPdfPages(state) {
+      if (!isDocsPdfViewerActive(state) || !state.bodyEl || !state.pdfDoc) return;
+      var bodyEl = state.bodyEl;
+      bodyEl.innerHTML = '';
+
+      var scrollEl = document.createElement('div');
+      scrollEl.className = 'docs-pdf-scroll';
+      var listEl = document.createElement('div');
+      listEl.className = 'docs-pdf-list';
+      scrollEl.appendChild(listEl);
+      bodyEl.appendChild(scrollEl);
+
+      state.scrollEl = scrollEl;
+      state.listEl = listEl;
+      state.pageItems = [];
+      state.renderQueue = [];
+      state.renderInFlight = 0;
+      state.currentPage = 1;
+
+      for (var pageNumber = 1; pageNumber <= state.pdfDoc.numPages; pageNumber++) {
+        var pageItem = createPdfPageItem(pageNumber);
+        state.pageItems.push(pageItem);
+        listEl.appendChild(pageItem.el);
+      }
+
+      state.onScroll = function() {
+        if (!isDocsPdfViewerActive(state)) return;
+        if (state.scrollFrame) return;
+        state.scrollFrame = window.requestAnimationFrame(function() {
+          state.scrollFrame = null;
+          updateDocsPdfProgress(state);
+          if (!state.observer) queueVisiblePdfPages(state);
+        });
+      };
+      scrollEl.addEventListener('scroll', state.onScroll, { passive: true });
+
+      state.onResize = function() {
+        scheduleDocsPdfRelayout(state);
+      };
+      window.addEventListener('resize', state.onResize);
+      window.addEventListener('orientationchange', state.onResize);
+      if (window.visualViewport) {
+        window.visualViewport.addEventListener('resize', state.onResize);
+      }
+
+      attachPdfObserver(state);
+      queueVisiblePdfPages(state);
+      updateDocsPdfProgress(state);
+    }
+
+    function openPdfWithPdfJs(localPath) {
+      var bodyEl = document.getElementById('docsViewerBody');
+      if (!bodyEl) return;
+
+      var state = {
+        destroyed: false,
+        bodyEl: bodyEl,
+        loadingTask: null,
+        pdfDoc: null,
+        pageItems: [],
+        renderQueue: [],
+        renderInFlight: 0,
+        maxConcurrentRenders: window.innerWidth <= 640 ? 1 : 2,
+        currentPage: 1,
+        resizeTimer: null,
+        observer: null,
+        scrollEl: null,
+        listEl: null,
+        scrollFrame: null,
+        onScroll: null,
+        onResize: null
+      };
+      docsPdfViewerState = state;
+
+      renderDocsViewerLoading('Загрузка PDF…');
+      setDocsViewerStatus('Загрузка…');
+
+      ensurePdfJsReady()
+        .then(function(pdfjsLib) {
+          if (!isDocsPdfViewerActive(state)) return null;
+          state.loadingTask = pdfjsLib.getDocument({
+            url: localPath,
+            disableAutoFetch: false,
+            disableStream: false
+          });
+          return state.loadingTask.promise;
+        })
+        .then(function(pdfDoc) {
+          if (!pdfDoc) return;
+          if (!isDocsPdfViewerActive(state)) {
+            if (pdfDoc && typeof pdfDoc.destroy === 'function') {
+              try { pdfDoc.destroy(); } catch (e) {}
+            }
+            return;
+          }
+          state.pdfDoc = pdfDoc;
+          mountPdfPages(state);
+          setDocsViewerStatus('1/' + pdfDoc.numPages);
+        })
+        .catch(function(err) {
+          if (!isDocsPdfViewerActive(state)) return;
+          destroyDocsPdfViewer();
+          renderDocsViewerError('Не удалось открыть PDF', err && err.message ? err.message : '');
+          setDocsViewerStatus('');
+        });
+    }
+
     function openDocsViewerUI(fileName) {
+      destroyDocsPdfViewer();
       var overlay = document.getElementById('docsViewerOverlay');
       var titleEl = document.getElementById('docsViewerTitle');
       var bodyEl = document.getElementById('docsViewerBody');
       if (!overlay) return;
       if (titleEl) titleEl.textContent = fileName;
       if (bodyEl) bodyEl.innerHTML = '';
+      setDocsViewerStatus('');
       overlay.classList.remove('hidden');
       document.documentElement.style.overflow = 'hidden';
     }
 
     function closeDocsViewerUI() {
+      destroyDocsPdfViewer();
       var overlay = document.getElementById('docsViewerOverlay');
       if (overlay) overlay.classList.add('hidden');
       document.documentElement.style.overflow = '';
       var bodyEl = document.getElementById('docsViewerBody');
       if (bodyEl) bodyEl.innerHTML = '';
+      setDocsViewerStatus('');
     }
 
-    // ── Open doc file — native iframe viewer ─────────────────────────────────
+    // ── Open doc file — in-app viewer ───────────────────────────────────────
 
     function openDocFile(filePath, fileName, mimeType) {
-      var name = decodeURIComponent(fileName || 'Файл');
-      var mime = decodeURIComponent(mimeType || '');
-      var localPath = decodeURIComponent(filePath || '');
+      var name = decodeDocAttr(fileName || 'Файл');
+      var mime = decodeDocAttr(mimeType || '');
+      var localPath = normalizeDocPath(filePath || '');
       var lname = name.toLowerCase();
 
       openDocsViewerUI(name);
@@ -3513,27 +4000,23 @@ var contentHtml = formatInstructionNodeContentHtml(
       var isPdf = mime.indexOf('pdf') !== -1 || lname.endsWith('.pdf');
 
       if (isPdf) {
-        var iframe = document.createElement('iframe');
-        iframe.src = localPath;
-        iframe.style.cssText = 'width:100%;height:100%;border:none;display:block;';
-        bodyEl.appendChild(iframe);
+        openPdfWithPdfJs(localPath);
         return;
       }
 
       if (isImage) {
+        var imageWrap = document.createElement('div');
+        imageWrap.className = 'docs-viewer-media-wrap';
         var img = document.createElement('img');
         img.className = 'docs-viewer-image';
         img.alt = name;
         img.src = localPath;
-        bodyEl.appendChild(img);
+        imageWrap.appendChild(img);
+        bodyEl.appendChild(imageWrap);
         return;
       }
 
-      bodyEl.innerHTML =
-        '<div class="docs-viewer-error">' +
-          'Просмотр этого формата недоступен.<br>' +
-          '<span style="opacity:0.6;font-size:12px">' + (mime || lname) + '</span>' +
-        '</div>';
+      renderDocsViewerError('Просмотр этого формата недоступен', mime || lname);
     }
 
     function showDocsToast(text, success) {
@@ -6010,6 +6493,7 @@ var contentHtml = formatInstructionNodeContentHtml(
     document.addEventListener('keydown', function(e) {
       if (e.key === 'Escape') closeLocoSeriesMenu();
       if (e.key === 'Escape') closeShiftActionsMenu(true);
+      if (e.key === 'Escape') closeDocsViewerUI();
     });
     window.addEventListener('online', function() {
       updateOfflineUiState({ isOffline: false, lastSyncStatus: readPendingSnapshot() ? 'pending' : 'synced' });
