@@ -617,39 +617,32 @@
     var installPromptDismissed = false;
     var installPromptInstalled = false;
     var deferredInstallPromptEvent = null;
-    var installGuideForcedScenario = '';
     var installGuideCopyFeedbackTimer = null;
     var INSTALL_GUIDE_COPY = {
-      subtitle: 'Установите приложение, чтобы открывать его в один тап.',
-      notes: {
-        telegram: 'Во встроенном браузере Telegram установка может быть недоступна. Откройте ссылку в Safari или Chrome.',
-        nativePrompt: 'Можно установить прямо сейчас. Если окно не появится, используйте шаги ниже.'
+      subtitle: 'Открой приложение в один тап — как обычное приложение',
+      warning: 'В Telegram установка может не работать — открой ссылку в браузере',
+      buttons: {
+        open: 'Открыть в браузере',
+        copy: 'Копировать',
+        copied: 'Скопировано',
+        error: 'Ошибка'
       },
       scenarios: {
         ios: {
-          switchLabel: 'iPhone',
-          title: 'Для iPhone (Safari)',
+          title: 'iPhone (Safari)',
           steps: [
             'Открой ссылку в Safari',
-            'Нажми «Поделиться»',
-            'Выбери «На экран Домой»'
+            'Нажми кнопку «Поделиться»',
+            'Выбери «На экран Домой»',
+            'Нажми «Добавить»'
           ]
         },
         android: {
-          switchLabel: 'Android',
-          title: 'Для Android (Chrome)',
+          title: 'Android (Chrome)',
           steps: [
             'Открой ссылку в Chrome',
-            'Нажми меню браузера',
-            'Выбери «Добавить на главный экран» или «Установить приложение»'
-          ]
-        },
-        desktop: {
-          switchLabel: 'Компьютер',
-          title: 'Для компьютера (Chrome или Edge)',
-          steps: [
-            'Открой ссылку в Chrome или Edge',
-            'Нажми значок установки в адресной строке',
+            'Нажми ⋮',
+            'Выбери «Установить приложение» или «Добавить на главный экран»',
             'Подтверди установку'
           ]
         }
@@ -1379,7 +1372,7 @@
     }
 
     function getInstallGuideScenarioKey(platform) {
-      if (platform === 'ios' || platform === 'android' || platform === 'desktop') {
+      if (platform === 'ios' || platform === 'android') {
         return platform;
       }
       return 'ios';
@@ -1411,35 +1404,35 @@
       appUrlEl.dataset.fullUrl = url;
     }
 
-    function renderInstallGuideScenario(scenarioKey) {
-      var scenario = getInstallGuideScenario(scenarioKey);
-      var titleEl = document.getElementById('installGuideScenarioTitle');
-      var stepsEl = document.getElementById('installGuideSteps');
+    function renderInstallGuideScenarios(primaryScenarioKey) {
+      var platformsEl = document.getElementById('installGuidePlatforms');
+      if (!platformsEl) return;
 
-      if (titleEl) titleEl.textContent = scenario.title;
-      if (!stepsEl) return;
+      var secondaryScenarioKey = primaryScenarioKey === 'android' ? 'ios' : 'android';
+      var orderedScenarios = [primaryScenarioKey, secondaryScenarioKey];
 
-      stepsEl.innerHTML = '';
-      for (var i = 0; i < scenario.steps.length; i++) {
-        var item = document.createElement('li');
-        item.textContent = scenario.steps[i];
-        stepsEl.appendChild(item);
-      }
-    }
+      platformsEl.innerHTML = '';
 
-    function syncInstallGuideScenarioSwitch(activeScenario, isVisible) {
-      var switchEl = document.getElementById('installGuideScenarioSwitch');
-      if (!switchEl) return;
-      switchEl.classList.toggle('hidden', !isVisible);
+      for (var i = 0; i < orderedScenarios.length; i++) {
+        var scenario = getInstallGuideScenario(orderedScenarios[i]);
+        var card = document.createElement('div');
+        card.className = 'install-guide-card ' + (i === 0 ? 'is-primary' : 'is-secondary');
 
-      var buttons = switchEl.querySelectorAll('[data-install-scenario]');
-      for (var i = 0; i < buttons.length; i++) {
-        var scenarioKey = buttons[i].getAttribute('data-install-scenario');
-        var scenario = getInstallGuideScenario(scenarioKey);
-        var isActive = scenarioKey === activeScenario;
-        buttons[i].textContent = scenario.switchLabel;
-        buttons[i].classList.toggle('active', isActive);
-        buttons[i].setAttribute('aria-selected', isActive ? 'true' : 'false');
+        var titleEl = document.createElement('div');
+        titleEl.className = 'install-guide-card-title';
+        titleEl.textContent = scenario.title;
+        card.appendChild(titleEl);
+
+        var stepsEl = document.createElement('ol');
+        stepsEl.className = 'install-guide-steps';
+        for (var j = 0; j < scenario.steps.length; j++) {
+          var item = document.createElement('li');
+          item.textContent = scenario.steps[j];
+          stepsEl.appendChild(item);
+        }
+        card.appendChild(stepsEl);
+
+        platformsEl.appendChild(card);
       }
     }
 
@@ -1450,15 +1443,15 @@
 
       btn.classList.remove('is-success', 'is-error');
       if (isSuccess) {
-        btn.textContent = 'Скопировано';
+        btn.textContent = INSTALL_GUIDE_COPY.buttons.copied;
         btn.classList.add('is-success');
       } else {
-        btn.textContent = 'Ошибка';
+        btn.textContent = INSTALL_GUIDE_COPY.buttons.error;
         btn.classList.add('is-error');
       }
 
       installGuideCopyFeedbackTimer = window.setTimeout(function() {
-        btn.textContent = 'Копировать';
+        btn.textContent = INSTALL_GUIDE_COPY.buttons.copy;
         btn.classList.remove('is-success', 'is-error');
         installGuideCopyFeedbackTimer = null;
       }, 1400);
@@ -1471,7 +1464,7 @@
       }
       var btn = document.getElementById('btnCopyUrl');
       if (!btn) return;
-      btn.textContent = 'Копировать';
+      btn.textContent = INSTALL_GUIDE_COPY.buttons.copy;
       btn.classList.remove('is-success', 'is-error');
     }
 
@@ -1491,38 +1484,17 @@
 
     function updateInstallGuideContent() {
       var platform = detectInstallGuidePlatform();
-      var detectedScenario = getInstallGuideScenarioKey(platform);
-      var useSwitcher = platform === 'unknown';
-      var activeScenario = useSwitcher ? getInstallGuideScenarioKey(installGuideForcedScenario) : detectedScenario;
-
-      if (!useSwitcher) {
-        installGuideForcedScenario = '';
-      }
+      var primaryScenario = getInstallGuideScenarioKey(platform);
 
       var subtitleEl = document.getElementById('installGuideSubtitle');
       if (subtitleEl) subtitleEl.textContent = INSTALL_GUIDE_COPY.subtitle;
 
-      renderInstallGuideScenario(activeScenario);
-      syncInstallGuideScenarioSwitch(activeScenario, useSwitcher);
+      renderInstallGuideScenarios(primaryScenario);
 
       var noteEl = document.getElementById('installGuideRuntimeNote');
       if (!noteEl) return;
-
-      var noteText = '';
-      if (isTelegramWebView()) {
-        noteText = INSTALL_GUIDE_COPY.notes.telegram;
-      } else if (hasDeferredInstallPrompt()) {
-        noteText = INSTALL_GUIDE_COPY.notes.nativePrompt;
-      }
-
-      if (noteText) {
-        noteEl.textContent = noteText;
-        noteEl.classList.remove('hidden');
-        return;
-      }
-
-      noteEl.classList.add('hidden');
-      noteEl.textContent = '';
+      noteEl.textContent = INSTALL_GUIDE_COPY.warning;
+      noteEl.classList.remove('hidden');
     }
 
     function maybeShowNativeInstallPrompt() {
@@ -8498,7 +8470,6 @@ var contentHtml = formatInstructionNodeContentHtml(
       var appUrl = getAppUrl();
       setInstallGuideUrl(appUrl);
       resetInstallGuideCopyFeedback();
-      installGuideForcedScenario = '';
       updateInstallGuideContent();
       openOverlay('overlayAddScreen');
     }
@@ -8513,17 +8484,6 @@ var contentHtml = formatInstructionNodeContentHtml(
           }
           openInstallGuideSheet();
         });
-      });
-    }
-    var installGuideScenarioSwitchEl = document.getElementById('installGuideScenarioSwitch');
-    if (installGuideScenarioSwitchEl) {
-      installGuideScenarioSwitchEl.addEventListener('click', function(e) {
-        var btn = e.target.closest('[data-install-scenario]');
-        if (!btn) return;
-        var scenarioKey = btn.getAttribute('data-install-scenario');
-        if (!INSTALL_GUIDE_COPY.scenarios[scenarioKey]) return;
-        installGuideForcedScenario = scenarioKey;
-        updateInstallGuideContent();
       });
     }
     var dismissInstallCardBtn = document.getElementById('btnDismissInstallCard');
@@ -8658,6 +8618,22 @@ if (action === 'scroll-node') {
     document.getElementById('btnCloseAddScreen').addEventListener('click', function() {
       closeOverlay('overlayAddScreen');
     });
+
+    var openInstallUrlBtn = document.getElementById('btnOpenInstallUrl');
+    if (openInstallUrlBtn) {
+      openInstallUrlBtn.textContent = INSTALL_GUIDE_COPY.buttons.open;
+      openInstallUrlBtn.addEventListener('click', function() {
+        var appUrlEl = document.getElementById('appUrl');
+        var url = (appUrlEl && appUrlEl.dataset && appUrlEl.dataset.fullUrl) ? appUrlEl.dataset.fullUrl : getAppUrl();
+        var openedWindow = null;
+        try {
+          openedWindow = window.open(url, '_blank', 'noopener');
+        } catch (e) {}
+        if (!openedWindow) {
+          window.location.href = url;
+        }
+      });
+    }
 
     document.getElementById('btnCopyUrl').addEventListener('click', function() {
       var appUrlEl = document.getElementById('appUrl');

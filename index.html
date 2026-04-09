@@ -620,28 +620,21 @@
   <div class="overlay" id="overlayAddScreen">
     <div class="bottom-sheet install-guide-sheet">
       <div class="install-guide-header">
-        <div class="install-guide-kicker">Установка PWA</div>
-        <div class="sheet-title">Добавить на главный экран</div>
+        <div class="sheet-title">Добавить на экран</div>
       </div>
 
-      <div class="install-guide-subtitle" id="installGuideSubtitle"></div>
-      <div class="install-guide-note hidden" id="installGuideRuntimeNote"></div>
+      <div class="install-guide-subtitle" id="installGuideSubtitle">Открой приложение в один тап — как обычное приложение</div>
+      <div class="install-guide-platforms" id="installGuidePlatforms"></div>
 
-      <div class="install-guide-switch hidden" id="installGuideScenarioSwitch" role="tablist" aria-label="Сценарий установки">
-        <button class="install-guide-switch-btn" type="button" role="tab" data-install-scenario="ios">iPhone</button>
-        <button class="install-guide-switch-btn" type="button" role="tab" data-install-scenario="android">Android</button>
-        <button class="install-guide-switch-btn" type="button" role="tab" data-install-scenario="desktop">Компьютер</button>
-      </div>
-
-      <div class="install-guide-card">
-        <div class="install-guide-card-title" id="installGuideScenarioTitle"></div>
-        <ol class="install-guide-steps" id="installGuideSteps"></ol>
-      </div>
+      <div class="install-guide-note" id="installGuideRuntimeNote">В Telegram установка может не работать — открой ссылку в браузере</div>
 
       <div class="install-guide-link-block">
         <div class="install-guide-link-label">Ссылка на приложение</div>
         <div class="install-guide-link-row">
           <div class="install-guide-link-value" id="appUrl"></div>
+        </div>
+        <div class="install-guide-link-actions">
+          <button class="btn-secondary install-guide-open-btn" id="btnOpenInstallUrl" type="button">Открыть в браузере</button>
           <button class="btn-copy install-guide-copy-btn" id="btnCopyUrl" type="button">Копировать</button>
         </div>
       </div>
