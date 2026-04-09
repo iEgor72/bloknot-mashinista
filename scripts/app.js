@@ -7780,7 +7780,6 @@ var contentHtml = formatInstructionNodeContentHtml(
       setQuickMetricText('statNight', fmtMin(nightMin));
       setQuickMetricText('statHoliday', fmtMin(holidayMin));
       setQuickMetricText('statShifts', String(monthShifts.length));
-      renderAverageShiftSummary(buildAverageShiftSummary(monthShifts, bounds, shiftIncomeMap));
 
       var normEl = document.getElementById('statNormMonth') || document.getElementById('statNorm');
       var normTodayEl = document.getElementById('statNormToday');
