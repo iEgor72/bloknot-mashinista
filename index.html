@@ -619,7 +619,10 @@
   <!-- Add to Screen Bottom Sheet -->
   <div class="overlay" id="overlayAddScreen">
     <div class="bottom-sheet install-guide-sheet">
-      <div class="sheet-title">Добавить на главный экран</div>
+      <div class="install-guide-header">
+        <div class="install-guide-kicker">Установка PWA</div>
+        <div class="sheet-title">Добавить на главный экран</div>
+      </div>
 
       <div class="install-guide-subtitle" id="installGuideSubtitle"></div>
       <div class="install-guide-note hidden" id="installGuideRuntimeNote"></div>
@@ -643,7 +646,9 @@
         </div>
       </div>
 
-      <button class="btn-sheet-close install-guide-close-btn" id="btnCloseAddScreen" type="button">Закрыть</button>
+      <div class="install-guide-actions">
+        <button class="btn-sheet-close install-guide-close-btn" id="btnCloseAddScreen" type="button">Закрыть</button>
+      </div>
     </div>
   </div>
 
