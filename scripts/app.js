@@ -6022,6 +6022,14 @@ var contentHtml = formatInstructionNodeContentHtml(
       return authBootstrapPromise;
     }
 
+    function hasCachedBootstrapData() {
+      if (getStoredCachedUser()) return true;
+      if (readShiftsCache() || readAnyShiftsCache()) return true;
+      if (readOfflineMeta() || readAnyOfflineMeta()) return true;
+      if (readPendingSnapshot()) return true;
+      return false;
+    }
+
     function bootstrapCachedShellFromStorage() {
       var cachedUser = getStoredCachedUser();
       var cachedShifts = readShiftsCache() || readAnyShiftsCache();
@@ -6050,6 +6058,17 @@ var contentHtml = formatInstructionNodeContentHtml(
       render();
       showAppShell();
       return true;
+    }
+
+    function bootstrapAppStartup() {
+      if (hasCachedBootstrapData()) {
+        bootstrapCachedShellFromStorage();
+        window.requestAnimationFrame(function() {
+          window.setTimeout(startBackgroundBootstrap, 320);
+        });
+        return;
+      }
+      restartAuthFlow();
     }
 
     function startBackgroundBootstrap() {
