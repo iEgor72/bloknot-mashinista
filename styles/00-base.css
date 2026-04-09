@@ -145,15 +145,10 @@
       display: none;
     }
 
-    html.fonts-loading #authGate,
-    html.fonts-loading #appShell {
-      opacity: 0;
-      visibility: hidden;
-      pointer-events: none;
-    }
+    /* Startup must never block on font loading. */
     html.fonts-ready #authGate,
     html.fonts-ready #appShell {
-      transition: opacity 0.22s ease;
+      transition: opacity 0.12s ease;
     }
 
     .is-standalone-pwa,

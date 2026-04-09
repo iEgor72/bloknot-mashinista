@@ -29,8 +29,6 @@
         root.classList.add('is-standalone-pwa');
       }
 
-      root.classList.add('fonts-loading');
-
       var didRevealShell = false;
       function revealShell() {
         if (didRevealShell) return;
@@ -40,28 +38,13 @@
       }
 
       function waitForFonts() {
-        if (!document.fonts || !document.fonts.ready) {
-          revealShell();
-          return;
-        }
-
-        Promise.race([
-          document.fonts.ready,
-          new Promise(function(resolve) {
-            window.setTimeout(resolve, 1800);
-          })
-        ])
-          .then(function() {
-            window.requestAnimationFrame(revealShell);
-          })
-          .catch(revealShell);
+        // Fonts should never block first paint/startup.
+        revealShell();
+        if (!document.fonts || !document.fonts.ready) return;
+        document.fonts.ready.catch(function() {});
       }
 
-      if (document.readyState === 'loading') {
-        document.addEventListener('DOMContentLoaded', waitForFonts, { once: true });
-      } else {
-        waitForFonts();
-      }
+      waitForFonts();
     })();
   </script>
   <script>
