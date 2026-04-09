@@ -1,3 +1,23 @@
+    @font-face {
+      font-family: 'Manrope';
+      src: url('/assets/fonts/plus-jakarta-sans/plus-jakarta-sans-cyrillic-ext.woff2') format('woff2');
+      font-style: normal;
+      font-weight: 400 800;
+      font-display: optional;
+    }
+
+    @font-face {
+      font-family: 'JetBrains Mono';
+      src:
+        local('SF Mono'),
+        local('Menlo'),
+        local('Consolas'),
+        local('Liberation Mono');
+      font-style: normal;
+      font-weight: 400 700;
+      font-display: optional;
+    }
+
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
     :root {

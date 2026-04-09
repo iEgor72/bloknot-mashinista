@@ -4279,6 +4279,13 @@ var contentHtml = formatInstructionNodeContentHtml(
     var icons = { pdf: iconPdf, doc: iconDoc, xls: iconXls, img: iconImg, default: iconDefault };
     var classes = { pdf: 'icon-pdf', doc: 'icon-doc', xls: 'icon-xls', img: 'icon-img', default: 'icon-default' };
     var badges = { pdf: 'badge-pdf', doc: 'badge-doc', xls: 'badge-xls', img: 'badge-img', default: 'badge-default' };
+    var docDownloadedIcon = '<svg viewBox="0 0 16 16" fill="none" aria-hidden="true"><circle cx="8" cy="8" r="6.5" stroke="currentColor" stroke-width="1.4"/><path d="M5 8.2l2 2.1L11.2 6" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"/></svg>';
+    var docOnlineOnlyIcon = '<svg viewBox="0 0 16 16" fill="none" aria-hidden="true"><path d="M4.3 10.7a2.3 2.3 0 0 1 .2-4.6 3.6 3.6 0 0 1 6.8 1.2 2.1 2.1 0 0 1 .2 4.2H4.3z" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/><path d="M8 5.2v3.4M8 8.6l1.4-1.4M8 8.6L6.6 7.2" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg>';
+
+    function buildDocDownloadStatusIcon(isDownloaded) {
+      var label = isDownloaded ? 'Файл скачан и доступен оффлайн' : 'Файл не скачан, нужен интернет';
+      return '<span class="docs-download-icon ' + (isDownloaded ? 'is-downloaded' : 'is-online-only') + '" role="img" aria-label="' + label + '" title="' + (isDownloaded ? 'Скачан' : 'Не скачан') + '">' + (isDownloaded ? docDownloadedIcon : docOnlineOnlyIcon) + '</span>';
+    }
 
     function renderDocFileList(folder, files) {
       var listId = docsFolderListId(folder);
@@ -4313,7 +4320,7 @@ var contentHtml = formatInstructionNodeContentHtml(
         var size = docsFormatSize(f.size);
         var updatedAt = docsFormatDate(f.updated_at || f.added_at || f.date_added);
         var meta = '<span class="badge ' + badges[type] + '">' + type.toUpperCase() + '</span>';
-        meta += '<span class="docs-download-status ' + (isDownloaded ? 'is-downloaded' : 'is-online-only') + '">' + (isDownloaded ? 'Скачан' : 'Только онлайн') + '</span>';
+        meta += buildDocDownloadStatusIcon(isDownloaded);
         if (updatedAt) meta += '<span>обновлено ' + updatedAt + '</span>';
         if (size) meta += '<span class="file-size">' + size + '</span>';
         html +=
@@ -4541,6 +4548,39 @@ var contentHtml = formatInstructionNodeContentHtml(
             (details ? '<span class="docs-viewer-error-meta">' + escapeHtml(details) + '</span>' : '') +
           '</div>' +
         '</div>';
+    }
+
+    function getFriendlyDocOpenError(err) {
+      var rawMessage = err && err.message ? String(err.message) : '';
+      var message = rawMessage.toLowerCase();
+      var isNetworkIssue =
+        message.indexOf('asset unavailable') !== -1 ||
+        message.indexOf('failed to fetch') !== -1 ||
+        message.indexOf('network') !== -1 ||
+        message.indexOf('fetch') !== -1 ||
+        message.indexOf('loading aborted') !== -1;
+
+      if (!navigator.onLine && isNetworkIssue) {
+        return {
+          title: 'Файл пока не скачан',
+          details: 'Сейчас вы оффлайн. Подключитесь к интернету и откройте файл один раз, чтобы он стал доступен без сети.',
+          status: 'Оффлайн'
+        };
+      }
+
+      if (isNetworkIssue) {
+        return {
+          title: 'Не удалось загрузить файл',
+          details: 'Проверьте интернет-соединение и попробуйте еще раз.',
+          status: ''
+        };
+      }
+
+      return {
+        title: 'Не удалось открыть файл',
+        details: 'Попробуйте снова. Если ошибка повторится, обновите приложение.',
+        status: ''
+      };
     }
 
     function isDocsPdfViewerActive(state) {
@@ -5129,8 +5169,9 @@ var contentHtml = formatInstructionNodeContentHtml(
         .catch(function(err) {
           if (!isDocsPdfViewerActive(state)) return;
           destroyDocsPdfViewer();
-          renderDocsViewerError('Не удалось открыть PDF', err && err.message ? err.message : '');
-          setDocsViewerStatus('');
+          var friendly = getFriendlyDocOpenError(err);
+          renderDocsViewerError(friendly.title, friendly.details);
+          setDocsViewerStatus(friendly.status);
         });
     }
 
@@ -5190,8 +5231,8 @@ var contentHtml = formatInstructionNodeContentHtml(
 
           if (!navigator.onLine && !isDownloaded) {
             renderDocsViewerError(
-              'Файл недоступен в оффлайн-режиме',
-              'Этот файл еще не скачан. Подключитесь к интернету и откройте его онлайн хотя бы один раз.'
+              'Файл пока не скачан',
+              'Сейчас вы оффлайн. Подключитесь к интернету и откройте файл один раз, чтобы он стал доступен без сети.'
             );
             setDocsViewerStatus('Оффлайн');
             return;
@@ -5215,8 +5256,8 @@ var contentHtml = formatInstructionNodeContentHtml(
             img.onerror = function() {
               if (!navigator.onLine) {
                 renderDocsViewerError(
-                  'Файл недоступен в оффлайн-режиме',
-                  'Этот файл еще не скачан. Подключитесь к интернету и откройте его онлайн хотя бы один раз.'
+                  'Файл пока не скачан',
+                  'Сейчас вы оффлайн. Подключитесь к интернету и откройте файл один раз, чтобы он стал доступен без сети.'
                 );
                 setDocsViewerStatus('Оффлайн');
               } else {

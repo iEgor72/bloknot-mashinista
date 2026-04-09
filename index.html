@@ -7,20 +7,6 @@
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
   <meta name="theme-color" content="#0C0C10" />
   <title>Блокнот машиниста</title>
-  <link rel="preconnect" href="https://fonts.googleapis.com" />
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-  <link
-    rel="stylesheet"
-    href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600;700&display=swap"
-    media="print"
-    onload="this.media='all'"
-  />
-  <noscript>
-    <link
-      rel="stylesheet"
-      href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600;700&display=swap"
-    />
-  </noscript>
   <script>
     (function() {
       var root = document.documentElement;
@@ -39,23 +25,6 @@
       if (detectStandaloneMode()) {
         root.classList.add('is-standalone-pwa');
       }
-
-      var didRevealShell = false;
-      function revealShell() {
-        if (didRevealShell) return;
-        didRevealShell = true;
-        root.classList.remove('fonts-loading');
-        root.classList.add('fonts-ready');
-      }
-
-      function waitForFonts() {
-        // Fonts should never block first paint/startup.
-        revealShell();
-        if (!document.fonts || !document.fonts.ready) return;
-        document.fonts.ready.catch(function() {});
-      }
-
-      waitForFonts();
     })();
   </script>
   <script>
