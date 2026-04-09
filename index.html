@@ -93,6 +93,21 @@
     }
     .hidden { display: none !important; }
     html.boot-has-cache #authGate { display: none !important; }
+    /* Critical docs gate placement to avoid cold-start jump before full CSS loads */
+    .docs-pro-gate {
+      position: fixed;
+      inset: 0;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 12px;
+      z-index: 4;
+      pointer-events: none;
+    }
+    .docs-pro-card {
+      width: min(100%, 380px);
+      pointer-events: auto;
+    }
   </style>
   <link
     rel="stylesheet"
