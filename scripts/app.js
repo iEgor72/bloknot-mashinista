@@ -1749,6 +1749,80 @@
       return 'medium';
     }
 
+    function buildShiftDurationLevelStats(durationValues) {
+      var values = [];
+      for (var i = 0; i < durationValues.length; i++) {
+        var value = Number(durationValues[i]);
+        if (!isFinite(value) || value <= 0) continue;
+        values.push(value);
+      }
+
+      if (!values.length) {
+        return {
+          count: 0,
+          average: 0,
+          spread: 0,
+          lowThreshold: 0,
+          highThreshold: 0,
+          stableSpread: 0
+        };
+      }
+
+      var min = values[0];
+      var max = values[0];
+      var sum = 0;
+      for (var v = 0; v < values.length; v++) {
+        var current = values[v];
+        sum += current;
+        if (current < min) min = current;
+        if (current > max) max = current;
+      }
+
+      var average = sum / values.length;
+      return {
+        count: values.length,
+        average: average,
+        spread: max - min,
+        lowThreshold: average * 0.8,
+        highThreshold: average * 1.2,
+        stableSpread: Math.max(120, average * 0.12)
+      };
+    }
+
+    function getShiftDurationLevel(durationMin, stats) {
+      if (!stats || stats.count < 3) return 'medium';
+      if (stats.spread < stats.stableSpread) return 'medium';
+      if (durationMin <= stats.lowThreshold) return 'low';
+      if (durationMin >= stats.highThreshold) return 'high';
+      return 'medium';
+    }
+
+    function buildMonthShiftDurationLevelMap(monthShifts, bounds) {
+      var durationMap = {};
+      if (!monthShifts || !monthShifts.length || !bounds) return durationMap;
+
+      var durationValues = [];
+      for (var i = 0; i < monthShifts.length; i++) {
+        var shift = monthShifts[i];
+        var durationMin = shiftMinutesInRange(shift, bounds.start, bounds.end);
+        var shiftId = String(shift.id);
+        durationMap[shiftId] = {
+          minutes: durationMin,
+          level: 'medium'
+        };
+        if (durationMin > 0) durationValues.push(durationMin);
+      }
+
+      var stats = buildShiftDurationLevelStats(durationValues);
+      var keys = Object.keys(durationMap);
+      for (var k = 0; k < keys.length; k++) {
+        var key = keys[k];
+        durationMap[key].level = getShiftDurationLevel(durationMap[key].minutes, stats);
+      }
+
+      return durationMap;
+    }
+
     function buildMonthShiftIncomeMap(monthShifts, bounds) {
       var incomeMap = {};
       if (!monthShifts || !monthShifts.length || !bounds) return incomeMap;
@@ -6490,6 +6564,15 @@ var contentHtml = formatInstructionNodeContentHtml(
       return h + 'ч ' + m + 'м';
     }
 
+    function fmtMinCompact(totalMin) {
+      if (totalMin <= 0) return '0ч';
+      var h = Math.floor(totalMin / 60);
+      var m = totalMin % 60;
+      if (h === 0) return m + 'м';
+      if (m === 0) return h + 'ч';
+      return h + 'ч' + m + 'м';
+    }
+
     function formatDurationReadable(totalMin) {
       var minutes = Math.max(0, Math.round(totalMin || 0));
       if (minutes === 0) return '0 мин';
@@ -6515,6 +6598,56 @@ var contentHtml = formatInstructionNodeContentHtml(
       if (hours === 0) return mins + ' мин';
       if (mins === 0) return hours + ' ч';
       return hours + ' ч ' + mins + ' мин';
+    }
+
+    function compareYearMonth(yearA, monthA, yearB, monthB) {
+      if (yearA > yearB) return 1;
+      if (yearA < yearB) return -1;
+      if (monthA > monthB) return 1;
+      if (monthA < monthB) return -1;
+      return 0;
+    }
+
+    function isWorkingNormDayLocal(date) {
+      if (!(date instanceof Date) || !isFinite(date.getTime())) return false;
+      var dayOfWeek = date.getDay();
+      if (dayOfWeek === 0 || dayOfWeek === 6) return false;
+      if (isNonWorkingHolidayLocalDate(date)) return false;
+      return true;
+    }
+
+    function getMonthNormSnapshot(year, month0, monthNormMin) {
+      var nowDate = new Date();
+      var relation = compareYearMonth(year, month0, nowDate.getFullYear(), nowDate.getMonth());
+      var monthDays = new Date(year, month0 + 1, 0).getDate();
+      var totalWorkingDays = 0;
+      var elapsedWorkingDays = 0;
+
+      for (var day = 1; day <= monthDays; day++) {
+        var date = new Date(year, month0, day, 12, 0, 0);
+        if (!isWorkingNormDayLocal(date)) continue;
+        totalWorkingDays += 1;
+        if (relation < 0 || (relation === 0 && day <= nowDate.getDate())) {
+          elapsedWorkingDays += 1;
+        }
+      }
+
+      var todayNormMin = 0;
+      if (relation < 0) {
+        todayNormMin = monthNormMin;
+      } else if (relation > 0) {
+        todayNormMin = 0;
+      } else if (totalWorkingDays > 0) {
+        todayNormMin = Math.round(monthNormMin * (elapsedWorkingDays / totalWorkingDays));
+      }
+
+      return {
+        relation: relation,
+        monthNormMin: monthNormMin,
+        todayNormMin: todayNormMin,
+        totalWorkingDays: totalWorkingDays,
+        elapsedWorkingDays: elapsedWorkingDays
+      };
     }
 
     function getShiftRangeState(shift) {
@@ -7026,7 +7159,7 @@ var contentHtml = formatInstructionNodeContentHtml(
     }
 
     // ── Render ──
-    function buildShiftItemHtml(sh, compact, pendingMap, shiftIncomeMap, durationBounds) {
+    function buildShiftItemHtml(sh, compact, pendingMap, shiftIncomeMap, durationBounds, durationLevelMap) {
       var p = getShiftDisplayParts(sh);
       var itemClass = 'shift-item' + (compact ? ' compact-shift' : '');
       var typeLabel = getShiftTypeLabel(sh);
@@ -7048,6 +7181,12 @@ var contentHtml = formatInstructionNodeContentHtml(
       if (sh.id === recentAddedShiftId) itemClass += ' is-adding-target';
       var shiftIsPending = pendingMap ? !!pendingMap[String(sh.id)] : isShiftPending(sh);
       if (shiftIsPending) itemClass += ' is-pending';
+      var durationLevelData = durationLevelMap ? durationLevelMap[String(sh.id)] : null;
+      var durationLevel = durationLevelData && typeof durationLevelData.level === 'string'
+        ? durationLevelData.level
+        : 'medium';
+      if (durationLevel === 'high') itemClass += ' duration-high';
+      else if (durationLevel === 'low') itemClass += ' duration-low';
       var incomeVm = getShiftIncomeViewModel(sh, shiftIncomeMap);
       var incomeHtml = getShiftIncomeChipHtml(incomeVm);
       itemClass += ' income-' + incomeVm.level;
@@ -7537,7 +7676,7 @@ var contentHtml = formatInstructionNodeContentHtml(
       });
     }
 
-    function renderShiftList(listEl, headerEl, shifts, compact, emptyText, headerBase, pendingMap, shiftIncomeMap, durationBounds) {
+    function renderShiftList(listEl, headerEl, shifts, compact, emptyText, headerBase, pendingMap, shiftIncomeMap, durationBounds, durationLevelMap) {
       if (!listEl) return;
       if (headerEl) headerEl.textContent = headerBase || 'Смены';
       bindShiftListDetailHandlers(listEl);
@@ -7549,7 +7688,7 @@ var contentHtml = formatInstructionNodeContentHtml(
         if (overviewTotalEl) {
           var overviewMinutes = 0;
           for (var om = 0; om < shifts.length; om++) overviewMinutes += getShiftMinutesForDisplay(shifts[om], durationBounds);
-          overviewTotalEl.textContent = fmtMin(overviewMinutes);
+          overviewTotalEl.textContent = fmtMinCompact(overviewMinutes);
         }
       }
 
@@ -7564,7 +7703,7 @@ var contentHtml = formatInstructionNodeContentHtml(
 
       var html = '';
       for (var i = 0; i < shifts.length; i++) {
-        html += buildShiftItemHtml(shifts[i], compact, pendingMap, shiftIncomeMap, durationBounds);
+        html += buildShiftItemHtml(shifts[i], compact, pendingMap, shiftIncomeMap, durationBounds, durationLevelMap);
         if (i < shifts.length - 1) {
           html += buildRestGapHtml(getRestGapInfo(shifts[i], shifts[i + 1]), compact);
         }
@@ -7630,6 +7769,7 @@ var contentHtml = formatInstructionNodeContentHtml(
       var nightMin = 0;
       var holidayMin = 0;
       var shiftIncomeMap = buildMonthShiftIncomeMap(monthShifts, bounds);
+      var shiftDurationLevelMap = buildMonthShiftDurationLevelMap(monthShifts, bounds);
       currentMonthShiftIncomeMap = shiftIncomeMap || Object.create(null);
       for (var j = 0; j < monthShifts.length; j++) {
         totalMin += shiftMinutesInRange(monthShifts[j], bounds.start, bounds.end);
@@ -7659,32 +7799,56 @@ var contentHtml = formatInstructionNodeContentHtml(
       setQuickMetricText('statShifts', String(monthShifts.length));
       renderAverageShiftSummary(buildAverageShiftSummary(monthShifts, bounds, shiftIncomeMap));
 
-      var normEl = document.getElementById('statNorm');
+      var normEl = document.getElementById('statNormMonth') || document.getElementById('statNorm');
+      var normTodayEl = document.getElementById('statNormToday');
       var diffEl = document.getElementById('statDiff');
       var progressFillEl = document.getElementById('dashboardProgressFill');
+      var dashboardCardEl = document.querySelector('.dashboard-card');
+
+      if (dashboardCardEl) {
+        dashboardCardEl.classList.remove('state-ok', 'state-overtime', 'state-remaining');
+      }
 
       if (norm !== undefined) {
-        normEl.textContent = norm + ' ч';
-        var normMin = norm  * 60;
-        var diffMin = totalMin - normMin;
+        if (normEl) normEl.textContent = norm + ' ч';
+        var normMin = norm * 60;
+        var normSnapshot = getMonthNormSnapshot(currentYear, currentMonth, normMin);
+        var diffBasisMin = normSnapshot.relation === 0
+          ? normSnapshot.todayNormMin
+          : normMin;
+        var diffMin = totalMin - diffBasisMin;
         var diffAbs = Math.abs(diffMin);
-        var progressPct = normMin > 0 ? Math.max(0, Math.min(100, Math.round((totalMin / normMin) * 100))) : 0;
+        var progressPct = diffBasisMin > 0 ? Math.max(0, Math.min(100, Math.round((totalMin / diffBasisMin) * 100))) : 0;
+
+        if (normTodayEl) {
+          normTodayEl.textContent = normSnapshot.relation > 0 ? '—' : fmtMin(normSnapshot.todayNormMin);
+        }
 
         diffEl.className = 'dashboard-sub';
         if (progressFillEl) progressFillEl.style.width = progressPct + '%';
 
         if (diffMin === 0 && totalMin > 0) {
-          diffEl.textContent = 'В норме';
+          diffEl.textContent = normSnapshot.relation === 0
+            ? 'План на сегодня выполнен'
+            : 'Норма месяца выполнена';
           diffEl.classList.add('ok');
+          if (dashboardCardEl) dashboardCardEl.classList.add('state-ok');
         } else if (diffMin > 0) {
-          diffEl.textContent = 'Переработка +' + fmtMin(diffAbs);
+          diffEl.textContent = normSnapshot.relation === 0
+            ? 'Вы опережаете план на ' + fmtMin(diffAbs)
+            : 'Норма закрыта, плюс ' + fmtMin(diffAbs);
           diffEl.classList.add('overtime');
+          if (dashboardCardEl) dashboardCardEl.classList.add('state-overtime');
         } else {
-          diffEl.textContent = 'Осталось ' + fmtMin(diffAbs) + ' до нормы';
+          diffEl.textContent = normSnapshot.relation === 0
+            ? 'До плана на сегодня осталось ' + fmtMin(diffAbs)
+            : 'До нормы месяца осталось ' + fmtMin(diffAbs);
           diffEl.classList.add('remaining');
+          if (dashboardCardEl) dashboardCardEl.classList.add('state-remaining');
         }
       } else {
-        normEl.textContent = '—';
+        if (normEl) normEl.textContent = '—';
+        if (normTodayEl) normTodayEl.textContent = '—';
         if (progressFillEl) progressFillEl.style.width = '0%';
         diffEl.className = 'dashboard-sub';
         diffEl.textContent = 'Норма не задана';
@@ -7699,7 +7863,8 @@ var contentHtml = formatInstructionNodeContentHtml(
         false,
         _renderPendingMap,
         shiftIncomeMap,
-        bounds
+        bounds,
+        shiftDurationLevelMap
       );
 
       renderShiftList(
@@ -7711,7 +7876,8 @@ var contentHtml = formatInstructionNodeContentHtml(
         'Смены',
         _renderPendingMap,
         shiftIncomeMap,
-        bounds
+        bounds,
+        shiftDurationLevelMap
       );
 
       renderSalaryPanel();

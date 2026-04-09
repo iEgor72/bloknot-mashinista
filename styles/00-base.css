@@ -38,6 +38,8 @@
       /* ── Green — money & income only ── */
       --green:     #4ADE80;
       --green-dim: rgba(74, 222, 128, 0.12);
+      --holiday:   #f472b6;
+      --holiday-dim: rgba(244, 114, 182, 0.14);
 
       /* ── Typography ── */
       --text:  #EEF2F8;

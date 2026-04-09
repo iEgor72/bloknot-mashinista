@@ -36,7 +36,7 @@
     .stat-value.ok        { color: var(--green); }
     .stat-value.remaining { color: var(--sub); }
     .stat-value.night     { color: var(--accent); }
-    .stat-value.holiday   { color: var(--sub); }
+    .stat-value.holiday   { color: var(--holiday); }
 
     /* ── Form section ── */
     .form-section {
@@ -316,7 +316,7 @@
     }
 
     .draft-stat-value.night   { color: var(--accent); }
-    .draft-stat-value.holiday { color: var(--sub); }
+    .draft-stat-value.holiday { color: var(--holiday); }
 
     .draft-stats-grid .stat-label {
       font-size: 10px;
