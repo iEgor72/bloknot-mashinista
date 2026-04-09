@@ -652,8 +652,9 @@
       }
     };
     // ── Documentation store ──
-    // ACCESS_UNRESTRICTED = false re-enables gating in the future.
-    var ACCESS_UNRESTRICTED = true;
+    // ACCESS_UNRESTRICTED = true disables docs gate completely.
+    var ACCESS_UNRESTRICTED = false;
+    var docsProUnlockedThisSession = ACCESS_UNRESTRICTED === true;
     var documentationStore = {
       activeTab: 'speeds'
     };
@@ -5360,9 +5361,40 @@ var contentHtml = formatInstructionNodeContentHtml(
       }, 1800);
     }
 
+    function isDocsProLocked() {
+      return docsProUnlockedThisSession !== true;
+    }
+
+    function renderDocsProGate() {
+      var wrap = document.getElementById('docsProWrap');
+      var gate = document.getElementById('docsProGate');
+      var unlockBtn = document.getElementById('btnUnlockDocsPro');
+      var locked = isDocsProLocked();
+      var showGate = locked && activeTab === 'instructions';
+
+      if (wrap) {
+        wrap.classList.toggle('is-locked', locked);
+      }
+      if (gate) {
+        gate.classList.toggle('hidden', !showGate);
+        gate.setAttribute('aria-hidden', showGate ? 'false' : 'true');
+      }
+      if (unlockBtn) {
+        unlockBtn.disabled = !locked;
+      }
+    }
+
+    function unlockDocsProForSession() {
+      if (!isDocsProLocked()) return;
+      docsProUnlockedThisSession = true;
+      renderDocsProGate();
+      renderDocumentationScreen();
+    }
+
     function renderDocumentationScreen() {
       var shell = document.getElementById('docsShell');
       if (!shell) return;
+      renderDocsProGate();
 
       // Sync active tab button state
       var tabBtns = shell.querySelectorAll('.docs-tab-btn[data-docs-tab]');
@@ -5374,6 +5406,10 @@ var contentHtml = formatInstructionNodeContentHtml(
       var panels = shell.querySelectorAll('.docs-panel[data-docs-panel]');
       for (var j = 0; j < panels.length; j++) {
         panels[j].classList.toggle('hidden', panels[j].getAttribute('data-docs-panel') !== documentationStore.activeTab);
+      }
+
+      if (isDocsProLocked()) {
+        return;
       }
 
       // Load files for the active tab
@@ -9077,6 +9113,15 @@ if (action === 'open-ref') {
 if (action === 'scroll-node') {
   scrollToInstructionNodeAnchor(trigger.getAttribute('data-section-id'));
 }
+      });
+    }
+
+    var unlockDocsProBtn = document.getElementById('btnUnlockDocsPro');
+    if (unlockDocsProBtn) {
+      unlockDocsProBtn.addEventListener('click', function() {
+        triggerHapticActionMedium();
+        unlockDocsProForSession();
+        showSaveToast('Документы открыты');
       });
     }
 

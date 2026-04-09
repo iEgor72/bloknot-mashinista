@@ -512,33 +512,49 @@
 
       <!-- Documentation Tab -->
       <section class="tab-panel" data-tab="instructions">
-        <div class="docs-shell" id="docsShell">
+        <div class="docs-pro-wrap is-locked" id="docsProWrap">
+          <div class="docs-shell" id="docsShell">
 
-          <!-- Nav card — matches month-nav style from other sections -->
-          <div class="month-nav docs-nav-card">
-            <div class="docs-nav-title">Документация</div>
-            <div class="docs-month-tabs" role="navigation" aria-label="Разделы документации">
-              <button class="docs-tab-btn active" data-docs-tab="speeds" type="button">Скорости</button>
-              <button class="docs-tab-btn" data-docs-tab="folders" type="button">Папки</button>
-              <button class="docs-tab-btn" data-docs-tab="memos" type="button">Режимки</button>
+            <!-- Nav card — matches month-nav style from other sections -->
+            <div class="month-nav docs-nav-card">
+              <div class="docs-nav-title">Документация</div>
+              <div class="docs-month-tabs" role="navigation" aria-label="Разделы документации">
+                <button class="docs-tab-btn active" data-docs-tab="speeds" type="button">Скорости</button>
+                <button class="docs-tab-btn" data-docs-tab="folders" type="button">Папки</button>
+                <button class="docs-tab-btn" data-docs-tab="memos" type="button">Режимки</button>
+              </div>
+            </div>
+
+            <!-- Speeds panel -->
+            <div class="docs-panel" data-docs-panel="speeds" id="docsPanelSpeeds">
+              <div class="docs-file-list" id="docsListSpeeds"></div>
+            </div>
+
+            <!-- Folders panel -->
+            <div class="docs-panel hidden" data-docs-panel="folders" id="docsPanelFolders">
+              <div class="docs-file-list" id="docsListFolders"></div>
+            </div>
+
+            <!-- Memos panel -->
+            <div class="docs-panel hidden" data-docs-panel="memos" id="docsPanelMemos">
+              <div class="docs-file-list" id="docsListMemos"></div>
             </div>
           </div>
 
-          <!-- Speeds panel -->
-          <div class="docs-panel" data-docs-panel="speeds" id="docsPanelSpeeds">
-            <div class="docs-file-list" id="docsListSpeeds"></div>
+          <div class="docs-pro-gate" id="docsProGate" role="region" aria-live="polite" aria-label="Подтверждение доступа к документам">
+            <div class="docs-pro-card">
+              <div class="docs-pro-icon" aria-hidden="true">
+                <svg viewBox="0 0 24 24" focusable="false">
+                  <path d="M7 10V8a5 5 0 0 1 10 0v2"></path>
+                  <rect x="5" y="10" width="14" height="10" rx="3" ry="3"></rect>
+                  <path d="M12 14v3"></path>
+                </svg>
+              </div>
+              <div class="docs-pro-title">Документы защищены</div>
+              <div class="docs-pro-text">Подтвердите вход, чтобы открыть раздел в этой сессии.</div>
+              <button class="btn-secondary docs-pro-unlock-btn" id="btnUnlockDocsPro" type="button">Открыть документы</button>
+            </div>
           </div>
-
-          <!-- Folders panel -->
-          <div class="docs-panel hidden" data-docs-panel="folders" id="docsPanelFolders">
-            <div class="docs-file-list" id="docsListFolders"></div>
-          </div>
-
-          <!-- Memos panel -->
-          <div class="docs-panel hidden" data-docs-panel="memos" id="docsPanelMemos">
-            <div class="docs-file-list" id="docsListMemos"></div>
-          </div>
-
         </div>
       </section>
     </div>

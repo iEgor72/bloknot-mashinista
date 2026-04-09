@@ -1231,6 +1231,105 @@
     }
 
     /* ── Sheet / overlay common ── */
+    .docs-pro-wrap {
+      position: relative;
+      min-height: 420px;
+    }
+
+    .docs-pro-wrap.is-locked .docs-shell {
+      filter: blur(10px) saturate(0.85);
+      opacity: 0.52;
+      pointer-events: none;
+      user-select: none;
+      transition: filter 0.22s ease, opacity 0.22s ease;
+    }
+
+    .docs-pro-wrap:not(.is-locked) .docs-shell {
+      filter: none;
+      opacity: 1;
+      transition: filter 0.22s ease, opacity 0.22s ease;
+    }
+
+    .docs-pro-gate {
+      position: absolute;
+      inset: 10px 0 0;
+      display: flex;
+      align-items: flex-start;
+      justify-content: center;
+      padding: 6px 0 0;
+      z-index: 4;
+    }
+
+    .docs-pro-gate.hidden {
+      display: none;
+    }
+
+    .docs-pro-card {
+      width: min(100%, 380px);
+      background: rgba(14, 18, 28, 0.96);
+      border: 1px solid rgba(65, 176, 255, 0.28);
+      border-radius: var(--r-card);
+      padding: 18px 16px;
+      text-align: center;
+      box-shadow: 0 12px 36px rgba(0, 0, 0, 0.34);
+    }
+
+    .docs-pro-icon {
+      width: 34px;
+      height: 34px;
+      margin: 0 auto 8px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background: rgba(56, 189, 248, 0.12);
+      border: 1px solid rgba(56, 189, 248, 0.28);
+      color: #74d5ff;
+    }
+
+    .docs-pro-icon svg {
+      width: 18px;
+      height: 18px;
+      display: block;
+    }
+
+    .docs-pro-icon svg path,
+    .docs-pro-icon svg rect {
+      fill: none;
+      stroke: currentColor;
+      stroke-width: 1.9;
+      stroke-linecap: round;
+      stroke-linejoin: round;
+    }
+
+    .docs-pro-icon svg rect {
+      stroke-width: 1.8;
+    }
+
+    .docs-pro-icon svg path:last-child {
+      stroke-width: 2;
+    }
+
+    .docs-pro-title {
+      font-size: 16px;
+      font-weight: 800;
+      color: var(--text);
+      margin-bottom: 6px;
+    }
+
+    .docs-pro-text {
+      font-size: 13px;
+      line-height: 1.45;
+      color: var(--sub);
+      margin-bottom: 14px;
+    }
+
+    .docs-pro-unlock-btn {
+      width: 100%;
+      min-height: 42px;
+      justify-content: center;
+    }
+
     .overlay {
       position: fixed;
       inset: 0;
