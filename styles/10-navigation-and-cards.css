@@ -980,6 +980,94 @@
       align-items: flex-start;
     }
 
+    .salary-settings-sheet {
+      display: grid;
+      gap: 0;
+    }
+
+    .salary-settings-header {
+      display: grid;
+      grid-template-columns: 34px minmax(0, 1fr) 34px;
+      align-items: center;
+      column-gap: 8px;
+      margin-bottom: 6px;
+      position: sticky;
+      top: -1px;
+      z-index: 2;
+      padding-bottom: 8px;
+      background: var(--card);
+    }
+
+    .salary-settings-header .sheet-title {
+      margin-bottom: 0;
+      text-align: center;
+      font-size: 17px;
+      line-height: 1.2;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    .salary-settings-header-spacer {
+      width: 34px;
+      height: 34px;
+      display: block;
+      pointer-events: none;
+    }
+
+    .salary-settings-back-btn {
+      width: 34px;
+      height: 34px;
+      border-radius: var(--r-inner);
+      border: 1px solid var(--border);
+      background: var(--card-hi);
+      color: var(--text);
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      -webkit-tap-highlight-color: transparent;
+      padding: 0;
+    }
+
+    .salary-settings-back-btn svg {
+      width: 18px;
+      height: 18px;
+      display: block;
+    }
+
+    .salary-settings-back-btn:active {
+      border-color: var(--border-hi);
+      color: var(--accent);
+    }
+
+    .salary-settings-actions {
+      margin-top: 8px;
+      display: flex;
+      justify-content: center;
+    }
+
+    .btn-sheet-save {
+      width: min(100%, 420px);
+      min-height: 44px;
+      border-radius: 12px;
+      border: 1px solid rgba(56, 189, 248, 0.32);
+      background: linear-gradient(180deg, rgba(56, 189, 248, 0.95), rgba(56, 189, 248, 0.82));
+      color: #001624;
+      font-family: 'Manrope', sans-serif;
+      font-size: 14px;
+      font-weight: 800;
+      letter-spacing: 0.01em;
+      cursor: pointer;
+      -webkit-tap-highlight-color: transparent;
+      box-shadow: 0 8px 24px rgba(56, 189, 248, 0.25);
+    }
+
+    .btn-sheet-save:active {
+      transform: translateY(1px);
+      box-shadow: 0 4px 14px rgba(56, 189, 248, 0.18);
+    }
+
     .settings-label {
       font-size: 14px;
       font-weight: 700;

@@ -1615,22 +1615,7 @@
     }
 
     function bindSettingsControls() {
-      var settingsInputIds = [
-        'settingTariff',
-        'settingNightPercent',
-        'settingClassPercent',
-        'settingDistrictPercent',
-        'settingNorthPercent',
-        'settingLocalPercent'
-      ];
-
-      for (var i = 0; i < settingsInputIds.length; i++) {
-        var el = document.getElementById(settingsInputIds[i]);
-        if (!el) continue;
-        el.addEventListener('change', syncSettingsFromInputs);
-        el.addEventListener('blur', syncSettingsFromInputs);
-      }
-
+      // Settings are applied explicitly via the "Сохранить" button.
     }
 
     function moneyFromHours(hours, rate, percent) {
@@ -9014,9 +8999,16 @@ var contentHtml = formatInstructionNodeContentHtml(
         openOverlay('overlaySalarySettings');
       });
     }
-    var closeSalarySettingsBtn = document.getElementById('btnCloseSalarySettings');
-    if (closeSalarySettingsBtn) {
-      closeSalarySettingsBtn.addEventListener('click', function() {
+    var backSalarySettingsBtn = document.getElementById('btnBackSalarySettings');
+    if (backSalarySettingsBtn) {
+      backSalarySettingsBtn.addEventListener('click', function() {
+        closeOverlay('overlaySalarySettings');
+      });
+    }
+    var saveSalarySettingsBtn = document.getElementById('btnSaveSalarySettings');
+    if (saveSalarySettingsBtn) {
+      saveSalarySettingsBtn.addEventListener('click', function() {
+        syncSettingsFromInputs();
         closeOverlay('overlaySalarySettings');
       });
     }
