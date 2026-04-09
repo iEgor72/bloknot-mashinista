@@ -1296,7 +1296,10 @@
     }
 
     .install-guide-link-row {
-      display: block;
+      display: grid;
+      grid-template-columns: minmax(0, 1fr) auto;
+      gap: 8px;
+      align-items: stretch;
     }
 
     .install-guide-link-value {
@@ -1314,12 +1317,11 @@
     }
 
     .install-guide-link-actions {
-      display: grid;
-      grid-template-columns: minmax(0, 1fr) auto;
-      gap: 8px;
+      display: block;
     }
 
     .install-guide-open-btn {
+      width: 100%;
       min-height: 36px;
       border: 1px solid var(--border-hi);
       background: rgba(255, 255, 255, 0.03);
@@ -1337,6 +1339,7 @@
       border: 1px solid rgba(56, 189, 248, 0.22);
       color: var(--accent);
       transition: background 0.15s, color 0.15s, border-color 0.15s;
+      align-self: stretch;
     }
 
     .install-guide-copy-btn:active {
@@ -1397,15 +1400,10 @@
       }
 
       .install-guide-link-row {
-        display: block;
-      }
-
-      .install-guide-link-actions {
-        grid-template-columns: 1fr;
+        grid-template-columns: minmax(0, 1fr) auto;
       }
 
       .install-guide-open-btn,
-      .install-guide-copy-btn,
       .install-guide-close-btn {
         width: 100%;
       }
