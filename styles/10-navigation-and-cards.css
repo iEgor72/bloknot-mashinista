@@ -1251,13 +1251,14 @@
     }
 
     .docs-pro-gate {
-      position: absolute;
+      position: fixed;
       inset: 0;
       display: flex;
       align-items: center;
       justify-content: center;
-      padding: 12px;
+      padding: max(12px, var(--safe-top)) 12px max(12px, var(--safe-bottom));
       z-index: 4;
+      pointer-events: none;
     }
 
     .docs-pro-gate.hidden {
@@ -1272,6 +1273,7 @@
       padding: 18px 16px;
       text-align: center;
       box-shadow: 0 12px 36px rgba(0, 0, 0, 0.34);
+      pointer-events: auto;
     }
 
     .docs-pro-icon {
