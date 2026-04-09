@@ -8441,12 +8441,27 @@ var contentHtml = formatInstructionNodeContentHtml(
     });
 
     // ── Overlays ──
+    function syncOverlayUiState() {
+      var overlays = document.querySelectorAll('.overlay');
+      var hasOpenOverlay = false;
+      for (var i = 0; i < overlays.length; i++) {
+        var isOpen = overlays[i].classList.contains('is-open') || overlays[i].classList.contains('visible');
+        if (isOpen) hasOpenOverlay = true;
+        overlays[i].setAttribute('aria-hidden', isOpen ? 'false' : 'true');
+      }
+      if (document.body) {
+        document.body.classList.toggle('has-open-overlay', hasOpenOverlay);
+      }
+    }
+
     function setOverlayOpenState(id, isOpen) {
       var overlay = document.getElementById(id);
       if (!overlay) return;
       overlay.classList.toggle('is-open', !!isOpen);
       // Keep legacy class for compatibility with any older styles or scripts.
       overlay.classList.toggle('visible', !!isOpen);
+      overlay.setAttribute('aria-hidden', isOpen ? 'false' : 'true');
+      syncOverlayUiState();
     }
 
     function openOverlay(id) {
@@ -8472,6 +8487,7 @@ var contentHtml = formatInstructionNodeContentHtml(
         }
       });
     }
+    syncOverlayUiState();
 
     function openInstallGuideSheet() {
       var appUrl = getAppUrl();
