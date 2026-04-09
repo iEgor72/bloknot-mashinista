@@ -16,6 +16,30 @@
       animation: tabPanelEnterBackward 260ms cubic-bezier(0.22, 1, 0.36, 1) both;
     }
 
+    .tab-panel.active.tab-enter-forward > *,
+    .tab-panel.active.tab-enter-backward > * {
+      will-change: transform, opacity;
+    }
+
+    .tab-panel.active.tab-enter-forward > * {
+      animation: tabPanelLayerForward 300ms cubic-bezier(0.22, 1, 0.36, 1) both;
+    }
+
+    .tab-panel.active.tab-enter-backward > * {
+      animation: tabPanelLayerBackward 300ms cubic-bezier(0.22, 1, 0.36, 1) both;
+    }
+
+    .tab-panel.active.tab-enter-forward > :nth-child(1),
+    .tab-panel.active.tab-enter-backward > :nth-child(1) { animation-delay: 28ms; }
+    .tab-panel.active.tab-enter-forward > :nth-child(2),
+    .tab-panel.active.tab-enter-backward > :nth-child(2) { animation-delay: 46ms; }
+    .tab-panel.active.tab-enter-forward > :nth-child(3),
+    .tab-panel.active.tab-enter-backward > :nth-child(3) { animation-delay: 64ms; }
+    .tab-panel.active.tab-enter-forward > :nth-child(4),
+    .tab-panel.active.tab-enter-backward > :nth-child(4) { animation-delay: 82ms; }
+    .tab-panel.active.tab-enter-forward > :nth-child(5),
+    .tab-panel.active.tab-enter-backward > :nth-child(5) { animation-delay: 100ms; }
+
     @keyframes tabPanelEnterForward {
       from {
         opacity: 0;
@@ -38,9 +62,36 @@
       }
     }
 
+    @keyframes tabPanelLayerForward {
+      from {
+        opacity: 0;
+        transform: translate3d(10px, 4px, 0) scale(0.995);
+      }
+      to {
+        opacity: 1;
+        transform: translate3d(0, 0, 0) scale(1);
+      }
+    }
+
+    @keyframes tabPanelLayerBackward {
+      from {
+        opacity: 0;
+        transform: translate3d(-10px, 4px, 0) scale(0.995);
+      }
+      to {
+        opacity: 1;
+        transform: translate3d(0, 0, 0) scale(1);
+      }
+    }
+
     @media (prefers-reduced-motion: reduce) {
       .tab-panel.active.tab-enter-forward,
       .tab-panel.active.tab-enter-backward {
+        animation: none;
+      }
+
+      .tab-panel.active.tab-enter-forward > *,
+      .tab-panel.active.tab-enter-backward > * {
         animation: none;
       }
     }
