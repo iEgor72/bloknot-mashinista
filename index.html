@@ -618,39 +618,32 @@
 
   <!-- Add to Screen Bottom Sheet -->
   <div class="overlay" id="overlayAddScreen">
-    <div class="bottom-sheet">
+    <div class="bottom-sheet install-guide-sheet">
       <div class="sheet-title">Добавить на главный экран</div>
-      <div class="sheet-text">Это одна и та же ссылка для Telegram, Safari и ярлыка на экране. Если ты открыл её впервые на новом устройстве, просто войди через Telegram один раз — дальше смены будут подхватываться автоматически.</div>
-      <div class="sheet-text hidden" id="installGuideRuntimeNote"></div>
 
-      <div class="sheet-text" id="installGuideIosTitle"><strong>Для iPhone:</strong></div>
-      <ol class="sheet-steps" id="installGuideIosSteps">
-        <li>Открой ссылку ниже в Safari</li>
-        <li>Нажми «Поделиться»</li>
-        <li>Выбери «На экран Домой»</li>
-      </ol>
+      <div class="install-guide-subtitle" id="installGuideSubtitle"></div>
+      <div class="install-guide-note hidden" id="installGuideRuntimeNote"></div>
 
-      <div class="sheet-text" id="installGuideAndroidTitle"><strong>Для Android:</strong></div>
-      <ol class="sheet-steps" id="installGuideAndroidSteps">
-        <li>Открой ссылку ниже в Chrome</li>
-        <li>Открой меню браузера</li>
-        <li>«Добавить на главный экран»</li>
-      </ol>
-
-      <div class="sheet-text hidden" id="installGuideDesktopTitle"><strong>Для компьютера:</strong></div>
-      <ol class="sheet-steps hidden" id="installGuideDesktopSteps">
-        <li>Открой ссылку ниже в Chrome или Edge</li>
-        <li>Нажми иконку установки в адресной строке</li>
-        <li>Подтверди установку приложения</li>
-      </ol>
-
-      <div class="sheet-text" style="font-size:12px; color:var(--text-muted); margin-bottom:6px;">Ссылка на приложение:</div>
-      <div class="sheet-url-row">
-        <div class="sheet-url-text" id="appUrl"></div>
-        <button class="btn-copy" id="btnCopyUrl">Копировать</button>
+      <div class="install-guide-switch hidden" id="installGuideScenarioSwitch" role="tablist" aria-label="Сценарий установки">
+        <button class="install-guide-switch-btn" type="button" role="tab" data-install-scenario="ios">iPhone</button>
+        <button class="install-guide-switch-btn" type="button" role="tab" data-install-scenario="android">Android</button>
+        <button class="install-guide-switch-btn" type="button" role="tab" data-install-scenario="desktop">Компьютер</button>
       </div>
 
-      <button class="btn-sheet-close" id="btnCloseAddScreen">Закрыть</button>
+      <div class="install-guide-card">
+        <div class="install-guide-card-title" id="installGuideScenarioTitle"></div>
+        <ol class="install-guide-steps" id="installGuideSteps"></ol>
+      </div>
+
+      <div class="install-guide-link-block">
+        <div class="install-guide-link-label">Ссылка на приложение</div>
+        <div class="install-guide-link-row">
+          <div class="install-guide-link-value" id="appUrl"></div>
+          <button class="btn-copy install-guide-copy-btn" id="btnCopyUrl" type="button">Копировать</button>
+        </div>
+      </div>
+
+      <button class="btn-sheet-close install-guide-close-btn" id="btnCloseAddScreen" type="button">Закрыть</button>
     </div>
   </div>
 
