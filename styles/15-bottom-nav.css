@@ -1,12 +1,15 @@
     /* ── Bottom Navigation Bar ── */
-    .bottom-nav {
-      position: fixed;
-      bottom: 0;
-      left: 0;
-      right: 0;
-      background: rgba(12, 12, 16, 0.9);
-      backdrop-filter: blur(28px);
-      -webkit-backdrop-filter: blur(28px);
+.bottom-nav {
+  position: fixed;
+  bottom: 0;
+  left: 50%;
+  right: auto;
+  transform: translateX(-50%);
+  width: min(480px, 100%);
+  max-width: 480px;
+  background: rgba(12, 12, 16, 0.9);
+  backdrop-filter: blur(28px);
+  -webkit-backdrop-filter: blur(28px);
       border-top: 1px solid var(--border);
       display: flex;
       justify-content: space-around;

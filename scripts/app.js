@@ -6023,11 +6023,25 @@ var contentHtml = formatInstructionNodeContentHtml(
     }
 
     function hasCachedBootstrapData() {
-      if (getStoredCachedUser()) return true;
-      if (readShiftsCache() || readAnyShiftsCache()) return true;
-      if (readOfflineMeta() || readAnyOfflineMeta()) return true;
-      if (readPendingSnapshot()) return true;
-      return false;
+      var storedUser = getStoredCachedUser();
+      var hasAnyCache =
+        !!storedUser ||
+        !!readShiftsCache() ||
+        !!readAnyShiftsCache() ||
+        !!readOfflineMeta() ||
+        !!readAnyOfflineMeta() ||
+        !!readPendingSnapshot();
+
+      if (!hasAnyCache) return false;
+
+      // Offline startup must remain instant even without a live session.
+      if (!navigator.onLine) return true;
+
+      // Online startup should skip shell bootstrap when there is no proven
+      // authenticated context, otherwise users see app first and auth later.
+      var hasStoredSession = !!getStoredSessionToken();
+      var hasKnownIdentity = hasKnownUserIdentity(storedUser);
+      return hasStoredSession && hasKnownIdentity;
     }
 
     function bootstrapCachedShellFromStorage() {

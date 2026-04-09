@@ -14,8 +14,31 @@
       function hasCachedBootstrapState() {
         try {
           if (!window.localStorage) return false;
-          if (window.localStorage.getItem('shift_tracker_cached_user_v1')) return true;
+          var sessionToken = window.localStorage.getItem('shift_tracker_session_token');
+          var cachedUserRaw = window.localStorage.getItem('shift_tracker_cached_user_v1');
+          var cachedUser = null;
 
+          if (cachedUserRaw) {
+            try {
+              cachedUser = JSON.parse(cachedUserRaw);
+            } catch (e) {
+              cachedUser = null;
+            }
+          }
+
+          var hasKnownUser = !!(
+            cachedUser &&
+            cachedUser.id !== undefined &&
+            cachedUser.id !== null &&
+            String(cachedUser.id).trim() &&
+            String(cachedUser.id).trim() !== 'guest'
+          );
+
+          // Online: hide auth gate only if there is a persisted authenticated context.
+          if (sessionToken && hasKnownUser) return true;
+
+          // Offline: allow immediate cached shell startup.
+          if (navigator.onLine !== false) return false;
           for (var i = 0; i < window.localStorage.length; i++) {
             var key = window.localStorage.key(i) || '';
             if (
