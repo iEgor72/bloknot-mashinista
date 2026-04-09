@@ -8,6 +8,43 @@
 
     .tab-panel.active { display: block; }
 
+    .tab-panel.active.tab-enter-forward {
+      animation: tabPanelEnterForward 260ms cubic-bezier(0.22, 1, 0.36, 1) both;
+    }
+
+    .tab-panel.active.tab-enter-backward {
+      animation: tabPanelEnterBackward 260ms cubic-bezier(0.22, 1, 0.36, 1) both;
+    }
+
+    @keyframes tabPanelEnterForward {
+      from {
+        opacity: 0;
+        transform: translate3d(20px, 0, 0) scale(0.992);
+      }
+      to {
+        opacity: 1;
+        transform: translate3d(0, 0, 0) scale(1);
+      }
+    }
+
+    @keyframes tabPanelEnterBackward {
+      from {
+        opacity: 0;
+        transform: translate3d(-20px, 0, 0) scale(0.992);
+      }
+      to {
+        opacity: 1;
+        transform: translate3d(0, 0, 0) scale(1);
+      }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      .tab-panel.active.tab-enter-forward,
+      .tab-panel.active.tab-enter-backward {
+        animation: none;
+      }
+    }
+
     .app-content {
       flex: 1 1 auto;
       min-width: 0;

@@ -56,6 +56,7 @@
     var recentAddedShiftId = null;
     var recentAddTimer = null;
     var activeTab = 'home';
+    var hasRenderedInitialTab = false;
     var activeShiftMenuId = null;
     var activeShiftMenuScope = null;
     var SHIFT_LIST_REVEAL_DURATION_MS = 220;
@@ -5647,16 +5648,42 @@ var contentHtml = formatInstructionNodeContentHtml(
       }
     }
 
+    function getTabTransitionDirection(fromTab, toTab) {
+      var order = {
+        home: 0,
+        shifts: 1,
+        add: 2,
+        salary: 3,
+        instructions: 4
+      };
+      var fromIndex = order.hasOwnProperty(fromTab) ? order[fromTab] : -1;
+      var toIndex = order.hasOwnProperty(toTab) ? order[toTab] : -1;
+      if (fromIndex < 0 || toIndex < 0 || fromIndex === toIndex) return 1;
+      return toIndex > fromIndex ? 1 : -1;
+    }
+
     function setActiveTab(tab) {
       closeShiftActionsMenu(true);
       closeLocoSeriesMenu();
+      var previousTab = activeTab || 'home';
       activeTab = tab || 'home';
 
       var panels = document.querySelectorAll('.tab-panel');
+      var activePanel = null;
       for (var i = 0; i < panels.length; i++) {
         var panel = panels[i];
-        panel.classList.toggle('active', panel.getAttribute('data-tab') === activeTab);
+        panel.classList.remove('tab-enter-forward', 'tab-enter-backward');
+        var isTargetPanel = panel.getAttribute('data-tab') === activeTab;
+        panel.classList.toggle('active', isTargetPanel);
+        if (isTargetPanel) activePanel = panel;
       }
+      if (activePanel && hasRenderedInitialTab && previousTab !== activeTab && !prefersReducedMotion()) {
+        var transitionClass = getTabTransitionDirection(previousTab, activeTab) > 0 ? 'tab-enter-forward' : 'tab-enter-backward';
+        // Force reflow so repeated transitions on the same tab still animate.
+        void activePanel.offsetWidth;
+        activePanel.classList.add(transitionClass);
+      }
+      hasRenderedInitialTab = true;
 
       var navButtons = document.querySelectorAll('.tab-btn[data-tab]');
       for (var j = 0; j < navButtons.length; j++) {
