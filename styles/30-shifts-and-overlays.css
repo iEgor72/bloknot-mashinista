@@ -26,57 +26,36 @@
     .shifts-overview {
       display: grid;
       grid-template-columns: repeat(2, minmax(0, 1fr));
-      gap: 12px;
-      margin-bottom: 16px;
+      gap: var(--gap);
+      margin-bottom: 14px;
     }
 
     .shifts-overview-chip {
-      background:
-        linear-gradient(180deg, rgba(255, 255, 255, 0.02), rgba(255, 255, 255, 0)) ,
-        var(--card-hi);
-      border: 1px solid rgba(255, 255, 255, 0.08);
+      background: var(--card-hi);
+      border: 1px solid var(--border);
       border-radius: var(--r-inner);
-      padding: 12px 13px 11px;
+      padding: 10px 12px;
       display: grid;
-      gap: 7px;
-      box-shadow:
-        inset 0 1px 0 rgba(255, 255, 255, 0.03),
-        0 10px 24px rgba(0, 0, 0, 0.18);
+      gap: 3px;
     }
 
     .shifts-overview-chip::before { content: none; }
 
     .shifts-overview-label {
-      font-size: 9px;
-      font-weight: 700;
-      letter-spacing: 0.14em;
+      font-size: 10px;
+      font-weight: 800;
+      letter-spacing: 0.1em;
       text-transform: uppercase;
-      color: rgba(136, 146, 164, 0.9);
+      color: var(--muted);
     }
 
     .shifts-overview-value {
-      display: inline-flex;
-      align-items: baseline;
-      width: fit-content;
-      max-width: 100%;
-      padding: 4px 10px 5px;
-      border-radius: var(--r-pill);
-      border: 1px solid rgba(56, 189, 248, 0.18);
-      background: rgba(56, 189, 248, 0.1);
-      box-shadow:
-        inset 0 1px 0 rgba(255, 255, 255, 0.13),
-        0 0 16px rgba(56, 189, 248, 0.12);
       font-family: 'JetBrains Mono', monospace;
-      font-size: clamp(20px, 4.9vw, 25px);
+      font-size: 18px;
       font-weight: 700;
-      line-height: 1;
-      letter-spacing: -0.03em;
+      letter-spacing: -0.02em;
       color: var(--text);
       font-variant-numeric: tabular-nums;
-      white-space: nowrap;
-      overflow: hidden;
-      text-overflow: ellipsis;
-      text-shadow: 0 0 14px rgba(56, 189, 248, 0.1);
     }
 
     /* ── Empty state ── */
@@ -146,23 +125,18 @@
 
     /* ── Shift item card ── */
     .shift-item {
-      background:
-        linear-gradient(180deg, rgba(255, 255, 255, 0.018), rgba(255, 255, 255, 0) 42%),
-        var(--card);
-      border: 1px solid rgba(255, 255, 255, 0.08);
+      background: var(--card);
+      border: 1px solid var(--border);
       border-radius: var(--r-card);
-      padding: 17px 16px 15px;
+      padding: 16px;
       margin-bottom: 0;
       display: flex;
       flex-direction: column;
       align-items: stretch;
-      gap: 12px;
+      gap: 10px;
       transition: border-color 0.18s ease;
       position: relative;
       overflow: hidden;
-      box-shadow:
-        inset 0 1px 0 rgba(255, 255, 255, 0.03),
-        0 12px 24px rgba(0, 0, 0, 0.2);
     }
 
     .shift-item::before { content: none; }
@@ -222,25 +196,22 @@
     .shift-card-top {
       display: grid;
       grid-template-columns: minmax(0, 1fr) auto;
-      align-items: start;
-      gap: 12px;
+      align-items: center;
+      gap: 10px;
       min-width: 0;
     }
 
     .shift-card-body {
       display: grid;
-      gap: 9px;
-      padding-top: 9px;
+      gap: 6px;
       padding-bottom: 0;
-      border-top: 1px solid rgba(255, 255, 255, 0.06);
     }
 
     .shift-type {
-      font-size: 16px;
-      font-weight: 800;
-      line-height: 1.22;
+      font-size: 15px;
+      font-weight: 700;
+      line-height: 1.2;
       color: var(--text);
-      letter-spacing: -0.01em;
       min-width: 0;
       overflow: hidden;
       text-overflow: ellipsis;
@@ -250,7 +221,7 @@
     .shift-type-content {
       display: inline-flex;
       align-items: center;
-      gap: 7px;
+      gap: 6px;
       min-width: 0;
       max-width: 100%;
     }
@@ -319,26 +290,22 @@
 
     .shift-main-row {
       display: flex;
-      align-items: center;
+      align-items: baseline;
       justify-content: space-between;
-      gap: 12px;
+      gap: 10px;
       min-width: 0;
-      padding: 8px 10px;
-      border-radius: 11px;
-      border: 1px solid rgba(255, 255, 255, 0.06);
-      background: rgba(255, 255, 255, 0.02);
     }
 
     .shift-datetime-line {
       flex: 1;
       display: flex;
       align-items: center;
-      gap: 6px;
+      gap: 5px;
       min-width: 0;
       font-family: 'JetBrains Mono', monospace;
       font-size: 12px;
       line-height: 1.35;
-      color: rgba(136, 146, 164, 0.95);
+      color: var(--sub);
       font-variant-numeric: tabular-nums;
     }
 
@@ -361,19 +328,18 @@
       flex-shrink: 0;
       display: inline-flex;
       align-items: center;
-      gap: 5px;
+      gap: 4px;
       font-family: 'JetBrains Mono', monospace;
       font-size: 11px;
-      font-weight: 700;
-      color: var(--text);
+      font-weight: 600;
+      color: var(--sub);
       line-height: 1.2;
       white-space: nowrap;
       font-variant-numeric: tabular-nums;
-      padding: 4px 10px;
+      padding: 2px 8px;
       border-radius: var(--r-pill);
-      background: linear-gradient(180deg, rgba(56, 189, 248, 0.12), rgba(56, 189, 248, 0.06));
-      border: 1px solid rgba(255, 255, 255, 0.11);
-      box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.14);
+      background: var(--card-hi);
+      border: 1px solid var(--border);
     }
 
     .shift-duration-icon {
@@ -381,7 +347,7 @@
       align-items: center;
       justify-content: center;
       flex-shrink: 0;
-      color: rgba(56, 189, 248, 0.78);
+      color: var(--muted);
     }
 
     .shift-duration-text { white-space: nowrap; }
@@ -437,26 +403,25 @@
     /* ── Shift income row ── */
     .shift-income-row {
       display: flex;
-      align-items: flex-end;
+      align-items: baseline;
       justify-content: space-between;
-      gap: 12px;
-      border-top: 1px solid rgba(255, 255, 255, 0.08);
-      padding-top: 12px;
+      gap: 10px;
+      border-top: 1px solid var(--border);
+      padding-top: 10px;
       min-width: 0;
     }
 
     .shift-income-row-label {
-      font-size: 10px;
-      color: rgba(136, 146, 164, 0.9);
-      font-weight: 700;
-      letter-spacing: 0.08em;
-      text-transform: uppercase;
+      font-size: 11px;
+      color: var(--sub);
+      font-weight: 600;
+      letter-spacing: 0.01em;
     }
 
     .shift-income-row-label-content {
       display: inline-flex;
       align-items: center;
-      gap: 5px;
+      gap: 4px;
       min-width: 0;
     }
 
@@ -476,32 +441,22 @@
     /* Income value — always green */
     .shift-income-chip {
       font-family: 'JetBrains Mono', monospace;
-      font-size: 21px;
-      font-weight: 800;
+      font-size: 18px;
+      font-weight: 700;
       color: var(--green);
-      line-height: 1.05;
-      letter-spacing: -0.03em;
+      line-height: 1.2;
+      letter-spacing: -0.01em;
       white-space: nowrap;
       font-variant-numeric: tabular-nums;
       background: none;
       border: none;
       padding: 0;
-      text-shadow: none;
     }
 
     .shift-income-chip--empty { color: var(--muted); }
-    .shift-income-chip--low   {
-      color: rgba(74, 222, 128, 0.74);
-      text-shadow: 0 0 10px rgba(74, 222, 128, 0.12);
-    }
-    .shift-income-chip--medium {
-      color: var(--green);
-      text-shadow: 0 0 12px rgba(74, 222, 128, 0.16);
-    }
-    .shift-income-chip--high  {
-      color: var(--green);
-      text-shadow: 0 0 15px rgba(74, 222, 128, 0.2);
-    }
+    .shift-income-chip--low   { color: rgba(74, 222, 128, 0.7); }
+    .shift-income-chip--medium { color: var(--green); }
+    .shift-income-chip--high  { color: var(--green); }
 
     /* ── Shift title (detail view) ── */
     .shift-title {
@@ -717,14 +672,14 @@
     /* ── Compact shift variant ── */
     .compact-shift .shift-income-row { padding-top: 8px; }
     .compact-shift .shift-income-row-label { font-size: 11px; }
-    .compact-shift .shift-income-chip { font-size: 16px; letter-spacing: -0.02em; }
+    .compact-shift .shift-income-chip { font-size: 14px; }
     .compact-shift .shift-card-top { gap: 8px; }
     .compact-shift .shift-type { font-size: 14px; }
     .compact-shift .shift-type-content { gap: 5px; }
     .compact-shift .shift-direction-row { font-size: 11px; gap: 4px; }
-    .compact-shift .shift-main-row { gap: 8px; padding: 6px 8px; }
+    .compact-shift .shift-main-row { gap: 8px; }
     .compact-shift .shift-datetime-line { font-size: 11px; }
-    .compact-shift .shift-duration { font-size: 10px; padding: 3px 8px; }
+    .compact-shift .shift-duration { font-size: 10px; }
     .compact-shift .shift-tech-line { font-size: 10px; }
     .compact-shift .shift-inline-icon { width: 12px; height: 12px; }
     .compact-shift .shift-actions-trigger { width: 28px; height: 28px; }
