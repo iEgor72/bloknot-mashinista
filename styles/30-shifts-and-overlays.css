@@ -780,21 +780,280 @@
     .docs-viewer-overlay {
       position: fixed;
       inset: 0;
-      z-index: var(--layer-overlay);
-      background: var(--bg);
+      z-index: calc(var(--layer-scrim) + 20);
+      background: rgba(7, 8, 20, 0.985);
       display: flex;
       flex-direction: column;
       overflow: hidden;
+      overscroll-behavior: contain;
+      touch-action: auto;
+      isolation: isolate;
+    }
+
+    body.docs-viewer-open .app-content {
+      overflow: hidden !important;
     }
 
     .docs-viewer-header {
-      background: var(--card);
-      border-bottom: 1px solid var(--border);
-      padding: 12px 16px;
+      position: sticky;
+      top: 0;
+      z-index: 5;
+      background:
+        linear-gradient(180deg, rgba(16, 19, 38, 0.96), rgba(13, 16, 32, 0.94)),
+        rgba(11, 13, 28, 0.92);
+      border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+      padding:
+        max(10px, env(safe-area-inset-top), var(--safe-top))
+        calc(12px + env(safe-area-inset-right))
+        10px
+        calc(12px + env(safe-area-inset-left));
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      flex-shrink: 0;
+      min-height: 56px;
+      backdrop-filter: blur(14px);
+      -webkit-backdrop-filter: blur(14px);
+    }
+
+    .docs-viewer-close {
+      appearance: none;
+      -webkit-appearance: none;
+      width: 34px;
+      min-width: 34px;
+      height: 34px;
+      border-radius: 11px;
+      border: 1px solid rgba(255, 255, 255, 0.12);
+      background: rgba(255, 255, 255, 0.08);
+      color: var(--text);
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      -webkit-tap-highlight-color: transparent;
+      transition: transform 0.14s ease, background 0.14s ease, border-color 0.14s ease;
+    }
+
+    .docs-viewer-close:active {
+      transform: translateY(1px);
+      background: rgba(255, 255, 255, 0.16);
+      border-color: rgba(255, 255, 255, 0.24);
+    }
+
+    .docs-viewer-close svg {
+      width: 17px;
+      height: 17px;
+      stroke: currentColor;
+      fill: none;
+      stroke-linecap: round;
+      stroke-linejoin: round;
+    }
+
+    .docs-viewer-title {
+      flex: 1;
+      min-width: 0;
+      font-size: 14px;
+      font-weight: 700;
+      line-height: 1.2;
+      color: var(--text);
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      letter-spacing: -0.01em;
+    }
+
+    .docs-viewer-status {
+      min-width: 62px;
+      text-align: right;
+      font-size: 12px;
+      font-weight: 600;
+      color: rgba(238, 242, 248, 0.66);
+      font-variant-numeric: tabular-nums;
+      white-space: nowrap;
+    }
+
+    .docs-viewer-status:empty {
+      visibility: hidden;
+    }
+
+    .docs-viewer-body {
+      flex: 1;
+      min-height: 0;
+      min-width: 0;
+      overflow: hidden;
+      display: flex;
+      flex-direction: column;
+      position: relative;
+    }
+
+    .docs-viewer-media-wrap {
+      flex: 1;
+      min-height: 0;
+      overflow: auto;
+      -webkit-overflow-scrolling: touch;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding:
+        12px
+        calc(12px + env(safe-area-inset-right))
+        calc(16px + env(safe-area-inset-bottom))
+        calc(12px + env(safe-area-inset-left));
+    }
+
+    .docs-pdf-scroll {
+      flex: 1;
+      min-height: 0;
+      min-width: 0;
+      overflow-y: auto;
+      overflow-x: auto;
+      -webkit-overflow-scrolling: touch;
+      overscroll-behavior-y: contain;
+      overscroll-behavior-x: contain;
+      touch-action: pan-y pinch-zoom;
+      padding:
+        12px
+        calc(12px + env(safe-area-inset-right))
+        calc(18px + env(safe-area-inset-bottom))
+        calc(12px + env(safe-area-inset-left));
+    }
+
+    .docs-pdf-list {
+      display: grid;
+      gap: 12px;
+      width: 100%;
+      min-width: 100%;
+      align-content: start;
+      transform-origin: 0 0;
+    }
+
+    .docs-pdf-list.is-live-zoom {
+      will-change: transform;
+    }
+
+    .docs-pdf-page {
+      width: 100%;
+      position: relative;
+      border-radius: 14px;
+      border: 1px solid rgba(255, 255, 255, 0.10);
+      background: rgba(18, 21, 43, 0.48);
+      overflow: hidden;
+      min-height: 180px;
+      box-shadow: 0 10px 26px rgba(0, 0, 0, 0.24);
+    }
+
+    .docs-pdf-canvas-wrap {
+      width: 100%;
+      display: none;
+      justify-content: center;
+      align-items: flex-start;
+      background: #ffffff;
+    }
+
+    .docs-pdf-page.is-rendered .docs-pdf-canvas-wrap {
+      display: flex;
+    }
+
+    .docs-viewer-canvas {
+      display: block;
+      width: 100%;
+      height: auto;
+      flex: 0 0 auto;
+      background: #ffffff;
+      opacity: 0;
+      transition: opacity 0.2s ease;
+    }
+
+    .docs-pdf-page.is-rendered .docs-viewer-canvas {
+      opacity: 1;
+    }
+
+    .docs-pdf-placeholder {
+      width: 100%;
+      padding-top: 141.4%;
+      background:
+        linear-gradient(110deg, rgba(255,255,255,0.03) 28%, rgba(255,255,255,0.1) 44%, rgba(255,255,255,0.03) 60%),
+        rgba(14, 16, 36, 0.74);
+      background-size: 200% 100%;
+      animation: docs-pdf-shimmer 1.2s linear infinite;
+    }
+
+    @keyframes docs-pdf-shimmer {
+      to { background-position: -200% 0; }
+    }
+
+    .docs-pdf-page.is-rendered .docs-pdf-placeholder {
+      display: none;
+    }
+
+    .docs-pdf-page-error {
+      display: none;
+      padding: 12px 14px;
+      color: #ff8d8d;
+      font-size: 13px;
+      line-height: 1.45;
+      background: rgba(255, 120, 120, 0.08);
+      border-top: 1px solid rgba(255, 120, 120, 0.16);
+    }
+
+    .docs-pdf-page.is-error .docs-pdf-placeholder {
+      display: none;
+    }
+
+    .docs-pdf-page.is-error .docs-pdf-page-error {
+      display: block;
+    }
+
+    .docs-viewer-image {
+      display: block;
+      max-width: 100%;
+      height: auto;
+      border-radius: 10px;
+      box-shadow: 0 8px 28px rgba(0, 0, 0, 0.45);
+      background: #ffffff;
+    }
+
+    .docs-viewer-loading {
       display: flex;
       align-items: center;
       gap: 10px;
-      flex-shrink: 0;
+      color: var(--sub);
+      font-size: 14px;
+      margin: auto;
+    }
+
+    .docs-viewer-error {
+      color: #ff8888;
+      font-size: 14px;
+      font-weight: 600;
+      text-align: center;
+      margin: auto;
+      padding: 20px;
+      line-height: 1.45;
+      max-width: 320px;
+      background: rgba(255, 120, 120, 0.08);
+      border: 1px solid rgba(255, 120, 120, 0.2);
+      border-radius: 14px;
+    }
+
+    .docs-viewer-error-meta {
+      display: block;
+      margin-top: 8px;
+      font-size: 12px;
+      opacity: 0.75;
+      font-weight: 500;
+      word-break: break-word;
+    }
+
+    @media (max-width: 480px) {
+      .docs-pdf-scroll {
+        padding-left: calc(10px + env(safe-area-inset-left));
+        padding-right: calc(10px + env(safe-area-inset-right));
+      }
+
+      .docs-pdf-list {
+        gap: 10px;
+      }
     }
 
     /* ── Docs items ── */
@@ -948,7 +1207,13 @@
       z-index: var(--layer-overlay);
     }
 
-    .docs-toast.is-visible {
+    .docs-toast.is-visible,
+    .docs-toast.docs-toast-show {
       opacity: 1;
       transform: translateX(-50%) translateY(0);
+    }
+
+    .docs-toast.docs-toast-ok {
+      border-color: rgba(82, 215, 130, 0.4);
+      background: rgba(20, 40, 30, 0.96);
     }

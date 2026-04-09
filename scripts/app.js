@@ -4798,6 +4798,7 @@ var contentHtml = formatInstructionNodeContentHtml(
         var originX = (typeof state.pinch.originX === 'number') ? state.pinch.originX : (scrollEl.clientWidth / 2);
         var originY = (typeof state.pinch.originY === 'number') ? state.pinch.originY : (scrollEl.clientHeight / 2);
         state.pinch.active = false;
+        state.tapStart = null;
         commitDocsPdfScale(state, targetScale, originX, originY);
       }
 
@@ -5058,15 +5059,19 @@ var contentHtml = formatInstructionNodeContentHtml(
       if (titleEl) titleEl.textContent = fileName;
       if (bodyEl) bodyEl.innerHTML = '';
       setDocsViewerStatus('');
+      overlay.setAttribute('aria-hidden', 'false');
       overlay.classList.remove('hidden');
-      document.documentElement.style.overflow = 'hidden';
+      document.body.classList.add('docs-viewer-open');
     }
 
     function closeDocsViewerUI() {
       destroyDocsPdfViewer();
       var overlay = document.getElementById('docsViewerOverlay');
-      if (overlay) overlay.classList.add('hidden');
-      document.documentElement.style.overflow = '';
+      if (overlay) {
+        overlay.classList.add('hidden');
+        overlay.setAttribute('aria-hidden', 'true');
+      }
+      document.body.classList.remove('docs-viewer-open');
       var bodyEl = document.getElementById('docsViewerBody');
       if (bodyEl) bodyEl.innerHTML = '';
       setDocsViewerStatus('');
