@@ -6031,7 +6031,6 @@ var contentHtml = formatInstructionNodeContentHtml(
       }
 
       STARTED_FROM_CACHED_STATE = true;
-      showAppShell();
       if (cachedShifts && Array.isArray(cachedShifts.shifts)) {
         allShifts = normalizeShiftsForDisplay(cachedShifts.shifts);
       }
@@ -6043,6 +6042,7 @@ var contentHtml = formatInstructionNodeContentHtml(
         lastError: ''
       });
       render();
+      showAppShell();
       return true;
     }
 
