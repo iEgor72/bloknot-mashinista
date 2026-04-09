@@ -6436,6 +6436,17 @@ var contentHtml = formatInstructionNodeContentHtml(
       return diff > 0 ? diff : 0;
     }
 
+    function getShiftMinutesForDisplay(shift, durationBounds) {
+      if (
+        durationBounds &&
+        isFinite(durationBounds.start) &&
+        isFinite(durationBounds.end)
+      ) {
+        return shiftMinutesInRange(shift, durationBounds.start, durationBounds.end);
+      }
+      return shiftTotalMinutes(shift);
+    }
+
     // Format minutes → "X ч" or "X ч Y м"
     function fmtMin(totalMin) {
       if (totalMin <= 0) return '0ч';
@@ -6982,14 +6993,15 @@ var contentHtml = formatInstructionNodeContentHtml(
     }
 
     // ── Render ──
-    function buildShiftItemHtml(sh, compact, pendingMap, shiftIncomeMap) {
-      var f = fmtShift(sh);
+    function buildShiftItemHtml(sh, compact, pendingMap, shiftIncomeMap, durationBounds) {
       var p = getShiftDisplayParts(sh);
       var itemClass = 'shift-item' + (compact ? ' compact-shift' : '');
       var typeLabel = getShiftTypeLabel(sh);
       var directionText = getShiftDirectionLineText(sh);
       var dateTimeText = getShiftDateTimeLineLabel(p);
-      var durationText = getShiftDurationLabelText(f.dur);
+      var rangeState = getShiftRangeState(sh);
+      var durationMinutes = getShiftMinutesForDisplay(sh, durationBounds);
+      var durationText = getShiftDurationLabelText(rangeState.hasValidInterval ? fmtMin(durationMinutes) : '—');
       var typeHtml = buildShiftTypeHtml(sh, typeLabel);
       var directionHtml = buildShiftDirectionHtml(directionText);
       var dateTimeHtml = buildShiftDateTimeHtml(dateTimeText);
@@ -7492,7 +7504,7 @@ var contentHtml = formatInstructionNodeContentHtml(
       });
     }
 
-    function renderShiftList(listEl, headerEl, shifts, compact, emptyText, headerBase, pendingMap, shiftIncomeMap) {
+    function renderShiftList(listEl, headerEl, shifts, compact, emptyText, headerBase, pendingMap, shiftIncomeMap, durationBounds) {
       if (!listEl) return;
       if (headerEl) headerEl.textContent = headerBase || 'Смены';
       bindShiftListDetailHandlers(listEl);
@@ -7503,7 +7515,7 @@ var contentHtml = formatInstructionNodeContentHtml(
         if (overviewCountEl) overviewCountEl.textContent = String(shifts.length);
         if (overviewTotalEl) {
           var overviewMinutes = 0;
-          for (var om = 0; om < shifts.length; om++) overviewMinutes += shiftTotalMinutes(shifts[om]);
+          for (var om = 0; om < shifts.length; om++) overviewMinutes += getShiftMinutesForDisplay(shifts[om], durationBounds);
           overviewTotalEl.textContent = fmtMin(overviewMinutes);
         }
       }
@@ -7519,7 +7531,7 @@ var contentHtml = formatInstructionNodeContentHtml(
 
       var html = '';
       for (var i = 0; i < shifts.length; i++) {
-        html += buildShiftItemHtml(shifts[i], compact, pendingMap, shiftIncomeMap);
+        html += buildShiftItemHtml(shifts[i], compact, pendingMap, shiftIncomeMap, durationBounds);
         if (i < shifts.length - 1) {
           html += buildRestGapHtml(getRestGapInfo(shifts[i], shifts[i + 1]), compact);
         }
@@ -7653,7 +7665,8 @@ var contentHtml = formatInstructionNodeContentHtml(
         'Нет смен за этот месяц',
         false,
         _renderPendingMap,
-        shiftIncomeMap
+        shiftIncomeMap,
+        bounds
       );
 
       renderShiftList(
@@ -7664,7 +7677,8 @@ var contentHtml = formatInstructionNodeContentHtml(
         'Нет смен за этот месяц',
         'Смены',
         _renderPendingMap,
-        shiftIncomeMap
+        shiftIncomeMap,
+        bounds
       );
 
       renderSalaryPanel();
