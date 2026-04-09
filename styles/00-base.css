@@ -171,6 +171,19 @@
       transition: opacity 0.12s ease;
     }
 
+    html.app-booting #authGate,
+    html.app-booting #appShell {
+      opacity: 0;
+      visibility: hidden;
+      transform: translate3d(0, 10px, 0);
+      pointer-events: none;
+    }
+
+    #authGate,
+    #appShell {
+      transition: opacity 0.26s ease, transform 0.34s cubic-bezier(0.22, 1, 0.36, 1);
+    }
+
     .is-standalone-pwa,
     .is-standalone-pwa body {
       height: 100vh;
@@ -199,6 +212,27 @@
       z-index: var(--layer-content);
       min-width: 0;
       overflow: hidden;
+    }
+
+    .app.app-shell-entering {
+      opacity: 0;
+      transform: translate3d(0, 14px, 0);
+      will-change: transform, opacity;
+    }
+
+    .app.app-shell-entering.app-shell-visible {
+      opacity: 1;
+      transform: translate3d(0, 0, 0);
+      transition: opacity 0.26s ease, transform 0.42s cubic-bezier(0.2, 0.9, 0.2, 1);
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      .app.app-shell-entering,
+      .app.app-shell-entering.app-shell-visible {
+        opacity: 1;
+        transform: none;
+        transition: none;
+      }
     }
 
     .is-standalone-pwa .app,

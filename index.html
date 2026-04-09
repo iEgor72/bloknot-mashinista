@@ -10,6 +10,24 @@
   <script>
     (function() {
       var root = document.documentElement;
+      root.classList.add('app-booting');
+      var pendingStyles = 7;
+      var bootReleased = false;
+
+      function releaseBootGate() {
+        if (bootReleased) return;
+        bootReleased = true;
+        root.classList.remove('app-booting');
+      }
+
+      window.__appBootMarkStyleLoaded = function() {
+        if (bootReleased) return;
+        pendingStyles -= 1;
+        if (pendingStyles <= 0) {
+          releaseBootGate();
+        }
+      };
+      window.setTimeout(releaseBootGate, 1800);
 
       function detectStandaloneMode() {
         try {
@@ -51,43 +69,50 @@
     rel="stylesheet"
     href="/styles/00-base.css"
     media="print"
-    onload="this.media='all'"
+    onload="this.media='all';window.__appBootMarkStyleLoaded&&window.__appBootMarkStyleLoaded()"
+    onerror="window.__appBootMarkStyleLoaded&&window.__appBootMarkStyleLoaded()"
   />
   <link
     rel="stylesheet"
     href="/styles/10-navigation-and-cards.css"
     media="print"
-    onload="this.media='all'"
+    onload="this.media='all';window.__appBootMarkStyleLoaded&&window.__appBootMarkStyleLoaded()"
+    onerror="window.__appBootMarkStyleLoaded&&window.__appBootMarkStyleLoaded()"
   />
   <link
     rel="stylesheet"
     href="/styles/15-bottom-nav.css"
     media="print"
-    onload="this.media='all'"
+    onload="this.media='all';window.__appBootMarkStyleLoaded&&window.__appBootMarkStyleLoaded()"
+    onerror="window.__appBootMarkStyleLoaded&&window.__appBootMarkStyleLoaded()"
   />
   <link
     rel="stylesheet"
     href="/styles/16-press-feedback.css"
     media="print"
-    onload="this.media='all'"
+    onload="this.media='all';window.__appBootMarkStyleLoaded&&window.__appBootMarkStyleLoaded()"
+    onerror="window.__appBootMarkStyleLoaded&&window.__appBootMarkStyleLoaded()"
   />
   <link
     rel="stylesheet"
     href="/styles/20-form-and-stats.css"
     media="print"
-    onload="this.media='all'"
+    onload="this.media='all';window.__appBootMarkStyleLoaded&&window.__appBootMarkStyleLoaded()"
+    onerror="window.__appBootMarkStyleLoaded&&window.__appBootMarkStyleLoaded()"
   />
   <link
     rel="stylesheet"
     href="/styles/30-shifts-and-overlays.css"
     media="print"
-    onload="this.media='all'"
+    onload="this.media='all';window.__appBootMarkStyleLoaded&&window.__appBootMarkStyleLoaded()"
+    onerror="window.__appBootMarkStyleLoaded&&window.__appBootMarkStyleLoaded()"
   />
   <link
     rel="stylesheet"
     href="/styles/40-premium-refresh.css"
     media="print"
-    onload="this.media='all'"
+    onload="this.media='all';window.__appBootMarkStyleLoaded&&window.__appBootMarkStyleLoaded()"
+    onerror="window.__appBootMarkStyleLoaded&&window.__appBootMarkStyleLoaded()"
   />
   <noscript><link rel="stylesheet" href="/styles/00-base.css" /></noscript>
   <noscript><link rel="stylesheet" href="/styles/10-navigation-and-cards.css" /></noscript>

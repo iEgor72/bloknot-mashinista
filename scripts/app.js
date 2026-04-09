@@ -57,6 +57,8 @@
     var recentAddTimer = null;
     var activeTab = 'home';
     var hasRenderedInitialTab = false;
+    var hasPlayedAppShellReveal = false;
+    var appShellRevealTimer = null;
     var activeShiftMenuId = null;
     var activeShiftMenuScope = null;
     var SHIFT_LIST_REVEAL_DURATION_MS = 220;
@@ -5625,7 +5627,31 @@ var contentHtml = formatInstructionNodeContentHtml(
     function showAppShell() {
       AUTH_STATE = 'authenticated';
       if (AUTH_GATE) AUTH_GATE.classList.add('hidden');
-      if (APP_SHELL) APP_SHELL.classList.remove('hidden');
+      if (APP_SHELL) {
+        APP_SHELL.classList.remove('hidden');
+        if (!hasPlayedAppShellReveal && !prefersReducedMotion()) {
+          APP_SHELL.classList.add('app-shell-entering');
+          APP_SHELL.classList.remove('app-shell-visible');
+          window.requestAnimationFrame(function() {
+            window.requestAnimationFrame(function() {
+              if (!APP_SHELL) return;
+              APP_SHELL.classList.add('app-shell-visible');
+            });
+          });
+          if (appShellRevealTimer) {
+            window.clearTimeout(appShellRevealTimer);
+          }
+          appShellRevealTimer = window.setTimeout(function() {
+            if (!APP_SHELL) return;
+            APP_SHELL.classList.remove('app-shell-entering', 'app-shell-visible');
+            hasPlayedAppShellReveal = true;
+            appShellRevealTimer = null;
+          }, 460);
+        } else {
+          APP_SHELL.classList.remove('app-shell-entering', 'app-shell-visible');
+          hasPlayedAppShellReveal = true;
+        }
+      }
       settleSafeAreaInsets();
       repairUiText();
       updateSettingsControls();
@@ -5682,6 +5708,11 @@ var contentHtml = formatInstructionNodeContentHtml(
         // Force reflow so repeated transitions on the same tab still animate.
         void activePanel.offsetWidth;
         activePanel.classList.add(transitionClass);
+        var clearTransitionClass = function() {
+          activePanel.classList.remove('tab-enter-forward', 'tab-enter-backward');
+          activePanel.removeEventListener('animationend', clearTransitionClass);
+        };
+        activePanel.addEventListener('animationend', clearTransitionClass);
       }
       hasRenderedInitialTab = true;
 
