@@ -359,6 +359,10 @@
     .dashboard-month-income {
       margin-top: 0;
       min-height: auto;
+      display: flex;
+      align-items: baseline;
+      justify-content: space-between;
+      gap: 12px;
     }
 
     .dashboard-norms {
@@ -403,25 +407,29 @@
     }
 
     .dashboard-month-income-label {
-      font-size: 10px;
-      color: var(--muted);
-      font-weight: 800;
-      letter-spacing: 0.08em;
-      text-transform: uppercase;
+      font-size: 13px;
+      color: var(--sub);
+      font-weight: 600;
+      letter-spacing: 0.01em;
+      text-transform: none;
+      line-height: 1.25;
+      min-width: 0;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
     }
 
     .dashboard-month-income-value {
       font-family: 'JetBrains Mono', monospace;
-      font-size: clamp(17px, 4.8vw, 22px);
+      font-size: clamp(20px, 5.3vw, 25px);
       font-weight: 700;
       line-height: 1.2;
       color: var(--green);
       font-variant-numeric: tabular-nums;
       letter-spacing: -0.02em;
       white-space: nowrap;
-      min-width: 0;
-      overflow: hidden;
-      text-overflow: ellipsis;
+      flex-shrink: 0;
+      text-align: right;
     }
 
     .dashboard-sub {
