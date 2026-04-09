@@ -236,12 +236,8 @@
     }
 
     .dashboard-head::before {
-      content: '';
-      display: block;
-      width: 16px;
-      height: 2px;
-      background: var(--accent);
-      border-radius: var(--r-pill);
+      content: none;
+      display: none;
     }
 
     .dashboard-eyebrow {
@@ -314,8 +310,37 @@
       box-shadow: 0 0 12px var(--accent-glow);
     }
 
+    .progress-marker {
+      position: absolute;
+      top: 50%;
+      transform: translate(-50%, -50%);
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      border: 2px solid currentColor;
+      background: var(--card-hi);
+      color: var(--sub);
+      pointer-events: none;
+      z-index: 2;
+    }
+
+    .progress-marker::after {
+      content: '';
+      position: absolute;
+      left: 50%;
+      top: -11px;
+      transform: translateX(-50%);
+      width: 1px;
+      height: 9px;
+      background: currentColor;
+      opacity: 0.55;
+    }
+
+    .progress-marker-today { color: var(--accent); }
+    .progress-marker-month { color: var(--holiday); }
+
     .dashboard-month-income {
-      margin-top: 16px;
+      margin-top: 12px;
       display: flex;
       align-items: baseline;
       justify-content: space-between;
@@ -408,9 +433,9 @@
     }
 
     .dashboard-sub.remaining {
-      color: var(--accent);
-      border-color: rgba(56, 189, 248, 0.24);
-      background: rgba(56, 189, 248, 0.12);
+      color: var(--holiday);
+      border-color: rgba(244, 114, 182, 0.24);
+      background: var(--holiday-dim);
     }
 
     .dashboard-card.state-ok .progress-fill,

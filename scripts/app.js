@@ -1749,59 +1749,15 @@
       return 'medium';
     }
 
-    function buildShiftDurationLevelStats(durationValues) {
-      var values = [];
-      for (var i = 0; i < durationValues.length; i++) {
-        var value = Number(durationValues[i]);
-        if (!isFinite(value) || value <= 0) continue;
-        values.push(value);
-      }
-
-      if (!values.length) {
-        return {
-          count: 0,
-          average: 0,
-          spread: 0,
-          lowThreshold: 0,
-          highThreshold: 0,
-          stableSpread: 0
-        };
-      }
-
-      var min = values[0];
-      var max = values[0];
-      var sum = 0;
-      for (var v = 0; v < values.length; v++) {
-        var current = values[v];
-        sum += current;
-        if (current < min) min = current;
-        if (current > max) max = current;
-      }
-
-      var average = sum / values.length;
-      return {
-        count: values.length,
-        average: average,
-        spread: max - min,
-        lowThreshold: average * 0.8,
-        highThreshold: average * 1.2,
-        stableSpread: Math.max(120, average * 0.12)
-      };
-    }
-
-    function getShiftDurationLevel(durationMin, stats) {
-      if (!stats || stats.count < 3) return 'medium';
-      if (stats.spread < stats.stableSpread) return 'medium';
-      if (durationMin <= stats.lowThreshold) return 'low';
-      if (durationMin >= stats.highThreshold) return 'high';
-      return 'medium';
-    }
-
     function buildMonthShiftDurationLevelMap(monthShifts, bounds) {
       var durationMap = {};
       if (!monthShifts || !monthShifts.length || !bounds) return durationMap;
+      var bestId = '';
+      var worstId = '';
+      var bestMinutes = -1;
+      var worstMinutes = Number.POSITIVE_INFINITY;
+      var validCount = 0;
 
-      var durationValues = [];
       for (var i = 0; i < monthShifts.length; i++) {
         var shift = monthShifts[i];
         var durationMin = shiftMinutesInRange(shift, bounds.start, bounds.end);
@@ -1810,14 +1766,27 @@
           minutes: durationMin,
           level: 'medium'
         };
-        if (durationMin > 0) durationValues.push(durationMin);
+        if (durationMin <= 0) continue;
+        validCount += 1;
+        if (durationMin > bestMinutes) {
+          bestMinutes = durationMin;
+          bestId = shiftId;
+        }
+        if (durationMin < worstMinutes) {
+          worstMinutes = durationMin;
+          worstId = shiftId;
+        }
       }
 
-      var stats = buildShiftDurationLevelStats(durationValues);
-      var keys = Object.keys(durationMap);
-      for (var k = 0; k < keys.length; k++) {
-        var key = keys[k];
-        durationMap[key].level = getShiftDurationLevel(durationMap[key].minutes, stats);
+      if (validCount < 2) return durationMap;
+      if (!bestId || !worstId) return durationMap;
+      if (bestMinutes === worstMinutes) return durationMap;
+
+      durationMap[bestId].level = 'high';
+      durationMap[worstId].level = 'low';
+
+      if (bestId === worstId) {
+        durationMap[bestId].level = 'medium';
       }
 
       return durationMap;
@@ -6634,11 +6603,11 @@ var contentHtml = formatInstructionNodeContentHtml(
 
       var todayNormMin = 0;
       if (relation < 0) {
-        todayNormMin = monthNormMin;
+        todayNormMin = totalWorkingDays * 8 * 60;
       } else if (relation > 0) {
         todayNormMin = 0;
-      } else if (totalWorkingDays > 0) {
-        todayNormMin = Math.round(monthNormMin * (elapsedWorkingDays / totalWorkingDays));
+      } else {
+        todayNormMin = elapsedWorkingDays * 8 * 60;
       }
 
       return {
@@ -6648,6 +6617,20 @@ var contentHtml = formatInstructionNodeContentHtml(
         totalWorkingDays: totalWorkingDays,
         elapsedWorkingDays: elapsedWorkingDays
       };
+    }
+
+    function setProgressMarkerPosition(markerEl, valueMin, maxMin) {
+      if (!markerEl) return;
+      var value = Number(valueMin);
+      var maxValue = Number(maxMin);
+      if (!isFinite(value) || value <= 0 || !isFinite(maxValue) || maxValue <= 0) {
+        markerEl.classList.add('hidden');
+        markerEl.style.removeProperty('left');
+        return;
+      }
+      var pct = Math.max(0, Math.min(100, (value / maxValue) * 100));
+      markerEl.classList.remove('hidden');
+      markerEl.style.left = pct + '%';
     }
 
     function getShiftRangeState(shift) {
@@ -7803,6 +7786,8 @@ var contentHtml = formatInstructionNodeContentHtml(
       var normTodayEl = document.getElementById('statNormToday');
       var diffEl = document.getElementById('statDiff');
       var progressFillEl = document.getElementById('dashboardProgressFill');
+      var progressTodayMarkerEl = document.getElementById('dashboardProgressTodayMarker');
+      var progressMonthMarkerEl = document.getElementById('dashboardProgressMonthMarker');
       var dashboardCardEl = document.querySelector('.dashboard-card');
 
       if (dashboardCardEl) {
@@ -7818,31 +7803,34 @@ var contentHtml = formatInstructionNodeContentHtml(
           : normMin;
         var diffMin = totalMin - diffBasisMin;
         var diffAbs = Math.abs(diffMin);
-        var progressPct = diffBasisMin > 0 ? Math.max(0, Math.min(100, Math.round((totalMin / diffBasisMin) * 100))) : 0;
+        var progressAxisMin = Math.max(normMin, normSnapshot.todayNormMin, totalMin, 1);
+        var workedPct = Math.max(0, Math.min(100, Math.round((totalMin / progressAxisMin) * 100)));
 
         if (normTodayEl) {
           normTodayEl.textContent = normSnapshot.relation > 0 ? '—' : fmtMin(normSnapshot.todayNormMin);
         }
 
         diffEl.className = 'dashboard-sub';
-        if (progressFillEl) progressFillEl.style.width = progressPct + '%';
+        if (progressFillEl) progressFillEl.style.width = workedPct + '%';
+        setProgressMarkerPosition(progressTodayMarkerEl, normSnapshot.todayNormMin, progressAxisMin);
+        setProgressMarkerPosition(progressMonthMarkerEl, normMin, progressAxisMin);
 
-        if (diffMin === 0 && totalMin > 0) {
-          diffEl.textContent = normSnapshot.relation === 0
-            ? 'План на сегодня выполнен'
-            : 'Норма месяца выполнена';
-          diffEl.classList.add('ok');
-          if (dashboardCardEl) dashboardCardEl.classList.add('state-ok');
+        if (diffMin === 0) {
+          if (normSnapshot.relation > 0 && totalMin === 0) {
+            diffEl.textContent = 'Месяц еще не начался';
+            diffEl.classList.add('remaining');
+            if (dashboardCardEl) dashboardCardEl.classList.add('state-remaining');
+          } else {
+            diffEl.textContent = 'Норма выполнена';
+            diffEl.classList.add('ok');
+            if (dashboardCardEl) dashboardCardEl.classList.add('state-ok');
+          }
         } else if (diffMin > 0) {
-          diffEl.textContent = normSnapshot.relation === 0
-            ? 'Вы опережаете план на ' + fmtMin(diffAbs)
-            : 'Норма закрыта, плюс ' + fmtMin(diffAbs);
+          diffEl.textContent = 'Переработка ' + fmtMin(diffAbs);
           diffEl.classList.add('overtime');
           if (dashboardCardEl) dashboardCardEl.classList.add('state-overtime');
         } else {
-          diffEl.textContent = normSnapshot.relation === 0
-            ? 'До плана на сегодня осталось ' + fmtMin(diffAbs)
-            : 'До нормы месяца осталось ' + fmtMin(diffAbs);
+          diffEl.textContent = 'Недоработка ' + fmtMin(diffAbs);
           diffEl.classList.add('remaining');
           if (dashboardCardEl) dashboardCardEl.classList.add('state-remaining');
         }
@@ -7850,6 +7838,8 @@ var contentHtml = formatInstructionNodeContentHtml(
         if (normEl) normEl.textContent = '—';
         if (normTodayEl) normTodayEl.textContent = '—';
         if (progressFillEl) progressFillEl.style.width = '0%';
+        setProgressMarkerPosition(progressTodayMarkerEl, 0, 0);
+        setProgressMarkerPosition(progressMonthMarkerEl, 0, 0);
         diffEl.className = 'dashboard-sub';
         diffEl.textContent = 'Норма не задана';
       }

@@ -188,7 +188,11 @@
             <div class="dashboard-eyebrow">Отработано</div>
             <div class="dashboard-value"><span id="statWorked">0 ч</span></div>
           </div>
-          <div class="progress-track"><div class="progress-fill" id="dashboardProgressFill"></div></div>
+          <div class="progress-track">
+            <div class="progress-fill" id="dashboardProgressFill"></div>
+            <span class="progress-marker progress-marker-today hidden" id="dashboardProgressTodayMarker" aria-hidden="true"></span>
+            <span class="progress-marker progress-marker-month hidden" id="dashboardProgressMonthMarker" aria-hidden="true"></span>
+          </div>
           <div class="dashboard-norms" aria-live="polite">
             <div class="dashboard-norm-item">
               <span class="dashboard-norm-label">Норма на сегодня</span>
@@ -199,11 +203,11 @@
               <span class="dashboard-norm-value" id="statNormMonth">—</span>
             </div>
           </div>
+          <div class="dashboard-sub" id="statDiff">Осталось —</div>
           <div class="dashboard-month-income" aria-live="polite">
             <span class="dashboard-month-income-label" id="dashboardMonthIncomeLabel">За месяц</span>
             <span class="dashboard-month-income-value" id="dashboardMonthIncomeValue">—</span>
           </div>
-          <div class="dashboard-sub" id="statDiff">Осталось —</div>
           <div class="dashboard-average" id="dashboardAverageShift">ср. смена: нет данных</div>
         </div>
 
