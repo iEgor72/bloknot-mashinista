@@ -6776,6 +6776,10 @@ var contentHtml = formatInstructionNodeContentHtml(
         '</div>';
     }
 
+    function buildShiftPendingIconHtml() {
+      return '<div class="shift-pending-line" role="img" aria-label="Не синхронизировано" title="Не синхронизировано">' + docOnlineOnlyIcon + '</div>';
+    }
+
     function buildShiftDetailHeroCardHtml(shift, shiftIncomeMap) {
       if (!shift) return '';
       var f = fmtShift(shift);
@@ -6802,7 +6806,7 @@ var contentHtml = formatInstructionNodeContentHtml(
           '<div class="shift-card-top">' +
             typeHtml +
           '</div>' +
-          (isShiftPending(shift) ? '<div class="shift-pending-line">Не синхронизировано</div>' : '') +
+          (isShiftPending(shift) ? buildShiftPendingIconHtml() : '') +
           directionHtml +
           '<div class="shift-card-body">' +
             '<div class="shift-main-row">' +
@@ -6937,7 +6941,7 @@ var contentHtml = formatInstructionNodeContentHtml(
             '</div>' +
           '</div>' +
         '</div>' +
-        (shiftIsPending ? '<div class="shift-pending-line">Не синхронизировано</div>' : '') +
+        (shiftIsPending ? buildShiftPendingIconHtml() : '') +
         directionHtml +
         '<div class="shift-card-body">' +
           '<div class="shift-main-row">' +
