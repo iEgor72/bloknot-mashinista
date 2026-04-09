@@ -5465,6 +5465,12 @@ var contentHtml = formatInstructionNodeContentHtml(
       }
     }
 
+    function hasKnownUserIdentity(user) {
+      if (!user || user.id === undefined || user.id === null) return false;
+      var id = String(user.id).trim();
+      return !!id && id !== 'guest';
+    }
+
     function setStoredCachedUser(user) {
       try {
         if (user && typeof user === 'object') {
@@ -6057,7 +6063,8 @@ var contentHtml = formatInstructionNodeContentHtml(
           return;
         }
 
-        if (!readShiftsCache() && !readAnyShiftsCache()) {
+        var hasKnownIdentity = hasKnownUserIdentity(CURRENT_USER) || hasKnownUserIdentity(getStoredCachedUser());
+        if (!hasKnownIdentity || (!readShiftsCache() && !readAnyShiftsCache())) {
           showAuthGate(AUTH_ENV_STATE, 'guest');
           renderTelegramLoginWidget();
         }
@@ -6112,10 +6119,7 @@ var contentHtml = formatInstructionNodeContentHtml(
               lastSyncStatus: servedFromCache || STARTED_FROM_CACHED_STATE ? 'cached' : 'error',
               lastError: 'Unauthorized'
             });
-            if (STARTED_FROM_CACHED_STATE || servedFromCache) {
-              if (!servedFromCache && callback) callback();
-              return;
-            }
+            if (!servedFromCache && callback) callback();
             handleAuthUnauthorized('load');
             return;
           }
@@ -6186,7 +6190,7 @@ var contentHtml = formatInstructionNodeContentHtml(
           }
           if (result.status === 401) {
             updateOfflineUiState({ isOffline: !navigator.onLine, isSyncing: false, hasPending: true, lastSyncStatus: 'error', lastError: 'Unauthorized' });
-            if (!STARTED_FROM_CACHED_STATE) handleAuthUnauthorized('save');
+            handleAuthUnauthorized('save');
             return;
           }
           updateOfflineUiState({ isOffline: !navigator.onLine, isSyncing: false, hasPending: true, lastSyncStatus: 'error', lastError: (result.body && result.body.error) || 'API save failed' });
