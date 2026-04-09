@@ -621,19 +621,27 @@
     <div class="bottom-sheet">
       <div class="sheet-title">Добавить на главный экран</div>
       <div class="sheet-text">Это одна и та же ссылка для Telegram, Safari и ярлыка на экране. Если ты открыл её впервые на новом устройстве, просто войди через Telegram один раз — дальше смены будут подхватываться автоматически.</div>
+      <div class="sheet-text hidden" id="installGuideRuntimeNote"></div>
 
-      <div class="sheet-text"><strong>Для iPhone:</strong></div>
-      <ol class="sheet-steps">
+      <div class="sheet-text" id="installGuideIosTitle"><strong>Для iPhone:</strong></div>
+      <ol class="sheet-steps" id="installGuideIosSteps">
         <li>Открой ссылку ниже в Safari</li>
         <li>Нажми «Поделиться»</li>
         <li>Выбери «На экран Домой»</li>
       </ol>
 
-      <div class="sheet-text"><strong>Для Android:</strong></div>
-      <ol class="sheet-steps">
+      <div class="sheet-text" id="installGuideAndroidTitle"><strong>Для Android:</strong></div>
+      <ol class="sheet-steps" id="installGuideAndroidSteps">
         <li>Открой ссылку ниже в Chrome</li>
         <li>Открой меню браузера</li>
         <li>«Добавить на главный экран»</li>
+      </ol>
+
+      <div class="sheet-text hidden" id="installGuideDesktopTitle"><strong>Для компьютера:</strong></div>
+      <ol class="sheet-steps hidden" id="installGuideDesktopSteps">
+        <li>Открой ссылку ниже в Chrome или Edge</li>
+        <li>Нажми иконку установки в адресной строке</li>
+        <li>Подтверди установку приложения</li>
       </ol>
 
       <div class="sheet-text" style="font-size:12px; color:var(--text-muted); margin-bottom:6px;">Ссылка на приложение:</div>

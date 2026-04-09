@@ -955,7 +955,8 @@
       pointer-events: none;
     }
 
-    .overlay.is-open {
+    .overlay.is-open,
+    .overlay.visible {
       opacity: 1;
       visibility: visible;
       pointer-events: auto;
@@ -976,7 +977,8 @@
       transition: transform 0.28s cubic-bezier(0.25, 1, 0.35, 1);
     }
 
-    .overlay.is-open .bottom-sheet {
+    .overlay.is-open .bottom-sheet,
+    .overlay.visible .bottom-sheet {
       transform: translateY(0);
     }
 

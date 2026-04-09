@@ -601,6 +601,7 @@
     }
 
     var APP_VERSION = '1.0.0 (1)';
+    var INSTALL_PROMPT_STATE_STORAGE_KEY = 'shift_tracker_install_prompt_state_v1';
     var LEGACY_SETTINGS_STORAGE_KEY = 'shift_tracker_settings_v1';
     var SALARY_PARAMS_STORAGE_KEY = 'shift_tracker_salary_params_v1';
     var DEFAULT_SALARY_PARAMS = {
@@ -614,6 +615,8 @@
     var salaryParamsStore = createSalaryParamsStore();
     var appSettings = salaryParamsStore.values;
     var installPromptDismissed = false;
+    var installPromptInstalled = false;
+    var deferredInstallPromptEvent = null;
     // ── Documentation store ──
     // ACCESS_UNRESTRICTED = false re-enables gating in the future.
     var ACCESS_UNRESTRICTED = true;
@@ -1297,8 +1300,131 @@
       return String(rounded).replace(/\.0$/, '') + '%';
     }
 
+    function logInstallDebug(message, payload) {
+      if (!window.console || typeof console.debug !== 'function') return;
+      if (payload === undefined) {
+        console.debug('[PWA install]', message);
+        return;
+      }
+      console.debug('[PWA install]', message, payload);
+    }
+
+    function loadInstallPromptState() {
+      try {
+        var raw = localStorage.getItem(INSTALL_PROMPT_STATE_STORAGE_KEY);
+        if (!raw) return;
+        var parsed = JSON.parse(raw);
+        if (!parsed || typeof parsed !== 'object') return;
+        installPromptInstalled = parsed.installed === true;
+      } catch (e) {
+        console.warn('[PWA install] Failed to load install state', e);
+      }
+    }
+
+    function saveInstallPromptState() {
+      try {
+        localStorage.setItem(INSTALL_PROMPT_STATE_STORAGE_KEY, JSON.stringify({
+          installed: installPromptInstalled === true
+        }));
+      } catch (e) {}
+    }
+
+    function detectInstallGuidePlatform() {
+      var ua = navigator.userAgent || '';
+      var iosByUa = /iPad|iPhone|iPod/i.test(ua);
+      var iosByTouchMac = navigator.platform === 'MacIntel' && navigator.maxTouchPoints > 1;
+      if (iosByUa || iosByTouchMac) return 'ios';
+      if (/Android/i.test(ua)) return 'android';
+      return 'desktop';
+    }
+
+    function isTelegramWebView() {
+      try {
+        var webApp = getTelegramWebApp();
+        if (webApp && typeof webApp.initData === 'string' && webApp.initData.length > 0) {
+          return true;
+        }
+      } catch (e) {}
+      return /Telegram/i.test(navigator.userAgent || '');
+    }
+
+    function setInstallGuideSectionVisible(prefix, isVisible) {
+      var titleEl = document.getElementById('installGuide' + prefix + 'Title');
+      var stepsEl = document.getElementById('installGuide' + prefix + 'Steps');
+      if (titleEl) titleEl.classList.toggle('hidden', !isVisible);
+      if (stepsEl) stepsEl.classList.toggle('hidden', !isVisible);
+    }
+
+    function hasDeferredInstallPrompt() {
+      return !!(deferredInstallPromptEvent && typeof deferredInstallPromptEvent.prompt === 'function');
+    }
+
+    function updateInstallGuideContent() {
+      var platform = detectInstallGuidePlatform();
+      var shouldShowDesktop = platform === 'desktop';
+
+      setInstallGuideSectionVisible('Ios', platform === 'ios' || (!shouldShowDesktop && platform !== 'android'));
+      setInstallGuideSectionVisible('Android', platform === 'android' || (!shouldShowDesktop && platform !== 'ios'));
+      setInstallGuideSectionVisible('Desktop', shouldShowDesktop);
+
+      var noteEl = document.getElementById('installGuideRuntimeNote');
+      if (!noteEl) return;
+
+      if (isTelegramWebView()) {
+        noteEl.textContent = 'Во встроенном браузере Telegram установка PWA может быть недоступна. Откройте ссылку в Safari или Chrome и добавьте приложение на главный экран.';
+        noteEl.classList.remove('hidden');
+        return;
+      }
+
+      if (hasDeferredInstallPrompt()) {
+        noteEl.textContent = 'Этот браузер поддерживает системную установку PWA. Если окно установки не появится, используйте шаги ниже.';
+        noteEl.classList.remove('hidden');
+        return;
+      }
+
+      noteEl.classList.add('hidden');
+      noteEl.textContent = '';
+    }
+
+    function maybeShowNativeInstallPrompt() {
+      if (!hasDeferredInstallPrompt()) {
+        logInstallDebug('Native install prompt unavailable. Falling back to guide.');
+        return Promise.resolve({ outcome: 'unavailable' });
+      }
+
+      var promptEvent = deferredInstallPromptEvent;
+      deferredInstallPromptEvent = null;
+      renderInstallPromptCard();
+
+      return Promise.resolve()
+        .then(function() {
+          return promptEvent.prompt();
+        })
+        .then(function() {
+          if (promptEvent.userChoice && typeof promptEvent.userChoice.then === 'function') {
+            return promptEvent.userChoice;
+          }
+          return { outcome: 'unknown' };
+        })
+        .then(function(choice) {
+          var outcome = choice && choice.outcome ? choice.outcome : 'unknown';
+          logInstallDebug('Native prompt outcome', outcome);
+          if (outcome === 'accepted') {
+            installPromptInstalled = true;
+            installPromptDismissed = true;
+            saveInstallPromptState();
+            renderInstallPromptCard();
+          }
+          return { outcome: outcome };
+        })
+        .catch(function(error) {
+          console.warn('[PWA install] Native install prompt failed', error);
+          return { outcome: 'error', error: error };
+        });
+    }
+
     function shouldShowInstallPromptCard() {
-      return !isStandalonePwa() && !installPromptDismissed;
+      return !isStandalonePwa() && !installPromptDismissed && !installPromptInstalled;
     }
 
     function renderInstallPromptCard() {
@@ -8176,14 +8302,22 @@ var contentHtml = formatInstructionNodeContentHtml(
     });
 
     // ── Overlays ──
+    function setOverlayOpenState(id, isOpen) {
+      var overlay = document.getElementById(id);
+      if (!overlay) return;
+      overlay.classList.toggle('is-open', !!isOpen);
+      // Keep legacy class for compatibility with any older styles or scripts.
+      overlay.classList.toggle('visible', !!isOpen);
+    }
+
     function openOverlay(id) {
       closeShiftActionsMenu(true);
       closeLocoSeriesMenu();
-      document.getElementById(id).classList.add('visible');
+      setOverlayOpenState(id, true);
     }
 
     function closeOverlay(id) {
-      document.getElementById(id).classList.remove('visible');
+      setOverlayOpenState(id, false);
       if (id === 'overlayConfirm' && pendingDeleteId) {
         pendingDeleteId = null;
         render();
@@ -8201,7 +8335,9 @@ var contentHtml = formatInstructionNodeContentHtml(
     }
 
     function openInstallGuideSheet() {
-      document.getElementById('appUrl').textContent = getAppUrl();
+      var appUrlEl = document.getElementById('appUrl');
+      if (appUrlEl) appUrlEl.textContent = getAppUrl();
+      updateInstallGuideContent();
       openOverlay('overlayAddScreen');
     }
 
@@ -8209,7 +8345,12 @@ var contentHtml = formatInstructionNodeContentHtml(
     var showInstallGuideBtn = document.getElementById('btnShowInstallGuide');
     if (showInstallGuideBtn) {
       showInstallGuideBtn.addEventListener('click', function() {
-        openInstallGuideSheet();
+        maybeShowNativeInstallPrompt().then(function(result) {
+          if (result && result.outcome === 'accepted') {
+            return;
+          }
+          openInstallGuideSheet();
+        });
       });
     }
     var dismissInstallCardBtn = document.getElementById('btnDismissInstallCard');
@@ -8361,10 +8502,45 @@ if (action === 'scroll-node') {
       }
     });
 
+    window.addEventListener('beforeinstallprompt', function(event) {
+      event.preventDefault();
+      deferredInstallPromptEvent = event;
+      logInstallDebug('Captured beforeinstallprompt event');
+      renderInstallPromptCard();
+      updateInstallGuideContent();
+    });
+
+    window.addEventListener('appinstalled', function() {
+      logInstallDebug('appinstalled event received');
+      installPromptInstalled = true;
+      installPromptDismissed = true;
+      deferredInstallPromptEvent = null;
+      saveInstallPromptState();
+      closeOverlay('overlayAddScreen');
+      renderInstallPromptCard();
+      updateInstallGuideContent();
+    });
+
+    if (window.matchMedia) {
+      var standaloneMedia = window.matchMedia('(display-mode: standalone)');
+      if (standaloneMedia) {
+        var onStandaloneModeChange = function() {
+          renderInstallPromptCard();
+        };
+        if (typeof standaloneMedia.addEventListener === 'function') {
+          standaloneMedia.addEventListener('change', onStandaloneModeChange);
+        } else if (typeof standaloneMedia.addListener === 'function') {
+          standaloneMedia.addListener(onStandaloneModeChange);
+        }
+      }
+    }
+
+    loadInstallPromptState();
     repairUiText();
     bindSettingsControls();
     updateSettingsControls();
     renderInstallPromptCard();
+    updateInstallGuideContent();
     renderDocumentationScreen();
     startUserStatsTracking();
 
