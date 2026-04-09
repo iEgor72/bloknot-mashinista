@@ -92,10 +92,7 @@
     /* Active state */
     .nav-item.active .tab-icon  { opacity: 1; color: var(--accent); }
     .nav-item.active .tab-label { color: var(--accent); }
-    .nav-item.active::after {
-      background: var(--accent);
-      box-shadow: 0 0 6px var(--accent-glow);
-    }
+    /* Active dot disabled: keep pseudo-element space to avoid layout shifts. */
 
     /* ── FAB slot — inline, same flex:1 ── */
     .nav-fab {
