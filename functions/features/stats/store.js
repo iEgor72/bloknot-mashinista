@@ -46,8 +46,36 @@ async function ensureSchema(db) {
   ).run();
 }
 
+async function hasTable(db, tableName) {
+  var row = await db.prepare(
+    "SELECT name FROM sqlite_master WHERE type = 'table' AND name = ? LIMIT 1"
+  ).bind(tableName).first();
+  return !!(row && row.name);
+}
+
 async function readStatsRows(db) {
-  var totalRow = await db.prepare('SELECT COUNT(*) AS count FROM stats_users').first();
+  var hasUserShifts = await hasTable(db, 'user_shifts');
+  var totalUsersQuery = [
+    'SELECT COUNT(DISTINCT user_id) AS count',
+    'FROM (',
+    '  SELECT user_id FROM stats_users',
+    '  UNION ALL',
+    '  SELECT user_id FROM stats_sessions',
+  ];
+
+  if (hasUserShifts) {
+    totalUsersQuery.push('  UNION ALL');
+    totalUsersQuery.push('  SELECT user_id FROM user_shifts');
+  }
+
+  totalUsersQuery.push(')');
+  totalUsersQuery.push('WHERE user_id IS NOT NULL');
+  totalUsersQuery.push("  AND TRIM(user_id) <> ''");
+  totalUsersQuery.push("  AND TRIM(user_id) <> 'guest'");
+
+  var totalRow = await db.prepare(
+    totalUsersQuery.join('\n')
+  ).first();
   var onlineRow = await db.prepare(
     [
       'SELECT COUNT(DISTINCT user_id) AS count',
