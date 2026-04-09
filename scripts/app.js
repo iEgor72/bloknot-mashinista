@@ -6716,13 +6716,13 @@ var contentHtml = formatInstructionNodeContentHtml(
     function getShiftTypeLabel(shift) {
       if (!shift) return 'Смена';
       if (shift.route_kind === 'trip') return 'Поездка';
-      if (shift.route_kind === 'depot') return 'Под депо';
+      if (shift.route_kind === 'depot') return 'Смена';
       return 'Смена';
     }
 
     function getShiftTypeIconName(shift) {
       if (shift && shift.route_kind === 'trip') return 'train';
-      if (shift && shift.route_kind === 'depot') return 'depot';
+      if (shift && shift.route_kind === 'depot') return 'shift';
       return 'shift';
     }
 
@@ -8051,7 +8051,7 @@ var contentHtml = formatInstructionNodeContentHtml(
         return 'Поездка';
       }
       if (shift.route_kind === 'depot') {
-        return 'Под депо';
+        return 'Смена';
       }
       var loco = getLocoSummary(shift);
       if (loco) return 'Локомотив ' + loco;
