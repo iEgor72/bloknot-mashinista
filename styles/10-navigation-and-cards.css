@@ -1233,7 +1233,7 @@
     /* ── Sheet / overlay common ── */
     .docs-pro-wrap {
       position: relative;
-      min-height: 420px;
+      min-height: 0;
     }
 
     .docs-pro-wrap.is-locked .docs-shell {
@@ -1257,7 +1257,7 @@
       align-items: center;
       justify-content: center;
       padding: 12px;
-      z-index: 4;
+      z-index: calc(var(--layer-scrim) + 5);
       pointer-events: none;
     }
 

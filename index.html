@@ -101,7 +101,7 @@
       align-items: center;
       justify-content: center;
       padding: 12px;
-      z-index: 4;
+      z-index: 200;
       pointer-events: none;
     }
     .docs-pro-card {
@@ -556,22 +556,23 @@
             </div>
           </div>
 
-          <div class="docs-pro-gate hidden" id="docsProGate" role="region" aria-live="polite" aria-label="Подтверждение доступа к документам">
-            <div class="docs-pro-card">
-              <div class="docs-pro-icon" aria-hidden="true">
-                <svg viewBox="0 0 24 24" focusable="false">
-                  <path d="M7 10V8a5 5 0 0 1 10 0v2"></path>
-                  <rect x="5" y="10" width="14" height="10" rx="3" ry="3"></rect>
-                  <path d="M12 14v3"></path>
-                </svg>
-              </div>
-              <div class="docs-pro-title">Документы защищены</div>
-              <div class="docs-pro-text">Доступ к разделу открывается после покупки PRO-версии. Сейчас открываем бесплатно.</div>
-              <button class="btn-secondary docs-pro-unlock-btn" id="btnUnlockDocsPro" type="button">Открыть бесплатно</button>
-            </div>
-          </div>
         </div>
       </section>
+    </div>
+
+    <div class="docs-pro-gate hidden" id="docsProGate" role="region" aria-live="polite" aria-label="Подтверждение доступа к документам">
+      <div class="docs-pro-card">
+        <div class="docs-pro-icon" aria-hidden="true">
+          <svg viewBox="0 0 24 24" focusable="false">
+            <path d="M7 10V8a5 5 0 0 1 10 0v2"></path>
+            <rect x="5" y="10" width="14" height="10" rx="3" ry="3"></rect>
+            <path d="M12 14v3"></path>
+          </svg>
+        </div>
+        <div class="docs-pro-title">Документы защищены</div>
+        <div class="docs-pro-text">Доступ к разделу открывается после покупки PRO-версии. Сейчас открываем бесплатно.</div>
+        <button class="btn-secondary docs-pro-unlock-btn" id="btnUnlockDocsPro" type="button">Открыть бесплатно</button>
+      </div>
     </div>
 
     <nav class="bottom-nav" aria-label="Основная навигация">
