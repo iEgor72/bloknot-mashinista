@@ -1860,13 +1860,13 @@
       averageEl.className = 'dashboard-average';
 
       if (!summary || summary.shiftCount === 0) {
-        averageEl.textContent = 'ср. смена: нет данных';
+        averageEl.textContent = 'Нет данных';
         averageEl.classList.add('is-muted');
         return;
       }
 
       if (summary.shiftCount < MIN_SHIFTS_FOR_AVERAGE) {
-        averageEl.textContent = 'ср. смена: нужно больше смен';
+        averageEl.textContent = 'Нужно больше смен';
         averageEl.classList.add('is-muted');
         return;
       }
@@ -1878,7 +1878,7 @@
         ? formatHoursAndMinutes(summary.averageDurationMin)
         : '—';
 
-      averageEl.textContent = 'ср. смена: ' + incomeText + ' · ' + durationText;
+      averageEl.textContent = incomeText + ' · ' + durationText;
       if (summary.incomeCount === 0 || summary.durationCount === 0) {
         averageEl.classList.add('is-muted');
       }
