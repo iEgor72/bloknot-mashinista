@@ -4,32 +4,8 @@
     return;
   }
 
-  var swReloaded = false;
   var initialController = navigator.serviceWorker.controller;
   var SW_URL = '/sw.js';
-
-  function scheduleSoftReload() {
-    if (swReloaded) return;
-    swReloaded = true;
-
-    var reload = function() {
-      window.setTimeout(function() {
-        window.location.reload();
-      }, 180);
-    };
-
-    if (document.visibilityState === 'hidden') {
-      var onVisible = function() {
-        if (document.visibilityState !== 'visible') return;
-        document.removeEventListener('visibilitychange', onVisible);
-        reload();
-      };
-      document.addEventListener('visibilitychange', onVisible);
-      return;
-    }
-
-    reload();
-  }
 
   function postToWorker(registration, payload) {
     var target = registration && (registration.active || registration.waiting || registration.installing);
@@ -65,7 +41,9 @@
       initialController = activeController;
       return;
     }
-    scheduleSoftReload();
+    // Keep current session stable and avoid startup flicker; new controller
+    // will be naturally used on next navigation.
+    console.info('[SW] Controller updated; reload deferred to next navigation.');
   });
 
   navigator.serviceWorker.register(SW_URL, { scope: '/' }).then(function(registration) {
