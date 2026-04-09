@@ -1,7 +1,8 @@
-const CACHE_VERSION = 'v18';
+const CACHE_VERSION = 'v19';
 const CACHE_NAME = `shift-tracker-shell-${CACHE_VERSION}`;
 const NAVIGATION_FALLBACK_URL = '/index.html';
 const NETWORK_TIMEOUT_MS = 1200;
+const ASSET_NETWORK_TIMEOUT_MS = 1200;
 const INDEX_ASSET_PATTERN = /(?:href|src)=["'](\/(?:styles|scripts|assets)\/[^"'?#]+(?:\?[^"']*)?)["']/g;
 const INSTALL_SHELL_URLS = [
   '/',
@@ -21,6 +22,19 @@ const INSTALL_SHELL_URLS = [
   '/scripts/app-init.js',
   '/scripts/sw-register.js',
   '/sw.js'
+];
+const CRITICAL_INSTALL_URLS = [
+  '/',
+  '/index.html',
+  '/styles/00-base.css',
+  '/styles/10-navigation-and-cards.css',
+  '/styles/15-bottom-nav.css',
+  '/styles/20-form-and-stats.css',
+  '/styles/30-shifts-and-overlays.css',
+  '/scripts/safe-area.js',
+  '/scripts/app.js',
+  '/scripts/app-init.js',
+  '/scripts/sw-register.js'
 ];
 const EXTENDED_SHELL_URLS = [
   '/assets/fonts/plus-jakarta-sans/plus-jakarta-sans-cyrillic-ext.woff2',
@@ -43,6 +57,7 @@ const EXTENDED_SHELL_URLS = [
   '/assets/pdfjs/pdf.worker.min.js'
 ];
 const INSTALL_SHELL_SET = new Set(INSTALL_SHELL_URLS.map((url) => normalizeShellUrl(url)).filter(Boolean));
+const CRITICAL_INSTALL_SET = new Set(CRITICAL_INSTALL_URLS.map((url) => normalizeShellUrl(url)).filter(Boolean));
 
 self.addEventListener('install', (event) => {
   event.waitUntil((async () => {
@@ -100,8 +115,15 @@ async function warmShellCache(options) {
   const shellUrls = await resolveShellUrls(mode);
   let cachedCount = 0;
 
+  if (mode === 'install') {
+    cachedCount += await precacheCriticalInstallShell(cache);
+  }
+
   await Promise.all(
     shellUrls.map(async (assetUrl) => {
+      if (mode === 'install' && CRITICAL_INSTALL_SET.has(assetUrl)) {
+        return;
+      }
       try {
         const response = await fetch(new Request(assetUrl, { cache: 'no-store' }));
         if (response && response.ok) {
@@ -124,6 +146,18 @@ async function warmShellCache(options) {
     return;
   }
   console.info('[SW] Extended warmup cache updated:', `${cachedCount}/${shellUrls.length}`);
+}
+
+async function precacheCriticalInstallShell(cache) {
+  const criticalUrls = uniqueShellUrls(CRITICAL_INSTALL_URLS);
+  try {
+    await cache.addAll(criticalUrls);
+    console.info('[SW] Critical install shell precached:', criticalUrls.length);
+    return criticalUrls.length;
+  } catch (error) {
+    console.error('[SW] Critical install shell precache failed:', error && error.message ? error.message : error);
+    throw error;
+  }
 }
 
 async function resolveShellUrls(mode) {
@@ -211,6 +245,17 @@ function isStaticAssetRequest(request, url) {
   );
 }
 
+function isStyleRequest(request) {
+  if (!request) return false;
+  if (request.destination === 'style') return true;
+
+  try {
+    return new URL(request.url).pathname.endsWith('.css');
+  } catch (error) {
+    return false;
+  }
+}
+
 function withTimeout(promise, timeoutMs) {
   return new Promise((resolve) => {
     let settled = false;
@@ -296,13 +341,25 @@ async function staleWhileRevalidate(request, event) {
     return cached;
   }
 
-  const response = await networkPromise;
+  const response = await withTimeout(networkPromise, ASSET_NETWORK_TIMEOUT_MS);
   if (response) {
     return response;
   }
 
   const fallback = await cache.match(request, { ignoreSearch: true });
   if (fallback) return fallback;
+
+  if (isStyleRequest(request)) {
+    console.warn('[SW] Serving empty CSS fallback for missing asset:', new URL(request.url).pathname);
+    return new Response('', {
+      status: 200,
+      headers: {
+        'Content-Type': 'text/css; charset=utf-8',
+        'Cache-Control': 'no-store'
+      }
+    });
+  }
+
   throw new Error('Asset unavailable');
 }
 

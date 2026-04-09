@@ -66,14 +66,68 @@
       document.head.appendChild(script);
     })();
   </script>
-  <link rel="stylesheet" href="/styles/00-base.css" />
-  <link rel="stylesheet" href="/styles/10-navigation-and-cards.css" />
-  <link rel="stylesheet" href="/styles/15-bottom-nav.css" />
-  <link rel="stylesheet" href="/styles/16-press-feedback.css" />
-  <link rel="stylesheet" href="/styles/20-form-and-stats.css" />
-  <link rel="stylesheet" href="/styles/30-shifts-and-overlays.css" />
-  <link rel="stylesheet" href="/styles/40-premium-refresh.css" />
-  <script src="/scripts/safe-area.js"></script>
+  <style>
+    html, body {
+      margin: 0;
+      min-height: 100%;
+      background: #0C0C10;
+      color: #EEF2F8;
+    }
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+    }
+    .hidden { display: none !important; }
+  </style>
+  <link
+    rel="stylesheet"
+    href="/styles/00-base.css"
+    media="print"
+    onload="this.media='all'"
+  />
+  <link
+    rel="stylesheet"
+    href="/styles/10-navigation-and-cards.css"
+    media="print"
+    onload="this.media='all'"
+  />
+  <link
+    rel="stylesheet"
+    href="/styles/15-bottom-nav.css"
+    media="print"
+    onload="this.media='all'"
+  />
+  <link
+    rel="stylesheet"
+    href="/styles/16-press-feedback.css"
+    media="print"
+    onload="this.media='all'"
+  />
+  <link
+    rel="stylesheet"
+    href="/styles/20-form-and-stats.css"
+    media="print"
+    onload="this.media='all'"
+  />
+  <link
+    rel="stylesheet"
+    href="/styles/30-shifts-and-overlays.css"
+    media="print"
+    onload="this.media='all'"
+  />
+  <link
+    rel="stylesheet"
+    href="/styles/40-premium-refresh.css"
+    media="print"
+    onload="this.media='all'"
+  />
+  <noscript><link rel="stylesheet" href="/styles/00-base.css" /></noscript>
+  <noscript><link rel="stylesheet" href="/styles/10-navigation-and-cards.css" /></noscript>
+  <noscript><link rel="stylesheet" href="/styles/15-bottom-nav.css" /></noscript>
+  <noscript><link rel="stylesheet" href="/styles/16-press-feedback.css" /></noscript>
+  <noscript><link rel="stylesheet" href="/styles/20-form-and-stats.css" /></noscript>
+  <noscript><link rel="stylesheet" href="/styles/30-shifts-and-overlays.css" /></noscript>
+  <noscript><link rel="stylesheet" href="/styles/40-premium-refresh.css" /></noscript>
+  <script src="/scripts/safe-area.js" defer></script>
 </head>
 <body>
   <!-- Auth Gate -->
@@ -687,11 +741,11 @@
   </div>
 
   <!-- Runtime Scripts -->
-  <script src="/scripts/nav-debug.js"></script>
-  <script src="/scripts/utils/haptics.js"></script>
-  <script src="/scripts/app.js"></script>
-  <script src="/scripts/press-feedback.js"></script>
-  <script src="/scripts/app-init.js"></script>
-  <script src="/scripts/sw-register.js"></script>
+  <script src="/scripts/app.js" defer></script>
+  <script src="/scripts/app-init.js" defer></script>
+  <script src="/scripts/sw-register.js" defer></script>
+  <script src="/scripts/utils/haptics.js" defer></script>
+  <script src="/scripts/press-feedback.js" defer></script>
+  <script src="/scripts/nav-debug.js" defer></script>
 </body>
 </html>
