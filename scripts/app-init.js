@@ -1,3 +1,5 @@
 // ── Init ──
 bootstrapCachedShellFromStorage();
-window.setTimeout(startBackgroundBootstrap, 0);
+window.requestAnimationFrame(function() {
+  window.setTimeout(startBackgroundBootstrap, 320);
+});
