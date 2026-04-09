@@ -234,7 +234,14 @@
       <section class="tab-panel" data-tab="add">
         <div class="form-section is-adding" id="shiftFormSection">
           <div class="form-title-row">
-            <div class="form-title" id="formTitle">Добавить смену</div>
+            <div class="form-title-leading">
+              <button class="form-back-btn hidden" id="btnBackFromEdit" type="button" aria-label="Назад к сменам">
+                <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false">
+                  <path fill="currentColor" d="M14.7 5.3a1 1 0 0 1 0 1.4L10.41 11H20a1 1 0 1 1 0 2h-9.59l4.3 4.3a1 1 0 1 1-1.42 1.4l-6-6a1 1 0 0 1 0-1.4l6-6a1 1 0 0 1 1.41 0Z"></path>
+                </svg>
+              </button>
+              <div class="form-title" id="formTitle">Добавить смену</div>
+            </div>
             <div class="edit-badge" id="editBadge">Режим редактирования</div>
           </div>
           <div class="form-hint">Время указывается в МСК, а все часы считаются по локальному времени: ночные, праздничные и общая длительность</div>

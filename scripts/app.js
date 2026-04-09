@@ -8156,6 +8156,7 @@ var contentHtml = formatInstructionNodeContentHtml(
       setFormMode('edit');
       document.getElementById('formTitle').textContent = 'Редактировать смену';
       document.getElementById('editBadge').classList.add('visible');
+      document.getElementById('btnBackFromEdit').classList.remove('hidden');
       document.getElementById('inputStartDate').value = shift.start_msk.substring(0, 10);
       document.getElementById('inputStartTime').value = shift.start_msk.substring(11, 16);
       document.getElementById('inputEndDate').value = shift.end_msk.substring(0, 10);
@@ -8173,6 +8174,7 @@ var contentHtml = formatInstructionNodeContentHtml(
       setFormMode('add');
       document.getElementById('formTitle').textContent = 'Добавить смену';
       document.getElementById('editBadge').classList.remove('visible');
+      document.getElementById('btnBackFromEdit').classList.add('hidden');
       document.getElementById('btnAdd').textContent = 'Добавить смену';
       document.getElementById('btnCancelEdit').classList.add('hidden');
       clearErrors();
@@ -8829,6 +8831,10 @@ if (action === 'scroll-node') {
     }
 
     document.getElementById('btnCancelEdit').addEventListener('click', function() {
+      exitEditMode('shifts');
+    });
+    document.getElementById('btnBackFromEdit').addEventListener('click', function() {
+      triggerHapticSelection();
       exitEditMode('shifts');
     });
 

@@ -83,6 +83,41 @@
       margin-bottom: 8px;
     }
 
+    .form-title-leading {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      min-width: 0;
+    }
+
+    .form-back-btn {
+      appearance: none;
+      width: 32px;
+      height: 32px;
+      border-radius: var(--r-inner);
+      border: 1px solid var(--border);
+      background: var(--card-hi);
+      color: var(--text);
+      display: inline-grid;
+      place-items: center;
+      cursor: pointer;
+      flex-shrink: 0;
+      -webkit-tap-highlight-color: transparent;
+      transition: transform 0.14s ease, background 0.14s ease, border-color 0.14s ease;
+    }
+
+    .form-back-btn svg {
+      width: 16px;
+      height: 16px;
+      display: block;
+    }
+
+    .form-back-btn:active {
+      transform: scale(0.97);
+      background: rgba(255, 255, 255, 0.10);
+      border-color: rgba(255, 255, 255, 0.24);
+    }
+
     .edit-badge {
       display: none;
       align-items: center;
