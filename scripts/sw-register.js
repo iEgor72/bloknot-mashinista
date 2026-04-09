@@ -44,9 +44,7 @@
   }
 
   function requestWarmupCache(registration) {
-    if (!postToWorker(registration, { type: 'WARMUP_CACHE' })) {
-      console.warn('[SW] No worker target available for WARMUP_CACHE message.');
-    }
+    return postToWorker(registration, { type: 'WARMUP_CACHE' });
   }
 
   function requestSkipWaiting(registration) {
@@ -80,7 +78,15 @@
     }
 
     requestSkipWaiting(registration);
-    requestWarmupCache(registration);
+
+    navigator.serviceWorker.ready.then(function(readyRegistration) {
+      console.info('[SW] Ready:', readyRegistration.scope || SW_URL);
+      if (!requestWarmupCache(readyRegistration)) {
+        console.warn('[SW] Ready registration has no active target for WARMUP_CACHE.');
+      }
+    }).catch(function(error) {
+      console.warn('[SW] navigator.serviceWorker.ready failed:', error);
+    });
 
     registration.addEventListener('updatefound', function() {
       var installing = registration.installing;
@@ -88,7 +94,9 @@
       installing.addEventListener('statechange', function() {
         if (installing.state === 'installed' && navigator.serviceWorker.controller) {
           requestSkipWaiting(registration);
-          requestWarmupCache(registration);
+          navigator.serviceWorker.ready.then(function(readyRegistration) {
+            requestWarmupCache(readyRegistration);
+          }).catch(function() {});
         }
       });
     });
@@ -97,7 +105,7 @@
       if (!navigator.serviceWorker.controller) {
         console.warn('[SW] Worker registered but page is not yet controlled. It will control next navigation.');
       }
-    }, 3500);
+    }, 5000);
   }).catch(function(error) {
     console.error('[SW] Service worker registration failed for ' + SW_URL + ':', error);
   });

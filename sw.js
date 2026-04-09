@@ -1,9 +1,9 @@
-const CACHE_VERSION = 'v17';
+const CACHE_VERSION = 'v18';
 const CACHE_NAME = `shift-tracker-shell-${CACHE_VERSION}`;
 const NAVIGATION_FALLBACK_URL = '/index.html';
 const NETWORK_TIMEOUT_MS = 1200;
 const INDEX_ASSET_PATTERN = /(?:href|src)=["'](\/(?:styles|scripts|assets)\/[^"'?#]+(?:\?[^"']*)?)["']/g;
-const CORE_SHELL_URLS = [
+const INSTALL_SHELL_URLS = [
   '/',
   '/index.html',
   '/styles/00-base.css',
@@ -13,10 +13,6 @@ const CORE_SHELL_URLS = [
   '/styles/20-form-and-stats.css',
   '/styles/30-shifts-and-overlays.css',
   '/styles/40-premium-refresh.css',
-  '/assets/fonts/plus-jakarta-sans/plus-jakarta-sans-cyrillic-ext.woff2',
-  '/assets/fonts/plus-jakarta-sans/plus-jakarta-sans-vietnamese.woff2',
-  '/assets/fonts/plus-jakarta-sans/plus-jakarta-sans-latin-ext.woff2',
-  '/assets/fonts/plus-jakarta-sans/plus-jakarta-sans-latin.woff2',
   '/scripts/safe-area.js',
   '/scripts/nav-debug.js',
   '/scripts/utils/haptics.js',
@@ -26,7 +22,11 @@ const CORE_SHELL_URLS = [
   '/scripts/sw-register.js',
   '/sw.js'
 ];
-const SHELL_EXTRA_URLS = [
+const EXTENDED_SHELL_URLS = [
+  '/assets/fonts/plus-jakarta-sans/plus-jakarta-sans-cyrillic-ext.woff2',
+  '/assets/fonts/plus-jakarta-sans/plus-jakarta-sans-vietnamese.woff2',
+  '/assets/fonts/plus-jakarta-sans/plus-jakarta-sans-latin-ext.woff2',
+  '/assets/fonts/plus-jakarta-sans/plus-jakarta-sans-latin.woff2',
   '/scripts/instructions/normalizeText.js',
   '/scripts/instructions/tokenize.js',
   '/scripts/instructions/buildChargrams.js',
@@ -42,11 +42,11 @@ const SHELL_EXTRA_URLS = [
   '/assets/pdfjs/pdf.min.js',
   '/assets/pdfjs/pdf.worker.min.js'
 ];
-const CORE_SHELL_SET = new Set(CORE_SHELL_URLS.map((url) => normalizeShellUrl(url)).filter(Boolean));
+const INSTALL_SHELL_SET = new Set(INSTALL_SHELL_URLS.map((url) => normalizeShellUrl(url)).filter(Boolean));
 
 self.addEventListener('install', (event) => {
   event.waitUntil((async () => {
-    await warmShellCache();
+    await warmShellCache({ mode: 'install' });
     await self.skipWaiting();
   })());
 });
@@ -69,7 +69,7 @@ self.addEventListener('message', (event) => {
     self.skipWaiting();
   }
   if (data && data.type === 'WARMUP_CACHE') {
-    event.waitUntil(warmShellCache());
+    event.waitUntil(warmShellCache({ mode: 'full' }));
   }
 });
 
@@ -94,35 +94,53 @@ self.addEventListener('fetch', (event) => {
   event.respondWith(cacheFirst(request));
 });
 
-async function warmShellCache() {
+async function warmShellCache(options) {
+  const mode = options && options.mode === 'install' ? 'install' : 'full';
   const cache = await caches.open(CACHE_NAME);
-  const shellUrls = await resolveShellUrls();
+  const shellUrls = await resolveShellUrls(mode);
+  let cachedCount = 0;
+
   await Promise.all(
     shellUrls.map(async (assetUrl) => {
       try {
         const response = await fetch(new Request(assetUrl, { cache: 'no-store' }));
         if (response && response.ok) {
           await cache.put(assetUrl, response.clone());
-        } else if (CORE_SHELL_SET.has(assetUrl)) {
-          console.warn('[SW] Failed to precache core asset:', assetUrl, response ? response.status : 'no-response');
+          cachedCount += 1;
+        } else if (INSTALL_SHELL_SET.has(assetUrl)) {
+          console.warn('[SW] Failed to precache install shell asset:', assetUrl, response ? response.status : 'no-response');
         }
       } catch (error) {
         // Keep install/refresh resilient: one failed asset should not block the SW lifecycle.
-        if (CORE_SHELL_SET.has(assetUrl)) {
-          console.warn('[SW] Error while precaching core asset:', assetUrl, error && error.message ? error.message : error);
+        if (INSTALL_SHELL_SET.has(assetUrl)) {
+          console.warn('[SW] Error while precaching install shell asset:', assetUrl, error && error.message ? error.message : error);
         }
       }
     })
   );
+
+  if (mode === 'install') {
+    console.info('[SW] Install shell cache ready:', `${cachedCount}/${shellUrls.length}`);
+    return;
+  }
+  console.info('[SW] Extended warmup cache updated:', `${cachedCount}/${shellUrls.length}`);
 }
 
-async function resolveShellUrls() {
+async function resolveShellUrls(mode) {
+  if (mode === 'install') {
+    return uniqueShellUrls([
+      NAVIGATION_FALLBACK_URL,
+      '/',
+      ...INSTALL_SHELL_URLS
+    ]);
+  }
+
   const discoveredAssets = await discoverIndexAssets();
   return uniqueShellUrls([
     NAVIGATION_FALLBACK_URL,
     '/',
-    ...CORE_SHELL_URLS,
-    ...SHELL_EXTRA_URLS,
+    ...INSTALL_SHELL_URLS,
+    ...EXTENDED_SHELL_URLS,
     ...discoveredAssets
   ]);
 }
@@ -249,8 +267,12 @@ async function networkFirstDocument(request) {
     (await cache.match(NAVIGATION_FALLBACK_URL)) ||
     (await cache.match('/'));
 
-  if (fallback) return fallback;
+  if (fallback) {
+    console.warn('[SW] Navigation fallback served from cache for:', new URL(request.url).pathname);
+    return fallback;
+  }
 
+  console.warn('[SW] Navigation fallback page served (no cache, no network).');
   return createOfflineDocumentFallback();
 }
 

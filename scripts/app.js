@@ -5324,7 +5324,12 @@ var contentHtml = formatInstructionNodeContentHtml(
     }
 
     function getAppUrl() {
-      return window.location.origin + window.location.pathname;
+      var pathname = window.location.pathname || '/';
+      if (/\/index\.html$/i.test(pathname)) {
+        pathname = pathname.replace(/index\.html$/i, '');
+      }
+      if (!pathname) pathname = '/';
+      return window.location.origin + pathname;
     }
 
     function isLocalAuthEnvironment() {
