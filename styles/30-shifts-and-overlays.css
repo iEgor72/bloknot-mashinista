@@ -576,7 +576,8 @@
       width: auto;
     }
 
-    .shift-actions-trigger {
+    .shift-actions-trigger,
+    .shift-delete-trigger {
       appearance: none;
       background: var(--card-hi);
       border: 1px solid var(--border);
@@ -599,6 +600,25 @@
       background: var(--accent-dim);
       color: var(--accent);
       border-color: rgba(56, 189, 248, 0.2);
+    }
+
+    .shift-delete-trigger {
+      color: #fda4af;
+      border-color: rgba(251, 113, 133, 0.35);
+      background: rgba(251, 113, 133, 0.12);
+      font-size: 0;
+    }
+
+    .shift-delete-trigger svg {
+      width: 16px;
+      height: 16px;
+      display: block;
+    }
+
+    .shift-delete-trigger:active {
+      color: #fecdd3;
+      border-color: rgba(251, 113, 133, 0.55);
+      background: rgba(251, 113, 133, 0.2);
     }
 
     /* ── Shift actions menu ── */
@@ -682,7 +702,8 @@
     .compact-shift .shift-duration { font-size: 10px; }
     .compact-shift .shift-tech-line { font-size: 10px; }
     .compact-shift .shift-inline-icon { width: 12px; height: 12px; }
-    .compact-shift .shift-actions-trigger { width: 28px; height: 28px; }
+    .compact-shift .shift-actions-trigger,
+    .compact-shift .shift-delete-trigger { width: 28px; height: 28px; }
     .compact-shift .shift-top-right { gap: 6px; }
 
     /* ── Pending shift badge ── */

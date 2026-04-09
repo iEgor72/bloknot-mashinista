@@ -6932,12 +6932,16 @@ var contentHtml = formatInstructionNodeContentHtml(
       var incomeHtml = getShiftIncomeChipHtml(incomeVm);
       itemClass += ' income-' + incomeVm.level;
 
-      var html = '<div class="' + itemClass + '" data-shift-id="' + sh.id + '" data-pending="' + (shiftIsPending ? '1' : '0') + '" data-shift-open="1" role="button" tabindex="0" aria-label="Открыть детали смены: ' + escapeHtml(shiftTitle || 'Смена') + '">' +
+      var html = '<div class="' + itemClass + '" data-shift-id="' + sh.id + '" data-pending="' + (shiftIsPending ? '1' : '0') + '" data-shift-open="1" role="button" tabindex="0" aria-label="Редактировать смену: ' + escapeHtml(shiftTitle || 'Смена') + '">' +
         '<div class="shift-card-top">' +
           typeHtml +
           '<div class="shift-top-right">' +
             '<div class="shift-actions-wrap">' +
-              '<button class="shift-actions-trigger" type="button" data-id="' + sh.id + '" aria-label="Действия" aria-haspopup="menu" aria-expanded="' + (activeShiftMenuId === sh.id ? 'true' : 'false') + '">⋯</button>' +
+              '<button class="shift-delete-trigger" type="button" data-id="' + sh.id + '" aria-label="Удалить смену">' +
+                '<svg viewBox="0 0 24 24" aria-hidden="true" focusable="false">' +
+                  '<path fill="currentColor" d="M9 3h6a1 1 0 0 1 1 1v1h4a1 1 0 1 1 0 2h-1l-1 12a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 7H4a1 1 0 1 1 0-2h4V4a1 1 0 0 1 1-1Zm1 2h4V5h-4v0Zm-3 2 1 12h8l1-12H7Zm3 2a1 1 0 0 1 1 1v6a1 1 0 1 1-2 0v-6a1 1 0 0 1 1-1Zm4 0a1 1 0 0 1 1 1v6a1 1 0 1 1-2 0v-6a1 1 0 0 1 1-1Z"></path>' +
+                '</svg>' +
+              '</button>' +
             '</div>' +
           '</div>' +
         '</div>' +
@@ -7375,6 +7379,16 @@ var contentHtml = formatInstructionNodeContentHtml(
       runShiftSharedAnimation(fallbackCard, fromRect, toRect, 0, toRadius, finishClose);
     }
 
+    function openShiftEditorFromCard(cardEl) {
+      if (!cardEl) return;
+      var shiftId = cardEl.getAttribute('data-shift-id');
+      if (!shiftId) return;
+      var shift = findShiftById(shiftId);
+      if (!shift) return;
+      triggerHapticTapLight();
+      enterEditMode(shift);
+    }
+
     function bindShiftListDetailHandlers(listEl) {
       if (!listEl || listEl.dataset.shiftDetailBound === '1') return;
       listEl.dataset.shiftDetailBound = '1';
@@ -7383,8 +7397,8 @@ var contentHtml = formatInstructionNodeContentHtml(
         if (shiftDetailState.isAnimating) return;
         var card = e.target && e.target.closest ? e.target.closest('.shift-item[data-shift-open="1"][data-shift-id]') : null;
         if (!card || !listEl.contains(card)) return;
-        if (e.target.closest('.shift-actions-trigger') || e.target.closest('.shift-actions-wrap')) return;
-        openShiftDetailFromCard(card, listEl.id);
+        if (e.target.closest('.shift-delete-trigger') || e.target.closest('.shift-actions-wrap')) return;
+        openShiftEditorFromCard(card);
       });
 
       listEl.addEventListener('keydown', function(e) {
@@ -7393,7 +7407,7 @@ var contentHtml = formatInstructionNodeContentHtml(
         var card = e.target && e.target.closest ? e.target.closest('.shift-item[data-shift-open="1"][data-shift-id]') : null;
         if (!card || !listEl.contains(card)) return;
         e.preventDefault();
-        openShiftDetailFromCard(card, listEl.id);
+        openShiftEditorFromCard(card);
       });
     }
 
@@ -7431,10 +7445,9 @@ var contentHtml = formatInstructionNodeContentHtml(
       }
       listEl.innerHTML = html;
 
-      var actionTriggers = listEl.querySelectorAll('.shift-actions-trigger');
+      var actionTriggers = listEl.querySelectorAll('.shift-delete-trigger');
       for (var a = 0; a < actionTriggers.length; a++) {
-        actionTriggers[a].addEventListener('pointerdown', handleShiftActionsTriggerPointerDown);
-        actionTriggers[a].addEventListener('click', handleShiftActionsTriggerClick);
+        actionTriggers[a].addEventListener('click', handleDeleteClick);
       }
 
       revealShiftListOnFirstMount(listEl);
@@ -8110,6 +8123,10 @@ var contentHtml = formatInstructionNodeContentHtml(
 
     // ── Delete handler ──
     function handleDeleteClick(e) {
+      if (e) {
+        e.preventDefault();
+        e.stopPropagation();
+      }
       var id = e.currentTarget.getAttribute('data-id');
       var shift = null;
       for (var i = 0; i < allShifts.length; i++) {
