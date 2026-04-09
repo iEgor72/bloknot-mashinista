@@ -5325,6 +5325,41 @@ var contentHtml = formatInstructionNodeContentHtml(
       }, success ? 3500 : 4000);
     }
 
+    var saveToastHideTimer = null;
+
+    function showSaveToast(text) {
+      var toast = document.getElementById('saveToast');
+      if (!toast) {
+        toast = document.createElement('div');
+        toast.id = 'saveToast';
+        toast.className = 'app-toast app-toast-save';
+        toast.setAttribute('role', 'status');
+        toast.setAttribute('aria-live', 'polite');
+        toast.innerHTML = '<span class="app-toast-icon" aria-hidden="true">✓</span><span class="app-toast-text"></span>';
+        document.body.appendChild(toast);
+      }
+
+      var textEl = toast.querySelector('.app-toast-text');
+      if (textEl) {
+        textEl.textContent = text || 'Сохранено';
+      }
+
+      toast.classList.remove('is-visible');
+      if (saveToastHideTimer) {
+        clearTimeout(saveToastHideTimer);
+      }
+
+      requestAnimationFrame(function() {
+        requestAnimationFrame(function() {
+          toast.classList.add('is-visible');
+        });
+      });
+
+      saveToastHideTimer = setTimeout(function() {
+        toast.classList.remove('is-visible');
+      }, 1800);
+    }
+
     function renderDocumentationScreen() {
       var shell = document.getElementById('docsShell');
       if (!shell) return;
@@ -8876,6 +8911,7 @@ var contentHtml = formatInstructionNodeContentHtml(
         }
 
         triggerHapticSuccess();
+        showSaveToast('Сохранено');
 
         if (isEditing) {
           exitEditMode();
@@ -9010,6 +9046,7 @@ var contentHtml = formatInstructionNodeContentHtml(
       saveSalarySettingsBtn.addEventListener('click', function() {
         syncSettingsFromInputs();
         closeOverlay('overlaySalarySettings');
+        showSaveToast('Сохранено');
       });
     }
 
