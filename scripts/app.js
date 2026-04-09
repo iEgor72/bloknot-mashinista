@@ -7240,7 +7240,7 @@ var contentHtml = formatInstructionNodeContentHtml(
       shiftDetailState.isAnimating = false;
       shiftDetailState.isOpen = true;
       if (SHIFT_DETAIL_OVERLAY) {
-        SHIFT_DETAIL_OVERLAY.classList.add('is-visible');
+        SHIFT_DETAIL_OVERLAY.classList.add('is-open', 'is-visible');
         SHIFT_DETAIL_OVERLAY.classList.remove('hidden');
         SHIFT_DETAIL_OVERLAY.setAttribute('aria-hidden', 'false');
       }
@@ -7297,7 +7297,7 @@ var contentHtml = formatInstructionNodeContentHtml(
 
       window.requestAnimationFrame(function() {
         if (token !== shiftDetailState.transitionToken) return;
-        if (SHIFT_DETAIL_OVERLAY) SHIFT_DETAIL_OVERLAY.classList.add('is-visible');
+        if (SHIFT_DETAIL_OVERLAY) SHIFT_DETAIL_OVERLAY.classList.add('is-open', 'is-visible');
         runShiftSharedAnimation(cardEl, sourceRect, targetRect, sourceRadius, 0, function() {
           finalizeShiftDetailOpen(token);
         });
@@ -7347,7 +7347,7 @@ var contentHtml = formatInstructionNodeContentHtml(
       var toRect = destinationCard && destinationCard.getBoundingClientRect ? destinationCard.getBoundingClientRect() : null;
       var toRadius = getShiftCardRadiusPx(destinationCard || shiftDetailState.sourceCardEl);
 
-      if (SHIFT_DETAIL_OVERLAY) SHIFT_DETAIL_OVERLAY.classList.remove('is-visible');
+      if (SHIFT_DETAIL_OVERLAY) SHIFT_DETAIL_OVERLAY.classList.remove('is-open', 'is-visible');
 
       function finishClose() {
         if (token !== shiftDetailState.transitionToken) return;

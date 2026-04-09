@@ -751,7 +751,8 @@
       transition: transform 0.3s cubic-bezier(0.25, 1, 0.35, 1);
     }
 
-    .shift-detail-overlay.is-open {
+    .shift-detail-overlay.is-open,
+    .shift-detail-overlay.is-visible {
       transform: translateY(0);
     }
 
