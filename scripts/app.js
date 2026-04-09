@@ -4061,6 +4061,112 @@ var contentHtml = formatInstructionNodeContentHtml(
 
     // Cache loaded files per folder so switching tabs doesn't re-fetch every time
     var docsFilesCache = {};
+    var docsDownloadStateByPath = {};
+    var docsDownloadCheckPromises = {};
+    var docsDownloadRefreshTick = 0;
+
+    function getDocPathKey(path) {
+      return normalizeDocPath(path || '');
+    }
+
+    function markDocAsDownloaded(path) {
+      var key = getDocPathKey(path);
+      if (!key) return;
+      if (docsDownloadStateByPath[key]) return;
+      docsDownloadStateByPath[key] = true;
+
+      var activeFiles = docsFilesCache[documentationStore.activeTab];
+      if (activeFiles && activeFiles.length) {
+        renderDocFileList(documentationStore.activeTab, activeFiles);
+      }
+    }
+
+    function buildDocCacheLookupCandidates(pathKey) {
+      var map = {};
+
+      function addCandidate(value) {
+        var key = value && String(value).trim();
+        if (!key) return;
+        if (map[key]) return;
+        map[key] = true;
+      }
+
+      addCandidate(pathKey);
+      try {
+        addCandidate(new URL(pathKey, window.location.origin).toString());
+      } catch (e) {}
+
+      try {
+        addCandidate(decodeURI(pathKey));
+      } catch (e) {}
+
+      return Object.keys(map);
+    }
+
+    function resolveDocDownloadedFromCache(pathKey) {
+      if (!pathKey) return Promise.resolve(false);
+      if (!('caches' in window)) return Promise.resolve(false);
+
+      var lookupCandidates = buildDocCacheLookupCandidates(pathKey);
+      if (!lookupCandidates.length) return Promise.resolve(false);
+
+      return Promise.all(
+        lookupCandidates.map(function(candidate) {
+          return caches.match(candidate, { ignoreSearch: true })
+            .then(function(match) { return !!match; })
+            .catch(function() { return false; });
+        })
+      ).then(function(matches) {
+        for (var i = 0; i < matches.length; i++) {
+          if (matches[i]) return true;
+        }
+        return false;
+      });
+    }
+
+    function checkDocDownloaded(path) {
+      var pathKey = getDocPathKey(path);
+      if (!pathKey) return Promise.resolve(false);
+      if (docsDownloadStateByPath[pathKey] === true) {
+        return Promise.resolve(true);
+      }
+      if (docsDownloadCheckPromises[pathKey]) {
+        return docsDownloadCheckPromises[pathKey];
+      }
+
+      var checkPromise = resolveDocDownloadedFromCache(pathKey)
+        .then(function(isDownloaded) {
+          docsDownloadStateByPath[pathKey] = !!isDownloaded;
+          delete docsDownloadCheckPromises[pathKey];
+          return !!isDownloaded;
+        })
+        .catch(function() {
+          delete docsDownloadCheckPromises[pathKey];
+          return !!docsDownloadStateByPath[pathKey];
+        });
+
+      docsDownloadCheckPromises[pathKey] = checkPromise;
+      return checkPromise;
+    }
+
+    function refreshDocDownloadStateForFolder(folder, files) {
+      if (!files || !files.length) return;
+
+      var checks = [];
+      for (var i = 0; i < files.length; i++) {
+        checks.push(checkDocDownloaded(files[i] && files[i].path ? files[i].path : ''));
+      }
+
+      if (!checks.length) return;
+      var tick = ++docsDownloadRefreshTick;
+
+      Promise.all(checks).then(function() {
+        if (tick !== docsDownloadRefreshTick) return;
+        if (documentationStore.activeTab !== folder) return;
+        var activeFiles = docsFilesCache[folder] || files;
+        renderDocFileList(folder, activeFiles);
+      }).catch(function() {});
+    }
 
     function docsFolderListId(folder) {
       var map = { speeds: 'docsListSpeeds', folders: 'docsListFolders', memos: 'docsListMemos' };
@@ -4201,14 +4307,17 @@ var contentHtml = formatInstructionNodeContentHtml(
       var html = '<div class="docs-item-list">';
       for (var i = 0; i < files.length; i++) {
         var f = files[i];
+        var pathKey = getDocPathKey(f.path || '');
+        var isDownloaded = !!(pathKey && docsDownloadStateByPath[pathKey]);
         var type = getFileType(f.path || f.name || '');
         var size = docsFormatSize(f.size);
         var updatedAt = docsFormatDate(f.updated_at || f.added_at || f.date_added);
         var meta = '<span class="badge ' + badges[type] + '">' + type.toUpperCase() + '</span>';
+        meta += '<span class="docs-download-status ' + (isDownloaded ? 'is-downloaded' : 'is-online-only') + '">' + (isDownloaded ? 'Скачан' : 'Только онлайн') + '</span>';
         if (updatedAt) meta += '<span>обновлено ' + updatedAt + '</span>';
         if (size) meta += '<span class="file-size">' + size + '</span>';
         html +=
-          '<div class="docs-item" data-file-path="' + encodeURIComponent(f.path || '') + '" data-file-name="' + encodeURIComponent(f.name || '') + '" data-mime-type="' + encodeURIComponent(f.mime_type || '') + '">' +
+          '<div class="docs-item ' + (isDownloaded ? 'is-downloaded' : 'is-online-only') + '" data-file-path="' + encodeURIComponent(f.path || '') + '" data-file-name="' + encodeURIComponent(f.name || '') + '" data-mime-type="' + encodeURIComponent(f.mime_type || '') + '" data-doc-downloaded="' + (isDownloaded ? '1' : '0') + '">' +
             '<div class="docs-item-icon file-icon-wrap ' + classes[type] + '">' +
               icons[type] +
             '</div>' +
@@ -4236,6 +4345,7 @@ var contentHtml = formatInstructionNodeContentHtml(
     function loadDocFiles(folder) {
       if (docsFilesCache[folder]) {
         renderDocFileList(folder, docsFilesCache[folder]);
+        refreshDocDownloadStateForFolder(folder, docsFilesCache[folder]);
         return;
       }
 
@@ -4245,6 +4355,7 @@ var contentHtml = formatInstructionNodeContentHtml(
         var files = (manifest && Array.isArray(manifest[folder])) ? manifest[folder] : [];
         docsFilesCache[folder] = files;
         renderDocFileList(folder, files);
+        refreshDocDownloadStateForFolder(folder, files);
       }
 
       if (_docsManifestCache) {
@@ -5013,6 +5124,7 @@ var contentHtml = formatInstructionNodeContentHtml(
           state.pdfDoc = pdfDoc;
           mountPdfPages(state);
           setDocsViewerStatus(getDocsPdfStatusText(state));
+          markDocAsDownloaded(localPath);
         })
         .catch(function(err) {
           if (!isDocsPdfViewerActive(state)) return;
@@ -5061,28 +5173,66 @@ var contentHtml = formatInstructionNodeContentHtml(
 
       var bodyEl = document.getElementById('docsViewerBody');
       if (!bodyEl) return;
+      if (!localPath) {
+        renderDocsViewerError('Не удалось определить путь к файлу');
+        setDocsViewerStatus('');
+        return;
+      }
 
       var isImage = mime.indexOf('image') !== -1;
       var isPdf = mime.indexOf('pdf') !== -1 || lname.endsWith('.pdf');
 
-      if (isPdf) {
-        openPdfWithPdfJs(localPath);
-        return;
-      }
+      checkDocDownloaded(localPath)
+        .catch(function() { return false; })
+        .then(function(isDownloaded) {
+          var overlay = document.getElementById('docsViewerOverlay');
+          if (!overlay || overlay.classList.contains('hidden')) return;
 
-      if (isImage) {
-        var imageWrap = document.createElement('div');
-        imageWrap.className = 'docs-viewer-media-wrap';
-        var img = document.createElement('img');
-        img.className = 'docs-viewer-image';
-        img.alt = name;
-        img.src = localPath;
-        imageWrap.appendChild(img);
-        bodyEl.appendChild(imageWrap);
-        return;
-      }
+          if (!navigator.onLine && !isDownloaded) {
+            renderDocsViewerError(
+              'Файл недоступен в оффлайн-режиме',
+              'Этот файл еще не скачан. Подключитесь к интернету и откройте его онлайн хотя бы один раз.'
+            );
+            setDocsViewerStatus('Оффлайн');
+            return;
+          }
 
-      renderDocsViewerError('Просмотр этого формата недоступен', mime || lname);
+          if (isPdf) {
+            openPdfWithPdfJs(localPath);
+            return;
+          }
+
+          if (isImage) {
+            var imageWrap = document.createElement('div');
+            imageWrap.className = 'docs-viewer-media-wrap';
+            var img = document.createElement('img');
+            img.className = 'docs-viewer-image';
+            img.alt = name;
+            img.onload = function() {
+              markDocAsDownloaded(localPath);
+              setDocsViewerStatus('');
+            };
+            img.onerror = function() {
+              if (!navigator.onLine) {
+                renderDocsViewerError(
+                  'Файл недоступен в оффлайн-режиме',
+                  'Этот файл еще не скачан. Подключитесь к интернету и откройте его онлайн хотя бы один раз.'
+                );
+                setDocsViewerStatus('Оффлайн');
+              } else {
+                renderDocsViewerError('Не удалось загрузить изображение');
+                setDocsViewerStatus('');
+              }
+            };
+            img.src = localPath;
+            imageWrap.appendChild(img);
+            bodyEl.appendChild(imageWrap);
+            return;
+          }
+
+          renderDocsViewerError('Просмотр этого формата недоступен', mime || lname);
+          setDocsViewerStatus('');
+        });
     }
 
     function showDocsToast(text, success) {

@@ -1073,6 +1073,14 @@
 
     .docs-item:active { border-color: var(--border-hi); }
 
+    .docs-item.is-downloaded {
+      border-color: rgba(74, 222, 128, 0.28);
+    }
+
+    .docs-item.is-downloaded .docs-item-action {
+      color: #4ADE80;
+    }
+
     .docs-item-icon {
       display: flex;
       align-items: center;
@@ -1124,6 +1132,28 @@
 
     .docs-item-meta > span {
       white-space: nowrap;
+    }
+
+    .docs-download-status {
+      display: inline-flex;
+      align-items: center;
+      padding: 2px 7px;
+      border-radius: var(--r-pill);
+      font-size: 10px;
+      font-weight: 700;
+      letter-spacing: 0.01em;
+    }
+
+    .docs-download-status.is-downloaded {
+      color: #4ADE80;
+      background: rgba(74, 222, 128, 0.12);
+      border: 1px solid rgba(74, 222, 128, 0.28);
+    }
+
+    .docs-download-status.is-online-only {
+      color: #F59E0B;
+      background: rgba(245, 158, 11, 0.12);
+      border: 1px solid rgba(245, 158, 11, 0.28);
     }
 
     .file-size {
