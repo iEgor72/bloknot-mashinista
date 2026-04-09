@@ -5879,25 +5879,57 @@ var contentHtml = formatInstructionNodeContentHtml(
       });
     }
 
-    function authenticateWithTelegramWebApp(timeoutMs) {
-      if (!(window.Telegram && Telegram.WebApp && Telegram.WebApp.initData)) {
-        return Promise.resolve(null);
+    function getTelegramInitData() {
+      try {
+        if (window.Telegram && Telegram.WebApp && typeof Telegram.WebApp.initData === 'string') {
+          return Telegram.WebApp.initData || '';
+        }
+      } catch (e) {}
+      return '';
+    }
+
+    function waitForTelegramInitData(timeoutMs) {
+      var budget = typeof timeoutMs === 'number' && timeoutMs > 0 ? timeoutMs : 1400;
+      var startedAt = Date.now();
+      return new Promise(function(resolve) {
+        var check = function() {
+          var initData = getTelegramInitData();
+          if (initData) {
+            resolve(initData);
+            return;
+          }
+          if (Date.now() - startedAt >= budget) {
+            resolve('');
+            return;
+          }
+          window.setTimeout(check, 120);
+        };
+        check();
+      });
+    }
+
+    function authenticateWithTelegramWebApp(timeoutMs, options) {
+      var opts = options || {};
+      var waitBudgetMs = opts.waitBudgetMs;
+      if (typeof waitBudgetMs !== 'number' || waitBudgetMs <= 0) {
+        waitBudgetMs = Math.max(1200, Math.min(3000, (typeof timeoutMs === 'number' ? timeoutMs : 1200) + 600));
       }
 
-      showAuthGate(AUTH_ENV_STATE, 'pending');
-
-      return fetchJson(AUTH_API_URL, {
+      return waitForTelegramInitData(waitBudgetMs).then(function(initData) {
+        if (!initData) return null;
+        return fetchJson(AUTH_API_URL, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ initData: Telegram.WebApp.initData })
-      }, timeoutMs).then(function(result) {
-        if (result.ok && result.body && result.body.user) {
-          CURRENT_SESSION_TOKEN = result.body.sessionToken || '';
-          setStoredSessionToken(CURRENT_SESSION_TOKEN);
-          setStoredCachedUser(result.body.user);
-          return result.body.user;
-        }
-        throw new Error((result.body && result.body.error) || 'Не удалось войти через Telegram');
+          body: JSON.stringify({ initData: initData })
+        }, timeoutMs).then(function(result) {
+          if (result.ok && result.body && result.body.user) {
+            CURRENT_SESSION_TOKEN = result.body.sessionToken || '';
+            setStoredSessionToken(CURRENT_SESSION_TOKEN);
+            setStoredCachedUser(result.body.user);
+            return result.body.user;
+          }
+          throw new Error((result.body && result.body.error) || 'Не удалось войти через Telegram');
+        });
       });
     }
 
@@ -5950,7 +5982,9 @@ var contentHtml = formatInstructionNodeContentHtml(
 
       if (!authBootstrapPromise) {
         if (!silent) showAuthGate('prod', 'pending');
-        authBootstrapPromise = authenticateWithTelegramWebApp(timeoutMs)
+        authBootstrapPromise = authenticateWithTelegramWebApp(timeoutMs, {
+          waitBudgetMs: silent ? 2600 : 1600
+        })
           .then(function(user) {
             if (user) return user;
             return restoreSession(timeoutMs);
@@ -6015,7 +6049,7 @@ var contentHtml = formatInstructionNodeContentHtml(
     function startBackgroundBootstrap() {
       if (!navigator.onLine) return;
 
-      ensureAuthenticated(1200, { silent: true }).then(function(user) {
+      ensureAuthenticated(2200, { silent: true }).then(function(user) {
         if (user) {
           loadShifts(function() {
             render();
