@@ -61,6 +61,7 @@
     var activeShiftMenuScope = null;
     var SHIFT_LIST_REVEAL_DURATION_MS = 220;
     var SHIFT_LIST_REVEAL_DELAY_STEP_MS = 30;
+    var suppressInitialListReveal = true;
     var shiftListRevealRegistry = Object.create(null);
     var shiftListRevealAutoId = 0;
     var SHIFT_SHARED_TRANSITION_MS = 300;
@@ -5582,6 +5583,9 @@ var contentHtml = formatInstructionNodeContentHtml(
     }
 
     function showAuthGate(envState, authState) {
+      try {
+        document.documentElement.classList.remove('boot-has-cache');
+      } catch (e) {}
       if (AUTH_GATE) AUTH_GATE.classList.remove('hidden');
       if (APP_SHELL) APP_SHELL.classList.add('hidden');
       var view = getAuthView(envState, authState);
@@ -7053,6 +7057,12 @@ var contentHtml = formatInstructionNodeContentHtml(
       }
       if (state.revealed) return;
 
+      if (suppressInitialListReveal) {
+        state.revealed = true;
+        clearShiftListRevealClasses(listEl, state);
+        return;
+      }
+
       var cards = listEl.querySelectorAll('.shift-item');
       if (!cards.length) return;
       if (!isShiftListRevealReady(listEl)) return;
@@ -8365,6 +8375,12 @@ var contentHtml = formatInstructionNodeContentHtml(
       });
       window.visualViewport.addEventListener('scroll', scheduleKeyboardSync);
     }
+    window.setTimeout(function() {
+      suppressInitialListReveal = false;
+    }, 900);
+    document.addEventListener('pointerdown', function() {
+      suppressInitialListReveal = false;
+    }, { once: true, passive: true });
     document.addEventListener('focusin', function(e) {
       if (!isKeyboardInputElement(e.target) || !isKeyboardFieldEligible(e.target)) return;
       scheduleKeyboardSync();
