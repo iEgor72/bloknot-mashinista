@@ -52,6 +52,7 @@
     var allShifts = [];
     var pendingDeleteId = null;
     var editingShiftId = null;
+    var editReturnTab = 'shifts';
     var recentAddedShiftId = null;
     var recentAddTimer = null;
     var activeTab = 'home';
@@ -7386,7 +7387,7 @@ var contentHtml = formatInstructionNodeContentHtml(
       var shift = findShiftById(shiftId);
       if (!shift) return;
       triggerHapticTapLight();
-      enterEditMode(shift);
+      enterEditMode(shift, { returnTab: activeTab });
     }
 
     function bindShiftListDetailHandlers(listEl) {
@@ -8098,7 +8099,7 @@ var contentHtml = formatInstructionNodeContentHtml(
 
       if (action === 'edit') {
         triggerHapticTapLight();
-        enterEditMode(shift);
+        enterEditMode(shift, { returnTab: activeTab });
         closeShiftActionsMenu(true);
         return;
       }
@@ -8147,8 +8148,12 @@ var contentHtml = formatInstructionNodeContentHtml(
       return null;
     }
 
-    function enterEditMode(shift) {
+    function enterEditMode(shift, options) {
       if (!shift) return;
+      var opts = options || {};
+      var returnTab = opts.returnTab || activeTab || 'shifts';
+      if (returnTab === 'add') returnTab = 'shifts';
+      editReturnTab = returnTab;
 
       editingShiftId = shift.id;
       clearRecentAddHighlight();
@@ -8185,7 +8190,9 @@ var contentHtml = formatInstructionNodeContentHtml(
       clearOptionalShiftData();
       setDefaultShiftTimeInputs();
       renderDraftShiftSummary();
-      setActiveTab(nextTab || 'add');
+      var targetTab = nextTab || editReturnTab || 'shifts';
+      editReturnTab = 'shifts';
+      setActiveTab(targetTab);
       render();
     }
 
@@ -8194,7 +8201,7 @@ var contentHtml = formatInstructionNodeContentHtml(
       var shift = findShiftById(id);
       if (!shift) return;
       triggerHapticTapLight();
-      enterEditMode(shift);
+      enterEditMode(shift, { returnTab: activeTab });
     }
 
     document.getElementById('btnConfirmDelete').addEventListener('click', function() {
@@ -8207,7 +8214,7 @@ var contentHtml = formatInstructionNodeContentHtml(
       allShifts = newShifts;
       pendingMutationIds = [];
       if (editingShiftId === pendingDeleteId) {
-        exitEditMode('shifts');
+        exitEditMode();
       }
       pendingDeleteId = null;
       closeOverlay('overlayConfirm');
@@ -8598,7 +8605,7 @@ var contentHtml = formatInstructionNodeContentHtml(
         triggerHapticSuccess();
 
         if (isEditing) {
-          exitEditMode('shifts');
+          exitEditMode();
           clearRecentAddHighlight();
         } else {
           inputStartDateEl.value = '';
@@ -8831,11 +8838,11 @@ if (action === 'scroll-node') {
     }
 
     document.getElementById('btnCancelEdit').addEventListener('click', function() {
-      exitEditMode('shifts');
+      exitEditMode();
     });
     document.getElementById('btnBackFromEdit').addEventListener('click', function() {
       triggerHapticSelection();
-      exitEditMode('shifts');
+      exitEditMode();
     });
 
     document.getElementById('btnCloseAddScreen').addEventListener('click', function() {
