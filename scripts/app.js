@@ -6700,9 +6700,9 @@ var contentHtml = formatInstructionNodeContentHtml(
         todayNormMin = safeMonthNormMin;
       } else if (relation > 0) {
         todayNormMin = 0;
-      } else if (totalWorkingDays > 0 && safeMonthNormMin > 0) {
-        todayNormMin = Math.round((safeMonthNormMin * elapsedWorkingDays) / totalWorkingDays);
-        if (todayNormMin > safeMonthNormMin) todayNormMin = safeMonthNormMin;
+      } else {
+        // Для текущего месяца считаем норму на сегодня по 8 часов за каждый рабочий день.
+        todayNormMin = elapsedWorkingDays * 8 * 60;
       }
 
       return {
