@@ -5327,19 +5327,33 @@ var contentHtml = formatInstructionNodeContentHtml(
     }
 
     var saveToastHideTimer = null;
-    var ACTION_TOAST_TEXT = {
-      added: 'Добавлено',
-      saved: 'Сохранено',
-      canceled: 'Отменено',
-      deleted: 'Удалено'
+    var ACTION_TOAST_CONFIG = {
+      added: { text: 'Добавлено', tone: 'success' },
+      saved: { text: 'Сохранено', tone: 'info' },
+      canceled: { text: 'Отменено', tone: 'neutral' },
+      deleted: { text: 'Удалено', tone: 'danger' }
     };
 
-    function showSaveToast(text) {
+    function normalizeToastTone(tone) {
+      var value = String(tone || '').toLowerCase();
+      if (value === 'success' || value === 'info' || value === 'neutral' || value === 'danger') return value;
+      return 'success';
+    }
+
+    function getToastIconByTone(tone) {
+      if (tone === 'info') return 'i';
+      if (tone === 'neutral') return '~';
+      if (tone === 'danger') return '!';
+      return '✓';
+    }
+
+    function showSaveToast(text, tone) {
+      var normalizedTone = normalizeToastTone(tone);
       var toast = document.getElementById('saveToast');
       if (!toast) {
         toast = document.createElement('div');
         toast.id = 'saveToast';
-        toast.className = 'app-toast app-toast-save';
+        toast.className = 'app-toast app-toast-save app-toast-tone-success';
         toast.setAttribute('role', 'status');
         toast.setAttribute('aria-live', 'polite');
         toast.innerHTML = '<span class="app-toast-icon" aria-hidden="true">✓</span><span class="app-toast-text"></span>';
@@ -5350,6 +5364,12 @@ var contentHtml = formatInstructionNodeContentHtml(
       if (textEl) {
         textEl.textContent = text || 'Сохранено';
       }
+      var iconEl = toast.querySelector('.app-toast-icon');
+      if (iconEl) {
+        iconEl.textContent = getToastIconByTone(normalizedTone);
+      }
+      toast.classList.remove('app-toast-tone-success', 'app-toast-tone-info', 'app-toast-tone-neutral', 'app-toast-tone-danger');
+      toast.classList.add('app-toast-tone-' + normalizedTone);
 
       toast.classList.remove('is-visible');
       if (saveToastHideTimer) {
@@ -5369,7 +5389,12 @@ var contentHtml = formatInstructionNodeContentHtml(
 
     function showActionToast(actionKey) {
       var key = String(actionKey || '').toLowerCase();
-      showSaveToast(ACTION_TOAST_TEXT[key] || 'Готово');
+      var config = ACTION_TOAST_CONFIG[key];
+      if (!config) {
+        showSaveToast('Готово', 'info');
+        return;
+      }
+      showSaveToast(config.text, config.tone);
     }
 
     function isDocsProLocked() {
