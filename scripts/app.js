@@ -65,8 +65,10 @@
     var shiftListRevealRegistry = Object.create(null);
     var shiftListRevealAutoId = 0;
     var SHIFT_SWIPE_DELETE_WIDTH = 122;
-    var SHIFT_SWIPE_OPEN_THRESHOLD_RATIO = 0.14;
-    var SHIFT_SWIPE_CLOSE_THRESHOLD_RATIO = 0.86;
+    var SHIFT_SWIPE_OPEN_THRESHOLD_RATIO = 0.10;
+    var SHIFT_SWIPE_CLOSE_THRESHOLD_RATIO = 0.94;
+    var SHIFT_SWIPE_OPEN_MIN_X = 8;
+    var SHIFT_SWIPE_CLOSE_MIN_X = 2;
     var SHIFT_SWIPE_FLING_MIN_PX = 10;
     var SHIFT_SWIPE_FLING_MAX_MS = 320;
     var SHIFT_SWIPE_LOCK_MIN_X = 4;
@@ -7965,14 +7967,14 @@ var contentHtml = formatInstructionNodeContentHtml(
               pointerId = null;
               var hasHorizontalSwipe = absX >= SHIFT_SWIPE_LOCK_MIN_X && absX >= absY * 0.45;
               if (hasHorizontalSwipe) {
-                if (!openedAtStart && deltaX <= -SHIFT_SWIPE_LOCK_MIN_X) {
+                if (!openedAtStart && deltaX <= -SHIFT_SWIPE_OPEN_MIN_X) {
                   logSwipe('pointerend-no-drag-open', { reason: 'horizontal-swipe-left' });
                   finishDrag(true);
                   e.preventDefault();
                   e.stopPropagation();
                   return;
                 }
-                if (openedAtStart && deltaX >= SHIFT_SWIPE_LOCK_MIN_X) {
+                if (openedAtStart && deltaX >= SHIFT_SWIPE_CLOSE_MIN_X) {
                   logSwipe('pointerend-no-drag-close', { reason: 'horizontal-swipe-right' });
                   finishDrag(false);
                   e.preventDefault();
@@ -8002,19 +8004,21 @@ var contentHtml = formatInstructionNodeContentHtml(
             contentEl.style.transform = 'translate3d(' + finalOffset + 'px, 0, 0)';
             var shouldOpen = false;
             if (openedAtStart) {
-              var shouldClose = (finalOffset >= closeThresholdPx) || (maxOffsetReached >= closeThresholdPx) || isQuickFlingRight;
+              var shouldClose = (deltaX >= SHIFT_SWIPE_CLOSE_MIN_X) || (finalOffset >= closeThresholdPx) || (maxOffsetReached >= closeThresholdPx) || isQuickFlingRight;
               shouldOpen = !shouldClose;
               if (isQuickFlingLeft) shouldOpen = true;
               logSwipe('pointerend-decision-opened-start', {
                 closeThresholdPx: closeThresholdPx,
+                closeMinX: SHIFT_SWIPE_CLOSE_MIN_X,
                 shouldClose: shouldClose,
                 shouldOpen: shouldOpen
               });
             } else {
-              shouldOpen = (finalOffset <= openThresholdPx) || (minOffsetReached <= openThresholdPx) || isQuickFlingLeft;
+              shouldOpen = (deltaX <= -SHIFT_SWIPE_OPEN_MIN_X) || (finalOffset <= openThresholdPx) || (minOffsetReached <= openThresholdPx) || isQuickFlingLeft;
               if (isQuickFlingRight) shouldOpen = false;
               logSwipe('pointerend-decision-closed-start', {
                 openThresholdPx: openThresholdPx,
+                openMinX: SHIFT_SWIPE_OPEN_MIN_X,
                 shouldOpen: shouldOpen
               });
             }
