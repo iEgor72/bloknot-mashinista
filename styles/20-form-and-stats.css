@@ -597,6 +597,75 @@
       line-height: 1.45;
     }
 
+    .fuel-columns {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 10px;
+      padding-top: 8px;
+    }
+
+    .fuel-column {
+      display: grid;
+      gap: 8px;
+      border: 1px solid var(--border);
+      border-radius: var(--r-inner);
+      padding: 10px;
+    }
+
+    .fuel-column-title {
+      font-size: 12px;
+      font-weight: 700;
+      color: var(--text);
+      line-height: 1.3;
+    }
+
+    .fuel-column .optional-control {
+      font-family: 'JetBrains Mono', monospace;
+    }
+
+    .fuel-grid {
+      gap: 8px;
+      padding-top: 2px;
+    }
+
+    .fuel-grid-kg {
+      margin-top: 4px;
+      padding-top: 10px;
+      border-top: 1px dashed var(--border);
+    }
+
+    .fuel-coeff-input {
+      letter-spacing: 0.01em;
+    }
+
+    .fuel-kg-output[readonly] {
+      color: var(--accent);
+      border-bottom-style: dashed;
+      cursor: default;
+    }
+
+    .fuel-consumption-note {
+      margin-top: 8px;
+      font-size: 11px;
+      color: var(--muted);
+      line-height: 1.35;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      flex-wrap: wrap;
+    }
+
+    .fuel-consumption-item strong {
+      color: var(--sub);
+      font-family: 'JetBrains Mono', monospace;
+      font-weight: 600;
+      margin-left: 2px;
+    }
+
+    .fuel-consumption-sep {
+      opacity: 0.65;
+    }
+
     /* ── Primary button ── */
     .btn-primary {
       width: 100%;

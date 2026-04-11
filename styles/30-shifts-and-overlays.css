@@ -420,6 +420,29 @@
       word-break: break-word;
     }
 
+    .shift-fuel-note {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      flex-wrap: wrap;
+      font-size: 11px;
+      line-height: 1.35;
+      color: var(--muted);
+      font-variant-numeric: tabular-nums;
+      margin-top: 1px;
+    }
+
+    .shift-fuel-note strong {
+      color: var(--sub);
+      font-family: 'JetBrains Mono', monospace;
+      font-weight: 600;
+      margin-left: 2px;
+    }
+
+    .shift-fuel-note-sep {
+      opacity: 0.65;
+    }
+
     .shift-tech-sep {
       color: var(--muted);
       line-height: 1;
@@ -734,6 +757,7 @@
     .compact-shift .shift-datetime-line { font-size: 11px; }
     .compact-shift .shift-duration { font-size: 10px; }
     .compact-shift .shift-tech-line { font-size: 10px; }
+    .compact-shift .shift-fuel-note { font-size: 10px; }
     .compact-shift .shift-inline-icon { width: 12px; height: 12px; }
     .compact-shift .shift-actions-trigger,
     .compact-shift .shift-delete-trigger { width: 28px; height: 28px; }

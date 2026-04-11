@@ -7000,6 +7000,7 @@ var contentHtml = formatInstructionNodeContentHtml(
       var dateTimeHtml = buildShiftDateTimeHtml(dateTimeText);
       var durationHtml = buildShiftDurationHtml(durationText);
       var technicalHtml = buildShiftTechnicalHtml(shift);
+      var fuelNoteHtml = buildShiftFuelConsumptionHtml(shift);
       var incomeLabelHtml = buildShiftIncomeLabelHtml();
       var incomeVm = getShiftIncomeViewModel(shift, shiftIncomeMap);
       var incomeHtml = getShiftIncomeChipHtml(incomeVm);
@@ -7019,6 +7020,7 @@ var contentHtml = formatInstructionNodeContentHtml(
               durationHtml +
             '</div>' +
             technicalHtml +
+            fuelNoteHtml +
             '<div class="shift-income-row">' +
               incomeLabelHtml +
               incomeHtml +
@@ -7084,6 +7086,7 @@ var contentHtml = formatInstructionNodeContentHtml(
       var dateTimeHtml = buildShiftDateTimeHtml(dateTimeText);
       var durationHtml = buildShiftDurationHtml(durationText);
       var technicalHtml = buildShiftTechnicalHtml(shift);
+      var fuelNoteHtml = buildShiftFuelConsumptionHtml(shift);
       var incomeLabelHtml = buildShiftIncomeLabelHtml();
       var incomeVm = getShiftIncomeViewModel(shift, shiftIncomeMap);
       var incomeHtml = getShiftIncomeChipHtml(incomeVm);
@@ -7105,6 +7108,7 @@ var contentHtml = formatInstructionNodeContentHtml(
               durationHtml +
             '</div>' +
             technicalHtml +
+            fuelNoteHtml +
             '<div class="shift-income-row">' +
               incomeLabelHtml +
               incomeHtml +
@@ -7123,6 +7127,9 @@ var contentHtml = formatInstructionNodeContentHtml(
       var direction = getShiftDirectionLineText(shift);
       var locoSummary = getLocoSummary(shift);
       var trainSummary = getTrainSummary(shift);
+      var fuelTotals = getFuelConsumptionTotalsFromShift(shift);
+      var fuelReceiveSummary = buildFuelSideSummary(shift, 'receive');
+      var fuelHandoverSummary = buildFuelSideSummary(shift, 'handover');
       var syncStatus = isShiftPending(shift) ? 'Не синхронизировано' : 'Синхронизировано';
       var periodLabel = parsedStart && parsedEnd
         ? formatHoursAndMinutes(Math.max(0, Math.round((parsedEnd.getTime() - parsedStart.getTime()) / 60000)))
@@ -7152,6 +7159,16 @@ var contentHtml = formatInstructionNodeContentHtml(
       html += '<div class="shift-detail-list">';
       html += buildShiftDetailRowHtml('Локомотив', locoSummary);
       html += buildShiftDetailRowHtml('Поезд', trainSummary);
+      html += '</div>';
+      html += '</section>';
+
+      html += '<section class="shift-detail-section">';
+      html += '<div class="shift-detail-section-title">Топливо</div>';
+      html += '<div class="shift-detail-list">';
+      html += buildShiftDetailRowHtml('Расход в л', hasFuelData(shift) ? formatFuelLitersSignedValue(fuelTotals.consumptionLiters) : '');
+      html += buildShiftDetailRowHtml('Расход в кг', hasFuelData(shift) ? formatFuelKgSignedValue(fuelTotals.consumptionKg) : '');
+      html += buildShiftDetailRowHtml('Приём', fuelReceiveSummary);
+      html += buildShiftDetailRowHtml('Сдача', fuelHandoverSummary);
       html += '</div>';
       html += '</section>';
 
@@ -7212,6 +7229,7 @@ var contentHtml = formatInstructionNodeContentHtml(
       var dateTimeHtml = buildShiftDateTimeHtml(dateTimeText);
       var durationHtml = buildShiftDurationHtml(durationText);
       var technicalHtml = buildShiftTechnicalHtml(sh);
+      var fuelNoteHtml = buildShiftFuelConsumptionHtml(sh);
       var incomeLabelHtml = buildShiftIncomeLabelHtml();
       var shiftTitle = getShiftTitle(sh);
       if (sh.route_kind === 'trip') itemClass += ' has-trip';
@@ -7251,6 +7269,7 @@ var contentHtml = formatInstructionNodeContentHtml(
             durationHtml +
           '</div>' +
           technicalHtml +
+          fuelNoteHtml +
           '<div class="shift-income-row">' +
             incomeLabelHtml +
             incomeHtml +
@@ -7979,6 +7998,253 @@ var contentHtml = formatInstructionNodeContentHtml(
       return String(value || '').replace(/\D+/g, '').slice(0, maxLen);
     }
 
+    var DEFAULT_FUEL_COEFF = '0.868';
+    var LEGACY_DEFAULT_FUEL_COEFF = '0.800';
+
+    function isDefaultFuelCoeffValue(coeff) {
+      return coeff === DEFAULT_FUEL_COEFF || coeff === LEGACY_DEFAULT_FUEL_COEFF;
+    }
+
+    function cleanFuelCoeffInput(value) {
+      var normalized = String(value || '').replace(/,/g, '.').replace(/[^0-9.]/g, '');
+      if (!normalized) return '';
+      var dotIndex = normalized.indexOf('.');
+      if (dotIndex >= 0) {
+        normalized = normalized.slice(0, dotIndex + 1) + normalized.slice(dotIndex + 1).replace(/\./g, '');
+      }
+      var parts = normalized.split('.');
+      var integerPart = parts[0] || '';
+      var fractionPart = parts.length > 1 ? (parts[1] || '') : '';
+      if (parts.length > 1) {
+        return ((integerPart || '0').slice(0, 1)) + '.' + fractionPart.slice(0, 3);
+      }
+      return integerPart.slice(0, 2);
+    }
+
+    function normalizeFuelCoeff(value, fallback) {
+      var fallbackValue = fallback === undefined ? '' : String(fallback);
+      var cleaned = cleanFuelCoeffInput(value);
+      if (!cleaned) return fallbackValue;
+      var parsed = NaN;
+      if (/^\d{1,2}$/.test(cleaned)) {
+        var suffix = cleaned.slice(0, 2).padEnd(2, '0');
+        parsed = Number('0.8' + suffix);
+      } else {
+        parsed = Number(cleaned);
+      }
+      if (!isFinite(parsed)) return fallbackValue;
+      var clamped = Math.max(0.8, Math.min(0.899, parsed));
+      return clamped.toFixed(3);
+    }
+
+    function parseFuelCoeff(value, fallback) {
+      var normalized = normalizeFuelCoeff(value, fallback === undefined ? '' : fallback);
+      if (!normalized) return null;
+      var parsed = Number(normalized);
+      return isFinite(parsed) ? parsed : null;
+    }
+
+    function parseFuelLitersValue(value) {
+      var litersDigits = cleanDigits(value, 4);
+      if (!litersDigits) return 0;
+      var parsed = Number(litersDigits);
+      return isFinite(parsed) ? parsed : 0;
+    }
+
+    function formatFuelKgValue(value) {
+      if (!isFinite(value)) return '';
+      var rounded = Math.round(value * 100) / 100;
+      if (rounded < 0) return '';
+      var text = rounded.toFixed(2).replace(/\.?0+$/, '');
+      return text.replace('.', ',');
+    }
+
+    function formatFuelKgSignedValue(value) {
+      if (!isFinite(value)) return '0';
+      var absText = formatFuelKgValue(Math.abs(value)) || '0';
+      return value < 0 ? ('-' + absText) : absText;
+    }
+
+    function formatFuelLitersSignedValue(value) {
+      if (!isFinite(value)) return '0';
+      return Math.round(value).toLocaleString('ru-RU');
+    }
+
+    function getFuelKgText(litersRaw, coeffRaw, fallbackCoeff) {
+      var liters = parseFuelLitersValue(litersRaw);
+      if (!liters) return '';
+      var coeff = parseFuelCoeff(coeffRaw, fallbackCoeff === undefined ? DEFAULT_FUEL_COEFF : fallbackCoeff);
+      if (coeff === null) return '';
+      return formatFuelKgValue(liters * coeff);
+    }
+
+    function getFuelConsumptionTotals(raw) {
+      raw = raw || {};
+      var receiveCoeff = parseFuelCoeff(raw.receiveCoeff, DEFAULT_FUEL_COEFF);
+      var handoverCoeff = parseFuelCoeff(raw.handoverCoeff, DEFAULT_FUEL_COEFF);
+      var receiveLitersA = parseFuelLitersValue(raw.receiveLitersA);
+      var receiveLitersB = parseFuelLitersValue(raw.receiveLitersB);
+      var receiveLitersV = parseFuelLitersValue(raw.receiveLitersV);
+      var handoverLitersA = parseFuelLitersValue(raw.handoverLitersA);
+      var handoverLitersB = parseFuelLitersValue(raw.handoverLitersB);
+      var handoverLitersV = parseFuelLitersValue(raw.handoverLitersV);
+
+      receiveCoeff = receiveCoeff === null ? Number(DEFAULT_FUEL_COEFF) : receiveCoeff;
+      handoverCoeff = handoverCoeff === null ? Number(DEFAULT_FUEL_COEFF) : handoverCoeff;
+
+      var receiveLitersTotal = receiveLitersA + receiveLitersB + receiveLitersV;
+      var handoverLitersTotal = handoverLitersA + handoverLitersB + handoverLitersV;
+      var receiveKgTotal = receiveLitersTotal * receiveCoeff;
+      var handoverKgTotal = handoverLitersTotal * handoverCoeff;
+
+      return {
+        receiveLitersTotal: receiveLitersTotal,
+        handoverLitersTotal: handoverLitersTotal,
+        consumptionLiters: receiveLitersTotal - handoverLitersTotal,
+        receiveKgTotal: receiveKgTotal,
+        handoverKgTotal: handoverKgTotal,
+        consumptionKg: receiveKgTotal - handoverKgTotal
+      };
+    }
+
+    function getFuelConsumptionTotalsFromShift(shift) {
+      shift = shift || {};
+      return getFuelConsumptionTotals({
+        receiveCoeff: shift.fuel_receive_coeff,
+        receiveLitersA: shift.fuel_receive_liters_a,
+        receiveLitersB: shift.fuel_receive_liters_b,
+        receiveLitersV: shift.fuel_receive_liters_v,
+        handoverCoeff: shift.fuel_handover_coeff,
+        handoverLitersA: shift.fuel_handover_liters_a,
+        handoverLitersB: shift.fuel_handover_liters_b,
+        handoverLitersV: shift.fuel_handover_liters_v
+      });
+    }
+
+    function buildShiftFuelConsumptionHtml(shift) {
+      if (!hasFuelData(shift)) return '';
+      var totals = getFuelConsumptionTotalsFromShift(shift);
+      return '' +
+        '<div class="shift-fuel-note">' +
+          '<span>Расход в л:<strong>' + escapeHtml(formatFuelLitersSignedValue(totals.consumptionLiters)) + '</strong></span>' +
+          '<span class="shift-fuel-note-sep" aria-hidden="true">·</span>' +
+          '<span>Расход в кг:<strong>' + escapeHtml(formatFuelKgSignedValue(totals.consumptionKg)) + '</strong></span>' +
+        '</div>';
+    }
+
+    function updateFuelKgOutputs() {
+      var groups = [
+        {
+          coeffId: 'inputFuelReceiveCoeff',
+          liters: {
+            a: 'inputFuelReceiveLitersA',
+            b: 'inputFuelReceiveLitersB',
+            v: 'inputFuelReceiveLitersV'
+          },
+          kg: {
+            a: 'inputFuelReceiveKgA',
+            b: 'inputFuelReceiveKgB',
+            v: 'inputFuelReceiveKgV'
+          }
+        },
+        {
+          coeffId: 'inputFuelHandoverCoeff',
+          liters: {
+            a: 'inputFuelHandoverLitersA',
+            b: 'inputFuelHandoverLitersB',
+            v: 'inputFuelHandoverLitersV'
+          },
+          kg: {
+            a: 'inputFuelHandoverKgA',
+            b: 'inputFuelHandoverKgB',
+            v: 'inputFuelHandoverKgV'
+          }
+        }
+      ];
+      for (var gi = 0; gi < groups.length; gi++) {
+        var coeff = getFieldValue(groups[gi].coeffId);
+        var tanks = ['a', 'b', 'v'];
+        for (var ti = 0; ti < tanks.length; ti++) {
+          var tank = tanks[ti];
+          var liters = getFieldValue(groups[gi].liters[tank]);
+          setFieldValue(groups[gi].kg[tank], getFuelKgText(liters, coeff, DEFAULT_FUEL_COEFF));
+        }
+      }
+
+      var totals = getFuelConsumptionTotals({
+        receiveCoeff: getFieldValue('inputFuelReceiveCoeff'),
+        receiveLitersA: getFieldValue('inputFuelReceiveLitersA'),
+        receiveLitersB: getFieldValue('inputFuelReceiveLitersB'),
+        receiveLitersV: getFieldValue('inputFuelReceiveLitersV'),
+        handoverCoeff: getFieldValue('inputFuelHandoverCoeff'),
+        handoverLitersA: getFieldValue('inputFuelHandoverLitersA'),
+        handoverLitersB: getFieldValue('inputFuelHandoverLitersB'),
+        handoverLitersV: getFieldValue('inputFuelHandoverLitersV')
+      });
+      var totalLitersEl = document.getElementById('fuelConsumptionLiters');
+      var totalKgEl = document.getElementById('fuelConsumptionKg');
+      if (totalLitersEl) totalLitersEl.textContent = formatFuelLitersSignedValue(totals.consumptionLiters);
+      if (totalKgEl) totalKgEl.textContent = formatFuelKgSignedValue(totals.consumptionKg);
+    }
+
+    function hasFuelData(shift) {
+      shift = shift || {};
+      var receiveCoeff = normalizeFuelCoeff(shift.fuel_receive_coeff, DEFAULT_FUEL_COEFF);
+      var handoverCoeff = normalizeFuelCoeff(shift.fuel_handover_coeff, DEFAULT_FUEL_COEFF);
+      return !!(
+        cleanDigits(shift.fuel_receive_liters_a, 4) ||
+        cleanDigits(shift.fuel_receive_liters_b, 4) ||
+        cleanDigits(shift.fuel_receive_liters_v, 4) ||
+        cleanDigits(shift.fuel_handover_liters_a, 4) ||
+        cleanDigits(shift.fuel_handover_liters_b, 4) ||
+        cleanDigits(shift.fuel_handover_liters_v, 4) ||
+        !isDefaultFuelCoeffValue(receiveCoeff) ||
+        !isDefaultFuelCoeffValue(handoverCoeff)
+      );
+    }
+
+    function buildFuelSideSummary(shift, side) {
+      var isReceive = side === 'receive';
+      var coeff = normalizeFuelCoeff(isReceive ? shift.fuel_receive_coeff : shift.fuel_handover_coeff, DEFAULT_FUEL_COEFF);
+      var aLiters = cleanDigits(isReceive ? shift.fuel_receive_liters_a : shift.fuel_handover_liters_a, 4);
+      var bLiters = cleanDigits(isReceive ? shift.fuel_receive_liters_b : shift.fuel_handover_liters_b, 4);
+      var vLiters = cleanDigits(isReceive ? shift.fuel_receive_liters_v : shift.fuel_handover_liters_v, 4);
+      var rows = [];
+
+      if (aLiters) rows.push('А ' + aLiters + ' л → ' + (getFuelKgText(aLiters, coeff) || '—') + ' кг');
+      if (bLiters) rows.push('Б ' + bLiters + ' л → ' + (getFuelKgText(bLiters, coeff) || '—') + ' кг');
+      if (vLiters) rows.push('В ' + vLiters + ' л → ' + (getFuelKgText(vLiters, coeff) || '—') + ' кг');
+      if (!rows.length && isDefaultFuelCoeffValue(coeff)) return '';
+      return 'Кэф ' + coeff.replace('.', ',') + (rows.length ? ' · ' + rows.join(' · ') : '');
+    }
+
+    function wireFuelCoeffInput(id) {
+      var el = document.getElementById(id);
+      if (!el) return;
+      var handleInput = function() {
+        var cleaned = cleanFuelCoeffInput(el.value);
+        if (el.value !== cleaned) el.value = cleaned;
+        updateFuelKgOutputs();
+      };
+      var handleBlur = function() {
+        var normalized = normalizeFuelCoeff(el.value, DEFAULT_FUEL_COEFF);
+        if (el.value !== normalized) el.value = normalized;
+        updateFuelKgOutputs();
+      };
+      var handleFocus = function() {
+        if (el.value !== DEFAULT_FUEL_COEFF || typeof el.setSelectionRange !== 'function') return;
+        window.setTimeout(function() {
+          try {
+            el.setSelectionRange(3, 5);
+          } catch (e) {}
+        }, 0);
+      };
+      el.addEventListener('input', handleInput);
+      el.addEventListener('blur', handleBlur);
+      el.addEventListener('focus', handleFocus);
+      el.addEventListener('change', handleBlur);
+    }
+
     function getRouteType() {
       var active = document.querySelector('#routeTypeSegmented .segmented-btn.active');
       return active ? active.getAttribute('data-value') : 'depot';
@@ -8201,7 +8467,15 @@ var contentHtml = formatInstructionNodeContentHtml(
         train_length: cleanDigits(getFieldValue('inputTrainLength'), 3),
         route_kind: routeKind,
         route_from: routeKind === 'trip' ? getFieldValue('inputRouteFrom') : '',
-        route_to: routeKind === 'trip' ? getFieldValue('inputRouteTo') : ''
+        route_to: routeKind === 'trip' ? getFieldValue('inputRouteTo') : '',
+        fuel_receive_coeff: normalizeFuelCoeff(getFieldValue('inputFuelReceiveCoeff'), DEFAULT_FUEL_COEFF),
+        fuel_receive_liters_a: cleanDigits(getFieldValue('inputFuelReceiveLitersA'), 4),
+        fuel_receive_liters_b: cleanDigits(getFieldValue('inputFuelReceiveLitersB'), 4),
+        fuel_receive_liters_v: cleanDigits(getFieldValue('inputFuelReceiveLitersV'), 4),
+        fuel_handover_coeff: normalizeFuelCoeff(getFieldValue('inputFuelHandoverCoeff'), DEFAULT_FUEL_COEFF),
+        fuel_handover_liters_a: cleanDigits(getFieldValue('inputFuelHandoverLitersA'), 4),
+        fuel_handover_liters_b: cleanDigits(getFieldValue('inputFuelHandoverLitersB'), 4),
+        fuel_handover_liters_v: cleanDigits(getFieldValue('inputFuelHandoverLitersV'), 4)
       };
     }
 
@@ -8215,10 +8489,20 @@ var contentHtml = formatInstructionNodeContentHtml(
       setFieldValue('inputTrainLength', shift.train_length || '');
       setFieldValue('inputRouteFrom', shift.route_from || '');
       setFieldValue('inputRouteTo', shift.route_to || '');
+      setFieldValue('inputFuelReceiveCoeff', normalizeFuelCoeff(shift.fuel_receive_coeff, DEFAULT_FUEL_COEFF));
+      setFieldValue('inputFuelReceiveLitersA', cleanDigits(shift.fuel_receive_liters_a, 4));
+      setFieldValue('inputFuelReceiveLitersB', cleanDigits(shift.fuel_receive_liters_b, 4));
+      setFieldValue('inputFuelReceiveLitersV', cleanDigits(shift.fuel_receive_liters_v, 4));
+      setFieldValue('inputFuelHandoverCoeff', normalizeFuelCoeff(shift.fuel_handover_coeff, DEFAULT_FUEL_COEFF));
+      setFieldValue('inputFuelHandoverLitersA', cleanDigits(shift.fuel_handover_liters_a, 4));
+      setFieldValue('inputFuelHandoverLitersB', cleanDigits(shift.fuel_handover_liters_b, 4));
+      setFieldValue('inputFuelHandoverLitersV', cleanDigits(shift.fuel_handover_liters_v, 4));
       setRouteType(shift.route_kind === 'trip' ? 'trip' : 'depot');
       setOptionalCardOpen('optionalLocoCard', !!(shift.locomotive_series || shift.locomotive_number));
       setOptionalCardOpen('optionalTrainCard', !!(shift.train_number || shift.train_weight || shift.train_axles || shift.train_length));
       setOptionalCardOpen('optionalRouteCard', !!(shift.route_kind === 'trip' || shift.route_from || shift.route_to));
+      setOptionalCardOpen('optionalFuelCard', hasFuelData(shift));
+      updateFuelKgOutputs();
       renderDraftShiftSummary();
     }
 
@@ -8232,7 +8516,15 @@ var contentHtml = formatInstructionNodeContentHtml(
         train_length: '',
         route_kind: 'depot',
         route_from: '',
-        route_to: ''
+        route_to: '',
+        fuel_receive_coeff: DEFAULT_FUEL_COEFF,
+        fuel_receive_liters_a: '',
+        fuel_receive_liters_b: '',
+        fuel_receive_liters_v: '',
+        fuel_handover_coeff: DEFAULT_FUEL_COEFF,
+        fuel_handover_liters_a: '',
+        fuel_handover_liters_b: '',
+        fuel_handover_liters_v: ''
       });
     }
 
@@ -8720,6 +9012,15 @@ var contentHtml = formatInstructionNodeContentHtml(
     wireNumericInput('inputTrainWeight', 4);
     wireNumericInput('inputTrainAxles', 3);
     wireNumericInput('inputTrainLength', 3);
+    wireNumericInput('inputFuelReceiveLitersA', 4);
+    wireNumericInput('inputFuelReceiveLitersB', 4);
+    wireNumericInput('inputFuelReceiveLitersV', 4);
+    wireNumericInput('inputFuelHandoverLitersA', 4);
+    wireNumericInput('inputFuelHandoverLitersB', 4);
+    wireNumericInput('inputFuelHandoverLitersV', 4);
+    wireFuelCoeffInput('inputFuelReceiveCoeff');
+    wireFuelCoeffInput('inputFuelHandoverCoeff');
+    updateFuelKgOutputs();
 
     document.getElementById('inputLocoSeries').addEventListener('change', function(e) {
       updateSelectPlaceholderState(e.currentTarget);
@@ -8837,6 +9138,20 @@ var contentHtml = formatInstructionNodeContentHtml(
     }, 30000);
     document.getElementById('inputRouteFrom').addEventListener('input', renderDraftShiftSummary);
     document.getElementById('inputRouteTo').addEventListener('input', renderDraftShiftSummary);
+    var fuelReactiveInputs = [
+      'inputFuelReceiveLitersA',
+      'inputFuelReceiveLitersB',
+      'inputFuelReceiveLitersV',
+      'inputFuelHandoverLitersA',
+      'inputFuelHandoverLitersB',
+      'inputFuelHandoverLitersV'
+    ];
+    for (var fr = 0; fr < fuelReactiveInputs.length; fr++) {
+      var fuelInput = document.getElementById(fuelReactiveInputs[fr]);
+      if (!fuelInput) continue;
+      fuelInput.addEventListener('input', updateFuelKgOutputs);
+      fuelInput.addEventListener('blur', updateFuelKgOutputs);
+    }
     for (var rt = 0; rt < routeTypeButtons.length; rt++) {
       routeTypeButtons[rt].addEventListener('click', function(e) {
         var nextRouteType = e.currentTarget.getAttribute('data-value');
@@ -8909,7 +9224,15 @@ var contentHtml = formatInstructionNodeContentHtml(
         train_length: optionalData.train_length,
         route_kind: optionalData.route_kind,
         route_from: optionalData.route_from,
-        route_to: optionalData.route_to
+        route_to: optionalData.route_to,
+        fuel_receive_coeff: optionalData.fuel_receive_coeff,
+        fuel_receive_liters_a: optionalData.fuel_receive_liters_a,
+        fuel_receive_liters_b: optionalData.fuel_receive_liters_b,
+        fuel_receive_liters_v: optionalData.fuel_receive_liters_v,
+        fuel_handover_coeff: optionalData.fuel_handover_coeff,
+        fuel_handover_liters_a: optionalData.fuel_handover_liters_a,
+        fuel_handover_liters_b: optionalData.fuel_handover_liters_b,
+        fuel_handover_liters_v: optionalData.fuel_handover_liters_v
       };
 
       if (isEditing) {
