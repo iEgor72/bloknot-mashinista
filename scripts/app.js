@@ -6879,6 +6879,9 @@ var contentHtml = formatInstructionNodeContentHtml(
       if (iconName === 'axles') {
         return '<svg ' + common + '><circle cx="10" cy="10" r="2.7"></circle><path d="M10 4.2v1.6"></path><path d="M10 14.2v1.6"></path><path d="M4.2 10h1.6"></path><path d="M14.2 10h1.6"></path><path d="M5.8 5.8 7 7"></path><path d="M13 13l1.2 1.2"></path><path d="M14.2 5.8 13 7"></path><path d="M7 13l-1.2 1.2"></path></svg>';
       }
+      if (iconName === 'fuel') {
+        return '<svg ' + common + '><path d="M8 6.2h5a1.6 1.6 0 0 1 1.6 1.6v6.7A1.6 1.6 0 0 1 13 16.1H8a1.6 1.6 0 0 1-1.6-1.6V7.8A1.6 1.6 0 0 1 8 6.2Z"></path><path d="M14.6 8.7h1.2a1.1 1.1 0 0 1 1.1 1.1V12a1.1 1.1 0 0 1-1.1 1.1h-1.2"></path><path d="M9.3 8.7h2.4"></path><path d="M9.3 11.1h2.4"></path><path d="M6.4 8.6 4.7 7"></path><path d="M4.7 7 3.6 8.3"></path></svg>';
+      }
       if (iconName === 'income') {
         return '<svg ' + common + '><path d="M4 7.5h12a1.5 1.5 0 0 1 1.5 1.5v4a1.5 1.5 0 0 1-1.5 1.5H4a1.5 1.5 0 0 1-1.5-1.5V9A1.5 1.5 0 0 1 4 7.5Z"></path><circle cx="10" cy="11" r="1.7"></circle><path d="M5.2 11h.1"></path><path d="M14.7 11h.1"></path></svg>';
       }
@@ -8074,7 +8077,7 @@ var contentHtml = formatInstructionNodeContentHtml(
 
     function getFuelConsumptionInlineText(totals) {
       totals = totals || {};
-      return formatFuelLitersSignedValue(totals.consumptionLiters) + 'л | ' + formatFuelKgSignedValue(totals.consumptionKg) + 'кг';
+      return formatFuelLitersSignedValue(totals.consumptionLiters) + ' л | ' + formatFuelKgSignedValue(totals.consumptionKg) + ' кг';
     }
 
     function getFuelKgText(litersRaw, coeffRaw, fallbackCoeff) {
@@ -8133,7 +8136,8 @@ var contentHtml = formatInstructionNodeContentHtml(
       var totals = getFuelConsumptionTotalsFromShift(shift);
       return '' +
         '<div class="shift-fuel-note">' +
-          'Расход: <strong>' + escapeHtml(getFuelConsumptionInlineText(totals)) + '</strong>' +
+          '<span class="shift-fuel-note-icon" aria-hidden="true">' + getShiftInlineIconSvg('fuel') + '</span>' +
+          '<span class="shift-fuel-note-text">Расход: <strong>' + escapeHtml(getFuelConsumptionInlineText(totals)) + '</strong></span>' +
         '</div>';
     }
 

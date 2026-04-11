@@ -432,6 +432,16 @@
       margin-top: 1px;
     }
 
+    .shift-fuel-note-icon {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+      color: var(--muted);
+    }
+
+    .shift-fuel-note-text { min-width: 0; }
+
     .shift-fuel-note strong {
       color: var(--sub);
       font-family: 'JetBrains Mono', monospace;
