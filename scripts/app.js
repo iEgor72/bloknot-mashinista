@@ -27,6 +27,84 @@
       '2026-10': 176, '2026-11': 159, '2026-12': 176
     };
 
+    // Производственный календарь (переносы + сокращенные дни) для точного расчета нормы.
+    // Источник: holidays-calendar-ru (данные за 2025-2026).
+    var PRODUCTION_NON_WORKING_DAY_KEYS = [
+      '2025-01-01', '2025-01-02', '2025-01-03', '2025-01-04', '2025-01-05', '2025-01-06', '2025-01-07', '2025-01-08',
+      '2025-02-22', '2025-02-23', '2025-03-08', '2025-03-09',
+      '2025-05-01', '2025-05-02', '2025-05-08', '2025-05-09',
+      '2025-06-12', '2025-06-13',
+      '2025-11-03', '2025-11-04',
+      '2025-12-31',
+      '2026-01-01', '2026-01-02', '2026-01-03', '2026-01-04', '2026-01-05', '2026-01-06', '2026-01-07', '2026-01-08', '2026-01-09',
+      '2026-02-23', '2026-03-09',
+      '2026-05-01', '2026-05-11',
+      '2026-06-12',
+      '2026-11-04',
+      '2026-12-31'
+    ];
+
+    var PRODUCTION_SHORT_DAY_KEYS = [
+      '2025-03-07', '2025-04-30', '2025-06-11', '2025-11-01',
+      '2026-04-30', '2026-05-08', '2026-06-11', '2026-11-03'
+    ];
+
+    var PRODUCTION_WORKING_DAY_KEYS = [
+      '2025-11-01'
+    ];
+
+    function buildDateKeyLookup(keys) {
+      var out = Object.create(null);
+      var list = keys || [];
+      for (var i = 0; i < list.length; i++) {
+        out[list[i]] = true;
+      }
+      return out;
+    }
+
+    function buildYearLookupFromDateKeys(keys) {
+      var out = Object.create(null);
+      var list = keys || [];
+      for (var i = 0; i < list.length; i++) {
+        var year = String(list[i]).slice(0, 4);
+        if (year.length === 4) out[year] = true;
+      }
+      return out;
+    }
+
+    var PRODUCTION_NON_WORKING_DAY_MAP = buildDateKeyLookup(PRODUCTION_NON_WORKING_DAY_KEYS);
+    var PRODUCTION_SHORT_DAY_MAP = buildDateKeyLookup(PRODUCTION_SHORT_DAY_KEYS);
+    var PRODUCTION_WORKING_DAY_MAP = buildDateKeyLookup(PRODUCTION_WORKING_DAY_KEYS);
+    var PRODUCTION_CALENDAR_YEAR_MAP = buildYearLookupFromDateKeys(
+      PRODUCTION_NON_WORKING_DAY_KEYS.concat(PRODUCTION_SHORT_DAY_KEYS, PRODUCTION_WORKING_DAY_KEYS)
+    );
+
+    function getLocalDateKey(date) {
+      if (!(date instanceof Date) || !isFinite(date.getTime())) return '';
+      return date.getFullYear() + '-' + String(date.getMonth() + 1).padStart(2, '0') + '-' + String(date.getDate()).padStart(2, '0');
+    }
+
+    function getNormDayMinutesLocal(date) {
+      if (!(date instanceof Date) || !isFinite(date.getTime())) return 0;
+      var dayOfWeek = date.getDay();
+      var key = getLocalDateKey(date);
+      var hasProductionYear = !!PRODUCTION_CALENDAR_YEAR_MAP[String(date.getFullYear())];
+
+      if (PRODUCTION_WORKING_DAY_MAP[key]) {
+        return PRODUCTION_SHORT_DAY_MAP[key] ? (7 * 60) : (8 * 60);
+      }
+
+      if (hasProductionYear) {
+        if (PRODUCTION_NON_WORKING_DAY_MAP[key]) return 0;
+        if (dayOfWeek === 0 || dayOfWeek === 6) return 0;
+        return PRODUCTION_SHORT_DAY_MAP[key] ? (7 * 60) : (8 * 60);
+      }
+
+      if (dayOfWeek === 0 || dayOfWeek === 6) return 0;
+      if (isNonWorkingHolidayLocalDate(date)) return 0;
+      return 8 * 60;
+    }
+
     function isNonWorkingHolidayLocalDate(date) {
       var month = date.getMonth();
       var day = date.getDate();
@@ -6670,39 +6748,42 @@ var contentHtml = formatInstructionNodeContentHtml(
       return 0;
     }
 
-    function isWorkingNormDayLocal(date) {
-      if (!(date instanceof Date) || !isFinite(date.getTime())) return false;
-      var dayOfWeek = date.getDay();
-      if (dayOfWeek === 0 || dayOfWeek === 6) return false;
-      if (isNonWorkingHolidayLocalDate(date)) return false;
-      return true;
-    }
-
     function getMonthNormSnapshot(year, month0, monthNormMin) {
       var nowDate = new Date();
       var relation = compareYearMonth(year, month0, nowDate.getFullYear(), nowDate.getMonth());
       var monthDays = new Date(year, month0 + 1, 0).getDate();
       var totalWorkingDays = 0;
       var elapsedWorkingDays = 0;
+      var calculatedMonthNormMin = 0;
+      var elapsedNormMin = 0;
+      var hasProductionYear = !!PRODUCTION_CALENDAR_YEAR_MAP[String(year)];
 
       for (var day = 1; day <= monthDays; day++) {
         var date = new Date(year, month0, day, 12, 0, 0);
-        if (!isWorkingNormDayLocal(date)) continue;
+        var dayNormMin = getNormDayMinutesLocal(date);
+        if (dayNormMin <= 0) continue;
         totalWorkingDays += 1;
+        calculatedMonthNormMin += dayNormMin;
         if (relation < 0 || (relation === 0 && day <= nowDate.getDate())) {
           elapsedWorkingDays += 1;
+          elapsedNormMin += dayNormMin;
         }
       }
 
       var safeMonthNormMin = Math.max(0, Number(monthNormMin) || 0);
+      if (hasProductionYear && calculatedMonthNormMin > 0) {
+        safeMonthNormMin = calculatedMonthNormMin;
+      }
+
       var todayNormMin = 0;
-      if (relation < 0) {
+      if (safeMonthNormMin <= 0) {
+        todayNormMin = 0;
+      } else if (relation < 0) {
         todayNormMin = safeMonthNormMin;
       } else if (relation > 0) {
         todayNormMin = 0;
       } else {
-        // Для текущего месяца считаем норму на сегодня по 8 часов за каждый рабочий день.
-        todayNormMin = elapsedWorkingDays * 8 * 60;
+        todayNormMin = elapsedNormMin;
       }
 
       return {
@@ -6710,7 +6791,8 @@ var contentHtml = formatInstructionNodeContentHtml(
         monthNormMin: safeMonthNormMin,
         todayNormMin: todayNormMin,
         totalWorkingDays: totalWorkingDays,
-        elapsedWorkingDays: elapsedWorkingDays
+        elapsedWorkingDays: elapsedWorkingDays,
+        calculatedMonthNormMin: calculatedMonthNormMin
       };
     }
 
@@ -7887,7 +7969,10 @@ var contentHtml = formatInstructionNodeContentHtml(
 
       // Norm
       var monthKey = currentYear + '-' + String(currentMonth + 1).padStart(2, '0');
-      var norm = WORK_NORMS[monthKey];
+      var normFromTableHours = WORK_NORMS[monthKey];
+      var baseNormMin = normFromTableHours !== undefined ? (normFromTableHours * 60) : 0;
+      var normSnapshot = getMonthNormSnapshot(currentYear, currentMonth, baseNormMin);
+      var normMin = normSnapshot.monthNormMin;
 
       // Update stats
       var statWorkedEl = document.getElementById('statWorked');
@@ -7916,10 +8001,12 @@ var contentHtml = formatInstructionNodeContentHtml(
         dashboardCardEl.classList.remove('state-ok', 'state-overtime', 'state-remaining');
       }
 
-      if (norm !== undefined) {
-        if (normEl) normEl.textContent = norm + ' ч';
-        var normMin = norm * 60;
-        var normSnapshot = getMonthNormSnapshot(currentYear, currentMonth, normMin);
+      if (normMin > 0) {
+        if (normEl) {
+          normEl.textContent = (normMin % 60 === 0)
+            ? (Math.round(normMin / 60) + ' ч')
+            : fmtMin(normMin);
+        }
         var diffBasisMin = normSnapshot.relation === 0
           ? normSnapshot.todayNormMin
           : normMin;
