@@ -1036,6 +1036,7 @@
       overflow-y: auto;
       -webkit-overflow-scrolling: touch;
       touch-action: pan-y;
+      overscroll-behavior: none;
       padding:
         12px
         calc(14px + env(safe-area-inset-right))

@@ -71,10 +71,7 @@
     }
 
     .is-standalone-pwa .app-content {
-      /* iOS standalone can freeze nested momentum scrollers after edge-swipe attempts.
-         touch-action: pan-y tells the browser this is a vertical-only scroller so it
-         won't enter the "back gesture vs scroll" ambiguity on diagonal swipes. */
-      -webkit-overflow-scrolling: auto;
+      overscroll-behavior: none;
     }
 
     .is-standalone-pwa .tab-panel { margin-bottom: 0; }
@@ -1380,6 +1377,7 @@
       overflow-y: auto;
       -webkit-overflow-scrolling: touch;
       touch-action: pan-y;
+      overscroll-behavior: none;
       transform: translateY(100%);
       transition: transform 0.28s cubic-bezier(0.25, 1, 0.35, 1);
     }
