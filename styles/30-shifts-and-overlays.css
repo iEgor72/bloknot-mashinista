@@ -714,8 +714,8 @@
 
     .shift-actions-trigger {
       appearance: none;
-      background: var(--card-hi);
-      border: 1px solid var(--border);
+      background: transparent;
+      border: 1px solid transparent;
       color: var(--sub);
       width: 34px;
       height: 34px;
@@ -730,12 +730,18 @@
       line-height: 0;
     }
 
-    .shift-actions-trigger:active,
+    .shift-actions-trigger:active {
+      background: rgba(255, 255, 255, 0.06);
+      color: var(--text);
+      border-color: rgba(255, 255, 255, 0.12);
+      transform: translateY(1px);
+    }
+
     .shift-actions-trigger.is-open {
       background: var(--accent-dim);
       color: var(--accent);
       border-color: rgba(56, 189, 248, 0.2);
-      transform: translateY(1px);
+      transform: none;
     }
 
     .shift-actions-trigger-icon {
