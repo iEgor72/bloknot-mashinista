@@ -5327,6 +5327,12 @@ var contentHtml = formatInstructionNodeContentHtml(
     }
 
     var saveToastHideTimer = null;
+    var ACTION_TOAST_TEXT = {
+      added: 'Добавлено',
+      saved: 'Сохранено',
+      canceled: 'Отменено',
+      deleted: 'Удалено'
+    };
 
     function showSaveToast(text) {
       var toast = document.getElementById('saveToast');
@@ -5359,6 +5365,11 @@ var contentHtml = formatInstructionNodeContentHtml(
       saveToastHideTimer = setTimeout(function() {
         toast.classList.remove('is-visible');
       }, 1800);
+    }
+
+    function showActionToast(actionKey) {
+      var key = String(actionKey || '').toLowerCase();
+      showSaveToast(ACTION_TOAST_TEXT[key] || 'Готово');
     }
 
     function isDocsProLocked() {
@@ -8874,6 +8885,7 @@ var contentHtml = formatInstructionNodeContentHtml(
           return;
         }
         triggerHapticSuccess();
+        showActionToast('deleted');
         render();
       });
     });
@@ -8881,6 +8893,7 @@ var contentHtml = formatInstructionNodeContentHtml(
     document.getElementById('btnCancelDelete').addEventListener('click', function() {
       pendingDeleteId = null;
       closeOverlay('overlayConfirm');
+      showActionToast('canceled');
       render();
     });
 
@@ -9283,7 +9296,7 @@ var contentHtml = formatInstructionNodeContentHtml(
         }
 
         triggerHapticSuccess();
-        showSaveToast('Сохранено');
+        showActionToast(isEditing ? 'saved' : 'added');
 
         if (isEditing) {
           exitEditMode();
@@ -9418,7 +9431,7 @@ var contentHtml = formatInstructionNodeContentHtml(
       saveSalarySettingsBtn.addEventListener('click', function() {
         syncSettingsFromInputs();
         closeOverlay('overlaySalarySettings');
-        showSaveToast('Сохранено');
+        showActionToast('saved');
       });
     }
 
@@ -9537,10 +9550,12 @@ if (action === 'scroll-node') {
 
     document.getElementById('btnCancelEdit').addEventListener('click', function() {
       exitEditMode();
+      showActionToast('canceled');
     });
     document.getElementById('btnBackFromEdit').addEventListener('click', function() {
       triggerHapticSelection();
       exitEditMode();
+      showActionToast('canceled');
     });
 
     document.getElementById('btnCloseAddScreen').addEventListener('click', function() {
