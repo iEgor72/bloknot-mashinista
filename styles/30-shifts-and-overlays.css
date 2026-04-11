@@ -937,7 +937,6 @@
       display: flex;
       flex-direction: column;
       overflow: hidden;
-      touch-action: pan-y;
       transform: translateY(100%);
       transition: transform 0.3s cubic-bezier(0.25, 1, 0.35, 1);
     }
@@ -1035,7 +1034,6 @@
       flex: 1;
       overflow-y: auto;
       -webkit-overflow-scrolling: touch;
-      touch-action: pan-y;
       padding:
         12px
         calc(14px + env(safe-area-inset-right))
