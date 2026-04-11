@@ -73,6 +73,7 @@
     var SHIFT_SWIPE_LOCK_CANCEL_RATIO = 4.0;
     var SHIFT_SWIPE_LOCK_CANCEL_MIN_Y = 34;
     var SHIFT_SWIPE_SUPPRESS_CLICK_MS = 650;
+    var SHIFT_SWIPE_DEBUG = true;
     var openShiftSwipeCard = null;
     var SHIFT_SHARED_TRANSITION_MS = 300;
     var SHIFT_SHARED_TRANSITION_EASING = 'cubic-bezier(0.32, 0.72, 0, 1)';
@@ -7778,6 +7779,9 @@ var contentHtml = formatInstructionNodeContentHtml(
       if (!cardEl || !cardEl.classList) return;
       var contentEl = getShiftSwipeContentEl(cardEl);
       if (!contentEl) return;
+      if (SHIFT_SWIPE_DEBUG && window.console && typeof console.log === 'function') {
+        try { console.log('[swipe-debug]', 'set-open', 'shift=' + (cardEl.getAttribute('data-shift-id') || 'unknown'), { shouldOpen: !!shouldOpen }); } catch (err) {}
+      }
       cardEl.classList.remove('is-swipe-dragging');
       cardEl.classList.toggle('is-swipe-open', !!shouldOpen);
       contentEl.style.transform = '';
@@ -7812,6 +7816,16 @@ var contentHtml = formatInstructionNodeContentHtml(
           var minOffsetReached = 0;
           var maxOffsetReached = 0;
           var isDragging = false;
+          var lastMoveLogTs = 0;
+
+          function logSwipe(stage, payload) {
+            if (!SHIFT_SWIPE_DEBUG || !window.console || typeof console.log !== 'function') return;
+            var id = card.getAttribute('data-shift-id') || 'unknown';
+            var entry = payload || {};
+            try {
+              console.log('[swipe-debug]', stage, 'shift=' + id, entry);
+            } catch (err) {}
+          }
 
           function getBaseOffset() {
             return isShiftSwipeOpen(card) ? -SHIFT_SWIPE_DELETE_WIDTH : 0;
@@ -7830,14 +7844,22 @@ var contentHtml = formatInstructionNodeContentHtml(
 
           function markSwipeSuppressClick() {
             card.dataset.shiftSwipeSuppressClick = '1';
+            logSwipe('suppress-click-on', { ms: SHIFT_SWIPE_SUPPRESS_CLICK_MS });
             window.setTimeout(function() {
               if (card && card.dataset) delete card.dataset.shiftSwipeSuppressClick;
+              logSwipe('suppress-click-off');
             }, SHIFT_SWIPE_SUPPRESS_CLICK_MS);
           }
 
           function finishDrag(shouldOpen) {
             pointerId = null;
             isDragging = false;
+            logSwipe('finish-drag', {
+              shouldOpen: !!shouldOpen,
+              currentOffset: currentOffset,
+              minOffsetReached: minOffsetReached,
+              maxOffsetReached: maxOffsetReached
+            });
             setShiftSwipeOpen(card, shouldOpen);
             markSwipeSuppressClick();
           }
@@ -7855,6 +7877,14 @@ var contentHtml = formatInstructionNodeContentHtml(
             minOffsetReached = startOffset;
             maxOffsetReached = startOffset;
             isDragging = false;
+            lastMoveLogTs = 0;
+            logSwipe('pointerdown', {
+              pointerId: pointerId,
+              startX: startX,
+              startY: startY,
+              startOffset: startOffset,
+              openedAtStart: startOffset < 0
+            });
             if (contentEl.setPointerCapture) {
               try { contentEl.setPointerCapture(pointerId); } catch (err) {}
             }
@@ -7870,20 +7900,37 @@ var contentHtml = formatInstructionNodeContentHtml(
               if (absX < 3 && absY < 3) return;
               if (absX < SHIFT_SWIPE_LOCK_MIN_X) {
                 if (absY >= SHIFT_SWIPE_LOCK_CANCEL_MIN_Y) {
+                  logSwipe('move-cancel-vertical-early', { absX: absX, absY: absY });
                   pointerId = null;
                   contentEl.style.transform = '';
                 }
                 return;
               }
               if (absY > absX * SHIFT_SWIPE_LOCK_CANCEL_RATIO && absY >= SHIFT_SWIPE_LOCK_CANCEL_MIN_Y) {
+                logSwipe('move-cancel-vertical-ratio', {
+                  absX: absX,
+                  absY: absY,
+                  ratio: SHIFT_SWIPE_LOCK_CANCEL_RATIO
+                });
                 pointerId = null;
                 contentEl.style.transform = '';
                 return;
               }
               isDragging = true;
               card.classList.add('is-swipe-dragging');
+              logSwipe('drag-start', { absX: absX, absY: absY, startOffset: startOffset });
             }
             applyOffset(startOffset + deltaX);
+            if (!lastMoveLogTs || (Date.now() - lastMoveLogTs) >= 80) {
+              lastMoveLogTs = Date.now();
+              logSwipe('drag-move', {
+                deltaX: deltaX,
+                deltaY: deltaY,
+                currentOffset: currentOffset,
+                minOffsetReached: minOffsetReached,
+                maxOffsetReached: maxOffsetReached
+              });
+            }
             e.preventDefault();
           });
 
@@ -7899,17 +7946,34 @@ var contentHtml = formatInstructionNodeContentHtml(
             var horizontalIntent = absX >= SHIFT_SWIPE_FLING_MIN_PX && absX >= absY * 0.6;
             var isQuickFlingLeft = horizontalIntent && deltaX <= -SHIFT_SWIPE_FLING_MIN_PX && deltaMs <= SHIFT_SWIPE_FLING_MAX_MS;
             var isQuickFlingRight = horizontalIntent && deltaX >= SHIFT_SWIPE_FLING_MIN_PX && deltaMs <= SHIFT_SWIPE_FLING_MAX_MS;
+            logSwipe('pointerend-raw', {
+              openedAtStart: openedAtStart,
+              isDragging: isDragging,
+              deltaX: deltaX,
+              deltaY: deltaY,
+              absX: absX,
+              absY: absY,
+              deltaMs: deltaMs,
+              finalOffset: finalOffset,
+              minOffsetReached: minOffsetReached,
+              maxOffsetReached: maxOffsetReached,
+              horizontalIntent: horizontalIntent,
+              isQuickFlingLeft: isQuickFlingLeft,
+              isQuickFlingRight: isQuickFlingRight
+            });
             if (!isDragging) {
               pointerId = null;
               var hasHorizontalSwipe = absX >= SHIFT_SWIPE_LOCK_MIN_X && absX >= absY * 0.45;
               if (hasHorizontalSwipe) {
                 if (!openedAtStart && deltaX <= -SHIFT_SWIPE_LOCK_MIN_X) {
+                  logSwipe('pointerend-no-drag-open', { reason: 'horizontal-swipe-left' });
                   finishDrag(true);
                   e.preventDefault();
                   e.stopPropagation();
                   return;
                 }
                 if (openedAtStart && deltaX >= SHIFT_SWIPE_LOCK_MIN_X) {
+                  logSwipe('pointerend-no-drag-close', { reason: 'horizontal-swipe-right' });
                   finishDrag(false);
                   e.preventDefault();
                   e.stopPropagation();
@@ -7917,12 +7981,14 @@ var contentHtml = formatInstructionNodeContentHtml(
                 }
               }
               if (!openedAtStart && isQuickFlingLeft) {
+                logSwipe('pointerend-no-drag-open', { reason: 'quick-fling-left' });
                 finishDrag(true);
                 e.preventDefault();
                 e.stopPropagation();
                 return;
               }
               if (isShiftSwipeOpen(card) && !(e.target && e.target.closest && e.target.closest('.shift-swipe-delete'))) {
+                logSwipe('pointerend-no-drag-toggle-open-card', { nextOpen: !!isQuickFlingLeft });
                 setShiftSwipeOpen(card, isQuickFlingLeft);
                 markSwipeSuppressClick();
                 e.preventDefault();
@@ -7939,9 +8005,18 @@ var contentHtml = formatInstructionNodeContentHtml(
               var shouldClose = (finalOffset >= closeThresholdPx) || (maxOffsetReached >= closeThresholdPx) || isQuickFlingRight;
               shouldOpen = !shouldClose;
               if (isQuickFlingLeft) shouldOpen = true;
+              logSwipe('pointerend-decision-opened-start', {
+                closeThresholdPx: closeThresholdPx,
+                shouldClose: shouldClose,
+                shouldOpen: shouldOpen
+              });
             } else {
               shouldOpen = (finalOffset <= openThresholdPx) || (minOffsetReached <= openThresholdPx) || isQuickFlingLeft;
               if (isQuickFlingRight) shouldOpen = false;
+              logSwipe('pointerend-decision-closed-start', {
+                openThresholdPx: openThresholdPx,
+                shouldOpen: shouldOpen
+              });
             }
             finishDrag(shouldOpen);
             e.preventDefault();
@@ -7964,11 +8039,17 @@ var contentHtml = formatInstructionNodeContentHtml(
         if (!card || !listEl.contains(card)) return;
         if (e.target.closest('.shift-swipe-delete')) return;
         if (card.dataset.shiftSwipeSuppressClick === '1') {
+          if (SHIFT_SWIPE_DEBUG && window.console && typeof console.log === 'function') {
+            try { console.log('[swipe-debug]', 'click-suppressed', 'shift=' + (card.getAttribute('data-shift-id') || 'unknown')); } catch (err) {}
+          }
           e.preventDefault();
           e.stopPropagation();
           return;
         }
         if (isShiftSwipeOpen(card)) {
+          if (SHIFT_SWIPE_DEBUG && window.console && typeof console.log === 'function') {
+            try { console.log('[swipe-debug]', 'click-close-open-card', 'shift=' + (card.getAttribute('data-shift-id') || 'unknown')); } catch (err) {}
+          }
           setShiftSwipeOpen(card, false);
           e.preventDefault();
           e.stopPropagation();
@@ -9360,6 +9441,9 @@ var contentHtml = formatInstructionNodeContentHtml(
     document.addEventListener('pointerdown', function(e) {
       if (!openShiftSwipeCard) return;
       if (openShiftSwipeCard.contains(e.target)) return;
+      if (SHIFT_SWIPE_DEBUG && window.console && typeof console.log === 'function') {
+        try { console.log('[swipe-debug]', 'outside-pointerdown-close', 'shift=' + (openShiftSwipeCard.getAttribute('data-shift-id') || 'unknown')); } catch (err) {}
+      }
       setShiftSwipeOpen(openShiftSwipeCard, false);
     });
     document.addEventListener('scroll', function() {
