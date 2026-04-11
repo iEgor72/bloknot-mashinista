@@ -65,6 +65,9 @@
     var shiftListRevealRegistry = Object.create(null);
     var shiftListRevealAutoId = 0;
     var SHIFT_SWIPE_DELETE_WIDTH = 122;
+    var SHIFT_SWIPE_OPEN_THRESHOLD_RATIO = 0.24;
+    var SHIFT_SWIPE_FLING_MIN_PX = 20;
+    var SHIFT_SWIPE_FLING_MAX_MS = 240;
     var openShiftSwipeCard = null;
     var SHIFT_SHARED_TRANSITION_MS = 300;
     var SHIFT_SHARED_TRANSITION_EASING = 'cubic-bezier(0.32, 0.72, 0, 1)';
@@ -7798,6 +7801,7 @@ var contentHtml = formatInstructionNodeContentHtml(
           var pointerId = null;
           var startX = 0;
           var startY = 0;
+          var startTs = 0;
           var startOffset = 0;
           var currentOffset = 0;
           var isDragging = false;
@@ -7832,6 +7836,7 @@ var contentHtml = formatInstructionNodeContentHtml(
             pointerId = e.pointerId;
             startX = e.clientX;
             startY = e.clientY;
+            startTs = Date.now();
             startOffset = getBaseOffset();
             currentOffset = startOffset;
             isDragging = false;
@@ -7869,7 +7874,11 @@ var contentHtml = formatInstructionNodeContentHtml(
               }
               return;
             }
-            var shouldOpen = currentOffset <= -Math.round(SHIFT_SWIPE_DELETE_WIDTH * 0.45);
+            var thresholdPx = -Math.round(SHIFT_SWIPE_DELETE_WIDTH * SHIFT_SWIPE_OPEN_THRESHOLD_RATIO);
+            var deltaX = e.clientX - startX;
+            var deltaMs = Math.max(1, Date.now() - startTs);
+            var isQuickFling = deltaX <= -SHIFT_SWIPE_FLING_MIN_PX && deltaMs <= SHIFT_SWIPE_FLING_MAX_MS;
+            var shouldOpen = currentOffset <= thresholdPx || isQuickFling;
             finishDrag(shouldOpen);
             e.preventDefault();
             e.stopPropagation();
