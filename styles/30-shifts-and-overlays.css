@@ -760,22 +760,32 @@
     .compact-shift .shift-top-right { gap: 6px; }
 
     /* ── Pending shift badge ── */
-    .shift-pending-line {
+    .shift-pending-line,
+    .shift-sync-inline {
       display: inline-flex;
       align-items: center;
       justify-content: center;
-      width: 18px;
-      height: 18px;
-      margin: 2px 0 2px;
+      width: 16px;
+      height: 16px;
       border-radius: var(--r-pill);
       color: #F59E0B;
       background: rgba(245, 158, 11, 0.12);
       border: 1px solid rgba(245, 158, 11, 0.28);
     }
 
-    .shift-pending-line svg {
-      width: 13px;
-      height: 13px;
+    .shift-pending-line {
+      margin: 2px 0 2px;
+    }
+
+    .shift-sync-inline {
+      margin-left: 2px;
+      flex-shrink: 0;
+    }
+
+    .shift-pending-line svg,
+    .shift-sync-inline svg {
+      width: 11px;
+      height: 11px;
       display: block;
     }
 

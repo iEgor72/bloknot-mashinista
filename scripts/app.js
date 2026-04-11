@@ -6914,12 +6914,18 @@ var contentHtml = formatInstructionNodeContentHtml(
         .replace(/(\d)\s+мин/g, '$1м');
     }
 
-    function buildShiftTypeHtml(shift, typeLabel) {
+    function buildShiftSyncInlineIconHtml() {
+      return '<span class="shift-sync-inline" role="img" aria-label="Не синхронизировано" title="Не синхронизировано">' + docOnlineOnlyIcon + '</span>';
+    }
+
+    function buildShiftTypeHtml(shift, typeLabel, showSyncIcon) {
+      var syncIconHtml = showSyncIcon ? buildShiftSyncInlineIconHtml() : '';
       return '' +
         '<div class="shift-type">' +
           '<span class="shift-type-content">' +
             '<span class="shift-type-icon" aria-hidden="true">' + getShiftInlineIconSvg(getShiftTypeIconName(shift)) + '</span>' +
             '<span class="shift-type-text">' + escapeHtml(typeLabel) + '</span>' +
+            syncIconHtml +
           '</span>' +
         '</div>';
     }
@@ -6992,10 +6998,11 @@ var contentHtml = formatInstructionNodeContentHtml(
       var f = fmtShift(shift);
       var p = getShiftDisplayParts(shift);
       var typeLabel = getShiftTypeLabel(shift);
+      var shiftPending = isShiftPending(shift);
       var directionText = getShiftDirectionLineText(shift);
       var dateTimeText = getShiftDateTimeLineLabel(p);
       var durationText = getShiftDurationLabelText(f.dur);
-      var typeHtml = buildShiftTypeHtml(shift, typeLabel);
+      var typeHtml = buildShiftTypeHtml(shift, typeLabel, shiftPending);
       var directionHtml = buildShiftDirectionHtml(directionText);
       var dateTimeHtml = buildShiftDateTimeHtml(dateTimeText);
       var durationHtml = buildShiftDurationHtml(durationText);
@@ -7006,6 +7013,7 @@ var contentHtml = formatInstructionNodeContentHtml(
       var incomeHtml = getShiftIncomeChipHtml(incomeVm);
       var itemClass = 'shift-item compact-shift shift-item-confirm';
       if (shift.route_kind === 'trip') itemClass += ' has-trip';
+      if (shiftPending) itemClass += ' is-pending';
       itemClass += ' income-' + incomeVm.level;
 
       return '' +
@@ -7069,19 +7077,16 @@ var contentHtml = formatInstructionNodeContentHtml(
         '</div>';
     }
 
-    function buildShiftPendingIconHtml() {
-      return '<div class="shift-pending-line" role="img" aria-label="Не синхронизировано" title="Не синхронизировано">' + docOnlineOnlyIcon + '</div>';
-    }
-
     function buildShiftDetailHeroCardHtml(shift, shiftIncomeMap) {
       if (!shift) return '';
       var f = fmtShift(shift);
       var p = getShiftDisplayParts(shift);
       var typeLabel = getShiftTypeLabel(shift);
+      var shiftPending = isShiftPending(shift);
       var directionText = getShiftDirectionLineText(shift);
       var dateTimeText = getShiftDateTimeLineLabel(p);
       var durationText = getShiftDurationLabelText(f.dur);
-      var typeHtml = buildShiftTypeHtml(shift, typeLabel);
+      var typeHtml = buildShiftTypeHtml(shift, typeLabel, shiftPending);
       var directionHtml = buildShiftDirectionHtml(directionText);
       var dateTimeHtml = buildShiftDateTimeHtml(dateTimeText);
       var durationHtml = buildShiftDurationHtml(durationText);
@@ -7092,7 +7097,7 @@ var contentHtml = formatInstructionNodeContentHtml(
       var incomeHtml = getShiftIncomeChipHtml(incomeVm);
       var itemClass = 'shift-item shift-item-confirm shift-item-detail';
       if (shift.route_kind === 'trip') itemClass += ' has-trip';
-      if (isShiftPending(shift)) itemClass += ' is-pending';
+      if (shiftPending) itemClass += ' is-pending';
       itemClass += ' income-' + incomeVm.level;
 
       return '' +
@@ -7100,7 +7105,6 @@ var contentHtml = formatInstructionNodeContentHtml(
           '<div class="shift-card-top">' +
             typeHtml +
           '</div>' +
-          (isShiftPending(shift) ? buildShiftPendingIconHtml() : '') +
           directionHtml +
           '<div class="shift-card-body">' +
             '<div class="shift-main-row">' +
@@ -7218,12 +7222,13 @@ var contentHtml = formatInstructionNodeContentHtml(
       var p = getShiftDisplayParts(sh);
       var itemClass = 'shift-item' + (compact ? ' compact-shift' : '');
       var typeLabel = getShiftTypeLabel(sh);
+      var shiftIsPending = pendingMap ? !!pendingMap[String(sh.id)] : isShiftPending(sh);
       var directionText = getShiftDirectionLineText(sh);
       var dateTimeText = getShiftDateTimeLineLabel(p);
       var rangeState = getShiftRangeState(sh);
       var durationMinutes = getShiftMinutesForDisplay(sh, durationBounds);
       var durationText = getShiftDurationLabelText(rangeState.hasValidInterval ? fmtMin(durationMinutes) : '—');
-      var typeHtml = buildShiftTypeHtml(sh, typeLabel);
+      var typeHtml = buildShiftTypeHtml(sh, typeLabel, shiftIsPending);
       var directionHtml = buildShiftDirectionHtml(directionText);
       var dateTimeHtml = buildShiftDateTimeHtml(dateTimeText);
       var durationHtml = buildShiftDurationHtml(durationText);
@@ -7235,7 +7240,6 @@ var contentHtml = formatInstructionNodeContentHtml(
       if (sh.id === editingShiftId) itemClass += ' is-edit-target';
       if (sh.id === pendingDeleteId) itemClass += ' is-delete-target';
       if (sh.id === recentAddedShiftId) itemClass += ' is-adding-target';
-      var shiftIsPending = pendingMap ? !!pendingMap[String(sh.id)] : isShiftPending(sh);
       if (shiftIsPending) itemClass += ' is-pending';
       var durationLevelData = durationLevelMap ? durationLevelMap[String(sh.id)] : null;
       var durationLevel = durationLevelData && typeof durationLevelData.level === 'string'
@@ -7260,7 +7264,6 @@ var contentHtml = formatInstructionNodeContentHtml(
             '</div>' +
           '</div>' +
         '</div>' +
-        (shiftIsPending ? buildShiftPendingIconHtml() : '') +
         directionHtml +
         '<div class="shift-card-body">' +
           '<div class="shift-main-row">' +

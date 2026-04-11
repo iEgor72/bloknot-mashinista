@@ -638,10 +638,14 @@
       letter-spacing: 0.01em;
     }
 
-    .fuel-kg-output[readonly] {
+    .fuel-kg-output[readonly],
+    .fuel-kg-output[disabled] {
       color: var(--accent);
       border-bottom-style: dashed;
       cursor: default;
+      pointer-events: none;
+      opacity: 1;
+      -webkit-text-fill-color: var(--accent);
     }
 
     .fuel-consumption-note {
