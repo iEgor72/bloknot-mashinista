@@ -59,8 +59,6 @@
     var hasRenderedInitialTab = false;
     var activeShiftMenuId = null;
     var activeShiftMenuScope = null;
-    var lastShiftActionsTriggerId = '';
-    var lastShiftActionsTriggerTs = 0;
     var SHIFT_LIST_REVEAL_DURATION_MS = 220;
     var SHIFT_LIST_REVEAL_DELAY_STEP_MS = 30;
     var suppressInitialListReveal = true;
@@ -68,7 +66,6 @@
     var shiftListRevealAutoId = 0;
     var SHIFT_SHARED_TRANSITION_MS = 300;
     var SHIFT_SHARED_TRANSITION_EASING = 'cubic-bezier(0.32, 0.72, 0, 1)';
-    var SHIFT_ACTIONS_TRIGGER_DEDUPE_MS = 90;
     var BACK_SWIPE_EDGE_START_PX = 42;
     var BACK_SWIPE_START_THRESHOLD_PX = 9;
     var BACK_SWIPE_COMMIT_DISTANCE_PX = 70;
@@ -7993,6 +7990,11 @@ var contentHtml = formatInstructionNodeContentHtml(
 
       listEl.addEventListener('click', function(e) {
         if (shiftDetailState.isAnimating) return;
+        var trigger = e.target && e.target.closest ? e.target.closest('.shift-actions-trigger') : null;
+        if (trigger && listEl.contains(trigger)) {
+          handleShiftActionsTriggerClick(e, trigger, listEl);
+          return;
+        }
         var card = e.target && e.target.closest ? e.target.closest('.shift-item[data-shift-open="1"][data-shift-id]') : null;
         if (!card || !listEl.contains(card)) return;
         if (e.target.closest('.shift-actions-trigger') || e.target.closest('.shift-actions-wrap')) return;
@@ -8044,11 +8046,6 @@ var contentHtml = formatInstructionNodeContentHtml(
       }
       listEl.innerHTML = html;
 
-      var actionTriggers = listEl.querySelectorAll('.shift-actions-trigger');
-      for (var a = 0; a < actionTriggers.length; a++) {
-        actionTriggers[a].addEventListener('click', handleShiftActionsTriggerClick);
-      }
-
       revealShiftListOnFirstMount(listEl);
       if (shiftDetailState.isOpen && shiftDetailState.sourceListId === listEl.id) {
         setShiftDetailSourceCardHidden(true);
@@ -8066,7 +8063,6 @@ var contentHtml = formatInstructionNodeContentHtml(
     }
 
     function render() {
-      syncShiftActionsMenuLifecycle();
       updateOfflineUiState();
       renderUserStatsFooter();
       var _renderPendingMap = getPendingShiftIdMap();
@@ -8235,11 +8231,7 @@ var contentHtml = formatInstructionNodeContentHtml(
         }
       }
 
-      if (activeShiftMenuId !== null && SHIFT_ACTIONS_MENU) {
-        renderShiftActionsMenu(activeShiftMenuId);
-      } else if (SHIFT_ACTIONS_MENU) {
-        hideShiftActionsMenuOnly();
-      }
+      syncShiftActionsMenuLifecycle();
       syncTelegramBackButton();
     }
     function clearRecentAddHighlight() {
@@ -8852,6 +8844,12 @@ var contentHtml = formatInstructionNodeContentHtml(
       };
     }
 
+    function setShiftActionsTriggerState(triggerEl, isOpen) {
+      if (!triggerEl) return;
+      triggerEl.classList.toggle('is-open', !!isOpen);
+      triggerEl.setAttribute('aria-expanded', isOpen ? 'true' : 'false');
+    }
+
     function hideShiftActionsMenuOnly() {
       if (SHIFT_ACTIONS_MENU) {
         SHIFT_ACTIONS_MENU.classList.remove('is-entering');
@@ -8881,10 +8879,11 @@ var contentHtml = formatInstructionNodeContentHtml(
 
       var els = getShiftActionsMenuEls();
       if (editingShiftId || !els.shiftEl || !els.triggerEl) {
-        activeShiftMenuId = null;
-        activeShiftMenuScope = null;
-        hideShiftActionsMenuOnly();
+        closeShiftActionsMenu(true);
+        return;
       }
+      setShiftActionsTriggerState(els.triggerEl, true);
+      renderShiftActionsMenu(activeShiftMenuId);
     }
 
     function portalShiftActionsMenu() {
@@ -8954,36 +8953,46 @@ var contentHtml = formatInstructionNodeContentHtml(
       updateShiftActionsMenuPosition();
     }
 
-    function closeShiftActionsMenu(skipRender) {
-      if (activeShiftMenuId === null) return;
+    function closeShiftActionsMenu() {
+      if (activeShiftMenuId === null) {
+        hideShiftActionsMenuOnly();
+        return;
+      }
+      var els = getShiftActionsMenuEls();
+      if (els && els.triggerEl) setShiftActionsTriggerState(els.triggerEl, false);
       hideShiftActionsMenuOnly();
       activeShiftMenuId = null;
       activeShiftMenuScope = null;
-      if (!skipRender) render();
     }
 
-    function handleShiftActionsTriggerClick(e) {
+    function openShiftActionsMenuForTrigger(triggerEl, targetId, targetScope) {
+      if (!triggerEl || !targetId) return;
+      var prevEls = getShiftActionsMenuEls();
+      if (prevEls && prevEls.triggerEl && prevEls.triggerEl !== triggerEl) {
+        setShiftActionsTriggerState(prevEls.triggerEl, false);
+      }
+      activeShiftMenuId = targetId;
+      activeShiftMenuScope = targetScope;
+      setShiftActionsTriggerState(triggerEl, true);
+      renderShiftActionsMenu(targetId);
+    }
+
+    function handleShiftActionsTriggerClick(e, triggerElArg, hostElArg) {
       e.preventDefault();
       e.stopPropagation();
-      var targetId = e.currentTarget.getAttribute('data-id');
-      var nowTs = Date.now();
-      if (targetId && lastShiftActionsTriggerId === targetId && (nowTs - lastShiftActionsTriggerTs) < SHIFT_ACTIONS_TRIGGER_DEDUPE_MS) {
-        return;
-      }
-      lastShiftActionsTriggerId = targetId || '';
-      lastShiftActionsTriggerTs = nowTs;
-      var host = e.currentTarget.closest('#homeShiftsList, #shiftsList');
+      var triggerEl = triggerElArg || e.currentTarget;
+      if (!triggerEl) return;
+      var targetId = triggerEl.getAttribute('data-id');
+      var host = hostElArg || triggerEl.closest('#homeShiftsList, #shiftsList');
       var targetScope = host ? host.id : 'shiftsList';
 
       if (activeShiftMenuId === targetId && activeShiftMenuScope === targetScope) {
-        closeShiftActionsMenu();
+        closeShiftActionsMenu(true);
         return;
       }
 
       triggerHapticTapLight();
-      activeShiftMenuId = targetId;
-      activeShiftMenuScope = targetScope;
-      render();
+      openShiftActionsMenuForTrigger(triggerEl, targetId, targetScope);
     }
 
     function handleShiftActionsItemClick(item, e) {
