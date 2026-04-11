@@ -149,7 +149,7 @@
 
     .shift-item[data-shift-open="1"] {
       cursor: pointer;
-      touch-action: pan-y;
+      touch-action: manipulation;
       -webkit-tap-highlight-color: transparent;
     }
 
@@ -166,78 +166,6 @@
       visibility: hidden;
       opacity: 0 !important;
       pointer-events: none !important;
-    }
-
-    .shift-swipe-item {
-      padding: 0;
-      isolation: isolate;
-    }
-
-    .shift-swipe-content {
-      position: relative;
-      z-index: 1;
-      display: grid;
-      gap: 10px;
-      padding: 16px;
-      background: var(--card);
-      border-radius: inherit;
-      transform: translate3d(0, 0, 0);
-      transition: transform 0.2s ease;
-      will-change: transform;
-    }
-
-    .shift-swipe-item.is-swipe-dragging .shift-swipe-content {
-      transition: none;
-    }
-
-    .shift-swipe-item.is-swipe-open .shift-swipe-content {
-      transform: translate3d(-122px, 0, 0);
-    }
-
-    .shift-swipe-delete {
-      position: absolute;
-      top: 0;
-      right: 0;
-      bottom: 0;
-      width: 122px;
-      border: none;
-      border-left: 1px solid rgba(244, 63, 94, 0.28);
-      border-radius: 0 calc(var(--r-card) - 1px) calc(var(--r-card) - 1px) 0;
-      background:
-        linear-gradient(135deg, rgba(244, 63, 94, 0.76), rgba(244, 63, 94, 0.46));
-      color: #ffe5ea;
-      display: inline-flex;
-      align-items: center;
-      justify-content: center;
-      gap: 8px;
-      font-family: 'Manrope', sans-serif;
-      font-size: 15px;
-      font-weight: 700;
-      line-height: 1;
-      cursor: pointer;
-      -webkit-tap-highlight-color: transparent;
-      z-index: 0;
-    }
-
-    .shift-swipe-delete:active {
-      color: #fff1f4;
-      background:
-        linear-gradient(135deg, rgba(244, 63, 94, 0.92), rgba(244, 63, 94, 0.6));
-    }
-
-    .shift-swipe-delete-icon {
-      width: 16px;
-      height: 16px;
-      display: inline-flex;
-      align-items: center;
-      justify-content: center;
-      flex-shrink: 0;
-    }
-
-    .shift-swipe-delete-icon svg {
-      width: 15px;
-      height: 15px;
-      display: block;
     }
 
     /* Reveal animation */
@@ -541,6 +469,84 @@
       min-width: 0;
     }
 
+    .shift-card-actions {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      border-top: 1px solid var(--border);
+      padding-top: 10px;
+      margin-top: 2px;
+      min-width: 0;
+    }
+
+    .shift-card-action-btn {
+      appearance: none;
+      border: 1px solid var(--border);
+      border-radius: var(--r-inner);
+      height: 42px;
+      padding: 0 14px;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      font-family: 'Manrope', sans-serif;
+      font-size: 14px;
+      font-weight: 700;
+      line-height: 1;
+      white-space: nowrap;
+      cursor: pointer;
+      -webkit-tap-highlight-color: transparent;
+      background: var(--card-hi);
+      color: var(--sub);
+      transition: background 0.15s, border-color 0.15s, color 0.15s, transform 0.12s;
+    }
+
+    .shift-card-action-btn:active {
+      transform: translateY(1px);
+    }
+
+    .shift-card-edit-btn {
+      flex: 1;
+      justify-content: flex-start;
+      color: var(--warn);
+      border-color: rgba(247, 185, 85, 0.35);
+      background: rgba(247, 185, 85, 0.14);
+    }
+
+    .shift-card-edit-btn:active {
+      border-color: rgba(247, 185, 85, 0.5);
+      background: rgba(247, 185, 85, 0.22);
+      color: #ffd796;
+    }
+
+    .shift-card-delete-btn {
+      color: var(--danger);
+      border-color: rgba(244, 63, 94, 0.32);
+      background: rgba(244, 63, 94, 0.12);
+      min-width: 138px;
+    }
+
+    .shift-card-delete-btn:active {
+      border-color: rgba(244, 63, 94, 0.52);
+      background: rgba(244, 63, 94, 0.22);
+      color: #fecdd3;
+    }
+
+    .shift-card-action-icon {
+      width: 16px;
+      height: 16px;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+    }
+
+    .shift-card-action-icon svg {
+      width: 15px;
+      height: 15px;
+      display: block;
+    }
+
     .shift-income-row-label {
       font-size: 11px;
       color: var(--sub);
@@ -830,7 +836,9 @@
     .compact-shift .shift-main-row { gap: 8px; }
     .compact-shift .shift-datetime-line { font-size: 11px; }
     .compact-shift .shift-duration { font-size: 11px; }
-    .compact-shift .shift-swipe-content { padding: 14px; }
+    .compact-shift .shift-card-actions { gap: 8px; padding-top: 8px; }
+    .compact-shift .shift-card-action-btn { height: 36px; font-size: 13px; padding: 0 12px; }
+    .compact-shift .shift-card-delete-btn { min-width: 118px; }
     .compact-shift .shift-tech-line { font-size: 10px; }
     .compact-shift .shift-fuel-note { font-size: 10px; }
     .compact-shift .shift-inline-icon { width: 12px; height: 12px; }
