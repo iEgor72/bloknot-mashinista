@@ -6694,18 +6694,20 @@ var contentHtml = formatInstructionNodeContentHtml(
         }
       }
 
+      var safeMonthNormMin = Math.max(0, Number(monthNormMin) || 0);
       var todayNormMin = 0;
       if (relation < 0) {
-        todayNormMin = totalWorkingDays * 8 * 60;
+        todayNormMin = safeMonthNormMin;
       } else if (relation > 0) {
         todayNormMin = 0;
-      } else {
-        todayNormMin = elapsedWorkingDays * 8 * 60;
+      } else if (totalWorkingDays > 0 && safeMonthNormMin > 0) {
+        todayNormMin = Math.round((safeMonthNormMin * elapsedWorkingDays) / totalWorkingDays);
+        if (todayNormMin > safeMonthNormMin) todayNormMin = safeMonthNormMin;
       }
 
       return {
         relation: relation,
-        monthNormMin: monthNormMin,
+        monthNormMin: safeMonthNormMin,
         todayNormMin: todayNormMin,
         totalWorkingDays: totalWorkingDays,
         elapsedWorkingDays: elapsedWorkingDays
