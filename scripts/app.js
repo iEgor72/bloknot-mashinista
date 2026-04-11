@@ -69,6 +69,9 @@
     var SHIFT_SWIPE_CLOSE_THRESHOLD_RATIO = 0.86;
     var SHIFT_SWIPE_FLING_MIN_PX = 10;
     var SHIFT_SWIPE_FLING_MAX_MS = 320;
+    var SHIFT_SWIPE_LOCK_MIN_X = 6;
+    var SHIFT_SWIPE_LOCK_CANCEL_RATIO = 3.0;
+    var SHIFT_SWIPE_LOCK_CANCEL_MIN_Y = 26;
     var openShiftSwipeCard = null;
     var SHIFT_SHARED_TRANSITION_MS = 300;
     var SHIFT_SHARED_TRANSITION_EASING = 'cubic-bezier(0.32, 0.72, 0, 1)';
@@ -7851,8 +7854,17 @@ var contentHtml = formatInstructionNodeContentHtml(
             var deltaX = e.clientX - startX;
             var deltaY = e.clientY - startY;
             if (!isDragging) {
-              if (Math.abs(deltaX) < 4 && Math.abs(deltaY) < 4) return;
-              if (Math.abs(deltaY) > Math.abs(deltaX) * 1.2) {
+              var absX = Math.abs(deltaX);
+              var absY = Math.abs(deltaY);
+              if (absX < 3 && absY < 3) return;
+              if (absX < SHIFT_SWIPE_LOCK_MIN_X) {
+                if (absY >= SHIFT_SWIPE_LOCK_CANCEL_MIN_Y) {
+                  pointerId = null;
+                  contentEl.style.transform = '';
+                }
+                return;
+              }
+              if (absY > absX * SHIFT_SWIPE_LOCK_CANCEL_RATIO && absY >= SHIFT_SWIPE_LOCK_CANCEL_MIN_Y) {
                 pointerId = null;
                 contentEl.style.transform = '';
                 return;
