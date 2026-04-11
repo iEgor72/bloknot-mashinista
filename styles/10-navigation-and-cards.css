@@ -63,11 +63,15 @@
       overflow-x: hidden;
       overflow-y: auto;
       -webkit-overflow-scrolling: touch;
-      touch-action: pan-y;
       overscroll-behavior-x: none;
       overscroll-behavior-y: contain;
       padding-bottom: calc(var(--app-shell-bottom-reserve) + var(--page-padding-bottom));
       scroll-padding-bottom: calc(var(--app-shell-bottom-reserve) + var(--page-padding-bottom));
+    }
+
+    .is-standalone-pwa .app-content {
+      /* iOS standalone can freeze nested momentum scrollers after edge-swipe attempts. */
+      -webkit-overflow-scrolling: auto;
     }
 
     .is-standalone-pwa .tab-panel { margin-bottom: 0; }

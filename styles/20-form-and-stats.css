@@ -46,7 +46,6 @@
       padding: var(--c-pad);
       margin-bottom: 16px;
       overflow: visible;
-      touch-action: pan-y;
     }
 
     .form-section.is-adding {
@@ -379,7 +378,6 @@
       cursor: pointer;
       -webkit-tap-highlight-color: transparent;
       user-select: none;
-      touch-action: pan-y;
     }
 
     .optional-summary::-webkit-details-marker { display: none; }

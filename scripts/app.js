@@ -119,6 +119,9 @@
       document.documentElement.clientHeight ||
       0
     );
+    var standaloneViewportHeightValue = (window.CSS && typeof window.CSS.supports === 'function' && window.CSS.supports('height: 100lvh'))
+      ? '100lvh'
+      : '100vh';
     function updateFooter() {
       var userLabel = CURRENT_USER ? (' · ' + (CURRENT_USER.display_name || CURRENT_USER.username || ('ID ' + CURRENT_USER.id))) : '';
       var text = 'Часовой пояс: ' + deviceTimezone + userLabel;
@@ -427,9 +430,8 @@
       }
 
       if (!keyboardStateOpen && isStandalonePwa()) {
-        // In iOS standalone mode rely on native dynamic viewport height.
-        // Manual px measurements may temporarily under-report height and create bottom black bars.
-        setAppViewportHeight('100dvh');
+        // In iOS standalone mode keep shell height stable during edge gestures.
+        setAppViewportHeight(standaloneViewportHeightValue);
         return;
       }
 
