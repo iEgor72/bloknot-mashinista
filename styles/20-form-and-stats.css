@@ -204,6 +204,10 @@
       color: var(--text);
     }
 
+    .form-actions .btn-delete-edit {
+      margin-top: 14px;
+    }
+
     .form-success {
       text-align: center;
       color: var(--green);
