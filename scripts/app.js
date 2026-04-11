@@ -7808,6 +7808,8 @@ var contentHtml = formatInstructionNodeContentHtml(
           var startTs = 0;
           var startOffset = 0;
           var currentOffset = 0;
+          var minOffsetReached = 0;
+          var maxOffsetReached = 0;
           var isDragging = false;
 
           function getBaseOffset() {
@@ -7820,6 +7822,8 @@ var contentHtml = formatInstructionNodeContentHtml(
 
           function applyOffset(offset) {
             currentOffset = clampOffset(offset);
+            if (currentOffset < minOffsetReached) minOffsetReached = currentOffset;
+            if (currentOffset > maxOffsetReached) maxOffsetReached = currentOffset;
             contentEl.style.transform = 'translate3d(' + currentOffset + 'px, 0, 0)';
           }
 
@@ -7843,6 +7847,8 @@ var contentHtml = formatInstructionNodeContentHtml(
             startTs = Date.now();
             startOffset = getBaseOffset();
             currentOffset = startOffset;
+            minOffsetReached = startOffset;
+            maxOffsetReached = startOffset;
             isDragging = false;
             if (contentEl.setPointerCapture) {
               try { contentEl.setPointerCapture(pointerId); } catch (err) {}
@@ -7917,10 +7923,11 @@ var contentHtml = formatInstructionNodeContentHtml(
             contentEl.style.transform = 'translate3d(' + finalOffset + 'px, 0, 0)';
             var shouldOpen = false;
             if (openedAtStart) {
-              shouldOpen = !(finalOffset >= closeThresholdPx || isQuickFlingRight);
-              if (isQuickFlingLeft) shouldOpen = true;
+              var shouldClose = (finalOffset >= closeThresholdPx) || (maxOffsetReached >= closeThresholdPx) || isQuickFlingRight;
+              shouldOpen = !shouldClose;
+              if (isQuickFlingLeft || minOffsetReached <= openThresholdPx) shouldOpen = true;
             } else {
-              shouldOpen = finalOffset <= openThresholdPx || isQuickFlingLeft;
+              shouldOpen = (finalOffset <= openThresholdPx) || (minOffsetReached <= openThresholdPx) || isQuickFlingLeft;
             }
             finishDrag(shouldOpen);
             e.preventDefault();
