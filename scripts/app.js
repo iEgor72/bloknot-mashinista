@@ -9200,17 +9200,76 @@ var contentHtml = formatInstructionNodeContentHtml(
       }
     }, 30000);
 
-    // ── Standalone PWA: detect & recover frozen momentum scroll ──
-    // iOS WebKit bug: when the system back-swipe gesture starts from the left
-    // edge but gets cancelled (diagonal swipe), the compositor momentum scroller
-    // gets stuck.  The scroll position freezes after touchend even though the
-    // finger was still moving.  The fix: after touchend, wait briefly and check
-    // whether scrollTop changed (momentum should have moved it).  If it didn't
-    // and we're not at a scroll boundary, toggle overflow to force-reset the
-    // compositor, then restore everything in the same paint frame.
+    // ── Standalone PWA: prevent & recover frozen momentum scroll ──
+    // iOS WebKit bug: the system back-swipe gesture recogniser claims touches
+    // starting near the left screen edge.  When the swipe is diagonal, the
+    // gesture is cancelled but the compositor momentum scroller is left stuck.
+    //
+    // Prevention: an invisible 16 px-wide guard element along the left edge with
+    // touch-action:pan-y blocks iOS from starting the horizontal gesture.
+    // Touches on the guard are forwarded to the scroll container behind it so
+    // the user can still scroll normally from the very edge.
+    //
+    // Recovery (fallback): after every touchend, if the finger was moving but
+    // scrollTop doesn't change within 80 ms, toggle overflow to force-reset the
+    // compositor.
     (function initStandaloneScrollFreezeFix() {
       if (!isStandalonePwa()) return;
 
+      // -- Edge guard (prevention) --
+      var EDGE_WIDTH = 16;
+      var guard = document.createElement('div');
+      guard.setAttribute('aria-hidden', 'true');
+      guard.style.cssText = [
+        'position:fixed',
+        'left:0',
+        'top:0',
+        'width:' + EDGE_WIDTH + 'px',
+        'height:100%',
+        'z-index:999999',
+        'touch-action:pan-y',
+        '-webkit-user-select:none',
+        'user-select:none'
+      ].join(';');
+      document.body.appendChild(guard);
+
+      function findScrollContainer(x, y) {
+        guard.style.pointerEvents = 'none';
+        var el = document.elementFromPoint(x, y);
+        guard.style.pointerEvents = '';
+        if (!el) return null;
+        var c = el.closest('.shift-detail-body') ||
+                el.closest('.shift-detail-scroll') ||
+                el.closest('.bottom-sheet') ||
+                el.closest('.app-content');
+        return c;
+      }
+
+      guard.addEventListener('touchstart', function(e) {
+        if (e.touches.length !== 1) return;
+        var t = e.touches[0];
+        var container = findScrollContainer(t.clientX + EDGE_WIDTH, t.clientY);
+        if (!container) return;
+        var lastY = t.clientY;
+
+        function onMove(me) {
+          if (me.touches.length !== 1) return;
+          me.preventDefault();
+          var dy = lastY - me.touches[0].clientY;
+          container.scrollTop += dy;
+          lastY = me.touches[0].clientY;
+        }
+        function onEnd() {
+          guard.removeEventListener('touchmove', onMove);
+          guard.removeEventListener('touchend', onEnd);
+          guard.removeEventListener('touchcancel', onEnd);
+        }
+        guard.addEventListener('touchmove', onMove, { passive: false });
+        guard.addEventListener('touchend', onEnd);
+        guard.addEventListener('touchcancel', onEnd);
+      }, { passive: true });
+
+      // -- Recovery (fallback for touches outside guard) --
       function patchContainer(el) {
         if (!el || el.__sffPatched) return;
         el.__sffPatched = true;
@@ -9247,8 +9306,7 @@ var contentHtml = formatInstructionNodeContentHtml(
           if (timer) clearTimeout(timer);
           timer = setTimeout(function() {
             timer = 0;
-            if (el.scrollTop !== scrollAtEnd) return; // momentum is working
-            // Momentum stuck — reset compositor
+            if (el.scrollTop !== scrollAtEnd) return;
             var saved = el.scrollTop;
             requestAnimationFrame(function() {
               el.style.overflowY = 'hidden';
