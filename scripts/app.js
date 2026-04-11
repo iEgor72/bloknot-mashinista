@@ -59,6 +59,8 @@
     var hasRenderedInitialTab = false;
     var activeShiftMenuId = null;
     var activeShiftMenuScope = null;
+    var lastShiftActionsTriggerId = '';
+    var lastShiftActionsTriggerTs = 0;
     var SHIFT_LIST_REVEAL_DURATION_MS = 220;
     var SHIFT_LIST_REVEAL_DELAY_STEP_MS = 30;
     var suppressInitialListReveal = true;
@@ -66,7 +68,8 @@
     var shiftListRevealAutoId = 0;
     var SHIFT_SHARED_TRANSITION_MS = 300;
     var SHIFT_SHARED_TRANSITION_EASING = 'cubic-bezier(0.32, 0.72, 0, 1)';
-    var BACK_SWIPE_EDGE_START_PX = 26;
+    var SHIFT_ACTIONS_TRIGGER_DEDUPE_MS = 90;
+    var BACK_SWIPE_EDGE_START_PX = 42;
     var BACK_SWIPE_START_THRESHOLD_PX = 9;
     var BACK_SWIPE_COMMIT_DISTANCE_PX = 70;
     var BACK_SWIPE_COMMIT_VELOCITY_PX_MS = 0.4;
@@ -7826,6 +7829,16 @@ var contentHtml = formatInstructionNodeContentHtml(
     }
 
     function resolveBackSwipeContext() {
+      var docsOverlay = document.getElementById('docsViewerOverlay');
+      if (docsOverlay && !docsOverlay.classList.contains('hidden')) {
+        return {
+          surfaceEl: docsOverlay,
+          onBack: function() {
+            closeDocsViewerUI();
+          }
+        };
+      }
+
       if (shiftDetailState.isOpen && SHIFT_DETAIL_SURFACE && SHIFT_DETAIL_OVERLAY && !SHIFT_DETAIL_OVERLAY.classList.contains('hidden')) {
         return {
           surfaceEl: SHIFT_DETAIL_SURFACE,
@@ -7845,7 +7858,7 @@ var contentHtml = formatInstructionNodeContentHtml(
         };
       }
 
-      if (editingShiftId && activeTab === 'add' && !keyboardStateOpen && ADD_TAB_PANEL && ADD_TAB_PANEL.classList.contains('active')) {
+      if (editingShiftId && activeTab === 'add' && ADD_TAB_PANEL && ADD_TAB_PANEL.classList.contains('active')) {
         return {
           surfaceEl: ADD_TAB_PANEL,
           onBack: function() {
@@ -7968,10 +7981,10 @@ var contentHtml = formatInstructionNodeContentHtml(
     function bindBackSwipeHandlers() {
       if (document.body && document.body.dataset.backSwipeBound === '1') return;
       if (document.body) document.body.dataset.backSwipeBound = '1';
-      document.addEventListener('touchstart', handleBackSwipeTouchStart, { passive: true });
-      document.addEventListener('touchmove', handleBackSwipeTouchMove, { passive: false });
-      document.addEventListener('touchend', handleBackSwipeTouchEnd, { passive: false });
-      document.addEventListener('touchcancel', handleBackSwipeTouchCancel, { passive: true });
+      document.addEventListener('touchstart', handleBackSwipeTouchStart, { passive: true, capture: true });
+      document.addEventListener('touchmove', handleBackSwipeTouchMove, { passive: false, capture: true });
+      document.addEventListener('touchend', handleBackSwipeTouchEnd, { passive: false, capture: true });
+      document.addEventListener('touchcancel', handleBackSwipeTouchCancel, { passive: true, capture: true });
     }
 
     function bindShiftListDetailHandlers(listEl) {
@@ -8949,26 +8962,28 @@ var contentHtml = formatInstructionNodeContentHtml(
       if (!skipRender) render();
     }
 
-    function toggleShiftActionsMenu(id) {
-      if (activeShiftMenuId === id) {
-        activeShiftMenuId = null;
-        activeShiftMenuScope = null;
-      } else {
-        activeShiftMenuId = id;
-      }
-      render();
-    }
-
     function handleShiftActionsTriggerClick(e) {
       e.preventDefault();
       e.stopPropagation();
       var targetId = e.currentTarget.getAttribute('data-id');
-      if (activeShiftMenuId !== targetId) {
-        triggerHapticTapLight();
+      var nowTs = Date.now();
+      if (targetId && lastShiftActionsTriggerId === targetId && (nowTs - lastShiftActionsTriggerTs) < SHIFT_ACTIONS_TRIGGER_DEDUPE_MS) {
+        return;
       }
+      lastShiftActionsTriggerId = targetId || '';
+      lastShiftActionsTriggerTs = nowTs;
       var host = e.currentTarget.closest('#homeShiftsList, #shiftsList');
-      activeShiftMenuScope = host ? host.id : 'shiftsList';
-      toggleShiftActionsMenu(targetId);
+      var targetScope = host ? host.id : 'shiftsList';
+
+      if (activeShiftMenuId === targetId && activeShiftMenuScope === targetScope) {
+        closeShiftActionsMenu();
+        return;
+      }
+
+      triggerHapticTapLight();
+      activeShiftMenuId = targetId;
+      activeShiftMenuScope = targetScope;
+      render();
     }
 
     function handleShiftActionsItemClick(item, e) {
@@ -9012,12 +9027,6 @@ var contentHtml = formatInstructionNodeContentHtml(
       }
 
       triggerHapticTapLight();
-    }
-
-    function handleShiftActionsBackdropPointerDown(e) {
-      e.preventDefault();
-      e.stopPropagation();
-      closeShiftActionsMenu(true);
     }
 
     // ── Delete handler ──
@@ -9341,10 +9350,6 @@ var contentHtml = formatInstructionNodeContentHtml(
         handleShiftActionsItemClick(item, e);
       }, { passive: false });
     }
-    if (SHIFT_ACTIONS_BACKDROP) {
-      SHIFT_ACTIONS_BACKDROP.addEventListener('pointerdown', handleShiftActionsBackdropPointerDown);
-      SHIFT_ACTIONS_BACKDROP.addEventListener('click', handleShiftActionsBackdropPointerDown);
-    }
     document.addEventListener('pointerdown', function(e) {
       var els = getLocoSeriesMenuEls();
       if (!els.menuEl || els.menuEl.classList.contains('hidden')) return;
@@ -9358,6 +9363,12 @@ var contentHtml = formatInstructionNodeContentHtml(
       var clickedMenu = !!(SHIFT_ACTIONS_MENU && SHIFT_ACTIONS_MENU.contains(e.target));
       if (!clickedTrigger && !clickedMenu) closeShiftActionsMenu(true);
     });
+    document.addEventListener('click', function(e) {
+      if (activeShiftMenuId === null) return;
+      var clickedTrigger = !!e.target.closest('.shift-actions-trigger');
+      var clickedMenu = !!(SHIFT_ACTIONS_MENU && SHIFT_ACTIONS_MENU.contains(e.target));
+      if (!clickedTrigger && !clickedMenu) closeShiftActionsMenu(true);
+    }, true);
     document.addEventListener('scroll', function() {
       if (LOCO_SERIES_MENU_OPEN) updateLocoSeriesMenuPosition();
       if (activeShiftMenuId !== null) closeShiftActionsMenu(true);
