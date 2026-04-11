@@ -65,10 +65,10 @@
     var shiftListRevealRegistry = Object.create(null);
     var shiftListRevealAutoId = 0;
     var SHIFT_SWIPE_DELETE_WIDTH = 122;
-    var SHIFT_SWIPE_OPEN_THRESHOLD_RATIO = 0.24;
-    var SHIFT_SWIPE_CLOSE_THRESHOLD_RATIO = 0.72;
-    var SHIFT_SWIPE_FLING_MIN_PX = 16;
-    var SHIFT_SWIPE_FLING_MAX_MS = 240;
+    var SHIFT_SWIPE_OPEN_THRESHOLD_RATIO = 0.14;
+    var SHIFT_SWIPE_CLOSE_THRESHOLD_RATIO = 0.86;
+    var SHIFT_SWIPE_FLING_MIN_PX = 10;
+    var SHIFT_SWIPE_FLING_MAX_MS = 320;
     var openShiftSwipeCard = null;
     var SHIFT_SHARED_TRANSITION_MS = 300;
     var SHIFT_SHARED_TRANSITION_EASING = 'cubic-bezier(0.32, 0.72, 0, 1)';
@@ -7851,8 +7851,8 @@ var contentHtml = formatInstructionNodeContentHtml(
             var deltaX = e.clientX - startX;
             var deltaY = e.clientY - startY;
             if (!isDragging) {
-              if (Math.abs(deltaX) < 6 && Math.abs(deltaY) < 6) return;
-              if (Math.abs(deltaY) > Math.abs(deltaX)) {
+              if (Math.abs(deltaX) < 4 && Math.abs(deltaY) < 4) return;
+              if (Math.abs(deltaY) > Math.abs(deltaX) * 1.2) {
                 pointerId = null;
                 contentEl.style.transform = '';
                 return;
