@@ -66,6 +66,7 @@
     var shiftListRevealAutoId = 0;
     var SHIFT_SHARED_TRANSITION_MS = 300;
     var SHIFT_SHARED_TRANSITION_EASING = 'cubic-bezier(0.32, 0.72, 0, 1)';
+    var ENABLE_BACK_SWIPE_GESTURE = false;
     var BACK_SWIPE_EDGE_START_PX = 22;
     var BACK_SWIPE_START_THRESHOLD_PX = 5;
     var BACK_SWIPE_COMMIT_DISTANCE_PX = 58;
@@ -8140,6 +8141,10 @@ var contentHtml = formatInstructionNodeContentHtml(
     }
 
     function bindBackSwipeHandlers() {
+      if (!ENABLE_BACK_SWIPE_GESTURE) {
+        resetBackSwipeState();
+        return;
+      }
       if (document.body && document.body.dataset.backSwipeBound === '1') return;
       if (document.body) document.body.dataset.backSwipeBound = '1';
       document.addEventListener('touchstart', handleBackSwipeTouchStart, { passive: true, capture: true });
