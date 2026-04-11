@@ -8003,9 +8003,7 @@ var contentHtml = formatInstructionNodeContentHtml(
 
       if (normMin > 0) {
         if (normEl) {
-          normEl.textContent = (normMin % 60 === 0)
-            ? (Math.round(normMin / 60) + ' ч')
-            : fmtMin(normMin);
+          normEl.textContent = fmtMin(normMin);
         }
         var diffBasisMin = normSnapshot.relation === 0
           ? normSnapshot.todayNormMin
