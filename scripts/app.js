@@ -108,7 +108,6 @@
     } catch(e) {}
 
     var footerEl = document.getElementById('timezoneFooter');
-    var SHIFT_ACTIONS_BACKDROP = document.getElementById('shiftActionsBackdrop');
     var APP_SHELL = document.querySelector('.app');
     var APP_CONTENT = document.querySelector('.app-content');
     var BOTTOM_NAV = document.querySelector('.bottom-nav');
@@ -8865,10 +8864,6 @@ var contentHtml = formatInstructionNodeContentHtml(
           SHIFT_ACTIONS_MENU.addEventListener('animationend', _onLeaveEnd);
         }
       }
-      if (SHIFT_ACTIONS_BACKDROP) {
-        SHIFT_ACTIONS_BACKDROP.classList.add('hidden');
-        SHIFT_ACTIONS_BACKDROP.setAttribute('aria-hidden', 'true');
-      }
     }
 
     function syncShiftActionsMenuLifecycle() {
@@ -8888,9 +8883,6 @@ var contentHtml = formatInstructionNodeContentHtml(
 
     function portalShiftActionsMenu() {
       if (!SHIFT_ACTIONS_MENU || !UI_OVERLAY_ROOT) return;
-      if (SHIFT_ACTIONS_BACKDROP && SHIFT_ACTIONS_BACKDROP.parentNode !== UI_OVERLAY_ROOT) {
-        UI_OVERLAY_ROOT.appendChild(SHIFT_ACTIONS_BACKDROP);
-      }
       if (SHIFT_ACTIONS_MENU.parentNode !== UI_OVERLAY_ROOT) {
         UI_OVERLAY_ROOT.appendChild(SHIFT_ACTIONS_MENU);
       }
@@ -8942,10 +8934,6 @@ var contentHtml = formatInstructionNodeContentHtml(
           '<span class="shift-actions-item-label">Удалить</span>' +
         '</button>';
       portalShiftActionsMenu();
-      if (SHIFT_ACTIONS_BACKDROP) {
-        SHIFT_ACTIONS_BACKDROP.classList.remove('hidden');
-        SHIFT_ACTIONS_BACKDROP.setAttribute('aria-hidden', 'false');
-      }
       SHIFT_ACTIONS_MENU.classList.remove('is-leaving', 'is-entering', 'hidden');
       SHIFT_ACTIONS_MENU.setAttribute('aria-hidden', 'false');
       void SHIFT_ACTIONS_MENU.offsetWidth;
