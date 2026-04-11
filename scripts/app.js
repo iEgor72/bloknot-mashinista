@@ -64,6 +64,8 @@
     var suppressInitialListReveal = true;
     var shiftListRevealRegistry = Object.create(null);
     var shiftListRevealAutoId = 0;
+    var SHIFT_SWIPE_DELETE_WIDTH = 122;
+    var openShiftSwipeCard = null;
     var SHIFT_SHARED_TRANSITION_MS = 300;
     var SHIFT_SHARED_TRANSITION_EASING = 'cubic-bezier(0.32, 0.72, 0, 1)';
     var currentMonthShiftIncomeMap = Object.create(null);
@@ -7290,34 +7292,32 @@ var contentHtml = formatInstructionNodeContentHtml(
       var incomeHtml = getShiftIncomeChipHtml(incomeVm);
       itemClass += ' income-' + incomeVm.level;
 
+      itemClass += ' shift-swipe-item';
       var html = '<div class="' + itemClass + '" data-shift-id="' + sh.id + '" data-pending="' + (shiftIsPending ? '1' : '0') + '" data-shift-open="1" role="button" tabindex="0" aria-label="Редактировать смену: ' + escapeHtml(shiftTitle || 'Смена') + '">' +
-        '<div class="shift-card-top">' +
-          typeHtml +
-        '</div>' +
-        directionHtml +
-        '<div class="shift-card-body">' +
-          '<div class="shift-main-row">' +
-            dateTimeHtml +
-            durationHtml +
+        '<button class="shift-swipe-delete" type="button" data-id="' + sh.id + '" aria-label="Удалить смену">' +
+          '<span class="shift-swipe-delete-icon" aria-hidden="true">' +
+            '<svg viewBox="0 0 24 24" focusable="false">' +
+              '<path fill="currentColor" d="M9 3h6a1 1 0 0 1 1 1v1h4a1 1 0 1 1 0 2h-1l-1 12a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 7H4a1 1 0 1 1 0-2h4V4a1 1 0 0 1 1-1Zm1 2h4V5h-4v0Zm-3 2 1 12h8l1-12H7Zm3 2a1 1 0 0 1 1 1v6a1 1 0 1 1-2 0v-6a1 1 0 0 1 1-1Zm4 0a1 1 0 0 1 1 1v6a1 1 0 1 1-2 0v-6a1 1 0 0 1 1-1Z"></path>' +
+            '</svg>' +
+          '</span>' +
+          '<span class="shift-swipe-delete-label">Удалить</span>' +
+        '</button>' +
+        '<div class="shift-swipe-content">' +
+          '<div class="shift-card-top">' +
+            typeHtml +
           '</div>' +
-          technicalHtml +
-          fuelNoteHtml +
-          '<div class="shift-income-row">' +
-            incomeLabelHtml +
-            incomeHtml +
-          '</div>' +
-          '<div class="shift-card-actions">' +
-            '<button class="shift-card-action-btn shift-card-edit-btn" type="button" data-id="' + sh.id + '" aria-label="Редактировать смену">' +
-              'Редактировать' +
-            '</button>' +
-            '<button class="shift-card-action-btn shift-card-delete-btn" type="button" data-id="' + sh.id + '" aria-label="Удалить смену">' +
-              '<span class="shift-card-action-icon" aria-hidden="true">' +
-                '<svg viewBox="0 0 24 24" focusable="false">' +
-                  '<path fill="currentColor" d="M9 3h6a1 1 0 0 1 1 1v1h4a1 1 0 1 1 0 2h-1l-1 12a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 7H4a1 1 0 1 1 0-2h4V4a1 1 0 0 1 1-1Zm1 2h4V5h-4v0Zm-3 2 1 12h8l1-12H7Zm3 2a1 1 0 0 1 1 1v6a1 1 0 1 1-2 0v-6a1 1 0 0 1 1-1Zm4 0a1 1 0 0 1 1 1v6a1 1 0 1 1-2 0v-6a1 1 0 0 1 1-1Z"></path>' +
-                '</svg>' +
-              '</span>' +
-              '<span class="shift-card-action-label">Удалить</span>' +
-            '</button>' +
+          directionHtml +
+          '<div class="shift-card-body">' +
+            '<div class="shift-main-row">' +
+              dateTimeHtml +
+              durationHtml +
+            '</div>' +
+            technicalHtml +
+            fuelNoteHtml +
+            '<div class="shift-income-row">' +
+              incomeLabelHtml +
+              incomeHtml +
+            '</div>' +
           '</div>' +
         '</div>';
 
@@ -7757,6 +7757,130 @@ var contentHtml = formatInstructionNodeContentHtml(
       enterEditMode(shift, { returnTab: activeTab });
     }
 
+    function isShiftSwipeOpen(cardEl) {
+      return !!(cardEl && cardEl.classList && cardEl.classList.contains('is-swipe-open'));
+    }
+
+    function getShiftSwipeContentEl(cardEl) {
+      if (!cardEl || !cardEl.querySelector) return null;
+      return cardEl.querySelector('.shift-swipe-content');
+    }
+
+    function setShiftSwipeOpen(cardEl, shouldOpen) {
+      if (!cardEl || !cardEl.classList) return;
+      var contentEl = getShiftSwipeContentEl(cardEl);
+      if (!contentEl) return;
+      cardEl.classList.remove('is-swipe-dragging');
+      cardEl.classList.toggle('is-swipe-open', !!shouldOpen);
+      contentEl.style.transform = '';
+      if (shouldOpen) {
+        openShiftSwipeCard = cardEl;
+      } else if (openShiftSwipeCard === cardEl) {
+        openShiftSwipeCard = null;
+      }
+    }
+
+    function closeOpenShiftSwipeCard(exceptCard) {
+      if (!openShiftSwipeCard || openShiftSwipeCard === exceptCard) return;
+      setShiftSwipeOpen(openShiftSwipeCard, false);
+    }
+
+    function bindShiftSwipeHandlers(listEl) {
+      if (!listEl) return;
+      var cards = listEl.querySelectorAll('.shift-swipe-item[data-shift-open="1"][data-shift-id]');
+      for (var i = 0; i < cards.length; i++) {
+        var cardEl = cards[i];
+        if (!cardEl || cardEl.dataset.shiftSwipeBound === '1') continue;
+        cardEl.dataset.shiftSwipeBound = '1';
+        (function(card) {
+          var contentEl = getShiftSwipeContentEl(card);
+          if (!contentEl) return;
+          var pointerId = null;
+          var startX = 0;
+          var startY = 0;
+          var startOffset = 0;
+          var currentOffset = 0;
+          var isDragging = false;
+
+          function getBaseOffset() {
+            return isShiftSwipeOpen(card) ? -SHIFT_SWIPE_DELETE_WIDTH : 0;
+          }
+
+          function clampOffset(value) {
+            return Math.max(-SHIFT_SWIPE_DELETE_WIDTH, Math.min(0, value));
+          }
+
+          function applyOffset(offset) {
+            currentOffset = clampOffset(offset);
+            contentEl.style.transform = 'translate3d(' + currentOffset + 'px, 0, 0)';
+          }
+
+          function finishDrag(shouldOpen) {
+            pointerId = null;
+            isDragging = false;
+            setShiftSwipeOpen(card, shouldOpen);
+            card.dataset.shiftSwipeSuppressClick = '1';
+            window.setTimeout(function() {
+              if (card && card.dataset) delete card.dataset.shiftSwipeSuppressClick;
+            }, 220);
+          }
+
+          card.addEventListener('pointerdown', function(e) {
+            if (e.button !== undefined && e.button !== 0) return;
+            if (e.target && e.target.closest && e.target.closest('.shift-swipe-delete')) return;
+            closeOpenShiftSwipeCard(card);
+            pointerId = e.pointerId;
+            startX = e.clientX;
+            startY = e.clientY;
+            startOffset = getBaseOffset();
+            currentOffset = startOffset;
+            isDragging = false;
+            if (contentEl.setPointerCapture) {
+              try { contentEl.setPointerCapture(pointerId); } catch (err) {}
+            }
+          });
+
+          card.addEventListener('pointermove', function(e) {
+            if (pointerId === null || e.pointerId !== pointerId) return;
+            var deltaX = e.clientX - startX;
+            var deltaY = e.clientY - startY;
+            if (!isDragging) {
+              if (Math.abs(deltaX) < 6 && Math.abs(deltaY) < 6) return;
+              if (Math.abs(deltaY) > Math.abs(deltaX)) {
+                pointerId = null;
+                contentEl.style.transform = '';
+                return;
+              }
+              isDragging = true;
+              card.classList.add('is-swipe-dragging');
+            }
+            applyOffset(startOffset + deltaX);
+            e.preventDefault();
+          });
+
+          function onPointerEnd(e) {
+            if (pointerId === null || e.pointerId !== pointerId) return;
+            if (!isDragging) {
+              pointerId = null;
+              if (isShiftSwipeOpen(card) && !(e.target && e.target.closest && e.target.closest('.shift-swipe-delete'))) {
+                setShiftSwipeOpen(card, false);
+                e.preventDefault();
+                e.stopPropagation();
+              }
+              return;
+            }
+            var shouldOpen = currentOffset <= -Math.round(SHIFT_SWIPE_DELETE_WIDTH * 0.45);
+            finishDrag(shouldOpen);
+            e.preventDefault();
+            e.stopPropagation();
+          }
+
+          card.addEventListener('pointerup', onPointerEnd);
+          card.addEventListener('pointercancel', onPointerEnd);
+        })(cardEl);
+      }
+    }
+
     function bindShiftListDetailHandlers(listEl) {
       if (!listEl || listEl.dataset.shiftDetailBound === '1') return;
       listEl.dataset.shiftDetailBound = '1';
@@ -7765,7 +7889,18 @@ var contentHtml = formatInstructionNodeContentHtml(
         if (shiftDetailState.isAnimating) return;
         var card = e.target && e.target.closest ? e.target.closest('.shift-item[data-shift-open="1"][data-shift-id]') : null;
         if (!card || !listEl.contains(card)) return;
-        if (e.target.closest('.shift-card-actions')) return;
+        if (e.target.closest('.shift-swipe-delete')) return;
+        if (card.dataset.shiftSwipeSuppressClick === '1') {
+          e.preventDefault();
+          e.stopPropagation();
+          return;
+        }
+        if (isShiftSwipeOpen(card)) {
+          setShiftSwipeOpen(card, false);
+          e.preventDefault();
+          e.stopPropagation();
+          return;
+        }
         openShiftEditorFromCard(card);
       });
 
@@ -7774,7 +7909,13 @@ var contentHtml = formatInstructionNodeContentHtml(
         if (!(e.key === 'Enter' || e.key === ' ')) return;
         var card = e.target && e.target.closest ? e.target.closest('.shift-item[data-shift-open="1"][data-shift-id]') : null;
         if (!card || !listEl.contains(card)) return;
-        if (e.target.closest('.shift-card-actions')) return;
+        if (e.target.closest('.shift-swipe-delete')) return;
+        if (isShiftSwipeOpen(card)) {
+          setShiftSwipeOpen(card, false);
+          e.preventDefault();
+          e.stopPropagation();
+          return;
+        }
         e.preventDefault();
         openShiftEditorFromCard(card);
       });
@@ -7813,16 +7954,14 @@ var contentHtml = formatInstructionNodeContentHtml(
         }
       }
       listEl.innerHTML = html;
+      closeOpenShiftSwipeCard();
+      openShiftSwipeCard = null;
 
-      var editButtons = listEl.querySelectorAll('.shift-card-edit-btn');
-      for (var ei = 0; ei < editButtons.length; ei++) {
-        editButtons[ei].addEventListener('click', handleEditClick);
-      }
-
-      var deleteButtons = listEl.querySelectorAll('.shift-card-delete-btn');
+      var deleteButtons = listEl.querySelectorAll('.shift-swipe-delete');
       for (var di = 0; di < deleteButtons.length; di++) {
         deleteButtons[di].addEventListener('click', handleDeleteClick);
       }
+      bindShiftSwipeHandlers(listEl);
 
       revealShiftListOnFirstMount(listEl);
       if (shiftDetailState.isOpen && shiftDetailState.sourceListId === listEl.id) {
@@ -9145,17 +9284,25 @@ var contentHtml = formatInstructionNodeContentHtml(
       var clickedMenu = !!(SHIFT_ACTIONS_MENU && SHIFT_ACTIONS_MENU.contains(e.target));
       if (!clickedTrigger && !clickedMenu) closeShiftActionsMenu(true);
     });
+    document.addEventListener('pointerdown', function(e) {
+      if (!openShiftSwipeCard) return;
+      if (openShiftSwipeCard.contains(e.target)) return;
+      setShiftSwipeOpen(openShiftSwipeCard, false);
+    });
     document.addEventListener('scroll', function() {
       if (LOCO_SERIES_MENU_OPEN) updateLocoSeriesMenuPosition();
       if (activeShiftMenuId !== null) closeShiftActionsMenu(true);
+      if (openShiftSwipeCard) setShiftSwipeOpen(openShiftSwipeCard, false);
     }, true);
     window.addEventListener('resize', function() {
       if (LOCO_SERIES_MENU_OPEN) updateLocoSeriesMenuPosition();
       if (activeShiftMenuId !== null) closeShiftActionsMenu(true);
+      if (openShiftSwipeCard) setShiftSwipeOpen(openShiftSwipeCard, false);
     });
     document.addEventListener('keydown', function(e) {
       if (e.key === 'Escape') closeLocoSeriesMenu();
       if (e.key === 'Escape') closeShiftActionsMenu(true);
+      if (e.key === 'Escape' && openShiftSwipeCard) setShiftSwipeOpen(openShiftSwipeCard, false);
       if (e.key === 'Escape') closeDocsViewerUI();
       if (e.key === 'Escape') closeShiftDetail();
     });
