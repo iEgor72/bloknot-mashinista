@@ -66,7 +66,8 @@
     var shiftListRevealAutoId = 0;
     var SHIFT_SWIPE_DELETE_WIDTH = 122;
     var SHIFT_SWIPE_OPEN_THRESHOLD_RATIO = 0.24;
-    var SHIFT_SWIPE_FLING_MIN_PX = 20;
+    var SHIFT_SWIPE_CLOSE_THRESHOLD_RATIO = 0.72;
+    var SHIFT_SWIPE_FLING_MIN_PX = 16;
     var SHIFT_SWIPE_FLING_MAX_MS = 240;
     var openShiftSwipeCard = null;
     var SHIFT_SHARED_TRANSITION_MS = 300;
@@ -7874,11 +7875,20 @@ var contentHtml = formatInstructionNodeContentHtml(
               }
               return;
             }
-            var thresholdPx = -Math.round(SHIFT_SWIPE_DELETE_WIDTH * SHIFT_SWIPE_OPEN_THRESHOLD_RATIO);
+            var openedAtStart = startOffset < 0;
+            var openThresholdPx = -Math.round(SHIFT_SWIPE_DELETE_WIDTH * SHIFT_SWIPE_OPEN_THRESHOLD_RATIO);
+            var closeThresholdPx = -Math.round(SHIFT_SWIPE_DELETE_WIDTH * SHIFT_SWIPE_CLOSE_THRESHOLD_RATIO);
             var deltaX = e.clientX - startX;
             var deltaMs = Math.max(1, Date.now() - startTs);
-            var isQuickFling = deltaX <= -SHIFT_SWIPE_FLING_MIN_PX && deltaMs <= SHIFT_SWIPE_FLING_MAX_MS;
-            var shouldOpen = currentOffset <= thresholdPx || isQuickFling;
+            var isQuickFlingLeft = deltaX <= -SHIFT_SWIPE_FLING_MIN_PX && deltaMs <= SHIFT_SWIPE_FLING_MAX_MS;
+            var isQuickFlingRight = deltaX >= SHIFT_SWIPE_FLING_MIN_PX && deltaMs <= SHIFT_SWIPE_FLING_MAX_MS;
+            var shouldOpen = false;
+            if (openedAtStart) {
+              shouldOpen = !(currentOffset >= closeThresholdPx || isQuickFlingRight);
+              if (isQuickFlingLeft) shouldOpen = true;
+            } else {
+              shouldOpen = currentOffset <= openThresholdPx || isQuickFlingLeft;
+            }
             finishDrag(shouldOpen);
             e.preventDefault();
             e.stopPropagation();
