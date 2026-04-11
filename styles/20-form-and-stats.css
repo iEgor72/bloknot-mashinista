@@ -655,15 +655,11 @@
       flex-wrap: wrap;
     }
 
-    .fuel-consumption-item strong {
+    .fuel-consumption-note strong {
       color: var(--sub);
       font-family: 'JetBrains Mono', monospace;
       font-weight: 600;
       margin-left: 2px;
-    }
-
-    .fuel-consumption-sep {
-      opacity: 0.65;
     }
 
     /* ── Primary button ── */

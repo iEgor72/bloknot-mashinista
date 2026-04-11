@@ -439,10 +439,6 @@
       margin-left: 2px;
     }
 
-    .shift-fuel-note-sep {
-      opacity: 0.65;
-    }
-
     .shift-tech-sep {
       color: var(--muted);
       line-height: 1;

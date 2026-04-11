@@ -7165,8 +7165,7 @@ var contentHtml = formatInstructionNodeContentHtml(
       html += '<section class="shift-detail-section">';
       html += '<div class="shift-detail-section-title">Топливо</div>';
       html += '<div class="shift-detail-list">';
-      html += buildShiftDetailRowHtml('Расход в л', hasFuelData(shift) ? formatFuelLitersSignedValue(fuelTotals.consumptionLiters) : '');
-      html += buildShiftDetailRowHtml('Расход в кг', hasFuelData(shift) ? formatFuelKgSignedValue(fuelTotals.consumptionKg) : '');
+      html += buildShiftDetailRowHtml('Расход', hasFuelData(shift) ? getFuelConsumptionInlineText(fuelTotals) : '');
       html += buildShiftDetailRowHtml('Приём', fuelReceiveSummary);
       html += buildShiftDetailRowHtml('Сдача', fuelHandoverSummary);
       html += '</div>';
@@ -8067,7 +8066,12 @@ var contentHtml = formatInstructionNodeContentHtml(
 
     function formatFuelLitersSignedValue(value) {
       if (!isFinite(value)) return '0';
-      return Math.round(value).toLocaleString('ru-RU');
+      return String(Math.round(value));
+    }
+
+    function getFuelConsumptionInlineText(totals) {
+      totals = totals || {};
+      return formatFuelLitersSignedValue(totals.consumptionLiters) + 'л | ' + formatFuelKgSignedValue(totals.consumptionKg) + 'кг';
     }
 
     function getFuelKgText(litersRaw, coeffRaw, fallbackCoeff) {
@@ -8126,9 +8130,7 @@ var contentHtml = formatInstructionNodeContentHtml(
       var totals = getFuelConsumptionTotalsFromShift(shift);
       return '' +
         '<div class="shift-fuel-note">' +
-          '<span>Расход в л:<strong>' + escapeHtml(formatFuelLitersSignedValue(totals.consumptionLiters)) + '</strong></span>' +
-          '<span class="shift-fuel-note-sep" aria-hidden="true">·</span>' +
-          '<span>Расход в кг:<strong>' + escapeHtml(formatFuelKgSignedValue(totals.consumptionKg)) + '</strong></span>' +
+          'Расход: <strong>' + escapeHtml(getFuelConsumptionInlineText(totals)) + '</strong>' +
         '</div>';
     }
 
