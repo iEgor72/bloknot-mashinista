@@ -865,10 +865,6 @@
     .compact-shift .shift-actions-trigger { width: 30px; height: 30px; }
     .compact-shift .shift-top-right { gap: 6px; }
 
-    .is-back-swipe-active {
-      will-change: transform;
-    }
-
     /* ── Pending shift badge ── */
     .shift-pending-line,
     .shift-sync-inline {
