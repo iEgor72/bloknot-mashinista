@@ -66,6 +66,11 @@
     var shiftListRevealAutoId = 0;
     var SHIFT_SHARED_TRANSITION_MS = 300;
     var SHIFT_SHARED_TRANSITION_EASING = 'cubic-bezier(0.32, 0.72, 0, 1)';
+    var EDIT_BACK_SWIPE_EDGE_START_PX = 28;
+    var EDIT_BACK_SWIPE_START_THRESHOLD_PX = 10;
+    var EDIT_BACK_SWIPE_COMMIT_DISTANCE_PX = 72;
+    var EDIT_BACK_SWIPE_COMMIT_VELOCITY_PX_MS = 0.42;
+    var EDIT_BACK_SWIPE_MAX_VERTICAL_DRIFT_PX = 64;
     var currentMonthShiftIncomeMap = Object.create(null);
     var shiftDetailState = {
       isOpen: false,
@@ -80,6 +85,19 @@
       shouldPopOnClose: false,
       skipNextPopstateClose: false,
       tapLockUntil: 0
+    };
+    var editBackSwipeState = {
+      tracking: false,
+      engaged: false,
+      startX: 0,
+      startY: 0,
+      lastX: 0,
+      startTs: 0,
+      lastTs: 0,
+      deltaX: 0,
+      deltaY: 0,
+      panelEl: null,
+      resetTimer: null
     };
 
     // ── Timezone ──
@@ -100,6 +118,7 @@
     var SHIFT_DETAIL_CONTENT = document.getElementById('shiftDetailContent');
     var SHIFT_DETAIL_TITLE = document.getElementById('shiftDetailTitle');
     var SHIFT_DETAIL_CLOSE_BUTTON = document.getElementById('btnCloseShiftDetail');
+    var ADD_TAB_PANEL = document.querySelector('.tab-panel[data-tab="add"]');
     var keyboardFocusField = null;
     var keyboardStateOpen = false;
     var keyboardSyncTimer = null;
@@ -7289,10 +7308,23 @@ var contentHtml = formatInstructionNodeContentHtml(
       var incomeVm = getShiftIncomeViewModel(sh, shiftIncomeMap);
       var incomeHtml = getShiftIncomeChipHtml(incomeVm);
       itemClass += ' income-' + incomeVm.level;
+      var shiftIdStr = String(sh.id);
+      var isActionsOpen = activeShiftMenuId !== null && String(activeShiftMenuId) === shiftIdStr;
 
       var html = '<div class="' + itemClass + '" data-shift-id="' + sh.id + '" data-pending="' + (shiftIsPending ? '1' : '0') + '" data-shift-open="1" role="button" tabindex="0" aria-label="Редактировать смену: ' + escapeHtml(shiftTitle || 'Смена') + '">' +
         '<div class="shift-card-top">' +
           typeHtml +
+          '<div class="shift-top-right">' +
+            '<div class="shift-actions-wrap">' +
+              '<button class="shift-actions-trigger' + (isActionsOpen ? ' is-open' : '') + '" type="button" data-id="' + sh.id + '" aria-label="Действия" aria-haspopup="menu" aria-expanded="' + (isActionsOpen ? 'true' : 'false') + '">' +
+                '<svg class="shift-actions-trigger-icon" viewBox="0 0 24 24" aria-hidden="true" focusable="false">' +
+                  '<circle cx="6.5" cy="12" r="1.7"></circle>' +
+                  '<circle cx="12" cy="12" r="1.7"></circle>' +
+                  '<circle cx="17.5" cy="12" r="1.7"></circle>' +
+                '</svg>' +
+              '</button>' +
+            '</div>' +
+          '</div>' +
         '</div>' +
         directionHtml +
         '<div class="shift-card-body">' +
@@ -7305,19 +7337,6 @@ var contentHtml = formatInstructionNodeContentHtml(
           '<div class="shift-income-row">' +
             incomeLabelHtml +
             incomeHtml +
-          '</div>' +
-          '<div class="shift-card-actions">' +
-            '<button class="shift-card-action-btn shift-card-edit-btn" type="button" data-id="' + sh.id + '" aria-label="Редактировать смену">' +
-              'Редактировать' +
-            '</button>' +
-            '<button class="shift-card-action-btn shift-card-delete-btn" type="button" data-id="' + sh.id + '" aria-label="Удалить смену">' +
-              '<span class="shift-card-action-icon" aria-hidden="true">' +
-                '<svg viewBox="0 0 24 24" focusable="false">' +
-                  '<path fill="currentColor" d="M9 3h6a1 1 0 0 1 1 1v1h4a1 1 0 1 1 0 2h-1l-1 12a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 7H4a1 1 0 1 1 0-2h4V4a1 1 0 0 1 1-1Zm1 2h4V5h-4v0Zm-3 2 1 12h8l1-12H7Zm3 2a1 1 0 0 1 1 1v6a1 1 0 1 1-2 0v-6a1 1 0 0 1 1-1Zm4 0a1 1 0 0 1 1 1v6a1 1 0 1 1-2 0v-6a1 1 0 0 1 1-1Z"></path>' +
-                '</svg>' +
-              '</span>' +
-              '<span class="shift-card-action-label">Удалить</span>' +
-            '</button>' +
           '</div>' +
         '</div>';
 
@@ -7757,6 +7776,167 @@ var contentHtml = formatInstructionNodeContentHtml(
       enterEditMode(shift, { returnTab: activeTab });
     }
 
+    function clearEditBackSwipeResetTimer() {
+      if (editBackSwipeState.resetTimer) {
+        window.clearTimeout(editBackSwipeState.resetTimer);
+        editBackSwipeState.resetTimer = null;
+      }
+    }
+
+    function scheduleEditBackSwipeVisualReset(panelEl, delayMs) {
+      if (!panelEl) return;
+      clearEditBackSwipeResetTimer();
+      editBackSwipeState.resetTimer = window.setTimeout(function() {
+        if (!panelEl || !panelEl.style) return;
+        panelEl.style.removeProperty('transform');
+        panelEl.style.removeProperty('transition');
+        panelEl.classList.remove('is-back-swipe-active');
+        clearEditBackSwipeResetTimer();
+      }, delayMs);
+    }
+
+    function resetEditBackSwipeVisual(animateBack) {
+      var panelEl = editBackSwipeState.panelEl;
+      if (!panelEl || !panelEl.style) return;
+      clearEditBackSwipeResetTimer();
+      if (animateBack) {
+        panelEl.style.transition = 'transform 190ms cubic-bezier(0.22, 0.61, 0.36, 1)';
+        panelEl.style.transform = 'translate3d(0, 0, 0)';
+        scheduleEditBackSwipeVisualReset(panelEl, 210);
+        return;
+      }
+      panelEl.style.removeProperty('transform');
+      panelEl.style.removeProperty('transition');
+      panelEl.classList.remove('is-back-swipe-active');
+    }
+
+    function finishEditBackSwipeState() {
+      editBackSwipeState.tracking = false;
+      editBackSwipeState.engaged = false;
+      editBackSwipeState.startX = 0;
+      editBackSwipeState.startY = 0;
+      editBackSwipeState.lastX = 0;
+      editBackSwipeState.startTs = 0;
+      editBackSwipeState.lastTs = 0;
+      editBackSwipeState.deltaX = 0;
+      editBackSwipeState.deltaY = 0;
+      editBackSwipeState.panelEl = null;
+    }
+
+    function canUseEditBackSwipe() {
+      if (!editingShiftId || activeTab !== 'add') return false;
+      if (keyboardStateOpen) return false;
+      if (!ADD_TAB_PANEL || !ADD_TAB_PANEL.classList.contains('active')) return false;
+      return true;
+    }
+
+    function handleEditBackSwipeTouchStart(e) {
+      if (!canUseEditBackSwipe()) return;
+      if (!e || !e.touches || e.touches.length !== 1) return;
+      var touch = e.touches[0];
+      if (!touch || touch.clientX > EDIT_BACK_SWIPE_EDGE_START_PX) return;
+
+      clearEditBackSwipeResetTimer();
+      editBackSwipeState.tracking = true;
+      editBackSwipeState.engaged = false;
+      editBackSwipeState.startX = touch.clientX;
+      editBackSwipeState.startY = touch.clientY;
+      editBackSwipeState.lastX = touch.clientX;
+      editBackSwipeState.startTs = Date.now();
+      editBackSwipeState.lastTs = editBackSwipeState.startTs;
+      editBackSwipeState.deltaX = 0;
+      editBackSwipeState.deltaY = 0;
+      editBackSwipeState.panelEl = ADD_TAB_PANEL;
+    }
+
+    function handleEditBackSwipeTouchMove(e) {
+      if (!editBackSwipeState.tracking) return;
+      if (!e || !e.touches || e.touches.length !== 1) {
+        resetEditBackSwipeVisual(true);
+        finishEditBackSwipeState();
+        return;
+      }
+
+      var touch = e.touches[0];
+      var dx = touch.clientX - editBackSwipeState.startX;
+      var dy = touch.clientY - editBackSwipeState.startY;
+      var absDx = Math.abs(dx);
+      var absDy = Math.abs(dy);
+
+      editBackSwipeState.deltaX = dx;
+      editBackSwipeState.deltaY = dy;
+      editBackSwipeState.lastX = touch.clientX;
+      editBackSwipeState.lastTs = Date.now();
+
+      if (dx < -12) {
+        resetEditBackSwipeVisual(true);
+        finishEditBackSwipeState();
+        return;
+      }
+
+      if (!editBackSwipeState.engaged) {
+        if (absDx < EDIT_BACK_SWIPE_START_THRESHOLD_PX) return;
+        if (absDy > EDIT_BACK_SWIPE_MAX_VERTICAL_DRIFT_PX) {
+          resetEditBackSwipeVisual(true);
+          finishEditBackSwipeState();
+          return;
+        }
+        if (absDx < absDy * 0.75) return;
+        editBackSwipeState.engaged = true;
+        if (editBackSwipeState.panelEl && editBackSwipeState.panelEl.classList) {
+          editBackSwipeState.panelEl.classList.add('is-back-swipe-active');
+        }
+      }
+
+      if (!editBackSwipeState.panelEl || !editBackSwipeState.panelEl.style) return;
+      var offset = Math.max(0, Math.min(dx, 160));
+      editBackSwipeState.panelEl.style.transition = 'none';
+      editBackSwipeState.panelEl.style.transform = 'translate3d(' + offset + 'px, 0, 0)';
+      e.preventDefault();
+    }
+
+    function handleEditBackSwipeTouchEnd(e) {
+      if (!editBackSwipeState.tracking) return;
+      var panelEl = editBackSwipeState.panelEl;
+      var dx = editBackSwipeState.deltaX;
+      var totalDuration = Math.max(16, Date.now() - editBackSwipeState.startTs);
+      var velocityX = (editBackSwipeState.lastX - editBackSwipeState.startX) / totalDuration;
+      var shouldGoBack = editBackSwipeState.engaged && dx > 20 &&
+        (dx >= EDIT_BACK_SWIPE_COMMIT_DISTANCE_PX || velocityX >= EDIT_BACK_SWIPE_COMMIT_VELOCITY_PX_MS);
+
+      if (shouldGoBack) {
+        if (panelEl && panelEl.style) {
+          panelEl.style.transition = 'transform 170ms cubic-bezier(0.22, 0.61, 0.36, 1)';
+          panelEl.style.transform = 'translate3d(' + Math.max(dx, 132) + 'px, 0, 0)';
+          scheduleEditBackSwipeVisualReset(panelEl, 190);
+        }
+        finishEditBackSwipeState();
+        triggerHapticSelection();
+        exitEditMode();
+        showActionToast('canceled');
+        if (e && typeof e.preventDefault === 'function') e.preventDefault();
+        return;
+      }
+
+      resetEditBackSwipeVisual(editBackSwipeState.engaged);
+      finishEditBackSwipeState();
+    }
+
+    function handleEditBackSwipeTouchCancel() {
+      if (!editBackSwipeState.tracking) return;
+      resetEditBackSwipeVisual(editBackSwipeState.engaged);
+      finishEditBackSwipeState();
+    }
+
+    function bindEditBackSwipeHandlers() {
+      if (!ADD_TAB_PANEL || ADD_TAB_PANEL.dataset.editBackSwipeBound === '1') return;
+      ADD_TAB_PANEL.dataset.editBackSwipeBound = '1';
+      ADD_TAB_PANEL.addEventListener('touchstart', handleEditBackSwipeTouchStart, { passive: true });
+      ADD_TAB_PANEL.addEventListener('touchmove', handleEditBackSwipeTouchMove, { passive: false });
+      ADD_TAB_PANEL.addEventListener('touchend', handleEditBackSwipeTouchEnd, { passive: false });
+      ADD_TAB_PANEL.addEventListener('touchcancel', handleEditBackSwipeTouchCancel, { passive: true });
+    }
+
     function bindShiftListDetailHandlers(listEl) {
       if (!listEl || listEl.dataset.shiftDetailBound === '1') return;
       listEl.dataset.shiftDetailBound = '1';
@@ -7765,7 +7945,7 @@ var contentHtml = formatInstructionNodeContentHtml(
         if (shiftDetailState.isAnimating) return;
         var card = e.target && e.target.closest ? e.target.closest('.shift-item[data-shift-open="1"][data-shift-id]') : null;
         if (!card || !listEl.contains(card)) return;
-        if (e.target.closest('.shift-card-actions')) return;
+        if (e.target.closest('.shift-actions-trigger') || e.target.closest('.shift-actions-wrap')) return;
         openShiftEditorFromCard(card);
       });
 
@@ -7774,7 +7954,7 @@ var contentHtml = formatInstructionNodeContentHtml(
         if (!(e.key === 'Enter' || e.key === ' ')) return;
         var card = e.target && e.target.closest ? e.target.closest('.shift-item[data-shift-open="1"][data-shift-id]') : null;
         if (!card || !listEl.contains(card)) return;
-        if (e.target.closest('.shift-card-actions')) return;
+        if (e.target.closest('.shift-actions-trigger') || e.target.closest('.shift-actions-wrap')) return;
         e.preventDefault();
         openShiftEditorFromCard(card);
       });
@@ -7814,14 +7994,10 @@ var contentHtml = formatInstructionNodeContentHtml(
       }
       listEl.innerHTML = html;
 
-      var editButtons = listEl.querySelectorAll('.shift-card-edit-btn');
-      for (var ei = 0; ei < editButtons.length; ei++) {
-        editButtons[ei].addEventListener('click', handleEditClick);
-      }
-
-      var deleteButtons = listEl.querySelectorAll('.shift-card-delete-btn');
-      for (var di = 0; di < deleteButtons.length; di++) {
-        deleteButtons[di].addEventListener('click', handleDeleteClick);
+      var actionTriggers = listEl.querySelectorAll('.shift-actions-trigger');
+      for (var a = 0; a < actionTriggers.length; a++) {
+        actionTriggers[a].addEventListener('pointerdown', handleShiftActionsTriggerPointerDown);
+        actionTriggers[a].addEventListener('click', handleShiftActionsTriggerClick);
       }
 
       revealShiftListOnFirstMount(listEl);
@@ -8701,8 +8877,22 @@ var contentHtml = formatInstructionNodeContentHtml(
     function renderShiftActionsMenu(shiftId) {
       if (!SHIFT_ACTIONS_MENU) return;
       SHIFT_ACTIONS_MENU.innerHTML =
-        '<button class="shift-actions-item" type="button" data-action="edit" data-id="' + shiftId + '" role="menuitem">Редактировать</button>' +
-        '<button class="shift-actions-item is-danger" type="button" data-action="delete" data-id="' + shiftId + '" role="menuitem">Удалить</button>';
+        '<button class="shift-actions-item" type="button" data-action="edit" data-id="' + shiftId + '" role="menuitem">' +
+          '<span class="shift-actions-item-icon" aria-hidden="true">' +
+            '<svg viewBox="0 0 24 24" focusable="false">' +
+              '<path fill="currentColor" d="M3 17.25V21h3.75L18.3 9.45l-3.75-3.75L3 17.25Zm2.92 2.33H5v-.92l9.55-9.55.92.92-9.55 9.55ZM20.7 7.04a1 1 0 0 0 0-1.41l-2.33-2.33a1 1 0 0 0-1.42 0l-1.13 1.13 3.75 3.75 1.13-1.14Z"></path>' +
+            '</svg>' +
+          '</span>' +
+          '<span class="shift-actions-item-label">Редактировать</span>' +
+        '</button>' +
+        '<button class="shift-actions-item is-danger" type="button" data-action="delete" data-id="' + shiftId + '" role="menuitem">' +
+          '<span class="shift-actions-item-icon" aria-hidden="true">' +
+            '<svg viewBox="0 0 24 24" focusable="false">' +
+              '<path fill="currentColor" d="M9 3h6a1 1 0 0 1 1 1v1h4a1 1 0 1 1 0 2h-1l-1 12a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 7H4a1 1 0 1 1 0-2h4V4a1 1 0 0 1 1-1Zm1 2h4V5h-4v0Zm-3 2 1 12h8l1-12H7Zm3 2a1 1 0 0 1 1 1v6a1 1 0 1 1-2 0v-6a1 1 0 0 1 1-1Zm4 0a1 1 0 0 1 1 1v6a1 1 0 1 1-2 0v-6a1 1 0 0 1 1-1Z"></path>' +
+            '</svg>' +
+          '</span>' +
+          '<span class="shift-actions-item-label">Удалить</span>' +
+        '</button>';
       portalShiftActionsMenu();
       if (SHIFT_ACTIONS_BACKDROP) {
         SHIFT_ACTIONS_BACKDROP.classList.remove('hidden');
@@ -9559,6 +9749,7 @@ if (action === 'scroll-node') {
         }
       });
     }
+    bindEditBackSwipeHandlers();
 
     var tabButtons = document.querySelectorAll('.tab-btn[data-tab]');
     for (var tb = 0; tb < tabButtons.length; tb++) {

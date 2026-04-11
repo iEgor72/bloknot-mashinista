@@ -712,23 +712,22 @@
       width: auto;
     }
 
-    .shift-actions-trigger,
-    .shift-delete-trigger {
+    .shift-actions-trigger {
       appearance: none;
       background: var(--card-hi);
       border: 1px solid var(--border);
       color: var(--sub);
-      width: 32px;
-      height: 32px;
-      border-radius: var(--r-inner);
+      width: 34px;
+      height: 34px;
+      border-radius: 12px;
       cursor: pointer;
       display: grid;
       place-items: center;
       flex-shrink: 0;
-      transition: background 0.15s, color 0.15s;
+      transition: background 0.15s, color 0.15s, border-color 0.15s, transform 0.12s;
       -webkit-tap-highlight-color: transparent;
-      font-size: 18px;
-      line-height: 1;
+      font-size: 0;
+      line-height: 0;
     }
 
     .shift-actions-trigger:active,
@@ -736,25 +735,14 @@
       background: var(--accent-dim);
       color: var(--accent);
       border-color: rgba(56, 189, 248, 0.2);
+      transform: translateY(1px);
     }
 
-    .shift-delete-trigger {
-      color: #fda4af;
-      border-color: rgba(251, 113, 133, 0.35);
-      background: rgba(251, 113, 133, 0.12);
-      font-size: 0;
-    }
-
-    .shift-delete-trigger svg {
+    .shift-actions-trigger-icon {
       width: 16px;
       height: 16px;
       display: block;
-    }
-
-    .shift-delete-trigger:active {
-      color: #fecdd3;
-      border-color: rgba(251, 113, 133, 0.55);
-      background: rgba(251, 113, 133, 0.2);
+      fill: currentColor;
     }
 
     /* ── Shift actions menu ── */
@@ -802,6 +790,7 @@
     .shift-actions-item {
       display: flex;
       align-items: center;
+      gap: 10px;
       width: 100%;
       min-height: 40px;
       appearance: none;
@@ -817,6 +806,31 @@
       cursor: pointer;
       transition: background 0.12s;
       -webkit-tap-highlight-color: transparent;
+    }
+
+    .shift-actions-item + .shift-actions-item {
+      border-top: 1px solid rgba(255, 255, 255, 0.08);
+    }
+
+    .shift-actions-item-icon {
+      width: 16px;
+      height: 16px;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+      color: currentColor;
+    }
+
+    .shift-actions-item-icon svg {
+      width: 16px;
+      height: 16px;
+      display: block;
+    }
+
+    .shift-actions-item-label {
+      min-width: 0;
+      flex: 1;
     }
 
     .shift-actions-item:hover,
@@ -842,9 +856,12 @@
     .compact-shift .shift-tech-line { font-size: 10px; }
     .compact-shift .shift-fuel-note { font-size: 10px; }
     .compact-shift .shift-inline-icon { width: 12px; height: 12px; }
-    .compact-shift .shift-actions-trigger,
-    .compact-shift .shift-delete-trigger { width: 28px; height: 28px; }
+    .compact-shift .shift-actions-trigger { width: 30px; height: 30px; }
     .compact-shift .shift-top-right { gap: 6px; }
+
+    .tab-panel[data-tab="add"].is-back-swipe-active {
+      will-change: transform;
+    }
 
     /* ── Pending shift badge ── */
     .shift-pending-line,
