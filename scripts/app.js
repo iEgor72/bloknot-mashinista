@@ -66,11 +66,11 @@
     var shiftListRevealAutoId = 0;
     var SHIFT_SHARED_TRANSITION_MS = 300;
     var SHIFT_SHARED_TRANSITION_EASING = 'cubic-bezier(0.32, 0.72, 0, 1)';
-    var EDIT_BACK_SWIPE_EDGE_START_PX = 28;
-    var EDIT_BACK_SWIPE_START_THRESHOLD_PX = 10;
-    var EDIT_BACK_SWIPE_COMMIT_DISTANCE_PX = 72;
-    var EDIT_BACK_SWIPE_COMMIT_VELOCITY_PX_MS = 0.42;
-    var EDIT_BACK_SWIPE_MAX_VERTICAL_DRIFT_PX = 64;
+    var BACK_SWIPE_EDGE_START_PX = 26;
+    var BACK_SWIPE_START_THRESHOLD_PX = 9;
+    var BACK_SWIPE_COMMIT_DISTANCE_PX = 70;
+    var BACK_SWIPE_COMMIT_VELOCITY_PX_MS = 0.4;
+    var BACK_SWIPE_MAX_VERTICAL_DRIFT_PX = 72;
     var currentMonthShiftIncomeMap = Object.create(null);
     var shiftDetailState = {
       isOpen: false,
@@ -86,7 +86,7 @@
       skipNextPopstateClose: false,
       tapLockUntil: 0
     };
-    var editBackSwipeState = {
+    var backSwipeState = {
       tracking: false,
       engaged: false,
       startX: 0,
@@ -96,7 +96,8 @@
       lastTs: 0,
       deltaX: 0,
       deltaY: 0,
-      panelEl: null,
+      surfaceEl: null,
+      onBack: null,
       resetTimer: null
     };
 
@@ -7776,165 +7777,201 @@ var contentHtml = formatInstructionNodeContentHtml(
       enterEditMode(shift, { returnTab: activeTab });
     }
 
-    function clearEditBackSwipeResetTimer() {
-      if (editBackSwipeState.resetTimer) {
-        window.clearTimeout(editBackSwipeState.resetTimer);
-        editBackSwipeState.resetTimer = null;
+    function clearBackSwipeResetTimer() {
+      if (backSwipeState.resetTimer) {
+        window.clearTimeout(backSwipeState.resetTimer);
+        backSwipeState.resetTimer = null;
       }
     }
 
-    function scheduleEditBackSwipeVisualReset(panelEl, delayMs) {
-      if (!panelEl) return;
-      clearEditBackSwipeResetTimer();
-      editBackSwipeState.resetTimer = window.setTimeout(function() {
-        if (!panelEl || !panelEl.style) return;
-        panelEl.style.removeProperty('transform');
-        panelEl.style.removeProperty('transition');
-        panelEl.classList.remove('is-back-swipe-active');
-        clearEditBackSwipeResetTimer();
+    function scheduleBackSwipeVisualReset(surfaceEl, delayMs) {
+      if (!surfaceEl) return;
+      clearBackSwipeResetTimer();
+      backSwipeState.resetTimer = window.setTimeout(function() {
+        if (!surfaceEl || !surfaceEl.style) return;
+        surfaceEl.style.removeProperty('transform');
+        surfaceEl.style.removeProperty('transition');
+        surfaceEl.classList.remove('is-back-swipe-active');
+        clearBackSwipeResetTimer();
       }, delayMs);
     }
 
-    function resetEditBackSwipeVisual(animateBack) {
-      var panelEl = editBackSwipeState.panelEl;
-      if (!panelEl || !panelEl.style) return;
-      clearEditBackSwipeResetTimer();
+    function resetBackSwipeVisual(animateBack) {
+      var surfaceEl = backSwipeState.surfaceEl;
+      if (!surfaceEl || !surfaceEl.style) return;
+      clearBackSwipeResetTimer();
       if (animateBack) {
-        panelEl.style.transition = 'transform 190ms cubic-bezier(0.22, 0.61, 0.36, 1)';
-        panelEl.style.transform = 'translate3d(0, 0, 0)';
-        scheduleEditBackSwipeVisualReset(panelEl, 210);
+        surfaceEl.style.transition = 'transform 190ms cubic-bezier(0.22, 0.61, 0.36, 1)';
+        surfaceEl.style.transform = 'translate3d(0, 0, 0)';
+        scheduleBackSwipeVisualReset(surfaceEl, 210);
         return;
       }
-      panelEl.style.removeProperty('transform');
-      panelEl.style.removeProperty('transition');
-      panelEl.classList.remove('is-back-swipe-active');
+      surfaceEl.style.removeProperty('transform');
+      surfaceEl.style.removeProperty('transition');
+      surfaceEl.classList.remove('is-back-swipe-active');
     }
 
-    function finishEditBackSwipeState() {
-      editBackSwipeState.tracking = false;
-      editBackSwipeState.engaged = false;
-      editBackSwipeState.startX = 0;
-      editBackSwipeState.startY = 0;
-      editBackSwipeState.lastX = 0;
-      editBackSwipeState.startTs = 0;
-      editBackSwipeState.lastTs = 0;
-      editBackSwipeState.deltaX = 0;
-      editBackSwipeState.deltaY = 0;
-      editBackSwipeState.panelEl = null;
+    function finishBackSwipeState() {
+      backSwipeState.tracking = false;
+      backSwipeState.engaged = false;
+      backSwipeState.startX = 0;
+      backSwipeState.startY = 0;
+      backSwipeState.lastX = 0;
+      backSwipeState.startTs = 0;
+      backSwipeState.lastTs = 0;
+      backSwipeState.deltaX = 0;
+      backSwipeState.deltaY = 0;
+      backSwipeState.surfaceEl = null;
+      backSwipeState.onBack = null;
     }
 
-    function canUseEditBackSwipe() {
-      if (!editingShiftId || activeTab !== 'add') return false;
-      if (keyboardStateOpen) return false;
-      if (!ADD_TAB_PANEL || !ADD_TAB_PANEL.classList.contains('active')) return false;
-      return true;
+    function resolveBackSwipeContext() {
+      if (shiftDetailState.isOpen && SHIFT_DETAIL_SURFACE && SHIFT_DETAIL_OVERLAY && !SHIFT_DETAIL_OVERLAY.classList.contains('hidden')) {
+        return {
+          surfaceEl: SHIFT_DETAIL_SURFACE,
+          onBack: function() {
+            closeShiftDetail();
+          }
+        };
+      }
+
+      var salaryOverlay = document.getElementById('overlaySalarySettings');
+      if (salaryOverlay && (salaryOverlay.classList.contains('is-open') || salaryOverlay.classList.contains('visible'))) {
+        return {
+          surfaceEl: salaryOverlay.querySelector('.salary-settings-sheet') || salaryOverlay.querySelector('.bottom-sheet') || salaryOverlay,
+          onBack: function() {
+            closeOverlay('overlaySalarySettings');
+          }
+        };
+      }
+
+      if (editingShiftId && activeTab === 'add' && !keyboardStateOpen && ADD_TAB_PANEL && ADD_TAB_PANEL.classList.contains('active')) {
+        return {
+          surfaceEl: ADD_TAB_PANEL,
+          onBack: function() {
+            triggerHapticSelection();
+            exitEditMode();
+            showActionToast('canceled');
+          }
+        };
+      }
+
+      return null;
     }
 
-    function handleEditBackSwipeTouchStart(e) {
-      if (!canUseEditBackSwipe()) return;
+    function isBackSwipeBlockedTarget(target) {
+      if (!target || !target.closest) return false;
+      return !!target.closest('input, textarea, select, [contenteditable="true"], .glass-select-menu, .shift-actions-menu');
+    }
+
+    function handleBackSwipeTouchStart(e) {
       if (!e || !e.touches || e.touches.length !== 1) return;
       var touch = e.touches[0];
-      if (!touch || touch.clientX > EDIT_BACK_SWIPE_EDGE_START_PX) return;
+      if (!touch || touch.clientX > BACK_SWIPE_EDGE_START_PX) return;
+      if (isBackSwipeBlockedTarget(e.target)) return;
 
-      clearEditBackSwipeResetTimer();
-      editBackSwipeState.tracking = true;
-      editBackSwipeState.engaged = false;
-      editBackSwipeState.startX = touch.clientX;
-      editBackSwipeState.startY = touch.clientY;
-      editBackSwipeState.lastX = touch.clientX;
-      editBackSwipeState.startTs = Date.now();
-      editBackSwipeState.lastTs = editBackSwipeState.startTs;
-      editBackSwipeState.deltaX = 0;
-      editBackSwipeState.deltaY = 0;
-      editBackSwipeState.panelEl = ADD_TAB_PANEL;
+      var context = resolveBackSwipeContext();
+      if (!context || !context.surfaceEl || !context.onBack) return;
+
+      clearBackSwipeResetTimer();
+      backSwipeState.tracking = true;
+      backSwipeState.engaged = false;
+      backSwipeState.startX = touch.clientX;
+      backSwipeState.startY = touch.clientY;
+      backSwipeState.lastX = touch.clientX;
+      backSwipeState.startTs = Date.now();
+      backSwipeState.lastTs = backSwipeState.startTs;
+      backSwipeState.deltaX = 0;
+      backSwipeState.deltaY = 0;
+      backSwipeState.surfaceEl = context.surfaceEl;
+      backSwipeState.onBack = context.onBack;
     }
 
-    function handleEditBackSwipeTouchMove(e) {
-      if (!editBackSwipeState.tracking) return;
+    function handleBackSwipeTouchMove(e) {
+      if (!backSwipeState.tracking) return;
       if (!e || !e.touches || e.touches.length !== 1) {
-        resetEditBackSwipeVisual(true);
-        finishEditBackSwipeState();
+        resetBackSwipeVisual(true);
+        finishBackSwipeState();
         return;
       }
 
       var touch = e.touches[0];
-      var dx = touch.clientX - editBackSwipeState.startX;
-      var dy = touch.clientY - editBackSwipeState.startY;
+      var dx = touch.clientX - backSwipeState.startX;
+      var dy = touch.clientY - backSwipeState.startY;
       var absDx = Math.abs(dx);
       var absDy = Math.abs(dy);
 
-      editBackSwipeState.deltaX = dx;
-      editBackSwipeState.deltaY = dy;
-      editBackSwipeState.lastX = touch.clientX;
-      editBackSwipeState.lastTs = Date.now();
+      backSwipeState.deltaX = dx;
+      backSwipeState.deltaY = dy;
+      backSwipeState.lastX = touch.clientX;
+      backSwipeState.lastTs = Date.now();
 
       if (dx < -12) {
-        resetEditBackSwipeVisual(true);
-        finishEditBackSwipeState();
+        resetBackSwipeVisual(true);
+        finishBackSwipeState();
         return;
       }
 
-      if (!editBackSwipeState.engaged) {
-        if (absDx < EDIT_BACK_SWIPE_START_THRESHOLD_PX) return;
-        if (absDy > EDIT_BACK_SWIPE_MAX_VERTICAL_DRIFT_PX) {
-          resetEditBackSwipeVisual(true);
-          finishEditBackSwipeState();
+      if (!backSwipeState.engaged) {
+        if (absDx < BACK_SWIPE_START_THRESHOLD_PX) return;
+        if (absDy > BACK_SWIPE_MAX_VERTICAL_DRIFT_PX) {
+          resetBackSwipeVisual(true);
+          finishBackSwipeState();
           return;
         }
         if (absDx < absDy * 0.75) return;
-        editBackSwipeState.engaged = true;
-        if (editBackSwipeState.panelEl && editBackSwipeState.panelEl.classList) {
-          editBackSwipeState.panelEl.classList.add('is-back-swipe-active');
+        backSwipeState.engaged = true;
+        if (backSwipeState.surfaceEl && backSwipeState.surfaceEl.classList) {
+          backSwipeState.surfaceEl.classList.add('is-back-swipe-active');
         }
       }
 
-      if (!editBackSwipeState.panelEl || !editBackSwipeState.panelEl.style) return;
+      if (!backSwipeState.surfaceEl || !backSwipeState.surfaceEl.style) return;
       var offset = Math.max(0, Math.min(dx, 160));
-      editBackSwipeState.panelEl.style.transition = 'none';
-      editBackSwipeState.panelEl.style.transform = 'translate3d(' + offset + 'px, 0, 0)';
+      backSwipeState.surfaceEl.style.transition = 'none';
+      backSwipeState.surfaceEl.style.transform = 'translate3d(' + offset + 'px, 0, 0)';
       e.preventDefault();
     }
 
-    function handleEditBackSwipeTouchEnd(e) {
-      if (!editBackSwipeState.tracking) return;
-      var panelEl = editBackSwipeState.panelEl;
-      var dx = editBackSwipeState.deltaX;
-      var totalDuration = Math.max(16, Date.now() - editBackSwipeState.startTs);
-      var velocityX = (editBackSwipeState.lastX - editBackSwipeState.startX) / totalDuration;
-      var shouldGoBack = editBackSwipeState.engaged && dx > 20 &&
-        (dx >= EDIT_BACK_SWIPE_COMMIT_DISTANCE_PX || velocityX >= EDIT_BACK_SWIPE_COMMIT_VELOCITY_PX_MS);
+    function handleBackSwipeTouchEnd(e) {
+      if (!backSwipeState.tracking) return;
+      var surfaceEl = backSwipeState.surfaceEl;
+      var dx = backSwipeState.deltaX;
+      var totalDuration = Math.max(16, Date.now() - backSwipeState.startTs);
+      var velocityX = (backSwipeState.lastX - backSwipeState.startX) / totalDuration;
+      var shouldGoBack = backSwipeState.engaged && dx > 20 &&
+        (dx >= BACK_SWIPE_COMMIT_DISTANCE_PX || velocityX >= BACK_SWIPE_COMMIT_VELOCITY_PX_MS);
 
       if (shouldGoBack) {
-        if (panelEl && panelEl.style) {
-          panelEl.style.transition = 'transform 170ms cubic-bezier(0.22, 0.61, 0.36, 1)';
-          panelEl.style.transform = 'translate3d(' + Math.max(dx, 132) + 'px, 0, 0)';
-          scheduleEditBackSwipeVisualReset(panelEl, 190);
+        if (surfaceEl && surfaceEl.style) {
+          surfaceEl.style.transition = 'transform 170ms cubic-bezier(0.22, 0.61, 0.36, 1)';
+          surfaceEl.style.transform = 'translate3d(' + Math.max(dx, 132) + 'px, 0, 0)';
+          scheduleBackSwipeVisualReset(surfaceEl, 190);
         }
-        finishEditBackSwipeState();
-        triggerHapticSelection();
-        exitEditMode();
-        showActionToast('canceled');
+        var onBack = backSwipeState.onBack;
+        finishBackSwipeState();
+        if (typeof onBack === 'function') onBack();
         if (e && typeof e.preventDefault === 'function') e.preventDefault();
         return;
       }
 
-      resetEditBackSwipeVisual(editBackSwipeState.engaged);
-      finishEditBackSwipeState();
+      resetBackSwipeVisual(backSwipeState.engaged);
+      finishBackSwipeState();
     }
 
-    function handleEditBackSwipeTouchCancel() {
-      if (!editBackSwipeState.tracking) return;
-      resetEditBackSwipeVisual(editBackSwipeState.engaged);
-      finishEditBackSwipeState();
+    function handleBackSwipeTouchCancel() {
+      if (!backSwipeState.tracking) return;
+      resetBackSwipeVisual(backSwipeState.engaged);
+      finishBackSwipeState();
     }
 
-    function bindEditBackSwipeHandlers() {
-      if (!ADD_TAB_PANEL || ADD_TAB_PANEL.dataset.editBackSwipeBound === '1') return;
-      ADD_TAB_PANEL.dataset.editBackSwipeBound = '1';
-      ADD_TAB_PANEL.addEventListener('touchstart', handleEditBackSwipeTouchStart, { passive: true });
-      ADD_TAB_PANEL.addEventListener('touchmove', handleEditBackSwipeTouchMove, { passive: false });
-      ADD_TAB_PANEL.addEventListener('touchend', handleEditBackSwipeTouchEnd, { passive: false });
-      ADD_TAB_PANEL.addEventListener('touchcancel', handleEditBackSwipeTouchCancel, { passive: true });
+    function bindBackSwipeHandlers() {
+      if (document.body && document.body.dataset.backSwipeBound === '1') return;
+      if (document.body) document.body.dataset.backSwipeBound = '1';
+      document.addEventListener('touchstart', handleBackSwipeTouchStart, { passive: true });
+      document.addEventListener('touchmove', handleBackSwipeTouchMove, { passive: false });
+      document.addEventListener('touchend', handleBackSwipeTouchEnd, { passive: false });
+      document.addEventListener('touchcancel', handleBackSwipeTouchCancel, { passive: true });
     }
 
     function bindShiftListDetailHandlers(listEl) {
@@ -7996,7 +8033,6 @@ var contentHtml = formatInstructionNodeContentHtml(
 
       var actionTriggers = listEl.querySelectorAll('.shift-actions-trigger');
       for (var a = 0; a < actionTriggers.length; a++) {
-        actionTriggers[a].addEventListener('pointerdown', handleShiftActionsTriggerPointerDown);
         actionTriggers[a].addEventListener('click', handleShiftActionsTriggerClick);
       }
 
@@ -8926,7 +8962,6 @@ var contentHtml = formatInstructionNodeContentHtml(
     function handleShiftActionsTriggerClick(e) {
       e.preventDefault();
       e.stopPropagation();
-      if (e.currentTarget.dataset.shiftTriggerPressed === '1' && e.type === 'click') return;
       var targetId = e.currentTarget.getAttribute('data-id');
       if (activeShiftMenuId !== targetId) {
         triggerHapticTapLight();
@@ -8934,18 +8969,6 @@ var contentHtml = formatInstructionNodeContentHtml(
       var host = e.currentTarget.closest('#homeShiftsList, #shiftsList');
       activeShiftMenuScope = host ? host.id : 'shiftsList';
       toggleShiftActionsMenu(targetId);
-    }
-
-    function handleShiftActionsTriggerPointerDown(e) {
-      e.preventDefault();
-      e.stopPropagation();
-      var trigger = e.currentTarget;
-      if (trigger.dataset.shiftTriggerPressed === '1') return;
-      trigger.dataset.shiftTriggerPressed = '1';
-      window.setTimeout(function() {
-        delete trigger.dataset.shiftTriggerPressed;
-      }, 350);
-      handleShiftActionsTriggerClick(e);
     }
 
     function handleShiftActionsItemClick(item, e) {
@@ -9749,7 +9772,7 @@ if (action === 'scroll-node') {
         }
       });
     }
-    bindEditBackSwipeHandlers();
+    bindBackSwipeHandlers();
 
     var tabButtons = document.querySelectorAll('.tab-btn[data-tab]');
     for (var tb = 0; tb < tabButtons.length; tb++) {

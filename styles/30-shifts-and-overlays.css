@@ -859,7 +859,7 @@
     .compact-shift .shift-actions-trigger { width: 30px; height: 30px; }
     .compact-shift .shift-top-right { gap: 6px; }
 
-    .tab-panel[data-tab="add"].is-back-swipe-active {
+    .is-back-swipe-active {
       will-change: transform;
     }
 
