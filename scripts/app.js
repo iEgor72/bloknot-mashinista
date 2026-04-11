@@ -7830,7 +7830,7 @@ var contentHtml = formatInstructionNodeContentHtml(
             card.dataset.shiftSwipeSuppressClick = '1';
             window.setTimeout(function() {
               if (card && card.dataset) delete card.dataset.shiftSwipeSuppressClick;
-            }, 220);
+            }, 420);
           }
 
           card.addEventListener('pointerdown', function(e) {
@@ -7891,15 +7891,18 @@ var contentHtml = formatInstructionNodeContentHtml(
             var openThresholdPx = -Math.round(SHIFT_SWIPE_DELETE_WIDTH * SHIFT_SWIPE_OPEN_THRESHOLD_RATIO);
             var closeThresholdPx = -Math.round(SHIFT_SWIPE_DELETE_WIDTH * SHIFT_SWIPE_CLOSE_THRESHOLD_RATIO);
             var deltaX = e.clientX - startX;
+            var finalOffset = clampOffset(startOffset + deltaX);
+            currentOffset = finalOffset;
+            contentEl.style.transform = 'translate3d(' + finalOffset + 'px, 0, 0)';
             var deltaMs = Math.max(1, Date.now() - startTs);
             var isQuickFlingLeft = deltaX <= -SHIFT_SWIPE_FLING_MIN_PX && deltaMs <= SHIFT_SWIPE_FLING_MAX_MS;
             var isQuickFlingRight = deltaX >= SHIFT_SWIPE_FLING_MIN_PX && deltaMs <= SHIFT_SWIPE_FLING_MAX_MS;
             var shouldOpen = false;
             if (openedAtStart) {
-              shouldOpen = !(currentOffset >= closeThresholdPx || isQuickFlingRight);
+              shouldOpen = !(finalOffset >= closeThresholdPx || isQuickFlingRight);
               if (isQuickFlingLeft) shouldOpen = true;
             } else {
-              shouldOpen = currentOffset <= openThresholdPx || isQuickFlingLeft;
+              shouldOpen = finalOffset <= openThresholdPx || isQuickFlingLeft;
             }
             finishDrag(shouldOpen);
             e.preventDefault();
