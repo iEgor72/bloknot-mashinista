@@ -72,6 +72,7 @@
     var SHIFT_SWIPE_LOCK_MIN_X = 4;
     var SHIFT_SWIPE_LOCK_CANCEL_RATIO = 4.0;
     var SHIFT_SWIPE_LOCK_CANCEL_MIN_Y = 34;
+    var SHIFT_SWIPE_SUPPRESS_CLICK_MS = 650;
     var openShiftSwipeCard = null;
     var SHIFT_SHARED_TRANSITION_MS = 300;
     var SHIFT_SHARED_TRANSITION_EASING = 'cubic-bezier(0.32, 0.72, 0, 1)';
@@ -7827,14 +7828,18 @@ var contentHtml = formatInstructionNodeContentHtml(
             contentEl.style.transform = 'translate3d(' + currentOffset + 'px, 0, 0)';
           }
 
+          function markSwipeSuppressClick() {
+            card.dataset.shiftSwipeSuppressClick = '1';
+            window.setTimeout(function() {
+              if (card && card.dataset) delete card.dataset.shiftSwipeSuppressClick;
+            }, SHIFT_SWIPE_SUPPRESS_CLICK_MS);
+          }
+
           function finishDrag(shouldOpen) {
             pointerId = null;
             isDragging = false;
             setShiftSwipeOpen(card, shouldOpen);
-            card.dataset.shiftSwipeSuppressClick = '1';
-            window.setTimeout(function() {
-              if (card && card.dataset) delete card.dataset.shiftSwipeSuppressClick;
-            }, 420);
+            markSwipeSuppressClick();
           }
 
           card.addEventListener('pointerdown', function(e) {
@@ -7896,6 +7901,21 @@ var contentHtml = formatInstructionNodeContentHtml(
             var isQuickFlingRight = horizontalIntent && deltaX >= SHIFT_SWIPE_FLING_MIN_PX && deltaMs <= SHIFT_SWIPE_FLING_MAX_MS;
             if (!isDragging) {
               pointerId = null;
+              var hasHorizontalSwipe = absX >= SHIFT_SWIPE_LOCK_MIN_X && absX >= absY * 0.45;
+              if (hasHorizontalSwipe) {
+                if (!openedAtStart && deltaX <= -SHIFT_SWIPE_LOCK_MIN_X) {
+                  finishDrag(true);
+                  e.preventDefault();
+                  e.stopPropagation();
+                  return;
+                }
+                if (openedAtStart && deltaX >= SHIFT_SWIPE_LOCK_MIN_X) {
+                  finishDrag(false);
+                  e.preventDefault();
+                  e.stopPropagation();
+                  return;
+                }
+              }
               if (!openedAtStart && isQuickFlingLeft) {
                 finishDrag(true);
                 e.preventDefault();
@@ -7903,15 +7923,8 @@ var contentHtml = formatInstructionNodeContentHtml(
                 return;
               }
               if (isShiftSwipeOpen(card) && !(e.target && e.target.closest && e.target.closest('.shift-swipe-delete'))) {
-                if (isQuickFlingLeft) {
-                  setShiftSwipeOpen(card, true);
-                } else {
-                  setShiftSwipeOpen(card, false);
-                }
-                card.dataset.shiftSwipeSuppressClick = '1';
-                window.setTimeout(function() {
-                  if (card && card.dataset) delete card.dataset.shiftSwipeSuppressClick;
-                }, 420);
+                setShiftSwipeOpen(card, isQuickFlingLeft);
+                markSwipeSuppressClick();
                 e.preventDefault();
                 e.stopPropagation();
               }
@@ -7925,9 +7938,10 @@ var contentHtml = formatInstructionNodeContentHtml(
             if (openedAtStart) {
               var shouldClose = (finalOffset >= closeThresholdPx) || (maxOffsetReached >= closeThresholdPx) || isQuickFlingRight;
               shouldOpen = !shouldClose;
-              if (isQuickFlingLeft || minOffsetReached <= openThresholdPx) shouldOpen = true;
+              if (isQuickFlingLeft) shouldOpen = true;
             } else {
               shouldOpen = (finalOffset <= openThresholdPx) || (minOffsetReached <= openThresholdPx) || isQuickFlingLeft;
+              if (isQuickFlingRight) shouldOpen = false;
             }
             finishDrag(shouldOpen);
             e.preventDefault();
