@@ -9199,68 +9199,6 @@ var contentHtml = formatInstructionNodeContentHtml(
         flushPendingSnapshot();
       }
     }, 30000);
-
-    // ── Standalone PWA diagonal-swipe scroll freeze fix ──
-    // In iOS standalone mode the compositor can freeze when a touch moves
-    // diagonally (horizontal + vertical at the same time). The browser cannot
-    // decide between a system back-gesture and a vertical scroll, so it stalls.
-    // Fix: on diagonal touchmove we preventDefault the native gesture and drive
-    // scrollTop ourselves, avoiding the ambiguity entirely.
-    (function initStandaloneScrollFix() {
-      if (!isStandalonePwa()) return;
-
-      var DIRECTION_THRESHOLD = 8;
-      var DIAGONAL_RATIO = 0.36;
-
-      function patchScrollContainer(container) {
-        if (!container || container.__pwaScrollPatched) return;
-        container.__pwaScrollPatched = true;
-
-        var touch = null;
-
-        container.addEventListener('touchstart', function(e) {
-          if (e.touches.length !== 1) { touch = null; return; }
-          var t = e.touches[0];
-          touch = { sx: t.clientX, sy: t.clientY, ly: t.clientY, manual: false, decided: false };
-        }, { passive: true });
-
-        container.addEventListener('touchmove', function(e) {
-          if (!touch || e.touches.length !== 1) return;
-          var t = e.touches[0];
-          var dy = touch.sy - t.clientY;
-          var dx = t.clientX - touch.sx;
-
-          if (!touch.decided && (Math.abs(dy) > DIRECTION_THRESHOLD || Math.abs(dx) > DIRECTION_THRESHOLD)) {
-            touch.decided = true;
-            // Diagonal: horizontal displacement is a significant fraction of vertical
-            touch.manual = Math.abs(dx) > Math.abs(dy) * DIAGONAL_RATIO;
-          }
-
-          if (touch.manual) {
-            e.preventDefault();
-            var frameDy = touch.ly - t.clientY;
-            container.scrollTop += frameDy;
-          }
-          touch.ly = t.clientY;
-        }, { passive: false });
-
-        container.addEventListener('touchend', function() { touch = null; }, { passive: true });
-        container.addEventListener('touchcancel', function() { touch = null; }, { passive: true });
-      }
-
-      if (APP_CONTENT) patchScrollContainer(APP_CONTENT);
-
-      var shiftDetailBody = document.querySelector('.shift-detail-body');
-      var shiftDetailScroll = document.querySelector('.shift-detail-scroll');
-      if (shiftDetailBody) patchScrollContainer(shiftDetailBody);
-      if (shiftDetailScroll) patchScrollContainer(shiftDetailScroll);
-
-      var bottomSheets = document.querySelectorAll('.bottom-sheet');
-      for (var bsi = 0; bsi < bottomSheets.length; bsi++) {
-        patchScrollContainer(bottomSheets[bsi]);
-      }
-    })();
-
     document.getElementById('inputRouteFrom').addEventListener('input', renderDraftShiftSummary);
     document.getElementById('inputRouteTo').addEventListener('input', renderDraftShiftSummary);
     var fuelReactiveInputs = [
