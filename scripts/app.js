@@ -7293,15 +7293,6 @@ var contentHtml = formatInstructionNodeContentHtml(
       var html = '<div class="' + itemClass + '" data-shift-id="' + sh.id + '" data-pending="' + (shiftIsPending ? '1' : '0') + '" data-shift-open="1" role="button" tabindex="0" aria-label="Редактировать смену: ' + escapeHtml(shiftTitle || 'Смена') + '">' +
         '<div class="shift-card-top">' +
           typeHtml +
-          '<div class="shift-top-right">' +
-            '<div class="shift-actions-wrap">' +
-              '<button class="shift-delete-trigger" type="button" data-id="' + sh.id + '" aria-label="Удалить смену">' +
-                '<svg viewBox="0 0 24 24" aria-hidden="true" focusable="false">' +
-                  '<path fill="currentColor" d="M9 3h6a1 1 0 0 1 1 1v1h4a1 1 0 1 1 0 2h-1l-1 12a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 7H4a1 1 0 1 1 0-2h4V4a1 1 0 0 1 1-1Zm1 2h4V5h-4v0Zm-3 2 1 12h8l1-12H7Zm3 2a1 1 0 0 1 1 1v6a1 1 0 1 1-2 0v-6a1 1 0 0 1 1-1Zm4 0a1 1 0 0 1 1 1v6a1 1 0 1 1-2 0v-6a1 1 0 0 1 1-1Z"></path>' +
-                '</svg>' +
-              '</button>' +
-            '</div>' +
-          '</div>' +
         '</div>' +
         directionHtml +
         '<div class="shift-card-body">' +
@@ -7314,6 +7305,19 @@ var contentHtml = formatInstructionNodeContentHtml(
           '<div class="shift-income-row">' +
             incomeLabelHtml +
             incomeHtml +
+          '</div>' +
+          '<div class="shift-card-actions">' +
+            '<button class="shift-card-action-btn shift-card-edit-btn" type="button" data-id="' + sh.id + '" aria-label="Редактировать смену">' +
+              'Редактировать' +
+            '</button>' +
+            '<button class="shift-card-action-btn shift-card-delete-btn" type="button" data-id="' + sh.id + '" aria-label="Удалить смену">' +
+              '<span class="shift-card-action-icon" aria-hidden="true">' +
+                '<svg viewBox="0 0 24 24" focusable="false">' +
+                  '<path fill="currentColor" d="M9 3h6a1 1 0 0 1 1 1v1h4a1 1 0 1 1 0 2h-1l-1 12a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 7H4a1 1 0 1 1 0-2h4V4a1 1 0 0 1 1-1Zm1 2h4V5h-4v0Zm-3 2 1 12h8l1-12H7Zm3 2a1 1 0 0 1 1 1v6a1 1 0 1 1-2 0v-6a1 1 0 0 1 1-1Zm4 0a1 1 0 0 1 1 1v6a1 1 0 1 1-2 0v-6a1 1 0 0 1 1-1Z"></path>' +
+                '</svg>' +
+              '</span>' +
+              '<span class="shift-card-action-label">Удалить</span>' +
+            '</button>' +
           '</div>' +
         '</div>';
 
@@ -7761,7 +7765,7 @@ var contentHtml = formatInstructionNodeContentHtml(
         if (shiftDetailState.isAnimating) return;
         var card = e.target && e.target.closest ? e.target.closest('.shift-item[data-shift-open="1"][data-shift-id]') : null;
         if (!card || !listEl.contains(card)) return;
-        if (e.target.closest('.shift-delete-trigger') || e.target.closest('.shift-actions-wrap')) return;
+        if (e.target.closest('.shift-card-actions')) return;
         openShiftEditorFromCard(card);
       });
 
@@ -7770,6 +7774,7 @@ var contentHtml = formatInstructionNodeContentHtml(
         if (!(e.key === 'Enter' || e.key === ' ')) return;
         var card = e.target && e.target.closest ? e.target.closest('.shift-item[data-shift-open="1"][data-shift-id]') : null;
         if (!card || !listEl.contains(card)) return;
+        if (e.target.closest('.shift-card-actions')) return;
         e.preventDefault();
         openShiftEditorFromCard(card);
       });
@@ -7809,9 +7814,14 @@ var contentHtml = formatInstructionNodeContentHtml(
       }
       listEl.innerHTML = html;
 
-      var actionTriggers = listEl.querySelectorAll('.shift-delete-trigger');
-      for (var a = 0; a < actionTriggers.length; a++) {
-        actionTriggers[a].addEventListener('click', handleDeleteClick);
+      var editButtons = listEl.querySelectorAll('.shift-card-edit-btn');
+      for (var ei = 0; ei < editButtons.length; ei++) {
+        editButtons[ei].addEventListener('click', handleEditClick);
+      }
+
+      var deleteButtons = listEl.querySelectorAll('.shift-card-delete-btn');
+      for (var di = 0; di < deleteButtons.length; di++) {
+        deleteButtons[di].addEventListener('click', handleDeleteClick);
       }
 
       revealShiftListOnFirstMount(listEl);
@@ -8848,6 +8858,7 @@ var contentHtml = formatInstructionNodeContentHtml(
       setOptionalCardOpen('optionalFuelCard', false);
       document.getElementById('btnAdd').textContent = 'Сохранить изменения';
       document.getElementById('btnCancelEdit').classList.remove('hidden');
+      document.getElementById('btnDeleteEdit').classList.remove('hidden');
       clearErrors();
       renderDraftShiftSummary();
       render();
@@ -8861,6 +8872,7 @@ var contentHtml = formatInstructionNodeContentHtml(
       document.getElementById('btnBackFromEdit').classList.add('hidden');
       document.getElementById('btnAdd').textContent = 'Добавить смену';
       document.getElementById('btnCancelEdit').classList.add('hidden');
+      document.getElementById('btnDeleteEdit').classList.add('hidden');
       clearErrors();
       document.getElementById('inputStartDate').value = '';
       document.getElementById('inputStartTime').value = '';
@@ -8876,6 +8888,10 @@ var contentHtml = formatInstructionNodeContentHtml(
     }
 
     function handleEditClick(e) {
+      if (e) {
+        e.preventDefault();
+        e.stopPropagation();
+      }
       var id = e.currentTarget.getAttribute('data-id');
       var shift = findShiftById(id);
       if (!shift) return;
@@ -9576,6 +9592,12 @@ if (action === 'scroll-node') {
     document.getElementById('btnCancelEdit').addEventListener('click', function() {
       exitEditMode();
       showActionToast('canceled');
+    });
+    document.getElementById('btnDeleteEdit').addEventListener('click', function() {
+      if (!editingShiftId) return;
+      triggerHapticWarning();
+      pendingDeleteId = editingShiftId;
+      openOverlay('overlayConfirm');
     });
     document.getElementById('btnBackFromEdit').addEventListener('click', function() {
       triggerHapticSelection();

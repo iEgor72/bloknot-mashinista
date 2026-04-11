@@ -642,6 +642,27 @@
 
     .btn-link:hover { color: var(--text); }
 
+    .btn-danger {
+      width: 100%;
+      height: 48px;
+      border-radius: var(--r-inner);
+      background: rgba(244, 63, 94, 0.12);
+      color: var(--danger);
+      font-family: 'Manrope', sans-serif;
+      font-size: 15px;
+      font-weight: 700;
+      border: 1px solid rgba(244, 63, 94, 0.28);
+      cursor: pointer;
+      transition: background 0.15s, border-color 0.15s, color 0.15s;
+      -webkit-tap-highlight-color: transparent;
+    }
+
+    .btn-danger:active {
+      background: rgba(244, 63, 94, 0.2);
+      border-color: rgba(244, 63, 94, 0.46);
+      color: #fecdd3;
+    }
+
     /* ── Confirm sheet ── */
     .btn-confirm-cancel,
     .btn-confirm-delete {
