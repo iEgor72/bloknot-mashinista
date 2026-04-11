@@ -8137,7 +8137,7 @@ var contentHtml = formatInstructionNodeContentHtml(
       return '' +
         '<div class="shift-fuel-note">' +
           '<span class="shift-fuel-note-icon" aria-hidden="true">' + getShiftInlineIconSvg('fuel') + '</span>' +
-          '<span class="shift-fuel-note-text">Расход: <strong>' + escapeHtml(getFuelConsumptionInlineText(totals)) + '</strong></span>' +
+          '<span class="shift-fuel-note-text"><strong>' + escapeHtml(getFuelConsumptionInlineText(totals)) + '</strong></span>' +
         '</div>';
     }
 
@@ -8806,6 +8806,10 @@ var contentHtml = formatInstructionNodeContentHtml(
       document.getElementById('inputEndDate').value = shift.end_msk.substring(0, 10);
       document.getElementById('inputEndTime').value = shift.end_msk.substring(11, 16);
       applyOptionalShiftData(shift);
+      setOptionalCardOpen('optionalRouteCard', false);
+      setOptionalCardOpen('optionalTrainCard', false);
+      setOptionalCardOpen('optionalLocoCard', false);
+      setOptionalCardOpen('optionalFuelCard', false);
       document.getElementById('btnAdd').textContent = 'Сохранить изменения';
       document.getElementById('btnCancelEdit').classList.remove('hidden');
       clearErrors();
