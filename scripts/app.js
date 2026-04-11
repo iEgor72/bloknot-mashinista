@@ -66,11 +66,19 @@
     var shiftListRevealAutoId = 0;
     var SHIFT_SHARED_TRANSITION_MS = 300;
     var SHIFT_SHARED_TRANSITION_EASING = 'cubic-bezier(0.32, 0.72, 0, 1)';
-    var BACK_SWIPE_EDGE_START_PX = 42;
-    var BACK_SWIPE_START_THRESHOLD_PX = 9;
-    var BACK_SWIPE_COMMIT_DISTANCE_PX = 70;
-    var BACK_SWIPE_COMMIT_VELOCITY_PX_MS = 0.4;
-    var BACK_SWIPE_MAX_VERTICAL_DRIFT_PX = 72;
+    var BACK_SWIPE_EDGE_START_PX = 22;
+    var BACK_SWIPE_START_THRESHOLD_PX = 5;
+    var BACK_SWIPE_COMMIT_DISTANCE_PX = 58;
+    var BACK_SWIPE_COMMIT_VELOCITY_PX_MS = 0.26;
+    var BACK_SWIPE_MAX_VERTICAL_DRIFT_PX = 120;
+    var BACK_SWIPE_RESIST_START_PX = 210;
+    var BACK_SWIPE_RESIST_FACTOR = 0.58;
+    var BACK_SWIPE_MAX_TRANSLATE_RATIO = 1;
+    var BACK_SWIPE_PROGRESS_DISTANCE_RATIO = 0.78;
+    var BACK_SWIPE_CANCEL_DURATION_MS = 260;
+    var BACK_SWIPE_COMMIT_DURATION_MS = 240;
+    var BACK_SWIPE_SCALE_DROP = 0.004;
+    var BACK_SWIPE_RADIUS_MAX_PX = 8;
     var currentMonthShiftIncomeMap = Object.create(null);
     var shiftDetailState = {
       isOpen: false,
@@ -88,6 +96,7 @@
     };
     var backSwipeState = {
       tracking: false,
+      committing: false,
       engaged: false,
       startX: 0,
       startY: 0,
@@ -96,8 +105,13 @@
       lastTs: 0,
       deltaX: 0,
       deltaY: 0,
+      appliedX: 0,
+      viewportWidth: 0,
       surfaceEl: null,
+      rootEl: null,
       onBack: null,
+      snapshot: null,
+      commitTimer: null,
       resetTimer: null
     };
 
@@ -7783,35 +7797,69 @@ var contentHtml = formatInstructionNodeContentHtml(
       }
     }
 
-    function scheduleBackSwipeVisualReset(surfaceEl, delayMs) {
-      if (!surfaceEl) return;
-      clearBackSwipeResetTimer();
-      backSwipeState.resetTimer = window.setTimeout(function() {
-        if (!surfaceEl || !surfaceEl.style) return;
-        surfaceEl.style.removeProperty('transform');
-        surfaceEl.style.removeProperty('transition');
-        surfaceEl.classList.remove('is-back-swipe-active');
-        clearBackSwipeResetTimer();
-      }, delayMs);
-    }
-
-    function resetBackSwipeVisual(animateBack) {
-      var surfaceEl = backSwipeState.surfaceEl;
-      if (!surfaceEl || !surfaceEl.style) return;
-      clearBackSwipeResetTimer();
-      if (animateBack) {
-        surfaceEl.style.transition = 'transform 190ms cubic-bezier(0.22, 0.61, 0.36, 1)';
-        surfaceEl.style.transform = 'translate3d(0, 0, 0)';
-        scheduleBackSwipeVisualReset(surfaceEl, 210);
-        return;
+    function clearBackSwipeCommitTimer() {
+      if (backSwipeState.commitTimer) {
+        window.clearTimeout(backSwipeState.commitTimer);
+        backSwipeState.commitTimer = null;
       }
-      surfaceEl.style.removeProperty('transform');
-      surfaceEl.style.removeProperty('transition');
-      surfaceEl.classList.remove('is-back-swipe-active');
     }
 
-    function finishBackSwipeState() {
+    function setInlineStyleValue(el, prop, value) {
+      if (!el || !el.style) return;
+      if (value === undefined || value === null || value === '') {
+        el.style.removeProperty(prop);
+      } else {
+        el.style.setProperty(prop, value);
+      }
+    }
+
+    function captureBackSwipeSnapshot(surfaceEl, rootEl) {
+      var snap = {
+        surfaceEl: surfaceEl || null,
+        rootEl: rootEl || null,
+        surfaceTransform: '',
+        surfaceTransition: '',
+        surfaceOpacity: '',
+        surfaceBorderRadius: '',
+        surfaceBoxShadow: '',
+        rootOpacity: '',
+        rootTransition: ''
+      };
+      if (surfaceEl && surfaceEl.style) {
+        snap.surfaceTransform = surfaceEl.style.getPropertyValue('transform');
+        snap.surfaceTransition = surfaceEl.style.getPropertyValue('transition');
+        snap.surfaceOpacity = surfaceEl.style.getPropertyValue('opacity');
+        snap.surfaceBorderRadius = surfaceEl.style.getPropertyValue('border-radius');
+        snap.surfaceBoxShadow = surfaceEl.style.getPropertyValue('box-shadow');
+      }
+      if (rootEl && rootEl !== surfaceEl && rootEl.style) {
+        snap.rootOpacity = rootEl.style.getPropertyValue('opacity');
+        snap.rootTransition = rootEl.style.getPropertyValue('transition');
+      }
+      return snap;
+    }
+
+    function restoreBackSwipeSnapshot(snapshot) {
+      if (!snapshot) return;
+      var surfaceEl = snapshot.surfaceEl;
+      var rootEl = snapshot.rootEl;
+      if (surfaceEl && surfaceEl.style) {
+        setInlineStyleValue(surfaceEl, 'transform', snapshot.surfaceTransform);
+        setInlineStyleValue(surfaceEl, 'transition', snapshot.surfaceTransition);
+        setInlineStyleValue(surfaceEl, 'opacity', snapshot.surfaceOpacity);
+        setInlineStyleValue(surfaceEl, 'border-radius', snapshot.surfaceBorderRadius);
+        setInlineStyleValue(surfaceEl, 'box-shadow', snapshot.surfaceBoxShadow);
+        surfaceEl.classList.remove('is-back-swipe-active');
+      }
+      if (rootEl && rootEl !== surfaceEl && rootEl.style) {
+        setInlineStyleValue(rootEl, 'opacity', snapshot.rootOpacity);
+        setInlineStyleValue(rootEl, 'transition', snapshot.rootTransition);
+      }
+    }
+
+    function resetBackSwipeState() {
       backSwipeState.tracking = false;
+      backSwipeState.committing = false;
       backSwipeState.engaged = false;
       backSwipeState.startX = 0;
       backSwipeState.startY = 0;
@@ -7820,8 +7868,123 @@ var contentHtml = formatInstructionNodeContentHtml(
       backSwipeState.lastTs = 0;
       backSwipeState.deltaX = 0;
       backSwipeState.deltaY = 0;
+      backSwipeState.appliedX = 0;
+      backSwipeState.viewportWidth = 0;
       backSwipeState.surfaceEl = null;
+      backSwipeState.rootEl = null;
       backSwipeState.onBack = null;
+      backSwipeState.snapshot = null;
+      backSwipeState.commitTimer = null;
+      backSwipeState.resetTimer = null;
+    }
+
+    function getBackSwipeViewportWidth() {
+      var width = Math.round(window.innerWidth || document.documentElement.clientWidth || 0);
+      if (!width || width < 1) width = 360;
+      return width;
+    }
+
+    function computeBackSwipeOffset(rawDx, viewportWidth) {
+      var maxTranslate = Math.max(160, viewportWidth * BACK_SWIPE_MAX_TRANSLATE_RATIO);
+      var clamped = Math.max(0, Math.min(rawDx, maxTranslate));
+      if (clamped <= BACK_SWIPE_RESIST_START_PX) return clamped;
+      return BACK_SWIPE_RESIST_START_PX + ((clamped - BACK_SWIPE_RESIST_START_PX) * BACK_SWIPE_RESIST_FACTOR);
+    }
+
+    function getBackSwipeProgress(offsetPx, viewportWidth) {
+      var distance = Math.max(140, viewportWidth * BACK_SWIPE_PROGRESS_DISTANCE_RATIO);
+      if (distance <= 0) return 0;
+      return Math.max(0, Math.min(1, offsetPx / distance));
+    }
+
+    function applyBackSwipeVisual(offsetPx, progress, withTransition) {
+      var surfaceEl = backSwipeState.surfaceEl;
+      var rootEl = backSwipeState.rootEl;
+      if (!surfaceEl || !surfaceEl.style) return;
+
+      var scale = 1 - (progress * BACK_SWIPE_SCALE_DROP);
+      var radius = Math.round(progress * BACK_SWIPE_RADIUS_MAX_PX);
+      var overlayOpacity = (1 - (progress * 0.035)).toFixed(3);
+      if (withTransition) {
+        surfaceEl.style.setProperty(
+          'transition',
+          'transform ' + BACK_SWIPE_CANCEL_DURATION_MS + 'ms cubic-bezier(0.16, 1, 0.3, 1), ' +
+          'opacity ' + BACK_SWIPE_CANCEL_DURATION_MS + 'ms cubic-bezier(0.16, 1, 0.3, 1), ' +
+          'border-radius ' + BACK_SWIPE_CANCEL_DURATION_MS + 'ms cubic-bezier(0.16, 1, 0.3, 1)'
+        );
+      } else {
+        surfaceEl.style.setProperty('transition', 'none');
+      }
+      surfaceEl.style.setProperty('transform', 'translate3d(' + offsetPx.toFixed(2) + 'px, 0, 0) scale(' + scale.toFixed(4) + ')');
+      surfaceEl.style.setProperty('opacity', '1');
+      surfaceEl.style.setProperty('border-radius', radius + 'px');
+      surfaceEl.style.setProperty('box-shadow', 'none');
+      if (rootEl && rootEl !== surfaceEl && rootEl.style) {
+        rootEl.style.setProperty(
+          'transition',
+          withTransition
+            ? ('opacity ' + BACK_SWIPE_CANCEL_DURATION_MS + 'ms cubic-bezier(0.16, 1, 0.3, 1)')
+            : 'none'
+        );
+        rootEl.style.setProperty('opacity', overlayOpacity);
+      }
+    }
+
+    function runBackSwipeCancelAnimation() {
+      var snapshot = backSwipeState.snapshot;
+      var surfaceEl = backSwipeState.surfaceEl;
+      if (!surfaceEl || !surfaceEl.style) {
+        restoreBackSwipeSnapshot(snapshot);
+        resetBackSwipeState();
+        return;
+      }
+      backSwipeState.tracking = false;
+      backSwipeState.engaged = false;
+      applyBackSwipeVisual(0, 0, true);
+      clearBackSwipeResetTimer();
+      backSwipeState.resetTimer = window.setTimeout(function() {
+        restoreBackSwipeSnapshot(snapshot);
+        resetBackSwipeState();
+      }, BACK_SWIPE_CANCEL_DURATION_MS + 24);
+    }
+
+    function runBackSwipeCommitAnimation(e) {
+      var snapshot = backSwipeState.snapshot;
+      var surfaceEl = backSwipeState.surfaceEl;
+      var rootEl = backSwipeState.rootEl;
+      var onBack = backSwipeState.onBack;
+      var viewportWidth = backSwipeState.viewportWidth || getBackSwipeViewportWidth();
+      var exitX = Math.max(viewportWidth + 28, backSwipeState.appliedX + 148);
+      if (surfaceEl && surfaceEl.style) {
+        surfaceEl.style.setProperty(
+          'transition',
+          'transform ' + BACK_SWIPE_COMMIT_DURATION_MS + 'ms cubic-bezier(0.22, 1, 0.36, 1), ' +
+          'opacity ' + BACK_SWIPE_COMMIT_DURATION_MS + 'ms cubic-bezier(0.22, 1, 0.36, 1), ' +
+          'border-radius ' + BACK_SWIPE_COMMIT_DURATION_MS + 'ms cubic-bezier(0.22, 1, 0.36, 1)'
+        );
+        surfaceEl.style.setProperty('transform', 'translate3d(' + exitX.toFixed(2) + 'px, 0, 0) scale(' + (1 - BACK_SWIPE_SCALE_DROP * 1.25).toFixed(4) + ')');
+        surfaceEl.style.setProperty('opacity', '1');
+        surfaceEl.style.setProperty('border-radius', Math.round(BACK_SWIPE_RADIUS_MAX_PX * 1.2) + 'px');
+        surfaceEl.style.setProperty('box-shadow', 'none');
+      }
+      if (rootEl && rootEl !== surfaceEl && rootEl.style) {
+        rootEl.style.setProperty('transition', 'opacity ' + BACK_SWIPE_COMMIT_DURATION_MS + 'ms cubic-bezier(0.22, 1, 0.36, 1)');
+        rootEl.style.setProperty('opacity', '0.965');
+      }
+
+      backSwipeState.tracking = false;
+      backSwipeState.engaged = false;
+      backSwipeState.committing = true;
+      clearBackSwipeCommitTimer();
+      backSwipeState.commitTimer = window.setTimeout(function() {
+        try {
+          if (typeof onBack === 'function') onBack();
+        } finally {
+          restoreBackSwipeSnapshot(snapshot);
+          resetBackSwipeState();
+        }
+      }, BACK_SWIPE_COMMIT_DURATION_MS + 10);
+      if (e && typeof e.preventDefault === 'function') e.preventDefault();
     }
 
     function resolveBackSwipeContext() {
@@ -7829,25 +7992,29 @@ var contentHtml = formatInstructionNodeContentHtml(
       if (docsOverlay && !docsOverlay.classList.contains('hidden')) {
         return {
           surfaceEl: docsOverlay,
+          rootEl: docsOverlay,
           onBack: function() {
             closeDocsViewerUI();
           }
         };
       }
 
-      if (shiftDetailState.isOpen && SHIFT_DETAIL_SURFACE && SHIFT_DETAIL_OVERLAY && !SHIFT_DETAIL_OVERLAY.classList.contains('hidden')) {
+      if (shiftDetailState.isOpen && SHIFT_DETAIL_OVERLAY && !SHIFT_DETAIL_OVERLAY.classList.contains('hidden')) {
         return {
-          surfaceEl: SHIFT_DETAIL_SURFACE,
+          surfaceEl: SHIFT_DETAIL_SURFACE || SHIFT_DETAIL_OVERLAY,
+          rootEl: SHIFT_DETAIL_OVERLAY,
           onBack: function() {
-            closeShiftDetail();
+            closeShiftDetail({ immediate: true });
           }
         };
       }
 
       var salaryOverlay = document.getElementById('overlaySalarySettings');
       if (salaryOverlay && (salaryOverlay.classList.contains('is-open') || salaryOverlay.classList.contains('visible'))) {
+        var salarySurface = salaryOverlay.querySelector('.salary-settings-sheet') || salaryOverlay.querySelector('.bottom-sheet');
         return {
-          surfaceEl: salaryOverlay.querySelector('.salary-settings-sheet') || salaryOverlay.querySelector('.bottom-sheet') || salaryOverlay,
+          surfaceEl: salarySurface || salaryOverlay,
+          rootEl: salaryOverlay,
           onBack: function() {
             closeOverlay('overlaySalarySettings');
           }
@@ -7857,6 +8024,7 @@ var contentHtml = formatInstructionNodeContentHtml(
       if (editingShiftId && activeTab === 'add' && ADD_TAB_PANEL && ADD_TAB_PANEL.classList.contains('active')) {
         return {
           surfaceEl: ADD_TAB_PANEL,
+          rootEl: ADD_TAB_PANEL,
           onBack: function() {
             triggerHapticSelection();
             exitEditMode();
@@ -7874,6 +8042,7 @@ var contentHtml = formatInstructionNodeContentHtml(
     }
 
     function handleBackSwipeTouchStart(e) {
+      if (backSwipeState.committing) return;
       if (!e || !e.touches || e.touches.length !== 1) return;
       var touch = e.touches[0];
       if (!touch || touch.clientX > BACK_SWIPE_EDGE_START_PX) return;
@@ -7882,8 +8051,13 @@ var contentHtml = formatInstructionNodeContentHtml(
       var context = resolveBackSwipeContext();
       if (!context || !context.surfaceEl || !context.onBack) return;
 
+      clearBackSwipeCommitTimer();
       clearBackSwipeResetTimer();
+      if (backSwipeState.snapshot) {
+        restoreBackSwipeSnapshot(backSwipeState.snapshot);
+      }
       backSwipeState.tracking = true;
+      backSwipeState.committing = false;
       backSwipeState.engaged = false;
       backSwipeState.startX = touch.clientX;
       backSwipeState.startY = touch.clientY;
@@ -7892,15 +8066,18 @@ var contentHtml = formatInstructionNodeContentHtml(
       backSwipeState.lastTs = backSwipeState.startTs;
       backSwipeState.deltaX = 0;
       backSwipeState.deltaY = 0;
+      backSwipeState.appliedX = 0;
+      backSwipeState.viewportWidth = getBackSwipeViewportWidth();
       backSwipeState.surfaceEl = context.surfaceEl;
+      backSwipeState.rootEl = context.rootEl || context.surfaceEl;
       backSwipeState.onBack = context.onBack;
+      backSwipeState.snapshot = captureBackSwipeSnapshot(backSwipeState.surfaceEl, backSwipeState.rootEl);
     }
 
     function handleBackSwipeTouchMove(e) {
-      if (!backSwipeState.tracking) return;
+      if (!backSwipeState.tracking || backSwipeState.committing) return;
       if (!e || !e.touches || e.touches.length !== 1) {
-        resetBackSwipeVisual(true);
-        finishBackSwipeState();
+        runBackSwipeCancelAnimation();
         return;
       }
 
@@ -7916,62 +8093,50 @@ var contentHtml = formatInstructionNodeContentHtml(
       backSwipeState.lastTs = Date.now();
 
       if (dx < -12) {
-        resetBackSwipeVisual(true);
-        finishBackSwipeState();
+        runBackSwipeCancelAnimation();
         return;
       }
 
       if (!backSwipeState.engaged) {
         if (absDx < BACK_SWIPE_START_THRESHOLD_PX) return;
         if (absDy > BACK_SWIPE_MAX_VERTICAL_DRIFT_PX) {
-          resetBackSwipeVisual(true);
-          finishBackSwipeState();
+          runBackSwipeCancelAnimation();
           return;
         }
-        if (absDx < absDy * 0.75) return;
+        if (absDx < absDy * 0.62) return;
         backSwipeState.engaged = true;
         if (backSwipeState.surfaceEl && backSwipeState.surfaceEl.classList) {
           backSwipeState.surfaceEl.classList.add('is-back-swipe-active');
         }
       }
 
-      if (!backSwipeState.surfaceEl || !backSwipeState.surfaceEl.style) return;
-      var offset = Math.max(0, Math.min(dx, 160));
-      backSwipeState.surfaceEl.style.transition = 'none';
-      backSwipeState.surfaceEl.style.transform = 'translate3d(' + offset + 'px, 0, 0)';
+      var offset = computeBackSwipeOffset(dx, backSwipeState.viewportWidth);
+      backSwipeState.appliedX = offset;
+      var progress = getBackSwipeProgress(offset, backSwipeState.viewportWidth);
+      applyBackSwipeVisual(offset, progress, false);
       e.preventDefault();
     }
 
     function handleBackSwipeTouchEnd(e) {
-      if (!backSwipeState.tracking) return;
-      var surfaceEl = backSwipeState.surfaceEl;
+      if (!backSwipeState.tracking || backSwipeState.committing) return;
+
       var dx = backSwipeState.deltaX;
       var totalDuration = Math.max(16, Date.now() - backSwipeState.startTs);
       var velocityX = (backSwipeState.lastX - backSwipeState.startX) / totalDuration;
-      var shouldGoBack = backSwipeState.engaged && dx > 20 &&
-        (dx >= BACK_SWIPE_COMMIT_DISTANCE_PX || velocityX >= BACK_SWIPE_COMMIT_VELOCITY_PX_MS);
+      var travelledX = Math.max(dx, backSwipeState.appliedX);
+      var shouldGoBack = backSwipeState.engaged && travelledX > 18 &&
+        (travelledX >= BACK_SWIPE_COMMIT_DISTANCE_PX || velocityX >= BACK_SWIPE_COMMIT_VELOCITY_PX_MS);
 
       if (shouldGoBack) {
-        if (surfaceEl && surfaceEl.style) {
-          surfaceEl.style.transition = 'transform 170ms cubic-bezier(0.22, 0.61, 0.36, 1)';
-          surfaceEl.style.transform = 'translate3d(' + Math.max(dx, 132) + 'px, 0, 0)';
-          scheduleBackSwipeVisualReset(surfaceEl, 190);
-        }
-        var onBack = backSwipeState.onBack;
-        finishBackSwipeState();
-        if (typeof onBack === 'function') onBack();
-        if (e && typeof e.preventDefault === 'function') e.preventDefault();
+        runBackSwipeCommitAnimation(e);
         return;
       }
-
-      resetBackSwipeVisual(backSwipeState.engaged);
-      finishBackSwipeState();
+      runBackSwipeCancelAnimation();
     }
 
     function handleBackSwipeTouchCancel() {
-      if (!backSwipeState.tracking) return;
-      resetBackSwipeVisual(backSwipeState.engaged);
-      finishBackSwipeState();
+      if (!backSwipeState.tracking || backSwipeState.committing) return;
+      runBackSwipeCancelAnimation();
     }
 
     function bindBackSwipeHandlers() {
