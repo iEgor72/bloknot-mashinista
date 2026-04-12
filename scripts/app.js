@@ -8409,8 +8409,9 @@ var contentHtml = formatInstructionNodeContentHtml(
 
     function syncFuelCoeffByRule(side, section, value, sourceInput) {
       if (!side || !section) return;
+      if (side !== 'receive') return;
       var targetSections = [section];
-      if (side === 'receive' && section === 'a') {
+      if (section === 'a') {
         targetSections = FUEL_SECTIONS;
       }
       function applyToSide(targetSide) {
@@ -8420,10 +8421,8 @@ var contentHtml = formatInstructionNodeContentHtml(
           targetInput.value = value;
         }
       }
-      applyToSide(side);
-      if (side === 'receive') {
-        applyToSide('handover');
-      }
+      applyToSide('receive');
+      applyToSide('handover');
     }
 
     function wireFuelCoeffInput(id) {
