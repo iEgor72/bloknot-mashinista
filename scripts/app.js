@@ -8407,27 +8407,16 @@ var contentHtml = formatInstructionNodeContentHtml(
       return document.getElementById(getFuelCoeffInputId(side, section));
     }
 
-    function syncFuelCoeffLinks(side) {
-      var coeffAInput = getFuelCoeffInput(side, 'a');
-      if (!coeffAInput) return;
-      var aNorm = normalizeFuelCoeff(coeffAInput.value, DEFAULT_FUEL_COEFF);
-      var coeffBInput = getFuelCoeffInput(side, 'b');
-      var coeffVInput = getFuelCoeffInput(side, 'v');
-      if (coeffBInput) coeffBInput.dataset.syncWithA = normalizeFuelCoeff(coeffBInput.value, DEFAULT_FUEL_COEFF) === aNorm ? '1' : '0';
-      if (coeffVInput) coeffVInput.dataset.syncWithA = normalizeFuelCoeff(coeffVInput.value, DEFAULT_FUEL_COEFF) === aNorm ? '1' : '0';
-    }
-
-    function propagateFuelCoeffFromA(side, value) {
-      var normalizedA = normalizeFuelCoeff(value, DEFAULT_FUEL_COEFF);
-      var coeffBInput = getFuelCoeffInput(side, 'b');
-      var coeffVInput = getFuelCoeffInput(side, 'v');
-      if (coeffBInput && coeffBInput.dataset.syncWithA !== '0') {
-        coeffBInput.value = normalizedA;
-        coeffBInput.dataset.syncWithA = '1';
-      }
-      if (coeffVInput && coeffVInput.dataset.syncWithA !== '0') {
-        coeffVInput.value = normalizedA;
-        coeffVInput.dataset.syncWithA = '1';
+    function syncFuelCoeffByRule(section, value, sourceInput) {
+      if (!section) return;
+      var targetSections = section === 'a' ? FUEL_SECTIONS : [section];
+      for (var s = 0; s < 2; s++) {
+        var side = s === 0 ? 'receive' : 'handover';
+        for (var i = 0; i < targetSections.length; i++) {
+          var targetInput = getFuelCoeffInput(side, targetSections[i]);
+          if (!targetInput || targetInput === sourceInput) continue;
+          targetInput.value = value;
+        }
       }
     }
 
@@ -8437,25 +8426,15 @@ var contentHtml = formatInstructionNodeContentHtml(
       var handleInput = function() {
         var cleaned = cleanFuelCoeffInput(el.value);
         if (el.value !== cleaned) el.value = cleaned;
-        var side = el.getAttribute('data-side');
         var section = el.getAttribute('data-section');
-        if (side && section === 'a') {
-          propagateFuelCoeffFromA(side, el.value);
-        } else if (section) {
-          el.dataset.syncWithA = '0';
-        }
+        syncFuelCoeffByRule(section, el.value, el);
         updateFuelKgOutputs();
       };
       var handleBlur = function() {
         var normalized = normalizeFuelCoeff(el.value, DEFAULT_FUEL_COEFF);
         if (el.value !== normalized) el.value = normalized;
-        var side = el.getAttribute('data-side');
         var section = el.getAttribute('data-section');
-        if (side && section === 'a') {
-          propagateFuelCoeffFromA(side, normalized);
-        } else if (section) {
-          el.dataset.syncWithA = '0';
-        }
+        syncFuelCoeffByRule(section, normalized, el);
         updateFuelKgOutputs();
       };
       var handleFocus = function() {
@@ -8740,8 +8719,6 @@ var contentHtml = formatInstructionNodeContentHtml(
       setFieldValue('inputFuelHandoverLitersA', cleanDigits(shift.fuel_handover_liters_a, 4));
       setFieldValue('inputFuelHandoverLitersB', cleanDigits(shift.fuel_handover_liters_b, 4));
       setFieldValue('inputFuelHandoverLitersV', cleanDigits(shift.fuel_handover_liters_v, 4));
-      syncFuelCoeffLinks('receive');
-      syncFuelCoeffLinks('handover');
       setRouteType(shift.route_kind === 'trip' ? 'trip' : 'depot');
       setOptionalCardOpen('optionalLocoCard', !!(shift.locomotive_series || shift.locomotive_number));
       setOptionalCardOpen('optionalTrainCard', !!(shift.train_number || shift.train_weight || shift.train_axles || shift.train_length));
@@ -9290,8 +9267,6 @@ var contentHtml = formatInstructionNodeContentHtml(
     wireFuelCoeffInput('inputFuelHandoverCoeffA');
     wireFuelCoeffInput('inputFuelHandoverCoeffB');
     wireFuelCoeffInput('inputFuelHandoverCoeffV');
-    syncFuelCoeffLinks('receive');
-    syncFuelCoeffLinks('handover');
     updateFuelKgOutputs();
 
     document.getElementById('inputLocoSeries').addEventListener('change', function(e) {
