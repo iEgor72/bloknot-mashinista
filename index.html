@@ -433,93 +433,131 @@
               <div class="fuel-columns">
                 <section class="fuel-column" aria-label="Прием топлива">
                   <div class="fuel-column-title">Прием топлива</div>
-                  <div class="optional-grid fuel-grid fuel-grid-coeff">
-                    <div class="field">
-                      <label>Кэф А</label>
-                      <input class="optional-control fuel-coeff-input" type="text" id="inputFuelReceiveCoeffA" data-side="receive" data-section="a" inputmode="decimal" maxlength="5" value="0.868" placeholder="0.868" />
-                    </div>
-                    <div class="field">
-                      <label>Кэф Б</label>
-                      <input class="optional-control fuel-coeff-input" type="text" id="inputFuelReceiveCoeffB" data-side="receive" data-section="b" inputmode="decimal" maxlength="5" value="0.868" placeholder="0.868" />
-                    </div>
-                    <div class="field">
-                      <label>Кэф В</label>
-                      <input class="optional-control fuel-coeff-input" type="text" id="inputFuelReceiveCoeffV" data-side="receive" data-section="v" inputmode="decimal" maxlength="5" value="0.868" placeholder="0.868" />
-                    </div>
-                  </div>
-                  <div class="optional-grid fuel-grid">
-                    <div class="field">
-                      <label>А, л</label>
-                      <input class="optional-control" type="text" id="inputFuelReceiveLitersA" inputmode="numeric" maxlength="4" placeholder="0000" />
-                    </div>
-                    <div class="field">
-                      <label>Б, л</label>
-                      <input class="optional-control" type="text" id="inputFuelReceiveLitersB" inputmode="numeric" maxlength="4" placeholder="0000" />
-                    </div>
-                    <div class="field">
-                      <label>В, л</label>
-                      <input class="optional-control" type="text" id="inputFuelReceiveLitersV" inputmode="numeric" maxlength="4" placeholder="0000" />
-                    </div>
-                  </div>
-                  <div class="optional-grid fuel-grid fuel-grid-kg">
-                    <div class="field">
-                      <label>А, кг</label>
-                      <input class="optional-control fuel-kg-output" type="text" id="inputFuelReceiveKgA" readonly disabled tabindex="-1" aria-readonly="true" />
-                    </div>
-                    <div class="field">
-                      <label>Б, кг</label>
-                      <input class="optional-control fuel-kg-output" type="text" id="inputFuelReceiveKgB" readonly disabled tabindex="-1" aria-readonly="true" />
-                    </div>
-                    <div class="field">
-                      <label>В, кг</label>
-                      <input class="optional-control fuel-kg-output" type="text" id="inputFuelReceiveKgV" readonly disabled tabindex="-1" aria-readonly="true" />
-                    </div>
+                  <div class="fuel-sections">
+                    <section class="fuel-section-row" aria-label="Секция А, прием">
+                      <div class="fuel-section-top">
+                        <div class="fuel-section-label">А</div>
+                        <div class="fuel-inline-wrap">
+                          <input class="optional-control fuel-inline-input fuel-liters-inline" type="text" id="inputFuelReceiveLitersA" inputmode="numeric" maxlength="4" placeholder="0000" aria-label="Прием, секция А, литры" />
+                          <span class="fuel-inline-unit">л</span>
+                        </div>
+                      </div>
+                      <div class="fuel-section-bottom">
+                        <div class="fuel-inline-wrap">
+                          <span class="fuel-inline-prefix">К</span>
+                          <input class="optional-control fuel-inline-input fuel-coeff-input fuel-coeff-inline" type="text" id="inputFuelReceiveCoeffA" data-side="receive" data-section="a" inputmode="decimal" maxlength="5" value="0.868" placeholder="0.868" aria-label="Прием, секция А, коэффициент" />
+                        </div>
+                        <div class="fuel-inline-wrap">
+                          <input class="optional-control fuel-inline-input fuel-kg-output fuel-kg-inline" type="text" id="inputFuelReceiveKgA" readonly disabled tabindex="-1" aria-readonly="true" aria-label="Прием, секция А, килограммы" />
+                          <span class="fuel-inline-unit">кг</span>
+                        </div>
+                      </div>
+                    </section>
+
+                    <section class="fuel-section-row" aria-label="Секция Б, прием">
+                      <div class="fuel-section-top">
+                        <div class="fuel-section-label">Б</div>
+                        <div class="fuel-inline-wrap">
+                          <input class="optional-control fuel-inline-input fuel-liters-inline" type="text" id="inputFuelReceiveLitersB" inputmode="numeric" maxlength="4" placeholder="0000" aria-label="Прием, секция Б, литры" />
+                          <span class="fuel-inline-unit">л</span>
+                        </div>
+                      </div>
+                      <div class="fuel-section-bottom">
+                        <div class="fuel-inline-wrap">
+                          <span class="fuel-inline-prefix">К</span>
+                          <input class="optional-control fuel-inline-input fuel-coeff-input fuel-coeff-inline" type="text" id="inputFuelReceiveCoeffB" data-side="receive" data-section="b" inputmode="decimal" maxlength="5" value="0.868" placeholder="0.868" aria-label="Прием, секция Б, коэффициент" />
+                        </div>
+                        <div class="fuel-inline-wrap">
+                          <input class="optional-control fuel-inline-input fuel-kg-output fuel-kg-inline" type="text" id="inputFuelReceiveKgB" readonly disabled tabindex="-1" aria-readonly="true" aria-label="Прием, секция Б, килограммы" />
+                          <span class="fuel-inline-unit">кг</span>
+                        </div>
+                      </div>
+                    </section>
+
+                    <section class="fuel-section-row" aria-label="Секция В, прием">
+                      <div class="fuel-section-top">
+                        <div class="fuel-section-label">В</div>
+                        <div class="fuel-inline-wrap">
+                          <input class="optional-control fuel-inline-input fuel-liters-inline" type="text" id="inputFuelReceiveLitersV" inputmode="numeric" maxlength="4" placeholder="0000" aria-label="Прием, секция В, литры" />
+                          <span class="fuel-inline-unit">л</span>
+                        </div>
+                      </div>
+                      <div class="fuel-section-bottom">
+                        <div class="fuel-inline-wrap">
+                          <span class="fuel-inline-prefix">К</span>
+                          <input class="optional-control fuel-inline-input fuel-coeff-input fuel-coeff-inline" type="text" id="inputFuelReceiveCoeffV" data-side="receive" data-section="v" inputmode="decimal" maxlength="5" value="0.868" placeholder="0.868" aria-label="Прием, секция В, коэффициент" />
+                        </div>
+                        <div class="fuel-inline-wrap">
+                          <input class="optional-control fuel-inline-input fuel-kg-output fuel-kg-inline" type="text" id="inputFuelReceiveKgV" readonly disabled tabindex="-1" aria-readonly="true" aria-label="Прием, секция В, килограммы" />
+                          <span class="fuel-inline-unit">кг</span>
+                        </div>
+                      </div>
+                    </section>
                   </div>
                 </section>
 
                 <section class="fuel-column" aria-label="Сдача топлива">
                   <div class="fuel-column-title">Сдача топлива</div>
-                  <div class="optional-grid fuel-grid fuel-grid-coeff">
-                    <div class="field">
-                      <label>Кэф А</label>
-                      <input class="optional-control fuel-coeff-input" type="text" id="inputFuelHandoverCoeffA" data-side="handover" data-section="a" inputmode="decimal" maxlength="5" value="0.868" placeholder="0.868" />
-                    </div>
-                    <div class="field">
-                      <label>Кэф Б</label>
-                      <input class="optional-control fuel-coeff-input" type="text" id="inputFuelHandoverCoeffB" data-side="handover" data-section="b" inputmode="decimal" maxlength="5" value="0.868" placeholder="0.868" />
-                    </div>
-                    <div class="field">
-                      <label>Кэф В</label>
-                      <input class="optional-control fuel-coeff-input" type="text" id="inputFuelHandoverCoeffV" data-side="handover" data-section="v" inputmode="decimal" maxlength="5" value="0.868" placeholder="0.868" />
-                    </div>
-                  </div>
-                  <div class="optional-grid fuel-grid">
-                    <div class="field">
-                      <label>А, л</label>
-                      <input class="optional-control" type="text" id="inputFuelHandoverLitersA" inputmode="numeric" maxlength="4" placeholder="0000" />
-                    </div>
-                    <div class="field">
-                      <label>Б, л</label>
-                      <input class="optional-control" type="text" id="inputFuelHandoverLitersB" inputmode="numeric" maxlength="4" placeholder="0000" />
-                    </div>
-                    <div class="field">
-                      <label>В, л</label>
-                      <input class="optional-control" type="text" id="inputFuelHandoverLitersV" inputmode="numeric" maxlength="4" placeholder="0000" />
-                    </div>
-                  </div>
-                  <div class="optional-grid fuel-grid fuel-grid-kg">
-                    <div class="field">
-                      <label>А, кг</label>
-                      <input class="optional-control fuel-kg-output" type="text" id="inputFuelHandoverKgA" readonly disabled tabindex="-1" aria-readonly="true" />
-                    </div>
-                    <div class="field">
-                      <label>Б, кг</label>
-                      <input class="optional-control fuel-kg-output" type="text" id="inputFuelHandoverKgB" readonly disabled tabindex="-1" aria-readonly="true" />
-                    </div>
-                    <div class="field">
-                      <label>В, кг</label>
-                      <input class="optional-control fuel-kg-output" type="text" id="inputFuelHandoverKgV" readonly disabled tabindex="-1" aria-readonly="true" />
-                    </div>
+                  <div class="fuel-sections">
+                    <section class="fuel-section-row" aria-label="Секция А, сдача">
+                      <div class="fuel-section-top">
+                        <div class="fuel-section-label">А</div>
+                        <div class="fuel-inline-wrap">
+                          <input class="optional-control fuel-inline-input fuel-liters-inline" type="text" id="inputFuelHandoverLitersA" inputmode="numeric" maxlength="4" placeholder="0000" aria-label="Сдача, секция А, литры" />
+                          <span class="fuel-inline-unit">л</span>
+                        </div>
+                      </div>
+                      <div class="fuel-section-bottom">
+                        <div class="fuel-inline-wrap">
+                          <span class="fuel-inline-prefix">К</span>
+                          <input class="optional-control fuel-inline-input fuel-coeff-input fuel-coeff-inline" type="text" id="inputFuelHandoverCoeffA" data-side="handover" data-section="a" inputmode="decimal" maxlength="5" value="0.868" placeholder="0.868" aria-label="Сдача, секция А, коэффициент" />
+                        </div>
+                        <div class="fuel-inline-wrap">
+                          <input class="optional-control fuel-inline-input fuel-kg-output fuel-kg-inline" type="text" id="inputFuelHandoverKgA" readonly disabled tabindex="-1" aria-readonly="true" aria-label="Сдача, секция А, килограммы" />
+                          <span class="fuel-inline-unit">кг</span>
+                        </div>
+                      </div>
+                    </section>
+
+                    <section class="fuel-section-row" aria-label="Секция Б, сдача">
+                      <div class="fuel-section-top">
+                        <div class="fuel-section-label">Б</div>
+                        <div class="fuel-inline-wrap">
+                          <input class="optional-control fuel-inline-input fuel-liters-inline" type="text" id="inputFuelHandoverLitersB" inputmode="numeric" maxlength="4" placeholder="0000" aria-label="Сдача, секция Б, литры" />
+                          <span class="fuel-inline-unit">л</span>
+                        </div>
+                      </div>
+                      <div class="fuel-section-bottom">
+                        <div class="fuel-inline-wrap">
+                          <span class="fuel-inline-prefix">К</span>
+                          <input class="optional-control fuel-inline-input fuel-coeff-input fuel-coeff-inline" type="text" id="inputFuelHandoverCoeffB" data-side="handover" data-section="b" inputmode="decimal" maxlength="5" value="0.868" placeholder="0.868" aria-label="Сдача, секция Б, коэффициент" />
+                        </div>
+                        <div class="fuel-inline-wrap">
+                          <input class="optional-control fuel-inline-input fuel-kg-output fuel-kg-inline" type="text" id="inputFuelHandoverKgB" readonly disabled tabindex="-1" aria-readonly="true" aria-label="Сдача, секция Б, килограммы" />
+                          <span class="fuel-inline-unit">кг</span>
+                        </div>
+                      </div>
+                    </section>
+
+                    <section class="fuel-section-row" aria-label="Секция В, сдача">
+                      <div class="fuel-section-top">
+                        <div class="fuel-section-label">В</div>
+                        <div class="fuel-inline-wrap">
+                          <input class="optional-control fuel-inline-input fuel-liters-inline" type="text" id="inputFuelHandoverLitersV" inputmode="numeric" maxlength="4" placeholder="0000" aria-label="Сдача, секция В, литры" />
+                          <span class="fuel-inline-unit">л</span>
+                        </div>
+                      </div>
+                      <div class="fuel-section-bottom">
+                        <div class="fuel-inline-wrap">
+                          <span class="fuel-inline-prefix">К</span>
+                          <input class="optional-control fuel-inline-input fuel-coeff-input fuel-coeff-inline" type="text" id="inputFuelHandoverCoeffV" data-side="handover" data-section="v" inputmode="decimal" maxlength="5" value="0.868" placeholder="0.868" aria-label="Сдача, секция В, коэффициент" />
+                        </div>
+                        <div class="fuel-inline-wrap">
+                          <input class="optional-control fuel-inline-input fuel-kg-output fuel-kg-inline" type="text" id="inputFuelHandoverKgV" readonly disabled tabindex="-1" aria-readonly="true" aria-label="Сдача, секция В, килограммы" />
+                          <span class="fuel-inline-unit">кг</span>
+                        </div>
+                      </div>
+                    </section>
                   </div>
                 </section>
               </div>

@@ -8388,7 +8388,7 @@ var contentHtml = formatInstructionNodeContentHtml(
       var bLiters = cleanDigits(isReceive ? shift.fuel_receive_liters_b : shift.fuel_handover_liters_b, 4);
       var vLiters = cleanDigits(isReceive ? shift.fuel_receive_liters_v : shift.fuel_handover_liters_v, 4);
       var rows = [];
-      var coeffLine = 'Кэф А/Б/В ' + coeffA.replace('.', ',') + '/' + coeffB.replace('.', ',') + '/' + coeffV.replace('.', ',');
+      var coeffLine = 'К А/Б/В ' + coeffA.replace('.', ',') + '/' + coeffB.replace('.', ',') + '/' + coeffV.replace('.', ',');
 
       if (aLiters) rows.push('А ' + aLiters + ' л → ' + (getFuelKgText(aLiters, coeffA) || '—') + ' кг');
       if (bLiters) rows.push('Б ' + bLiters + ' л → ' + (getFuelKgText(bLiters, coeffB) || '—') + ' кг');

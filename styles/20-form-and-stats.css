@@ -619,16 +619,16 @@
     .fuel-columns {
       display: grid;
       grid-template-columns: repeat(2, minmax(0, 1fr));
-      gap: 10px;
+      gap: 12px;
       padding-top: 8px;
     }
 
     .fuel-column {
       display: grid;
-      gap: 8px;
+      gap: 10px;
       border: 1px solid var(--border);
       border-radius: var(--r-inner);
-      padding: 10px;
+      padding: 12px;
     }
 
     .fuel-column-title {
@@ -642,21 +642,94 @@
       font-family: 'JetBrains Mono', monospace;
     }
 
-    .fuel-grid {
+    .fuel-sections {
+      display: grid;
       gap: 8px;
-      padding-top: 2px;
     }
 
-    .fuel-grid-coeff {
-      border-bottom: 1px dashed var(--border);
-      padding-bottom: 8px;
-      margin-bottom: 2px;
+    .fuel-section-row {
+      border: 1px solid var(--border);
+      border-radius: var(--r-inner);
+      padding: 10px;
+      background: rgba(255, 255, 255, 0.02);
     }
 
-    .fuel-grid-kg {
-      margin-top: 4px;
-      padding-top: 10px;
+    .fuel-section-top {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 10px;
+    }
+
+    .fuel-section-label {
+      font-size: 16px;
+      line-height: 1;
+      font-weight: 700;
+      color: var(--text);
+    }
+
+    .fuel-section-bottom {
+      margin-top: 8px;
+      padding-top: 8px;
       border-top: 1px dashed var(--border);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 10px;
+    }
+
+    .fuel-inline-wrap {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      min-width: 0;
+    }
+
+    .fuel-inline-prefix {
+      font-size: 14px;
+      font-weight: 700;
+      color: var(--sub);
+      letter-spacing: 0.01em;
+    }
+
+    .fuel-inline-unit {
+      font-size: 13px;
+      font-weight: 700;
+      color: var(--sub);
+    }
+
+    .fuel-inline-input {
+      border: 1px solid var(--border);
+      border-bottom: 1px solid var(--border);
+      border-radius: 10px;
+      background: rgba(255, 255, 255, 0.03);
+      min-height: 34px;
+      padding: 6px 10px;
+      text-align: right;
+      width: 90px;
+    }
+
+    .fuel-inline-input:focus {
+      border-color: var(--accent);
+      border-bottom-color: var(--accent);
+    }
+
+    .fuel-liters-inline {
+      width: 96px;
+    }
+
+    .fuel-coeff-inline {
+      width: 78px;
+    }
+
+    .fuel-kg-inline {
+      width: 90px;
+    }
+
+    @media (max-width: 860px) {
+      .fuel-columns {
+        grid-template-columns: 1fr;
+      }
     }
 
     .fuel-coeff-input {
@@ -671,6 +744,12 @@
       pointer-events: none;
       opacity: 1;
       -webkit-text-fill-color: var(--accent);
+    }
+
+    .fuel-kg-inline[readonly],
+    .fuel-kg-inline[disabled] {
+      border-style: dashed;
+      border-bottom-style: dashed;
     }
 
     .fuel-consumption-note {
