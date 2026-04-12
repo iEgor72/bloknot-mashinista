@@ -8129,6 +8129,7 @@ var contentHtml = formatInstructionNodeContentHtml(
 
     var DEFAULT_FUEL_COEFF = '0.868';
     var LEGACY_DEFAULT_FUEL_COEFF = '0.800';
+    var FUEL_SECTIONS = ['a', 'b', 'v'];
 
     function isDefaultFuelCoeffValue(coeff) {
       return coeff === DEFAULT_FUEL_COEFF || coeff === LEGACY_DEFAULT_FUEL_COEFF;
@@ -8214,8 +8215,12 @@ var contentHtml = formatInstructionNodeContentHtml(
 
     function getFuelConsumptionTotals(raw) {
       raw = raw || {};
-      var receiveCoeff = parseFuelCoeff(raw.receiveCoeff, DEFAULT_FUEL_COEFF);
-      var handoverCoeff = parseFuelCoeff(raw.handoverCoeff, DEFAULT_FUEL_COEFF);
+      var receiveCoeffA = parseFuelCoeff(raw.receiveCoeffA, raw.receiveCoeff || DEFAULT_FUEL_COEFF);
+      var receiveCoeffB = parseFuelCoeff(raw.receiveCoeffB, raw.receiveCoeff || DEFAULT_FUEL_COEFF);
+      var receiveCoeffV = parseFuelCoeff(raw.receiveCoeffV, raw.receiveCoeff || DEFAULT_FUEL_COEFF);
+      var handoverCoeffA = parseFuelCoeff(raw.handoverCoeffA, raw.handoverCoeff || DEFAULT_FUEL_COEFF);
+      var handoverCoeffB = parseFuelCoeff(raw.handoverCoeffB, raw.handoverCoeff || DEFAULT_FUEL_COEFF);
+      var handoverCoeffV = parseFuelCoeff(raw.handoverCoeffV, raw.handoverCoeff || DEFAULT_FUEL_COEFF);
       var receiveLitersA = parseFuelLitersValue(raw.receiveLitersA);
       var receiveLitersB = parseFuelLitersValue(raw.receiveLitersB);
       var receiveLitersV = parseFuelLitersValue(raw.receiveLitersV);
@@ -8223,13 +8228,17 @@ var contentHtml = formatInstructionNodeContentHtml(
       var handoverLitersB = parseFuelLitersValue(raw.handoverLitersB);
       var handoverLitersV = parseFuelLitersValue(raw.handoverLitersV);
 
-      receiveCoeff = receiveCoeff === null ? Number(DEFAULT_FUEL_COEFF) : receiveCoeff;
-      handoverCoeff = handoverCoeff === null ? Number(DEFAULT_FUEL_COEFF) : handoverCoeff;
+      receiveCoeffA = receiveCoeffA === null ? Number(DEFAULT_FUEL_COEFF) : receiveCoeffA;
+      receiveCoeffB = receiveCoeffB === null ? Number(DEFAULT_FUEL_COEFF) : receiveCoeffB;
+      receiveCoeffV = receiveCoeffV === null ? Number(DEFAULT_FUEL_COEFF) : receiveCoeffV;
+      handoverCoeffA = handoverCoeffA === null ? Number(DEFAULT_FUEL_COEFF) : handoverCoeffA;
+      handoverCoeffB = handoverCoeffB === null ? Number(DEFAULT_FUEL_COEFF) : handoverCoeffB;
+      handoverCoeffV = handoverCoeffV === null ? Number(DEFAULT_FUEL_COEFF) : handoverCoeffV;
 
       var receiveLitersTotal = receiveLitersA + receiveLitersB + receiveLitersV;
       var handoverLitersTotal = handoverLitersA + handoverLitersB + handoverLitersV;
-      var receiveKgTotal = receiveLitersTotal * receiveCoeff;
-      var handoverKgTotal = handoverLitersTotal * handoverCoeff;
+      var receiveKgTotal = receiveLitersA * receiveCoeffA + receiveLitersB * receiveCoeffB + receiveLitersV * receiveCoeffV;
+      var handoverKgTotal = handoverLitersA * handoverCoeffA + handoverLitersB * handoverCoeffB + handoverLitersV * handoverCoeffV;
       var hasReceive = receiveLitersTotal > 0;
       var hasHandover = handoverLitersTotal > 0;
       var hasPair = hasReceive && hasHandover;
@@ -8251,10 +8260,16 @@ var contentHtml = formatInstructionNodeContentHtml(
       shift = shift || {};
       return getFuelConsumptionTotals({
         receiveCoeff: shift.fuel_receive_coeff,
+        receiveCoeffA: shift.fuel_receive_coeff_a,
+        receiveCoeffB: shift.fuel_receive_coeff_b,
+        receiveCoeffV: shift.fuel_receive_coeff_v,
         receiveLitersA: shift.fuel_receive_liters_a,
         receiveLitersB: shift.fuel_receive_liters_b,
         receiveLitersV: shift.fuel_receive_liters_v,
         handoverCoeff: shift.fuel_handover_coeff,
+        handoverCoeffA: shift.fuel_handover_coeff_a,
+        handoverCoeffB: shift.fuel_handover_coeff_b,
+        handoverCoeffV: shift.fuel_handover_coeff_v,
         handoverLitersA: shift.fuel_handover_liters_a,
         handoverLitersB: shift.fuel_handover_liters_b,
         handoverLitersV: shift.fuel_handover_liters_v
@@ -8274,7 +8289,11 @@ var contentHtml = formatInstructionNodeContentHtml(
     function updateFuelKgOutputs() {
       var groups = [
         {
-          coeffId: 'inputFuelReceiveCoeff',
+          coeff: {
+            a: 'inputFuelReceiveCoeffA',
+            b: 'inputFuelReceiveCoeffB',
+            v: 'inputFuelReceiveCoeffV'
+          },
           liters: {
             a: 'inputFuelReceiveLitersA',
             b: 'inputFuelReceiveLitersB',
@@ -8287,7 +8306,11 @@ var contentHtml = formatInstructionNodeContentHtml(
           }
         },
         {
-          coeffId: 'inputFuelHandoverCoeff',
+          coeff: {
+            a: 'inputFuelHandoverCoeffA',
+            b: 'inputFuelHandoverCoeffB',
+            v: 'inputFuelHandoverCoeffV'
+          },
           liters: {
             a: 'inputFuelHandoverLitersA',
             b: 'inputFuelHandoverLitersB',
@@ -8301,21 +8324,27 @@ var contentHtml = formatInstructionNodeContentHtml(
         }
       ];
       for (var gi = 0; gi < groups.length; gi++) {
-        var coeff = getFieldValue(groups[gi].coeffId);
-        var tanks = ['a', 'b', 'v'];
+        var tanks = FUEL_SECTIONS;
         for (var ti = 0; ti < tanks.length; ti++) {
           var tank = tanks[ti];
           var liters = getFieldValue(groups[gi].liters[tank]);
+          var coeff = getFieldValue(groups[gi].coeff[tank]);
           setFieldValue(groups[gi].kg[tank], getFuelKgText(liters, coeff, DEFAULT_FUEL_COEFF));
         }
       }
 
       var totals = getFuelConsumptionTotals({
-        receiveCoeff: getFieldValue('inputFuelReceiveCoeff'),
+        receiveCoeff: getFieldValue('inputFuelReceiveCoeffA'),
+        receiveCoeffA: getFieldValue('inputFuelReceiveCoeffA'),
+        receiveCoeffB: getFieldValue('inputFuelReceiveCoeffB'),
+        receiveCoeffV: getFieldValue('inputFuelReceiveCoeffV'),
         receiveLitersA: getFieldValue('inputFuelReceiveLitersA'),
         receiveLitersB: getFieldValue('inputFuelReceiveLitersB'),
         receiveLitersV: getFieldValue('inputFuelReceiveLitersV'),
-        handoverCoeff: getFieldValue('inputFuelHandoverCoeff'),
+        handoverCoeff: getFieldValue('inputFuelHandoverCoeffA'),
+        handoverCoeffA: getFieldValue('inputFuelHandoverCoeffA'),
+        handoverCoeffB: getFieldValue('inputFuelHandoverCoeffB'),
+        handoverCoeffV: getFieldValue('inputFuelHandoverCoeffV'),
         handoverLitersA: getFieldValue('inputFuelHandoverLitersA'),
         handoverLitersB: getFieldValue('inputFuelHandoverLitersB'),
         handoverLitersV: getFieldValue('inputFuelHandoverLitersV')
@@ -8328,8 +8357,12 @@ var contentHtml = formatInstructionNodeContentHtml(
 
     function hasFuelData(shift) {
       shift = shift || {};
-      var receiveCoeff = normalizeFuelCoeff(shift.fuel_receive_coeff, DEFAULT_FUEL_COEFF);
-      var handoverCoeff = normalizeFuelCoeff(shift.fuel_handover_coeff, DEFAULT_FUEL_COEFF);
+      var receiveCoeffA = normalizeFuelCoeff(shift.fuel_receive_coeff_a, shift.fuel_receive_coeff || DEFAULT_FUEL_COEFF);
+      var receiveCoeffB = normalizeFuelCoeff(shift.fuel_receive_coeff_b, shift.fuel_receive_coeff || DEFAULT_FUEL_COEFF);
+      var receiveCoeffV = normalizeFuelCoeff(shift.fuel_receive_coeff_v, shift.fuel_receive_coeff || DEFAULT_FUEL_COEFF);
+      var handoverCoeffA = normalizeFuelCoeff(shift.fuel_handover_coeff_a, shift.fuel_handover_coeff || DEFAULT_FUEL_COEFF);
+      var handoverCoeffB = normalizeFuelCoeff(shift.fuel_handover_coeff_b, shift.fuel_handover_coeff || DEFAULT_FUEL_COEFF);
+      var handoverCoeffV = normalizeFuelCoeff(shift.fuel_handover_coeff_v, shift.fuel_handover_coeff || DEFAULT_FUEL_COEFF);
       return !!(
         cleanDigits(shift.fuel_receive_liters_a, 4) ||
         cleanDigits(shift.fuel_receive_liters_b, 4) ||
@@ -8337,24 +8370,65 @@ var contentHtml = formatInstructionNodeContentHtml(
         cleanDigits(shift.fuel_handover_liters_a, 4) ||
         cleanDigits(shift.fuel_handover_liters_b, 4) ||
         cleanDigits(shift.fuel_handover_liters_v, 4) ||
-        !isDefaultFuelCoeffValue(receiveCoeff) ||
-        !isDefaultFuelCoeffValue(handoverCoeff)
+        !isDefaultFuelCoeffValue(receiveCoeffA) ||
+        !isDefaultFuelCoeffValue(receiveCoeffB) ||
+        !isDefaultFuelCoeffValue(receiveCoeffV) ||
+        !isDefaultFuelCoeffValue(handoverCoeffA) ||
+        !isDefaultFuelCoeffValue(handoverCoeffB) ||
+        !isDefaultFuelCoeffValue(handoverCoeffV)
       );
     }
 
     function buildFuelSideSummary(shift, side) {
       var isReceive = side === 'receive';
-      var coeff = normalizeFuelCoeff(isReceive ? shift.fuel_receive_coeff : shift.fuel_handover_coeff, DEFAULT_FUEL_COEFF);
+      var coeffA = normalizeFuelCoeff(isReceive ? shift.fuel_receive_coeff_a : shift.fuel_handover_coeff_a, isReceive ? (shift.fuel_receive_coeff || DEFAULT_FUEL_COEFF) : (shift.fuel_handover_coeff || DEFAULT_FUEL_COEFF));
+      var coeffB = normalizeFuelCoeff(isReceive ? shift.fuel_receive_coeff_b : shift.fuel_handover_coeff_b, isReceive ? (shift.fuel_receive_coeff || DEFAULT_FUEL_COEFF) : (shift.fuel_handover_coeff || DEFAULT_FUEL_COEFF));
+      var coeffV = normalizeFuelCoeff(isReceive ? shift.fuel_receive_coeff_v : shift.fuel_handover_coeff_v, isReceive ? (shift.fuel_receive_coeff || DEFAULT_FUEL_COEFF) : (shift.fuel_handover_coeff || DEFAULT_FUEL_COEFF));
       var aLiters = cleanDigits(isReceive ? shift.fuel_receive_liters_a : shift.fuel_handover_liters_a, 4);
       var bLiters = cleanDigits(isReceive ? shift.fuel_receive_liters_b : shift.fuel_handover_liters_b, 4);
       var vLiters = cleanDigits(isReceive ? shift.fuel_receive_liters_v : shift.fuel_handover_liters_v, 4);
       var rows = [];
+      var coeffLine = 'Кэф А/Б/В ' + coeffA.replace('.', ',') + '/' + coeffB.replace('.', ',') + '/' + coeffV.replace('.', ',');
 
-      if (aLiters) rows.push('А ' + aLiters + ' л → ' + (getFuelKgText(aLiters, coeff) || '—') + ' кг');
-      if (bLiters) rows.push('Б ' + bLiters + ' л → ' + (getFuelKgText(bLiters, coeff) || '—') + ' кг');
-      if (vLiters) rows.push('В ' + vLiters + ' л → ' + (getFuelKgText(vLiters, coeff) || '—') + ' кг');
-      if (!rows.length && isDefaultFuelCoeffValue(coeff)) return '';
-      return 'Кэф ' + coeff.replace('.', ',') + (rows.length ? ' · ' + rows.join(' · ') : '');
+      if (aLiters) rows.push('А ' + aLiters + ' л → ' + (getFuelKgText(aLiters, coeffA) || '—') + ' кг');
+      if (bLiters) rows.push('Б ' + bLiters + ' л → ' + (getFuelKgText(bLiters, coeffB) || '—') + ' кг');
+      if (vLiters) rows.push('В ' + vLiters + ' л → ' + (getFuelKgText(vLiters, coeffV) || '—') + ' кг');
+      if (!rows.length && isDefaultFuelCoeffValue(coeffA) && isDefaultFuelCoeffValue(coeffB) && isDefaultFuelCoeffValue(coeffV)) return '';
+      return coeffLine + (rows.length ? ' · ' + rows.join(' · ') : '');
+    }
+
+    function getFuelCoeffInputId(side, section) {
+      var suffix = String(section || 'a').toUpperCase();
+      if (side === 'handover') return 'inputFuelHandoverCoeff' + suffix;
+      return 'inputFuelReceiveCoeff' + suffix;
+    }
+
+    function getFuelCoeffInput(side, section) {
+      return document.getElementById(getFuelCoeffInputId(side, section));
+    }
+
+    function syncFuelCoeffLinks(side) {
+      var coeffAInput = getFuelCoeffInput(side, 'a');
+      if (!coeffAInput) return;
+      var aNorm = normalizeFuelCoeff(coeffAInput.value, DEFAULT_FUEL_COEFF);
+      var coeffBInput = getFuelCoeffInput(side, 'b');
+      var coeffVInput = getFuelCoeffInput(side, 'v');
+      if (coeffBInput) coeffBInput.dataset.syncWithA = normalizeFuelCoeff(coeffBInput.value, DEFAULT_FUEL_COEFF) === aNorm ? '1' : '0';
+      if (coeffVInput) coeffVInput.dataset.syncWithA = normalizeFuelCoeff(coeffVInput.value, DEFAULT_FUEL_COEFF) === aNorm ? '1' : '0';
+    }
+
+    function propagateFuelCoeffFromA(side, value) {
+      var normalizedA = normalizeFuelCoeff(value, DEFAULT_FUEL_COEFF);
+      var coeffBInput = getFuelCoeffInput(side, 'b');
+      var coeffVInput = getFuelCoeffInput(side, 'v');
+      if (coeffBInput && coeffBInput.dataset.syncWithA !== '0') {
+        coeffBInput.value = normalizedA;
+        coeffBInput.dataset.syncWithA = '1';
+      }
+      if (coeffVInput && coeffVInput.dataset.syncWithA !== '0') {
+        coeffVInput.value = normalizedA;
+        coeffVInput.dataset.syncWithA = '1';
+      }
     }
 
     function wireFuelCoeffInput(id) {
@@ -8363,11 +8437,25 @@ var contentHtml = formatInstructionNodeContentHtml(
       var handleInput = function() {
         var cleaned = cleanFuelCoeffInput(el.value);
         if (el.value !== cleaned) el.value = cleaned;
+        var side = el.getAttribute('data-side');
+        var section = el.getAttribute('data-section');
+        if (side && section === 'a') {
+          propagateFuelCoeffFromA(side, el.value);
+        } else if (section) {
+          el.dataset.syncWithA = '0';
+        }
         updateFuelKgOutputs();
       };
       var handleBlur = function() {
         var normalized = normalizeFuelCoeff(el.value, DEFAULT_FUEL_COEFF);
         if (el.value !== normalized) el.value = normalized;
+        var side = el.getAttribute('data-side');
+        var section = el.getAttribute('data-section');
+        if (side && section === 'a') {
+          propagateFuelCoeffFromA(side, normalized);
+        } else if (section) {
+          el.dataset.syncWithA = '0';
+        }
         updateFuelKgOutputs();
       };
       var handleFocus = function() {
@@ -8597,6 +8685,12 @@ var contentHtml = formatInstructionNodeContentHtml(
 
     function collectOptionalShiftData() {
       var routeKind = getRouteType() === 'trip' ? 'trip' : 'depot';
+      var receiveCoeffA = normalizeFuelCoeff(getFieldValue('inputFuelReceiveCoeffA'), DEFAULT_FUEL_COEFF);
+      var receiveCoeffB = normalizeFuelCoeff(getFieldValue('inputFuelReceiveCoeffB'), receiveCoeffA);
+      var receiveCoeffV = normalizeFuelCoeff(getFieldValue('inputFuelReceiveCoeffV'), receiveCoeffA);
+      var handoverCoeffA = normalizeFuelCoeff(getFieldValue('inputFuelHandoverCoeffA'), DEFAULT_FUEL_COEFF);
+      var handoverCoeffB = normalizeFuelCoeff(getFieldValue('inputFuelHandoverCoeffB'), handoverCoeffA);
+      var handoverCoeffV = normalizeFuelCoeff(getFieldValue('inputFuelHandoverCoeffV'), handoverCoeffA);
       return {
         locomotive_series: getFieldValue('inputLocoSeries'),
         locomotive_number: cleanDigits(getFieldValue('inputLocoNumber'), 4),
@@ -8607,11 +8701,17 @@ var contentHtml = formatInstructionNodeContentHtml(
         route_kind: routeKind,
         route_from: routeKind === 'trip' ? getFieldValue('inputRouteFrom') : '',
         route_to: routeKind === 'trip' ? getFieldValue('inputRouteTo') : '',
-        fuel_receive_coeff: normalizeFuelCoeff(getFieldValue('inputFuelReceiveCoeff'), DEFAULT_FUEL_COEFF),
+        fuel_receive_coeff: receiveCoeffA,
+        fuel_receive_coeff_a: receiveCoeffA,
+        fuel_receive_coeff_b: receiveCoeffB,
+        fuel_receive_coeff_v: receiveCoeffV,
         fuel_receive_liters_a: cleanDigits(getFieldValue('inputFuelReceiveLitersA'), 4),
         fuel_receive_liters_b: cleanDigits(getFieldValue('inputFuelReceiveLitersB'), 4),
         fuel_receive_liters_v: cleanDigits(getFieldValue('inputFuelReceiveLitersV'), 4),
-        fuel_handover_coeff: normalizeFuelCoeff(getFieldValue('inputFuelHandoverCoeff'), DEFAULT_FUEL_COEFF),
+        fuel_handover_coeff: handoverCoeffA,
+        fuel_handover_coeff_a: handoverCoeffA,
+        fuel_handover_coeff_b: handoverCoeffB,
+        fuel_handover_coeff_v: handoverCoeffV,
         fuel_handover_liters_a: cleanDigits(getFieldValue('inputFuelHandoverLitersA'), 4),
         fuel_handover_liters_b: cleanDigits(getFieldValue('inputFuelHandoverLitersB'), 4),
         fuel_handover_liters_v: cleanDigits(getFieldValue('inputFuelHandoverLitersV'), 4)
@@ -8628,14 +8728,20 @@ var contentHtml = formatInstructionNodeContentHtml(
       setFieldValue('inputTrainLength', shift.train_length || '');
       setFieldValue('inputRouteFrom', shift.route_from || '');
       setFieldValue('inputRouteTo', shift.route_to || '');
-      setFieldValue('inputFuelReceiveCoeff', normalizeFuelCoeff(shift.fuel_receive_coeff, DEFAULT_FUEL_COEFF));
+      setFieldValue('inputFuelReceiveCoeffA', normalizeFuelCoeff(shift.fuel_receive_coeff_a, shift.fuel_receive_coeff || DEFAULT_FUEL_COEFF));
+      setFieldValue('inputFuelReceiveCoeffB', normalizeFuelCoeff(shift.fuel_receive_coeff_b, shift.fuel_receive_coeff || DEFAULT_FUEL_COEFF));
+      setFieldValue('inputFuelReceiveCoeffV', normalizeFuelCoeff(shift.fuel_receive_coeff_v, shift.fuel_receive_coeff || DEFAULT_FUEL_COEFF));
       setFieldValue('inputFuelReceiveLitersA', cleanDigits(shift.fuel_receive_liters_a, 4));
       setFieldValue('inputFuelReceiveLitersB', cleanDigits(shift.fuel_receive_liters_b, 4));
       setFieldValue('inputFuelReceiveLitersV', cleanDigits(shift.fuel_receive_liters_v, 4));
-      setFieldValue('inputFuelHandoverCoeff', normalizeFuelCoeff(shift.fuel_handover_coeff, DEFAULT_FUEL_COEFF));
+      setFieldValue('inputFuelHandoverCoeffA', normalizeFuelCoeff(shift.fuel_handover_coeff_a, shift.fuel_handover_coeff || DEFAULT_FUEL_COEFF));
+      setFieldValue('inputFuelHandoverCoeffB', normalizeFuelCoeff(shift.fuel_handover_coeff_b, shift.fuel_handover_coeff || DEFAULT_FUEL_COEFF));
+      setFieldValue('inputFuelHandoverCoeffV', normalizeFuelCoeff(shift.fuel_handover_coeff_v, shift.fuel_handover_coeff || DEFAULT_FUEL_COEFF));
       setFieldValue('inputFuelHandoverLitersA', cleanDigits(shift.fuel_handover_liters_a, 4));
       setFieldValue('inputFuelHandoverLitersB', cleanDigits(shift.fuel_handover_liters_b, 4));
       setFieldValue('inputFuelHandoverLitersV', cleanDigits(shift.fuel_handover_liters_v, 4));
+      syncFuelCoeffLinks('receive');
+      syncFuelCoeffLinks('handover');
       setRouteType(shift.route_kind === 'trip' ? 'trip' : 'depot');
       setOptionalCardOpen('optionalLocoCard', !!(shift.locomotive_series || shift.locomotive_number));
       setOptionalCardOpen('optionalTrainCard', !!(shift.train_number || shift.train_weight || shift.train_axles || shift.train_length));
@@ -8657,10 +8763,16 @@ var contentHtml = formatInstructionNodeContentHtml(
         route_from: '',
         route_to: '',
         fuel_receive_coeff: DEFAULT_FUEL_COEFF,
+        fuel_receive_coeff_a: DEFAULT_FUEL_COEFF,
+        fuel_receive_coeff_b: DEFAULT_FUEL_COEFF,
+        fuel_receive_coeff_v: DEFAULT_FUEL_COEFF,
         fuel_receive_liters_a: '',
         fuel_receive_liters_b: '',
         fuel_receive_liters_v: '',
         fuel_handover_coeff: DEFAULT_FUEL_COEFF,
+        fuel_handover_coeff_a: DEFAULT_FUEL_COEFF,
+        fuel_handover_coeff_b: DEFAULT_FUEL_COEFF,
+        fuel_handover_coeff_v: DEFAULT_FUEL_COEFF,
         fuel_handover_liters_a: '',
         fuel_handover_liters_b: '',
         fuel_handover_liters_v: ''
@@ -9172,8 +9284,14 @@ var contentHtml = formatInstructionNodeContentHtml(
     wireNumericInput('inputFuelHandoverLitersA', 4);
     wireNumericInput('inputFuelHandoverLitersB', 4);
     wireNumericInput('inputFuelHandoverLitersV', 4);
-    wireFuelCoeffInput('inputFuelReceiveCoeff');
-    wireFuelCoeffInput('inputFuelHandoverCoeff');
+    wireFuelCoeffInput('inputFuelReceiveCoeffA');
+    wireFuelCoeffInput('inputFuelReceiveCoeffB');
+    wireFuelCoeffInput('inputFuelReceiveCoeffV');
+    wireFuelCoeffInput('inputFuelHandoverCoeffA');
+    wireFuelCoeffInput('inputFuelHandoverCoeffB');
+    wireFuelCoeffInput('inputFuelHandoverCoeffV');
+    syncFuelCoeffLinks('receive');
+    syncFuelCoeffLinks('handover');
     updateFuelKgOutputs();
 
     document.getElementById('inputLocoSeries').addEventListener('change', function(e) {
@@ -9382,10 +9500,16 @@ var contentHtml = formatInstructionNodeContentHtml(
         route_from: optionalData.route_from,
         route_to: optionalData.route_to,
         fuel_receive_coeff: optionalData.fuel_receive_coeff,
+        fuel_receive_coeff_a: optionalData.fuel_receive_coeff_a,
+        fuel_receive_coeff_b: optionalData.fuel_receive_coeff_b,
+        fuel_receive_coeff_v: optionalData.fuel_receive_coeff_v,
         fuel_receive_liters_a: optionalData.fuel_receive_liters_a,
         fuel_receive_liters_b: optionalData.fuel_receive_liters_b,
         fuel_receive_liters_v: optionalData.fuel_receive_liters_v,
         fuel_handover_coeff: optionalData.fuel_handover_coeff,
+        fuel_handover_coeff_a: optionalData.fuel_handover_coeff_a,
+        fuel_handover_coeff_b: optionalData.fuel_handover_coeff_b,
+        fuel_handover_coeff_v: optionalData.fuel_handover_coeff_v,
         fuel_handover_liters_a: optionalData.fuel_handover_liters_a,
         fuel_handover_liters_b: optionalData.fuel_handover_liters_b,
         fuel_handover_liters_v: optionalData.fuel_handover_liters_v

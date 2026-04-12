@@ -433,9 +433,19 @@
               <div class="fuel-columns">
                 <section class="fuel-column" aria-label="Прием топлива">
                   <div class="fuel-column-title">Прием топлива</div>
-                  <div class="field">
-                    <label>Кэф</label>
-                    <input class="optional-control fuel-coeff-input" type="text" id="inputFuelReceiveCoeff" inputmode="decimal" maxlength="5" value="0.868" placeholder="0.868" />
+                  <div class="optional-grid fuel-grid fuel-grid-coeff">
+                    <div class="field">
+                      <label>Кэф А</label>
+                      <input class="optional-control fuel-coeff-input" type="text" id="inputFuelReceiveCoeffA" data-side="receive" data-section="a" inputmode="decimal" maxlength="5" value="0.868" placeholder="0.868" />
+                    </div>
+                    <div class="field">
+                      <label>Кэф Б</label>
+                      <input class="optional-control fuel-coeff-input" type="text" id="inputFuelReceiveCoeffB" data-side="receive" data-section="b" inputmode="decimal" maxlength="5" value="0.868" placeholder="0.868" />
+                    </div>
+                    <div class="field">
+                      <label>Кэф В</label>
+                      <input class="optional-control fuel-coeff-input" type="text" id="inputFuelReceiveCoeffV" data-side="receive" data-section="v" inputmode="decimal" maxlength="5" value="0.868" placeholder="0.868" />
+                    </div>
                   </div>
                   <div class="optional-grid fuel-grid">
                     <div class="field">
@@ -469,9 +479,19 @@
 
                 <section class="fuel-column" aria-label="Сдача топлива">
                   <div class="fuel-column-title">Сдача топлива</div>
-                  <div class="field">
-                    <label>Кэф</label>
-                    <input class="optional-control fuel-coeff-input" type="text" id="inputFuelHandoverCoeff" inputmode="decimal" maxlength="5" value="0.868" placeholder="0.868" />
+                  <div class="optional-grid fuel-grid fuel-grid-coeff">
+                    <div class="field">
+                      <label>Кэф А</label>
+                      <input class="optional-control fuel-coeff-input" type="text" id="inputFuelHandoverCoeffA" data-side="handover" data-section="a" inputmode="decimal" maxlength="5" value="0.868" placeholder="0.868" />
+                    </div>
+                    <div class="field">
+                      <label>Кэф Б</label>
+                      <input class="optional-control fuel-coeff-input" type="text" id="inputFuelHandoverCoeffB" data-side="handover" data-section="b" inputmode="decimal" maxlength="5" value="0.868" placeholder="0.868" />
+                    </div>
+                    <div class="field">
+                      <label>Кэф В</label>
+                      <input class="optional-control fuel-coeff-input" type="text" id="inputFuelHandoverCoeffV" data-side="handover" data-section="v" inputmode="decimal" maxlength="5" value="0.868" placeholder="0.868" />
+                    </div>
                   </div>
                   <div class="optional-grid fuel-grid">
                     <div class="field">

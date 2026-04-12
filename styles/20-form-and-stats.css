@@ -647,6 +647,12 @@
       padding-top: 2px;
     }
 
+    .fuel-grid-coeff {
+      border-bottom: 1px dashed var(--border);
+      padding-bottom: 8px;
+      margin-bottom: 2px;
+    }
+
     .fuel-grid-kg {
       margin-top: 4px;
       padding-top: 10px;
