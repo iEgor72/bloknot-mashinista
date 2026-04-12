@@ -8242,6 +8242,9 @@ var contentHtml = formatInstructionNodeContentHtml(
       var hasReceive = receiveLitersTotal > 0;
       var hasHandover = handoverLitersTotal > 0;
       var hasPair = hasReceive && hasHandover;
+      var hasPairA = receiveLitersA > 0 && handoverLitersA > 0;
+      var hasPairB = receiveLitersB > 0 && handoverLitersB > 0;
+      var hasPairV = receiveLitersV > 0 && handoverLitersV > 0;
 
       return {
         receiveLitersTotal: receiveLitersTotal,
@@ -8249,6 +8252,12 @@ var contentHtml = formatInstructionNodeContentHtml(
         hasReceive: hasReceive,
         hasHandover: hasHandover,
         hasPair: hasPair,
+        consumptionLitersA: hasPairA ? (receiveLitersA - handoverLitersA) : 0,
+        consumptionLitersB: hasPairB ? (receiveLitersB - handoverLitersB) : 0,
+        consumptionLitersV: hasPairV ? (receiveLitersV - handoverLitersV) : 0,
+        consumptionKgA: hasPairA ? ((receiveLitersA * receiveCoeffA) - (handoverLitersA * handoverCoeffA)) : 0,
+        consumptionKgB: hasPairB ? ((receiveLitersB * receiveCoeffB) - (handoverLitersB * handoverCoeffB)) : 0,
+        consumptionKgV: hasPairV ? ((receiveLitersV * receiveCoeffV) - (handoverLitersV * handoverCoeffV)) : 0,
         consumptionLiters: hasPair ? (receiveLitersTotal - handoverLitersTotal) : 0,
         receiveKgTotal: receiveKgTotal,
         handoverKgTotal: handoverKgTotal,
@@ -8351,6 +8360,17 @@ var contentHtml = formatInstructionNodeContentHtml(
       });
       var totalLitersEl = document.getElementById('fuelConsumptionLiters');
       var totalKgEl = document.getElementById('fuelConsumptionKg');
+      var sectionKeys = [
+        { key: 'A', litersId: 'fuelConsumptionSectionALiters', kgId: 'fuelConsumptionSectionAKg' },
+        { key: 'B', litersId: 'fuelConsumptionSectionBLiters', kgId: 'fuelConsumptionSectionBKg' },
+        { key: 'V', litersId: 'fuelConsumptionSectionVLiters', kgId: 'fuelConsumptionSectionVKg' }
+      ];
+      for (var sk = 0; sk < sectionKeys.length; sk++) {
+        var sectionLitersEl = document.getElementById(sectionKeys[sk].litersId);
+        var sectionKgEl = document.getElementById(sectionKeys[sk].kgId);
+        if (sectionLitersEl) sectionLitersEl.textContent = formatFuelLitersSignedValue(totals['consumptionLiters' + sectionKeys[sk].key]);
+        if (sectionKgEl) sectionKgEl.textContent = formatFuelKgSignedValue(totals['consumptionKg' + sectionKeys[sk].key]);
+      }
       if (totalLitersEl) totalLitersEl.textContent = formatFuelLitersSignedValue(totals.consumptionLiters);
       if (totalKgEl) totalKgEl.textContent = formatFuelKgSignedValue(totals.consumptionKg);
     }
