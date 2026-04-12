@@ -8409,7 +8409,10 @@ var contentHtml = formatInstructionNodeContentHtml(
 
     function syncFuelCoeffByRule(side, section, value, sourceInput) {
       if (!side || !section) return;
-      var targetSections = section === 'a' ? FUEL_SECTIONS : [section];
+      var targetSections = [section];
+      if (side === 'receive' && section === 'a') {
+        targetSections = FUEL_SECTIONS;
+      }
       function applyToSide(targetSide) {
         for (var i = 0; i < targetSections.length; i++) {
           var targetInput = getFuelCoeffInput(targetSide, targetSections[i]);
