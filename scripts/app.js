@@ -7094,12 +7094,10 @@ var contentHtml = formatInstructionNodeContentHtml(
       if (!shift) return items;
       var loco = getLocoSummary(shift, { compact: true });
       var primary = getShiftPrimaryConsist(shift);
-      var consists = getShiftConsists(shift, false);
       if (loco) items.push({ icon: 'locomotive', text: loco.replace('№ ', '№') });
       if (primary.train_number) items.push({ icon: 'train', text: '№' + primary.train_number });
       if (primary.train_length) items.push({ icon: 'wagon', text: primary.train_length + ' ваг' });
       if (primary.train_axles) items.push({ icon: 'axles', text: primary.train_axles + ' оси' });
-      if (consists.length > 1) items.push({ icon: 'route', text: '+' + (consists.length - 1) + ' доп. рейс' });
       return items;
     }
 
@@ -7256,7 +7254,6 @@ var contentHtml = formatInstructionNodeContentHtml(
       var incomeVm = getShiftIncomeViewModel(shift, shiftIncomeMap);
       var shiftType = getShiftTypeLabel(shift);
       var direction = getShiftDirectionLineText(shift, { full: true });
-      var consists = getShiftConsists(shift, false);
       var locoSummary = getLocoSummary(shift);
       var trainSummary = getTrainSummary(shift);
       var fuelTotals = getFuelConsumptionTotalsFromShift(shift);
@@ -7282,7 +7279,6 @@ var contentHtml = formatInstructionNodeContentHtml(
       html += '<div class="shift-detail-section-title">Маршрут</div>';
       html += '<div class="shift-detail-list">';
       html += buildShiftDetailRowHtml('Тип', shiftType);
-      html += buildShiftDetailRowHtml('Доп. рейсы', consists.length > 1 ? String(consists.length - 1) : '0');
       html += buildShiftDetailRowHtml('Участки', direction);
       html += '</div>';
       html += '</section>';
@@ -8686,7 +8682,6 @@ var contentHtml = formatInstructionNodeContentHtml(
     var FUEL_SIDE_KINDS = ['receive', 'handover'];
     var CONSIST_LIST_EL = document.getElementById('consistList');
     var CONSIST_TEMPLATE_EL = document.getElementById('consistItemTemplate');
-    var RARE_CONSISTS_DETAILS_EL = document.getElementById('rareConsistsDetails');
     var CONSIST_NUMERIC_LIMITS = {
       locomotive_number: 4,
       train_number: 4,
@@ -8813,6 +8808,7 @@ var contentHtml = formatInstructionNodeContentHtml(
         });
         if (hasAnyConsistData(legacy)) list.push(legacy);
       }
+      if (list.length > 1) list = [list[0]];
       if (ensureOne && !list.length) list.push(createDefaultConsistEntry());
       return list;
     }
@@ -8869,9 +8865,8 @@ var contentHtml = formatInstructionNodeContentHtml(
     function getShiftDirectionLineText(shift, options) {
       var routes = getShiftRouteSummaries(shift);
       if (!routes.length) return '';
-      if (options && options.full) return routes.join(' · ');
-      if (routes.length === 1) return routes[0];
-      return routes[0] + ' +' + (routes.length - 1);
+      if (options && options.full) return routes[0];
+      return routes[0];
     }
 
     function getShiftTypeLabel(shift) {
@@ -9002,31 +8997,12 @@ var contentHtml = formatInstructionNodeContentHtml(
       return list;
     }
 
-    function syncRareConsistsDetails(extraCount) {
-      if (!RARE_CONSISTS_DETAILS_EL) return;
-      var hasExtra = Number(extraCount || 0) > 0;
-      RARE_CONSISTS_DETAILS_EL.classList.toggle('has-extra', hasExtra);
-      if (!hasExtra) RARE_CONSISTS_DETAILS_EL.open = false;
-    }
-
     function renumberConsistItems() {
       var items = getConsistItems();
-      var onlyOne = items.length <= 1;
       for (var i = 0; i < items.length; i++) {
-        items[i].classList.toggle('is-primary', i === 0);
-        items[i].classList.toggle('is-secondary', i > 0);
-        var titleEl = items[i].querySelector('.consist-item-title');
-        if (titleEl) {
-          if (i === 0) {
-            titleEl.textContent = 'Основной рейс';
-          } else {
-            titleEl.textContent = 'Дополнительный рейс ' + String(i + 1);
-          }
-        }
         var removeBtn = items[i].querySelector('[data-action="remove-consist"]');
-        if (removeBtn) removeBtn.disabled = onlyOne;
+        if (removeBtn) removeBtn.disabled = true;
       }
-      syncRareConsistsDetails(items.length - 1);
     }
 
     function renderConsistItems(entries) {
@@ -9041,22 +9017,6 @@ var contentHtml = formatInstructionNodeContentHtml(
         CONSIST_LIST_EL.appendChild(clone);
       }
       renumberConsistItems();
-    }
-
-    function createContinuationConsist(prevEntry) {
-      var source = normalizeConsistEntry(prevEntry || {});
-      var next = createDefaultConsistEntry();
-      next.route_kind = 'trip';
-      next.locomotive_series = source.locomotive_series;
-      next.locomotive_number = source.locomotive_number;
-      for (var s = 0; s < FUEL_SIDE_KINDS.length; s++) {
-        var side = FUEL_SIDE_KINDS[s];
-        for (var k = 0; k < FUEL_SECTIONS.length; k++) {
-          var section = FUEL_SECTIONS[k];
-          next['fuel_' + side + '_coeff_' + section] = source['fuel_' + side + '_coeff_' + section];
-        }
-      }
-      return next;
     }
 
     function handleConsistCoeffInput(inputEl) {
@@ -9344,9 +9304,6 @@ var contentHtml = formatInstructionNodeContentHtml(
           rows.push('Кэф А/Б/В ' + coeffs[0].replace('.', ',') + '/' + coeffs[1].replace('.', ',') + '/' + coeffs[2].replace('.', ','));
         }
         var summary = rows.join(' · ');
-        if (consists.length > 1) {
-          summary = (getConsistLocoSummary(consist) || ('Рейс ' + (i + 1))) + ': ' + summary;
-        }
         summaries.push(summary);
       }
       return summaries.join(' · ');
@@ -9388,7 +9345,6 @@ var contentHtml = formatInstructionNodeContentHtml(
         }
       }
       setOptionalCardOpen('optionalConsistsCard', hasAny);
-      if (RARE_CONSISTS_DETAILS_EL) RARE_CONSISTS_DETAILS_EL.open = consists.length > 1;
       updateFuelKgOutputs();
       renderDraftShiftSummary();
     }
@@ -9396,7 +9352,6 @@ var contentHtml = formatInstructionNodeContentHtml(
     function clearOptionalShiftData() {
       renderConsistItems([createDefaultConsistEntry()]);
       setOptionalCardOpen('optionalConsistsCard', false);
-      if (RARE_CONSISTS_DETAILS_EL) RARE_CONSISTS_DETAILS_EL.open = false;
       updateFuelKgOutputs();
     }
 
@@ -9411,7 +9366,7 @@ var contentHtml = formatInstructionNodeContentHtml(
         list.push(summary);
       }
       if (!list.length) return '';
-      if (options && options.compact && list.length > 1) return list[0] + ' +' + (list.length - 1);
+      if (options && options.compact && list.length > 1) return list[0];
       return list.join(' / ');
     }
 
@@ -9426,16 +9381,13 @@ var contentHtml = formatInstructionNodeContentHtml(
         list.push(summary);
       }
       if (!list.length) return '';
-      if (options && options.compact && list.length > 1) return list[0] + ' +' + (list.length - 1);
+      if (options && options.compact && list.length > 1) return list[0];
       return list.join(' / ');
     }
 
     function getShiftTitle(shift) {
       var routes = getShiftRouteSummaries(shift);
-      if (routes.length) {
-        if (routes.length === 1) return routes[0];
-        return routes[0] + ' +' + (routes.length - 1);
-      }
+      if (routes.length) return routes[0];
       var loco = getLocoSummary(shift, { compact: true });
       if (loco) return 'Локомотив ' + loco;
       var train = getTrainSummary(shift, { compact: true });
@@ -9810,22 +9762,6 @@ var contentHtml = formatInstructionNodeContentHtml(
     setFormMode('add');
     clearOptionalShiftData();
     bindConsistListEvents();
-
-    var addConsistBtnEl = document.getElementById('btnAddConsist');
-    if (addConsistBtnEl) {
-      addConsistBtnEl.addEventListener('click', function() {
-        triggerHapticTapSoft();
-        var currentConsists = readConsistsFromForm(true);
-        var sourceList = currentConsists.length ? currentConsists : [createDefaultConsistEntry()];
-        var lastConsist = sourceList[sourceList.length - 1];
-        sourceList.push(createContinuationConsist(lastConsist));
-        renderConsistItems(sourceList);
-        updateFuelKgOutputs();
-        renderDraftShiftSummary();
-        setOptionalCardOpen('optionalConsistsCard', true);
-        if (RARE_CONSISTS_DETAILS_EL) RARE_CONSISTS_DETAILS_EL.open = true;
-      });
-    }
 
     setDefaultShiftTimeInputs();
     renderDraftShiftSummary();

@@ -355,25 +355,18 @@
             </div>
           </div>
 
-          <div class="optional-section-title">Дополнительные данные рейса</div>
+          <div class="optional-section-title">Данные рейса</div>
 
           <details class="optional-card" id="optionalConsistsCard">
             <summary class="optional-summary">
               <div class="optional-summary-main">
-                <div class="optional-summary-title">Маршрут, локомотив, топливо и поезд</div>
-                <div class="optional-summary-subtitle">Обычно заполняется один рейс</div>
+                <div class="optional-summary-title">Участок, локомотив, топливо, поезд</div>
+                <div class="optional-summary-subtitle">Для одной смены</div>
               </div>
               <div class="optional-summary-chevron">⌄</div>
             </summary>
             <div class="optional-card-body">
               <div class="consist-list" id="consistList"></div>
-              <details class="rare-consists" id="rareConsistsDetails">
-                <summary class="rare-consists-summary">Редкий случай: несколько рейсов в одной смене</summary>
-                <div class="rare-consists-body">
-                  <button class="btn-secondary consist-add-btn" id="btnAddConsist" type="button">+ Добавить дополнительный рейс</button>
-                  <div class="optional-note consist-rare-note">Нужно только если в одной смене был переход на другой участок/поезд.</div>
-                </div>
-              </details>
               <div class="fuel-consumption-note" id="fuelConsumptionNote">
                 Общий расход: <strong id="fuelConsumptionLiters">0</strong> л | <strong id="fuelConsumptionKg">0</strong> кг
               </div>
@@ -382,11 +375,6 @@
 
           <template id="consistItemTemplate">
             <article class="consist-item" data-consist-item="1">
-              <div class="consist-item-head">
-                <div class="consist-item-title">Рейс <span class="consist-item-index">1</span></div>
-                <button class="consist-remove-btn" type="button" data-action="remove-consist">Удалить</button>
-              </div>
-
               <section class="consist-block">
                 <div class="consist-block-title">Участок и вид следования</div>
                 <div class="segmented two route-segmented" data-setting-group="routeType">
