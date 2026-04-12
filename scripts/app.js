@@ -8407,16 +8407,19 @@ var contentHtml = formatInstructionNodeContentHtml(
       return document.getElementById(getFuelCoeffInputId(side, section));
     }
 
-    function syncFuelCoeffByRule(section, value, sourceInput) {
-      if (!section) return;
+    function syncFuelCoeffByRule(side, section, value, sourceInput) {
+      if (!side || !section) return;
       var targetSections = section === 'a' ? FUEL_SECTIONS : [section];
-      for (var s = 0; s < 2; s++) {
-        var side = s === 0 ? 'receive' : 'handover';
+      function applyToSide(targetSide) {
         for (var i = 0; i < targetSections.length; i++) {
-          var targetInput = getFuelCoeffInput(side, targetSections[i]);
+          var targetInput = getFuelCoeffInput(targetSide, targetSections[i]);
           if (!targetInput || targetInput === sourceInput) continue;
           targetInput.value = value;
         }
+      }
+      applyToSide(side);
+      if (side === 'receive') {
+        applyToSide('handover');
       }
     }
 
@@ -8426,15 +8429,17 @@ var contentHtml = formatInstructionNodeContentHtml(
       var handleInput = function() {
         var cleaned = cleanFuelCoeffInput(el.value);
         if (el.value !== cleaned) el.value = cleaned;
+        var side = el.getAttribute('data-side');
         var section = el.getAttribute('data-section');
-        syncFuelCoeffByRule(section, el.value, el);
+        syncFuelCoeffByRule(side, section, el.value, el);
         updateFuelKgOutputs();
       };
       var handleBlur = function() {
         var normalized = normalizeFuelCoeff(el.value, DEFAULT_FUEL_COEFF);
         if (el.value !== normalized) el.value = normalized;
+        var side = el.getAttribute('data-side');
         var section = el.getAttribute('data-section');
-        syncFuelCoeffByRule(section, normalized, el);
+        syncFuelCoeffByRule(side, section, normalized, el);
         updateFuelKgOutputs();
       };
       var handleFocus = function() {
