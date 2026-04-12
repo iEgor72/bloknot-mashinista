@@ -355,189 +355,196 @@
             </div>
           </div>
 
-          <div class="optional-section-title">Необязательные данные</div>
+          <div class="optional-section-title">Полурейсы смены</div>
 
-          <details class="optional-card" id="optionalRouteCard">
+          <details class="optional-card" id="optionalConsistsCard" open>
             <summary class="optional-summary">
               <div class="optional-summary-main">
-                <div class="optional-summary-title">Участок и вид следования</div>
-                <div class="optional-summary-subtitle">Поездка или смена</div>
+                <div class="optional-summary-title">Участки, локомотивы, топливо и поезда</div>
+                <div class="optional-summary-subtitle">Каждый блок = один полурейс</div>
               </div>
               <div class="optional-summary-chevron">⌄</div>
             </summary>
             <div class="optional-card-body">
-              <div class="segmented two route-segmented" id="routeTypeSegmented" data-setting-group="routeType">
-                <button type="button" class="segmented-btn" data-value="trip">Поездка</button>
-                <button type="button" class="segmented-btn" data-value="depot">Смена</button>
+              <div class="consist-list" id="consistList"></div>
+              <button class="btn-secondary consist-add-btn" id="btnAddConsist" type="button">+ Добавить полурейс</button>
+              <div class="fuel-consumption-note" id="fuelConsumptionNote">
+                Общий расход: <strong id="fuelConsumptionLiters">0</strong> л | <strong id="fuelConsumptionKg">0</strong> кг
               </div>
-              <div class="route-fields" id="routeFields">
+            </div>
+          </details>
+
+          <template id="consistItemTemplate">
+            <article class="consist-item" data-consist-item="1">
+              <div class="consist-item-head">
+                <div class="consist-item-title">Полурейс <span class="consist-item-index">1</span></div>
+                <button class="consist-remove-btn" type="button" data-action="remove-consist">Удалить</button>
+              </div>
+
+              <section class="consist-block">
+                <div class="consist-block-title">Участок и вид следования</div>
+                <div class="segmented two route-segmented" data-setting-group="routeType">
+                  <button type="button" class="segmented-btn active" data-value="trip">Поездка</button>
+                  <button type="button" class="segmented-btn" data-value="depot">Смена</button>
+                </div>
+                <div class="route-fields">
+                  <div class="optional-grid optional-grid-two">
+                    <div class="field">
+                      <label>Станция отправления</label>
+                      <input class="optional-control" type="text" data-field="route_from" maxlength="64" placeholder="Станция отправления" />
+                    </div>
+                    <div class="field">
+                      <label>Станция прибытия</label>
+                      <input class="optional-control" type="text" data-field="route_to" maxlength="64" placeholder="Станция прибытия" />
+                    </div>
+                  </div>
+                  <div class="optional-note">Для режима «Смена» дополнительные поля не нужны.</div>
+                </div>
+              </section>
+
+              <section class="consist-block">
+                <div class="consist-block-title">Локомотив</div>
                 <div class="optional-grid optional-grid-two">
                   <div class="field">
-                    <label>Станция отправления</label>
-                    <input class="optional-control" type="text" id="inputRouteFrom" maxlength="64" placeholder="Станция отправления" />
+                    <label>Серия локомотива</label>
+                    <select class="optional-control" data-field="locomotive_series">
+                      <option value="">Выберите серию</option>
+                      <option value="ТЭ10">ТЭ10</option>
+                      <option value="ТЭ25">ТЭ25</option>
+                      <option value="ТЭМ">ТЭМ</option>
+                      <option value="ЭС5">ЭС5</option>
+                    </select>
                   </div>
                   <div class="field">
-                    <label>Станция прибытия</label>
-                    <input class="optional-control" type="text" id="inputRouteTo" maxlength="64" placeholder="Станция прибытия" />
+                    <label>Номер локомотива</label>
+                    <input class="optional-control" type="text" data-field="locomotive_number" inputmode="numeric" maxlength="4" placeholder="0101" />
                   </div>
                 </div>
-                <div class="optional-note">Для режима «Смена» дополнительные поля не нужны.</div>
-              </div>
-            </div>
-          </details>
+              </section>
 
-          <details class="optional-card" id="optionalTrainCard">
-            <summary class="optional-summary">
-              <div class="optional-summary-main">
-                <div class="optional-summary-title">Поезд</div>
-                <div class="optional-summary-subtitle">Номер, вес, оси и длина</div>
-              </div>
-              <div class="optional-summary-chevron">⌄</div>
-            </summary>
-            <div class="optional-card-body">
-              <div class="optional-grid optional-grid-two">
-                <div class="field">
-                  <label>Номер поезда</label>
-                  <input class="optional-control" type="text" id="inputTrainNumber" inputmode="numeric" maxlength="4" placeholder="1234" />
-                </div>
-                <div class="field">
-                  <label>Вес</label>
-                  <input class="optional-control" type="text" id="inputTrainWeight" inputmode="numeric" maxlength="4" placeholder="8000" />
-                </div>
-                <div class="field">
-                  <label>Оси</label>
-                  <input class="optional-control" type="text" id="inputTrainAxles" inputmode="numeric" maxlength="3" placeholder="060" />
-                </div>
-                <div class="field">
-                  <label>Условная длина</label>
-                  <input class="optional-control" type="text" id="inputTrainLength" inputmode="numeric" maxlength="3" placeholder="300" />
-                </div>
-              </div>
-            </div>
-          </details>
+              <section class="consist-block">
+                <div class="consist-block-title">Топливо</div>
+                <div class="fuel-columns">
+                  <section class="fuel-column" aria-label="Прием топлива" data-side="receive">
+                    <div class="fuel-column-title">Прием топлива</div>
+                    <div class="optional-grid fuel-grid fuel-grid-coeff">
+                      <div class="field">
+                        <label>Кэф А</label>
+                        <input class="optional-control fuel-coeff-input" type="text" data-role="fuel-coeff" data-side="receive" data-section="a" inputmode="decimal" maxlength="5" value="0.868" placeholder="0.868" />
+                      </div>
+                      <div class="field">
+                        <label>Кэф Б</label>
+                        <input class="optional-control fuel-coeff-input" type="text" data-role="fuel-coeff" data-side="receive" data-section="b" inputmode="decimal" maxlength="5" value="0.868" placeholder="0.868" />
+                      </div>
+                      <div class="field">
+                        <label>Кэф В</label>
+                        <input class="optional-control fuel-coeff-input" type="text" data-role="fuel-coeff" data-side="receive" data-section="v" inputmode="decimal" maxlength="5" value="0.868" placeholder="0.868" />
+                      </div>
+                    </div>
+                    <div class="optional-grid fuel-grid">
+                      <div class="field">
+                        <label>А, л</label>
+                        <input class="optional-control" type="text" data-role="fuel-liters" data-side="receive" data-section="a" inputmode="numeric" maxlength="4" placeholder="0000" />
+                      </div>
+                      <div class="field">
+                        <label>Б, л</label>
+                        <input class="optional-control" type="text" data-role="fuel-liters" data-side="receive" data-section="b" inputmode="numeric" maxlength="4" placeholder="0000" />
+                      </div>
+                      <div class="field">
+                        <label>В, л</label>
+                        <input class="optional-control" type="text" data-role="fuel-liters" data-side="receive" data-section="v" inputmode="numeric" maxlength="4" placeholder="0000" />
+                      </div>
+                    </div>
+                    <div class="optional-grid fuel-grid fuel-grid-kg">
+                      <div class="field">
+                        <label>А, кг</label>
+                        <input class="optional-control fuel-kg-output" type="text" data-role="fuel-kg" data-side="receive" data-section="a" readonly disabled tabindex="-1" aria-readonly="true" />
+                      </div>
+                      <div class="field">
+                        <label>Б, кг</label>
+                        <input class="optional-control fuel-kg-output" type="text" data-role="fuel-kg" data-side="receive" data-section="b" readonly disabled tabindex="-1" aria-readonly="true" />
+                      </div>
+                      <div class="field">
+                        <label>В, кг</label>
+                        <input class="optional-control fuel-kg-output" type="text" data-role="fuel-kg" data-side="receive" data-section="v" readonly disabled tabindex="-1" aria-readonly="true" />
+                      </div>
+                    </div>
+                  </section>
 
-          <details class="optional-card" id="optionalLocoCard">
-            <summary class="optional-summary">
-              <div class="optional-summary-main">
-                <div class="optional-summary-title">Локомотив</div>
-                <div class="optional-summary-subtitle">Серия и номер</div>
-              </div>
-              <div class="optional-summary-chevron">⌄</div>
-            </summary>
-            <div class="optional-card-body">
-              <div class="optional-grid optional-grid-two">
-                <div class="field">
-                  <label>Серия локомотива</label>
-                  <div class="glass-select" id="locoSeriesSelect">
-                    <button class="glass-select-trigger" id="locoSeriesTrigger" type="button" aria-haspopup="listbox" aria-expanded="false">
-                      <span class="glass-select-value" id="locoSeriesValue">Выберите серию</span>
-                      <span class="glass-select-chevron">⌄</span>
-                    </button>
-                    <div class="glass-select-menu hidden" id="locoSeriesMenu" role="listbox" aria-label="Серия локомотива"></div>
-                  </div>
-                  <select class="hidden" id="inputLocoSeries" tabindex="-1" aria-hidden="true">
-                    <option value="" selected disabled hidden>Выберите серию</option>
-                    <option value="ТЭ10">ТЭ10</option>
-                    <option value="ТЭ25">ТЭ25</option>
-                    <option value="ТЭМ">ТЭМ</option>
-                    <option value="ЭС5">ЭС5</option>
-                  </select>
+                  <section class="fuel-column" aria-label="Сдача топлива" data-side="handover">
+                    <div class="fuel-column-title">Сдача топлива</div>
+                    <div class="optional-grid fuel-grid fuel-grid-coeff">
+                      <div class="field">
+                        <label>Кэф А</label>
+                        <input class="optional-control fuel-coeff-input" type="text" data-role="fuel-coeff" data-side="handover" data-section="a" inputmode="decimal" maxlength="5" value="0.868" placeholder="0.868" />
+                      </div>
+                      <div class="field">
+                        <label>Кэф Б</label>
+                        <input class="optional-control fuel-coeff-input" type="text" data-role="fuel-coeff" data-side="handover" data-section="b" inputmode="decimal" maxlength="5" value="0.868" placeholder="0.868" />
+                      </div>
+                      <div class="field">
+                        <label>Кэф В</label>
+                        <input class="optional-control fuel-coeff-input" type="text" data-role="fuel-coeff" data-side="handover" data-section="v" inputmode="decimal" maxlength="5" value="0.868" placeholder="0.868" />
+                      </div>
+                    </div>
+                    <div class="optional-grid fuel-grid">
+                      <div class="field">
+                        <label>А, л</label>
+                        <input class="optional-control" type="text" data-role="fuel-liters" data-side="handover" data-section="a" inputmode="numeric" maxlength="4" placeholder="0000" />
+                      </div>
+                      <div class="field">
+                        <label>Б, л</label>
+                        <input class="optional-control" type="text" data-role="fuel-liters" data-side="handover" data-section="b" inputmode="numeric" maxlength="4" placeholder="0000" />
+                      </div>
+                      <div class="field">
+                        <label>В, л</label>
+                        <input class="optional-control" type="text" data-role="fuel-liters" data-side="handover" data-section="v" inputmode="numeric" maxlength="4" placeholder="0000" />
+                      </div>
+                    </div>
+                    <div class="optional-grid fuel-grid fuel-grid-kg">
+                      <div class="field">
+                        <label>А, кг</label>
+                        <input class="optional-control fuel-kg-output" type="text" data-role="fuel-kg" data-side="handover" data-section="a" readonly disabled tabindex="-1" aria-readonly="true" />
+                      </div>
+                      <div class="field">
+                        <label>Б, кг</label>
+                        <input class="optional-control fuel-kg-output" type="text" data-role="fuel-kg" data-side="handover" data-section="b" readonly disabled tabindex="-1" aria-readonly="true" />
+                      </div>
+                      <div class="field">
+                        <label>В, кг</label>
+                        <input class="optional-control fuel-kg-output" type="text" data-role="fuel-kg" data-side="handover" data-section="v" readonly disabled tabindex="-1" aria-readonly="true" />
+                      </div>
+                    </div>
+                  </section>
                 </div>
-                <div class="field">
-                  <label>Номер локомотива</label>
-                  <input class="optional-control" type="text" id="inputLocoNumber" inputmode="numeric" maxlength="4" placeholder="0010" />
+                <div class="fuel-consumption-note fuel-consumption-note-inline">
+                  Расход по полурейсу: <strong data-role="consist-consumption-liters">0</strong> л | <strong data-role="consist-consumption-kg">0</strong> кг
                 </div>
-              </div>
-            </div>
-          </details>
+              </section>
 
-          <details class="optional-card" id="optionalFuelCard">
-            <summary class="optional-summary">
-              <div class="optional-summary-main">
-                <div class="optional-summary-title">Топливо</div>
-                <div class="optional-summary-subtitle">Прием и сдача</div>
-              </div>
-              <div class="optional-summary-chevron">⌄</div>
-            </summary>
-            <div class="optional-card-body">
-              <div class="fuel-columns">
-                <section class="fuel-column" aria-label="Прием топлива">
-                  <div class="fuel-column-title">Прием топлива</div>
+              <section class="consist-block">
+                <div class="consist-block-title">Поезд</div>
+                <div class="optional-grid optional-grid-two">
                   <div class="field">
-                    <label>Кэф</label>
-                    <input class="optional-control fuel-coeff-input" type="text" id="inputFuelReceiveCoeff" inputmode="decimal" maxlength="5" value="0.868" placeholder="0.868" />
+                    <label>Номер поезда</label>
+                    <input class="optional-control" type="text" data-field="train_number" inputmode="numeric" maxlength="4" placeholder="1234" />
                   </div>
-                  <div class="optional-grid fuel-grid">
-                    <div class="field">
-                      <label>А, л</label>
-                      <input class="optional-control" type="text" id="inputFuelReceiveLitersA" inputmode="numeric" maxlength="4" placeholder="0000" />
-                    </div>
-                    <div class="field">
-                      <label>Б, л</label>
-                      <input class="optional-control" type="text" id="inputFuelReceiveLitersB" inputmode="numeric" maxlength="4" placeholder="0000" />
-                    </div>
-                    <div class="field">
-                      <label>В, л</label>
-                      <input class="optional-control" type="text" id="inputFuelReceiveLitersV" inputmode="numeric" maxlength="4" placeholder="0000" />
-                    </div>
-                  </div>
-                  <div class="optional-grid fuel-grid fuel-grid-kg">
-                    <div class="field">
-                      <label>А, кг</label>
-                      <input class="optional-control fuel-kg-output" type="text" id="inputFuelReceiveKgA" readonly disabled tabindex="-1" aria-readonly="true" />
-                    </div>
-                    <div class="field">
-                      <label>Б, кг</label>
-                      <input class="optional-control fuel-kg-output" type="text" id="inputFuelReceiveKgB" readonly disabled tabindex="-1" aria-readonly="true" />
-                    </div>
-                    <div class="field">
-                      <label>В, кг</label>
-                      <input class="optional-control fuel-kg-output" type="text" id="inputFuelReceiveKgV" readonly disabled tabindex="-1" aria-readonly="true" />
-                    </div>
-                  </div>
-                </section>
-
-                <section class="fuel-column" aria-label="Сдача топлива">
-                  <div class="fuel-column-title">Сдача топлива</div>
                   <div class="field">
-                    <label>Кэф</label>
-                    <input class="optional-control fuel-coeff-input" type="text" id="inputFuelHandoverCoeff" inputmode="decimal" maxlength="5" value="0.868" placeholder="0.868" />
+                    <label>Вес</label>
+                    <input class="optional-control" type="text" data-field="train_weight" inputmode="numeric" maxlength="4" placeholder="7000" />
                   </div>
-                  <div class="optional-grid fuel-grid">
-                    <div class="field">
-                      <label>А, л</label>
-                      <input class="optional-control" type="text" id="inputFuelHandoverLitersA" inputmode="numeric" maxlength="4" placeholder="0000" />
-                    </div>
-                    <div class="field">
-                      <label>Б, л</label>
-                      <input class="optional-control" type="text" id="inputFuelHandoverLitersB" inputmode="numeric" maxlength="4" placeholder="0000" />
-                    </div>
-                    <div class="field">
-                      <label>В, л</label>
-                      <input class="optional-control" type="text" id="inputFuelHandoverLitersV" inputmode="numeric" maxlength="4" placeholder="0000" />
-                    </div>
+                  <div class="field">
+                    <label>Оси</label>
+                    <input class="optional-control" type="text" data-field="train_axles" inputmode="numeric" maxlength="3" placeholder="284" />
                   </div>
-                  <div class="optional-grid fuel-grid fuel-grid-kg">
-                    <div class="field">
-                      <label>А, кг</label>
-                      <input class="optional-control fuel-kg-output" type="text" id="inputFuelHandoverKgA" readonly disabled tabindex="-1" aria-readonly="true" />
-                    </div>
-                    <div class="field">
-                      <label>Б, кг</label>
-                      <input class="optional-control fuel-kg-output" type="text" id="inputFuelHandoverKgB" readonly disabled tabindex="-1" aria-readonly="true" />
-                    </div>
-                    <div class="field">
-                      <label>В, кг</label>
-                      <input class="optional-control fuel-kg-output" type="text" id="inputFuelHandoverKgV" readonly disabled tabindex="-1" aria-readonly="true" />
-                    </div>
+                  <div class="field">
+                    <label>Условная длина</label>
+                    <input class="optional-control" type="text" data-field="train_length" inputmode="numeric" maxlength="3" placeholder="71" />
                   </div>
-                </section>
-              </div>
-              <div class="fuel-consumption-note" id="fuelConsumptionNote">
-                Расход: <strong id="fuelConsumptionLiters">0</strong> л | <strong id="fuelConsumptionKg">0</strong> кг
-              </div>
-            </div>
-          </details>
+                </div>
+              </section>
+            </article>
+          </template>
 
           <div class="form-actions">
             <button class="btn-primary" id="btnAdd">Добавить смену</button>
