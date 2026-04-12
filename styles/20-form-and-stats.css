@@ -672,9 +672,72 @@
     }
 
     .consist-remove-btn:disabled {
-      opacity: 0.45;
-      cursor: default;
-      pointer-events: none;
+      display: none;
+    }
+
+    .consist-item.is-primary .consist-item-head {
+      display: none;
+    }
+
+    .consist-item.is-secondary {
+      border-color: rgba(56, 189, 248, 0.28);
+      background: rgba(56, 189, 248, 0.06);
+    }
+
+    .consist-item.is-secondary .consist-item-title {
+      color: var(--accent);
+    }
+
+    .consist-rare-note {
+      margin-top: 8px;
+    }
+
+    .rare-consists {
+      margin-top: 12px;
+      border-top: 1px dashed var(--border);
+      padding-top: 10px;
+    }
+
+    .rare-consists-summary {
+      list-style: none;
+      cursor: pointer;
+      font-size: 12px;
+      font-weight: 700;
+      color: var(--sub);
+      line-height: 1.4;
+      user-select: none;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .rare-consists-summary::-webkit-details-marker {
+      display: none;
+    }
+
+    .rare-consists-summary::before {
+      content: '▸';
+      font-size: 11px;
+      color: var(--sub);
+      transform: translateY(-0.5px);
+      transition: transform 0.15s ease, color 0.15s ease;
+    }
+
+    .rare-consists[open] .rare-consists-summary {
+      color: var(--text);
+    }
+
+    .rare-consists.has-extra .rare-consists-summary {
+      color: var(--accent);
+    }
+
+    .rare-consists[open] .rare-consists-summary::before {
+      color: var(--accent);
+      transform: rotate(90deg) translateY(-0.5px);
+    }
+
+    .rare-consists-body {
+      padding-top: 8px;
     }
 
     .consist-block {
