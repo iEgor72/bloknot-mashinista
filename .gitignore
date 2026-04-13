@@ -2,3 +2,6 @@ data/
 node_modules/
 .env
 .wrangler/
+tmp_*.html
+.tmp-*.js
+.claude/
