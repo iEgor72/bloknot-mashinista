@@ -276,7 +276,6 @@ function buildUserPresenceStats(store) {
   const nowMs = Date.now();
   const users = (store && store.users) || {};
   const sessions = (store && store.sessions) || {};
-  const userIds = Object.keys(users);
   const onlineUserMap = {};
 
   Object.keys(sessions).forEach(sessionId => {
@@ -289,8 +288,21 @@ function buildUserPresenceStats(store) {
     }
   });
 
+  // Count all unique users: presence store + anyone who has a shifts file
+  const allUserIds = new Set(Object.keys(users).filter(id => id && id !== 'guest' && id !== 'default'));
+  try {
+    if (fs.existsSync(USERS_DIR)) {
+      fs.readdirSync(USERS_DIR).forEach(fname => {
+        if (fname.endsWith('.json')) {
+          const uid = fname.slice(0, -5);
+          if (uid && uid !== 'guest' && uid !== 'default') allUserIds.add(uid);
+        }
+      });
+    }
+  } catch (e) {}
+
   return {
-    totalUsers: userIds.length,
+    totalUsers: allUserIds.size,
     onlineUsers: Object.keys(onlineUserMap).length,
     onlineWindowSeconds: Math.floor(ONLINE_WINDOW_MS / 1000),
     updatedAt: new Date().toISOString(),
