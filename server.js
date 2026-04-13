@@ -27,37 +27,122 @@ const ONLINE_WINDOW_MS = 2 * 60 * 1000;
   }
 })();
 
-// Validate Telegram session token (Authorization: Bearer <token>)
-// Token format: base64url(payloadJson) + '.' + hmac-sha256(sha256(botToken), payloadJson)
-function getUserIdFromRequest(req) {
+const SESSION_TTL_SECONDS = 60 * 60 * 24 * 30; // 30 days
+
+function sha256Buf(input) {
+  return crypto.createHash('sha256').update(input, 'utf8').digest();
+}
+
+function hmacSha256Hex(keyBuf, message) {
+  return crypto.createHmac('sha256', keyBuf).update(message, 'utf8').digest('hex');
+}
+
+function base64UrlEncode(str) {
+  return Buffer.from(str, 'utf8').toString('base64')
+    .replace(/\+/g, '-').replace(/\//g, '_').replace(/=+$/, '');
+}
+
+function createSessionToken(user) {
   const botToken = process.env.TELEGRAM_BOT_TOKEN;
-  if (!botToken) return null;
+  const payload = JSON.stringify({
+    user,
+    iat: Math.floor(Date.now() / 1000),
+    exp: Math.floor(Date.now() / 1000) + SESSION_TTL_SECONDS,
+  });
+  const secret = sha256Buf(botToken);
+  return base64UrlEncode(payload) + '.' + hmacSha256Hex(secret, payload);
+}
 
-  const authHeader = req.headers['authorization'] || '';
-  if (!authHeader.toLowerCase().startsWith('bearer ')) return null;
-  const tokenValue = authHeader.slice(7).trim();
-  if (!tokenValue || tokenValue.indexOf('.') === -1) return null;
-
+// Decode and validate a session token, returns full user object or null
+function decodeSessionToken(tokenValue, botToken) {
+  if (!tokenValue || !botToken || tokenValue.indexOf('.') === -1) return null;
   const dotIdx = tokenValue.indexOf('.');
   const payloadB64 = tokenValue.slice(0, dotIdx);
   const signature = tokenValue.slice(dotIdx + 1).toLowerCase();
-
   let payloadJson;
   try {
-    const normalized = payloadB64.replace(/-/g, '+').replace(/_/g, '/');
-    payloadJson = Buffer.from(normalized, 'base64').toString('utf8');
+    payloadJson = Buffer.from(payloadB64.replace(/-/g, '+').replace(/_/g, '/'), 'base64').toString('utf8');
   } catch (e) { return null; }
-
-  const secretBytes = crypto.createHash('sha256').update(botToken, 'utf8').digest();
-  const expected = crypto.createHmac('sha256', secretBytes).update(payloadJson, 'utf8').digest('hex');
-  if (expected !== signature) return null;
-
+  const secretBytes = sha256Buf(botToken);
+  if (hmacSha256Hex(secretBytes, payloadJson) !== signature) return null;
   try {
     const payload = JSON.parse(payloadJson);
     if (!payload || !payload.user || !payload.exp) return null;
     if (payload.exp * 1000 < Date.now()) return null;
-    return String(payload.user.id || '');
+    return payload.user;
   } catch (e) { return null; }
+}
+
+function getUserFromRequest(req) {
+  const botToken = process.env.TELEGRAM_BOT_TOKEN;
+  if (!botToken) return null;
+  const authHeader = req.headers['authorization'] || '';
+  if (!authHeader.toLowerCase().startsWith('bearer ')) return null;
+  return decodeSessionToken(authHeader.slice(7).trim(), botToken);
+}
+
+function getUserIdFromRequest(req) {
+  const user = getUserFromRequest(req);
+  return user ? String(user.id || '') : null;
+}
+
+// Verify Telegram Login Widget params
+function verifyTelegramLoginParams(params, botToken) {
+  const hash = params.get('hash');
+  if (!hash) return null;
+  const authDate = Number(params.get('auth_date') || 0);
+  if (!authDate || Date.now() / 1000 - authDate > 86400) return null;
+  const allowed = new Set(['auth_date', 'first_name', 'hash', 'id', 'last_name', 'photo_url', 'username']);
+  const keys = [];
+  for (const [k] of params) { if (allowed.has(k) && k !== 'hash') keys.push(k); }
+  keys.sort();
+  const checkString = keys.map(k => `${k}=${params.get(k)}`).join('\n');
+  const secret = sha256Buf(botToken);
+  if (hmacSha256Hex(secret, checkString) !== hash.toLowerCase()) return null;
+  const id = params.get('id');
+  if (!id) return null;
+  const first = params.get('first_name') || '';
+  const last = params.get('last_name') || '';
+  const uname = params.get('username') || '';
+  return {
+    id: String(id), first_name: first, last_name: last, username: uname,
+    photo_url: params.get('photo_url') || '', auth_date: authDate,
+    display_name: [first, last].join(' ').trim() || uname || ('ID ' + id),
+  };
+}
+
+// Verify Telegram WebApp initData
+function verifyTelegramWebAppInitData(initData, botToken) {
+  if (!initData) return null;
+  const params = new URLSearchParams(initData);
+  const hash = params.get('hash');
+  if (!hash) return null;
+  const authDate = Number(params.get('auth_date') || 0);
+  if (!authDate || Date.now() / 1000 - authDate > 86400) return null;
+  const keys = [];
+  for (const [k] of params) { if (k !== 'hash') keys.push(k); }
+  keys.sort();
+  const checkString = keys.map(k => `${k}=${params.get(k)}`).join('\n');
+  const secret = crypto.createHmac('sha256', Buffer.from('WebAppData', 'utf8')).update(botToken, 'utf8').digest();
+  if (hmacSha256Hex(secret, checkString) !== hash.toLowerCase()) return null;
+  try {
+    const parsed = JSON.parse(params.get('user') || 'null');
+    if (!parsed || !parsed.id) return null;
+    const first = parsed.first_name || '';
+    const last = parsed.last_name || '';
+    const uname = parsed.username || '';
+    return {
+      id: String(parsed.id), first_name: first, last_name: last, username: uname,
+      photo_url: parsed.photo_url || '', auth_date: authDate,
+      display_name: [first, last].join(' ').trim() || uname || ('ID ' + parsed.id),
+    };
+  } catch (e) { return null; }
+}
+
+function safeRedirectTarget(raw) {
+  const v = String(raw || '/');
+  if (!v || v[0] !== '/' || v.startsWith('//')) return '/';
+  return v;
 }
 
 function ensureDirs() {
@@ -318,6 +403,54 @@ const server = http.createServer(async (req, res) => {
   if (req.method === 'OPTIONS') {
     res.writeHead(204);
     res.end();
+    return;
+  }
+
+  if (pathname === '/api/auth') {
+    const botToken = process.env.TELEGRAM_BOT_TOKEN;
+    if (!botToken) { sendJson(res, 500, { error: 'TELEGRAM_BOT_TOKEN not configured' }); return; }
+
+    if (req.method === 'GET') {
+      const mode = parsedUrl.query.mode;
+      const hasTelegramParams = ['id', 'auth_date', 'hash'].every(k => parsedUrl.query[k]);
+
+      if (mode === 'telegram-login' || hasTelegramParams) {
+        // Login Widget callback — verify params, create token, redirect with ?_st=
+        const params = new URLSearchParams(Object.entries(parsedUrl.query).map(([k, v]) => [k, String(v)]));
+        const user = verifyTelegramLoginParams(params, botToken);
+        if (!user) { sendJson(res, 401, { error: 'Telegram login verification failed' }); return; }
+        const sessionToken = createSessionToken(user);
+        const returnPath = safeRedirectTarget(parsedUrl.query.return);
+        const sep = returnPath.includes('?') ? '&' : '?';
+        res.writeHead(302, { 'Location': returnPath + sep + '_st=' + encodeURIComponent(sessionToken), 'Cache-Control': 'no-store' });
+        res.end();
+        return;
+      }
+
+      // Check existing session (Bearer token)
+      const user = getUserFromRequest(req);
+      if (!user) { sendJson(res, 401, { error: 'Unauthorized' }); return; }
+      sendJson(res, 200, { user, sessionToken: createSessionToken(user) });
+      return;
+    }
+
+    if (req.method === 'POST') {
+      try {
+        const body = await readBody(req);
+        const payload = body ? JSON.parse(body) : {};
+        const initData = payload && typeof payload.initData === 'string' ? payload.initData : '';
+        if (!initData) { sendJson(res, 400, { error: 'Expected { initData: "..." }' }); return; }
+        const user = verifyTelegramWebAppInitData(initData, botToken);
+        if (!user) { sendJson(res, 401, { error: 'Telegram WebApp verification failed' }); return; }
+        sendJson(res, 200, { user, sessionToken: createSessionToken(user) });
+      } catch (err) {
+        sendJson(res, 400, { error: err.message || 'Invalid payload' });
+      }
+      return;
+    }
+
+    if (req.method === 'DELETE') { res.writeHead(204, { 'Cache-Control': 'no-store' }); res.end(); return; }
+    sendJson(res, 405, { error: 'Method not allowed' });
     return;
   }
 

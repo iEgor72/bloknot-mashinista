@@ -5665,6 +5665,22 @@ var contentHtml = formatInstructionNodeContentHtml(
     }
 
     var CACHED_USER_STORAGE_KEY = 'shift_tracker_cached_user_v1';
+
+    // Read session token passed via URL query param (used when HTTP redirect can't set Secure cookies)
+    (function() {
+      try {
+        var urlParams = new URLSearchParams(window.location.search);
+        var urlToken = urlParams.get('_st');
+        if (urlToken) {
+          setStoredSessionToken(urlToken);
+          urlParams.delete('_st');
+          var newSearch = urlParams.toString();
+          var cleanUrl = window.location.pathname + (newSearch ? '?' + newSearch : '') + window.location.hash;
+          history.replaceState(null, '', cleanUrl);
+        }
+      } catch(e) {}
+    })();
+
     var CURRENT_SESSION_TOKEN = getStoredSessionToken();
     var STARTED_FROM_CACHED_STATE = false;
 
