@@ -1623,6 +1623,21 @@
       line-height: 1;
     }
 
+    .install-guide-steps li .ig-browser-icon,
+    .install-guide-steps li .ig-share-icon,
+    .install-guide-steps li .ig-add-icon,
+    .install-guide-steps li .ig-dots-icon {
+      display: inline-block;
+      vertical-align: middle;
+      position: relative;
+      top: -1px;
+      flex-shrink: 0;
+    }
+    .install-guide-steps li .ig-browser-icon { width: 15px; height: 15px; }
+    .install-guide-steps li .ig-share-icon   { width: 14px; height: 16px; }
+    .install-guide-steps li .ig-add-icon     { width: 15px; height: 15px; }
+    .install-guide-steps li .ig-dots-icon    { width:  5px; height: 14px; }
+
     .install-guide-link-block {
       display: grid;
       gap: 8px;

@@ -713,17 +713,17 @@
         ios: {
           title: 'iPhone (Safari)',
           steps: [
-            'Открой ссылку в Safari',
-            'Нажми кнопку «Поделиться»',
-            'Выбери «На экран Домой»',
+            'Открой ссылку в <svg class="ig-browser-icon" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg"><circle cx="10" cy="10" r="9" stroke="#1a73e8" stroke-width="1.5"/><path d="M10 1c0 0 3.5 3.5 3.5 9S10 19 10 19M10 1C10 1 6.5 4.5 6.5 10S10 19 10 19M1 10h18" stroke="#1a73e8" stroke-width="1.2"/></svg>&nbsp;Safari',
+            'Нажми <svg class="ig-share-icon" viewBox="0 0 20 22" fill="none" xmlns="http://www.w3.org/2000/svg"><rect x="3" y="8" width="14" height="12" rx="2" stroke="#1a73e8" stroke-width="1.5"/><path d="M10 1v12M7 4l3-3 3 3" stroke="#1a73e8" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>&nbsp;Поделиться',
+            'Выбери <svg class="ig-add-icon" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg"><rect x="1.5" y="1.5" width="17" height="17" rx="3.5" stroke="#1a73e8" stroke-width="1.5"/><path d="M10 6v8M6 10h8" stroke="#1a73e8" stroke-width="1.5" stroke-linecap="round"/></svg>&nbsp;На экран Домой',
             'Нажми «Добавить»'
           ]
         },
         android: {
           title: 'Android (Chrome)',
           steps: [
-            'Открой ссылку в Chrome',
-            'Нажми ⋮',
+            'Открой ссылку в <svg class="ig-browser-icon" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg"><circle cx="10" cy="10" r="9" stroke="#1a73e8" stroke-width="1.5"/><circle cx="10" cy="10" r="3.5" fill="#1a73e8"/><path d="M10 1.5L13.5 7.5H6.5L10 1.5Z" fill="#EA4335"/><path d="M1.5 10L5 16H1.5V10Z" fill="#FBBC04" opacity="0.8"/><path d="M13.5 7.5L18.5 10L15 16L10 13.5L13.5 7.5Z" fill="#34A853" opacity="0.8"/></svg>&nbsp;Chrome',
+            'Нажми <svg class="ig-dots-icon" viewBox="0 0 6 20" fill="none" xmlns="http://www.w3.org/2000/svg"><circle cx="3" cy="3" r="2" fill="#1a73e8"/><circle cx="3" cy="10" r="2" fill="#1a73e8"/><circle cx="3" cy="17" r="2" fill="#1a73e8"/></svg>',
             'Выбери «Установить приложение» или «Добавить на главный экран»',
             'Подтверди установку'
           ]
@@ -1510,7 +1510,7 @@
         stepsEl.className = 'install-guide-steps';
         for (var j = 0; j < scenario.steps.length; j++) {
           var item = document.createElement('li');
-          item.textContent = scenario.steps[j];
+          item.innerHTML = scenario.steps[j];
           stepsEl.appendChild(item);
         }
         card.appendChild(stepsEl);
