@@ -6710,7 +6710,7 @@ var contentHtml = formatInstructionNodeContentHtml(
       var m = totalMin % 60;
       if (h === 0) return m + 'м';
       if (m === 0) return h + 'ч';
-      return h + 'ч' + m + 'м';
+      return h + 'ч ' + m + 'м';
     }
 
     function formatDurationReadable(totalMin) {
@@ -8202,7 +8202,7 @@ var contentHtml = formatInstructionNodeContentHtml(
 
     function getFuelConsumptionInlineText(totals) {
       totals = totals || {};
-      return formatFuelLitersSignedValue(totals.consumptionLiters) + ' л | ' + formatFuelKgSignedValue(totals.consumptionKg) + ' кг';
+      return formatFuelLitersSignedValue(totals.consumptionLiters) + 'л | ' + formatFuelKgSignedValue(totals.consumptionKg) + 'кг';
     }
 
     function getFuelKgText(litersRaw, coeffRaw, fallbackCoeff) {
