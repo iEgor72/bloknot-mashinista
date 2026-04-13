@@ -6015,7 +6015,7 @@ var contentHtml = formatInstructionNodeContentHtml(
     }
 
     function repairUiText() {
-      document.title = 'Учёт смен';
+      document.title = 'Блокнот машиниста';
 
       var monthPrev = document.getElementById('btnPrevMonth');
       if (monthPrev) {
