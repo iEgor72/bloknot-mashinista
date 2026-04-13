@@ -9578,6 +9578,7 @@ var contentHtml = formatInstructionNodeContentHtml(
             recentAddTimer = null;
             render();
           }, 1600);
+          setTimeout(function() { setActiveTab('home'); }, 600);
         }
         document.getElementById('formSuccess').textContent = isEditing ? '✓ Смена обновлена' : '✓ Смена добавлена';
         btn.disabled = false;
