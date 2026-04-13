@@ -1,4 +1,5 @@
 const http = require('http');
+const https = require('https');
 const fs = require('fs');
 const path = require('path');
 const url = require('url');
@@ -514,6 +515,49 @@ function readBody(req) {
   });
 }
 
+const APP_URL = 'https://bloknot-mashinista-bot.ru';
+
+function callTelegramApi(token, method, payload) {
+  return new Promise((resolve, reject) => {
+    const body = JSON.stringify(payload);
+    const options = {
+      hostname: 'api.telegram.org',
+      path: `/bot${token}/${method}`,
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json; charset=utf-8',
+        'Content-Length': Buffer.byteLength(body),
+      },
+    };
+    const req = https.request(options, res => {
+      let data = '';
+      res.on('data', chunk => { data += chunk; });
+      res.on('end', () => {
+        try { resolve(JSON.parse(data)); } catch (e) { resolve({ ok: false }); }
+      });
+    });
+    req.on('error', reject);
+    req.write(body);
+    req.end();
+  });
+}
+
+function buildWelcomeMessage(chatId) {
+  return {
+    chat_id: chatId,
+    text:
+      'Блокнот машиниста готов.\n\n' +
+      'Открывай мини-апп кнопкой ниже и добавляй смены откуда удобно. ' +
+      'Если откроешь сайт в браузере, войди через Telegram один раз — данные синхронизируются автоматически.',
+    reply_markup: {
+      inline_keyboard: [
+        [{ text: '📋 Открыть мини-апп', web_app: { url: APP_URL } }],
+        [{ text: '🌐 Открыть в браузере', url: APP_URL }],
+      ],
+    },
+  };
+}
+
 const server = http.createServer(async (req, res) => {
   const parsedUrl = url.parse(req.url, true);
   const pathname = parsedUrl.pathname || '/';
@@ -529,6 +573,37 @@ const server = http.createServer(async (req, res) => {
   if (req.method === 'OPTIONS') {
     res.writeHead(204);
     res.end();
+    return;
+  }
+
+  if (pathname === '/api/telegram-webhook') {
+    if (req.method !== 'POST') {
+      sendJson(res, 200, { ok: true });
+      return;
+    }
+    const token = process.env.TELEGRAM_BOT_TOKEN;
+    if (!token) {
+      sendJson(res, 500, { ok: false, error: 'no token' });
+      return;
+    }
+    try {
+      const body = await readBody(req);
+      const update = body ? JSON.parse(body) : {};
+      const message = update && update.message;
+      const text = (message && message.text) || '';
+      const chatId = message && message.chat && message.chat.id;
+      if (chatId) {
+        if (text.startsWith('/start') || text.startsWith('/help')) {
+          callTelegramApi(token, 'sendMessage', buildWelcomeMessage(chatId)).catch(() => {});
+        } else {
+          callTelegramApi(token, 'sendMessage', {
+            chat_id: chatId,
+            text: 'Используй кнопку «Открыть мини-апп» в сообщении или в меню бота.',
+          }).catch(() => {});
+        }
+      }
+    } catch (_) {}
+    sendJson(res, 200, { ok: true });
     return;
   }
 
