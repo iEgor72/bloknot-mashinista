@@ -542,19 +542,21 @@ function callTelegramApi(token, method, payload) {
   });
 }
 
-function buildWelcomeMessage(chatId) {
+function buildWelcomeMessage(chatId, firstName) {
+  const greeting = firstName ? `👋 Привет, ${firstName}!` : '👋 Привет!';
   return {
     chat_id: chatId,
     text:
-      '👋 Привет! Это Блокнот машиниста — электронный журнал учёта рабочих смен.\n\n' +
+      `${greeting} Это Блокнот машиниста — электронный учёт рабочих смен.\n\n` +
       'Что здесь можно делать:\n' +
       '📅 вести журнал смен с датами и часами\n' +
       '⏱ следить за нормой и переработкой\n' +
-      '⛽️ записывать расход топлива\n\n' +
+      '⛽️ записывать расход топлива\n' +
+      '📚 круглосуточный доступ к важным документам и инструкциям\n\n' +
       '🔒 Данные привязаны к твоему Telegram-аккаунту и доступны с любого устройства.',
     reply_markup: {
       inline_keyboard: [
-        [{ text: '📋 Открыть журнал', web_app: { url: APP_URL } }],
+        [{ text: '✈️ Открыть в Telegram', web_app: { url: APP_URL } }],
         [{ text: '🌐 Открыть в браузере', url: APP_URL }],
       ],
     },
@@ -595,9 +597,10 @@ const server = http.createServer(async (req, res) => {
       const message = update && update.message;
       const text = (message && message.text) || '';
       const chatId = message && message.chat && message.chat.id;
+      const firstName = (message && message.from && message.from.first_name) || '';
       if (chatId) {
         if (text.startsWith('/start') || text.startsWith('/help')) {
-          callTelegramApi(token, 'sendMessage', buildWelcomeMessage(chatId)).catch(() => {});
+          callTelegramApi(token, 'sendMessage', buildWelcomeMessage(chatId, firstName)).catch(() => {});
         } else {
           callTelegramApi(token, 'sendMessage', {
             chat_id: chatId,
