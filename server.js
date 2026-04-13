@@ -10,6 +10,18 @@ const DATA_DIR = path.join(ROOT, 'data');
 const USERS_DIR = path.join(DATA_DIR, 'local-shifts');
 const USER_STATS_FILE = path.join(DATA_DIR, 'user-presence.json');
 const ONLINE_WINDOW_MS = 2 * 60 * 1000;
+const USER_PRESENCE_FLUSH_DELAY_MS = 2500;
+const SHIFT_USER_IDS_CACHE_TTL_MS = 30 * 1000;
+
+let userPresenceStoreCache = null;
+let userPresenceStoreLoaded = false;
+let userPresenceStoreDirty = false;
+let userPresenceStoreFlushTimer = null;
+let userPresenceStoreWriteInFlight = false;
+let userPresenceStoreFlushQueued = false;
+
+let shiftUserIdsCache = new Set();
+let shiftUserIdsCacheExpiresAtMs = 0;
 
 // Load .env file if present (simple key=value parser, no deps)
 (function loadDotEnv() {
@@ -190,6 +202,7 @@ function writeShifts(sid, shifts) {
       })
     : [];
   fs.writeFileSync(file, JSON.stringify(sanitized, null, 2), 'utf8');
+  rememberShiftUserId(normalizeSid(sid));
 }
 
 function normalizeStatsUserId(rawUserId) {
@@ -201,6 +214,36 @@ function normalizeStatsUserId(rawUserId) {
 
 function isValidSessionId(rawSessionId) {
   return typeof rawSessionId === 'string' && /^[a-z0-9_-]{12,64}$/i.test(rawSessionId);
+}
+
+function rememberShiftUserId(rawUserId) {
+  const userId = normalizeStatsUserId(rawUserId);
+  if (!userId || userId === 'default') return;
+  shiftUserIdsCache.add(userId);
+  shiftUserIdsCacheExpiresAtMs = Date.now() + SHIFT_USER_IDS_CACHE_TTL_MS;
+}
+
+function listShiftUserIds() {
+  const nowMs = Date.now();
+  if (shiftUserIdsCache.size && shiftUserIdsCacheExpiresAtMs > nowMs) {
+    return shiftUserIdsCache;
+  }
+
+  const next = new Set();
+  try {
+    if (fs.existsSync(USERS_DIR)) {
+      fs.readdirSync(USERS_DIR).forEach(fname => {
+        if (!fname.endsWith('.json')) return;
+        const uid = normalizeStatsUserId(fname.slice(0, -5));
+        if (!uid || uid === 'default') return;
+        next.add(uid);
+      });
+    }
+  } catch (e) {}
+
+  shiftUserIdsCache = next;
+  shiftUserIdsCacheExpiresAtMs = nowMs + SHIFT_USER_IDS_CACHE_TTL_MS;
+  return shiftUserIdsCache;
 }
 
 function sanitizeUserPresenceStore(rawStore) {
@@ -252,7 +295,7 @@ function sanitizeUserPresenceStore(rawStore) {
   return { users, sessions };
 }
 
-function readUserPresenceStore() {
+function loadUserPresenceStoreFromDisk() {
   ensureDirs();
   try {
     if (!fs.existsSync(USER_STATS_FILE)) {
@@ -266,10 +309,79 @@ function readUserPresenceStore() {
   }
 }
 
-function writeUserPresenceStore(store) {
+function readUserPresenceStore() {
+  if (!userPresenceStoreLoaded || !userPresenceStoreCache) {
+    userPresenceStoreCache = loadUserPresenceStoreFromDisk();
+    userPresenceStoreLoaded = true;
+  }
+  return userPresenceStoreCache;
+}
+
+function scheduleUserPresenceStoreFlush(delayMs) {
+  if (userPresenceStoreWriteInFlight) {
+    userPresenceStoreFlushQueued = true;
+    return;
+  }
+  if (userPresenceStoreFlushTimer) return;
+
+  const timeoutMs = typeof delayMs === 'number' ? delayMs : USER_PRESENCE_FLUSH_DELAY_MS;
+  userPresenceStoreFlushTimer = setTimeout(() => {
+    userPresenceStoreFlushTimer = null;
+    flushUserPresenceStoreNow();
+  }, timeoutMs);
+  if (typeof userPresenceStoreFlushTimer.unref === 'function') {
+    userPresenceStoreFlushTimer.unref();
+  }
+}
+
+function flushUserPresenceStoreNow() {
+  if (!userPresenceStoreLoaded || !userPresenceStoreCache || !userPresenceStoreDirty) return;
+  if (userPresenceStoreWriteInFlight) {
+    userPresenceStoreFlushQueued = true;
+    return;
+  }
+
   ensureDirs();
-  const sanitized = sanitizeUserPresenceStore(store);
-  fs.writeFileSync(USER_STATS_FILE, JSON.stringify(sanitized, null, 2), 'utf8');
+  userPresenceStoreWriteInFlight = true;
+  userPresenceStoreDirty = false;
+  const snapshot = sanitizeUserPresenceStore(userPresenceStoreCache);
+  const serialized = JSON.stringify(snapshot, null, 2);
+
+  fs.writeFile(USER_STATS_FILE, serialized, 'utf8', (err) => {
+    userPresenceStoreWriteInFlight = false;
+    if (err) {
+      userPresenceStoreDirty = true;
+    } else {
+      userPresenceStoreCache = snapshot;
+    }
+
+    if (userPresenceStoreDirty || userPresenceStoreFlushQueued) {
+      userPresenceStoreFlushQueued = false;
+      scheduleUserPresenceStoreFlush(USER_PRESENCE_FLUSH_DELAY_MS);
+    }
+  });
+}
+
+function flushUserPresenceStoreSyncOnShutdown() {
+  if (!userPresenceStoreLoaded || !userPresenceStoreCache || !userPresenceStoreDirty) return;
+  if (userPresenceStoreFlushTimer) {
+    clearTimeout(userPresenceStoreFlushTimer);
+    userPresenceStoreFlushTimer = null;
+  }
+  try {
+    ensureDirs();
+    const snapshot = sanitizeUserPresenceStore(userPresenceStoreCache);
+    fs.writeFileSync(USER_STATS_FILE, JSON.stringify(snapshot, null, 2), 'utf8');
+    userPresenceStoreCache = snapshot;
+    userPresenceStoreDirty = false;
+  } catch (e) {}
+}
+
+function writeUserPresenceStore(store) {
+  userPresenceStoreCache = sanitizeUserPresenceStore(store);
+  userPresenceStoreLoaded = true;
+  userPresenceStoreDirty = true;
+  scheduleUserPresenceStoreFlush();
 }
 
 function buildUserPresenceStats(store) {
@@ -290,16 +402,7 @@ function buildUserPresenceStats(store) {
 
   // Count all unique users: presence store + anyone who has a shifts file
   const allUserIds = new Set(Object.keys(users).filter(id => id && id !== 'guest' && id !== 'default'));
-  try {
-    if (fs.existsSync(USERS_DIR)) {
-      fs.readdirSync(USERS_DIR).forEach(fname => {
-        if (fname.endsWith('.json')) {
-          const uid = fname.slice(0, -5);
-          if (uid && uid !== 'guest' && uid !== 'default') allUserIds.add(uid);
-        }
-      });
-    }
-  } catch (e) {}
+  listShiftUserIds().forEach(uid => allUserIds.add(uid));
 
   return {
     totalUsers: allUserIds.size,
@@ -336,6 +439,16 @@ function touchUserPresence(userId, sessionId) {
   writeUserPresenceStore(store);
   return buildUserPresenceStats(store);
 }
+
+process.on('SIGINT', () => {
+  flushUserPresenceStoreSyncOnShutdown();
+  process.exit(0);
+});
+
+process.on('SIGTERM', () => {
+  flushUserPresenceStoreSyncOnShutdown();
+  process.exit(0);
+});
 
 function sendJson(res, statusCode, payload) {
   const body = JSON.stringify(payload);
