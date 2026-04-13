@@ -5,3 +5,4 @@ node_modules/
 tmp_*.html
 .tmp-*.js
 .claude/
+bot_avatar.png

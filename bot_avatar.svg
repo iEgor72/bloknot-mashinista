@@ -1,0 +1,49 @@
+<svg width="512" height="512" viewBox="0 0 512 512" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <filter id="glow" x="-30%" y="-30%" width="160%" height="160%">
+      <feGaussianBlur in="SourceGraphic" stdDeviation="4" result="blur"/>
+      <feMerge><feMergeNode in="blur"/><feMergeNode in="SourceGraphic"/></feMerge>
+    </filter>
+  </defs>
+
+  <!-- Clock face — app card colour -->
+  <circle cx="256" cy="256" r="200" fill="#1e293b"/>
+  <circle cx="256" cy="256" r="192" fill="#162032"/>
+
+  <!-- Cyan bezel (app accent) with subtle glow -->
+  <circle cx="256" cy="256" r="200" fill="none" stroke="#38bdf8" stroke-width="9" filter="url(#glow)"/>
+  <circle cx="256" cy="256" r="200" fill="none" stroke="#38bdf8" stroke-width="6"/>
+
+  <!-- Major hour markers: 12 / 3 / 6 / 9 -->
+  <rect x="249" y="73"  width="14" height="24" rx="7" fill="white" opacity="0.9"/>
+  <rect x="415" y="249" width="24" height="14" rx="7" fill="white" opacity="0.9"/>
+  <rect x="249" y="415" width="14" height="24" rx="7" fill="white" opacity="0.9"/>
+  <rect x="73"  y="249" width="24" height="14" rx="7" fill="white" opacity="0.9"/>
+
+  <!-- Minor hour dots (30° intervals) -->
+  <circle cx="348" cy="98"  r="6" fill="white" opacity="0.28"/>
+  <circle cx="415" cy="165" r="6" fill="white" opacity="0.28"/>
+  <circle cx="415" cy="348" r="6" fill="white" opacity="0.28"/>
+  <circle cx="348" cy="415" r="6" fill="white" opacity="0.28"/>
+  <circle cx="165" cy="415" r="6" fill="white" opacity="0.28"/>
+  <circle cx="98"  cy="348" r="6" fill="white" opacity="0.28"/>
+  <circle cx="98"  cy="165" r="6" fill="white" opacity="0.28"/>
+  <circle cx="165" cy="98"  r="6" fill="white" opacity="0.28"/>
+
+  <!-- Minute hand: 10 min = 60°, length 148 -->
+  <line x1="256" y1="256" x2="384" y2="182" stroke="white" stroke-width="11" stroke-linecap="round"/>
+
+  <!-- Hour hand: 10h 10m = 305°, length 108 -->
+  <line x1="256" y1="256" x2="167" y2="194" stroke="white" stroke-width="15" stroke-linecap="round"/>
+
+  <!-- Second hand: cyan accent, 120°, with tail -->
+  <line x1="221" y1="236" x2="395" y2="336"
+        stroke="#38bdf8" stroke-width="5" stroke-linecap="round" filter="url(#glow)"/>
+  <line x1="221" y1="236" x2="395" y2="336"
+        stroke="#38bdf8" stroke-width="4" stroke-linecap="round"/>
+
+  <!-- Centre cap -->
+  <circle cx="256" cy="256" r="17" fill="#1e293b"/>
+  <circle cx="256" cy="256" r="17" fill="none" stroke="#38bdf8" stroke-width="3"/>
+  <circle cx="256" cy="256" r="8"  fill="#38bdf8"/>
+</svg>
