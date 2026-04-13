@@ -2,6 +2,7 @@ const http = require('http');
 const fs = require('fs');
 const path = require('path');
 const url = require('url');
+const crypto = require('crypto');
 
 const ROOT = __dirname;
 const PORT = process.env.PORT || 3000;
@@ -9,6 +10,55 @@ const DATA_DIR = path.join(ROOT, 'data');
 const USERS_DIR = path.join(DATA_DIR, 'local-shifts');
 const USER_STATS_FILE = path.join(DATA_DIR, 'user-presence.json');
 const ONLINE_WINDOW_MS = 2 * 60 * 1000;
+
+// Load .env file if present (simple key=value parser, no deps)
+(function loadDotEnv() {
+  const envFile = path.join(ROOT, '.env');
+  if (!fs.existsSync(envFile)) return;
+  const lines = fs.readFileSync(envFile, 'utf8').split('\n');
+  for (const line of lines) {
+    const trimmed = line.trim();
+    if (!trimmed || trimmed.startsWith('#')) continue;
+    const idx = trimmed.indexOf('=');
+    if (idx === -1) continue;
+    const key = trimmed.slice(0, idx).trim();
+    const val = trimmed.slice(idx + 1).trim().replace(/^["']|["']$/g, '');
+    if (key && !(key in process.env)) process.env[key] = val;
+  }
+})();
+
+// Validate Telegram session token (Authorization: Bearer <token>)
+// Token format: base64url(payloadJson) + '.' + hmac-sha256(sha256(botToken), payloadJson)
+function getUserIdFromRequest(req) {
+  const botToken = process.env.TELEGRAM_BOT_TOKEN;
+  if (!botToken) return null;
+
+  const authHeader = req.headers['authorization'] || '';
+  if (!authHeader.toLowerCase().startsWith('bearer ')) return null;
+  const tokenValue = authHeader.slice(7).trim();
+  if (!tokenValue || tokenValue.indexOf('.') === -1) return null;
+
+  const dotIdx = tokenValue.indexOf('.');
+  const payloadB64 = tokenValue.slice(0, dotIdx);
+  const signature = tokenValue.slice(dotIdx + 1).toLowerCase();
+
+  let payloadJson;
+  try {
+    const normalized = payloadB64.replace(/-/g, '+').replace(/_/g, '/');
+    payloadJson = Buffer.from(normalized, 'base64').toString('utf8');
+  } catch (e) { return null; }
+
+  const secretBytes = crypto.createHash('sha256').update(botToken, 'utf8').digest();
+  const expected = crypto.createHmac('sha256', secretBytes).update(payloadJson, 'utf8').digest('hex');
+  if (expected !== signature) return null;
+
+  try {
+    const payload = JSON.parse(payloadJson);
+    if (!payload || !payload.user || !payload.exp) return null;
+    if (payload.exp * 1000 < Date.now()) return null;
+    return String(payload.user.id || '');
+  } catch (e) { return null; }
+}
 
 function ensureDirs() {
   if (!fs.existsSync(DATA_DIR)) {
@@ -256,7 +306,10 @@ function readBody(req) {
 const server = http.createServer(async (req, res) => {
   const parsedUrl = url.parse(req.url, true);
   const pathname = parsedUrl.pathname || '/';
-  const sid = normalizeSid(parsedUrl.query && parsedUrl.query.sid);
+  const telegramUserId = getUserIdFromRequest(req);
+  const sid = telegramUserId
+    ? normalizeSid(telegramUserId)
+    : normalizeSid(parsedUrl.query && parsedUrl.query.sid);
 
   res.setHeader('Access-Control-Allow-Origin', '*');
   res.setHeader('Access-Control-Allow-Methods', 'GET,PUT,POST,OPTIONS');
