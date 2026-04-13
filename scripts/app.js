@@ -722,7 +722,7 @@
         android: {
           title: 'Android (Chrome)',
           steps: [
-            'Открой ссылку в <svg class="ig-browser-icon" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg"><circle cx="10" cy="10" r="9" stroke="#1a73e8" stroke-width="1.5"/><circle cx="10" cy="10" r="3.5" fill="#1a73e8"/><path d="M10 1.5L13.5 7.5H6.5L10 1.5Z" fill="#EA4335"/><path d="M1.5 10L5 16H1.5V10Z" fill="#FBBC04" opacity="0.8"/><path d="M13.5 7.5L18.5 10L15 16L10 13.5L13.5 7.5Z" fill="#34A853" opacity="0.8"/></svg>&nbsp;Chrome',
+            'Открой ссылку в <svg class="ig-browser-icon" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M10 1A9 9 0 0 1 17.8 14.5L14.8 12.75A5.5 5.5 0 0 0 10 4.5Z" fill="#EA4335"/><path d="M17.8 14.5A9 9 0 0 1 2.2 14.5L5.2 12.75A5.5 5.5 0 0 0 14.8 12.75Z" fill="#FBBC05"/><path d="M2.2 14.5A9 9 0 0 1 10 1L10 4.5A5.5 5.5 0 0 0 5.2 12.75Z" fill="#34A853"/><circle cx="10" cy="10" r="5" fill="white"/><circle cx="10" cy="10" r="3.8" fill="#4285F4"/></svg>&nbsp;Chrome',
             'Нажми <svg class="ig-dots-icon" viewBox="0 0 6 20" fill="none" xmlns="http://www.w3.org/2000/svg"><circle cx="3" cy="3" r="2" fill="#1a73e8"/><circle cx="3" cy="10" r="2" fill="#1a73e8"/><circle cx="3" cy="17" r="2" fill="#1a73e8"/></svg>',
             'Выбери «Установить приложение» или «Добавить на главный экран»',
             'Подтверди установку'
