@@ -1,4 +1,4 @@
-const CACHE_VERSION = 'v22';
+const CACHE_VERSION = 'v24';
 const CACHE_NAME = `shift-tracker-shell-${CACHE_VERSION}`;
 const NAVIGATION_FALLBACK_URL = '/index.html';
 const NETWORK_TIMEOUT_MS = 1200;
@@ -19,7 +19,15 @@ const INSTALL_SHELL_URLS = [
   '/scripts/nav-debug.js',
   '/scripts/utils/haptics.js',
   '/scripts/press-feedback.js',
+  '/scripts/app-constants.js',
+  '/scripts/viewport.js',
+  '/scripts/time-utils.js',
+  '/scripts/instructions-app.js',
+  '/scripts/docs-app.js',
   '/scripts/app.js',
+  '/scripts/auth.js',
+  '/scripts/render.js',
+  '/scripts/shift-form.js',
   '/scripts/app-init.js',
   '/scripts/sw-register.js',
   '/sw.js'
@@ -34,7 +42,15 @@ const CRITICAL_INSTALL_URLS = [
   '/styles/30-shifts-and-overlays.css',
   '/assets/fonts/plus-jakarta-sans/plus-jakarta-sans-cyrillic-ext.woff2',
   '/scripts/safe-area.js',
+  '/scripts/app-constants.js',
+  '/scripts/viewport.js',
+  '/scripts/time-utils.js',
+  '/scripts/instructions-app.js',
+  '/scripts/docs-app.js',
   '/scripts/app.js',
+  '/scripts/auth.js',
+  '/scripts/render.js',
+  '/scripts/shift-form.js',
   '/scripts/app-init.js',
   '/scripts/sw-register.js'
 ];
@@ -43,17 +59,6 @@ const EXTENDED_SHELL_URLS = [
   '/assets/fonts/plus-jakarta-sans/plus-jakarta-sans-vietnamese.woff2',
   '/assets/fonts/plus-jakarta-sans/plus-jakarta-sans-latin-ext.woff2',
   '/assets/fonts/plus-jakarta-sans/plus-jakarta-sans-latin.woff2',
-  '/scripts/instructions/normalizeText.js',
-  '/scripts/instructions/tokenize.js',
-  '/scripts/instructions/buildChargrams.js',
-  '/scripts/instructions/fuzzy.js',
-  '/scripts/instructions/parseHierarchy.js',
-  '/scripts/instructions/parseInstruction.js',
-  '/scripts/instructions/buildSearchEntities.js',
-  '/scripts/instructions/rankResults.js',
-  '/scripts/instructions/searchInstructions.js',
-  '/scripts/instructions/instructionsDb.js',
-  '/assets/instructions/catalog.v2.json',
   '/assets/docs/manifest.json',
   '/assets/pdfjs/pdf.min.js',
   '/assets/pdfjs/pdf.worker.min.js'
