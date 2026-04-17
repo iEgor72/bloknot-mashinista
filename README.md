@@ -65,12 +65,6 @@ Useful commands:
 - `npm run memory:refresh` — rebuild current project snapshot.
 - `npm run memory:log -- --task "..." --methods "..."` — append an explicit agent note.
 - `npm run memory:sync` — sync memory files to Obsidian now.
-- `npm run memory:watch:daemon` — start background watcher (auto refresh/log on file save).
-- `npm run memory:watch:status` — watcher status.
-- `npm run memory:watch:stop` — stop watcher.
-- `npm run memory:autostart:install` — enable autostart on Windows (Task Scheduler if allowed, otherwise Startup shortcut fallback).
-- `npm run memory:autostart:status` — autostart status and active mode.
-- `npm run memory:autostart:uninstall` — remove all autostart entries (scheduler + Startup shortcut).
 
 If you work through an AI agent (Codex/Claude/Cursor), you do not need to run these manually:
 - the agent should run preflight at session start,
@@ -86,27 +80,3 @@ Generated intelligence documents:
 Auto-update:
 - `memory:init` installs a `post-commit` Git hook.
 - After each commit, memory changelog is updated automatically.
-
-## Telegram Orchestrator (MVP)
-
-This project now includes a basic orchestrator queue in `server.js` for admin Telegram chat.
-
-Required env:
-- `TELEGRAM_BOT_TOKEN` — bot token.
-- `ADMIN_TELEGRAM_ID` or `ORCHESTRATOR_ADMIN_IDS` — Telegram user IDs allowed to create tasks.
-- `ORCHESTRATOR_API_KEY` — secret key for `/api/orchestrator/jobs*` API.
-
-Admin commands in Telegram:
-- `/task <text>` — create a queued task for Codex.
-- `/jobs` — list recent tasks.
-- `/job <id>` — show task details.
-- `/cancel <id>` — cancel task.
-- `/orchestrator` — help.
-
-Orchestrator API (for worker/Codex automation):
-- `GET /api/orchestrator/jobs?status=queued&limit=20`
-- `POST /api/orchestrator/jobs`
-- `PATCH /api/orchestrator/jobs/{id}`
-
-All orchestrator API calls must include header:
-- `x-orchestrator-key: <ORCHESTRATOR_API_KEY>`

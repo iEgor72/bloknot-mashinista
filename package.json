@@ -11,16 +11,6 @@
     "memory:refresh": "node tools/agent-memory/refresh.js",
     "memory:log": "node tools/agent-memory/log.js",
     "memory:install-hooks": "node tools/agent-memory/install-hooks.js",
-    "memory:sync": "node tools/agent-memory/sync-obsidian.js",
-    "memory:watch": "node tools/agent-memory/watch.js",
-    "memory:watch:daemon": "node tools/agent-memory/watch.js --daemon",
-    "memory:watch:stop": "node tools/agent-memory/watch.js --stop",
-    "memory:watch:status": "node tools/agent-memory/watch.js --status",
-    "memory:autostart:install": "powershell.exe -NoProfile -ExecutionPolicy Bypass -File tools/agent-memory/autostart.ps1 -Action install",
-    "memory:autostart:status": "powershell.exe -NoProfile -ExecutionPolicy Bypass -File tools/agent-memory/autostart.ps1 -Action status",
-    "memory:autostart:uninstall": "powershell.exe -NoProfile -ExecutionPolicy Bypass -File tools/agent-memory/autostart.ps1 -Action uninstall",
-    "orchestrator:list": "node tools/orchestrator/list-jobs.js",
-    "orchestrator:create": "node tools/orchestrator/create-job.js",
-    "orchestrator:update": "node tools/orchestrator/update-job.js"
+    "memory:sync": "node tools/agent-memory/sync-obsidian.js"
   }
 }

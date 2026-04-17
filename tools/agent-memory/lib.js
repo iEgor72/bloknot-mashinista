@@ -655,12 +655,6 @@ function buildSessionProtocolDoc() {
     '## Obsidian Sync',
     '- Ensure `.agent-memory.local.json` exists with correct vault path.',
     '- `memory:preflight`, `memory:refresh`, and `memory:log` sync memory to Obsidian when enabled.',
-    '',
-    '## Background Watcher',
-    '- Start once: `npm run memory:watch:daemon`.',
-    '- Check status: `npm run memory:watch:status`.',
-    '- Stop watcher: `npm run memory:watch:stop`.',
-    '- While running, watcher auto-refreshes memory and appends changelog notes after local file changes.',
     ''
   ].join('\n');
 }

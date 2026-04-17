@@ -1,6 +1,6 @@
 # Session Protocol
 
-Generated: 2026-04-17 15:37:14 +10:00
+Generated: 2026-04-17 19:05:43 +10:00
 
 ## Mandatory Preflight (start of every agent session)
 1. Run `npm run memory:preflight`.
@@ -27,9 +27,3 @@ Generated: 2026-04-17 15:37:14 +10:00
 ## Obsidian Sync
 - Ensure `.agent-memory.local.json` exists with correct vault path.
 - `memory:preflight`, `memory:refresh`, and `memory:log` sync memory to Obsidian when enabled.
-
-## Background Watcher
-- Start once: `npm run memory:watch:daemon`.
-- Check status: `npm run memory:watch:status`.
-- Stop watcher: `npm run memory:watch:stop`.
-- While running, watcher auto-refreshes memory and appends changelog notes after local file changes.
