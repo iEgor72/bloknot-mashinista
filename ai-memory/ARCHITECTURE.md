@@ -1,11 +1,11 @@
 # Architecture
 
-Generated: 2026-04-17 15:15:51 +10:00
+Generated: 2026-04-17 15:18:26 +10:00
 
 ## Snapshot
-- Tracked files: 72
-- Text-like files: 51
-- Text-like lines: 55191
+- Tracked files: 102
+- Text-like files: 79
+- Text-like lines: 57855
 - Service Worker cache version: `v24`
 - Wrangler D1 binding: configured
 

@@ -1,6 +1,6 @@
 # Methods
 
-Generated: 2026-04-17 15:15:51 +10:00
+Generated: 2026-04-17 15:18:26 +10:00
 
 ## Authentication Methods
 - Telegram WebApp enabled (`initData` verification).

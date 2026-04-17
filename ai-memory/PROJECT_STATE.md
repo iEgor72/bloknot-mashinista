@@ -1,18 +1,20 @@
 # Project State
 
-Generated: 2026-04-17 15:15:51 +10:00
+Generated: 2026-04-17 15:18:26 +10:00
 
 ## Repository
 - Name: `bloknot-mashinista`
 - Root: `D:\work\bloknot-mashinista-tg`
 - Branch: `main`
-- Tracked files: 72
-- HEAD: `b8217f4` (refactor: split app.js into focused modules and remove dead code)
+- Tracked files: 102
+- HEAD: `bfede13` (feat: add agent memory workflow and telegram orchestrator queue)
 
 ## Top-Level File Map
 - `assets`: 22
+- `(root)`: 18
 - `scripts`: 18
-- `(root)`: 14
+- `tools`: 14
+- `ai-memory`: 12
 - `functions`: 10
 - `styles`: 8
 
