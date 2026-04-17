@@ -926,7 +926,7 @@ const server = http.createServer(async (req, res) => {
           const jobId = normalizeOrchestratorText(normalizedText.replace(/^\/cancel(?:@\w+)?\s+/i, ''));
           const updated = updateOrchestratorJobById(jobId, {
             status: 'canceled',
-            note: 'Canceled from Telegram',
+            note: 'Отменено из Telegram',
             noteBy: String(fromUserId || 'admin'),
           });
           callTelegramApi(token, 'sendMessage', {
