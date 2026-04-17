@@ -116,7 +116,8 @@
         speeds: 'docsListSpeeds',
         folders: 'docsListFolders',
         instructions: 'docsListInstructions',
-        memos: 'docsListMemos'
+        memos: 'docsListMemos',
+        reminders: 'docsListReminders'
       };
       return map[folder] || null;
     }

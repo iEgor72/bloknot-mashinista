@@ -153,6 +153,7 @@
     .app-content,
     .auth-gate,
     .bottom-sheet,
+    .docs-month-tabs,
     .docs-docx-scroll,
     .docs-pdf-scroll,
     .shift-detail-body {
@@ -163,6 +164,7 @@
     .app-content::-webkit-scrollbar,
     .auth-gate::-webkit-scrollbar,
     .bottom-sheet::-webkit-scrollbar,
+    .docs-month-tabs::-webkit-scrollbar,
     .docs-docx-scroll::-webkit-scrollbar,
     .docs-pdf-scroll::-webkit-scrollbar,
     .shift-detail-body::-webkit-scrollbar {

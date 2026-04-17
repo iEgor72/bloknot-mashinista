@@ -96,10 +96,12 @@
       "mime_type": "application/pdf",
       "size": 6873310,
       "updated_at": "2026-04-08"
-    },
+    }
+  ],
+  "reminders": [
     {
       "name": "Проверки торм оборудования",
-      "path": "/assets/docs/memos/Проверки торм оборудования.pdf",
+      "path": "/assets/docs/reminders/Проверки торм оборудования.pdf",
       "mime_type": "application/pdf",
       "size": 1194671,
       "updated_at": "2026-04-18"

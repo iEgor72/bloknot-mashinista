@@ -1,14 +1,14 @@
 # Project State
 
 <!-- AUTO_STATUS:START -->
-Generated: 2026-04-18 07:48:16 +1000
+Generated: 2026-04-18 07:56:15 +1000
 
 ## Repository Snapshot
 - Local repo path: `D:\work\bloknot-mashinista-tg`
 - Project memory path: `D:\work\bloknot-mashinista-tg\ai-memory`
 - Branch: `main`
-- HEAD: `1f1409c`
-- Last commit: `1f1409c chore(memory): consolidate agent memory workflow`
+- HEAD: `88df275`
+- Last commit: `88df275 feat(docs): add memos and docx preview`
 
 ## Git Remote
 ```text
@@ -20,7 +20,7 @@ origin	https://github.com/iEgor72/bloknot-mashinista.git (push)
 ```text
 codex/next-direction b044dd5 offline mvp
   codex/tabs-ui        117f1fa [origin/codex/tabs-ui] tabs ui
-* main                 1f1409c [origin/main] chore(memory): consolidate agent memory workflow
+* main                 88df275 [origin/main] feat(docs): add memos and docx preview
 ```
 
 ## Worktree
@@ -30,11 +30,7 @@ M ai-memory/CHANGELOG.md
  M ai-memory/PROJECT_STATE.md
  M ai-memory/RECENT_COMMITS.md
  M ai-memory/WORKTREE_STATUS.md
- M assets/docs/manifest.json
- M index.html
-?? ai-memory/sessions/2026-04-18.md
-?? assets/docs/instructions/
-?? "assets/docs/memos/Проверки торм оборудования.pdf"
+ M ai-memory/sessions/2026-04-18.md
 ```
 <!-- AUTO_STATUS:END -->
 

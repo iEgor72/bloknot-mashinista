@@ -1,9 +1,10 @@
 # Recent Commits
 
-Generated: 2026-04-18 07:48:17 +1000
+Generated: 2026-04-18 07:56:16 +1000
 
 | Hash | Date | Author | Message |
 | --- | --- | --- | --- |
+| `88df275` | 2026-04-18T07:54:24+10:00 | iEgor72 | feat(docs): add memos and docx preview |
 | `1f1409c` | 2026-04-17T23:15:41+10:00 | iEgor72 | chore(memory): consolidate agent memory workflow |
 | `72d555a` | 2026-04-17T19:51:48+10:00 | iEgor72 | chore: remove master-bot-hub traces after cancellation |
 | `6841902` | 2026-04-17T19:22:32+10:00 | iEgor72 | chore(master-bot): set VPS project path in registry |
@@ -43,4 +44,3 @@ Generated: 2026-04-18 07:48:17 +1000
 | `837826c` | 2026-04-12T23:30:47+10:00 | iEgor72 | Keep handover coeff sections independent |
 | `c5ce42c` | 2026-04-12T23:24:22+10:00 | iEgor72 | Make fuel coeff sync one-way from receive to handover |
 | `af4c15e` | 2026-04-12T22:57:57+10:00 | iEgor72 | Adjust fuel coeff sync across receive and handover |
-| `edbe9ce` | 2026-04-12T22:47:11+10:00 | iEgor72 | Refine fuel panel into compact section cards |

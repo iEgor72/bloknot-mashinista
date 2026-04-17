@@ -1207,13 +1207,15 @@
     .docs-month-tabs {
       display: flex;
       gap: 4px;
+      overflow-x: auto;
+      -webkit-overflow-scrolling: touch;
       background: rgba(0, 0, 0, 0.25);
       border-radius: var(--r-pill);
       padding: 3px;
     }
 
     .docs-tab-btn {
-      flex: 1;
+      flex: 1 0 max-content;
       appearance: none;
       border: none;
       background: transparent;
@@ -1225,6 +1227,7 @@
       min-height: 34px;
       border-radius: var(--r-pill);
       cursor: pointer;
+      white-space: nowrap;
       transition: background 0.15s, color 0.15s;
       -webkit-tap-highlight-color: transparent;
     }
