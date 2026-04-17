@@ -1,13 +1,13 @@
 # Project State
 
-Generated: 2026-04-17 15:18:26 +10:00
+Generated: 2026-04-17 15:30:23 +10:00
 
 ## Repository
 - Name: `bloknot-mashinista`
 - Root: `D:\work\bloknot-mashinista-tg`
 - Branch: `main`
 - Tracked files: 102
-- HEAD: `bfede13` (feat: add agent memory workflow and telegram orchestrator queue)
+- HEAD: `752515e` (feat(docs): add instructions tab in documentation)
 
 ## Top-Level File Map
 - `assets`: 22

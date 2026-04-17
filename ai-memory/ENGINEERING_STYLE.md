@@ -1,6 +1,6 @@
 # Engineering Style
 
-Generated: 2026-04-17 15:18:26 +10:00
+Generated: 2026-04-17 15:30:24 +10:00
 
 ## Codebase Style Metrics
 - JS files: 43
@@ -9,7 +9,7 @@ Generated: 2026-04-17 15:18:26 +10:00
 - ESM-like files: 11
 - addEventListener calls: 208
 - fetch() calls: 50
-- catch(...) blocks: 277
+- catch(...) blocks: 278
 
 ## Writing Style Traits
 - Defensive coding with frequent `try/catch` around platform-specific APIs (Telegram SDK, localStorage, viewport APIs).

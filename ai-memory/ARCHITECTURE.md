@@ -1,11 +1,11 @@
 # Architecture
 
-Generated: 2026-04-17 15:18:26 +10:00
+Generated: 2026-04-17 15:30:24 +10:00
 
 ## Snapshot
 - Tracked files: 102
 - Text-like files: 79
-- Text-like lines: 57855
+- Text-like lines: 57995
 - Service Worker cache version: `v24`
 - Wrangler D1 binding: configured
 
@@ -21,7 +21,7 @@ Generated: 2026-04-17 15:18:26 +10:00
 - `scripts/viewport.js` (523 lines)
 - `scripts/time-utils.js` (888 lines)
 - `scripts/instructions-app.js` (2086 lines)
-- `scripts/docs-app.js` (1240 lines)
+- `scripts/docs-app.js` (1245 lines)
 - `scripts/app.js` (1646 lines)
 - `scripts/auth.js` (801 lines)
 - `scripts/render.js` (1659 lines)

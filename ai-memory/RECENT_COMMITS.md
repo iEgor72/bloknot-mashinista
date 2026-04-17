@@ -1,9 +1,12 @@
 # Recent Commits
 
-Generated: 2026-04-17 15:18:27 +10:00
+Generated: 2026-04-17 15:30:24 +10:00
 
 | Hash | Date | Author | Message |
 | --- | --- | --- | --- |
+| `752515e` | 2026-04-17T15:28:52+10:00 | iEgor72 | feat(docs): add instructions tab in documentation |
+| `bde938e` | 2026-04-17T15:19:42+10:00 | iEgor72 | feat: add /myid telegram command for orchestrator access |
+| `35fe7f8` | 2026-04-17T15:18:45+10:00 | iEgor72 | chore: refresh ai-memory after orchestrator rollout |
 | `bfede13` | 2026-04-17T15:16:18+10:00 | iEgor72 | feat: add agent memory workflow and telegram orchestrator queue |
 | `b8217f4` | 2026-04-15T21:15:29+10:00 | iEgor72 | refactor: split app.js into focused modules and remove dead code |
 | `9f11b12` | 2026-04-13T16:54:51+10:00 | iEgor72 | feat: personalize bot welcome message with user name and update content |
@@ -41,6 +44,3 @@ Generated: 2026-04-17 15:18:27 +10:00
 | `419f4fa` | 2026-04-12T01:45:58+10:00 | iEgor72 | Use 8h per elapsed workday for current month today norm |
 | `5934db4` | 2026-04-12T01:41:50+10:00 | iEgor72 | Fix today norm to be based on monthly norm |
 | `e027f02` | 2026-04-11T17:15:31+10:00 | iEgor72 | Revert "Detect and recover frozen momentum scroll in standalone PWA" |
-| `13afadb` | 2026-04-11T17:15:31+10:00 | iEgor72 | Revert "Add left-edge touch guard to prevent iOS back-swipe scroll freeze" |
-| `f9790f3` | 2026-04-11T17:11:28+10:00 | iEgor72 | Add left-edge touch guard to prevent iOS back-swipe scroll freeze |
-| `ded9f83` | 2026-04-11T17:04:57+10:00 | iEgor72 | Detect and recover frozen momentum scroll in standalone PWA |
