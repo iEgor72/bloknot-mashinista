@@ -112,7 +112,12 @@
     }
 
     function docsFolderListId(folder) {
-      var map = { speeds: 'docsListSpeeds', folders: 'docsListFolders', memos: 'docsListMemos' };
+      var map = {
+        speeds: 'docsListSpeeds',
+        folders: 'docsListFolders',
+        instructions: 'docsListInstructions',
+        memos: 'docsListMemos'
+      };
       return map[folder] || null;
     }
 
