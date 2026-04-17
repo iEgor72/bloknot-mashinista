@@ -1,9 +1,11 @@
 # Recent Commits
 
-Generated: 2026-04-17 15:30:24 +10:00
+Generated: 2026-04-17 15:37:14 +10:00
 
 | Hash | Date | Author | Message |
 | --- | --- | --- | --- |
+| `e717be1` | 2026-04-17T15:36:36+10:00 | iEgor72 | feat(orchestrator): user-friendly telegram status messages |
+| `3411a85` | 2026-04-17T15:30:41+10:00 | iEgor72 | chore(memory): refresh ai-memory after docs update |
 | `752515e` | 2026-04-17T15:28:52+10:00 | iEgor72 | feat(docs): add instructions tab in documentation |
 | `bde938e` | 2026-04-17T15:19:42+10:00 | iEgor72 | feat: add /myid telegram command for orchestrator access |
 | `35fe7f8` | 2026-04-17T15:18:45+10:00 | iEgor72 | chore: refresh ai-memory after orchestrator rollout |
@@ -42,5 +44,3 @@ Generated: 2026-04-17 15:30:24 +10:00
 | `1a427c5` | 2026-04-12T02:28:29+10:00 | iEgor72 | Unify monthly norm formatting with today norm |
 | `313dfee` | 2026-04-12T01:55:09+10:00 | iEgor72 | Use production calendar rules for month and today norms |
 | `419f4fa` | 2026-04-12T01:45:58+10:00 | iEgor72 | Use 8h per elapsed workday for current month today norm |
-| `5934db4` | 2026-04-12T01:41:50+10:00 | iEgor72 | Fix today norm to be based on monthly norm |
-| `e027f02` | 2026-04-11T17:15:31+10:00 | iEgor72 | Revert "Detect and recover frozen momentum scroll in standalone PWA" |
