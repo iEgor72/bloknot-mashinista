@@ -1,42 +1,26 @@
 # Engineering Style
 
-Generated: 2026-04-17 19:10:38 +10:00
+Generated: 2026-04-17 23:20 +10:00
 
-## Codebase Style Metrics
-- JS files: 38
-- Declaration mix: var=2182 (26.0%), let=1619 (19.3%), const=4599 (54.8%)
-- IIFE-like files: 17
-- ESM-like files: 11
-- addEventListener calls: 208
-- fetch() calls: 49
-- catch(...) blocks: 253
+## First Rule
+- Memory first, work second. Always run `python tools/agent_memory.py preflight` and read required memory files before project analysis, code search, edits, tests, deploy, or answers.
 
-## Writing Style Traits
-- Defensive coding with frequent `try/catch` around platform-specific APIs (Telegram SDK, localStorage, viewport APIs).
-- Imperative, event-driven DOM code with direct `document.getElementById` / query selectors.
-- Shared global runtime state across deferred scripts; module boundaries are file-based, not bundler-based.
-- Extensive constants and small helper functions before side-effect handlers.
-- User-facing copy is primarily Russian; technical identifiers are English.
+## Code Style
+- Existing frontend is plain JavaScript with shared globals and deferred scripts; preserve local style and load order.
+- Use defensive `try/catch` around Telegram SDK, viewport, localStorage, service worker, and platform APIs.
+- Keep user-facing copy in Russian unless the surrounding UI uses English.
+- Prefer small, local helpers near existing code over broad abstractions.
+- Preserve localStorage key names, API payload shapes, service worker cache contracts, and offline pending queue behavior.
 
-## Naming and Data Conventions
-- Persistent frontend keys use `shift_tracker_*` prefix for localStorage namespacing.
-- Backend DB tables follow snake_case names (`user_shifts`, `stats_sessions`, `docs_files`).
-- API payloads are JSON, usually with explicit `ok/error` envelope and `no-store` cache headers.
+## Change Discipline
+- Do not mix memory/tooling changes with unrelated product refactors.
+- Do not delete or overwrite user changes in the worktree.
+- Do not edit generated/binary/static assets unless the task requires it.
+- After meaningful changes, record a memory log with files and method.
+- End each session with memory refresh/sync.
 
-## Storage Key Constants (sample)
-- `CACHED_USER_STORAGE_KEY` = `shift_tracker_cached_user_v1` (`scripts/auth.js`)
-- `INSTALL_PROMPT_STATE_STORAGE_KEY` = `shift_tracker_install_prompt_state_v1` (`scripts/app.js`)
-- `LEGACY_SETTINGS_STORAGE_KEY` = `shift_tracker_settings_v1` (`scripts/app.js`)
-- `SALARY_PARAMS_STORAGE_KEY` = `shift_tracker_salary_params_v1` (`scripts/app.js`)
-- `SESSION_STORAGE_KEY` = `shift_tracker_session_token` (`scripts/auth.js`)
-- `SHIFTS_CACHE_STORAGE_KEY` = `shift_tracker_shifts_cache_v1` (`scripts/app.js`)
-- `SHIFTS_META_STORAGE_KEY` = `shift_tracker_shifts_meta_v1` (`scripts/app.js`)
-- `SHIFTS_PENDING_STORAGE_KEY` = `shift_tracker_shifts_pending_v1` (`scripts/app.js`)
-- `STORAGE_KEY` = `shifts` (`scripts/app-constants.js`)
-- `USER_STATS_CACHE_STORAGE_KEY` = `shift_tracker_user_stats_cache_v1` (`scripts/app.js`)
-- `USER_STATS_SESSION_ID_STORAGE_KEY` = `shift_tracker_device_id_v1` (`scripts/app.js`)
-
-## Practical Constraints for Agents
-- Do not break script load order from `index.html`; many globals depend on declaration timing.
-- Preserve compatibility with Telegram WebApp runtime and mobile webview behavior.
-- Keep offline behavior stable: cache keys, service worker versioning, and pending queue contracts.
+## Production Safety
+- Do not deploy or restart without explicit user request.
+- Before deploy, verify local and production branch/upstream, and verify the intended commit is in the production branch.
+- Never print/read private key contents, `.env` secrets, tokens, or production secrets into chat.
+- Current production app uses PM2 process `bloknot-mashinista`; no project-specific systemd unit was found.

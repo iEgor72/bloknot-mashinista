@@ -1,9 +1,13 @@
 # Recent Commits
 
-Generated: 2026-04-17 19:10:38 +10:00
+Generated: 2026-04-17 23:13:14 +1000
 
 | Hash | Date | Author | Message |
 | --- | --- | --- | --- |
+| `72d555a` | 2026-04-17T19:51:48+10:00 | iEgor72 | chore: remove master-bot-hub traces after cancellation |
+| `6841902` | 2026-04-17T19:22:32+10:00 | iEgor72 | chore(master-bot): set VPS project path in registry |
+| `40c0218` | 2026-04-17T19:21:42+10:00 | iEgor72 | feat(master-bot): scaffold chat-first hub with coder task queue |
+| `650f1e0` | 2026-04-17T19:11:31+10:00 | iEgor72 | chore(memory): refresh ai-memory after orchestrator removal |
 | `e2e7841` | 2026-04-17T19:10:37+10:00 | iEgor72 | chore: remove background memory watcher and orchestrator MVP |
 | `d5c10d8` | 2026-04-17T15:38:08+10:00 | iEgor72 | chore(orchestrator): localize cancel note text |
 | `9fd749b` | 2026-04-17T15:37:24+10:00 | iEgor72 | chore(memory): refresh ai-memory after orchestrator messaging update |
@@ -40,7 +44,3 @@ Generated: 2026-04-17 19:10:38 +10:00
 | `af4c15e` | 2026-04-12T22:57:57+10:00 | iEgor72 | Adjust fuel coeff sync across receive and handover |
 | `edbe9ce` | 2026-04-12T22:47:11+10:00 | iEgor72 | Refine fuel panel into compact section cards |
 | `3e5014c` | 2026-04-12T22:40:18+10:00 | iEgor72 | Restore per-section fuel coeffs with A-to-all sync |
-| `ff644b3` | 2026-04-12T22:14:39+10:00 | iEgor72 | Restore pre-half-run form layout and keep simple flow |
-| `4c05924` | 2026-04-12T22:10:56+10:00 | iEgor72 | Remove half-run UI and keep single-trip flow |
-| `7b9aa71` | 2026-04-12T22:03:44+10:00 | iEgor72 | Refine rare extra-run flow in shift form |
-| `80e04b5` | 2026-04-12T21:52:01+10:00 | iEgor72 | Переработка формы смен: полурейсы, мульти-локомотив, КЭФ по секциям |

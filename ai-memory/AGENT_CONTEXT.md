@@ -6,50 +6,61 @@
 - технический долг;
 - риски и причины решений.
 
+## Mandatory Memory Rule
+
+- Перед любой работой по проекту агент обязан запустить `python tools/agent_memory.py preflight`.
+- Затем агент читает memory-файлы в порядке из `ai-memory/SESSION_PROTOCOL.md`.
+- Только после этого можно искать по коду, анализировать, править файлы, запускать тесты, планировать деплой или отвечать по проекту.
+- После значимого изменения: `python tools/agent_memory.py log --task "..." --methods "..." --files "..."`.
+- В конце: `python tools/agent_memory.py refresh` и `python tools/agent_memory.py sync --direction push`.
+
 ## VPS Runtime (72.56.109.219)
 
-- Сервер: `root@72.56.109.219` (Ubuntu 24.04, hostname `ams-1-vm-9glf`).
-- На сервере 2 проекта:
-- `bloknot-mashinista` (нужный проект): `/opt/bloknot-mashinista`
-- `studio-bot` (отдельный проект): `/opt/studio-bot`
+- SSH host: `root@72.56.109.219`.
+- SSH key path: `%USERPROFILE%/.ssh/timeweb_deploy_ed25519`.
+- Private key contents: never print/read into chat.
+- Codex has access to the VPS from this machine through the listed key.
+- On the server, read-only audit found:
+  - `/opt/bloknot-mashinista/.git`
+  - `/opt/studio-bot/.git`
 
 ### Нужный проект: /opt/bloknot-mashinista
 
 - Git remote: `https://github.com/iEgor72/bloknot-mashinista.git`
-- Рабочая ветка: `main`
-- Runtime: `node server.js` под `pm2` процессом `bloknot-mashinista`
+- Production branch/upstream: `main...origin/main`
+- Production HEAD at setup check: `72d555a` (`chore: remove master-bot-hub traces after cancellation`)
+- Production worktree note: untracked `package-lock.json` exists on VPS.
+- Runtime: `node server.js` under PM2 process `bloknot-mashinista`
 - PM2 cwd/script: `/opt/bloknot-mashinista` / `/opt/bloknot-mashinista/server.js`
-- Порт приложения: `127.0.0.1:3000`
-- Reverse proxy: `nginx` site `/etc/nginx/sites-available/bloknot` -> `proxy_pass http://127.0.0.1:3000`
-- Домен: `https://bloknot-mashinista-bot.ru` (TLS через certbot)
+- PM2 env/status at setup check: `NODE_ENV=production`, status `online`
+- PM2 supervisor systemd unit: `pm2-root.service`
+- Project-specific systemd unit: not detected by read-only `systemctl` search.
+- Port: `127.0.0.1:3000`
+- Reverse proxy: nginx site `bloknot` -> `proxy_pass http://127.0.0.1:3000`
+- Domain: `https://bloknot-mashinista-bot.ru`
 
 ### Второй проект: /opt/studio-bot
 
-- Запущен как systemd unit: `studio-bot.service`
-- WorkingDirectory: `/opt/studio-bot`
-- Команда: `/opt/studio-bot/venv/bin/python -m bot`
-- Этот сервис не относится к деплою bloknot-mashinista.
+- Separate project. Do not touch `/opt/studio-bot` or `studio-bot.service` without explicit direct user instruction in this chat.
 
-## Deployment Policy (обязательный порядок)
+## Deployment Policy
 
-1. Локально: изменения -> commit -> `git push origin main`.
-2. На VPS:
-- `cd /opt/bloknot-mashinista`
-- `git pull --ff-only origin main`
-- если обновлялись зависимости: `npm install`
-- `pm2 reload bloknot-mashinista --update-env`
-3. Проверка:
-- `pm2 ls`
-- `curl -Ik https://bloknot-mashinista-bot.ru`
+1. Do not deploy or restart services unless the user explicitly asks.
+2. Before deploy:
+   - check local `git status -sb`, `git branch -vv`, and intended commit;
+   - check production `cd /opt/bloknot-mashinista && git status -sb && git branch -vv`;
+   - verify production branch/upstream because it can differ from local;
+   - verify the intended commit is present in the production branch.
+3. Standard production runtime is PM2, not a project-specific systemd service.
+4. Do not invent a `systemctl restart <service>` service name. The systemctl template is blocked until a real project-specific service is found safely.
+5. Reference deploy command for the actual PM2 runtime only; do not run without explicit user request:
 
-### Ownership
+```powershell
+ssh -i $env:USERPROFILE\.ssh\timeweb_deploy_ed25519 -o IdentitiesOnly=yes -o StrictHostKeyChecking=accept-new -o BatchMode=yes root@72.56.109.219 "cd /opt/bloknot-mashinista && git pull --ff-only origin main && pm2 reload bloknot-mashinista --update-env && pm2 status bloknot-mashinista && git rev-parse --short HEAD"
+```
 
-- Push в Git выполняет агент (Codex) самостоятельно.
-- После push агент выполняет деплой на VPS (pull/reload/smoke-check) и отчитывается результатом.
-- Пользователь не запускает деплой-команды вручную, если явно не попросил иной режим.
+## Constraints
 
-## Ограничения
-
-- Не деплоить через ручное редактирование файлов на VPS (кроме аварийных hotfix).
-- Не трогать `/opt/studio-bot` и `studio-bot.service` вообще без явной прямой команды пользователя в этом чате.
-- При любой задаче сохранять существующие функции приложения (включая оффлайн-режим) без регрессий.
+- Do not deploy by manually editing files on the VPS except an explicitly requested emergency hotfix.
+- Do not touch `/opt/studio-bot` or `studio-bot.service` without explicit direct instruction.
+- Preserve existing app behavior, including Telegram auth, mobile viewport behavior, and offline/PWA behavior.

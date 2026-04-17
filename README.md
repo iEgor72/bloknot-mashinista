@@ -61,10 +61,12 @@ This repo includes an agent memory workflow in [`ai-memory/`](/D:/work/bloknot-m
    - `npm run memory:init`
 
 Useful commands:
-- `npm run memory:preflight` — refresh memory and print mandatory reading order for a new session.
-- `npm run memory:refresh` — rebuild current project snapshot.
-- `npm run memory:log -- --task "..." --methods "..."` — append an explicit agent note.
-- `npm run memory:sync` — sync memory files to Obsidian now.
+- `python tools/agent_memory.py preflight` — print mandatory reading order for a new session.
+- `python tools/agent_memory.py refresh` — refresh current project snapshot.
+- `python tools/agent_memory.py log --task "..." --methods "..."` — append an explicit agent note.
+- `python tools/agent_memory.py sync --direction push` — sync memory files to Obsidian now.
+
+The `npm run memory:*` scripts are compatibility wrappers around the Python memory CLI.
 
 If you work through an AI agent (Codex/Claude/Cursor), you do not need to run these manually:
 - the agent should run preflight at session start,
@@ -78,5 +80,5 @@ Generated intelligence documents:
 - `ai-memory/SESSION_PROTOCOL.md`
 
 Auto-update:
-- `memory:init` installs a `post-commit` Git hook.
+- `memory:init` installs a Python `post-commit` Git hook.
 - After each commit, memory changelog is updated automatically.

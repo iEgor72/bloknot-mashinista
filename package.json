@@ -6,11 +6,11 @@
   "main": "server.js",
   "scripts": {
     "start": "node server.js",
-    "memory:init": "node tools/agent-memory/init.js",
-    "memory:preflight": "node tools/agent-memory/preflight.js",
-    "memory:refresh": "node tools/agent-memory/refresh.js",
-    "memory:log": "node tools/agent-memory/log.js",
-    "memory:install-hooks": "node tools/agent-memory/install-hooks.js",
-    "memory:sync": "node tools/agent-memory/sync-obsidian.js"
+    "memory:init": "python tools/agent_memory.py init",
+    "memory:preflight": "python tools/agent_memory.py preflight",
+    "memory:refresh": "python tools/agent_memory.py refresh",
+    "memory:log": "python tools/agent_memory.py log",
+    "memory:install-hooks": "python tools/agent_memory.py install-hooks",
+    "memory:sync": "python tools/agent_memory.py sync --direction push"
   }
 }

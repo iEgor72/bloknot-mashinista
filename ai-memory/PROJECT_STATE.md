@@ -1,111 +1,106 @@
 # Project State
 
-Generated: 2026-04-17 19:10:38 +10:00
+<!-- AUTO_STATUS:START -->
+Generated: 2026-04-17 23:13:13 +1000
 
-## Repository
-- Name: `bloknot-mashinista`
-- Root: `D:\work\bloknot-mashinista-tg`
+## Repository Snapshot
+- Local repo path: `D:\work\bloknot-mashinista-tg`
+- Project memory path: `D:\work\bloknot-mashinista-tg\ai-memory`
 - Branch: `main`
-- Tracked files: 96
-- HEAD: `e2e7841` (chore: remove background memory watcher and orchestrator MVP)
+- HEAD: `72d555a`
+- Last commit: `72d555a chore: remove master-bot-hub traces after cancellation`
 
-## Top-Level File Map
-- `assets`: 22
-- `(root)`: 18
-- `scripts`: 18
-- `ai-memory`: 12
-- `functions`: 10
-- `styles`: 8
-- `tools`: 8
-
-## API Surface
-- `/api/auth` (functions/api/auth.js)
-- `/api/docs` (functions/api/docs.js)
-- `/api/shifts` (functions/api/shifts.js)
-- `/api/stats` (functions/api/stats.js)
-- `/api/telegram-webhook` (functions/api/telegram-webhook.js)
-
-## Frontend Runtime Scripts
-- `scripts/app-constants.js`
-- `scripts/app-init.js`
-- `scripts/app.js`
-- `scripts/auth.js`
-- `scripts/docs-app.js`
-- `scripts/instructions-app.js`
-- `scripts/nav-debug.js`
-- `scripts/press-feedback.js`
-- `scripts/render.js`
-- `scripts/safe-area.js`
-- `scripts/shift-form.js`
-- `scripts/sw-register.js`
-- `scripts/time-utils.js`
-- `scripts/utils/haptics.js`
-- `scripts/viewport.js`
-
-## README Snapshot
+## Git Remote
 ```text
-# Shift Tracker App
-
-Telegram shift tracker with one shared account per Telegram user.
-
-## What this app does
-
-- Inside Telegram it signs in automatically with `Telegram.WebApp.initData`.
-- In Safari, Chrome, desktop, or from a home-screen shortcut it uses the Telegram login flow.
-- The same Telegram account always opens the same shift list on every device.
-- Different Telegram users get their own separate data.
-
-## How the auth flow works
-
-- Telegram WebApp requests are verified on the server with your bot token.
-- Browser logins are verified through Telegram Login Widget.
-- After login, the server stores a signed session cookie for that browser.
-- Shifts are saved in Cloudflare D1 by Telegram user id.
-
-## Required Cloudflare setup
-
-1. Deploy the repo to Cloudflare Pages.
-2. Create a Cloudflare D1 database.
-3. Bind the database to the Pages project as `DB`.
-4. Add a Pages secret named `TELEGRAM_BOT_TOKEN` with your bot token.
-5. In BotFather, make sure the bot domain for Telegram Login is set to your Pages domain.
+origin	https://github.com/iEgor72/bloknot-mashinista.git (fetch)
+origin	https://github.com/iEgor72/bloknot-mashinista.git (push)
 ```
 
-## scripts/README.md Snapshot
+## Branch Tracking
 ```text
-# Scripts Structure
-
-Runtime scripts are loaded in this order from [`index.html`](/D:/work/bloknot-mashinista-tg/index.html):
-
-1. [`safe-area.js`](/D:/work/bloknot-mashinista-tg/scripts/safe-area.js)
-2. [`app-constants.js`](/D:/work/bloknot-mashinista-tg/scripts/app-constants.js)
-3. [`viewport.js`](/D:/work/bloknot-mashinista-tg/scripts/viewport.js)
-4. [`time-utils.js`](/D:/work/bloknot-mashinista-tg/scripts/time-utils.js)
-5. [`instructions-app.js`](/D:/work/bloknot-mashinista-tg/scripts/instructions-app.js)
-6. [`docs-app.js`](/D:/work/bloknot-mashinista-tg/scripts/docs-app.js)
-7. [`app.js`](/D:/work/bloknot-mashinista-tg/scripts/app.js)
-8. [`auth.js`](/D:/work/bloknot-mashinista-tg/scripts/auth.js)
-9. [`render.js`](/D:/work/bloknot-mashinista-tg/scripts/render.js)
-10. [`shift-form.js`](/D:/work/bloknot-mashinista-tg/scripts/shift-form.js)
-11. [`app-init.js`](/D:/work/bloknot-mashinista-tg/scripts/app-init.js)
-12. [`sw-register.js`](/D:/work/bloknot-mashinista-tg/scripts/sw-register.js)
-13. [`utils/haptics.js`](/D:/work/bloknot-mashinista-tg/scripts/utils/haptics.js)
-14. [`press-feedback.js`](/D:/work/bloknot-mashinista-tg/scripts/press-feedback.js)
-15. [`nav-debug.js`](/D:/work/bloknot-mashinista-tg/scripts/nav-debug.js)
-
-## Module responsibilities
-
-| File | Lines | Responsibility |
-|------|-------|----------------|
-| `app-constants.js` | ~116 | Production calendar, work norms, date helpers, MSK_OFFSET |
-| `viewport.js` | ~522 | Viewport height, keyboard detection, haptic feedback, Telegram layout events |
-| `time-utils.js` | ~887 | parseMsk, shift duration, date formatting |
-| `instructions-app.js` | ~2085 | Instructions tab UI — list, search, detail view |
-| `docs-app.js` | ~1239 | Documentation tab — file list, PDF viewer, video |
-| `app.js` | ~1645 | Core state, storage helpers, salary calc, user stats, install guide |
-| `auth.js` | ~800 | Auth flow, session tokens, Telegram WebApp auth, bootstrap |
-| `render.js` | ~1658 | Main render(), shift list/detail, shared animations |
-| `shift-form.js` | ~951 | Add/edit shift form, delete handler, overlays, add-to-screen |
-| `app-init.js` | ~2 | Entry point — calls bootstrapAppStartup() |
-| `sw-register.js` | ~90 | Service worker registration and update flow |
+codex/next-direction b044dd5 offline mvp
+  codex/tabs-ui        117f1fa [origin/codex/tabs-ui] tabs ui
+* main                 72d555a [origin/main] chore: remove master-bot-hub traces after cancellation
 ```
+
+## Worktree
+```text
+M AGENTS.md
+ M README.md
+ M ai-memory/AGENT_CONTEXT.md
+ M ai-memory/ARCHITECTURE.md
+ M ai-memory/CHANGELOG.md
+ M ai-memory/ENGINEERING_STYLE.md
+ M ai-memory/INDEX.md
+ M ai-memory/METHODS.md
+ M ai-memory/PROJECT_STATE.md
+ M ai-memory/RECENT_COMMITS.md
+ M ai-memory/SESSION_PROTOCOL.md
+ M ai-memory/START_HERE.md
+ M ai-memory/WORKTREE_STATUS.md
+ M ai-memory/sessions/2026-04-17.md
+ M package.json
+ D tools/agent-memory/init.js
+ D tools/agent-memory/install-hooks.js
+ D tools/agent-memory/lib.js
+ D tools/agent-memory/log.js
+ D tools/agent-memory/post-commit.js
+ D tools/agent-memory/preflight.js
+ D tools/agent-memory/refresh.js
+ D tools/agent-memory/sync-obsidian.js
+?? tools/agent_memory.py
+```
+<!-- AUTO_STATUS:END -->
+
+## Project Identity
+- Name: `bloknot-mashinista`
+- Local repo path: `D:\work\bloknot-mashinista-tg`
+- Git remote: `https://github.com/iEgor72/bloknot-mashinista.git`
+- Main local branch at setup time: `main` tracking `origin/main`
+- Project memory path: `D:\work\bloknot-mashinista-tg\ai-memory`
+- Obsidian/Codex vault path on this machine: `D:\work\Codex\Projects\bloknot-mashinista-tg`
+
+## Required Agent Workflow
+- Mandatory first command before any project work: `python tools/agent_memory.py preflight`
+- Then read: `START_HERE.md`, `PROJECT_STATE.md`, `ARCHITECTURE.md`, `METHODS.md`, `ENGINEERING_STYLE.md`, latest `CHANGELOG.md`, `WORKTREE_STATUS.md`
+- Do not start with code search, edits, tests, deploy, or project conclusions before memory is read.
+- Log meaningful changes with `python tools/agent_memory.py log --task "..." --methods "..." --files "..."`
+- End work with `python tools/agent_memory.py refresh` and `python tools/agent_memory.py sync --direction push`
+
+## Application State
+- Telegram shift tracker / PWA for locomotive crews.
+- Frontend: `index.html`, plain deferred JS scripts in `scripts/`, layered CSS in `styles/`.
+- Backend in production codebase: Cloudflare Pages Functions under `functions/api/*` with D1 binding in `wrangler.toml`.
+- Local/VPS runtime: `server.js` static/dev server with local JSON storage.
+- PWA/offline runtime: `sw.js` and `scripts/sw-register.js`.
+- PM2 ecosystem file: `ecosystem.config.js`.
+
+## VPS / Production Deploy Access
+- SSH host: `root@72.56.109.219`
+- SSH key path: `%USERPROFILE%/.ssh/timeweb_deploy_ed25519`
+- Private key contents: never print, read into chat, or commit.
+- Codex has SSH access from this machine through the listed key.
+- Production repo path found by read-only SSH: `/opt/bloknot-mashinista`
+- Production remote: `https://github.com/iEgor72/bloknot-mashinista.git`
+- Production branch/upstream found by read-only SSH: `main...origin/main`
+- Production HEAD at setup check: `72d555a` (`chore: remove master-bot-hub traces after cancellation`)
+- Production worktree note: `?? package-lock.json` exists on the VPS; review before deploy that touches lockfiles.
+- Project-specific systemd service: not found by `systemctl list-units --type=service --all` or `systemctl list-unit-files` grep for `bloknot|mashinista|shift|tracker`.
+- PM2 supervisor unit: `pm2-root.service`
+- Runtime process: PM2 process `bloknot-mashinista`
+- PM2 cwd/script: `/opt/bloknot-mashinista` / `/opt/bloknot-mashinista/server.js`
+- Runtime env/port from PM2/ecosystem: `NODE_ENV=production`, `PORT=3000`
+- Reverse proxy: nginx site `bloknot`, domain `bloknot-mashinista-bot.ru`, proxy to `http://127.0.0.1:3000`
+
+## Deploy Rules
+- Do not deploy or restart services unless the user explicitly asks.
+- Before deploy, verify local branch/upstream and production branch/upstream; production can track a different branch than local.
+- Before deploy, verify the intended commit is present in the production branch.
+- Do not invent a systemd service name. Current runtime uses PM2 process `bloknot-mashinista`, not a project-specific systemd unit.
+- Reference deploy command for the actual PM2 runtime only; do not run without explicit request:
+
+```powershell
+ssh -i $env:USERPROFILE\.ssh\timeweb_deploy_ed25519 -o IdentitiesOnly=yes -o StrictHostKeyChecking=accept-new -o BatchMode=yes root@72.56.109.219 "cd /opt/bloknot-mashinista && git pull --ff-only origin main && pm2 reload bloknot-mashinista --update-env && pm2 status bloknot-mashinista && git rev-parse --short HEAD"
+```
+
+- Requested `systemctl restart <FOUND_SERVICE_NAME>` template is blocked until a real project-specific systemd service is found safely.
