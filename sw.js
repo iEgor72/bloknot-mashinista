@@ -1,4 +1,4 @@
-const CACHE_VERSION = 'v24';
+const CACHE_VERSION = 'v25';
 const CACHE_NAME = `shift-tracker-shell-${CACHE_VERSION}`;
 const NAVIGATION_FALLBACK_URL = '/index.html';
 const NETWORK_TIMEOUT_MS = 1200;
@@ -60,6 +60,7 @@ const EXTENDED_SHELL_URLS = [
   '/assets/fonts/plus-jakarta-sans/plus-jakarta-sans-latin-ext.woff2',
   '/assets/fonts/plus-jakarta-sans/plus-jakarta-sans-latin.woff2',
   '/assets/docs/manifest.json',
+  '/assets/docs/vendor/jszip.min.js',
   '/assets/pdfjs/pdf.min.js',
   '/assets/pdfjs/pdf.worker.min.js'
 ];

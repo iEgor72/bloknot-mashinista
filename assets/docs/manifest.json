@@ -66,7 +66,15 @@
       "updated_at": "2026-04-08"
     }
   ],
-  "instructions": [],
+  "instructions": [
+    {
+      "name": "2580p",
+      "path": "/assets/docs/instructions/2580p.docx",
+      "mime_type": "application/vnd.openxmlformats-officedocument.wordprocessingml.document",
+      "size": 87479,
+      "updated_at": "2026-04-18"
+    }
+  ],
   "memos": [
     {
       "name": "БАМ",
@@ -88,6 +96,13 @@
       "mime_type": "application/pdf",
       "size": 6873310,
       "updated_at": "2026-04-08"
+    },
+    {
+      "name": "Проверки торм оборудования",
+      "path": "/assets/docs/memos/Проверки торм оборудования.pdf",
+      "mime_type": "application/pdf",
+      "size": 1194671,
+      "updated_at": "2026-04-18"
     }
   ]
 }

@@ -153,6 +153,7 @@
     .app-content,
     .auth-gate,
     .bottom-sheet,
+    .docs-docx-scroll,
     .docs-pdf-scroll,
     .shift-detail-body {
       -ms-overflow-style: none;
@@ -162,6 +163,7 @@
     .app-content::-webkit-scrollbar,
     .auth-gate::-webkit-scrollbar,
     .bottom-sheet::-webkit-scrollbar,
+    .docs-docx-scroll::-webkit-scrollbar,
     .docs-pdf-scroll::-webkit-scrollbar,
     .shift-detail-body::-webkit-scrollbar {
       display: none;

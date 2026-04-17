@@ -1245,6 +1245,102 @@
         calc(12px + env(safe-area-inset-left));
     }
 
+    .docs-docx-scroll {
+      flex: 1;
+      min-height: 0;
+      min-width: 0;
+      overflow: auto;
+      -webkit-overflow-scrolling: touch;
+      padding:
+        12px
+        calc(12px + env(safe-area-inset-right))
+        calc(18px + env(safe-area-inset-bottom))
+        calc(12px + env(safe-area-inset-left));
+      background: #e8edf4;
+    }
+
+    .docs-docx-page {
+      width: min(100%, 840px);
+      min-height: 100%;
+      margin: 0 auto;
+      padding: clamp(18px, 5vw, 44px);
+      color: #171c2b;
+      background: #ffffff;
+      border: 1px solid rgba(20, 25, 42, 0.12);
+      border-radius: 8px;
+      box-shadow: 0 12px 34px rgba(10, 16, 30, 0.16);
+      font-family: "Times New Roman", Georgia, serif;
+      font-size: 16px;
+      line-height: 1.45;
+    }
+
+    .docs-docx-paragraph {
+      margin: 0 0 10px;
+      color: inherit;
+      white-space: pre-wrap;
+      overflow-wrap: anywhere;
+    }
+
+    .docs-docx-paragraph.is-heading {
+      margin-top: 16px;
+      margin-bottom: 12px;
+      font-size: 18px;
+      font-weight: 700;
+    }
+
+    .docs-docx-paragraph.is-centered {
+      text-align: center;
+    }
+
+    .docs-docx-paragraph.is-right {
+      text-align: right;
+    }
+
+    .docs-docx-paragraph.is-numbered {
+      margin-top: 8px;
+    }
+
+    .docs-docx-gap {
+      height: 10px;
+    }
+
+    .docs-docx-underline {
+      text-decoration: underline;
+    }
+
+    .docs-docx-tab {
+      display: inline-block;
+      width: 2em;
+    }
+
+    .docs-docx-table-wrap {
+      width: 100%;
+      overflow-x: auto;
+      margin: 12px 0;
+    }
+
+    .docs-docx-table {
+      width: 100%;
+      border-collapse: collapse;
+      color: #171c2b;
+      font-size: 15px;
+      line-height: 1.35;
+    }
+
+    .docs-docx-table td {
+      border: 1px solid rgba(20, 25, 42, 0.34);
+      padding: 7px 8px;
+      vertical-align: top;
+    }
+
+    .docs-docx-table .docs-docx-paragraph {
+      margin-bottom: 6px;
+    }
+
+    .docs-docx-table .docs-docx-paragraph:last-child {
+      margin-bottom: 0;
+    }
+
     .docs-pdf-scroll {
       flex: 1;
       min-height: 0;
@@ -1390,6 +1486,16 @@
     }
 
     @media (max-width: 480px) {
+      .docs-docx-scroll {
+        padding-left: calc(10px + env(safe-area-inset-left));
+        padding-right: calc(10px + env(safe-area-inset-right));
+      }
+
+      .docs-docx-page {
+        padding: 16px;
+        font-size: 15px;
+      }
+
       .docs-pdf-scroll {
         padding-left: calc(10px + env(safe-area-inset-left));
         padding-right: calc(10px + env(safe-area-inset-right));

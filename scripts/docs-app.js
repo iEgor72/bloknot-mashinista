@@ -335,11 +335,13 @@
 
     var DOCS_PDFJS_SRC = '/assets/pdfjs/pdf.min.js';
     var DOCS_PDFJS_WORKER_SRC = '/assets/pdfjs/pdf.worker.min.js';
+    var DOCS_JSZIP_SRC = '/assets/docs/vendor/jszip.min.js';
     var DOCS_PDF_MIN_SCALE = 1;
     var DOCS_PDF_MAX_SCALE = 3;
     var DOCS_PDF_DOUBLE_TAP_DELAY = 280;
     var DOCS_PDF_DOUBLE_TAP_DISTANCE = 26;
     var docsPdfJsLoadPromise = null;
+    var docsZipLoadPromise = null;
     var docsPdfViewerState = null;
 
     function decodeDocAttr(value) {
@@ -496,6 +498,262 @@
             (details ? '<span class="docs-viewer-error-meta">' + escapeHtml(details) + '</span>' : '') +
           '</div>' +
         '</div>';
+    }
+
+    function ensureDocsZipReady() {
+      if (window.JSZip) return Promise.resolve(window.JSZip);
+      if (docsZipLoadPromise) return docsZipLoadPromise;
+
+      docsZipLoadPromise = new Promise(function(resolve, reject) {
+        var script = document.createElement('script');
+        script.src = DOCS_JSZIP_SRC;
+        script.async = true;
+        script.onload = function() {
+          if (window.JSZip) {
+            resolve(window.JSZip);
+          } else {
+            reject(new Error('JSZip is not available'));
+          }
+        };
+        script.onerror = function() {
+          reject(new Error('Failed to load JSZip'));
+        };
+        document.head.appendChild(script);
+      });
+
+      return docsZipLoadPromise;
+    }
+
+    function getDocxLocalName(node) {
+      if (!node) return '';
+      return node.localName || String(node.nodeName || '').split(':').pop();
+    }
+
+    function getDocxAttr(node, localName) {
+      if (!node || !node.attributes) return '';
+      for (var i = 0; i < node.attributes.length; i++) {
+        var attr = node.attributes[i];
+        if (getDocxLocalName(attr) === localName) return attr.value || '';
+      }
+      return '';
+    }
+
+    function getDocxChild(node, localName) {
+      if (!node || !node.childNodes) return null;
+      for (var i = 0; i < node.childNodes.length; i++) {
+        var child = node.childNodes[i];
+        if (child.nodeType === 1 && getDocxLocalName(child) === localName) return child;
+      }
+      return null;
+    }
+
+    function getDocxChildren(node, localName) {
+      var result = [];
+      if (!node || !node.childNodes) return result;
+      for (var i = 0; i < node.childNodes.length; i++) {
+        var child = node.childNodes[i];
+        if (child.nodeType === 1 && (!localName || getDocxLocalName(child) === localName)) {
+          result.push(child);
+        }
+      }
+      return result;
+    }
+
+    function getDocxTextFromNode(node) {
+      var parts = [];
+      if (!node || !node.getElementsByTagName) return '';
+      var textNodes = node.getElementsByTagName('*');
+      for (var i = 0; i < textNodes.length; i++) {
+        if (getDocxLocalName(textNodes[i]) === 't' && textNodes[i].textContent) {
+          parts.push(textNodes[i].textContent);
+        }
+      }
+      return parts.join('');
+    }
+
+    function getDocxParagraphMeta(paragraph) {
+      var meta = { style: '', align: '' };
+      var props = getDocxChild(paragraph, 'pPr');
+      if (!props) return meta;
+
+      var pStyle = getDocxChild(props, 'pStyle');
+      if (pStyle) meta.style = getDocxAttr(pStyle, 'val');
+
+      var jc = getDocxChild(props, 'jc');
+      if (jc) meta.align = getDocxAttr(jc, 'val');
+
+      return meta;
+    }
+
+    function getDocxRunMeta(run) {
+      var meta = { bold: false, italic: false, underline: false };
+      var props = getDocxChild(run, 'rPr');
+      if (!props) return meta;
+      meta.bold = !!getDocxChild(props, 'b');
+      meta.italic = !!getDocxChild(props, 'i');
+      meta.underline = !!getDocxChild(props, 'u');
+      return meta;
+    }
+
+    function wrapDocxRunHtml(html, meta) {
+      if (!html) return '';
+      var wrapped = html;
+      if (meta && meta.underline) wrapped = '<span class="docs-docx-underline">' + wrapped + '</span>';
+      if (meta && meta.italic) wrapped = '<em>' + wrapped + '</em>';
+      if (meta && meta.bold) wrapped = '<strong>' + wrapped + '</strong>';
+      return wrapped;
+    }
+
+    function renderDocxRun(run) {
+      var meta = getDocxRunMeta(run);
+      var html = '';
+      var children = getDocxChildren(run);
+      for (var i = 0; i < children.length; i++) {
+        var child = children[i];
+        var name = getDocxLocalName(child);
+        if (name === 't') {
+          html += escapeHtml(child.textContent || '');
+        } else if (name === 'tab') {
+          html += '<span class="docs-docx-tab"></span>';
+        } else if (name === 'br' || name === 'cr') {
+          html += '<br />';
+        }
+      }
+      return wrapDocxRunHtml(html, meta);
+    }
+
+    function getDocxParagraphClass(paragraph, text) {
+      var meta = getDocxParagraphMeta(paragraph);
+      var classes = ['docs-docx-paragraph'];
+      var style = String(meta.style || '').toLowerCase();
+      var cleanText = String(text || '').trim();
+
+      if (style.indexOf('title') !== -1 || style.indexOf('heading') !== -1) {
+        classes.push('is-heading');
+      }
+      if (meta.align === 'center') classes.push('is-centered');
+      if (meta.align === 'right' || meta.align === 'end') classes.push('is-right');
+      if (/^\d+[\.\)]\s+/.test(cleanText)) classes.push('is-numbered');
+      return classes.join(' ');
+    }
+
+    function renderDocxParagraph(paragraph) {
+      var html = '';
+      var children = getDocxChildren(paragraph);
+      for (var i = 0; i < children.length; i++) {
+        if (getDocxLocalName(children[i]) === 'r') {
+          html += renderDocxRun(children[i]);
+        }
+      }
+
+      var text = getDocxTextFromNode(paragraph);
+      if (!html && !String(text || '').trim()) {
+        return '<div class="docs-docx-gap" aria-hidden="true"></div>';
+      }
+
+      return '<p class="' + getDocxParagraphClass(paragraph, text) + '">' + (html || '&nbsp;') + '</p>';
+    }
+
+    function renderDocxTable(table) {
+      var rows = getDocxChildren(table, 'tr');
+      var html = '<div class="docs-docx-table-wrap"><table class="docs-docx-table">';
+      for (var r = 0; r < rows.length; r++) {
+        html += '<tr>';
+        var cells = getDocxChildren(rows[r], 'tc');
+        for (var c = 0; c < cells.length; c++) {
+          var cellHtml = '';
+          var blocks = getDocxChildren(cells[c]);
+          for (var b = 0; b < blocks.length; b++) {
+            if (getDocxLocalName(blocks[b]) === 'p') {
+              cellHtml += renderDocxParagraph(blocks[b]);
+            } else if (getDocxLocalName(blocks[b]) === 'tbl') {
+              cellHtml += renderDocxTable(blocks[b]);
+            }
+          }
+          html += '<td>' + (cellHtml || '&nbsp;') + '</td>';
+        }
+        html += '</tr>';
+      }
+      html += '</table></div>';
+      return html;
+    }
+
+    function renderDocxDocumentXml(xmlText) {
+      var parser = new DOMParser();
+      var doc = parser.parseFromString(xmlText, 'application/xml');
+      if (doc.getElementsByTagName('parsererror').length) {
+        throw new Error('DOCX XML parse failed');
+      }
+
+      var body = null;
+      var allNodes = doc.getElementsByTagName('*');
+      for (var i = 0; i < allNodes.length; i++) {
+        if (getDocxLocalName(allNodes[i]) === 'body') {
+          body = allNodes[i];
+          break;
+        }
+      }
+      if (!body) throw new Error('DOCX body not found');
+
+      var html = '';
+      var children = getDocxChildren(body);
+      for (var c = 0; c < children.length; c++) {
+        var name = getDocxLocalName(children[c]);
+        if (name === 'p') {
+          html += renderDocxParagraph(children[c]);
+        } else if (name === 'tbl') {
+          html += renderDocxTable(children[c]);
+        }
+      }
+
+      return html || '<p class="docs-docx-paragraph">Документ пуст</p>';
+    }
+
+    function renderDocsDocxHtml(html, localPath) {
+      var bodyEl = document.getElementById('docsViewerBody');
+      if (!bodyEl) return;
+      bodyEl.innerHTML =
+        '<div class="docs-docx-scroll">' +
+          '<article class="docs-docx-page">' + html + '</article>' +
+        '</div>';
+      markDocAsDownloaded(localPath);
+      setDocsViewerStatus('DOCX');
+    }
+
+    function openDocxWithPreview(localPath) {
+      renderDocsViewerLoading('Загрузка DOCX…');
+      setDocsViewerStatus('Загрузка…');
+
+      var zipLib = null;
+      ensureDocsZipReady()
+        .then(function(JSZip) {
+          zipLib = JSZip;
+          return fetch(localPath, { cache: 'no-store' });
+        })
+        .then(function(resp) {
+          if (!resp || !resp.ok) {
+            throw new Error('Failed to fetch DOCX');
+          }
+          return resp.arrayBuffer();
+        })
+        .then(function(buffer) {
+          return zipLib.loadAsync(buffer);
+        })
+        .then(function(zip) {
+          var documentFile = zip.file('word/document.xml');
+          if (!documentFile) throw new Error('DOCX document.xml not found');
+          return documentFile.async('string');
+        })
+        .then(function(xmlText) {
+          var overlay = document.getElementById('docsViewerOverlay');
+          if (!overlay || overlay.classList.contains('hidden')) return;
+          renderDocsDocxHtml(renderDocxDocumentXml(xmlText), localPath);
+        })
+        .catch(function(err) {
+          var friendly = getFriendlyDocOpenError(err);
+          renderDocsViewerError(friendly.title, friendly.details);
+          setDocsViewerStatus(friendly.status);
+        });
     }
 
     function getFriendlyDocOpenError(err) {
@@ -1170,6 +1428,10 @@
 
       var isImage = mime.indexOf('image') !== -1;
       var isPdf = mime.indexOf('pdf') !== -1 || lname.endsWith('.pdf');
+      var isDocx =
+        mime.indexOf('wordprocessingml.document') !== -1 ||
+        lname.endsWith('.docx') ||
+        localPath.toLowerCase().endsWith('.docx');
 
       checkDocDownloaded(localPath)
         .catch(function() { return false; })
@@ -1188,6 +1450,11 @@
 
           if (isPdf) {
             openPdfWithPdfJs(localPath);
+            return;
+          }
+
+          if (isDocx) {
+            openDocxWithPreview(localPath);
             return;
           }
 

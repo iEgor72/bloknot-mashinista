@@ -1,14 +1,14 @@
 # Project State
 
 <!-- AUTO_STATUS:START -->
-Generated: 2026-04-17 23:13:13 +1000
+Generated: 2026-04-18 07:48:16 +1000
 
 ## Repository Snapshot
 - Local repo path: `D:\work\bloknot-mashinista-tg`
 - Project memory path: `D:\work\bloknot-mashinista-tg\ai-memory`
 - Branch: `main`
-- HEAD: `72d555a`
-- Last commit: `72d555a chore: remove master-bot-hub traces after cancellation`
+- HEAD: `1f1409c`
+- Last commit: `1f1409c chore(memory): consolidate agent memory workflow`
 
 ## Git Remote
 ```text
@@ -20,35 +20,21 @@ origin	https://github.com/iEgor72/bloknot-mashinista.git (push)
 ```text
 codex/next-direction b044dd5 offline mvp
   codex/tabs-ui        117f1fa [origin/codex/tabs-ui] tabs ui
-* main                 72d555a [origin/main] chore: remove master-bot-hub traces after cancellation
+* main                 1f1409c [origin/main] chore(memory): consolidate agent memory workflow
 ```
 
 ## Worktree
 ```text
-M AGENTS.md
- M README.md
- M ai-memory/AGENT_CONTEXT.md
- M ai-memory/ARCHITECTURE.md
- M ai-memory/CHANGELOG.md
- M ai-memory/ENGINEERING_STYLE.md
+M ai-memory/CHANGELOG.md
  M ai-memory/INDEX.md
- M ai-memory/METHODS.md
  M ai-memory/PROJECT_STATE.md
  M ai-memory/RECENT_COMMITS.md
- M ai-memory/SESSION_PROTOCOL.md
- M ai-memory/START_HERE.md
  M ai-memory/WORKTREE_STATUS.md
- M ai-memory/sessions/2026-04-17.md
- M package.json
- D tools/agent-memory/init.js
- D tools/agent-memory/install-hooks.js
- D tools/agent-memory/lib.js
- D tools/agent-memory/log.js
- D tools/agent-memory/post-commit.js
- D tools/agent-memory/preflight.js
- D tools/agent-memory/refresh.js
- D tools/agent-memory/sync-obsidian.js
-?? tools/agent_memory.py
+ M assets/docs/manifest.json
+ M index.html
+?? ai-memory/sessions/2026-04-18.md
+?? assets/docs/instructions/
+?? "assets/docs/memos/Проверки торм оборудования.pdf"
 ```
 <!-- AUTO_STATUS:END -->
 
