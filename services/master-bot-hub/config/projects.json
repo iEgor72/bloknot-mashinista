@@ -1,0 +1,19 @@
+{
+  "projects": [
+    {
+      "id": "bloknot",
+      "title": "Блокнот машиниста",
+      "repoPath": "D:/work/bloknot-mashinista-tg",
+      "vps": {
+        "host": "72.56.109.219",
+        "path": "/opt/bloknot-mashinista",
+        "process": "bloknot-mashinista"
+      },
+      "rules": [
+        "Не ломать оффлайн-режим и существующие функции.",
+        "Изменения через git commit/push и деплой только pull/reload.",
+        "Не затрагивать /opt/studio-bot без отдельного явного запроса."
+      ]
+    }
+  ]
+}

@@ -1,0 +1,13 @@
+{
+  "name": "master-bot-hub",
+  "version": "0.1.0",
+  "private": true,
+  "description": "Telegram master bot hub with AI chat and coder task queue",
+  "main": "src/server.js",
+  "scripts": {
+    "start": "node src/server.js",
+    "dev": "node src/server.js",
+    "worker": "node src/worker.js",
+    "check": "node --check src/server.js && node --check src/worker.js"
+  }
+}
