@@ -839,6 +839,13 @@ const server = http.createServer(async (req, res) => {
               text: helpText,
             }).catch(() => {});
           }
+        } else if (/^\/myid(?:@\w+)?$/i.test(normalizedText)) {
+          callTelegramApi(token, 'sendMessage', {
+            chat_id: chatId,
+            text:
+              `Ваш Telegram ID: ${String(fromUserId || '')}\n` +
+              `Orchestrator admin: ${isAdmin ? 'yes' : 'no'}`,
+          }).catch(() => {});
         } else if (isAdmin && /^\/task(?:@\w+)?\s+/i.test(normalizedText)) {
           const requestText = normalizeOrchestratorText(normalizedText.replace(/^\/task(?:@\w+)?\s+/i, ''));
           if (!requestText) {
