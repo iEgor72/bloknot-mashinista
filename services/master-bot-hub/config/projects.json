@@ -3,7 +3,7 @@
     {
       "id": "bloknot",
       "title": "Блокнот машиниста",
-      "repoPath": "D:/work/bloknot-mashinista-tg",
+      "repoPath": "/opt/bloknot-mashinista",
       "vps": {
         "host": "72.56.109.219",
         "path": "/opt/bloknot-mashinista",
