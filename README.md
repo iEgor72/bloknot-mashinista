@@ -80,11 +80,3 @@ Generated intelligence documents:
 Auto-update:
 - `memory:init` installs a `post-commit` Git hook.
 - After each commit, memory changelog is updated automatically.
-
-## Master Bot Hub (new)
-
-A separate standalone service for AI-first Telegram conversation and coder task routing is available in:
-
-- [`services/master-bot-hub/`](/D:/work/bloknot-mashinista-tg/services/master-bot-hub)
-
-This service is independent from the `bloknot` app runtime and is intended as the foundation for a single \"conductor\" bot that can discuss ideas and hand off implementation tasks to a coding executor.
