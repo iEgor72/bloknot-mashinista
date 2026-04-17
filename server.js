@@ -10,6 +10,8 @@ const PORT = process.env.PORT || 3000;
 const DATA_DIR = path.join(ROOT, 'data');
 const USERS_DIR = path.join(DATA_DIR, 'local-shifts');
 const USER_STATS_FILE = path.join(DATA_DIR, 'user-presence.json');
+const ORCHESTRATOR_JOBS_FILE = path.join(DATA_DIR, 'orchestrator-jobs.json');
+const ORCHESTRATOR_MAX_JOBS = 500;
 const ONLINE_WINDOW_MS = 2 * 60 * 1000;
 const USER_PRESENCE_FLUSH_DELAY_MS = 2500;
 const SHIFT_USER_IDS_CACHE_TTL_MS = 30 * 1000;
@@ -515,6 +517,228 @@ function readBody(req) {
   });
 }
 
+function getTelegramAdminIds() {
+  const values = [];
+  const append = (raw) => {
+    if (!raw) return;
+    String(raw)
+      .split(/[,\s;]+/)
+      .map((part) => part.trim())
+      .filter(Boolean)
+      .forEach((id) => values.push(id));
+  };
+  append(process.env.ADMIN_TELEGRAM_ID);
+  append(process.env.ORCHESTRATOR_ADMIN_IDS);
+  append(process.env.TELEGRAM_ADMIN_IDS);
+  return new Set(values);
+}
+
+function isTelegramAdminUser(rawUserId) {
+  if (rawUserId === undefined || rawUserId === null) return false;
+  return getTelegramAdminIds().has(String(rawUserId));
+}
+
+function normalizeOrchestratorStatus(rawStatus) {
+  const value = String(rawStatus || '').trim().toLowerCase();
+  if (!value) return 'queued';
+  const allowed = new Set(['queued', 'in_progress', 'done', 'failed', 'canceled']);
+  return allowed.has(value) ? value : 'queued';
+}
+
+function normalizeOrchestratorText(value) {
+  const text = String(value || '').trim();
+  return text.length > 4000 ? text.slice(0, 4000) : text;
+}
+
+function buildOrchestratorJobId() {
+  const now = new Date();
+  const stamp = [
+    now.getFullYear(),
+    String(now.getMonth() + 1).padStart(2, '0'),
+    String(now.getDate()).padStart(2, '0'),
+    String(now.getHours()).padStart(2, '0'),
+    String(now.getMinutes()).padStart(2, '0'),
+    String(now.getSeconds()).padStart(2, '0'),
+  ].join('');
+  const rand = crypto.randomBytes(3).toString('hex');
+  return `job-${stamp}-${rand}`;
+}
+
+function sanitizeOrchestratorJob(rawJob) {
+  if (!rawJob || typeof rawJob !== 'object') return null;
+  const id = normalizeOrchestratorText(rawJob.id);
+  if (!id) return null;
+  const request = normalizeOrchestratorText(rawJob.request);
+  if (!request) return null;
+  const status = normalizeOrchestratorStatus(rawJob.status);
+  const createdAt = typeof rawJob.createdAt === 'string' && rawJob.createdAt ? rawJob.createdAt : new Date().toISOString();
+  const updatedAt = typeof rawJob.updatedAt === 'string' && rawJob.updatedAt ? rawJob.updatedAt : createdAt;
+  const source = normalizeOrchestratorText(rawJob.source || 'telegram');
+  const createdBy = rawJob.createdBy && typeof rawJob.createdBy === 'object'
+    ? {
+        telegramId: normalizeOrchestratorText(rawJob.createdBy.telegramId || ''),
+        username: normalizeOrchestratorText(rawJob.createdBy.username || ''),
+        fullName: normalizeOrchestratorText(rawJob.createdBy.fullName || ''),
+      }
+    : { telegramId: '', username: '', fullName: '' };
+  const chatId = normalizeOrchestratorText(rawJob.chatId || '');
+  const notes = Array.isArray(rawJob.notes)
+    ? rawJob.notes
+        .map((note) => {
+          if (!note || typeof note !== 'object') return null;
+          const text = normalizeOrchestratorText(note.text || '');
+          if (!text) return null;
+          return {
+            at: typeof note.at === 'string' && note.at ? note.at : new Date().toISOString(),
+            by: normalizeOrchestratorText(note.by || ''),
+            text,
+          };
+        })
+        .filter(Boolean)
+        .slice(-50)
+    : [];
+  const result = normalizeOrchestratorText(rawJob.result || '');
+
+  return {
+    id,
+    request,
+    status,
+    source,
+    chatId,
+    createdBy,
+    notes,
+    result,
+    createdAt,
+    updatedAt,
+  };
+}
+
+function readOrchestratorJobs() {
+  ensureDirs();
+  try {
+    if (!fs.existsSync(ORCHESTRATOR_JOBS_FILE)) return [];
+    const raw = fs.readFileSync(ORCHESTRATOR_JOBS_FILE, 'utf8');
+    const parsed = raw ? JSON.parse(raw) : [];
+    if (!Array.isArray(parsed)) return [];
+    return parsed.map(sanitizeOrchestratorJob).filter(Boolean);
+  } catch (err) {
+    return [];
+  }
+}
+
+function writeOrchestratorJobs(jobs) {
+  ensureDirs();
+  const next = Array.isArray(jobs) ? jobs.map(sanitizeOrchestratorJob).filter(Boolean) : [];
+  const limited = next.slice(0, ORCHESTRATOR_MAX_JOBS);
+  fs.writeFileSync(ORCHESTRATOR_JOBS_FILE, JSON.stringify(limited, null, 2), 'utf8');
+  return limited;
+}
+
+function prependOrchestratorJob(job) {
+  const existing = readOrchestratorJobs();
+  existing.unshift(job);
+  return writeOrchestratorJobs(existing);
+}
+
+function createOrchestratorJob(payload) {
+  const nowIso = new Date().toISOString();
+  const request = normalizeOrchestratorText(payload && payload.request);
+  if (!request) return null;
+  const job = sanitizeOrchestratorJob({
+    id: buildOrchestratorJobId(),
+    request,
+    status: 'queued',
+    source: normalizeOrchestratorText((payload && payload.source) || 'telegram'),
+    chatId: normalizeOrchestratorText(payload && payload.chatId),
+    createdBy: {
+      telegramId: normalizeOrchestratorText(payload && payload.telegramId),
+      username: normalizeOrchestratorText(payload && payload.username),
+      fullName: normalizeOrchestratorText(payload && payload.fullName),
+    },
+    notes: [],
+    result: '',
+    createdAt: nowIso,
+    updatedAt: nowIso,
+  });
+  if (!job) return null;
+  prependOrchestratorJob(job);
+  return job;
+}
+
+function updateOrchestratorJobById(jobId, patch) {
+  const id = normalizeOrchestratorText(jobId);
+  if (!id) return null;
+  const jobs = readOrchestratorJobs();
+  const idx = jobs.findIndex((job) => job.id === id);
+  if (idx === -1) return null;
+  const current = jobs[idx];
+  const next = {
+    ...current,
+    status: patch && patch.status ? normalizeOrchestratorStatus(patch.status) : current.status,
+    result: patch && patch.result !== undefined ? normalizeOrchestratorText(patch.result) : current.result,
+    updatedAt: new Date().toISOString(),
+  };
+  const noteText = normalizeOrchestratorText(patch && patch.note);
+  if (noteText) {
+    const noteBy = normalizeOrchestratorText(patch && patch.noteBy);
+    next.notes = (Array.isArray(current.notes) ? current.notes : []).concat([
+      {
+        at: next.updatedAt,
+        by: noteBy || 'system',
+        text: noteText,
+      },
+    ]).slice(-50);
+  }
+  jobs[idx] = sanitizeOrchestratorJob(next);
+  writeOrchestratorJobs(jobs);
+  return jobs[idx];
+}
+
+function filterOrchestratorJobs(jobs, status, limit) {
+  const normalizedStatus = status ? normalizeOrchestratorStatus(status) : '';
+  const filtered = normalizedStatus
+    ? jobs.filter((job) => job.status === normalizedStatus)
+    : jobs;
+  const safeLimit = Number.isFinite(limit) ? Math.max(1, Math.min(100, limit)) : 20;
+  return filtered.slice(0, safeLimit);
+}
+
+function getOrchestratorApiKey() {
+  return String(process.env.ORCHESTRATOR_API_KEY || '').trim();
+}
+
+function isOrchestratorApiAuthorized(req) {
+  const key = getOrchestratorApiKey();
+  if (!key) return false;
+  const provided = String(req.headers['x-orchestrator-key'] || '').trim();
+  return provided && provided === key;
+}
+
+function buildOrchestratorHelpText() {
+  return (
+    'Режим оркестратора:\n' +
+    '/task <что сделать> — поставить задачу Codex\n' +
+    '/jobs — последние задачи\n' +
+    '/job <id> — детали задачи\n' +
+    '/cancel <id> — отменить задачу'
+  );
+}
+
+function formatOrchestratorJobShort(job) {
+  return `${job.id} [${job.status}] ${job.request}`;
+}
+
+function formatOrchestratorJobDetails(job) {
+  const notes = (job.notes || []).slice(-3).map((note) => `- ${note.at} ${note.by}: ${note.text}`).join('\n');
+  return (
+    `ID: ${job.id}\n` +
+    `Статус: ${job.status}\n` +
+    `Запрос: ${job.request}\n` +
+    (job.result ? `Результат: ${job.result}\n` : '') +
+    (notes ? `Заметки:\n${notes}` : '')
+  );
+}
+
 const APP_URL = 'https://bloknot-mashinista-bot.ru';
 
 function callTelegramApi(token, method, payload) {
@@ -598,9 +822,91 @@ const server = http.createServer(async (req, res) => {
       const text = (message && message.text) || '';
       const chatId = message && message.chat && message.chat.id;
       const firstName = (message && message.from && message.from.first_name) || '';
+      const username = (message && message.from && message.from.username) || '';
+      const lastName = (message && message.from && message.from.last_name) || '';
+      const fromUserId = message && message.from && message.from.id;
+      const isAdmin = isTelegramAdminUser(fromUserId);
+      const normalizedText = String(text || '').trim();
       if (chatId) {
-        if (text.startsWith('/start') || text.startsWith('/help')) {
+        if (normalizedText.startsWith('/start') || normalizedText.startsWith('/help')) {
+          const helpText = isAdmin
+            ? `${buildWelcomeMessage(chatId, firstName).text}\n\n${buildOrchestratorHelpText()}`
+            : buildWelcomeMessage(chatId, firstName).text;
           callTelegramApi(token, 'sendMessage', buildWelcomeMessage(chatId, firstName)).catch(() => {});
+          if (isAdmin) {
+            callTelegramApi(token, 'sendMessage', {
+              chat_id: chatId,
+              text: helpText,
+            }).catch(() => {});
+          }
+        } else if (isAdmin && /^\/task(?:@\w+)?\s+/i.test(normalizedText)) {
+          const requestText = normalizeOrchestratorText(normalizedText.replace(/^\/task(?:@\w+)?\s+/i, ''));
+          if (!requestText) {
+            callTelegramApi(token, 'sendMessage', {
+              chat_id: chatId,
+              text: 'Пустая задача. Пример: /task Добавить фильтр по сменам за месяц',
+            }).catch(() => {});
+          } else {
+            const job = createOrchestratorJob({
+              request: requestText,
+              source: 'telegram',
+              chatId: String(chatId),
+              telegramId: String(fromUserId || ''),
+              username,
+              fullName: [firstName, lastName].join(' ').trim(),
+            });
+            if (!job) {
+              callTelegramApi(token, 'sendMessage', {
+                chat_id: chatId,
+                text: 'Не удалось создать задачу. Попробуй ещё раз.',
+              }).catch(() => {});
+            } else {
+              callTelegramApi(token, 'sendMessage', {
+                chat_id: chatId,
+                text: `Задача поставлена: ${job.id}\nСтатус: ${job.status}\n\n${job.request}`,
+              }).catch(() => {});
+            }
+          }
+        } else if (isAdmin && /^\/jobs(?:@\w+)?$/i.test(normalizedText)) {
+          const jobs = filterOrchestratorJobs(readOrchestratorJobs(), '', 7);
+          const textBody = jobs.length
+            ? `Последние задачи:\n${jobs.map((job) => `- ${formatOrchestratorJobShort(job)}`).join('\n')}`
+            : 'Задач пока нет.';
+          callTelegramApi(token, 'sendMessage', {
+            chat_id: chatId,
+            text: textBody,
+          }).catch(() => {});
+        } else if (isAdmin && /^\/job(?:@\w+)?\s+/i.test(normalizedText)) {
+          const jobId = normalizeOrchestratorText(normalizedText.replace(/^\/job(?:@\w+)?\s+/i, ''));
+          const job = readOrchestratorJobs().find((entry) => entry.id === jobId);
+          callTelegramApi(token, 'sendMessage', {
+            chat_id: chatId,
+            text: job ? formatOrchestratorJobDetails(job) : `Задача ${jobId} не найдена.`,
+          }).catch(() => {});
+        } else if (isAdmin && /^\/cancel(?:@\w+)?\s+/i.test(normalizedText)) {
+          const jobId = normalizeOrchestratorText(normalizedText.replace(/^\/cancel(?:@\w+)?\s+/i, ''));
+          const updated = updateOrchestratorJobById(jobId, {
+            status: 'canceled',
+            note: 'Canceled from Telegram',
+            noteBy: String(fromUserId || 'admin'),
+          });
+          callTelegramApi(token, 'sendMessage', {
+            chat_id: chatId,
+            text: updated ? `Задача отменена: ${updated.id}` : `Задача ${jobId} не найдена.`,
+          }).catch(() => {});
+        } else if (isAdmin && /^\/orchestrator(?:@\w+)?$/i.test(normalizedText)) {
+          callTelegramApi(token, 'sendMessage', {
+            chat_id: chatId,
+            text: buildOrchestratorHelpText(),
+          }).catch(() => {});
+        } else if (isAdmin) {
+          callTelegramApi(token, 'sendMessage', {
+            chat_id: chatId,
+            text:
+              'Для постановки задачи используй команду:\n' +
+              '/task <что сделать>\n\n' +
+              'Справка: /orchestrator',
+          }).catch(() => {});
         } else {
           callTelegramApi(token, 'sendMessage', {
             chat_id: chatId,
@@ -610,6 +916,88 @@ const server = http.createServer(async (req, res) => {
       }
     } catch (_) {}
     sendJson(res, 200, { ok: true });
+    return;
+  }
+
+  const orchestratorJobMatch = pathname.match(/^\/api\/orchestrator\/jobs(?:\/([A-Za-z0-9_-]+))?$/);
+  if (orchestratorJobMatch) {
+    const apiKey = getOrchestratorApiKey();
+    if (!apiKey) {
+      sendJson(res, 503, { ok: false, error: 'ORCHESTRATOR_API_KEY is not configured' });
+      return;
+    }
+    if (!isOrchestratorApiAuthorized(req)) {
+      sendJson(res, 401, { ok: false, error: 'Unauthorized orchestrator API access' });
+      return;
+    }
+
+    const jobId = orchestratorJobMatch[1] ? String(orchestratorJobMatch[1]) : '';
+
+    if (req.method === 'GET') {
+      const status = parsedUrl.query && parsedUrl.query.status ? String(parsedUrl.query.status) : '';
+      const limitRaw = parsedUrl.query && parsedUrl.query.limit ? Number(parsedUrl.query.limit) : 20;
+      const jobs = filterOrchestratorJobs(readOrchestratorJobs(), status, limitRaw);
+      sendJson(res, 200, { ok: true, jobs });
+      return;
+    }
+
+    if (req.method === 'POST' && !jobId) {
+      try {
+        const raw = await readBody(req);
+        const payload = raw ? JSON.parse(raw) : {};
+        const job = createOrchestratorJob({
+          request: payload && payload.request,
+          source: payload && payload.source ? payload.source : 'api',
+          chatId: payload && payload.chatId ? String(payload.chatId) : '',
+          telegramId: payload && payload.telegramId ? String(payload.telegramId) : '',
+          username: payload && payload.username ? String(payload.username) : '',
+          fullName: payload && payload.fullName ? String(payload.fullName) : '',
+        });
+        if (!job) {
+          sendJson(res, 400, { ok: false, error: 'Invalid request' });
+          return;
+        }
+        sendJson(res, 201, { ok: true, job });
+      } catch (err) {
+        sendJson(res, 400, { ok: false, error: err.message || 'Invalid payload' });
+      }
+      return;
+    }
+
+    if (req.method === 'PATCH' && jobId) {
+      try {
+        const raw = await readBody(req);
+        const payload = raw ? JSON.parse(raw) : {};
+        const updated = updateOrchestratorJobById(jobId, {
+          status: payload && payload.status,
+          result: payload && payload.result,
+          note: payload && payload.note,
+          noteBy: payload && payload.noteBy ? String(payload.noteBy) : 'api',
+        });
+        if (!updated) {
+          sendJson(res, 404, { ok: false, error: 'Job not found' });
+          return;
+        }
+
+        if (payload && payload.notify === true && updated.chatId && process.env.TELEGRAM_BOT_TOKEN) {
+          const notifyText =
+            `Задача ${updated.id}\n` +
+            `Статус: ${updated.status}\n` +
+            `${updated.result ? `Результат: ${updated.result}` : ''}`;
+          callTelegramApi(process.env.TELEGRAM_BOT_TOKEN, 'sendMessage', {
+            chat_id: updated.chatId,
+            text: notifyText.trim(),
+          }).catch(() => {});
+        }
+
+        sendJson(res, 200, { ok: true, job: updated });
+      } catch (err) {
+        sendJson(res, 400, { ok: false, error: err.message || 'Invalid payload' });
+      }
+      return;
+    }
+
+    sendJson(res, 405, { ok: false, error: 'Method not allowed' });
     return;
   }
 

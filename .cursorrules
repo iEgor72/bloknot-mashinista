@@ -1,0 +1,15 @@
+Mandatory before any code changes:
+- Agent runs `npm run memory:preflight` autonomously (user action is not required)
+- Read `ai-memory/START_HERE.md`
+- Read `ai-memory/PROJECT_STATE.md`
+- Read `ai-memory/ARCHITECTURE.md`
+- Read `ai-memory/METHODS.md`
+- Read `ai-memory/ENGINEERING_STYLE.md`
+- Read latest `ai-memory/CHANGELOG.md` entries
+- Read `ai-memory/WORKTREE_STATUS.md`
+
+After significant work:
+- Agent runs `npm run memory:log -- --task "..." --methods "..." --files "file1,file2"` autonomously
+- Agent runs `npm run memory:refresh` autonomously
+
+After each git commit, post-commit hook updates ai-memory automatically.

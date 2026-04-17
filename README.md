@@ -50,3 +50,63 @@ After that, send `/start` to the bot and it will answer with a button that opens
 ## Local note
 
 The local `server.js` file is only a simple static/dev server. The real synced auth flow works on Cloudflare Pages with D1 and the Telegram bot token secret.
+
+## AI memory (Obsidian + Git)
+
+This repo includes an agent memory workflow in [`ai-memory/`](/D:/work/bloknot-mashinista-tg/ai-memory/) that can be synced into your Obsidian vault.
+
+1. Copy `.agent-memory.local.example.json` to `.agent-memory.local.json`.
+2. Set your local `vaultPath` and `projectFolder`.
+3. Run:
+   - `npm run memory:init`
+
+Useful commands:
+- `npm run memory:preflight` — refresh memory and print mandatory reading order for a new session.
+- `npm run memory:refresh` — rebuild current project snapshot.
+- `npm run memory:log -- --task "..." --methods "..."` — append an explicit agent note.
+- `npm run memory:sync` — sync memory files to Obsidian now.
+- `npm run memory:watch:daemon` — start background watcher (auto refresh/log on file save).
+- `npm run memory:watch:status` — watcher status.
+- `npm run memory:watch:stop` — stop watcher.
+- `npm run memory:autostart:install` — enable autostart on Windows (Task Scheduler if allowed, otherwise Startup shortcut fallback).
+- `npm run memory:autostart:status` — autostart status and active mode.
+- `npm run memory:autostart:uninstall` — remove all autostart entries (scheduler + Startup shortcut).
+
+If you work through an AI agent (Codex/Claude/Cursor), you do not need to run these manually:
+- the agent should run preflight at session start,
+- log key steps during work,
+- refresh memory at session end.
+
+Generated intelligence documents:
+- `ai-memory/ARCHITECTURE.md`
+- `ai-memory/METHODS.md`
+- `ai-memory/ENGINEERING_STYLE.md`
+- `ai-memory/SESSION_PROTOCOL.md`
+
+Auto-update:
+- `memory:init` installs a `post-commit` Git hook.
+- After each commit, memory changelog is updated automatically.
+
+## Telegram Orchestrator (MVP)
+
+This project now includes a basic orchestrator queue in `server.js` for admin Telegram chat.
+
+Required env:
+- `TELEGRAM_BOT_TOKEN` — bot token.
+- `ADMIN_TELEGRAM_ID` or `ORCHESTRATOR_ADMIN_IDS` — Telegram user IDs allowed to create tasks.
+- `ORCHESTRATOR_API_KEY` — secret key for `/api/orchestrator/jobs*` API.
+
+Admin commands in Telegram:
+- `/task <text>` — create a queued task for Codex.
+- `/jobs` — list recent tasks.
+- `/job <id>` — show task details.
+- `/cancel <id>` — cancel task.
+- `/orchestrator` — help.
+
+Orchestrator API (for worker/Codex automation):
+- `GET /api/orchestrator/jobs?status=queued&limit=20`
+- `POST /api/orchestrator/jobs`
+- `PATCH /api/orchestrator/jobs/{id}`
+
+All orchestrator API calls must include header:
+- `x-orchestrator-key: <ORCHESTRATOR_API_KEY>`

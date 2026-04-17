@@ -6,3 +6,5 @@ tmp_*.html
 .tmp-*.js
 .claude/
 bot_avatar.png
+.agent-memory.local.json
+.agent-memory.watcher.pid
