@@ -1,6 +1,6 @@
 # Session Protocol
 
-Generated: 2026-04-17 19:05:43 +10:00
+Generated: 2026-04-17 19:10:38 +10:00
 
 ## Mandatory Preflight (start of every agent session)
 1. Run `npm run memory:preflight`.

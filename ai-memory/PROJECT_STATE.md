@@ -1,22 +1,22 @@
 # Project State
 
-Generated: 2026-04-17 15:37:13 +10:00
+Generated: 2026-04-17 19:10:38 +10:00
 
 ## Repository
 - Name: `bloknot-mashinista`
 - Root: `D:\work\bloknot-mashinista-tg`
 - Branch: `main`
-- Tracked files: 102
-- HEAD: `e717be1` (feat(orchestrator): user-friendly telegram status messages)
+- Tracked files: 96
+- HEAD: `e2e7841` (chore: remove background memory watcher and orchestrator MVP)
 
 ## Top-Level File Map
 - `assets`: 22
 - `(root)`: 18
 - `scripts`: 18
-- `tools`: 14
 - `ai-memory`: 12
 - `functions`: 10
 - `styles`: 8
+- `tools`: 8
 
 ## API Surface
 - `/api/auth` (functions/api/auth.js)

@@ -1,9 +1,12 @@
 # Recent Commits
 
-Generated: 2026-04-17 15:37:14 +10:00
+Generated: 2026-04-17 19:10:38 +10:00
 
 | Hash | Date | Author | Message |
 | --- | --- | --- | --- |
+| `e2e7841` | 2026-04-17T19:10:37+10:00 | iEgor72 | chore: remove background memory watcher and orchestrator MVP |
+| `d5c10d8` | 2026-04-17T15:38:08+10:00 | iEgor72 | chore(orchestrator): localize cancel note text |
+| `9fd749b` | 2026-04-17T15:37:24+10:00 | iEgor72 | chore(memory): refresh ai-memory after orchestrator messaging update |
 | `e717be1` | 2026-04-17T15:36:36+10:00 | iEgor72 | feat(orchestrator): user-friendly telegram status messages |
 | `3411a85` | 2026-04-17T15:30:41+10:00 | iEgor72 | chore(memory): refresh ai-memory after docs update |
 | `752515e` | 2026-04-17T15:28:52+10:00 | iEgor72 | feat(docs): add instructions tab in documentation |
@@ -41,6 +44,3 @@ Generated: 2026-04-17 15:37:14 +10:00
 | `4c05924` | 2026-04-12T22:10:56+10:00 | iEgor72 | Remove half-run UI and keep single-trip flow |
 | `7b9aa71` | 2026-04-12T22:03:44+10:00 | iEgor72 | Refine rare extra-run flow in shift form |
 | `80e04b5` | 2026-04-12T21:52:01+10:00 | iEgor72 | Переработка формы смен: полурейсы, мульти-локомотив, КЭФ по секциям |
-| `1a427c5` | 2026-04-12T02:28:29+10:00 | iEgor72 | Unify monthly norm formatting with today norm |
-| `313dfee` | 2026-04-12T01:55:09+10:00 | iEgor72 | Use production calendar rules for month and today norms |
-| `419f4fa` | 2026-04-12T01:45:58+10:00 | iEgor72 | Use 8h per elapsed workday for current month today norm |

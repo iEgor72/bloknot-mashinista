@@ -1,15 +1,15 @@
 # Engineering Style
 
-Generated: 2026-04-17 15:37:13 +10:00
+Generated: 2026-04-17 19:10:38 +10:00
 
 ## Codebase Style Metrics
-- JS files: 43
-- Declaration mix: var=2182 (25.5%), let=1623 (19.0%), const=4745 (55.5%)
+- JS files: 38
+- Declaration mix: var=2182 (26.0%), let=1619 (19.3%), const=4599 (54.8%)
 - IIFE-like files: 17
 - ESM-like files: 11
 - addEventListener calls: 208
-- fetch() calls: 50
-- catch(...) blocks: 278
+- fetch() calls: 49
+- catch(...) blocks: 253
 
 ## Writing Style Traits
 - Defensive coding with frequent `try/catch` around platform-specific APIs (Telegram SDK, localStorage, viewport APIs).
