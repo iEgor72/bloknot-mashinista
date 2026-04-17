@@ -714,27 +714,54 @@ function isOrchestratorApiAuthorized(req) {
   return provided && provided === key;
 }
 
+function getOrchestratorStatusPresentation(rawStatus) {
+  const status = normalizeOrchestratorStatus(rawStatus);
+  const map = {
+    queued: { id: 'queued', emoji: '📥', title: 'Принято', subtitle: 'Задача добавлена в очередь' },
+    in_progress: { id: 'in_progress', emoji: '🛠️', title: 'В работе', subtitle: 'Задача сейчас выполняется' },
+    done: { id: 'done', emoji: '✅', title: 'Готово', subtitle: 'Задача выполнена' },
+    failed: { id: 'failed', emoji: '⚠️', title: 'Нужна проверка', subtitle: 'Во время выполнения возникла ошибка' },
+    canceled: { id: 'canceled', emoji: '⛔', title: 'Отменено', subtitle: 'Задача была отменена' },
+  };
+  return map[status] || map.queued;
+}
+
+function truncateOrchestratorText(value, maxLen) {
+  const limit = Math.max(8, Number(maxLen) || 8);
+  const text = String(value || '').replace(/\s+/g, ' ').trim();
+  if (!text) return '';
+  if (text.length <= limit) return text;
+  return `${text.slice(0, limit - 1).trim()}…`;
+}
+
 function buildOrchestratorHelpText() {
   return (
-    'Режим оркестратора:\n' +
-    '/task <что сделать> — поставить задачу Codex\n' +
-    '/jobs — последние задачи\n' +
-    '/job <id> — детали задачи\n' +
-    '/cancel <id> — отменить задачу'
+    'Оркестратор задач:\n' +
+    '/task <что сделать> — поставить задачу\n' +
+    '/jobs — посмотреть последние задачи\n' +
+    '/job <id> — открыть подробности\n' +
+    '/cancel <id> — отменить задачу\n\n' +
+    'Статусы показываются по-человечески: «Принято», «В работе», «Готово», «Нужна проверка».'
   );
 }
 
 function formatOrchestratorJobShort(job) {
-  return `${job.id} [${job.status}] ${job.request}`;
+  const status = getOrchestratorStatusPresentation(job.status);
+  return `${status.emoji} ${status.title} · ${job.id} · ${truncateOrchestratorText(job.request, 96)}`;
 }
 
 function formatOrchestratorJobDetails(job) {
-  const notes = (job.notes || []).slice(-3).map((note) => `- ${note.at} ${note.by}: ${note.text}`).join('\n');
+  const status = getOrchestratorStatusPresentation(job.status);
+  const notes = (job.notes || [])
+    .slice(-3)
+    .map((note) => `- ${note.at} · ${note.by}: ${note.text}`)
+    .join('\n');
   return (
-    `ID: ${job.id}\n` +
-    `Статус: ${job.status}\n` +
-    `Запрос: ${job.request}\n` +
-    (job.result ? `Результат: ${job.result}\n` : '') +
+    `${status.emoji} ${status.title}\n` +
+    `${status.subtitle}\n\n` +
+    `Номер: ${job.id}\n` +
+    `Задача: ${job.request}\n` +
+    (job.result ? `Итог: ${job.result}\n` : '') +
     (notes ? `Заметки:\n${notes}` : '')
   );
 }
@@ -844,14 +871,14 @@ const server = http.createServer(async (req, res) => {
             chat_id: chatId,
             text:
               `Ваш Telegram ID: ${String(fromUserId || '')}\n` +
-              `Orchestrator admin: ${isAdmin ? 'yes' : 'no'}`,
+              `Доступ к оркестратору: ${isAdmin ? 'есть' : 'нет'}`,
           }).catch(() => {});
         } else if (isAdmin && /^\/task(?:@\w+)?\s+/i.test(normalizedText)) {
           const requestText = normalizeOrchestratorText(normalizedText.replace(/^\/task(?:@\w+)?\s+/i, ''));
           if (!requestText) {
             callTelegramApi(token, 'sendMessage', {
               chat_id: chatId,
-              text: 'Пустая задача. Пример: /task Добавить фильтр по сменам за месяц',
+              text: 'Текст задачи пустой.\n\nПример: /task Добавить фильтр по сменам за месяц',
             }).catch(() => {});
           } else {
             const job = createOrchestratorJob({
@@ -868,9 +895,14 @@ const server = http.createServer(async (req, res) => {
                 text: 'Не удалось создать задачу. Попробуй ещё раз.',
               }).catch(() => {});
             } else {
+              const status = getOrchestratorStatusPresentation(job.status);
               callTelegramApi(token, 'sendMessage', {
                 chat_id: chatId,
-                text: `Задача поставлена: ${job.id}\nСтатус: ${job.status}\n\n${job.request}`,
+                text:
+                  `${status.emoji} ${status.title}\n` +
+                  `${status.subtitle}\n\n` +
+                  `Номер: ${job.id}\n` +
+                  `Задача: ${job.request}`,
               }).catch(() => {});
             }
           }
@@ -878,7 +910,7 @@ const server = http.createServer(async (req, res) => {
           const jobs = filterOrchestratorJobs(readOrchestratorJobs(), '', 7);
           const textBody = jobs.length
             ? `Последние задачи:\n${jobs.map((job) => `- ${formatOrchestratorJobShort(job)}`).join('\n')}`
-            : 'Задач пока нет.';
+            : 'Пока задач нет.';
           callTelegramApi(token, 'sendMessage', {
             chat_id: chatId,
             text: textBody,
@@ -899,7 +931,7 @@ const server = http.createServer(async (req, res) => {
           });
           callTelegramApi(token, 'sendMessage', {
             chat_id: chatId,
-            text: updated ? `Задача отменена: ${updated.id}` : `Задача ${jobId} не найдена.`,
+            text: updated ? `⛔ Отменено\nНомер: ${updated.id}` : `Задача ${jobId} не найдена.`,
           }).catch(() => {});
         } else if (isAdmin && /^\/orchestrator(?:@\w+)?$/i.test(normalizedText)) {
           callTelegramApi(token, 'sendMessage', {
@@ -910,8 +942,9 @@ const server = http.createServer(async (req, res) => {
           callTelegramApi(token, 'sendMessage', {
             chat_id: chatId,
             text:
-              'Для постановки задачи используй команду:\n' +
-              '/task <что сделать>\n\n' +
+              'Я сейчас работаю как оркестратор задач.\n' +
+              'Поставить задачу: /task <что сделать>\n' +
+              'Список задач: /jobs\n' +
               'Справка: /orchestrator',
           }).catch(() => {});
         } else {
@@ -987,10 +1020,12 @@ const server = http.createServer(async (req, res) => {
         }
 
         if (payload && payload.notify === true && updated.chatId && process.env.TELEGRAM_BOT_TOKEN) {
+          const status = getOrchestratorStatusPresentation(updated.status);
           const notifyText =
-            `Задача ${updated.id}\n` +
-            `Статус: ${updated.status}\n` +
-            `${updated.result ? `Результат: ${updated.result}` : ''}`;
+            `${status.emoji} ${status.title}\n` +
+            `${status.subtitle}\n\n` +
+            `Номер: ${updated.id}\n` +
+            `${updated.result ? `Итог: ${updated.result}` : ''}`;
           callTelegramApi(process.env.TELEGRAM_BOT_TOKEN, 'sendMessage', {
             chat_id: updated.chatId,
             text: notifyText.trim(),
