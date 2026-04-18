@@ -1251,12 +1251,22 @@
       min-width: 0;
       overflow: auto;
       -webkit-overflow-scrolling: touch;
+      overscroll-behavior-y: contain;
+      overscroll-behavior-x: contain;
+      touch-action: pan-x pan-y pinch-zoom;
       padding:
         12px
         calc(12px + env(safe-area-inset-right))
         calc(18px + env(safe-area-inset-bottom))
         calc(12px + env(safe-area-inset-left));
       background: #e8edf4;
+    }
+
+    .docs-docx-scale-wrap {
+      position: relative;
+      width: 100%;
+      min-width: 100%;
+      min-height: 100%;
     }
 
     .docs-docx-page {
@@ -1272,6 +1282,11 @@
       font-family: "Times New Roman", Georgia, serif;
       font-size: 16px;
       line-height: 1.45;
+      transform-origin: 0 0;
+    }
+
+    .docs-docx-page.is-live-zoom {
+      will-change: transform;
     }
 
     .docs-docx-paragraph {

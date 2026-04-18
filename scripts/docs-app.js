@@ -344,6 +344,7 @@
     var docsPdfJsLoadPromise = null;
     var docsZipLoadPromise = null;
     var docsPdfViewerState = null;
+    var docsDocxViewerState = null;
 
     function decodeDocAttr(value) {
       if (value === undefined || value === null) return '';
@@ -394,6 +395,16 @@
       );
       var zoomPart = zoom > 1.01 ? (' · ' + formatDocsPdfScale(zoom) + 'x') : '';
       return page + '/' + state.pageItems.length + zoomPart;
+    }
+
+    function getDocsDocxStatusText(state, scaleForStatus) {
+      var zoom = clampDocsPdfScale(
+        typeof scaleForStatus === 'number'
+          ? scaleForStatus
+          : (state && state.zoomScale ? state.zoomScale : DOCS_PDF_MIN_SCALE)
+      );
+      var zoomPart = zoom > 1.01 ? (' · ' + formatDocsPdfScale(zoom) + 'x') : '';
+      return 'DOCX' + zoomPart;
     }
 
     function getDocsTouchPoint(scrollEl, touch) {
@@ -710,47 +721,335 @@
       return html || '<p class="docs-docx-paragraph">Документ пуст</p>';
     }
 
-    function renderDocsDocxHtml(html, localPath) {
+    function isDocsDocxViewerActive(state) {
+      return !!(state && !state.destroyed && docsDocxViewerState === state);
+    }
+
+    function createDocsDocxViewerState(bodyEl) {
+      return {
+        destroyed: false,
+        bodyEl: bodyEl,
+        scrollEl: null,
+        wrapEl: null,
+        pageEl: null,
+        zoomScale: DOCS_PDF_MIN_SCALE,
+        previewScale: DOCS_PDF_MIN_SCALE,
+        measured: false,
+        baseWrapWidth: 0,
+        baseWrapHeight: 0,
+        basePageWidth: 0,
+        basePageHeight: 0,
+        basePageLeft: 0,
+        basePageTop: 0,
+        pinch: { active: false, startDistance: 0, startScale: DOCS_PDF_MIN_SCALE, originX: 0, originY: 0 },
+        tapStart: null,
+        lastTapAt: 0,
+        lastTapX: 0,
+        lastTapY: 0,
+        resizeTimer: null,
+        onResize: null,
+        onTouchStart: null,
+        onTouchMove: null,
+        onTouchEnd: null,
+        onTouchCancel: null
+      };
+    }
+
+    function resetDocsDocxMeasureStyles(state) {
+      if (!state || !state.wrapEl || !state.pageEl) return;
+      state.wrapEl.style.width = '';
+      state.wrapEl.style.height = '';
+      state.pageEl.style.position = '';
+      state.pageEl.style.left = '';
+      state.pageEl.style.top = '';
+      state.pageEl.style.width = '';
+      state.pageEl.style.minHeight = '';
+      state.pageEl.style.margin = '';
+      state.pageEl.style.transform = '';
+      state.pageEl.style.transformOrigin = '';
+      state.pageEl.classList.remove('is-live-zoom');
+    }
+
+    function measureDocsDocxLayout(state) {
+      if (!isDocsDocxViewerActive(state) || !state.scrollEl || !state.wrapEl || !state.pageEl) return;
+      resetDocsDocxMeasureStyles(state);
+
+      var wrapWidth = Math.max(1, state.wrapEl.offsetWidth || state.scrollEl.clientWidth || 1);
+      var wrapHeight = Math.max(1, state.wrapEl.scrollHeight || state.scrollEl.clientHeight || 1);
+      var pageWidth = Math.max(1, state.pageEl.offsetWidth || 1);
+      var pageHeight = Math.max(1, state.pageEl.offsetHeight || 1);
+      var pageLeft = Math.max(0, state.pageEl.offsetLeft || 0);
+      var pageTop = Math.max(0, state.pageEl.offsetTop || 0);
+      var pageRight = Math.max(0, wrapWidth - pageLeft - pageWidth);
+      var pageBottom = Math.max(0, wrapHeight - pageTop - pageHeight);
+
+      state.basePageWidth = pageWidth;
+      state.basePageHeight = pageHeight;
+      state.basePageLeft = pageLeft;
+      state.basePageTop = pageTop;
+      state.baseWrapWidth = Math.max(wrapWidth, pageLeft + pageWidth + pageRight);
+      state.baseWrapHeight = Math.max(wrapHeight, pageTop + pageHeight + pageBottom);
+      state.measured = true;
+    }
+
+    function applyDocsDocxCommittedScale(state) {
+      if (!isDocsDocxViewerActive(state) || !state.scrollEl || !state.wrapEl || !state.pageEl) return;
+      if (!state.measured) measureDocsDocxLayout(state);
+      if (!state.measured) return;
+
+      var scale = clampDocsPdfScale(state.zoomScale);
+      var wrapWidth = Math.max(state.scrollEl.clientWidth, state.baseWrapWidth * scale);
+      var wrapHeight = Math.max(state.scrollEl.clientHeight, state.baseWrapHeight * scale);
+
+      state.wrapEl.style.width = Math.ceil(wrapWidth) + 'px';
+      state.wrapEl.style.height = Math.ceil(wrapHeight) + 'px';
+      state.pageEl.style.position = 'absolute';
+      state.pageEl.style.left = Math.round(state.basePageLeft * scale) + 'px';
+      state.pageEl.style.top = Math.round(state.basePageTop * scale) + 'px';
+      state.pageEl.style.width = Math.round(state.basePageWidth) + 'px';
+      state.pageEl.style.minHeight = Math.round(state.basePageHeight) + 'px';
+      state.pageEl.style.margin = '0';
+      state.pageEl.style.transformOrigin = '0 0';
+      state.pageEl.style.transform = Math.abs(scale - 1) < 0.001 ? '' : ('scale(' + scale + ')');
+      state.pageEl.classList.toggle('is-live-zoom', scale > 1.01);
+      setDocsViewerStatus(getDocsDocxStatusText(state));
+    }
+
+    function commitDocsDocxScale(state, scale, originX, originY) {
+      if (!isDocsDocxViewerActive(state) || !state.scrollEl || !state.wrapEl || !state.pageEl) return;
+      if (!state.measured) measureDocsDocxLayout(state);
+      if (!state.measured) return;
+
+      var nextScale = clampDocsPdfScale(scale);
+      var prevScale = clampDocsPdfScale(state.zoomScale);
+      var rawX = originX;
+      var rawY = originY;
+      if (typeof rawX !== 'number' || !isFinite(rawX)) rawX = state.scrollEl.clientWidth / 2;
+      if (typeof rawY !== 'number' || !isFinite(rawY)) rawY = state.scrollEl.clientHeight / 2;
+      var anchorX = Math.max(0, Math.min(state.scrollEl.clientWidth, rawX));
+      var anchorY = Math.max(0, Math.min(state.scrollEl.clientHeight, rawY));
+      var contentX = (state.scrollEl.scrollLeft + anchorX) / prevScale;
+      var contentY = (state.scrollEl.scrollTop + anchorY) / prevScale;
+
+      state.zoomScale = nextScale;
+      state.previewScale = nextScale;
+      applyDocsDocxCommittedScale(state);
+
+      state.scrollEl.scrollLeft = Math.max(0, contentX * nextScale - anchorX);
+      state.scrollEl.scrollTop = Math.max(0, contentY * nextScale - anchorY);
+    }
+
+    function scheduleDocsDocxRelayout(state) {
+      if (!isDocsDocxViewerActive(state)) return;
+      if (state.resizeTimer) clearTimeout(state.resizeTimer);
+      state.resizeTimer = setTimeout(function() {
+        if (!isDocsDocxViewerActive(state) || !state.scrollEl || !state.wrapEl) return;
+        state.resizeTimer = null;
+
+        var oldWidth = Math.max(1, state.wrapEl.offsetWidth || state.scrollEl.scrollWidth || 1);
+        var oldHeight = Math.max(1, state.wrapEl.offsetHeight || state.scrollEl.scrollHeight || 1);
+        var ratioX = (state.scrollEl.scrollLeft + state.scrollEl.clientWidth / 2) / oldWidth;
+        var ratioY = (state.scrollEl.scrollTop + state.scrollEl.clientHeight / 2) / oldHeight;
+
+        state.measured = false;
+        measureDocsDocxLayout(state);
+        applyDocsDocxCommittedScale(state);
+
+        var nextWidth = Math.max(1, state.wrapEl.offsetWidth || state.scrollEl.scrollWidth || 1);
+        var nextHeight = Math.max(1, state.wrapEl.offsetHeight || state.scrollEl.scrollHeight || 1);
+        state.scrollEl.scrollLeft = Math.max(0, ratioX * nextWidth - state.scrollEl.clientWidth / 2);
+        state.scrollEl.scrollTop = Math.max(0, ratioY * nextHeight - state.scrollEl.clientHeight / 2);
+      }, 80);
+    }
+
+    function attachDocxGestureHandlers(state) {
+      if (!isDocsDocxViewerActive(state) || !state.scrollEl) return;
+      var scrollEl = state.scrollEl;
+
+      state.onTouchStart = function(e) {
+        if (!isDocsDocxViewerActive(state)) return;
+        if (e.touches.length === 2) {
+          var p1 = getDocsTouchPoint(scrollEl, e.touches[0]);
+          var p2 = getDocsTouchPoint(scrollEl, e.touches[1]);
+          var distance = getDocsDistance(p1, p2);
+          if (distance <= 0) return;
+          state.pinch.active = true;
+          state.pinch.startDistance = distance;
+          state.pinch.startScale = clampDocsPdfScale(state.zoomScale);
+          state.pinch.originX = (p1.x + p2.x) / 2;
+          state.pinch.originY = (p1.y + p2.y) / 2;
+          state.previewScale = state.pinch.startScale;
+          state.tapStart = null;
+          state.lastTapAt = 0;
+          return;
+        }
+        if (e.touches.length === 1 && !state.pinch.active) {
+          var tapPoint = getDocsTouchPoint(scrollEl, e.touches[0]);
+          state.tapStart = {
+            x: tapPoint.x,
+            y: tapPoint.y,
+            moved: false
+          };
+        }
+      };
+
+      state.onTouchMove = function(e) {
+        if (!isDocsDocxViewerActive(state)) return;
+        if (state.pinch.active && e.touches.length >= 2) {
+          e.preventDefault();
+          var p1 = getDocsTouchPoint(scrollEl, e.touches[0]);
+          var p2 = getDocsTouchPoint(scrollEl, e.touches[1]);
+          var distance = getDocsDistance(p1, p2);
+          if (distance <= 0 || !state.pinch.startDistance) return;
+          var nextScale = state.pinch.startScale * (distance / state.pinch.startDistance);
+          commitDocsDocxScale(state, nextScale, state.pinch.originX, state.pinch.originY);
+          return;
+        }
+        if (state.tapStart && e.touches.length === 1) {
+          var movePoint = getDocsTouchPoint(scrollEl, e.touches[0]);
+          var movedDistance = getDocsDistance(movePoint, state.tapStart);
+          if (movedDistance > 12) state.tapStart.moved = true;
+        }
+      };
+
+      state.onTouchEnd = function(e) {
+        if (!isDocsDocxViewerActive(state)) return;
+        if (state.pinch.active && e.touches.length < 2) {
+          e.preventDefault();
+          state.pinch.active = false;
+          state.tapStart = null;
+          return;
+        }
+        if (!state.tapStart || state.tapStart.moved || e.changedTouches.length !== 1 || state.pinch.active) {
+          state.tapStart = null;
+          return;
+        }
+        var now = Date.now();
+        var tapPoint = getDocsTouchPoint(scrollEl, e.changedTouches[0]);
+        var interval = now - (state.lastTapAt || 0);
+        var distFromLast = getDocsDistance(tapPoint, {
+          x: state.lastTapX || 0,
+          y: state.lastTapY || 0
+        });
+        if (state.lastTapAt && interval <= DOCS_PDF_DOUBLE_TAP_DELAY && distFromLast <= DOCS_PDF_DOUBLE_TAP_DISTANCE) {
+          e.preventDefault();
+          state.lastTapAt = 0;
+          var targetScale = Math.abs((state.zoomScale || 1) - 1) < 0.05 ? 2 : 1;
+          commitDocsDocxScale(state, targetScale, tapPoint.x, tapPoint.y);
+        } else {
+          state.lastTapAt = now;
+          state.lastTapX = tapPoint.x;
+          state.lastTapY = tapPoint.y;
+        }
+        state.tapStart = null;
+      };
+
+      state.onTouchCancel = function() {
+        if (!isDocsDocxViewerActive(state)) return;
+        state.pinch.active = false;
+        state.tapStart = null;
+      };
+
+      scrollEl.addEventListener('touchstart', state.onTouchStart, { passive: true });
+      scrollEl.addEventListener('touchmove', state.onTouchMove, { passive: false });
+      scrollEl.addEventListener('touchend', state.onTouchEnd, { passive: false });
+      scrollEl.addEventListener('touchcancel', state.onTouchCancel, { passive: true });
+    }
+
+    function mountDocsDocxViewer(state, html, localPath) {
+      if (!isDocsDocxViewerActive(state) || !state.bodyEl) return;
+      state.bodyEl.innerHTML =
+        '<div class="docs-docx-scroll">' +
+          '<div class="docs-docx-scale-wrap">' +
+            '<article class="docs-docx-page">' + html + '</article>' +
+          '</div>' +
+        '</div>';
+
+      state.scrollEl = state.bodyEl.querySelector('.docs-docx-scroll');
+      state.wrapEl = state.bodyEl.querySelector('.docs-docx-scale-wrap');
+      state.pageEl = state.bodyEl.querySelector('.docs-docx-page');
+      state.zoomScale = DOCS_PDF_MIN_SCALE;
+      state.previewScale = DOCS_PDF_MIN_SCALE;
+      state.measured = false;
+      state.pinch = { active: false, startDistance: 0, startScale: DOCS_PDF_MIN_SCALE, originX: 0, originY: 0 };
+      state.tapStart = null;
+      state.lastTapAt = 0;
+      state.lastTapX = 0;
+      state.lastTapY = 0;
+
+      measureDocsDocxLayout(state);
+      applyDocsDocxCommittedScale(state);
+
+      state.onResize = function() {
+        scheduleDocsDocxRelayout(state);
+      };
+      window.addEventListener('resize', state.onResize);
+      window.addEventListener('orientationchange', state.onResize);
+      if (window.visualViewport) {
+        window.visualViewport.addEventListener('resize', state.onResize);
+      }
+
+      attachDocxGestureHandlers(state);
+      markDocAsDownloaded(localPath);
+      setDocsViewerStatus(getDocsDocxStatusText(state));
+    }
+
+    function renderDocsDocxHtml(html, localPath, state) {
       var bodyEl = document.getElementById('docsViewerBody');
       if (!bodyEl) return;
-      bodyEl.innerHTML =
-        '<div class="docs-docx-scroll">' +
-          '<article class="docs-docx-page">' + html + '</article>' +
-        '</div>';
-      markDocAsDownloaded(localPath);
-      setDocsViewerStatus('DOCX');
+      if (!state) {
+        destroyDocsDocxViewer();
+        state = createDocsDocxViewerState(bodyEl);
+        docsDocxViewerState = state;
+      }
+      if (!isDocsDocxViewerActive(state)) return;
+      state.bodyEl = bodyEl;
+      mountDocsDocxViewer(state, html, localPath);
     }
 
     function openDocxWithPreview(localPath) {
+      var bodyEl = document.getElementById('docsViewerBody');
+      if (!bodyEl) return;
+      destroyDocsDocxViewer();
+      var state = createDocsDocxViewerState(bodyEl);
+      docsDocxViewerState = state;
+
       renderDocsViewerLoading('Загрузка DOCX…');
       setDocsViewerStatus('Загрузка…');
 
       var zipLib = null;
       ensureDocsZipReady()
         .then(function(JSZip) {
+          if (!isDocsDocxViewerActive(state)) return null;
           zipLib = JSZip;
           return fetch(localPath, { cache: 'no-store' });
         })
         .then(function(resp) {
+          if (!isDocsDocxViewerActive(state) || !resp) return null;
           if (!resp || !resp.ok) {
             throw new Error('Failed to fetch DOCX');
           }
           return resp.arrayBuffer();
         })
         .then(function(buffer) {
+          if (!isDocsDocxViewerActive(state) || !buffer) return null;
           return zipLib.loadAsync(buffer);
         })
         .then(function(zip) {
+          if (!isDocsDocxViewerActive(state) || !zip) return null;
           var documentFile = zip.file('word/document.xml');
           if (!documentFile) throw new Error('DOCX document.xml not found');
           return documentFile.async('string');
         })
         .then(function(xmlText) {
+          if (!isDocsDocxViewerActive(state) || !xmlText) return;
           var overlay = document.getElementById('docsViewerOverlay');
           if (!overlay || overlay.classList.contains('hidden')) return;
-          renderDocsDocxHtml(renderDocxDocumentXml(xmlText), localPath);
+          renderDocsDocxHtml(renderDocxDocumentXml(xmlText), localPath, state);
         })
         .catch(function(err) {
+          if (!isDocsDocxViewerActive(state)) return;
+          destroyDocsDocxViewer();
           var friendly = getFriendlyDocOpenError(err);
           renderDocsViewerError(friendly.title, friendly.details);
           setDocsViewerStatus(friendly.status);
@@ -900,6 +1199,37 @@
       }
       if (state.pdfDoc && typeof state.pdfDoc.destroy === 'function') {
         try { state.pdfDoc.destroy(); } catch (e) {}
+      }
+    }
+
+    function destroyDocsDocxViewer() {
+      var state = docsDocxViewerState;
+      if (!state) return;
+      docsDocxViewerState = null;
+      state.destroyed = true;
+
+      if (state.resizeTimer) {
+        clearTimeout(state.resizeTimer);
+        state.resizeTimer = null;
+      }
+      if (state.scrollEl && state.onTouchStart) {
+        state.scrollEl.removeEventListener('touchstart', state.onTouchStart);
+      }
+      if (state.scrollEl && state.onTouchMove) {
+        state.scrollEl.removeEventListener('touchmove', state.onTouchMove);
+      }
+      if (state.scrollEl && state.onTouchEnd) {
+        state.scrollEl.removeEventListener('touchend', state.onTouchEnd);
+      }
+      if (state.scrollEl && state.onTouchCancel) {
+        state.scrollEl.removeEventListener('touchcancel', state.onTouchCancel);
+      }
+      if (state.onResize) {
+        window.removeEventListener('resize', state.onResize);
+        window.removeEventListener('orientationchange', state.onResize);
+        if (window.visualViewport) {
+          window.visualViewport.removeEventListener('resize', state.onResize);
+        }
       }
     }
 
@@ -1384,6 +1714,7 @@
 
     function openDocsViewerUI(fileName) {
       destroyDocsPdfViewer();
+      destroyDocsDocxViewer();
       var overlay = document.getElementById('docsViewerOverlay');
       var titleEl = document.getElementById('docsViewerTitle');
       var bodyEl = document.getElementById('docsViewerBody');
@@ -1398,6 +1729,7 @@
 
     function closeDocsViewerUI() {
       destroyDocsPdfViewer();
+      destroyDocsDocxViewer();
       var overlay = document.getElementById('docsViewerOverlay');
       if (overlay) {
         overlay.classList.add('hidden');
