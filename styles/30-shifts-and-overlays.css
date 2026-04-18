@@ -3,8 +3,9 @@
       margin-bottom: 20px;
       padding: 16px;
       border-radius: var(--r-card);
-      background: var(--card);
+      background: linear-gradient(180deg, rgba(255, 255, 255, 0.025), rgba(255, 255, 255, 0.01)), var(--card);
       border: 1px solid var(--border);
+      box-shadow: 0 12px 30px rgba(0, 0, 0, 0.14);
       overflow: visible;
     }
 
@@ -31,10 +32,10 @@
     }
 
     .shifts-overview-chip {
-      background: var(--card-hi);
+      background: rgba(255, 255, 255, 0.03);
       border: 1px solid var(--border);
-      border-radius: var(--r-inner);
-      padding: 10px 12px;
+      border-radius: 14px;
+      padding: 11px 12px;
       display: grid;
       gap: 3px;
     }
@@ -65,9 +66,9 @@
 
     /* ── Empty state ── */
     .shifts-empty {
-      background: var(--card-hi);
+      background: rgba(255, 255, 255, 0.03);
       border: 1px solid var(--border);
-      border-radius: var(--r-inner);
+      border-radius: 16px;
       padding: 32px 18px;
       text-align: center;
       color: var(--sub);
@@ -130,7 +131,7 @@
 
     /* ── Shift item card ── */
     .shift-item {
-      background: var(--card);
+      background: linear-gradient(180deg, rgba(255, 255, 255, 0.025), rgba(255, 255, 255, 0.01)), var(--card);
       border: 1px solid var(--border);
       border-radius: var(--r-card);
       padding: 16px;
@@ -139,8 +140,9 @@
       flex-direction: column;
       align-items: stretch;
       gap: 10px;
-      transition: border-color 0.18s ease;
+      transition: border-color 0.18s ease, transform 0.18s ease, box-shadow 0.18s ease;
       position: relative;
+      box-shadow: 0 10px 24px rgba(0, 0, 0, 0.10);
       overflow: hidden;
     }
 
@@ -155,6 +157,7 @@
 
     .shift-item[data-shift-open="1"]:active {
       border-color: var(--border-hi);
+      transform: translateY(1px);
     }
 
     .shift-item[data-shift-open="1"]:focus-visible {
@@ -1523,20 +1526,24 @@
 
     /* ── Docs items ── */
     .docs-item {
-      background: var(--card);
+      background: linear-gradient(180deg, rgba(255, 255, 255, 0.025), rgba(255, 255, 255, 0.01)), var(--card);
       border: 1px solid var(--border);
-      border-radius: var(--r-inner);
+      border-radius: 16px;
       padding: 14px 16px;
       margin-bottom: 8px;
       display: flex;
       align-items: center;
       gap: 12px;
       cursor: pointer;
-      transition: border-color 0.15s;
+      transition: border-color 0.15s, transform 0.15s, box-shadow 0.15s;
+      box-shadow: 0 8px 20px rgba(0, 0, 0, 0.10);
       -webkit-tap-highlight-color: transparent;
     }
 
-    .docs-item:active { border-color: var(--border-hi); }
+    .docs-item:active {
+      border-color: var(--border-hi);
+      transform: translateY(1px);
+    }
 
     .docs-item.is-downloaded {
       border-color: rgba(74, 222, 128, 0.28);
@@ -1673,6 +1680,9 @@
       text-align: center;
       color: var(--sub);
       font-size: 14px;
+      border-radius: 16px;
+      background: rgba(255, 255, 255, 0.03);
+      border: 1px solid var(--border);
     }
 
     .docs-upload-btn {
