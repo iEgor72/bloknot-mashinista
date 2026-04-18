@@ -7,10 +7,11 @@
   transform: translateX(-50%);
   width: min(480px, 100%);
   max-width: 480px;
-  background: rgba(12, 12, 16, 0.9);
+  background: rgba(12, 12, 16, 0.92);
   backdrop-filter: blur(28px);
   -webkit-backdrop-filter: blur(28px);
       border-top: 1px solid var(--border);
+      box-shadow: 0 -10px 28px rgba(0, 0, 0, 0.22);
       display: flex;
       justify-content: space-around;
       align-items: flex-end;
@@ -48,7 +49,8 @@
       align-items: center;
       gap: 4px;
       flex: 1;
-      padding: 4px 0;
+      padding: 5px 0 3px;
+      border-radius: 14px;
     }
 
     /* Icon */
@@ -95,6 +97,9 @@
     /* Active state */
     .nav-item.active .tab-icon  { opacity: 1; color: var(--accent); }
     .nav-item.active .tab-label { color: var(--accent); }
+    .nav-item.active {
+      background: rgba(56, 189, 248, 0.08);
+    }
     /* Active dot disabled: keep pseudo-element space to avoid layout shifts. */
 
     /* ── FAB slot — inline, same flex:1 ── */
