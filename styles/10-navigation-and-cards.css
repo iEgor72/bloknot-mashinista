@@ -1205,38 +1205,54 @@
     }
 
     .docs-month-tabs {
-      display: flex;
-      gap: 4px;
-      overflow-x: auto;
-      -webkit-overflow-scrolling: touch;
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 6px;
+      overflow: visible;
       background: rgba(0, 0, 0, 0.25);
-      border-radius: var(--r-pill);
-      padding: 3px;
+      border-radius: 18px;
+      padding: 6px;
     }
 
     .docs-tab-btn {
-      flex: 1 0 max-content;
       appearance: none;
-      border: none;
-      background: transparent;
+      border: 1px solid rgba(255, 255, 255, 0.06);
+      background: rgba(255, 255, 255, 0.03);
       color: var(--muted);
       font-family: 'Manrope', sans-serif;
       font-size: 13px;
       font-weight: 700;
-      padding: 8px 10px;
-      min-height: 34px;
-      border-radius: var(--r-pill);
+      line-height: 1.2;
+      padding: 9px 10px;
+      min-height: 40px;
+      border-radius: 14px;
       cursor: pointer;
-      white-space: nowrap;
-      transition: background 0.15s, color 0.15s;
+      white-space: normal;
+      text-align: center;
+      text-wrap: balance;
+      box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.03);
+      transition: background 0.15s, color 0.15s, border-color 0.15s, transform 0.15s;
       -webkit-tap-highlight-color: transparent;
     }
 
     .docs-tab-btn::before { content: none; }
 
+    .docs-tab-btn:hover {
+      color: var(--text);
+      border-color: rgba(255, 255, 255, 0.12);
+    }
+
     .docs-tab-btn.active {
       background: var(--card-hi);
       color: var(--accent);
+      border-color: rgba(123, 180, 255, 0.32);
+      box-shadow: 0 8px 18px rgba(0, 0, 0, 0.18), inset 0 1px 0 rgba(255, 255, 255, 0.05);
+    }
+
+    @media (min-width: 520px) {
+      .docs-month-tabs {
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+      }
     }
 
     /* ── Sheet / overlay common ── */
