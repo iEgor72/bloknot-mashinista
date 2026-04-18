@@ -1,14 +1,14 @@
 # Project State
 
 <!-- AUTO_STATUS:START -->
-Generated: 2026-04-18 07:56:15 +1000
+Generated: 2026-04-18 17:38:17 +1000
 
 ## Repository Snapshot
 - Local repo path: `D:\work\bloknot-mashinista-tg`
 - Project memory path: `D:\work\bloknot-mashinista-tg\ai-memory`
 - Branch: `main`
-- HEAD: `88df275`
-- Last commit: `88df275 feat(docs): add memos and docx preview`
+- HEAD: `b6d82ac`
+- Last commit: `b6d82ac feat(docs): add docx zoom gestures`
 
 ## Git Remote
 ```text
@@ -20,7 +20,7 @@ origin	https://github.com/iEgor72/bloknot-mashinista.git (push)
 ```text
 codex/next-direction b044dd5 offline mvp
   codex/tabs-ui        117f1fa [origin/codex/tabs-ui] tabs ui
-* main                 88df275 [origin/main] feat(docs): add memos and docx preview
+* main                 b6d82ac [origin/main] feat(docs): add docx zoom gestures
 ```
 
 ## Worktree
