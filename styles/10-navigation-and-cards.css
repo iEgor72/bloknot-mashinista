@@ -127,8 +127,9 @@
       padding: 16px;
       margin-bottom: 16px;
       border-radius: var(--r-card);
-      background: var(--card);
+      background: linear-gradient(180deg, rgba(255, 255, 255, 0.025), rgba(255, 255, 255, 0.01)), var(--card);
       border: 1px solid var(--border);
+      box-shadow: 0 10px 28px rgba(0, 0, 0, 0.16);
       overflow: visible;
     }
 
@@ -221,11 +222,12 @@
 
     /* ── Dashboard card (hours) ── */
     .dashboard-card {
-      background: var(--card-hi);
+      background: linear-gradient(180deg, rgba(255, 255, 255, 0.035), rgba(255, 255, 255, 0.01)), var(--card-hi);
       border: 1px solid var(--border);
       border-radius: var(--r-card);
       padding: var(--c-pad);
       margin-bottom: 16px;
+      box-shadow: 0 18px 36px rgba(0, 0, 0, 0.18);
       overflow: visible;
     }
 
@@ -239,6 +241,8 @@
       display: grid;
       gap: 6px;
       margin-bottom: 14px;
+      padding-bottom: 8px;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.05);
     }
 
     .dashboard-head::before {
@@ -288,7 +292,7 @@
       margin-top: 2px;
       background: rgba(255, 255, 255, 0.06);
       border-radius: var(--r-pill);
-      height: 2px;
+      height: 4px;
       overflow: visible;
       position: relative;
     }
@@ -356,10 +360,10 @@
       display: grid;
       gap: 2px;
       min-width: 0;
-      padding: 8px 10px;
-      border-radius: 12px;
+      padding: 10px 12px;
+      border-radius: 14px;
       border: 1px solid var(--border);
-      background: rgba(255, 255, 255, 0.02);
+      background: rgba(255, 255, 255, 0.03);
     }
 
     .dashboard-month-income {
@@ -381,10 +385,10 @@
     .dashboard-norm-item {
       display: grid;
       gap: 2px;
-      padding: 7px 9px;
-      border-radius: 12px;
+      padding: 9px 10px;
+      border-radius: 14px;
       border: 1px solid var(--border);
-      background: rgba(255, 255, 255, 0.02);
+      background: rgba(255, 255, 255, 0.03);
       min-width: 0;
       justify-items: center;
       text-align: center;
@@ -518,8 +522,9 @@
       margin-bottom: 20px;
       padding: 14px;
       border-radius: var(--r-card);
-      background: var(--card);
+      background: linear-gradient(180deg, rgba(255, 255, 255, 0.025), rgba(255, 255, 255, 0.01)), var(--card);
       border: 1px solid var(--border);
+      box-shadow: 0 12px 30px rgba(0, 0, 0, 0.14);
       overflow: visible;
     }
 
@@ -560,13 +565,13 @@
 
     .quick-stat {
       position: relative;
-      padding: 6px 9px 7px;
+      padding: 8px 10px 9px;
       display: flex;
       flex-direction: column;
       align-items: center;
       justify-content: center;
-      gap: 4px;
-      min-height: 64px;
+      gap: 5px;
+      min-height: 68px;
       min-width: 0;
     }
 
@@ -644,18 +649,33 @@
     }
 
     .section-link {
-      background: transparent;
-      border: none;
+      background: rgba(56, 189, 248, 0.10);
+      border: 1px solid rgba(56, 189, 248, 0.16);
       color: var(--accent);
       font-family: 'Manrope', sans-serif;
       font-size: 12px;
       font-weight: 700;
       cursor: pointer;
-      padding: 4px 0;
+      padding: 7px 12px;
+      border-radius: 999px;
       -webkit-tap-highlight-color: transparent;
     }
 
     .section-link:active { opacity: 0.7; }
+
+    .install-prompt-card {
+      border-radius: var(--r-card);
+      border: 1px solid var(--border);
+      background: linear-gradient(180deg, rgba(56, 189, 248, 0.08), rgba(56, 189, 248, 0.03)), var(--card);
+      box-shadow: 0 14px 32px rgba(0, 0, 0, 0.16);
+    }
+
+    .usage-stats-note {
+      margin-top: 10px;
+      text-align: center;
+      color: var(--sub);
+      opacity: 0.92;
+    }
 
     /* ── Average shift card ── */
     .average-shift-card {
