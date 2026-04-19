@@ -1,6 +1,6 @@
 # Worktree Status
 
-Generated: 2026-04-19 21:07:05 +0000
+Generated: 2026-04-19 21:05:31 +0000
 
 ## git status -sb
 ```text
@@ -18,15 +18,15 @@ Generated: 2026-04-19 21:07:05 +0000
 
 ## git branch -vv
 ```text
-* main a63c814 [origin/main] fix(ui): hide locked content behind shared pro gate
+* main 663d48f [origin/main] fix(ui): flatten locked content behind shared pro gate
 ```
 
 ## HEAD
 ```text
-a63c814 fix(ui): hide locked content behind shared pro gate
- ai-memory/CHANGELOG.md             |  8 ++++++++
- ai-memory/PROJECT_STATE.md         |  9 ++++-----
- ai-memory/WORKTREE_STATUS.md       | 17 ++++++++---------
- styles/10-navigation-and-cards.css | 19 ++++---------------
- 4 files changed, 24 insertions(+), 29 deletions(-)
+663d48f fix(ui): flatten locked content behind shared pro gate
+ ai-memory/CHANGELOG.md             | 16 ++++++++++++++++
+ ai-memory/PROJECT_STATE.md         |  9 +++++----
+ ai-memory/WORKTREE_STATUS.md       | 20 +++++++++-----------
+ styles/10-navigation-and-cards.css |  9 +++++++++
+ 4 files changed, 39 insertions(+), 15 deletions(-)
 ```

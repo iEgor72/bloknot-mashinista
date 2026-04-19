@@ -1326,33 +1326,18 @@
     .docs-pro-wrap {
       position: relative;
       min-height: 0;
-      isolation: isolate;
-    }
-
-    .docs-pro-wrap.is-locked::after {
-      content: '';
-      position: absolute;
-      inset: 0;
-      z-index: 2;
-      pointer-events: none;
-      background: rgba(7, 10, 18, 0.18);
-      backdrop-filter: blur(10px) saturate(0.88);
-      -webkit-backdrop-filter: blur(10px) saturate(0.88);
     }
 
     .docs-pro-wrap.is-locked .docs-shell {
+      visibility: hidden;
       pointer-events: none;
       user-select: none;
     }
 
     .docs-pro-wrap:not(.is-locked) .docs-shell {
+      visibility: visible;
       pointer-events: auto;
       user-select: auto;
-    }
-
-    .docs-shell {
-      position: relative;
-      z-index: 1;
     }
 
     .docs-pro-gate {
