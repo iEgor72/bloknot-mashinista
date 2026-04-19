@@ -369,7 +369,21 @@
     function setDocsViewerStatus(text) {
       var statusEl = document.getElementById('docsViewerStatus');
       if (!statusEl) return;
-      statusEl.textContent = text || '';
+      var raw = String(text || '').trim();
+      if (!raw) {
+        statusEl.textContent = '';
+        return;
+      }
+
+      var parts = raw.split('·').map(function(part) { return part.trim(); }).filter(Boolean);
+      if (!parts.length) {
+        statusEl.textContent = raw;
+        return;
+      }
+
+      statusEl.innerHTML = parts.map(function(part) {
+        return '<span class="docs-viewer-status-pill">' + escapeHtml(part) + '</span>';
+      }).join('');
     }
 
     function clampDocsPdfScale(scale) {
