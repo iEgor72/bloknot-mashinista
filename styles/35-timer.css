@@ -84,10 +84,6 @@
   transition: filter 0.22s ease, opacity 0.22s ease;
 }
 
-.timer-pro-gate {
-  position: fixed;
-}
-
 .timer-shell {
   display: grid;
   gap: var(--c-pad);

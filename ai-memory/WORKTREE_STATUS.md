@@ -1,10 +1,10 @@
 # Worktree Status
 
-Generated: 2026-04-19 15:39:26 +0000
+Generated: 2026-04-19 15:43:41 +0000
 
 ## git status -sb
 ```text
-## main...origin/main [ahead 2]
+## main...origin/main [ahead 3]
  M ai-memory/ARCHITECTURE.md
  M ai-memory/INDEX.md
  M ai-memory/PROJECT_STATE.md
@@ -18,19 +18,16 @@ Generated: 2026-04-19 15:39:26 +0000
 
 ## git branch -vv
 ```text
-* main 4695d6e [origin/main: ahead 2] fix(security): reduce exposure of runtime and api internals
+* main 8ebe599 [origin/main: ahead 3] fix(security): escape dynamic shift identifiers in ui
 ```
 
 ## HEAD
 ```text
-4695d6e fix(security): reduce exposure of runtime and api internals
+8ebe599 fix(security): escape dynamic shift identifiers in ui
  ai-memory/CHANGELOG.md       |  8 ++++++++
- ai-memory/PROJECT_STATE.md   | 14 ++++----------
- ai-memory/WORKTREE_STATUS.md | 24 +++++++++++------------
- functions/api/auth.js        |  1 -
- functions/api/docs.js        |  1 -
- functions/api/shifts.js      |  1 -
- functions/api/stats.js       |  1 -
- server.js                    | 46 +++++++++++++++++++++++++++++++++++++++++++-
- 8 files changed, 68 insertions(+), 28 deletions(-)
+ ai-memory/PROJECT_STATE.md   |  8 ++++----
+ ai-memory/WORKTREE_STATUS.md | 24 +++++++++++++-----------
+ scripts/render.js            | 22 ++++++++++++++++------
+ scripts/time-utils.js        |  6 ++++--
+ 5 files changed, 45 insertions(+), 23 deletions(-)
 ```
