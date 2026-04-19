@@ -127,9 +127,9 @@
       padding: 16px;
       margin-bottom: 16px;
       border-radius: var(--r-card);
-      background: linear-gradient(180deg, rgba(255, 255, 255, 0.025), rgba(255, 255, 255, 0.01)), var(--card);
-      border: 1px solid var(--border);
-      box-shadow: 0 10px 28px rgba(0, 0, 0, 0.16);
+      background: linear-gradient(180deg, rgba(255, 255, 255, 0.04), rgba(255, 255, 255, 0.014)), var(--card);
+      border: 1px solid rgba(255, 255, 255, 0.09);
+      box-shadow: 0 14px 34px rgba(0, 0, 0, 0.22), inset 0 1px 0 rgba(255, 255, 255, 0.04);
       overflow: visible;
     }
 
@@ -159,14 +159,15 @@
       margin-top: 3px;
       font-size: 10px;
       font-weight: 800;
-      color: var(--muted);
+      color: var(--sub);
+      opacity: 0.78;
       letter-spacing: 0.12em;
       text-transform: uppercase;
     }
 
     .month-btn {
-      background: rgba(255, 255, 255, 0.04);
-      border: 1px solid var(--border);
+      background: linear-gradient(180deg, rgba(255, 255, 255, 0.045), rgba(255, 255, 255, 0.018));
+      border: 1px solid rgba(255, 255, 255, 0.08);
       color: var(--text);
       width: 34px;
       height: 34px;
@@ -176,7 +177,8 @@
       display: flex;
       align-items: center;
       justify-content: center;
-      transition: background 0.15s, border-color 0.15s;
+      box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.03);
+      transition: background 0.15s, border-color 0.15s, transform 0.12s ease;
       -webkit-tap-highlight-color: transparent;
     }
 
@@ -190,9 +192,11 @@
       display: grid;
       grid-template-columns: repeat(3, minmax(0, 1fr));
       gap: 4px;
-      background: rgba(0, 0, 0, 0.25);
+      background: rgba(0, 0, 0, 0.24);
+      border: 1px solid rgba(255, 255, 255, 0.04);
       border-radius: var(--r-pill);
       padding: 3px;
+      box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.025);
     }
 
     .month-tab {
@@ -201,21 +205,23 @@
       border-radius: var(--r-pill);
       background: transparent;
       border: none;
-      color: var(--muted);
+      color: var(--sub);
+      opacity: 0.72;
       font-family: 'Manrope', sans-serif;
       font-size: 13px;
       font-weight: 700;
       cursor: pointer;
-      transition: background 0.16s, color 0.16s;
+      transition: background 0.16s, color 0.16s, opacity 0.16s;
       -webkit-tap-highlight-color: transparent;
     }
 
     .month-tab::before { content: none; }
 
     .month-tab.active {
-      background: var(--card-hi);
+      background: linear-gradient(180deg, rgba(56, 189, 248, 0.14), rgba(255, 255, 255, 0.04)), var(--card-hi);
       color: var(--accent);
-      box-shadow: 0 1px 4px rgba(0, 0, 0, 0.3);
+      opacity: 1;
+      box-shadow: 0 6px 16px rgba(0, 0, 0, 0.22), inset 0 1px 0 rgba(255, 255, 255, 0.04);
     }
 
     .month-tab:active { opacity: 0.8; }

@@ -12,7 +12,8 @@
 }
 
 .shifts-back-label {
-  color: var(--muted);
+  color: var(--sub);
+  opacity: 0.9;
   font-size: 13px;
   font-weight: 700;
   letter-spacing: 0.01em;
