@@ -517,11 +517,11 @@
       }
 
       var quickLabels = document.querySelectorAll('.quick-stats-grid .quick-stat .stat-label');
-      var quickLabelText = ['Ночные часы', 'Смен за месяц', 'Праздничные часы'];
+      var quickLabelText = ['Ночные', 'Смены', 'Праздничные'];
       var quickLabelByRole = {
-        night: 'Ночные часы',
-        shifts: 'Смен за месяц',
-        holiday: 'Праздничные часы'
+        night: 'Ночные',
+        shifts: 'Смены',
+        holiday: 'Праздничные'
       };
       for (var q = 0; q < quickLabels.length && q < quickLabelText.length; q++) {
         var role = quickLabels[q].getAttribute('data-quick-label');

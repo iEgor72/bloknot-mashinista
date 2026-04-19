@@ -633,12 +633,12 @@
       display: block;
       width: 100%;
       margin-top: 10px;
-      padding: 0 2px;
+      padding: 0 4px 2px;
       font-size: 10px;
       font-weight: 700;
-      letter-spacing: 0.04em;
-      text-transform: none;
-      color: rgba(238, 242, 248, 0.72);
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+      color: rgba(238, 242, 248, 0.74);
       text-align: center;
       line-height: 1.3;
       min-height: 2.6em;
@@ -1464,8 +1464,24 @@
       transform: translateY(0);
     }
 
+    .tab-panel[data-tab="shifts"] {
+      position: relative;
+      padding-top: 6px;
+    }
+
+    .tab-panel[data-tab="shifts"]::before {
+      content: '';
+      display: block;
+      width: 38px;
+      height: 4px;
+      margin: 0 auto 12px;
+      border-radius: 999px;
+      background: rgba(255, 255, 255, 0.14);
+      box-shadow: 0 1px 0 rgba(255, 255, 255, 0.05);
+    }
+
     .tab-panel[data-tab="shifts"].tab-enter-sheet-up {
-      animation: tabSheetUp 0.3s cubic-bezier(0.25, 1, 0.35, 1);
+      animation: tabSheetUp 0.34s cubic-bezier(0.22, 1, 0.36, 1);
       transform-origin: bottom center;
       will-change: transform, opacity;
     }
@@ -1473,11 +1489,15 @@
     @keyframes tabSheetUp {
       from {
         opacity: 0;
-        transform: translateY(42px);
+        transform: translateY(52px) scale(0.985);
+      }
+      72% {
+        opacity: 1;
+        transform: translateY(-2px) scale(1);
       }
       to {
         opacity: 1;
-        transform: translateY(0);
+        transform: translateY(0) scale(1);
       }
     }
 
