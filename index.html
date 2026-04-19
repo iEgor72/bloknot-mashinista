@@ -257,8 +257,8 @@
         </div>
 
         <div class="section-header section-header-row">
-          <span>Последние смены</span>
-          <button class="section-link" id="btnGoToShifts" type="button">Все</button>
+          <span>Недавние смены</span>
+          <button class="section-link" id="btnGoToShifts" type="button">Открыть журнал</button>
         </div>
         <div id="homeShiftsList"></div>
 
@@ -275,6 +275,14 @@
 
       <!-- Shifts Tab -->
       <section class="tab-panel" data-tab="shifts">
+        <div class="shifts-back-row">
+          <button class="salary-settings-back-btn" id="btnBackFromShifts" type="button" aria-label="Вернуться на главную">
+            <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false">
+              <path fill="currentColor" d="M14.7 5.3a1 1 0 0 1 0 1.4L10.41 11H20a1 1 0 1 1 0 2h-9.59l4.3 4.3a1 1 0 1 1-1.42 1.4l-6-6a1 1 0 0 1 0-1.4l6-6a1 1 0 0 1 1.41 0Z"></path>
+            </svg>
+          </button>
+          <span class="shifts-back-label">Главная</span>
+        </div>
         <div class="month-nav">
           <div class="month-nav-top">
             <button class="month-btn" id="btnPrevShiftsMonth" type="button" aria-label="Предыдущий месяц">‹</button>
@@ -287,14 +295,14 @@
           <div class="month-tabs" id="shiftsMonthTabs" aria-label="Месяцы квартала"></div>
         </div>
         <div class="shifts-section">
-          <div class="section-header" id="shiftsHeader">Смены</div>
-          <div class="shifts-overview" aria-label="Краткая сводка смен">
+          <div class="section-header" id="shiftsHeader">История смен</div>
+          <div class="shifts-overview" aria-label="Краткая сводка по сменам">
             <div class="shifts-overview-chip">
-              <span class="shifts-overview-label">Смен</span>
+              <span class="shifts-overview-label">Всего смен</span>
               <span class="shifts-overview-value" id="shiftsOverviewCount">0</span>
             </div>
             <div class="shifts-overview-chip">
-              <span class="shifts-overview-label">Время</span>
+              <span class="shifts-overview-label">Отработано</span>
               <span class="shifts-overview-value" id="shiftsOverviewTotal">0 ч</span>
             </div>
           </div>
@@ -307,7 +315,7 @@
         <div class="form-section is-adding" id="shiftFormSection">
           <div class="form-title-row">
             <div class="form-title-leading">
-              <button class="form-back-btn hidden" id="btnBackFromEdit" type="button" aria-label="Назад к сменам">
+              <button class="form-back-btn hidden" id="btnBackFromEdit" type="button" aria-label="Назад к истории смен">
                 <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false">
                   <path fill="currentColor" d="M14.7 5.3a1 1 0 0 1 0 1.4L10.41 11H20a1 1 0 1 1 0 2h-9.59l4.3 4.3a1 1 0 1 1-1.42 1.4l-6-6a1 1 0 0 1 0-1.4l6-6a1 1 0 0 1 1.41 0Z"></path>
                 </svg>
@@ -692,50 +700,75 @@
 
       <!-- Timer Tab -->
       <section class="tab-panel" data-tab="stopwatch">
-        <div class="timer-shell">
-          <div class="month-nav timer-nav-card">
-            <div class="timer-nav-head">
-              <div>
-                <div class="docs-nav-title">Таймер</div>
-                <div class="timer-nav-subtitle">Этапный помощник с локальными сигналами и оффлайн-работой</div>
+        <div class="timer-pro-wrap is-locked" id="timerProWrap">
+          <div class="timer-shell" id="timerShell">
+            <div class="dashboard-card timer-display-card">
+              <div class="dashboard-head timer-dashboard-head">
+                <div class="dashboard-eyebrow">Таймер</div>
+                <div class="dashboard-value timer-value"><span id="timerValue">00:00</span></div>
               </div>
-              <span class="timer-pro-chip">PRO</span>
+              <div class="progress-track timer-progress-track">
+                <div class="progress-fill" id="timerProgressFill"></div>
+                <span class="progress-marker timer-progress-marker" id="timerMarkerKvt" aria-hidden="true"></span>
+                <span class="progress-marker timer-progress-marker" id="timerMarkerNabor" aria-hidden="true"></span>
+                <span class="progress-marker timer-progress-marker" id="timerMarkerMove" aria-hidden="true"></span>
+                <span class="progress-marker timer-progress-marker" id="timerMarkerSpravka" aria-hidden="true"></span>
+                <span class="progress-marker timer-progress-marker timer-progress-marker-danger" id="timerMarkerProbe" aria-hidden="true"></span>
+              </div>
+              <div class="dashboard-sub timer-stage-title" id="timerStageTitle">ГОТОВ К ЗАПУСКУ</div>
+              <div class="dashboard-norms timer-summary-grid" aria-live="polite">
+                <div class="dashboard-norm-item timer-summary-item">
+                  <span class="dashboard-norm-label">Следующий этап</span>
+                  <span class="dashboard-norm-value" id="timerStageMeta">00:35</span>
+                </div>
+                <div class="dashboard-norm-item timer-summary-item">
+                  <span class="dashboard-norm-label">Режим</span>
+                  <span class="dashboard-norm-value" id="timerModeLabel">ОБЫЧНЫЙ</span>
+                </div>
+              </div>
             </div>
-          </div>
 
-          <div class="timer-display-card">
-            <div class="timer-kicker">Текущий этап</div>
-            <div class="timer-value" id="timerValue">00:00</div>
-            <div class="timer-stage-title" id="timerStageTitle">Готов к запуску</div>
-            <div class="timer-stage-subtitle" id="timerStageSubtitle">Запусти таймер, чтобы получать подсказки по этапам</div>
-          </div>
+            <div class="form-section timer-controls-card">
+              <button class="btn-primary timer-main-btn" id="timerMainBtn" type="button">
+                <span class="timer-main-btn-label" id="timerMainBtnLabel">Старт</span>
+                <span class="timer-main-btn-hint" id="timerMainBtnHint">Нажми для старта, удерживай для сброса</span>
+              </button>
 
-          <div class="timer-controls-card">
-            <button class="timer-main-btn" id="timerMainBtn" type="button">
-              <span class="timer-main-btn-label" id="timerMainBtnLabel">Старт</span>
-              <span class="timer-main-btn-hint" id="timerMainBtnHint">Запустить таймер</span>
-            </button>
-
-            <div class="timer-secondary-actions">
-              <button class="timer-secondary-btn" id="timerResetBtn" type="button">Сброс</button>
-              <button class="timer-secondary-btn" id="timerMarkBtn" type="button">Отметка</button>
+              <div class="timer-demo-row">
+                <button class="timer-demo-btn" id="timerSpeedToggle" type="button">Ускорение ×1</button>
+              </div>
             </div>
 
-            <div class="timer-toggle-row" role="group" aria-label="Настройки таймера">
-              <button class="timer-toggle-btn is-active" id="timerSoundToggle" type="button" aria-pressed="true">Звук</button>
-              <button class="timer-toggle-btn is-active" id="timerVibrationToggle" type="button" aria-pressed="true">Вибрация</button>
-            </div>
-          </div>
-
-          <div class="timer-stage-card">
-            <div class="section-header section-header-row timer-stage-header">
-              <span>Этапы</span>
-              <span class="timer-stage-meta" id="timerStageMeta">Следующий этап не начат</span>
-            </div>
-            <div class="timer-stage-list" id="timerStageList"></div>
+            <details class="optional-card timer-stage-spoiler">
+              <summary class="optional-summary timer-stage-summary">
+                <div class="optional-summary-main">
+                  <div class="optional-summary-title">Порядок действий</div>
+                  <div class="optional-summary-subtitle">Этапы таймера и что делать дальше</div>
+                </div>
+                <div class="optional-summary-chevron">⌄</div>
+              </summary>
+              <div class="optional-card-body timer-stage-spoiler-body">
+                <div class="timer-stage-list" id="timerStageList"></div>
+              </div>
+            </details>
           </div>
         </div>
       </section>
+
+      <div class="docs-pro-gate hidden timer-pro-gate" id="timerProGate" role="region" aria-live="polite" aria-label="Подтверждение доступа к таймеру">
+        <div class="docs-pro-card">
+          <div class="docs-pro-icon" aria-hidden="true">
+            <svg viewBox="0 0 24 24" focusable="false">
+              <path d="M7 10V8a5 5 0 0 1 10 0v2"></path>
+              <rect x="5" y="10" width="14" height="10" rx="3" ry="3"></rect>
+              <path d="M12 14v3"></path>
+            </svg>
+          </div>
+          <div class="docs-pro-title">PRO-функция</div>
+          <div class="docs-pro-text">Доступ к разделу открывается после покупки PRO-версии. Сейчас открываем бесплатно.</div>
+          <button class="btn-secondary docs-pro-unlock-btn" id="btnUnlockTimerPro" type="button">Открыть бесплатно</button>
+        </div>
+      </div>
 
       <!-- Documentation Tab -->
       <section class="tab-panel" data-tab="instructions">
@@ -793,7 +826,7 @@
             <path d="M12 14v3"></path>
           </svg>
         </div>
-        <div class="docs-pro-title">Документы защищены</div>
+        <div class="docs-pro-title">PRO-функция</div>
         <div class="docs-pro-text">Доступ к разделу открывается после покупки PRO-версии. Сейчас открываем бесплатно.</div>
         <button class="btn-secondary docs-pro-unlock-btn" id="btnUnlockDocsPro" type="button">Открыть бесплатно</button>
       </div>
@@ -831,7 +864,7 @@
         <span class="fab-label">Добавить</span>
       </button>
 
-      <button class="tab-btn nav-item" type="button" data-tab="stopwatch">
+      <button class="tab-btn nav-item nav-item-pro" type="button" data-tab="stopwatch">
         <span class="tab-icon" aria-hidden="true">
           <svg viewBox="0 0 24 24">
             <circle cx="12" cy="13" r="7"></circle>
@@ -841,16 +874,18 @@
             <path d="M15.5 5.2 17 3.7"></path>
           </svg>
         </span>
-        <span class="tab-label tab-label-with-badge"><span>Таймер</span><span class="tab-badge-pro">PRO</span></span>
+        <span class="tab-label">Таймер</span>
+        <span class="tab-badge-pro-corner">PRO</span>
       </button>
-      <button class="tab-btn nav-item" type="button" data-tab="instructions">
+      <button class="tab-btn nav-item nav-item-pro" type="button" data-tab="instructions">
         <span class="tab-icon" aria-hidden="true">
           <svg viewBox="0 0 24 24">
             <path d="M3 7a2 2 0 0 1 2-2h4.17a2 2 0 0 1 1.42.59L12 7h7a2 2 0 0 1 2 2v9a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V7z"></path>
             <path d="M12 7v11"></path>
           </svg>
         </span>
-        <span class="tab-label tab-label-with-badge"><span>Документы</span><span class="tab-badge-pro">PRO</span></span>
+        <span class="tab-label">Документы</span>
+        <span class="tab-badge-pro-corner">PRO</span>
       </button>
     </nav>
   </div>

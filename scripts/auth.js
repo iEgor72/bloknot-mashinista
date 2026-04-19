@@ -348,11 +348,15 @@
     }
 
     function handleTabActivated(tab) {
+      if (typeof renderDocsProGate === 'function') renderDocsProGate();
+      if (typeof renderStopwatchProGate === 'function') renderStopwatchProGate();
       if (tab === 'instructions') {
         renderDocumentationScreen();
       }
-      if (tab === 'stopwatch' && typeof renderStopwatchScreen === 'function') {
-        renderStopwatchScreen();
+      if (tab === 'stopwatch') {
+        if (typeof renderStopwatchScreen === 'function') {
+          renderStopwatchScreen();
+        }
       }
     }
 
@@ -381,21 +385,28 @@
       var activePanel = null;
       for (var i = 0; i < panels.length; i++) {
         var panel = panels[i];
-        panel.classList.remove('tab-enter-forward', 'tab-enter-backward');
+        panel.classList.remove('tab-enter-forward', 'tab-enter-backward', 'tab-enter-sheet-up');
         var isTargetPanel = panel.getAttribute('data-tab') === activeTab;
         panel.classList.toggle('active', isTargetPanel);
         if (isTargetPanel) activePanel = panel;
       }
       if (activePanel && hasRenderedInitialTab && previousTab !== activeTab && !prefersReducedMotion()) {
         var transitionClass = getTabTransitionDirection(previousTab, activeTab) > 0 ? 'tab-enter-forward' : 'tab-enter-backward';
+        var sheetMotion = document.body && document.body.dataset ? document.body.dataset.shiftsMotion : '';
+        if (activeTab === 'shifts' && sheetMotion === 'up') {
+          transitionClass = 'tab-enter-sheet-up';
+        }
         // Force reflow so repeated transitions on the same tab still animate.
         void activePanel.offsetWidth;
         activePanel.classList.add(transitionClass);
         var clearTransitionClass = function() {
-          activePanel.classList.remove('tab-enter-forward', 'tab-enter-backward');
+          activePanel.classList.remove('tab-enter-forward', 'tab-enter-backward', 'tab-enter-sheet-up');
           activePanel.removeEventListener('animationend', clearTransitionClass);
         };
         activePanel.addEventListener('animationend', clearTransitionClass);
+      }
+      if (document.body && document.body.dataset) {
+        delete document.body.dataset.shiftsMotion;
       }
       hasRenderedInitialTab = true;
 
@@ -518,10 +529,10 @@
       }
 
       var btnGoToShifts = document.getElementById('btnGoToShifts');
-      if (btnGoToShifts) btnGoToShifts.textContent = 'Все';
+      if (btnGoToShifts) btnGoToShifts.textContent = 'Открыть журнал';
 
       var shiftsHeader = document.getElementById('shiftsHeader');
-      if (shiftsHeader) shiftsHeader.textContent = 'Смены';
+      if (shiftsHeader) shiftsHeader.textContent = 'История смен';
 
       var instructionsPageTitle = document.querySelector('.instructions-page-title');
       if (instructionsPageTitle) instructionsPageTitle.textContent = 'Инструкции';

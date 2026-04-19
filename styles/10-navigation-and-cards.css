@@ -1427,6 +1427,23 @@
       transform: translateY(0);
     }
 
+    .tab-panel[data-tab="shifts"].tab-enter-sheet-up {
+      animation: tabSheetUp 0.3s cubic-bezier(0.25, 1, 0.35, 1);
+      transform-origin: bottom center;
+      will-change: transform, opacity;
+    }
+
+    @keyframes tabSheetUp {
+      from {
+        opacity: 0;
+        transform: translateY(42px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
     .sheet-title {
       font-size: 18px;
       font-weight: 700;

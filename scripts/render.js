@@ -528,7 +528,7 @@
 
     function renderShiftList(listEl, headerEl, shifts, compact, emptyText, headerBase, pendingMap, shiftIncomeMap, durationBounds, durationLevelMap) {
       if (!listEl) return;
-      if (headerEl) headerEl.textContent = headerBase || 'Смены';
+      if (headerEl) headerEl.textContent = headerBase || 'История смен';
       bindShiftListDetailHandlers(listEl);
 
       if (!compact) {
@@ -548,7 +548,7 @@
       }
 
       if (headerEl && headerBase !== false) {
-        headerEl.textContent = (headerBase || 'Смены') + (compact ? '' : ' · ' + shifts.length);
+        headerEl.textContent = (headerBase || 'История смен') + (compact ? '' : ' · ' + shifts.length);
       }
 
       var html = '';
@@ -712,7 +712,7 @@
         null,
         monthShifts.slice(0, 3),
         true,
-        'Нет смен за этот месяц',
+        'В этом месяце смен пока нет',
         false,
         _renderPendingMap,
         shiftIncomeMap,
@@ -725,8 +725,8 @@
         document.getElementById('shiftsHeader'),
         monthShifts,
         false,
-        'Нет смен за этот месяц',
-        'Смены',
+        'В этом месяце смен пока нет',
+        'История смен',
         _renderPendingMap,
         shiftIncomeMap,
         bounds,

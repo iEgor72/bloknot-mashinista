@@ -715,7 +715,16 @@ if (action === 'scroll-node') {
       unlockDocsProBtn.addEventListener('click', function() {
         triggerHapticActionMedium();
         unlockDocsProForSession();
-        showSaveToast('Документы открыты');
+        showSaveToast('PRO открыт');
+      });
+    }
+
+    var unlockTimerProBtn = document.getElementById('btnUnlockTimerPro');
+    if (unlockTimerProBtn) {
+      unlockTimerProBtn.addEventListener('click', function() {
+        triggerHapticActionMedium();
+        unlockStopwatchProForSession();
+        showSaveToast('PRO открыт');
       });
     }
 
@@ -785,10 +794,21 @@ if (action === 'scroll-node') {
     var goToShiftsBtn = document.getElementById('btnGoToShifts');
     if (goToShiftsBtn) {
       goToShiftsBtn.addEventListener('click', function() {
+        if (document.body && document.body.dataset) {
+          document.body.dataset.shiftsMotion = 'up';
+        }
         if (activeTab !== 'shifts') {
           triggerHapticSelection();
         }
         setActiveTab('shifts');
+      });
+    }
+
+    var backFromShiftsBtn = document.getElementById('btnBackFromShifts');
+    if (backFromShiftsBtn) {
+      backFromShiftsBtn.addEventListener('click', function() {
+        triggerHapticSelection();
+        setActiveTab('home');
       });
     }
 
