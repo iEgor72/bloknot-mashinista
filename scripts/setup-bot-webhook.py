@@ -29,6 +29,7 @@ if not TOKEN:
     print('ERROR: TELEGRAM_BOT_TOKEN not found in env or .env file')
     sys.exit(1)
 
+WEBHOOK_SECRET = os.environ.get('TELEGRAM_WEBHOOK_SECRET', '').strip()
 APP_URL = 'https://bloknot-mashinista-bot.ru'
 WEBHOOK_URL = f'{APP_URL}/api/telegram-webhook'
 
@@ -48,11 +49,15 @@ print('1. Deleting old webhook...')
 tg('deleteWebhook', {'drop_pending_updates': True})
 
 print('2. Setting webhook...')
-tg('setWebhook', {
+set_webhook_payload = {
     'url': WEBHOOK_URL,
     'allowed_updates': ['message'],
     'drop_pending_updates': True,
-})
+}
+if WEBHOOK_SECRET:
+    set_webhook_payload['secret_token'] = WEBHOOK_SECRET
+
+tg('setWebhook', set_webhook_payload)
 
 print('3. Verifying webhook info...')
 tg('getWebhookInfo')

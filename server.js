@@ -517,7 +517,27 @@ function readBody(req) {
 }
 
 const APP_URL = 'https://bloknot-mashinista-bot.ru';
+const APP_ORIGIN = (() => {
+  try {
+    return new URL(APP_URL).origin;
+  } catch (_) {
+    return '';
+  }
+})();
+const ALLOWED_CORS_ORIGINS = new Set([
+  APP_ORIGIN,
+  'http://localhost:3000',
+  'http://127.0.0.1:3000',
+  'http://localhost:8788',
+  'http://127.0.0.1:8788',
+].filter(Boolean));
 const WELCOME_PROMO_URL = `${APP_URL}/assets/welcome-promo.jpg`;
+
+function getAllowedCorsOrigin(req) {
+  const origin = req && req.headers ? req.headers.origin : '';
+  if (!origin) return '';
+  return ALLOWED_CORS_ORIGINS.has(origin) ? origin : '';
+}
 
 function callTelegramApi(token, method, payload) {
   return new Promise((resolve, reject) => {
@@ -572,11 +592,13 @@ const server = http.createServer(async (req, res) => {
   const parsedUrl = url.parse(req.url, true);
   const pathname = parsedUrl.pathname || '/';
   const telegramUserId = getUserIdFromRequest(req);
-  const sid = telegramUserId
-    ? normalizeSid(telegramUserId)
-    : normalizeSid(parsedUrl.query && parsedUrl.query.sid);
+  const sid = telegramUserId ? normalizeSid(telegramUserId) : '';
+  const allowedCorsOrigin = getAllowedCorsOrigin(req);
 
-  res.setHeader('Access-Control-Allow-Origin', '*');
+  if (allowedCorsOrigin) {
+    res.setHeader('Access-Control-Allow-Origin', allowedCorsOrigin);
+    res.setHeader('Vary', 'Origin');
+  }
   res.setHeader('Access-Control-Allow-Methods', 'GET,PUT,POST,OPTIONS');
   res.setHeader('Access-Control-Allow-Headers', 'Content-Type, Authorization');
 
@@ -592,8 +614,14 @@ const server = http.createServer(async (req, res) => {
       return;
     }
     const token = process.env.TELEGRAM_BOT_TOKEN;
+    const webhookSecret = process.env.TELEGRAM_WEBHOOK_SECRET || '';
+    const requestWebhookSecret = req.headers['x-telegram-bot-api-secret-token'] || '';
     if (!token) {
       sendJson(res, 500, { ok: false, error: 'no token' });
+      return;
+    }
+    if (webhookSecret && requestWebhookSecret !== webhookSecret) {
+      sendJson(res, 403, { ok: false, error: 'forbidden' });
       return;
     }
     try {
@@ -691,6 +719,11 @@ const server = http.createServer(async (req, res) => {
   }
 
   if (pathname === '/api/shifts') {
+    if (!sid) {
+      sendJson(res, 401, { error: 'Unauthorized' });
+      return;
+    }
+
     if (req.method === 'GET') {
       sendJson(res, 200, { sid, shifts: readShifts(sid) });
       return;
@@ -719,6 +752,11 @@ const server = http.createServer(async (req, res) => {
   }
 
   if (pathname === '/api/stats') {
+    if (!sid) {
+      sendJson(res, 401, { error: 'Unauthorized' });
+      return;
+    }
+
     if (req.method === 'GET') {
       sendJson(res, 200, readUserPresenceStats());
       return;
@@ -728,7 +766,7 @@ const server = http.createServer(async (req, res) => {
       try {
         const body = await readBody(req);
         const payload = body ? JSON.parse(body) : {};
-        const userId = normalizeStatsUserId(payload && payload.userId);
+        const userId = normalizeStatsUserId(telegramUserId);
         const sessionId = typeof payload.sessionId === 'string'
           ? payload.sessionId.trim()
           : (typeof payload.deviceId === 'string' ? payload.deviceId.trim() : '');

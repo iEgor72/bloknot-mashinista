@@ -2,6 +2,7 @@ from __future__ import annotations
 
 import argparse
 import json
+import re
 import shutil
 import subprocess
 import sys
@@ -198,6 +199,10 @@ def _replace_auto_block(text: str, block: str) -> str:
     return text[:start] + block + text[end:]
 
 
+def _sanitize_remote_output(text: str) -> str:
+    return re.sub(r"(https?://)([^/@\s]+)@", r"\1<redacted>@", text)
+
+
 def _project_state_auto_block() -> str:
     status_short = _run_git("status", "--short")
     if status_short == "<empty>":
@@ -217,7 +222,7 @@ def _project_state_auto_block() -> str:
             "",
             "## Git Remote",
             "```text",
-            _run_git("remote", "-v"),
+            _sanitize_remote_output(_run_git("remote", "-v")),
             "```",
             "",
             "## Branch Tracking",
