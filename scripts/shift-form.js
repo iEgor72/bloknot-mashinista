@@ -790,21 +790,11 @@ if (action === 'scroll-node') {
     var goToShiftsBtn = document.getElementById('btnGoToShifts');
     if (goToShiftsBtn) {
       goToShiftsBtn.addEventListener('click', function() {
-        if (document.body && document.body.dataset) {
-          document.body.dataset.shiftsMotion = 'up';
-        }
-        if (activeTab !== 'shifts') {
-          triggerHapticSelection();
-        }
-        setActiveTab('shifts');
-      });
-    }
-
-    var closeShiftsSheetBtn = document.getElementById('btnCloseShiftsSheet');
-    if (closeShiftsSheetBtn) {
-      closeShiftsSheetBtn.addEventListener('click', function() {
         triggerHapticSelection();
-        setActiveTab('home');
+        openOverlay('overlayShifts');
+        window.setTimeout(function() {
+          render();
+        }, 20);
       });
     }
 
@@ -812,7 +802,7 @@ if (action === 'scroll-node') {
     if (closeShiftsBottomBtn) {
       closeShiftsBottomBtn.addEventListener('click', function() {
         triggerHapticSuccess();
-        setActiveTab('home');
+        closeOverlay('overlayShifts');
       });
     }
 

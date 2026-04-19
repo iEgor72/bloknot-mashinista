@@ -1470,18 +1470,6 @@
       transform: translateY(0);
     }
 
-    .tab-panel[data-tab="shifts"] {
-      position: relative;
-      margin-top: clamp(18px, 5vh, 44px);
-      padding-top: 6px;
-      padding-bottom: calc(8px + var(--safe-bottom));
-    }
-
-    .tab-panel[data-tab="shifts"].tab-enter-sheet-up {
-      animation: tabSheetUp 0.34s cubic-bezier(0.22, 1, 0.36, 1);
-      transform-origin: bottom center;
-      will-change: transform, opacity;
-    }
 
     @keyframes tabSheetUp {
       from {

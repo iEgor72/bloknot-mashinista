@@ -1,15 +1,17 @@
 /* ── Timer screen ───────────────────────────────────────────── */
-.shifts-sheet-dismiss {
-  width: 100%;
+.shifts-sheet {
+  display: grid;
+  gap: 0;
+  padding-top: 10px;
+}
+
+.shifts-sheet-handle-wrap {
   display: flex;
   justify-content: center;
   align-items: center;
   padding: 2px 0 12px;
   margin-bottom: 2px;
-  border: none;
-  background: transparent;
-  cursor: pointer;
-  -webkit-tap-highlight-color: transparent;
+  pointer-events: none;
 }
 
 .shifts-sheet-handle {
