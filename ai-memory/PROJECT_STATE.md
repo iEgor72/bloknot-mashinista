@@ -1,14 +1,14 @@
 # Project State
 
 <!-- AUTO_STATUS:START -->
-Generated: 2026-04-19 21:05:31 +0000
+Generated: 2026-04-19 21:02:24 +0000
 
 ## Repository Snapshot
 - Local repo path: `/opt/bloknot-mashinista`
 - Project memory path: `/opt/bloknot-mashinista/ai-memory`
 - Branch: `main`
-- HEAD: `663d48f`
-- Last commit: `663d48f fix(ui): flatten locked content behind shared pro gate`
+- HEAD: `8716922`
+- Last commit: `8716922 Revert "refactor(ui): make pro gate own locked-screen backdrop"`
 
 ## Git Remote
 ```text
@@ -18,12 +18,13 @@ origin	https://github.com/iEgor72/bloknot-mashinista.git (push)
 
 ## Branch Tracking
 ```text
-* main 663d48f [origin/main] fix(ui): flatten locked content behind shared pro gate
+* main 8716922 [origin/main] Revert "refactor(ui): make pro gate own locked-screen backdrop"
 ```
 
 ## Worktree
 ```text
 M ai-memory/ARCHITECTURE.md
+ M ai-memory/CHANGELOG.md
  M ai-memory/INDEX.md
  M ai-memory/RECENT_COMMITS.md
  M scripts/stopwatch-engine.js
