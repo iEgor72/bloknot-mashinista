@@ -548,7 +548,7 @@
         if (!title) continue;
         if (overlays[oi].id === 'overlayAddScreen') title.textContent = 'Добавить на главный экран';
         if (overlays[oi].id === 'overlaySalarySettings') title.textContent = 'Параметры расчёта';
-        if (overlays[oi].id === 'overlayConfirm') title.textContent = 'Удалить смену';
+        if (overlays[oi].id === 'overlayConfirm') title.textContent = 'Удалить запись';
       }
     }
 

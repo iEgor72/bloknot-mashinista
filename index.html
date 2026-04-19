@@ -320,24 +320,24 @@
                   <path fill="currentColor" d="M14.7 5.3a1 1 0 0 1 0 1.4L10.41 11H20a1 1 0 1 1 0 2h-9.59l4.3 4.3a1 1 0 1 1-1.42 1.4l-6-6a1 1 0 0 1 0-1.4l6-6a1 1 0 0 1 1.41 0Z"></path>
                 </svg>
               </button>
-              <div class="form-title" id="formTitle">Добавить смену</div>
+              <div class="form-title" id="formTitle">Новая смена</div>
             </div>
-            <div class="edit-badge" id="editBadge">Режим редактирования</div>
+            <div class="edit-badge" id="editBadge">Редактирование</div>
           </div>
           <div class="form-edit-banner hidden" id="formEditBanner" aria-live="polite">
-            <div class="form-edit-banner-title">Вы редактируете существующую смену</div>
+            <div class="form-edit-banner-title">Вы редактируете запись о смене</div>
             <div class="form-edit-banner-text">Проверьте время и детали, затем сохраните изменения или удалите запись.</div>
           </div>
-          <div class="form-hint">Время указывается в МСК, а все часы считаются по локальному времени: ночные, праздничные и общая длительность</div>
+          <div class="form-hint">Время вводится в МСК, а расчёт часов выполняется по локальному времени устройства.</div>
 
           <div class="form-stage">
             <div class="form-stage-head">
               <div class="form-stage-kicker">Время смены</div>
-              <div class="form-stage-title">Задайте границы смены</div>
+              <div class="form-stage-title">Укажите начало и конец смены</div>
             </div>
 
             <div class="field">
-              <label>Начало смены</label>
+              <label>Когда началась смена</label>
               <div class="datetime-row">
                 <input type="date" id="inputStartDate" />
                 <input type="time" id="inputStartTime" />
@@ -346,7 +346,7 @@
             </div>
 
             <div class="field">
-              <label>Конец смены</label>
+              <label>Когда закончилась смена</label>
               <div class="datetime-row">
                 <input type="date" id="inputEndDate" />
                 <input type="time" id="inputEndTime" />
@@ -382,7 +382,7 @@
             <summary class="optional-summary">
               <div class="optional-summary-main">
                 <div class="optional-summary-title">Участок и вид следования</div>
-                <div class="optional-summary-subtitle">Поездка или смена</div>
+                <div class="optional-summary-subtitle">Что это было</div>
               </div>
               <div class="optional-summary-chevron">⌄</div>
             </summary>
@@ -402,7 +402,7 @@
                     <input class="optional-control" type="text" id="inputRouteTo" maxlength="64" placeholder="Станция прибытия" />
                   </div>
                 </div>
-                <div class="optional-note">Для режима «Смена» дополнительные поля не нужны.</div>
+                <div class="optional-note">Если это обычная смена, дополнительные поля можно не заполнять.</div>
               </div>
             </div>
           </details>
@@ -624,9 +624,9 @@
           </details>
 
           <div class="form-actions">
-            <button class="btn-primary" id="btnAdd">Добавить смену</button>
+            <button class="btn-primary" id="btnAdd">Сохранить смену</button>
             <button class="btn-secondary btn-cancel-edit hidden" id="btnCancelEdit" type="button">Отменить редактирование</button>
-            <button class="btn-danger btn-delete-edit hidden" id="btnDeleteEdit" type="button">Удалить смену</button>
+            <button class="btn-danger btn-delete-edit hidden" id="btnDeleteEdit" type="button">Удалить запись</button>
           </div>
           <div class="form-success" id="formSuccess"></div>
         </div>
@@ -855,7 +855,7 @@
       </button>
 
       <!-- FAB — inline flex slot, 3rd position -->
-      <button class="tab-btn nav-fab" type="button" data-tab="add" id="fab-add" aria-label="Добавить смену">
+      <button class="tab-btn nav-fab" type="button" data-tab="add" id="fab-add" aria-label="Новая смена">
         <div class="fab-btn">
           <svg viewBox="0 0 24 24" width="24" height="24" stroke="currentColor" fill="none" stroke-width="2.5" stroke-linecap="round">
             <path d="M12 5v14M5 12h14"></path>
@@ -1022,7 +1022,7 @@
   <!-- Confirm Delete Bottom Sheet -->
   <div class="overlay" id="overlayConfirm">
     <div class="bottom-sheet">
-      <div class="sheet-title">Удалить смену</div>
+      <div class="sheet-title">Удалить запись</div>
       <div class="confirm-shift-card-slot" id="confirmShiftCard"></div>
       <div class="confirm-note">Это действие нельзя отменить</div>
       <div class="confirm-btns">

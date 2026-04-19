@@ -58,10 +58,10 @@
     function exitEditMode(nextTab) {
       editingShiftId = null;
       setFormMode('add');
-      document.getElementById('formTitle').textContent = 'Добавить смену';
+      document.getElementById('formTitle').textContent = 'Новая смена';
       document.getElementById('editBadge').classList.remove('visible');
       document.getElementById('btnBackFromEdit').classList.add('hidden');
-      document.getElementById('btnAdd').textContent = 'Добавить смену';
+      document.getElementById('btnAdd').textContent = 'Сохранить смену';
       document.getElementById('btnCancelEdit').classList.add('hidden');
       document.getElementById('btnDeleteEdit').classList.add('hidden');
       clearErrors();
@@ -435,14 +435,14 @@
       var valid = true;
 
       if (!startVal) {
-        document.getElementById('errStart').textContent = 'Заполни дату и время начала';
+        document.getElementById('errStart').textContent = 'Укажите дату и время начала';
         inputStartDateEl.classList.add('input-error');
         inputStartTimeEl.classList.add('input-error');
         valid = false;
       }
 
       if (!endVal) {
-        document.getElementById('errEnd').textContent = 'Заполни дату и время окончания';
+        document.getElementById('errEnd').textContent = 'Укажите дату и время окончания';
         inputEndDateEl.classList.add('input-error');
         inputEndTimeEl.classList.add('input-error');
         valid = false;
@@ -463,7 +463,7 @@
       }
 
       if (endDate.getTime() <= startDate.getTime()) {
-        document.getElementById('errEnd').textContent = 'Конец смены не может быть раньше начала';
+        document.getElementById('errEnd').textContent = 'Время окончания не может быть раньше начала';
         inputEndDateEl.classList.add('input-error');
         inputEndTimeEl.classList.add('input-error');
         triggerHapticError();
@@ -562,7 +562,7 @@
           }, 1600);
           setActiveTab('home');
         }
-        document.getElementById('formSuccess').textContent = isEditing ? '✓ Смена обновлена' : '✓ Смена добавлена';
+        document.getElementById('formSuccess').textContent = isEditing ? '✓ Изменения сохранены' : '✓ Смена сохранена';
         btn.disabled = false;
         if (!isEditing) {
           var section = document.getElementById('shiftFormSection');
