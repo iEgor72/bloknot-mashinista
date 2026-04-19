@@ -12,8 +12,7 @@
 }
 
 .shifts-back-label {
-  color: var(--sub);
-  opacity: 0.9;
+  color: var(--muted);
   font-size: 13px;
   font-weight: 700;
   letter-spacing: 0.01em;
@@ -111,7 +110,7 @@
 }
 
 .timer-summary-item {
-  background: var(--color-surface-soft);
+  background: var(--card-hi);
   padding: 12px 12px;
 }
 

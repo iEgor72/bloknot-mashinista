@@ -127,9 +127,9 @@
       padding: 16px;
       margin-bottom: 16px;
       border-radius: var(--r-card);
-      background: linear-gradient(180deg, rgba(255, 255, 255, 0.04), rgba(255, 255, 255, 0.014)), var(--card);
-      border: 1px solid rgba(255, 255, 255, 0.09);
-      box-shadow: 0 14px 34px rgba(0, 0, 0, 0.22), inset 0 1px 0 rgba(255, 255, 255, 0.04);
+      background: var(--card);
+      border: 1px solid var(--border);
+      box-shadow: none;
       overflow: visible;
     }
 
@@ -159,15 +159,14 @@
       margin-top: 3px;
       font-size: 10px;
       font-weight: 800;
-      color: var(--sub);
-      opacity: 0.78;
+      color: var(--muted);
       letter-spacing: 0.12em;
       text-transform: uppercase;
     }
 
     .month-btn {
-      background: linear-gradient(180deg, rgba(255, 255, 255, 0.045), rgba(255, 255, 255, 0.018));
-      border: 1px solid rgba(255, 255, 255, 0.08);
+      background: var(--card-hi);
+      border: 1px solid var(--border);
       color: var(--text);
       width: 34px;
       height: 34px;
@@ -177,7 +176,6 @@
       display: flex;
       align-items: center;
       justify-content: center;
-      box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.03);
       transition: background 0.15s, border-color 0.15s, transform 0.12s ease;
       -webkit-tap-highlight-color: transparent;
     }
@@ -192,11 +190,9 @@
       display: grid;
       grid-template-columns: repeat(3, minmax(0, 1fr));
       gap: 4px;
-      background: rgba(0, 0, 0, 0.24);
-      border: 1px solid rgba(255, 255, 255, 0.04);
+      background: rgba(0, 0, 0, 0.25);
       border-radius: var(--r-pill);
       padding: 3px;
-      box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.025);
     }
 
     .month-tab {
@@ -205,8 +201,7 @@
       border-radius: var(--r-pill);
       background: transparent;
       border: none;
-      color: var(--sub);
-      opacity: 0.72;
+      color: var(--muted);
       font-family: 'Manrope', sans-serif;
       font-size: 13px;
       font-weight: 700;
@@ -218,22 +213,22 @@
     .month-tab::before { content: none; }
 
     .month-tab.active {
-      background: linear-gradient(180deg, rgba(56, 189, 248, 0.14), rgba(255, 255, 255, 0.04)), var(--card-hi);
+      background: var(--card-hi);
       color: var(--accent);
       opacity: 1;
-      box-shadow: 0 6px 16px rgba(0, 0, 0, 0.22), inset 0 1px 0 rgba(255, 255, 255, 0.04);
+      box-shadow: 0 1px 4px rgba(0, 0, 0, 0.3);
     }
 
     .month-tab:active { opacity: 0.8; }
 
     /* ── Dashboard card (hours) ── */
     .dashboard-card {
-      background: linear-gradient(180deg, rgba(255, 255, 255, 0.04), rgba(255, 255, 255, 0.012)), var(--card-hi);
+      background: var(--card);
       border: 1px solid var(--border);
       border-radius: var(--r-card);
       padding: 18px;
       margin-bottom: 18px;
-      box-shadow: 0 18px 38px rgba(0, 0, 0, 0.2);
+      box-shadow: none;
       overflow: visible;
     }
 
@@ -530,9 +525,9 @@
       margin-bottom: 20px;
       padding: 16px;
       border-radius: var(--r-card);
-      background: linear-gradient(180deg, rgba(255, 255, 255, 0.03), rgba(255, 255, 255, 0.01)), var(--card);
+      background: var(--card);
       border: 1px solid var(--border);
-      box-shadow: 0 14px 32px rgba(0, 0, 0, 0.16);
+      box-shadow: none;
       overflow: visible;
     }
 
@@ -584,8 +579,8 @@
       min-width: 0;
       border-radius: 16px;
       border: 1px solid var(--border);
-      background: linear-gradient(180deg, rgba(255, 255, 255, 0.028), rgba(255, 255, 255, 0.012)), var(--card-hi);
-      box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.02);
+      background: var(--card-hi);
+      box-shadow: none;
     }
 
     .quick-stat + .quick-stat {
@@ -613,7 +608,7 @@
     .quick-stat-value.shifts  { color: var(--text); }
 
     .quick-stat.quick-stat-primary {
-      background: linear-gradient(180deg, rgba(255, 255, 255, 0.04), rgba(255, 255, 255, 0.014)), var(--card-hi);
+      background: var(--card-hi);
       border-color: var(--border-hi);
     }
 
@@ -696,8 +691,8 @@
     .install-prompt-card {
       border-radius: var(--r-card);
       border: 1px solid var(--border);
-      background: linear-gradient(180deg, rgba(56, 189, 248, 0.08), rgba(56, 189, 248, 0.02)), var(--card);
-      box-shadow: 0 16px 34px rgba(0, 0, 0, 0.18);
+      background: var(--card);
+      box-shadow: none;
     }
 
     .usage-stats-note {
@@ -714,9 +709,9 @@
       margin-bottom: 18px;
       padding: 16px;
       border-radius: var(--r-card);
-      background: linear-gradient(180deg, rgba(255, 255, 255, 0.03), rgba(255, 255, 255, 0.012)), var(--card);
+      background: var(--card);
       border: 1px solid var(--border);
-      box-shadow: 0 14px 30px rgba(0, 0, 0, 0.14);
+      box-shadow: none;
       overflow: visible;
     }
 
