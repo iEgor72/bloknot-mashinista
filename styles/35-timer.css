@@ -8,10 +8,15 @@
   border-radius: 16px;
   background: rgba(255, 255, 255, 0.03);
   border: 1px solid rgba(255, 255, 255, 0.05);
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.02);
 }
 
 .shifts-month-nav {
   margin-bottom: 18px;
+}
+
+.shifts-back-row .salary-settings-back-btn {
+  flex-shrink: 0;
 }
 
 .shifts-back-label {
