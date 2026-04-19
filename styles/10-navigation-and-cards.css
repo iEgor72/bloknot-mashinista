@@ -1472,6 +1472,7 @@
 
     .tab-panel[data-tab="shifts"] {
       position: relative;
+      margin-top: clamp(18px, 5vh, 44px);
       padding-top: 6px;
       padding-bottom: calc(8px + var(--safe-bottom));
     }
