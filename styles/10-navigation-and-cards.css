@@ -1336,15 +1336,6 @@
       transition: filter 0.22s ease, opacity 0.22s ease;
     }
 
-    .docs-pro-wrap.is-locked .docs-shell,
-    .docs-pro-wrap.is-locked .docs-shell *,
-    .docs-pro-wrap.is-locked .docs-shell *::before,
-    .docs-pro-wrap.is-locked .docs-shell *::after {
-      animation: none !important;
-      box-shadow: none !important;
-      text-shadow: none !important;
-    }
-
     .docs-pro-wrap:not(.is-locked) .docs-shell {
       filter: none;
       opacity: 1;
