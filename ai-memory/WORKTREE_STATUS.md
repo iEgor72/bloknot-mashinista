@@ -1,12 +1,11 @@
 # Worktree Status
 
-Generated: 2026-04-19 21:02:24 +0000
+Generated: 2026-04-19 21:05:31 +0000
 
 ## git status -sb
 ```text
 ## main...origin/main
  M ai-memory/ARCHITECTURE.md
- M ai-memory/CHANGELOG.md
  M ai-memory/INDEX.md
  M ai-memory/PROJECT_STATE.md
  M ai-memory/RECENT_COMMITS.md
@@ -19,15 +18,15 @@ Generated: 2026-04-19 21:02:24 +0000
 
 ## git branch -vv
 ```text
-* main 8716922 [origin/main] Revert "refactor(ui): make pro gate own locked-screen backdrop"
+* main 663d48f [origin/main] fix(ui): flatten locked content behind shared pro gate
 ```
 
 ## HEAD
 ```text
-8716922 Revert "refactor(ui): make pro gate own locked-screen backdrop"
- ai-memory/CHANGELOG.md             |  8 --------
- ai-memory/PROJECT_STATE.md         |  8 ++++----
- ai-memory/WORKTREE_STATUS.md       | 16 +++++++++-------
- styles/10-navigation-and-cards.css | 13 +++++++------
- 4 files changed, 20 insertions(+), 25 deletions(-)
+663d48f fix(ui): flatten locked content behind shared pro gate
+ ai-memory/CHANGELOG.md             | 16 ++++++++++++++++
+ ai-memory/PROJECT_STATE.md         |  9 +++++----
+ ai-memory/WORKTREE_STATUS.md       | 20 +++++++++-----------
+ styles/10-navigation-and-cards.css |  9 +++++++++
+ 4 files changed, 39 insertions(+), 15 deletions(-)
 ```
