@@ -13,14 +13,20 @@ function buildBaseUrl(request) {
   return url.origin;
 }
 
-function buildReply(chatId, baseUrl) {
+function buildReply(chatId, baseUrl, firstName) {
+  var greeting = firstName ? ('👋 Привет, ' + firstName + '!') : '👋 Привет!';
   return {
-    method: 'sendMessage',
+    method: 'sendPhoto',
     chat_id: chatId,
-    text:
-      'Блокнот машиниста готов.\n\n' +
-      'Открывай мини-апп кнопкой ниже и добавляй смены откуда удобно. ' +
-      'Если откроешь сайт в браузере, войди через Telegram один раз, и данные синхронизируются автоматически.',
+    photo: baseUrl + '/assets/welcome-promo.jpg',
+    caption:
+      greeting + ' Это Блокнот машиниста, электронный учёт рабочих смен.\n\n' +
+      'Что здесь можно делать:\n' +
+      '📅 вести журнал смен с датами и часами\n' +
+      '⏱ следить за нормой и переработкой\n' +
+      '⛽️ записывать расход топлива\n' +
+      '📚 быстро открывать важные документы и инструкции\n\n' +
+      '🔒 Данные привязаны к твоему Telegram-аккаунту и доступны с любого устройства.',
     reply_markup: {
       inline_keyboard: [
         [
@@ -51,13 +57,14 @@ export async function onRequest(context) {
     var message = update && update.message;
     var text = (message && message.text) || '';
     var chatId = message && message.chat && message.chat.id;
+    var firstName = (message && message.from && message.from.first_name) || '';
 
     if (!chatId) {
       return json({ ok: true });
     }
 
     if (text.indexOf('/start') === 0 || text.indexOf('/help') === 0) {
-      return json(buildReply(chatId, buildBaseUrl(request)));
+      return json(buildReply(chatId, buildBaseUrl(request), firstName));
     }
 
     return json({
