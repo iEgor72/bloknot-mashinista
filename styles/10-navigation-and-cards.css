@@ -831,12 +831,13 @@
     /* ── Salary cards ── */
     .salary-card,
     .settings-card {
-      background: var(--card);
+      background: linear-gradient(180deg, rgba(255, 255, 255, 0.025), rgba(255, 255, 255, 0.012)), var(--card);
       border: 1px solid var(--border);
       border-radius: var(--r-card);
       padding: 18px;
       margin-bottom: 14px;
       overflow: visible;
+      box-shadow: 0 14px 30px rgba(0, 0, 0, 0.14);
     }
 
     .settings-card {
@@ -865,8 +866,9 @@
 
     .salary-total-caption {
       margin-top: 8px;
-      color: var(--sub);
+      color: rgba(238, 242, 248, 0.62);
       font-size: 13px;
+      line-height: 1.45;
     }
 
     .salary-disclaimer {
@@ -1921,6 +1923,17 @@
       display: grid;
       gap: 10px;
       margin-top: 16px;
+    }
+
+    .confirm-note {
+      font-size: 12px;
+      line-height: 1.5;
+      color: rgba(255, 233, 195, 0.88);
+      background: rgba(245, 158, 11, 0.08);
+      border: 1px solid rgba(245, 158, 11, 0.18);
+      border-radius: 12px;
+      padding: 10px 12px;
+      margin-top: 12px;
     }
 
     /* ── Shift actions menu ── */

@@ -975,7 +975,7 @@
     }
 
     .shift-detail-header {
-      background: var(--card);
+      background: linear-gradient(180deg, rgba(255, 255, 255, 0.025), rgba(255, 255, 255, 0.012)), var(--card);
       border-bottom: 1px solid var(--border);
       padding:
         max(10px, env(safe-area-inset-top), var(--safe-top))
@@ -1034,7 +1034,7 @@
 
     .shift-detail-header-kicker {
       font-size: 11px;
-      color: var(--sub);
+      color: rgba(238, 242, 248, 0.56);
       letter-spacing: 0.03em;
       text-transform: uppercase;
       font-weight: 700;
@@ -1178,6 +1178,7 @@
       gap: 12px;
       flex-shrink: 0;
       min-height: 56px;
+      box-shadow: 0 10px 26px rgba(0, 0, 0, 0.18);
       backdrop-filter: blur(14px);
       -webkit-backdrop-filter: blur(14px);
     }
@@ -1563,6 +1564,7 @@
 
     .docs-item:active {
       border-color: var(--border-hi);
+      background: linear-gradient(180deg, rgba(255, 255, 255, 0.036), rgba(255, 255, 255, 0.016)), var(--card);
       transform: translateY(1px);
     }
 

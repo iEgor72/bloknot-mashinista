@@ -661,6 +661,7 @@
     var openSalarySettingsBtn = document.getElementById('btnOpenSalarySettings');
     if (openSalarySettingsBtn) {
       openSalarySettingsBtn.addEventListener('click', function() {
+        triggerHapticSelection();
         updateSettingsControls();
         openOverlay('overlaySalarySettings');
       });
@@ -668,12 +669,14 @@
     var backSalarySettingsBtn = document.getElementById('btnBackSalarySettings');
     if (backSalarySettingsBtn) {
       backSalarySettingsBtn.addEventListener('click', function() {
+        triggerHapticSelection();
         closeOverlay('overlaySalarySettings');
       });
     }
     var saveSalarySettingsBtn = document.getElementById('btnSaveSalarySettings');
     if (saveSalarySettingsBtn) {
       saveSalarySettingsBtn.addEventListener('click', function() {
+        triggerHapticSuccess();
         syncSettingsFromInputs();
         closeOverlay('overlaySalarySettings');
         showActionToast('saved');
