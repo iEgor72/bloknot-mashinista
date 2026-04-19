@@ -475,7 +475,7 @@
           SHIFT_DETAIL_CONTENT.classList.add('hidden');
           SHIFT_DETAIL_CONTENT.innerHTML = '';
         }
-        if (SHIFT_DETAIL_TITLE) SHIFT_DETAIL_TITLE.textContent = 'Детали смены';
+        if (SHIFT_DETAIL_TITLE) SHIFT_DETAIL_TITLE.textContent = 'Подробности смены';
         resetShiftDetailState();
         syncTelegramBackButton();
       }
@@ -639,7 +639,7 @@
       if (monthIncomeValueEl) {
         monthIncomeValueEl.textContent = monthShifts.length > 0
           ? formatRub(monthSalarySummary.netAmount)
-          : 'Нет смен';
+          : 'Смен пока нет';
       }
       setQuickMetricText('statNight', fmtMin(nightMin));
       setQuickMetricText('statHoliday', fmtMin(holidayMin));
@@ -680,7 +680,7 @@
 
         if (diffMin === 0) {
           if (normSnapshot.relation > 0 && totalMin === 0) {
-            diffEl.textContent = 'Месяц еще не начался';
+            diffEl.textContent = 'Месяц ещё не начался';
             diffEl.classList.add('remaining');
             if (dashboardCardEl) dashboardCardEl.classList.add('state-remaining');
           } else {
@@ -689,11 +689,11 @@
             if (dashboardCardEl) dashboardCardEl.classList.add('state-ok');
           }
         } else if (diffMin > 0) {
-          diffEl.textContent = 'Переработка ' + fmtMin(diffAbs);
+          diffEl.textContent = 'Сверх нормы: ' + fmtMin(diffAbs);
           diffEl.classList.add('overtime');
           if (dashboardCardEl) dashboardCardEl.classList.add('state-overtime');
         } else {
-          diffEl.textContent = 'Недоработка ' + fmtMin(diffAbs);
+          diffEl.textContent = 'Осталось до нормы: ' + fmtMin(diffAbs);
           diffEl.classList.add('remaining');
           if (dashboardCardEl) dashboardCardEl.classList.add('state-remaining');
         }
@@ -704,7 +704,7 @@
         setProgressMarkerPosition(progressTodayMarkerEl, 0, 0);
         setProgressMarkerPosition(progressMonthMarkerEl, 0, 0);
         diffEl.className = 'dashboard-sub';
-        diffEl.textContent = 'Норма не задана';
+        diffEl.textContent = 'Норма пока не задана';
       }
 
       renderShiftList(

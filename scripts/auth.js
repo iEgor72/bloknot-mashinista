@@ -57,7 +57,7 @@
       prod: {
         guest: {
           badge: 'Telegram login',
-          title: 'Войди, чтобы увидеть свои смены',
+          title: 'Войдите, чтобы открыть свои смены',
           message: 'Открой приложение через Telegram или браузер и подтверди вход один раз. После этого данные будут синхронизироваться автоматически.',
           primary: 'Войти через Telegram',
           primaryHint: '',
@@ -540,13 +540,13 @@
       if (appVersionValue) appVersionValue.textContent = APP_VERSION;
 
       var addScreenBtn = document.getElementById('btnShowInstallGuide');
-      if (addScreenBtn) addScreenBtn.textContent = 'Показать инструкцию';
+      if (addScreenBtn) addScreenBtn.textContent = 'Как установить';
 
       var overlays = document.querySelectorAll('.overlay');
       for (var oi = 0; oi < overlays.length; oi++) {
         var title = overlays[oi].querySelector('.sheet-title');
         if (!title) continue;
-        if (overlays[oi].id === 'overlayAddScreen') title.textContent = 'Добавить на главный экран';
+        if (overlays[oi].id === 'overlayAddScreen') title.textContent = 'Установить приложение';
         if (overlays[oi].id === 'overlaySalarySettings') title.textContent = 'Параметры расчёта';
         if (overlays[oi].id === 'overlayConfirm') title.textContent = 'Удалить запись';
       }

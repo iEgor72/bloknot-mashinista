@@ -846,10 +846,10 @@
       html += '<section class="shift-detail-section">';
       html += '<div class="shift-detail-section-title">Расчёт</div>';
       html += '<div class="shift-detail-list">';
-      html += buildShiftDetailRowHtml('Доход за смену', salaryText);
+      html += buildShiftDetailRowHtml('Доход за эту смену', salaryText);
       html += buildShiftDetailRowHtml('Синхронизация', syncStatus);
       html += '</div>';
-      html += '<div class="shift-detail-note">Время начала/конца введено в МСК, перерасчёт часов выполняется в локальном часовом поясе устройства.</div>';
+      html += '<div class="shift-detail-note">Время вы указываете в МСК, а часы приложение пересчитывает по локальному времени устройства.</div>';
       html += '</section>';
 
       return html;
@@ -861,11 +861,11 @@
       if (!shift) {
         SHIFT_DETAIL_HERO_SLOT.innerHTML = '';
         SHIFT_DETAIL_CONTENT.innerHTML = '';
-        SHIFT_DETAIL_TITLE.textContent = 'Смена не найдена';
+        SHIFT_DETAIL_TITLE.textContent = 'Запись не найдена';
         return;
       }
       var shiftTitle = getShiftTitle(shift);
-      SHIFT_DETAIL_TITLE.textContent = shiftTitle || 'Детали смены';
+      SHIFT_DETAIL_TITLE.textContent = shiftTitle || 'Подробности смены';
       SHIFT_DETAIL_HERO_SLOT.innerHTML = buildShiftDetailHeroCardHtml(shift, currentMonthShiftIncomeMap);
       SHIFT_DETAIL_CONTENT.innerHTML = buildShiftDetailContentHtml(shift, currentMonthShiftIncomeMap);
     }

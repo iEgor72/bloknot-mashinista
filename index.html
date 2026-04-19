@@ -263,14 +263,14 @@
         <div id="homeShiftsList"></div>
 
         <div class="install-prompt-card hidden" id="installPromptCard">
-          <div class="install-prompt-title">Добавить на главный экран</div>
-          <div class="install-prompt-text">Открывайте приложение в один тап, как обычное приложение</div>
+          <div class="install-prompt-title">Установить приложение</div>
+          <div class="install-prompt-text">Запускайте Блокнот Машиниста в один тап, как обычное приложение.</div>
           <div class="install-prompt-actions">
-            <button class="btn-secondary" id="btnShowInstallGuide" type="button">Показать инструкцию</button>
+            <button class="btn-secondary" id="btnShowInstallGuide" type="button">Как установить</button>
             <button class="btn-link install-dismiss-btn" id="btnDismissInstallCard" type="button">Позже</button>
           </div>
         </div>
-        <div class="usage-stats-note" id="userStatsFooter" aria-live="polite">Онлайн: — · Всего: —</div>
+        <div class="usage-stats-note" id="userStatsFooter" aria-live="polite">Сейчас онлайн: — · Всего пользователей: —</div>
       </section>
 
       <!-- Shifts Tab -->
@@ -357,21 +357,21 @@
 
           <div class="form-stage form-stage-summary">
             <div class="form-stage-head">
-              <div class="form-stage-kicker">Расчётные показатели</div>
-              <div class="form-stage-title">Предварительный расчёт</div>
+              <div class="form-stage-kicker">Сводка по смене</div>
+              <div class="form-stage-title">Предварительный итог</div>
             </div>
-            <div class="draft-stats-grid" aria-label="Предварительный расчёт времени">
+            <div class="draft-stats-grid" aria-label="Предварительная сводка по смене">
               <div class="draft-stat">
                 <span class="draft-stat-value night" id="draftNight">0 ч</span>
                 <span class="stat-label">Ночные</span>
               </div>
               <div class="draft-stat">
                 <span class="draft-stat-value" id="draftTotal">0 ч</span>
-                <span class="stat-label">Общее</span>
+                <span class="stat-label">Всего</span>
               </div>
               <div class="draft-stat">
                 <span class="draft-stat-value holiday" id="draftHoliday">0 ч</span>
-                <span class="stat-label">Празднич.</span>
+                <span class="stat-label">Праздничные</span>
               </div>
             </div>
           </div>
@@ -1044,7 +1044,7 @@
         </button>
         <div class="shift-detail-header-main">
           <div class="shift-detail-header-kicker">Смена</div>
-          <div class="shift-detail-header-title" id="shiftDetailTitle">Детали смены</div>
+          <div class="shift-detail-header-title" id="shiftDetailTitle">Подробности смены</div>
         </div>
       </div>
       <div class="shift-detail-scroll" id="shiftDetailScroll">
