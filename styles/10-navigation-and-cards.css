@@ -614,6 +614,8 @@
     .quick-stat.quick-stat-primary {
       background: var(--card-hi);
       border-color: var(--border-hi);
+      min-height: 100px;
+      padding-bottom: 12px;
     }
 
     .quick-stat.quick-stat-primary .quick-stat-value {
