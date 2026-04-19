@@ -136,7 +136,7 @@
 
     /* ── Shift item card ── */
     .shift-item {
-      background: var(--card);
+      background: linear-gradient(180deg, rgba(255, 255, 255, 0.025), rgba(255, 255, 255, 0.012)), var(--card);
       border: 1px solid var(--border);
       border-radius: var(--r-card);
       padding: 16px;
@@ -147,7 +147,7 @@
       gap: 10px;
       transition: border-color 0.18s ease, transform 0.18s ease, box-shadow 0.18s ease, background 0.18s ease;
       position: relative;
-      box-shadow: none;
+      box-shadow: 0 12px 26px rgba(0, 0, 0, 0.12);
       overflow: hidden;
     }
 
@@ -162,8 +162,9 @@
 
     .shift-item[data-shift-open="1"]:active {
       border-color: var(--border-hi);
-      background: linear-gradient(180deg, rgba(255, 255, 255, 0.036), rgba(255, 255, 255, 0.016)), var(--card);
+      background: linear-gradient(180deg, rgba(255, 255, 255, 0.04), rgba(255, 255, 255, 0.018)), var(--card);
       transform: translateY(1px);
+      box-shadow: 0 8px 18px rgba(0, 0, 0, 0.10);
     }
 
     .shift-item[data-shift-open="1"]:focus-visible {
@@ -706,8 +707,8 @@
       padding: 4px 9px;
       border-radius: var(--r-pill);
       border: 1px solid var(--border);
-      background: var(--card-hi);
-      color: var(--sub);
+      background: rgba(255, 255, 255, 0.04);
+      color: rgba(238, 242, 248, 0.66);
       font-size: 11px;
       line-height: 1;
       white-space: nowrap;
@@ -715,8 +716,8 @@
 
     .shift-note {
       font-size: 12px;
-      color: var(--sub);
-      line-height: 1.35;
+      color: rgba(238, 242, 248, 0.58);
+      line-height: 1.45;
       margin-top: 6px;
     }
 
@@ -1626,7 +1627,8 @@
       gap: 8px;
       flex-wrap: wrap;
       font-size: 11px;
-      color: var(--sub);
+      color: rgba(238, 242, 248, 0.58);
+      line-height: 1.35;
     }
 
     .docs-item-meta > span {
@@ -1685,7 +1687,7 @@
     .badge-default { background: rgba(136, 146, 164, 0.08); color: #8892A4; }
 
     .docs-item-action {
-      color: var(--sub);
+      color: rgba(238, 242, 248, 0.56);
       display: flex;
       align-items: center;
       justify-content: center;
