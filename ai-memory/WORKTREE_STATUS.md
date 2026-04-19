@@ -1,6 +1,6 @@
 # Worktree Status
 
-Generated: 2026-04-19 20:51:21 +0000
+Generated: 2026-04-19 20:56:25 +0000
 
 ## git status -sb
 ```text
@@ -18,18 +18,16 @@ Generated: 2026-04-19 20:51:21 +0000
 
 ## git branch -vv
 ```text
-* main d52306f [origin/main] refactor(ui): reuse shared pro gate for timer and docs
+* main 5d4dbe4 [origin/main] fix(ui): reuse docs pro wrapper for timer gate
 ```
 
 ## HEAD
 ```text
-d52306f refactor(ui): reuse shared pro gate for timer and docs
+5d4dbe4 fix(ui): reuse docs pro wrapper for timer gate
  ai-memory/CHANGELOG.md       |  8 ++++++++
  ai-memory/PROJECT_STATE.md   |  8 ++++----
- ai-memory/WORKTREE_STATUS.md | 21 +++++++++------------
- index.html                   | 19 ++-----------------
- scripts/app.js               | 37 +++++++++++++++++--------------------
- scripts/shift-form.js        | 15 +++------------
- styles/35-timer.css          |  4 ----
- 7 files changed, 43 insertions(+), 69 deletions(-)
+ ai-memory/WORKTREE_STATUS.md | 18 ++++++++++--------
+ index.html                   |  4 ++--
+ styles/35-timer.css          | 19 -------------------
+ 5 files changed, 24 insertions(+), 33 deletions(-)
 ```
