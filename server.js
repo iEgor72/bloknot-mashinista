@@ -517,6 +517,7 @@ function readBody(req) {
 }
 
 const APP_URL = 'https://bloknot-mashinista-bot.ru';
+const WELCOME_PROMO_URL = `${APP_URL}/assets/welcome-promo.jpg`;
 
 function callTelegramApi(token, method, payload) {
   return new Promise((resolve, reject) => {
@@ -547,14 +548,10 @@ function buildWelcomeMessage(chatId, firstName) {
   const greeting = firstName ? `👋 Привет, ${firstName}!` : '👋 Привет!';
   return {
     chat_id: chatId,
-    text:
-      `${greeting} Это Блокнот машиниста — электронный учёт рабочих смен.\n\n` +
-      'Что здесь можно делать:\n' +
-      '📅 вести журнал смен с датами и часами\n' +
-      '⏱ следить за нормой и переработкой\n' +
-      '⛽️ записывать расход топлива\n' +
-      '📚 круглосуточный доступ к важным документам и инструкциям\n\n' +
-      '🔒 Данные привязаны к твоему Telegram-аккаунту и доступны с любого устройства.',
+    photo: WELCOME_PROMO_URL,
+    caption:
+      `${greeting}\n\n` +
+      'Это Блокнот машиниста, приложение для удобного учёта смен, расчёта зарплаты, таймера и быстрого доступа к документам.',
     reply_markup: {
       inline_keyboard: [
         [{ text: '✈️ Открыть в Telegram', web_app: { url: APP_URL } }],
@@ -603,7 +600,24 @@ const server = http.createServer(async (req, res) => {
       const normalizedText = String(text || '').trim();
       if (chatId) {
         if (normalizedText.startsWith('/start') || normalizedText.startsWith('/help')) {
-          callTelegramApi(token, 'sendMessage', buildWelcomeMessage(chatId, firstName)).catch(() => {});
+          callTelegramApi(token, 'sendPhoto', buildWelcomeMessage(chatId, firstName))
+            .then(result => {
+              if (!result || result.ok !== true) {
+                return callTelegramApi(token, 'sendMessage', {
+                  chat_id: chatId,
+                  text: (firstName ? `👋 Привет, ${firstName}!\n\n` : '👋 Привет!\n\n') +
+                    'Открывай Блокнот машиниста по кнопке ниже.',
+                  reply_markup: {
+                    inline_keyboard: [
+                      [{ text: '✈️ Открыть в Telegram', web_app: { url: APP_URL } }],
+                      [{ text: '🌐 Открыть в браузере', url: APP_URL }],
+                    ],
+                  },
+                });
+              }
+              return null;
+            })
+            .catch(() => {});
         } else if (/^\/myid(?:@\w+)?$/i.test(normalizedText)) {
           callTelegramApi(token, 'sendMessage', {
             chat_id: chatId,
