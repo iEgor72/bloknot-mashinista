@@ -222,12 +222,12 @@
 
     /* ── Dashboard card (hours) ── */
     .dashboard-card {
-      background: linear-gradient(180deg, rgba(255, 255, 255, 0.035), rgba(255, 255, 255, 0.01)), var(--card-hi);
+      background: linear-gradient(180deg, rgba(255, 255, 255, 0.04), rgba(255, 255, 255, 0.012)), var(--card-hi);
       border: 1px solid var(--border);
       border-radius: var(--r-card);
-      padding: var(--c-pad);
-      margin-bottom: 16px;
-      box-shadow: 0 18px 36px rgba(0, 0, 0, 0.18);
+      padding: 18px;
+      margin-bottom: 18px;
+      box-shadow: 0 18px 38px rgba(0, 0, 0, 0.2);
       overflow: visible;
     }
 
@@ -239,9 +239,9 @@
     /* Accent risk line above label */
     .dashboard-head {
       display: grid;
-      gap: 6px;
-      margin-bottom: 14px;
-      padding-bottom: 8px;
+      gap: 8px;
+      margin-bottom: 16px;
+      padding-bottom: 10px;
       border-bottom: 1px solid rgba(255, 255, 255, 0.05);
     }
 
@@ -350,7 +350,7 @@
     .progress-marker-month { color: var(--holiday); }
 
     .dashboard-meta-grid {
-      margin-top: 10px;
+      margin-top: 12px;
       display: grid;
       grid-template-columns: minmax(0, 1fr);
       gap: 8px;
@@ -358,12 +358,13 @@
 
     .dashboard-meta-item {
       display: grid;
-      gap: 2px;
+      gap: 3px;
       min-width: 0;
-      padding: 10px 12px;
-      border-radius: 14px;
+      padding: 11px 12px;
+      border-radius: 16px;
       border: 1px solid var(--border);
-      background: rgba(255, 255, 255, 0.03);
+      background: linear-gradient(180deg, rgba(255, 255, 255, 0.035), rgba(255, 255, 255, 0.015)), var(--card);
+      box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.03);
     }
 
     .dashboard-month-income {
@@ -376,22 +377,23 @@
     }
 
     .dashboard-norms {
-      margin-top: 12px;
+      margin-top: 14px;
       display: grid;
       grid-template-columns: repeat(2, minmax(0, 1fr));
-      gap: 8px;
+      gap: 10px;
     }
 
     .dashboard-norm-item {
       display: grid;
-      gap: 2px;
-      padding: 9px 10px;
-      border-radius: 14px;
+      gap: 3px;
+      padding: 10px 10px;
+      border-radius: 16px;
       border: 1px solid var(--border);
-      background: rgba(255, 255, 255, 0.03);
+      background: linear-gradient(180deg, rgba(255, 255, 255, 0.03), rgba(255, 255, 255, 0.015)), var(--card);
       min-width: 0;
       justify-items: center;
       text-align: center;
+      box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.03);
     }
 
     .dashboard-norm-label {
@@ -443,7 +445,7 @@
     }
 
     .dashboard-sub {
-      margin-top: 9px;
+      margin-top: 11px;
       display: flex;
       align-items: center;
       gap: 6px;
@@ -518,13 +520,13 @@
     /* ── Quick stats grid (3 columns) ── */
     .quick-stats-grid {
       display: grid;
-      gap: var(--gap);
+      gap: 12px;
       margin-bottom: 20px;
-      padding: 14px;
+      padding: 16px;
       border-radius: var(--r-card);
-      background: linear-gradient(180deg, rgba(255, 255, 255, 0.025), rgba(255, 255, 255, 0.01)), var(--card);
+      background: linear-gradient(180deg, rgba(255, 255, 255, 0.03), rgba(255, 255, 255, 0.01)), var(--card);
       border: 1px solid var(--border);
-      box-shadow: 0 12px 30px rgba(0, 0, 0, 0.14);
+      box-shadow: 0 14px 32px rgba(0, 0, 0, 0.16);
       overflow: visible;
     }
 
@@ -559,25 +561,30 @@
 
     .quick-stats-row {
       display: grid;
-      grid-template-columns: 1fr 1fr 1fr;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
       align-items: stretch;
+      gap: 10px;
     }
 
     .quick-stat {
       position: relative;
-      padding: 8px 10px 9px;
+      padding: 10px 10px 11px;
       display: flex;
       flex-direction: column;
       align-items: center;
       justify-content: center;
       gap: 5px;
-      min-height: 68px;
+      min-height: 72px;
       min-width: 0;
+      border-radius: 16px;
+      border: 1px solid var(--border);
+      background: linear-gradient(180deg, rgba(255, 255, 255, 0.028), rgba(255, 255, 255, 0.012)), var(--card-hi);
+      box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.02);
     }
 
     .quick-stat + .quick-stat {
-      border-left: 1px solid var(--border);
-      padding-left: 14px;
+      border-left: none;
+      padding-left: 10px;
     }
 
     .quick-stat-value {
@@ -598,6 +605,11 @@
     .quick-stat-value.night   { color: var(--accent); }
     .quick-stat-value.holiday { color: var(--holiday); }
     .quick-stat-value.shifts  { color: var(--text); }
+
+    .quick-stat.quick-stat-primary {
+      background: linear-gradient(180deg, rgba(255, 255, 255, 0.04), rgba(255, 255, 255, 0.014)), var(--card-hi);
+      border-color: var(--border-hi);
+    }
 
     .quick-stat.quick-stat-primary .quick-stat-value {
       font-size: 24px;
@@ -646,7 +658,8 @@
       align-items: center;
       justify-content: space-between;
       gap: 10px;
-      margin-bottom: 12px;
+      margin-bottom: 14px;
+      padding-top: 2px;
     }
 
     .section-link {
@@ -692,11 +705,12 @@
     .average-shift-card {
       display: grid;
       gap: 10px;
-      margin-bottom: 16px;
-      padding: 14px;
+      margin-bottom: 18px;
+      padding: 16px;
       border-radius: var(--r-card);
-      background: var(--card);
+      background: linear-gradient(180deg, rgba(255, 255, 255, 0.03), rgba(255, 255, 255, 0.012)), var(--card);
       border: 1px solid var(--border);
+      box-shadow: 0 14px 30px rgba(0, 0, 0, 0.14);
       overflow: visible;
     }
 
