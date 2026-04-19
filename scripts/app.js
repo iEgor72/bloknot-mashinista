@@ -1461,29 +1461,23 @@
       return stopwatchProUnlockedThisSession !== true;
     }
 
-    function renderSharedProGate() {
-      var gate = document.getElementById('sharedProGate');
-      var unlockBtn = document.getElementById('btnUnlockSharedPro');
-      var showGate = (isStopwatchProLocked() && activeTab === 'stopwatch') || (isDocsProLocked() && activeTab === 'instructions');
-      var isLocked = isStopwatchProLocked() || isDocsProLocked();
+    function renderStopwatchProGate() {
+      var wrap = document.getElementById('timerProWrap');
+      var gate = document.getElementById('timerProGate');
+      var unlockBtn = document.getElementById('btnUnlockTimerPro');
+      var locked = isStopwatchProLocked();
+      var showGate = locked && activeTab === 'stopwatch';
 
+      if (wrap) {
+        wrap.classList.toggle('is-locked', locked);
+      }
       if (gate) {
         gate.classList.toggle('hidden', !showGate);
         gate.setAttribute('aria-hidden', showGate ? 'false' : 'true');
       }
       if (unlockBtn) {
-        unlockBtn.disabled = !isLocked;
+        unlockBtn.disabled = !locked;
       }
-    }
-
-    function renderStopwatchProGate() {
-      var wrap = document.getElementById('timerProWrap');
-      var locked = isStopwatchProLocked();
-
-      if (wrap) {
-        wrap.classList.toggle('is-locked', locked);
-      }
-      renderSharedProGate();
     }
 
     function unlockStopwatchProForSession() {
@@ -1497,12 +1491,21 @@
 
     function renderDocsProGate() {
       var wrap = document.getElementById('docsProWrap');
+      var gate = document.getElementById('docsProGate');
+      var unlockBtn = document.getElementById('btnUnlockDocsPro');
       var locked = isDocsProLocked();
+      var showGate = locked && activeTab === 'instructions';
 
       if (wrap) {
         wrap.classList.toggle('is-locked', locked);
       }
-      renderSharedProGate();
+      if (gate) {
+        gate.classList.toggle('hidden', !showGate);
+        gate.setAttribute('aria-hidden', showGate ? 'false' : 'true');
+      }
+      if (unlockBtn) {
+        unlockBtn.disabled = !locked;
+      }
     }
 
     function unlockDocsProForSession() {

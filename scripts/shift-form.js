@@ -745,11 +745,20 @@ if (action === 'scroll-node') {
       });
     }
 
-    var unlockSharedProBtn = document.getElementById('btnUnlockSharedPro');
-    if (unlockSharedProBtn) {
-      unlockSharedProBtn.addEventListener('click', function() {
+    var unlockDocsProBtn = document.getElementById('btnUnlockDocsPro');
+    if (unlockDocsProBtn) {
+      unlockDocsProBtn.addEventListener('click', function() {
         triggerHapticActionMedium();
         unlockDocsProForSession();
+        showSaveToast('PRO открыт');
+      });
+    }
+
+    var unlockTimerProBtn = document.getElementById('btnUnlockTimerPro');
+    if (unlockTimerProBtn) {
+      unlockTimerProBtn.addEventListener('click', function() {
+        triggerHapticActionMedium();
+        unlockStopwatchProForSession();
         showSaveToast('PRO открыт');
       });
     }
