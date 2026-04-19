@@ -569,12 +569,11 @@
 
     .quick-stat {
       position: relative;
-      padding: 12px 10px;
+      padding: 10px 10px 8px;
       display: grid;
-      align-content: center;
+      grid-template-rows: 1fr auto;
       justify-items: center;
       text-align: center;
-      row-gap: 8px;
       min-height: 72px;
       min-width: 0;
       border-radius: 16px;
@@ -597,6 +596,7 @@
       min-width: 0;
       width: 100%;
       max-width: 100%;
+      align-self: center;
       text-align: center;
       white-space: nowrap;
       overflow: hidden;
@@ -634,6 +634,7 @@
       text-align: center;
       line-height: 1.2;
       min-height: 2.4em;
+      margin-top: 2px;
       overflow: visible;
     }
 
