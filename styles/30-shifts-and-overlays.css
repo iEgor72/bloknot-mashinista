@@ -1176,9 +1176,7 @@
       overflow: hidden;
       border-radius: 22px 22px 0 0;
       border: 1px solid var(--border);
-      background:
-        linear-gradient(180deg, rgba(56, 189, 248, 0.04) 0%, rgba(56, 189, 248, 0) 20%),
-        var(--card);
+      background: var(--card);
       box-shadow: 0 22px 56px rgba(0, 0, 0, 0.38);
       transform: translateY(100%);
       transition: transform 0.28s cubic-bezier(0.25, 1, 0.35, 1);
@@ -1196,6 +1194,7 @@
       padding: 12px 0 8px;
       flex-shrink: 0;
       pointer-events: none;
+      background: var(--card);
     }
 
     .docs-viewer-handle {
