@@ -689,11 +689,11 @@
             if (dashboardCardEl) dashboardCardEl.classList.add('state-ok');
           }
         } else if (diffMin > 0) {
-          diffEl.textContent = 'Сверх нормы: ' + fmtMin(diffAbs);
+          diffEl.textContent = 'Переработка ' + fmtMin(diffAbs);
           diffEl.classList.add('overtime');
           if (dashboardCardEl) dashboardCardEl.classList.add('state-overtime');
         } else {
-          diffEl.textContent = 'Осталось до нормы: ' + fmtMin(diffAbs);
+          diffEl.textContent = 'Недоработка ' + fmtMin(diffAbs);
           diffEl.classList.add('remaining');
           if (dashboardCardEl) dashboardCardEl.classList.add('state-remaining');
         }
