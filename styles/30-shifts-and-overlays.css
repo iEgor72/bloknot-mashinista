@@ -9,6 +9,7 @@
       overflow: visible;
     }
 
+    #homeShiftsList,
     #shiftsList {
       display: grid;
       gap: 12px;
