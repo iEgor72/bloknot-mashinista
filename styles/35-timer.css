@@ -5,6 +5,34 @@
   padding-top: 10px;
 }
 
+.edit-shift-sheet {
+  display: grid;
+  gap: 0;
+  padding-top: 10px;
+}
+
+.edit-shift-handle-wrap {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 2px 0 12px;
+  margin-bottom: 2px;
+  pointer-events: none;
+}
+
+.edit-shift-handle {
+  display: block;
+  width: 38px;
+  height: 4px;
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.14);
+  box-shadow: 0 1px 0 rgba(255, 255, 255, 0.05);
+}
+
+.edit-shift-mount > .form-section {
+  margin-bottom: 0;
+}
+
 .shifts-sheet-handle-wrap {
   display: flex;
   justify-content: center;

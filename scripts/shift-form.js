@@ -24,20 +24,53 @@
       return null;
     }
 
+    var editFormHomeParent = null;
+    var editFormHomeNextSibling = null;
+
+    function isOverlayOpen(id) {
+      var overlay = document.getElementById(id);
+      return !!(overlay && (overlay.classList.contains('is-open') || overlay.classList.contains('visible')));
+    }
+
+    function mountEditFormIntoOverlay() {
+      var formSection = document.getElementById('shiftFormSection');
+      var mount = document.getElementById('editShiftMount');
+      if (!formSection || !mount) return;
+      if (!editFormHomeParent) {
+        editFormHomeParent = formSection.parentNode;
+        editFormHomeNextSibling = formSection.nextSibling;
+      }
+      if (formSection.parentNode !== mount) {
+        mount.appendChild(formSection);
+      }
+    }
+
+    function restoreEditFormToHome() {
+      var formSection = document.getElementById('shiftFormSection');
+      if (!formSection || !editFormHomeParent) return;
+      if (editFormHomeNextSibling && editFormHomeNextSibling.parentNode === editFormHomeParent) {
+        editFormHomeParent.insertBefore(formSection, editFormHomeNextSibling);
+      } else {
+        editFormHomeParent.appendChild(formSection);
+      }
+    }
+
     function enterEditMode(shift, options) {
       if (!shift) return;
       var opts = options || {};
-      var returnTab = opts.returnTab || activeTab || 'shifts';
-      if (returnTab === 'add') returnTab = 'shifts';
+      var returnTab = opts.returnTab || (isOverlayOpen('overlayShifts') ? 'shifts' : (activeTab || 'home'));
+      if (returnTab === 'add') returnTab = 'home';
       editReturnTab = returnTab;
 
       editingShiftId = shift.id;
       clearRecentAddHighlight();
-      setActiveTab('add');
+      if (isOverlayOpen('overlayShifts')) {
+        closeOverlay('overlayShifts');
+      }
+      mountEditFormIntoOverlay();
       setFormMode('edit');
       document.getElementById('formTitle').textContent = 'Редактировать смену';
       document.getElementById('editBadge').classList.add('visible');
-      document.getElementById('btnBackFromEdit').classList.remove('hidden');
       document.getElementById('inputStartDate').value = shift.start_msk.substring(0, 10);
       document.getElementById('inputStartTime').value = shift.start_msk.substring(11, 16);
       document.getElementById('inputEndDate').value = shift.end_msk.substring(0, 10);
@@ -52,15 +85,17 @@
       document.getElementById('btnDeleteEdit').classList.remove('hidden');
       clearErrors();
       renderDraftShiftSummary();
+      openOverlay('overlayEditShift');
       render();
     }
 
     function exitEditMode(nextTab) {
       editingShiftId = null;
+      closeOverlay('overlayEditShift');
+      restoreEditFormToHome();
       setFormMode('add');
       document.getElementById('formTitle').textContent = 'Новая смена';
       document.getElementById('editBadge').classList.remove('visible');
-      document.getElementById('btnBackFromEdit').classList.add('hidden');
       document.getElementById('btnAdd').textContent = 'Сохранить смену';
       document.getElementById('btnCancelEdit').classList.add('hidden');
       document.getElementById('btnDeleteEdit').classList.add('hidden');
@@ -72,9 +107,13 @@
       clearOptionalShiftData();
       setDefaultShiftTimeInputs();
       renderDraftShiftSummary();
-      var targetTab = nextTab || editReturnTab || 'shifts';
+      var targetTab = nextTab || editReturnTab || 'home';
       editReturnTab = 'shifts';
-      setActiveTab(targetTab);
+      if (targetTab === 'shifts') {
+        openOverlay('overlayShifts');
+      } else {
+        setActiveTab(targetTab);
+      }
       render();
     }
 
@@ -87,7 +126,7 @@
       var shift = findShiftById(id);
       if (!shift) return;
       triggerHapticTapLight();
-      enterEditMode(shift, { returnTab: activeTab });
+      enterEditMode(shift, { returnTab: isOverlayOpen('overlayShifts') ? 'shifts' : activeTab });
     }
 
     document.getElementById('btnConfirmDelete').addEventListener('click', function() {
@@ -816,11 +855,16 @@ if (action === 'scroll-node') {
       pendingDeleteId = editingShiftId;
       openOverlay('overlayConfirm');
     });
-    document.getElementById('btnBackFromEdit').addEventListener('click', function() {
-      triggerHapticSelection();
-      exitEditMode();
-      showActionToast('canceled');
-    });
+    var editShiftOverlay = document.getElementById('overlayEditShift');
+    if (editShiftOverlay) {
+      editShiftOverlay.addEventListener('click', function(e) {
+        if (e.target === e.currentTarget && editingShiftId) {
+          triggerHapticSelection();
+          exitEditMode();
+          showActionToast('canceled');
+        }
+      });
+    }
 
     document.getElementById('btnCloseAddScreen').addEventListener('click', function() {
       closeOverlay('overlayAddScreen');

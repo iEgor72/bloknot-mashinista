@@ -279,11 +279,6 @@
         <div class="form-section is-adding" id="shiftFormSection">
           <div class="form-title-row">
             <div class="form-title-leading">
-              <button class="form-back-btn hidden" id="btnBackFromEdit" type="button" aria-label="Назад к истории смен">
-                <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false">
-                  <path fill="currentColor" d="M14.7 5.3a1 1 0 0 1 0 1.4L10.41 11H20a1 1 0 1 1 0 2h-9.59l4.3 4.3a1 1 0 1 1-1.42 1.4l-6-6a1 1 0 0 1 0-1.4l6-6a1 1 0 0 1 1.41 0Z"></path>
-                </svg>
-              </button>
               <div class="form-title" id="formTitle">Новая смена</div>
             </div>
             <div class="edit-badge" id="editBadge">Редактирование</div>
@@ -980,6 +975,16 @@
       <div class="salary-settings-actions">
         <button class="btn-sheet-save" id="btnSaveSalarySettings" type="button">Сохранить</button>
       </div>
+    </div>
+  </div>
+
+  <!-- Edit Shift Bottom Sheet -->
+  <div class="overlay" id="overlayEditShift">
+    <div class="bottom-sheet edit-shift-sheet">
+      <div class="edit-shift-handle-wrap" aria-hidden="true">
+        <span class="edit-shift-handle"></span>
+      </div>
+      <div class="edit-shift-mount" id="editShiftMount"></div>
     </div>
   </div>
 
