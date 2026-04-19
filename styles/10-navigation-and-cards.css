@@ -1549,12 +1549,12 @@
 
     #overlayAddScreen {
       z-index: calc(var(--layer-scrim) + 10);
-      align-items: center;
+      align-items: flex-end;
       justify-content: center;
       padding:
         max(14px, var(--safe-top))
         12px
-        max(14px, var(--safe-bottom));
+        0;
       background: rgba(3, 7, 16, 0.68);
       backdrop-filter: blur(6px);
       -webkit-backdrop-filter: blur(6px);
@@ -1563,26 +1563,26 @@
     }
 
     #overlayAddScreen .install-guide-sheet {
-      width: min(440px, 100%);
-      max-width: 440px;
-      margin: 0;
-      padding: 18px 16px 16px;
-      max-height: min(92dvh, calc(100dvh - 24px));
-      border-radius: 20px;
-      border: 1px solid var(--border-hi);
+      width: min(480px, 100%);
+      max-width: 480px;
+      margin: 0 auto;
+      padding: 10px 20px calc(24px + var(--safe-bottom));
+      max-height: 90dvh;
+      border-radius: var(--r-card) var(--r-card) 0 0;
+      border: 1px solid var(--border);
       background:
-        linear-gradient(180deg, rgba(56, 189, 248, 0.06) 0%, rgba(56, 189, 248, 0) 24%),
+        linear-gradient(180deg, rgba(56, 189, 248, 0.05) 0%, rgba(56, 189, 248, 0) 22%),
         var(--card);
-      box-shadow: 0 26px 62px rgba(0, 0, 0, 0.45);
+      box-shadow: 0 22px 56px rgba(0, 0, 0, 0.38);
       overflow-y: auto;
       touch-action: pan-y;
-      transform: translateY(12px) scale(0.985);
-      transition: transform 0.24s cubic-bezier(0.25, 1, 0.35, 1);
+      transform: translateY(100%);
+      transition: transform 0.28s cubic-bezier(0.25, 1, 0.35, 1);
     }
 
     #overlayAddScreen.is-open .install-guide-sheet,
     #overlayAddScreen.visible .install-guide-sheet {
-      transform: translateY(0) scale(1);
+      transform: translateY(0);
     }
 
     .install-guide-sheet > * {
@@ -1613,6 +1613,24 @@
     .overlay.is-open .install-guide-sheet > *:nth-child(5),
     .overlay.visible .install-guide-sheet > *:nth-child(5) { transition-delay: 80ms; }
 
+    .install-guide-handle-wrap {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      padding: 2px 0 12px;
+      margin-bottom: 2px;
+      pointer-events: none;
+    }
+
+    .install-guide-handle {
+      display: block;
+      width: 38px;
+      height: 4px;
+      border-radius: 999px;
+      background: rgba(255, 255, 255, 0.14);
+      box-shadow: 0 1px 0 rgba(255, 255, 255, 0.05);
+    }
+
     .install-guide-header {
       display: grid;
       gap: 8px;
@@ -1636,9 +1654,10 @@
 
     .install-guide-sheet .sheet-title {
       margin-bottom: 0;
-      font-size: 22px;
-      line-height: 1.08;
+      font-size: 20px;
+      line-height: 1.12;
       letter-spacing: -0.02em;
+      text-align: center;
     }
 
     .install-guide-subtitle {
@@ -1840,13 +1859,13 @@
       grid-template-columns: minmax(0, 1fr);
       justify-items: center;
       width: 100%;
-      padding-top: 2px;
+      padding-top: 6px;
     }
 
     .install-guide-close-btn {
       min-width: 0;
       width: 100%;
-      height: 38px;
+      min-height: 44px;
       background: rgba(255, 255, 255, 0.03);
       color: var(--sub);
     }
@@ -1863,13 +1882,14 @@
       }
 
       #overlayAddScreen {
-        padding: max(10px, var(--safe-top)) 10px max(10px, var(--safe-bottom));
+        padding: max(10px, var(--safe-top)) 10px 0;
       }
 
       #overlayAddScreen .install-guide-sheet {
         width: 100%;
-        max-height: min(94dvh, calc(100dvh - 20px));
-        border-radius: 18px;
+        max-height: 92dvh;
+        border-radius: 18px 18px 0 0;
+        padding: 10px 16px calc(22px + var(--safe-bottom));
       }
 
       .install-guide-sheet .sheet-title {
