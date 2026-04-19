@@ -1060,7 +1060,7 @@
       top: -1px;
       z-index: 2;
       padding-bottom: 8px;
-      background: linear-gradient(180deg, rgba(255, 255, 255, 0.025), rgba(255, 255, 255, 0.012)), var(--card);
+      background: transparent;
     }
 
     .salary-settings-header .sheet-title {
