@@ -16,10 +16,9 @@
 
 ## VPS Runtime (72.56.109.219)
 
-- SSH host: `root@72.56.109.219`.
-- SSH key path: `%USERPROFILE%/.ssh/timeweb_deploy_ed25519`.
+- This OpenClaw session is already running on the VPS.
+- Do not ask the user for an SSH key or SSH back into the same machine for normal project work from this environment.
 - Private key contents: never print/read into chat.
-- Codex has access to the VPS from this machine through the listed key.
 - On the server, read-only audit found:
   - `/opt/bloknot-mashinista/.git`
   - `/opt/studio-bot/.git`
@@ -55,8 +54,8 @@
 4. Do not invent a `systemctl restart <service>` service name. The systemctl template is blocked until a real project-specific service is found safely.
 5. Reference deploy command for the actual PM2 runtime only; do not run without explicit user request:
 
-```powershell
-ssh -i $env:USERPROFILE\.ssh\timeweb_deploy_ed25519 -o IdentitiesOnly=yes -o StrictHostKeyChecking=accept-new -o BatchMode=yes root@72.56.109.219 "cd /opt/bloknot-mashinista && git pull --ff-only origin main && pm2 reload bloknot-mashinista --update-env && pm2 status bloknot-mashinista && git rev-parse --short HEAD"
+```bash
+cd /opt/bloknot-mashinista && git pull --ff-only origin main && pm2 reload bloknot-mashinista --update-env && pm2 status bloknot-mashinista && git rev-parse --short HEAD
 ```
 
 ## Constraints

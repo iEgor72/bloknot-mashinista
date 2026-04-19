@@ -28,25 +28,24 @@ Generated: 2026-04-17 23:20 +10:00
 - If tests are skipped or unavailable, record that explicitly in the final answer and memory when material.
 
 ## VPS / Deploy Access Method
-- SSH host: `root@72.56.109.219`
-- SSH key path: `%USERPROFILE%/.ssh/timeweb_deploy_ed25519`
-- Private key contents: never print/read into chat.
-- Codex can access the VPS from this machine with the listed key.
+- This OpenClaw session is already on the project server.
 - Production repo path: `/opt/bloknot-mashinista`
-- Production branch/upstream: `main...origin/main` as verified by read-only SSH.
+- Production branch/upstream: `main...origin/main`.
 - Production runtime: PM2 process `bloknot-mashinista`; PM2 is supervised by `pm2-root.service`.
 - Project-specific systemd service: not found. Do not invent one and do not run a `systemctl restart <project>` command for this app unless a real service is later found.
-- Before deploy, verify local branch/upstream, production branch/upstream, production worktree status, and that the intended commit is in the production branch.
-- Current production worktree has untracked `package-lock.json`; review before any deploy affecting dependencies or lockfiles.
+- Before deploy, verify local branch/upstream, production worktree status, and that the intended commit is in the current branch.
+- Deploy/restart from this environment should be done locally, not by SSHing back into the same VPS.
+- Do not ask the user for an SSH key for this project from this environment unless local access actually fails.
 - Reference PM2 deploy command only; do not run without explicit user request:
 
-```powershell
-ssh -i $env:USERPROFILE\.ssh\timeweb_deploy_ed25519 -o IdentitiesOnly=yes -o StrictHostKeyChecking=accept-new -o BatchMode=yes root@72.56.109.219 "cd /opt/bloknot-mashinista && git pull --ff-only origin main && pm2 reload bloknot-mashinista --update-env && pm2 status bloknot-mashinista && git rev-parse --short HEAD"
+```bash
+cd /opt/bloknot-mashinista && git pull --ff-only origin main && pm2 reload bloknot-mashinista --update-env && pm2 status bloknot-mashinista && git rev-parse --short HEAD
 ```
 
 ## Existing Project Methods
 - Telegram WebApp auth uses `initData` verification.
 - Browser auth uses Telegram Login Widget callback through `/api/auth?mode=telegram-login`.
+- Active production backend flow runs through VPS `server.js`; do not assume Cloudflare handlers are live in production just because `functions/api/*` exists.
 - Shift sync uses authenticated `/api/shifts` calls with bearer token/session cookie.
 - Offline handling uses service worker shell caching plus frontend pending mutation queue.
 - Instructions search uses Russian stemming and fuzzy matching.
