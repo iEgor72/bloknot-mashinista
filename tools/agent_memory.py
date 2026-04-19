@@ -419,12 +419,13 @@ def install_post_commit_hook() -> tuple[bool, str]:
     hook_path = hooks_dir / "post-commit"
     marker_start = "# >>> agent-memory >>>"
     marker_end = "# <<< agent-memory <<<"
+    repo_root_var = "$" + "REPO_ROOT"
     snippet = "\n".join(
         [
             marker_start,
             'REPO_ROOT="$(git rev-parse --show-toplevel 2>/dev/null)"',
-            'if [ -n "$REPO_ROOT" ]; then',
-            '  python "$REPO_ROOT/tools/agent_memory.py" post-commit >/dev/null 2>&1 || true',
+            f'if [ -n "{repo_root_var}" ]; then',
+            f'  python "{repo_root_var}/tools/agent_memory.py" post-commit >/dev/null 2>&1 || true',
             "fi",
             marker_end,
             "",
