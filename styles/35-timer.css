@@ -195,49 +195,49 @@
 .timer-main-btn::before {
   content: "";
   position: absolute;
-  inset: 0;
+  inset: 1px;
+  border-radius: 15px;
   background:
-    radial-gradient(120% 90% at 50% 100%, rgba(244, 63, 94, 0.22), rgba(244, 63, 94, 0.08) 38%, rgba(244, 63, 94, 0) 72%),
-    linear-gradient(180deg, rgba(255, 255, 255, 0.03), rgba(255, 255, 255, 0));
-  opacity: calc(var(--timer-hold-progress) * 0.82);
+    radial-gradient(100% 70% at 50% 100%, rgba(244, 63, 94, 0.16), rgba(244, 63, 94, 0.05) 42%, rgba(244, 63, 94, 0) 72%),
+    linear-gradient(180deg, rgba(255, 255, 255, 0.025), rgba(255, 255, 255, 0));
+  opacity: calc(var(--timer-hold-progress) * 0.55);
   z-index: 0;
-  transition: opacity 0.08s linear;
+  transition: opacity 0.1s linear;
 }
 
 .timer-main-btn::after {
   content: "";
   position: absolute;
-  left: 12px;
-  right: 12px;
+  left: 14px;
+  right: 14px;
   bottom: 10px;
-  height: 4px;
+  height: 3px;
   border-radius: 999px;
   background:
-    linear-gradient(90deg, rgba(255, 214, 224, 0.98), rgba(255, 146, 174, 0.98)) 0 0 / var(--timer-hold-fill) 100% no-repeat,
-    rgba(255, 255, 255, 0.12);
-  box-shadow:
-    inset 0 1px 0 rgba(255, 255, 255, 0.12),
-    0 0 12px rgba(244, 63, 94, 0.14);
+    linear-gradient(90deg, rgba(255, 214, 224, 0.96), rgba(255, 146, 174, 0.96)) 0 0 / var(--timer-hold-fill) 100% no-repeat,
+    rgba(255, 255, 255, 0.08);
+  box-shadow: 0 0 10px rgba(244, 63, 94, 0.10);
   pointer-events: none;
   z-index: 0;
-  opacity: calc(0.22 + (var(--timer-hold-progress) * 0.78));
+  opacity: calc(var(--timer-hold-progress) * 1);
+  transition: opacity 0.1s linear;
 }
 
 .timer-main-btn.is-holding {
-  border-color: rgba(244, 63, 94, 0.28);
-  box-shadow: 0 10px 22px rgba(56, 189, 248, 0.16), 0 8px 18px rgba(244, 63, 94, 0.10), inset 0 1px 0 rgba(255, 255, 255, 0.08);
+  border-color: rgba(255, 255, 255, 0.12);
+  box-shadow: 0 10px 22px rgba(56, 189, 248, 0.14), 0 6px 14px rgba(244, 63, 94, 0.06), inset 0 1px 0 rgba(255, 255, 255, 0.10);
 }
 
 .timer-main-btn.is-holding .timer-main-btn-label {
-  color: rgba(255, 245, 247, 0.98);
+  color: rgba(255, 248, 249, 0.98);
 }
 
 .timer-main-btn.is-holding .timer-main-btn-hint {
-  color: rgba(255, 231, 236, 0.84);
+  color: rgba(255, 236, 240, 0.78);
 }
 
 .timer-main-btn.is-holding:active {
-  box-shadow: 0 8px 18px rgba(56, 189, 248, 0.12), 0 6px 14px rgba(244, 63, 94, 0.08), inset 0 1px 0 rgba(255, 255, 255, 0.06);
+  box-shadow: 0 8px 18px rgba(56, 189, 248, 0.10), 0 4px 10px rgba(244, 63, 94, 0.05), inset 0 1px 0 rgba(255, 255, 255, 0.08);
 }
 
 .timer-main-btn > * {
