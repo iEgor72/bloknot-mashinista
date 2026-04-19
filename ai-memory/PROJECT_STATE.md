@@ -1,14 +1,14 @@
 # Project State
 
 <!-- AUTO_STATUS:START -->
-Generated: 2026-04-19 21:05:31 +0000
+Generated: 2026-04-19 21:07:05 +0000
 
 ## Repository Snapshot
 - Local repo path: `/opt/bloknot-mashinista`
 - Project memory path: `/opt/bloknot-mashinista/ai-memory`
 - Branch: `main`
-- HEAD: `663d48f`
-- Last commit: `663d48f fix(ui): flatten locked content behind shared pro gate`
+- HEAD: `a63c814`
+- Last commit: `a63c814 fix(ui): hide locked content behind shared pro gate`
 
 ## Git Remote
 ```text
@@ -18,7 +18,7 @@ origin	https://github.com/iEgor72/bloknot-mashinista.git (push)
 
 ## Branch Tracking
 ```text
-* main 663d48f [origin/main] fix(ui): flatten locked content behind shared pro gate
+* main a63c814 [origin/main] fix(ui): hide locked content behind shared pro gate
 ```
 
 ## Worktree
