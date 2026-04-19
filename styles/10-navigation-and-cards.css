@@ -1473,17 +1473,7 @@
     .tab-panel[data-tab="shifts"] {
       position: relative;
       padding-top: 6px;
-    }
-
-    .tab-panel[data-tab="shifts"]::before {
-      content: '';
-      display: block;
-      width: 38px;
-      height: 4px;
-      margin: 0 auto 12px;
-      border-radius: 999px;
-      background: rgba(255, 255, 255, 0.14);
-      box-shadow: 0 1px 0 rgba(255, 255, 255, 0.05);
+      padding-bottom: calc(8px + var(--safe-bottom));
     }
 
     .tab-panel[data-tab="shifts"].tab-enter-sheet-up {

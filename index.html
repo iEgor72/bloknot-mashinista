@@ -275,14 +275,9 @@
 
       <!-- Shifts Tab -->
       <section class="tab-panel" data-tab="shifts">
-        <div class="shifts-back-row">
-          <button class="salary-settings-back-btn" id="btnBackFromShifts" type="button" aria-label="Вернуться на главную">
-            <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false">
-              <path fill="currentColor" d="M14.7 5.3a1 1 0 0 1 0 1.4L10.41 11H20a1 1 0 1 1 0 2h-9.59l4.3 4.3a1 1 0 1 1-1.42 1.4l-6-6a1 1 0 0 1 0-1.4l6-6a1 1 0 0 1 1.41 0Z"></path>
-            </svg>
-          </button>
-          <span class="shifts-back-label">На главную</span>
-        </div>
+        <button class="shifts-sheet-dismiss" id="btnCloseShiftsSheet" type="button" aria-label="Закрыть журнал смен">
+          <span class="shifts-sheet-handle" aria-hidden="true"></span>
+        </button>
         <div class="month-nav shifts-month-nav">
           <div class="month-nav-top">
             <button class="month-btn" id="btnPrevShiftsMonth" type="button" aria-label="Предыдущий месяц">‹</button>
@@ -307,6 +302,9 @@
             </div>
           </div>
           <div id="shiftsList"></div>
+        </div>
+        <div class="shifts-sheet-actions">
+          <button class="btn-sheet-save shifts-sheet-close-btn" id="btnCloseShiftsBottom" type="button">Готово</button>
         </div>
       </section>
 
@@ -895,11 +893,7 @@
   <div class="overlay" id="overlaySalarySettings">
     <div class="bottom-sheet salary-settings-sheet">
       <div class="salary-settings-header">
-        <button class="salary-settings-back-btn" id="btnBackSalarySettings" type="button" aria-label="Назад">
-          <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false">
-            <path fill="currentColor" d="M14.7 5.3a1 1 0 0 1 0 1.4L10.41 11H20a1 1 0 1 1 0 2h-9.59l4.3 4.3a1 1 0 1 1-1.42 1.4l-6-6a1 1 0 0 1 0-1.4l6-6a1 1 0 0 1 1.41 0Z"></path>
-          </svg>
-        </button>
+        <span class="salary-settings-header-spacer" aria-hidden="true"></span>
         <div class="sheet-title">Параметры расчёта</div>
         <span class="salary-settings-header-spacer" aria-hidden="true"></span>
       </div>

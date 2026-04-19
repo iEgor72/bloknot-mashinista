@@ -666,13 +666,6 @@
         openOverlay('overlaySalarySettings');
       });
     }
-    var backSalarySettingsBtn = document.getElementById('btnBackSalarySettings');
-    if (backSalarySettingsBtn) {
-      backSalarySettingsBtn.addEventListener('click', function() {
-        triggerHapticSelection();
-        closeOverlay('overlaySalarySettings');
-      });
-    }
     var saveSalarySettingsBtn = document.getElementById('btnSaveSalarySettings');
     if (saveSalarySettingsBtn) {
       saveSalarySettingsBtn.addEventListener('click', function() {
@@ -807,10 +800,18 @@ if (action === 'scroll-node') {
       });
     }
 
-    var backFromShiftsBtn = document.getElementById('btnBackFromShifts');
-    if (backFromShiftsBtn) {
-      backFromShiftsBtn.addEventListener('click', function() {
+    var closeShiftsSheetBtn = document.getElementById('btnCloseShiftsSheet');
+    if (closeShiftsSheetBtn) {
+      closeShiftsSheetBtn.addEventListener('click', function() {
         triggerHapticSelection();
+        setActiveTab('home');
+      });
+    }
+
+    var closeShiftsBottomBtn = document.getElementById('btnCloseShiftsBottom');
+    if (closeShiftsBottomBtn) {
+      closeShiftsBottomBtn.addEventListener('click', function() {
+        triggerHapticSuccess();
         setActiveTab('home');
       });
     }
