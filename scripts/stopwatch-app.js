@@ -180,7 +180,7 @@
       timerMainBtnLabel.textContent = state.isRunning ? 'Пауза' : (state.elapsedSeconds > 0 ? 'Продолжить' : 'Старт');
     }
     if (timerMainBtnHint) {
-      timerMainBtnHint.textContent = state.elapsedSeconds > 0 ? 'Удерживай, чтобы сбросить таймер' : 'Нажми для старта, удерживай для сброса';
+      timerMainBtnHint.textContent = state.elapsedSeconds > 0 ? 'Удерживай для сброса' : 'Нажми, чтобы начать';
     }
     if (timerStageMetaEl) {
       timerStageMetaEl.textContent = state.nextStage ? state.nextStage.time : 'ГОТОВО';
