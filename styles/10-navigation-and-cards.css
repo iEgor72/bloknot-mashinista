@@ -1269,6 +1269,10 @@
       box-shadow: 0 8px 18px rgba(0, 0, 0, 0.18), inset 0 1px 0 rgba(255, 255, 255, 0.05);
     }
 
+    .docs-tab-btn-wide {
+      grid-column: 1 / -1;
+    }
+
     @media (min-width: 520px) {
       .docs-month-tabs {
         grid-template-columns: repeat(3, minmax(0, 1fr));
