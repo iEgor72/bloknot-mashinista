@@ -618,8 +618,8 @@
       background: var(--card);
       border: 1px solid var(--border);
       border-radius: var(--r-card);
-      padding: 18px;
-      margin-top: 18px;
+      padding: var(--c-pad);
+      margin-top: 16px;
       margin-bottom: 16px;
     }
 
@@ -629,7 +629,7 @@
       font-size: 16px;
       font-weight: 700;
       color: var(--text);
-      margin-bottom: 8px;
+      margin-bottom: 6px;
     }
 
     .install-prompt-text {
@@ -656,7 +656,6 @@
     .install-dismiss-btn {
       padding: 0;
       justify-self: center;
-      opacity: 0.9;
     }
 
     /* ── Secondary / link buttons ── */
