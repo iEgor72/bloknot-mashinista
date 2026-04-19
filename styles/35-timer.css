@@ -185,10 +185,11 @@
   -webkit-user-select: none;
   -webkit-touch-callout: none;
   touch-action: manipulation;
-  border: 1px solid rgba(255, 255, 255, 0.08);
-  background: var(--control-primary-bg);
+  border: 1px solid rgba(113, 212, 255, 0.28);
+  background:
+    linear-gradient(180deg, rgba(100, 214, 255, 0.98), rgba(56, 189, 248, 0.94));
   color: var(--control-primary-text);
-  box-shadow: 0 8px 22px var(--color-primary-glow), inset 0 1px 0 rgba(255, 255, 255, 0.12);
+  box-shadow: 0 10px 24px rgba(56, 189, 248, 0.22), inset 0 1px 0 rgba(255, 255, 255, 0.2);
   transition: box-shadow 0.18s, transform 0.14s, filter 0.14s, border-color 0.14s, color 0.14s, background 0.14s;
 }
 
@@ -198,9 +199,9 @@
   inset: 1px;
   border-radius: 15px;
   background:
-    radial-gradient(100% 70% at 50% 100%, rgba(244, 63, 94, 0.16), rgba(244, 63, 94, 0.05) 42%, rgba(244, 63, 94, 0) 72%),
-    linear-gradient(180deg, rgba(255, 255, 255, 0.025), rgba(255, 255, 255, 0));
-  opacity: calc(var(--timer-hold-progress) * 0.55);
+    linear-gradient(180deg, rgba(255, 255, 255, 0.22), rgba(255, 255, 255, 0.06) 34%, rgba(255, 255, 255, 0) 78%),
+    radial-gradient(120% 90% at 50% 100%, rgba(14, 165, 233, 0.22), rgba(14, 165, 233, 0.08) 46%, rgba(14, 165, 233, 0) 76%);
+  opacity: calc(0.72 + (var(--timer-hold-progress) * 0.22));
   z-index: 0;
   transition: opacity 0.1s linear;
 }
@@ -214,30 +215,30 @@
   height: 3px;
   border-radius: 999px;
   background:
-    linear-gradient(90deg, rgba(255, 214, 224, 0.96), rgba(255, 146, 174, 0.96)) 0 0 / var(--timer-hold-fill) 100% no-repeat,
-    rgba(255, 255, 255, 0.08);
-  box-shadow: 0 0 10px rgba(244, 63, 94, 0.10);
+    linear-gradient(90deg, rgba(10, 24, 38, 0.94), rgba(3, 105, 161, 0.98)) 0 0 / var(--timer-hold-fill) 100% no-repeat,
+    rgba(10, 24, 38, 0.14);
+  box-shadow: 0 0 10px rgba(56, 189, 248, 0.18);
   pointer-events: none;
   z-index: 0;
-  opacity: calc(var(--timer-hold-progress) * 1);
+  opacity: calc(0.22 + (var(--timer-hold-progress) * 0.78));
   transition: opacity 0.1s linear;
 }
 
 .timer-main-btn.is-holding {
-  border-color: rgba(255, 255, 255, 0.12);
-  box-shadow: 0 10px 22px rgba(56, 189, 248, 0.14), 0 6px 14px rgba(244, 63, 94, 0.06), inset 0 1px 0 rgba(255, 255, 255, 0.10);
+  border-color: rgba(186, 234, 255, 0.42);
+  box-shadow: 0 12px 28px rgba(56, 189, 248, 0.28), 0 0 0 1px rgba(255, 255, 255, 0.08), inset 0 1px 0 rgba(255, 255, 255, 0.24);
 }
 
 .timer-main-btn.is-holding .timer-main-btn-label {
-  color: rgba(255, 248, 249, 0.98);
+  color: rgba(0, 14, 26, 0.98);
 }
 
 .timer-main-btn.is-holding .timer-main-btn-hint {
-  color: rgba(255, 236, 240, 0.78);
+  color: rgba(0, 14, 26, 0.72);
 }
 
 .timer-main-btn.is-holding:active {
-  box-shadow: 0 8px 18px rgba(56, 189, 248, 0.10), 0 4px 10px rgba(244, 63, 94, 0.05), inset 0 1px 0 rgba(255, 255, 255, 0.08);
+  box-shadow: 0 8px 18px rgba(56, 189, 248, 0.2), 0 0 0 1px rgba(255, 255, 255, 0.06), inset 0 1px 0 rgba(255, 255, 255, 0.18);
 }
 
 .timer-main-btn > * {
