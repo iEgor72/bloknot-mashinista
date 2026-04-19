@@ -1,14 +1,14 @@
 # Project State
 
 <!-- AUTO_STATUS:START -->
-Generated: 2026-04-19 20:56:25 +0000
+Generated: 2026-04-19 20:51:21 +0000
 
 ## Repository Snapshot
 - Local repo path: `/opt/bloknot-mashinista`
 - Project memory path: `/opt/bloknot-mashinista/ai-memory`
 - Branch: `main`
-- HEAD: `5d4dbe4`
-- Last commit: `5d4dbe4 fix(ui): reuse docs pro wrapper for timer gate`
+- HEAD: `d52306f`
+- Last commit: `d52306f refactor(ui): reuse shared pro gate for timer and docs`
 
 ## Git Remote
 ```text
@@ -18,7 +18,7 @@ origin	https://github.com/iEgor72/bloknot-mashinista.git (push)
 
 ## Branch Tracking
 ```text
-* main 5d4dbe4 [origin/main] fix(ui): reuse docs pro wrapper for timer gate
+* main d52306f [origin/main] refactor(ui): reuse shared pro gate for timer and docs
 ```
 
 ## Worktree
