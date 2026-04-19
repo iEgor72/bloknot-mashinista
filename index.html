@@ -1057,16 +1057,22 @@
 
   <!-- Docs File Viewer Overlay -->
   <div class="docs-viewer-overlay hidden" id="docsViewerOverlay" aria-modal="true" role="dialog" aria-label="Просмотр файла">
-    <div class="docs-viewer-sheet">
-      <div class="docs-viewer-handle-wrap" aria-hidden="true">
-        <span class="docs-viewer-handle"></span>
+    <div class="docs-viewer-header">
+      <button class="docs-viewer-back" id="docsViewerClose" type="button" aria-label="Назад к документам">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+          <path d="M15 18l-6-6 6-6"></path>
+          <path d="M9 12h10"></path>
+        </svg>
+      </button>
+      <div class="docs-viewer-header-main">
+        <div class="docs-viewer-kicker">Документ</div>
+        <div class="docs-viewer-title-row">
+          <div class="docs-viewer-title" id="docsViewerTitle"></div>
+          <div class="docs-viewer-status" id="docsViewerStatus" aria-live="polite"></div>
+        </div>
       </div>
-      <div class="docs-viewer-header">
-        <div class="docs-viewer-title" id="docsViewerTitle"></div>
-        <div class="docs-viewer-status" id="docsViewerStatus" aria-live="polite"></div>
-      </div>
-      <div class="docs-viewer-body" id="docsViewerBody"></div>
     </div>
+    <div class="docs-viewer-body" id="docsViewerBody"></div>
   </div>
 
   <!-- Runtime Scripts -->

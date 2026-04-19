@@ -791,6 +791,10 @@ if (action === 'scroll-node') {
     }
 
     // Docs viewer: close
+    var docsViewerCloseBtn = document.getElementById('docsViewerClose');
+    if (docsViewerCloseBtn) {
+      docsViewerCloseBtn.addEventListener('click', closeDocsViewerUI);
+    }
     var docsViewerOverlay = document.getElementById('docsViewerOverlay');
     if (docsViewerOverlay) {
       docsViewerOverlay.addEventListener('click', function(e) {
