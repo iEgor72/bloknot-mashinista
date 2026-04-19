@@ -1,10 +1,10 @@
 # Worktree Status
 
-Generated: 2026-04-19 20:51:21 +0000
+Generated: 2026-04-19 15:43:41 +0000
 
 ## git status -sb
 ```text
-## main...origin/main
+## main...origin/main [ahead 3]
  M ai-memory/ARCHITECTURE.md
  M ai-memory/INDEX.md
  M ai-memory/PROJECT_STATE.md
@@ -18,18 +18,16 @@ Generated: 2026-04-19 20:51:21 +0000
 
 ## git branch -vv
 ```text
-* main d52306f [origin/main] refactor(ui): reuse shared pro gate for timer and docs
+* main 8ebe599 [origin/main: ahead 3] fix(security): escape dynamic shift identifiers in ui
 ```
 
 ## HEAD
 ```text
-d52306f refactor(ui): reuse shared pro gate for timer and docs
+8ebe599 fix(security): escape dynamic shift identifiers in ui
  ai-memory/CHANGELOG.md       |  8 ++++++++
  ai-memory/PROJECT_STATE.md   |  8 ++++----
- ai-memory/WORKTREE_STATUS.md | 21 +++++++++------------
- index.html                   | 19 ++-----------------
- scripts/app.js               | 37 +++++++++++++++++--------------------
- scripts/shift-form.js        | 15 +++------------
- styles/35-timer.css          |  4 ----
- 7 files changed, 43 insertions(+), 69 deletions(-)
+ ai-memory/WORKTREE_STATUS.md | 24 +++++++++++++-----------
+ scripts/render.js            | 22 ++++++++++++++++------
+ scripts/time-utils.js        |  6 ++++--
+ 5 files changed, 45 insertions(+), 23 deletions(-)
 ```

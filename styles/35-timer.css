@@ -65,6 +65,25 @@
   width: min(100%, 420px);
 }
 
+.timer-pro-wrap {
+  position: relative;
+  min-height: 0;
+}
+
+.timer-pro-wrap.is-locked .timer-shell {
+  filter: blur(10px) saturate(0.85);
+  opacity: 0.52;
+  pointer-events: none;
+  user-select: none;
+  transition: filter 0.22s ease, opacity 0.22s ease;
+}
+
+.timer-pro-wrap:not(.is-locked) .timer-shell {
+  filter: none;
+  opacity: 1;
+  transition: filter 0.22s ease, opacity 0.22s ease;
+}
+
 .timer-shell {
   display: grid;
   gap: var(--c-pad);
