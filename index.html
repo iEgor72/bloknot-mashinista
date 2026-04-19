@@ -139,6 +139,10 @@
   />
   <link
     rel="stylesheet"
+    href="/styles/35-timer.css"
+  />
+  <link
+    rel="stylesheet"
     href="/styles/40-premium-refresh.css"
   />
   <noscript><link rel="stylesheet" href="/styles/00-base.css" /></noscript>
@@ -147,6 +151,7 @@
   <noscript><link rel="stylesheet" href="/styles/16-press-feedback.css" /></noscript>
   <noscript><link rel="stylesheet" href="/styles/20-form-and-stats.css" /></noscript>
   <noscript><link rel="stylesheet" href="/styles/30-shifts-and-overlays.css" /></noscript>
+  <noscript><link rel="stylesheet" href="/styles/35-timer.css" /></noscript>
   <noscript><link rel="stylesheet" href="/styles/40-premium-refresh.css" /></noscript>
   <script src="/scripts/safe-area.js" defer></script>
 </head>
@@ -685,6 +690,53 @@
         </div>
       </section>
 
+      <!-- Timer Tab -->
+      <section class="tab-panel" data-tab="stopwatch">
+        <div class="timer-shell">
+          <div class="month-nav timer-nav-card">
+            <div class="timer-nav-head">
+              <div>
+                <div class="docs-nav-title">Таймер</div>
+                <div class="timer-nav-subtitle">Этапный помощник с локальными сигналами и оффлайн-работой</div>
+              </div>
+              <span class="timer-pro-chip">PRO</span>
+            </div>
+          </div>
+
+          <div class="timer-display-card">
+            <div class="timer-kicker">Текущий этап</div>
+            <div class="timer-value" id="timerValue">00:00</div>
+            <div class="timer-stage-title" id="timerStageTitle">Готов к запуску</div>
+            <div class="timer-stage-subtitle" id="timerStageSubtitle">Запусти таймер, чтобы получать подсказки по этапам</div>
+          </div>
+
+          <div class="timer-controls-card">
+            <button class="timer-main-btn" id="timerMainBtn" type="button">
+              <span class="timer-main-btn-label" id="timerMainBtnLabel">Старт</span>
+              <span class="timer-main-btn-hint" id="timerMainBtnHint">Запустить таймер</span>
+            </button>
+
+            <div class="timer-secondary-actions">
+              <button class="timer-secondary-btn" id="timerResetBtn" type="button">Сброс</button>
+              <button class="timer-secondary-btn" id="timerMarkBtn" type="button">Отметка</button>
+            </div>
+
+            <div class="timer-toggle-row" role="group" aria-label="Настройки таймера">
+              <button class="timer-toggle-btn is-active" id="timerSoundToggle" type="button" aria-pressed="true">Звук</button>
+              <button class="timer-toggle-btn is-active" id="timerVibrationToggle" type="button" aria-pressed="true">Вибрация</button>
+            </div>
+          </div>
+
+          <div class="timer-stage-card">
+            <div class="section-header section-header-row timer-stage-header">
+              <span>Этапы</span>
+              <span class="timer-stage-meta" id="timerStageMeta">Следующий этап не начат</span>
+            </div>
+            <div class="timer-stage-list" id="timerStageList"></div>
+          </div>
+        </div>
+      </section>
+
       <!-- Documentation Tab -->
       <section class="tab-panel" data-tab="instructions">
         <div class="docs-pro-wrap is-locked" id="docsProWrap">
@@ -757,16 +809,16 @@
         </span>
         <span class="tab-label">Главная</span>
       </button>
-      <button class="tab-btn nav-item" type="button" data-tab="shifts">
+      <button class="tab-btn nav-item" type="button" data-tab="salary">
         <span class="tab-icon" aria-hidden="true">
           <svg viewBox="0 0 24 24">
-            <path d="M5 17h3"></path>
-            <path d="M5 12h7"></path>
-            <path d="M5 7h11"></path>
-            <path d="M16.5 5.5l2 2-7 7H9.5v-2z"></path>
+            <path d="M4 8h16v10H4z"></path>
+            <path d="M8 8V6h8v2"></path>
+            <path d="M7 12h10"></path>
+            <path d="M7 15h6"></path>
           </svg>
         </span>
-        <span class="tab-label">Смены</span>
+        <span class="tab-label">Зарплата</span>
       </button>
 
       <!-- FAB — inline flex slot, 3rd position -->
@@ -779,16 +831,17 @@
         <span class="fab-label">Добавить</span>
       </button>
 
-      <button class="tab-btn nav-item" type="button" data-tab="salary">
+      <button class="tab-btn nav-item" type="button" data-tab="stopwatch">
         <span class="tab-icon" aria-hidden="true">
           <svg viewBox="0 0 24 24">
-            <path d="M4 8h16v10H4z"></path>
-            <path d="M8 8V6h8v2"></path>
-            <path d="M7 12h10"></path>
-            <path d="M7 15h6"></path>
+            <circle cx="12" cy="13" r="7"></circle>
+            <path d="M12 13V9.5"></path>
+            <path d="M12 13l2.5 1.8"></path>
+            <path d="M9 3h6"></path>
+            <path d="M15.5 5.2 17 3.7"></path>
           </svg>
         </span>
-        <span class="tab-label">Зарплата</span>
+        <span class="tab-label tab-label-with-badge"><span>Таймер</span><span class="tab-badge-pro">PRO</span></span>
       </button>
       <button class="tab-btn nav-item" type="button" data-tab="instructions">
         <span class="tab-icon" aria-hidden="true">
@@ -797,7 +850,7 @@
             <path d="M12 7v11"></path>
           </svg>
         </span>
-        <span class="tab-label">Документы</span>
+        <span class="tab-label tab-label-with-badge"><span>Документы</span><span class="tab-badge-pro">PRO</span></span>
       </button>
     </nav>
   </div>
@@ -987,6 +1040,8 @@
   <script src="/scripts/app.js" defer></script>
   <script src="/scripts/auth.js" defer></script>
   <script src="/scripts/render.js" defer></script>
+  <script src="/scripts/stopwatch-engine.js" defer></script>
+  <script src="/scripts/stopwatch-app.js" defer></script>
   <script src="/scripts/shift-form.js" defer></script>
   <script src="/scripts/app-init.js" defer></script>
   <script src="/scripts/sw-register.js" defer></script>

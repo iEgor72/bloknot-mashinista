@@ -351,14 +351,18 @@
       if (tab === 'instructions') {
         renderDocumentationScreen();
       }
+      if (tab === 'stopwatch' && typeof renderStopwatchScreen === 'function') {
+        renderStopwatchScreen();
+      }
     }
 
     function getTabTransitionDirection(fromTab, toTab) {
       var order = {
         home: 0,
         shifts: 1,
+        salary: 1,
         add: 2,
-        salary: 3,
+        stopwatch: 3,
         instructions: 4
       };
       var fromIndex = order.hasOwnProperty(fromTab) ? order[fromTab] : -1;
@@ -398,7 +402,9 @@
       var navButtons = document.querySelectorAll('.tab-btn[data-tab]');
       for (var j = 0; j < navButtons.length; j++) {
         var btn = navButtons[j];
-        btn.classList.toggle('active', btn.getAttribute('data-tab') === activeTab);
+        var btnTab = btn.getAttribute('data-tab');
+        var shouldBeActive = btnTab === activeTab || (activeTab === 'shifts' && btnTab === 'home');
+        btn.classList.toggle('active', shouldBeActive);
       }
 
       scheduleBottomNavHeightSync();
