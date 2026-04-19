@@ -34,7 +34,6 @@
       --accent:      #38BDF8;
       --accent-dim:  rgba(56, 189, 248, 0.12);
       --accent-glow: rgba(56, 189, 248, 0.28);
-      --accent-strong: #5bd2ff;
 
       /* ── Green — money & income only ── */
       --green:     #4ADE80;
@@ -46,47 +45,6 @@
       --text:  #EEF2F8;
       --sub:   #8892A4;
       --muted: #3A4254;
-
-      /* ── Semantic UI tokens ── */
-      --color-surface-base: var(--card);
-      --color-surface-elevated: var(--card-hi);
-      --color-surface-soft: rgba(255, 255, 255, 0.03);
-      --color-border-soft: var(--border);
-      --color-border-strong: var(--border-hi);
-      --color-text-primary: var(--text);
-      --color-text-secondary: var(--sub);
-      --color-text-muted: var(--muted);
-      --color-primary: var(--accent);
-      --color-primary-strong: var(--accent-strong);
-      --color-primary-soft: var(--accent-dim);
-      --color-primary-soft-strong: rgba(56, 189, 248, 0.06);
-      --color-primary-border-soft: rgba(56, 189, 248, 0.16);
-      --color-primary-border-strong: rgba(56, 189, 248, 0.18);
-      --color-primary-glow: var(--accent-glow);
-      --color-success: var(--green);
-      --color-success-soft: rgba(74, 222, 128, 0.06);
-      --color-success-border-soft: rgba(74, 222, 128, 0.18);
-      --color-danger: #f43f5e;
-      --color-danger-soft: rgba(244, 63, 94, 0.12);
-      --color-danger-strong: rgba(244, 63, 94, 0.2);
-      --color-danger-border: rgba(244, 63, 94, 0.28);
-      --color-danger-border-strong: rgba(244, 63, 94, 0.46);
-      --color-danger-soft-strong: rgba(244, 63, 94, 0.18);
-      --color-danger-text-soft: #fecdd3;
-      --color-danger-text-muted: rgba(254, 205, 211, 0.92);
-      --color-danger-decor: #ff7a7a;
-      --color-danger-decor-strong: #ff8d8d;
-      --color-warning: #f59e0b;
-      --color-warning-soft: rgba(245, 158, 11, 0.12);
-      --color-warning-border-soft: rgba(247, 185, 85, 0.22);
-      --color-warning-text-soft: #f3cd87;
-      --control-primary-bg: linear-gradient(180deg, var(--color-primary-strong), var(--color-primary));
-      --control-primary-text: #000e1a;
-      --control-primary-text-muted: rgba(0, 14, 26, 0.72);
-      --control-danger-bg: var(--color-danger-soft);
-      --control-danger-fill-bg: linear-gradient(180deg, rgba(66, 31, 42, 0.9), rgba(52, 24, 34, 0.9));
-      --control-danger-fill-shadow: rgba(244, 63, 94, 0.18);
-      --control-danger-text: var(--color-danger);
 
       /* ── Radii ── */
       --r-card:  24px;
@@ -642,15 +600,14 @@
     .install-prompt-actions {
       display: grid;
       justify-items: center;
-      gap: 10px;
+      gap: 8px;
       width: 100%;
-      margin-top: 4px;
+      margin-top: 2px;
     }
 
     .install-prompt-actions .btn-secondary {
       min-width: 216px;
       justify-self: center;
-      box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.03);
     }
 
     .install-dismiss-btn {
