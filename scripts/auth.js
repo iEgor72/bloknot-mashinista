@@ -517,11 +517,11 @@
       }
 
       var quickLabels = document.querySelectorAll('.quick-stats-grid .quick-stat .stat-label');
-      var quickLabelText = ['Ночные', 'Смены', 'Праздничные'];
+      var quickLabelText = ['Ночные часы', 'Смен за месяц', 'Праздничные часы'];
       var quickLabelByRole = {
-        night: 'Ночные',
-        shifts: 'Смены',
-        holiday: 'Праздничные'
+        night: 'Ночные часы',
+        shifts: 'Смен за месяц',
+        holiday: 'Праздничные часы'
       };
       for (var q = 0; q < quickLabels.length && q < quickLabelText.length; q++) {
         var role = quickLabels[q].getAttribute('data-quick-label');
@@ -529,10 +529,10 @@
       }
 
       var btnGoToShifts = document.getElementById('btnGoToShifts');
-      if (btnGoToShifts) btnGoToShifts.textContent = 'Открыть журнал';
+      if (btnGoToShifts) btnGoToShifts.textContent = 'Все смены';
 
       var shiftsHeader = document.getElementById('shiftsHeader');
-      if (shiftsHeader) shiftsHeader.textContent = 'История смен';
+      if (shiftsHeader) shiftsHeader.textContent = 'Журнал смен';
 
       var instructionsPageTitle = document.querySelector('.instructions-page-title');
       if (instructionsPageTitle) instructionsPageTitle.textContent = 'Инструкции';

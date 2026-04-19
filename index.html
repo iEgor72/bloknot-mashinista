@@ -236,29 +236,29 @@
           </div>
         </div>
 
-        <div class="quick-stats-grid">
+        <div class="quick-stats-grid" aria-label="Краткая сводка за месяц">
           <div class="quick-stats-head">
-            <div class="quick-stats-note">за месяц</div>
+            <div class="quick-stats-note">Кратко за месяц</div>
           </div>
           <div class="quick-stats-row">
             <div class="quick-stat">
-              <span class="quick-stat-value night" id="statNight">0ч</span>
-              <span class="stat-label" data-quick-label="night">Ночные</span>
+              <span class="quick-stat-value night" id="statNight">0 ч</span>
+              <span class="stat-label" data-quick-label="night">Ночные часы</span>
             </div>
             <div class="quick-stat quick-stat-primary">
               <span class="quick-stat-value shifts" id="statShifts">0</span>
-              <span class="stat-label" data-quick-label="shifts">Смены</span>
+              <span class="stat-label" data-quick-label="shifts">Смен за месяц</span>
             </div>
             <div class="quick-stat">
-              <span class="quick-stat-value holiday" id="statHoliday">0ч</span>
-              <span class="stat-label" data-quick-label="holiday">Праздничные</span>
+              <span class="quick-stat-value holiday" id="statHoliday">0 ч</span>
+              <span class="stat-label" data-quick-label="holiday">Праздничные часы</span>
             </div>
           </div>
         </div>
 
         <div class="section-header section-header-row">
           <span>Недавние смены</span>
-          <button class="section-link" id="btnGoToShifts" type="button">Открыть журнал</button>
+          <button class="section-link" id="btnGoToShifts" type="button">Все смены</button>
         </div>
         <div id="homeShiftsList"></div>
 
@@ -281,7 +281,7 @@
               <path fill="currentColor" d="M14.7 5.3a1 1 0 0 1 0 1.4L10.41 11H20a1 1 0 1 1 0 2h-9.59l4.3 4.3a1 1 0 1 1-1.42 1.4l-6-6a1 1 0 0 1 0-1.4l6-6a1 1 0 0 1 1.41 0Z"></path>
             </svg>
           </button>
-          <span class="shifts-back-label">Главная</span>
+          <span class="shifts-back-label">На главную</span>
         </div>
         <div class="month-nav shifts-month-nav">
           <div class="month-nav-top">
@@ -295,7 +295,7 @@
           <div class="month-tabs" id="shiftsMonthTabs" aria-label="Месяцы квартала"></div>
         </div>
         <div class="shifts-section">
-          <div class="section-header" id="shiftsHeader">История смен</div>
+          <div class="section-header" id="shiftsHeader">Журнал смен</div>
           <div class="shifts-overview" aria-label="Краткая сводка по сменам">
             <div class="shifts-overview-chip">
               <span class="shifts-overview-label">Всего смен</span>

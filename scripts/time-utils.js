@@ -248,12 +248,12 @@
 
     // Format minutes → "X ч" or "X ч Y м"
     function fmtMin(totalMin) {
-      if (totalMin <= 0) return '0ч';
+      if (totalMin <= 0) return '0 ч';
       var h = Math.floor(totalMin / 60);
       var m = totalMin % 60;
-      if (h === 0) return m + 'м';
-      if (m === 0) return h + 'ч';
-      return h + 'ч ' + m + 'м';
+      if (h === 0) return m + ' м';
+      if (m === 0) return h + ' ч';
+      return h + ' ч ' + m + ' м';
     }
 
 

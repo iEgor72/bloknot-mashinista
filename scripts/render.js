@@ -528,7 +528,7 @@
 
     function renderShiftList(listEl, headerEl, shifts, compact, emptyText, headerBase, pendingMap, shiftIncomeMap, durationBounds, durationLevelMap) {
       if (!listEl) return;
-      if (headerEl) headerEl.textContent = headerBase || 'История смен';
+      if (headerEl) headerEl.textContent = headerBase || 'Журнал смен';
       bindShiftListDetailHandlers(listEl);
 
       if (!compact) {
@@ -548,7 +548,7 @@
       }
 
       if (headerEl && headerBase !== false) {
-        headerEl.textContent = (headerBase || 'История смен') + (compact ? '' : ' · ' + shifts.length);
+        headerEl.textContent = (headerBase || 'Журнал смен') + (compact ? '' : ' · ' + shifts.length);
       }
 
       var html = '';
@@ -726,7 +726,7 @@
         monthShifts,
         false,
         'В этом месяце смен пока нет',
-        'История смен',
+        'Журнал смен',
         _renderPendingMap,
         shiftIncomeMap,
         bounds,
