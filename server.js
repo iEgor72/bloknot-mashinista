@@ -10,6 +10,17 @@ const PORT = process.env.PORT || 3000;
 const DATA_DIR = path.join(ROOT, 'data');
 const USERS_DIR = path.join(DATA_DIR, 'local-shifts');
 const USER_STATS_FILE = path.join(DATA_DIR, 'user-presence.json');
+const PUBLIC_TOP_LEVEL_FILES = new Set([
+  'index.html',
+  'manifest.webmanifest',
+  'sw.js',
+  'apple-touch-icon.png',
+  'icon-192.png',
+  'icon-512.png',
+  'bot_avatar.svg',
+  '_redirects',
+]);
+const PUBLIC_TOP_LEVEL_DIRS = new Set(['assets', 'scripts', 'styles', 'docs']);
 const ONLINE_WINDOW_MS = 2 * 60 * 1000;
 const USER_PRESENCE_FLUSH_DELAY_MS = 2500;
 const SHIFT_USER_IDS_CACHE_TTL_MS = 30 * 1000;
@@ -457,6 +468,8 @@ function sendJson(res, statusCode, payload) {
     'Content-Type': 'application/json; charset=utf-8',
     'Content-Length': Buffer.byteLength(body),
     'Cache-Control': 'no-store',
+    'X-Content-Type-Options': 'nosniff',
+    'Referrer-Policy': 'strict-origin-when-cross-origin',
   });
   res.end(body);
 }
@@ -466,11 +479,33 @@ function sendText(res, statusCode, body, contentType) {
     'Content-Type': contentType || 'text/plain; charset=utf-8',
     'Content-Length': Buffer.byteLength(body),
     'Cache-Control': 'no-store',
+    'X-Content-Type-Options': 'nosniff',
+    'Referrer-Policy': 'strict-origin-when-cross-origin',
   });
   res.end(body);
 }
 
+function isPublicFilePath(filePath) {
+  const relativePath = path.relative(ROOT, filePath);
+  if (!relativePath || relativePath.startsWith('..') || path.isAbsolute(relativePath)) return false;
+
+  const segments = relativePath.split(path.sep).filter(Boolean);
+  if (!segments.length) return false;
+  if (segments.some(segment => segment.startsWith('.'))) return false;
+
+  if (segments.length === 1) {
+    return PUBLIC_TOP_LEVEL_FILES.has(segments[0]);
+  }
+
+  return PUBLIC_TOP_LEVEL_DIRS.has(segments[0]);
+}
+
 function serveFile(res, filePath) {
+  if (!isPublicFilePath(filePath)) {
+    sendText(res, 404, 'Not found');
+    return;
+  }
+
   if (!fs.existsSync(filePath) || fs.statSync(filePath).isDirectory()) {
     sendText(res, 404, 'Not found');
     return;
@@ -497,6 +532,8 @@ function serveFile(res, filePath) {
   res.writeHead(200, {
     'Content-Type': types[ext] || 'application/octet-stream',
     'Cache-Control': 'no-store',
+    'X-Content-Type-Options': 'nosniff',
+    'Referrer-Policy': 'strict-origin-when-cross-origin',
   });
   fs.createReadStream(filePath).pipe(res);
 }
@@ -789,7 +826,14 @@ const server = http.createServer(async (req, res) => {
     return;
   }
 
-  const normalized = decodeURIComponent(pathname === '/' ? '/index.html' : pathname);
+  let normalized;
+  try {
+    normalized = decodeURIComponent(pathname === '/' ? '/index.html' : pathname);
+  } catch (_) {
+    sendText(res, 400, 'Bad request');
+    return;
+  }
+
   const filePath = path.join(ROOT, normalized);
 
   if (!filePath.startsWith(ROOT)) {

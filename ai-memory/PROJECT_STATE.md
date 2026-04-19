@@ -1,14 +1,14 @@
 # Project State
 
 <!-- AUTO_STATUS:START -->
-Generated: 2026-04-19 15:34:48 +0000
+Generated: 2026-04-19 15:35:19 +0000
 
 ## Repository Snapshot
 - Local repo path: `/opt/bloknot-mashinista`
 - Project memory path: `/opt/bloknot-mashinista/ai-memory`
 - Branch: `main`
-- HEAD: `81f8343`
-- Last commit: `81f8343 feat(bot): finalize welcome caption copy`
+- HEAD: `8518b5c`
+- Last commit: `8518b5c fix(security): harden auth boundaries on vps runtime`
 
 ## Git Remote
 ```text
@@ -18,21 +18,15 @@ origin	https://github.com/iEgor72/bloknot-mashinista.git (push)
 
 ## Branch Tracking
 ```text
-* main 81f8343 [origin/main] feat(bot): finalize welcome caption copy
+* main 8518b5c [origin/main: ahead 1] fix(security): harden auth boundaries on vps runtime
 ```
 
 ## Worktree
 ```text
 M ai-memory/ARCHITECTURE.md
- M ai-memory/CHANGELOG.md
  M ai-memory/INDEX.md
- M ai-memory/PROJECT_STATE.md
  M ai-memory/RECENT_COMMITS.md
- M ai-memory/WORKTREE_STATUS.md
- M scripts/setup-bot-webhook.py
  M scripts/stopwatch-engine.js
- M server.js
- M tools/agent_memory.py
 ?? ai-memory/sessions/2026-04-19.md
 ?? docs/
 ?? scripts/__pycache__/

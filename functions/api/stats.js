@@ -71,7 +71,6 @@ export async function onRequest(context) {
   } catch (err) {
     return json(500, {
       error: err && err.message ? err.message : 'Unexpected error',
-      stack: err && err.stack ? String(err.stack) : null,
     });
   }
 }
