@@ -1057,14 +1057,16 @@
 
   <!-- Docs File Viewer Overlay -->
   <div class="docs-viewer-overlay hidden" id="docsViewerOverlay" aria-modal="true" role="dialog" aria-label="Просмотр файла">
-    <div class="docs-viewer-header">
-      <button class="docs-viewer-close" id="docsViewerClose" type="button" aria-label="Закрыть">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M15 18l-6-6 6-6"/><path d="M9 12h12"/></svg>
-      </button>
-      <div class="docs-viewer-title" id="docsViewerTitle"></div>
-      <div class="docs-viewer-status" id="docsViewerStatus" aria-live="polite"></div>
+    <div class="docs-viewer-sheet">
+      <div class="docs-viewer-handle-wrap" aria-hidden="true">
+        <span class="docs-viewer-handle"></span>
+      </div>
+      <div class="docs-viewer-header">
+        <div class="docs-viewer-title" id="docsViewerTitle"></div>
+        <div class="docs-viewer-status" id="docsViewerStatus" aria-live="polite"></div>
+      </div>
+      <div class="docs-viewer-body" id="docsViewerBody"></div>
     </div>
-    <div class="docs-viewer-body" id="docsViewerBody"></div>
   </div>
 
   <!-- Runtime Scripts -->
