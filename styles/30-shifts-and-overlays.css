@@ -85,7 +85,7 @@
       align-items: center;
       gap: 8px;
       margin: 10px 4px 10px;
-      color: var(--sub);
+      color: rgba(160, 169, 183, 0.88);
       font-size: 11px;
       font-weight: 700;
       line-height: 1;
@@ -248,9 +248,9 @@
 
     .shift-type {
       font-size: 15px;
-      font-weight: 700;
+      font-weight: 750;
       line-height: 1.2;
-      color: var(--text);
+      color: rgba(244, 247, 252, 0.98);
       min-width: 0;
       overflow: hidden;
       text-overflow: ellipsis;
@@ -322,7 +322,7 @@
       align-items: center;
       justify-content: center;
       flex-shrink: 0;
-      color: var(--muted);
+      color: rgba(126, 137, 154, 0.82);
     }
 
     .shift-direction-text {
@@ -358,7 +358,7 @@
       align-items: center;
       justify-content: center;
       flex-shrink: 0;
-      color: var(--muted);
+      color: rgba(126, 137, 154, 0.84);
     }
 
     .shift-datetime-text {
@@ -392,7 +392,7 @@
       align-items: center;
       justify-content: center;
       flex-shrink: 0;
-      color: var(--muted);
+      color: rgba(154, 164, 179, 0.82);
     }
 
     .shift-duration-text { white-space: nowrap; }
@@ -424,7 +424,7 @@
       align-items: center;
       justify-content: center;
       flex-shrink: 0;
-      color: var(--muted);
+      color: rgba(126, 137, 154, 0.76);
     }
 
     .shift-tech-part-text {
@@ -450,20 +450,20 @@
       align-items: center;
       justify-content: center;
       flex-shrink: 0;
-      color: var(--muted);
+      color: rgba(126, 137, 154, 0.74);
     }
 
     .shift-fuel-note-text { min-width: 0; }
 
     .shift-fuel-note strong {
-      color: var(--sub);
+      color: rgba(184, 192, 204, 0.9);
       font-family: 'JetBrains Mono', monospace;
       font-weight: 600;
       margin-left: 0;
     }
 
     .shift-tech-sep {
-      color: var(--muted);
+      color: rgba(116, 126, 142, 0.62);
       line-height: 1;
       flex-shrink: 0;
     }
@@ -585,12 +585,13 @@
       align-items: center;
       justify-content: center;
       flex-shrink: 0;
-      color: var(--muted);
+      color: rgba(126, 137, 154, 0.72);
     }
 
     .shift-income-row-label-text {
       min-width: 0;
       white-space: nowrap;
+      color: rgba(162, 171, 184, 0.88);
     }
 
     /* Income value — always green */
