@@ -382,7 +382,7 @@
       }
 
       statusEl.innerHTML = parts.map(function(part) {
-        return '<span class="docs-viewer-status-pill">' + escapeHtml(part) + '</span>';
+        return '<span class="shift-pill docs-viewer-status-pill">' + escapeHtml(part) + '</span>';
       }).join('');
     }
 
