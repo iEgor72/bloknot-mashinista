@@ -196,8 +196,10 @@
   content: "";
   position: absolute;
   inset: 0;
-  background: linear-gradient(180deg, rgba(244, 63, 94, 0.08), rgba(244, 63, 94, 0.16));
-  opacity: calc(var(--timer-hold-progress) * 0.9);
+  background:
+    radial-gradient(120% 90% at 50% 100%, rgba(244, 63, 94, 0.22), rgba(244, 63, 94, 0.08) 38%, rgba(244, 63, 94, 0) 72%),
+    linear-gradient(180deg, rgba(255, 255, 255, 0.03), rgba(255, 255, 255, 0));
+  opacity: calc(var(--timer-hold-progress) * 0.82);
   z-index: 0;
   transition: opacity 0.08s linear;
 }
@@ -210,30 +212,32 @@
   bottom: 10px;
   height: 4px;
   border-radius: 999px;
-  background: linear-gradient(90deg, rgba(255, 232, 236, 0.96), rgba(255, 176, 191, 0.98));
-  box-shadow: 0 0 10px rgba(244, 63, 94, 0.20);
-  transform-origin: left center;
-  transform: scaleX(var(--timer-hold-progress));
+  background:
+    linear-gradient(90deg, rgba(255, 214, 224, 0.98), rgba(255, 146, 174, 0.98)) 0 0 / var(--timer-hold-fill) 100% no-repeat,
+    rgba(255, 255, 255, 0.12);
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.12),
+    0 0 12px rgba(244, 63, 94, 0.14);
   pointer-events: none;
   z-index: 0;
-  opacity: calc(0.18 + (var(--timer-hold-progress) * 0.82));
+  opacity: calc(0.22 + (var(--timer-hold-progress) * 0.78));
 }
 
 .timer-main-btn.is-holding {
-  border-color: rgba(244, 63, 94, 0.34);
-  box-shadow: 0 10px 24px rgba(244, 63, 94, 0.16), inset 0 1px 0 rgba(255, 255, 255, 0.08);
+  border-color: rgba(244, 63, 94, 0.28);
+  box-shadow: 0 10px 22px rgba(56, 189, 248, 0.16), 0 8px 18px rgba(244, 63, 94, 0.10), inset 0 1px 0 rgba(255, 255, 255, 0.08);
 }
 
 .timer-main-btn.is-holding .timer-main-btn-label {
-  color: #fff3f5;
+  color: rgba(255, 245, 247, 0.98);
 }
 
 .timer-main-btn.is-holding .timer-main-btn-hint {
-  color: rgba(255, 234, 238, 0.88);
+  color: rgba(255, 231, 236, 0.84);
 }
 
 .timer-main-btn.is-holding:active {
-  box-shadow: 0 8px 18px rgba(244, 63, 94, 0.14), inset 0 1px 0 rgba(255, 255, 255, 0.06);
+  box-shadow: 0 8px 18px rgba(56, 189, 248, 0.12), 0 6px 14px rgba(244, 63, 94, 0.08), inset 0 1px 0 rgba(255, 255, 255, 0.06);
 }
 
 .timer-main-btn > * {
