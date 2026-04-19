@@ -1,14 +1,14 @@
 # Project State
 
 <!-- AUTO_STATUS:START -->
-Generated: 2026-04-19 15:35:19 +0000
+Generated: 2026-04-19 15:39:26 +0000
 
 ## Repository Snapshot
 - Local repo path: `/opt/bloknot-mashinista`
 - Project memory path: `/opt/bloknot-mashinista/ai-memory`
 - Branch: `main`
-- HEAD: `8518b5c`
-- Last commit: `8518b5c fix(security): harden auth boundaries on vps runtime`
+- HEAD: `4695d6e`
+- Last commit: `4695d6e fix(security): reduce exposure of runtime and api internals`
 
 ## Git Remote
 ```text
@@ -18,7 +18,7 @@ origin	https://github.com/iEgor72/bloknot-mashinista.git (push)
 
 ## Branch Tracking
 ```text
-* main 8518b5c [origin/main: ahead 1] fix(security): harden auth boundaries on vps runtime
+* main 4695d6e [origin/main: ahead 2] fix(security): reduce exposure of runtime and api internals
 ```
 
 ## Worktree

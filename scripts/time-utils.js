@@ -683,9 +683,10 @@
       if (shift.route_kind === 'trip') itemClass += ' has-trip';
       if (shiftPending) itemClass += ' is-pending';
       itemClass += ' income-' + incomeVm.level;
+      var shiftIdAttr = escapeHtml(String(shift.id || ''));
 
       return '' +
-        '<div class="' + itemClass + '" data-shift-id="' + shift.id + '">' +
+        '<div class="' + itemClass + '" data-shift-id="' + shiftIdAttr + '">' +
           '<div class="shift-card-top">' +
             typeHtml +
           '</div>' +
@@ -767,9 +768,10 @@
       if (shift.route_kind === 'trip') itemClass += ' has-trip';
       if (shiftPending) itemClass += ' is-pending';
       itemClass += ' income-' + incomeVm.level;
+      var shiftIdAttr = escapeHtml(String(shift.id || ''));
 
       return '' +
-        '<div class="' + itemClass + '" data-shift-id="' + shift.id + '">' +
+        '<div class="' + itemClass + '" data-shift-id="' + shiftIdAttr + '">' +
           '<div class="shift-card-top">' +
             typeHtml +
           '</div>' +

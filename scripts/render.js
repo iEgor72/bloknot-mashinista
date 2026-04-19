@@ -31,14 +31,15 @@
       var incomeHtml = getShiftIncomeChipHtml(incomeVm);
       itemClass += ' income-' + incomeVm.level;
       var shiftIdStr = String(sh.id);
+      var shiftIdAttr = escapeHtml(shiftIdStr);
       var isActionsOpen = activeShiftMenuId !== null && String(activeShiftMenuId) === shiftIdStr;
 
-      var html = '<div class="' + itemClass + '" data-shift-id="' + sh.id + '" data-pending="' + (shiftIsPending ? '1' : '0') + '" data-shift-open="1" role="button" tabindex="0" aria-label="Редактировать смену: ' + escapeHtml(shiftTitle || 'Смена') + '">' +
+      var html = '<div class="' + itemClass + '" data-shift-id="' + shiftIdAttr + '" data-pending="' + (shiftIsPending ? '1' : '0') + '" data-shift-open="1" role="button" tabindex="0" aria-label="Редактировать смену: ' + escapeHtml(shiftTitle || 'Смена') + '">' +
         '<div class="shift-card-top">' +
           typeHtml +
           '<div class="shift-top-right">' +
             '<div class="shift-actions-wrap">' +
-              '<button class="shift-actions-trigger' + (isActionsOpen ? ' is-open' : '') + '" type="button" data-id="' + sh.id + '" aria-label="Действия" aria-haspopup="menu" aria-expanded="' + (isActionsOpen ? 'true' : 'false') + '">' +
+              '<button class="shift-actions-trigger' + (isActionsOpen ? ' is-open' : '') + '" type="button" data-id="' + shiftIdAttr + '" aria-label="Действия" aria-haspopup="menu" aria-expanded="' + (isActionsOpen ? 'true' : 'false') + '">' +
                 '<svg class="shift-actions-trigger-icon" viewBox="0 0 24 24" aria-hidden="true" focusable="false">' +
                   '<circle cx="6.5" cy="12" r="1.7"></circle>' +
                   '<circle cx="12" cy="12" r="1.7"></circle>' +
@@ -779,6 +780,14 @@
         .replace(/'/g, '&#39;');
     }
 
+    function escapeSelectorValue(value) {
+      var text = String(value || '');
+      if (window.CSS && typeof window.CSS.escape === 'function') {
+        return window.CSS.escape(text);
+      }
+      return text.replace(/\\/g, '\\\\').replace(/"/g, '\\"');
+    }
+
     function cleanDigits(value, maxLen) {
       return String(value || '').replace(/\D+/g, '').slice(0, maxLen);
     }
@@ -1467,9 +1476,9 @@
     function getShiftActionsMenuEls() {
       var scopeSelector = activeShiftMenuScope ? ('#' + activeShiftMenuScope + ' ') : '';
       return {
-        triggerEl: activeShiftMenuId ? document.querySelector(scopeSelector + '.shift-actions-trigger[data-id="' + activeShiftMenuId + '"]') : null,
+        triggerEl: activeShiftMenuId ? document.querySelector(scopeSelector + '.shift-actions-trigger[data-id="' + escapeSelectorValue(activeShiftMenuId) + '"]') : null,
         menuEl: SHIFT_ACTIONS_MENU,
-        shiftEl: activeShiftMenuId ? document.querySelector(scopeSelector + '.shift-item[data-shift-id="' + activeShiftMenuId + '"]') : null
+        shiftEl: activeShiftMenuId ? document.querySelector(scopeSelector + '.shift-item[data-shift-id="' + escapeSelectorValue(activeShiftMenuId) + '"]') : null
       };
     }
 
@@ -1546,8 +1555,9 @@
 
     function renderShiftActionsMenu(shiftId) {
       if (!SHIFT_ACTIONS_MENU) return;
+      var safeShiftId = escapeHtml(String(shiftId || ''));
       SHIFT_ACTIONS_MENU.innerHTML =
-        '<button class="shift-actions-item" type="button" data-action="edit" data-id="' + shiftId + '" role="menuitem">' +
+        '<button class="shift-actions-item" type="button" data-action="edit" data-id="' + safeShiftId + '" role="menuitem">' +
           '<span class="shift-actions-item-icon" aria-hidden="true">' +
             '<svg viewBox="0 0 24 24" focusable="false">' +
               '<path fill="currentColor" d="M3 17.25V21h3.75L18.3 9.45l-3.75-3.75L3 17.25Zm2.92 2.33H5v-.92l9.55-9.55.92.92-9.55 9.55ZM20.7 7.04a1 1 0 0 0 0-1.41l-2.33-2.33a1 1 0 0 0-1.42 0l-1.13 1.13 3.75 3.75 1.13-1.14Z"></path>' +
@@ -1555,7 +1565,7 @@
           '</span>' +
           '<span class="shift-actions-item-label">Редактировать</span>' +
         '</button>' +
-        '<button class="shift-actions-item is-danger" type="button" data-action="delete" data-id="' + shiftId + '" role="menuitem">' +
+        '<button class="shift-actions-item is-danger" type="button" data-action="delete" data-id="' + safeShiftId + '" role="menuitem">' +
           '<span class="shift-actions-item-icon" aria-hidden="true">' +
             '<svg viewBox="0 0 24 24" focusable="false">' +
               '<path fill="currentColor" d="M9 3h6a1 1 0 0 1 1 1v1h4a1 1 0 1 1 0 2h-1l-1 12a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 7H4a1 1 0 1 1 0-2h4V4a1 1 0 0 1 1-1Zm1 2h4V5h-4v0Zm-3 2 1 12h8l1-12H7Zm3 2a1 1 0 0 1 1 1v6a1 1 0 1 1-2 0v-6a1 1 0 0 1 1-1Zm4 0a1 1 0 0 1 1 1v6a1 1 0 1 1-2 0v-6a1 1 0 0 1 1-1Z"></path>' +
