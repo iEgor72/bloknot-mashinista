@@ -1701,9 +1701,11 @@
       text-align: center;
       color: var(--sub);
       font-size: 14px;
-      border-radius: 16px;
-      background: rgba(255, 255, 255, 0.03);
+      line-height: 1.55;
+      border-radius: 18px;
+      background: linear-gradient(180deg, rgba(255, 255, 255, 0.03), rgba(255, 255, 255, 0.012)), var(--card-hi);
       border: 1px solid var(--border);
+      box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.03);
     }
 
     .docs-upload-btn {
