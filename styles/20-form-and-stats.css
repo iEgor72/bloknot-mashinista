@@ -602,8 +602,8 @@
       min-height: 112px;
       resize: vertical;
       line-height: 1.45;
-      padding-top: 10px;
-      padding-bottom: 10px;
+      padding-top: 16px;
+      padding-bottom: 12px;
       font-family: 'Manrope', sans-serif;
     }
 

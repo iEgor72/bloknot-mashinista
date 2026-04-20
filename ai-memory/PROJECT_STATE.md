@@ -1,14 +1,14 @@
 # Project State
 
 <!-- AUTO_STATUS:START -->
-Generated: 2026-04-20 00:07:10 +0000
+Generated: 2026-04-20 07:06:21 +0000
 
 ## Repository Snapshot
 - Local repo path: `/opt/bloknot-mashinista`
 - Project memory path: `/opt/bloknot-mashinista/ai-memory`
 - Branch: `main`
-- HEAD: `c8ec176`
-- Last commit: `c8ec176 fix(ui): show train weight in shift cards`
+- HEAD: `94d0c35`
+- Last commit: `94d0c35 feat(ui): add notes field to shifts`
 
 ## Git Remote
 ```text
@@ -18,7 +18,7 @@ origin	https://github.com/iEgor72/bloknot-mashinista.git (push)
 
 ## Branch Tracking
 ```text
-* main c8ec176 [origin/main] fix(ui): show train weight in shift cards
+* main 94d0c35 [origin/main] feat(ui): add notes field to shifts
 ```
 
 ## Worktree

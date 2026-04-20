@@ -1,6 +1,6 @@
 # Worktree Status
 
-Generated: 2026-04-20 00:07:10 +0000
+Generated: 2026-04-20 07:06:21 +0000
 
 ## git status -sb
 ```text
@@ -19,15 +19,17 @@ Generated: 2026-04-20 00:07:10 +0000
 
 ## git branch -vv
 ```text
-* main c8ec176 [origin/main] fix(ui): show train weight in shift cards
+* main 94d0c35 [origin/main] feat(ui): add notes field to shifts
 ```
 
 ## HEAD
 ```text
-c8ec176 fix(ui): show train weight in shift cards
- ai-memory/CHANGELOG.md       | 16 ++++++++++++++++
- ai-memory/PROJECT_STATE.md   |  9 +++++----
- ai-memory/WORKTREE_STATUS.md | 26 +++++++++++++-------------
- scripts/time-utils.js        |  1 +
- 4 files changed, 35 insertions(+), 17 deletions(-)
+94d0c35 feat(ui): add notes field to shifts
+ ai-memory/PROJECT_STATE.md   | 10 +++++-----
+ ai-memory/WORKTREE_STATUS.md | 21 +++++++++------------
+ index.html                   | 16 ++++++++++++++++
+ scripts/render.js            |  4 ++++
+ scripts/shift-form.js        |  2 ++
+ styles/20-form-and-stats.css |  9 +++++++++
+ 6 files changed, 45 insertions(+), 17 deletions(-)
 ```
