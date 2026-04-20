@@ -93,12 +93,9 @@
       }
     };
     // ── Feature flags ──
-    // Keep these switches explicit so removed sections can be restored later without rebuilding logic from scratch.
     var PRO_MODE_ENABLED = false;
-    var STOPWATCH_TAB_ENABLED = false;
     var ACCESS_UNRESTRICTED = PRO_MODE_ENABLED !== true;
     var docsProUnlockedThisSession = ACCESS_UNRESTRICTED === true;
-    var stopwatchProUnlockedThisSession = ACCESS_UNRESTRICTED === true;
     var documentationStore = {
       activeTab: 'speeds'
     };
@@ -1459,38 +1456,6 @@
       return docsProUnlockedThisSession !== true;
     }
 
-    function isStopwatchProLocked() {
-      return stopwatchProUnlockedThisSession !== true;
-    }
-
-    function renderStopwatchProGate() {
-      var wrap = document.getElementById('timerProWrap');
-      var gate = document.getElementById('timerProGate');
-      var unlockBtn = document.getElementById('btnUnlockTimerPro');
-      var locked = isStopwatchProLocked();
-      var showGate = locked && activeTab === 'stopwatch';
-
-      if (wrap) {
-        wrap.classList.toggle('is-locked', locked);
-      }
-      if (gate) {
-        gate.classList.toggle('hidden', !showGate);
-        gate.setAttribute('aria-hidden', showGate ? 'false' : 'true');
-      }
-      if (unlockBtn) {
-        unlockBtn.disabled = !locked;
-      }
-    }
-
-    function unlockStopwatchProForSession() {
-      docsProUnlockedThisSession = true;
-      stopwatchProUnlockedThisSession = true;
-      renderDocsProGate();
-      renderStopwatchProGate();
-      renderDocumentationScreen();
-      if (typeof renderStopwatchScreen === 'function') renderStopwatchScreen();
-    }
-
     function renderDocsProGate() {
       var wrap = document.getElementById('docsProWrap');
       var gate = document.getElementById('docsProGate');
@@ -1512,18 +1477,14 @@
 
     function unlockDocsProForSession() {
       docsProUnlockedThisSession = true;
-      stopwatchProUnlockedThisSession = true;
       renderDocsProGate();
-      renderStopwatchProGate();
       renderDocumentationScreen();
-      if (typeof renderStopwatchScreen === 'function') renderStopwatchScreen();
     }
 
     function renderDocumentationScreen() {
       var shell = document.getElementById('docsShell');
       if (!shell) return;
       renderDocsProGate();
-      renderStopwatchProGate();
 
       // Sync active tab button state
       var tabBtns = shell.querySelectorAll('.docs-tab-btn[data-docs-tab]');

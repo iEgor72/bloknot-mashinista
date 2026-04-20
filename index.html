@@ -673,74 +673,6 @@
         </div>
       </section>
 
-      <!-- Timer Tab -->
-      <section class="tab-panel" data-tab="stopwatch">
-        <div class="timer-pro-wrap is-locked" id="timerProWrap">
-          <div class="timer-shell" id="timerShell">
-            <div class="dashboard-card timer-display-card">
-              <div class="dashboard-head timer-dashboard-head">
-                <div class="dashboard-eyebrow">Таймер</div>
-                <div class="dashboard-value timer-value"><span id="timerValue">00:00</span></div>
-              </div>
-              <div class="progress-track timer-progress-track">
-                <div class="progress-fill" id="timerProgressFill"></div>
-                <span class="progress-marker timer-progress-marker" id="timerMarkerKvt" aria-hidden="true"></span>
-                <span class="progress-marker timer-progress-marker" id="timerMarkerNabor" aria-hidden="true"></span>
-                <span class="progress-marker timer-progress-marker" id="timerMarkerMove" aria-hidden="true"></span>
-                <span class="progress-marker timer-progress-marker" id="timerMarkerSpravka" aria-hidden="true"></span>
-                <span class="progress-marker timer-progress-marker timer-progress-marker-danger" id="timerMarkerProbe" aria-hidden="true"></span>
-              </div>
-              <div class="dashboard-sub timer-stage-title" id="timerStageTitle">ГОТОВ К ЗАПУСКУ</div>
-              <div class="dashboard-norms timer-summary-grid" aria-live="polite">
-                <div class="dashboard-norm-item timer-summary-item">
-                  <span class="dashboard-norm-label">Следующий этап</span>
-                  <span class="dashboard-norm-value" id="timerStageMeta">00:35</span>
-                </div>
-                <div class="dashboard-norm-item timer-summary-item">
-                  <span class="dashboard-norm-label">Режим</span>
-                  <span class="dashboard-norm-value" id="timerModeLabel">ОБЫЧНЫЙ</span>
-                </div>
-              </div>
-            </div>
-
-            <div class="form-section timer-controls-card">
-              <button class="btn-primary timer-main-btn" id="timerMainBtn" type="button">
-                <span class="timer-main-btn-label" id="timerMainBtnLabel">Старт</span>
-                <span class="timer-main-btn-hint" id="timerMainBtnHint">Нажми, чтобы начать</span>
-              </button>
-            </div>
-
-            <details class="optional-card timer-stage-spoiler">
-              <summary class="optional-summary timer-stage-summary">
-                <div class="optional-summary-main">
-                  <div class="optional-summary-title">Порядок действий</div>
-                  <div class="optional-summary-subtitle">Этапы таймера и что делать дальше</div>
-                </div>
-                <div class="optional-summary-chevron">⌄</div>
-              </summary>
-              <div class="optional-card-body timer-stage-spoiler-body">
-                <div class="timer-stage-list" id="timerStageList"></div>
-              </div>
-            </details>
-          </div>
-        </div>
-      </section>
-
-      <div class="docs-pro-gate hidden timer-pro-gate" id="timerProGate" role="region" aria-live="polite" aria-label="Подтверждение доступа к таймеру">
-        <div class="docs-pro-card">
-          <div class="docs-pro-icon" aria-hidden="true">
-            <svg viewBox="0 0 24 24" focusable="false">
-              <path d="M7 10V8a5 5 0 0 1 10 0v2"></path>
-              <rect x="5" y="10" width="14" height="10" rx="3" ry="3"></rect>
-              <path d="M12 14v3"></path>
-            </svg>
-          </div>
-          <div class="docs-pro-title">PRO-функция</div>
-          <div class="docs-pro-text">Доступ к разделу открывается после покупки PRO-версии. Сейчас открываем бесплатно.</div>
-          <button class="btn-secondary docs-pro-unlock-btn" id="btnUnlockTimerPro" type="button">Открыть бесплатно</button>
-        </div>
-      </div>
-
       <!-- Documentation Tab -->
       <section class="tab-panel" data-tab="instructions">
         <div class="docs-pro-wrap is-locked" id="docsProWrap">
@@ -784,6 +716,34 @@
             </div>
           </div>
 
+        </div>
+      </section>
+
+      <section class="tab-panel" data-tab="shifts">
+        <div class="month-nav shifts-month-nav shifts-page-nav">
+          <div class="month-nav-top">
+            <button class="month-btn" id="btnPrevShiftsMonth" type="button" aria-label="Предыдущий месяц">‹</button>
+            <div class="month-header">
+              <div class="month-title" id="shiftsMonthTitle"></div>
+              <div class="month-quarter" id="shiftsMonthQuarter"></div>
+            </div>
+            <button class="month-btn" id="btnNextShiftsMonth" type="button" aria-label="Следующий месяц">›</button>
+          </div>
+          <div class="month-tabs" id="shiftsMonthTabs" aria-label="Месяцы квартала"></div>
+        </div>
+        <div class="shifts-section shifts-page-section">
+          <div class="section-header" id="shiftsHeader">Журнал смен</div>
+          <div class="shifts-overview" aria-label="Краткая сводка по сменам">
+            <div class="shifts-overview-chip">
+              <span class="shifts-overview-label">Всего смен</span>
+              <span class="shifts-overview-value" id="shiftsOverviewCount">0</span>
+            </div>
+            <div class="shifts-overview-chip">
+              <span class="shifts-overview-label">Отработано</span>
+              <span class="shifts-overview-value" id="shiftsOverviewTotal">0 ч</span>
+            </div>
+          </div>
+          <div id="shiftsList"></div>
         </div>
       </section>
     </div>
@@ -858,49 +818,11 @@
         <span class="tab-label">Документы</span>
       </button>
     </nav>
-  </div>
 
   <!-- Shared Overlay Layer -->
   <div class="ui-overlay-root" id="uiOverlayRoot" aria-hidden="true"></div>
   <div class="shift-actions-backdrop hidden" id="shiftActionsBackdrop" aria-hidden="true"></div>
   <div class="shift-actions-menu hidden" id="shiftActionsMenu" role="menu" aria-hidden="true"></div>
-
-  <!-- Shifts Bottom Sheet -->
-  <div class="overlay" id="overlayShifts">
-    <div class="bottom-sheet shifts-sheet">
-      <div class="shifts-sheet-handle-wrap" aria-hidden="true">
-        <span class="shifts-sheet-handle"></span>
-      </div>
-      <div class="month-nav shifts-month-nav">
-        <div class="month-nav-top">
-          <button class="month-btn" id="btnPrevShiftsMonth" type="button" aria-label="Предыдущий месяц">‹</button>
-          <div class="month-header">
-            <div class="month-title" id="shiftsMonthTitle"></div>
-            <div class="month-quarter" id="shiftsMonthQuarter"></div>
-          </div>
-          <button class="month-btn" id="btnNextShiftsMonth" type="button" aria-label="Следующий месяц">›</button>
-        </div>
-        <div class="month-tabs" id="shiftsMonthTabs" aria-label="Месяцы квартала"></div>
-      </div>
-      <div class="shifts-section">
-        <div class="section-header" id="shiftsHeader">Журнал смен</div>
-        <div class="shifts-overview" aria-label="Краткая сводка по сменам">
-          <div class="shifts-overview-chip">
-            <span class="shifts-overview-label">Всего смен</span>
-            <span class="shifts-overview-value" id="shiftsOverviewCount">0</span>
-          </div>
-          <div class="shifts-overview-chip">
-            <span class="shifts-overview-label">Отработано</span>
-            <span class="shifts-overview-value" id="shiftsOverviewTotal">0 ч</span>
-          </div>
-        </div>
-        <div id="shiftsList"></div>
-      </div>
-      <div class="shifts-sheet-actions">
-        <button class="btn-sheet-save shifts-sheet-close-btn" id="btnCloseShiftsBottom" type="button">Готово</button>
-      </div>
-    </div>
-  </div>
 
   <!-- Salary Settings Bottom Sheet -->
   <div class="overlay" id="overlaySalarySettings">
@@ -1101,8 +1023,6 @@
   <script src="/scripts/app.js" defer></script>
   <script src="/scripts/auth.js" defer></script>
   <script src="/scripts/render.js" defer></script>
-  <script src="/scripts/stopwatch-engine.js" defer></script>
-  <script src="/scripts/stopwatch-app.js" defer></script>
   <script src="/scripts/shift-form.js" defer></script>
   <script src="/scripts/app-init.js" defer></script>
   <script src="/scripts/sw-register.js" defer></script>

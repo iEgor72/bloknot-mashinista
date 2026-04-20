@@ -1,14 +1,14 @@
 # Project State
 
 <!-- AUTO_STATUS:START -->
-Generated: 2026-04-20 07:19:37 +0000
+Generated: 2026-04-20 21:22:57 +0000
 
 ## Repository Snapshot
 - Local repo path: `/opt/bloknot-mashinista`
 - Project memory path: `/opt/bloknot-mashinista/ai-memory`
 - Branch: `main`
-- HEAD: `49bc7b1`
-- Last commit: `49bc7b1 fix(ui): polish notes textarea styling`
+- HEAD: `d5de8f9`
+- Last commit: `d5de8f9 refactor(ui): restore shifts nav and disable pro flow`
 
 ## Git Remote
 ```text
@@ -18,7 +18,7 @@ origin	https://github.com/iEgor72/bloknot-mashinista.git (push)
 
 ## Branch Tracking
 ```text
-* main 49bc7b1 [origin/main] fix(ui): polish notes textarea styling
+* main d5de8f9 [origin/main] refactor(ui): restore shifts nav and disable pro flow
 ```
 
 ## Worktree

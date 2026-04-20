@@ -58,15 +58,12 @@
     function enterEditMode(shift, options) {
       if (!shift) return;
       var opts = options || {};
-      var returnTab = opts.returnTab || (isOverlayOpen('overlayShifts') ? 'shifts' : (activeTab || 'home'));
+      var returnTab = opts.returnTab || (activeTab || 'home');
       if (returnTab === 'add') returnTab = 'home';
       editReturnTab = returnTab;
 
       editingShiftId = shift.id;
       clearRecentAddHighlight();
-      if (isOverlayOpen('overlayShifts')) {
-        closeOverlay('overlayShifts');
-      }
       mountEditFormIntoOverlay();
       setFormMode('edit');
       document.getElementById('formTitle').textContent = 'Редактировать смену';
@@ -110,11 +107,7 @@
       renderDraftShiftSummary();
       var targetTab = nextTab || editReturnTab || 'home';
       editReturnTab = 'shifts';
-      if (targetTab === 'shifts') {
-        openOverlay('overlayShifts');
-      } else {
-        setActiveTab(targetTab);
-      }
+      setActiveTab(targetTab);
       render();
     }
 
@@ -127,7 +120,7 @@
       var shift = findShiftById(id);
       if (!shift) return;
       triggerHapticTapLight();
-      enterEditMode(shift, { returnTab: isOverlayOpen('overlayShifts') ? 'shifts' : activeTab });
+      enterEditMode(shift, { returnTab: activeTab });
     }
 
     document.getElementById('btnConfirmDelete').addEventListener('click', function() {
@@ -655,9 +648,6 @@
 
     function closeOverlay(id) {
       setOverlayOpenState(id, false);
-      if (id === 'overlayShifts' && activeTab === 'shifts') {
-        setActiveTab('home');
-      }
       if (id === 'overlayConfirm' && pendingDeleteId) {
         pendingDeleteId = null;
         render();
@@ -759,15 +749,6 @@ if (action === 'scroll-node') {
       });
     }
 
-    var unlockTimerProBtn = document.getElementById('btnUnlockTimerPro');
-    if (unlockTimerProBtn) {
-      unlockTimerProBtn.addEventListener('click', function() {
-        triggerHapticActionMedium();
-        unlockStopwatchProForSession();
-        showSaveToast('PRO открыт');
-      });
-    }
-
     // ── Documentation sub-tab switching + file actions ─────────────────────
     var docsShellEl = document.getElementById('docsShell');
     if (docsShellEl) {
@@ -829,26 +810,18 @@ if (action === 'scroll-node') {
           if (!isSameTab) {
             triggerHapticTapSoft();
           }
-          if (isOverlayOpen('overlayShifts')) {
-            closeOverlay('overlayShifts');
-          }
           openAddTabAndFocusForm();
           return;
         }
         if (tab === 'shifts') {
-          triggerHapticSelection();
-          if (document.body && document.body.dataset) {
-            document.body.dataset.shiftsMotion = 'up';
+          if (!isSameTab) {
+            triggerHapticSelection();
           }
           setActiveTab('shifts');
-          openOverlay('overlayShifts');
           window.setTimeout(function() {
             render();
           }, 20);
           return;
-        }
-        if (isOverlayOpen('overlayShifts')) {
-          closeOverlay('overlayShifts');
         }
         if (!isSameTab) {
           triggerHapticSelection();
@@ -861,22 +834,10 @@ if (action === 'scroll-node') {
     if (goToShiftsBtn) {
       goToShiftsBtn.addEventListener('click', function() {
         triggerHapticSelection();
-        if (document.body && document.body.dataset) {
-          document.body.dataset.shiftsMotion = 'up';
-        }
         setActiveTab('shifts');
-        openOverlay('overlayShifts');
         window.setTimeout(function() {
           render();
         }, 20);
-      });
-    }
-
-    var closeShiftsBottomBtn = document.getElementById('btnCloseShiftsBottom');
-    if (closeShiftsBottomBtn) {
-      closeShiftsBottomBtn.addEventListener('click', function() {
-        triggerHapticSuccess();
-        closeOverlay('overlayShifts');
       });
     }
 

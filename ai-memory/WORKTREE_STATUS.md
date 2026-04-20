@@ -1,6 +1,6 @@
 # Worktree Status
 
-Generated: 2026-04-20 07:19:37 +0000
+Generated: 2026-04-20 21:22:57 +0000
 
 ## git status -sb
 ```text
@@ -19,15 +19,18 @@ Generated: 2026-04-20 07:19:37 +0000
 
 ## git branch -vv
 ```text
-* main 49bc7b1 [origin/main] fix(ui): polish notes textarea styling
+* main d5de8f9 [origin/main] refactor(ui): restore shifts nav and disable pro flow
 ```
 
 ## HEAD
 ```text
-49bc7b1 fix(ui): polish notes textarea styling
+d5de8f9 refactor(ui): restore shifts nav and disable pro flow
  ai-memory/CHANGELOG.md       |  8 ++++++++
  ai-memory/PROJECT_STATE.md   |  8 ++++----
- ai-memory/WORKTREE_STATUS.md | 12 ++++++------
- styles/20-form-and-stats.css | 13 ++++++++++---
- 4 files changed, 28 insertions(+), 13 deletions(-)
+ ai-memory/WORKTREE_STATUS.md | 10 +++++-----
+ index.html                   | 29 ++++++++++++++---------------
+ scripts/app.js               |  8 +++++---
+ scripts/auth.js              | 14 ++++++++++----
+ scripts/shift-form.js        | 25 +++++++++++++++++++++++++
+ 7 files changed, 71 insertions(+), 31 deletions(-)
 ```

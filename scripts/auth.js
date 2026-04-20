@@ -349,17 +349,8 @@
 
     function handleTabActivated(tab) {
       if (typeof renderDocsProGate === 'function') renderDocsProGate();
-      if (typeof renderStopwatchProGate === 'function') renderStopwatchProGate();
       if (tab === 'instructions') {
         renderDocumentationScreen();
-      }
-      if (tab === 'stopwatch' && typeof STOPWATCH_TAB_ENABLED !== 'undefined' && STOPWATCH_TAB_ENABLED !== true) {
-        return;
-      }
-      if (tab === 'stopwatch') {
-        if (typeof renderStopwatchScreen === 'function') {
-          renderStopwatchScreen();
-        }
       }
     }
 
@@ -369,8 +360,7 @@
         shifts: 1,
         add: 2,
         salary: 3,
-        instructions: 4,
-        stopwatch: 5
+        instructions: 4
       };
       var fromIndex = order.hasOwnProperty(fromTab) ? order[fromTab] : -1;
       var toIndex = order.hasOwnProperty(toTab) ? order[toTab] : -1;
@@ -382,9 +372,6 @@
       closeShiftActionsMenu(true);
       closeLocoSeriesMenu();
       var previousTab = activeTab || 'home';
-      if (tab === 'stopwatch' && typeof STOPWATCH_TAB_ENABLED !== 'undefined' && STOPWATCH_TAB_ENABLED !== true) {
-        tab = 'salary';
-      }
       activeTab = tab || 'home';
 
       var panels = document.querySelectorAll('.tab-panel');
