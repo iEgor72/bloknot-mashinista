@@ -1359,6 +1359,7 @@
         train_weight: cleanDigits(getFieldValue('inputTrainWeight'), 4),
         train_axles: cleanDigits(getFieldValue('inputTrainAxles'), 3),
         train_length: cleanDigits(getFieldValue('inputTrainLength'), 3),
+        notes: getFieldValue('inputShiftNotes').trim(),
         route_kind: routeKind,
         route_from: routeKind === 'trip' ? getFieldValue('inputRouteFrom') : '',
         route_to: routeKind === 'trip' ? getFieldValue('inputRouteTo') : '',
@@ -1387,6 +1388,7 @@
       setFieldValue('inputTrainWeight', shift.train_weight || '');
       setFieldValue('inputTrainAxles', shift.train_axles || '');
       setFieldValue('inputTrainLength', shift.train_length || '');
+      setFieldValue('inputShiftNotes', shift.notes || '');
       setFieldValue('inputRouteFrom', shift.route_from || '');
       setFieldValue('inputRouteTo', shift.route_to || '');
       setFieldValue('inputFuelReceiveCoeffA', normalizeFuelCoeff(shift.fuel_receive_coeff_a, shift.fuel_receive_coeff || DEFAULT_FUEL_COEFF));
@@ -1404,6 +1406,7 @@
       setRouteType(shift.route_kind === 'trip' ? 'trip' : 'depot');
       setOptionalCardOpen('optionalLocoCard', !!(shift.locomotive_series || shift.locomotive_number));
       setOptionalCardOpen('optionalTrainCard', !!(shift.train_number || shift.train_weight || shift.train_axles || shift.train_length));
+      setOptionalCardOpen('optionalNotesCard', !!shift.notes);
       setOptionalCardOpen('optionalRouteCard', !!(shift.route_kind === 'trip' || shift.route_from || shift.route_to));
       setOptionalCardOpen('optionalFuelCard', hasFuelData(shift));
       updateFuelKgOutputs();
@@ -1418,6 +1421,7 @@
         train_weight: '',
         train_axles: '',
         train_length: '',
+        notes: '',
         route_kind: 'depot',
         route_from: '',
         route_to: '',

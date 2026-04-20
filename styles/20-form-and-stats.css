@@ -598,6 +598,15 @@
       border-bottom-color: var(--accent);
     }
 
+    .optional-textarea {
+      min-height: 112px;
+      resize: vertical;
+      line-height: 1.45;
+      padding-top: 10px;
+      padding-bottom: 10px;
+      font-family: 'Manrope', sans-serif;
+    }
+
     select.optional-control,
     .optional-select {
       padding-right: 28px;

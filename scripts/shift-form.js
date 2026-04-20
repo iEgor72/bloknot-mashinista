@@ -78,6 +78,7 @@
       applyOptionalShiftData(shift);
       setOptionalCardOpen('optionalRouteCard', false);
       setOptionalCardOpen('optionalTrainCard', false);
+      setOptionalCardOpen('optionalNotesCard', false);
       setOptionalCardOpen('optionalLocoCard', false);
       setOptionalCardOpen('optionalFuelCard', false);
       document.getElementById('btnAdd').textContent = 'Сохранить изменения';
@@ -525,6 +526,7 @@
         train_weight: optionalData.train_weight,
         train_axles: optionalData.train_axles,
         train_length: optionalData.train_length,
+        notes: optionalData.notes,
         route_kind: optionalData.route_kind,
         route_from: optionalData.route_from,
         route_to: optionalData.route_to,

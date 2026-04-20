@@ -1,14 +1,14 @@
 # Project State
 
 <!-- AUTO_STATUS:START -->
-Generated: 2026-04-19 21:10:22 +0000
+Generated: 2026-04-20 00:07:10 +0000
 
 ## Repository Snapshot
 - Local repo path: `/opt/bloknot-mashinista`
 - Project memory path: `/opt/bloknot-mashinista/ai-memory`
 - Branch: `main`
-- HEAD: `c683835`
-- Last commit: `c683835 Revert "refactor(ui): reuse shared pro gate for timer and docs"`
+- HEAD: `c8ec176`
+- Last commit: `c8ec176 fix(ui): show train weight in shift cards`
 
 ## Git Remote
 ```text
@@ -18,17 +18,17 @@ origin	https://github.com/iEgor72/bloknot-mashinista.git (push)
 
 ## Branch Tracking
 ```text
-* main c683835 [origin/main] Revert "refactor(ui): reuse shared pro gate for timer and docs"
+* main c8ec176 [origin/main] fix(ui): show train weight in shift cards
 ```
 
 ## Worktree
 ```text
 M ai-memory/ARCHITECTURE.md
- M ai-memory/CHANGELOG.md
  M ai-memory/INDEX.md
  M ai-memory/RECENT_COMMITS.md
  M scripts/stopwatch-engine.js
 ?? ai-memory/sessions/2026-04-19.md
+?? ai-memory/sessions/2026-04-20.md
 ?? docs/
 ?? scripts/__pycache__/
 ?? tools/__pycache__/

@@ -1,17 +1,17 @@
 # Worktree Status
 
-Generated: 2026-04-19 21:10:22 +0000
+Generated: 2026-04-20 00:07:10 +0000
 
 ## git status -sb
 ```text
 ## main...origin/main
  M ai-memory/ARCHITECTURE.md
- M ai-memory/CHANGELOG.md
  M ai-memory/INDEX.md
  M ai-memory/PROJECT_STATE.md
  M ai-memory/RECENT_COMMITS.md
  M scripts/stopwatch-engine.js
 ?? ai-memory/sessions/2026-04-19.md
+?? ai-memory/sessions/2026-04-20.md
 ?? docs/
 ?? scripts/__pycache__/
 ?? tools/__pycache__/
@@ -19,18 +19,15 @@ Generated: 2026-04-19 21:10:22 +0000
 
 ## git branch -vv
 ```text
-* main c683835 [origin/main] Revert "refactor(ui): reuse shared pro gate for timer and docs"
+* main c8ec176 [origin/main] fix(ui): show train weight in shift cards
 ```
 
 ## HEAD
 ```text
-c683835 Revert "refactor(ui): reuse shared pro gate for timer and docs"
- ai-memory/CHANGELOG.md       |  8 --------
- ai-memory/PROJECT_STATE.md   |  8 ++++----
- ai-memory/WORKTREE_STATUS.md | 21 ++++++++++++---------
- index.html                   | 19 +++++++++++++++++--
- scripts/app.js               | 37 ++++++++++++++++++++-----------------
- scripts/shift-form.js        | 15 ++++++++++++---
- styles/35-timer.css          |  4 ++++
- 7 files changed, 69 insertions(+), 43 deletions(-)
+c8ec176 fix(ui): show train weight in shift cards
+ ai-memory/CHANGELOG.md       | 16 ++++++++++++++++
+ ai-memory/PROJECT_STATE.md   |  9 +++++----
+ ai-memory/WORKTREE_STATUS.md | 26 +++++++++++++-------------
+ scripts/time-utils.js        |  1 +
+ 4 files changed, 35 insertions(+), 17 deletions(-)
 ```
