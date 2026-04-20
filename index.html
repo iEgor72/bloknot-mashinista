@@ -813,16 +813,18 @@
         </span>
         <span class="tab-label">Главная</span>
       </button>
-      <button class="tab-btn nav-item" type="button" data-tab="salary">
+      <button class="tab-btn nav-item" type="button" data-tab="shifts">
         <span class="tab-icon" aria-hidden="true">
           <svg viewBox="0 0 24 24">
-            <path d="M4 8h16v10H4z"></path>
-            <path d="M8 8V6h8v2"></path>
+            <path d="M7 6h10"></path>
             <path d="M7 12h10"></path>
-            <path d="M7 15h6"></path>
+            <path d="M7 18h10"></path>
+            <circle cx="4" cy="6" r="1"></circle>
+            <circle cx="4" cy="12" r="1"></circle>
+            <circle cx="4" cy="18" r="1"></circle>
           </svg>
         </span>
-        <span class="tab-label">Зарплата</span>
+        <span class="tab-label">Смены</span>
       </button>
 
       <!-- FAB — inline flex slot, 3rd position -->
@@ -835,20 +837,18 @@
         <span class="fab-label">Добавить</span>
       </button>
 
-      <button class="tab-btn nav-item nav-item-pro" type="button" data-tab="stopwatch">
+      <button class="tab-btn nav-item" type="button" data-tab="salary">
         <span class="tab-icon" aria-hidden="true">
           <svg viewBox="0 0 24 24">
-            <circle cx="12" cy="13" r="7"></circle>
-            <path d="M12 13V9.5"></path>
-            <path d="M12 13l2.5 1.8"></path>
-            <path d="M9 3h6"></path>
-            <path d="M15.5 5.2 17 3.7"></path>
+            <path d="M4 8h16v10H4z"></path>
+            <path d="M8 8V6h8v2"></path>
+            <path d="M7 12h10"></path>
+            <path d="M7 15h6"></path>
           </svg>
         </span>
-        <span class="tab-label">Таймер</span>
-        <span class="tab-badge-pro-corner">PRO</span>
+        <span class="tab-label">Зарплата</span>
       </button>
-      <button class="tab-btn nav-item nav-item-pro" type="button" data-tab="instructions">
+      <button class="tab-btn nav-item" type="button" data-tab="instructions">
         <span class="tab-icon" aria-hidden="true">
           <svg viewBox="0 0 24 24">
             <path d="M3 7a2 2 0 0 1 2-2h4.17a2 2 0 0 1 1.42.59L12 7h7a2 2 0 0 1 2 2v9a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V7z"></path>
@@ -856,7 +856,6 @@
           </svg>
         </span>
         <span class="tab-label">Документы</span>
-        <span class="tab-badge-pro-corner">PRO</span>
       </button>
     </nav>
   </div>

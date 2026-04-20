@@ -655,6 +655,9 @@
 
     function closeOverlay(id) {
       setOverlayOpenState(id, false);
+      if (id === 'overlayShifts' && activeTab === 'shifts') {
+        setActiveTab('home');
+      }
       if (id === 'overlayConfirm' && pendingDeleteId) {
         pendingDeleteId = null;
         render();
@@ -826,8 +829,26 @@ if (action === 'scroll-node') {
           if (!isSameTab) {
             triggerHapticTapSoft();
           }
+          if (isOverlayOpen('overlayShifts')) {
+            closeOverlay('overlayShifts');
+          }
           openAddTabAndFocusForm();
           return;
+        }
+        if (tab === 'shifts') {
+          triggerHapticSelection();
+          if (document.body && document.body.dataset) {
+            document.body.dataset.shiftsMotion = 'up';
+          }
+          setActiveTab('shifts');
+          openOverlay('overlayShifts');
+          window.setTimeout(function() {
+            render();
+          }, 20);
+          return;
+        }
+        if (isOverlayOpen('overlayShifts')) {
+          closeOverlay('overlayShifts');
         }
         if (!isSameTab) {
           triggerHapticSelection();
@@ -840,6 +861,10 @@ if (action === 'scroll-node') {
     if (goToShiftsBtn) {
       goToShiftsBtn.addEventListener('click', function() {
         triggerHapticSelection();
+        if (document.body && document.body.dataset) {
+          document.body.dataset.shiftsMotion = 'up';
+        }
+        setActiveTab('shifts');
         openOverlay('overlayShifts');
         window.setTimeout(function() {
           render();

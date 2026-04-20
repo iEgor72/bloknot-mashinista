@@ -353,6 +353,9 @@
       if (tab === 'instructions') {
         renderDocumentationScreen();
       }
+      if (tab === 'stopwatch' && typeof STOPWATCH_TAB_ENABLED !== 'undefined' && STOPWATCH_TAB_ENABLED !== true) {
+        return;
+      }
       if (tab === 'stopwatch') {
         if (typeof renderStopwatchScreen === 'function') {
           renderStopwatchScreen();
@@ -364,10 +367,10 @@
       var order = {
         home: 0,
         shifts: 1,
-        salary: 1,
         add: 2,
-        stopwatch: 3,
-        instructions: 4
+        salary: 3,
+        instructions: 4,
+        stopwatch: 5
       };
       var fromIndex = order.hasOwnProperty(fromTab) ? order[fromTab] : -1;
       var toIndex = order.hasOwnProperty(toTab) ? order[toTab] : -1;
@@ -379,6 +382,9 @@
       closeShiftActionsMenu(true);
       closeLocoSeriesMenu();
       var previousTab = activeTab || 'home';
+      if (tab === 'stopwatch' && typeof STOPWATCH_TAB_ENABLED !== 'undefined' && STOPWATCH_TAB_ENABLED !== true) {
+        tab = 'salary';
+      }
       activeTab = tab || 'home';
 
       var panels = document.querySelectorAll('.tab-panel');
@@ -414,7 +420,7 @@
       for (var j = 0; j < navButtons.length; j++) {
         var btn = navButtons[j];
         var btnTab = btn.getAttribute('data-tab');
-        var shouldBeActive = btnTab === activeTab || (activeTab === 'shifts' && btnTab === 'home');
+        var shouldBeActive = btnTab === activeTab;
         btn.classList.toggle('active', shouldBeActive);
       }
 

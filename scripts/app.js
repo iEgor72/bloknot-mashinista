@@ -92,9 +92,11 @@
         }
       }
     };
-    // ── Documentation store ──
-    // ACCESS_UNRESTRICTED = true disables docs gate completely.
-    var ACCESS_UNRESTRICTED = false;
+    // ── Feature flags ──
+    // Keep these switches explicit so removed sections can be restored later without rebuilding logic from scratch.
+    var PRO_MODE_ENABLED = false;
+    var STOPWATCH_TAB_ENABLED = false;
+    var ACCESS_UNRESTRICTED = PRO_MODE_ENABLED !== true;
     var docsProUnlockedThisSession = ACCESS_UNRESTRICTED === true;
     var stopwatchProUnlockedThisSession = ACCESS_UNRESTRICTED === true;
     var documentationStore = {
