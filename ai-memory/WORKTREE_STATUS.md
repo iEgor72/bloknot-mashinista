@@ -1,11 +1,12 @@
 # Worktree Status
 
-Generated: 2026-04-19 15:39:26 +0000
+Generated: 2026-04-19 21:10:22 +0000
 
 ## git status -sb
 ```text
-## main...origin/main [ahead 2]
+## main...origin/main
  M ai-memory/ARCHITECTURE.md
+ M ai-memory/CHANGELOG.md
  M ai-memory/INDEX.md
  M ai-memory/PROJECT_STATE.md
  M ai-memory/RECENT_COMMITS.md
@@ -18,19 +19,18 @@ Generated: 2026-04-19 15:39:26 +0000
 
 ## git branch -vv
 ```text
-* main 4695d6e [origin/main: ahead 2] fix(security): reduce exposure of runtime and api internals
+* main c683835 [origin/main] Revert "refactor(ui): reuse shared pro gate for timer and docs"
 ```
 
 ## HEAD
 ```text
-4695d6e fix(security): reduce exposure of runtime and api internals
- ai-memory/CHANGELOG.md       |  8 ++++++++
- ai-memory/PROJECT_STATE.md   | 14 ++++----------
- ai-memory/WORKTREE_STATUS.md | 24 +++++++++++------------
- functions/api/auth.js        |  1 -
- functions/api/docs.js        |  1 -
- functions/api/shifts.js      |  1 -
- functions/api/stats.js       |  1 -
- server.js                    | 46 +++++++++++++++++++++++++++++++++++++++++++-
- 8 files changed, 68 insertions(+), 28 deletions(-)
+c683835 Revert "refactor(ui): reuse shared pro gate for timer and docs"
+ ai-memory/CHANGELOG.md       |  8 --------
+ ai-memory/PROJECT_STATE.md   |  8 ++++----
+ ai-memory/WORKTREE_STATUS.md | 21 ++++++++++++---------
+ index.html                   | 19 +++++++++++++++++--
+ scripts/app.js               | 37 ++++++++++++++++++++-----------------
+ scripts/shift-form.js        | 15 ++++++++++++---
+ styles/35-timer.css          |  4 ++++
+ 7 files changed, 69 insertions(+), 43 deletions(-)
 ```

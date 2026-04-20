@@ -639,6 +639,7 @@
       var loco = getLocoSummary(shift);
       if (loco) items.push({ icon: 'locomotive', text: loco.replace('№ ', '№') });
       if (shift.train_number) items.push({ icon: 'train', text: '№' + shift.train_number });
+      if (shift.train_weight) items.push({ icon: 'train', text: shift.train_weight + ' т' });
       if (shift.train_length) items.push({ icon: 'wagon', text: shift.train_length + ' ваг' });
       if (shift.train_axles) items.push({ icon: 'axles', text: shift.train_axles + ' оси' });
       return items;
