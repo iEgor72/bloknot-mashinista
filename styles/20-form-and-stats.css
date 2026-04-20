@@ -448,6 +448,10 @@
       padding: 10px 16px 16px;
     }
 
+    #optionalNotesCard .optional-card-body {
+      padding: 14px 16px 16px;
+    }
+
     .optional-grid {
       display: grid;
       gap: 10px;
@@ -602,13 +606,13 @@
       min-height: 112px;
       resize: vertical;
       line-height: 1.45;
-      padding-top: 20px;
+      padding-top: 16px;
       padding-bottom: 12px;
       font-family: 'Manrope', sans-serif;
     }
 
     #optionalNotesCard .field {
-      gap: 12px;
+      gap: 10px;
     }
 
     select.optional-control,
