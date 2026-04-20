@@ -1,14 +1,14 @@
 # Project State
 
 <!-- AUTO_STATUS:START -->
-Generated: 2026-04-20 21:22:57 +0000
+Generated: 2026-04-20 21:39:32 +0000
 
 ## Repository Snapshot
 - Local repo path: `/opt/bloknot-mashinista`
 - Project memory path: `/opt/bloknot-mashinista/ai-memory`
 - Branch: `main`
-- HEAD: `d5de8f9`
-- Last commit: `d5de8f9 refactor(ui): restore shifts nav and disable pro flow`
+- HEAD: `c4d3998`
+- Last commit: `c4d3998 refactor(ui): remove timer and restore shifts page`
 
 ## Git Remote
 ```text
@@ -18,7 +18,7 @@ origin	https://github.com/iEgor72/bloknot-mashinista.git (push)
 
 ## Branch Tracking
 ```text
-* main d5de8f9 [origin/main] refactor(ui): restore shifts nav and disable pro flow
+* main c4d3998 [origin/main] refactor(ui): remove timer and restore shifts page
 ```
 
 ## Worktree
@@ -26,7 +26,6 @@ origin	https://github.com/iEgor72/bloknot-mashinista.git (push)
 M ai-memory/ARCHITECTURE.md
  M ai-memory/INDEX.md
  M ai-memory/RECENT_COMMITS.md
- M scripts/stopwatch-engine.js
 ?? ai-memory/sessions/2026-04-19.md
 ?? ai-memory/sessions/2026-04-20.md
 ?? docs/

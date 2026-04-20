@@ -592,9 +592,10 @@
       position: static;
       transform: none;
       font-family: 'JetBrains Mono', monospace;
-      font-size: 21px;
+      font-size: clamp(16px, 4.4vw, 21px);
       font-weight: 700;
       line-height: 1.05;
+      letter-spacing: -0.05em;
       color: var(--text);
       min-width: 0;
       width: 100%;
@@ -622,6 +623,7 @@
     .quick-stat.quick-stat-primary .quick-stat-value {
       font-size: 27px;
       font-weight: 700;
+      letter-spacing: -0.03em;
     }
 
     .quick-stat.quick-stat-primary .stat-label {
@@ -643,6 +645,24 @@
       line-height: 1.3;
       min-height: 2.6em;
       overflow: visible;
+    }
+
+    @media (max-width: 380px) {
+      .quick-stats-row {
+        gap: 8px;
+      }
+
+      .quick-stat {
+        padding: 14px 8px 12px;
+      }
+
+      .quick-stat-value {
+        font-size: 15px;
+      }
+
+      .quick-stat.quick-stat-primary .quick-stat-value {
+        font-size: 25px;
+      }
     }
 
     .quick-stat-value.is-updated {

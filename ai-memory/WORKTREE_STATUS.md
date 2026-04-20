@@ -1,6 +1,6 @@
 # Worktree Status
 
-Generated: 2026-04-20 21:22:57 +0000
+Generated: 2026-04-20 21:39:32 +0000
 
 ## git status -sb
 ```text
@@ -9,7 +9,6 @@ Generated: 2026-04-20 21:22:57 +0000
  M ai-memory/INDEX.md
  M ai-memory/PROJECT_STATE.md
  M ai-memory/RECENT_COMMITS.md
- M scripts/stopwatch-engine.js
 ?? ai-memory/sessions/2026-04-19.md
 ?? ai-memory/sessions/2026-04-20.md
 ?? docs/
@@ -19,18 +18,21 @@ Generated: 2026-04-20 21:22:57 +0000
 
 ## git branch -vv
 ```text
-* main d5de8f9 [origin/main] refactor(ui): restore shifts nav and disable pro flow
+* main c4d3998 [origin/main] refactor(ui): remove timer and restore shifts page
 ```
 
 ## HEAD
 ```text
-d5de8f9 refactor(ui): restore shifts nav and disable pro flow
- ai-memory/CHANGELOG.md       |  8 ++++++++
- ai-memory/PROJECT_STATE.md   |  8 ++++----
- ai-memory/WORKTREE_STATUS.md | 10 +++++-----
- index.html                   | 29 ++++++++++++++---------------
- scripts/app.js               |  8 +++++---
- scripts/auth.js              | 14 ++++++++++----
- scripts/shift-form.js        | 25 +++++++++++++++++++++++++
- 7 files changed, 71 insertions(+), 31 deletions(-)
+c4d3998 refactor(ui): remove timer and restore shifts page
+ ai-memory/CHANGELOG.md       |  16 ++
+ ai-memory/PROJECT_STATE.md   |   8 +-
+ ai-memory/WORKTREE_STATUS.md |  15 +-
+ index.html                   | 136 ++++-----------
+ scripts/app.js               |  39 -----
+ scripts/auth.js              |  15 +-
+ scripts/shift-form.js        |  49 +-----
+ scripts/stopwatch-app.js     | 302 +--------------------------------
+ scripts/stopwatch-engine.js  | 141 +---------------
+ styles/35-timer.css          | 389 +------------------------------------------
+ 10 files changed, 68 insertions(+), 1042 deletions(-)
 ```
