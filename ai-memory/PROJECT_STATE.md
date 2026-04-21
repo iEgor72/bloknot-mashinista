@@ -1,14 +1,14 @@
 # Project State
 
 <!-- AUTO_STATUS:START -->
-Generated: 2026-04-21 09:08:32 +0000
+Generated: 2026-04-21 09:10:12 +0000
 
 ## Repository Snapshot
 - Local repo path: `/opt/bloknot-mashinista`
 - Project memory path: `/opt/bloknot-mashinista/ai-memory`
 - Branch: `main`
-- HEAD: `762da28`
-- Last commit: `762da28 fix(seo): replace outdated promo image`
+- HEAD: `0f8fb49`
+- Last commit: `0f8fb49 improve(seo): tailor hero images by page`
 
 ## Git Remote
 ```text
@@ -18,7 +18,7 @@ origin	https://github.com/iEgor72/bloknot-mashinista.git (push)
 
 ## Branch Tracking
 ```text
-* main 762da28 [origin/main] fix(seo): replace outdated promo image
+* main 0f8fb49 [origin/main] improve(seo): tailor hero images by page
 ```
 
 ## Worktree
