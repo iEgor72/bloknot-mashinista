@@ -709,6 +709,59 @@
       return { titleText: '', noteText: '' };
     }
 
+    function getDurationMinutesFromTimeRange(startTime, endTime) {
+      if (!startTime || !endTime) return 0;
+      var startParts = String(startTime).split(':');
+      var endParts = String(endTime).split(':');
+      if (startParts.length < 2 || endParts.length < 2) return 0;
+      var startMinutes = (parseInt(startParts[0], 10) * 60) + parseInt(startParts[1], 10);
+      var endMinutes = (parseInt(endParts[0], 10) * 60) + parseInt(endParts[1], 10);
+      if (!isFinite(startMinutes) || !isFinite(endMinutes)) return 0;
+      if (endMinutes <= startMinutes) endMinutes += 24 * 60;
+      return Math.max(0, endMinutes - startMinutes);
+    }
+
+    function buildScheduleDayFactSummary(state) {
+      var summary = {
+        titleText: 'Что в этот день',
+        timeText: '—',
+        durationText: '—',
+        incomeText: '—',
+        noteText: 'Пока нет записи по этому дню.'
+      };
+      if (!state) return summary;
+      if (state.hasFact && state.factShifts && state.factShifts[0]) {
+        var shift = state.factShifts[0];
+        var parts = getShiftDisplayParts(shift);
+        var incomeVm = getShiftIncomeViewModel(shift, currentMonthShiftIncomeMap);
+        summary.titleText = state.factShifts.length > 1 ? 'Факт по дню' : 'Факт по этому дню';
+        summary.timeText = (parts.startTime || '--:--') + ' - ' + (parts.endTime || '--:--');
+        summary.durationText = fmtMin(shiftTotalMinutes(shift));
+        summary.incomeText = incomeVm.amountText || '—';
+        summary.noteText = getShiftTypeLabel(shift);
+        if (state.factShifts.length > 1) {
+          summary.noteText += ' · и ещё ' + (state.factShifts.length - 1) + ' запись';
+        }
+        return summary;
+      }
+      if (state.plannedCode === 'D' || state.plannedCode === 'N') {
+        var durationMin = getDurationMinutesFromTimeRange(state.startTime, state.endTime);
+        summary.titleText = 'По графику';
+        summary.timeText = state.startTime && state.endTime ? (state.startTime + ' - ' + state.endTime) : '—';
+        summary.durationText = durationMin > 0 ? fmtMin(durationMin) : '—';
+        summary.incomeText = '—';
+        summary.noteText = state.plannedCode === 'N' ? 'Ночная смена по графику' : 'Дневная смена по графику';
+        return summary;
+      }
+      if (state.plannedCode === 'V') {
+        summary.titleText = 'По графику';
+        summary.noteText = 'Выходной';
+        return summary;
+      }
+      summary.noteText = 'План на этот день не задан.';
+      return summary;
+    }
+
     function renderSchedulePlannerOverlay() {
       var listEl = document.getElementById('schedulePeriodsList');
       if (!listEl) return;
@@ -741,6 +794,10 @@
       var dateEl = document.getElementById('scheduleDayDate');
       var statusEl = document.getElementById('scheduleDayStatus');
       var factCardEl = document.getElementById('scheduleDayFactCard');
+      var factTitleEl = document.getElementById('scheduleDayFactTitle');
+      var factTimeEl = document.getElementById('scheduleDayFactTime');
+      var factDurationEl = document.getElementById('scheduleDayFactDuration');
+      var factIncomeEl = document.getElementById('scheduleDayFactIncome');
       var factTextEl = document.getElementById('scheduleDayFactText');
       var addShiftBtn = document.getElementById('btnScheduleDayAddShift');
       var editShiftBtn = document.getElementById('btnScheduleDayEditShift');
@@ -748,20 +805,20 @@
       var startTimeEl = document.getElementById('scheduleDayStartTime');
       var endTimeEl = document.getElementById('scheduleDayEndTime');
       var typeButtons = document.querySelectorAll('#scheduleDayTypeSegmented .segmented-btn');
-      if (!dateEl || !statusEl || !factCardEl || !factTextEl || !addShiftBtn || !editShiftBtn || !timeFieldsEl || !startTimeEl || !endTimeEl || !typeButtons.length) return;
+      if (!dateEl || !statusEl || !factCardEl || !factTitleEl || !factTimeEl || !factDurationEl || !factIncomeEl || !factTextEl || !addShiftBtn || !editShiftBtn || !timeFieldsEl || !startTimeEl || !endTimeEl || !typeButtons.length) return;
 
       dateEl.textContent = formatScheduleDateLabel(dateKey);
       statusEl.textContent = state.hasFact
         ? 'Запись уже есть. Можно открыть её или точечно поменять план на этот день.'
         : ((state.plannedCode ? formatScheduleCodeLabel(state.plannedCode) : 'План на день не задан') + (state.period ? ' · ' + buildSchedulePeriodSummary(state.period) : ''));
 
-      if (state.hasFact) {
-        factCardEl.classList.remove('hidden');
-        factTextEl.textContent = getShiftTitle(state.factShifts[0]) + (state.factShifts.length > 1 ? ' и ещё ' + (state.factShifts.length - 1) + ' запись' : '');
-      } else {
-        factCardEl.classList.add('hidden');
-        factTextEl.textContent = '';
-      }
+      var daySummary = buildScheduleDayFactSummary(state);
+      factCardEl.classList.remove('hidden');
+      factTitleEl.textContent = daySummary.titleText;
+      factTimeEl.textContent = daySummary.timeText;
+      factDurationEl.textContent = daySummary.durationText;
+      factIncomeEl.textContent = daySummary.incomeText;
+      factTextEl.textContent = daySummary.noteText;
 
       addShiftBtn.textContent = 'Добавить запись';
       editShiftBtn.classList.toggle('hidden', !state.hasFact);

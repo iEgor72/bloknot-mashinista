@@ -1056,9 +1056,9 @@
         </div>
       </div>
 
-      <div class="salary-settings-actions">
-        <button class="btn-sheet-save" id="btnSaveSchedulePeriod" type="button">Сохранить</button>
-        <button class="btn-sheet-close" id="btnCloseSchedulePlanner" type="button">Закрыть</button>
+      <div class="form-actions schedule-sheet-actions">
+        <button class="btn-primary" id="btnSaveSchedulePeriod" type="button">Сохранить</button>
+        <button class="btn-secondary" id="btnCloseSchedulePlanner" type="button">Закрыть</button>
       </div>
     </div>
   </div>
@@ -1076,8 +1076,22 @@
         <div class="schedule-day-status" id="scheduleDayStatus">—</div>
       </div>
 
-      <div class="schedule-day-fact hidden" id="scheduleDayFactCard">
-        <div class="schedule-day-fact-title">Факт по этому дню</div>
+      <div class="schedule-day-fact" id="scheduleDayFactCard">
+        <div class="schedule-day-fact-title" id="scheduleDayFactTitle">Что в этот день</div>
+        <div class="schedule-day-fact-metrics">
+          <div class="schedule-day-fact-metric">
+            <div class="schedule-day-fact-label">Явка - окончание</div>
+            <div class="schedule-day-fact-value" id="scheduleDayFactTime">—</div>
+          </div>
+          <div class="schedule-day-fact-metric">
+            <div class="schedule-day-fact-label">Длительность</div>
+            <div class="schedule-day-fact-value" id="scheduleDayFactDuration">—</div>
+          </div>
+          <div class="schedule-day-fact-metric">
+            <div class="schedule-day-fact-label">Деньги</div>
+            <div class="schedule-day-fact-value" id="scheduleDayFactIncome">—</div>
+          </div>
+        </div>
         <div class="schedule-day-fact-text" id="scheduleDayFactText"></div>
       </div>
 
@@ -1110,9 +1124,9 @@
         </div>
       </div>
 
-      <div class="salary-settings-actions">
-        <button class="btn-sheet-save" id="btnSaveScheduleDay" type="button">Сохранить день</button>
-        <button class="btn-sheet-close" id="btnCloseScheduleDay" type="button">Закрыть</button>
+      <div class="form-actions schedule-sheet-actions">
+        <button class="btn-primary" id="btnSaveScheduleDay" type="button">Сохранить день</button>
+        <button class="btn-secondary" id="btnCloseScheduleDay" type="button">Закрыть</button>
       </div>
     </div>
   </div>

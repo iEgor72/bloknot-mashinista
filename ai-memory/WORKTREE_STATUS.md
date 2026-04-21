@@ -1,6 +1,6 @@
 # Worktree Status
 
-Generated: 2026-04-21 10:49:13 +0000
+Generated: 2026-04-21 10:59:27 +0000
 
 ## git status -sb
 ```text
@@ -20,15 +20,16 @@ Generated: 2026-04-21 10:49:13 +0000
 
 ## git branch -vv
 ```text
-* main 7e95fc9 [origin/main] fix(schedule): clarify upcoming day details
+* main f3b94df [origin/main] fix(schedule): unify day preview and sheet actions
 ```
 
 ## HEAD
 ```text
-7e95fc9 fix(schedule): clarify upcoming day details
- ai-memory/CHANGELOG.md       |  8 ++++++++
- ai-memory/PROJECT_STATE.md   |  8 ++++----
- ai-memory/WORKTREE_STATUS.md | 24 ++++++++++++------------
- scripts/render.js            | 27 +++++++++++++++++++++++++--
- 4 files changed, 49 insertions(+), 18 deletions(-)
+f3b94df fix(schedule): unify day preview and sheet actions
+ ai-memory/CHANGELOG.md             |  8 ++++++
+ ai-memory/PROJECT_STATE.md         |  8 +++---
+ ai-memory/WORKTREE_STATUS.md       | 20 ++++++-------
+ scripts/render.js                  | 57 ++++++++++++++++++++++++++++----------
+ styles/10-navigation-and-cards.css | 40 ++++++++++++++++++++++----
+ 5 files changed, 96 insertions(+), 37 deletions(-)
 ```
