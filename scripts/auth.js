@@ -333,6 +333,7 @@
       if (APP_SHELL) APP_SHELL.classList.remove('hidden');
       settleSafeAreaInsets();
       repairUiText();
+      if (typeof reloadScheduleStoreForCurrentUser === 'function') reloadScheduleStoreForCurrentUser();
       updateSettingsControls();
       updateOfflineUiState();
       setActiveTab(activeTab || 'home');

@@ -710,6 +710,212 @@
       });
     }
 
+    function setSegmentedValue(containerId, value) {
+      var buttons = document.querySelectorAll('#' + containerId + ' .segmented-btn');
+      for (var i = 0; i < buttons.length; i++) {
+        buttons[i].classList.toggle('active', buttons[i].getAttribute('data-value') === value);
+      }
+    }
+
+    function getSegmentedValue(containerId, fallback) {
+      var active = document.querySelector('#' + containerId + ' .segmented-btn.active');
+      return active ? active.getAttribute('data-value') : fallback;
+    }
+
+    function syncSchedulePlannerMode() {
+      var mode = getSegmentedValue('scheduleModeSegmented', 'manual');
+      var cycleFields = document.getElementById('scheduleCycleFields');
+      if (cycleFields) cycleFields.classList.toggle('hidden', mode !== 'cycle');
+    }
+
+    function syncSchedulePatternPreview() {
+      var input = document.getElementById('schedulePatternValue');
+      var preview = document.getElementById('schedulePatternPreview');
+      if (!input || !preview) return;
+      preview.textContent = formatSchedulePattern(input.value || '');
+    }
+
+    function resetSchedulePlannerForm() {
+      var startDateEl = document.getElementById('schedulePeriodStartDate');
+      var endDateEl = document.getElementById('schedulePeriodEndDate');
+      var patternEl = document.getElementById('schedulePatternValue');
+      var startTimeEl = document.getElementById('scheduleDefaultStartTime');
+      var endTimeEl = document.getElementById('scheduleDefaultEndTime');
+      if (startDateEl) startDateEl.value = getTodayDateKey();
+      if (endDateEl) endDateEl.value = '';
+      if (patternEl) patternEl.value = '';
+      if (startTimeEl) startTimeEl.value = '08:00';
+      if (endTimeEl) endTimeEl.value = '20:00';
+      setSegmentedValue('scheduleModeSegmented', 'manual');
+      syncSchedulePlannerMode();
+      syncSchedulePatternPreview();
+    }
+
+    function syncScheduleDayTimeFields() {
+      var value = getSegmentedValue('scheduleDayTypeSegmented', 'auto');
+      var timeFields = document.getElementById('scheduleDayTimeFields');
+      if (timeFields) timeFields.classList.toggle('hidden', !(value === 'D' || value === 'N'));
+    }
+
+    var openSchedulePlannerBtn = document.getElementById('btnOpenSchedulePlanner');
+    if (openSchedulePlannerBtn) {
+      openSchedulePlannerBtn.addEventListener('click', function() {
+        triggerHapticSelection();
+        renderSchedulePlannerOverlay();
+        resetSchedulePlannerForm();
+        openOverlay('overlaySchedulePlanner');
+      });
+    }
+
+    var closeSchedulePlannerBtn = document.getElementById('btnCloseSchedulePlanner');
+    if (closeSchedulePlannerBtn) {
+      closeSchedulePlannerBtn.addEventListener('click', function() {
+        closeOverlay('overlaySchedulePlanner');
+      });
+    }
+
+    var scheduleModeSegmented = document.getElementById('scheduleModeSegmented');
+    if (scheduleModeSegmented) {
+      scheduleModeSegmented.addEventListener('click', function(e) {
+        var btn = e.target.closest('.segmented-btn[data-value]');
+        if (!btn) return;
+        setSegmentedValue('scheduleModeSegmented', btn.getAttribute('data-value'));
+        syncSchedulePlannerMode();
+      });
+    }
+
+    var schedulePatternBuilder = document.querySelector('.schedule-pattern-builder');
+    if (schedulePatternBuilder) {
+      schedulePatternBuilder.addEventListener('click', function(e) {
+        var input = document.getElementById('schedulePatternValue');
+        if (!input) return;
+        var addBtn = e.target.closest('[data-pattern-add]');
+        if (addBtn) {
+          input.value = normalizeSchedulePattern((input.value || '') + addBtn.getAttribute('data-pattern-add'));
+          syncSchedulePatternPreview();
+          return;
+        }
+        if (e.target.closest('#btnSchedulePatternBackspace')) {
+          input.value = normalizeSchedulePattern((input.value || '').slice(0, -1));
+          syncSchedulePatternPreview();
+          return;
+        }
+        if (e.target.closest('#btnSchedulePatternClear')) {
+          input.value = '';
+          syncSchedulePatternPreview();
+        }
+      });
+    }
+
+    var saveSchedulePeriodBtn = document.getElementById('btnSaveSchedulePeriod');
+    if (saveSchedulePeriodBtn) {
+      saveSchedulePeriodBtn.addEventListener('click', function() {
+        var mode = getSegmentedValue('scheduleModeSegmented', 'manual');
+        var startDate = normalizeDateKey(document.getElementById('schedulePeriodStartDate').value);
+        var endDate = normalizeDateKey(document.getElementById('schedulePeriodEndDate').value);
+        var pattern = normalizeSchedulePattern(document.getElementById('schedulePatternValue').value || '');
+        var startTime = normalizeTimeValue(document.getElementById('scheduleDefaultStartTime').value, '08:00');
+        var endTime = normalizeTimeValue(document.getElementById('scheduleDefaultEndTime').value, '20:00');
+        if (!startDate) {
+          showSaveToast('Укажите дату начала', 'danger');
+          return;
+        }
+        if (endDate && compareDateKeys(endDate, startDate) < 0) {
+          showSaveToast('Окончание раньше начала', 'danger');
+          return;
+        }
+        if (mode === 'cycle' && !pattern) {
+          showSaveToast('Добавьте шаблон графика', 'danger');
+          return;
+        }
+        upsertSchedulePeriod({
+          id: createSchedulePeriodId(),
+          mode: mode,
+          startDate: startDate,
+          endDate: endDate,
+          pattern: pattern,
+          startTime: startTime,
+          endTime: endTime
+        });
+        triggerHapticSuccess();
+        render();
+        resetSchedulePlannerForm();
+        showSaveToast('Период сохранён', 'success');
+      });
+    }
+
+    var schedulePeriodsListEl = document.getElementById('schedulePeriodsList');
+    if (schedulePeriodsListEl) {
+      schedulePeriodsListEl.addEventListener('click', function(e) {
+        var deleteBtn = e.target.closest('[data-schedule-delete]');
+        if (!deleteBtn) return;
+        deleteSchedulePeriod(deleteBtn.getAttribute('data-schedule-delete'));
+        triggerHapticWarning();
+        render();
+        showSaveToast('Период удалён', 'neutral');
+      });
+    }
+
+    var scheduleDayTypeSegmented = document.getElementById('scheduleDayTypeSegmented');
+    if (scheduleDayTypeSegmented) {
+      scheduleDayTypeSegmented.addEventListener('click', function(e) {
+        var btn = e.target.closest('.segmented-btn[data-value]');
+        if (!btn) return;
+        setSegmentedValue('scheduleDayTypeSegmented', btn.getAttribute('data-value'));
+        syncScheduleDayTimeFields();
+      });
+    }
+
+    var saveScheduleDayBtn = document.getElementById('btnSaveScheduleDay');
+    if (saveScheduleDayBtn) {
+      saveScheduleDayBtn.addEventListener('click', function() {
+        var typeValue = getSegmentedValue('scheduleDayTypeSegmented', 'auto');
+        setScheduleDayOverride(selectedScheduleDayKey, {
+          code: typeValue,
+          startTime: document.getElementById('scheduleDayStartTime').value,
+          endTime: document.getElementById('scheduleDayEndTime').value
+        });
+        triggerHapticSuccess();
+        closeOverlay('overlayScheduleDay');
+        render();
+        showSaveToast(typeValue === 'auto' ? 'День возвращён в авто' : 'День сохранён', 'success');
+      });
+    }
+
+    var closeScheduleDayBtn = document.getElementById('btnCloseScheduleDay');
+    if (closeScheduleDayBtn) {
+      closeScheduleDayBtn.addEventListener('click', function() {
+        closeOverlay('overlayScheduleDay');
+      });
+    }
+
+    var scheduleDayAddShiftBtn = document.getElementById('btnScheduleDayAddShift');
+    if (scheduleDayAddShiftBtn) {
+      scheduleDayAddShiftBtn.addEventListener('click', function() {
+        var state = resolveScheduleDay(selectedScheduleDayKey || getTodayDateKey());
+        closeOverlay('overlayScheduleDay');
+        openAddShiftForDate(state.dateKey, {
+          routeKind: state.period && state.period.mode === 'manual' ? 'trip' : 'depot',
+          startTime: state.startTime || '08:00',
+          endTime: state.endTime || '20:00'
+        });
+      });
+    }
+
+    var scheduleDayEditShiftBtn = document.getElementById('btnScheduleDayEditShift');
+    if (scheduleDayEditShiftBtn) {
+      scheduleDayEditShiftBtn.addEventListener('click', function() {
+        var shiftId = this.getAttribute('data-shift-id');
+        var shift = shiftId ? findShiftById(shiftId) : null;
+        if (!shift) return;
+        closeOverlay('overlayScheduleDay');
+        enterEditMode(shift, { returnTab: 'home' });
+      });
+    }
+
+    resetSchedulePlannerForm();
+    syncScheduleDayTimeFields();
+
     var instructionsShellEl = document.getElementById('instructionsShell');
     if (instructionsShellEl) {
       instructionsShellEl.addEventListener('click', function(e) {

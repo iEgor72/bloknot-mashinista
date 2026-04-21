@@ -567,6 +567,170 @@
       }
     }
 
+    function getScheduleCellClass(dayState) {
+      if (!dayState) return '';
+      if (dayState.hasFact && !dayState.plannedCode) return ' is-fact-only has-fact';
+      var cls = '';
+      if (dayState.plannedCode === 'D') cls += ' is-day';
+      else if (dayState.plannedCode === 'N') cls += ' is-night';
+      else if (dayState.plannedCode === 'V') cls += ' is-rest';
+      if (dayState.hasFact) cls += ' has-fact';
+      return cls;
+    }
+
+    function renderHomeScheduleCard() {
+      var calendarEl = document.getElementById('homeScheduleCalendar');
+      var upcomingEl = document.getElementById('homeScheduleUpcoming');
+      var subtitleEl = document.getElementById('scheduleCardSubtitle');
+      if (!calendarEl || !upcomingEl || !subtitleEl) return;
+
+      var firstDay = new Date(currentYear, currentMonth, 1);
+      var daysInMonth = new Date(currentYear, currentMonth + 1, 0).getDate();
+      var startOffset = (firstDay.getDay() + 6) % 7;
+      var todayKey = getTodayDateKey();
+      var html = '';
+
+      for (var pad = 0; pad < startOffset; pad++) {
+        html += '<div class="schedule-day-placeholder" aria-hidden="true"></div>';
+      }
+
+      for (var day = 1; day <= daysInMonth; day++) {
+        var dateKey = currentYear + '-' + String(currentMonth + 1).padStart(2, '0') + '-' + String(day).padStart(2, '0');
+        var dayState = resolveScheduleDay(dateKey);
+        var dayClass = 'schedule-day-cell' + getScheduleCellClass(dayState) + (dateKey === todayKey ? ' is-today' : '');
+        var badge = scheduleCodeToRu(dayState.effectiveCode || dayState.plannedCode || '');
+        var badgeHtml = badge
+          ? '<span class="schedule-day-badge">' + escapeHtml(badge) + '</span>'
+          : '<span class="schedule-day-badge">·</span>';
+        html += '<button type="button" class="' + dayClass + '" data-schedule-date="' + dateKey + '" aria-label="' + escapeHtml(formatScheduleDateLabel(dateKey) + '. ' + formatScheduleCodeLabel(dayState.effectiveCode || dayState.plannedCode)) + '">' +
+          '<span class="schedule-day-number">' + day + '</span>' +
+          badgeHtml +
+        '</button>';
+      }
+      calendarEl.innerHTML = html;
+
+      var calendarButtons = calendarEl.querySelectorAll('[data-schedule-date]');
+      for (var i = 0; i < calendarButtons.length; i++) {
+        calendarButtons[i].addEventListener('click', function(e) {
+          var dateKey = e.currentTarget.getAttribute('data-schedule-date');
+          if (!dateKey) return;
+          setSelectedScheduleDay(dateKey);
+          renderScheduleDayOverlay();
+          openOverlay('overlayScheduleDay');
+        });
+      }
+
+      var periods = getSchedulePeriods();
+      if (!periods.length) {
+        subtitleEl.textContent = 'Пока без графика. Можно оставить только поездки вручную или добавить период со сменным циклом.';
+      } else {
+        subtitleEl.textContent = 'Показываем факт по сменам и план там, где у периода включён график.';
+      }
+
+      var upcoming = [];
+      for (var offset = 0; offset < 120 && upcoming.length < 5; offset++) {
+        var upcomingKey = getDateKeyByOffset(todayKey, offset);
+        var upcomingState = resolveScheduleDay(upcomingKey);
+        var code = upcomingState.effectiveCode || upcomingState.plannedCode;
+        if (!code || code === 'V') continue;
+        upcoming.push({
+          dateKey: upcomingKey,
+          code: code,
+          label: formatScheduleCodeLabel(code),
+          timeText: upcomingState.startTime && upcomingState.endTime ? (upcomingState.startTime + '–' + upcomingState.endTime) : ''
+        });
+      }
+
+      if (!upcoming.length) {
+        upcomingEl.innerHTML = '<div class="schedule-upcoming-empty">Здесь появятся ближайшие рабочие дни по графику. Если вы работаете только поездками вручную, календарь будет отмечать уже внесённые записи.</div>';
+      } else {
+        var upcomingHtml = '';
+        for (var ui = 0; ui < upcoming.length; ui++) {
+          upcomingHtml += '<div class="schedule-upcoming-item">' +
+            '<div class="schedule-upcoming-date">' + escapeHtml(formatScheduleShortDate(upcoming[ui].dateKey)) + '</div>' +
+            '<div class="schedule-upcoming-main">' +
+              '<div class="schedule-upcoming-title">' + escapeHtml(upcoming[ui].label) + '</div>' +
+              '<div class="schedule-upcoming-note">' + escapeHtml(upcoming[ui].timeText || 'Без фиксированного времени') + '</div>' +
+            '</div>' +
+          '</div>';
+        }
+        upcomingEl.innerHTML = upcomingHtml;
+      }
+    }
+
+    function renderSchedulePlannerOverlay() {
+      var listEl = document.getElementById('schedulePeriodsList');
+      if (!listEl) return;
+      var periods = getSchedulePeriods();
+      if (!periods.length) {
+        listEl.innerHTML = '<div class="schedule-upcoming-empty">Периодов пока нет. Если вы работаете только поездками вручную, можно ничего не добавлять. Если график нужен, добавьте период и цикл ниже.</div>';
+        return;
+      }
+      var html = '';
+      for (var i = 0; i < periods.length; i++) {
+        var period = periods[i];
+        var rangeText = 'с ' + period.startDate + (period.endDate ? ' по ' + period.endDate : ' · до отмены');
+        html += '<div class="schedule-period-card">' +
+          '<div class="schedule-period-top">' +
+            '<div>' +
+              '<div class="schedule-period-title">' + escapeHtml(buildSchedulePeriodSummary(period)) + '</div>' +
+              '<div class="schedule-period-note">' + escapeHtml(rangeText) + '</div>' +
+            '</div>' +
+            '<button type="button" class="schedule-period-delete" data-schedule-delete="' + escapeHtml(period.id) + '">Удалить</button>' +
+          '</div>' +
+          '<div class="schedule-period-subnote">' + (period.mode === 'cycle' ? 'Автопостроение календаря по шаблону' : 'Все записи в этот период вносятся вручную') + '</div>' +
+        '</div>';
+      }
+      listEl.innerHTML = html;
+    }
+
+    function renderScheduleDayOverlay() {
+      var dateKey = selectedScheduleDayKey || getTodayDateKey();
+      var state = resolveScheduleDay(dateKey);
+      var dateEl = document.getElementById('scheduleDayDate');
+      var statusEl = document.getElementById('scheduleDayStatus');
+      var factCardEl = document.getElementById('scheduleDayFactCard');
+      var factTextEl = document.getElementById('scheduleDayFactText');
+      var addShiftBtn = document.getElementById('btnScheduleDayAddShift');
+      var editShiftBtn = document.getElementById('btnScheduleDayEditShift');
+      var timeFieldsEl = document.getElementById('scheduleDayTimeFields');
+      var startTimeEl = document.getElementById('scheduleDayStartTime');
+      var endTimeEl = document.getElementById('scheduleDayEndTime');
+      var typeButtons = document.querySelectorAll('#scheduleDayTypeSegmented .segmented-btn');
+      if (!dateEl || !statusEl || !factCardEl || !factTextEl || !addShiftBtn || !editShiftBtn || !timeFieldsEl || !startTimeEl || !endTimeEl || !typeButtons.length) return;
+
+      dateEl.textContent = formatScheduleDateLabel(dateKey);
+      statusEl.textContent = state.hasFact
+        ? 'Факт уже есть. При желании можно быстро открыть запись или поставить плановое исключение.'
+        : formatScheduleCodeLabel(state.plannedCode) + (state.period ? ' · ' + buildSchedulePeriodSummary(state.period) : '');
+
+      if (state.hasFact) {
+        factCardEl.classList.remove('hidden');
+        factTextEl.textContent = getShiftTitle(state.factShifts[0]) + (state.factShifts.length > 1 ? ' и ещё ' + (state.factShifts.length - 1) : '');
+      } else {
+        factCardEl.classList.add('hidden');
+        factTextEl.textContent = '';
+      }
+
+      addShiftBtn.textContent = state.period && state.period.mode === 'manual' ? 'Добавить поездку' : 'Добавить смену';
+      editShiftBtn.classList.toggle('hidden', !state.hasFact);
+      if (!editShiftBtn.classList.contains('hidden') && state.factShifts[0]) {
+        editShiftBtn.setAttribute('data-shift-id', state.factShifts[0].id);
+      } else {
+        editShiftBtn.removeAttribute('data-shift-id');
+      }
+
+      var selectedType = state.override && state.override.code ? state.override.code : 'auto';
+      for (var i = 0; i < typeButtons.length; i++) {
+        typeButtons[i].classList.toggle('active', typeButtons[i].getAttribute('data-value') === selectedType);
+      }
+      var shouldShowTimes = selectedType === 'D' || selectedType === 'N';
+      timeFieldsEl.classList.toggle('hidden', !shouldShowTimes);
+      startTimeEl.value = state.startTime || '08:00';
+      endTimeEl.value = state.endTime || '20:00';
+      addShiftBtn.setAttribute('data-schedule-date', dateKey);
+    }
+
     function renderDeleteConfirmCard(shiftIncomeMap) {
       var cardEl = document.getElementById('confirmShiftCard');
       if (!cardEl) return;
@@ -623,6 +787,9 @@
       }
       var monthSalarySummary = calculateSalarySummaryByMinutes(totalMin, nightMin, holidayMin);
       renderDeleteConfirmCard(shiftIncomeMap);
+      renderHomeScheduleCard();
+      renderSchedulePlannerOverlay();
+      renderScheduleDayOverlay();
 
       // Norm
       var monthKey = currentYear + '-' + String(currentMonth + 1).padStart(2, '0');

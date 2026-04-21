@@ -753,6 +753,395 @@
       } catch (e) {}
     }
 
+    var SCHEDULE_STORAGE_KEY = 'shift_tracker_schedule_v1';
+    var scheduleStore = loadScheduleStore();
+    var selectedScheduleDayKey = '';
+
+    function createEmptyScheduleStore() {
+      return { version: 1, periods: [], overrides: {} };
+    }
+
+    function normalizeDateKey(raw) {
+      var value = typeof raw === 'string' ? raw.trim() : '';
+      return /^\d{4}-\d{2}-\d{2}$/.test(value) ? value : '';
+    }
+
+    function normalizeTimeValue(raw, fallback) {
+      var value = typeof raw === 'string' ? raw.trim() : '';
+      if (/^\d{2}:\d{2}$/.test(value)) return value;
+      return fallback || '';
+    }
+
+    function normalizeScheduleCode(raw) {
+      var value = String(raw || '').trim().toUpperCase();
+      if (value === 'Д') value = 'D';
+      if (value === 'Н') value = 'N';
+      if (value === 'В') value = 'V';
+      if (value === 'AUTO' || value === 'D' || value === 'N' || value === 'V') return value;
+      return '';
+    }
+
+    function normalizeSchedulePattern(raw) {
+      var source = String(raw || '').trim().toUpperCase();
+      var chars = [];
+      for (var i = 0; i < source.length; i++) {
+        var code = normalizeScheduleCode(source.charAt(i));
+        if (code && code !== 'AUTO') chars.push(code);
+      }
+      return chars.join('');
+    }
+
+    function scheduleCodeToRu(code) {
+      if (code === 'D') return 'Д';
+      if (code === 'N') return 'Н';
+      if (code === 'V') return 'В';
+      if (code === 'P') return 'П';
+      if (code === 'S') return 'С';
+      return '';
+    }
+
+    function formatSchedulePattern(pattern) {
+      var value = normalizeSchedulePattern(pattern);
+      if (!value) return '—';
+      var parts = [];
+      for (var i = 0; i < value.length; i++) parts.push(scheduleCodeToRu(value.charAt(i)));
+      return parts.join('');
+    }
+
+    function getTodayDateKey() {
+      return formatMskDatePart(new Date());
+    }
+
+    function parseDateKeyUtc(dateKey) {
+      var safe = normalizeDateKey(dateKey);
+      if (!safe) return NaN;
+      return Date.UTC(parseInt(safe.substring(0, 4), 10), parseInt(safe.substring(5, 7), 10) - 1, parseInt(safe.substring(8, 10), 10));
+    }
+
+    function formatUtcDateKey(date) {
+      if (!(date instanceof Date) || !isFinite(date.getTime())) return '';
+      var year = date.getUTCFullYear();
+      var month = String(date.getUTCMonth() + 1).padStart(2, '0');
+      var day = String(date.getUTCDate()).padStart(2, '0');
+      return year + '-' + month + '-' + day;
+    }
+
+    function getDateKeyByOffset(dateKey, offsetDays) {
+      var baseTs = parseDateKeyUtc(dateKey);
+      if (!isFinite(baseTs)) return '';
+      return formatUtcDateKey(new Date(baseTs + (Number(offsetDays) || 0) * 86400000));
+    }
+
+    function compareDateKeys(a, b) {
+      var left = normalizeDateKey(a);
+      var right = normalizeDateKey(b);
+      if (!left && !right) return 0;
+      if (!left) return -1;
+      if (!right) return 1;
+      if (left > right) return 1;
+      if (left < right) return -1;
+      return 0;
+    }
+
+    function getDaysBetweenDateKeys(startDateKey, endDateKey) {
+      var startTs = parseDateKeyUtc(startDateKey);
+      var endTs = parseDateKeyUtc(endDateKey);
+      if (!isFinite(startTs) || !isFinite(endTs)) return 0;
+      return Math.round((endTs - startTs) / 86400000);
+    }
+
+    function createSchedulePeriodId() {
+      return 'period_' + Date.now().toString(36) + '_' + Math.random().toString(36).slice(2, 7);
+    }
+
+    function normalizeSchedulePeriod(raw) {
+      if (!raw || typeof raw !== 'object') return null;
+      var mode = raw.mode === 'cycle' ? 'cycle' : 'manual';
+      var startDate = normalizeDateKey(raw.startDate);
+      if (!startDate) return null;
+      var endDate = normalizeDateKey(raw.endDate);
+      if (endDate && compareDateKeys(endDate, startDate) < 0) endDate = '';
+      var pattern = mode === 'cycle' ? normalizeSchedulePattern(raw.pattern) : '';
+      return {
+        id: raw.id ? String(raw.id) : createSchedulePeriodId(),
+        mode: mode,
+        startDate: startDate,
+        endDate: endDate || '',
+        pattern: pattern,
+        startTime: normalizeTimeValue(raw.startTime, '08:00'),
+        endTime: normalizeTimeValue(raw.endTime, '20:00')
+      };
+    }
+
+    function normalizeScheduleOverrides(raw) {
+      var source = raw && typeof raw === 'object' ? raw : {};
+      var result = {};
+      var keys = Object.keys(source);
+      for (var i = 0; i < keys.length; i++) {
+        var dateKey = normalizeDateKey(keys[i]);
+        if (!dateKey) continue;
+        var item = source[keys[i]] || {};
+        var code = normalizeScheduleCode(item.code);
+        if (!code || code === 'AUTO') continue;
+        result[dateKey] = {
+          code: code,
+          startTime: normalizeTimeValue(item.startTime, ''),
+          endTime: normalizeTimeValue(item.endTime, '')
+        };
+      }
+      return result;
+    }
+
+    function normalizeScheduleStore(raw) {
+      var payload = raw && typeof raw === 'object' ? raw : {};
+      var periods = [];
+      var rawPeriods = Array.isArray(payload.periods) ? payload.periods : [];
+      for (var i = 0; i < rawPeriods.length; i++) {
+        var period = normalizeSchedulePeriod(rawPeriods[i]);
+        if (!period) continue;
+        if (period.mode === 'cycle' && !period.pattern) continue;
+        periods.push(period);
+      }
+      periods.sort(function(a, b) {
+        return compareDateKeys(a.startDate, b.startDate);
+      });
+      return {
+        version: 1,
+        periods: periods,
+        overrides: normalizeScheduleOverrides(payload.overrides)
+      };
+    }
+
+    function loadScheduleStore() {
+      return normalizeScheduleStore(readStoredJson(getOfflineStorageKey(SCHEDULE_STORAGE_KEY), createEmptyScheduleStore()));
+    }
+
+    function saveScheduleStore() {
+      scheduleStore = normalizeScheduleStore(scheduleStore);
+      writeStoredJson(getOfflineStorageKey(SCHEDULE_STORAGE_KEY), scheduleStore);
+      return scheduleStore;
+    }
+
+    function reloadScheduleStoreForCurrentUser() {
+      scheduleStore = loadScheduleStore();
+    }
+
+    function getSchedulePeriods() {
+      return Array.isArray(scheduleStore && scheduleStore.periods) ? scheduleStore.periods.slice() : [];
+    }
+
+    function getScheduleOverrides() {
+      return scheduleStore && scheduleStore.overrides && typeof scheduleStore.overrides === 'object' ? scheduleStore.overrides : {};
+    }
+
+    function getActiveSchedulePeriod(dateKey) {
+      var safeDate = normalizeDateKey(dateKey);
+      if (!safeDate) return null;
+      var periods = getSchedulePeriods();
+      var winner = null;
+      for (var i = 0; i < periods.length; i++) {
+        var period = periods[i];
+        if (compareDateKeys(period.startDate, safeDate) > 0) continue;
+        if (period.endDate && compareDateKeys(period.endDate, safeDate) < 0) continue;
+        winner = period;
+      }
+      return winner;
+    }
+
+    function getShiftsForDate(dateKey) {
+      var safeDate = normalizeDateKey(dateKey);
+      if (!safeDate) return [];
+      var result = [];
+      for (var i = 0; i < allShifts.length; i++) {
+        var shift = allShifts[i];
+        var startDate = normalizeDateKey(shift && shift.start_msk ? shift.start_msk.substring(0, 10) : '');
+        var endDate = normalizeDateKey(shift && shift.end_msk ? shift.end_msk.substring(0, 10) : '') || startDate;
+        if (!startDate) continue;
+        if (compareDateKeys(startDate, safeDate) <= 0 && compareDateKeys(endDate, safeDate) >= 0) {
+          result.push(shift);
+        }
+      }
+      result.sort(compareShiftsByStartDesc);
+      return result;
+    }
+
+    function getPlannedScheduleSnapshot(dateKey) {
+      var safeDate = normalizeDateKey(dateKey);
+      var period = getActiveSchedulePeriod(safeDate);
+      var overrides = getScheduleOverrides();
+      var override = safeDate ? overrides[safeDate] : null;
+      var plannedCode = '';
+      var source = 'none';
+      var startTime = '';
+      var endTime = '';
+      if (period) {
+        source = period.mode;
+        startTime = period.startTime || '';
+        endTime = period.endTime || '';
+        if (period.mode === 'cycle' && period.pattern) {
+          var delta = getDaysBetweenDateKeys(period.startDate, safeDate);
+          if (delta >= 0) {
+            plannedCode = period.pattern.charAt(delta % period.pattern.length) || '';
+          }
+        }
+      }
+      if (override && override.code) {
+        plannedCode = override.code;
+        source = 'override';
+        startTime = override.startTime || startTime;
+        endTime = override.endTime || endTime;
+      }
+      return {
+        period: period,
+        override: override,
+        plannedCode: plannedCode,
+        source: source,
+        startTime: startTime,
+        endTime: endTime
+      };
+    }
+
+    function resolveScheduleDay(dateKey) {
+      var safeDate = normalizeDateKey(dateKey);
+      var plan = getPlannedScheduleSnapshot(safeDate);
+      var factShifts = getShiftsForDate(safeDate);
+      var hasTrip = false;
+      for (var i = 0; i < factShifts.length; i++) {
+        if (factShifts[i] && factShifts[i].route_kind === 'trip') {
+          hasTrip = true;
+          break;
+        }
+      }
+      var factCode = factShifts.length ? (hasTrip ? 'P' : 'S') : '';
+      return {
+        dateKey: safeDate,
+        period: plan.period,
+        override: plan.override,
+        source: plan.source,
+        plannedCode: plan.plannedCode,
+        startTime: plan.startTime,
+        endTime: plan.endTime,
+        factShifts: factShifts,
+        factCode: factCode,
+        hasFact: factShifts.length > 0,
+        effectiveCode: factCode || plan.plannedCode || ''
+      };
+    }
+
+    function formatScheduleCodeLabel(code) {
+      if (code === 'D') return 'Дневная смена';
+      if (code === 'N') return 'Ночная смена';
+      if (code === 'V') return 'Выходной';
+      if (code === 'P') return 'Поездка';
+      if (code === 'S') return 'Смена';
+      return 'Без плана';
+    }
+
+    function formatScheduleDateLabel(dateKey) {
+      var safeDate = normalizeDateKey(dateKey);
+      if (!safeDate) return '—';
+      var monthNames = ['января', 'февраля', 'марта', 'апреля', 'мая', 'июня', 'июля', 'августа', 'сентября', 'октября', 'ноября', 'декабря'];
+      var day = safeDate.substring(8, 10);
+      var monthIndex = parseInt(safeDate.substring(5, 7), 10) - 1;
+      var year = safeDate.substring(0, 4);
+      return Number(day) + ' ' + (monthNames[monthIndex] || '') + ' ' + year;
+    }
+
+    function formatScheduleShortDate(dateKey) {
+      var safeDate = normalizeDateKey(dateKey);
+      if (!safeDate) return '—';
+      var monthNames = ['янв', 'фев', 'мар', 'апр', 'май', 'июн', 'июл', 'авг', 'сен', 'окт', 'ноя', 'дек'];
+      return safeDate.substring(8, 10) + ' ' + (monthNames[parseInt(safeDate.substring(5, 7), 10) - 1] || '');
+    }
+
+    function buildSchedulePeriodSummary(period) {
+      if (!period) return '';
+      if (period.mode === 'cycle') {
+        return 'График ' + formatSchedulePattern(period.pattern) + ' · ' + (period.startTime || '—') + '–' + (period.endTime || '—');
+      }
+      return 'Поездки вручную';
+    }
+
+    function upsertSchedulePeriod(periodInput) {
+      var period = normalizeSchedulePeriod(periodInput);
+      if (!period) return null;
+      var periods = getSchedulePeriods();
+      var updated = [];
+      for (var i = 0; i < periods.length; i++) {
+        if (periods[i].id !== period.id) updated.push(periods[i]);
+      }
+      updated.push(period);
+      scheduleStore.periods = updated;
+      saveScheduleStore();
+      return period;
+    }
+
+    function deleteSchedulePeriod(periodId) {
+      var periods = getSchedulePeriods();
+      var updated = [];
+      for (var i = 0; i < periods.length; i++) {
+        if (periods[i].id !== periodId) updated.push(periods[i]);
+      }
+      scheduleStore.periods = updated;
+      saveScheduleStore();
+    }
+
+    function setScheduleDayOverride(dateKey, payload) {
+      var safeDate = normalizeDateKey(dateKey);
+      if (!safeDate) return;
+      var overrides = getScheduleOverrides();
+      var code = normalizeScheduleCode(payload && payload.code);
+      if (!code || code === 'AUTO') {
+        delete overrides[safeDate];
+      } else {
+        overrides[safeDate] = {
+          code: code,
+          startTime: normalizeTimeValue(payload && payload.startTime, ''),
+          endTime: normalizeTimeValue(payload && payload.endTime, '')
+        };
+      }
+      scheduleStore.overrides = overrides;
+      saveScheduleStore();
+    }
+
+    function setSelectedScheduleDay(dateKey) {
+      selectedScheduleDayKey = normalizeDateKey(dateKey) || getTodayDateKey();
+      return selectedScheduleDayKey;
+    }
+
+    function buildPresetShiftEndDate(dateKey, startTime, endTime) {
+      var safeDate = normalizeDateKey(dateKey) || getTodayDateKey();
+      var safeStart = normalizeTimeValue(startTime, '08:00');
+      var safeEnd = normalizeTimeValue(endTime, '20:00');
+      if (!safeStart || !safeEnd) return safeDate;
+      return safeEnd > safeStart ? safeDate : getDateKeyByOffset(safeDate, 1);
+    }
+
+    function openAddShiftForDate(dateKey, options) {
+      var safeDate = normalizeDateKey(dateKey) || getTodayDateKey();
+      var opts = options || {};
+      if (editingShiftId) {
+        exitEditMode('home');
+      } else {
+        setFormMode('add');
+      }
+      clearErrors();
+      clearOptionalShiftData();
+      document.getElementById('inputStartDate').value = safeDate;
+      document.getElementById('inputStartTime').value = normalizeTimeValue(opts.startTime, '08:00');
+      document.getElementById('inputEndDate').value = buildPresetShiftEndDate(safeDate, document.getElementById('inputStartTime').value, normalizeTimeValue(opts.endTime, '20:00'));
+      document.getElementById('inputEndTime').value = normalizeTimeValue(opts.endTime, '20:00');
+      setRouteType(opts.routeKind === 'trip' ? 'trip' : 'depot');
+      renderDraftShiftSummary();
+      setActiveTab('add');
+      window.setTimeout(function() {
+        var formSection = document.getElementById('shiftFormSection');
+        if (formSection && formSection.scrollIntoView) {
+          formSection.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        }
+      }, 40);
+    }
+
     // Stub — retained so any lingering references don't throw.
     // Re-implement when PRO gating is needed again (flip ACCESS_UNRESTRICTED).
     function setAccessRestricted(/*isRestricted*/) {}

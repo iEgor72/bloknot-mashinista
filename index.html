@@ -256,6 +256,37 @@
           </div>
         </div>
 
+        <div class="schedule-card" aria-label="Календарь работы">
+          <div class="schedule-card-head">
+            <div>
+              <div class="quick-stats-note">Календарь работы</div>
+              <div class="schedule-card-subtitle" id="scheduleCardSubtitle">Смены, поездки и будущий график в одном месте</div>
+            </div>
+            <button class="section-link" id="btnOpenSchedulePlanner" type="button">Настроить</button>
+          </div>
+
+          <div class="schedule-weekdays" aria-hidden="true">
+            <span>Пн</span>
+            <span>Вт</span>
+            <span>Ср</span>
+            <span>Чт</span>
+            <span>Пт</span>
+            <span>Сб</span>
+            <span>Вс</span>
+          </div>
+
+          <div class="schedule-calendar-grid" id="homeScheduleCalendar"></div>
+
+          <div class="schedule-legend">
+            <span class="schedule-legend-item"><span class="schedule-legend-dot is-day"></span>День</span>
+            <span class="schedule-legend-item"><span class="schedule-legend-dot is-night"></span>Ночь</span>
+            <span class="schedule-legend-item"><span class="schedule-legend-dot is-rest"></span>Выходной</span>
+            <span class="schedule-legend-item"><span class="schedule-legend-dot is-fact"></span>Факт</span>
+          </div>
+
+          <div class="schedule-upcoming-list" id="homeScheduleUpcoming"></div>
+        </div>
+
         <div class="section-header section-header-row">
           <span>Недавние смены</span>
           <button class="section-link" id="btnGoToShifts" type="button">Все смены</button>
@@ -966,6 +997,130 @@
       <div class="confirm-btns">
         <button class="btn-confirm-cancel" id="btnCancelDelete">Отмена</button>
         <button class="btn-confirm-delete" id="btnConfirmDelete">Удалить</button>
+      </div>
+    </div>
+  </div>
+
+  <div class="overlay" id="overlaySchedulePlanner">
+    <div class="bottom-sheet schedule-planner-sheet">
+      <div class="salary-settings-header">
+        <span class="salary-settings-header-spacer" aria-hidden="true"></span>
+        <div class="sheet-title">График работы</div>
+        <span class="salary-settings-header-spacer" aria-hidden="true"></span>
+      </div>
+
+      <div class="settings-help-block">Периоды не ломают текущие смены. Это отдельный плановый слой поверх уже внесённых поездок и смен.</div>
+
+      <div class="settings-section-title">Периоды</div>
+      <div class="schedule-periods-list" id="schedulePeriodsList"></div>
+
+      <div class="settings-section-title">Новый период</div>
+      <div class="settings-card schedule-form-card">
+        <div class="field">
+          <label>Как работаете в этот период</label>
+          <div class="segmented two" id="scheduleModeSegmented" data-setting-group="scheduleMode">
+            <button type="button" class="segmented-btn active" data-value="manual">Поездки вручную</button>
+            <button type="button" class="segmented-btn" data-value="cycle">Сменный график</button>
+          </div>
+        </div>
+
+        <div class="optional-grid optional-grid-two">
+          <div class="field">
+            <label>Дата начала</label>
+            <input class="optional-control" type="date" id="schedulePeriodStartDate" />
+          </div>
+          <div class="field">
+            <label>Дата окончания</label>
+            <input class="optional-control" type="date" id="schedulePeriodEndDate" />
+            <div class="optional-note">Можно оставить пусто</div>
+          </div>
+        </div>
+
+        <div id="scheduleCycleFields" class="hidden">
+          <div class="field">
+            <label>Шаблон графика</label>
+            <div class="schedule-pattern-preview" id="schedulePatternPreview">—</div>
+            <div class="schedule-pattern-builder">
+              <button type="button" class="schedule-pattern-btn" data-pattern-add="D">Д</button>
+              <button type="button" class="schedule-pattern-btn" data-pattern-add="N">Н</button>
+              <button type="button" class="schedule-pattern-btn" data-pattern-add="V">В</button>
+              <button type="button" class="schedule-pattern-btn is-muted" id="btnSchedulePatternBackspace">⌫</button>
+              <button type="button" class="schedule-pattern-btn is-muted" id="btnSchedulePatternClear">Очистить</button>
+            </div>
+            <input type="hidden" id="schedulePatternValue" value="" />
+            <div class="optional-note">Например: ДДННВВВВ</div>
+          </div>
+
+          <div class="optional-grid optional-grid-two">
+            <div class="field">
+              <label>Стандартная явка</label>
+              <input class="optional-control" type="time" id="scheduleDefaultStartTime" value="08:00" />
+            </div>
+            <div class="field">
+              <label>Окончание</label>
+              <input class="optional-control" type="time" id="scheduleDefaultEndTime" value="20:00" />
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="salary-settings-actions">
+        <button class="btn-sheet-save" id="btnSaveSchedulePeriod" type="button">Сохранить период</button>
+        <button class="btn-sheet-close" id="btnCloseSchedulePlanner" type="button">Закрыть</button>
+      </div>
+    </div>
+  </div>
+
+  <div class="overlay" id="overlayScheduleDay">
+    <div class="bottom-sheet schedule-day-sheet">
+      <div class="salary-settings-header">
+        <span class="salary-settings-header-spacer" aria-hidden="true"></span>
+        <div class="sheet-title">День в календаре</div>
+        <span class="salary-settings-header-spacer" aria-hidden="true"></span>
+      </div>
+
+      <div class="schedule-day-summary">
+        <div class="schedule-day-date" id="scheduleDayDate">—</div>
+        <div class="schedule-day-status" id="scheduleDayStatus">—</div>
+      </div>
+
+      <div class="schedule-day-fact hidden" id="scheduleDayFactCard">
+        <div class="schedule-day-fact-title">Факт по этому дню</div>
+        <div class="schedule-day-fact-text" id="scheduleDayFactText"></div>
+      </div>
+
+      <div class="schedule-day-actions-row">
+        <button class="btn-secondary" id="btnScheduleDayAddShift" type="button">Добавить запись</button>
+        <button class="btn-secondary hidden" id="btnScheduleDayEditShift" type="button">Открыть смену</button>
+      </div>
+
+      <div class="settings-section-title">Точечное изменение</div>
+      <div class="settings-card schedule-day-editor-card">
+        <div class="field">
+          <label>Какой это день</label>
+          <div class="segmented" id="scheduleDayTypeSegmented" data-setting-group="scheduleDayType">
+            <button type="button" class="segmented-btn active" data-value="auto">Авто</button>
+            <button type="button" class="segmented-btn" data-value="D">Д</button>
+            <button type="button" class="segmented-btn" data-value="N">Н</button>
+            <button type="button" class="segmented-btn" data-value="V">В</button>
+          </div>
+        </div>
+
+        <div class="optional-grid optional-grid-two hidden" id="scheduleDayTimeFields">
+          <div class="field">
+            <label>Явка</label>
+            <input class="optional-control" type="time" id="scheduleDayStartTime" value="08:00" />
+          </div>
+          <div class="field">
+            <label>Окончание</label>
+            <input class="optional-control" type="time" id="scheduleDayEndTime" value="20:00" />
+          </div>
+        </div>
+      </div>
+
+      <div class="salary-settings-actions">
+        <button class="btn-sheet-save" id="btnSaveScheduleDay" type="button">Сохранить день</button>
+        <button class="btn-sheet-close" id="btnCloseScheduleDay" type="button">Закрыть</button>
       </div>
     </div>
   </div>
