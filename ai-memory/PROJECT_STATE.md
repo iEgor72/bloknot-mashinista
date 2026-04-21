@@ -1,14 +1,14 @@
 # Project State
 
 <!-- AUTO_STATUS:START -->
-Generated: 2026-04-21 12:18:15 +0000
+Generated: 2026-04-21 12:19:44 +0000
 
 ## Repository Snapshot
 - Local repo path: `/opt/bloknot-mashinista`
 - Project memory path: `/opt/bloknot-mashinista/ai-memory`
 - Branch: `main`
-- HEAD: `9abce7a`
-- Last commit: `9abce7a fix(schedule): rewrite day sheet copy in user terms`
+- HEAD: `a41bc6b`
+- Last commit: `a41bc6b fix(schedule): stop mutating reused fact card`
 
 ## Git Remote
 ```text
@@ -18,7 +18,7 @@ origin	https://github.com/iEgor72/bloknot-mashinista.git (push)
 
 ## Branch Tracking
 ```text
-* main 9abce7a [origin/main] fix(schedule): rewrite day sheet copy in user terms
+* main a41bc6b [origin/main] fix(schedule): stop mutating reused fact card
 ```
 
 ## Worktree

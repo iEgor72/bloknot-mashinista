@@ -1,6 +1,6 @@
 # Worktree Status
 
-Generated: 2026-04-21 12:18:15 +0000
+Generated: 2026-04-21 12:19:44 +0000
 
 ## git status -sb
 ```text
@@ -20,17 +20,16 @@ Generated: 2026-04-21 12:18:15 +0000
 
 ## git branch -vv
 ```text
-* main 9abce7a [origin/main] fix(schedule): rewrite day sheet copy in user terms
+* main a41bc6b [origin/main] fix(schedule): stop mutating reused fact card
 ```
 
 ## HEAD
 ```text
-9abce7a fix(schedule): rewrite day sheet copy in user terms
- ai-memory/CHANGELOG.md       |  8 ++++++++
- ai-memory/PROJECT_STATE.md   |  8 ++++----
- ai-memory/WORKTREE_STATUS.md | 19 ++++++++-----------
- index.html                   |  8 ++++----
- scripts/render.js            |  4 ++--
- scripts/shift-form.js        |  2 +-
- 6 files changed, 27 insertions(+), 22 deletions(-)
+a41bc6b fix(schedule): stop mutating reused fact card
+ ai-memory/CHANGELOG.md             |  8 ++++++++
+ ai-memory/PROJECT_STATE.md         |  8 ++++----
+ ai-memory/WORKTREE_STATUS.md       | 18 ++++++++++--------
+ scripts/render.js                  |  9 +++++----
+ styles/10-navigation-and-cards.css |  9 +++++++++
+ 5 files changed, 36 insertions(+), 16 deletions(-)
 ```
