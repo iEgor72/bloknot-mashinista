@@ -810,11 +810,7 @@
       var planTextEl = document.getElementById('scheduleDayPlanText');
       var addShiftBtn = document.getElementById('btnScheduleDayAddShift');
       var editShiftBtn = document.getElementById('btnScheduleDayEditShift');
-      var timeFieldsEl = document.getElementById('scheduleDayTimeFields');
-      var startTimeEl = document.getElementById('scheduleDayStartTime');
-      var endTimeEl = document.getElementById('scheduleDayEndTime');
-      var typeButtons = document.querySelectorAll('#scheduleDayTypeSegmented .segmented-btn');
-      if (!dateEl || !statusEl || !factCardEl || !factTitleEl || !factTextEl || !factContentEl || !planCardEl || !planTitleEl || !planTimeEl || !planDurationEl || !planTextEl || !addShiftBtn || !editShiftBtn || !timeFieldsEl || !startTimeEl || !endTimeEl || !typeButtons.length) return;
+      if (!dateEl || !statusEl || !factCardEl || !factTitleEl || !factTextEl || !factContentEl || !planCardEl || !planTitleEl || !planTimeEl || !planDurationEl || !planTextEl || !addShiftBtn || !editShiftBtn) return;
 
       dateEl.textContent = formatScheduleDateLabel(dateKey);
       if (state.hasFact && state.plannedCode) {
@@ -857,14 +853,6 @@
         editShiftBtn.removeAttribute('data-date-key');
       }
 
-      var selectedType = state.override && state.override.code ? state.override.code : 'auto';
-      for (var i = 0; i < typeButtons.length; i++) {
-        typeButtons[i].classList.toggle('active', typeButtons[i].getAttribute('data-value') === selectedType);
-      }
-      var shouldShowTimes = selectedType === 'D' || selectedType === 'N';
-      timeFieldsEl.classList.toggle('hidden', !shouldShowTimes);
-      startTimeEl.value = state.startTime || '08:00';
-      endTimeEl.value = state.endTime || '20:00';
       addShiftBtn.setAttribute('data-schedule-date', dateKey);
     }
 

@@ -1218,51 +1218,10 @@
     }
 
     .schedule-day-fact-text,
-    .schedule-day-plan-text,
-    .schedule-day-editor-note {
+    .schedule-day-plan-text {
       font-size: 12px;
       line-height: 1.45;
       color: var(--muted);
-    }
-
-    .schedule-day-type-grid {
-      display: grid;
-      grid-template-columns: repeat(2, minmax(0, 1fr));
-      gap: 10px;
-      margin: 0;
-      background: transparent;
-      padding: 0;
-      border: 0;
-      border-radius: 0;
-      overflow: visible;
-      box-shadow: none;
-    }
-
-    .schedule-day-type-grid .segmented-btn {
-      min-width: 0;
-      width: 100%;
-      min-height: 44px;
-      padding: 0 12px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      text-align: center;
-      border-radius: 14px;
-      border: 1px solid rgba(255,255,255,0.08);
-      background: rgba(255,255,255,0.035);
-      color: var(--text);
-      font-size: 13px;
-      font-weight: 700;
-      line-height: 1.2;
-      box-sizing: border-box;
-      box-shadow: none;
-    }
-
-    .schedule-day-type-grid .segmented-btn.active {
-      background: linear-gradient(180deg, rgba(100, 227, 255, 0.20), rgba(56, 189, 248, 0.14));
-      border-color: rgba(56, 189, 248, 0.28);
-      color: #dff9ff;
-      box-shadow: inset 0 0 0 1px rgba(255,255,255,0.04);
     }
 
     .schedule-sheet-actions {

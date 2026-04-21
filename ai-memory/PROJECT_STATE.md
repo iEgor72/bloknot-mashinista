@@ -1,14 +1,14 @@
 # Project State
 
 <!-- AUTO_STATUS:START -->
-Generated: 2026-04-21 12:21:26 +0000
+Generated: 2026-04-21 12:25:35 +0000
 
 ## Repository Snapshot
 - Local repo path: `/opt/bloknot-mashinista`
 - Project memory path: `/opt/bloknot-mashinista/ai-memory`
 - Branch: `main`
-- HEAD: `a5c6c8f`
-- Last commit: `a5c6c8f fix(schedule): remove segmented wrapper from day mark`
+- HEAD: `866ce9e`
+- Last commit: `866ce9e fix(schedule): align day sheet with app typography`
 
 ## Git Remote
 ```text
@@ -18,7 +18,7 @@ origin	https://github.com/iEgor72/bloknot-mashinista.git (push)
 
 ## Branch Tracking
 ```text
-* main a5c6c8f [origin/main] fix(schedule): remove segmented wrapper from day mark
+* main 866ce9e [origin/main] fix(schedule): align day sheet with app typography
 ```
 
 ## Worktree

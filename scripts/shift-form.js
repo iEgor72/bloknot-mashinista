@@ -774,11 +774,7 @@
       syncSchedulePlannerFormMeta();
     }
 
-    function syncScheduleDayTimeFields() {
-      var value = getSegmentedValue('scheduleDayTypeSegmented', 'auto');
-      var timeFields = document.getElementById('scheduleDayTimeFields');
-      if (timeFields) timeFields.classList.toggle('hidden', !(value === 'D' || value === 'N'));
-    }
+    function syncScheduleDayTimeFields() {}
 
     var openSchedulePlannerBtn = document.getElementById('btnOpenSchedulePlanner');
     if (openSchedulePlannerBtn) {
@@ -890,32 +886,6 @@
       });
     }
 
-    var scheduleDayTypeSegmented = document.getElementById('scheduleDayTypeSegmented');
-    if (scheduleDayTypeSegmented) {
-      scheduleDayTypeSegmented.addEventListener('click', function(e) {
-        var btn = e.target.closest('.segmented-btn[data-value]');
-        if (!btn) return;
-        setSegmentedValue('scheduleDayTypeSegmented', btn.getAttribute('data-value'));
-        syncScheduleDayTimeFields();
-      });
-    }
-
-    var saveScheduleDayBtn = document.getElementById('btnSaveScheduleDay');
-    if (saveScheduleDayBtn) {
-      saveScheduleDayBtn.addEventListener('click', function() {
-        var typeValue = getSegmentedValue('scheduleDayTypeSegmented', 'auto');
-        setScheduleDayOverride(selectedScheduleDayKey, {
-          code: typeValue,
-          startTime: document.getElementById('scheduleDayStartTime').value,
-          endTime: document.getElementById('scheduleDayEndTime').value
-        });
-        triggerHapticSuccess();
-        closeOverlay('overlayScheduleDay');
-        render();
-        showSaveToast(typeValue === 'auto' ? 'Вернул как в графике' : 'Отметку дня сохранил', 'success');
-      });
-    }
-
     var closeScheduleDayBtn = document.getElementById('btnCloseScheduleDay');
     if (closeScheduleDayBtn) {
       closeScheduleDayBtn.addEventListener('click', function() {
@@ -947,7 +917,6 @@
     }
 
     resetSchedulePlannerForm();
-    syncScheduleDayTimeFields();
 
     var instructionsShellEl = document.getElementById('instructionsShell');
     if (instructionsShellEl) {

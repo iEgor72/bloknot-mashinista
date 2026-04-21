@@ -1,6 +1,6 @@
 # Worktree Status
 
-Generated: 2026-04-21 12:21:26 +0000
+Generated: 2026-04-21 12:25:35 +0000
 
 ## git status -sb
 ```text
@@ -20,16 +20,15 @@ Generated: 2026-04-21 12:21:26 +0000
 
 ## git branch -vv
 ```text
-* main a5c6c8f [origin/main] fix(schedule): remove segmented wrapper from day mark
+* main 866ce9e [origin/main] fix(schedule): align day sheet with app typography
 ```
 
 ## HEAD
 ```text
-a5c6c8f fix(schedule): remove segmented wrapper from day mark
- ai-memory/CHANGELOG.md             |  8 ++++++++
- ai-memory/PROJECT_STATE.md         |  8 ++++----
- ai-memory/WORKTREE_STATUS.md       | 19 +++++++++----------
- index.html                         |  2 +-
- styles/10-navigation-and-cards.css |  2 ++
- 5 files changed, 24 insertions(+), 15 deletions(-)
+866ce9e fix(schedule): align day sheet with app typography
+ ai-memory/CHANGELOG.md             |   8 +++
+ ai-memory/PROJECT_STATE.md         |   8 +--
+ ai-memory/WORKTREE_STATUS.md       |  14 ++---
+ styles/10-navigation-and-cards.css | 122 ++++++++++++++++++++++---------------
+ 4 files changed, 92 insertions(+), 60 deletions(-)
 ```
