@@ -642,7 +642,7 @@
         var badge = getScheduleVisualLabel(code);
         var badgeHtml = badge
           ? '<span class="schedule-day-badge">' + escapeHtml(badge) + '</span>'
-          : '<span class="schedule-day-badge is-empty">—</span>';
+          : '';
         var ariaParts = [formatScheduleDateLabel(dateKey)];
         if (code) {
           ariaParts.push(formatScheduleCodeLabel(code));
