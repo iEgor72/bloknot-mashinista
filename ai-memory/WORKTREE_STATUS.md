@@ -1,6 +1,6 @@
 # Worktree Status
 
-Generated: 2026-04-21 09:26:36 +0000
+Generated: 2026-04-21 09:44:42 +0000
 
 ## git status -sb
 ```text
@@ -20,16 +20,19 @@ Generated: 2026-04-21 09:26:36 +0000
 
 ## git branch -vv
 ```text
-* main 9c88d87 [origin/main] chore(seo): add yandex verification file
+* main 21a61b5 [origin/main] feat(seo): add salary calculator landing page
 ```
 
 ## HEAD
 ```text
-9c88d87 chore(seo): add yandex verification file
- ai-memory/CHANGELOG.md       |  8 ++++++++
- ai-memory/PROJECT_STATE.md   |  8 ++++----
- ai-memory/WORKTREE_STATUS.md | 13 +++++++------
- server.js                    |  1 +
- yandex_de378ce11c15bc59.html |  6 ++++++
- 5 files changed, 26 insertions(+), 10 deletions(-)
+21a61b5 feat(seo): add salary calculator landing page
+ ai-memory/CHANGELOG.md                        |   8 ++
+ ai-memory/PROJECT_STATE.md                    |   8 +-
+ ai-memory/WORKTREE_STATUS.md                  |  12 +--
+ docs/seo/kalkulyator-zarplaty-mashinista.html | 108 ++++++++++++++++++++++++++
+ docs/seo/uchet-marshrutov.html                |  25 +++---
+ docs/seo/zarplata-mashinista.html             |   7 +-
+ docs/seo/zhurnal-smen-mashinista.html         |   7 +-
+ server.js                                     |   3 +-
+ 8 files changed, 149 insertions(+), 29 deletions(-)
 ```
