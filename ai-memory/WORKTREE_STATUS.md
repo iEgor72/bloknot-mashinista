@@ -1,6 +1,6 @@
 # Worktree Status
 
-Generated: 2026-04-21 11:06:58 +0000
+Generated: 2026-04-21 11:09:49 +0000
 
 ## git status -sb
 ```text
@@ -20,17 +20,15 @@ Generated: 2026-04-21 11:06:58 +0000
 
 ## git branch -vv
 ```text
-* main 97ee03b [origin/main] fix(schedule): reuse app buttons and simplify day card
+* main 9f7c4cf [origin/main] fix(schedule): stop showing route in upcoming cards
 ```
 
 ## HEAD
 ```text
-97ee03b fix(schedule): reuse app buttons and simplify day card
- ai-memory/CHANGELOG.md             |  8 +++++
- ai-memory/PROJECT_STATE.md         |  8 ++---
- ai-memory/WORKTREE_STATUS.md       | 17 ++++-----
- index.html                         | 30 +++++++++++-----
- scripts/render.js                  | 73 +++++++++++++++++++++++++++++++++-----
- styles/10-navigation-and-cards.css | 55 +++++++++++++++++++++++++++-
- 6 files changed, 162 insertions(+), 29 deletions(-)
+9f7c4cf fix(schedule): stop showing route in upcoming cards
+ ai-memory/CHANGELOG.md       |  8 ++++++++
+ ai-memory/PROJECT_STATE.md   |  8 ++++----
+ ai-memory/WORKTREE_STATUS.md | 19 ++++++++++---------
+ scripts/render.js            | 28 +++++++++++-----------------
+ 4 files changed, 33 insertions(+), 30 deletions(-)
 ```
