@@ -1,14 +1,14 @@
 # Project State
 
 <!-- AUTO_STATUS:START -->
-Generated: 2026-04-21 11:30:48 +0000
+Generated: 2026-04-21 11:41:14 +0000
 
 ## Repository Snapshot
 - Local repo path: `/opt/bloknot-mashinista`
 - Project memory path: `/opt/bloknot-mashinista/ai-memory`
 - Branch: `main`
-- HEAD: `af2fb8e`
-- Last commit: `af2fb8e refactor(home): reorder dashboard blocks`
+- HEAD: `8e5067a`
+- Last commit: `8e5067a feat(schedule): add period editing and clearer day state`
 
 ## Git Remote
 ```text
@@ -18,7 +18,7 @@ origin	https://github.com/iEgor72/bloknot-mashinista.git (push)
 
 ## Branch Tracking
 ```text
-* main af2fb8e [origin/main] refactor(home): reorder dashboard blocks
+* main 8e5067a [origin/main] feat(schedule): add period editing and clearer day state
 ```
 
 ## Worktree
