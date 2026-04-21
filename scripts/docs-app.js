@@ -512,14 +512,18 @@
       }
     }
 
-    function renderDocsViewerLoading(text) {
+    function renderDocsViewerLoading(text, details) {
       var bodyEl = document.getElementById('docsViewerBody');
       if (!bodyEl) return;
       bodyEl.innerHTML =
         '<div class="docs-viewer-media-wrap">' +
-          '<div class="docs-viewer-loading">' +
-            '<div class="docs-loading-spinner"></div>' +
-            '<span>' + escapeHtml(text || 'Загрузка…') + '</span>' +
+          '<div class="docs-viewer-loading-block">' +
+            '<div class="docs-viewer-loading">' +
+              '<div class="docs-loading-spinner"></div>' +
+              '<span>' + escapeHtml(text || 'Загрузка…') + '</span>' +
+            '</div>' +
+            '<div class="docs-viewer-loading-progress" aria-hidden="true"><span></span></div>' +
+            (details ? '<div class="docs-viewer-loading-note">' + escapeHtml(details) + '</div>' : '') +
           '</div>' +
         '</div>';
     }
@@ -1031,15 +1035,19 @@
       mountDocsDocxViewer(state, html, localPath);
     }
 
-    function openDocxWithPreview(localPath) {
+    function openDocxWithPreview(localPath, attempt) {
       var bodyEl = document.getElementById('docsViewerBody');
       if (!bodyEl) return;
+      var tryIndex = Number(attempt || 0);
       destroyDocsDocxViewer();
       var state = createDocsDocxViewerState(bodyEl);
       docsDocxViewerState = state;
 
-      renderDocsViewerLoading('Загрузка DOCX…');
-      setDocsViewerStatus('Загрузка…');
+      renderDocsViewerLoading(
+        tryIndex > 0 ? 'Повторная загрузка DOCX…' : 'Загрузка DOCX…',
+        tryIndex > 0 ? 'Пробуем открыть документ ещё раз' : 'Подготавливаем документ для просмотра'
+      );
+      setDocsViewerStatus(tryIndex > 0 ? 'Повтор...' : 'Загрузка…');
 
       var zipLib = null;
       ensureDocsZipReady()
@@ -1073,6 +1081,11 @@
         })
         .catch(function(err) {
           if (!isDocsDocxViewerActive(state)) return;
+          if (isRetryableDocError(err) && tryIndex < 1) {
+            destroyDocsDocxViewer();
+            openDocxWithPreview(localPath, tryIndex + 1);
+            return;
+          }
           destroyDocsDocxViewer();
           var friendly = getFriendlyDocOpenError(err);
           renderDocsViewerError(friendly.title, friendly.details);
@@ -1080,15 +1093,22 @@
         });
     }
 
-    function getFriendlyDocOpenError(err) {
+    function isRetryableDocError(err) {
       var rawMessage = err && err.message ? String(err.message) : '';
       var message = rawMessage.toLowerCase();
-      var isNetworkIssue =
+      return (
         message.indexOf('asset unavailable') !== -1 ||
         message.indexOf('failed to fetch') !== -1 ||
         message.indexOf('network') !== -1 ||
         message.indexOf('fetch') !== -1 ||
-        message.indexOf('loading aborted') !== -1;
+        message.indexOf('loading aborted') !== -1
+      );
+    }
+
+    function getFriendlyDocOpenError(err) {
+      var rawMessage = err && err.message ? String(err.message) : '';
+      var message = rawMessage.toLowerCase();
+      var isNetworkIssue = isRetryableDocError(err);
 
       if (!navigator.onLine && isNetworkIssue) {
         return {
@@ -1341,7 +1361,7 @@
       scrollEl.addEventListener('touchcancel', state.onTouchCancel, { passive: true });
     }
 
-    function mountDocsImageViewer(state, localPath, name) {
+    function mountDocsImageViewer(state, localPath, name, attempt) {
       if (!isDocsImageViewerActive(state) || !state.bodyEl) return;
       state.bodyEl.innerHTML =
         '<div class="docs-image-scroll">' +
@@ -1381,6 +1401,12 @@
 
       state.imageEl.onerror = function() {
         if (!isDocsImageViewerActive(state)) return;
+        var tryIndex = Number(attempt || 0);
+        if (navigator.onLine && tryIndex < 1) {
+          destroyDocsImageViewer();
+          openImageWithPreview(localPath, name, tryIndex + 1);
+          return;
+        }
         if (!navigator.onLine) {
           renderDocsViewerError(
             'Файл пока не скачан',
@@ -1396,15 +1422,19 @@
       state.imageEl.src = localPath;
     }
 
-    function openImageWithPreview(localPath, name) {
+    function openImageWithPreview(localPath, name, attempt) {
       var bodyEl = document.getElementById('docsViewerBody');
       if (!bodyEl) return;
+      var tryIndex = Number(attempt || 0);
       destroyDocsImageViewer();
       var state = createDocsImageViewerState(bodyEl);
       docsImageViewerState = state;
-      renderDocsViewerLoading('Загрузка изображения…');
-      setDocsViewerStatus('Загрузка…');
-      mountDocsImageViewer(state, localPath, name);
+      renderDocsViewerLoading(
+        tryIndex > 0 ? 'Повторная загрузка изображения…' : 'Загрузка изображения…',
+        tryIndex > 0 ? 'Пробуем открыть изображение ещё раз' : 'Подготавливаем изображение для просмотра'
+      );
+      setDocsViewerStatus(tryIndex > 0 ? 'Повтор...' : 'Загрузка…');
+      mountDocsImageViewer(state, localPath, name, tryIndex);
     }
 
     function isDocsPdfViewerActive(state) {
@@ -1991,9 +2021,10 @@
       updateDocsPdfProgress(state);
     }
 
-    function openPdfWithPdfJs(localPath) {
+    function openPdfWithPdfJs(localPath, attempt) {
       var bodyEl = document.getElementById('docsViewerBody');
       if (!bodyEl) return;
+      var tryIndex = Number(attempt || 0);
 
       var state = {
         destroyed: false,
@@ -2026,8 +2057,11 @@
       };
       docsPdfViewerState = state;
 
-      renderDocsViewerLoading('Загрузка PDF…');
-      setDocsViewerStatus('Загрузка…');
+      renderDocsViewerLoading(
+        tryIndex > 0 ? 'Повторная загрузка PDF…' : 'Загрузка PDF…',
+        tryIndex > 0 ? 'Пробуем открыть документ ещё раз' : 'Подготавливаем страницы для просмотра'
+      );
+      setDocsViewerStatus(tryIndex > 0 ? 'Повтор...' : 'Загрузка…');
 
       ensurePdfJsReady()
         .then(function(pdfjsLib) {
@@ -2054,6 +2088,11 @@
         })
         .catch(function(err) {
           if (!isDocsPdfViewerActive(state)) return;
+          if (isRetryableDocError(err) && tryIndex < 1) {
+            destroyDocsPdfViewer();
+            openPdfWithPdfJs(localPath, tryIndex + 1);
+            return;
+          }
           destroyDocsPdfViewer();
           var friendly = getFriendlyDocOpenError(err);
           renderDocsViewerError(friendly.title, friendly.details);

@@ -1541,13 +1541,57 @@
       will-change: transform;
     }
 
+    .docs-viewer-loading-block {
+      width: min(100%, 320px);
+      margin: auto;
+      display: grid;
+      gap: 12px;
+    }
+
     .docs-viewer-loading {
       display: flex;
       align-items: center;
+      justify-content: center;
       gap: 10px;
       color: var(--sub);
       font-size: 14px;
-      margin: auto;
+      text-align: center;
+    }
+
+    .docs-viewer-loading-progress {
+      position: relative;
+      width: 100%;
+      height: 6px;
+      overflow: hidden;
+      border-radius: 999px;
+      background: rgba(255, 255, 255, 0.08);
+      border: 1px solid rgba(255, 255, 255, 0.06);
+    }
+
+    .docs-viewer-loading-progress span {
+      display: block;
+      width: 42%;
+      height: 100%;
+      border-radius: inherit;
+      background: linear-gradient(90deg, rgba(56, 189, 248, 0.38), rgba(56, 189, 248, 0.95));
+      box-shadow: 0 0 14px rgba(56, 189, 248, 0.24);
+      animation: docsViewerProgressSlide 1.15s ease-in-out infinite;
+    }
+
+    .docs-viewer-loading-note {
+      color: var(--muted);
+      font-size: 12px;
+      line-height: 1.4;
+      text-align: center;
+    }
+
+    @keyframes docsViewerProgressSlide {
+      0% {
+        transform: translateX(-115%);
+      }
+      100% {
+        transform: translateX(250%);
+      }
     }
 
     .docs-viewer-error {

@@ -1,6 +1,6 @@
 # Worktree Status
 
-Generated: 2026-04-21 02:29:08 +0000
+Generated: 2026-04-21 02:33:13 +0000
 
 ## git status -sb
 ```text
@@ -19,16 +19,15 @@ Generated: 2026-04-21 02:29:08 +0000
 
 ## git branch -vv
 ```text
-* main e2059f5 [origin/main] feat(docs): add zoom gestures for image viewer
+* main 36a7c94 [origin/main] fix(sw): reduce false doc load failures
 ```
 
 ## HEAD
 ```text
-e2059f5 feat(docs): add zoom gestures for image viewer
- ai-memory/CHANGELOG.md            |   8 +
- ai-memory/PROJECT_STATE.md        |   9 +-
- ai-memory/WORKTREE_STATUS.md      |  18 +-
- scripts/docs-app.js               | 362 +++++++++++++++++++++++++++++++++++---
- styles/30-shifts-and-overlays.css |  31 ++++
- 5 files changed, 392 insertions(+), 36 deletions(-)
+36a7c94 fix(sw): reduce false doc load failures
+ ai-memory/CHANGELOG.md       |  8 ++++++++
+ ai-memory/PROJECT_STATE.md   |  8 ++++----
+ ai-memory/WORKTREE_STATUS.md | 18 +++++++++---------
+ sw.js                        | 17 +++++++++++++++--
+ 4 files changed, 36 insertions(+), 15 deletions(-)
 ```

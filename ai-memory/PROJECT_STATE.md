@@ -1,14 +1,14 @@
 # Project State
 
 <!-- AUTO_STATUS:START -->
-Generated: 2026-04-21 02:29:08 +0000
+Generated: 2026-04-21 02:33:13 +0000
 
 ## Repository Snapshot
 - Local repo path: `/opt/bloknot-mashinista`
 - Project memory path: `/opt/bloknot-mashinista/ai-memory`
 - Branch: `main`
-- HEAD: `e2059f5`
-- Last commit: `e2059f5 feat(docs): add zoom gestures for image viewer`
+- HEAD: `36a7c94`
+- Last commit: `36a7c94 fix(sw): reduce false doc load failures`
 
 ## Git Remote
 ```text
@@ -18,7 +18,7 @@ origin	https://github.com/iEgor72/bloknot-mashinista.git (push)
 
 ## Branch Tracking
 ```text
-* main e2059f5 [origin/main] feat(docs): add zoom gestures for image viewer
+* main 36a7c94 [origin/main] fix(sw): reduce false doc load failures
 ```
 
 ## Worktree
