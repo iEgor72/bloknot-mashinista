@@ -856,15 +856,14 @@
 
     function normalizeSchedulePeriod(raw) {
       if (!raw || typeof raw !== 'object') return null;
-      var mode = raw.mode === 'cycle' ? 'cycle' : 'manual';
       var startDate = normalizeDateKey(raw.startDate);
       if (!startDate) return null;
       var endDate = normalizeDateKey(raw.endDate);
       if (endDate && compareDateKeys(endDate, startDate) < 0) endDate = '';
-      var pattern = mode === 'cycle' ? normalizeSchedulePattern(raw.pattern) : '';
+      var pattern = normalizeSchedulePattern(raw.pattern);
       return {
         id: raw.id ? String(raw.id) : createSchedulePeriodId(),
-        mode: mode,
+        mode: 'cycle',
         startDate: startDate,
         endDate: endDate || '',
         pattern: pattern,
@@ -898,8 +897,7 @@
       var rawPeriods = Array.isArray(payload.periods) ? payload.periods : [];
       for (var i = 0; i < rawPeriods.length; i++) {
         var period = normalizeSchedulePeriod(rawPeriods[i]);
-        if (!period) continue;
-        if (period.mode === 'cycle' && !period.pattern) continue;
+        if (!period || !period.pattern) continue;
         periods.push(period);
       }
       periods.sort(function(a, b) {
@@ -978,7 +976,7 @@
         source = period.mode;
         startTime = period.startTime || '';
         endTime = period.endTime || '';
-        if (period.mode === 'cycle' && period.pattern) {
+        if (period.pattern) {
           var delta = getDaysBetweenDateKeys(period.startDate, safeDate);
           if (delta >= 0) {
             plannedCode = period.pattern.charAt(delta % period.pattern.length) || '';
@@ -1061,11 +1059,10 @@
     }
 
     function getScheduleVisualLabel(code) {
-      if (code === 'D') return 'День';
-      if (code === 'N') return 'Ночь';
-      if (code === 'V') return 'Вых';
-      if (code === 'P') return 'Рейс';
-      if (code === 'S') return 'Смена';
+      if (code === 'D') return 'Д';
+      if (code === 'N') return 'Н';
+      if (code === 'V') return 'В';
+      if (code === 'P' || code === 'S') return 'Ф';
       return '';
     }
 
@@ -1093,10 +1090,7 @@
 
     function buildSchedulePeriodSummary(period) {
       if (!period) return '';
-      if (period.mode === 'cycle') {
-        return 'График ' + formatSchedulePattern(period.pattern) + ' · ' + (period.startTime || '—') + '–' + (period.endTime || '—');
-      }
-      return 'Поездки вручную';
+      return 'График ' + formatSchedulePattern(period.pattern) + ' · ' + (period.startTime || '—') + '–' + (period.endTime || '—');
     }
 
     function upsertSchedulePeriod(periodInput) {

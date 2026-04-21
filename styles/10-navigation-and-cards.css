@@ -678,9 +678,9 @@
     /* ── Schedule card ── */
     .schedule-card {
       display: grid;
-      gap: 14px;
+      gap: 10px;
       margin-bottom: 20px;
-      padding: 16px;
+      padding: 14px;
       border-radius: var(--r-card);
       background: var(--card);
       border: 1px solid var(--border);
@@ -698,24 +698,24 @@
     .schedule-card-subtitle {
       margin-top: 4px;
       color: var(--muted);
-      font-size: 13px;
-      line-height: 1.45;
+      font-size: 12px;
+      line-height: 1.4;
     }
 
     .schedule-weekdays,
     .schedule-calendar-grid {
       display: grid;
       grid-template-columns: repeat(7, minmax(0, 1fr));
-      gap: 8px;
+      gap: 5px;
     }
 
     .schedule-weekdays span {
       display: flex;
       align-items: center;
       justify-content: center;
-      min-height: 20px;
-      color: rgba(238, 242, 248, 0.56);
-      font-size: 11px;
+      min-height: 16px;
+      color: rgba(238, 242, 248, 0.48);
+      font-size: 9px;
       font-weight: 800;
       letter-spacing: 0.08em;
       text-transform: uppercase;
@@ -728,14 +728,14 @@
     .schedule-day-cell,
     .schedule-day-placeholder {
       min-width: 0;
-      min-height: 58px;
-      border-radius: 16px;
+      min-height: 44px;
+      border-radius: 12px;
     }
 
     .schedule-day-placeholder {
       background: transparent;
-      border: 1px dashed rgba(255, 255, 255, 0.04);
-      opacity: 0.24;
+      border: 1px dashed rgba(255, 255, 255, 0.03);
+      opacity: 0.16;
     }
 
     .schedule-day-cell {
@@ -743,10 +743,10 @@
       display: grid;
       align-content: space-between;
       justify-items: start;
-      gap: 8px;
-      padding: 9px 8px 8px;
-      border: 1px solid rgba(255, 255, 255, 0.07);
-      background: rgba(255, 255, 255, 0.025);
+      gap: 3px;
+      padding: 6px 6px 5px;
+      border: 1px solid rgba(255, 255, 255, 0.06);
+      background: rgba(255, 255, 255, 0.02);
       color: var(--text);
       cursor: pointer;
       transition: transform 0.12s ease, border-color 0.16s ease, background 0.16s ease;
@@ -767,13 +767,13 @@
     .schedule-day-cell.has-fact::after {
       content: '';
       position: absolute;
-      top: 8px;
-      right: 8px;
-      width: 7px;
-      height: 7px;
+      top: 6px;
+      right: 6px;
+      width: 6px;
+      height: 6px;
       border-radius: 999px;
-      background: #38bdf8;
-      box-shadow: 0 0 0 4px rgba(56, 189, 248, 0.12);
+      background: #f59e0b;
+      box-shadow: 0 0 0 3px rgba(245, 158, 11, 0.12);
     }
 
     .schedule-day-cell.is-day {
@@ -798,7 +798,7 @@
 
     .schedule-day-number {
       font-family: 'JetBrains Mono', monospace;
-      font-size: 15px;
+      font-size: 13px;
       font-weight: 700;
       line-height: 1;
       color: var(--text);
@@ -809,16 +809,16 @@
       align-items: center;
       justify-content: flex-start;
       min-width: 0;
-      min-height: 18px;
+      min-height: 14px;
       padding: 0;
       border-radius: 0;
       background: transparent;
       color: rgba(238, 242, 248, 0.82);
-      font-size: 11px;
-      font-weight: 700;
-      letter-spacing: 0.01em;
-      line-height: 1.15;
-      text-transform: none;
+      font-size: 9px;
+      font-weight: 800;
+      letter-spacing: 0.02em;
+      line-height: 1;
+      text-transform: uppercase;
     }
 
     .schedule-day-badge.is-empty {
@@ -866,11 +866,11 @@
     .schedule-legend-dot.is-day { background: #22c55e; }
     .schedule-legend-dot.is-night { background: var(--accent); }
     .schedule-legend-dot.is-rest { background: #94a3b8; }
-    .schedule-legend-dot.is-fact { background: #38bdf8; }
+    .schedule-legend-dot.is-fact { background: #f59e0b; }
 
     .schedule-upcoming-list {
       display: grid;
-      gap: 10px;
+      gap: 8px;
     }
 
     .schedule-upcoming-item,
@@ -982,6 +982,15 @@
       gap: 14px;
     }
 
+    .schedule-period-range-note {
+      margin-top: -4px;
+    }
+
+    .schedule-period-dates-grid,
+    .schedule-period-times-grid {
+      align-items: start;
+    }
+
     .schedule-pattern-preview {
       min-height: 48px;
       padding: 12px 14px;
@@ -1053,21 +1062,21 @@
     @media (max-width: 420px) {
       .schedule-weekdays,
       .schedule-calendar-grid {
-        gap: 6px;
+        gap: 4px;
       }
 
       .schedule-day-cell,
       .schedule-day-placeholder {
-        min-height: 54px;
-        border-radius: 14px;
+        min-height: 40px;
+        border-radius: 10px;
       }
 
       .schedule-day-number {
-        font-size: 14px;
+        font-size: 12px;
       }
 
       .schedule-day-badge {
-        font-size: 10px;
+        font-size: 8px;
       }
 
       .schedule-day-actions-row {

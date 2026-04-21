@@ -1014,31 +1014,23 @@
       <div class="settings-section-title">Уже добавлено</div>
       <div class="schedule-periods-list" id="schedulePeriodsList"></div>
 
-      <div class="settings-section-title">Добавить период</div>
+      <div class="settings-section-title">Добавить период графика</div>
       <div class="settings-card schedule-form-card">
-        <div class="field">
-          <label>1. Как вы работаете в этот период</label>
-          <div class="segmented two" id="scheduleModeSegmented" data-setting-group="scheduleMode">
-            <button type="button" class="segmented-btn active" data-value="manual">Поездки</button>
-            <button type="button" class="segmented-btn" data-value="cycle">График</button>
-          </div>
-        </div>
-
-        <div class="optional-grid optional-grid-two">
+        <div class="optional-grid optional-grid-two schedule-period-dates-grid">
           <div class="field">
-            <label>2. С какого дня</label>
+            <label>1. С какого дня</label>
             <input class="optional-control" type="date" id="schedulePeriodStartDate" />
           </div>
           <div class="field">
             <label>По какой день</label>
             <input class="optional-control" type="date" id="schedulePeriodEndDate" />
-            <div class="optional-note">Можно не указывать</div>
           </div>
         </div>
+        <div class="optional-note schedule-period-range-note">Можно не указывать, если график действует дальше без даты окончания.</div>
 
-        <div id="scheduleCycleFields" class="hidden">
+        <div id="scheduleCycleFields">
           <div class="field">
-            <label>3. Наберите цикл графика</label>
+            <label>2. Наберите цикл графика</label>
             <div class="schedule-pattern-preview" id="schedulePatternPreview">—</div>
             <div class="schedule-pattern-builder">
               <button type="button" class="schedule-pattern-btn" data-pattern-add="D">Д</button>
@@ -1051,9 +1043,9 @@
             <div class="optional-note">Например: ДДННВВВВ или ДНВВ</div>
           </div>
 
-          <div class="optional-grid optional-grid-two">
+          <div class="optional-grid optional-grid-two schedule-period-times-grid">
             <div class="field">
-              <label>Обычная явка</label>
+              <label>3. Обычная явка</label>
               <input class="optional-control" type="time" id="scheduleDefaultStartTime" value="08:00" />
             </div>
             <div class="field">

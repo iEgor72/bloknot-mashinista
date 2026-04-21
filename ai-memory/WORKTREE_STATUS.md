@@ -1,6 +1,6 @@
 # Worktree Status
 
-Generated: 2026-04-21 10:29:14 +0000
+Generated: 2026-04-21 10:37:39 +0000
 
 ## git status -sb
 ```text
@@ -20,21 +20,19 @@ Generated: 2026-04-21 10:29:14 +0000
 
 ## git branch -vv
 ```text
-* main 751b33b [origin/main] feat(schedule): add home work calendar
+* main a7c6077 [origin/main] fix(schedule): simplify calendar and planner
 ```
 
 ## HEAD
 ```text
-751b33b feat(schedule): add home work calendar
- ai-memory/CHANGELOG.md             |   8 +
- ai-memory/PROJECT_STATE.md         |   8 +-
- ai-memory/WORKTREE_STATUS.md       |  17 +-
- index.html                         | 155 +++++++++++++++
- scripts/app.js                     | 389 ++++++++++++++++++++++++++++++++++++
- scripts/auth.js                    |   1 +
- scripts/render.js                  | 167 ++++++++++++++++
- scripts/shift-form.js              | 206 +++++++++++++++++++
- styles/10-navigation-and-cards.css | 391 +++++++++++++++++++++++++++++++++++++
- sw.js                              |   2 +-
- 10 files changed, 1330 insertions(+), 14 deletions(-)
+a7c6077 fix(schedule): simplify calendar and planner
+ ai-memory/CHANGELOG.md             |  8 +++++
+ ai-memory/PROJECT_STATE.md         |  8 ++---
+ ai-memory/WORKTREE_STATUS.md       | 22 +++++++-----
+ index.html                         | 32 ++++++++---------
+ scripts/app.js                     | 37 ++++++++++++++++++++
+ scripts/render.js                  | 19 +++++-----
+ scripts/shift-form.js              | 12 +++++++
+ styles/10-navigation-and-cards.css | 71 +++++++++++++++++++++-----------------
+ 8 files changed, 141 insertions(+), 68 deletions(-)
 ```

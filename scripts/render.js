@@ -625,7 +625,7 @@
       if (!periods.length) {
         subtitleEl.textContent = 'Если графика нет, календарь просто отмечает уже внесённые записи.';
       } else {
-        subtitleEl.textContent = 'Сначала показываем факт, а там где его нет, план по графику.';
+        subtitleEl.textContent = 'Факт важнее плана. Пустые дни заполняются графиком автоматически.';
       }
 
       var upcoming = [];
@@ -643,7 +643,7 @@
       }
 
       if (!upcoming.length) {
-        upcomingEl.innerHTML = '<div class="schedule-upcoming-empty">Здесь появятся ближайшие рабочие дни по графику. Если вы работаете только поездками вручную, календарь будет отмечать уже внесённые записи.</div>';
+        upcomingEl.innerHTML = '<div class="schedule-upcoming-empty">Когда добавите график, здесь появятся ближайшие рабочие дни. Без графика календарь просто отмечает уже внесённые записи.</div>';
       } else {
         var upcomingHtml = '';
         for (var ui = 0; ui < upcoming.length; ui++) {
@@ -664,7 +664,7 @@
       if (!listEl) return;
       var periods = getSchedulePeriods();
       if (!periods.length) {
-        listEl.innerHTML = '<div class="schedule-upcoming-empty">Периодов пока нет. Если вы работаете только поездками вручную, можно ничего не добавлять. Если график нужен, добавьте период и цикл ниже.</div>';
+        listEl.innerHTML = '<div class="schedule-upcoming-empty">Периодов графика пока нет. Если работаете без цикла, можно ничего не добавлять. Если график есть, добавьте его ниже.</div>';
         return;
       }
       var html = '';
@@ -679,7 +679,7 @@
             '</div>' +
             '<button type="button" class="schedule-period-delete" data-schedule-delete="' + escapeHtml(period.id) + '">Удалить</button>' +
           '</div>' +
-          '<div class="schedule-period-subnote">' + (period.mode === 'cycle' ? 'Автопостроение календаря по шаблону' : 'Все записи в этот период вносятся вручную') + '</div>' +
+          '<div class="schedule-period-subnote">Автопостроение календаря по шаблону</div>' +
         '</div>';
       }
       listEl.innerHTML = html;
@@ -713,7 +713,7 @@
         factTextEl.textContent = '';
       }
 
-      addShiftBtn.textContent = state.period && state.period.mode === 'manual' ? 'Добавить поездку' : 'Добавить смену';
+      addShiftBtn.textContent = 'Добавить запись';
       editShiftBtn.classList.toggle('hidden', !state.hasFact);
       if (!editShiftBtn.classList.contains('hidden') && state.factShifts[0]) {
         editShiftBtn.setAttribute('data-shift-id', state.factShifts[0].id);

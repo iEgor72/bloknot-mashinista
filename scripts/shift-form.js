@@ -722,12 +722,6 @@
       return active ? active.getAttribute('data-value') : fallback;
     }
 
-    function syncSchedulePlannerMode() {
-      var mode = getSegmentedValue('scheduleModeSegmented', 'manual');
-      var cycleFields = document.getElementById('scheduleCycleFields');
-      if (cycleFields) cycleFields.classList.toggle('hidden', mode !== 'cycle');
-    }
-
     function syncSchedulePatternPreview() {
       var input = document.getElementById('schedulePatternValue');
       var preview = document.getElementById('schedulePatternPreview');
@@ -746,8 +740,6 @@
       if (patternEl) patternEl.value = '';
       if (startTimeEl) startTimeEl.value = '08:00';
       if (endTimeEl) endTimeEl.value = '20:00';
-      setSegmentedValue('scheduleModeSegmented', 'manual');
-      syncSchedulePlannerMode();
       syncSchedulePatternPreview();
     }
 
@@ -771,16 +763,6 @@
     if (closeSchedulePlannerBtn) {
       closeSchedulePlannerBtn.addEventListener('click', function() {
         closeOverlay('overlaySchedulePlanner');
-      });
-    }
-
-    var scheduleModeSegmented = document.getElementById('scheduleModeSegmented');
-    if (scheduleModeSegmented) {
-      scheduleModeSegmented.addEventListener('click', function(e) {
-        var btn = e.target.closest('.segmented-btn[data-value]');
-        if (!btn) return;
-        setSegmentedValue('scheduleModeSegmented', btn.getAttribute('data-value'));
-        syncSchedulePlannerMode();
       });
     }
 
@@ -810,7 +792,6 @@
     var saveSchedulePeriodBtn = document.getElementById('btnSaveSchedulePeriod');
     if (saveSchedulePeriodBtn) {
       saveSchedulePeriodBtn.addEventListener('click', function() {
-        var mode = getSegmentedValue('scheduleModeSegmented', 'manual');
         var startDate = normalizeDateKey(document.getElementById('schedulePeriodStartDate').value);
         var endDate = normalizeDateKey(document.getElementById('schedulePeriodEndDate').value);
         var pattern = normalizeSchedulePattern(document.getElementById('schedulePatternValue').value || '');
@@ -824,12 +805,12 @@
           showSaveToast('Окончание раньше начала', 'danger');
           return;
         }
-        if (mode === 'cycle' && !pattern) {
+        if (!pattern) {
           showSaveToast('Добавьте шаблон графика', 'danger');
           return;
         }
         if (hasOverlappingSchedulePeriod({
-          mode: mode,
+          mode: 'cycle',
           startDate: startDate,
           endDate: endDate,
           pattern: pattern,
@@ -841,7 +822,7 @@
         }
         upsertSchedulePeriod({
           id: createSchedulePeriodId(),
-          mode: mode,
+          mode: 'cycle',
           startDate: startDate,
           endDate: endDate,
           pattern: pattern,
@@ -907,7 +888,7 @@
         var state = resolveScheduleDay(selectedScheduleDayKey || getTodayDateKey());
         closeOverlay('overlayScheduleDay');
         openAddShiftForDate(state.dateKey, {
-          routeKind: state.period && state.period.mode === 'manual' ? 'trip' : 'depot',
+          routeKind: state.plannedCode ? 'depot' : 'trip',
           startTime: state.startTime || '08:00',
           endTime: state.endTime || '20:00'
         });
