@@ -1,14 +1,14 @@
 # Project State
 
 <!-- AUTO_STATUS:START -->
-Generated: 2026-04-21 11:58:56 +0000
+Generated: 2026-04-21 12:01:06 +0000
 
 ## Repository Snapshot
 - Local repo path: `/opt/bloknot-mashinista`
 - Project memory path: `/opt/bloknot-mashinista/ai-memory`
 - Branch: `main`
-- HEAD: `9452af1`
-- Last commit: `9452af1 fix(schedule): highlight journal target from calendar`
+- HEAD: `9b4e759`
+- Last commit: `9b4e759 fix(schedule): clear journal highlight outside shifts`
 
 ## Git Remote
 ```text
@@ -18,7 +18,7 @@ origin	https://github.com/iEgor72/bloknot-mashinista.git (push)
 
 ## Branch Tracking
 ```text
-* main 9452af1 [origin/main] fix(schedule): highlight journal target from calendar
+* main 9b4e759 [origin/main] fix(schedule): clear journal highlight outside shifts
 ```
 
 ## Worktree

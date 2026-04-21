@@ -719,34 +719,36 @@
       return Math.max(0, endMinutes - startMinutes);
     }
 
+    function buildReadonlyScheduleFactCardHtml(shift) {
+      if (!shift) return '';
+      var html = buildShiftItemHtml(shift, true, null, currentMonthShiftIncomeMap, null, null);
+      html = html.replace(/ data-shift-open="1" role="button" tabindex="0" aria-label="[^"]*"/, ' data-shift-open="0"');
+      html = html.replace(/<div class="shift-top-right">[\s\S]*?<\/div>\s*<\/div>/, '</div>');
+      return '<div class="schedule-day-fact-card-shell">' + html + '</div>';
+    }
+
     function buildScheduleDayFactSummary(state) {
       var summary = {
         titleText: 'Факт',
-        timeText: '—',
-        durationText: '—',
-        incomeText: '—',
-        noteText: 'Записи за этот день пока нет.'
+        noteText: 'Записи за этот день пока нет.',
+        cardHtml: ''
       };
       if (!state) return summary;
       if (state.hasFact && state.factShifts && state.factShifts[0]) {
         var shift = state.factShifts[0];
-        var parts = getShiftDisplayParts(shift);
-        var incomeVm = getShiftIncomeViewModel(shift, currentMonthShiftIncomeMap);
         summary.titleText = state.factShifts.length > 1 ? 'Факт по дню' : 'Факт';
-        summary.timeText = (parts.startTime || '--:--') + ' - ' + (parts.endTime || '--:--');
-        summary.durationText = fmtMin(shiftTotalMinutes(shift));
-        summary.incomeText = incomeVm.amountText || '—';
         summary.noteText = getShiftTypeLabel(shift);
         if (state.factShifts.length > 1) {
           summary.noteText += ' · и ещё ' + (state.factShifts.length - 1) + ' запись';
         }
+        summary.cardHtml = buildReadonlyScheduleFactCardHtml(shift);
       }
       return summary;
     }
 
     function buildScheduleDayPlanSummary(state) {
       var summary = {
-        titleText: 'План',
+        titleText: 'По графику',
         timeText: '—',
         durationText: '—',
         noteText: 'План на этот день не задан.'
@@ -802,10 +804,8 @@
       var statusEl = document.getElementById('scheduleDayStatus');
       var factCardEl = document.getElementById('scheduleDayFactCard');
       var factTitleEl = document.getElementById('scheduleDayFactTitle');
-      var factTimeEl = document.getElementById('scheduleDayFactTime');
-      var factDurationEl = document.getElementById('scheduleDayFactDuration');
-      var factIncomeEl = document.getElementById('scheduleDayFactIncome');
       var factTextEl = document.getElementById('scheduleDayFactText');
+      var factContentEl = document.getElementById('scheduleDayFactContent');
       var planCardEl = document.getElementById('scheduleDayPlanCard');
       var planTitleEl = document.getElementById('scheduleDayPlanTitle');
       var planTimeEl = document.getElementById('scheduleDayPlanTime');
@@ -817,15 +817,15 @@
       var startTimeEl = document.getElementById('scheduleDayStartTime');
       var endTimeEl = document.getElementById('scheduleDayEndTime');
       var typeButtons = document.querySelectorAll('#scheduleDayTypeSegmented .segmented-btn');
-      if (!dateEl || !statusEl || !factCardEl || !factTitleEl || !factTimeEl || !factDurationEl || !factIncomeEl || !factTextEl || !planCardEl || !planTitleEl || !planTimeEl || !planDurationEl || !planTextEl || !addShiftBtn || !editShiftBtn || !timeFieldsEl || !startTimeEl || !endTimeEl || !typeButtons.length) return;
+      if (!dateEl || !statusEl || !factCardEl || !factTitleEl || !factTextEl || !factContentEl || !planCardEl || !planTitleEl || !planTimeEl || !planDurationEl || !planTextEl || !addShiftBtn || !editShiftBtn || !timeFieldsEl || !startTimeEl || !endTimeEl || !typeButtons.length) return;
 
       dateEl.textContent = formatScheduleDateLabel(dateKey);
       if (state.hasFact && state.plannedCode) {
-        statusEl.textContent = 'Сверху факт, ниже график. Если разошлось с реальностью, факт важнее.';
+        statusEl.textContent = 'Есть фактическая смена и график на этот день.';
       } else if (state.hasFact) {
-        statusEl.textContent = 'Есть фактическая запись. График на этот день не задан.';
+        statusEl.textContent = 'Есть фактическая смена.';
       } else if (state.plannedCode) {
-        statusEl.textContent = 'Есть план на день. Когда отработаете, просто добавьте запись.';
+        statusEl.textContent = 'Фактической смены ещё нет, ниже только график.';
       } else {
         statusEl.textContent = 'На этот день пока нет ни графика, ни записи.';
       }
@@ -833,10 +833,8 @@
       var daySummary = buildScheduleDayFactSummary(state);
       factCardEl.classList.remove('hidden');
       factTitleEl.textContent = daySummary.titleText;
-      factTimeEl.textContent = daySummary.timeText;
-      factDurationEl.textContent = daySummary.durationText;
-      factIncomeEl.textContent = daySummary.incomeText;
       factTextEl.textContent = daySummary.noteText;
+      factContentEl.innerHTML = daySummary.cardHtml || '<div class="schedule-day-empty-card">Пока ничего не записано. Когда появится смена, она покажется здесь обычной карточкой.</div>';
 
       var planSummary = buildScheduleDayPlanSummary(state);
       planCardEl.classList.toggle('hidden', !state.plannedCode);
@@ -845,27 +843,17 @@
       planDurationEl.textContent = planSummary.durationText;
       planTextEl.textContent = planSummary.noteText;
 
-      if (state.plannedCode === 'D' || state.plannedCode === 'N') {
-        addShiftBtn.textContent = 'Добавить смену';
-      } else {
-        addShiftBtn.textContent = 'Добавить поездку';
-      }
+      addShiftBtn.classList.toggle('hidden', state.hasFact);
+      addShiftBtn.textContent = 'Добавить запись';
       editShiftBtn.classList.toggle('hidden', !state.hasFact);
       if (!editShiftBtn.classList.contains('hidden') && state.factShifts[0]) {
+        editShiftBtn.textContent = 'Открыть в сменах';
         editShiftBtn.setAttribute('data-shift-id', state.factShifts[0].id);
         editShiftBtn.setAttribute('data-date-key', state.dateKey || '');
-        if (state.factShifts.length > 1) {
-          editShiftBtn.textContent = 'Открыть записи';
-          editShiftBtn.setAttribute('data-open-mode', 'list');
-        } else {
-          editShiftBtn.textContent = 'Открыть смену';
-          editShiftBtn.setAttribute('data-open-mode', 'single');
-        }
       } else {
-        editShiftBtn.textContent = 'Открыть смену';
+        editShiftBtn.textContent = 'Открыть в сменах';
         editShiftBtn.removeAttribute('data-shift-id');
         editShiftBtn.removeAttribute('data-date-key');
-        editShiftBtn.removeAttribute('data-open-mode');
       }
 
       var selectedType = state.override && state.override.code ? state.override.code : 'auto';

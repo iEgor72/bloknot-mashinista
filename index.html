@@ -1071,26 +1071,18 @@
       </div>
 
       <div class="schedule-day-fact" id="scheduleDayFactCard">
-        <div class="schedule-day-fact-title" id="scheduleDayFactTitle">Факт</div>
-        <div class="schedule-day-fact-metrics">
-          <div class="schedule-day-fact-metric">
-            <div class="schedule-day-fact-label">Явка - окончание</div>
-            <div class="schedule-day-fact-value" id="scheduleDayFactTime">—</div>
-          </div>
-          <div class="schedule-day-fact-metric">
-            <div class="schedule-day-fact-label">Длительность</div>
-            <div class="schedule-day-fact-value" id="scheduleDayFactDuration">—</div>
-          </div>
-          <div class="schedule-day-fact-metric">
-            <div class="schedule-day-fact-label">Деньги</div>
-            <div class="schedule-day-fact-value" id="scheduleDayFactIncome">—</div>
-          </div>
+        <div class="schedule-day-block-head">
+          <div class="schedule-day-fact-title" id="scheduleDayFactTitle">Факт</div>
+          <div class="schedule-day-fact-text" id="scheduleDayFactText"></div>
         </div>
-        <div class="schedule-day-fact-text" id="scheduleDayFactText"></div>
+        <div class="schedule-day-fact-content" id="scheduleDayFactContent"></div>
       </div>
 
-      <div class="schedule-day-plan" id="scheduleDayPlanCard">
-        <div class="schedule-day-plan-title" id="scheduleDayPlanTitle">План</div>
+      <div class="schedule-day-plan hidden" id="scheduleDayPlanCard">
+        <div class="schedule-day-block-head">
+          <div class="schedule-day-plan-title" id="scheduleDayPlanTitle">По графику</div>
+          <div class="schedule-day-plan-text" id="scheduleDayPlanText"></div>
+        </div>
         <div class="schedule-day-plan-metrics">
           <div class="schedule-day-plan-metric">
             <div class="schedule-day-plan-label">Явка - окончание</div>
@@ -1101,23 +1093,23 @@
             <div class="schedule-day-plan-value" id="scheduleDayPlanDuration">—</div>
           </div>
         </div>
-        <div class="schedule-day-plan-text" id="scheduleDayPlanText"></div>
       </div>
 
       <div class="schedule-day-actions-row">
-        <button class="btn-secondary" id="btnScheduleDayAddShift" type="button">Добавить запись</button>
-        <button class="btn-secondary hidden" id="btnScheduleDayEditShift" type="button">Открыть смену</button>
+        <button class="btn-primary hidden" id="btnScheduleDayAddShift" type="button">Добавить запись</button>
+        <button class="btn-secondary hidden" id="btnScheduleDayEditShift" type="button">Открыть в сменах</button>
       </div>
 
-      <div class="settings-section-title">Точечное изменение</div>
+      <div class="settings-section-title">План на день</div>
       <div class="settings-card schedule-day-editor-card">
+        <div class="schedule-day-editor-note">Меняет только план в календаре. Фактические смены ниже не меняются.</div>
         <div class="field">
-          <label>Какой это день</label>
-          <div class="segmented" id="scheduleDayTypeSegmented" data-setting-group="scheduleDayType">
+          <label>Что показывать в календаре</label>
+          <div class="segmented schedule-day-type-grid" id="scheduleDayTypeSegmented" data-setting-group="scheduleDayType">
             <button type="button" class="segmented-btn active" data-value="auto">Авто</button>
-            <button type="button" class="segmented-btn" data-value="D">Д</button>
-            <button type="button" class="segmented-btn" data-value="N">Н</button>
-            <button type="button" class="segmented-btn" data-value="V">В</button>
+            <button type="button" class="segmented-btn" data-value="D">День</button>
+            <button type="button" class="segmented-btn" data-value="N">Ночь</button>
+            <button type="button" class="segmented-btn" data-value="V">Выходной</button>
           </div>
         </div>
 
