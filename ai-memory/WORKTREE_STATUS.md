@@ -1,6 +1,6 @@
 # Worktree Status
 
-Generated: 2026-04-21 11:11:47 +0000
+Generated: 2026-04-21 11:15:47 +0000
 
 ## git status -sb
 ```text
@@ -20,16 +20,16 @@ Generated: 2026-04-21 11:11:47 +0000
 
 ## git branch -vv
 ```text
-* main 86cb9fd [origin/main] fix(schedule): reuse close button and refine upcoming cards
+* main f3e77cd [origin/main] fix(schedule): reuse shift card layout in upcoming list
 ```
 
 ## HEAD
 ```text
-86cb9fd fix(schedule): reuse close button and refine upcoming cards
- ai-memory/CHANGELOG.md             |  8 ++++++++
- ai-memory/PROJECT_STATE.md         |  8 ++++----
- ai-memory/WORKTREE_STATUS.md       | 18 ++++++++----------
- index.html                         |  4 ++--
- styles/10-navigation-and-cards.css | 31 +++++++++++++++++++++++--------
- 5 files changed, 45 insertions(+), 24 deletions(-)
+f3e77cd fix(schedule): reuse shift card layout in upcoming list
+ ai-memory/CHANGELOG.md             |  8 ++++
+ ai-memory/PROJECT_STATE.md         |  8 ++--
+ ai-memory/WORKTREE_STATUS.md       | 17 ++++----
+ scripts/render.js                  | 87 ++++++++++++++++++++------------------
+ styles/10-navigation-and-cards.css | 33 +++++++++------
+ 5 files changed, 88 insertions(+), 65 deletions(-)
 ```

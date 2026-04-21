@@ -983,19 +983,6 @@
       }
 
       renderShiftList(
-        document.getElementById('homeShiftsList'),
-        null,
-        monthShifts.slice(0, 3),
-        true,
-        'Пока пусто. Добавь первую смену, и здесь появятся последние записи.',
-        false,
-        _renderPendingMap,
-        shiftIncomeMap,
-        bounds,
-        shiftDurationLevelMap
-      );
-
-      renderShiftList(
         document.getElementById('shiftsList'),
         document.getElementById('shiftsHeader'),
         monthShifts,
