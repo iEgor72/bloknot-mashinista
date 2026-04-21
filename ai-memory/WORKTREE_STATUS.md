@@ -1,6 +1,6 @@
 # Worktree Status
 
-Generated: 2026-04-21 10:45:11 +0000
+Generated: 2026-04-21 10:49:13 +0000
 
 ## git status -sb
 ```text
@@ -20,19 +20,15 @@ Generated: 2026-04-21 10:45:11 +0000
 
 ## git branch -vv
 ```text
-* main d7844da [origin/main] fix(schedule): simplify graph setup and calendar
+* main 7e95fc9 [origin/main] fix(schedule): clarify upcoming day details
 ```
 
 ## HEAD
 ```text
-d7844da fix(schedule): simplify graph setup and calendar
- ai-memory/CHANGELOG.md             |  8 ++++
- ai-memory/PROJECT_STATE.md         |  8 ++--
- ai-memory/WORKTREE_STATUS.md       | 26 ++++++------
- index.html                         | 24 ++++-------
- scripts/app.js                     | 24 +++++------
- scripts/render.js                  | 10 ++---
- scripts/shift-form.js              | 27 ++-----------
- styles/10-navigation-and-cards.css | 81 +++++++++++++++++++++-----------------
- 8 files changed, 95 insertions(+), 113 deletions(-)
+7e95fc9 fix(schedule): clarify upcoming day details
+ ai-memory/CHANGELOG.md       |  8 ++++++++
+ ai-memory/PROJECT_STATE.md   |  8 ++++----
+ ai-memory/WORKTREE_STATUS.md | 24 ++++++++++++------------
+ scripts/render.js            | 27 +++++++++++++++++++++++++--
+ 4 files changed, 49 insertions(+), 18 deletions(-)
 ```

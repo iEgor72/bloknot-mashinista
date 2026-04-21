@@ -634,11 +634,12 @@
         var upcomingState = resolveScheduleDay(upcomingKey);
         var code = upcomingState.effectiveCode || upcomingState.plannedCode;
         if (!code || code === 'V') continue;
+        var preview = buildUpcomingSchedulePreview(upcomingState);
         upcoming.push({
           dateKey: upcomingKey,
           code: code,
-          label: formatScheduleCodeLabel(code),
-          noteText: buildUpcomingScheduleNote(upcomingState)
+          titleText: preview.titleText,
+          noteText: preview.noteText
         });
       }
 
@@ -650,7 +651,7 @@
           upcomingHtml += '<div class="schedule-upcoming-item">' +
             '<div class="schedule-upcoming-date">' + escapeHtml(formatScheduleShortDate(upcoming[ui].dateKey)) + '</div>' +
             '<div class="schedule-upcoming-main">' +
-              '<div class="schedule-upcoming-title">' + escapeHtml(upcoming[ui].label) + '</div>' +
+              '<div class="schedule-upcoming-title">' + escapeHtml(upcoming[ui].titleText || 'Рабочий день') + '</div>' +
               '<div class="schedule-upcoming-note">' + escapeHtml(upcoming[ui].noteText || 'Откройте день, чтобы посмотреть детали') + '</div>' +
             '</div>' +
           '</div>';
@@ -659,27 +660,53 @@
       }
     }
 
-    function buildUpcomingScheduleNote(dayState) {
-      if (!dayState) return '';
+    function buildUpcomingSchedulePreview(dayState) {
+      if (!dayState) {
+        return { titleText: '', noteText: '' };
+      }
       if (dayState.hasFact && dayState.factShifts && dayState.factShifts[0]) {
         var shift = dayState.factShifts[0];
         var direction = getShiftDirectionLineText(shift);
-        if (shift.route_kind === 'trip') {
-          return direction || getShiftDateTimeLineLabel(getShiftDisplayParts(shift));
-        }
         var startTime = shift.start_msk && shift.start_msk.length >= 16 ? shift.start_msk.substring(11, 16) : '';
         var endTime = shift.end_msk && shift.end_msk.length >= 16 ? shift.end_msk.substring(11, 16) : '';
-        if (startTime && endTime) return 'Явка ' + startTime + ' · окончание ' + endTime;
-        return getShiftDateTimeLineLabel(getShiftDisplayParts(shift));
+        var timeRange = startTime && endTime ? (startTime + '–' + endTime) : '';
+        if (direction) {
+          return {
+            titleText: direction,
+            noteText: shift.route_kind === 'trip' ? 'Поездка' : ('Смена' + (timeRange ? ' · ' + timeRange : ''))
+          };
+        }
+        if (timeRange) {
+          return {
+            titleText: timeRange,
+            noteText: shift.route_kind === 'trip' ? 'Поездка' : 'Смена'
+          };
+        }
+        return {
+          titleText: getShiftTypeLabel(shift),
+          noteText: 'Есть запись по этому дню'
+        };
       }
       if (dayState.plannedCode === 'D' || dayState.plannedCode === 'N') {
+        var planType = dayState.plannedCode === 'N' ? 'Ночь по графику' : 'День по графику';
         if (dayState.startTime && dayState.endTime) {
-          return 'Явка ' + dayState.startTime + ' · окончание ' + dayState.endTime;
+          return {
+            titleText: dayState.startTime + '–' + dayState.endTime,
+            noteText: planType
+          };
         }
-        return 'Рабочий день по графику';
+        return {
+          titleText: 'Рабочий день',
+          noteText: planType
+        };
       }
-      if (dayState.plannedCode === 'V') return 'Выходной по графику';
-      return '';
+      if (dayState.plannedCode === 'V') {
+        return {
+          titleText: 'Выходной',
+          noteText: 'По графику'
+        };
+      }
+      return { titleText: '', noteText: '' };
     }
 
     function renderSchedulePlannerOverlay() {
