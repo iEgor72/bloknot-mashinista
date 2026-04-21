@@ -638,7 +638,7 @@
           dateKey: upcomingKey,
           code: code,
           label: formatScheduleCodeLabel(code),
-          timeText: upcomingState.startTime && upcomingState.endTime ? (upcomingState.startTime + '–' + upcomingState.endTime) : ''
+          noteText: buildUpcomingScheduleNote(upcomingState)
         });
       }
 
@@ -651,12 +651,35 @@
             '<div class="schedule-upcoming-date">' + escapeHtml(formatScheduleShortDate(upcoming[ui].dateKey)) + '</div>' +
             '<div class="schedule-upcoming-main">' +
               '<div class="schedule-upcoming-title">' + escapeHtml(upcoming[ui].label) + '</div>' +
-              '<div class="schedule-upcoming-note">' + escapeHtml(upcoming[ui].timeText || 'Без фиксированного времени') + '</div>' +
+              '<div class="schedule-upcoming-note">' + escapeHtml(upcoming[ui].noteText || 'Откройте день, чтобы посмотреть детали') + '</div>' +
             '</div>' +
           '</div>';
         }
         upcomingEl.innerHTML = upcomingHtml;
       }
+    }
+
+    function buildUpcomingScheduleNote(dayState) {
+      if (!dayState) return '';
+      if (dayState.hasFact && dayState.factShifts && dayState.factShifts[0]) {
+        var shift = dayState.factShifts[0];
+        var direction = getShiftDirectionLineText(shift);
+        if (shift.route_kind === 'trip') {
+          return direction || getShiftDateTimeLineLabel(getShiftDisplayParts(shift));
+        }
+        var startTime = shift.start_msk && shift.start_msk.length >= 16 ? shift.start_msk.substring(11, 16) : '';
+        var endTime = shift.end_msk && shift.end_msk.length >= 16 ? shift.end_msk.substring(11, 16) : '';
+        if (startTime && endTime) return 'Явка ' + startTime + ' · окончание ' + endTime;
+        return getShiftDateTimeLineLabel(getShiftDisplayParts(shift));
+      }
+      if (dayState.plannedCode === 'D' || dayState.plannedCode === 'N') {
+        if (dayState.startTime && dayState.endTime) {
+          return 'Явка ' + dayState.startTime + ' · окончание ' + dayState.endTime;
+        }
+        return 'Рабочий день по графику';
+      }
+      if (dayState.plannedCode === 'V') return 'Выходной по графику';
+      return '';
     }
 
     function renderSchedulePlannerOverlay() {

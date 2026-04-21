@@ -1,14 +1,14 @@
 # Project State
 
 <!-- AUTO_STATUS:START -->
-Generated: 2026-04-21 10:37:39 +0000
+Generated: 2026-04-21 10:45:11 +0000
 
 ## Repository Snapshot
 - Local repo path: `/opt/bloknot-mashinista`
 - Project memory path: `/opt/bloknot-mashinista/ai-memory`
 - Branch: `main`
-- HEAD: `a7c6077`
-- Last commit: `a7c6077 fix(schedule): simplify calendar and planner`
+- HEAD: `d7844da`
+- Last commit: `d7844da fix(schedule): simplify graph setup and calendar`
 
 ## Git Remote
 ```text
@@ -18,7 +18,7 @@ origin	https://github.com/iEgor72/bloknot-mashinista.git (push)
 
 ## Branch Tracking
 ```text
-* main a7c6077 [origin/main] fix(schedule): simplify calendar and planner
+* main d7844da [origin/main] fix(schedule): simplify graph setup and calendar
 ```
 
 ## Worktree
