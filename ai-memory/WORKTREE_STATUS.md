@@ -1,6 +1,6 @@
 # Worktree Status
 
-Generated: 2026-04-21 09:47:34 +0000
+Generated: 2026-04-21 09:50:26 +0000
 
 ## git status -sb
 ```text
@@ -20,16 +20,16 @@ Generated: 2026-04-21 09:47:34 +0000
 
 ## git branch -vv
 ```text
-* main de47cdc [origin/main] feat(seo): add shift schedule landing page
+* main 31c3132 [origin/main] feat(seo): add app landing page
 ```
 
 ## HEAD
 ```text
-de47cdc feat(seo): add shift schedule landing page
- ai-memory/CHANGELOG.md               |   8 +++
- ai-memory/PROJECT_STATE.md           |   8 +--
- ai-memory/WORKTREE_STATUS.md         |  21 ++++---
- docs/seo/grafik-smen-mashinista.html | 108 +++++++++++++++++++++++++++++++++++
- server.js                            |   3 +-
- 5 files changed, 134 insertions(+), 14 deletions(-)
+31c3132 feat(seo): add app landing page
+ ai-memory/CHANGELOG.md                    |   8 +++
+ ai-memory/PROJECT_STATE.md                |   8 +--
+ ai-memory/WORKTREE_STATUS.md              |  21 +++---
+ docs/seo/prilozhenie-dlya-mashinista.html | 109 ++++++++++++++++++++++++++++++
+ server.js                                 |   3 +-
+ 5 files changed, 132 insertions(+), 17 deletions(-)
 ```
