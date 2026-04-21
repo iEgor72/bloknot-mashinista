@@ -1189,6 +1189,27 @@
       }, 40);
     }
 
+    function openShiftsForDate(dateKey, preferredShiftId) {
+      var safeDate = normalizeDateKey(dateKey) || getTodayDateKey();
+      var targetId = preferredShiftId || '';
+      if (!targetId) {
+        var dayShifts = getShiftsForDate(safeDate);
+        targetId = dayShifts[0] && dayShifts[0].id ? dayShifts[0].id : '';
+      }
+      setActiveTab('shifts');
+      window.setTimeout(function() {
+        var listEl = document.getElementById('shiftsList');
+        if (!listEl) return;
+        var selector = targetId
+          ? '.shift-item[data-shift-id="' + String(targetId).replace(/"/g, '\\"') + '"]'
+          : '.shift-item';
+        var targetCard = listEl.querySelector(selector);
+        if (targetCard && targetCard.scrollIntoView) {
+          targetCard.scrollIntoView({ behavior: 'smooth', block: 'center' });
+        }
+      }, 80);
+    }
+
     // Stub — retained so any lingering references don't throw.
     // Re-implement when PRO gating is needed again (flip ACCESS_UNRESTRICTED).
     function setAccessRestricted(/*isRestricted*/) {}

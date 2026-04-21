@@ -939,7 +939,14 @@
     var scheduleDayEditShiftBtn = document.getElementById('btnScheduleDayEditShift');
     if (scheduleDayEditShiftBtn) {
       scheduleDayEditShiftBtn.addEventListener('click', function() {
+        var openMode = this.getAttribute('data-open-mode') || 'single';
         var shiftId = this.getAttribute('data-shift-id');
+        var dateKey = this.getAttribute('data-date-key') || (selectedScheduleDayKey || getTodayDateKey());
+        if (openMode === 'list') {
+          closeOverlay('overlayScheduleDay');
+          openShiftsForDate(dateKey, shiftId);
+          return;
+        }
         var shift = shiftId ? findShiftById(shiftId) : null;
         if (!shift) return;
         closeOverlay('overlayScheduleDay');

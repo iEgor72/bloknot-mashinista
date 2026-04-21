@@ -1,14 +1,14 @@
 # Project State
 
 <!-- AUTO_STATUS:START -->
-Generated: 2026-04-21 11:41:14 +0000
+Generated: 2026-04-21 11:48:23 +0000
 
 ## Repository Snapshot
 - Local repo path: `/opt/bloknot-mashinista`
 - Project memory path: `/opt/bloknot-mashinista/ai-memory`
 - Branch: `main`
-- HEAD: `8e5067a`
-- Last commit: `8e5067a feat(schedule): add period editing and clearer day state`
+- HEAD: `1d738dc`
+- Last commit: `1d738dc fix(schedule): separate plan and fact in day sheet`
 
 ## Git Remote
 ```text
@@ -18,7 +18,7 @@ origin	https://github.com/iEgor72/bloknot-mashinista.git (push)
 
 ## Branch Tracking
 ```text
-* main 8e5067a [origin/main] feat(schedule): add period editing and clearer day state
+* main 1d738dc [origin/main] fix(schedule): separate plan and fact in day sheet
 ```
 
 ## Worktree

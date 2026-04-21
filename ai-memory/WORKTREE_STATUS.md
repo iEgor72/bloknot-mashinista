@@ -1,6 +1,6 @@
 # Worktree Status
 
-Generated: 2026-04-21 11:41:14 +0000
+Generated: 2026-04-21 11:48:23 +0000
 
 ## git status -sb
 ```text
@@ -20,19 +20,17 @@ Generated: 2026-04-21 11:41:14 +0000
 
 ## git branch -vv
 ```text
-* main 8e5067a [origin/main] feat(schedule): add period editing and clearer day state
+* main 1d738dc [origin/main] fix(schedule): separate plan and fact in day sheet
 ```
 
 ## HEAD
 ```text
-8e5067a feat(schedule): add period editing and clearer day state
- ai-memory/CHANGELOG.md             |  8 +++++++
- ai-memory/PROJECT_STATE.md         |  8 +++----
- ai-memory/WORKTREE_STATUS.md       | 17 +++++++-------
- index.html                         |  2 +-
- scripts/app.js                     | 16 +++++++++++++
- scripts/render.js                  | 17 ++++++++++----
- scripts/shift-form.js              | 47 +++++++++++++++++++++++++++++++++++---
- styles/10-navigation-and-cards.css | 30 ++++++++++++++++++++++++
- 8 files changed, 124 insertions(+), 21 deletions(-)
+1d738dc fix(schedule): separate plan and fact in day sheet
+ ai-memory/CHANGELOG.md             |  8 ++++
+ ai-memory/PROJECT_STATE.md         |  8 ++--
+ ai-memory/WORKTREE_STATUS.md       | 20 ++++++----
+ index.html                         | 17 ++++++++-
+ scripts/render.js                  | 54 ++++++++++++++++++---------
+ styles/10-navigation-and-cards.css | 76 +++++++++++++++++++++++++++++++-------
+ 6 files changed, 139 insertions(+), 44 deletions(-)
 ```

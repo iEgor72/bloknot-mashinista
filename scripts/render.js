@@ -844,12 +844,27 @@
       planDurationEl.textContent = planSummary.durationText;
       planTextEl.textContent = planSummary.noteText;
 
-      addShiftBtn.textContent = state.plannedCode === 'V' ? 'Добавить запись вручную' : 'Добавить запись';
+      if (state.plannedCode === 'D' || state.plannedCode === 'N') {
+        addShiftBtn.textContent = 'Добавить смену';
+      } else {
+        addShiftBtn.textContent = 'Добавить поездку';
+      }
       editShiftBtn.classList.toggle('hidden', !state.hasFact);
       if (!editShiftBtn.classList.contains('hidden') && state.factShifts[0]) {
         editShiftBtn.setAttribute('data-shift-id', state.factShifts[0].id);
+        editShiftBtn.setAttribute('data-date-key', state.dateKey || '');
+        if (state.factShifts.length > 1) {
+          editShiftBtn.textContent = 'Открыть записи';
+          editShiftBtn.setAttribute('data-open-mode', 'list');
+        } else {
+          editShiftBtn.textContent = 'Открыть смену';
+          editShiftBtn.setAttribute('data-open-mode', 'single');
+        }
       } else {
+        editShiftBtn.textContent = 'Открыть смену';
         editShiftBtn.removeAttribute('data-shift-id');
+        editShiftBtn.removeAttribute('data-date-key');
+        editShiftBtn.removeAttribute('data-open-mode');
       }
 
       var selectedType = state.override && state.override.code ? state.override.code : 'auto';
