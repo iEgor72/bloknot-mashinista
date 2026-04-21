@@ -33,6 +33,7 @@ const SEO_PAGE_ROUTES = {
   '/zhurnal-smen-mashinista': 'docs/seo/zhurnal-smen-mashinista.html',
   '/kalkulyator-zarplaty-mashinista': 'docs/seo/kalkulyator-zarplaty-mashinista.html',
   '/grafik-smen-mashinista': 'docs/seo/grafik-smen-mashinista.html',
+  '/prilozhenie-dlya-mashinista': 'docs/seo/prilozhenie-dlya-mashinista.html',
 };
 
 let userPresenceStoreCache = null;
@@ -511,7 +512,7 @@ function isPublicFilePath(filePath) {
 }
 
 function buildSeoSitemapXml() {
-  const urls = ['/', '/uchet-marshrutov', '/zarplata-mashinista', '/zhurnal-smen-mashinista', '/kalkulyator-zarplaty-mashinista', '/grafik-smen-mashinista'];
+  const urls = ['/', '/uchet-marshrutov', '/zarplata-mashinista', '/zhurnal-smen-mashinista', '/kalkulyator-zarplaty-mashinista', '/grafik-smen-mashinista', '/prilozhenie-dlya-mashinista'];
   const now = new Date().toISOString();
   return [
     '<?xml version="1.0" encoding="UTF-8"?>',

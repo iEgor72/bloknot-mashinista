@@ -1,6 +1,6 @@
 # Worktree Status
 
-Generated: 2026-04-21 09:44:42 +0000
+Generated: 2026-04-21 09:47:34 +0000
 
 ## git status -sb
 ```text
@@ -20,19 +20,16 @@ Generated: 2026-04-21 09:44:42 +0000
 
 ## git branch -vv
 ```text
-* main 21a61b5 [origin/main] feat(seo): add salary calculator landing page
+* main de47cdc [origin/main] feat(seo): add shift schedule landing page
 ```
 
 ## HEAD
 ```text
-21a61b5 feat(seo): add salary calculator landing page
- ai-memory/CHANGELOG.md                        |   8 ++
- ai-memory/PROJECT_STATE.md                    |   8 +-
- ai-memory/WORKTREE_STATUS.md                  |  12 +--
- docs/seo/kalkulyator-zarplaty-mashinista.html | 108 ++++++++++++++++++++++++++
- docs/seo/uchet-marshrutov.html                |  25 +++---
- docs/seo/zarplata-mashinista.html             |   7 +-
- docs/seo/zhurnal-smen-mashinista.html         |   7 +-
- server.js                                     |   3 +-
- 8 files changed, 149 insertions(+), 29 deletions(-)
+de47cdc feat(seo): add shift schedule landing page
+ ai-memory/CHANGELOG.md               |   8 +++
+ ai-memory/PROJECT_STATE.md           |   8 +--
+ ai-memory/WORKTREE_STATUS.md         |  21 ++++---
+ docs/seo/grafik-smen-mashinista.html | 108 +++++++++++++++++++++++++++++++++++
+ server.js                            |   3 +-
+ 5 files changed, 134 insertions(+), 14 deletions(-)
 ```

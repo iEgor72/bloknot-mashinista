@@ -1,14 +1,14 @@
 # Project State
 
 <!-- AUTO_STATUS:START -->
-Generated: 2026-04-21 09:44:42 +0000
+Generated: 2026-04-21 09:47:34 +0000
 
 ## Repository Snapshot
 - Local repo path: `/opt/bloknot-mashinista`
 - Project memory path: `/opt/bloknot-mashinista/ai-memory`
 - Branch: `main`
-- HEAD: `21a61b5`
-- Last commit: `21a61b5 feat(seo): add salary calculator landing page`
+- HEAD: `de47cdc`
+- Last commit: `de47cdc feat(seo): add shift schedule landing page`
 
 ## Git Remote
 ```text
@@ -18,7 +18,7 @@ origin	https://github.com/iEgor72/bloknot-mashinista.git (push)
 
 ## Branch Tracking
 ```text
-* main 21a61b5 [origin/main] feat(seo): add salary calculator landing page
+* main de47cdc [origin/main] feat(seo): add shift schedule landing page
 ```
 
 ## Worktree
