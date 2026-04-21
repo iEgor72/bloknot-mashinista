@@ -1,6 +1,6 @@
 # Worktree Status
 
-Generated: 2026-04-21 12:31:38 +0000
+Generated: 2026-04-21 12:35:52 +0000
 
 ## git status -sb
 ```text
@@ -20,18 +20,18 @@ Generated: 2026-04-21 12:31:38 +0000
 
 ## git branch -vv
 ```text
-* main 6d7939f [origin/main] refactor(schedule): remove day mark override from sheet
+* main 3569c52 [origin/main] fix(schedule): default shifts to 01:00-13:00
 ```
 
 ## HEAD
 ```text
-6d7939f refactor(schedule): remove day mark override from sheet
- ai-memory/CHANGELOG.md             |  8 +++++++
- ai-memory/PROJECT_STATE.md         |  8 +++----
- ai-memory/WORKTREE_STATUS.md       | 17 +++++++--------
- index.html                         | 26 -----------------------
- scripts/render.js                  | 14 +------------
- scripts/shift-form.js              | 33 +----------------------------
- styles/10-navigation-and-cards.css | 43 +-------------------------------------
- 7 files changed, 23 insertions(+), 126 deletions(-)
+3569c52 fix(schedule): default shifts to 01:00-13:00
+ ai-memory/CHANGELOG.md       |  8 ++++++++
+ ai-memory/PROJECT_STATE.md   |  8 ++++----
+ ai-memory/WORKTREE_STATUS.md | 19 +++++++++++--------
+ index.html                   |  4 ++--
+ scripts/app.js               | 14 +++++++-------
+ scripts/shift-form.js        | 16 ++++++++--------
+ scripts/time-utils.js        |  2 +-
+ 7 files changed, 41 insertions(+), 30 deletions(-)
 ```
