@@ -1,14 +1,14 @@
 # Project State
 
 <!-- AUTO_STATUS:START -->
-Generated: 2026-04-20 21:39:32 +0000
+Generated: 2026-04-20 22:05:09 +0000
 
 ## Repository Snapshot
 - Local repo path: `/opt/bloknot-mashinista`
 - Project memory path: `/opt/bloknot-mashinista/ai-memory`
 - Branch: `main`
-- HEAD: `c4d3998`
-- Last commit: `c4d3998 refactor(ui): remove timer and restore shifts page`
+- HEAD: `c3dddba`
+- Last commit: `c3dddba fix(ui): prevent overflow in month summary stats`
 
 ## Git Remote
 ```text
@@ -18,7 +18,7 @@ origin	https://github.com/iEgor72/bloknot-mashinista.git (push)
 
 ## Branch Tracking
 ```text
-* main c4d3998 [origin/main] refactor(ui): remove timer and restore shifts page
+* main c3dddba [origin/main] fix(ui): prevent overflow in month summary stats
 ```
 
 ## Worktree

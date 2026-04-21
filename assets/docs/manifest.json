@@ -24,6 +24,13 @@
   ],
   "folders": [
     {
+      "name": "Папка №8",
+      "path": "/assets/docs/folders/Папка №8.jpg",
+      "mime_type": "image/jpeg",
+      "size": 190240,
+      "updated_at": "2026-04-21"
+    },
+    {
       "name": "Папка №7",
       "path": "/assets/docs/folders/Папка №7.pdf",
       "mime_type": "application/pdf",
