@@ -1,14 +1,14 @@
 # Project State
 
 <!-- AUTO_STATUS:START -->
-Generated: 2026-04-21 12:15:51 +0000
+Generated: 2026-04-21 12:18:15 +0000
 
 ## Repository Snapshot
 - Local repo path: `/opt/bloknot-mashinista`
 - Project memory path: `/opt/bloknot-mashinista/ai-memory`
 - Branch: `main`
-- HEAD: `a04bed6`
-- Last commit: `a04bed6 fix(schedule): repair day sheet mobile layout`
+- HEAD: `9abce7a`
+- Last commit: `9abce7a fix(schedule): rewrite day sheet copy in user terms`
 
 ## Git Remote
 ```text
@@ -18,7 +18,7 @@ origin	https://github.com/iEgor72/bloknot-mashinista.git (push)
 
 ## Branch Tracking
 ```text
-* main a04bed6 [origin/main] fix(schedule): repair day sheet mobile layout
+* main 9abce7a [origin/main] fix(schedule): rewrite day sheet copy in user terms
 ```
 
 ## Worktree

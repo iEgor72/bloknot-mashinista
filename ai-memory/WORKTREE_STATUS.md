@@ -1,6 +1,6 @@
 # Worktree Status
 
-Generated: 2026-04-21 12:15:51 +0000
+Generated: 2026-04-21 12:18:15 +0000
 
 ## git status -sb
 ```text
@@ -20,15 +20,17 @@ Generated: 2026-04-21 12:15:51 +0000
 
 ## git branch -vv
 ```text
-* main a04bed6 [origin/main] fix(schedule): repair day sheet mobile layout
+* main 9abce7a [origin/main] fix(schedule): rewrite day sheet copy in user terms
 ```
 
 ## HEAD
 ```text
-a04bed6 fix(schedule): repair day sheet mobile layout
- ai-memory/CHANGELOG.md             |  8 ++++++++
- ai-memory/PROJECT_STATE.md         |  8 ++++----
- ai-memory/WORKTREE_STATUS.md       | 19 +++++++++++--------
- styles/10-navigation-and-cards.css | 27 +++++++++++++++++++++++++--
- 4 files changed, 48 insertions(+), 14 deletions(-)
+9abce7a fix(schedule): rewrite day sheet copy in user terms
+ ai-memory/CHANGELOG.md       |  8 ++++++++
+ ai-memory/PROJECT_STATE.md   |  8 ++++----
+ ai-memory/WORKTREE_STATUS.md | 19 ++++++++-----------
+ index.html                   |  8 ++++----
+ scripts/render.js            |  4 ++--
+ scripts/shift-form.js        |  2 +-
+ 6 files changed, 27 insertions(+), 22 deletions(-)
 ```

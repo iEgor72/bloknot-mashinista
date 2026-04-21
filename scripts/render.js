@@ -721,10 +721,7 @@
 
     function buildReadonlyScheduleFactCardHtml(shift) {
       if (!shift) return '';
-      var html = buildShiftItemHtml(shift, true, null, currentMonthShiftIncomeMap, null, null);
-      html = html.replace(/ data-shift-open="1" role="button" tabindex="0" aria-label="[^"]*"/, ' data-shift-open="0"');
-      html = html.replace(/<div class="shift-top-right">[\s\S]*?<\/div>\s*<\/div>/, '</div>');
-      return '<div class="schedule-day-fact-card-shell">' + html + '</div>';
+      return '<div class="schedule-day-fact-card-shell">' + buildShiftItemHtml(shift, true, null, currentMonthShiftIncomeMap, null, null) + '</div>';
     }
 
     function buildScheduleDayFactSummary(state) {
@@ -834,6 +831,10 @@
       factCardEl.classList.remove('hidden');
       factTitleEl.textContent = daySummary.titleText;
       factTextEl.textContent = daySummary.noteText;
+      var hasFactCard = !!daySummary.cardHtml;
+      if (factTitleEl.parentNode && factTitleEl.parentNode.classList) {
+        factTitleEl.parentNode.classList.toggle('hidden', hasFactCard);
+      }
       factContentEl.innerHTML = daySummary.cardHtml || '<div class="schedule-day-empty-card">Пока ничего не записано. Когда появится смена, она покажется здесь обычной карточкой.</div>';
 
       var planSummary = buildScheduleDayPlanSummary(state);

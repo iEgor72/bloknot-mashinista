@@ -1132,15 +1132,24 @@
       gap: 10px;
     }
 
+    .schedule-day-fact-card-shell {
+      display: grid;
+    }
+
     .schedule-day-fact-card-shell .shift-item {
       margin: 0;
       box-shadow: none;
       background: linear-gradient(180deg, rgba(255,255,255,0.03), rgba(255,255,255,0.012)), #17171f;
+      pointer-events: none;
     }
 
     .schedule-day-fact-card-shell .shift-actions-wrap,
     .schedule-day-fact-card-shell .shift-top-right {
       display: none !important;
+    }
+
+    .schedule-day-fact-card-shell .shift-card-top {
+      grid-template-columns: minmax(0, 1fr);
     }
 
     .schedule-day-empty-card {
