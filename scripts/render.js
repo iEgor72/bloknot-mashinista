@@ -20,6 +20,7 @@
       if (sh.id === editingShiftId) itemClass += ' is-edit-target';
       if (sh.id === pendingDeleteId) itemClass += ' is-delete-target';
       if (sh.id === recentAddedShiftId) itemClass += ' is-adding-target';
+      if (sh.id === journalFocusShiftId) itemClass += ' is-journal-focus-target';
       if (shiftIsPending) itemClass += ' is-pending';
       var durationLevelData = durationLevelMap ? durationLevelMap[String(sh.id)] : null;
       var durationLevel = durationLevelData && typeof durationLevelData.level === 'string'
@@ -1058,6 +1059,14 @@
       if (recentAddTimer) {
         clearTimeout(recentAddTimer);
         recentAddTimer = null;
+      }
+    }
+
+    function clearJournalFocusHighlight() {
+      journalFocusShiftId = null;
+      if (journalFocusTimer) {
+        clearTimeout(journalFocusTimer);
+        journalFocusTimer = null;
       }
     }
 

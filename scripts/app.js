@@ -17,6 +17,8 @@
     var editReturnTab = 'shifts';
     var recentAddedShiftId = null;
     var recentAddTimer = null;
+    var journalFocusShiftId = null;
+    var journalFocusTimer = null;
     var activeTab = 'home';
     var hasRenderedInitialTab = false;
     var activeShiftMenuId = null;
@@ -1202,6 +1204,11 @@
         currentYear = targetYear;
         currentMonth = targetMonth;
       }
+      journalFocusShiftId = targetId || null;
+      if (journalFocusTimer) {
+        clearTimeout(journalFocusTimer);
+        journalFocusTimer = null;
+      }
       if (typeof render === 'function') {
         render();
       }
@@ -1215,6 +1222,13 @@
         var targetCard = listEl.querySelector(selector);
         if (targetCard && targetCard.scrollIntoView) {
           targetCard.scrollIntoView({ behavior: 'smooth', block: 'center' });
+        }
+        if (journalFocusShiftId) {
+          journalFocusTimer = window.setTimeout(function() {
+            journalFocusShiftId = null;
+            journalFocusTimer = null;
+            if (typeof render === 'function') render();
+          }, 2200);
         }
       }, 80);
     }

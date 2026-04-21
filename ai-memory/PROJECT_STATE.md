@@ -1,14 +1,14 @@
 # Project State
 
 <!-- AUTO_STATUS:START -->
-Generated: 2026-04-21 11:54:29 +0000
+Generated: 2026-04-21 11:56:53 +0000
 
 ## Repository Snapshot
 - Local repo path: `/opt/bloknot-mashinista`
 - Project memory path: `/opt/bloknot-mashinista/ai-memory`
 - Branch: `main`
-- HEAD: `934a4e0`
-- Last commit: `934a4e0 fix(schedule): clarify mixed day actions`
+- HEAD: `0537183`
+- Last commit: `0537183 fix(schedule): sync journal month from calendar day`
 
 ## Git Remote
 ```text
@@ -18,7 +18,7 @@ origin	https://github.com/iEgor72/bloknot-mashinista.git (push)
 
 ## Branch Tracking
 ```text
-* main 934a4e0 [origin/main] fix(schedule): clarify mixed day actions
+* main 0537183 [origin/main] fix(schedule): sync journal month from calendar day
 ```
 
 ## Worktree
