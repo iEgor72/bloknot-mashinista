@@ -260,9 +260,9 @@
           <div class="schedule-card-head">
             <div>
               <div class="quick-stats-note">Календарь работы</div>
-              <div class="schedule-card-subtitle" id="scheduleCardSubtitle">Смены, поездки и будущий график в одном месте</div>
+              <div class="schedule-card-subtitle" id="scheduleCardSubtitle">Показываем рабочие дни, выходные и уже внесённые записи</div>
             </div>
-            <button class="section-link" id="btnOpenSchedulePlanner" type="button">Настроить</button>
+            <button class="section-link" id="btnOpenSchedulePlanner" type="button">График</button>
           </div>
 
           <div class="schedule-weekdays" aria-hidden="true">
@@ -1009,36 +1009,36 @@
         <span class="salary-settings-header-spacer" aria-hidden="true"></span>
       </div>
 
-      <div class="settings-help-block">Периоды не ломают текущие смены. Это отдельный плановый слой поверх уже внесённых поездок и смен.</div>
+      <div class="settings-help-block">Если графика нет, ничего настраивать не нужно. Просто вносите поездки и смены как раньше. График нужен только тем, у кого есть повторяющийся цикл.</div>
 
-      <div class="settings-section-title">Периоды</div>
+      <div class="settings-section-title">Уже добавлено</div>
       <div class="schedule-periods-list" id="schedulePeriodsList"></div>
 
-      <div class="settings-section-title">Новый период</div>
+      <div class="settings-section-title">Добавить период</div>
       <div class="settings-card schedule-form-card">
         <div class="field">
-          <label>Как работаете в этот период</label>
+          <label>1. Как вы работаете в этот период</label>
           <div class="segmented two" id="scheduleModeSegmented" data-setting-group="scheduleMode">
-            <button type="button" class="segmented-btn active" data-value="manual">Поездки вручную</button>
-            <button type="button" class="segmented-btn" data-value="cycle">Сменный график</button>
+            <button type="button" class="segmented-btn active" data-value="manual">Поездки</button>
+            <button type="button" class="segmented-btn" data-value="cycle">График</button>
           </div>
         </div>
 
         <div class="optional-grid optional-grid-two">
           <div class="field">
-            <label>Дата начала</label>
+            <label>2. С какого дня</label>
             <input class="optional-control" type="date" id="schedulePeriodStartDate" />
           </div>
           <div class="field">
-            <label>Дата окончания</label>
+            <label>По какой день</label>
             <input class="optional-control" type="date" id="schedulePeriodEndDate" />
-            <div class="optional-note">Можно оставить пусто</div>
+            <div class="optional-note">Можно не указывать</div>
           </div>
         </div>
 
         <div id="scheduleCycleFields" class="hidden">
           <div class="field">
-            <label>Шаблон графика</label>
+            <label>3. Наберите цикл графика</label>
             <div class="schedule-pattern-preview" id="schedulePatternPreview">—</div>
             <div class="schedule-pattern-builder">
               <button type="button" class="schedule-pattern-btn" data-pattern-add="D">Д</button>
@@ -1048,16 +1048,16 @@
               <button type="button" class="schedule-pattern-btn is-muted" id="btnSchedulePatternClear">Очистить</button>
             </div>
             <input type="hidden" id="schedulePatternValue" value="" />
-            <div class="optional-note">Например: ДДННВВВВ</div>
+            <div class="optional-note">Например: ДДННВВВВ или ДНВВ</div>
           </div>
 
           <div class="optional-grid optional-grid-two">
             <div class="field">
-              <label>Стандартная явка</label>
+              <label>Обычная явка</label>
               <input class="optional-control" type="time" id="scheduleDefaultStartTime" value="08:00" />
             </div>
             <div class="field">
-              <label>Окончание</label>
+              <label>Обычное окончание</label>
               <input class="optional-control" type="time" id="scheduleDefaultEndTime" value="20:00" />
             </div>
           </div>
@@ -1065,7 +1065,7 @@
       </div>
 
       <div class="salary-settings-actions">
-        <button class="btn-sheet-save" id="btnSaveSchedulePeriod" type="button">Сохранить период</button>
+        <button class="btn-sheet-save" id="btnSaveSchedulePeriod" type="button">Сохранить</button>
         <button class="btn-sheet-close" id="btnCloseSchedulePlanner" type="button">Закрыть</button>
       </div>
     </div>

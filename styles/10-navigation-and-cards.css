@@ -742,15 +742,16 @@
       position: relative;
       display: grid;
       align-content: space-between;
-      justify-items: center;
-      gap: 6px;
-      padding: 10px 6px 8px;
-      border: 1px solid var(--border);
-      background: var(--card-hi);
+      justify-items: start;
+      gap: 8px;
+      padding: 9px 8px 8px;
+      border: 1px solid rgba(255, 255, 255, 0.07);
+      background: rgba(255, 255, 255, 0.025);
       color: var(--text);
       cursor: pointer;
       transition: transform 0.12s ease, border-color 0.16s ease, background 0.16s ease;
       -webkit-tap-highlight-color: transparent;
+      text-align: left;
     }
 
     .schedule-day-cell:active {
@@ -760,6 +761,7 @@
     .schedule-day-cell.is-today {
       border-color: rgba(56, 189, 248, 0.34);
       box-shadow: inset 0 0 0 1px rgba(56, 189, 248, 0.1);
+      background: rgba(56, 189, 248, 0.05);
     }
 
     .schedule-day-cell.has-fact::after {
@@ -775,23 +777,23 @@
     }
 
     .schedule-day-cell.is-day {
-      border-color: rgba(34, 197, 94, 0.2);
-      background: linear-gradient(180deg, rgba(34, 197, 94, 0.12), rgba(255, 255, 255, 0.03));
+      border-color: rgba(34, 197, 94, 0.18);
+      background: rgba(34, 197, 94, 0.06);
     }
 
     .schedule-day-cell.is-night {
-      border-color: rgba(99, 102, 241, 0.24);
-      background: linear-gradient(180deg, rgba(99, 102, 241, 0.16), rgba(255, 255, 255, 0.03));
+      border-color: rgba(56, 189, 248, 0.24);
+      background: rgba(56, 189, 248, 0.08);
     }
 
     .schedule-day-cell.is-rest {
       border-color: rgba(148, 163, 184, 0.14);
-      background: linear-gradient(180deg, rgba(148, 163, 184, 0.10), rgba(255, 255, 255, 0.02));
+      background: rgba(148, 163, 184, 0.06);
     }
 
     .schedule-day-cell.is-fact-only {
       border-color: rgba(56, 189, 248, 0.24);
-      background: linear-gradient(180deg, rgba(56, 189, 248, 0.12), rgba(255, 255, 255, 0.03));
+      background: rgba(56, 189, 248, 0.06);
     }
 
     .schedule-day-number {
@@ -805,33 +807,38 @@
     .schedule-day-badge {
       display: inline-flex;
       align-items: center;
-      justify-content: center;
-      min-width: 28px;
-      min-height: 24px;
-      padding: 0 8px;
-      border-radius: 999px;
-      background: rgba(255, 255, 255, 0.08);
-      color: var(--text);
-      font-size: 12px;
-      font-weight: 800;
-      letter-spacing: 0.03em;
+      justify-content: flex-start;
+      min-width: 0;
+      min-height: 18px;
+      padding: 0;
+      border-radius: 0;
+      background: transparent;
+      color: rgba(238, 242, 248, 0.82);
+      font-size: 11px;
+      font-weight: 700;
+      letter-spacing: 0.01em;
+      line-height: 1.15;
+      text-transform: none;
+    }
+
+    .schedule-day-badge.is-empty {
+      color: rgba(148, 163, 184, 0.44);
     }
 
     .schedule-day-cell.is-rest .schedule-day-badge {
-      color: rgba(226, 232, 240, 0.88);
-      background: rgba(148, 163, 184, 0.14);
+      color: rgba(226, 232, 240, 0.72);
     }
 
     .schedule-day-cell.is-night .schedule-day-badge {
-      background: rgba(99, 102, 241, 0.18);
+      color: var(--accent);
     }
 
     .schedule-day-cell.is-day .schedule-day-badge {
-      background: rgba(34, 197, 94, 0.18);
+      color: #7ee2a8;
     }
 
     .schedule-day-cell.is-fact-only .schedule-day-badge {
-      background: rgba(56, 189, 248, 0.18);
+      color: #7dd3fc;
     }
 
     .schedule-legend {
@@ -857,7 +864,7 @@
     }
 
     .schedule-legend-dot.is-day { background: #22c55e; }
-    .schedule-legend-dot.is-night { background: #6366f1; }
+    .schedule-legend-dot.is-night { background: var(--accent); }
     .schedule-legend-dot.is-rest { background: #94a3b8; }
     .schedule-legend-dot.is-fact { background: #38bdf8; }
 
@@ -912,6 +919,10 @@
       display: grid;
       gap: 10px;
       margin-bottom: 10px;
+    }
+
+    .schedule-planner-sheet .settings-help-block {
+      line-height: 1.55;
     }
 
     .schedule-period-card {
@@ -1047,7 +1058,7 @@
 
       .schedule-day-cell,
       .schedule-day-placeholder {
-        min-height: 52px;
+        min-height: 54px;
         border-radius: 14px;
       }
 
@@ -1056,9 +1067,7 @@
       }
 
       .schedule-day-badge {
-        min-width: 24px;
-        min-height: 22px;
-        font-size: 11px;
+        font-size: 10px;
       }
 
       .schedule-day-actions-row {

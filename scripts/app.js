@@ -1054,6 +1054,43 @@
       return safeDate.substring(8, 10) + ' ' + (monthNames[parseInt(safeDate.substring(5, 7), 10) - 1] || '');
     }
 
+    function formatScheduleRangeLabel(startDate, endDate) {
+      var startText = formatScheduleShortDate(startDate);
+      if (!endDate) return 'с ' + startText + ' · до отмены';
+      return startText + ' - ' + formatScheduleShortDate(endDate);
+    }
+
+    function getScheduleVisualLabel(code) {
+      if (code === 'D') return 'День';
+      if (code === 'N') return 'Ночь';
+      if (code === 'V') return 'Вых';
+      if (code === 'P') return 'Рейс';
+      if (code === 'S') return 'Смена';
+      return '';
+    }
+
+    function rangesOverlap(startA, endA, startB, endB) {
+      var aStart = normalizeDateKey(startA);
+      var bStart = normalizeDateKey(startB);
+      if (!aStart || !bStart) return false;
+      var aEnd = normalizeDateKey(endA) || '9999-12-31';
+      var bEnd = normalizeDateKey(endB) || '9999-12-31';
+      return compareDateKeys(aStart, bEnd) <= 0 && compareDateKeys(bStart, aEnd) <= 0;
+    }
+
+    function hasOverlappingSchedulePeriod(periodInput, ignoreId) {
+      var period = normalizeSchedulePeriod(periodInput);
+      if (!period) return false;
+      var periods = getSchedulePeriods();
+      for (var i = 0; i < periods.length; i++) {
+        if (ignoreId && periods[i].id === ignoreId) continue;
+        if (rangesOverlap(period.startDate, period.endDate, periods[i].startDate, periods[i].endDate)) {
+          return true;
+        }
+      }
+      return false;
+    }
+
     function buildSchedulePeriodSummary(period) {
       if (!period) return '';
       if (period.mode === 'cycle') {

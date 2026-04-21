@@ -1,6 +1,6 @@
 # Worktree Status
 
-Generated: 2026-04-21 09:52:45 +0000
+Generated: 2026-04-21 10:29:14 +0000
 
 ## git status -sb
 ```text
@@ -20,15 +20,21 @@ Generated: 2026-04-21 09:52:45 +0000
 
 ## git branch -vv
 ```text
-* main be331b7 [origin/main] fix(seo): improve stat card spacing
+* main 751b33b [origin/main] feat(schedule): add home work calendar
 ```
 
 ## HEAD
 ```text
-be331b7 fix(seo): improve stat card spacing
- ai-memory/CHANGELOG.md       |  8 ++++++++
- ai-memory/PROJECT_STATE.md   |  8 ++++----
- ai-memory/WORKTREE_STATUS.md | 18 +++++++++---------
- docs/seo/seo.css             | 23 +++++++++++++++++++----
- 4 files changed, 40 insertions(+), 17 deletions(-)
+751b33b feat(schedule): add home work calendar
+ ai-memory/CHANGELOG.md             |   8 +
+ ai-memory/PROJECT_STATE.md         |   8 +-
+ ai-memory/WORKTREE_STATUS.md       |  17 +-
+ index.html                         | 155 +++++++++++++++
+ scripts/app.js                     | 389 ++++++++++++++++++++++++++++++++++++
+ scripts/auth.js                    |   1 +
+ scripts/render.js                  | 167 ++++++++++++++++
+ scripts/shift-form.js              | 206 +++++++++++++++++++
+ styles/10-navigation-and-cards.css | 391 +++++++++++++++++++++++++++++++++++++
+ sw.js                              |   2 +-
+ 10 files changed, 1330 insertions(+), 14 deletions(-)
 ```

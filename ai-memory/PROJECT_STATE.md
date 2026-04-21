@@ -1,14 +1,14 @@
 # Project State
 
 <!-- AUTO_STATUS:START -->
-Generated: 2026-04-21 09:52:45 +0000
+Generated: 2026-04-21 10:29:14 +0000
 
 ## Repository Snapshot
 - Local repo path: `/opt/bloknot-mashinista`
 - Project memory path: `/opt/bloknot-mashinista/ai-memory`
 - Branch: `main`
-- HEAD: `be331b7`
-- Last commit: `be331b7 fix(seo): improve stat card spacing`
+- HEAD: `751b33b`
+- Last commit: `751b33b feat(schedule): add home work calendar`
 
 ## Git Remote
 ```text
@@ -18,7 +18,7 @@ origin	https://github.com/iEgor72/bloknot-mashinista.git (push)
 
 ## Branch Tracking
 ```text
-* main be331b7 [origin/main] fix(seo): improve stat card spacing
+* main 751b33b [origin/main] feat(schedule): add home work calendar
 ```
 
 ## Worktree

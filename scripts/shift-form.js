@@ -828,6 +828,17 @@
           showSaveToast('Добавьте шаблон графика', 'danger');
           return;
         }
+        if (hasOverlappingSchedulePeriod({
+          mode: mode,
+          startDate: startDate,
+          endDate: endDate,
+          pattern: pattern,
+          startTime: startTime,
+          endTime: endTime
+        })) {
+          showSaveToast('Периоды не должны пересекаться', 'danger');
+          return;
+        }
         upsertSchedulePeriod({
           id: createSchedulePeriodId(),
           mode: mode,
@@ -840,6 +851,7 @@
         triggerHapticSuccess();
         render();
         resetSchedulePlannerForm();
+        closeOverlay('overlaySchedulePlanner');
         showSaveToast('Период сохранён', 'success');
       });
     }

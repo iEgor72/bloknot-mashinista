@@ -598,11 +598,12 @@
         var dateKey = currentYear + '-' + String(currentMonth + 1).padStart(2, '0') + '-' + String(day).padStart(2, '0');
         var dayState = resolveScheduleDay(dateKey);
         var dayClass = 'schedule-day-cell' + getScheduleCellClass(dayState) + (dateKey === todayKey ? ' is-today' : '');
-        var badge = scheduleCodeToRu(dayState.effectiveCode || dayState.plannedCode || '');
+        var code = dayState.effectiveCode || dayState.plannedCode || '';
+        var badge = getScheduleVisualLabel(code);
         var badgeHtml = badge
           ? '<span class="schedule-day-badge">' + escapeHtml(badge) + '</span>'
-          : '<span class="schedule-day-badge">·</span>';
-        html += '<button type="button" class="' + dayClass + '" data-schedule-date="' + dateKey + '" aria-label="' + escapeHtml(formatScheduleDateLabel(dateKey) + '. ' + formatScheduleCodeLabel(dayState.effectiveCode || dayState.plannedCode)) + '">' +
+          : '<span class="schedule-day-badge is-empty">—</span>';
+        html += '<button type="button" class="' + dayClass + '" data-schedule-date="' + dateKey + '" aria-label="' + escapeHtml(formatScheduleDateLabel(dateKey) + '. ' + formatScheduleCodeLabel(code)) + '">' +
           '<span class="schedule-day-number">' + day + '</span>' +
           badgeHtml +
         '</button>';
@@ -622,9 +623,9 @@
 
       var periods = getSchedulePeriods();
       if (!periods.length) {
-        subtitleEl.textContent = 'Пока без графика. Можно оставить только поездки вручную или добавить период со сменным циклом.';
+        subtitleEl.textContent = 'Если графика нет, календарь просто отмечает уже внесённые записи.';
       } else {
-        subtitleEl.textContent = 'Показываем факт по сменам и план там, где у периода включён график.';
+        subtitleEl.textContent = 'Сначала показываем факт, а там где его нет, план по графику.';
       }
 
       var upcoming = [];
@@ -669,7 +670,7 @@
       var html = '';
       for (var i = 0; i < periods.length; i++) {
         var period = periods[i];
-        var rangeText = 'с ' + period.startDate + (period.endDate ? ' по ' + period.endDate : ' · до отмены');
+        var rangeText = formatScheduleRangeLabel(period.startDate, period.endDate);
         html += '<div class="schedule-period-card">' +
           '<div class="schedule-period-top">' +
             '<div>' +
@@ -701,12 +702,12 @@
 
       dateEl.textContent = formatScheduleDateLabel(dateKey);
       statusEl.textContent = state.hasFact
-        ? 'Факт уже есть. При желании можно быстро открыть запись или поставить плановое исключение.'
-        : formatScheduleCodeLabel(state.plannedCode) + (state.period ? ' · ' + buildSchedulePeriodSummary(state.period) : '');
+        ? 'Запись уже есть. Можно открыть её или точечно поменять план на этот день.'
+        : ((state.plannedCode ? formatScheduleCodeLabel(state.plannedCode) : 'План на день не задан') + (state.period ? ' · ' + buildSchedulePeriodSummary(state.period) : ''));
 
       if (state.hasFact) {
         factCardEl.classList.remove('hidden');
-        factTextEl.textContent = getShiftTitle(state.factShifts[0]) + (state.factShifts.length > 1 ? ' и ещё ' + (state.factShifts.length - 1) : '');
+        factTextEl.textContent = getShiftTitle(state.factShifts[0]) + (state.factShifts.length > 1 ? ' и ещё ' + (state.factShifts.length - 1) + ' запись' : '');
       } else {
         factCardEl.classList.add('hidden');
         factTextEl.textContent = '';
