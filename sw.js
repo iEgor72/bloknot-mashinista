@@ -1,9 +1,17 @@
-const CACHE_VERSION = 'v28';
+const CACHE_VERSION = 'v29';
 const CACHE_NAME = `shift-tracker-shell-${CACHE_VERSION}`;
 const NAVIGATION_FALLBACK_URL = '/index.html';
 const NETWORK_TIMEOUT_MS = 1200;
 const ASSET_NETWORK_TIMEOUT_MS = 1200;
 const DOCS_ASSET_NETWORK_TIMEOUT_MS = 8000;
+const APP_SHELL_PATHS = new Set(['/', '/index.html']);
+const SEO_PAGE_PATHS = new Set([
+  '/uchet-marshrutov',
+  '/zarplata-mashinista',
+  '/zhurnal-smen-mashinista',
+  '/robots.txt',
+  '/sitemap.xml'
+]);
 const INDEX_ASSET_PATTERN = /(?:href|src)=["'](\/(?:styles|scripts|assets)\/[^"'?#]+(?:\?[^"']*)?)["']/g;
 const INSTALL_SHELL_URLS = [
   '/',
@@ -276,6 +284,14 @@ function isDocsAssetRequest(request) {
   }
 }
 
+function isAppShellPath(pathname) {
+  return APP_SHELL_PATHS.has(pathname);
+}
+
+function shouldBypassNavigationFallback(pathname) {
+  return SEO_PAGE_PATHS.has(pathname);
+}
+
 function withTimeout(promise, timeoutMs) {
   return new Promise((resolve) => {
     let settled = false;
@@ -303,38 +319,45 @@ function withTimeout(promise, timeoutMs) {
 
 async function networkFirstDocument(request) {
   const cache = await caches.open(CACHE_NAME);
+  const requestUrl = new URL(request.url);
+  const pathname = requestUrl.pathname;
+  const allowAppShellFallback = !shouldBypassNavigationFallback(pathname);
+  const isShellPath = isAppShellPath(pathname);
 
-  const cached =
-    (await cache.match(request, { ignoreSearch: true })) ||
-    (await cache.match(NAVIGATION_FALLBACK_URL)) ||
-    (await cache.match('/'));
+  let cached = await cache.match(request, { ignoreSearch: true });
+  if (!cached && allowAppShellFallback) {
+    cached =
+      (await cache.match(NAVIGATION_FALLBACK_URL)) ||
+      (await cache.match('/'));
+  }
 
-  // Always update cache in background (fire-and-forget)
   const networkPromise = fetch(request, { cache: 'no-store' })
     .then((response) => {
       if (response && response.ok) {
         cache.put(request, response.clone());
-        cache.put(NAVIGATION_FALLBACK_URL, response.clone());
-        cache.put('/', response.clone());
+        if (isShellPath) {
+          cache.put(NAVIGATION_FALLBACK_URL, response.clone());
+          cache.put('/', response.clone());
+        }
       }
       return response;
     })
     .catch(() => null);
 
-  // Serve cache immediately if available (zero-latency offline).
   if (cached) return cached;
 
-  // No cache yet (first visit): wait for network with timeout.
   const fastResponse = await withTimeout(networkPromise, NETWORK_TIMEOUT_MS);
   if (fastResponse) return fastResponse;
 
-  const fallback =
-    (await cache.match(NAVIGATION_FALLBACK_URL)) ||
-    (await cache.match('/'));
+  if (allowAppShellFallback) {
+    const fallback =
+      (await cache.match(NAVIGATION_FALLBACK_URL)) ||
+      (await cache.match('/'));
 
-  if (fallback) {
-    console.warn('[SW] Navigation fallback served from cache for:', new URL(request.url).pathname);
-    return fallback;
+    if (fallback) {
+      console.warn('[SW] Navigation fallback served from cache for:', pathname);
+      return fallback;
+    }
   }
 
   console.warn('[SW] Navigation fallback page served (no cache, no network).');

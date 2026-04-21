@@ -1,14 +1,14 @@
 # Project State
 
 <!-- AUTO_STATUS:START -->
-Generated: 2026-04-21 03:46:37 +0000
+Generated: 2026-04-21 08:52:22 +0000
 
 ## Repository Snapshot
 - Local repo path: `/opt/bloknot-mashinista`
 - Project memory path: `/opt/bloknot-mashinista/ai-memory`
 - Branch: `main`
-- HEAD: `fc5ee24`
-- Last commit: `fc5ee24 fix(ui): prevent nav text selection on ios`
+- HEAD: `88ae765`
+- Last commit: `88ae765 feat(seo): add public landing pages for search`
 
 ## Git Remote
 ```text
@@ -18,7 +18,7 @@ origin	https://github.com/iEgor72/bloknot-mashinista.git (push)
 
 ## Branch Tracking
 ```text
-* main fc5ee24 [origin/main] fix(ui): prevent nav text selection on ios
+* main 88ae765 [origin/main] feat(seo): add public landing pages for search
 ```
 
 ## Worktree
@@ -29,7 +29,8 @@ M ai-memory/ARCHITECTURE.md
 ?? ai-memory/sessions/2026-04-19.md
 ?? ai-memory/sessions/2026-04-20.md
 ?? ai-memory/sessions/2026-04-21.md
-?? docs/
+?? docs/stopwatch-implementation-checklist.md
+?? docs/stopwatch-integration-spec.md
 ?? scripts/__pycache__/
 ?? tools/__pycache__/
 ```
