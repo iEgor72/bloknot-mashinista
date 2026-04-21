@@ -19,6 +19,9 @@
       z-index: 100;
       opacity: 1;
       transition: opacity 0.22s ease;
+      user-select: none;
+      -webkit-user-select: none;
+      -webkit-touch-callout: none;
     }
 
     body.is-keyboard-open .bottom-nav {
@@ -39,6 +42,9 @@
       border: none;
       cursor: pointer;
       -webkit-tap-highlight-color: transparent;
+      -webkit-touch-callout: none;
+      user-select: none;
+      -webkit-user-select: none;
       padding: 0;
     }
 
@@ -144,6 +150,15 @@
       font-weight: 700;
       color: var(--accent);
       line-height: 1;
+    }
+
+    .bottom-nav .tab-label,
+    .bottom-nav .fab-label,
+    .bottom-nav .tab-icon,
+    .bottom-nav .fab-btn {
+      user-select: none;
+      -webkit-user-select: none;
+      -webkit-touch-callout: none;
     }
 
     /* FAB pulse animation */

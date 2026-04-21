@@ -1,6 +1,6 @@
 # Worktree Status
 
-Generated: 2026-04-21 02:33:13 +0000
+Generated: 2026-04-21 02:39:15 +0000
 
 ## git status -sb
 ```text
@@ -19,15 +19,16 @@ Generated: 2026-04-21 02:33:13 +0000
 
 ## git branch -vv
 ```text
-* main 36a7c94 [origin/main] fix(sw): reduce false doc load failures
+* main f15c94e [origin/main] fix(docs): add retry and loading progress states
 ```
 
 ## HEAD
 ```text
-36a7c94 fix(sw): reduce false doc load failures
- ai-memory/CHANGELOG.md       |  8 ++++++++
- ai-memory/PROJECT_STATE.md   |  8 ++++----
- ai-memory/WORKTREE_STATUS.md | 18 +++++++++---------
- sw.js                        | 17 +++++++++++++++--
- 4 files changed, 36 insertions(+), 15 deletions(-)
+f15c94e fix(docs): add retry and loading progress states
+ ai-memory/CHANGELOG.md            |  8 +++++
+ ai-memory/PROJECT_STATE.md        |  8 ++---
+ ai-memory/WORKTREE_STATUS.md      | 17 +++++----
+ scripts/docs-app.js               | 75 +++++++++++++++++++++++++++++----------
+ styles/30-shifts-and-overlays.css | 46 +++++++++++++++++++++++-
+ 5 files changed, 122 insertions(+), 32 deletions(-)
 ```

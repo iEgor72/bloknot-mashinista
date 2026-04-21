@@ -1,14 +1,14 @@
 # Project State
 
 <!-- AUTO_STATUS:START -->
-Generated: 2026-04-21 02:33:13 +0000
+Generated: 2026-04-21 02:39:15 +0000
 
 ## Repository Snapshot
 - Local repo path: `/opt/bloknot-mashinista`
 - Project memory path: `/opt/bloknot-mashinista/ai-memory`
 - Branch: `main`
-- HEAD: `36a7c94`
-- Last commit: `36a7c94 fix(sw): reduce false doc load failures`
+- HEAD: `f15c94e`
+- Last commit: `f15c94e fix(docs): add retry and loading progress states`
 
 ## Git Remote
 ```text
@@ -18,7 +18,7 @@ origin	https://github.com/iEgor72/bloknot-mashinista.git (push)
 
 ## Branch Tracking
 ```text
-* main 36a7c94 [origin/main] fix(sw): reduce false doc load failures
+* main f15c94e [origin/main] fix(docs): add retry and loading progress states
 ```
 
 ## Worktree
