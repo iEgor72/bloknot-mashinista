@@ -1196,6 +1196,15 @@
         var dayShifts = getShiftsForDate(safeDate);
         targetId = dayShifts[0] && dayShifts[0].id ? dayShifts[0].id : '';
       }
+      var targetYear = parseInt(safeDate.substring(0, 4), 10);
+      var targetMonth = parseInt(safeDate.substring(5, 7), 10) - 1;
+      if (isFinite(targetYear) && isFinite(targetMonth) && targetMonth >= 0 && targetMonth <= 11) {
+        currentYear = targetYear;
+        currentMonth = targetMonth;
+      }
+      if (typeof render === 'function') {
+        render();
+      }
       setActiveTab('shifts');
       window.setTimeout(function() {
         var listEl = document.getElementById('shiftsList');

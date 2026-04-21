@@ -1,6 +1,6 @@
 # Worktree Status
 
-Generated: 2026-04-21 11:48:23 +0000
+Generated: 2026-04-21 11:54:30 +0000
 
 ## git status -sb
 ```text
@@ -20,17 +20,17 @@ Generated: 2026-04-21 11:48:23 +0000
 
 ## git branch -vv
 ```text
-* main 1d738dc [origin/main] fix(schedule): separate plan and fact in day sheet
+* main 934a4e0 [origin/main] fix(schedule): clarify mixed day actions
 ```
 
 ## HEAD
 ```text
-1d738dc fix(schedule): separate plan and fact in day sheet
- ai-memory/CHANGELOG.md             |  8 ++++
- ai-memory/PROJECT_STATE.md         |  8 ++--
- ai-memory/WORKTREE_STATUS.md       | 20 ++++++----
- index.html                         | 17 ++++++++-
- scripts/render.js                  | 54 ++++++++++++++++++---------
- styles/10-navigation-and-cards.css | 76 +++++++++++++++++++++++++++++++-------
- 6 files changed, 139 insertions(+), 44 deletions(-)
+934a4e0 fix(schedule): clarify mixed day actions
+ ai-memory/CHANGELOG.md       |  8 ++++++++
+ ai-memory/PROJECT_STATE.md   |  8 ++++----
+ ai-memory/WORKTREE_STATUS.md | 22 ++++++++++------------
+ scripts/app.js               | 21 +++++++++++++++++++++
+ scripts/render.js            | 17 ++++++++++++++++-
+ scripts/shift-form.js        |  7 +++++++
+ 6 files changed, 66 insertions(+), 17 deletions(-)
 ```
