@@ -1287,6 +1287,30 @@
         calc(12px + env(safe-area-inset-left));
     }
 
+    .docs-image-scroll {
+      flex: 1;
+      min-height: 0;
+      min-width: 0;
+      overflow: auto;
+      -webkit-overflow-scrolling: touch;
+      overscroll-behavior-y: contain;
+      overscroll-behavior-x: contain;
+      touch-action: pan-x pan-y pinch-zoom;
+      padding:
+        12px
+        calc(12px + env(safe-area-inset-right))
+        calc(20px + env(safe-area-inset-bottom))
+        calc(12px + env(safe-area-inset-left));
+      background: #0b0e18;
+    }
+
+    .docs-image-scale-wrap {
+      position: relative;
+      width: 100%;
+      min-width: 100%;
+      min-height: 100%;
+    }
+
     .docs-docx-scroll {
       flex: 1;
       min-height: 0;
@@ -1508,6 +1532,13 @@
       border-radius: 10px;
       box-shadow: 0 8px 28px rgba(0, 0, 0, 0.45);
       background: #ffffff;
+    }
+
+    .docs-viewer-image-zoomable {
+      width: min(100%, 1200px);
+      margin: 0 auto;
+      transform-origin: 0 0;
+      will-change: transform;
     }
 
     .docs-viewer-loading {
