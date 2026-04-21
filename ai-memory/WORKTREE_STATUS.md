@@ -1,6 +1,6 @@
 # Worktree Status
 
-Generated: 2026-04-21 09:05:24 +0000
+Generated: 2026-04-21 09:08:32 +0000
 
 ## git status -sb
 ```text
@@ -20,18 +20,18 @@ Generated: 2026-04-21 09:05:24 +0000
 
 ## git branch -vv
 ```text
-* main 5977e55 [origin/main] improve(seo): enrich landing pages visuals and copy
+* main 762da28 [origin/main] fix(seo): replace outdated promo image
 ```
 
 ## HEAD
 ```text
-5977e55 improve(seo): enrich landing pages visuals and copy
- ai-memory/CHANGELOG.md                |   8 ++
- ai-memory/PROJECT_STATE.md            |   8 +-
- ai-memory/WORKTREE_STATUS.md          |  20 ++--
- docs/seo/seo.css                      | 194 +++++++++++++++++++++++++---------
- docs/seo/uchet-marshrutov.html        |  81 ++++++++------
- docs/seo/zarplata-mashinista.html     |  79 ++++++++------
- docs/seo/zhurnal-smen-mashinista.html |  80 ++++++++------
- 7 files changed, 312 insertions(+), 158 deletions(-)
+762da28 fix(seo): replace outdated promo image
+ ai-memory/CHANGELOG.md                |   8 ++++++++
+ ai-memory/PROJECT_STATE.md            |   8 ++++----
+ ai-memory/WORKTREE_STATUS.md          |  19 +++++++++++--------
+ assets/seo/landing-salary-screen.jpg  | Bin 0 -> 60226 bytes
+ docs/seo/uchet-marshrutov.html        |   4 ++--
+ docs/seo/zarplata-mashinista.html     |   4 ++--
+ docs/seo/zhurnal-smen-mashinista.html |   4 ++--
+ 7 files changed, 29 insertions(+), 18 deletions(-)
 ```
