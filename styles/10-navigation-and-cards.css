@@ -795,8 +795,17 @@
       color: rgba(244, 247, 252, 0.56);
     }
 
+    .schedule-day-cell.is-holiday {
+      border-color: rgba(255, 107, 107, 0.28);
+      box-shadow: inset 0 0 0 1px rgba(255, 107, 107, 0.08);
+    }
+
     .schedule-day-cell.is-holiday .schedule-day-number {
       color: #ff7a7a;
+    }
+
+    .schedule-day-cell.is-holiday .schedule-day-badge {
+      box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.04);
     }
 
     .schedule-day-badge {
