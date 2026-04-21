@@ -1078,58 +1078,79 @@
       margin-top: 10px;
     }
 
+    .schedule-day-sheet {
+      padding: 18px 16px calc(26px + var(--safe-bottom));
+    }
+
+    .schedule-day-sheet .salary-settings-header {
+      margin-bottom: 10px;
+      padding-bottom: 6px;
+    }
+
+    .schedule-day-sheet .sheet-title {
+      font-size: 16px;
+      font-weight: 800;
+    }
+
     .schedule-day-summary {
       display: grid;
-      gap: 8px;
-      margin-bottom: 16px;
+      gap: 6px;
+      margin-bottom: 14px;
     }
 
     .schedule-day-date {
-      font-size: 24px;
-      font-weight: 900;
-      line-height: 1.1;
+      font-size: 21px;
+      font-weight: 800;
+      line-height: 1.15;
+      letter-spacing: -0.02em;
       color: var(--text);
     }
 
     .schedule-day-status {
       color: var(--muted);
-      font-size: 14px;
-      line-height: 1.5;
+      font-size: 13px;
+      line-height: 1.45;
     }
 
     .schedule-day-fact,
     .schedule-day-plan {
-      margin-bottom: 14px;
-      padding: 14px;
-      border-radius: 22px;
+      margin-bottom: 12px;
       display: grid;
-      gap: 12px;
-      border: 1px solid rgba(255, 255, 255, 0.08);
-      background: linear-gradient(180deg, rgba(255, 255, 255, 0.04), rgba(255, 255, 255, 0.02)), #181821;
-      box-shadow: 0 14px 30px rgba(0, 0, 0, 0.12);
+      gap: 10px;
+    }
+
+    .schedule-day-fact {
+      padding: 0;
+      border: 0;
+      background: transparent;
+      box-shadow: none;
     }
 
     .schedule-day-plan {
-      background: linear-gradient(180deg, rgba(255, 255, 255, 0.035), rgba(255, 255, 255, 0.016)), #171720;
+      padding: 14px;
+      border-radius: var(--r-card);
+      border: 1px solid var(--border);
+      background: linear-gradient(180deg, rgba(255, 255, 255, 0.025), rgba(255, 255, 255, 0.012)), var(--card);
+      box-shadow: 0 14px 30px rgba(0, 0, 0, 0.14);
     }
 
     .schedule-day-block-head {
       display: grid;
-      gap: 4px;
+      gap: 3px;
     }
 
     .schedule-day-fact-title,
     .schedule-day-plan-title {
-      font-size: 11px;
+      font-size: 10px;
       font-weight: 800;
-      letter-spacing: 0.08em;
+      letter-spacing: 0.12em;
       text-transform: uppercase;
       color: var(--muted);
     }
 
     .schedule-day-fact-content {
       display: grid;
-      gap: 10px;
+      gap: 8px;
     }
 
     .schedule-day-fact-card-shell {
@@ -1138,8 +1159,8 @@
 
     .schedule-day-fact-card-shell .shift-item {
       margin: 0;
-      box-shadow: none;
-      background: linear-gradient(180deg, rgba(255,255,255,0.03), rgba(255,255,255,0.012)), #17171f;
+      box-shadow: 0 14px 30px rgba(0, 0, 0, 0.14);
+      background: linear-gradient(180deg, rgba(255,255,255,0.025), rgba(255,255,255,0.012)), var(--card);
       pointer-events: none;
     }
 
@@ -1153,29 +1174,29 @@
     }
 
     .schedule-day-empty-card {
-      padding: 16px;
-      border-radius: 18px;
+      padding: 14px;
+      border-radius: var(--r-card);
       border: 1px dashed rgba(255, 255, 255, 0.10);
-      background: rgba(255, 255, 255, 0.025);
+      background: rgba(255, 255, 255, 0.02);
       color: var(--muted);
-      font-size: 13px;
-      line-height: 1.55;
+      font-size: 12px;
+      line-height: 1.5;
     }
 
     .schedule-day-plan-metrics {
       display: grid;
-      gap: 10px;
+      gap: 8px;
       grid-template-columns: repeat(2, minmax(0, 1fr));
     }
 
     .schedule-day-plan-metric {
       min-width: 0;
       display: grid;
-      gap: 4px;
-      padding: 12px 13px;
-      border-radius: 16px;
-      background: rgba(255, 255, 255, 0.04);
-      border: 1px solid rgba(255, 255, 255, 0.06);
+      gap: 3px;
+      padding: 10px 12px;
+      border-radius: 14px;
+      background: rgba(255, 255, 255, 0.03);
+      border: 1px solid rgba(255, 255, 255, 0.05);
     }
 
     .schedule-day-plan-label {
@@ -1183,15 +1204,15 @@
       font-weight: 800;
       letter-spacing: 0.08em;
       text-transform: uppercase;
-      line-height: 1.3;
-      color: rgba(238, 242, 248, 0.58);
+      line-height: 1.25;
+      color: rgba(238, 242, 248, 0.52);
     }
 
     .schedule-day-plan-value {
       font-family: 'JetBrains Mono', monospace;
-      font-size: 15px;
+      font-size: 14px;
       font-weight: 700;
-      line-height: 1.25;
+      line-height: 1.2;
       word-break: break-word;
       color: rgba(243, 251, 255, 0.92);
     }
@@ -1199,8 +1220,8 @@
     .schedule-day-fact-text,
     .schedule-day-plan-text,
     .schedule-day-editor-note {
-      font-size: 13px;
-      line-height: 1.5;
+      font-size: 12px;
+      line-height: 1.45;
       color: var(--muted);
     }
 
@@ -1220,18 +1241,18 @@
     .schedule-day-type-grid .segmented-btn {
       min-width: 0;
       width: 100%;
-      min-height: 48px;
+      min-height: 44px;
       padding: 0 12px;
       display: flex;
       align-items: center;
       justify-content: center;
       text-align: center;
-      border-radius: 16px;
+      border-radius: 14px;
       border: 1px solid rgba(255,255,255,0.08);
-      background: rgba(255,255,255,0.04);
+      background: rgba(255,255,255,0.035);
       color: var(--text);
-      font-size: 14px;
-      font-weight: 800;
+      font-size: 13px;
+      font-weight: 700;
       line-height: 1.2;
       box-sizing: border-box;
       box-shadow: none;
@@ -1245,32 +1266,35 @@
     }
 
     .schedule-sheet-actions {
-      margin-top: 10px;
+      margin-top: 8px;
     }
 
     .schedule-sheet-actions .install-guide-close-btn {
       width: 100%;
-      min-height: 48px;
-      border-radius: 16px;
+      min-height: 46px;
+      border-radius: 14px;
       display: flex;
       align-items: center;
       justify-content: center;
-      font-size: 15px;
+      font-size: 14px;
       border-color: var(--border);
     }
 
     .schedule-day-actions-row {
       display: grid;
       grid-template-columns: minmax(0, 1fr);
-      gap: 10px;
-      margin-bottom: 16px;
+      gap: 8px;
+      margin-bottom: 14px;
     }
 
     .schedule-day-actions-row .btn-primary,
     .schedule-day-actions-row .btn-secondary {
       width: 100%;
       min-width: 0;
+      min-height: 46px;
       justify-content: center;
+      font-size: 14px;
+      font-weight: 700;
     }
 
     @media (max-width: 420px) {

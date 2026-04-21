@@ -1,6 +1,6 @@
 # Worktree Status
 
-Generated: 2026-04-21 12:19:44 +0000
+Generated: 2026-04-21 12:21:26 +0000
 
 ## git status -sb
 ```text
@@ -20,16 +20,16 @@ Generated: 2026-04-21 12:19:44 +0000
 
 ## git branch -vv
 ```text
-* main a41bc6b [origin/main] fix(schedule): stop mutating reused fact card
+* main a5c6c8f [origin/main] fix(schedule): remove segmented wrapper from day mark
 ```
 
 ## HEAD
 ```text
-a41bc6b fix(schedule): stop mutating reused fact card
+a5c6c8f fix(schedule): remove segmented wrapper from day mark
  ai-memory/CHANGELOG.md             |  8 ++++++++
  ai-memory/PROJECT_STATE.md         |  8 ++++----
- ai-memory/WORKTREE_STATUS.md       | 18 ++++++++++--------
- scripts/render.js                  |  9 +++++----
- styles/10-navigation-and-cards.css |  9 +++++++++
- 5 files changed, 36 insertions(+), 16 deletions(-)
+ ai-memory/WORKTREE_STATUS.md       | 19 +++++++++----------
+ index.html                         |  2 +-
+ styles/10-navigation-and-cards.css |  2 ++
+ 5 files changed, 24 insertions(+), 15 deletions(-)
 ```
