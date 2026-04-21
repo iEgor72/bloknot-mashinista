@@ -573,6 +573,16 @@
       }
     }
 
+    function buildScheduleLocalDate(dateKey) {
+      var safeDate = typeof normalizeDateKey === 'function' ? normalizeDateKey(dateKey) : String(dateKey || '');
+      if (!safeDate) return null;
+      var year = parseInt(safeDate.slice(0, 4), 10);
+      var month = parseInt(safeDate.slice(5, 7), 10) - 1;
+      var day = parseInt(safeDate.slice(8, 10), 10);
+      var date = new Date(year, month, day);
+      return isFinite(date.getTime()) ? date : null;
+    }
+
     function isScheduleHolidayDate(dateKey) {
       var safeDate = typeof normalizeDateKey === 'function' ? normalizeDateKey(dateKey) : String(dateKey || '');
       if (!safeDate) return false;
@@ -580,13 +590,20 @@
         return true;
       }
       if (typeof isNonWorkingHolidayLocalDate === 'function') {
-        var year = parseInt(safeDate.slice(0, 4), 10);
-        var month = parseInt(safeDate.slice(5, 7), 10) - 1;
-        var day = parseInt(safeDate.slice(8, 10), 10);
-        var date = new Date(year, month, day);
-        if (isFinite(date.getTime())) return !!isNonWorkingHolidayLocalDate(date);
+        var date = buildScheduleLocalDate(safeDate);
+        if (date) return !!isNonWorkingHolidayLocalDate(date);
       }
       return false;
+    }
+
+    function isScheduleCalendarOffDay(dateKey) {
+      var date = buildScheduleLocalDate(dateKey);
+      if (!date) return false;
+      if (typeof getNormDayMinutesLocal === 'function') {
+        return getNormDayMinutesLocal(date) === 0;
+      }
+      var dayOfWeek = date.getDay();
+      return dayOfWeek === 0 || dayOfWeek === 6 || isScheduleHolidayDate(dateKey);
     }
 
     function getScheduleCellClass(dayState) {
@@ -597,8 +614,7 @@
       else if (code === 'N') cls += ' is-night';
       else if (code === 'V') cls += ' is-rest';
       if (dayState.hasFact) cls += ' has-fact';
-      if (isScheduleHolidayDate(dayState.dateKey)) cls += ' is-holiday';
-      if (dayState.isFiveTwoPattern) cls += ' is-cycle-5-2';
+      if (isScheduleCalendarOffDay(dayState.dateKey)) cls += ' is-holiday';
       return cls;
     }
 
@@ -627,25 +643,13 @@
         var badgeHtml = badge
           ? '<span class="schedule-day-badge">' + escapeHtml(badge) + '</span>'
           : '<span class="schedule-day-badge is-empty">—</span>';
-        var holidayHtml = isScheduleHolidayDate(dateKey)
-          ? '<span class="schedule-day-holiday-badge" aria-hidden="true">П</span>'
-          : '';
-        var workedHtml = dayState.hasFact
-          ? '<span class="schedule-day-worked-badge" aria-hidden="true">●</span>'
-          : '';
         var ariaParts = [formatScheduleDateLabel(dateKey)];
-        if (dayState.hasFact) {
-          ariaParts.push(code === 'N' ? 'работали в ночь' : 'работали в день');
-        } else if (code) {
+        if (code) {
           ariaParts.push(formatScheduleCodeLabel(code));
         }
-        if (isScheduleHolidayDate(dateKey)) ariaParts.push('праздничный день');
-        if (dayState.isFiveTwoPattern) ariaParts.push('цикл 5 на 2');
+        if (isScheduleCalendarOffDay(dateKey)) ariaParts.push('календарный выходной');
         html += '<button type="button" class="' + dayClass + '" data-schedule-date="' + dateKey + '" aria-label="' + escapeHtml(ariaParts.join('. ')) + '">' +
-          '<span class="schedule-day-topline">' +
-            '<span class="schedule-day-number">' + day + '</span>' +
-            '<span class="schedule-day-markers">' + holidayHtml + workedHtml + '</span>' +
-          '</span>' +
+          '<span class="schedule-day-number">' + day + '</span>' +
           badgeHtml +
         '</button>';
       }
