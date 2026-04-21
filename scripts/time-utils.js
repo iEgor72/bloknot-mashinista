@@ -104,7 +104,7 @@
         var now = new Date();
         startDateEl.value = formatMskDatePart(now);
         startDateEl.defaultValue = startDateEl.value;
-        startTimeEl.value = '01:00';
+        startTimeEl.value = formatMskTimePart(now);
         startTimeEl.defaultValue = startTimeEl.value;
       }
 

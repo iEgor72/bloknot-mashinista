@@ -1,14 +1,14 @@
 # Project State
 
 <!-- AUTO_STATUS:START -->
-Generated: 2026-04-21 12:35:52 +0000
+Generated: 2026-04-21 12:38:09 +0000
 
 ## Repository Snapshot
 - Local repo path: `/opt/bloknot-mashinista`
 - Project memory path: `/opt/bloknot-mashinista/ai-memory`
 - Branch: `main`
-- HEAD: `3569c52`
-- Last commit: `3569c52 fix(schedule): default shifts to 01:00-13:00`
+- HEAD: `e06b028`
+- Last commit: `e06b028 fix(schedule): raise legend and color graph buttons`
 
 ## Git Remote
 ```text
@@ -18,7 +18,7 @@ origin	https://github.com/iEgor72/bloknot-mashinista.git (push)
 
 ## Branch Tracking
 ```text
-* main 3569c52 [origin/main] fix(schedule): default shifts to 01:00-13:00
+* main e06b028 [origin/main] fix(schedule): raise legend and color graph buttons
 ```
 
 ## Worktree

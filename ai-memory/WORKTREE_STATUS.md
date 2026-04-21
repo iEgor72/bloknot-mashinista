@@ -1,6 +1,6 @@
 # Worktree Status
 
-Generated: 2026-04-21 12:35:52 +0000
+Generated: 2026-04-21 12:38:09 +0000
 
 ## git status -sb
 ```text
@@ -20,18 +20,16 @@ Generated: 2026-04-21 12:35:52 +0000
 
 ## git branch -vv
 ```text
-* main 3569c52 [origin/main] fix(schedule): default shifts to 01:00-13:00
+* main e06b028 [origin/main] fix(schedule): raise legend and color graph buttons
 ```
 
 ## HEAD
 ```text
-3569c52 fix(schedule): default shifts to 01:00-13:00
- ai-memory/CHANGELOG.md       |  8 ++++++++
- ai-memory/PROJECT_STATE.md   |  8 ++++----
- ai-memory/WORKTREE_STATUS.md | 19 +++++++++++--------
- index.html                   |  4 ++--
- scripts/app.js               | 14 +++++++-------
- scripts/shift-form.js        | 16 ++++++++--------
- scripts/time-utils.js        |  2 +-
- 7 files changed, 41 insertions(+), 30 deletions(-)
+e06b028 fix(schedule): raise legend and color graph buttons
+ ai-memory/CHANGELOG.md             |  8 ++++++++
+ ai-memory/PROJECT_STATE.md         |  8 ++++----
+ ai-memory/WORKTREE_STATUS.md       | 22 +++++++++++-----------
+ index.html                         | 14 +++++++-------
+ styles/10-navigation-and-cards.css | 22 +++++++++++++++++++++-
+ 5 files changed, 51 insertions(+), 23 deletions(-)
 ```
