@@ -179,6 +179,11 @@
         var preferredCard = preferredList.querySelector('.shift-item[data-shift-open="1"][data-shift-id="' + id + '"]');
         if (preferredCard) return preferredCard;
       }
+      var homeUpcomingList = document.getElementById('homeScheduleUpcoming');
+      if (homeUpcomingList && (!preferredList || preferredList !== homeUpcomingList)) {
+        var homeUpcomingCard = homeUpcomingList.querySelector('.shift-item[data-shift-open="1"][data-shift-id="' + id + '"]');
+        if (homeUpcomingCard) return homeUpcomingCard;
+      }
       var homeList = document.getElementById('homeShiftsList');
       if (homeList && (!preferredList || preferredList !== homeList)) {
         var homeCard = homeList.querySelector('.shift-item[data-shift-open="1"][data-shift-id="' + id + '"]');
@@ -628,16 +633,20 @@
         subtitleEl.textContent = 'Факт важнее плана. Пустые дни заполняются графиком автоматически.';
       }
 
+      bindShiftListDetailHandlers(upcomingEl);
+
       var upcoming = [];
       for (var offset = 0; offset < 120 && upcoming.length < 5; offset++) {
         var upcomingKey = getDateKeyByOffset(todayKey, offset);
         var upcomingState = resolveScheduleDay(upcomingKey);
         var code = upcomingState.effectiveCode || upcomingState.plannedCode;
         if (!code || code === 'V') continue;
+        var preview = buildUpcomingScheduleCardHtml(upcomingState);
         upcoming.push({
           dateKey: upcomingKey,
           code: code,
-          cardHtml: buildUpcomingScheduleCardHtml(upcomingState)
+          cardHtml: preview.html,
+          useStandaloneCard: !!preview.useStandaloneCard
         });
       }
 
@@ -646,11 +655,11 @@
       } else {
         var upcomingHtml = '';
         for (var ui = 0; ui < upcoming.length; ui++) {
-          upcomingHtml += '<div class="schedule-upcoming-item">' +
-            '<div class="schedule-upcoming-date">' + escapeHtml(formatScheduleShortDate(upcoming[ui].dateKey)) + '</div>' +
-            '<div class="schedule-upcoming-main">' +
-              (upcoming[ui].cardHtml || '<div class="schedule-upcoming-empty">Откройте день, чтобы посмотреть детали</div>') +
-            '</div>' +
+          upcomingHtml += '<div class="schedule-upcoming-item' + (upcoming[ui].useStandaloneCard ? ' has-standalone-card' : '') + '">' +
+            (upcoming[ui].useStandaloneCard
+              ? ('<div class="schedule-upcoming-main">' + (upcoming[ui].cardHtml || '<div class="schedule-upcoming-empty">Откройте день, чтобы посмотреть детали</div>') + '</div>')
+              : ('<div class="schedule-upcoming-date">' + escapeHtml(formatScheduleShortDate(upcoming[ui].dateKey)) + '</div>' +
+                '<div class="schedule-upcoming-main">' + (upcoming[ui].cardHtml || '<div class="schedule-upcoming-empty">Откройте день, чтобы посмотреть детали</div>') + '</div>')) +
           '</div>';
         }
         upcomingEl.innerHTML = upcomingHtml;
@@ -658,58 +667,43 @@
     }
 
     function buildUpcomingScheduleCardHtml(dayState) {
-      if (!dayState) return '';
+      if (!dayState) return { html: '', useStandaloneCard: false };
       if (dayState.hasFact && dayState.factShifts && dayState.factShifts[0]) {
         var shift = dayState.factShifts[0];
-        var displayParts = getShiftDisplayParts(shift);
-        var timeLineText = (displayParts.startTime || '--:--') + ' - ' + (displayParts.endTime || '--:--');
-        var durationText = getShiftDurationLabelText(fmtMin(shiftTotalMinutes(shift)));
-        var incomeVm = getShiftIncomeViewModel(shift, currentMonthShiftIncomeMap);
-        var technicalHtml = buildShiftTechnicalHtml(shift);
-        var fuelNoteHtml = buildShiftFuelConsumptionHtml(shift);
-        return '' +
-          '<div class="schedule-upcoming-card compact-shift">' +
-            buildShiftTypeHtml(shift, getShiftTypeLabel(shift), false) +
-            '<div class="shift-card-body">' +
-              '<div class="shift-main-row">' +
-                buildShiftDateTimeHtml(timeLineText) +
-                buildShiftDurationHtml(durationText) +
-              '</div>' +
-              technicalHtml +
-              fuelNoteHtml +
-              '<div class="shift-income-row">' +
-                buildShiftIncomeLabelHtml() +
-                getShiftIncomeChipHtml(incomeVm) +
-              '</div>' +
-            '</div>' +
-          '</div>';
+        return {
+          html: buildShiftItemHtml(shift, true, null, currentMonthShiftIncomeMap, null, null),
+          useStandaloneCard: true
+        };
       }
       if (dayState.plannedCode === 'D' || dayState.plannedCode === 'N') {
         var planLabel = dayState.plannedCode === 'N' ? 'Ночь по графику' : 'День по графику';
         var durationMin = getDurationMinutesFromTimeRange(dayState.startTime, dayState.endTime);
         var durationText = durationMin > 0 ? getShiftDurationLabelText(fmtMin(durationMin)) : '—';
         var timeLineText = dayState.startTime && dayState.endTime ? (dayState.startTime + ' - ' + dayState.endTime) : '—';
-        return '' +
-          '<div class="schedule-upcoming-card compact-shift is-plan">' +
-            '<div class="shift-type">' +
-              '<span class="shift-type-content">' +
-                '<span class="shift-type-icon" aria-hidden="true">' + getShiftInlineIconSvg(dayState.plannedCode === 'N' ? 'calendar' : 'depot') + '</span>' +
-                '<span class="shift-type-text">' + escapeHtml(planLabel) + '</span>' +
-              '</span>' +
-            '</div>' +
-            '<div class="shift-card-body">' +
-              '<div class="shift-main-row">' +
-                buildShiftDateTimeHtml(timeLineText) +
-                buildShiftDurationHtml(durationText) +
+        return {
+          html: '' +
+            '<div class="schedule-upcoming-card compact-shift is-plan">' +
+              '<div class="shift-type">' +
+                '<span class="shift-type-content">' +
+                  '<span class="shift-type-icon" aria-hidden="true">' + getShiftInlineIconSvg(dayState.plannedCode === 'N' ? 'calendar' : 'depot') + '</span>' +
+                  '<span class="shift-type-text">' + escapeHtml(planLabel) + '</span>' +
+                '</span>' +
               '</div>' +
-              '<div class="shift-income-row">' +
-                buildShiftIncomeLabelHtml() +
-                getShiftIncomeChipHtml({ hasValue: false, level: 'none', amountText: '—' }) +
+              '<div class="shift-card-body">' +
+                '<div class="shift-main-row">' +
+                  buildShiftDateTimeHtml(timeLineText) +
+                  buildShiftDurationHtml(durationText) +
+                '</div>' +
+                '<div class="shift-income-row">' +
+                  buildShiftIncomeLabelHtml() +
+                  getShiftIncomeChipHtml({ hasValue: false, level: 'none', amountText: '—' }) +
+                '</div>' +
               '</div>' +
-            '</div>' +
-          '</div>';
+            '</div>',
+          useStandaloneCard: false
+        };
       }
-      return '';
+      return { html: '', useStandaloneCard: false };
     }
 
     function getDurationMinutesFromTimeRange(startTime, endTime) {
@@ -1880,7 +1874,7 @@
       var triggerEl = triggerElArg || e.currentTarget;
       if (!triggerEl) return;
       var targetId = triggerEl.getAttribute('data-id');
-      var host = hostElArg || triggerEl.closest('#homeShiftsList, #shiftsList');
+      var host = hostElArg || triggerEl.closest('#homeScheduleUpcoming, #homeShiftsList, #shiftsList');
       var targetScope = host ? host.id : 'shiftsList';
 
       if (activeShiftMenuId === targetId && activeShiftMenuScope === targetScope) {

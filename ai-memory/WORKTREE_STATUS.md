@@ -1,6 +1,6 @@
 # Worktree Status
 
-Generated: 2026-04-21 11:21:05 +0000
+Generated: 2026-04-21 11:24:26 +0000
 
 ## git status -sb
 ```text
@@ -20,16 +20,15 @@ Generated: 2026-04-21 11:21:05 +0000
 
 ## git branch -vv
 ```text
-* main b7e3b1d [origin/main] refactor(home): remove duplicate recent shifts block
+* main 3fc3d5e [origin/main] feat(schedule): add train and fuel details to top card
 ```
 
 ## HEAD
 ```text
-b7e3b1d refactor(home): remove duplicate recent shifts block
+3fc3d5e feat(schedule): add train and fuel details to top card
  ai-memory/CHANGELOG.md       |  8 ++++++++
  ai-memory/PROJECT_STATE.md   |  8 ++++----
  ai-memory/WORKTREE_STATUS.md | 18 +++++++++---------
- index.html                   |  6 ------
- scripts/render.js            | 13 -------------
- 5 files changed, 21 insertions(+), 32 deletions(-)
+ scripts/render.js            |  4 ++++
+ 4 files changed, 25 insertions(+), 13 deletions(-)
 ```

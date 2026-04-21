@@ -889,6 +889,14 @@
       align-items: start;
     }
 
+    .schedule-upcoming-item.has-standalone-card {
+      grid-template-columns: minmax(0, 1fr);
+      padding: 0;
+      border: none;
+      background: transparent;
+      box-shadow: none;
+    }
+
     .schedule-upcoming-date {
       display: inline-flex;
       align-items: center;
@@ -909,6 +917,10 @@
       display: grid;
       gap: 4px;
       padding-top: 2px;
+    }
+
+    .schedule-upcoming-item.has-standalone-card .schedule-upcoming-main {
+      padding-top: 0;
     }
 
     .schedule-upcoming-card {

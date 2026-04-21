@@ -1,14 +1,14 @@
 # Project State
 
 <!-- AUTO_STATUS:START -->
-Generated: 2026-04-21 11:21:05 +0000
+Generated: 2026-04-21 11:24:26 +0000
 
 ## Repository Snapshot
 - Local repo path: `/opt/bloknot-mashinista`
 - Project memory path: `/opt/bloknot-mashinista/ai-memory`
 - Branch: `main`
-- HEAD: `b7e3b1d`
-- Last commit: `b7e3b1d refactor(home): remove duplicate recent shifts block`
+- HEAD: `3fc3d5e`
+- Last commit: `3fc3d5e feat(schedule): add train and fuel details to top card`
 
 ## Git Remote
 ```text
@@ -18,7 +18,7 @@ origin	https://github.com/iEgor72/bloknot-mashinista.git (push)
 
 ## Branch Tracking
 ```text
-* main b7e3b1d [origin/main] refactor(home): remove duplicate recent shifts block
+* main 3fc3d5e [origin/main] feat(schedule): add train and fuel details to top card
 ```
 
 ## Worktree
