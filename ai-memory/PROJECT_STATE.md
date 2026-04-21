@@ -1,14 +1,14 @@
 # Project State
 
 <!-- AUTO_STATUS:START -->
-Generated: 2026-04-21 08:58:15 +0000
+Generated: 2026-04-21 09:05:24 +0000
 
 ## Repository Snapshot
 - Local repo path: `/opt/bloknot-mashinista`
 - Project memory path: `/opt/bloknot-mashinista/ai-memory`
 - Branch: `main`
-- HEAD: `5273c3a`
-- Last commit: `5273c3a fix(sw): bypass app shell for seo pages`
+- HEAD: `5977e55`
+- Last commit: `5977e55 improve(seo): enrich landing pages visuals and copy`
 
 ## Git Remote
 ```text
@@ -18,7 +18,7 @@ origin	https://github.com/iEgor72/bloknot-mashinista.git (push)
 
 ## Branch Tracking
 ```text
-* main 5273c3a [origin/main] fix(sw): bypass app shell for seo pages
+* main 5977e55 [origin/main] improve(seo): enrich landing pages visuals and copy
 ```
 
 ## Worktree

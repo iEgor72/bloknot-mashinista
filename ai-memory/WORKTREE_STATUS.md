@@ -1,6 +1,6 @@
 # Worktree Status
 
-Generated: 2026-04-21 08:58:15 +0000
+Generated: 2026-04-21 09:05:24 +0000
 
 ## git status -sb
 ```text
@@ -20,15 +20,18 @@ Generated: 2026-04-21 08:58:15 +0000
 
 ## git branch -vv
 ```text
-* main 5273c3a [origin/main] fix(sw): bypass app shell for seo pages
+* main 5977e55 [origin/main] improve(seo): enrich landing pages visuals and copy
 ```
 
 ## HEAD
 ```text
-5273c3a fix(sw): bypass app shell for seo pages
- ai-memory/CHANGELOG.md       |  8 +++++++
- ai-memory/PROJECT_STATE.md   | 11 +++++----
- ai-memory/WORKTREE_STATUS.md | 23 +++++++++++-------
- sw.js                        | 57 +++++++++++++++++++++++++++++++-------------
- 4 files changed, 68 insertions(+), 31 deletions(-)
+5977e55 improve(seo): enrich landing pages visuals and copy
+ ai-memory/CHANGELOG.md                |   8 ++
+ ai-memory/PROJECT_STATE.md            |   8 +-
+ ai-memory/WORKTREE_STATUS.md          |  20 ++--
+ docs/seo/seo.css                      | 194 +++++++++++++++++++++++++---------
+ docs/seo/uchet-marshrutov.html        |  81 ++++++++------
+ docs/seo/zarplata-mashinista.html     |  79 ++++++++------
+ docs/seo/zhurnal-smen-mashinista.html |  80 ++++++++------
+ 7 files changed, 312 insertions(+), 158 deletions(-)
 ```
