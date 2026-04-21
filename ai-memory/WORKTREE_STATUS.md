@@ -1,6 +1,6 @@
 # Worktree Status
 
-Generated: 2026-04-21 11:15:47 +0000
+Generated: 2026-04-21 11:21:05 +0000
 
 ## git status -sb
 ```text
@@ -20,16 +20,16 @@ Generated: 2026-04-21 11:15:47 +0000
 
 ## git branch -vv
 ```text
-* main f3e77cd [origin/main] fix(schedule): reuse shift card layout in upcoming list
+* main b7e3b1d [origin/main] refactor(home): remove duplicate recent shifts block
 ```
 
 ## HEAD
 ```text
-f3e77cd fix(schedule): reuse shift card layout in upcoming list
- ai-memory/CHANGELOG.md             |  8 ++++
- ai-memory/PROJECT_STATE.md         |  8 ++--
- ai-memory/WORKTREE_STATUS.md       | 17 ++++----
- scripts/render.js                  | 87 ++++++++++++++++++++------------------
- styles/10-navigation-and-cards.css | 33 +++++++++------
- 5 files changed, 88 insertions(+), 65 deletions(-)
+b7e3b1d refactor(home): remove duplicate recent shifts block
+ ai-memory/CHANGELOG.md       |  8 ++++++++
+ ai-memory/PROJECT_STATE.md   |  8 ++++----
+ ai-memory/WORKTREE_STATUS.md | 18 +++++++++---------
+ index.html                   |  6 ------
+ scripts/render.js            | 13 -------------
+ 5 files changed, 21 insertions(+), 32 deletions(-)
 ```

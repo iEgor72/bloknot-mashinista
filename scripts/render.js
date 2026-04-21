@@ -665,6 +665,8 @@
         var timeLineText = (displayParts.startTime || '--:--') + ' - ' + (displayParts.endTime || '--:--');
         var durationText = getShiftDurationLabelText(fmtMin(shiftTotalMinutes(shift)));
         var incomeVm = getShiftIncomeViewModel(shift, currentMonthShiftIncomeMap);
+        var technicalHtml = buildShiftTechnicalHtml(shift);
+        var fuelNoteHtml = buildShiftFuelConsumptionHtml(shift);
         return '' +
           '<div class="schedule-upcoming-card compact-shift">' +
             buildShiftTypeHtml(shift, getShiftTypeLabel(shift), false) +
@@ -673,6 +675,8 @@
                 buildShiftDateTimeHtml(timeLineText) +
                 buildShiftDurationHtml(durationText) +
               '</div>' +
+              technicalHtml +
+              fuelNoteHtml +
               '<div class="shift-income-row">' +
                 buildShiftIncomeLabelHtml() +
                 getShiftIncomeChipHtml(incomeVm) +

@@ -1,14 +1,14 @@
 # Project State
 
 <!-- AUTO_STATUS:START -->
-Generated: 2026-04-21 11:15:47 +0000
+Generated: 2026-04-21 11:21:05 +0000
 
 ## Repository Snapshot
 - Local repo path: `/opt/bloknot-mashinista`
 - Project memory path: `/opt/bloknot-mashinista/ai-memory`
 - Branch: `main`
-- HEAD: `f3e77cd`
-- Last commit: `f3e77cd fix(schedule): reuse shift card layout in upcoming list`
+- HEAD: `b7e3b1d`
+- Last commit: `b7e3b1d refactor(home): remove duplicate recent shifts block`
 
 ## Git Remote
 ```text
@@ -18,7 +18,7 @@ origin	https://github.com/iEgor72/bloknot-mashinista.git (push)
 
 ## Branch Tracking
 ```text
-* main f3e77cd [origin/main] fix(schedule): reuse shift card layout in upcoming list
+* main b7e3b1d [origin/main] refactor(home): remove duplicate recent shifts block
 ```
 
 ## Worktree
