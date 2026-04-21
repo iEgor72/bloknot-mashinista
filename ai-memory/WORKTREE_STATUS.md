@@ -1,6 +1,6 @@
 # Worktree Status
 
-Generated: 2026-04-21 09:10:12 +0000
+Generated: 2026-04-21 09:11:56 +0000
 
 ## git status -sb
 ```text
@@ -20,17 +20,15 @@ Generated: 2026-04-21 09:10:12 +0000
 
 ## git branch -vv
 ```text
-* main 0f8fb49 [origin/main] improve(seo): tailor hero images by page
+* main d9452a4 [origin/main] fix(seo): fit hero screenshots without cropping
 ```
 
 ## HEAD
 ```text
-0f8fb49 improve(seo): tailor hero images by page
- ai-memory/CHANGELOG.md                |   8 ++++++++
- ai-memory/PROJECT_STATE.md            |   8 ++++----
- ai-memory/WORKTREE_STATUS.md          |  22 +++++++++++-----------
- assets/seo/landing-overview.jpg       | Bin 0 -> 70499 bytes
- docs/seo/uchet-marshrutov.html        |   4 ++--
- docs/seo/zhurnal-smen-mashinista.html |   4 ++--
- 6 files changed, 27 insertions(+), 19 deletions(-)
+d9452a4 fix(seo): fit hero screenshots without cropping
+ ai-memory/CHANGELOG.md       |  8 ++++++++
+ ai-memory/PROJECT_STATE.md   |  8 ++++----
+ ai-memory/WORKTREE_STATUS.md | 13 ++++++-------
+ docs/seo/seo.css             | 16 +++++++++++++---
+ 4 files changed, 31 insertions(+), 14 deletions(-)
 ```

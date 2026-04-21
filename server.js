@@ -19,6 +19,7 @@ const PUBLIC_TOP_LEVEL_FILES = new Set([
   'icon-512.png',
   'bot_avatar.svg',
   '_redirects',
+  'googled7576eb3c69566bc.html',
 ]);
 const PUBLIC_TOP_LEVEL_DIRS = new Set(['assets', 'scripts', 'styles', 'docs']);
 const ONLINE_WINDOW_MS = 2 * 60 * 1000;
