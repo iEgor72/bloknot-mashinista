@@ -1,6 +1,6 @@
 # Worktree Status
 
-Generated: 2026-04-21 08:52:22 +0000
+Generated: 2026-04-21 08:58:15 +0000
 
 ## git status -sb
 ```text
@@ -20,19 +20,15 @@ Generated: 2026-04-21 08:52:22 +0000
 
 ## git branch -vv
 ```text
-* main 88ae765 [origin/main] feat(seo): add public landing pages for search
+* main 5273c3a [origin/main] fix(sw): bypass app shell for seo pages
 ```
 
 ## HEAD
 ```text
-88ae765 feat(seo): add public landing pages for search
- ai-memory/CHANGELOG.md                |   8 ++
- ai-memory/PROJECT_STATE.md            |   8 +-
- ai-memory/WORKTREE_STATUS.md          |  17 ++--
- docs/seo/seo.css                      | 171 ++++++++++++++++++++++++++++++++++
- docs/seo/uchet-marshrutov.html        |  88 +++++++++++++++++
- docs/seo/zarplata-mashinista.html     |  88 +++++++++++++++++
- docs/seo/zhurnal-smen-mashinista.html |  87 +++++++++++++++++
- server.js                             |  50 ++++++++++
- 8 files changed, 504 insertions(+), 13 deletions(-)
+5273c3a fix(sw): bypass app shell for seo pages
+ ai-memory/CHANGELOG.md       |  8 +++++++
+ ai-memory/PROJECT_STATE.md   | 11 +++++----
+ ai-memory/WORKTREE_STATUS.md | 23 +++++++++++-------
+ sw.js                        | 57 +++++++++++++++++++++++++++++++-------------
+ 4 files changed, 68 insertions(+), 31 deletions(-)
 ```
