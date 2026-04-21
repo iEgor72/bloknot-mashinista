@@ -26,6 +26,13 @@ const PUBLIC_TOP_LEVEL_DIRS = new Set(['assets', 'scripts', 'styles', 'docs']);
 const ONLINE_WINDOW_MS = 2 * 60 * 1000;
 const USER_PRESENCE_FLUSH_DELAY_MS = 2500;
 const SHIFT_USER_IDS_CACHE_TTL_MS = 30 * 1000;
+const STRUCTURED_LOG_TTL_MS = 30 * 1000;
+const MAX_SHIFTS_PER_PAYLOAD = 500;
+const MAX_SHIFT_FIELD_COUNT = 64;
+const MAX_SHIFT_ID_LENGTH = 128;
+const MAX_SHIFT_TEXT_LENGTH = 512;
+const MAX_SHIFT_NOTES_LENGTH = 4000;
+const MAX_SHIFT_ISO_LENGTH = 40;
 const PUBLIC_SITE_URL = process.env.PUBLIC_SITE_URL || 'https://bloknot-mashinista-bot.ru';
 const SEO_PAGE_ROUTES = {
   '/uchet-marshrutov': 'docs/seo/uchet-marshrutov.html',
@@ -45,6 +52,7 @@ let userPresenceStoreFlushQueued = false;
 
 let shiftUserIdsCache = new Set();
 let shiftUserIdsCacheExpiresAtMs = 0;
+const structuredLogRateLimit = new Map();
 
 // Load .env file if present (simple key=value parser, no deps)
 (function loadDotEnv() {
@@ -97,7 +105,10 @@ function decodeSessionToken(tokenValue, botToken) {
   let payloadJson;
   try {
     payloadJson = Buffer.from(payloadB64.replace(/-/g, '+').replace(/_/g, '/'), 'base64').toString('utf8');
-  } catch (e) { return null; }
+  } catch (e) {
+    logStructuredRateLimited('warn', 'auth.session.decode_base64_failed', 'auth.session.decode_base64_failed', { error: toErrorMeta(e) });
+    return null;
+  }
   const secretBytes = sha256Buf(botToken);
   if (hmacSha256Hex(secretBytes, payloadJson) !== signature) return null;
   try {
@@ -105,15 +116,61 @@ function decodeSessionToken(tokenValue, botToken) {
     if (!payload || !payload.user || !payload.exp) return null;
     if (payload.exp * 1000 < Date.now()) return null;
     return payload.user;
-  } catch (e) { return null; }
+  } catch (e) {
+    logStructuredRateLimited('warn', 'auth.session.invalid_payload', 'auth.session.invalid_payload', { error: toErrorMeta(e) });
+    return null;
+  }
+}
+
+function parseCookies(req) {
+  const header = req && req.headers ? (req.headers.cookie || '') : '';
+  if (!header) return {};
+  return header.split(';').reduce((acc, part) => {
+    const trimmed = String(part || '').trim();
+    if (!trimmed) return acc;
+    const eqIndex = trimmed.indexOf('=');
+    if (eqIndex === -1) return acc;
+    const key = trimmed.slice(0, eqIndex).trim();
+    const value = trimmed.slice(eqIndex + 1).trim();
+    if (!key) return acc;
+    try {
+      acc[key] = decodeURIComponent(value);
+    } catch (_) {
+      acc[key] = value;
+    }
+    return acc;
+  }, {});
+}
+
+function buildSessionCookie(tokenValue, maxAgeSeconds) {
+  const safeToken = encodeURIComponent(String(tokenValue || ''));
+  const maxAge = Number.isFinite(maxAgeSeconds) ? Math.max(0, Math.floor(maxAgeSeconds)) : SESSION_TTL_SECONDS;
+  const parts = [
+    `bm_session=${safeToken}`,
+    'Path=/',
+    'HttpOnly',
+    'SameSite=Lax',
+    `Max-Age=${maxAge}`,
+  ];
+  if (maxAge === 0) {
+    parts.push('Expires=Thu, 01 Jan 1970 00:00:00 GMT');
+  }
+  if (APP_URL.startsWith('https://')) {
+    parts.push('Secure');
+  }
+  return parts.join('; ');
 }
 
 function getUserFromRequest(req) {
   const botToken = process.env.TELEGRAM_BOT_TOKEN;
   if (!botToken) return null;
   const authHeader = req.headers['authorization'] || '';
-  if (!authHeader.toLowerCase().startsWith('bearer ')) return null;
-  return decodeSessionToken(authHeader.slice(7).trim(), botToken);
+  if (authHeader.toLowerCase().startsWith('bearer ')) {
+    return decodeSessionToken(authHeader.slice(7).trim(), botToken);
+  }
+  const cookies = parseCookies(req);
+  if (!cookies || !cookies.bm_session) return null;
+  return decodeSessionToken(cookies.bm_session, botToken);
 }
 
 function getUserIdFromRequest(req) {
@@ -171,13 +228,154 @@ function verifyTelegramWebAppInitData(initData, botToken) {
       photo_url: parsed.photo_url || '', auth_date: authDate,
       display_name: [first, last].join(' ').trim() || uname || ('ID ' + parsed.id),
     };
-  } catch (e) { return null; }
+  } catch (e) {
+    logStructuredRateLimited('warn', 'auth.webapp.invalid_user_json', 'auth.webapp.invalid_user_json', { error: toErrorMeta(e) });
+    return null;
+  }
 }
 
 function safeRedirectTarget(raw) {
   const v = String(raw || '/');
   if (!v || v[0] !== '/' || v.startsWith('//')) return '/';
   return v;
+}
+
+function toErrorMeta(error) {
+  if (!error) return null;
+  return {
+    name: error.name || 'Error',
+    message: error.message || String(error),
+    code: error.code || '',
+  };
+}
+
+function logStructured(level, event, meta) {
+  const payload = {
+    level: level || 'info',
+    event: event || 'server.log',
+    ts: new Date().toISOString(),
+    ...(meta && typeof meta === 'object' ? meta : {}),
+  };
+  const line = JSON.stringify(payload);
+  if (level === 'error' || level === 'warn') {
+    console.error(line);
+    return;
+  }
+  console.log(line);
+}
+
+function logStructuredRateLimited(level, event, rateKey, meta) {
+  const cacheKey = `${level}:${event}:${rateKey || ''}`;
+  const now = Date.now();
+  const nextAllowedAt = structuredLogRateLimit.get(cacheKey) || 0;
+  if (nextAllowedAt > now) return;
+  structuredLogRateLimit.set(cacheKey, now + STRUCTURED_LOG_TTL_MS);
+  logStructured(level, event, meta);
+}
+
+function atomicWriteFileSync(filePath, content) {
+  ensureDirs();
+  const dir = path.dirname(filePath);
+  const tmpPath = path.join(dir, `.${path.basename(filePath)}.${process.pid}.${Date.now()}.tmp`);
+  fs.writeFileSync(tmpPath, content, 'utf8');
+  fs.renameSync(tmpPath, filePath);
+}
+
+function atomicWriteFile(filePath, content, callback) {
+  ensureDirs();
+  const dir = path.dirname(filePath);
+  const tmpPath = path.join(dir, `.${path.basename(filePath)}.${process.pid}.${Date.now()}.tmp`);
+  fs.writeFile(tmpPath, content, 'utf8', (writeErr) => {
+    if (writeErr) {
+      callback(writeErr);
+      return;
+    }
+    fs.rename(tmpPath, filePath, (renameErr) => {
+      if (!renameErr) {
+        callback(null);
+        return;
+      }
+      fs.unlink(tmpPath, () => callback(renameErr));
+    });
+  });
+}
+
+function validateIsoLikeString(value, fieldName) {
+  if (typeof value !== 'string' || !value || value.length > MAX_SHIFT_ISO_LENGTH) {
+    throw new Error(`Invalid ${fieldName}`);
+  }
+}
+
+function validateShiftText(value, fieldName, maxLength) {
+  if (typeof value !== 'string' || value.length > (maxLength || MAX_SHIFT_TEXT_LENGTH)) {
+    throw new Error(`Invalid ${fieldName}`);
+  }
+}
+
+function validateShiftNumber(value, fieldName) {
+  if (typeof value !== 'number' || !Number.isFinite(value)) {
+    throw new Error(`Invalid ${fieldName}`);
+  }
+}
+
+function sanitizeAndValidateShift(shift, index) {
+  if (!shift || typeof shift !== 'object' || Array.isArray(shift)) {
+    throw new Error(`Invalid shift at index ${index}`);
+  }
+
+  const keys = Object.keys(shift);
+  if (!keys.length || keys.length > MAX_SHIFT_FIELD_COUNT) {
+    throw new Error(`Invalid shift at index ${index}`);
+  }
+
+  const sanitized = {};
+  keys.forEach((key) => {
+    if (key === 'pending') return;
+    const value = shift[key];
+    if (value === undefined) return;
+
+    if (key === 'id') {
+      if (typeof value !== 'string' || !value.trim() || value.length > MAX_SHIFT_ID_LENGTH) {
+        throw new Error(`Invalid shift id at index ${index}`);
+      }
+    } else if (key === 'start_msk' || key === 'end_msk' || key === 'created_at') {
+      validateIsoLikeString(value, key);
+    } else if (key === 'notes') {
+      validateShiftText(value, key, MAX_SHIFT_NOTES_LENGTH);
+    } else if (typeof value === 'string') {
+      validateShiftText(value, key, MAX_SHIFT_TEXT_LENGTH);
+    } else if (typeof value === 'number') {
+      validateShiftNumber(value, key);
+    } else if (typeof value === 'boolean' || value === null) {
+      // allowed
+    } else {
+      throw new Error(`Invalid field ${key} at index ${index}`);
+    }
+
+    sanitized[key] = value;
+  });
+
+  if (!sanitized.id) {
+    throw new Error(`Missing shift id at index ${index}`);
+  }
+  if (!sanitized.start_msk || !sanitized.end_msk || !sanitized.created_at) {
+    throw new Error(`Missing required shift fields at index ${index}`);
+  }
+
+  return sanitized;
+}
+
+function sanitizeAndValidateShiftsPayload(payload) {
+  if (!payload || typeof payload !== 'object' || Array.isArray(payload)) {
+    throw new Error('Expected JSON object payload');
+  }
+  if (!Array.isArray(payload.shifts)) {
+    throw new Error('Expected { shifts: [] }');
+  }
+  if (payload.shifts.length > MAX_SHIFTS_PER_PAYLOAD) {
+    throw new Error('Too many shifts in one request');
+  }
+  return payload.shifts.map((shift, index) => sanitizeAndValidateShift(shift, index));
 }
 
 function ensureDirs() {
@@ -206,25 +404,25 @@ function readShifts(sid) {
     if (!fs.existsSync(file)) return [];
     const raw = fs.readFileSync(file, 'utf8');
     const parsed = JSON.parse(raw || '[]');
-    return Array.isArray(parsed) ? parsed : [];
+    if (!Array.isArray(parsed)) {
+      logStructuredRateLimited('warn', 'storage.shifts.invalid_file_shape', file, { sid: normalizeSid(sid), file });
+      return [];
+    }
+    return parsed;
   } catch (err) {
+    logStructuredRateLimited('error', 'storage.shifts.read_failed', file, {
+      sid: normalizeSid(sid),
+      file,
+      error: toErrorMeta(err),
+    });
     return [];
   }
 }
 
 function writeShifts(sid, shifts) {
   const file = getUserFile(sid);
-  const sanitized = Array.isArray(shifts)
-    ? shifts.map(shift => {
-        const copy = {};
-        Object.keys(shift || {}).forEach(key => {
-          if (key === 'pending') return;
-          copy[key] = shift[key];
-        });
-        return copy;
-      })
-    : [];
-  fs.writeFileSync(file, JSON.stringify(sanitized, null, 2), 'utf8');
+  const serialized = JSON.stringify(Array.isArray(shifts) ? shifts : [], null, 2);
+  atomicWriteFileSync(file, serialized);
   rememberShiftUserId(normalizeSid(sid));
 }
 
@@ -262,7 +460,12 @@ function listShiftUserIds() {
         next.add(uid);
       });
     }
-  } catch (e) {}
+  } catch (e) {
+    logStructuredRateLimited('error', 'storage.shifts.list_user_ids_failed', USERS_DIR, {
+      dir: USERS_DIR,
+      error: toErrorMeta(e),
+    });
+  }
 
   shiftUserIdsCache = next;
   shiftUserIdsCacheExpiresAtMs = nowMs + SHIFT_USER_IDS_CACHE_TTL_MS;
@@ -328,6 +531,10 @@ function loadUserPresenceStoreFromDisk() {
     const parsed = raw ? JSON.parse(raw) : {};
     return sanitizeUserPresenceStore(parsed);
   } catch (err) {
+    logStructuredRateLimited('error', 'storage.user_presence.read_failed', USER_STATS_FILE, {
+      file: USER_STATS_FILE,
+      error: toErrorMeta(err),
+    });
     return { users: {}, sessions: {} };
   }
 }
@@ -370,10 +577,14 @@ function flushUserPresenceStoreNow() {
   const snapshot = sanitizeUserPresenceStore(userPresenceStoreCache);
   const serialized = JSON.stringify(snapshot, null, 2);
 
-  fs.writeFile(USER_STATS_FILE, serialized, 'utf8', (err) => {
+  atomicWriteFile(USER_STATS_FILE, serialized, (err) => {
     userPresenceStoreWriteInFlight = false;
     if (err) {
       userPresenceStoreDirty = true;
+      logStructuredRateLimited('error', 'storage.user_presence.write_failed', USER_STATS_FILE, {
+        file: USER_STATS_FILE,
+        error: toErrorMeta(err),
+      });
     } else {
       userPresenceStoreCache = snapshot;
     }
@@ -394,10 +605,15 @@ function flushUserPresenceStoreSyncOnShutdown() {
   try {
     ensureDirs();
     const snapshot = sanitizeUserPresenceStore(userPresenceStoreCache);
-    fs.writeFileSync(USER_STATS_FILE, JSON.stringify(snapshot, null, 2), 'utf8');
+    atomicWriteFileSync(USER_STATS_FILE, JSON.stringify(snapshot, null, 2));
     userPresenceStoreCache = snapshot;
     userPresenceStoreDirty = false;
-  } catch (e) {}
+  } catch (e) {
+    logStructuredRateLimited('error', 'storage.user_presence.shutdown_flush_failed', USER_STATS_FILE, {
+      file: USER_STATS_FILE,
+      error: toErrorMeta(e),
+    });
+  }
 }
 
 function writeUserPresenceStore(store) {
@@ -473,7 +689,7 @@ process.on('SIGTERM', () => {
   process.exit(0);
 });
 
-function sendJson(res, statusCode, payload) {
+function sendJson(res, statusCode, payload, extraHeaders) {
   const body = JSON.stringify(payload);
   res.writeHead(statusCode, {
     'Content-Type': 'application/json; charset=utf-8',
@@ -481,6 +697,7 @@ function sendJson(res, statusCode, payload) {
     'Cache-Control': 'no-store',
     'X-Content-Type-Options': 'nosniff',
     'Referrer-Policy': 'strict-origin-when-cross-origin',
+    ...(extraHeaders && typeof extraHeaders === 'object' ? extraHeaders : {}),
   });
   res.end(body);
 }
@@ -623,7 +840,16 @@ function callTelegramApi(token, method, payload) {
       let data = '';
       res.on('data', chunk => { data += chunk; });
       res.on('end', () => {
-        try { resolve(JSON.parse(data)); } catch (e) { resolve({ ok: false }); }
+        try {
+          resolve(JSON.parse(data));
+        } catch (e) {
+          logStructuredRateLimited('warn', 'telegram.api.invalid_json', method, {
+            method,
+            statusCode: res.statusCode || 0,
+            error: toErrorMeta(e),
+          });
+          resolve({ ok: false });
+        }
       });
     });
     req.on('error', reject);
@@ -639,17 +865,19 @@ function buildWelcomeMessage(chatId, firstName) {
     photo: WELCOME_PROMO_URL,
     caption:
       `${greeting}\n\n` +
-      'Блокнот машиниста помогает держать всё важное в одном месте.\n\n' +
-      'Что можно делать в приложении:\n' +
-      '📅 считать часы по сменам, дням и месяцам\n' +
-      '💸 быстро рассчитывать зарплату по часам, тарифам и доплатам\n' +
-      '⏱ запускать таймер для смен, поездок и задач\n' +
-      '📚 быстро открывать документы и инструкции без лишнего поиска\n\n' +
-      '🔒 Данные привязаны к твоему Telegram-аккаунту и доступны с любого устройства.\n\n' +
-      'Нажимай кнопку ниже и открывай приложение.',
+      'Блокнот Машиниста помогает спокойно вести свою рабочую историю.\n\n' +
+      'В приложении можно:\n' +
+      '📅 записывать смены и поездки\n' +
+      '🕒 смотреть часы и историю по месяцам\n' +
+      '💸 сверять расчёт по своим записям\n' +
+      '📚 быстро открывать документы и инструкции\n' +
+      '📝 сохранять заметки по сменам\n\n' +
+      '🔒 Данные привязаны к твоему Telegram-аккаунту.\n\n' +
+      'Открывай приложение по кнопке ниже.',
     reply_markup: {
       inline_keyboard: [
         [{ text: '✈️ Открыть в Telegram', web_app: { url: APP_URL } }],
+        [{ text: '🤖 Открыть бота', url: 'https://t.me/bloknot_mashinista_bot' }],
         [{ text: '🌐 Открыть в браузере', url: APP_URL }],
       ],
     },
@@ -709,10 +937,11 @@ const server = http.createServer(async (req, res) => {
                 return callTelegramApi(token, 'sendMessage', {
                   chat_id: chatId,
                   text: (firstName ? `👋 Привет, ${firstName}!\n\n` : '👋 Привет!\n\n') +
-                    'Открывай Блокнот машиниста по кнопке ниже.',
+                    'Блокнот Машиниста помогает вести смены, смотреть часы и хранить свою рабочую историю в одном месте.\n\nЕсли удобнее, начни через бота: https://t.me/bloknot_mashinista_bot',
                   reply_markup: {
                     inline_keyboard: [
                       [{ text: '✈️ Открыть в Telegram', web_app: { url: APP_URL } }],
+                      [{ text: '🤖 Открыть бота', url: 'https://t.me/bloknot_mashinista_bot' }],
                       [{ text: '🌐 Открыть в браузере', url: APP_URL }],
                     ],
                   },
@@ -720,20 +949,39 @@ const server = http.createServer(async (req, res) => {
               }
               return null;
             })
-            .catch(() => {});
+            .catch((err) => {
+              logStructuredRateLimited('error', 'telegram.webhook.send_welcome_failed', `welcome:${chatId || 'unknown'}`, {
+                chatId: chatId || null,
+                error: toErrorMeta(err),
+              });
+            });
         } else if (/^\/myid(?:@\w+)?$/i.test(normalizedText)) {
           callTelegramApi(token, 'sendMessage', {
             chat_id: chatId,
             text: `Ваш Telegram ID: ${String(fromUserId || '')}`,
-          }).catch(() => {});
+          }).catch((err) => {
+            logStructuredRateLimited('error', 'telegram.webhook.send_myid_failed', `myid:${chatId || 'unknown'}`, {
+              chatId: chatId || null,
+              error: toErrorMeta(err),
+            });
+          });
         } else {
           callTelegramApi(token, 'sendMessage', {
             chat_id: chatId,
             text: 'Используй кнопку «Открыть мини-апп» в сообщении или в меню бота.',
-          }).catch(() => {});
+          }).catch((err) => {
+            logStructuredRateLimited('error', 'telegram.webhook.send_default_reply_failed', `default:${chatId || 'unknown'}`, {
+              chatId: chatId || null,
+              error: toErrorMeta(err),
+            });
+          });
         }
       }
-    } catch (_) {}
+    } catch (err) {
+      logStructuredRateLimited('error', 'telegram.webhook.request_failed', `webhook:${req.socket && req.socket.remoteAddress ? req.socket.remoteAddress : 'unknown'}`, {
+        error: toErrorMeta(err),
+      });
+    }
     sendJson(res, 200, { ok: true });
     return;
   }
@@ -747,14 +995,16 @@ const server = http.createServer(async (req, res) => {
       const hasTelegramParams = ['id', 'auth_date', 'hash'].every(k => parsedUrl.query[k]);
 
       if (mode === 'telegram-login' || hasTelegramParams) {
-        // Login Widget callback — verify params, create token, redirect with ?_st=
         const params = new URLSearchParams(Object.entries(parsedUrl.query).map(([k, v]) => [k, String(v)]));
         const user = verifyTelegramLoginParams(params, botToken);
         if (!user) { sendJson(res, 401, { error: 'Telegram login verification failed' }); return; }
         const sessionToken = createSessionToken(user);
         const returnPath = safeRedirectTarget(parsedUrl.query.return);
-        const sep = returnPath.includes('?') ? '&' : '?';
-        res.writeHead(302, { 'Location': returnPath + sep + '_st=' + encodeURIComponent(sessionToken), 'Cache-Control': 'no-store' });
+        res.writeHead(302, {
+          'Location': returnPath,
+          'Cache-Control': 'no-store',
+          'Set-Cookie': buildSessionCookie(sessionToken),
+        });
         res.end();
         return;
       }
@@ -774,14 +1024,27 @@ const server = http.createServer(async (req, res) => {
         if (!initData) { sendJson(res, 400, { error: 'Expected { initData: "..." }' }); return; }
         const user = verifyTelegramWebAppInitData(initData, botToken);
         if (!user) { sendJson(res, 401, { error: 'Telegram WebApp verification failed' }); return; }
-        sendJson(res, 200, { user, sessionToken: createSessionToken(user) });
+        const sessionToken = createSessionToken(user);
+        sendJson(res, 200, { user, sessionToken }, {
+          'Set-Cookie': buildSessionCookie(sessionToken),
+        });
       } catch (err) {
+        logStructuredRateLimited('warn', 'auth.webapp.invalid_payload', 'auth.webapp.invalid_payload', {
+          error: toErrorMeta(err),
+        });
         sendJson(res, 400, { error: err.message || 'Invalid payload' });
       }
       return;
     }
 
-    if (req.method === 'DELETE') { res.writeHead(204, { 'Cache-Control': 'no-store' }); res.end(); return; }
+    if (req.method === 'DELETE') {
+      res.writeHead(204, {
+        'Cache-Control': 'no-store',
+        'Set-Cookie': buildSessionCookie('', 0),
+      });
+      res.end();
+      return;
+    }
     sendJson(res, 405, { error: 'Method not allowed' });
     return;
   }
@@ -801,16 +1064,17 @@ const server = http.createServer(async (req, res) => {
       try {
         const body = await readBody(req);
         const payload = body ? JSON.parse(body) : {};
-        const shifts = Array.isArray(payload.shifts) ? payload.shifts : null;
-        if (!shifts) {
-          sendJson(res, 400, { error: 'Expected { shifts: [] }' });
-          return;
-        }
-
+        const shifts = sanitizeAndValidateShiftsPayload(payload);
         writeShifts(sid, shifts);
         sendJson(res, 200, { ok: true, sid, shifts });
       } catch (err) {
-        sendJson(res, 400, { error: err.message || 'Invalid payload' });
+        const errorMessage = err && err.message ? err.message : 'Invalid payload';
+        const isValidationError = /^(Expected|Too many|Invalid|Missing)/.test(errorMessage);
+        logStructuredRateLimited(isValidationError ? 'warn' : 'error', 'storage.shifts.write_rejected', `${sid}:${errorMessage}`, {
+          sid,
+          error: toErrorMeta(err),
+        });
+        sendJson(res, isValidationError ? 400 : 500, { error: errorMessage });
       }
       return;
     }
@@ -848,6 +1112,10 @@ const server = http.createServer(async (req, res) => {
         }
         sendJson(res, 200, touchUserPresence(userId, sessionId));
       } catch (err) {
+        logStructuredRateLimited('warn', 'stats.invalid_payload', 'stats.invalid_payload', {
+          sid,
+          error: toErrorMeta(err),
+        });
         sendJson(res, 400, { error: err.message || 'Invalid payload' });
       }
       return;
@@ -884,7 +1152,11 @@ const server = http.createServer(async (req, res) => {
   let normalized;
   try {
     normalized = decodeURIComponent(pathname === '/' ? '/index.html' : pathname);
-  } catch (_) {
+  } catch (err) {
+    logStructuredRateLimited('warn', 'http.bad_pathname', pathname, {
+      pathname,
+      error: toErrorMeta(err),
+    });
     sendText(res, 400, 'Bad request');
     return;
   }

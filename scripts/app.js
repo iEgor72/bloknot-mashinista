@@ -99,7 +99,8 @@
     var ACCESS_UNRESTRICTED = PRO_MODE_ENABLED !== true;
     var docsProUnlockedThisSession = ACCESS_UNRESTRICTED === true;
     var documentationStore = {
-      activeTab: 'speeds'
+      activeTab: 'instructions',
+      activeEntry: ''
     };
     // Future document model (populate when remote files are added):
     // { id, title, category: 'folders'|'instructions'|'memos'|'regimki',
@@ -759,6 +760,8 @@
     var scheduleStore = loadScheduleStore();
     var selectedScheduleDayKey = '';
     var selectedSchedulePeriodId = '';
+    var pendingScheduleConflict = null;
+    var scheduleArchiveExpanded = false;
 
     function createEmptyScheduleStore() {
       return { version: 1, periods: [], overrides: {} };
@@ -835,6 +838,18 @@
       return formatUtcDateKey(new Date(baseTs + (Number(offsetDays) || 0) * 86400000));
     }
 
+    function isProductionHolidayDateKey(dateKey) {
+      var safeDate = normalizeDateKey(dateKey);
+      if (!safeDate) return false;
+      return !!PRODUCTION_NON_WORKING_DAY_MAP[safeDate];
+    }
+
+    function isProductionShortDayDateKey(dateKey) {
+      var safeDate = normalizeDateKey(dateKey);
+      if (!safeDate) return false;
+      return !!PRODUCTION_SHORT_DAY_MAP[safeDate];
+    }
+
     function compareDateKeys(a, b) {
       var left = normalizeDateKey(a);
       var right = normalizeDateKey(b);
@@ -894,6 +909,30 @@
       return result;
     }
 
+    function compareSchedulePeriodsByStart(a, b) {
+      var diff = compareDateKeys(a && a.startDate, b && b.startDate);
+      if (diff !== 0) return diff;
+      var leftEnd = normalizeDateKey(a && a.endDate) || '9999-12-31';
+      var rightEnd = normalizeDateKey(b && b.endDate) || '9999-12-31';
+      if (leftEnd < rightEnd) return -1;
+      if (leftEnd > rightEnd) return 1;
+      var leftId = a && a.id ? String(a.id) : '';
+      var rightId = b && b.id ? String(b.id) : '';
+      if (leftId < rightId) return -1;
+      if (leftId > rightId) return 1;
+      return 0;
+    }
+
+    function compareSchedulePeriodsByPriority(a, b) {
+      var diff = compareDateKeys(b && b.startDate, a && a.startDate);
+      if (diff !== 0) return diff;
+      var leftEnd = normalizeDateKey(a && a.endDate) || '9999-12-31';
+      var rightEnd = normalizeDateKey(b && b.endDate) || '9999-12-31';
+      if (leftEnd < rightEnd) return -1;
+      if (leftEnd > rightEnd) return 1;
+      return compareSchedulePeriodsByStart(a, b);
+    }
+
     function normalizeScheduleStore(raw) {
       var payload = raw && typeof raw === 'object' ? raw : {};
       var periods = [];
@@ -903,9 +942,7 @@
         if (!period || !period.pattern) continue;
         periods.push(period);
       }
-      periods.sort(function(a, b) {
-        return compareDateKeys(a.startDate, b.startDate);
-      });
+      periods.sort(compareSchedulePeriodsByStart);
       return {
         version: 1,
         periods: periods,
@@ -935,18 +972,24 @@
       return scheduleStore && scheduleStore.overrides && typeof scheduleStore.overrides === 'object' ? scheduleStore.overrides : {};
     }
 
-    function getActiveSchedulePeriod(dateKey) {
+    function getSchedulePeriodsForDate(dateKey) {
       var safeDate = normalizeDateKey(dateKey);
-      if (!safeDate) return null;
+      if (!safeDate) return [];
       var periods = getSchedulePeriods();
-      var winner = null;
+      var matches = [];
       for (var i = 0; i < periods.length; i++) {
         var period = periods[i];
         if (compareDateKeys(period.startDate, safeDate) > 0) continue;
         if (period.endDate && compareDateKeys(period.endDate, safeDate) < 0) continue;
-        winner = period;
+        matches.push(period);
       }
-      return winner;
+      matches.sort(compareSchedulePeriodsByPriority);
+      return matches;
+    }
+
+    function getActiveSchedulePeriod(dateKey) {
+      var matches = getSchedulePeriodsForDate(dateKey);
+      return matches.length ? matches[0] : null;
     }
 
     function getShiftsForDate(dateKey) {
@@ -959,6 +1002,21 @@
         var endDate = normalizeDateKey(shift && shift.end_msk ? shift.end_msk.substring(0, 10) : '') || startDate;
         if (!startDate) continue;
         if (compareDateKeys(startDate, safeDate) <= 0 && compareDateKeys(endDate, safeDate) >= 0) {
+          result.push(shift);
+        }
+      }
+      result.sort(compareShiftsByStartDesc);
+      return result;
+    }
+
+    function getScheduleFactShiftsForDate(dateKey) {
+      var safeDate = normalizeDateKey(dateKey);
+      if (!safeDate) return [];
+      var result = [];
+      for (var i = 0; i < allShifts.length; i++) {
+        var shift = allShifts[i];
+        var startDate = normalizeDateKey(shift && shift.start_msk ? shift.start_msk.substring(0, 10) : '');
+        if (startDate === safeDate) {
           result.push(shift);
         }
       }
@@ -1002,18 +1060,49 @@
       };
     }
 
+    function isFiveTwoSchedulePattern(pattern) {
+      var normalized = normalizeSchedulePattern(pattern);
+      if (normalized.length !== 7) return false;
+      if (normalized.slice(5) !== 'VV') return false;
+      for (var i = 0; i < 5; i++) {
+        var code = normalized.charAt(i);
+        if (code !== 'D' && code !== 'N') return false;
+      }
+      return true;
+    }
+
+    function getScheduleCycleMeta(dateKey, period) {
+      var safeDate = normalizeDateKey(dateKey);
+      if (!safeDate || !period || !period.pattern) return null;
+      var pattern = normalizeSchedulePattern(period.pattern);
+      if (!pattern) return null;
+      var delta = getDaysBetweenDateKeys(period.startDate, safeDate);
+      if (delta < 0) return null;
+      var cycleIndex = delta % pattern.length;
+      return {
+        cycleIndex: cycleIndex,
+        cycleLength: pattern.length,
+        isFiveTwo: isFiveTwoSchedulePattern(pattern)
+      };
+    }
+
+    function inferWorkedScheduleCodeFromShift(shift) {
+      if (!shift) return '';
+      var explicitCode = normalizeScheduleCode(shift.schedule_code || shift.code || '');
+      if (explicitCode === 'D' || explicitCode === 'N' || explicitCode === 'V') return explicitCode;
+      var startDate = normalizeDateKey(shift.start_msk ? String(shift.start_msk).substring(0, 10) : '');
+      var endDate = normalizeDateKey(shift.end_msk ? String(shift.end_msk).substring(0, 10) : '') || startDate;
+      if (startDate && endDate && compareDateKeys(endDate, startDate) > 0) return 'N';
+      return 'D';
+    }
+
     function resolveScheduleDay(dateKey) {
       var safeDate = normalizeDateKey(dateKey);
       var plan = getPlannedScheduleSnapshot(safeDate);
-      var factShifts = getShiftsForDate(safeDate);
-      var hasTrip = false;
-      for (var i = 0; i < factShifts.length; i++) {
-        if (factShifts[i] && factShifts[i].route_kind === 'trip') {
-          hasTrip = true;
-          break;
-        }
-      }
-      var factCode = factShifts.length ? (hasTrip ? 'P' : 'S') : '';
+      var cycleMeta = getScheduleCycleMeta(safeDate, plan.period);
+      var factShifts = getScheduleFactShiftsForDate(safeDate);
+      var workedCode = factShifts.length ? inferWorkedScheduleCodeFromShift(factShifts[0]) : '';
+      var displayCode = workedCode || plan.plannedCode || '';
       return {
         dateKey: safeDate,
         period: plan.period,
@@ -1022,10 +1111,60 @@
         plannedCode: plan.plannedCode,
         startTime: plan.startTime,
         endTime: plan.endTime,
+        isHoliday: isProductionHolidayDateKey(safeDate),
+        isShortDay: isProductionShortDayDateKey(safeDate),
+        cycleIndex: cycleMeta ? cycleMeta.cycleIndex : -1,
+        cycleLength: cycleMeta ? cycleMeta.cycleLength : 0,
+        isFiveTwoPattern: !!(cycleMeta && cycleMeta.isFiveTwo),
         factShifts: factShifts,
-        factCode: factCode,
+        workedCode: workedCode,
         hasFact: factShifts.length > 0,
-        effectiveCode: factCode || plan.plannedCode || ''
+        effectiveCode: displayCode
+      };
+    }
+
+    function buildScheduleDerivedShift(dateKey, dayState) {
+      var safeDate = normalizeDateKey(dateKey);
+      var state = dayState || resolveScheduleDay(safeDate);
+      if (!safeDate || !state || state.hasFact) return null;
+      if (state.plannedCode !== 'D' && state.plannedCode !== 'N') return null;
+      var startTime = normalizeTimeValue(state.startTime, '01:00');
+      var endTime = normalizeTimeValue(state.endTime, '13:00');
+      var endDate = buildPresetShiftEndDate(safeDate, startTime, endTime);
+      return {
+        id: 'schedule_' + safeDate + '_' + state.plannedCode,
+        start_msk: safeDate + 'T' + startTime,
+        end_msk: endDate + 'T' + endTime,
+        route_kind: 'depot',
+        schedule_code: state.plannedCode,
+        isScheduleDerived: true,
+        scheduleDateKey: safeDate
+      };
+    }
+
+    function buildMonthCalculationShifts(year, month0, bounds) {
+      var actualShifts = [];
+      var calculationShifts = [];
+      for (var i = 0; i < allShifts.length; i++) {
+        if (shiftMinutesInRange(allShifts[i], bounds.start, bounds.end) <= 0) continue;
+        actualShifts.push(allShifts[i]);
+        calculationShifts.push(allShifts[i]);
+      }
+
+      var monthDays = new Date(year, month0 + 1, 0).getDate();
+      for (var day = 1; day <= monthDays; day++) {
+        var dateKey = year + '-' + String(month0 + 1).padStart(2, '0') + '-' + String(day).padStart(2, '0');
+        var plannedShift = buildScheduleDerivedShift(dateKey, resolveScheduleDay(dateKey));
+        if (!plannedShift) continue;
+        if (shiftMinutesInRange(plannedShift, bounds.start, bounds.end) <= 0) continue;
+        calculationShifts.push(plannedShift);
+      }
+
+      actualShifts.sort(compareShiftsByStartDesc);
+      calculationShifts.sort(compareShiftsByStartDesc);
+      return {
+        actualShifts: actualShifts,
+        calculationShifts: calculationShifts
       };
     }
 
@@ -1065,7 +1204,6 @@
       if (code === 'D') return 'Д';
       if (code === 'N') return 'Н';
       if (code === 'V') return 'В';
-      if (code === 'P' || code === 'S') return 'Ф';
       return '';
     }
 
@@ -1081,19 +1219,27 @@
     function hasOverlappingSchedulePeriod(periodInput, ignoreId) {
       var period = normalizeSchedulePeriod(periodInput);
       if (!period) return false;
+      return getOverlappingSchedulePeriods(period, ignoreId).length > 0;
+    }
+
+    function getOverlappingSchedulePeriods(periodInput, ignoreId) {
+      var period = normalizeSchedulePeriod(periodInput);
+      if (!period) return [];
       var periods = getSchedulePeriods();
+      var overlaps = [];
       for (var i = 0; i < periods.length; i++) {
         if (ignoreId && periods[i].id === ignoreId) continue;
         if (rangesOverlap(period.startDate, period.endDate, periods[i].startDate, periods[i].endDate)) {
-          return true;
+          overlaps.push(periods[i]);
         }
       }
-      return false;
+      return overlaps;
     }
 
     function buildSchedulePeriodSummary(period) {
       if (!period) return '';
-      return 'График ' + formatSchedulePattern(period.pattern) + ' · ' + (period.startTime || '—') + '–' + (period.endTime || '—');
+      var cycleHint = isFiveTwoSchedulePattern(period.pattern) ? '5/2 · ' : '';
+      return 'График ' + cycleHint + formatSchedulePattern(period.pattern) + ' · ' + (period.startTime || '—') + '–' + (period.endTime || '—');
     }
 
     function getSchedulePeriodById(periodId) {
@@ -1113,6 +1259,67 @@
       var updated = [];
       for (var i = 0; i < periods.length; i++) {
         if (periods[i].id !== period.id) updated.push(periods[i]);
+      }
+      updated.push(period);
+      scheduleStore.periods = updated;
+      saveScheduleStore();
+      return period;
+    }
+
+    function cloneSchedulePeriod(period, overrides) {
+      if (!period) return null;
+      var payload = {
+        id: period.id,
+        mode: period.mode,
+        startDate: period.startDate,
+        endDate: period.endDate,
+        pattern: period.pattern,
+        startTime: period.startTime,
+        endTime: period.endTime
+      };
+      var extra = overrides && typeof overrides === 'object' ? overrides : null;
+      if (extra) {
+        var keys = Object.keys(extra);
+        for (var i = 0; i < keys.length; i++) {
+          payload[keys[i]] = extra[keys[i]];
+        }
+      }
+      return normalizeSchedulePeriod(payload);
+    }
+
+    function replaceSchedulePeriods(periodInput, replaceIds) {
+      var period = normalizeSchedulePeriod(periodInput);
+      if (!period) return null;
+      var ids = Array.isArray(replaceIds) ? replaceIds : [];
+      var replaceMap = Object.create(null);
+      for (var i = 0; i < ids.length; i++) {
+        if (ids[i]) replaceMap[String(ids[i])] = true;
+      }
+      var periods = getSchedulePeriods();
+      var updated = [];
+      var replacementStart = period.startDate;
+      var replacementEnd = normalizeDateKey(period.endDate) || '9999-12-31';
+      var dayBeforeReplacement = getDateKeyByOffset(replacementStart, -1);
+      var dayAfterReplacement = replacementEnd === '9999-12-31' ? '' : getDateKeyByOffset(replacementEnd, 1);
+      for (var j = 0; j < periods.length; j++) {
+        var current = periods[j];
+        if (current.id === period.id) continue;
+        var shouldReplace = replaceMap[String(current.id)] || rangesOverlap(period.startDate, period.endDate, current.startDate, current.endDate);
+        if (!shouldReplace) {
+          updated.push(current);
+          continue;
+        }
+        var currentEnd = normalizeDateKey(current.endDate) || '9999-12-31';
+        if (compareDateKeys(current.startDate, replacementStart) < 0 && dayBeforeReplacement && compareDateKeys(dayBeforeReplacement, current.startDate) >= 0) {
+          updated.push(cloneSchedulePeriod(current, { endDate: dayBeforeReplacement }));
+        }
+        if (dayAfterReplacement && compareDateKeys(currentEnd, replacementEnd) > 0 && compareDateKeys(dayAfterReplacement, currentEnd) <= 0) {
+          updated.push(cloneSchedulePeriod(current, {
+            id: createSchedulePeriodId(),
+            startDate: dayAfterReplacement,
+            endDate: current.endDate || ''
+          }));
+        }
       }
       updated.push(period);
       scheduleStore.periods = updated;
@@ -1158,11 +1365,49 @@
       return selectedSchedulePeriodId;
     }
 
+    function setPendingScheduleConflict(conflict) {
+      pendingScheduleConflict = conflict && typeof conflict === 'object' ? conflict : null;
+      return pendingScheduleConflict;
+    }
+
+    function getSchedulePeriodsViewModel(todayDateKey) {
+      var todayKey = normalizeDateKey(todayDateKey) || getTodayDateKey();
+      var periods = getSchedulePeriods();
+      var activeMatches = getSchedulePeriodsForDate(todayKey);
+      var active = activeMatches.length ? activeMatches[0] : null;
+      var upcoming = [];
+      var archived = [];
+      for (var i = 0; i < periods.length; i++) {
+        var period = periods[i];
+        if (active && period.id === active.id) continue;
+        if (compareDateKeys(period.startDate, todayKey) > 0) {
+          upcoming.push(period);
+          continue;
+        }
+        if (period.endDate && compareDateKeys(period.endDate, todayKey) < 0) {
+          archived.push(period);
+          continue;
+        }
+        archived.push(period);
+      }
+      upcoming.sort(compareSchedulePeriodsByStart);
+      archived.sort(function(a, b) { return compareSchedulePeriodsByStart(b, a); });
+      return {
+        active: active,
+        upcoming: upcoming,
+        archived: archived,
+        hiddenCount: upcoming.length + archived.length,
+        activeConflicts: activeMatches.length > 1 ? activeMatches.slice(1) : []
+      };
+    }
+
     function buildPresetShiftEndDate(dateKey, startTime, endTime) {
       var safeDate = normalizeDateKey(dateKey) || getTodayDateKey();
       var safeStart = normalizeTimeValue(startTime, '01:00');
       var safeEnd = normalizeTimeValue(endTime, '13:00');
       if (!safeStart || !safeEnd) return safeDate;
+      // Contract: the schedule day anchors the shift start date.
+      // If the end time is not later than the start time, the shift ends on the next calendar day.
       return safeEnd > safeStart ? safeDate : getDateKeyByOffset(safeDate, 1);
     }
 
@@ -1791,13 +2036,8 @@
 
     function renderSalaryPanel() {
       var bounds = getMonthBounds(currentYear, currentMonth);
-      var monthShifts = [];
-      for (var i = 0; i < allShifts.length; i++) {
-        if (shiftMinutesInRange(allShifts[i], bounds.start, bounds.end) > 0) {
-          monthShifts.push(allShifts[i]);
-        }
-      }
-      monthShifts.sort(compareShiftsByStartDesc);
+      var monthShiftSets = buildMonthCalculationShifts(currentYear, currentMonth, bounds);
+      var monthShifts = monthShiftSets.calculationShifts;
 
       var summary = buildSalarySummary(monthShifts, bounds);
       renderMonthHeader('salaryMonthTitle', 'salaryMonthQuarter', 'salaryMonthTabs', currentYear, currentMonth, function(targetMonth) {
@@ -1961,28 +2201,88 @@
       renderDocumentationScreen();
     }
 
+    function getDocsEntryMeta(entry) {
+      if (entry === 'instructions') {
+        return {
+          title: 'Инструкции',
+          subtitle: 'Здесь полный текст документов',
+          tabs: ['instructions']
+        };
+      }
+      if (entry === 'folders') {
+        return {
+          title: 'Папки',
+          subtitle: 'Здесь материалы собраны по темам',
+          tabs: ['folders']
+        };
+      }
+      if (entry === 'memory') {
+        return {
+          title: 'Памятки',
+          subtitle: 'Здесь быстрые материалы: скорости, режимки и памятки',
+          tabs: ['speeds', 'memos', 'reminders']
+        };
+      }
+      return {
+        title: 'Документы',
+        subtitle: 'Сначала выберите раздел',
+        tabs: []
+      };
+    }
+
     function renderDocumentationScreen() {
       var shell = document.getElementById('docsShell');
       if (!shell) return;
       renderDocsProGate();
 
-      // Sync active tab button state
+      var entryCard = document.getElementById('docsEntryCard');
+      var subnavCard = document.getElementById('docsSubnavCard');
+      var currentEntryTitle = document.getElementById('docsCurrentEntryTitle');
+      var currentEntrySubtitle = document.getElementById('docsCurrentEntrySubtitle');
+      var secondaryTabs = document.getElementById('docsSecondaryTabs');
+      var entryMeta = getDocsEntryMeta(documentationStore.activeEntry);
+      var hasEntry = !!(documentationStore.activeEntry && entryMeta.tabs.length);
+
+      if (entryCard) {
+        entryCard.classList.toggle('hidden', hasEntry);
+      }
+      if (subnavCard) {
+        subnavCard.classList.toggle('hidden', !hasEntry);
+      }
+      if (currentEntryTitle) {
+        currentEntryTitle.textContent = entryMeta.title;
+      }
+      if (currentEntrySubtitle) {
+        currentEntrySubtitle.textContent = entryMeta.subtitle;
+      }
+      if (secondaryTabs) {
+        secondaryTabs.classList.toggle('hidden', !(hasEntry && entryMeta.tabs.length > 1));
+      }
+
+      var entryButtons = shell.querySelectorAll('.docs-entry-tile[data-docs-entry]');
+      for (var e = 0; e < entryButtons.length; e++) {
+        entryButtons[e].classList.toggle('active', entryButtons[e].getAttribute('data-docs-entry') === documentationStore.activeEntry);
+      }
+
       var tabBtns = shell.querySelectorAll('.docs-tab-btn[data-docs-tab]');
       for (var i = 0; i < tabBtns.length; i++) {
-        tabBtns[i].classList.toggle('active', tabBtns[i].getAttribute('data-docs-tab') === documentationStore.activeTab);
+        var tabName = tabBtns[i].getAttribute('data-docs-tab');
+        var isAllowed = entryMeta.tabs.indexOf(tabName) !== -1;
+        tabBtns[i].classList.toggle('hidden', !isAllowed || !hasEntry || entryMeta.tabs.length <= 1);
+        tabBtns[i].classList.toggle('active', hasEntry && tabName === documentationStore.activeTab);
       }
 
-      // Show only the active panel
       var panels = shell.querySelectorAll('.docs-panel[data-docs-panel]');
       for (var j = 0; j < panels.length; j++) {
-        panels[j].classList.toggle('hidden', panels[j].getAttribute('data-docs-panel') !== documentationStore.activeTab);
+        var panelName = panels[j].getAttribute('data-docs-panel');
+        var isVisible = hasEntry && panelName === documentationStore.activeTab;
+        panels[j].classList.toggle('hidden', !isVisible);
       }
 
-      if (isDocsProLocked()) {
+      if (isDocsProLocked() || !hasEntry) {
         return;
       }
 
-      // Load files for the active tab
       loadDocFiles(documentationStore.activeTab);
     }
 

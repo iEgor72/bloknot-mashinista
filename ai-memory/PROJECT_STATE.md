@@ -1,14 +1,14 @@
 # Project State
 
 <!-- AUTO_STATUS:START -->
-Generated: 2026-04-21 12:38:09 +0000
+Generated: 2026-04-21 23:44:37 +0000
 
 ## Repository Snapshot
 - Local repo path: `/opt/bloknot-mashinista`
 - Project memory path: `/opt/bloknot-mashinista/ai-memory`
 - Branch: `main`
-- HEAD: `e06b028`
-- Last commit: `e06b028 fix(schedule): raise legend and color graph buttons`
+- HEAD: `7571ee7`
+- Last commit: `7571ee7 fix(schedule): restore regular add current-time default`
 
 ## Git Remote
 ```text
@@ -18,17 +18,34 @@ origin	https://github.com/iEgor72/bloknot-mashinista.git (push)
 
 ## Branch Tracking
 ```text
-* main e06b028 [origin/main] fix(schedule): raise legend and color graph buttons
+* main 7571ee7 [origin/main] fix(schedule): restore regular add current-time default
 ```
 
 ## Worktree
 ```text
 M ai-memory/ARCHITECTURE.md
+ M ai-memory/CHANGELOG.md
  M ai-memory/INDEX.md
+ M ai-memory/PROJECT_STATE.md
  M ai-memory/RECENT_COMMITS.md
+ M ai-memory/WORKTREE_STATUS.md
+ M index.html
+ M scripts/app.js
+ M scripts/auth.js
+ M scripts/render.js
+ M scripts/shift-form.js
+ M server.js
+ M styles/10-navigation-and-cards.css
+ M styles/20-form-and-stats.css
+ M sw.js
 ?? ai-memory/sessions/2026-04-19.md
 ?? ai-memory/sessions/2026-04-20.md
 ?? ai-memory/sessions/2026-04-21.md
+?? docs/2026-04-21-calendar-docs-visual-language-mini-spec.md
+?? docs/2026-04-21-marketing-onboarding-wave1-2-spec.md
+?? docs/2026-04-21-product-minimalism-principles.md
+?? docs/2026-04-21-review-action-plan.md
+?? docs/2026-04-21-wave-2-ux-spec.md
 ?? docs/stopwatch-implementation-checklist.md
 ?? docs/stopwatch-integration-spec.md
 ?? scripts/__pycache__/

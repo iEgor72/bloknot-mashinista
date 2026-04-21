@@ -57,31 +57,31 @@
       prod: {
         guest: {
           badge: 'Telegram login',
-          title: 'Войдите, чтобы открыть свои смены',
-          message: 'Открой приложение через Telegram или браузер и подтверди вход один раз. После этого данные будут синхронизироваться автоматически.',
-          primary: 'Войти через Telegram',
-          primaryHint: '',
+          title: 'Открой свои смены и рабочую историю',
+          message: 'Блокнот Машиниста помогает записывать смены, смотреть часы по периоду, хранить заметки и держать под рукой документы. Вход через Telegram нужен, чтобы открыть твои данные и синхронизировать их между устройствами.',
+          primary: 'Открыть бота',
+          primaryHint: 'Если открыл сайт из поиска, проще сначала зайти через бота: https://t.me/bloknot_mashinista_bot',
           status: '',
-          note: '',
-          bannerTitle: '',
-          bannerText: '',
-          bannerIcon: 'i',
-          showBanner: false,
+          note: 'Впервые здесь? Сначала открой бота, потом при желании можно пользоваться и в браузере.',
+          bannerTitle: 'Начать удобнее через Telegram',
+          bannerText: 'Сначала бот открывает доступ к твоим данным, потом приложение можно открыть и в браузере.',
+          bannerIcon: '↗',
+          showBanner: true,
           showWidget: true,
-          showPrimary: false,
+          showPrimary: true,
           showRetry: false,
           primaryBusy: false
         },
         pending: {
           badge: 'Telegram login',
           title: 'Подтверждаем вход',
-          message: 'Проверяем твою сессию и готовим вход.',
-          primary: 'Войти через Telegram',
+          message: 'Проверяем твою сессию и открываем доступ к сменам, часам и журналу.',
+          primary: 'Открыть бота',
           primaryHint: 'Проверяем доступ и готовим вход.',
           status: 'Проверяем вход...',
-          note: 'Немного подожди, это займёт секунду.',
+          note: 'Немного подожди, это обычно занимает пару секунд.',
           bannerTitle: 'Подтверждаем вход',
-          bannerText: 'Секунду, ищем сохранённую сессию и готовим форму входа.',
+          bannerText: 'Смотрим, есть ли сохранённая сессия, и подготавливаем вход.',
           bannerIcon: '…',
           showBanner: true,
           showWidget: false,
@@ -91,13 +91,13 @@
         error: {
           badge: 'Telegram login',
           title: 'Не удалось выполнить вход',
-          message: 'Попробуй ещё раз или открой приложение через Telegram.',
+          message: 'Попробуй ещё раз или открой приложение через Telegram. Обычно через бота вход проходит понятнее.',
           primary: 'Повторить',
-          primaryHint: 'Попробуй снова или открой приложение через Telegram.',
+          primaryHint: 'Если ошибка повторится, начни через бота: https://t.me/bloknot_mashinista_bot',
           status: '',
-          note: 'Нажми "Повторить" или открой приложение через Telegram.',
+          note: 'Нажми «Повторить» или открой бота: https://t.me/bloknot_mashinista_bot',
           bannerTitle: 'Не удалось выполнить вход',
-          bannerText: 'Попробуй ещё раз или открой приложение через Telegram.',
+          bannerText: 'Если вход снова не сработает, удобнее начать через Telegram-бота.',
           bannerIcon: '!',
           showBanner: true,
           showWidget: true,
@@ -129,21 +129,6 @@
     }
 
     var CACHED_USER_STORAGE_KEY = 'shift_tracker_cached_user_v1';
-
-    // Read session token passed via URL query param (used when HTTP redirect can't set Secure cookies)
-    (function() {
-      try {
-        var urlParams = new URLSearchParams(window.location.search);
-        var urlToken = urlParams.get('_st');
-        if (urlToken) {
-          setStoredSessionToken(urlToken);
-          urlParams.delete('_st');
-          var newSearch = urlParams.toString();
-          var cleanUrl = window.location.pathname + (newSearch ? '?' + newSearch : '') + window.location.hash;
-          history.replaceState(null, '', cleanUrl);
-        }
-      } catch(e) {}
-    })();
 
     var CURRENT_SESSION_TOKEN = getStoredSessionToken();
     var STARTED_FROM_CACHED_STATE = false;
@@ -304,6 +289,12 @@
         renderTelegramLoginWidget();
       }
       return nextState;
+    }
+
+    function openTelegramBot() {
+      try {
+        window.location.href = getTelegramBotUrl();
+      } catch (e) {}
     }
 
     function restartAuthFlow() {
@@ -552,6 +543,16 @@
 
     function getLoginReturnUrl() {
       return window.location.pathname + window.location.search + window.location.hash;
+    }
+
+    if (AUTH_PRIMARY_ACTION) {
+      AUTH_PRIMARY_ACTION.addEventListener('click', function() {
+        if (AUTH_STATE === 'error') {
+          restartAuthFlow();
+          return;
+        }
+        openTelegramBot();
+      });
     }
 
     function renderTelegramLoginWidget() {

@@ -573,14 +573,32 @@
       }
     }
 
+    function isScheduleHolidayDate(dateKey) {
+      var safeDate = typeof normalizeDateKey === 'function' ? normalizeDateKey(dateKey) : String(dateKey || '');
+      if (!safeDate) return false;
+      if (typeof PRODUCTION_NON_WORKING_DAY_MAP !== 'undefined' && PRODUCTION_NON_WORKING_DAY_MAP[safeDate]) {
+        return true;
+      }
+      if (typeof isNonWorkingHolidayLocalDate === 'function') {
+        var year = parseInt(safeDate.slice(0, 4), 10);
+        var month = parseInt(safeDate.slice(5, 7), 10) - 1;
+        var day = parseInt(safeDate.slice(8, 10), 10);
+        var date = new Date(year, month, day);
+        if (isFinite(date.getTime())) return !!isNonWorkingHolidayLocalDate(date);
+      }
+      return false;
+    }
+
     function getScheduleCellClass(dayState) {
       if (!dayState) return '';
-      if (dayState.hasFact && !dayState.plannedCode) return ' is-fact-only has-fact';
       var cls = '';
-      if (dayState.plannedCode === 'D') cls += ' is-day';
-      else if (dayState.plannedCode === 'N') cls += ' is-night';
-      else if (dayState.plannedCode === 'V') cls += ' is-rest';
+      var code = dayState.effectiveCode || dayState.plannedCode || '';
+      if (code === 'D') cls += ' is-day';
+      else if (code === 'N') cls += ' is-night';
+      else if (code === 'V') cls += ' is-rest';
       if (dayState.hasFact) cls += ' has-fact';
+      if (isScheduleHolidayDate(dayState.dateKey)) cls += ' is-holiday';
+      if (dayState.isFiveTwoPattern) cls += ' is-cycle-5-2';
       return cls;
     }
 
@@ -609,8 +627,25 @@
         var badgeHtml = badge
           ? '<span class="schedule-day-badge">' + escapeHtml(badge) + '</span>'
           : '<span class="schedule-day-badge is-empty">—</span>';
-        html += '<button type="button" class="' + dayClass + '" data-schedule-date="' + dateKey + '" aria-label="' + escapeHtml(formatScheduleDateLabel(dateKey) + '. ' + formatScheduleCodeLabel(code)) + '">' +
-          '<span class="schedule-day-number">' + day + '</span>' +
+        var holidayHtml = isScheduleHolidayDate(dateKey)
+          ? '<span class="schedule-day-holiday-badge" aria-hidden="true">П</span>'
+          : '';
+        var workedHtml = dayState.hasFact
+          ? '<span class="schedule-day-worked-badge" aria-hidden="true">●</span>'
+          : '';
+        var ariaParts = [formatScheduleDateLabel(dateKey)];
+        if (dayState.hasFact) {
+          ariaParts.push(code === 'N' ? 'работали в ночь' : 'работали в день');
+        } else if (code) {
+          ariaParts.push(formatScheduleCodeLabel(code));
+        }
+        if (isScheduleHolidayDate(dateKey)) ariaParts.push('праздничный день');
+        if (dayState.isFiveTwoPattern) ariaParts.push('цикл 5 на 2');
+        html += '<button type="button" class="' + dayClass + '" data-schedule-date="' + dateKey + '" aria-label="' + escapeHtml(ariaParts.join('. ')) + '">' +
+          '<span class="schedule-day-topline">' +
+            '<span class="schedule-day-number">' + day + '</span>' +
+            '<span class="schedule-day-markers">' + holidayHtml + workedHtml + '</span>' +
+          '</span>' +
           badgeHtml +
         '</button>';
       }
@@ -627,17 +662,14 @@
         });
       }
 
-      var periods = getSchedulePeriods();
-      if (!periods.length) {
-        subtitleEl.textContent = 'Если графика нет, календарь просто отмечает уже внесённые записи.';
-      } else {
-        subtitleEl.textContent = 'Факт важнее плана. Пустые дни заполняются графиком автоматически.';
-      }
+      var periodsVm = getSchedulePeriodsViewModel(todayKey);
+      if (periodsVm.active) subtitleEl.textContent = 'Сейчас действует: ' + buildSchedulePeriodSummary(periodsVm.active) + '.';
+      else subtitleEl.textContent = 'Сразу видно день, ночь, выходной и праздник.';
 
       bindShiftListDetailHandlers(upcomingEl);
 
       var upcoming = [];
-      for (var offset = 0; offset < 120 && upcoming.length < 5; offset++) {
+      for (var offset = 0; offset < 120 && upcoming.length < 2; offset++) {
         var upcomingKey = getDateKeyByOffset(todayKey, offset);
         var upcomingState = resolveScheduleDay(upcomingKey);
         var code = upcomingState.effectiveCode || upcomingState.plannedCode;
@@ -652,7 +684,7 @@
       }
 
       if (!upcoming.length) {
-        upcomingEl.innerHTML = '<div class="schedule-upcoming-empty">Когда добавите график, здесь появятся ближайшие рабочие дни. Без графика календарь просто отмечает уже внесённые записи.</div>';
+        upcomingEl.innerHTML = '<div class="schedule-upcoming-empty">Ближайших смен пока нет.</div>';
       } else {
         var upcomingHtml = '';
         for (var ui = 0; ui < upcoming.length; ui++) {
@@ -677,29 +709,18 @@
         };
       }
       if (dayState.plannedCode === 'D' || dayState.plannedCode === 'N') {
-        var planLabel = dayState.plannedCode === 'N' ? 'Ночь по графику' : 'День по графику';
+        var planLabel = dayState.plannedCode === 'N' ? 'Ночь' : 'День';
         var durationMin = getDurationMinutesFromTimeRange(dayState.startTime, dayState.endTime);
-        var durationText = durationMin > 0 ? getShiftDurationLabelText(fmtMin(durationMin)) : '—';
-        var timeLineText = dayState.startTime && dayState.endTime ? (dayState.startTime + ' - ' + dayState.endTime) : '—';
+        var durationText = durationMin > 0 ? fmtMin(durationMin) : '';
+        var timeLineText = dayState.startTime && dayState.endTime ? (dayState.startTime + ' - ' + dayState.endTime) : 'Время не задано';
         return {
           html: '' +
-            '<div class="schedule-upcoming-card compact-shift is-plan">' +
-              '<div class="shift-type">' +
-                '<span class="shift-type-content">' +
-                  '<span class="shift-type-icon" aria-hidden="true">' + getShiftInlineIconSvg(dayState.plannedCode === 'N' ? 'calendar' : 'depot') + '</span>' +
-                  '<span class="shift-type-text">' + escapeHtml(planLabel) + '</span>' +
-                '</span>' +
+            '<div class="schedule-upcoming-card is-plan">' +
+              '<div class="schedule-upcoming-plan-top">' +
+                '<span class="schedule-upcoming-plan-title">' + escapeHtml(planLabel) + '</span>' +
+                (durationText ? '<span class="schedule-upcoming-plan-meta">' + escapeHtml(durationText) + '</span>' : '') +
               '</div>' +
-              '<div class="shift-card-body">' +
-                '<div class="shift-main-row">' +
-                  buildShiftDateTimeHtml(timeLineText) +
-                  buildShiftDurationHtml(durationText) +
-                '</div>' +
-                '<div class="shift-income-row">' +
-                  buildShiftIncomeLabelHtml() +
-                  getShiftIncomeChipHtml({ hasValue: false, level: 'none', amountText: '—' }) +
-                '</div>' +
-              '</div>' +
+              '<div class="schedule-upcoming-plan-time">' + escapeHtml(timeLineText) + '</div>' +
             '</div>',
           useStandaloneCard: false
         };
@@ -726,17 +747,17 @@
 
     function buildScheduleDayFactSummary(state) {
       var summary = {
-        titleText: 'Факт',
-        noteText: 'Записи за этот день пока нет.',
+        titleText: 'Работали',
+        noteText: 'Записи нет.',
         cardHtml: ''
       };
       if (!state) return summary;
       if (state.hasFact && state.factShifts && state.factShifts[0]) {
         var shift = state.factShifts[0];
-        summary.titleText = state.factShifts.length > 1 ? 'Факт по дню' : 'Факт';
+        summary.titleText = state.effectiveCode === 'N' ? 'Работали в ночь' : 'Работали днём';
         summary.noteText = getShiftTypeLabel(shift);
         if (state.factShifts.length > 1) {
-          summary.noteText += ' · и ещё ' + (state.factShifts.length - 1) + ' запись';
+          summary.noteText += ' + ещё ' + (state.factShifts.length - 1);
         }
         summary.cardHtml = buildReadonlyScheduleFactCardHtml(shift);
       }
@@ -748,50 +769,113 @@
         titleText: 'По графику',
         timeText: '—',
         durationText: '—',
-        noteText: 'План на этот день не задан.'
+        noteText: 'График не задан.'
       };
       if (!state) return summary;
       if (state.plannedCode === 'D' || state.plannedCode === 'N') {
         var durationMin = getDurationMinutesFromTimeRange(state.startTime, state.endTime);
         summary.timeText = state.startTime && state.endTime ? (state.startTime + ' - ' + state.endTime) : '—';
         summary.durationText = durationMin > 0 ? fmtMin(durationMin) : '—';
-        summary.noteText = state.plannedCode === 'N' ? 'Ночная смена по графику' : 'Дневная смена по графику';
+        summary.noteText = state.plannedCode === 'N' ? 'Ночная смена' : 'Дневная смена';
+        if (state.isHoliday) summary.noteText += ' · праздник';
+        else if (state.isShortDay) summary.noteText += ' · предпраздничный день';
+        else if (state.isFiveTwoPattern) summary.noteText += ' · цикл 5/2';
         return summary;
       }
       if (state.plannedCode === 'V') {
-        summary.noteText = 'По графику выходной.';
+        summary.noteText = state.isHoliday ? 'Праздничный выходной.' : 'Выходной.';
+        if (!state.isHoliday && state.isFiveTwoPattern) summary.noteText = 'Выходной · цикл 5/2.';
         return summary;
       }
       return summary;
     }
 
+    function buildSchedulePeriodCardHtml(period, options) {
+      if (!period) return '';
+      var opts = options || {};
+      var rangeText = formatScheduleRangeLabel(period.startDate, period.endDate);
+      var cardClass = 'schedule-period-card';
+      if (opts.current) cardClass += ' is-current';
+      else if (opts.secondary) cardClass += ' is-secondary';
+      var subnote = opts.current ? 'Этот период сейчас управляет календарём.' : 'Календарь строится по этому шаблону.';
+      return '<div class="' + cardClass + '">' +
+        (opts.kicker ? '<div class="schedule-period-kicker">' + escapeHtml(opts.kicker) + '</div>' : '') +
+        '<div class="schedule-period-top">' +
+          '<div>' +
+            '<div class="schedule-period-title">' + escapeHtml(buildSchedulePeriodSummary(period)) + '</div>' +
+            '<div class="schedule-period-note">' + escapeHtml(rangeText) + '</div>' +
+          '</div>' +
+          '<div class="schedule-period-actions">' +
+            '<button type="button" class="schedule-period-action" data-schedule-edit="' + escapeHtml(period.id) + '">Изменить</button>' +
+            '<button type="button" class="schedule-period-delete" data-schedule-delete="' + escapeHtml(period.id) + '">Удалить</button>' +
+          '</div>' +
+        '</div>' +
+        '<div class="schedule-period-subnote">' + escapeHtml(subnote) + '</div>' +
+      '</div>';
+    }
+
     function renderSchedulePlannerOverlay() {
       var listEl = document.getElementById('schedulePeriodsList');
+      var conflictEl = document.getElementById('scheduleConflictBox');
       if (!listEl) return;
-      var periods = getSchedulePeriods();
-      if (!periods.length) {
-        listEl.innerHTML = '<div class="schedule-upcoming-empty">Периодов графика пока нет. Если работаете без цикла, можно ничего не добавлять. Если график есть, добавьте его ниже.</div>';
+      var vm = getSchedulePeriodsViewModel(getTodayDateKey());
+      var html = '';
+
+      if (vm.active) {
+        html += buildSchedulePeriodCardHtml(vm.active, { current: true, kicker: 'Актуальный график' });
+      } else if (!vm.hiddenCount) {
+        html += '<div class="schedule-upcoming-empty">Графика пока нет. Если работаете без цикла, можно ничего не добавлять.</div>';
+      } else {
+        html += '<div class="schedule-upcoming-empty">Сейчас активного графика нет.</div>';
+      }
+
+      if (vm.activeConflicts && vm.activeConflicts.length) {
+        html += '<div class="schedule-upcoming-empty">Нашёл пересекающиеся старые периоды. Сейчас берётся самый новый активный график.</div>';
+      }
+
+      if (vm.hiddenCount) {
+        html += '<button type="button" class="schedule-history-toggle" id="btnToggleScheduleArchive" aria-expanded="' + (scheduleArchiveExpanded ? 'true' : 'false') + '">' +
+          (scheduleArchiveExpanded ? 'Скрыть историю и будущие периоды' : ('Показать историю и будущие периоды (' + vm.hiddenCount + ')')) +
+        '</button>';
+        if (scheduleArchiveExpanded) {
+          html += '<div class="schedule-period-archive">';
+          if (vm.upcoming.length) {
+            html += '<div class="schedule-period-group-title">Следующие периоды</div>';
+            for (var ui = 0; ui < vm.upcoming.length; ui++) {
+              html += buildSchedulePeriodCardHtml(vm.upcoming[ui], { secondary: true });
+            }
+          }
+          if (vm.archived.length) {
+            html += '<div class="schedule-period-group-title">История</div>';
+            for (var ai = 0; ai < vm.archived.length; ai++) {
+              html += buildSchedulePeriodCardHtml(vm.archived[ai], { secondary: true });
+            }
+          }
+          html += '</div>';
+        }
+      }
+
+      listEl.innerHTML = html;
+
+      if (!conflictEl) return;
+      if (!pendingScheduleConflict || !pendingScheduleConflict.overlaps || !pendingScheduleConflict.overlaps.length) {
+        conflictEl.classList.add('hidden');
+        conflictEl.innerHTML = '';
         return;
       }
-      var html = '';
-      for (var i = 0; i < periods.length; i++) {
-        var period = periods[i];
-        var rangeText = formatScheduleRangeLabel(period.startDate, period.endDate);
-        html += '<div class="schedule-period-card">' +
-          '<div class="schedule-period-top">' +
-            '<div>' +
-              '<div class="schedule-period-title">' + escapeHtml(buildSchedulePeriodSummary(period)) + '</div>' +
-              '<div class="schedule-period-note">' + escapeHtml(rangeText) + '</div>' +
-            '</div>' +
-            '<div class="schedule-period-actions">' +
-              '<button type="button" class="schedule-period-action" data-schedule-edit="' + escapeHtml(period.id) + '">Изменить</button>' +
-              '<button type="button" class="schedule-period-delete" data-schedule-delete="' + escapeHtml(period.id) + '">Удалить</button>' +
-            '</div>' +
-          '</div>' +
-          '<div class="schedule-period-subnote">Автопостроение календаря по шаблону</div>' +
-        '</div>';
+      var overlapNames = [];
+      for (var oi = 0; oi < pendingScheduleConflict.overlaps.length; oi++) {
+        overlapNames.push(buildSchedulePeriodSummary(pendingScheduleConflict.overlaps[oi]));
       }
-      listEl.innerHTML = html;
+      conflictEl.classList.remove('hidden');
+      conflictEl.innerHTML = '<div class="schedule-conflict-title">Новый период пересекается с уже сохранённым графиком</div>' +
+        '<div class="schedule-conflict-text">Графики не могут накладываться. Можно открыть старый период на редактирование или заменить его с даты начала нового графика.</div>' +
+        '<div class="schedule-conflict-list">' + escapeHtml(overlapNames.join(' • ')) + '</div>' +
+        '<div class="schedule-conflict-text">При замене предыдущий период закончится днём раньше.</div>' +
+        '<div class="schedule-conflict-actions">' +
+          '<button type="button" class="btn-primary" data-schedule-conflict-action="replace">Заменить с этой даты</button>' +
+          '<button type="button" class="btn-secondary" data-schedule-conflict-action="edit">Открыть старый период</button>' +
+        '</div>';
     }
 
     function renderScheduleDayOverlay() {
@@ -813,15 +897,19 @@
       if (!dateEl || !statusEl || !factCardEl || !factTitleEl || !factTextEl || !factContentEl || !planCardEl || !planTitleEl || !planTimeEl || !planDurationEl || !planTextEl || !addShiftBtn || !editShiftBtn) return;
 
       dateEl.textContent = formatScheduleDateLabel(dateKey);
+      var statusParts = [];
       if (state.hasFact && state.plannedCode) {
-        statusEl.textContent = 'Есть фактическая смена, ниже показан график на этот день.';
+        statusParts.push(state.effectiveCode === 'N' ? 'Итог, отработали в ночь.' : 'Итог, отработали днём.');
+        statusParts.push('Ниже есть и запись, и график.');
       } else if (state.hasFact) {
-        statusEl.textContent = 'Есть фактическая смена.';
+        statusParts.push(state.effectiveCode === 'N' ? 'Итог, отработали в ночь.' : 'Итог, отработали днём.');
       } else if (state.plannedCode) {
-        statusEl.textContent = 'Фактической смены ещё нет, ниже показано, что стоит по графику.';
+        statusParts.push('Итог по графику.');
       } else {
-        statusEl.textContent = 'На этот день пока нет ни графика, ни записи.';
+        statusParts.push('Пустой день.');
       }
+      if (state.isHoliday) statusParts.push('Праздник.');
+      statusEl.textContent = statusParts.join(' ');
 
       var daySummary = buildScheduleDayFactSummary(state);
       factCardEl.classList.remove('hidden');
@@ -831,7 +919,7 @@
       if (factTitleEl.parentNode && factTitleEl.parentNode.classList) {
         factTitleEl.parentNode.classList.toggle('hidden', hasFactCard);
       }
-      factContentEl.innerHTML = daySummary.cardHtml || '<div class="schedule-day-empty-card">Пока ничего не записано. Когда появится смена, она покажется здесь обычной карточкой.</div>';
+      factContentEl.innerHTML = daySummary.cardHtml || '<div class="schedule-day-empty-card">Записи нет.</div>';
 
       var planSummary = buildScheduleDayPlanSummary(state);
       planCardEl.classList.toggle('hidden', !state.plannedCode);
@@ -886,29 +974,21 @@
       });
 
       var bounds = getMonthBounds(currentYear, currentMonth);
-
-      // Filter shifts that have at least 1 minute in this month
-      var monthShifts = [];
-      for (var i = 0; i < allShifts.length; i++) {
-        if (shiftMinutesInRange(allShifts[i], bounds.start, bounds.end) > 0) {
-          monthShifts.push(allShifts[i]);
-        }
-      }
-
-      // Sort newest first
-      monthShifts.sort(compareShiftsByStartDesc);
+      var monthShiftSets = buildMonthCalculationShifts(currentYear, currentMonth, bounds);
+      var monthShifts = monthShiftSets.actualShifts;
+      var calculationShifts = monthShiftSets.calculationShifts;
 
       // Calculate total worked minutes in this month
       var totalMin = 0;
       var nightMin = 0;
       var holidayMin = 0;
-      var shiftIncomeMap = buildMonthShiftIncomeMap(monthShifts, bounds);
+      var shiftIncomeMap = buildMonthShiftIncomeMap(calculationShifts, bounds);
       var shiftDurationLevelMap = buildMonthShiftDurationLevelMap(monthShifts, bounds);
       currentMonthShiftIncomeMap = shiftIncomeMap || Object.create(null);
-      for (var j = 0; j < monthShifts.length; j++) {
-        totalMin += shiftMinutesInRange(monthShifts[j], bounds.start, bounds.end);
-        nightMin += shiftNightMinutesInRange(monthShifts[j], bounds.start, bounds.end);
-        holidayMin += shiftHolidayMinutesInRange(monthShifts[j], bounds.start, bounds.end);
+      for (var j = 0; j < calculationShifts.length; j++) {
+        totalMin += shiftMinutesInRange(calculationShifts[j], bounds.start, bounds.end);
+        nightMin += shiftNightMinutesInRange(calculationShifts[j], bounds.start, bounds.end);
+        holidayMin += shiftHolidayMinutesInRange(calculationShifts[j], bounds.start, bounds.end);
       }
       var monthSalarySummary = calculateSalarySummaryByMinutes(totalMin, nightMin, holidayMin);
       renderDeleteConfirmCard(shiftIncomeMap);
@@ -930,13 +1010,13 @@
       var monthIncomeValueEl = document.getElementById('dashboardMonthIncomeValue');
       if (monthIncomeLabelEl) monthIncomeLabelEl.textContent = formatMonthIncomeLabel(currentMonth);
       if (monthIncomeValueEl) {
-        monthIncomeValueEl.textContent = monthShifts.length > 0
+        monthIncomeValueEl.textContent = calculationShifts.length > 0
           ? formatRub(monthSalarySummary.netAmount)
           : 'Смен пока нет';
       }
       setQuickMetricText('statNight', fmtMin(nightMin));
       setQuickMetricText('statHoliday', fmtMin(holidayMin));
-      setQuickMetricText('statShifts', String(monthShifts.length));
+      setQuickMetricText('statShifts', String(calculationShifts.length));
 
       var normEl = document.getElementById('statNormMonth') || document.getElementById('statNorm');
       var normTodayEl = document.getElementById('statNormToday');

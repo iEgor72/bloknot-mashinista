@@ -142,10 +142,30 @@
       color: rgba(255, 233, 195, 0.9);
     }
 
+    .form-intro-card {
+      margin-bottom: 12px;
+      padding: 12px 14px;
+      border-radius: 16px;
+      border: 1px solid rgba(56, 189, 248, 0.14);
+      background: rgba(56, 189, 248, 0.05);
+    }
+
+    .form-intro-copy {
+      display: grid;
+      gap: 4px;
+    }
+
+    .form-intro-title {
+      font-size: 13px;
+      font-weight: 800;
+      line-height: 1.3;
+      color: #d9f4ff;
+    }
+
     .form-hint {
       font-size: 12px;
-      color: rgba(238, 242, 248, 0.56);
-      margin-bottom: 16px;
+      color: rgba(238, 242, 248, 0.68);
+      margin-bottom: 0;
       line-height: 1.55;
     }
 
@@ -160,15 +180,19 @@
       gap: 14px;
     }
 
+    .form-stage.form-stage-core {
+      gap: 12px;
+    }
+
     .form-stage-head {
       display: grid;
       gap: 2px;
-      margin-bottom: 8px;
+      margin-bottom: 4px;
     }
 
     .form-stage-kicker {
-      font-size: 15px;
-      font-weight: 700;
+      font-size: 14px;
+      font-weight: 800;
       color: var(--text);
       line-height: 1.3;
     }
@@ -181,6 +205,8 @@
 
     .form-stage-summary {
       margin-bottom: 12px;
+      padding-top: 14px;
+      padding-bottom: 12px;
     }
 
     .form-actions {
@@ -262,7 +288,7 @@
       border-radius: 0;
       color: var(--text);
       font-family: 'JetBrains Mono', monospace;
-      font-size: 15px;
+      font-size: 16px;
       padding: 8px 2px;
       outline: none;
       -webkit-appearance: none;
@@ -306,18 +332,18 @@
       grid-template-columns: repeat(3, minmax(0, 1fr));
       gap: 0;
       margin: 0;
-      padding: 10px 0 4px;
+      padding: 4px 0 0;
     }
 
     .draft-stat {
       position: relative;
-      padding: 6px 10px 7px;
+      padding: 4px 8px 5px;
       display: flex;
       flex-direction: column;
       align-items: center;
       justify-content: center;
       gap: 4px;
-      min-height: 60px;
+      min-height: 54px;
     }
 
     .draft-stat + .draft-stat {
@@ -354,6 +380,63 @@
     }
 
     /* ── Optional expandable cards ── */
+    .details-disclosure-wrap {
+      margin-top: 2px;
+      margin-bottom: 12px;
+    }
+
+    .details-disclosure-btn {
+      width: 100%;
+      min-height: 60px;
+      padding: 12px 14px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      border-radius: 16px;
+      border: 1px solid rgba(56, 189, 248, 0.18);
+      background: rgba(56, 189, 248, 0.06);
+      color: #cfeeff;
+      font: inherit;
+      text-align: left;
+    }
+
+    .details-disclosure-copy {
+      min-width: 0;
+      display: grid;
+      gap: 3px;
+    }
+
+    .details-disclosure-title {
+      font-size: 14px;
+      font-weight: 800;
+      line-height: 1.3;
+      color: var(--text);
+    }
+
+    .details-disclosure-note {
+      margin: 0;
+      font-size: 12px;
+      line-height: 1.45;
+      color: rgba(238, 242, 248, 0.62);
+    }
+
+    .details-disclosure-icon {
+      flex-shrink: 0;
+      font-size: 18px;
+      line-height: 1;
+      color: var(--accent);
+      transition: transform 0.18s ease;
+    }
+
+    .details-disclosure-btn.is-expanded .details-disclosure-icon {
+      transform: rotate(180deg);
+    }
+
+    .add-details-section.hidden {
+      display: none;
+    }
+
     .optional-section-title {
       font-size: 10px;
       font-weight: 800;

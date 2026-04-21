@@ -78,6 +78,7 @@
       setOptionalCardOpen('optionalNotesCard', false);
       setOptionalCardOpen('optionalLocoCard', false);
       setOptionalCardOpen('optionalFuelCard', false);
+      setAddDetailsExpanded(true);
       document.getElementById('btnAdd').textContent = 'Сохранить изменения';
       document.getElementById('btnCancelEdit').classList.remove('hidden');
       document.getElementById('btnDeleteEdit').classList.remove('hidden');
@@ -103,6 +104,7 @@
       document.getElementById('inputEndDate').value = '';
       document.getElementById('inputEndTime').value = '';
       clearOptionalShiftData();
+      setAddDetailsExpanded(false);
       setDefaultShiftTimeInputs();
       renderDraftShiftSummary();
       var targetTab = nextTab || editReturnTab || 'home';
@@ -207,8 +209,33 @@
     var inputEndDateEl = document.getElementById('inputEndDate');
     var inputEndTimeEl = document.getElementById('inputEndTime');
     var routeTypeButtons = document.querySelectorAll('#routeTypeSegmented .segmented-btn');
+    var addDetailsToggleBtn = document.getElementById('btnToggleAddDetails');
+    var addDetailsSection = document.getElementById('addDetailsSection');
+
+    function setAddDetailsExpanded(expanded) {
+      if (!addDetailsSection || !addDetailsToggleBtn) return;
+      var isExpanded = expanded === true;
+      var titleEl = addDetailsToggleBtn.querySelector('.details-disclosure-title');
+      var noteEl = document.getElementById('addDetailsNote');
+      var iconEl = addDetailsToggleBtn.querySelector('.details-disclosure-icon');
+      addDetailsSection.classList.toggle('hidden', !isExpanded);
+      addDetailsToggleBtn.classList.toggle('is-expanded', isExpanded);
+      addDetailsToggleBtn.setAttribute('aria-expanded', isExpanded ? 'true' : 'false');
+      if (titleEl) {
+        titleEl.textContent = isExpanded ? 'Скрыть детали смены' : 'Открыть детали смены';
+      }
+      if (noteEl) {
+        noteEl.textContent = isExpanded
+          ? 'Все поля ниже необязательные. Заполняйте только то, что хотите сохранить в записи.'
+          : 'Маршрут, локомотив, поезд, топливо и заметки доступны в полном виде.';
+      }
+      if (iconEl) {
+        iconEl.textContent = '⌄';
+      }
+    }
     setFormMode('add');
     clearOptionalShiftData();
+    setAddDetailsExpanded(false);
 
     setDefaultShiftTimeInputs();
     renderDraftShiftSummary();
@@ -449,6 +476,13 @@
       fuelInput.addEventListener('input', updateFuelKgOutputs);
       fuelInput.addEventListener('blur', updateFuelKgOutputs);
     }
+    if (addDetailsToggleBtn) {
+      addDetailsToggleBtn.addEventListener('click', function() {
+        triggerHapticTapLight();
+        setAddDetailsExpanded(addDetailsSection && addDetailsSection.classList.contains('hidden'));
+      });
+    }
+
     for (var rt = 0; rt < routeTypeButtons.length; rt++) {
       routeTypeButtons[rt].addEventListener('click', function(e) {
         var nextRouteType = e.currentTarget.getAttribute('data-value');
@@ -585,6 +619,7 @@
           inputEndDateEl.value = '';
           inputEndTimeEl.value = '';
           clearOptionalShiftData();
+          setAddDetailsExpanded(false);
           setFormMode('add');
           clearRecentAddHighlight();
           recentAddedShiftId = shiftId;
@@ -731,10 +766,34 @@
 
     function syncSchedulePlannerFormMeta() {
       var titleEl = document.getElementById('schedulePlannerSectionTitle');
+      var noteEl = document.getElementById('schedulePlannerModeNote');
       var saveBtn = document.getElementById('btnSaveSchedulePeriod');
       var isEditing = !!selectedSchedulePeriodId;
+      var hasConflict = !!(pendingScheduleConflict && pendingScheduleConflict.overlaps && pendingScheduleConflict.overlaps.length);
       if (titleEl) titleEl.textContent = isEditing ? 'Редактировать период графика' : 'Добавить период графика';
+      if (noteEl) {
+        if (isEditing) noteEl.textContent = 'Редактирование меняет весь выбранный период целиком.';
+        else if (hasConflict) noteEl.textContent = 'Новый график можно сохранить как замену с даты начала. Предыдущий период закончится днём раньше.';
+        else noteEl.textContent = 'Если график меняется с новой даты, просто добавьте новый период с этой даты.';
+      }
       if (saveBtn) saveBtn.textContent = isEditing ? 'Сохранить изменения' : 'Сохранить';
+    }
+
+    function readSchedulePlannerDraft() {
+      return {
+        id: selectedSchedulePeriodId || createSchedulePeriodId(),
+        mode: 'cycle',
+        startDate: normalizeDateKey(document.getElementById('schedulePeriodStartDate').value),
+        endDate: normalizeDateKey(document.getElementById('schedulePeriodEndDate').value),
+        pattern: normalizeSchedulePattern(document.getElementById('schedulePatternValue').value || ''),
+        startTime: normalizeTimeValue(document.getElementById('scheduleDefaultStartTime').value, '01:00'),
+        endTime: normalizeTimeValue(document.getElementById('scheduleDefaultEndTime').value, '13:00')
+      };
+    }
+
+    function clearScheduleConflictState() {
+      setPendingScheduleConflict(null);
+      syncSchedulePlannerFormMeta();
     }
 
     function resetSchedulePlannerForm() {
@@ -744,6 +803,7 @@
       var startTimeEl = document.getElementById('scheduleDefaultStartTime');
       var endTimeEl = document.getElementById('scheduleDefaultEndTime');
       setSelectedSchedulePeriod('');
+      clearScheduleConflictState();
       if (startDateEl) startDateEl.value = getTodayDateKey();
       if (endDateEl) endDateEl.value = '';
       if (patternEl) patternEl.value = '';
@@ -760,6 +820,7 @@
         return;
       }
       setSelectedSchedulePeriod(period.id);
+      clearScheduleConflictState();
       var startDateEl = document.getElementById('schedulePeriodStartDate');
       var endDateEl = document.getElementById('schedulePeriodEndDate');
       var patternEl = document.getElementById('schedulePatternValue');
@@ -772,6 +833,7 @@
       if (endTimeEl) endTimeEl.value = period.endTime || '13:00';
       syncSchedulePatternPreview();
       syncSchedulePlannerFormMeta();
+      renderSchedulePlannerOverlay();
     }
 
     function syncScheduleDayTimeFields() {}
@@ -780,8 +842,9 @@
     if (openSchedulePlannerBtn) {
       openSchedulePlannerBtn.addEventListener('click', function() {
         triggerHapticSelection();
-        renderSchedulePlannerOverlay();
+        scheduleArchiveExpanded = false;
         resetSchedulePlannerForm();
+        renderSchedulePlannerOverlay();
         openOverlay('overlaySchedulePlanner');
       });
     }
@@ -819,44 +882,31 @@
     var saveSchedulePeriodBtn = document.getElementById('btnSaveSchedulePeriod');
     if (saveSchedulePeriodBtn) {
       saveSchedulePeriodBtn.addEventListener('click', function() {
-        var startDate = normalizeDateKey(document.getElementById('schedulePeriodStartDate').value);
-        var endDate = normalizeDateKey(document.getElementById('schedulePeriodEndDate').value);
-        var pattern = normalizeSchedulePattern(document.getElementById('schedulePatternValue').value || '');
-        var startTime = normalizeTimeValue(document.getElementById('scheduleDefaultStartTime').value, '01:00');
-        var endTime = normalizeTimeValue(document.getElementById('scheduleDefaultEndTime').value, '13:00');
-        if (!startDate) {
+        var draft = readSchedulePlannerDraft();
+        if (!draft.startDate) {
           showSaveToast('Укажите дату начала', 'danger');
           return;
         }
-        if (endDate && compareDateKeys(endDate, startDate) < 0) {
+        if (draft.endDate && compareDateKeys(draft.endDate, draft.startDate) < 0) {
           showSaveToast('Окончание раньше начала', 'danger');
           return;
         }
-        if (!pattern) {
+        if (!draft.pattern) {
           showSaveToast('Добавьте шаблон графика', 'danger');
           return;
         }
-        if (hasOverlappingSchedulePeriod({
-          mode: 'cycle',
-          startDate: startDate,
-          endDate: endDate,
-          pattern: pattern,
-          startTime: startTime,
-          endTime: endTime
-        }, selectedSchedulePeriodId)) {
-          showSaveToast('Периоды не должны пересекаться', 'danger');
+        var overlaps = getOverlappingSchedulePeriods(draft, selectedSchedulePeriodId);
+        if (overlaps.length) {
+          setPendingScheduleConflict({ draft: draft, overlaps: overlaps });
+          scheduleArchiveExpanded = true;
+          syncSchedulePlannerFormMeta();
+          renderSchedulePlannerOverlay();
+          showSaveToast('Нужно решить пересечение графиков', 'danger');
           return;
         }
+        clearScheduleConflictState();
         var isEditingPeriod = !!selectedSchedulePeriodId;
-        upsertSchedulePeriod({
-          id: selectedSchedulePeriodId || createSchedulePeriodId(),
-          mode: 'cycle',
-          startDate: startDate,
-          endDate: endDate,
-          pattern: pattern,
-          startTime: startTime,
-          endTime: endTime
-        });
+        upsertSchedulePeriod(draft);
         triggerHapticSuccess();
         render();
         resetSchedulePlannerForm();
@@ -868,6 +918,13 @@
     var schedulePeriodsListEl = document.getElementById('schedulePeriodsList');
     if (schedulePeriodsListEl) {
       schedulePeriodsListEl.addEventListener('click', function(e) {
+        var toggleBtn = e.target.closest('#btnToggleScheduleArchive');
+        if (toggleBtn) {
+          scheduleArchiveExpanded = !scheduleArchiveExpanded;
+          triggerHapticSelection();
+          renderSchedulePlannerOverlay();
+          return;
+        }
         var editBtn = e.target.closest('[data-schedule-edit]');
         if (editBtn) {
           triggerHapticSelection();
@@ -879,10 +936,41 @@
         if (selectedSchedulePeriodId && selectedSchedulePeriodId === String(deleteBtn.getAttribute('data-schedule-delete'))) {
           resetSchedulePlannerForm();
         }
+        clearScheduleConflictState();
         deleteSchedulePeriod(deleteBtn.getAttribute('data-schedule-delete'));
         triggerHapticWarning();
         render();
         showSaveToast('Период удалён', 'neutral');
+      });
+    }
+
+    var scheduleConflictBoxEl = document.getElementById('scheduleConflictBox');
+    if (scheduleConflictBoxEl) {
+      scheduleConflictBoxEl.addEventListener('click', function(e) {
+        var actionBtn = e.target.closest('[data-schedule-conflict-action]');
+        if (!actionBtn || !pendingScheduleConflict) return;
+        var action = actionBtn.getAttribute('data-schedule-conflict-action');
+        if (action === 'edit') {
+          var overlap = pendingScheduleConflict.overlaps && pendingScheduleConflict.overlaps[0];
+          if (overlap) {
+            triggerHapticSelection();
+            fillSchedulePlannerForm(overlap.id);
+          }
+          return;
+        }
+        if (action === 'replace') {
+          var replaceIds = [];
+          for (var i = 0; i < pendingScheduleConflict.overlaps.length; i++) {
+            replaceIds.push(pendingScheduleConflict.overlaps[i].id);
+          }
+          replaceSchedulePeriods(pendingScheduleConflict.draft, replaceIds);
+          clearScheduleConflictState();
+          triggerHapticSuccess();
+          render();
+          resetSchedulePlannerForm();
+          closeOverlay('overlaySchedulePlanner');
+          showSaveToast('График заменён с даты начала', 'success');
+        }
       });
     }
 
@@ -961,6 +1049,28 @@ if (action === 'scroll-node') {
     var docsShellEl = document.getElementById('docsShell');
     if (docsShellEl) {
       docsShellEl.addEventListener('click', function(e) {
+        var entryBtn = e.target.closest('.docs-entry-tile[data-docs-entry]');
+        if (entryBtn) {
+          var entry = entryBtn.getAttribute('data-docs-entry');
+          if (entry) {
+            triggerHapticSelection();
+            documentationStore.activeEntry = entry;
+            if (entry === 'instructions') documentationStore.activeTab = 'instructions';
+            else if (entry === 'folders') documentationStore.activeTab = 'folders';
+            else documentationStore.activeTab = 'speeds';
+            renderDocumentationScreen();
+          }
+          return;
+        }
+
+        var backBtn = e.target.closest('#docsBackButton');
+        if (backBtn) {
+          triggerHapticSelection();
+          documentationStore.activeEntry = '';
+          renderDocumentationScreen();
+          return;
+        }
+
         // Tab switch
         var btn = e.target.closest('.docs-tab-btn[data-docs-tab]');
         if (btn) {

@@ -240,16 +240,17 @@
           <div class="schedule-card-head">
             <div>
               <div class="quick-stats-note">Календарь работы</div>
-              <div class="schedule-card-subtitle" id="scheduleCardSubtitle">Показываем рабочие дни, выходные и уже внесённые записи</div>
+              <div class="schedule-card-subtitle" id="scheduleCardSubtitle">Сразу видно день, ночь, выходной и праздник</div>
             </div>
             <button class="section-link" id="btnOpenSchedulePlanner" type="button">График</button>
           </div>
 
-          <div class="schedule-legend">
+          <div class="schedule-legend" aria-label="Обозначения календаря">
             <span class="schedule-legend-item"><span class="schedule-legend-dot is-day"></span>День</span>
             <span class="schedule-legend-item"><span class="schedule-legend-dot is-night"></span>Ночь</span>
             <span class="schedule-legend-item"><span class="schedule-legend-dot is-rest"></span>Выходной</span>
-            <span class="schedule-legend-item"><span class="schedule-legend-dot is-fact"></span>Факт</span>
+            <span class="schedule-legend-item"><span class="schedule-legend-dot is-holiday"></span>Праздник</span>
+            <span class="schedule-legend-item"><span class="schedule-legend-dot is-record"></span>Есть запись</span>
           </div>
 
           <div class="schedule-weekdays" aria-hidden="true">
@@ -310,14 +311,19 @@
           </div>
           <div class="form-edit-banner hidden" id="formEditBanner" aria-live="polite">
             <div class="form-edit-banner-title">Вы редактируете запись о смене</div>
-            <div class="form-edit-banner-text">Проверьте время и детали, затем сохраните изменения или удалите запись.</div>
+            <div class="form-edit-banner-text">Время и детали можно спокойно поправить здесь, затем сохранить или удалить запись.</div>
           </div>
-          <div class="form-hint">Время вводится в МСК, а расчёт часов выполняется по локальному времени устройства.</div>
+          <div class="form-intro-card">
+            <div class="form-intro-copy">
+              <div class="form-intro-title">Сначала только время</div>
+              <div class="form-hint">Введите начало и конец смены. Детали можно открыть ниже и заполнить сразу или вернуться к ним позже. Время вводится в МСК, расчёт часов идёт по локальному времени устройства.</div>
+            </div>
+          </div>
 
-          <div class="form-stage">
+          <div class="form-stage form-stage-core">
             <div class="form-stage-head">
-              <div class="form-stage-kicker">Время смены</div>
-              <div class="form-stage-title">Укажите начало и конец смены</div>
+              <div class="form-stage-kicker">Быстрая запись</div>
+              <div class="form-stage-title">Этого уже достаточно, чтобы сохранить смену</div>
             </div>
 
             <div class="field">
@@ -360,7 +366,18 @@
             </div>
           </div>
 
-          <div class="optional-section-title">Необязательные данные</div>
+          <div class="details-disclosure-wrap">
+            <button class="details-disclosure-btn" id="btnToggleAddDetails" type="button" aria-expanded="false" aria-controls="addDetailsSection">
+              <span class="details-disclosure-copy">
+                <span class="details-disclosure-title">Открыть детали смены</span>
+                <span class="details-disclosure-note" id="addDetailsNote">Маршрут, локомотив, поезд, топливо и заметки доступны в полном виде.</span>
+              </span>
+              <span class="details-disclosure-icon" aria-hidden="true">⌄</span>
+            </button>
+          </div>
+
+          <div class="add-details-section hidden" id="addDetailsSection">
+          <div class="optional-section-title">Полные детали смены</div>
 
           <details class="optional-card" id="optionalRouteCard">
             <summary class="optional-summary">
@@ -623,6 +640,8 @@
             </div>
           </details>
 
+          </div>
+
           <div class="form-actions">
             <button class="btn-primary" id="btnAdd">Сохранить смену</button>
             <button class="btn-secondary btn-cancel-edit hidden" id="btnCancelEdit" type="button">Отменить редактирование</button>
@@ -703,15 +722,73 @@
         <div class="docs-pro-wrap is-locked" id="docsProWrap">
           <div class="docs-shell" id="docsShell">
 
-            <!-- Nav card — matches month-nav style from other sections -->
-            <div class="month-nav docs-nav-card">
-              <div class="docs-nav-title">Документация</div>
-              <div class="docs-month-tabs" role="navigation" aria-label="Разделы документации">
-                <button class="docs-tab-btn active" data-docs-tab="speeds" type="button">Скорости</button>
-                <button class="docs-tab-btn" data-docs-tab="memos" type="button">Режимки</button>
-                <button class="docs-tab-btn" data-docs-tab="instructions" type="button">Инструкции</button>
-                <button class="docs-tab-btn" data-docs-tab="reminders" type="button">Памятки</button>
-                <button class="docs-tab-btn docs-tab-btn-wide" data-docs-tab="folders" type="button">Папки</button>
+            <div class="month-nav docs-entry-card" id="docsEntryCard">
+              <div class="docs-nav-copy docs-nav-copy-rich">
+                <div class="docs-nav-kicker">Куда нажать</div>
+                <div class="docs-nav-title">Документы</div>
+              </div>
+              <div class="docs-entry-grid" aria-label="Разделы документации">
+                <button class="docs-entry-tile" data-docs-entry="instructions" type="button">
+                  <span class="docs-entry-icon docs-entry-icon-instructions" aria-hidden="true">
+                    <svg viewBox="0 0 24 24" fill="none">
+                      <rect x="5" y="4" width="14" height="16" rx="3"></rect>
+                      <path d="M9 9h6M9 12h6M9 15h4"></path>
+                    </svg>
+                  </span>
+                  <span class="docs-entry-content">
+                    <span class="docs-entry-eyebrow">Нужен полный документ</span>
+                    <span class="docs-entry-name">Инструкции</span>
+                    <span class="docs-entry-note">рабочие инструкции, приказы и документы целиком</span>
+                  </span>
+                  <span class="docs-entry-arrow" aria-hidden="true">›</span>
+                </button>
+                <button class="docs-entry-tile" data-docs-entry="memory" type="button">
+                  <span class="docs-entry-icon docs-entry-icon-memory" aria-hidden="true">
+                    <svg viewBox="0 0 24 24" fill="none">
+                      <path d="M7 6.5h10a2 2 0 0 1 2 2v8a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2v-8a2 2 0 0 1 2-2Z"></path>
+                      <path d="M9 10h6M9 13h4"></path>
+                      <circle cx="16.5" cy="16.5" r="1.5"></circle>
+                    </svg>
+                  </span>
+                  <span class="docs-entry-content">
+                    <span class="docs-entry-eyebrow">Нужно быстро свериться</span>
+                    <span class="docs-entry-name">Памятки</span>
+                    <span class="docs-entry-note">скорости, режимки и короткие подсказки</span>
+                  </span>
+                  <span class="docs-entry-arrow" aria-hidden="true">›</span>
+                </button>
+                <button class="docs-entry-tile" data-docs-entry="folders" type="button">
+                  <span class="docs-entry-icon docs-entry-icon-folders" aria-hidden="true">
+                    <svg viewBox="0 0 24 24" fill="none">
+                      <path d="M4 8a2 2 0 0 1 2-2h3.4l1.4 1.6H18a2 2 0 0 1 2 2v6.4a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V8Z"></path>
+                      <path d="M8 12h8M8 15h5"></path>
+                    </svg>
+                  </span>
+                  <span class="docs-entry-content">
+                    <span class="docs-entry-eyebrow">Ищете тему целиком</span>
+                    <span class="docs-entry-name">Папки</span>
+                    <span class="docs-entry-note">собранные материалы и конспекты по одной теме</span>
+                  </span>
+                  <span class="docs-entry-arrow" aria-hidden="true">›</span>
+                </button>
+              </div>
+            </div>
+
+            <div class="month-nav docs-nav-card hidden" id="docsSubnavCard">
+              <div class="docs-nav-copy docs-nav-copy-row docs-nav-copy-rich">
+                <div class="docs-nav-heading-group">
+                  <div class="docs-nav-kicker">Что внутри</div>
+                  <div class="docs-nav-title" id="docsCurrentEntryTitle">Документация</div>
+                  <div class="docs-nav-subtitle" id="docsCurrentEntrySubtitle">Выберите нужный подраздел</div>
+                </div>
+                <button class="docs-back-btn" id="docsBackButton" type="button"><span aria-hidden="true">←</span><span>Назад к разделам</span></button>
+              </div>
+              <div class="docs-month-tabs hidden" id="docsSecondaryTabs" role="navigation" aria-label="Подразделы документации">
+                <button class="docs-tab-btn" data-docs-tab="speeds" type="button"><span class="docs-tab-dot" aria-hidden="true"></span><span>Скорости</span></button>
+                <button class="docs-tab-btn" data-docs-tab="memos" type="button"><span class="docs-tab-dot" aria-hidden="true"></span><span>Режимки</span></button>
+                <button class="docs-tab-btn" data-docs-tab="reminders" type="button"><span class="docs-tab-dot" aria-hidden="true"></span><span>Памятки</span></button>
+                <button class="docs-tab-btn" data-docs-tab="instructions" type="button"><span class="docs-tab-dot" aria-hidden="true"></span><span>Инструкции</span></button>
+                <button class="docs-tab-btn" data-docs-tab="folders" type="button"><span class="docs-tab-dot" aria-hidden="true"></span><span>Папки</span></button>
               </div>
             </div>
 
@@ -1005,10 +1082,12 @@
 
       <div class="settings-help-block">Если графика нет, ничего настраивать не нужно. Просто вносите поездки и смены как раньше. График нужен только тем, у кого есть повторяющийся цикл.</div>
 
-      <div class="settings-section-title">Уже добавлено</div>
+      <div class="settings-section-title">Что сейчас действует</div>
       <div class="schedule-periods-list" id="schedulePeriodsList"></div>
+      <div class="schedule-conflict-box hidden" id="scheduleConflictBox"></div>
 
       <div class="settings-section-title" id="schedulePlannerSectionTitle">Добавить период графика</div>
+      <div class="optional-note schedule-planner-mode-note" id="schedulePlannerModeNote">Если график меняется с новой даты, просто добавьте новый период с этой даты.</div>
       <div class="settings-card schedule-form-card">
         <div class="optional-grid optional-grid-two schedule-period-dates-grid">
           <div class="field">
@@ -1072,7 +1151,7 @@
 
       <div class="schedule-day-fact" id="scheduleDayFactCard">
         <div class="schedule-day-block-head">
-          <div class="schedule-day-fact-title" id="scheduleDayFactTitle">Факт</div>
+          <div class="schedule-day-fact-title" id="scheduleDayFactTitle">Работали</div>
           <div class="schedule-day-fact-text" id="scheduleDayFactText"></div>
         </div>
         <div class="schedule-day-fact-content" id="scheduleDayFactContent"></div>
@@ -1085,7 +1164,7 @@
         </div>
         <div class="schedule-day-plan-metrics">
           <div class="schedule-day-plan-metric">
-            <div class="schedule-day-plan-label">Явка - окончание</div>
+            <div class="schedule-day-plan-label">Время</div>
             <div class="schedule-day-plan-value" id="scheduleDayPlanTime">—</div>
           </div>
           <div class="schedule-day-plan-metric">

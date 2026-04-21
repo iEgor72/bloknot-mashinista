@@ -1,46 +1,46 @@
 # Recent Commits
 
-Generated: 2026-04-18 17:38:17 +1000
+Generated: 2026-04-21 23:44:37 +0000
 
 | Hash | Date | Author | Message |
 | --- | --- | --- | --- |
-| `b6d82ac` | 2026-04-18T17:20:51+10:00 | iEgor72 | feat(docs): add docx zoom gestures |
-| `cd882e5` | 2026-04-18T08:59:07+10:00 | iEgor72 | fix(docs): split memos and reminders tabs |
-| `88df275` | 2026-04-18T07:54:24+10:00 | iEgor72 | feat(docs): add memos and docx preview |
-| `1f1409c` | 2026-04-17T23:15:41+10:00 | iEgor72 | chore(memory): consolidate agent memory workflow |
-| `72d555a` | 2026-04-17T19:51:48+10:00 | iEgor72 | chore: remove master-bot-hub traces after cancellation |
-| `6841902` | 2026-04-17T19:22:32+10:00 | iEgor72 | chore(master-bot): set VPS project path in registry |
-| `40c0218` | 2026-04-17T19:21:42+10:00 | iEgor72 | feat(master-bot): scaffold chat-first hub with coder task queue |
-| `650f1e0` | 2026-04-17T19:11:31+10:00 | iEgor72 | chore(memory): refresh ai-memory after orchestrator removal |
-| `e2e7841` | 2026-04-17T19:10:37+10:00 | iEgor72 | chore: remove background memory watcher and orchestrator MVP |
-| `d5c10d8` | 2026-04-17T15:38:08+10:00 | iEgor72 | chore(orchestrator): localize cancel note text |
-| `9fd749b` | 2026-04-17T15:37:24+10:00 | iEgor72 | chore(memory): refresh ai-memory after orchestrator messaging update |
-| `e717be1` | 2026-04-17T15:36:36+10:00 | iEgor72 | feat(orchestrator): user-friendly telegram status messages |
-| `3411a85` | 2026-04-17T15:30:41+10:00 | iEgor72 | chore(memory): refresh ai-memory after docs update |
-| `752515e` | 2026-04-17T15:28:52+10:00 | iEgor72 | feat(docs): add instructions tab in documentation |
-| `bde938e` | 2026-04-17T15:19:42+10:00 | iEgor72 | feat: add /myid telegram command for orchestrator access |
-| `35fe7f8` | 2026-04-17T15:18:45+10:00 | iEgor72 | chore: refresh ai-memory after orchestrator rollout |
-| `bfede13` | 2026-04-17T15:16:18+10:00 | iEgor72 | feat: add agent memory workflow and telegram orchestrator queue |
-| `b8217f4` | 2026-04-15T21:15:29+10:00 | iEgor72 | refactor: split app.js into focused modules and remove dead code |
-| `9f11b12` | 2026-04-13T16:54:51+10:00 | iEgor72 | feat: personalize bot welcome message with user name and update content |
-| `fabd932` | 2026-04-13T16:50:15+10:00 | iEgor72 | fix: add emojis to bot welcome message |
-| `498ba3f` | 2026-04-13T16:45:48+10:00 | iEgor72 | fix: improve bot welcome message with proper app description |
-| `bc9a8e1` | 2026-04-13T16:40:25+10:00 | iEgor72 | feat: add setup-bot-webhook script and update server |
-| `f45db87` | 2026-04-13T16:27:37+10:00 | iEgor72 | feat: add PWA manifest, icons and fix app name meta tags |
-| `bf023e2` | 2026-04-13T16:24:09+10:00 | iEgor72 | fix: add dark background to bot avatar SVG |
-| `9c951fa` | 2026-04-13T16:13:34+10:00 | iEgor72 | feat: add bot avatar SVG (clock, app dark theme + cyan accent) |
-| `4f29f6b` | 2026-04-13T16:03:16+10:00 | iEgor72 | perf: reduce /api/stats disk contention with in-memory cache |
-| `20e6ccd` | 2026-04-13T14:58:57+10:00 | iEgor72 | fix: redraw Chrome icon using proper arc segments |
-| `7241a8f` | 2026-04-13T14:54:33+10:00 | iEgor72 | feat: add browser-style SVG icons to install guide steps |
-| `71c72de` | 2026-04-13T14:29:25+10:00 | iEgor72 | fix: navigate to home immediately after adding shift |
-| `856af30` | 2026-04-13T14:25:36+10:00 | iEgor72 | feat: navigate to home tab after adding a shift |
-| `e834016` | 2026-04-13T14:08:20+10:00 | iEgor72 | fix: rename app title from Учёт смен to Блокнот машиниста |
-| `4d0870c` | 2026-04-13T12:15:35+10:00 | iEgor72 | fix: count all shift-file users in totalUsers stat |
-| `c5ef15d` | 2026-04-13T12:13:00+10:00 | iEgor72 | feat: add /api/auth endpoint and HTTP token redirect flow |
-| `f3b58fc` | 2026-04-13T11:57:41+10:00 | iEgor72 | feat: add Telegram session auth to VPS server |
-| `f4c4fcf` | 2026-04-13T11:36:02+10:00 | iEgor72 | chore: add PM2 config for VPS deployment |
-| `8c83f45` | 2026-04-13T11:16:51+10:00 | iEgor72 | fix: adjust fuel and compact time spacing |
-| `ec29802` | 2026-04-13T00:01:21+10:00 | iEgor72 | Limit coeff propagation to matching handover section |
-| `0367b1b` | 2026-04-12T23:45:31+10:00 | iEgor72 | Add section fuel consumption summary in form footer |
-| `91a08e6` | 2026-04-12T23:43:07+10:00 | iEgor72 | Restrict coeff sync to receive-side edits only |
-| `837826c` | 2026-04-12T23:30:47+10:00 | iEgor72 | Keep handover coeff sections independent |
+| `7571ee7` | 2026-04-21T12:42:36+00:00 | iEgor72 | fix(schedule): restore regular add current-time default |
+| `e06b028` | 2026-04-21T12:38:02+00:00 | iEgor72 | fix(schedule): raise legend and color graph buttons |
+| `3569c52` | 2026-04-21T12:35:44+00:00 | iEgor72 | fix(schedule): default shifts to 01:00-13:00 |
+| `6d7939f` | 2026-04-21T12:31:30+00:00 | iEgor72 | refactor(schedule): remove day mark override from sheet |
+| `866ce9e` | 2026-04-21T12:25:29+00:00 | iEgor72 | fix(schedule): align day sheet with app typography |
+| `a5c6c8f` | 2026-04-21T12:21:21+00:00 | iEgor72 | fix(schedule): remove segmented wrapper from day mark |
+| `a41bc6b` | 2026-04-21T12:19:40+00:00 | iEgor72 | fix(schedule): stop mutating reused fact card |
+| `9abce7a` | 2026-04-21T12:18:10+00:00 | iEgor72 | fix(schedule): rewrite day sheet copy in user terms |
+| `a04bed6` | 2026-04-21T12:15:43+00:00 | iEgor72 | fix(schedule): repair day sheet mobile layout |
+| `535344e` | 2026-04-21T12:10:17+00:00 | iEgor72 | fix(schedule): rebuild day sheet around real shift card |
+| `9b4e759` | 2026-04-21T12:01:00+00:00 | iEgor72 | fix(schedule): clear journal highlight outside shifts |
+| `9452af1` | 2026-04-21T11:58:51+00:00 | iEgor72 | fix(schedule): highlight journal target from calendar |
+| `0537183` | 2026-04-21T11:56:40+00:00 | iEgor72 | fix(schedule): sync journal month from calendar day |
+| `934a4e0` | 2026-04-21T11:54:25+00:00 | iEgor72 | fix(schedule): clarify mixed day actions |
+| `1d738dc` | 2026-04-21T11:48:18+00:00 | iEgor72 | fix(schedule): separate plan and fact in day sheet |
+| `8e5067a` | 2026-04-21T11:41:06+00:00 | iEgor72 | feat(schedule): add period editing and clearer day state |
+| `af2fb8e` | 2026-04-21T11:30:41+00:00 | iEgor72 | refactor(home): reorder dashboard blocks |
+| `f38b855` | 2026-04-21T11:28:31+00:00 | iEgor72 | fix(schedule): render exact shift card on top |
+| `3fc3d5e` | 2026-04-21T11:24:21+00:00 | iEgor72 | feat(schedule): add train and fuel details to top card |
+| `b7e3b1d` | 2026-04-21T11:20:57+00:00 | iEgor72 | refactor(home): remove duplicate recent shifts block |
+| `f3e77cd` | 2026-04-21T11:15:34+00:00 | iEgor72 | fix(schedule): reuse shift card layout in upcoming list |
+| `86cb9fd` | 2026-04-21T11:11:42+00:00 | iEgor72 | fix(schedule): reuse close button and refine upcoming cards |
+| `9f7c4cf` | 2026-04-21T11:09:44+00:00 | iEgor72 | fix(schedule): stop showing route in upcoming cards |
+| `97ee03b` | 2026-04-21T11:06:52+00:00 | iEgor72 | fix(schedule): reuse app buttons and simplify day card |
+| `f3b94df` | 2026-04-21T10:59:21+00:00 | iEgor72 | fix(schedule): unify day preview and sheet actions |
+| `7e95fc9` | 2026-04-21T10:49:07+00:00 | iEgor72 | fix(schedule): clarify upcoming day details |
+| `d7844da` | 2026-04-21T10:45:02+00:00 | iEgor72 | fix(schedule): simplify graph setup and calendar |
+| `a7c6077` | 2026-04-21T10:37:31+00:00 | iEgor72 | fix(schedule): simplify calendar and planner |
+| `751b33b` | 2026-04-21T10:29:08+00:00 | iEgor72 | feat(schedule): add home work calendar |
+| `be331b7` | 2026-04-21T09:52:36+00:00 | iEgor72 | fix(seo): improve stat card spacing |
+| `31c3132` | 2026-04-21T09:50:15+00:00 | iEgor72 | feat(seo): add app landing page |
+| `de47cdc` | 2026-04-21T09:47:24+00:00 | iEgor72 | feat(seo): add shift schedule landing page |
+| `21a61b5` | 2026-04-21T09:44:30+00:00 | iEgor72 | feat(seo): add salary calculator landing page |
+| `9c88d87` | 2026-04-21T09:26:29+00:00 | iEgor72 | chore(seo): add yandex verification file |
+| `e10a3dc` | 2026-04-21T09:18:29+00:00 | iEgor72 | chore(seo): add google site verification file |
+| `d9452a4` | 2026-04-21T09:11:41+00:00 | iEgor72 | fix(seo): fit hero screenshots without cropping |
+| `0f8fb49` | 2026-04-21T09:10:07+00:00 | iEgor72 | improve(seo): tailor hero images by page |
+| `762da28` | 2026-04-21T09:08:25+00:00 | iEgor72 | fix(seo): replace outdated promo image |
+| `5977e55` | 2026-04-21T09:05:19+00:00 | iEgor72 | improve(seo): enrich landing pages visuals and copy |
+| `5273c3a` | 2026-04-21T08:58:06+00:00 | iEgor72 | fix(sw): bypass app shell for seo pages |

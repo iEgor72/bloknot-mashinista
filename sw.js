@@ -1,4 +1,4 @@
-const CACHE_VERSION = 'v30';
+const CACHE_VERSION = 'v32';
 const CACHE_NAME = `shift-tracker-shell-${CACHE_VERSION}`;
 const NAVIGATION_FALLBACK_URL = '/index.html';
 const NETWORK_TIMEOUT_MS = 1200;
@@ -9,6 +9,9 @@ const SEO_PAGE_PATHS = new Set([
   '/uchet-marshrutov',
   '/zarplata-mashinista',
   '/zhurnal-smen-mashinista',
+  '/kalkulyator-zarplaty-mashinista',
+  '/grafik-smen-mashinista',
+  '/prilozhenie-dlya-mashinista',
   '/robots.txt',
   '/sitemap.xml'
 ]);
@@ -22,7 +25,12 @@ const INSTALL_SHELL_URLS = [
   '/styles/16-press-feedback.css',
   '/styles/20-form-and-stats.css',
   '/styles/30-shifts-and-overlays.css',
+  '/styles/35-timer.css',
   '/styles/40-premium-refresh.css',
+  '/manifest.webmanifest',
+  '/apple-touch-icon.png',
+  '/icon-192.png',
+  '/icon-512.png',
   '/assets/fonts/plus-jakarta-sans/plus-jakarta-sans-cyrillic-ext.woff2',
   '/scripts/safe-area.js',
   '/scripts/nav-debug.js',
@@ -49,6 +57,13 @@ const CRITICAL_INSTALL_URLS = [
   '/styles/15-bottom-nav.css',
   '/styles/20-form-and-stats.css',
   '/styles/30-shifts-and-overlays.css',
+  '/styles/35-timer.css',
+  '/styles/16-press-feedback.css',
+  '/styles/40-premium-refresh.css',
+  '/manifest.webmanifest',
+  '/apple-touch-icon.png',
+  '/icon-192.png',
+  '/icon-512.png',
   '/assets/fonts/plus-jakarta-sans/plus-jakarta-sans-cyrillic-ext.woff2',
   '/scripts/safe-area.js',
   '/scripts/app-constants.js',
@@ -61,7 +76,10 @@ const CRITICAL_INSTALL_URLS = [
   '/scripts/render.js',
   '/scripts/shift-form.js',
   '/scripts/app-init.js',
-  '/scripts/sw-register.js'
+  '/scripts/sw-register.js',
+  '/scripts/utils/haptics.js',
+  '/scripts/press-feedback.js',
+  '/scripts/nav-debug.js'
 ];
 const EXTENDED_SHELL_URLS = [
   '/assets/fonts/plus-jakarta-sans/plus-jakarta-sans-cyrillic-ext.woff2',
