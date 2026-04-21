@@ -31,6 +31,7 @@ const SEO_PAGE_ROUTES = {
   '/uchet-marshrutov': 'docs/seo/uchet-marshrutov.html',
   '/zarplata-mashinista': 'docs/seo/zarplata-mashinista.html',
   '/zhurnal-smen-mashinista': 'docs/seo/zhurnal-smen-mashinista.html',
+  '/kalkulyator-zarplaty-mashinista': 'docs/seo/kalkulyator-zarplaty-mashinista.html',
 };
 
 let userPresenceStoreCache = null;
@@ -509,7 +510,7 @@ function isPublicFilePath(filePath) {
 }
 
 function buildSeoSitemapXml() {
-  const urls = ['/', '/uchet-marshrutov', '/zarplata-mashinista', '/zhurnal-smen-mashinista'];
+  const urls = ['/', '/uchet-marshrutov', '/zarplata-mashinista', '/zhurnal-smen-mashinista', '/kalkulyator-zarplaty-mashinista'];
   const now = new Date().toISOString();
   return [
     '<?xml version="1.0" encoding="UTF-8"?>',
