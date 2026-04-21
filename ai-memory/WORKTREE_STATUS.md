@@ -1,6 +1,6 @@
 # Worktree Status
 
-Generated: 2026-04-21 02:24:16 +0000
+Generated: 2026-04-21 02:29:08 +0000
 
 ## git status -sb
 ```text
@@ -19,16 +19,16 @@ Generated: 2026-04-21 02:24:16 +0000
 
 ## git branch -vv
 ```text
-* main b89680e [origin/main] feat(docs): add folder 8 image document
+* main e2059f5 [origin/main] feat(docs): add zoom gestures for image viewer
 ```
 
 ## HEAD
 ```text
-b89680e feat(docs): add folder 8 image document
- ai-memory/CHANGELOG.md           |   8 ++++++++
- ai-memory/PROJECT_STATE.md       |   8 ++++----
- ai-memory/WORKTREE_STATUS.md     |  22 ++++++++--------------
- assets/docs/folders/Папка №8.jpg | Bin 0 -> 190240 bytes
- assets/docs/manifest.json        |   7 +++++++
- 5 files changed, 27 insertions(+), 18 deletions(-)
+e2059f5 feat(docs): add zoom gestures for image viewer
+ ai-memory/CHANGELOG.md            |   8 +
+ ai-memory/PROJECT_STATE.md        |   9 +-
+ ai-memory/WORKTREE_STATUS.md      |  18 +-
+ scripts/docs-app.js               | 362 +++++++++++++++++++++++++++++++++++---
+ styles/30-shifts-and-overlays.css |  31 ++++
+ 5 files changed, 392 insertions(+), 36 deletions(-)
 ```

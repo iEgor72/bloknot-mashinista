@@ -1,8 +1,9 @@
-const CACHE_VERSION = 'v27';
+const CACHE_VERSION = 'v28';
 const CACHE_NAME = `shift-tracker-shell-${CACHE_VERSION}`;
 const NAVIGATION_FALLBACK_URL = '/index.html';
 const NETWORK_TIMEOUT_MS = 1200;
 const ASSET_NETWORK_TIMEOUT_MS = 1200;
+const DOCS_ASSET_NETWORK_TIMEOUT_MS = 8000;
 const INDEX_ASSET_PATTERN = /(?:href|src)=["'](\/(?:styles|scripts|assets)\/[^"'?#]+(?:\?[^"']*)?)["']/g;
 const INSTALL_SHELL_URLS = [
   '/',
@@ -264,6 +265,17 @@ function isStyleRequest(request) {
   }
 }
 
+function isDocsAssetRequest(request) {
+  if (!request) return false;
+
+  try {
+    const url = new URL(request.url);
+    return url.pathname.startsWith('/assets/docs/');
+  } catch (error) {
+    return false;
+  }
+}
+
 function withTimeout(promise, timeoutMs) {
   return new Promise((resolve) => {
     let settled = false;
@@ -349,7 +361,8 @@ async function staleWhileRevalidate(request, event) {
     return cached;
   }
 
-  const response = await withTimeout(networkPromise, ASSET_NETWORK_TIMEOUT_MS);
+  const timeoutMs = isDocsAssetRequest(request) ? DOCS_ASSET_NETWORK_TIMEOUT_MS : ASSET_NETWORK_TIMEOUT_MS;
+  const response = await withTimeout(networkPromise, timeoutMs);
   if (response) {
     return response;
   }
