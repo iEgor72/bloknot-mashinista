@@ -634,12 +634,10 @@
         var upcomingState = resolveScheduleDay(upcomingKey);
         var code = upcomingState.effectiveCode || upcomingState.plannedCode;
         if (!code || code === 'V') continue;
-        var preview = buildUpcomingSchedulePreview(upcomingState);
         upcoming.push({
           dateKey: upcomingKey,
           code: code,
-          titleText: preview.titleText,
-          noteText: preview.noteText
+          cardHtml: buildUpcomingScheduleCardHtml(upcomingState)
         });
       }
 
@@ -651,8 +649,7 @@
           upcomingHtml += '<div class="schedule-upcoming-item">' +
             '<div class="schedule-upcoming-date">' + escapeHtml(formatScheduleShortDate(upcoming[ui].dateKey)) + '</div>' +
             '<div class="schedule-upcoming-main">' +
-              '<div class="schedule-upcoming-title">' + escapeHtml(upcoming[ui].titleText || 'Рабочий день') + '</div>' +
-              '<div class="schedule-upcoming-note">' + escapeHtml(upcoming[ui].noteText || 'Откройте день, чтобы посмотреть детали') + '</div>' +
+              (upcoming[ui].cardHtml || '<div class="schedule-upcoming-empty">Откройте день, чтобы посмотреть детали</div>') +
             '</div>' +
           '</div>';
         }
@@ -660,47 +657,55 @@
       }
     }
 
-    function buildUpcomingSchedulePreview(dayState) {
-      if (!dayState) {
-        return { titleText: '', noteText: '' };
-      }
+    function buildUpcomingScheduleCardHtml(dayState) {
+      if (!dayState) return '';
       if (dayState.hasFact && dayState.factShifts && dayState.factShifts[0]) {
         var shift = dayState.factShifts[0];
-        var startTime = shift.start_msk && shift.start_msk.length >= 16 ? shift.start_msk.substring(11, 16) : '';
-        var endTime = shift.end_msk && shift.end_msk.length >= 16 ? shift.end_msk.substring(11, 16) : '';
-        var timeRange = startTime && endTime ? (startTime + '–' + endTime) : getShiftTypeLabel(shift);
-        var durationText = fmtMin(shiftTotalMinutes(shift));
+        var displayParts = getShiftDisplayParts(shift);
+        var timeLineText = (displayParts.startTime || '--:--') + ' - ' + (displayParts.endTime || '--:--');
+        var durationText = getShiftDurationLabelText(fmtMin(shiftTotalMinutes(shift)));
         var incomeVm = getShiftIncomeViewModel(shift, currentMonthShiftIncomeMap);
-        var noteParts = [];
-        if (durationText && durationText !== '0ч') noteParts.push(durationText);
-        if (incomeVm && incomeVm.amountText && incomeVm.amountText !== '—') noteParts.push(incomeVm.amountText);
-        if (!noteParts.length) noteParts.push(getShiftTypeLabel(shift));
-        return {
-          titleText: timeRange,
-          noteText: noteParts.join(' · ')
-        };
+        return '' +
+          '<div class="schedule-upcoming-card compact-shift">' +
+            buildShiftTypeHtml(shift, getShiftTypeLabel(shift), false) +
+            '<div class="shift-card-body">' +
+              '<div class="shift-main-row">' +
+                buildShiftDateTimeHtml(timeLineText) +
+                buildShiftDurationHtml(durationText) +
+              '</div>' +
+              '<div class="shift-income-row">' +
+                buildShiftIncomeLabelHtml() +
+                getShiftIncomeChipHtml(incomeVm) +
+              '</div>' +
+            '</div>' +
+          '</div>';
       }
       if (dayState.plannedCode === 'D' || dayState.plannedCode === 'N') {
-        var planType = dayState.plannedCode === 'N' ? 'Ночь по графику' : 'День по графику';
-        if (dayState.startTime && dayState.endTime) {
-          var durationMin = getDurationMinutesFromTimeRange(dayState.startTime, dayState.endTime);
-          return {
-            titleText: dayState.startTime + '–' + dayState.endTime,
-            noteText: (durationMin > 0 ? fmtMin(durationMin) + ' · ' : '') + planType
-          };
-        }
-        return {
-          titleText: 'Рабочий день',
-          noteText: planType
-        };
+        var planLabel = dayState.plannedCode === 'N' ? 'Ночь по графику' : 'День по графику';
+        var durationMin = getDurationMinutesFromTimeRange(dayState.startTime, dayState.endTime);
+        var durationText = durationMin > 0 ? getShiftDurationLabelText(fmtMin(durationMin)) : '—';
+        var timeLineText = dayState.startTime && dayState.endTime ? (dayState.startTime + ' - ' + dayState.endTime) : '—';
+        return '' +
+          '<div class="schedule-upcoming-card compact-shift is-plan">' +
+            '<div class="shift-type">' +
+              '<span class="shift-type-content">' +
+                '<span class="shift-type-icon" aria-hidden="true">' + getShiftInlineIconSvg(dayState.plannedCode === 'N' ? 'calendar' : 'depot') + '</span>' +
+                '<span class="shift-type-text">' + escapeHtml(planLabel) + '</span>' +
+              '</span>' +
+            '</div>' +
+            '<div class="shift-card-body">' +
+              '<div class="shift-main-row">' +
+                buildShiftDateTimeHtml(timeLineText) +
+                buildShiftDurationHtml(durationText) +
+              '</div>' +
+              '<div class="shift-income-row">' +
+                buildShiftIncomeLabelHtml() +
+                getShiftIncomeChipHtml({ hasValue: false, level: 'none', amountText: '—' }) +
+              '</div>' +
+            '</div>' +
+          '</div>';
       }
-      if (dayState.plannedCode === 'V') {
-        return {
-          titleText: 'Выходной',
-          noteText: 'По графику'
-        };
-      }
-      return { titleText: '', noteText: '' };
+      return '';
     }
 
     function getDurationMinutesFromTimeRange(startTime, endTime) {

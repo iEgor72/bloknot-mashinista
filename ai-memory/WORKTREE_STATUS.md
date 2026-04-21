@@ -1,6 +1,6 @@
 # Worktree Status
 
-Generated: 2026-04-21 11:09:49 +0000
+Generated: 2026-04-21 11:11:47 +0000
 
 ## git status -sb
 ```text
@@ -20,15 +20,16 @@ Generated: 2026-04-21 11:09:49 +0000
 
 ## git branch -vv
 ```text
-* main 9f7c4cf [origin/main] fix(schedule): stop showing route in upcoming cards
+* main 86cb9fd [origin/main] fix(schedule): reuse close button and refine upcoming cards
 ```
 
 ## HEAD
 ```text
-9f7c4cf fix(schedule): stop showing route in upcoming cards
- ai-memory/CHANGELOG.md       |  8 ++++++++
- ai-memory/PROJECT_STATE.md   |  8 ++++----
- ai-memory/WORKTREE_STATUS.md | 19 ++++++++++---------
- scripts/render.js            | 28 +++++++++++-----------------
- 4 files changed, 33 insertions(+), 30 deletions(-)
+86cb9fd fix(schedule): reuse close button and refine upcoming cards
+ ai-memory/CHANGELOG.md             |  8 ++++++++
+ ai-memory/PROJECT_STATE.md         |  8 ++++----
+ ai-memory/WORKTREE_STATUS.md       | 18 ++++++++----------
+ index.html                         |  4 ++--
+ styles/10-navigation-and-cards.css | 31 +++++++++++++++++++++++--------
+ 5 files changed, 45 insertions(+), 24 deletions(-)
 ```
