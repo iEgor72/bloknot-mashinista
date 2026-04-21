@@ -1,6 +1,6 @@
 # Worktree Status
 
-Generated: 2026-04-21 02:39:15 +0000
+Generated: 2026-04-21 03:46:37 +0000
 
 ## git status -sb
 ```text
@@ -19,16 +19,15 @@ Generated: 2026-04-21 02:39:15 +0000
 
 ## git branch -vv
 ```text
-* main f15c94e [origin/main] fix(docs): add retry and loading progress states
+* main fc5ee24 [origin/main] fix(ui): prevent nav text selection on ios
 ```
 
 ## HEAD
 ```text
-f15c94e fix(docs): add retry and loading progress states
- ai-memory/CHANGELOG.md            |  8 +++++
- ai-memory/PROJECT_STATE.md        |  8 ++---
- ai-memory/WORKTREE_STATUS.md      | 17 +++++----
- scripts/docs-app.js               | 75 +++++++++++++++++++++++++++++----------
- styles/30-shifts-and-overlays.css | 46 +++++++++++++++++++++++-
- 5 files changed, 122 insertions(+), 32 deletions(-)
+fc5ee24 fix(ui): prevent nav text selection on ios
+ ai-memory/CHANGELOG.md       |  8 ++++++++
+ ai-memory/PROJECT_STATE.md   |  8 ++++----
+ ai-memory/WORKTREE_STATUS.md | 17 +++++++++--------
+ styles/15-bottom-nav.css     | 15 +++++++++++++++
+ 4 files changed, 36 insertions(+), 12 deletions(-)
 ```

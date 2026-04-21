@@ -1,14 +1,14 @@
 # Project State
 
 <!-- AUTO_STATUS:START -->
-Generated: 2026-04-21 02:39:15 +0000
+Generated: 2026-04-21 03:46:37 +0000
 
 ## Repository Snapshot
 - Local repo path: `/opt/bloknot-mashinista`
 - Project memory path: `/opt/bloknot-mashinista/ai-memory`
 - Branch: `main`
-- HEAD: `f15c94e`
-- Last commit: `f15c94e fix(docs): add retry and loading progress states`
+- HEAD: `fc5ee24`
+- Last commit: `fc5ee24 fix(ui): prevent nav text selection on ios`
 
 ## Git Remote
 ```text
@@ -18,7 +18,7 @@ origin	https://github.com/iEgor72/bloknot-mashinista.git (push)
 
 ## Branch Tracking
 ```text
-* main f15c94e [origin/main] fix(docs): add retry and loading progress states
+* main fc5ee24 [origin/main] fix(ui): prevent nav text selection on ios
 ```
 
 ## Worktree

@@ -24,6 +24,12 @@ const PUBLIC_TOP_LEVEL_DIRS = new Set(['assets', 'scripts', 'styles', 'docs']);
 const ONLINE_WINDOW_MS = 2 * 60 * 1000;
 const USER_PRESENCE_FLUSH_DELAY_MS = 2500;
 const SHIFT_USER_IDS_CACHE_TTL_MS = 30 * 1000;
+const PUBLIC_SITE_URL = process.env.PUBLIC_SITE_URL || 'https://bloknot-mashinista-bot.ru';
+const SEO_PAGE_ROUTES = {
+  '/uchet-marshrutov': 'docs/seo/uchet-marshrutov.html',
+  '/zarplata-mashinista': 'docs/seo/zarplata-mashinista.html',
+  '/zhurnal-smen-mashinista': 'docs/seo/zhurnal-smen-mashinista.html',
+};
 
 let userPresenceStoreCache = null;
 let userPresenceStoreLoaded = false;
@@ -500,6 +506,26 @@ function isPublicFilePath(filePath) {
   return PUBLIC_TOP_LEVEL_DIRS.has(segments[0]);
 }
 
+function buildSeoSitemapXml() {
+  const urls = ['/', '/uchet-marshrutov', '/zarplata-mashinista', '/zhurnal-smen-mashinista'];
+  const now = new Date().toISOString();
+  return [
+    '<?xml version="1.0" encoding="UTF-8"?>',
+    '<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">',
+    ...urls.map((pathname) => {
+      return [
+        '  <url>',
+        `    <loc>${PUBLIC_SITE_URL}${pathname}</loc>`,
+        `    <lastmod>${now}</lastmod>`,
+        `    <changefreq>${pathname === '/' ? 'weekly' : 'monthly'}</changefreq>`,
+        `    <priority>${pathname === '/' ? '0.8' : '0.7'}</priority>`,
+        '  </url>'
+      ].join('\n');
+    }),
+    '</urlset>'
+  ].join('\n');
+}
+
 function serveFile(res, filePath) {
   if (!isPublicFilePath(filePath)) {
     sendText(res, 404, 'Not found');
@@ -823,6 +849,30 @@ const server = http.createServer(async (req, res) => {
     }
 
     sendJson(res, 405, { error: 'Method not allowed' });
+    return;
+  }
+
+  if (pathname === '/robots.txt') {
+    sendText(
+      res,
+      200,
+      [
+        'User-agent: *',
+        'Allow: /',
+        'Sitemap: ' + PUBLIC_SITE_URL + '/sitemap.xml'
+      ].join('\n'),
+      'text/plain; charset=utf-8'
+    );
+    return;
+  }
+
+  if (pathname === '/sitemap.xml') {
+    sendText(res, 200, buildSeoSitemapXml(), 'application/xml; charset=utf-8');
+    return;
+  }
+
+  if (SEO_PAGE_ROUTES[pathname]) {
+    serveFile(res, path.join(ROOT, SEO_PAGE_ROUTES[pathname]));
     return;
   }
 
