@@ -1,6 +1,6 @@
 # Worktree Status
 
-Generated: 2026-04-21 10:59:27 +0000
+Generated: 2026-04-21 11:06:58 +0000
 
 ## git status -sb
 ```text
@@ -20,16 +20,17 @@ Generated: 2026-04-21 10:59:27 +0000
 
 ## git branch -vv
 ```text
-* main f3b94df [origin/main] fix(schedule): unify day preview and sheet actions
+* main 97ee03b [origin/main] fix(schedule): reuse app buttons and simplify day card
 ```
 
 ## HEAD
 ```text
-f3b94df fix(schedule): unify day preview and sheet actions
- ai-memory/CHANGELOG.md             |  8 ++++++
- ai-memory/PROJECT_STATE.md         |  8 +++---
- ai-memory/WORKTREE_STATUS.md       | 20 ++++++-------
- scripts/render.js                  | 57 ++++++++++++++++++++++++++++----------
- styles/10-navigation-and-cards.css | 40 ++++++++++++++++++++++----
- 5 files changed, 96 insertions(+), 37 deletions(-)
+97ee03b fix(schedule): reuse app buttons and simplify day card
+ ai-memory/CHANGELOG.md             |  8 +++++
+ ai-memory/PROJECT_STATE.md         |  8 ++---
+ ai-memory/WORKTREE_STATUS.md       | 17 ++++-----
+ index.html                         | 30 +++++++++++-----
+ scripts/render.js                  | 73 +++++++++++++++++++++++++++++++++-----
+ styles/10-navigation-and-cards.css | 55 +++++++++++++++++++++++++++-
+ 6 files changed, 162 insertions(+), 29 deletions(-)
 ```

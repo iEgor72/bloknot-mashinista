@@ -1,14 +1,14 @@
 # Project State
 
 <!-- AUTO_STATUS:START -->
-Generated: 2026-04-21 10:59:27 +0000
+Generated: 2026-04-21 11:06:58 +0000
 
 ## Repository Snapshot
 - Local repo path: `/opt/bloknot-mashinista`
 - Project memory path: `/opt/bloknot-mashinista/ai-memory`
 - Branch: `main`
-- HEAD: `f3b94df`
-- Last commit: `f3b94df fix(schedule): unify day preview and sheet actions`
+- HEAD: `97ee03b`
+- Last commit: `97ee03b fix(schedule): reuse app buttons and simplify day card`
 
 ## Git Remote
 ```text
@@ -18,7 +18,7 @@ origin	https://github.com/iEgor72/bloknot-mashinista.git (push)
 
 ## Branch Tracking
 ```text
-* main f3b94df [origin/main] fix(schedule): unify day preview and sheet actions
+* main 97ee03b [origin/main] fix(schedule): reuse app buttons and simplify day card
 ```
 
 ## Worktree

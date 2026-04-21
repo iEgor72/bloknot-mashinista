@@ -666,33 +666,27 @@
       }
       if (dayState.hasFact && dayState.factShifts && dayState.factShifts[0]) {
         var shift = dayState.factShifts[0];
-        var direction = getShiftDirectionLineText(shift);
         var startTime = shift.start_msk && shift.start_msk.length >= 16 ? shift.start_msk.substring(11, 16) : '';
         var endTime = shift.end_msk && shift.end_msk.length >= 16 ? shift.end_msk.substring(11, 16) : '';
-        var timeRange = startTime && endTime ? (startTime + '–' + endTime) : '';
-        if (direction) {
-          return {
-            titleText: direction,
-            noteText: shift.route_kind === 'trip' ? 'Поездка' : ('Смена' + (timeRange ? ' · ' + timeRange : ''))
-          };
-        }
-        if (timeRange) {
-          return {
-            titleText: timeRange,
-            noteText: shift.route_kind === 'trip' ? 'Поездка' : 'Смена'
-          };
-        }
+        var timeRange = startTime && endTime ? (startTime + '–' + endTime) : getShiftTypeLabel(shift);
+        var durationText = fmtMin(shiftTotalMinutes(shift));
+        var incomeVm = getShiftIncomeViewModel(shift, currentMonthShiftIncomeMap);
+        var noteParts = [];
+        if (durationText && durationText !== '0ч') noteParts.push(durationText);
+        if (incomeVm && incomeVm.amountText && incomeVm.amountText !== '—') noteParts.push(incomeVm.amountText);
+        if (!noteParts.length) noteParts.push(getShiftTypeLabel(shift));
         return {
-          titleText: getShiftTypeLabel(shift),
-          noteText: 'Есть запись по этому дню'
+          titleText: timeRange,
+          noteText: noteParts.join(' · ')
         };
       }
       if (dayState.plannedCode === 'D' || dayState.plannedCode === 'N') {
         var planType = dayState.plannedCode === 'N' ? 'Ночь по графику' : 'День по графику';
         if (dayState.startTime && dayState.endTime) {
+          var durationMin = getDurationMinutesFromTimeRange(dayState.startTime, dayState.endTime);
           return {
             titleText: dayState.startTime + '–' + dayState.endTime,
-            noteText: planType
+            noteText: (durationMin > 0 ? fmtMin(durationMin) + ' · ' : '') + planType
           };
         }
         return {
