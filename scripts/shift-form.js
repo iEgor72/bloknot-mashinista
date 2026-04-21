@@ -747,8 +747,8 @@
       if (startDateEl) startDateEl.value = getTodayDateKey();
       if (endDateEl) endDateEl.value = '';
       if (patternEl) patternEl.value = '';
-      if (startTimeEl) startTimeEl.value = '08:00';
-      if (endTimeEl) endTimeEl.value = '20:00';
+      if (startTimeEl) startTimeEl.value = '01:00';
+      if (endTimeEl) endTimeEl.value = '13:00';
       syncSchedulePatternPreview();
       syncSchedulePlannerFormMeta();
     }
@@ -768,8 +768,8 @@
       if (startDateEl) startDateEl.value = period.startDate || '';
       if (endDateEl) endDateEl.value = period.endDate || '';
       if (patternEl) patternEl.value = period.pattern || '';
-      if (startTimeEl) startTimeEl.value = period.startTime || '08:00';
-      if (endTimeEl) endTimeEl.value = period.endTime || '20:00';
+      if (startTimeEl) startTimeEl.value = period.startTime || '01:00';
+      if (endTimeEl) endTimeEl.value = period.endTime || '13:00';
       syncSchedulePatternPreview();
       syncSchedulePlannerFormMeta();
     }
@@ -822,8 +822,8 @@
         var startDate = normalizeDateKey(document.getElementById('schedulePeriodStartDate').value);
         var endDate = normalizeDateKey(document.getElementById('schedulePeriodEndDate').value);
         var pattern = normalizeSchedulePattern(document.getElementById('schedulePatternValue').value || '');
-        var startTime = normalizeTimeValue(document.getElementById('scheduleDefaultStartTime').value, '08:00');
-        var endTime = normalizeTimeValue(document.getElementById('scheduleDefaultEndTime').value, '20:00');
+        var startTime = normalizeTimeValue(document.getElementById('scheduleDefaultStartTime').value, '01:00');
+        var endTime = normalizeTimeValue(document.getElementById('scheduleDefaultEndTime').value, '13:00');
         if (!startDate) {
           showSaveToast('Укажите дату начала', 'danger');
           return;
@@ -900,8 +900,8 @@
         closeOverlay('overlayScheduleDay');
         openAddShiftForDate(state.dateKey, {
           routeKind: state.plannedCode ? 'depot' : 'trip',
-          startTime: state.startTime || '08:00',
-          endTime: state.endTime || '20:00'
+          startTime: state.startTime || '01:00',
+          endTime: state.endTime || '13:00'
         });
       });
     }

@@ -1,14 +1,14 @@
 # Project State
 
 <!-- AUTO_STATUS:START -->
-Generated: 2026-04-21 12:25:35 +0000
+Generated: 2026-04-21 12:31:38 +0000
 
 ## Repository Snapshot
 - Local repo path: `/opt/bloknot-mashinista`
 - Project memory path: `/opt/bloknot-mashinista/ai-memory`
 - Branch: `main`
-- HEAD: `866ce9e`
-- Last commit: `866ce9e fix(schedule): align day sheet with app typography`
+- HEAD: `6d7939f`
+- Last commit: `6d7939f refactor(schedule): remove day mark override from sheet`
 
 ## Git Remote
 ```text
@@ -18,7 +18,7 @@ origin	https://github.com/iEgor72/bloknot-mashinista.git (push)
 
 ## Branch Tracking
 ```text
-* main 866ce9e [origin/main] fix(schedule): align day sheet with app typography
+* main 6d7939f [origin/main] refactor(schedule): remove day mark override from sheet
 ```
 
 ## Worktree

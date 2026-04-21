@@ -1,6 +1,6 @@
 # Worktree Status
 
-Generated: 2026-04-21 12:25:35 +0000
+Generated: 2026-04-21 12:31:38 +0000
 
 ## git status -sb
 ```text
@@ -20,15 +20,18 @@ Generated: 2026-04-21 12:25:35 +0000
 
 ## git branch -vv
 ```text
-* main 866ce9e [origin/main] fix(schedule): align day sheet with app typography
+* main 6d7939f [origin/main] refactor(schedule): remove day mark override from sheet
 ```
 
 ## HEAD
 ```text
-866ce9e fix(schedule): align day sheet with app typography
- ai-memory/CHANGELOG.md             |   8 +++
- ai-memory/PROJECT_STATE.md         |   8 +--
- ai-memory/WORKTREE_STATUS.md       |  14 ++---
- styles/10-navigation-and-cards.css | 122 ++++++++++++++++++++++---------------
- 4 files changed, 92 insertions(+), 60 deletions(-)
+6d7939f refactor(schedule): remove day mark override from sheet
+ ai-memory/CHANGELOG.md             |  8 +++++++
+ ai-memory/PROJECT_STATE.md         |  8 +++----
+ ai-memory/WORKTREE_STATUS.md       | 17 +++++++--------
+ index.html                         | 26 -----------------------
+ scripts/render.js                  | 14 +------------
+ scripts/shift-form.js              | 33 +----------------------------
+ styles/10-navigation-and-cards.css | 43 +-------------------------------------
+ 7 files changed, 23 insertions(+), 126 deletions(-)
 ```

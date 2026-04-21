@@ -870,8 +870,8 @@
         startDate: startDate,
         endDate: endDate || '',
         pattern: pattern,
-        startTime: normalizeTimeValue(raw.startTime, '08:00'),
-        endTime: normalizeTimeValue(raw.endTime, '20:00')
+        startTime: normalizeTimeValue(raw.startTime, '01:00'),
+        endTime: normalizeTimeValue(raw.endTime, '13:00')
       };
     }
 
@@ -1160,8 +1160,8 @@
 
     function buildPresetShiftEndDate(dateKey, startTime, endTime) {
       var safeDate = normalizeDateKey(dateKey) || getTodayDateKey();
-      var safeStart = normalizeTimeValue(startTime, '08:00');
-      var safeEnd = normalizeTimeValue(endTime, '20:00');
+      var safeStart = normalizeTimeValue(startTime, '01:00');
+      var safeEnd = normalizeTimeValue(endTime, '13:00');
       if (!safeStart || !safeEnd) return safeDate;
       return safeEnd > safeStart ? safeDate : getDateKeyByOffset(safeDate, 1);
     }
@@ -1177,9 +1177,9 @@
       clearErrors();
       clearOptionalShiftData();
       document.getElementById('inputStartDate').value = safeDate;
-      document.getElementById('inputStartTime').value = normalizeTimeValue(opts.startTime, '08:00');
-      document.getElementById('inputEndDate').value = buildPresetShiftEndDate(safeDate, document.getElementById('inputStartTime').value, normalizeTimeValue(opts.endTime, '20:00'));
-      document.getElementById('inputEndTime').value = normalizeTimeValue(opts.endTime, '20:00');
+      document.getElementById('inputStartTime').value = normalizeTimeValue(opts.startTime, '01:00');
+      document.getElementById('inputEndDate').value = buildPresetShiftEndDate(safeDate, document.getElementById('inputStartTime').value, normalizeTimeValue(opts.endTime, '13:00'));
+      document.getElementById('inputEndTime').value = normalizeTimeValue(opts.endTime, '13:00');
       setRouteType(opts.routeKind === 'trip' ? 'trip' : 'depot');
       renderDraftShiftSummary();
       setActiveTab('add');
