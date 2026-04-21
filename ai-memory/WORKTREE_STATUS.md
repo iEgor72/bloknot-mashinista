@@ -1,6 +1,6 @@
 # Worktree Status
 
-Generated: 2026-04-21 12:01:06 +0000
+Generated: 2026-04-21 12:10:22 +0000
 
 ## git status -sb
 ```text
@@ -20,15 +20,18 @@ Generated: 2026-04-21 12:01:06 +0000
 
 ## git branch -vv
 ```text
-* main 9b4e759 [origin/main] fix(schedule): clear journal highlight outside shifts
+* main 535344e [origin/main] fix(schedule): rebuild day sheet around real shift card
 ```
 
 ## HEAD
 ```text
-9b4e759 fix(schedule): clear journal highlight outside shifts
- ai-memory/CHANGELOG.md       |  8 ++++++++
- ai-memory/PROJECT_STATE.md   |  8 ++++----
- ai-memory/WORKTREE_STATUS.md | 18 ++++++++++--------
- scripts/auth.js              |  4 ++++
- 4 files changed, 26 insertions(+), 12 deletions(-)
+535344e fix(schedule): rebuild day sheet around real shift card
+ ai-memory/CHANGELOG.md             |   8 +++
+ ai-memory/PROJECT_STATE.md         |   8 +--
+ ai-memory/WORKTREE_STATUS.md       |  18 +++---
+ index.html                         |  44 ++++++---------
+ scripts/render.js                  |  56 ++++++++----------
+ scripts/shift-form.js              |  10 +---
+ styles/10-navigation-and-cards.css | 113 +++++++++++++++++++++----------------
+ 7 files changed, 126 insertions(+), 131 deletions(-)
 ```

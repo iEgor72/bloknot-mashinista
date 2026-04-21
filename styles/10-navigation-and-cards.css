@@ -1202,16 +1202,28 @@
       background: transparent;
       padding: 0;
       border: 0;
+      border-radius: 0;
+      overflow: visible;
     }
 
     .schedule-day-type-grid .segmented-btn {
-      min-height: 46px;
+      min-width: 0;
+      width: 100%;
+      min-height: 48px;
+      padding: 0 12px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      text-align: center;
       border-radius: 16px;
       border: 1px solid rgba(255,255,255,0.08);
       background: rgba(255,255,255,0.04);
       color: var(--text);
       font-size: 14px;
       font-weight: 800;
+      line-height: 1.2;
+      box-sizing: border-box;
+      box-shadow: none;
     }
 
     .schedule-day-type-grid .segmented-btn.active {
@@ -1238,9 +1250,16 @@
 
     .schedule-day-actions-row {
       display: grid;
-      grid-template-columns: repeat(2, minmax(0, 1fr));
+      grid-template-columns: minmax(0, 1fr);
       gap: 10px;
       margin-bottom: 16px;
+    }
+
+    .schedule-day-actions-row .btn-primary,
+    .schedule-day-actions-row .btn-secondary {
+      width: 100%;
+      min-width: 0;
+      justify-content: center;
     }
 
     @media (max-width: 420px) {
@@ -1277,6 +1296,10 @@
       }
 
       .schedule-day-actions-row {
+        grid-template-columns: 1fr;
+      }
+
+      .schedule-day-type-grid {
         grid-template-columns: 1fr;
       }
     }
