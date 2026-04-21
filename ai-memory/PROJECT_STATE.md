@@ -1,14 +1,14 @@
 # Project State
 
 <!-- AUTO_STATUS:START -->
-Generated: 2026-04-21 11:28:37 +0000
+Generated: 2026-04-21 11:30:48 +0000
 
 ## Repository Snapshot
 - Local repo path: `/opt/bloknot-mashinista`
 - Project memory path: `/opt/bloknot-mashinista/ai-memory`
 - Branch: `main`
-- HEAD: `f38b855`
-- Last commit: `f38b855 fix(schedule): render exact shift card on top`
+- HEAD: `af2fb8e`
+- Last commit: `af2fb8e refactor(home): reorder dashboard blocks`
 
 ## Git Remote
 ```text
@@ -18,7 +18,7 @@ origin	https://github.com/iEgor72/bloknot-mashinista.git (push)
 
 ## Branch Tracking
 ```text
-* main f38b855 [origin/main] fix(schedule): render exact shift card on top
+* main af2fb8e [origin/main] refactor(home): reorder dashboard blocks
 ```
 
 ## Worktree

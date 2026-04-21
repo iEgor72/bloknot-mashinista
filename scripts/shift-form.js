@@ -729,18 +729,49 @@
       preview.textContent = formatSchedulePattern(input.value || '');
     }
 
+    function syncSchedulePlannerFormMeta() {
+      var titleEl = document.getElementById('schedulePlannerSectionTitle');
+      var saveBtn = document.getElementById('btnSaveSchedulePeriod');
+      var isEditing = !!selectedSchedulePeriodId;
+      if (titleEl) titleEl.textContent = isEditing ? 'Редактировать период графика' : 'Добавить период графика';
+      if (saveBtn) saveBtn.textContent = isEditing ? 'Сохранить изменения' : 'Сохранить';
+    }
+
     function resetSchedulePlannerForm() {
       var startDateEl = document.getElementById('schedulePeriodStartDate');
       var endDateEl = document.getElementById('schedulePeriodEndDate');
       var patternEl = document.getElementById('schedulePatternValue');
       var startTimeEl = document.getElementById('scheduleDefaultStartTime');
       var endTimeEl = document.getElementById('scheduleDefaultEndTime');
+      setSelectedSchedulePeriod('');
       if (startDateEl) startDateEl.value = getTodayDateKey();
       if (endDateEl) endDateEl.value = '';
       if (patternEl) patternEl.value = '';
       if (startTimeEl) startTimeEl.value = '08:00';
       if (endTimeEl) endTimeEl.value = '20:00';
       syncSchedulePatternPreview();
+      syncSchedulePlannerFormMeta();
+    }
+
+    function fillSchedulePlannerForm(periodId) {
+      var period = getSchedulePeriodById(periodId);
+      if (!period) {
+        resetSchedulePlannerForm();
+        return;
+      }
+      setSelectedSchedulePeriod(period.id);
+      var startDateEl = document.getElementById('schedulePeriodStartDate');
+      var endDateEl = document.getElementById('schedulePeriodEndDate');
+      var patternEl = document.getElementById('schedulePatternValue');
+      var startTimeEl = document.getElementById('scheduleDefaultStartTime');
+      var endTimeEl = document.getElementById('scheduleDefaultEndTime');
+      if (startDateEl) startDateEl.value = period.startDate || '';
+      if (endDateEl) endDateEl.value = period.endDate || '';
+      if (patternEl) patternEl.value = period.pattern || '';
+      if (startTimeEl) startTimeEl.value = period.startTime || '08:00';
+      if (endTimeEl) endTimeEl.value = period.endTime || '20:00';
+      syncSchedulePatternPreview();
+      syncSchedulePlannerFormMeta();
     }
 
     function syncScheduleDayTimeFields() {
@@ -816,12 +847,13 @@
           pattern: pattern,
           startTime: startTime,
           endTime: endTime
-        })) {
+        }, selectedSchedulePeriodId)) {
           showSaveToast('Периоды не должны пересекаться', 'danger');
           return;
         }
+        var isEditingPeriod = !!selectedSchedulePeriodId;
         upsertSchedulePeriod({
-          id: createSchedulePeriodId(),
+          id: selectedSchedulePeriodId || createSchedulePeriodId(),
           mode: 'cycle',
           startDate: startDate,
           endDate: endDate,
@@ -833,15 +865,24 @@
         render();
         resetSchedulePlannerForm();
         closeOverlay('overlaySchedulePlanner');
-        showSaveToast('Период сохранён', 'success');
+        showSaveToast(isEditingPeriod ? 'Период обновлён' : 'Период сохранён', 'success');
       });
     }
 
     var schedulePeriodsListEl = document.getElementById('schedulePeriodsList');
     if (schedulePeriodsListEl) {
       schedulePeriodsListEl.addEventListener('click', function(e) {
+        var editBtn = e.target.closest('[data-schedule-edit]');
+        if (editBtn) {
+          triggerHapticSelection();
+          fillSchedulePlannerForm(editBtn.getAttribute('data-schedule-edit'));
+          return;
+        }
         var deleteBtn = e.target.closest('[data-schedule-delete]');
         if (!deleteBtn) return;
+        if (selectedSchedulePeriodId && selectedSchedulePeriodId === String(deleteBtn.getAttribute('data-schedule-delete'))) {
+          resetSchedulePlannerForm();
+        }
         deleteSchedulePeriod(deleteBtn.getAttribute('data-schedule-delete'));
         triggerHapticWarning();
         render();

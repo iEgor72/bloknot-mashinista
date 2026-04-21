@@ -777,7 +777,10 @@
               '<div class="schedule-period-title">' + escapeHtml(buildSchedulePeriodSummary(period)) + '</div>' +
               '<div class="schedule-period-note">' + escapeHtml(rangeText) + '</div>' +
             '</div>' +
-            '<button type="button" class="schedule-period-delete" data-schedule-delete="' + escapeHtml(period.id) + '">Удалить</button>' +
+            '<div class="schedule-period-actions">' +
+              '<button type="button" class="schedule-period-action" data-schedule-edit="' + escapeHtml(period.id) + '">Изменить</button>' +
+              '<button type="button" class="schedule-period-delete" data-schedule-delete="' + escapeHtml(period.id) + '">Удалить</button>' +
+            '</div>' +
           '</div>' +
           '<div class="schedule-period-subnote">Автопостроение календаря по шаблону</div>' +
         '</div>';
@@ -805,9 +808,15 @@
       if (!dateEl || !statusEl || !factCardEl || !factTitleEl || !factTimeEl || !factDurationEl || !factIncomeEl || !factTextEl || !addShiftBtn || !editShiftBtn || !timeFieldsEl || !startTimeEl || !endTimeEl || !typeButtons.length) return;
 
       dateEl.textContent = formatScheduleDateLabel(dateKey);
-      statusEl.textContent = state.hasFact
-        ? 'Запись уже есть. Можно открыть её или точечно поменять план на этот день.'
-        : ((state.plannedCode ? formatScheduleCodeLabel(state.plannedCode) : 'План на день не задан') + (state.period ? ' · ' + buildSchedulePeriodSummary(state.period) : ''));
+      if (state.hasFact) {
+        statusEl.textContent = state.plannedCode
+          ? ('Факт уже внесён. По графику здесь ' + formatScheduleCodeLabel(state.plannedCode).toLowerCase() + '.')
+          : 'Факт уже внесён. График на этот день не задан.';
+      } else {
+        statusEl.textContent = state.plannedCode
+          ? ('По графику здесь ' + formatScheduleCodeLabel(state.plannedCode).toLowerCase() + '.')
+          : 'На этот день пока нет ни графика, ни записи.';
+      }
 
       var daySummary = buildScheduleDayFactSummary(state);
       factCardEl.classList.remove('hidden');

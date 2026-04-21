@@ -756,6 +756,7 @@
     var SCHEDULE_STORAGE_KEY = 'shift_tracker_schedule_v1';
     var scheduleStore = loadScheduleStore();
     var selectedScheduleDayKey = '';
+    var selectedSchedulePeriodId = '';
 
     function createEmptyScheduleStore() {
       return { version: 1, periods: [], overrides: {} };
@@ -1093,6 +1094,16 @@
       return 'График ' + formatSchedulePattern(period.pattern) + ' · ' + (period.startTime || '—') + '–' + (period.endTime || '—');
     }
 
+    function getSchedulePeriodById(periodId) {
+      var targetId = periodId ? String(periodId) : '';
+      if (!targetId) return null;
+      var periods = getSchedulePeriods();
+      for (var i = 0; i < periods.length; i++) {
+        if (String(periods[i].id) === targetId) return periods[i];
+      }
+      return null;
+    }
+
     function upsertSchedulePeriod(periodInput) {
       var period = normalizeSchedulePeriod(periodInput);
       if (!period) return null;
@@ -1138,6 +1149,11 @@
     function setSelectedScheduleDay(dateKey) {
       selectedScheduleDayKey = normalizeDateKey(dateKey) || getTodayDateKey();
       return selectedScheduleDayKey;
+    }
+
+    function setSelectedSchedulePeriod(periodId) {
+      selectedSchedulePeriodId = periodId ? String(periodId) : '';
+      return selectedSchedulePeriodId;
     }
 
     function buildPresetShiftEndDate(dateKey, startTime, endTime) {

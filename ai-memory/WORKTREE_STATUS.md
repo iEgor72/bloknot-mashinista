@@ -1,6 +1,6 @@
 # Worktree Status
 
-Generated: 2026-04-21 11:28:37 +0000
+Generated: 2026-04-21 11:30:48 +0000
 
 ## git status -sb
 ```text
@@ -20,16 +20,15 @@ Generated: 2026-04-21 11:28:37 +0000
 
 ## git branch -vv
 ```text
-* main f38b855 [origin/main] fix(schedule): render exact shift card on top
+* main af2fb8e [origin/main] refactor(home): reorder dashboard blocks
 ```
 
 ## HEAD
 ```text
-f38b855 fix(schedule): render exact shift card on top
- ai-memory/CHANGELOG.md             |  8 ++++
- ai-memory/PROJECT_STATE.md         |  8 ++--
- ai-memory/WORKTREE_STATUS.md       | 11 +++--
- scripts/render.js                  | 90 ++++++++++++++++++--------------------
- styles/10-navigation-and-cards.css | 12 +++++
- 5 files changed, 71 insertions(+), 58 deletions(-)
+af2fb8e refactor(home): reorder dashboard blocks
+ ai-memory/CHANGELOG.md       |  8 ++++++++
+ ai-memory/PROJECT_STATE.md   |  8 ++++----
+ ai-memory/WORKTREE_STATUS.md | 17 +++++++++--------
+ index.html                   | 40 ++++++++++++++++++++--------------------
+ 4 files changed, 41 insertions(+), 32 deletions(-)
 ```

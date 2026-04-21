@@ -971,6 +971,35 @@
       border: 1px solid rgba(255, 255, 255, 0.08);
     }
 
+    .schedule-period-actions {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      flex-wrap: wrap;
+      justify-content: flex-end;
+    }
+
+    .schedule-period-action,
+    .schedule-period-delete {
+      min-height: 34px;
+      padding: 0 12px;
+      border-radius: 12px;
+      border: 1px solid rgba(255,255,255,.10);
+      background: rgba(255,255,255,.05);
+      color: var(--sub);
+      font-family: 'Manrope', sans-serif;
+      font-size: 12px;
+      font-weight: 700;
+      cursor: pointer;
+      -webkit-tap-highlight-color: transparent;
+    }
+
+    .schedule-period-action:active,
+    .schedule-period-delete:active {
+      transform: translateY(1px);
+      background: rgba(255,255,255,.07);
+    }
+
     .schedule-period-top {
       display: flex;
       align-items: flex-start;
@@ -1009,6 +1038,7 @@
     }
 
     .schedule-pattern-btn.is-muted,
+    .schedule-period-action,
     .schedule-period-delete {
       color: var(--muted);
     }
