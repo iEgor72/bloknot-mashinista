@@ -912,7 +912,7 @@
         triggerHapticSuccess();
         closeOverlay('overlayScheduleDay');
         render();
-        showSaveToast(typeValue === 'auto' ? 'День возвращён в авто' : 'День сохранён', 'success');
+        showSaveToast(typeValue === 'auto' ? 'Вернул как в графике' : 'Отметку дня сохранил', 'success');
       });
     }
 

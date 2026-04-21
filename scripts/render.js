@@ -821,11 +821,11 @@
 
       dateEl.textContent = formatScheduleDateLabel(dateKey);
       if (state.hasFact && state.plannedCode) {
-        statusEl.textContent = 'Есть фактическая смена и график на этот день.';
+        statusEl.textContent = 'Есть фактическая смена, ниже показан график на этот день.';
       } else if (state.hasFact) {
         statusEl.textContent = 'Есть фактическая смена.';
       } else if (state.plannedCode) {
-        statusEl.textContent = 'Фактической смены ещё нет, ниже только график.';
+        statusEl.textContent = 'Фактической смены ещё нет, ниже показано, что стоит по графику.';
       } else {
         statusEl.textContent = 'На этот день пока нет ни графика, ни записи.';
       }

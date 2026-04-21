@@ -1,6 +1,6 @@
 # Worktree Status
 
-Generated: 2026-04-21 12:10:22 +0000
+Generated: 2026-04-21 12:15:51 +0000
 
 ## git status -sb
 ```text
@@ -20,18 +20,15 @@ Generated: 2026-04-21 12:10:22 +0000
 
 ## git branch -vv
 ```text
-* main 535344e [origin/main] fix(schedule): rebuild day sheet around real shift card
+* main a04bed6 [origin/main] fix(schedule): repair day sheet mobile layout
 ```
 
 ## HEAD
 ```text
-535344e fix(schedule): rebuild day sheet around real shift card
- ai-memory/CHANGELOG.md             |   8 +++
- ai-memory/PROJECT_STATE.md         |   8 +--
- ai-memory/WORKTREE_STATUS.md       |  18 +++---
- index.html                         |  44 ++++++---------
- scripts/render.js                  |  56 ++++++++----------
- scripts/shift-form.js              |  10 +---
- styles/10-navigation-and-cards.css | 113 +++++++++++++++++++++----------------
- 7 files changed, 126 insertions(+), 131 deletions(-)
+a04bed6 fix(schedule): repair day sheet mobile layout
+ ai-memory/CHANGELOG.md             |  8 ++++++++
+ ai-memory/PROJECT_STATE.md         |  8 ++++----
+ ai-memory/WORKTREE_STATUS.md       | 19 +++++++++++--------
+ styles/10-navigation-and-cards.css | 27 +++++++++++++++++++++++++--
+ 4 files changed, 48 insertions(+), 14 deletions(-)
 ```
