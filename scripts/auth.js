@@ -412,6 +412,10 @@
         btn.classList.toggle('active', shouldBeActive);
       }
 
+      if (activeTab !== 'shifts' && typeof clearJournalFocusHighlight === 'function') {
+        clearJournalFocusHighlight();
+      }
+
       scheduleBottomNavHeightSync();
       updateFooter();
       renderInstallPromptCard();

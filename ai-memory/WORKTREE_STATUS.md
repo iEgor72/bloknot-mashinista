@@ -1,6 +1,6 @@
 # Worktree Status
 
-Generated: 2026-04-21 11:56:53 +0000
+Generated: 2026-04-21 11:58:56 +0000
 
 ## git status -sb
 ```text
@@ -20,15 +20,17 @@ Generated: 2026-04-21 11:56:53 +0000
 
 ## git branch -vv
 ```text
-* main 0537183 [origin/main] fix(schedule): sync journal month from calendar day
+* main 9452af1 [origin/main] fix(schedule): highlight journal target from calendar
 ```
 
 ## HEAD
 ```text
-0537183 fix(schedule): sync journal month from calendar day
- ai-memory/CHANGELOG.md       |  8 ++++++++
- ai-memory/PROJECT_STATE.md   |  8 ++++----
- ai-memory/WORKTREE_STATUS.md | 20 ++++++++++----------
- scripts/app.js               |  9 +++++++++
- 4 files changed, 31 insertions(+), 14 deletions(-)
+9452af1 fix(schedule): highlight journal target from calendar
+ ai-memory/CHANGELOG.md            |  8 ++++++++
+ ai-memory/PROJECT_STATE.md        |  8 ++++----
+ ai-memory/WORKTREE_STATUS.md      | 14 ++++++--------
+ scripts/app.js                    | 14 ++++++++++++++
+ scripts/render.js                 |  9 +++++++++
+ styles/30-shifts-and-overlays.css | 21 +++++++++++++++++++++
+ 6 files changed, 62 insertions(+), 12 deletions(-)
 ```
