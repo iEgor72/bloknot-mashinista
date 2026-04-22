@@ -1,6 +1,6 @@
 # Worktree Status
 
-Generated: 2026-04-22 11:19:52 +0000
+Generated: 2026-04-22 11:24:41 +0000
 
 ## git status -sb
 ```text
@@ -10,18 +10,18 @@ Generated: 2026-04-22 11:19:52 +0000
 
 ## git branch -vv
 ```text
-* main a7ef152 [origin/main] fix(docs): center loading note in viewer
+* main 62ac928 [origin/main] style(docs): polish viewer header
 ```
 
 ## HEAD
 ```text
-a7ef152 fix(docs): center loading note in viewer
+62ac928 style(docs): polish viewer header
  ai-memory/CHANGELOG.md            |  8 ++++++++
  ai-memory/INDEX.md                |  2 +-
  ai-memory/PROJECT_STATE.md        |  8 ++++----
  ai-memory/RECENT_COMMITS.md       |  4 ++--
- ai-memory/WORKTREE_STATUS.md      | 29 +++++++++++------------------
+ ai-memory/WORKTREE_STATUS.md      | 22 +++++++++++-----------
  ai-memory/sessions/2026-04-22.md  |  1 +
- styles/30-shifts-and-overlays.css |  3 +++
- 7 files changed, 30 insertions(+), 25 deletions(-)
+ styles/30-shifts-and-overlays.css | 38 ++++++++++++++++++++++++++++----------
+ 7 files changed, 55 insertions(+), 28 deletions(-)
 ```
