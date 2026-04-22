@@ -2358,14 +2358,11 @@
       pendingDelete: null,
       statusText: '',
       selectedSectionFilter: 'all',
-      revision: null,
-      serverConfirmedAdmin: false,
-      adminCapabilityChecked: false,
-      adminCapabilityPending: false
+      revision: null
     };
 
     function isDocsAdmin() {
-      return !!((typeof CURRENT_USER !== 'undefined' && CURRENT_USER && CURRENT_USER.is_admin) || docsAdminState.serverConfirmedAdmin);
+      return !!(typeof CURRENT_USER !== 'undefined' && CURRENT_USER && CURRENT_USER.is_admin);
     }
 
     function invalidateDocsCaches() {
@@ -2767,39 +2764,9 @@
       return null;
     }
 
-    function refreshDocsAdminCapability() {
-      if (docsAdminState.adminCapabilityPending) return;
-      if (typeof CURRENT_USER === 'undefined' || !CURRENT_USER || !CURRENT_USER.id || CURRENT_USER.id === 'guest') {
-        docsAdminState.serverConfirmedAdmin = false;
-        docsAdminState.adminCapabilityChecked = true;
-        return;
-      }
-      if (CURRENT_USER && CURRENT_USER.is_admin) {
-        docsAdminState.serverConfirmedAdmin = true;
-        docsAdminState.adminCapabilityChecked = true;
-        return;
-      }
-      docsAdminState.adminCapabilityPending = true;
-      fetchDocsAdminJson('GET', null, '?mode=admin').then(function() {
-        docsAdminState.serverConfirmedAdmin = true;
-        docsAdminState.adminCapabilityChecked = true;
-        syncDocsAdminVisibility();
-      }).catch(function() {
-        docsAdminState.serverConfirmedAdmin = false;
-        docsAdminState.adminCapabilityChecked = true;
-        syncDocsAdminVisibility();
-      }).finally(function() {
-        docsAdminState.adminCapabilityPending = false;
-      });
-    }
-
     function syncDocsAdminVisibility() {
       var els = ensureDocsAdminElements();
       var canManage = isDocsAdmin();
-      if (!canManage && !docsAdminState.adminCapabilityChecked) {
-        refreshDocsAdminCapability();
-      }
-      canManage = isDocsAdmin();
       if (els.entryButton) els.entryButton.classList.toggle('hidden', !canManage);
       if (els.subnavButton) els.subnavButton.classList.toggle('hidden', !canManage);
       if (!canManage) closeDocsAdmin();
@@ -3021,9 +2988,6 @@
       if (els.confirmDelete) els.confirmDelete.addEventListener('click', confirmDocsAdminDelete);
       syncDocsAdminVisibility();
       window.addEventListener('bm:current-user-changed', function() {
-        docsAdminState.adminCapabilityChecked = false;
-        docsAdminState.serverConfirmedAdmin = false;
-        docsAdminState.adminCapabilityPending = false;
         syncDocsAdminVisibility();
         if (docsAdminState.isOpen && isDocsAdmin()) {
           loadDocsAdminDocuments();
