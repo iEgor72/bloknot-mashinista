@@ -806,7 +806,7 @@
       var cardClass = 'schedule-period-card';
       if (opts.current) cardClass += ' is-current';
       else if (opts.secondary) cardClass += ' is-secondary';
-      var subnote = opts.current ? 'Этот период попадает в выбранный месяц.' : 'Период графика в выбранном месяце.';
+      var subnote = opts.current ? 'Сейчас действует в выбранном месяце.' : 'Тоже действует в выбранном месяце.';
       var periodIdAttr = escapeHtml(String(period.id || ''));
       if (selectedSchedulePeriodId && String(selectedSchedulePeriodId) === String(period.id)) cardClass += ' is-selected';
       return '<div class="' + cardClass + '" data-schedule-period="' + periodIdAttr + '">' +
@@ -856,7 +856,7 @@
         html += '<div class="schedule-upcoming-empty">В этом месяце графика нет.</div>';
       } else {
         for (var pi = 0; pi < vm.periods.length; pi++) {
-          html += buildSchedulePeriodCardHtml(vm.periods[pi], { current: pi === 0, kicker: pi === 0 ? 'График месяца' : 'Ещё период месяца' });
+          html += buildSchedulePeriodCardHtml(vm.periods[pi], { current: pi === 0, kicker: pi === 0 ? 'Активный период' : 'Другой период' });
         }
       }
 

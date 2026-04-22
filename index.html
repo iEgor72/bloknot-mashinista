@@ -1080,14 +1080,27 @@
 
       <div class="settings-help-block">Если графика нет, ничего настраивать не нужно. Просто вносите поездки и смены как раньше. График нужен только тем, у кого есть повторяющийся цикл.</div>
 
-      <div class="settings-section-title" id="schedulePlannerMonthTitle">Что действует в этом месяце</div>
-      <div class="schedule-periods-list" id="schedulePeriodsList"></div>
-      <div class="optional-note schedule-period-inline-note" id="schedulePeriodInlineNote">Нажмите на график, чтобы отредактировать его. Удаление доступно прямо в карточке, как в остальных местах приложения.</div>
-      <div class="schedule-conflict-box hidden" id="scheduleConflictBox"></div>
+      <div class="settings-card schedule-overview-card">
+        <div class="form-stage-head schedule-sheet-section-head">
+          <div class="form-stage-kicker">Календарь</div>
+          <div class="settings-section-title" id="schedulePlannerMonthTitle">Что действует в этом месяце</div>
+          <div class="optional-note schedule-period-inline-note" id="schedulePeriodInlineNote">Нажмите на карточку, чтобы отредактировать период. Удаление доступно прямо в карточке.</div>
+        </div>
+        <div class="schedule-periods-list" id="schedulePeriodsList"></div>
+        <div class="schedule-conflict-box hidden" id="scheduleConflictBox"></div>
+      </div>
 
-      <div class="settings-section-title" id="schedulePlannerSectionTitle">Добавить период графика</div>
-      <div class="optional-note schedule-planner-mode-note" id="schedulePlannerModeNote">Если график меняется с новой даты, просто добавьте новый период с этой даты.</div>
       <div class="settings-card schedule-form-card">
+        <div class="form-title-row schedule-form-title-row">
+          <div class="form-title-leading">
+            <div class="form-stage-head schedule-sheet-section-head schedule-form-head">
+              <div class="form-stage-kicker">Настройка графика</div>
+              <div class="settings-section-title" id="schedulePlannerSectionTitle">Добавить период графика</div>
+              <div class="optional-note schedule-planner-mode-note" id="schedulePlannerModeNote">Если график меняется с новой даты, просто добавьте новый период с этой даты.</div>
+            </div>
+          </div>
+          <div class="edit-badge" id="schedulePlannerEditBadge">Редактирование</div>
+        </div>
         <div class="optional-grid optional-grid-two schedule-period-dates-grid">
           <div class="field">
             <label>1. С какого дня</label>

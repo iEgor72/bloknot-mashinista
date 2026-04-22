@@ -1,9 +1,10 @@
 # Recent Commits
 
-Generated: 2026-04-22 02:18:24 +0000
+Generated: 2026-04-22 02:19:22 +0000
 
 | Hash | Date | Author | Message |
 | --- | --- | --- | --- |
+| `49f8276` | 2026-04-22T02:19:09+00:00 | iEgor72 | fix(schedule): align planner actions with app ui |
 | `a6d4b00` | 2026-04-22T02:12:31+00:00 | iEgor72 | fix(schedule): make graph deletion offline-safe |
 | `41bb038` | 2026-04-22T02:01:51+00:00 | iEgor72 | fix(schedule): make offline delete ui fail-safe |
 | `8418d6c` | 2026-04-22T01:57:53+00:00 | iEgor72 | fix(schedule): unblock offline graph delete ui |
@@ -43,4 +44,3 @@ Generated: 2026-04-22 02:18:24 +0000
 | `1d738dc` | 2026-04-21T11:48:18+00:00 | iEgor72 | fix(schedule): separate plan and fact in day sheet |
 | `8e5067a` | 2026-04-21T11:41:06+00:00 | iEgor72 | feat(schedule): add period editing and clearer day state |
 | `af2fb8e` | 2026-04-21T11:30:41+00:00 | iEgor72 | refactor(home): reorder dashboard blocks |
-| `f38b855` | 2026-04-21T11:28:31+00:00 | iEgor72 | fix(schedule): render exact shift card on top |

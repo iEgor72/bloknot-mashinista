@@ -819,15 +819,19 @@
       var titleEl = document.getElementById('schedulePlannerSectionTitle');
       var noteEl = document.getElementById('schedulePlannerModeNote');
       var saveBtn = document.getElementById('btnSaveSchedulePeriod');
+      var editBadgeEl = document.getElementById('schedulePlannerEditBadge');
+      var formCardEl = document.querySelector('.schedule-form-card');
       var isEditing = !!selectedSchedulePeriodId;
       var hasConflict = !!(pendingScheduleConflict && pendingScheduleConflict.overlaps && pendingScheduleConflict.overlaps.length);
       if (titleEl) titleEl.textContent = isEditing ? 'Редактировать период графика' : 'Добавить период графика';
       if (noteEl) {
-        if (isEditing) noteEl.textContent = 'Редактирование меняет весь выбранный период целиком.';
+        if (isEditing) noteEl.textContent = 'Меняете весь выбранный период целиком, как обычную запись в приложении.';
         else if (hasConflict) noteEl.textContent = 'Новый график можно сохранить как замену с даты начала. Предыдущий период закончится днём раньше.';
         else noteEl.textContent = 'Если график меняется с новой даты, просто добавьте новый период с этой даты.';
       }
       if (saveBtn) saveBtn.textContent = isEditing ? 'Сохранить изменения' : 'Сохранить';
+      if (editBadgeEl) editBadgeEl.classList.toggle('visible', isEditing);
+      if (formCardEl) formCardEl.classList.toggle('is-editing', isEditing);
     }
 
     function readSchedulePlannerDraft() {
