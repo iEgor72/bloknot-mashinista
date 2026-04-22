@@ -152,11 +152,15 @@
           if (shouldResetPlanner) {
             resetSchedulePlannerForm();
           }
-          persistScheduleMaterializedMonth({ purgePeriodIds: [deletedPeriodId] });
           pendingScheduleDeletePeriodId = null;
           closeOverlay('overlayConfirm');
           render();
           showSaveToast(wasOnline ? 'График удалён' : 'График удалён, синхронизируем при появлении сети', 'neutral');
+          try {
+            persistScheduleMaterializedMonth({ purgePeriodIds: [deletedPeriodId] });
+          } catch (e) {
+            console.error('schedule delete materialization sync failed', e);
+          }
         });
         return;
       }
