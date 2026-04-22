@@ -2599,14 +2599,14 @@
       if (entry === 'speeds') {
         return {
           title: 'Скорости',
-          subtitle: 'Лимиты и участки по направлениям',
+          subtitle: 'Скорости по участкам',
           tabs: ['speeds']
         };
       }
       if (entry === 'memos') {
         return {
           title: 'Режимки',
-          subtitle: 'Режимные листы по нужным участкам',
+          subtitle: 'Режимные карты по участкам',
           tabs: ['memos']
         };
       }

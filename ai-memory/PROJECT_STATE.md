@@ -1,14 +1,14 @@
 # Project State
 
 <!-- AUTO_STATUS:START -->
-Generated: 2026-04-22 11:24:41 +0000
+Generated: 2026-04-22 11:26:41 +0000
 
 ## Repository Snapshot
 - Local repo path: `/opt/bloknot-mashinista`
 - Project memory path: `/opt/bloknot-mashinista/ai-memory`
 - Branch: `main`
-- HEAD: `62ac928`
-- Last commit: `62ac928 style(docs): polish viewer header`
+- HEAD: `0477851`
+- Last commit: `0477851 fix(docs): simplify viewer status chip`
 
 ## Git Remote
 ```text
@@ -18,7 +18,7 @@ origin	https://github.com/iEgor72/bloknot-mashinista.git (push)
 
 ## Branch Tracking
 ```text
-* main 62ac928 [origin/main] style(docs): polish viewer header
+* main 0477851 [origin/main] fix(docs): simplify viewer status chip
 ```
 
 ## Worktree
