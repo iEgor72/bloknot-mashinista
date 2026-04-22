@@ -1008,13 +1008,6 @@
           return;
         }
         var remoteStore = normalizeScheduleStore(result.body && result.body.schedule);
-        if (!hasScheduleStoreData(remoteStore) && hasScheduleStoreData(localStore)) {
-          syncScheduleStoreRemote(localStore, function(err, syncedStore) {
-            scheduleStore = err ? localStore : normalizeScheduleStore(syncedStore);
-            if (typeof callback === 'function') callback(scheduleStore);
-          });
-          return;
-        }
         scheduleStore = writeScheduleStoreLocal(remoteStore);
         if (typeof callback === 'function') callback(scheduleStore);
       }).catch(function() {
