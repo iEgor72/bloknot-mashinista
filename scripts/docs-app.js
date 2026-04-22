@@ -2393,15 +2393,28 @@
       });
     }
 
+    function getDocsAdminSessionToken() {
+      try {
+        return localStorage.getItem('shift_tracker_session_token') || '';
+      } catch (e) {
+        return '';
+      }
+    }
+
     function fetchDocsAdminJson(method, payload, query) {
       var url = DOCS_API_URL || '/api/docs';
       if (query) url += query;
+      var headers = {
+        'Content-Type': 'application/json; charset=utf-8'
+      };
+      var sessionToken = getDocsAdminSessionToken();
+      if (sessionToken) {
+        headers.Authorization = 'Bearer ' + sessionToken;
+      }
       return fetch(url, {
         method: method,
         credentials: 'same-origin',
-        headers: {
-          'Content-Type': 'application/json; charset=utf-8'
-        },
+        headers: headers,
         body: payload ? JSON.stringify(payload) : undefined
       }).then(function(response) {
         return response.text().then(function(text) {

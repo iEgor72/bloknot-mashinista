@@ -37,13 +37,13 @@ async function runScenario(browser, user, expectAdminVisible) {
   const errors = [];
   page.on('pageerror', err => {
     const text = err && err.message ? err.message : String(err);
-    if (/401|Unauthorized/.test(text)) return;
+    if (/401|403|Unauthorized|Forbidden/.test(text)) return;
     errors.push(text);
   });
   page.on('console', msg => {
     if (msg.type() !== 'error') return;
     const text = msg.text();
-    if (/401|Unauthorized/.test(text)) return;
+    if (/401|403|Unauthorized|Forbidden/.test(text)) return;
     errors.push(text);
   });
   await bootstrapUser(page, user);
