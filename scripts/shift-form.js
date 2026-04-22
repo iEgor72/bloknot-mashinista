@@ -138,6 +138,7 @@
         triggerHapticWarning();
         var deletedPeriodId = pendingScheduleDeletePeriodId;
         var shouldResetPlanner = !!(selectedSchedulePeriodId && selectedSchedulePeriodId === String(deletedPeriodId));
+        var wasOnline = !!navigator.onLine;
         clearScheduleConflictState();
         deleteSchedulePeriod(deletedPeriodId, function(err) {
           if (err) {
@@ -155,7 +156,7 @@
           pendingScheduleDeletePeriodId = null;
           closeOverlay('overlayConfirm');
           render();
-          showSaveToast('График удалён', 'neutral');
+          showSaveToast(wasOnline ? 'График удалён' : 'График удалён, синхронизируем при появлении сети', 'neutral');
         });
         return;
       }
