@@ -807,20 +807,18 @@
       if (opts.current) cardClass += ' is-current';
       else if (opts.secondary) cardClass += ' is-secondary';
       var subnote = opts.current ? 'Этот период попадает в выбранный месяц.' : 'Период графика в выбранном месяце.';
-      return '<div class="' + cardClass + '">' +
+      var periodIdAttr = escapeHtml(String(period.id || ''));
+      if (selectedSchedulePeriodId && String(selectedSchedulePeriodId) === String(period.id)) cardClass += ' is-selected';
+      return '<button type="button" class="' + cardClass + '" data-schedule-period-card="' + periodIdAttr + '">' +
         (opts.kicker ? '<div class="schedule-period-kicker">' + escapeHtml(opts.kicker) + '</div>' : '') +
         '<div class="schedule-period-top">' +
           '<div>' +
             '<div class="schedule-period-title">' + escapeHtml(buildSchedulePeriodSummary(period)) + '</div>' +
             '<div class="schedule-period-note">' + escapeHtml(rangeText) + '</div>' +
           '</div>' +
-          '<div class="schedule-period-actions">' +
-            '<button type="button" class="schedule-period-action" data-schedule-edit="' + escapeHtml(period.id) + '">Редактировать</button>' +
-            '<button type="button" class="schedule-period-delete" data-schedule-delete="' + escapeHtml(period.id) + '">Удалить</button>' +
-          '</div>' +
         '</div>' +
         '<div class="schedule-period-subnote">' + escapeHtml(subnote) + '</div>' +
-      '</div>';
+      '</button>';
     }
 
     function buildConfirmSchedulePeriodCardHtml(period) {
@@ -840,6 +838,9 @@
     function renderSchedulePlannerOverlay() {
       var listEl = document.getElementById('schedulePeriodsList');
       var conflictEl = document.getElementById('scheduleConflictBox');
+      var actionRowEl = document.getElementById('schedulePeriodManagementActions');
+      var editActionBtn = document.getElementById('btnSchedulePeriodEdit');
+      var deleteActionBtn = document.getElementById('btnSchedulePeriodDelete');
       if (!listEl) return;
       var vm = getSchedulePeriodsViewModel(getVisibleMonthStartDateKey(), getVisibleMonthEndDateKey());
       var html = '';
@@ -857,6 +858,13 @@
       }
 
       listEl.innerHTML = html;
+
+      if (actionRowEl) {
+        var selectedPeriod = selectedSchedulePeriodId ? getSchedulePeriodById(selectedSchedulePeriodId) : null;
+        actionRowEl.classList.toggle('hidden', !selectedPeriod);
+        if (editActionBtn) editActionBtn.textContent = 'Редактировать график';
+        if (deleteActionBtn) deleteActionBtn.textContent = 'Удалить график';
+      }
 
       if (!conflictEl) return;
       if (!pendingScheduleConflict || !pendingScheduleConflict.overlaps || !pendingScheduleConflict.overlaps.length) {

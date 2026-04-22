@@ -954,19 +954,28 @@
     var schedulePeriodsListEl = document.getElementById('schedulePeriodsList');
     if (schedulePeriodsListEl) {
       schedulePeriodsListEl.addEventListener('click', function(e) {
-        var editBtn = e.target.closest('[data-schedule-edit]');
-        if (editBtn) {
-          triggerHapticSelection();
-          fillSchedulePlannerForm(editBtn.getAttribute('data-schedule-edit'));
-          return;
-        }
-        var deleteBtn = e.target.closest('[data-schedule-delete]');
-        if (!deleteBtn) return;
-        if (selectedSchedulePeriodId && selectedSchedulePeriodId === String(deleteBtn.getAttribute('data-schedule-delete'))) {
-          resetSchedulePlannerForm();
-        }
+        var cardBtn = e.target.closest('[data-schedule-period-card]');
+        if (!cardBtn) return;
+        triggerHapticSelection();
+        fillSchedulePlannerForm(cardBtn.getAttribute('data-schedule-period-card'));
+      });
+    }
+
+    var schedulePeriodEditBtn = document.getElementById('btnSchedulePeriodEdit');
+    if (schedulePeriodEditBtn) {
+      schedulePeriodEditBtn.addEventListener('click', function() {
+        if (!selectedSchedulePeriodId) return;
+        triggerHapticSelection();
+        fillSchedulePlannerForm(selectedSchedulePeriodId);
+      });
+    }
+
+    var schedulePeriodDeleteBtn = document.getElementById('btnSchedulePeriodDelete');
+    if (schedulePeriodDeleteBtn) {
+      schedulePeriodDeleteBtn.addEventListener('click', function() {
+        if (!selectedSchedulePeriodId) return;
         clearScheduleConflictState();
-        pendingScheduleDeletePeriodId = deleteBtn.getAttribute('data-schedule-delete');
+        pendingScheduleDeletePeriodId = selectedSchedulePeriodId;
         triggerHapticWarning();
         render();
         openOverlay('overlayConfirm');
