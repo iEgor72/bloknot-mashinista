@@ -163,8 +163,13 @@
       if (!pendingDeleteId) return;
       triggerHapticActionMedium();
       var deletedShift = findShiftById(pendingDeleteId);
-      var deletedDateKey = deletedShift && deletedShift.start_msk ? normalizeDateKey(deletedShift.start_msk.substring(0, 10)) : '';
-      var shouldSuppressScheduleDay = !!(deletedShift && typeof isScheduleMaterializedShift === 'function' && isScheduleMaterializedShift(deletedShift) && deletedDateKey);
+      var deleteMeta = typeof getScheduleGeneratedShiftDeleteMeta === 'function'
+        ? getScheduleGeneratedShiftDeleteMeta(deletedShift)
+        : null;
+      var deletedDateKey = deleteMeta && deleteMeta.anchorDateKey
+        ? deleteMeta.anchorDateKey
+        : (deletedShift && deletedShift.start_msk ? normalizeDateKey(deletedShift.start_msk.substring(0, 10)) : '');
+      var shouldSuppressScheduleDay = !!(deleteMeta && deletedDateKey);
       var newShifts = [];
       for (var i = 0; i < allShifts.length; i++) {
         if (allShifts[i].id !== pendingDeleteId) newShifts.push(allShifts[i]);
@@ -620,6 +625,10 @@
         fuel_handover_liters_v: optionalData.fuel_handover_liters_v
       };
 
+      var suppressScheduleSourceDateKey = typeof shouldSuppressScheduleSourceDayOnEdit === 'function'
+        ? shouldSuppressScheduleSourceDayOnEdit(existingShift, shift)
+        : '';
+
       if (isEditing) {
         var replaced = false;
         for (var i = 0; i < allShifts.length; i++) {
@@ -635,6 +644,10 @@
       } else {
         allShifts.push(shift);
       }
+      if (suppressScheduleSourceDateKey && typeof setScheduleDayOverride === 'function') {
+        setScheduleDayOverride(suppressScheduleSourceDateKey, { code: 'V', startTime: '', endTime: '' });
+      }
+
       pendingMutationIds = [shiftId];
 
       // Disable button during save

@@ -153,6 +153,9 @@
   <noscript><link rel="stylesheet" href="/styles/30-shifts-and-overlays.css" /></noscript>
   <noscript><link rel="stylesheet" href="/styles/35-timer.css" /></noscript>
   <noscript><link rel="stylesheet" href="/styles/40-premium-refresh.css" /></noscript>
+  <script>
+    window.CURRENT_USER = window.CURRENT_USER || null;
+  </script>
   <script src="/scripts/safe-area.js" defer></script>
 </head>
 <body>
@@ -856,9 +859,9 @@
             <path d="M12 14v3"></path>
           </svg>
         </div>
-        <div class="docs-pro-title">PRO-функция</div>
-        <div class="docs-pro-text">Доступ к разделу открывается после покупки PRO-версии. Сейчас открываем бесплатно.</div>
-        <button class="btn-secondary docs-pro-unlock-btn" id="btnUnlockDocsPro" type="button">Открыть бесплатно</button>
+        <div class="docs-pro-title">Документы готовы к открытию</div>
+        <div class="docs-pro-text">Если раздел открылся не сразу, просто продолжите. На слабой сети первая загрузка может занять чуть больше времени.</div>
+        <button class="btn-secondary docs-pro-unlock-btn" id="btnUnlockDocsPro" type="button">Продолжить</button>
       </div>
     </div>
 
@@ -1237,12 +1240,12 @@
 
   <!-- Runtime Scripts -->
   <script src="/scripts/app-constants.js" defer></script>
+  <script src="/scripts/auth.js" defer></script>
   <script src="/scripts/viewport.js" defer></script>
   <script src="/scripts/time-utils.js" defer></script>
   <script src="/scripts/instructions-app.js" defer></script>
   <script src="/scripts/docs-app.js" defer></script>
   <script src="/scripts/app.js" defer></script>
-  <script src="/scripts/auth.js" defer></script>
   <script src="/scripts/render.js" defer></script>
   <script src="/scripts/shift-form.js" defer></script>
   <script src="/scripts/app-init.js" defer></script>

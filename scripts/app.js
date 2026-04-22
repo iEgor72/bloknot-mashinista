@@ -1187,6 +1187,35 @@
       return !!(shift && (shift.schedule_generated || shift.isScheduleDerived || shift.schedule_period_id));
     }
 
+    function getScheduleShiftAnchorDateKey(shift) {
+      if (!shift) return '';
+      return normalizeDateKey(shift.scheduleDateKey || (shift.start_msk ? String(shift.start_msk).substring(0, 10) : ''));
+    }
+
+    function getShiftStartDateKey(shift) {
+      if (!shift || !shift.start_msk) return '';
+      return normalizeDateKey(String(shift.start_msk).substring(0, 10));
+    }
+
+    function shouldSuppressScheduleSourceDayOnEdit(previousShift, nextShift) {
+      if (!isScheduleMaterializedShift(previousShift)) return '';
+      var previousDateKey = getScheduleShiftAnchorDateKey(previousShift);
+      var nextDateKey = getShiftStartDateKey(nextShift);
+      if (!previousDateKey || !nextDateKey) return '';
+      return previousDateKey === nextDateKey ? '' : previousDateKey;
+    }
+
+    function getScheduleGeneratedShiftDeleteMeta(shift) {
+      if (!isScheduleMaterializedShift(shift)) return null;
+      var anchorDateKey = getScheduleShiftAnchorDateKey(shift);
+      if (!anchorDateKey) return null;
+      return {
+        anchorDateKey: anchorDateKey,
+        periodId: shift && shift.schedule_period_id ? String(shift.schedule_period_id) : '',
+        code: normalizeScheduleCode(shift && shift.schedule_code)
+      };
+    }
+
     function getScheduleFactShiftsForDate(dateKey) {
       var safeDate = normalizeDateKey(dateKey);
       if (!safeDate) return [];

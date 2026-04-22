@@ -801,7 +801,7 @@
       var cardClass = 'schedule-period-card';
       if (opts.current) cardClass += ' is-current';
       else if (opts.secondary) cardClass += ' is-secondary';
-      var subnote = opts.current ? 'Этот период сейчас действует в выбранном месяце.' : 'Этот период тоже действует в выбранном месяце.';
+      var subnote = opts.current ? 'Этот график сейчас работает в выбранном месяце.' : 'Этот график тоже захватывает выбранный месяц.';
       var periodIdAttr = escapeHtml(String(period.id || ''));
       if (selectedSchedulePeriodId && String(selectedSchedulePeriodId) === String(period.id)) cardClass += ' is-selected';
       return '<div class="' + cardClass + '" data-schedule-period="' + periodIdAttr + '">' +
@@ -817,7 +817,7 @@
         '</button>' +
         '<div class="schedule-period-card-actions">' +
           '<button type="button" class="shift-card-action-btn shift-card-edit-btn schedule-period-action-btn" data-schedule-period-action="edit" data-schedule-period-id="' + periodIdAttr + '">Изменить</button>' +
-          '<button type="button" class="shift-card-action-btn shift-card-delete-btn schedule-period-action-btn" data-schedule-period-action="delete" data-schedule-period-id="' + periodIdAttr + '">Удалить период</button>' +
+          '<button type="button" class="shift-card-action-btn shift-card-delete-btn schedule-period-action-btn" data-schedule-period-action="delete" data-schedule-period-id="' + periodIdAttr + '">Удалить график</button>' +
         '</div>' +
       '</div>';
     }
@@ -832,7 +832,7 @@
             '<div class="schedule-period-note">' + escapeHtml(formatScheduleRangeLabel(period.startDate, period.endDate)) + '</div>' +
           '</div>' +
         '</div>' +
-        '<div class="schedule-period-subnote">Удалится этот период и все смены, которые появились из него в этом месяце.</div>' +
+        '<div class="schedule-period-subnote">Удалится этот график и все смены, которые он создал в выбранном месяце.</div>' +
       '</div>';
     }
 
@@ -856,7 +856,7 @@
         html += '';
       } else {
         for (var pi = 0; pi < vm.periods.length; pi++) {
-          html += buildSchedulePeriodCardHtml(vm.periods[pi], { current: pi === 0, kicker: pi === 0 ? 'Сейчас действует' : 'Также действует' });
+          html += buildSchedulePeriodCardHtml(vm.periods[pi], { current: pi === 0, kicker: pi === 0 ? 'Сейчас активен' : 'Тоже активен' });
         }
       }
 
@@ -873,13 +873,13 @@
         overlapNames.push(buildSchedulePeriodSummary(pendingScheduleConflict.overlaps[oi]));
       }
       conflictEl.classList.remove('hidden');
-      conflictEl.innerHTML = '<div class="schedule-conflict-title">Новый период пересекается с уже сохранённым графиком</div>' +
-        '<div class="schedule-conflict-text">Один и тот же день не может относиться сразу к двум периодам. Можно открыть старый период и поправить его вручную или сразу заменить его, начиная с даты нового периода.</div>' +
+      conflictEl.innerHTML = '<div class="schedule-conflict-title">Новый график пересекается с уже сохранённым</div>' +
+        '<div class="schedule-conflict-text">На одни и те же дни нельзя сохранить два графика. Можно открыть текущий график и поправить его вручную или сразу начать новый с выбранной даты.</div>' +
         '<div class="schedule-conflict-list">' + escapeHtml(overlapNames.join(' • ')) + '</div>' +
-        '<div class="schedule-conflict-text">Если выберете замену, старый период закончится автоматически на день раньше.</div>' +
+        '<div class="schedule-conflict-text">Если выберете замену, старый график закончится автоматически на день раньше.</div>' +
         '<div class="schedule-conflict-actions">' +
-          '<button type="button" class="btn-primary" data-schedule-conflict-action="replace">Заменить с этой даты</button>' +
-          '<button type="button" class="btn-secondary" data-schedule-conflict-action="edit">Открыть старый период</button>' +
+          '<button type="button" class="btn-primary" data-schedule-conflict-action="replace">Начать новый график с этой даты</button>' +
+          '<button type="button" class="btn-secondary" data-schedule-conflict-action="edit">Открыть текущий график</button>' +
         '</div>';
     }
 
@@ -948,15 +948,23 @@
       var confirmBtn = document.getElementById('btnConfirmDelete');
       if (!cardEl) return;
       if (pendingScheduleDeletePeriodId) {
-        if (titleEl) titleEl.textContent = 'Удалить период графика';
-        if (noteEl) noteEl.textContent = 'Период будет удалён вместе со сменами, которые он создал в этом месяце. Это действие нельзя отменить.';
-        if (confirmBtn) confirmBtn.textContent = 'Удалить период';
+        if (titleEl) titleEl.textContent = 'Удалить график';
+        if (noteEl) noteEl.textContent = 'График будет удалён вместе со сменами, которые он создал в выбранном месяце. Это действие нельзя отменить.';
+        if (confirmBtn) confirmBtn.textContent = 'Удалить график';
         cardEl.innerHTML = buildConfirmSchedulePeriodCardHtml(getSchedulePeriodById(pendingScheduleDeletePeriodId));
         return;
       }
-      if (titleEl) titleEl.textContent = 'Удалить запись';
-      if (noteEl) noteEl.textContent = 'Это действие нельзя отменить';
-      if (confirmBtn) confirmBtn.textContent = 'Удалить';
+      var pendingShift = pendingDeleteId ? findShiftById(pendingDeleteId) : null;
+      var pendingScheduleShiftDeleteMeta = pendingShift && typeof getScheduleGeneratedShiftDeleteMeta === 'function'
+        ? getScheduleGeneratedShiftDeleteMeta(pendingShift)
+        : null;
+      if (titleEl) titleEl.textContent = pendingScheduleShiftDeleteMeta ? 'Удалить смену из графика' : 'Удалить запись';
+      if (noteEl) {
+        noteEl.textContent = pendingScheduleShiftDeleteMeta
+          ? 'Смена исчезнет из журнала, а этот день будет помечен как выходной для графика. Потом можно снова изменить график или добавить реальную смену вручную.'
+          : 'Это действие нельзя отменить';
+      }
+      if (confirmBtn) confirmBtn.textContent = pendingScheduleShiftDeleteMeta ? 'Удалить смену' : 'Удалить';
       if (!pendingDeleteId) {
         cardEl.innerHTML = '';
         return;

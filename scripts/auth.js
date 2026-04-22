@@ -26,6 +26,7 @@
     var UI_OVERLAY_ROOT = document.getElementById('uiOverlayRoot');
     var SHIFT_ACTIONS_MENU = document.getElementById('shiftActionsMenu');
     var AUTH_WIDGET_READY = false;
+    var AUTH_WIDGET_FALLBACK_TIMER = null;
     var authBootstrapPromise = null;
     var SESSION_STORAGE_KEY = 'shift_tracker_session_token';
     var AUTH_ENV_STATE = isLocalAuthEnvironment() ? 'dev' : 'prod';
@@ -290,6 +291,17 @@
         renderTelegramLoginWidget();
       }
       return nextState;
+    }
+
+    function setAuthInlineError(message) {
+      if (!AUTH_ERROR) return;
+      AUTH_ERROR.textContent = message || '';
+    }
+
+    function clearAuthWidgetFallbackTimer() {
+      if (!AUTH_WIDGET_FALLBACK_TIMER) return;
+      clearTimeout(AUTH_WIDGET_FALLBACK_TIMER);
+      AUTH_WIDGET_FALLBACK_TIMER = null;
     }
 
     function openTelegramBot() {
@@ -561,7 +573,15 @@
     function renderTelegramLoginWidget() {
       if (!AUTH_WIDGET || AUTH_WIDGET_READY || AUTH_ENV_STATE === 'dev') return;
       AUTH_WIDGET_READY = true;
+      clearAuthWidgetFallbackTimer();
+      setAuthInlineError('');
       AUTH_WIDGET.innerHTML = '';
+
+      if (navigator.onLine === false) {
+        AUTH_WIDGET_READY = false;
+        setAuthInlineError('Сейчас нет интернета. Как только связь появится, вход через Telegram снова станет доступен.');
+        return;
+      }
 
       var script = document.createElement('script');
       script.async = true;
@@ -570,8 +590,22 @@
       script.setAttribute('data-size', 'large');
       script.setAttribute('data-request-access', 'write');
       script.setAttribute('data-auth-url', window.location.origin + '/api/auth?mode=telegram-login&return=' + encodeURIComponent(getLoginReturnUrl()));
+      script.onload = function() {
+        clearAuthWidgetFallbackTimer();
+        AUTH_WIDGET_FALLBACK_TIMER = window.setTimeout(function() {
+          AUTH_WIDGET_FALLBACK_TIMER = null;
+          if (!AUTH_WIDGET || !AUTH_WIDGET.childElementCount) return;
+          var widgetRoot = AUTH_WIDGET.firstElementChild;
+          if (!widgetRoot || !(widgetRoot.offsetHeight > 0 || widgetRoot.querySelector('iframe, button, a'))) {
+            AUTH_WIDGET_READY = false;
+            setAuthInlineError('Виджет Telegram не успел загрузиться. Можно подождать ещё пару секунд или просто открыть бота кнопкой выше.');
+          }
+        }, 2600);
+      };
       script.onerror = function() {
+        clearAuthWidgetFallbackTimer();
         AUTH_WIDGET_READY = false;
+        setAuthInlineError('Не удалось загрузить вход через Telegram. Попробуйте ещё раз или откройте бота напрямую.');
         showAuthGate('prod', 'error');
       };
       AUTH_WIDGET.appendChild(script);
@@ -726,6 +760,11 @@
             CURRENT_USER = null;
             if (!silent) {
               showAuthGate('prod', 'error');
+              if (err && err.name === 'AbortError') {
+                setAuthInlineError('Связь отвечает слишком медленно. Попробуйте ещё раз или откройте бота, если так надёжнее.');
+              } else if (navigator.onLine === false) {
+                setAuthInlineError('Сейчас нет интернета. Если приложение уже открывалось раньше, данные появятся после восстановления связи или из кеша.');
+              }
               renderTelegramLoginWidget();
             }
             return null;

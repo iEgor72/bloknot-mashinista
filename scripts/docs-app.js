@@ -298,6 +298,46 @@
 
     var _docsManifestCache = null;
 
+    function fetchDocsManifestWithFallback() {
+      if (_docsManifestCache) {
+        return Promise.resolve(_docsManifestCache);
+      }
+
+      function tryRead(response) {
+        if (!response || !response.ok) throw new Error('manifest unavailable');
+        return response.json();
+      }
+
+      return fetch('/assets/docs/manifest.json', { cache: 'no-store' })
+        .then(tryRead)
+        .catch(function(networkErr) {
+          if (!('caches' in window)) throw networkErr;
+          return caches.match('/assets/docs/manifest.json', { ignoreSearch: true }).then(function(cachedResponse) {
+            if (!cachedResponse) throw networkErr;
+            return tryRead(cachedResponse);
+          });
+        })
+        .then(function(manifest) {
+          _docsManifestCache = manifest;
+          return manifest;
+        });
+    }
+
+    function renderDocListLoadError(folder) {
+      var listId = docsFolderListId(folder);
+      var el = listId ? document.getElementById(listId) : null;
+      if (!el) return;
+      var title = navigator.onLine === false ? 'Список пока недоступен оффлайн' : 'Не удалось загрузить список файлов';
+      var text = navigator.onLine === false
+        ? 'Если это первый запуск, подключитесь к интернету и откройте раздел ещё раз. Потом список будет доступнее даже при слабой сети.'
+        : 'Связь сейчас нестабильна. Подождите немного и откройте раздел ещё раз.';
+      el.innerHTML =
+        '<div class="docs-empty-state docs-empty-state-muted">' +
+          '<div class="docs-empty-title">' + title + '</div>' +
+          '<div class="docs-empty-text">' + text + '</div>' +
+        '</div>';
+    }
+
     function loadDocFiles(folder) {
       if (docsFilesCache[folder]) {
         renderDocFileList(folder, docsFilesCache[folder]);
@@ -314,21 +354,12 @@
         refreshDocDownloadStateForFolder(folder, files);
       }
 
-      if (_docsManifestCache) {
-        renderFromManifest(_docsManifestCache);
-        return;
-      }
-
-      fetch('/assets/docs/manifest.json', { cache: 'no-store' })
-        .then(function(resp) { return resp.json(); })
+      fetchDocsManifestWithFallback()
         .then(function(manifest) {
-          _docsManifestCache = manifest;
           renderFromManifest(manifest);
         })
         .catch(function() {
-          var listId = docsFolderListId(folder);
-          var el = listId ? document.getElementById(listId) : null;
-          if (el) el.innerHTML = '<div class="docs-loading"><span>⚠ Не удалось загрузить список файлов</span></div>';
+          renderDocListLoadError(folder);
         });
     }
 
