@@ -255,7 +255,7 @@
               '</svg>' +
             '</div>' +
             '<div class="docs-empty-title">В этом разделе пока пусто</div>' +
-            '<div class="docs-empty-text">Когда сюда добавят файлы, они появятся здесь.</div>' +
+            '<div class="docs-empty-text">Когда сюда добавят файлы, они сразу появятся в этом списке.</div>' +
           '</div>';
         return;
       }
@@ -272,8 +272,9 @@
         meta += buildDocDownloadStatusIcon(isDownloaded);
         if (updatedAt) meta += '<span>обновлено ' + updatedAt + '</span>';
         if (size) meta += '<span class="file-size">' + size + '</span>';
+        var docActionLabel = (isDownloaded ? 'Открыть файл' : 'Открыть файл, может понадобиться интернет') + ': ' + (f.name || 'Файл');
         html +=
-          '<div class="docs-item ' + (isDownloaded ? 'is-downloaded' : 'is-online-only') + '" data-file-path="' + encodeURIComponent(f.path || '') + '" data-file-name="' + encodeURIComponent(f.name || '') + '" data-mime-type="' + encodeURIComponent(f.mime_type || '') + '" data-doc-downloaded="' + (isDownloaded ? '1' : '0') + '">' +
+          '<div class="docs-item ' + (isDownloaded ? 'is-downloaded' : 'is-online-only') + '" role="button" tabindex="0" aria-label="' + escapeHtml(docActionLabel) + '" data-file-path="' + encodeURIComponent(f.path || '') + '" data-file-name="' + encodeURIComponent(f.name || '') + '" data-mime-type="' + encodeURIComponent(f.mime_type || '') + '" data-doc-downloaded="' + (isDownloaded ? '1' : '0') + '">' +
             '<div class="docs-item-icon file-icon-wrap ' + classes[type] + '">' +
               icons[type] +
             '</div>' +
@@ -293,7 +294,7 @@
       if (!listId) return;
       var el = document.getElementById(listId);
       if (!el) return;
-      el.innerHTML = '<div class="docs-loading"><div class="docs-loading-spinner"></div><span>Загрузка…</span></div>';
+      el.innerHTML = '<div class="docs-loading"><div class="docs-loading-spinner"></div><span>Загружаем список файлов…</span></div>';
     }
 
     var _docsManifestCache = null;
@@ -329,8 +330,8 @@
       if (!el) return;
       var title = navigator.onLine === false ? 'Список пока недоступен без интернета' : 'Не удалось загрузить список файлов';
       var text = navigator.onLine === false
-        ? 'Если открываете раздел впервые, подключитесь к интернету и зайдите сюда ещё раз. Потом он будет доступен и оффлайн.'
-        : 'Связь сейчас нестабильна. Подождите немного и попробуйте снова.';
+        ? 'Если открываете раздел впервые, подключитесь к интернету и зайдите сюда ещё раз. После этого список будет доступен и без сети.'
+        : 'Связь сейчас нестабильна. Подождите немного и попробуйте открыть раздел ещё раз.';
       el.innerHTML =
         '<div class="docs-empty-state docs-empty-state-muted">' +
           '<div class="docs-empty-title">' + title + '</div>' +
@@ -2239,4 +2240,17 @@
         setTimeout(function() { if (toast.parentNode) toast.parentNode.removeChild(toast); }, 350);
       }, success ? 3500 : 4000);
     }
+
+    document.addEventListener('keydown', function(e) {
+      if (!e || e.defaultPrevented) return;
+      if (!(e.key === 'Enter' || e.key === ' ')) return;
+      if (e.altKey || e.ctrlKey || e.metaKey) return;
+      var item = e.target && e.target.closest ? e.target.closest('.docs-item[data-file-path]') : null;
+      if (!item) return;
+      e.preventDefault();
+      var filePath = item.getAttribute('data-file-path') || '';
+      var fileName = item.getAttribute('data-file-name') || '';
+      var mimeType = item.getAttribute('data-mime-type') || '';
+      if (filePath) openDocFile(filePath, fileName, mimeType);
+    });
 

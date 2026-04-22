@@ -157,12 +157,8 @@
           closeOverlay('overlayConfirm');
           render();
           showSaveToast(wasOnline ? 'Период графика удалён' : 'Период графика удалён. Когда интернет появится, всё синхронизируется автоматически', 'neutral');
-          try {
-            if (shouldResetPlanner) {
-              resetSchedulePlannerForm();
-            }
-          } catch (e) {
-            console.error('schedule delete planner reset failed', e);
+          if (shouldResetPlanner && typeof resetSchedulePlannerForm === 'function') {
+            resetSchedulePlannerForm();
           }
         });
         return;

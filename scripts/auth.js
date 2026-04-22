@@ -62,7 +62,7 @@
           title: 'Открой свои смены и рабочую историю',
           message: 'Блокнот Машиниста помогает записывать смены, смотреть часы по периоду, хранить заметки и держать под рукой документы. Вход через Telegram нужен, чтобы открыть твои данные и синхронизировать их между устройствами.',
           primary: 'Открыть бота',
-          primaryHint: 'Если открыл сайт из поиска, проще сначала зайти через бота: https://t.me/bloknot_mashinista_bot',
+          primaryHint: 'Если открыли сайт из поиска, проще сначала зайти через бота: https://t.me/bloknot_mashinista_bot',
           status: '',
           note: 'Впервые здесь? Сначала открой бота, потом при желании можно пользоваться и в браузере.',
           bannerTitle: 'Начать удобнее через Telegram',
@@ -81,7 +81,7 @@
           primary: 'Открыть бота',
           primaryHint: 'Проверяем доступ и готовим вход.',
           status: 'Проверяем вход...',
-          note: 'Немного подожди, это обычно занимает пару секунд.',
+          note: 'Обычно это занимает пару секунд. Если процесс затянулся, попробуйте ещё раз или откройте бота.',
           bannerTitle: 'Подтверждаем вход',
           bannerText: 'Смотрим, есть ли сохранённая сессия, и подготавливаем вход.',
           bannerIcon: '…',
@@ -97,7 +97,7 @@
           primary: 'Повторить',
           primaryHint: 'Если ошибка повторится, начни через бота: https://t.me/bloknot_mashinista_bot',
           status: '',
-          note: 'Нажми «Повторить» или открой бота: https://t.me/bloknot_mashinista_bot',
+          note: 'Нажмите «Повторить». Если ошибка повторится, откройте бота: https://t.me/bloknot_mashinista_bot',
           bannerTitle: 'Не удалось выполнить вход',
           bannerText: 'Если вход снова не сработает, удобнее начать через Telegram-бота.',
           bannerIcon: '!',
@@ -238,7 +238,10 @@
     function applyAuthView(view) {
       var copy = view.copy || AUTH_VIEWS.prod.guest;
 
-      if (AUTH_CARD) AUTH_CARD.setAttribute('data-auth-mode', view.env === 'dev' ? 'local' : 'prod');
+      if (AUTH_CARD) {
+        AUTH_CARD.setAttribute('data-auth-mode', view.env === 'dev' ? 'local' : 'prod');
+        AUTH_CARD.setAttribute('data-auth-state', view.state);
+      }
       if (AUTH_MODE_CHIP) AUTH_MODE_CHIP.textContent = copy.badge || 'Telegram login';
       if (AUTH_TITLE) AUTH_TITLE.textContent = copy.title || '';
       if (AUTH_MESSAGE) AUTH_MESSAGE.textContent = copy.message || '';
@@ -255,6 +258,7 @@
         AUTH_PRIMARY_ACTION.textContent = copy.primary || 'Войти через Telegram';
         AUTH_PRIMARY_ACTION.disabled = !!copy.primaryBusy;
         AUTH_PRIMARY_ACTION.setAttribute('aria-busy', copy.primaryBusy ? 'true' : 'false');
+        AUTH_PRIMARY_ACTION.setAttribute('aria-live', 'polite');
         AUTH_PRIMARY_ACTION.classList.toggle('hidden', copy.showPrimary === false);
       }
       if (AUTH_PRIMARY_HINT) AUTH_PRIMARY_HINT.textContent = copy.primaryHint || '';
@@ -579,7 +583,7 @@
 
       if (navigator.onLine === false) {
         AUTH_WIDGET_READY = false;
-        setAuthInlineError('Сейчас нет интернета. Как только связь появится, вход через Telegram снова станет доступен.');
+        setAuthInlineError('Сейчас нет интернета. Как только связь появится, вход через Telegram снова станет доступен. Если приложение уже открывалось раньше, сохранённые данные подтянутся из кеша.');
         return;
       }
 

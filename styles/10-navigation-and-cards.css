@@ -1015,8 +1015,9 @@
 
     .schedule-upcoming-empty {
       font-size: 11px;
-      line-height: 1.4;
-      color: rgba(238, 242, 248, 0.52);
+      line-height: 1.5;
+      color: rgba(238, 242, 248, 0.58);
+      text-wrap: balance;
     }
 
     @media (max-width: 640px) {

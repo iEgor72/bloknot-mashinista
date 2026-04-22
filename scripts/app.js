@@ -548,7 +548,6 @@
           var k = localStorage.key(ki);
           if (k && k.indexOf(SHIFTS_PENDING_STORAGE_KEY) === 0) toRemove.push(k);
         }
-        console.log('[clearPending] removing keys:', toRemove);
         for (var ri = 0; ri < toRemove.length; ri++) localStorage.removeItem(toRemove[ri]);
       } catch (e) {}
       writeOfflineMeta({

@@ -1,9 +1,10 @@
 # Recent Commits
 
-Generated: 2026-04-22 05:23:06 +0000
+Generated: 2026-04-22 05:33:36 +0000
 
 | Hash | Date | Author | Message |
 | --- | --- | --- | --- |
+| `a7e9bfa` | 2026-04-22T05:26:45+00:00 | iEgor72 | fix(ui): apply quiet polish refinements |
 | `50c39fc` | 2026-04-22T05:15:48+00:00 | iEgor72 | fix(ui): polish schedule, docs, and auth flows |
 | `b7f0284` | 2026-04-22T04:18:58+00:00 | iEgor72 | copy(docs): simplify document card labels |
 | `8c2e8f2` | 2026-04-22T04:15:57+00:00 | iEgor72 | copy(docs): make document section cards human-readable |
@@ -43,4 +44,3 @@ Generated: 2026-04-22 05:23:06 +0000
 | `84a2cb0` | 2026-04-22T00:03:14+00:00 | iEgor72 | fix(schedule): scope planner to visible month |
 | `f9c05b7` | 2026-04-21T23:54:12+00:00 | iEgor72 | fix(calendar): accent non-working days with red outline |
 | `eee5595` | 2026-04-21T23:52:33+00:00 | iEgor72 | fix(calendar): remove empty day dashes |
-| `31dab05` | 2026-04-21T23:50:27+00:00 | iEgor72 | fix(calendar): remove marker clutter from month grid |

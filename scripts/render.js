@@ -513,23 +513,25 @@
 
       listEl.addEventListener('click', function(e) {
         if (shiftDetailState.isAnimating) return;
-        var trigger = e.target && e.target.closest ? e.target.closest('.shift-actions-trigger') : null;
+        var eventTarget = e.target && e.target.nodeType === 1 ? e.target : null;
+        var trigger = eventTarget && eventTarget.closest ? eventTarget.closest('.shift-actions-trigger') : null;
         if (trigger && listEl.contains(trigger)) {
           handleShiftActionsTriggerClick(e, trigger, listEl);
           return;
         }
-        var card = e.target && e.target.closest ? e.target.closest('.shift-item[data-shift-open="1"][data-shift-id]') : null;
+        var card = eventTarget && eventTarget.closest ? eventTarget.closest('.shift-item[data-shift-open="1"][data-shift-id]') : null;
         if (!card || !listEl.contains(card)) return;
-        if (e.target.closest('.shift-actions-trigger') || e.target.closest('.shift-actions-wrap')) return;
+        if ((eventTarget.closest && eventTarget.closest('.shift-actions-trigger')) || (eventTarget.closest && eventTarget.closest('.shift-actions-wrap'))) return;
         openShiftEditorFromCard(card);
       });
 
       listEl.addEventListener('keydown', function(e) {
         if (shiftDetailState.isAnimating) return;
         if (!(e.key === 'Enter' || e.key === ' ')) return;
-        var card = e.target && e.target.closest ? e.target.closest('.shift-item[data-shift-open="1"][data-shift-id]') : null;
+        var eventTarget = e.target && e.target.nodeType === 1 ? e.target : null;
+        var card = eventTarget && eventTarget.closest ? eventTarget.closest('.shift-item[data-shift-open="1"][data-shift-id]') : null;
         if (!card || !listEl.contains(card)) return;
-        if (e.target.closest('.shift-actions-trigger') || e.target.closest('.shift-actions-wrap')) return;
+        if ((eventTarget.closest && eventTarget.closest('.shift-actions-trigger')) || (eventTarget.closest && eventTarget.closest('.shift-actions-wrap'))) return;
         e.preventDefault();
         openShiftEditorFromCard(card);
       });
@@ -688,15 +690,15 @@
       }
 
       if (!upcoming.length) {
-        upcomingEl.innerHTML = '<div class="schedule-upcoming-empty">На ближайшие дни смен пока нет.</div>';
+        upcomingEl.innerHTML = '<div class="schedule-upcoming-empty">На ближайшие дни смен пока нет. Откройте «График» или добавьте смену вручную.</div>';
       } else {
         var upcomingHtml = '';
         for (var ui = 0; ui < upcoming.length; ui++) {
           upcomingHtml += '<div class="schedule-upcoming-item' + (upcoming[ui].useStandaloneCard ? ' has-standalone-card' : '') + '">' +
             (upcoming[ui].useStandaloneCard
-              ? ('<div class="schedule-upcoming-main">' + (upcoming[ui].cardHtml || '<div class="schedule-upcoming-empty">Откройте день, чтобы посмотреть детали</div>') + '</div>')
+              ? ('<div class="schedule-upcoming-main">' + (upcoming[ui].cardHtml || '<div class="schedule-upcoming-empty">Откройте день, чтобы посмотреть подробности.</div>') + '</div>')
               : ('<div class="schedule-upcoming-date">' + escapeHtml(formatScheduleShortDate(upcoming[ui].dateKey)) + '</div>' +
-                '<div class="schedule-upcoming-main">' + (upcoming[ui].cardHtml || '<div class="schedule-upcoming-empty">Откройте день, чтобы посмотреть детали</div>') + '</div>')) +
+                '<div class="schedule-upcoming-main">' + (upcoming[ui].cardHtml || '<div class="schedule-upcoming-empty">Откройте день, чтобы посмотреть подробности.</div>') + '</div>')) +
           '</div>';
         }
         upcomingEl.innerHTML = upcomingHtml;

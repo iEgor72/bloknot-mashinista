@@ -1,14 +1,14 @@
 # Project State
 
 <!-- AUTO_STATUS:START -->
-Generated: 2026-04-22 05:23:06 +0000
+Generated: 2026-04-22 05:33:35 +0000
 
 ## Repository Snapshot
 - Local repo path: `/opt/bloknot-mashinista`
 - Project memory path: `/opt/bloknot-mashinista/ai-memory`
 - Branch: `main`
-- HEAD: `50c39fc`
-- Last commit: `50c39fc fix(ui): polish schedule, docs, and auth flows`
+- HEAD: `a7e9bfa`
+- Last commit: `a7e9bfa fix(ui): apply quiet polish refinements`
 
 ## Git Remote
 ```text
@@ -18,18 +18,25 @@ origin	https://github.com/iEgor72/bloknot-mashinista.git (push)
 
 ## Branch Tracking
 ```text
-* main 50c39fc [origin/main] fix(ui): polish schedule, docs, and auth flows
+* main a7e9bfa [origin/main] fix(ui): apply quiet polish refinements
 ```
 
 ## Worktree
 ```text
 M ai-memory/CHANGELOG.md
- M index.html
+ M ai-memory/INDEX.md
+ M ai-memory/PROJECT_STATE.md
+ M ai-memory/RECENT_COMMITS.md
+ M ai-memory/WORKTREE_STATUS.md
+ M scripts/app.js
+ M scripts/auth.js
  M scripts/docs-app.js
- M scripts/press-feedback.js
  M scripts/render.js
  M scripts/shift-form.js
  M styles/00-base.css
+ M styles/10-navigation-and-cards.css
+ M styles/20-form-and-stats.css
+ M styles/30-shifts-and-overlays.css
 ?? ai-memory/sessions/2026-04-19.md
 ?? ai-memory/sessions/2026-04-20.md
 ?? ai-memory/sessions/2026-04-21.md
