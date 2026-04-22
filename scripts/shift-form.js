@@ -136,11 +136,17 @@
     document.getElementById('btnConfirmDelete').addEventListener('click', function() {
       if (!pendingDeleteId) return;
       triggerHapticActionMedium();
+      var deletedShift = findShiftById(pendingDeleteId);
+      var deletedDateKey = deletedShift && deletedShift.start_msk ? normalizeDateKey(deletedShift.start_msk.substring(0, 10)) : '';
+      var shouldSuppressScheduleDay = !!(deletedShift && typeof isScheduleMaterializedShift === 'function' && isScheduleMaterializedShift(deletedShift) && deletedDateKey);
       var newShifts = [];
       for (var i = 0; i < allShifts.length; i++) {
         if (allShifts[i].id !== pendingDeleteId) newShifts.push(allShifts[i]);
       }
       allShifts = newShifts;
+      if (shouldSuppressScheduleDay && typeof setScheduleDayOverride === 'function') {
+        setScheduleDayOverride(deletedDateKey, { code: 'V', startTime: '', endTime: '' });
+      }
       pendingMutationIds = [];
       if (editingShiftId === pendingDeleteId) {
         exitEditMode();
@@ -886,6 +892,15 @@
       });
     }
 
+    function persistScheduleMaterializedMonth(options) {
+      if (typeof syncVisibleMonthMaterializedScheduleShifts !== 'function' || typeof saveShifts !== 'function') return false;
+      var changed = syncVisibleMonthMaterializedScheduleShifts(options);
+      if (!changed) return false;
+      pendingMutationIds = [];
+      saveShifts();
+      return true;
+    }
+
     var saveSchedulePeriodBtn = document.getElementById('btnSaveSchedulePeriod');
     if (saveSchedulePeriodBtn) {
       saveSchedulePeriodBtn.addEventListener('click', function() {
@@ -913,6 +928,7 @@
         clearScheduleConflictState();
         var isEditingPeriod = !!selectedSchedulePeriodId;
         upsertSchedulePeriod(draft);
+        persistScheduleMaterializedMonth({ purgePeriodIds: [draft.id] });
         triggerHapticSuccess();
         render();
         resetSchedulePlannerForm();
@@ -936,7 +952,9 @@
           resetSchedulePlannerForm();
         }
         clearScheduleConflictState();
-        deleteSchedulePeriod(deleteBtn.getAttribute('data-schedule-delete'));
+        var deletedPeriodId = deleteBtn.getAttribute('data-schedule-delete');
+        deleteSchedulePeriod(deletedPeriodId);
+        persistScheduleMaterializedMonth({ purgePeriodIds: [deletedPeriodId] });
         triggerHapticWarning();
         render();
         showSaveToast('Период удалён', 'neutral');
@@ -963,6 +981,7 @@
             replaceIds.push(pendingScheduleConflict.overlaps[i].id);
           }
           replaceSchedulePeriods(pendingScheduleConflict.draft, replaceIds);
+          persistScheduleMaterializedMonth({ purgePeriodIds: [pendingScheduleConflict.draft.id].concat(replaceIds) });
           clearScheduleConflictState();
           triggerHapticSuccess();
           render();

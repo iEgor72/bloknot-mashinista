@@ -555,7 +555,6 @@
 
     function getShiftTypeLabel(shift) {
       if (!shift) return 'Смена';
-      if (shift.isScheduleDerived) return 'Смена по графику';
       if (shift.route_kind === 'trip') return 'Поездка';
       if (shift.route_kind === 'depot') return 'Смена';
       return 'Смена';

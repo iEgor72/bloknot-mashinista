@@ -35,22 +35,19 @@
       var shiftIdAttr = escapeHtml(shiftIdStr);
       var isActionsOpen = activeShiftMenuId !== null && String(activeShiftMenuId) === shiftIdStr;
 
-      var actionsHtml = '';
-      if (!sh.isScheduleDerived) {
-        actionsHtml = '<div class="shift-top-right">' +
-          '<div class="shift-actions-wrap">' +
-            '<button class="shift-actions-trigger' + (isActionsOpen ? ' is-open' : '') + '" type="button" data-id="' + shiftIdAttr + '" aria-label="Действия" aria-haspopup="menu" aria-expanded="' + (isActionsOpen ? 'true' : 'false') + '">' +
-              '<svg class="shift-actions-trigger-icon" viewBox="0 0 24 24" aria-hidden="true" focusable="false">' +
-                '<circle cx="6.5" cy="12" r="1.7"></circle>' +
-                '<circle cx="12" cy="12" r="1.7"></circle>' +
-                '<circle cx="17.5" cy="12" r="1.7"></circle>' +
-              '</svg>' +
-            '</button>' +
-          '</div>' +
-        '</div>';
-      }
+      var actionsHtml = '<div class="shift-top-right">' +
+        '<div class="shift-actions-wrap">' +
+          '<button class="shift-actions-trigger' + (isActionsOpen ? ' is-open' : '') + '" type="button" data-id="' + shiftIdAttr + '" aria-label="Действия" aria-haspopup="menu" aria-expanded="' + (isActionsOpen ? 'true' : 'false') + '">' +
+            '<svg class="shift-actions-trigger-icon" viewBox="0 0 24 24" aria-hidden="true" focusable="false">' +
+              '<circle cx="6.5" cy="12" r="1.7"></circle>' +
+              '<circle cx="12" cy="12" r="1.7"></circle>' +
+              '<circle cx="17.5" cy="12" r="1.7"></circle>' +
+            '</svg>' +
+          '</button>' +
+        '</div>' +
+      '</div>';
 
-      var html = '<div class="' + itemClass + '" data-shift-id="' + shiftIdAttr + '" data-pending="' + (shiftIsPending ? '1' : '0') + '" data-shift-open="1" role="button" tabindex="0" aria-label="' + escapeHtml((sh.isScheduleDerived ? 'Открыть день графика: ' : 'Редактировать смену: ') + (shiftTitle || 'Смена')) + '">' +
+      var html = '<div class="' + itemClass + '" data-shift-id="' + shiftIdAttr + '" data-pending="' + (shiftIsPending ? '1' : '0') + '" data-shift-open="1" role="button" tabindex="0" aria-label="Редактировать смену: ' + escapeHtml(shiftTitle || 'Смена') + '">' +
         '<div class="shift-card-top">' +
           typeHtml +
           actionsHtml +
@@ -507,12 +504,6 @@
       var shift = findShiftById(shiftId);
       if (!shift) return;
       triggerHapticTapLight();
-      if (shift.isScheduleDerived) {
-        setSelectedScheduleDay(shift.scheduleDateKey || (shift.start_msk ? shift.start_msk.substring(0, 10) : ''));
-        renderScheduleDayOverlay();
-        openOverlay('overlayScheduleDay');
-        return;
-      }
       enterEditMode(shift, { returnTab: activeTab });
     }
 
@@ -890,8 +881,10 @@
       if (!dateEl || !statusEl || !factCardEl || !factTitleEl || !factTextEl || !factContentEl || !planCardEl || !planTitleEl || !planTimeEl || !planDurationEl || !planTextEl || !addShiftBtn || !editShiftBtn) return;
 
       dateEl.textContent = formatScheduleDateLabel(dateKey);
+      var primaryFactShift = state.factShifts && state.factShifts[0] ? state.factShifts[0] : null;
+      var hasMaterializedFact = !!(primaryFactShift && typeof isScheduleMaterializedShift === 'function' && isScheduleMaterializedShift(primaryFactShift));
       var statusParts = [];
-      if (state.hasFact && state.plannedCode) {
+      if (state.hasFact && state.plannedCode && !hasMaterializedFact) {
         statusParts.push(state.effectiveCode === 'N' ? 'Итог, отработали в ночь.' : 'Итог, отработали днём.');
         statusParts.push('Ниже есть и запись, и график.');
       } else if (state.hasFact) {
@@ -915,7 +908,7 @@
       factContentEl.innerHTML = daySummary.cardHtml || '<div class="schedule-day-empty-card">Записи нет.</div>';
 
       var planSummary = buildScheduleDayPlanSummary(state);
-      planCardEl.classList.toggle('hidden', !state.plannedCode);
+      planCardEl.classList.toggle('hidden', !state.plannedCode || hasMaterializedFact);
       planTitleEl.textContent = planSummary.titleText;
       planTimeEl.textContent = planSummary.timeText;
       planDurationEl.textContent = planSummary.durationText;
@@ -925,7 +918,7 @@
       addShiftBtn.textContent = 'Добавить запись';
       editShiftBtn.classList.toggle('hidden', !state.hasFact);
       if (!editShiftBtn.classList.contains('hidden') && state.factShifts[0]) {
-        editShiftBtn.textContent = 'Открыть в сменах';
+        editShiftBtn.textContent = hasMaterializedFact ? 'Редактировать смену' : 'Открыть в сменах';
         editShiftBtn.setAttribute('data-shift-id', state.factShifts[0].id);
         editShiftBtn.setAttribute('data-date-key', state.dateKey || '');
       } else {
@@ -950,7 +943,6 @@
     function render() {
       updateOfflineUiState();
       renderUserStatsFooter();
-      var _renderPendingMap = getPendingShiftIdMap();
 
       // Month title
       renderMonthHeader('monthTitle', 'monthQuarter', 'homeMonthTabs', currentYear, currentMonth, function(targetMonth) {
@@ -967,6 +959,11 @@
       });
 
       var bounds = getMonthBounds(currentYear, currentMonth);
+      if (typeof syncVisibleMonthMaterializedScheduleShifts === 'function') {
+        var materializedChanged = syncVisibleMonthMaterializedScheduleShifts();
+        if (materializedChanged && typeof saveShifts === 'function') saveShifts();
+      }
+      var _renderPendingMap = getPendingShiftIdMap();
       var monthShiftSets = buildMonthCalculationShifts(currentYear, currentMonth, bounds);
       var monthShifts = monthShiftSets.actualShifts;
       var calculationShifts = monthShiftSets.calculationShifts;

@@ -1009,12 +1009,32 @@
       return result;
     }
 
+    function isScheduleMaterializedShift(shift) {
+      return !!(shift && (shift.schedule_generated || shift.isScheduleDerived || shift.schedule_period_id));
+    }
+
     function getScheduleFactShiftsForDate(dateKey) {
       var safeDate = normalizeDateKey(dateKey);
       if (!safeDate) return [];
       var result = [];
       for (var i = 0; i < allShifts.length; i++) {
         var shift = allShifts[i];
+        var startDate = normalizeDateKey(shift && shift.start_msk ? shift.start_msk.substring(0, 10) : '');
+        if (startDate === safeDate) {
+          result.push(shift);
+        }
+      }
+      result.sort(compareShiftsByStartDesc);
+      return result;
+    }
+
+    function getManualFactShiftsForDate(dateKey) {
+      var safeDate = normalizeDateKey(dateKey);
+      if (!safeDate) return [];
+      var result = [];
+      for (var i = 0; i < allShifts.length; i++) {
+        var shift = allShifts[i];
+        if (isScheduleMaterializedShift(shift)) continue;
         var startDate = normalizeDateKey(shift && shift.start_msk ? shift.start_msk.substring(0, 10) : '');
         if (startDate === safeDate) {
           result.push(shift);
@@ -1123,23 +1143,77 @@
       };
     }
 
+    function buildMaterializedScheduleShift(dateKey, period, plannedCode, startTime, endTime) {
+      var safeDate = normalizeDateKey(dateKey);
+      var safeCode = normalizeScheduleCode(plannedCode);
+      if (!safeDate || !period || (safeCode !== 'D' && safeCode !== 'N')) return null;
+      var safeStart = normalizeTimeValue(startTime, '01:00');
+      var safeEnd = normalizeTimeValue(endTime, '13:00');
+      var endDate = buildPresetShiftEndDate(safeDate, safeStart, safeEnd);
+      return {
+        id: 'schedule_' + String(period.id || 'period') + '_' + safeDate,
+        start_msk: safeDate + 'T' + safeStart,
+        end_msk: endDate + 'T' + safeEnd,
+        created_at: new Date().toISOString(),
+        route_kind: 'depot',
+        schedule_code: safeCode,
+        schedule_generated: true,
+        schedule_period_id: String(period.id || ''),
+        scheduleDateKey: safeDate
+      };
+    }
+
     function buildScheduleDerivedShift(dateKey, dayState) {
       var safeDate = normalizeDateKey(dateKey);
       var state = dayState || resolveScheduleDay(safeDate);
       if (!safeDate || !state || state.hasFact) return null;
       if (state.plannedCode !== 'D' && state.plannedCode !== 'N') return null;
-      var startTime = normalizeTimeValue(state.startTime, '01:00');
-      var endTime = normalizeTimeValue(state.endTime, '13:00');
-      var endDate = buildPresetShiftEndDate(safeDate, startTime, endTime);
-      return {
-        id: 'schedule_' + safeDate + '_' + state.plannedCode,
-        start_msk: safeDate + 'T' + startTime,
-        end_msk: endDate + 'T' + endTime,
-        route_kind: 'depot',
-        schedule_code: state.plannedCode,
-        isScheduleDerived: true,
-        scheduleDateKey: safeDate
-      };
+      return buildMaterializedScheduleShift(safeDate, state.period, state.plannedCode, state.startTime, state.endTime);
+    }
+
+    function syncMaterializedScheduleShiftsForRange(startDateKey, endDateKey, options) {
+      var safeStart = normalizeDateKey(startDateKey);
+      var safeEnd = normalizeDateKey(endDateKey);
+      if (!safeStart || !safeEnd) return false;
+      var opts = options && typeof options === 'object' ? options : {};
+      var purgeIds = Array.isArray(opts.purgePeriodIds) ? opts.purgePeriodIds : [];
+      var purgeMap = Object.create(null);
+      for (var pi = 0; pi < purgeIds.length; pi++) {
+        if (purgeIds[pi]) purgeMap[String(purgeIds[pi])] = true;
+      }
+      var nextShifts = [];
+      for (var i = 0; i < allShifts.length; i++) {
+        var shift = allShifts[i];
+        if (isScheduleMaterializedShift(shift)) {
+          var shiftStart = normalizeDateKey(shift && shift.start_msk ? shift.start_msk.substring(0, 10) : '');
+          var periodId = shift && shift.schedule_period_id ? String(shift.schedule_period_id) : '';
+          if ((shiftStart && compareDateKeys(shiftStart, safeStart) >= 0 && compareDateKeys(shiftStart, safeEnd) <= 0) || purgeMap[periodId]) {
+            continue;
+          }
+        }
+        nextShifts.push(shift);
+      }
+      var dayCount = getDaysBetweenDateKeys(safeStart, safeEnd);
+      for (var day = 0; day <= dayCount; day++) {
+        var dateKey = getDateKeyByOffset(safeStart, day);
+        if (!dateKey) continue;
+        if (getManualFactShiftsForDate(dateKey).length) continue;
+        var plan = getPlannedScheduleSnapshot(dateKey);
+        if (!plan || !plan.period) continue;
+        var generatedShift = buildMaterializedScheduleShift(dateKey, plan.period, plan.plannedCode, plan.startTime, plan.endTime);
+        if (!generatedShift) continue;
+        nextShifts.push(generatedShift);
+      }
+      nextShifts.sort(compareShiftsByStartDesc);
+      var prevSerialized = JSON.stringify(cloneShiftsForCache(allShifts));
+      var nextSerialized = JSON.stringify(cloneShiftsForCache(nextShifts));
+      if (prevSerialized === nextSerialized) return false;
+      allShifts = nextShifts;
+      return true;
+    }
+
+    function syncVisibleMonthMaterializedScheduleShifts(options) {
+      return syncMaterializedScheduleShiftsForRange(getVisibleMonthStartDateKey(), getVisibleMonthEndDateKey(), options);
     }
 
     function buildMonthCalculationShifts(year, month0, bounds) {
