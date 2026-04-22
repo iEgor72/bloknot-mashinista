@@ -924,7 +924,7 @@
       addShiftBtn.textContent = 'Добавить запись';
       editShiftBtn.classList.toggle('hidden', !state.hasFact);
       if (!editShiftBtn.classList.contains('hidden') && state.factShifts[0]) {
-        editShiftBtn.textContent = hasMaterializedFact ? 'Редактировать смену' : 'Открыть в сменах';
+        editShiftBtn.textContent = 'Открыть в сменах';
         editShiftBtn.setAttribute('data-shift-id', state.factShifts[0].id);
         editShiftBtn.setAttribute('data-date-key', state.dateKey || '');
       } else {
