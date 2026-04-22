@@ -2512,27 +2512,27 @@
       if (entry === 'instructions') {
         return {
           title: 'Инструкции',
-          subtitle: 'Здесь полный текст документов',
+          subtitle: 'Полные документы и приказы',
           tabs: ['instructions']
         };
       }
       if (entry === 'folders') {
         return {
           title: 'Папки',
-          subtitle: 'Здесь материалы собраны по темам',
+          subtitle: 'Материалы собраны по темам',
           tabs: ['folders']
         };
       }
       if (entry === 'memory') {
         return {
           title: 'Памятки',
-          subtitle: 'Здесь быстрые материалы: скорости, режимки и памятки',
+          subtitle: 'Короткие подсказки для работы',
           tabs: ['speeds', 'memos', 'reminders']
         };
       }
       return {
         title: 'Документы',
-        subtitle: 'Сначала выберите раздел',
+        subtitle: 'Выберите нужный раздел',
         tabs: []
       };
     }

@@ -1,14 +1,14 @@
 # Project State
 
 <!-- AUTO_STATUS:START -->
-Generated: 2026-04-22 04:08:46 +0000
+Generated: 2026-04-22 04:11:48 +0000
 
 ## Repository Snapshot
 - Local repo path: `/opt/bloknot-mashinista`
 - Project memory path: `/opt/bloknot-mashinista/ai-memory`
 - Branch: `main`
-- HEAD: `effa4e6`
-- Last commit: `effa4e6 style(schedule): tighten calendar card spacing`
+- HEAD: `4687936`
+- Last commit: `4687936 fix(schedule): remove header gap under calendar title`
 
 ## Git Remote
 ```text
@@ -18,7 +18,7 @@ origin	https://github.com/iEgor72/bloknot-mashinista.git (push)
 
 ## Branch Tracking
 ```text
-* main effa4e6 [origin/main] style(schedule): tighten calendar card spacing
+* main 4687936 [origin/main] fix(schedule): remove header gap under calendar title
 ```
 
 ## Worktree

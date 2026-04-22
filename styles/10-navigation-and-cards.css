@@ -2322,9 +2322,11 @@
       font-size: 12px;
       line-height: 1.3;
       color: rgba(238, 242, 248, 0.68);
-      white-space: nowrap;
+      white-space: normal;
       overflow: hidden;
-      text-overflow: ellipsis;
+      display: -webkit-box;
+      -webkit-line-clamp: 2;
+      -webkit-box-orient: vertical;
     }
 
     .docs-entry-meta {

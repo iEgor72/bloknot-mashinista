@@ -1,6 +1,6 @@
 # Worktree Status
 
-Generated: 2026-04-22 04:08:46 +0000
+Generated: 2026-04-22 04:11:48 +0000
 
 ## git status -sb
 ```text
@@ -18,17 +18,17 @@ Generated: 2026-04-22 04:08:46 +0000
 
 ## git branch -vv
 ```text
-* main effa4e6 [origin/main] style(schedule): tighten calendar card spacing
+* main 4687936 [origin/main] fix(schedule): remove header gap under calendar title
 ```
 
 ## HEAD
 ```text
-effa4e6 style(schedule): tighten calendar card spacing
+4687936 fix(schedule): remove header gap under calendar title
  ai-memory/CHANGELOG.md             |  8 ++++++++
  ai-memory/INDEX.md                 |  2 +-
  ai-memory/PROJECT_STATE.md         |  8 ++++----
  ai-memory/RECENT_COMMITS.md        |  4 ++--
- ai-memory/WORKTREE_STATUS.md       | 21 +++++++++++----------
- styles/10-navigation-and-cards.css |  3 ++-
- 6 files changed, 28 insertions(+), 18 deletions(-)
+ ai-memory/WORKTREE_STATUS.md       | 21 ++++++++++-----------
+ styles/10-navigation-and-cards.css | 13 +++++++++----
+ 6 files changed, 34 insertions(+), 22 deletions(-)
 ```
