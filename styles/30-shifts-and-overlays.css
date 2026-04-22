@@ -1575,6 +1575,7 @@
       margin: auto;
       display: grid;
       gap: 12px;
+      justify-items: center;
     }
 
     .docs-viewer-loading {
@@ -1614,6 +1615,8 @@
       text-align: center;
       text-wrap: balance;
       max-width: 28ch;
+      margin: 0 auto;
+      justify-self: center;
     }
 
     @keyframes docsViewerProgressSlide {

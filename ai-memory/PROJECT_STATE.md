@@ -1,14 +1,14 @@
 # Project State
 
 <!-- AUTO_STATUS:START -->
-Generated: 2026-04-22 11:15:14 +0000
+Generated: 2026-04-22 11:17:27 +0000
 
 ## Repository Snapshot
 - Local repo path: `/opt/bloknot-mashinista`
 - Project memory path: `/opt/bloknot-mashinista/ai-memory`
 - Branch: `main`
-- HEAD: `640559c`
-- Last commit: `640559c feat(docs): add uploaded reminders`
+- HEAD: `7e4f3f6`
+- Last commit: `7e4f3f6 chore(git): allow docs catalog in data`
 
 ## Git Remote
 ```text
@@ -18,7 +18,7 @@ origin	https://github.com/iEgor72/bloknot-mashinista.git (push)
 
 ## Branch Tracking
 ```text
-* main 640559c [origin/main] feat(docs): add uploaded reminders
+* main 7e4f3f6 [origin/main] chore(git): allow docs catalog in data
 ```
 
 ## Worktree
