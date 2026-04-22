@@ -1,14 +1,14 @@
 # Project State
 
 <!-- AUTO_STATUS:START -->
-Generated: 2026-04-22 04:06:50 +0000
+Generated: 2026-04-22 04:08:46 +0000
 
 ## Repository Snapshot
 - Local repo path: `/opt/bloknot-mashinista`
 - Project memory path: `/opt/bloknot-mashinista/ai-memory`
 - Branch: `main`
-- HEAD: `45ddfa0`
-- Last commit: `45ddfa0 copy(schedule): remove redundant calendar subtitle`
+- HEAD: `effa4e6`
+- Last commit: `effa4e6 style(schedule): tighten calendar card spacing`
 
 ## Git Remote
 ```text
@@ -18,7 +18,7 @@ origin	https://github.com/iEgor72/bloknot-mashinista.git (push)
 
 ## Branch Tracking
 ```text
-* main 45ddfa0 [origin/main] copy(schedule): remove redundant calendar subtitle
+* main effa4e6 [origin/main] style(schedule): tighten calendar card spacing
 ```
 
 ## Worktree

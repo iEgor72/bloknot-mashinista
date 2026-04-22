@@ -689,11 +689,16 @@
     }
 
     .schedule-card-head {
-      display: flex;
-      align-items: flex-start;
-      justify-content: space-between;
-      gap: 12px;
+      position: relative;
+      display: block;
+      padding-right: 92px;
       margin-bottom: -1px;
+    }
+
+    .schedule-card-head .section-link {
+      position: absolute;
+      top: 0;
+      right: 0;
     }
 
     .schedule-card-subtitle {

@@ -1,6 +1,6 @@
 # Worktree Status
 
-Generated: 2026-04-22 04:06:50 +0000
+Generated: 2026-04-22 04:08:46 +0000
 
 ## git status -sb
 ```text
@@ -18,18 +18,17 @@ Generated: 2026-04-22 04:06:50 +0000
 
 ## git branch -vv
 ```text
-* main 45ddfa0 [origin/main] copy(schedule): remove redundant calendar subtitle
+* main effa4e6 [origin/main] style(schedule): tighten calendar card spacing
 ```
 
 ## HEAD
 ```text
-45ddfa0 copy(schedule): remove redundant calendar subtitle
- ai-memory/CHANGELOG.md       |  8 ++++++++
- ai-memory/INDEX.md           |  2 +-
- ai-memory/PROJECT_STATE.md   |  8 ++++----
- ai-memory/RECENT_COMMITS.md  |  4 ++--
- ai-memory/WORKTREE_STATUS.md | 15 ++++++---------
- index.html                   |  1 -
- scripts/render.js            |  7 +------
- 7 files changed, 22 insertions(+), 23 deletions(-)
+effa4e6 style(schedule): tighten calendar card spacing
+ ai-memory/CHANGELOG.md             |  8 ++++++++
+ ai-memory/INDEX.md                 |  2 +-
+ ai-memory/PROJECT_STATE.md         |  8 ++++----
+ ai-memory/RECENT_COMMITS.md        |  4 ++--
+ ai-memory/WORKTREE_STATUS.md       | 21 +++++++++++----------
+ styles/10-navigation-and-cards.css |  3 ++-
+ 6 files changed, 28 insertions(+), 18 deletions(-)
 ```
