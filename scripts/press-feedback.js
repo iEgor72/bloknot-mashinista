@@ -56,7 +56,11 @@
     if (!node || !node.closest) return null;
     var pressable = node.closest(PRESS_SELECTOR);
     if (!pressable) return null;
-    if (pressable.disabled || pressable.getAttribute('aria-disabled') === 'true') {
+    if (
+      pressable.disabled ||
+      pressable.getAttribute('aria-disabled') === 'true' ||
+      pressable.getAttribute('aria-busy') === 'true'
+    ) {
       return null;
     }
     return pressable;

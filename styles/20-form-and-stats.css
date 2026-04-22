@@ -545,6 +545,12 @@
       border-bottom: 1px solid var(--border);
     }
 
+    .optional-summary:focus-visible {
+      outline: 2px solid rgba(91, 210, 255, 0.85);
+      outline-offset: -2px;
+      border-radius: calc(var(--r-inner) + 2px);
+    }
+
     .optional-grid-two {
       grid-template-columns: repeat(2, minmax(0, 1fr));
     }

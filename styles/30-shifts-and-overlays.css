@@ -77,6 +77,9 @@
       font-size: 14px;
       line-height: 1.55;
       box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.03);
+      max-width: 360px;
+      margin: 0 auto;
+      text-wrap: balance;
     }
 
     /* ── Rest gap indicator ── */
@@ -785,6 +788,11 @@
       border-color: rgba(56, 189, 248, 0.2);
       box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.03);
       transform: none;
+    }
+
+    .shift-actions-trigger:focus-visible {
+      outline: 2px solid rgba(91, 210, 255, 0.9);
+      outline-offset: 2px;
     }
 
     .shift-actions-trigger-icon {
@@ -1717,6 +1725,11 @@
       transform: translateY(1px);
     }
 
+    .docs-item:focus-visible {
+      outline: 2px solid rgba(91, 210, 255, 0.9);
+      outline-offset: 2px;
+    }
+
     .docs-item.is-downloaded {
       border-color: rgba(74, 222, 128, 0.28);
     }
@@ -1858,6 +1871,9 @@
       background: linear-gradient(180deg, rgba(255, 255, 255, 0.024), rgba(255, 255, 255, 0.01)), var(--card-hi);
       border: 1px solid rgba(255, 255, 255, 0.08);
       box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.02);
+      max-width: 360px;
+      margin: 0 auto;
+      text-wrap: balance;
     }
 
     .docs-empty-state-muted {
@@ -1873,6 +1889,8 @@
 
     .docs-empty-text {
       color: rgba(238, 242, 248, 0.66);
+      max-width: 30ch;
+      margin: 0 auto;
     }
 
     .docs-upload-btn {

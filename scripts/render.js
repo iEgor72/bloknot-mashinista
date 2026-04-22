@@ -688,7 +688,7 @@
       }
 
       if (!upcoming.length) {
-        upcomingEl.innerHTML = '<div class="schedule-upcoming-empty">Ближайших смен пока нет.</div>';
+        upcomingEl.innerHTML = '<div class="schedule-upcoming-empty">На ближайшие дни смен пока нет.</div>';
       } else {
         var upcomingHtml = '';
         for (var ui = 0; ui < upcoming.length; ui++) {
@@ -752,7 +752,7 @@
     function buildScheduleDayFactSummary(state) {
       var summary = {
         titleText: 'Смена за день',
-        noteText: 'За этот день смены пока нет.',
+        noteText: 'За этот день смены нет.',
         cardHtml: ''
       };
       if (!state) return summary;
@@ -773,7 +773,7 @@
         titleText: 'Запланировано по графику',
         timeText: '—',
         durationText: '—',
-        noteText: 'На этот день ничего не задано по графику.'
+        noteText: 'На этот день по графику ничего не запланировано.'
       };
       if (!state) return summary;
       if (state.plannedCode === 'D' || state.plannedCode === 'N') {

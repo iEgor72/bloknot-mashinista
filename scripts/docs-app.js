@@ -254,8 +254,8 @@
                 '<path d="M16 32H24" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"/>' +
               '</svg>' +
             '</div>' +
-            '<div class="docs-empty-title">Файлов пока нет</div>' +
-            '<div class="docs-empty-text">Файлы будут здесь после загрузки</div>' +
+            '<div class="docs-empty-title">В этом разделе пока пусто</div>' +
+            '<div class="docs-empty-text">Когда сюда добавят файлы, они появятся здесь.</div>' +
           '</div>';
         return;
       }
@@ -327,10 +327,10 @@
       var listId = docsFolderListId(folder);
       var el = listId ? document.getElementById(listId) : null;
       if (!el) return;
-      var title = navigator.onLine === false ? 'Список пока недоступен оффлайн' : 'Не удалось загрузить список файлов';
+      var title = navigator.onLine === false ? 'Список пока недоступен без интернета' : 'Не удалось загрузить список файлов';
       var text = navigator.onLine === false
-        ? 'Если это первый запуск, подключитесь к интернету и откройте раздел ещё раз. Потом список будет доступнее даже при слабой сети.'
-        : 'Связь сейчас нестабильна. Подождите немного и откройте раздел ещё раз.';
+        ? 'Если открываете раздел впервые, подключитесь к интернету и зайдите сюда ещё раз. Потом он будет доступен и оффлайн.'
+        : 'Связь сейчас нестабильна. Подождите немного и попробуйте снова.';
       el.innerHTML =
         '<div class="docs-empty-state docs-empty-state-muted">' +
           '<div class="docs-empty-title">' + title + '</div>' +

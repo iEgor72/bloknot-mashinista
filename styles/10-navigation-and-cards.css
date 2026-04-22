@@ -185,6 +185,11 @@
       border-color: rgba(56, 189, 248, 0.2);
     }
 
+    .month-btn:focus-visible {
+      outline: 2px solid rgba(91, 210, 255, 0.9);
+      outline-offset: 2px;
+    }
+
     /* ── Quarter month tabs ── */
     .month-tabs {
       display: grid;
@@ -220,6 +225,11 @@
     }
 
     .month-tab:active { opacity: 0.8; }
+
+    .month-tab:focus-visible {
+      outline: 2px solid rgba(91, 210, 255, 0.85);
+      outline-offset: 2px;
+    }
 
     /* ── Dashboard card (hours) ── */
     .dashboard-card {

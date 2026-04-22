@@ -133,7 +133,14 @@
       enterEditMode(shift, { returnTab: activeTab });
     }
 
-    document.getElementById('btnConfirmDelete').addEventListener('click', function() {
+    function bindClickById(id, handler) {
+      var el = document.getElementById(id);
+      if (!el || typeof handler !== 'function') return null;
+      el.addEventListener('click', handler);
+      return el;
+    }
+
+    bindClickById('btnConfirmDelete', function() {
       if (pendingScheduleDeletePeriodId) {
         triggerHapticWarning();
         var deletedPeriodId = pendingScheduleDeletePeriodId;
@@ -202,7 +209,7 @@
       });
     });
 
-    document.getElementById('btnCancelDelete').addEventListener('click', function() {
+    bindClickById('btnCancelDelete', function() {
       pendingDeleteId = null;
       pendingScheduleDeletePeriodId = null;
       closeOverlay('overlayConfirm');
@@ -1231,11 +1238,11 @@ if (action === 'scroll-node') {
       });
     }
 
-    document.getElementById('btnCancelEdit').addEventListener('click', function() {
+    bindClickById('btnCancelEdit', function() {
       exitEditMode();
       showActionToast('canceled');
     });
-    document.getElementById('btnDeleteEdit').addEventListener('click', function() {
+    bindClickById('btnDeleteEdit', function() {
       if (!editingShiftId) return;
       triggerHapticWarning();
       pendingDeleteId = editingShiftId;
@@ -1252,7 +1259,7 @@ if (action === 'scroll-node') {
       });
     }
 
-    document.getElementById('btnCloseAddScreen').addEventListener('click', function() {
+    bindClickById('btnCloseAddScreen', function() {
       closeOverlay('overlayAddScreen');
     });
 
@@ -1272,7 +1279,7 @@ if (action === 'scroll-node') {
       });
     }
 
-    document.getElementById('btnCopyUrl').addEventListener('click', function() {
+    bindClickById('btnCopyUrl', function() {
       var appUrlEl = document.getElementById('appUrl');
       var url = (appUrlEl && appUrlEl.dataset && appUrlEl.dataset.fullUrl) ? appUrlEl.dataset.fullUrl : getAppUrl();
 
@@ -1373,7 +1380,7 @@ if (action === 'scroll-node') {
       });
     }
 
-    document.getElementById('btnAuthRetry').addEventListener('click', function() {
+    bindClickById('btnAuthRetry', function() {
       restartAuthFlow();
     });
 

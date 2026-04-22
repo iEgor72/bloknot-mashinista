@@ -483,6 +483,21 @@
 
     .auth-primary:active { transform: translateY(0); }
 
+    .auth-primary:focus-visible {
+      outline: 2px solid rgba(91, 210, 255, 0.95);
+      outline-offset: 2px;
+    }
+
+    .auth-primary[aria-busy="true"] {
+      cursor: wait;
+      opacity: 0.92;
+      box-shadow: 0 3px 14px rgba(56, 189, 248, 0.18);
+    }
+
+    .auth-primary:disabled {
+      cursor: default;
+    }
+
     .auth-primary-hint {
       font-size: 12px;
       line-height: 1.5;
