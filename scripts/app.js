@@ -1216,6 +1216,24 @@
       return syncMaterializedScheduleShiftsForRange(getVisibleMonthStartDateKey(), getVisibleMonthEndDateKey(), options);
     }
 
+    function persistVisibleMonthMaterializedScheduleShifts(options) {
+      if (typeof saveShifts !== 'function') return false;
+      var changed = syncVisibleMonthMaterializedScheduleShifts(options);
+      if (!changed) return false;
+      pendingMutationIds = [];
+      saveShifts();
+      return true;
+    }
+
+    function persistScheduleDayMaterializedShift(dateKey, options) {
+      if (typeof saveShifts !== 'function') return false;
+      var changed = syncMaterializedScheduleShiftsForRange(dateKey, dateKey, options);
+      if (!changed) return false;
+      pendingMutationIds = [];
+      saveShifts();
+      return true;
+    }
+
     function buildMonthCalculationShifts(year, month0, bounds) {
       var actualShifts = [];
       var calculationShifts = [];

@@ -195,6 +195,7 @@
       button.addEventListener('click', function() {
         triggerHapticSelection();
         shiftCurrentMonthBy(delta);
+        if (typeof persistVisibleMonthMaterializedScheduleShifts === 'function') persistVisibleMonthMaterializedScheduleShifts();
         render();
       });
     }
@@ -893,12 +894,8 @@
     }
 
     function persistScheduleMaterializedMonth(options) {
-      if (typeof syncVisibleMonthMaterializedScheduleShifts !== 'function' || typeof saveShifts !== 'function') return false;
-      var changed = syncVisibleMonthMaterializedScheduleShifts(options);
-      if (!changed) return false;
-      pendingMutationIds = [];
-      saveShifts();
-      return true;
+      if (typeof persistVisibleMonthMaterializedScheduleShifts !== 'function') return false;
+      return persistVisibleMonthMaterializedScheduleShifts(options);
     }
 
     var saveSchedulePeriodBtn = document.getElementById('btnSaveSchedulePeriod');

@@ -663,6 +663,9 @@
           var dateKey = e.currentTarget.getAttribute('data-schedule-date');
           if (!dateKey) return;
           setSelectedScheduleDay(dateKey);
+          if (typeof persistScheduleDayMaterializedShift === 'function') {
+            persistScheduleDayMaterializedShift(dateKey);
+          }
           renderScheduleDayOverlay();
           openOverlay('overlayScheduleDay');
         });
@@ -864,10 +867,6 @@
 
     function renderScheduleDayOverlay() {
       var dateKey = selectedScheduleDayKey || getTodayDateKey();
-      if (typeof syncMaterializedScheduleShiftsForRange === 'function') {
-        var materializedChanged = syncMaterializedScheduleShiftsForRange(dateKey, dateKey);
-        if (materializedChanged && typeof saveShifts === 'function') saveShifts();
-      }
       var state = resolveScheduleDay(dateKey);
       var dateEl = document.getElementById('scheduleDayDate');
       var statusEl = document.getElementById('scheduleDayStatus');
@@ -955,20 +954,18 @@
         if (targetMonth === currentMonth) return;
         triggerHapticSelection();
         currentMonth = targetMonth;
+        if (typeof persistVisibleMonthMaterializedScheduleShifts === 'function') persistVisibleMonthMaterializedScheduleShifts();
         render();
       });
       renderMonthHeader('shiftsMonthTitle', 'shiftsMonthQuarter', 'shiftsMonthTabs', currentYear, currentMonth, function(targetMonth) {
         if (targetMonth === currentMonth) return;
         triggerHapticSelection();
         currentMonth = targetMonth;
+        if (typeof persistVisibleMonthMaterializedScheduleShifts === 'function') persistVisibleMonthMaterializedScheduleShifts();
         render();
       });
 
       var bounds = getMonthBounds(currentYear, currentMonth);
-      if (typeof syncVisibleMonthMaterializedScheduleShifts === 'function') {
-        var materializedChanged = syncVisibleMonthMaterializedScheduleShifts();
-        if (materializedChanged && typeof saveShifts === 'function') saveShifts();
-      }
       var _renderPendingMap = getPendingShiftIdMap();
       var monthShiftSets = buildMonthCalculationShifts(currentYear, currentMonth, bounds);
       var monthShifts = monthShiftSets.actualShifts;
