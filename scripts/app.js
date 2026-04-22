@@ -1297,6 +1297,22 @@
       return result;
     }
 
+    function resolveScheduleShiftWindow(plannedCode, startTime, endTime) {
+      var safeCode = normalizeScheduleCode(plannedCode);
+      var safeStart = normalizeTimeValue(startTime, '01:00');
+      var safeEnd = normalizeTimeValue(endTime, '13:00');
+      if (safeCode === 'N') {
+        return {
+          startTime: safeEnd,
+          endTime: safeStart
+        };
+      }
+      return {
+        startTime: safeStart,
+        endTime: safeEnd
+      };
+    }
+
     function getPlannedScheduleSnapshot(dateKey) {
       var safeDate = normalizeDateKey(dateKey);
       var period = getActiveSchedulePeriod(safeDate);
@@ -1306,6 +1322,7 @@
       var source = 'none';
       var startTime = '';
       var endTime = '';
+      var hasExplicitOverrideTimes = false;
       if (period) {
         source = period.mode;
         startTime = period.startTime || '';
@@ -1320,16 +1337,23 @@
       if (override && override.code) {
         plannedCode = override.code;
         source = 'override';
+        hasExplicitOverrideTimes = !!(override.startTime || override.endTime);
         startTime = override.startTime || startTime;
         endTime = override.endTime || endTime;
       }
+      var resolvedWindow = hasExplicitOverrideTimes
+        ? {
+            startTime: normalizeTimeValue(startTime, '01:00'),
+            endTime: normalizeTimeValue(endTime, '13:00')
+          }
+        : resolveScheduleShiftWindow(plannedCode, startTime, endTime);
       return {
         period: period,
         override: override,
         plannedCode: plannedCode,
         source: source,
-        startTime: startTime,
-        endTime: endTime
+        startTime: resolvedWindow.startTime,
+        endTime: resolvedWindow.endTime
       };
     }
 
@@ -1400,8 +1424,9 @@
       var safeDate = normalizeDateKey(dateKey);
       var safeCode = normalizeScheduleCode(plannedCode);
       if (!safeDate || !period || (safeCode !== 'D' && safeCode !== 'N')) return null;
-      var safeStart = normalizeTimeValue(startTime, '01:00');
-      var safeEnd = normalizeTimeValue(endTime, '13:00');
+      var resolvedWindow = resolveScheduleShiftWindow(safeCode, startTime, endTime);
+      var safeStart = resolvedWindow.startTime;
+      var safeEnd = resolvedWindow.endTime;
       var endDate = buildPresetShiftEndDate(safeDate, safeStart, safeEnd);
       return {
         id: 'schedule_' + String(period.id || 'period') + '_' + safeDate,

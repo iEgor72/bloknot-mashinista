@@ -1,6 +1,6 @@
 # Worktree Status
 
-Generated: 2026-04-22 11:35:40 +0000
+Generated: 2026-04-22 11:37:09 +0000
 
 ## git status -sb
 ```text
@@ -10,19 +10,19 @@ Generated: 2026-04-22 11:35:40 +0000
 
 ## git branch -vv
 ```text
-* main 4f8825e [origin/main] copy(docs): adjust speeds and memos subtitles
+* main 4f1d1b5 [origin/main] copy(docs): adjust reminders subtitle
 ```
 
 ## HEAD
 ```text
-4f8825e copy(docs): adjust speeds and memos subtitles
+4f1d1b5 copy(docs): adjust reminders subtitle
  ai-memory/CHANGELOG.md           |  8 ++++++++
  ai-memory/INDEX.md               |  2 +-
  ai-memory/PROJECT_STATE.md       |  8 ++++----
  ai-memory/RECENT_COMMITS.md      |  4 ++--
- ai-memory/WORKTREE_STATUS.md     | 13 +++++++------
+ ai-memory/WORKTREE_STATUS.md     | 24 ++++++++++++------------
  ai-memory/sessions/2026-04-22.md |  1 +
- index.html                       |  4 ++--
- scripts/app.js                   |  4 ++--
- 8 files changed, 27 insertions(+), 17 deletions(-)
+ index.html                       |  2 +-
+ scripts/app.js                   |  2 +-
+ 8 files changed, 30 insertions(+), 21 deletions(-)
 ```

@@ -1,14 +1,14 @@
 # Project State
 
 <!-- AUTO_STATUS:START -->
-Generated: 2026-04-22 11:35:40 +0000
+Generated: 2026-04-22 11:37:09 +0000
 
 ## Repository Snapshot
 - Local repo path: `/opt/bloknot-mashinista`
 - Project memory path: `/opt/bloknot-mashinista/ai-memory`
 - Branch: `main`
-- HEAD: `4f8825e`
-- Last commit: `4f8825e copy(docs): adjust speeds and memos subtitles`
+- HEAD: `4f1d1b5`
+- Last commit: `4f1d1b5 copy(docs): adjust reminders subtitle`
 
 ## Git Remote
 ```text
@@ -18,7 +18,7 @@ origin	https://github.com/iEgor72/bloknot-mashinista.git (push)
 
 ## Branch Tracking
 ```text
-* main 4f8825e [origin/main] copy(docs): adjust speeds and memos subtitles
+* main 4f1d1b5 [origin/main] copy(docs): adjust reminders subtitle
 ```
 
 ## Worktree
