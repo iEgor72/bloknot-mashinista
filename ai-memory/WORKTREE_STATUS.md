@@ -1,29 +1,35 @@
 # Worktree Status
 
-Generated: 2026-04-22 10:37:06 +0000
+Generated: 2026-04-22 11:06:33 +0000
 
 ## git status -sb
 ```text
 ## main...origin/main
+ M ai-memory/CHANGELOG.md
+ M ai-memory/INDEX.md
  M ai-memory/PROJECT_STATE.md
+ M ai-memory/RECENT_COMMITS.md
+ M ai-memory/WORKTREE_STATUS.md
+ M ai-memory/sessions/2026-04-22.md
 ```
 
 ## git branch -vv
 ```text
-* main 0392f28 [origin/main] fix(sync): persist salary params across clients
+* main 363c2c6 [origin/main] feat(docs): split quick docs into separate entries
 ```
 
 ## HEAD
 ```text
-0392f28 fix(sync): persist salary params across clients
- ai-memory/CHANGELOG.md           | 24 ++++++++++
- ai-memory/INDEX.md               |  2 +-
- ai-memory/PROJECT_STATE.md       | 14 +++---
- ai-memory/RECENT_COMMITS.md      |  8 ++--
- ai-memory/WORKTREE_STATUS.md     | 29 ++++--------
- ai-memory/sessions/2026-04-22.md |  3 ++
- scripts/app.js                   | 52 ++++++++++++++++++++++
- scripts/auth.js                  |  2 +
- server.js                        | 95 ++++++++++++++++++++++++++++++++++++++++
- 9 files changed, 199 insertions(+), 30 deletions(-)
+363c2c6 feat(docs): split quick docs into separate entries
+ ai-memory/CHANGELOG.md             |  8 ++++++++
+ ai-memory/INDEX.md                 |  2 +-
+ ai-memory/PROJECT_STATE.md         | 15 +++++---------
+ ai-memory/RECENT_COMMITS.md        |  4 ++--
+ ai-memory/WORKTREE_STATUS.md       | 23 +++++++++++----------
+ ai-memory/sessions/2026-04-22.md   |  1 +
+ index.html                         | 41 ++++++++++++++++++++++++++++++++------
+ scripts/app.js                     | 28 +++++++++++++++++++-------
+ scripts/shift-form.js              |  2 ++
+ styles/10-navigation-and-cards.css | 18 +++++++++++++++++
+ 10 files changed, 106 insertions(+), 36 deletions(-)
 ```

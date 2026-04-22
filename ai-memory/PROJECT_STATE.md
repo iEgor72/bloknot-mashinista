@@ -1,14 +1,14 @@
 # Project State
 
 <!-- AUTO_STATUS:START -->
-Generated: 2026-04-22 10:37:06 +0000
+Generated: 2026-04-22 11:06:33 +0000
 
 ## Repository Snapshot
 - Local repo path: `/opt/bloknot-mashinista`
 - Project memory path: `/opt/bloknot-mashinista/ai-memory`
 - Branch: `main`
-- HEAD: `0392f28`
-- Last commit: `0392f28 fix(sync): persist salary params across clients`
+- HEAD: `363c2c6`
+- Last commit: `363c2c6 feat(docs): split quick docs into separate entries`
 
 ## Git Remote
 ```text
@@ -18,12 +18,17 @@ origin	https://github.com/iEgor72/bloknot-mashinista.git (push)
 
 ## Branch Tracking
 ```text
-* main 0392f28 [origin/main] fix(sync): persist salary params across clients
+* main 363c2c6 [origin/main] feat(docs): split quick docs into separate entries
 ```
 
 ## Worktree
 ```text
-clean
+M ai-memory/CHANGELOG.md
+ M ai-memory/INDEX.md
+ M ai-memory/PROJECT_STATE.md
+ M ai-memory/RECENT_COMMITS.md
+ M ai-memory/WORKTREE_STATUS.md
+ M ai-memory/sessions/2026-04-22.md
 ```
 <!-- AUTO_STATUS:END -->
 
@@ -49,6 +54,10 @@ clean
 - Cloudflare Pages Functions and D1 bindings remain in the repo (`functions/api/*`, `functions/features/*`, `wrangler.toml`) but are not the current production deployment path.
 - PWA/offline runtime: `sw.js` and `scripts/sw-register.js`.
 - PM2 ecosystem file: `ecosystem.config.js`.
+
+## Durable UI Direction
+- Docs landing should keep separate top-level entries for `Инструкции`, `Скорости`, `Режимки`, `Памятки`, and `Папки` rather than grouping speeds/regimki/reminders behind one shared entry.
+- Next docs-screen polish direction: align card visual weight, make `Папки` visually wider/double-width, and further clean up supporting subtitle copy if it feels noisy.
 
 ## VPS / Production Deploy Access
 - This OpenClaw session is running on the project server itself.

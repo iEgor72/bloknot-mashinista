@@ -75,11 +75,53 @@
   ],
   "instructions": [
     {
+      "name": "1357р безопасное нахождение на ж.д. путях",
+      "path": "/assets/docs/instructions/1357р безопасное нахождение на ж.д. путях.docx",
+      "mime_type": "application/vnd.openxmlformats-officedocument.wordprocessingml.document",
+      "size": 383473,
+      "updated_at": "2026-04-22"
+    },
+    {
       "name": "2580p",
       "path": "/assets/docs/instructions/2580p.docx",
       "mime_type": "application/vnd.openxmlformats-officedocument.wordprocessingml.document",
       "size": 87479,
       "updated_at": "2026-04-18"
+    },
+    {
+      "name": "ИОТ ТЧЭ-9-002-2023",
+      "path": "/assets/docs/instructions/ИОТ ТЧЭ-9-002-2023.pdf",
+      "mime_type": "application/pdf",
+      "size": 1375411,
+      "updated_at": "2026-04-22"
+    },
+    {
+      "name": "ИОТ ТЧЭ-9-003-2023",
+      "path": "/assets/docs/instructions/ИОТ ТЧЭ-9-003-2023.pdf",
+      "mime_type": "application/pdf",
+      "size": 1386113,
+      "updated_at": "2026-04-22"
+    },
+    {
+      "name": "ПТЭ приказ 250",
+      "path": "/assets/docs/instructions/ПТЭ приказ 250.pdf",
+      "mime_type": "application/pdf",
+      "size": 11586656,
+      "updated_at": "2026-04-22"
+    },
+    {
+      "name": "Перечень мест где запрещено брать с места",
+      "path": "/assets/docs/instructions/Перечень мест где запрещено брать с места.docx",
+      "mime_type": "application/vnd.openxmlformats-officedocument.wordprocessingml.document",
+      "size": 132391,
+      "updated_at": "2026-04-22"
+    },
+    {
+      "name": "Распоряжение ЦТ-5р Методика КСОТ-П",
+      "path": "/assets/docs/instructions/Распоряжение ЦТ-5р Методика КСОТ-П.pdf",
+      "mime_type": "application/pdf",
+      "size": 1738667,
+      "updated_at": "2026-04-22"
     }
   ],
   "memos": [
