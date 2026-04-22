@@ -1,6 +1,6 @@
 # Worktree Status
 
-Generated: 2026-04-22 02:31:48 +0000
+Generated: 2026-04-22 02:42:37 +0000
 
 ## git status -sb
 ```text
@@ -18,19 +18,19 @@ Generated: 2026-04-22 02:31:48 +0000
 
 ## git branch -vv
 ```text
-* main 65032fe [origin/main] refactor(schedule): align day sheet with app ui
+* main df13835 [origin/main] copy(schedule): make calendar text more user-friendly
 ```
 
 ## HEAD
 ```text
-65032fe refactor(schedule): align day sheet with app ui
- ai-memory/CHANGELOG.md             |  8 ++++++++
- ai-memory/INDEX.md                 |  2 +-
- ai-memory/PROJECT_STATE.md         |  8 ++++----
- ai-memory/RECENT_COMMITS.md        |  4 ++--
- ai-memory/WORKTREE_STATUS.md       | 24 +++++++++++------------
- index.html                         | 22 ++++++++++-----------
- scripts/render.js                  |  6 +++---
- styles/10-navigation-and-cards.css | 40 +++++++++++++++++++++-----------------
- 8 files changed, 63 insertions(+), 51 deletions(-)
+df13835 copy(schedule): make calendar text more user-friendly
+ ai-memory/CHANGELOG.md       |  8 ++++++++
+ ai-memory/INDEX.md           |  2 +-
+ ai-memory/PROJECT_STATE.md   |  8 ++++----
+ ai-memory/RECENT_COMMITS.md  |  4 ++--
+ ai-memory/WORKTREE_STATUS.md | 21 ++++++++++-----------
+ index.html                   | 10 +++++-----
+ scripts/render.js            | 40 ++++++++++++++++++++--------------------
+ scripts/shift-form.js        | 18 +++++++++---------
+ 8 files changed, 59 insertions(+), 52 deletions(-)
 ```

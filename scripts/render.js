@@ -672,7 +672,7 @@
       }
 
       var periodsVm = getSchedulePeriodsViewModel(todayKey);
-      if (periodsVm.active) subtitleEl.textContent = 'Сейчас действует: ' + buildSchedulePeriodSummary(periodsVm.active) + '.';
+      if (periodsVm.active) subtitleEl.textContent = 'Сейчас по графику: ' + buildSchedulePeriodSummary(periodsVm.active) + '.';
       else subtitleEl.textContent = 'Сразу видно день, ночь, выходной и праздник.';
 
       bindShiftListDetailHandlers(upcomingEl);
@@ -778,7 +778,7 @@
         titleText: 'Запланировано по графику',
         timeText: '—',
         durationText: '—',
-        noteText: 'На этот день график не задан.'
+        noteText: 'На этот день ничего не задано по графику.'
       };
       if (!state) return summary;
       if (state.plannedCode === 'D' || state.plannedCode === 'N') {
@@ -806,7 +806,7 @@
       var cardClass = 'schedule-period-card';
       if (opts.current) cardClass += ' is-current';
       else if (opts.secondary) cardClass += ' is-secondary';
-      var subnote = opts.current ? 'Этот период сейчас работает в выбранном месяце.' : 'Этот период тоже действует в выбранном месяце.';
+      var subnote = opts.current ? 'Этот период сейчас действует в выбранном месяце.' : 'Этот период тоже действует в выбранном месяце.';
       var periodIdAttr = escapeHtml(String(period.id || ''));
       if (selectedSchedulePeriodId && String(selectedSchedulePeriodId) === String(period.id)) cardClass += ' is-selected';
       return '<div class="' + cardClass + '" data-schedule-period="' + periodIdAttr + '">' +
@@ -837,7 +837,7 @@
             '<div class="schedule-period-note">' + escapeHtml(formatScheduleRangeLabel(period.startDate, period.endDate)) + '</div>' +
           '</div>' +
         '</div>' +
-        '<div class="schedule-period-subnote">Удалится сам период и все смены, которые он создал в этом месяце.</div>' +
+        '<div class="schedule-period-subnote">Удалится этот период и все смены, которые появились из него в этом месяце.</div>' +
       '</div>';
     }
 
@@ -853,7 +853,7 @@
       }
 
       if (vm.isEmpty) {
-        html += '<div class="schedule-upcoming-empty">В этом месяце графика нет.</div>';
+        html += '<div class="schedule-upcoming-empty">На этот месяц график ещё не задан.</div>';
       } else {
         for (var pi = 0; pi < vm.periods.length; pi++) {
           html += buildSchedulePeriodCardHtml(vm.periods[pi], { current: pi === 0, kicker: pi === 0 ? 'Сейчас действует' : 'Также действует' });
@@ -874,9 +874,9 @@
       }
       conflictEl.classList.remove('hidden');
       conflictEl.innerHTML = '<div class="schedule-conflict-title">Новый период пересекается с уже сохранённым графиком</div>' +
-        '<div class="schedule-conflict-text">Два графика не могут действовать одновременно в одни и те же даты. Вы можете открыть старый период и поправить его вручную или сразу заменить его начиная с даты нового периода.</div>' +
+        '<div class="schedule-conflict-text">Один и тот же день не может относиться сразу к двум периодам. Можно открыть старый период и поправить его вручную или сразу заменить его, начиная с даты нового периода.</div>' +
         '<div class="schedule-conflict-list">' + escapeHtml(overlapNames.join(' • ')) + '</div>' +
-        '<div class="schedule-conflict-text">Если выберете замену, старый период автоматически закончится на день раньше.</div>' +
+        '<div class="schedule-conflict-text">Если выберете замену, старый период закончится автоматически на день раньше.</div>' +
         '<div class="schedule-conflict-actions">' +
           '<button type="button" class="btn-primary" data-schedule-conflict-action="replace">Заменить с этой даты</button>' +
           '<button type="button" class="btn-secondary" data-schedule-conflict-action="edit">Открыть старый период</button>' +
@@ -906,18 +906,18 @@
       var hasMaterializedFact = !!(primaryFactShift && typeof isScheduleMaterializedShift === 'function' && isScheduleMaterializedShift(primaryFactShift));
       var statusParts = [];
       if (hasMaterializedFact) {
-        statusParts.push('Смена за этот день уже есть в журнале.');
+        statusParts.push('Смена за этот день уже есть в журнале. Можно открыть её ниже.');
       } else if (state.hasFact && state.plannedCode) {
         statusParts.push(state.effectiveCode === 'N' ? 'По факту здесь уже есть ночная смена.' : 'По факту здесь уже есть дневная смена.');
-        statusParts.push('Ниже показаны и запись, и план по графику.');
+        statusParts.push('Ниже можно посмотреть запись и план по графику.');
       } else if (state.hasFact) {
         statusParts.push(state.effectiveCode === 'N' ? 'По факту здесь уже есть ночная смена.' : 'По факту здесь уже есть дневная смена.');
       } else if (state.plannedCode) {
-        statusParts.push('На этот день есть план по графику.');
+        statusParts.push('На этот день уже есть план по графику.');
       } else {
-        statusParts.push('На этот день пока ничего не запланировано и не записано.');
+        statusParts.push('На этот день пока ничего нет. При необходимости можно добавить смену вручную.');
       }
-      if (state.isHoliday) statusParts.push('Праздник.');
+      if (state.isHoliday) statusParts.push('Это праздничный день.');
       statusEl.textContent = statusParts.join(' ');
 
       var daySummary = buildScheduleDayFactSummary(state);
@@ -938,7 +938,7 @@
       planTextEl.textContent = planSummary.noteText;
 
       addShiftBtn.classList.toggle('hidden', state.hasFact);
-      addShiftBtn.textContent = state.plannedCode ? 'Добавить смену на этот день' : 'Добавить смену';
+      addShiftBtn.textContent = state.plannedCode ? 'Добавить смену на этот день' : 'Добавить смену вручную';
       editShiftBtn.classList.toggle('hidden', !state.hasFact);
       if (!editShiftBtn.classList.contains('hidden') && state.factShifts[0]) {
         editShiftBtn.textContent = state.factShifts.length > 1 ? 'Посмотреть смены за день' : 'Открыть смену';
@@ -961,7 +961,7 @@
       if (!cardEl) return;
       if (pendingScheduleDeletePeriodId) {
         if (titleEl) titleEl.textContent = 'Удалить период графика';
-        if (noteEl) noteEl.textContent = 'Период и связанные с ним смены за этот месяц будут удалены. Отменить это действие нельзя.';
+        if (noteEl) noteEl.textContent = 'Период будет удалён вместе со сменами, которые он создал в этом месяце. Это действие нельзя отменить.';
         if (confirmBtn) confirmBtn.textContent = 'Удалить период';
         cardEl.innerHTML = buildConfirmSchedulePeriodCardHtml(getSchedulePeriodById(pendingScheduleDeletePeriodId));
         return;

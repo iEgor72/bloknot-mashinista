@@ -143,13 +143,13 @@
         deleteSchedulePeriod(deletedPeriodId, function(err) {
           if (err) {
             triggerHapticError();
-            showSaveToast('Не удалось удалить график', 'danger');
+            showSaveToast('Не получилось удалить период графика', 'danger');
             return;
           }
           pendingScheduleDeletePeriodId = null;
           closeOverlay('overlayConfirm');
           render();
-          showSaveToast(wasOnline ? 'Период графика удалён' : 'Период графика удалён. Когда появится сеть, всё синхронизируется автоматически', 'neutral');
+          showSaveToast(wasOnline ? 'Период графика удалён' : 'Период графика удалён. Когда интернет появится, всё синхронизируется автоматически', 'neutral');
           try {
             if (shouldResetPlanner) {
               resetSchedulePlannerForm();
@@ -825,9 +825,9 @@
       var hasConflict = !!(pendingScheduleConflict && pendingScheduleConflict.overlaps && pendingScheduleConflict.overlaps.length);
       if (titleEl) titleEl.textContent = isEditing ? 'Изменить период графика' : 'Добавить период графика';
       if (noteEl) {
-        if (isEditing) noteEl.textContent = 'Здесь можно поменять даты, цикл и время для выбранного периода.';
+        if (isEditing) noteEl.textContent = 'Здесь можно изменить даты, цикл и время выбранного периода.';
         else if (hasConflict) noteEl.textContent = 'Новый период пересекается с существующим. Ниже можно открыть старый период или заменить его с даты начала нового.';
-        else noteEl.textContent = 'Если график меняется с определённого дня, просто создайте новый период с этой даты.';
+        else noteEl.textContent = 'Если график меняется с какого-то дня, просто создайте новый период с этой даты.';
       }
       if (saveBtn) saveBtn.textContent = isEditing ? 'Сохранить изменения' : 'Сохранить график';
       if (editBadgeEl) editBadgeEl.classList.toggle('visible', isEditing);
@@ -951,7 +951,7 @@
           return;
         }
         if (!draft.pattern) {
-          showSaveToast('Добавьте шаблон графика', 'danger');
+          showSaveToast('Сначала задайте цикл графика', 'danger');
           return;
         }
         var overlaps = getOverlappingSchedulePeriods(draft, selectedSchedulePeriodId);
@@ -959,7 +959,7 @@
           setPendingScheduleConflict({ draft: draft, overlaps: overlaps });
           syncSchedulePlannerFormMeta();
           renderSchedulePlannerOverlay();
-          showSaveToast('Проверьте пересечение периодов и выберите, что сделать дальше', 'danger');
+          showSaveToast('Периоды пересекаются. Выберите ниже, как поступить', 'danger');
           return;
         }
         clearScheduleConflictState();
