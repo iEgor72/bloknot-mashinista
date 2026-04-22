@@ -864,6 +864,10 @@
 
     function renderScheduleDayOverlay() {
       var dateKey = selectedScheduleDayKey || getTodayDateKey();
+      if (typeof syncMaterializedScheduleShiftsForRange === 'function') {
+        var materializedChanged = syncMaterializedScheduleShiftsForRange(dateKey, dateKey);
+        if (materializedChanged && typeof saveShifts === 'function') saveShifts();
+      }
       var state = resolveScheduleDay(dateKey);
       var dateEl = document.getElementById('scheduleDayDate');
       var statusEl = document.getElementById('scheduleDayStatus');
@@ -884,7 +888,9 @@
       var primaryFactShift = state.factShifts && state.factShifts[0] ? state.factShifts[0] : null;
       var hasMaterializedFact = !!(primaryFactShift && typeof isScheduleMaterializedShift === 'function' && isScheduleMaterializedShift(primaryFactShift));
       var statusParts = [];
-      if (state.hasFact && state.plannedCode && !hasMaterializedFact) {
+      if (hasMaterializedFact) {
+        statusParts.push('Смена уже в журнале.');
+      } else if (state.hasFact && state.plannedCode) {
         statusParts.push(state.effectiveCode === 'N' ? 'Итог, отработали в ночь.' : 'Итог, отработали днём.');
         statusParts.push('Ниже есть и запись, и график.');
       } else if (state.hasFact) {
