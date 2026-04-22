@@ -236,6 +236,82 @@
       return '<span class="docs-download-icon ' + (isDownloaded ? 'is-downloaded' : 'is-online-only') + '" role="img" aria-label="' + label + '" title="' + (isDownloaded ? 'Скачан' : 'Не скачан') + '">' + (isDownloaded ? docDownloadedIcon : docOnlineOnlyIcon) + '</span>';
     }
 
+    function normalizeDocDisplayText(value) {
+      return String(value || '')
+        .replace(/\.[a-z0-9]+$/i, '')
+        .replace(/[._]+/g, ' ')
+        .replace(/\s+/g, ' ')
+        .trim();
+    }
+
+    function extractDocBaseName(file) {
+      var path = file && file.path ? String(file.path) : '';
+      if (!path) return normalizeDocDisplayText(file && file.name);
+      var tail = path.split('/').pop() || '';
+      return normalizeDocDisplayText(decodeDocAttr(tail));
+    }
+
+    var DOC_DISPLAY_META_BY_PATH = {
+      '/assets/docs/instructions/2580p.docx': {
+        title: 'Действия в аварийных и нестандартных ситуациях',
+        subtitle: '2580р от 12.12.2017'
+      },
+      '/assets/docs/speeds/Скоростя БАМ Парк Д Приказ № 161.pdf': {
+        title: 'Скорости БАМ',
+        subtitle: 'Приказ №161 от 27.02.2026'
+      },
+      '/assets/docs/speeds/Скоростя ВСГ Парк Д Приказ № 161.pdf': {
+        title: 'Скорости ВСГ',
+        subtitle: 'Приказ №161 от 27.02.2026'
+      },
+      '/assets/docs/speeds/Скоростя ВЛЧ Приказ № 161.pdf': {
+        title: 'Скорости ВЛЧ',
+        subtitle: 'Приказ №161 от 27.02.2026'
+      }
+    };
+
+    function buildDocDisplayMeta(folder, file) {
+      var path = file && file.path ? String(file.path) : '';
+      var explicit = DOC_DISPLAY_META_BY_PATH[path];
+      if (explicit) {
+        return {
+          title: explicit.title,
+          subtitle: explicit.subtitle
+        };
+      }
+
+      var baseName = extractDocBaseName(file);
+      var safeName = normalizeDocDisplayText(file && file.name);
+      if (folder === 'folders') {
+        return {
+          title: safeName || baseName || 'Папка',
+          subtitle: 'Конспекты по безопасности движения'
+        };
+      }
+      if (folder === 'speeds') {
+        return {
+          title: 'Скорости ' + (safeName || baseName || ''),
+          subtitle: baseName || ''
+        };
+      }
+      if (folder === 'memos') {
+        return {
+          title: 'Памятка ' + (safeName || baseName || ''),
+          subtitle: baseName || ''
+        };
+      }
+      if (folder === 'reminders') {
+        return {
+          title: safeName || baseName || 'Памятка',
+          subtitle: baseName && baseName !== safeName ? baseName : ''
+        };
+      }
+      return {
+        title: safeName || baseName || 'Файл',
+        subtitle: baseName && baseName !== safeName ? baseName : ''
+      };
+    }
+
     function renderDocFileList(folder, files) {
       var listId = docsFolderListId(folder);
       if (!listId) return;
@@ -268,18 +344,22 @@
         var type = getFileType(f.path || f.name || '');
         var size = docsFormatSize(f.size);
         var updatedAt = docsFormatDate(f.updated_at || f.added_at || f.date_added);
+        var displayMeta = buildDocDisplayMeta(folder, f);
         var meta = '<span class="badge ' + badges[type] + '">' + type.toUpperCase() + '</span>';
         meta += buildDocDownloadStatusIcon(isDownloaded);
         if (updatedAt) meta += '<span>обновлено ' + updatedAt + '</span>';
         if (size) meta += '<span class="file-size">' + size + '</span>';
-        var docActionLabel = (isDownloaded ? 'Открыть файл' : 'Открыть файл, может понадобиться интернет') + ': ' + (f.name || 'Файл');
+        var actionName = displayMeta.title || f.name || 'Файл';
+        var docActionLabel = (isDownloaded ? 'Открыть файл' : 'Открыть файл, может понадобиться интернет') + ': ' + actionName;
+        if (displayMeta.subtitle) docActionLabel += '. ' + displayMeta.subtitle;
         html +=
           '<div class="docs-item ' + (isDownloaded ? 'is-downloaded' : 'is-online-only') + '" role="button" tabindex="0" aria-label="' + escapeHtml(docActionLabel) + '" data-file-path="' + encodeURIComponent(f.path || '') + '" data-file-name="' + encodeURIComponent(f.name || '') + '" data-mime-type="' + encodeURIComponent(f.mime_type || '') + '" data-doc-downloaded="' + (isDownloaded ? '1' : '0') + '">' +
             '<div class="docs-item-icon file-icon-wrap ' + classes[type] + '">' +
               icons[type] +
             '</div>' +
             '<div class="docs-item-body">' +
-              '<div class="docs-item-title">' + (f.name || 'Файл') + '</div>' +
+              '<div class="docs-item-title">' + escapeHtml(displayMeta.title || f.name || 'Файл') + '</div>' +
+              (displayMeta.subtitle ? '<div class="docs-item-subtitle">' + escapeHtml(displayMeta.subtitle) + '</div>' : '') +
               '<div class="docs-item-meta">' + meta + '</div>' +
             '</div>' +
             '<div class="docs-item-action" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"/></svg></div>' +
