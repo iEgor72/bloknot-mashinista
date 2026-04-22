@@ -1,14 +1,14 @@
 # Project State
 
 <!-- AUTO_STATUS:START -->
-Generated: 2026-04-22 08:24:26 +0000
+Generated: 2026-04-22 10:28:14 +0000
 
 ## Repository Snapshot
 - Local repo path: `/opt/bloknot-mashinista`
 - Project memory path: `/opt/bloknot-mashinista/ai-memory`
 - Branch: `main`
-- HEAD: `3630c67`
-- Last commit: `3630c67 Revert "feat(docs): add owner-only document admin"`
+- HEAD: `362112f`
+- Last commit: `362112f fix(docs): remove folder card subtitles`
 
 ## Git Remote
 ```text
@@ -18,13 +18,17 @@ origin	https://github.com/iEgor72/bloknot-mashinista.git (push)
 
 ## Branch Tracking
 ```text
-* main 3630c67 [origin/main] Revert "feat(docs): add owner-only document admin"
+* main 362112f [origin/main] fix(docs): remove folder card subtitles
 ```
 
 ## Worktree
 ```text
 M ai-memory/CHANGELOG.md
-?? ai-memory/sessions/2026-04-22.md
+ M ai-memory/INDEX.md
+ M ai-memory/PROJECT_STATE.md
+ M ai-memory/RECENT_COMMITS.md
+ M ai-memory/WORKTREE_STATUS.md
+ M ai-memory/sessions/2026-04-22.md
 ```
 <!-- AUTO_STATUS:END -->
 

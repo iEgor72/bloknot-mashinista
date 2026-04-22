@@ -61,6 +61,7 @@
     };
     var salaryParamsStore = createSalaryParamsStore();
     var appSettings = salaryParamsStore.values;
+    var salaryParamsSyncInFlight = null;
     var installPromptDismissed = false;
     var installPromptInstalled = false;
     var deferredInstallPromptEvent = null;
@@ -754,6 +755,56 @@
       try {
         localStorage.setItem(SALARY_PARAMS_STORAGE_KEY, JSON.stringify(normalizeSalaryParams(params)));
       } catch (e) {}
+    }
+
+    function applySalaryParamsFromServer(payload, shouldRender) {
+      var normalized = normalizeSalaryParams(payload || {});
+      salaryParamsStore.values = normalized;
+      saveSalaryParams(normalized);
+      appSettings = salaryParamsStore.values;
+      updateSettingsControls();
+      if (shouldRender !== false && typeof render === 'function') render();
+      return normalized;
+    }
+
+    function loadSalaryParamsFromServer() {
+      if (!navigator.onLine || typeof fetchJson !== 'function' || !SALARY_PARAMS_API_URL) {
+        return Promise.resolve(null);
+      }
+      return fetchJson(SALARY_PARAMS_API_URL, {
+        method: 'GET',
+        headers: { 'Accept': 'application/json' }
+      }, 4500).then(function(result) {
+        if (result.ok && result.body && result.body.salaryParams) {
+          return applySalaryParamsFromServer(result.body.salaryParams, true);
+        }
+        return null;
+      }).catch(function() {
+        return null;
+      });
+    }
+
+    function syncSalaryParamsToServer(params) {
+      var normalized = normalizeSalaryParams(params || appSettings || DEFAULT_SALARY_PARAMS);
+      if (!navigator.onLine || typeof fetchJson !== 'function' || !SALARY_PARAMS_API_URL) {
+        return Promise.resolve(null);
+      }
+      if (salaryParamsSyncInFlight) return salaryParamsSyncInFlight;
+      salaryParamsSyncInFlight = fetchJson(SALARY_PARAMS_API_URL, {
+        method: 'PUT',
+        headers: { 'Content-Type': 'application/json', 'Accept': 'application/json' },
+        body: JSON.stringify({ salaryParams: normalized })
+      }, 4500).then(function(result) {
+        salaryParamsSyncInFlight = null;
+        if (result.ok && result.body && result.body.salaryParams) {
+          return applySalaryParamsFromServer(result.body.salaryParams, false);
+        }
+        return null;
+      }).catch(function() {
+        salaryParamsSyncInFlight = null;
+        return null;
+      });
+      return salaryParamsSyncInFlight;
     }
 
     var SCHEDULE_STORAGE_KEY = 'shift_tracker_schedule_v1';
@@ -2111,6 +2162,7 @@
 
       salaryParamsStore.update(appSettings);
       appSettings = salaryParamsStore.values;
+      syncSalaryParamsToServer(appSettings);
       render();
     }
 

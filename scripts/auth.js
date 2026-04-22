@@ -2,6 +2,7 @@
     var AUTH_API_URL = API_BASE_URL + '/api/auth';
     var SHIFTS_API_URL = API_BASE_URL + '/api/shifts';
     var SCHEDULE_API_URL = API_BASE_URL + '/api/schedule';
+    var SALARY_PARAMS_API_URL = API_BASE_URL + '/api/salary-params';
     var USER_STATS_API_URL = API_BASE_URL + '/api/stats';
     var DOCS_API_URL = API_BASE_URL + '/api/docs';
     var TELEGRAM_BOT_USERNAME = 'bloknot_mashinista_bot';
@@ -344,6 +345,7 @@
       if (typeof reloadScheduleStoreForCurrentUser === 'function') reloadScheduleStoreForCurrentUser(function() {
         if (typeof render === 'function') render();
       });
+      if (typeof loadSalaryParamsFromServer === 'function') loadSalaryParamsFromServer();
       updateSettingsControls();
       updateOfflineUiState();
       setActiveTab(activeTab || 'home');

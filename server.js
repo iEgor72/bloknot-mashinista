@@ -10,6 +10,7 @@ const PORT = process.env.PORT || 3000;
 const DATA_DIR = path.join(ROOT, 'data');
 const USERS_DIR = path.join(DATA_DIR, 'local-shifts');
 const SCHEDULES_DIR = path.join(DATA_DIR, 'local-schedules');
+const SALARY_PARAMS_DIR = path.join(DATA_DIR, 'local-salary-params');
 const USER_STATS_FILE = path.join(DATA_DIR, 'user-presence.json');
 const PUBLIC_TOP_LEVEL_FILES = new Set([
   'index.html',
@@ -38,6 +39,15 @@ const MAX_SCHEDULE_PERIODS_PER_PAYLOAD = 256;
 const MAX_SCHEDULE_OVERRIDES_PER_PAYLOAD = 3660;
 const MAX_SCHEDULE_ID_LENGTH = 128;
 const MAX_SCHEDULE_PATTERN_LENGTH = 64;
+const DEFAULT_SALARY_PARAMS = {
+  tariffRate: 380,
+  nightPercent: 40,
+  classPercent: 5,
+  districtPercent: 30,
+  northPercent: 50,
+  localPercent: 20,
+};
+const SALARY_PARAM_KEYS = Object.keys(DEFAULT_SALARY_PARAMS);
 const PUBLIC_SITE_URL = process.env.PUBLIC_SITE_URL || 'https://bloknot-mashinista-bot.ru';
 const SEO_PAGE_ROUTES = {
   '/uchet-marshrutov': 'docs/seo/uchet-marshrutov.html',
@@ -393,6 +403,9 @@ function ensureDirs() {
   if (!fs.existsSync(SCHEDULES_DIR)) {
     fs.mkdirSync(SCHEDULES_DIR, { recursive: true });
   }
+  if (!fs.existsSync(SALARY_PARAMS_DIR)) {
+    fs.mkdirSync(SALARY_PARAMS_DIR, { recursive: true });
+  }
 }
 
 function normalizeSid(rawSid) {
@@ -409,6 +422,11 @@ function getUserFile(sid) {
 function getUserScheduleFile(sid) {
   ensureDirs();
   return path.join(SCHEDULES_DIR, `${normalizeSid(sid)}.json`);
+}
+
+function getUserSalaryParamsFile(sid) {
+  ensureDirs();
+  return path.join(SALARY_PARAMS_DIR, `${normalizeSid(sid)}.json`);
 }
 
 function createEmptyScheduleStore() {
@@ -517,6 +535,27 @@ function sanitizeAndValidateSchedulePayload(payload) {
   };
 }
 
+function sanitizeAndValidateSalaryParamsPayload(payload) {
+  if (!payload || typeof payload !== 'object' || Array.isArray(payload)) {
+    throw new Error('Expected JSON object payload');
+  }
+  const source = payload.salaryParams && typeof payload.salaryParams === 'object' && !Array.isArray(payload.salaryParams)
+    ? payload.salaryParams
+    : payload;
+  const result = {};
+  SALARY_PARAM_KEYS.forEach((key) => {
+    const rawValue = source[key];
+    const parsed = rawValue === '' || rawValue === null || rawValue === undefined
+      ? DEFAULT_SALARY_PARAMS[key]
+      : Number(rawValue);
+    if (!Number.isFinite(parsed) || parsed < 0 || parsed > 1000000) {
+      throw new Error(`Invalid salary param ${key}`);
+    }
+    result[key] = parsed;
+  });
+  return result;
+}
+
 function readScheduleStore(sid) {
   const file = getUserScheduleFile(sid);
   try {
@@ -536,6 +575,28 @@ function readScheduleStore(sid) {
 function writeScheduleStore(sid, schedule) {
   const file = getUserScheduleFile(sid);
   const serialized = JSON.stringify(sanitizeAndValidateSchedulePayload(schedule), null, 2);
+  atomicWriteFileSync(file, serialized);
+}
+
+function readSalaryParams(sid) {
+  const file = getUserSalaryParamsFile(sid);
+  try {
+    if (!fs.existsSync(file)) return { ...DEFAULT_SALARY_PARAMS };
+    const raw = fs.readFileSync(file, 'utf8');
+    return sanitizeAndValidateSalaryParamsPayload(JSON.parse(raw || '{}'));
+  } catch (err) {
+    logStructuredRateLimited('error', 'storage.salary_params.read_failed', file, {
+      sid: normalizeSid(sid),
+      file,
+      error: toErrorMeta(err),
+    });
+    return { ...DEFAULT_SALARY_PARAMS };
+  }
+}
+
+function writeSalaryParams(sid, salaryParams) {
+  const file = getUserSalaryParamsFile(sid);
+  const serialized = JSON.stringify(sanitizeAndValidateSalaryParamsPayload(salaryParams), null, 2);
   atomicWriteFileSync(file, serialized);
 }
 
@@ -1246,6 +1307,40 @@ const server = http.createServer(async (req, res) => {
         const errorMessage = err && err.message ? err.message : 'Invalid payload';
         const isValidationError = /^(Expected|Too many|Invalid|Missing)/.test(errorMessage);
         logStructuredRateLimited(isValidationError ? 'warn' : 'error', 'storage.schedule.write_rejected', `${sid}:${errorMessage}`, {
+          sid,
+          error: toErrorMeta(err),
+        });
+        sendJson(res, isValidationError ? 400 : 500, { error: errorMessage });
+      }
+      return;
+    }
+
+    sendJson(res, 405, { error: 'Method not allowed' });
+    return;
+  }
+
+  if (pathname === '/api/salary-params') {
+    if (!sid) {
+      sendJson(res, 401, { error: 'Unauthorized' });
+      return;
+    }
+
+    if (req.method === 'GET') {
+      sendJson(res, 200, { sid, salaryParams: readSalaryParams(sid) });
+      return;
+    }
+
+    if (req.method === 'PUT') {
+      try {
+        const body = await readBody(req);
+        const payload = body ? JSON.parse(body) : {};
+        const salaryParams = sanitizeAndValidateSalaryParamsPayload(payload);
+        writeSalaryParams(sid, salaryParams);
+        sendJson(res, 200, { ok: true, sid, salaryParams });
+      } catch (err) {
+        const errorMessage = err && err.message ? err.message : 'Invalid payload';
+        const isValidationError = /^(Expected|Invalid|Missing)/.test(errorMessage);
+        logStructuredRateLimited(isValidationError ? 'warn' : 'error', 'storage.salary_params.write_rejected', `${sid}:${errorMessage}`, {
           sid,
           error: toErrorMeta(err),
         });

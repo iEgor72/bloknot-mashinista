@@ -1,9 +1,12 @@
 # Recent Commits
 
-Generated: 2026-04-22 08:24:26 +0000
+Generated: 2026-04-22 10:28:14 +0000
 
 | Hash | Date | Author | Message |
 | --- | --- | --- | --- |
+| `362112f` | 2026-04-22T10:28:12+00:00 | iEgor72 | fix(docs): remove folder card subtitles |
+| `a378a57` | 2026-04-22T10:26:01+00:00 | iEgor72 | fix(docs): rename memo cards to режимки |
+| `8d78df3` | 2026-04-22T08:28:29+00:00 | iEgor72 | fix(docs): remove redundant folder intro copy |
 | `3630c67` | 2026-04-22T08:22:12+00:00 | iEgor72 | Revert "feat(docs): add owner-only document admin" |
 | `2af3939` | 2026-04-22T08:22:12+00:00 | iEgor72 | Revert "fix(docs): recover admin controls from stale session state" |
 | `3880cf9` | 2026-04-22T08:22:12+00:00 | iEgor72 | Revert "fix(docs): send bearer session for admin controls" |
@@ -41,6 +44,3 @@ Generated: 2026-04-22 08:24:26 +0000
 | `408db1e` | 2026-04-22T01:55:08+00:00 | iEgor72 | fix(schedule): keep graph delete offline-first |
 | `2664bc0` | 2026-04-22T01:42:00+00:00 | iEgor72 | fix(schedule): confirm graph delete only after sync |
 | `9c11778` | 2026-04-22T01:33:03+00:00 | iEgor72 | refactor(schedule): align graph sync with shifts |
-| `5db8a8f` | 2026-04-22T01:29:14+00:00 | iEgor72 | fix(schedule): stop resurrecting deleted graphs |
-| `1c2fd80` | 2026-04-22T01:19:44+00:00 | iEgor72 | fix(ui): keep newly opened overlays on top |
-| `59119ef` | 2026-04-22T01:16:51+00:00 | iEgor72 | fix(schedule): hint how to select graph actions |
