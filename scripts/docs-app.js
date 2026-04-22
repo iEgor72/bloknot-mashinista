@@ -267,6 +267,18 @@
       '/assets/docs/speeds/Скоростя ВЛЧ Приказ № 161.pdf': {
         title: 'Скорости ВЛЧ',
         subtitle: 'Приказ №161 от 27.02.2026'
+      },
+      '/assets/docs/memos/БАМ кмс-пост-1.pdf': {
+        title: 'Режимка БАМ',
+        subtitle: ''
+      },
+      '/assets/docs/memos/ВСКГ- КСМ новый 2 пассажир.pdf': {
+        title: 'Режимка ВСГ',
+        subtitle: ''
+      },
+      '/assets/docs/memos/КСМ-ВЛЧ 2.pdf': {
+        title: 'Режимка ВЛЧ',
+        subtitle: ''
       }
     };
 
@@ -296,8 +308,8 @@
       }
       if (folder === 'memos') {
         return {
-          title: 'Памятка ' + (safeName || baseName || ''),
-          subtitle: baseName || ''
+          title: 'Режимка ' + (safeName || baseName || ''),
+          subtitle: ''
         };
       }
       if (folder === 'reminders') {
