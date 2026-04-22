@@ -955,14 +955,71 @@
       return normalizeScheduleStore(readStoredJson(getOfflineStorageKey(SCHEDULE_STORAGE_KEY), createEmptyScheduleStore()));
     }
 
-    function saveScheduleStore() {
-      scheduleStore = normalizeScheduleStore(scheduleStore);
+    function hasScheduleStoreData(store) {
+      var safeStore = normalizeScheduleStore(store);
+      return !!(safeStore.periods.length || Object.keys(safeStore.overrides || {}).length);
+    }
+
+    function writeScheduleStoreLocal(store) {
+      scheduleStore = normalizeScheduleStore(store);
       writeStoredJson(getOfflineStorageKey(SCHEDULE_STORAGE_KEY), scheduleStore);
       return scheduleStore;
     }
 
-    function reloadScheduleStoreForCurrentUser() {
-      scheduleStore = loadScheduleStore();
+    function syncScheduleStoreRemote(store, callback) {
+      var snapshot = normalizeScheduleStore(store);
+      if (!navigator.onLine || typeof fetchJson !== 'function' || !SCHEDULE_API_URL) {
+        if (typeof callback === 'function') callback(null, snapshot);
+        return;
+      }
+      fetchJson(SCHEDULE_API_URL, {
+        method: 'PUT',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ schedule: snapshot })
+      }).then(function(result) {
+        if (!result || !result.ok) {
+          if (typeof callback === 'function') callback(new Error((result && result.body && result.body.error) || 'Schedule sync failed'), snapshot);
+          return;
+        }
+        var remoteStore = normalizeScheduleStore(result.body && result.body.schedule);
+        writeScheduleStoreLocal(remoteStore);
+        if (typeof callback === 'function') callback(null, remoteStore);
+      }).catch(function(err) {
+        if (typeof callback === 'function') callback(err, snapshot);
+      });
+    }
+
+    function saveScheduleStore() {
+      var snapshot = writeScheduleStoreLocal(scheduleStore);
+      syncScheduleStoreRemote(snapshot);
+      return snapshot;
+    }
+
+    function reloadScheduleStoreForCurrentUser(callback) {
+      var localStore = loadScheduleStore();
+      scheduleStore = localStore;
+      if (!navigator.onLine || typeof fetchJson !== 'function' || !SCHEDULE_API_URL) {
+        if (typeof callback === 'function') callback(localStore);
+        return;
+      }
+      fetchJson(SCHEDULE_API_URL).then(function(result) {
+        if (!result || !result.ok) {
+          if (typeof callback === 'function') callback(localStore);
+          return;
+        }
+        var remoteStore = normalizeScheduleStore(result.body && result.body.schedule);
+        if (!hasScheduleStoreData(remoteStore) && hasScheduleStoreData(localStore)) {
+          syncScheduleStoreRemote(localStore, function(err, syncedStore) {
+            scheduleStore = err ? localStore : normalizeScheduleStore(syncedStore);
+            if (typeof callback === 'function') callback(scheduleStore);
+          });
+          return;
+        }
+        scheduleStore = writeScheduleStoreLocal(remoteStore);
+        if (typeof callback === 'function') callback(scheduleStore);
+      }).catch(function() {
+        if (typeof callback === 'function') callback(localStore);
+      });
     }
 
     function getSchedulePeriods() {

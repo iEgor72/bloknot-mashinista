@@ -1,6 +1,7 @@
     var API_BASE_URL = window.SHIFT_API_BASE_URL || '';
     var AUTH_API_URL = API_BASE_URL + '/api/auth';
     var SHIFTS_API_URL = API_BASE_URL + '/api/shifts';
+    var SCHEDULE_API_URL = API_BASE_URL + '/api/schedule';
     var USER_STATS_API_URL = API_BASE_URL + '/api/stats';
     var DOCS_API_URL = API_BASE_URL + '/api/docs';
     var TELEGRAM_BOT_USERNAME = 'bloknot_mashinista_bot';
@@ -324,7 +325,9 @@
       if (APP_SHELL) APP_SHELL.classList.remove('hidden');
       settleSafeAreaInsets();
       repairUiText();
-      if (typeof reloadScheduleStoreForCurrentUser === 'function') reloadScheduleStoreForCurrentUser();
+      if (typeof reloadScheduleStoreForCurrentUser === 'function') reloadScheduleStoreForCurrentUser(function() {
+        if (typeof render === 'function') render();
+      });
       updateSettingsControls();
       updateOfflineUiState();
       setActiveTab(activeTab || 'home');
