@@ -21,6 +21,14 @@
       for (var i = 0; i < allShifts.length; i++) {
         if (allShifts[i].id === id) return allShifts[i];
       }
+      if (typeof buildMonthCalculationShifts === 'function' && typeof getMonthBounds === 'function') {
+        var bounds = getMonthBounds(currentYear, currentMonth);
+        var monthShiftSets = buildMonthCalculationShifts(currentYear, currentMonth, bounds);
+        var shifts = monthShiftSets && Array.isArray(monthShiftSets.calculationShifts) ? monthShiftSets.calculationShifts : [];
+        for (var j = 0; j < shifts.length; j++) {
+          if (shifts[j].id === id) return shifts[j];
+        }
+      }
       return null;
     }
 

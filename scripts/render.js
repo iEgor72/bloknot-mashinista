@@ -35,20 +35,25 @@
       var shiftIdAttr = escapeHtml(shiftIdStr);
       var isActionsOpen = activeShiftMenuId !== null && String(activeShiftMenuId) === shiftIdStr;
 
-      var html = '<div class="' + itemClass + '" data-shift-id="' + shiftIdAttr + '" data-pending="' + (shiftIsPending ? '1' : '0') + '" data-shift-open="1" role="button" tabindex="0" aria-label="Редактировать смену: ' + escapeHtml(shiftTitle || 'Смена') + '">' +
+      var actionsHtml = '';
+      if (!sh.isScheduleDerived) {
+        actionsHtml = '<div class="shift-top-right">' +
+          '<div class="shift-actions-wrap">' +
+            '<button class="shift-actions-trigger' + (isActionsOpen ? ' is-open' : '') + '" type="button" data-id="' + shiftIdAttr + '" aria-label="Действия" aria-haspopup="menu" aria-expanded="' + (isActionsOpen ? 'true' : 'false') + '">' +
+              '<svg class="shift-actions-trigger-icon" viewBox="0 0 24 24" aria-hidden="true" focusable="false">' +
+                '<circle cx="6.5" cy="12" r="1.7"></circle>' +
+                '<circle cx="12" cy="12" r="1.7"></circle>' +
+                '<circle cx="17.5" cy="12" r="1.7"></circle>' +
+              '</svg>' +
+            '</button>' +
+          '</div>' +
+        '</div>';
+      }
+
+      var html = '<div class="' + itemClass + '" data-shift-id="' + shiftIdAttr + '" data-pending="' + (shiftIsPending ? '1' : '0') + '" data-shift-open="1" role="button" tabindex="0" aria-label="' + escapeHtml((sh.isScheduleDerived ? 'Открыть день графика: ' : 'Редактировать смену: ') + (shiftTitle || 'Смена')) + '">' +
         '<div class="shift-card-top">' +
           typeHtml +
-          '<div class="shift-top-right">' +
-            '<div class="shift-actions-wrap">' +
-              '<button class="shift-actions-trigger' + (isActionsOpen ? ' is-open' : '') + '" type="button" data-id="' + shiftIdAttr + '" aria-label="Действия" aria-haspopup="menu" aria-expanded="' + (isActionsOpen ? 'true' : 'false') + '">' +
-                '<svg class="shift-actions-trigger-icon" viewBox="0 0 24 24" aria-hidden="true" focusable="false">' +
-                  '<circle cx="6.5" cy="12" r="1.7"></circle>' +
-                  '<circle cx="12" cy="12" r="1.7"></circle>' +
-                  '<circle cx="17.5" cy="12" r="1.7"></circle>' +
-                '</svg>' +
-              '</button>' +
-            '</div>' +
-          '</div>' +
+          actionsHtml +
         '</div>' +
         directionHtml +
         '<div class="shift-card-body">' +
@@ -502,6 +507,12 @@
       var shift = findShiftById(shiftId);
       if (!shift) return;
       triggerHapticTapLight();
+      if (shift.isScheduleDerived) {
+        setSelectedScheduleDay(shift.scheduleDateKey || (shift.start_msk ? shift.start_msk.substring(0, 10) : ''));
+        renderScheduleDayOverlay();
+        openOverlay('overlayScheduleDay');
+        return;
+      }
       enterEditMode(shift, { returnTab: activeTab });
     }
 
@@ -965,7 +976,7 @@
       var nightMin = 0;
       var holidayMin = 0;
       var shiftIncomeMap = buildMonthShiftIncomeMap(calculationShifts, bounds);
-      var shiftDurationLevelMap = buildMonthShiftDurationLevelMap(monthShifts, bounds);
+      var shiftDurationLevelMap = buildMonthShiftDurationLevelMap(calculationShifts, bounds);
       currentMonthShiftIncomeMap = shiftIncomeMap || Object.create(null);
       for (var j = 0; j < calculationShifts.length; j++) {
         totalMin += shiftMinutesInRange(calculationShifts[j], bounds.start, bounds.end);
@@ -1065,9 +1076,9 @@
       renderShiftList(
         document.getElementById('shiftsList'),
         document.getElementById('shiftsHeader'),
-        monthShifts,
+        calculationShifts,
         false,
-        'Пока пусто. Добавь первую смену, и журнал заполнится автоматически.',
+        'Пока пусто. Добавь первую смену или график, и журнал заполнится автоматически.',
         'Журнал смен',
         _renderPendingMap,
         shiftIncomeMap,
