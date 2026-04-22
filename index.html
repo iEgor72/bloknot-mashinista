@@ -723,12 +723,9 @@
           <div class="docs-shell" id="docsShell">
 
             <div class="month-nav docs-entry-card" id="docsEntryCard">
-              <div class="docs-nav-copy docs-nav-copy-rich docs-nav-copy-with-admin">
-                <div>
-                  <div class="docs-nav-kicker">Выберите раздел</div>
-                  <div class="docs-nav-title">Документы</div>
-                </div>
-                <button class="docs-admin-entry hidden" id="docsAdminEntryButton" type="button">Управление</button>
+              <div class="docs-nav-copy docs-nav-copy-rich">
+                <div class="docs-nav-kicker">Выберите раздел</div>
+                <div class="docs-nav-title">Документы</div>
               </div>
               <div class="docs-entry-grid" aria-label="Разделы документации">
                 <button class="docs-entry-tile" data-docs-entry="instructions" type="button">
@@ -784,10 +781,7 @@
                   <div class="docs-nav-title" id="docsCurrentEntryTitle">Документация</div>
                   <div class="docs-nav-subtitle" id="docsCurrentEntrySubtitle">Выберите нужный подраздел</div>
                 </div>
-                <div class="docs-nav-actions">
-                  <button class="docs-admin-entry hidden" id="docsAdminSubnavButton" type="button">Управление</button>
-                  <button class="docs-back-btn" id="docsBackButton" type="button"><span aria-hidden="true">←</span><span>Назад к разделам</span></button>
-                </div>
+                <button class="docs-back-btn" id="docsBackButton" type="button"><span aria-hidden="true">←</span><span>Назад к разделам</span></button>
               </div>
               <div class="docs-month-tabs hidden" id="docsSecondaryTabs" role="navigation" aria-label="Подразделы документации">
                 <button class="docs-tab-btn" data-docs-tab="speeds" type="button"><span class="docs-tab-dot" aria-hidden="true"></span><span>Скорости</span></button>
@@ -821,83 +815,6 @@
             <!-- Reminders panel -->
             <div class="docs-panel hidden" data-docs-panel="reminders" id="docsPanelReminders">
               <div class="docs-file-list" id="docsListReminders"></div>
-            </div>
-
-            <div class="month-nav docs-admin-shell hidden" id="docsAdminShell" aria-live="polite">
-              <div class="docs-admin-head">
-                <div>
-                  <div class="docs-nav-kicker">Только для администратора</div>
-                  <div class="docs-nav-title docs-admin-title">Управление документами</div>
-                  <div class="docs-nav-subtitle" id="docsAdminSubtitle">Здесь можно загружать, переименовывать, архивировать и возвращать документы.</div>
-                </div>
-                <div class="docs-admin-head-actions">
-                  <button class="docs-back-btn" id="docsAdminCloseButton" type="button"><span aria-hidden="true">←</span><span>К документам</span></button>
-                  <button class="btn-secondary docs-admin-primary" id="docsAdminCreateButton" type="button">Добавить документ</button>
-                </div>
-              </div>
-              <div class="docs-admin-layout">
-                <div class="docs-admin-list-card">
-                  <div class="docs-admin-section-title">Список документов</div>
-                  <div class="docs-admin-toolbar">
-                    <label class="field docs-admin-field docs-admin-filter-field">
-                      <span class="field-label">Показывать</span>
-                      <select class="input" id="docsAdminFilterSection">
-                        <option value="all">Все разделы</option>
-                        <option value="instructions">Инструкции</option>
-                        <option value="speeds">Скорости</option>
-                        <option value="memos">Режимки</option>
-                        <option value="reminders">Памятки</option>
-                        <option value="folders">Папки</option>
-                        <option value="archived">Только архив</option>
-                      </select>
-                    </label>
-                    <div class="docs-admin-summary" id="docsAdminSummary">Загрузка списка…</div>
-                  </div>
-                  <div class="docs-admin-list" id="docsAdminList"></div>
-                </div>
-                <div class="docs-admin-form-card">
-                  <div class="docs-admin-section-title" id="docsAdminFormTitle">Новый документ</div>
-                  <form class="docs-admin-form" id="docsAdminForm">
-                    <input type="hidden" id="docsAdminDocumentId" />
-                    <input type="hidden" id="docsAdminDocumentPath" />
-                    <label class="field docs-admin-field">
-                      <span class="field-label">Название</span>
-                      <input class="input" id="docsAdminTitle" type="text" maxlength="160" placeholder="Например, Скорости БАМ" />
-                    </label>
-                    <label class="field docs-admin-field">
-                      <span class="field-label">Подзаголовок</span>
-                      <input class="input" id="docsAdminSubtitleInput" type="text" maxlength="200" placeholder="Приказ, дата или короткое пояснение" />
-                    </label>
-                    <label class="field docs-admin-field">
-                      <span class="field-label">Раздел</span>
-                      <select class="input" id="docsAdminSection">
-                        <option value="instructions">Инструкции</option>
-                        <option value="speeds">Скорости</option>
-                        <option value="memos">Режимки</option>
-                        <option value="reminders">Памятки</option>
-                        <option value="folders">Папки</option>
-                      </select>
-                    </label>
-                    <div class="docs-admin-grid">
-                      <label class="field docs-admin-field">
-                        <span class="field-label">Порядок</span>
-                        <input class="input" id="docsAdminSortOrder" type="number" inputmode="numeric" placeholder="Необязательно" />
-                      </label>
-                      <label class="field docs-admin-field">
-                        <span class="field-label">Файл</span>
-                        <button class="docs-upload-btn docs-admin-upload-btn" id="docsAdminSelectFileButton" type="button">Выбрать файл</button>
-                        <input class="hidden" id="docsAdminFileInput" type="file" multiple accept=".pdf,.doc,.docx,.xls,.xlsx,.jpg,.jpeg,.png,.webp" />
-                      </label>
-                    </div>
-                    <div class="docs-admin-upload-state" id="docsAdminUploadState">Файл пока не выбран.</div>
-                    <div class="docs-admin-actions-row">
-                      <button class="btn-secondary" id="docsAdminResetButton" type="button">Очистить</button>
-                      <button class="btn-primary" id="docsAdminSubmitButton" type="submit">Сохранить</button>
-                    </div>
-                    <div class="docs-admin-note" id="docsAdminFormNote">Можно загружать один файл или сразу несколько. Если файлов несколько, названия возьмутся из имён файлов, а подписи можно будет поправить после загрузки.</div>
-                  </form>
-                </div>
-              </div>
             </div>
           </div>
 
@@ -1300,20 +1217,6 @@
   </div>
 
   <!-- Docs File Viewer Overlay -->
-  <div class="docs-admin-confirm hidden" id="docsAdminConfirm" aria-modal="true" role="dialog" aria-label="Подтверждение удаления документа">
-    <div class="docs-admin-confirm-card">
-      <div class="docs-pro-icon docs-admin-confirm-icon" aria-hidden="true">
-        <svg viewBox="0 0 24 24"><path d="M9 3h6"></path><path d="M5 7h14"></path><path d="M8 7v11a2 2 0 0 0 2 2h4a2 2 0 0 0 2-2V7"></path><path d="M10 11v5M14 11v5"></path></svg>
-      </div>
-      <div class="docs-pro-title" id="docsAdminConfirmTitle">Удалить документ?</div>
-      <div class="docs-pro-text" id="docsAdminConfirmText">Документ исчезнет из списка после подтверждения.</div>
-      <div class="docs-admin-confirm-actions">
-        <button class="btn-secondary" id="docsAdminConfirmCancel" type="button">Отмена</button>
-        <button class="btn-danger" id="docsAdminConfirmDelete" type="button">Удалить</button>
-      </div>
-    </div>
-  </div>
-
   <div class="docs-viewer-overlay hidden" id="docsViewerOverlay" aria-modal="true" role="dialog" aria-label="Просмотр файла">
     <div class="docs-viewer-header">
       <div class="docs-viewer-header-side docs-viewer-header-side-left">
