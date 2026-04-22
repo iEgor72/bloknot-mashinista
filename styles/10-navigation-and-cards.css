@@ -1324,6 +1324,13 @@
       padding: 16px;
     }
 
+    .schedule-day-fact.has-shift-card {
+      padding: 0;
+      border: 0;
+      background: transparent;
+      box-shadow: none;
+    }
+
     .schedule-day-plan {
       padding: 16px;
       border-radius: var(--r-card);
@@ -1354,6 +1361,10 @@
 
     .schedule-day-fact-card-shell {
       display: grid;
+    }
+
+    .schedule-day-fact.has-shift-card .schedule-day-fact-content {
+      gap: 0;
     }
 
     .schedule-day-fact-card-shell .shift-item {

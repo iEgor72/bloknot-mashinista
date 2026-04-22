@@ -909,6 +909,7 @@
       factTitleEl.textContent = daySummary.titleText;
       factTextEl.textContent = daySummary.noteText;
       var hasFactCard = !!daySummary.cardHtml;
+      factCardEl.classList.toggle('has-shift-card', hasFactCard);
       if (factTitleEl.parentNode && factTitleEl.parentNode.classList) {
         factTitleEl.parentNode.classList.toggle('hidden', hasFactCard);
       }

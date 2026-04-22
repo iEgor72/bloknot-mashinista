@@ -1,6 +1,6 @@
 # Worktree Status
 
-Generated: 2026-04-22 03:23:00 +0000
+Generated: 2026-04-22 03:25:01 +0000
 
 ## git status -sb
 ```text
@@ -18,18 +18,17 @@ Generated: 2026-04-22 03:23:00 +0000
 
 ## git branch -vv
 ```text
-* main e4ef955 [origin/main] copy(schedule): simplify day sheet fact wording
+* main 672346b [origin/main] fix(schedule): remove duplicate empty day copy
 ```
 
 ## HEAD
 ```text
-e4ef955 copy(schedule): simplify day sheet fact wording
+672346b fix(schedule): remove duplicate empty day copy
  ai-memory/CHANGELOG.md       |  8 ++++++++
  ai-memory/INDEX.md           |  2 +-
  ai-memory/PROJECT_STATE.md   |  8 ++++----
  ai-memory/RECENT_COMMITS.md  |  4 ++--
- ai-memory/WORKTREE_STATUS.md | 24 ++++++++++++------------
- index.html                   |  2 +-
- scripts/render.js            | 10 +++++-----
- 7 files changed, 33 insertions(+), 25 deletions(-)
+ ai-memory/WORKTREE_STATUS.md | 23 +++++++++++------------
+ scripts/render.js            |  3 +++
+ 6 files changed, 29 insertions(+), 19 deletions(-)
 ```
