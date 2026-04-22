@@ -143,9 +143,6 @@
         deleteSchedulePeriod(deletedPeriodId, function(err) {
           if (err) {
             triggerHapticError();
-            reloadScheduleStoreForCurrentUser(function() {
-              render();
-            });
             showSaveToast('Не удалось удалить график', 'danger');
             return;
           }
@@ -159,11 +156,6 @@
             }
           } catch (e) {
             console.error('schedule delete planner reset failed', e);
-          }
-          try {
-            persistScheduleMaterializedMonth({ purgePeriodIds: [deletedPeriodId] });
-          } catch (e) {
-            console.error('schedule delete materialization sync failed', e);
           }
         });
         return;

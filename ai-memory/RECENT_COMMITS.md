@@ -1,9 +1,30 @@
 # Recent Commits
 
-Generated: 2026-04-21 23:44:37 +0000
+Generated: 2026-04-22 02:12:21 +0000
 
 | Hash | Date | Author | Message |
 | --- | --- | --- | --- |
+| `41bb038` | 2026-04-22T02:01:51+00:00 | iEgor72 | fix(schedule): make offline delete ui fail-safe |
+| `8418d6c` | 2026-04-22T01:57:53+00:00 | iEgor72 | fix(schedule): unblock offline graph delete ui |
+| `408db1e` | 2026-04-22T01:55:08+00:00 | iEgor72 | fix(schedule): keep graph delete offline-first |
+| `2664bc0` | 2026-04-22T01:42:00+00:00 | iEgor72 | fix(schedule): confirm graph delete only after sync |
+| `9c11778` | 2026-04-22T01:33:03+00:00 | iEgor72 | refactor(schedule): align graph sync with shifts |
+| `5db8a8f` | 2026-04-22T01:29:14+00:00 | iEgor72 | fix(schedule): stop resurrecting deleted graphs |
+| `1c2fd80` | 2026-04-22T01:19:44+00:00 | iEgor72 | fix(ui): keep newly opened overlays on top |
+| `59119ef` | 2026-04-22T01:16:51+00:00 | iEgor72 | fix(schedule): hint how to select graph actions |
+| `09eba47` | 2026-04-22T01:03:15+00:00 | iEgor72 | fix(schedule): sync graphs across devices |
+| `f108ce8` | 2026-04-22T00:54:21+00:00 | iEgor72 | refactor(schedule): move period actions into bottom sheet |
+| `46a422d` | 2026-04-22T00:51:13+00:00 | iEgor72 | fix(schedule): confirm graph deletion and restyle actions |
+| `3994dd1` | 2026-04-22T00:46:00+00:00 | iEgor72 | fix(calendar): remove render-time materialization lag |
+| `4da25da` | 2026-04-22T00:41:47+00:00 | iEgor72 | fix(calendar): align day CTA wording |
+| `56bef4f` | 2026-04-22T00:35:20+00:00 | iEgor72 | fix(calendar): unify day sheet with materialized shifts |
+| `4b0fb67` | 2026-04-22T00:19:41+00:00 | iEgor72 | feat(schedule): materialize graph shifts as real entries |
+| `ae01881` | 2026-04-22T00:09:15+00:00 | iEgor72 | feat(shifts): show graph-generated shifts in journal |
+| `84a2cb0` | 2026-04-22T00:03:14+00:00 | iEgor72 | fix(schedule): scope planner to visible month |
+| `f9c05b7` | 2026-04-21T23:54:12+00:00 | iEgor72 | fix(calendar): accent non-working days with red outline |
+| `eee5595` | 2026-04-21T23:52:33+00:00 | iEgor72 | fix(calendar): remove empty day dashes |
+| `31dab05` | 2026-04-21T23:50:27+00:00 | iEgor72 | fix(calendar): remove marker clutter from month grid |
+| `2768be9` | 2026-04-21T23:44:53+00:00 | iEgor72 | feat(app): refine schedule planner and simplify core flows |
 | `7571ee7` | 2026-04-21T12:42:36+00:00 | iEgor72 | fix(schedule): restore regular add current-time default |
 | `e06b028` | 2026-04-21T12:38:02+00:00 | iEgor72 | fix(schedule): raise legend and color graph buttons |
 | `3569c52` | 2026-04-21T12:35:44+00:00 | iEgor72 | fix(schedule): default shifts to 01:00-13:00 |
@@ -23,24 +44,3 @@ Generated: 2026-04-21 23:44:37 +0000
 | `af2fb8e` | 2026-04-21T11:30:41+00:00 | iEgor72 | refactor(home): reorder dashboard blocks |
 | `f38b855` | 2026-04-21T11:28:31+00:00 | iEgor72 | fix(schedule): render exact shift card on top |
 | `3fc3d5e` | 2026-04-21T11:24:21+00:00 | iEgor72 | feat(schedule): add train and fuel details to top card |
-| `b7e3b1d` | 2026-04-21T11:20:57+00:00 | iEgor72 | refactor(home): remove duplicate recent shifts block |
-| `f3e77cd` | 2026-04-21T11:15:34+00:00 | iEgor72 | fix(schedule): reuse shift card layout in upcoming list |
-| `86cb9fd` | 2026-04-21T11:11:42+00:00 | iEgor72 | fix(schedule): reuse close button and refine upcoming cards |
-| `9f7c4cf` | 2026-04-21T11:09:44+00:00 | iEgor72 | fix(schedule): stop showing route in upcoming cards |
-| `97ee03b` | 2026-04-21T11:06:52+00:00 | iEgor72 | fix(schedule): reuse app buttons and simplify day card |
-| `f3b94df` | 2026-04-21T10:59:21+00:00 | iEgor72 | fix(schedule): unify day preview and sheet actions |
-| `7e95fc9` | 2026-04-21T10:49:07+00:00 | iEgor72 | fix(schedule): clarify upcoming day details |
-| `d7844da` | 2026-04-21T10:45:02+00:00 | iEgor72 | fix(schedule): simplify graph setup and calendar |
-| `a7c6077` | 2026-04-21T10:37:31+00:00 | iEgor72 | fix(schedule): simplify calendar and planner |
-| `751b33b` | 2026-04-21T10:29:08+00:00 | iEgor72 | feat(schedule): add home work calendar |
-| `be331b7` | 2026-04-21T09:52:36+00:00 | iEgor72 | fix(seo): improve stat card spacing |
-| `31c3132` | 2026-04-21T09:50:15+00:00 | iEgor72 | feat(seo): add app landing page |
-| `de47cdc` | 2026-04-21T09:47:24+00:00 | iEgor72 | feat(seo): add shift schedule landing page |
-| `21a61b5` | 2026-04-21T09:44:30+00:00 | iEgor72 | feat(seo): add salary calculator landing page |
-| `9c88d87` | 2026-04-21T09:26:29+00:00 | iEgor72 | chore(seo): add yandex verification file |
-| `e10a3dc` | 2026-04-21T09:18:29+00:00 | iEgor72 | chore(seo): add google site verification file |
-| `d9452a4` | 2026-04-21T09:11:41+00:00 | iEgor72 | fix(seo): fit hero screenshots without cropping |
-| `0f8fb49` | 2026-04-21T09:10:07+00:00 | iEgor72 | improve(seo): tailor hero images by page |
-| `762da28` | 2026-04-21T09:08:25+00:00 | iEgor72 | fix(seo): replace outdated promo image |
-| `5977e55` | 2026-04-21T09:05:19+00:00 | iEgor72 | improve(seo): enrich landing pages visuals and copy |
-| `5273c3a` | 2026-04-21T08:58:06+00:00 | iEgor72 | fix(sw): bypass app shell for seo pages |

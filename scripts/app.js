@@ -1593,14 +1593,46 @@
       return period;
     }
 
+    function purgeMaterializedScheduleShiftsForPeriodIds(periodIds) {
+      var ids = Array.isArray(periodIds) ? periodIds : [];
+      if (!ids.length) return false;
+      var purgeMap = Object.create(null);
+      for (var i = 0; i < ids.length; i++) {
+        if (ids[i] !== undefined && ids[i] !== null && ids[i] !== '') {
+          purgeMap[String(ids[i])] = true;
+        }
+      }
+      var nextShifts = [];
+      for (var j = 0; j < allShifts.length; j++) {
+        var shift = allShifts[j];
+        var periodId = shift && shift.schedule_period_id ? String(shift.schedule_period_id) : '';
+        if (isScheduleMaterializedShift(shift) && purgeMap[periodId]) continue;
+        nextShifts.push(shift);
+      }
+      var prevSerialized = JSON.stringify(cloneShiftsForCache(allShifts));
+      var nextSerialized = JSON.stringify(cloneShiftsForCache(nextShifts));
+      if (prevSerialized === nextSerialized) return false;
+      allShifts = nextShifts;
+      pendingMutationIds = [];
+      saveShifts();
+      return true;
+    }
+
     function deleteSchedulePeriod(periodId, callback) {
+      var targetId = periodId ? String(periodId) : '';
+      if (!targetId) {
+        if (typeof callback === 'function') callback(new Error('Missing schedule period id'));
+        return;
+      }
       var periods = getSchedulePeriods();
       var updated = [];
       for (var i = 0; i < periods.length; i++) {
-        if (periods[i].id !== periodId) updated.push(periods[i]);
+        if (String(periods[i].id) !== targetId) updated.push(periods[i]);
       }
       scheduleStore.periods = updated;
-      saveScheduleStore(callback);
+      saveScheduleStore();
+      purgeMaterializedScheduleShiftsForPeriodIds([targetId]);
+      if (typeof callback === 'function') callback(null);
     }
 
     function setScheduleDayOverride(dateKey, payload) {
