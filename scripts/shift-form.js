@@ -1160,6 +1160,8 @@ if (action === 'scroll-node') {
             documentationStore.activeEntry = entry;
             if (entry === 'instructions') documentationStore.activeTab = 'instructions';
             else if (entry === 'folders') documentationStore.activeTab = 'folders';
+            else if (entry === 'memos') documentationStore.activeTab = 'memos';
+            else if (entry === 'reminders') documentationStore.activeTab = 'reminders';
             else documentationStore.activeTab = 'speeds';
             renderDocumentationScreen();
           }

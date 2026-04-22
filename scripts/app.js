@@ -2596,18 +2596,32 @@
           tabs: ['instructions']
         };
       }
+      if (entry === 'speeds') {
+        return {
+          title: 'Скорости',
+          subtitle: 'Лимиты и участки по направлениям',
+          tabs: ['speeds']
+        };
+      }
+      if (entry === 'memos') {
+        return {
+          title: 'Режимки',
+          subtitle: 'Режимные листы по нужным участкам',
+          tabs: ['memos']
+        };
+      }
+      if (entry === 'reminders') {
+        return {
+          title: 'Памятки',
+          subtitle: 'Короткие рабочие подсказки',
+          tabs: ['reminders']
+        };
+      }
       if (entry === 'folders') {
         return {
           title: 'Папки',
           subtitle: 'Материалы собраны по темам',
           tabs: ['folders']
-        };
-      }
-      if (entry === 'memory') {
-        return {
-          title: 'Памятки',
-          subtitle: 'Короткие подсказки для работы',
-          tabs: ['speeds', 'memos', 'reminders']
         };
       }
       return {

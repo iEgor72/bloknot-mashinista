@@ -1,9 +1,10 @@
 # Recent Commits
 
-Generated: 2026-04-22 10:28:14 +0000
+Generated: 2026-04-22 10:37:06 +0000
 
 | Hash | Date | Author | Message |
 | --- | --- | --- | --- |
+| `0392f28` | 2026-04-22T10:37:04+00:00 | iEgor72 | fix(sync): persist salary params across clients |
 | `362112f` | 2026-04-22T10:28:12+00:00 | iEgor72 | fix(docs): remove folder card subtitles |
 | `a378a57` | 2026-04-22T10:26:01+00:00 | iEgor72 | fix(docs): rename memo cards to режимки |
 | `8d78df3` | 2026-04-22T08:28:29+00:00 | iEgor72 | fix(docs): remove redundant folder intro copy |
@@ -43,4 +44,3 @@ Generated: 2026-04-22 10:28:14 +0000
 | `8418d6c` | 2026-04-22T01:57:53+00:00 | iEgor72 | fix(schedule): unblock offline graph delete ui |
 | `408db1e` | 2026-04-22T01:55:08+00:00 | iEgor72 | fix(schedule): keep graph delete offline-first |
 | `2664bc0` | 2026-04-22T01:42:00+00:00 | iEgor72 | fix(schedule): confirm graph delete only after sync |
-| `9c11778` | 2026-04-22T01:33:03+00:00 | iEgor72 | refactor(schedule): align graph sync with shifts |

@@ -1,14 +1,14 @@
 # Project State
 
 <!-- AUTO_STATUS:START -->
-Generated: 2026-04-22 10:28:14 +0000
+Generated: 2026-04-22 10:37:06 +0000
 
 ## Repository Snapshot
 - Local repo path: `/opt/bloknot-mashinista`
 - Project memory path: `/opt/bloknot-mashinista/ai-memory`
 - Branch: `main`
-- HEAD: `362112f`
-- Last commit: `362112f fix(docs): remove folder card subtitles`
+- HEAD: `0392f28`
+- Last commit: `0392f28 fix(sync): persist salary params across clients`
 
 ## Git Remote
 ```text
@@ -18,17 +18,12 @@ origin	https://github.com/iEgor72/bloknot-mashinista.git (push)
 
 ## Branch Tracking
 ```text
-* main 362112f [origin/main] fix(docs): remove folder card subtitles
+* main 0392f28 [origin/main] fix(sync): persist salary params across clients
 ```
 
 ## Worktree
 ```text
-M ai-memory/CHANGELOG.md
- M ai-memory/INDEX.md
- M ai-memory/PROJECT_STATE.md
- M ai-memory/RECENT_COMMITS.md
- M ai-memory/WORKTREE_STATUS.md
- M ai-memory/sessions/2026-04-22.md
+clean
 ```
 <!-- AUTO_STATUS:END -->
 

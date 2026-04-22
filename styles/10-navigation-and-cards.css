@@ -2303,6 +2303,24 @@
       border-color: rgba(167, 139, 250, 0.2);
     }
 
+    .docs-entry-icon-speeds {
+      color: #60a5fa;
+      background: rgba(96, 165, 250, 0.11);
+      border-color: rgba(96, 165, 250, 0.2);
+    }
+
+    .docs-entry-icon-memos {
+      color: #a78bfa;
+      background: rgba(167, 139, 250, 0.11);
+      border-color: rgba(167, 139, 250, 0.2);
+    }
+
+    .docs-entry-icon-reminders {
+      color: #34d399;
+      background: rgba(52, 211, 153, 0.11);
+      border-color: rgba(52, 211, 153, 0.2);
+    }
+
     .docs-entry-icon-folders {
       color: #fbbf24;
       background: rgba(251, 191, 36, 0.12);
