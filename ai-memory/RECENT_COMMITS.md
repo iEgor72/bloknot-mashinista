@@ -1,9 +1,10 @@
 # Recent Commits
 
-Generated: 2026-04-22 02:12:21 +0000
+Generated: 2026-04-22 02:18:24 +0000
 
 | Hash | Date | Author | Message |
 | --- | --- | --- | --- |
+| `a6d4b00` | 2026-04-22T02:12:31+00:00 | iEgor72 | fix(schedule): make graph deletion offline-safe |
 | `41bb038` | 2026-04-22T02:01:51+00:00 | iEgor72 | fix(schedule): make offline delete ui fail-safe |
 | `8418d6c` | 2026-04-22T01:57:53+00:00 | iEgor72 | fix(schedule): unblock offline graph delete ui |
 | `408db1e` | 2026-04-22T01:55:08+00:00 | iEgor72 | fix(schedule): keep graph delete offline-first |
@@ -43,4 +44,3 @@ Generated: 2026-04-22 02:12:21 +0000
 | `8e5067a` | 2026-04-21T11:41:06+00:00 | iEgor72 | feat(schedule): add period editing and clearer day state |
 | `af2fb8e` | 2026-04-21T11:30:41+00:00 | iEgor72 | refactor(home): reorder dashboard blocks |
 | `f38b855` | 2026-04-21T11:28:31+00:00 | iEgor72 | fix(schedule): render exact shift card on top |
-| `3fc3d5e` | 2026-04-21T11:24:21+00:00 | iEgor72 | feat(schedule): add train and fuel details to top card |

@@ -973,31 +973,28 @@
     var schedulePeriodsListEl = document.getElementById('schedulePeriodsList');
     if (schedulePeriodsListEl) {
       schedulePeriodsListEl.addEventListener('click', function(e) {
+        var actionBtn = e.target.closest('[data-schedule-period-action]');
+        if (actionBtn) {
+          var action = actionBtn.getAttribute('data-schedule-period-action');
+          var periodId = actionBtn.getAttribute('data-schedule-period-id');
+          if (!periodId) return;
+          if (action === 'delete') {
+            clearScheduleConflictState();
+            setSelectedSchedulePeriod(periodId);
+            pendingScheduleDeletePeriodId = periodId;
+            triggerHapticWarning();
+            render();
+            openOverlay('overlayConfirm');
+            return;
+          }
+          triggerHapticSelection();
+          fillSchedulePlannerForm(periodId);
+          return;
+        }
         var cardBtn = e.target.closest('[data-schedule-period-card]');
         if (!cardBtn) return;
         triggerHapticSelection();
         fillSchedulePlannerForm(cardBtn.getAttribute('data-schedule-period-card'));
-      });
-    }
-
-    var schedulePeriodEditBtn = document.getElementById('btnSchedulePeriodEdit');
-    if (schedulePeriodEditBtn) {
-      schedulePeriodEditBtn.addEventListener('click', function() {
-        if (!selectedSchedulePeriodId) return;
-        triggerHapticSelection();
-        fillSchedulePlannerForm(selectedSchedulePeriodId);
-      });
-    }
-
-    var schedulePeriodDeleteBtn = document.getElementById('btnSchedulePeriodDelete');
-    if (schedulePeriodDeleteBtn) {
-      schedulePeriodDeleteBtn.addEventListener('click', function() {
-        if (!selectedSchedulePeriodId) return;
-        clearScheduleConflictState();
-        pendingScheduleDeletePeriodId = selectedSchedulePeriodId;
-        triggerHapticWarning();
-        render();
-        openOverlay('overlayConfirm');
       });
     }
 

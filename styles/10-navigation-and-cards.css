@@ -1032,18 +1032,32 @@
 
     .schedule-period-card {
       display: grid;
-      gap: 8px;
+      gap: 10px;
       width: 100%;
       padding: 14px;
       border-radius: 18px;
       background: #181821;
       border: 1px solid rgba(255, 255, 255, 0.08);
       text-align: left;
-      cursor: pointer;
       -webkit-tap-highlight-color: transparent;
       transition: border-color .16s ease, background .16s ease, transform .14s ease, box-shadow .16s ease;
     }
 
+    .schedule-period-card-main {
+      appearance: none;
+      display: grid;
+      gap: 8px;
+      width: 100%;
+      padding: 0;
+      border: 0;
+      background: transparent;
+      text-align: left;
+      color: inherit;
+      cursor: pointer;
+      -webkit-tap-highlight-color: transparent;
+    }
+
+    .schedule-period-card-main:active,
     .schedule-period-card:active {
       transform: translateY(1px);
     }
@@ -1128,37 +1142,25 @@
     }
 
     .schedule-conflict-actions .btn-primary,
-    .schedule-conflict-actions .btn-secondary,
-    .schedule-period-management-actions .btn-edit-action,
-    .schedule-period-management-actions .btn-danger {
+    .schedule-conflict-actions .btn-secondary {
       flex: 1 1 220px;
     }
 
-    .schedule-period-management-actions {
+    .schedule-period-inline-note {
       margin: 10px 0 14px;
     }
 
-    .schedule-period-selection-hint {
-      margin: 10px 0 12px;
+    .schedule-period-card-actions {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      border-top: 1px solid var(--border);
+      padding-top: 10px;
+      min-width: 0;
     }
 
-    .schedule-period-selection-card {
-      cursor: default;
-      border-color: rgba(245, 158, 11, 0.18);
-      background: rgba(245, 158, 11, 0.08);
-      color: #fef3c7;
-    }
-
-    .schedule-period-selection-card .details-disclosure-title {
-      color: var(--text);
-    }
-
-    .schedule-period-selection-card .details-disclosure-note {
-      color: rgba(238, 242, 248, 0.72);
-    }
-
-    .schedule-period-selection-card .details-disclosure-icon {
-      color: #fbbf24;
+    .schedule-period-action-btn {
+      min-width: 0;
     }
 
     .schedule-period-top {
@@ -1481,6 +1483,14 @@
 
       .schedule-day-actions-row {
         grid-template-columns: 1fr;
+      }
+
+      .schedule-period-card-actions {
+        flex-direction: column;
+      }
+
+      .schedule-period-action-btn {
+        width: 100%;
       }
 
       .schedule-day-type-grid {

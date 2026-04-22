@@ -809,16 +809,22 @@
       var subnote = opts.current ? 'Этот период попадает в выбранный месяц.' : 'Период графика в выбранном месяце.';
       var periodIdAttr = escapeHtml(String(period.id || ''));
       if (selectedSchedulePeriodId && String(selectedSchedulePeriodId) === String(period.id)) cardClass += ' is-selected';
-      return '<button type="button" class="' + cardClass + '" data-schedule-period-card="' + periodIdAttr + '">' +
-        (opts.kicker ? '<div class="schedule-period-kicker">' + escapeHtml(opts.kicker) + '</div>' : '') +
-        '<div class="schedule-period-top">' +
-          '<div>' +
-            '<div class="schedule-period-title">' + escapeHtml(buildSchedulePeriodSummary(period)) + '</div>' +
-            '<div class="schedule-period-note">' + escapeHtml(rangeText) + '</div>' +
+      return '<div class="' + cardClass + '" data-schedule-period="' + periodIdAttr + '">' +
+        '<button type="button" class="schedule-period-card-main" data-schedule-period-card="' + periodIdAttr + '">' +
+          (opts.kicker ? '<div class="schedule-period-kicker">' + escapeHtml(opts.kicker) + '</div>' : '') +
+          '<div class="schedule-period-top">' +
+            '<div>' +
+              '<div class="schedule-period-title">' + escapeHtml(buildSchedulePeriodSummary(period)) + '</div>' +
+              '<div class="schedule-period-note">' + escapeHtml(rangeText) + '</div>' +
+            '</div>' +
           '</div>' +
+          '<div class="schedule-period-subnote">' + escapeHtml(subnote) + '</div>' +
+        '</button>' +
+        '<div class="schedule-period-card-actions">' +
+          '<button type="button" class="shift-card-action-btn shift-card-edit-btn schedule-period-action-btn" data-schedule-period-action="edit" data-schedule-period-id="' + periodIdAttr + '">Редактировать</button>' +
+          '<button type="button" class="shift-card-action-btn shift-card-delete-btn schedule-period-action-btn" data-schedule-period-action="delete" data-schedule-period-id="' + periodIdAttr + '">Удалить</button>' +
         '</div>' +
-        '<div class="schedule-period-subnote">' + escapeHtml(subnote) + '</div>' +
-      '</button>';
+      '</div>';
     }
 
     function buildConfirmSchedulePeriodCardHtml(period) {
@@ -838,13 +844,6 @@
     function renderSchedulePlannerOverlay() {
       var listEl = document.getElementById('schedulePeriodsList');
       var conflictEl = document.getElementById('scheduleConflictBox');
-      var actionRowEl = document.getElementById('schedulePeriodManagementActions');
-      var editActionBtn = document.getElementById('btnSchedulePeriodEdit');
-      var deleteActionBtn = document.getElementById('btnSchedulePeriodDelete');
-      var selectionHintEl = document.getElementById('schedulePeriodSelectionHint');
-      var selectionHintTitleEl = document.getElementById('schedulePeriodSelectionHintTitle');
-      var selectionHintNoteEl = document.getElementById('schedulePeriodSelectionHintNote');
-      var selectionHintIconEl = document.getElementById('schedulePeriodSelectionHintIcon');
       if (!listEl) return;
       var vm = getSchedulePeriodsViewModel(getVisibleMonthStartDateKey(), getVisibleMonthEndDateKey());
       var html = '';
@@ -862,29 +861,6 @@
       }
 
       listEl.innerHTML = html;
-
-      var selectedPeriod = selectedSchedulePeriodId ? getSchedulePeriodById(selectedSchedulePeriodId) : null;
-      if (actionRowEl) {
-        actionRowEl.classList.toggle('hidden', !selectedPeriod);
-        if (editActionBtn) editActionBtn.textContent = 'Редактировать график';
-        if (deleteActionBtn) deleteActionBtn.textContent = 'Удалить график';
-      }
-      if (selectionHintEl) {
-        selectionHintEl.classList.toggle('hidden', vm.isEmpty);
-        if (vm.isEmpty) {
-          selectionHintEl.classList.add('hidden');
-        } else if (selectedPeriod) {
-          selectionHintEl.classList.remove('hidden');
-          if (selectionHintTitleEl) selectionHintTitleEl.textContent = 'График выбран';
-          if (selectionHintNoteEl) selectionHintNoteEl.textContent = 'Ниже можно отредактировать или удалить выбранный график.';
-          if (selectionHintIconEl) selectionHintIconEl.textContent = '↓';
-        } else {
-          selectionHintEl.classList.remove('hidden');
-          if (selectionHintTitleEl) selectionHintTitleEl.textContent = 'Выберите график выше';
-          if (selectionHintNoteEl) selectionHintNoteEl.textContent = 'После выбора снизу появятся кнопки редактирования и удаления.';
-          if (selectionHintIconEl) selectionHintIconEl.textContent = '↑';
-        }
-      }
 
       if (!conflictEl) return;
       if (!pendingScheduleConflict || !pendingScheduleConflict.overlaps || !pendingScheduleConflict.overlaps.length) {

@@ -1,14 +1,14 @@
 # Project State
 
 <!-- AUTO_STATUS:START -->
-Generated: 2026-04-22 02:12:21 +0000
+Generated: 2026-04-22 02:18:24 +0000
 
 ## Repository Snapshot
 - Local repo path: `/opt/bloknot-mashinista`
 - Project memory path: `/opt/bloknot-mashinista/ai-memory`
 - Branch: `main`
-- HEAD: `41bb038`
-- Last commit: `41bb038 fix(schedule): make offline delete ui fail-safe`
+- HEAD: `a6d4b00`
+- Last commit: `a6d4b00 fix(schedule): make graph deletion offline-safe`
 
 ## Git Remote
 ```text
@@ -18,7 +18,7 @@ origin	https://github.com/iEgor72/bloknot-mashinista.git (push)
 
 ## Branch Tracking
 ```text
-* main 41bb038 [origin/main] fix(schedule): make offline delete ui fail-safe
+* main a6d4b00 [origin/main] fix(schedule): make graph deletion offline-safe
 ```
 
 ## Worktree
@@ -28,8 +28,10 @@ M ai-memory/CHANGELOG.md
  M ai-memory/PROJECT_STATE.md
  M ai-memory/RECENT_COMMITS.md
  M ai-memory/WORKTREE_STATUS.md
- M scripts/app.js
+ M index.html
+ M scripts/render.js
  M scripts/shift-form.js
+ M styles/10-navigation-and-cards.css
 ?? ai-memory/sessions/2026-04-19.md
 ?? ai-memory/sessions/2026-04-20.md
 ?? ai-memory/sessions/2026-04-21.md
