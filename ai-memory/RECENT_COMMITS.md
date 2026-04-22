@@ -1,9 +1,10 @@
 # Recent Commits
 
-Generated: 2026-04-22 04:11:48 +0000
+Generated: 2026-04-22 04:16:06 +0000
 
 | Hash | Date | Author | Message |
 | --- | --- | --- | --- |
+| `8c2e8f2` | 2026-04-22T04:15:57+00:00 | iEgor72 | copy(docs): make document section cards human-readable |
 | `4687936` | 2026-04-22T04:11:38+00:00 | iEgor72 | fix(schedule): remove header gap under calendar title |
 | `effa4e6` | 2026-04-22T04:08:32+00:00 | iEgor72 | style(schedule): tighten calendar card spacing |
 | `45ddfa0` | 2026-04-22T04:06:39+00:00 | iEgor72 | copy(schedule): remove redundant calendar subtitle |
@@ -43,4 +44,3 @@ Generated: 2026-04-22 04:11:48 +0000
 | `31dab05` | 2026-04-21T23:50:27+00:00 | iEgor72 | fix(calendar): remove marker clutter from month grid |
 | `2768be9` | 2026-04-21T23:44:53+00:00 | iEgor72 | feat(app): refine schedule planner and simplify core flows |
 | `7571ee7` | 2026-04-21T12:42:36+00:00 | iEgor72 | fix(schedule): restore regular add current-time default |
-| `e06b028` | 2026-04-21T12:38:02+00:00 | iEgor72 | fix(schedule): raise legend and color graph buttons |

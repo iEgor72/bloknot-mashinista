@@ -1,6 +1,6 @@
 # Worktree Status
 
-Generated: 2026-04-22 04:11:48 +0000
+Generated: 2026-04-22 04:16:06 +0000
 
 ## git status -sb
 ```text
@@ -18,17 +18,19 @@ Generated: 2026-04-22 04:11:48 +0000
 
 ## git branch -vv
 ```text
-* main 4687936 [origin/main] fix(schedule): remove header gap under calendar title
+* main 8c2e8f2 [origin/main] copy(docs): make document section cards human-readable
 ```
 
 ## HEAD
 ```text
-4687936 fix(schedule): remove header gap under calendar title
+8c2e8f2 copy(docs): make document section cards human-readable
  ai-memory/CHANGELOG.md             |  8 ++++++++
  ai-memory/INDEX.md                 |  2 +-
  ai-memory/PROJECT_STATE.md         |  8 ++++----
  ai-memory/RECENT_COMMITS.md        |  4 ++--
- ai-memory/WORKTREE_STATUS.md       | 21 ++++++++++-----------
- styles/10-navigation-and-cards.css | 13 +++++++++----
- 6 files changed, 34 insertions(+), 22 deletions(-)
+ ai-memory/WORKTREE_STATUS.md       | 12 ++++++------
+ index.html                         | 14 +++++++-------
+ scripts/app.js                     |  8 ++++----
+ styles/10-navigation-and-cards.css |  6 ++++--
+ 8 files changed, 36 insertions(+), 26 deletions(-)
 ```

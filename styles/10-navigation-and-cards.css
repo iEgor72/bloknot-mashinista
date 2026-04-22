@@ -2299,16 +2299,12 @@
 
     .docs-entry-content {
       display: grid;
-      gap: 3px;
+      gap: 2px;
       min-width: 0;
     }
 
     .docs-entry-eyebrow {
-      font-size: 9px;
-      font-weight: 800;
-      letter-spacing: 0.1em;
-      text-transform: uppercase;
-      color: rgba(238, 242, 248, 0.42);
+      display: none;
     }
 
     .docs-entry-name {
