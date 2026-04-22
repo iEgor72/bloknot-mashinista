@@ -1039,8 +1039,41 @@
       gap: 3px;
     }
 
+    .schedule-planner-steps {
+      display: grid;
+      gap: 8px;
+      margin-top: 2px;
+    }
+
+    .schedule-planner-step {
+      display: grid;
+      grid-template-columns: 24px minmax(0, 1fr);
+      gap: 10px;
+      align-items: start;
+    }
+
+    .schedule-planner-step-num {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      width: 24px;
+      height: 24px;
+      border-radius: 999px;
+      background: rgba(56, 189, 248, 0.14);
+      color: #8edfff;
+      font-size: 12px;
+      font-weight: 800;
+      line-height: 1;
+    }
+
+    .schedule-planner-step-text {
+      font-size: 13px;
+      line-height: 1.45;
+      color: var(--text);
+    }
+
     .schedule-planner-mode-note {
-      margin: 0;
+      margin: 2px 0 0;
       max-width: 46ch;
     }
 

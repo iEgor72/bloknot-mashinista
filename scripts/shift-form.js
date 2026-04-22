@@ -827,7 +827,7 @@
       if (noteEl) {
         if (isEditing) noteEl.textContent = 'Измените даты, цикл и время, затем сохраните.';
         else if (hasConflict) noteEl.textContent = 'Периоды пересекаются. Откройте старый или замените его с новой даты.';
-        else noteEl.textContent = 'Если график меняется, создайте новый период с новой даты.';
+        else noteEl.textContent = 'Заполните поля ниже и сохраните график.';
       }
       if (saveBtn) saveBtn.textContent = isEditing ? 'Сохранить изменения' : 'Сохранить график';
       if (editBadgeEl) editBadgeEl.classList.toggle('visible', isEditing);

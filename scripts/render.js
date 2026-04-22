@@ -844,6 +844,7 @@
     function renderSchedulePlannerOverlay() {
       var listEl = document.getElementById('schedulePeriodsList');
       var conflictEl = document.getElementById('scheduleConflictBox');
+      var overviewCardEl = document.getElementById('scheduleOverviewCard');
       if (!listEl) return;
       var vm = getSchedulePeriodsViewModel(getVisibleMonthStartDateKey(), getVisibleMonthEndDateKey());
       var html = '';
@@ -852,8 +853,12 @@
         monthTitleEl.textContent = 'График на ' + ((MONTH_NAMES && MONTH_NAMES[currentMonth]) ? (MONTH_NAMES[currentMonth] + ' ' + currentYear) : 'этот месяц');
       }
 
+      if (overviewCardEl) {
+        overviewCardEl.classList.toggle('hidden', vm.isEmpty);
+      }
+
       if (vm.isEmpty) {
-        html += '<div class="schedule-upcoming-empty">График ещё не добавлен.</div>';
+        html += '';
       } else {
         for (var pi = 0; pi < vm.periods.length; pi++) {
           html += buildSchedulePeriodCardHtml(vm.periods[pi], { current: pi === 0, kicker: pi === 0 ? 'Сейчас действует' : 'Также действует' });
