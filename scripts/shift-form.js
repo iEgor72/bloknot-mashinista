@@ -137,16 +137,26 @@
       if (pendingScheduleDeletePeriodId) {
         triggerHapticWarning();
         var deletedPeriodId = pendingScheduleDeletePeriodId;
-        if (selectedSchedulePeriodId && selectedSchedulePeriodId === String(deletedPeriodId)) {
-          resetSchedulePlannerForm();
-        }
+        var shouldResetPlanner = !!(selectedSchedulePeriodId && selectedSchedulePeriodId === String(deletedPeriodId));
         clearScheduleConflictState();
-        deleteSchedulePeriod(deletedPeriodId);
-        persistScheduleMaterializedMonth({ purgePeriodIds: [deletedPeriodId] });
-        pendingScheduleDeletePeriodId = null;
-        closeOverlay('overlayConfirm');
-        render();
-        showSaveToast('График удалён', 'neutral');
+        deleteSchedulePeriod(deletedPeriodId, function(err) {
+          if (err) {
+            triggerHapticError();
+            reloadScheduleStoreForCurrentUser(function() {
+              render();
+            });
+            showSaveToast('Не удалось удалить график', 'danger');
+            return;
+          }
+          if (shouldResetPlanner) {
+            resetSchedulePlannerForm();
+          }
+          persistScheduleMaterializedMonth({ purgePeriodIds: [deletedPeriodId] });
+          pendingScheduleDeletePeriodId = null;
+          closeOverlay('overlayConfirm');
+          render();
+          showSaveToast('График удалён', 'neutral');
+        });
         return;
       }
       if (!pendingDeleteId) return;

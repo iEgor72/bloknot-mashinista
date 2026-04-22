@@ -1081,9 +1081,17 @@
     function saveScheduleStore(callback) {
       var snapshot = normalizeScheduleStore(scheduleStore);
       scheduleStore = writePendingScheduleSnapshot(snapshot).schedule;
-      if (callback) callback(null);
-      if (!navigator.onLine) return scheduleStore;
-      syncScheduleStoreRemote(snapshot, function() {
+      if (!navigator.onLine) {
+        if (callback) callback(null, scheduleStore);
+        return scheduleStore;
+      }
+      syncScheduleStoreRemote(snapshot, function(err, remoteStore) {
+        if (err) {
+          if (callback) callback(err, scheduleStore);
+          return;
+        }
+        scheduleStore = normalizeScheduleStore(remoteStore);
+        if (callback) callback(null, scheduleStore);
         render();
       });
       return scheduleStore;
@@ -1585,14 +1593,14 @@
       return period;
     }
 
-    function deleteSchedulePeriod(periodId) {
+    function deleteSchedulePeriod(periodId, callback) {
       var periods = getSchedulePeriods();
       var updated = [];
       for (var i = 0; i < periods.length; i++) {
         if (periods[i].id !== periodId) updated.push(periods[i]);
       }
       scheduleStore.periods = updated;
-      saveScheduleStore();
+      saveScheduleStore(callback);
     }
 
     function setScheduleDayOverride(dateKey, payload) {
