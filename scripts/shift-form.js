@@ -149,13 +149,17 @@
             showSaveToast('Не удалось удалить график', 'danger');
             return;
           }
-          if (shouldResetPlanner) {
-            resetSchedulePlannerForm();
-          }
           pendingScheduleDeletePeriodId = null;
           closeOverlay('overlayConfirm');
           render();
           showSaveToast(wasOnline ? 'График удалён' : 'График удалён, синхронизируем при появлении сети', 'neutral');
+          try {
+            if (shouldResetPlanner) {
+              resetSchedulePlannerForm();
+            }
+          } catch (e) {
+            console.error('schedule delete planner reset failed', e);
+          }
           try {
             persistScheduleMaterializedMonth({ purgePeriodIds: [deletedPeriodId] });
           } catch (e) {
