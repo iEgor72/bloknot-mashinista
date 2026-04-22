@@ -912,6 +912,9 @@
       if (factTitleEl.parentNode && factTitleEl.parentNode.classList) {
         factTitleEl.parentNode.classList.toggle('hidden', hasFactCard);
       }
+      if (!hasFactCard) {
+        factTextEl.textContent = '';
+      }
       factContentEl.innerHTML = daySummary.cardHtml || '<div class="schedule-day-empty-card">За этот день пока нет добавленной смены.</div>';
 
       var planSummary = buildScheduleDayPlanSummary(state);
