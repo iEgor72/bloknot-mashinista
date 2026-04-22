@@ -1,9 +1,10 @@
 # Recent Commits
 
-Generated: 2026-04-22 02:22:15 +0000
+Generated: 2026-04-22 02:31:48 +0000
 
 | Hash | Date | Author | Message |
 | --- | --- | --- | --- |
+| `65032fe` | 2026-04-22T02:31:33+00:00 | iEgor72 | refactor(schedule): align day sheet with app ui |
 | `5500dc0` | 2026-04-22T02:22:05+00:00 | iEgor72 | refactor(schedule): make planner feel native to app |
 | `49f8276` | 2026-04-22T02:19:09+00:00 | iEgor72 | fix(schedule): align planner actions with app ui |
 | `a6d4b00` | 2026-04-22T02:12:31+00:00 | iEgor72 | fix(schedule): make graph deletion offline-safe |
@@ -43,4 +44,3 @@ Generated: 2026-04-22 02:22:15 +0000
 | `0537183` | 2026-04-21T11:56:40+00:00 | iEgor72 | fix(schedule): sync journal month from calendar day |
 | `934a4e0` | 2026-04-21T11:54:25+00:00 | iEgor72 | fix(schedule): clarify mixed day actions |
 | `1d738dc` | 2026-04-21T11:48:18+00:00 | iEgor72 | fix(schedule): separate plan and fact in day sheet |
-| `8e5067a` | 2026-04-21T11:41:06+00:00 | iEgor72 | feat(schedule): add period editing and clearer day state |

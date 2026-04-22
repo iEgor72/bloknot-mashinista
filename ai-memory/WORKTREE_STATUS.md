@@ -1,6 +1,6 @@
 # Worktree Status
 
-Generated: 2026-04-22 02:22:15 +0000
+Generated: 2026-04-22 02:31:48 +0000
 
 ## git status -sb
 ```text
@@ -18,20 +18,19 @@ Generated: 2026-04-22 02:22:15 +0000
 
 ## git branch -vv
 ```text
-* main 5500dc0 [origin/main] refactor(schedule): make planner feel native to app
+* main 65032fe [origin/main] refactor(schedule): align day sheet with app ui
 ```
 
 ## HEAD
 ```text
-5500dc0 refactor(schedule): make planner feel native to app
- ai-memory/CHANGELOG.md             |  8 +++++++
+65032fe refactor(schedule): align day sheet with app ui
+ ai-memory/CHANGELOG.md             |  8 ++++++++
  ai-memory/INDEX.md                 |  2 +-
- ai-memory/PROJECT_STATE.md         | 17 ++++----------
+ ai-memory/PROJECT_STATE.md         |  8 ++++----
  ai-memory/RECENT_COMMITS.md        |  4 ++--
- ai-memory/WORKTREE_STATUS.md       | 32 +++++++++++----------------
- index.html                         | 25 ++++++++++++++++-----
- scripts/render.js                  |  4 ++--
- scripts/shift-form.js              |  6 ++++-
- styles/10-navigation-and-cards.css | 45 +++++++++++++++++++++++++++++++-------
- 9 files changed, 91 insertions(+), 52 deletions(-)
+ ai-memory/WORKTREE_STATUS.md       | 24 +++++++++++------------
+ index.html                         | 22 ++++++++++-----------
+ scripts/render.js                  |  6 +++---
+ styles/10-navigation-and-cards.css | 40 +++++++++++++++++++++-----------------
+ 8 files changed, 63 insertions(+), 51 deletions(-)
 ```
