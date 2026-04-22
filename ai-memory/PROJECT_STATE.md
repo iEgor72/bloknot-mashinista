@@ -1,14 +1,14 @@
 # Project State
 
 <!-- AUTO_STATUS:START -->
-Generated: 2026-04-22 03:49:53 +0000
+Generated: 2026-04-22 03:53:47 +0000
 
 ## Repository Snapshot
 - Local repo path: `/opt/bloknot-mashinista`
 - Project memory path: `/opt/bloknot-mashinista/ai-memory`
 - Branch: `main`
-- HEAD: `5c1bc12`
-- Last commit: `5c1bc12 copy(schedule): reduce planner text noise`
+- HEAD: `8c20dc0`
+- Last commit: `8c20dc0 refactor(schedule): centralize planner instructions`
 
 ## Git Remote
 ```text
@@ -18,7 +18,7 @@ origin	https://github.com/iEgor72/bloknot-mashinista.git (push)
 
 ## Branch Tracking
 ```text
-* main 5c1bc12 [origin/main] copy(schedule): reduce planner text noise
+* main 8c20dc0 [origin/main] refactor(schedule): centralize planner instructions
 ```
 
 ## Worktree

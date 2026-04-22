@@ -1,9 +1,10 @@
 # Recent Commits
 
-Generated: 2026-04-22 03:49:53 +0000
+Generated: 2026-04-22 03:53:47 +0000
 
 | Hash | Date | Author | Message |
 | --- | --- | --- | --- |
+| `8c20dc0` | 2026-04-22T03:53:28+00:00 | iEgor72 | refactor(schedule): centralize planner instructions |
 | `5c1bc12` | 2026-04-22T03:49:42+00:00 | iEgor72 | copy(schedule): reduce planner text noise |
 | `20a7a92` | 2026-04-22T03:47:16+00:00 | iEgor72 | refactor(schedule): flatten empty day state |
 | `5704739` | 2026-04-22T03:38:21+00:00 | iEgor72 | fix(schedule): remove nested card chrome in day sheet |
@@ -43,4 +44,3 @@ Generated: 2026-04-22 03:49:53 +0000
 | `6d7939f` | 2026-04-21T12:31:30+00:00 | iEgor72 | refactor(schedule): remove day mark override from sheet |
 | `866ce9e` | 2026-04-21T12:25:29+00:00 | iEgor72 | fix(schedule): align day sheet with app typography |
 | `a5c6c8f` | 2026-04-21T12:21:21+00:00 | iEgor72 | fix(schedule): remove segmented wrapper from day mark |
-| `a41bc6b` | 2026-04-21T12:19:40+00:00 | iEgor72 | fix(schedule): stop mutating reused fact card |

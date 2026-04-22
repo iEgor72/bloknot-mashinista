@@ -1246,6 +1246,8 @@
     }
 
     .schedule-pattern-btn {
+      appearance: none;
+      -webkit-appearance: none;
       display: inline-flex;
       align-items: center;
       justify-content: center;
@@ -1258,6 +1260,9 @@
       -webkit-tap-highlight-color: transparent;
       border: 1px solid var(--border);
       background: var(--card-hi);
+      background-image: none;
+      box-shadow: none;
+      outline: none;
       color: var(--text);
     }
 

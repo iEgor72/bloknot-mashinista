@@ -1,6 +1,6 @@
 # Worktree Status
 
-Generated: 2026-04-22 03:49:53 +0000
+Generated: 2026-04-22 03:53:47 +0000
 
 ## git status -sb
 ```text
@@ -18,19 +18,20 @@ Generated: 2026-04-22 03:49:53 +0000
 
 ## git branch -vv
 ```text
-* main 5c1bc12 [origin/main] copy(schedule): reduce planner text noise
+* main 8c20dc0 [origin/main] refactor(schedule): centralize planner instructions
 ```
 
 ## HEAD
 ```text
-5c1bc12 copy(schedule): reduce planner text noise
- ai-memory/CHANGELOG.md       |  8 ++++++++
- ai-memory/INDEX.md           |  2 +-
- ai-memory/PROJECT_STATE.md   |  8 ++++----
- ai-memory/RECENT_COMMITS.md  |  4 ++--
- ai-memory/WORKTREE_STATUS.md | 14 +++++++-------
- index.html                   | 22 +++++++++++-----------
- scripts/render.js            |  4 ++--
- scripts/shift-form.js        |  8 ++++----
- 8 files changed, 39 insertions(+), 31 deletions(-)
+8c20dc0 refactor(schedule): centralize planner instructions
+ ai-memory/CHANGELOG.md             |  8 ++++++++
+ ai-memory/INDEX.md                 |  2 +-
+ ai-memory/PROJECT_STATE.md         |  8 ++++----
+ ai-memory/RECENT_COMMITS.md        |  4 ++--
+ ai-memory/WORKTREE_STATUS.md       | 23 ++++++++++++-----------
+ index.html                         |  9 ++++++---
+ scripts/render.js                  |  7 ++++++-
+ scripts/shift-form.js              |  2 +-
+ styles/10-navigation-and-cards.css | 35 ++++++++++++++++++++++++++++++++++-
+ 9 files changed, 74 insertions(+), 24 deletions(-)
 ```
