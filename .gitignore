@@ -1,4 +1,6 @@
 data/
+!data/docs/
+!data/docs/catalog.json
 node_modules/
 .env
 .wrangler/

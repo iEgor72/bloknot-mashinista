@@ -1,6 +1,6 @@
 # Worktree Status
 
-Generated: 2026-04-22 11:13:01 +0000
+Generated: 2026-04-22 11:15:14 +0000
 
 ## git status -sb
 ```text
@@ -10,24 +10,25 @@ Generated: 2026-04-22 11:13:01 +0000
 
 ## git branch -vv
 ```text
-* main afde921 [origin/main] feat(docs): add uploaded instruction files
+* main 640559c [origin/main] feat(docs): add uploaded reminders
 ```
 
 ## HEAD
 ```text
-afde921 feat(docs): add uploaded instruction files
- ai-memory/CHANGELOG.md                             |  16 ++++++++
+640559c feat(docs): add uploaded reminders
+ ai-memory/CHANGELOG.md                             |   8 +
  ai-memory/INDEX.md                                 |   2 +-
- ai-memory/PROJECT_STATE.md                         |  19 +++++++---
+ ai-memory/PROJECT_STATE.md                         |  15 +-
  ai-memory/RECENT_COMMITS.md                        |   4 +-
- ai-memory/WORKTREE_STATUS.md                       |  32 +++++++++-------
- ai-memory/sessions/2026-04-22.md                   |   2 +
- .../1357р безопасное нахождение на ж.д. путях.docx | Bin 0 -> 383473 bytes
- assets/docs/instructions/ИОТ ТЧЭ-9-002-2023.pdf    | Bin 0 -> 1375411 bytes
- assets/docs/instructions/ИОТ ТЧЭ-9-003-2023.pdf    | Bin 0 -> 1386113 bytes
- assets/docs/instructions/ПТЭ приказ 250.pdf        | Bin 0 -> 11586656 bytes
- .../Перечень мест где запрещено брать с места.docx | Bin 0 -> 132391 bytes
- .../Распоряжение ЦТ-5р Методика КСОТ-П.pdf         | Bin 0 -> 1738667 bytes
- assets/docs/manifest.json                          |  42 +++++++++++++++++++++
- 13 files changed, 96 insertions(+), 21 deletions(-)
+ ai-memory/WORKTREE_STATUS.md                       |  36 +-
+ ai-memory/sessions/2026-04-22.md                   |   1 +
+ assets/docs/manifest.json                          |  42 ++
+ assets/docs/reminders/Команды КЛУБ-У.doc           | Bin 0 -> 305664 bytes
+ assets/docs/reminders/Памятка ТСКБМ.docx           | Bin 0 -> 14668 bytes
+ .../docs/reminders/Памятка машинисту КПД-3П.docx   | Bin 0 -> 17552 bytes
+ assets/docs/reminders/Памятка по КПД-3А.docx       | Bin 0 -> 16115 bytes
+ .../Памятка по порядку проведения КП тормозов.pdf  | Bin 0 -> 214984 bytes
+ .../Памятка по эксплуатации аппаратуры КЛУБ.doc    | Bin 0 -> 32768 bytes
+ data/docs/catalog.json                             | 528 +++++++++++++++++++++
+ 14 files changed, 604 insertions(+), 32 deletions(-)
 ```
