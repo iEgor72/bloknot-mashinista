@@ -1,9 +1,19 @@
 # Recent Commits
 
-Generated: 2026-04-22 05:42:12 +0000
+Generated: 2026-04-22 08:24:26 +0000
 
 | Hash | Date | Author | Message |
 | --- | --- | --- | --- |
+| `3630c67` | 2026-04-22T08:22:12+00:00 | iEgor72 | Revert "feat(docs): add owner-only document admin" |
+| `2af3939` | 2026-04-22T08:22:12+00:00 | iEgor72 | Revert "fix(docs): recover admin controls from stale session state" |
+| `3880cf9` | 2026-04-22T08:22:12+00:00 | iEgor72 | Revert "fix(docs): send bearer session for admin controls" |
+| `52894bc` | 2026-04-22T08:22:12+00:00 | iEgor72 | Revert "fix(docs): simplify mobile loading header state" |
+| `2c2d189` | 2026-04-22T07:08:47+00:00 | iEgor72 | fix(docs): simplify mobile loading header state |
+| `a40bdf8` | 2026-04-22T07:03:35+00:00 | iEgor72 | fix(docs): send bearer session for admin controls |
+| `6641172` | 2026-04-22T07:00:53+00:00 | iEgor72 | fix(docs): recover admin controls from stale session state |
+| `33544f2` | 2026-04-22T06:50:47+00:00 | iEgor72 | feat(docs): add owner-only document admin |
+| `a0a8b4d` | 2026-04-22T05:51:57+00:00 | iEgor72 | feat(docs): improve document title structure |
+| `5210b02` | 2026-04-22T05:44:32+00:00 | iEgor72 | fix(ui): continue ultra-safe polish pass |
 | `62af9ce` | 2026-04-22T05:36:29+00:00 | iEgor72 | fix(ui): refine docs states and defensive polish |
 | `a7e9bfa` | 2026-04-22T05:26:45+00:00 | iEgor72 | fix(ui): apply quiet polish refinements |
 | `50c39fc` | 2026-04-22T05:15:48+00:00 | iEgor72 | fix(ui): polish schedule, docs, and auth flows |
@@ -34,13 +44,3 @@ Generated: 2026-04-22 05:42:12 +0000
 | `5db8a8f` | 2026-04-22T01:29:14+00:00 | iEgor72 | fix(schedule): stop resurrecting deleted graphs |
 | `1c2fd80` | 2026-04-22T01:19:44+00:00 | iEgor72 | fix(ui): keep newly opened overlays on top |
 | `59119ef` | 2026-04-22T01:16:51+00:00 | iEgor72 | fix(schedule): hint how to select graph actions |
-| `09eba47` | 2026-04-22T01:03:15+00:00 | iEgor72 | fix(schedule): sync graphs across devices |
-| `f108ce8` | 2026-04-22T00:54:21+00:00 | iEgor72 | refactor(schedule): move period actions into bottom sheet |
-| `46a422d` | 2026-04-22T00:51:13+00:00 | iEgor72 | fix(schedule): confirm graph deletion and restyle actions |
-| `3994dd1` | 2026-04-22T00:46:00+00:00 | iEgor72 | fix(calendar): remove render-time materialization lag |
-| `4da25da` | 2026-04-22T00:41:47+00:00 | iEgor72 | fix(calendar): align day CTA wording |
-| `56bef4f` | 2026-04-22T00:35:20+00:00 | iEgor72 | fix(calendar): unify day sheet with materialized shifts |
-| `4b0fb67` | 2026-04-22T00:19:41+00:00 | iEgor72 | feat(schedule): materialize graph shifts as real entries |
-| `ae01881` | 2026-04-22T00:09:15+00:00 | iEgor72 | feat(shifts): show graph-generated shifts in journal |
-| `84a2cb0` | 2026-04-22T00:03:14+00:00 | iEgor72 | fix(schedule): scope planner to visible month |
-| `f9c05b7` | 2026-04-21T23:54:12+00:00 | iEgor72 | fix(calendar): accent non-working days with red outline |
