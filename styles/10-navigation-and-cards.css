@@ -1128,15 +1128,15 @@
 
     .schedule-period-action,
     .schedule-period-delete {
-      min-height: 34px;
-      padding: 0 12px;
+      min-height: 36px;
+      padding: 0 13px;
       border-radius: 12px;
-      border: 1px solid rgba(255,255,255,.10);
-      background: rgba(255,255,255,.05);
-      color: var(--sub);
+      border: 1px solid rgba(255,255,255,.14);
+      background: rgba(255,255,255,.08);
+      color: rgba(244, 247, 252, 0.94);
       font-family: 'Manrope', sans-serif;
       font-size: 12px;
-      font-weight: 700;
+      font-weight: 800;
       cursor: pointer;
       -webkit-tap-highlight-color: transparent;
     }
@@ -1144,7 +1144,7 @@
     .schedule-period-action:active,
     .schedule-period-delete:active {
       transform: translateY(1px);
-      background: rgba(255,255,255,.07);
+      background: rgba(255,255,255,.12);
     }
 
     .schedule-period-top {
@@ -1202,9 +1202,7 @@
       background: rgba(148, 163, 184, 0.12);
     }
 
-    .schedule-pattern-btn.is-muted,
-    .schedule-period-action,
-    .schedule-period-delete {
+    .schedule-pattern-btn.is-muted {
       color: var(--muted);
     }
 

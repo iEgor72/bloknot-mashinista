@@ -1370,34 +1370,43 @@
       return pendingScheduleConflict;
     }
 
-    function getSchedulePeriodsViewModel(todayDateKey) {
-      var todayKey = normalizeDateKey(todayDateKey) || getTodayDateKey();
+    function buildMonthDateKey(year, month0, day) {
+      return String(year) + '-' + String(month0 + 1).padStart(2, '0') + '-' + String(day).padStart(2, '0');
+    }
+
+    function getVisibleMonthStartDateKey() {
+      return buildMonthDateKey(currentYear, currentMonth, 1);
+    }
+
+    function getVisibleMonthEndDateKey() {
+      return buildMonthDateKey(currentYear, currentMonth, new Date(currentYear, currentMonth + 1, 0).getDate());
+    }
+
+    function getSchedulePeriodsForRange(startDateKey, endDateKey) {
+      var safeStart = normalizeDateKey(startDateKey);
+      var safeEnd = normalizeDateKey(endDateKey);
+      if (!safeStart || !safeEnd) return [];
       var periods = getSchedulePeriods();
-      var activeMatches = getSchedulePeriodsForDate(todayKey);
-      var active = activeMatches.length ? activeMatches[0] : null;
-      var upcoming = [];
-      var archived = [];
+      var matches = [];
       for (var i = 0; i < periods.length; i++) {
         var period = periods[i];
-        if (active && period.id === active.id) continue;
-        if (compareDateKeys(period.startDate, todayKey) > 0) {
-          upcoming.push(period);
-          continue;
-        }
-        if (period.endDate && compareDateKeys(period.endDate, todayKey) < 0) {
-          archived.push(period);
-          continue;
-        }
-        archived.push(period);
+        if (!rangesOverlap(safeStart, safeEnd, period.startDate, period.endDate)) continue;
+        matches.push(period);
       }
-      upcoming.sort(compareSchedulePeriodsByStart);
-      archived.sort(function(a, b) { return compareSchedulePeriodsByStart(b, a); });
+      matches.sort(compareSchedulePeriodsByStart);
+      return matches;
+    }
+
+    function getSchedulePeriodsViewModel(startDateKey, endDateKey) {
+      var safeStart = normalizeDateKey(startDateKey) || getVisibleMonthStartDateKey();
+      var safeEnd = normalizeDateKey(endDateKey) || getVisibleMonthEndDateKey();
+      var periods = getSchedulePeriodsForRange(safeStart, safeEnd);
       return {
-        active: active,
-        upcoming: upcoming,
-        archived: archived,
-        hiddenCount: upcoming.length + archived.length,
-        activeConflicts: activeMatches.length > 1 ? activeMatches.slice(1) : []
+        monthStart: safeStart,
+        monthEnd: safeEnd,
+        active: periods.length ? periods[0] : null,
+        periods: periods,
+        isEmpty: periods.length === 0
       };
     }
 

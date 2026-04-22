@@ -804,7 +804,7 @@
       var endTimeEl = document.getElementById('scheduleDefaultEndTime');
       setSelectedSchedulePeriod('');
       clearScheduleConflictState();
-      if (startDateEl) startDateEl.value = getTodayDateKey();
+      if (startDateEl) startDateEl.value = typeof getVisibleMonthStartDateKey === 'function' ? getVisibleMonthStartDateKey() : getTodayDateKey();
       if (endDateEl) endDateEl.value = '';
       if (patternEl) patternEl.value = '';
       if (startTimeEl) startTimeEl.value = '01:00';
@@ -842,7 +842,6 @@
     if (openSchedulePlannerBtn) {
       openSchedulePlannerBtn.addEventListener('click', function() {
         triggerHapticSelection();
-        scheduleArchiveExpanded = false;
         resetSchedulePlannerForm();
         renderSchedulePlannerOverlay();
         openOverlay('overlaySchedulePlanner');
@@ -898,7 +897,6 @@
         var overlaps = getOverlappingSchedulePeriods(draft, selectedSchedulePeriodId);
         if (overlaps.length) {
           setPendingScheduleConflict({ draft: draft, overlaps: overlaps });
-          scheduleArchiveExpanded = true;
           syncSchedulePlannerFormMeta();
           renderSchedulePlannerOverlay();
           showSaveToast('Нужно решить пересечение графиков', 'danger');
@@ -918,13 +916,6 @@
     var schedulePeriodsListEl = document.getElementById('schedulePeriodsList');
     if (schedulePeriodsListEl) {
       schedulePeriodsListEl.addEventListener('click', function(e) {
-        var toggleBtn = e.target.closest('#btnToggleScheduleArchive');
-        if (toggleBtn) {
-          scheduleArchiveExpanded = !scheduleArchiveExpanded;
-          triggerHapticSelection();
-          renderSchedulePlannerOverlay();
-          return;
-        }
         var editBtn = e.target.closest('[data-schedule-edit]');
         if (editBtn) {
           triggerHapticSelection();

@@ -801,7 +801,7 @@
       var cardClass = 'schedule-period-card';
       if (opts.current) cardClass += ' is-current';
       else if (opts.secondary) cardClass += ' is-secondary';
-      var subnote = opts.current ? 'Этот период сейчас управляет календарём.' : 'Календарь строится по этому шаблону.';
+      var subnote = opts.current ? 'Этот период попадает в выбранный месяц.' : 'Период графика в выбранном месяце.';
       return '<div class="' + cardClass + '">' +
         (opts.kicker ? '<div class="schedule-period-kicker">' + escapeHtml(opts.kicker) + '</div>' : '') +
         '<div class="schedule-period-top">' +
@@ -822,40 +822,18 @@
       var listEl = document.getElementById('schedulePeriodsList');
       var conflictEl = document.getElementById('scheduleConflictBox');
       if (!listEl) return;
-      var vm = getSchedulePeriodsViewModel(getTodayDateKey());
+      var vm = getSchedulePeriodsViewModel(getVisibleMonthStartDateKey(), getVisibleMonthEndDateKey());
       var html = '';
+      var monthTitleEl = document.getElementById('schedulePlannerMonthTitle');
+      if (monthTitleEl) {
+        monthTitleEl.textContent = 'Что действует в ' + ((MONTH_NAMES && MONTH_NAMES[currentMonth]) ? (MONTH_NAMES[currentMonth] + ' ' + currentYear) : 'этом месяце');
+      }
 
-      if (vm.active) {
-        html += buildSchedulePeriodCardHtml(vm.active, { current: true, kicker: 'Актуальный график' });
-      } else if (!vm.hiddenCount) {
-        html += '<div class="schedule-upcoming-empty">Графика пока нет. Если работаете без цикла, можно ничего не добавлять.</div>';
+      if (vm.isEmpty) {
+        html += '<div class="schedule-upcoming-empty">В этом месяце графика нет.</div>';
       } else {
-        html += '<div class="schedule-upcoming-empty">Сейчас активного графика нет.</div>';
-      }
-
-      if (vm.activeConflicts && vm.activeConflicts.length) {
-        html += '<div class="schedule-upcoming-empty">Нашёл пересекающиеся старые периоды. Сейчас берётся самый новый активный график.</div>';
-      }
-
-      if (vm.hiddenCount) {
-        html += '<button type="button" class="schedule-history-toggle" id="btnToggleScheduleArchive" aria-expanded="' + (scheduleArchiveExpanded ? 'true' : 'false') + '">' +
-          (scheduleArchiveExpanded ? 'Скрыть историю и будущие периоды' : ('Показать историю и будущие периоды (' + vm.hiddenCount + ')')) +
-        '</button>';
-        if (scheduleArchiveExpanded) {
-          html += '<div class="schedule-period-archive">';
-          if (vm.upcoming.length) {
-            html += '<div class="schedule-period-group-title">Следующие периоды</div>';
-            for (var ui = 0; ui < vm.upcoming.length; ui++) {
-              html += buildSchedulePeriodCardHtml(vm.upcoming[ui], { secondary: true });
-            }
-          }
-          if (vm.archived.length) {
-            html += '<div class="schedule-period-group-title">История</div>';
-            for (var ai = 0; ai < vm.archived.length; ai++) {
-              html += buildSchedulePeriodCardHtml(vm.archived[ai], { secondary: true });
-            }
-          }
-          html += '</div>';
+        for (var pi = 0; pi < vm.periods.length; pi++) {
+          html += buildSchedulePeriodCardHtml(vm.periods[pi], { current: pi === 0, kicker: pi === 0 ? 'График месяца' : 'Ещё период месяца' });
         }
       }
 
