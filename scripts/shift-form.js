@@ -35,6 +35,28 @@
     var editFormHomeParent = null;
     var editFormHomeNextSibling = null;
 
+    function getShiftFormElement(id) {
+      return document.getElementById(id);
+    }
+
+    function setShiftFormText(id, value) {
+      var el = getShiftFormElement(id);
+      if (el) el.textContent = value;
+      return el;
+    }
+
+    function setShiftFormValue(id, value) {
+      var el = getShiftFormElement(id);
+      if (el) el.value = value;
+      return el;
+    }
+
+    function toggleShiftFormClass(id, className, enabled) {
+      var el = getShiftFormElement(id);
+      if (el) el.classList.toggle(className, enabled !== false);
+      return el;
+    }
+
     function isOverlayOpen(id) {
       var overlay = document.getElementById(id);
       return !!(overlay && (overlay.classList.contains('is-open') || overlay.classList.contains('visible')));
@@ -74,12 +96,12 @@
       clearRecentAddHighlight();
       mountEditFormIntoOverlay();
       setFormMode('edit');
-      document.getElementById('formTitle').textContent = 'Редактировать смену';
-      document.getElementById('editBadge').classList.add('visible');
-      document.getElementById('inputStartDate').value = shift.start_msk.substring(0, 10);
-      document.getElementById('inputStartTime').value = shift.start_msk.substring(11, 16);
-      document.getElementById('inputEndDate').value = shift.end_msk.substring(0, 10);
-      document.getElementById('inputEndTime').value = shift.end_msk.substring(11, 16);
+      setShiftFormText('formTitle', 'Редактировать смену');
+      toggleShiftFormClass('editBadge', 'visible', true);
+      setShiftFormValue('inputStartDate', shift.start_msk.substring(0, 10));
+      setShiftFormValue('inputStartTime', shift.start_msk.substring(11, 16));
+      setShiftFormValue('inputEndDate', shift.end_msk.substring(0, 10));
+      setShiftFormValue('inputEndTime', shift.end_msk.substring(11, 16));
       applyOptionalShiftData(shift);
       setOptionalCardOpen('optionalRouteCard', false);
       setOptionalCardOpen('optionalTrainCard', false);
@@ -87,9 +109,9 @@
       setOptionalCardOpen('optionalLocoCard', false);
       setOptionalCardOpen('optionalFuelCard', false);
       setAddDetailsExpanded(true);
-      document.getElementById('btnAdd').textContent = 'Сохранить изменения';
-      document.getElementById('btnCancelEdit').classList.remove('hidden');
-      document.getElementById('btnDeleteEdit').classList.remove('hidden');
+      setShiftFormText('btnAdd', 'Сохранить изменения');
+      toggleShiftFormClass('btnCancelEdit', 'hidden', false);
+      toggleShiftFormClass('btnDeleteEdit', 'hidden', false);
       clearErrors();
       renderDraftShiftSummary();
       openOverlay('overlayEditShift');
@@ -101,16 +123,16 @@
       closeOverlay('overlayEditShift');
       restoreEditFormToHome();
       setFormMode('add');
-      document.getElementById('formTitle').textContent = 'Новая смена';
-      document.getElementById('editBadge').classList.remove('visible');
-      document.getElementById('btnAdd').textContent = 'Сохранить смену';
-      document.getElementById('btnCancelEdit').classList.add('hidden');
-      document.getElementById('btnDeleteEdit').classList.add('hidden');
+      setShiftFormText('formTitle', 'Новая смена');
+      toggleShiftFormClass('editBadge', 'visible', false);
+      setShiftFormText('btnAdd', 'Сохранить смену');
+      toggleShiftFormClass('btnCancelEdit', 'hidden', true);
+      toggleShiftFormClass('btnDeleteEdit', 'hidden', true);
       clearErrors();
-      document.getElementById('inputStartDate').value = '';
-      document.getElementById('inputStartTime').value = '';
-      document.getElementById('inputEndDate').value = '';
-      document.getElementById('inputEndTime').value = '';
+      setShiftFormValue('inputStartDate', '');
+      setShiftFormValue('inputStartTime', '');
+      setShiftFormValue('inputEndDate', '');
+      setShiftFormValue('inputEndTime', '');
       clearOptionalShiftData();
       setAddDetailsExpanded(false);
       setDefaultShiftTimeInputs();
@@ -245,13 +267,13 @@
 
     // ── Add shift form ──
     function clearErrors() {
-      document.getElementById('errStart').textContent = '';
-      document.getElementById('errEnd').textContent = '';
-      document.getElementById('inputStartDate').classList.remove('input-error');
-      document.getElementById('inputStartTime').classList.remove('input-error');
-      document.getElementById('inputEndDate').classList.remove('input-error');
-      document.getElementById('inputEndTime').classList.remove('input-error');
-      document.getElementById('formSuccess').textContent = '';
+      setShiftFormText('errStart', '');
+      setShiftFormText('errEnd', '');
+      toggleShiftFormClass('inputStartDate', 'input-error', false);
+      toggleShiftFormClass('inputStartTime', 'input-error', false);
+      toggleShiftFormClass('inputEndDate', 'input-error', false);
+      toggleShiftFormClass('inputEndTime', 'input-error', false);
+      setShiftFormText('formSuccess', '');
     }
 
     var inputStartDateEl = document.getElementById('inputStartDate');
@@ -394,10 +416,13 @@
     wireFuelCoeffInput('inputFuelHandoverCoeffV');
     updateFuelKgOutputs();
 
-    document.getElementById('inputLocoSeries').addEventListener('change', function(e) {
-      updateSelectPlaceholderState(e.currentTarget);
-      renderDraftShiftSummary();
-    });
+    var inputLocoSeriesEl = document.getElementById('inputLocoSeries');
+    if (inputLocoSeriesEl) {
+      inputLocoSeriesEl.addEventListener('change', function(e) {
+        updateSelectPlaceholderState(e.currentTarget);
+        renderDraftShiftSummary();
+      });
+    }
     buildLocoSeriesMenu();
     syncLocoSeriesTrigger();
     var locoSeriesTriggerEl = document.getElementById('locoSeriesTrigger');
@@ -515,8 +540,10 @@
         flushPendingScheduleSnapshot();
       }
     }, 30000);
-    document.getElementById('inputRouteFrom').addEventListener('input', renderDraftShiftSummary);
-    document.getElementById('inputRouteTo').addEventListener('input', renderDraftShiftSummary);
+    var inputRouteFromEl = document.getElementById('inputRouteFrom');
+    if (inputRouteFromEl) inputRouteFromEl.addEventListener('input', renderDraftShiftSummary);
+    var inputRouteToEl = document.getElementById('inputRouteTo');
+    if (inputRouteToEl) inputRouteToEl.addEventListener('input', renderDraftShiftSummary);
     var fuelReactiveInputs = [
       'inputFuelReceiveLitersA',
       'inputFuelReceiveLitersB',
@@ -549,7 +576,8 @@
       });
     }
 
-    document.getElementById('btnAdd').addEventListener('click', function() {
+    var btnAddEl = document.getElementById('btnAdd');
+    if (btnAddEl) btnAddEl.addEventListener('click', function() {
       clearErrors();
 
       var startVal = composeMskDateTime(inputStartDateEl.value, inputStartTimeEl.value);

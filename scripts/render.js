@@ -690,7 +690,7 @@
       }
 
       if (!upcoming.length) {
-        upcomingEl.innerHTML = '<div class="schedule-upcoming-empty">На ближайшие дни смен пока нет. Откройте «График» или добавьте смену вручную.</div>';
+        upcomingEl.innerHTML = '<div class="schedule-upcoming-empty">На ближайшие дни записей нет. Откройте «График» или добавьте смену вручную.</div>';
       } else {
         var upcomingHtml = '';
         for (var ui = 0; ui < upcoming.length; ui++) {
@@ -963,7 +963,7 @@
       if (titleEl) titleEl.textContent = pendingScheduleShiftDeleteMeta ? 'Удалить смену из графика' : 'Удалить запись';
       if (noteEl) {
         noteEl.textContent = pendingScheduleShiftDeleteMeta
-          ? 'Смена исчезнет из журнала, а этот день будет помечен как выходной для графика. Потом можно снова изменить график или добавить реальную смену вручную.'
+          ? 'Смена исчезнет из журнала, а день станет выходным по графику. Потом можно снова изменить график или добавить фактическую смену вручную.'
           : 'Это действие нельзя отменить';
       }
       if (confirmBtn) confirmBtn.textContent = pendingScheduleShiftDeleteMeta ? 'Удалить смену' : 'Удалить';
@@ -1034,7 +1034,7 @@
       if (monthIncomeValueEl) {
         monthIncomeValueEl.textContent = calculationShifts.length > 0
           ? formatRub(monthSalarySummary.netAmount)
-          : 'Смен пока нет';
+          : 'Пока нет записей';
       }
       setQuickMetricText('statNight', fmtMin(nightMin));
       setQuickMetricText('statHoliday', fmtMin(holidayMin));
@@ -1107,7 +1107,7 @@
         document.getElementById('shiftsHeader'),
         calculationShifts,
         false,
-        'Пока пусто. Добавь первую смену или график, и журнал заполнится автоматически.',
+        'Пока здесь пусто. Добавь первую смену или график, и журнал заполнится автоматически.',
         'Журнал смен',
         _renderPendingMap,
         shiftIncomeMap,

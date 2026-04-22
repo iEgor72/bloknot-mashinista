@@ -554,6 +554,7 @@
       color: var(--sub);
       margin: 8px 0 0;
       min-height: 18px;
+      text-wrap: balance;
     }
 
     .auth-status {
@@ -589,6 +590,7 @@
       margin-top: 10px;
       min-height: 18px;
       display: none;
+      text-wrap: balance;
     }
 
     .auth-card[data-auth-state="error"] .auth-error { display: block; }
@@ -639,12 +641,14 @@
     .offline-banner-status {
       font-size: 11px;
       color: var(--sub);
+      white-space: nowrap;
     }
 
     .offline-banner-text {
       font-size: 12px;
       color: var(--sub);
       line-height: 1.45;
+      text-wrap: balance;
     }
 
     /* ── Usage stats footer ── */
@@ -725,6 +729,22 @@
       transform: scale(0.99);
       background: rgba(56, 189, 248, 0.14);
       border-color: rgba(56, 189, 248, 0.26);
+    }
+
+    .btn-secondary:focus-visible {
+      outline: 2px solid rgba(91, 210, 255, 0.9);
+      outline-offset: 2px;
+      background: rgba(56, 189, 248, 0.12);
+      border-color: rgba(91, 210, 255, 0.3);
+      color: var(--text);
+    }
+
+    .btn-secondary:disabled,
+    .btn-secondary[aria-disabled="true"] {
+      cursor: default;
+      opacity: 0.56;
+      filter: saturate(0.86);
+      box-shadow: none;
     }
 
     .btn-link {

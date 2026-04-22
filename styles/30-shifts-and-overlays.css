@@ -1612,6 +1612,8 @@
       font-size: 12px;
       line-height: 1.4;
       text-align: center;
+      text-wrap: balance;
+      max-width: 28ch;
     }
 
     @keyframes docsViewerProgressSlide {
@@ -1635,6 +1637,7 @@
       background: rgba(255, 120, 120, 0.08);
       border: 1px solid rgba(255, 120, 120, 0.2);
       border-radius: 14px;
+      text-wrap: balance;
     }
 
     @media (max-width: 640px) {
@@ -1741,6 +1744,9 @@
     .docs-item.is-loading {
       pointer-events: none;
       opacity: 0.78;
+      cursor: progress;
+      border-color: rgba(91, 210, 255, 0.22);
+      box-shadow: 0 0 0 1px rgba(91, 210, 255, 0.06), 0 10px 22px rgba(0, 0, 0, 0.14);
     }
 
     .docs-item.is-downloaded {
@@ -1943,6 +1949,7 @@
       border: 2px solid rgba(56, 189, 248, 0.14);
       border-top-color: rgba(56, 189, 248, 0.96);
       animation: docsListSpinner 0.9s linear infinite;
+      flex-shrink: 0;
     }
 
     .docs-empty-state-muted {
@@ -1960,6 +1967,7 @@
       color: rgba(238, 242, 248, 0.66);
       max-width: 30ch;
       margin: 0 auto;
+      text-wrap: balance;
     }
 
     @keyframes docsListSpinner {

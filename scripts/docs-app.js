@@ -255,7 +255,7 @@
               '</svg>' +
             '</div>' +
             '<div class="docs-empty-title">В этом разделе пока пусто</div>' +
-            '<div class="docs-empty-text">Когда сюда добавят файлы, они сразу появятся в этом списке.</div>' +
+            '<div class="docs-empty-text">Когда здесь появятся файлы, они сразу отобразятся в списке.</div>' +
           '</div>';
         return;
       }
@@ -294,7 +294,7 @@
       if (!listId) return;
       var el = document.getElementById(listId);
       if (!el) return;
-      el.innerHTML = '<div class="docs-loading"><div class="docs-loading-spinner"></div><span>Загружаем список файлов…</span></div>';
+      el.innerHTML = '<div class="docs-loading" role="status" aria-live="polite" aria-busy="true"><div class="docs-loading-spinner" aria-hidden="true"></div><span>Загружаем список документов…</span></div>';
     }
 
     var _docsManifestCache = null;
@@ -328,9 +328,9 @@
       var listId = docsFolderListId(folder);
       var el = listId ? document.getElementById(listId) : null;
       if (!el) return;
-      var title = navigator.onLine === false ? 'Список пока недоступен без интернета' : 'Не удалось загрузить список файлов';
+      var title = navigator.onLine === false ? 'Без интернета список пока недоступен' : 'Не удалось загрузить список документов';
       var text = navigator.onLine === false
-        ? 'Если открываете раздел впервые, подключитесь к интернету и зайдите сюда ещё раз. После этого список будет доступен и без сети.'
+        ? 'Если открываете этот раздел впервые, подключитесь к интернету и зайдите сюда ещё раз. После этого список будет доступен и без сети.'
         : 'Связь сейчас нестабильна. Подождите немного и попробуйте открыть раздел ещё раз.';
       el.innerHTML =
         '<div class="docs-empty-state docs-empty-state-muted">' +
@@ -1145,7 +1145,7 @@
       if (!navigator.onLine && isNetworkIssue) {
         return {
           title: 'Файл пока не скачан',
-          details: 'Сейчас вы оффлайн. Подключитесь к интернету и откройте файл один раз, чтобы он стал доступен без сети.',
+          details: 'Сейчас вы не в сети. Подключитесь к интернету и откройте файл один раз, чтобы потом он был доступен без сети.',
           status: 'Оффлайн'
         };
       }
@@ -1153,14 +1153,14 @@
       if (isNetworkIssue) {
         return {
           title: 'Не удалось загрузить файл',
-          details: 'Проверьте интернет-соединение и попробуйте еще раз.',
+          details: 'Проверьте интернет-соединение и попробуйте ещё раз.',
           status: ''
         };
       }
 
       return {
         title: 'Не удалось открыть файл',
-        details: 'Попробуйте снова. Если ошибка повторится, обновите приложение.',
+        details: 'Попробуйте ещё раз. Если ошибка повторится, обновите приложение.',
         status: ''
       };
     }
@@ -1666,6 +1666,8 @@
       if (item.status === 'rendered' && !item.needsRerender) return;
       item.status = 'queued';
       item.el.classList.add('is-loading');
+      item.el.setAttribute('aria-busy', 'true');
+      item.el.setAttribute('aria-disabled', 'true');
       state.renderQueue.push(pageNumber);
       pumpPdfRenderQueue(state);
     }
@@ -1749,6 +1751,8 @@
           item.renderTask = null;
           item.el.classList.remove('is-loading', 'is-error');
           item.el.classList.add('is-rendered');
+          item.el.setAttribute('aria-busy', 'false');
+          item.el.removeAttribute('aria-disabled');
         })
         .catch(function(err) {
           if (!isDocsPdfViewerActive(state)) return;
@@ -1758,12 +1762,16 @@
             item.status = 'idle';
             item.needsRerender = true;
             item.el.classList.remove('is-loading');
+            item.el.setAttribute('aria-busy', 'false');
+            item.el.removeAttribute('aria-disabled');
             return;
           }
           item.status = 'error';
           item.needsRerender = false;
           item.el.classList.remove('is-loading', 'is-rendered');
           item.el.classList.add('is-error');
+          item.el.setAttribute('aria-busy', 'false');
+          item.el.removeAttribute('aria-disabled');
           if (item.errorEl) {
             item.errorEl.textContent = 'Не удалось отрисовать страницу ' + item.pageNumber;
           }
@@ -1787,6 +1795,8 @@
         }
         item.renderTask = null;
         item.status = 'idle';
+        item.el.setAttribute('aria-busy', 'false');
+        item.el.removeAttribute('aria-disabled');
         var hasRenderedBitmap = item.canvas && item.canvas.width > 0 && item.canvas.height > 0 && item.el.classList.contains('is-rendered');
         if (hasRenderedBitmap) {
           item.needsRerender = true;

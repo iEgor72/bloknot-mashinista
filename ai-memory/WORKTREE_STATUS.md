@@ -1,6 +1,6 @@
 # Worktree Status
 
-Generated: 2026-04-22 05:33:35 +0000
+Generated: 2026-04-22 05:42:11 +0000
 
 ## git status -sb
 ```text
@@ -10,7 +10,6 @@ Generated: 2026-04-22 05:33:35 +0000
  M ai-memory/PROJECT_STATE.md
  M ai-memory/RECENT_COMMITS.md
  M ai-memory/WORKTREE_STATUS.md
- M scripts/app.js
  M scripts/auth.js
  M scripts/docs-app.js
  M scripts/render.js
@@ -32,25 +31,25 @@ Generated: 2026-04-22 05:33:35 +0000
 
 ## git branch -vv
 ```text
-* main a7e9bfa [origin/main] fix(ui): apply quiet polish refinements
+* main 62af9ce [origin/main] fix(ui): refine docs states and defensive polish
 ```
 
 ## HEAD
 ```text
-a7e9bfa fix(ui): apply quiet polish refinements
- ai-memory/CHANGELOG.md             | 24 ++++++++++++++++++++++++
+62af9ce fix(ui): refine docs states and defensive polish
+ ai-memory/CHANGELOG.md             | 24 ++++++++++++
  ai-memory/INDEX.md                 |  2 +-
- ai-memory/PROJECT_STATE.md         | 17 +++++------------
- ai-memory/RECENT_COMMITS.md        |  4 ++--
- ai-memory/WORKTREE_STATUS.md       | 35 ++++++++++++++++++-----------------
- index.html                         |  2 +-
- scripts/docs-app.js                | 10 +++++-----
- scripts/press-feedback.js          |  6 +++++-
- scripts/render.js                  |  6 +++---
- scripts/shift-form.js              | 21 ++++++++++++++-------
- styles/00-base.css                 | 15 +++++++++++++++
- styles/10-navigation-and-cards.css | 10 ++++++++++
- styles/20-form-and-stats.css       |  6 ++++++
- styles/30-shifts-and-overlays.css  | 18 ++++++++++++++++++
- 14 files changed, 127 insertions(+), 49 deletions(-)
+ ai-memory/PROJECT_STATE.md         | 19 ++++++---
+ ai-memory/RECENT_COMMITS.md        |  4 +-
+ ai-memory/WORKTREE_STATUS.md       | 44 ++++++++++++---------
+ scripts/app.js                     |  1 -
+ scripts/auth.js                    | 14 ++++---
+ scripts/docs-app.js                | 24 +++++++++---
+ scripts/render.js                  | 18 +++++----
+ scripts/shift-form.js              |  8 +---
+ styles/00-base.css                 | 31 ++++++++++++++-
+ styles/10-navigation-and-cards.css |  5 ++-
+ styles/20-form-and-stats.css       | 19 ++++++++-
+ styles/30-shifts-and-overlays.css  | 79 +++++++++++++++++++++++++++++++++++++-
+ 14 files changed, 232 insertions(+), 60 deletions(-)
 ```

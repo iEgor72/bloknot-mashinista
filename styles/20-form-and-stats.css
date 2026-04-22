@@ -946,7 +946,20 @@
       filter: brightness(0.98);
     }
 
-    .btn-primary:disabled {
+    .btn-primary:focus-visible {
+      outline: 2px solid rgba(91, 210, 255, 0.92);
+      outline-offset: 3px;
+      filter: brightness(1.02);
+      box-shadow: 0 0 0 1px rgba(91, 210, 255, 0.16), 0 10px 26px rgba(56, 189, 248, 0.24);
+    }
+
+    .btn-primary[aria-busy="true"] {
+      cursor: wait;
+      filter: saturate(0.96);
+    }
+
+    .btn-primary:disabled,
+    .btn-primary[aria-disabled="true"] {
       opacity: 0.45;
       pointer-events: none;
       filter: saturate(0.88);
