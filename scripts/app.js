@@ -758,6 +758,8 @@
     }
 
     var SCHEDULE_STORAGE_KEY = 'shift_tracker_schedule_v1';
+    var SCHEDULE_CACHE_STORAGE_KEY = 'shift_tracker_schedule_cache_v1';
+    var SCHEDULE_PENDING_STORAGE_KEY = 'shift_tracker_schedule_pending_v1';
     var scheduleStore = loadScheduleStore();
     var selectedScheduleDayKey = '';
     var selectedSchedulePeriodId = '';
@@ -951,7 +953,55 @@
       };
     }
 
+    function readScheduleCache() {
+      return readStoredJson(getOfflineStorageKey(SCHEDULE_CACHE_STORAGE_KEY), null);
+    }
+
+    function writeScheduleCache(store) {
+      var payload = {
+        version: 1,
+        userId: getOfflineStorageUserId(),
+        updatedAt: new Date().toISOString(),
+        schedule: normalizeScheduleStore(store)
+      };
+      writeStoredJson(getOfflineStorageKey(SCHEDULE_CACHE_STORAGE_KEY), payload);
+      writeStoredJson(getOfflineStorageKey(SCHEDULE_STORAGE_KEY), payload.schedule);
+      return payload;
+    }
+
+    function readPendingScheduleSnapshot() {
+      return readStoredJson(getOfflineStorageKey(SCHEDULE_PENDING_STORAGE_KEY), null);
+    }
+
+    function writePendingScheduleSnapshot(store) {
+      var payload = {
+        version: 1,
+        userId: getOfflineStorageUserId(),
+        savedAt: new Date().toISOString(),
+        reason: 'offline-save',
+        schedule: normalizeScheduleStore(store)
+      };
+      writeStoredJson(getOfflineStorageKey(SCHEDULE_PENDING_STORAGE_KEY), payload);
+      writeScheduleCache(payload.schedule);
+      return payload;
+    }
+
+    function clearPendingScheduleSnapshot() {
+      try {
+        var toRemove = [];
+        for (var ki = 0; ki < localStorage.length; ki++) {
+          var key = localStorage.key(ki);
+          if (key && key.indexOf(SCHEDULE_PENDING_STORAGE_KEY) === 0) toRemove.push(key);
+        }
+        for (var ri = 0; ri < toRemove.length; ri++) localStorage.removeItem(toRemove[ri]);
+      } catch (e) {}
+    }
+
     function loadScheduleStore() {
+      var pending = readPendingScheduleSnapshot();
+      if (pending && pending.schedule) return normalizeScheduleStore(pending.schedule);
+      var cached = readScheduleCache();
+      if (cached && cached.schedule) return normalizeScheduleStore(cached.schedule);
       return normalizeScheduleStore(readStoredJson(getOfflineStorageKey(SCHEDULE_STORAGE_KEY), createEmptyScheduleStore()));
     }
 
@@ -962,7 +1012,7 @@
 
     function writeScheduleStoreLocal(store) {
       scheduleStore = normalizeScheduleStore(store);
-      writeStoredJson(getOfflineStorageKey(SCHEDULE_STORAGE_KEY), scheduleStore);
+      writeScheduleCache(scheduleStore);
       return scheduleStore;
     }
 
@@ -974,7 +1024,7 @@
       }
       fetchJson(SCHEDULE_API_URL, {
         method: 'PUT',
-        headers: { 'Content-Type': 'application/json' },
+        headers: { 'Content-Type': 'application/json', 'Accept': 'application/json' },
         body: JSON.stringify({ schedule: snapshot })
       }).then(function(result) {
         if (!result || !result.ok) {
@@ -982,6 +1032,7 @@
           return;
         }
         var remoteStore = normalizeScheduleStore(result.body && result.body.schedule);
+        clearPendingScheduleSnapshot();
         writeScheduleStoreLocal(remoteStore);
         if (typeof callback === 'function') callback(null, remoteStore);
       }).catch(function(err) {
@@ -989,10 +1040,53 @@
       });
     }
 
-    function saveScheduleStore() {
-      var snapshot = writeScheduleStoreLocal(scheduleStore);
-      syncScheduleStoreRemote(snapshot);
-      return snapshot;
+    function flushPendingScheduleSnapshot(source, callback, shouldRender) {
+      if (typeof source === 'function') {
+        callback = source;
+        source = 'save';
+      }
+      if (shouldRender === undefined) shouldRender = true;
+      var pending = readPendingScheduleSnapshot();
+      if (!pending || !pending.schedule) {
+        if (callback) callback(null);
+        return;
+      }
+      if (!navigator.onLine) {
+        if (callback) callback(null);
+        return;
+      }
+      fetchJson(SCHEDULE_API_URL, {
+        method: 'PUT',
+        headers: { 'Content-Type': 'application/json', 'Accept': 'application/json' },
+        body: JSON.stringify({ schedule: normalizeScheduleStore(pending.schedule) })
+      }).then(function(result) {
+        if (result.ok) {
+          scheduleStore = writeScheduleStoreLocal(result.body && result.body.schedule);
+          clearPendingScheduleSnapshot();
+          if (callback) callback(null);
+          if (shouldRender) render();
+          return;
+        }
+        if (result.status === 401) {
+          handleAuthUnauthorized(source === 'load' ? 'load' : 'save');
+          if (callback) callback(new Error('Unauthorized'));
+          return;
+        }
+        if (callback) callback(new Error((result.body && result.body.error) || 'Schedule sync failed'));
+      }).catch(function(err) {
+        if (callback) callback(err || new Error('Network error'));
+      });
+    }
+
+    function saveScheduleStore(callback) {
+      var snapshot = normalizeScheduleStore(scheduleStore);
+      scheduleStore = writePendingScheduleSnapshot(snapshot).schedule;
+      if (callback) callback(null);
+      if (!navigator.onLine) return scheduleStore;
+      syncScheduleStoreRemote(snapshot, function() {
+        render();
+      });
+      return scheduleStore;
     }
 
     function reloadScheduleStoreForCurrentUser(callback) {
@@ -1002,17 +1096,38 @@
         if (typeof callback === 'function') callback(localStore);
         return;
       }
-      fetchJson(SCHEDULE_API_URL).then(function(result) {
-        if (!result || !result.ok) {
+
+      var startLoad = function() {
+        fetchJson(SCHEDULE_API_URL, {
+          method: 'GET',
+          headers: { 'Accept': 'application/json' }
+        }).then(function(result) {
+          if (!result || !result.ok) {
+            if (result && result.status === 401) handleAuthUnauthorized('load');
+            if (typeof callback === 'function') callback(localStore);
+            return;
+          }
+          var remoteStore = normalizeScheduleStore(result.body && result.body.schedule);
+          scheduleStore = writeScheduleStoreLocal(remoteStore);
+          if (typeof callback === 'function') callback(scheduleStore);
+        }).catch(function() {
           if (typeof callback === 'function') callback(localStore);
-          return;
-        }
-        var remoteStore = normalizeScheduleStore(result.body && result.body.schedule);
-        scheduleStore = writeScheduleStoreLocal(remoteStore);
-        if (typeof callback === 'function') callback(scheduleStore);
-      }).catch(function() {
-        if (typeof callback === 'function') callback(localStore);
-      });
+        });
+      };
+
+      var pending = readPendingScheduleSnapshot();
+      if (pending && pending.schedule) {
+        flushPendingScheduleSnapshot('load', function(err) {
+          if (!err) {
+            startLoad();
+            return;
+          }
+          if (typeof callback === 'function') callback(localStore);
+        }, false);
+        return;
+      }
+
+      startLoad();
     }
 
     function getSchedulePeriods() {

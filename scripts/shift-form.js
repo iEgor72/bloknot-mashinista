@@ -459,6 +459,7 @@
     window.addEventListener('online', function() {
       updateOfflineUiState({ isOffline: false, lastSyncStatus: readPendingSnapshot() ? 'pending' : 'synced' });
       flushPendingSnapshot();
+      if (typeof flushPendingScheduleSnapshot === 'function') flushPendingScheduleSnapshot();
       refreshUserStats('online');
     });
     window.addEventListener('offline', function() {
@@ -475,6 +476,7 @@
         updateOfflineUiState({ isOffline: !navigator.onLine, hasPending: !!readPendingSnapshot() });
         if (navigator.onLine) {
           flushPendingSnapshot();
+          if (typeof flushPendingScheduleSnapshot === 'function') flushPendingScheduleSnapshot();
           refreshUserStats('visibility');
         } else {
           applyUserStatsOfflineFallback();
@@ -489,6 +491,9 @@
     setInterval(function() {
       if (navigator.onLine && readPendingSnapshot() && !offlineUiState.isSyncing) {
         flushPendingSnapshot();
+      }
+      if (navigator.onLine && typeof readPendingScheduleSnapshot === 'function' && readPendingScheduleSnapshot()) {
+        flushPendingScheduleSnapshot();
       }
     }, 30000);
     document.getElementById('inputRouteFrom').addEventListener('input', renderDraftShiftSummary);
