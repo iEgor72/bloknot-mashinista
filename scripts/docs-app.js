@@ -297,7 +297,7 @@
       if (folder === 'folders') {
         return {
           title: safeName || baseName || 'Папка',
-          subtitle: 'Конспекты по безопасности движения'
+          subtitle: ''
         };
       }
       if (folder === 'speeds') {
