@@ -1,14 +1,14 @@
 # Project State
 
 <!-- AUTO_STATUS:START -->
-Generated: 2026-04-22 02:19:21 +0000
+Generated: 2026-04-22 02:22:15 +0000
 
 ## Repository Snapshot
 - Local repo path: `/opt/bloknot-mashinista`
 - Project memory path: `/opt/bloknot-mashinista/ai-memory`
 - Branch: `main`
-- HEAD: `49f8276`
-- Last commit: `49f8276 fix(schedule): align planner actions with app ui`
+- HEAD: `5500dc0`
+- Last commit: `5500dc0 refactor(schedule): make planner feel native to app`
 
 ## Git Remote
 ```text
@@ -18,7 +18,7 @@ origin	https://github.com/iEgor72/bloknot-mashinista.git (push)
 
 ## Branch Tracking
 ```text
-* main 49f8276 [origin/main] fix(schedule): align planner actions with app ui
+* main 5500dc0 [origin/main] refactor(schedule): make planner feel native to app
 ```
 
 ## Worktree

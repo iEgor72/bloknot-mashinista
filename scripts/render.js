@@ -938,14 +938,14 @@
       planTextEl.textContent = planSummary.noteText;
 
       addShiftBtn.classList.toggle('hidden', state.hasFact);
-      addShiftBtn.textContent = 'Добавить запись';
+      addShiftBtn.textContent = state.plannedCode ? 'Добавить смену по графику' : 'Добавить смену';
       editShiftBtn.classList.toggle('hidden', !state.hasFact);
       if (!editShiftBtn.classList.contains('hidden') && state.factShifts[0]) {
-        editShiftBtn.textContent = 'Открыть в сменах';
+        editShiftBtn.textContent = state.factShifts.length > 1 ? 'Открыть смены за день' : 'Открыть смену';
         editShiftBtn.setAttribute('data-shift-id', state.factShifts[0].id);
         editShiftBtn.setAttribute('data-date-key', state.dateKey || '');
       } else {
-        editShiftBtn.textContent = 'Открыть в сменах';
+        editShiftBtn.textContent = 'Открыть смену';
         editShiftBtn.removeAttribute('data-shift-id');
         editShiftBtn.removeAttribute('data-date-key');
       }

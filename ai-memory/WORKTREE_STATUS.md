@@ -1,6 +1,6 @@
 # Worktree Status
 
-Generated: 2026-04-22 02:19:21 +0000
+Generated: 2026-04-22 02:22:15 +0000
 
 ## git status -sb
 ```text
@@ -18,20 +18,20 @@ Generated: 2026-04-22 02:19:21 +0000
 
 ## git branch -vv
 ```text
-* main 49f8276 [origin/main] fix(schedule): align planner actions with app ui
+* main 5500dc0 [origin/main] refactor(schedule): make planner feel native to app
 ```
 
 ## HEAD
 ```text
-49f8276 fix(schedule): align planner actions with app ui
- ai-memory/CHANGELOG.md             | 16 ++++++++++
+5500dc0 refactor(schedule): make planner feel native to app
+ ai-memory/CHANGELOG.md             |  8 +++++++
  ai-memory/INDEX.md                 |  2 +-
- ai-memory/PROJECT_STATE.md         | 12 ++++----
- ai-memory/RECENT_COMMITS.md        |  4 +--
- ai-memory/WORKTREE_STATUS.md       | 20 +++++++++----
- index.html                         | 14 +--------
- scripts/render.js                  | 52 +++++++++------------------------
- scripts/shift-form.js              | 39 ++++++++++++-------------
- styles/10-navigation-and-cards.css | 60 ++++++++++++++++++++++----------------
- 9 files changed, 108 insertions(+), 111 deletions(-)
+ ai-memory/PROJECT_STATE.md         | 17 ++++----------
+ ai-memory/RECENT_COMMITS.md        |  4 ++--
+ ai-memory/WORKTREE_STATUS.md       | 32 +++++++++++----------------
+ index.html                         | 25 ++++++++++++++++-----
+ scripts/render.js                  |  4 ++--
+ scripts/shift-form.js              |  6 ++++-
+ styles/10-navigation-and-cards.css | 45 +++++++++++++++++++++++++++++++-------
+ 9 files changed, 91 insertions(+), 52 deletions(-)
 ```

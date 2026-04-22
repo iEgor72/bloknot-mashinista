@@ -1156,12 +1156,15 @@
         <span class="salary-settings-header-spacer" aria-hidden="true"></span>
       </div>
 
-      <div class="schedule-day-summary">
-        <div class="schedule-day-date" id="scheduleDayDate">—</div>
-        <div class="schedule-day-status" id="scheduleDayStatus">—</div>
+      <div class="settings-card schedule-day-summary-card">
+        <div class="form-stage-head schedule-day-summary-head">
+          <div class="form-stage-kicker">Календарный день</div>
+          <div class="schedule-day-date" id="scheduleDayDate">—</div>
+          <div class="schedule-day-status" id="scheduleDayStatus">—</div>
+        </div>
       </div>
 
-      <div class="schedule-day-fact" id="scheduleDayFactCard">
+      <div class="settings-card schedule-day-fact" id="scheduleDayFactCard">
         <div class="schedule-day-block-head">
           <div class="schedule-day-fact-title" id="scheduleDayFactTitle">Работали</div>
           <div class="schedule-day-fact-text" id="scheduleDayFactText"></div>
@@ -1169,7 +1172,7 @@
         <div class="schedule-day-fact-content" id="scheduleDayFactContent"></div>
       </div>
 
-      <div class="schedule-day-plan hidden" id="scheduleDayPlanCard">
+      <div class="settings-card schedule-day-plan hidden" id="scheduleDayPlanCard">
         <div class="schedule-day-block-head">
           <div class="schedule-day-plan-title" id="scheduleDayPlanTitle">По графику</div>
           <div class="schedule-day-plan-text" id="scheduleDayPlanText"></div>
@@ -1186,12 +1189,9 @@
         </div>
       </div>
 
-      <div class="schedule-day-actions-row">
-        <button class="btn-primary hidden" id="btnScheduleDayAddShift" type="button">Добавить запись</button>
-        <button class="btn-secondary hidden" id="btnScheduleDayEditShift" type="button">Открыть в сменах</button>
-      </div>
-
-      <div class="form-actions schedule-sheet-actions">
+      <div class="form-actions schedule-day-actions-row">
+        <button class="btn-primary hidden" id="btnScheduleDayAddShift" type="button">Добавить смену</button>
+        <button class="btn-secondary hidden" id="btnScheduleDayEditShift" type="button">Открыть смену</button>
         <button class="btn-sheet-close install-guide-close-btn" id="btnCloseScheduleDay" type="button">Закрыть</button>
       </div>
     </div>
