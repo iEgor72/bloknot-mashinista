@@ -1,9 +1,10 @@
 # Recent Commits
 
-Generated: 2026-04-22 03:25:01 +0000
+Generated: 2026-04-22 03:38:34 +0000
 
 | Hash | Date | Author | Message |
 | --- | --- | --- | --- |
+| `5704739` | 2026-04-22T03:38:21+00:00 | iEgor72 | fix(schedule): remove nested card chrome in day sheet |
 | `672346b` | 2026-04-22T03:24:49+00:00 | iEgor72 | fix(schedule): remove duplicate empty day copy |
 | `e4ef955` | 2026-04-22T03:22:47+00:00 | iEgor72 | copy(schedule): simplify day sheet fact wording |
 | `4167d8c` | 2026-04-22T03:20:26+00:00 | iEgor72 | refactor(schedule): simplify day sheet header |
@@ -43,4 +44,3 @@ Generated: 2026-04-22 03:25:01 +0000
 | `a41bc6b` | 2026-04-21T12:19:40+00:00 | iEgor72 | fix(schedule): stop mutating reused fact card |
 | `9abce7a` | 2026-04-21T12:18:10+00:00 | iEgor72 | fix(schedule): rewrite day sheet copy in user terms |
 | `a04bed6` | 2026-04-21T12:15:43+00:00 | iEgor72 | fix(schedule): repair day sheet mobile layout |
-| `535344e` | 2026-04-21T12:10:17+00:00 | iEgor72 | fix(schedule): rebuild day sheet around real shift card |

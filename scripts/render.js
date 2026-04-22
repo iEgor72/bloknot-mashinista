@@ -914,9 +914,9 @@
         factTitleEl.parentNode.classList.toggle('hidden', hasFactCard);
       }
       if (!hasFactCard) {
-        factTextEl.textContent = '';
+        factTextEl.textContent = daySummary.noteText;
       }
-      factContentEl.innerHTML = daySummary.cardHtml || '<div class="schedule-day-empty-card">За этот день пока нет добавленной смены.</div>';
+      factContentEl.innerHTML = daySummary.cardHtml || '';
 
       var planSummary = buildScheduleDayPlanSummary(state);
       planCardEl.classList.toggle('hidden', !state.plannedCode || hasMaterializedFact);

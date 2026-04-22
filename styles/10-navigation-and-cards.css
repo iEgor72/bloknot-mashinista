@@ -1383,16 +1383,6 @@
       grid-template-columns: minmax(0, 1fr);
     }
 
-    .schedule-day-empty-card {
-      padding: 12px 14px;
-      border-radius: 14px;
-      border: 1px dashed rgba(255, 255, 255, 0.08);
-      background: rgba(255, 255, 255, 0.016);
-      color: rgba(238, 242, 248, 0.52);
-      font-size: 12px;
-      line-height: 1.45;
-    }
-
     .schedule-day-plan-metrics {
       display: grid;
       gap: 6px;
