@@ -1,6 +1,6 @@
 # Worktree Status
 
-Generated: 2026-04-22 11:17:27 +0000
+Generated: 2026-04-22 11:19:52 +0000
 
 ## git status -sb
 ```text
@@ -10,18 +10,18 @@ Generated: 2026-04-22 11:17:27 +0000
 
 ## git branch -vv
 ```text
-* main 7e4f3f6 [origin/main] chore(git): allow docs catalog in data
+* main a7ef152 [origin/main] fix(docs): center loading note in viewer
 ```
 
 ## HEAD
 ```text
-7e4f3f6 chore(git): allow docs catalog in data
- .gitignore                       |  2 ++
- ai-memory/CHANGELOG.md           |  8 ++++++++
- ai-memory/INDEX.md               |  2 +-
- ai-memory/PROJECT_STATE.md       |  8 ++++----
- ai-memory/RECENT_COMMITS.md      |  4 ++--
- ai-memory/WORKTREE_STATUS.md     | 31 ++++++++++++++++---------------
- ai-memory/sessions/2026-04-22.md |  1 +
- 7 files changed, 34 insertions(+), 22 deletions(-)
+a7ef152 fix(docs): center loading note in viewer
+ ai-memory/CHANGELOG.md            |  8 ++++++++
+ ai-memory/INDEX.md                |  2 +-
+ ai-memory/PROJECT_STATE.md        |  8 ++++----
+ ai-memory/RECENT_COMMITS.md       |  4 ++--
+ ai-memory/WORKTREE_STATUS.md      | 29 +++++++++++------------------
+ ai-memory/sessions/2026-04-22.md  |  1 +
+ styles/30-shifts-and-overlays.css |  3 +++
+ 7 files changed, 30 insertions(+), 25 deletions(-)
 ```

@@ -1,9 +1,10 @@
 # Recent Commits
 
-Generated: 2026-04-22 11:17:27 +0000
+Generated: 2026-04-22 11:19:52 +0000
 
 | Hash | Date | Author | Message |
 | --- | --- | --- | --- |
+| `a7ef152` | 2026-04-22T11:19:49+00:00 | iEgor72 | fix(docs): center loading note in viewer |
 | `7e4f3f6` | 2026-04-22T11:17:26+00:00 | iEgor72 | chore(git): allow docs catalog in data |
 | `640559c` | 2026-04-22T11:15:11+00:00 | iEgor72 | feat(docs): add uploaded reminders |
 | `afde921` | 2026-04-22T11:12:55+00:00 | iEgor72 | feat(docs): add uploaded instruction files |
@@ -43,4 +44,3 @@ Generated: 2026-04-22 11:17:27 +0000
 | `65032fe` | 2026-04-22T02:31:33+00:00 | iEgor72 | refactor(schedule): align day sheet with app ui |
 | `5500dc0` | 2026-04-22T02:22:05+00:00 | iEgor72 | refactor(schedule): make planner feel native to app |
 | `49f8276` | 2026-04-22T02:19:09+00:00 | iEgor72 | fix(schedule): align planner actions with app ui |
-| `a6d4b00` | 2026-04-22T02:12:31+00:00 | iEgor72 | fix(schedule): make graph deletion offline-safe |
