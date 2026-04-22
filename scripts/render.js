@@ -623,8 +623,7 @@
     function renderHomeScheduleCard() {
       var calendarEl = document.getElementById('homeScheduleCalendar');
       var upcomingEl = document.getElementById('homeScheduleUpcoming');
-      var subtitleEl = document.getElementById('scheduleCardSubtitle');
-      if (!calendarEl || !upcomingEl || !subtitleEl) return;
+      if (!calendarEl || !upcomingEl) return;
 
       var firstDay = new Date(currentYear, currentMonth, 1);
       var daysInMonth = new Date(currentYear, currentMonth + 1, 0).getDate();
@@ -670,10 +669,6 @@
           openOverlay('overlayScheduleDay');
         });
       }
-
-      var periodsVm = getSchedulePeriodsViewModel(todayKey);
-      if (periodsVm.active) subtitleEl.textContent = 'Сейчас по графику: ' + buildSchedulePeriodSummary(periodsVm.active) + '.';
-      else subtitleEl.textContent = 'Сразу видно день, ночь, выходной и праздник.';
 
       bindShiftListDetailHandlers(upcomingEl);
 

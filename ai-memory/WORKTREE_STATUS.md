@@ -1,6 +1,6 @@
 # Worktree Status
 
-Generated: 2026-04-22 03:53:47 +0000
+Generated: 2026-04-22 04:00:29 +0000
 
 ## git status -sb
 ```text
@@ -18,20 +18,17 @@ Generated: 2026-04-22 03:53:47 +0000
 
 ## git branch -vv
 ```text
-* main 8c20dc0 [origin/main] refactor(schedule): centralize planner instructions
+* main d12f4b7 [origin/main] fix(schedule): remove nested button chrome
 ```
 
 ## HEAD
 ```text
-8c20dc0 refactor(schedule): centralize planner instructions
+d12f4b7 fix(schedule): remove nested button chrome
  ai-memory/CHANGELOG.md             |  8 ++++++++
  ai-memory/INDEX.md                 |  2 +-
  ai-memory/PROJECT_STATE.md         |  8 ++++----
  ai-memory/RECENT_COMMITS.md        |  4 ++--
- ai-memory/WORKTREE_STATUS.md       | 23 ++++++++++++-----------
- index.html                         |  9 ++++++---
- scripts/render.js                  |  7 ++++++-
- scripts/shift-form.js              |  2 +-
- styles/10-navigation-and-cards.css | 35 ++++++++++++++++++++++++++++++++++-
- 9 files changed, 74 insertions(+), 24 deletions(-)
+ ai-memory/WORKTREE_STATUS.md       | 25 +++++++++++++------------
+ styles/10-navigation-and-cards.css |  5 +++++
+ 6 files changed, 33 insertions(+), 19 deletions(-)
 ```

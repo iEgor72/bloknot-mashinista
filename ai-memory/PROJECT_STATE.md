@@ -1,14 +1,14 @@
 # Project State
 
 <!-- AUTO_STATUS:START -->
-Generated: 2026-04-22 03:53:47 +0000
+Generated: 2026-04-22 04:00:29 +0000
 
 ## Repository Snapshot
 - Local repo path: `/opt/bloknot-mashinista`
 - Project memory path: `/opt/bloknot-mashinista/ai-memory`
 - Branch: `main`
-- HEAD: `8c20dc0`
-- Last commit: `8c20dc0 refactor(schedule): centralize planner instructions`
+- HEAD: `d12f4b7`
+- Last commit: `d12f4b7 fix(schedule): remove nested button chrome`
 
 ## Git Remote
 ```text
@@ -18,7 +18,7 @@ origin	https://github.com/iEgor72/bloknot-mashinista.git (push)
 
 ## Branch Tracking
 ```text
-* main 8c20dc0 [origin/main] refactor(schedule): centralize planner instructions
+* main d12f4b7 [origin/main] fix(schedule): remove nested button chrome
 ```
 
 ## Worktree
