@@ -13,6 +13,7 @@
     var currentMonth = now.getMonth(); // 0-indexed
     var allShifts = [];
     var pendingDeleteId = null;
+    var pendingScheduleDeletePeriodId = null;
     var editingShiftId = null;
     var editReturnTab = 'shifts';
     var recentAddedShiftId = null;

@@ -815,11 +815,25 @@
             '<div class="schedule-period-note">' + escapeHtml(rangeText) + '</div>' +
           '</div>' +
           '<div class="schedule-period-actions">' +
-            '<button type="button" class="schedule-period-action" data-schedule-edit="' + escapeHtml(period.id) + '">Изменить</button>' +
+            '<button type="button" class="schedule-period-action" data-schedule-edit="' + escapeHtml(period.id) + '">Редактировать</button>' +
             '<button type="button" class="schedule-period-delete" data-schedule-delete="' + escapeHtml(period.id) + '">Удалить</button>' +
           '</div>' +
         '</div>' +
         '<div class="schedule-period-subnote">' + escapeHtml(subnote) + '</div>' +
+      '</div>';
+    }
+
+    function buildConfirmSchedulePeriodCardHtml(period) {
+      if (!period) return '';
+      return '<div class="schedule-period-card schedule-period-card-confirm">' +
+        '<div class="schedule-period-kicker">График</div>' +
+        '<div class="schedule-period-top">' +
+          '<div>' +
+            '<div class="schedule-period-title">' + escapeHtml(buildSchedulePeriodSummary(period)) + '</div>' +
+            '<div class="schedule-period-note">' + escapeHtml(formatScheduleRangeLabel(period.startDate, period.endDate)) + '</div>' +
+          '</div>' +
+        '</div>' +
+        '<div class="schedule-period-subnote">Будут удалены этот период и созданные им смены в выбранном месяце.</div>' +
       '</div>';
     }
 
@@ -937,7 +951,20 @@
 
     function renderDeleteConfirmCard(shiftIncomeMap) {
       var cardEl = document.getElementById('confirmShiftCard');
+      var titleEl = document.getElementById('confirmOverlayTitle');
+      var noteEl = document.getElementById('confirmOverlayNote');
+      var confirmBtn = document.getElementById('btnConfirmDelete');
       if (!cardEl) return;
+      if (pendingScheduleDeletePeriodId) {
+        if (titleEl) titleEl.textContent = 'Удалить график';
+        if (noteEl) noteEl.textContent = 'Это действие нельзя отменить';
+        if (confirmBtn) confirmBtn.textContent = 'Удалить график';
+        cardEl.innerHTML = buildConfirmSchedulePeriodCardHtml(getSchedulePeriodById(pendingScheduleDeletePeriodId));
+        return;
+      }
+      if (titleEl) titleEl.textContent = 'Удалить запись';
+      if (noteEl) noteEl.textContent = 'Это действие нельзя отменить';
+      if (confirmBtn) confirmBtn.textContent = 'Удалить';
       if (!pendingDeleteId) {
         cardEl.innerHTML = '';
         return;

@@ -134,6 +134,21 @@
     }
 
     document.getElementById('btnConfirmDelete').addEventListener('click', function() {
+      if (pendingScheduleDeletePeriodId) {
+        triggerHapticWarning();
+        var deletedPeriodId = pendingScheduleDeletePeriodId;
+        if (selectedSchedulePeriodId && selectedSchedulePeriodId === String(deletedPeriodId)) {
+          resetSchedulePlannerForm();
+        }
+        clearScheduleConflictState();
+        deleteSchedulePeriod(deletedPeriodId);
+        persistScheduleMaterializedMonth({ purgePeriodIds: [deletedPeriodId] });
+        pendingScheduleDeletePeriodId = null;
+        closeOverlay('overlayConfirm');
+        render();
+        showSaveToast('График удалён', 'neutral');
+        return;
+      }
       if (!pendingDeleteId) return;
       triggerHapticActionMedium();
       var deletedShift = findShiftById(pendingDeleteId);
@@ -173,6 +188,7 @@
 
     document.getElementById('btnCancelDelete').addEventListener('click', function() {
       pendingDeleteId = null;
+      pendingScheduleDeletePeriodId = null;
       closeOverlay('overlayConfirm');
       showActionToast('canceled');
       render();
@@ -698,8 +714,9 @@
 
     function closeOverlay(id) {
       setOverlayOpenState(id, false);
-      if (id === 'overlayConfirm' && pendingDeleteId) {
+      if (id === 'overlayConfirm' && (pendingDeleteId || pendingScheduleDeletePeriodId)) {
         pendingDeleteId = null;
+        pendingScheduleDeletePeriodId = null;
         render();
       }
     }
@@ -949,12 +966,10 @@
           resetSchedulePlannerForm();
         }
         clearScheduleConflictState();
-        var deletedPeriodId = deleteBtn.getAttribute('data-schedule-delete');
-        deleteSchedulePeriod(deletedPeriodId);
-        persistScheduleMaterializedMonth({ purgePeriodIds: [deletedPeriodId] });
+        pendingScheduleDeletePeriodId = deleteBtn.getAttribute('data-schedule-delete');
         triggerHapticWarning();
         render();
-        showSaveToast('Период удалён', 'neutral');
+        openOverlay('overlayConfirm');
       });
     }
 
