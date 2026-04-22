@@ -149,6 +149,48 @@
   ],
   "reminders": [
     {
+      "name": "Команды КЛУБ-У",
+      "path": "/assets/docs/reminders/Команды КЛУБ-У.doc",
+      "mime_type": "application/msword",
+      "size": 305664,
+      "updated_at": "2026-04-22"
+    },
+    {
+      "name": "Памятка ТСКБМ",
+      "path": "/assets/docs/reminders/Памятка ТСКБМ.docx",
+      "mime_type": "application/vnd.openxmlformats-officedocument.wordprocessingml.document",
+      "size": 14668,
+      "updated_at": "2026-04-22"
+    },
+    {
+      "name": "Памятка машинисту КПД-3П",
+      "path": "/assets/docs/reminders/Памятка машинисту КПД-3П.docx",
+      "mime_type": "application/vnd.openxmlformats-officedocument.wordprocessingml.document",
+      "size": 17552,
+      "updated_at": "2026-04-22"
+    },
+    {
+      "name": "Памятка по КПД-3А",
+      "path": "/assets/docs/reminders/Памятка по КПД-3А.docx",
+      "mime_type": "application/vnd.openxmlformats-officedocument.wordprocessingml.document",
+      "size": 16115,
+      "updated_at": "2026-04-22"
+    },
+    {
+      "name": "Памятка по порядку проведения КП тормозов",
+      "path": "/assets/docs/reminders/Памятка по порядку проведения КП тормозов.pdf",
+      "mime_type": "application/pdf",
+      "size": 214984,
+      "updated_at": "2026-04-22"
+    },
+    {
+      "name": "Памятка по эксплуатации аппаратуры КЛУБ",
+      "path": "/assets/docs/reminders/Памятка по эксплуатации аппаратуры КЛУБ.doc",
+      "mime_type": "application/msword",
+      "size": 32768,
+      "updated_at": "2026-04-22"
+    },
+    {
       "name": "Проверки торм оборудования",
       "path": "/assets/docs/reminders/Проверки торм оборудования.pdf",
       "mime_type": "application/pdf",

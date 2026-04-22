@@ -1,14 +1,14 @@
 # Project State
 
 <!-- AUTO_STATUS:START -->
-Generated: 2026-04-22 11:06:33 +0000
+Generated: 2026-04-22 11:13:01 +0000
 
 ## Repository Snapshot
 - Local repo path: `/opt/bloknot-mashinista`
 - Project memory path: `/opt/bloknot-mashinista/ai-memory`
 - Branch: `main`
-- HEAD: `363c2c6`
-- Last commit: `363c2c6 feat(docs): split quick docs into separate entries`
+- HEAD: `afde921`
+- Last commit: `afde921 feat(docs): add uploaded instruction files`
 
 ## Git Remote
 ```text
@@ -18,17 +18,12 @@ origin	https://github.com/iEgor72/bloknot-mashinista.git (push)
 
 ## Branch Tracking
 ```text
-* main 363c2c6 [origin/main] feat(docs): split quick docs into separate entries
+* main afde921 [origin/main] feat(docs): add uploaded instruction files
 ```
 
 ## Worktree
 ```text
-M ai-memory/CHANGELOG.md
- M ai-memory/INDEX.md
- M ai-memory/PROJECT_STATE.md
- M ai-memory/RECENT_COMMITS.md
- M ai-memory/WORKTREE_STATUS.md
- M ai-memory/sessions/2026-04-22.md
+clean
 ```
 <!-- AUTO_STATUS:END -->
 

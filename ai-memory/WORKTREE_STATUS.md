@@ -1,35 +1,33 @@
 # Worktree Status
 
-Generated: 2026-04-22 11:06:33 +0000
+Generated: 2026-04-22 11:13:01 +0000
 
 ## git status -sb
 ```text
 ## main...origin/main
- M ai-memory/CHANGELOG.md
- M ai-memory/INDEX.md
  M ai-memory/PROJECT_STATE.md
- M ai-memory/RECENT_COMMITS.md
- M ai-memory/WORKTREE_STATUS.md
- M ai-memory/sessions/2026-04-22.md
 ```
 
 ## git branch -vv
 ```text
-* main 363c2c6 [origin/main] feat(docs): split quick docs into separate entries
+* main afde921 [origin/main] feat(docs): add uploaded instruction files
 ```
 
 ## HEAD
 ```text
-363c2c6 feat(docs): split quick docs into separate entries
- ai-memory/CHANGELOG.md             |  8 ++++++++
- ai-memory/INDEX.md                 |  2 +-
- ai-memory/PROJECT_STATE.md         | 15 +++++---------
- ai-memory/RECENT_COMMITS.md        |  4 ++--
- ai-memory/WORKTREE_STATUS.md       | 23 +++++++++++----------
- ai-memory/sessions/2026-04-22.md   |  1 +
- index.html                         | 41 ++++++++++++++++++++++++++++++++------
- scripts/app.js                     | 28 +++++++++++++++++++-------
- scripts/shift-form.js              |  2 ++
- styles/10-navigation-and-cards.css | 18 +++++++++++++++++
- 10 files changed, 106 insertions(+), 36 deletions(-)
+afde921 feat(docs): add uploaded instruction files
+ ai-memory/CHANGELOG.md                             |  16 ++++++++
+ ai-memory/INDEX.md                                 |   2 +-
+ ai-memory/PROJECT_STATE.md                         |  19 +++++++---
+ ai-memory/RECENT_COMMITS.md                        |   4 +-
+ ai-memory/WORKTREE_STATUS.md                       |  32 +++++++++-------
+ ai-memory/sessions/2026-04-22.md                   |   2 +
+ .../1357р безопасное нахождение на ж.д. путях.docx | Bin 0 -> 383473 bytes
+ assets/docs/instructions/ИОТ ТЧЭ-9-002-2023.pdf    | Bin 0 -> 1375411 bytes
+ assets/docs/instructions/ИОТ ТЧЭ-9-003-2023.pdf    | Bin 0 -> 1386113 bytes
+ assets/docs/instructions/ПТЭ приказ 250.pdf        | Bin 0 -> 11586656 bytes
+ .../Перечень мест где запрещено брать с места.docx | Bin 0 -> 132391 bytes
+ .../Распоряжение ЦТ-5р Методика КСОТ-П.pdf         | Bin 0 -> 1738667 bytes
+ assets/docs/manifest.json                          |  42 +++++++++++++++++++++
+ 13 files changed, 96 insertions(+), 21 deletions(-)
 ```
