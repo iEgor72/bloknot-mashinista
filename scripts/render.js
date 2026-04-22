@@ -841,6 +841,10 @@
       var actionRowEl = document.getElementById('schedulePeriodManagementActions');
       var editActionBtn = document.getElementById('btnSchedulePeriodEdit');
       var deleteActionBtn = document.getElementById('btnSchedulePeriodDelete');
+      var selectionHintEl = document.getElementById('schedulePeriodSelectionHint');
+      var selectionHintTitleEl = document.getElementById('schedulePeriodSelectionHintTitle');
+      var selectionHintNoteEl = document.getElementById('schedulePeriodSelectionHintNote');
+      var selectionHintIconEl = document.getElementById('schedulePeriodSelectionHintIcon');
       if (!listEl) return;
       var vm = getSchedulePeriodsViewModel(getVisibleMonthStartDateKey(), getVisibleMonthEndDateKey());
       var html = '';
@@ -859,11 +863,27 @@
 
       listEl.innerHTML = html;
 
+      var selectedPeriod = selectedSchedulePeriodId ? getSchedulePeriodById(selectedSchedulePeriodId) : null;
       if (actionRowEl) {
-        var selectedPeriod = selectedSchedulePeriodId ? getSchedulePeriodById(selectedSchedulePeriodId) : null;
         actionRowEl.classList.toggle('hidden', !selectedPeriod);
         if (editActionBtn) editActionBtn.textContent = 'Редактировать график';
         if (deleteActionBtn) deleteActionBtn.textContent = 'Удалить график';
+      }
+      if (selectionHintEl) {
+        selectionHintEl.classList.toggle('hidden', vm.isEmpty);
+        if (vm.isEmpty) {
+          selectionHintEl.classList.add('hidden');
+        } else if (selectedPeriod) {
+          selectionHintEl.classList.remove('hidden');
+          if (selectionHintTitleEl) selectionHintTitleEl.textContent = 'График выбран';
+          if (selectionHintNoteEl) selectionHintNoteEl.textContent = 'Ниже можно отредактировать или удалить выбранный график.';
+          if (selectionHintIconEl) selectionHintIconEl.textContent = '↓';
+        } else {
+          selectionHintEl.classList.remove('hidden');
+          if (selectionHintTitleEl) selectionHintTitleEl.textContent = 'Выберите график выше';
+          if (selectionHintNoteEl) selectionHintNoteEl.textContent = 'После выбора снизу появятся кнопки редактирования и удаления.';
+          if (selectionHintIconEl) selectionHintIconEl.textContent = '↑';
+        }
       }
 
       if (!conflictEl) return;
