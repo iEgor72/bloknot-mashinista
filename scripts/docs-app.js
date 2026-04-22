@@ -1175,7 +1175,7 @@
         tryIndex > 0 ? 'Повторная загрузка DOCX…' : 'Загрузка DOCX…',
         tryIndex > 0 ? 'Пробуем открыть документ ещё раз' : 'Подготавливаем документ для просмотра'
       );
-      setDocsViewerStatus('');
+      setDocsViewerStatus(tryIndex > 0 ? 'Повтор...' : 'Загрузка…');
 
       var zipLib = null;
       ensureDocsZipReady()
@@ -1561,7 +1561,7 @@
         tryIndex > 0 ? 'Повторная загрузка изображения…' : 'Загрузка изображения…',
         tryIndex > 0 ? 'Пробуем открыть изображение ещё раз' : 'Подготавливаем изображение для просмотра'
       );
-      setDocsViewerStatus('');
+      setDocsViewerStatus(tryIndex > 0 ? 'Повтор...' : 'Загрузка…');
       mountDocsImageViewer(state, localPath, name, tryIndex);
     }
 
@@ -2199,7 +2199,7 @@
         tryIndex > 0 ? 'Повторная загрузка PDF…' : 'Загрузка PDF…',
         tryIndex > 0 ? 'Пробуем открыть документ ещё раз' : 'Подготавливаем страницы для просмотра'
       );
-      setDocsViewerStatus('');
+      setDocsViewerStatus(tryIndex > 0 ? 'Повтор...' : 'Загрузка…');
 
       ensurePdfJsReady()
         .then(function(pdfjsLib) {
