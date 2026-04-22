@@ -1078,13 +1078,13 @@
         <span class="salary-settings-header-spacer" aria-hidden="true"></span>
       </div>
 
-      <div class="settings-help-block">Если у вас нет постоянного графика, сюда можно не заходить. Просто добавляйте поездки и смены как обычно. Этот раздел нужен только для повторяющегося цикла работы.</div>
+      <div class="settings-help-block">1. Выберите дату начала. 2. Соберите цикл. 3. Нажмите «Сохранить график». Если графика нет, просто не заполняйте этот раздел.</div>
 
       <div class="settings-card schedule-overview-card">
         <div class="form-stage-head schedule-sheet-section-head">
           <div class="form-stage-kicker">Календарь</div>
-          <div class="settings-section-title" id="schedulePlannerMonthTitle">Что действует в этом месяце</div>
-          <div class="optional-note schedule-period-inline-note" id="schedulePeriodInlineNote">Нажмите на карточку, чтобы открыть период. Внутри можно сразу изменить его или удалить.</div>
+          <div class="settings-section-title" id="schedulePlannerMonthTitle">График на этот месяц</div>
+          <div class="optional-note schedule-period-inline-note" id="schedulePeriodInlineNote">Нажмите на период, чтобы изменить или удалить его.</div>
         </div>
         <div class="schedule-periods-list" id="schedulePeriodsList"></div>
         <div class="schedule-conflict-box hidden" id="scheduleConflictBox"></div>
@@ -1094,9 +1094,9 @@
         <div class="form-title-row schedule-form-title-row">
           <div class="form-title-leading">
             <div class="form-stage-head schedule-sheet-section-head schedule-form-head">
-              <div class="form-stage-kicker">Настройка графика</div>
-              <div class="settings-section-title" id="schedulePlannerSectionTitle">Добавить период графика</div>
-              <div class="optional-note schedule-planner-mode-note" id="schedulePlannerModeNote">Если график меняется с какого-то дня, просто создайте новый период, начиная с этой даты.</div>
+              <div class="form-stage-kicker">Новый период</div>
+              <div class="settings-section-title" id="schedulePlannerSectionTitle">Добавить период</div>
+              <div class="optional-note schedule-planner-mode-note" id="schedulePlannerModeNote">Если график меняется, создайте новый период с новой даты.</div>
             </div>
           </div>
           <div class="edit-badge" id="schedulePlannerEditBadge">Редактирование</div>
@@ -1111,11 +1111,11 @@
             <input class="optional-control" type="date" id="schedulePeriodEndDate" />
           </div>
         </div>
-        <div class="optional-note schedule-period-range-note">Можно не указывать, если график действует дальше без даты окончания.</div>
+        <div class="optional-note schedule-period-range-note">Можно оставить пустым.</div>
 
         <div id="scheduleCycleFields">
           <div class="field">
-            <label>2. Наберите цикл графика</label>
+            <label>2. Соберите цикл</label>
             <div class="schedule-pattern-preview" id="schedulePatternPreview">—</div>
             <div class="schedule-pattern-builder">
               <button type="button" class="schedule-pattern-btn" data-pattern-add="D">Д</button>
@@ -1125,16 +1125,16 @@
               <button type="button" class="schedule-pattern-btn is-muted" id="btnSchedulePatternClear">Очистить</button>
             </div>
             <input type="hidden" id="schedulePatternValue" value="" />
-            <div class="optional-note">Например: ДДННВВВВ или ДНВВ</div>
+            <div class="optional-note">Например: ДДННВВВВ</div>
           </div>
 
           <div class="optional-grid optional-grid-two schedule-period-times-grid">
             <div class="field">
-              <label>3. Обычная явка</label>
+              <label>3. Время начала</label>
               <input class="optional-control" type="time" id="scheduleDefaultStartTime" value="01:00" />
             </div>
             <div class="field">
-              <label>Обычное окончание</label>
+              <label>Время конца</label>
               <input class="optional-control" type="time" id="scheduleDefaultEndTime" value="13:00" />
             </div>
           </div>

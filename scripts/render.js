@@ -849,11 +849,11 @@
       var html = '';
       var monthTitleEl = document.getElementById('schedulePlannerMonthTitle');
       if (monthTitleEl) {
-        monthTitleEl.textContent = 'Что действует в ' + ((MONTH_NAMES && MONTH_NAMES[currentMonth]) ? (MONTH_NAMES[currentMonth] + ' ' + currentYear) : 'этом месяце');
+        monthTitleEl.textContent = 'График на ' + ((MONTH_NAMES && MONTH_NAMES[currentMonth]) ? (MONTH_NAMES[currentMonth] + ' ' + currentYear) : 'этот месяц');
       }
 
       if (vm.isEmpty) {
-        html += '<div class="schedule-upcoming-empty">На этот месяц график ещё не задан.</div>';
+        html += '<div class="schedule-upcoming-empty">График ещё не добавлен.</div>';
       } else {
         for (var pi = 0; pi < vm.periods.length; pi++) {
           html += buildSchedulePeriodCardHtml(vm.periods[pi], { current: pi === 0, kicker: pi === 0 ? 'Сейчас действует' : 'Также действует' });

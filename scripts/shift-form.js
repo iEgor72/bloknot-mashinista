@@ -823,11 +823,11 @@
       var formCardEl = document.querySelector('.schedule-form-card');
       var isEditing = !!selectedSchedulePeriodId;
       var hasConflict = !!(pendingScheduleConflict && pendingScheduleConflict.overlaps && pendingScheduleConflict.overlaps.length);
-      if (titleEl) titleEl.textContent = isEditing ? 'Изменить период графика' : 'Добавить период графика';
+      if (titleEl) titleEl.textContent = isEditing ? 'Изменить период' : 'Добавить период';
       if (noteEl) {
-        if (isEditing) noteEl.textContent = 'Здесь можно изменить даты, цикл и время выбранного периода.';
-        else if (hasConflict) noteEl.textContent = 'Новый период пересекается с существующим. Ниже можно открыть старый период или заменить его с даты начала нового.';
-        else noteEl.textContent = 'Если график меняется с какого-то дня, просто создайте новый период с этой даты.';
+        if (isEditing) noteEl.textContent = 'Измените даты, цикл и время, затем сохраните.';
+        else if (hasConflict) noteEl.textContent = 'Периоды пересекаются. Откройте старый или замените его с новой даты.';
+        else noteEl.textContent = 'Если график меняется, создайте новый период с новой даты.';
       }
       if (saveBtn) saveBtn.textContent = isEditing ? 'Сохранить изменения' : 'Сохранить график';
       if (editBadgeEl) editBadgeEl.classList.toggle('visible', isEditing);
