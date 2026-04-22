@@ -1,14 +1,14 @@
 # Project State
 
 <!-- AUTO_STATUS:START -->
-Generated: 2026-04-22 05:42:11 +0000
+Generated: 2026-04-22 06:21:42 +0000
 
 ## Repository Snapshot
 - Local repo path: `/opt/bloknot-mashinista`
 - Project memory path: `/opt/bloknot-mashinista/ai-memory`
 - Branch: `main`
-- HEAD: `62af9ce`
-- Last commit: `62af9ce fix(ui): refine docs states and defensive polish`
+- HEAD: `a0a8b4d`
+- Last commit: `a0a8b4d feat(docs): improve document title structure`
 
 ## Git Remote
 ```text
@@ -18,7 +18,7 @@ origin	https://github.com/iEgor72/bloknot-mashinista.git (push)
 
 ## Branch Tracking
 ```text
-* main 62af9ce [origin/main] fix(ui): refine docs states and defensive polish
+* main a0a8b4d [origin/main] feat(docs): improve document title structure
 ```
 
 ## Worktree
@@ -28,18 +28,17 @@ M ai-memory/CHANGELOG.md
  M ai-memory/PROJECT_STATE.md
  M ai-memory/RECENT_COMMITS.md
  M ai-memory/WORKTREE_STATUS.md
+ M index.html
  M scripts/auth.js
  M scripts/docs-app.js
- M scripts/render.js
- M scripts/shift-form.js
- M styles/00-base.css
+ M server.js
  M styles/10-navigation-and-cards.css
- M styles/20-form-and-stats.css
  M styles/30-shifts-and-overlays.css
 ?? ai-memory/sessions/2026-04-19.md
 ?? ai-memory/sessions/2026-04-20.md
 ?? ai-memory/sessions/2026-04-21.md
 ?? ai-memory/sessions/2026-04-22.md
+?? docs/2026-04-22-admin-docs-release-review.md
 ?? docs/stopwatch-implementation-checklist.md
 ?? docs/stopwatch-integration-spec.md
 ?? scripts/__pycache__/

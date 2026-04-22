@@ -10,6 +10,7 @@ module.exports = {
       env: {
         NODE_ENV: 'production',
         PORT: 3000,
+        BM_ADMIN_TELEGRAM_IDS: '906498745',
       },
     },
   ],

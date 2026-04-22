@@ -2197,6 +2197,13 @@
       gap: 8px;
     }
 
+    .docs-nav-copy-with-admin {
+      display: flex;
+      align-items: start;
+      justify-content: space-between;
+      gap: 12px;
+    }
+
     .docs-nav-copy-row {
       display: flex;
       align-items: flex-start;
@@ -2593,6 +2600,187 @@
       width: 100%;
       min-height: 42px;
       justify-content: center;
+    }
+
+    .docs-admin-entry,
+    .docs-admin-primary {
+      min-height: 40px;
+      padding: 0 14px;
+      border-radius: var(--r-pill);
+      border: 1px solid rgba(56, 189, 248, 0.18);
+      background: rgba(56, 189, 248, 0.1);
+      color: var(--accent);
+      font: inherit;
+      font-size: 13px;
+      font-weight: 700;
+    }
+
+    .docs-admin-shell {
+      margin-top: 12px;
+      display: grid;
+      gap: 14px;
+    }
+
+    .docs-admin-head,
+    .docs-admin-layout {
+      display: grid;
+      gap: 14px;
+    }
+
+    .docs-admin-head-actions {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+    }
+
+    .docs-admin-layout {
+      grid-template-columns: minmax(0, 1.15fr) minmax(0, 1fr);
+      align-items: start;
+    }
+
+    .docs-admin-list-card,
+    .docs-admin-form-card {
+      padding: 16px;
+      border-radius: 18px;
+      border: 1px solid rgba(255, 255, 255, 0.07);
+      background: rgba(255, 255, 255, 0.025);
+      display: grid;
+      gap: 12px;
+    }
+
+    .docs-admin-section-title {
+      font-size: 13px;
+      font-weight: 800;
+      color: var(--text);
+    }
+
+    .docs-admin-list {
+      display: grid;
+      gap: 10px;
+    }
+
+    .docs-admin-item {
+      border: 1px solid rgba(255,255,255,0.08);
+      background: rgba(255,255,255,0.02);
+      border-radius: 16px;
+      padding: 14px;
+      display: grid;
+      gap: 10px;
+    }
+
+    .docs-admin-item-head,
+    .docs-admin-item-meta,
+    .docs-admin-item-actions,
+    .docs-admin-actions-row,
+    .docs-admin-confirm-actions {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      align-items: center;
+    }
+
+    .docs-admin-item-head {
+      justify-content: space-between;
+    }
+
+    .docs-admin-item-title {
+      font-size: 14px;
+      font-weight: 700;
+      color: var(--text);
+    }
+
+    .docs-admin-item-subtitle,
+    .docs-admin-note,
+    .docs-admin-upload-state,
+    .docs-admin-empty,
+    .docs-admin-status {
+      font-size: 12px;
+      line-height: 1.5;
+      color: var(--sub);
+    }
+
+    .docs-admin-item-meta {
+      font-size: 11px;
+      color: rgba(238,242,248,0.72);
+    }
+
+    .docs-admin-chip {
+      padding: 4px 8px;
+      border-radius: var(--r-pill);
+      background: rgba(255,255,255,0.06);
+      border: 1px solid rgba(255,255,255,0.08);
+    }
+
+    .docs-admin-action {
+      min-height: 34px;
+      padding: 0 12px;
+      border-radius: 12px;
+      border: 1px solid rgba(255,255,255,0.08);
+      background: rgba(255,255,255,0.04);
+      color: var(--text);
+      font: inherit;
+      font-size: 12px;
+      font-weight: 700;
+    }
+
+    .docs-admin-action.is-danger {
+      color: #ffb4bf;
+      border-color: rgba(244,63,94,0.22);
+      background: rgba(244,63,94,0.1);
+    }
+
+    .docs-admin-form {
+      display: grid;
+      gap: 12px;
+    }
+
+    .docs-admin-field {
+      display: grid;
+      gap: 6px;
+    }
+
+    .docs-admin-grid {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 12px;
+    }
+
+    .docs-admin-confirm {
+      position: fixed;
+      inset: 0;
+      z-index: calc(var(--layer-scrim) + 6);
+      background: rgba(0, 0, 0, 0.58);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 16px;
+    }
+
+    .docs-admin-confirm.hidden {
+      display: none;
+    }
+
+    .docs-admin-confirm-card {
+      width: min(100%, 360px);
+      padding: 18px 16px;
+      border-radius: var(--r-card);
+      border: 1px solid rgba(255,255,255,0.08);
+      background: rgba(14, 18, 28, 0.98);
+      text-align: center;
+      display: grid;
+      gap: 12px;
+    }
+
+    @media (max-width: 720px) {
+      .docs-admin-layout,
+      .docs-admin-grid {
+        grid-template-columns: minmax(0, 1fr);
+      }
+
+      .docs-nav-copy-with-admin {
+        align-items: stretch;
+        flex-direction: column;
+      }
     }
 
     .overlay {

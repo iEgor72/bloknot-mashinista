@@ -2007,6 +2007,352 @@
       -webkit-tap-highlight-color: transparent;
     }
 
+    .docs-admin-upload-btn {
+      width: 100%;
+      justify-content: center;
+      margin-top: 0;
+    }
+
+    .docs-admin-upload-state.is-pending {
+      color: #f3cd87;
+    }
+
+    .docs-admin-upload-state.is-ready {
+      color: #b7f7d0;
+    }
+
+    .docs-admin-upload-state.is-error,
+    .docs-admin-status.is-error {
+      color: #ffb4bf;
+    }
+
+    .docs-nav-copy-with-admin {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+    }
+
+    .docs-nav-actions {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      flex-wrap: wrap;
+      justify-content: flex-end;
+    }
+
+    .docs-admin-entry,
+    .docs-admin-action,
+    .docs-admin-primary {
+      -webkit-tap-highlight-color: transparent;
+    }
+
+    .docs-admin-entry {
+      border: 1px solid rgba(56, 189, 248, 0.22);
+      background: rgba(56, 189, 248, 0.1);
+      color: #9be4ff;
+      border-radius: 999px;
+      padding: 10px 14px;
+      font: inherit;
+      font-size: 13px;
+      font-weight: 800;
+      cursor: pointer;
+      flex-shrink: 0;
+    }
+
+    .docs-admin-shell {
+      margin-top: 14px;
+      padding: 18px;
+      border-radius: 20px;
+      border: 1px solid rgba(255, 255, 255, 0.08);
+      background: linear-gradient(180deg, rgba(255, 255, 255, 0.028), rgba(255, 255, 255, 0.012)), var(--card);
+      box-shadow: 0 12px 28px rgba(0, 0, 0, 0.16);
+    }
+
+    .docs-admin-head,
+    .docs-admin-head-actions,
+    .docs-admin-grid,
+    .docs-admin-actions-row,
+    .docs-admin-item-head,
+    .docs-admin-item-actions,
+    .docs-admin-version-row,
+    .docs-admin-activity-item {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .docs-admin-head {
+      justify-content: space-between;
+      align-items: flex-start;
+      margin-bottom: 16px;
+      gap: 14px;
+    }
+
+    .docs-admin-head-actions {
+      flex-wrap: wrap;
+      justify-content: flex-end;
+    }
+
+    .docs-admin-layout {
+      display: grid;
+      gap: 14px;
+    }
+
+    .docs-admin-toolbar {
+      display: grid;
+      gap: 10px;
+      margin-top: 12px;
+    }
+
+    .docs-admin-filter-field {
+      margin: 0;
+    }
+
+    .docs-admin-summary {
+      min-height: 20px;
+      font-size: 13px;
+      line-height: 1.45;
+      color: rgba(238, 242, 248, 0.68);
+    }
+
+    .docs-admin-list-card,
+    .docs-admin-form-card,
+    .docs-admin-item,
+    .docs-admin-confirm-card {
+      border-radius: 18px;
+      border: 1px solid rgba(255, 255, 255, 0.07);
+      background: rgba(255, 255, 255, 0.03);
+      box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.025);
+    }
+
+    .docs-admin-list-card,
+    .docs-admin-form-card {
+      padding: 16px;
+    }
+
+    .docs-admin-section-title,
+    .docs-admin-group-title,
+    .docs-admin-versions-title {
+      font-size: 14px;
+      font-weight: 800;
+      color: var(--text);
+    }
+
+    .docs-admin-list {
+      display: grid;
+      gap: 14px;
+      margin-top: 12px;
+    }
+
+    .docs-admin-group {
+      display: grid;
+      gap: 10px;
+    }
+
+    .docs-admin-empty,
+    .docs-admin-note,
+    .docs-admin-version-meta,
+    .docs-admin-activity-meta {
+      color: rgba(238, 242, 248, 0.62);
+      font-size: 13px;
+      line-height: 1.45;
+      text-wrap: balance;
+    }
+
+    .docs-admin-form {
+      display: grid;
+      gap: 12px;
+      margin-top: 12px;
+    }
+
+    .docs-admin-grid {
+      align-items: flex-end;
+      flex-wrap: wrap;
+    }
+
+    .docs-admin-grid > .docs-admin-field {
+      flex: 1 1 180px;
+    }
+
+    .docs-admin-upload-state {
+      min-height: 20px;
+      font-size: 13px;
+      line-height: 1.4;
+    }
+
+    .docs-admin-item {
+      padding: 14px;
+      display: grid;
+      gap: 10px;
+    }
+
+    .docs-admin-item.is-archived {
+      opacity: 0.88;
+      border-color: rgba(245, 158, 11, 0.18);
+    }
+
+    .docs-admin-item.is-busy {
+      pointer-events: none;
+      opacity: 0.68;
+    }
+
+    .docs-admin-item-head {
+      justify-content: space-between;
+      align-items: flex-start;
+    }
+
+    .docs-admin-item-title {
+      font-size: 15px;
+      font-weight: 800;
+      color: var(--text);
+      line-height: 1.35;
+    }
+
+    .docs-admin-item-subtitle {
+      font-size: 13px;
+      color: rgba(238, 242, 248, 0.68);
+      margin-top: 4px;
+    }
+
+    .docs-admin-item-meta,
+    .docs-admin-item-actions,
+    .docs-admin-versions,
+    .docs-admin-activity-list {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+    }
+
+    .docs-admin-chip {
+      display: inline-flex;
+      align-items: center;
+      min-height: 26px;
+      padding: 0 10px;
+      border-radius: 999px;
+      font-size: 12px;
+      font-weight: 700;
+      color: rgba(238, 242, 248, 0.8);
+      background: rgba(255, 255, 255, 0.06);
+      border: 1px solid rgba(255, 255, 255, 0.08);
+    }
+
+    .docs-admin-chip.is-warn {
+      color: #f3cd87;
+      border-color: rgba(245, 158, 11, 0.24);
+      background: rgba(245, 158, 11, 0.12);
+    }
+
+    .docs-admin-chip.is-ok {
+      color: #b7f7d0;
+      border-color: rgba(74, 222, 128, 0.24);
+      background: rgba(74, 222, 128, 0.12);
+    }
+
+    .docs-admin-action {
+      border: 1px solid rgba(255, 255, 255, 0.09);
+      background: rgba(255, 255, 255, 0.05);
+      color: var(--text);
+      border-radius: 999px;
+      min-height: 34px;
+      padding: 0 12px;
+      font: inherit;
+      font-size: 13px;
+      font-weight: 700;
+      cursor: pointer;
+    }
+
+    .docs-admin-action[disabled] {
+      opacity: 0.45;
+      cursor: default;
+    }
+
+    .docs-admin-action.is-primary {
+      color: #9be4ff;
+      border-color: rgba(56, 189, 248, 0.22);
+      background: rgba(56, 189, 248, 0.1);
+    }
+
+    .docs-admin-action.is-danger {
+      color: #ffb4bf;
+      border-color: rgba(255, 125, 141, 0.22);
+      background: rgba(127, 29, 29, 0.18);
+    }
+
+    .docs-admin-versions,
+    .docs-admin-activity-list {
+      display: grid;
+      width: 100%;
+    }
+
+    .docs-admin-version-row,
+    .docs-admin-activity-item {
+      justify-content: space-between;
+      align-items: center;
+      width: 100%;
+      padding-top: 8px;
+      border-top: 1px solid rgba(255, 255, 255, 0.06);
+    }
+
+    .docs-admin-version-copy {
+      min-width: 0;
+    }
+
+    .docs-admin-confirm {
+      position: fixed;
+      inset: 0;
+      z-index: calc(var(--layer-overlay) + 6);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 16px;
+      background: rgba(5, 10, 18, 0.68);
+      backdrop-filter: blur(10px);
+    }
+
+    .docs-admin-confirm-card {
+      width: min(100%, 380px);
+      padding: 18px;
+    }
+
+    .docs-admin-confirm-actions {
+      display: flex;
+      justify-content: flex-end;
+      gap: 10px;
+      margin-top: 16px;
+    }
+
+    @media (min-width: 860px) {
+      .docs-admin-layout {
+        grid-template-columns: minmax(0, 1.35fr) minmax(300px, 0.9fr);
+        align-items: start;
+      }
+    }
+
+    @media (max-width: 640px) {
+      .docs-admin-head,
+      .docs-admin-head-actions,
+      .docs-admin-item-head,
+      .docs-admin-version-row,
+      .docs-admin-activity-item,
+      .docs-nav-actions {
+        flex-direction: column;
+        align-items: stretch;
+      }
+
+      .docs-admin-item-actions,
+      .docs-admin-confirm-actions {
+        flex-wrap: wrap;
+      }
+
+      .docs-admin-action,
+      .docs-admin-entry,
+      .docs-back-btn {
+        width: 100%;
+        justify-content: center;
+      }
+    }
+
     /* ── Toast ── */
     .app-toast {
       --toast-border: rgba(82, 215, 130, 0.42);

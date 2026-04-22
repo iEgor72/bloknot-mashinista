@@ -1,9 +1,11 @@
 # Recent Commits
 
-Generated: 2026-04-22 05:42:12 +0000
+Generated: 2026-04-22 06:21:42 +0000
 
 | Hash | Date | Author | Message |
 | --- | --- | --- | --- |
+| `a0a8b4d` | 2026-04-22T05:51:57+00:00 | iEgor72 | feat(docs): improve document title structure |
+| `5210b02` | 2026-04-22T05:44:32+00:00 | iEgor72 | fix(ui): continue ultra-safe polish pass |
 | `62af9ce` | 2026-04-22T05:36:29+00:00 | iEgor72 | fix(ui): refine docs states and defensive polish |
 | `a7e9bfa` | 2026-04-22T05:26:45+00:00 | iEgor72 | fix(ui): apply quiet polish refinements |
 | `50c39fc` | 2026-04-22T05:15:48+00:00 | iEgor72 | fix(ui): polish schedule, docs, and auth flows |
@@ -42,5 +44,3 @@ Generated: 2026-04-22 05:42:12 +0000
 | `56bef4f` | 2026-04-22T00:35:20+00:00 | iEgor72 | fix(calendar): unify day sheet with materialized shifts |
 | `4b0fb67` | 2026-04-22T00:19:41+00:00 | iEgor72 | feat(schedule): materialize graph shifts as real entries |
 | `ae01881` | 2026-04-22T00:09:15+00:00 | iEgor72 | feat(shifts): show graph-generated shifts in journal |
-| `84a2cb0` | 2026-04-22T00:03:14+00:00 | iEgor72 | fix(schedule): scope planner to visible month |
-| `f9c05b7` | 2026-04-21T23:54:12+00:00 | iEgor72 | fix(calendar): accent non-working days with red outline |

@@ -135,6 +135,16 @@
     var CURRENT_SESSION_TOKEN = getStoredSessionToken();
     var STARTED_FROM_CACHED_STATE = false;
 
+    function syncCurrentUserGlobal() {
+      try {
+        window.CURRENT_USER = CURRENT_USER || null;
+        if (typeof syncDocsAdminVisibility === 'function') syncDocsAdminVisibility();
+        window.dispatchEvent(new CustomEvent('bm:current-user-changed', {
+          detail: { user: window.CURRENT_USER || null }
+        }));
+      } catch (e) {}
+    }
+
     function getStoredCachedUser() {
       try {
         var raw = localStorage.getItem(CACHED_USER_STORAGE_KEY);
@@ -712,6 +722,7 @@
         headers: { 'Accept': 'application/json' }
       }).then(function() {
         CURRENT_USER = null;
+        syncCurrentUserGlobal();
         CURRENT_SESSION_TOKEN = '';
         setStoredSessionToken('');
         setStoredCachedUser(null);
@@ -730,7 +741,8 @@
       if (AUTH_ENV_STATE === 'dev') {
         if (!authBootstrapPromise) {
           authBootstrapPromise = Promise.resolve(null).then(function() {
-            CURRENT_USER = { id: 0, first_name: 'Dev', username: 'devuser' };
+            CURRENT_USER = { id: 0, first_name: 'Dev', username: 'devuser', is_admin: false };
+            syncCurrentUserGlobal();
             return CURRENT_USER;
           });
         }
@@ -749,11 +761,13 @@
           .then(function(user) {
             if (user) {
               CURRENT_USER = user;
+              syncCurrentUserGlobal();
               showAppShell();
               return user;
             }
 
             CURRENT_USER = null;
+            syncCurrentUserGlobal();
             if (!silent) {
               showAuthGate('prod', 'guest');
               renderTelegramLoginWidget();
@@ -762,6 +776,7 @@
           })
           .catch(function(err) {
             CURRENT_USER = null;
+            syncCurrentUserGlobal();
             if (!silent) {
               showAuthGate('prod', 'error');
               if (err && err.name === 'AbortError') {
@@ -813,6 +828,7 @@
       } else {
         CURRENT_USER = { id: 'guest' };
       }
+      syncCurrentUserGlobal();
 
       STARTED_FROM_CACHED_STATE = true;
       if (cachedShifts && Array.isArray(cachedShifts.shifts)) {
