@@ -886,8 +886,7 @@
     function renderScheduleDayOverlay() {
       var dateKey = selectedScheduleDayKey || getTodayDateKey();
       var state = resolveScheduleDay(dateKey);
-      var dateEl = document.getElementById('scheduleDayDate');
-      var statusEl = document.getElementById('scheduleDayStatus');
+      var titleEl = document.getElementById('scheduleDayTitle');
       var factCardEl = document.getElementById('scheduleDayFactCard');
       var factTitleEl = document.getElementById('scheduleDayFactTitle');
       var factTextEl = document.getElementById('scheduleDayFactText');
@@ -899,26 +898,11 @@
       var planTextEl = document.getElementById('scheduleDayPlanText');
       var addShiftBtn = document.getElementById('btnScheduleDayAddShift');
       var editShiftBtn = document.getElementById('btnScheduleDayEditShift');
-      if (!dateEl || !statusEl || !factCardEl || !factTitleEl || !factTextEl || !factContentEl || !planCardEl || !planTitleEl || !planTimeEl || !planDurationEl || !planTextEl || !addShiftBtn || !editShiftBtn) return;
+      if (!titleEl || !factCardEl || !factTitleEl || !factTextEl || !factContentEl || !planCardEl || !planTitleEl || !planTimeEl || !planDurationEl || !planTextEl || !addShiftBtn || !editShiftBtn) return;
 
-      dateEl.textContent = formatScheduleDateLabel(dateKey);
+      titleEl.textContent = formatScheduleDateLabel(dateKey);
       var primaryFactShift = state.factShifts && state.factShifts[0] ? state.factShifts[0] : null;
       var hasMaterializedFact = !!(primaryFactShift && typeof isScheduleMaterializedShift === 'function' && isScheduleMaterializedShift(primaryFactShift));
-      var statusParts = [];
-      if (hasMaterializedFact) {
-        statusParts.push('Смена за этот день уже есть в журнале. Можно открыть её ниже.');
-      } else if (state.hasFact && state.plannedCode) {
-        statusParts.push(state.effectiveCode === 'N' ? 'По факту здесь уже есть ночная смена.' : 'По факту здесь уже есть дневная смена.');
-        statusParts.push('Ниже можно посмотреть запись и план по графику.');
-      } else if (state.hasFact) {
-        statusParts.push(state.effectiveCode === 'N' ? 'По факту здесь уже есть ночная смена.' : 'По факту здесь уже есть дневная смена.');
-      } else if (state.plannedCode) {
-        statusParts.push('На этот день уже есть план по графику.');
-      } else {
-        statusParts.push('На этот день пока ничего нет. При необходимости можно добавить смену вручную.');
-      }
-      if (state.isHoliday) statusParts.push('Это праздничный день.');
-      statusEl.textContent = statusParts.join(' ');
 
       var daySummary = buildScheduleDayFactSummary(state);
       factCardEl.classList.remove('hidden');

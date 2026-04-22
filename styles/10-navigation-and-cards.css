@@ -1304,30 +1304,9 @@
       font-weight: 800;
     }
 
-    .schedule-day-summary-card,
     .schedule-day-fact,
     .schedule-day-plan {
       margin-bottom: 12px;
-    }
-
-    .schedule-day-summary {
-      display: grid;
-      gap: 3px;
-      margin-bottom: 10px;
-    }
-
-    .schedule-day-date {
-      font-size: 19px;
-      font-weight: 800;
-      line-height: 1.15;
-      letter-spacing: -0.02em;
-      color: var(--text);
-    }
-
-    .schedule-day-status {
-      color: rgba(238, 242, 248, 0.62);
-      font-size: 11px;
-      line-height: 1.42;
     }
 
     .schedule-day-fact,
@@ -1339,10 +1318,6 @@
     .schedule-day-plan.hidden,
     .schedule-day-fact.hidden {
       display: none;
-    }
-
-    .schedule-day-summary-head {
-      gap: 4px;
     }
 
     .schedule-day-fact {
