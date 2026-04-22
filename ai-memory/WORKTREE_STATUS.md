@@ -1,6 +1,6 @@
 # Worktree Status
 
-Generated: 2026-04-22 11:37:09 +0000
+Generated: 2026-04-22 23:20:55 +0000
 
 ## git status -sb
 ```text
@@ -10,19 +10,19 @@ Generated: 2026-04-22 11:37:09 +0000
 
 ## git branch -vv
 ```text
-* main 4f1d1b5 [origin/main] copy(docs): adjust reminders subtitle
+* main 17f98c4 [origin/main] fix(schedule): invert generated night shift hours
 ```
 
 ## HEAD
 ```text
-4f1d1b5 copy(docs): adjust reminders subtitle
+17f98c4 fix(schedule): invert generated night shift hours
  ai-memory/CHANGELOG.md           |  8 ++++++++
  ai-memory/INDEX.md               |  2 +-
  ai-memory/PROJECT_STATE.md       |  8 ++++----
  ai-memory/RECENT_COMMITS.md      |  4 ++--
- ai-memory/WORKTREE_STATUS.md     | 24 ++++++++++++------------
+ ai-memory/WORKTREE_STATUS.md     | 14 +++++++-------
  ai-memory/sessions/2026-04-22.md |  1 +
- index.html                       |  2 +-
- scripts/app.js                   |  2 +-
- 8 files changed, 30 insertions(+), 21 deletions(-)
+ scripts/app.js                   | 33 +++++++++++++++++++++++++++++----
+ scripts/auth.js                  |  1 +
+ 8 files changed, 53 insertions(+), 18 deletions(-)
 ```

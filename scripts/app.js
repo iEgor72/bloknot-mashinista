@@ -1424,9 +1424,8 @@
       var safeDate = normalizeDateKey(dateKey);
       var safeCode = normalizeScheduleCode(plannedCode);
       if (!safeDate || !period || (safeCode !== 'D' && safeCode !== 'N')) return null;
-      var resolvedWindow = resolveScheduleShiftWindow(safeCode, startTime, endTime);
-      var safeStart = resolvedWindow.startTime;
-      var safeEnd = resolvedWindow.endTime;
+      var safeStart = normalizeTimeValue(startTime, '01:00');
+      var safeEnd = normalizeTimeValue(endTime, '13:00');
       var endDate = buildPresetShiftEndDate(safeDate, safeStart, safeEnd);
       return {
         id: 'schedule_' + String(period.id || 'period') + '_' + safeDate,
