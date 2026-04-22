@@ -699,6 +699,9 @@
     function setOverlayOpenState(id, isOpen) {
       var overlay = document.getElementById(id);
       if (!overlay) return;
+      if (isOpen && overlay.parentNode) {
+        overlay.parentNode.appendChild(overlay);
+      }
       overlay.classList.toggle('is-open', !!isOpen);
       // Keep legacy class for compatibility with any older styles or scripts.
       overlay.classList.toggle('visible', !!isOpen);
