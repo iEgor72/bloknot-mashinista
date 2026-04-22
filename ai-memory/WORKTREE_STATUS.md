@@ -1,6 +1,6 @@
 # Worktree Status
 
-Generated: 2026-04-22 11:26:41 +0000
+Generated: 2026-04-22 11:35:40 +0000
 
 ## git status -sb
 ```text
@@ -10,19 +10,19 @@ Generated: 2026-04-22 11:26:41 +0000
 
 ## git branch -vv
 ```text
-* main 0477851 [origin/main] fix(docs): simplify viewer status chip
+* main 4f8825e [origin/main] copy(docs): adjust speeds and memos subtitles
 ```
 
 ## HEAD
 ```text
-0477851 fix(docs): simplify viewer status chip
- ai-memory/CHANGELOG.md            |  8 ++++++++
- ai-memory/INDEX.md                |  2 +-
- ai-memory/PROJECT_STATE.md        |  8 ++++----
- ai-memory/RECENT_COMMITS.md       |  4 ++--
- ai-memory/WORKTREE_STATUS.md      | 12 ++++++------
- ai-memory/sessions/2026-04-22.md  |  1 +
- scripts/docs-app.js               |  2 +-
- styles/30-shifts-and-overlays.css | 19 +++++++++++--------
- 8 files changed, 34 insertions(+), 22 deletions(-)
+4f8825e copy(docs): adjust speeds and memos subtitles
+ ai-memory/CHANGELOG.md           |  8 ++++++++
+ ai-memory/INDEX.md               |  2 +-
+ ai-memory/PROJECT_STATE.md       |  8 ++++----
+ ai-memory/RECENT_COMMITS.md      |  4 ++--
+ ai-memory/WORKTREE_STATUS.md     | 13 +++++++------
+ ai-memory/sessions/2026-04-22.md |  1 +
+ index.html                       |  4 ++--
+ scripts/app.js                   |  4 ++--
+ 8 files changed, 27 insertions(+), 17 deletions(-)
 ```

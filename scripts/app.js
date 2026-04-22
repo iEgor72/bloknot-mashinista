@@ -2613,7 +2613,7 @@
       if (entry === 'reminders') {
         return {
           title: 'Памятки',
-          subtitle: 'Короткие рабочие подсказки',
+          subtitle: 'Небольшие рабочие шпаргалки',
           tabs: ['reminders']
         };
       }

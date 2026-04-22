@@ -1,9 +1,10 @@
 # Recent Commits
 
-Generated: 2026-04-22 11:26:41 +0000
+Generated: 2026-04-22 11:35:40 +0000
 
 | Hash | Date | Author | Message |
 | --- | --- | --- | --- |
+| `4f8825e` | 2026-04-22T11:35:38+00:00 | iEgor72 | copy(docs): adjust speeds and memos subtitles |
 | `0477851` | 2026-04-22T11:26:39+00:00 | iEgor72 | fix(docs): simplify viewer status chip |
 | `62ac928` | 2026-04-22T11:24:38+00:00 | iEgor72 | style(docs): polish viewer header |
 | `a7ef152` | 2026-04-22T11:19:49+00:00 | iEgor72 | fix(docs): center loading note in viewer |
@@ -43,4 +44,3 @@ Generated: 2026-04-22 11:26:41 +0000
 | `4167d8c` | 2026-04-22T03:20:26+00:00 | iEgor72 | refactor(schedule): simplify day sheet header |
 | `90879ef` | 2026-04-22T03:17:55+00:00 | iEgor72 | copy(schedule): polish calendar microcopy |
 | `df13835` | 2026-04-22T02:42:25+00:00 | iEgor72 | copy(schedule): make calendar text more user-friendly |
-| `65032fe` | 2026-04-22T02:31:33+00:00 | iEgor72 | refactor(schedule): align day sheet with app ui |
