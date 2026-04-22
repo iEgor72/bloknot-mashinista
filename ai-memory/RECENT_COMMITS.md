@@ -1,9 +1,10 @@
 # Recent Commits
 
-Generated: 2026-04-22 04:00:29 +0000
+Generated: 2026-04-22 04:06:50 +0000
 
 | Hash | Date | Author | Message |
 | --- | --- | --- | --- |
+| `45ddfa0` | 2026-04-22T04:06:39+00:00 | iEgor72 | copy(schedule): remove redundant calendar subtitle |
 | `d12f4b7` | 2026-04-22T04:00:12+00:00 | iEgor72 | fix(schedule): remove nested button chrome |
 | `8c20dc0` | 2026-04-22T03:53:28+00:00 | iEgor72 | refactor(schedule): centralize planner instructions |
 | `5c1bc12` | 2026-04-22T03:49:42+00:00 | iEgor72 | copy(schedule): reduce planner text noise |
@@ -43,4 +44,3 @@ Generated: 2026-04-22 04:00:29 +0000
 | `e06b028` | 2026-04-21T12:38:02+00:00 | iEgor72 | fix(schedule): raise legend and color graph buttons |
 | `3569c52` | 2026-04-21T12:35:44+00:00 | iEgor72 | fix(schedule): default shifts to 01:00-13:00 |
 | `6d7939f` | 2026-04-21T12:31:30+00:00 | iEgor72 | refactor(schedule): remove day mark override from sheet |
-| `866ce9e` | 2026-04-21T12:25:29+00:00 | iEgor72 | fix(schedule): align day sheet with app typography |
