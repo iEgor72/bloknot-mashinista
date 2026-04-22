@@ -1,6 +1,6 @@
 # Worktree Status
 
-Generated: 2026-04-22 03:18:06 +0000
+Generated: 2026-04-22 03:20:37 +0000
 
 ## git status -sb
 ```text
@@ -18,19 +18,19 @@ Generated: 2026-04-22 03:18:06 +0000
 
 ## git branch -vv
 ```text
-* main 90879ef [origin/main] copy(schedule): polish calendar microcopy
+* main 4167d8c [origin/main] refactor(schedule): simplify day sheet header
 ```
 
 ## HEAD
 ```text
-90879ef copy(schedule): polish calendar microcopy
- ai-memory/CHANGELOG.md       |  8 ++++++++
- ai-memory/INDEX.md           |  2 +-
- ai-memory/PROJECT_STATE.md   |  8 ++++----
- ai-memory/RECENT_COMMITS.md  |  4 ++--
- ai-memory/WORKTREE_STATUS.md | 24 ++++++++++++------------
- index.html                   |  8 ++++----
- scripts/render.js            | 28 ++++++++++++++--------------
- scripts/shift-form.js        | 12 ++++++------
- 8 files changed, 51 insertions(+), 43 deletions(-)
+4167d8c refactor(schedule): simplify day sheet header
+ ai-memory/CHANGELOG.md             |  8 ++++++++
+ ai-memory/INDEX.md                 |  2 +-
+ ai-memory/PROJECT_STATE.md         |  8 ++++----
+ ai-memory/RECENT_COMMITS.md        |  4 ++--
+ ai-memory/WORKTREE_STATUS.md       | 16 ++++++++--------
+ index.html                         | 10 +---------
+ scripts/render.js                  | 22 +++-------------------
+ styles/10-navigation-and-cards.css | 25 -------------------------
+ 8 files changed, 27 insertions(+), 68 deletions(-)
 ```

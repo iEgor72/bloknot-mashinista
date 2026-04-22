@@ -756,14 +756,14 @@
 
     function buildScheduleDayFactSummary(state) {
       var summary = {
-        titleText: 'Работали',
-        noteText: 'Записи нет.',
+        titleText: 'Смена за день',
+        noteText: 'За этот день смены пока нет.',
         cardHtml: ''
       };
       if (!state) return summary;
       if (state.hasFact && state.factShifts && state.factShifts[0]) {
         var shift = state.factShifts[0];
-        summary.titleText = state.effectiveCode === 'N' ? 'Работали в ночь' : 'Работали днём';
+        summary.titleText = state.factShifts.length > 1 ? 'Смены за день' : 'Смена за день';
         summary.noteText = getShiftTypeLabel(shift);
         if (state.factShifts.length > 1) {
           summary.noteText += ' + ещё ' + (state.factShifts.length - 1);
@@ -912,7 +912,7 @@
       if (factTitleEl.parentNode && factTitleEl.parentNode.classList) {
         factTitleEl.parentNode.classList.toggle('hidden', hasFactCard);
       }
-      factContentEl.innerHTML = daySummary.cardHtml || '<div class="schedule-day-empty-card">Записи нет.</div>';
+      factContentEl.innerHTML = daySummary.cardHtml || '<div class="schedule-day-empty-card">За этот день пока нет добавленной смены.</div>';
 
       var planSummary = buildScheduleDayPlanSummary(state);
       planCardEl.classList.toggle('hidden', !state.plannedCode || hasMaterializedFact);
@@ -922,7 +922,7 @@
       planTextEl.textContent = planSummary.noteText;
 
       addShiftBtn.classList.toggle('hidden', state.hasFact);
-      addShiftBtn.textContent = state.plannedCode ? 'Добавить смену на этот день' : 'Добавить смену вручную';
+      addShiftBtn.textContent = 'Добавить смену';
       editShiftBtn.classList.toggle('hidden', !state.hasFact);
       if (!editShiftBtn.classList.contains('hidden') && state.factShifts[0]) {
         editShiftBtn.textContent = state.factShifts.length > 1 ? 'Посмотреть смены за день' : 'Открыть смену';

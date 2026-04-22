@@ -1,9 +1,10 @@
 # Recent Commits
 
-Generated: 2026-04-22 03:18:06 +0000
+Generated: 2026-04-22 03:20:37 +0000
 
 | Hash | Date | Author | Message |
 | --- | --- | --- | --- |
+| `4167d8c` | 2026-04-22T03:20:26+00:00 | iEgor72 | refactor(schedule): simplify day sheet header |
 | `90879ef` | 2026-04-22T03:17:55+00:00 | iEgor72 | copy(schedule): polish calendar microcopy |
 | `df13835` | 2026-04-22T02:42:25+00:00 | iEgor72 | copy(schedule): make calendar text more user-friendly |
 | `65032fe` | 2026-04-22T02:31:33+00:00 | iEgor72 | refactor(schedule): align day sheet with app ui |
@@ -43,4 +44,3 @@ Generated: 2026-04-22 03:18:06 +0000
 | `535344e` | 2026-04-21T12:10:17+00:00 | iEgor72 | fix(schedule): rebuild day sheet around real shift card |
 | `9b4e759` | 2026-04-21T12:01:00+00:00 | iEgor72 | fix(schedule): clear journal highlight outside shifts |
 | `9452af1` | 2026-04-21T11:58:51+00:00 | iEgor72 | fix(schedule): highlight journal target from calendar |
-| `0537183` | 2026-04-21T11:56:40+00:00 | iEgor72 | fix(schedule): sync journal month from calendar day |

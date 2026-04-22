@@ -1,14 +1,14 @@
 # Project State
 
 <!-- AUTO_STATUS:START -->
-Generated: 2026-04-22 03:18:06 +0000
+Generated: 2026-04-22 03:20:37 +0000
 
 ## Repository Snapshot
 - Local repo path: `/opt/bloknot-mashinista`
 - Project memory path: `/opt/bloknot-mashinista/ai-memory`
 - Branch: `main`
-- HEAD: `90879ef`
-- Last commit: `90879ef copy(schedule): polish calendar microcopy`
+- HEAD: `4167d8c`
+- Last commit: `4167d8c refactor(schedule): simplify day sheet header`
 
 ## Git Remote
 ```text
@@ -18,7 +18,7 @@ origin	https://github.com/iEgor72/bloknot-mashinista.git (push)
 
 ## Branch Tracking
 ```text
-* main 90879ef [origin/main] copy(schedule): polish calendar microcopy
+* main 4167d8c [origin/main] refactor(schedule): simplify day sheet header
 ```
 
 ## Worktree
