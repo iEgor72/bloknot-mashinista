@@ -270,58 +270,6 @@
       padding-bottom: 0;
     }
 
-    .shift-card-sections {
-      gap: 10px;
-    }
-
-    .shift-card-section {
-      display: grid;
-      gap: 8px;
-      padding: 11px 12px;
-      border-radius: 16px;
-      background: rgba(255, 255, 255, 0.038);
-      border: 1px solid rgba(255, 255, 255, 0.075);
-      box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.025);
-    }
-
-    .shift-card-section-title {
-      font-size: 10px;
-      font-weight: 800;
-      letter-spacing: 0.12em;
-      text-transform: uppercase;
-      color: rgba(143, 154, 171, 0.88);
-    }
-
-    .shift-card-section-body {
-      display: grid;
-      gap: 8px;
-      min-width: 0;
-    }
-
-    .shift-card-section-attendance {
-      background: rgba(87, 98, 255, 0.075);
-      border-color: rgba(110, 122, 255, 0.14);
-    }
-
-    .shift-card-section-route {
-      background: rgba(255, 255, 255, 0.045);
-    }
-
-    .shift-card-section-train {
-      background: rgba(34, 197, 94, 0.055);
-      border-color: rgba(52, 211, 153, 0.12);
-    }
-
-    .shift-card-section-fuel {
-      background: rgba(245, 158, 11, 0.06);
-      border-color: rgba(251, 191, 36, 0.13);
-    }
-
-    .shift-card-section-income {
-      background: rgba(16, 185, 129, 0.07);
-      border-color: rgba(52, 211, 153, 0.16);
-    }
-
     .shift-type {
       font-size: 15px;
       font-weight: 750;
@@ -393,10 +341,10 @@
       gap: 6px;
       width: fit-content;
       max-width: 100%;
-      font-size: 13px;
-      line-height: 1.35;
-      color: rgba(232, 237, 245, 0.96);
-      font-weight: 700;
+      font-size: 12px;
+      line-height: 1.3;
+      color: rgba(232, 237, 245, 0.94);
+      font-weight: 600;
       min-width: 0;
       padding: 7px 10px;
       border-radius: 999px;
@@ -503,7 +451,7 @@
       color: rgba(226, 232, 240, 0.92);
       min-width: 0;
       font-variant-numeric: tabular-nums;
-      padding-top: 0;
+      padding-top: 4px;
     }
 
     .shift-tech-part {
@@ -561,21 +509,15 @@
     }
 
     .shift-fuel-note {
-      display: inline-flex;
+      display: flex;
       align-items: center;
       gap: 6px;
       flex-wrap: wrap;
-      width: fit-content;
-      max-width: 100%;
-      font-size: 12px;
+      font-size: 11px;
       line-height: 1.35;
-      color: rgba(224, 230, 239, 0.94);
+      color: rgba(224, 230, 239, 0.92);
       font-variant-numeric: tabular-nums;
-      margin-top: 0;
-      padding: 8px 10px;
-      border-radius: 12px;
-      background: rgba(255, 255, 255, 0.06);
-      border: 1px solid rgba(255, 255, 255, 0.08);
+      margin-top: 2px;
     }
 
     .shift-fuel-note-icon {
@@ -609,11 +551,11 @@
     /* ── Shift income row ── */
     .shift-income-row {
       display: flex;
-      align-items: center;
-      justify-content: space-between;
+      align-items: flex-start;
+      justify-content: flex-start;
       flex-wrap: wrap;
       gap: 8px;
-      padding-top: 0;
+      padding-top: 2px;
       margin-top: 0;
       min-width: 0;
     }
@@ -1015,8 +957,6 @@
     .compact-shift .shift-income-row { padding-top: 0; }
     .compact-shift .shift-income-row-label { font-size: 11px; }
     .compact-shift .shift-income-row-label-content { padding: 6px 8px; }
-    .compact-shift .shift-card-section { padding: 10px 11px; gap: 7px; }
-    .compact-shift .shift-card-section-title { font-size: 9px; letter-spacing: 0.1em; }
     .compact-shift .shift-income-chip {
       font-size: 14px;
       padding: 6px 10px;

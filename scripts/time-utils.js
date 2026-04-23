@@ -646,17 +646,6 @@
         '</span>';
     }
 
-    function buildShiftSectionHtml(title, bodyHtml, extraClass) {
-      if (!bodyHtml) return '';
-      var sectionClass = 'shift-card-section';
-      if (extraClass) sectionClass += ' ' + extraClass;
-      return '' +
-        '<section class="' + sectionClass + '">' +
-          '<div class="shift-card-section-title">' + escapeHtml(title || '') + '</div>' +
-          '<div class="shift-card-section-body">' + bodyHtml + '</div>' +
-        '</section>';
-    }
-
     function getShiftTechnicalItems(shift) {
       var items = [];
       if (!shift) return items;
@@ -704,19 +693,6 @@
       var incomeLabelHtml = buildShiftIncomeLabelHtml();
       var incomeVm = getShiftIncomeViewModel(shift, shiftIncomeMap);
       var incomeHtml = getShiftIncomeChipHtml(incomeVm);
-      var attendanceSectionHtml = buildShiftSectionHtml('Явка', '' +
-        '<div class="shift-main-row">' +
-          dateTimeHtml +
-          durationHtml +
-        '</div>', 'shift-card-section-attendance');
-      var directionSectionHtml = buildShiftSectionHtml('Направление', directionHtml, 'shift-card-section-route');
-      var trainSectionHtml = buildShiftSectionHtml('Поезд', technicalHtml, 'shift-card-section-train');
-      var fuelSectionHtml = buildShiftSectionHtml('Расход', fuelNoteHtml, 'shift-card-section-fuel');
-      var incomeSectionHtml = buildShiftSectionHtml('Деньги', '' +
-        '<div class="shift-income-row">' +
-          incomeLabelHtml +
-          incomeHtml +
-        '</div>', 'shift-card-section-income');
       var itemClass = 'shift-item compact-shift shift-item-confirm';
       if (shift.route_kind === 'trip') itemClass += ' has-trip';
       if (shiftPending) itemClass += ' is-pending';
@@ -728,12 +704,18 @@
           '<div class="shift-card-top">' +
             typeHtml +
           '</div>' +
-          '<div class="shift-card-body shift-card-sections">' +
-            attendanceSectionHtml +
-            directionSectionHtml +
-            trainSectionHtml +
-            fuelSectionHtml +
-            incomeSectionHtml +
+          directionHtml +
+          '<div class="shift-card-body">' +
+            '<div class="shift-main-row">' +
+              dateTimeHtml +
+              durationHtml +
+            '</div>' +
+            technicalHtml +
+            fuelNoteHtml +
+            '<div class="shift-income-row">' +
+              incomeLabelHtml +
+              incomeHtml +
+            '</div>' +
           '</div>' +
           '</div>';
     }
@@ -796,19 +778,6 @@
       var incomeLabelHtml = buildShiftIncomeLabelHtml();
       var incomeVm = getShiftIncomeViewModel(shift, shiftIncomeMap);
       var incomeHtml = getShiftIncomeChipHtml(incomeVm);
-      var attendanceSectionHtml = buildShiftSectionHtml('Явка', '' +
-        '<div class="shift-main-row">' +
-          dateTimeHtml +
-          durationHtml +
-        '</div>', 'shift-card-section-attendance');
-      var directionSectionHtml = buildShiftSectionHtml('Направление', directionHtml, 'shift-card-section-route');
-      var trainSectionHtml = buildShiftSectionHtml('Поезд', technicalHtml, 'shift-card-section-train');
-      var fuelSectionHtml = buildShiftSectionHtml('Расход', fuelNoteHtml, 'shift-card-section-fuel');
-      var incomeSectionHtml = buildShiftSectionHtml('Деньги', '' +
-        '<div class="shift-income-row">' +
-          incomeLabelHtml +
-          incomeHtml +
-        '</div>', 'shift-card-section-income');
       var itemClass = 'shift-item shift-item-confirm shift-item-detail';
       if (shift.route_kind === 'trip') itemClass += ' has-trip';
       if (shiftPending) itemClass += ' is-pending';
@@ -820,12 +789,18 @@
           '<div class="shift-card-top">' +
             typeHtml +
           '</div>' +
-          '<div class="shift-card-body shift-card-sections">' +
-            attendanceSectionHtml +
-            directionSectionHtml +
-            trainSectionHtml +
-            fuelSectionHtml +
-            incomeSectionHtml +
+          directionHtml +
+          '<div class="shift-card-body">' +
+            '<div class="shift-main-row">' +
+              dateTimeHtml +
+              durationHtml +
+            '</div>' +
+            technicalHtml +
+            fuelNoteHtml +
+            '<div class="shift-income-row">' +
+              incomeLabelHtml +
+              incomeHtml +
+            '</div>' +
           '</div>' +
         '</div>';
     }
