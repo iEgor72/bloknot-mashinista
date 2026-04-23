@@ -822,7 +822,14 @@
       return salaryParamsSyncInFlight;
     }
 
-    var scheduleStore = createEmptyScheduleStore();
+    var SCHEDULE_STORAGE_KEY = 'shift_tracker_schedule_v1';
+    var SCHEDULE_CACHE_STORAGE_KEY = 'shift_tracker_schedule_cache_v1';
+    var SCHEDULE_PENDING_STORAGE_KEY = 'shift_tracker_schedule_pending_v1';
+    var scheduleStore = loadScheduleStore();
+    var selectedScheduleDayKey = '';
+    var selectedSchedulePeriodId = '';
+    var pendingScheduleConflict = null;
+    var scheduleArchiveExpanded = false;
 
     function createEmptyScheduleStore() {
       return { version: 1, periods: [], overrides: {} };
@@ -929,58 +936,378 @@
       return Math.round((endTs - startTs) / 86400000);
     }
 
-    function createSchedulePeriodId() { return ''; }
-    function normalizeSchedulePeriod() { return null; }
-    function normalizeScheduleOverrides() { return {}; }
-    function compareSchedulePeriodsByStart() { return 0; }
-    function compareSchedulePeriodsByPriority() { return 0; }
-    function normalizeScheduleStore() { return createEmptyScheduleStore(); }
-    function readScheduleCache() { return null; }
-    function writeScheduleCache() { return null; }
-    function readPendingScheduleSnapshot() { return null; }
-    function writePendingScheduleSnapshot() { return { schedule: createEmptyScheduleStore() }; }
-    function clearPendingScheduleSnapshot() {}
-    function loadScheduleStore() { return createEmptyScheduleStore(); }
-    function hasScheduleStoreData() { return false; }
-    function writeScheduleStoreLocal() { scheduleStore = createEmptyScheduleStore(); return scheduleStore; }
-    function syncScheduleStoreRemote(store, callback) { if (typeof callback === 'function') callback(null, createEmptyScheduleStore()); return createEmptyScheduleStore(); }
-    function flushPendingScheduleSnapshot(source, callback) { if (typeof callback === 'function') callback(null, scheduleStore); return false; }
-    function saveScheduleStore(callback) { scheduleStore = createEmptyScheduleStore(); if (typeof callback === 'function') callback(null, scheduleStore); return scheduleStore; }
-    function reloadScheduleStoreForCurrentUser(callback) { scheduleStore = createEmptyScheduleStore(); if (typeof callback === 'function') callback(scheduleStore); }
-    function getSchedulePeriods() { return []; }
-    function getScheduleOverrides() { return {}; }
-    function getSchedulePeriodsForDate() { return []; }
-    function getActiveSchedulePeriod() { return null; }
+    function createSchedulePeriodId() {
+      return 'period_' + Date.now().toString(36) + '_' + Math.random().toString(36).slice(2, 7);
+    }
+
+    function normalizeSchedulePeriod(raw) {
+      if (!raw || typeof raw !== 'object') return null;
+      var startDate = normalizeDateKey(raw.startDate);
+      if (!startDate) return null;
+      var endDate = normalizeDateKey(raw.endDate);
+      if (endDate && compareDateKeys(endDate, startDate) < 0) endDate = '';
+      var pattern = normalizeSchedulePattern(raw.pattern);
+      return {
+        id: raw.id ? String(raw.id) : createSchedulePeriodId(),
+        mode: 'cycle',
+        startDate: startDate,
+        endDate: endDate || '',
+        pattern: pattern,
+        startTime: normalizeTimeValue(raw.startTime, '01:00'),
+        endTime: normalizeTimeValue(raw.endTime, '13:00')
+      };
+    }
+
+    function normalizeScheduleOverrides(raw) {
+      var source = raw && typeof raw === 'object' ? raw : {};
+      var result = {};
+      var keys = Object.keys(source);
+      for (var i = 0; i < keys.length; i++) {
+        var dateKey = normalizeDateKey(keys[i]);
+        if (!dateKey) continue;
+        var item = source[keys[i]] || {};
+        var code = normalizeScheduleCode(item.code);
+        var periodId = item.periodId ? String(item.periodId).trim() : '';
+        if (!code || code === 'AUTO' || !periodId) continue;
+        result[dateKey] = {
+          code: code,
+          startTime: normalizeTimeValue(item.startTime, ''),
+          endTime: normalizeTimeValue(item.endTime, ''),
+          periodId: periodId
+        };
+      }
+      return result;
+    }
+
+    function compareSchedulePeriodsByStart(a, b) {
+      var diff = compareDateKeys(a && a.startDate, b && b.startDate);
+      if (diff !== 0) return diff;
+      var leftEnd = normalizeDateKey(a && a.endDate) || '9999-12-31';
+      var rightEnd = normalizeDateKey(b && b.endDate) || '9999-12-31';
+      if (leftEnd < rightEnd) return -1;
+      if (leftEnd > rightEnd) return 1;
+      var leftId = a && a.id ? String(a.id) : '';
+      var rightId = b && b.id ? String(b.id) : '';
+      if (leftId < rightId) return -1;
+      if (leftId > rightId) return 1;
+      return 0;
+    }
+
+    function compareSchedulePeriodsByPriority(a, b) {
+      var diff = compareDateKeys(b && b.startDate, a && a.startDate);
+      if (diff !== 0) return diff;
+      var leftEnd = normalizeDateKey(a && a.endDate) || '9999-12-31';
+      var rightEnd = normalizeDateKey(b && b.endDate) || '9999-12-31';
+      if (leftEnd < rightEnd) return -1;
+      if (leftEnd > rightEnd) return 1;
+      return compareSchedulePeriodsByStart(a, b);
+    }
+
+    function normalizeScheduleStore(raw) {
+      var payload = raw && typeof raw === 'object' ? raw : {};
+      var periods = [];
+      var rawPeriods = Array.isArray(payload.periods) ? payload.periods : [];
+      for (var i = 0; i < rawPeriods.length; i++) {
+        var period = normalizeSchedulePeriod(rawPeriods[i]);
+        if (!period || !period.pattern) continue;
+        periods.push(period);
+      }
+      periods.sort(compareSchedulePeriodsByStart);
+      return {
+        version: 1,
+        periods: periods,
+        overrides: normalizeScheduleOverrides(payload.overrides)
+      };
+    }
+
+    function readScheduleCache() {
+      return readStoredJson(getOfflineStorageKey(SCHEDULE_CACHE_STORAGE_KEY), null);
+    }
+
+    function writeScheduleCache(store) {
+      var payload = {
+        version: 1,
+        userId: getOfflineStorageUserId(),
+        updatedAt: new Date().toISOString(),
+        schedule: normalizeScheduleStore(store)
+      };
+      writeStoredJson(getOfflineStorageKey(SCHEDULE_CACHE_STORAGE_KEY), payload);
+      writeStoredJson(getOfflineStorageKey(SCHEDULE_STORAGE_KEY), payload.schedule);
+      return payload;
+    }
+
+    function readPendingScheduleSnapshot() {
+      return readStoredJson(getOfflineStorageKey(SCHEDULE_PENDING_STORAGE_KEY), null);
+    }
+
+    function writePendingScheduleSnapshot(store) {
+      var payload = {
+        version: 1,
+        userId: getOfflineStorageUserId(),
+        savedAt: new Date().toISOString(),
+        reason: 'offline-save',
+        schedule: normalizeScheduleStore(store)
+      };
+      writeStoredJson(getOfflineStorageKey(SCHEDULE_PENDING_STORAGE_KEY), payload);
+      writeScheduleCache(payload.schedule);
+      return payload;
+    }
+
+    function clearPendingScheduleSnapshot() {
+      try {
+        var toRemove = [];
+        for (var ki = 0; ki < localStorage.length; ki++) {
+          var key = localStorage.key(ki);
+          if (key && key.indexOf(SCHEDULE_PENDING_STORAGE_KEY) === 0) toRemove.push(key);
+        }
+        for (var ri = 0; ri < toRemove.length; ri++) localStorage.removeItem(toRemove[ri]);
+      } catch (e) {}
+    }
+
+    function loadScheduleStore() {
+      var pending = readPendingScheduleSnapshot();
+      if (pending && pending.schedule) return normalizeScheduleStore(pending.schedule);
+      var cached = readScheduleCache();
+      if (cached && cached.schedule) return normalizeScheduleStore(cached.schedule);
+      return normalizeScheduleStore(readStoredJson(getOfflineStorageKey(SCHEDULE_STORAGE_KEY), createEmptyScheduleStore()));
+    }
+
+    function hasScheduleStoreData(store) {
+      var safeStore = normalizeScheduleStore(store);
+      return !!(safeStore.periods.length || Object.keys(safeStore.overrides || {}).length);
+    }
+
+    function writeScheduleStoreLocal(store) {
+      scheduleStore = normalizeScheduleStore(store);
+      writeScheduleCache(scheduleStore);
+      return scheduleStore;
+    }
+
+    function syncScheduleStoreRemote(store, callback) {
+      var snapshot = normalizeScheduleStore(store);
+      if (!navigator.onLine || typeof fetchJson !== 'function' || !SCHEDULE_API_URL) {
+        if (typeof callback === 'function') callback(null, snapshot);
+        return;
+      }
+      fetchJson(SCHEDULE_API_URL, {
+        method: 'PUT',
+        headers: { 'Content-Type': 'application/json', 'Accept': 'application/json' },
+        body: JSON.stringify({ schedule: snapshot })
+      }).then(function(result) {
+        if (!result || !result.ok) {
+          if (typeof callback === 'function') callback(new Error((result && result.body && result.body.error) || 'Schedule sync failed'), snapshot);
+          return;
+        }
+        var remoteStore = normalizeScheduleStore(result.body && result.body.schedule);
+        clearPendingScheduleSnapshot();
+        writeScheduleStoreLocal(remoteStore);
+        if (typeof callback === 'function') callback(null, remoteStore);
+      }).catch(function(err) {
+        if (typeof callback === 'function') callback(err, snapshot);
+      });
+    }
+
+    function flushPendingScheduleSnapshot(source, callback, shouldRender) {
+      if (typeof source === 'function') {
+        callback = source;
+        source = 'save';
+      }
+      if (shouldRender === undefined) shouldRender = true;
+      var pending = readPendingScheduleSnapshot();
+      if (!pending || !pending.schedule) {
+        if (callback) callback(null);
+        return;
+      }
+      if (!navigator.onLine) {
+        if (callback) callback(null);
+        return;
+      }
+      fetchJson(SCHEDULE_API_URL, {
+        method: 'PUT',
+        headers: { 'Content-Type': 'application/json', 'Accept': 'application/json' },
+        body: JSON.stringify({ schedule: normalizeScheduleStore(pending.schedule) })
+      }).then(function(result) {
+        if (result.ok) {
+          scheduleStore = writeScheduleStoreLocal(result.body && result.body.schedule);
+          clearPendingScheduleSnapshot();
+          if (callback) callback(null);
+          if (shouldRender) render();
+          return;
+        }
+        if (result.status === 401) {
+          handleAuthUnauthorized(source === 'load' ? 'load' : 'save');
+          if (callback) callback(new Error('Unauthorized'));
+          return;
+        }
+        if (callback) callback(new Error((result.body && result.body.error) || 'Schedule sync failed'));
+      }).catch(function(err) {
+        if (callback) callback(err || new Error('Network error'));
+      });
+    }
+
+    function saveScheduleStore(callback) {
+      var snapshot = normalizeScheduleStore(scheduleStore);
+      scheduleStore = writePendingScheduleSnapshot(snapshot).schedule;
+      if (!navigator.onLine) {
+        if (callback) callback(null, scheduleStore);
+        return scheduleStore;
+      }
+      syncScheduleStoreRemote(snapshot, function(err, remoteStore) {
+        if (err) {
+          if (callback) callback(err, scheduleStore);
+          return;
+        }
+        scheduleStore = normalizeScheduleStore(remoteStore);
+        if (callback) callback(null, scheduleStore);
+        render();
+      });
+      return scheduleStore;
+    }
+
+    function reloadScheduleStoreForCurrentUser(callback) {
+      var localStore = loadScheduleStore();
+      scheduleStore = localStore;
+      if (!navigator.onLine || typeof fetchJson !== 'function' || !SCHEDULE_API_URL) {
+        if (typeof callback === 'function') callback(localStore);
+        return;
+      }
+
+      var startLoad = function() {
+        fetchJson(SCHEDULE_API_URL, {
+          method: 'GET',
+          headers: { 'Accept': 'application/json' }
+        }).then(function(result) {
+          if (!result || !result.ok) {
+            if (result && result.status === 401) handleAuthUnauthorized('load');
+            if (typeof callback === 'function') callback(localStore);
+            return;
+          }
+          var remoteStore = normalizeScheduleStore(result.body && result.body.schedule);
+          scheduleStore = writeScheduleStoreLocal(remoteStore);
+          if (typeof callback === 'function') callback(scheduleStore);
+        }).catch(function() {
+          if (typeof callback === 'function') callback(localStore);
+        });
+      };
+
+      var pending = readPendingScheduleSnapshot();
+      if (pending && pending.schedule) {
+        flushPendingScheduleSnapshot('load', function(err) {
+          if (!err) {
+            startLoad();
+            return;
+          }
+          if (typeof callback === 'function') callback(localStore);
+        }, false);
+        return;
+      }
+
+      startLoad();
+    }
+
+    function getSchedulePeriods() {
+      return Array.isArray(scheduleStore && scheduleStore.periods) ? scheduleStore.periods.slice() : [];
+    }
+
+    function getScheduleOverrides() {
+      return scheduleStore && scheduleStore.overrides && typeof scheduleStore.overrides === 'object' ? scheduleStore.overrides : {};
+    }
+
+    function getSchedulePeriodsForDate(dateKey) {
+      var safeDate = normalizeDateKey(dateKey);
+      if (!safeDate) return [];
+      var periods = getSchedulePeriods();
+      var matches = [];
+      for (var i = 0; i < periods.length; i++) {
+        var period = periods[i];
+        if (compareDateKeys(period.startDate, safeDate) > 0) continue;
+        if (period.endDate && compareDateKeys(period.endDate, safeDate) < 0) continue;
+        matches.push(period);
+      }
+      matches.sort(compareSchedulePeriodsByPriority);
+      return matches;
+    }
+
+    function getActiveSchedulePeriod(dateKey) {
+      var matches = getSchedulePeriodsForDate(dateKey);
+      return matches.length ? matches[0] : null;
+    }
+
+    function getShiftsForDate(dateKey) {
+      var safeDate = normalizeDateKey(dateKey);
+      if (!safeDate) return [];
+      var result = [];
+      for (var i = 0; i < allShifts.length; i++) {
+        var shift = allShifts[i];
+        var startDate = normalizeDateKey(shift && shift.start_msk ? shift.start_msk.substring(0, 10) : '');
+        var endDate = normalizeDateKey(shift && shift.end_msk ? shift.end_msk.substring(0, 10) : '') || startDate;
+        if (!startDate) continue;
+        if (compareDateKeys(startDate, safeDate) <= 0 && compareDateKeys(endDate, safeDate) >= 0) {
+          result.push(shift);
+        }
+      }
+      result.sort(compareShiftsByStartDesc);
+      return result;
+    }
 
     function isScheduleMaterializedShift(shift) {
       return !!(shift && (shift.schedule_generated || shift.isScheduleDerived || shift.schedule_period_id));
     }
 
     function getScheduleShiftAnchorDateKey(shift) {
-      return normalizeDateKey(shift && (shift.scheduleDateKey || (shift.start_msk ? String(shift.start_msk).substring(0, 10) : '')));
+      if (!shift) return '';
+      return normalizeDateKey(shift.scheduleDateKey || (shift.start_msk ? String(shift.start_msk).substring(0, 10) : ''));
+    }
+
+    function getShiftStartDateKey(shift) {
+      if (!shift || !shift.start_msk) return '';
+      return normalizeDateKey(String(shift.start_msk).substring(0, 10));
     }
 
     function getShiftScheduleSourceDateKey(shift) {
       if (!shift) return '';
-      return normalizeDateKey(shift.schedule_origin_date_key || getScheduleShiftAnchorDateKey(shift) || (shift.start_msk ? String(shift.start_msk).substring(0, 10) : ''));
+      return normalizeDateKey(
+        shift.schedule_origin_date_key
+          || getScheduleShiftAnchorDateKey(shift)
+          || (shift.start_msk ? String(shift.start_msk).substring(0, 10) : '')
+      );
     }
 
-    function getShiftScheduleSourcePeriodId(shift) {
-      if (shift && shift.schedule_origin_period_id) return String(shift.schedule_origin_period_id);
-      if (shift && shift.schedule_period_id) return String(shift.schedule_period_id);
+    function getShiftScheduleSourcePeriodId(shift, sourceDateKey) {
+      if (shift && shift.schedule_origin_period_id) {
+        return String(shift.schedule_origin_period_id);
+      }
+      if (shift && shift.schedule_period_id) {
+        return String(shift.schedule_period_id);
+      }
+      if (sourceDateKey && typeof getActiveSchedulePeriod === 'function') {
+        var period = getActiveSchedulePeriod(sourceDateKey);
+        return period && period.id ? String(period.id) : '';
+      }
       return '';
     }
 
     function shouldSuppressScheduleSourceDayOnEdit(previousShift, nextShift) {
       var previousDateKey = getShiftScheduleSourceDateKey(previousShift);
-      var nextDateKey = getShiftScheduleSourceDateKey(nextShift);
-      return !!(previousDateKey && nextDateKey && previousDateKey === nextDateKey);
+      if (!previousDateKey) return '';
+      var nextDateKey = getShiftStartDateKey(nextShift);
+      if (!nextDateKey) return '';
+      return previousDateKey === nextDateKey ? '' : previousDateKey;
     }
 
     function getScheduleGeneratedShiftDeleteMeta(shift) {
+      if (!shift) return null;
+      var originDateKey = shift && shift.schedule_origin_date_key ? normalizeDateKey(shift.schedule_origin_date_key) : '';
+      var anchorDateKey = originDateKey || (isScheduleMaterializedShift(shift) ? getScheduleShiftAnchorDateKey(shift) : '');
+      if (!anchorDateKey) return null;
+      var activePeriod = getActiveSchedulePeriod(anchorDateKey);
       return {
-        dateKey: getShiftScheduleSourceDateKey(shift),
-        periodId: getShiftScheduleSourcePeriodId(shift),
+        anchorDateKey: anchorDateKey,
+        periodId: shift && shift.schedule_origin_period_id
+          ? String(shift.schedule_origin_period_id)
+          : (shift && shift.schedule_period_id
+            ? String(shift.schedule_period_id)
+            : (activePeriod && activePeriod.id ? String(activePeriod.id) : '')),
         code: normalizeScheduleCode((shift && (shift.schedule_code || shift.code)) || '')
       };
     }
@@ -991,155 +1318,251 @@
       var result = [];
       for (var i = 0; i < allShifts.length; i++) {
         var shift = allShifts[i];
-        if (isScheduleMaterializedShift(shift)) continue;
-        if (getShiftStartDateKey(shift) === safeDate) result.push(shift);
+        var startDate = normalizeDateKey(shift && shift.start_msk ? shift.start_msk.substring(0, 10) : '');
+        if (startDate === safeDate) {
+          result.push(shift);
+        }
       }
-      result.sort(compareShiftsByStartAsc);
+      result.sort(compareShiftsByStartDesc);
       return result;
     }
 
-    function resolveScheduleShiftWindow() { return { startTime: '', endTime: '' }; }
+    function getManualFactShiftsForDate(dateKey) {
+      var safeDate = normalizeDateKey(dateKey);
+      if (!safeDate) return [];
+      var result = [];
+      for (var i = 0; i < allShifts.length; i++) {
+        var shift = allShifts[i];
+        if (isScheduleMaterializedShift(shift)) continue;
+        var startDate = normalizeDateKey(shift && shift.start_msk ? shift.start_msk.substring(0, 10) : '');
+        if (startDate === safeDate) {
+          result.push(shift);
+        }
+      }
+      result.sort(compareShiftsByStartDesc);
+      return result;
+    }
 
-    function getPlannedScheduleSnapshot(dateKey) {
+    function resolveScheduleShiftWindow(plannedCode, startTime, endTime) {
+      var safeCode = normalizeScheduleCode(plannedCode);
+      var safeStart = normalizeTimeValue(startTime, '01:00');
+      var safeEnd = normalizeTimeValue(endTime, '13:00');
+      if (safeCode === 'N') {
+        return {
+          startTime: safeEnd,
+          endTime: safeStart
+        };
+      }
       return {
-        dateKey: normalizeDateKey(dateKey),
-        period: null,
-        source: 'manual-only',
-        plannedCode: '',
-        startTime: '',
-        endTime: '',
-        override: null
+        startTime: safeStart,
+        endTime: safeEnd
       };
     }
 
-    function isFiveTwoSchedulePattern() { return false; }
-    function getScheduleCycleMeta() { return null; }
+    function getPlannedScheduleSnapshot(dateKey) {
+      var safeDate = normalizeDateKey(dateKey);
+      var period = getActiveSchedulePeriod(safeDate);
+      var overrides = getScheduleOverrides();
+      var override = safeDate ? overrides[safeDate] : null;
+      var plannedCode = '';
+      var source = 'none';
+      var startTime = '';
+      var endTime = '';
+      var hasExplicitOverrideTimes = false;
+      if (period) {
+        source = period.mode;
+        startTime = period.startTime || '';
+        endTime = period.endTime || '';
+        if (period.pattern) {
+          var delta = getDaysBetweenDateKeys(period.startDate, safeDate);
+          if (delta >= 0) {
+            plannedCode = period.pattern.charAt(delta % period.pattern.length) || '';
+          }
+        }
+      }
+      var canApplyOverride = !!(override && override.code && period && override.periodId && String(override.periodId) === String(period.id));
+      if (canApplyOverride) {
+        plannedCode = override.code;
+        source = 'override';
+        hasExplicitOverrideTimes = !!(override.startTime || override.endTime);
+        startTime = override.startTime || startTime;
+        endTime = override.endTime || endTime;
+      }
+      var resolvedWindow = hasExplicitOverrideTimes
+        ? {
+            startTime: normalizeTimeValue(startTime, '01:00'),
+            endTime: normalizeTimeValue(endTime, '13:00')
+          }
+        : resolveScheduleShiftWindow(plannedCode, startTime, endTime);
+      return {
+        period: period,
+        override: override,
+        plannedCode: plannedCode,
+        source: source,
+        startTime: resolvedWindow.startTime,
+        endTime: resolvedWindow.endTime
+      };
+    }
+
+    function isFiveTwoSchedulePattern(pattern) {
+      var normalized = normalizeSchedulePattern(pattern);
+      if (normalized.length !== 7) return false;
+      if (normalized.slice(5) !== 'VV') return false;
+      for (var i = 0; i < 5; i++) {
+        var code = normalized.charAt(i);
+        if (code !== 'D' && code !== 'N') return false;
+      }
+      return true;
+    }
+
+    function getScheduleCycleMeta(dateKey, period) {
+      var safeDate = normalizeDateKey(dateKey);
+      if (!safeDate || !period || !period.pattern) return null;
+      var pattern = normalizeSchedulePattern(period.pattern);
+      if (!pattern) return null;
+      var delta = getDaysBetweenDateKeys(period.startDate, safeDate);
+      if (delta < 0) return null;
+      var cycleIndex = delta % pattern.length;
+      return {
+        cycleIndex: cycleIndex,
+        cycleLength: pattern.length,
+        isFiveTwo: isFiveTwoSchedulePattern(pattern)
+      };
+    }
 
     function inferWorkedScheduleCodeFromShift(shift) {
       if (!shift) return '';
+      if (typeof inferShiftWorkCodeByLocalTime === 'function') {
+        return inferShiftWorkCodeByLocalTime(shift);
+      }
       var explicitCode = normalizeScheduleCode(shift.schedule_code || shift.code || '');
-      if (explicitCode) return explicitCode;
-      return inferShiftWorkCodeByLocalTime(shift);
+      if (explicitCode === 'D' || explicitCode === 'N' || explicitCode === 'V') return explicitCode;
+      var startDate = normalizeDateKey(shift.start_msk ? String(shift.start_msk).substring(0, 10) : '');
+      var endDate = normalizeDateKey(shift.end_msk ? String(shift.end_msk).substring(0, 10) : '') || startDate;
+      if (startDate && endDate && compareDateKeys(endDate, startDate) > 0) return 'N';
+      return 'D';
     }
 
     function resolveScheduleDay(dateKey) {
       var safeDate = normalizeDateKey(dateKey);
+      var plan = getPlannedScheduleSnapshot(safeDate);
+      var cycleMeta = getScheduleCycleMeta(safeDate, plan.period);
       var factShifts = getScheduleFactShiftsForDate(safeDate);
       var workedCode = factShifts.length ? inferWorkedScheduleCodeFromShift(factShifts[0]) : '';
+      var displayCode = workedCode || plan.plannedCode || '';
       return {
         dateKey: safeDate,
-        period: null,
-        plannedCode: '',
-        startTime: '',
-        endTime: '',
-        override: null,
-        factShifts: factShifts,
-        hasFact: factShifts.length > 0,
-        workedCode: workedCode,
+        period: plan.period,
+        override: plan.override,
+        source: plan.source,
+        plannedCode: plan.plannedCode,
+        startTime: plan.startTime,
+        endTime: plan.endTime,
         isHoliday: isProductionHolidayDateKey(safeDate),
         isShortDay: isProductionShortDayDateKey(safeDate),
-        cycleDayIndex: 0,
-        cycleLength: 0,
-        isFiveTwoPattern: false,
-        source: 'manual-only'
+        cycleIndex: cycleMeta ? cycleMeta.cycleIndex : -1,
+        cycleLength: cycleMeta ? cycleMeta.cycleLength : 0,
+        isFiveTwoPattern: !!(cycleMeta && cycleMeta.isFiveTwo),
+        factShifts: factShifts,
+        workedCode: workedCode,
+        hasFact: factShifts.length > 0,
+        effectiveCode: displayCode
       };
     }
 
-    function buildMaterializedScheduleShift() { return null; }
-    function buildScheduleDerivedShift() { return null; }
-    function syncMaterializedScheduleShiftsForRange() { return false; }
-    function syncVisibleMonthMaterializedScheduleShifts() { return false; }
-    function persistVisibleMonthMaterializedScheduleShifts() { return false; }
-    function persistScheduleDayMaterializedShift() { return false; }
-
-    function formatScheduleCodeLabel(code) {
-      if (code === 'D') return 'Дневная смена';
-      if (code === 'N') return 'Ночная смена';
-      if (code === 'V') return 'Выходной';
-      if (code === 'P') return 'Поездка';
-      if (code === 'S') return 'Смена';
-      return 'Без плана';
-    }
-
-    function formatScheduleDateLabel(dateKey) {
+    function buildMaterializedScheduleShift(dateKey, period, plannedCode, startTime, endTime) {
       var safeDate = normalizeDateKey(dateKey);
-      if (!safeDate) return '—';
-      var monthNames = ['января', 'февраля', 'марта', 'апреля', 'мая', 'июня', 'июля', 'августа', 'сентября', 'октября', 'ноября', 'декабря'];
-      var day = safeDate.substring(8, 10);
-      var monthIndex = parseInt(safeDate.substring(5, 7), 10) - 1;
-      var year = safeDate.substring(0, 4);
-      return Number(day) + ' ' + (monthNames[monthIndex] || '') + ' ' + year;
-    }
-
-    function formatScheduleShortDate(dateKey) {
-      var safeDate = normalizeDateKey(dateKey);
-      if (!safeDate) return '—';
-      var monthNames = ['янв', 'фев', 'мар', 'апр', 'май', 'июн', 'июл', 'авг', 'сен', 'окт', 'ноя', 'дек'];
-      return safeDate.substring(8, 10) + ' ' + (monthNames[parseInt(safeDate.substring(5, 7), 10) - 1] || '');
-    }
-
-    function formatScheduleRangeLabel(startDate, endDate) {
-      var startText = formatScheduleShortDate(startDate);
-      if (!endDate) return 'с ' + startText + ' · до отмены';
-      return startText + ' - ' + formatScheduleShortDate(endDate);
-    }
-
-    function getScheduleVisualLabel(code) {
-      if (code === 'D') return 'Д';
-      if (code === 'N') return 'Н';
-      if (code === 'V') return 'В';
-      return '';
-    }
-
-    function rangesOverlap(startA, endA, startB, endB) {
-      var aStart = normalizeDateKey(startA);
-      var bStart = normalizeDateKey(startB);
-      if (!aStart || !bStart) return false;
-      var aEnd = normalizeDateKey(endA) || '9999-12-31';
-      var bEnd = normalizeDateKey(endB) || '9999-12-31';
-      return compareDateKeys(aStart, bEnd) <= 0 && compareDateKeys(bStart, aEnd) <= 0;
-    }
-
-    function hasOverlappingSchedulePeriod() { return false; }
-    function getOverlappingSchedulePeriods() { return []; }
-    function buildSchedulePeriodSummary() { return 'Ручной режим'; }
-    function getSchedulePeriodById() { return null; }
-    function upsertSchedulePeriod() { return null; }
-    function cloneSchedulePeriod() { return null; }
-    function isDateKeyWithinSchedulePeriod() { return false; }
-    function isLegacyScheduleLinkedShift() { return false; }
-    function reconcileScheduleLinkedState() { return false; }
-    function replaceSchedulePeriods() { return null; }
-    function purgeMaterializedScheduleShiftsForPeriodIds() { return false; }
-    function deleteSchedulePeriod(periodId, callback) { if (typeof callback === 'function') callback(new Error('Manual-only mode')); }
-    function setScheduleDayOverrideLocal() { return false; }
-    function setScheduleDayOverride() { return false; }
-
-    function setSelectedScheduleDay(dateKey) {
-      selectedScheduleDayKey = normalizeDateKey(dateKey) || getTodayDateKey();
-      return selectedScheduleDayKey;
-    }
-
-    function setSelectedSchedulePeriod(periodId) {
-      selectedSchedulePeriodId = periodId ? String(periodId) : '';
-      return selectedSchedulePeriodId;
-    }
-
-    function setPendingScheduleConflict(conflict) {
-      pendingScheduleConflict = conflict && typeof conflict === 'object' ? conflict : null;
-      return pendingScheduleConflict;
-    }
-
-    function getSchedulePeriodsForRange() { return []; }
-
-    function getSchedulePeriodsViewModel(startDateKey, endDateKey) {
-      return {
-        startDate: normalizeDateKey(startDateKey),
-        endDate: normalizeDateKey(endDateKey) || normalizeDateKey(startDateKey),
-        active: null,
-        periods: [],
-        isEmpty: true
+      var safeCode = normalizeScheduleCode(plannedCode);
+      if (!safeDate || !period || (safeCode !== 'D' && safeCode !== 'N')) return null;
+      var safeStart = normalizeTimeValue(startTime, '01:00');
+      var safeEnd = normalizeTimeValue(endTime, '13:00');
+      var endDate = buildPresetShiftEndDate(safeDate, safeStart, safeEnd);
+      var shift = {
+        id: 'schedule_' + String(period.id || 'period') + '_' + safeDate,
+        start_msk: safeDate + 'T' + safeStart,
+        end_msk: endDate + 'T' + safeEnd,
+        created_at: new Date().toISOString(),
+        route_kind: 'depot',
+        schedule_code: safeCode,
+        schedule_generated: true,
+        schedule_period_id: String(period.id || ''),
+        scheduleDateKey: safeDate
       };
+      if (typeof inferShiftWorkCodeByLocalTime === 'function') {
+        shift.schedule_code = inferShiftWorkCodeByLocalTime(shift) || shift.schedule_code;
+      }
+      return shift;
+    }
+
+    function buildScheduleDerivedShift(dateKey, dayState) {
+      var safeDate = normalizeDateKey(dateKey);
+      var state = dayState || resolveScheduleDay(safeDate);
+      if (!safeDate || !state || state.hasFact) return null;
+      if (state.plannedCode !== 'D' && state.plannedCode !== 'N') return null;
+      return buildMaterializedScheduleShift(safeDate, state.period, state.plannedCode, state.startTime, state.endTime);
+    }
+
+    function syncMaterializedScheduleShiftsForRange(startDateKey, endDateKey, options) {
+      var safeStart = normalizeDateKey(startDateKey);
+      var safeEnd = normalizeDateKey(endDateKey);
+      if (!safeStart || !safeEnd) return false;
+      var opts = options && typeof options === 'object' ? options : {};
+      var purgeIds = Array.isArray(opts.purgePeriodIds) ? opts.purgePeriodIds : [];
+      var purgeMap = Object.create(null);
+      for (var pi = 0; pi < purgeIds.length; pi++) {
+        if (purgeIds[pi]) purgeMap[String(purgeIds[pi])] = true;
+      }
+      var nextShifts = [];
+      for (var i = 0; i < allShifts.length; i++) {
+        var shift = allShifts[i];
+        if (isScheduleMaterializedShift(shift)) {
+          var shiftStart = normalizeDateKey(shift && shift.start_msk ? shift.start_msk.substring(0, 10) : '');
+          var periodId = shift && shift.schedule_period_id ? String(shift.schedule_period_id) : '';
+          if ((shiftStart && compareDateKeys(shiftStart, safeStart) >= 0 && compareDateKeys(shiftStart, safeEnd) <= 0) || purgeMap[periodId]) {
+            continue;
+          }
+        }
+        nextShifts.push(shift);
+      }
+      var dayCount = getDaysBetweenDateKeys(safeStart, safeEnd);
+      for (var day = 0; day <= dayCount; day++) {
+        var dateKey = getDateKeyByOffset(safeStart, day);
+        if (!dateKey) continue;
+        if (getManualFactShiftsForDate(dateKey).length) continue;
+        var plan = getPlannedScheduleSnapshot(dateKey);
+        if (!plan || !plan.period) continue;
+        var generatedShift = buildMaterializedScheduleShift(dateKey, plan.period, plan.plannedCode, plan.startTime, plan.endTime);
+        if (!generatedShift) continue;
+        nextShifts.push(generatedShift);
+      }
+      nextShifts.sort(compareShiftsByStartDesc);
+      var prevSerialized = JSON.stringify(cloneShiftsForCache(allShifts));
+      var nextSerialized = JSON.stringify(cloneShiftsForCache(nextShifts));
+      if (prevSerialized === nextSerialized) return false;
+      allShifts = nextShifts;
+      return true;
+    }
+
+    function syncVisibleMonthMaterializedScheduleShifts(options) {
+      return syncMaterializedScheduleShiftsForRange(getVisibleMonthStartDateKey(), getVisibleMonthEndDateKey(), options);
+    }
+
+    function persistVisibleMonthMaterializedScheduleShifts(options) {
+      if (typeof saveShifts !== 'function') return false;
+      var changed = syncVisibleMonthMaterializedScheduleShifts(options);
+      if (!changed) return false;
+      pendingMutationIds = [];
+      saveShifts();
+      return true;
+    }
+
+    function persistScheduleDayMaterializedShift(dateKey, options) {
+      if (typeof saveShifts !== 'function') return false;
+      var changed = syncMaterializedScheduleShiftsForRange(dateKey, dateKey, options);
+      if (!changed) return false;
+      pendingMutationIds = [];
+      saveShifts();
+      return true;
     }
 
     function buildMonthCalculationShifts(year, month0, bounds) {
@@ -1580,6 +2003,21 @@
       var changed = setScheduleDayOverrideLocal(dateKey, payload);
       if (changed) saveScheduleStore();
       return changed;
+    }
+
+    function setSelectedScheduleDay(dateKey) {
+      selectedScheduleDayKey = normalizeDateKey(dateKey) || getTodayDateKey();
+      return selectedScheduleDayKey;
+    }
+
+    function setSelectedSchedulePeriod(periodId) {
+      selectedSchedulePeriodId = periodId ? String(periodId) : '';
+      return selectedSchedulePeriodId;
+    }
+
+    function setPendingScheduleConflict(conflict) {
+      pendingScheduleConflict = conflict && typeof conflict === 'object' ? conflict : null;
+      return pendingScheduleConflict;
     }
 
     function buildMonthDateKey(year, month0, day) {

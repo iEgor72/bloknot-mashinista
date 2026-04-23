@@ -1,10 +1,9 @@
 # Recent Commits
 
-Generated: 2026-04-23 06:00:12 +0000
+Generated: 2026-04-23 05:34:04 +0000
 
 | Hash | Date | Author | Message |
 | --- | --- | --- | --- |
-| `bbe2f55` | 2026-04-23T05:34:18+00:00 | iEgor72 | refactor(schedule): switch app to manual-only shifts |
 | `92334ca` | 2026-04-23T01:23:24+00:00 | iEgor72 | fix(schedule): suppress source day when deleting linked shifts |
 | `ca3df71` | 2026-04-23T01:20:34+00:00 | iEgor72 | fix(schedule): link added shifts to source periods |
 | `29cf9a5` | 2026-04-23T01:17:01+00:00 | iEgor72 | fix(schedule): purge manual edits with deleted periods |
@@ -44,3 +43,4 @@ Generated: 2026-04-23 06:00:12 +0000
 | `a7ef152` | 2026-04-22T11:19:49+00:00 | iEgor72 | fix(docs): center loading note in viewer |
 | `7e4f3f6` | 2026-04-22T11:17:26+00:00 | iEgor72 | chore(git): allow docs catalog in data |
 | `640559c` | 2026-04-22T11:15:11+00:00 | iEgor72 | feat(docs): add uploaded reminders |
+| `afde921` | 2026-04-22T11:12:55+00:00 | iEgor72 | feat(docs): add uploaded instruction files |

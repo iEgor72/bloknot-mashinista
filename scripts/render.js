@@ -759,42 +759,243 @@
       }
     }
 
-    function buildUpcomingScheduleCardHtml() {
+    function buildUpcomingScheduleCardHtml(dayState) {
+      if (!dayState) return { html: '', useStandaloneCard: false };
+      if (dayState.hasFact && dayState.factShifts && dayState.factShifts[0]) {
+        var shift = dayState.factShifts[0];
+        return {
+          html: buildShiftItemHtml(shift, true, null, currentMonthShiftIncomeMap, null, null),
+          useStandaloneCard: true
+        };
+      }
+      if (dayState.plannedCode === 'D' || dayState.plannedCode === 'N') {
+        var planLabel = dayState.plannedCode === 'N' ? 'Ночь' : 'День';
+        var durationMin = getDurationMinutesFromTimeRange(dayState.startTime, dayState.endTime);
+        var durationText = durationMin > 0 ? fmtMin(durationMin) : '';
+        var timeLineText = dayState.startTime && dayState.endTime ? (dayState.startTime + ' - ' + dayState.endTime) : 'Время не задано';
+        return {
+          html: '' +
+            '<div class="schedule-upcoming-card is-plan">' +
+              '<div class="schedule-upcoming-plan-top">' +
+                '<span class="schedule-upcoming-plan-title">' + escapeHtml(planLabel) + '</span>' +
+                (durationText ? '<span class="schedule-upcoming-plan-meta">' + escapeHtml(durationText) + '</span>' : '') +
+              '</div>' +
+              '<div class="schedule-upcoming-plan-time">' + escapeHtml(timeLineText) + '</div>' +
+            '</div>',
+          useStandaloneCard: false
+        };
+      }
       return { html: '', useStandaloneCard: false };
     }
 
-    function buildReadonlyScheduleFactCardHtml() {
-      return '';
+    function getDurationMinutesFromTimeRange(startTime, endTime) {
+      if (!startTime || !endTime) return 0;
+      var startParts = String(startTime).split(':');
+      var endParts = String(endTime).split(':');
+      if (startParts.length < 2 || endParts.length < 2) return 0;
+      var startMinutes = (parseInt(startParts[0], 10) * 60) + parseInt(startParts[1], 10);
+      var endMinutes = (parseInt(endParts[0], 10) * 60) + parseInt(endParts[1], 10);
+      if (!isFinite(startMinutes) || !isFinite(endMinutes)) return 0;
+      if (endMinutes <= startMinutes) endMinutes += 24 * 60;
+      return Math.max(0, endMinutes - startMinutes);
     }
 
-    function buildScheduleDayFactSummary() {
-      return {
+    function buildReadonlyScheduleFactCardHtml(shift) {
+      if (!shift) return '';
+      return '<div class="schedule-day-fact-card-shell">' + buildShiftItemHtml(shift, true, null, currentMonthShiftIncomeMap, null, null) + '</div>';
+    }
+
+    function buildScheduleDayFactSummary(state) {
+      var summary = {
         titleText: 'Смена за день',
         noteText: 'За этот день смены нет.',
         cardHtml: ''
       };
+      if (!state) return summary;
+      if (state.hasFact && state.factShifts && state.factShifts[0]) {
+        var shift = state.factShifts[0];
+        summary.titleText = state.factShifts.length > 1 ? 'Смены за день' : 'Смена за день';
+        summary.noteText = getShiftTypeLabel(shift);
+        if (state.factShifts.length > 1) {
+          summary.noteText += ' + ещё ' + (state.factShifts.length - 1);
+        }
+        summary.cardHtml = buildReadonlyScheduleFactCardHtml(shift);
+      }
+      return summary;
     }
 
-    function buildScheduleDayPlanSummary() {
-      return {
-        titleText: 'Ручной режим',
+    function buildScheduleDayPlanSummary(state) {
+      var summary = {
+        titleText: 'Запланировано по графику',
         timeText: '—',
         durationText: '—',
-        noteText: 'Графики отключены. Добавляйте смены вручную.'
+        noteText: 'На этот день по графику ничего не запланировано.'
       };
+      if (!state) return summary;
+      if (state.plannedCode === 'D' || state.plannedCode === 'N') {
+        var durationMin = getDurationMinutesFromTimeRange(state.startTime, state.endTime);
+        summary.timeText = state.startTime && state.endTime ? (state.startTime + ' - ' + state.endTime) : '—';
+        summary.durationText = durationMin > 0 ? fmtMin(durationMin) : '—';
+        summary.noteText = state.plannedCode === 'N' ? 'Ночная смена' : 'Дневная смена';
+        if (state.isHoliday) summary.noteText += ' · праздник';
+        else if (state.isShortDay) summary.noteText += ' · предпраздничный день';
+        else if (state.isFiveTwoPattern) summary.noteText += ' · цикл 5/2';
+        return summary;
+      }
+      if (state.plannedCode === 'V') {
+        summary.noteText = state.isHoliday ? 'Праздничный выходной.' : 'Выходной.';
+        if (!state.isHoliday && state.isFiveTwoPattern) summary.noteText = 'Выходной · цикл 5/2.';
+        return summary;
+      }
+      return summary;
     }
 
-    function buildSchedulePeriodCardHtml() {
-      return '';
+    function buildSchedulePeriodCardHtml(period, options) {
+      if (!period) return '';
+      var opts = options || {};
+      var rangeText = formatScheduleRangeLabel(period.startDate, period.endDate);
+      var cardClass = 'schedule-period-card';
+      if (opts.current) cardClass += ' is-current';
+      else if (opts.secondary) cardClass += ' is-secondary';
+      var subnote = opts.current ? 'Этот график сейчас работает в выбранном месяце.' : 'Этот график тоже захватывает выбранный месяц.';
+      var periodIdAttr = escapeHtml(String(period.id || ''));
+      if (selectedSchedulePeriodId && String(selectedSchedulePeriodId) === String(period.id)) cardClass += ' is-selected';
+      return '<div class="' + cardClass + '" data-schedule-period="' + periodIdAttr + '">' +
+        '<button type="button" class="schedule-period-card-main" data-schedule-period-card="' + periodIdAttr + '">' +
+          (opts.kicker ? '<div class="schedule-period-kicker">' + escapeHtml(opts.kicker) + '</div>' : '') +
+          '<div class="schedule-period-top">' +
+            '<div>' +
+              '<div class="schedule-period-title">' + escapeHtml(buildSchedulePeriodSummary(period)) + '</div>' +
+              '<div class="schedule-period-note">' + escapeHtml(rangeText) + '</div>' +
+            '</div>' +
+          '</div>' +
+          '<div class="schedule-period-subnote">' + escapeHtml(subnote) + '</div>' +
+        '</button>' +
+        '<div class="schedule-period-card-actions">' +
+          '<button type="button" class="shift-card-action-btn shift-card-edit-btn schedule-period-action-btn" data-schedule-period-action="edit" data-schedule-period-id="' + periodIdAttr + '">Изменить</button>' +
+          '<button type="button" class="shift-card-action-btn shift-card-delete-btn schedule-period-action-btn" data-schedule-period-action="delete" data-schedule-period-id="' + periodIdAttr + '">Удалить график</button>' +
+        '</div>' +
+      '</div>';
     }
 
-    function buildConfirmSchedulePeriodCardHtml() {
-      return '';
+    function buildConfirmSchedulePeriodCardHtml(period) {
+      if (!period) return '';
+      return '<div class="schedule-period-card schedule-period-card-confirm">' +
+        '<div class="schedule-period-kicker">График</div>' +
+        '<div class="schedule-period-top">' +
+          '<div>' +
+            '<div class="schedule-period-title">' + escapeHtml(buildSchedulePeriodSummary(period)) + '</div>' +
+            '<div class="schedule-period-note">' + escapeHtml(formatScheduleRangeLabel(period.startDate, period.endDate)) + '</div>' +
+          '</div>' +
+        '</div>' +
+        '<div class="schedule-period-subnote">Удалится этот график и все смены, которые он создал в выбранном месяце.</div>' +
+      '</div>';
     }
 
-    function renderSchedulePlannerOverlay() {}
+    function renderSchedulePlannerOverlay() {
+      var listEl = document.getElementById('schedulePeriodsList');
+      var conflictEl = document.getElementById('scheduleConflictBox');
+      var overviewCardEl = document.getElementById('scheduleOverviewCard');
+      if (!listEl) return;
+      var vm = getSchedulePeriodsViewModel(getVisibleMonthStartDateKey(), getVisibleMonthEndDateKey());
+      var html = '';
+      var monthTitleEl = document.getElementById('schedulePlannerMonthTitle');
+      if (monthTitleEl) {
+        monthTitleEl.textContent = 'График на ' + ((MONTH_NAMES && MONTH_NAMES[currentMonth]) ? (MONTH_NAMES[currentMonth] + ' ' + currentYear) : 'этот месяц');
+      }
 
-    function renderScheduleDayOverlay() {}
+      if (overviewCardEl) {
+        overviewCardEl.classList.toggle('hidden', vm.isEmpty);
+      }
+
+      if (vm.isEmpty) {
+        html += '';
+      } else {
+        for (var pi = 0; pi < vm.periods.length; pi++) {
+          html += buildSchedulePeriodCardHtml(vm.periods[pi], { current: pi === 0, kicker: pi === 0 ? 'Сейчас активен' : 'Тоже активен' });
+        }
+      }
+
+      listEl.innerHTML = html;
+
+      if (!conflictEl) return;
+      if (!pendingScheduleConflict || !pendingScheduleConflict.overlaps || !pendingScheduleConflict.overlaps.length) {
+        conflictEl.classList.add('hidden');
+        conflictEl.innerHTML = '';
+        return;
+      }
+      var overlapNames = [];
+      for (var oi = 0; oi < pendingScheduleConflict.overlaps.length; oi++) {
+        overlapNames.push(buildSchedulePeriodSummary(pendingScheduleConflict.overlaps[oi]));
+      }
+      conflictEl.classList.remove('hidden');
+      conflictEl.innerHTML = '<div class="schedule-conflict-title">Новый график пересекается с уже сохранённым</div>' +
+        '<div class="schedule-conflict-text">На одни и те же дни нельзя сохранить два графика. Можно открыть текущий график и поправить его вручную или сразу начать новый с выбранной даты.</div>' +
+        '<div class="schedule-conflict-list">' + escapeHtml(overlapNames.join(' • ')) + '</div>' +
+        '<div class="schedule-conflict-text">Если выберете замену, старый график закончится автоматически на день раньше.</div>' +
+        '<div class="schedule-conflict-actions">' +
+          '<button type="button" class="btn-primary" data-schedule-conflict-action="replace">Начать новый график с этой даты</button>' +
+          '<button type="button" class="btn-secondary" data-schedule-conflict-action="edit">Открыть текущий график</button>' +
+        '</div>';
+    }
+
+    function renderScheduleDayOverlay() {
+      var dateKey = selectedScheduleDayKey || getTodayDateKey();
+      var state = resolveScheduleDay(dateKey);
+      var titleEl = document.getElementById('scheduleDayTitle');
+      var factCardEl = document.getElementById('scheduleDayFactCard');
+      var factTitleEl = document.getElementById('scheduleDayFactTitle');
+      var factTextEl = document.getElementById('scheduleDayFactText');
+      var factContentEl = document.getElementById('scheduleDayFactContent');
+      var planCardEl = document.getElementById('scheduleDayPlanCard');
+      var planTitleEl = document.getElementById('scheduleDayPlanTitle');
+      var planTimeEl = document.getElementById('scheduleDayPlanTime');
+      var planDurationEl = document.getElementById('scheduleDayPlanDuration');
+      var planTextEl = document.getElementById('scheduleDayPlanText');
+      var addShiftBtn = document.getElementById('btnScheduleDayAddShift');
+      var editShiftBtn = document.getElementById('btnScheduleDayEditShift');
+      if (!titleEl || !factCardEl || !factTitleEl || !factTextEl || !factContentEl || !planCardEl || !planTitleEl || !planTimeEl || !planDurationEl || !planTextEl || !addShiftBtn || !editShiftBtn) return;
+
+      titleEl.textContent = formatScheduleDateLabel(dateKey);
+      var primaryFactShift = state.factShifts && state.factShifts[0] ? state.factShifts[0] : null;
+      var hasMaterializedFact = !!(primaryFactShift && typeof isScheduleMaterializedShift === 'function' && isScheduleMaterializedShift(primaryFactShift));
+
+      var daySummary = buildScheduleDayFactSummary(state);
+      factCardEl.classList.remove('hidden');
+      factTitleEl.textContent = daySummary.titleText;
+      factTextEl.textContent = daySummary.noteText;
+      var hasFactCard = !!daySummary.cardHtml;
+      factCardEl.classList.toggle('has-shift-card', hasFactCard);
+      if (factTitleEl.parentNode && factTitleEl.parentNode.classList) {
+        factTitleEl.parentNode.classList.toggle('hidden', hasFactCard);
+      }
+      if (!hasFactCard) {
+        factTextEl.textContent = daySummary.noteText;
+      }
+      factContentEl.innerHTML = daySummary.cardHtml || '';
+
+      var planSummary = buildScheduleDayPlanSummary(state);
+      planCardEl.classList.toggle('hidden', !state.plannedCode || hasMaterializedFact);
+      planTitleEl.textContent = planSummary.titleText;
+      planTimeEl.textContent = planSummary.timeText;
+      planDurationEl.textContent = planSummary.durationText;
+      planTextEl.textContent = planSummary.noteText;
+
+      addShiftBtn.classList.toggle('hidden', state.hasFact);
+      addShiftBtn.textContent = 'Добавить смену';
+      editShiftBtn.classList.toggle('hidden', !state.hasFact);
+      if (!editShiftBtn.classList.contains('hidden') && state.factShifts[0]) {
+        editShiftBtn.textContent = state.factShifts.length > 1 ? 'Посмотреть смены за день' : 'Открыть смену';
+        editShiftBtn.setAttribute('data-shift-id', state.factShifts[0].id);
+        editShiftBtn.setAttribute('data-date-key', state.dateKey || '');
+      } else {
+        editShiftBtn.textContent = 'Открыть смену';
+        editShiftBtn.removeAttribute('data-shift-id');
+        editShiftBtn.removeAttribute('data-date-key');
+      }
+
+      addShiftBtn.setAttribute('data-schedule-date', dateKey);
+    }
 
     function renderDeleteConfirmCard(shiftIncomeMap) {
       var cardEl = document.getElementById('confirmShiftCard');
