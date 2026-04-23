@@ -650,11 +650,11 @@
       var items = [];
       if (!shift) return items;
       var loco = getLocoSummary(shift);
-      if (loco) items.push({ icon: 'locomotive', text: loco.replace('№ ', '№') });
-      if (shift.train_number) items.push({ icon: 'train', text: '№' + shift.train_number });
-      if (shift.train_weight) items.push({ icon: 'train', text: shift.train_weight + ' т' });
-      if (shift.train_length) items.push({ icon: 'wagon', text: shift.train_length + ' ваг' });
-      if (shift.train_axles) items.push({ icon: 'axles', text: shift.train_axles + ' оси' });
+      if (loco) items.push({ icon: 'locomotive', tone: 'loco', text: loco.replace('№ ', '№') });
+      if (shift.train_number) items.push({ icon: 'train', tone: 'train', text: '№' + shift.train_number });
+      if (shift.train_weight) items.push({ icon: 'train', tone: 'weight', text: shift.train_weight + ' т' });
+      if (shift.train_length) items.push({ icon: 'wagon', tone: 'length', text: shift.train_length + ' ваг' });
+      if (shift.train_axles) items.push({ icon: 'axles', tone: 'axles', text: shift.train_axles + ' оси' });
       return items;
     }
 
@@ -664,9 +664,9 @@
 
       var html = '<div class="shift-tech-line">';
       for (var i = 0; i < items.length; i++) {
-        if (i > 0) html += '<span class="shift-tech-sep" aria-hidden="true">·</span>';
+        var tone = items[i].tone ? ' shift-tech-part-' + items[i].tone : '';
         html += '' +
-          '<span class="shift-tech-part">' +
+          '<span class="shift-tech-part' + tone + '">' +
             '<span class="shift-tech-part-icon" aria-hidden="true">' + getShiftInlineIconSvg(items[i].icon) + '</span>' +
             '<span class="shift-tech-part-text">' + escapeHtml(items[i].text) + '</span>' +
           '</span>';
