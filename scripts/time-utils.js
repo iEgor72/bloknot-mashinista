@@ -663,25 +663,13 @@
         '</span>';
     }
 
-    function buildShiftIncomeBadgeHtml(incomeViewModel) {
-      var vm = incomeViewModel || { hasValue: false, amountText: '—' };
-      return '' +
-        '<div class="shift-income-row">' +
-          '<div class="shift-money-badge">' +
-            '<span class="shift-money-badge-icon" aria-hidden="true">' + getShiftInlineIconSvg('income') + '</span>' +
-            '<span class="shift-money-badge-label">Доход за смену</span>' +
-            '<span class="shift-money-badge-sep" aria-hidden="true">•</span>' +
-            '<span class="shift-money-badge-value">' + escapeHtml(vm.amountText || '—') + '</span>' +
-          '</div>' +
-        '</div>';
-    }
-
     function buildShiftSectionHtml(title, bodyHtml, extraClass) {
       if (!bodyHtml) return '';
       var sectionClass = 'shift-card-section';
       if (extraClass) sectionClass += ' ' + extraClass;
       return '' +
         '<section class="' + sectionClass + '">' +
+          '<div class="shift-card-section-title">' + escapeHtml(title || '') + '</div>' +
           '<div class="shift-card-section-body">' + bodyHtml + '</div>' +
         '</section>';
     }
@@ -704,16 +692,17 @@
 
       var partsHtml = '';
       for (var i = 0; i < items.length; i++) {
+        if (i > 0) partsHtml += '<span class="shift-tech-badge-sep" aria-hidden="true">•</span>';
         partsHtml += '' +
-          '<span class="shift-tech-grid-item">' +
-            '<span class="shift-tech-grid-icon" aria-hidden="true">' + getShiftInlineIconSvg(items[i].icon) + '</span>' +
-            '<span class="shift-tech-grid-text">' + escapeHtml(items[i].text) + '</span>' +
+          '<span class="shift-tech-badge-part">' +
+            '<span class="shift-tech-badge-icon" aria-hidden="true">' + getShiftInlineIconSvg(items[i].icon) + '</span>' +
+            '<span class="shift-tech-badge-text">' + escapeHtml(items[i].text) + '</span>' +
           '</span>';
       }
 
       return '' +
         '<div class="shift-tech-line">' +
-          '<div class="shift-tech-grid">' + partsHtml + '</div>' +
+          '<span class="shift-tech-badge">' + partsHtml + '</span>' +
         '</div>';
     }
 
@@ -731,12 +720,18 @@
       var attendanceHtml = buildShiftAttendanceHtml(dateTimeText, durationText);
       var technicalHtml = buildShiftTechnicalHtml(shift);
       var fuelNoteHtml = buildShiftFuelConsumptionHtml(shift);
+      var incomeLabelHtml = buildShiftIncomeLabelHtml();
       var incomeVm = getShiftIncomeViewModel(shift, shiftIncomeMap);
+      var incomeHtml = getShiftIncomeChipHtml(incomeVm);
       var attendanceSectionHtml = buildShiftSectionHtml('Явка', attendanceHtml, 'shift-card-section-attendance');
       var directionSectionHtml = buildShiftSectionHtml('Направление', directionHtml, 'shift-card-section-route');
       var trainSectionHtml = buildShiftSectionHtml('Поезд', technicalHtml, 'shift-card-section-train');
       var fuelSectionHtml = buildShiftSectionHtml('Расход', fuelNoteHtml, 'shift-card-section-fuel');
-      var incomeSectionHtml = buildShiftSectionHtml('Деньги', buildShiftIncomeBadgeHtml(incomeVm), 'shift-card-section-income');
+      var incomeSectionHtml = buildShiftSectionHtml('Деньги', '' +
+        '<div class="shift-income-row">' +
+          incomeLabelHtml +
+          incomeHtml +
+        '</div>', 'shift-card-section-income');
       var itemClass = 'shift-item compact-shift shift-item-confirm';
       if (shift.route_kind === 'trip') itemClass += ' has-trip';
       if (shiftPending) itemClass += ' is-pending';
@@ -812,12 +807,18 @@
       var attendanceHtml = buildShiftAttendanceHtml(dateTimeText, durationText);
       var technicalHtml = buildShiftTechnicalHtml(shift);
       var fuelNoteHtml = buildShiftFuelConsumptionHtml(shift);
+      var incomeLabelHtml = buildShiftIncomeLabelHtml();
       var incomeVm = getShiftIncomeViewModel(shift, shiftIncomeMap);
+      var incomeHtml = getShiftIncomeChipHtml(incomeVm);
       var attendanceSectionHtml = buildShiftSectionHtml('Явка', attendanceHtml, 'shift-card-section-attendance');
       var directionSectionHtml = buildShiftSectionHtml('Направление', directionHtml, 'shift-card-section-route');
       var trainSectionHtml = buildShiftSectionHtml('Поезд', technicalHtml, 'shift-card-section-train');
       var fuelSectionHtml = buildShiftSectionHtml('Расход', fuelNoteHtml, 'shift-card-section-fuel');
-      var incomeSectionHtml = buildShiftSectionHtml('Деньги', buildShiftIncomeBadgeHtml(incomeVm), 'shift-card-section-income');
+      var incomeSectionHtml = buildShiftSectionHtml('Деньги', '' +
+        '<div class="shift-income-row">' +
+          incomeLabelHtml +
+          incomeHtml +
+        '</div>', 'shift-card-section-income');
       var itemClass = 'shift-item shift-item-confirm shift-item-detail';
       if (shift.route_kind === 'trip') itemClass += ' has-trip';
       if (shiftPending) itemClass += ' is-pending';

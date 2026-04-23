@@ -13,6 +13,7 @@
       var attendanceHtml = buildShiftAttendanceHtml(dateTimeText, durationText);
       var technicalHtml = buildShiftTechnicalHtml(sh);
       var fuelNoteHtml = buildShiftFuelConsumptionHtml(sh);
+      var incomeLabelHtml = buildShiftIncomeLabelHtml();
       var attendanceSectionHtml = buildShiftSectionHtml('Явка', attendanceHtml, 'shift-card-section-attendance');
       var directionSectionHtml = buildShiftSectionHtml('Направление', directionHtml, 'shift-card-section-route');
       var trainSectionHtml = buildShiftSectionHtml('Поезд', technicalHtml, 'shift-card-section-train');
@@ -31,7 +32,12 @@
       if (durationLevel === 'high') itemClass += ' duration-high';
       else if (durationLevel === 'low') itemClass += ' duration-low';
       var incomeVm = getShiftIncomeViewModel(sh, shiftIncomeMap);
-      var incomeSectionHtml = buildShiftSectionHtml('Деньги', buildShiftIncomeBadgeHtml(incomeVm), 'shift-card-section-income');
+      var incomeHtml = getShiftIncomeChipHtml(incomeVm);
+      var incomeSectionHtml = buildShiftSectionHtml('Деньги', '' +
+        '<div class="shift-income-row">' +
+          incomeLabelHtml +
+          incomeHtml +
+        '</div>', 'shift-card-section-income');
       itemClass += ' income-' + incomeVm.level;
       var shiftIdStr = String(sh.id);
       var shiftIdAttr = escapeHtml(shiftIdStr);
