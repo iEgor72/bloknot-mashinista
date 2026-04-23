@@ -558,7 +558,7 @@ function sanitizeAndValidateSalaryParamsPayload(payload) {
   return result;
 }
 
-function readScheduleStore(sid) {
+function readPersistedScheduleStore(sid) {
   const file = getUserScheduleFile(sid);
   try {
     if (!fs.existsSync(file)) return createEmptyScheduleStore();
@@ -574,10 +574,15 @@ function readScheduleStore(sid) {
   }
 }
 
-function writeScheduleStore(sid, schedule) {
-  const file = getUserScheduleFile(sid);
-  const serialized = JSON.stringify(sanitizeAndValidateSchedulePayload(schedule), null, 2);
-  atomicWriteFileSync(file, serialized);
+function readScheduleStore() {
+  return createEmptyScheduleStore();
+}
+
+function writeScheduleStore(_sid, schedule) {
+  if (schedule && typeof schedule === 'object') {
+    sanitizeAndValidateSchedulePayload(schedule);
+  }
+  return createEmptyScheduleStore();
 }
 
 function readSalaryParams(sid) {
@@ -1302,9 +1307,8 @@ const server = http.createServer(async (req, res) => {
       try {
         const body = await readBody(req);
         const payload = body ? JSON.parse(body) : {};
-        const schedule = sanitizeAndValidateSchedulePayload(payload);
-        writeScheduleStore(sid, schedule);
-        sendJson(res, 200, { ok: true, sid, schedule });
+        writeScheduleStore(sid, payload);
+        sendJson(res, 200, { ok: true, sid, schedule: createEmptyScheduleStore() });
       } catch (err) {
         const errorMessage = err && err.message ? err.message : 'Invalid payload';
         const isValidationError = /^(Expected|Too many|Invalid|Missing)/.test(errorMessage);

@@ -2,6 +2,7 @@ data/
 !data/docs/
 !data/docs/catalog.json
 node_modules/
+artifacts/
 .env
 .wrangler/
 tmp_*.html

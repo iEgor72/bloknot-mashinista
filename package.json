@@ -11,6 +11,11 @@
     "memory:refresh": "python tools/agent_memory.py refresh",
     "memory:log": "python tools/agent_memory.py log",
     "memory:install-hooks": "python tools/agent_memory.py install-hooks",
-    "memory:sync": "python tools/agent_memory.py sync --direction push"
+    "memory:sync": "python tools/agent_memory.py sync --direction push",
+    "migrate:remove-schedule-data": "node scripts/migrate-remove-schedule-data.js",
+    "smoke:local": "node scripts/local-smoke.mjs"
+  },
+  "devDependencies": {
+    "@playwright/test": "^1.54.2"
   }
 }

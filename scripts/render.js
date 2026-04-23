@@ -639,66 +639,53 @@
 
       for (var day = 1; day <= daysInMonth; day++) {
         var dateKey = currentYear + '-' + String(currentMonth + 1).padStart(2, '0') + '-' + String(day).padStart(2, '0');
-        var dayState = resolveScheduleDay(dateKey);
+        var factShifts = typeof getManualFactShiftsForDate === 'function' ? getManualFactShiftsForDate(dateKey) : [];
+        var workedCode = factShifts.length && typeof inferWorkedScheduleCodeFromShift === 'function'
+          ? inferWorkedScheduleCodeFromShift(factShifts[0])
+          : '';
+        var dayState = {
+          dateKey: dateKey,
+          factShifts: factShifts,
+          hasFact: factShifts.length > 0,
+          effectiveCode: workedCode,
+          plannedCode: '',
+          workedCode: workedCode
+        };
         var dayClass = 'schedule-day-cell' + getScheduleCellClass(dayState) + (dateKey === todayKey ? ' is-today' : '');
-        var code = dayState.effectiveCode || dayState.plannedCode || '';
-        var badge = getScheduleVisualLabel(code);
+        var badge = getScheduleVisualLabel(workedCode);
         var badgeHtml = badge
           ? '<span class="schedule-day-badge">' + escapeHtml(badge) + '</span>'
           : '';
         var ariaParts = [formatScheduleDateLabel(dateKey)];
-        if (code) {
-          ariaParts.push(formatScheduleCodeLabel(code));
-        }
+        if (workedCode) ariaParts.push(formatScheduleCodeLabel(workedCode));
         if (isScheduleCalendarOffDay(dateKey)) ariaParts.push('календарный выходной');
-        html += '<button type="button" class="' + dayClass + '" data-schedule-date="' + dateKey + '" aria-label="' + escapeHtml(ariaParts.join('. ')) + '">' +
+        html += '<div class="' + dayClass + '" aria-label="' + escapeHtml(ariaParts.join('. ')) + '">' +
           '<span class="schedule-day-number">' + day + '</span>' +
           badgeHtml +
-        '</button>';
+        '</div>';
       }
       calendarEl.innerHTML = html;
-
-      var calendarButtons = calendarEl.querySelectorAll('[data-schedule-date]');
-      for (var i = 0; i < calendarButtons.length; i++) {
-        calendarButtons[i].addEventListener('click', function(e) {
-          var dateKey = e.currentTarget.getAttribute('data-schedule-date');
-          if (!dateKey) return;
-          setSelectedScheduleDay(dateKey);
-          if (typeof persistScheduleDayMaterializedShift === 'function') {
-            persistScheduleDayMaterializedShift(dateKey);
-          }
-          renderScheduleDayOverlay();
-          openOverlay('overlayScheduleDay');
-        });
-      }
 
       bindShiftListDetailHandlers(upcomingEl);
 
       var upcoming = [];
       for (var offset = 0; offset < 120 && upcoming.length < 2; offset++) {
         var upcomingKey = getDateKeyByOffset(todayKey, offset);
-        var upcomingState = resolveScheduleDay(upcomingKey);
-        var code = upcomingState.effectiveCode || upcomingState.plannedCode;
-        if (!code || code === 'V') continue;
-        var preview = buildUpcomingScheduleCardHtml(upcomingState);
+        var factShifts = typeof getManualFactShiftsForDate === 'function' ? getManualFactShiftsForDate(upcomingKey) : [];
+        if (!factShifts.length) continue;
         upcoming.push({
           dateKey: upcomingKey,
-          code: code,
-          cardHtml: preview.html,
-          useStandaloneCard: !!preview.useStandaloneCard
+          cardHtml: buildShiftItemHtml(factShifts[0], true, null, currentMonthShiftIncomeMap, null, null)
         });
       }
 
       if (!upcoming.length) {
-        upcomingEl.innerHTML = '<div class="schedule-upcoming-empty">На ближайшие дни записей нет. Откройте «График» или добавьте смену вручную.</div>';
+        upcomingEl.innerHTML = '<div class="schedule-upcoming-empty">На ближайшие дни ручных записей нет. Добавьте смену вручную, и она появится здесь.</div>';
       } else {
         var upcomingHtml = '';
         for (var ui = 0; ui < upcoming.length; ui++) {
-          upcomingHtml += '<div class="schedule-upcoming-item' + (upcoming[ui].useStandaloneCard ? ' has-standalone-card' : '') + '">' +
-            (upcoming[ui].useStandaloneCard
-              ? ('<div class="schedule-upcoming-main">' + (upcoming[ui].cardHtml || '<div class="schedule-upcoming-empty">Откройте день, чтобы посмотреть подробности.</div>') + '</div>')
-              : ('<div class="schedule-upcoming-date">' + escapeHtml(formatScheduleShortDate(upcoming[ui].dateKey)) + '</div>' +
-                '<div class="schedule-upcoming-main">' + (upcoming[ui].cardHtml || '<div class="schedule-upcoming-empty">Откройте день, чтобы посмотреть подробности.</div>') + '</div>')) +
+          upcomingHtml += '<div class="schedule-upcoming-item has-standalone-card">' +
+            '<div class="schedule-upcoming-main">' + (upcoming[ui].cardHtml || '') + '</div>' +
           '</div>';
         }
         upcomingEl.innerHTML = upcomingHtml;
@@ -999,18 +986,23 @@
       var monthShiftSets = buildMonthCalculationShifts(currentYear, currentMonth, bounds);
       var monthShifts = monthShiftSets.actualShifts;
       var calculationShifts = monthShiftSets.calculationShifts;
+      var visibleManualShifts = [];
+      for (var ms = 0; ms < monthShifts.length; ms++) {
+        if (typeof isScheduleMaterializedShift === 'function' && isScheduleMaterializedShift(monthShifts[ms])) continue;
+        visibleManualShifts.push(monthShifts[ms]);
+      }
 
       // Calculate total worked minutes in this month
       var totalMin = 0;
       var nightMin = 0;
       var holidayMin = 0;
-      var shiftIncomeMap = buildMonthShiftIncomeMap(calculationShifts, bounds);
-      var shiftDurationLevelMap = buildMonthShiftDurationLevelMap(calculationShifts, bounds);
+      var shiftIncomeMap = buildMonthShiftIncomeMap(visibleManualShifts, bounds);
+      var shiftDurationLevelMap = buildMonthShiftDurationLevelMap(visibleManualShifts, bounds);
       currentMonthShiftIncomeMap = shiftIncomeMap || Object.create(null);
-      for (var j = 0; j < calculationShifts.length; j++) {
-        totalMin += shiftMinutesInRange(calculationShifts[j], bounds.start, bounds.end);
-        nightMin += shiftNightMinutesInRange(calculationShifts[j], bounds.start, bounds.end);
-        holidayMin += shiftHolidayMinutesInRange(calculationShifts[j], bounds.start, bounds.end);
+      for (var j = 0; j < visibleManualShifts.length; j++) {
+        totalMin += shiftMinutesInRange(visibleManualShifts[j], bounds.start, bounds.end);
+        nightMin += shiftNightMinutesInRange(visibleManualShifts[j], bounds.start, bounds.end);
+        holidayMin += shiftHolidayMinutesInRange(visibleManualShifts[j], bounds.start, bounds.end);
       }
       var monthSalarySummary = calculateSalarySummaryByMinutes(totalMin, nightMin, holidayMin);
       renderDeleteConfirmCard(shiftIncomeMap);
@@ -1032,13 +1024,13 @@
       var monthIncomeValueEl = document.getElementById('dashboardMonthIncomeValue');
       if (monthIncomeLabelEl) monthIncomeLabelEl.textContent = formatMonthIncomeLabel(currentMonth);
       if (monthIncomeValueEl) {
-        monthIncomeValueEl.textContent = calculationShifts.length > 0
+        monthIncomeValueEl.textContent = visibleManualShifts.length > 0
           ? formatRub(monthSalarySummary.netAmount)
           : 'Пока нет записей';
       }
       setQuickMetricText('statNight', fmtMin(nightMin));
       setQuickMetricText('statHoliday', fmtMin(holidayMin));
-      setQuickMetricText('statShifts', String(calculationShifts.length));
+      setQuickMetricText('statShifts', String(visibleManualShifts.length));
 
       var normEl = document.getElementById('statNormMonth') || document.getElementById('statNorm');
       var normTodayEl = document.getElementById('statNormToday');
@@ -1105,9 +1097,9 @@
       renderShiftList(
         document.getElementById('shiftsList'),
         document.getElementById('shiftsHeader'),
-        calculationShifts,
+        visibleManualShifts,
         false,
-        'Пока здесь пусто. Добавь первую смену или график, и журнал заполнится автоматически.',
+        'Пока здесь пусто. Добавь первую смену вручную, и журнал появится здесь.',
         'Журнал смен',
         _renderPendingMap,
         shiftIncomeMap,
