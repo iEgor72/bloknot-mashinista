@@ -266,7 +266,7 @@
 
     .shift-card-body {
       display: grid;
-      gap: 10px;
+      gap: 8px;
       padding-bottom: 0;
     }
 
@@ -287,11 +287,6 @@
       gap: 6px;
       min-width: 0;
       max-width: 100%;
-      padding: 6px 10px;
-      border-radius: 999px;
-      background: rgba(56, 189, 248, 0.08);
-      border: 1px solid rgba(56, 189, 248, 0.14);
-      box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.03);
     }
 
     .shift-type-icon {
@@ -336,21 +331,14 @@
     }
 
     .shift-direction-row {
-      display: inline-flex;
+      display: flex;
       align-items: center;
-      gap: 6px;
-      width: fit-content;
-      max-width: 100%;
+      gap: 5px;
       font-size: 12px;
       line-height: 1.3;
-      color: rgba(232, 237, 245, 0.94);
-      font-weight: 600;
+      color: rgba(224, 230, 240, 0.92);
+      font-weight: 560;
       min-width: 0;
-      padding: 7px 10px;
-      border-radius: 999px;
-      background: rgba(255, 255, 255, 0.05);
-      border: 1px solid rgba(255, 255, 255, 0.07);
-      box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.03);
     }
 
     .shift-direction-icon {
@@ -366,35 +354,27 @@
       overflow: hidden;
       text-overflow: ellipsis;
       white-space: nowrap;
-      max-width: 100%;
     }
 
     .shift-main-row {
       display: flex;
-      align-items: flex-start;
-      justify-content: flex-start;
-      flex-wrap: wrap;
-      gap: 8px;
+      align-items: center;
+      justify-content: space-between;
+      gap: 10px;
       min-width: 0;
     }
 
     .shift-datetime-line {
-      flex: 0 1 auto;
-      display: inline-flex;
+      flex: 1;
+      display: flex;
       align-items: center;
-      gap: 6px;
+      gap: 5px;
       min-width: 0;
-      max-width: 100%;
       font-family: 'JetBrains Mono', monospace;
       font-size: 12px;
       line-height: 1.35;
       color: rgba(232, 237, 245, 0.96);
       font-variant-numeric: tabular-nums;
-      padding: 7px 10px;
-      border-radius: 999px;
-      background: rgba(255, 255, 255, 0.05);
-      border: 1px solid rgba(255, 255, 255, 0.07);
-      box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.03);
     }
 
     .shift-datetime-icon {
@@ -551,12 +531,12 @@
     /* ── Shift income row ── */
     .shift-income-row {
       display: flex;
-      align-items: flex-start;
-      justify-content: flex-start;
-      flex-wrap: wrap;
-      gap: 8px;
-      padding-top: 2px;
-      margin-top: 0;
+      align-items: baseline;
+      justify-content: space-between;
+      gap: 10px;
+      border-top: 1px solid rgba(255, 255, 255, 0.1);
+      padding-top: 12px;
+      margin-top: 4px;
       min-width: 0;
     }
 
@@ -644,19 +624,13 @@
       font-weight: 800;
       letter-spacing: 0.08em;
       text-transform: uppercase;
-      display: inline-flex;
     }
 
     .shift-income-row-label-content {
       display: inline-flex;
       align-items: center;
-      gap: 5px;
+      gap: 4px;
       min-width: 0;
-      padding: 7px 10px;
-      border-radius: 999px;
-      background: rgba(255, 255, 255, 0.05);
-      border: 1px solid rgba(255, 255, 255, 0.07);
-      box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.03);
     }
 
     .shift-income-row-label-icon {
@@ -676,18 +650,16 @@
     /* Income value — always green */
     .shift-income-chip {
       font-family: 'JetBrains Mono', monospace;
-      font-size: 16px;
+      font-size: 18px;
       font-weight: 700;
       color: var(--green);
       line-height: 1.2;
       letter-spacing: -0.01em;
       white-space: nowrap;
       font-variant-numeric: tabular-nums;
-      padding: 7px 12px;
-      border-radius: 999px;
-      background: rgba(16, 185, 129, 0.1);
-      border: 1px solid rgba(16, 185, 129, 0.18);
-      box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.03);
+      background: none;
+      border: none;
+      padding: 0;
     }
 
     .shift-income-chip--empty { color: var(--muted); }
@@ -954,30 +926,16 @@
     .shift-actions-item.is-danger:hover { background: rgba(244, 63, 94, 0.08); }
 
     /* ── Compact shift variant ── */
-    .compact-shift .shift-income-row { padding-top: 0; }
+    .compact-shift .shift-income-row { padding-top: 8px; }
     .compact-shift .shift-income-row-label { font-size: 11px; }
-    .compact-shift .shift-income-row-label-content { padding: 6px 8px; }
-    .compact-shift .shift-income-chip {
-      font-size: 14px;
-      padding: 6px 10px;
-    }
+    .compact-shift .shift-income-chip { font-size: 14px; }
     .compact-shift .shift-card-top { gap: 8px; }
     .compact-shift .shift-type { font-size: 14px; }
     .compact-shift .shift-type-content { gap: 5px; }
-    .compact-shift .shift-direction-row {
-      font-size: 11px;
-      gap: 4px;
-      padding: 6px 8px;
-    }
-    .compact-shift .shift-main-row { gap: 6px; }
-    .compact-shift .shift-datetime-line {
-      font-size: 11px;
-      padding: 6px 8px;
-    }
-    .compact-shift .shift-duration {
-      font-size: 11px;
-      padding: 6px 8px;
-    }
+    .compact-shift .shift-direction-row { font-size: 11px; gap: 4px; }
+    .compact-shift .shift-main-row { gap: 8px; }
+    .compact-shift .shift-datetime-line { font-size: 11px; }
+    .compact-shift .shift-duration { font-size: 11px; }
     .compact-shift .shift-card-actions { gap: 8px; padding-top: 8px; }
     .compact-shift .shift-card-action-btn { height: 36px; font-size: 13px; padding: 0 12px; }
     .compact-shift .shift-card-delete-btn { min-width: 118px; }
