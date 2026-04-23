@@ -1,9 +1,14 @@
 # Recent Commits
 
-Generated: 2026-04-23 00:44:16 +0000
+Generated: 2026-04-23 00:46:37 +0000
 
 | Hash | Date | Author | Message |
 | --- | --- | --- | --- |
+| `e20cd2c` | 2026-04-23T00:46:30+00:00 | iEgor72 | revert(shifts): roll back earlier card styling |
+| `29cae4e` | 2026-04-23T00:46:10+00:00 | iEgor72 | Revert "style(shifts): improve card readability" |
+| `7e2b456` | 2026-04-23T00:46:03+00:00 | iEgor72 | Revert "style(shifts): render technical info as badges" |
+| `15c9de2` | 2026-04-23T00:45:51+00:00 | iEgor72 | Revert "style(shifts): unify card content as chips" |
+| `0014a54` | 2026-04-23T00:44:24+00:00 | iEgor72 | chore(memory): refresh after shift card rollback |
 | `e9ee51d` | 2026-04-23T00:43:57+00:00 | iEgor72 | Revert "style(shifts): group cards into readable sections" |
 | `e815ec2` | 2026-04-23T00:43:57+00:00 | iEgor72 | Revert "style(shifts): tone down card section styling" |
 | `32ed6d0` | 2026-04-23T00:43:57+00:00 | iEgor72 | Revert "style(shifts): collapse train data into one badge" |
@@ -39,8 +44,3 @@ Generated: 2026-04-23 00:44:16 +0000
 | `52894bc` | 2026-04-22T08:22:12+00:00 | iEgor72 | Revert "fix(docs): simplify mobile loading header state" |
 | `2c2d189` | 2026-04-22T07:08:47+00:00 | iEgor72 | fix(docs): simplify mobile loading header state |
 | `a40bdf8` | 2026-04-22T07:03:35+00:00 | iEgor72 | fix(docs): send bearer session for admin controls |
-| `6641172` | 2026-04-22T07:00:53+00:00 | iEgor72 | fix(docs): recover admin controls from stale session state |
-| `33544f2` | 2026-04-22T06:50:47+00:00 | iEgor72 | feat(docs): add owner-only document admin |
-| `a0a8b4d` | 2026-04-22T05:51:57+00:00 | iEgor72 | feat(docs): improve document title structure |
-| `5210b02` | 2026-04-22T05:44:32+00:00 | iEgor72 | fix(ui): continue ultra-safe polish pass |
-| `62af9ce` | 2026-04-22T05:36:29+00:00 | iEgor72 | fix(ui): refine docs states and defensive polish |

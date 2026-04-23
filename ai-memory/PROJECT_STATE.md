@@ -1,14 +1,14 @@
 # Project State
 
 <!-- AUTO_STATUS:START -->
-Generated: 2026-04-23 00:44:16 +0000
+Generated: 2026-04-23 00:46:37 +0000
 
 ## Repository Snapshot
 - Local repo path: `/opt/bloknot-mashinista`
 - Project memory path: `/opt/bloknot-mashinista/ai-memory`
 - Branch: `main`
-- HEAD: `e9ee51d`
-- Last commit: `e9ee51d Revert "style(shifts): group cards into readable sections"`
+- HEAD: `e20cd2c`
+- Last commit: `e20cd2c revert(shifts): roll back earlier card styling`
 
 ## Git Remote
 ```text
@@ -18,13 +18,12 @@ origin	https://github.com/iEgor72/bloknot-mashinista.git (push)
 
 ## Branch Tracking
 ```text
-* main e9ee51d [origin/main] Revert "style(shifts): group cards into readable sections"
+* main e20cd2c [origin/main] revert(shifts): roll back earlier card styling
 ```
 
 ## Worktree
 ```text
-M ai-memory/CHANGELOG.md
- M ai-memory/sessions/2026-04-23.md
+clean
 ```
 <!-- AUTO_STATUS:END -->
 
