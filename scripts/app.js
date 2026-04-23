@@ -16,6 +16,7 @@
     var pendingScheduleDeletePeriodId = null;
     var editingShiftId = null;
     var editReturnTab = 'shifts';
+    var pendingAddShiftScheduleOrigin = null;
     var recentAddedShiftId = null;
     var recentAddTimer = null;
     var journalFocusShiftId = null;
@@ -1876,6 +1877,12 @@
     function openAddShiftForDate(dateKey, options) {
       var safeDate = normalizeDateKey(dateKey) || getTodayDateKey();
       var opts = options || {};
+      pendingAddShiftScheduleOrigin = opts.scheduleOrigin && typeof opts.scheduleOrigin === 'object'
+        ? {
+            dateKey: normalizeDateKey(opts.scheduleOrigin.dateKey) || safeDate,
+            periodId: opts.scheduleOrigin.periodId ? String(opts.scheduleOrigin.periodId) : ''
+          }
+        : null;
       if (editingShiftId) {
         exitEditMode('home');
       } else {

@@ -136,6 +136,7 @@
       clearOptionalShiftData();
       setAddDetailsExpanded(false);
       setDefaultShiftTimeInputs();
+      if (typeof pendingAddShiftScheduleOrigin !== 'undefined') pendingAddShiftScheduleOrigin = null;
       renderDraftShiftSummary();
       var targetTab = nextTab || editReturnTab || 'home';
       editReturnTab = 'shifts';
@@ -642,6 +643,9 @@
         scheduleOriginPeriodId = existingShift.schedule_origin_period_id
           ? String(existingShift.schedule_origin_period_id)
           : (existingShift.schedule_period_id ? String(existingShift.schedule_period_id) : '');
+      } else if (typeof pendingAddShiftScheduleOrigin !== 'undefined' && pendingAddShiftScheduleOrigin) {
+        scheduleOriginDateKey = pendingAddShiftScheduleOrigin.dateKey ? String(pendingAddShiftScheduleOrigin.dateKey) : '';
+        scheduleOriginPeriodId = pendingAddShiftScheduleOrigin.periodId ? String(pendingAddShiftScheduleOrigin.periodId) : '';
       }
       var shift = {
         id: shiftId,
@@ -751,6 +755,7 @@
           clearOptionalShiftData();
           setAddDetailsExpanded(false);
           setFormMode('add');
+          if (typeof pendingAddShiftScheduleOrigin !== 'undefined') pendingAddShiftScheduleOrigin = null;
           clearRecentAddHighlight();
           recentAddedShiftId = shiftId;
           if (recentAddTimer) clearTimeout(recentAddTimer);
@@ -1131,7 +1136,10 @@
         openAddShiftForDate(state.dateKey, {
           routeKind: state.plannedCode ? 'depot' : 'trip',
           startTime: state.startTime || '01:00',
-          endTime: state.endTime || '13:00'
+          endTime: state.endTime || '13:00',
+          scheduleOrigin: state && state.period
+            ? { dateKey: state.dateKey, periodId: state.period.id }
+            : null
         });
       });
     }
