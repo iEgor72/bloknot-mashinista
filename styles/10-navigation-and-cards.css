@@ -280,6 +280,11 @@
       text-align: center;
     }
 
+    .home-calendar-weekdays span:nth-child(6),
+    .home-calendar-weekdays span:nth-child(7) {
+      color: rgba(248, 113, 113, 0.9);
+    }
+
     .home-calendar-day {
       position: relative;
       min-height: 52px;
@@ -304,7 +309,18 @@
 
     .home-calendar-day.is-weekend,
     .home-calendar-day.is-holiday {
-      background: rgba(255, 255, 255, 0.05);
+      background: rgba(127, 29, 29, 0.12);
+      border-color: rgba(248, 113, 113, 0.18);
+    }
+
+    .home-calendar-day.is-weekend .home-calendar-day-number,
+    .home-calendar-day.is-holiday .home-calendar-day-number {
+      color: rgba(254, 202, 202, 0.98);
+    }
+
+    .home-calendar-day.is-weekend .home-calendar-day-arrows,
+    .home-calendar-day.is-holiday .home-calendar-day-arrows {
+      color: rgba(254, 202, 202, 0.82);
     }
 
     .home-calendar-day.has-shift.shift-day {
@@ -317,6 +333,11 @@
       background: rgba(167, 139, 250, 0.18);
       border-color: rgba(167, 139, 250, 0.34);
       color: #f3ecff;
+    }
+
+    .home-calendar-day.has-shift.is-weekend,
+    .home-calendar-day.has-shift.is-holiday {
+      box-shadow: inset 0 0 0 1px rgba(248, 113, 113, 0.5);
     }
 
     .home-calendar-day.is-today {
