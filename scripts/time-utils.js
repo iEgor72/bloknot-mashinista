@@ -715,12 +715,12 @@
           '<div class="shift-card-top">' +
             typeHtml +
           '</div>' +
-          directionHtml +
           '<div class="shift-card-body">' +
             '<div class="shift-main-row">' +
               dateTimeHtml +
               durationHtml +
             '</div>' +
+            directionHtml +
             technicalHtml +
             fuelNoteHtml +
             '<div class="shift-income-row">' +
@@ -800,12 +800,12 @@
           '<div class="shift-card-top">' +
             typeHtml +
           '</div>' +
-          directionHtml +
           '<div class="shift-card-body">' +
             '<div class="shift-main-row">' +
               dateTimeHtml +
               durationHtml +
             '</div>' +
+            directionHtml +
             technicalHtml +
             fuelNoteHtml +
             '<div class="shift-income-row">' +
