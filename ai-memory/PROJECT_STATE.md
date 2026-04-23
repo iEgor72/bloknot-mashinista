@@ -1,14 +1,14 @@
 # Project State
 
 <!-- AUTO_STATUS:START -->
-Generated: 2026-04-23 00:46:37 +0000
+Generated: 2026-04-23 05:34:04 +0000
 
 ## Repository Snapshot
 - Local repo path: `/opt/bloknot-mashinista`
 - Project memory path: `/opt/bloknot-mashinista/ai-memory`
 - Branch: `main`
-- HEAD: `e20cd2c`
-- Last commit: `e20cd2c revert(shifts): roll back earlier card styling`
+- HEAD: `92334ca`
+- Last commit: `92334ca fix(schedule): suppress source day when deleting linked shifts`
 
 ## Git Remote
 ```text
@@ -18,12 +18,24 @@ origin	https://github.com/iEgor72/bloknot-mashinista.git (push)
 
 ## Branch Tracking
 ```text
-* main e20cd2c [origin/main] revert(shifts): roll back earlier card styling
+* main 92334ca [origin/main] fix(schedule): suppress source day when deleting linked shifts
 ```
 
 ## Worktree
 ```text
-clean
+M ai-memory/CHANGELOG.md
+ M ai-memory/INDEX.md
+ M ai-memory/PROJECT_STATE.md
+ M ai-memory/RECENT_COMMITS.md
+ M ai-memory/WORKTREE_STATUS.md
+ M ai-memory/sessions/2026-04-23.md
+ M index.html
+ M scripts/app.js
+ M scripts/auth.js
+ M scripts/render.js
+ M scripts/shift-form.js
+ M styles/10-navigation-and-cards.css
+ M sw.js
 ```
 <!-- AUTO_STATUS:END -->
 

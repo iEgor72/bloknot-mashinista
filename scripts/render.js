@@ -622,6 +622,54 @@
       return cls;
     }
 
+    function getShiftCalendarBoundaryMarkers(dateKey) {
+      var safeDate = typeof normalizeDateKey === 'function' ? normalizeDateKey(dateKey) : '';
+      var markers = {
+        startsOvernight: false,
+        endsOvernight: false,
+        startCode: '',
+        endCode: ''
+      };
+      if (!safeDate || !Array.isArray(allShifts) || !allShifts.length) return markers;
+      for (var i = 0; i < allShifts.length; i++) {
+        var shift = allShifts[i];
+        var startDate = typeof normalizeDateKey === 'function'
+          ? normalizeDateKey(shift && shift.start_msk ? String(shift.start_msk).substring(0, 10) : '')
+          : '';
+        var endDate = typeof normalizeDateKey === 'function'
+          ? normalizeDateKey(shift && shift.end_msk ? String(shift.end_msk).substring(0, 10) : '')
+          : '';
+        if (!startDate || !endDate || startDate === endDate) continue;
+        var shiftCode = typeof inferWorkedScheduleCodeFromShift === 'function'
+          ? inferWorkedScheduleCodeFromShift(shift)
+          : (shift && (shift.schedule_code || shift.code) ? String(shift.schedule_code || shift.code) : '');
+        if (startDate === safeDate) {
+          markers.startsOvernight = true;
+          if (!markers.startCode) markers.startCode = shiftCode;
+        }
+        if (endDate === safeDate) {
+          markers.endsOvernight = true;
+          if (!markers.endCode) markers.endCode = shiftCode;
+        }
+        if (markers.startsOvernight && markers.endsOvernight && markers.startCode && markers.endCode) break;
+      }
+      return markers;
+    }
+
+    function buildScheduleDayBoundaryHtml(dateKey) {
+      var markers = getShiftCalendarBoundaryMarkers(dateKey);
+      if (!markers.startsOvernight && !markers.endsOvernight) return '';
+      var html = '<span class="schedule-day-boundary-markers" aria-hidden="true">';
+      if (markers.endsOvernight) {
+        html += '<span class="schedule-day-boundary schedule-day-boundary--end" title="Завершение смены">←</span>';
+      }
+      if (markers.startsOvernight) {
+        html += '<span class="schedule-day-boundary schedule-day-boundary--start" title="Переходит на следующий день">→</span>';
+      }
+      html += '</span>';
+      return html;
+    }
+
     function renderHomeScheduleCard() {
       var calendarEl = document.getElementById('homeScheduleCalendar');
       var upcomingEl = document.getElementById('homeScheduleUpcoming');
@@ -639,20 +687,28 @@
 
       for (var day = 1; day <= daysInMonth; day++) {
         var dateKey = currentYear + '-' + String(currentMonth + 1).padStart(2, '0') + '-' + String(day).padStart(2, '0');
-        var dayState = resolveScheduleDay(dateKey);
-        var dayClass = 'schedule-day-cell' + getScheduleCellClass(dayState) + (dateKey === todayKey ? ' is-today' : '');
-        var code = dayState.effectiveCode || dayState.plannedCode || '';
-        var badge = getScheduleVisualLabel(code);
+        var dayShifts = typeof getShiftsForDate === 'function' ? getShiftsForDate(dateKey) : [];
+        var primaryShift = dayShifts && dayShifts[0] ? dayShifts[0] : null;
+        var dayClass = 'schedule-day-cell' + (primaryShift ? ' has-fact' : '') + (dateKey === todayKey ? ' is-today' : '');
+        var code = primaryShift && typeof inferWorkedScheduleCodeFromShift === 'function'
+          ? inferWorkedScheduleCodeFromShift(primaryShift)
+          : '';
+        if (code === 'D') dayClass += ' is-day';
+        else if (code === 'N') dayClass += ' is-night';
+        var boundaryMarkers = getShiftCalendarBoundaryMarkers(dateKey);
+        var displayCode = code || boundaryMarkers.endCode || boundaryMarkers.startCode || '';
+        var badge = getScheduleVisualLabel(displayCode);
+        var badgeClass = 'schedule-day-badge' + (!code && boundaryMarkers.endsOvernight ? ' schedule-day-badge--carryover' : '');
         var badgeHtml = badge
-          ? '<span class="schedule-day-badge">' + escapeHtml(badge) + '</span>'
+          ? '<span class="' + badgeClass + '">' + escapeHtml(badge) + '</span>'
           : '';
         var ariaParts = [formatScheduleDateLabel(dateKey)];
-        if (code) {
-          ariaParts.push(formatScheduleCodeLabel(code));
-        }
-        if (isScheduleCalendarOffDay(dateKey)) ariaParts.push('календарный выходной');
+        if (displayCode) ariaParts.push(formatScheduleCodeLabel(displayCode));
+        var boundaryHtml = buildScheduleDayBoundaryHtml(dateKey);
+        if (boundaryHtml) ariaParts.push('есть переход смены через полночь');
         html += '<button type="button" class="' + dayClass + '" data-schedule-date="' + dateKey + '" aria-label="' + escapeHtml(ariaParts.join('. ')) + '">' +
           '<span class="schedule-day-number">' + day + '</span>' +
+          boundaryHtml +
           badgeHtml +
         '</button>';
       }
@@ -663,42 +719,40 @@
         calendarButtons[i].addEventListener('click', function(e) {
           var dateKey = e.currentTarget.getAttribute('data-schedule-date');
           if (!dateKey) return;
-          setSelectedScheduleDay(dateKey);
-          if (typeof persistScheduleDayMaterializedShift === 'function') {
-            persistScheduleDayMaterializedShift(dateKey);
+          var dateShifts = typeof getShiftsForDate === 'function' ? getShiftsForDate(dateKey) : [];
+          if (dateShifts && dateShifts.length) {
+            openShiftsForDate(dateKey, dateShifts[0].id);
+            return;
           }
-          renderScheduleDayOverlay();
-          openOverlay('overlayScheduleDay');
+          openAddShiftForDate(dateKey, {});
         });
       }
 
       bindShiftListDetailHandlers(upcomingEl);
 
       var upcoming = [];
-      for (var offset = 0; offset < 120 && upcoming.length < 2; offset++) {
-        var upcomingKey = getDateKeyByOffset(todayKey, offset);
-        var upcomingState = resolveScheduleDay(upcomingKey);
-        var code = upcomingState.effectiveCode || upcomingState.plannedCode;
-        if (!code || code === 'V') continue;
-        var preview = buildUpcomingScheduleCardHtml(upcomingState);
+      var sortedShifts = Array.isArray(allShifts) ? allShifts.slice() : [];
+      sortedShifts.sort(compareShiftsByStartAsc);
+      for (var si = 0; si < sortedShifts.length && upcoming.length < 2; si++) {
+        var shift = sortedShifts[si];
+        var shiftDateKey = typeof normalizeDateKey === 'function' && shift && shift.start_msk
+          ? normalizeDateKey(String(shift.start_msk).substring(0, 10))
+          : '';
+        if (!shiftDateKey || compareDateKeys(shiftDateKey, todayKey) < 0) continue;
         upcoming.push({
-          dateKey: upcomingKey,
-          code: code,
-          cardHtml: preview.html,
-          useStandaloneCard: !!preview.useStandaloneCard
+          dateKey: shiftDateKey,
+          cardHtml: buildShiftItemHtml(shift, true, null, currentMonthShiftIncomeMap, null, null),
+          useStandaloneCard: true
         });
       }
 
       if (!upcoming.length) {
-        upcomingEl.innerHTML = '<div class="schedule-upcoming-empty">На ближайшие дни записей нет. Откройте «График» или добавьте смену вручную.</div>';
+        upcomingEl.innerHTML = '<div class="schedule-upcoming-empty">На ближайшие дни записей нет. Добавьте смену вручную.</div>';
       } else {
         var upcomingHtml = '';
         for (var ui = 0; ui < upcoming.length; ui++) {
           upcomingHtml += '<div class="schedule-upcoming-item' + (upcoming[ui].useStandaloneCard ? ' has-standalone-card' : '') + '">' +
-            (upcoming[ui].useStandaloneCard
-              ? ('<div class="schedule-upcoming-main">' + (upcoming[ui].cardHtml || '<div class="schedule-upcoming-empty">Откройте день, чтобы посмотреть подробности.</div>') + '</div>')
-              : ('<div class="schedule-upcoming-date">' + escapeHtml(formatScheduleShortDate(upcoming[ui].dateKey)) + '</div>' +
-                '<div class="schedule-upcoming-main">' + (upcoming[ui].cardHtml || '<div class="schedule-upcoming-empty">Откройте день, чтобы посмотреть подробности.</div>') + '</div>')) +
+            '<div class="schedule-upcoming-main">' + (upcoming[ui].cardHtml || '<div class="schedule-upcoming-empty">Откройте день, чтобы посмотреть подробности.</div>') + '</div>' +
           '</div>';
         }
         upcomingEl.innerHTML = upcomingHtml;
@@ -949,24 +1003,9 @@
       var noteEl = document.getElementById('confirmOverlayNote');
       var confirmBtn = document.getElementById('btnConfirmDelete');
       if (!cardEl) return;
-      if (pendingScheduleDeletePeriodId) {
-        if (titleEl) titleEl.textContent = 'Удалить график';
-        if (noteEl) noteEl.textContent = 'График будет удалён вместе со сменами, которые он создал в выбранном месяце. Это действие нельзя отменить.';
-        if (confirmBtn) confirmBtn.textContent = 'Удалить график';
-        cardEl.innerHTML = buildConfirmSchedulePeriodCardHtml(getSchedulePeriodById(pendingScheduleDeletePeriodId));
-        return;
-      }
-      var pendingShift = pendingDeleteId ? findShiftById(pendingDeleteId) : null;
-      var pendingScheduleShiftDeleteMeta = pendingShift && typeof getScheduleGeneratedShiftDeleteMeta === 'function'
-        ? getScheduleGeneratedShiftDeleteMeta(pendingShift)
-        : null;
-      if (titleEl) titleEl.textContent = pendingScheduleShiftDeleteMeta ? 'Удалить смену из графика' : 'Удалить запись';
-      if (noteEl) {
-        noteEl.textContent = pendingScheduleShiftDeleteMeta
-          ? 'Смена исчезнет из журнала, а день станет выходным по графику. Потом можно снова изменить график или добавить фактическую смену вручную.'
-          : 'Это действие нельзя отменить';
-      }
-      if (confirmBtn) confirmBtn.textContent = pendingScheduleShiftDeleteMeta ? 'Удалить смену' : 'Удалить';
+      if (titleEl) titleEl.textContent = 'Удалить запись';
+      if (noteEl) noteEl.textContent = 'Это действие нельзя отменить';
+      if (confirmBtn) confirmBtn.textContent = 'Удалить';
       if (!pendingDeleteId) {
         cardEl.innerHTML = '';
         return;
@@ -983,14 +1022,12 @@
         if (targetMonth === currentMonth) return;
         triggerHapticSelection();
         currentMonth = targetMonth;
-        if (typeof persistVisibleMonthMaterializedScheduleShifts === 'function') persistVisibleMonthMaterializedScheduleShifts();
         render();
       });
       renderMonthHeader('shiftsMonthTitle', 'shiftsMonthQuarter', 'shiftsMonthTabs', currentYear, currentMonth, function(targetMonth) {
         if (targetMonth === currentMonth) return;
         triggerHapticSelection();
         currentMonth = targetMonth;
-        if (typeof persistVisibleMonthMaterializedScheduleShifts === 'function') persistVisibleMonthMaterializedScheduleShifts();
         render();
       });
 
@@ -1015,8 +1052,6 @@
       var monthSalarySummary = calculateSalarySummaryByMinutes(totalMin, nightMin, holidayMin);
       renderDeleteConfirmCard(shiftIncomeMap);
       renderHomeScheduleCard();
-      renderSchedulePlannerOverlay();
-      renderScheduleDayOverlay();
 
       // Norm
       var monthKey = currentYear + '-' + String(currentMonth + 1).padStart(2, '0');
@@ -1107,7 +1142,7 @@
         document.getElementById('shiftsHeader'),
         calculationShifts,
         false,
-        'Пока здесь пусто. Добавь первую смену или график, и журнал заполнится автоматически.',
+        'Пока здесь пусто. Добавь первую смену вручную — и журнал заполнится.',
         'Журнал смен',
         _renderPendingMap,
         shiftIncomeMap,

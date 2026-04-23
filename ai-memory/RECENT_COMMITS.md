@@ -1,9 +1,20 @@
 # Recent Commits
 
-Generated: 2026-04-23 00:46:37 +0000
+Generated: 2026-04-23 05:34:04 +0000
 
 | Hash | Date | Author | Message |
 | --- | --- | --- | --- |
+| `92334ca` | 2026-04-23T01:23:24+00:00 | iEgor72 | fix(schedule): suppress source day when deleting linked shifts |
+| `ca3df71` | 2026-04-23T01:20:34+00:00 | iEgor72 | fix(schedule): link added shifts to source periods |
+| `29cf9a5` | 2026-04-23T01:17:01+00:00 | iEgor72 | fix(schedule): purge manual edits with deleted periods |
+| `709197b` | 2026-04-23T01:10:01+00:00 | iEgor72 | fix(schedule): resync day after override changes |
+| `6277709` | 2026-04-23T01:06:05+00:00 | iEgor72 | fix(schedule): fallback active period for overrides |
+| `2c867ea` | 2026-04-23T01:02:13+00:00 | iEgor72 | fix(schedule): scope overrides to schedule periods |
+| `d21d7cc` | 2026-04-23T00:57:50+00:00 | iEgor72 | fix(schedule): clear overrides when deleting period |
+| `1f4bf7c` | 2026-04-23T00:53:56+00:00 | iEgor72 | style(shifts): move route below time block |
+| `ff88042` | 2026-04-23T00:51:53+00:00 | iEgor72 | style(shifts): split train data into two rows |
+| `539f5d1` | 2026-04-23T00:50:09+00:00 | iEgor72 | style(shifts): pin duration to the right |
+| `481f81a` | 2026-04-23T00:48:55+00:00 | iEgor72 | style(shifts): make duration inline instead of badge |
 | `e20cd2c` | 2026-04-23T00:46:30+00:00 | iEgor72 | revert(shifts): roll back earlier card styling |
 | `29cae4e` | 2026-04-23T00:46:10+00:00 | iEgor72 | Revert "style(shifts): improve card readability" |
 | `7e2b456` | 2026-04-23T00:46:03+00:00 | iEgor72 | Revert "style(shifts): render technical info as badges" |
@@ -33,14 +44,3 @@ Generated: 2026-04-23 00:46:37 +0000
 | `7e4f3f6` | 2026-04-22T11:17:26+00:00 | iEgor72 | chore(git): allow docs catalog in data |
 | `640559c` | 2026-04-22T11:15:11+00:00 | iEgor72 | feat(docs): add uploaded reminders |
 | `afde921` | 2026-04-22T11:12:55+00:00 | iEgor72 | feat(docs): add uploaded instruction files |
-| `363c2c6` | 2026-04-22T11:03:54+00:00 | iEgor72 | feat(docs): split quick docs into separate entries |
-| `0392f28` | 2026-04-22T10:37:04+00:00 | iEgor72 | fix(sync): persist salary params across clients |
-| `362112f` | 2026-04-22T10:28:12+00:00 | iEgor72 | fix(docs): remove folder card subtitles |
-| `a378a57` | 2026-04-22T10:26:01+00:00 | iEgor72 | fix(docs): rename memo cards to режимки |
-| `8d78df3` | 2026-04-22T08:28:29+00:00 | iEgor72 | fix(docs): remove redundant folder intro copy |
-| `3630c67` | 2026-04-22T08:22:12+00:00 | iEgor72 | Revert "feat(docs): add owner-only document admin" |
-| `2af3939` | 2026-04-22T08:22:12+00:00 | iEgor72 | Revert "fix(docs): recover admin controls from stale session state" |
-| `3880cf9` | 2026-04-22T08:22:12+00:00 | iEgor72 | Revert "fix(docs): send bearer session for admin controls" |
-| `52894bc` | 2026-04-22T08:22:12+00:00 | iEgor72 | Revert "fix(docs): simplify mobile loading header state" |
-| `2c2d189` | 2026-04-22T07:08:47+00:00 | iEgor72 | fix(docs): simplify mobile loading header state |
-| `a40bdf8` | 2026-04-22T07:03:35+00:00 | iEgor72 | fix(docs): send bearer session for admin controls |
