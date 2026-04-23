@@ -687,25 +687,6 @@
       color: var(--accent);
     }
 
-    .shift-schedule {
-      display: grid;
-      justify-items: center;
-      gap: 5px;
-      padding: 2px 0 0;
-      background: transparent;
-      border: none;
-    }
-
-    .shift-schedule-row {
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      gap: 8px;
-      min-width: 0;
-    }
-
-    .shift-schedule-main { justify-content: center; }
-
     .shift-kind-line {
       display: flex;
       flex-wrap: wrap;

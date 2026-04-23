@@ -136,7 +136,6 @@
       clearOptionalShiftData();
       setAddDetailsExpanded(false);
       setDefaultShiftTimeInputs();
-      if (typeof pendingAddShiftScheduleOrigin !== 'undefined') pendingAddShiftScheduleOrigin = null;
       renderDraftShiftSummary();
       var targetTab = nextTab || editReturnTab || 'home';
       editReturnTab = 'shifts';
@@ -197,7 +196,6 @@
 
     bindClickById('btnCancelDelete', function() {
       pendingDeleteId = null;
-      pendingScheduleDeletePeriodId = null;
       closeOverlay('overlayConfirm');
       showActionToast('canceled');
       render();
@@ -674,8 +672,7 @@
           clearOptionalShiftData();
           setAddDetailsExpanded(false);
           setFormMode('add');
-          if (typeof pendingAddShiftScheduleOrigin !== 'undefined') pendingAddShiftScheduleOrigin = null;
-          clearRecentAddHighlight();
+              clearRecentAddHighlight();
           recentAddedShiftId = shiftId;
           if (recentAddTimer) clearTimeout(recentAddTimer);
           recentAddTimer = setTimeout(function() {
@@ -740,9 +737,8 @@
 
     function closeOverlay(id) {
       setOverlayOpenState(id, false);
-      if (id === 'overlayConfirm' && (pendingDeleteId || pendingScheduleDeletePeriodId)) {
+      if (id === 'overlayConfirm' && pendingDeleteId) {
         pendingDeleteId = null;
-        pendingScheduleDeletePeriodId = null;
         render();
       }
     }
@@ -814,233 +810,6 @@
       var active = document.querySelector('#' + containerId + ' .segmented-btn.active');
       return active ? active.getAttribute('data-value') : fallback;
     }
-
-    function syncSchedulePatternPreview() {
-      var input = document.getElementById('schedulePatternValue');
-      var preview = document.getElementById('schedulePatternPreview');
-      if (!input || !preview) return;
-      preview.textContent = formatSchedulePattern(input.value || '');
-    }
-
-    function syncSchedulePlannerFormMeta() {
-      var titleEl = document.getElementById('schedulePlannerSectionTitle');
-      var noteEl = document.getElementById('schedulePlannerModeNote');
-      var saveBtn = document.getElementById('btnSaveSchedulePeriod');
-      var editBadgeEl = document.getElementById('schedulePlannerEditBadge');
-      var formCardEl = document.querySelector('.schedule-form-card');
-      var isEditing = !!selectedSchedulePeriodId;
-      var hasConflict = !!(pendingScheduleConflict && pendingScheduleConflict.overlaps && pendingScheduleConflict.overlaps.length);
-      if (titleEl) titleEl.textContent = isEditing ? 'Изменить период' : 'Добавить период';
-      if (noteEl) {
-        if (isEditing) noteEl.textContent = 'Измените даты, цикл и время, затем сохраните.';
-        else if (hasConflict) noteEl.textContent = 'Периоды пересекаются. Откройте старый или замените его с новой даты.';
-        else noteEl.textContent = 'Заполните поля ниже и сохраните график.';
-      }
-      if (saveBtn) saveBtn.textContent = isEditing ? 'Сохранить изменения' : 'Сохранить график';
-      if (editBadgeEl) editBadgeEl.classList.toggle('visible', isEditing);
-      if (formCardEl) formCardEl.classList.toggle('is-editing', isEditing);
-    }
-
-    function readSchedulePlannerDraft() {
-      return {
-        id: selectedSchedulePeriodId || createSchedulePeriodId(),
-        mode: 'cycle',
-        startDate: normalizeDateKey(document.getElementById('schedulePeriodStartDate').value),
-        endDate: normalizeDateKey(document.getElementById('schedulePeriodEndDate').value),
-        pattern: normalizeSchedulePattern(document.getElementById('schedulePatternValue').value || ''),
-        startTime: normalizeTimeValue(document.getElementById('scheduleDefaultStartTime').value, '01:00'),
-        endTime: normalizeTimeValue(document.getElementById('scheduleDefaultEndTime').value, '13:00')
-      };
-    }
-
-    function clearScheduleConflictState() {
-      setPendingScheduleConflict(null);
-      syncSchedulePlannerFormMeta();
-    }
-
-    function resetSchedulePlannerForm() {
-      var startDateEl = document.getElementById('schedulePeriodStartDate');
-      var endDateEl = document.getElementById('schedulePeriodEndDate');
-      var patternEl = document.getElementById('schedulePatternValue');
-      var startTimeEl = document.getElementById('scheduleDefaultStartTime');
-      var endTimeEl = document.getElementById('scheduleDefaultEndTime');
-      setSelectedSchedulePeriod('');
-      clearScheduleConflictState();
-      if (startDateEl) startDateEl.value = typeof getVisibleMonthStartDateKey === 'function' ? getVisibleMonthStartDateKey() : getTodayDateKey();
-      if (endDateEl) endDateEl.value = '';
-      if (patternEl) patternEl.value = '';
-      if (startTimeEl) startTimeEl.value = '01:00';
-      if (endTimeEl) endTimeEl.value = '13:00';
-      syncSchedulePatternPreview();
-      syncSchedulePlannerFormMeta();
-    }
-
-    function fillSchedulePlannerForm(periodId) {
-      var period = getSchedulePeriodById(periodId);
-      if (!period) {
-        resetSchedulePlannerForm();
-        return;
-      }
-      setSelectedSchedulePeriod(period.id);
-      clearScheduleConflictState();
-      var startDateEl = document.getElementById('schedulePeriodStartDate');
-      var endDateEl = document.getElementById('schedulePeriodEndDate');
-      var patternEl = document.getElementById('schedulePatternValue');
-      var startTimeEl = document.getElementById('scheduleDefaultStartTime');
-      var endTimeEl = document.getElementById('scheduleDefaultEndTime');
-      if (startDateEl) startDateEl.value = period.startDate || '';
-      if (endDateEl) endDateEl.value = period.endDate || '';
-      if (patternEl) patternEl.value = period.pattern || '';
-      if (startTimeEl) startTimeEl.value = period.startTime || '01:00';
-      if (endTimeEl) endTimeEl.value = period.endTime || '13:00';
-      syncSchedulePatternPreview();
-      syncSchedulePlannerFormMeta();
-      renderSchedulePlannerOverlay();
-    }
-
-    function syncScheduleDayTimeFields() {}
-
-    var openSchedulePlannerBtn = document.getElementById('btnOpenSchedulePlanner');
-    if (openSchedulePlannerBtn) {
-      openSchedulePlannerBtn.addEventListener('click', function() {
-        triggerHapticSelection();
-        resetSchedulePlannerForm();
-        renderSchedulePlannerOverlay();
-        openOverlay('overlaySchedulePlanner');
-      });
-    }
-
-    var closeSchedulePlannerBtn = document.getElementById('btnCloseSchedulePlanner');
-    if (closeSchedulePlannerBtn) {
-      closeSchedulePlannerBtn.addEventListener('click', function() {
-        closeOverlay('overlaySchedulePlanner');
-      });
-    }
-
-    var schedulePatternBuilder = document.querySelector('.schedule-pattern-builder');
-    if (schedulePatternBuilder) {
-      schedulePatternBuilder.addEventListener('click', function(e) {
-        var input = document.getElementById('schedulePatternValue');
-        if (!input) return;
-        var addBtn = e.target.closest('[data-pattern-add]');
-        if (addBtn) {
-          input.value = normalizeSchedulePattern((input.value || '') + addBtn.getAttribute('data-pattern-add'));
-          syncSchedulePatternPreview();
-          return;
-        }
-        if (e.target.closest('#btnSchedulePatternBackspace')) {
-          input.value = normalizeSchedulePattern((input.value || '').slice(0, -1));
-          syncSchedulePatternPreview();
-          return;
-        }
-        if (e.target.closest('#btnSchedulePatternClear')) {
-          input.value = '';
-          syncSchedulePatternPreview();
-        }
-      });
-    }
-
-    function persistScheduleMaterializedMonth(options) {
-      if (typeof persistVisibleMonthMaterializedScheduleShifts !== 'function') return false;
-      return persistVisibleMonthMaterializedScheduleShifts(options);
-    }
-
-    var saveSchedulePeriodBtn = document.getElementById('btnSaveSchedulePeriod');
-    if (saveSchedulePeriodBtn) {
-      saveSchedulePeriodBtn.addEventListener('click', function() {
-        var draft = readSchedulePlannerDraft();
-        if (!draft.startDate) {
-          showSaveToast('Укажите дату начала', 'danger');
-          return;
-        }
-        if (draft.endDate && compareDateKeys(draft.endDate, draft.startDate) < 0) {
-          showSaveToast('Окончание раньше начала', 'danger');
-          return;
-        }
-        if (!draft.pattern) {
-          showSaveToast('Сначала задайте цикл графика', 'danger');
-          return;
-        }
-        var overlaps = getOverlappingSchedulePeriods(draft, selectedSchedulePeriodId);
-        if (overlaps.length) {
-          setPendingScheduleConflict({ draft: draft, overlaps: overlaps });
-          syncSchedulePlannerFormMeta();
-          renderSchedulePlannerOverlay();
-          showSaveToast('Периоды пересекаются. Выберите ниже, как поступить', 'danger');
-          return;
-        }
-        clearScheduleConflictState();
-        var isEditingPeriod = !!selectedSchedulePeriodId;
-        upsertSchedulePeriod(draft);
-        persistScheduleMaterializedMonth({ purgePeriodIds: [draft.id] });
-        triggerHapticSuccess();
-        render();
-        resetSchedulePlannerForm();
-        closeOverlay('overlaySchedulePlanner');
-        showSaveToast(isEditingPeriod ? 'Изменения в графике сохранены' : 'Новый период графика сохранён', 'success');
-      });
-    }
-
-    var schedulePeriodsListEl = document.getElementById('schedulePeriodsList');
-    if (schedulePeriodsListEl) {
-      schedulePeriodsListEl.addEventListener('click', function(e) {
-        var actionBtn = e.target.closest('[data-schedule-period-action]');
-        if (actionBtn) {
-          var action = actionBtn.getAttribute('data-schedule-period-action');
-          var periodId = actionBtn.getAttribute('data-schedule-period-id');
-          if (!periodId) return;
-          if (action === 'delete') {
-            clearScheduleConflictState();
-            setSelectedSchedulePeriod(periodId);
-            pendingScheduleDeletePeriodId = periodId;
-            triggerHapticWarning();
-            render();
-            openOverlay('overlayConfirm');
-            return;
-          }
-          triggerHapticSelection();
-          fillSchedulePlannerForm(periodId);
-          return;
-        }
-        var cardBtn = e.target.closest('[data-schedule-period-card]');
-        if (!cardBtn) return;
-        triggerHapticSelection();
-        fillSchedulePlannerForm(cardBtn.getAttribute('data-schedule-period-card'));
-      });
-    }
-
-    var scheduleConflictBoxEl = document.getElementById('scheduleConflictBox');
-    if (scheduleConflictBoxEl) {
-      scheduleConflictBoxEl.addEventListener('click', function(e) {
-        var actionBtn = e.target.closest('[data-schedule-conflict-action]');
-        if (!actionBtn || !pendingScheduleConflict) return;
-        var action = actionBtn.getAttribute('data-schedule-conflict-action');
-        if (action === 'edit') {
-          var overlap = pendingScheduleConflict.overlaps && pendingScheduleConflict.overlaps[0];
-          if (overlap) {
-            triggerHapticSelection();
-            fillSchedulePlannerForm(overlap.id);
-          }
-          return;
-        }
-        if (action === 'replace') {
-          var replaceIds = [];
-          for (var i = 0; i < pendingScheduleConflict.overlaps.length; i++) {
-            replaceIds.push(pendingScheduleConflict.overlaps[i].id);
-          }
-          replaceSchedulePeriods(pendingScheduleConflict.draft, replaceIds);
-          persistScheduleMaterializedMonth({ purgePeriodIds: [pendingScheduleConflict.draft.id].concat(replaceIds) });
-          clearScheduleConflictState();
-          triggerHapticSuccess();
-          render();
-          resetSchedulePlannerForm();
-          closeOverlay('overlaySchedulePlanner');
-          showSaveToast('Старый период заменён, начиная с новой даты', 'success');
-        }
-      });
-    }
-
-    resetSchedulePlannerForm();
 
     var instructionsShellEl = document.getElementById('instructionsShell');
     if (instructionsShellEl) {

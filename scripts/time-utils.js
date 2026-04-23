@@ -203,8 +203,12 @@
 
     function inferShiftWorkCodeByLocalTime(shift) {
       if (!shift) return '';
-      var explicitCode = typeof normalizeScheduleCode === 'function'
-        ? normalizeScheduleCode(shift.schedule_code || shift.code || '')
+      var explicitRawCode = String((shift && (shift.code || shift.schedule_code)) || '').trim().toUpperCase();
+      if (explicitRawCode === 'Д') explicitRawCode = 'D';
+      if (explicitRawCode === 'Н') explicitRawCode = 'N';
+      if (explicitRawCode === 'В') explicitRawCode = 'V';
+      var explicitCode = (explicitRawCode === 'D' || explicitRawCode === 'N' || explicitRawCode === 'V' || explicitRawCode === 'AUTO')
+        ? explicitRawCode
         : '';
       if (explicitCode === 'V') return 'V';
       var totalMin = shiftTotalMinutes(shift);

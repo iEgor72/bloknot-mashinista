@@ -34,10 +34,6 @@ const MAX_SHIFT_ID_LENGTH = 128;
 const MAX_SHIFT_TEXT_LENGTH = 512;
 const MAX_SHIFT_NOTES_LENGTH = 4000;
 const MAX_SHIFT_ISO_LENGTH = 40;
-const MAX_SCHEDULE_PERIODS_PER_PAYLOAD = 256;
-const MAX_SCHEDULE_OVERRIDES_PER_PAYLOAD = 3660;
-const MAX_SCHEDULE_ID_LENGTH = 128;
-const MAX_SCHEDULE_PATTERN_LENGTH = 64;
 const DEFAULT_SALARY_PARAMS = {
   tariffRate: 380,
   nightPercent: 40,
@@ -430,124 +426,6 @@ function getUserFile(sid) {
   return path.join(USERS_DIR, `${normalizeSid(sid)}.json`);
 }
 
-function getUserScheduleFile(sid) {
-  ensureDirs();
-  return path.join(SCHEDULES_DIR, `${normalizeSid(sid)}.json`);
-}
-
-function getUserSalaryParamsFile(sid) {
-  ensureDirs();
-  return path.join(SALARY_PARAMS_DIR, `${normalizeSid(sid)}.json`);
-}
-
-function createEmptyScheduleStore() {
-  return { version: 1, periods: [], overrides: {} };
-}
-
-function normalizeScheduleDateKey(raw) {
-  const value = typeof raw === 'string' ? raw.trim() : '';
-  return /^\d{4}-\d{2}-\d{2}$/.test(value) ? value : '';
-}
-
-function normalizeScheduleTimeValue(raw, fallback = '') {
-  const value = typeof raw === 'string' ? raw.trim() : '';
-  return /^\d{2}:\d{2}$/.test(value) ? value : fallback;
-}
-
-function normalizeScheduleCode(raw) {
-  let value = typeof raw === 'string' ? raw.trim().toUpperCase() : '';
-  if (value === 'Д') value = 'D';
-  if (value === 'Н') value = 'N';
-  if (value === 'В') value = 'V';
-  return ['AUTO', 'D', 'N', 'V'].includes(value) ? value : '';
-}
-
-function normalizeSchedulePattern(raw) {
-  const source = typeof raw === 'string' ? raw.trim().toUpperCase() : '';
-  let result = '';
-  for (const char of source) {
-    const code = normalizeScheduleCode(char);
-    if (code && code !== 'AUTO') result += code;
-  }
-  return result.slice(0, MAX_SCHEDULE_PATTERN_LENGTH);
-}
-
-function sanitizeSchedulePeriod(period, index) {
-  if (!period || typeof period !== 'object' || Array.isArray(period)) {
-    throw new Error(`Invalid schedule period at index ${index}`);
-  }
-  const id = typeof period.id === 'string' ? period.id.trim() : '';
-  const startDate = normalizeScheduleDateKey(period.startDate);
-  const endDate = normalizeScheduleDateKey(period.endDate);
-  const pattern = normalizeSchedulePattern(period.pattern);
-  const startTime = normalizeScheduleTimeValue(period.startTime, '08:00');
-  const endTime = normalizeScheduleTimeValue(period.endTime, '20:00');
-  if (!id || id.length > MAX_SCHEDULE_ID_LENGTH) throw new Error(`Invalid schedule period id at index ${index}`);
-  if (!startDate) throw new Error(`Invalid schedule startDate at index ${index}`);
-  if (period.endDate && !endDate) throw new Error(`Invalid schedule endDate at index ${index}`);
-  if (endDate && endDate < startDate) throw new Error(`Invalid schedule range at index ${index}`);
-  if (!pattern) throw new Error(`Invalid schedule pattern at index ${index}`);
-  return {
-    id,
-    startDate,
-    endDate,
-    pattern,
-    startTime,
-    endTime,
-  };
-}
-
-function sanitizeScheduleOverrides(rawOverrides) {
-  const source = rawOverrides && typeof rawOverrides === 'object' && !Array.isArray(rawOverrides) ? rawOverrides : {};
-  const result = {};
-  const dateKeys = Object.keys(source);
-  if (dateKeys.length > MAX_SCHEDULE_OVERRIDES_PER_PAYLOAD) {
-    throw new Error('Too many schedule overrides in one request');
-  }
-  dateKeys.forEach((dateKey) => {
-    const safeDate = normalizeScheduleDateKey(dateKey);
-    if (!safeDate) return;
-    const row = source[dateKey];
-    if (!row || typeof row !== 'object' || Array.isArray(row)) return;
-    const code = normalizeScheduleCode(row.code);
-    const startTime = normalizeScheduleTimeValue(row.startTime);
-    const endTime = normalizeScheduleTimeValue(row.endTime);
-    const periodId = row.periodId ? String(row.periodId).trim() : '';
-    if (!code || !periodId || periodId.length > MAX_SCHEDULE_ID_LENGTH) return;
-    result[safeDate] = {
-      code,
-      startTime,
-      endTime,
-      periodId,
-    };
-  });
-  return result;
-}
-
-function sanitizeAndValidateSchedulePayload(payload) {
-  if (!payload || typeof payload !== 'object' || Array.isArray(payload)) {
-    throw new Error('Expected JSON object payload');
-  }
-  const source = payload.schedule && typeof payload.schedule === 'object' && !Array.isArray(payload.schedule)
-    ? payload.schedule
-    : payload;
-  const rawPeriods = Array.isArray(source.periods) ? source.periods : [];
-  if (rawPeriods.length > MAX_SCHEDULE_PERIODS_PER_PAYLOAD) {
-    throw new Error('Too many schedule periods in one request');
-  }
-  const periods = rawPeriods.map((period, index) => sanitizeSchedulePeriod(period, index));
-  periods.sort((a, b) => {
-    if (a.startDate < b.startDate) return -1;
-    if (a.startDate > b.startDate) return 1;
-    return String(a.id).localeCompare(String(b.id));
-  });
-  return {
-    version: 1,
-    periods,
-    overrides: sanitizeScheduleOverrides(source.overrides),
-  };
-}
-
 function sanitizeAndValidateSalaryParamsPayload(payload) {
   if (!payload || typeof payload !== 'object' || Array.isArray(payload)) {
     throw new Error('Expected JSON object payload');
@@ -567,33 +445,6 @@ function sanitizeAndValidateSalaryParamsPayload(payload) {
     result[key] = parsed;
   });
   return result;
-}
-
-function readPersistedScheduleStore(sid) {
-  const file = getUserScheduleFile(sid);
-  try {
-    if (!fs.existsSync(file)) return createEmptyScheduleStore();
-    const raw = fs.readFileSync(file, 'utf8');
-    return sanitizeAndValidateSchedulePayload(JSON.parse(raw || '{}'));
-  } catch (err) {
-    logStructuredRateLimited('error', 'storage.schedule.read_failed', file, {
-      sid: normalizeSid(sid),
-      file,
-      error: toErrorMeta(err),
-    });
-    return createEmptyScheduleStore();
-  }
-}
-
-function readScheduleStore() {
-  return createEmptyScheduleStore();
-}
-
-function writeScheduleStore(_sid, schedule) {
-  if (schedule && typeof schedule === 'object') {
-    sanitizeAndValidateSchedulePayload(schedule);
-  }
-  return createEmptyScheduleStore();
 }
 
 function readSalaryParams(sid) {

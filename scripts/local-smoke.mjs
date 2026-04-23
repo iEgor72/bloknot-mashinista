@@ -129,8 +129,6 @@ async function main() {
     let body = { ok: true };
     if (url.pathname === '/api/shifts') {
       body = { sid: '999', shifts: [] };
-    } else if (url.pathname === '/api/schedule') {
-      body = { sid: '999', schedule: { version: 1, periods: [], overrides: {} } };
     } else if (url.pathname === '/api/salary-params') {
       body = { sid: '999', salaryParams: { tariffRate: 380, nightPercent: 40, classPercent: 5, districtPercent: 30, northPercent: 50, localPercent: 20 } };
     } else if (url.pathname === '/api/stats') {
