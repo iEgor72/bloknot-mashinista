@@ -207,6 +207,9 @@
           endTime: '',
           periodId: deleteMeta && deleteMeta.periodId ? deleteMeta.periodId : ''
         });
+        if (typeof syncMaterializedScheduleShiftsForRange === 'function') {
+          syncMaterializedScheduleShiftsForRange(deletedDateKey, deletedDateKey);
+        }
       }
       pendingMutationIds = [];
       if (editingShiftId === pendingDeleteId) {
@@ -698,6 +701,9 @@
           endTime: '',
           periodId: suppressScheduleSourcePeriodId
         });
+        if (typeof syncMaterializedScheduleShiftsForRange === 'function') {
+          syncMaterializedScheduleShiftsForRange(suppressScheduleSourceDateKey, suppressScheduleSourceDateKey);
+        }
       }
 
       pendingMutationIds = [shiftId];
