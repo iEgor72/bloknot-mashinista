@@ -1005,6 +1005,15 @@ if (action === 'scroll-node') {
       openShiftsForDate(dateKey, shiftId || '');
     });
 
+    bindClickById('btnHomeCalendarDayCreateShift', function(e) {
+      var button = e && e.currentTarget ? e.currentTarget : document.getElementById('btnHomeCalendarDayCreateShift');
+      var dateKey = button && button.dataset ? button.dataset.dateKey : '';
+      if (!dateKey) return;
+      triggerHapticSelection();
+      closeOverlay('overlayHomeCalendarDay');
+      openAddShiftForDate(dateKey);
+    });
+
     var openInstallUrlBtn = document.getElementById('btnOpenInstallUrl');
     if (openInstallUrlBtn) {
       openInstallUrlBtn.textContent = INSTALL_GUIDE_COPY.buttons.open;

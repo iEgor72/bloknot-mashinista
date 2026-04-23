@@ -674,6 +674,7 @@
       var noteEl = document.getElementById('homeCalendarDayNote');
       var contentEl = document.getElementById('homeCalendarDayContent');
       var openJournalBtn = document.getElementById('btnHomeCalendarDayOpenJournal');
+      var createShiftBtn = document.getElementById('btnHomeCalendarDayCreateShift');
       var opts = options && typeof options === 'object' ? options : {};
       selectedHomeCalendarDateKey = safeDate;
       if (titleEl) titleEl.textContent = formatHomeCalendarSheetDate(safeDate);
@@ -683,10 +684,14 @@
         openJournalBtn.classList.toggle('hidden', !shifts.length);
         openJournalBtn.textContent = shifts.length > 1 ? 'Открыть день в журнале' : 'Открыть смену в журнале';
       }
+      if (createShiftBtn) {
+        createShiftBtn.dataset.dateKey = safeDate;
+        createShiftBtn.classList.toggle('hidden', !!shifts.length);
+      }
       if (!contentEl || !noteEl) return;
       if (!shifts.length) {
-        noteEl.textContent = 'Смен на этот день пока нет. Можно добавить новую запись прямо отсюда.';
-        contentEl.innerHTML = '<div class="home-calendar-day-empty">На этот день записей нет.</div>';
+        noteEl.textContent = 'На этот день пока нет смен. Можно сначала посмотреть дату, а потом создать запись отсюда.';
+        contentEl.innerHTML = '<div class="home-calendar-day-empty">На этот день записей нет. Если хочешь, можно сразу добавить новую смену.</div>';
         return;
       }
       var bounds = typeof getMonthBounds === 'function' ? getMonthBounds(currentYear, currentMonth) : null;
@@ -718,13 +723,8 @@
         var dateKey = target.getAttribute('data-date-key');
         if (!dateKey) return;
         triggerHapticTapLight();
-        var shifts = getManualShiftsForDate(dateKey);
-        if (shifts.length) {
-          renderHomeCalendarDaySheet(dateKey);
-          openOverlay('overlayHomeCalendarDay');
-          return;
-        }
-        openAddShiftForDate(dateKey);
+        renderHomeCalendarDaySheet(dateKey);
+        openOverlay('overlayHomeCalendarDay');
       });
     }
 
