@@ -1,14 +1,14 @@
 # Project State
 
 <!-- AUTO_STATUS:START -->
-Generated: 2026-04-23 00:17:46 +0000
+Generated: 2026-04-23 00:20:12 +0000
 
 ## Repository Snapshot
 - Local repo path: `/opt/bloknot-mashinista`
 - Project memory path: `/opt/bloknot-mashinista/ai-memory`
 - Branch: `main`
-- HEAD: `5351381`
-- Last commit: `5351381 style(shifts): improve card readability`
+- HEAD: `6ac85a1`
+- Last commit: `6ac85a1 style(shifts): render technical info as badges`
 
 ## Git Remote
 ```text
@@ -18,7 +18,7 @@ origin	https://github.com/iEgor72/bloknot-mashinista.git (push)
 
 ## Branch Tracking
 ```text
-* main 5351381 [origin/main] style(shifts): improve card readability
+* main 6ac85a1 [origin/main] style(shifts): render technical info as badges
 ```
 
 ## Worktree
