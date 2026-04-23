@@ -456,8 +456,25 @@
       return list;
     }
 
+    function stripScheduleFieldsFromShift(rawShift) {
+      var source = cloneShiftForCache(rawShift) || {};
+      delete source.schedule_generated;
+      delete source.isScheduleDerived;
+      delete source.schedule_period_id;
+      delete source.schedule_origin_date_key;
+      delete source.schedule_origin_period_id;
+      delete source.schedule_code;
+      delete source.scheduleDateKey;
+      return source;
+    }
+
     function normalizeShiftsForDisplay(shifts) {
-      var normalized = clearPendingFlags(shifts);
+      var sanitized = [];
+      for (var i = 0; i < (shifts || []).length; i++) {
+        if (isScheduleMaterializedShift(shifts[i])) continue;
+        sanitized.push(stripScheduleFieldsFromShift(shifts[i]));
+      }
+      var normalized = clearPendingFlags(sanitized);
       var pendingMap = getPendingShiftIdMap();
       var pendingIds = Object.keys(pendingMap);
       return pendingIds.length ? applyPendingFlags(normalized, pendingIds) : normalized;
@@ -1530,27 +1547,16 @@
 
     function buildMonthCalculationShifts(year, month0, bounds) {
       var actualShifts = [];
-      var calculationShifts = [];
       for (var i = 0; i < allShifts.length; i++) {
+        if (isScheduleMaterializedShift(allShifts[i])) continue;
         if (shiftMinutesInRange(allShifts[i], bounds.start, bounds.end) <= 0) continue;
         actualShifts.push(allShifts[i]);
-        calculationShifts.push(allShifts[i]);
-      }
-
-      var monthDays = new Date(year, month0 + 1, 0).getDate();
-      for (var day = 1; day <= monthDays; day++) {
-        var dateKey = year + '-' + String(month0 + 1).padStart(2, '0') + '-' + String(day).padStart(2, '0');
-        var plannedShift = buildScheduleDerivedShift(dateKey, resolveScheduleDay(dateKey));
-        if (!plannedShift) continue;
-        if (shiftMinutesInRange(plannedShift, bounds.start, bounds.end) <= 0) continue;
-        calculationShifts.push(plannedShift);
       }
 
       actualShifts.sort(compareShiftsByStartDesc);
-      calculationShifts.sort(compareShiftsByStartDesc);
       return {
         actualShifts: actualShifts,
-        calculationShifts: calculationShifts
+        calculationShifts: actualShifts.slice()
       };
     }
 

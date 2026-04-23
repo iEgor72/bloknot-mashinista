@@ -164,54 +164,13 @@
     }
 
     bindClickById('btnConfirmDelete', function() {
-      if (pendingScheduleDeletePeriodId) {
-        triggerHapticWarning();
-        var deletedPeriodId = pendingScheduleDeletePeriodId;
-        var shouldResetPlanner = !!(selectedSchedulePeriodId && selectedSchedulePeriodId === String(deletedPeriodId));
-        var wasOnline = !!navigator.onLine;
-        clearScheduleConflictState();
-        deleteSchedulePeriod(deletedPeriodId, function(err) {
-          if (err) {
-            triggerHapticError();
-            showSaveToast('Не получилось удалить период графика', 'danger');
-            return;
-          }
-          pendingScheduleDeletePeriodId = null;
-          closeOverlay('overlayConfirm');
-          render();
-          showSaveToast(wasOnline ? 'Период графика удалён' : 'Период графика удалён. Когда интернет появится, всё синхронизируется автоматически', 'neutral');
-          if (shouldResetPlanner && typeof resetSchedulePlannerForm === 'function') {
-            resetSchedulePlannerForm();
-          }
-        });
-        return;
-      }
       if (!pendingDeleteId) return;
       triggerHapticActionMedium();
-      var deletedShift = findShiftById(pendingDeleteId);
-      var deleteMeta = typeof getScheduleGeneratedShiftDeleteMeta === 'function'
-        ? getScheduleGeneratedShiftDeleteMeta(deletedShift)
-        : null;
-      var deletedDateKey = deleteMeta && deleteMeta.anchorDateKey
-        ? deleteMeta.anchorDateKey
-        : (deletedShift && deletedShift.start_msk ? normalizeDateKey(deletedShift.start_msk.substring(0, 10)) : '');
-      var shouldSuppressScheduleDay = !!(deleteMeta && deletedDateKey);
       var newShifts = [];
       for (var i = 0; i < allShifts.length; i++) {
         if (allShifts[i].id !== pendingDeleteId) newShifts.push(allShifts[i]);
       }
       allShifts = newShifts;
-      if (shouldSuppressScheduleDay && typeof setScheduleDayOverride === 'function') {
-        setScheduleDayOverride(deletedDateKey, {
-          code: 'V',
-          startTime: '',
-          endTime: '',
-          periodId: deleteMeta && deleteMeta.periodId ? deleteMeta.periodId : ''
-        });
-        if (typeof syncMaterializedScheduleShiftsForRange === 'function') {
-          syncMaterializedScheduleShiftsForRange(deletedDateKey, deletedDateKey);
-        }
-      }
       pendingMutationIds = [];
       if (editingShiftId === pendingDeleteId) {
         exitEditMode();
@@ -261,7 +220,6 @@
       button.addEventListener('click', function() {
         triggerHapticSelection();
         shiftCurrentMonthBy(delta);
-        if (typeof persistVisibleMonthMaterializedScheduleShifts === 'function') persistVisibleMonthMaterializedScheduleShifts();
         render();
       });
     }
@@ -634,19 +592,6 @@
       var shiftId = isEditing ? editingShiftId : (Date.now().toString(36) + Math.random().toString(36).substring(2, 7));
       var existingShift = isEditing ? findShiftById(shiftId) : null;
       var optionalData = collectOptionalShiftData();
-      var scheduleOriginDateKey = '';
-      var scheduleOriginPeriodId = '';
-      if (existingShift) {
-        scheduleOriginDateKey = existingShift.schedule_origin_date_key
-          ? String(existingShift.schedule_origin_date_key)
-          : (typeof getScheduleShiftAnchorDateKey === 'function' ? getScheduleShiftAnchorDateKey(existingShift) : '');
-        scheduleOriginPeriodId = existingShift.schedule_origin_period_id
-          ? String(existingShift.schedule_origin_period_id)
-          : (existingShift.schedule_period_id ? String(existingShift.schedule_period_id) : '');
-      } else if (typeof pendingAddShiftScheduleOrigin !== 'undefined' && pendingAddShiftScheduleOrigin) {
-        scheduleOriginDateKey = pendingAddShiftScheduleOrigin.dateKey ? String(pendingAddShiftScheduleOrigin.dateKey) : '';
-        scheduleOriginPeriodId = pendingAddShiftScheduleOrigin.periodId ? String(pendingAddShiftScheduleOrigin.periodId) : '';
-      }
       var shift = {
         id: shiftId,
         start_msk: startVal,
@@ -677,23 +622,9 @@
         fuel_handover_liters_b: optionalData.fuel_handover_liters_b,
         fuel_handover_liters_v: optionalData.fuel_handover_liters_v
       };
-      if (scheduleOriginDateKey) shift.schedule_origin_date_key = scheduleOriginDateKey;
-      if (scheduleOriginPeriodId) shift.schedule_origin_period_id = scheduleOriginPeriodId;
       if (typeof inferShiftWorkCodeByLocalTime === 'function') {
         shift.code = inferShiftWorkCodeByLocalTime(shift) || '';
       }
-
-      var suppressScheduleSourceDateKey = typeof shouldSuppressScheduleSourceDayOnEdit === 'function'
-        ? shouldSuppressScheduleSourceDayOnEdit(existingShift, shift)
-        : '';
-      var suppressScheduleSourcePeriodId = existingShift && existingShift.schedule_period_id
-        ? String(existingShift.schedule_period_id)
-        : (suppressScheduleSourceDateKey && typeof getActiveSchedulePeriod === 'function'
-          ? (function() {
-              var period = getActiveSchedulePeriod(suppressScheduleSourceDateKey);
-              return period && period.id ? String(period.id) : '';
-            })()
-          : '');
 
       if (isEditing) {
         var replaced = false;
@@ -710,18 +641,6 @@
       } else {
         allShifts.push(shift);
       }
-      if (suppressScheduleSourceDateKey && typeof setScheduleDayOverride === 'function') {
-        setScheduleDayOverride(suppressScheduleSourceDateKey, {
-          code: 'V',
-          startTime: '',
-          endTime: '',
-          periodId: suppressScheduleSourcePeriodId
-        });
-        if (typeof syncMaterializedScheduleShiftsForRange === 'function') {
-          syncMaterializedScheduleShiftsForRange(suppressScheduleSourceDateKey, suppressScheduleSourceDateKey);
-        }
-      }
-
       pendingMutationIds = [shiftId];
 
       // Disable button during save
@@ -1118,39 +1037,6 @@
           closeOverlay('overlaySchedulePlanner');
           showSaveToast('Старый период заменён, начиная с новой даты', 'success');
         }
-      });
-    }
-
-    var closeScheduleDayBtn = document.getElementById('btnCloseScheduleDay');
-    if (closeScheduleDayBtn) {
-      closeScheduleDayBtn.addEventListener('click', function() {
-        closeOverlay('overlayScheduleDay');
-      });
-    }
-
-    var scheduleDayAddShiftBtn = document.getElementById('btnScheduleDayAddShift');
-    if (scheduleDayAddShiftBtn) {
-      scheduleDayAddShiftBtn.addEventListener('click', function() {
-        var state = resolveScheduleDay(selectedScheduleDayKey || getTodayDateKey());
-        closeOverlay('overlayScheduleDay');
-        openAddShiftForDate(state.dateKey, {
-          routeKind: state.plannedCode ? 'depot' : 'trip',
-          startTime: state.startTime || '01:00',
-          endTime: state.endTime || '13:00',
-          scheduleOrigin: state && state.period
-            ? { dateKey: state.dateKey, periodId: state.period.id }
-            : null
-        });
-      });
-    }
-
-    var scheduleDayEditShiftBtn = document.getElementById('btnScheduleDayEditShift');
-    if (scheduleDayEditShiftBtn) {
-      scheduleDayEditShiftBtn.addEventListener('click', function() {
-        var shiftId = this.getAttribute('data-shift-id');
-        var dateKey = this.getAttribute('data-date-key') || (selectedScheduleDayKey || getTodayDateKey());
-        closeOverlay('overlayScheduleDay');
-        openShiftsForDate(dateKey, shiftId);
       });
     }
 

@@ -712,11 +712,11 @@
         if (dayState.continuesBefore && dayState.continuesAfter) ariaParts.push('смена продолжается через этот день');
         else if (dayState.continuesBefore) ariaParts.push('смена продолжается с прошлого дня');
         else if (dayState.continuesAfter) ariaParts.push('смена переходит на следующий день');
-        html += '<div class="' + dayClass + '" aria-label="' + escapeHtml(ariaParts.join('. ')) + '">' +
+        html += '<button type="button" class="' + dayClass + '" data-schedule-date="' + escapeHtml(dateKey) + '" aria-label="' + escapeHtml(ariaParts.join('. ')) + '">' +
           '<span class="schedule-day-number">' + day + '</span>' +
           badgeHtml +
           boundaryHtml +
-        '</div>';
+        '</button>';
       }
       calendarEl.innerHTML = html;
 
@@ -930,53 +930,28 @@
       var dateKey = selectedScheduleDayKey || getTodayDateKey();
       var state = resolveScheduleDay(dateKey);
       var titleEl = document.getElementById('scheduleDayTitle');
-      var factCardEl = document.getElementById('scheduleDayFactCard');
-      var factTitleEl = document.getElementById('scheduleDayFactTitle');
       var factTextEl = document.getElementById('scheduleDayFactText');
       var factContentEl = document.getElementById('scheduleDayFactContent');
-      var planCardEl = document.getElementById('scheduleDayPlanCard');
-      var planTitleEl = document.getElementById('scheduleDayPlanTitle');
-      var planTimeEl = document.getElementById('scheduleDayPlanTime');
-      var planDurationEl = document.getElementById('scheduleDayPlanDuration');
-      var planTextEl = document.getElementById('scheduleDayPlanText');
       var addShiftBtn = document.getElementById('btnScheduleDayAddShift');
       var editShiftBtn = document.getElementById('btnScheduleDayEditShift');
-      if (!titleEl || !factCardEl || !factTitleEl || !factTextEl || !factContentEl || !planCardEl || !planTitleEl || !planTimeEl || !planDurationEl || !planTextEl || !addShiftBtn || !editShiftBtn) return;
+      if (!titleEl || !factTextEl || !factContentEl || !addShiftBtn || !editShiftBtn) return;
 
       titleEl.textContent = formatScheduleDateLabel(dateKey);
-      var primaryFactShift = state.factShifts && state.factShifts[0] ? state.factShifts[0] : null;
-      var hasMaterializedFact = !!(primaryFactShift && typeof isScheduleMaterializedShift === 'function' && isScheduleMaterializedShift(primaryFactShift));
+      factContentEl.innerHTML = '';
+      addShiftBtn.classList.add('hidden');
+      editShiftBtn.classList.add('hidden');
 
-      var daySummary = buildScheduleDayFactSummary(state);
-      factCardEl.classList.remove('hidden');
-      factTitleEl.textContent = daySummary.titleText;
-      factTextEl.textContent = daySummary.noteText;
-      var hasFactCard = !!daySummary.cardHtml;
-      factCardEl.classList.toggle('has-shift-card', hasFactCard);
-      if (factTitleEl.parentNode && factTitleEl.parentNode.classList) {
-        factTitleEl.parentNode.classList.toggle('hidden', hasFactCard);
-      }
-      if (!hasFactCard) {
-        factTextEl.textContent = daySummary.noteText;
-      }
-      factContentEl.innerHTML = daySummary.cardHtml || '';
-
-      var planSummary = buildScheduleDayPlanSummary(state);
-      planCardEl.classList.toggle('hidden', !state.plannedCode || hasMaterializedFact);
-      planTitleEl.textContent = planSummary.titleText;
-      planTimeEl.textContent = planSummary.timeText;
-      planDurationEl.textContent = planSummary.durationText;
-      planTextEl.textContent = planSummary.noteText;
-
-      addShiftBtn.classList.toggle('hidden', state.hasFact);
-      addShiftBtn.textContent = 'Добавить смену';
-      editShiftBtn.classList.toggle('hidden', !state.hasFact);
-      if (!editShiftBtn.classList.contains('hidden') && state.factShifts[0]) {
-        editShiftBtn.textContent = state.factShifts.length > 1 ? 'Посмотреть смены за день' : 'Открыть смену';
+      if (state.hasFact && state.factShifts && state.factShifts[0]) {
+        factTextEl.textContent = state.factShifts.length > 1 ? 'Показываю первую смену за этот день.' : 'Смена за выбранный день.';
+        factContentEl.innerHTML = buildReadonlyScheduleFactCardHtml(state.factShifts[0]);
+        editShiftBtn.classList.remove('hidden');
+        editShiftBtn.textContent = state.factShifts.length > 1 ? 'Открыть смены за день' : 'Перейти к смене';
         editShiftBtn.setAttribute('data-shift-id', state.factShifts[0].id);
         editShiftBtn.setAttribute('data-date-key', state.dateKey || '');
       } else {
-        editShiftBtn.textContent = 'Открыть смену';
+        factTextEl.textContent = 'На этот день смены нет. Можно сразу добавить новую запись.';
+        addShiftBtn.classList.remove('hidden');
+        addShiftBtn.textContent = 'Добавить смену';
         editShiftBtn.removeAttribute('data-shift-id');
         editShiftBtn.removeAttribute('data-date-key');
       }
@@ -990,24 +965,9 @@
       var noteEl = document.getElementById('confirmOverlayNote');
       var confirmBtn = document.getElementById('btnConfirmDelete');
       if (!cardEl) return;
-      if (pendingScheduleDeletePeriodId) {
-        if (titleEl) titleEl.textContent = 'Удалить график';
-        if (noteEl) noteEl.textContent = 'График будет удалён вместе со сменами, которые он создал в выбранном месяце. Это действие нельзя отменить.';
-        if (confirmBtn) confirmBtn.textContent = 'Удалить график';
-        cardEl.innerHTML = buildConfirmSchedulePeriodCardHtml(getSchedulePeriodById(pendingScheduleDeletePeriodId));
-        return;
-      }
-      var pendingShift = pendingDeleteId ? findShiftById(pendingDeleteId) : null;
-      var pendingScheduleShiftDeleteMeta = pendingShift && typeof getScheduleGeneratedShiftDeleteMeta === 'function'
-        ? getScheduleGeneratedShiftDeleteMeta(pendingShift)
-        : null;
-      if (titleEl) titleEl.textContent = pendingScheduleShiftDeleteMeta ? 'Удалить смену из графика' : 'Удалить запись';
-      if (noteEl) {
-        noteEl.textContent = pendingScheduleShiftDeleteMeta
-          ? 'Смена исчезнет из журнала, а день станет выходным по графику. Потом можно снова изменить график или добавить фактическую смену вручную.'
-          : 'Это действие нельзя отменить';
-      }
-      if (confirmBtn) confirmBtn.textContent = pendingScheduleShiftDeleteMeta ? 'Удалить смену' : 'Удалить';
+      if (titleEl) titleEl.textContent = 'Удалить запись';
+      if (noteEl) noteEl.textContent = 'Это действие нельзя отменить';
+      if (confirmBtn) confirmBtn.textContent = 'Удалить';
       if (!pendingDeleteId) {
         cardEl.innerHTML = '';
         return;
@@ -1024,14 +984,12 @@
         if (targetMonth === currentMonth) return;
         triggerHapticSelection();
         currentMonth = targetMonth;
-        if (typeof persistVisibleMonthMaterializedScheduleShifts === 'function') persistVisibleMonthMaterializedScheduleShifts();
         render();
       });
       renderMonthHeader('shiftsMonthTitle', 'shiftsMonthQuarter', 'shiftsMonthTabs', currentYear, currentMonth, function(targetMonth) {
         if (targetMonth === currentMonth) return;
         triggerHapticSelection();
         currentMonth = targetMonth;
-        if (typeof persistVisibleMonthMaterializedScheduleShifts === 'function') persistVisibleMonthMaterializedScheduleShifts();
         render();
       });
 
@@ -1060,9 +1018,6 @@
       }
       var monthSalarySummary = calculateSalarySummaryByMinutes(totalMin, nightMin, holidayMin);
       renderDeleteConfirmCard(shiftIncomeMap);
-      renderHomeScheduleCard();
-      renderSchedulePlannerOverlay();
-      renderScheduleDayOverlay();
 
       // Norm
       var monthKey = currentYear + '-' + String(currentMonth + 1).padStart(2, '0');

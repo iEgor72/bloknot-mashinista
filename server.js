@@ -9,7 +9,6 @@ const ROOT = __dirname;
 const PORT = process.env.PORT || 3000;
 const DATA_DIR = path.join(ROOT, 'data');
 const USERS_DIR = path.join(DATA_DIR, 'local-shifts');
-const SCHEDULES_DIR = path.join(DATA_DIR, 'local-schedules');
 const SALARY_PARAMS_DIR = path.join(DATA_DIR, 'local-salary-params');
 const USER_STATS_FILE = path.join(DATA_DIR, 'user-presence.json');
 const PUBLIC_TOP_LEVEL_FILES = new Set([
@@ -338,7 +337,22 @@ function sanitizeAndValidateShift(shift, index) {
     throw new Error(`Invalid shift at index ${index}`);
   }
 
-  const keys = Object.keys(shift);
+  const scheduleFieldSet = new Set([
+    'schedule_generated',
+    'isScheduleDerived',
+    'schedule_period_id',
+    'schedule_origin_date_key',
+    'schedule_origin_period_id',
+    'schedule_code',
+    'scheduleDateKey',
+  ]);
+  const sanitizedInput = {};
+  Object.keys(shift).forEach((key) => {
+    if (scheduleFieldSet.has(key)) return;
+    sanitizedInput[key] = shift[key];
+  });
+
+  const keys = Object.keys(sanitizedInput);
   if (!keys.length || keys.length > MAX_SHIFT_FIELD_COUNT) {
     throw new Error(`Invalid shift at index ${index}`);
   }
@@ -346,7 +360,7 @@ function sanitizeAndValidateShift(shift, index) {
   const sanitized = {};
   keys.forEach((key) => {
     if (key === 'pending') return;
-    const value = shift[key];
+    const value = sanitizedInput[key];
     if (value === undefined) return;
 
     if (key === 'id') {
@@ -399,9 +413,6 @@ function ensureDirs() {
   }
   if (!fs.existsSync(USERS_DIR)) {
     fs.mkdirSync(USERS_DIR, { recursive: true });
-  }
-  if (!fs.existsSync(SCHEDULES_DIR)) {
-    fs.mkdirSync(SCHEDULES_DIR, { recursive: true });
   }
   if (!fs.existsSync(SALARY_PARAMS_DIR)) {
     fs.mkdirSync(SALARY_PARAMS_DIR, { recursive: true });
@@ -1280,39 +1291,6 @@ const server = http.createServer(async (req, res) => {
         const errorMessage = err && err.message ? err.message : 'Invalid payload';
         const isValidationError = /^(Expected|Too many|Invalid|Missing)/.test(errorMessage);
         logStructuredRateLimited(isValidationError ? 'warn' : 'error', 'storage.shifts.write_rejected', `${sid}:${errorMessage}`, {
-          sid,
-          error: toErrorMeta(err),
-        });
-        sendJson(res, isValidationError ? 400 : 500, { error: errorMessage });
-      }
-      return;
-    }
-
-    sendJson(res, 405, { error: 'Method not allowed' });
-    return;
-  }
-
-  if (pathname === '/api/schedule') {
-    if (!sid) {
-      sendJson(res, 401, { error: 'Unauthorized' });
-      return;
-    }
-
-    if (req.method === 'GET') {
-      sendJson(res, 200, { sid, schedule: readScheduleStore(sid) });
-      return;
-    }
-
-    if (req.method === 'PUT') {
-      try {
-        const body = await readBody(req);
-        const payload = body ? JSON.parse(body) : {};
-        writeScheduleStore(sid, payload);
-        sendJson(res, 200, { ok: true, sid, schedule: createEmptyScheduleStore() });
-      } catch (err) {
-        const errorMessage = err && err.message ? err.message : 'Invalid payload';
-        const isValidationError = /^(Expected|Too many|Invalid|Missing)/.test(errorMessage);
-        logStructuredRateLimited(isValidationError ? 'warn' : 'error', 'storage.schedule.write_rejected', `${sid}:${errorMessage}`, {
           sid,
           error: toErrorMeta(err),
         });
