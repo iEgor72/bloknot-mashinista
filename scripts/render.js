@@ -658,7 +658,7 @@
       if (!meta.hasShift) ariaParts.push('день свободен для новой смены');
       return '<button type="button" class="' + className + '" data-date-key="' + escapeHtml(dateKey) + '" aria-label="' + escapeHtml(ariaParts.join('. ')) + '">' +
         '<span class="home-calendar-day-number">' + dateObj.getDate() + '</span>' +
-        (meta.shiftCount > 1 ? '<span class="home-calendar-day-badge">' + meta.shiftCount + '</span>' : '') +
+        (meta.shiftCount > 0 ? '<span class="home-calendar-day-count">' + meta.shiftCount + '</span>' : '') +
         '<span class="home-calendar-day-arrows" aria-hidden="true">' +
           '<span class="home-calendar-arrow home-calendar-arrow-in' + (meta.carryIn ? ' is-visible' : '') + '">←</span>' +
           '<span class="home-calendar-arrow home-calendar-arrow-out' + (meta.carryOut ? ' is-visible' : '') + '">→</span>' +

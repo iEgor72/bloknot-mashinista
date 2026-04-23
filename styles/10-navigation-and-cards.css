@@ -310,7 +310,6 @@
     .home-calendar-day.is-weekend,
     .home-calendar-day.is-holiday {
       background: rgba(127, 29, 29, 0.12);
-      border-color: rgba(248, 113, 113, 0.18);
     }
 
     .home-calendar-day.is-weekend .home-calendar-day-number,
@@ -337,7 +336,7 @@
 
     .home-calendar-day.has-shift.is-weekend,
     .home-calendar-day.has-shift.is-holiday {
-      box-shadow: inset 0 0 0 1px rgba(248, 113, 113, 0.5);
+      box-shadow: inset 0 0 0 999px rgba(127, 29, 29, 0.10);
     }
 
     .home-calendar-day.is-today {
@@ -361,24 +360,21 @@
       z-index: 1;
     }
 
-    .home-calendar-day-badge {
+    .home-calendar-day-count {
       position: absolute;
       top: 8px;
       right: 8px;
-      display: inline-flex;
-      align-items: center;
-      justify-content: center;
-      min-width: 20px;
-      height: 18px;
-      padding: 0 5px;
-      border-radius: 999px;
-      background: rgba(15, 23, 42, 0.42);
-      color: rgba(255, 255, 255, 0.92);
-      font-size: 10px;
+      color: rgba(255, 255, 255, 0.78);
+      font-size: 11px;
       font-weight: 800;
       line-height: 1;
-      border: 1px solid rgba(255, 255, 255, 0.1);
+      letter-spacing: -0.01em;
       z-index: 1;
+    }
+
+    .home-calendar-day.is-weekend .home-calendar-day-count,
+    .home-calendar-day.is-holiday .home-calendar-day-count {
+      color: rgba(254, 202, 202, 0.92);
     }
 
     .home-calendar-day-arrows {
