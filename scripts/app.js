@@ -1259,16 +1259,19 @@
     }
 
     function getScheduleGeneratedShiftDeleteMeta(shift) {
-      if (!isScheduleMaterializedShift(shift)) return null;
-      var anchorDateKey = getScheduleShiftAnchorDateKey(shift);
+      if (!shift) return null;
+      var originDateKey = shift && shift.schedule_origin_date_key ? normalizeDateKey(shift.schedule_origin_date_key) : '';
+      var anchorDateKey = originDateKey || (isScheduleMaterializedShift(shift) ? getScheduleShiftAnchorDateKey(shift) : '');
       if (!anchorDateKey) return null;
       var activePeriod = getActiveSchedulePeriod(anchorDateKey);
       return {
         anchorDateKey: anchorDateKey,
-        periodId: shift && shift.schedule_period_id
-          ? String(shift.schedule_period_id)
-          : (activePeriod && activePeriod.id ? String(activePeriod.id) : ''),
-        code: normalizeScheduleCode(shift && shift.schedule_code)
+        periodId: shift && shift.schedule_origin_period_id
+          ? String(shift.schedule_origin_period_id)
+          : (shift && shift.schedule_period_id
+            ? String(shift.schedule_period_id)
+            : (activePeriod && activePeriod.id ? String(activePeriod.id) : '')),
+        code: normalizeScheduleCode((shift && (shift.schedule_code || shift.code)) || '')
       };
     }
 
