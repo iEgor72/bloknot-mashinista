@@ -336,8 +336,8 @@
       gap: 5px;
       font-size: 12px;
       line-height: 1.3;
-      color: rgba(172, 180, 194, 0.88);
-      font-weight: 500;
+      color: rgba(224, 230, 240, 0.92);
+      font-weight: 560;
       min-width: 0;
     }
 
@@ -346,7 +346,7 @@
       align-items: center;
       justify-content: center;
       flex-shrink: 0;
-      color: rgba(126, 137, 154, 0.82);
+      color: rgba(148, 160, 180, 0.9);
     }
 
     .shift-direction-text {
@@ -373,7 +373,7 @@
       font-family: 'JetBrains Mono', monospace;
       font-size: 12px;
       line-height: 1.35;
-      color: rgba(192, 200, 212, 0.9);
+      color: rgba(232, 237, 245, 0.96);
       font-variant-numeric: tabular-nums;
     }
 
@@ -382,7 +382,7 @@
       align-items: center;
       justify-content: center;
       flex-shrink: 0;
-      color: rgba(126, 137, 154, 0.84);
+      color: rgba(154, 166, 184, 0.9);
     }
 
     .shift-datetime-text {
@@ -422,14 +422,15 @@
     .shift-duration-text { white-space: nowrap; }
 
     .shift-tech-line {
-      display: flex;
-      flex-wrap: wrap;
-      align-items: center;
-      column-gap: 5px;
-      row-gap: 4px;
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, max-content));
+      justify-content: start;
+      align-items: start;
+      column-gap: 14px;
+      row-gap: 6px;
       font-size: 11px;
       line-height: 1.4;
-      color: rgba(144, 154, 170, 0.78);
+      color: rgba(214, 221, 232, 0.9);
       min-width: 0;
       font-variant-numeric: tabular-nums;
       padding-top: 2px;
@@ -448,7 +449,7 @@
       align-items: center;
       justify-content: center;
       flex-shrink: 0;
-      color: rgba(126, 137, 154, 0.76);
+      color: rgba(150, 162, 181, 0.88);
     }
 
     .shift-tech-part-text {
@@ -464,9 +465,9 @@
       flex-wrap: wrap;
       font-size: 11px;
       line-height: 1.35;
-      color: rgba(144, 154, 170, 0.76);
+      color: rgba(224, 230, 239, 0.92);
       font-variant-numeric: tabular-nums;
-      margin-top: 1px;
+      margin-top: 2px;
     }
 
     .shift-fuel-note-icon {
@@ -474,7 +475,7 @@
       align-items: center;
       justify-content: center;
       flex-shrink: 0;
-      color: rgba(126, 137, 154, 0.74);
+      color: rgba(154, 166, 184, 0.88);
     }
 
     .shift-fuel-note-text { min-width: 0; }
@@ -487,9 +488,7 @@
     }
 
     .shift-tech-sep {
-      color: rgba(116, 126, 142, 0.62);
-      line-height: 1;
-      flex-shrink: 0;
+      display: none;
     }
 
     .shift-inline-icon {
@@ -910,7 +909,11 @@
     .compact-shift .shift-card-actions { gap: 8px; padding-top: 8px; }
     .compact-shift .shift-card-action-btn { height: 36px; font-size: 13px; padding: 0 12px; }
     .compact-shift .shift-card-delete-btn { min-width: 118px; }
-    .compact-shift .shift-tech-line { font-size: 10px; }
+    .compact-shift .shift-tech-line {
+      font-size: 10px;
+      grid-template-columns: 1fr;
+      row-gap: 5px;
+    }
     .compact-shift .shift-fuel-note { font-size: 10px; }
     .compact-shift .shift-inline-icon { width: 12px; height: 12px; }
     .compact-shift .shift-actions-trigger { width: 30px; height: 30px; }
