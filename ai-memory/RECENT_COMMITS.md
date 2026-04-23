@@ -1,9 +1,20 @@
 # Recent Commits
 
-Generated: 2026-04-23 00:20:12 +0000
+Generated: 2026-04-23 00:44:16 +0000
 
 | Hash | Date | Author | Message |
 | --- | --- | --- | --- |
+| `e9ee51d` | 2026-04-23T00:43:57+00:00 | iEgor72 | Revert "style(shifts): group cards into readable sections" |
+| `e815ec2` | 2026-04-23T00:43:57+00:00 | iEgor72 | Revert "style(shifts): tone down card section styling" |
+| `32ed6d0` | 2026-04-23T00:43:57+00:00 | iEgor72 | Revert "style(shifts): collapse train data into one badge" |
+| `1406773` | 2026-04-23T00:43:57+00:00 | iEgor72 | Revert "style(shifts): restore badge icons and merge attendance" |
+| `b520d9e` | 2026-04-23T00:43:57+00:00 | iEgor72 | Revert "style(shifts): simplify badges and grid train data" |
+| `28ec53c` | 2026-04-23T00:43:19+00:00 | iEgor72 | style(shifts): simplify badges and grid train data |
+| `e52056c` | 2026-04-23T00:37:50+00:00 | iEgor72 | style(shifts): restore badge icons and merge attendance |
+| `9ed5b7d` | 2026-04-23T00:33:19+00:00 | iEgor72 | style(shifts): collapse train data into one badge |
+| `98a824b` | 2026-04-23T00:31:14+00:00 | iEgor72 | style(shifts): tone down card section styling |
+| `f71b895` | 2026-04-23T00:28:16+00:00 | iEgor72 | style(shifts): group cards into readable sections |
+| `749a47b` | 2026-04-23T00:22:04+00:00 | iEgor72 | style(shifts): unify card content as chips |
 | `6ac85a1` | 2026-04-23T00:20:10+00:00 | iEgor72 | style(shifts): render technical info as badges |
 | `5351381` | 2026-04-23T00:17:44+00:00 | iEgor72 | style(shifts): improve card readability |
 | `576fc9c` | 2026-04-23T00:11:41+00:00 | iEgor72 | fix(schedule): classify shifts by local work time |
@@ -33,14 +44,3 @@ Generated: 2026-04-23 00:20:12 +0000
 | `a0a8b4d` | 2026-04-22T05:51:57+00:00 | iEgor72 | feat(docs): improve document title structure |
 | `5210b02` | 2026-04-22T05:44:32+00:00 | iEgor72 | fix(ui): continue ultra-safe polish pass |
 | `62af9ce` | 2026-04-22T05:36:29+00:00 | iEgor72 | fix(ui): refine docs states and defensive polish |
-| `a7e9bfa` | 2026-04-22T05:26:45+00:00 | iEgor72 | fix(ui): apply quiet polish refinements |
-| `50c39fc` | 2026-04-22T05:15:48+00:00 | iEgor72 | fix(ui): polish schedule, docs, and auth flows |
-| `b7f0284` | 2026-04-22T04:18:58+00:00 | iEgor72 | copy(docs): simplify document card labels |
-| `8c2e8f2` | 2026-04-22T04:15:57+00:00 | iEgor72 | copy(docs): make document section cards human-readable |
-| `4687936` | 2026-04-22T04:11:38+00:00 | iEgor72 | fix(schedule): remove header gap under calendar title |
-| `effa4e6` | 2026-04-22T04:08:32+00:00 | iEgor72 | style(schedule): tighten calendar card spacing |
-| `45ddfa0` | 2026-04-22T04:06:39+00:00 | iEgor72 | copy(schedule): remove redundant calendar subtitle |
-| `d12f4b7` | 2026-04-22T04:00:12+00:00 | iEgor72 | fix(schedule): remove nested button chrome |
-| `8c20dc0` | 2026-04-22T03:53:28+00:00 | iEgor72 | refactor(schedule): centralize planner instructions |
-| `5c1bc12` | 2026-04-22T03:49:42+00:00 | iEgor72 | copy(schedule): reduce planner text noise |
-| `20a7a92` | 2026-04-22T03:47:16+00:00 | iEgor72 | refactor(schedule): flatten empty day state |
