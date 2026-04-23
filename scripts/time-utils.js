@@ -673,17 +673,18 @@
       var items = getShiftTechnicalItems(shift);
       if (!items.length) return '';
 
-      var html = '<div class="shift-tech-line">';
+      var parts = [];
       for (var i = 0; i < items.length; i++) {
-        var tone = items[i].tone ? ' shift-tech-part-' + items[i].tone : '';
-        html += '' +
-          '<span class="shift-tech-part' + tone + '">' +
-            '<span class="shift-tech-part-icon" aria-hidden="true">' + getShiftInlineIconSvg(items[i].icon) + '</span>' +
-            '<span class="shift-tech-part-text">' + escapeHtml(items[i].text) + '</span>' +
-          '</span>';
+        parts.push(items[i].text);
       }
-      html += '</div>';
-      return html;
+
+      return '' +
+        '<div class="shift-tech-line">' +
+          '<span class="shift-tech-badge">' +
+            '<span class="shift-tech-badge-icon" aria-hidden="true">' + getShiftInlineIconSvg('train') + '</span>' +
+            '<span class="shift-tech-badge-text">' + escapeHtml(parts.join(' • ')) + '</span>' +
+          '</span>' +
+        '</div>';
     }
 
     function buildConfirmShiftCardHtml(shift, shiftIncomeMap) {
