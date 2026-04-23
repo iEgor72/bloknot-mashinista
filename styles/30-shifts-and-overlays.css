@@ -426,17 +426,23 @@
     .shift-duration-text { white-space: nowrap; }
 
     .shift-tech-line {
-      display: flex;
-      flex-wrap: wrap;
-      align-items: center;
-      column-gap: 5px;
-      row-gap: 4px;
+      display: grid;
+      gap: 4px;
       font-size: 11px;
       line-height: 1.4;
       color: rgba(144, 154, 170, 0.78);
       min-width: 0;
       font-variant-numeric: tabular-nums;
       padding-top: 2px;
+    }
+
+    .shift-tech-row {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      column-gap: 5px;
+      row-gap: 4px;
+      min-width: 0;
     }
 
     .shift-tech-part {
@@ -915,6 +921,7 @@
     .compact-shift .shift-card-action-btn { height: 36px; font-size: 13px; padding: 0 12px; }
     .compact-shift .shift-card-delete-btn { min-width: 118px; }
     .compact-shift .shift-tech-line { font-size: 10px; }
+    .compact-shift .shift-tech-row { row-gap: 3px; }
     .compact-shift .shift-fuel-note { font-size: 10px; }
     .compact-shift .shift-inline-icon { width: 12px; height: 12px; }
     .compact-shift .shift-actions-trigger { width: 30px; height: 30px; }

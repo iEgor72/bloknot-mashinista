@@ -662,14 +662,25 @@
       var items = getShiftTechnicalItems(shift);
       if (!items.length) return '';
 
-      var html = '<div class="shift-tech-line">';
-      for (var i = 0; i < items.length; i++) {
-        if (i > 0) html += '<span class="shift-tech-sep" aria-hidden="true">·</span>';
-        html += '' +
-          '<span class="shift-tech-part">' +
-            '<span class="shift-tech-part-icon" aria-hidden="true">' + getShiftInlineIconSvg(items[i].icon) + '</span>' +
-            '<span class="shift-tech-part-text">' + escapeHtml(items[i].text) + '</span>' +
-          '</span>';
+      function renderTechRow(rowItems) {
+        var rowHtml = '';
+        for (var i = 0; i < rowItems.length; i++) {
+          if (i > 0) rowHtml += '<span class="shift-tech-sep" aria-hidden="true">·</span>';
+          rowHtml += '' +
+            '<span class="shift-tech-part">' +
+              '<span class="shift-tech-part-icon" aria-hidden="true">' + getShiftInlineIconSvg(rowItems[i].icon) + '</span>' +
+              '<span class="shift-tech-part-text">' + escapeHtml(rowItems[i].text) + '</span>' +
+            '</span>';
+        }
+        return rowHtml;
+      }
+
+      var primaryItems = items.slice(0, 2);
+      var secondaryItems = items.slice(2);
+      var html = '<div class="shift-tech-line">' +
+        '<div class="shift-tech-row shift-tech-row-primary">' + renderTechRow(primaryItems) + '</div>';
+      if (secondaryItems.length) {
+        html += '<div class="shift-tech-row shift-tech-row-secondary">' + renderTechRow(secondaryItems) + '</div>';
       }
       html += '</div>';
       return html;
