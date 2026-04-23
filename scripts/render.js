@@ -10,11 +10,16 @@
       var durationText = getShiftDurationLabelText(rangeState.hasValidInterval ? fmtMin(durationMinutes) : '—');
       var typeHtml = buildShiftTypeHtml(sh, typeLabel, shiftIsPending);
       var directionHtml = buildShiftDirectionHtml(directionText);
-      var attendanceHtml = buildShiftAttendanceHtml(dateTimeText, durationText);
+      var dateTimeHtml = buildShiftDateTimeHtml(dateTimeText);
+      var durationHtml = buildShiftDurationHtml(durationText);
       var technicalHtml = buildShiftTechnicalHtml(sh);
       var fuelNoteHtml = buildShiftFuelConsumptionHtml(sh);
       var incomeLabelHtml = buildShiftIncomeLabelHtml();
-      var attendanceSectionHtml = buildShiftSectionHtml('Явка', attendanceHtml, 'shift-card-section-attendance');
+      var attendanceSectionHtml = buildShiftSectionHtml('Явка', '' +
+        '<div class="shift-main-row">' +
+          dateTimeHtml +
+          durationHtml +
+        '</div>', 'shift-card-section-attendance');
       var directionSectionHtml = buildShiftSectionHtml('Направление', directionHtml, 'shift-card-section-route');
       var trainSectionHtml = buildShiftSectionHtml('Поезд', technicalHtml, 'shift-card-section-train');
       var fuelSectionHtml = buildShiftSectionHtml('Расход', fuelNoteHtml, 'shift-card-section-fuel');
