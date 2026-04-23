@@ -636,6 +636,23 @@
         '</div>';
     }
 
+    function buildShiftAttendanceHtml(dateTimeText, durationText) {
+      return '' +
+        '<div class="shift-main-row">' +
+          '<div class="shift-attendance-badge">' +
+            '<span class="shift-attendance-badge-part">' +
+              '<span class="shift-attendance-badge-icon" aria-hidden="true">' + getShiftInlineIconSvg('calendar') + '</span>' +
+              '<span class="shift-attendance-badge-text">' + escapeHtml(dateTimeText || '—') + '</span>' +
+            '</span>' +
+            '<span class="shift-attendance-badge-sep" aria-hidden="true">•</span>' +
+            '<span class="shift-attendance-badge-part is-duration">' +
+              '<span class="shift-attendance-badge-icon" aria-hidden="true">' + getShiftInlineIconSvg('duration') + '</span>' +
+              '<span class="shift-attendance-badge-text">' + escapeHtml(durationText || '—') + '</span>' +
+            '</span>' +
+          '</div>' +
+        '</div>';
+    }
+
     function buildShiftIncomeLabelHtml() {
       return '' +
         '<span class="shift-income-row-label">' +
@@ -673,17 +690,19 @@
       var items = getShiftTechnicalItems(shift);
       if (!items.length) return '';
 
-      var parts = [];
+      var partsHtml = '';
       for (var i = 0; i < items.length; i++) {
-        parts.push(items[i].text);
+        if (i > 0) partsHtml += '<span class="shift-tech-badge-sep" aria-hidden="true">•</span>';
+        partsHtml += '' +
+          '<span class="shift-tech-badge-part">' +
+            '<span class="shift-tech-badge-icon" aria-hidden="true">' + getShiftInlineIconSvg(items[i].icon) + '</span>' +
+            '<span class="shift-tech-badge-text">' + escapeHtml(items[i].text) + '</span>' +
+          '</span>';
       }
 
       return '' +
         '<div class="shift-tech-line">' +
-          '<span class="shift-tech-badge">' +
-            '<span class="shift-tech-badge-icon" aria-hidden="true">' + getShiftInlineIconSvg('train') + '</span>' +
-            '<span class="shift-tech-badge-text">' + escapeHtml(parts.join(' • ')) + '</span>' +
-          '</span>' +
+          '<span class="shift-tech-badge">' + partsHtml + '</span>' +
         '</div>';
     }
 
@@ -698,18 +717,13 @@
       var durationText = getShiftDurationLabelText(f.dur);
       var typeHtml = buildShiftTypeHtml(shift, typeLabel, shiftPending);
       var directionHtml = buildShiftDirectionHtml(directionText);
-      var dateTimeHtml = buildShiftDateTimeHtml(dateTimeText);
-      var durationHtml = buildShiftDurationHtml(durationText);
+      var attendanceHtml = buildShiftAttendanceHtml(dateTimeText, durationText);
       var technicalHtml = buildShiftTechnicalHtml(shift);
       var fuelNoteHtml = buildShiftFuelConsumptionHtml(shift);
       var incomeLabelHtml = buildShiftIncomeLabelHtml();
       var incomeVm = getShiftIncomeViewModel(shift, shiftIncomeMap);
       var incomeHtml = getShiftIncomeChipHtml(incomeVm);
-      var attendanceSectionHtml = buildShiftSectionHtml('Явка', '' +
-        '<div class="shift-main-row">' +
-          dateTimeHtml +
-          durationHtml +
-        '</div>', 'shift-card-section-attendance');
+      var attendanceSectionHtml = buildShiftSectionHtml('Явка', attendanceHtml, 'shift-card-section-attendance');
       var directionSectionHtml = buildShiftSectionHtml('Направление', directionHtml, 'shift-card-section-route');
       var trainSectionHtml = buildShiftSectionHtml('Поезд', technicalHtml, 'shift-card-section-train');
       var fuelSectionHtml = buildShiftSectionHtml('Расход', fuelNoteHtml, 'shift-card-section-fuel');
@@ -790,18 +804,13 @@
       var durationText = getShiftDurationLabelText(f.dur);
       var typeHtml = buildShiftTypeHtml(shift, typeLabel, shiftPending);
       var directionHtml = buildShiftDirectionHtml(directionText);
-      var dateTimeHtml = buildShiftDateTimeHtml(dateTimeText);
-      var durationHtml = buildShiftDurationHtml(durationText);
+      var attendanceHtml = buildShiftAttendanceHtml(dateTimeText, durationText);
       var technicalHtml = buildShiftTechnicalHtml(shift);
       var fuelNoteHtml = buildShiftFuelConsumptionHtml(shift);
       var incomeLabelHtml = buildShiftIncomeLabelHtml();
       var incomeVm = getShiftIncomeViewModel(shift, shiftIncomeMap);
       var incomeHtml = getShiftIncomeChipHtml(incomeVm);
-      var attendanceSectionHtml = buildShiftSectionHtml('Явка', '' +
-        '<div class="shift-main-row">' +
-          dateTimeHtml +
-          durationHtml +
-        '</div>', 'shift-card-section-attendance');
+      var attendanceSectionHtml = buildShiftSectionHtml('Явка', attendanceHtml, 'shift-card-section-attendance');
       var directionSectionHtml = buildShiftSectionHtml('Направление', directionHtml, 'shift-card-section-route');
       var trainSectionHtml = buildShiftSectionHtml('Поезд', technicalHtml, 'shift-card-section-train');
       var fuelSectionHtml = buildShiftSectionHtml('Расход', fuelNoteHtml, 'shift-card-section-fuel');
