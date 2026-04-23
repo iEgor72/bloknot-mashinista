@@ -243,10 +243,8 @@
     }
 
     .home-calendar-card-head {
-      display: flex;
-      align-items: flex-start;
-      justify-content: space-between;
-      gap: 10px;
+      display: grid;
+      gap: 8px;
     }
 
     .home-calendar-card-title {
@@ -255,14 +253,6 @@
       letter-spacing: 0.08em;
       text-transform: uppercase;
       color: var(--text);
-    }
-
-    .home-calendar-card-note {
-      margin-top: 4px;
-      font-size: 12px;
-      line-height: 1.45;
-      color: var(--sub);
-      max-width: 54ch;
     }
 
     .home-calendar-weekdays,
@@ -398,6 +388,7 @@
       color: var(--sub);
       font-size: 11px;
       line-height: 1.35;
+      margin-top: 2px;
     }
 
     .home-calendar-legend-item {
