@@ -633,6 +633,16 @@
       var shiftId = isEditing ? editingShiftId : (Date.now().toString(36) + Math.random().toString(36).substring(2, 7));
       var existingShift = isEditing ? findShiftById(shiftId) : null;
       var optionalData = collectOptionalShiftData();
+      var scheduleOriginDateKey = '';
+      var scheduleOriginPeriodId = '';
+      if (existingShift) {
+        scheduleOriginDateKey = existingShift.schedule_origin_date_key
+          ? String(existingShift.schedule_origin_date_key)
+          : (typeof getScheduleShiftAnchorDateKey === 'function' ? getScheduleShiftAnchorDateKey(existingShift) : '');
+        scheduleOriginPeriodId = existingShift.schedule_origin_period_id
+          ? String(existingShift.schedule_origin_period_id)
+          : (existingShift.schedule_period_id ? String(existingShift.schedule_period_id) : '');
+      }
       var shift = {
         id: shiftId,
         start_msk: startVal,
@@ -663,6 +673,8 @@
         fuel_handover_liters_b: optionalData.fuel_handover_liters_b,
         fuel_handover_liters_v: optionalData.fuel_handover_liters_v
       };
+      if (scheduleOriginDateKey) shift.schedule_origin_date_key = scheduleOriginDateKey;
+      if (scheduleOriginPeriodId) shift.schedule_origin_period_id = scheduleOriginPeriodId;
       if (typeof inferShiftWorkCodeByLocalTime === 'function') {
         shift.code = inferShiftWorkCodeByLocalTime(shift) || '';
       }

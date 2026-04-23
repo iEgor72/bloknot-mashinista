@@ -1722,7 +1722,21 @@
       for (var j = 0; j < allShifts.length; j++) {
         var shift = allShifts[j];
         var periodId = shift && shift.schedule_period_id ? String(shift.schedule_period_id) : '';
+        var originPeriodId = shift && shift.schedule_origin_period_id ? String(shift.schedule_origin_period_id) : '';
+        var shiftId = shift && shift.id ? String(shift.id) : '';
+        var shouldPurgeByLegacyId = false;
+        if (shiftId) {
+          var purgeKeys = Object.keys(purgeMap);
+          for (var pk = 0; pk < purgeKeys.length; pk++) {
+            if (shiftId.indexOf('schedule_' + purgeKeys[pk] + '_') === 0) {
+              shouldPurgeByLegacyId = true;
+              break;
+            }
+          }
+        }
         if (isScheduleMaterializedShift(shift) && purgeMap[periodId]) continue;
+        if (originPeriodId && purgeMap[originPeriodId]) continue;
+        if (shouldPurgeByLegacyId) continue;
         nextShifts.push(shift);
       }
       var prevSerialized = JSON.stringify(cloneShiftsForCache(allShifts));
@@ -1754,15 +1768,14 @@
       if (removedPeriod) {
         var overrides = getScheduleOverrides();
         var nextOverrides = {};
-        var startDate = normalizeDateKey(removedPeriod.startDate);
-        var endDate = normalizeDateKey(removedPeriod.endDate) || startDate;
         var overrideKeys = Object.keys(overrides);
         for (var j = 0; j < overrideKeys.length; j++) {
-          var overrideDateKey = normalizeDateKey(overrideKeys[j]);
-          if (overrideDateKey && startDate && endDate && compareDateKeys(overrideDateKey, startDate) >= 0 && compareDateKeys(overrideDateKey, endDate) <= 0) {
+          var override = overrides[overrideKeys[j]];
+          var overridePeriodId = override && override.periodId ? String(override.periodId) : '';
+          if (overridePeriodId && overridePeriodId === targetId) {
             continue;
           }
-          nextOverrides[overrideKeys[j]] = overrides[overrideKeys[j]];
+          nextOverrides[overrideKeys[j]] = override;
         }
         scheduleStore.overrides = nextOverrides;
       }
