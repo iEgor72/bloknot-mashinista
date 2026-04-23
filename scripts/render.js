@@ -15,6 +15,14 @@
       var technicalHtml = buildShiftTechnicalHtml(sh);
       var fuelNoteHtml = buildShiftFuelConsumptionHtml(sh);
       var incomeLabelHtml = buildShiftIncomeLabelHtml();
+      var attendanceSectionHtml = buildShiftSectionHtml('Явка', '' +
+        '<div class="shift-main-row">' +
+          dateTimeHtml +
+          durationHtml +
+        '</div>', 'shift-card-section-attendance');
+      var directionSectionHtml = buildShiftSectionHtml('Направление', directionHtml, 'shift-card-section-route');
+      var trainSectionHtml = buildShiftSectionHtml('Поезд', technicalHtml, 'shift-card-section-train');
+      var fuelSectionHtml = buildShiftSectionHtml('Расход', fuelNoteHtml, 'shift-card-section-fuel');
       var shiftTitle = getShiftTitle(sh);
       if (sh.route_kind === 'trip') itemClass += ' has-trip';
       if (sh.id === editingShiftId) itemClass += ' is-edit-target';
@@ -30,6 +38,11 @@
       else if (durationLevel === 'low') itemClass += ' duration-low';
       var incomeVm = getShiftIncomeViewModel(sh, shiftIncomeMap);
       var incomeHtml = getShiftIncomeChipHtml(incomeVm);
+      var incomeSectionHtml = buildShiftSectionHtml('Деньги', '' +
+        '<div class="shift-income-row">' +
+          incomeLabelHtml +
+          incomeHtml +
+        '</div>', 'shift-card-section-income');
       itemClass += ' income-' + incomeVm.level;
       var shiftIdStr = String(sh.id);
       var shiftIdAttr = escapeHtml(shiftIdStr);
@@ -52,18 +65,12 @@
           typeHtml +
           actionsHtml +
         '</div>' +
-        directionHtml +
-        '<div class="shift-card-body">' +
-          '<div class="shift-main-row">' +
-            dateTimeHtml +
-            durationHtml +
-          '</div>' +
-          technicalHtml +
-          fuelNoteHtml +
-          '<div class="shift-income-row">' +
-            incomeLabelHtml +
-            incomeHtml +
-          '</div>' +
+        '<div class="shift-card-body shift-card-sections">' +
+          attendanceSectionHtml +
+          directionSectionHtml +
+          trainSectionHtml +
+          fuelSectionHtml +
+          incomeSectionHtml +
         '</div>';
 
       html += '</div>';
