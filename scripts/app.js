@@ -1736,10 +1736,30 @@
       }
       var periods = getSchedulePeriods();
       var updated = [];
+      var removedPeriod = null;
       for (var i = 0; i < periods.length; i++) {
-        if (String(periods[i].id) !== targetId) updated.push(periods[i]);
+        if (String(periods[i].id) !== targetId) {
+          updated.push(periods[i]);
+        } else {
+          removedPeriod = periods[i];
+        }
       }
       scheduleStore.periods = updated;
+      if (removedPeriod) {
+        var overrides = getScheduleOverrides();
+        var nextOverrides = {};
+        var startDate = normalizeDateKey(removedPeriod.startDate);
+        var endDate = normalizeDateKey(removedPeriod.endDate) || startDate;
+        var overrideKeys = Object.keys(overrides);
+        for (var j = 0; j < overrideKeys.length; j++) {
+          var overrideDateKey = normalizeDateKey(overrideKeys[j]);
+          if (overrideDateKey && startDate && endDate && compareDateKeys(overrideDateKey, startDate) >= 0 && compareDateKeys(overrideDateKey, endDate) <= 0) {
+            continue;
+          }
+          nextOverrides[overrideKeys[j]] = overrides[overrideKeys[j]];
+        }
+        scheduleStore.overrides = nextOverrides;
+      }
       saveScheduleStore();
       purgeMaterializedScheduleShiftsForPeriodIds([targetId]);
       if (typeof callback === 'function') callback(null);
