@@ -745,6 +745,19 @@
       }
 
       renderShiftList(
+        document.getElementById('homeShiftsList'),
+        document.getElementById('homeShiftsHeader'),
+        visibleManualShifts.slice(0, 3),
+        true,
+        'Пока здесь пусто. Добавь первую смену вручную, и последние записи появятся здесь.',
+        'Последние смены',
+        _renderPendingMap,
+        shiftIncomeMap,
+        bounds,
+        shiftDurationLevelMap
+      );
+
+      renderShiftList(
         document.getElementById('shiftsList'),
         document.getElementById('shiftsHeader'),
         visibleManualShifts,
