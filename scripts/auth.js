@@ -342,6 +342,10 @@
       if (APP_SHELL) APP_SHELL.classList.remove('hidden');
       settleSafeAreaInsets();
       repairUiText();
+      if (typeof reloadScheduleStoreForCurrentUser === 'function') reloadScheduleStoreForCurrentUser(function() {
+        if (typeof persistVisibleMonthMaterializedScheduleShifts === 'function') persistVisibleMonthMaterializedScheduleShifts();
+        if (typeof render === 'function') render();
+      });
       if (typeof loadSalaryParamsFromServer === 'function') loadSalaryParamsFromServer();
       updateSettingsControls();
       updateOfflineUiState();

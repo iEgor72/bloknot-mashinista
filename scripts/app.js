@@ -387,18 +387,6 @@
       return writeStoredJson(getOfflineStorageKey(SHIFTS_META_STORAGE_KEY), meta);
     }
 
-    function isPersistedManualShift(shift) {
-      return !isScheduleMaterializedShift(shift);
-    }
-
-    function filterPersistedManualShifts(shifts) {
-      var list = [];
-      for (var i = 0; i < (shifts || []).length; i++) {
-        if (isPersistedManualShift(shifts[i])) list.push(shifts[i]);
-      }
-      return list;
-    }
-
     function cloneShiftForCache(shift) {
       var copy = {};
       var keys = Object.keys(shift || {});
@@ -410,19 +398,17 @@
     }
 
     function cloneShiftsForCache(shifts) {
-      var persisted = filterPersistedManualShifts(shifts);
       var list = [];
-      for (var i = 0; i < persisted.length; i++) {
-        list.push(cloneShiftForCache(persisted[i]));
+      for (var i = 0; i < (shifts || []).length; i++) {
+        list.push(cloneShiftForCache(shifts[i]));
       }
       return list;
     }
 
     function cloneShiftsForServer(shifts) {
-      var persisted = filterPersistedManualShifts(shifts);
       var list = [];
-      for (var i = 0; i < persisted.length; i++) {
-        var shift = persisted[i] || {};
+      for (var i = 0; i < (shifts || []).length; i++) {
+        var shift = shifts[i] || {};
         var copy = {};
         var keys = Object.keys(shift);
         for (var j = 0; j < keys.length; j++) {
@@ -1264,34 +1250,11 @@
       return normalizeDateKey(String(shift.start_msk).substring(0, 10));
     }
 
-    function getShiftScheduleSourceDateKey(shift) {
-      if (!shift) return '';
-      return normalizeDateKey(
-        shift.schedule_origin_date_key
-          || getScheduleShiftAnchorDateKey(shift)
-          || (shift.start_msk ? String(shift.start_msk).substring(0, 10) : '')
-      );
-    }
-
-    function getShiftScheduleSourcePeriodId(shift, sourceDateKey) {
-      if (shift && shift.schedule_origin_period_id) {
-        return String(shift.schedule_origin_period_id);
-      }
-      if (shift && shift.schedule_period_id) {
-        return String(shift.schedule_period_id);
-      }
-      if (sourceDateKey && typeof getActiveSchedulePeriod === 'function') {
-        var period = getActiveSchedulePeriod(sourceDateKey);
-        return period && period.id ? String(period.id) : '';
-      }
-      return '';
-    }
-
     function shouldSuppressScheduleSourceDayOnEdit(previousShift, nextShift) {
-      var previousDateKey = getShiftScheduleSourceDateKey(previousShift);
-      if (!previousDateKey) return '';
+      if (!isScheduleMaterializedShift(previousShift)) return '';
+      var previousDateKey = getScheduleShiftAnchorDateKey(previousShift);
       var nextDateKey = getShiftStartDateKey(nextShift);
-      if (!nextDateKey) return '';
+      if (!previousDateKey || !nextDateKey) return '';
       return previousDateKey === nextDateKey ? '' : previousDateKey;
     }
 
@@ -1574,6 +1537,15 @@
         calculationShifts.push(allShifts[i]);
       }
 
+      var monthDays = new Date(year, month0 + 1, 0).getDate();
+      for (var day = 1; day <= monthDays; day++) {
+        var dateKey = year + '-' + String(month0 + 1).padStart(2, '0') + '-' + String(day).padStart(2, '0');
+        var plannedShift = buildScheduleDerivedShift(dateKey, resolveScheduleDay(dateKey));
+        if (!plannedShift) continue;
+        if (shiftMinutesInRange(plannedShift, bounds.start, bounds.end) <= 0) continue;
+        calculationShifts.push(plannedShift);
+      }
+
       actualShifts.sort(compareShiftsByStartDesc);
       calculationShifts.sort(compareShiftsByStartDesc);
       return {
@@ -1671,19 +1643,11 @@
       if (!period) return null;
       var periods = getSchedulePeriods();
       var updated = [];
-      var previousPeriod = null;
       for (var i = 0; i < periods.length; i++) {
-        if (periods[i].id !== period.id) {
-          updated.push(periods[i]);
-        } else {
-          previousPeriod = periods[i];
-        }
+        if (periods[i].id !== period.id) updated.push(periods[i]);
       }
       updated.push(period);
       scheduleStore.periods = updated;
-      if (previousPeriod) {
-        reconcileScheduleLinkedState([{ fromId: previousPeriod.id, fromPeriod: previousPeriod, toPeriod: period }]);
-      }
       saveScheduleStore();
       return period;
     }
@@ -1709,158 +1673,6 @@
       return normalizeSchedulePeriod(payload);
     }
 
-    function isDateKeyWithinSchedulePeriod(dateKey, period) {
-      var safeDate = normalizeDateKey(dateKey);
-      if (!safeDate || !period || !period.startDate) return false;
-      if (compareDateKeys(safeDate, period.startDate) < 0) return false;
-      var periodEnd = normalizeDateKey(period.endDate) || '9999-12-31';
-      return compareDateKeys(safeDate, periodEnd) <= 0;
-    }
-
-    function isLegacyScheduleLinkedShift(shift, period) {
-      if (!shift || isScheduleMaterializedShift(shift)) return false;
-      var originPeriodId = shift.schedule_origin_period_id ? String(shift.schedule_origin_period_id) : '';
-      if (originPeriodId) return false;
-      var originDateKey = shift.schedule_origin_date_key
-        ? normalizeDateKey(shift.schedule_origin_date_key)
-        : getShiftStartDateKey(shift);
-      return !!(originDateKey && isDateKeyWithinSchedulePeriod(originDateKey, period));
-    }
-
-    function reconcileScheduleLinkedState(transitions) {
-      var rules = Array.isArray(transitions) ? transitions : [];
-      if (!rules.length) return false;
-      var normalizedRules = [];
-      for (var i = 0; i < rules.length; i++) {
-        var rule = rules[i] || {};
-        var fromId = rule.fromId ? String(rule.fromId) : '';
-        var fromPeriod = normalizeSchedulePeriod(rule.fromPeriod);
-        var toPeriod = rule.toPeriod ? normalizeSchedulePeriod(rule.toPeriod) : null;
-        if (!fromId || !fromPeriod) continue;
-        normalizedRules.push({
-          fromId: fromId,
-          fromPeriod: fromPeriod,
-          toPeriod: toPeriod,
-          remove: !toPeriod
-        });
-      }
-      if (!normalizedRules.length) return false;
-
-      var overridesChanged = false;
-      var overrides = getScheduleOverrides();
-      var nextOverrides = {};
-      var overrideKeys = Object.keys(overrides);
-      for (var oi = 0; oi < overrideKeys.length; oi++) {
-        var dateKey = overrideKeys[oi];
-        var override = overrides[dateKey];
-        var nextOverride = override;
-        for (var ri = 0; ri < normalizedRules.length; ri++) {
-          var overrideRule = normalizedRules[ri];
-          if (!nextOverride || String(nextOverride.periodId || '') !== overrideRule.fromId) continue;
-          if (!isDateKeyWithinSchedulePeriod(dateKey, overrideRule.fromPeriod)) continue;
-          if (overrideRule.remove) {
-            nextOverride = null;
-          } else if (isDateKeyWithinSchedulePeriod(dateKey, overrideRule.toPeriod)) {
-            var nextPeriodId = String(overrideRule.toPeriod.id || '');
-            if (String(nextOverride.periodId || '') !== nextPeriodId) {
-              nextOverride = {
-                code: nextOverride.code,
-                startTime: nextOverride.startTime || '',
-                endTime: nextOverride.endTime || '',
-                periodId: nextPeriodId
-              };
-            }
-          } else {
-            nextOverride = null;
-          }
-          break;
-        }
-        if (nextOverride) nextOverrides[dateKey] = nextOverride;
-        if (nextOverride !== override) overridesChanged = true;
-      }
-      if (overridesChanged) {
-        scheduleStore.overrides = nextOverrides;
-      }
-
-      var shiftsChanged = false;
-      var nextShifts = [];
-      for (var si = 0; si < allShifts.length; si++) {
-        var shift = allShifts[si];
-        var nextShift = shift;
-        var originPeriodId = shift && shift.schedule_origin_period_id ? String(shift.schedule_origin_period_id) : '';
-        var originDateKey = getShiftScheduleSourceDateKey(shift);
-        var generatedPeriodId = shift && shift.schedule_period_id ? String(shift.schedule_period_id) : '';
-        var generatedDateKey = getScheduleShiftAnchorDateKey(shift) || getShiftStartDateKey(shift);
-        var legacyLinkedDateKey = isLegacyScheduleLinkedShift(shift, normalizedRules[0] && normalizedRules[0].fromPeriod)
-          ? getShiftStartDateKey(shift)
-          : '';
-        var shouldDropShift = false;
-        for (var sri = 0; sri < normalizedRules.length; sri++) {
-          var shiftRule = normalizedRules[sri];
-          if (!legacyLinkedDateKey && isLegacyScheduleLinkedShift(shift, shiftRule.fromPeriod)) {
-            legacyLinkedDateKey = getShiftStartDateKey(shift);
-          }
-          if (originPeriodId && originPeriodId === shiftRule.fromId && isDateKeyWithinSchedulePeriod(originDateKey, shiftRule.fromPeriod)) {
-            if (shiftRule.remove || !isDateKeyWithinSchedulePeriod(originDateKey, shiftRule.toPeriod)) {
-              shouldDropShift = true;
-            } else {
-              var nextOriginPeriodId = String(shiftRule.toPeriod.id || '');
-              if (originPeriodId !== nextOriginPeriodId) {
-                nextShift = cloneShiftForCache(nextShift);
-                nextShift.schedule_origin_period_id = nextOriginPeriodId;
-                if (!nextShift.schedule_origin_date_key && originDateKey) {
-                  nextShift.schedule_origin_date_key = originDateKey;
-                }
-                shiftsChanged = true;
-              }
-            }
-            break;
-          }
-          if (generatedPeriodId && generatedPeriodId === shiftRule.fromId && isDateKeyWithinSchedulePeriod(generatedDateKey, shiftRule.fromPeriod)) {
-            if (shiftRule.remove || !isDateKeyWithinSchedulePeriod(generatedDateKey, shiftRule.toPeriod)) {
-              shouldDropShift = true;
-            } else {
-              var nextGeneratedPeriodId = String(shiftRule.toPeriod.id || '');
-              if (generatedPeriodId !== nextGeneratedPeriodId) {
-                nextShift = cloneShiftForCache(nextShift);
-                nextShift.schedule_period_id = nextGeneratedPeriodId;
-                if (nextShift.id && String(nextShift.id).indexOf('schedule_' + shiftRule.fromId + '_') === 0) {
-                  nextShift.id = 'schedule_' + nextGeneratedPeriodId + '_' + generatedDateKey;
-                }
-                shiftsChanged = true;
-              }
-            }
-            break;
-          }
-          if (legacyLinkedDateKey && isDateKeyWithinSchedulePeriod(legacyLinkedDateKey, shiftRule.fromPeriod)) {
-            if (shiftRule.remove || !isDateKeyWithinSchedulePeriod(legacyLinkedDateKey, shiftRule.toPeriod)) {
-              shouldDropShift = true;
-            } else {
-              var reboundOriginPeriodId = String(shiftRule.toPeriod.id || '');
-              nextShift = cloneShiftForCache(nextShift);
-              nextShift.schedule_origin_period_id = reboundOriginPeriodId;
-              if (!nextShift.schedule_origin_date_key) {
-                nextShift.schedule_origin_date_key = legacyLinkedDateKey;
-              }
-              shiftsChanged = true;
-            }
-            break;
-          }
-        }
-        if (shouldDropShift) {
-          shiftsChanged = true;
-          continue;
-        }
-        nextShifts.push(nextShift);
-      }
-      if (shiftsChanged) {
-        allShifts = nextShifts;
-        pendingMutationIds = [];
-        saveShifts();
-      }
-      return overridesChanged || shiftsChanged;
-    }
-
     function replaceSchedulePeriods(periodInput, replaceIds) {
       var period = normalizeSchedulePeriod(periodInput);
       if (!period) return null;
@@ -1871,7 +1683,6 @@
       }
       var periods = getSchedulePeriods();
       var updated = [];
-      var transitions = [];
       var replacementStart = period.startDate;
       var replacementEnd = normalizeDateKey(period.endDate) || '9999-12-31';
       var dayBeforeReplacement = getDateKeyByOffset(replacementStart, -1);
@@ -1889,19 +1700,15 @@
           updated.push(cloneSchedulePeriod(current, { endDate: dayBeforeReplacement }));
         }
         if (dayAfterReplacement && compareDateKeys(currentEnd, replacementEnd) > 0 && compareDateKeys(dayAfterReplacement, currentEnd) <= 0) {
-          var rightSegment = cloneSchedulePeriod(current, {
+          updated.push(cloneSchedulePeriod(current, {
             id: createSchedulePeriodId(),
             startDate: dayAfterReplacement,
             endDate: current.endDate || ''
-          });
-          updated.push(rightSegment);
-          transitions.push({ fromId: current.id, fromPeriod: current, toPeriod: rightSegment });
+          }));
         }
-        transitions.push({ fromId: current.id, fromPeriod: current, toPeriod: null });
       }
       updated.push(period);
       scheduleStore.periods = updated;
-      reconcileScheduleLinkedState(transitions);
       saveScheduleStore();
       return period;
     }
@@ -1963,15 +1770,27 @@
       }
       scheduleStore.periods = updated;
       if (removedPeriod) {
-        reconcileScheduleLinkedState([{ fromId: removedPeriod.id, fromPeriod: removedPeriod, toPeriod: null }]);
+        var overrides = getScheduleOverrides();
+        var nextOverrides = {};
+        var overrideKeys = Object.keys(overrides);
+        for (var j = 0; j < overrideKeys.length; j++) {
+          var override = overrides[overrideKeys[j]];
+          var overridePeriodId = override && override.periodId ? String(override.periodId) : '';
+          if (overridePeriodId && overridePeriodId === targetId) {
+            continue;
+          }
+          nextOverrides[overrideKeys[j]] = override;
+        }
+        scheduleStore.overrides = nextOverrides;
       }
       saveScheduleStore();
+      purgeMaterializedScheduleShiftsForPeriodIds([targetId]);
       if (typeof callback === 'function') callback(null);
     }
 
-    function setScheduleDayOverrideLocal(dateKey, payload) {
+    function setScheduleDayOverride(dateKey, payload) {
       var safeDate = normalizeDateKey(dateKey);
-      if (!safeDate) return false;
+      if (!safeDate) return;
       var overrides = getScheduleOverrides();
       var code = normalizeScheduleCode(payload && payload.code);
       var periodId = payload && payload.periodId ? String(payload.periodId).trim() : '';
@@ -1980,29 +1799,17 @@
         periodId = activePeriod && activePeriod.id ? String(activePeriod.id).trim() : '';
       }
       if (!code || code === 'AUTO' || !periodId) {
-        if (!overrides[safeDate]) return false;
         delete overrides[safeDate];
       } else {
-        var nextOverride = {
+        overrides[safeDate] = {
           code: code,
           startTime: normalizeTimeValue(payload && payload.startTime, ''),
           endTime: normalizeTimeValue(payload && payload.endTime, ''),
           periodId: periodId
         };
-        var currentOverride = overrides[safeDate];
-        if (currentOverride && currentOverride.code === nextOverride.code && currentOverride.startTime === nextOverride.startTime && currentOverride.endTime === nextOverride.endTime && currentOverride.periodId === nextOverride.periodId) {
-          return false;
-        }
-        overrides[safeDate] = nextOverride;
       }
       scheduleStore.overrides = overrides;
-      return true;
-    }
-
-    function setScheduleDayOverride(dateKey, payload) {
-      var changed = setScheduleDayOverrideLocal(dateKey, payload);
-      if (changed) saveScheduleStore();
-      return changed;
+      saveScheduleStore();
     }
 
     function setSelectedScheduleDay(dateKey) {
@@ -2073,7 +1880,12 @@
     function openAddShiftForDate(dateKey, options) {
       var safeDate = normalizeDateKey(dateKey) || getTodayDateKey();
       var opts = options || {};
-      pendingAddShiftScheduleOrigin = null;
+      pendingAddShiftScheduleOrigin = opts.scheduleOrigin && typeof opts.scheduleOrigin === 'object'
+        ? {
+            dateKey: normalizeDateKey(opts.scheduleOrigin.dateKey) || safeDate,
+            periodId: opts.scheduleOrigin.periodId ? String(opts.scheduleOrigin.periodId) : ''
+          }
+        : null;
       if (editingShiftId) {
         exitEditMode('home');
       } else {
@@ -2970,7 +2782,7 @@
       var cached = readShiftsCache();
       var servedFromCache = false;
       if (cached && Array.isArray(cached.shifts)) {
-        allShifts = normalizeShiftsForDisplay(filterPersistedManualShifts(cached.shifts));
+        allShifts = normalizeShiftsForDisplay(cached.shifts);
         updateOfflineUiState({ isOffline: !navigator.onLine, hasPending: !!readPendingSnapshot() });
         servedFromCache = true;
         if (callback) callback();
@@ -2990,7 +2802,7 @@
           headers: { 'Accept': 'application/json' }
         }).then(function(result) {
           if (result.ok) {
-            allShifts = clearPendingFlags(filterPersistedManualShifts(Array.isArray(result.body && result.body.shifts) ? result.body.shifts : []));
+            allShifts = clearPendingFlags(Array.isArray(result.body && result.body.shifts) ? result.body.shifts : []);
             writeShiftsCache(allShifts, {
               isOffline: false,
               isSyncing: false,
