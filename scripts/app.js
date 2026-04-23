@@ -19,6 +19,7 @@
     var recentAddTimer = null;
     var journalFocusShiftId = null;
     var journalFocusTimer = null;
+    var selectedHomeCalendarDateKey = '';
     var activeTab = 'home';
     var hasRenderedInitialTab = false;
     var activeShiftMenuId = null;
@@ -825,6 +826,30 @@
         return null;
       });
       return salaryParamsSyncInFlight;
+    }
+
+    function normalizeDateKey(dateKey) {
+      if (typeof dateKey !== 'string') return '';
+      var safe = dateKey.trim();
+      if (!/^\d{4}-\d{2}-\d{2}$/.test(safe)) return '';
+      var year = parseInt(safe.substring(0, 4), 10);
+      var month = parseInt(safe.substring(5, 7), 10);
+      var day = parseInt(safe.substring(8, 10), 10);
+      var probe = new Date(Date.UTC(year, month - 1, day));
+      if (!isFinite(probe.getTime())) return '';
+      if (probe.getUTCFullYear() !== year || probe.getUTCMonth() !== month - 1 || probe.getUTCDate() !== day) return '';
+      return safe;
+    }
+
+    function normalizeTimeValue(timeValue, fallback) {
+      var raw = typeof timeValue === 'string' ? timeValue.trim() : '';
+      if (!/^\d{2}:\d{2}$/.test(raw)) return typeof fallback === 'string' ? fallback : '';
+      var hours = parseInt(raw.substring(0, 2), 10);
+      var minutes = parseInt(raw.substring(3, 5), 10);
+      if (!isFinite(hours) || !isFinite(minutes) || hours < 0 || hours > 23 || minutes < 0 || minutes > 59) {
+        return typeof fallback === 'string' ? fallback : '';
+      }
+      return String(hours).padStart(2, '0') + ':' + String(minutes).padStart(2, '0');
     }
 
     function getTodayDateKey() {

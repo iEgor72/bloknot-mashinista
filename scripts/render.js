@@ -587,6 +587,170 @@
       return isFinite(date.getTime()) ? date : null;
     }
 
+    function formatHomeCalendarSheetDate(dateKey) {
+      var date = buildScheduleLocalDate(dateKey);
+      if (!date) return dateKey || 'День';
+      return date.toLocaleDateString('ru-RU', {
+        weekday: 'long',
+        day: 'numeric',
+        month: 'long'
+      });
+    }
+
+    function getManualShiftsForDate(dateKey) {
+      var dayShifts = typeof getShiftsForDate === 'function' ? getShiftsForDate(dateKey) : [];
+      var manualShifts = [];
+      for (var i = 0; i < dayShifts.length; i++) {
+        if (typeof isLegacyGeneratedShift === 'function' && isLegacyGeneratedShift(dayShifts[i])) continue;
+        manualShifts.push(dayShifts[i]);
+      }
+      return manualShifts;
+    }
+
+    function getCalendarDayMeta(dateKey) {
+      var shifts = getManualShiftsForDate(dateKey);
+      var startShift = null;
+      var carryShift = null;
+      var carryOut = false;
+      for (var i = 0; i < shifts.length; i++) {
+        var shift = shifts[i];
+        var startDate = normalizeDateKey(shift && shift.start_msk ? shift.start_msk.substring(0, 10) : '');
+        var endDate = normalizeDateKey(shift && shift.end_msk ? shift.end_msk.substring(0, 10) : '') || startDate;
+        if (!startShift && startDate === dateKey) startShift = shift;
+        if (!carryShift && startDate && startDate < dateKey && endDate >= dateKey) carryShift = shift;
+        if (startDate <= dateKey && endDate > dateKey) carryOut = true;
+      }
+      var displayShift = startShift || carryShift || shifts[0] || null;
+      var code = displayShift && typeof inferShiftWorkCodeByLocalTime === 'function'
+        ? inferShiftWorkCodeByLocalTime(displayShift)
+        : '';
+      return {
+        shifts: shifts,
+        shiftCount: shifts.length,
+        hasShift: shifts.length > 0,
+        carryIn: !!carryShift,
+        carryOut: carryOut,
+        code: code
+      };
+    }
+
+    function buildHomeCalendarDayButtonHtml(dateObj, inMonth, todayKey) {
+      var dateKey = dateObj.getFullYear() + '-' + String(dateObj.getMonth() + 1).padStart(2, '0') + '-' + String(dateObj.getDate()).padStart(2, '0');
+      var meta = getCalendarDayMeta(dateKey);
+      var isToday = dateKey === todayKey;
+      var isHoliday = isScheduleHolidayDate(dateKey);
+      var isWeekend = dateObj.getDay() === 0 || dateObj.getDay() === 6;
+      var className = 'home-calendar-day';
+      var ariaParts = [dateObj.toLocaleDateString('ru-RU', { day: 'numeric', month: 'long', year: 'numeric' })];
+      if (!inMonth) className += ' is-outside-month';
+      if (isToday) className += ' is-today';
+      if (isWeekend) className += ' is-weekend';
+      if (isHoliday) className += ' is-holiday';
+      if (meta.hasShift) className += ' has-shift';
+      if (meta.carryIn) className += ' has-carry-in';
+      if (meta.carryOut) className += ' has-carry-out';
+      if (meta.code === 'N') className += ' shift-night';
+      else if (meta.code === 'D') className += ' shift-day';
+      if (meta.shiftCount > 1) ariaParts.push('Смен: ' + meta.shiftCount);
+      else if (meta.shiftCount === 1) ariaParts.push('1 смена');
+      if (meta.carryIn) ariaParts.push('переход с прошлого дня');
+      if (meta.carryOut) ariaParts.push('переход на следующий день');
+      if (!meta.hasShift) ariaParts.push('день свободен для новой смены');
+      return '<button type="button" class="' + className + '" data-date-key="' + escapeHtml(dateKey) + '" aria-label="' + escapeHtml(ariaParts.join('. ')) + '">' +
+        '<span class="home-calendar-day-number">' + dateObj.getDate() + '</span>' +
+        (meta.shiftCount > 1 ? '<span class="home-calendar-day-badge">' + meta.shiftCount + '</span>' : '') +
+        '<span class="home-calendar-day-arrows" aria-hidden="true">' +
+          '<span class="home-calendar-arrow home-calendar-arrow-in' + (meta.carryIn ? ' is-visible' : '') + '">←</span>' +
+          '<span class="home-calendar-arrow home-calendar-arrow-out' + (meta.carryOut ? ' is-visible' : '') + '">→</span>' +
+        '</span>' +
+      '</button>';
+    }
+
+    function renderHomeCalendarDaySheet(dateKey, options) {
+      var safeDate = typeof normalizeDateKey === 'function' ? normalizeDateKey(dateKey) : '';
+      if (!safeDate) return;
+      var shifts = getManualShiftsForDate(safeDate);
+      var titleEl = document.getElementById('homeCalendarDayTitle');
+      var noteEl = document.getElementById('homeCalendarDayNote');
+      var contentEl = document.getElementById('homeCalendarDayContent');
+      var openJournalBtn = document.getElementById('btnHomeCalendarDayOpenJournal');
+      var opts = options && typeof options === 'object' ? options : {};
+      selectedHomeCalendarDateKey = safeDate;
+      if (titleEl) titleEl.textContent = formatHomeCalendarSheetDate(safeDate);
+      if (openJournalBtn) {
+        openJournalBtn.dataset.dateKey = safeDate;
+        openJournalBtn.dataset.shiftId = shifts[0] && shifts[0].id ? String(shifts[0].id) : '';
+        openJournalBtn.classList.toggle('hidden', !shifts.length);
+        openJournalBtn.textContent = shifts.length > 1 ? 'Открыть день в журнале' : 'Открыть смену в журнале';
+      }
+      if (!contentEl || !noteEl) return;
+      if (!shifts.length) {
+        noteEl.textContent = 'Смен на этот день пока нет. Можно добавить новую запись прямо отсюда.';
+        contentEl.innerHTML = '<div class="home-calendar-day-empty">На этот день записей нет.</div>';
+        return;
+      }
+      var bounds = typeof getMonthBounds === 'function' ? getMonthBounds(currentYear, currentMonth) : null;
+      var shiftIncomeMap = currentMonthShiftIncomeMap || Object.create(null);
+      var durationLevelMap = typeof buildMonthShiftDurationLevelMap === 'function'
+        ? buildMonthShiftDurationLevelMap(shifts, bounds)
+        : null;
+      var totalMinutes = 0;
+      for (var i = 0; i < shifts.length; i++) {
+        totalMinutes += getShiftMinutesForDisplay(shifts[i], bounds);
+      }
+      noteEl.textContent = shifts.length > 1
+        ? ('Смен за день: ' + shifts.length + ' · всего ' + fmtMin(totalMinutes))
+        : ('Смена за день · ' + fmtMin(totalMinutes));
+      var html = '';
+      for (var si = 0; si < shifts.length; si++) {
+        html += buildShiftItemHtml(shifts[si], true, null, shiftIncomeMap, bounds, durationLevelMap);
+      }
+      contentEl.innerHTML = html;
+      if (!opts.skipBind) bindShiftListDetailHandlers(contentEl);
+    }
+
+    function bindHomeCalendarHandlers(gridEl) {
+      if (!gridEl || gridEl.dataset.calendarBound === '1') return;
+      gridEl.dataset.calendarBound = '1';
+      gridEl.addEventListener('click', function(e) {
+        var target = e.target && e.target.nodeType === 1 ? e.target.closest('.home-calendar-day[data-date-key]') : null;
+        if (!target || !gridEl.contains(target)) return;
+        var dateKey = target.getAttribute('data-date-key');
+        if (!dateKey) return;
+        triggerHapticTapLight();
+        var shifts = getManualShiftsForDate(dateKey);
+        if (shifts.length) {
+          renderHomeCalendarDaySheet(dateKey);
+          openOverlay('overlayHomeCalendarDay');
+          return;
+        }
+        openAddShiftForDate(dateKey);
+      });
+    }
+
+    function renderHomeCalendar() {
+      var gridEl = document.getElementById('homeCalendarGrid');
+      if (!gridEl) return;
+      bindHomeCalendarHandlers(gridEl);
+      var firstOfMonth = new Date(currentYear, currentMonth, 1);
+      var monthDays = new Date(currentYear, currentMonth + 1, 0).getDate();
+      var startWeekday = (firstOfMonth.getDay() + 6) % 7;
+      var todayKey = typeof getTodayDateKey === 'function' ? getTodayDateKey() : '';
+      var html = '';
+      for (var prev = startWeekday; prev > 0; prev--) {
+        html += buildHomeCalendarDayButtonHtml(new Date(currentYear, currentMonth, 1 - prev), false, todayKey);
+      }
+      for (var day = 1; day <= monthDays; day++) {
+        html += buildHomeCalendarDayButtonHtml(new Date(currentYear, currentMonth, day), true, todayKey);
+      }
+      var totalCells = startWeekday + monthDays;
+      var trailing = totalCells % 7 === 0 ? 0 : (7 - (totalCells % 7));
+      for (var next = 1; next <= trailing; next++) {
+        html += buildHomeCalendarDayButtonHtml(new Date(currentYear, currentMonth + 1, next), false, todayKey);
+      }
+      gridEl.innerHTML = html;
+    }
+
     function isScheduleHolidayDate(dateKey) {
       var safeDate = typeof normalizeDateKey === 'function' ? normalizeDateKey(dateKey) : String(dateKey || '');
       if (!safeDate) return false;
@@ -633,6 +797,7 @@
         currentMonth = targetMonth;
         render();
       });
+      renderHomeCalendar();
 
       var bounds = getMonthBounds(currentYear, currentMonth);
       var _renderPendingMap = getPendingShiftIdMap();
@@ -773,6 +938,11 @@
       renderSalaryPanel();
       renderInstallPromptCard();
       renderInstructionsScreen();
+
+      var homeCalendarDayOverlayEl = document.getElementById('overlayHomeCalendarDay');
+      if (homeCalendarDayOverlayEl && homeCalendarDayOverlayEl.classList.contains('is-open') && selectedHomeCalendarDateKey) {
+        renderHomeCalendarDaySheet(selectedHomeCalendarDateKey, { skipBind: false });
+      }
 
       if (shiftDetailState.isOpen || shiftDetailState.isAnimating) {
         if (shiftDetailState.shiftId && findShiftById(shiftDetailState.shiftId)) {

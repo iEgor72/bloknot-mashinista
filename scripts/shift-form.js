@@ -991,6 +991,20 @@ if (action === 'scroll-node') {
       closeOverlay('overlayAddScreen');
     });
 
+    bindClickById('btnHomeCalendarDayClose', function() {
+      closeOverlay('overlayHomeCalendarDay');
+    });
+
+    bindClickById('btnHomeCalendarDayOpenJournal', function(e) {
+      var button = e && e.currentTarget ? e.currentTarget : document.getElementById('btnHomeCalendarDayOpenJournal');
+      var dateKey = button && button.dataset ? button.dataset.dateKey : '';
+      var shiftId = button && button.dataset ? button.dataset.shiftId : '';
+      if (!dateKey) return;
+      triggerHapticSelection();
+      closeOverlay('overlayHomeCalendarDay');
+      openShiftsForDate(dateKey, shiftId || '');
+    });
+
     var openInstallUrlBtn = document.getElementById('btnOpenInstallUrl');
     if (openInstallUrlBtn) {
       openInstallUrlBtn.textContent = INSTALL_GUIDE_COPY.buttons.open;
