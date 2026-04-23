@@ -1261,9 +1261,12 @@
       if (!isScheduleMaterializedShift(shift)) return null;
       var anchorDateKey = getScheduleShiftAnchorDateKey(shift);
       if (!anchorDateKey) return null;
+      var activePeriod = getActiveSchedulePeriod(anchorDateKey);
       return {
         anchorDateKey: anchorDateKey,
-        periodId: shift && shift.schedule_period_id ? String(shift.schedule_period_id) : '',
+        periodId: shift && shift.schedule_period_id
+          ? String(shift.schedule_period_id)
+          : (activePeriod && activePeriod.id ? String(activePeriod.id) : ''),
         code: normalizeScheduleCode(shift && shift.schedule_code)
       };
     }
@@ -1774,6 +1777,10 @@
       var overrides = getScheduleOverrides();
       var code = normalizeScheduleCode(payload && payload.code);
       var periodId = payload && payload.periodId ? String(payload.periodId).trim() : '';
+      if (!periodId) {
+        var activePeriod = getActiveSchedulePeriod(safeDate);
+        periodId = activePeriod && activePeriod.id ? String(activePeriod.id).trim() : '';
+      }
       if (!code || code === 'AUTO' || !periodId) {
         delete overrides[safeDate];
       } else {

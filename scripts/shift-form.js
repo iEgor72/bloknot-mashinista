@@ -669,7 +669,12 @@
         : '';
       var suppressScheduleSourcePeriodId = existingShift && existingShift.schedule_period_id
         ? String(existingShift.schedule_period_id)
-        : '';
+        : (suppressScheduleSourceDateKey && typeof getActiveSchedulePeriod === 'function'
+          ? (function() {
+              var period = getActiveSchedulePeriod(suppressScheduleSourceDateKey);
+              return period && period.id ? String(period.id) : '';
+            })()
+          : '');
 
       if (isEditing) {
         var replaced = false;
