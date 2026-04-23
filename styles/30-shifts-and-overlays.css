@@ -291,12 +291,7 @@
     }
 
     .shift-card-section-title {
-      font-size: 9px;
-      font-weight: 800;
-      letter-spacing: 0.1em;
-      text-transform: uppercase;
-      color: rgba(128, 138, 154, 0.72);
-      padding: 0 2px;
+      display: none;
     }
 
     .shift-card-section-body {
@@ -529,12 +524,19 @@
       padding-top: 0;
     }
 
-    .shift-tech-badge {
+    .shift-tech-grid {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 6px;
+      width: 100%;
+      min-width: 0;
+    }
+
+    .shift-tech-grid-item {
       display: inline-flex;
       align-items: center;
       gap: 6px;
       min-width: 0;
-      max-width: 100%;
       padding: 6px 9px;
       border-radius: 999px;
       background: rgba(168, 85, 247, 0.10);
@@ -546,20 +548,7 @@
       overflow: hidden;
     }
 
-    .shift-tech-badge-part {
-      display: inline-flex;
-      align-items: center;
-      gap: 5px;
-      min-width: 0;
-      flex-shrink: 1;
-    }
-
-    .shift-tech-badge-sep {
-      flex-shrink: 0;
-      color: rgba(220, 203, 252, 0.58);
-    }
-
-    .shift-tech-badge-icon {
+    .shift-tech-grid-icon {
       display: inline-flex;
       align-items: center;
       justify-content: center;
@@ -567,7 +556,7 @@
       color: rgba(226, 214, 255, 0.88);
     }
 
-    .shift-tech-badge-text {
+    .shift-tech-grid-text {
       min-width: 0;
       overflow: hidden;
       text-overflow: ellipsis;
@@ -627,7 +616,7 @@
     .shift-income-row {
       display: flex;
       align-items: center;
-      justify-content: space-between;
+      justify-content: flex-start;
       flex-wrap: wrap;
       gap: 8px;
       padding-top: 0;
@@ -637,6 +626,50 @@
 
     .shift-card-section-income .shift-income-row {
       align-items: stretch;
+    }
+
+    .shift-money-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      min-width: 0;
+      max-width: 100%;
+      padding: 7px 12px;
+      border-radius: 999px;
+      background: rgba(16, 185, 129, 0.1);
+      border: 1px solid rgba(16, 185, 129, 0.18);
+      box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.03);
+      color: rgba(214, 255, 240, 0.96);
+      font-variant-numeric: tabular-nums;
+    }
+
+    .shift-money-badge-icon {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+      color: rgba(167, 243, 208, 0.92);
+    }
+
+    .shift-money-badge-label {
+      white-space: nowrap;
+      font-size: 11px;
+      font-weight: 700;
+      color: rgba(190, 251, 220, 0.92);
+    }
+
+    .shift-money-badge-sep {
+      flex-shrink: 0;
+      color: rgba(167, 243, 208, 0.58);
+    }
+
+    .shift-money-badge-value {
+      white-space: nowrap;
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 16px;
+      font-weight: 700;
+      letter-spacing: -0.01em;
+      color: var(--green);
     }
 
     .shift-card-actions {
@@ -1038,7 +1071,6 @@
     .compact-shift .shift-income-row-label-content { padding: 6px 8px; }
     .compact-shift .shift-card-section { padding-top: 7px; gap: 5px; }
     .compact-shift .shift-card-section:first-child { padding-top: 0; }
-    .compact-shift .shift-card-section-title { font-size: 8px; letter-spacing: 0.08em; }
     .compact-shift .shift-income-chip {
       font-size: 14px;
       padding: 6px 10px;
@@ -1073,9 +1105,11 @@
       gap: 6px;
     }
 
-    .compact-shift .shift-tech-part {
-      padding: 5px 8px;
-    }
+    .compact-shift .shift-tech-grid { gap: 5px; }
+    .compact-shift .shift-tech-grid-item { padding: 5px 8px; }
+    .compact-shift .shift-money-badge { padding: 6px 10px; }
+    .compact-shift .shift-money-badge-label { font-size: 10px; }
+    .compact-shift .shift-money-badge-value { font-size: 14px; }
     .compact-shift .shift-fuel-note { font-size: 10px; }
     .compact-shift .shift-inline-icon { width: 12px; height: 12px; }
     .compact-shift .shift-actions-trigger { width: 30px; height: 30px; }
