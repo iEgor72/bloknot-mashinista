@@ -876,6 +876,35 @@
       box-shadow: none;
     }
 
+    .schedule-day-boundary {
+      position: absolute;
+      inset: auto 6px 6px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      pointer-events: none;
+      font-size: 11px;
+      line-height: 1;
+      font-weight: 800;
+      color: rgba(238, 242, 248, 0.78);
+    }
+
+    .schedule-day-boundary-marker {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      min-width: 10px;
+      text-shadow: 0 1px 0 rgba(12, 12, 16, 0.55);
+    }
+
+    .schedule-day-boundary-marker.is-before {
+      margin-right: auto;
+    }
+
+    .schedule-day-boundary-marker.is-after {
+      margin-left: auto;
+    }
+
     .schedule-legend {
       display: flex;
       flex-wrap: wrap;
@@ -910,7 +939,6 @@
 
     .schedule-legend-dot.is-day { background: #22c55e; }
     .schedule-legend-dot.is-night { background: var(--accent); }
-    .schedule-legend-dot.is-rest { background: #94a3b8; }
     .schedule-legend-dot.is-holiday { background: #f472b6; }
     .schedule-legend-dot.is-record {
       width: 6px;

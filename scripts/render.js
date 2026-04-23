@@ -610,16 +610,61 @@
       return dayOfWeek === 0 || dayOfWeek === 6 || isScheduleHolidayDate(dateKey);
     }
 
+    function getManualCalendarShiftSegmentsForDate(dateKey) {
+      var safeDate = typeof normalizeDateKey === 'function' ? normalizeDateKey(dateKey) : String(dateKey || '');
+      if (!safeDate) return [];
+      var result = [];
+      for (var i = 0; i < allShifts.length; i++) {
+        var shift = allShifts[i];
+        if (!shift || (typeof isScheduleMaterializedShift === 'function' && isScheduleMaterializedShift(shift))) continue;
+        var startDate = typeof getShiftStartDateKey === 'function' ? getShiftStartDateKey(shift) : '';
+        var endDate = typeof normalizeDateKey === 'function'
+          ? normalizeDateKey(shift && shift.end_msk ? String(shift.end_msk).substring(0, 10) : '')
+          : '';
+        if (!startDate) continue;
+        endDate = endDate || startDate;
+        if (typeof compareDateKeys === 'function' && (compareDateKeys(startDate, safeDate) > 0 || compareDateKeys(endDate, safeDate) < 0)) continue;
+        var workedCode = typeof inferWorkedScheduleCodeFromShift === 'function'
+          ? inferWorkedScheduleCodeFromShift(shift)
+          : '';
+        result.push({
+          shift: shift,
+          workedCode: workedCode,
+          isStartDay: startDate === safeDate,
+          isEndDay: endDate === safeDate,
+          continuesBefore: startDate !== safeDate,
+          continuesAfter: endDate !== safeDate
+        });
+      }
+      result.sort(function(a, b) {
+        return compareShiftsByStartDesc(a.shift, b.shift);
+      });
+      return result;
+    }
+
     function getScheduleCellClass(dayState) {
       if (!dayState) return '';
       var cls = '';
       var code = dayState.effectiveCode || dayState.plannedCode || '';
       if (code === 'D') cls += ' is-day';
       else if (code === 'N') cls += ' is-night';
-      else if (code === 'V') cls += ' is-rest';
       if (dayState.hasFact) cls += ' has-fact';
-      if (isScheduleCalendarOffDay(dayState.dateKey)) cls += ' is-holiday';
+      if (dayState.continuesBefore) cls += ' continues-before';
+      if (dayState.continuesAfter) cls += ' continues-after';
       return cls;
+    }
+
+    function buildScheduleBoundaryMarkers(dayState) {
+      if (!dayState || !dayState.hasFact || (!dayState.continuesBefore && !dayState.continuesAfter)) return '';
+      var parts = ['<span class="schedule-day-boundary" aria-hidden="true">'];
+      if (dayState.continuesBefore) {
+        parts.push('<span class="schedule-day-boundary-marker is-before">◂</span>');
+      }
+      if (dayState.continuesAfter) {
+        parts.push('<span class="schedule-day-boundary-marker is-after">▸</span>');
+      }
+      parts.push('</span>');
+      return parts.join('');
     }
 
     function renderHomeScheduleCard() {
@@ -639,29 +684,36 @@
 
       for (var day = 1; day <= daysInMonth; day++) {
         var dateKey = currentYear + '-' + String(currentMonth + 1).padStart(2, '0') + '-' + String(day).padStart(2, '0');
-        var factShifts = typeof getManualFactShiftsForDate === 'function' ? getManualFactShiftsForDate(dateKey) : [];
-        var workedCode = factShifts.length && typeof inferWorkedScheduleCodeFromShift === 'function'
-          ? inferWorkedScheduleCodeFromShift(factShifts[0])
-          : '';
+        var factSegments = getManualCalendarShiftSegmentsForDate(dateKey);
+        var primarySegment = factSegments.length ? factSegments[0] : null;
+        var factShifts = [];
+        for (var fs = 0; fs < factSegments.length; fs++) factShifts.push(factSegments[fs].shift);
+        var workedCode = primarySegment ? primarySegment.workedCode : '';
         var dayState = {
           dateKey: dateKey,
           factShifts: factShifts,
-          hasFact: factShifts.length > 0,
+          hasFact: factSegments.length > 0,
           effectiveCode: workedCode,
           plannedCode: '',
-          workedCode: workedCode
+          workedCode: workedCode,
+          continuesBefore: !!(primarySegment && primarySegment.continuesBefore),
+          continuesAfter: !!(primarySegment && primarySegment.continuesAfter)
         };
         var dayClass = 'schedule-day-cell' + getScheduleCellClass(dayState) + (dateKey === todayKey ? ' is-today' : '');
         var badge = getScheduleVisualLabel(workedCode);
         var badgeHtml = badge
           ? '<span class="schedule-day-badge">' + escapeHtml(badge) + '</span>'
           : '';
+        var boundaryHtml = buildScheduleBoundaryMarkers(dayState);
         var ariaParts = [formatScheduleDateLabel(dateKey)];
         if (workedCode) ariaParts.push(formatScheduleCodeLabel(workedCode));
-        if (isScheduleCalendarOffDay(dateKey)) ariaParts.push('календарный выходной');
+        if (dayState.continuesBefore && dayState.continuesAfter) ariaParts.push('смена продолжается через этот день');
+        else if (dayState.continuesBefore) ariaParts.push('смена продолжается с прошлого дня');
+        else if (dayState.continuesAfter) ariaParts.push('смена переходит на следующий день');
         html += '<div class="' + dayClass + '" aria-label="' + escapeHtml(ariaParts.join('. ')) + '">' +
           '<span class="schedule-day-number">' + day + '</span>' +
           badgeHtml +
+          boundaryHtml +
         '</div>';
       }
       calendarEl.innerHTML = html;
