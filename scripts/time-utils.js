@@ -201,6 +201,19 @@
       return total;
     }
 
+    function inferShiftWorkCodeByLocalTime(shift) {
+      if (!shift) return '';
+      var explicitCode = typeof normalizeScheduleCode === 'function'
+        ? normalizeScheduleCode(shift.schedule_code || shift.code || '')
+        : '';
+      if (explicitCode === 'V') return 'V';
+      var totalMin = shiftTotalMinutes(shift);
+      if (totalMin <= 0) return explicitCode;
+      var nightMin = shiftNightMinutesInRange(shift, -8640000000000000, 8640000000000000);
+      var dayMin = Math.max(0, totalMin - nightMin);
+      return nightMin >= dayMin ? 'N' : 'D';
+    }
+
     function shiftHolidayMinutesInRange(shift, boundsStart, boundsEnd) {
       var s = parseMsk(shift.start_msk);
       var e = parseMsk(shift.end_msk);

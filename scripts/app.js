@@ -1385,6 +1385,9 @@
 
     function inferWorkedScheduleCodeFromShift(shift) {
       if (!shift) return '';
+      if (typeof inferShiftWorkCodeByLocalTime === 'function') {
+        return inferShiftWorkCodeByLocalTime(shift);
+      }
       var explicitCode = normalizeScheduleCode(shift.schedule_code || shift.code || '');
       if (explicitCode === 'D' || explicitCode === 'N' || explicitCode === 'V') return explicitCode;
       var startDate = normalizeDateKey(shift.start_msk ? String(shift.start_msk).substring(0, 10) : '');
@@ -1427,7 +1430,7 @@
       var safeStart = normalizeTimeValue(startTime, '01:00');
       var safeEnd = normalizeTimeValue(endTime, '13:00');
       var endDate = buildPresetShiftEndDate(safeDate, safeStart, safeEnd);
-      return {
+      var shift = {
         id: 'schedule_' + String(period.id || 'period') + '_' + safeDate,
         start_msk: safeDate + 'T' + safeStart,
         end_msk: endDate + 'T' + safeEnd,
@@ -1438,6 +1441,10 @@
         schedule_period_id: String(period.id || ''),
         scheduleDateKey: safeDate
       };
+      if (typeof inferShiftWorkCodeByLocalTime === 'function') {
+        shift.schedule_code = inferShiftWorkCodeByLocalTime(shift) || shift.schedule_code;
+      }
+      return shift;
     }
 
     function buildScheduleDerivedShift(dateKey, dayState) {

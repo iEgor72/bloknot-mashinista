@@ -1,9 +1,10 @@
 # Recent Commits
 
-Generated: 2026-04-22 23:20:55 +0000
+Generated: 2026-04-22 23:59:20 +0000
 
 | Hash | Date | Author | Message |
 | --- | --- | --- | --- |
+| `c4dc586` | 2026-04-22T23:59:19+00:00 | iEgor72 | fix(schedule): avoid double-inverting night shifts |
 | `17f98c4` | 2026-04-22T23:20:52+00:00 | iEgor72 | fix(schedule): invert generated night shift hours |
 | `4f1d1b5` | 2026-04-22T11:37:07+00:00 | iEgor72 | copy(docs): adjust reminders subtitle |
 | `4f8825e` | 2026-04-22T11:35:38+00:00 | iEgor72 | copy(docs): adjust speeds and memos subtitles |
@@ -43,4 +44,3 @@ Generated: 2026-04-22 23:20:55 +0000
 | `5704739` | 2026-04-22T03:38:21+00:00 | iEgor72 | fix(schedule): remove nested card chrome in day sheet |
 | `672346b` | 2026-04-22T03:24:49+00:00 | iEgor72 | fix(schedule): remove duplicate empty day copy |
 | `e4ef955` | 2026-04-22T03:22:47+00:00 | iEgor72 | copy(schedule): simplify day sheet fact wording |
-| `4167d8c` | 2026-04-22T03:20:26+00:00 | iEgor72 | refactor(schedule): simplify day sheet header |

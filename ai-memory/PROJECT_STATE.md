@@ -1,14 +1,14 @@
 # Project State
 
 <!-- AUTO_STATUS:START -->
-Generated: 2026-04-22 23:20:55 +0000
+Generated: 2026-04-22 23:59:20 +0000
 
 ## Repository Snapshot
 - Local repo path: `/opt/bloknot-mashinista`
 - Project memory path: `/opt/bloknot-mashinista/ai-memory`
 - Branch: `main`
-- HEAD: `17f98c4`
-- Last commit: `17f98c4 fix(schedule): invert generated night shift hours`
+- HEAD: `c4dc586`
+- Last commit: `c4dc586 fix(schedule): avoid double-inverting night shifts`
 
 ## Git Remote
 ```text
@@ -18,7 +18,7 @@ origin	https://github.com/iEgor72/bloknot-mashinista.git (push)
 
 ## Branch Tracking
 ```text
-* main 17f98c4 [origin/main] fix(schedule): invert generated night shift hours
+* main c4dc586 [origin/main] fix(schedule): avoid double-inverting night shifts
 ```
 
 ## Worktree

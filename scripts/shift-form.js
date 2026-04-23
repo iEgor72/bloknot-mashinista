@@ -655,6 +655,9 @@
         fuel_handover_liters_b: optionalData.fuel_handover_liters_b,
         fuel_handover_liters_v: optionalData.fuel_handover_liters_v
       };
+      if (typeof inferShiftWorkCodeByLocalTime === 'function') {
+        shift.code = inferShiftWorkCodeByLocalTime(shift) || '';
+      }
 
       var suppressScheduleSourceDateKey = typeof shouldSuppressScheduleSourceDayOnEdit === 'function'
         ? shouldSuppressScheduleSourceDayOnEdit(existingShift, shift)
