@@ -952,11 +952,13 @@
         if (!dateKey) continue;
         var item = source[keys[i]] || {};
         var code = normalizeScheduleCode(item.code);
-        if (!code || code === 'AUTO') continue;
+        var periodId = item.periodId ? String(item.periodId).trim() : '';
+        if (!code || code === 'AUTO' || !periodId) continue;
         result[dateKey] = {
           code: code,
           startTime: normalizeTimeValue(item.startTime, ''),
-          endTime: normalizeTimeValue(item.endTime, '')
+          endTime: normalizeTimeValue(item.endTime, ''),
+          periodId: periodId
         };
       }
       return result;
@@ -1334,7 +1336,8 @@
           }
         }
       }
-      if (override && override.code) {
+      var canApplyOverride = !!(override && override.code && period && override.periodId && String(override.periodId) === String(period.id));
+      if (canApplyOverride) {
         plannedCode = override.code;
         source = 'override';
         hasExplicitOverrideTimes = !!(override.startTime || override.endTime);
@@ -1770,13 +1773,15 @@
       if (!safeDate) return;
       var overrides = getScheduleOverrides();
       var code = normalizeScheduleCode(payload && payload.code);
-      if (!code || code === 'AUTO') {
+      var periodId = payload && payload.periodId ? String(payload.periodId).trim() : '';
+      if (!code || code === 'AUTO' || !periodId) {
         delete overrides[safeDate];
       } else {
         overrides[safeDate] = {
           code: code,
           startTime: normalizeTimeValue(payload && payload.startTime, ''),
-          endTime: normalizeTimeValue(payload && payload.endTime, '')
+          endTime: normalizeTimeValue(payload && payload.endTime, ''),
+          periodId: periodId
         };
       }
       scheduleStore.overrides = overrides;

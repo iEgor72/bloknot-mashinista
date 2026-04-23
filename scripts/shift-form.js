@@ -201,7 +201,12 @@
       }
       allShifts = newShifts;
       if (shouldSuppressScheduleDay && typeof setScheduleDayOverride === 'function') {
-        setScheduleDayOverride(deletedDateKey, { code: 'V', startTime: '', endTime: '' });
+        setScheduleDayOverride(deletedDateKey, {
+          code: 'V',
+          startTime: '',
+          endTime: '',
+          periodId: deleteMeta && deleteMeta.periodId ? deleteMeta.periodId : ''
+        });
       }
       pendingMutationIds = [];
       if (editingShiftId === pendingDeleteId) {
@@ -662,6 +667,9 @@
       var suppressScheduleSourceDateKey = typeof shouldSuppressScheduleSourceDayOnEdit === 'function'
         ? shouldSuppressScheduleSourceDayOnEdit(existingShift, shift)
         : '';
+      var suppressScheduleSourcePeriodId = existingShift && existingShift.schedule_period_id
+        ? String(existingShift.schedule_period_id)
+        : '';
 
       if (isEditing) {
         var replaced = false;
@@ -679,7 +687,12 @@
         allShifts.push(shift);
       }
       if (suppressScheduleSourceDateKey && typeof setScheduleDayOverride === 'function') {
-        setScheduleDayOverride(suppressScheduleSourceDateKey, { code: 'V', startTime: '', endTime: '' });
+        setScheduleDayOverride(suppressScheduleSourceDateKey, {
+          code: 'V',
+          startTime: '',
+          endTime: '',
+          periodId: suppressScheduleSourcePeriodId
+        });
       }
 
       pendingMutationIds = [shiftId];

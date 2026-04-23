@@ -501,11 +501,13 @@ function sanitizeScheduleOverrides(rawOverrides) {
     const code = normalizeScheduleCode(row.code);
     const startTime = normalizeScheduleTimeValue(row.startTime);
     const endTime = normalizeScheduleTimeValue(row.endTime);
-    if (!code && !startTime && !endTime) return;
+    const periodId = row.periodId ? String(row.periodId).trim() : '';
+    if (!code || !periodId || periodId.length > MAX_SCHEDULE_ID_LENGTH) return;
     result[safeDate] = {
       code,
       startTime,
       endTime,
+      periodId,
     };
   });
   return result;
