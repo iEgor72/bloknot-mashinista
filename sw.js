@@ -1,4 +1,4 @@
-const CACHE_VERSION = 'v49';
+const CACHE_VERSION = 'v50';
 const CACHE_NAME = `shift-tracker-shell-${CACHE_VERSION}`;
 const NAVIGATION_FALLBACK_URL = '/index.html';
 const NETWORK_TIMEOUT_MS = 1200;

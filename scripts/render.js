@@ -649,6 +649,7 @@
       if (code === 'D') cls += ' is-day';
       else if (code === 'N') cls += ' is-night';
       if (dayState.hasFact) cls += ' has-fact';
+      if (dayState.isCalendarOffDay) cls += ' is-holiday';
       if (dayState.continuesBefore) cls += ' continues-before';
       if (dayState.continuesAfter) cls += ' continues-after';
       return cls;
@@ -696,6 +697,7 @@
           effectiveCode: workedCode,
           plannedCode: '',
           workedCode: workedCode,
+          isCalendarOffDay: isScheduleCalendarOffDay(dateKey),
           continuesBefore: !!(primarySegment && primarySegment.continuesBefore),
           continuesAfter: !!(primarySegment && primarySegment.continuesAfter)
         };
