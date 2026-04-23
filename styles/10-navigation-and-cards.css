@@ -360,17 +360,12 @@
       position: absolute;
       top: 8px;
       right: 8px;
-      color: rgba(255, 255, 255, 0.78);
+      color: rgba(255, 255, 255, 0.96);
       font-size: 11px;
       font-weight: 800;
       line-height: 1;
       letter-spacing: -0.01em;
       z-index: 1;
-    }
-
-    .home-calendar-day.is-weekend .home-calendar-day-count,
-    .home-calendar-day.is-holiday .home-calendar-day-count {
-      color: rgba(254, 202, 202, 0.92);
     }
 
     .home-calendar-day-arrows {
