@@ -912,10 +912,10 @@
       renderShiftList(
         document.getElementById('homeShiftsList'),
         document.getElementById('homeShiftsHeader'),
-        visibleManualShifts.slice(0, 3),
+        visibleManualShifts.slice(0, 1),
         true,
-        'Пока здесь пусто. Добавь первую смену вручную, и последние записи появятся здесь.',
-        'Последние смены',
+        'Пока здесь пусто. Добавь первую смену вручную, и последняя запись появится здесь.',
+        'Последняя смена',
         _renderPendingMap,
         shiftIncomeMap,
         bounds,
