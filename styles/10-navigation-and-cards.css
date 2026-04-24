@@ -419,6 +419,16 @@
       color: rgba(255, 255, 255, 0.9);
     }
 
+    .home-calendar-latest-shift {
+      margin-top: 6px;
+      padding-top: 12px;
+      border-top: 1px solid var(--border);
+    }
+
+    .home-calendar-latest-shift-header {
+      margin-bottom: 10px;
+    }
+
     .home-calendar-day-sheet {
       display: grid;
       gap: 14px;
