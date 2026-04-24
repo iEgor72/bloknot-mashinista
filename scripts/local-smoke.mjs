@@ -4,9 +4,10 @@ import fs from 'node:fs';
 import path from 'node:path';
 import process from 'node:process';
 import { setTimeout as delay } from 'node:timers/promises';
+import { fileURLToPath } from 'node:url';
 import { chromium } from '@playwright/test';
 
-const repoRoot = path.resolve(path.dirname(new URL(import.meta.url).pathname), '..');
+const repoRoot = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
 const artifactsDir = path.join(repoRoot, 'artifacts', 'local-smoke');
 const port = Number(process.env.SMOKE_PORT || process.env.PORT || 4173);
 const baseUrl = `http://127.0.0.1:${port}`;

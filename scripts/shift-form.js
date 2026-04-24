@@ -468,7 +468,6 @@
     window.addEventListener('online', function() {
       updateOfflineUiState({ isOffline: false, lastSyncStatus: readPendingSnapshot() ? 'pending' : 'synced' });
       flushPendingSnapshot();
-      if (typeof flushPendingScheduleSnapshot === 'function') flushPendingScheduleSnapshot();
       refreshUserStats('online');
     });
     window.addEventListener('offline', function() {
@@ -485,13 +484,12 @@
         updateOfflineUiState({ isOffline: !navigator.onLine, hasPending: !!readPendingSnapshot() });
         if (navigator.onLine) {
           flushPendingSnapshot();
-          if (typeof flushPendingScheduleSnapshot === 'function') flushPendingScheduleSnapshot();
           refreshUserStats('visibility');
         } else {
           applyUserStatsOfflineFallback();
         }
         renderInstallPromptCard();
-        renderInstructionsScreen();
+        renderDocumentationScreen();
       }
     });
 
@@ -500,9 +498,6 @@
     setInterval(function() {
       if (navigator.onLine && readPendingSnapshot() && !offlineUiState.isSyncing) {
         flushPendingSnapshot();
-      }
-      if (navigator.onLine && typeof readPendingScheduleSnapshot === 'function' && readPendingScheduleSnapshot()) {
-        flushPendingScheduleSnapshot();
       }
     }, 30000);
     var inputRouteFromEl = document.getElementById('inputRouteFrom');
@@ -809,36 +804,6 @@
     function getSegmentedValue(containerId, fallback) {
       var active = document.querySelector('#' + containerId + ' .segmented-btn.active');
       return active ? active.getAttribute('data-value') : fallback;
-    }
-
-    var instructionsShellEl = document.getElementById('instructionsShell');
-    if (instructionsShellEl) {
-      instructionsShellEl.addEventListener('click', function(e) {
-        var trigger = e.target.closest('[data-action]');
-        if (!trigger) return;
-        var action = trigger.getAttribute('data-action');
-        if (action === 'open-instruction') {
-  openInstructionDetail(trigger.getAttribute('data-instruction-id'));
-  return;
-}
-if (action === 'open-section') {
-  openInstructionSection(
-    trigger.getAttribute('data-instruction-id'),
-    trigger.getAttribute('data-section-id')
-  );
-  return;
-}
-if (action === 'open-ref') {
-  openInstructionReference(
-    trigger.getAttribute('data-instruction-id'),
-    trigger.getAttribute('data-target-number')
-  );
-  return;
-}
-if (action === 'scroll-node') {
-  scrollToInstructionNodeAnchor(trigger.getAttribute('data-section-id'));
-}
-      });
     }
 
     var unlockDocsProBtn = document.getElementById('btnUnlockDocsPro');

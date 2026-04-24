@@ -13,7 +13,7 @@ Generated: 2026-04-17 23:20 +10:00
 - Prefer existing plain JS/global script patterns; do not introduce bundlers or module systems casually.
 - Preserve `index.html` script load order unless the change explicitly handles dependent globals.
 - For frontend changes, preserve Telegram WebApp behavior, mobile viewport handling, PWA/offline behavior, and local pending mutation contracts.
-- For backend changes, keep JSON API envelopes and `no-store` cache behavior consistent with existing `functions/api/*` handlers.
+- For backend changes, keep JSON API envelopes and `no-store` cache behavior consistent with active `server.js` handlers.
 - Keep edits scoped; avoid unrelated refactors and generated asset churn.
 
 ## Search / Analysis Method
@@ -45,7 +45,7 @@ cd /opt/bloknot-mashinista && git pull --ff-only origin main && pm2 reload blokn
 ## Existing Project Methods
 - Telegram WebApp auth uses `initData` verification.
 - Browser auth uses Telegram Login Widget callback through `/api/auth?mode=telegram-login`.
-- Active production backend flow runs through VPS `server.js`; do not assume Cloudflare handlers are live in production just because `functions/api/*` exists.
+- Active production backend flow runs through VPS `server.js`; legacy Cloudflare handlers were removed on 2026-04-25.
 - Shift sync uses authenticated `/api/shifts` calls with bearer token/session cookie.
 - Offline handling uses service worker shell caching plus frontend pending mutation queue.
 - Instructions search uses Russian stemming and fuzzy matching.

@@ -104,20 +104,6 @@
       activeTab: 'instructions',
       activeEntry: ''
     };
-    // Future document model (populate when remote files are added):
-    // { id, title, category: 'folders'|'instructions'|'memos'|'regimki',
-    //   remoteUrl, fileName, isDownloaded }
-    var documentationItems = {
-      folders:      [],
-      instructions: [],
-      memos:        [],
-      regimki:      [],
-      speeds:       []
-    };
-    var instructionsStore = { status: 'idle', instructions: [], searchDocs: [],
-      preparedSearchDocs: [], preparedSearchDocsKey: '', searchResults: [],
-      searchAnswer: null, searchQuery: '', view: 'list',
-      selectedInstructionId: '', selectedSectionId: '', loadPromise: null };
     var SHIFTS_CACHE_STORAGE_KEY = 'shift_tracker_shifts_cache_v1';
     var SHIFTS_PENDING_STORAGE_KEY = 'shift_tracker_shifts_pending_v1';
     var SHIFTS_META_STORAGE_KEY = 'shift_tracker_shifts_meta_v1';
@@ -1635,7 +1621,6 @@
       if (baseList) baseList.innerHTML = baseRows.join('');
       if (coeffList) coeffList.innerHTML = coeffRows.join('');
     }
-    // ── Instructions — see scripts/instructions-app.js ──
     // ── Documentation & PDF Viewer — see scripts/docs-app.js ──
     var saveToastHideTimer = null;
     var ACTION_TOAST_CONFIG = {
@@ -1835,9 +1820,6 @@
 
       loadDocFiles(documentationStore.activeTab);
     }
-
-    // Alias so any leftover internal calls still resolve without throwing.
-    function renderInstructionsScreen() { renderDocumentationScreen(); }
 
     // ── Auth / Session — see scripts/auth.js ──
     // ── Load / Save shifts ──

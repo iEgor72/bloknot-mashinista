@@ -13,11 +13,11 @@ Styles are loaded in this order from [`index.html`](/D:/work/bloknot-mashinista-
 ## Notes
 
 - `00-base.css`: tokens, root variables, base reset, auth shell.
-- `10-navigation-and-cards.css`: month navigation and dashboard cards.
+- `10-navigation-and-cards.css`: month navigation, dashboard, home calendar and cards.
 - `15-bottom-nav.css`: isolated bottom navigation component styles.
 - `16-press-feedback.css`: touch/press interaction feedback.
 - `20-form-and-stats.css`: form blocks, stats and inputs.
-- `30-shifts-and-overlays.css`: shifts list, overlays, dialogs and footer components.
+- `30-shifts-and-overlays.css`: shifts list, document viewer, overlays, dialogs, sheets and footer components.
 - `40-premium-refresh.css`: final visual override layer for premium/glow styling and nested blur cleanup.
 
-Bottom navigation positioning variables are declared in `00-base.css` and consumed by selectors in `10-navigation-and-cards.css`.
+Bottom navigation positioning variables are declared in `00-base.css` and consumed by selectors in later layers.

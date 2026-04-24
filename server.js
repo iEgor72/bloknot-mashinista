@@ -426,6 +426,11 @@ function getUserFile(sid) {
   return path.join(USERS_DIR, `${normalizeSid(sid)}.json`);
 }
 
+function getUserSalaryParamsFile(sid) {
+  ensureDirs();
+  return path.join(SALARY_PARAMS_DIR, `${normalizeSid(sid)}.json`);
+}
+
 function sanitizeAndValidateSalaryParamsPayload(payload) {
   if (!payload || typeof payload !== 'object' || Array.isArray(payload)) {
     throw new Error('Expected JSON object payload');

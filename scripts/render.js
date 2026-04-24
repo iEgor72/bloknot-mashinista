@@ -937,7 +937,7 @@
 
       renderSalaryPanel();
       renderInstallPromptCard();
-      renderInstructionsScreen();
+      renderDocumentationScreen();
 
       var homeCalendarDayOverlayEl = document.getElementById('overlayHomeCalendarDay');
       if (homeCalendarDayOverlayEl && homeCalendarDayOverlayEl.classList.contains('is-open') && selectedHomeCalendarDateKey) {

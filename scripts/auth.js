@@ -3,7 +3,6 @@
     var SHIFTS_API_URL = API_BASE_URL + '/api/shifts';
     var SALARY_PARAMS_API_URL = API_BASE_URL + '/api/salary-params';
     var USER_STATS_API_URL = API_BASE_URL + '/api/stats';
-    var DOCS_API_URL = API_BASE_URL + '/api/docs';
     var TELEGRAM_BOT_USERNAME = 'bloknot_mashinista_bot';
     var CURRENT_USER = null;
     var AUTH_GATE = document.getElementById('authGate');
@@ -349,7 +348,7 @@
       scheduleBottomNavHeightSync();
       updateFooter();
       renderInstallPromptCard();
-      renderInstructionsScreen();
+      renderDocumentationScreen();
       if (navigator.onLine) {
         refreshUserStats('auth');
       } else {
@@ -429,7 +428,7 @@
       updateFooter();
       renderInstallPromptCard();
       handleTabActivated(activeTab);
-      renderInstructionsScreen();
+      renderDocumentationScreen();
       if (activeTab === 'home') {
         revealShiftListOnFirstMount(document.getElementById('homeShiftsList'));
       } else if (activeTab === 'shifts') {

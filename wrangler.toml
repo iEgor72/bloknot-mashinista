@@ -1,9 +1,0 @@
-name = "shift-tracker-app"
-pages_build_output_dir = "."
-compatibility_date = "2026-04-03"
-compatibility_flags = ["nodejs_compat"]
-
-[[d1_databases]]
-binding = "DB"
-database_name = "bloknot_mashinista_db"
-database_id = "26887757-757b-4aa2-8f32-167968a0bdec"

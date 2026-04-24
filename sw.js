@@ -1,4 +1,4 @@
-const CACHE_VERSION = 'v50';
+const CACHE_VERSION = 'v51';
 const CACHE_NAME = `shift-tracker-shell-${CACHE_VERSION}`;
 const NAVIGATION_FALLBACK_URL = '/index.html';
 const NETWORK_TIMEOUT_MS = 1200;
@@ -25,7 +25,6 @@ const INSTALL_SHELL_URLS = [
   '/styles/16-press-feedback.css',
   '/styles/20-form-and-stats.css',
   '/styles/30-shifts-and-overlays.css',
-  '/styles/35-timer.css',
   '/styles/40-premium-refresh.css',
   '/manifest.webmanifest',
   '/apple-touch-icon.png',
@@ -39,7 +38,6 @@ const INSTALL_SHELL_URLS = [
   '/scripts/app-constants.js',
   '/scripts/viewport.js',
   '/scripts/time-utils.js',
-  '/scripts/instructions-app.js',
   '/scripts/docs-app.js',
   '/scripts/app.js',
   '/scripts/auth.js',
@@ -57,7 +55,6 @@ const CRITICAL_INSTALL_URLS = [
   '/styles/15-bottom-nav.css',
   '/styles/20-form-and-stats.css',
   '/styles/30-shifts-and-overlays.css',
-  '/styles/35-timer.css',
   '/styles/16-press-feedback.css',
   '/styles/40-premium-refresh.css',
   '/manifest.webmanifest',
@@ -69,7 +66,6 @@ const CRITICAL_INSTALL_URLS = [
   '/scripts/app-constants.js',
   '/scripts/viewport.js',
   '/scripts/time-utils.js',
-  '/scripts/instructions-app.js',
   '/scripts/docs-app.js',
   '/scripts/app.js',
   '/scripts/auth.js',
