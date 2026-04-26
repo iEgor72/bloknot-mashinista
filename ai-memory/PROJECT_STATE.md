@@ -1,14 +1,14 @@
 # Project State
 
 <!-- AUTO_STATUS:START -->
-Generated: 2026-04-27 09:22:42 +1000
+Generated: 2026-04-27 09:51:45 +1000
 
 ## Repository Snapshot
 - Local repo path: `D:\work\bloknot-mashinista-tg`
 - Project memory path: `D:\work\bloknot-mashinista-tg\ai-memory`
 - Branch: `main`
-- HEAD: `791297c`
-- Last commit: `791297c feat(shifts): open details from cards`
+- HEAD: `b121f90`
+- Last commit: `b121f90 fix(shifts): improve detail readability`
 
 ## Git Remote
 ```text
@@ -20,7 +20,7 @@ origin	https://github.com/iEgor72/bloknot-mashinista.git (push)
 ```text
 codex/next-direction b044dd5 offline mvp
   codex/tabs-ui        117f1fa [origin/codex/tabs-ui] tabs ui
-* main                 791297c [origin/main] feat(shifts): open details from cards
+* main                 b121f90 [origin/main] fix(shifts): improve detail readability
 ```
 
 ## Worktree

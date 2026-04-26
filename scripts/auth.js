@@ -31,7 +31,7 @@
     var AUTH_WIDGET_FALLBACK_TIMER = null;
     var authBootstrapPromise = null;
     var SESSION_STORAGE_KEY = 'shift_tracker_session_token';
-    var AUTH_ENV_STATE = isLocalAuthEnvironment() ? 'dev' : 'prod';
+    var AUTH_ENV_STATE = isLocalAuthEnvironment() ? 'dev' : (isStandalonePwaAuthEnvironment() ? 'standalone' : 'prod');
     var AUTH_STATE = 'guest';
     var AUTH_VIEWS = {
       dev: {
@@ -60,51 +60,108 @@
       },
       prod: {
         guest: {
-          badge: 'Telegram login',
-          title: 'Открой свои смены и рабочую историю',
-          message: 'Блокнот Машиниста помогает записывать смены, смотреть часы по периоду, хранить заметки и держать под рукой документы. Вход через Telegram нужен, чтобы открыть твои данные и синхронизировать их между устройствами.',
-          primary: 'Открыть бота',
-          primaryHint: 'Если открыли сайт из поиска, проще сначала зайти через бота: https://t.me/bloknot_mashinista_bot',
+          badge: 'Telegram',
+          title: 'Войти в Блокнот',
+          message: 'Открой бота, чтобы войти и синхронизировать смены между устройствами.',
+          primary: 'Открыть Telegram',
+          primaryAction: 'telegram',
+          primaryHint: 'Код внутри приложения больше не используем.',
           status: '',
-          note: 'Впервые здесь? Сначала открой бота, потом при желании можно пользоваться и в браузере.',
-          bannerTitle: 'Начать удобнее через Telegram',
-          bannerText: 'Сначала бот открывает доступ к твоим данным, потом приложение можно открыть и в браузере.',
-          bannerIcon: '↗',
+          note: 'После входа через Telegram приложение откроется уже с твоими данными.',
+          bannerTitle: 'Вход через Telegram',
+          bannerText: 'Без SMS-кода в окне приложения. Так стабильнее для PWA и браузера.',
+          bannerIcon: 'i',
           showBanner: true,
-          showWidget: true,
+          showWidget: false,
           showPrimary: true,
           showRetry: false,
           primaryBusy: false
         },
         pending: {
-          badge: 'Telegram login',
-          title: 'Подтверждаем вход',
-          message: 'Проверяем твою сессию и открываем доступ к сменам, часам и журналу.',
-          primary: 'Открыть бота',
-          primaryHint: 'Проверяем доступ и готовим вход.',
+          badge: 'Telegram',
+          title: 'Проверяем вход',
+          message: 'Смотрим, есть ли сохранённая сессия для приложения.',
+          primary: 'Открыть Telegram',
+          primaryAction: 'telegram',
+          primaryHint: 'Если проверка затянулась, открой Telegram.',
           status: 'Проверяем вход...',
-          note: 'Обычно это занимает пару секунд. Если вход затянулся, попробуйте ещё раз или откройте бота.',
-          bannerTitle: 'Подтверждаем вход',
-          bannerText: 'Смотрим, есть ли сохранённая сессия, и подготавливаем вход.',
-          bannerIcon: '…',
+          note: '',
+          showBanner: false,
+          showWidget: false,
+          showRetry: false,
+          primaryBusy: false
+        },
+        error: {
+          badge: 'Telegram',
+          title: 'Вход не прошёл',
+          message: 'Открой Telegram и запусти приложение через бота.',
+          primary: 'Открыть Telegram',
+          primaryAction: 'telegram',
+          primaryHint: 'Если Safari уже вошёл нормально, можно продолжить там.',
+          status: '',
+          note: 'Виджет с кодом отключён, чтобы не заводить в нерабочий сценарий.',
+          bannerTitle: 'Нужен внешний вход',
+          bannerText: 'Используем вход через Telegram, без SMS-кода внутри приложения.',
+          bannerIcon: '!',
           showBanner: true,
           showWidget: false,
           showRetry: false,
-          primaryBusy: true
+          primaryBusy: false
+        },
+        authenticated: {
+          showBanner: false,
+          showWidget: false,
+          showRetry: false,
+          primaryBusy: false
+        }
+      },
+      standalone: {
+        guest: {
+          badge: 'Telegram',
+          title: 'Войти в Блокнот',
+          message: 'Открой бота, чтобы войти и синхронизировать смены между устройствами.',
+          primary: 'Открыть Telegram',
+          primaryAction: 'telegram',
+          primaryHint: 'Код внутри приложения больше не используем.',
+          status: '',
+          note: 'После входа через Telegram приложение откроется уже с твоими данными.',
+          bannerTitle: 'Вход через Telegram',
+          bannerText: 'Без SMS-кода в окне приложения. Так стабильнее для PWA и браузера.',
+          bannerIcon: 'i',
+          showBanner: true,
+          showWidget: false,
+          showPrimary: true,
+          showRetry: false,
+          primaryBusy: false
+        },
+        pending: {
+          badge: 'Telegram',
+          title: 'Проверяем вход',
+          message: 'Смотрим, есть ли сохранённая сессия для приложения.',
+          primary: 'Открыть Telegram',
+          primaryAction: 'telegram',
+          primaryHint: 'Если проверка затянулась, открой Telegram.',
+          status: 'Проверяем вход...',
+          note: '',
+          showBanner: false,
+          showWidget: false,
+          showRetry: false,
+          primaryBusy: false
         },
         error: {
-          badge: 'Telegram login',
-          title: 'Не удалось выполнить вход',
-          message: 'Попробуй ещё раз или открой приложение через Telegram. Обычно через бота войти проще.',
-          primary: 'Повторить',
-          primaryHint: 'Если ошибка повторится, начни через бота: https://t.me/bloknot_mashinista_bot',
+          badge: 'Telegram',
+          title: 'Вход не прошёл',
+          message: 'Открой Telegram и запусти приложение через бота.',
+          primary: 'Открыть Telegram',
+          primaryAction: 'telegram',
+          primaryHint: 'Если Safari уже вошёл нормально, можно продолжить там.',
           status: '',
-          note: 'Нажмите «Повторить». Если ошибка повторится, откройте бота: https://t.me/bloknot_mashinista_bot',
-          bannerTitle: 'Не удалось выполнить вход',
-          bannerText: 'Если вход снова не сработает, проще начать через Telegram-бота.',
+          note: 'Виджет с кодом отключён, чтобы не заводить в нерабочий сценарий.',
+          bannerTitle: 'Нужен внешний вход',
+          bannerText: 'Используем вход через Telegram, без SMS-кода внутри приложения.',
           bannerIcon: '!',
           showBanner: true,
-          showWidget: true,
+          showWidget: false,
           showRetry: false,
           primaryBusy: false
         },
@@ -223,12 +280,30 @@
         hostname === '::1';
     }
 
+    function isStandalonePwaAuthEnvironment() {
+      try {
+        return !!(
+          (window.matchMedia && window.matchMedia('(display-mode: standalone)').matches) ||
+          window.navigator.standalone === true ||
+          (document.documentElement && document.documentElement.classList.contains('is-standalone-pwa'))
+        );
+      } catch (e) {
+        return false;
+      }
+    }
+
+    function resolveAuthEnvKey(envState) {
+      if (envState === 'dev') return 'dev';
+      if (isStandalonePwaAuthEnvironment()) return 'standalone';
+      return 'prod';
+    }
+
     function getTelegramBotUrl() {
       return 'https://t.me/' + TELEGRAM_BOT_USERNAME;
     }
 
     function getAuthView(envState, authState) {
-      var envKey = envState === 'dev' ? 'dev' : 'prod';
+      var envKey = resolveAuthEnvKey(envState);
       var authKey = AUTH_VIEWS[envKey] && AUTH_VIEWS[envKey][authState] ? authState : 'guest';
       return {
         env: envKey,
@@ -241,7 +316,7 @@
       var copy = view.copy || AUTH_VIEWS.prod.guest;
 
       if (AUTH_CARD) {
-        AUTH_CARD.setAttribute('data-auth-mode', view.env === 'dev' ? 'local' : 'prod');
+        AUTH_CARD.setAttribute('data-auth-mode', view.env === 'dev' ? 'local' : (view.env === 'standalone' ? 'standalone' : 'prod'));
         AUTH_CARD.setAttribute('data-auth-state', view.state);
       }
       if (AUTH_MODE_CHIP) AUTH_MODE_CHIP.textContent = copy.badge || 'Telegram login';
@@ -262,6 +337,7 @@
         AUTH_PRIMARY_ACTION.setAttribute('aria-busy', copy.primaryBusy ? 'true' : 'false');
         AUTH_PRIMARY_ACTION.setAttribute('aria-live', 'polite');
         AUTH_PRIMARY_ACTION.classList.toggle('hidden', copy.showPrimary === false);
+        AUTH_PRIMARY_ACTION.dataset.authAction = copy.primaryAction || '';
       }
       if (AUTH_PRIMARY_HINT) AUTH_PRIMARY_HINT.textContent = copy.primaryHint || '';
       if (AUTH_ERROR) AUTH_ERROR.textContent = '';
@@ -580,6 +656,11 @@
 
     if (AUTH_PRIMARY_ACTION) {
       AUTH_PRIMARY_ACTION.addEventListener('click', function() {
+        var action = AUTH_PRIMARY_ACTION.dataset ? AUTH_PRIMARY_ACTION.dataset.authAction : '';
+        if (action === 'telegram') {
+          openTelegramBot();
+          return;
+        }
         if (AUTH_STATE === 'error') {
           restartAuthFlow();
           return;
@@ -589,44 +670,12 @@
     }
 
     function renderTelegramLoginWidget() {
-      if (!AUTH_WIDGET || AUTH_WIDGET_READY || AUTH_ENV_STATE === 'dev') return;
-      AUTH_WIDGET_READY = true;
+      // Telegram Login Widget with an SMS code is intentionally disabled.
+      // Entry point is Telegram bot / WebApp auth, which is stable in PWA and browser.
       clearAuthWidgetFallbackTimer();
-      setAuthInlineError('');
-      AUTH_WIDGET.innerHTML = '';
-
-      if (navigator.onLine === false) {
-        AUTH_WIDGET_READY = false;
-        setAuthInlineError('Сейчас нет интернета. Как только связь появится, вход через Telegram снова станет доступен. Если приложение уже открывалось раньше, сохранённые данные подтянутся из кэша.');
-        return;
-      }
-
-      var script = document.createElement('script');
-      script.async = true;
-      script.src = 'https://telegram.org/js/telegram-widget.js?22';
-      script.setAttribute('data-telegram-login', TELEGRAM_BOT_USERNAME);
-      script.setAttribute('data-size', 'large');
-      script.setAttribute('data-request-access', 'write');
-      script.setAttribute('data-auth-url', window.location.origin + '/api/auth?mode=telegram-login&return=' + encodeURIComponent(getLoginReturnUrl()));
-      script.onload = function() {
-        clearAuthWidgetFallbackTimer();
-        AUTH_WIDGET_FALLBACK_TIMER = window.setTimeout(function() {
-          AUTH_WIDGET_FALLBACK_TIMER = null;
-          if (!AUTH_WIDGET || !AUTH_WIDGET.childElementCount) return;
-          var widgetRoot = AUTH_WIDGET.firstElementChild;
-          if (!widgetRoot || !(widgetRoot.offsetHeight > 0 || widgetRoot.querySelector('iframe, button, a'))) {
-            AUTH_WIDGET_READY = false;
-            setAuthInlineError('Виджет Telegram не успел загрузиться. Можно подождать ещё пару секунд или просто открыть бота кнопкой выше.');
-          }
-        }, 2600);
-      };
-      script.onerror = function() {
-        clearAuthWidgetFallbackTimer();
-        AUTH_WIDGET_READY = false;
-        setAuthInlineError('Не удалось загрузить вход через Telegram. Попробуйте ещё раз или откройте бота напрямую.');
-        showAuthGate('prod', 'error');
-      };
-      AUTH_WIDGET.appendChild(script);
+      AUTH_WIDGET_READY = false;
+      if (AUTH_WIDGET) AUTH_WIDGET.innerHTML = '';
+      return;
     }
 
     function fetchJson(url, options, timeoutMs) {
