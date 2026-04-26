@@ -11437,6 +11437,12 @@
     return Math.max(10, getCssInsetVar('--safe-top'));
   }
 
+  function getPoekhaliRootRect() {
+    var host = tracker.canvas || byId('poekhaliCanvas') || byId('poekhaliModeShell');
+    if (!host || !host.getBoundingClientRect) return null;
+    return host.getBoundingClientRect();
+  }
+
   function getPoekhaliTopControlsBottom() {
     var ids = [
       'btnPoekhaliBack',
@@ -11446,14 +11452,17 @@
       'btnPoekhaliMap',
       'poekhaliGpsStatus'
     ];
+    var rootRect = getPoekhaliRootRect();
+    var rootTop = rootRect && isFinite(rootRect.top) ? rootRect.top : 0;
     var maxBottom = 0;
     for (var i = 0; i < ids.length; i++) {
       var el = byId(ids[i]);
       if (!el) continue;
       var rect = el.getBoundingClientRect ? el.getBoundingClientRect() : null;
       if (!rect) continue;
-      if (isFinite(rect.bottom) && rect.bottom > maxBottom) {
-        maxBottom = rect.bottom;
+      var localBottom = rect.bottom - rootTop;
+      if (isFinite(localBottom) && localBottom > maxBottom) {
+        maxBottom = localBottom;
       }
     }
     if (maxBottom <= 0) {

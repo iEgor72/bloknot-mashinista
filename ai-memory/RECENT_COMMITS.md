@@ -1,9 +1,10 @@
 # Recent Commits
 
-Generated: 2026-04-26 15:26:14 +0000
+Generated: 2026-04-26 15:30:53 +0000
 
 | Hash | Date | Author | Message |
 | --- | --- | --- | --- |
+| `82fe975` | 2026-04-26T15:26:14+00:00 | iEgor72 | fix(poekhali): relayout on offline banner toggle |
 | `0738639` | 2026-04-26T15:13:06+00:00 | iEgor72 | fix(poekhali): unify top stack layout |
 | `7a1e3d2` | 2026-04-26T15:02:24+00:00 | iEgor72 | fix(poekhali): place route below top hud |
 | `c0a1637` | 2026-04-26T15:00:09+00:00 | iEgor72 | fix(poekhali): anchor hud below control row |
@@ -43,4 +44,3 @@ Generated: 2026-04-26 15:26:14 +0000
 | `13f36f3` | 2026-04-23T06:03:32+00:00 | iEgor72 | refactor(schedule): remove legacy planner and backend sync |
 | `bbe2f55` | 2026-04-23T05:34:18+00:00 | iEgor72 | refactor(schedule): switch app to manual-only shifts |
 | `92334ca` | 2026-04-23T01:23:24+00:00 | iEgor72 | fix(schedule): suppress source day when deleting linked shifts |
-| `ca3df71` | 2026-04-23T01:20:34+00:00 | iEgor72 | fix(schedule): link added shifts to source periods |

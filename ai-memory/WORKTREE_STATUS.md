@@ -1,6 +1,6 @@
 # Worktree Status
 
-Generated: 2026-04-26 15:26:14 +0000
+Generated: 2026-04-26 15:30:53 +0000
 
 ## git status -sb
 ```text
@@ -8,8 +8,7 @@ Generated: 2026-04-26 15:26:14 +0000
  M ai-memory/CHANGELOG.md
  M ai-memory/PROJECT_STATE.md
  M ai-memory/sessions/2026-04-26.md
- M scripts/app.js
- M styles/00-base.css
+ M scripts/poekhali-tracker.js
 ```
 
 ## git branch -vv
@@ -25,18 +24,19 @@ Generated: 2026-04-26 15:26:14 +0000
 + cleanup-review                                6219db2 (/tmp/bloknot-clean/review) Revert "refactor(schedule): switch app to manual-only shifts"
 + cleanup-test-harness                          6219db2 (/tmp/bloknot-batch/test-harness) Revert "refactor(schedule): switch app to manual-only shifts"
 + feat/manual-calendar-from-scratch             8345ab9 (/tmp/bloknot-manual-calendar) feat(home): polish manual calendar flow
-* main                                          0738639 [origin/main] fix(poekhali): unify top stack layout
+* main                                          82fe975 [origin/main] fix(poekhali): relayout on offline banner toggle
 ```
 
 ## HEAD
 ```text
-0738639 fix(poekhali): unify top stack layout
+82fe975 fix(poekhali): relayout on offline banner toggle
  ai-memory/CHANGELOG.md           |  8 ++++++++
  ai-memory/INDEX.md               |  2 +-
- ai-memory/PROJECT_STATE.md       |  8 ++++----
+ ai-memory/PROJECT_STATE.md       | 11 ++++++-----
  ai-memory/RECENT_COMMITS.md      |  4 ++--
- ai-memory/WORKTREE_STATUS.md     | 12 ++++++------
+ ai-memory/WORKTREE_STATUS.md     | 15 ++++++++-------
  ai-memory/sessions/2026-04-26.md |  1 +
- scripts/poekhali-tracker.js      | 12 ++++++++++--
- 7 files changed, 32 insertions(+), 15 deletions(-)
+ scripts/app.js                   | 13 ++++++++++++-
+ styles/00-base.css               |  6 ++++++
+ 8 files changed, 44 insertions(+), 16 deletions(-)
 ```
