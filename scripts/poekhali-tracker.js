@@ -13511,13 +13511,13 @@
     var xUnit = Math.max(4.2, Math.min(7.2, w / APK_VISIBLE_PICKETS));
     var viewportWidth = Math.min(w, xUnit * APK_VISIBLE_PICKETS);
     var viewportX = Math.round((w - viewportWidth) / 2);
-    var coordBottom = Math.max(130, getPoekhaliTopStackBottom() + 20);
+    var coordBottom = Math.max(124, getPoekhaliTopStackBottom() + 12);
     var navReserve = 118;
-    var scaleY = Math.round(Math.min(h - navReserve - 120, Math.max(coordBottom + 332, h * 0.64)));
-    if (!isFinite(scaleY) || scaleY < coordBottom + 260) scaleY = Math.round(h * 0.66);
+    var scaleY = Math.round(Math.min(h - navReserve - 108, Math.max(coordBottom + 308, h * 0.63)));
+    if (!isFinite(scaleY) || scaleY < coordBottom + 244) scaleY = Math.round(h * 0.65);
 
-    var profileTop = Math.max(286, coordBottom + 158);
-    var profileBottom = scaleY - Math.max(30, xUnit * 5.5);
+    var profileTop = Math.max(248, coordBottom + 104);
+    var profileBottom = scaleY - Math.max(28, xUnit * 5.1);
     if (profileBottom < profileTop + 116) {
       profileBottom = Math.min(scaleY - 72, profileTop + 142);
     }
@@ -13530,9 +13530,9 @@
     var headX = Math.round(viewportX + xUnit * 26);
     var trainWidth = Math.max(xUnit * 14, getVisualTrainLengthMeters(getTrainLengthMeters(), false) * oneMeter);
     var trainHeight = Math.max(16, Math.round(xUnit * 3.2));
-    var bottomTextY = Math.min(h - navReserve - 28, scaleY + 94);
-    var speedTopY = Math.max(coordBottom + 82, profileTop - 82);
-    var speedRailY = speedTopY + 58;
+    var bottomTextY = Math.min(h - navReserve - 24, scaleY + 88);
+    var speedTopY = Math.max(coordBottom + 48, profileTop - 58);
+    var speedRailY = speedTopY + 50;
 
     return {
       canvasWidth: w,
@@ -14968,23 +14968,15 @@
     var isLive = tracker.status === 'gps-live' && !isPreview;
     var details = getPoekhaliTrainDetails();
     var trainMeters = Math.max(1, Math.round(Number(details && details.lengthMeters) || getTrainLengthMeters()));
-    var headY = getProfileYAt(center, center, sector, layout);
+    var bodyHeight = Math.max(10, Math.min(isPreview ? 15 : 17, layout.xUnit * 2.45));
+    var bodyColor = isLive ? 'rgba(74, 222, 128, 0.88)' : 'rgba(56, 189, 248, 0.84)';
     ctx.save();
     ctx.beginPath();
     ctx.rect(layout.viewportX - 18, layout.profileTop - 64, layout.viewportWidth + 36, layout.trackY - layout.profileTop + 58);
     ctx.clip();
     drawTrainProfileGuide(ctx, layout, center, sector, trainMeters, isLive, isPreview);
     drawApkTrainLengthBlock(ctx, layout, center, sector, trainMeters, isLive, isPreview);
-    ctx.fillStyle = isLive ? THEME.green : THEME.accentStrong;
-    ctx.strokeStyle = 'rgba(3, 7, 18, 0.92)';
-    ctx.lineWidth = 2.2;
-    ctx.shadowColor = isLive ? 'rgba(74, 222, 128, 0.28)' : 'rgba(56, 189, 248, 0.26)';
-    ctx.shadowBlur = isPreview ? 5 : 8;
-    ctx.beginPath();
-    ctx.arc(layout.headX, headY, Math.max(4, layout.xUnit * 0.72), 0, Math.PI * 2);
-    ctx.fill();
-    ctx.shadowBlur = 0;
-    ctx.stroke();
+    drawTrainHead(ctx, layout, center, sector, bodyHeight, bodyColor, isLive, isPreview);
     ctx.restore();
   }
 

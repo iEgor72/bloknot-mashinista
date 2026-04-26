@@ -1,9 +1,10 @@
 # Recent Commits
 
-Generated: 2026-04-26 15:45:50 +0000
+Generated: 2026-04-26 16:02:30 +0000
 
 | Hash | Date | Author | Message |
 | --- | --- | --- | --- |
+| `c7259c9` | 2026-04-26T15:45:50+00:00 | iEgor72 | feat(ui): make offline notice floating and dismissible |
 | `38a5058` | 2026-04-26T15:30:53+00:00 | iEgor72 | fix(poekhali): measure top stack in local coordinates |
 | `82fe975` | 2026-04-26T15:26:14+00:00 | iEgor72 | fix(poekhali): relayout on offline banner toggle |
 | `0738639` | 2026-04-26T15:13:06+00:00 | iEgor72 | fix(poekhali): unify top stack layout |
@@ -43,4 +44,3 @@ Generated: 2026-04-26 15:45:50 +0000
 | `d6c9bcb` | 2026-04-23T06:14:22+00:00 | iEgor72 | fix(sw): force cache refresh after rollback |
 | `416d8dd` | 2026-04-23T06:12:39+00:00 | iEgor72 | Revert "refactor(schedule): remove legacy planner and backend sync" |
 | `13f36f3` | 2026-04-23T06:03:32+00:00 | iEgor72 | refactor(schedule): remove legacy planner and backend sync |
-| `bbe2f55` | 2026-04-23T05:34:18+00:00 | iEgor72 | refactor(schedule): switch app to manual-only shifts |
