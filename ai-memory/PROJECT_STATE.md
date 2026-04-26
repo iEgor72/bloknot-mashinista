@@ -1,14 +1,14 @@
 # Project State
 
 <!-- AUTO_STATUS:START -->
-Generated: 2026-04-26 14:21:03 +0000
+Generated: 2026-04-26 14:33:55 +0000
 
 ## Repository Snapshot
 - Local repo path: `/opt/bloknot-mashinista`
 - Project memory path: `/opt/bloknot-mashinista/ai-memory`
 - Branch: `main`
-- HEAD: `2f9486d`
-- Last commit: `2f9486d refactor(poekhali): make map sheet state-driven overlay`
+- HEAD: `f9bf393`
+- Last commit: `f9bf393 fix(poekhali): respect telegram safe area at top`
 
 ## Git Remote
 ```text
@@ -29,15 +29,14 @@ origin	https://github.com/iEgor72/bloknot-mashinista.git (push)
 + cleanup-review                                6219db2 (/tmp/bloknot-clean/review) Revert "refactor(schedule): switch app to manual-only shifts"
 + cleanup-test-harness                          6219db2 (/tmp/bloknot-batch/test-harness) Revert "refactor(schedule): switch app to manual-only shifts"
 + feat/manual-calendar-from-scratch             8345ab9 (/tmp/bloknot-manual-calendar) feat(home): polish manual calendar flow
-* main                                          2f9486d [origin/main] refactor(poekhali): make map sheet state-driven overlay
+* main                                          f9bf393 [origin/main] fix(poekhali): respect telegram safe area at top
 ```
 
 ## Worktree
 ```text
 M ai-memory/CHANGELOG.md
  M ai-memory/sessions/2026-04-26.md
- M scripts/poekhali-tracker.js
- M styles/10-navigation-and-cards.css
+ M scripts/sw-register.js
 ```
 <!-- AUTO_STATUS:END -->
 

@@ -1,9 +1,10 @@
 # Recent Commits
 
-Generated: 2026-04-26 14:21:03 +0000
+Generated: 2026-04-26 14:33:55 +0000
 
 | Hash | Date | Author | Message |
 | --- | --- | --- | --- |
+| `f9bf393` | 2026-04-26T14:21:10+00:00 | iEgor72 | fix(poekhali): respect telegram safe area at top |
 | `2f9486d` | 2026-04-26T13:46:32+00:00 | iEgor72 | refactor(poekhali): make map sheet state-driven overlay |
 | `104e7e7` | 2026-04-26T13:43:41+00:00 | iEgor72 | fix(ui): block tap-through and disable app selection |
 | `93f0c4a` | 2026-04-26T13:37:46+00:00 | iEgor72 | fix(poekhali): prevent map sheet reopen and selection |
@@ -43,4 +44,3 @@ Generated: 2026-04-26 14:21:03 +0000
 | `6277709` | 2026-04-23T01:06:05+00:00 | iEgor72 | fix(schedule): fallback active period for overrides |
 | `2c867ea` | 2026-04-23T01:02:13+00:00 | iEgor72 | fix(schedule): scope overrides to schedule periods |
 | `d21d7cc` | 2026-04-23T00:57:50+00:00 | iEgor72 | fix(schedule): clear overrides when deleting period |
-| `1f4bf7c` | 2026-04-23T00:53:56+00:00 | iEgor72 | style(shifts): move route below time block |
