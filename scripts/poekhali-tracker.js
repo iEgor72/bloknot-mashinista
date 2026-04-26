@@ -10,7 +10,7 @@
   var APK_ANGLE_MULTIPLIER = 0.22;
   var APK_LABEL_FOCUS_RADIUS_M = 720;
   var APK_LABEL_CONTEXT_RADIUS_M = 1500;
-  var POEKHALI_DIAGNOSTIC_VERSION = 'v185';
+  var POEKHALI_DIAGNOSTIC_VERSION = 'v199';
   var REMOTE_MAP_SOURCE_ENABLED = false;
   var BACKUP_SCHEMA_VERSION = 1;
   var TRAIN_LOCO_LENGTH_M = 51;
@@ -57,10 +57,52 @@
   var RUNS_STORAGE_KEY = 'poekhali.runs.v1';
   var RUNS_SYNC_STORAGE_KEY = 'poekhali.runs.sync.v1';
   var RUNS_SYNC_DEBOUNCE_MS = 1200;
+  var RUNS_LIVE_SYNC_DELAY_MS = 120000;
   var RUNS_MAX_ITEMS = 200;
+  var RUN_TRACE_MAX_POINTS = 1800;
+  var RUN_TRACE_MIN_TIME_MS = 2500;
+  var RUN_TRACE_FORCE_TIME_MS = 15000;
+  var RUN_TRACE_MIN_COORDINATE_DELTA_M = 8;
+  var RUN_LIVE_SAVE_INTERVAL_MS = 30000;
+  var RUN_LIVE_SHIFT_WRITE_INTERVAL_MS = 120000;
+  var RUN_ACTIVE_RESUME_GRACE_MS = 45 * 60 * 1000;
+  var RUN_MAX_REASONABLE_DURATION_MS = 18 * 60 * 60 * 1000;
+  var DRAW_LIVE_INTERVAL_MS = 10000;
+  var DRAW_IDLE_INTERVAL_MS = 0;
+  var DRAW_HIDDEN_INTERVAL_MS = 5000;
+  var DRAW_ACTIVE_THROTTLE_MS = 900;
+  var DRAW_DRAG_THROTTLE_MS = 80;
+  var AUTO_RUN_START_DELAY_MS = 650;
+  var GPS_START_POLL_INTERVAL_MS = 5000;
+  var GPS_FAST_POLL_INTERVAL_MS = 8000;
+  var GPS_ACTIVE_POLL_INTERVAL_MS = 12000;
+  var GPS_SLOW_POLL_INTERVAL_MS = 18000;
+  var GPS_HIDDEN_POLL_INTERVAL_MS = 60000;
+  var GPS_ERROR_POLL_INTERVAL_MS = 30000;
+  var GPS_ACTIVE_OPTIONS = {
+    enableHighAccuracy: false,
+    maximumAge: 15000,
+    timeout: 15000
+  };
+  var GPS_START_OPTIONS = {
+    enableHighAccuracy: false,
+    maximumAge: 5000,
+    timeout: 12000
+  };
+  var GPS_HIDDEN_OPTIONS = {
+    enableHighAccuracy: false,
+    maximumAge: 60000,
+    timeout: 15000
+  };
+  var GPS_IDLE_OPTIONS = {
+    enableHighAccuracy: false,
+    maximumAge: 60000,
+    timeout: 12000
+  };
   var LEARNING_STORAGE_KEY = 'poekhali.mapLearning.v1';
   var LEARNING_SYNC_STORAGE_KEY = 'poekhali.mapLearning.sync.v1';
   var LEARNING_SYNC_DEBOUNCE_MS = 1200;
+  var LEARNING_LIVE_SYNC_DELAY_MS = 180000;
   var LEARNING_MAX_ACCURACY_M = 150;
   var LEARNING_MIN_COORDINATE_DELTA_M = 35;
   var LEARNING_MIN_DISTANCE_DELTA_M = 120;
@@ -79,7 +121,9 @@
   var LEARNING_RAW_DRAFT_MIN_DISTANCE_M = 120;
   var GPS_DIRECTION_MIN_DELTA_M = 25;
   var GPS_DIRECTION_MIN_TIME_MS = 2500;
-  var GPS_DIRECTION_MANUAL_LOCK_MS = 120000;
+  var GPS_DIRECTION_CONFIRM_DELTA_M = 80;
+  var GPS_DIRECTION_CONFIRM_SAMPLES = 2;
+  var GPS_DIRECTION_MAX_ACCURACY_M = 80;
   var AUTO_MAP_SWITCH_MARGIN_M = 160;
   var ROUTE_MAP_MIN_SCORE = 64;
   var NEXT_RESTRICTION_LOOKAHEAD_M = 5000;
@@ -120,6 +164,13 @@
     active: false,
     watchId: null,
     frameId: null,
+    drawPendingTimer: null,
+    lastCanvasDrawAt: 0,
+    passiveGpsInFlight: false,
+    gpsPollTimer: null,
+    gpsPollInFlight: false,
+    gpsPollToken: 0,
+    gpsPollLastAt: 0,
     assetPromise: null,
     manifestPromise: null,
     referencePromise: null,
@@ -224,6 +275,7 @@
     runs: [],
     activeRunId: '',
     lastShiftRunWriteAt: 0,
+    lastRunPersistAt: 0,
     runSync: {
       state: 'idle',
       pending: false,
@@ -237,8 +289,10 @@
     nearestProjection: null,
     autoPosition: null,
     lastDirectionProbe: null,
+    directionVoteEven: null,
+    directionVoteMeters: 0,
+    directionVoteSamples: 0,
     directionSource: '',
-    manualDirectionLockedUntil: 0,
     previewCoordinate: null,
     previewSector: null,
     previewDragActive: false,
@@ -253,6 +307,8 @@
     runStartPreparing: false,
     runStartToken: 0,
     runStartMessage: '',
+    autoRunTimer: null,
+    autoRunSuppressedShiftId: '',
     backupMessage: '',
     backupMessageTone: '',
     timerStartedAt: 0,
@@ -274,9 +330,10 @@
 
   function getGpsStatusDisplayText(text) {
     var value = text || 'GPS';
-    if (window.innerWidth <= 420 && value === 'НЕТ GPS') return 'GPS';
-    if (window.innerWidth <= 420 && value.indexOf('GPS · УЧ ') === 0) return value.replace('GPS · ', '');
-    if (window.innerWidth <= 420 && value.indexOf('ВНЕ · УЧ ') === 0) return 'ВНЕ';
+    var width = typeof window !== 'undefined' ? window.innerWidth : 0;
+    if (width <= 640 && value === 'НЕТ GPS') return 'GPS';
+    if (width <= 640 && value.indexOf('GPS · УЧ ') === 0) return 'GPS';
+    if (width <= 640 && value.indexOf('ВНЕ · УЧ ') === 0) return 'ВНЕ';
     return value;
   }
 
@@ -812,27 +869,29 @@
     var hasTrainPayload = !!(hasTrainNumber || weight || axles || conditionalLength);
 
     if (conditionalLength > 0) {
+      var trainMeters = conditionalLength * safeSettings.wagonLength;
       return {
         type: 'train',
-        lengthMeters: safeSettings.locoLength + conditionalLength * safeSettings.wagonLength,
-        lengthLabel: conditionalLength + ' уд.',
+        lengthMeters: trainMeters,
+        lengthLabel: conditionalLength + ' ваг.',
         lengthSource: 'из смены',
         lengthTone: '',
         readiness: 'ready',
-        note: 'Длина состава взята из карточки смены. Отрисовка головы и хвоста идет по этой длине.'
+        note: 'Длина состава взята из карточки смены: количество вагонов умножено на 14 метров.'
       };
     }
 
     if (axles > 0) {
       var wagonCountByAxles = Math.max(1, Math.ceil(axles / 4));
+      var estimatedMeters = wagonCountByAxles * safeSettings.wagonLength;
       return {
         type: 'estimated',
-        lengthMeters: safeSettings.locoLength + wagonCountByAxles * safeSettings.wagonLength,
-        lengthLabel: '~' + (safeSettings.locoLength + wagonCountByAxles * safeSettings.wagonLength) + ' м',
+        lengthMeters: estimatedMeters,
+        lengthLabel: '~' + estimatedMeters + ' м',
         lengthSource: 'по осям',
         lengthTone: 'warning',
         readiness: 'review',
-        note: 'Условная длина не указана, поэтому хвост состава рассчитан по осям. Для точной работы заполните условную длину в смене.'
+        note: 'Количество вагонов не указано, поэтому длина состава рассчитана по осям. Для точной работы заполните длину в смене.'
       };
     }
 
@@ -893,16 +952,136 @@
     return 'П ' + wayNumber;
   }
 
-  function getEvenFromObjectFileKey(fileKey) {
+  function getEvenFromObjectFileName(fileKey) {
     var key = String(fileKey || '').toLowerCase();
     if (!/^[12]n?$/.test(key)) return null;
-    return key.slice(-1) !== 'n';
+    return key.slice(-1) === 'n';
+  }
+
+  function getEvenFromObjectFileKey(fileKey) {
+    var key = String(fileKey || '');
+    var store = tracker.trackObjectsByFile && tracker.trackObjectsByFile[key];
+    if (store && store.directionEven !== null && store.directionEven !== undefined) {
+      return !!store.directionEven;
+    }
+    return getEvenFromObjectFileName(key);
+  }
+
+  function getEvenFromTrackObject(item) {
+    if (item && item.directionEven !== null && item.directionEven !== undefined) return !!item.directionEven;
+    return getEvenFromObjectFileKey(item && item.fileKey);
+  }
+
+  function getCoordinateDirectionForEven(even) {
+    return even ? -1 : 1;
+  }
+
+  function getCurrentCoordinateDirection() {
+    return getCoordinateDirectionForEven(tracker.even);
+  }
+
+  function getEvenFromCoordinateDelta(delta) {
+    var value = Number(delta);
+    if (!isFinite(value) || Math.abs(value) < 1) return !!tracker.even;
+    return value < 0;
+  }
+
+  function getEvenFromTrainNumber(value) {
+    var text = String(value || '').replace(/\s+/g, '');
+    var match = text.match(/\d+/);
+    if (!match) return null;
+    var digit = Number(match[0].slice(-1));
+    if (!isFinite(digit)) return null;
+    return digit % 2 === 0;
+  }
+
+  function getDirectionValueLabel(even) {
+    return even ? 'ЧЕТ' : 'НЕЧЕТ';
+  }
+
+  function resetGpsDirectionVote() {
+    tracker.directionVoteEven = null;
+    tracker.directionVoteMeters = 0;
+    tracker.directionVoteSamples = 0;
+  }
+
+  function applyDetectedDirection(even, source, options) {
+    options = options || {};
+    var nextEven = !!even;
+    var nextSource = source || 'auto';
+    if (!options.force && tracker.directionSource === 'gps' && nextSource !== 'gps') return false;
+    var changed = tracker.even !== nextEven || tracker.directionSource !== nextSource;
+    tracker.even = nextEven;
+    tracker.directionSource = nextSource;
+    if (changed || options.updateRun) {
+      updateActiveRunNavigationState();
+      updateModeButtons();
+      requestDraw();
+    }
+    return changed;
+  }
+
+  function getAutoDirectionCandidate() {
+    var routeSuggestion = getShiftRouteSuggestion();
+    if (routeSuggestion && routeSuggestion.status === 'ready') {
+      return {
+        even: !!routeSuggestion.even,
+        source: 'route',
+        wayNumber: routeSuggestion.wayNumber || 0
+      };
+    }
+    var details = getPoekhaliTrainDetails();
+    var trainEven = getEvenFromTrainNumber(details && details.trainNumber);
+    if (trainEven !== null) {
+      return {
+        even: trainEven,
+        source: 'train',
+        wayNumber: 0
+      };
+    }
+    return null;
+  }
+
+  function applyBestAutoDirection(options) {
+    options = options || {};
+    var candidate = getAutoDirectionCandidate();
+    if (!candidate) return false;
+    if (candidate.wayNumber) tracker.wayNumber = normalizeWayNumber(candidate.wayNumber);
+    return applyDetectedDirection(candidate.even, candidate.source, options);
+  }
+
+  function getDirectionalDistance(target, origin, even) {
+    return (Number(target) - Number(origin)) * getCoordinateDirectionForEven(even);
+  }
+
+  function getDirectionStartCoordinate(start, end, even) {
+    return getCoordinateDirectionForEven(even) > 0 ? start : end;
+  }
+
+  function getDirectionEndCoordinate(start, end, even) {
+    return getCoordinateDirectionForEven(even) > 0 ? end : start;
+  }
+
+  function getDirectionalWindow(center, behindMeters, aheadMeters, even) {
+    var coordinate = Number(center);
+    var behind = Math.max(0, Number(behindMeters) || 0);
+    var ahead = Math.max(0, Number(aheadMeters) || 0);
+    if (getCoordinateDirectionForEven(even) > 0) {
+      return {
+        left: coordinate - behind,
+        right: coordinate + ahead
+      };
+    }
+    return {
+      left: coordinate - ahead,
+      right: coordinate + behind
+    };
   }
 
   function getRouteObjectFileScore(station, even) {
     if (!station) return 0;
     var wayNumber = getWayNumberFromObjectFileKey(station.fileKey);
-    var directionEven = getEvenFromObjectFileKey(station.fileKey);
+    var directionEven = getEvenFromTrackObject(station);
     var score = 0;
     if (wayNumber) score += 4;
     if (wayNumber && wayNumber === normalizeWayNumber(tracker.wayNumber)) score += 1;
@@ -938,7 +1117,7 @@
     var parts = [];
     if (trainNumber) parts.push('Поезд ' + trainNumber);
     if (loco) parts.push(loco);
-    if (conditionalLength > 0) parts.push(conditionalLength + ' уд.');
+    if (conditionalLength > 0) parts.push(conditionalLength + ' ваг.');
     else if (composition.lengthSource) parts.push(composition.lengthSource);
     return {
       context: context,
@@ -977,6 +1156,9 @@
     for (var s = 0; s < sources.length; s++) {
       var source = sources[s] && sources[s].store ? sources[s].store : sources[s];
       var sourceKey = sources[s] && sources[s].key ? String(sources[s].key) : '';
+      var sourceDirectionEven = source && source.directionEven !== null && source.directionEven !== undefined
+        ? !!source.directionEven
+        : getEvenFromObjectFileName(sourceKey);
       var objects = source && Array.isArray(source.all) ? source.all : [];
       for (var i = 0; i < objects.length; i++) {
         var item = objects[i];
@@ -991,6 +1173,7 @@
         if (seen[key]) continue;
         seen[key] = true;
         if (fileKey && !item.fileKey) item.fileKey = fileKey;
+        if (item.directionEven === undefined || item.directionEven === null) item.directionEven = sourceDirectionEven;
         stations.push(item);
       }
     }
@@ -1043,9 +1226,9 @@
     if (!fromMatch || !toMatch || fromMatch.score < ROUTE_MAP_MIN_SCORE || toMatch.score < ROUTE_MAP_MIN_SCORE) return null;
     var fromStation = fromMatch.station;
     var toStation = toMatch.station;
-    var even = toStation.coordinate >= fromStation.coordinate;
+    var even = getEvenFromCoordinateDelta(toStation.coordinate - fromStation.coordinate);
     var distance = Math.abs(toStation.coordinate - fromStation.coordinate);
-    var coordinate = even ? fromStation.coordinate : fromStation.end;
+    var coordinate = getDirectionStartCoordinate(fromStation.coordinate, fromStation.end, even);
     var fromWay = getWayNumberFromObjectFileKey(fromStation.fileKey);
     var toWay = getWayNumberFromObjectFileKey(toStation.fileKey);
     var wayNumber = fromWay && toWay && fromWay === toWay ? fromWay : (fromWay || toWay || 0);
@@ -1327,10 +1510,8 @@
   function applyShiftRouteSuggestion(suggestion) {
     var item = suggestion || getShiftRouteSuggestion();
     if (!item || item.status !== 'ready') return false;
-    tracker.even = !!item.even;
     if (item.wayNumber) tracker.wayNumber = normalizeWayNumber(item.wayNumber);
-    tracker.directionSource = 'route';
-    tracker.manualDirectionLockedUntil = 0;
+    applyDetectedDirection(item.even, 'route', { force: tracker.directionSource !== 'gps', updateRun: true });
     setPreviewProjection({
       lineCoordinate: item.coordinate,
       sector: item.sector
@@ -1346,12 +1527,10 @@
     if (!item || item.status !== 'ready') return false;
     var hasLiveProjection = tracker.projection && tracker.projection.onTrack;
     if (hasLiveProjection) {
-      if (!tracker.directionSource || tracker.directionSource === 'route') {
-        tracker.even = !!item.even;
-        tracker.directionSource = 'route';
+      if (!tracker.directionSource || tracker.directionSource === 'route' || tracker.directionSource === 'train') {
+        applyDetectedDirection(item.even, 'route', { force: true, updateRun: true });
       }
       if (item.wayNumber) tracker.wayNumber = normalizeWayNumber(item.wayNumber);
-      tracker.manualDirectionLockedUntil = 0;
       updateModeButtons();
       requestDraw();
       return true;
@@ -1451,8 +1630,8 @@
   function getDirectionSourceLabel() {
     if (tracker.directionSource === 'gps') return 'GPS';
     if (tracker.directionSource === 'route') return 'маршрут';
-    if (tracker.directionSource === 'manual') return 'ручн.';
-    return 'по умолч.';
+    if (tracker.directionSource === 'train') return 'номер поезда';
+    return 'авто';
   }
 
   function updateAutoPositionState(status, projection, message) {
@@ -1481,18 +1660,27 @@
       lineCoordinate: projection.lineCoordinate,
       ts: now
     };
-    if (tracker.manualDirectionLockedUntil && now < tracker.manualDirectionLockedUntil) return;
     if (!previous || getSectorKey(previous.sector) !== getSectorKey(projection.sector)) return;
     var delta = projection.lineCoordinate - previous.lineCoordinate;
     var dt = now - previous.ts;
     var speed = Number(coords && coords.speed);
+    var accuracy = Number(coords && coords.accuracy);
     if (dt < GPS_DIRECTION_MIN_TIME_MS || Math.abs(delta) < GPS_DIRECTION_MIN_DELTA_M) return;
     if (isFinite(speed) && speed > 0 && speed < 0.6) return;
-    var nextEven = delta > 0;
-    if (tracker.even !== nextEven || tracker.directionSource !== 'gps') {
-      tracker.even = nextEven;
-      tracker.directionSource = 'gps';
-      updateModeButtons();
+    if (isFinite(accuracy) && accuracy > GPS_DIRECTION_MAX_ACCURACY_M) return;
+    var nextEven = getEvenFromCoordinateDelta(delta);
+    if (tracker.directionVoteEven !== nextEven) {
+      tracker.directionVoteEven = nextEven;
+      tracker.directionVoteMeters = Math.abs(delta);
+      tracker.directionVoteSamples = 1;
+    } else {
+      tracker.directionVoteMeters += Math.abs(delta);
+      tracker.directionVoteSamples += 1;
+    }
+    if (tracker.directionVoteSamples >= GPS_DIRECTION_CONFIRM_SAMPLES ||
+      tracker.directionVoteMeters >= GPS_DIRECTION_CONFIRM_DELTA_M) {
+      applyDetectedDirection(nextEven, 'gps', { force: true, updateRun: true });
+      resetGpsDirectionVote();
     }
   }
 
@@ -1710,6 +1898,7 @@
       clearTimeout(tracker.warningSync.timer);
       tracker.warningSync.timer = null;
     }
+    if (isPageHidden()) return;
     var delay = Number(delayMs);
     if (!isFinite(delay) || delay < 0) delay = WARNINGS_SYNC_DEBOUNCE_MS;
     tracker.warningSync.timer = setTimeout(function() {
@@ -1830,6 +2019,60 @@
     if (isFinite(Number(point.accuracy))) result.accuracy = Math.max(0, Math.round(Number(point.accuracy)));
     if (isFinite(Number(point.speedKmh))) result.speedKmh = Math.max(0, Math.round(Number(point.speedKmh)));
     return result;
+  }
+
+  function thinRunTracePoints(points) {
+    var source = Array.isArray(points) ? points.filter(Boolean) : [];
+    if (source.length <= RUN_TRACE_MAX_POINTS) return source;
+    var result = [];
+    var lastIndex = -1;
+    for (var i = 0; i < RUN_TRACE_MAX_POINTS; i++) {
+      var index = Math.round(i * (source.length - 1) / Math.max(1, RUN_TRACE_MAX_POINTS - 1));
+      if (index === lastIndex) continue;
+      result.push(source[index]);
+      lastIndex = index;
+    }
+    return result;
+  }
+
+  function normalizeRunPointsList(points) {
+    var source = Array.isArray(points) ? points : [];
+    var result = [];
+    for (var i = 0; i < source.length; i++) {
+      var point = normalizeRunPoint(source[i]);
+      if (point) result.push(point);
+    }
+    result.sort(function(a, b) {
+      return (Number(a.ts) || 0) - (Number(b.ts) || 0);
+    });
+    return thinRunTracePoints(result);
+  }
+
+  function shouldAppendRunPoint(run, point) {
+    if (!run || !point) return false;
+    var points = Array.isArray(run.points) ? run.points : [];
+    if (!points.length) return true;
+    var last = points[points.length - 1];
+    if (!last) return true;
+    if (getSectorKey(last.sector) !== getSectorKey(point.sector)) return true;
+    var dt = Math.max(0, (Number(point.ts) || 0) - (Number(last.ts) || 0));
+    var moved = Math.abs((Number(point.coordinate) || 0) - (Number(last.coordinate) || 0));
+    if (dt >= RUN_TRACE_FORCE_TIME_MS) return true;
+    if (dt >= RUN_TRACE_MIN_TIME_MS && moved >= RUN_TRACE_MIN_COORDINATE_DELTA_M) return true;
+    if (dt >= RUN_TRACE_MIN_TIME_MS && Math.abs((Number(point.speedKmh) || 0) - (Number(last.speedKmh) || 0)) >= 5) return true;
+    return false;
+  }
+
+  function appendRunPoint(run, point) {
+    if (!run || !point) return false;
+    var normalized = normalizeRunPoint(point);
+    if (!normalized || !shouldAppendRunPoint(run, normalized)) return false;
+    if (!Array.isArray(run.points)) run.points = [];
+    run.points.push(normalized);
+    if (run.points.length > RUN_TRACE_MAX_POINTS) {
+      run.points = thinRunTracePoints(run.points);
+    }
+    return true;
   }
 
   function calculateSpeedKmh(distanceMeters, durationMs) {
@@ -1954,6 +2197,11 @@
       poekhali_route_outside_m: getShiftRunNumber(normalized.routeOutsideMeters),
       poekhali_route_progress_pct: Math.max(0, Math.min(100, Math.round((Number(normalized.routeProgressPct) || 0) * 10) / 10)),
       poekhali_route_eta_s: getShiftRunNumber(normalized.routeEtaSeconds),
+      poekhali_loco: String(normalized.loco || ''),
+      poekhali_train_number: String(normalized.trainNumber || ''),
+      poekhali_train_weight: String(normalized.weight || ''),
+      poekhali_train_axles: String(normalized.axles || ''),
+      poekhali_train_wagons: getShiftRunNumber(normalized.conditionalLength),
       poekhali_train_length_m: getShiftRunNumber(normalized.lengthMeters),
       poekhali_train_length_source: String(normalized.lengthSource || ''),
       poekhali_train_length_label: String(normalized.lengthLabel || ''),
@@ -2259,6 +2507,11 @@
     var run = getActiveRun();
 
     if (shift && shift.id) {
+      if (tracker.status === 'run-blocked') {
+        tracker.status = 'waiting';
+        tracker.runStartMessage = '';
+        tracker.gpsError = '';
+      }
       if (run && !run.shiftId) {
         run.shiftId = String(shift.id);
         applyShiftDetailsToRun(run, getPoekhaliTrainDetails());
@@ -2275,6 +2528,7 @@
       tracker.routeMapCandidate = null;
     }
 
+    applyBestAutoDirection();
     updateModeButtons();
     setOpsButton();
     requestDraw();
@@ -2291,6 +2545,7 @@
         return options.loadAssets === false ? false : loadAssets();
       })
       .then(function() {
+        applyBestAutoDirection();
         updateModeButtons();
         setOpsButton();
         requestDraw();
@@ -2312,7 +2567,9 @@
     requestDraw();
     if (!selected) return false;
 
-    preparePoekhaliModeEntry({ pinnedShiftId: shiftId });
+    preparePoekhaliModeEntry({ pinnedShiftId: shiftId }).then(function() {
+      scheduleAutoRunStart('shift', AUTO_RUN_START_DELAY_MS);
+    });
 
     return true;
   }
@@ -2410,6 +2667,7 @@
       routeOutsideMeters: Math.max(0, Math.round(Number(item.routeOutsideMeters) || 0)),
       routeProgressPct: Math.max(0, Math.min(100, Number(item.routeProgressPct) || 0)),
       routeEtaSeconds: Math.max(0, Math.round(Number(item.routeEtaSeconds) || 0)),
+      points: normalizeRunPointsList(item.points),
       startPoint: normalizeRunPoint(item.startPoint),
       endPoint: normalizeRunPoint(item.endPoint || item.lastPoint),
       lastPoint: normalizeRunPoint(item.lastPoint || item.endPoint || item.startPoint),
@@ -2549,7 +2807,19 @@
     if (run.status === 'active') {
       var updatedAt = Date.parse(run.updatedAt || run.startedAt || '');
       var carriedMs = isFinite(updatedAt) ? Math.max(0, Date.now() - updatedAt) : 0;
-      tracker.timerElapsedMs = durationMs + Math.min(carriedMs, 24 * 60 * 60 * 1000);
+      var totalMs = durationMs + carriedMs;
+      if (carriedMs > RUN_ACTIVE_RESUME_GRACE_MS || totalMs > RUN_MAX_REASONABLE_DURATION_MS) {
+        run.status = 'paused';
+        run.durationMs = Math.min(durationMs, RUN_MAX_REASONABLE_DURATION_MS);
+        run.updatedAt = new Date().toISOString();
+        updateRunDerivedMetrics(run);
+        tracker.timerElapsedMs = run.durationMs;
+        tracker.timerStartedAt = 0;
+        tracker.timerRunning = false;
+        saveRuns();
+        return;
+      }
+      tracker.timerElapsedMs = totalMs;
       tracker.timerStartedAt = Date.now();
       tracker.timerRunning = true;
       updateRunDerivedMetrics(run);
@@ -2577,7 +2847,11 @@
         pending: true,
         error: ''
       });
-      scheduleRunSync();
+      if (tracker.timerRunning) {
+        if (!tracker.runSync.timer) scheduleRunSync(RUNS_LIVE_SYNC_DELAY_MS);
+      } else {
+        scheduleRunSync();
+      }
     }
     if (tracker.opsSheet && tracker.opsSheet.root && !tracker.opsSheet.root.classList.contains('hidden')) {
       renderOpsSheet();
@@ -2590,6 +2864,7 @@
       clearTimeout(tracker.runSync.timer);
       tracker.runSync.timer = null;
     }
+    if (isPageHidden()) return;
     var delay = Number(delayMs);
     if (!isFinite(delay) || delay < 0) delay = RUNS_SYNC_DEBOUNCE_MS;
     tracker.runSync.timer = setTimeout(function() {
@@ -2601,7 +2876,7 @@
   function syncRunsWithServer(reason) {
     if (!isRunSyncAvailable()) return Promise.resolve(false);
     if (tracker.runSync.inFlight) {
-      scheduleRunSync(RUNS_SYNC_DEBOUNCE_MS);
+      scheduleRunSync(tracker.timerRunning ? RUNS_LIVE_SYNC_DELAY_MS : RUNS_SYNC_DEBOUNCE_MS);
       return Promise.resolve(false);
     }
     if (typeof navigator !== 'undefined' && !navigator.onLine) {
@@ -2679,7 +2954,7 @@
     if (typeof window === 'undefined' || !window.addEventListener) return;
     window.addEventListener('online', function() {
       if (tracker.runSync.pending || hasRunsData(tracker.runs)) {
-        scheduleRunSync(250);
+        scheduleRunSync(tracker.timerRunning ? RUNS_LIVE_SYNC_DELAY_MS : 250);
       }
     });
   }
@@ -2783,6 +3058,7 @@
       routeProgressPct: 0,
       routeEtaSeconds: 0,
       warningsCount: getCurrentWarnings().length,
+      points: point ? [point] : [],
       startPoint: point,
       endPoint: point,
       lastPoint: point,
@@ -2824,6 +3100,7 @@
       updateRunDerivedMetrics(run);
     }
     saveRuns();
+    tracker.lastRunPersistAt = Date.now();
     writeRunToLinkedShift(run, { force: true });
     return run;
   }
@@ -2834,6 +3111,7 @@
     if (!run || run.status === 'finished') return;
     var point = createRunPoint(projection, position);
     if (!point) return;
+    appendRunPoint(run, point);
     var last = run.lastPoint;
     var movedMeters = 0;
     var deltaMs = 0;
@@ -2881,8 +3159,16 @@
     updatePoekhaliRuntimeAlert(run, point, activeRestriction, overspeed);
     run.updatedAt = new Date().toISOString();
     updateRunDerivedMetrics(run);
-    saveRuns();
-    writeRunToLinkedShift(run, { throttleMs: 15000 });
+    var now = Date.now();
+    var shouldPersist = !tracker.lastRunPersistAt ||
+      now - tracker.lastRunPersistAt >= RUN_LIVE_SAVE_INTERVAL_MS ||
+      movedMeters >= 500 ||
+      overspeed > 1;
+    if (shouldPersist) {
+      tracker.lastRunPersistAt = now;
+      saveRuns();
+      writeRunToLinkedShift(run, { throttleMs: RUN_LIVE_SHIFT_WRITE_INTERVAL_MS });
+    }
   }
 
   function updateActiveRunNavigationState() {
@@ -2898,12 +3184,20 @@
     applyNavigationTargetToRun(run);
     run.updatedAt = new Date().toISOString();
     saveRuns();
+    tracker.lastRunPersistAt = Date.now();
     writeRunToLinkedShift(run, { force: true });
   }
 
   function pauseActiveRun() {
     var run = getActiveRun();
     if (!run || run.status === 'finished') return;
+    var point = createRunPoint(getCurrentProjectionForForm(), tracker.lastLocation);
+    if (point) {
+      appendRunPoint(run, point);
+      run.lastPoint = point;
+      run.endPoint = point;
+      if (!run.startPoint) run.startPoint = point;
+    }
     run.status = 'paused';
     run.durationMs = getTimerElapsed();
     run.updatedAt = new Date().toISOString();
@@ -2914,6 +3208,7 @@
     updateRunDerivedMetrics(run);
     resetPoekhaliLiveAlert();
     saveRuns();
+    tracker.lastRunPersistAt = Date.now();
     writeRunToLinkedShift(run, { force: true });
   }
 
@@ -2921,6 +3216,14 @@
     var run = getActiveRun();
     if (!run) return;
     var nowIso = new Date().toISOString();
+    var details = getPoekhaliTrainDetails();
+    tracker.autoRunSuppressedShiftId = String(run.shiftId || (details && details.shift && details.shift.id) || '');
+    var point = createRunPoint(getCurrentProjectionForForm(), tracker.lastLocation);
+    if (point) {
+      appendRunPoint(run, point);
+      run.lastPoint = point;
+      if (!run.startPoint) run.startPoint = point;
+    }
     run.status = 'finished';
     run.endedAt = nowIso;
     run.durationMs = getTimerElapsed();
@@ -2937,6 +3240,7 @@
     tracker.timerElapsedMs = 0;
     resetPoekhaliLiveAlert();
     saveRuns();
+    tracker.lastRunPersistAt = Date.now();
     writeRunToLinkedShift(run, { force: true });
     updateModeButtons();
     requestDraw();
@@ -3103,13 +3407,13 @@
     var distance = Math.max(0, Math.round(Number(run.nextTargetDistanceMeters) || 0));
     var eta = formatEtaSeconds(run.nextTargetEtaSeconds, compact);
     if (compact) {
-      return label + (distance ? ' / ' + formatRunDistance(distance) : ' / тут') + (eta ? ' / ' + eta : '');
+      return label + (distance ? ' / ' + formatRunDistance(distance) : ' / 0 м') + (eta ? ' / ' + eta : '');
     }
     var coordinate = Number(run.nextTargetCoordinate);
     var point = isFinite(coordinate) && coordinate > 0 ? formatLineCoordinate(coordinate) : '';
     var parts = [label];
     if (distance > 0) parts.push('через ' + formatRunDistance(distance));
-    else parts.push('тут');
+    else parts.push('сейчас');
     if (eta) parts.push(eta);
     if (point) parts.push(point);
     parts.push(getNavigationTargetShortLabel(run.nextTargetKind, run.nextTargetSource));
@@ -3308,7 +3612,7 @@
     }
     var coordinate = current.lineCoordinate;
     if (coordinate >= item.start && coordinate <= item.end) return 'active';
-    if (tracker.even) return item.start > coordinate ? 'ahead' : 'passed';
+    if (getCurrentCoordinateDirection() > 0) return item.start > coordinate ? 'ahead' : 'passed';
     return item.end < coordinate ? 'ahead' : 'passed';
   }
 
@@ -4413,7 +4717,11 @@
         pending: true,
         error: ''
       });
-      scheduleLearningSync();
+      if (tracker.timerRunning) {
+        if (!tracker.learningSync.timer) scheduleLearningSync(LEARNING_LIVE_SYNC_DELAY_MS);
+      } else {
+        scheduleLearningSync();
+      }
     }
   }
 
@@ -4423,6 +4731,7 @@
       clearTimeout(tracker.learningSync.timer);
       tracker.learningSync.timer = null;
     }
+    if (isPageHidden()) return;
     var delay = Number(delayMs);
     if (!isFinite(delay) || delay < 0) delay = LEARNING_SYNC_DEBOUNCE_MS;
     tracker.learningSync.timer = setTimeout(function() {
@@ -4434,7 +4743,7 @@
   function syncLearningStoreWithServer(reason) {
     if (!isLearningSyncAvailable()) return Promise.resolve(false);
     if (tracker.learningSync.inFlight) {
-      scheduleLearningSync(LEARNING_SYNC_DEBOUNCE_MS);
+      scheduleLearningSync(tracker.timerRunning ? LEARNING_LIVE_SYNC_DELAY_MS : LEARNING_SYNC_DEBOUNCE_MS);
       return Promise.resolve(false);
     }
     if (typeof navigator !== 'undefined' && !navigator.onLine) {
@@ -4540,7 +4849,7 @@
     if (typeof window === 'undefined' || !window.addEventListener) return;
     window.addEventListener('online', function() {
       if (tracker.learningSync.pending || hasLearningStoreData(tracker.learning)) {
-        scheduleLearningSync(250);
+        scheduleLearningSync(tracker.timerRunning ? LEARNING_LIVE_SYNC_DELAY_MS : 250);
       }
     });
   }
@@ -5779,7 +6088,6 @@
     }).filter(function(value) {
       return isFinite(value);
     }) : [];
-    if (!sectors.length) return null;
     return {
       id: String(item.id || ('speed-doc-' + coordinate + '-' + end + '-' + speed)),
       coordinate: coordinate,
@@ -5800,6 +6108,110 @@
     };
   }
 
+  function addSpeedDocRuleToSectorIndex(index, rule, sector, inferred) {
+    var key = getSectorKey(sector);
+    if (!key || key === '0') return;
+    if (!index[key]) index[key] = [];
+    var item = inferred ? Object.assign({}, rule, {
+      inferredSector: true,
+      resolvedSector: Number(key)
+    }) : rule;
+    index[key].push(item);
+  }
+
+  function addSpeedDocSectorRange(ranges, sector, start, end) {
+    var key = getSectorKey(sector);
+    if (!key || key === '0') return;
+    var left = Number(start);
+    var right = Number(end);
+    if (!isFinite(left) || !isFinite(right)) return;
+    if (right < left) {
+      var tmp = left;
+      left = right;
+      right = tmp;
+    }
+    if (!ranges[key]) ranges[key] = {
+      sector: Number(key),
+      start: left,
+      end: right
+    };
+    ranges[key].start = Math.min(ranges[key].start, left);
+    ranges[key].end = Math.max(ranges[key].end, right);
+  }
+
+  function getCurrentMapSpeedDocSectorRanges() {
+    var ranges = {};
+    Object.keys(tracker.profileBySector || {}).forEach(function(key) {
+      var points = tracker.profileBySector[key] || [];
+      for (var i = 0; i < points.length; i++) {
+        addSpeedDocSectorRange(ranges, key, points[i].start, points[i].end);
+      }
+    });
+    for (var p = 0; p < tracker.routePoints.length; p++) {
+      var point = tracker.routePoints[p];
+      addSpeedDocSectorRange(ranges, point.sector, point.ordinate, point.ordinate);
+    }
+    Object.keys(tracker.trackObjectsByFile || {}).forEach(function(fileKey) {
+      var store = tracker.trackObjectsByFile[fileKey];
+      Object.keys((store && store.bySector) || {}).forEach(function(sectorKey) {
+        var objects = store.bySector[sectorKey] || [];
+        for (var i = 0; i < objects.length; i++) {
+          addSpeedDocSectorRange(ranges, sectorKey, objects[i].coordinate, objects[i].end);
+        }
+      });
+    });
+    Object.keys(tracker.speedLimitsBySector || {}).forEach(function(sectorKey) {
+      var speeds = tracker.speedLimitsBySector[sectorKey] || [];
+      for (var i = 0; i < speeds.length; i++) {
+        addSpeedDocSectorRange(ranges, sectorKey, speeds[i].coordinate, speeds[i].end);
+      }
+    });
+    return Object.keys(ranges).map(function(key) {
+      return ranges[key];
+    });
+  }
+
+  function inferSpeedDocRuleSectors(rule) {
+    if (!rule || !isFinite(rule.coordinate) || !isFinite(rule.end)) return [];
+    var ranges = getCurrentMapSpeedDocSectorRanges();
+    var result = [];
+    var tolerance = 1200;
+    for (var i = 0; i < ranges.length; i++) {
+      var range = ranges[i];
+      if (rule.end + tolerance < range.start || rule.coordinate - tolerance > range.end) continue;
+      result.push(range.sector);
+    }
+    return result;
+  }
+
+  function refreshSpeedDocsSectorIndex() {
+    if (!tracker.speedDocs) {
+      tracker.speedDocsBySector = {};
+      return;
+    }
+    var index = {};
+    var rules = tracker.speedDocs.rules || [];
+    for (var i = 0; i < rules.length; i++) {
+      var rule = rules[i];
+      var explicitSectors = Array.isArray(rule.targetSectors) ? rule.targetSectors : [];
+      var sectors = explicitSectors.length ? explicitSectors : inferSpeedDocRuleSectors(rule);
+      var seen = {};
+      for (var s = 0; s < sectors.length; s++) {
+        var key = getSectorKey(sectors[s]);
+        if (!key || seen[key]) continue;
+        seen[key] = true;
+        addSpeedDocRuleToSectorIndex(index, rule, key, !explicitSectors.length);
+      }
+    }
+    Object.keys(index).forEach(function(key) {
+      index[key].sort(function(a, b) {
+        return a.coordinate - b.coordinate || a.speed - b.speed;
+      });
+    });
+    tracker.speedDocs.bySector = index;
+    tracker.speedDocsBySector = index;
+  }
+
   function normalizeSpeedDocsPayload(payload) {
     var result = {
       title: payload && payload.title ? String(payload.title) : 'Актуальные скорости',
@@ -5814,18 +6226,7 @@
       var rule = normalizeSpeedDocRule(rules[i]);
       if (!rule) continue;
       result.rules.push(rule);
-      for (var s = 0; s < rule.targetSectors.length; s++) {
-        var key = getSectorKey(rule.targetSectors[s]);
-        if (!key) continue;
-        if (!result.bySector[key]) result.bySector[key] = [];
-        result.bySector[key].push(rule);
-      }
     }
-    Object.keys(result.bySector).forEach(function(key) {
-      result.bySector[key].sort(function(a, b) {
-        return a.coordinate - b.coordinate || a.speed - b.speed;
-      });
-    });
     return result;
   }
 
@@ -5835,7 +6236,7 @@
       .then(function(text) {
         var payload = JSON.parse(text);
         tracker.speedDocs = normalizeSpeedDocsPayload(payload);
-        tracker.speedDocsBySector = tracker.speedDocs.bySector || {};
+        refreshSpeedDocsSectorIndex();
         tracker.speedDocsLoaded = true;
         tracker.speedDocsError = '';
         requestDraw();
@@ -7121,6 +7522,8 @@
     var state = getUserTripReadiness();
     var details = state.details;
     var activeRun = state.activeRun;
+    var shiftId = details && details.shift && details.shift.id ? String(details.shift.id) : '';
+    var autoSuppressed = !!(shiftId && !activeRun && (tracker.autoRunSuppressedShiftId === shiftId || hasFinishedRunForShift(shiftId)));
     var section = document.createElement('section');
     section.className = 'poekhali-ops-section poekhali-user-ready';
     if (activeRun || state.ready) section.classList.add('is-ready');
@@ -7129,20 +7532,22 @@
     var head = document.createElement('div');
     head.className = 'poekhali-ops-section-head';
     var title = document.createElement('div');
-    title.textContent = activeRun ? 'Поездка идет' : state.ready ? 'Можно ехать' : 'Подготовка';
+    title.textContent = activeRun ? 'Запись идет' : autoSuppressed ? 'Поездка завершена' : state.ready ? 'Автозапись готова' : 'Автозапись';
     var total = document.createElement('div');
     total.className = 'poekhali-ops-total';
-    total.textContent = activeRun ? getRunStatusText(activeRun.status) : state.ready ? 'готово' : state.blockers[0] || 'проверка';
+    total.textContent = activeRun ? getRunStatusText(activeRun.status) : autoSuppressed ? 'готово' : state.ready ? 'готово' : state.blockers[0] || 'проверка';
     head.appendChild(title);
     head.appendChild(total);
 
     var headline = document.createElement('div');
     headline.className = 'poekhali-ready-headline';
     headline.textContent = activeRun
-      ? ((activeRun.trainNumber ? 'Поезд № ' + activeRun.trainNumber : 'Поезд') + ' записывается в смену')
-      : state.ready
-        ? 'Смена, карта и позиция готовы для записи.'
-        : state.blockers.join(' · ');
+      ? ((activeRun.trainNumber ? 'Поезд № ' + activeRun.trainNumber : 'Поезд') + ' пишется в смену')
+      : autoSuppressed
+        ? 'Эта поездка уже завершена. Новая запись начнется только вручную.'
+        : state.ready
+          ? 'Смена, карта и позиция готовы. Запись запускается сама.'
+          : state.blockers.join(' · ');
 
     var grid = document.createElement('div');
     grid.className = 'poekhali-shift-info-grid';
@@ -7156,10 +7561,12 @@
     var note = document.createElement('div');
     note.className = 'poekhali-shift-route ' + (activeRun || state.ready ? 'is-success' : details.hasShift ? 'is-warning' : 'is-danger');
     note.textContent = activeRun
-      ? 'Режим пишет пробег, скорость, ограничения, оповещения и GPS-слой в эту смену.'
-      : state.ready
-        ? 'Нажмите старт, когда готовы записывать поездку. Без живого GPS режим начнет от маршрута смены и переключится на GPS автоматически.'
-        : 'Заполните недостающие данные. Режим не подставляет выдуманный поезд и не запускает пустую запись.';
+      ? 'Пишем пробег, скорость и GPS-слой в эту смену. При выходе из Поехали запись ставится на паузу.'
+      : autoSuppressed
+        ? 'Автозапуск для этой смены остановлен после завершения поездки.'
+        : state.ready
+          ? 'Нажимать отдельный старт не нужно. Без живого GPS режим начнет от маршрута смены и переключится на GPS автоматически.'
+          : 'Заполните недостающие данные. Режим не подставляет выдуманный поезд и не запускает пустую запись.';
 
     var actions = document.createElement('div');
     actions.className = 'poekhali-warning-form-actions poekhali-trip-actions';
@@ -7167,7 +7574,7 @@
     var primary = document.createElement('button');
     primary.type = 'button';
     primary.className = activeRun || state.ready ? 'poekhali-primary-action' : 'poekhali-secondary-action';
-    primary.textContent = activeRun ? 'Завершить поездку' : state.ready ? 'Начать запись' : details.hasShift ? 'Включить GPS' : 'Открыть смену';
+    primary.textContent = activeRun ? 'Завершить поездку' : autoSuppressed && state.ready ? 'Начать новую' : state.ready ? 'Запустить сейчас' : details.hasShift ? 'Проверить GPS' : 'Открыть смену';
     primary.addEventListener('click', function() {
       if (activeRun) {
         finishActiveRun();
@@ -7248,6 +7655,7 @@
     grid.appendChild(createShiftInfoCell('Пробег', formatRunDistance(run.distanceMeters), run.distanceMeters ? 'success' : 'muted'));
     grid.appendChild(createShiftInfoCell('Техскорость', formatRunSpeedKmh(run.technicalSpeedKmh), run.technicalSpeedKmh ? '' : 'muted'));
     grid.appendChild(createShiftInfoCell('Макс.', run.maxSpeedKmh ? run.maxSpeedKmh + ' км/ч' : '—', run.maxSpeedKmh ? '' : 'muted'));
+    grid.appendChild(createShiftInfoCell('Трек', run.points && run.points.length ? run.points.length + ' точ.' : '—', run.points && run.points.length ? 'success' : 'muted'));
     grid.appendChild(createShiftInfoCell('Цель', formatRunNavigationTarget(run, true), run.nextTargetLabel ? 'warning' : 'muted'));
     grid.appendChild(createShiftInfoCell('Оповещения', run.alertCount ? String(run.alertCount) : '0', run.alertCount ? 'danger' : 'muted'));
     section.appendChild(grid);
@@ -8253,6 +8661,7 @@
     var lastRunAt = lastRun && (lastRun.updatedAt || lastRun.startedAt)
       ? formatRunDateTime(lastRun.updatedAt || lastRun.startedAt)
       : '—';
+    var runPointCount = lastRun && Array.isArray(lastRun.points) ? lastRun.points.length : 0;
     return {
       appVersion: POEKHALI_DIAGNOSTIC_VERSION,
       mapTitle: tracker.currentMap && tracker.currentMap.title ? tracker.currentMap.title : '—',
@@ -8291,6 +8700,8 @@
       lastLearningAt: lastLearningAt,
       run: lastRun ? getRunStatusText(lastRun.status) : '—',
       runTone: activeRun ? 'success' : lastRun ? '' : 'muted',
+      runPoints: runPointCount ? runPointCount + ' точ.' : '—',
+      runPointsTone: runPointCount ? 'success' : 'muted',
       lastRunAt: lastRunAt,
       sw: swState,
       swTone: swState === 'активен' ? 'success' : 'warning',
@@ -8335,6 +8746,7 @@
     grid.appendChild(createShiftInfoCell('Дообучение', diagnostics.learning, diagnostics.learningTone));
     grid.appendChild(createShiftInfoCell('Последняя GPS', diagnostics.lastLearningAt, diagnostics.lastLearningAt === '—' ? 'muted' : ''));
     grid.appendChild(createShiftInfoCell('Поездка', diagnostics.run, diagnostics.runTone));
+    grid.appendChild(createShiftInfoCell('Трек', diagnostics.runPoints, diagnostics.runPointsTone));
     grid.appendChild(createShiftInfoCell('Run время', diagnostics.lastRunAt, diagnostics.lastRunAt === '—' ? 'muted' : ''));
     grid.appendChild(createShiftInfoCell('SW', diagnostics.sw, diagnostics.swTone));
     grid.appendChild(createShiftInfoCell('Cache API', diagnostics.cache, diagnostics.cacheTone));
@@ -10523,6 +10935,8 @@
     if (!sectorNodes.length) sectorNodes = [doc];
     var all = [];
     var bySector = {};
+    var signalNEven = 0;
+    var signalEven = 0;
 
     for (var sectorIndex = 0; sectorIndex < sectorNodes.length; sectorIndex++) {
       var sectorNode = sectorNodes[sectorIndex];
@@ -10540,6 +10954,10 @@
         var name = String(getFirstTextByLocalName(node, 'name') || '').trim();
         var speed = parseNumber(getFirstTextByLocalName(node, 'speed'));
         if (!isFinite(coordinate) || !type || !name) continue;
+        if (type === '1') {
+          if (/^Ч/i.test(name)) signalEven += 1;
+          else if (/^[НH]/i.test(name)) signalNEven += 1;
+        }
         var item = {
           fileKey: fileKey,
           sector: sector,
@@ -10566,9 +10984,22 @@
       if (a.sector !== b.sector) return a.sector - b.sector;
       return a.coordinate - b.coordinate;
     });
+    var directionEven = null;
+    if (signalEven > signalNEven) directionEven = true;
+    else if (signalNEven > signalEven) directionEven = false;
+    if (directionEven !== null) {
+      for (var itemIndex = 0; itemIndex < all.length; itemIndex++) {
+        all[itemIndex].directionEven = directionEven;
+      }
+    }
     return {
       all: all,
-      bySector: bySector
+      bySector: bySector,
+      directionEven: directionEven,
+      directionStats: {
+        evenSignals: signalEven,
+        oddSignals: signalNEven
+      }
     };
   }
 
@@ -10656,6 +11087,7 @@
       }
       tracker.speedLimits = speed.all;
       tracker.speedLimitsBySector = speed.bySector;
+      if (tracker.speedDocs) refreshSpeedDocsSectorIndex();
       tracker.assetsLoaded = true;
       tracker.assetsError = '';
       if (tracker.lastLocation && tracker.lastLocation.coords) {
@@ -10774,8 +11206,7 @@
     if (!best) best = findNearestPointInList(location, points);
     if (!best) return null;
 
-    var speedTune = Number(coords.speed) || 0;
-    if (!tracker.even) speedTune = -speedTune;
+    var speedTune = (Number(coords.speed) || 0) * getCurrentCoordinateDirection();
     best.lineCoordinate = Math.round(best.lineCoordinate + speedTune);
     best.secondDistance = secondDistance;
     best.onTrack = best.distance <= MATCH_THRESHOLD_M ||
@@ -11191,10 +11622,7 @@
     var coordinate = Math.max(0, Math.round(value));
     var km = Math.floor(coordinate / 1000);
     var meters = coordinate % 1000;
-    if (tracker.simpleCoordinate) {
-      return km + ' км ' + (Math.floor(meters / 100) + 1) + ' пк';
-    }
-    return km + '.' + String(meters).padStart(3, '0');
+    return km + ' км ' + (Math.floor(meters / 100) + 1) + ' пк';
   }
 
   function formatTimer(ms) {
@@ -11209,10 +11637,15 @@
   }
 
   function getTimerButtonLabel() {
-    if (tracker.runStartPreparing) return '...';
-    var elapsed = getTimerElapsed();
-    if (tracker.timerRunning || elapsed > 0) return formatTimer(elapsed);
-    return 'Старт';
+    if (tracker.runStartPreparing) return 'СТАРТ';
+    if (tracker.timerRunning) return 'ИДЕТ';
+    if (getActiveRun() || getTimerElapsed() > 0) return 'ПАУЗА';
+    var details = getPoekhaliTrainDetails();
+    if (!details || !details.hasShift) return 'НЕТ СМЕНЫ';
+    var shiftId = details.shift && details.shift.id ? String(details.shift.id) : '';
+    if (shiftId && (tracker.autoRunSuppressedShiftId === shiftId || hasFinishedRunForShift(shiftId))) return 'ГОТОВО';
+    if (tracker.status === 'run-blocked') return 'ПРОВЕРЬ';
+    return 'АВТО';
   }
 
   function formatTime(date) {
@@ -11241,14 +11674,93 @@
     return elapsed;
   }
 
-  function beginPoekhaliRun() {
+  function hasFinishedRunForShift(shiftId) {
+    var id = String(shiftId || '');
+    if (!id) return false;
+    for (var i = 0; i < tracker.runs.length; i++) {
+      var run = tracker.runs[i];
+      if (!run || run.deletedAt || run.status !== 'finished') continue;
+      if (String(run.shiftId || '') === id) return true;
+    }
+    return false;
+  }
+
+  function clearAutoRunTimer() {
+    if (tracker.autoRunTimer !== null) {
+      window.clearTimeout(tracker.autoRunTimer);
+      tracker.autoRunTimer = null;
+    }
+  }
+
+  function shouldAutoStartPoekhaliRun() {
+    if (!tracker.active || tracker.timerRunning || tracker.runStartPreparing) return false;
+    if (isPageHidden()) return false;
+    if (tracker.status === 'run-blocked' && tracker.runStartMessage) return false;
+    var details = getPoekhaliTrainDetails();
+    if (!details || !details.hasShift) return false;
+    var shiftId = details.shift && details.shift.id ? String(details.shift.id) : '';
+    if (getActiveRun()) return true;
+    if (shiftId && tracker.autoRunSuppressedShiftId === shiftId) return false;
+    if (shiftId && hasFinishedRunForShift(shiftId)) return false;
+    return true;
+  }
+
+  function scheduleAutoRunStart(reason, delayMs) {
+    clearAutoRunTimer();
+    if (!shouldAutoStartPoekhaliRun()) {
+      setTimerButton();
+      return;
+    }
+    var delay = isFinite(Number(delayMs)) ? Math.max(0, Number(delayMs)) : AUTO_RUN_START_DELAY_MS;
+    tracker.autoRunTimer = window.setTimeout(function() {
+      tracker.autoRunTimer = null;
+      if (shouldAutoStartPoekhaliRun()) {
+        beginPoekhaliRun({
+          auto: true,
+          reason: reason || 'auto'
+        });
+      } else {
+        setTimerButton();
+      }
+    }, delay);
+    setTimerButton();
+  }
+
+  function waitForRunStartReadiness(token) {
+    var first = getRunStartReadiness();
+    if (first.ready || first.reason !== 'no-position' || !shouldKeepGpsWatching()) {
+      return Promise.resolve(first);
+    }
+    return new Promise(function(resolve) {
+      var startedAt = Date.now();
+      function check() {
+        if (!tracker.runStartPreparing || tracker.runStartToken !== token || tracker.timerRunning || !tracker.active) {
+          resolve(null);
+          return;
+        }
+        var next = getRunStartReadiness();
+        if (next.ready || next.reason !== 'no-position' || Date.now() - startedAt >= 6500) {
+          resolve(next);
+          return;
+        }
+        window.setTimeout(check, 350);
+      }
+      window.setTimeout(check, 350);
+    });
+  }
+
+  function beginPoekhaliRun(options) {
+    options = options || {};
     if (tracker.timerRunning || tracker.runStartPreparing) return;
+    clearAutoRunTimer();
+    if (!options.auto) tracker.autoRunSuppressedShiftId = '';
     var token = Date.now() + Math.random();
     tracker.runStartPreparing = true;
     tracker.runStartToken = token;
     tracker.runStartMessage = '';
     updateModeButtons();
     requestDraw();
+    restartWatchingGps();
 
     preparePoekhaliModeEntry()
       .catch(function(error) {
@@ -11257,19 +11769,27 @@
       })
       .then(function() {
         if (!tracker.runStartPreparing || tracker.runStartToken !== token || tracker.timerRunning || !tracker.active) return null;
-        var readiness = getRunStartReadiness();
+        applyBestAutoDirection();
+        return waitForRunStartReadiness(token);
+      })
+      .then(function(readiness) {
+        if (!tracker.runStartPreparing || tracker.runStartToken !== token || tracker.timerRunning || !tracker.active || !readiness) return null;
         if (!readiness.ready) {
           blockRunStart(readiness);
           return null;
         }
         tracker.timerStartedAt = Date.now();
         tracker.timerRunning = true;
+        restartWatchingGps();
         var run = startOrResumeRun();
         if (!run) {
           blockRunStart({
             projection: readiness.projection,
             message: 'Не удалось создать рабочую запись Поехали. Проверьте смену и карту.'
           });
+        }
+        if (run && options.auto) {
+          tracker.runStartMessage = '';
         }
         return run;
       })
@@ -11285,15 +11805,18 @@
         tracker.runStartPreparing = false;
         tracker.runStartToken = 0;
         updateModeButtons();
+        syncPoekhaliPowerMode();
         requestDraw();
       });
   }
 
   function setTimerRunning(shouldRun) {
     if (!shouldRun && tracker.runStartPreparing) {
+      clearAutoRunTimer();
       tracker.runStartPreparing = false;
       tracker.runStartToken = 0;
       updateModeButtons();
+      syncPoekhaliPowerMode();
       requestDraw();
       return;
     }
@@ -11302,9 +11825,11 @@
       beginPoekhaliRun();
       return;
     } else {
+      clearAutoRunTimer();
       tracker.timerElapsedMs = getTimerElapsed();
       tracker.timerRunning = false;
       pauseActiveRun();
+      restartWatchingGps();
     }
     updateModeButtons();
     requestDraw();
@@ -11319,15 +11844,16 @@
     tracker.gpsError = '';
     tracker.runStartMessage = '';
     setGpsStatus('GPS', 'is-live');
+    var shouldCaptureTrackData = !!(tracker.timerRunning || tracker.runStartPreparing);
 
     if (!tracker.assetsLoaded) {
       tracker.projection = null;
       tracker.status = 'loading';
       updateAutoPositionState('loading', null, 'GPS получен, карта еще загружается.');
-      recordRawLearningSample(position, null);
+      if (shouldCaptureTrackData) recordRawLearningSample(position, null);
     } else {
       var projection = applyTrackProjection(position.coords);
-      recordLearningSample(position, projection);
+      if (shouldCaptureTrackData) recordLearningSample(position, projection);
       updateActiveRunFromProjection(projection, position);
     }
     requestDraw();
@@ -11352,7 +11878,61 @@
     requestDraw();
   }
 
-  function startWatchingGps() {
+  function isPageHidden() {
+    return typeof document !== 'undefined' && !!document.hidden;
+  }
+
+  function shouldKeepGpsWatching() {
+    if (!tracker.active) return false;
+    if (!(tracker.timerRunning || tracker.runStartPreparing)) return false;
+    return true;
+  }
+
+  function getGpsPollOptions() {
+    if (tracker.runStartPreparing) return GPS_START_OPTIONS;
+    if (isPageHidden()) return GPS_HIDDEN_OPTIONS;
+    return tracker.timerRunning ? GPS_ACTIVE_OPTIONS : GPS_IDLE_OPTIONS;
+  }
+
+  function getGpsPollIntervalMs(hasError) {
+    if (!shouldKeepGpsWatching()) return 0;
+    if (hasError) return GPS_ERROR_POLL_INTERVAL_MS;
+    if (tracker.runStartPreparing) return GPS_START_POLL_INTERVAL_MS;
+    if (isPageHidden()) return GPS_HIDDEN_POLL_INTERVAL_MS;
+    var rawSpeed = tracker.lastLocation && tracker.lastLocation.coords
+      ? Number(tracker.lastLocation.coords.speed)
+      : NaN;
+    var run = getActiveRun();
+    var runSpeed = run && run.lastPoint ? Number(run.lastPoint.speedKmh) / 3.6 : 0;
+    var speed = Math.max(0, isFinite(rawSpeed) ? rawSpeed : 0, isFinite(runSpeed) ? runSpeed : 0);
+    if (!isFinite(rawSpeed) && !speed) return GPS_ACTIVE_POLL_INTERVAL_MS;
+    if (speed >= 10) return GPS_FAST_POLL_INTERVAL_MS;
+    if (speed <= 1.2) return GPS_SLOW_POLL_INTERVAL_MS;
+    return GPS_ACTIVE_POLL_INTERVAL_MS;
+  }
+
+  function clearGpsPollTimer() {
+    if (tracker.gpsPollTimer !== null) {
+      window.clearTimeout(tracker.gpsPollTimer);
+      tracker.gpsPollTimer = null;
+    }
+  }
+
+  function scheduleGpsPoll(delayMs) {
+    clearGpsPollTimer();
+    if (!shouldKeepGpsWatching()) return;
+    var delay = Math.max(0, Number(delayMs) || 0);
+    tracker.gpsPollTimer = window.setTimeout(function() {
+      tracker.gpsPollTimer = null;
+      requestGpsPoll();
+    }, delay);
+  }
+
+  function requestGpsPoll() {
+    if (!shouldKeepGpsWatching()) {
+      stopWatchingGps();
+      return;
+    }
     if (!navigator.geolocation) {
       tracker.gpsError = 'GPS недоступен в браузере';
       tracker.status = 'gps-unsupported';
@@ -11360,34 +11940,88 @@
       requestDraw();
       return;
     }
-    if (tracker.watchId !== null) return;
+    if (tracker.gpsPollInFlight) return;
+
+    tracker.gpsPollInFlight = true;
+    tracker.gpsPollLastAt = Date.now();
+    var token = ++tracker.gpsPollToken;
+    try {
+      navigator.geolocation.getCurrentPosition(function(position) {
+        if (token !== tracker.gpsPollToken) return;
+        tracker.gpsPollInFlight = false;
+        handlePosition(position);
+        scheduleGpsPoll(getGpsPollIntervalMs(false));
+      }, function(error) {
+        if (token !== tracker.gpsPollToken) return;
+        tracker.gpsPollInFlight = false;
+        handleGpsError(error);
+        scheduleGpsPoll(getGpsPollIntervalMs(true));
+      }, getGpsPollOptions());
+    } catch (error) {
+      if (token === tracker.gpsPollToken) {
+        tracker.gpsPollInFlight = false;
+        handleGpsError(error);
+        scheduleGpsPoll(getGpsPollIntervalMs(true));
+      }
+    }
+  }
+
+  function startWatchingGps() {
+    if (!shouldKeepGpsWatching()) return;
+    if (!navigator.geolocation) {
+      tracker.gpsError = 'GPS недоступен в браузере';
+      tracker.status = 'gps-unsupported';
+      setGpsStatus('НЕТ GPS', 'is-error');
+      requestDraw();
+      return;
+    }
+    if (tracker.gpsPollTimer !== null || tracker.gpsPollInFlight) return;
 
     tracker.status = tracker.assetsLoaded ? 'waiting' : 'loading';
     tracker.gpsError = '';
     tracker.runStartMessage = '';
     setGpsStatus('GPS', '');
-    try {
-      tracker.watchId = navigator.geolocation.watchPosition(
-        handlePosition,
-        handleGpsError,
-        {
-          enableHighAccuracy: true,
-          maximumAge: 1000,
-          timeout: 10000
-        }
-      );
-    } catch (error) {
-      handleGpsError(error);
-    }
+    scheduleGpsPoll(0);
   }
 
   function stopWatchingGps() {
+    clearGpsPollTimer();
+    tracker.gpsPollToken += 1;
+    tracker.gpsPollInFlight = false;
     if (tracker.watchId !== null && navigator.geolocation) {
       try {
         navigator.geolocation.clearWatch(tracker.watchId);
       } catch (error) {}
     }
     tracker.watchId = null;
+  }
+
+  function restartWatchingGps() {
+    stopWatchingGps();
+    if (shouldKeepGpsWatching()) startWatchingGps();
+  }
+
+  function requestPassiveGpsFix() {
+    if (!tracker.active || tracker.timerRunning || tracker.runStartPreparing || tracker.passiveGpsInFlight) return;
+    if (!navigator.geolocation || isPageHidden()) return;
+    tracker.passiveGpsInFlight = true;
+    tracker.status = tracker.assetsLoaded ? 'waiting' : 'loading';
+    tracker.gpsError = '';
+    setGpsStatus('GPS', '');
+    try {
+      navigator.geolocation.getCurrentPosition(function(position) {
+        tracker.passiveGpsInFlight = false;
+        handlePosition(position);
+        stopWatchingGps();
+      }, function(error) {
+        tracker.passiveGpsInFlight = false;
+        handleGpsError(error);
+        stopWatchingGps();
+      }, GPS_IDLE_OPTIONS);
+    } catch (error) {
+      tracker.passiveGpsInFlight = false;
+      handleGpsError(error);
+    }
   }
 
   function resizeCanvas() {
@@ -11446,7 +12080,6 @@
   function getPoekhaliTopControlsBottom() {
     var ids = [
       'btnPoekhaliBack',
-      'btnPoekhaliK',
       'btnPoekhaliDirection',
       'btnPoekhaliWay',
       'btnPoekhaliMap',
@@ -11657,26 +12290,51 @@
     el.setAttribute('aria-label', el.title);
   }
 
+  function setDirectionButton() {
+    var el = byId('btnPoekhaliDirection');
+    if (!el) return;
+    var value = getDirectionValueLabel(tracker.even);
+    var source = getDirectionSourceLabel();
+    el.dataset.controlLabel = 'Напр.';
+    el.textContent = 'АВТО';
+    var title = 'Направление определяется автоматически: ' + value + ' · ' + source;
+    el.title = title;
+    el.setAttribute('aria-label', title);
+    el.classList.toggle('is-auto', tracker.directionSource !== 'manual');
+    el.classList.toggle('is-live', tracker.directionSource === 'gps');
+  }
+
   function setTimerButton() {
     var el = byId('btnPoekhaliTimer');
     if (!el) return;
+    var activeRun = getActiveRun();
+    var details = getPoekhaliTrainDetails();
     el.dataset.controlLabel = 'Запись';
     el.textContent = getTimerButtonLabel();
+    el.classList.toggle('is-recording', !!tracker.timerRunning);
+    el.classList.toggle('is-preparing', !!tracker.runStartPreparing);
+    el.classList.toggle('is-paused', !tracker.timerRunning && !!activeRun);
+    el.classList.toggle('is-blocked', !tracker.timerRunning && (!details || !details.hasShift || tracker.status === 'run-blocked'));
     var title = tracker.runStartPreparing
-      ? 'Готовлю карту, смену и GPS для записи поездки'
+      ? 'Автозапись запускается: готовлю карту, смену и GPS'
       : tracker.timerRunning
-        ? 'Поставить запись поездки на паузу'
-        : getTimerElapsed() > 0
-          ? 'Продолжить запись поездки'
-          : 'Начать запись поездки';
+        ? 'Запись идет ' + formatTimer(getTimerElapsed()) + '. Нажмите, чтобы открыть данные поездки'
+        : activeRun
+          ? 'Запись на паузе. При входе в Поехали продолжится автоматически'
+          : !details || !details.hasShift
+            ? 'Автозапись ждет выбранную смену'
+            : details.shift && details.shift.id && (tracker.autoRunSuppressedShiftId === String(details.shift.id) || hasFinishedRunForShift(details.shift.id))
+              ? 'Поездка завершена. Нажмите, чтобы начать новую запись вручную'
+              : tracker.status === 'run-blocked'
+                ? (tracker.runStartMessage || 'Проверьте смену, маршрут и GPS')
+                : 'Автозапись включена. Нажмите, чтобы запустить сейчас';
     el.title = title;
     el.setAttribute('aria-label', title);
   }
 
   function updateModeButtons() {
-    setText('btnPoekhaliDirection', tracker.even ? 'ЧЕТ' : 'НЕЧЕТ');
+    setDirectionButton();
     setText('btnPoekhaliWay', 'П ' + tracker.wayNumber);
-    setText('btnPoekhaliK', tracker.simpleCoordinate ? 'КМ' : 'K 1');
     setTimerButton();
     setMapButton();
     setOpsButton();
@@ -12350,7 +13008,18 @@
   }
 
   function getCurrentObjectFileKey() {
-    return String(tracker.wayNumber) + (tracker.even ? '' : 'n');
+    var way = normalizeWayNumber(tracker.wayNumber);
+    var even = !!tracker.even;
+    var stores = tracker.trackObjectsByFile || {};
+    var keys = Object.keys(stores);
+    for (var i = 0; i < keys.length; i++) {
+      if (getWayNumberFromObjectFileKey(keys[i]) !== way) continue;
+      var directionEven = stores[keys[i]] && stores[keys[i]].directionEven !== null && stores[keys[i]].directionEven !== undefined
+        ? !!stores[keys[i]].directionEven
+        : getEvenFromObjectFileName(keys[i]);
+      if (directionEven === even) return keys[i];
+    }
+    return String(way) + (even ? 'n' : '');
   }
 
   function mergeRegimeTrackObjects(baseObjects, regimeObjects) {
@@ -12945,15 +13614,44 @@
     return centerX + (value - center) / TRACK_METERS_PER_PIXEL;
   }
 
-  function formatSpeedLabel(rule) {
-    var value = isFinite(rule.speed) ? Math.round(rule.speed) : String(rule.name || '').replace(/\D+/g, '');
-    return value ? String(value) : String(rule.name || '');
+  function getNamedSpeedValue(rule) {
+    var name = String(rule && rule.name || '');
+    var match = name.match(/(^|\D)(\d{1,3})(?=\D|$)/);
+    if (!match) return NaN;
+    var value = parseNumber(match[2]);
+    return isFinite(value) && value > 0 && value <= 160 ? value : NaN;
+  }
+
+  function canonicalizeSpeedLimitValue(value) {
+    var speed = Number(value);
+    if (!isFinite(speed) || speed <= 0 || speed > 160) return NaN;
+    var normalized = Math.floor(speed / 5) * 5;
+    return normalized > 0 && normalized <= 160 ? normalized : NaN;
+  }
+
+  function getSpeedRuleRawValue(rule) {
+    if (!rule) return NaN;
+    if (isFinite(rule.speed)) {
+      var numeric = Number(rule.speed);
+      if (numeric > 0 && numeric <= 160) return numeric;
+    }
+    var named = getNamedSpeedValue(rule);
+    if (isFinite(named)) return named;
+    var parsed = parseNumber(String(rule.name || '').replace(/\D+/g, ''));
+    return isFinite(parsed) && parsed > 0 && parsed <= 160 ? parsed : NaN;
   }
 
   function getSpeedRuleValue(rule) {
-    if (!rule) return NaN;
-    if (isFinite(rule.speed)) return Number(rule.speed);
-    return parseNumber(formatSpeedLabel(rule));
+    var raw = getSpeedRuleRawValue(rule);
+    var named = getNamedSpeedValue(rule);
+    var value = isFinite(raw) ? raw : named;
+    if (isFinite(raw) && isFinite(named) && Math.abs(raw - named) <= 5) value = named;
+    return canonicalizeSpeedLimitValue(value);
+  }
+
+  function formatSpeedLabel(rule) {
+    var value = getSpeedRuleValue(rule);
+    return isFinite(value) && value > 0 ? String(Math.round(value)) : String(rule && rule.name || '');
   }
 
   function normalizeActiveRestriction(rule, projection) {
@@ -12963,9 +13661,8 @@
     var start = Math.max(0, Math.round(Number(rule.coordinate) || 0));
     var end = Math.max(start, Math.round(Number(rule.end) || start + Math.max(0, Number(rule.length) || 0)));
     var coordinate = Math.max(0, Math.round(Number(projection.lineCoordinate) || 0));
-    var distanceToEnd = tracker.even
-      ? Math.max(0, end - coordinate)
-      : Math.max(0, coordinate - start);
+    var activeEnd = getDirectionEndCoordinate(start, end, tracker.even);
+    var distanceToEnd = Math.max(0, getDirectionalDistance(activeEnd, coordinate, tracker.even));
     var prefix = getSpeedRulePrefix(rule);
     return {
       label: prefix + ' ' + formatSpeedLabel(rule),
@@ -12997,8 +13694,8 @@
     for (var i = 0; i < speedRules.length; i++) {
       var rule = speedRules[i];
       if (!rule || center >= rule.coordinate && center <= rule.end) continue;
-      var anchor = tracker.even ? rule.coordinate : rule.end;
-      var distance = tracker.even ? anchor - center : center - anchor;
+      var anchor = getDirectionStartCoordinate(rule.coordinate, rule.end, tracker.even);
+      var distance = getDirectionalDistance(anchor, center, tracker.even);
       if (!isFinite(distance) || distance < 0) continue;
       if (!best) {
         best = { rule: rule, anchor: anchor, distance: distance };
@@ -13052,8 +13749,9 @@
     var sector = projection.sector;
     var rules = speedRules;
     if (!Array.isArray(rules)) {
-      var left = tracker.even ? center - 250 : center - NEXT_RESTRICTION_LOOKAHEAD_M;
-      var right = tracker.even ? center + NEXT_RESTRICTION_LOOKAHEAD_M : center + 250;
+      var window = getDirectionalWindow(center, 250, NEXT_RESTRICTION_LOOKAHEAD_M, tracker.even);
+      var left = window.left;
+      var right = window.right;
       var visibleObjects = getTrackObjectsInWindow(left, right, sector);
       rules = getSpeedRulesInWindow(left, right, sector, visibleObjects);
     }
@@ -13099,7 +13797,7 @@
     var start = Math.max(0, Math.round(Number(item.coordinate) || 0));
     var end = Math.max(start, Math.round(Number(item.end) || start));
     if (item.type === '2' && center >= start && center <= end) return center;
-    return tracker.even ? start : end;
+    return getDirectionStartCoordinate(start, end, tracker.even);
   }
 
   function findNextTrackObjectForDirection(center, sector, type) {
@@ -13114,7 +13812,7 @@
       var item = objects[i];
       var anchor = getObjectApproachAnchor(item, center);
       if (anchor === null || !isFinite(anchor)) continue;
-      var distance = tracker.even ? anchor - center : center - anchor;
+      var distance = getDirectionalDistance(anchor, center, tracker.even);
       if (item.type === '2' && center >= item.coordinate && center <= item.end) distance = 0;
       if (!isFinite(distance) || distance < 0) continue;
       if (!best || distance < best.distance) {
@@ -13191,8 +13889,7 @@
     if (!station || !isFinite(station.coordinate)) return null;
     var start = Math.max(0, Math.round(Number(station.coordinate) || 0));
     var end = Math.max(start, Math.round(Number(station.end) || start));
-    if (role === 'from') return even ? start : end;
-    return even ? start : end;
+    return getDirectionStartCoordinate(start, end, even);
   }
 
   function resolveRouteProgressForProjection(projection, suggestion) {
@@ -13205,7 +13902,7 @@
     if (!isFinite(start) || !isFinite(finish) || Math.abs(finish - start) < 1) return null;
     var total = Math.abs(finish - start);
     var current = Math.max(0, Math.round(Number(projection.lineCoordinate) || 0));
-    var rawPassed = even ? current - start : start - current;
+    var rawPassed = getDirectionalDistance(current, start, even);
     var passed = rawPassed;
     var status = 'route';
     var outside = 0;
@@ -13353,7 +14050,7 @@
         label: 'Конец ' + activeLabel,
         source: run.activeRestrictionSource,
         sector: run.activeRestrictionSector,
-        coordinate: tracker.even ? run.activeRestrictionEnd : run.activeRestrictionStart,
+        coordinate: getDirectionEndCoordinate(run.activeRestrictionStart, run.activeRestrictionEnd, tracker.even),
         distanceMeters: activeDistance,
         etaSeconds: estimateEtaSeconds(activeDistance, speed),
         updatedAt: run.activeRestrictionUpdatedAt
@@ -13435,7 +14132,9 @@
 
   function normalizeSpeedRules(rules) {
     var sorted = (rules || []).filter(function(rule) {
-      return rule && isFinite(rule.coordinate) && isFinite(rule.end) && rule.end >= rule.coordinate;
+      var speed = getSpeedRuleValue(rule);
+      return rule && isFinite(rule.coordinate) && isFinite(rule.end) && rule.end >= rule.coordinate &&
+        isFinite(speed) && speed > 0 && speed <= 160;
     }).slice().sort(function(a, b) {
       return a.coordinate - b.coordinate || getSpeedRuleValue(a) - getSpeedRuleValue(b);
     });
@@ -13486,7 +14185,7 @@
   }
 
   function getDirectionMultiplier() {
-    return tracker.even ? 1 : -1;
+    return getCurrentCoordinateDirection();
   }
 
   function getProfilePointsForSectorOrFallback(sector) {
@@ -13528,7 +14227,7 @@
 
     var oneMeter = xUnit / 100;
     var headX = Math.round(viewportX + xUnit * 26);
-    var trainWidth = Math.max(xUnit * 14, getVisualTrainLengthMeters(getTrainLengthMeters(), false) * oneMeter);
+    var trainWidth = Math.max(2, getTrainLengthMeters() * oneMeter);
     var trainHeight = Math.max(16, Math.round(xUnit * 3.2));
     var bottomTextY = Math.min(h - navReserve - 24, scaleY + 88);
     var speedTopY = Math.max(coordBottom + 48, profileTop - 58);
@@ -13923,7 +14622,7 @@
         label: 'Конец ' + active.label,
         source: active.source,
         sector: active.sector,
-        coordinate: tracker.even ? active.end : active.start,
+        coordinate: getDirectionEndCoordinate(active.start, active.end, tracker.even),
         distanceMeters: active.distanceToEnd,
         etaSeconds: estimateEtaSeconds(active.distanceToEnd, speed),
         updatedAt: active.updatedAt
@@ -14004,7 +14703,7 @@
   function formatLiveNavigationTargetDistance(target) {
     if (!target) return '—';
     var distance = Math.max(0, Math.round(Number(target.distanceMeters) || 0));
-    return distance > 0 ? formatDistanceLabel(distance) : 'ТУТ';
+    return distance > 0 ? formatDistanceLabel(distance) : '0 м';
   }
 
   function getLiveNavigationTargetTone(target, isPreview) {
@@ -14102,13 +14801,13 @@
       title = formatLiveNavigationTargetTitle(navTarget) || title;
       subtitle = formatLiveNavigationTargetSubtitle(navTarget, locationTitle) || subtitle;
     }
-    var chip3Label = navTarget ? (Math.max(0, Math.round(Number(navTarget.distanceMeters) || 0)) > 0 ? 'ДАЛЕЕ' : 'ТУТ') : (nextRestriction ? 'ДАЛЕЕ' : (nextWarning ? 'ПР' : (isPreview ? 'GPS' : (nextSignal ? 'СВ' : 'ЦЕЛЬ'))));
+    var chip3Label = navTarget ? (Math.max(0, Math.round(Number(navTarget.distanceMeters) || 0)) > 0 ? 'ДАЛЕЕ' : 'СЕЙЧАС') : (nextRestriction ? 'ДАЛЕЕ' : (nextWarning ? 'ПР' : (isPreview ? 'GPS' : (nextSignal ? 'СВ' : 'ЦЕЛЬ'))));
     var chip3Text = navTarget
         ? formatLiveNavigationTargetDistance(navTarget)
       : nextRestriction
         ? formatDistanceLabel(nextRestriction.distance)
       : nextWarning
-        ? (nextWarning.status === 'active' ? 'ТУТ' : formatDistanceLabel(nextWarning.distance))
+        ? (nextWarning.status === 'active' ? '0 м' : formatDistanceLabel(nextWarning.distance))
       : isPreview
         ? (tracker.status === 'offtrack' ? 'ВНЕ' : 'НЕТ')
       : (nextSignal ? formatDistanceLabel(Math.abs(nextSignal.coordinate - center)) : '—');
@@ -14280,15 +14979,6 @@
         });
       }
     }
-    var currentPk = Math.floor(((Math.round(center) % 1000) + 1000) % 1000 / 100) + 1;
-    fillRoundRect(ctx, layout.headX - 24, railY - 31, 48, 20, 7, 'rgba(56, 189, 248, 0.18)');
-    strokeRoundRect(ctx, layout.headX - 23.5, railY - 30.5, 47, 19, 7, 'rgba(56, 189, 248, 0.42)');
-    drawText(ctx, 'ПК ' + currentPk, layout.headX, railY - 17, {
-      size: 10,
-      weight: 850,
-      color: THEME.accentStrong,
-      align: 'center'
-    });
     ctx.restore();
   }
 
@@ -14676,9 +15366,50 @@
     return priority >= 44 && distance <= APK_LABEL_FOCUS_RADIUS_M;
   }
 
+  function doSpeedRangesOverlap(a, b, tolerance) {
+    if (!a || !b) return false;
+    var gap = Math.max(
+      Math.max(Number(a.coordinate) || 0, Number(b.coordinate) || 0) -
+        Math.min(Number(a.end) || 0, Number(b.end) || 0),
+      0
+    );
+    return gap <= (isFinite(tolerance) ? tolerance : 40);
+  }
+
+  function filterSpeedRulesForDisplay(speedRules, activeSpeed, center) {
+    var prepared = (speedRules || []).filter(Boolean).slice().sort(function(a, b) {
+      var aActive = isSameSpeedRule(a, activeSpeed) ? 1 : 0;
+      var bActive = isSameSpeedRule(b, activeSpeed) ? 1 : 0;
+      if (aActive !== bActive) return bActive - aActive;
+      var priorityDelta = getSpeedRulePriority(b) - getSpeedRulePriority(a);
+      if (priorityDelta) return priorityDelta;
+      var aSpeed = getSpeedRuleValue(a);
+      var bSpeed = getSpeedRuleValue(b);
+      if (isFinite(aSpeed) && isFinite(bSpeed) && Math.abs(aSpeed - bSpeed) > 0.1) return aSpeed - bSpeed;
+      return getRangeDistanceFromCenter(a.coordinate, a.end, center) - getRangeDistanceFromCenter(b.coordinate, b.end, center);
+    });
+    var result = [];
+    for (var i = 0; i < prepared.length; i++) {
+      var rule = prepared[i];
+      var speed = getSpeedRuleValue(rule);
+      var duplicate = false;
+      for (var j = 0; j < result.length; j++) {
+        var existing = result[j];
+        var existingSpeed = getSpeedRuleValue(existing);
+        if (!isFinite(speed) || !isFinite(existingSpeed)) continue;
+        if (Math.abs(speed - existingSpeed) > 3) continue;
+        if (!doSpeedRangesOverlap(rule, existing, 45)) continue;
+        duplicate = true;
+        break;
+      }
+      if (!duplicate) result.push(rule);
+    }
+    return result;
+  }
+
   function drawApkSpeedBands(ctx, layout, center, sector, speedRules, activeSpeed, isPreview, labelLayout) {
     var maxLanes = 4;
-    var maxLabels = isPreview ? 4 : 5;
+    var maxLabels = isPreview ? 3 : 3;
     var labelRightByLane = [];
     var drawnLabels = 0;
     ctx.save();
@@ -14691,7 +15422,8 @@
     ctx.moveTo(layout.viewportX + 8, railBottomY);
     ctx.lineTo(layout.viewportRight - 8, railBottomY);
     ctx.stroke();
-    var prepared = (speedRules || []).map(function(rule) {
+    var displayRules = filterSpeedRulesForDisplay(speedRules, activeSpeed, center);
+    var prepared = displayRules.map(function(rule) {
       return {
         rule: rule,
         priority: getSpeedVisualPriority(rule, activeSpeed, center)
@@ -14772,8 +15504,9 @@
 
   function computeAvgProfileAngle(center, sector, layout) {
     var trainMeters = getTrainLengthMeters();
-    var minCoordinate = tracker.even ? center - trainMeters : center;
-    var maxCoordinate = tracker.even ? center : center + trainMeters;
+    var tailCoordinate = center - getCurrentCoordinateDirection() * trainMeters;
+    var minCoordinate = Math.min(tailCoordinate, center);
+    var maxCoordinate = Math.max(tailCoordinate, center);
     var source = getVisibleProfileSegmentsForWindow(minCoordinate, maxCoordinate, sector);
     var weighted = 0;
     var length = 0;
@@ -14788,7 +15521,7 @@
 
   function collectTrainProfilePath(center, sector, layout, trainMeters) {
     var lengthMeters = Math.max(1, Math.round(Number(trainMeters) || getTrainLengthMeters()));
-    var tail = tracker.even ? center - lengthMeters : center + lengthMeters;
+    var tail = center - getCurrentCoordinateDirection() * lengthMeters;
     var head = center;
     var left = Math.min(tail, head);
     var right = Math.max(tail, head);
@@ -14852,7 +15585,7 @@
     ctx.lineWidth = 1;
     for (var i = 1; i <= maxLines; i++) {
       var offset = Math.min(lengthMeters - 12, i * divisionStep);
-      var coordinate = tracker.even ? center - offset : center + offset;
+      var coordinate = center - getCurrentCoordinateDirection() * offset;
       var x = coordinateToApkX(coordinate, center, layout);
       if (x < layout.viewportX - 14 || x > layout.viewportRight + 14) continue;
       var y = getProfileYAt(coordinate, center, sector, layout);
@@ -14878,7 +15611,7 @@
     ctx.fillStyle = isPreview ? 'rgba(3, 7, 18, 0.50)' : 'rgba(3, 7, 18, 0.74)';
     for (var i = 0; i < maxWheels; i++) {
       var offset = Math.min(lengthMeters - 8, 12 + i * wheelStep);
-      var coordinate = tracker.even ? center - offset : center + offset;
+      var coordinate = center - getCurrentCoordinateDirection() * offset;
       var x = coordinateToApkX(coordinate, center, layout);
       if (x < layout.viewportX - 12 || x > layout.viewportRight + 12) continue;
       var y = getProfileYAt(coordinate, center, sector, layout);
@@ -14894,54 +15627,116 @@
     ctx.restore();
   }
 
-  function drawTrainHead(ctx, layout, center, sector, bodyHeight, bodyColor, isLive, isPreview) {
+  function drawApkTrainProfileBar(ctx, layout, center, sector, trainMeters, isPreview) {
+    var points = collectTrainProfilePath(center, sector, layout, trainMeters);
+    if (!points || points.length < 2) return;
+    var height = Math.max(6, Math.min(9, layout.xUnit * 1.15));
+    var fill = isPreview ? 'rgba(91, 210, 255, 0.58)' : '#5bd2ff';
+    function stroke(width, color) {
+      ctx.strokeStyle = color;
+      ctx.lineWidth = width;
+      ctx.lineCap = 'butt';
+      ctx.lineJoin = 'round';
+      ctx.beginPath();
+      ctx.moveTo(points[0].x, points[0].y);
+      for (var i = 1; i < points.length; i++) {
+        ctx.lineTo(points[i].x, points[i].y);
+      }
+      ctx.stroke();
+    }
+    ctx.save();
+    ctx.beginPath();
+    ctx.rect(layout.viewportX, layout.profileTop - 34, layout.viewportWidth, layout.trackY - layout.profileTop + 42);
+    ctx.clip();
+    stroke(height + 2, 'rgba(0, 0, 0, 0.96)');
+    stroke(height, fill);
+    ctx.restore();
+  }
+
+  function getTrainHeadingAngle(center, sector, layout, trainMeters) {
+    var lengthMeters = Math.max(1, Math.round(Number(trainMeters) || getTrainLengthMeters()));
+    var tailCoordinate = center - getCurrentCoordinateDirection() * lengthMeters;
+    var headX = coordinateToApkX(center, center, layout);
+    var headY = getProfileYAt(center, center, sector, layout);
+    var tailX = coordinateToApkX(tailCoordinate, center, layout);
+    var tailY = getProfileYAt(tailCoordinate, center, sector, layout);
+    return Math.atan2(headY - tailY, headX - tailX);
+  }
+
+  function drawTrainHead(ctx, layout, center, sector, trainMeters, bodyHeight, bodyColor, isLive, isPreview) {
     var headX = layout.headX;
     var headY = getProfileYAt(center, center, sector, layout);
-    var angle = getProfileTangentAngle(center, center, sector, layout);
-    var nose = Math.max(9, Math.min(18, layout.xUnit * 2.35));
-    var cabWidth = Math.max(14, Math.min(24, layout.xUnit * 3.4));
+    var angle = getTrainHeadingAngle(center, sector, layout, trainMeters);
+    var nose = Math.max(11, Math.min(21, layout.xUnit * 3.0));
+    var cabWidth = Math.max(24, Math.min(42, layout.xUnit * 5.7));
+    var roofLift = Math.max(2, bodyHeight * 0.18);
+    var lowerY = bodyHeight / 2;
+    var upperY = -bodyHeight / 2;
+    var headlight = isLive ? '#dcfce7' : '#e0f2fe';
     ctx.save();
     ctx.translate(headX, headY);
     ctx.rotate(angle);
     ctx.globalAlpha = isPreview ? 0.90 : 1;
     ctx.shadowColor = isLive ? 'rgba(74, 222, 128, 0.42)' : 'rgba(56, 189, 248, 0.24)';
-    ctx.shadowBlur = isPreview ? 8 : 12;
-    fillRoundRect(ctx, -cabWidth, -bodyHeight / 2, cabWidth + 2, bodyHeight, 4, bodyColor);
+    ctx.shadowBlur = isPreview ? 7 : 11;
+
+    ctx.fillStyle = 'rgba(3, 7, 18, 0.92)';
+    ctx.beginPath();
+    roundRectPath(ctx, -cabWidth - 3, upperY - 2, cabWidth + nose + 6, bodyHeight + 4, 6);
+    ctx.fill();
+
     ctx.fillStyle = bodyColor;
     ctx.beginPath();
-    ctx.moveTo(0, -bodyHeight / 2);
-    ctx.lineTo(nose, 0);
-    ctx.lineTo(0, bodyHeight / 2);
+    ctx.moveTo(-cabWidth + 6, upperY - roofLift);
+    ctx.lineTo(-4, upperY - roofLift);
+    ctx.quadraticCurveTo(3, upperY - roofLift, 7, upperY + 2);
+    ctx.lineTo(nose, -1);
+    ctx.quadraticCurveTo(nose + 2, 0, nose, 1);
+    ctx.lineTo(7, lowerY - 2);
+    ctx.quadraticCurveTo(3, lowerY + roofLift, -4, lowerY + roofLift);
+    ctx.lineTo(-cabWidth + 5, lowerY + roofLift);
+    ctx.quadraticCurveTo(-cabWidth, lowerY, -cabWidth, lowerY - 4);
+    ctx.lineTo(-cabWidth, upperY + 4);
+    ctx.quadraticCurveTo(-cabWidth, upperY, -cabWidth + 6, upperY - roofLift);
     ctx.closePath();
     ctx.fill();
     ctx.shadowBlur = 0;
-    ctx.strokeStyle = 'rgba(3, 7, 18, 0.94)';
-    ctx.lineWidth = 2;
-    strokeRoundRect(ctx, -cabWidth + 0.5, -bodyHeight / 2 + 0.5, cabWidth + 1, bodyHeight - 1, 4, ctx.strokeStyle);
-    ctx.beginPath();
-    ctx.moveTo(0, -bodyHeight / 2 + 1);
-    ctx.lineTo(nose - 0.5, 0);
-    ctx.lineTo(0, bodyHeight / 2 - 1);
+    ctx.strokeStyle = 'rgba(187, 247, 208, 0.78)';
+    ctx.lineWidth = 1.15;
     ctx.stroke();
-    ctx.fillStyle = 'rgba(238, 242, 248, 0.76)';
+
+    ctx.strokeStyle = 'rgba(3, 7, 18, 0.82)';
+    ctx.lineWidth = 2.2;
     ctx.beginPath();
-    ctx.moveTo(-cabWidth + 4, -bodyHeight / 2 + 4);
-    ctx.lineTo(-Math.max(5, cabWidth * 0.24), -bodyHeight / 2 + 4);
-    ctx.lineTo(-Math.max(7, cabWidth * 0.30), -1);
-    ctx.lineTo(-cabWidth + 3, -2);
+    ctx.moveTo(-cabWidth + 4, lowerY + 1);
+    ctx.lineTo(6, lowerY + 1);
+    ctx.stroke();
+
+    ctx.fillStyle = 'rgba(236, 253, 245, 0.88)';
+    ctx.beginPath();
+    ctx.moveTo(-cabWidth + 6, upperY + 4);
+    ctx.lineTo(-Math.max(9, cabWidth * 0.40), upperY + 4);
+    ctx.lineTo(-Math.max(11, cabWidth * 0.48), -1);
+    ctx.lineTo(-cabWidth + 5, -2);
     ctx.closePath();
     ctx.fill();
-    ctx.fillStyle = 'rgba(3, 7, 18, 0.82)';
+
+    ctx.fillStyle = 'rgba(224, 242, 254, 0.78)';
+    fillRoundRect(ctx, -Math.max(17, cabWidth * 0.42), -bodyHeight * 0.22, Math.max(10, cabWidth * 0.24), bodyHeight * 0.42, 2, ctx.fillStyle);
+
+    ctx.fillStyle = headlight;
     ctx.beginPath();
-    ctx.arc(0, 0, Math.max(3, layout.xUnit * 0.58), 0, Math.PI * 2);
+    ctx.arc(Math.max(5, nose * 0.58), 0, Math.max(2.1, layout.xUnit * 0.32), 0, Math.PI * 2);
     ctx.fill();
     ctx.restore();
   }
 
   function drawTrainProfileGuide(ctx, layout, center, sector, trainMeters, isLive, isPreview) {
-    var span = Math.max(120, Math.min(320, Math.round((Number(trainMeters) || getTrainLengthMeters()) * 0.18)));
-    var left = center - span;
-    var right = center + span;
+    var span = Math.max(130, Math.min(360, Math.round((Number(trainMeters) || getTrainLengthMeters()) * 0.22)));
+    var rear = center - getCurrentCoordinateDirection() * span;
+    var nose = center + getCurrentCoordinateDirection() * Math.min(80, span * 0.28);
+    var left = Math.min(rear, nose);
+    var right = Math.max(rear, nose);
     ctx.save();
     drawProfileRange(ctx, layout, center, sector, left, right, 0, 'rgba(3, 7, 18, 0.72)', Math.max(3.2, layout.xUnit * 0.54));
     drawProfileRange(ctx, layout, center, sector, left, right, 0, isLive ? 'rgba(98, 255, 151, 0.90)' : 'rgba(91, 210, 255, 0.90)', Math.max(2.0, layout.xUnit * 0.34));
@@ -14961,22 +15756,31 @@
     strokeTrainProfilePath(ctx, points, bodyHeight + 5, 'rgba(3, 7, 18, 0.84)', null, isPreview ? 0.76 : 0.88);
     strokeTrainProfilePath(ctx, points, bodyHeight, fill, isLive ? 'rgba(74, 222, 128, 0.18)' : 'rgba(56, 189, 248, 0.16)', isPreview ? 0.82 : 0.94);
     strokeTrainProfilePath(ctx, points, Math.max(2.2, bodyHeight * 0.22), edge, null, isPreview ? 0.56 : 0.72);
+    drawTrainBodyDivisions(ctx, layout, center, sector, visualMeters, bodyHeight, isPreview);
+    drawTrainProfileWheels(ctx, layout, center, sector, visualMeters, bodyHeight, isPreview);
     ctx.restore();
   }
 
   function drawApkTrain(ctx, layout, center, sector, avgAngle, isPreview) {
-    var isLive = tracker.status === 'gps-live' && !isPreview;
     var details = getPoekhaliTrainDetails();
     var trainMeters = Math.max(1, Math.round(Number(details && details.lengthMeters) || getTrainLengthMeters()));
-    var bodyHeight = Math.max(10, Math.min(isPreview ? 15 : 17, layout.xUnit * 2.45));
-    var bodyColor = isLive ? 'rgba(74, 222, 128, 0.88)' : 'rgba(56, 189, 248, 0.84)';
+    var tailCoordinate = center - getCurrentCoordinateDirection() * trainMeters;
+    var headX = coordinateToApkX(center, center, layout);
+    var tailX = coordinateToApkX(tailCoordinate, center, layout);
+    var x = Math.min(tailX, headX);
+    var width = Math.max(2, Math.abs(headX - tailX));
+    var height = Math.max(6, Math.min(9, layout.xUnit * 1.15));
+    var y = layout.trackY - height / 2;
+    var fill = isPreview ? 'rgba(91, 210, 255, 0.58)' : '#5bd2ff';
+    drawApkTrainProfileBar(ctx, layout, center, sector, trainMeters, isPreview);
     ctx.save();
     ctx.beginPath();
-    ctx.rect(layout.viewportX - 18, layout.profileTop - 64, layout.viewportWidth + 36, layout.trackY - layout.profileTop + 58);
+    ctx.rect(layout.viewportX, layout.trackY - 18, layout.viewportWidth, 36);
     ctx.clip();
-    drawTrainProfileGuide(ctx, layout, center, sector, trainMeters, isLive, isPreview);
-    drawApkTrainLengthBlock(ctx, layout, center, sector, trainMeters, isLive, isPreview);
-    drawTrainHead(ctx, layout, center, sector, bodyHeight, bodyColor, isLive, isPreview);
+    ctx.fillStyle = 'rgba(0, 0, 0, 0.96)';
+    ctx.fillRect(Math.round(x) - 1, Math.round(y) - 1, Math.round(width) + 2, Math.round(height) + 2);
+    ctx.fillStyle = fill;
+    ctx.fillRect(Math.round(x), Math.round(y), Math.round(width), Math.round(height));
     ctx.restore();
   }
 
@@ -15050,7 +15854,7 @@
     }).sort(function(a, b) {
       return a.coordinate - b.coordinate;
     });
-    if (tracker.even) {
+    if (getCurrentCoordinateDirection() > 0) {
       for (var i = 0; i < objects.length; i++) {
         if (objects[i].coordinate >= center) return objects[i];
       }
@@ -15068,7 +15872,7 @@
     }).sort(function(a, b) {
       return a.coordinate - b.coordinate;
     });
-    if (tracker.even) {
+    if (getCurrentCoordinateDirection() > 0) {
       for (var i = 0; i < marks.length; i++) {
         if (marks[i].coordinate >= center) return marks[i];
       }
@@ -15095,9 +15899,7 @@
       if (status !== 'active' && status !== 'ahead') continue;
       var anchor = status === 'active'
         ? center
-        : tracker.even
-          ? warning.start
-          : warning.end;
+        : getDirectionStartCoordinate(warning.start, warning.end, tracker.even);
       var distance = status === 'active' ? 0 : Math.abs(anchor - center);
       if (!best || distance < best.distance) {
         best = {
@@ -15839,6 +16641,7 @@
 
   function drawCanvas() {
     if (!resizeCanvas()) return;
+    tracker.lastCanvasDrawAt = Date.now();
     var ctx = tracker.ctx;
     var w = tracker.width;
     var h = tracker.height;
@@ -15860,40 +16663,132 @@
       drawCenteredStatus(ctx, w, h);
     }
     drawBottomBar(ctx, w, h, displayProjection);
-    setText('btnPoekhaliDirection', tracker.even ? 'ЧЕТ' : 'НЕЧЕТ');
+    setDirectionButton();
     setText('btnPoekhaliWay', 'П ' + tracker.wayNumber);
-    setText('btnPoekhaliK', tracker.simpleCoordinate ? 'КМ' : 'K 1');
     setTimerButton();
     setMapButton();
     setOpsButton();
     syncGpsStatusDisplay();
   }
 
+  function getDrawThrottleMs() {
+    if (tracker.previewDragActive) return DRAW_DRAG_THROTTLE_MS;
+    return DRAW_ACTIVE_THROTTLE_MS;
+  }
+
+  function getDrawLoopIntervalMs() {
+    if (isPageHidden()) return DRAW_HIDDEN_INTERVAL_MS;
+    return (tracker.timerRunning || tracker.runStartPreparing) ? DRAW_LIVE_INTERVAL_MS : DRAW_IDLE_INTERVAL_MS;
+  }
+
+  function shouldKeepDrawLoop() {
+    if (!tracker.active || isPageHidden()) return false;
+    return !!(tracker.timerRunning || tracker.runStartPreparing || tracker.previewDragActive);
+  }
+
   function requestDraw() {
     if (!tracker.active) {
       drawCanvas();
+      return;
     }
+    if (isPageHidden()) return;
+    if (typeof window === 'undefined' || !window.setTimeout) {
+      drawCanvas();
+      return;
+    }
+    var elapsed = Date.now() - (tracker.lastCanvasDrawAt || 0);
+    var wait = Math.max(0, getDrawThrottleMs() - elapsed);
+    if (wait <= 0) {
+      if (tracker.drawPendingTimer !== null) {
+        window.clearTimeout(tracker.drawPendingTimer);
+        tracker.drawPendingTimer = null;
+      }
+      drawCanvas();
+      return;
+    }
+    if (tracker.drawPendingTimer !== null) return;
+    tracker.drawPendingTimer = window.setTimeout(function() {
+      tracker.drawPendingTimer = null;
+      if (tracker.active) drawCanvas();
+    }, wait);
   }
 
   function drawLoop() {
-    if (!tracker.active) {
+    if (!shouldKeepDrawLoop()) {
       tracker.frameId = null;
       return;
     }
-    drawCanvas();
-    tracker.frameId = window.requestAnimationFrame(drawLoop);
+    requestDraw();
+    var interval = getDrawLoopIntervalMs();
+    if (!interval || interval <= 0) {
+      tracker.frameId = null;
+      return;
+    }
+    tracker.frameId = window.setTimeout(drawLoop, interval);
   }
 
   function startDrawLoop() {
     if (tracker.frameId !== null) return;
-    tracker.frameId = window.requestAnimationFrame(drawLoop);
+    if (!shouldKeepDrawLoop()) return;
+    var interval = getDrawLoopIntervalMs();
+    if (!interval || interval <= 0) return;
+    tracker.frameId = window.setTimeout(drawLoop, interval);
   }
 
   function stopDrawLoop() {
     if (tracker.frameId !== null) {
-      window.cancelAnimationFrame(tracker.frameId);
+      window.clearTimeout(tracker.frameId);
       tracker.frameId = null;
     }
+    if (tracker.drawPendingTimer !== null) {
+      window.clearTimeout(tracker.drawPendingTimer);
+      tracker.drawPendingTimer = null;
+    }
+  }
+
+  function schedulePendingPoekhaliSyncs(delayMs) {
+    var delay = isFinite(Number(delayMs)) ? Number(delayMs) : 1800;
+    if (tracker.warningSync.pending) scheduleWarningSync(delay);
+    if (tracker.learningSync.pending) {
+      if (tracker.timerRunning) {
+        if (!tracker.learningSync.timer) scheduleLearningSync(LEARNING_LIVE_SYNC_DELAY_MS);
+      } else {
+        scheduleLearningSync(delay + 400);
+      }
+    }
+    if (tracker.runSync.pending) {
+      if (tracker.timerRunning) {
+        if (!tracker.runSync.timer) scheduleRunSync(RUNS_LIVE_SYNC_DELAY_MS);
+      } else {
+        scheduleRunSync(delay + 800);
+      }
+    }
+  }
+
+  function syncPoekhaliPowerMode() {
+    if (!tracker.active) {
+      if (!isPageHidden()) schedulePendingPoekhaliSyncs(1800);
+      return;
+    }
+    if (isPageHidden()) {
+      stopDrawLoop();
+      if (shouldKeepGpsWatching()) {
+        if (!tracker.gpsPollInFlight) scheduleGpsPoll(GPS_HIDDEN_POLL_INTERVAL_MS);
+      } else {
+        stopWatchingGps();
+      }
+      return;
+    }
+    if (shouldKeepGpsWatching()) {
+      if (tracker.gpsPollTimer !== null && !tracker.gpsPollInFlight) scheduleGpsPoll(0);
+      else startWatchingGps();
+    } else {
+      stopWatchingGps();
+    }
+    requestDraw();
+    startDrawLoop();
+    schedulePendingPoekhaliSyncs(1800);
+    if (shouldAutoStartPoekhaliRun()) scheduleAutoRunStart('visibility', AUTO_RUN_START_DELAY_MS);
   }
 
   function canBrowsePreview() {
@@ -15971,8 +16866,10 @@
     loadReference();
     loadSpeedDocs();
     loadRegimeMaps();
-    preparePoekhaliModeEntry();
-    startWatchingGps();
+    preparePoekhaliModeEntry().then(function() {
+      scheduleAutoRunStart('entry', AUTO_RUN_START_DELAY_MS);
+    });
+    if (shouldKeepGpsWatching()) startWatchingGps();
     resizeCanvas();
     drawCanvas();
     if (wasActive) {
@@ -15982,13 +16879,19 @@
   }
 
   function stopPoekhaliTrackerMode() {
-    tracker.active = false;
+    clearAutoRunTimer();
+    if (tracker.timerRunning) {
+      tracker.timerElapsedMs = getTimerElapsed();
+      tracker.timerRunning = false;
+      pauseActiveRun();
+    }
     tracker.runStartPreparing = false;
     tracker.runStartToken = 0;
+    tracker.active = false;
     resetPoekhaliLiveAlert();
     stopWatchingGps();
     stopDrawLoop();
-    if (!tracker.timerRunning) setTimerButton();
+    setTimerButton();
   }
 
   function syncPoekhaliTrackerMode(shouldRun) {
@@ -16005,14 +16908,10 @@
     var directionBtn = byId('btnPoekhaliDirection');
     if (directionBtn) {
       directionBtn.addEventListener('click', function() {
-        tracker.even = !tracker.even;
-        tracker.directionSource = 'manual';
-        tracker.manualDirectionLockedUntil = Date.now() + GPS_DIRECTION_MANUAL_LOCK_MS;
-        if (tracker.lastLocation && tracker.lastLocation.coords) {
-          applyTrackProjection(tracker.lastLocation.coords);
-        }
-        updateActiveRunNavigationState();
-        requestDraw();
+        applyBestAutoDirection({ force: tracker.directionSource !== 'gps', updateRun: true });
+        if (!tracker.projection || !tracker.projection.onTrack) requestPassiveGpsFix();
+        closeMapPicker();
+        openOpsSheet();
       });
     }
 
@@ -16021,14 +16920,6 @@
       wayBtn.addEventListener('click', function() {
         tracker.wayNumber = tracker.wayNumber === 1 ? 2 : 1;
         updateActiveRunNavigationState();
-        requestDraw();
-      });
-    }
-
-    var kBtn = byId('btnPoekhaliK');
-    if (kBtn) {
-      kBtn.addEventListener('click', function() {
-        tracker.simpleCoordinate = !tracker.simpleCoordinate;
         requestDraw();
       });
     }
@@ -16052,14 +16943,26 @@
     var gpsBtn = byId('poekhaliGpsStatus');
     if (gpsBtn) {
       gpsBtn.addEventListener('click', function() {
-        startWatchingGps();
+        if (shouldKeepGpsWatching()) startWatchingGps();
+        else requestPassiveGpsFix();
       });
     }
 
     var timerBtn = byId('btnPoekhaliTimer');
     if (timerBtn) {
       timerBtn.addEventListener('click', function() {
-        setTimerRunning(!tracker.timerRunning);
+        if (tracker.timerRunning || tracker.runStartPreparing) {
+          closeMapPicker();
+          openOpsSheet();
+          return;
+        }
+        var details = getPoekhaliTrainDetails();
+        if (!details || !details.hasShift) {
+          closeMapPicker();
+          openOpsSheet();
+          return;
+        }
+        setTimerRunning(true);
       });
     }
 
@@ -16076,6 +16979,9 @@
       resizeCanvas();
       requestDraw();
     });
+    if (typeof document !== 'undefined' && document.addEventListener) {
+      document.addEventListener('visibilitychange', syncPoekhaliPowerMode);
+    }
   }
 
   function init() {
@@ -16097,9 +17003,7 @@
     if (isPoekhaliPanelActive() || (document.body && document.body.classList.contains('is-poekhali-mode'))) {
       startPoekhaliTrackerMode();
     }
-    scheduleWarningSync(1400);
-    scheduleLearningSync(1800);
-    scheduleRunSync(1600);
+    schedulePendingPoekhaliSyncs(1800);
   }
 
   if (document.readyState === 'loading') {

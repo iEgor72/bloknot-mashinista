@@ -1,14 +1,14 @@
 # Project State
 
 <!-- AUTO_STATUS:START -->
-Generated: 2026-04-26 16:02:30 +0000
+Generated: 2026-04-27 08:17:03 +1000
 
 ## Repository Snapshot
-- Local repo path: `/opt/bloknot-mashinista`
-- Project memory path: `/opt/bloknot-mashinista/ai-memory`
+- Local repo path: `D:\work\bloknot-mashinista-tg`
+- Project memory path: `D:\work\bloknot-mashinista-tg\ai-memory`
 - Branch: `main`
-- HEAD: `c7259c9`
-- Last commit: `c7259c9 feat(ui): make offline notice floating and dismissible`
+- HEAD: `beb016e`
+- Last commit: `beb016e Revert "fix(poekhali): orient head by train vector"`
 
 ## Git Remote
 ```text
@@ -18,25 +18,28 @@ origin	https://github.com/iEgor72/bloknot-mashinista.git (push)
 
 ## Branch Tracking
 ```text
-+ calendar-fix-main                             4b9e6c6 (/tmp/bloknot-batch/calendar-fix) Fix home calendar to show manual shifts only
-+ chore/remove-graphs-and-restore-calendar-flow e90d829 (/tmp/bloknot-remove-graphs) refactor(app): remove remaining schedule tails
-+ cleanup-archaeology                           6219db2 (/tmp/bloknot-batch/archaeology) Revert "refactor(schedule): switch app to manual-only shifts"
-+ cleanup-backend                               6219db2 (/tmp/bloknot-clean/backend) Revert "refactor(schedule): switch app to manual-only shifts"
-+ cleanup-backend-migrate                       6219db2 (/tmp/bloknot-batch/backend-migrate) Revert "refactor(schedule): switch app to manual-only shifts"
-+ cleanup-frontend                              6219db2 (/tmp/bloknot-clean/frontend) Revert "refactor(schedule): switch app to manual-only shifts"
-+ cleanup-frontend-smoke                        ed81af6 (/tmp/bloknot-batch/frontend-smoke) Hide schedule planner UI from frontend
-+ cleanup-integration                           dba6ed0 (/tmp/bloknot-batch/integration) Remove schedule planner and add local smoke test
-+ cleanup-review                                6219db2 (/tmp/bloknot-clean/review) Revert "refactor(schedule): switch app to manual-only shifts"
-+ cleanup-test-harness                          6219db2 (/tmp/bloknot-batch/test-harness) Revert "refactor(schedule): switch app to manual-only shifts"
-+ feat/manual-calendar-from-scratch             8345ab9 (/tmp/bloknot-manual-calendar) feat(home): polish manual calendar flow
-* main                                          c7259c9 [origin/main] feat(ui): make offline notice floating and dismissible
+codex/next-direction b044dd5 offline mvp
+  codex/tabs-ui        117f1fa [origin/codex/tabs-ui] tabs ui
+* main                 beb016e [origin/main] Revert "fix(poekhali): orient head by train vector"
 ```
 
 ## Worktree
 ```text
 M ai-memory/CHANGELOG.md
- M ai-memory/sessions/2026-04-26.md
+ M ai-memory/INDEX.md
+ M ai-memory/PROJECT_STATE.md
+ M ai-memory/RECENT_COMMITS.md
+ M ai-memory/WORKTREE_STATUS.md
+ M index.html
+ M scripts/app.js
  M scripts/poekhali-tracker.js
+ M scripts/shift-form.js
+ M scripts/time-utils.js
+ M server.js
+ M styles/00-base.css
+ M styles/10-navigation-and-cards.css
+ M sw.js
+?? ai-memory/sessions/2026-04-27.md
 ```
 <!-- AUTO_STATUS:END -->
 

@@ -911,15 +911,34 @@
       return parts.join(' · ');
     }
 
+    function getShiftCardTextValue(shift, primaryKey, fallbackKey) {
+      var primary = shift && shift[primaryKey] !== undefined && shift[primaryKey] !== null
+        ? String(shift[primaryKey]).trim()
+        : '';
+      if (primary) return primary;
+      return shift && shift[fallbackKey] !== undefined && shift[fallbackKey] !== null
+        ? String(shift[fallbackKey]).trim()
+        : '';
+    }
+
+    function getShiftCardTrainLengthText(shift) {
+      var direct = getShiftCardTextValue(shift, 'train_length', 'poekhali_train_wagons');
+      if (direct) return direct + ' ваг';
+      var label = String(shift && shift.poekhali_train_length_label || '').trim();
+      if (label) return label.replace(/\s*уд\./i, ' ваг.');
+      var meters = getShiftPoekhaliNumber(shift, 'poekhali_train_length_m');
+      return meters > 0 ? meters + ' м' : '';
+    }
+
     function getShiftTechnicalItems(shift) {
       var items = [];
       if (!shift) return items;
-      var loco = getLocoSummary(shift);
+      var loco = getLocoSummary(shift) || getShiftCardTextValue(shift, 'locomotive_summary', 'poekhali_loco');
+      var trainNumber = getShiftCardTextValue(shift, 'train_number', 'poekhali_train_number');
+      var trainWeight = getShiftCardTextValue(shift, 'train_weight', 'poekhali_train_weight');
+      var trainAxles = getShiftCardTextValue(shift, 'train_axles', 'poekhali_train_axles');
+      var trainLength = getShiftCardTrainLengthText(shift);
       if (loco) items.push({ icon: 'locomotive', text: loco.replace('№ ', '№') });
-      if (shift.train_number) items.push({ icon: 'train', text: '№' + shift.train_number });
-      if (shift.train_weight) items.push({ icon: 'train', text: shift.train_weight + ' т' });
-      if (shift.train_length) items.push({ icon: 'wagon', text: shift.train_length + ' ваг' });
-      if (shift.train_axles) items.push({ icon: 'axles', text: shift.train_axles + ' оси' });
       if (hasShiftPoekhaliData(shift)) {
         var techSpeed = getShiftPoekhaliNumber(shift, 'poekhali_technical_speed_kmh');
         var averageSpeed = getShiftPoekhaliNumber(shift, 'poekhali_average_speed_kmh');
@@ -931,44 +950,11 @@
         } else if (distance > 0) {
           items.push({ icon: 'route', text: formatShiftPoekhaliDistance(distance) });
         }
-        var warningRulesText = formatShiftPoekhaliWarningRules(shift);
-        if (warningRulesText) {
-          items.push({ icon: 'route', text: 'ПР ' + warningRulesText });
-        }
-        var activeRestrictionText = formatShiftPoekhaliActiveRestriction(shift, true);
-        if (activeRestrictionText) {
-          items.push({ icon: 'speed', text: 'Огр ' + activeRestrictionText });
-        }
-        var nextRestrictionText = formatShiftPoekhaliNextRestriction(shift, true);
-        if (nextRestrictionText) {
-          items.push({ icon: 'route', text: 'Далее ' + nextRestrictionText });
-        }
-        var nextSignalText = formatShiftPoekhaliNextObject(shift, 'next_signal', true);
-        if (nextSignalText) {
-          items.push({ icon: 'route', text: 'Св ' + nextSignalText });
-        }
-        var nextStationText = formatShiftPoekhaliNextObject(shift, 'next_station', true);
-        if (nextStationText) {
-          items.push({ icon: 'route', text: 'Ст ' + nextStationText });
-        }
-        var routeProgressText = formatShiftPoekhaliRouteProgress(shift, true);
-        if (routeProgressText) {
-          items.push({ icon: 'route', text: 'Маршрут ' + routeProgressText });
-        }
-        var navigationTargetText = formatShiftPoekhaliNavigationTarget(shift, true);
-        if (navigationTargetText) {
-          items.push({ icon: 'route', text: 'Цель ' + navigationTargetText });
-        }
-        var overspeedMax = getShiftPoekhaliNumber(shift, 'poekhali_overspeed_max_kmh');
-        if (overspeedMax > 0) {
-          items.push({ icon: 'speed', text: 'Прев +' + overspeedMax + ' км/ч' });
-        }
-        var alertCount = getShiftPoekhaliNumber(shift, 'poekhali_alert_count');
-        if (alertCount > 0) {
-          var lastAlertText = formatShiftPoekhaliLastAlert(shift, true);
-          items.push({ icon: 'speed', text: 'Оповещ. ' + alertCount + (lastAlertText ? ' · ' + lastAlertText : '') });
-        }
       }
+      if (trainNumber) items.push({ icon: 'train', text: '№' + trainNumber });
+      if (trainWeight) items.push({ icon: 'train', text: trainWeight + ' т' });
+      if (trainLength) items.push({ icon: 'wagon', text: trainLength });
+      if (trainAxles) items.push({ icon: 'axles', text: trainAxles + ' оси' });
       return items;
     }
 

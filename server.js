@@ -56,6 +56,7 @@ const MAX_POEKHALI_WARNING_ID_LENGTH = 128;
 const MAX_POEKHALI_WARNING_TEXT_LENGTH = 240;
 const MAX_POEKHALI_RUNS_PER_PAYLOAD = 500;
 const MAX_POEKHALI_RUN_ID_LENGTH = 128;
+const MAX_POEKHALI_RUN_POINTS_PER_RUN = 1800;
 const DEFAULT_SALARY_PARAMS = {
   tariffRate: 380,
   monthlyNormHours: 0,
@@ -1284,9 +1285,16 @@ function sanitizePoekhaliRunItem(item) {
   const nowIso = new Date().toISOString();
   const startedAt = normalizeIsoish(item.startedAt) || normalizeIsoish(item.createdAt) || nowIso;
   const status = ['active', 'paused', 'finished'].includes(String(item.status || '')) ? String(item.status) : 'finished';
-  const startPoint = sanitizePoekhaliRunPoint(item.startPoint);
-  const endPoint = sanitizePoekhaliRunPoint(item.endPoint || item.lastPoint);
-  const lastPoint = sanitizePoekhaliRunPoint(item.lastPoint || item.endPoint || item.startPoint);
+  const points = thinPayloadArray(
+    Array.isArray(item.points) ? item.points : [],
+    MAX_POEKHALI_RUN_POINTS_PER_RUN,
+  )
+    .map((point) => sanitizePoekhaliRunPoint(point))
+    .filter(Boolean)
+    .sort((a, b) => (a.ts || 0) - (b.ts || 0));
+  const startPoint = sanitizePoekhaliRunPoint(item.startPoint) || points[0] || null;
+  const endPoint = sanitizePoekhaliRunPoint(item.endPoint || item.lastPoint) || points[points.length - 1] || null;
+  const lastPoint = sanitizePoekhaliRunPoint(item.lastPoint || item.endPoint || item.startPoint) || endPoint || startPoint;
 
   return {
     id,
@@ -1374,6 +1382,7 @@ function sanitizePoekhaliRunItem(item) {
     routeOutsideMeters: Math.max(0, Math.round(sanitizeFiniteNumber(item.routeOutsideMeters, 0))),
     routeProgressPct: Math.max(0, Math.min(100, Math.round(sanitizeFiniteNumber(item.routeProgressPct, 0) * 10) / 10)),
     routeEtaSeconds: Math.max(0, Math.round(sanitizeFiniteNumber(item.routeEtaSeconds, 0))),
+    points,
     startPoint,
     endPoint,
     lastPoint,

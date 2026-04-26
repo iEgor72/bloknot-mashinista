@@ -85,6 +85,26 @@
       }
     }
 
+    var pendingSyncRetryTimer = null;
+
+    function schedulePendingSyncRetry(delayMs) {
+      if (pendingSyncRetryTimer) {
+        window.clearTimeout(pendingSyncRetryTimer);
+        pendingSyncRetryTimer = null;
+      }
+      if (document.hidden || !navigator.onLine || !readPendingSnapshot()) return;
+      var delay = Math.max(30000, Number(delayMs) || 5 * 60 * 1000);
+      pendingSyncRetryTimer = window.setTimeout(function() {
+        pendingSyncRetryTimer = null;
+        if (document.hidden || !navigator.onLine || !readPendingSnapshot() || offlineUiState.isSyncing) {
+          schedulePendingSyncRetry(5 * 60 * 1000);
+          return;
+        }
+        flushPendingSnapshot();
+        schedulePendingSyncRetry(5 * 60 * 1000);
+      }, delay);
+    }
+
     function enterEditMode(shift, options) {
       if (!shift) return;
       var opts = options || {};
@@ -469,6 +489,7 @@
       updateOfflineUiState({ isOffline: false, lastSyncStatus: readPendingSnapshot() ? 'pending' : 'synced' });
       flushPendingSnapshot();
       refreshUserStats('online');
+      schedulePendingSyncRetry(5 * 60 * 1000);
     });
     window.addEventListener('offline', function() {
       applyUserStatsOfflineFallback();
@@ -485,6 +506,7 @@
         if (navigator.onLine) {
           flushPendingSnapshot();
           refreshUserStats('visibility');
+          schedulePendingSyncRetry(5 * 60 * 1000);
         } else {
           applyUserStatsOfflineFallback();
         }
@@ -493,13 +515,7 @@
       }
     });
 
-    // Auto-retry pending sync every 30s — catches cases where the 'online' event
-    // fired but sync failed (e.g. flaky network), without requiring user action.
-    setInterval(function() {
-      if (navigator.onLine && readPendingSnapshot() && !offlineUiState.isSyncing) {
-        flushPendingSnapshot();
-      }
-    }, 30000);
+    schedulePendingSyncRetry(5 * 60 * 1000);
     var inputRouteFromEl = document.getElementById('inputRouteFrom');
     if (inputRouteFromEl) inputRouteFromEl.addEventListener('input', renderDraftShiftSummary);
     var inputRouteToEl = document.getElementById('inputRouteTo');

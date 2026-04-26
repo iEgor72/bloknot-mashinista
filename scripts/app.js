@@ -113,7 +113,7 @@
     var SHIFTS_META_STORAGE_KEY = 'shift_tracker_shifts_meta_v1';
     var USER_STATS_CACHE_STORAGE_KEY = 'shift_tracker_user_stats_cache_v1';
     var USER_STATS_SESSION_ID_STORAGE_KEY = 'shift_tracker_device_id_v1';
-    var USER_STATS_PING_INTERVAL_MS = 45000;
+    var USER_STATS_PING_INTERVAL_MS = 10 * 60 * 1000;
     var pendingMutationIds = [];
     var offlineUiState = {
       isOffline: false,
@@ -353,14 +353,22 @@
 
       if (navigator.onLine) {
         window.setTimeout(function() {
+          if (document.hidden) return;
           refreshUserStats('startup');
         }, 700);
       }
 
-      userStatsPollTimer = window.setInterval(function() {
-        if (document.hidden || !navigator.onLine) return;
-        refreshUserStats('interval');
-      }, USER_STATS_PING_INTERVAL_MS);
+      function scheduleNextUserStatsPing() {
+        if (userStatsPollTimer) window.clearTimeout(userStatsPollTimer);
+        userStatsPollTimer = window.setTimeout(function() {
+          userStatsPollTimer = null;
+          if (!document.hidden && navigator.onLine) {
+            refreshUserStats('interval');
+          }
+          scheduleNextUserStatsPing();
+        }, USER_STATS_PING_INTERVAL_MS);
+      }
+      scheduleNextUserStatsPing();
     }
 
     function readOfflineMeta() {
@@ -641,8 +649,8 @@
         return {
           key: 'error-' + String(offlineUiState.lastError || ''),
           title: 'Ошибка синхронизации',
-          text: 'Локальная копия сохранена. Повторим отправку автоматически.',
-          statusText: 'Ошибка синхронизации',
+          text: 'Сохранено локально, отправим автоматически.',
+          statusText: 'Повторим',
           tone: 'danger',
           autoHideMs: 6500
         };
@@ -705,6 +713,7 @@
       titleEl.textContent = payload.title;
       textEl.textContent = payload.text;
       syncEl.textContent = payload.statusText;
+      syncEl.hidden = !payload.statusText || payload.statusText === payload.title;
       bannerEl.classList.remove('is-danger', 'is-info');
       bannerEl.classList.add(payload.tone === 'danger' ? 'is-danger' : 'is-info');
       bannerEl.classList.remove('hidden');
