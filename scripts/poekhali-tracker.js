@@ -11470,6 +11470,14 @@
     return getPoekhaliTopHudY() + 72;
   }
 
+  function getPoekhaliLiveSummaryTop() {
+    return getPoekhaliTopHudBottom() + 14;
+  }
+
+  function getPoekhaliTopStackBottom() {
+    return getPoekhaliLiveSummaryTop() + 70;
+  }
+
   function roundRectPath(ctx, x, y, width, height, radius) {
     var r = Math.max(0, Math.min(radius || 0, width / 2, height / 2));
     if (ctx.roundRect) {
@@ -13494,7 +13502,7 @@
     var xUnit = Math.max(4.2, Math.min(7.2, w / APK_VISIBLE_PICKETS));
     var viewportWidth = Math.min(w, xUnit * APK_VISIBLE_PICKETS);
     var viewportX = Math.round((w - viewportWidth) / 2);
-    var coordBottom = Math.max(130, getPoekhaliTopHudBottom() + 26);
+    var coordBottom = Math.max(130, getPoekhaliTopStackBottom() + 20);
     var navReserve = 118;
     var scaleY = Math.round(Math.min(h - navReserve - 120, Math.max(coordBottom + 332, h * 0.64)));
     if (!isFinite(scaleY) || scaleY < coordBottom + 260) scaleY = Math.round(h * 0.66);
@@ -14038,7 +14046,7 @@
   function drawApkLiveSummary(ctx, layout, center, sector, visibleObjects, activeSpeed, nextSignal, nextStation, nextWarning, nextRestriction, routeProgress, isPreview, projection) {
     var w = layout.canvasWidth || layout.viewportRight;
     var x = getPanelInset(w);
-    var y = 140;
+    var y = getPoekhaliLiveSummaryTop();
     var width = w - x * 2;
     var hasRouteProgress = !!(routeProgress && isFinite(routeProgress.distanceMeters));
     var panelHeight = hasRouteProgress ? 70 : 52;
