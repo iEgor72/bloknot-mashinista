@@ -154,6 +154,9 @@
       overflow: hidden;
       scroll-padding-bottom: 24px;
       color-scheme: dark;
+      -webkit-user-select: none;
+      user-select: none;
+      -webkit-touch-callout: none;
     }
 
     html {
@@ -177,6 +180,19 @@
 
     body::after {
       content: none;
+    }
+
+    .docs-viewer-overlay,
+    .docs-viewer-overlay *,
+    .docs-viewer-body,
+    .docs-viewer-body *,
+    .docs-viewer-title,
+    .docs-viewer-title *,
+    .docs-viewer-status,
+    .docs-viewer-status * {
+      -webkit-user-select: text;
+      user-select: text;
+      -webkit-touch-callout: default;
     }
 
     /* ── Hide scrollbars (keep scroll behavior) ── */

@@ -147,6 +147,7 @@
     ctx: null,
     mapPicker: null,
     mapPickerRequestToken: 0,
+    mapPickerClosedAt: 0,
     opsSheet: null,
     opsView: readStringStorage(OPS_VIEW_STORAGE_KEY) || 'drive',
     conflictCard: null,
@@ -6669,8 +6670,24 @@
     root.appendChild(panel);
     shell.appendChild(root);
 
-    backdrop.addEventListener('click', closeMapPicker);
-    closeBtn.addEventListener('click', closeMapPicker);
+    function handleMapSheetClose(event) {
+      if (event) {
+        if (typeof event.preventDefault === 'function') event.preventDefault();
+        if (typeof event.stopPropagation === 'function') event.stopPropagation();
+      }
+      closeMapPicker();
+    }
+
+    panel.addEventListener('click', function(event) {
+      if (event && typeof event.stopPropagation === 'function') event.stopPropagation();
+    });
+    panel.addEventListener('pointerdown', function(event) {
+      if (event && typeof event.stopPropagation === 'function') event.stopPropagation();
+    });
+    backdrop.addEventListener('click', handleMapSheetClose);
+    backdrop.addEventListener('pointerdown', handleMapSheetClose);
+    closeBtn.addEventListener('click', handleMapSheetClose);
+    closeBtn.addEventListener('pointerdown', handleMapSheetClose);
 
     tracker.mapPicker = {
       root: root,
@@ -6871,18 +6888,21 @@
   }
 
   function openMapPicker() {
+    if (Date.now() - (tracker.mapPickerClosedAt || 0) < 400) return;
     var requestToken = Date.now();
     tracker.mapPickerRequestToken = requestToken;
     loadManifest().then(function() {
       return loadAssets();
     }).then(function() {
       if (tracker.mapPickerRequestToken !== requestToken) return;
+      if (Date.now() - (tracker.mapPickerClosedAt || 0) < 400) return;
       var picker = getMapPicker();
       if (!picker) return;
       renderMapPicker();
       picker.root.classList.remove('hidden');
     }).catch(function() {
       if (tracker.mapPickerRequestToken !== requestToken) return;
+      if (Date.now() - (tracker.mapPickerClosedAt || 0) < 400) return;
       var picker = getMapPicker();
       if (!picker) return;
       renderMapPicker();
@@ -6892,6 +6912,7 @@
 
   function closeMapPicker() {
     tracker.mapPickerRequestToken = 0;
+    tracker.mapPickerClosedAt = Date.now();
     if (tracker.mapPicker && tracker.mapPicker.root) {
       tracker.mapPicker.root.classList.add('hidden');
     }

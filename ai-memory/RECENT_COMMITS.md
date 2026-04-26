@@ -1,9 +1,10 @@
 # Recent Commits
 
-Generated: 2026-04-26 13:37:38 +0000
+Generated: 2026-04-26 13:43:31 +0000
 
 | Hash | Date | Author | Message |
 | --- | --- | --- | --- |
+| `93f0c4a` | 2026-04-26T13:37:46+00:00 | iEgor72 | fix(poekhali): prevent map sheet reopen and selection |
 | `df94ef4` | 2026-04-26T13:32:04+00:00 | iEgor72 | fix(poekhali): force canvas startup redraw |
 | `9f4dbd1` | 2026-04-26T21:49:10+10:00 | iEgor72 | feat: release poekhali mode |
 | `c631e1b` | 2026-04-25T08:06:39+10:00 | iEgor72 | chore(memory): refresh after legacy cleanup |
@@ -43,4 +44,3 @@ Generated: 2026-04-26 13:37:38 +0000
 | `1f4bf7c` | 2026-04-23T00:53:56+00:00 | iEgor72 | style(shifts): move route below time block |
 | `ff88042` | 2026-04-23T00:51:53+00:00 | iEgor72 | style(shifts): split train data into two rows |
 | `539f5d1` | 2026-04-23T00:50:09+00:00 | iEgor72 | style(shifts): pin duration to the right |
-| `481f81a` | 2026-04-23T00:48:55+00:00 | iEgor72 | style(shifts): make duration inline instead of badge |
