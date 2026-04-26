@@ -13511,12 +13511,12 @@
     var xUnit = Math.max(4.2, Math.min(7.2, w / APK_VISIBLE_PICKETS));
     var viewportWidth = Math.min(w, xUnit * APK_VISIBLE_PICKETS);
     var viewportX = Math.round((w - viewportWidth) / 2);
-    var coordBottom = Math.max(124, getPoekhaliTopStackBottom() + 12);
+    var coordBottom = Math.max(120, getPoekhaliTopStackBottom() + 8);
     var navReserve = 118;
-    var scaleY = Math.round(Math.min(h - navReserve - 108, Math.max(coordBottom + 308, h * 0.63)));
-    if (!isFinite(scaleY) || scaleY < coordBottom + 244) scaleY = Math.round(h * 0.65);
+    var scaleY = Math.round(Math.min(h - navReserve - 102, Math.max(coordBottom + 300, h * 0.625)));
+    if (!isFinite(scaleY) || scaleY < coordBottom + 236) scaleY = Math.round(h * 0.645);
 
-    var profileTop = Math.max(248, coordBottom + 104);
+    var profileTop = Math.max(236, coordBottom + 92);
     var profileBottom = scaleY - Math.max(28, xUnit * 5.1);
     if (profileBottom < profileTop + 116) {
       profileBottom = Math.min(scaleY - 72, profileTop + 142);
@@ -13530,9 +13530,9 @@
     var headX = Math.round(viewportX + xUnit * 26);
     var trainWidth = Math.max(xUnit * 14, getVisualTrainLengthMeters(getTrainLengthMeters(), false) * oneMeter);
     var trainHeight = Math.max(16, Math.round(xUnit * 3.2));
-    var bottomTextY = Math.min(h - navReserve - 24, scaleY + 88);
-    var speedTopY = Math.max(coordBottom + 48, profileTop - 58);
-    var speedRailY = speedTopY + 50;
+    var bottomTextY = Math.min(h - navReserve - 22, scaleY + 84);
+    var speedTopY = Math.max(coordBottom + 42, profileTop - 52);
+    var speedRailY = speedTopY + 46;
 
     return {
       canvasWidth: w,
@@ -13682,6 +13682,18 @@
     var y1 = getProfileYAt(coordinate - span, center, sector, layout);
     var y2 = getProfileYAt(coordinate + span, center, sector, layout);
     return Math.atan2(y2 - y1, x2 - x1);
+  }
+
+  function getTrainHeadingAngle(center, sector, layout, trainMeters) {
+    var headCoordinate = center;
+    var tailCoordinate = tracker.even
+      ? center + Math.max(1, Math.round(Number(trainMeters) || getTrainLengthMeters()))
+      : center - Math.max(1, Math.round(Number(trainMeters) || getTrainLengthMeters()));
+    var headX = coordinateToApkX(headCoordinate, center, layout);
+    var headY = getProfileYAt(headCoordinate, center, sector, layout);
+    var tailX = coordinateToApkX(tailCoordinate, center, layout);
+    var tailY = getProfileYAt(tailCoordinate, center, sector, layout);
+    return Math.atan2(headY - tailY, headX - tailX);
   }
 
   function collectProfileCoordinates(start, end, sector) {
@@ -14894,10 +14906,10 @@
     ctx.restore();
   }
 
-  function drawTrainHead(ctx, layout, center, sector, bodyHeight, bodyColor, isLive, isPreview) {
+  function drawTrainHead(ctx, layout, center, sector, trainMeters, bodyHeight, bodyColor, isLive, isPreview) {
     var headX = layout.headX;
     var headY = getProfileYAt(center, center, sector, layout);
-    var angle = getProfileTangentAngle(center, center, sector, layout);
+    var angle = getTrainHeadingAngle(center, sector, layout, trainMeters);
     var nose = Math.max(9, Math.min(18, layout.xUnit * 2.35));
     var cabWidth = Math.max(14, Math.min(24, layout.xUnit * 3.4));
     ctx.save();
@@ -14976,7 +14988,7 @@
     ctx.clip();
     drawTrainProfileGuide(ctx, layout, center, sector, trainMeters, isLive, isPreview);
     drawApkTrainLengthBlock(ctx, layout, center, sector, trainMeters, isLive, isPreview);
-    drawTrainHead(ctx, layout, center, sector, bodyHeight, bodyColor, isLive, isPreview);
+    drawTrainHead(ctx, layout, center, sector, trainMeters, bodyHeight, bodyColor, isLive, isPreview);
     ctx.restore();
   }
 
