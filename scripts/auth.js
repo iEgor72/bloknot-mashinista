@@ -437,7 +437,13 @@
       handleTabActivated(activeTab);
       renderDocumentationScreen();
       if (typeof syncPoekhaliTrackerMode === 'function') {
-        syncPoekhaliTrackerMode(activeTab === 'poekhali');
+        var shouldRunPoekhali = activeTab === 'poekhali';
+        syncPoekhaliTrackerMode(shouldRunPoekhali);
+        if (shouldRunPoekhali && typeof window.requestAnimationFrame === 'function') {
+          window.requestAnimationFrame(function() {
+            syncPoekhaliTrackerMode(true);
+          });
+        }
       }
       if (activeTab === 'home') {
         revealShiftListOnFirstMount(document.getElementById('homeShiftsList'));

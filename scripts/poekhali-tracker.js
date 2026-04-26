@@ -15876,6 +15876,7 @@
   }
 
   function startPoekhaliTrackerMode() {
+    var wasActive = tracker.active;
     tracker.active = true;
     loadReference();
     loadSpeedDocs();
@@ -15883,6 +15884,10 @@
     preparePoekhaliModeEntry();
     startWatchingGps();
     resizeCanvas();
+    drawCanvas();
+    if (wasActive) {
+      requestDraw();
+    }
     startDrawLoop();
   }
 
@@ -15899,6 +15904,11 @@
   function syncPoekhaliTrackerMode(shouldRun) {
     if (shouldRun) startPoekhaliTrackerMode();
     else stopPoekhaliTrackerMode();
+  }
+
+  function isPoekhaliPanelActive() {
+    var activePanel = document.querySelector('.tab-panel.active');
+    return !!(activePanel && activePanel.getAttribute('data-tab') === 'poekhali');
   }
 
   function bindControls() {
@@ -15994,6 +16004,9 @@
     loadRegimeMaps();
     resizeCanvas();
     drawCanvas();
+    if (isPoekhaliPanelActive() || (document.body && document.body.classList.contains('is-poekhali-mode'))) {
+      startPoekhaliTrackerMode();
+    }
     scheduleWarningSync(1400);
     scheduleLearningSync(1800);
     scheduleRunSync(1600);

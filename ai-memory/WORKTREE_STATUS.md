@@ -1,68 +1,79 @@
 # Worktree Status
 
-Generated: 2026-04-26 21:48:43 +1000
+Generated: 2026-04-26 13:31:55 +0000
 
 ## git status -sb
 ```text
 ## main...origin/main
-M  .gitignore
-MM ai-memory/CHANGELOG.md
-M  ai-memory/INDEX.md
-MM ai-memory/PROJECT_STATE.md
-M  ai-memory/RECENT_COMMITS.md
-M  ai-memory/WORKTREE_STATUS.md
-M  ai-memory/sessions/2026-04-25.md
-AM ai-memory/sessions/2026-04-26.md
-A  assets/tracker/data.xml
-A  assets/tracker/maps-manifest.json
-A  assets/tracker/maps/komsomol-sk-tche-9/1.xml
-A  assets/tracker/maps/komsomol-sk-tche-9/1n.xml
-A  assets/tracker/maps/komsomol-sk-tche-9/2.xml
-A  assets/tracker/maps/komsomol-sk-tche-9/2n.xml
-A  assets/tracker/maps/komsomol-sk-tche-9/data.xml
-A  assets/tracker/maps/komsomol-sk-tche-9/profile.xml
-A  assets/tracker/maps/komsomol-sk-tche-9/speed.xml
-A  assets/tracker/profile.xml
-A  assets/tracker/regime-maps.json
-A  assets/tracker/speed-docs.json
-A  assets/tracker/tch9-reference.json
-A  docs/2026-04-26-poekhali-parity-tz.md
-M  index.html
-M  package.json
-M  scripts/app.js
-M  scripts/auth.js
-M  scripts/docs-app.js
-A  scripts/download-poekhali-maps.mjs
-A  scripts/import-poekhali-android-backup.py
-A  scripts/import-regime-maps.py
-A  scripts/import-speed-docs.py
-A  scripts/import-tch9-reference.py
-A  scripts/poekhali-tracker.js
-M  scripts/render.js
-M  scripts/shift-form.js
-M  scripts/time-utils.js
-M  server.js
-M  styles/10-navigation-and-cards.css
-M  styles/15-bottom-nav.css
-M  styles/30-shifts-and-overlays.css
-M  sw.js
+ M ai-memory/CHANGELOG.md
+ M ai-memory/INDEX.md
+ M ai-memory/PROJECT_STATE.md
+ M ai-memory/RECENT_COMMITS.md
+ M ai-memory/WORKTREE_STATUS.md
+ M ai-memory/sessions/2026-04-26.md
+ M scripts/auth.js
+ M scripts/poekhali-tracker.js
 ```
 
 ## git branch -vv
 ```text
-codex/next-direction b044dd5 offline mvp
-  codex/tabs-ui        117f1fa [origin/codex/tabs-ui] tabs ui
-* main                 c631e1b [origin/main] chore(memory): refresh after legacy cleanup
++ calendar-fix-main                             4b9e6c6 (/tmp/bloknot-batch/calendar-fix) Fix home calendar to show manual shifts only
++ chore/remove-graphs-and-restore-calendar-flow e90d829 (/tmp/bloknot-remove-graphs) refactor(app): remove remaining schedule tails
++ cleanup-archaeology                           6219db2 (/tmp/bloknot-batch/archaeology) Revert "refactor(schedule): switch app to manual-only shifts"
++ cleanup-backend                               6219db2 (/tmp/bloknot-clean/backend) Revert "refactor(schedule): switch app to manual-only shifts"
++ cleanup-backend-migrate                       6219db2 (/tmp/bloknot-batch/backend-migrate) Revert "refactor(schedule): switch app to manual-only shifts"
++ cleanup-frontend                              6219db2 (/tmp/bloknot-clean/frontend) Revert "refactor(schedule): switch app to manual-only shifts"
++ cleanup-frontend-smoke                        ed81af6 (/tmp/bloknot-batch/frontend-smoke) Hide schedule planner UI from frontend
++ cleanup-integration                           dba6ed0 (/tmp/bloknot-batch/integration) Remove schedule planner and add local smoke test
++ cleanup-review                                6219db2 (/tmp/bloknot-clean/review) Revert "refactor(schedule): switch app to manual-only shifts"
++ cleanup-test-harness                          6219db2 (/tmp/bloknot-batch/test-harness) Revert "refactor(schedule): switch app to manual-only shifts"
++ feat/manual-calendar-from-scratch             8345ab9 (/tmp/bloknot-manual-calendar) feat(home): polish manual calendar flow
+* main                                          9f4dbd1 [origin/main] feat: release poekhali mode
 ```
 
 ## HEAD
 ```text
-c631e1b chore(memory): refresh after legacy cleanup
- ai-memory/CHANGELOG.md           |  9 ++++
- ai-memory/INDEX.md               |  2 +-
- ai-memory/PROJECT_STATE.md       | 49 +++-------------------
- ai-memory/RECENT_COMMITS.md      |  4 +-
- ai-memory/WORKTREE_STATUS.md     | 89 ++++++++++++++++++++--------------------
- ai-memory/sessions/2026-04-25.md |  1 +
- 6 files changed, 64 insertions(+), 90 deletions(-)
+9f4dbd1 feat: release poekhali mode
+ .gitignore                                         |     5 +
+ ai-memory/CHANGELOG.md                             |   921 +
+ ai-memory/INDEX.md                                 |     2 +-
+ ai-memory/PROJECT_STATE.md                         |    51 +-
+ ai-memory/RECENT_COMMITS.md                        |     4 +-
+ ai-memory/WORKTREE_STATUS.md                       |    99 +-
+ ai-memory/sessions/2026-04-25.md                   |    32 +
+ ai-memory/sessions/2026-04-26.md                   |    84 +
+ assets/tracker/data.xml                            |  1161 +
+ assets/tracker/maps-manifest.json                  |   155 +
+ assets/tracker/maps/komsomol-sk-tche-9/1.xml       | 24581 +++++++++++
+ assets/tracker/maps/komsomol-sk-tche-9/1n.xml      | 24569 +++++++++++
+ assets/tracker/maps/komsomol-sk-tche-9/2.xml       | 16517 ++++++++
+ assets/tracker/maps/komsomol-sk-tche-9/2n.xml      | 16517 ++++++++
+ assets/tracker/maps/komsomol-sk-tche-9/data.xml    | 41808 +++++++++++++++++++
+ assets/tracker/maps/komsomol-sk-tche-9/profile.xml |  7113 ++++
+ assets/tracker/maps/komsomol-sk-tche-9/speed.xml   |     1 +
+ assets/tracker/profile.xml                         |  3598 ++
+ assets/tracker/regime-maps.json                    | 40801 ++++++++++++++++++
+ assets/tracker/speed-docs.json                     |  3409 ++
+ assets/tracker/tch9-reference.json                 |  5026 +++
+ docs/2026-04-26-poekhali-parity-tz.md              |   384 +
+ index.html                                         |   116 +-
+ package.json                                       |     5 +
+ scripts/app.js                                     |   217 +-
+ scripts/auth.js                                    |    18 +-
+ scripts/docs-app.js                                |    20 +
+ scripts/download-poekhali-maps.mjs                 |   217 +
+ scripts/import-poekhali-android-backup.py          |   212 +
+ scripts/import-regime-maps.py                      |  1234 +
+ scripts/import-speed-docs.py                       |   373 +
+ scripts/import-tch9-reference.py                   |   250 +
+ scripts/poekhali-tracker.js                        | 16013 +++++++
+ scripts/render.js                                  |    28 +-
+ scripts/shift-form.js                              |    27 +
+ scripts/time-utils.js                              |   368 +
+ server.js                                          |  1077 +-
+ styles/10-navigation-and-cards.css                 |  1579 +
+ styles/15-bottom-nav.css                           |    30 +-
+ styles/30-shifts-and-overlays.css                  |    54 +
+ sw.js                                              |    92 +-
+ 41 files changed, 208682 insertions(+), 86 deletions(-)
 ```
