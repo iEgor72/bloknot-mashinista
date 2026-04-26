@@ -1,6 +1,6 @@
 # Worktree Status
 
-Generated: 2026-04-26 14:33:55 +0000
+Generated: 2026-04-26 14:55:30 +0000
 
 ## git status -sb
 ```text
@@ -8,7 +8,7 @@ Generated: 2026-04-26 14:33:55 +0000
  M ai-memory/CHANGELOG.md
  M ai-memory/PROJECT_STATE.md
  M ai-memory/sessions/2026-04-26.md
- M scripts/sw-register.js
+ M scripts/poekhali-tracker.js
 ```
 
 ## git branch -vv
@@ -24,19 +24,18 @@ Generated: 2026-04-26 14:33:55 +0000
 + cleanup-review                                6219db2 (/tmp/bloknot-clean/review) Revert "refactor(schedule): switch app to manual-only shifts"
 + cleanup-test-harness                          6219db2 (/tmp/bloknot-batch/test-harness) Revert "refactor(schedule): switch app to manual-only shifts"
 + feat/manual-calendar-from-scratch             8345ab9 (/tmp/bloknot-manual-calendar) feat(home): polish manual calendar flow
-* main                                          f9bf393 [origin/main] fix(poekhali): respect telegram safe area at top
+* main                                          8cc498e [origin/main] fix(pwa): refresh standalone shell after sw update
 ```
 
 ## HEAD
 ```text
-f9bf393 fix(poekhali): respect telegram safe area at top
- ai-memory/CHANGELOG.md             |  8 +++++++
- ai-memory/INDEX.md                 |  2 +-
- ai-memory/PROJECT_STATE.md         |  8 +++----
- ai-memory/RECENT_COMMITS.md        |  4 ++--
- ai-memory/WORKTREE_STATUS.md       | 24 ++++++++++----------
- ai-memory/sessions/2026-04-26.md   |  1 +
- scripts/poekhali-tracker.js        | 20 +++++++++++++++--
- styles/10-navigation-and-cards.css | 46 +++++++++++++++++++-------------------
- 8 files changed, 69 insertions(+), 44 deletions(-)
+8cc498e fix(pwa): refresh standalone shell after sw update
+ ai-memory/CHANGELOG.md           |  8 +++++++
+ ai-memory/INDEX.md               |  2 +-
+ ai-memory/PROJECT_STATE.md       | 11 ++++-----
+ ai-memory/RECENT_COMMITS.md      |  4 ++--
+ ai-memory/WORKTREE_STATUS.md     | 23 +++++++++---------
+ ai-memory/sessions/2026-04-26.md |  1 +
+ scripts/sw-register.js           | 51 ++++++++++++++++++++++++++++++++++++----
+ 7 files changed, 75 insertions(+), 25 deletions(-)
 ```

@@ -11438,7 +11438,7 @@
   }
 
   function getPoekhaliTopHudY() {
-    return Math.max(58, Math.round(getPoekhaliTopOffset() + 48));
+    return Math.max(70, Math.round(getPoekhaliTopOffset() + 60));
   }
 
   function roundRectPath(ctx, x, y, width, height, radius) {

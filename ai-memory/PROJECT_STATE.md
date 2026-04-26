@@ -1,14 +1,14 @@
 # Project State
 
 <!-- AUTO_STATUS:START -->
-Generated: 2026-04-26 14:33:55 +0000
+Generated: 2026-04-26 14:55:30 +0000
 
 ## Repository Snapshot
 - Local repo path: `/opt/bloknot-mashinista`
 - Project memory path: `/opt/bloknot-mashinista/ai-memory`
 - Branch: `main`
-- HEAD: `f9bf393`
-- Last commit: `f9bf393 fix(poekhali): respect telegram safe area at top`
+- HEAD: `8cc498e`
+- Last commit: `8cc498e fix(pwa): refresh standalone shell after sw update`
 
 ## Git Remote
 ```text
@@ -29,14 +29,14 @@ origin	https://github.com/iEgor72/bloknot-mashinista.git (push)
 + cleanup-review                                6219db2 (/tmp/bloknot-clean/review) Revert "refactor(schedule): switch app to manual-only shifts"
 + cleanup-test-harness                          6219db2 (/tmp/bloknot-batch/test-harness) Revert "refactor(schedule): switch app to manual-only shifts"
 + feat/manual-calendar-from-scratch             8345ab9 (/tmp/bloknot-manual-calendar) feat(home): polish manual calendar flow
-* main                                          f9bf393 [origin/main] fix(poekhali): respect telegram safe area at top
+* main                                          8cc498e [origin/main] fix(pwa): refresh standalone shell after sw update
 ```
 
 ## Worktree
 ```text
 M ai-memory/CHANGELOG.md
  M ai-memory/sessions/2026-04-26.md
- M scripts/sw-register.js
+ M scripts/poekhali-tracker.js
 ```
 <!-- AUTO_STATUS:END -->
 
