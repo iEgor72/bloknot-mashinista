@@ -1538,9 +1538,9 @@
     }
 
     .poekhali-map-sheet {
-      position: absolute;
+      position: fixed;
       inset: 0;
-      z-index: 6;
+      z-index: 260;
       display: grid;
       align-items: end;
       padding: 16px 16px calc(96px + env(safe-area-inset-bottom));

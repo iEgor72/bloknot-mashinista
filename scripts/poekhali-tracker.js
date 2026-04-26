@@ -146,8 +146,7 @@
     canvas: null,
     ctx: null,
     mapPicker: null,
-    mapPickerRequestToken: 0,
-    mapPickerClosedAt: 0,
+    mapPickerOpen: false,
     opsSheet: null,
     opsView: readStringStorage(OPS_VIEW_STORAGE_KEY) || 'drive',
     conflictCard: null,
@@ -6610,8 +6609,8 @@
     if (tracker.mapPicker && tracker.mapPicker.root && tracker.mapPicker.root.parentNode) {
       return tracker.mapPicker;
     }
-    var shell = byId('poekhaliModeShell');
-    if (!shell) return null;
+    var host = document.body;
+    if (!host) return null;
 
     var root = document.createElement('div');
     root.id = 'poekhaliMapSheet';
@@ -6668,7 +6667,7 @@
     panel.appendChild(sectorBlock);
     root.appendChild(backdrop);
     root.appendChild(panel);
-    shell.appendChild(root);
+    host.appendChild(root);
 
     function handleMapSheetClose(event) {
       if (event) {
@@ -6887,32 +6886,37 @@
     }
   }
 
+  function showMapPicker() {
+    var picker = getMapPicker();
+    if (!picker) return null;
+    tracker.mapPickerOpen = true;
+    renderMapPicker();
+    picker.root.classList.remove('hidden');
+    return picker;
+  }
+
   function openMapPicker() {
-    if (Date.now() - (tracker.mapPickerClosedAt || 0) < 400) return;
-    var requestToken = Date.now();
-    tracker.mapPickerRequestToken = requestToken;
-    loadManifest().then(function() {
-      return loadAssets();
-    }).then(function() {
-      if (tracker.mapPickerRequestToken !== requestToken) return;
-      if (Date.now() - (tracker.mapPickerClosedAt || 0) < 400) return;
-      var picker = getMapPicker();
-      if (!picker) return;
-      renderMapPicker();
-      picker.root.classList.remove('hidden');
-    }).catch(function() {
-      if (tracker.mapPickerRequestToken !== requestToken) return;
-      if (Date.now() - (tracker.mapPickerClosedAt || 0) < 400) return;
-      var picker = getMapPicker();
-      if (!picker) return;
-      renderMapPicker();
-      picker.root.classList.remove('hidden');
-    });
+    var picker = showMapPicker();
+    if (!picker) return;
+    Promise.resolve()
+      .then(function() {
+        return loadManifest();
+      })
+      .then(function() {
+        return loadAssets();
+      })
+      .then(function() {
+        if (!tracker.mapPickerOpen) return;
+        renderMapPicker();
+      })
+      .catch(function() {
+        if (!tracker.mapPickerOpen) return;
+        renderMapPicker();
+      });
   }
 
   function closeMapPicker() {
-    tracker.mapPickerRequestToken = 0;
-    tracker.mapPickerClosedAt = Date.now();
+    tracker.mapPickerOpen = false;
     if (tracker.mapPicker && tracker.mapPicker.root) {
       tracker.mapPicker.root.classList.add('hidden');
     }
