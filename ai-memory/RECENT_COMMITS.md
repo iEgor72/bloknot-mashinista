@@ -1,9 +1,10 @@
 # Recent Commits
 
-Generated: 2026-04-27 08:42:08 +1000
+Generated: 2026-04-27 09:07:27 +1000
 
 | Hash | Date | Author | Message |
 | --- | --- | --- | --- |
+| `c66152d` | 2026-04-27T08:45:23+10:00 | iEgor72 | chore(pwa): update app icon |
 | `b72b039` | 2026-04-27T08:33:06+10:00 | iEgor72 | fix(shifts): hide placeholder train composition |
 | `b67d010` | 2026-04-27T08:21:20+10:00 | iEgor72 | fix(poekhali): stabilize live trip mode |
 | `beb016e` | 2026-04-26T16:15:24Z | iEgor72 | Revert "fix(poekhali): orient head by train vector" |
@@ -43,4 +44,3 @@ Generated: 2026-04-27 08:42:08 +1000
 | `34dc6c4` | 2026-04-23T10:06:13Z | iEgor72 | refactor(app): remove remaining schedule tails |
 | `d10eaca` | 2026-04-23T09:37:53Z | iEgor72 | refactor(app): remove graph and schedule user flows |
 | `d81c5a7` | 2026-04-23T07:53:11Z | iEgor72 | Restore holiday highlighting in home calendar |
-| `eaf0726` | 2026-04-23T07:48:38Z | iEgor72 | Fix home calendar overnight shift display |

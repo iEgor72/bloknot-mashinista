@@ -1,14 +1,14 @@
 # Project State
 
 <!-- AUTO_STATUS:START -->
-Generated: 2026-04-27 08:42:08 +1000
+Generated: 2026-04-27 09:07:27 +1000
 
 ## Repository Snapshot
 - Local repo path: `D:\work\bloknot-mashinista-tg`
 - Project memory path: `D:\work\bloknot-mashinista-tg\ai-memory`
 - Branch: `main`
-- HEAD: `b72b039`
-- Last commit: `b72b039 fix(shifts): hide placeholder train composition`
+- HEAD: `c66152d`
+- Last commit: `c66152d chore(pwa): update app icon`
 
 ## Git Remote
 ```text
@@ -20,7 +20,7 @@ origin	https://github.com/iEgor72/bloknot-mashinista.git (push)
 ```text
 codex/next-direction b044dd5 offline mvp
   codex/tabs-ui        117f1fa [origin/codex/tabs-ui] tabs ui
-* main                 b72b039 [origin/main] fix(shifts): hide placeholder train composition
+* main                 c66152d [origin/main] chore(pwa): update app icon
 ```
 
 ## Worktree
@@ -34,6 +34,7 @@ M ai-memory/CHANGELOG.md
  M apple-touch-icon.png
  M icon-192.png
  M icon-512.png
+ M scripts/time-utils.js
  M sw.js
 ```
 <!-- AUTO_STATUS:END -->

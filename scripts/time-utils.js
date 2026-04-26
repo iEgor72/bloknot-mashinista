@@ -970,38 +970,44 @@
       return text;
     }
 
-    function getShiftTechnicalItems(shift) {
-      var items = [];
-      if (!shift) return items;
+    function getShiftTechnicalRows(shift) {
+      var rows = [];
+      if (!shift) return rows;
       var loco = getLocoSummary(shift) || getShiftCardTextValue(shift, 'locomotive_summary', 'poekhali_loco');
       if (isShiftCardPlaceholderText(loco)) loco = '';
       var trainNumber = getShiftCardDigitsValue(shift, 'train_number', 'poekhali_train_number', 4);
       var trainWeight = getShiftCardDigitsValue(shift, 'train_weight', 'poekhali_train_weight', 4);
       var trainAxles = getShiftCardDigitsValue(shift, 'train_axles', 'poekhali_train_axles', 3);
       var trainLength = getShiftCardTrainLengthText(shift);
-      if (loco) items.push({ icon: 'locomotive', text: loco.replace('№ ', '№') });
+      var identityItems = [];
+      var compositionItems = [];
+      var poekhaliItems = [];
+      if (loco) identityItems.push({ icon: 'locomotive', text: loco.replace('№ ', '№') });
+      if (trainNumber) identityItems.push({ icon: 'train', text: '№' + trainNumber });
+      if (trainWeight) compositionItems.push({ icon: 'train', text: trainWeight + ' т' });
+      if (trainAxles) compositionItems.push({ icon: 'axles', text: trainAxles + ' оси' });
+      if (trainLength) compositionItems.push({ icon: 'wagon', text: trainLength });
       if (hasShiftPoekhaliData(shift)) {
         var techSpeed = getShiftPoekhaliNumber(shift, 'poekhali_technical_speed_kmh');
         var averageSpeed = getShiftPoekhaliNumber(shift, 'poekhali_average_speed_kmh');
         var distance = getShiftPoekhaliNumber(shift, 'poekhali_distance_m');
         if (techSpeed > 0) {
-          items.push({ icon: 'speed', text: 'Тех ' + formatShiftPoekhaliSpeed(techSpeed) });
+          poekhaliItems.push({ icon: 'speed', text: 'Тех ' + formatShiftPoekhaliSpeed(techSpeed) });
         } else if (averageSpeed > 0) {
-          items.push({ icon: 'speed', text: 'Ср ' + formatShiftPoekhaliSpeed(averageSpeed) });
+          poekhaliItems.push({ icon: 'speed', text: 'Ср ' + formatShiftPoekhaliSpeed(averageSpeed) });
         } else if (distance > 0) {
-          items.push({ icon: 'route', text: formatShiftPoekhaliDistance(distance) });
+          poekhaliItems.push({ icon: 'route', text: formatShiftPoekhaliDistance(distance) });
         }
       }
-      if (trainNumber) items.push({ icon: 'train', text: '№' + trainNumber });
-      if (trainWeight) items.push({ icon: 'train', text: trainWeight + ' т' });
-      if (trainLength) items.push({ icon: 'wagon', text: trainLength });
-      if (trainAxles) items.push({ icon: 'axles', text: trainAxles + ' оси' });
-      return items;
+      if (identityItems.length) rows.push(identityItems);
+      if (compositionItems.length) rows.push(compositionItems);
+      if (poekhaliItems.length) rows.push(poekhaliItems);
+      return rows;
     }
 
     function buildShiftTechnicalHtml(shift) {
-      var items = getShiftTechnicalItems(shift);
-      if (!items.length) return '';
+      var rows = getShiftTechnicalRows(shift);
+      if (!rows.length) return '';
 
       function renderTechRow(rowItems) {
         var rowHtml = '';
@@ -1016,12 +1022,9 @@
         return rowHtml;
       }
 
-      var primaryItems = items.slice(0, 2);
-      var secondaryItems = items.slice(2);
-      var html = '<div class="shift-tech-line">' +
-        '<div class="shift-tech-row shift-tech-row-primary">' + renderTechRow(primaryItems) + '</div>';
-      if (secondaryItems.length) {
-        html += '<div class="shift-tech-row shift-tech-row-secondary">' + renderTechRow(secondaryItems) + '</div>';
+      var html = '<div class="shift-tech-line">';
+      for (var rowIndex = 0; rowIndex < rows.length; rowIndex++) {
+        html += '<div class="shift-tech-row shift-tech-row-' + (rowIndex + 1) + '">' + renderTechRow(rows[rowIndex]) + '</div>';
       }
       html += '</div>';
       return html;
