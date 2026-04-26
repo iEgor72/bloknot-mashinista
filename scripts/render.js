@@ -47,7 +47,7 @@
         '</div>' +
       '</div>';
 
-      var html = '<div class="' + itemClass + '" data-shift-id="' + shiftIdAttr + '" data-pending="' + (shiftIsPending ? '1' : '0') + '" data-shift-open="1" role="button" tabindex="0" aria-label="Редактировать смену: ' + escapeHtml(shiftTitle || 'Смена') + '">' +
+      var html = '<div class="' + itemClass + '" data-shift-id="' + shiftIdAttr + '" data-pending="' + (shiftIsPending ? '1' : '0') + '" data-shift-open="1" role="button" tabindex="0" aria-label="Открыть подробности смены: ' + escapeHtml(shiftTitle || 'Смена') + '">' +
         '<div class="shift-card-top">' +
           typeHtml +
           actionsHtml +
@@ -522,7 +522,7 @@
         var card = eventTarget && eventTarget.closest ? eventTarget.closest('.shift-item[data-shift-open="1"][data-shift-id]') : null;
         if (!card || !listEl.contains(card)) return;
         if ((eventTarget.closest && eventTarget.closest('.shift-actions-trigger')) || (eventTarget.closest && eventTarget.closest('.shift-actions-wrap'))) return;
-        openShiftEditorFromCard(card);
+        openShiftDetailFromCard(card, listEl.id || '');
       });
 
       listEl.addEventListener('keydown', function(e) {
@@ -533,7 +533,7 @@
         if (!card || !listEl.contains(card)) return;
         if ((eventTarget.closest && eventTarget.closest('.shift-actions-trigger')) || (eventTarget.closest && eventTarget.closest('.shift-actions-wrap'))) return;
         e.preventDefault();
-        openShiftEditorFromCard(card);
+        openShiftDetailFromCard(card, listEl.id || '');
       });
     }
 
