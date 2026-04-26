@@ -741,7 +741,7 @@
       var meters = ((rounded % 1000) + 1000) % 1000;
       var km = Math.floor(rounded / 1000);
       var pk = Math.floor(meters / 100) + 1;
-      return (isFinite(numericSector) && numericSector > 0 ? 'уч. ' + Math.round(numericSector) + ' · ' : '') + km + ' км ' + pk + ' пк';
+      return (isFinite(numericSector) && numericSector > 0 ? 'уч. ' + Math.round(numericSector) + ', ' : '') + km + ' км ' + pk + ' пк';
     }
 
     function formatShiftPoekhaliPoint(shift, prefix) {
@@ -1104,19 +1104,62 @@
       return text;
     }
 
-    function buildShiftDetailRowHtml(label, value, emptyText) {
+    function getShiftDetailValueLines(displayText, options) {
+      var text = getShiftDetailValue(displayText);
+      var lines = [];
+      var rawLines = options && Array.isArray(options.lines) ? options.lines : null;
+      if (rawLines) {
+        for (var i = 0; i < rawLines.length; i++) {
+          var prepared = getShiftDetailValue(rawLines[i]);
+          if (prepared) lines.push(prepared);
+        }
+      } else if (text && !(options && options.split === false) && text.indexOf(' · ') !== -1 && text.length > 26) {
+        var parts = text.split(/\s+·\s+/);
+        for (var j = 0; j < parts.length; j++) {
+          var part = getShiftDetailValue(parts[j]);
+          if (part) lines.push(part);
+        }
+      }
+      if (!lines.length && text) lines.push(text);
+      return lines;
+    }
+
+    function shouldStackShiftDetailValue(displayText, lines, options) {
+      if (options && options.stacked === true) return true;
+      if (options && options.inline === true) return false;
+      if (lines && lines.length > 1) return true;
+      return getShiftDetailValue(displayText).length > 34;
+    }
+
+    function buildShiftDetailValueHtml(lines) {
+      var source = Array.isArray(lines) ? lines : [];
+      if (source.length <= 1) return escapeHtml(source[0] || '');
+      var html = '';
+      for (var i = 0; i < source.length; i++) {
+        html += '<span class="shift-detail-value-line' + (i === 0 ? ' is-primary' : '') + '">' + escapeHtml(source[i]) + '</span>';
+      }
+      return '<span class="shift-detail-value-lines">' + html + '</span>';
+    }
+
+    function buildShiftDetailRowHtml(label, value, emptyText, options) {
+      if (emptyText && typeof emptyText === 'object') {
+        options = emptyText;
+        emptyText = '';
+      }
       var prepared = getShiftDetailValue(value);
       var hasValue = !!prepared;
       var displayText = hasValue ? prepared : (emptyText || '—');
+      var lines = hasValue ? getShiftDetailValueLines(displayText, options) : [displayText];
+      var isStacked = hasValue && shouldStackShiftDetailValue(displayText, lines, options);
       return '' +
-        '<div class="shift-detail-row">' +
+        '<div class="shift-detail-row' + (isStacked ? ' is-stacked' : '') + '">' +
           '<span class="shift-detail-key">' + escapeHtml(label) + '</span>' +
-          '<span class="shift-detail-value' + (hasValue ? '' : ' is-empty') + '">' + escapeHtml(displayText) + '</span>' +
+          '<span class="shift-detail-value' + (hasValue ? '' : ' is-empty') + (lines.length > 1 ? ' has-lines' : '') + '">' + buildShiftDetailValueHtml(lines) + '</span>' +
         '</div>';
     }
 
-    function buildShiftDetailOptionalRowHtml(label, value) {
-      return getShiftDetailValue(value) ? buildShiftDetailRowHtml(label, value) : '';
+    function buildShiftDetailOptionalRowHtml(label, value, options) {
+      return getShiftDetailValue(value) ? buildShiftDetailRowHtml(label, value, '', options) : '';
     }
 
     function buildShiftDetailMetricGridHtml(items) {

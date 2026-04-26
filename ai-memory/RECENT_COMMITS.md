@@ -1,9 +1,10 @@
 # Recent Commits
 
-Generated: 2026-04-27 09:18:56 +1000
+Generated: 2026-04-27 09:22:43 +1000
 
 | Hash | Date | Author | Message |
 | --- | --- | --- | --- |
+| `791297c` | 2026-04-27T09:19:57+10:00 | iEgor72 | feat(shifts): open details from cards |
 | `316d4b9` | 2026-04-27T09:08:32+10:00 | iEgor72 | fix(shifts): arrange train details in card |
 | `c66152d` | 2026-04-27T08:45:23+10:00 | iEgor72 | chore(pwa): update app icon |
 | `b72b039` | 2026-04-27T08:33:06+10:00 | iEgor72 | fix(shifts): hide placeholder train composition |
@@ -43,4 +44,3 @@ Generated: 2026-04-27 09:18:56 +1000
 | `0fa8176` | 2026-04-23T16:04:10Z | iEgor72 | feat(home): polish manual calendar flow |
 | `18d193a` | 2026-04-23T15:19:36Z | iEgor72 | feat(home): restore recent shifts block |
 | `34dc6c4` | 2026-04-23T10:06:13Z | iEgor72 | refactor(app): remove remaining schedule tails |
-| `d10eaca` | 2026-04-23T09:37:53Z | iEgor72 | refactor(app): remove graph and schedule user flows |
