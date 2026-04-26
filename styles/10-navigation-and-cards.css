@@ -615,39 +615,39 @@
     }
 
     .poekhali-back-btn {
-      top: max(10px, env(safe-area-inset-top));
-      left: max(10px, env(safe-area-inset-left));
+      top: max(10px, var(--safe-top));
+      left: max(10px, var(--safe-left));
       width: 44px;
       padding: 0;
     }
 
     .poekhali-k-btn {
-      top: max(10px, env(safe-area-inset-top));
-      left: calc(max(10px, env(safe-area-inset-left)) + 52px);
+      top: max(10px, var(--safe-top));
+      left: calc(max(10px, var(--safe-left)) + 52px);
       width: 54px;
     }
 
     .poekhali-direction-btn {
-      top: max(10px, env(safe-area-inset-top));
-      left: calc(max(10px, env(safe-area-inset-left)) + 114px);
+      top: max(10px, var(--safe-top));
+      left: calc(max(10px, var(--safe-left)) + 114px);
       width: 70px;
     }
 
     .poekhali-way-btn {
-      top: max(10px, env(safe-area-inset-top));
-      left: calc(max(10px, env(safe-area-inset-left)) + 192px);
+      top: max(10px, var(--safe-top));
+      left: calc(max(10px, var(--safe-left)) + 192px);
       width: 56px;
     }
 
     .poekhali-map-btn {
-      top: max(10px, env(safe-area-inset-top));
-      left: calc(max(10px, env(safe-area-inset-left)) + 256px);
+      top: max(10px, var(--safe-top));
+      left: calc(max(10px, var(--safe-left)) + 256px);
       width: 58px;
     }
 
     .poekhali-gps-btn {
-      top: max(10px, env(safe-area-inset-top));
-      right: max(10px, env(safe-area-inset-right));
+      top: max(10px, var(--safe-top));
+      right: max(10px, var(--safe-right));
       min-width: 68px;
       color: var(--sub);
     }
@@ -666,7 +666,7 @@
 
     .poekhali-timer-btn {
       left: 50%;
-      bottom: calc(94px + env(safe-area-inset-bottom));
+      bottom: calc(94px + var(--safe-bottom));
       min-width: 96px;
       transform: translateX(-50%);
       background: var(--accent-dim);
@@ -681,7 +681,7 @@
 
     .poekhali-ops-btn {
       left: calc(50% + 60px);
-      bottom: calc(94px + env(safe-area-inset-bottom));
+      bottom: calc(94px + var(--safe-bottom));
       min-width: 74px;
       background: rgba(56, 189, 248, 0.10);
       border-color: rgba(56, 189, 248, 0.22);
@@ -1841,22 +1841,22 @@
       }
 
       .poekhali-k-btn {
-        left: calc(max(8px, env(safe-area-inset-left)) + 42px);
+        left: calc(max(8px, var(--safe-left)) + 42px);
         width: 48px;
       }
 
       .poekhali-direction-btn {
-        left: calc(max(8px, env(safe-area-inset-left)) + 96px);
+        left: calc(max(8px, var(--safe-left)) + 96px);
         width: 64px;
       }
 
       .poekhali-way-btn {
-        left: calc(max(8px, env(safe-area-inset-left)) + 166px);
+        left: calc(max(8px, var(--safe-left)) + 166px);
         width: 48px;
       }
 
       .poekhali-map-btn {
-        left: calc(max(8px, env(safe-area-inset-left)) + 220px);
+        left: calc(max(8px, var(--safe-left)) + 220px);
         width: 50px;
       }
 
@@ -1913,28 +1913,28 @@
       }
 
       .poekhali-back-btn {
-        left: max(8px, env(safe-area-inset-left));
+        left: max(8px, var(--safe-left));
         width: 36px;
       }
 
       .poekhali-k-btn {
-        left: calc(max(8px, env(safe-area-inset-left)) + 42px);
+        left: calc(max(8px, var(--safe-left)) + 42px);
         width: 42px;
       }
 
       .poekhali-direction-btn {
-        left: calc(max(8px, env(safe-area-inset-left)) + 88px);
+        left: calc(max(8px, var(--safe-left)) + 88px);
         width: 56px;
       }
 
       .poekhali-way-btn {
-        left: calc(max(8px, env(safe-area-inset-left)) + 150px);
+        left: calc(max(8px, var(--safe-left)) + 150px);
         width: 42px;
       }
 
       .poekhali-map-btn {
         display: inline-flex;
-        left: calc(max(8px, env(safe-area-inset-left)) + 198px);
+        left: calc(max(8px, var(--safe-left)) + 198px);
         width: 44px;
       }
 

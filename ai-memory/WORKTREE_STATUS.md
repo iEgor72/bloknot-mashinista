@@ -1,6 +1,6 @@
 # Worktree Status
 
-Generated: 2026-04-26 13:46:22 +0000
+Generated: 2026-04-26 14:21:03 +0000
 
 ## git status -sb
 ```text
@@ -25,19 +25,19 @@ Generated: 2026-04-26 13:46:22 +0000
 + cleanup-review                                6219db2 (/tmp/bloknot-clean/review) Revert "refactor(schedule): switch app to manual-only shifts"
 + cleanup-test-harness                          6219db2 (/tmp/bloknot-batch/test-harness) Revert "refactor(schedule): switch app to manual-only shifts"
 + feat/manual-calendar-from-scratch             8345ab9 (/tmp/bloknot-manual-calendar) feat(home): polish manual calendar flow
-* main                                          104e7e7 [origin/main] fix(ui): block tap-through and disable app selection
+* main                                          2f9486d [origin/main] refactor(poekhali): make map sheet state-driven overlay
 ```
 
 ## HEAD
 ```text
-104e7e7 fix(ui): block tap-through and disable app selection
- ai-memory/CHANGELOG.md           |  8 ++++++++
- ai-memory/INDEX.md               |  2 +-
- ai-memory/PROJECT_STATE.md       | 10 +++++-----
- ai-memory/RECENT_COMMITS.md      |  4 ++--
- ai-memory/WORKTREE_STATUS.md     | 26 +++++++++++++-------------
- ai-memory/sessions/2026-04-26.md |  1 +
- scripts/poekhali-tracker.js      | 25 +++++++++++++++++++++++--
- styles/00-base.css               | 16 ++++++++++++++++
- 8 files changed, 69 insertions(+), 23 deletions(-)
+2f9486d refactor(poekhali): make map sheet state-driven overlay
+ ai-memory/CHANGELOG.md             |  8 ++++++
+ ai-memory/INDEX.md                 |  2 +-
+ ai-memory/PROJECT_STATE.md         | 10 +++----
+ ai-memory/RECENT_COMMITS.md        |  4 +--
+ ai-memory/WORKTREE_STATUS.md       | 26 ++++++++---------
+ ai-memory/sessions/2026-04-26.md   |  1 +
+ scripts/poekhali-tracker.js        | 58 ++++++++++++++++++++------------------
+ styles/10-navigation-and-cards.css |  4 +--
+ 8 files changed, 63 insertions(+), 50 deletions(-)
 ```

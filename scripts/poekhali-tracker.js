@@ -11426,6 +11426,21 @@
     return w < 380 ? 12 : 16;
   }
 
+  function getCssInsetVar(name) {
+    if (typeof window === 'undefined' || !window.getComputedStyle || !document || !document.documentElement) return 0;
+    var value = window.getComputedStyle(document.documentElement).getPropertyValue(name);
+    var parsed = parseFloat(value);
+    return isFinite(parsed) && parsed > 0 ? parsed : 0;
+  }
+
+  function getPoekhaliTopOffset() {
+    return Math.max(10, getCssInsetVar('--safe-top'));
+  }
+
+  function getPoekhaliTopHudY() {
+    return Math.max(58, Math.round(getPoekhaliTopOffset() + 48));
+  }
+
   function roundRectPath(ctx, x, y, width, height, radius) {
     var r = Math.max(0, Math.min(radius || 0, width / 2, height / 2));
     if (ctx.roundRect) {
@@ -12252,7 +12267,8 @@
     var panelWidth = Math.min(w - getPanelInset(w) * 2, 360);
     var panelHeight = hasMapSummary ? 168 : (sub ? 122 : 96);
     var x = Math.round((w - panelWidth) / 2);
-    var y = Math.round(Math.max(154, Math.min((h - panelHeight) / 2 - 4, h - panelHeight - 250)));
+    var minY = getPoekhaliTopHudY() + 96;
+    var y = Math.round(Math.max(minY, Math.min((h - panelHeight) / 2 - 4, h - panelHeight - 250)));
     var accent = tone === 'danger' ? THEME.danger : THEME.accent;
     drawPanel(ctx, x, y, panelWidth, panelHeight, 18, 'rgba(19, 19, 24, 0.88)', THEME.borderHi);
     fillRoundRect(ctx, x + 14, y + 14, 4, panelHeight - 28, 4, accent);
@@ -15722,7 +15738,7 @@
     var now = new Date();
     var inset = getPanelInset(w);
     var x = inset;
-    var y = 58;
+    var y = getPoekhaliTopHudY();
     var width = w - inset * 2;
     var height = 72;
     var liveProjection = tracker.projection && tracker.projection.onTrack ? tracker.projection : null;
