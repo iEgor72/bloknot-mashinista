@@ -921,22 +921,63 @@
         : '';
     }
 
+    function getShiftCardDigitsValue(shift, primaryKey, fallbackKey, maxLen) {
+      var raw = getShiftCardTextValue(shift, primaryKey, fallbackKey);
+      var digits = String(raw || '').replace(/\D+/g, '');
+      var limit = Math.max(0, Math.round(Number(maxLen) || 0));
+      if (limit) digits = digits.slice(0, limit);
+      return Number(digits) > 0 ? digits : '';
+    }
+
+    function isShiftCardPlaceholderText(value) {
+      var text = String(value || '').trim().toLowerCase();
+      return !text ||
+        text === 'локомотив' ||
+        text === 'нет данных' ||
+        text === 'нет смены' ||
+        text === 'нет состава' ||
+        text === 'только лок.' ||
+        text === 'только локомотив';
+    }
+
     function getShiftCardTrainLengthText(shift) {
-      var direct = getShiftCardTextValue(shift, 'train_length', 'poekhali_train_wagons');
+      var direct = getShiftCardDigitsValue(shift, 'train_length', 'poekhali_train_wagons', 3);
       if (direct) return direct + ' ваг';
+      var compositionType = String(shift && shift.poekhali_train_composition_type || '').trim();
       var label = String(shift && shift.poekhali_train_length_label || '').trim();
-      if (label) return label.replace(/\s*уд\./i, ' ваг.');
+      if ((compositionType === 'train' || compositionType === 'estimated' || /\d/.test(label)) &&
+        !isShiftCardPlaceholderText(label)) {
+        return label.replace(/\s*уд\./i, ' ваг.');
+      }
       var meters = getShiftPoekhaliNumber(shift, 'poekhali_train_length_m');
-      return meters > 0 ? meters + ' м' : '';
+      if ((compositionType === 'train' || compositionType === 'estimated' || meters > 51) && meters > 0) return meters + ' м';
+      return '';
+    }
+
+    function formatShiftCardPoekhaliTrainLength(shift) {
+      var compositionType = String(shift && shift.poekhali_train_composition_type || '').trim();
+      var label = String(shift && shift.poekhali_train_length_label || '').trim();
+      var meters = getShiftPoekhaliNumber(shift, 'poekhali_train_length_m');
+      var hasActualComposition = compositionType === 'train' || compositionType === 'estimated' ||
+        (/\d/.test(label) && !isShiftCardPlaceholderText(label)) ||
+        meters > 51;
+      if (!hasActualComposition || !meters) return '';
+      var source = String(shift && shift.poekhali_train_length_source || '').trim();
+      var text = meters + ' м';
+      if (source === 'по осям') text = '~' + text;
+      if (label && label !== text && !isShiftCardPlaceholderText(label)) text += ' · ' + label.replace(/\s*уд\./i, ' ваг.');
+      if (source && !isShiftCardPlaceholderText(source)) text += ' · ' + source;
+      return text;
     }
 
     function getShiftTechnicalItems(shift) {
       var items = [];
       if (!shift) return items;
       var loco = getLocoSummary(shift) || getShiftCardTextValue(shift, 'locomotive_summary', 'poekhali_loco');
-      var trainNumber = getShiftCardTextValue(shift, 'train_number', 'poekhali_train_number');
-      var trainWeight = getShiftCardTextValue(shift, 'train_weight', 'poekhali_train_weight');
-      var trainAxles = getShiftCardTextValue(shift, 'train_axles', 'poekhali_train_axles');
+      if (isShiftCardPlaceholderText(loco)) loco = '';
+      var trainNumber = getShiftCardDigitsValue(shift, 'train_number', 'poekhali_train_number', 4);
+      var trainWeight = getShiftCardDigitsValue(shift, 'train_weight', 'poekhali_train_weight', 4);
+      var trainAxles = getShiftCardDigitsValue(shift, 'train_axles', 'poekhali_train_axles', 3);
       var trainLength = getShiftCardTrainLengthText(shift);
       if (loco) items.push({ icon: 'locomotive', text: loco.replace('№ ', '№') });
       if (hasShiftPoekhaliData(shift)) {
@@ -1184,7 +1225,7 @@
         html += buildShiftDetailRowHtml('Карта', shift.poekhali_map_title || shift.poekhali_map_id || shift.poekhali_warning_rules_map_title || shift.poekhali_warning_rules_map_id);
         html += buildShiftDetailRowHtml('Направление', shift.poekhali_direction);
         html += buildShiftDetailRowHtml('Путь', shift.poekhali_track);
-        html += buildShiftDetailRowHtml('Состав', formatShiftPoekhaliTrainLength(shift));
+        html += buildShiftDetailRowHtml('Состав', formatShiftCardPoekhaliTrainLength(shift));
         html += buildShiftDetailRowHtml('Старт', formatShiftPoekhaliDateTime(shift.poekhali_started_at));
         html += buildShiftDetailRowHtml('Финиш', formatShiftPoekhaliDateTime(shift.poekhali_ended_at));
         html += buildShiftDetailRowHtml('Время', formatShiftPoekhaliDuration(shift.poekhali_duration_ms));

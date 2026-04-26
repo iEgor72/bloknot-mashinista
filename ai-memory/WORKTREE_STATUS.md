@@ -1,6 +1,6 @@
 # Worktree Status
 
-Generated: 2026-04-27 08:17:03 +1000
+Generated: 2026-04-27 08:31:48 +1000
 
 ## git status -sb
 ```text
@@ -10,34 +10,35 @@ Generated: 2026-04-27 08:17:03 +1000
  M ai-memory/PROJECT_STATE.md
  M ai-memory/RECENT_COMMITS.md
  M ai-memory/WORKTREE_STATUS.md
- M index.html
- M scripts/app.js
- M scripts/poekhali-tracker.js
- M scripts/shift-form.js
+ M ai-memory/sessions/2026-04-27.md
  M scripts/time-utils.js
- M server.js
- M styles/00-base.css
- M styles/10-navigation-and-cards.css
  M sw.js
-?? ai-memory/sessions/2026-04-27.md
 ```
 
 ## git branch -vv
 ```text
 codex/next-direction b044dd5 offline mvp
   codex/tabs-ui        117f1fa [origin/codex/tabs-ui] tabs ui
-* main                 beb016e [origin/main] Revert "fix(poekhali): orient head by train vector"
+* main                 b67d010 [origin/main] fix(poekhali): stabilize live trip mode
 ```
 
 ## HEAD
 ```text
-beb016e Revert "fix(poekhali): orient head by train vector"
- ai-memory/CHANGELOG.md           |  8 --------
- ai-memory/INDEX.md               |  2 +-
- ai-memory/PROJECT_STATE.md       |  8 ++++----
- ai-memory/RECENT_COMMITS.md      |  4 ++--
- ai-memory/WORKTREE_STATUS.md     | 24 +++++++++++++-----------
- ai-memory/sessions/2026-04-26.md |  1 -
- scripts/poekhali-tracker.js      | 32 ++++++++++----------------------
- 7 files changed, 30 insertions(+), 49 deletions(-)
+b67d010 fix(poekhali): stabilize live trip mode
+ ai-memory/CHANGELOG.md             |  128 ++++
+ ai-memory/INDEX.md                 |    2 +-
+ ai-memory/PROJECT_STATE.md         |   39 +-
+ ai-memory/RECENT_COMMITS.md        |   76 +-
+ ai-memory/WORKTREE_STATUS.md       |   50 +-
+ ai-memory/sessions/2026-04-27.md   |   17 +
+ index.html                         |    5 +-
+ scripts/app.js                     |   23 +-
+ scripts/poekhali-tracker.js        | 1342 ++++++++++++++++++++++++++++++------
+ scripts/shift-form.js              |   30 +-
+ scripts/time-utils.js              |   70 +-
+ server.js                          |   15 +-
+ styles/00-base.css                 |   86 ++-
+ styles/10-navigation-and-cards.css |  116 +++-
+ sw.js                              |    2 +-
+ 15 files changed, 1574 insertions(+), 427 deletions(-)
 ```
