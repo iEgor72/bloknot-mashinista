@@ -1545,6 +1545,9 @@
       align-items: end;
       padding: 16px 16px calc(96px + env(safe-area-inset-bottom));
       pointer-events: auto;
+      -webkit-user-select: none;
+      user-select: none;
+      -webkit-touch-callout: none;
     }
 
     .poekhali-map-sheet.hidden {
@@ -1558,6 +1561,7 @@
       background: rgba(5, 6, 10, 0.54);
       backdrop-filter: blur(8px);
       -webkit-backdrop-filter: blur(8px);
+      touch-action: manipulation;
     }
 
     .poekhali-map-sheet-panel {
@@ -1572,6 +1576,9 @@
       max-height: min(82vh, 640px);
       overflow-y: auto;
       overscroll-behavior: contain;
+      -webkit-user-select: none;
+      user-select: none;
+      -webkit-touch-callout: none;
     }
 
     .poekhali-map-sheet-head {
@@ -1608,6 +1615,7 @@
       background: rgba(255, 255, 255, 0.06);
       color: var(--text);
       font-weight: 850;
+      touch-action: manipulation;
     }
 
     .poekhali-map-sheet-list {
@@ -1626,6 +1634,9 @@
       background: rgba(255, 255, 255, 0.045);
       color: var(--text);
       text-align: left;
+      touch-action: manipulation;
+      -webkit-user-select: none;
+      user-select: none;
     }
 
     .poekhali-map-option.is-selected {

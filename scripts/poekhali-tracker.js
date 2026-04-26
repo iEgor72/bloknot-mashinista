@@ -146,6 +146,7 @@
     canvas: null,
     ctx: null,
     mapPicker: null,
+    mapPickerRequestToken: 0,
     opsSheet: null,
     opsView: readStringStorage(OPS_VIEW_STORAGE_KEY) || 'drive',
     conflictCard: null,
@@ -6870,9 +6871,18 @@
   }
 
   function openMapPicker() {
+    var requestToken = Date.now();
+    tracker.mapPickerRequestToken = requestToken;
     loadManifest().then(function() {
       return loadAssets();
     }).then(function() {
+      if (tracker.mapPickerRequestToken !== requestToken) return;
+      var picker = getMapPicker();
+      if (!picker) return;
+      renderMapPicker();
+      picker.root.classList.remove('hidden');
+    }).catch(function() {
+      if (tracker.mapPickerRequestToken !== requestToken) return;
       var picker = getMapPicker();
       if (!picker) return;
       renderMapPicker();
@@ -6881,6 +6891,7 @@
   }
 
   function closeMapPicker() {
+    tracker.mapPickerRequestToken = 0;
     if (tracker.mapPicker && tracker.mapPicker.root) {
       tracker.mapPicker.root.classList.add('hidden');
     }

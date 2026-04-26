@@ -1,14 +1,14 @@
 # Project State
 
 <!-- AUTO_STATUS:START -->
-Generated: 2026-04-26 13:31:54 +0000
+Generated: 2026-04-26 13:37:38 +0000
 
 ## Repository Snapshot
 - Local repo path: `/opt/bloknot-mashinista`
 - Project memory path: `/opt/bloknot-mashinista/ai-memory`
 - Branch: `main`
-- HEAD: `9f4dbd1`
-- Last commit: `9f4dbd1 feat: release poekhali mode`
+- HEAD: `df94ef4`
+- Last commit: `df94ef4 fix(poekhali): force canvas startup redraw`
 
 ## Git Remote
 ```text
@@ -29,19 +29,15 @@ origin	https://github.com/iEgor72/bloknot-mashinista.git (push)
 + cleanup-review                                6219db2 (/tmp/bloknot-clean/review) Revert "refactor(schedule): switch app to manual-only shifts"
 + cleanup-test-harness                          6219db2 (/tmp/bloknot-batch/test-harness) Revert "refactor(schedule): switch app to manual-only shifts"
 + feat/manual-calendar-from-scratch             8345ab9 (/tmp/bloknot-manual-calendar) feat(home): polish manual calendar flow
-* main                                          9f4dbd1 [origin/main] feat: release poekhali mode
+* main                                          df94ef4 [origin/main] fix(poekhali): force canvas startup redraw
 ```
 
 ## Worktree
 ```text
 M ai-memory/CHANGELOG.md
- M ai-memory/INDEX.md
- M ai-memory/PROJECT_STATE.md
- M ai-memory/RECENT_COMMITS.md
- M ai-memory/WORKTREE_STATUS.md
  M ai-memory/sessions/2026-04-26.md
- M scripts/auth.js
  M scripts/poekhali-tracker.js
+ M styles/10-navigation-and-cards.css
 ```
 <!-- AUTO_STATUS:END -->
 
