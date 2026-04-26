@@ -184,12 +184,15 @@
   <!-- Application Shell -->
   <div class="app hidden" id="appShell">
     <div class="app-content">
-      <div class="offline-banner hidden" id="offlineBanner" aria-live="polite">
-        <div class="offline-banner-head">
-          <div class="offline-banner-title" id="offlineBannerTitle"></div>
-          <div class="offline-banner-status" id="offlineSyncStatus"></div>
+      <div class="offline-banner hidden" id="offlineBanner" aria-live="polite" aria-hidden="true">
+        <div class="offline-banner-copy">
+          <div class="offline-banner-head">
+            <div class="offline-banner-title" id="offlineBannerTitle"></div>
+            <div class="offline-banner-status" id="offlineSyncStatus"></div>
+          </div>
+          <div class="offline-banner-text" id="offlineBannerText"></div>
         </div>
-        <div class="offline-banner-text" id="offlineBannerText"></div>
+        <button class="offline-banner-close" id="btnOfflineBannerClose" type="button" aria-label="Закрыть уведомление">×</button>
       </div>
       <!-- Home Tab -->
       <section class="tab-panel active" data-tab="home">

@@ -122,6 +122,9 @@
       lastSyncStatus: 'idle',
       lastError: ''
     };
+    var offlineBannerHideTimer = null;
+    var offlineBannerDismissedKey = '';
+    var offlineBannerVisibleKey = '';
     var userStatsState = {
       onlineUsers: null,
       totalUsers: null,
@@ -575,6 +578,88 @@
       }
     }
 
+    function clearOfflineBannerHideTimer() {
+      if (!offlineBannerHideTimer) return;
+      clearTimeout(offlineBannerHideTimer);
+      offlineBannerHideTimer = null;
+    }
+
+    function hideOfflineBanner(markDismissed) {
+      var bannerEl = document.getElementById('offlineBanner');
+      if (!bannerEl) return;
+      clearOfflineBannerHideTimer();
+      if (markDismissed && offlineBannerVisibleKey) {
+        offlineBannerDismissedKey = offlineBannerVisibleKey;
+      }
+      offlineBannerVisibleKey = '';
+      bannerEl.classList.remove('is-visible', 'is-danger', 'is-info');
+      bannerEl.setAttribute('aria-hidden', 'true');
+      window.setTimeout(function() {
+        if (!bannerEl.classList.contains('is-visible')) {
+          bannerEl.classList.add('hidden');
+        }
+      }, 230);
+    }
+
+    function bindOfflineBannerControls() {
+      var bannerEl = document.getElementById('offlineBanner');
+      var closeEl = document.getElementById('btnOfflineBannerClose');
+      if (!bannerEl || !closeEl || bannerEl.dataset.bound === '1') return;
+      bannerEl.dataset.bound = '1';
+      closeEl.addEventListener('click', function() {
+        hideOfflineBanner(true);
+      });
+    }
+
+    function getOfflineBannerPayload() {
+      var isOffline = !!offlineUiState.isOffline || !navigator.onLine;
+      var hasPending = !!offlineUiState.hasPending || !!readPendingSnapshot();
+      var isSyncing = !!offlineUiState.isSyncing;
+      var status = offlineUiState.lastSyncStatus || 'idle';
+
+      if (isSyncing) {
+        return {
+          key: 'syncing',
+          title: 'Синхронизация',
+          text: 'Отправляем локальные изменения на сервер.',
+          statusText: 'Синхронизация...',
+          tone: 'info',
+          autoHideMs: 3500
+        };
+      }
+      if (isOffline) {
+        return {
+          key: hasPending ? 'offline-pending' : 'offline',
+          title: 'Нет сети',
+          text: hasPending ? 'Показываем последние сохранённые данные. Изменения отправятся при появлении сети.' : 'Показываем последние сохранённые данные.',
+          statusText: hasPending ? 'Сохранено локально' : 'Оффлайн',
+          tone: 'danger',
+          autoHideMs: 6500
+        };
+      }
+      if (status === 'error') {
+        return {
+          key: 'error-' + String(offlineUiState.lastError || ''),
+          title: 'Ошибка синхронизации',
+          text: 'Локальная копия сохранена. Повторим отправку автоматически.',
+          statusText: 'Ошибка синхронизации',
+          tone: 'danger',
+          autoHideMs: 6500
+        };
+      }
+      if (hasPending) {
+        return {
+          key: 'pending',
+          title: 'Есть несинхронизированные изменения',
+          text: 'Данные сохранены локально и будут отправлены автоматически.',
+          statusText: 'Сохранено локально',
+          tone: 'info',
+          autoHideMs: 4500
+        };
+      }
+      return null;
+    }
+
     function updateOfflineUiState(state) {
       if (state) {
         offlineUiState = {
@@ -599,53 +684,42 @@
         };
       }
 
+      bindOfflineBannerControls();
       var bannerEl = document.getElementById('offlineBanner');
       var titleEl = document.getElementById('offlineBannerTitle');
       var textEl = document.getElementById('offlineBannerText');
       var syncEl = document.getElementById('offlineSyncStatus');
       if (!bannerEl || !titleEl || !textEl || !syncEl) return;
 
-      var isOffline = !!offlineUiState.isOffline || !navigator.onLine;
-      var hasPending = !!offlineUiState.hasPending || !!readPendingSnapshot();
-      var isSyncing = !!offlineUiState.isSyncing;
-      var status = offlineUiState.lastSyncStatus || 'idle';
-
-      if (isSyncing) {
-        titleEl.textContent = 'Синхронизация';
-        textEl.textContent = 'Отправляем локальные изменения на сервер.';
-        syncEl.textContent = 'Синхронизация...';
-      } else if (isOffline) {
-        titleEl.textContent = 'Нет сети';
-        textEl.textContent = hasPending ? 'Показываем последние сохранённые данные. Изменения отправятся при появлении сети.' : 'Показываем последние сохранённые данные.';
-        syncEl.textContent = hasPending ? 'Сохранено локально' : 'Оффлайн';
-      } else if (status === 'error') {
-        titleEl.textContent = 'Ошибка синхронизации';
-        textEl.textContent = 'Локальная копия сохранена. Повторим отправку автоматически.';
-        syncEl.textContent = 'Ошибка синхронизации';
-      } else if (hasPending) {
-        titleEl.textContent = 'Есть несинхронизированные изменения';
-        textEl.textContent = 'Данные сохранены локально и будут отправлены при появлении сети.';
-        syncEl.textContent = 'Сохранено локально';
-      } else {
-        titleEl.textContent = 'Данные актуальны';
-        textEl.textContent = 'Локальный кэш и сервер синхронизированы.';
-        syncEl.textContent = 'Синхронизировано';
+      var payload = getOfflineBannerPayload();
+      if (!payload) {
+        offlineBannerDismissedKey = '';
+        hideOfflineBanner(false);
+        return;
+      }
+      if (offlineBannerDismissedKey && offlineBannerDismissedKey === payload.key) {
+        hideOfflineBanner(false);
+        return;
       }
 
-      var wasHidden = bannerEl.classList.contains('hidden');
-      var shouldShowBanner = status === 'error';
-      bannerEl.classList.toggle('hidden', !shouldShowBanner);
-      var isHidden = bannerEl.classList.contains('hidden');
-      bannerEl.setAttribute('aria-hidden', isHidden ? 'true' : 'false');
-
-      if (wasHidden !== isHidden && document.body && document.body.classList.contains('is-poekhali-mode') && typeof window.syncPoekhaliTrackerMode === 'function') {
-        window.requestAnimationFrame(function() {
-          window.syncPoekhaliTrackerMode(true);
-          window.requestAnimationFrame(function() {
-            window.syncPoekhaliTrackerMode(true);
-          });
-        });
+      titleEl.textContent = payload.title;
+      textEl.textContent = payload.text;
+      syncEl.textContent = payload.statusText;
+      bannerEl.classList.remove('is-danger', 'is-info');
+      bannerEl.classList.add(payload.tone === 'danger' ? 'is-danger' : 'is-info');
+      bannerEl.classList.remove('hidden');
+      bannerEl.setAttribute('aria-hidden', 'false');
+      if (offlineBannerVisibleKey !== payload.key) {
+        offlineBannerDismissedKey = '';
       }
+      offlineBannerVisibleKey = payload.key;
+      window.requestAnimationFrame(function() {
+        bannerEl.classList.add('is-visible');
+      });
+      clearOfflineBannerHideTimer();
+      offlineBannerHideTimer = setTimeout(function() {
+        hideOfflineBanner(true);
+      }, payload.autoHideMs || 5000);
     }
 
     function flushPendingSnapshot(source, callback, shouldRender) {
