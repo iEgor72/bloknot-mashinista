@@ -1,9 +1,10 @@
 # Recent Commits
 
-Generated: 2026-04-26 14:55:30 +0000
+Generated: 2026-04-26 15:00:09 +0000
 
 | Hash | Date | Author | Message |
 | --- | --- | --- | --- |
+| `8c62cb9` | 2026-04-26T14:55:30+00:00 | iEgor72 | fix(poekhali): add more top spacing below controls |
 | `8cc498e` | 2026-04-26T14:33:55+00:00 | iEgor72 | fix(pwa): refresh standalone shell after sw update |
 | `f9bf393` | 2026-04-26T14:21:10+00:00 | iEgor72 | fix(poekhali): respect telegram safe area at top |
 | `2f9486d` | 2026-04-26T13:46:32+00:00 | iEgor72 | refactor(poekhali): make map sheet state-driven overlay |
@@ -43,4 +44,3 @@ Generated: 2026-04-26 14:55:30 +0000
 | `29cf9a5` | 2026-04-23T01:17:01+00:00 | iEgor72 | fix(schedule): purge manual edits with deleted periods |
 | `709197b` | 2026-04-23T01:10:01+00:00 | iEgor72 | fix(schedule): resync day after override changes |
 | `6277709` | 2026-04-23T01:06:05+00:00 | iEgor72 | fix(schedule): fallback active period for overrides |
-| `2c867ea` | 2026-04-23T01:02:13+00:00 | iEgor72 | fix(schedule): scope overrides to schedule periods |

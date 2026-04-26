@@ -11437,8 +11437,33 @@
     return Math.max(10, getCssInsetVar('--safe-top'));
   }
 
+  function getPoekhaliTopControlsBottom() {
+    var ids = [
+      'btnPoekhaliBack',
+      'btnPoekhaliK',
+      'btnPoekhaliDirection',
+      'btnPoekhaliWay',
+      'btnPoekhaliMap',
+      'poekhaliGpsStatus'
+    ];
+    var maxBottom = 0;
+    for (var i = 0; i < ids.length; i++) {
+      var el = byId(ids[i]);
+      if (!el) continue;
+      var rect = el.getBoundingClientRect ? el.getBoundingClientRect() : null;
+      if (!rect) continue;
+      if (isFinite(rect.bottom) && rect.bottom > maxBottom) {
+        maxBottom = rect.bottom;
+      }
+    }
+    if (maxBottom <= 0) {
+      return Math.round(getPoekhaliTopOffset() + 44);
+    }
+    return Math.round(maxBottom);
+  }
+
   function getPoekhaliTopHudY() {
-    return Math.max(70, Math.round(getPoekhaliTopOffset() + 60));
+    return Math.max(78, getPoekhaliTopControlsBottom() + 16);
   }
 
   function roundRectPath(ctx, x, y, width, height, radius) {
