@@ -641,6 +641,12 @@
 
     .offline-banner.hidden { display: none; }
 
+    body.is-poekhali-mode .offline-banner {
+      margin-top: max(8px, var(--safe-top));
+      position: relative;
+      z-index: 4;
+    }
+
     .offline-banner-head {
       display: flex;
       align-items: center;

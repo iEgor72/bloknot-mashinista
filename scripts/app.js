@@ -632,9 +632,20 @@
         syncEl.textContent = 'Синхронизировано';
       }
 
+      var wasHidden = bannerEl.classList.contains('hidden');
       var shouldShowBanner = status === 'error';
       bannerEl.classList.toggle('hidden', !shouldShowBanner);
-      bannerEl.setAttribute('aria-hidden', bannerEl.classList.contains('hidden') ? 'true' : 'false');
+      var isHidden = bannerEl.classList.contains('hidden');
+      bannerEl.setAttribute('aria-hidden', isHidden ? 'true' : 'false');
+
+      if (wasHidden !== isHidden && document.body && document.body.classList.contains('is-poekhali-mode') && typeof window.syncPoekhaliTrackerMode === 'function') {
+        window.requestAnimationFrame(function() {
+          window.syncPoekhaliTrackerMode(true);
+          window.requestAnimationFrame(function() {
+            window.syncPoekhaliTrackerMode(true);
+          });
+        });
+      }
     }
 
     function flushPendingSnapshot(source, callback, shouldRender) {
