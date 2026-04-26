@@ -1,14 +1,14 @@
 # Project State
 
 <!-- AUTO_STATUS:START -->
-Generated: 2026-04-26 15:00:09 +0000
+Generated: 2026-04-26 15:02:24 +0000
 
 ## Repository Snapshot
 - Local repo path: `/opt/bloknot-mashinista`
 - Project memory path: `/opt/bloknot-mashinista/ai-memory`
 - Branch: `main`
-- HEAD: `8c62cb9`
-- Last commit: `8c62cb9 fix(poekhali): add more top spacing below controls`
+- HEAD: `c0a1637`
+- Last commit: `c0a1637 fix(poekhali): anchor hud below control row`
 
 ## Git Remote
 ```text
@@ -29,7 +29,7 @@ origin	https://github.com/iEgor72/bloknot-mashinista.git (push)
 + cleanup-review                                6219db2 (/tmp/bloknot-clean/review) Revert "refactor(schedule): switch app to manual-only shifts"
 + cleanup-test-harness                          6219db2 (/tmp/bloknot-batch/test-harness) Revert "refactor(schedule): switch app to manual-only shifts"
 + feat/manual-calendar-from-scratch             8345ab9 (/tmp/bloknot-manual-calendar) feat(home): polish manual calendar flow
-* main                                          8c62cb9 [origin/main] fix(poekhali): add more top spacing below controls
+* main                                          c0a1637 [origin/main] fix(poekhali): anchor hud below control row
 ```
 
 ## Worktree

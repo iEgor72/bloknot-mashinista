@@ -11466,6 +11466,10 @@
     return Math.max(78, getPoekhaliTopControlsBottom() + 16);
   }
 
+  function getPoekhaliTopHudBottom() {
+    return getPoekhaliTopHudY() + 72;
+  }
+
   function roundRectPath(ctx, x, y, width, height, radius) {
     var r = Math.max(0, Math.min(radius || 0, width / 2, height / 2));
     if (ctx.roundRect) {
@@ -13490,7 +13494,7 @@
     var xUnit = Math.max(4.2, Math.min(7.2, w / APK_VISIBLE_PICKETS));
     var viewportWidth = Math.min(w, xUnit * APK_VISIBLE_PICKETS);
     var viewportX = Math.round((w - viewportWidth) / 2);
-    var coordBottom = 130;
+    var coordBottom = Math.max(130, getPoekhaliTopHudBottom() + 26);
     var navReserve = 118;
     var scaleY = Math.round(Math.min(h - navReserve - 120, Math.max(coordBottom + 332, h * 0.64)));
     if (!isFinite(scaleY) || scaleY < coordBottom + 260) scaleY = Math.round(h * 0.66);
