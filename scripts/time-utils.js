@@ -555,6 +555,9 @@
       if (iconName === 'train') {
         return '<svg ' + common + '><rect x="3.5" y="6" width="13" height="7" rx="2"></rect><path d="M6.5 8.5h2"></path><path d="M11.5 8.5h2"></path><path d="M6.5 13v2"></path><path d="M13.5 13v2"></path></svg>';
       }
+      if (iconName === 'speed') {
+        return '<svg ' + common + '><path d="M4.2 13.5a6.3 6.3 0 1 1 11.6 0"></path><path d="M10 10.4l3.2-2.5"></path><path d="M6.3 12.7h.1"></path><path d="M13.6 12.7h.1"></path><path d="M10 5.8v.1"></path></svg>';
+      }
       if (iconName === 'wagon') {
         return '<svg ' + common + '><rect x="4" y="6.5" width="12" height="6.5" rx="1.8"></rect><path d="M8 6.5v6.5"></path><path d="M12 6.5v6.5"></path><circle cx="7" cy="14.5" r="0.9"></circle><circle cx="13" cy="14.5" r="0.9"></circle></svg>';
       }
@@ -650,6 +653,264 @@
         '</span>';
     }
 
+    function getShiftPoekhaliNumber(shift, key) {
+      var value = Number(shift && shift[key]);
+      return isFinite(value) ? Math.max(0, value) : 0;
+    }
+
+    function hasShiftPoekhaliData(shift) {
+      return !!(shift && (
+        shift.poekhali_run_id ||
+        shift.poekhali_user_section_id ||
+        getShiftPoekhaliNumber(shift, 'poekhali_warning_rules_count') > 0 ||
+        getShiftPoekhaliNumber(shift, 'poekhali_active_restriction_speed_kmh') > 0 ||
+        getShiftPoekhaliNumber(shift, 'poekhali_next_restriction_speed_kmh') > 0 ||
+        shift.poekhali_next_signal_name ||
+        shift.poekhali_next_station_name ||
+        shift.poekhali_next_target_label ||
+        getShiftPoekhaliNumber(shift, 'poekhali_route_distance_m') > 0 ||
+        getShiftPoekhaliNumber(shift, 'poekhali_route_eta_s') > 0 ||
+        getShiftPoekhaliNumber(shift, 'poekhali_overspeed_max_kmh') > 0 ||
+        getShiftPoekhaliNumber(shift, 'poekhali_alert_count') > 0 ||
+        shift.poekhali_last_alert_title ||
+        getShiftPoekhaliNumber(shift, 'poekhali_distance_m') > 0 ||
+        getShiftPoekhaliNumber(shift, 'poekhali_duration_ms') > 0 ||
+        getShiftPoekhaliNumber(shift, 'poekhali_technical_speed_kmh') > 0
+      ));
+    }
+
+    function formatShiftPoekhaliSpeed(value) {
+      var speed = Number(value);
+      if (!isFinite(speed) || speed <= 0) return '';
+      return (Math.round(speed * 10) / 10).toString().replace('.', ',') + ' км/ч';
+    }
+
+    function formatShiftPoekhaliEta(value, compact) {
+      var seconds = Math.max(0, Math.round(Number(value) || 0));
+      if (!seconds) return '';
+      var minutes = Math.max(1, Math.round(seconds / 60));
+      if (minutes < 60) return (compact ? '~' : 'примерно ') + minutes + ' мин';
+      var hours = Math.floor(minutes / 60);
+      var rest = minutes % 60;
+      if (compact) return '~' + hours + 'ч' + (rest ? ' ' + rest + 'м' : '');
+      return 'примерно ' + hours + ' ч' + (rest ? ' ' + rest + ' мин' : '');
+    }
+
+    function formatShiftPoekhaliDistance(value) {
+      var meters = Math.max(0, Math.round(Number(value) || 0));
+      if (meters >= 10000) return (meters / 1000).toFixed(1).replace('.', ',') + ' км';
+      if (meters >= 1000) return (meters / 1000).toFixed(2).replace('.', ',') + ' км';
+      return meters ? meters + ' м' : '';
+    }
+
+    function formatShiftPoekhaliTrainLength(shift) {
+      var meters = getShiftPoekhaliNumber(shift, 'poekhali_train_length_m');
+      if (!meters) return '';
+      var source = String(shift && shift.poekhali_train_length_source || '').trim();
+      var label = String(shift && shift.poekhali_train_length_label || '').trim();
+      var text = meters + ' м';
+      if (source === 'по осям') text = '~' + text;
+      if (label && label !== text) text += ' · ' + label;
+      if (source) text += ' · ' + source;
+      return text;
+    }
+
+    function formatShiftPoekhaliDuration(value) {
+      var ms = Math.max(0, Math.round(Number(value) || 0));
+      if (!ms) return '';
+      return formatHoursAndMinutes(Math.round(ms / 60000));
+    }
+
+    function formatShiftPoekhaliDateTime(value) {
+      var ts = Date.parse(value || '');
+      if (!isFinite(ts)) return '';
+      var date = new Date(ts);
+      try {
+        return date.toLocaleDateString('ru-RU', { day: '2-digit', month: '2-digit' }) + ', ' +
+          date.toLocaleTimeString('ru-RU', { hour: '2-digit', minute: '2-digit' });
+      } catch (error) {
+        return '';
+      }
+    }
+
+    function formatShiftPoekhaliCoordinate(sector, coordinate) {
+      var numericSector = Number(sector);
+      var numericCoordinate = Number(coordinate);
+      if (!isFinite(numericCoordinate) || numericCoordinate < 0) return '';
+      var rounded = Math.max(0, Math.round(numericCoordinate));
+      var meters = ((rounded % 1000) + 1000) % 1000;
+      var km = Math.floor(rounded / 1000);
+      var pk = Math.floor(meters / 100) + 1;
+      return (isFinite(numericSector) && numericSector > 0 ? 'уч. ' + Math.round(numericSector) + ' · ' : '') + km + ' км ' + pk + ' пк';
+    }
+
+    function formatShiftPoekhaliPoint(shift, prefix) {
+      return formatShiftPoekhaliCoordinate(
+        shift && shift['poekhali_' + prefix + '_sector'],
+        shift && shift['poekhali_' + prefix + '_coordinate']
+      );
+    }
+
+    function getShiftPoekhaliStatusLabel(status) {
+      if (status === 'active') return 'идет запись';
+      if (status === 'paused') return 'пауза';
+      if (status === 'finished') return 'завершено';
+      return '';
+    }
+
+    function getShiftPoekhaliSectionStatusLabel(status) {
+      if (status === 'verified') return 'проверено';
+      if (status === 'changed') return 'изменено';
+      if (status === 'draft') return 'на проверку';
+      return '';
+    }
+
+    function formatShiftPoekhaliWarningRules(shift) {
+      var total = getShiftPoekhaliNumber(shift, 'poekhali_warning_rules_count');
+      if (!total) return '';
+      var active = getShiftPoekhaliNumber(shift, 'poekhali_warning_rules_active_count');
+      var disabled = getShiftPoekhaliNumber(shift, 'poekhali_warning_rules_disabled_count');
+      var text = active + '/' + total;
+      if (disabled > 0) text += ' · неакт. ' + disabled;
+      return text;
+    }
+
+    function formatShiftPoekhaliActiveRestriction(shift, compact) {
+      if (!shift) return '';
+      var label = String(shift.poekhali_active_restriction_label || '').trim();
+      var speed = getShiftPoekhaliNumber(shift, 'poekhali_active_restriction_speed_kmh');
+      if (!label && speed > 0) label = formatShiftPoekhaliSpeed(speed);
+      if (!label) return '';
+      if (speed > 0 && !/км\/ч/i.test(label)) label += ' км/ч';
+      if (compact) return label;
+      var sector = shift.poekhali_active_restriction_sector;
+      var start = formatShiftPoekhaliCoordinate(sector, shift.poekhali_active_restriction_start);
+      var end = formatShiftPoekhaliCoordinate(sector, shift.poekhali_active_restriction_end);
+      var range = start && end && start !== end ? start + ' - ' + end : (start || end);
+      var distance = getShiftPoekhaliNumber(shift, 'poekhali_active_restriction_distance_m');
+      var parts = [label];
+      if (range) parts.push(range);
+      if (distance > 0) parts.push('до конца ' + formatShiftPoekhaliDistance(distance));
+      return parts.join(' · ');
+    }
+
+    function formatShiftPoekhaliNextRestriction(shift, compact) {
+      if (!shift) return '';
+      var label = String(shift.poekhali_next_restriction_label || '').trim();
+      var speed = getShiftPoekhaliNumber(shift, 'poekhali_next_restriction_speed_kmh');
+      if (!label && speed > 0) label = formatShiftPoekhaliSpeed(speed);
+      if (!label) return '';
+      if (speed > 0 && !/км\/ч/i.test(label)) label += ' км/ч';
+      var distance = getShiftPoekhaliNumber(shift, 'poekhali_next_restriction_distance_m');
+      var eta = formatShiftPoekhaliEta(shift.poekhali_next_restriction_eta_s, compact);
+      if (compact) return distance > 0 ? label + ' через ' + formatShiftPoekhaliDistance(distance) + (eta ? ' / ' + eta : '') : label;
+      var point = formatShiftPoekhaliCoordinate(
+        shift.poekhali_next_restriction_sector,
+        shift.poekhali_next_restriction_coordinate
+      );
+      var parts = [label];
+      if (distance > 0) parts.push('через ' + formatShiftPoekhaliDistance(distance));
+      if (eta) parts.push(eta);
+      if (point) parts.push(point);
+      return parts.join(' · ');
+    }
+
+    function formatShiftPoekhaliNextObject(shift, prefix, compact) {
+      if (!shift || !prefix) return '';
+      var name = String(shift['poekhali_' + prefix + '_name'] || '').trim();
+      if (!name) return '';
+      var source = String(shift['poekhali_' + prefix + '_source'] || '').trim();
+      var distance = getShiftPoekhaliNumber(shift, 'poekhali_' + prefix + '_distance_m');
+      var eta = formatShiftPoekhaliEta(shift['poekhali_' + prefix + '_eta_s'], compact);
+      if (compact) return distance > 0 ? name + ' через ' + formatShiftPoekhaliDistance(distance) + (eta ? ' / ' + eta : '') : name;
+      var point = formatShiftPoekhaliCoordinate(
+        shift['poekhali_' + prefix + '_sector'],
+        shift['poekhali_' + prefix + '_coordinate']
+      );
+      var parts = [name];
+      if (distance > 0) parts.push('через ' + formatShiftPoekhaliDistance(distance));
+      if (eta) parts.push(eta);
+      if (point) parts.push(point);
+      if (source) parts.push(source);
+      return parts.join(' · ');
+    }
+
+    function formatShiftPoekhaliRouteProgress(shift, compact) {
+      if (!shift) return '';
+      var total = getShiftPoekhaliNumber(shift, 'poekhali_route_distance_m');
+      if (!total) return '';
+      var remaining = getShiftPoekhaliNumber(shift, 'poekhali_route_remaining_m');
+      var progress = Number(shift.poekhali_route_progress_pct);
+      if (!isFinite(progress)) progress = 0;
+      progress = Math.max(0, Math.min(100, Math.round(progress * 10) / 10));
+      var eta = formatShiftPoekhaliEta(shift.poekhali_route_eta_s, compact);
+      if (compact) return Math.round(progress) + '% · ост. ' + formatShiftPoekhaliDistance(remaining) + (eta ? ' / ' + eta : '');
+      var from = String(shift.poekhali_route_from_name || '').trim();
+      var to = String(shift.poekhali_route_to_name || '').trim();
+      var parts = [];
+      if (from || to) parts.push((from || 'старт') + ' → ' + (to || 'финиш'));
+      parts.push(progress + '%');
+      parts.push('осталось ' + formatShiftPoekhaliDistance(remaining));
+      if (eta) parts.push(eta);
+      parts.push('из ' + formatShiftPoekhaliDistance(total));
+      return parts.join(' · ');
+    }
+
+    function getShiftPoekhaliTargetShortLabel(kind, source) {
+      if (kind === 'restriction_end') return 'КОНЕЦ';
+      if (kind === 'warning') return 'ПР';
+      if (kind === 'restriction') {
+        if (source === 'document') return 'ДОК';
+        if (source === 'regime') return 'РК';
+        if (source === 'user') return 'GPS';
+        return 'ОГР';
+      }
+      if (kind === 'signal') return 'СВ';
+      if (kind === 'station') return 'СТ';
+      if (kind === 'route_start') return 'СТАРТ';
+      if (kind === 'route_finish') return 'ФИН';
+      return 'ЦЕЛЬ';
+    }
+
+    function formatShiftPoekhaliNavigationTarget(shift, compact) {
+      if (!shift) return '';
+      var label = String(shift.poekhali_next_target_label || '').trim();
+      if (!label) return '';
+      var distance = getShiftPoekhaliNumber(shift, 'poekhali_next_target_distance_m');
+      var eta = formatShiftPoekhaliEta(shift.poekhali_next_target_eta_s, compact);
+      if (compact) return label + (distance > 0 ? ' через ' + formatShiftPoekhaliDistance(distance) : ' тут') + (eta ? ' / ' + eta : '');
+      var point = formatShiftPoekhaliCoordinate(
+        shift.poekhali_next_target_sector,
+        shift.poekhali_next_target_coordinate
+      );
+      var parts = [label];
+      if (distance > 0) parts.push('через ' + formatShiftPoekhaliDistance(distance));
+      else parts.push('тут');
+      if (eta) parts.push(eta);
+      if (point) parts.push(point);
+      parts.push(getShiftPoekhaliTargetShortLabel(shift.poekhali_next_target_kind, shift.poekhali_next_target_source));
+      return parts.join(' · ');
+    }
+
+    function formatShiftPoekhaliLastAlert(shift, compact) {
+      if (!shift) return '';
+      var title = String(shift.poekhali_last_alert_title || '').trim();
+      var text = String(shift.poekhali_last_alert_text || '').trim();
+      if (!title && !text) return '';
+      var distance = getShiftPoekhaliNumber(shift, 'poekhali_last_alert_distance_m');
+      var time = formatShiftPoekhaliDateTime(shift.poekhali_last_alert_at);
+      if (compact) {
+        return (title || text) +
+          (distance > 0 ? ' · ' + formatShiftPoekhaliDistance(distance) : '') +
+          (time ? ' · ' + time : '');
+      }
+      var parts = [title || text];
+      if (text && text !== title) parts.push(text);
+      if (distance > 0) parts.push(formatShiftPoekhaliDistance(distance));
+      if (time) parts.push(time);
+      return parts.join(' · ');
+    }
+
     function getShiftTechnicalItems(shift) {
       var items = [];
       if (!shift) return items;
@@ -659,6 +920,55 @@
       if (shift.train_weight) items.push({ icon: 'train', text: shift.train_weight + ' т' });
       if (shift.train_length) items.push({ icon: 'wagon', text: shift.train_length + ' ваг' });
       if (shift.train_axles) items.push({ icon: 'axles', text: shift.train_axles + ' оси' });
+      if (hasShiftPoekhaliData(shift)) {
+        var techSpeed = getShiftPoekhaliNumber(shift, 'poekhali_technical_speed_kmh');
+        var averageSpeed = getShiftPoekhaliNumber(shift, 'poekhali_average_speed_kmh');
+        var distance = getShiftPoekhaliNumber(shift, 'poekhali_distance_m');
+        if (techSpeed > 0) {
+          items.push({ icon: 'speed', text: 'Тех ' + formatShiftPoekhaliSpeed(techSpeed) });
+        } else if (averageSpeed > 0) {
+          items.push({ icon: 'speed', text: 'Ср ' + formatShiftPoekhaliSpeed(averageSpeed) });
+        } else if (distance > 0) {
+          items.push({ icon: 'route', text: formatShiftPoekhaliDistance(distance) });
+        }
+        var warningRulesText = formatShiftPoekhaliWarningRules(shift);
+        if (warningRulesText) {
+          items.push({ icon: 'route', text: 'ПР ' + warningRulesText });
+        }
+        var activeRestrictionText = formatShiftPoekhaliActiveRestriction(shift, true);
+        if (activeRestrictionText) {
+          items.push({ icon: 'speed', text: 'Огр ' + activeRestrictionText });
+        }
+        var nextRestrictionText = formatShiftPoekhaliNextRestriction(shift, true);
+        if (nextRestrictionText) {
+          items.push({ icon: 'route', text: 'Далее ' + nextRestrictionText });
+        }
+        var nextSignalText = formatShiftPoekhaliNextObject(shift, 'next_signal', true);
+        if (nextSignalText) {
+          items.push({ icon: 'route', text: 'Св ' + nextSignalText });
+        }
+        var nextStationText = formatShiftPoekhaliNextObject(shift, 'next_station', true);
+        if (nextStationText) {
+          items.push({ icon: 'route', text: 'Ст ' + nextStationText });
+        }
+        var routeProgressText = formatShiftPoekhaliRouteProgress(shift, true);
+        if (routeProgressText) {
+          items.push({ icon: 'route', text: 'Маршрут ' + routeProgressText });
+        }
+        var navigationTargetText = formatShiftPoekhaliNavigationTarget(shift, true);
+        if (navigationTargetText) {
+          items.push({ icon: 'route', text: 'Цель ' + navigationTargetText });
+        }
+        var overspeedMax = getShiftPoekhaliNumber(shift, 'poekhali_overspeed_max_kmh');
+        if (overspeedMax > 0) {
+          items.push({ icon: 'speed', text: 'Прев +' + overspeedMax + ' км/ч' });
+        }
+        var alertCount = getShiftPoekhaliNumber(shift, 'poekhali_alert_count');
+        if (alertCount > 0) {
+          var lastAlertText = formatShiftPoekhaliLastAlert(shift, true);
+          items.push({ icon: 'speed', text: 'Оповещ. ' + alertCount + (lastAlertText ? ' · ' + lastAlertText : '') });
+        }
+      }
       return items;
     }
 
@@ -840,6 +1150,21 @@
       var salaryText = incomeVm && incomeVm.hasValue ? incomeVm.amountText : '—';
 
       var html = '';
+      var shiftIdAttr = escapeHtml(String(shift.id || ''));
+      var poekhaliActionSummary = [direction, trainSummary].filter(function(item) {
+        return item && item !== '—';
+      }).join(' · ');
+      if (shiftIdAttr) {
+        html += '<section class="shift-detail-section shift-detail-poekhali-action-section">';
+        html += '<button type="button" class="shift-detail-poekhali-btn" data-poekhali-shift-id="' + shiftIdAttr + '">';
+        html += '<span class="shift-detail-poekhali-btn-main">Открыть в Поехали</span>';
+        if (poekhaliActionSummary) {
+          html += '<span class="shift-detail-poekhali-btn-sub">' + escapeHtml(poekhaliActionSummary) + '</span>';
+        }
+        html += '</button>';
+        html += '</section>';
+      }
+
       html += '<section class="shift-detail-section">';
       html += '<div class="shift-detail-section-title">Время</div>';
       html += '<div class="shift-detail-list">';
@@ -864,6 +1189,49 @@
       html += buildShiftDetailRowHtml('Поезд', trainSummary);
       html += '</div>';
       html += '</section>';
+
+      if (hasShiftPoekhaliData(shift)) {
+        html += '<section class="shift-detail-section">';
+        html += '<div class="shift-detail-section-title">Поехали</div>';
+        html += '<div class="shift-detail-list">';
+        html += buildShiftDetailRowHtml('Статус', getShiftPoekhaliStatusLabel(shift.poekhali_status));
+        html += buildShiftDetailRowHtml('Карта', shift.poekhali_map_title || shift.poekhali_map_id || shift.poekhali_warning_rules_map_title || shift.poekhali_warning_rules_map_id);
+        html += buildShiftDetailRowHtml('Направление', shift.poekhali_direction);
+        html += buildShiftDetailRowHtml('Путь', shift.poekhali_track);
+        html += buildShiftDetailRowHtml('Состав', formatShiftPoekhaliTrainLength(shift));
+        html += buildShiftDetailRowHtml('Старт', formatShiftPoekhaliDateTime(shift.poekhali_started_at));
+        html += buildShiftDetailRowHtml('Финиш', formatShiftPoekhaliDateTime(shift.poekhali_ended_at));
+        html += buildShiftDetailRowHtml('Время', formatShiftPoekhaliDuration(shift.poekhali_duration_ms));
+        html += buildShiftDetailRowHtml('В движении', formatShiftPoekhaliDuration(shift.poekhali_moving_ms));
+        html += buildShiftDetailRowHtml('Стоянки', formatShiftPoekhaliDuration(shift.poekhali_idle_ms));
+        html += buildShiftDetailRowHtml('Дистанция', formatShiftPoekhaliDistance(shift.poekhali_distance_m));
+        html += buildShiftDetailRowHtml('Техническая', formatShiftPoekhaliSpeed(shift.poekhali_technical_speed_kmh));
+        html += buildShiftDetailRowHtml('Средняя', formatShiftPoekhaliSpeed(shift.poekhali_average_speed_kmh));
+        html += buildShiftDetailRowHtml('Максимальная', formatShiftPoekhaliSpeed(shift.poekhali_max_speed_kmh));
+        html += buildShiftDetailRowHtml('Ограничение', formatShiftPoekhaliActiveRestriction(shift));
+        html += buildShiftDetailRowHtml('Следующее ограничение', formatShiftPoekhaliNextRestriction(shift));
+        html += buildShiftDetailRowHtml('Следующий светофор', formatShiftPoekhaliNextObject(shift, 'next_signal'));
+        html += buildShiftDetailRowHtml('Следующая станция', formatShiftPoekhaliNextObject(shift, 'next_station'));
+        html += buildShiftDetailRowHtml('Маршрут Поехали', formatShiftPoekhaliRouteProgress(shift));
+        html += buildShiftDetailRowHtml('Цель впереди', formatShiftPoekhaliNavigationTarget(shift));
+        html += buildShiftDetailRowHtml('Оповещения', getShiftPoekhaliNumber(shift, 'poekhali_alert_count') > 0 ? String(getShiftPoekhaliNumber(shift, 'poekhali_alert_count')) : '');
+        html += buildShiftDetailRowHtml('Последнее оповещение', formatShiftPoekhaliLastAlert(shift));
+        html += buildShiftDetailRowHtml('Превышение', getShiftPoekhaliNumber(shift, 'poekhali_overspeed_max_kmh') > 0 ? '+' + getShiftPoekhaliNumber(shift, 'poekhali_overspeed_max_kmh') + ' км/ч' : '');
+        html += buildShiftDetailRowHtml('Время превышения', formatShiftPoekhaliDuration(shift.poekhali_overspeed_duration_ms));
+        html += buildShiftDetailRowHtml('Путь превышения', formatShiftPoekhaliDistance(shift.poekhali_overspeed_distance_m));
+        html += buildShiftDetailRowHtml('Предупреждения', hasShiftPoekhaliData(shift) ? String(getShiftPoekhaliNumber(shift, 'poekhali_warnings_count')) : '');
+        html += buildShiftDetailRowHtml('ПР смены', formatShiftPoekhaliWarningRules(shift));
+        html += buildShiftDetailRowHtml('Список ПР', shift.poekhali_warning_rules_summary || '');
+        html += buildShiftDetailRowHtml('Откуда', formatShiftPoekhaliPoint(shift, 'start'));
+        html += buildShiftDetailRowHtml('Куда', formatShiftPoekhaliPoint(shift, 'end'));
+        html += buildShiftDetailRowHtml('GPS участок', shift.poekhali_user_section_title || shift.poekhali_user_section_id);
+        html += buildShiftDetailRowHtml('Статус участка', getShiftPoekhaliSectionStatusLabel(shift.poekhali_user_section_status));
+        html += buildShiftDetailRowHtml('Опорный ЭК', shift.poekhali_user_section_reference_sector ? 'уч. ' + shift.poekhali_user_section_reference_sector : '');
+        html += buildShiftDetailRowHtml('Объекты участка', shift.poekhali_user_section_id ? String(getShiftPoekhaliNumber(shift, 'poekhali_user_section_objects_count')) : '');
+        html += buildShiftDetailRowHtml('Скорости участка', shift.poekhali_user_section_id ? String(getShiftPoekhaliNumber(shift, 'poekhali_user_section_speeds_count')) : '');
+        html += '</div>';
+        html += '</section>';
+      }
 
       html += '<section class="shift-detail-section">';
       html += '<div class="shift-detail-section-title">Топливо</div>';

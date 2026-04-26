@@ -12,6 +12,11 @@
     "memory:log": "python tools/agent_memory.py log",
     "memory:install-hooks": "python tools/agent_memory.py install-hooks",
     "memory:sync": "python tools/agent_memory.py sync --direction push",
+    "maps:download": "node scripts/download-poekhali-maps.mjs",
+    "maps:import:android-backup": "python scripts/import-poekhali-android-backup.py",
+    "reference:import:tch9": "python scripts/import-tch9-reference.py",
+    "speeds:import": "python scripts/import-speed-docs.py",
+    "regime:import": "python scripts/import-regime-maps.py",
     "smoke:local": "node scripts/local-smoke.mjs"
   },
   "devDependencies": {

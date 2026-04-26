@@ -884,6 +884,15 @@
     .shift-actions-item:hover,
     .shift-actions-item:active { background: var(--card-hi); }
 
+    .shift-actions-item.is-poekhali {
+      color: var(--accent);
+    }
+
+    .shift-actions-item.is-poekhali:hover,
+    .shift-actions-item.is-poekhali:active {
+      background: var(--accent-dim);
+    }
+
     .shift-actions-item.is-danger { color: var(--danger); }
     .shift-actions-item.is-danger:hover { background: rgba(244, 63, 94, 0.08); }
 
@@ -1110,6 +1119,51 @@
       border: 1px solid var(--border);
       border-radius: var(--r-card);
       padding: 14px;
+    }
+
+    .shift-detail-poekhali-action-section {
+      padding: 0;
+      overflow: hidden;
+    }
+
+    .shift-detail-poekhali-btn {
+      appearance: none;
+      -webkit-appearance: none;
+      width: 100%;
+      min-height: 58px;
+      border: 0;
+      background:
+        linear-gradient(135deg, rgba(56, 189, 248, 0.20), rgba(34, 197, 94, 0.16)),
+        rgba(15, 23, 42, 0.44);
+      color: var(--text);
+      display: grid;
+      justify-items: start;
+      gap: 4px;
+      padding: 13px 14px;
+      text-align: left;
+      font-family: inherit;
+      cursor: pointer;
+    }
+
+    .shift-detail-poekhali-btn:active {
+      transform: scale(0.99);
+      filter: brightness(1.08);
+    }
+
+    .shift-detail-poekhali-btn-main {
+      color: var(--accent);
+      font-size: 15px;
+      font-weight: 900;
+      line-height: 1.15;
+    }
+
+    .shift-detail-poekhali-btn-sub {
+      color: rgba(238, 242, 248, 0.70);
+      font-size: 12px;
+      font-weight: 700;
+      line-height: 1.25;
+      max-width: 100%;
+      overflow-wrap: anywhere;
     }
 
     .shift-detail-section-title {

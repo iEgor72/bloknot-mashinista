@@ -1,0 +1,5026 @@
+{
+  "schemaVersion": 1,
+  "title": "Комсомольск ТЧЭ-9",
+  "source": {
+    "fileName": "tch9_v43_d25.04.26.db",
+    "sizeBytes": 163840,
+    "modifiedAt": "2026-04-25T01:57:49.133379+00:00",
+    "importedAt": "2026-04-25T04:16:08.911389+00:00"
+  },
+  "counts": {
+    "android_metadata": 1,
+    "branches": 3,
+    "common_table": 0,
+    "cur_time": 12,
+    "custom_branch": 0,
+    "custom_depot": 0,
+    "cut_time_alt": 12,
+    "depot": 7,
+    "haul_pusher": 0,
+    "hauls": 14,
+    "history_table": 0,
+    "idle_stations": 0,
+    "loco": 41,
+    "loco_on_haul": 19,
+    "norm_time": 13,
+    "station_on_haul": 260,
+    "stations": 77,
+    "traffic_type": 9,
+    "train_list": 0,
+    "train_numbers": 88,
+    "udr_cargo": 26,
+    "udr_pass": 0,
+    "udr_pusher": 0,
+    "udr_reserve": 0,
+    "udr_work": 0,
+    "user_data": 1
+  },
+  "branches": [
+    {
+      "_id": 6,
+      "branch_name": "Северо-Кавказская",
+      "updated": 0
+    },
+    {
+      "_id": 14,
+      "branch_name": "Восточно-Сибирская",
+      "updated": 0
+    },
+    {
+      "_id": 16,
+      "branch_name": "Дальневосточная",
+      "updated": 0
+    }
+  ],
+  "depots": [
+    {
+      "_id": 3,
+      "depot_name": "Иркутск-Сортировочный",
+      "depot_code": "ТЧЭ-5",
+      "branch_id": 14,
+      "updated": 0,
+      "time_zone": 0,
+      "name": "tch5"
+    },
+    {
+      "_id": 7,
+      "depot_name": "Новая Чара",
+      "depot_code": "ТЧЭ-14",
+      "branch_id": 14,
+      "updated": 0,
+      "time_zone": 6,
+      "name": "tch14"
+    },
+    {
+      "_id": 13,
+      "depot_name": "Ружино",
+      "depot_code": "ТЧЭ-4",
+      "branch_id": 16,
+      "updated": 0,
+      "time_zone": 7,
+      "name": "tch4"
+    },
+    {
+      "_id": 15,
+      "depot_name": "Комсомольск-на-Амуре",
+      "depot_code": "ТЧЭ-9",
+      "branch_id": 16,
+      "updated": 0,
+      "time_zone": 7,
+      "name": "tch9"
+    },
+    {
+      "_id": 16,
+      "depot_name": "Новый Ургал",
+      "depot_code": "ТЧЭ-13",
+      "branch_id": 16,
+      "updated": 0,
+      "time_zone": 7,
+      "name": "tch13"
+    },
+    {
+      "_id": 20,
+      "depot_name": "Тимашевская",
+      "depot_code": "ТЧЭ-11",
+      "branch_id": 6,
+      "updated": 0,
+      "time_zone": 0,
+      "name": "tch11"
+    },
+    {
+      "_id": 21,
+      "depot_name": "Чита",
+      "depot_code": "ТЧЭ-3",
+      "branch_id": 15,
+      "updated": 0,
+      "time_zone": 0,
+      "name": "tch3"
+    }
+  ],
+  "trafficTypes": [
+    {
+      "_id": 1,
+      "type": "Грузовой",
+      "updated": 1
+    },
+    {
+      "_id": 2,
+      "type": "Пассажирский",
+      "updated": 0
+    },
+    {
+      "_id": 3,
+      "type": "Резерв",
+      "updated": 0
+    },
+    {
+      "_id": 4,
+      "type": "Маневры по станции",
+      "updated": 0
+    },
+    {
+      "_id": 5,
+      "type": "Толкач",
+      "updated": 0
+    },
+    {
+      "_id": 6,
+      "type": "Хоз работы",
+      "updated": 0
+    },
+    {
+      "_id": 7,
+      "type": "Пересылка",
+      "updated": 0
+    },
+    {
+      "_id": 8,
+      "type": "Рабочий поезд",
+      "updated": 0
+    },
+    {
+      "_id": 9,
+      "type": "Пассажиром",
+      "updated": 0
+    }
+  ],
+  "locos": [
+    {
+      "_id": 1,
+      "line": "ТЭ10 М(У)",
+      "sections": 1,
+      "updated": 0
+    },
+    {
+      "_id": 2,
+      "line": "2ТЭ10 М(У)",
+      "sections": 2,
+      "updated": 0
+    },
+    {
+      "_id": 3,
+      "line": "3ТЭ10 М(У)",
+      "sections": 3,
+      "updated": 0
+    },
+    {
+      "_id": 4,
+      "line": "ТЭ10 (М,У,С)К",
+      "sections": 1,
+      "updated": 0
+    },
+    {
+      "_id": 5,
+      "line": "2ТЭ10 (М,У,С)К",
+      "sections": 2,
+      "updated": 0
+    },
+    {
+      "_id": 6,
+      "line": "3ТЭ10 (М,У,С)К",
+      "sections": 3,
+      "updated": 0
+    },
+    {
+      "_id": 7,
+      "line": "ТЭМ2",
+      "sections": 1,
+      "updated": 0
+    },
+    {
+      "_id": 8,
+      "line": "3ТЭ10МК",
+      "sections": 3,
+      "updated": 0
+    },
+    {
+      "_id": 9,
+      "line": "3ТЭ10УК",
+      "sections": 3,
+      "updated": 0
+    },
+    {
+      "_id": 10,
+      "line": "3ТЭ10МК гибрид",
+      "sections": 3,
+      "updated": 0
+    },
+    {
+      "_id": 11,
+      "line": "2ТЭ10МК",
+      "sections": 2,
+      "updated": 0
+    },
+    {
+      "_id": 12,
+      "line": "2ЭС5К",
+      "sections": 2,
+      "updated": 0
+    },
+    {
+      "_id": 13,
+      "line": "3ЭС5К",
+      "sections": 3,
+      "updated": 0
+    },
+    {
+      "_id": 14,
+      "line": "2*2ЭС5К",
+      "sections": 4,
+      "updated": 0
+    },
+    {
+      "_id": 15,
+      "line": "ВЛ10",
+      "sections": 2,
+      "updated": 0
+    },
+    {
+      "_id": 16,
+      "line": "ВЛ10У",
+      "sections": 2,
+      "updated": 0
+    },
+    {
+      "_id": 17,
+      "line": "ВЛ11",
+      "sections": 2,
+      "updated": 0
+    },
+    {
+      "_id": 18,
+      "line": "ВЛ11М",
+      "sections": 2,
+      "updated": 0
+    },
+    {
+      "_id": 19,
+      "line": "ВЛ10 КРП",
+      "sections": 2,
+      "updated": 0
+    },
+    {
+      "_id": 20,
+      "line": "ВЛ10УК",
+      "sections": 2,
+      "updated": 0
+    },
+    {
+      "_id": 21,
+      "line": "Чс2к",
+      "sections": 1,
+      "updated": 0
+    },
+    {
+      "_id": 22,
+      "line": "ЧС7",
+      "sections": 2,
+      "updated": 0
+    },
+    {
+      "_id": 23,
+      "line": "ТЭП70",
+      "sections": 2,
+      "updated": 0
+    },
+    {
+      "_id": 24,
+      "line": "ЧМЭ-3",
+      "sections": 1,
+      "updated": 0
+    },
+    {
+      "_id": 25,
+      "line": "3ЭС5К (1 сдвоенный)",
+      "sections": 3,
+      "updated": 0
+    },
+    {
+      "_id": 26,
+      "line": "3ЭС5К (2сдвоенный)",
+      "sections": 3,
+      "updated": 0
+    },
+    {
+      "_id": 27,
+      "line": "4ЭС5К",
+      "sections": 4,
+      "updated": 0
+    },
+    {
+      "_id": 28,
+      "line": "4ЭС5К (1 сдвоенный)",
+      "sections": 4,
+      "updated": 0
+    },
+    {
+      "_id": 29,
+      "line": "4ЭС5К (2 сдвоенный)",
+      "sections": 4,
+      "updated": 0
+    },
+    {
+      "_id": 30,
+      "line": "3ТЭ25К2М",
+      "sections": 3,
+      "updated": 0
+    },
+    {
+      "_id": 31,
+      "line": "2ТЭ25КМ",
+      "sections": 2,
+      "updated": 0
+    },
+    {
+      "_id": 32,
+      "line": "ВЛ85",
+      "sections": 2,
+      "updated": 0
+    },
+    {
+      "_id": 33,
+      "line": "ВЛ80С",
+      "sections": 2,
+      "updated": 0
+    },
+    {
+      "_id": 34,
+      "line": "ВЛ80Р",
+      "sections": 2,
+      "updated": 0
+    },
+    {
+      "_id": 35,
+      "line": "2ТЭ25А",
+      "sections": 2,
+      "updated": 0
+    },
+    {
+      "_id": 36,
+      "line": "ВЛ65",
+      "sections": 1,
+      "updated": 0
+    },
+    {
+      "_id": 37,
+      "line": "ВЛ80р(х3)",
+      "sections": 3,
+      "updated": 0
+    },
+    {
+      "_id": 38,
+      "line": "ВЛ80с(x3)",
+      "sections": 3,
+      "updated": 0
+    },
+    {
+      "_id": 39,
+      "line": "ЭП1",
+      "sections": 1,
+      "updated": 0
+    },
+    {
+      "_id": 40,
+      "line": "ЭП1п",
+      "sections": 1,
+      "updated": 0
+    },
+    {
+      "_id": 41,
+      "line": "Э5К",
+      "sections": 1,
+      "updated": 0
+    }
+  ],
+  "hauls": [
+    {
+      "id": 18,
+      "name": "Комсомольск - Волочаевка",
+      "lengthKm": 330,
+      "depotId": 15,
+      "depotName": "Комсомольск-на-Амуре",
+      "depotCode": "ТЧЭ-9",
+      "gateaway": 0.015,
+      "weightNorm": 6100,
+      "trainLengthNorm": 57,
+      "speedNorm": 45,
+      "shoulderId": 0,
+      "stations": [
+        {
+          "stationId": 26,
+          "name": "КСМ-Сорт",
+          "km": 0,
+          "meter": 0,
+          "pusher": false
+        },
+        {
+          "stationId": 49,
+          "name": "Хурба",
+          "km": 6,
+          "meter": 6000,
+          "pusher": false
+        },
+        {
+          "stationId": 48,
+          "name": "Мылки",
+          "km": 21,
+          "meter": 21000,
+          "pusher": false
+        },
+        {
+          "stationId": 47,
+          "name": "303 разъезд",
+          "km": 35,
+          "meter": 35000,
+          "pusher": false
+        },
+        {
+          "stationId": 46,
+          "name": "Подали",
+          "km": 41,
+          "meter": 41000,
+          "pusher": false
+        },
+        {
+          "stationId": 45,
+          "name": "Эльбан",
+          "km": 62,
+          "meter": 62000,
+          "pusher": false
+        },
+        {
+          "stationId": 44,
+          "name": "Тейсин",
+          "km": 72,
+          "meter": 72000,
+          "pusher": false
+        },
+        {
+          "stationId": 43,
+          "name": "Менгон",
+          "km": 80,
+          "meter": 80000,
+          "pusher": false
+        },
+        {
+          "stationId": 42,
+          "name": "Болонь",
+          "km": 98,
+          "meter": 98000,
+          "pusher": false
+        },
+        {
+          "stationId": 41,
+          "name": "21 разъезд",
+          "km": 115,
+          "meter": 115000,
+          "pusher": false
+        },
+        {
+          "stationId": 40,
+          "name": "Хевчен",
+          "km": 135,
+          "meter": 135000,
+          "pusher": false
+        },
+        {
+          "stationId": 39,
+          "name": "18 разъезд",
+          "km": 146,
+          "meter": 146000,
+          "pusher": false
+        },
+        {
+          "stationId": 38,
+          "name": "Сельгон",
+          "km": 168,
+          "meter": 168000,
+          "pusher": false
+        },
+        {
+          "stationId": 37,
+          "name": "Нусхи",
+          "km": 182,
+          "meter": 182000,
+          "pusher": false
+        },
+        {
+          "stationId": 36,
+          "name": "Санболи",
+          "km": 200,
+          "meter": 200000,
+          "pusher": false
+        },
+        {
+          "stationId": 35,
+          "name": "Литовко",
+          "km": 220,
+          "meter": 220000,
+          "pusher": false
+        },
+        {
+          "stationId": 34,
+          "name": "ДВост разъезд",
+          "km": 229,
+          "meter": 229000,
+          "pusher": false
+        },
+        {
+          "stationId": 33,
+          "name": "Форель",
+          "km": 243,
+          "meter": 243000,
+          "pusher": false
+        },
+        {
+          "stationId": 32,
+          "name": "Вандан",
+          "km": 259,
+          "meter": 259000,
+          "pusher": false
+        },
+        {
+          "stationId": 31,
+          "name": "Джелюмкен",
+          "km": 274,
+          "meter": 274000,
+          "pusher": false
+        },
+        {
+          "stationId": 30,
+          "name": "Партизанск. сопки",
+          "km": 291,
+          "meter": 291000,
+          "pusher": false
+        },
+        {
+          "stationId": 29,
+          "name": "Джармен",
+          "km": 309,
+          "meter": 309000,
+          "pusher": false
+        },
+        {
+          "stationId": 245,
+          "name": "Утиный",
+          "km": 320,
+          "meter": 320000,
+          "pusher": false
+        },
+        {
+          "stationId": 28,
+          "name": "Волочаевка",
+          "km": 330,
+          "meter": 330000,
+          "pusher": false
+        }
+      ]
+    },
+    {
+      "id": 19,
+      "name": "Волочаевка - Комсомольск",
+      "lengthKm": 330,
+      "depotId": 15,
+      "depotName": "Комсомольск-на-Амуре",
+      "depotCode": "ТЧЭ-9",
+      "gateaway": 0.015,
+      "weightNorm": 6100,
+      "trainLengthNorm": 57,
+      "speedNorm": 45,
+      "shoulderId": 0,
+      "stations": [
+        {
+          "stationId": 28,
+          "name": "Волочаевка",
+          "km": 0,
+          "meter": 0,
+          "pusher": false
+        },
+        {
+          "stationId": 245,
+          "name": "Утиный",
+          "km": 10,
+          "meter": 10000,
+          "pusher": false
+        },
+        {
+          "stationId": 29,
+          "name": "Джармен",
+          "km": 21,
+          "meter": 21000,
+          "pusher": false
+        },
+        {
+          "stationId": 30,
+          "name": "Партизанск. сопки",
+          "km": 39,
+          "meter": 39000,
+          "pusher": false
+        },
+        {
+          "stationId": 31,
+          "name": "Джелюмкен",
+          "km": 56,
+          "meter": 56000,
+          "pusher": false
+        },
+        {
+          "stationId": 32,
+          "name": "Вандан",
+          "km": 71,
+          "meter": 71000,
+          "pusher": false
+        },
+        {
+          "stationId": 33,
+          "name": "Форель",
+          "km": 87,
+          "meter": 87000,
+          "pusher": false
+        },
+        {
+          "stationId": 34,
+          "name": "ДВост разъезд",
+          "km": 101,
+          "meter": 101000,
+          "pusher": false
+        },
+        {
+          "stationId": 35,
+          "name": "Литовко",
+          "km": 110,
+          "meter": 110000,
+          "pusher": false
+        },
+        {
+          "stationId": 36,
+          "name": "Санболи",
+          "km": 130,
+          "meter": 130000,
+          "pusher": false
+        },
+        {
+          "stationId": 37,
+          "name": "Нусхи",
+          "km": 148,
+          "meter": 148000,
+          "pusher": false
+        },
+        {
+          "stationId": 38,
+          "name": "Сельгон",
+          "km": 162,
+          "meter": 162000,
+          "pusher": false
+        },
+        {
+          "stationId": 39,
+          "name": "18 разъезд",
+          "km": 185,
+          "meter": 185000,
+          "pusher": false
+        },
+        {
+          "stationId": 40,
+          "name": "Хевчен",
+          "km": 196,
+          "meter": 196000,
+          "pusher": false
+        },
+        {
+          "stationId": 41,
+          "name": "21 разъезд",
+          "km": 216,
+          "meter": 216000,
+          "pusher": false
+        },
+        {
+          "stationId": 42,
+          "name": "Болонь",
+          "km": 233,
+          "meter": 233000,
+          "pusher": false
+        },
+        {
+          "stationId": 43,
+          "name": "Менгон",
+          "km": 251,
+          "meter": 251000,
+          "pusher": false
+        },
+        {
+          "stationId": 44,
+          "name": "Тейсин",
+          "km": 259,
+          "meter": 259000,
+          "pusher": false
+        },
+        {
+          "stationId": 45,
+          "name": "Эльбан",
+          "km": 269,
+          "meter": 269000,
+          "pusher": false
+        },
+        {
+          "stationId": 46,
+          "name": "Подали",
+          "km": 290,
+          "meter": 290000,
+          "pusher": false
+        },
+        {
+          "stationId": 47,
+          "name": "303 разъезд",
+          "km": 296,
+          "meter": 296000,
+          "pusher": false
+        },
+        {
+          "stationId": 48,
+          "name": "Мылки",
+          "km": 310,
+          "meter": 310000,
+          "pusher": false
+        },
+        {
+          "stationId": 49,
+          "name": "Хурба",
+          "km": 315,
+          "meter": 315000,
+          "pusher": false
+        },
+        {
+          "stationId": 26,
+          "name": "КСМ-Сорт",
+          "km": 330,
+          "meter": 330000,
+          "pusher": false
+        }
+      ]
+    },
+    {
+      "id": 25,
+      "name": "Комсомольск - Сельгон",
+      "lengthKm": 168,
+      "depotId": 15,
+      "depotName": "Комсомольск-на-Амуре",
+      "depotCode": "ТЧЭ-9",
+      "gateaway": 0.015,
+      "weightNorm": 6100,
+      "trainLengthNorm": 57,
+      "speedNorm": 45,
+      "shoulderId": 0,
+      "stations": [
+        {
+          "stationId": 26,
+          "name": "КСМ-Сорт",
+          "km": 0,
+          "meter": 0,
+          "pusher": false
+        },
+        {
+          "stationId": 49,
+          "name": "Хурба",
+          "km": 6,
+          "meter": 6000,
+          "pusher": false
+        },
+        {
+          "stationId": 48,
+          "name": "Мылки",
+          "km": 21,
+          "meter": 21000,
+          "pusher": false
+        },
+        {
+          "stationId": 47,
+          "name": "303 разъезд",
+          "km": 35,
+          "meter": 35000,
+          "pusher": false
+        },
+        {
+          "stationId": 46,
+          "name": "Подали",
+          "km": 41,
+          "meter": 41000,
+          "pusher": false
+        },
+        {
+          "stationId": 45,
+          "name": "Эльбан",
+          "km": 62,
+          "meter": 62000,
+          "pusher": false
+        },
+        {
+          "stationId": 44,
+          "name": "Тейсин",
+          "km": 72,
+          "meter": 72000,
+          "pusher": false
+        },
+        {
+          "stationId": 43,
+          "name": "Менгон",
+          "km": 80,
+          "meter": 80000,
+          "pusher": false
+        },
+        {
+          "stationId": 42,
+          "name": "Болонь",
+          "km": 98,
+          "meter": 98000,
+          "pusher": false
+        },
+        {
+          "stationId": 41,
+          "name": "21 разъезд",
+          "km": 115,
+          "meter": 115000,
+          "pusher": false
+        },
+        {
+          "stationId": 40,
+          "name": "Хевчен",
+          "km": 135,
+          "meter": 135000,
+          "pusher": false
+        },
+        {
+          "stationId": 39,
+          "name": "18 разъезд",
+          "km": 146,
+          "meter": 146000,
+          "pusher": false
+        },
+        {
+          "stationId": 38,
+          "name": "Сельгон",
+          "km": 168,
+          "meter": 168000,
+          "pusher": false
+        }
+      ]
+    },
+    {
+      "id": 26,
+      "name": "Сельгон - Волочаевка",
+      "lengthKm": 162,
+      "depotId": 15,
+      "depotName": "Комсомольск-на-Амуре",
+      "depotCode": "ТЧЭ-9",
+      "gateaway": 0.01,
+      "weightNorm": 6100,
+      "trainLengthNorm": 57,
+      "speedNorm": 45,
+      "shoulderId": 0,
+      "stations": [
+        {
+          "stationId": 38,
+          "name": "Сельгон",
+          "km": 0,
+          "meter": 0,
+          "pusher": false
+        },
+        {
+          "stationId": 37,
+          "name": "Нусхи",
+          "km": 15,
+          "meter": 15000,
+          "pusher": false
+        },
+        {
+          "stationId": 36,
+          "name": "Санболи",
+          "km": 33,
+          "meter": 33000,
+          "pusher": false
+        },
+        {
+          "stationId": 35,
+          "name": "Литовко",
+          "km": 53,
+          "meter": 53000,
+          "pusher": false
+        },
+        {
+          "stationId": 34,
+          "name": "ДВост разъезд",
+          "km": 62,
+          "meter": 62000,
+          "pusher": false
+        },
+        {
+          "stationId": 33,
+          "name": "Форель",
+          "km": 76,
+          "meter": 76000,
+          "pusher": false
+        },
+        {
+          "stationId": 32,
+          "name": "Вандан",
+          "km": 92,
+          "meter": 92000,
+          "pusher": false
+        },
+        {
+          "stationId": 31,
+          "name": "Джелюмкен",
+          "km": 107,
+          "meter": 107000,
+          "pusher": false
+        },
+        {
+          "stationId": 30,
+          "name": "Партизанск. сопки",
+          "km": 124,
+          "meter": 124000,
+          "pusher": false
+        },
+        {
+          "stationId": 29,
+          "name": "Джармен",
+          "km": 142,
+          "meter": 142000,
+          "pusher": false
+        },
+        {
+          "stationId": 245,
+          "name": "Утиный",
+          "km": 152,
+          "meter": 152000,
+          "pusher": false
+        },
+        {
+          "stationId": 28,
+          "name": "Волочаевка",
+          "km": 162,
+          "meter": 162000,
+          "pusher": false
+        }
+      ]
+    },
+    {
+      "id": 27,
+      "name": "Волочаевка - Сельгон",
+      "lengthKm": 162,
+      "depotId": 15,
+      "depotName": "Комсомольск-на-Амуре",
+      "depotCode": "ТЧЭ-9",
+      "gateaway": 0.01,
+      "weightNorm": 6100,
+      "trainLengthNorm": 57,
+      "speedNorm": 45,
+      "shoulderId": 0,
+      "stations": [
+        {
+          "stationId": 28,
+          "name": "Волочаевка",
+          "km": 0,
+          "meter": 0,
+          "pusher": false
+        },
+        {
+          "stationId": 245,
+          "name": "Утиный",
+          "km": 10,
+          "meter": 10000,
+          "pusher": false
+        },
+        {
+          "stationId": 29,
+          "name": "Джармен",
+          "km": 20,
+          "meter": 20000,
+          "pusher": false
+        },
+        {
+          "stationId": 30,
+          "name": "Партизанск. сопки",
+          "km": 38,
+          "meter": 38000,
+          "pusher": false
+        },
+        {
+          "stationId": 31,
+          "name": "Джелюмкен",
+          "km": 55,
+          "meter": 55000,
+          "pusher": false
+        },
+        {
+          "stationId": 32,
+          "name": "Вандан",
+          "km": 70,
+          "meter": 70000,
+          "pusher": false
+        },
+        {
+          "stationId": 33,
+          "name": "Форель",
+          "km": 86,
+          "meter": 86000,
+          "pusher": false
+        },
+        {
+          "stationId": 34,
+          "name": "ДВост разъезд",
+          "km": 100,
+          "meter": 100000,
+          "pusher": false
+        },
+        {
+          "stationId": 35,
+          "name": "Литовко",
+          "km": 109,
+          "meter": 109000,
+          "pusher": false
+        },
+        {
+          "stationId": 36,
+          "name": "Санболи",
+          "km": 129,
+          "meter": 129000,
+          "pusher": false
+        },
+        {
+          "stationId": 37,
+          "name": "Нусхи",
+          "km": 147,
+          "meter": 147000,
+          "pusher": false
+        },
+        {
+          "stationId": 38,
+          "name": "Сельгон",
+          "km": 162,
+          "meter": 162000,
+          "pusher": false
+        }
+      ]
+    },
+    {
+      "id": 28,
+      "name": "Сельгон - Комсомольск",
+      "lengthKm": 168,
+      "depotId": 15,
+      "depotName": "Комсомольск-на-Амуре",
+      "depotCode": "ТЧЭ-9",
+      "gateaway": 0.015,
+      "weightNorm": 6100,
+      "trainLengthNorm": 57,
+      "speedNorm": 45,
+      "shoulderId": 0,
+      "stations": [
+        {
+          "stationId": 38,
+          "name": "Сельгон",
+          "km": 0,
+          "meter": 0,
+          "pusher": false
+        },
+        {
+          "stationId": 39,
+          "name": "18 разъезд",
+          "km": 22,
+          "meter": 22000,
+          "pusher": false
+        },
+        {
+          "stationId": 40,
+          "name": "Хевчен",
+          "km": 33,
+          "meter": 33000,
+          "pusher": false
+        },
+        {
+          "stationId": 41,
+          "name": "21 разъезд",
+          "km": 53,
+          "meter": 53000,
+          "pusher": false
+        },
+        {
+          "stationId": 42,
+          "name": "Болонь",
+          "km": 70,
+          "meter": 70000,
+          "pusher": false
+        },
+        {
+          "stationId": 43,
+          "name": "Менгон",
+          "km": 88,
+          "meter": 88000,
+          "pusher": false
+        },
+        {
+          "stationId": 44,
+          "name": "Тейсин",
+          "km": 96,
+          "meter": 96000,
+          "pusher": false
+        },
+        {
+          "stationId": 45,
+          "name": "Эльбан",
+          "km": 106,
+          "meter": 106000,
+          "pusher": false
+        },
+        {
+          "stationId": 46,
+          "name": "Подали",
+          "km": 127,
+          "meter": 127000,
+          "pusher": false
+        },
+        {
+          "stationId": 47,
+          "name": "303 разъезд",
+          "km": 133,
+          "meter": 133000,
+          "pusher": false
+        },
+        {
+          "stationId": 48,
+          "name": "Мылки",
+          "km": 147,
+          "meter": 147000,
+          "pusher": false
+        },
+        {
+          "stationId": 49,
+          "name": "Хурба",
+          "km": 162,
+          "meter": 162000,
+          "pusher": false
+        },
+        {
+          "stationId": 26,
+          "name": "КСМ-Сорт",
+          "km": 168,
+          "meter": 168000,
+          "pusher": false
+        }
+      ]
+    },
+    {
+      "id": 29,
+      "name": "Комсомольск - Высокогорная",
+      "lengthKm": 227,
+      "depotId": 15,
+      "depotName": "Комсомольск-на-Амуре",
+      "depotCode": "ТЧЭ-9",
+      "gateaway": 0.015,
+      "weightNorm": 4899,
+      "trainLengthNorm": 59,
+      "speedNorm": 37.9,
+      "shoulderId": 0,
+      "stations": [
+        {
+          "stationId": 26,
+          "name": "КСМ-Сорт",
+          "km": 0,
+          "meter": 0,
+          "pusher": false
+        },
+        {
+          "stationId": 19,
+          "name": "Селихин, Оунэ",
+          "km": 0,
+          "meter": 0,
+          "pusher": true
+        },
+        {
+          "stationId": 50,
+          "name": "Новый Мир",
+          "km": 2,
+          "meter": 2000,
+          "pusher": false
+        },
+        {
+          "stationId": 339,
+          "name": "Эльдиган,Оунэ",
+          "km": 10,
+          "meter": 10000,
+          "pusher": true
+        },
+        {
+          "stationId": 51,
+          "name": "Амурский разъезд",
+          "km": 12,
+          "meter": 12000,
+          "pusher": false
+        },
+        {
+          "stationId": 52,
+          "name": "Пивань",
+          "km": 17,
+          "meter": 17000,
+          "pusher": false
+        },
+        {
+          "stationId": 53,
+          "name": "БП 9км",
+          "km": 26,
+          "meter": 26000,
+          "pusher": false
+        },
+        {
+          "stationId": 54,
+          "name": "Кумтэ",
+          "km": 35,
+          "meter": 35000,
+          "pusher": false
+        },
+        {
+          "stationId": 55,
+          "name": "Гайтер",
+          "km": 46,
+          "meter": 46000,
+          "pusher": false
+        },
+        {
+          "stationId": 22,
+          "name": "Кун, БП 197км",
+          "km": 57,
+          "meter": 57000,
+          "pusher": true
+        },
+        {
+          "stationId": 56,
+          "name": "Картель",
+          "km": 59,
+          "meter": 59000,
+          "pusher": false
+        },
+        {
+          "stationId": 57,
+          "name": "Селихин",
+          "km": 69,
+          "meter": 69000,
+          "pusher": false
+        },
+        {
+          "stationId": 58,
+          "name": "Эльдиган",
+          "km": 79,
+          "meter": 79000,
+          "pusher": false
+        },
+        {
+          "stationId": 59,
+          "name": "Тудур",
+          "km": 90,
+          "meter": 90000,
+          "pusher": false
+        },
+        {
+          "stationId": 60,
+          "name": "Пони",
+          "km": 99,
+          "meter": 99000,
+          "pusher": false
+        },
+        {
+          "stationId": 61,
+          "name": "Кун",
+          "km": 112,
+          "meter": 112000,
+          "pusher": false
+        },
+        {
+          "stationId": 62,
+          "name": "Хумма",
+          "km": 121,
+          "meter": 121000,
+          "pusher": false
+        },
+        {
+          "stationId": 63,
+          "name": "Гурская",
+          "km": 129,
+          "meter": 129000,
+          "pusher": false
+        },
+        {
+          "stationId": 64,
+          "name": "Почепта",
+          "km": 141,
+          "meter": 141000,
+          "pusher": false
+        },
+        {
+          "stationId": 65,
+          "name": "Сагджему",
+          "km": 147,
+          "meter": 147000,
+          "pusher": false
+        },
+        {
+          "stationId": 66,
+          "name": "Уктур",
+          "km": 156,
+          "meter": 156000,
+          "pusher": false
+        },
+        {
+          "stationId": 67,
+          "name": "Аксака",
+          "km": 163,
+          "meter": 163000,
+          "pusher": false
+        },
+        {
+          "stationId": 246,
+          "name": "Галицкий",
+          "km": 171,
+          "meter": 171000,
+          "pusher": false
+        },
+        {
+          "stationId": 68,
+          "name": "Кенай",
+          "km": 179,
+          "meter": 179000,
+          "pusher": false
+        },
+        {
+          "stationId": 69,
+          "name": "Удоми",
+          "km": 190,
+          "meter": 190000,
+          "pusher": false
+        },
+        {
+          "stationId": 70,
+          "name": "Оунэ",
+          "km": 198,
+          "meter": 198000,
+          "pusher": false
+        },
+        {
+          "stationId": 71,
+          "name": "Нов Кузнецовский",
+          "km": 207,
+          "meter": 207000,
+          "pusher": false
+        },
+        {
+          "stationId": 72,
+          "name": "БП 197 км",
+          "km": 213,
+          "meter": 213000,
+          "pusher": false
+        },
+        {
+          "stationId": 73,
+          "name": "Мули",
+          "km": 219,
+          "meter": 219000,
+          "pusher": false
+        },
+        {
+          "stationId": 27,
+          "name": "Высокогорная",
+          "km": 227,
+          "meter": 227000,
+          "pusher": false
+        }
+      ]
+    },
+    {
+      "id": 30,
+      "name": "Высокогорная - Комсомольск",
+      "lengthKm": 227,
+      "depotId": 15,
+      "depotName": "Комсомольск-на-Амуре",
+      "depotCode": "ТЧЭ-9",
+      "gateaway": 0.01,
+      "weightNorm": 3200,
+      "trainLengthNorm": 57,
+      "speedNorm": 40.6,
+      "shoulderId": 0,
+      "stations": [
+        {
+          "stationId": 27,
+          "name": "Высокогорная",
+          "km": 0,
+          "meter": 0,
+          "pusher": false
+        },
+        {
+          "stationId": 23,
+          "name": "Высокогорная, Кун",
+          "km": 0,
+          "meter": 0,
+          "pusher": true
+        },
+        {
+          "stationId": 73,
+          "name": "Мули",
+          "km": 8,
+          "meter": 8000,
+          "pusher": false
+        },
+        {
+          "stationId": 72,
+          "name": "БП 197 км",
+          "km": 14,
+          "meter": 14000,
+          "pusher": false
+        },
+        {
+          "stationId": 71,
+          "name": "Нов Кузнецовский",
+          "km": 20,
+          "meter": 20000,
+          "pusher": false
+        },
+        {
+          "stationId": 70,
+          "name": "Оунэ",
+          "km": 29,
+          "meter": 29000,
+          "pusher": false
+        },
+        {
+          "stationId": 69,
+          "name": "Удоми",
+          "km": 37,
+          "meter": 37000,
+          "pusher": false
+        },
+        {
+          "stationId": 24,
+          "name": "Кузнецовский, Пони",
+          "km": 42,
+          "meter": 42000,
+          "pusher": true
+        },
+        {
+          "stationId": 68,
+          "name": "Кенай",
+          "km": 48,
+          "meter": 48000,
+          "pusher": false
+        },
+        {
+          "stationId": 246,
+          "name": "Галицкий",
+          "km": 56,
+          "meter": 56000,
+          "pusher": false
+        },
+        {
+          "stationId": 67,
+          "name": "Аксака",
+          "km": 64,
+          "meter": 64000,
+          "pusher": false
+        },
+        {
+          "stationId": 66,
+          "name": "Уктур",
+          "km": 71,
+          "meter": 71000,
+          "pusher": false
+        },
+        {
+          "stationId": 65,
+          "name": "Сагджему",
+          "km": 80,
+          "meter": 80000,
+          "pusher": false
+        },
+        {
+          "stationId": 64,
+          "name": "Почепта",
+          "km": 86,
+          "meter": 86000,
+          "pusher": false
+        },
+        {
+          "stationId": 63,
+          "name": "Гурская",
+          "km": 98,
+          "meter": 98000,
+          "pusher": false
+        },
+        {
+          "stationId": 62,
+          "name": "Хумма",
+          "km": 106,
+          "meter": 106000,
+          "pusher": false
+        },
+        {
+          "stationId": 61,
+          "name": "Кун",
+          "km": 115,
+          "meter": 115000,
+          "pusher": false
+        },
+        {
+          "stationId": 60,
+          "name": "Пони",
+          "km": 128,
+          "meter": 128000,
+          "pusher": false
+        },
+        {
+          "stationId": 59,
+          "name": "Тудур",
+          "km": 137,
+          "meter": 137000,
+          "pusher": false
+        },
+        {
+          "stationId": 58,
+          "name": "Эльдиган",
+          "km": 148,
+          "meter": 148000,
+          "pusher": false
+        },
+        {
+          "stationId": 57,
+          "name": "Селихин",
+          "km": 158,
+          "meter": 158000,
+          "pusher": false
+        },
+        {
+          "stationId": 56,
+          "name": "Картель",
+          "km": 168,
+          "meter": 168000,
+          "pusher": false
+        },
+        {
+          "stationId": 55,
+          "name": "Гайтер",
+          "km": 181,
+          "meter": 181000,
+          "pusher": false
+        },
+        {
+          "stationId": 54,
+          "name": "Кумтэ",
+          "km": 192,
+          "meter": 192000,
+          "pusher": false
+        },
+        {
+          "stationId": 53,
+          "name": "БП 9км",
+          "km": 201,
+          "meter": 201000,
+          "pusher": false
+        },
+        {
+          "stationId": 52,
+          "name": "Пивань",
+          "km": 210,
+          "meter": 210000,
+          "pusher": false
+        },
+        {
+          "stationId": 51,
+          "name": "Амурский разъезд",
+          "km": 215,
+          "meter": 215000,
+          "pusher": false
+        },
+        {
+          "stationId": 50,
+          "name": "Новый Мир",
+          "km": 225,
+          "meter": 225000,
+          "pusher": false
+        },
+        {
+          "stationId": 26,
+          "name": "КСМ-Сорт",
+          "km": 227,
+          "meter": 227000,
+          "pusher": false
+        }
+      ]
+    },
+    {
+      "id": 31,
+      "name": "Вскг - Соллу - Ксм",
+      "lengthKm": 239,
+      "depotId": 15,
+      "depotName": "Комсомольск-на-Амуре",
+      "depotCode": "ТЧЭ-9",
+      "gateaway": 0.01,
+      "weightNorm": 3200,
+      "trainLengthNorm": 59,
+      "speedNorm": 40.6,
+      "shoulderId": 0,
+      "stations": [
+        {
+          "stationId": 27,
+          "name": "Высокогорная",
+          "km": 0,
+          "meter": 0,
+          "pusher": false
+        },
+        {
+          "stationId": 23,
+          "name": "Высокогорная, Кун",
+          "km": 0,
+          "meter": 0,
+          "pusher": true
+        },
+        {
+          "stationId": 100,
+          "name": "Соллу",
+          "km": 12,
+          "meter": 12000,
+          "pusher": false
+        },
+        {
+          "stationId": 96,
+          "name": "Кузнецовский",
+          "km": 18,
+          "meter": 18000,
+          "pusher": false
+        },
+        {
+          "stationId": 97,
+          "name": "Откосная",
+          "km": 26,
+          "meter": 26000,
+          "pusher": false
+        },
+        {
+          "stationId": 98,
+          "name": "Косграмбо",
+          "km": 33,
+          "meter": 33000,
+          "pusher": false
+        },
+        {
+          "stationId": 70,
+          "name": "Оунэ",
+          "km": 40,
+          "meter": 40000,
+          "pusher": false
+        },
+        {
+          "stationId": 24,
+          "name": "Кузнецовский, Пони",
+          "km": 42,
+          "meter": 42000,
+          "pusher": true
+        },
+        {
+          "stationId": 69,
+          "name": "Удоми",
+          "km": 48,
+          "meter": 48000,
+          "pusher": false
+        },
+        {
+          "stationId": 68,
+          "name": "Кенай",
+          "km": 59,
+          "meter": 59000,
+          "pusher": false
+        },
+        {
+          "stationId": 246,
+          "name": "Галицкий",
+          "km": 67,
+          "meter": 67000,
+          "pusher": false
+        },
+        {
+          "stationId": 67,
+          "name": "Аксака",
+          "km": 75,
+          "meter": 75000,
+          "pusher": false
+        },
+        {
+          "stationId": 66,
+          "name": "Уктур",
+          "km": 82,
+          "meter": 82000,
+          "pusher": false
+        },
+        {
+          "stationId": 65,
+          "name": "Сагджему",
+          "km": 91,
+          "meter": 91000,
+          "pusher": false
+        },
+        {
+          "stationId": 64,
+          "name": "Почепта",
+          "km": 97,
+          "meter": 97000,
+          "pusher": false
+        },
+        {
+          "stationId": 63,
+          "name": "Гурская",
+          "km": 109,
+          "meter": 109000,
+          "pusher": false
+        },
+        {
+          "stationId": 62,
+          "name": "Хумма",
+          "km": 117,
+          "meter": 117000,
+          "pusher": false
+        },
+        {
+          "stationId": 61,
+          "name": "Кун",
+          "km": 126,
+          "meter": 126000,
+          "pusher": false
+        },
+        {
+          "stationId": 60,
+          "name": "Пони",
+          "km": 139,
+          "meter": 139000,
+          "pusher": false
+        },
+        {
+          "stationId": 59,
+          "name": "Тудур",
+          "km": 148,
+          "meter": 148000,
+          "pusher": false
+        },
+        {
+          "stationId": 58,
+          "name": "Эльдиган",
+          "km": 159,
+          "meter": 159000,
+          "pusher": false
+        },
+        {
+          "stationId": 57,
+          "name": "Селихин",
+          "km": 169,
+          "meter": 169000,
+          "pusher": false
+        },
+        {
+          "stationId": 56,
+          "name": "Картель",
+          "km": 182,
+          "meter": 182000,
+          "pusher": false
+        },
+        {
+          "stationId": 55,
+          "name": "Гайтер",
+          "km": 193,
+          "meter": 193000,
+          "pusher": false
+        },
+        {
+          "stationId": 54,
+          "name": "Кумтэ",
+          "km": 203,
+          "meter": 203000,
+          "pusher": false
+        },
+        {
+          "stationId": 53,
+          "name": "БП 9км",
+          "km": 212,
+          "meter": 212000,
+          "pusher": false
+        },
+        {
+          "stationId": 52,
+          "name": "Пивань",
+          "km": 221,
+          "meter": 221000,
+          "pusher": false
+        },
+        {
+          "stationId": 51,
+          "name": "Амурский разъезд",
+          "km": 226,
+          "meter": 226000,
+          "pusher": false
+        },
+        {
+          "stationId": 50,
+          "name": "Новый Мир",
+          "km": 236,
+          "meter": 236000,
+          "pusher": false
+        },
+        {
+          "stationId": 26,
+          "name": "КСМ-Сорт",
+          "km": 239,
+          "meter": 239000,
+          "pusher": false
+        }
+      ]
+    },
+    {
+      "id": 32,
+      "name": "Комсомольск",
+      "lengthKm": 44,
+      "depotId": 15,
+      "depotName": "Комсомольск-на-Амуре",
+      "depotCode": "ТЧЭ-9",
+      "gateaway": 0,
+      "weightNorm": 0,
+      "trainLengthNorm": 0,
+      "speedNorm": 43,
+      "shoulderId": 0,
+      "stations": [
+        {
+          "stationId": 102,
+          "name": "Дземги",
+          "km": 0,
+          "meter": 0,
+          "pusher": false
+        },
+        {
+          "stationId": 101,
+          "name": "КСМ-Груз",
+          "km": 10,
+          "meter": 10000,
+          "pusher": false
+        },
+        {
+          "stationId": 26,
+          "name": "КСМ-Сорт",
+          "km": 24,
+          "meter": 24000,
+          "pusher": false
+        },
+        {
+          "stationId": 50,
+          "name": "Новый Мир",
+          "km": 28,
+          "meter": 28000,
+          "pusher": false
+        },
+        {
+          "stationId": 49,
+          "name": "Хурба",
+          "km": 31,
+          "meter": 31000,
+          "pusher": false
+        },
+        {
+          "stationId": 51,
+          "name": "Амурский разъезд",
+          "km": 38,
+          "meter": 38000,
+          "pusher": false
+        },
+        {
+          "stationId": 52,
+          "name": "Пивань",
+          "km": 43,
+          "meter": 43000,
+          "pusher": false
+        },
+        {
+          "stationId": 243,
+          "name": "Комсомольск-2",
+          "km": 44,
+          "meter": 44000,
+          "pusher": false
+        },
+        {
+          "stationId": 48,
+          "name": "Мылки",
+          "km": 46,
+          "meter": 46000,
+          "pusher": false
+        }
+      ]
+    },
+    {
+      "id": 33,
+      "name": "Сельгон - Дземги",
+      "lengthKm": 192,
+      "depotId": 15,
+      "depotName": "Комсомольск-на-Амуре",
+      "depotCode": "ТЧЭ-9",
+      "gateaway": 0.015,
+      "weightNorm": 6100,
+      "trainLengthNorm": 57,
+      "speedNorm": 45,
+      "shoulderId": 0,
+      "stations": [
+        {
+          "stationId": 38,
+          "name": "Сельгон",
+          "km": 0,
+          "meter": 0,
+          "pusher": false
+        },
+        {
+          "stationId": 39,
+          "name": "18 разъезд",
+          "km": 22,
+          "meter": 22000,
+          "pusher": false
+        },
+        {
+          "stationId": 40,
+          "name": "Хевчен",
+          "km": 33,
+          "meter": 33000,
+          "pusher": false
+        },
+        {
+          "stationId": 41,
+          "name": "21 разъезд",
+          "km": 53,
+          "meter": 53000,
+          "pusher": false
+        },
+        {
+          "stationId": 42,
+          "name": "Болонь",
+          "km": 70,
+          "meter": 70000,
+          "pusher": false
+        },
+        {
+          "stationId": 43,
+          "name": "Менгон",
+          "km": 88,
+          "meter": 88000,
+          "pusher": false
+        },
+        {
+          "stationId": 44,
+          "name": "Тейсин",
+          "km": 96,
+          "meter": 96000,
+          "pusher": false
+        },
+        {
+          "stationId": 45,
+          "name": "Эльбан",
+          "km": 106,
+          "meter": 106000,
+          "pusher": false
+        },
+        {
+          "stationId": 46,
+          "name": "Подали",
+          "km": 127,
+          "meter": 127000,
+          "pusher": false
+        },
+        {
+          "stationId": 47,
+          "name": "303 разъезд",
+          "km": 133,
+          "meter": 133000,
+          "pusher": false
+        },
+        {
+          "stationId": 48,
+          "name": "Мылки",
+          "km": 147,
+          "meter": 147000,
+          "pusher": false
+        },
+        {
+          "stationId": 49,
+          "name": "Хурба",
+          "km": 162,
+          "meter": 162000,
+          "pusher": false
+        },
+        {
+          "stationId": 26,
+          "name": "КСМ-Сорт",
+          "km": 168,
+          "meter": 168000,
+          "pusher": false
+        },
+        {
+          "stationId": 101,
+          "name": "КСМ-Груз",
+          "km": 185,
+          "meter": 185000,
+          "pusher": false
+        },
+        {
+          "stationId": 102,
+          "name": "Дземги",
+          "km": 192,
+          "meter": 192000,
+          "pusher": false
+        }
+      ]
+    },
+    {
+      "id": 49,
+      "name": "Дземги - Сельгон",
+      "lengthKm": 192,
+      "depotId": 15,
+      "depotName": "Комсомольск-на-Амуре",
+      "depotCode": "ТЧЭ-9",
+      "gateaway": 0,
+      "weightNorm": 6100,
+      "trainLengthNorm": 57,
+      "speedNorm": 45,
+      "shoulderId": 0,
+      "stations": [
+        {
+          "stationId": 102,
+          "name": "Дземги",
+          "km": 4,
+          "meter": 4000,
+          "pusher": false
+        },
+        {
+          "stationId": 101,
+          "name": "КСМ-Груз",
+          "km": 11,
+          "meter": 11000,
+          "pusher": false
+        },
+        {
+          "stationId": 26,
+          "name": "КСМ-Сорт",
+          "km": 28,
+          "meter": 28000,
+          "pusher": false
+        },
+        {
+          "stationId": 49,
+          "name": "Хурба",
+          "km": 34,
+          "meter": 34000,
+          "pusher": false
+        },
+        {
+          "stationId": 48,
+          "name": "Мылки",
+          "km": 49,
+          "meter": 49000,
+          "pusher": false
+        },
+        {
+          "stationId": 47,
+          "name": "303 разъезд",
+          "km": 63,
+          "meter": 63000,
+          "pusher": false
+        },
+        {
+          "stationId": 46,
+          "name": "Подали",
+          "km": 69,
+          "meter": 69000,
+          "pusher": false
+        },
+        {
+          "stationId": 45,
+          "name": "Эльбан",
+          "km": 90,
+          "meter": 90000,
+          "pusher": false
+        },
+        {
+          "stationId": 44,
+          "name": "Тейсин",
+          "km": 100,
+          "meter": 100000,
+          "pusher": false
+        },
+        {
+          "stationId": 43,
+          "name": "Менгон",
+          "km": 108,
+          "meter": 108000,
+          "pusher": false
+        },
+        {
+          "stationId": 42,
+          "name": "Болонь",
+          "km": 126,
+          "meter": 126000,
+          "pusher": false
+        },
+        {
+          "stationId": 41,
+          "name": "21 разъезд",
+          "km": 143,
+          "meter": 143000,
+          "pusher": false
+        },
+        {
+          "stationId": 40,
+          "name": "Хевчен",
+          "km": 163,
+          "meter": 163000,
+          "pusher": false
+        },
+        {
+          "stationId": 39,
+          "name": "18 разъезд",
+          "km": 174,
+          "meter": 174000,
+          "pusher": false
+        },
+        {
+          "stationId": 38,
+          "name": "Сельгон",
+          "km": 196,
+          "meter": 196000,
+          "pusher": false
+        }
+      ]
+    },
+    {
+      "id": 59,
+      "name": "Комсомольск - Постышево",
+      "lengthKm": 218,
+      "depotId": 15,
+      "depotName": "Комсомольск-на-Амуре",
+      "depotCode": "ТЧЭ-9",
+      "gateaway": 0,
+      "weightNorm": 4900,
+      "trainLengthNorm": 71,
+      "speedNorm": 43.1,
+      "shoulderId": 0,
+      "stations": [
+        {
+          "stationId": 26,
+          "name": "КСМ-Сорт",
+          "km": 0,
+          "meter": 0,
+          "pusher": false
+        },
+        {
+          "stationId": 243,
+          "name": "Комсомольск-2",
+          "km": 16,
+          "meter": 16000,
+          "pusher": false
+        },
+        {
+          "stationId": 242,
+          "name": "Силинка",
+          "km": 29,
+          "meter": 29000,
+          "pusher": false
+        },
+        {
+          "stationId": 241,
+          "name": "Хольгасо",
+          "km": 39,
+          "meter": 39000,
+          "pusher": false
+        },
+        {
+          "stationId": 240,
+          "name": "Лиан",
+          "km": 54,
+          "meter": 54000,
+          "pusher": false
+        },
+        {
+          "stationId": 239,
+          "name": "Холони",
+          "km": 68,
+          "meter": 68000,
+          "pusher": false
+        },
+        {
+          "stationId": 244,
+          "name": "Хурмули",
+          "km": 78,
+          "meter": 78000,
+          "pusher": false
+        },
+        {
+          "stationId": 238,
+          "name": "Мавринский",
+          "km": 89,
+          "meter": 89000,
+          "pusher": false
+        },
+        {
+          "stationId": 237,
+          "name": "Пиль",
+          "km": 104,
+          "meter": 104000,
+          "pusher": false
+        },
+        {
+          "stationId": 236,
+          "name": "Горин",
+          "km": 114,
+          "meter": 114000,
+          "pusher": false
+        },
+        {
+          "stationId": 235,
+          "name": "Харпичан",
+          "km": 127,
+          "meter": 127000,
+          "pusher": false
+        },
+        {
+          "stationId": 234,
+          "name": "Катама",
+          "km": 142,
+          "meter": 142000,
+          "pusher": false
+        },
+        {
+          "stationId": 233,
+          "name": "Эворон",
+          "km": 150,
+          "meter": 150000,
+          "pusher": true
+        },
+        {
+          "stationId": 232,
+          "name": "Мони",
+          "km": 169,
+          "meter": 169000,
+          "pusher": false
+        },
+        {
+          "stationId": 231,
+          "name": "Болен",
+          "km": 190,
+          "meter": 190000,
+          "pusher": true
+        },
+        {
+          "stationId": 230,
+          "name": "Дуки",
+          "km": 203,
+          "meter": 203000,
+          "pusher": false
+        },
+        {
+          "stationId": 91,
+          "name": "Постышево",
+          "km": 218,
+          "meter": 218000,
+          "pusher": false
+        }
+      ]
+    },
+    {
+      "id": 60,
+      "name": "Постышево - Комсомольск",
+      "lengthKm": 218,
+      "depotId": 15,
+      "depotName": "Комсомольск-на-Амуре",
+      "depotCode": "ТЧЭ-9",
+      "gateaway": 0,
+      "weightNorm": 4900,
+      "trainLengthNorm": 71,
+      "speedNorm": 43.5,
+      "shoulderId": 0,
+      "stations": [
+        {
+          "stationId": 91,
+          "name": "Постышево",
+          "km": 0,
+          "meter": 0,
+          "pusher": true
+        },
+        {
+          "stationId": 230,
+          "name": "Дуки",
+          "km": 11,
+          "meter": 11000,
+          "pusher": false
+        },
+        {
+          "stationId": 231,
+          "name": "Болен",
+          "km": 24,
+          "meter": 24000,
+          "pusher": true
+        },
+        {
+          "stationId": 232,
+          "name": "Мони",
+          "km": 45,
+          "meter": 45000,
+          "pusher": true
+        },
+        {
+          "stationId": 233,
+          "name": "Эворон",
+          "km": 65,
+          "meter": 65000,
+          "pusher": false
+        },
+        {
+          "stationId": 234,
+          "name": "Катама",
+          "km": 73,
+          "meter": 73000,
+          "pusher": false
+        },
+        {
+          "stationId": 235,
+          "name": "Харпичан",
+          "km": 87,
+          "meter": 87000,
+          "pusher": false
+        },
+        {
+          "stationId": 236,
+          "name": "Горин",
+          "km": 101,
+          "meter": 101000,
+          "pusher": false
+        },
+        {
+          "stationId": 237,
+          "name": "Пиль",
+          "km": 110,
+          "meter": 110000,
+          "pusher": false
+        },
+        {
+          "stationId": 238,
+          "name": "Мавринский",
+          "km": 126,
+          "meter": 126000,
+          "pusher": false
+        },
+        {
+          "stationId": 244,
+          "name": "Хурмули",
+          "km": 137,
+          "meter": 137000,
+          "pusher": false
+        },
+        {
+          "stationId": 239,
+          "name": "Холони",
+          "km": 147,
+          "meter": 147000,
+          "pusher": false
+        },
+        {
+          "stationId": 240,
+          "name": "Лиан",
+          "km": 161,
+          "meter": 161000,
+          "pusher": false
+        },
+        {
+          "stationId": 241,
+          "name": "Хольгасо",
+          "km": 175,
+          "meter": 175000,
+          "pusher": false
+        },
+        {
+          "stationId": 242,
+          "name": "Силинка",
+          "km": 185,
+          "meter": 185000,
+          "pusher": false
+        },
+        {
+          "stationId": 243,
+          "name": "Комсомольск-2",
+          "km": 198,
+          "meter": 198000,
+          "pusher": false
+        },
+        {
+          "stationId": 26,
+          "name": "КСМ-Сорт",
+          "km": 218,
+          "meter": 218000,
+          "pusher": false
+        }
+      ]
+    }
+  ],
+  "trainNumbers": [
+    {
+      "_id": 1,
+      "begin_number": 1,
+      "end_number": 150,
+      "description": "Скорые пассажирские в международном, дальнем и местном сообщении круглогодичного обращения"
+    },
+    {
+      "_id": 2,
+      "begin_number": 151,
+      "end_number": 298,
+      "description": "Скорые пассажирские в международном, дальнем и местном сообщении сезонного и разового обращения"
+    },
+    {
+      "_id": 3,
+      "begin_number": 301,
+      "end_number": 450,
+      "description": "Пассажирские в международном, дальнем и местном сообщении круглогодичного обращения"
+    },
+    {
+      "_id": 4,
+      "begin_number": 451,
+      "end_number": 598,
+      "description": "Пассажирские в международном, дальнем и местном сообщении сезонного, разового назначения и детские"
+    },
+    {
+      "_id": 5,
+      "begin_number": 601,
+      "end_number": 698,
+      "description": "Пассажирские в международном, дальнем и местном сообщении круглогодичного обращения"
+    },
+    {
+      "_id": 6,
+      "begin_number": 701,
+      "end_number": 750,
+      "description": "Пассажирские скоростные"
+    },
+    {
+      "_id": 7,
+      "begin_number": 751,
+      "end_number": 788,
+      "description": "Пассажирские высокоскоростные"
+    },
+    {
+      "_id": 8,
+      "begin_number": 791,
+      "end_number": 798,
+      "description": "Диапазон выделен для тестирования системы «Экспресс-3»"
+    },
+    {
+      "_id": 9,
+      "begin_number": 801,
+      "end_number": 898,
+      "description": "Скорые, обслуживаемые моторвагонным подвижным составом (кроме скоростных и высококоростных)"
+    },
+    {
+      "_id": 10,
+      "begin_number": 901,
+      "end_number": 920,
+      "description": "Пассажирские служебного (специального) назначения"
+    },
+    {
+      "_id": 11,
+      "begin_number": 921,
+      "end_number": 940,
+      "description": "Туристические (коммерческие)"
+    },
+    {
+      "_id": 12,
+      "begin_number": 941,
+      "end_number": 960,
+      "description": "Людские"
+    },
+    {
+      "_id": 13,
+      "begin_number": 961,
+      "end_number": 970,
+      "description": "Грузопассажирские"
+    },
+    {
+      "_id": 14,
+      "begin_number": 971,
+      "end_number": 998,
+      "description": "Почтово-багажные"
+    },
+    {
+      "_id": 15,
+      "begin_number": 1001,
+      "end_number": 1020,
+      "description": "Специализированные грузовые рефрижераторные поезда"
+    },
+    {
+      "_id": 16,
+      "begin_number": 1021,
+      "end_number": 1420,
+      "description": "Специализированные грузовые контейнерные поезда"
+    },
+    {
+      "_id": 17,
+      "begin_number": 1421,
+      "end_number": 1440,
+      "description": "Специализированные поезда для перевозки грузов в контейнерах"
+    },
+    {
+      "_id": 18,
+      "begin_number": 1441,
+      "end_number": 1450,
+      "description": "Специализированные поезда для перевозки грузов в универсальном подвижном составе"
+    },
+    {
+      "_id": 19,
+      "begin_number": 1451,
+      "end_number": 1460,
+      "description": "Специализированные поезда ля перевозки живности"
+    },
+    {
+      "_id": 20,
+      "begin_number": 1461,
+      "end_number": 1810,
+      "description": "Специализированные поезда для перевозки угля, руды, удобрений в кольцевых маршрутах"
+    },
+    {
+      "_id": 21,
+      "begin_number": 1811,
+      "end_number": 1998,
+      "description": "Специализированные поезда для перевозки наливных грузов в кольцевых и технологических маршрутах"
+    },
+    {
+      "_id": 22,
+      "begin_number": 2001,
+      "end_number": 2998,
+      "description": "Сквозные грузовые, в том числе на удлинённых плечах обслуживания"
+    },
+    {
+      "_id": 23,
+      "begin_number": 3001,
+      "end_number": 3398,
+      "description": "Участковые грузовые"
+    },
+    {
+      "_id": 24,
+      "begin_number": 3401,
+      "end_number": 3468,
+      "description": "Сборные грузовые"
+    },
+    {
+      "_id": 25,
+      "begin_number": 3471,
+      "end_number": 3498,
+      "description": "Сборно-участковые грузовые"
+    },
+    {
+      "_id": 26,
+      "begin_number": 3501,
+      "end_number": 3598,
+      "description": "Вывозные для подачи и уборки вагонов на отдельные промежуточные станции участка и подъездные пути"
+    },
+    {
+      "_id": 27,
+      "begin_number": 3601,
+      "end_number": 3798,
+      "description": "Передаточные для передачи вагонов с одной станции на другую"
+    },
+    {
+      "_id": 28,
+      "begin_number": 3801,
+      "end_number": 3898,
+      "description": "Диспетчерские локомотивы для подачи и уборки вагонов на промежуточные станции"
+    },
+    {
+      "_id": 29,
+      "begin_number": 3901,
+      "end_number": 3978,
+      "description": "Поезда для подачи вагонов рабочего парка на перегон для выгрузки в технологическое «окно» при производстве путевых работ"
+    },
+    {
+      "_id": 30,
+      "begin_number": 3981,
+      "end_number": 3998,
+      "description": "Поезда для подачи вагонов по перевозочным документам под погрузку или выгрузку на примыкание к главным путям на перегоне, внутристанционные операции, подача вагонов по договорам на станции, закрытые для грузовых операций"
+    },
+    {
+      "_id": 31,
+      "begin_number": 4001,
+      "end_number": 4148,
+      "description": "Локомотивы-толкачи, следующие для подталкивания грузовых поездов"
+    },
+    {
+      "_id": 32,
+      "begin_number": 4151,
+      "end_number": 4188,
+      "description": "Локомотивы-толкачи, следующие для подталкивания пассажирских поездов"
+    },
+    {
+      "_id": 33,
+      "begin_number": 4191,
+      "end_number": 4198,
+      "description": "Локомотивы-толкачи, следующие для подталкивания хозяйственных поездов"
+    },
+    {
+      "_id": 34,
+      "begin_number": 4201,
+      "end_number": 4228,
+      "description": "Резервные локомотивы, следующие от подталкивания грузовых поездов"
+    },
+    {
+      "_id": 35,
+      "begin_number": 4231,
+      "end_number": 4258,
+      "description": "Резервные локомотивы, следующие от подталкивания вывозных и передаточных поездов"
+    },
+    {
+      "_id": 36,
+      "begin_number": 4261,
+      "end_number": 4298,
+      "description": "Резервные локомотивы, следующие от подталкивания хозяйственных поездов"
+    },
+    {
+      "_id": 37,
+      "begin_number": 4301,
+      "end_number": 4388,
+      "description": "Резервные локомотивы пассажирского движения"
+    },
+    {
+      "_id": 38,
+      "begin_number": 4391,
+      "end_number": 4398,
+      "description": "Резервные локомотивы пригородного движения"
+    },
+    {
+      "_id": 39,
+      "begin_number": 4401,
+      "end_number": 4698,
+      "description": "Резервные локомотивы грузового движения"
+    },
+    {
+      "_id": 40,
+      "begin_number": 4701,
+      "end_number": 4778,
+      "description": "Резервные локомотивы хозяйственного движения."
+    },
+    {
+      "_id": 41,
+      "begin_number": 4781,
+      "end_number": 4798,
+      "description": "Локомотивы-рельсосмазыватели"
+    },
+    {
+      "_id": 42,
+      "begin_number": 4801,
+      "end_number": 4878,
+      "description": "Резервные локомотивы вывозного и передаточного движения"
+    },
+    {
+      "_id": 43,
+      "begin_number": 4881,
+      "end_number": 4898,
+      "description": "Резервные локомотивы маневрового движения"
+    },
+    {
+      "_id": 44,
+      "begin_number": 4901,
+      "end_number": 4960,
+      "description": "Сплотки резервных локомотивов, находящихся в эксплуатации в грузовом движении"
+    },
+    {
+      "_id": 45,
+      "begin_number": 4961,
+      "end_number": 4990,
+      "description": "Сплотки резервных локомотивов, находящихся в эксплуатации в пассажирском движении"
+    },
+    {
+      "_id": 46,
+      "begin_number": 4991,
+      "end_number": 4994,
+      "description": "Сплотки резервных локомотивов, находящихся в эксплуатации в хозяйственном движении"
+    },
+    {
+      "_id": 47,
+      "begin_number": 4995,
+      "end_number": 4998,
+      "description": "Сплотки резервных локомотивов, находящихся в эксплуатации в маневровом движении"
+    },
+    {
+      "_id": 48,
+      "begin_number": 5001,
+      "end_number": 5398,
+      "description": "Поезда из пассажирских вагонов, следующих со станций высадки (посадки) пассажиров или пассажирских технических станций в пункты формирования, оборота, на станции для межрейсового отстоя и обратно. Данная нумерация применяется для составов, предусмотренных графиком движения. Данная нумерация присваивается также в тех случаях, когда межрейсовый отстой состава пассажирского поезда согласован причастными на путях базы отстоя"
+    },
+    {
+      "_id": 49,
+      "begin_number": 5401,
+      "end_number": 5498,
+      "description": "Поезда их пассажирских вагонов, следующих для межоперационного отстоя до (после) подготовки состава в рейс на пассажирской (пассажирской технической) станции и обратно. Данная нумерация применяется для составов поездов, назначаемых отдельными указаниями ОАО «РЖД»"
+    },
+    {
+      "_id": 50,
+      "begin_number": 5501,
+      "end_number": 5598,
+      "description": "Поезда из пассажирских вагонов, следующих на вагоноремонтные предприятия для всех видов ремонта, покраски и обратно"
+    },
+    {
+      "_id": 51,
+      "begin_number": 5601,
+      "end_number": 5798,
+      "description": "Передислокация вагонов новой постройки к месту приписки, подсылка составов под перевозку пассажиров и их возврат к месту приписки, из одного пункта приписки в другой"
+    },
+    {
+      "_id": 52,
+      "begin_number": 5801,
+      "end_number": 5998,
+      "description": "Поезда из пассажирских вагонов, следующих на базы отстоя и обратно"
+    },
+    {
+      "_id": 53,
+      "begin_number": 6001,
+      "end_number": 6998,
+      "description": "Пригородные, приграничные пригородные (региональные)"
+    },
+    {
+      "_id": 54,
+      "begin_number": 7001,
+      "end_number": 7098,
+      "description": "Скорые пригородные с резервированием мест"
+    },
+    {
+      "_id": 55,
+      "begin_number": 7101,
+      "end_number": 7598,
+      "description": "Скорые пригородные и городские"
+    },
+    {
+      "_id": 56,
+      "begin_number": 7601,
+      "end_number": 7628,
+      "description": "Пригородные служебного (специального) назначения"
+    },
+    {
+      "_id": 57,
+      "begin_number": 7631,
+      "end_number": 7898,
+      "description": "Моторвагонный подвижной состав, следующий со станций высадки (посадки) пассажиров в депо приписки и обратно, на станции для межрейсового отстоя и обратно, а также на другие станции посадки (высадки) пассажиров"
+    },
+    {
+      "_id": 58,
+      "begin_number": 7901,
+      "end_number": 7988,
+      "description": "Моторвагонный подвижной состав, используемый в пригородном сообщении, следующий на вагоноремонтные предприятия для всех видов ремонта, покраски и обратно, передислокация вагонов новой постройки к месту приписки, подсылка составов под перевозку пассажиров со станций других железных дорог и их возврат к месту приписки, из одного пункта формирования (пункта приписки вагонов) в другой"
+    },
+    {
+      "_id": 59,
+      "begin_number": 7989,
+      "end_number": 7998,
+      "description": "Моторвагонный подвижной состав, используемый в дальнем сообщении, следующий на вагоноремонтные предприятия для всех видов ремонта, покраски и обратно, передислокация вагонов новой постройки к месту приписки, подсылка составов под перевозку пассажиров со станций других железных дорог и их возврат к месту приписки, из одного пункта формирования (пункта приписки вагонов) в другой"
+    },
+    {
+      "_id": 60,
+      "begin_number": 8001,
+      "end_number": 8048,
+      "description": "Восстановительные поезда"
+    },
+    {
+      "_id": 61,
+      "begin_number": 8051,
+      "end_number": 8098,
+      "description": "Пожарные поезда"
+    },
+    {
+      "_id": 62,
+      "begin_number": 8101,
+      "end_number": 8198,
+      "description": "Снегоочистители и снегоуборочная техника"
+    },
+    {
+      "_id": 63,
+      "begin_number": 8201,
+      "end_number": 8248,
+      "description": "Щебнеочистительные машины"
+    },
+    {
+      "_id": 64,
+      "begin_number": 8251,
+      "end_number": 8298,
+      "description": "Выправочно-подбивочно-отделочные и рихтовочные машины"
+    },
+    {
+      "_id": 65,
+      "begin_number": 8301,
+      "end_number": 8348,
+      "description": "Путеукладочные и путеразборочные машины"
+    },
+    {
+      "_id": 66,
+      "begin_number": 8351,
+      "end_number": 8398,
+      "description": "Хоппер-дозаторные поезда"
+    },
+    {
+      "_id": 67,
+      "begin_number": 8401,
+      "end_number": 8448,
+      "description": "Рельсовозные поезд"
+    },
+    {
+      "_id": 68,
+      "begin_number": 8451,
+      "end_number": 8498,
+      "description": "Рельсошлифовальные поезда"
+    },
+    {
+      "_id": 69,
+      "begin_number": 8501,
+      "end_number": 8548,
+      "description": "Остальные машины и агрегаты для производства хозяйственных работ"
+    },
+    {
+      "_id": 70,
+      "begin_number": 8551,
+      "end_number": 8598,
+      "description": "Путеизмерители, дефектоскопы и вагоны-лаборатории"
+    },
+    {
+      "_id": 71,
+      "begin_number": 8601,
+      "end_number": 8698,
+      "description": "Автодрезины, мотовозы и специальный самоходный подвижной состав"
+    },
+    {
+      "_id": 72,
+      "begin_number": 8701,
+      "end_number": 8748,
+      "description": "Грузовые поезда для перевозки воды по хозяйственным документам"
+    },
+    {
+      "_id": 73,
+      "begin_number": 8751,
+      "end_number": 8798,
+      "description": "Поезда для перевозки работников к месту работ и обратно в моторвагонном или специальном самоходном подвижном составе"
+    },
+    {
+      "_id": 74,
+      "begin_number": 8801,
+      "end_number": 8848,
+      "description": "Поезда для перевозки работников к месту работ и обратно в вагонах с локомотивной тягой"
+    },
+    {
+      "_id": 75,
+      "begin_number": 8851,
+      "end_number": 8868,
+      "description": "Хозяйственные поезда для работы на перегоне, обслуживаемые маломощными диспетчерскими локомотивами"
+    },
+    {
+      "_id": 76,
+      "begin_number": 8871,
+      "end_number": 8898,
+      "description": "Хозяйственные поезда, работающие по договорам с транспортными организациями железных дорог"
+    },
+    {
+      "_id": 77,
+      "begin_number": 8901,
+      "end_number": 8918,
+      "description": "Локомотивы, сплотки локомотивов и моторвагонный подвижной состав, следующий в ремонт и из ремонта по грузовым документам"
+    },
+    {
+      "_id": 78,
+      "begin_number": 8921,
+      "end_number": 8928,
+      "description": "Поезда из вагонов (кроме вагонов пассажирского парка), следующих в ремонт и из ремонта по грузовым документам"
+    },
+    {
+      "_id": 79,
+      "begin_number": 8931,
+      "end_number": 8948,
+      "description": "Обкатка локомотивов и грузовых вагонов"
+    },
+    {
+      "_id": 80,
+      "begin_number": 8951,
+      "end_number": 8988,
+      "description": "Обкатка составов из порожних пассажирских вагонов и моторвагонного подвижного состава"
+    },
+    {
+      "_id": 81,
+      "begin_number": 8991,
+      "end_number": 8998,
+      "description": "Поезда для проведения опытных поездок"
+    },
+    {
+      "_id": 82,
+      "begin_number": 9001,
+      "end_number": 9098,
+      "description": "Поезда из порожних грузовых вагонов, негодных под погрузку, следующие на заводы и в депо для ремонта по специально оформленным документам"
+    },
+    {
+      "_id": 83,
+      "begin_number": 9201,
+      "end_number": 9248,
+      "description": "Первый поезд соединённого грузового поезда, следующего по одному и более диспетчерским участкам"
+    },
+    {
+      "_id": 84,
+      "begin_number": 9251,
+      "end_number": 9298,
+      "description": "Второй поезд соединённого грузового поезда, следующего по одному и более диспетчерским участкам"
+    },
+    {
+      "_id": 85,
+      "begin_number": 9301,
+      "end_number": 9498,
+      "description": "Поезда из порожних вагонов в количестве 350-520 осей с одним локомотивом в голове, в том числе на удлинённых плечах обслуживания"
+    },
+    {
+      "_id": 86,
+      "begin_number": 9501,
+      "end_number": 9700,
+      "description": "Тяжеловесные грузовые поезда весом брутто до 8000 т"
+    },
+    {
+      "_id": 87,
+      "begin_number": 9701,
+      "end_number": 9750,
+      "description": "Тяжеловесные грузовые поезда весом брутто от 8000 до 9000 "
+    },
+    {
+      "_id": 88,
+      "begin_number": 9751,
+      "end_number": 9798,
+      "description": "Тяжеловесные грузовые поезда весом брутто 9000 т и более"
+    }
+  ],
+  "normTime": {
+    "2014": [
+      136,
+      159,
+      159,
+      175,
+      151,
+      151,
+      184,
+      168,
+      176,
+      184,
+      143,
+      183
+    ],
+    "2015": [
+      120,
+      152,
+      168,
+      175,
+      143,
+      167,
+      184,
+      168,
+      176,
+      176,
+      159,
+      183
+    ],
+    "2016": [
+      120,
+      159,
+      168,
+      168,
+      152,
+      168,
+      168,
+      184,
+      176,
+      168,
+      167,
+      176
+    ],
+    "2017": [
+      136,
+      143,
+      175,
+      160,
+      160,
+      168,
+      168,
+      184,
+      168,
+      176,
+      167,
+      168
+    ],
+    "2018": [
+      136,
+      151,
+      159,
+      167,
+      159,
+      159,
+      176,
+      184,
+      160,
+      184,
+      168,
+      167
+    ],
+    "2019": [
+      136,
+      159,
+      159,
+      175,
+      143,
+      151,
+      184,
+      176,
+      168,
+      184,
+      160,
+      175
+    ],
+    "2020": [
+      136,
+      152,
+      168,
+      175,
+      135,
+      167,
+      184,
+      168,
+      176,
+      176,
+      159,
+      183
+    ],
+    "2021": [
+      120,
+      151,
+      176,
+      175,
+      152,
+      167,
+      176,
+      176,
+      176,
+      168,
+      159,
+      176
+    ],
+    "2022": [
+      128,
+      151,
+      175,
+      168,
+      144,
+      168,
+      168,
+      184,
+      176,
+      168,
+      167,
+      176
+    ],
+    "2023": [
+      136,
+      143,
+      175,
+      160,
+      160,
+      168,
+      168,
+      184,
+      168,
+      176,
+      167,
+      168
+    ],
+    "2024": [
+      136,
+      159,
+      159,
+      168,
+      159,
+      151,
+      184,
+      176,
+      168,
+      184,
+      167,
+      168
+    ],
+    "2025": [
+      136,
+      160,
+      167,
+      175,
+      144,
+      151,
+      184,
+      168,
+      176,
+      184,
+      151,
+      176
+    ],
+    "2026": [
+      120,
+      152,
+      168,
+      175,
+      151,
+      167,
+      184,
+      168,
+      176,
+      176,
+      159,
+      176
+    ]
+  },
+  "dailyCurrentTime": {
+    "2026": {
+      "1": [
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        8,
+        16,
+        24,
+        32,
+        40,
+        40,
+        40,
+        48,
+        56,
+        64,
+        72,
+        80,
+        80,
+        80,
+        88,
+        96,
+        104,
+        112,
+        120,
+        120
+      ],
+      "2": [
+        0,
+        8,
+        16,
+        24,
+        32,
+        40,
+        40,
+        40,
+        48,
+        56,
+        64,
+        72,
+        80,
+        80,
+        80,
+        88,
+        96,
+        104,
+        112,
+        120,
+        120,
+        120,
+        120,
+        128,
+        136,
+        144,
+        152,
+        152,
+        0,
+        0,
+        0
+      ],
+      "3": [
+        0,
+        8,
+        16,
+        24,
+        32,
+        40,
+        40,
+        40,
+        40,
+        48,
+        56,
+        64,
+        72,
+        72,
+        72,
+        80,
+        88,
+        96,
+        104,
+        112,
+        112,
+        112,
+        120,
+        128,
+        136,
+        144,
+        152,
+        152,
+        152,
+        160,
+        168
+      ],
+      "4": [
+        8,
+        16,
+        24,
+        24,
+        24,
+        32,
+        40,
+        48,
+        56,
+        64,
+        64,
+        64,
+        72,
+        80,
+        88,
+        96,
+        104,
+        104,
+        104,
+        112,
+        120,
+        128,
+        136,
+        144,
+        144,
+        144,
+        152,
+        160,
+        168,
+        175,
+        0
+      ],
+      "5": [
+        0,
+        0,
+        0,
+        8,
+        16,
+        24,
+        32,
+        39,
+        39,
+        39,
+        39,
+        47,
+        55,
+        63,
+        71,
+        71,
+        71,
+        79,
+        87,
+        95,
+        103,
+        111,
+        111,
+        111,
+        119,
+        127,
+        135,
+        143,
+        151,
+        151,
+        151
+      ],
+      "6": [
+        8,
+        16,
+        24,
+        32,
+        40,
+        40,
+        40,
+        48,
+        56,
+        64,
+        71,
+        71,
+        71,
+        71,
+        79,
+        87,
+        95,
+        103,
+        111,
+        111,
+        111,
+        119,
+        127,
+        135,
+        143,
+        151,
+        151,
+        151,
+        159,
+        167,
+        0
+      ],
+      "7": [
+        8,
+        16,
+        24,
+        24,
+        24,
+        32,
+        40,
+        48,
+        56,
+        64,
+        64,
+        64,
+        72,
+        80,
+        88,
+        96,
+        104,
+        104,
+        104,
+        112,
+        120,
+        128,
+        136,
+        144,
+        144,
+        144,
+        152,
+        160,
+        168,
+        176,
+        184
+      ],
+      "8": [
+        0,
+        0,
+        8,
+        16,
+        24,
+        32,
+        40,
+        40,
+        40,
+        48,
+        56,
+        64,
+        72,
+        80,
+        80,
+        80,
+        88,
+        96,
+        104,
+        112,
+        120,
+        120,
+        120,
+        128,
+        136,
+        144,
+        152,
+        160,
+        160,
+        160,
+        168
+      ],
+      "9": [
+        8,
+        16,
+        24,
+        32,
+        32,
+        32,
+        40,
+        48,
+        56,
+        64,
+        72,
+        72,
+        72,
+        80,
+        88,
+        96,
+        104,
+        112,
+        112,
+        112,
+        120,
+        128,
+        136,
+        144,
+        152,
+        152,
+        152,
+        160,
+        168,
+        176,
+        0
+      ],
+      "10": [
+        8,
+        16,
+        16,
+        16,
+        24,
+        32,
+        40,
+        48,
+        56,
+        56,
+        56,
+        64,
+        72,
+        80,
+        88,
+        96,
+        96,
+        96,
+        104,
+        112,
+        120,
+        128,
+        136,
+        136,
+        136,
+        144,
+        152,
+        160,
+        168,
+        176,
+        176
+      ],
+      "11": [
+        0,
+        8,
+        15,
+        15,
+        23,
+        31,
+        31,
+        31,
+        39,
+        47,
+        55,
+        63,
+        71,
+        71,
+        71,
+        79,
+        87,
+        95,
+        103,
+        111,
+        111,
+        111,
+        119,
+        127,
+        135,
+        143,
+        151,
+        151,
+        151,
+        159,
+        0
+      ],
+      "12": [
+        8,
+        16,
+        24,
+        32,
+        32,
+        32,
+        40,
+        48,
+        56,
+        64,
+        72,
+        72,
+        72,
+        80,
+        88,
+        96,
+        104,
+        112,
+        112,
+        112,
+        120,
+        128,
+        136,
+        144,
+        152,
+        152,
+        152,
+        160,
+        168,
+        176,
+        176
+      ]
+    }
+  },
+  "dailyCutTimeAlt": {
+    "2026": {
+      "1": [
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        7,
+        12,
+        12,
+        19,
+        26,
+        33,
+        40,
+        47,
+        52,
+        52,
+        59,
+        66,
+        73,
+        80,
+        87,
+        92,
+        92,
+        99,
+        106,
+        113,
+        120,
+        127,
+        132
+      ],
+      "2": [
+        0,
+        7,
+        14,
+        21,
+        28,
+        35,
+        40,
+        40,
+        47,
+        54,
+        61,
+        68,
+        75,
+        80,
+        80,
+        87,
+        94,
+        101,
+        108,
+        115,
+        120,
+        120,
+        120,
+        127,
+        134,
+        141,
+        148,
+        153,
+        0,
+        0,
+        0
+      ],
+      "3": [
+        0,
+        7,
+        14,
+        21,
+        28,
+        35,
+        39,
+        39,
+        39,
+        46,
+        53,
+        60,
+        67,
+        72,
+        72,
+        79,
+        86,
+        93,
+        100,
+        107,
+        112,
+        112,
+        119,
+        126,
+        133,
+        140,
+        147,
+        152,
+        152,
+        159,
+        166
+      ],
+      "4": [
+        7,
+        14,
+        21,
+        26,
+        26,
+        33,
+        40,
+        47,
+        54,
+        61,
+        66,
+        66,
+        73,
+        80,
+        87,
+        94,
+        101,
+        106,
+        106,
+        113,
+        120,
+        127,
+        134,
+        141,
+        146,
+        146,
+        153,
+        160,
+        167,
+        173,
+        0
+      ],
+      "5": [
+        0,
+        5,
+        5,
+        12,
+        19,
+        26,
+        33,
+        39,
+        39,
+        39,
+        46,
+        53,
+        60,
+        67,
+        74,
+        79,
+        79,
+        86,
+        93,
+        100,
+        107,
+        114,
+        119,
+        119,
+        126,
+        133,
+        140,
+        147,
+        154,
+        159,
+        159
+      ],
+      "6": [
+        7,
+        14,
+        21,
+        28,
+        35,
+        40,
+        40,
+        47,
+        54,
+        61,
+        67,
+        67,
+        72,
+        72,
+        79,
+        86,
+        93,
+        100,
+        107,
+        112,
+        112,
+        119,
+        126,
+        133,
+        140,
+        147,
+        152,
+        152,
+        159,
+        166,
+        0
+      ],
+      "7": [
+        7,
+        14,
+        21,
+        26,
+        26,
+        33,
+        40,
+        47,
+        54,
+        61,
+        66,
+        66,
+        73,
+        80,
+        87,
+        94,
+        101,
+        106,
+        106,
+        113,
+        120,
+        127,
+        134,
+        141,
+        146,
+        146,
+        153,
+        160,
+        167,
+        174,
+        181
+      ],
+      "8": [
+        5,
+        5,
+        12,
+        19,
+        26,
+        33,
+        40,
+        45,
+        45,
+        52,
+        59,
+        66,
+        73,
+        80,
+        85,
+        85,
+        92,
+        99,
+        106,
+        113,
+        120,
+        125,
+        125,
+        132,
+        139,
+        146,
+        153,
+        160,
+        165,
+        165,
+        172
+      ],
+      "9": [
+        7,
+        14,
+        21,
+        28,
+        33,
+        33,
+        40,
+        47,
+        54,
+        61,
+        68,
+        73,
+        73,
+        80,
+        87,
+        94,
+        101,
+        108,
+        113,
+        113,
+        120,
+        127,
+        134,
+        141,
+        148,
+        153,
+        153,
+        160,
+        167,
+        174,
+        0
+      ],
+      "10": [
+        7,
+        14,
+        19,
+        19,
+        26,
+        33,
+        40,
+        47,
+        54,
+        59,
+        59,
+        66,
+        73,
+        80,
+        87,
+        94,
+        99,
+        99,
+        106,
+        113,
+        120,
+        127,
+        134,
+        139,
+        139,
+        146,
+        153,
+        160,
+        167,
+        174,
+        179
+      ],
+      "11": [
+        0,
+        7,
+        13,
+        13,
+        20,
+        27,
+        32,
+        32,
+        39,
+        46,
+        53,
+        60,
+        67,
+        72,
+        72,
+        79,
+        86,
+        93,
+        100,
+        107,
+        112,
+        112,
+        119,
+        126,
+        133,
+        140,
+        147,
+        152,
+        152,
+        159,
+        0
+      ],
+      "12": [
+        7,
+        14,
+        21,
+        28,
+        33,
+        33,
+        40,
+        47,
+        54,
+        61,
+        68,
+        73,
+        73,
+        80,
+        87,
+        94,
+        101,
+        108,
+        113,
+        113,
+        120,
+        127,
+        134,
+        141,
+        148,
+        153,
+        153,
+        160,
+        167,
+        174,
+        174
+      ]
+    }
+  },
+  "locoOnHaul": [
+    {
+      "_id": 36,
+      "haul_id": 29,
+      "haul": "Комсомольск - Высокогорная",
+      "loco_id": 31,
+      "loco": "2ТЭ25КМ",
+      "traffic_type": 5,
+      "traffic_type_name": "Толкач"
+    },
+    {
+      "_id": 37,
+      "haul_id": 30,
+      "haul": "Высокогорная - Комсомольск",
+      "loco_id": 31,
+      "loco": "2ТЭ25КМ",
+      "traffic_type": 5,
+      "traffic_type_name": "Толкач"
+    },
+    {
+      "_id": 38,
+      "haul_id": 31,
+      "haul": "Вскг - Соллу - Ксм",
+      "loco_id": 31,
+      "loco": "2ТЭ25КМ",
+      "traffic_type": 5,
+      "traffic_type_name": "Толкач"
+    },
+    {
+      "_id": 67,
+      "haul_id": 28,
+      "haul": "Сельгон - Комсомольск",
+      "loco_id": 30,
+      "loco": "3ТЭ25К2М",
+      "traffic_type": 1,
+      "traffic_type_name": "Грузовой"
+    },
+    {
+      "_id": 69,
+      "haul_id": 27,
+      "haul": "Волочаевка - Сельгон",
+      "loco_id": 30,
+      "loco": "3ТЭ25К2М",
+      "traffic_type": 1,
+      "traffic_type_name": "Грузовой"
+    },
+    {
+      "_id": 70,
+      "haul_id": 32,
+      "haul": "Комсомольск",
+      "loco_id": 8,
+      "loco": "3ТЭ10МК",
+      "traffic_type": 1,
+      "traffic_type_name": "Грузовой"
+    },
+    {
+      "_id": 71,
+      "haul_id": 33,
+      "haul": "Сельгон - Дземги",
+      "loco_id": 30,
+      "loco": "3ТЭ25К2М",
+      "traffic_type": 1,
+      "traffic_type_name": "Грузовой"
+    },
+    {
+      "_id": 72,
+      "haul_id": 29,
+      "haul": "Комсомольск - Высокогорная",
+      "loco_id": 8,
+      "loco": "3ТЭ10МК",
+      "traffic_type": 1,
+      "traffic_type_name": "Грузовой"
+    },
+    {
+      "_id": 73,
+      "haul_id": 31,
+      "haul": "Вскг - Соллу - Ксм",
+      "loco_id": 8,
+      "loco": "3ТЭ10МК",
+      "traffic_type": 1,
+      "traffic_type_name": "Грузовой"
+    },
+    {
+      "_id": 74,
+      "haul_id": 30,
+      "haul": "Высокогорная - Комсомольск",
+      "loco_id": 8,
+      "loco": "3ТЭ10МК",
+      "traffic_type": 1,
+      "traffic_type_name": "Грузовой"
+    },
+    {
+      "_id": 75,
+      "haul_id": 49,
+      "haul": "Дземги - Сельгон",
+      "loco_id": 30,
+      "loco": "3ТЭ25К2М",
+      "traffic_type": 1,
+      "traffic_type_name": "Грузовой"
+    },
+    {
+      "_id": 119,
+      "haul_id": 59,
+      "haul": "Комсомольск - Постышево",
+      "loco_id": 8,
+      "loco": "3ТЭ10МК",
+      "traffic_type": 1,
+      "traffic_type_name": "Грузовой"
+    },
+    {
+      "_id": 120,
+      "haul_id": 60,
+      "haul": "Постышево - Комсомольск",
+      "loco_id": 8,
+      "loco": "3ТЭ10МК",
+      "traffic_type": 1,
+      "traffic_type_name": "Грузовой"
+    },
+    {
+      "_id": 137,
+      "haul_id": 59,
+      "haul": "Комсомольск - Постышево",
+      "loco_id": 8,
+      "loco": "3ТЭ10МК",
+      "traffic_type": 5,
+      "traffic_type_name": "Толкач"
+    },
+    {
+      "_id": 207,
+      "haul_id": 32,
+      "haul": "Комсомольск",
+      "loco_id": 31,
+      "loco": "2ТЭ25КМ",
+      "traffic_type": 1,
+      "traffic_type_name": "Грузовой"
+    },
+    {
+      "_id": 292,
+      "haul_id": 18,
+      "haul": "Комсомольск - Волочаевка",
+      "loco_id": 30,
+      "loco": "3ТЭ25К2М",
+      "traffic_type": 1,
+      "traffic_type_name": "Грузовой"
+    },
+    {
+      "_id": 293,
+      "haul_id": 19,
+      "haul": "Волочаевка - Комсомольск",
+      "loco_id": 30,
+      "loco": "3ТЭ25К2М",
+      "traffic_type": 1,
+      "traffic_type_name": "Грузовой"
+    },
+    {
+      "_id": 294,
+      "haul_id": 25,
+      "haul": "Комсомольск - Сельгон",
+      "loco_id": 30,
+      "loco": "3ТЭ25К2М",
+      "traffic_type": 1,
+      "traffic_type_name": "Грузовой"
+    },
+    {
+      "_id": 295,
+      "haul_id": 26,
+      "haul": "Сельгон - Волочаевка",
+      "loco_id": 30,
+      "loco": "3ТЭ25К2М",
+      "traffic_type": 1,
+      "traffic_type_name": "Грузовой"
+    }
+  ],
+  "udr": {
+    "cargo": [
+      {
+        "id": 19,
+        "haulId": 27,
+        "haul": "Волочаевка - Сельгон",
+        "locoId": 30,
+        "loco": "3ТЭ25К2М",
+        "values": {
+          "5": 28.28,
+          "6": 27.43,
+          "7": 26.83,
+          "8": 26.38,
+          "9": 26.02,
+          "10": 25.74,
+          "11": 25.51,
+          "12": 25.32,
+          "13": 25.16,
+          "14": 25.02,
+          "15": 24.9,
+          "16": 24.79,
+          "17": 24.7,
+          "18": 24.62,
+          "19": 24.54,
+          "20": 24.48,
+          "21": 24.42,
+          "22": 24.36,
+          "23": 24.31,
+          "24": 24.26,
+          "25": 24.22
+        },
+        "gateaway": 0.01,
+        "idle": 13,
+        "shunting": 0,
+        "limitation": 0
+      },
+      {
+        "id": 23,
+        "haulId": 30,
+        "haul": "Высокогорная - Комсомольск",
+        "locoId": 8,
+        "loco": "3ТЭ10МК",
+        "values": {
+          "5": 23.79,
+          "6": 20.55,
+          "7": 18.23,
+          "8": 16.49,
+          "9": 15.14,
+          "10": 14.06,
+          "11": 13.17,
+          "12": 12.43,
+          "13": 11.81,
+          "14": 11.27,
+          "15": 10.81,
+          "16": 10.4,
+          "17": 10.05,
+          "18": 9.73,
+          "19": 9.44,
+          "20": 9.19,
+          "21": 8.96,
+          "22": 8.74,
+          "23": 8.55,
+          "24": 8.38,
+          "25": 8.22
+        },
+        "gateaway": 0.01,
+        "idle": 20,
+        "shunting": 0,
+        "limitation": 0
+      },
+      {
+        "id": 24,
+        "haulId": 25,
+        "haul": "Комсомольск - Сельгон",
+        "locoId": 30,
+        "loco": "3ТЭ25К2М",
+        "values": {
+          "5": 37.5,
+          "6": 34.33,
+          "7": 32.07,
+          "8": 30.38,
+          "9": 29.06,
+          "10": 28,
+          "11": 26.64,
+          "12": 25.5,
+          "13": 24.54,
+          "14": 23.71,
+          "15": 23,
+          "16": 22.5,
+          "17": 22.06,
+          "18": 21.67,
+          "19": 21.32,
+          "20": 21,
+          "21": 20.75,
+          "22": 20.56,
+          "23": 20.35,
+          "24": 20.17,
+          "25": 20
+        },
+        "gateaway": 0.01,
+        "idle": 13,
+        "shunting": 0,
+        "limitation": 0
+      },
+      {
+        "id": 26,
+        "haulId": 18,
+        "haul": "Комсомольск - Волочаевка",
+        "locoId": 30,
+        "loco": "3ТЭ25К2М",
+        "values": {
+          "5": 54.06,
+          "6": 47.29,
+          "7": 42.45,
+          "8": 38.82,
+          "9": 36,
+          "10": 33.74,
+          "11": 31.9,
+          "12": 30.36,
+          "13": 29.05,
+          "14": 27.94,
+          "15": 26.97,
+          "16": 26.12,
+          "17": 25.38,
+          "18": 24.71,
+          "19": 24.12,
+          "20": 23.58,
+          "21": 23.1,
+          "22": 22.66,
+          "23": 22.26,
+          "24": 21.89,
+          "25": 21.55
+        },
+        "gateaway": 0.01,
+        "idle": 13,
+        "shunting": 0,
+        "limitation": 0
+      },
+      {
+        "id": 28,
+        "haulId": 19,
+        "haul": "Волочаевка - Комсомольск",
+        "locoId": 30,
+        "loco": "3ТЭ25К2М",
+        "values": {
+          "5": 32.94,
+          "6": 30.26,
+          "7": 28.35,
+          "8": 26.92,
+          "9": 25.8,
+          "10": 24.91,
+          "11": 24.18,
+          "12": 23.57,
+          "13": 23.05,
+          "14": 22.61,
+          "15": 22.23,
+          "16": 21.9,
+          "17": 21.6,
+          "18": 21.34,
+          "19": 21.1,
+          "20": 20.89,
+          "21": 20.7,
+          "22": 20.53,
+          "23": 20.37,
+          "24": 20.22,
+          "25": 20.09
+        },
+        "gateaway": 0.01,
+        "idle": 13,
+        "shunting": 0,
+        "limitation": 0
+      },
+      {
+        "id": 29,
+        "haulId": 29,
+        "haul": "Комсомольск - Высокогорная",
+        "locoId": 8,
+        "loco": "3ТЭ10МК",
+        "values": {
+          "5": 63.78,
+          "6": 55.29,
+          "7": 49.23,
+          "8": 44.68,
+          "9": 41.14,
+          "10": 38.31,
+          "11": 36,
+          "12": 34.07,
+          "13": 32.44,
+          "14": 31.04,
+          "15": 29.82,
+          "16": 28.76,
+          "17": 27.83,
+          "18": 26.99,
+          "19": 26.25,
+          "20": 25.58,
+          "21": 24.97,
+          "22": 24.42,
+          "23": 23.92,
+          "24": 23.46,
+          "25": 23.03
+        },
+        "gateaway": 0.01,
+        "idle": 20,
+        "shunting": 0,
+        "limitation": 0
+      },
+      {
+        "id": 31,
+        "haulId": 26,
+        "haul": "Сельгон - Волочаевка",
+        "locoId": 30,
+        "loco": "3ТЭ25К2М",
+        "values": {
+          "5": 65,
+          "6": 56.33,
+          "7": 50.14,
+          "8": 45.49,
+          "9": 41.88,
+          "10": 38.99,
+          "11": 36.62,
+          "12": 34.65,
+          "13": 32.99,
+          "14": 31.56,
+          "15": 30.32,
+          "16": 29.23,
+          "17": 28.28,
+          "18": 27.43,
+          "19": 26.67,
+          "20": 25.98,
+          "21": 25.36,
+          "22": 24.8,
+          "23": 24.29,
+          "24": 23.81,
+          "25": 23.38
+        },
+        "gateaway": 0.01,
+        "idle": 13,
+        "shunting": 0,
+        "limitation": 0
+      },
+      {
+        "id": 34,
+        "haulId": 28,
+        "haul": "Сельгон - Комсомольск",
+        "locoId": 30,
+        "loco": "3ТЭ25К2М",
+        "values": {
+          "5": 41.5,
+          "6": 36.63,
+          "7": 33.15,
+          "8": 30.54,
+          "9": 28.51,
+          "10": 26.89,
+          "11": 25.35,
+          "12": 24.07,
+          "13": 22.99,
+          "14": 22.06,
+          "15": 21.25,
+          "16": 20.62,
+          "17": 20.06,
+          "18": 19.57,
+          "19": 19.13,
+          "20": 18.73,
+          "21": 18.34,
+          "22": 17.99,
+          "23": 17.67,
+          "24": 17.37,
+          "25": 17.1
+        },
+        "gateaway": 0.01,
+        "idle": 13,
+        "shunting": 0,
+        "limitation": 0
+      },
+      {
+        "id": 37,
+        "haulId": 31,
+        "haul": "Вскг - Соллу - Ксм",
+        "locoId": 8,
+        "loco": "3ТЭ10МК",
+        "values": {
+          "5": 49.76,
+          "6": 43.17,
+          "7": 38.47,
+          "8": 34.94,
+          "9": 32.2,
+          "10": 30,
+          "11": 28.2,
+          "12": 26.71,
+          "13": 25.44,
+          "14": 24.35,
+          "15": 23.41,
+          "16": 22.59,
+          "17": 21.86,
+          "18": 21.22,
+          "19": 20.64,
+          "20": 20.12,
+          "21": 19.65,
+          "22": 19.22,
+          "23": 18.83,
+          "24": 18.47,
+          "25": 18.15
+        },
+        "gateaway": 0.01,
+        "idle": 20,
+        "shunting": 0,
+        "limitation": 0
+      },
+      {
+        "id": 73,
+        "haulId": 49,
+        "haul": "Дземги - Сельгон",
+        "locoId": 8,
+        "loco": "3ТЭ10МК",
+        "values": {
+          "5": 42.73,
+          "6": 37.44,
+          "7": 33.65,
+          "8": 30.81,
+          "9": 28.61,
+          "10": 26.84,
+          "11": 25.4,
+          "12": 24.19,
+          "13": 23.17,
+          "14": 22.3,
+          "15": 21.54,
+          "16": 20.88,
+          "17": 20.3,
+          "18": 19.78,
+          "19": 19.31,
+          "20": 18.9,
+          "21": 18.52,
+          "22": 18.17,
+          "23": 17.86,
+          "24": 17.57,
+          "25": 17.31
+        },
+        "gateaway": 0.01,
+        "idle": 22,
+        "shunting": 0,
+        "limitation": 0
+      },
+      {
+        "id": 74,
+        "haulId": 33,
+        "haul": "Сельгон - Дземги",
+        "locoId": 8,
+        "loco": "3ТЭ10МК",
+        "values": {
+          "5": 39.31,
+          "6": 34.47,
+          "7": 31.01,
+          "8": 28.41,
+          "9": 26.39,
+          "10": 24.78,
+          "11": 23.46,
+          "12": 22.36,
+          "13": 21.42,
+          "14": 20.63,
+          "15": 19.93,
+          "16": 19.33,
+          "17": 18.79,
+          "18": 18.32,
+          "19": 17.89,
+          "20": 17.51,
+          "21": 17.17,
+          "22": 16.85,
+          "23": 16.56,
+          "24": 16.3,
+          "25": 16.06
+        },
+        "gateaway": 0.01,
+        "idle": 20,
+        "shunting": 0,
+        "limitation": 0
+      },
+      {
+        "id": 100,
+        "haulId": 59,
+        "haul": "Комсомольск - Постышево",
+        "locoId": 8,
+        "loco": "3ТЭ10МК",
+        "values": {
+          "5": 43.92,
+          "6": 39,
+          "7": 35,
+          "8": 32,
+          "9": 30,
+          "10": 28,
+          "11": 27,
+          "12": 25,
+          "13": 24,
+          "14": 23,
+          "15": 23,
+          "16": 22,
+          "17": 21,
+          "18": 21,
+          "19": 20,
+          "20": 20,
+          "21": 20,
+          "22": 19,
+          "23": 19,
+          "24": 19,
+          "25": 18.41
+        },
+        "gateaway": 0.01,
+        "idle": 20,
+        "shunting": 0,
+        "limitation": 0
+      },
+      {
+        "id": 101,
+        "haulId": 60,
+        "haul": "Постышево - Комсомольск",
+        "locoId": 8,
+        "loco": "3ТЭ10МК",
+        "values": {
+          "5": 38.72,
+          "6": 34,
+          "7": 31,
+          "8": 29,
+          "9": 27,
+          "10": 25,
+          "11": 24,
+          "12": 23,
+          "13": 22,
+          "14": 21,
+          "15": 21,
+          "16": 20,
+          "17": 20,
+          "18": 19,
+          "19": 19,
+          "20": 18,
+          "21": 18,
+          "22": 18,
+          "23": 17.5,
+          "24": 17.25,
+          "25": 17.03
+        },
+        "gateaway": 0.01,
+        "idle": 20,
+        "shunting": 0,
+        "limitation": 0
+      },
+      {
+        "id": 160,
+        "haulId": 18,
+        "haul": "Комсомольск - Волочаевка",
+        "locoId": 8,
+        "loco": "3ТЭ10МК",
+        "values": {
+          "5": 40.54,
+          "6": 35.49,
+          "7": 31.89,
+          "8": 29.2,
+          "9": 27.09,
+          "10": 25.41,
+          "11": 24.03,
+          "12": 22.9,
+          "13": 21.9,
+          "14": 21.1,
+          "15": 20.4,
+          "16": 19.7,
+          "17": 19.2,
+          "18": 18.7,
+          "19": 18.2,
+          "20": 17.9,
+          "21": 17.5,
+          "22": 17.2,
+          "23": 16.9,
+          "24": 16.6,
+          "25": 16.3
+        },
+        "gateaway": 0.01,
+        "idle": 15,
+        "shunting": 0,
+        "limitation": 0
+      },
+      {
+        "id": 161,
+        "haulId": 19,
+        "haul": "Волочаевка - Комсомольск",
+        "locoId": 8,
+        "loco": "3ТЭ10МК",
+        "values": {
+          "5": 46.39,
+          "6": 41.6,
+          "7": 38.18,
+          "8": 35.61,
+          "9": 32.02,
+          "10": 30.71,
+          "11": 29.62,
+          "12": 28.7,
+          "13": 27.91,
+          "14": 27.23,
+          "15": 26.63,
+          "16": 26.1,
+          "17": 25.63,
+          "18": 25.21,
+          "19": 24.83,
+          "20": 24.49,
+          "21": 24.18,
+          "22": 23.89,
+          "23": 23.63,
+          "24": 23.4,
+          "25": 23
+        },
+        "gateaway": 0.01,
+        "idle": 15,
+        "shunting": 0,
+        "limitation": 0
+      },
+      {
+        "id": 193,
+        "haulId": 29,
+        "haul": "Комсомольск - Высокогорная",
+        "locoId": 30,
+        "loco": "3ТЭ25К2М",
+        "values": {
+          "5": 32.04,
+          "6": 31.11,
+          "7": 30.45,
+          "8": 29.95,
+          "9": 29.57,
+          "10": 29.26,
+          "11": 29.01,
+          "12": 28.8,
+          "13": 28.62,
+          "14": 28.46,
+          "15": 28.33,
+          "16": 28.22,
+          "17": 28.11,
+          "18": 28.02,
+          "19": 27.94,
+          "20": 27.82,
+          "21": 27.8,
+          "22": 27.74,
+          "23": 27.69,
+          "24": 27.64,
+          "25": 27.59
+        },
+        "gateaway": 0.01,
+        "idle": 20,
+        "shunting": 0,
+        "limitation": 0
+      },
+      {
+        "id": 194,
+        "haulId": 30,
+        "haul": "Высокогорная - Комсомольск",
+        "locoId": 30,
+        "loco": "3ТЭ25К2М",
+        "values": {
+          "5": 27.49,
+          "6": 24.33,
+          "7": 22.07,
+          "8": 20.38,
+          "9": 19.06,
+          "10": 18,
+          "11": 17.14,
+          "12": 16.42,
+          "13": 15.81,
+          "14": 15.29,
+          "15": 14.84,
+          "16": 14.45,
+          "17": 14.1,
+          "18": 13.79,
+          "19": 13.51,
+          "20": 13.26,
+          "21": 13.03,
+          "22": 12.83,
+          "23": 12.64,
+          "24": 12.47,
+          "25": 12.31
+        },
+        "gateaway": 0.01,
+        "idle": 20,
+        "shunting": 0,
+        "limitation": 0
+      },
+      {
+        "id": 195,
+        "haulId": 31,
+        "haul": "Вскг - Соллу - Ксм",
+        "locoId": 30,
+        "loco": "3ТЭ25К2М",
+        "values": {
+          "5": 27.54,
+          "6": 24.37,
+          "7": 22.1,
+          "8": 20.41,
+          "9": 19.09,
+          "10": 18.03,
+          "11": 17.17,
+          "12": 16.45,
+          "13": 15.84,
+          "14": 15.32,
+          "15": 14.86,
+          "16": 14.47,
+          "17": 14.12,
+          "18": 13.81,
+          "19": 13.53,
+          "20": 13.28,
+          "21": 13.05,
+          "22": 12.85,
+          "23": 12.66,
+          "24": 12.49,
+          "25": 12.33
+        },
+        "gateaway": 0.01,
+        "idle": 20,
+        "shunting": 0,
+        "limitation": 0
+      },
+      {
+        "id": 196,
+        "haulId": 25,
+        "haul": "Комсомольск - Сельгон",
+        "locoId": 8,
+        "loco": "3ТЭ10МК",
+        "values": {
+          "5": 50.56,
+          "6": 43.78,
+          "7": 38.93,
+          "8": 35.3,
+          "9": 32.47,
+          "10": 30.21,
+          "11": 28.36,
+          "12": 26.82,
+          "13": 25.52,
+          "14": 24.4,
+          "15": 23.43,
+          "16": 22.59,
+          "17": 21.84,
+          "18": 21.17,
+          "19": 20.58,
+          "20": 20.04,
+          "21": 19.56,
+          "22": 19.12,
+          "23": 18.72,
+          "24": 18.35,
+          "25": 18.01
+        },
+        "gateaway": 0.01,
+        "idle": 15,
+        "shunting": 0,
+        "limitation": 0
+      },
+      {
+        "id": 197,
+        "haulId": 26,
+        "haul": "Сельгон - Волочаевка",
+        "locoId": 8,
+        "loco": "3ТЭ10МК",
+        "values": {
+          "5": 56.98,
+          "6": 49.44,
+          "7": 44.05,
+          "8": 40.01,
+          "9": 36.87,
+          "10": 34.35,
+          "11": 32.3,
+          "12": 30.58,
+          "13": 29.13,
+          "14": 27.89,
+          "15": 26.81,
+          "16": 25.87,
+          "17": 25.04,
+          "18": 24.3,
+          "19": 23.64,
+          "20": 23.04,
+          "21": 22.5,
+          "22": 22.01,
+          "23": 21.57,
+          "24": 21.16,
+          "25": 20.78
+        },
+        "gateaway": 0.01,
+        "idle": 15,
+        "shunting": 0,
+        "limitation": 0
+      },
+      {
+        "id": 198,
+        "haulId": 27,
+        "haul": "Волочаевка - Сельгон",
+        "locoId": 8,
+        "loco": "3ТЭ10МК",
+        "values": {
+          "5": 65.04,
+          "6": 56.25,
+          "7": 49.97,
+          "8": 45.25,
+          "9": 41.59,
+          "10": 38.66,
+          "11": 36.26,
+          "12": 34.26,
+          "13": 32.57,
+          "14": 31.12,
+          "15": 29.86,
+          "16": 28.76,
+          "17": 27.79,
+          "18": 26.93,
+          "19": 26.16,
+          "20": 25.47,
+          "21": 24.84,
+          "22": 24.27,
+          "23": 23.74,
+          "24": 23.27,
+          "25": 23
+        },
+        "gateaway": 0.01,
+        "idle": 15,
+        "shunting": 0,
+        "limitation": 0
+      },
+      {
+        "id": 199,
+        "haulId": 28,
+        "haul": "Сельгон - Комсомольск",
+        "locoId": 8,
+        "loco": "3ТЭ10МК",
+        "values": {
+          "5": 44.13,
+          "6": 38.29,
+          "7": 34.12,
+          "8": 30.99,
+          "9": 28.55,
+          "10": 26.61,
+          "11": 25.01,
+          "12": 23.69,
+          "13": 22.56,
+          "14": 21.6,
+          "15": 20.76,
+          "16": 20.03,
+          "17": 19.39,
+          "18": 18.82,
+          "19": 18.3,
+          "20": 17.84,
+          "21": 17.43,
+          "22": 17.05,
+          "23": 16.7,
+          "24": 16.38,
+          "25": 16.09
+        },
+        "gateaway": 0.01,
+        "idle": 15,
+        "shunting": 0,
+        "limitation": 0
+      },
+      {
+        "id": 200,
+        "haulId": 33,
+        "haul": "Сельгон - Дземги",
+        "locoId": 30,
+        "loco": "3ТЭ25К2М",
+        "values": {
+          "5": 23.71,
+          "6": 22.87,
+          "7": 22.28,
+          "8": 21.83,
+          "9": 21.48,
+          "10": 21.2,
+          "11": 20.97,
+          "12": 20.78,
+          "13": 20.62,
+          "14": 20.48,
+          "15": 20.36,
+          "16": 20.26,
+          "17": 20.17,
+          "18": 20.09,
+          "19": 20.01,
+          "20": 19.95,
+          "21": 19.89,
+          "22": 19.83,
+          "23": 19.76,
+          "24": 19.74,
+          "25": 19.7
+        },
+        "gateaway": 0.01,
+        "idle": 20,
+        "shunting": 0,
+        "limitation": 0
+      },
+      {
+        "id": 201,
+        "haulId": 49,
+        "haul": "Дземги - Сельгон",
+        "locoId": 30,
+        "loco": "3ТЭ25К2М",
+        "values": {
+          "5": 49.6,
+          "6": 43,
+          "7": 38.2,
+          "8": 34.7,
+          "9": 31.9,
+          "10": 29.7,
+          "11": 27.9,
+          "12": 26.4,
+          "13": 25.2,
+          "14": 24.1,
+          "15": 23.1,
+          "16": 22.3,
+          "17": 21.6,
+          "18": 20.9,
+          "19": 20.3,
+          "20": 19.8,
+          "21": 19.3,
+          "22": 18.9,
+          "23": 18.5,
+          "24": 18.2,
+          "25": 17.8
+        },
+        "gateaway": 0.01,
+        "idle": 22,
+        "shunting": 0,
+        "limitation": 0
+      },
+      {
+        "id": 202,
+        "haulId": 59,
+        "haul": "Комсомольск - Постышево",
+        "locoId": 30,
+        "loco": "3ТЭ25К2М",
+        "values": {
+          "5": 40.65,
+          "6": 35.8,
+          "7": 32.44,
+          "8": 30,
+          "9": 28,
+          "10": 26,
+          "11": 25,
+          "12": 24,
+          "13": 23,
+          "14": 22,
+          "15": 21.5,
+          "16": 20.89,
+          "17": 20.36,
+          "18": 20,
+          "19": 19.47,
+          "20": 19,
+          "21": 18.75,
+          "22": 18.44,
+          "23": 18.16,
+          "24": 17.9,
+          "25": 17.66
+        },
+        "gateaway": 0.01,
+        "idle": 20,
+        "shunting": 0,
+        "limitation": 0
+      },
+      {
+        "id": 203,
+        "haulId": 60,
+        "haul": "Постышево - Комсомольск",
+        "locoId": 30,
+        "loco": "3ТЭ25К2М",
+        "values": {
+          "5": 32.37,
+          "6": 28.59,
+          "7": 25.9,
+          "8": 23.8,
+          "9": 22,
+          "10": 21,
+          "11": 20,
+          "12": 19,
+          "13": 18.42,
+          "14": 17.8,
+          "15": 17,
+          "16": 16.76,
+          "17": 16,
+          "18": 16,
+          "19": 15.67,
+          "20": 15.37,
+          "21": 15.1,
+          "22": 14.85,
+          "23": 14.63,
+          "24": 14.42,
+          "25": 14.24
+        },
+        "gateaway": 0.01,
+        "idle": 20,
+        "shunting": 0,
+        "limitation": 0
+      }
+    ],
+    "passenger": [],
+    "work": [],
+    "reserve": [],
+    "pusher": []
+  }
+}

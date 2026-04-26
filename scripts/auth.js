@@ -2,6 +2,9 @@
     var AUTH_API_URL = API_BASE_URL + '/api/auth';
     var SHIFTS_API_URL = API_BASE_URL + '/api/shifts';
     var SALARY_PARAMS_API_URL = API_BASE_URL + '/api/salary-params';
+    var POEKHALI_LEARNING_API_URL = API_BASE_URL + '/api/poekhali-learning';
+    var POEKHALI_WARNINGS_API_URL = API_BASE_URL + '/api/poekhali-warnings';
+    var POEKHALI_RUNS_API_URL = API_BASE_URL + '/api/poekhali-runs';
     var USER_STATS_API_URL = API_BASE_URL + '/api/stats';
     var TELEGRAM_BOT_USERNAME = 'bloknot_mashinista_bot';
     var CURRENT_USER = null;
@@ -367,9 +370,10 @@
       var order = {
         home: 0,
         shifts: 1,
-        add: 2,
-        salary: 3,
-        instructions: 4
+        poekhali: 2,
+        add: 3,
+        salary: 4,
+        instructions: 5
       };
       var fromIndex = order.hasOwnProperty(fromTab) ? order[fromTab] : -1;
       var toIndex = order.hasOwnProperty(toTab) ? order[toTab] : -1;
@@ -410,6 +414,9 @@
       if (document.body && document.body.dataset) {
         delete document.body.dataset.shiftsMotion;
       }
+      if (document.body) {
+        document.body.classList.toggle('is-poekhali-mode', activeTab === 'poekhali');
+      }
       hasRenderedInitialTab = true;
 
       var navButtons = document.querySelectorAll('.tab-btn[data-tab]');
@@ -429,6 +436,9 @@
       renderInstallPromptCard();
       handleTabActivated(activeTab);
       renderDocumentationScreen();
+      if (typeof syncPoekhaliTrackerMode === 'function') {
+        syncPoekhaliTrackerMode(activeTab === 'poekhali');
+      }
       if (activeTab === 'home') {
         revealShiftListOnFirstMount(document.getElementById('homeShiftsList'));
       } else if (activeTab === 'shifts') {
@@ -728,7 +738,7 @@
       if (AUTH_ENV_STATE === 'dev') {
         if (!authBootstrapPromise) {
           authBootstrapPromise = Promise.resolve(null).then(function() {
-            CURRENT_USER = { id: 0, first_name: 'Dev', username: 'devuser' };
+            CURRENT_USER = { id: 'dev-local', first_name: 'Dev', username: 'devuser' };
             return CURRENT_USER;
           });
         }

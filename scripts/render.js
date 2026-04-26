@@ -822,7 +822,14 @@
         nightMin += shiftNightMinutesInRange(visibleManualShifts[j], bounds.start, bounds.end);
         holidayMin += shiftHolidayMinutesInRange(visibleManualShifts[j], bounds.start, bounds.end);
       }
-      var monthSalarySummary = calculateSalarySummaryByMinutes(totalMin, nightMin, holidayMin);
+      var salaryMonthKey = currentYear + '-' + String(currentMonth + 1).padStart(2, '0');
+      var salaryNormFromTableHours = WORK_NORMS[salaryMonthKey];
+      var salaryBaseNormMin = salaryNormFromTableHours !== undefined ? (salaryNormFromTableHours * 60) : 0;
+      var salaryNormSnapshot = getMonthNormSnapshot(currentYear, currentMonth, salaryBaseNormMin);
+      var salaryNormHours = appSettings && Number(appSettings.monthlyNormHours) > 0
+        ? Number(appSettings.monthlyNormHours)
+        : (salaryNormSnapshot.monthNormMin / 60);
+      var monthSalarySummary = calculateSalarySummaryByMinutes(totalMin, nightMin, holidayMin, salaryNormHours, visibleManualShifts.length);
       renderDeleteConfirmCard(shiftIncomeMap);
 
       // Norm
@@ -1775,6 +1782,14 @@
       if (!SHIFT_ACTIONS_MENU) return;
       var safeShiftId = escapeHtml(String(shiftId || ''));
       SHIFT_ACTIONS_MENU.innerHTML =
+        '<button class="shift-actions-item is-poekhali" type="button" data-action="poekhali" data-id="' + safeShiftId + '" role="menuitem">' +
+          '<span class="shift-actions-item-icon" aria-hidden="true">' +
+            '<svg viewBox="0 0 24 24" focusable="false">' +
+              '<path fill="currentColor" d="M12 3a9 9 0 0 1 8.94 8H18.9A7 7 0 1 0 11 18.9V21A9 9 0 0 1 12 3Zm.9 5.15 5.1 7.7a1 1 0 0 1-1.15 1.48l-3.85-1.37-3.85 1.37A1 1 0 0 1 8 15.85l5.1-7.7Zm.1 2.36-2.25 3.4 1.92-.68a1 1 0 0 1 .66 0l1.92.68L13 10.51Z"></path>' +
+            '</svg>' +
+          '</span>' +
+          '<span class="shift-actions-item-label">Поехали</span>' +
+        '</button>' +
         '<button class="shift-actions-item" type="button" data-action="edit" data-id="' + safeShiftId + '" role="menuitem">' +
           '<span class="shift-actions-item-icon" aria-hidden="true">' +
             '<svg viewBox="0 0 24 24" focusable="false">' +
@@ -1869,6 +1884,17 @@
         triggerHapticTapLight();
         enterEditMode(shift, { returnTab: activeTab });
         closeShiftActionsMenu(true);
+        return;
+      }
+
+      if (action === 'poekhali') {
+        triggerHapticSelection();
+        closeShiftActionsMenu(true);
+        if (typeof openPoekhaliForShift === 'function') {
+          openPoekhaliForShift(id);
+          return;
+        }
+        if (typeof setActiveTab === 'function') setActiveTab('poekhali');
         return;
       }
 

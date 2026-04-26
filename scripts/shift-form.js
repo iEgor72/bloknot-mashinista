@@ -615,6 +615,13 @@
         fuel_handover_liters_b: optionalData.fuel_handover_liters_b,
         fuel_handover_liters_v: optionalData.fuel_handover_liters_v
       };
+      if (existingShift) {
+        Object.keys(existingShift).forEach(function(key) {
+          if (key.indexOf('poekhali_') === 0 && shift[key] === undefined) {
+            shift[key] = existingShift[key];
+          }
+        });
+      }
       if (typeof inferShiftWorkCodeByLocalTime === 'function') {
         shift.code = inferShiftWorkCodeByLocalTime(shift) || '';
       }
@@ -891,6 +898,22 @@
         }
       });
     }
+    if (typeof SHIFT_DETAIL_CONTENT !== 'undefined' && SHIFT_DETAIL_CONTENT) {
+      SHIFT_DETAIL_CONTENT.addEventListener('click', function(e) {
+        var target = e.target && e.target.closest ? e.target.closest('[data-poekhali-shift-id]') : null;
+        if (!target || !SHIFT_DETAIL_CONTENT.contains(target)) return;
+        e.preventDefault();
+        e.stopPropagation();
+        var shiftId = target.getAttribute('data-poekhali-shift-id') || '';
+        if (!shiftId) return;
+        triggerHapticSelection();
+        if (typeof openPoekhaliForShift === 'function') {
+          openPoekhaliForShift(shiftId);
+          return;
+        }
+        if (typeof setActiveTab === 'function') setActiveTab('poekhali');
+      });
+    }
     var tabButtons = document.querySelectorAll('.tab-btn[data-tab]');
     for (var tb = 0; tb < tabButtons.length; tb++) {
       tabButtons[tb].addEventListener('click', function(e) {
@@ -930,6 +953,10 @@
         }, 20);
       });
     }
+    bindClickById('btnPoekhaliBack', function() {
+      triggerHapticSelection();
+      setActiveTab('home');
+    });
 
     bindClickById('btnCancelEdit', function() {
       exitEditMode();

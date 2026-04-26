@@ -2,11 +2,16 @@ data/
 !data/docs/
 !data/docs/catalog.json
 node_modules/
+__pycache__/
 artifacts/
+tmp/
+tmp-trainnote-*
 .env
 .wrangler/
 tmp_*.html
 .tmp-*.js
+tmp-*.png
+assets/tracker/icons/
 .claude/
 bot_avatar.png
 .agent-memory.local.json

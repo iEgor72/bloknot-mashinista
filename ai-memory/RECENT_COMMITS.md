@@ -1,9 +1,10 @@
 # Recent Commits
 
-Generated: 2026-04-25 08:06:26 +1000
+Generated: 2026-04-26 21:48:43 +1000
 
 | Hash | Date | Author | Message |
 | --- | --- | --- | --- |
+| `c631e1b` | 2026-04-25T08:06:39+10:00 | iEgor72 | chore(memory): refresh after legacy cleanup |
 | `bca0195` | 2026-04-25T08:06:25+10:00 | iEgor72 | refactor: remove legacy runtime dead code |
 | `379ec2e` | 2026-04-24T02:18:32Z | iEgor72 | fix(home): merge latest shift into calendar card |
 | `32b8524` | 2026-04-24T02:14:28Z | iEgor72 | feat(home): restore latest shift card |
@@ -43,4 +44,3 @@ Generated: 2026-04-25 08:06:26 +1000
 | `481f81a` | 2026-04-23T00:48:55Z | iEgor72 | style(shifts): make duration inline instead of badge |
 | `e20cd2c` | 2026-04-23T00:46:30Z | iEgor72 | revert(shifts): roll back earlier card styling |
 | `29cae4e` | 2026-04-23T00:46:10Z | iEgor72 | Revert "style(shifts): improve card readability" |
-| `7e2b456` | 2026-04-23T00:46:03Z | iEgor72 | Revert "style(shifts): render technical info as badges" |

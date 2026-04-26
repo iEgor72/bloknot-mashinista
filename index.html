@@ -292,6 +292,25 @@
         <div class="usage-stats-note" id="userStatsFooter" aria-live="polite">Сейчас онлайн: — · Всего пользователей: —</div>
       </section>
 
+      <!-- Poekhali Tab -->
+      <section class="tab-panel poekhali-panel" data-tab="poekhali">
+        <div class="poekhali-mode-shell" id="poekhaliModeShell">
+          <canvas id="poekhaliCanvas" class="poekhali-canvas" aria-label="Режим Поехали"></canvas>
+          <button class="poekhali-overlay-btn poekhali-back-btn" id="btnPoekhaliBack" type="button" aria-label="Назад" title="Назад">
+            <svg viewBox="0 0 24 24" aria-hidden="true">
+              <path d="M15 6 9 12l6 6"></path>
+            </svg>
+          </button>
+          <button class="poekhali-overlay-btn poekhali-k-btn" id="btnPoekhaliK" type="button" data-control-label="Формат" title="Формат координаты">K 1</button>
+          <button class="poekhali-overlay-btn poekhali-direction-btn" id="btnPoekhaliDirection" type="button" data-control-label="Напр." title="Направление движения">ЧЕТ</button>
+          <button class="poekhali-overlay-btn poekhali-way-btn" id="btnPoekhaliWay" type="button" data-control-label="Путь" title="Путь">П 1</button>
+          <button class="poekhali-overlay-btn poekhali-map-btn" id="btnPoekhaliMap" type="button" data-control-label="Карта" title="Электронная карта">ЭК</button>
+          <button class="poekhali-overlay-btn poekhali-gps-btn" id="poekhaliGpsStatus" type="button" data-control-label="Связь" title="Статус GPS">GPS</button>
+          <button class="poekhali-overlay-btn poekhali-ops-btn" id="btnPoekhaliOps" type="button" data-control-label="Панель" aria-label="Данные поездки, предупреждения и карта">Поездка</button>
+          <button class="poekhali-overlay-btn poekhali-timer-btn" id="btnPoekhaliTimer" type="button" data-control-label="Запись" title="Начать запись поездки">Старт</button>
+        </div>
+      </section>
+
 
       <!-- Add Shift Tab -->
       <section class="tab-panel" data-tab="add">
@@ -422,10 +441,26 @@
                   </div>
                   <select class="hidden" id="inputLocoSeries" tabindex="-1" aria-hidden="true">
                     <option value="" selected disabled hidden>Выберите серию</option>
-                    <option value="ТЭ10">ТЭ10</option>
-                    <option value="ТЭ25">ТЭ25</option>
-                    <option value="ТЭМ">ТЭМ</option>
-                    <option value="ЭС5">ЭС5</option>
+                    <option value="2ТЭ10М">2ТЭ10М</option>
+                    <option value="2ТЭ10У">2ТЭ10У</option>
+                    <option value="3ТЭ10У">3ТЭ10У</option>
+                    <option value="3ТЭ10МК">3ТЭ10МК</option>
+                    <option value="2ТЭ25КМ">2ТЭ25КМ</option>
+                    <option value="3ТЭ25К2М">3ТЭ25К2М</option>
+                    <option value="ТЭП70">ТЭП70</option>
+                    <option value="ТЭП70БС">ТЭП70БС</option>
+                    <option value="ТЭМ2">ТЭМ2</option>
+                    <option value="ТЭМ18">ТЭМ18</option>
+                    <option value="ТЭМ18ДМ">ТЭМ18ДМ</option>
+                    <option value="ЭС5К">ЭС5К</option>
+                    <option value="2ЭС5К">2ЭС5К</option>
+                    <option value="3ЭС5К">3ЭС5К</option>
+                    <option value="4ЭС5К">4ЭС5К</option>
+                    <option value="ЭС5С">ЭС5С</option>
+                    <option value="ВЛ80">ВЛ80</option>
+                    <option value="ВЛ85">ВЛ85</option>
+                    <option value="ЭП1">ЭП1</option>
+                    <option value="ЭП1М">ЭП1М</option>
                   </select>
                 </div>
                 <div class="field">
@@ -665,6 +700,35 @@
 
         <div class="salary-disclaimer">* Все суммы примерные. Это ориентир для будущего расчёта, а не точный расчет заработка.</div>
 
+        <div class="salary-card salary-poekhali-card" id="salaryPoekhaliCard">
+          <div class="salary-poekhali-head">
+            <div>
+              <div class="salary-poekhali-kicker">Поехали за месяц</div>
+              <div class="salary-poekhali-title" id="salaryPoekhaliTitle">Нет записей</div>
+            </div>
+            <div class="salary-poekhali-badge" id="salaryPoekhaliBadge">0</div>
+          </div>
+          <div class="salary-poekhali-grid">
+            <div class="salary-poekhali-cell">
+              <span>Пробег</span>
+              <strong id="salaryPoekhaliDistance">—</strong>
+            </div>
+            <div class="salary-poekhali-cell">
+              <span>Техскорость</span>
+              <strong id="salaryPoekhaliTechSpeed">—</strong>
+            </div>
+            <div class="salary-poekhali-cell">
+              <span>ПР</span>
+              <strong id="salaryPoekhaliWarnings">—</strong>
+            </div>
+            <div class="salary-poekhali-cell">
+              <span>Превышения</span>
+              <strong id="salaryPoekhaliOverspeed">—</strong>
+            </div>
+          </div>
+          <div class="salary-poekhali-note" id="salaryPoekhaliFuel" hidden></div>
+        </div>
+
         <div class="section-header section-header-row salary-section-header">
           <span>Основные начисления</span>
           <button class="icon-glass-btn" id="btnOpenSalarySettings" type="button" aria-label="Открыть параметры расчёта">
@@ -690,6 +754,10 @@
         <div class="section-header">Итого</div>
         <div class="salary-card">
           <div class="salary-summary-list">
+            <div class="salary-summary-row hidden" id="salaryKomRow">
+              <span>Командировочные</span>
+              <span id="salaryKom">0 ₽</span>
+            </div>
             <div class="salary-summary-row">
               <span>Начислено</span>
               <span id="salaryAccrued">0 ₽</span>
@@ -909,7 +977,7 @@
         <span class="tab-label">Смены</span>
       </button>
 
-      <!-- FAB — inline flex slot, 3rd position -->
+      <!-- FAB — inline grid slot, center action -->
       <button class="tab-btn nav-fab" type="button" data-tab="add" id="fab-add" aria-label="Новая смена">
         <div class="fab-btn">
           <svg viewBox="0 0 24 24" width="24" height="24" stroke="currentColor" fill="none" stroke-width="2.5" stroke-linecap="round">
@@ -967,6 +1035,7 @@
             <span class="settings-unit">₽/час</span>
           </div>
         </div>
+
       </div>
 
       <div class="settings-section-title">Доплаты (% от тарифа)</div>
@@ -989,6 +1058,28 @@
           </div>
           <div class="settings-inline-field">
             <input class="settings-input compact" id="settingClassPercent" type="number" min="0" step="1" />
+            <span class="settings-unit">%</span>
+          </div>
+        </div>
+
+        <div class="settings-row settings-row-stack">
+          <div>
+            <div class="settings-label">Зональная надбавка (%)</div>
+            <div class="settings-note">Поле zone из расчёта APK. 0% если нет</div>
+          </div>
+          <div class="settings-inline-field">
+            <input class="settings-input compact" id="settingZonePercent" type="number" min="0" step="1" />
+            <span class="settings-unit">%</span>
+          </div>
+        </div>
+
+        <div class="settings-row settings-row-stack">
+          <div>
+            <div class="settings-label">Бамовская надбавка (%)</div>
+            <div class="settings-note">Поле bam из расчёта APK. 0% если нет</div>
+          </div>
+          <div class="settings-inline-field">
+            <input class="settings-input compact" id="settingBamPercent" type="number" min="0" step="1" />
             <span class="settings-unit">%</span>
           </div>
         </div>
@@ -1026,6 +1117,20 @@
           <div class="settings-inline-field">
             <input class="settings-input compact" id="settingLocalPercent" type="number" min="0" step="1" />
             <span class="settings-unit">%</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="settings-section-title">Командировочные</div>
+      <div class="settings-card">
+        <div class="settings-row settings-row-stack">
+          <div>
+            <div class="settings-label">Ком. расходы за поездку</div>
+            <div class="settings-note">Пока считаются по числу смен в выбранном месяце</div>
+          </div>
+          <div class="settings-inline-field">
+            <input class="settings-input compact" id="settingKomPerTrip" type="number" min="0" step="1" />
+            <span class="settings-unit">₽</span>
           </div>
         </div>
       </div>
@@ -1161,6 +1266,7 @@
   <script src="/scripts/time-utils.js" defer></script>
   <script src="/scripts/docs-app.js" defer></script>
   <script src="/scripts/app.js" defer></script>
+  <script src="/scripts/poekhali-tracker.js" defer></script>
   <script src="/scripts/render.js" defer></script>
   <script src="/scripts/shift-form.js" defer></script>
   <script src="/scripts/app-init.js" defer></script>

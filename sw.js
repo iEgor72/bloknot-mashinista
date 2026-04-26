@@ -1,4 +1,4 @@
-const CACHE_VERSION = 'v51';
+const CACHE_VERSION = 'v185';
 const CACHE_NAME = `shift-tracker-shell-${CACHE_VERSION}`;
 const NAVIGATION_FALLBACK_URL = '/index.html';
 const NETWORK_TIMEOUT_MS = 1200;
@@ -31,6 +31,19 @@ const INSTALL_SHELL_URLS = [
   '/icon-192.png',
   '/icon-512.png',
   '/assets/fonts/plus-jakarta-sans/plus-jakarta-sans-cyrillic-ext.woff2',
+  '/assets/tracker/data.xml',
+  '/assets/tracker/profile.xml',
+  '/assets/tracker/maps/komsomol-sk-tche-9/data.xml',
+  '/assets/tracker/maps/komsomol-sk-tche-9/profile.xml',
+  '/assets/tracker/maps/komsomol-sk-tche-9/speed.xml',
+  '/assets/tracker/maps/komsomol-sk-tche-9/1.xml',
+  '/assets/tracker/maps/komsomol-sk-tche-9/1n.xml',
+  '/assets/tracker/maps/komsomol-sk-tche-9/2.xml',
+  '/assets/tracker/maps/komsomol-sk-tche-9/2n.xml',
+  '/assets/tracker/maps-manifest.json',
+  '/assets/tracker/tch9-reference.json',
+  '/assets/tracker/speed-docs.json',
+  '/assets/tracker/regime-maps.json',
   '/scripts/safe-area.js',
   '/scripts/nav-debug.js',
   '/scripts/utils/haptics.js',
@@ -40,6 +53,7 @@ const INSTALL_SHELL_URLS = [
   '/scripts/time-utils.js',
   '/scripts/docs-app.js',
   '/scripts/app.js',
+  '/scripts/poekhali-tracker.js',
   '/scripts/auth.js',
   '/scripts/render.js',
   '/scripts/shift-form.js',
@@ -62,12 +76,21 @@ const CRITICAL_INSTALL_URLS = [
   '/icon-192.png',
   '/icon-512.png',
   '/assets/fonts/plus-jakarta-sans/plus-jakarta-sans-cyrillic-ext.woff2',
+  '/assets/tracker/data.xml',
+  '/assets/tracker/profile.xml',
+  '/assets/tracker/maps/komsomol-sk-tche-9/data.xml',
+  '/assets/tracker/maps/komsomol-sk-tche-9/profile.xml',
+  '/assets/tracker/maps-manifest.json',
+  '/assets/tracker/tch9-reference.json',
+  '/assets/tracker/speed-docs.json',
+  '/assets/tracker/regime-maps.json',
   '/scripts/safe-area.js',
   '/scripts/app-constants.js',
   '/scripts/viewport.js',
   '/scripts/time-utils.js',
   '/scripts/docs-app.js',
   '/scripts/app.js',
+  '/scripts/poekhali-tracker.js',
   '/scripts/auth.js',
   '/scripts/render.js',
   '/scripts/shift-form.js',
@@ -85,7 +108,20 @@ const EXTENDED_SHELL_URLS = [
   '/assets/docs/manifest.json',
   '/assets/docs/vendor/jszip.min.js',
   '/assets/pdfjs/pdf.min.js',
-  '/assets/pdfjs/pdf.worker.min.js'
+  '/assets/pdfjs/pdf.worker.min.js',
+  '/assets/tracker/data.xml',
+  '/assets/tracker/profile.xml',
+  '/assets/tracker/maps/komsomol-sk-tche-9/data.xml',
+  '/assets/tracker/maps/komsomol-sk-tche-9/profile.xml',
+  '/assets/tracker/maps/komsomol-sk-tche-9/speed.xml',
+  '/assets/tracker/maps/komsomol-sk-tche-9/1.xml',
+  '/assets/tracker/maps/komsomol-sk-tche-9/1n.xml',
+  '/assets/tracker/maps/komsomol-sk-tche-9/2.xml',
+  '/assets/tracker/maps/komsomol-sk-tche-9/2n.xml',
+  '/assets/tracker/maps-manifest.json',
+  '/assets/tracker/tch9-reference.json',
+  '/assets/tracker/speed-docs.json',
+  '/assets/tracker/regime-maps.json'
 ];
 const INSTALL_SHELL_SET = new Set(INSTALL_SHELL_URLS.map((url) => normalizeShellUrl(url)).filter(Boolean));
 const CRITICAL_INSTALL_SET = new Set(CRITICAL_INSTALL_URLS.map((url) => normalizeShellUrl(url)).filter(Boolean));
@@ -133,6 +169,10 @@ self.addEventListener('fetch', (event) => {
   }
 
   if (isStaticAssetRequest(request, url)) {
+    if (isShellCodeRequest(request, url) || isTrackerDataRequest(url)) {
+      event.respondWith(networkFirstStatic(request));
+      return;
+    }
     event.respondWith(staleWhileRevalidate(request, event));
     return;
   }
@@ -287,6 +327,20 @@ function isStyleRequest(request) {
   }
 }
 
+function isShellCodeRequest(request, url) {
+  if (request.destination === 'script' || request.destination === 'style' || request.destination === 'worker') return true;
+  return url.pathname.startsWith('/scripts/') ||
+    url.pathname.startsWith('/styles/') ||
+    url.pathname === '/sw.js';
+}
+
+function isTrackerDataRequest(url) {
+  return url.pathname === '/assets/tracker/maps-manifest.json' ||
+    url.pathname === '/assets/tracker/tch9-reference.json' ||
+    url.pathname === '/assets/tracker/speed-docs.json' ||
+    url.pathname === '/assets/tracker/regime-maps.json';
+}
+
 function isDocsAssetRequest(request) {
   if (!request) return false;
 
@@ -358,10 +412,10 @@ async function networkFirstDocument(request) {
     })
     .catch(() => null);
 
-  if (cached) return cached;
-
   const fastResponse = await withTimeout(networkPromise, NETWORK_TIMEOUT_MS);
   if (fastResponse) return fastResponse;
+
+  if (cached) return cached;
 
   if (allowAppShellFallback) {
     const fallback =
@@ -419,6 +473,36 @@ async function staleWhileRevalidate(request, event) {
   }
 
   throw new Error('Asset unavailable');
+}
+
+async function networkFirstStatic(request) {
+  const cache = await caches.open(CACHE_NAME);
+  const networkPromise = fetch(request, { cache: 'no-store' })
+    .then((response) => {
+      if (response && response.ok) {
+        cache.put(request, response.clone());
+      }
+      return response;
+    })
+    .catch(() => null);
+
+  const response = await withTimeout(networkPromise, ASSET_NETWORK_TIMEOUT_MS);
+  if (response) return response;
+
+  const cached = await cache.match(request, { ignoreSearch: true });
+  if (cached) return cached;
+
+  if (isStyleRequest(request)) {
+    return new Response('', {
+      status: 200,
+      headers: {
+        'Content-Type': 'text/css; charset=utf-8',
+        'Cache-Control': 'no-store'
+      }
+    });
+  }
+
+  throw new Error('Static asset unavailable');
 }
 
 async function cacheFirst(request) {

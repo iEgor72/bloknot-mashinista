@@ -252,9 +252,29 @@
     }
 
     var DOC_DISPLAY_META_BY_PATH = {
+      '/assets/docs/instructions/1357р безопасное нахождение на ж.д. путях.docx': {
+        title: 'Безопасное нахождение на ж.д. путях',
+        subtitle: '1357р'
+      },
       '/assets/docs/instructions/2580p.docx': {
         title: 'Действия в аварийных и нестандартных ситуациях',
         subtitle: '2580р от 12.12.2017'
+      },
+      '/assets/docs/instructions/ИОТ ТЧЭ-9-002-2023.pdf': {
+        title: 'Инструкция по охране труда',
+        subtitle: 'ИОТ ТЧЭ-9-002-2023'
+      },
+      '/assets/docs/instructions/ИОТ ТЧЭ-9-003-2023.pdf': {
+        title: 'Инструкция по охране труда',
+        subtitle: 'ИОТ ТЧЭ-9-003-2023'
+      },
+      '/assets/docs/instructions/ПТЭ приказ 250.pdf': {
+        title: 'ПТЭ',
+        subtitle: 'приказ 250'
+      },
+      '/assets/docs/instructions/Распоряжение ЦТ-5р Методика КСОТ-П.pdf': {
+        title: 'Методика КСОТ-П',
+        subtitle: 'Распоряжение ЦТ-5р'
       },
       '/assets/docs/speeds/Скоростя БАМ Парк Д Приказ № 161.pdf': {
         title: 'Скорости БАМ',

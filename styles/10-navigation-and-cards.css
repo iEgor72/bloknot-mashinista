@@ -507,6 +507,1488 @@
 
     .dashboard-card > * { position: relative; z-index: 1; }
 
+    body.is-poekhali-mode {
+      --app-shell-bottom-reserve: 92px;
+      --page-padding-top: 0px;
+      --page-padding-bottom: 92px;
+      background: var(--bg);
+    }
+
+    body.is-poekhali-mode .app-shell {
+      padding: 0;
+      max-width: none;
+      min-height: 100vh;
+      background: var(--bg);
+    }
+
+    body.is-poekhali-mode .app-content {
+      padding: 0;
+      min-height: 100vh;
+    }
+
+    body.is-poekhali-mode .bottom-nav {
+      display: grid;
+      grid-template-columns: repeat(5, minmax(0, 1fr));
+      gap: 2px;
+    }
+
+    .poekhali-panel {
+      min-height: 100vh;
+      margin: 0;
+    }
+
+    .poekhali-mode-shell {
+      position: relative;
+      overflow: hidden;
+      min-height: 100vh;
+      background: linear-gradient(180deg, #11131b 0%, var(--bg) 54%, #090a0f 100%);
+      color: var(--text);
+      touch-action: manipulation;
+    }
+
+    .poekhali-canvas {
+      display: block;
+      width: 100%;
+      height: 100vh;
+      background: var(--bg);
+    }
+
+    .poekhali-overlay-btn {
+      position: absolute;
+      z-index: 2;
+      min-width: 44px;
+      height: 38px;
+      padding: 0 10px;
+      border: 1px solid var(--border-hi);
+      border-radius: var(--r-inner);
+      background: rgba(19, 19, 24, 0.84);
+      color: var(--text);
+      font: 800 13px/1 'Plus Jakarta Sans', system-ui, sans-serif;
+      letter-spacing: 0;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      box-shadow: 0 10px 24px rgba(0, 0, 0, 0.24);
+      backdrop-filter: blur(12px);
+      -webkit-tap-highlight-color: transparent;
+    }
+
+    .poekhali-overlay-btn[data-control-label] {
+      height: 42px;
+      padding: 4px 8px 5px;
+      flex-direction: column;
+      gap: 2px;
+      line-height: 1;
+    }
+
+    .poekhali-overlay-btn[data-control-label]::before {
+      content: attr(data-control-label);
+      max-width: 100%;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+      color: var(--sub);
+      font-size: 7.5px;
+      font-weight: 850;
+      line-height: 1;
+      text-transform: uppercase;
+    }
+
+    .poekhali-overlay-btn svg {
+      width: 22px;
+      height: 22px;
+      fill: none;
+      stroke: currentColor;
+      stroke-width: 2.2;
+      stroke-linecap: round;
+      stroke-linejoin: round;
+    }
+
+    .poekhali-overlay-btn:active {
+      background: var(--accent-dim);
+      border-color: rgba(56, 189, 248, 0.28);
+      transform: translateY(1px);
+    }
+
+    .poekhali-overlay-btn.is-hidden {
+      display: none;
+    }
+
+    .poekhali-back-btn {
+      top: max(10px, env(safe-area-inset-top));
+      left: max(10px, env(safe-area-inset-left));
+      width: 44px;
+      padding: 0;
+    }
+
+    .poekhali-k-btn {
+      top: max(10px, env(safe-area-inset-top));
+      left: calc(max(10px, env(safe-area-inset-left)) + 52px);
+      width: 54px;
+    }
+
+    .poekhali-direction-btn {
+      top: max(10px, env(safe-area-inset-top));
+      left: calc(max(10px, env(safe-area-inset-left)) + 114px);
+      width: 70px;
+    }
+
+    .poekhali-way-btn {
+      top: max(10px, env(safe-area-inset-top));
+      left: calc(max(10px, env(safe-area-inset-left)) + 192px);
+      width: 56px;
+    }
+
+    .poekhali-map-btn {
+      top: max(10px, env(safe-area-inset-top));
+      left: calc(max(10px, env(safe-area-inset-left)) + 256px);
+      width: 58px;
+    }
+
+    .poekhali-gps-btn {
+      top: max(10px, env(safe-area-inset-top));
+      right: max(10px, env(safe-area-inset-right));
+      min-width: 68px;
+      color: var(--sub);
+    }
+
+    .poekhali-gps-btn.is-live {
+      color: var(--green);
+      background: var(--green-dim);
+      border-color: rgba(74, 222, 128, 0.26);
+    }
+
+    .poekhali-gps-btn.is-error {
+      color: var(--danger);
+      background: var(--color-danger-soft);
+      border-color: var(--color-danger-border);
+    }
+
+    .poekhali-timer-btn {
+      left: 50%;
+      bottom: calc(94px + env(safe-area-inset-bottom));
+      min-width: 96px;
+      transform: translateX(-50%);
+      background: var(--accent-dim);
+      border-color: rgba(56, 189, 248, 0.28);
+      color: var(--accent-strong);
+      font-variant-numeric: tabular-nums;
+    }
+
+    .poekhali-timer-btn:active {
+      transform: translateX(-50%) translateY(1px);
+    }
+
+    .poekhali-ops-btn {
+      left: calc(50% + 60px);
+      bottom: calc(94px + env(safe-area-inset-bottom));
+      min-width: 74px;
+      background: rgba(56, 189, 248, 0.10);
+      border-color: rgba(56, 189, 248, 0.22);
+      color: var(--accent-strong);
+    }
+
+    .poekhali-ops-btn.has-warnings {
+      min-width: 54px;
+      color: #fda4af;
+      background: rgba(244, 63, 94, 0.14);
+      border-color: rgba(251, 113, 133, 0.30);
+    }
+
+    .poekhali-ops-sheet {
+      position: absolute;
+      inset: 0;
+      z-index: 7;
+      display: grid;
+      align-items: end;
+      padding: 16px 16px calc(96px + env(safe-area-inset-bottom));
+      pointer-events: auto;
+    }
+
+    .poekhali-ops-sheet.hidden {
+      display: none;
+    }
+
+    .poekhali-ops-panel {
+      position: relative;
+      width: min(448px, 100%);
+      max-height: min(84vh, 680px);
+      margin: 0 auto;
+      overflow-y: auto;
+      overscroll-behavior: contain;
+      border: 1px solid var(--border);
+      border-radius: 22px;
+      background: rgba(19, 19, 24, 0.97);
+      box-shadow: 0 24px 60px rgba(0, 0, 0, 0.44);
+      padding: 14px;
+    }
+
+    .poekhali-ops-content {
+      display: grid;
+      gap: 10px;
+    }
+
+    .poekhali-ops-tabs {
+      display: grid;
+      grid-template-columns: repeat(var(--poekhali-ops-tab-count, 3), minmax(0, 1fr));
+      gap: 4px;
+      padding: 4px;
+      border-radius: 14px;
+      background: rgba(255, 255, 255, 0.045);
+      border: 1px solid rgba(255, 255, 255, 0.06);
+    }
+
+    .poekhali-ops-tab {
+      appearance: none;
+      border: 0;
+      min-width: 0;
+      min-height: 34px;
+      border-radius: 11px;
+      padding: 0 6px;
+      background: transparent;
+      color: var(--sub);
+      font: 850 11px/1 'Plus Jakarta Sans', system-ui, sans-serif;
+      letter-spacing: 0;
+      white-space: nowrap;
+    }
+
+    .poekhali-ops-tab.is-active {
+      color: var(--text);
+      background: rgba(255, 255, 255, 0.09);
+      box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.06);
+    }
+
+    @media (max-width: 340px) {
+      .poekhali-ops-tabs {
+        gap: 3px;
+        padding: 3px;
+      }
+
+      .poekhali-ops-tab {
+        min-height: 32px;
+        padding: 0 3px;
+        font-size: 10px;
+      }
+    }
+
+    .poekhali-ops-section {
+      display: grid;
+      gap: 10px;
+      padding: 12px;
+      border: 1px solid rgba(255, 255, 255, 0.07);
+      border-radius: 18px;
+      background: rgba(255, 255, 255, 0.035);
+    }
+
+    .poekhali-user-ready.is-ready {
+      border-color: rgba(74, 222, 128, 0.22);
+      background: linear-gradient(180deg, rgba(74, 222, 128, 0.10), rgba(255, 255, 255, 0.035));
+    }
+
+    .poekhali-user-ready.is-waiting {
+      border-color: rgba(56, 189, 248, 0.20);
+      background: linear-gradient(180deg, rgba(56, 189, 248, 0.10), rgba(255, 255, 255, 0.035));
+    }
+
+    .poekhali-user-ready.is-blocked {
+      border-color: rgba(244, 63, 94, 0.24);
+      background: linear-gradient(180deg, rgba(244, 63, 94, 0.10), rgba(255, 255, 255, 0.035));
+    }
+
+    .poekhali-ready-headline {
+      min-width: 0;
+      color: var(--text);
+      font: 900 18px/1.16 'Plus Jakarta Sans', system-ui, sans-serif;
+      overflow-wrap: anywhere;
+    }
+
+    .poekhali-trip-actions {
+      grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
+    }
+
+    .poekhali-ops-section-head {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 10px;
+      color: var(--text);
+      font: 850 12px/1.2 'Plus Jakarta Sans', system-ui, sans-serif;
+    }
+
+    .poekhali-ops-total {
+      color: var(--sub);
+      font-size: 10px;
+      font-weight: 850;
+      text-align: right;
+    }
+
+    .poekhali-shift-info-grid,
+    .poekhali-ops-grid {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 8px;
+    }
+
+    .poekhali-ops-grid.is-warning-grid {
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+    }
+
+    .poekhali-diagnostics-grid {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+
+    .poekhali-diagnostics-grid .poekhali-shift-info-cell strong {
+      font-size: 12px;
+    }
+
+    .poekhali-shift-info-cell,
+    .poekhali-ops-field {
+      min-width: 0;
+      display: grid;
+      gap: 5px;
+      padding: 9px;
+      border: 1px solid rgba(255, 255, 255, 0.06);
+      border-radius: 14px;
+      background: rgba(9, 10, 15, 0.44);
+    }
+
+    .poekhali-shift-info-cell span,
+    .poekhali-ops-field span {
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+      color: var(--sub);
+      font-size: 9px;
+      font-weight: 850;
+      line-height: 1.1;
+      text-transform: uppercase;
+    }
+
+    .poekhali-shift-info-cell strong {
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+      color: var(--text);
+      font-size: 13px;
+      line-height: 1.15;
+      font-weight: 850;
+    }
+
+    .poekhali-shift-info-cell.is-muted strong {
+      color: rgba(136, 146, 164, 0.72);
+    }
+
+    .poekhali-shift-info-cell.is-success strong {
+      color: var(--green);
+    }
+
+    .poekhali-shift-info-cell.is-danger strong {
+      color: var(--danger);
+    }
+
+    .poekhali-shift-info-cell.is-warning strong {
+      color: #fde68a;
+    }
+
+    .poekhali-shift-route {
+      min-height: 34px;
+      padding: 9px 10px;
+      border-radius: 14px;
+      background: rgba(56, 189, 248, 0.08);
+      color: var(--text);
+      font: 750 12px/1.3 'Plus Jakarta Sans', system-ui, sans-serif;
+    }
+
+    .poekhali-shift-route.is-success {
+      background: rgba(74, 222, 128, 0.10);
+      color: rgba(238, 242, 248, 0.90);
+      border: 1px solid rgba(74, 222, 128, 0.16);
+    }
+
+    .poekhali-shift-route.is-warning {
+      background: rgba(250, 204, 21, 0.09);
+      color: rgba(254, 240, 138, 0.94);
+      border: 1px solid rgba(250, 204, 21, 0.18);
+    }
+
+    .poekhali-shift-route.is-muted {
+      background: rgba(255, 255, 255, 0.045);
+      color: var(--sub);
+    }
+
+    .poekhali-shift-route.is-danger {
+      background: rgba(244, 63, 94, 0.10);
+      color: rgba(253, 164, 175, 0.94);
+      border: 1px solid rgba(251, 113, 133, 0.16);
+    }
+
+    .poekhali-shift-picker {
+      display: grid;
+      gap: 8px;
+    }
+
+    .poekhali-conflict-list {
+      display: grid;
+      gap: 7px;
+    }
+
+    .poekhali-conflict-row {
+      appearance: none;
+      width: 100%;
+      min-width: 0;
+      display: grid;
+      grid-template-columns: minmax(0, 1fr) auto;
+      align-items: center;
+      gap: 8px;
+      padding: 9px;
+      border-radius: 14px;
+      border: 1px solid rgba(250, 204, 21, 0.18);
+      background: rgba(113, 63, 18, 0.16);
+      color: var(--text);
+      text-align: left;
+    }
+
+    .poekhali-conflict-row.is-success {
+      border-color: rgba(34, 197, 94, 0.18);
+      background: rgba(34, 197, 94, 0.07);
+    }
+
+    .poekhali-conflict-row.is-danger {
+      border-color: rgba(244, 63, 94, 0.20);
+      background: rgba(244, 63, 94, 0.09);
+    }
+
+    .poekhali-conflict-text {
+      min-width: 0;
+      display: grid;
+      gap: 3px;
+    }
+
+    .poekhali-conflict-text strong,
+    .poekhali-conflict-text span,
+    .poekhali-conflict-text small {
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+
+    .poekhali-conflict-text strong {
+      color: #fde68a;
+      font-size: 12px;
+      line-height: 1.2;
+      font-weight: 850;
+    }
+
+    .poekhali-conflict-text span {
+      color: rgba(238, 242, 248, 0.82);
+      font-size: 11px;
+      line-height: 1.2;
+      font-weight: 750;
+    }
+
+    .poekhali-conflict-text small {
+      color: var(--sub);
+      font-size: 10px;
+      line-height: 1.2;
+      font-weight: 750;
+    }
+
+    .poekhali-conflict-badge {
+      display: grid;
+      place-items: center;
+      min-width: 54px;
+      height: 24px;
+      padding: 0 8px;
+      border-radius: 999px;
+      background: rgba(250, 204, 21, 0.14);
+      border: 1px solid rgba(250, 204, 21, 0.22);
+      color: #fde68a;
+      font: 850 10px/1 'Plus Jakarta Sans', system-ui, sans-serif;
+      text-transform: uppercase;
+    }
+
+    .poekhali-conflict-more {
+      padding: 3px 2px 0;
+      color: var(--sub);
+      font: 800 10px/1.2 'Plus Jakarta Sans', system-ui, sans-serif;
+      text-align: center;
+    }
+
+    .poekhali-conflict-card {
+      position: absolute;
+      left: max(12px, env(safe-area-inset-left));
+      right: max(12px, env(safe-area-inset-right));
+      bottom: calc(154px + env(safe-area-inset-bottom));
+      z-index: 6;
+      display: block;
+      pointer-events: auto;
+    }
+
+    .poekhali-conflict-card.hidden {
+      display: none;
+    }
+
+    .poekhali-conflict-card-content {
+      width: min(430px, 100%);
+      margin: 0 auto;
+      display: grid;
+      gap: 9px;
+      padding: 12px;
+      border-radius: 18px;
+      border: 1px solid rgba(250, 204, 21, 0.22);
+      background:
+        linear-gradient(180deg, rgba(113, 63, 18, 0.32), rgba(19, 19, 24, 0.96)),
+        rgba(19, 19, 24, 0.96);
+      box-shadow: 0 18px 46px rgba(0, 0, 0, 0.44);
+      backdrop-filter: blur(16px);
+    }
+
+    .poekhali-conflict-card-head {
+      display: grid;
+      grid-template-columns: minmax(0, 1fr) auto;
+      align-items: start;
+      gap: 10px;
+    }
+
+    .poekhali-conflict-card-head div {
+      min-width: 0;
+      display: grid;
+      gap: 3px;
+    }
+
+    .poekhali-conflict-card-head strong,
+    .poekhali-conflict-card-head span,
+    .poekhali-conflict-card-source {
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+
+    .poekhali-conflict-card-head strong {
+      color: #fde68a;
+      font: 850 13px/1.15 'Plus Jakarta Sans', system-ui, sans-serif;
+    }
+
+    .poekhali-conflict-card-head span {
+      color: rgba(238, 242, 248, 0.80);
+      font: 750 11px/1.2 'Plus Jakarta Sans', system-ui, sans-serif;
+    }
+
+    .poekhali-conflict-card-close {
+      appearance: none;
+      width: 30px;
+      height: 30px;
+      border: 1px solid rgba(250, 204, 21, 0.20);
+      border-radius: 10px;
+      background: rgba(9, 10, 15, 0.38);
+      color: #fde68a;
+      font: 850 18px/1 'Plus Jakarta Sans', system-ui, sans-serif;
+    }
+
+    .poekhali-conflict-metrics {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(70px, 1fr));
+      gap: 7px;
+    }
+
+    .poekhali-conflict-metric {
+      min-width: 0;
+      display: grid;
+      gap: 4px;
+      padding: 8px;
+      border-radius: 12px;
+      background: rgba(9, 10, 15, 0.42);
+      border: 1px solid rgba(255, 255, 255, 0.06);
+    }
+
+    .poekhali-conflict-metric span {
+      color: var(--sub);
+      font: 850 8px/1.1 'Plus Jakarta Sans', system-ui, sans-serif;
+      text-transform: uppercase;
+    }
+
+    .poekhali-conflict-metric strong {
+      color: var(--text);
+      font: 850 14px/1 'Plus Jakarta Sans', system-ui, sans-serif;
+    }
+
+    .poekhali-conflict-metric.is-warning strong {
+      color: #fde68a;
+    }
+
+    .poekhali-conflict-metric.is-info strong {
+      color: var(--accent-strong);
+    }
+
+    .poekhali-conflict-metric.is-muted strong {
+      color: rgba(238, 242, 248, 0.66);
+    }
+
+    .poekhali-conflict-metric.is-success strong {
+      color: var(--green);
+    }
+
+    .poekhali-conflict-metric.is-danger strong {
+      color: #fda4af;
+    }
+
+    .poekhali-conflict-card-note {
+      color: rgba(238, 242, 248, 0.84);
+      font: 750 11px/1.25 'Plus Jakarta Sans', system-ui, sans-serif;
+    }
+
+    .poekhali-conflict-card-fragment {
+      display: grid;
+      gap: 4px;
+      padding: 9px;
+      border-radius: 12px;
+      border: 1px solid rgba(250, 204, 21, 0.14);
+      background: rgba(9, 10, 15, 0.38);
+      color: rgba(238, 242, 248, 0.88);
+      font: 750 11px/1.28 'Plus Jakarta Sans', system-ui, sans-serif;
+      overflow-wrap: anywhere;
+    }
+
+    .poekhali-conflict-card-fragment span {
+      color: var(--sub);
+      font: 800 8px/1 'Plus Jakarta Sans', system-ui, sans-serif;
+      letter-spacing: 0;
+      text-transform: uppercase;
+    }
+
+    .poekhali-conflict-card-fragment b {
+      font: inherit;
+      color: inherit;
+    }
+
+    .poekhali-conflict-card-source {
+      color: var(--sub);
+      font: 750 10px/1.2 'Plus Jakarta Sans', system-ui, sans-serif;
+    }
+
+    .poekhali-conflict-card-actions {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 7px;
+    }
+
+    .poekhali-conflict-card-actions .poekhali-secondary-action,
+    .poekhali-conflict-card-actions .poekhali-primary-action,
+    .poekhali-conflict-card-actions .poekhali-warning-delete {
+      min-height: 34px;
+      padding: 0 8px;
+      font-size: 10px;
+    }
+
+    .poekhali-map-health-list {
+      display: grid;
+      gap: 7px;
+    }
+
+    .poekhali-map-health-row {
+      appearance: none;
+      width: 100%;
+      min-width: 0;
+      display: grid;
+      grid-template-columns: minmax(0, 1fr) auto;
+      align-items: center;
+      gap: 9px;
+      border: 1px solid rgba(250, 204, 21, 0.16);
+      border-radius: 13px;
+      background: rgba(250, 204, 21, 0.07);
+      padding: 9px;
+      color: var(--text);
+      text-align: left;
+      font-family: 'Plus Jakarta Sans', system-ui, sans-serif;
+      letter-spacing: 0;
+    }
+
+    .poekhali-map-health-row.is-blocked {
+      border-color: rgba(244, 63, 94, 0.18);
+      background: rgba(244, 63, 94, 0.08);
+    }
+
+    .poekhali-map-health-row.is-ready {
+      border-color: rgba(34, 197, 94, 0.18);
+      background: rgba(34, 197, 94, 0.07);
+    }
+
+    div.poekhali-map-health-row {
+      cursor: default;
+    }
+
+    .poekhali-map-health-text {
+      min-width: 0;
+      display: grid;
+      gap: 3px;
+    }
+
+    .poekhali-map-health-text strong,
+    .poekhali-map-health-text span {
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+
+    .poekhali-map-health-text strong {
+      color: rgba(238, 242, 248, 0.94);
+      font-size: 12px;
+      line-height: 1.2;
+      font-weight: 850;
+    }
+
+    .poekhali-map-health-text span {
+      color: var(--sub);
+      font-size: 10px;
+      line-height: 1.25;
+      font-weight: 750;
+    }
+
+    .poekhali-map-health-badge {
+      display: grid;
+      place-items: center;
+      min-width: 46px;
+      height: 25px;
+      border-radius: 999px;
+      border: 1px solid rgba(56, 189, 248, 0.20);
+      background: rgba(56, 189, 248, 0.10);
+      color: var(--accent-strong);
+      font-size: 9px;
+      font-weight: 900;
+      white-space: nowrap;
+    }
+
+    .poekhali-map-health-more {
+      padding: 2px 4px;
+      color: var(--sub);
+      font: 800 10px/1.2 'Plus Jakarta Sans', system-ui, sans-serif;
+      text-align: center;
+    }
+
+    .poekhali-ops-field input,
+    .poekhali-ops-field select,
+    .poekhali-ops-field textarea {
+      min-width: 0;
+      width: 100%;
+      border: 1px solid rgba(255, 255, 255, 0.08);
+      border-radius: 11px;
+      background: rgba(19, 19, 24, 0.90);
+      color: var(--text);
+      font: 850 13px/1 'Plus Jakarta Sans', system-ui, sans-serif;
+      letter-spacing: 0;
+      outline: none;
+    }
+
+    .poekhali-ops-field input,
+    .poekhali-ops-field select {
+      height: 32px;
+      padding: 0 8px;
+    }
+
+    .poekhali-ops-field textarea {
+      min-height: 92px;
+      resize: vertical;
+      padding: 8px;
+      line-height: 1.25;
+    }
+
+    .poekhali-ops-field.is-wide {
+      grid-column: 1 / -1;
+    }
+
+    .poekhali-ops-field input:focus,
+    .poekhali-ops-field select:focus,
+    .poekhali-ops-field textarea:focus {
+      border-color: rgba(56, 189, 248, 0.38);
+      box-shadow: 0 0 0 3px rgba(56, 189, 248, 0.10);
+    }
+
+    .poekhali-secondary-action,
+    .poekhali-primary-action,
+    .poekhali-warning-action,
+    .poekhali-warning-delete {
+      appearance: none;
+      border: 0;
+      border-radius: 13px;
+      min-height: 38px;
+      padding: 0 12px;
+      font: 850 12px/1 'Plus Jakarta Sans', system-ui, sans-serif;
+      letter-spacing: 0;
+      color: var(--text);
+    }
+
+    .poekhali-secondary-action {
+      background: rgba(255, 255, 255, 0.07);
+    }
+
+    .poekhali-primary-action {
+      background: var(--accent-dim);
+      color: var(--accent-strong);
+      border: 1px solid rgba(56, 189, 248, 0.20);
+    }
+
+    .poekhali-warning-form-actions {
+      display: grid;
+      grid-template-columns: minmax(0, 1fr);
+      gap: 8px;
+    }
+
+    .poekhali-warning-form-actions:has(.poekhali-secondary-action) {
+      grid-template-columns: minmax(0, 1fr) auto;
+    }
+
+    .poekhali-backup-actions {
+      grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
+    }
+
+    .poekhali-warning-file-input {
+      display: none;
+    }
+
+    .poekhali-ops-grid.is-user-section-meta {
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+    }
+
+    .poekhali-ops-grid.is-user-section-meta .poekhali-ops-field:first-child {
+      grid-column: 1 / -1;
+    }
+
+    .poekhali-user-entity-list {
+      display: grid;
+      gap: 7px;
+    }
+
+    .poekhali-user-entity-row {
+      display: grid;
+      grid-template-columns: minmax(0, 1fr) auto;
+      align-items: center;
+      gap: 8px;
+      padding: 9px;
+      border-radius: 14px;
+      background: rgba(56, 189, 248, 0.07);
+      border: 1px solid rgba(56, 189, 248, 0.16);
+    }
+
+    .poekhali-user-entity-row.is-editing {
+      border-color: rgba(34, 197, 94, 0.42);
+      background: rgba(34, 197, 94, 0.10);
+    }
+
+    .poekhali-user-entity-row .poekhali-warning-text strong {
+      color: rgba(186, 230, 253, 0.96);
+    }
+
+    .poekhali-user-entity-row .poekhali-warning-text span {
+      color: rgba(203, 213, 225, 0.78);
+    }
+
+    .poekhali-user-history-list {
+      display: grid;
+      gap: 6px;
+      padding: 8px 9px;
+      border-radius: 14px;
+      background: rgba(255, 255, 255, 0.035);
+      border: 1px solid rgba(255, 255, 255, 0.06);
+    }
+
+    .poekhali-user-history-row {
+      min-width: 0;
+      display: grid;
+      grid-template-columns: minmax(0, 1fr) auto;
+      align-items: center;
+      gap: 8px;
+      color: var(--sub);
+      font: 750 10px/1.25 'Plus Jakarta Sans', system-ui, sans-serif;
+    }
+
+    .poekhali-user-history-row span {
+      min-width: 0;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+
+    .poekhali-user-history-row small {
+      color: rgba(203, 213, 225, 0.62);
+      font: inherit;
+      white-space: nowrap;
+    }
+
+    .poekhali-warning-list {
+      display: grid;
+      gap: 7px;
+    }
+
+    .poekhali-warning-row {
+      display: grid;
+      grid-template-columns: minmax(0, 1fr) auto;
+      align-items: center;
+      gap: 8px;
+      padding: 9px;
+      border-radius: 14px;
+      background: rgba(244, 63, 94, 0.08);
+      border: 1px solid rgba(251, 113, 133, 0.16);
+    }
+
+    .poekhali-warning-row.is-ahead {
+      background: rgba(250, 204, 21, 0.08);
+      border-color: rgba(250, 204, 21, 0.18);
+    }
+
+    .poekhali-warning-row.is-passed,
+    .poekhali-warning-row.is-disabled,
+    .poekhali-warning-row.is-expired {
+      background: rgba(255, 255, 255, 0.035);
+      border-color: rgba(255, 255, 255, 0.075);
+      opacity: 0.74;
+    }
+
+    .poekhali-warning-row.is-editing {
+      border-color: rgba(56, 189, 248, 0.36);
+      box-shadow: 0 0 0 1px rgba(56, 189, 248, 0.12) inset;
+    }
+
+    .poekhali-warning-text {
+      min-width: 0;
+      display: grid;
+      gap: 3px;
+    }
+
+    .poekhali-warning-text strong,
+    .poekhali-warning-text span,
+    .poekhali-warning-status {
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+
+    .poekhali-warning-text strong {
+      color: #fda4af;
+      font-size: 12px;
+      line-height: 1.2;
+      font-weight: 850;
+    }
+
+    .poekhali-warning-text span,
+    .poekhali-warning-empty {
+      color: var(--sub);
+      font-size: 10px;
+      line-height: 1.25;
+      font-weight: 750;
+    }
+
+    .poekhali-warning-status {
+      color: rgba(74, 222, 128, 0.86);
+      font-size: 10px;
+      line-height: 1.2;
+      font-weight: 850;
+      text-transform: uppercase;
+    }
+
+    .poekhali-warning-row.is-ahead .poekhali-warning-status {
+      color: #fde68a;
+    }
+
+    .poekhali-warning-row.is-passed .poekhali-warning-status,
+    .poekhali-warning-row.is-disabled .poekhali-warning-status,
+    .poekhali-warning-row.is-expired .poekhali-warning-status {
+      color: var(--sub);
+    }
+
+    .poekhali-warning-actions {
+      display: grid;
+      grid-auto-flow: column;
+      grid-auto-columns: max-content;
+      gap: 6px;
+      align-items: center;
+    }
+
+    .poekhali-warning-action {
+      min-height: 32px;
+      padding: 0 9px;
+      color: var(--accent-strong);
+      background: rgba(56, 189, 248, 0.10);
+      border: 1px solid rgba(56, 189, 248, 0.16);
+    }
+
+    .poekhali-warning-action.is-disable {
+      color: #fde68a;
+      background: rgba(250, 204, 21, 0.10);
+      border-color: rgba(250, 204, 21, 0.18);
+    }
+
+    .poekhali-warning-action.is-enable {
+      color: var(--green);
+      background: rgba(74, 222, 128, 0.10);
+      border-color: rgba(74, 222, 128, 0.18);
+    }
+
+    .poekhali-warning-delete {
+      min-height: 32px;
+      color: #fda4af;
+      background: rgba(244, 63, 94, 0.12);
+      border: 1px solid rgba(251, 113, 133, 0.18);
+    }
+
+    .poekhali-warning-empty {
+      padding: 10px;
+      border-radius: 13px;
+      background: rgba(255, 255, 255, 0.035);
+      text-align: center;
+    }
+
+    .poekhali-map-sheet {
+      position: absolute;
+      inset: 0;
+      z-index: 6;
+      display: grid;
+      align-items: end;
+      padding: 16px 16px calc(96px + env(safe-area-inset-bottom));
+      pointer-events: auto;
+    }
+
+    .poekhali-map-sheet.hidden {
+      display: none;
+    }
+
+    .poekhali-map-sheet-backdrop {
+      position: absolute;
+      inset: 0;
+      border: 0;
+      background: rgba(5, 6, 10, 0.54);
+      backdrop-filter: blur(8px);
+      -webkit-backdrop-filter: blur(8px);
+    }
+
+    .poekhali-map-sheet-panel {
+      position: relative;
+      width: min(448px, 100%);
+      margin: 0 auto;
+      border: 1px solid var(--border);
+      border-radius: 22px;
+      background: rgba(19, 19, 24, 0.96);
+      box-shadow: 0 24px 60px rgba(0, 0, 0, 0.42);
+      padding: 14px;
+      max-height: min(82vh, 640px);
+      overflow-y: auto;
+      overscroll-behavior: contain;
+    }
+
+    .poekhali-map-sheet-head {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      padding: 2px 2px 12px;
+    }
+
+    .poekhali-map-sheet-title {
+      font: 850 15px/1.2 'Plus Jakarta Sans', system-ui, sans-serif;
+      color: var(--text);
+    }
+
+    .poekhali-map-sheet-subtitle {
+      margin-top: 3px;
+      font: 750 11px/1.2 'Plus Jakarta Sans', system-ui, sans-serif;
+      color: var(--sub);
+    }
+
+    .poekhali-map-sheet-close,
+    .poekhali-map-option {
+      appearance: none;
+      border: 0;
+      font-family: 'Plus Jakarta Sans', system-ui, sans-serif;
+      letter-spacing: 0;
+    }
+
+    .poekhali-map-sheet-close {
+      min-height: 34px;
+      padding: 0 12px;
+      border-radius: 12px;
+      background: rgba(255, 255, 255, 0.06);
+      color: var(--text);
+      font-weight: 850;
+    }
+
+    .poekhali-map-sheet-list {
+      display: grid;
+      gap: 8px;
+    }
+
+    .poekhali-map-option {
+      min-height: 58px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      padding: 10px 12px;
+      border-radius: 16px;
+      background: rgba(255, 255, 255, 0.045);
+      color: var(--text);
+      text-align: left;
+    }
+
+    .poekhali-map-option.is-selected {
+      background: var(--accent-dim);
+      box-shadow: inset 0 0 0 1px rgba(56, 189, 248, 0.24);
+    }
+
+    .poekhali-map-option.is-unavailable {
+      border: 1px solid rgba(244, 63, 94, 0.18);
+      background: rgba(244, 63, 94, 0.08);
+      cursor: default;
+    }
+
+    .poekhali-map-option.is-unavailable .poekhali-map-option-status {
+      color: #fb7185;
+    }
+
+    .poekhali-map-option-text {
+      min-width: 0;
+      display: grid;
+      gap: 4px;
+    }
+
+    .poekhali-map-option-text strong {
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+      font-size: 13px;
+      line-height: 1.2;
+    }
+
+    .poekhali-map-option-text span {
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+      color: var(--sub);
+      font-size: 10px;
+      font-weight: 750;
+      line-height: 1.2;
+    }
+
+    .poekhali-map-option-status {
+      flex: 0 0 auto;
+      color: var(--accent-strong);
+      font-size: 11px;
+      font-weight: 850;
+    }
+
+    .poekhali-map-sheet-note {
+      padding: 8px 4px 2px;
+      color: var(--sub);
+      font: 750 11px/1.35 'Plus Jakarta Sans', system-ui, sans-serif;
+    }
+
+    .poekhali-sector-section {
+      margin-top: 12px;
+      padding-top: 12px;
+      border-top: 1px solid rgba(255, 255, 255, 0.06);
+    }
+
+    .poekhali-sector-section.hidden {
+      display: none;
+    }
+
+    .poekhali-sector-head {
+      display: flex;
+      align-items: baseline;
+      justify-content: space-between;
+      gap: 12px;
+      padding: 0 2px 8px;
+    }
+
+    .poekhali-sector-title {
+      font: 850 13px/1.2 'Plus Jakarta Sans', system-ui, sans-serif;
+      color: var(--text);
+    }
+
+    .poekhali-sector-subtitle {
+      font: 750 10px/1.2 'Plus Jakarta Sans', system-ui, sans-serif;
+      color: var(--sub);
+      text-align: right;
+    }
+
+    .poekhali-sector-list {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 8px;
+    }
+
+    .poekhali-sector-option {
+      appearance: none;
+      min-height: 66px;
+      border: 1px solid rgba(255, 255, 255, 0.07);
+      border-radius: 16px;
+      background: rgba(255, 255, 255, 0.04);
+      color: var(--text);
+      display: grid;
+      gap: 7px;
+      padding: 10px;
+      text-align: left;
+      font-family: 'Plus Jakarta Sans', system-ui, sans-serif;
+      letter-spacing: 0;
+    }
+
+    .poekhali-sector-option.is-selected {
+      background: var(--accent-dim);
+      border-color: rgba(56, 189, 248, 0.26);
+      box-shadow: inset 0 0 0 1px rgba(56, 189, 248, 0.18);
+    }
+
+    .poekhali-sector-option-text {
+      min-width: 0;
+      display: grid;
+      gap: 3px;
+    }
+
+    .poekhali-sector-option-text strong {
+      font-size: 12px;
+      line-height: 1.15;
+      font-weight: 850;
+    }
+
+    .poekhali-sector-option-text span {
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+      color: var(--sub);
+      font-size: 9px;
+      line-height: 1.2;
+      font-weight: 750;
+    }
+
+    .poekhali-sector-option-status {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 6px;
+      min-width: 0;
+    }
+
+    .poekhali-sector-badge {
+      flex: 0 0 auto;
+      border-radius: 999px;
+      padding: 4px 7px;
+      font-size: 8px;
+      line-height: 1;
+      font-weight: 850;
+      color: var(--accent-strong);
+      background: rgba(56, 189, 248, 0.12);
+      border: 1px solid rgba(56, 189, 248, 0.22);
+    }
+
+    .poekhali-sector-badge.is-ready {
+      color: var(--green);
+      background: rgba(74, 222, 128, 0.12);
+      border-color: rgba(74, 222, 128, 0.22);
+    }
+
+    .poekhali-sector-badge.is-learned {
+      color: var(--green);
+      background: rgba(74, 222, 128, 0.12);
+      border-color: rgba(74, 222, 128, 0.28);
+    }
+
+    .poekhali-sector-badge.is-route-only {
+      color: var(--danger);
+      background: rgba(244, 63, 94, 0.10);
+      border-color: rgba(244, 63, 94, 0.20);
+    }
+
+    .poekhali-sector-counts {
+      min-width: 0;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+      color: var(--sub);
+      font-size: 8.5px;
+      font-weight: 750;
+    }
+
+    @media (max-width: 420px) {
+      .poekhali-overlay-btn {
+        height: 34px;
+        min-width: 32px;
+        padding: 0 5px;
+        border-radius: 12px;
+        font-size: 10.5px;
+      }
+
+      .poekhali-overlay-btn[data-control-label] {
+        height: 40px;
+        padding: 3px 5px 4px;
+        gap: 2px;
+      }
+
+      .poekhali-overlay-btn[data-control-label]::before {
+        font-size: 6.8px;
+      }
+
+      .poekhali-back-btn {
+        width: 36px;
+      }
+
+      .poekhali-k-btn {
+        left: calc(max(8px, env(safe-area-inset-left)) + 42px);
+        width: 48px;
+      }
+
+      .poekhali-direction-btn {
+        left: calc(max(8px, env(safe-area-inset-left)) + 96px);
+        width: 64px;
+      }
+
+      .poekhali-way-btn {
+        left: calc(max(8px, env(safe-area-inset-left)) + 166px);
+        width: 48px;
+      }
+
+      .poekhali-map-btn {
+        left: calc(max(8px, env(safe-area-inset-left)) + 220px);
+        width: 50px;
+      }
+
+      .poekhali-gps-btn {
+        min-width: 42px;
+        max-width: 42px;
+        padding: 0 4px;
+        font-size: 10px;
+      }
+
+      .poekhali-timer-btn {
+        min-width: 86px;
+      }
+
+      .poekhali-ops-btn {
+        left: calc(50% + 50px);
+        min-width: 58px;
+      }
+
+      .poekhali-ops-btn.has-warnings {
+        min-width: 46px;
+      }
+
+      .poekhali-ops-grid.is-warning-grid {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+      }
+
+      .poekhali-ops-grid.is-user-section-meta {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+      }
+
+      .poekhali-sector-list {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    @media (max-width: 370px) {
+      .poekhali-overlay-btn {
+        height: 34px;
+        min-width: 32px;
+        padding: 0 5px;
+        border-radius: 12px;
+        font-size: 10.5px;
+      }
+
+      .poekhali-overlay-btn[data-control-label] {
+        height: 40px;
+        padding: 3px 5px 4px;
+        gap: 2px;
+      }
+
+      .poekhali-overlay-btn[data-control-label]::before {
+        font-size: 6.8px;
+      }
+
+      .poekhali-back-btn {
+        left: max(8px, env(safe-area-inset-left));
+        width: 36px;
+      }
+
+      .poekhali-k-btn {
+        left: calc(max(8px, env(safe-area-inset-left)) + 42px);
+        width: 42px;
+      }
+
+      .poekhali-direction-btn {
+        left: calc(max(8px, env(safe-area-inset-left)) + 88px);
+        width: 56px;
+      }
+
+      .poekhali-way-btn {
+        left: calc(max(8px, env(safe-area-inset-left)) + 150px);
+        width: 42px;
+      }
+
+      .poekhali-map-btn {
+        display: inline-flex;
+        left: calc(max(8px, env(safe-area-inset-left)) + 198px);
+        width: 44px;
+      }
+
+      .poekhali-gps-btn {
+        min-width: 42px;
+        max-width: 42px;
+        padding: 0 4px;
+        font-size: 10px;
+      }
+
+      .poekhali-timer-btn {
+        min-width: 84px;
+      }
+
+      .poekhali-ops-btn {
+        left: calc(50% + 48px);
+        min-width: 52px;
+      }
+
+      .poekhali-ops-panel {
+        padding: 12px;
+      }
+
+      .poekhali-shift-info-grid,
+      .poekhali-ops-grid.is-user-section-meta,
+      .poekhali-ops-grid.is-warning-grid {
+        grid-template-columns: 1fr;
+      }
+
+      body.is-poekhali-mode .bottom-nav {
+        padding: 8px 6px max(6px, env(safe-area-inset-bottom));
+      }
+
+      body.is-poekhali-mode .nav-item {
+        gap: 3px;
+        padding: 4px 0 2px;
+        border-radius: 12px;
+      }
+
+      body.is-poekhali-mode .nav-item .tab-icon svg {
+        width: 18px;
+        height: 18px;
+      }
+
+      body.is-poekhali-mode .nav-item .tab-label,
+      body.is-poekhali-mode .fab-label {
+        font-size: 9px;
+      }
+
+      body.is-poekhali-mode .nav-item:not(.active) .tab-label {
+        display: none;
+      }
+
+      body.is-poekhali-mode .nav-fab {
+        gap: 3px;
+        padding-bottom: 2px;
+      }
+
+      body.is-poekhali-mode .fab-btn {
+        width: 44px;
+        height: 44px;
+        border-radius: 15px;
+      }
+    }
+
     /* Accent risk line above label */
     .dashboard-head {
       display: grid;
@@ -1166,6 +2648,103 @@
       line-height: 1.5;
       color: rgba(238, 242, 248, 0.54);
       margin: 8px 4px 16px;
+    }
+
+    .salary-poekhali-card {
+      display: grid;
+      gap: 12px;
+      padding: 14px;
+    }
+
+    .salary-poekhali-head {
+      display: flex;
+      align-items: flex-start;
+      justify-content: space-between;
+      gap: 12px;
+    }
+
+    .salary-poekhali-kicker {
+      font-size: 10px;
+      line-height: 1;
+      font-weight: 900;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      color: var(--sub);
+    }
+
+    .salary-poekhali-title {
+      margin-top: 5px;
+      font-size: 15px;
+      line-height: 1.25;
+      font-weight: 850;
+      color: var(--text);
+    }
+
+    .salary-poekhali-badge {
+      min-width: 36px;
+      min-height: 30px;
+      padding: 0 10px;
+      border-radius: 12px;
+      display: inline-grid;
+      place-items: center;
+      background: var(--accent-dim);
+      color: var(--accent-strong);
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 14px;
+      font-weight: 800;
+      font-variant-numeric: tabular-nums;
+    }
+
+    .salary-poekhali-grid {
+      display: grid;
+      grid-template-columns: repeat(4, minmax(0, 1fr));
+      gap: 8px;
+    }
+
+    .salary-poekhali-cell {
+      min-width: 0;
+      display: grid;
+      gap: 5px;
+      padding: 10px;
+      border: 1px solid rgba(255, 255, 255, 0.06);
+      border-radius: 12px;
+      background: rgba(255, 255, 255, 0.035);
+    }
+
+    .salary-poekhali-cell span {
+      min-width: 0;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+      font-size: 10px;
+      line-height: 1;
+      font-weight: 900;
+      letter-spacing: 0.05em;
+      text-transform: uppercase;
+      color: var(--sub);
+    }
+
+    .salary-poekhali-cell strong {
+      min-width: 0;
+      overflow-wrap: anywhere;
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 13px;
+      line-height: 1.15;
+      color: var(--text);
+      font-variant-numeric: tabular-nums;
+    }
+
+    .salary-poekhali-note {
+      padding-top: 2px;
+      color: rgba(238, 242, 248, 0.62);
+      font-size: 12px;
+      line-height: 1.45;
+    }
+
+    @media (max-width: 380px) {
+      .salary-poekhali-grid {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+      }
     }
 
     .salary-list {

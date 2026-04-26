@@ -1,63 +1,68 @@
 # Worktree Status
 
-Generated: 2026-04-25 08:06:26 +1000
+Generated: 2026-04-26 21:48:43 +1000
 
 ## git status -sb
 ```text
-## main...origin/main [ahead 1]
- M ai-memory/CHANGELOG.md
- M ai-memory/PROJECT_STATE.md
- M ai-memory/sessions/2026-04-25.md
+## main...origin/main
+M  .gitignore
+MM ai-memory/CHANGELOG.md
+M  ai-memory/INDEX.md
+MM ai-memory/PROJECT_STATE.md
+M  ai-memory/RECENT_COMMITS.md
+M  ai-memory/WORKTREE_STATUS.md
+M  ai-memory/sessions/2026-04-25.md
+AM ai-memory/sessions/2026-04-26.md
+A  assets/tracker/data.xml
+A  assets/tracker/maps-manifest.json
+A  assets/tracker/maps/komsomol-sk-tche-9/1.xml
+A  assets/tracker/maps/komsomol-sk-tche-9/1n.xml
+A  assets/tracker/maps/komsomol-sk-tche-9/2.xml
+A  assets/tracker/maps/komsomol-sk-tche-9/2n.xml
+A  assets/tracker/maps/komsomol-sk-tche-9/data.xml
+A  assets/tracker/maps/komsomol-sk-tche-9/profile.xml
+A  assets/tracker/maps/komsomol-sk-tche-9/speed.xml
+A  assets/tracker/profile.xml
+A  assets/tracker/regime-maps.json
+A  assets/tracker/speed-docs.json
+A  assets/tracker/tch9-reference.json
+A  docs/2026-04-26-poekhali-parity-tz.md
+M  index.html
+M  package.json
+M  scripts/app.js
+M  scripts/auth.js
+M  scripts/docs-app.js
+A  scripts/download-poekhali-maps.mjs
+A  scripts/import-poekhali-android-backup.py
+A  scripts/import-regime-maps.py
+A  scripts/import-speed-docs.py
+A  scripts/import-tch9-reference.py
+A  scripts/poekhali-tracker.js
+M  scripts/render.js
+M  scripts/shift-form.js
+M  scripts/time-utils.js
+M  server.js
+M  styles/10-navigation-and-cards.css
+M  styles/15-bottom-nav.css
+M  styles/30-shifts-and-overlays.css
+M  sw.js
 ```
 
 ## git branch -vv
 ```text
 codex/next-direction b044dd5 offline mvp
   codex/tabs-ui        117f1fa [origin/codex/tabs-ui] tabs ui
-* main                 bca0195 [origin/main: ahead 1] refactor: remove legacy runtime dead code
+* main                 c631e1b [origin/main] chore(memory): refresh after legacy cleanup
 ```
 
 ## HEAD
 ```text
-bca0195 refactor: remove legacy runtime dead code
- README.md                                |   102 +-
- ai-memory/ARCHITECTURE.md                |    16 +-
- ai-memory/CHANGELOG.md                   |    24 +
- ai-memory/INDEX.md                       |     2 +-
- ai-memory/METHODS.md                     |     4 +-
- ai-memory/PROJECT_STATE.md               |    56 +-
- ai-memory/RECENT_COMMITS.md              |    82 +-
- ai-memory/WORKTREE_STATUS.md             |    52 +-
- ai-memory/sessions/2026-04-25.md         |     4 +
- assets/instructions/catalog.v1.json      |   249 -
- assets/instructions/catalog.v2.json      | 33623 -----------------------------
- assets/instructions/sources.v2.json      |    41 -
- functions/api/auth.js                    |   137 -
- functions/api/docs.js                    |   218 -
- functions/api/shifts.js                  |    81 -
- functions/api/stats.js                   |    76 -
- functions/api/telegram-webhook.js        |    85 -
- functions/features/auth/telegram-auth.js |   305 -
- functions/features/docs/store.js         |    54 -
- functions/features/shifts/store.js       |    93 -
- functions/features/shifts/validation.js  |    24 -
- functions/features/stats/store.js        |   123 -
- index.html                               |     6 -
- scripts/README.md                        |    60 +-
- scripts/app.js                           |    18 -
- scripts/auth.js                          |     5 +-
- scripts/build-instructions-dataset.py    |   925 -
- scripts/instructions-app.js              |  2085 --
- scripts/local-smoke.mjs                  |     3 +-
- scripts/render.js                        |     2 +-
- scripts/shift-form.js                    |    37 +-
- scripts/stopwatch-app.js                 |     2 -
- scripts/stopwatch-engine.js              |     2 -
- server.js                                |     5 +
- styles/30-shifts-and-overlays.css        |    67 +
- styles/35-timer.css                      |    66 -
- styles/README.md                         |     6 +-
- sw.js                                    |     6 +-
- wrangler.toml                            |     9 -
- 39 files changed, 317 insertions(+), 38438 deletions(-)
+c631e1b chore(memory): refresh after legacy cleanup
+ ai-memory/CHANGELOG.md           |  9 ++++
+ ai-memory/INDEX.md               |  2 +-
+ ai-memory/PROJECT_STATE.md       | 49 +++-------------------
+ ai-memory/RECENT_COMMITS.md      |  4 +-
+ ai-memory/WORKTREE_STATUS.md     | 89 ++++++++++++++++++++--------------------
+ ai-memory/sessions/2026-04-25.md |  1 +
+ 6 files changed, 64 insertions(+), 90 deletions(-)
 ```

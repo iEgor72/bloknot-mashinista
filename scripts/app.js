@@ -53,11 +53,15 @@
     var SALARY_PARAMS_STORAGE_KEY = 'shift_tracker_salary_params_v1';
     var DEFAULT_SALARY_PARAMS = {
       tariffRate: 380,
+      monthlyNormHours: 0,
       nightPercent: 40,
       classPercent: 5,
+      zonePercent: 0,
+      bamPercent: 0,
       districtPercent: 30,
       northPercent: 50,
-      localPercent: 20
+      localPercent: 20,
+      komPerTrip: 0
     };
     var salaryParamsStore = createSalaryParamsStore();
     var appSettings = salaryParamsStore.values;
@@ -721,18 +725,27 @@
       }
 
       merged.tariffRate = parseFloat(merged.tariffRate);
+      merged.monthlyNormHours = parseFloat(merged.monthlyNormHours);
       merged.nightPercent = parseFloat(merged.nightPercent);
       merged.classPercent = parseFloat(merged.classPercent);
+      merged.zonePercent = parseFloat(merged.zonePercent);
+      merged.bamPercent = parseFloat(merged.bamPercent);
       merged.districtPercent = parseFloat(merged.districtPercent);
       merged.northPercent = parseFloat(merged.northPercent);
       merged.localPercent = parseFloat(merged.localPercent);
+      merged.komPerTrip = parseFloat(merged.komPerTrip);
 
       if (isNaN(merged.tariffRate)) merged.tariffRate = DEFAULT_SALARY_PARAMS.tariffRate;
+      if (isNaN(merged.monthlyNormHours)) merged.monthlyNormHours = DEFAULT_SALARY_PARAMS.monthlyNormHours;
+      merged.monthlyNormHours = 0;
       if (isNaN(merged.nightPercent)) merged.nightPercent = DEFAULT_SALARY_PARAMS.nightPercent;
       if (isNaN(merged.classPercent)) merged.classPercent = DEFAULT_SALARY_PARAMS.classPercent;
+      if (isNaN(merged.zonePercent)) merged.zonePercent = DEFAULT_SALARY_PARAMS.zonePercent;
+      if (isNaN(merged.bamPercent)) merged.bamPercent = DEFAULT_SALARY_PARAMS.bamPercent;
       if (isNaN(merged.districtPercent)) merged.districtPercent = DEFAULT_SALARY_PARAMS.districtPercent;
       if (isNaN(merged.northPercent)) merged.northPercent = DEFAULT_SALARY_PARAMS.northPercent;
       if (isNaN(merged.localPercent)) merged.localPercent = DEFAULT_SALARY_PARAMS.localPercent;
+      if (isNaN(merged.komPerTrip)) merged.komPerTrip = DEFAULT_SALARY_PARAMS.komPerTrip;
       return merged;
     }
 
@@ -1264,9 +1277,12 @@
       setSettingsInputValue('settingTariff', appSettings.tariffRate);
       setSettingsInputValue('settingNightPercent', appSettings.nightPercent);
       setSettingsInputValue('settingClassPercent', appSettings.classPercent);
+      setSettingsInputValue('settingZonePercent', appSettings.zonePercent);
+      setSettingsInputValue('settingBamPercent', appSettings.bamPercent);
       setSettingsInputValue('settingDistrictPercent', appSettings.districtPercent);
       setSettingsInputValue('settingNorthPercent', appSettings.northPercent);
       setSettingsInputValue('settingLocalPercent', appSettings.localPercent);
+      setSettingsInputValue('settingKomPerTrip', appSettings.komPerTrip);
 
       var versionValue = document.getElementById('appVersionValue');
       if (versionValue) versionValue.textContent = APP_VERSION;
@@ -1277,23 +1293,33 @@
       var tariffEl = document.getElementById('settingTariff');
       var nightEl = document.getElementById('settingNightPercent');
       var classEl = document.getElementById('settingClassPercent');
+      var zoneEl = document.getElementById('settingZonePercent');
+      var bamEl = document.getElementById('settingBamPercent');
       var districtEl = document.getElementById('settingDistrictPercent');
       var northEl = document.getElementById('settingNorthPercent');
       var localEl = document.getElementById('settingLocalPercent');
+      var komEl = document.getElementById('settingKomPerTrip');
 
       var tariff = tariffEl ? parseFloat(tariffEl.value) : NaN;
       var night = nightEl ? parseFloat(nightEl.value) : NaN;
       var klass = classEl ? parseFloat(classEl.value) : NaN;
+      var zone = zoneEl ? parseFloat(zoneEl.value) : NaN;
+      var bam = bamEl ? parseFloat(bamEl.value) : NaN;
       var district = districtEl ? parseFloat(districtEl.value) : NaN;
       var north = northEl ? parseFloat(northEl.value) : NaN;
       var local = localEl ? parseFloat(localEl.value) : NaN;
+      var kom = komEl ? parseFloat(komEl.value) : NaN;
 
       appSettings.tariffRate = isNaN(tariff) ? DEFAULT_SALARY_PARAMS.tariffRate : tariff;
+      appSettings.monthlyNormHours = 0;
       appSettings.nightPercent = isNaN(night) ? DEFAULT_SALARY_PARAMS.nightPercent : night;
       appSettings.classPercent = isNaN(klass) ? DEFAULT_SALARY_PARAMS.classPercent : klass;
+      appSettings.zonePercent = isNaN(zone) ? DEFAULT_SALARY_PARAMS.zonePercent : zone;
+      appSettings.bamPercent = isNaN(bam) ? DEFAULT_SALARY_PARAMS.bamPercent : bam;
       appSettings.districtPercent = isNaN(district) ? DEFAULT_SALARY_PARAMS.districtPercent : district;
       appSettings.northPercent = isNaN(north) ? DEFAULT_SALARY_PARAMS.northPercent : north;
       appSettings.localPercent = isNaN(local) ? DEFAULT_SALARY_PARAMS.localPercent : local;
+      appSettings.komPerTrip = isNaN(kom) ? DEFAULT_SALARY_PARAMS.komPerTrip : kom;
 
       salaryParamsStore.update(appSettings);
       appSettings = salaryParamsStore.values;
@@ -1309,33 +1335,78 @@
       return (hours || 0) * (rate || 0) * ((percent || 0) / 100);
     }
 
-    function calculateSalarySummaryByMinutes(totalMin, nightMin, holidayMin) {
+    function roundSalaryHours(hours) {
+      var value = Number(hours) || 0;
+      return Math.round(value * 100) / 100;
+    }
+
+    function getSalaryMonthlyNormHours(year, month0) {
+      var override = Number(appSettings.monthlyNormHours) || 0;
+      if (override > 0) return override;
+      var monthKey = year + '-' + String(month0 + 1).padStart(2, '0');
+      var normFromTableHours = typeof WORK_NORMS !== 'undefined' ? WORK_NORMS[monthKey] : 0;
+      var baseNormMin = normFromTableHours !== undefined ? (normFromTableHours * 60) : 0;
+      if (typeof getMonthNormSnapshot === 'function') {
+        return roundSalaryHours(getMonthNormSnapshot(year, month0, baseNormMin).monthNormMin / 60);
+      }
+      return roundSalaryHours(baseNormMin / 60);
+    }
+
+    function calculateSalarySummaryByMinutes(totalMin, nightMin, holidayMin, normHours, shiftCount) {
       var workedHours = totalMin / 60;
       var nightHours = nightMin / 60;
       var holidayHours = holidayMin / 60;
       var tariffRate = appSettings.tariffRate;
-      var tariffAmount = workedHours * tariffRate;
+      var safeNormHours = Math.max(0, Number(normHours) || 0);
+      var overNormHours = safeNormHours > 0 && workedHours > safeNormHours
+        ? roundSalaryHours(workedHours - safeNormHours)
+        : 0;
+      var travelOvertimeHours = 0;
+      var extraOvertimeHours = overNormHours;
+      var regularHours = Math.max(0, workedHours - overNormHours);
+      var monthlyBaseAmount = workedHours * tariffRate;
+      var tariffAmount = regularHours * tariffRate;
       var nightAmount = moneyFromHours(nightHours, tariffRate, appSettings.nightPercent);
+      var monthlyBonusAmount = monthlyBaseAmount * 0.04;
+      var overtimeAmount = overNormHours * tariffRate;
+      var travelOvertimeAmount = travelOvertimeHours * tariffRate * 0.5;
+      var extraOvertimeAmount = extraOvertimeHours * tariffRate;
       var classAmount = moneyFromHours(workedHours, tariffRate, appSettings.classPercent);
       var holidayAmount = holidayHours > 0 ? moneyFromHours(holidayHours, tariffRate, 100) : 0;
-      var baseAmount = tariffAmount + nightAmount + classAmount + holidayAmount;
+      var zoneAmount = monthlyBaseAmount * (appSettings.zonePercent / 100);
+      var bamAmount = monthlyBaseAmount * (appSettings.bamPercent / 100);
+      var komAmount = Math.max(0, Number(shiftCount) || 0) * (Number(appSettings.komPerTrip) || 0);
+      var baseAmount = tariffAmount + nightAmount + monthlyBonusAmount + classAmount + holidayAmount +
+        overtimeAmount + travelOvertimeAmount + extraOvertimeAmount + zoneAmount + bamAmount;
       var districtAmount = baseAmount * (appSettings.districtPercent / 100);
       var northAmount = baseAmount * (appSettings.northPercent / 100);
       var localAmount = baseAmount * (appSettings.localPercent / 100);
       var coeffTotal = districtAmount + northAmount + localAmount;
-      var accruedAmount = baseAmount + coeffTotal;
+      var accruedAmount = baseAmount + coeffTotal + komAmount;
       var ndflBase = baseAmount * 0.13;
       var ndflCoeffs = coeffTotal * 0.13;
       var netAmount = accruedAmount - ndflBase - ndflCoeffs;
 
       return {
         workedHours: workedHours,
+        normHours: safeNormHours,
+        regularHours: regularHours,
+        overNormHours: overNormHours,
+        travelOvertimeHours: travelOvertimeHours,
+        extraOvertimeHours: extraOvertimeHours,
         nightHours: nightHours,
         holidayHours: holidayHours,
         tariffAmount: tariffAmount,
         nightAmount: nightAmount,
+        monthlyBonusAmount: monthlyBonusAmount,
+        overtimeAmount: overtimeAmount,
+        travelOvertimeAmount: travelOvertimeAmount,
+        extraOvertimeAmount: extraOvertimeAmount,
         classAmount: classAmount,
         holidayAmount: holidayAmount,
+        zoneAmount: zoneAmount,
+        bamAmount: bamAmount,
+        komAmount: komAmount,
         baseAmount: baseAmount,
         districtAmount: districtAmount,
         northAmount: northAmount,
@@ -1370,7 +1441,7 @@
         holidayMin += shiftHolidayMinutesInRange(monthShifts[i], bounds.start, bounds.end);
       }
 
-      return calculateSalarySummaryByMinutes(totalMin, nightMin, holidayMin);
+      return calculateSalarySummaryByMinutes(totalMin, nightMin, holidayMin, getSalaryMonthlyNormHours(currentYear, currentMonth), monthShifts.length);
     }
 
     function buildShiftIncomeLevelStats(incomeValues) {
@@ -1526,6 +1597,101 @@
       };
     }
 
+    function readPoekhaliShiftNumber(shift, key) {
+      if (typeof getShiftPoekhaliNumber === 'function') return getShiftPoekhaliNumber(shift, key);
+      var value = Number(shift && shift[key]);
+      return isFinite(value) ? Math.max(0, value) : 0;
+    }
+
+    function formatPoekhaliSalaryDistance(meters) {
+      if (typeof formatShiftPoekhaliDistance === 'function') {
+        return formatShiftPoekhaliDistance(meters) || '—';
+      }
+      var value = Math.max(0, Math.round(Number(meters) || 0));
+      if (!value) return '—';
+      return (value / 1000).toFixed(value >= 10000 ? 1 : 2).replace('.', ',') + ' км';
+    }
+
+    function formatPoekhaliSalarySpeed(speed) {
+      if (typeof formatShiftPoekhaliSpeed === 'function') {
+        return formatShiftPoekhaliSpeed(speed) || '—';
+      }
+      var value = Number(speed);
+      if (!isFinite(value) || value <= 0) return '—';
+      return (Math.round(value * 10) / 10).toString().replace('.', ',') + ' км/ч';
+    }
+
+    function buildPoekhaliMonthOpsSummary(monthShifts) {
+      var shifts = monthShifts || [];
+      var summary = {
+        runCount: 0,
+        distanceMeters: 0,
+        movingMs: 0,
+        durationMs: 0,
+        idleMs: 0,
+        maxSpeedKmh: 0,
+        warningsCount: 0,
+        alertCount: 0,
+        overspeedCount: 0,
+        overspeedDurationMs: 0,
+        overspeedDistanceMeters: 0
+      };
+
+      for (var i = 0; i < shifts.length; i++) {
+        var shift = shifts[i];
+        var distance = readPoekhaliShiftNumber(shift, 'poekhali_distance_m');
+        var duration = readPoekhaliShiftNumber(shift, 'poekhali_duration_ms');
+        var moving = readPoekhaliShiftNumber(shift, 'poekhali_moving_ms');
+        var hasRun = !!(shift && shift.poekhali_run_id) || distance > 0 || duration > 0;
+        if (hasRun) summary.runCount += 1;
+
+        summary.distanceMeters += distance;
+        summary.durationMs += duration;
+        summary.movingMs += moving;
+        summary.idleMs += readPoekhaliShiftNumber(shift, 'poekhali_idle_ms');
+        summary.maxSpeedKmh = Math.max(summary.maxSpeedKmh, readPoekhaliShiftNumber(shift, 'poekhali_max_speed_kmh'));
+        summary.warningsCount += readPoekhaliShiftNumber(shift, 'poekhali_warnings_count');
+        summary.alertCount += readPoekhaliShiftNumber(shift, 'poekhali_alert_count');
+        if (readPoekhaliShiftNumber(shift, 'poekhali_overspeed_max_kmh') > 0) summary.overspeedCount += 1;
+        summary.overspeedDurationMs += readPoekhaliShiftNumber(shift, 'poekhali_overspeed_duration_ms');
+        summary.overspeedDistanceMeters += readPoekhaliShiftNumber(shift, 'poekhali_overspeed_distance_m');
+
+      }
+
+      summary.technicalSpeedKmh = summary.movingMs > 0 && summary.distanceMeters > 0
+        ? (summary.distanceMeters / 1000) / (summary.movingMs / 3600000)
+        : 0;
+      return summary;
+    }
+
+    function renderPoekhaliSalarySummary(summary) {
+      var titleEl = document.getElementById('salaryPoekhaliTitle');
+      var badgeEl = document.getElementById('salaryPoekhaliBadge');
+      var distanceEl = document.getElementById('salaryPoekhaliDistance');
+      var techSpeedEl = document.getElementById('salaryPoekhaliTechSpeed');
+      var warningsEl = document.getElementById('salaryPoekhaliWarnings');
+      var overspeedEl = document.getElementById('salaryPoekhaliOverspeed');
+      var fuelEl = document.getElementById('salaryPoekhaliFuel');
+      if (!titleEl || !badgeEl || !distanceEl || !techSpeedEl || !warningsEl || !overspeedEl) return;
+      if (fuelEl) {
+        fuelEl.hidden = true;
+        fuelEl.textContent = '';
+      }
+
+      titleEl.textContent = summary.runCount
+        ? 'Записано ' + summary.runCount + ' смен'
+        : 'Нет записей';
+      badgeEl.textContent = String(summary.runCount);
+      distanceEl.textContent = formatPoekhaliSalaryDistance(summary.distanceMeters);
+      techSpeedEl.textContent = formatPoekhaliSalarySpeed(summary.technicalSpeedKmh);
+      warningsEl.textContent = summary.warningsCount || summary.alertCount
+        ? (summary.warningsCount + ' ПР' + (summary.alertCount ? ' · ' + summary.alertCount + ' сигн.' : ''))
+        : '—';
+      overspeedEl.textContent = summary.overspeedCount
+        ? (summary.overspeedCount + ' смен' + (summary.overspeedDistanceMeters ? ' · ' + formatPoekhaliSalaryDistance(summary.overspeedDistanceMeters) : ''))
+        : '—';
+    }
+
     function renderAverageShiftSummary(summary) {
       var averageEl = document.getElementById('dashboardAverageShift');
       if (!averageEl) return;
@@ -1562,6 +1728,7 @@
       var monthShifts = monthShiftSets.calculationShifts;
 
       var summary = buildSalarySummary(monthShifts, bounds);
+      var poekhaliSummary = buildPoekhaliMonthOpsSummary(monthShifts);
       renderMonthHeader('salaryMonthTitle', 'salaryMonthQuarter', 'salaryMonthTabs', currentYear, currentMonth, function(targetMonth) {
         if (targetMonth === currentMonth) return;
         triggerHapticSelection();
@@ -1575,19 +1742,30 @@
       var salaryNdflBase = document.getElementById('salaryNdflBase');
       var salaryNdflCoeffs = document.getElementById('salaryNdflCoeffs');
       var salaryBaseTotal = document.getElementById('salaryBaseTotal');
+      var salaryKomRow = document.getElementById('salaryKomRow');
+      var salaryKom = document.getElementById('salaryKom');
       if (salaryNetTop) salaryNetTop.textContent = formatRub(summary.netAmount);
       if (salaryNetBottom) salaryNetBottom.textContent = formatRub(summary.netAmount);
       if (salaryAccrued) salaryAccrued.textContent = formatRub(summary.accruedAmount);
       if (salaryNdflBase) salaryNdflBase.textContent = '-' + formatRub(summary.ndflBase);
       if (salaryNdflCoeffs) salaryNdflCoeffs.textContent = '-' + formatRub(summary.ndflCoeffs);
       if (salaryBaseTotal) salaryBaseTotal.textContent = formatRub(summary.baseAmount);
+      if (salaryKomRow) salaryKomRow.classList.toggle('hidden', !(summary.komAmount > 0));
+      if (salaryKom) salaryKom.textContent = formatRub(summary.komAmount);
+      renderPoekhaliSalarySummary(poekhaliSummary);
 
       var baseRows = [];
       baseRows.push(createSalaryRowHtml(
         '004L',
-        'Тариф <span>(' + summary.workedHours.toFixed(2).replace('.', ',') + ' ч × ' + Number(appSettings.tariffRate).toFixed(2).replace('.', ',') + ' ₽)</span>',
+        'Тариф в норме <span>(' + summary.regularHours.toFixed(2).replace('.', ',') + ' ч × ' + Number(appSettings.tariffRate).toFixed(2).replace('.', ',') + ' ₽)</span>',
         '',
         formatRub(summary.tariffAmount)
+      ));
+      baseRows.push(createSalaryRowHtml(
+        '027L',
+        'Доплата 4% <span>(' + summary.workedHours.toFixed(2).replace('.', ',') + ' ч × тариф)</span>',
+        '',
+        formatRub(summary.monthlyBonusAmount)
       ));
       baseRows.push(createSalaryRowHtml(
         '023L',
@@ -1595,6 +1773,14 @@
         '',
         formatRub(summary.nightAmount)
       ));
+      if (summary.overNormHours > 0) {
+        baseRows.push(createSalaryRowHtml(
+          '018L',
+          'Сверх нормы <span>(' + summary.overNormHours.toFixed(2).replace('.', ',') + ' ч, норма ' + summary.normHours.toFixed(2).replace('.', ',') + ' ч)</span>',
+          'По схеме из APK: час сверх нормы оплачивается тарифом, доплата за сверхурочные добавляется отдельной строкой.',
+          formatRub(summary.overtimeAmount + summary.extraOvertimeAmount + summary.travelOvertimeAmount)
+        ));
+      }
       baseRows.push(createSalaryRowHtml(
         '025L',
         'Классная квалификация <span>(' + formatPercent(appSettings.classPercent) + ')</span>',
@@ -1609,7 +1795,22 @@
           formatRub(summary.holidayAmount)
         ));
       }
-
+      if (summary.zoneAmount > 0) {
+        baseRows.push(createSalaryRowHtml(
+          '029A',
+          'Зональная надбавка <span>(' + formatPercent(appSettings.zonePercent) + ')</span>',
+          '',
+          formatRub(summary.zoneAmount)
+        ));
+      }
+      if (summary.bamAmount > 0) {
+        baseRows.push(createSalaryRowHtml(
+          '030A',
+          'Бамовская надбавка <span>(' + formatPercent(appSettings.bamPercent) + ')</span>',
+          '',
+          formatRub(summary.bamAmount)
+        ));
+      }
       var coeffRows = [
         createSalaryRowHtml('026A', 'Районный коэфф. РФ <span>(' + formatPercent(appSettings.districtPercent) + ')</span>', '', formatRub(summary.districtAmount)),
         createSalaryRowHtml('027A', 'Северная надбавка <span>(' + formatPercent(appSettings.northPercent) + ')</span>', '', formatRub(summary.northAmount)),

@@ -1,0 +1,155 @@
+{
+  "source": "firebase-storage:ek_files",
+  "bucket": "durable-zoo-113815.appspot.com",
+  "generatedAt": "2026-04-25T05:02:39Z",
+  "maps": [
+    {
+      "id": "komsomol-sk-tche-9",
+      "title": "Комсомольск ТЧЭ-9",
+      "sourceName": "phone-backup:ru.badlog.trainnote/app_emap",
+      "data": "/assets/tracker/maps/komsomol-sk-tche-9/data.xml",
+      "profile": "/assets/tracker/maps/komsomol-sk-tche-9/profile.xml",
+      "speed": "/assets/tracker/maps/komsomol-sk-tche-9/speed.xml",
+      "files": [
+        "/assets/tracker/maps/komsomol-sk-tche-9/data.xml",
+        "/assets/tracker/maps/komsomol-sk-tche-9/profile.xml",
+        "/assets/tracker/maps/komsomol-sk-tche-9/speed.xml",
+        "/assets/tracker/maps/komsomol-sk-tche-9/1.xml",
+        "/assets/tracker/maps/komsomol-sk-tche-9/1n.xml",
+        "/assets/tracker/maps/komsomol-sk-tche-9/2.xml",
+        "/assets/tracker/maps/komsomol-sk-tche-9/2n.xml"
+      ],
+      "downloaded": true
+    },
+    {
+      "id": "apk-embedded",
+      "title": "Карта из APK",
+      "sourceName": "assets/data.xml + assets/profile.xml",
+      "data": "/assets/tracker/data.xml",
+      "profile": "/assets/tracker/profile.xml",
+      "speed": "",
+      "files": [
+        "/assets/tracker/data.xml",
+        "/assets/tracker/profile.xml"
+      ],
+      "downloaded": true
+    }
+  ],
+  "remote": [
+    {
+      "id": "vihorevka-gyrshelun-sayanskaya",
+      "title": "Вихоревка - Гыршелун(+ Саянская)",
+      "sourceName": "ek_files/Вихоревка - Гыршелун(+ Саянская).zip",
+      "zip": "/assets/tracker/map-zips/vihorevka-gyrshelun-sayanskaya.zip",
+      "downloaded": false,
+      "downloadError": "412 { \"error\": { \"code\": 412, \"message\": \"A required service account is missing necessary permissions. Please resolve by visiting the Storage page of the Firebase Console and re-linking your Firebase bucket or see this FAQ for more in"
+    },
+    {
+      "id": "vladivostok-obluch-e",
+      "title": "Владивосток-Облучье",
+      "sourceName": "ek_files/Владивосток-Облучье.zip",
+      "zip": "/assets/tracker/map-zips/vladivostok-obluch-e.zip",
+      "downloaded": false,
+      "downloadError": "412 { \"error\": { \"code\": 412, \"message\": \"A required service account is missing necessary permissions. Please resolve by visiting the Storage page of the Firebase Console and re-linking your Firebase bucket or see this FAQ for more in"
+    },
+    {
+      "id": "voynovka-ekaterinburg",
+      "title": "Войновка-Екатеринбург",
+      "sourceName": "ek_files/Войновка-Екатеринбург.zip",
+      "zip": "/assets/tracker/map-zips/voynovka-ekaterinburg.zip",
+      "downloaded": false,
+      "downloadError": "412 { \"error\": { \"code\": 412, \"message\": \"A required service account is missing necessary permissions. Please resolve by visiting the Storage page of the Firebase Console and re-linking your Firebase bucket or see this FAQ for more in"
+    },
+    {
+      "id": "irkutsk-slyudyanka",
+      "title": "Иркутск - Слюдянка",
+      "sourceName": "ek_files/Иркутск - Слюдянка.zip",
+      "zip": "/assets/tracker/map-zips/irkutsk-slyudyanka.zip",
+      "downloaded": false,
+      "downloadError": "412 { \"error\": { \"code\": 412, \"message\": \"A required service account is missing necessary permissions. Please resolve by visiting the Storage page of the Firebase Console and re-linking your Firebase bucket or see this FAQ for more in"
+    },
+    {
+      "id": "komsomol-sk-tche-9",
+      "title": "Комсомольск ТЧЭ-9",
+      "sourceName": "ek_files/Комсомольск ТЧЭ-9.zip",
+      "zip": "/assets/tracker/map-zips/komsomol-sk-tche-9.zip",
+      "downloaded": true,
+      "data": "/assets/tracker/maps/komsomol-sk-tche-9/data.xml",
+      "profile": "/assets/tracker/maps/komsomol-sk-tche-9/profile.xml",
+      "speed": "/assets/tracker/maps/komsomol-sk-tche-9/speed.xml",
+      "files": [
+        "/assets/tracker/maps/komsomol-sk-tche-9/data.xml",
+        "/assets/tracker/maps/komsomol-sk-tche-9/profile.xml",
+        "/assets/tracker/maps/komsomol-sk-tche-9/speed.xml",
+        "/assets/tracker/maps/komsomol-sk-tche-9/1.xml",
+        "/assets/tracker/maps/komsomol-sk-tche-9/1n.xml",
+        "/assets/tracker/maps/komsomol-sk-tche-9/2.xml",
+        "/assets/tracker/maps/komsomol-sk-tche-9/2n.xml"
+      ]
+    },
+    {
+      "id": "konosha-sosnogorsk",
+      "title": "Коноша-Сосногорск",
+      "sourceName": "ek_files/Коноша-Сосногорск.zip",
+      "zip": "/assets/tracker/map-zips/konosha-sosnogorsk.zip",
+      "downloaded": false,
+      "downloadError": "412 { \"error\": { \"code\": 412, \"message\": \"A required service account is missing necessary permissions. Please resolve by visiting the Storage page of the Firebase Console and re-linking your Firebase bucket or see this FAQ for more in"
+    },
+    {
+      "id": "mariinsk-irkutsk-by-skriptal",
+      "title": "Мариинск-Иркутск(by SkripTal)",
+      "sourceName": "ek_files/Мариинск-Иркутск(by SkripTal).zip",
+      "zip": "/assets/tracker/map-zips/mariinsk-irkutsk-by-skriptal.zip",
+      "downloaded": false,
+      "downloadError": "412 { \"error\": { \"code\": 412, \"message\": \"A required service account is missing necessary permissions. Please resolve by visiting the Storage page of the Firebase Console and re-linking your Firebase bucket or see this FAQ for more in"
+    },
+    {
+      "id": "ruzhino-gruz",
+      "title": "Ружино(груз)",
+      "sourceName": "ek_files/Ружино(груз).zip",
+      "zip": "/assets/tracker/map-zips/ruzhino-gruz.zip",
+      "downloaded": false,
+      "downloadError": "412 { \"error\": { \"code\": 412, \"message\": \"A required service account is missing necessary permissions. Please resolve by visiting the Storage page of the Firebase Console and re-linking your Firebase bucket or see this FAQ for more in"
+    },
+    {
+      "id": "ruzhino-pass-8170",
+      "title": "Ружино(пасс 8170)",
+      "sourceName": "ek_files/Ружино(пасс 8170).zip",
+      "zip": "/assets/tracker/map-zips/ruzhino-pass-8170.zip",
+      "downloaded": false,
+      "downloadError": "412 { \"error\": { \"code\": 412, \"message\": \"A required service account is missing necessary permissions. Please resolve by visiting the Storage page of the Firebase Console and re-linking your Firebase bucket or see this FAQ for more in"
+    },
+    {
+      "id": "tayshet-gyrshelun-ne-testirovalas",
+      "title": "Тайшет - Гыршелун(не тестировалась)",
+      "sourceName": "ek_files/Тайшет - Гыршелун(не тестировалась).zip",
+      "zip": "/assets/tracker/map-zips/tayshet-gyrshelun-ne-testirovalas.zip",
+      "downloaded": false,
+      "downloadError": "412 { \"error\": { \"code\": 412, \"message\": \"A required service account is missing necessary permissions. Please resolve by visiting the Storage page of the Firebase Console and re-linking your Firebase bucket or see this FAQ for more in"
+    },
+    {
+      "id": "taksimo-yuktali-gruz-ea70",
+      "title": "Таксимо-Юктали(груз EA70)",
+      "sourceName": "ek_files/Таксимо-Юктали(груз EA70).zip",
+      "zip": "/assets/tracker/map-zips/taksimo-yuktali-gruz-ea70.zip",
+      "downloaded": false,
+      "downloadError": "412 { \"error\": { \"code\": 412, \"message\": \"A required service account is missing necessary permissions. Please resolve by visiting the Storage page of the Firebase Console and re-linking your Firebase bucket or see this FAQ for more in"
+    },
+    {
+      "id": "tynda-verhnezeysk",
+      "title": "Тында-Верхнезейск",
+      "sourceName": "ek_files/Тында-Верхнезейск.zip",
+      "zip": "/assets/tracker/map-zips/tynda-verhnezeysk.zip",
+      "downloaded": false,
+      "downloadError": "412 { \"error\": { \"code\": 412, \"message\": \"A required service account is missing necessary permissions. Please resolve by visiting the Storage page of the Firebase Console and re-linking your Firebase bucket or see this FAQ for more in"
+    },
+    {
+      "id": "tynda-komsomol-sk-izvestkovaya",
+      "title": "Тында-Комсомольск-Известковая",
+      "sourceName": "ek_files/Тында-Комсомольск-Известковая.zip",
+      "zip": "/assets/tracker/map-zips/tynda-komsomol-sk-izvestkovaya.zip",
+      "downloaded": false,
+      "downloadError": "412 { \"error\": { \"code\": 412, \"message\": \"A required service account is missing necessary permissions. Please resolve by visiting the Storage page of the Firebase Console and re-linking your Firebase bucket or see this FAQ for more in"
+    }
+  ]
+}
