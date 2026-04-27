@@ -31,6 +31,7 @@
     var AUTH_WIDGET_FALLBACK_TIMER = null;
     var authBootstrapPromise = null;
     var SESSION_STORAGE_KEY = 'shift_tracker_session_token';
+    var PWA_LOGIN_REQUEST_STORAGE_KEY = 'shift_tracker_pwa_login_request_v1';
     var AUTH_ENV_STATE = isLocalAuthEnvironment() ? 'dev' : (isStandalonePwaAuthEnvironment() ? 'standalone' : 'prod');
     var AUTH_STATE = 'guest';
     var AUTH_VIEWS = {
@@ -64,7 +65,7 @@
           title: 'Войти в Блокнот',
           message: 'Подтверди вход через Telegram и синхронизируй смены между устройствами.',
           primary: 'Открыть Telegram',
-          primaryAction: 'telegram',
+          primaryAction: 'telegram-request',
           primaryHint: 'Если удобнее, можно сразу войти кнопкой ниже.',
           status: '',
           note: 'После подтверждения вход обновится автоматически.',
@@ -96,7 +97,7 @@
           title: 'Вход не прошёл',
           message: 'Попробуй снова: через Telegram или кнопкой входа ниже.',
           primary: 'Открыть Telegram',
-          primaryAction: 'telegram',
+          primaryAction: 'telegram-request',
           primaryHint: 'После подтверждения просто вернись в приложение.',
           status: '',
           note: 'Если Telegram уже подтвердил вход, Блокнот подтянет сессию при возврате.',
@@ -121,7 +122,7 @@
           title: 'Войти в Блокнот',
           message: 'Подтверди вход через Telegram, чтобы PWA снова работало с главного экрана.',
           primary: 'Открыть Telegram',
-          primaryAction: 'telegram',
+          primaryAction: 'telegram-request',
           primaryHint: 'Если открыл Telegram, потом просто вернись сюда.',
           status: '',
           note: 'Можно войти кнопкой ниже или через Telegram-бота — после возврата сессия восстановится.',
@@ -153,7 +154,7 @@
           title: 'Вход не прошёл',
           message: 'Попробуй подтверждение ещё раз — PWA ждёт Telegram-сессию и подхватит её при возврате.',
           primary: 'Открыть Telegram',
-          primaryAction: 'telegram',
+          primaryAction: 'telegram-request',
           primaryHint: 'Если уже подтвердил вход, просто вернись в приложение.',
           status: '',
           note: 'Кнопка входа ниже остаётся рабочей и для standalone PWA.',
@@ -306,6 +307,12 @@
       return AUTH_API_URL + '?mode=telegram-login&return=' + encodeURIComponent(getLoginReturnUrl());
     }
 
+    function getPwaLoginRequestApiUrl(requestId) {
+      var url = AUTH_API_URL + '/pwa-login-request';
+      if (requestId) url += '?request=' + encodeURIComponent(requestId);
+      return url;
+    }
+
     function getAuthView(envState, authState) {
       var envKey = resolveAuthEnvKey(envState);
       var authKey = AUTH_VIEWS[envKey] && AUTH_VIEWS[envKey][authState] ? authState : 'guest';
@@ -390,15 +397,77 @@
       AUTH_WIDGET_FALLBACK_TIMER = null;
     }
 
-    function openTelegramBot() {
+    function getStoredPwaLoginRequestId() {
       try {
-        window.location.href = getTelegramBotUrl();
+        return localStorage.getItem(PWA_LOGIN_REQUEST_STORAGE_KEY) || '';
+      } catch (e) {
+        return '';
+      }
+    }
+
+    function setStoredPwaLoginRequestId(requestId) {
+      try {
+        if (requestId) localStorage.setItem(PWA_LOGIN_REQUEST_STORAGE_KEY, requestId);
+        else localStorage.removeItem(PWA_LOGIN_REQUEST_STORAGE_KEY);
       } catch (e) {}
+    }
+
+    function openTelegramBot(url) {
+      try {
+        window.location.href = url || getTelegramBotUrl();
+      } catch (e) {}
+    }
+
+    function pollPwaLoginRequest(requestId, timeoutMs) {
+      var pendingRequestId = requestId || getStoredPwaLoginRequestId();
+      if (!pendingRequestId) return Promise.resolve(null);
+      return fetchJson(getPwaLoginRequestApiUrl(pendingRequestId), {
+        method: 'GET',
+        headers: { 'Accept': 'application/json' }
+      }, timeoutMs || 4500).then(function(result) {
+        if (result.ok && result.body && result.body.user) {
+          CURRENT_SESSION_TOKEN = result.body.sessionToken || '';
+          setStoredSessionToken(CURRENT_SESSION_TOKEN);
+          setStoredCachedUser(result.body.user);
+          setStoredPwaLoginRequestId('');
+          return result.body.user;
+        }
+        if (result.status === 404 || result.status === 410) {
+          setStoredPwaLoginRequestId('');
+        }
+        return null;
+      }).catch(function() {
+        return null;
+      });
+    }
+
+    function beginTelegramBotLoginRequest() {
+      showAuthGate(AUTH_ENV_STATE, 'pending');
+      if (AUTH_STATUS) AUTH_STATUS.textContent = 'Готовим вход через бота...';
+      setAuthInlineError('');
+      return fetchJson(getPwaLoginRequestApiUrl(), {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ return: getLoginReturnUrl() })
+      }, 5000).then(function(result) {
+        if (!result.ok || !result.body || !result.body.requestId || !result.body.botUrl) {
+          throw new Error((result.body && result.body.error) || 'Не удалось создать запрос на вход');
+        }
+        setStoredPwaLoginRequestId(result.body.requestId);
+        if (AUTH_STATUS) AUTH_STATUS.textContent = 'Открываем Telegram для подтверждения входа...';
+        openTelegramBot(result.body.botUrl);
+        return result.body;
+      }).catch(function(err) {
+        showAuthGate(AUTH_ENV_STATE, 'error');
+        setAuthInlineError(err && err.message ? err.message : 'Не удалось открыть Telegram-вход через бота.');
+        renderTelegramLoginWidget();
+        return null;
+      });
     }
 
     function tryRestoreSessionAfterExternalAuth(timeoutMs) {
       if (AUTH_ENV_STATE === 'dev') return Promise.resolve(null);
-      return restoreSession(timeoutMs || 5000).then(function(user) {
+      return pollPwaLoginRequest('', timeoutMs || 5000).then(function(user) {
         if (user) {
           CURRENT_USER = user;
           showAppShell();
@@ -407,7 +476,17 @@
           });
           return user;
         }
-        return null;
+        return restoreSession(timeoutMs || 5000).then(function(user) {
+          if (user) {
+            CURRENT_USER = user;
+            showAppShell();
+            loadShifts(function() {
+              render();
+            });
+            return user;
+          }
+          return null;
+        });
       }).catch(function() {
         return null;
       });
@@ -678,6 +757,10 @@
     if (AUTH_PRIMARY_ACTION) {
       AUTH_PRIMARY_ACTION.addEventListener('click', function() {
         var action = AUTH_PRIMARY_ACTION.dataset ? AUTH_PRIMARY_ACTION.dataset.authAction : '';
+        if (action === 'telegram-request') {
+          beginTelegramBotLoginRequest();
+          return;
+        }
         if (action === 'telegram') {
           openTelegramBot();
           return;

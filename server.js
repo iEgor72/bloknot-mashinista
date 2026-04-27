@@ -14,6 +14,7 @@ const POEKHALI_LEARNING_DIR = path.join(DATA_DIR, 'poekhali-learning');
 const POEKHALI_WARNINGS_DIR = path.join(DATA_DIR, 'poekhali-warnings');
 const POEKHALI_RUNS_DIR = path.join(DATA_DIR, 'poekhali-runs');
 const USER_STATS_FILE = path.join(DATA_DIR, 'user-presence.json');
+const LOGIN_REQUESTS_FILE = path.join(DATA_DIR, 'auth-login-requests.json');
 const PUBLIC_TOP_LEVEL_FILES = new Set([
   'index.html',
   'manifest.webmanifest',
@@ -115,6 +116,7 @@ const structuredLogRateLimit = new Map();
 })();
 
 const SESSION_TTL_SECONDS = 60 * 60 * 24 * 30; // 30 days
+const LOGIN_REQUEST_TTL_MS = 15 * 60 * 1000;
 
 function sha256Buf(input) {
   return crypto.createHash('sha256').update(input, 'utf8').digest();
@@ -505,6 +507,110 @@ function getUserPoekhaliLearningFile(sid) {
 function getUserPoekhaliWarningsFile(sid) {
   ensureDirs();
   return path.join(POEKHALI_WARNINGS_DIR, `${normalizeSid(sid)}.json`);
+}
+
+function readLoginRequestsStore() {
+  ensureDirs();
+  try {
+    if (!fs.existsSync(LOGIN_REQUESTS_FILE)) return {};
+    const raw = fs.readFileSync(LOGIN_REQUESTS_FILE, 'utf8');
+    const parsed = raw ? JSON.parse(raw) : {};
+    return parsed && typeof parsed === 'object' ? parsed : {};
+  } catch (err) {
+    logStructuredRateLimited('error', 'auth.login_requests.read_failed', LOGIN_REQUESTS_FILE, {
+      file: LOGIN_REQUESTS_FILE,
+      error: toErrorMeta(err),
+    });
+    return {};
+  }
+}
+
+function writeLoginRequestsStore(store) {
+  atomicWriteFileSync(LOGIN_REQUESTS_FILE, JSON.stringify(store || {}, null, 2));
+}
+
+function pruneLoginRequestsStore(store) {
+  const source = store && typeof store === 'object' ? store : {};
+  const now = Date.now();
+  const next = {};
+  Object.keys(source).forEach((requestId) => {
+    const item = source[requestId] || {};
+    const expiresAtMs = Date.parse(item.expiresAt || '');
+    const consumedAtMs = Date.parse(item.consumedAt || '');
+    if (Number.isFinite(consumedAtMs) && now - consumedAtMs > 60 * 1000) return;
+    if (Number.isFinite(expiresAtMs) && expiresAtMs < now - 60 * 1000) return;
+    next[requestId] = item;
+  });
+  return next;
+}
+
+function createPwaLoginRequest(returnPath) {
+  const requestId = crypto.randomBytes(18).toString('hex');
+  const store = pruneLoginRequestsStore(readLoginRequestsStore());
+  const nowIso = new Date().toISOString();
+  store[requestId] = {
+    id: requestId,
+    createdAt: nowIso,
+    expiresAt: new Date(Date.now() + LOGIN_REQUEST_TTL_MS).toISOString(),
+    returnPath: safeRedirectTarget(returnPath),
+    status: 'pending',
+    user: null,
+    approvedAt: '',
+    consumedAt: '',
+  };
+  writeLoginRequestsStore(store);
+  return store[requestId];
+}
+
+function approvePwaLoginRequest(requestId, user) {
+  if (!requestId || !user || !user.id) return null;
+  const store = pruneLoginRequestsStore(readLoginRequestsStore());
+  const item = store[requestId];
+  if (!item) return null;
+  const expiresAtMs = Date.parse(item.expiresAt || '');
+  if (Number.isFinite(expiresAtMs) && expiresAtMs < Date.now()) {
+    delete store[requestId];
+    writeLoginRequestsStore(store);
+    return null;
+  }
+  item.status = 'approved';
+  item.user = {
+    id: String(user.id),
+    first_name: user.first_name || '',
+    last_name: user.last_name || '',
+    username: user.username || '',
+    photo_url: user.photo_url || '',
+    display_name: user.display_name || [user.first_name || '', user.last_name || ''].join(' ').trim() || user.username || ('ID ' + user.id),
+  };
+  item.approvedAt = new Date().toISOString();
+  store[requestId] = item;
+  writeLoginRequestsStore(store);
+  return item;
+}
+
+function consumePwaLoginRequest(requestId) {
+  if (!requestId) return { status: 'missing' };
+  const store = pruneLoginRequestsStore(readLoginRequestsStore());
+  const item = store[requestId];
+  if (!item) {
+    writeLoginRequestsStore(store);
+    return { status: 'missing' };
+  }
+  const expiresAtMs = Date.parse(item.expiresAt || '');
+  if (Number.isFinite(expiresAtMs) && expiresAtMs < Date.now()) {
+    delete store[requestId];
+    writeLoginRequestsStore(store);
+    return { status: 'expired' };
+  }
+  if (item.status !== 'approved' || !item.user || !item.user.id) {
+    writeLoginRequestsStore(store);
+    return { status: 'pending' };
+  }
+  item.status = 'consumed';
+  item.consumedAt = new Date().toISOString();
+  store[requestId] = item;
+  writeLoginRequestsStore(store);
+  return { status: 'approved', user: item.user, returnPath: safeRedirectTarget(item.returnPath) };
 }
 
 function getUserPoekhaliRunsFile(sid) {
@@ -1966,7 +2072,33 @@ const server = http.createServer(async (req, res) => {
       const fromUserId = message && message.from && message.from.id;
       const normalizedText = String(text || '').trim();
       if (chatId) {
-        if (normalizedText.startsWith('/start') || normalizedText.startsWith('/help')) {
+        const loginMatch = normalizedText.match(/^\/start(?:@\w+)?\s+login_([a-f0-9]{24,64})$/i);
+        if (loginMatch) {
+          const approved = approvePwaLoginRequest(loginMatch[1], {
+            id: String(fromUserId || ''),
+            first_name: firstName || '',
+            last_name: (message && message.from && message.from.last_name) || '',
+            username: (message && message.from && message.from.username) || '',
+            display_name: [firstName || '', (message && message.from && message.from.last_name) || ''].join(' ').trim() || ((message && message.from && message.from.username) || '') || ('ID ' + String(fromUserId || '')),
+          });
+          callTelegramApi(token, 'sendMessage', {
+            chat_id: chatId,
+            text: approved
+              ? '✅ Вход для PWA подтверждён. Вернись в приложение «Блокнот» на главном экране — оно само подхватит сессию.'
+              : '⚠️ Этот запрос на вход уже устарел или не найден. Открой PWA снова и запроси вход ещё раз.',
+            reply_markup: approved ? {
+              inline_keyboard: [
+                [{ text: '🌐 Открыть Блокнот', url: APP_URL + safeRedirectTarget(approved.returnPath) }],
+                [{ text: '✈️ Открыть в Telegram', web_app: { url: APP_URL } }],
+              ],
+            } : undefined,
+          }).catch((err) => {
+            logStructuredRateLimited('error', 'telegram.webhook.send_login_confirm_failed', `login:${chatId || 'unknown'}`, {
+              chatId: chatId || null,
+              error: toErrorMeta(err),
+            });
+          });
+        } else if (normalizedText.startsWith('/start') || normalizedText.startsWith('/help')) {
           callTelegramApi(token, 'sendPhoto', buildWelcomeMessage(chatId, firstName))
             .then(result => {
               if (!result || result.ok !== true) {
@@ -2019,6 +2151,54 @@ const server = http.createServer(async (req, res) => {
       });
     }
     sendJson(res, 200, { ok: true });
+    return;
+  }
+
+  if (pathname === '/api/auth/pwa-login-request') {
+    const botToken = process.env.TELEGRAM_BOT_TOKEN;
+    if (!botToken) { sendJson(res, 500, { error: 'TELEGRAM_BOT_TOKEN not configured' }); return; }
+
+    if (req.method === 'POST') {
+      try {
+        const body = await readBody(req);
+        const payload = body ? JSON.parse(body) : {};
+        const loginRequest = createPwaLoginRequest(payload && payload.return ? payload.return : '/');
+        sendJson(res, 200, {
+          ok: true,
+          requestId: loginRequest.id,
+          status: loginRequest.status,
+          botUrl: `https://t.me/bloknot_mashinista_bot?start=login_${loginRequest.id}`,
+          expiresAt: loginRequest.expiresAt,
+        });
+      } catch (err) {
+        sendJson(res, 400, { error: err.message || 'Invalid payload' });
+      }
+      return;
+    }
+
+    if (req.method === 'GET') {
+      const requestId = String(parsedUrl.query.request || '').trim();
+      const result = consumePwaLoginRequest(requestId);
+      if (result.status === 'approved' && result.user) {
+        const sessionToken = createSessionToken(result.user);
+        sendJson(res, 200, { ok: true, status: 'approved', user: result.user, sessionToken }, {
+          'Set-Cookie': buildSessionCookie(sessionToken),
+        });
+        return;
+      }
+      if (result.status === 'pending') {
+        sendJson(res, 202, { ok: true, status: 'pending' });
+        return;
+      }
+      if (result.status === 'expired') {
+        sendJson(res, 410, { error: 'Login request expired', status: 'expired' });
+        return;
+      }
+      sendJson(res, 404, { error: 'Login request not found', status: 'missing' });
+      return;
+    }
+
+    sendJson(res, 405, { error: 'Method not allowed' });
     return;
   }
 
