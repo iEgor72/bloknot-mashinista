@@ -22,13 +22,9 @@
     var AUTH_PRIMARY_HINT = document.getElementById('authPrimaryHint');
     var AUTH_ERROR = document.getElementById('authError');
     var AUTH_NOTE = document.getElementById('authNote');
-    var AUTH_WIDGET = document.getElementById('telegramLoginWidget');
-    var AUTH_WIDGET_SHELL = document.getElementById('authWidgetShell');
     var APP_SHELL = document.getElementById('appShell');
     var UI_OVERLAY_ROOT = document.getElementById('uiOverlayRoot');
     var SHIFT_ACTIONS_MENU = document.getElementById('shiftActionsMenu');
-    var AUTH_WIDGET_READY = false;
-    var AUTH_WIDGET_FALLBACK_TIMER = null;
     var authBootstrapPromise = null;
     var SESSION_STORAGE_KEY = 'shift_tracker_session_token';
     var PWA_LOGIN_REQUEST_STORAGE_KEY = 'shift_tracker_pwa_login_request_v1';
@@ -66,14 +62,14 @@
           message: 'Подтверди вход через Telegram и синхронизируй смены между устройствами.',
           primary: 'Открыть Telegram',
           primaryAction: 'telegram-request',
-          primaryHint: 'Если удобнее, можно сразу войти кнопкой ниже.',
+          primaryHint: 'Откроем бота и подтвердим вход там.',
           status: '',
           note: 'После подтверждения вход обновится автоматически.',
           bannerTitle: 'Вход через Telegram',
-          bannerText: 'Для браузера и PWA снова доступен нормальный Telegram-вход прямо на экране.',
+          bannerText: 'Для браузера и PWA используем один надёжный вход через бота.',
           bannerIcon: 'i',
           showBanner: true,
-          showWidget: true,
+          showWidget: false,
           showPrimary: true,
           showRetry: false,
           primaryBusy: false
@@ -95,17 +91,17 @@
         error: {
           badge: 'Telegram',
           title: 'Вход не прошёл',
-          message: 'Попробуй снова: через Telegram или кнопкой входа ниже.',
+          message: 'Попробуй снова через Telegram.',
           primary: 'Открыть Telegram',
           primaryAction: 'telegram-request',
           primaryHint: 'После подтверждения просто вернись в приложение.',
           status: '',
           note: 'Если Telegram уже подтвердил вход, Блокнот подтянет сессию при возврате.',
           bannerTitle: 'Повторим вход',
-          bannerText: 'Standalone PWA и браузер используют один и тот же Telegram-вход.',
+          bannerText: 'Браузер и PWA используют один и тот же вход через бота.',
           bannerIcon: '!',
           showBanner: true,
-          showWidget: true,
+          showWidget: false,
           showRetry: true,
           primaryBusy: false
         },
@@ -125,12 +121,12 @@
           primaryAction: 'telegram-request',
           primaryHint: 'Если открыл Telegram, потом просто вернись сюда.',
           status: '',
-          note: 'Можно войти кнопкой ниже или через Telegram-бота — после возврата сессия восстановится.',
+          note: 'После возврата из Telegram PWA само восстановит сессию.',
           bannerTitle: 'Вход для PWA',
-          bannerText: 'Standalone-версия теперь снова умеет получать Telegram-сессию нормально.',
+          bannerText: 'Standalone-версия использует один надёжный вход через бота.',
           bannerIcon: 'i',
           showBanner: true,
-          showWidget: true,
+          showWidget: false,
           showPrimary: true,
           showRetry: false,
           primaryBusy: false
@@ -157,12 +153,12 @@
           primaryAction: 'telegram-request',
           primaryHint: 'Если уже подтвердил вход, просто вернись в приложение.',
           status: '',
-          note: 'Кнопка входа ниже остаётся рабочей и для standalone PWA.',
+          note: 'Если Telegram уже подтвердил вход, просто вернись в приложение.',
           bannerTitle: 'Повторим вход',
-          bannerText: 'Главный экран PWA больше не должен застревать на пустом переходе в Telegram.',
+          bannerText: 'Главный экран PWA теперь использует только вход через бота.',
           bannerIcon: '!',
           showBanner: true,
-          showWidget: true,
+          showWidget: false,
           showRetry: true,
           primaryBusy: false
         },
@@ -303,10 +299,6 @@
       return 'https://t.me/' + TELEGRAM_BOT_USERNAME;
     }
 
-    function getTelegramLoginAuthUrl() {
-      return AUTH_API_URL + '?mode=telegram-login&return=' + encodeURIComponent(getLoginReturnUrl());
-    }
-
     function getPwaLoginRequestApiUrl(requestId) {
       var url = AUTH_API_URL + '/pwa-login-request';
       if (requestId) url += '?request=' + encodeURIComponent(requestId);
@@ -353,7 +345,6 @@
       if (AUTH_PRIMARY_HINT) AUTH_PRIMARY_HINT.textContent = copy.primaryHint || '';
       if (AUTH_ERROR) AUTH_ERROR.textContent = '';
       if (AUTH_NOTE) AUTH_NOTE.textContent = copy.note || '';
-      if (AUTH_WIDGET_SHELL) AUTH_WIDGET_SHELL.classList.toggle('hidden', !copy.showWidget);
       if (document.getElementById('btnAuthRetry')) {
         document.getElementById('btnAuthRetry').classList.toggle('visible', !!copy.showRetry);
         document.getElementById('btnAuthRetry').textContent = 'Повторить';
@@ -380,21 +371,12 @@
       var hasSession = !!CURRENT_USER || !!CURRENT_SESSION_TOKEN || !!getStoredSessionToken();
       var nextState = AUTH_ENV_STATE === 'dev' ? 'guest' : (hasSession ? 'error' : 'guest');
       showAuthGate(AUTH_ENV_STATE, nextState);
-      if (nextState !== 'error') {
-        renderTelegramLoginWidget();
-      }
       return nextState;
     }
 
     function setAuthInlineError(message) {
       if (!AUTH_ERROR) return;
       AUTH_ERROR.textContent = message || '';
-    }
-
-    function clearAuthWidgetFallbackTimer() {
-      if (!AUTH_WIDGET_FALLBACK_TIMER) return;
-      clearTimeout(AUTH_WIDGET_FALLBACK_TIMER);
-      AUTH_WIDGET_FALLBACK_TIMER = null;
     }
 
     function getStoredPwaLoginRequestId() {
@@ -460,7 +442,6 @@
       }).catch(function(err) {
         showAuthGate(AUTH_ENV_STATE, 'error');
         setAuthInlineError(err && err.message ? err.message : 'Не удалось открыть Telegram-вход через бота.');
-        renderTelegramLoginWidget();
         return null;
       });
     }
@@ -494,8 +475,6 @@
 
     function restartAuthFlow() {
       authBootstrapPromise = null;
-      AUTH_WIDGET_READY = false;
-      if (AUTH_WIDGET) AUTH_WIDGET.innerHTML = '';
       if (AUTH_ENV_STATE === 'dev') {
         showAppShell();
         loadShifts(function() { render(); });
@@ -503,7 +482,6 @@
       }
 
       showAuthGate('prod', 'pending');
-      renderTelegramLoginWidget();
       ensureAuthenticated().then(function(user) {
         if (user) {
           loadShifts(function() {
@@ -773,37 +751,6 @@
       });
     }
 
-    function renderTelegramLoginWidget() {
-      clearAuthWidgetFallbackTimer();
-      AUTH_WIDGET_READY = false;
-      if (!AUTH_WIDGET || !AUTH_WIDGET_SHELL || AUTH_ENV_STATE === 'dev') {
-        if (AUTH_WIDGET) AUTH_WIDGET.innerHTML = '';
-        if (AUTH_WIDGET_SHELL) AUTH_WIDGET_SHELL.classList.add('hidden');
-        return;
-      }
-
-      AUTH_WIDGET.innerHTML = '';
-      AUTH_WIDGET_SHELL.classList.remove('hidden');
-
-      var widgetScript = document.createElement('script');
-      widgetScript.async = true;
-      widgetScript.src = 'https://telegram.org/js/telegram-widget.js?22';
-      widgetScript.setAttribute('data-telegram-login', TELEGRAM_BOT_USERNAME);
-      widgetScript.setAttribute('data-size', 'large');
-      widgetScript.setAttribute('data-radius', '14');
-      widgetScript.setAttribute('data-userpic', 'false');
-      widgetScript.setAttribute('data-request-access', 'write');
-      widgetScript.setAttribute('data-auth-url', getTelegramLoginAuthUrl());
-      AUTH_WIDGET.appendChild(widgetScript);
-
-      AUTH_WIDGET_FALLBACK_TIMER = window.setTimeout(function() {
-        AUTH_WIDGET_READY = !!(AUTH_WIDGET && AUTH_WIDGET.children && AUTH_WIDGET.children.length);
-        if (!AUTH_WIDGET_READY) {
-          setAuthInlineError('Не удалось показать кнопку входа Telegram. Открой Telegram вручную и вернись сюда.');
-        }
-      }, 1600);
-    }
-
     function fetchJson(url, options, timeoutMs) {
       var reqOptions = options || {};
       reqOptions.credentials = 'include';
@@ -906,11 +853,8 @@
         setStoredCachedUser(null);
         allShifts = [];
         authBootstrapPromise = null;
-        AUTH_WIDGET_READY = false;
-        if (AUTH_WIDGET) AUTH_WIDGET.innerHTML = '';
         updateFooter();
         showAuthGate(AUTH_ENV_STATE, 'guest');
-        renderTelegramLoginWidget();
       });
     }
 
@@ -945,7 +889,6 @@
             CURRENT_USER = null;
             if (!silent) {
               showAuthGate('prod', 'guest');
-              renderTelegramLoginWidget();
             }
             return null;
           })
@@ -958,7 +901,6 @@
               } else if (navigator.onLine === false) {
                 setAuthInlineError('Сейчас нет интернета. Если приложение уже открывалось раньше, данные появятся после восстановления связи или из кэша.');
               }
-              renderTelegramLoginWidget();
             }
             return null;
           });
@@ -1021,20 +963,12 @@
 
     window.addEventListener('focus', function() {
       if (AUTH_STATE === 'authenticated' || !navigator.onLine) return;
-      tryRestoreSessionAfterExternalAuth(3600).then(function(user) {
-        if (!user && (AUTH_STATE === 'guest' || AUTH_STATE === 'error')) {
-          renderTelegramLoginWidget();
-        }
-      });
+      tryRestoreSessionAfterExternalAuth(3600);
     });
 
     document.addEventListener('visibilitychange', function() {
       if (document.hidden || AUTH_STATE === 'authenticated' || !navigator.onLine) return;
-      tryRestoreSessionAfterExternalAuth(3600).then(function(user) {
-        if (!user && (AUTH_STATE === 'guest' || AUTH_STATE === 'error')) {
-          renderTelegramLoginWidget();
-        }
-      });
+      tryRestoreSessionAfterExternalAuth(3600);
     });
 
     function bootstrapAppStartup() {
@@ -1062,7 +996,6 @@
         var hasKnownIdentity = hasKnownUserIdentity(CURRENT_USER) || hasKnownUserIdentity(getStoredCachedUser());
         if (!hasKnownIdentity || (!readShiftsCache() && !readAnyShiftsCache())) {
           showAuthGate(AUTH_ENV_STATE, 'guest');
-          renderTelegramLoginWidget();
         }
       });
     }
