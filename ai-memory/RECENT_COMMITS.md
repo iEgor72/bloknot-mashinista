@@ -1,9 +1,11 @@
 # Recent Commits
 
-Generated: 2026-04-27 00:25:17 +0000
+Generated: 2026-04-27 00:32:12 +0000
 
 | Hash | Date | Author | Message |
 | --- | --- | --- | --- |
+| `b7c0cb8` | 2026-04-27T00:31:57+00:00 | iEgor72 | fix(auth): keep a single browser login flow |
+| `4d9d8b6` | 2026-04-27T00:25:17+00:00 | iEgor72 | fix(auth): add bot-confirmed PWA login fallback |
 | `86a4f00` | 2026-04-27T00:17:28+00:00 | iEgor72 | fix(auth): restore standalone PWA telegram login |
 | `43f5ba8` | 2026-04-27T09:58:44+10:00 | iEgor72 | fix(auth): simplify telegram login gate |
 | `b121f90` | 2026-04-27T09:33:37+10:00 | iEgor72 | fix(shifts): improve detail readability |
@@ -42,5 +44,3 @@ Generated: 2026-04-27 00:25:17 +0000
 | `304d678` | 2026-04-23T17:40:46+00:00 | iEgor72 | fix(home): polish calendar counters and weekends |
 | `ac9e942` | 2026-04-23T17:33:02+00:00 | iEgor72 | fix(home): refine calendar cell layout |
 | `8fc4c51` | 2026-04-23T17:27:19+00:00 | iEgor72 | fix(home): highlight weekend calendar days |
-| `74df658` | 2026-04-23T17:13:37+00:00 | iEgor72 | fix(home): refine calendar day sheet flow |
-| `c6851a1` | 2026-04-23T17:02:40+00:00 | iEgor72 | fix(home): refine calendar placement and arrows |

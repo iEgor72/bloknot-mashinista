@@ -1,19 +1,11 @@
 # Worktree Status
 
-Generated: 2026-04-27 00:25:17 +0000
+Generated: 2026-04-27 00:32:12 +0000
 
 ## git status -sb
 ```text
 ## main...origin/main
- M ai-memory/CHANGELOG.md
- M ai-memory/INDEX.md
  M ai-memory/PROJECT_STATE.md
- M ai-memory/RECENT_COMMITS.md
- M ai-memory/WORKTREE_STATUS.md
- M ai-memory/sessions/2026-04-27.md
- M scripts/auth.js
- M server.js
- M sw.js
 ```
 
 ## git branch -vv
@@ -29,16 +21,16 @@ Generated: 2026-04-27 00:25:17 +0000
 + cleanup-review                                6219db2 (/tmp/bloknot-clean/review) Revert "refactor(schedule): switch app to manual-only shifts"
 + cleanup-test-harness                          6219db2 (/tmp/bloknot-batch/test-harness) Revert "refactor(schedule): switch app to manual-only shifts"
 + feat/manual-calendar-from-scratch             8345ab9 (/tmp/bloknot-manual-calendar) feat(home): polish manual calendar flow
-* main                                          86a4f00 [origin/main] fix(auth): restore standalone PWA telegram login
+* main                                          b7c0cb8 [origin/main] fix(auth): keep a single browser login flow
 ```
 
 ## HEAD
 ```text
-86a4f00 fix(auth): restore standalone PWA telegram login
- ai-memory/CHANGELOG.md           |   8 +++
- ai-memory/sessions/2026-04-27.md |   1 +
- index.html                       |   3 +
- scripts/auth.js                  | 119 +++++++++++++++++++++++++++++----------
- sw.js                            |   2 +-
- 5 files changed, 103 insertions(+), 30 deletions(-)
+b7c0cb8 fix(auth): keep a single browser login flow
+ ai-memory/CHANGELOG.md           |  8 ++++
+ ai-memory/sessions/2026-04-27.md |  1 +
+ index.html                       |  3 --
+ scripts/auth.js                  | 95 ++++++----------------------------------
+ sw.js                            |  2 +-
+ 5 files changed, 24 insertions(+), 85 deletions(-)
 ```

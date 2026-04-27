@@ -1,14 +1,14 @@
 # Project State
 
 <!-- AUTO_STATUS:START -->
-Generated: 2026-04-27 00:25:17 +0000
+Generated: 2026-04-27 00:32:12 +0000
 
 ## Repository Snapshot
 - Local repo path: `/opt/bloknot-mashinista`
 - Project memory path: `/opt/bloknot-mashinista/ai-memory`
 - Branch: `main`
-- HEAD: `86a4f00`
-- Last commit: `86a4f00 fix(auth): restore standalone PWA telegram login`
+- HEAD: `b7c0cb8`
+- Last commit: `b7c0cb8 fix(auth): keep a single browser login flow`
 
 ## Git Remote
 ```text
@@ -29,20 +29,12 @@ origin	https://github.com/iEgor72/bloknot-mashinista.git (push)
 + cleanup-review                                6219db2 (/tmp/bloknot-clean/review) Revert "refactor(schedule): switch app to manual-only shifts"
 + cleanup-test-harness                          6219db2 (/tmp/bloknot-batch/test-harness) Revert "refactor(schedule): switch app to manual-only shifts"
 + feat/manual-calendar-from-scratch             8345ab9 (/tmp/bloknot-manual-calendar) feat(home): polish manual calendar flow
-* main                                          86a4f00 [origin/main] fix(auth): restore standalone PWA telegram login
+* main                                          b7c0cb8 [origin/main] fix(auth): keep a single browser login flow
 ```
 
 ## Worktree
 ```text
-M ai-memory/CHANGELOG.md
- M ai-memory/INDEX.md
- M ai-memory/PROJECT_STATE.md
- M ai-memory/RECENT_COMMITS.md
- M ai-memory/WORKTREE_STATUS.md
- M ai-memory/sessions/2026-04-27.md
- M scripts/auth.js
- M server.js
- M sw.js
+clean
 ```
 <!-- AUTO_STATUS:END -->
 
