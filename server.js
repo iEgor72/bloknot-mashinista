@@ -3575,47 +3575,7 @@ const server = http.createServer(async (req, res) => {
     return;
   }
 
-  if (pathname === '/api/poekhali-learning') {
-    if (!sid) {
-      sendJson(res, 401, { error: 'Unauthorized' });
-      return;
-    }
-
-    if (req.method === 'GET') {
-      sendJson(res, 200, {
-        sid,
-        learning: readPoekhaliLearning(sid),
-        sharedLearning: readSharedPoekhaliLearning(sid),
-      });
-      return;
-    }
-
-    if (req.method === 'PUT') {
-      try {
-        const body = await readBody(req);
-        const payload = body ? JSON.parse(body) : {};
-        const learning = writePoekhaliLearning(sid, payload);
-        sendJson(res, 200, {
-          ok: true,
-          sid,
-          learning,
-          sharedLearning: readSharedPoekhaliLearning(sid),
-        });
-      } catch (err) {
-        const errorMessage = err && err.message ? err.message : 'Invalid payload';
-        const isValidationError = /^(Expected|Too many|Invalid|Missing|Payload too large)/.test(errorMessage);
-        logStructuredRateLimited(isValidationError ? 'warn' : 'error', 'storage.poekhali_learning.write_rejected', `${sid}:${errorMessage}`, {
-          sid,
-          error: toErrorMeta(err),
-        });
-        sendJson(res, isValidationError ? 400 : 500, { error: errorMessage });
-      }
-      return;
-    }
-
-    sendJson(res, 405, { error: 'Method not allowed' });
-    return;
-  }
+  // /api/poekhali-learning removed: GPS-track learning and its sync were dropped.
 
   if (pathname === '/api/poekhali-warnings') {
     if (!sid) {
@@ -3650,38 +3610,7 @@ const server = http.createServer(async (req, res) => {
     return;
   }
 
-  if (pathname === '/api/poekhali-runs') {
-    if (!sid) {
-      sendJson(res, 401, { error: 'Unauthorized' });
-      return;
-    }
-
-    if (req.method === 'GET') {
-      sendJson(res, 200, { sid, runs: readPoekhaliRuns(sid) });
-      return;
-    }
-
-    if (req.method === 'PUT') {
-      try {
-        const body = await readBody(req);
-        const payload = body ? JSON.parse(body) : {};
-        const runs = writePoekhaliRuns(sid, payload && payload.runs);
-        sendJson(res, 200, { ok: true, sid, runs });
-      } catch (err) {
-        const errorMessage = err && err.message ? err.message : 'Invalid payload';
-        const isValidationError = /^(Expected|Too many|Invalid|Missing|Payload too large)/.test(errorMessage);
-        logStructuredRateLimited(isValidationError ? 'warn' : 'error', 'storage.poekhali_runs.write_rejected', `${sid}:${errorMessage}`, {
-          sid,
-          error: toErrorMeta(err),
-        });
-        sendJson(res, isValidationError ? 400 : 500, { error: errorMessage });
-      }
-      return;
-    }
-
-    sendJson(res, 405, { error: 'Method not allowed' });
-    return;
-  }
+  // /api/poekhali-runs removed: trip recording was dropped.
 
   if (pathname === '/api/salary-params') {
     if (!sid) {

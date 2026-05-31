@@ -3022,20 +3022,7 @@
   }
 
   function getActiveRun() {
-    if (tracker.activeRunId) {
-      for (var i = 0; i < tracker.runs.length; i++) {
-        if (tracker.runs[i] && tracker.runs[i].id === tracker.activeRunId && !tracker.runs[i].deletedAt && tracker.runs[i].status !== 'finished') {
-          return tracker.runs[i];
-        }
-      }
-    }
-    for (var j = 0; j < tracker.runs.length; j++) {
-      if (tracker.runs[j] && !tracker.runs[j].deletedAt && tracker.runs[j].status !== 'finished') {
-        tracker.activeRunId = tracker.runs[j].id;
-        return tracker.runs[j];
-      }
-    }
-    tracker.activeRunId = '';
+    // Trip recording removed: there is never an active run.
     return null;
   }
 
@@ -3073,9 +3060,8 @@
   }
 
   function loadRuns() {
-    loadRunSyncState();
-    tracker.runs = normalizeRunsList(readJsonStorage(RUNS_STORAGE_KEY, []));
-    restoreTimerFromActiveRun();
+    // Trip recording removed: keep the runs list permanently empty.
+    tracker.runs = [];
   }
 
   function saveRuns(options) {
