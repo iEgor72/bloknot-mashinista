@@ -1,14 +1,14 @@
 # Project State
 
 <!-- AUTO_STATUS:START -->
-Generated: 2026-05-31 19:18:11 +1000
+Generated: 2026-05-31 19:23:47 +1000
 
 ## Repository Snapshot
 - Local repo path: `D:\work\bloknot-mashinista-tg`
 - Project memory path: `D:\work\bloknot-mashinista-tg\ai-memory`
 - Branch: `poekhali-rework`
-- HEAD: `fdd07e7`
-- Last commit: `fdd07e7 chore(memory): log Poekhali rework session`
+- HEAD: `3303580`
+- Last commit: `3303580 refactor(poekhali): drop run/learning server endpoints, neutralize runs`
 
 ## Git Remote
 ```text
@@ -21,7 +21,7 @@ origin	https://github.com/iEgor72/bloknot-mashinista.git (push)
 codex/next-direction b044dd5 offline mvp
   codex/tabs-ui        117f1fa [origin/codex/tabs-ui] tabs ui
   main                 ad53dff [origin/main] chore(memory): record poekhali deploy
-* poekhali-rework      fdd07e7 chore(memory): log Poekhali rework session
+* poekhali-rework      3303580 refactor(poekhali): drop run/learning server endpoints, neutralize runs
 ```
 
 ## Worktree
