@@ -1,9 +1,10 @@
 # Recent Commits
 
-Generated: 2026-05-31 13:43:27 +1000
+Generated: 2026-05-31 13:47:14 +1000
 
 | Hash | Date | Author | Message |
 | --- | --- | --- | --- |
+| `b14e056` | 2026-05-31T13:47:13+10:00 | iEgor72 | refactor(poekhali): drop dead recording UI and speed-import buttons |
 | `e7bb43e` | 2026-05-31T13:43:25+10:00 | iEgor72 | fix(poekhali): remove phantom default 60 km/h prevailing-speed band |
 | `b181470` | 2026-05-31T13:31:45+10:00 | iEgor72 | feat(poekhali): add speed-editor entry point from profile/limit tile |
 | `35786d8` | 2026-05-31T13:28:43+10:00 | iEgor72 | feat(poekhali): manual speeds with 3 categories, replace recording UI |
@@ -43,4 +44,3 @@ Generated: 2026-05-31 13:43:27 +1000
 | `fb99c42` | 2026-05-06T22:37:46Z | iEgor72 | chore(memory): refresh after station signal fix |
 | `974c916` | 2026-05-06T22:37:34Z | iEgor72 | fix(poekhali): keep station name while inside station |
 | `1e19b9e` | 2026-05-06T22:32:37Z | iEgor72 | chore(memory): refresh after Apkan signal fix |
-| `bef206f` | 2026-05-06T22:32:25Z | iEgor72 | fix(poekhali): add manual Apkan signals |

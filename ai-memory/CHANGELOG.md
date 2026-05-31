@@ -5078,3 +5078,20 @@ Append-only журнал действий ИИ-агентов по проект�
 - Methods: `git post-commit hook`, `automatic memory update`
 - Files: `ai-memory/CHANGELOG.md`, `ai-memory/INDEX.md`, `ai-memory/PROJECT_STATE.md`, `ai-memory/RECENT_COMMITS.md`, `ai-memory/WORKTREE_STATUS.md`, `ai-memory/sessions/2026-05-31.md`, `scripts/poekhali-tracker.js`
 - Notes: Commit: `e7bb43e897f364a233fc6f4f4b401adab6b33738` (`e7bb43e`) | Author: `iEgor72`
+
+## 2026-05-31 13:47:13 +1000
+
+- Source: `post-commit`
+- Task: refactor(poekhali): drop dead recording UI and speed-import buttons
+- Branch: `poekhali-rework`
+- Methods: `git post-commit hook`, `automatic memory update`
+- Files: `ai-memory/CHANGELOG.md`, `ai-memory/INDEX.md`, `ai-memory/PROJECT_STATE.md`, `ai-memory/RECENT_COMMITS.md`, `ai-memory/WORKTREE_STATUS.md`, `ai-memory/sessions/2026-05-31.md`, `scripts/poekhali-tracker.js`
+- Notes: Commit: `b14e056e1187dceb633c1d88fc0942455c89ee89` (`b14e056`) | Author: `iEgor72`
+
+## 2026-05-31 13:47:23 +1000
+
+- Source: `manual`
+- Task: Poekhali: fix phantom 60 km/h band, remove dead recording UI + speed-import
+- Branch: `poekhali-rework`
+- Methods: `drawApkSpeedScale no default prevailing speed`, `delete renderUserTrip* functions`, `remove ЭК/РК/ДОК import buttons`
+- Files: `scripts/poekhali-tracker.js`
