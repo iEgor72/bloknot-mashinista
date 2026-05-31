@@ -4458,7 +4458,7 @@
     var speed = Number(rule.speed);
     if (!isFinite(coordinate) || !isFinite(end) || !isFinite(speed) || !isRealNumber(sector)) return null;
     var fallbackId = 'speed-' + sector + '-' + coordinate + '-' + end + '-' + Math.round(speed);
-    return {
+    var normalized = {
       id: normalizeLearningUserEntityId(rule.id || rule.key, fallbackId),
       sector: sector,
       wayNumber: Math.max(0, Math.round(Number(rule.wayNumber) || 0)),
@@ -4467,8 +4467,40 @@
       end: end,
       speed: speed,
       name: String(rule.name || Math.round(speed)).trim().slice(0, 80),
-      source: normalizeUserSectionEntitySource(rule.source)
+      source: normalizeUserSectionEntitySource(rule.source),
+      category: normalizeUserSpeedCategory(rule.category)
     };
+    // Reserved fields for temporary restrictions (not surfaced yet).
+    if (rule.validUntil) normalized.validUntil = String(rule.validUntil).slice(0, 40);
+    if (rule.orderNo) normalized.orderNo = String(rule.orderNo).slice(0, 40);
+    return normalized;
+  }
+
+  // User speed categories: установленная (set line speed), постоянное и временное ограничение.
+  var USER_SPEED_CATEGORIES = ['set', 'permanent', 'temporary'];
+  var speedEditorCategory = 'permanent';
+  function normalizeUserSpeedCategory(value) {
+    var v = String(value || '').trim();
+    return USER_SPEED_CATEGORIES.indexOf(v) >= 0 ? v : 'permanent';
+  }
+  function getUserSpeedCategoryLabel(category) {
+    var c = normalizeUserSpeedCategory(category);
+    if (c === 'set') return 'Установленная';
+    if (c === 'temporary') return 'Временное ограничение';
+    return 'Постоянное ограничение';
+  }
+  function getUserSpeedCategoryShort(category) {
+    var c = normalizeUserSpeedCategory(category);
+    if (c === 'set') return 'УСТ';
+    if (c === 'temporary') return 'ВРЕМ';
+    return 'ПОСТ';
+  }
+  // Profile colour per category: установленная — зелёный, постоянное — оранжевый, временное — красный.
+  function getUserSpeedCategoryRgb(category) {
+    var c = normalizeUserSpeedCategory(category);
+    if (c === 'set') return '74, 222, 128';
+    if (c === 'temporary') return '244, 63, 94';
+    return '251, 146, 60';
   }
 
   function buildRouteSegmentsFromUserPoints(points) {
@@ -5370,6 +5402,39 @@
     return tracker.userSectionsBySector[getSectorKey(sector)] || null;
   }
 
+  // Ensure a user section exists for a sector so manual speeds can be attached.
+  // Trip recording was removed, so sections are now seeded directly from the loaded
+  // map geometry (tracker.routePoints) instead of from a recorded GPS track.
+  function ensureUserSectionForSector(sector) {
+    var existing = getUserSectionForSector(sector);
+    if (existing) return existing;
+    if (!isRealNumber(sector)) return null;
+    var mapId = getLearningMapScope();
+    if (!mapId) return null;
+    var key = getSectorKey(sector);
+    var pts = (tracker.routePoints || []).filter(function(point) {
+      return getSectorKey(point.sector) === key && isFinite(point.lat) && isFinite(point.lon) && isFinite(point.ordinate);
+    });
+    if (pts.length < 2) return null;
+    var map = getLearningMap(mapId);
+    var now = Date.now();
+    var section = {
+      id: makeLearningUserEntityId('section'),
+      mapId: mapId,
+      sector: sector,
+      title: 'Скорости · уч. ' + formatSectorShortName(sector),
+      routePoints: pts.map(function(point) {
+        return { lat: point.lat, lon: point.lon, ordinate: point.ordinate, sector: sector };
+      }),
+      objects: [],
+      speeds: [],
+      createdAt: now,
+      updatedAt: now
+    };
+    if (!saveStoredUserLearningSection(map, section)) return null;
+    return getUserSectionForSector(sector);
+  }
+
   function getUserProfilePointsForSector(sector) {
     return tracker.userProfilesBySector[getSectorKey(sector)] || [];
   }
@@ -6256,6 +6321,7 @@
     if (type === 'speed') {
       if (!isFinite(speed) || speed <= 0) return false;
       if (!Array.isArray(stored.speeds)) stored.speeds = [];
+      var speedCategory = normalizeUserSpeedCategory(payload && payload.category);
       var speedRule = {
         id: normalizeLearningUserEntityId(id, makeLearningUserEntityId('speed')),
         sector: section.sector,
@@ -6264,8 +6330,9 @@
         length: length,
         end: coordinate + length,
         speed: Math.round(speed),
-        name: name || String(Math.round(speed)),
-        source: 'user'
+        name: name || (getUserSpeedCategoryShort(speedCategory) + ' ' + Math.round(speed)),
+        source: 'user',
+        category: speedCategory
       };
       var speedIndex = id
         ? stored.speeds.findIndex(function(item) { return String(item.id || '') === id; })
@@ -7962,7 +8029,7 @@
 
   function renderOpsTabs(parent) {
     var tabs = [
-      { id: 'drive', label: 'Поездка' },
+      { id: 'drive', label: 'Скорости' },
       { id: 'warnings', label: 'ПР' },
       { id: 'map', label: 'Карта' }
     ];
@@ -8041,6 +8108,158 @@
       return;
     }
     if (typeof setActiveTab === 'function') setActiveTab('add');
+  }
+
+  function getSectorFirstOrdinate(sector) {
+    var key = getSectorKey(sector);
+    var min = NaN;
+    var pts = tracker.routePoints || [];
+    for (var i = 0; i < pts.length; i++) {
+      if (getSectorKey(pts[i].sector) !== key) continue;
+      if (!isFinite(min) || pts[i].ordinate < min) min = pts[i].ordinate;
+    }
+    return isFinite(min) ? Math.round(min) : 0;
+  }
+
+  function renderSpeedsSection(parent) {
+    var sector = getCurrentDisplaySector();
+    var section = document.createElement('section');
+    section.className = 'poekhali-ops-section';
+    var head = document.createElement('div');
+    head.className = 'poekhali-ops-section-head';
+    var title = document.createElement('div');
+    title.textContent = 'Скорости';
+    var total = document.createElement('div');
+    total.className = 'poekhali-ops-total';
+    head.appendChild(title);
+    head.appendChild(total);
+    section.appendChild(head);
+
+    if (!isRealNumber(sector) || !tracker.assetsLoaded) {
+      var blocked = document.createElement('div');
+      blocked.className = 'poekhali-shift-route is-muted';
+      blocked.textContent = tracker.assetsLoaded
+        ? 'Нет участка под текущей позицией. Откройте карту участка во вкладке «Карта».'
+        : 'Карта участка загружается…';
+      section.appendChild(blocked);
+      parent.appendChild(section);
+      return;
+    }
+
+    var userSection = getUserSectionForSector(sector);
+    var speeds = userSection && Array.isArray(userSection.speeds) ? userSection.speeds.slice() : [];
+    total.textContent = speeds.length ? (speeds.length + ' шт.') : 'нет';
+
+    var hint = document.createElement('div');
+    hint.className = 'poekhali-shift-route is-muted';
+    hint.textContent = 'Выберите тип, укажите начало и конец (км · пк) и скорость.';
+    section.appendChild(hint);
+
+    var catWrap = document.createElement('div');
+    catWrap.className = 'poekhali-speed-cats';
+    [['set', 'Установленная'], ['permanent', 'Постоянное'], ['temporary', 'Временное']].forEach(function(pair) {
+      var catBtn = document.createElement('button');
+      catBtn.type = 'button';
+      catBtn.className = 'poekhali-speed-cat' + (speedEditorCategory === pair[0] ? ' is-active' : '');
+      catBtn.textContent = pair[1];
+      catBtn.addEventListener('click', function() {
+        speedEditorCategory = pair[0];
+        renderOpsSheet();
+      });
+      catWrap.appendChild(catBtn);
+    });
+    section.appendChild(catWrap);
+
+    var projection = getCurrentProjectionForForm();
+    var startCoord = projection && getSectorKey(projection.sector) === getSectorKey(sector) && isRealNumber(projection.lineCoordinate)
+      ? Math.round(projection.lineCoordinate)
+      : getSectorFirstOrdinate(sector);
+    var startParts = coordinateToKmPkMeter(startCoord);
+    var endParts = coordinateToKmPkMeter(startCoord + 1000);
+    var kmStart = createNumberInput(startParts.km, 1, 9999, 1);
+    var pkStart = createNumberInput(startParts.pk, 0, 9, 1);
+    var kmEnd = createNumberInput(endParts.km, 1, 9999, 1);
+    var pkEnd = createNumberInput(endParts.pk, 0, 9, 1);
+    var speedInput = createNumberInput(60, 1, 160, 5);
+    var grid = document.createElement('div');
+    grid.className = 'poekhali-shift-info-grid';
+    grid.appendChild(createField('Км нач.', kmStart));
+    grid.appendChild(createField('ПК нач.', pkStart));
+    grid.appendChild(createField('Км кон.', kmEnd));
+    grid.appendChild(createField('ПК кон.', pkEnd));
+    grid.appendChild(createField('Скорость', speedInput));
+    section.appendChild(grid);
+
+    var actions = document.createElement('div');
+    actions.className = 'poekhali-warning-form-actions';
+    var addBtn = document.createElement('button');
+    addBtn.type = 'button';
+    addBtn.className = 'poekhali-primary-action';
+    addBtn.textContent = 'Добавить скорость';
+    addBtn.addEventListener('click', function() {
+      var startC = coordinateFromKmPkMeter(kmStart.value, pkStart.value, 0);
+      var endC = coordinateFromKmPkMeter(kmEnd.value, pkEnd.value, 0);
+      if (endC < startC) {
+        var swap = startC;
+        startC = endC;
+        endC = swap;
+      }
+      var spd = Math.round(Number(speedInput.value));
+      if (!isFinite(spd) || spd <= 0) return;
+      var target = ensureUserSectionForSector(sector);
+      if (!target) {
+        addBtn.textContent = 'Не удалось создать участок';
+        return;
+      }
+      addUserSectionEntity(target, {
+        type: 'speed',
+        category: speedEditorCategory,
+        coordinate: startC,
+        length: Math.max(0, endC - startC),
+        speed: spd
+      });
+      renderOpsSheet();
+    });
+    actions.appendChild(addBtn);
+    section.appendChild(actions);
+
+    var list = document.createElement('div');
+    list.className = 'poekhali-user-entity-list';
+    if (!speeds.length) {
+      var empty = document.createElement('div');
+      empty.className = 'poekhali-warning-empty';
+      empty.textContent = 'Скорости пока не добавлены';
+      list.appendChild(empty);
+    } else {
+      speeds.sort(function(a, b) {
+        return a.coordinate - b.coordinate;
+      });
+      speeds.forEach(function(item) {
+        var row = document.createElement('div');
+        row.className = 'poekhali-user-entity-row';
+        var text = document.createElement('div');
+        text.className = 'poekhali-warning-text';
+        var strong = document.createElement('strong');
+        strong.textContent = getUserSpeedCategoryLabel(item.category) + ' · ' + Math.round(item.speed) + ' км/ч';
+        var span = document.createElement('span');
+        span.textContent = formatLineCoordinate(item.coordinate) + ' — ' + formatLineCoordinate(item.end);
+        text.appendChild(strong);
+        text.appendChild(span);
+        var del = document.createElement('button');
+        del.type = 'button';
+        del.className = 'poekhali-secondary-action';
+        del.textContent = 'Удалить';
+        del.addEventListener('click', function() {
+          deleteUserSectionEntity(userSection, 'speed', item.id);
+          renderOpsSheet();
+        });
+        row.appendChild(text);
+        row.appendChild(del);
+        list.appendChild(row);
+      });
+    }
+    section.appendChild(list);
+    parent.appendChild(section);
   }
 
   function renderUserTripSection(parent) {
@@ -12027,8 +12246,7 @@
       renderRegimeMapsSection(sheet.content);
       renderSpeedDocsSection(sheet.content);
     } else {
-      renderUserTripSection(sheet.content);
-      renderUserTripHistorySection(sheet.content);
+      renderSpeedsSection(sheet.content);
     }
     setOpsButton();
   }
@@ -15355,12 +15573,12 @@
   function getSpeedRulePriority(rule) {
     if (!rule) return 0;
     if (rule.source === 'warning') return 80;
-    if (rule.source === 'admin') return 70;
-    if (rule.source === 'manual') return 60;
-    if (rule.source === 'document') return 40;
-    if (rule.source === 'regime') return 30;
-    if (rule.source === 'object') return 20;
-    if (rule.source === 'speed') return 10;
+    if (rule.source === 'user') {
+      var category = normalizeUserSpeedCategory(rule.category);
+      if (category === 'temporary') return 60;
+      if (category === 'permanent') return 50;
+      return 40; // set — установленная скорость
+    }
     return 1;
   }
 
@@ -16020,6 +16238,7 @@
         var existingSpeed = getSpeedRuleValue(existing);
         if (Math.abs(existingSpeed - speed) > 0.1) continue;
         if (rule.source !== existing.source) continue;
+        if (rule.category !== existing.category) continue;
         if (rule.source === 'warning') continue;
         if (rule.coordinate > existing.end + 35 || existing.coordinate > rule.end + 35) continue;
         existing.coordinate = Math.min(existing.coordinate, rule.coordinate);
@@ -16042,6 +16261,7 @@
           name: rule.name,
           note: rule.note,
           source: rule.source,
+          category: rule.category,
           sourceName: rule.sourceName,
           sourceCode: rule.sourceCode,
           sourceUpdatedAt: rule.sourceUpdatedAt,
@@ -16172,36 +16392,24 @@
   }
 
   function getSpeedRulesInWindow(left, right, sector, visibleObjects) {
-    var rules = visibleObjects.filter(function(item) {
-      return item.type === '3';
-    }).map(function(item) {
-      return {
-        coordinate: item.coordinate,
-        length: item.length,
-        end: item.end,
-        speed: item.speed,
-        name: item.name,
-        source: 'object'
-      };
-    });
-    var sectorSpeeds = tracker.speedLimitsBySector[getSectorKey(sector)] || [];
-    for (var i = 0; i < sectorSpeeds.length; i++) {
-      var speed = sectorSpeeds[i];
-      if (speed.wayNumber && speed.wayNumber !== tracker.wayNumber) continue;
-      if (!isObjectInRange(speed, left, right)) continue;
+    // Speeds are user-managed only now (3 categories: установленная / постоянное /
+    // временное ограничение). The old auto-imported sources (ЭК objects & speeds, РК,
+    // документы, BAM, admin) were removed. Warnings (ПР) remain as a separate concept.
+    var rules = [];
+    var userSpeeds = getUserSpeedRulesForSector(sector, left, right);
+    for (var u = 0; u < userSpeeds.length; u++) {
+      var userSpeed = userSpeeds[u];
+      if (userSpeed.wayNumber && userSpeed.wayNumber !== tracker.wayNumber) continue;
       rules.push({
-        coordinate: speed.coordinate,
-        length: speed.length,
-        end: speed.end,
-        speed: speed.speed,
-        name: speed.name,
-        source: 'speed'
+        coordinate: userSpeed.coordinate,
+        length: userSpeed.length,
+        end: userSpeed.end,
+        speed: userSpeed.speed,
+        name: userSpeed.name,
+        source: 'user',
+        category: normalizeUserSpeedCategory(userSpeed.category)
       });
     }
-    appendRegimeSpeedRules(rules, left, right, sector);
-    appendDocumentSpeedRules(rules, left, right, sector);
-    appendManualBamSpeedRules(rules, left, right, sector);
-    appendAdminMapSpeedRules(rules, left, right, sector);
     var warnings = getWarningsForSector(sector, left, right);
     for (var j = 0; j < warnings.length; j++) {
       var warning = warnings[j];
@@ -17345,7 +17553,7 @@
     if (rule.source === 'document' && rule.conflict) return 'rgba(168, 85, 247, ' + (isActive ? 0.96 : isDimmed ? 0.36 : 0.74) + ')';
     if (rule.source === 'document') return 'rgba(56, 189, 248, ' + (isActive ? 0.94 : isDimmed ? 0.34 : 0.70) + ')';
     if (rule.source === 'regime') return 'rgba(251, 146, 60, ' + (isActive ? 0.94 : isDimmed ? 0.30 : 0.62) + ')';
-    if (rule.source === 'user') return 'rgba(74, 222, 128, ' + (isActive ? 0.94 : isDimmed ? 0.32 : 0.68) + ')';
+    if (rule.source === 'user') return 'rgba(' + getUserSpeedCategoryRgb(rule.category) + ', ' + (isActive ? 0.94 : isDimmed ? 0.32 : 0.68) + ')';
     if (isFinite(speed) && speed <= 45) return 'rgba(244, 63, 94, ' + alpha + ')';
     if (isFinite(speed) && speed <= 65) return 'rgba(250, 204, 21, ' + alpha + ')';
     return 'rgba(74, 222, 128, ' + alpha + ')';
@@ -17381,10 +17589,11 @@
       };
     }
     if (rule && rule.source === 'user') {
+      var rgb = getUserSpeedCategoryRgb(rule.category);
       return {
-        fill: 'rgba(20, 83, 45, 0.78)',
-        stroke: 'rgba(74, 222, 128, 0.36)',
-        text: '#bbf7d0'
+        fill: 'rgba(' + rgb + ', 0.18)',
+        stroke: 'rgba(' + rgb + ', 0.42)',
+        text: 'rgba(' + rgb + ', 1)'
       };
     }
     return {

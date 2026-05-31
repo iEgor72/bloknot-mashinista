@@ -1,9 +1,10 @@
 # Recent Commits
 
-Generated: 2026-05-31 13:09:09 +1000
+Generated: 2026-05-31 13:16:40 +1000
 
 | Hash | Date | Author | Message |
 | --- | --- | --- | --- |
+| `fd5d6d2` | 2026-05-31T13:16:39+10:00 | iEgor72 | feat(poekhali): GPS passive status + neutralize trip recording |
 | `65fcb69` | 2026-05-31T13:08:55+10:00 | iEgor72 | chore: checkpoint working tree before Poekhali rework |
 | `ad53dff` | 2026-05-13T16:34:08+10:00 | iEgor72 | chore(memory): record poekhali deploy |
 | `cd733de` | 2026-05-13T16:28:32+10:00 | iEgor72 | chore(memory): record memory sync commit |
@@ -43,4 +44,3 @@ Generated: 2026-05-31 13:09:09 +1000
 | `19cd27d` | 2026-05-06T22:28:34Z | iEgor72 | chore(memory): refresh after speed label cleanup |
 | `1b10f81` | 2026-05-06T22:28:23Z | iEgor72 | fix(poekhali): show speed labels without source prefix |
 | `a469c9c` | 2026-05-06T22:23:54Z | iEgor72 | chore(memory): refresh after hiding legacy speed UI |
-| `7ef0e22` | 2026-05-06T22:23:41Z | iEgor72 | fix(poekhali): hide legacy speed sources in UI |

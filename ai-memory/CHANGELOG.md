@@ -5034,3 +5034,12 @@ Append-only журнал действий ИИ-агентов по проект�
 - Methods: `git post-commit hook`, `automatic memory update`
 - Files: `admin.html`, `ai-memory/CHANGELOG.md`, `ai-memory/sessions/2026-05-13.md`, `ai-memory/sessions/2026-05-15.md`, `ai-memory/sessions/2026-05-16.md`, `ai-memory/sessions/2026-05-17.md`, `ai-memory/sessions/2026-05-30.md`, `ai-memory/sessions/2026-05-31.md`, `index.html`, `scripts/admin.js`, `scripts/app-init.js`, `scripts/app.js`, `scripts/docs-app.js`, `scripts/partner-smoke.mjs`, `scripts/partners.js`, `scripts/poekhali-tracker.js`, `scripts/render.js`, `scripts/shift-form.js`, `scripts/time-utils.js`, `scripts/viewport.js`, `server.js`, `styles/10-navigation-and-cards.css`, `styles/15-bottom-nav.css`, `styles/20-form-and-stats.css`, `styles/50-design-refresh.css`, `styles/55-partners.css`, `styles/admin-design-refresh.css`, `styles/admin.css`, `sw.js`
 - Notes: Commit: `65fcb69ee8d03a3a92f5e572190ee80e66256157` (`65fcb69`) | Author: `iEgor72`
+
+## 2026-05-31 13:16:40 +1000
+
+- Source: `post-commit`
+- Task: feat(poekhali): GPS passive status + neutralize trip recording
+- Branch: `poekhali-rework`
+- Methods: `git post-commit hook`, `automatic memory update`
+- Files: `ai-memory/CHANGELOG.md`, `ai-memory/INDEX.md`, `ai-memory/PROJECT_STATE.md`, `ai-memory/RECENT_COMMITS.md`, `ai-memory/WORKTREE_STATUS.md`, `ai-memory/sessions/2026-05-31.md`, `scripts/app-init.js`, `scripts/poekhali-tracker.js`, `styles/10-navigation-and-cards.css`, `styles/50-design-refresh.css`
+- Notes: Commit: `fd5d6d296c102b5612267735a6318255cbac31ba` (`fd5d6d2`) | Author: `iEgor72`

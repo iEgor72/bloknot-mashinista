@@ -977,6 +977,36 @@
       box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.06);
     }
 
+    .poekhali-speed-cats {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 4px;
+      padding: 4px;
+      margin: 8px 0;
+      border-radius: 14px;
+      background: rgba(255, 255, 255, 0.045);
+      border: 1px solid rgba(255, 255, 255, 0.06);
+    }
+
+    .poekhali-speed-cat {
+      appearance: none;
+      border: 0;
+      min-width: 0;
+      min-height: 34px;
+      border-radius: 11px;
+      padding: 0 6px;
+      background: transparent;
+      color: var(--sub);
+      font: 850 11px/1 'Plus Jakarta Sans', system-ui, sans-serif;
+      white-space: nowrap;
+    }
+
+    .poekhali-speed-cat.is-active {
+      color: var(--text);
+      background: rgba(255, 255, 255, 0.09);
+      box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.06);
+    }
+
     @media (max-width: 340px) {
       .poekhali-ops-tabs {
         gap: 3px;
