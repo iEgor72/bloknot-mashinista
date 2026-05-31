@@ -5052,3 +5052,20 @@ Append-only журнал действий ИИ-агентов по проект�
 - Methods: `git post-commit hook`, `automatic memory update`
 - Files: `ai-memory/CHANGELOG.md`, `ai-memory/INDEX.md`, `ai-memory/PROJECT_STATE.md`, `ai-memory/RECENT_COMMITS.md`, `ai-memory/WORKTREE_STATUS.md`, `ai-memory/sessions/2026-05-31.md`, `scripts/poekhali-tracker.js`, `styles/10-navigation-and-cards.css`
 - Notes: Commit: `35786d84d59d8d3a325cf49a5d9b8c0fd1cd1220` (`35786d8`) | Author: `iEgor72`
+
+## 2026-05-31 13:31:46 +1000
+
+- Source: `post-commit`
+- Task: feat(poekhali): add speed-editor entry point from profile/limit tile
+- Branch: `poekhali-rework`
+- Methods: `git post-commit hook`, `automatic memory update`
+- Files: `ai-memory/CHANGELOG.md`, `ai-memory/INDEX.md`, `ai-memory/PROJECT_STATE.md`, `ai-memory/RECENT_COMMITS.md`, `ai-memory/WORKTREE_STATUS.md`, `ai-memory/sessions/2026-05-31.md`, `scripts/app-init.js`, `scripts/poekhali-tracker.js`
+- Notes: Commit: `b1814702682dedc71c5c2387da3a61848b96ecee` (`b181470`) | Author: `iEgor72`
+
+## 2026-05-31 13:31:56 +1000
+
+- Source: `manual`
+- Task: Poekhali rework: remove recording, manual 3-category speeds, GPS status-only
+- Branch: `poekhali-rework`
+- Methods: `neutralize recording entry points`, `always-on GPS watch`, `ensureUserSectionForSector from map geometry`, `category field on speeds`, `getSpeedRulesInWindow user-only`, `new Скорости ops tab`
+- Files: `scripts/poekhali-tracker.js`, `scripts/app-init.js`, `styles/10-navigation-and-cards.css`, `styles/50-design-refresh.css`

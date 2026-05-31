@@ -17749,7 +17749,6 @@
     if (debugSim) { curSpeed = 47; maxSpeed = 70; }
     var axisCeil = Math.max(maxSpeed, curSpeed, 60);
     var vAxisMax = Math.max(20, Math.ceil(axisCeil / 20) * 20);
-    var lineSpeed = maxSpeed > 0 ? maxSpeed : vAxisMax;   // prevailing speed where nothing is posted
     function speedToY(v) {
       var t = clamp((Number(v) || 0) / vAxisMax, 0, 1);
       return baseY - t * (baseY - topY);
@@ -17786,7 +17785,8 @@
           if (isFinite(sv) && sv < eff) eff = sv;
         }
       }
-      if (!isFinite(eff)) eff = lineSpeed;
+      // No posted speed at this coordinate → no band (speeds are user-managed only).
+      if (!isFinite(eff)) eff = 0;
       if (debugSim) {
         var fr = (x - x0) / (x1 - x0);
         eff = fr < 0.34 ? 70 : (fr < 0.62 ? 25 : 60);
@@ -17806,6 +17806,7 @@
       var changed = k === samples.length || Math.abs(samples[k].v - samples[runStart].v) > 0.1;
       if (!changed) continue;
       var v = samples[runStart].v;
+      if (!(v > 0)) { runStart = k; continue; }
       var y = speedToY(v);
       var sx = samples[runStart].x;
       var ex = samples[k - 1].x;
