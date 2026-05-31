@@ -5113,3 +5113,12 @@ Append-only журнал действий ИИ-агентов по проект�
 - Methods: `git post-commit hook`, `automatic memory update`
 - Files: `ai-memory/CHANGELOG.md`, `ai-memory/INDEX.md`, `ai-memory/PROJECT_STATE.md`, `ai-memory/RECENT_COMMITS.md`, `ai-memory/WORKTREE_STATUS.md`, `ai-memory/sessions/2026-05-31.md`, `scripts/poekhali-tracker.js`, `server.js`
 - Notes: Commit: `330358061432e089d2feb981919c064bf92cea99` (`3303580`) | Author: `iEgor72`
+
+## 2026-05-31 19:26:28 +1000
+
+- Source: `post-commit`
+- Task: refactor(poekhali): delete GPS learning-sample capture functions
+- Branch: `poekhali-rework`
+- Methods: `git post-commit hook`, `automatic memory update`
+- Files: `ai-memory/CHANGELOG.md`, `ai-memory/INDEX.md`, `ai-memory/PROJECT_STATE.md`, `ai-memory/RECENT_COMMITS.md`, `ai-memory/WORKTREE_STATUS.md`, `ai-memory/sessions/2026-05-31.md`, `scripts/poekhali-tracker.js`
+- Notes: Commit: `9064eac6743a642c2f67b2d6828c9fa581ddfa4f` (`9064eac`) | Author: `iEgor72`

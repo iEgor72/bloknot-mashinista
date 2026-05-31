@@ -1,9 +1,10 @@
 # Recent Commits
 
-Generated: 2026-05-31 19:23:48 +1000
+Generated: 2026-05-31 19:26:28 +1000
 
 | Hash | Date | Author | Message |
 | --- | --- | --- | --- |
+| `9064eac` | 2026-05-31T19:26:27+10:00 | iEgor72 | refactor(poekhali): delete GPS learning-sample capture functions |
 | `3303580` | 2026-05-31T19:23:46+10:00 | iEgor72 | refactor(poekhali): drop run/learning server endpoints, neutralize runs |
 | `fdd07e7` | 2026-05-31T19:18:10+10:00 | iEgor72 | chore(memory): log Poekhali rework session |
 | `b14e056` | 2026-05-31T13:47:13+10:00 | iEgor72 | refactor(poekhali): drop dead recording UI and speed-import buttons |
@@ -43,4 +44,3 @@ Generated: 2026-05-31 19:23:48 +1000
 | `c99b6dc` | 2026-05-06T22:46:03Z | iEgor72 | fix(poekhali): show current station separately from next target |
 | `f46a6a6` | 2026-05-06T22:42:19Z | iEgor72 | chore(memory): refresh after signal focus fix |
 | `1989653` | 2026-05-06T22:42:04Z | iEgor72 | fix(poekhali): focus signals ahead of train head |
-| `fb99c42` | 2026-05-06T22:37:46Z | iEgor72 | chore(memory): refresh after station signal fix |

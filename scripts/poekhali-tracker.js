@@ -2807,9 +2807,7 @@
     requestDraw();
     if (!selected) return false;
 
-    preparePoekhaliModeEntry({ pinnedShiftId: shiftId }).then(function() {
-      scheduleAutoRunStart('shift', AUTO_RUN_START_DELAY_MS);
-    });
+    preparePoekhaliModeEntry({ pinnedShiftId: shiftId });
 
     return true;
   }
@@ -18897,7 +18895,6 @@
     requestDraw();
     startDrawLoop();
     schedulePendingPoekhaliSyncs(1800);
-    if (shouldAutoStartPoekhaliRun()) scheduleAutoRunStart('visibility', AUTO_RUN_START_DELAY_MS);
   }
 
   function canBrowsePreview() {
@@ -19112,9 +19109,7 @@
     loadWarnings();
     bindWarningSyncEvents();
     loadLearningStore();
-    bindLearningSyncEvents();
     loadRuns();
-    bindRunSyncEvents();
     updateModeButtons();
     loadManifest();
     loadSpeedDocs();
