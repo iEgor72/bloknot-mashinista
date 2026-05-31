@@ -5139,3 +5139,12 @@ Append-only журнал действий ИИ-агентов по проект�
 - Branch: `poekhali-rework`
 - Methods: `remove /api/poekhali-runs|learning handlers`, `getActiveRun->null`, `loadRuns clears`, `delete sample-capture cluster`, `drop auto-run + sync init wiring`
 - Files: `scripts/poekhali-tracker.js`, `server.js`
+
+## 2026-05-31 19:35:28 +1000
+
+- Source: `post-commit`
+- Task: refactor(poekhali): remove run journal UI and run refs from debug/backup
+- Branch: `poekhali-rework`
+- Methods: `git post-commit hook`, `automatic memory update`
+- Files: `ai-memory/CHANGELOG.md`, `ai-memory/INDEX.md`, `ai-memory/PROJECT_STATE.md`, `ai-memory/RECENT_COMMITS.md`, `ai-memory/WORKTREE_STATUS.md`, `ai-memory/sessions/2026-05-31.md`, `scripts/poekhali-tracker.js`
+- Notes: Commit: `d5096d9f87bf14e3ad839448592e3083996bb400` (`d5096d9`) | Author: `iEgor72`
