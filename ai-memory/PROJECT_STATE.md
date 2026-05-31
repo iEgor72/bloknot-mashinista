@@ -1,14 +1,14 @@
 # Project State
 
 <!-- AUTO_STATUS:START -->
-Generated: 2026-05-31 13:31:46 +1000
+Generated: 2026-05-31 13:43:27 +1000
 
 ## Repository Snapshot
 - Local repo path: `D:\work\bloknot-mashinista-tg`
 - Project memory path: `D:\work\bloknot-mashinista-tg\ai-memory`
 - Branch: `poekhali-rework`
-- HEAD: `b181470`
-- Last commit: `b181470 feat(poekhali): add speed-editor entry point from profile/limit tile`
+- HEAD: `e7bb43e`
+- Last commit: `e7bb43e fix(poekhali): remove phantom default 60 km/h prevailing-speed band`
 
 ## Git Remote
 ```text
@@ -21,7 +21,7 @@ origin	https://github.com/iEgor72/bloknot-mashinista.git (push)
 codex/next-direction b044dd5 offline mvp
   codex/tabs-ui        117f1fa [origin/codex/tabs-ui] tabs ui
   main                 ad53dff [origin/main] chore(memory): record poekhali deploy
-* poekhali-rework      b181470 feat(poekhali): add speed-editor entry point from profile/limit tile
+* poekhali-rework      e7bb43e fix(poekhali): remove phantom default 60 km/h prevailing-speed band
 ```
 
 ## Worktree

@@ -5069,3 +5069,12 @@ Append-only журнал действий ИИ-агентов по проект�
 - Branch: `poekhali-rework`
 - Methods: `neutralize recording entry points`, `always-on GPS watch`, `ensureUserSectionForSector from map geometry`, `category field on speeds`, `getSpeedRulesInWindow user-only`, `new Скорости ops tab`
 - Files: `scripts/poekhali-tracker.js`, `scripts/app-init.js`, `styles/10-navigation-and-cards.css`, `styles/50-design-refresh.css`
+
+## 2026-05-31 13:43:26 +1000
+
+- Source: `post-commit`
+- Task: fix(poekhali): remove phantom default 60 km/h prevailing-speed band
+- Branch: `poekhali-rework`
+- Methods: `git post-commit hook`, `automatic memory update`
+- Files: `ai-memory/CHANGELOG.md`, `ai-memory/INDEX.md`, `ai-memory/PROJECT_STATE.md`, `ai-memory/RECENT_COMMITS.md`, `ai-memory/WORKTREE_STATUS.md`, `ai-memory/sessions/2026-05-31.md`, `scripts/poekhali-tracker.js`
+- Notes: Commit: `e7bb43e897f364a233fc6f4f4b401adab6b33738` (`e7bb43e`) | Author: `iEgor72`

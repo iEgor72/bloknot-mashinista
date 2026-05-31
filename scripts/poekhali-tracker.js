@@ -8055,61 +8055,6 @@
     parent.appendChild(wrap);
   }
 
-  function getUserTripReadiness() {
-    var details = getPoekhaliTrainDetails();
-    var routeSuggestion = getShiftRouteSuggestion();
-    var liveProjection = tracker.projection && tracker.projection.onTrack ? tracker.projection : null;
-    var previewProjection = liveProjection ? null : getPreviewProjection();
-    var activeRun = getActiveRun();
-    var blockers = [];
-    var actions = [];
-
-    if (!details.hasShift) {
-      blockers.push('Выберите смену');
-      actions.push('shift');
-    } else if (details.compositionReadiness === 'blocked') {
-      blockers.push('Заполните поезд');
-      actions.push('shift');
-    }
-    if (!tracker.assetsLoaded) {
-      blockers.push(tracker.assetsError ? 'Карта не открылась' : 'Карта загружается');
-      actions.push('map');
-    }
-    if (!liveProjection && !previewProjection && routeSuggestion.status !== 'ready') {
-      blockers.push('Нужен GPS или маршрут');
-      actions.push('gps');
-    }
-
-    var positionText = liveProjection
-      ? formatLineCoordinate(liveProjection.lineCoordinate)
-      : previewProjection
-        ? formatLineCoordinate(previewProjection.lineCoordinate)
-        : routeSuggestion.status === 'ready'
-          ? 'маршрут найден'
-          : 'ждет GPS';
-
-    return {
-      details: details,
-      routeSuggestion: routeSuggestion,
-      liveProjection: liveProjection,
-      previewProjection: previewProjection,
-      activeRun: activeRun,
-      blockers: blockers,
-      actions: actions,
-      ready: !blockers.length,
-      positionText: positionText
-    };
-  }
-
-  function focusShiftFromTripPanel(details) {
-    closeOpsSheet();
-    if (details && details.hasShift && typeof openShiftsForDate === 'function') {
-      openShiftsForDate(String(details.shift.start_msk || '').substring(0, 10), details.shift.id || '');
-      return;
-    }
-    if (typeof setActiveTab === 'function') setActiveTab('add');
-  }
-
   function getSectorFirstOrdinate(sector) {
     var key = getSectorKey(sector);
     var min = NaN;
@@ -8259,157 +8204,6 @@
       });
     }
     section.appendChild(list);
-    parent.appendChild(section);
-  }
-
-  function renderUserTripSection(parent) {
-    var state = getUserTripReadiness();
-    var details = state.details;
-    var activeRun = state.activeRun;
-    var shiftId = details && details.shift && details.shift.id ? String(details.shift.id) : '';
-    var autoSuppressed = !!(shiftId && !activeRun && (tracker.autoRunSuppressedShiftId === shiftId || hasFinishedRunForShift(shiftId)));
-    var section = document.createElement('section');
-    section.className = 'poekhali-ops-section poekhali-user-ready';
-    if (activeRun || state.ready) section.classList.add('is-ready');
-    else section.classList.add(details.hasShift ? 'is-waiting' : 'is-blocked');
-
-    var head = document.createElement('div');
-    head.className = 'poekhali-ops-section-head';
-    var title = document.createElement('div');
-    title.textContent = activeRun ? 'Запись идет' : autoSuppressed ? 'Поездка завершена' : state.ready ? 'Автозапись готова' : 'Автозапись';
-    var total = document.createElement('div');
-    total.className = 'poekhali-ops-total';
-    total.textContent = activeRun ? getRunStatusText(activeRun.status) : autoSuppressed ? 'готово' : state.ready ? 'готово' : state.blockers[0] || 'проверка';
-    head.appendChild(title);
-    head.appendChild(total);
-
-    var headline = document.createElement('div');
-    headline.className = 'poekhali-ready-headline';
-    headline.textContent = activeRun
-      ? ((activeRun.trainNumber ? 'Поезд № ' + activeRun.trainNumber : 'Поезд') + ' пишется в смену')
-      : autoSuppressed
-        ? 'Эта поездка уже завершена. Новая запись начнется только вручную.'
-        : state.ready
-          ? 'Смена, карта и позиция готовы. Запись запускается сама.'
-          : state.blockers.join(' · ');
-
-    var grid = document.createElement('div');
-    grid.className = 'poekhali-shift-info-grid';
-    grid.appendChild(createShiftInfoCell('Смена', details.hasShift ? (details.trainNumber ? '№ ' + details.trainNumber : 'выбрана') : 'нет', details.hasShift ? 'success' : 'danger'));
-    grid.appendChild(createShiftInfoCell('Состав', details.hasShift ? formatPoekhaliCompositionLength(details) : '—', details.compositionReadiness === 'ready' ? 'success' : details.compositionReadiness === 'blocked' ? 'danger' : 'warning'));
-    grid.appendChild(createShiftInfoCell('Маршрут', state.routeSuggestion.status === 'ready' ? state.routeSuggestion.directionLabel : (details.route || '—'), state.routeSuggestion.status === 'ready' ? 'success' : 'warning'));
-    grid.appendChild(createShiftInfoCell('Позиция', state.positionText, state.liveProjection ? 'success' : state.previewProjection || state.routeSuggestion.status === 'ready' ? 'warning' : 'muted'));
-    grid.appendChild(createShiftInfoCell('Карта', tracker.currentMap && tracker.currentMap.title ? tracker.currentMap.title : '—', tracker.assetsLoaded ? 'success' : 'warning'));
-    grid.appendChild(createShiftInfoCell('ПР', String(getCurrentWarnings().length), getCurrentWarnings().length ? 'warning' : 'muted'));
-
-    var note = document.createElement('div');
-    note.className = 'poekhali-shift-route ' + (activeRun || state.ready ? 'is-success' : details.hasShift ? 'is-warning' : 'is-danger');
-    note.textContent = activeRun
-      ? 'Пишем пробег, скорость и GPS-слой в эту смену. При выходе из Поехали запись ставится на паузу.'
-      : autoSuppressed
-        ? 'Автозапуск для этой смены остановлен после завершения поездки.'
-        : state.ready
-          ? 'Нажимать отдельный старт не нужно. Без живого GPS режим начнет от маршрута смены и переключится на GPS автоматически.'
-          : 'Заполните недостающие данные. Режим не подставляет выдуманный поезд и не запускает пустую запись.';
-
-    var actions = document.createElement('div');
-    actions.className = 'poekhali-warning-form-actions poekhali-trip-actions';
-
-    var primary = document.createElement('button');
-    primary.type = 'button';
-    primary.className = activeRun || state.ready ? 'poekhali-primary-action' : 'poekhali-secondary-action';
-    primary.textContent = activeRun ? 'Завершить поездку' : autoSuppressed && state.ready ? 'Начать новую' : state.ready ? 'Запустить сейчас' : details.hasShift ? 'Проверить GPS' : 'Открыть смену';
-    primary.addEventListener('click', function() {
-      if (activeRun) {
-        finishActiveRun();
-        return;
-      }
-      if (state.ready) {
-        setTimerRunning(true);
-        return;
-      }
-      if (!details.hasShift) {
-        focusShiftFromTripPanel(details);
-        return;
-      }
-      startWatchingGps();
-    });
-    actions.appendChild(primary);
-
-    if (!state.liveProjection && state.routeSuggestion.status === 'ready') {
-      var routeBtn = document.createElement('button');
-      routeBtn.type = 'button';
-      routeBtn.className = 'poekhali-secondary-action';
-      routeBtn.textContent = 'Открыть маршрут';
-      routeBtn.addEventListener('click', function() {
-        applyShiftRouteSuggestion(state.routeSuggestion);
-        closeOpsSheet();
-      });
-      actions.appendChild(routeBtn);
-    } else {
-      var warnBtn = document.createElement('button');
-      warnBtn.type = 'button';
-      warnBtn.className = 'poekhali-secondary-action';
-      warnBtn.textContent = 'Предупреждения';
-      warnBtn.addEventListener('click', function() {
-        setOpsView('warnings');
-      });
-      actions.appendChild(warnBtn);
-    }
-
-    section.appendChild(head);
-    section.appendChild(headline);
-    section.appendChild(grid);
-    section.appendChild(note);
-    section.appendChild(actions);
-    parent.appendChild(section);
-  }
-
-  function renderUserTripHistorySection(parent) {
-    var visibleRuns = normalizeRunsList(tracker.runs).filter(function(item) {
-      return item && !item.deletedAt;
-    });
-    var activeRun = getActiveRun();
-    var run = activeRun || visibleRuns[0] || null;
-    var section = document.createElement('section');
-    section.className = 'poekhali-ops-section';
-    var head = document.createElement('div');
-    head.className = 'poekhali-ops-section-head';
-    var title = document.createElement('div');
-    title.textContent = 'Итоги поездки';
-    var total = document.createElement('div');
-    total.className = 'poekhali-ops-total';
-    total.textContent = activeRun ? 'сейчас' : visibleRuns.length ? visibleRuns.length + ' зап.' : 'пусто';
-    head.appendChild(title);
-    head.appendChild(total);
-    section.appendChild(head);
-
-    if (!run) {
-      var empty = document.createElement('div');
-      empty.className = 'poekhali-shift-route is-muted';
-      empty.textContent = 'После первой записи здесь будут пробег, скорость, ограничения и объект впереди.';
-      section.appendChild(empty);
-      parent.appendChild(section);
-      return;
-    }
-
-    var grid = document.createElement('div');
-    grid.className = 'poekhali-shift-info-grid';
-    grid.appendChild(createShiftInfoCell('Время', formatTimer(run.status === 'active' ? getTimerElapsed() : run.durationMs)));
-    grid.appendChild(createShiftInfoCell('Пробег', formatRunDistance(run.distanceMeters), run.distanceMeters ? 'success' : 'muted'));
-    grid.appendChild(createShiftInfoCell('Техскорость', formatRunSpeedKmh(run.technicalSpeedKmh), run.technicalSpeedKmh ? '' : 'muted'));
-    grid.appendChild(createShiftInfoCell('Макс.', run.maxSpeedKmh ? run.maxSpeedKmh + ' км/ч' : '—', run.maxSpeedKmh ? '' : 'muted'));
-    grid.appendChild(createShiftInfoCell('Трек', run.points && run.points.length ? run.points.length + ' точ.' : '—', run.points && run.points.length ? 'success' : 'muted'));
-    grid.appendChild(createShiftInfoCell('Впереди', formatRunNavigationTarget(run, true), run.nextTargetLabel ? 'warning' : 'muted'));
-    grid.appendChild(createShiftInfoCell('Оповещения', run.alertCount ? String(run.alertCount) : '0', run.alertCount ? 'danger' : 'muted'));
-    section.appendChild(grid);
-
-    var note = document.createElement('div');
-    note.className = 'poekhali-shift-route ' + (activeRun ? 'is-success' : 'is-muted');
-    note.textContent = (run.trainNumber ? 'Поезд № ' + run.trainNumber : 'Поезд') +
-      (run.route ? ' · ' + run.route : '') +
-      ' · ' + formatRunDateTime(run.startedAt);
-    section.appendChild(note);
     parent.appendChild(section);
   }
 
@@ -10720,36 +10514,7 @@
           });
           referenceActions.appendChild(regimeObjectsBtn);
         }
-        if (referenceSummary.emapSpeeds) {
-          var emapSpeedsBtn = document.createElement('button');
-          emapSpeedsBtn.type = 'button';
-          emapSpeedsBtn.className = 'poekhali-secondary-action';
-          emapSpeedsBtn.textContent = 'Скорости ЭК';
-          emapSpeedsBtn.addEventListener('click', function() {
-            addReferenceSpeedsToUserSection(currentUserSection, 'emap');
-          });
-          referenceActions.appendChild(emapSpeedsBtn);
-        }
-        if (referenceSummary.regimeSpeeds) {
-          var regimeSpeedsBtn = document.createElement('button');
-          regimeSpeedsBtn.type = 'button';
-          regimeSpeedsBtn.className = 'poekhali-secondary-action';
-          regimeSpeedsBtn.textContent = 'Скорости РК';
-          regimeSpeedsBtn.addEventListener('click', function() {
-            addReferenceSpeedsToUserSection(currentUserSection, 'regime');
-          });
-          referenceActions.appendChild(regimeSpeedsBtn);
-        }
-        if (referenceSummary.documentSpeeds) {
-          var documentSpeedsBtn = document.createElement('button');
-          documentSpeedsBtn.type = 'button';
-          documentSpeedsBtn.className = 'poekhali-primary-action';
-          documentSpeedsBtn.textContent = 'Скорости ДОК';
-          documentSpeedsBtn.addEventListener('click', function() {
-            addReferenceSpeedsToUserSection(currentUserSection, 'document');
-          });
-          referenceActions.appendChild(documentSpeedsBtn);
-        }
+        // Speed import (ЭК/РК/ДОК) removed — speeds are user-managed only now.
         if (referenceActions.childNodes.length) list.appendChild(referenceActions);
       } else {
         var referenceMissing = document.createElement('div');
@@ -12244,7 +12009,6 @@
       renderDownloadedMapsReadinessSection(sheet.content);
       renderMapCatalogSection(sheet.content);
       renderRegimeMapsSection(sheet.content);
-      renderSpeedDocsSection(sheet.content);
     } else {
       renderSpeedsSection(sheet.content);
     }
