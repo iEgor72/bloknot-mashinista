@@ -133,6 +133,7 @@
       toggleShiftFormClass('btnCancelEdit', 'hidden', false);
       toggleShiftFormClass('btnDeleteEdit', 'hidden', false);
       clearErrors();
+      if (typeof syncShiftShareRow === 'function') syncShiftShareRow();
       renderDraftShiftSummary();
       openOverlay('overlayEditShift');
       render();
@@ -156,6 +157,7 @@
       clearOptionalShiftData();
       setAddDetailsExpanded(false);
       setDefaultShiftTimeInputs();
+      if (typeof syncShiftShareRow === 'function') syncShiftShareRow();
       renderDraftShiftSummary();
       var targetTab = nextTab || editReturnTab || 'home';
       editReturnTab = 'shifts';
@@ -286,9 +288,9 @@
           ? 'Все поля ниже необязательные. Заполняйте только то, что хотите сохранить в записи.'
           : 'Маршрут, локомотив, поезд, топливо и заметки доступны в полном виде.';
       }
-      if (iconEl) {
-        iconEl.textContent = '⌄';
-      }
+      // Keep the SVG chevron from the markup; rotation is handled in CSS via
+      // [aria-expanded]. (Previously this overwrote it with a "⌄" text glyph.)
+      void iconEl;
     }
     setFormMode('add');
     clearOptionalShiftData();
@@ -561,6 +563,59 @@
       });
     }
 
+    // ── Crew sharing (Phase 2): show the toggle only when adding a NEW shift and
+    // an active partner exists; deliver facts to the partner on a successful save. ──
+    function syncShiftShareRow() {
+      var row = document.getElementById('shiftShareRow');
+      if (!row) return;
+      var active = (window.BrigadePartners && typeof BrigadePartners.getActivePartner === 'function')
+        ? BrigadePartners.getActivePartner() : null;
+      if (editingShiftId || !active) {
+        row.classList.add('hidden');
+        return;
+      }
+      row.classList.remove('hidden');
+      var partnerEl = document.getElementById('shiftSharePartner');
+      if (partnerEl) partnerEl.textContent = active.label || '';
+    }
+
+    function maybeShareSavedShift(shift) {
+      try {
+        var row = document.getElementById('shiftShareRow');
+        var toggle = document.getElementById('shiftShareToggle');
+        if (!row || row.classList.contains('hidden')) return;
+        if (!toggle || !toggle.checked) return;
+        if (!window.BrigadePartners || typeof BrigadePartners.shareShift !== 'function') return;
+        BrigadePartners.shareShift(shift).then(function(r) {
+          if (r && r.delivered) {
+            var fs = document.getElementById('formSuccess');
+            if (fs && fs.textContent.indexOf('сохранена') !== -1) {
+              fs.textContent = '✓ Смена сохранена и отправлена напарнику';
+            }
+          }
+        });
+      } catch (e) {}
+    }
+
+    // Editing a shift I previously shared pushes the update to the same partner.
+    function maybeReshareEditedShift(shift) {
+      try {
+        if (!shift || !window.BrigadePartners || typeof BrigadePartners.shareShiftTo !== 'function') return;
+        var pid = BrigadePartners.getSharedPairing(shift.id);
+        if (pid) BrigadePartners.shareShiftTo(shift, pid);
+      } catch (e) {}
+    }
+
+    // Keep the toggle in sync when the Add tab opens and after partner state loads.
+    document.addEventListener('click', function(e) {
+      if (e.target.closest && e.target.closest('[data-tab="add"]')) {
+        window.setTimeout(syncShiftShareRow, 60);
+      }
+    });
+    if (window.BrigadePartners && typeof BrigadePartners.ensureLoaded === 'function') {
+      BrigadePartners.ensureLoaded().then(syncShiftShareRow).catch(function() {});
+    }
+
     var btnAddEl = document.getElementById('btnAdd');
     if (btnAddEl) btnAddEl.addEventListener('click', function() {
       clearErrors();
@@ -687,6 +742,12 @@
 
         triggerHapticSuccess();
         showActionToast(isEditing ? 'saved' : 'added');
+
+        if (!isEditing) {
+          maybeShareSavedShift(shift);
+        } else {
+          maybeReshareEditedShift(shift);
+        }
 
         if (isEditing) {
           exitEditMode();

@@ -1,4 +1,4 @@
-const CACHE_VERSION = 'v327';
+const CACHE_VERSION = 'v333';
 const CACHE_NAME = `shift-tracker-shell-${CACHE_VERSION}`;
 const NAVIGATION_FALLBACK_URL = '/index.html';
 const NETWORK_TIMEOUT_MS = 4500;
@@ -59,6 +59,7 @@ const INSTALL_SHELL_URLS = [
   '/scripts/auth.js',
   '/scripts/render.js',
   '/scripts/shift-form.js',
+  '/scripts/partners.js',
   '/scripts/app-init.js',
   '/scripts/sw-register.js',
   '/sw.js'
@@ -96,6 +97,7 @@ const CRITICAL_INSTALL_URLS = [
   '/scripts/auth.js',
   '/scripts/render.js',
   '/scripts/shift-form.js',
+  '/scripts/partners.js',
   '/scripts/app-init.js',
   '/scripts/sw-register.js',
   '/scripts/utils/haptics.js',

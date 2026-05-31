@@ -15,6 +15,10 @@ const POEKHALI_WARNINGS_DIR = path.join(DATA_DIR, 'poekhali-warnings');
 const POEKHALI_RUNS_DIR = path.join(DATA_DIR, 'poekhali-runs');
 const USER_STATS_FILE = path.join(DATA_DIR, 'user-presence.json');
 const LOGIN_REQUESTS_FILE = path.join(DATA_DIR, 'auth-login-requests.json');
+const PARTNERSHIPS_FILE = path.join(DATA_DIR, 'partnerships.json');
+const PARTNER_INVITES_FILE = path.join(DATA_DIR, 'partner-invites.json');
+const PARTNER_STATE_DIR = path.join(DATA_DIR, 'partner-state');
+const SHIFT_INBOX_DIR = path.join(DATA_DIR, 'shift-inbox');
 const ADMIN_CONFIG_FILE = path.join(DATA_DIR, 'admin-config.json');
 const ADMIN_POEKHALI_MAP_FILE = path.join(DATA_DIR, 'admin-poekhali-map.json');
 const DOCS_ROOT_DIR = path.join(ROOT, 'assets', 'docs');
@@ -210,6 +214,11 @@ const structuredLogRateLimit = new Map();
 
 const SESSION_TTL_SECONDS = 60 * 60 * 24 * 30; // 30 days
 const LOGIN_REQUEST_TTL_MS = 15 * 60 * 1000;
+const PARTNER_INVITE_TTL_MS = 30 * 60 * 1000; // codes are read aloud, kept short-lived
+const MAX_PARTNERSHIPS_PER_USER = 50;
+const MAX_INBOX_ITEMS_PER_USER = 200;
+const REDEEM_RATE_LIMIT_MAX = 12; // redeem attempts per window, per account
+const REDEEM_RATE_LIMIT_WINDOW_MS = 10 * 60 * 1000;
 
 function sha256Buf(input) {
   return crypto.createHash('sha256').update(input, 'utf8').digest();
@@ -574,6 +583,12 @@ function ensureDirs() {
   if (!fs.existsSync(POEKHALI_RUNS_DIR)) {
     fs.mkdirSync(POEKHALI_RUNS_DIR, { recursive: true });
   }
+  if (!fs.existsSync(PARTNER_STATE_DIR)) {
+    fs.mkdirSync(PARTNER_STATE_DIR, { recursive: true });
+  }
+  if (!fs.existsSync(SHIFT_INBOX_DIR)) {
+    fs.mkdirSync(SHIFT_INBOX_DIR, { recursive: true });
+  }
 }
 
 function normalizeSid(rawSid) {
@@ -704,6 +719,207 @@ function consumePwaLoginRequest(requestId) {
   store[requestId] = item;
   writeLoginRequestsStore(store);
   return { status: 'approved', user: item.user, returnPath: safeRedirectTarget(item.returnPath) };
+}
+
+// ── Crew partner pairing (Phase 1: linking, address book, active pointer) ──
+
+function displayNameFromSessionUser(user) {
+  if (!user || typeof user !== 'object') return '';
+  const explicit = String(user.display_name || '').trim();
+  if (explicit) return explicit;
+  const composed = [user.first_name || '', user.last_name || ''].join(' ').trim();
+  if (composed) return composed;
+  const uname = String(user.username || '').trim();
+  if (uname) return uname;
+  return user.id ? ('ID ' + String(user.id)) : '';
+}
+
+function readJsonObjectFile(file) {
+  try {
+    if (!fs.existsSync(file)) return {};
+    const raw = fs.readFileSync(file, 'utf8');
+    const parsed = raw ? JSON.parse(raw) : {};
+    return parsed && typeof parsed === 'object' && !Array.isArray(parsed) ? parsed : {};
+  } catch (err) {
+    logStructuredRateLimited('error', 'storage.partner.read_failed', file, { file, error: toErrorMeta(err) });
+    return {};
+  }
+}
+
+function readPartnershipsStore() {
+  ensureDirs();
+  const store = readJsonObjectFile(PARTNERSHIPS_FILE);
+  if (!store.pairings || typeof store.pairings !== 'object' || Array.isArray(store.pairings)) {
+    store.pairings = {};
+  }
+  return store;
+}
+
+function writePartnershipsStore(store) {
+  atomicWriteFileSync(PARTNERSHIPS_FILE, JSON.stringify(store || { pairings: {} }, null, 2));
+}
+
+function readPartnerInvitesStore() {
+  ensureDirs();
+  return readJsonObjectFile(PARTNER_INVITES_FILE);
+}
+
+function writePartnerInvitesStore(store) {
+  atomicWriteFileSync(PARTNER_INVITES_FILE, JSON.stringify(store || {}, null, 2));
+}
+
+function prunePartnerInvitesStore(store) {
+  const source = store && typeof store === 'object' ? store : {};
+  const now = Date.now();
+  const next = {};
+  Object.keys(source).forEach((code) => {
+    const item = source[code] || {};
+    if (item.consumedAt) return;
+    const expiresAtMs = Date.parse(item.expiresAt || '');
+    if (Number.isFinite(expiresAtMs) && expiresAtMs < now) return;
+    next[code] = item;
+  });
+  return next;
+}
+
+function getPartnerStateFile(sid) {
+  ensureDirs();
+  return path.join(PARTNER_STATE_DIR, `${normalizeSid(sid)}.json`);
+}
+
+function readPartnerState(sid) {
+  const state = readJsonObjectFile(getPartnerStateFile(sid));
+  return { activePairingId: typeof state.activePairingId === 'string' ? state.activePairingId : '' };
+}
+
+function writePartnerState(sid, state) {
+  const payload = { activePairingId: state && typeof state.activePairingId === 'string' ? state.activePairingId : '' };
+  atomicWriteFileSync(getPartnerStateFile(sid), JSON.stringify(payload, null, 2));
+}
+
+// Codes are dictated aloud in a noisy cab, so they are digits only (easy to say,
+// no letter/locale confusion). Six digits, short-lived and single-use.
+function generatePartnerInviteCode(existing) {
+  for (let attempt = 0; attempt < 50; attempt += 1) {
+    let code = '';
+    const bytes = crypto.randomBytes(6);
+    for (let i = 0; i < 6; i += 1) {
+      code += String(bytes[i] % 10);
+    }
+    if (!existing || !existing[code]) return code;
+  }
+  return String(100000 + (crypto.randomBytes(3).readUIntBE(0, 3) % 900000));
+}
+
+function findActivePairingBetween(store, sidA, sidB) {
+  const pairings = store.pairings || {};
+  return Object.keys(pairings).find((id) => {
+    const p = pairings[id];
+    return p && p.status === 'active' && Array.isArray(p.members) &&
+      p.members.includes(sidA) && p.members.includes(sidB);
+  }) || '';
+}
+
+function listUserPairingIds(store, sid) {
+  const pairings = store.pairings || {};
+  return Object.keys(pairings).filter((id) => {
+    const p = pairings[id];
+    return p && p.status === 'active' && Array.isArray(p.members) && p.members.includes(sid);
+  });
+}
+
+// Shape a pairing for the requesting user: surface the *other* member and trust direction.
+function presentPairingForUser(pairing, sid, activePairingId) {
+  const partnerSid = (pairing.members || []).find((m) => m !== sid) || '';
+  const labels = pairing.labels || {};
+  const trust = pairing.trust || {};
+  return {
+    pairingId: pairing.id,
+    partnerLabel: labels[partnerSid] || ('ID ' + partnerSid),
+    isActive: pairing.id === activePairingId,
+    iTrustPartner: trust[sid] === 'trusted',
+    partnerTrustsMe: trust[partnerSid] === 'trusted',
+    createdAt: pairing.createdAt || '',
+  };
+}
+
+// Only neutral, factual shift fields cross between crew members. Money/rates are
+// never shared (each person's pay is computed locally from their own salary params),
+// and personal poekhali tracking stays private.
+const SHARED_SHIFT_FACT_KEYS = new Set([
+  'start_msk', 'end_msk',
+  'locomotive_series', 'locomotive_number',
+  'train_number', 'train_weight', 'train_axles', 'train_length',
+  'notes', 'route_kind', 'route_from', 'route_to', 'code',
+  'fuel_receive_coeff', 'fuel_receive_coeff_a', 'fuel_receive_coeff_b', 'fuel_receive_coeff_v',
+  'fuel_receive_liters_a', 'fuel_receive_liters_b', 'fuel_receive_liters_v',
+  'fuel_handover_coeff', 'fuel_handover_coeff_a', 'fuel_handover_coeff_b', 'fuel_handover_coeff_v',
+  'fuel_handover_liters_a', 'fuel_handover_liters_b', 'fuel_handover_liters_v',
+]);
+
+function sanitizeSharedShiftFacts(shift) {
+  if (!shift || typeof shift !== 'object' || Array.isArray(shift)) {
+    throw new Error('Invalid shift payload');
+  }
+  const facts = {};
+  SHARED_SHIFT_FACT_KEYS.forEach((key) => {
+    const value = shift[key];
+    if (value === undefined || value === null || value === '') return;
+    if (key === 'start_msk' || key === 'end_msk') {
+      validateIsoLikeString(value, key);
+    } else if (key === 'notes') {
+      validateShiftText(value, key, MAX_SHIFT_NOTES_LENGTH);
+    } else if (typeof value === 'string') {
+      validateShiftText(value, key, MAX_SHIFT_TEXT_LENGTH);
+    } else if (typeof value === 'number') {
+      validateShiftNumber(value, key);
+    } else {
+      return; // booleans / other types are not part of shared facts
+    }
+    facts[key] = value;
+  });
+  if (!facts.start_msk || !facts.end_msk) {
+    throw new Error('Missing shift times');
+  }
+  return facts;
+}
+
+function getShiftInboxFile(sid) {
+  ensureDirs();
+  return path.join(SHIFT_INBOX_DIR, `${normalizeSid(sid)}.json`);
+}
+
+function readShiftInbox(sid) {
+  const file = getShiftInboxFile(sid);
+  try {
+    if (!fs.existsSync(file)) return [];
+    const raw = fs.readFileSync(file, 'utf8');
+    const parsed = JSON.parse(raw || '[]');
+    return Array.isArray(parsed) ? parsed : [];
+  } catch (err) {
+    logStructuredRateLimited('error', 'storage.inbox.read_failed', file, { file, error: toErrorMeta(err) });
+    return [];
+  }
+}
+
+function writeShiftInbox(sid, items) {
+  const list = Array.isArray(items) ? items.slice(-MAX_INBOX_ITEMS_PER_USER) : [];
+  atomicWriteFileSync(getShiftInboxFile(sid), JSON.stringify(list, null, 2));
+}
+
+// In-memory throttle so a numeric redeem code cannot be brute-forced. Per account.
+const redeemAttemptsBySid = new Map();
+function allowRedeemAttempt(sid) {
+  const now = Date.now();
+  const recent = (redeemAttemptsBySid.get(sid) || []).filter((t) => now - t < REDEEM_RATE_LIMIT_WINDOW_MS);
+  if (recent.length >= REDEEM_RATE_LIMIT_MAX) {
+    redeemAttemptsBySid.set(sid, recent);
+    return false;
+  }
+  recent.push(now);
+  redeemAttemptsBySid.set(sid, recent);
+  if (redeemAttemptsBySid.size > 5000) redeemAttemptsBySid.clear(); // crude cap
+  return true;
 }
 
 function getUserPoekhaliRunsFile(sid) {
@@ -1709,6 +1925,13 @@ function listShiftUserIds() {
   return shiftUserIdsCache;
 }
 
+const KNOWN_PLATFORMS = new Set(['ios', 'android', 'desktop', 'unknown']);
+
+function normalizePlatform(value) {
+  const v = typeof value === 'string' ? value.trim().toLowerCase() : '';
+  return KNOWN_PLATFORMS.has(v) ? v : 'unknown';
+}
+
 function sanitizeUserPresenceStore(rawStore) {
   const source = rawStore && typeof rawStore === 'object' ? rawStore : {};
   const sourceUsers = source.users && typeof source.users === 'object' ? source.users : {};
@@ -1726,6 +1949,7 @@ function sanitizeUserPresenceStore(rawStore) {
     users[normalizedUserId] = {
       firstSeenAt: firstSeenAt || lastSeenAt,
       lastSeenAt: lastSeenAt,
+      platform: normalizePlatform(row.platform),
     };
   });
 
@@ -1745,6 +1969,7 @@ function sanitizeUserPresenceStore(rawStore) {
       users[userId] = {
         firstSeenAt: firstSeenAt || lastSeenAt,
         lastSeenAt,
+        platform: 'unknown',
       };
     } else {
       const knownLastSeenMs = Date.parse(users[userId].lastSeenAt || '');
@@ -1880,10 +2105,17 @@ function buildUserPresenceStats(store) {
   const allUserIds = new Set(Object.keys(users).filter(id => id && id !== 'guest' && id !== 'default'));
   listShiftUserIds().forEach(uid => allUserIds.add(uid));
 
+  const platforms = { ios: 0, android: 0, desktop: 0, unknown: 0 };
+  allUserIds.forEach(uid => {
+    const platform = normalizePlatform((users[uid] || {}).platform);
+    platforms[platform] = (platforms[platform] || 0) + 1;
+  });
+
   return {
     totalUsers: allUserIds.size,
     onlineUsers: Object.keys(onlineUserMap).length,
     onlineWindowSeconds: Math.floor(ONLINE_WINDOW_MS / 1000),
+    platforms,
     updatedAt: new Date().toISOString(),
   };
 }
@@ -2053,6 +2285,7 @@ function listAdminUsers() {
         id,
         firstSeenAt: row.firstSeenAt || '',
         lastSeenAt: row.lastSeenAt || '',
+        platform: normalizePlatform(row.platform),
         online: Number.isFinite(lastSeenMs) && nowMs - lastSeenMs <= ONLINE_WINDOW_MS,
         sessions: sessions.length,
         shifts: getArrayFileCount(readShifts, id),
@@ -2380,6 +2613,299 @@ function writeAdminUserPayload(sid, payload) {
   return getAdminUserPayload(safeSid);
 }
 
+async function handlePartnersApi(req, res, pathname, sid, user) {
+  if (!sid) {
+    sendJson(res, 401, { error: 'Unauthorized' });
+    return;
+  }
+
+  // POST /api/partners/invite → generate a short code the partner types in.
+  if (pathname === '/api/partners/invite' && req.method === 'POST') {
+    const store = prunePartnerInvitesStore(readPartnerInvitesStore());
+    const code = generatePartnerInviteCode(store);
+    const nowIso = new Date().toISOString();
+    store[code] = {
+      code,
+      inviterSid: sid,
+      inviterName: displayNameFromSessionUser(user),
+      createdAt: nowIso,
+      expiresAt: new Date(Date.now() + PARTNER_INVITE_TTL_MS).toISOString(),
+      consumedAt: '',
+    };
+    writePartnerInvitesStore(store);
+    sendJson(res, 200, { code, expiresAt: store[code].expiresAt });
+    return;
+  }
+
+  // POST /api/partners/redeem { code } → create a mutual pairing.
+  if (pathname === '/api/partners/redeem' && req.method === 'POST') {
+    if (!allowRedeemAttempt(sid)) {
+      sendJson(res, 429, { error: 'Слишком много попыток. Подождите немного и попробуйте снова.' });
+      return;
+    }
+    let body;
+    try {
+      const raw = await readBody(req);
+      body = raw ? JSON.parse(raw) : {};
+    } catch (err) {
+      sendJson(res, 400, { error: 'Invalid payload' });
+      return;
+    }
+    const code = String((body && body.code) || '').trim().toUpperCase();
+    if (!code) {
+      sendJson(res, 400, { error: 'Введите код приглашения' });
+      return;
+    }
+    const invitesStore = prunePartnerInvitesStore(readPartnerInvitesStore());
+    const invite = invitesStore[code];
+    if (!invite || invite.consumedAt) {
+      writePartnerInvitesStore(invitesStore);
+      sendJson(res, 404, { error: 'Код не найден или уже использован' });
+      return;
+    }
+    if (invite.inviterSid === sid) {
+      sendJson(res, 400, { error: 'Нельзя связать аккаунт сам с собой' });
+      return;
+    }
+
+    const store = readPartnershipsStore();
+    if (listUserPairingIds(store, sid).length >= MAX_PARTNERSHIPS_PER_USER) {
+      sendJson(res, 400, { error: 'Слишком много напарников в книжке' });
+      return;
+    }
+    let pairingId = findActivePairingBetween(store, sid, invite.inviterSid);
+    if (!pairingId) {
+      pairingId = crypto.randomBytes(12).toString('hex');
+      store.pairings[pairingId] = {
+        id: pairingId,
+        members: [invite.inviterSid, sid],
+        status: 'active',
+        trust: { [invite.inviterSid]: 'pending', [sid]: 'pending' },
+        labels: {
+          [invite.inviterSid]: invite.inviterName || ('ID ' + invite.inviterSid),
+          [sid]: displayNameFromSessionUser(user) || ('ID ' + sid),
+        },
+        createdAt: new Date().toISOString(),
+      };
+      writePartnershipsStore(store);
+    }
+
+    invite.consumedAt = new Date().toISOString();
+    invite.consumedBySid = sid;
+    invitesStore[code] = invite;
+    writePartnerInvitesStore(invitesStore);
+
+    // Fresh pairing is most likely the crew they are working with right now.
+    writePartnerState(sid, { activePairingId: pairingId });
+    const inviterState = readPartnerState(invite.inviterSid);
+    if (!inviterState.activePairingId) {
+      writePartnerState(invite.inviterSid, { activePairingId: pairingId });
+    }
+
+    const activePairingId = readPartnerState(sid).activePairingId;
+    sendJson(res, 200, { pairing: presentPairingForUser(store.pairings[pairingId], sid, activePairingId) });
+    return;
+  }
+
+  // GET /api/partners → address book + which pairing is active.
+  if (pathname === '/api/partners' && req.method === 'GET') {
+    const store = readPartnershipsStore();
+    const activePairingId = readPartnerState(sid).activePairingId;
+    const partners = listUserPairingIds(store, sid)
+      .map((id) => presentPairingForUser(store.pairings[id], sid, activePairingId))
+      .sort((a, b) => String(a.partnerLabel).localeCompare(String(b.partnerLabel), 'ru'));
+    sendJson(res, 200, { partners, activePairingId });
+    return;
+  }
+
+  // POST /api/partners/active { pairingId|null } → switch the active crew pointer.
+  if (pathname === '/api/partners/active' && req.method === 'POST') {
+    let body;
+    try {
+      const raw = await readBody(req);
+      body = raw ? JSON.parse(raw) : {};
+    } catch (err) {
+      sendJson(res, 400, { error: 'Invalid payload' });
+      return;
+    }
+    const pairingId = body && body.pairingId ? String(body.pairingId) : '';
+    if (pairingId) {
+      const store = readPartnershipsStore();
+      const pairing = store.pairings[pairingId];
+      if (!pairing || pairing.status !== 'active' || !Array.isArray(pairing.members) || !pairing.members.includes(sid)) {
+        sendJson(res, 404, { error: 'Пара не найдена' });
+        return;
+      }
+    }
+    writePartnerState(sid, { activePairingId: pairingId });
+    sendJson(res, 200, { ok: true, activePairingId: pairingId });
+    return;
+  }
+
+  // DELETE /api/partners/:id → unpair (archive). Both members lose the link.
+  const unpairMatch = pathname.match(/^\/api\/partners\/([a-f0-9]{12,64})$/i);
+  if (unpairMatch && req.method === 'DELETE') {
+    const pairingId = unpairMatch[1];
+    const store = readPartnershipsStore();
+    const pairing = store.pairings[pairingId];
+    if (!pairing || !Array.isArray(pairing.members) || !pairing.members.includes(sid)) {
+      sendJson(res, 404, { error: 'Пара не найдена' });
+      return;
+    }
+    pairing.status = 'archived';
+    pairing.archivedAt = new Date().toISOString();
+    store.pairings[pairingId] = pairing;
+    writePartnershipsStore(store);
+    // Clear the active pointer for any member that was pointing at this pairing.
+    (pairing.members || []).forEach((memberSid) => {
+      if (readPartnerState(memberSid).activePairingId === pairingId) {
+        writePartnerState(memberSid, { activePairingId: '' });
+      }
+    });
+    sendJson(res, 200, { ok: true });
+    return;
+  }
+
+  sendJson(res, 405, { error: 'Method not allowed' });
+}
+
+async function handleShiftShareApi(req, res, pathname, sid, user) {
+  if (!sid) {
+    sendJson(res, 401, { error: 'Unauthorized' });
+    return;
+  }
+
+  // POST /api/shifts/share { shift, sourceId } → deliver facts to the active partner's inbox.
+  if (pathname === '/api/shifts/share' && req.method === 'POST') {
+    let body;
+    try {
+      const raw = await readBody(req);
+      body = raw ? JSON.parse(raw) : {};
+    } catch (err) {
+      sendJson(res, 400, { error: 'Invalid payload' });
+      return;
+    }
+
+    // A queued offline share carries the pairing it was meant for, so it reaches the
+    // intended partner even if the active pointer changed before it was delivered.
+    // Anti-leak still holds: the pairing must be active and include the caller.
+    const requestedPairingId = body && body.pairingId ? String(body.pairingId) : '';
+    const targetPairingId = requestedPairingId || readPartnerState(sid).activePairingId;
+    if (!targetPairingId) {
+      sendJson(res, 409, { error: 'Нет активного напарника' });
+      return;
+    }
+    const store = readPartnershipsStore();
+    const pairing = store.pairings[targetPairingId];
+    if (!pairing || pairing.status !== 'active' || !Array.isArray(pairing.members) || !pairing.members.includes(sid)) {
+      sendJson(res, 409, { error: 'Пара недоступна' });
+      return;
+    }
+    const partnerSid = pairing.members.find((m) => m !== sid) || '';
+    if (!partnerSid) {
+      sendJson(res, 409, { error: 'Напарник не найден' });
+      return;
+    }
+
+    let facts;
+    try {
+      facts = sanitizeSharedShiftFacts(body && body.shift);
+    } catch (err) {
+      sendJson(res, 400, { error: err && err.message ? err.message : 'Invalid shift' });
+      return;
+    }
+
+    const sourceId = body && body.sourceId ? String(body.sourceId).slice(0, MAX_SHIFT_ID_LENGTH) : '';
+    const inbox = readShiftInbox(partnerSid);
+    const nowIso = new Date().toISOString();
+    // If the recipient already trusts this sender, the shift lands automatically.
+    const autoAccept = (pairing.trust || {})[partnerSid] === 'trusted';
+    const proposal = {
+      id: crypto.randomBytes(10).toString('hex'),
+      sharedBy: sid,
+      sharedByName: displayNameFromSessionUser(user) || ('ID ' + sid),
+      pairingId: targetPairingId,
+      sourceId,
+      facts,
+      autoAccept,
+      createdAt: nowIso,
+    };
+    // Re-sharing an edited shift updates the existing proposal instead of piling up.
+    let replaced = false;
+    const next = inbox.map((item) => {
+      if (sourceId && item && item.sharedBy === sid && item.sourceId === sourceId) {
+        replaced = true;
+        return { ...proposal, id: item.id, createdAt: item.createdAt };
+      }
+      return item;
+    });
+    if (!replaced) next.push(proposal);
+    writeShiftInbox(partnerSid, next);
+
+    const partnerLabel = (pairing.labels || {})[partnerSid] || ('ID ' + partnerSid);
+    sendJson(res, 200, { ok: true, delivered: true, to: partnerLabel });
+    return;
+  }
+
+  // GET /api/shifts/inbox → proposals waiting for me.
+  if (pathname === '/api/shifts/inbox' && req.method === 'GET') {
+    const items = readShiftInbox(sid).map((item) => ({
+      id: item.id,
+      sharedBy: item.sharedBy || '',
+      sharedByName: item.sharedByName || '',
+      pairingId: item.pairingId || '',
+      sourceId: item.sourceId || '',
+      facts: item.facts || {},
+      autoAccept: !!item.autoAccept,
+      createdAt: item.createdAt || '',
+    }));
+    sendJson(res, 200, { items });
+    return;
+  }
+
+  // POST /api/shifts/inbox/resolve { id, action } → remove a proposal once handled client-side.
+  if (pathname === '/api/shifts/inbox/resolve' && req.method === 'POST') {
+    let body;
+    try {
+      const raw = await readBody(req);
+      body = raw ? JSON.parse(raw) : {};
+    } catch (err) {
+      sendJson(res, 400, { error: 'Invalid payload' });
+      return;
+    }
+    const id = body && body.id ? String(body.id) : '';
+    if (!id) {
+      sendJson(res, 400, { error: 'Missing id' });
+      return;
+    }
+    const action = body && body.action ? String(body.action) : '';
+    const inbox = readShiftInbox(sid);
+    const target = inbox.find((item) => item && item.id === id);
+
+    // Accepting a partner's shift earns trust in that direction: from now on this
+    // partner's shifts auto-land instead of waiting in the inbox.
+    if (action === 'accept' && target && target.pairingId) {
+      const store = readPartnershipsStore();
+      const pairing = store.pairings[target.pairingId];
+      if (pairing && Array.isArray(pairing.members) && pairing.members.includes(sid)) {
+        if (!pairing.trust || typeof pairing.trust !== 'object') pairing.trust = {};
+        if (pairing.trust[sid] !== 'trusted') {
+          pairing.trust[sid] = 'trusted';
+          store.pairings[target.pairingId] = pairing;
+          writePartnershipsStore(store);
+        }
+      }
+    }
+
+    const next = inbox.filter((item) => item && item.id !== id);
+    writeShiftInbox(sid, next);
+    sendJson(res, 200, { ok: true, remaining: next.length });
+    return;
+  }
+
+  sendJson(res, 405, { error: 'Method not allowed' });
+}
+
 async function handleAdminApi(req, res, pathname, parsedUrl) {
   const adminUser = getAdminUserFromRequest(req);
   if (!adminUser) {
@@ -2469,15 +2995,20 @@ async function handleAdminApi(req, res, pathname, parsedUrl) {
   sendJson(res, 405, { error: 'Method not allowed' });
 }
 
-function touchUserPresence(userId, sessionId) {
+function touchUserPresence(userId, sessionId, platform) {
   const store = readUserPresenceStore();
   const nowIso = new Date().toISOString();
   const existingUser = store.users[userId];
   const existingSession = store.sessions[sessionId];
 
+  const reportedPlatform = normalizePlatform(platform);
+  const knownPlatform = existingUser ? normalizePlatform(existingUser.platform) : 'unknown';
+  const resolvedPlatform = reportedPlatform !== 'unknown' ? reportedPlatform : knownPlatform;
+
   store.users[userId] = {
     firstSeenAt: existingUser && typeof existingUser.firstSeenAt === 'string' && existingUser.firstSeenAt ? existingUser.firstSeenAt : nowIso,
     lastSeenAt: nowIso,
+    platform: resolvedPlatform,
   };
   store.sessions[sessionId] = {
     userId,
@@ -2742,7 +3273,7 @@ const server = http.createServer(async (req, res) => {
     res.setHeader('Access-Control-Allow-Origin', allowedCorsOrigin);
     res.setHeader('Vary', 'Origin');
   }
-  res.setHeader('Access-Control-Allow-Methods', 'GET,PUT,POST,OPTIONS');
+  res.setHeader('Access-Control-Allow-Methods', 'GET,PUT,POST,DELETE,OPTIONS');
   res.setHeader('Access-Control-Allow-Headers', 'Content-Type, Authorization');
 
   if (req.method === 'OPTIONS') {
@@ -2753,6 +3284,16 @@ const server = http.createServer(async (req, res) => {
 
   if (pathname === '/api/admin' || pathname === '/api/admin/me') {
     await handleAdminApi(req, res, pathname, parsedUrl);
+    return;
+  }
+
+  if (pathname === '/api/partners' || pathname.startsWith('/api/partners/')) {
+    await handlePartnersApi(req, res, pathname, sid, getUserFromRequest(req));
+    return;
+  }
+
+  if (pathname === '/api/shifts/share' || pathname.startsWith('/api/shifts/inbox')) {
+    await handleShiftShareApi(req, res, pathname, sid, getUserFromRequest(req));
     return;
   }
 
@@ -3195,6 +3736,7 @@ const server = http.createServer(async (req, res) => {
         const sessionId = typeof payload.sessionId === 'string'
           ? payload.sessionId.trim()
           : (typeof payload.deviceId === 'string' ? payload.deviceId.trim() : '');
+        const platform = normalizePlatform(payload.platform);
         if (!userId) {
           sendJson(res, 400, { error: 'Invalid userId' });
           return;
@@ -3203,7 +3745,7 @@ const server = http.createServer(async (req, res) => {
           sendJson(res, 400, { error: 'Invalid sessionId' });
           return;
         }
-        sendJson(res, 200, touchUserPresence(userId, sessionId));
+        sendJson(res, 200, touchUserPresence(userId, sessionId, platform));
       } catch (err) {
         logStructuredRateLimited('warn', 'stats.invalid_payload', 'stats.invalid_payload', {
           sid,

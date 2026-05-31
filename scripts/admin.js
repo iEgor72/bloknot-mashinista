@@ -418,6 +418,36 @@
     return raw.trim() ? JSON.parse(raw) : {};
   }
 
+  var PLATFORM_LABELS = { ios: 'iPhone', android: 'Android', desktop: 'ПК', unknown: 'неизвестно' };
+
+  function platformLabel(platform) {
+    return PLATFORM_LABELS[platform] || PLATFORM_LABELS.unknown;
+  }
+
+  function describePlatformSummary(platforms) {
+    var counts = platforms && typeof platforms === 'object' ? platforms : {};
+    var ios = Number(counts.ios) || 0;
+    var android = Number(counts.android) || 0;
+    var desktop = Number(counts.desktop) || 0;
+    var unknown = Number(counts.unknown) || 0;
+    var known = ios + android + desktop;
+
+    var breakdown = 'iPhone ' + ios + ' · Android ' + android + ' · ПК ' + desktop +
+      (unknown ? ' · ещё не определено ' + unknown : '');
+
+    var leader = '—';
+    var leaderPercent = 8;
+    if (known > 0) {
+      if (ios >= android && ios >= desktop) { leader = 'iPhone'; leaderPercent = getPercent(ios, known); }
+      else if (android >= ios && android >= desktop) { leader = 'Android'; leaderPercent = getPercent(android, known); }
+      else { leader = 'ПК'; leaderPercent = getPercent(desktop, known); }
+    } else if (unknown > 0) {
+      breakdown = 'Платформа пока не собрана — данные появятся после захода пользователей';
+    }
+
+    return { leader: leader, leaderPercent: leaderPercent, breakdown: breakdown };
+  }
+
   function getPercent(value, total) {
     var current = Math.max(0, Number(value) || 0);
     var max = Math.max(1, Number(total) || 0);
@@ -638,6 +668,7 @@
     var storage = data.storage || {};
     var stats = data.stats || {};
     var onlinePercent = getPercent(stats.onlineUsers, stats.totalUsers);
+    var platformSummary = describePlatformSummary(stats.platforms);
     var totalBytes = sumStorageBytes(storage);
     panel.innerHTML =
       '<div class="welcome-card">' +
@@ -657,6 +688,7 @@
         metricCard('Людей в приложении', stats.totalUsers, 'Все, кто хотя бы раз заходил или имеет смены', 'users') +
         metricCard('Сейчас онлайн', stats.onlineUsers, 'Зелёная полоска показывает долю онлайн', 'online', onlinePercent) +
         metricCard('Документов в базе', data.docs && data.docs.totalFiles, 'Файлы из раздела "Документы"', 'docs') +
+        metricCard('iPhone или Android', platformSummary.leader, platformSummary.breakdown, 'users', platformSummary.leaderPercent) +
       '</div></details>' +
       '<details class="admin-quiet-details"><summary>Данные и доступ</summary><div class="grid grid-2">' +
         '<div class="card"><div class="card-title">Что уже заполнено</div>' +
@@ -984,6 +1016,7 @@
           '<span class="person-main"><strong>Пользователь ' + escapeHtml(user.id) + '</strong>' +
             '<span class="person-sub">' + escapeHtml(user.online ? 'сейчас в приложении' : ('последний вход: ' + formatDate(user.lastSeenAt))) + '</span></span>' +
           '<span class="person-badges">' +
+            '<span>' + escapeHtml(platformLabel(user.platform)) + '</span>' +
             '<span>' + escapeHtml(user.shifts || 0) + ' смен</span>' +
             '<span>' + escapeHtml(user.runs || 0) + ' поездок</span>' +
             '<span>' + escapeHtml(user.warnings || 0) + ' огр.</span>' +
@@ -2013,34 +2046,175 @@
   }
 
   function renderMapStage(rules, objects, bounds, routeBounds, route, popover) {
+    var popoverEntity = popover.id ? findMapEntity(popover.kind, popover.id, rules, objects, state.poekhaliMap) : null;
+    return '<div class="map-stage">' +
+      '<canvas class="map-stage-canvas" id="mapStageCanvas"></canvas>' +
+      '<div class="map-stage-hint muted">Тяни середину полосы — двигай. Край — расширяй/сужай. Клик по пустому месту скорости — новая полоса в этой точке.</div>' +
+      (popoverEntity ? renderMapPopover(popover.kind, popoverEntity, bounds, routeBounds) : '') +
+    '</div>';
+  }
+
+  function drawMapCanvas(canvas, route, bounds, popover) {
+    if (!canvas || !canvas.getContext) return;
+    var dpr = window.devicePixelRatio || 1;
+    var rect = canvas.getBoundingClientRect();
+    var w = Math.round(rect.width);
+    var h = Math.round(rect.height || 180);
+    if (w < 40) {
+      window.setTimeout(function() { drawMapCanvas(canvas, route, bounds, popover); }, 50);
+      return;
+    }
+    canvas.width = Math.round(w * dpr);
+    canvas.height = Math.round(h * dpr);
+    canvas.style.height = h + 'px';
+    var ctx = canvas.getContext('2d');
+    ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+
+    var map = normalizeMapConfig(state.poekhaliMap);
+    var rules = getMergedRouteSpeedRules(route.id);
+    var objects = map.objects.filter(function(item) { return item.routeId === route.id; });
     var stations = Array.isArray(route && route.stations) ? route.stations : [];
 
-    var stationsHtml = stations.map(function(station) {
-      var coord = Number(station.meter || station.coordinate) || 0;
-      if (coord < bounds.min || coord > bounds.max) return '';
-      return '<span class="map-station-tick" style="left:' + coordinatePercent(coord, bounds) + '%"><i></i><b>' + escapeHtml(station.name || '') + '</b></span>';
-    }).join('');
+    var toX = function(c) {
+      var ratio = (c - bounds.min) / Math.max(1, bounds.max - bounds.min);
+      return ratio * w;
+    };
+    var fromX = function(x) {
+      return bounds.min + (x / Math.max(1, w)) * (bounds.max - bounds.min);
+    };
+
+    var topScaleY = 14;
+    var bandTop = 30;
+    var bandBottom = 80;
+    var bandHeight = bandBottom - bandTop;
+    var trackY = 108;
+    var stationLabelY = 132;
+    var bottomScaleY = h - 6;
+
+    ctx.fillStyle = '#0b0c10';
+    ctx.fillRect(0, 0, w, h);
+
+    ctx.strokeStyle = 'rgba(255,255,255,0.05)';
+    ctx.lineWidth = 1;
+    for (var gi = 0; gi <= 6; gi += 1) {
+      var gx = (w / 6) * gi;
+      ctx.beginPath();
+      ctx.moveTo(gx, topScaleY + 2);
+      ctx.lineTo(gx, bottomScaleY - 10);
+      ctx.stroke();
+    }
+
+    ctx.fillStyle = 'rgba(154,164,178,0.7)';
+    ctx.font = '9px system-ui';
+    ctx.textAlign = 'center';
+    for (var ti = 0; ti <= 6; ti += 1) {
+      var tc = bounds.min + ((bounds.max - bounds.min) / 6) * ti;
+      var tx = toX(tc);
+      var label = formatCoordinate(tc);
+      var clamped = Math.max(28, Math.min(w - 28, tx));
+      ctx.fillText(label, clamped, topScaleY);
+      ctx.fillText(label, clamped, bottomScaleY);
+    }
+
+    ctx.fillStyle = 'rgba(255,255,255,0.18)';
+    ctx.fillRect(0, trackY - 1, w, 2);
+
+    var scene = { bands: [], handleWidth: 10 };
 
     var visibleRules = rules.filter(function(rule) {
       return getRuleEnd(rule) >= bounds.min && getRuleStart(rule) <= bounds.max;
     });
-    var visibleObjects = objects.filter(function(obj) {
-      var coord = Number(obj.coordinate) || 0;
-      return coord >= bounds.min && coord <= bounds.max;
+
+    visibleRules.forEach(function(rule) {
+      var rs = getRuleStart(rule);
+      var re = getRuleEnd(rule);
+      var x1 = toX(Math.max(rs, bounds.min));
+      var x2 = toX(Math.min(re, bounds.max));
+      if (x2 - x1 < 1) x2 = x1 + 1;
+      var speed = Math.max(1, Math.round(Number(rule.speed) || 60));
+      var tone = speed <= 40 ? 'danger' : speed <= 60 ? 'warning' : 'success';
+      var selected = popover.kind === 'speed' && popover.id === rule.id;
+      var fill = tone === 'danger' ? 'rgba(255,107,107,0.78)' : tone === 'warning' ? 'rgba(246,198,91,0.78)' : 'rgba(97,211,148,0.78)';
+      var border = tone === 'danger' ? 'rgba(255,107,107,1)' : tone === 'warning' ? 'rgba(246,198,91,1)' : 'rgba(97,211,148,1)';
+      ctx.fillStyle = fill;
+      ctx.fillRect(x1, bandTop, x2 - x1, bandHeight);
+      ctx.strokeStyle = border;
+      ctx.lineWidth = selected ? 2.5 : 1;
+      ctx.strokeRect(x1 + 0.5, bandTop + 0.5, x2 - x1 - 1, bandHeight - 1);
+
+      var handleW = Math.min(8, Math.max(4, (x2 - x1) * 0.18));
+      ctx.fillStyle = 'rgba(0,0,0,0.32)';
+      ctx.fillRect(x1, bandTop, handleW, bandHeight);
+      ctx.fillRect(x2 - handleW, bandTop, handleW, bandHeight);
+      ctx.fillStyle = 'rgba(255,255,255,0.85)';
+      for (var hi = 0; hi < 3; hi += 1) {
+        ctx.fillRect(x1 + handleW / 2 - 0.5, bandTop + 12 + hi * 8, 1, 4);
+        ctx.fillRect(x2 - handleW / 2 - 0.5, bandTop + 12 + hi * 8, 1, 4);
+      }
+
+      if (selected) {
+        ctx.save();
+        ctx.shadowColor = 'rgba(255,255,255,0.45)';
+        ctx.shadowBlur = 8;
+        ctx.strokeStyle = '#ffffff';
+        ctx.lineWidth = 1.5;
+        ctx.strokeRect(x1 + 1, bandTop + 1, x2 - x1 - 2, bandHeight - 2);
+        ctx.restore();
+      }
+
+      ctx.fillStyle = '#0c0f12';
+      ctx.font = '900 13px system-ui';
+      ctx.textAlign = 'center';
+      ctx.fillText(speed + '', (x1 + x2) / 2, bandTop + bandHeight / 2 + 5);
+
+      scene.bands.push({
+        id: rule.id,
+        x1: x1, x2: x2,
+        y1: bandTop, y2: bandBottom,
+        handleW: handleW,
+        speed: speed,
+        baseRuleId: rule.baseId || null,
+      });
     });
 
-    var popoverEntity = popover.id ? findMapEntity(popover.kind, popover.id, rules, objects, state.poekhaliMap) : null;
+    stations.forEach(function(station) {
+      var coord = Number(station.meter || station.coordinate) || 0;
+      if (coord < bounds.min || coord > bounds.max) return;
+      var sx = toX(coord);
+      ctx.fillStyle = 'rgba(122,183,255,0.85)';
+      ctx.fillRect(Math.round(sx) - 0.5, trackY - 12, 2, 24);
+      ctx.fillStyle = '#d8ebff';
+      ctx.font = '10px system-ui';
+      ctx.textAlign = 'center';
+      var name = String(station.name || '');
+      if (name.length > 12) name = name.slice(0, 11) + '…';
+      var nx = Math.max(28, Math.min(w - 28, sx));
+      ctx.fillText(name, nx, stationLabelY);
+    });
 
-    return '<div class="map-stage">' +
-      '<div class="map-stage-scale">' + renderMapTicks(bounds) + '</div>' +
-      '<div class="map-stage-rail" id="mapStageRail">' +
-        '<div class="map-stage-line"></div>' +
-        '<div class="map-stage-stations">' + stationsHtml + '</div>' +
-        '<div class="map-stage-speeds">' + visibleRules.map(function(rule) { return renderMapSpeedBar(rule, bounds, popover); }).join('') + '</div>' +
-        '<div class="map-stage-objects">' + visibleObjects.map(function(obj) { return renderMapMarker(obj, bounds, popover); }).join('') + '</div>' +
-      '</div>' +
-      (popoverEntity ? renderMapPopover(popover.kind, popoverEntity, bounds, routeBounds) : '') +
-    '</div>';
+    objects.forEach(function(obj) {
+      var coord = Number(obj.coordinate) || 0;
+      if (coord < bounds.min || coord > bounds.max) return;
+      var ox = toX(coord);
+      var typeStr = String(obj.type);
+      var selected = popover.kind === 'object' && popover.id === obj.id;
+      if (typeStr === '2') {
+        ctx.fillStyle = 'rgba(122,183,255,0.85)';
+        ctx.fillRect(Math.round(ox) - 0.5, trackY - 12, 2, 24);
+      } else {
+        ctx.beginPath();
+        ctx.arc(ox, trackY, selected ? 6 : 4, 0, Math.PI * 2);
+        ctx.fillStyle = typeStr === '3' ? 'rgba(246,198,91,0.95)' : 'rgba(97,211,148,0.95)';
+        ctx.fill();
+        if (selected) {
+          ctx.strokeStyle = '#ffffff';
+          ctx.lineWidth = 1.5;
+          ctx.stroke();
+        }
+      }
+    });
+
+    state.mapCanvasScene = scene;
   }
 
   function renderMapTicks(bounds) {
@@ -2228,6 +2402,12 @@
   }
 
   function bindMapEditorV2(route, bounds, routeBounds) {
+    var canvas = $('#mapStageCanvas');
+    if (canvas) {
+      drawMapCanvas(canvas, route, bounds, state.mapPopover || { kind: null, id: null });
+      bindMapCanvasInteractions(canvas, route, bounds, routeBounds);
+    }
+
     var routeSelect = $('#mapRouteSelect');
     if (routeSelect) routeSelect.addEventListener('change', function() {
       state.mapRouteId = routeSelect.value;
@@ -2375,6 +2555,126 @@
       state.mapPopover = { kind: 'object', id: obj.id };
     }
     renderPoekhaliMap();
+  }
+
+  function bindMapCanvasInteractions(canvas, route, bounds, routeBounds) {
+    canvas.addEventListener('pointerdown', function(event) {
+      if (event.button !== undefined && event.button !== 0) return;
+      var rect = canvas.getBoundingClientRect();
+      var x = event.clientX - rect.left;
+      var y = event.clientY - rect.top;
+      var scene = state.mapCanvasScene || { bands: [] };
+      var inBandRow = y >= 28 && y <= 84;
+      var hit = null;
+      var mode = null;
+      for (var i = 0; i < scene.bands.length; i += 1) {
+        var b = scene.bands[i];
+        if (x >= b.x1 - 2 && x <= b.x2 + 2 && y >= b.y1 - 2 && y <= b.y2 + 2) {
+          if (x <= b.x1 + b.handleW) mode = 'resize-start';
+          else if (x >= b.x2 - b.handleW) mode = 'resize-end';
+          else mode = 'move';
+          hit = b;
+          break;
+        }
+      }
+      if (!hit) {
+        if (inBandRow) {
+          var coord = Math.round(bounds.min + (x / Math.max(1, rect.width)) * (bounds.max - bounds.min));
+          addMapSpeedAtCoord(coord, route, bounds);
+        }
+        return;
+      }
+      event.preventDefault();
+      startMapCanvasDrag(canvas, event, hit, mode, route, bounds, routeBounds);
+    });
+  }
+
+  function addMapSpeedAtCoord(coord, route, bounds) {
+    var map = normalizeMapConfig(state.poekhaliMap);
+    state.poekhaliMap = map;
+    var span = Math.max(500, Math.round((bounds.max - bounds.min) / 18));
+    var start = Math.max(0, coord - Math.round(span / 2));
+    var end = coord + Math.round(span / 2);
+    var rule = {
+      id: createAdminId('speed'),
+      routeId: route.id,
+      sector: route.sector,
+      coordinate: start,
+      start: start,
+      end: end,
+      length: end - start,
+      speed: 60,
+      wayNumber: 0,
+      name: 'Новая скорость',
+    };
+    map.speedRules.push(rule);
+    state.mapPopover = { kind: 'speed', id: rule.id };
+    renderPoekhaliMap();
+  }
+
+  function startMapCanvasDrag(canvas, downEvent, hit, mode, route, bounds, routeBounds) {
+    var rect = canvas.getBoundingClientRect();
+    var pointerId = downEvent.pointerId;
+    var moved = false;
+    var initialX = downEvent.clientX;
+
+    var rules = getMergedRouteSpeedRules(route.id);
+    var base = rules.find(function(r) { return r.id === hit.id; });
+    if (!base) return;
+    var entity = ensureMapOverrideRule(base);
+    var initial = { start: getRuleStart(entity), end: getRuleEnd(entity) };
+
+    if (canvas.setPointerCapture) {
+      try { canvas.setPointerCapture(pointerId); } catch (_) {}
+    }
+    canvas.style.cursor = mode === 'move' ? 'grabbing' : 'ew-resize';
+
+    function onMove(event) {
+      var dx = event.clientX - initialX;
+      if (!moved && Math.abs(dx) < 4) return;
+      moved = true;
+      var ratio = dx / Math.max(1, rect.width);
+      var deltaCoord = Math.round(ratio * (bounds.max - bounds.min));
+      if (mode === 'move') {
+        var ns = initial.start + deltaCoord;
+        var ne = initial.end + deltaCoord;
+        if (ns < routeBounds.min) { ne += routeBounds.min - ns; ns = routeBounds.min; }
+        if (ne > routeBounds.max) { ns -= ne - routeBounds.max; ne = routeBounds.max; }
+        entity.start = ns;
+        entity.end = ne;
+      } else if (mode === 'resize-start') {
+        var newStart = Math.max(routeBounds.min, Math.min(initial.end - 50, initial.start + deltaCoord));
+        entity.start = newStart;
+        entity.end = initial.end;
+      } else if (mode === 'resize-end') {
+        var newEnd = Math.min(routeBounds.max, Math.max(initial.start + 50, initial.end + deltaCoord));
+        entity.start = initial.start;
+        entity.end = newEnd;
+      }
+      entity.coordinate = Math.min(Number(entity.start) || 0, Number(entity.end) || 0);
+      entity.length = Math.max(0, Math.abs(Number(entity.end) - Number(entity.start)));
+      drawMapCanvas(canvas, route, bounds, state.mapPopover || { kind: null, id: null });
+    }
+
+    function finish() {
+      canvas.removeEventListener('pointermove', onMove);
+      canvas.removeEventListener('pointerup', finish);
+      canvas.removeEventListener('pointercancel', finish);
+      if (canvas.releasePointerCapture) {
+        try { canvas.releasePointerCapture(pointerId); } catch (_) {}
+      }
+      canvas.style.cursor = '';
+      if (moved) {
+        renderPoekhaliMap();
+      } else {
+        state.mapPopover = { kind: 'speed', id: hit.id };
+        renderPoekhaliMap();
+      }
+    }
+
+    canvas.addEventListener('pointermove', onMove);
+    canvas.addEventListener('pointerup', finish);
+    canvas.addEventListener('pointercancel', finish);
   }
 
   function startMapDrag(el, downEvent, route, bounds, routeBounds) {
@@ -2663,38 +2963,84 @@
     var list = $('#docsList');
     var rows = (state.docsManifest && state.docsManifest[state.docsCategory]) || [];
     if (!rows.length) {
-      list.innerHTML = '<div class="empty">В категории нет документов. Перетащи файл в зону сверху.</div>';
+      list.innerHTML = '<div class="empty">В категории нет документов. Перетащи файл в зону сверху или нажми «Добавить строку».</div>';
       return;
     }
     list.innerHTML = rows.map(function(doc, index) {
-      return '<div class="row-card doc-builder-card" draggable="true" data-doc-card="' + index + '">' +
-        '<div class="doc-card-head">' +
-          '<div class="doc-type-mark">' + escapeHtml(getDocTypeLabel(doc)) + '</div>' +
-          '<div><strong>' + escapeHtml(doc.name || 'Новый документ') + '</strong>' +
-          '<div class="muted">' + escapeHtml(doc.caption || doc.path || 'Файл ещё не выбран') + '</div></div>' +
-          '<button class="icon-btn" data-delete-doc="' + index + '" type="button">×</button>' +
+      var typeKind = getDocTypeLabel(doc);
+      var isImage = typeKind === 'IMG';
+      var sizeLabel = doc.size ? formatBytes(doc.size) : '';
+      var dateLabel = doc.updated_at || '';
+      var pathLabel = doc.path || 'файл ещё не загружен';
+      return '<div class="doc-row-v2 doc-row-v2--' + typeKind.toLowerCase() + '" data-doc-card="' + index + '" draggable="true">' +
+        '<div class="doc-row-preview">' +
+          (isImage && doc.path
+            ? '<img src="' + escapeHtml(doc.path) + '" alt="" loading="lazy" />'
+            : '<b>' + escapeHtml(typeKind) + '</b>') +
         '</div>' +
-        '<div class="builder-grid">' +
-          docField('Название', 'name', doc.name, index) +
-          docField('Подпись', 'caption', doc.caption, index) +
+        '<div class="doc-row-main">' +
+          '<input class="input doc-row-name" data-doc-field="name" data-index="' + index + '" value="' + escapeHtml(doc.name || '') + '" placeholder="Название документа" />' +
+          '<input class="input doc-row-caption" data-doc-field="caption" data-index="' + index + '" value="' + escapeHtml(doc.caption || '') + '" placeholder="Подпись (короткое пояснение)" />' +
+          '<div class="doc-row-meta">' +
+            '<span class="doc-row-path" title="' + escapeHtml(pathLabel) + '">' + escapeHtml(pathLabel) + '</span>' +
+            (sizeLabel ? '<span>' + escapeHtml(sizeLabel) + '</span>' : '') +
+            (dateLabel ? '<span>' + escapeHtml(dateLabel) + '</span>' : '') +
+          '</div>' +
         '</div>' +
-        '<details class="advanced-details expert-only"><summary>Дополнительно</summary><div class="builder-grid">' +
-          docField('Файл на сервере', 'path', doc.path, index) +
-          docField('Тип файла', 'mime_type', doc.mime_type, index) +
-          docField('Размер', 'size', doc.size, index, 'number') +
-          docField('Дата', 'updated_at', doc.updated_at, index, 'date') +
-        '</div></details></div>';
+        '<div class="doc-row-actions">' +
+          '<input type="file" class="doc-row-replace-input" data-replace-index="' + index + '" accept=".pdf,.doc,.docx,.jpg,.jpeg,.png,.txt" hidden />' +
+          '<button class="btn doc-row-replace-btn" data-replace-btn="' + index + '" type="button" title="Заменить файл">Заменить</button>' +
+          '<button class="icon-btn" data-delete-doc="' + index + '" type="button" title="Удалить">×</button>' +
+        '</div>' +
+      '</div>';
     }).join('');
-    $all('[data-doc-field]').forEach(function(input) {
+    $all('[data-doc-field]', list).forEach(function(input) {
       input.addEventListener('input', function() {
         var doc = state.docsManifest[state.docsCategory][Number(input.dataset.index)];
         doc[input.dataset.docField] = input.type === 'number' ? Number(input.value || 0) : input.value;
       });
     });
-    $all('[data-delete-doc]').forEach(function(btn) {
+    $all('[data-delete-doc]', list).forEach(function(btn) {
       btn.addEventListener('click', function() {
         state.docsManifest[state.docsCategory].splice(Number(btn.dataset.deleteDoc), 1);
         renderDocuments();
+      });
+    });
+    $all('[data-replace-btn]', list).forEach(function(btn) {
+      btn.addEventListener('click', function() {
+        var index = Number(btn.dataset.replaceBtn);
+        var input = list.querySelector('[data-replace-index="' + index + '"]');
+        if (input) input.click();
+      });
+    });
+    $all('[data-replace-index]', list).forEach(function(input) {
+      input.addEventListener('change', function() {
+        var index = Number(input.dataset.replaceIndex);
+        var file = input.files && input.files[0];
+        input.value = '';
+        if (file) replaceDocFile(index, file);
+      });
+    });
+    $all('[data-doc-card]', list).forEach(function(card) {
+      card.addEventListener('dragover', function(event) {
+        if (event.dataTransfer && event.dataTransfer.types && Array.prototype.indexOf.call(event.dataTransfer.types, 'Files') !== -1) {
+          event.preventDefault();
+          event.stopPropagation();
+          card.classList.add('is-replace-target');
+          event.dataTransfer.dropEffect = 'copy';
+        }
+      });
+      card.addEventListener('dragleave', function(event) {
+        if (!card.contains(event.relatedTarget)) card.classList.remove('is-replace-target');
+      });
+      card.addEventListener('drop', function(event) {
+        if (!event.dataTransfer || !event.dataTransfer.files || !event.dataTransfer.files.length) return;
+        event.preventDefault();
+        event.stopPropagation();
+        card.classList.remove('is-replace-target');
+        var file = event.dataTransfer.files[0];
+        var index = Number(card.dataset.docCard);
+        replaceDocFile(index, file);
       });
     });
     bindReorderCards(list, '[data-doc-card]', function(from, to) {
@@ -2703,16 +3049,34 @@
     });
   }
 
-  function docField(label, key, value, index, type) {
-    return '<div class="field ' + (key === 'path' ? 'wide' : '') + '"><label>' + escapeHtml(label) + '</label><input class="input" type="' +
-      (type || 'text') + '" data-doc-field="' + key + '" data-index="' + index + '" value="' + escapeHtml(value === undefined ? '' : value) + '" /></div>';
+  function replaceDocFile(index, file) {
+    var docs = state.docsManifest && state.docsManifest[state.docsCategory];
+    if (!docs || !docs[index]) return;
+    var oldDoc = docs[index];
+    var beforeCount = docs.length;
+    setStatus('Заменяю файл «' + (oldDoc.name || 'документ') + '»...');
+    return uploadDocFile(file).then(function() {
+      var list = state.docsManifest[state.docsCategory];
+      if (!list || list.length <= beforeCount) {
+        setStatus('Файл загружен, но manifest не содержит новой записи', 'error');
+        renderDocuments();
+        return;
+      }
+      var newEntry = list[list.length - 1];
+      oldDoc.path = newEntry.path;
+      oldDoc.mime_type = newEntry.mime_type;
+      oldDoc.size = newEntry.size;
+      oldDoc.updated_at = newEntry.updated_at;
+      list.splice(list.length - 1, 1);
+      saveDocs();
+    }).catch(showError);
   }
 
   function getDocTypeLabel(doc) {
     var mime = String(doc && doc.mime_type || '').toLowerCase();
     var path = String(doc && doc.path || '').toLowerCase();
     if (mime.indexOf('pdf') !== -1 || path.endsWith('.pdf')) return 'PDF';
-    if (mime.indexOf('image') !== -1 || /\.(jpg|jpeg|png)$/.test(path)) return 'IMG';
+    if (mime.indexOf('image') !== -1 || /\.(jpg|jpeg|png|webp|gif)$/.test(path)) return 'IMG';
     if (mime.indexOf('word') !== -1 || /\.(doc|docx)$/.test(path)) return 'DOC';
     if (mime.indexOf('text') !== -1 || path.endsWith('.txt')) return 'TXT';
     return 'FILE';

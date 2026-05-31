@@ -139,6 +139,14 @@
     rel="stylesheet"
     href="/styles/40-premium-refresh.css"
   />
+  <link
+    rel="stylesheet"
+    href="/styles/50-design-refresh.css"
+  />
+  <link
+    rel="stylesheet"
+    href="/styles/55-partners.css"
+  />
   <noscript><link rel="stylesheet" href="/styles/00-base.css" /></noscript>
   <noscript><link rel="stylesheet" href="/styles/10-navigation-and-cards.css" /></noscript>
   <noscript><link rel="stylesheet" href="/styles/15-bottom-nav.css" /></noscript>
@@ -146,6 +154,8 @@
   <noscript><link rel="stylesheet" href="/styles/20-form-and-stats.css" /></noscript>
   <noscript><link rel="stylesheet" href="/styles/30-shifts-and-overlays.css" /></noscript>
   <noscript><link rel="stylesheet" href="/styles/40-premium-refresh.css" /></noscript>
+  <noscript><link rel="stylesheet" href="/styles/50-design-refresh.css" /></noscript>
+  <noscript><link rel="stylesheet" href="/styles/55-partners.css" /></noscript>
   <script>
     window.CURRENT_USER = window.CURRENT_USER || null;
   </script>
@@ -155,6 +165,13 @@
   <!-- Auth Gate -->
   <div class="auth-gate" id="authGate">
     <div class="auth-card" id="authCard">
+      <div class="auth-brand" aria-hidden="true">
+        <div class="auth-brand-mark">БМ</div>
+        <div class="auth-brand-meta">
+          <div class="auth-brand-name">Блокнот машиниста</div>
+          <div class="auth-brand-sub">Учёт смен и поездок</div>
+        </div>
+      </div>
       <div class="auth-kicker" id="authModeChip"></div>
       <div class="auth-title" id="authTitle"></div>
       <div class="auth-text" id="authMessage"></div>
@@ -179,6 +196,27 @@
   <!-- Application Shell -->
   <div class="app hidden" id="appShell">
     <div class="app-content">
+      <header class="app-top-bar" id="appTopBar" aria-label="Шапка приложения">
+        <div class="app-top-bar-leading">
+          <div class="app-top-bar-title" id="appTopBarTitle">Блокнот машиниста</div>
+          <div class="app-top-bar-sub" id="appTopBarSub">—</div>
+        </div>
+        <button class="app-top-bar-icon" id="appTopBarBell" type="button" aria-label="Уведомления">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+            <path d="M6 8a6 6 0 0 1 12 0c0 7 3 9 3 9H3s3-2 3-9z"></path>
+            <path d="M10 21a2 2 0 0 0 4 0"></path>
+          </svg>
+          <span class="app-top-bar-icon-dot" aria-hidden="true"></span>
+        </button>
+        <button class="app-top-bar-gps hidden" id="appTopBarGps" type="button" aria-label="GPS статус">
+          <span class="app-top-bar-gps-dot" aria-hidden="true"></span>
+          <span class="app-top-bar-gps-word">GPS</span>
+        </button>
+        <button class="app-top-bar-way hidden" id="appTopBarWay" type="button" aria-label="Путь">
+          <span class="app-top-bar-way-label">Путь</span>
+          <span class="app-top-bar-way-value" id="appTopBarWayValue">П 1</span>
+        </button>
+      </header>
       <div class="offline-banner hidden" id="offlineBanner" aria-live="polite" aria-hidden="true">
         <div class="offline-banner-copy">
           <div class="offline-banner-head">
@@ -205,59 +243,71 @@
 
         <div class="dashboard-card">
           <div class="dashboard-head">
-            <div class="dashboard-eyebrow">Отработано</div>
-            <div class="dashboard-value"><span id="statWorked">0 ч</span></div>
+            <div class="dashboard-gauge" id="dashboardGauge" aria-hidden="true">
+              <svg viewBox="0 0 116 116">
+                <defs>
+                  <linearGradient id="gradAccent" x1="0" y1="0" x2="1" y2="1">
+                    <stop offset="0" style="stop-color: var(--accent);"></stop>
+                    <stop offset="1" style="stop-color: var(--accent-2);"></stop>
+                  </linearGradient>
+                  <linearGradient id="gradOver" x1="0" y1="0" x2="1" y2="1">
+                    <stop offset="0" style="stop-color: var(--good);"></stop>
+                    <stop offset="1" style="stop-color: oklch(0.72 0.16 150);"></stop>
+                  </linearGradient>
+                </defs>
+                <circle cx="58" cy="58" r="48" fill="none" class="gauge-track" stroke-width="8"></circle>
+                <circle cx="58" cy="58" r="48" fill="none" class="gauge-fill" stroke-width="8" id="dashboardGaugeFill" stroke-dasharray="301.6" stroke-dashoffset="301.6" transform="rotate(-90 58 58)"></circle>
+                <circle cx="58" cy="58" r="40" fill="none" class="gauge-over hidden" stroke-width="5" id="dashboardGaugeOver" stroke-dasharray="251.3" stroke-dashoffset="251.3" transform="rotate(-90 58 58)"></circle>
+              </svg>
+              <div class="dashboard-gauge-inner">
+                <div class="dashboard-gauge-num" id="dashboardGaugeNum">0<span class="u">ч</span></div>
+                <div class="dashboard-gauge-unit" id="dashboardGaugeUnit">из — ч</div>
+              </div>
+            </div>
+            <div class="dashboard-head-right">
+              <div class="dashboard-norms" aria-live="polite">
+                <div class="dashboard-norm-item dashboard-norm-item--today">
+                  <span class="dashboard-norm-label">Норма на сегодня</span>
+                  <span class="dashboard-norm-value" id="statNormToday">—</span>
+                </div>
+                <div class="dashboard-norm-item dashboard-norm-item--month">
+                  <span class="dashboard-norm-label">Норма месяца</span>
+                  <span class="dashboard-norm-value" id="statNormMonth">—</span>
+                </div>
+                <div class="dashboard-norm-item dashboard-norm-item--diff">
+                  <span class="dashboard-norm-label" id="statDiffLabel">Осталось</span>
+                  <span class="dashboard-norm-value" id="statDiff">—</span>
+                </div>
+              </div>
+              <span id="statWorked" hidden aria-hidden="true">0 ч</span>
+            </div>
           </div>
           <div class="progress-track">
             <div class="progress-fill" id="dashboardProgressFill"></div>
             <span class="progress-marker progress-marker-today hidden" id="dashboardProgressTodayMarker" aria-hidden="true"></span>
             <span class="progress-marker progress-marker-month hidden" id="dashboardProgressMonthMarker" aria-hidden="true"></span>
           </div>
-          <div class="dashboard-norms" aria-live="polite">
-            <div class="dashboard-norm-item dashboard-norm-item--today">
-              <span class="dashboard-norm-label">Норма на сегодня</span>
-              <span class="dashboard-norm-value" id="statNormToday">—</span>
-            </div>
-            <div class="dashboard-norm-item dashboard-norm-item--month">
-              <span class="dashboard-norm-label">Норма месяца</span>
-              <span class="dashboard-norm-value" id="statNormMonth">—</span>
-            </div>
-          </div>
-          <div class="dashboard-sub" id="statDiff">Осталось —</div>
           <div class="dashboard-meta-grid" aria-live="polite">
             <div class="dashboard-meta-item dashboard-month-income">
               <span class="dashboard-month-income-label" id="dashboardMonthIncomeLabel">За месяц</span>
               <span class="dashboard-month-income-value" id="dashboardMonthIncomeValue">—</span>
             </div>
+            <div class="dashboard-meta-item dashboard-month-income-spark" id="dashboardMonthIncomeSpark" aria-hidden="true">
+              <svg id="dashboardSparkSvg" width="84" height="28" viewBox="0 0 84 28" preserveAspectRatio="none">
+                <defs>
+                  <linearGradient id="dashboardSparkArea" x1="0" x2="0" y1="0" y2="1">
+                    <stop offset="0" style="stop-color: var(--good); stop-opacity: 0.5"/>
+                    <stop offset="1" style="stop-color: var(--good); stop-opacity: 0"/>
+                  </linearGradient>
+                </defs>
+                <path id="dashboardSparkArea" d="" fill="url(#dashboardSparkArea)"/>
+                <path id="dashboardSparkLine" d="" fill="none" stroke="var(--good)" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/>
+                <circle id="dashboardSparkDot" cx="0" cy="0" r="2" fill="var(--good)"/>
+              </svg>
+              <span class="hero-income-delta num" id="dashboardSparkDelta" hidden></span>
+            </div>
           </div>
         </div>
-
-        <section class="home-calendar-card" aria-label="Календарь смен">
-          <div class="home-calendar-card-head">
-            <div>
-              <div class="home-calendar-card-title">Календарь смен</div>
-            </div>
-            <div class="home-calendar-legend" aria-hidden="true">
-              <span class="home-calendar-legend-item"><span class="home-calendar-legend-dot is-day"></span>Дневная</span>
-              <span class="home-calendar-legend-item"><span class="home-calendar-legend-dot is-night"></span>Ночная</span>
-              <span class="home-calendar-legend-item"><span class="home-calendar-legend-arrows">← →</span>Переход через полночь</span>
-            </div>
-          </div>
-          <div class="home-calendar-weekdays" aria-hidden="true">
-            <span>Пн</span>
-            <span>Вт</span>
-            <span>Ср</span>
-            <span>Чт</span>
-            <span>Пт</span>
-            <span>Сб</span>
-            <span>Вс</span>
-          </div>
-          <div class="home-calendar-grid" id="homeCalendarGrid"></div>
-          <div class="home-calendar-latest-shift">
-            <div class="section-header home-calendar-latest-shift-header" id="homeShiftsHeader">Последняя смена</div>
-            <div id="homeShiftsList"></div>
-          </div>
-        </section>
 
         <div class="quick-stats-grid" aria-label="Краткая сводка за месяц">
           <div class="quick-stats-head">
@@ -279,6 +329,51 @@
           </div>
         </div>
 
+        <section class="home-calendar-card" aria-label="Календарь смен">
+          <div class="home-calendar-card-head">
+            <div>
+              <div class="home-calendar-card-title">Календарь смен</div>
+            </div>
+            <div class="home-calendar-legend" aria-hidden="true">
+              <span class="home-calendar-legend-item"><span class="home-calendar-legend-dot is-day"></span>День</span>
+              <span class="home-calendar-legend-item"><span class="home-calendar-legend-dot is-night"></span>Ночь</span>
+            </div>
+          </div>
+          <div class="home-calendar-weekdays" aria-hidden="true">
+            <span>Пн</span>
+            <span>Вт</span>
+            <span>Ср</span>
+            <span>Чт</span>
+            <span>Пт</span>
+            <span>Сб</span>
+            <span>Вс</span>
+          </div>
+          <div class="home-calendar-grid" id="homeCalendarGrid"></div>
+        </section>
+
+        <button class="crew-entry-card" id="homeCrewEntry" type="button" aria-label="Открыть раздел Бригада">
+          <span class="crew-entry-icon" aria-hidden="true">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+              <circle cx="9" cy="8" r="3.2"></circle>
+              <path d="M3.5 19c0-3 2.5-4.8 5.5-4.8s5.5 1.8 5.5 4.8"></path>
+              <circle cx="17.5" cy="9" r="2.6"></circle>
+              <path d="M16 14.4c2.6.2 4.5 1.9 4.5 4.6"></path>
+            </svg>
+          </span>
+          <span class="crew-entry-body">
+            <span class="crew-entry-title">Бригада</span>
+            <span class="crew-entry-sub" id="homeCrewEntrySub">Свяжитесь с напарником, чтобы делиться сменами</span>
+          </span>
+          <span class="crew-entry-badge" id="homeCrewBadge" hidden aria-label="Новые смены от напарника">0</span>
+          <span class="crew-entry-chevron" aria-hidden="true">›</span>
+        </button>
+
+        <div class="section-header section-header-row" id="homeShiftsHeader">
+          <span class="section-header-text">Смены</span>
+          <a class="section-link" href="#" id="homeAllShiftsLink" role="button">Все смены ›</a>
+        </div>
+        <div id="homeShiftsList"></div>
+
         <div class="install-prompt-card hidden" id="installPromptCard">
           <div class="install-prompt-title">Установить приложение</div>
           <div class="install-prompt-text">Запускайте Блокнот Машиниста в один тап, как обычное приложение.</div>
@@ -293,17 +388,89 @@
 
       <!-- Poekhali Tab -->
       <section class="tab-panel poekhali-panel" data-tab="poekhali">
-        <div class="poekhali-mode-shell" id="poekhaliModeShell">
-          <canvas id="poekhaliCanvas" class="poekhali-canvas" aria-label="Режим Поехали"></canvas>
+        <!-- Design-style scrollable layout. Original canvas remains below for state continuity. -->
+        <div class="trk-design" id="trkDesign">
+          <!-- Train plate -->
+          <div class="train-plate" id="trkPlate">
+            <div class="train-plate-loco">
+              <svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 13V6.5A2.5 2.5 0 0 1 6.5 4h6A2.5 2.5 0 0 1 15 6.5V13"/><path d="M4 11h11"/><path d="M7 8h3"/><circle cx="6.5" cy="14.5" r="1"/><circle cx="12.5" cy="14.5" r="1"/></svg>
+              <div>
+                <div class="train-plate-loco-num num" id="trkPlateLoco">—</div>
+                <div class="train-plate-loco-sub" id="trkPlateTrain">нет активной смены</div>
+              </div>
+            </div>
+            <div class="train-plate-stats">
+              <div><div class="l">Вес</div><div class="v num" id="trkPlateWeight">—<span class="u">т</span></div></div>
+              <div><div class="l">Осей</div><div class="v num" id="trkPlateAxles">—</div></div>
+              <div><div class="l">Уд</div><div class="v num" id="trkPlateLength">—</div></div>
+            </div>
+          </div>
+
+          <!-- Current speed + МСК clock -->
+          <div class="speedo" id="trkSpeedo">
+            <div class="speedo-main">
+              <div class="speedo-label">Текущая скорость</div>
+              <div class="speedo-speed">
+                <span class="speedo-speed-val num" id="trkSpeed">0</span>
+                <span class="speedo-speed-unit">км/ч</span>
+              </div>
+            </div>
+            <div class="speedo-clock num" id="trkClock">—</div>
+          </div>
+
+          <!-- Limit · grade · next-distance metric row -->
+          <div class="trk-metrics" id="trkMetrics">
+            <div class="trk-metric is-limit">
+              <div class="trk-metric-l">Лимит</div>
+              <div class="trk-metric-v num" id="trkLimit">—</div>
+            </div>
+            <div class="trk-metric is-grade">
+              <div class="trk-metric-l">Уклон</div>
+              <div class="trk-metric-v num" id="trkGrade">—</div>
+            </div>
+            <div class="trk-metric is-reach">
+              <div class="trk-metric-l">Далее</div>
+              <div class="trk-metric-v num" id="trkReach">—</div>
+            </div>
+          </div>
+
+          <!-- Profile container — canvas occupies all free space until bottom tiles -->
+          <div class="trk-profile-card">
+            <div class="trk-profile-canvas-wrap">
+              <canvas id="poekhaliCanvas" class="poekhali-canvas trk-profile-canvas" aria-label="Профиль пути"></canvas>
+            </div>
+          </div>
+
+          <!-- Bottom two tiles -->
+          <div class="trk-bottom">
+            <div class="timer-tile">
+              <span class="timer-dot"></span>
+              <div class="timer-info">
+                <div class="l">В пути</div>
+                <div class="v num" id="trkTimer">—</div>
+              </div>
+            </div>
+            <div class="mode-tile mode-info">
+              <div class="brk-ico">
+                <svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4.2 13.5a6.3 6.3 0 1 1 11.6 0"/><path d="M10 10.4l3.2-2.5"/></svg>
+              </div>
+              <div class="timer-info">
+                <div class="l">Тех. скорость</div>
+                <div class="v num" id="trkTechSpeed">—</div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Legacy overlay buttons — hidden but kept so tracker.js can attach handlers (they live inside the canvas wrap above so positioning works) -->
+        <div class="poekhali-mode-shell poekhali-mode-shell-hidden" id="poekhaliModeShell" aria-hidden="true">
           <button class="poekhali-overlay-btn poekhali-back-btn" id="btnPoekhaliBack" type="button" aria-label="Назад" title="Назад">
-            <svg viewBox="0 0 24 24" aria-hidden="true">
-              <path d="M15 6 9 12l6 6"></path>
-            </svg>
+            <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M15 6 9 12l6 6"></path></svg>
           </button>
           <button class="poekhali-overlay-btn poekhali-direction-btn poekhali-direction-bar" id="btnPoekhaliDirection" type="button" data-control-label="Напр." title="Автоопределение направления">АВТО</button>
           <button class="poekhali-overlay-btn poekhali-map-btn is-hidden" id="btnPoekhaliMap" type="button" data-control-label="Карта" title="Электронная карта">ЭК</button>
           <div class="poekhali-top-tray">
-            <button class="poekhali-overlay-btn poekhali-way-btn is-hidden" id="btnPoekhaliWay" type="button" title="Путь">П:1</button>
+            <button class="poekhali-overlay-btn poekhali-way-btn is-hidden" id="btnPoekhaliWay" type="button" data-control-label="Путь" title="Путь">П:1</button>
             <button class="poekhali-overlay-btn poekhali-live-btn" id="btnPoekhaliLive" type="button" aria-label="GPS и запись поездки" title="GPS и запись поездки"><span class="poekhali-live-dot" aria-hidden="true">●</span><span class="poekhali-live-gps"><span class="poekhali-live-gps-stack"><span class="poekhali-live-gps-word">GPS</span><span class="poekhali-live-gps-meta">—</span></span></span></button>
           </div>
           <button class="poekhali-overlay-btn poekhali-ops-btn is-hidden" id="btnPoekhaliOps" type="button" hidden data-control-label="Панель" aria-hidden="true" tabindex="-1" aria-label="Данные поездки">Поездка</button>
@@ -383,7 +550,9 @@
                 <span class="details-disclosure-title">Открыть детали смены</span>
                 <span class="details-disclosure-note" id="addDetailsNote">Маршрут, локомотив, поезд, топливо и заметки доступны в полном виде.</span>
               </span>
-              <span class="details-disclosure-icon" aria-hidden="true">⌄</span>
+              <span class="details-disclosure-icon" aria-hidden="true">
+                <svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 8l5 5 5-5"></path></svg>
+              </span>
             </button>
           </div>
 
@@ -393,13 +562,13 @@
           <details class="optional-card" id="optionalRouteCard">
             <summary class="optional-summary">
               <div class="optional-summary-main">
-                <div class="optional-summary-title">Участок и вид следования</div>
-                <div class="optional-summary-subtitle">Поездка или смена</div>
+                <div class="optional-summary-title">Маршрут</div>
+                <div class="optional-summary-subtitle">Станции отправления и прибытия</div>
               </div>
-              <div class="optional-summary-chevron">⌄</div>
+              <div class="optional-summary-chevron"><svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 8l5 5 5-5"></path></svg></div>
             </summary>
             <div class="optional-card-body">
-              <div class="segmented two route-segmented" id="routeTypeSegmented" data-setting-group="routeType">
+              <div class="segmented two route-segmented hidden" id="routeTypeSegmented" data-setting-group="routeType" aria-hidden="true">
                 <button type="button" class="segmented-btn" data-value="trip">Поездка</button>
                 <button type="button" class="segmented-btn" data-value="depot">Смена</button>
               </div>
@@ -414,7 +583,7 @@
                     <input class="optional-control" type="text" id="inputRouteTo" maxlength="64" placeholder="Станция прибытия" />
                   </div>
                 </div>
-                <div class="optional-note">Если это обычная смена, дополнительные поля можно не заполнять.</div>
+                <div class="optional-note">Маршрут не обязателен — заполняйте, если хотите отметить участок поездки.</div>
               </div>
             </div>
           </details>
@@ -425,7 +594,7 @@
                 <div class="optional-summary-title">Локомотив</div>
                 <div class="optional-summary-subtitle">Серия и номер</div>
               </div>
-              <div class="optional-summary-chevron">⌄</div>
+              <div class="optional-summary-chevron"><svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 8l5 5 5-5"></path></svg></div>
             </summary>
             <div class="optional-card-body">
               <div class="optional-grid optional-grid-two">
@@ -434,31 +603,28 @@
                   <div class="glass-select loco-series-select" id="locoSeriesSelect">
                     <button class="glass-select-trigger" id="locoSeriesTrigger" type="button" aria-haspopup="listbox" aria-expanded="false">
                       <span class="glass-select-value is-placeholder" id="locoSeriesValue">Выберите серию</span>
-                      <span class="glass-select-chevron">⌄</span>
+                      <span class="glass-select-chevron" aria-hidden="true"><svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 8l5 5 5-5"></path></svg></span>
                     </button>
                     <div class="glass-select-menu hidden" id="locoSeriesMenu" role="listbox" aria-label="Серия локомотива"></div>
                     <select class="hidden" id="inputLocoSeries" tabindex="-1" aria-hidden="true">
-                    <option value="" selected disabled hidden>Выберите серию</option>
-                    <option value="2ТЭ10М">2ТЭ10М</option>
-                    <option value="2ТЭ10У">2ТЭ10У</option>
-                    <option value="3ТЭ10У">3ТЭ10У</option>
-                    <option value="3ТЭ10МК">3ТЭ10МК</option>
-                    <option value="2ТЭ25КМ">2ТЭ25КМ</option>
-                    <option value="3ТЭ25К2М">3ТЭ25К2М</option>
-                    <option value="ТЭП70">ТЭП70</option>
-                    <option value="ТЭП70БС">ТЭП70БС</option>
-                    <option value="ТЭМ2">ТЭМ2</option>
-                    <option value="ТЭМ18">ТЭМ18</option>
-                    <option value="ТЭМ18ДМ">ТЭМ18ДМ</option>
-                    <option value="ЭС5К">ЭС5К</option>
-                    <option value="2ЭС5К">2ЭС5К</option>
-                    <option value="3ЭС5К">3ЭС5К</option>
-                    <option value="4ЭС5К">4ЭС5К</option>
-                    <option value="ЭС5С">ЭС5С</option>
-                    <option value="ВЛ80">ВЛ80</option>
-                    <option value="ВЛ85">ВЛ85</option>
-                    <option value="ЭП1">ЭП1</option>
-                    <option value="ЭП1М">ЭП1М</option>
+                      <option value="" selected disabled hidden>Выберите серию</option>
+                      <optgroup label="Тепловозы · 3 секции">
+                        <option value="3ТЭ10">3ТЭ10</option>
+                        <option value="3ТЭ25">3ТЭ25</option>
+                      </optgroup>
+                      <optgroup label="Тепловозы · 2 секции">
+                        <option value="2ТЭ10">2ТЭ10</option>
+                        <option value="2ТЭ25">2ТЭ25</option>
+                      </optgroup>
+                      <optgroup label="Тепловозы · 1 секция">
+                        <option value="ТЭП">ТЭП</option>
+                        <option value="ТЭМ">ТЭМ</option>
+                      </optgroup>
+                      <optgroup label="Электровозы">
+                        <option value="3ЭС5">3ЭС5</option>
+                        <option value="2ЭС5">2ЭС5</option>
+                        <option value="ВЛ80">ВЛ80</option>
+                      </optgroup>
                     </select>
                   </div>
                 </div>
@@ -476,14 +642,23 @@
                 <div class="optional-summary-title">Топливо</div>
                 <div class="optional-summary-subtitle">Прием и сдача</div>
               </div>
-              <div class="optional-summary-chevron">⌄</div>
+              <div class="optional-summary-chevron"><svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 8l5 5 5-5"></path></svg></div>
             </summary>
             <div class="optional-card-body">
+              <div class="fuel-needs-loco" id="fuelNeedsLoco" aria-live="polite">
+                <div class="fuel-needs-loco-ico" aria-hidden="true">
+                  <svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M4 13V6.5A2.5 2.5 0 0 1 6.5 4h6A2.5 2.5 0 0 1 15 6.5V13"/><path d="M4 11h11"/><circle cx="6.5" cy="14.5" r="1"/><circle cx="12.5" cy="14.5" r="1"/></svg>
+                </div>
+                <div class="fuel-needs-loco-copy">
+                  <div class="fuel-needs-loco-title">Сначала выберите серию локомотива</div>
+                  <div class="fuel-needs-loco-text">По серии определим, сколько секций топлива заполнять.</div>
+                </div>
+              </div>
               <div class="fuel-columns">
                 <section class="fuel-column" aria-label="Прием топлива">
                   <div class="fuel-column-title">Прием топлива</div>
                   <div class="fuel-sections">
-                    <section class="fuel-section-row" aria-label="Секция А, прием">
+                    <section class="fuel-section-row" data-fuel-section="a" aria-label="Секция А, прием">
                       <div class="fuel-section-top">
                         <div class="fuel-section-label">А</div>
                         <div class="fuel-inline-wrap">
@@ -503,7 +678,7 @@
                       </div>
                     </section>
 
-                    <section class="fuel-section-row" aria-label="Секция Б, прием">
+                    <section class="fuel-section-row" data-fuel-section="b" aria-label="Секция Б, прием">
                       <div class="fuel-section-top">
                         <div class="fuel-section-label">Б</div>
                         <div class="fuel-inline-wrap">
@@ -523,7 +698,7 @@
                       </div>
                     </section>
 
-                    <section class="fuel-section-row" aria-label="Секция В, прием">
+                    <section class="fuel-section-row" data-fuel-section="v" aria-label="Секция В, прием">
                       <div class="fuel-section-top">
                         <div class="fuel-section-label">В</div>
                         <div class="fuel-inline-wrap">
@@ -548,7 +723,7 @@
                 <section class="fuel-column" aria-label="Сдача топлива">
                   <div class="fuel-column-title">Сдача топлива</div>
                   <div class="fuel-sections">
-                    <section class="fuel-section-row" aria-label="Секция А, сдача">
+                    <section class="fuel-section-row" data-fuel-section="a" aria-label="Секция А, сдача">
                       <div class="fuel-section-top">
                         <div class="fuel-section-label">А</div>
                         <div class="fuel-inline-wrap">
@@ -568,7 +743,7 @@
                       </div>
                     </section>
 
-                    <section class="fuel-section-row" aria-label="Секция Б, сдача">
+                    <section class="fuel-section-row" data-fuel-section="b" aria-label="Секция Б, сдача">
                       <div class="fuel-section-top">
                         <div class="fuel-section-label">Б</div>
                         <div class="fuel-inline-wrap">
@@ -588,7 +763,7 @@
                       </div>
                     </section>
 
-                    <section class="fuel-section-row" aria-label="Секция В, сдача">
+                    <section class="fuel-section-row" data-fuel-section="v" aria-label="Секция В, сдача">
                       <div class="fuel-section-top">
                         <div class="fuel-section-label">В</div>
                         <div class="fuel-inline-wrap">
@@ -612,9 +787,9 @@
               </div>
               <div class="fuel-consumption-note" id="fuelConsumptionNote">
                 <div class="fuel-consumption-sections">
-                  <span class="fuel-consumption-chip">А: <strong id="fuelConsumptionSectionALiters">0</strong>л / <strong id="fuelConsumptionSectionAKg">0</strong>кг</span>
-                  <span class="fuel-consumption-chip">Б: <strong id="fuelConsumptionSectionBLiters">0</strong>л / <strong id="fuelConsumptionSectionBKg">0</strong>кг</span>
-                  <span class="fuel-consumption-chip">В: <strong id="fuelConsumptionSectionVLiters">0</strong>л / <strong id="fuelConsumptionSectionVKg">0</strong>кг</span>
+                  <span class="fuel-consumption-chip" data-fuel-section="a">А: <strong id="fuelConsumptionSectionALiters">0</strong>л / <strong id="fuelConsumptionSectionAKg">0</strong>кг</span>
+                  <span class="fuel-consumption-chip" data-fuel-section="b">Б: <strong id="fuelConsumptionSectionBLiters">0</strong>л / <strong id="fuelConsumptionSectionBKg">0</strong>кг</span>
+                  <span class="fuel-consumption-chip" data-fuel-section="v">В: <strong id="fuelConsumptionSectionVLiters">0</strong>л / <strong id="fuelConsumptionSectionVKg">0</strong>кг</span>
                 </div>
                 <div class="fuel-consumption-total">Итого: <strong id="fuelConsumptionLiters">0</strong>л | <strong id="fuelConsumptionKg">0</strong>кг</div>
               </div>
@@ -627,7 +802,7 @@
                 <div class="optional-summary-title">Поезд</div>
                 <div class="optional-summary-subtitle">Номер, вес, оси и длина</div>
               </div>
-              <div class="optional-summary-chevron">⌄</div>
+              <div class="optional-summary-chevron"><svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 8l5 5 5-5"></path></svg></div>
             </summary>
             <div class="optional-card-body">
               <div class="optional-grid optional-grid-two">
@@ -657,7 +832,7 @@
                 <div class="optional-summary-title">Заметки</div>
                 <div class="optional-summary-subtitle">Замечания, наблюдения и важные детали</div>
               </div>
-              <div class="optional-summary-chevron">⌄</div>
+              <div class="optional-summary-chevron"><svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 8l5 5 5-5"></path></svg></div>
             </summary>
             <div class="optional-card-body">
               <div class="field">
@@ -668,6 +843,14 @@
           </details>
 
           </div>
+
+          <label class="shift-share-row hidden" id="shiftShareRow">
+            <input type="checkbox" id="shiftShareToggle" checked />
+            <span class="shift-share-text">
+              <span class="shift-share-title">Поделиться с напарником</span>
+              <span class="shift-share-partner" id="shiftSharePartner">—</span>
+            </span>
+          </label>
 
           <div class="form-actions">
             <button class="btn-primary" id="btnAdd">Сохранить смену</button>
@@ -695,9 +878,20 @@
         <div class="salary-card salary-summary-card">
           <div class="salary-total-amount" id="salaryNetTop">0 ₽</div>
           <div class="salary-total-caption">на руки (после НДФЛ)</div>
+          <div class="salary-hero-stack" id="salaryHeroStack" aria-hidden="true"></div>
+          <div class="salary-hero-legend" id="salaryHeroLegend"></div>
         </div>
 
         <div class="salary-disclaimer">* Все суммы примерные. Это ориентир для будущего расчёта, а не точный расчет заработка.</div>
+
+        <section class="salary-trend" id="salaryTrend" aria-label="История за 6 месяцев">
+          <div class="salary-trend-head">
+            <span class="t">История · последние 6 месяцев</span>
+            <span class="u">тыс. ₽</span>
+          </div>
+          <div class="salary-trend-bars" id="salaryTrendBars"></div>
+          <div class="salary-trend-labels" id="salaryTrendLabels"></div>
+        </section>
 
         <div class="section-header section-header-row salary-section-header">
           <span>Основные начисления</span>
@@ -770,6 +964,7 @@
                     <span class="docs-entry-name">Инструкции</span>
                     <span class="docs-entry-note">Приказы, инструкции, распоряжения</span>
                   </span>
+                  <span class="docs-entry-count num" data-count-for="" aria-hidden="true">—</span>
                   <span class="docs-entry-arrow" aria-hidden="true">›</span>
                 </button>
                 <button class="docs-entry-tile" data-docs-entry="speeds" type="button">
@@ -785,6 +980,7 @@
                     <span class="docs-entry-name">Скорости</span>
                     <span class="docs-entry-note">Скорости по участкам</span>
                   </span>
+                  <span class="docs-entry-count num" data-count-for="" aria-hidden="true">—</span>
                   <span class="docs-entry-arrow" aria-hidden="true">›</span>
                 </button>
                 <button class="docs-entry-tile" data-docs-entry="memos" type="button">
@@ -800,6 +996,7 @@
                     <span class="docs-entry-name">Режимки</span>
                     <span class="docs-entry-note">Режимные карты по участкам</span>
                   </span>
+                  <span class="docs-entry-count num" data-count-for="" aria-hidden="true">—</span>
                   <span class="docs-entry-arrow" aria-hidden="true">›</span>
                 </button>
                 <button class="docs-entry-tile" data-docs-entry="reminders" type="button">
@@ -814,6 +1011,7 @@
                     <span class="docs-entry-name">Памятки</span>
                     <span class="docs-entry-note">Небольшие рабочие шпаргалки</span>
                   </span>
+                  <span class="docs-entry-count num" data-count-for="" aria-hidden="true">—</span>
                   <span class="docs-entry-arrow" aria-hidden="true">›</span>
                 </button>
                 <button class="docs-entry-tile" data-docs-entry="folders" type="button">
@@ -828,17 +1026,50 @@
                     <span class="docs-entry-name">Папки</span>
                     <span class="docs-entry-note">Конспекты по безопасности движения</span>
                   </span>
+                  <span class="docs-entry-count num" data-count-for="" aria-hidden="true">—</span>
+                  <span class="docs-entry-arrow" aria-hidden="true">›</span>
+                </button>
+                <button class="docs-entry-tile" data-docs-entry="favorites" type="button">
+                  <span class="docs-entry-icon docs-entry-icon-favorites" aria-hidden="true">
+                    <svg viewBox="0 0 24 24" fill="none">
+                      <path d="m12 3 2.6 6 6.4.6-4.9 4.4 1.5 6.4L12 17l-5.6 3.4L8 14l-5-4.4 6.4-.6z"></path>
+                    </svg>
+                  </span>
+                  <span class="docs-entry-content">
+                    <span class="docs-entry-eyebrow">Только важное</span>
+                    <span class="docs-entry-name">Избранное</span>
+                    <span class="docs-entry-note">Помеченные звездой</span>
+                  </span>
+                  <span class="docs-entry-count num" data-count-for="favorites" aria-hidden="true">0</span>
                   <span class="docs-entry-arrow" aria-hidden="true">›</span>
                 </button>
               </div>
             </div>
 
+            <div class="doc-favorites-overlay hidden" id="docsFavoritesPanel">
+              <div class="section-header section-header-row" style="margin: 8px 4px;">
+                <button class="docs-back-btn docs-back-btn-leading" id="docsFavoritesBack" type="button" aria-label="Назад"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 6 9 12l6 6"></path></svg></button>
+                <span class="section-header-text">Избранное</span>
+              </div>
+              <div class="docs-file-list" id="docsFavoritesList"></div>
+            </div>
+
+            <div class="doc-recent" id="docsRecentList" aria-label="Недавно открытые">
+              <div class="section-header section-header-row" style="margin: 0 0 10px;">
+                <span class="section-header-text">Недавно открытые</span>
+                <span class="doc-recent-empty" id="docsRecentEmpty" hidden>пусто</span>
+              </div>
+              <div id="docsRecentRows"></div>
+            </div>
+
             <div class="month-nav docs-nav-card hidden" id="docsSubnavCard">
-              <div class="docs-nav-copy docs-nav-copy-row docs-nav-copy-rich">
+              <div class="docs-nav-copy docs-nav-copy-row docs-nav-copy-rich docs-nav-copy-with-back">
+                <button class="docs-back-btn docs-back-btn-leading" id="docsBackButton" type="button" aria-label="Назад к разделам">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M15 6 9 12l6 6"></path></svg>
+                </button>
                 <div class="docs-nav-heading-group">
                   <div class="docs-nav-title" id="docsCurrentEntryTitle">Документация</div>
                 </div>
-                <button class="docs-back-btn" id="docsBackButton" type="button"><span aria-hidden="true">←</span><span>Назад к разделам</span></button>
               </div>
               <div class="docs-month-tabs hidden" id="docsSecondaryTabs" role="navigation" aria-label="Подразделы документации">
                 <button class="docs-tab-btn" data-docs-tab="speeds" type="button"><span class="docs-tab-dot" aria-hidden="true"></span><span>Скорости</span></button>
@@ -902,7 +1133,67 @@
               <span class="shifts-overview-value" id="shiftsOverviewTotal">0 ч</span>
             </div>
           </div>
-          <div id="shiftsList"></div>
+          <div class="shifts-filters" id="shiftsFilters" role="tablist" aria-label="Фильтр смен">
+            <button class="shifts-filter-btn is-on" type="button" data-filter="all" role="tab" aria-selected="true">Все</button>
+            <button class="shifts-filter-btn" type="button" data-filter="day" role="tab" aria-selected="false">Дневные</button>
+            <button class="shifts-filter-btn" type="button" data-filter="night" role="tab" aria-selected="false">Ночные</button>
+            <button class="shifts-filter-btn" type="button" data-filter="holiday" role="tab" aria-selected="false">Праздничные</button>
+          </div>
+          <div id="shiftsList" data-filter="all"></div>
+        </div>
+      </section>
+
+      <section class="tab-panel" data-tab="partners">
+        <div class="partners-head">
+          <button class="partners-back" id="partnersBack" type="button" aria-label="Назад">‹</button>
+          <div class="partners-head-title">Бригада</div>
+        </div>
+
+        <div class="partners-intro">
+          Один член бригады добавляет смену — у второго она появляется автоматически.
+          Свяжитесь по короткому коду, выберите активного напарника, и можно делиться.
+        </div>
+
+        <div class="partners-inbox" id="partnersInbox" hidden aria-live="polite">
+          <div class="partners-card-title">Входящие смены</div>
+          <div class="partners-inbox-list" id="partnersInboxList"></div>
+        </div>
+
+        <div class="partners-active-card" id="partnersActiveCard" aria-live="polite">
+          <div class="partners-active-label">Активный напарник</div>
+          <div class="partners-active-value" id="partnersActiveValue">Не выбран</div>
+          <div class="partners-active-hint" id="partnersActiveHint">Новые смены ни с кем не делятся.</div>
+        </div>
+
+        <div class="partners-link-card">
+          <div class="partners-card-title">Связать напарника</div>
+          <div class="partners-link-actions">
+            <button class="btn-secondary partners-generate-btn" id="partnersGenerateBtn" type="button">Создать код</button>
+          </div>
+          <div class="partners-code-box hidden" id="partnersCodeBox" aria-live="polite">
+            <div class="partners-code-label">Назовите код напарнику:</div>
+            <div class="partners-code-value" id="partnersCodeValue">——————</div>
+            <div class="partners-code-expiry" id="partnersCodeExpiry"></div>
+          </div>
+          <div class="partners-redeem">
+            <div class="partners-card-subtitle">Ввести код напарника</div>
+            <div class="partners-code-grid" id="partnersCodeGrid" role="group" aria-label="Код приглашения из 6 цифр">
+              <input class="partners-code-cell" type="text" inputmode="numeric" pattern="[0-9]*" autocomplete="one-time-code" spellcheck="false" maxlength="1" aria-label="Цифра 1 из 6" />
+              <input class="partners-code-cell" type="text" inputmode="numeric" pattern="[0-9]*" autocomplete="off" spellcheck="false" maxlength="1" aria-label="Цифра 2 из 6" />
+              <input class="partners-code-cell" type="text" inputmode="numeric" pattern="[0-9]*" autocomplete="off" spellcheck="false" maxlength="1" aria-label="Цифра 3 из 6" />
+              <input class="partners-code-cell" type="text" inputmode="numeric" pattern="[0-9]*" autocomplete="off" spellcheck="false" maxlength="1" aria-label="Цифра 4 из 6" />
+              <input class="partners-code-cell" type="text" inputmode="numeric" pattern="[0-9]*" autocomplete="off" spellcheck="false" maxlength="1" aria-label="Цифра 5 из 6" />
+              <input class="partners-code-cell" type="text" inputmode="numeric" pattern="[0-9]*" autocomplete="off" spellcheck="false" maxlength="1" aria-label="Цифра 6 из 6" />
+            </div>
+            <button class="btn-primary partners-redeem-btn" id="partnersRedeemBtn" type="button">Связать</button>
+          </div>
+          <div class="partners-feedback hidden" id="partnersFeedback" role="status" aria-live="polite"></div>
+        </div>
+
+        <div class="partners-book">
+          <div class="partners-card-title">Напарники</div>
+          <div class="partners-book-list" id="partnersBookList"></div>
+          <div class="partners-book-empty" id="partnersBookEmpty">Пока никого нет. Создайте код или введите код напарника выше.</div>
         </div>
       </section>
     </div>
@@ -932,18 +1223,13 @@
         </span>
         <span class="tab-label">Главная</span>
       </button>
-      <button class="tab-btn nav-item" type="button" data-tab="shifts">
+      <button class="tab-btn nav-item" type="button" data-tab="poekhali">
         <span class="tab-icon" aria-hidden="true">
-          <svg viewBox="0 0 24 24">
-            <path d="M7 6h10"></path>
-            <path d="M7 12h10"></path>
-            <path d="M7 18h10"></path>
-            <circle cx="4" cy="6" r="1"></circle>
-            <circle cx="4" cy="12" r="1"></circle>
-            <circle cx="4" cy="18" r="1"></circle>
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M3 12h3l3-8 4 16 3-8h5"></path>
           </svg>
         </span>
-        <span class="tab-label">Смены</span>
+        <span class="tab-label">Поехали</span>
       </button>
 
       <!-- FAB — inline grid slot, center action -->
@@ -1136,6 +1422,67 @@
     </div>
   </div>
 
+  <!-- Install banner — slides in from the top; whole banner is clickable -->
+  <div class="install-banner" id="installBanner" role="button" tabindex="0" aria-label="Установить приложение" aria-hidden="true">
+    <div class="install-banner-ico" aria-hidden="true">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3v12"/><path d="M7 10l5 5 5-5"/><path d="M5 21h14"/></svg>
+    </div>
+    <div class="install-banner-copy">
+      <div class="install-banner-title">Установить приложение</div>
+      <div class="install-banner-text">Запускайте Блокнот Машиниста в один тап с домашнего экрана.</div>
+    </div>
+    <button class="install-banner-close" id="btnInstallPopupLater" type="button" aria-label="Закрыть">
+      <svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M5 5l10 10M15 5L5 15"/></svg>
+    </button>
+  </div>
+
+  <!-- Notifications Sheet -->
+  <div class="overlay" id="overlayNotifications">
+    <div class="bottom-sheet notif-sheet">
+      <div class="edit-shift-handle-wrap" aria-hidden="true"><span class="edit-shift-handle"></span></div>
+      <div class="notif-head">
+        <div class="eyebrow">Уведомления</div>
+        <div class="sheet-title" style="margin-top:4px;">Что нового</div>
+      </div>
+      <div class="notif-list" id="notifList" aria-live="polite"></div>
+      <div class="notif-foot">
+        <button class="btn-secondary" id="btnNotifMarkRead" type="button">Прочитать все</button>
+        <button class="btn-secondary" id="btnNotifClose" type="button">Закрыть</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Quick Add Sheet (design-refresh) -->
+  <div class="overlay" id="overlayQuickAdd">
+    <div class="bottom-sheet quick-add-sheet">
+      <div class="edit-shift-handle-wrap" aria-hidden="true"><span class="edit-shift-handle"></span></div>
+      <div class="quick-add-head">
+        <div class="eyebrow">Быстрое добавление</div>
+        <div class="sheet-title" style="margin-top:4px;">Что записать?</div>
+      </div>
+      <div class="add-list">
+        <button class="add-row" type="button" data-quick-action="new-shift">
+          <span class="add-row-ico"><svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="10" cy="10" r="3.2"/><path d="M10 2.5v1.5"/><path d="M10 16v1.5"/><path d="M2.5 10H4"/><path d="M16 10h1.5"/><path d="M4.5 4.5l1 1"/><path d="M14.5 14.5l1 1"/><path d="M15.5 4.5l-1 1"/><path d="M5.5 14.5l-1 1"/></svg></span>
+          <span class="add-row-text"><span class="name">Новая смена</span><span class="desc">Дата, маршрут, локомотив, состав</span></span>
+          <span class="add-row-ch">›</span>
+        </button>
+        <button class="add-row" type="button" data-quick-action="trip">
+          <span class="add-row-ico"><svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 13V6.5A2.5 2.5 0 0 1 6.5 4h6A2.5 2.5 0 0 1 15 6.5V13"/><path d="M4 11h11"/><path d="M7 8h3"/><circle cx="6.5" cy="14.5" r="1"/><circle cx="12.5" cy="14.5" r="1"/></svg></span>
+          <span class="add-row-text"><span class="name">Поездка</span><span class="desc">Без смены, для статистики</span></span>
+          <span class="add-row-ch">›</span>
+        </button>
+        <button class="add-row" type="button" data-quick-action="note">
+          <span class="add-row-ico"><svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m10 3 2.2 5 5.3.5-4 3.6 1.2 5.3L10 14.4 5.3 17.4l1.2-5.3-4-3.6 5.3-.5Z"/></svg></span>
+          <span class="add-row-text"><span class="name">Заметка</span><span class="desc">Пометка в журнал</span></span>
+          <span class="add-row-ch">›</span>
+        </button>
+      </div>
+      <div class="quick-add-foot">
+        <button class="btn-secondary" type="button" id="btnQuickAddClose">Отмена</button>
+      </div>
+    </div>
+  </div>
+
   <!-- Confirm Delete Bottom Sheet -->
   <div class="overlay" id="overlayConfirm">
     <div class="bottom-sheet">
@@ -1203,6 +1550,7 @@
   <script src="/scripts/poekhali-tracker.js" defer></script>
   <script src="/scripts/render.js" defer></script>
   <script src="/scripts/shift-form.js" defer></script>
+  <script src="/scripts/partners.js" defer></script>
   <script src="/scripts/app-init.js" defer></script>
   <script src="/scripts/sw-register.js" defer></script>
   <script src="/scripts/utils/haptics.js" defer></script>

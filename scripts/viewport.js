@@ -279,7 +279,11 @@
       if (!el || el.nodeType !== 1) return false;
       if (el.closest && el.closest('[contenteditable="true"]')) return true;
       if (!el.matches) return false;
-      return el.matches('input:not([type="button"]):not([type="submit"]):not([type="reset"]):not([type="checkbox"]):not([type="radio"]):not([type="file"]), textarea, select');
+      // Native-picker inputs (date/time/color/range) open an OS overlay, not a
+      // text keyboard, so they must NOT trigger the keyboard layout (which hides
+      // the bottom nav). Excluding them keeps the nav visible on the shift form,
+      // whose first field (start date) is auto-focused when the tab opens.
+      return el.matches('input:not([type="button"]):not([type="submit"]):not([type="reset"]):not([type="checkbox"]):not([type="radio"]):not([type="file"]):not([type="date"]):not([type="time"]):not([type="datetime-local"]):not([type="month"]):not([type="week"]):not([type="color"]):not([type="range"]), textarea, select');
     }
 
     function isKeyboardFieldEligible(el) {

@@ -620,9 +620,15 @@
     .glass-select-chevron {
       flex-shrink: 0;
       color: var(--sub);
-      font-size: 16px;
-      line-height: 1;
-      transition: transform 0.18s ease;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      transition: transform 0.18s ease, color 0.18s ease;
+    }
+    .glass-select-chevron svg {
+      width: 16px;
+      height: 16px;
+      display: block;
     }
 
     .glass-select-trigger.is-open .glass-select-chevron {

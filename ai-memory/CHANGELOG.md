@@ -4680,3 +4680,339 @@ Append-only журнал действий ИИ-агентов по проект�
 - Branch: `main`
 - Methods: `Созданы коммиты 5bf61c2 и memory-синки до cd733de`, `выполнен git push origin main`, `на VPS /opt/bloknot-mashinista подтверждены main/origin-main и intended commit cd733de`, `выполнены git pull --ff-only`, `node -c server/admin/poekhali`, `pm2 reload bloknot-mashinista`, `проверены PM2 online`, `локальные HTTP 200 для /admin и /`, `внешний curl.exe /admin вернул 200 при повторной проверке`, `Invoke-WebRequest и одна curl-проверка были нестабильны по timeout`
 - Files: `admin.html`, `scripts/admin.js`, `scripts/docs-app.js`, `scripts/poekhali-tracker.js`, `server.js`, `styles/10-navigation-and-cards.css`, `styles/admin.css`, `ai-memory`
+
+## 2026-05-13 20:38:47 +1000
+
+- Source: `manual`
+- Task: Этап 3: Admin Файлы — компактные ряды с preview, per-card drag-replace, inline rename/caption
+- Branch: `main`
+- Methods: `rewrite renderDocRows to single-column row layout: 64px preview (image thumb for IMG`, `color-tinted type badge for PDF/DOC/TXT) + inline name+caption inputs + path/size/date meta + Replace/Delete actions`, `add replaceDocFile(index`, `file) that uploads then swaps file fields onto existing manifest entry preserving name+caption`, `per-card dragover/drop accepts file replacement with green highlight`
+- Files: `scripts/admin.js`, `styles/admin.css`
+
+## 2026-05-13 20:46:52 +1000
+
+- Source: `manual`
+- Task: App Поехали ПР: rich preview canvas в popover — профиль, станции, скорости, ПР, GPS
+- Branch: `main`
+- Methods: `drawWarningPreviewCanvas(canvas`, `warning) — рисует профиль (getVisibleProfileSegmentsForWindow)`, `станции/светофоры (getTrackObjectsInWindow)`, `бенды скоростей (getSpeedRulesInWindow)`, `другие ПР (faded)`, `highlight выбранного ПР`, `GPS-маркер`, `реалтайм-redraw при изменении speed/km/pk инпутов`
+- Files: `scripts/poekhali-tracker.js`, `styles/10-navigation-and-cards.css`
+
+## 2026-05-13 20:52:49 +1000
+
+- Source: `manual`
+- Task: Admin Карта Поехали: canvas-редактор с прямой манипуляцией скоростями
+- Branch: `main`
+- Methods: `drawMapCanvas(canvas`, `route`, `bounds`, `popover) — рисует Поехали-стиль: top/bottom scale`, `цветные speed bands (45px tall с handle-индикаторами на краях)`, `станции как вертикальные тики с именами`, `светофоры как точки. bindMapCanvasInteractions с pointerdown hit-test: drag center=move обе границы`, `drag edges=resize одной границы`, `click empty в band-row=новая скорость в этой точке`, `click на банд=открыть popover. ensureMapOverrideRule для базовых правил каталога перед drag.`
+- Files: `scripts/admin.js`, `styles/admin.css`
+
+## 2026-05-15 13:21:24 +1000
+
+- Source: `manual`
+- Task: Bloknot Mashinista.html design implementation: oklch tokens, conic gauge dashboard, bento docs, bottom nav with Поехали in slot 2, all 5 tabs restyled
+- Branch: `main`
+- Methods: `new styles/50-design-refresh.css (oklch+color-mix`, `Manrope+JetBrains Mono`, `hairline glass surfaces)`, `index.html: inject SVG conic gauge in dashboard`, `swap nav slot 2 shifts→poekhali`, `add 'Все смены' link`, `render.js: updateDashboardGauge helper drives stroke-dashoffset`, `split statDiff label/value (Осталось/Норма выполнена/Переработка)`, `setSectionHeaderText preserves link`, `app-init.js: bind homeAllShiftsLink to setActiveTab('shifts')`, `15-bottom-nav.css: add poekhali grid-column`
+- Files: `styles/50-design-refresh.css`, `index.html`, `scripts/render.js`, `scripts/app-init.js`, `styles/15-bottom-nav.css`
+
+## 2026-05-15 15:16:02 +1000
+
+- Source: `manual`
+- Task: Bloknot Mashinista 1-в-1: карточка смены v2, иконки в зарплате+stack-bar, счётчики на доках, AddSheet шторка, ShiftDetail hero
+- Branch: `main`
+- Methods: `buildShiftItemHtml переписан под макетную структуру (mark+title+sub+amount+actions`, `shift-consist row`, `3-cell meta)`, `новые хелперы buildShiftMarkHtml/buildShiftConsistHtml/buildShiftMetaCellsHtml + ruNum/getShiftConsistDescriptor в time-utils`, `иконки sun/moon/star/length/flag/up/percent в getShiftInlineIconSvg`, `createSalaryRowHtml v2 с круглой иконкой-чипом и кодом-пилюлей`, `renderSalaryHeroStack добавляет stack-bar+legend`, `бентошки docs получили счётчики из manifest.json + секция 'Недавно открытые' через localStorage shift_tracker_docs_recent_v1`, `AddSheet шторка overlayQuickAdd с 3 действиями (Новая смена/Поездка/Заметка) перехватывает FAB-клик`, `buildShiftDetailHeroCardHtml переписан под sd-hero+ln-info+sd-income`
+- Files: `scripts/time-utils.js`, `scripts/render.js`, `scripts/app.js`, `scripts/app-init.js`, `index.html`, `styles/50-design-refresh.css`
+
+## 2026-05-15 17:57:14 +1000
+
+- Source: `manual`
+- Task: Bloknot Mashinista полный перенос: trend 6 мес, KPI Отдых, спарклайн hero-income, плашка поезда Поехали
+- Branch: `main`
+- Methods: `renderSalaryTrend строит 6 баров через buildMonthCalculationShifts+buildSalarySummary`, `тыс. ₽`, `текущий месяц.cur`, `обновлено grid-template-columns:repeat(4`, `1fr) для KPI`, `добавлена 4-я плитка statRest с расчётом среднего отдыха между сменами (parseMsk gaps)`, `обновлён hero-income с SVG спарклайном (path + dot + delta-pill) и updateDashboardSparkline тянет 6 мес netAmount`, `train-plate как absolute overlay в poekhali-mode-shell заполняется из window.shifts или localStorage shift_tracker_shifts_cache_v1_* при клике на Поехали`
+- Files: `scripts/render.js`, `scripts/app.js`, `scripts/app-init.js`, `index.html`, `styles/50-design-refresh.css`
+
+## 2026-05-15 18:10:14 +1000
+
+- Source: `manual`
+- Task: Bloknot Mashinista довод: top-bar, плавающее меню, hero, порядок Зарплаты, back-кнопка Доков, Recent рабочий
+- Branch: `main`
+- Methods: `added app-top-bar в .app-content с заголовком/сабом/колокольчиком`, `app-init bindAppTopBar обновляет per-tab title+sub (Home показывает имя из cached_user) и скрывает бар на Поехали`, `.bottom-nav теперь position:fixed floating: bottom:14px+safe-area`, `width: min(480`, `100%)-24px`, `border-radius:28px со всех сторон`, `padding:0 4px`, `--bottom-nav-height поднят до 96px`, `dashboard hero убран дублирующий Отработано/0ч — остались 3 stat-строки + скрытый #statWorked`, `salary-trend перенесён вверх между disclaimer и Основные начисления`, `docs-back-btn перерендерен слева (docs-nav-copy-with-back + .docs-back-btn-leading 36×36 chevron icon)`, `Recent docs теперь пишутся из docs-app.js openDocFile в localStorage shift_tracker_docs_recent_v1 + emit 'storage' event`, `AddSheet шторка удалена (FAB → форма напрямую как было)`
+- Files: `index.html`, `scripts/app-init.js`, `scripts/docs-app.js`, `styles/50-design-refresh.css`
+
+## 2026-05-15 18:14:35 +1000
+
+- Source: `manual`
+- Task: Главная — hero/calendar/shift-card подгонка к макету: убрана progress-track, переименован income-label, compact=false на homeShiftsList, компактный формат даты карточки
+- Branch: `main`
+- Methods: `скрыл .dashboard-card .progress-track (display:none) — gauge уже показывает прогресс`, `formatMonthIncomeLabel теперь возвращает 'Доход за май' (eyebrow-стиль)`, `homeShiftsList рендерится с compact=false и берёт 2 последние смены вместо 1`, `headerBase 'Смены' (раньше 'Последняя смена')`, `новый helper buildShiftCompactDateLine -> '26 апр · вс · 12:40 → 00:40' + ⁺¹ если переход через полночь`, `buildShiftItemHtml использует этот формат для shift-card-sub`
+- Files: `scripts/app.js`, `scripts/render.js`, `scripts/time-utils.js`, `styles/50-design-refresh.css`
+
+## 2026-05-15 18:22:22 +1000
+
+- Source: `manual`
+- Task: Поехали — макетный mock-экран вместо канваса; норм-строки без рамок
+- Branch: `main`
+- Methods: `новая разметка .trk-mock внутри tab-panel poekhali: chips (Формат/Напр/Путь/Карта/GPS)`, `train-plate (loco+stats)`, `.speedo с большим числом+часами`, `.speedo-aux 3 плитки (Лимит/Уклон/Далее)`, `.profile SVG со станциями`, `светофорами`, `elevation профилем и пульсирующим маркером локо`, `.trk-bottom (timer-tile + mode-tile)`, `кнопка Начать запись переключает на legacy poekhali-mode-shell (hidden by default)`, `bindTrkMock рисует профиль и тикает часы`, `усилен override .dashboard-norm-item и --today/--month: background:transparent`, `border:0`, `padding:0 с !important чтобы убрать легаси-полоски`, `train-plate-loco svg width/height 18px`
+- Files: _not specified_
+
+## 2026-05-15 18:28:48 +1000
+
+- Source: `manual`
+- Task: Поехали: убран Формат КМ, время МСК, удалена запись поездки. Календарь: правильные селекторы и индикатор-полоска. Карточка смены: без ⋯, без ⁺¹, без · N счётчика, мета Длительность/Топливо/Доход
+- Branch: `main`
+- Methods: `удалён чип Формат КМ и кнопка btnStartTracking в HTML`, `trkClock форматируется через toLocaleTimeString Europe/Moscow + суффикс МСК (fallback UTC+3)`, `legacy poekhali-mode-shell остался hidden+aria-hidden для совместимости с poekhali-tracker.js`, `CSS calendar: правильные селекторы .is-outside-month/.has-shift.shift-day/.has-shift.shift-night с !important чтобы перебить legacy 10-navigation-and-cards.css`, `weekend ячейки сбрасывают красный фон`, `today оставляет тонкий внутренний бордер вместо белой обводки`, `добавлен ::after индикатор-полоска внизу has-shift ячеек`, `renderShiftList не добавляет · N к заголовкам с .section-header-text (homeShifts)`, `buildShiftCompactDateLine без ⁺¹`, `buildShiftMetaCellsHtml теперь Длительность / Топливо (fallback Поезд) / Доход (fallback Состав)`, `скрыт .shift-card-v2 .shift-actions-wrap (⋯)`
+- Files: `index.html`, `scripts/app-init.js`, `scripts/time-utils.js`, `scripts/render.js`, `styles/50-design-refresh.css`
+
+## 2026-05-15 18:36:04 +1000
+
+- Source: `manual`
+- Task: Главная: KPI перед календарём, смены отдельным блоком; календарь без стрелок/счётчиков; рабочий колокольчик с уведомлениями; Поехали: прямоугольный поезд с хвостом и движением
+- Branch: `main`
+- Methods: `HTML: переставлен порядок Главной — quick-stats-grid идёт сразу после dashboard-card`, `home-calendar-card без обёртки latest-shift`, `секция Смены вынесена в отдельный section-header + #homeShiftsList ниже календаря`, `CSS calendar: скрыты .home-calendar-day-count`, `.home-calendar-day-arrows`, `.home-calendar-legend-arrows`, `число цифры выровнено align-self:flex-start (верх-лево)`, `HTML добавлен #overlayNotifications с notif-sheet (Уведомления / Что нового / список / Прочитать все / Закрыть)`, `JS bindNotifications в app-init: localStorage shift_tracker_notifications_v1`, `addNotification(title`, `text`, `tone)`, `seed на welcome/cache-version/SW updatefound/offline`, `рендер списка с tone-color dot и fmtAgo (только что/N мин назад)`, `badge на колокольчике .app-top-bar-icon-dot[data-count]`, `train marker в SVG переписан в прямоугольный локомотив (rect 16×12 + окошко + headlight + стрелка) + хвост (line) с 5 axle ticks и end-cap`, `CSS keyframe trkTrainMove 40s linear infinite from translate(60`, `118) to translate(340`, `118)`
+- Files: `index.html`, `scripts/app-init.js`, `styles/50-design-refresh.css`
+
+## 2026-05-15 18:40:53 +1000
+
+- Source: `manual`
+- Task: Поехали: откат на рабочий канвасный трекер — mock-экран удалён, shell снова видимый
+- Branch: `main`
+- Methods: `удалена .trk-mock разметка из index.html (chips/plate/speedo/aux/profile/timer/btnStartTracking)`, `.poekhali-mode-shell больше не hidden/aria-hidden`, `в app-init.js удалена IIFE bindTrkMock (анимация часов и SVG-профиль) и восстановлено сокрытие app-top-bar на вкладке poekhali (bar.classList.toggle hidden`, `tab===poekhali)`, `поезд в канвасе рендерится drawApkTrainProfileBar — горизонтальной прямоугольной полосой по профилю пути`, `drawTrainHead не вызывается`, `стили .trk-* и keyframe trkTrainMove в 50-design-refresh.css больше ни на что не действуют (можно почистить позже)`
+- Files: `index.html`, `scripts/app-init.js`
+
+## 2026-05-15 18:45:50 +1000
+
+- Source: `manual`
+- Task: Поехали: дизайн overlay-кнопок без поломки канваса — двухстрочные chip Label/Value
+- Branch: `main`
+- Methods: `.poekhali-overlay-btn перекрашена в стиль design chip: glass+bg-deeper`, `Manrope+JetBrains Mono шрифты`, `padding 8/12`, `min-height 38`, `backdrop-filter blur22`, `кнопки с data-control-label получают ::before с маленьким label (Manrope 8px 0.14em uppercase ink-3) сверху значения`, `HTML btnPoekhaliWay получил data-control-label=Путь`, `GPS live-btn стилизована: горизонтальный flex с точкой + вертикальный stack из gps-word (Manrope 8 ink-3) и gps-meta (JetBrains Mono 13 ink`, `good когда is-on)`, `.poekhali-back-btn оставлена квадратной 40×40 с chevron-иконкой`, `.poekhali-direction-bar получает accent-gradient в is-on. Канвасный рендер (drawApkTrainProfileBar`, `плашка станции`, `ФАКТ/ДОПУСК/КМ/ПК) не трогается`
+- Files: _not specified_
+
+## 2026-05-15 18:54:23 +1000
+
+- Source: `manual`
+- Task: Поехали: рабочий редизайн — canvas перенесён в блок Профиль пути, поверх DOM-разметка под макет, логика трекера сохранена
+- Branch: `main`
+- Methods: `новая HTML-разметка .trk-design с chips (Формат/Напр/Путь/Карта/Уч)`, `train-plate (Вес/Ваг/Ось/Длина)`, `.speedo (Текущая скорость + clock МСК)`, `.speedo-aux (Лимит/Уклон/Далее)`, `.trk-profile-card с canvas#poekhaliCanvas внутри .trk-profile-canvas-wrap (280px)`, `.trk-bottom (В пути + Тех. скорость)`, `legacy .poekhali-mode-shell.poekhali-mode-shell-hidden с кнопками вынесен за viewport (тракер находит свои overlay-кнопки через DOM`, `события работают)`, `bindPoekhaliDesign в app-init: каждые 500ms читает window.tracker.speedMps→км/ч`, `getTimerElapsed→В пути`, `синхронизирует Формат-chip с GPS-кнопкой`, `bindAppTopBar в Поехали показывает маршрут смены вместо подписи 'Режим реального времени'`, `подменяет колокольчик на GPS-chip (.app-top-bar-gps красный когда offline`, `зелёный когда is-on)`
+- Files: `index.html`, `scripts/app-init.js`, `styles/50-design-refresh.css`
+
+## 2026-05-15 19:01:16 +1000
+
+- Source: `manual`
+- Task: Поехали: только chip Путь, спидометр current | allowed, aux без Лимита
+- Branch: `main`
+- Methods: `удалены chips Формат/Напр/Карта/Уч — остался только Путь (П 1)`, `в .speedo заголовок сменён на 'Текущая / допустимая'`, `значение теперь #trkSpeed | #trkAllowed км/ч (allowed подсвечен var(--bad) с glow)`, `.speedo-aux получил модификатор .speedo-aux-2 с 2-колоночным grid (Уклон + Далее)`, `aux.limit удалён`
+- Files: _not specified_
+
+## 2026-05-15 19:06:11 +1000
+
+- Source: `manual`
+- Task: Поехали: plate 3 столбца (Вес/Осей/Усл), aux ряд удалён, канвас на всю ширину
+- Branch: `main`
+- Methods: `train-plate-stats теперь только 3 столбца: Вес (т) / Осей / Усл (без юнита`, `длина в условных вагонах из train_length)`, `удалён весь .speedo-aux ряд (Уклон и Далее уже рисуются на канвасе)`, `.trk-profile-card получил отрицательный margin: 0 calc(-1*var(--page-padding-x)) чтобы выйти за padding приложения и занять полную ширину экрана`, `border-radius:0`, `верх/низ hairline`, `.trk-profile-canvas-wrap высота 360px`, `bindPoekhaliDesign updatePlate подстраивает значения под новые id без train_cars и без юнита м`
+- Files: `index.html`, `scripts/app-init.js`, `styles/50-design-refresh.css`
+
+## 2026-05-15 19:14:02 +1000
+
+- Source: `manual`
+- Task: Поехали: Уд вместо Усл, Путь в top-bar, канвас на всю свободную высоту, нижние плитки к низу
+- Branch: `main`
+- Methods: `plate column renamed Усл→Уд`, `добавлен .app-top-bar-way chip справа от GPS (label Путь / value П 1)`, `bindWayChip click→btnPoekhaliWay.click`, `lаbel sync каждую секунду из текстa legacy кнопки`, `удалён .trk-chips ряд`, `.trk-design height=calc(100dvh - 56 - var(--bottom-nav-height) - 16)`, `min-height:0`, `overflow:hidden — нет скролла страницы`, `.trk-profile-card flex:1 1 auto`, `.trk-profile-canvas-wrap flex:1 1 auto min-height:240px — канвас занимает всё свободное пространство`, `нижние плитки В пути/Тех.скорость прижаты к нижнему меню`, `bindAppTopBar показывает GPS и Way chip только на Поехали`
+- Files: `index.html`, `scripts/app-init.js`, `styles/50-design-refresh.css`
+
+## 2026-05-15 22:59:17 +1000
+
+- Source: `manual`
+- Task: Admin: design refresh layer (admin-design-refresh.css) с oklch палитрой, glass поверхностями, горизонтальной навигацией на mobile
+- Branch: `main`
+- Methods: `новый styles/admin-design-refresh.css подключён в admin.html после admin.css`, `применяет oklch token system + Manrope/JetBrains Mono шрифты ко всему admin-shell`, `sidebar получил glass background + accent active state на nav-btn с глоу-индикатором слева`, `в mobile (<=720px) sidebar становится горизонтальной полосой (flex-direction:row + overflow-x:auto) и не sticky`, `topbar стилизован под design (h1 22px tabular-nums`, `note 12px ink-3`, `кнопки 40px glass border)`, `.admin-command input получил accent focus-ring`, `общие card/metric-tile/dropzone/file-row/users-row перекрашены в glass+hairline`, `admin.js не тронут — только CSS override`
+- Files: `admin.html`, `styles/admin-design-refresh.css`
+
+## 2026-05-15 23:06:04 +1000
+
+- Source: `manual`
+- Task: Add форма: top-bar Новая смена/Сначала только время, дубликат заголовка скрыт, segmented + disclosure + fuel sections под design
+- Branch: `main`
+- Methods: `убран guard 'if t==add' в bindAppTopBar (AddSheet удалён давно) — теперь applyForTab срабатывает на FAB click и показывает Новая смена/Сначала только время`, `.tab-panel[data-tab='add'] .form-title-row {display:none} — дубликат заголовка скрыт`, `.draft-stats-grid → grid 3 равных столбца с hairline разделителями`, `.segmented/.route-segmented/.segmented-btn — pill chip с accent gradient на active`, `.details-disclosure-btn — design card с акцент-chevron (rotate(180) при aria-expanded=true)`, `.optional-section-title — eyebrow`, `fuel-columns 2-col`, `fuel-section-row glass`, `fuel-consumption-note — accent plate с chip'ами`, `.tab-panel[data-tab='poekhali'] {display:none} фикс — Поехали панель больше не торчит в других вкладках`
+- Files: `scripts/app-init.js`, `styles/50-design-refresh.css`
+
+## 2026-05-15 23:23:01 +1000
+
+- Source: `manual`
+- Task: Add форма: новый список серий локомотивов (3ТЭ/3ЭС/2ТЭ/2ЭС/ТЭП/ТЭМ/ВЛ80) + динамические секции топлива А/Б/В по серии
+- Branch: `main`
+- Methods: `обновлены <option> в #inputLocoSeries: 3ТЭ10`, `3ТЭ25`, `3ЭС5`, `2ТЭ10`, `2ТЭ25`, `2ЭС5`, `ТЭП`, `ТЭМ`, `ВЛ80 (порядок: трешки → двушки → односекционные)`, `на все 6 .fuel-section-row добавлен data-fuel-section=a/b/v`, `на 3 .fuel-consumption-chip тоже data-fuel-section`, `CSS .tab-panel[data-tab=add] [data-fuel-section=b/v] {display:none} по умолчанию`, `[data-loco-sections=3] → revert b и v`, `[data-loco-sections=2] → revert b`, `bindLocoSections в app-init следит за #inputLocoSeries.change/.input и MutationObserver на attribute value`, `sectionsFor возвращает '3' если value начинается с '3'`, `'2' если с '2'`, `иначе '1'`, `проставляет panel.dataset.locoSections`
+- Files: `index.html`, `scripts/app-init.js`, `styles/50-design-refresh.css`
+
+## 2026-05-15 23:32:03 +1000
+
+- Source: `manual`
+- Task: Add форма: чистка после обзора — убран дубль 'Сначала только время', топливо в vertical stack, segmented Поездка/Смена полная ширина, chevron'ы SVG вместо глифов
+- Branch: `main`
+- Methods: `.tab-panel[data-tab='add'] .form-intro-card {display:none} убирает дубль`, `.fuel-columns теперь flex-direction:column (Прием→Сдача стэк)`, `.fuel-section-row внутренний grid 28px+1fr с верхней (литры) и нижней (К + коэфф + кг output) строкой через dashed border-top`, `.fuel-inline-input width:84px text-align:center monospace`, `.fuel-coeff-inline 70px`, `.fuel-kg-output 76px opacity 0.75`, `.route-segmented + .segmented теперь display:grid 1fr 1fr width:100%`, `segmented-btn min-height 38px font 13px`, `активная — accent gradient`, `глифы ⌄ заменены на SVG chevron (path M5 8l5 5 5-5) в details-disclosure-icon и optional-summary-chevron`, `иконки glass-фон с accent поворотом на 180° при open`
+- Files: `index.html`, `styles/50-design-refresh.css`
+
+## 2026-05-15 23:36:14 +1000
+
+- Source: `manual`
+- Task: Add форма: внутренние отступы полей выровнены, А и К в топливе теперь в одной колонке
+- Branch: `main`
+- Methods: `.optional-control/.field input[type] получают padding:10px 14px min-height:44px (раньше падали в 8px 2px у date/time из-за нативных стилей)`, `date/time input padding-right:10px чтобы иконка не упиралась`, `.fuel-section-row перестроен в простой flex-column 12px padding`, `.fuel-section-top и .fuel-section-bottom — flex align-center gap 10px`, `.fuel-section-label и .fuel-section-bottom > .fuel-inline-wrap:first-child .fuel-inline-prefix теперь оба width:26px min-width:26px text-align:center — А и К строго в одну вертикаль`, `.fuel-section-bottom > .fuel-inline-wrap:last-child margin-left:auto прижимает кг output к правому краю как 'л' в верхней строке`
+- Files: `styles/50-design-refresh.css`
+
+## 2026-05-15 23:38:29 +1000
+
+- Source: `manual`
+- Task: Главная: убран KPI-блок Отдых, нижнее меню выровнено по --page-padding-x
+- Branch: `main`
+- Methods: `удалена 4-я плитка #statRest из HTML`, `.quick-stats-row вернулся на grid-template-columns repeat(3`, `1fr)`, `удалён код в render.js считавший среднее время отдыха между сменами`, `.bottom-nav width теперь calc(min(480px`, `100%) - 2*var(--page-padding-x`, `16px)) вместо -24px — навигация ровно совпадает с краями контента .app`
+- Files: _not specified_
+
+## 2026-05-15 23:52:54 +1000
+
+- Source: `manual`
+- Task: Install popup, snow icon (Северная), убран Поездка/Смена, fuel placeholder без серии, Избранное в Документах + звезда-индикатор
+- Branch: `main`
+- Methods: `1) overlayInstall popup: bindInstallPopup открывает через 1500ms если не standalone и нет sessionStorage shift_tracker_install_dismissed_v1`, `click Позже/scrim → markDismissed (сессионно)`, `Как установить → triggers legacy btnShowInstallGuide`, `легаси .install-prompt-card на Главной скрыт. 2) Иконка snow (svg star-of-6) добавлена в getShiftInlineIconSvg`, `getSalaryRowIcon: 027A → name:'snow' tone:'snow-icon' (раньше moon/night-icon)`, `.salary-row-icon.snow-icon — холодный голубой. 3) Удалён segmented Поездка/Смена (.route-segmented hidden)`, `карточка теперь называется 'Маршрут' с подписью про станции`, `optional-note обновлён. 4) HTML добавлен .fuel-needs-loco placeholder с иконкой warn`, `CSS: при отсутствии data-loco-sections на panel — .fuel-columns и .fuel-consumption-note hidden`, `.fuel-needs-loco visible`, `bindLocoSections теперь removeAttribute когда серия пустая. 5) Документы: добавлена плитка [data-docs-entry=favorites] (col-span 2)`, `скрытая панель #docsFavoritesPanel`, `bindDocsFavorites в app-init использует localStorage shift_tracker_docs_favorites_v1`, `MutationObserver навешивает .docs-fav-toggle (svg star) на каждый .docs-item`, `toggle сохраняет {path`, `name`, `meta`, `ext}`, `.docs-item.is-favorite получает warn-border`, `клик на плитку Избранное скрывает entryCard+панели и показывает список`, `bento: folders теперь col-span 2 чтобы Избранное поместилось в ряд`
+- Files: `index.html`, `scripts/app-init.js`, `scripts/app.js`, `scripts/time-utils.js`, `styles/50-design-refresh.css`
+
+## 2026-05-16 09:45:02 +1000
+
+- Source: `manual`
+- Task: Документы: back-кнопка слева, мета-строка карточки не обрезается, 'Недавно открытые' отдельный блок
+- Branch: `main`
+- Methods: `.docs-nav-copy-with-back теперь display:flex row align-center justify-flex-start gap:12 (!important)`, `.docs-nav-heading-group flex:1 1 auto min-width:0 text-align:left чтобы кнопка ← оказалась слева а заголовок занял остальное`, `.docs-item получил flex/min-width:0 layout`, `.docs-item-title и .docs-item-subtitle nowrap+ellipsis`, `.docs-item-meta white-space:normal flex-wrap:wrap (мета 'PDF · обновлено 08.04.2026 · 415 КБ' теперь переносится а не обрезается)`, `.has-fav-toggle padding-right:50px и .docs-item-action margin-right:30px чтобы звёздочка не пересекалась со стрелкой`, `div .doc-recent вынесен из .docs-entry-card в отдельный блок (#docsRecentList)`, `CSS :has(.docs-nav-card:not(.hidden)) и :has(#docsFavoritesPanel:not(.hidden)) скрывают его в подразделах и избранном`
+- Files: `index.html`, `styles/50-design-refresh.css`
+
+## 2026-05-16 09:48:34 +1000
+
+- Source: `manual`
+- Task: Install prompt теперь top-баннер (slide-down), не блокирует UI
+- Branch: `main`
+- Methods: `удалён overlay/bottom-sheet вариант`, `добавлен aside.install-banner поверх top-bar: position:fixed top=safe+10`, `width=min(480`, `100%)-2*page-padding-x`, `backdrop blur с accent border`, `slide-down через transform: translateY(-120%) → 0 + opacity transition 350ms`, `bindInstallBanner в app-init: при !standalone && !sessionDismissed открывается через 1500ms (banner.classList.add('is-open'))`, `Как → triggers btnShowInstallGuide + markDismissed`, `× → markDismissed`, `страница и нижнее меню остаются интерактивными — баннер только толкает в notify-zone сверху`
+- Files: _not specified_
+
+## 2026-05-16 09:50:50 +1000
+
+- Source: `manual`
+- Task: Install-баннер: весь кликабельный, крестик красный, без кнопки 'Как'
+- Branch: `main`
+- Methods: `удалена .install-banner-action`, `.install-banner получил role=button tabindex=0 cursor:pointer`, `hover усиливает accent-border`, `:active scale 0.99`, `keydown Enter/Space → click`, `bindInstallBanner: клик по баннеру открывает guide установки + markDismissed`, `клик по .install-banner-close stopPropagation чтобы только закрыть`, `.install-banner-close теперь bad-soft фон с bad-border 30×30 (вместо glass)`
+- Files: `index.html`, `scripts/app-init.js`, `styles/50-design-refresh.css`
+
+## 2026-05-16 09:59:45 +1000
+
+- Source: `manual`
+- Task: Список локомотивов: optgroup группировка в HTML + glass-select-menu рендерит заголовки групп
+- Branch: `main`
+- Methods: `select#inputLocoSeries теперь в 4 optgroup: 'Тепловозы · 3 секции' (3ТЭ10/3ТЭ25)`, `'Тепловозы · 2 секции' (2ТЭ10/2ТЭ25)`, `'Тепловозы · 1 секция' (ТЭП/ТЭМ)`, `'Электровозы' (3ЭС5/2ЭС5/ВЛ80) — порядок трешки→двушки→односекционные→электровозы`, `лишние удалены`, `render.js buildLocoSeriesMenu теперь обходит select.children а не options[]`, `emit'ит .glass-select-group div для каждого OPTGROUP с label`, `потом opt'ы внутри`, `добавлен CSS .glass-select-group (uppercase eyebrow 9px Manrope`, `padding 12/14/6)`, `существующая bindLocoSections sectionsFor использует первую цифру серии и корректно даёт 3/2/1 для всех новых имён`
+- Files: `index.html`, `scripts/render.js`, `styles/50-design-refresh.css`
+
+## 2026-05-16 10:06:08 +1000
+
+- Source: `manual`
+- Task: ShiftDetail: 4-cell metric grid сверху (Длительность · Поезд · Топливо · Доход)
+- Branch: `main`
+- Methods: `buildShiftDetailContentHtml: в ветке !hasPoekhaliDetails теперь сначала рисуется buildShiftDetailMetricGridHtml с 4 ячейками (durationLabel`, `train_number`, `fuel total`, `salary с tone=success)`, `Длительность убрана из шапки списка Главное (уже в grid)`, `добавлен CSS .shift-detail-metrics (grid 2x2 8px) + .shift-detail-metric (glass bg-rise-2 padding 12 radius 14) + .shift-detail-metric-label (eyebrow uppercase 9px) + .shift-detail-metric-value (16px JetBrains Mono tabular)`, `tone-варианты is-success/is-accent/is-warn для цветных value`
+- Files: `scripts/time-utils.js`, `styles/50-design-refresh.css`
+
+## 2026-05-16 10:33:16 +1000
+
+- Source: `manual`
+- Task: Сводка/Журнал Смены: filter-chips и динамический подзаголовок top-bar
+- Branch: `main`
+- Methods: `добавлен .shifts-filters ряд chip-кнопок (Все/Дневные/Ночные/Праздничные) с aria-selected`, `CSS #shiftsList[data-filter] селекторы скрывают не-подходящие .shift-item (и .shift-rest-gap при активном фильтре чтобы разделители отдыха не висели)`, `bindShiftsFilters в app-init: click переключает is-on и dataset.filter`, `bindAppTopBar также подхватывает #homeAllShiftsLink и [data-go-tab] чтобы applyForTab('shifts') срабатывала по 'Все смены ›'`, `MutationObserver на #shiftsOverviewCount/#shiftsOverviewTotal обновляет sub top-bar как 'N смен · X ч Y м'`
+- Files: `index.html`, `scripts/app-init.js`, `styles/50-design-refresh.css`
+
+## 2026-05-16 10:39:10 +1000
+
+- Source: `manual`
+- Task: Auth-экран входа: brand row, pill-kicker, design hero, glass banner и accent CTA
+- Branch: `main`
+- Methods: `добавлен .auth-brand row в HTML (БМ-mark + название + eyebrow)`, `CSS .auth-gate получил ambient radial accent+night gradients`, `.auth-card теперь 22/20 padding с glass border-radius var(--r-card)`, `.auth-brand-mark 44×44 accent gradient с глоу`, `.auth-kicker — accent-soft pill с zelene dot`, `скрывается если пустой`, `.auth-title 24px Manrope tight letter-spacing`, `.auth-banner перекрашен в glass plate с .is-error вариантом bad-soft`, `.auth-primary 48px accent gradient с -8px глоу`, `.auth-retry — glass 40px`, `.auth-error и .auth-status автоматически скрываются если пустые`
+- Files: `index.html`, `styles/50-design-refresh.css`
+
+## 2026-05-16 10:42:23 +1000
+
+- Source: `manual`
+- Task: Bottom-sheets: Параметры зарплаты, Install guide, День календаря, Confirm — design overhaul
+- Branch: `main`
+- Methods: `.bottom-sheet получил единый padding 10/16/28`, `.salary-settings-sheet: settings-section-title как eyebrow`, `settings-card glass-плашка bg-rise-2`, `settings-row flex с hairline border между`, `settings-input 96×38 JetBrains Mono tabular text-right с accent focus-ring`, `settings-help-block 11px ink-4`, `.btn-sheet-save теперь полная ширина 48px accent gradient`, `.btn-sheet-close — glass 44px`, `.install-guide-sheet: platforms-row как pill-segmented с accent active`, `install-guide-note — warn-soft pill`, `install-guide-link-block (glass + URL в монопространстве с overflow ellipsis)`, `btn-copy accent-soft pill 36px`, `.home-calendar-day-sheet: head 14px gap`, `content vertical flex 8px`, `actions grid 8px`, `.confirm-btns grid 1fr 1fr 46px кнопки 13px Manrope`
+- Files: `styles/50-design-refresh.css`
+
+## 2026-05-16 10:47:27 +1000
+
+- Source: `manual`
+- Task: Admin Карта Поехали: toolbar/stage/popover/summary под design (CSS-only)
+- Branch: `main`
+- Methods: `.map-toolbar — glass plate с маршрут-select 38px+12px радиус`, `chip-кнопки 34px`, `.map-toolbar-counts JetBrains Mono tabular eyebrow`, `.map-stage — glass card с stage-rail center-line`, `.map-popover — glass card 16px с head/foot hairline-разделителями`, `.map-popover-presets кнопки 30px pill-chip с accent active`, `.map-summary — glass card с head eyebrow uppercase`, `.map-summary-row grid 44px+1fr+auto с rounded glass background`, `.is-active accent-soft border`, `.map-summary-badge 44×28 цветной chip (accent/warn/bad/good tone)`, `.map-summary-name 13px Manrope`, `.map-summary-coord 10px JetBrains Mono tabular ink-3`, `.map-route-select inline glass dropdown`, `.map-toolbar .btn.is-primary accent gradient. Логика admin.js не тронута`
+- Files: `styles/admin-design-refresh.css`
+
+## 2026-05-16 10:54:33 +1000
+
+- Source: `manual`
+- Task: Обход экранов: убраны дубликаты title в Документах и Смены, в остальном чисто
+- Branch: `main`
+- Methods: `Документы: .tab-panel[data-tab='instructions'] .docs-entry-card > .docs-nav-copy .docs-nav-title {display:none} — внутренний 'Документы' заголовок скрыт (top-bar уже показывает)`, `padding-bottom:0 + margin-bottom:4px у .docs-nav-copy чтобы убрать пустое место`, `Смены: .tab-panel[data-tab='shifts'] #shiftsHeader {display:none} — 'ЖУРНАЛ СМЕН' eyebrow убран (top-bar уже title)`, `проверены все остальные экраны (Главная`, `Поехали`, `Add форма`, `Зарплата`, `Админка Главная/Мастер/Люди/Карта/Файлы/Конструктор) — критичных косяков не найдено`
+- Files: `styles/50-design-refresh.css`
+
+## 2026-05-16 10:58:10 +1000
+
+- Source: `manual`
+- Task: Edit-shift overlay (#overlayEditShift): design refresh, заголовок Редактировать смену + edit-badge, скрыт intro-card но виден title-row
+- Branch: `main`
+- Methods: `form переезжает в #editShiftMount через enterEditMode`, `CSS: #editShiftMount .form-title-row {display:flex !important} (перебивает скрытие из .tab-panel[data-tab=add])`, `.form-intro-card display:none тоже принудительно скрыт`, `.edit-badge стилизован как warn-soft pill 'РЕДАКТИРОВАНИЕ'`, `.form-edit-banner — warn-soft plate`, `.form-actions grid с full-width btn-primary (48)`, `btn-secondary (44)`, `btn-danger (44)`, `.edit-shift-sheet padding 10/16/28 max-height 92vh overflow-y auto`
+- Files: `styles/50-design-refresh.css`
+
+## 2026-05-16 11:00:41 +1000
+
+- Source: `manual`
+- Task: Поехали: убраны DOM-дубли спидометра и нижних плиток (канвас уже рисует ФАКТ/ДОПУСК/МСК/В пути)
+- Branch: `main`
+- Methods: `.trk-design > .speedo и .trk-design > .trk-bottom display:none !important — DOM-блоки 'Текущая/допустимая 0|—' и 'В пути/Тех. скорость' скрыты`, `так как канвас сам рисует ФАКТ/ДОПУСК внутри station-plate с актуальными значениями`, `теперь сверху остался только train-plate (компакт)`, `всё свободное место отдано канвасу`, `который вписывает плашку станции + 3 плашки (Уклон/МСК/До) + светофоры + профиль + длину состава + км-шкалу + мини-плитки ФАКТ/ДОПУСК/КМ/ПК без 'каши'`
+- Files: `styles/50-design-refresh.css`
+
+## 2026-05-17 17:50:19 +1000
+
+- Source: `manual`
+- Task: ShiftDetail: добавлен breakdown расчёта выплаты (Оклад/Ночные/Праздничные/Классная/Итого)
+- Branch: `main`
+- Methods: `новый helper buildShiftDetailPayoutBreakdownHtml в time-utils.js: читает appSettings.tariffRate/nightPercent/classPercent`, `shiftTotalMinutes + shiftNightMinutesInRange + shiftHolidayMinutesInRange`, `считает: оклад=ч*тариф`, `ночные=nightч*тариф*%/100`, `праздничные=holч*тариф (двойная)`, `классная=ч*тариф*%/100`, `итого`, `рендерит .brk-row с .brk-ico (sun/moon/star/income)`, `.brk-name 'Оклад · 8 ч 30 м'`, `.brk-sub 'по тарифу 380 ₽/ч' + 'надбавка 40%' и т.д.`, `.brk-val (плюс для надбавок`, `итог в good цвете)`, `buildShiftDetailContentHtml в ветке !hasPoekhaliDetails вызывает breakdown в try/catch — не сломает если каких-то функций нет`, `стили .brk/.brk-row уже были из Salary блока`, `не показывается если tariffRate=0 (не сконфигурирован)`
+- Files: `scripts/time-utils.js`
+
+## 2026-05-30 13:38:01 +1000
+
+- Source: `manual`
+- Task: Crew partner pairing Phase 1: linking via short code, address book, active-partner pointer
+- Branch: `main`
+- Methods: `New global partnerships+invites stores and per-user partner-state in server.js`, `/api/partners invite/redeem/list/active/DELETE endpoints with mutual-consent invariants`, `scripts/partners.js + Бригада panel + home entry card`, `styles/55-partners.css`, `sw.js v329 precache. Verified via scripts/partner-smoke.mjs (13 asserts) and browser preview.`
+- Files: `server.js`, `scripts/partners.js`, `index.html`, `styles/55-partners.css`, `sw.js`, `scripts/partner-smoke.mjs`
+
+## 2026-05-30 14:10:05 +1000
+
+- Source: `manual`
+- Task: Crew partner pairing Phase 2: share shift facts to active partner inbox + receive/accept/dismiss + redeem rate limit
+- Branch: `main`
+- Methods: `server.js: shift-inbox store`, `sanitizeSharedShiftFacts whitelist (no money/poekhali)`, `POST /api/shifts/share (idempotent on sharedBy+sourceId`, `active-partner resolved server-side)`, `GET /api/shifts/inbox`, `POST /api/shifts/inbox/resolve`, `in-memory redeem rate limit (12/10min). Frontend: partners.js inbox render+accept(insert into allShifts+saveShifts)+dismiss`, `home badge`, `BrigadePartners public API`, `shift-form.js share toggle synced on add/edit + maybeShareSavedShift on new save`, `55-partners.css. sw v330. Verified via partner-smoke.mjs (24 asserts) and seeded browser preview (inbox accept inserts shift`, `resolves server-side`, `badge clears).`
+- Files: `server.js`, `scripts/partners.js`, `scripts/shift-form.js`, `index.html`, `styles/55-partners.css`, `sw.js`, `scripts/partner-smoke.mjs`
+
+## 2026-05-30 14:18:32 +1000
+
+- Source: `manual`
+- Task: Crew partner pairing Phase 3: trust model with auto-insert of trusted partner shifts + undo
+- Branch: `main`
+- Methods: `server.js: resolve(accept) sets directional trust[sid]=trusted`, `share marks proposal autoAccept when recipient trusts sender`, `inbox GET returns autoAccept/sharedBy/sourceId. partners.js: processInbox auto-accepts trusted items (insert into allShifts stamped shared_source_id for dedup`, `resolve server-side)`, `undo toast removes inserted shifts`, `active-card hint reflects trust`, `buildSharedShift shared by manual+auto. 55-partners.css undo toast. sw v331. Verified: partner-smoke.mjs trust steps (first share manual/autoAccept=false`, `post-accept share autoAccept=true`, `directional) + browser preview (auto-insert 4->5`, `dedup no-dup`, `undo 6->5`, `trust hint).`
+- Files: `server.js`, `scripts/partners.js`, `styles/55-partners.css`, `sw.js`, `scripts/partner-smoke.mjs`
+
+## 2026-05-30 18:53:41 +1000
+
+- Source: `manual`
+- Task: Crew partner pairing Phase 4: offline-durable share queue, explicit pairing routing, edit propagation, receiver upsert
+- Branch: `main`
+- Methods: `server.js share accepts validated explicit pairingId (offline queue routing`, `anti-leak preserved). partners.js: localStorage share queue (shift_tracker_pending_shares_v1) enqueue+flush on load/online`, `captures pairingId`, `sharedOut map (shift_tracker_shared_out_v1) for getSharedPairing`, `upsertSharedShift updates existing shared shift in place by shared_source_id (replaces dedup-skip)`, `showShareToast supports update (no undo) vs insert (undo). shift-form.js maybeReshareEditedShift on edit save. sw v332. Verified: smoke 18 asserts incl explicit-pairingId delivery + non-member reject`, `browser offline->online queue (enqueue offline`, `flush online empties)`, `edit re-share routing`, `receiver upsert dedup.`
+- Files: `server.js`, `scripts/partners.js`, `scripts/shift-form.js`, `sw.js`, `scripts/partner-smoke.mjs`
+
+## 2026-05-31 00:54:00 +1000
+
+- Source: `manual`
+- Task: Crew sharing: shared indicator on shift cards
+- Branch: `main`
+- Methods: `render.js buildShiftShareBadgeHtml: outgoing badge (BrigadePartners.getSharedPairing`, `accent) + incoming badge (sh.shared_source_id`, `green) injected into shift-card-title`, `55-partners.css .shift-share-mark`, `sw v333. Verified in preview: both badges render with correct titles/colors`, `no console errors.`
+- Files: `scripts/render.js`, `styles/55-partners.css`, `sw.js`

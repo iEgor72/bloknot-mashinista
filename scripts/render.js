@@ -1,22 +1,23 @@
     function buildShiftItemHtml(sh, compact, pendingMap, shiftIncomeMap, durationBounds, durationLevelMap) {
       var p = getShiftDisplayParts(sh);
-      var itemClass = 'shift-item' + (compact ? ' compact-shift' : '');
-      var typeLabel = getShiftTypeLabel(sh);
+      var itemClass = 'shift-item shift-card-v2' + (compact ? ' compact-shift' : '');
       var shiftIsPending = pendingMap ? !!pendingMap[String(sh.id)] : isShiftPending(sh);
       var directionText = getShiftDirectionLineText(sh);
       var dateTimeText = getShiftDateTimeLineLabel(p);
       var rangeState = getShiftRangeState(sh);
       var durationMinutes = getShiftMinutesForDisplay(sh, durationBounds);
       var durationText = getShiftDurationLabelText(rangeState.hasValidInterval ? fmtMin(durationMinutes) : '—');
-      var typeHtml = buildShiftTypeHtml(sh, typeLabel, shiftIsPending);
-      var directionHtml = buildShiftDirectionHtml(directionText);
-      var dateTimeHtml = buildShiftDateTimeHtml(dateTimeText);
-      var durationHtml = buildShiftDurationHtml(durationText);
-      var technicalHtml = buildShiftTechnicalHtml(sh);
-      var fuelNoteHtml = buildShiftFuelConsumptionHtml(sh);
-      var incomeLabelHtml = buildShiftIncomeLabelHtml();
-      var shiftTitle = getShiftTitle(sh);
+
+      var shiftTitle = directionText || getShiftTitle(sh) || 'Смена';
+      var holidayMin = (typeof shiftHolidayMinutesInRange === 'function')
+        ? shiftHolidayMinutesInRange(sh, -8640000000000000, 8640000000000000)
+        : 0;
+      var isHolidayShift = holidayMin > 0;
+      var workCode = (typeof inferShiftWorkCodeByLocalTime === 'function')
+        ? inferShiftWorkCodeByLocalTime(sh) : '';
       if (sh.route_kind === 'trip') itemClass += ' has-trip';
+      if (workCode === 'N') itemClass += ' is-night';
+      if (isHolidayShift) itemClass += ' is-holiday';
       if (sh.id === editingShiftId) itemClass += ' is-edit-target';
       if (sh.id === pendingDeleteId) itemClass += ' is-delete-target';
       if (sh.id === recentAddedShiftId) itemClass += ' is-adding-target';
@@ -29,45 +30,74 @@
       if (durationLevel === 'high') itemClass += ' duration-high';
       else if (durationLevel === 'low') itemClass += ' duration-low';
       var incomeVm = getShiftIncomeViewModel(sh, shiftIncomeMap);
-      var incomeHtml = getShiftIncomeChipHtml(incomeVm);
       itemClass += ' income-' + incomeVm.level;
       var shiftIdStr = String(sh.id);
       var shiftIdAttr = escapeHtml(shiftIdStr);
       var isActionsOpen = activeShiftMenuId !== null && String(activeShiftMenuId) === shiftIdStr;
 
-      var actionsHtml = '<div class="shift-top-right">' +
-        '<div class="shift-actions-wrap">' +
-          '<button class="shift-actions-trigger' + (isActionsOpen ? ' is-open' : '') + '" type="button" data-id="' + shiftIdAttr + '" aria-label="Действия" aria-haspopup="menu" aria-expanded="' + (isActionsOpen ? 'true' : 'false') + '">' +
-            '<svg class="shift-actions-trigger-icon" viewBox="0 0 24 24" aria-hidden="true" focusable="false">' +
-              '<circle cx="6.5" cy="12" r="1.7"></circle>' +
-              '<circle cx="12" cy="12" r="1.7"></circle>' +
-              '<circle cx="17.5" cy="12" r="1.7"></circle>' +
-            '</svg>' +
-          '</button>' +
-        '</div>' +
+      var markHtml = (typeof buildShiftMarkHtml === 'function')
+        ? buildShiftMarkHtml(sh, isHolidayShift)
+        : '';
+      var consistHtml = (typeof buildShiftConsistHtml === 'function')
+        ? buildShiftConsistHtml(sh) : '';
+      var metaHtml = (typeof buildShiftMetaCellsHtml === 'function')
+        ? buildShiftMetaCellsHtml(sh, durationText, incomeVm && incomeVm.label) : '';
+
+      var incomeAmountHtml = '';
+      if (incomeVm && incomeVm.label) {
+        incomeAmountHtml = '<div class="shift-amount num">' + escapeHtml(String(incomeVm.label).trim()) + '</div>';
+      }
+      var pendingDotHtml = shiftIsPending ? '<span class="shift-sync-inline" aria-label="Не синхронизировано" title="Не синхронизировано">' + docOnlineOnlyIcon + '</span>' : '';
+      var shareBadgeHtml = (typeof buildShiftShareBadgeHtml === 'function') ? buildShiftShareBadgeHtml(sh) : '';
+      var actionsHtml = '<div class="shift-actions-wrap">' +
+        '<button class="shift-actions-trigger' + (isActionsOpen ? ' is-open' : '') + '" type="button" data-id="' + shiftIdAttr + '" aria-label="Действия" aria-haspopup="menu" aria-expanded="' + (isActionsOpen ? 'true' : 'false') + '">' +
+          '<svg class="shift-actions-trigger-icon" viewBox="0 0 24 24" aria-hidden="true" focusable="false">' +
+            '<circle cx="6.5" cy="12" r="1.7"></circle>' +
+            '<circle cx="12" cy="12" r="1.7"></circle>' +
+            '<circle cx="17.5" cy="12" r="1.7"></circle>' +
+          '</svg>' +
+        '</button>' +
       '</div>';
 
-      var html = '<div class="' + itemClass + '" data-shift-id="' + shiftIdAttr + '" data-pending="' + (shiftIsPending ? '1' : '0') + '" data-shift-open="1" role="button" tabindex="0" aria-label="Редактировать смену: ' + escapeHtml(shiftTitle || 'Смена') + '">' +
+      var compactDate = (typeof buildShiftCompactDateLine === 'function') ? buildShiftCompactDateLine(sh) : '';
+      var subText = (compactDate || dateTimeText) + (isHolidayShift ? ' · праздник' : '');
+
+      var html = '<div class="' + itemClass + '" data-shift-id="' + shiftIdAttr + '" data-pending="' + (shiftIsPending ? '1' : '0') + '" data-shift-open="1" role="button" tabindex="0" aria-label="Редактировать смену: ' + escapeHtml(shiftTitle) + '">' +
         '<div class="shift-card-top">' +
-          typeHtml +
+          markHtml +
+          '<div class="shift-title-wrap">' +
+            '<div class="shift-card-title">' + escapeHtml(shiftTitle) + shareBadgeHtml + pendingDotHtml + '</div>' +
+            '<div class="shift-card-sub">' + escapeHtml(subText) + '</div>' +
+          '</div>' +
+          incomeAmountHtml +
           actionsHtml +
         '</div>' +
-        '<div class="shift-card-body">' +
-          '<div class="shift-main-row">' +
-            dateTimeHtml +
-            durationHtml +
-          '</div>' +
-          directionHtml +
-          technicalHtml +
-          fuelNoteHtml +
-          '<div class="shift-income-row">' +
-            incomeLabelHtml +
-            incomeHtml +
-          '</div>' +
-        '</div>';
+        consistHtml +
+        (compact ? '' : metaHtml) +
+      '</div>';
 
-      html += '</div>';
       return html;
+    }
+
+    // Small marker on a shift card: incoming (received from partner) or outgoing
+    // (shared to the active partner). Outgoing state comes from BrigadePartners.
+    function buildShiftShareBadgeHtml(sh) {
+      if (!sh) return '';
+      if (sh.shared_source_id) {
+        return '<span class="shift-share-mark is-in" title="Смена от напарника" aria-label="Смена от напарника">' +
+          '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false">' +
+            '<path d="M12 3v11"></path><path d="M8 11l4 4 4-4"></path><path d="M5 19h14"></path>' +
+          '</svg></span>';
+      }
+      try {
+        if (window.BrigadePartners && typeof BrigadePartners.getSharedPairing === 'function' && BrigadePartners.getSharedPairing(sh.id)) {
+          return '<span class="shift-share-mark is-out" title="Отправлено напарнику" aria-label="Отправлено напарнику">' +
+            '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false">' +
+              '<path d="M21 3L11 13"></path><path d="M21 3l-6.5 18-3.5-8-8-3.5L21 3z"></path>' +
+            '</svg></span>';
+        }
+      } catch (e) {}
+      return '';
     }
 
     function prefersReducedMotion() {
@@ -537,9 +567,132 @@
       });
     }
 
+    function updateDashboardGauge(workedMin, normMin, diffMin) {
+      var fillEl = document.getElementById('dashboardGaugeFill');
+      var overEl = document.getElementById('dashboardGaugeOver');
+      var numEl  = document.getElementById('dashboardGaugeNum');
+      var unitEl = document.getElementById('dashboardGaugeUnit');
+      var gaugeEl = document.getElementById('dashboardGauge');
+      if (!fillEl || !numEl || !unitEl || !gaugeEl) return;
+
+      var fillR = 48;
+      var overR = 40;
+      var fillC = 2 * Math.PI * fillR;
+      var overC = 2 * Math.PI * overR;
+      fillEl.setAttribute('stroke-dasharray', String(fillC));
+      if (overEl) overEl.setAttribute('stroke-dasharray', String(overC));
+
+      var workedHrs = Math.max(0, Math.round((workedMin || 0) / 60));
+      numEl.innerHTML = workedHrs + '<span class="u">ч</span>';
+
+      if (!normMin || normMin <= 0) {
+        unitEl.textContent = 'из — ч';
+        fillEl.setAttribute('stroke-dashoffset', String(fillC));
+        if (overEl) overEl.classList.add('hidden');
+        gaugeEl.classList.remove('is-over');
+        return;
+      }
+      var normHrs = Math.round(normMin / 60);
+      unitEl.textContent = 'из ' + normHrs + ' ч';
+
+      var pct = Math.min(workedMin / normMin, 1);
+      fillEl.setAttribute('stroke-dashoffset', String(fillC * (1 - pct)));
+
+      var overPct = workedMin > normMin ? Math.min((workedMin - normMin) / normMin, 1) : 0;
+      if (overEl) {
+        if (overPct > 0) {
+          overEl.classList.remove('hidden');
+          overEl.setAttribute('stroke-dashoffset', String(overC * (1 - overPct)));
+          gaugeEl.classList.add('is-over');
+        } else {
+          overEl.classList.add('hidden');
+          gaugeEl.classList.remove('is-over');
+        }
+      }
+    }
+
+    function updateDashboardSparkline() {
+      var lineEl = document.getElementById('dashboardSparkLine');
+      var areaEl = document.querySelectorAll('#dashboardSparkSvg path')[0];
+      var dotEl = document.getElementById('dashboardSparkDot');
+      var deltaEl = document.getElementById('dashboardSparkDelta');
+      if (!lineEl || !areaEl || !dotEl) return;
+      var w = 84, h = 28;
+      var vals = [];
+      for (var off = 5; off >= 0; off--) {
+        var d = new Date(currentYear, currentMonth - off, 1);
+        var y = d.getFullYear();
+        var m = d.getMonth();
+        var bounds = (typeof getMonthBounds === 'function') ? getMonthBounds(y, m) : null;
+        if (!bounds || typeof buildMonthCalculationShifts !== 'function' || typeof buildSalarySummary !== 'function') {
+          vals.push(0); continue;
+        }
+        try {
+          var sets = buildMonthCalculationShifts(y, m, bounds);
+          var summary = buildSalarySummary(sets.calculationShifts, bounds);
+          vals.push(Math.max(0, summary.netAmount || 0));
+        } catch (e) { vals.push(0); }
+      }
+      var minV = Math.min.apply(null, vals);
+      var maxV = Math.max.apply(null, vals);
+      var range = (maxV - minV) || 1;
+      var step = w / Math.max(1, vals.length - 1);
+      var pts = vals.map(function(v, i) {
+        var x = i * step;
+        var y = h - ((v - minV) / range) * (h - 4) - 2;
+        return x.toFixed(1) + ',' + y.toFixed(1);
+      });
+      var dLine = 'M ' + pts.join(' L ');
+      var dArea = dLine + ' L ' + w + ',' + h + ' L 0,' + h + ' Z';
+      lineEl.setAttribute('d', dLine);
+      areaEl.setAttribute('d', dArea);
+      var last = pts[pts.length - 1].split(',');
+      dotEl.setAttribute('cx', last[0]);
+      dotEl.setAttribute('cy', last[1]);
+
+      // Trend-based colour: earned more than last month → green, less → red,
+      // unchanged → neutral. Applies to the line, fill gradient, dot and delta.
+      var diff = vals.length >= 2 ? vals[vals.length - 1] - vals[vals.length - 2] : 0;
+      var rootStyle = getComputedStyle(document.documentElement);
+      var toneVar = diff > 0 ? '--good' : (diff < 0 ? '--bad' : '--ink-3');
+      var toneColor = (rootStyle.getPropertyValue(toneVar) || '').trim() ||
+        (diff > 0 ? '#4ade80' : (diff < 0 ? '#f87171' : '#8892a4'));
+      var softColor = 'color-mix(in oklch, ' + toneColor + ' 18%, transparent)';
+      lineEl.setAttribute('stroke', toneColor);
+      dotEl.setAttribute('fill', toneColor);
+      var sparkStops = document.querySelectorAll('#dashboardSparkSvg linearGradient stop');
+      for (var si = 0; si < sparkStops.length; si++) { sparkStops[si].style.stopColor = toneColor; }
+      var sparkSvgEl = document.getElementById('dashboardSparkSvg');
+      if (sparkSvgEl) {
+        sparkSvgEl.style.filter = 'drop-shadow(0 0 6px color-mix(in oklch, ' + toneColor + ' 32%, transparent))';
+      }
+
+      if (deltaEl) {
+        if (diff !== 0 && isFinite(diff)) {
+          deltaEl.hidden = false;
+          var arrow = diff > 0 ? '↗' : '↘';
+          deltaEl.textContent = arrow + ' ' + (typeof formatRub === 'function' ? formatRub(Math.abs(diff)) : Math.round(Math.abs(diff)) + ' ₽');
+          deltaEl.style.color = toneColor;
+          deltaEl.style.background = softColor;
+        } else {
+          deltaEl.hidden = true;
+        }
+      }
+    }
+
+    function setSectionHeaderText(headerEl, text) {
+      if (!headerEl) return;
+      var titleEl = headerEl.querySelector('.section-header-text');
+      if (titleEl) {
+        titleEl.textContent = text;
+      } else {
+        headerEl.textContent = text;
+      }
+    }
+
     function renderShiftList(listEl, headerEl, shifts, compact, emptyText, headerBase, pendingMap, shiftIncomeMap, durationBounds, durationLevelMap) {
       if (!listEl) return;
-      if (headerEl) headerEl.textContent = headerBase || 'Журнал смен';
+      setSectionHeaderText(headerEl, headerBase || 'Журнал смен');
       bindShiftListDetailHandlers(listEl);
 
       if (!compact) {
@@ -559,7 +712,9 @@
       }
 
       if (headerEl && headerBase !== false) {
-        headerEl.textContent = (headerBase || 'Журнал смен') + (compact ? '' : ' · ' + shifts.length);
+        var hasTitleWrap = headerEl.querySelector && headerEl.querySelector('.section-header-text');
+        var withCount = (headerBase || 'Журнал смен') + (compact ? '' : ' · ' + shifts.length);
+        setSectionHeaderText(headerEl, hasTitleWrap ? (headerBase || 'Журнал смен') : withCount);
       }
 
       var html = '';
@@ -842,6 +997,7 @@
       // Update stats
       var statWorkedEl = document.getElementById('statWorked');
       if (statWorkedEl) statWorkedEl.textContent = fmtMin(totalMin);
+      var statDiffLabelEl = document.getElementById('statDiffLabel');
       var monthIncomeLabelEl = document.getElementById('dashboardMonthIncomeLabel');
       var monthIncomeValueEl = document.getElementById('dashboardMonthIncomeValue');
       if (monthIncomeLabelEl) monthIncomeLabelEl.textContent = formatMonthIncomeLabel(currentMonth);
@@ -850,6 +1006,7 @@
           ? formatRub(monthSalarySummary.netAmount)
           : 'Пока нет записей';
       }
+      try { updateDashboardSparkline(); } catch (e) {}
       setQuickMetricText('statNight', fmtMin(nightMin));
       setQuickMetricText('statHoliday', fmtMin(holidayMin));
       setQuickMetricText('statShifts', String(visibleManualShifts.length));
@@ -886,23 +1043,28 @@
         if (progressFillEl) progressFillEl.style.width = workedPct + '%';
         setProgressMarkerPosition(progressTodayMarkerEl, normSnapshot.todayNormMin, progressAxisMin);
         setProgressMarkerPosition(progressMonthMarkerEl, normMin, progressAxisMin);
+        updateDashboardGauge(totalMin, normMin, diffMin);
 
         if (diffMin === 0) {
           if (normSnapshot.relation > 0 && totalMin === 0) {
             diffEl.textContent = 'Месяц ещё не начался';
+            if (statDiffLabelEl) statDiffLabelEl.textContent = 'Статус';
             diffEl.classList.add('remaining');
             if (dashboardCardEl) dashboardCardEl.classList.add('state-remaining');
           } else {
-            diffEl.textContent = 'Норма выполнена';
+            diffEl.textContent = '0 ч';
+            if (statDiffLabelEl) statDiffLabelEl.textContent = 'Норма выполнена';
             diffEl.classList.add('ok');
             if (dashboardCardEl) dashboardCardEl.classList.add('state-ok');
           }
         } else if (diffMin > 0) {
-          diffEl.textContent = 'Переработка ' + fmtMin(diffAbs);
+          diffEl.textContent = '+' + fmtMin(diffAbs);
+          if (statDiffLabelEl) statDiffLabelEl.textContent = 'Переработка';
           diffEl.classList.add('overtime');
           if (dashboardCardEl) dashboardCardEl.classList.add('state-overtime');
         } else {
-          diffEl.textContent = 'Недоработка ' + fmtMin(diffAbs);
+          diffEl.textContent = fmtMin(diffAbs);
+          if (statDiffLabelEl) statDiffLabelEl.textContent = 'Осталось';
           diffEl.classList.add('remaining');
           if (dashboardCardEl) dashboardCardEl.classList.add('state-remaining');
         }
@@ -914,15 +1076,16 @@
         setProgressMarkerPosition(progressMonthMarkerEl, 0, 0);
         diffEl.className = 'dashboard-sub';
         diffEl.textContent = 'Норма пока не задана';
+        updateDashboardGauge(totalMin, 0, 0);
       }
 
       renderShiftList(
         document.getElementById('homeShiftsList'),
         document.getElementById('homeShiftsHeader'),
-        visibleManualShifts.slice(0, 1),
-        true,
+        visibleManualShifts.slice(0, 2),
+        false,
         'Пока здесь пусто. Добавь первую смену вручную, и последняя запись появится здесь.',
-        'Последняя смена',
+        'Смены',
         _renderPendingMap,
         shiftIncomeMap,
         bounds,
@@ -1370,7 +1533,13 @@
     function updateRouteFieldsVisibility() {
       var routeFields = document.getElementById('routeFields');
       if (!routeFields) return;
-      routeFields.classList.toggle('hidden', getRouteType() !== 'trip');
+      // The trip/depot chooser is hidden in the current UI, which left the
+      // "Маршрут" section expanding to an empty body. When the chooser is not
+      // shown the route is a simple from→to, so the station fields are always
+      // visible; the trip-only gating only applies when the chooser is present.
+      var chooser = document.getElementById('routeTypeSegmented');
+      var chooserVisible = chooser && !chooser.classList.contains('hidden');
+      routeFields.classList.toggle('hidden', chooserVisible && getRouteType() !== 'trip');
     }
 
     function setOptionalCardOpen(cardId, open) {
@@ -1441,10 +1610,26 @@
       var menuEl = els.menuEl;
       if (!selectEl || !menuEl) return;
       var html = '';
-      for (var i = 0; i < selectEl.options.length; i++) {
-        var opt = selectEl.options[i];
-        if (!opt.value) continue;
-        html += '<button type="button" class="glass-select-option" role="option" aria-selected="false" data-value="' + escapeHtml(opt.value) + '">' + escapeHtml(opt.textContent) + '</button>';
+      // Walk top-level children so we preserve <optgroup> headings.
+      function emitOption(opt) {
+        if (!opt || !opt.value) return '';
+        return '<button type="button" class="glass-select-option" role="option" aria-selected="false" data-value="' + escapeHtml(opt.value) + '">' + escapeHtml(opt.textContent) + '</button>';
+      }
+      var children = selectEl.children;
+      var sawGroup = false;
+      for (var i = 0; i < children.length; i++) {
+        var node = children[i];
+        var tag = (node.tagName || '').toUpperCase();
+        if (tag === 'OPTGROUP') {
+          sawGroup = true;
+          html += '<div class="glass-select-group" role="presentation">' + escapeHtml(node.label || '') + '</div>';
+          for (var j = 0; j < node.children.length; j++) html += emitOption(node.children[j]);
+        } else if (tag === 'OPTION') {
+          html += emitOption(node);
+        }
+      }
+      if (!html) {
+        for (var k = 0; k < selectEl.options.length; k++) html += emitOption(selectEl.options[k]);
       }
       menuEl.innerHTML = html;
       syncLocoSeriesTrigger();

@@ -378,10 +378,13 @@
         var size = docsFormatSize(f.size);
         var updatedAt = docsFormatDate(f.updated_at || f.added_at || f.date_added);
         var displayMeta = buildDocDisplayMeta(folder, f);
-        var meta = '<span class="badge ' + badges[type] + '">' + type.toUpperCase() + '</span>';
-        meta += buildDocDownloadStatusIcon(isDownloaded);
-        if (updatedAt) meta += '<span>обновлено ' + updatedAt + '</span>';
-        if (size) meta += '<span class="file-size">' + size + '</span>';
+        // The file type is already printed on the icon, so no separate type
+        // badge. The download status rides in the corner of the icon, and a
+        // muted footer ("обновлено … · размер") sits at the bottom of the card.
+        var footerBits = [];
+        if (updatedAt) footerBits.push('обновлено ' + updatedAt);
+        if (size) footerBits.push(size);
+        var footerHtml = footerBits.length ? '<div class="docs-item-footer">' + footerBits.join(' · ') + '</div>' : '';
         var actionName = displayMeta.title || f.name || 'Файл';
         var docActionLabel = (isDownloaded ? 'Открыть файл' : 'Открыть файл, может понадобиться интернет') + ': ' + actionName;
         if (displayMeta.subtitle) docActionLabel += '. ' + displayMeta.subtitle;
@@ -389,13 +392,13 @@
           '<div class="docs-item ' + (isDownloaded ? 'is-downloaded' : 'is-online-only') + '" role="button" tabindex="0" aria-label="' + escapeHtml(docActionLabel) + '" data-file-path="' + encodeURIComponent(f.path || '') + '" data-file-name="' + encodeURIComponent(f.name || '') + '" data-mime-type="' + encodeURIComponent(f.mime_type || '') + '" data-doc-downloaded="' + (isDownloaded ? '1' : '0') + '">' +
             '<div class="docs-item-icon file-icon-wrap ' + classes[type] + '">' +
               icons[type] +
+              buildDocDownloadStatusIcon(isDownloaded) +
             '</div>' +
             '<div class="docs-item-body">' +
               '<div class="docs-item-title">' + escapeHtml(displayMeta.title || f.name || 'Файл') + '</div>' +
               (displayMeta.subtitle ? '<div class="docs-item-subtitle">' + escapeHtml(displayMeta.subtitle) + '</div>' : '') +
-              '<div class="docs-item-meta">' + meta + '</div>' +
+              footerHtml +
             '</div>' +
-            '<div class="docs-item-action" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"/></svg></div>' +
           '</div>';
       }
       html += '</div>';
@@ -2293,6 +2296,31 @@
       var mime = decodeDocAttr(mimeType || '');
       var localPath = normalizeDocPath(filePath || '');
       var lname = name.toLowerCase();
+
+      // Track recent opens for the Documents bento "Недавно открытые" list.
+      try {
+        if (window.localStorage) {
+          var raw = window.localStorage.getItem('shift_tracker_docs_recent_v1');
+          var items = raw ? (JSON.parse(raw) || []) : [];
+          if (!Array.isArray(items)) items = [];
+          items = items.filter(function(it) { return it && it.path !== localPath; });
+          var ext = 'PDF';
+          if (lname.endsWith('.docx')) ext = 'DOCX';
+          else if (lname.endsWith('.doc')) ext = 'DOC';
+          else if (lname.endsWith('.txt')) ext = 'TXT';
+          else if (mime.indexOf('image') !== -1) ext = 'IMG';
+          else if (localPath.indexOf('reg') !== -1 || lname.indexOf('режим') !== -1) ext = 'РЕЖ';
+          var now = new Date();
+          var dd = String(now.getDate()).padStart(2, '0');
+          var months = ['янв','фев','мар','апр','май','июн','июл','авг','сен','окт','ноя','дек'];
+          var meta = dd + ' ' + months[now.getMonth()] + ' · только что';
+          items.unshift({ path: localPath, name: name, meta: meta, ext: ext });
+          items = items.slice(0, 8);
+          window.localStorage.setItem('shift_tracker_docs_recent_v1', JSON.stringify(items));
+          // Notify app-init's listener even within the same tab
+          try { window.dispatchEvent(new Event('storage')); } catch (e) {}
+        }
+      } catch (e) { /* ignore */ }
 
       openDocsViewerUI(name);
 

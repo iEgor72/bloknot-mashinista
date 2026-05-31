@@ -570,7 +570,153 @@
       if (iconName === 'income') {
         return '<svg ' + common + '><path d="M4 7.5h12a1.5 1.5 0 0 1 1.5 1.5v4a1.5 1.5 0 0 1-1.5 1.5H4a1.5 1.5 0 0 1-1.5-1.5V9A1.5 1.5 0 0 1 4 7.5Z"></path><circle cx="10" cy="11" r="1.7"></circle><path d="M5.2 11h.1"></path><path d="M14.7 11h.1"></path></svg>';
       }
+      if (iconName === 'sun') {
+        return '<svg ' + common + '><circle cx="10" cy="10" r="3.2"></circle><path d="M10 2.5v1.5"></path><path d="M10 16v1.5"></path><path d="M2.5 10H4"></path><path d="M16 10h1.5"></path><path d="M4.5 4.5l1 1"></path><path d="M14.5 14.5l1 1"></path><path d="M15.5 4.5l-1 1"></path><path d="M5.5 14.5l-1 1"></path></svg>';
+      }
+      if (iconName === 'moon') {
+        return '<svg ' + common + '><path d="M16.5 11.8A6.6 6.6 0 1 1 8.2 3.5a5.1 5.1 0 0 0 8.3 8.3Z"></path></svg>';
+      }
+      if (iconName === 'star') {
+        return '<svg ' + common + '><path d="m10 3 2.2 5 5.3.5-4 3.6 1.2 5.3L10 14.4 5.3 17.4l1.2-5.3-4-3.6 5.3-.5Z"></path></svg>';
+      }
+      if (iconName === 'length') {
+        return '<svg ' + common + '><path d="M3.5 10h13"></path><path d="M5 7.5v5"></path><path d="M15 7.5v5"></path><path d="M9 8.5v3"></path><path d="M11 8.5v3"></path></svg>';
+      }
+      if (iconName === 'flag') {
+        return '<svg ' + common + '><path d="M5 17V3"></path><path d="M5 3h9l-2 3.5L14 10H5"></path></svg>';
+      }
+      if (iconName === 'up') {
+        return '<svg ' + common + '><path d="m6 14 4-6 4 6"></path><path d="M10 8v9"></path></svg>';
+      }
+      if (iconName === 'percent') {
+        return '<svg ' + common + '><path d="M5 15 15 5"></path><circle cx="6.5" cy="6.5" r="1.8"></circle><circle cx="13.5" cy="13.5" r="1.8"></circle></svg>';
+      }
+      if (iconName === 'snow') {
+        return '<svg ' + common + '><path d="M10 2v16"/><path d="M2 10h16"/><path d="M4.5 4.5l11 11"/><path d="M15.5 4.5l-11 11"/><path d="M7.5 4l2.5 2 2.5-2"/><path d="M7.5 16l2.5-2 2.5 2"/><path d="M4 7.5l2 2.5-2 2.5"/><path d="M16 7.5l-2 2.5 2 2.5"/></svg>';
+      }
       return '<svg ' + common + '><rect x="3.5" y="4.5" width="13" height="12" rx="2.2"></rect><path d="M7 3.5v2"></path><path d="M13 3.5v2"></path><path d="M3.5 8h13"></path></svg>';
+    }
+
+    function getShiftConsistDescriptor(shift) {
+      if (!shift) return null;
+      var loco = '';
+      if (shift.loco_series && shift.loco_number) {
+        loco = String(shift.loco_series) + ' № ' + String(shift.loco_number);
+      } else if (shift.loco_series) {
+        loco = String(shift.loco_series);
+      } else if (shift.loco_number) {
+        loco = '№ ' + String(shift.loco_number);
+      }
+      var weight = shift.train_weight ? Number(shift.train_weight) : 0;
+      var axles = shift.train_axles ? Number(shift.train_axles) : 0;
+      var length = shift.train_length ? Number(shift.train_length) : 0;
+      var trainNumber = shift.train_number ? String(shift.train_number) : '';
+      return {
+        loco: loco,
+        weight: weight > 0 ? weight : 0,
+        axles: axles > 0 ? axles : 0,
+        length: length > 0 ? length : 0,
+        trainNumber: trainNumber
+      };
+    }
+
+    function buildShiftMarkHtml(shift, isHoliday) {
+      var code = inferShiftWorkCodeByLocalTime(shift);
+      var icon = 'sun';
+      var mark = '';
+      if (isHoliday) { icon = 'star'; mark = 'hol'; }
+      else if (code === 'N') { icon = 'moon'; mark = 'night'; }
+      return '<div class="shift-type-mark' + (mark ? ' ' + mark : '') + '" aria-hidden="true">' + getShiftInlineIconSvg(icon) + '</div>';
+    }
+
+    function ruNum(n) {
+      try { return Number(n).toLocaleString('ru-RU'); }
+      catch (e) { return String(n); }
+    }
+
+    function buildShiftConsistHtml(shift) {
+      var c = getShiftConsistDescriptor(shift);
+      if (!c) return '';
+      var items = [];
+      if (c.loco) {
+        items.push('<span class="sc-item">' + getShiftInlineIconSvg('locomotive') + '<span class="num">' + escapeHtml(c.loco) + '</span></span>');
+      }
+      if (c.trainNumber) {
+        items.push('<span class="sc-item">' + getShiftInlineIconSvg('train') + '<span class="num">№ ' + escapeHtml(c.trainNumber) + '</span></span>');
+      }
+      if (c.weight > 0) {
+        items.push('<span class="sc-item">' + getShiftInlineIconSvg('axles') + '<span class="num">' + ruNum(c.weight) + ' т</span></span>');
+      }
+      if (c.axles > 0 || c.length > 0) {
+        var parts = [];
+        if (c.axles > 0) parts.push(ruNum(c.axles) + ' ось');
+        if (c.length > 0) parts.push(ruNum(c.length) + ' усл.');
+        items.push('<span class="sc-item dim"><span class="num">' + parts.join(' · ') + '</span></span>');
+      }
+      if (!items.length) return '';
+      return '<div class="shift-consist">' + items.join('') + '</div>';
+    }
+
+    function buildShiftCompactDateLine(shift) {
+      try {
+        var s = parseMsk(shift && shift.start_msk);
+        var e = parseMsk(shift && shift.end_msk);
+        if (!s || !e) return '';
+        var dows = ['вс','пн','вт','ср','чт','пт','сб'];
+        var months = ['янв','фев','мар','апр','май','июн','июл','авг','сен','окт','ноя','дек'];
+        var d = s.getDate();
+        var m = months[s.getMonth()];
+        var dow = dows[s.getDay()];
+        function hhmm(d) {
+          var h = String(d.getHours()).padStart(2, '0');
+          var mi = String(d.getMinutes()).padStart(2, '0');
+          return h + ':' + mi;
+        }
+        var startHM = hhmm(s);
+        var endHM = hhmm(e);
+        return d + ' ' + m + ' · ' + dow + ' · ' + startHM + ' → ' + endHM;
+      } catch (err) { return ''; }
+    }
+
+    function buildShiftMetaCellsHtml(shift, durationText, incomeText) {
+      var c = getShiftConsistDescriptor(shift) || {};
+      // Cell 1: Длительность (всегда)
+      // Cell 2: Топливо (если есть данные) иначе Поезд №
+      // Cell 3: Доход (если есть) иначе Состав (длина)
+      var fuelCell = '—';
+      try {
+        if (typeof hasFuelData === 'function' && hasFuelData(shift) && typeof getFuelConsumptionTotalsFromShift === 'function') {
+          var ft = getFuelConsumptionTotalsFromShift(shift);
+          if (ft && ft.liters > 0) fuelCell = ruNum(ft.liters) + ' л';
+        }
+      } catch (e) {}
+      var middleLabel = 'Топливо';
+      var middleVal = fuelCell;
+      if (fuelCell === '—') {
+        middleLabel = 'Поезд';
+        middleVal = c.trainNumber ? '№ ' + escapeHtml(c.trainNumber) : '—';
+      }
+      var rightLabel = 'Доход';
+      var rightVal = (incomeText && String(incomeText).trim()) ? escapeHtml(String(incomeText).trim()) : '—';
+      if (rightVal === '—') {
+        rightLabel = 'Состав';
+        rightVal = c.length > 0 ? (ruNum(c.length) + ' усл.') : (c.weight > 0 ? (ruNum(c.weight) + ' т') : '—');
+      }
+      return '' +
+        '<div class="shift-meta">' +
+          '<div class="shift-meta-item">' +
+            '<div class="shift-meta-label">Длительность</div>' +
+            '<div class="shift-meta-value">' + escapeHtml(durationText || '—') + '</div>' +
+          '</div>' +
+          '<div class="shift-meta-item">' +
+            '<div class="shift-meta-label">' + middleLabel + '</div>' +
+            '<div class="shift-meta-value num">' + middleVal + '</div>' +
+          '</div>' +
+          '<div class="shift-meta-item income">' +
+            '<div class="shift-meta-label">' + rightLabel + '</div>' +
+            '<div class="shift-meta-value num">' + rightVal + '</div>' +
+          '</div>' +
+        '</div>';
     }
 
     function getShiftTypeLabel(shift) {
@@ -1204,6 +1350,80 @@
       return getShiftDetailValue(value) ? buildShiftDetailRowHtml(label, value, '', options) : '';
     }
 
+    function buildShiftDetailPayoutBreakdownHtml(shift) {
+      if (!shift) return '';
+      var settings = (typeof appSettings === 'object' && appSettings) ? appSettings : {};
+      var tariff = Number(settings.tariffRate) || 0;
+      if (tariff <= 0) return ''; // no point showing breakdown without tariff configured
+
+      // Minutes
+      var totalMin = (typeof shiftTotalMinutes === 'function') ? shiftTotalMinutes(shift) : 0;
+      var nightMin = (typeof shiftNightMinutesInRange === 'function')
+        ? shiftNightMinutesInRange(shift, -8640000000000000, 8640000000000000) : 0;
+      var holidayMin = (typeof shiftHolidayMinutesInRange === 'function')
+        ? shiftHolidayMinutesInRange(shift, -8640000000000000, 8640000000000000) : 0;
+      if (totalMin <= 0) return '';
+
+      var nightPct = Number(settings.nightPercent) || 0;
+      var classPct = Number(settings.classPercent) || 0;
+
+      var hours = totalMin / 60;
+      var nightHours = nightMin / 60;
+      var holidayHours = holidayMin / 60;
+
+      function fmtRub(n) {
+        var v = Math.round(Number(n) || 0);
+        try { return v.toLocaleString('ru-RU') + ' ₽'; }
+        catch (e) { return v + ' ₽'; }
+      }
+      function fmtHM(min) {
+        if (!isFinite(min) || min <= 0) return '0 ч';
+        var h = Math.floor(min / 60);
+        var m = Math.round(min % 60);
+        if (h && m) return h + ' ч ' + m + ' м';
+        if (h) return h + ' ч';
+        return m + ' м';
+      }
+
+      var oklad = hours * tariff;
+      var nightSum = nightHours * tariff * (nightPct / 100);
+      var holidaySum = holidayHours * tariff;  // двойная оплата → +1× тарифа
+      var classSum = hours * tariff * (classPct / 100);
+
+      function row(icon, name, sub, val, sign) {
+        var prefix = sign === '+' ? '+ ' : '';
+        return '<div class="brk-row">' +
+          '<div class="brk-ico ' + (icon.tone || '') + '">' + getShiftInlineIconSvg(icon.name) + '</div>' +
+          '<div><div class="brk-name">' + escapeHtml(name) + '</div>' +
+          (sub ? '<div class="brk-sub">' + escapeHtml(sub) + '</div>' : '') +
+          '</div>' +
+          '<div class="brk-val num">' + prefix + fmtRub(val) + '</div>' +
+        '</div>';
+      }
+
+      var rows = '';
+      rows += row({ name: 'sun' }, 'Оклад · ' + fmtHM(totalMin), 'по тарифу ' + fmtRub(tariff).replace(' ₽','') + ' ₽/ч', oklad);
+      if (nightMin > 0 && nightPct > 0) {
+        rows += row({ name: 'moon', tone: 'n' }, 'Ночные · ' + fmtHM(nightMin), 'надбавка ' + nightPct + '%', nightSum, '+');
+      }
+      if (holidayMin > 0) {
+        rows += row({ name: 'star', tone: 'h' }, 'Праздничные · ' + fmtHM(holidayMin), 'двойная оплата', holidaySum, '+');
+      }
+      if (classPct > 0) {
+        rows += row({ name: 'star', tone: 'h' }, 'Классная квалификация', '+' + classPct + '% к тарифу', classSum, '+');
+      }
+      var total = oklad + nightSum + holidaySum + classSum;
+      rows += '<div class="brk-row brk-total">' +
+        '<div class="brk-ico b">' + getShiftInlineIconSvg('income') + '</div>' +
+        '<div><div class="brk-name">Итого по смене</div><div class="brk-sub">до коэффициентов</div></div>' +
+        '<div class="brk-val num" style="color:var(--good)">' + fmtRub(total) + '</div>' +
+      '</div>';
+
+      return '' +
+        '<div class="shift-detail-section-title" style="margin-top:14px;">Расчёт</div>' +
+        '<div class="brk">' + rows + '</div>';
+    }
+
     function buildShiftDetailMetricGridHtml(items) {
       var source = Array.isArray(items) ? items : [];
       var cells = '';
@@ -1250,44 +1470,55 @@
       if (!shift) return '';
       var f = fmtShift(shift);
       var p = getShiftDisplayParts(shift);
-      var typeLabel = getShiftTypeLabel(shift);
       var shiftPending = isShiftPending(shift);
       var directionText = getShiftDirectionLineText(shift);
       var dateTimeText = getShiftDateTimeLineLabel(p);
       var durationText = getShiftDurationLabelText(f.dur);
-      var typeHtml = buildShiftTypeHtml(shift, typeLabel, shiftPending);
-      var directionHtml = buildShiftDirectionHtml(directionText);
-      var dateTimeHtml = buildShiftDateTimeHtml(dateTimeText);
-      var durationHtml = buildShiftDurationHtml(durationText);
-      var technicalHtml = buildShiftTechnicalHtml(shift);
-      var fuelNoteHtml = buildShiftFuelConsumptionHtml(shift);
-      var incomeLabelHtml = buildShiftIncomeLabelHtml();
       var incomeVm = getShiftIncomeViewModel(shift, shiftIncomeMap);
-      var incomeHtml = getShiftIncomeChipHtml(incomeVm);
-      var itemClass = 'shift-item shift-item-confirm shift-item-detail';
-      if (shift.route_kind === 'trip') itemClass += ' has-trip';
-      if (shiftPending) itemClass += ' is-pending';
-      itemClass += ' income-' + incomeVm.level;
+      var holidayMin = (typeof shiftHolidayMinutesInRange === 'function')
+        ? shiftHolidayMinutesInRange(shift, -8640000000000000, 8640000000000000) : 0;
+      var isHolidayShift = holidayMin > 0;
+      var markHtml = buildShiftMarkHtml(shift, isHolidayShift);
+      var c = getShiftConsistDescriptor(shift) || {};
+      var heroLines = [];
+      heroLines.push('<div class="ln"><span class="ln-ico">' + getShiftInlineIconSvg('duration') + '</span><span>' + escapeHtml(dateTimeText) + ' · <span class="num" style="color:var(--ink)">' + escapeHtml(durationText) + '</span></span></div>');
+      if (c.loco) {
+        heroLines.push('<div class="ln"><span class="ln-ico">' + getShiftInlineIconSvg('locomotive') + '</span><span class="num">' + escapeHtml(c.loco) + (c.trainNumber ? ' · поезд № ' + escapeHtml(c.trainNumber) : '') + '</span></div>');
+      } else if (c.trainNumber) {
+        heroLines.push('<div class="ln"><span class="ln-ico">' + getShiftInlineIconSvg('train') + '</span><span class="num">поезд № ' + escapeHtml(c.trainNumber) + '</span></div>');
+      }
+      if (c.weight > 0 || c.axles > 0) {
+        var wParts = [];
+        if (c.weight > 0) wParts.push(ruNum(c.weight) + ' т');
+        if (c.axles > 0) wParts.push(c.axles + ' осей');
+        heroLines.push('<div class="ln"><span class="ln-ico">' + getShiftInlineIconSvg('axles') + '</span><span class="num">' + wParts.join(' · ') + '</span></div>');
+      }
+      if (c.length > 0) {
+        heroLines.push('<div class="ln"><span class="ln-ico">' + getShiftInlineIconSvg('length') + '</span><span class="num">' + ruNum(c.length) + ' усл. длина</span></div>');
+      }
+      var fuelTotalsText = '';
+      try {
+        if (typeof hasFuelData === 'function' && hasFuelData(shift) && typeof getFuelConsumptionInlineText === 'function' && typeof getFuelConsumptionTotalsFromShift === 'function') {
+          fuelTotalsText = getFuelConsumptionInlineText(getFuelConsumptionTotalsFromShift(shift));
+        }
+      } catch (e) { fuelTotalsText = ''; }
+      if (fuelTotalsText) {
+        heroLines.push('<div class="ln"><span class="ln-ico">' + getShiftInlineIconSvg('fuel') + '</span><span>' + escapeHtml(fuelTotalsText) + '</span></div>');
+      }
+      var incomeAmount = incomeVm && incomeVm.hasValue ? escapeHtml(String(incomeVm.amountText || incomeVm.label).trim()) : '';
       var shiftIdAttr = escapeHtml(String(shift.id || ''));
-
+      var pendingHtml = shiftPending ? '<span class="shift-sync-inline" aria-label="Не синхронизировано" title="Не синхронизировано">' + docOnlineOnlyIcon + '</span>' : '';
       return '' +
-        '<div class="' + itemClass + '" data-shift-id="' + shiftIdAttr + '">' +
-          '<div class="shift-card-top">' +
-            typeHtml +
-          '</div>' +
-          '<div class="shift-card-body">' +
-            '<div class="shift-main-row">' +
-              dateTimeHtml +
-              durationHtml +
-            '</div>' +
-            directionHtml +
-            technicalHtml +
-            fuelNoteHtml +
-            '<div class="shift-income-row">' +
-              incomeLabelHtml +
-              incomeHtml +
+        '<div class="sd-hero" data-shift-id="' + shiftIdAttr + '">' +
+          '<div class="sd-hero-head">' +
+            markHtml +
+            '<div class="sd-hero-title-wrap">' +
+              '<div class="eyebrow">Смена</div>' +
+              '<div class="sd-route">' + escapeHtml(directionText || 'Смена') + pendingHtml + '</div>' +
             '</div>' +
           '</div>' +
+          '<div class="sd-info">' + heroLines.join('') + '</div>' +
+          (incomeAmount ? '<div class="sd-income"><div class="l">Доход за смену</div><div class="v num">' + incomeAmount + '</div></div>' : '') +
         '</div>';
     }
 
@@ -1315,17 +1546,30 @@
 
       if (!hasPoekhaliDetails) {
         html += '<section class="shift-detail-section shift-detail-section-main">';
+        // 4-cell metric grid: Длительность · Поезд · Топливо · Доход
+        var fuelText = (typeof hasFuelData === 'function' && hasFuelData(shift) && typeof getFuelConsumptionInlineText === 'function')
+          ? (function(){ try { return getFuelConsumptionInlineText(fuelTotals); } catch(e){ return ''; } })()
+          : '';
+        var trainShort = (shift && shift.train_number) ? ('№ ' + shift.train_number) : '';
+        html += buildShiftDetailMetricGridHtml([
+          { label: 'Длительность', value: (durationLabel === '—' ? periodLabel : durationLabel) },
+          { label: 'Поезд',        value: trainShort },
+          { label: 'Топливо',      value: fuelText },
+          { label: 'Доход',        value: salaryText, tone: 'success' }
+        ]);
         html += '<div class="shift-detail-section-title">Главное</div>';
         html += '<div class="shift-detail-list">';
-        html += buildShiftDetailRowHtml('Длительность', durationLabel === '—' ? periodLabel : durationLabel);
         html += buildShiftDetailRowHtml('Начало', formatLocalDateTimeFromMsk(shift.start_msk));
         html += buildShiftDetailRowHtml('Конец', formatLocalDateTimeFromMsk(shift.end_msk));
         html += buildShiftDetailRowHtml('Маршрут', direction || shiftType);
         html += buildShiftDetailRowHtml('Локомотив', locoSummary);
-        html += buildShiftDetailRowHtml('Поезд', trainSummary);
-        html += buildShiftDetailOptionalRowHtml('Топливо', hasFuelData(shift) ? getFuelConsumptionInlineText(fuelTotals) : '');
-        html += buildShiftDetailRowHtml('Доход', salaryText);
+        html += buildShiftDetailRowHtml('Состав', trainSummary);
         html += '</div>';
+        // ── Breakdown расчёта выплаты ──
+        try {
+          var breakdownHtml = buildShiftDetailPayoutBreakdownHtml(shift);
+          if (breakdownHtml) html += breakdownHtml;
+        } catch (e) {}
         html += '</section>';
       }
 

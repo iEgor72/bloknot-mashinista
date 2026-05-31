@@ -1,0 +1,379 @@
+/* ════════════════════════════════════════════════════════════════════
+   55-partners.css — Crew partner pairing (Бригада)
+   Home entry card + dedicated partners panel: linking by code,
+   active-partner pointer, address book. Uses the design-refresh tokens.
+   ──────────────────────────────────────────────────────────────────── */
+
+/* ── Home entry card ────────────────────────────────────────────── */
+.crew-entry-card {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  width: 100%;
+  margin: 6px 0 18px;
+  padding: 14px 16px;
+  border: 1px solid var(--hair, rgba(255, 255, 255, 0.08));
+  border-radius: var(--radius, 18px);
+  background: var(--bg-rise, #16161c);
+  color: var(--ink, #eef2f8);
+  text-align: left;
+  cursor: pointer;
+  transition: border-color 0.18s ease, transform 0.12s ease;
+}
+.crew-entry-card:active { transform: scale(0.985); }
+.crew-entry-card:hover { border-color: var(--hair-strong, rgba(255, 255, 255, 0.16)); }
+
+.crew-entry-icon {
+  flex: 0 0 auto;
+  display: grid;
+  place-items: center;
+  width: 42px;
+  height: 42px;
+  border-radius: 12px;
+  background: color-mix(in oklch, var(--accent, #38bdf8) 18%, transparent);
+  color: var(--accent, #38bdf8);
+}
+.crew-entry-icon svg { width: 22px; height: 22px; }
+
+.crew-entry-body { flex: 1 1 auto; min-width: 0; }
+.crew-entry-title { font-weight: 700; font-size: 15px; }
+.crew-entry-sub {
+  display: block;
+  margin-top: 2px;
+  font-size: 12.5px;
+  color: var(--ink-3, #8b93a7);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.crew-entry-badge {
+  flex: 0 0 auto;
+  min-width: 20px;
+  height: 20px;
+  padding: 0 6px;
+  border-radius: 10px;
+  background: var(--accent, #38bdf8);
+  color: #03121c;
+  font-size: 12px;
+  font-weight: 800;
+  line-height: 20px;
+  text-align: center;
+}
+.crew-entry-chevron { flex: 0 0 auto; font-size: 22px; color: var(--ink-3, #8b93a7); }
+
+/* ── Share toggle inside the shift form ─────────────────────────── */
+.shift-share-row {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin: 4px 0 14px;
+  padding: 12px 14px;
+  border: 1px solid color-mix(in oklch, var(--accent, #38bdf8) 35%, transparent);
+  border-radius: 14px;
+  background: color-mix(in oklch, var(--accent, #38bdf8) 7%, transparent);
+  cursor: pointer;
+}
+.shift-share-row input[type="checkbox"] {
+  flex: 0 0 auto;
+  width: 20px;
+  height: 20px;
+  accent-color: var(--accent, #38bdf8);
+}
+.shift-share-text { display: flex; flex-direction: column; min-width: 0; }
+.shift-share-title { font-weight: 600; font-size: 14px; }
+.shift-share-partner {
+  font-size: 12.5px;
+  color: var(--ink-2, #b6bdce);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+/* ── Shared marker on shift cards ───────────────────────────────── */
+.shift-share-mark {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 17px;
+  height: 17px;
+  margin-left: 6px;
+  vertical-align: -3px;
+}
+.shift-share-mark svg { width: 14px; height: 14px; }
+.shift-share-mark.is-out { color: var(--accent, #38bdf8); }
+.shift-share-mark.is-in { color: var(--good, #34d399); }
+
+/* ── Undo toast for auto-inserted shifts ────────────────────────── */
+.partners-undo-toast {
+  position: fixed;
+  left: 50%;
+  bottom: calc(var(--bottom-nav-height, 76px) + env(safe-area-inset-bottom, 0px) + 14px);
+  transform: translate(-50%, 16px);
+  z-index: 1200;
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  max-width: min(440px, calc(100vw - 28px));
+  padding: 12px 14px 12px 18px;
+  border-radius: 14px;
+  border: 1px solid var(--hair-strong, rgba(255, 255, 255, 0.16));
+  background: var(--bg-rise-2, #23232c);
+  box-shadow: 0 12px 32px rgba(0, 0, 0, 0.45);
+  opacity: 0;
+  transition: opacity 0.2s ease, transform 0.2s ease;
+}
+.partners-undo-toast.is-visible { opacity: 1; transform: translate(-50%, 0); }
+.partners-undo-text { font-size: 13.5px; color: var(--ink, #eef2f8); }
+.partners-undo-btn {
+  flex: 0 0 auto;
+  padding: 7px 14px;
+  border-radius: 10px;
+  border: none;
+  background: var(--accent, #38bdf8);
+  color: #03121c;
+  font-size: 13px;
+  font-weight: 800;
+  cursor: pointer;
+}
+
+/* ── Inbox (incoming shifts from partner) ───────────────────────── */
+.partners-inbox {
+  border: 1px solid color-mix(in oklch, var(--accent, #38bdf8) 40%, transparent);
+  border-radius: var(--radius, 18px);
+  background: color-mix(in oklch, var(--accent, #38bdf8) 8%, var(--bg-rise, #16161c));
+  padding: 16px;
+  margin-bottom: 14px;
+}
+.partners-inbox-item {
+  padding: 12px 0;
+  border-top: 1px solid var(--hair, rgba(255, 255, 255, 0.08));
+}
+.partners-inbox-item:first-of-type { border-top: none; }
+.partners-inbox-from {
+  font-size: 12.5px;
+  color: var(--ink-2, #b6bdce);
+}
+.partners-inbox-summary {
+  margin-top: 2px;
+  font-size: 15px;
+  font-weight: 700;
+}
+.partners-inbox-actions {
+  display: flex;
+  gap: 8px;
+  margin-top: 10px;
+}
+.partners-inbox-accept {
+  flex: 1 1 auto;
+  width: auto;
+}
+.partners-inbox-dismiss {
+  flex: 0 0 auto;
+  padding: 9px 16px;
+  border-radius: 11px;
+  border: 1px solid var(--hair-strong, rgba(255, 255, 255, 0.16));
+  background: transparent;
+  color: var(--ink-2, #b6bdce);
+  font-size: 13.5px;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+/* ── Partners panel ─────────────────────────────────────────────── */
+.tab-panel[data-tab="partners"] { padding-bottom: 32px; }
+.tab-panel[data-tab="partners"].is-busy { opacity: 0.7; pointer-events: none; }
+
+.partners-head {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 12px;
+}
+.partners-back {
+  flex: 0 0 auto;
+  width: 38px;
+  height: 38px;
+  border: 1px solid var(--hair, rgba(255, 255, 255, 0.08));
+  border-radius: 12px;
+  background: var(--bg-rise, #16161c);
+  color: var(--ink, #eef2f8);
+  font-size: 22px;
+  line-height: 1;
+  cursor: pointer;
+}
+.partners-head-title { font-size: 19px; font-weight: 800; }
+
+.partners-intro {
+  font-size: 13px;
+  line-height: 1.5;
+  color: var(--ink-2, #b6bdce);
+  margin-bottom: 16px;
+}
+
+.partners-active-card,
+.partners-link-card,
+.partners-book {
+  border: 1px solid var(--hair, rgba(255, 255, 255, 0.08));
+  border-radius: var(--radius, 18px);
+  background: var(--bg-rise, #16161c);
+  padding: 16px;
+  margin-bottom: 14px;
+}
+
+.partners-active-card.is-set {
+  border-color: color-mix(in oklch, var(--good, #34d399) 45%, transparent);
+  background: color-mix(in oklch, var(--good, #34d399) 8%, var(--bg-rise, #16161c));
+}
+.partners-active-label,
+.partners-card-title {
+  font-size: 12px;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  color: var(--ink-3, #8b93a7);
+  font-weight: 700;
+}
+.partners-active-value {
+  margin-top: 4px;
+  font-size: 18px;
+  font-weight: 800;
+}
+.partners-active-hint {
+  margin-top: 4px;
+  font-size: 12.5px;
+  color: var(--ink-2, #b6bdce);
+}
+
+.partners-card-title { margin-bottom: 12px; }
+.partners-card-subtitle {
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--ink-2, #b6bdce);
+  margin-bottom: 8px;
+}
+
+.partners-link-actions { margin-bottom: 8px; }
+.partners-generate-btn { width: 100%; }
+
+.partners-code-box {
+  margin: 10px 0 14px;
+  padding: 12px 14px;
+  border-radius: 14px;
+  border: 1px dashed color-mix(in oklch, var(--accent, #38bdf8) 50%, transparent);
+  background: color-mix(in oklch, var(--accent, #38bdf8) 8%, transparent);
+  text-align: center;
+}
+.partners-code-label { font-size: 12.5px; color: var(--ink-2, #b6bdce); }
+.partners-code-value {
+  font-family: 'JetBrains Mono', ui-monospace, monospace;
+  font-size: 30px;
+  font-weight: 700;
+  letter-spacing: 0.18em;
+  margin: 6px 0 4px;
+  color: var(--accent, #38bdf8);
+}
+.partners-code-expiry { font-size: 11.5px; color: var(--ink-3, #8b93a7); }
+
+.partners-redeem { margin-top: 6px; }
+
+/* OTP-style code entry: six digit cells, full-width action below. */
+.partners-code-grid {
+  display: flex;
+  gap: 8px;
+  margin-bottom: 12px;
+}
+.partners-code-cell {
+  flex: 1 1 0;
+  min-width: 0;
+  height: 54px;
+  padding: 0;
+  border-radius: 12px;
+  border: 1px solid var(--hair-strong, rgba(255, 255, 255, 0.16));
+  background: var(--bg, #0c0c10);
+  color: var(--ink, #eef2f8);
+  font-size: 24px;
+  font-weight: 600;
+  font-family: 'JetBrains Mono', ui-monospace, monospace;
+  text-align: center;
+  transition: border-color 0.15s ease, box-shadow 0.15s ease;
+}
+.partners-code-cell:focus {
+  outline: none;
+  border-color: var(--accent, #38bdf8);
+  box-shadow: 0 0 0 2px color-mix(in oklch, var(--accent, #38bdf8) 30%, transparent);
+}
+.partners-redeem-btn {
+  width: 100%;
+}
+
+.partners-feedback {
+  margin-top: 12px;
+  padding: 9px 12px;
+  border-radius: 11px;
+  font-size: 13px;
+}
+.partners-feedback.is-ok {
+  background: color-mix(in oklch, var(--good, #34d399) 14%, transparent);
+  color: var(--good, #34d399);
+}
+.partners-feedback.is-error {
+  background: color-mix(in oklch, var(--bad, #f87171) 14%, transparent);
+  color: var(--bad, #f87171);
+}
+
+/* ── Address book ───────────────────────────────────────────────── */
+.partners-book-empty {
+  font-size: 13px;
+  color: var(--ink-3, #8b93a7);
+  line-height: 1.5;
+}
+.partners-item {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 12px 0;
+  border-top: 1px solid var(--hair, rgba(255, 255, 255, 0.07));
+}
+.partners-item:first-child { border-top: none; }
+.partners-item-main { flex: 1 1 auto; min-width: 0; }
+.partners-item-name {
+  font-weight: 700;
+  font-size: 15px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.partners-item-tag {
+  margin-top: 2px;
+  font-size: 11.5px;
+  font-weight: 600;
+  color: var(--good, #34d399);
+}
+.partners-item-actions { flex: 0 0 auto; display: flex; align-items: center; gap: 8px; }
+
+.partners-item-active {
+  padding: 7px 11px;
+  border-radius: 10px;
+  border: 1px solid var(--hair-strong, rgba(255, 255, 255, 0.16));
+  background: transparent;
+  color: var(--ink-2, #b6bdce);
+  font-size: 12.5px;
+  font-weight: 600;
+  cursor: pointer;
+  white-space: nowrap;
+}
+.partners-item-active.is-on {
+  border-color: color-mix(in oklch, var(--good, #34d399) 50%, transparent);
+  background: color-mix(in oklch, var(--good, #34d399) 16%, transparent);
+  color: var(--good, #34d399);
+}
+.partners-item-remove {
+  width: 32px;
+  height: 32px;
+  border-radius: 10px;
+  border: 1px solid var(--hair, rgba(255, 255, 255, 0.08));
+  background: transparent;
+  color: var(--ink-3, #8b93a7);
+  font-size: 14px;
+  cursor: pointer;
+}
+.partners-item-remove:active { transform: scale(0.92); }

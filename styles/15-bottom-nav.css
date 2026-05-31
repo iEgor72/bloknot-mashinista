@@ -37,6 +37,7 @@
     }
 
     .bottom-nav [data-tab="home"] { grid-column: 1; }
+    .bottom-nav [data-tab="poekhali"] { grid-column: 2; }
     .bottom-nav [data-tab="shifts"] { grid-column: 2; }
     .bottom-nav [data-tab="add"] { grid-column: 3; }
     .bottom-nav [data-tab="salary"] { grid-column: 4; }

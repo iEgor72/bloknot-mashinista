@@ -7,6 +7,12 @@
   var MAX_SEGMENT_ORDINATE_GAP_M = 1600;
   var TRACK_METERS_PER_PIXEL = 16;
   var APK_VISIBLE_PICKETS = 60;
+  // When true, the live HUD readouts (speed, clock, limit, grade, distance,
+  // timer, tech-speed) are rendered as HTML cards around the canvas instead of
+  // being drawn onto the canvas. The canvas then holds only the path profile,
+  // speed scale and the train. All underlying logic stays intact; the values
+  // are published to tracker.hud for the HTML layer to read.
+  var POEKHALI_HTML_HUD = true;
   var APK_ANGLE_MULTIPLIER = 0.22;
   var APK_LABEL_FOCUS_RADIUS_M = 720;
   var APK_LABEL_CONTEXT_RADIUS_M = 1500;
@@ -10988,6 +10994,215 @@
     return 'mid';
   }
 
+  function drawWarningPreviewCanvas(canvas, warning) {
+    if (!canvas || !canvas.getContext) return;
+    var dpr = window.devicePixelRatio || 1;
+    var rect = canvas.getBoundingClientRect();
+    var w = Math.round(rect.width);
+    var h = Math.round(rect.height || 160);
+    if (w < 40) {
+      window.setTimeout(function() { drawWarningPreviewCanvas(canvas, warning); }, 50);
+      return;
+    }
+    canvas.width = Math.round(w * dpr);
+    canvas.height = Math.round(h * dpr);
+    canvas.style.height = h + 'px';
+    var ctx = canvas.getContext('2d');
+    ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+
+    var sector = Number(warning.sector);
+    var startC = Math.min(Number(warning.start) || 0, Number(warning.end) || 0);
+    var endC = Math.max(Number(warning.start) || 0, Number(warning.end) || 0);
+    var center = (startC + endC) / 2;
+    var span = Math.max(2000, (endC - startC) * 4, 4000);
+    var leftC = center - span / 2;
+    var rightC = center + span / 2;
+    var toX = function(c) {
+      var ratio = (c - leftC) / Math.max(1, rightC - leftC);
+      return ratio * w;
+    };
+
+    var profileTop = 6;
+    var profileBottom = Math.round(h * 0.42);
+    var trackY = Math.round(h * 0.62);
+    var labelY = h - 4;
+
+    ctx.fillStyle = '#0b0c10';
+    ctx.fillRect(0, 0, w, h);
+
+    ctx.strokeStyle = 'rgba(255,255,255,0.06)';
+    ctx.lineWidth = 1;
+    for (var gx = 0; gx <= w; gx += w / 6) {
+      ctx.beginPath();
+      ctx.moveTo(gx, profileTop);
+      ctx.lineTo(gx, h - 14);
+      ctx.stroke();
+    }
+
+    var profileSegments = [];
+    try {
+      profileSegments = typeof getVisibleProfileSegmentsForWindow === 'function'
+        ? (getVisibleProfileSegmentsForWindow(leftC, rightC, sector) || [])
+        : [];
+    } catch (_) { profileSegments = []; }
+    if (profileSegments.length) {
+      var elevs = [];
+      profileSegments.forEach(function(s) {
+        if (isFinite(s.startElev)) elevs.push(Number(s.startElev));
+        if (isFinite(s.endElev)) elevs.push(Number(s.endElev));
+      });
+      if (elevs.length >= 2) {
+        var minElev = Math.min.apply(Math, elevs);
+        var maxElev = Math.max.apply(Math, elevs);
+        if (maxElev - minElev < 1) maxElev = minElev + 1;
+        var yForElev = function(e) {
+          var t = (e - minElev) / (maxElev - minElev);
+          return profileBottom - t * (profileBottom - profileTop);
+        };
+        ctx.beginPath();
+        var hasFirst = false;
+        profileSegments.forEach(function(seg) {
+          var sStart = Math.max(seg.start, leftC);
+          var sEnd = Math.min(seg.end, rightC);
+          if (sEnd <= sStart) return;
+          var x1 = toX(sStart);
+          var x2 = toX(sEnd);
+          var y1 = yForElev(seg.startElev);
+          var y2 = yForElev(seg.endElev);
+          if (!hasFirst) {
+            ctx.moveTo(x1, y1);
+            hasFirst = true;
+          } else {
+            ctx.lineTo(x1, y1);
+          }
+          ctx.lineTo(x2, y2);
+        });
+        ctx.strokeStyle = 'rgba(91, 210, 255, 0.85)';
+        ctx.lineWidth = 2;
+        ctx.lineJoin = 'round';
+        ctx.stroke();
+      } else {
+        ctx.fillStyle = 'rgba(255,255,255,0.28)';
+        ctx.font = '10px system-ui';
+        ctx.textAlign = 'center';
+        ctx.fillText('профиль недоступен', w / 2, (profileTop + profileBottom) / 2);
+      }
+    } else {
+      ctx.fillStyle = 'rgba(255,255,255,0.28)';
+      ctx.font = '10px system-ui';
+      ctx.textAlign = 'center';
+      ctx.fillText('профиль недоступен', w / 2, (profileTop + profileBottom) / 2);
+    }
+
+    ctx.fillStyle = 'rgba(255,255,255,0.14)';
+    ctx.fillRect(0, trackY - 1, w, 2);
+
+    var visibleObjects = [];
+    try {
+      visibleObjects = typeof getTrackObjectsInWindow === 'function'
+        ? (getTrackObjectsInWindow(leftC, rightC, sector) || [])
+        : [];
+    } catch (_) { visibleObjects = []; }
+
+    var speedRules = [];
+    try {
+      speedRules = typeof getSpeedRulesInWindow === 'function'
+        ? (getSpeedRulesInWindow(leftC, rightC, sector, visibleObjects) || [])
+        : [];
+    } catch (_) { speedRules = []; }
+    speedRules.forEach(function(rule) {
+      if (!isFinite(rule.coordinate)) return;
+      var rs = Math.min(Number(rule.coordinate) || 0, Number(rule.end) || 0);
+      var re = Math.max(Number(rule.coordinate) || 0, Number(rule.end) || 0);
+      var x1 = toX(Math.max(rs, leftC));
+      var x2 = toX(Math.min(re, rightC));
+      if (x2 - x1 < 1) return;
+      var s = Math.max(1, Math.round(Number(rule.speed) || 60));
+      var c = s <= 40 ? 'rgba(255,107,107,0.45)' : s <= 60 ? 'rgba(246,198,91,0.45)' : 'rgba(97,211,148,0.45)';
+      ctx.fillStyle = c;
+      ctx.fillRect(x1, trackY - 7, Math.max(1, x2 - x1), 14);
+    });
+
+    visibleObjects.forEach(function(obj) {
+      var x = toX(Number(obj.coordinate) || 0);
+      var typeStr = String(obj.type);
+      if (typeStr === '2') {
+        ctx.fillStyle = 'rgba(122,183,255,0.85)';
+        ctx.fillRect(Math.round(x) - 0.5, trackY - 14, 2, 28);
+        ctx.fillStyle = '#d8ebff';
+        ctx.font = '9px system-ui';
+        ctx.textAlign = 'left';
+        ctx.fillText(String(obj.name || ''), Math.min(w - 4, x + 3), trackY - 16);
+      } else if (typeStr === '1') {
+        ctx.beginPath();
+        ctx.arc(x, trackY, 3.5, 0, Math.PI * 2);
+        ctx.fillStyle = 'rgba(97,211,148,0.95)';
+        ctx.fill();
+      }
+    });
+
+    var allWarnings = (state.selectedUserData && []) || (tracker.warnings || []);
+    allWarnings = (tracker.warnings || []).filter(function(w0) {
+      return w0 && w0.id !== warning.id && Number(w0.sector) === sector && w0.enabled !== false;
+    });
+    allWarnings.forEach(function(w0) {
+      var s0 = Math.min(Number(w0.start) || 0, Number(w0.end) || 0);
+      var e0 = Math.max(Number(w0.start) || 0, Number(w0.end) || 0);
+      if (e0 < leftC || s0 > rightC) return;
+      var x1 = toX(Math.max(s0, leftC));
+      var x2 = toX(Math.min(e0, rightC));
+      ctx.fillStyle = 'rgba(255,255,255,0.12)';
+      ctx.fillRect(x1, trackY - 9, Math.max(2, x2 - x1), 18);
+    });
+
+    var hStart = toX(startC);
+    var hEnd = toX(endC);
+    var width = Math.max(3, hEnd - hStart);
+    var hColor = speed <= 40 ? 'rgba(255,107,107,0.85)' : speed <= 60 ? 'rgba(246,198,91,0.85)' : 'rgba(97,211,148,0.85)';
+    ctx.save();
+    ctx.fillStyle = hColor;
+    ctx.fillRect(hStart, trackY - 10, width, 20);
+    ctx.strokeStyle = '#ffffff';
+    ctx.lineWidth = 1.5;
+    ctx.strokeRect(hStart + 0.5, trackY - 9.5, width - 1, 19);
+    ctx.fillStyle = '#0c0f12';
+    ctx.font = '900 11px system-ui';
+    ctx.textAlign = 'center';
+    ctx.fillText(speed + ' км/ч', hStart + width / 2, trackY + 4);
+    ctx.restore();
+
+    var projection = getCurrentProjectionForForm();
+    if (projection && Number(projection.sector) === sector && isRealNumber(projection.lineCoordinate)) {
+      var gpsC = Number(projection.lineCoordinate);
+      if (gpsC >= leftC && gpsC <= rightC) {
+        var gx = toX(gpsC);
+        ctx.fillStyle = 'rgba(122,183,255,1)';
+        ctx.beginPath();
+        ctx.moveTo(gx - 5, trackY + 16);
+        ctx.lineTo(gx + 5, trackY + 16);
+        ctx.lineTo(gx, trackY + 8);
+        ctx.closePath();
+        ctx.fill();
+        ctx.fillStyle = 'rgba(122,183,255,0.9)';
+        ctx.font = '900 9px system-ui';
+        ctx.textAlign = 'center';
+        ctx.fillText('GPS', gx, trackY + 26);
+      }
+    }
+
+    ctx.fillStyle = 'rgba(154,164,178,0.7)';
+    ctx.font = '9px system-ui';
+    ctx.textAlign = 'center';
+    for (var t = 0; t <= 4; t += 1) {
+      var c = leftC + ((rightC - leftC) / 4) * t;
+      var x = toX(c);
+      var kmpk = coordinateToKmPk(c);
+      var label = kmpk.km + 'км ' + kmpk.pk + 'пк';
+      var xClamped = Math.max(20, Math.min(w - 20, x));
+      ctx.fillText(label, xClamped, labelY);
+    }
+  }
+
   function getWarnAppPopover() {
     if (!tracker.warningsAppPopover) tracker.warningsAppPopover = { id: null };
     return tracker.warningsAppPopover;
@@ -11185,6 +11400,13 @@
     var pop = document.createElement('div');
     pop.className = 'poekhali-warn-popover poekhali-warn-popover--' + tone;
 
+    var previewCanvas = document.createElement('canvas');
+    previewCanvas.className = 'poekhali-warn-preview-canvas';
+    pop.appendChild(previewCanvas);
+    var redrawPreview = function() { drawWarningPreviewCanvas(previewCanvas, warning); };
+    setTimeout(redrawPreview, 0);
+    pop.dataset.warnPreviewRedraw = '1';
+
     var head = document.createElement('div');
     head.className = 'poekhali-warn-popover-head';
     var headTitle = document.createElement('strong');
@@ -11219,6 +11441,7 @@
       warning.updatedAt = new Date().toISOString();
       speedLabelStrong.textContent = warning.speed + ' км/ч';
       headTitle.textContent = 'ПР · ' + warning.speed + ' км/ч';
+      redrawPreview();
     });
     speedSlider.addEventListener('change', function() {
       saveWarnings();
@@ -11295,6 +11518,7 @@
           if (field === 'end' && Number(warning.end) < Number(warning.start)) warning.start = warning.end;
         }
         warning.updatedAt = new Date().toISOString();
+        redrawPreview();
       }
       kmInput.addEventListener('input', applyKmPk);
       pkInput.addEventListener('input', applyKmPk);
@@ -13406,13 +13630,15 @@
       }
     }
     if (maxBottom <= 0) {
-      return Math.round(getPoekhaliTopOffset() + 44);
+      // Overlay HUD controls now live in the HTML top-bar (chips), not on the
+      // canvas, so there is no control row to clear — keep just a small top pad.
+      return Math.round(getPoekhaliTopOffset());
     }
     return Math.round(maxBottom);
   }
 
   function getPoekhaliTopHudY() {
-    return Math.max(68, getPoekhaliTopControlsBottom() + 8);
+    return Math.max(8, getPoekhaliTopControlsBottom() + 8);
   }
 
   function getPoekhaliTopHudBottom() {
@@ -15847,7 +16073,9 @@
     var viewportWidth = Math.min(w, xUnit * APK_VISIBLE_PICKETS);
     var viewportX = Math.round((w - viewportWidth) / 2);
     var coordBottom = Math.max(124, getPoekhaliTopStackBottom() + 12);
-    var navReserve = 118;
+    // Bottom nav now lives in the HTML tab-bar below the canvas (not overlapping
+    // it), so only a small breathing pad is reserved at the canvas bottom.
+    var navReserve = 28;
     var scaleY = Math.round(Math.min(h - navReserve - 108, Math.max(coordBottom + 308, h * 0.63)));
     if (!isFinite(scaleY) || scaleY < coordBottom + 244) scaleY = Math.round(h * 0.65);
 
@@ -15861,12 +16089,28 @@
       profileBottom = scaleY - 78;
     }
 
+    var speedScaleTopY = Math.max(coordBottom + 48, profileTop - 58);
+    if (POEKHALI_HTML_HUD) {
+      // The HTML cards above the canvas leave it short, and the on-canvas HUD
+      // panels are gone. Rebalance into: a tall speed-scale band on top, the
+      // terrain profile below it, then the km scale. The speed axis spans
+      // [speedScaleTopY .. profileTop]; the terrain spans [profileTop .. profileBottom].
+      var topPad = 18;
+      coordBottom = topPad;
+      scaleY = Math.round(h - 44);   // leave room for the km/pk tick labels below the rail
+      profileBottom = scaleY - 16;
+      speedScaleTopY = topPad;
+      profileTop = Math.round(topPad + 0.46 * (profileBottom - topPad));
+      if (profileTop < speedScaleTopY + 84) profileTop = speedScaleTopY + 84;
+      if (profileBottom < profileTop + 70) profileBottom = profileTop + 70;
+    }
+
     var oneMeter = xUnit / 100;
     var headX = Math.round(viewportX + xUnit * 26);
     var trainWidth = Math.max(2, getTrainLengthMeters() * oneMeter);
     var trainHeight = Math.max(16, Math.round(xUnit * 3.2));
     var bottomTextY = Math.min(h - navReserve - 24, scaleY + 88);
-    var speedTopY = Math.max(coordBottom + 48, profileTop - 58);
+    var speedTopY = speedScaleTopY;
     var speedRailY = speedTopY + 50;
 
     return {
@@ -15882,6 +16126,7 @@
       trackY: scaleY,
       profileTop: profileTop,
       profileBottom: profileBottom,
+      speedScaleTopY: speedScaleTopY,
       speedTopY: speedTopY,
       speedRailY: speedRailY,
       bottomTextY: bottomTextY,
@@ -16484,6 +16729,23 @@
         ? 'danger'
         : 'info';
 
+    if (POEKHALI_HTML_HUD) {
+      // Publish the computed live readouts for the surrounding HTML cards and
+      // skip drawing the on-canvas summary panel entirely (preview + live).
+      tracker.hud = tracker.hud || {};
+      tracker.hud.headline = headline;
+      tracker.hud.stationLabel = currentStationLabel;
+      tracker.hud.gradeLabel = slopeLabel;
+      tracker.hud.gradeText = slopeText;
+      tracker.hud.gradeTone = slopeTone;
+      tracker.hud.reachCaption = reachCaption;
+      tracker.hud.reachText = reachText;
+      tracker.hud.reachTone = reachTone;
+      tracker.hud.msk = tracker.poekhaliMskClockDisplay || formatTime(new Date());
+      tracker.hud.at = Date.now();
+      return;
+    }
+
     var liveAlert = isPreview ? null : getCurrentPoekhaliLiveAlert();
     var panelFill = 'rgba(26, 26, 34, 0.82)';
     var panelStroke = 'rgba(56, 189, 248, 0.18)';
@@ -16760,7 +17022,9 @@
         });
       }
     }
-    drawTrainKmScaleProjection(ctx, layout, center, !!isPreview);
+    // The train-length bar projected onto the km scale (the "lower train") is
+    // dropped in the HTML-HUD layout — only the train on the profile remains.
+    if (!POEKHALI_HTML_HUD) drawTrainKmScaleProjection(ctx, layout, center, !!isPreview);
     ctx.restore();
   }
 
@@ -17230,6 +17494,195 @@
     return result;
   }
 
+  // Speed → colour ramp: 0–39 red, 40–59 yellow, 60+ green.
+  function speedScaleToneColor(v, alpha) {
+    if (!isFinite(v)) return 'rgba(136, 146, 164, ' + alpha + ')';
+    if (v >= 60) return 'rgba(74, 222, 128, ' + alpha + ')';
+    if (v >= 40) return 'rgba(250, 204, 21, ' + alpha + ')';
+    return 'rgba(248, 81, 97, ' + alpha + ')';
+  }
+
+  // HTML-HUD speed scale: a continuous speed axis where each posted-speed segment
+  // is a horizontal line whose height is proportional to the speed (higher → up).
+  // Where segments overlap the lower speed wins (sampled with a min reducer). Each
+  // segment bleeds a colour gradient down onto the terrain profile and drops to it
+  // with a dashed connector at the steps. The current (factual) speed is a dashed
+  // white line rising from the train up to its speed height on the axis.
+  function drawApkSpeedScale(ctx, layout, center, sector, speedRules, activeSpeed, bounds) {
+    var topY = isFinite(layout.speedScaleTopY) ? layout.speedScaleTopY : (layout.profileTop - 70);
+    var baseY = layout.profileTop - 6;          // v = 0 sits just above the terrain
+    if (baseY <= topY + 12) return;
+    var x0 = layout.viewportX + 2;
+    var x1 = layout.viewportRight - 2;
+    if (x1 <= x0) return;
+
+    var rules = (speedRules || []).filter(function(r) { return isFactualSpeedRuleSource(r); });
+    var maxSpeed = 0;
+    for (var i = 0; i < rules.length; i++) {
+      var s = getSpeedRuleValue(rules[i]);
+      if (isFinite(s)) maxSpeed = Math.max(maxSpeed, s);
+    }
+    var curSpeed = Math.max(0, (Number(tracker.speedMps) || 0) * 3.6);
+    // Visual simulation hook (dev only): 47 km/h under a 70 → 25 → 60 skyline.
+    var debugSim = !!(typeof window !== 'undefined' && window.__pkSpeedSim);
+    if (debugSim) { curSpeed = 47; maxSpeed = 70; }
+    var axisCeil = Math.max(maxSpeed, curSpeed, 60);
+    var vAxisMax = Math.max(20, Math.ceil(axisCeil / 20) * 20);
+    var lineSpeed = maxSpeed > 0 ? maxSpeed : vAxisMax;   // prevailing speed where nothing is posted
+    function speedToY(v) {
+      var t = clamp((Number(v) || 0) / vAxisMax, 0, 1);
+      return baseY - t * (baseY - topY);
+    }
+
+    // Axis gridlines (every 20), labels every 40.
+    ctx.save();
+    for (var g = 20; g <= vAxisMax; g += 20) {
+      var gy = speedToY(g);
+      ctx.strokeStyle = 'rgba(238, 242, 248, 0.06)';
+      ctx.lineWidth = 1;
+      ctx.beginPath();
+      ctx.moveTo(x0, gy + 0.5);
+      ctx.lineTo(x1, gy + 0.5);
+      ctx.stroke();
+      if (g % 40 === 0) {
+        drawText(ctx, String(g), x0 + 2, gy - 3, { size: 8, weight: 800, color: 'rgba(238, 242, 248, 0.34)' });
+      }
+    }
+    ctx.restore();
+
+    // Sample the effective (minimum) posted speed and the terrain Y across the viewport.
+    var stepPx = 2;
+    var samples = [];
+    for (var x = x0; x <= x1; x += stepPx) {
+      var coord = coordinateAtApkX(x, center, layout);
+      var eff = Infinity;
+      for (var r2 = 0; r2 < rules.length; r2++) {
+        var rl = rules[r2];
+        var rs = Math.min(Number(rl.coordinate), Number(rl.end));
+        var re = Math.max(Number(rl.coordinate), Number(rl.end));
+        if (coord >= rs && coord <= re) {
+          var sv = getSpeedRuleValue(rl);
+          if (isFinite(sv) && sv < eff) eff = sv;
+        }
+      }
+      if (!isFinite(eff)) eff = lineSpeed;
+      if (debugSim) {
+        var fr = (x - x0) / (x1 - x0);
+        eff = fr < 0.34 ? 70 : (fr < 0.62 ? 25 : 60);
+      }
+      samples.push({ x: x, v: eff, py: getProfileYAt(coord, center, sector, layout) });
+    }
+    if (!samples.length) return;
+
+    // Per run of equal speed: gradient fill down to the terrain, the horizontal
+    // speed line, and a dashed drop to the terrain at the step boundary.
+    ctx.save();
+    ctx.beginPath();
+    ctx.rect(x0, topY - 4, x1 - x0, (layout.profileBottom || baseY) - (topY - 4));
+    ctx.clip();
+    var runStart = 0;
+    for (var k = 1; k <= samples.length; k++) {
+      var changed = k === samples.length || Math.abs(samples[k].v - samples[runStart].v) > 0.1;
+      if (!changed) continue;
+      var v = samples[runStart].v;
+      var y = speedToY(v);
+      var sx = samples[runStart].x;
+      var ex = samples[k - 1].x;
+
+      // Gradient bleed: top edge = speed line, bottom edge = terrain profile.
+      var maxPy = y;
+      for (var j2 = runStart; j2 < k; j2++) { if (samples[j2].py > maxPy) maxPy = samples[j2].py; }
+      ctx.beginPath();
+      ctx.moveTo(sx, y);
+      ctx.lineTo(ex, y);
+      for (var j = k - 1; j >= runStart; j--) { ctx.lineTo(samples[j].x, samples[j].py); }
+      ctx.closePath();
+      var grad = ctx.createLinearGradient(0, y, 0, Math.max(y + 6, maxPy));
+      grad.addColorStop(0, speedScaleToneColor(v, 0.32));
+      grad.addColorStop(1, speedScaleToneColor(v, 0.0));
+      ctx.fillStyle = grad;
+      ctx.fill();
+
+      // Horizontal speed line (dark underlay + colour).
+      ctx.lineCap = 'butt';
+      ctx.strokeStyle = 'rgba(3, 7, 18, 0.7)';
+      ctx.lineWidth = 4.4;
+      ctx.beginPath(); ctx.moveTo(sx, y); ctx.lineTo(ex, y); ctx.stroke();
+      ctx.strokeStyle = speedScaleToneColor(v, 0.98);
+      ctx.lineWidth = 2.6;
+      ctx.beginPath(); ctx.moveTo(sx, y); ctx.lineTo(ex, y); ctx.stroke();
+
+      // Dashed drop to the terrain at the step.
+      if (k < samples.length) {
+        ctx.save();
+        ctx.strokeStyle = speedScaleToneColor(Math.min(v, samples[k].v), 0.7);
+        ctx.lineWidth = 1.4;
+        ctx.setLineDash([3, 3]);
+        ctx.beginPath();
+        ctx.moveTo(ex, y);
+        ctx.lineTo(ex, samples[k - 1].py);
+        ctx.stroke();
+        ctx.restore();
+      }
+      runStart = k;
+    }
+    ctx.restore();
+
+    // Speed value pills at the centre of wide-enough runs.
+    runStart = 0;
+    for (var k2 = 1; k2 <= samples.length; k2++) {
+      var ch2 = k2 === samples.length || Math.abs(samples[k2].v - samples[runStart].v) > 0.1;
+      if (!ch2) continue;
+      var v2 = samples[runStart].v;
+      var sx2 = samples[runStart].x;
+      var ex2 = samples[k2 - 1].x;
+      if (ex2 - sx2 >= 30 && v2 > 0) {
+        var midX = (sx2 + ex2) / 2;
+        var pillCY = speedToY(v2) - 11;
+        var lbl = String(Math.round(v2));
+        var pw = lbl.length * 7 + 12;
+        var ph = 15;
+        fillRoundRect(ctx, midX - pw / 2, pillCY - ph / 2, pw, ph, 7, speedScaleToneColor(v2, 0.96));
+        drawText(ctx, lbl, midX, pillCY, { size: 10, weight: 850, color: '#04131f', align: 'center', baseline: 'middle' });
+      }
+      runStart = k2;
+    }
+
+    // Factual speed: built like a limit segment — a SOLID white line on top, the
+    // value badge centred above it, and dashed drops on BOTH ends down onto the train.
+    var ext = getApkTrainExtentX(layout, center);
+    var wl = Math.max(ext.left, x0);
+    var wr = Math.min(ext.right, x1);
+    var ay = speedToY(curSpeed);
+    var trainY = getProfileYAt(center, center, sector, layout) - 8;
+    if (wr > wl) {
+      ctx.save();
+      if (trainY > ay + 2) {
+        ctx.strokeStyle = 'rgba(255, 255, 255, 0.55)';
+        ctx.lineWidth = 1.4;
+        ctx.setLineDash([3, 3]);
+        ctx.beginPath();
+        ctx.moveTo(wl, ay); ctx.lineTo(wl, trainY);
+        ctx.moveTo(wr, ay); ctx.lineTo(wr, trainY);
+        ctx.stroke();
+        ctx.setLineDash([]);
+      }
+      ctx.strokeStyle = 'rgba(255, 255, 255, 0.96)';
+      ctx.lineWidth = 2.6;
+      ctx.lineCap = 'round';
+      ctx.beginPath();
+      ctx.moveTo(wl, ay);
+      ctx.lineTo(wr, ay);
+      ctx.stroke();
+      var spLbl = String(Math.round(curSpeed));
+      var spw = spLbl.length * 7 + 12;
+      var midX = clamp((wl + wr) / 2, x0 + spw / 2, x1 - spw / 2);
+      fillRoundRect(ctx, midX - spw / 2, ay - 19, spw, 15, 7, 'rgba(255, 255, 255, 0.96)');
+      drawText(ctx, spLbl, midX, ay - 11, { size: 9.5, weight: 850, color: '#0b1220', align: 'center', baseline: 'middle' });
+      ctx.restore();
+    }
+  }
+
   function drawApkSpeedBands(ctx, layout, center, sector, speedRules, activeSpeed, isPreview, labelLayout) {
     var maxLanes = 4;
     var laneStep = isPreview ? 17 : 18;
@@ -17609,7 +18062,58 @@
   function drawApkTrain(ctx, layout, center, sector, avgAngle, isPreview) {
     var details = getPoekhaliTrainDetails();
     var trainMeters = Math.max(1, Math.round(Number(details && details.lengthMeters) || getTrainLengthMeters()));
-    drawApkTrainProfileBar(ctx, layout, center, sector, trainMeters, isPreview);
+    if (!POEKHALI_HTML_HUD) drawApkTrainProfileBar(ctx, layout, center, sector, trainMeters, isPreview);
+    if (POEKHALI_HTML_HUD) drawApkTrainLengthLabel(ctx, layout, center, sector, details);
+  }
+
+  // Head/tail screen geometry of the train (head at the live coordinate, tail
+  // back by the full composition length). Shared by the length band and the
+  // factual-speed line so they cover exactly the same span.
+  function getApkTrainExtentX(layout, center, details) {
+    var src = details || getPoekhaliTrainDetails();
+    var trainMeters = Math.max(1, Math.round(Number(src && src.lengthMeters) || getTrainLengthMeters()));
+    var locoMeters = Math.max(0, Math.round(Number(src && src.locoLengthMeters) || TRAIN_LOCO_LENGTH_M));
+    var compositionType = String(src && src.compositionType || '');
+    var projMeters = (compositionType === 'train' || compositionType === 'estimated') ? trainMeters + locoMeters : trainMeters;
+    var dir = getCurrentCoordinateDirection();
+    var tailCoord = center - dir * projMeters;
+    var headX = coordinateToApkX(center, center, layout);
+    var tailX = coordinateToApkX(tailCoord, center, layout);
+    return {
+      headX: headX,
+      tailX: tailX,
+      left: Math.min(headX, tailX),
+      right: Math.max(headX, tailX),
+      midCoord: (center + tailCoord) / 2
+    };
+  }
+
+  // The train: a plain rectangle on the profile spanning head→tail with the
+  // composition length inside it (re-homed from the removed km-scale train).
+  function drawApkTrainLengthLabel(ctx, layout, center, sector, details) {
+    var labels = getTrainKmScaleLengthLabels(details);
+    var ext = getApkTrainExtentX(layout, center, details);
+    var left = Math.max(ext.left, layout.viewportX + 4);
+    var right = Math.min(ext.right, layout.viewportRight - 4);
+    var span = right - left;
+    if (span < 8) return;
+    var py = getProfileYAt(ext.midCoord, center, sector, layout);
+    var bandH = Math.max(14, Math.min(18, layout.xUnit * 1.9));
+    var cy = py - Math.max(8, bandH / 2 + 1);   // sit the body on the rail
+    // Plain rectangle body.
+    fillRoundRect(ctx, left, cy - bandH / 2, span, bandH, 3, 'rgba(91, 210, 255, 0.82)');
+    strokeRoundRect(ctx, left + 0.5, cy - bandH / 2 + 0.5, span - 1, bandH - 1, 3, 'rgba(186, 230, 253, 0.9)');
+    // Longest length label that fits inside the rectangle.
+    ctx.save();
+    ctx.font = '850 9.5px "Plus Jakarta Sans", system-ui, sans-serif';
+    var label = '';
+    for (var i = 0; i < (labels || []).length; i++) {
+      if (ctx.measureText(labels[i]).width + 8 <= span) { label = labels[i]; break; }
+    }
+    ctx.restore();
+    if (label) {
+      drawText(ctx, label, (left + right) / 2, cy, { size: 9.5, weight: 850, color: '#04131f', align: 'center', baseline: 'middle', maxWidth: Math.max(8, span - 6) });
+    }
   }
 
   function drawApkPreviewCursor(ctx, layout, center, sector) {
@@ -18256,7 +18760,11 @@
 
     drawApkStations(ctx, layout, center, sector, visibleObjects, isPreview, labelLayout);
     drawApkSignals(ctx, layout, center, sector, visibleObjects, isPreview, labelLayout, nextSignal);
-    drawApkSpeedBands(ctx, layout, center, sector, speedRules, factualActiveSpeed, isPreview, labelLayout);
+    if (POEKHALI_HTML_HUD) {
+      drawApkSpeedScale(ctx, layout, center, sector, speedRules, factualActiveSpeed, bounds);
+    } else {
+      drawApkSpeedBands(ctx, layout, center, sector, speedRules, factualActiveSpeed, isPreview, labelLayout);
+    }
     drawRegimeControlMarks(ctx, layout, center, sector, visibleControlMarks, isPreview, labelLayout);
     drawApkWarningCue(ctx, layout, center, sector, nextWarning, isPreview, labelLayout);
     drawApkNextRestrictionCue(ctx, layout, center, sector, nextRestriction, isPreview, labelLayout);
@@ -18361,6 +18869,40 @@
     ctx.restore();
   }
 
+  // Assemble the live readouts into a small global snapshot that the HTML cards
+  // around the canvas poll. Keeps all computation inside the tracker; the HTML
+  // layer only reads. No-op when the HTML HUD layout is disabled.
+  function publishPoekhaliHtmlHud(hasProjection) {
+    if (!POEKHALI_HTML_HUD) return;
+    var hud = tracker.hud || {};
+    var run = getActiveRun();
+    var speedKmh = Math.max(0, (Number(tracker.speedMps) || 0) * 3.6);
+    var limit = tracker.activeRestriction && tracker.activeRestriction.speedKmh > 0
+      ? tracker.activeRestriction.speedKmh : null;
+    var timerMs = 0;
+    try { timerMs = getTimerElapsed(); } catch (e) {}
+    var techSpeed = run && isFinite(run.technicalSpeedKmh) && run.technicalSpeedKmh > 0
+      ? run.technicalSpeedKmh : null;
+    window.poekhaliHud = {
+      at: Date.now(),
+      hasProjection: !!hasProjection,
+      status: tracker.status,
+      live: tracker.status === 'gps-live',
+      speedKmh: speedKmh,
+      speedMeters: !!tracker.speedMeters,
+      limitKmh: limit,
+      gradeText: hud.gradeText || '—',
+      gradeTone: hud.gradeTone || 'info',
+      reachText: hud.reachText || '—',
+      reachTone: hud.reachTone || 'info',
+      headline: hud.headline || '',
+      stationLabel: hud.stationLabel || '',
+      msk: hud.msk || (tracker.poekhaliMskClockDisplay || ''),
+      timerMs: timerMs,
+      techSpeedKmh: techSpeed
+    };
+  }
+
   function drawCanvas() {
     if (!resizeCanvas()) return;
     tracker.lastCanvasDrawAt = Date.now();
@@ -18384,7 +18926,9 @@
       drawCenteredStatus(ctx, w, h);
       drawPoekhaliStandaloneMskChip(ctx, w, h);
     }
-    drawBottomBar(ctx, w, h, displayProjection);
+    // ФАКТ/ДОПУСК/КМ/ПК tiles move to HTML cards in the HTML-HUD layout.
+    if (!POEKHALI_HTML_HUD) drawBottomBar(ctx, w, h, displayProjection);
+    publishPoekhaliHtmlHud(!!displayProjection);
     setDirectionButton();
     setText('btnPoekhaliWay', 'П:' + normalizeWayNumber(tracker.wayNumber));
     syncPoekhaliLiveButton();

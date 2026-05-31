@@ -509,7 +509,6 @@
 
     body.is-poekhali-mode {
       --app-shell-bottom-reserve: 92px;
-      --page-padding-top: 0px;
       --page-padding-bottom: 92px;
       background: var(--bg);
     }
@@ -4642,6 +4641,15 @@
     .poekhali-warn-popover--danger { border-color: rgba(255, 107, 107, 0.48); }
     .poekhali-warn-popover--warning { border-color: rgba(246, 198, 91, 0.48); }
     .poekhali-warn-popover--success { border-color: rgba(97, 211, 148, 0.48); }
+
+    .poekhali-warn-preview-canvas {
+      display: block;
+      width: 100%;
+      height: 160px;
+      border: 1px solid rgba(255, 255, 255, 0.08);
+      border-radius: 10px;
+      background: #0b0c10;
+    }
 
     .poekhali-warn-popover-head {
       display: flex;

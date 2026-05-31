@@ -327,6 +327,24 @@
       renderUserStatsFooter();
     }
 
+    function getClientPlatform() {
+      try {
+        var webApp = window.Telegram && Telegram.WebApp ? Telegram.WebApp : null;
+        var tgPlatform = webApp && typeof webApp.platform === 'string' ? webApp.platform.toLowerCase() : '';
+        if (tgPlatform === 'ios') return 'ios';
+        if (tgPlatform === 'android' || tgPlatform === 'android_x') return 'android';
+        if (tgPlatform === 'macos' || tgPlatform === 'tdesktop' ||
+            tgPlatform === 'weba' || tgPlatform === 'webk' || tgPlatform === 'web') {
+          return 'desktop';
+        }
+      } catch (e) {}
+      try {
+        var guess = detectInstallGuidePlatform();
+        if (guess === 'ios' || guess === 'android' || guess === 'desktop') return guess;
+      } catch (e) {}
+      return 'unknown';
+    }
+
     function refreshUserStats(reason) {
       if (!navigator.onLine) {
         applyUserStatsOfflineFallback();
@@ -353,7 +371,7 @@
           'Content-Type': 'application/json',
           'Accept': 'application/json'
         },
-        body: JSON.stringify({ userId: userId, sessionId: sessionId, reason: reason || 'heartbeat' })
+        body: JSON.stringify({ userId: userId, sessionId: sessionId, platform: getClientPlatform(), reason: reason || 'heartbeat' })
       }, 4500).then(function(result) {
         userStatsInFlight = null;
         userStatsState.isLoading = false;
@@ -1118,8 +1136,8 @@
 
     function formatMonthIncomeLabel(month0) {
       var monthName = MONTH_NAMES[month0];
-      if (!monthName) return 'За месяц:';
-      return 'За ' + monthName.toLowerCase() + ':';
+      if (!monthName) return 'Доход за месяц';
+      return 'Доход за ' + monthName.toLowerCase();
     }
 
     function formatPercent(value) {
@@ -1513,15 +1531,31 @@
       };
     }
 
+    function getSalaryRowIcon(code) {
+      var key = String(code || '').toUpperCase();
+      if (key.indexOf('023') === 0) return { name: 'moon', tone: 'night-icon' };
+      if (key === '027A')           return { name: 'snow', tone: 'snow-icon' };
+      if (key.indexOf('024') === 0) return { name: 'star', tone: 'holiday-icon' };
+      if (key.indexOf('025') === 0) return { name: 'star', tone: 'holiday-icon' };
+      if (key.indexOf('018') === 0) return { name: 'up',   tone: 'bonus-icon' };
+      if (key === '027L')           return { name: 'income', tone: '' };
+      if (key.indexOf('029') === 0 || key.indexOf('030') === 0) return { name: 'flag', tone: 'bonus-icon' };
+      if (key.indexOf('026') === 0 || key.indexOf('028') === 0) return { name: 'percent', tone: '' };
+      return { name: 'sun', tone: '' };
+    }
+
     function createSalaryRowHtml(code, title, detail, value) {
-      var detailHtml = detail ? '<div class="salary-note">' + detail + '</div>' : '';
-      return '<div class="salary-row">' +
-        '<div class="salary-code">' + code + '</div>' +
+      var detailHtml = detail ? '<div class="salary-row-sub salary-note">' + detail + '</div>' : '';
+      var ic = getSalaryRowIcon(code);
+      var iconSvg = (typeof getShiftInlineIconSvg === 'function') ? getShiftInlineIconSvg(ic.name) : '';
+      var iconCls = 'salary-row-icon' + (ic.tone ? ' ' + ic.tone : '');
+      return '<div class="salary-row salary-row-v2" data-code="' + code + '">' +
+        '<div class="' + iconCls + '" aria-hidden="true">' + iconSvg + '</div>' +
         '<div class="salary-main">' +
-          '<div class="salary-name">' + title + '</div>' +
+          '<div class="salary-row-name">' + title + ' <span class="salary-row-code">' + code + '</span></div>' +
           detailHtml +
         '</div>' +
-        '<div class="salary-value">' + value + '</div>' +
+        '<div class="salary-row-value num">' + value + '</div>' +
       '</div>';
     }
 
@@ -1818,6 +1852,80 @@
       var coeffList = document.getElementById('salaryCoeffList');
       if (baseList) baseList.innerHTML = baseRows.join('');
       if (coeffList) coeffList.innerHTML = coeffRows.join('');
+
+      // ── Hero stack-bar + legend ──
+      renderSalaryHeroStack(summary);
+      // ── 6-month trend bars ──
+      renderSalaryTrend();
+    }
+
+    function renderSalaryTrend() {
+      var barsEl = document.getElementById('salaryTrendBars');
+      var labelsEl = document.getElementById('salaryTrendLabels');
+      if (!barsEl || !labelsEl) return;
+      var monthNames = ['Янв','Фев','Мар','Апр','Май','Июн','Июл','Авг','Сен','Окт','Ноя','Дек'];
+      var rows = [];
+      var maxV = 0;
+      for (var off = 5; off >= 0; off--) {
+        var d = new Date(currentYear, currentMonth - off, 1);
+        var y = d.getFullYear();
+        var m = d.getMonth();
+        var bounds = getMonthBounds(y, m);
+        var sets = buildMonthCalculationShifts(y, m, bounds);
+        var summary = (function() {
+          try { return buildSalarySummary(sets.calculationShifts, bounds); }
+          catch (e) { return { netAmount: 0 }; }
+        })();
+        var v = Math.round((summary.netAmount || 0) / 1000); // thousands ₽
+        rows.push({ label: monthNames[m], v: v, current: (off === 0) });
+        if (v > maxV) maxV = v;
+      }
+      if (maxV <= 0) maxV = 1;
+      var barsHtml = '';
+      var labelsHtml = '';
+      for (var i = 0; i < rows.length; i++) {
+        var r = rows[i];
+        var h = Math.max(8, Math.round((r.v / maxV) * 100));
+        barsHtml += '<div class="salary-trend-bar' + (r.current ? ' cur' : '') + '" data-value="' + r.v + '" style="height:' + h + '%"></div>';
+        labelsHtml += '<span' + (r.current ? ' class="cur"' : '') + '>' + r.label + '</span>';
+      }
+      barsEl.innerHTML = barsHtml;
+      labelsEl.innerHTML = labelsHtml;
+    }
+
+    function renderSalaryHeroStack(summary) {
+      var stackEl = document.getElementById('salaryHeroStack');
+      var legendEl = document.getElementById('salaryHeroLegend');
+      if (!stackEl || !legendEl) return;
+      var segs = [];
+      var tariffBase = (summary.tariffAmount || 0) + (summary.monthlyBonusAmount || 0) + (summary.classAmount || 0);
+      if (tariffBase > 0) segs.push({ label: 'Оклад', v: tariffBase, color: 'var(--accent)' });
+      if ((summary.nightAmount || 0) > 0) segs.push({ label: 'Ночные · ' + (summary.nightHours || 0).toFixed(1).replace('.', ',') + ' ч', v: summary.nightAmount, color: 'var(--night)' });
+      if ((summary.holidayAmount || 0) > 0) segs.push({ label: 'Праздничные · ' + (summary.holidayHours || 0).toFixed(1).replace('.', ',') + ' ч', v: summary.holidayAmount, color: 'var(--holiday)' });
+      var coeffTotal = (summary.districtAmount || 0) + (summary.northAmount || 0) + (summary.localAmount || 0);
+      if (coeffTotal > 0) segs.push({ label: 'Коэффициенты', v: coeffTotal, color: 'var(--good)' });
+      var overtime = (summary.overtimeAmount || 0) + (summary.extraOvertimeAmount || 0) + (summary.travelOvertimeAmount || 0);
+      if (overtime > 0) segs.push({ label: 'Сверх нормы', v: overtime, color: 'var(--warn)' });
+      var total = 0;
+      for (var i = 0; i < segs.length; i++) total += segs[i].v;
+      if (total <= 0) {
+        stackEl.innerHTML = '';
+        legendEl.innerHTML = '';
+        return;
+      }
+      var stackHtml = '';
+      for (var k = 0; k < segs.length; k++) {
+        var s = segs[k];
+        var pct = (s.v / total) * 100;
+        stackHtml += '<span style="width:' + pct.toFixed(2) + '%;background:linear-gradient(180deg,' + s.color + ',color-mix(in oklch,' + s.color + ' 55%,black));box-shadow:inset 0 1px 0 color-mix(in oklch,white 30%,transparent);"></span>';
+      }
+      stackEl.innerHTML = stackHtml;
+      var legendHtml = '';
+      for (var n = 0; n < segs.length; n++) {
+        var seg = segs[n];
+        legendHtml += '<div class="salary-hero-legend-row"><span class="dot" style="background:' + seg.color + '"></span><span>' + seg.label + '</span><span class="v num">' + formatRub(seg.v) + '</span></div>';
+      }
+      legendEl.innerHTML = legendHtml;
     }
     // ── Documentation & PDF Viewer — see scripts/docs-app.js ──
     var saveToastHideTimer = null;
