@@ -8774,14 +8774,6 @@
     ));
 
     items.push(createProdAuditItem(
-      'runs',
-      'Запись поездки в смену',
-      (activeRun ? 'активная запись есть' : 'активной записи нет') + ' · журнал ' + tracker.runs.length + ' · сервер ' + getRunSyncLabel(),
-      runState === 'error' ? 'blocked' : (activeRun || tracker.runs.length ? 'ready' : 'review'),
-      { badge: activeRun ? 'RUN' : String(tracker.runs.length), scope: 'trip' }
-    ));
-
-    items.push(createProdAuditItem(
       'learning',
       'Дорисовка карты GPS',
       'точек ' + learningSummary.totalSamples + ' · GPS участков ' + learningSummary.userSections +
@@ -9030,10 +9022,6 @@
     var speedDocsSummary = getSpeedDocsSummary();
     var regimeSummary = getRegimeMapsSummary();
     var learningSummary = getLearningSummary();
-    var activeRun = getActiveRun();
-    var lastRun = activeRun || normalizeRunsList(tracker.runs).filter(function(item) {
-      return item && !item.deletedAt;
-    })[0] || null;
     var swState = typeof navigator !== 'undefined' && navigator.serviceWorker
       ? (navigator.serviceWorker.controller ? 'активен' : 'ожидает')
       : 'нет';
@@ -9042,10 +9030,6 @@
     var lastLearningAt = learningSummary.lastSample && learningSummary.lastSample.ts
       ? formatLearningTime(learningSummary.lastSample.ts)
       : '—';
-    var lastRunAt = lastRun && (lastRun.updatedAt || lastRun.startedAt)
-      ? formatRunDateTime(lastRun.updatedAt || lastRun.startedAt)
-      : '—';
-    var runPointCount = lastRun && Array.isArray(lastRun.points) ? lastRun.points.length : 0;
     return {
       appVersion: POEKHALI_DIAGNOSTIC_VERSION,
       mapTitle: tracker.currentMap && tracker.currentMap.title ? tracker.currentMap.title : '—',
@@ -9075,18 +9059,11 @@
       regimeTone: regimeSummary.loaded ? 'success' : 'warning',
       warningsSync: getWarningSyncLabel(),
       warningsSyncTone: getWarningSyncTone().replace('is-', ''),
-      runsSync: getRunSyncLabel(),
-      runsSyncTone: getRunSyncTone().replace('is-', ''),
       learningSync: getLearningSyncLabel(),
       learningSyncTone: getLearningSyncTone().replace('is-', ''),
       learning: learningSummary.totalSamples ? (learningSummary.totalSamples + ' точ.') : '—',
       learningTone: learningSummary.totalSamples ? 'success' : 'muted',
       lastLearningAt: lastLearningAt,
-      run: lastRun ? getRunStatusText(lastRun.status) : '—',
-      runTone: activeRun ? 'success' : lastRun ? '' : 'muted',
-      runPoints: runPointCount ? runPointCount + ' точ.' : '—',
-      runPointsTone: runPointCount ? 'success' : 'muted',
-      lastRunAt: lastRunAt,
       sw: swState,
       swTone: swState === 'активен' ? 'success' : 'warning',
       cache: cacheState,
@@ -9125,13 +9102,9 @@
     grid.appendChild(createShiftInfoCell('ДОК', diagnostics.docs, diagnostics.docsTone));
     grid.appendChild(createShiftInfoCell('РК', diagnostics.regime, diagnostics.regimeTone));
     grid.appendChild(createShiftInfoCell('ПР sync', diagnostics.warningsSync, diagnostics.warningsSyncTone));
-    grid.appendChild(createShiftInfoCell('Run sync', diagnostics.runsSync, diagnostics.runsSyncTone));
     grid.appendChild(createShiftInfoCell('GPS sync', diagnostics.learningSync, diagnostics.learningSyncTone));
     grid.appendChild(createShiftInfoCell('Дообучение', diagnostics.learning, diagnostics.learningTone));
     grid.appendChild(createShiftInfoCell('Последняя GPS', diagnostics.lastLearningAt, diagnostics.lastLearningAt === '—' ? 'muted' : ''));
-    grid.appendChild(createShiftInfoCell('Поездка', diagnostics.run, diagnostics.runTone));
-    grid.appendChild(createShiftInfoCell('Трек', diagnostics.runPoints, diagnostics.runPointsTone));
-    grid.appendChild(createShiftInfoCell('Run время', diagnostics.lastRunAt, diagnostics.lastRunAt === '—' ? 'muted' : ''));
     grid.appendChild(createShiftInfoCell('SW', diagnostics.sw, diagnostics.swTone));
     grid.appendChild(createShiftInfoCell('Cache API', diagnostics.cache, diagnostics.cacheTone));
 
@@ -9179,7 +9152,6 @@
     var learning = getLearningBackupCounts(tracker.learning);
     return {
       warnings: normalizeWarningsList(tracker.warnings).filter(function(item) { return !item.deletedAt; }).length,
-      runs: normalizeRunsList(tracker.runs).filter(function(item) { return !item.deletedAt; }).length,
       learningSamples: learning.samples + learning.rawSamples,
       userSections: learning.userSections
     };
@@ -9212,7 +9184,6 @@
       prodAudit: cloneForBackup(getProdAuditState()),
       speedDocReview: cloneForBackup(getSpeedDocReviewState()),
       warnings: normalizeWarningsList(tracker.warnings),
-      runs: normalizeRunsList(tracker.runs),
       learning: normalizeLearningStore(tracker.learning),
       mapReadiness: cloneForBackup(getMapReadinessSummary()),
       downloadedMaps: cloneForBackup(getDownloadedMapsReadinessSnapshot()),
@@ -9220,7 +9191,6 @@
     };
     packageData.stats = {
       warnings: packageData.warnings.filter(function(item) { return !item.deletedAt; }).length,
-      runs: packageData.runs.filter(function(item) { return !item.deletedAt; }).length,
       learning: getLearningBackupCounts(packageData.learning),
       userSections: getLearningBackupCounts(packageData.learning).userSections
     };
@@ -9250,7 +9220,7 @@
     var payload = buildPoekhaliBackupPackage();
     downloadJsonFile(getPoekhaliBackupFileName(), payload);
     var stats = getPoekhaliBackupStats();
-    tracker.backupMessage = 'Пакет собран: ПР ' + stats.warnings + ' · поездок ' + stats.runs + ' · GPS точек ' + stats.learningSamples + ' · GPS участков ' + stats.userSections + '.';
+    tracker.backupMessage = 'Пакет собран: ПР ' + stats.warnings + ' · GPS точек ' + stats.learningSamples + ' · GPS участков ' + stats.userSections + '.';
     tracker.backupMessageTone = 'success';
     renderOpsSheet();
   }
@@ -9296,18 +9266,12 @@
     var payload = normalizePoekhaliBackupPayload(raw);
     if (!payload) throw new Error('Это не пакет Поехали.');
     var importedWarnings = normalizeWarningsList(payload.warnings);
-    var importedRuns = normalizeRunsList(payload.runs);
     var importedLearning = normalizeLearningStore(payload.learning);
     var learningCounts = getLearningBackupCounts(importedLearning);
 
     if (importedWarnings.length) {
       tracker.warnings = mergeWarningsLists(tracker.warnings, importedWarnings);
       saveWarnings();
-    }
-    if (importedRuns.length) {
-      tracker.runs = mergeRunsLists(tracker.runs, importedRuns);
-      restoreTimerFromActiveRun();
-      saveRuns();
     }
     if (learningCounts.samples || learningCounts.rawSamples || learningCounts.userSections) {
       tracker.learning = mergeLearningStores(tracker.learning, importedLearning);
@@ -10677,147 +10641,6 @@
     if (state === 'syncing' || state === 'loading' || state === 'pending') return 'is-muted';
     if (state === 'offline' || state === 'error') return 'is-danger';
     return 'is-muted';
-  }
-
-  function renderRunsSection(parent) {
-    var section = document.createElement('section');
-    section.className = 'poekhali-ops-section';
-    var head = document.createElement('div');
-    head.className = 'poekhali-ops-section-head';
-    var title = document.createElement('div');
-    title.textContent = 'Журнал Поехали';
-    var total = document.createElement('div');
-    total.className = 'poekhali-ops-total';
-    var visibleRuns = normalizeRunsList(tracker.runs).filter(function(item) {
-      return item && !item.deletedAt;
-    });
-    var activeRun = getActiveRun();
-    total.textContent = activeRun ? 'идет запись' : (visibleRuns.length ? visibleRuns.length + ' зап.' : 'нет записей');
-    head.appendChild(title);
-    head.appendChild(total);
-
-    var syncNote = document.createElement('div');
-    syncNote.className = 'poekhali-shift-route ' + getRunSyncTone();
-    syncNote.textContent = 'Сервер: ' + getRunSyncLabel() +
-      (tracker.runSync && tracker.runSync.error ? ' · ' + tracker.runSync.error : '') +
-      (tracker.runSync && tracker.runSync.lastSyncAt ? ' · ' + formatLearningTime(tracker.runSync.lastSyncAt) : '');
-
-    var summaryRun = activeRun || visibleRuns[0] || null;
-    var grid = document.createElement('div');
-    grid.className = 'poekhali-shift-info-grid';
-    grid.appendChild(createShiftInfoCell('Запись', summaryRun ? formatTimer(summaryRun.status === 'active' ? getTimerElapsed() : summaryRun.durationMs) : formatTimer(getTimerElapsed()), summaryRun ? '' : 'muted'));
-    grid.appendChild(createShiftInfoCell('Дистанция', summaryRun ? formatRunDistance(summaryRun.distanceMeters) : '—', summaryRun ? '' : 'muted'));
-    grid.appendChild(createShiftInfoCell('Тех.', summaryRun ? formatRunSpeedKmh(summaryRun.technicalSpeedKmh) : '—', summaryRun && summaryRun.technicalSpeedKmh ? '' : 'muted'));
-    grid.appendChild(createShiftInfoCell('Средняя', summaryRun ? formatRunSpeedKmh(summaryRun.averageSpeedKmh) : '—', summaryRun && summaryRun.averageSpeedKmh ? '' : 'muted'));
-    grid.appendChild(createShiftInfoCell('Макс.', summaryRun && summaryRun.maxSpeedKmh ? summaryRun.maxSpeedKmh + ' км/ч' : '—', summaryRun && summaryRun.maxSpeedKmh ? '' : 'muted'));
-    grid.appendChild(createShiftInfoCell('Огр.', summaryRun ? formatRunActiveRestriction(summaryRun, true) : '—', summaryRun && summaryRun.activeRestrictionSpeedKmh ? '' : 'muted'));
-    grid.appendChild(createShiftInfoCell('Далее', summaryRun ? formatRunNextRestriction(summaryRun, true) : '—', summaryRun && summaryRun.nextRestrictionSpeedKmh ? '' : 'muted'));
-    grid.appendChild(createShiftInfoCell('Сигнал', summaryRun ? formatRunNextObject(summaryRun, 'nextSignal', true) : '—', summaryRun && summaryRun.nextSignalName ? '' : 'muted'));
-    grid.appendChild(createShiftInfoCell('Станция', summaryRun ? formatRunNextObject(summaryRun, 'nextStation', true) : '—', summaryRun && summaryRun.nextStationName ? '' : 'muted'));
-    grid.appendChild(createShiftInfoCell('Маршрут', summaryRun ? formatRunRouteProgress(summaryRun, true) : '—', summaryRun && summaryRun.routeDistanceMeters ? '' : 'muted'));
-    grid.appendChild(createShiftInfoCell('Впереди', summaryRun ? formatRunNavigationTarget(summaryRun, true) : '—', summaryRun && summaryRun.nextTargetLabel ? '' : 'muted'));
-    grid.appendChild(createShiftInfoCell('Прев.', summaryRun && summaryRun.overspeedMaxKmh ? '+' + summaryRun.overspeedMaxKmh + ' км/ч' : '—', summaryRun && summaryRun.overspeedMaxKmh ? 'danger' : 'muted'));
-    grid.appendChild(createShiftInfoCell('Опов.', summaryRun && summaryRun.alertCount ? String(summaryRun.alertCount) : '—', summaryRun && summaryRun.alertCount ? 'danger' : 'muted'));
-    grid.appendChild(createShiftInfoCell('ПР', summaryRun ? String(summaryRun.warningsCount || 0) : '—', summaryRun ? '' : 'muted'));
-    grid.appendChild(createShiftInfoCell('Смена', summaryRun ? getRunShiftLabel(summaryRun) : '—', summaryRun && findShiftForRun(summaryRun) ? '' : 'muted'));
-    grid.appendChild(createShiftInfoCell('Старт', summaryRun ? formatRunPoint(summaryRun.startPoint) : '—', summaryRun && summaryRun.startPoint ? '' : 'muted'));
-    grid.appendChild(createShiftInfoCell('Финиш', summaryRun ? formatRunPoint(summaryRun.endPoint || summaryRun.lastPoint) : '—', summaryRun && (summaryRun.endPoint || summaryRun.lastPoint) ? '' : 'muted'));
-
-    var note = document.createElement('div');
-    note.className = 'poekhali-shift-route';
-    if (activeRun) {
-      note.textContent = getRunStatusText(activeRun.status) + ' · ' +
-        (activeRun.trainNumber ? 'поезд № ' + activeRun.trainNumber : 'поезд не указан') +
-        (activeRun.route ? ' · ' + activeRun.route : '') +
-        ' · ' + formatRunDateTime(activeRun.startedAt);
-    } else if (summaryRun) {
-      note.textContent = getRunStatusText(summaryRun.status) + ' · ' +
-        (summaryRun.trainNumber ? 'поезд № ' + summaryRun.trainNumber : 'поезд не указан') +
-        (summaryRun.route ? ' · ' + summaryRun.route : '') +
-        ' · ' + formatRunDateTime(summaryRun.startedAt);
-    } else {
-      note.classList.add('is-muted');
-      note.textContent = 'Записей пока нет';
-    }
-
-    section.appendChild(head);
-    section.appendChild(syncNote);
-    section.appendChild(grid);
-    section.appendChild(note);
-
-    if (activeRun) {
-      var actions = document.createElement('div');
-      actions.className = 'poekhali-warning-form-actions';
-      var finishBtn = document.createElement('button');
-      finishBtn.type = 'button';
-      finishBtn.className = 'poekhali-primary-action';
-      finishBtn.textContent = 'Завершить поездку';
-      finishBtn.addEventListener('click', function() {
-        finishActiveRun();
-      });
-      actions.appendChild(finishBtn);
-      section.appendChild(actions);
-    }
-
-    var list = document.createElement('div');
-    list.className = 'poekhali-map-health-list';
-    var rows = visibleRuns.slice(0, 8);
-    for (var i = 0; i < rows.length; i++) {
-      (function(item) {
-        var row = document.createElement(item.lastPoint ? 'button' : 'div');
-        if (item.lastPoint) row.type = 'button';
-        row.className = 'poekhali-map-health-row ' + (item.status === 'finished' ? 'is-ready' : '');
-        if (item.lastPoint) {
-          row.title = 'Открыть последнюю точку поездки';
-          row.addEventListener('click', function() {
-            focusRunPoint(item.lastPoint);
-          });
-        }
-
-        var text = document.createElement('span');
-        text.className = 'poekhali-map-health-text';
-        var strong = document.createElement('strong');
-        strong.textContent = (item.trainNumber ? '№ ' + item.trainNumber : 'Поезд') + ' · ' + getRunStatusText(item.status);
-        var meta = document.createElement('span');
-        meta.textContent = formatRunDateTime(item.startedAt) + ' · ' +
-          formatRunDistance(item.distanceMeters) + ' · ' +
-          'тех ' + formatRunSpeedKmh(item.technicalSpeedKmh) + ' · ' +
-          formatTimer(item.status === 'active' ? getTimerElapsed() : item.durationMs) +
-          (item.activeRestrictionSpeedKmh ? ' · огр ' + formatRunActiveRestriction(item, true) : '') +
-          (item.nextRestrictionSpeedKmh ? ' · далее ' + formatRunNextRestriction(item, true) : '') +
-          (item.nextSignalName ? ' · св ' + formatRunNextObject(item, 'nextSignal', true) : '') +
-          (item.nextStationName ? ' · ст ' + formatRunNextObject(item, 'nextStation', true) : '') +
-          (item.routeDistanceMeters ? ' · маршрут ' + formatRunRouteProgress(item, true) : '') +
-          (item.nextTargetLabel ? ' · впереди ' + formatRunNavigationTarget(item, true) : '') +
-          (item.overspeedMaxKmh ? ' · прев +' + item.overspeedMaxKmh : '') +
-          (item.alertCount ? ' · опов ' + item.alertCount : '') +
-          (item.lastPoint ? ' · ' + formatRunPoint(item.lastPoint) : '');
-        text.appendChild(strong);
-        text.appendChild(meta);
-
-        var badge = document.createElement('span');
-        badge.className = 'poekhali-map-health-badge';
-        badge.textContent = item.maxSpeedKmh ? item.maxSpeedKmh + ' км/ч' : item.direction || '—';
-
-        row.appendChild(text);
-        row.appendChild(badge);
-        list.appendChild(row);
-      })(rows[i]);
-    }
-    if (visibleRuns.length > rows.length) {
-      var more = document.createElement('div');
-      more.className = 'poekhali-map-health-more';
-      more.textContent = 'Еще ' + (visibleRuns.length - rows.length) + ' записей в журнале';
-      list.appendChild(more);
-    }
-    if (!rows.length) {
-      var empty = document.createElement('div');
-      empty.className = 'poekhali-map-health-more';
-      empty.textContent = 'История появится после первой поездки';
-      list.appendChild(empty);
-    }
-    section.appendChild(list);
-    parent.appendChild(section);
   }
 
   function warnCoordPercent(coord, bounds) {

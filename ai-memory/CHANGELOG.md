@@ -5122,3 +5122,20 @@ Append-only журнал действий ИИ-агентов по проект�
 - Methods: `git post-commit hook`, `automatic memory update`
 - Files: `ai-memory/CHANGELOG.md`, `ai-memory/INDEX.md`, `ai-memory/PROJECT_STATE.md`, `ai-memory/RECENT_COMMITS.md`, `ai-memory/WORKTREE_STATUS.md`, `ai-memory/sessions/2026-05-31.md`, `scripts/poekhali-tracker.js`
 - Notes: Commit: `9064eac6743a642c2f67b2d6828c9fa581ddfa4f` (`9064eac`) | Author: `iEgor72`
+
+## 2026-05-31 19:28:10 +1000
+
+- Source: `post-commit`
+- Task: refactor(poekhali): drop auto-run triggers and run/learning sync init wiring
+- Branch: `poekhali-rework`
+- Methods: `git post-commit hook`, `automatic memory update`
+- Files: `ai-memory/CHANGELOG.md`, `ai-memory/INDEX.md`, `ai-memory/PROJECT_STATE.md`, `ai-memory/RECENT_COMMITS.md`, `ai-memory/WORKTREE_STATUS.md`, `ai-memory/sessions/2026-05-31.md`, `scripts/poekhali-tracker.js`
+- Notes: Commit: `6b54c1c40b65873d78a7b51d02bd661f610a32de` (`6b54c1c`) | Author: `iEgor72`
+
+## 2026-05-31 19:29:01 +1000
+
+- Source: `manual`
+- Task: Poekhali deep cleanup: remove server endpoints, sample capture, neutralize runs/auto-run
+- Branch: `poekhali-rework`
+- Methods: `remove /api/poekhali-runs|learning handlers`, `getActiveRun->null`, `loadRuns clears`, `delete sample-capture cluster`, `drop auto-run + sync init wiring`
+- Files: `scripts/poekhali-tracker.js`, `server.js`
