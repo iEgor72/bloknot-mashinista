@@ -124,6 +124,9 @@
   var LEARNING_MAX_OBJECTS_PER_USER_SECTION = 420;
   var LEARNING_MAX_SPEEDS_PER_USER_SECTION = 420;
   var LEARNING_MAX_HISTORY_PER_USER_SECTION = 80;
+  // Trip distance accumulator bounds (per GPS step) for the local technical-speed metric.
+  var TRIP_MIN_DISTANCE_STEP_M = 8;
+  var TRIP_MAX_DISTANCE_STEP_M = 4000;
   var LEARNING_RAW_DRAFT_SECTOR_BASE = 900000;
   var LEARNING_RAW_DRAFT_MIN_DISTANCE_M = 120;
   var GPS_DIRECTION_MIN_DELTA_M = 25;
@@ -399,6 +402,8 @@
     backupMessageTone: '',
     timerStartedAt: 0,
     timerElapsedMs: 0,
+    tripDistanceM: 0,
+    tripLastFix: null,
     speedMps: 0,
     accuracy: 0,
     gpsFixState: 'none',
@@ -3094,6 +3099,8 @@
   }
 
   function scheduleRunSync(delayMs) {
+    // Trip recording removed: never sync runs to the server.
+    return;
     if (!isRunSyncAvailable()) return;
     if (tracker.runSync.timer) {
       clearTimeout(tracker.runSync.timer);
@@ -5072,6 +5079,8 @@
   }
 
   function scheduleLearningSync(delayMs) {
+    // GPS-track learning removed: never sync learning data to the server.
+    return;
     if (!isLearningSyncAvailable()) return;
     if (tracker.learningSync.timer) {
       clearTimeout(tracker.learningSync.timer);
@@ -13029,12 +13038,8 @@
   }
 
   function shouldAutoStartPoekhaliRun() {
-    // Never start a new GPS/run flow implicitly on mode entry or visibility change.
-    // Mobile PWA/WebView can show a native geolocation prompt; combining that with
-    // auto preparation makes the screen look frozen. User tap is required.
-    if (!tracker.active || tracker.timerRunning || tracker.runStartPreparing) return false;
-    if (isPageHidden()) return false;
-    return !!getActiveRun();
+    // Trip recording was removed. The mode never starts a run.
+    return false;
   }
 
   function scheduleAutoRunStart(reason, delayMs) {
@@ -13195,20 +13200,53 @@
     tracker.gpsError = '';
     tracker.runStartMessage = '';
     setGpsStatus('GPS', 'is-live');
-    var shouldCaptureTrackData = !!(tracker.timerRunning || tracker.runStartPreparing);
+    updateTripMetricsFromPosition(position);
 
     if (!tracker.assetsLoaded) {
       tracker.projection = null;
       tracker.status = 'loading';
       updateAutoPositionState('loading', null, 'GPS получен, карта еще загружается.');
-      if (shouldCaptureTrackData) recordRawLearningSample(position, null);
     } else {
-      var projection = applyTrackProjection(position.coords);
-      if (shouldCaptureTrackData) recordLearningSample(position, projection);
-      updateActiveRunFromProjection(projection, position);
-      if (projection && projection.onTrack) maybeAutoResumePausedRun('gps-reconnect');
+      applyTrackProjection(position.coords);
     }
     requestDraw();
+  }
+
+  // Lightweight in-memory trip timer + technical speed. No trips are recorded or
+  // synced; the timer auto-starts on the first GPS fix and resets on mode exit.
+  function updateTripMetricsFromPosition(position) {
+    if (!tracker.timerRunning) {
+      tracker.timerStartedAt = Date.now();
+      tracker.timerRunning = true;
+    }
+    var coords = position && position.coords;
+    if (!coords || !isRealNumber(coords.latitude) || !isRealNumber(coords.longitude)) return;
+    var acc = Number(coords.accuracy);
+    if (isFinite(acc) && acc > LEARNING_MAX_ACCURACY_M) {
+      tracker.tripLastFix = { lat: coords.latitude, lon: coords.longitude };
+      return;
+    }
+    if (tracker.tripLastFix) {
+      var step = haversine(tracker.tripLastFix.lat, tracker.tripLastFix.lon, coords.latitude, coords.longitude);
+      if (isFinite(step) && step >= TRIP_MIN_DISTANCE_STEP_M && step <= TRIP_MAX_DISTANCE_STEP_M) {
+        tracker.tripDistanceM += step;
+      }
+    }
+    tracker.tripLastFix = { lat: coords.latitude, lon: coords.longitude };
+  }
+
+  function getTripTechnicalSpeedKmh() {
+    var elapsedMs = getTimerElapsed();
+    if (!(elapsedMs > 0) || !(tracker.tripDistanceM > 0)) return null;
+    return tracker.tripDistanceM / 1000 / (elapsedMs / 3600000);
+  }
+
+  function resetTripMetrics() {
+    tracker.timerRunning = false;
+    tracker.timerStartedAt = 0;
+    tracker.timerElapsedMs = 0;
+    tracker.tripDistanceM = 0;
+    tracker.tripLastFix = null;
   }
 
   function handleGpsError(error) {
@@ -13239,28 +13277,24 @@
   }
 
   function shouldKeepGpsWatching() {
-    if (!tracker.active) return false;
-    if (tracker.timerRunning || tracker.runStartPreparing) return true;
-    return shouldAutoResumePausedRun();
+    // GPS is now a passive, always-on positioning source while the Poekhali mode
+    // is open. It is no longer gated on trip recording.
+    return !!tracker.active;
   }
 
   function getGpsPollOptions() {
-    if (tracker.runStartPreparing) return GPS_START_OPTIONS;
     if (isPageHidden()) return GPS_HIDDEN_OPTIONS;
-    return tracker.timerRunning ? GPS_ACTIVE_OPTIONS : GPS_IDLE_OPTIONS;
+    return GPS_ACTIVE_OPTIONS;
   }
 
   function getGpsPollIntervalMs(hasError) {
     if (!shouldKeepGpsWatching()) return 0;
     if (hasError) return GPS_ERROR_POLL_INTERVAL_MS;
-    if (tracker.runStartPreparing) return GPS_START_POLL_INTERVAL_MS;
     if (isPageHidden()) return GPS_HIDDEN_POLL_INTERVAL_MS;
     var rawSpeed = tracker.lastLocation && tracker.lastLocation.coords
       ? Number(tracker.lastLocation.coords.speed)
       : NaN;
-    var run = getActiveRun();
-    var runSpeed = run && run.lastPoint ? Number(run.lastPoint.speedKmh) / 3.6 : 0;
-    var speed = Math.max(0, isFinite(rawSpeed) ? rawSpeed : 0, isFinite(runSpeed) ? runSpeed : 0);
+    var speed = Math.max(0, isFinite(rawSpeed) ? rawSpeed : 0);
     if (!isFinite(rawSpeed) && !speed) return GPS_ACTIVE_POLL_INTERVAL_MS;
     if (speed >= 10) return GPS_FAST_POLL_INTERVAL_MS;
     if (speed <= 1.2) return GPS_SLOW_POLL_INTERVAL_MS;
@@ -13859,8 +13893,7 @@
     if (fs === 'unsupported') return 'нет API';
     if (fs === 'timeout') return 'таймаут';
     if (fs === 'unavailable') return 'нет связи';
-    var watching = !!(tracker.timerRunning || tracker.runStartPreparing);
-    if (watching && !tracker.lastLocation && (tracker.status === 'waiting' || tracker.status === 'loading')) {
+    if (tracker.active && !tracker.lastLocation && (tracker.status === 'waiting' || tracker.status === 'loading')) {
       return 'поиск…';
     }
     if (!tracker.lastLocation && tracker.passiveGpsInFlight) return 'поиск…';
@@ -13903,54 +13936,33 @@
     var metaEl = el.querySelector('.poekhali-live-gps-meta');
     if (!dot || !stack || !metaEl) return;
 
-    var activeRun = getActiveRun();
-    var details = getPoekhaliTrainDetails();
     delete el.dataset.controlLabel;
 
-    el.classList.toggle('is-recording', !!tracker.timerRunning);
-    el.classList.toggle('is-preparing', !!tracker.runStartPreparing);
-    el.classList.toggle('is-paused', !tracker.timerRunning && !!activeRun);
-    el.classList.toggle('is-blocked', !tracker.timerRunning && (!details || !details.hasShift || tracker.status === 'run-blocked'));
+    var tone = getPoekhaliGpsStackToneClass();
 
-    dot.classList.remove('is-dot-rec', 'is-dot-preparing', 'is-dot-pause', 'is-dot-idle');
-    if (tracker.timerRunning) {
-      dot.textContent = '●';
-      dot.classList.add('is-dot-rec');
-    } else if (tracker.runStartPreparing) {
-      dot.textContent = '●';
-      dot.classList.add('is-dot-preparing');
-    } else if (activeRun) {
-      dot.textContent = 'II';
-      dot.classList.add('is-dot-pause');
-    } else {
-      dot.textContent = '●';
-      dot.classList.add('is-dot-idle');
-    }
+    // The button is now a passive GPS connection indicator. The dot just mirrors
+    // the connection quality tone; there are no recording states.
+    el.classList.remove('is-recording', 'is-preparing', 'is-paused', 'is-blocked');
+
+    dot.classList.remove('is-dot-rec', 'is-dot-preparing', 'is-dot-pause', 'is-dot-idle', 'is-gps-ok', 'is-gps-warn', 'is-gps-muted', 'is-gps-error');
+    dot.textContent = '●';
+    dot.classList.add(tone);
 
     stack.classList.remove('is-gps-ok', 'is-gps-warn', 'is-gps-muted', 'is-gps-error');
-    stack.classList.add(getPoekhaliGpsStackToneClass());
+    stack.classList.add(tone);
 
     metaEl.textContent = getPoekhaliGpsMetaLine();
 
-    var title = tracker.runStartPreparing
-      ? 'Запуск записи и GPS: готовлю карту и смену. Нажмите — отменить подготовку'
-      : tracker.timerRunning
-        ? 'Запись · GPS активен · ' + formatTimer(getTimerElapsed()) + '. Нажмите — пауза'
-        : activeRun
-          ? 'Запись на паузе · GPS при возобновлении. Нажмите — продолжить'
-          : !details || !details.hasShift
-            ? 'Нажмите — пробить GPS; смену и детали поездки — кнопка направления «АВТО» внизу'
-            : details.shift && details.shift.id && (tracker.autoRunSuppressedShiftId === String(details.shift.id) || hasFinishedRunForShift(details.shift.id))
-              ? 'Поездка завершена. Нажмите — новая запись и GPS'
-              : tracker.status === 'run-blocked'
-                ? (tracker.runStartMessage || 'Проверьте смену, маршрут и GPS')
-                : 'Нажмите — включить GPS и запись поездки';
-    title +=
-      ' Точка: красная — запись; янтарная — подготовка; жёлтый «II» — пауза; серая — запись выключена.' +
-      ' Справа одной строкой «GPS · …»: цветом показано качество приёма (зелёный / жёлтый / красный / серый); после точки точность GPS ±м; число спутников показывается только если браузер его реально отдаёт.';
+    var title = tone === 'is-gps-ok'
+      ? 'GPS подключён'
+      : tone === 'is-gps-warn'
+        ? 'GPS: слабый сигнал'
+        : tone === 'is-gps-error'
+          ? 'GPS недоступен. Нажмите — повторить попытку'
+          : 'Поиск GPS…';
     var gpsHint = String(el.dataset.fullText || '').trim();
-    if (gpsHint && !tracker.timerRunning && !tracker.runStartPreparing) {
-      title = title + ' Карта/маршрут: ' + gpsHint + '.';
+    if (gpsHint && gpsHint !== 'GPS') {
+      title = title + ' · ' + gpsHint;
     }
     el.title = title;
     el.setAttribute('aria-label', title);
@@ -18875,14 +18887,12 @@
   function publishPoekhaliHtmlHud(hasProjection) {
     if (!POEKHALI_HTML_HUD) return;
     var hud = tracker.hud || {};
-    var run = getActiveRun();
     var speedKmh = Math.max(0, (Number(tracker.speedMps) || 0) * 3.6);
     var limit = tracker.activeRestriction && tracker.activeRestriction.speedKmh > 0
       ? tracker.activeRestriction.speedKmh : null;
     var timerMs = 0;
     try { timerMs = getTimerElapsed(); } catch (e) {}
-    var techSpeed = run && isFinite(run.technicalSpeedKmh) && run.technicalSpeedKmh > 0
-      ? run.technicalSpeedKmh : null;
+    var techSpeed = getTripTechnicalSpeedKmh();
     window.poekhaliHud = {
       at: Date.now(),
       hasProjection: !!hasProjection,
@@ -18899,7 +18909,9 @@
       stationLabel: hud.stationLabel || '',
       msk: hud.msk || (tracker.poekhaliMskClockDisplay || ''),
       timerMs: timerMs,
-      techSpeedKmh: techSpeed
+      techSpeedKmh: techSpeed,
+      gpsTone: getPoekhaliGpsStackToneClass(),
+      gpsMeta: getPoekhaliGpsMetaLine()
     };
   }
 
@@ -19166,9 +19178,8 @@
     loadSpeedDocs();
     loadRegimeMaps();
     loadAdminMap();
-    preparePoekhaliModeEntry().then(function() {
-      scheduleAutoRunStart('entry', AUTO_RUN_START_DELAY_MS);
-    });
+    resetTripMetrics();
+    preparePoekhaliModeEntry();
     if (shouldKeepGpsWatching()) startWatchingGps();
     resizeCanvas();
     drawCanvas();
@@ -19185,12 +19196,7 @@
     gpsConnectionToastState.hadErrorUi = false;
     stopPoekhaliMskClock();
     clearAutoRunTimer();
-    if (tracker.timerRunning) {
-      tracker.timerElapsedMs = getTimerElapsed();
-      tracker.timerRunning = false;
-      tracker.manualRunPause = false;
-      pauseActiveRun();
-    }
+    resetTripMetrics();
     tracker.runStartPreparing = false;
     tracker.runStartToken = 0;
     tracker.active = false;
@@ -19245,23 +19251,10 @@
     if (liveBtn) {
       liveBtn.addEventListener('click', function() {
         closeMapPicker();
-        if (tracker.timerRunning || tracker.runStartPreparing) {
-          setTimerRunning(false);
-          return;
-        }
-        var details = getPoekhaliTrainDetails();
-        if (!details || !details.hasShift) {
-          requestPassiveGpsFix();
-          return;
-        }
-        // Do not combine permission probing with run startup in one tap: on mobile
-        // WebView/PWA it can freeze the screen behind the native location flow.
-        // First tap gets/refreshes a GPS point, next tap starts the trip once a point exists.
-        if (!tracker.lastLocation || !tracker.projection || !tracker.projection.onTrack) {
-          requestPassiveGpsFix();
-          return;
-        }
-        setTimerRunning(true);
+        // GPS is a passive status indicator now. Tapping only re-kicks the always-on
+        // watch so a stalled/denied fix can be retried (it may re-prompt permission).
+        restartWatchingGps();
+        syncPoekhaliLiveButton();
       });
     }
 

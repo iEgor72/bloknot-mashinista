@@ -366,6 +366,16 @@ if (typeof bootstrapAppStartup === 'function') {
     syncWayLabel();
     window.setInterval(syncWayLabel, 1000);
   })();
+
+  // Top-bar GPS chip → re-kick the always-on GPS watch (passive status, no recording).
+  (function bindGpsChip() {
+    var gpsChip = document.getElementById('appTopBarGps');
+    if (!gpsChip) return;
+    gpsChip.addEventListener('click', function() {
+      var legacy = document.getElementById('btnPoekhaliLive');
+      if (legacy) legacy.click();
+    });
+  })();
   // Initial
   var initial = document.querySelector('.tab-panel.active');
   applyForTab(initial ? initial.getAttribute('data-tab') : 'home');
@@ -506,11 +516,14 @@ if (typeof bootstrapAppStartup === 'function') {
       var v = dirChip.querySelector('.v');
       if (v) v.textContent = (dirBtn.textContent || '').trim() || 'АВТО';
     }
-    // GPS chip
-    var liveBtn = document.getElementById('btnPoekhaliLive');
-    var formatChip = document.getElementById('trkChipFormat');
-    if (liveBtn && formatChip) {
-      formatChip.classList.toggle('is-on', liveBtn.classList.contains('is-on'));
+    // GPS status chip (top bar) — passive connection indicator fed by poekhaliHud.
+    var gpsChip = document.getElementById('appTopBarGps');
+    if (gpsChip) {
+      var tone = hud.gpsTone || 'is-gps-muted';
+      gpsChip.classList.remove('is-gps-ok', 'is-gps-warn', 'is-gps-muted', 'is-gps-error', 'is-on');
+      gpsChip.classList.add(tone);
+      var gpsWord = gpsChip.querySelector('.app-top-bar-gps-word');
+      if (gpsWord) gpsWord.textContent = hud.gpsMeta && hud.gpsMeta !== '—' ? ('GPS · ' + hud.gpsMeta) : 'GPS';
     }
   }
 

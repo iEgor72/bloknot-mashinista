@@ -5016,3 +5016,21 @@ Append-only журнал действий ИИ-агентов по проект�
 - Branch: `main`
 - Methods: `render.js buildShiftShareBadgeHtml: outgoing badge (BrigadePartners.getSharedPairing`, `accent) + incoming badge (sh.shared_source_id`, `green) injected into shift-card-title`, `55-partners.css .shift-share-mark`, `sw v333. Verified in preview: both badges render with correct titles/colors`, `no console errors.`
 - Files: `scripts/render.js`, `styles/55-partners.css`, `sw.js`
+
+## 2026-05-31 13:08:57 +1000
+
+- Source: `post-commit`
+- Task: @ chore: checkpoint working tree before Poekhali rework
+- Branch: `poekhali-rework`
+- Methods: `git post-commit hook`, `automatic memory update`
+- Files: `admin.html`, `ai-memory/CHANGELOG.md`, `ai-memory/sessions/2026-05-13.md`, `ai-memory/sessions/2026-05-15.md`, `ai-memory/sessions/2026-05-16.md`, `ai-memory/sessions/2026-05-17.md`, `ai-memory/sessions/2026-05-30.md`, `ai-memory/sessions/2026-05-31.md`, `index.html`, `scripts/admin.js`, `scripts/app-init.js`, `scripts/app.js`, `scripts/docs-app.js`, `scripts/partner-smoke.mjs`, `scripts/partners.js`, `scripts/poekhali-tracker.js`, `scripts/render.js`, `scripts/shift-form.js`, `scripts/time-utils.js`, `scripts/viewport.js`, `server.js`, `styles/10-navigation-and-cards.css`, `styles/15-bottom-nav.css`, `styles/20-form-and-stats.css`, `styles/50-design-refresh.css`, `styles/55-partners.css`, `styles/admin-design-refresh.css`, `styles/admin.css`, `sw.js`
+- Notes: Commit: `f5393c75a3a46dd85a2513a059f675bbb52ed300` (`f5393c7`) | Author: `iEgor72`
+
+## 2026-05-31 13:09:08 +1000
+
+- Source: `post-commit`
+- Task: chore: checkpoint working tree before Poekhali rework
+- Branch: `poekhali-rework`
+- Methods: `git post-commit hook`, `automatic memory update`
+- Files: `admin.html`, `ai-memory/CHANGELOG.md`, `ai-memory/sessions/2026-05-13.md`, `ai-memory/sessions/2026-05-15.md`, `ai-memory/sessions/2026-05-16.md`, `ai-memory/sessions/2026-05-17.md`, `ai-memory/sessions/2026-05-30.md`, `ai-memory/sessions/2026-05-31.md`, `index.html`, `scripts/admin.js`, `scripts/app-init.js`, `scripts/app.js`, `scripts/docs-app.js`, `scripts/partner-smoke.mjs`, `scripts/partners.js`, `scripts/poekhali-tracker.js`, `scripts/render.js`, `scripts/shift-form.js`, `scripts/time-utils.js`, `scripts/viewport.js`, `server.js`, `styles/10-navigation-and-cards.css`, `styles/15-bottom-nav.css`, `styles/20-form-and-stats.css`, `styles/50-design-refresh.css`, `styles/55-partners.css`, `styles/admin-design-refresh.css`, `styles/admin.css`, `sw.js`
+- Notes: Commit: `65fcb69ee8d03a3a92f5e572190ee80e66256157` (`65fcb69`) | Author: `iEgor72`

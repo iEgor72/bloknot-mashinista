@@ -3376,6 +3376,44 @@ details.optional-card[open] .optional-summary-chevron {
   box-shadow: 0 0 6px color-mix(in oklch, var(--good) 60%, transparent);
 }
 
+/* Passive GPS connection tones (set from poekhaliHud) */
+.app-top-bar-gps.is-gps-ok {
+  background: color-mix(in oklch, var(--good) 18%, transparent);
+  border-color: color-mix(in oklch, var(--good) 32%, transparent);
+  color: var(--good);
+}
+.app-top-bar-gps.is-gps-ok .app-top-bar-gps-dot {
+  background: var(--good);
+  box-shadow: 0 0 6px color-mix(in oklch, var(--good) 60%, transparent);
+}
+.app-top-bar-gps.is-gps-warn {
+  background: color-mix(in oklch, #f5b417 18%, transparent);
+  border-color: color-mix(in oklch, #f5b417 32%, transparent);
+  color: #f5b417;
+}
+.app-top-bar-gps.is-gps-warn .app-top-bar-gps-dot {
+  background: #f5b417;
+  box-shadow: 0 0 6px color-mix(in oklch, #f5b417 60%, transparent);
+}
+.app-top-bar-gps.is-gps-muted {
+  background: color-mix(in oklch, var(--ink-3) 14%, transparent);
+  border-color: color-mix(in oklch, var(--ink-3) 28%, transparent);
+  color: var(--ink-3);
+}
+.app-top-bar-gps.is-gps-muted .app-top-bar-gps-dot {
+  background: var(--ink-3);
+  box-shadow: none;
+}
+.app-top-bar-gps.is-gps-error {
+  background: color-mix(in oklch, var(--bad) 18%, transparent);
+  border-color: color-mix(in oklch, var(--bad) 32%, transparent);
+  color: var(--bad);
+}
+.app-top-bar-gps.is-gps-error .app-top-bar-gps-dot {
+  background: var(--bad);
+  box-shadow: 0 0 6px color-mix(in oklch, var(--bad) 60%, transparent);
+}
+
 /* Way chip in top bar (Poekhali only) — Путь · П 1 */
 .app-top-bar-way {
   display: inline-flex;

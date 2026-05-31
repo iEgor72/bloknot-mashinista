@@ -795,31 +795,22 @@
       font-weight: 900;
     }
 
-    .poekhali-live-dot.is-dot-rec {
-      color: #f87171;
-      text-shadow: 0 0 10px rgba(248, 113, 113, 0.35);
+    /* Passive GPS connection indicator — dot colour mirrors connection quality. */
+    .poekhali-live-dot.is-gps-ok {
+      color: #86efac;
+      text-shadow: 0 0 10px rgba(134, 239, 172, 0.3);
     }
 
-    .poekhali-live-dot.is-dot-preparing {
-      color: #fb923c;
-      animation: poekhali-live-dot-pulse 1.15s ease-in-out infinite;
+    .poekhali-live-dot.is-gps-warn {
+      color: #fcd34d;
     }
 
-    .poekhali-live-dot.is-dot-pause {
-      color: #fbbf24;
-      font-size: 11px;
-      font-weight: 900;
-      letter-spacing: 0.06em;
+    .poekhali-live-dot.is-gps-muted {
+      color: rgba(148, 163, 184, 0.55);
     }
 
-    .poekhali-live-dot.is-dot-idle {
-      color: rgba(148, 163, 184, 0.42);
-      font-size: 14px;
-    }
-
-    @keyframes poekhali-live-dot-pulse {
-      0%, 100% { opacity: 1; transform: scale(1); }
-      50% { opacity: 0.62; transform: scale(0.92); }
+    .poekhali-live-dot.is-gps-error {
+      color: #fda4af;
     }
 
     .poekhali-live-gps {
