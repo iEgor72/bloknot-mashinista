@@ -1,14 +1,14 @@
 # Project State
 
 <!-- AUTO_STATUS:START -->
-Generated: 2026-05-31 13:16:40 +1000
+Generated: 2026-05-31 13:28:44 +1000
 
 ## Repository Snapshot
 - Local repo path: `D:\work\bloknot-mashinista-tg`
 - Project memory path: `D:\work\bloknot-mashinista-tg\ai-memory`
 - Branch: `poekhali-rework`
-- HEAD: `fd5d6d2`
-- Last commit: `fd5d6d2 feat(poekhali): GPS passive status + neutralize trip recording`
+- HEAD: `35786d8`
+- Last commit: `35786d8 feat(poekhali): manual speeds with 3 categories, replace recording UI`
 
 ## Git Remote
 ```text
@@ -21,7 +21,7 @@ origin	https://github.com/iEgor72/bloknot-mashinista.git (push)
 codex/next-direction b044dd5 offline mvp
   codex/tabs-ui        117f1fa [origin/codex/tabs-ui] tabs ui
   main                 ad53dff [origin/main] chore(memory): record poekhali deploy
-* poekhali-rework      fd5d6d2 feat(poekhali): GPS passive status + neutralize trip recording
+* poekhali-rework      35786d8 feat(poekhali): manual speeds with 3 categories, replace recording UI
 ```
 
 ## Worktree

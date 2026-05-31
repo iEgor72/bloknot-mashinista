@@ -527,6 +527,20 @@ if (typeof bootstrapAppStartup === 'function') {
     }
   }
 
+  // Open the speed editor (ops sheet → «Скорости») by tapping the profile or the limit tile.
+  (function bindSpeedEditorEntry() {
+    function openSpeeds() {
+      if (typeof window.poekhaliOpenSpeedEditor === 'function') window.poekhaliOpenSpeedEditor();
+    }
+    var profileCard = design.querySelector('.trk-profile-card');
+    if (profileCard) profileCard.addEventListener('click', openSpeeds);
+    var limitTile = design.querySelector('.trk-metric.is-limit');
+    if (limitTile) {
+      limitTile.style.cursor = 'pointer';
+      limitTile.addEventListener('click', openSpeeds);
+    }
+  })();
+
   updatePlate();
   updateLive();
   // poll every 500ms while tab open

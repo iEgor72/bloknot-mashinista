@@ -19428,6 +19428,12 @@
   }
 
   function bindControls() {
+    // Entry point for the new-design layer (app-init.js) to open the speed editor.
+    window.poekhaliOpenSpeedEditor = function() {
+      tracker.opsView = 'drive';
+      openOpsSheet();
+    };
+
     var directionBtn = byId('btnPoekhaliDirection');
     if (directionBtn) {
       directionBtn.addEventListener('click', function() {
