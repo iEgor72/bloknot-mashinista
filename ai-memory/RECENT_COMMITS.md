@@ -1,9 +1,10 @@
 # Recent Commits
 
-Generated: 2026-05-31 19:35:28 +1000
+Generated: 2026-05-31 19:46:44 +1000
 
 | Hash | Date | Author | Message |
 | --- | --- | --- | --- |
+| `081b7ae` | 2026-05-31T19:46:43+10:00 | iEgor72 | refactor(poekhali): delete the dead run subsystem (~2000 lines) |
 | `d5096d9` | 2026-05-31T19:35:27+10:00 | iEgor72 | refactor(poekhali): remove run journal UI and run refs from debug/backup |
 | `6b54c1c` | 2026-05-31T19:28:09+10:00 | iEgor72 | refactor(poekhali): drop auto-run triggers and run/learning sync init wiring |
 | `9064eac` | 2026-05-31T19:26:27+10:00 | iEgor72 | refactor(poekhali): delete GPS learning-sample capture functions |
@@ -43,4 +44,3 @@ Generated: 2026-05-31 19:35:28 +1000
 | `0a8760d` | 2026-05-06T23:53:28Z | iEgor72 | chore(memory): refresh after poekhali hang fix |
 | `1ba44a2` | 2026-05-06T23:53:11Z | iEgor72 | fix(poekhali): cache signal direction during drawing |
 | `5257931` | 2026-05-06T22:46:12Z | iEgor72 | chore(memory): refresh after station hud fix |
-| `c99b6dc` | 2026-05-06T22:46:03Z | iEgor72 | fix(poekhali): show current station separately from next target |

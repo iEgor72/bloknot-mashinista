@@ -5148,3 +5148,20 @@ Append-only журнал действий ИИ-агентов по проект�
 - Methods: `git post-commit hook`, `automatic memory update`
 - Files: `ai-memory/CHANGELOG.md`, `ai-memory/INDEX.md`, `ai-memory/PROJECT_STATE.md`, `ai-memory/RECENT_COMMITS.md`, `ai-memory/WORKTREE_STATUS.md`, `ai-memory/sessions/2026-05-31.md`, `scripts/poekhali-tracker.js`
 - Notes: Commit: `d5096d9f87bf14e3ad839448592e3083996bb400` (`d5096d9`) | Author: `iEgor72`
+
+## 2026-05-31 19:46:43 +1000
+
+- Source: `post-commit`
+- Task: refactor(poekhali): delete the dead run subsystem (~2000 lines)
+- Branch: `poekhali-rework`
+- Methods: `git post-commit hook`, `automatic memory update`
+- Files: `ai-memory/CHANGELOG.md`, `ai-memory/INDEX.md`, `ai-memory/PROJECT_STATE.md`, `ai-memory/RECENT_COMMITS.md`, `ai-memory/WORKTREE_STATUS.md`, `ai-memory/sessions/2026-05-31.md`, `scripts/poekhali-tracker.js`
+- Notes: Commit: `081b7aecd82f615fb47a1c864f9973919c518cde` (`081b7ae`) | Author: `iEgor72`
+
+## 2026-05-31 19:47:51 +1000
+
+- Source: `manual`
+- Task: Poekhali: delete dead run subsystem (~1935 lines), neutralize learning sync
+- Branch: `poekhali-rework`
+- Methods: `sed-delete run point/lifecycle/sync/format/alert/auto-run clusters`, `getActiveRun/updateActiveRunNavigationState inert stubs`, `strip run refs from diagnostics/prod-audit/backup`, `keep learning store for user speed sections`
+- Files: `scripts/poekhali-tracker.js`, `server.js`

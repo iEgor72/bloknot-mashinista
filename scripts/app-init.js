@@ -468,19 +468,21 @@ if (typeof bootstrapAppStartup === 'function') {
     var hud = window.poekhaliHud || {};
     var set = function(id, val) { var el = document.getElementById(id); if (el) el.textContent = val; };
 
-    // Current speed
+    // Фактическая (actual) speed
     var speedKmh = isFinite(hud.speedKmh) ? Math.max(0, Number(hud.speedKmh)) : 0;
     set('trkSpeed', hud.speedMeters ? speedKmh.toFixed(1) : String(Math.round(speedKmh)));
 
-    // Overspeed: flip the current-speed colour when above the active limit.
+    // Допустимая (allowed) speed — shown next to the actual one.
+    set('trkAllow', (isFinite(hud.limitKmh) && hud.limitKmh > 0) ? String(Math.round(hud.limitKmh)) : '—');
+
+    // Overspeed: flip the actual-speed colour when above the allowed limit.
     var speedo = document.getElementById('trkSpeedo');
     if (speedo) {
       var over = isFinite(hud.limitKmh) && hud.limitKmh > 0 && speedKmh > hud.limitKmh + 1;
       speedo.classList.toggle('is-over', !!over);
     }
 
-    // Лимит / Уклон / Далее
-    set('trkLimit', (isFinite(hud.limitKmh) && hud.limitKmh > 0) ? (Math.round(hud.limitKmh) + ' км/ч') : '—');
+    // Уклон / Далее
     set('trkGrade', hud.gradeText || '—');
     set('trkReach', hud.reachText || '—');
 
@@ -534,10 +536,10 @@ if (typeof bootstrapAppStartup === 'function') {
     }
     var profileCard = design.querySelector('.trk-profile-card');
     if (profileCard) profileCard.addEventListener('click', openSpeeds);
-    var limitTile = design.querySelector('.trk-metric.is-limit');
-    if (limitTile) {
-      limitTile.style.cursor = 'pointer';
-      limitTile.addEventListener('click', openSpeeds);
+    var speedo = design.querySelector('#trkSpeedo');
+    if (speedo) {
+      speedo.style.cursor = 'pointer';
+      speedo.addEventListener('click', openSpeeds);
     }
   })();
 

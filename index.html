@@ -406,24 +406,31 @@
             </div>
           </div>
 
-          <!-- Current speed + МСК clock -->
+          <!-- Speed: фактическая + допустимая together (КЛУБ-style) + МСК clock -->
           <div class="speedo" id="trkSpeedo">
             <div class="speedo-main">
-              <div class="speedo-label">Текущая скорость</div>
-              <div class="speedo-speed">
-                <span class="speedo-speed-val num" id="trkSpeed">0</span>
+              <div class="speedo-pair">
+                <div class="speedo-cell">
+                  <div class="speedo-label">Факт.</div>
+                  <div class="speedo-speed">
+                    <span class="speedo-speed-val num" id="trkSpeed">0</span>
+                  </div>
+                </div>
+                <div class="speedo-sep" aria-hidden="true"></div>
+                <div class="speedo-cell">
+                  <div class="speedo-label">Доп.</div>
+                  <div class="speedo-speed">
+                    <span class="speedo-allow-val num" id="trkAllow">—</span>
+                  </div>
+                </div>
                 <span class="speedo-speed-unit">км/ч</span>
               </div>
             </div>
             <div class="speedo-clock num" id="trkClock">—</div>
           </div>
 
-          <!-- Limit · grade · next-distance metric row -->
+          <!-- Grade · next-distance metric row (limit moved into the speed block) -->
           <div class="trk-metrics" id="trkMetrics">
-            <div class="trk-metric is-limit">
-              <div class="trk-metric-l">Лимит</div>
-              <div class="trk-metric-v num" id="trkLimit">—</div>
-            </div>
             <div class="trk-metric is-grade">
               <div class="trk-metric-l">Уклон</div>
               <div class="trk-metric-v num" id="trkGrade">—</div>

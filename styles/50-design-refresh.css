@@ -1233,32 +1233,48 @@ body::after { content: none; }
   font: 600 9px/1 'Manrope'; letter-spacing: 0.16em;
   color: var(--ink-3); text-transform: uppercase;
 }
+/* Фактическая (cyan) и допустимая (red) скорость рядом — как на КЛУБ-У. */
+.speedo-pair {
+  display: flex; align-items: baseline; gap: 14px; margin-top: 6px;
+}
+.speedo-cell { display: flex; flex-direction: column; gap: 6px; min-width: 0; }
+.speedo-sep {
+  align-self: stretch; width: 1px; margin: 4px 0;
+  background: var(--hair-strong);
+}
 .speedo-speed {
-  display: flex; align-items: baseline; gap: 8px; margin-top: 8px;
+  display: flex; align-items: baseline; gap: 8px;
 }
 .speedo-speed-val {
-  font: 700 54px/0.9 'JetBrains Mono';
+  font: 700 46px/0.9 'JetBrains Mono';
   letter-spacing: -0.03em; font-variant-numeric: tabular-nums;
   color: var(--accent);
   text-shadow: 0 0 18px color-mix(in oklch, var(--accent) 40%, transparent);
 }
+.speedo-allow-val {
+  font: 700 46px/0.9 'JetBrains Mono';
+  letter-spacing: -0.03em; font-variant-numeric: tabular-nums;
+  color: var(--bad);
+  text-shadow: 0 0 18px color-mix(in oklch, var(--bad) 40%, transparent);
+}
 .speedo-speed-unit {
   font: 700 14px/1 'Manrope'; letter-spacing: 0.04em; color: var(--ink-2);
+  align-self: baseline;
 }
 .speedo-clock {
   font: 700 17px/1 'JetBrains Mono'; color: var(--ink-2);
   font-variant-numeric: tabular-nums;
 }
-/* Overspeed: flip the current-speed accent to the danger colour. */
+/* Overspeed: flip the actual-speed accent to the danger colour. */
 .speedo.is-over .speedo-speed-val {
   color: var(--bad);
   text-shadow: 0 0 18px color-mix(in oklch, var(--bad) 40%, transparent);
 }
 
-/* Лимит · Уклон · Далее metric row */
+/* Уклон · Далее metric row (Лимит moved into the speed block) */
 .trk-metrics {
   margin-top: 8px;
-  display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 8px;
+  display: grid; grid-template-columns: 1fr 1fr; gap: 8px;
 }
 .trk-metric {
   padding: 10px 12px; border-radius: 14px;
