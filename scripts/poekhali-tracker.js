@@ -3078,7 +3078,7 @@
 
   // User speed categories: установленная (set line speed), постоянное и временное ограничение.
   var USER_SPEED_CATEGORIES = ['set', 'permanent', 'temporary'];
-  var speedEditorCategory = 'permanent';
+  var speedEditorCategory = 'temporary';
   function normalizeUserSpeedCategory(value) {
     var v = String(value || '').trim();
     return USER_SPEED_CATEGORIES.indexOf(v) >= 0 ? v : 'permanent';
@@ -6538,7 +6538,7 @@
       var blocked = document.createElement('div');
       blocked.className = 'poekhali-shift-route is-muted';
       blocked.textContent = tracker.assetsLoaded
-        ? 'Нет участка под текущей позицией. Откройте карту участка во вкладке «Карта».'
+        ? 'Нет участка под текущей позицией — карта подтянется по GPS или маршруту смены.'
         : 'Карта участка загружается…';
       section.appendChild(blocked);
       parent.appendChild(section);
@@ -6546,17 +6546,15 @@
     }
 
     var userSection = getUserSectionForSector(sector);
-    var speeds = userSection && Array.isArray(userSection.speeds) ? userSection.speeds.slice() : [];
+    var allSpeeds = userSection && Array.isArray(userSection.speeds) ? userSection.speeds.slice() : [];
+    var speeds = allSpeeds.filter(function(item) {
+      return normalizeUserSpeedCategory(item.category) === speedEditorCategory;
+    });
     total.textContent = speeds.length ? (speeds.length + ' шт.') : 'нет';
-
-    var hint = document.createElement('div');
-    hint.className = 'poekhali-shift-route is-muted';
-    hint.textContent = 'Выберите тип, укажите начало и конец (км · пк) и скорость.';
-    section.appendChild(hint);
 
     var catWrap = document.createElement('div');
     catWrap.className = 'poekhali-speed-cats';
-    [['set', 'Установленная'], ['permanent', 'Постоянное'], ['temporary', 'Временное']].forEach(function(pair) {
+    [['temporary', 'Временное'], ['permanent', 'Постоянное'], ['set', 'Установленная']].forEach(function(pair) {
       var catBtn = document.createElement('button');
       catBtn.type = 'button';
       catBtn.className = 'poekhali-speed-cat' + (speedEditorCategory === pair[0] ? ' is-active' : '');
@@ -6627,7 +6625,7 @@
     if (!speeds.length) {
       var empty = document.createElement('div');
       empty.className = 'poekhali-warning-empty';
-      empty.textContent = 'Скорости пока не добавлены';
+      empty.textContent = getUserSpeedCategoryLabel(speedEditorCategory) + ': пока пусто';
       list.appendChild(empty);
     } else {
       speeds.sort(function(a, b) {
@@ -6639,14 +6637,14 @@
         var text = document.createElement('div');
         text.className = 'poekhali-warning-text';
         var strong = document.createElement('strong');
-        strong.textContent = getUserSpeedCategoryLabel(item.category) + ' · ' + Math.round(item.speed) + ' км/ч';
+        strong.textContent = Math.round(item.speed) + ' км/ч';
         var span = document.createElement('span');
         span.textContent = formatLineCoordinate(item.coordinate) + ' — ' + formatLineCoordinate(item.end);
         text.appendChild(strong);
         text.appendChild(span);
         var del = document.createElement('button');
         del.type = 'button';
-        del.className = 'poekhali-secondary-action';
+        del.className = 'poekhali-warning-delete';
         del.textContent = 'Удалить';
         del.addEventListener('click', function() {
           deleteUserSectionEntity(userSection, 'speed', item.id);
@@ -10269,9 +10267,10 @@
     }
     tracker.opsSheetRenderPending = false;
     clearElement(sheet.content);
-    var details = getPoekhaliTrainDetails();
-    sheet.subtitle.textContent = (details.hasShift ? getShiftSourceLabel(details.source) : 'карточка не найдена') +
-      ' · ' + formatPoekhaliCompositionLength(details);
+    var subtitleSector = getCurrentDisplaySector();
+    sheet.subtitle.textContent = isRealNumber(subtitleSector)
+      ? formatSectorDisplayName(subtitleSector)
+      : 'Участок подтянется по GPS или маршруту';
     tracker.opsView = normalizeOpsView(tracker.opsView);
     renderOpsTabs(sheet.content);
     if (tracker.opsView === 'warnings') {

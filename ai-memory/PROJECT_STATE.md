@@ -1,14 +1,14 @@
 # Project State
 
 <!-- AUTO_STATUS:START -->
-Generated: 2026-06-01 11:23:13 +1000
+Generated: 2026-06-01 11:38:26 +1000
 
 ## Repository Snapshot
 - Local repo path: `D:\work\bloknot-mashinista-tg`
 - Project memory path: `D:\work\bloknot-mashinista-tg\ai-memory`
 - Branch: `poekhali-rework`
-- HEAD: `97dcd24`
-- Last commit: `97dcd24 feat(poekhali): single speed/limit add button with 3-category toggle`
+- HEAD: `80fe503`
+- Last commit: `80fe503 feat(poekhali): editor shows only the speed editor (drop ПР & Карта tabs)`
 
 ## Git Remote
 ```text
@@ -21,7 +21,7 @@ origin	https://github.com/iEgor72/bloknot-mashinista.git (push)
 codex/next-direction b044dd5 offline mvp
   codex/tabs-ui        117f1fa [origin/codex/tabs-ui] tabs ui
   main                 ad53dff [origin/main] chore(memory): record poekhali deploy
-* poekhali-rework      97dcd24 feat(poekhali): single speed/limit add button with 3-category toggle
+* poekhali-rework      80fe503 feat(poekhali): editor shows only the speed editor (drop ПР & Карта tabs)
 ```
 
 ## Worktree
