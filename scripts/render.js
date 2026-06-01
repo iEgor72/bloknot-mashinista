@@ -667,8 +667,15 @@
         sparkSvgEl.style.filter = 'drop-shadow(0 0 6px color-mix(in oklch, ' + toneColor + ' 32%, transparent))';
       }
 
+      // Empty state: no income across the last 6 months → hide the flat line and
+      // show a soft caption instead of a meaningless grey baseline.
+      var hasData = maxV > 0;
+      var emptyEl = document.getElementById('dashboardSparkEmpty');
+      if (sparkSvgEl) sparkSvgEl.style.display = hasData ? '' : 'none';
+      if (emptyEl) emptyEl.hidden = hasData;
+
       if (deltaEl) {
-        if (diff !== 0 && isFinite(diff)) {
+        if (hasData && diff !== 0 && isFinite(diff)) {
           deltaEl.hidden = false;
           var arrow = diff > 0 ? '↗' : '↘';
           deltaEl.textContent = arrow + ' ' + (typeof formatRub === 'function' ? formatRub(Math.abs(diff)) : Math.round(Math.abs(diff)) + ' ₽');

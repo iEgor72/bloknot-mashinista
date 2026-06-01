@@ -559,6 +559,13 @@ body::after { content: none; }
 .dashboard-month-income-spark svg {
   filter: drop-shadow(0 0 6px color-mix(in oklch, var(--good) 32%, transparent));
 }
+.dashboard-spark-empty {
+  font: 600 10px/1 'Manrope', system-ui, sans-serif;
+  letter-spacing: 0.06em;
+  color: var(--ink-3);
+  opacity: 0.8;
+}
+.dashboard-spark-empty[hidden] { display: none; }
 .hero-income-delta {
   display: inline-flex;
   align-items: center;

@@ -5183,3 +5183,12 @@ Append-only журнал действий ИИ-агентов по проект�
 - Methods: `git post-commit hook`, `automatic memory update`
 - Files: `ai-memory/CHANGELOG.md`, `ai-memory/INDEX.md`, `ai-memory/PROJECT_STATE.md`, `ai-memory/RECENT_COMMITS.md`, `ai-memory/WORKTREE_STATUS.md`, `ai-memory/sessions/2026-05-31.md`, `index.html`, `scripts/app-init.js`, `scripts/poekhali-tracker.js`, `styles/50-design-refresh.css`
 - Notes: Commit: `d579bde361f543f47ca4387943b3058c6840bdf1` (`d579bde`) | Author: `iEgor72`
+
+## 2026-06-01 11:10:24 +1000
+
+- Source: `post-commit`
+- Task: feat(poekhali): visible + Скорость / + Предупреждение buttons above profile
+- Branch: `poekhali-rework`
+- Methods: `git post-commit hook`, `automatic memory update`
+- Files: `ai-memory/CHANGELOG.md`, `ai-memory/INDEX.md`, `ai-memory/PROJECT_STATE.md`, `ai-memory/RECENT_COMMITS.md`, `ai-memory/WORKTREE_STATUS.md`, `ai-memory/sessions/2026-06-01.md`, `index.html`, `scripts/app-init.js`, `scripts/poekhali-tracker.js`, `styles/50-design-refresh.css`
+- Notes: Commit: `cac5a5275a3f160bc5a41102246af1e0b35db308` (`cac5a52`) | Author: `iEgor72`
