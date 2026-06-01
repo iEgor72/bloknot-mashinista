@@ -5201,3 +5201,12 @@ Append-only журнал действий ИИ-агентов по проект�
 - Methods: `git post-commit hook`, `automatic memory update`
 - Files: `ai-memory/CHANGELOG.md`, `ai-memory/INDEX.md`, `ai-memory/PROJECT_STATE.md`, `ai-memory/RECENT_COMMITS.md`, `ai-memory/WORKTREE_STATUS.md`, `ai-memory/sessions/2026-06-01.md`, `index.html`, `scripts/render.js`, `styles/50-design-refresh.css`
 - Notes: Commit: `6903a277d4d34b696567e1fd5cab43d94346d5ce` (`6903a27`) | Author: `iEgor72`
+
+## 2026-06-01 11:20:24 +1000
+
+- Source: `post-commit`
+- Task: fix(poekhali): ops editor sheet was invisible (rendered inside hidden shell)
+- Branch: `poekhali-rework`
+- Methods: `git post-commit hook`, `automatic memory update`
+- Files: `ai-memory/CHANGELOG.md`, `ai-memory/INDEX.md`, `ai-memory/PROJECT_STATE.md`, `ai-memory/RECENT_COMMITS.md`, `ai-memory/WORKTREE_STATUS.md`, `ai-memory/sessions/2026-06-01.md`, `scripts/poekhali-tracker.js`, `styles/10-navigation-and-cards.css`
+- Notes: Commit: `a2c99e81844c2aed861709846cb864eb89f8a434` (`a2c99e8`) | Author: `iEgor72`

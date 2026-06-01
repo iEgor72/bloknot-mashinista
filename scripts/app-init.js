@@ -602,13 +602,8 @@ if (typeof bootstrapAppStartup === 'function') {
     function openSpeeds() {
       if (typeof window.poekhaliOpenSpeedEditor === 'function') window.poekhaliOpenSpeedEditor();
     }
-    function openWarnings() {
-      if (typeof window.poekhaliOpenWarningsEditor === 'function') window.poekhaliOpenWarningsEditor();
-    }
     var addSpeed = document.getElementById('trkAddSpeed');
     if (addSpeed) addSpeed.addEventListener('click', openSpeeds);
-    var addWarning = document.getElementById('trkAddWarning');
-    if (addWarning) addWarning.addEventListener('click', openWarnings);
     var profileCard = design.querySelector('.trk-profile-card');
     if (profileCard) profileCard.addEventListener('click', openSpeeds);
     var speedo = design.querySelector('#trkSpeedo');

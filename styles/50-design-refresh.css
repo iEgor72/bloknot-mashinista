@@ -1315,10 +1315,10 @@ body::after { content: none; }
 .trk-metric.is-grade .trk-metric-v { color: var(--good); }
 .trk-metric.is-reach .trk-metric-v { color: var(--warn); }
 
-/* Add speed / warning entry buttons (above the profile) */
+/* Add speed/limit entry button (above the profile) */
 .trk-edit-actions {
   margin-top: 8px;
-  display: grid; grid-template-columns: 1fr 1fr; gap: 8px;
+  display: grid; grid-template-columns: 1fr; gap: 8px;
 }
 .trk-edit-btn {
   appearance: none; cursor: pointer;
