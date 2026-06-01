@@ -407,7 +407,7 @@
             </div>
           </div>
 
-          <!-- Round speedometer (КЛУБ-style): фактическая в центре, допустимая красным -->
+          <!-- Round speedometer (КЛУБ-style) with integrated stats -->
           <div class="speedo speedo-round" id="trkSpeedo">
             <div class="gauge" id="trkGauge">
               <svg class="gauge-svg" viewBox="0 0 220 220" aria-hidden="true">
@@ -422,62 +422,28 @@
                 <div class="gauge-allow num" id="trkAllow">—</div>
               </div>
             </div>
-            <div class="speedo-foot">
-              <div class="speedo-foot-cell">
-                <span class="speedo-foot-l">Голова состава</span>
-                <span class="speedo-foot-v num" id="trkHeadPos">—</span>
-              </div>
-              <div class="speedo-foot-cell is-right">
-                <span class="speedo-foot-l">Время МСК</span>
-                <span class="speedo-foot-v num" id="trkClock">—</span>
-              </div>
+            <div class="speedo-stats">
+              <div class="speedo-stat"><span class="l">Голова состава</span><span class="v num" id="trkHeadPos">—</span></div>
+              <div class="speedo-stat"><span class="l">Время МСК</span><span class="v num" id="trkClock">—</span></div>
+              <div class="speedo-stat is-grade"><span class="l">Уклон</span><span class="v num" id="trkGrade">—</span></div>
+              <div class="speedo-stat is-reach"><span class="l">Далее</span><span class="v num" id="trkReach">—</span></div>
+              <div class="speedo-stat"><span class="l">В пути</span><span class="v num" id="trkTimer">—</span></div>
+              <div class="speedo-stat is-tech"><span class="l">Тех. скорость</span><span class="v num" id="trkTechSpeed">—</span></div>
             </div>
           </div>
 
-          <!-- Grade · next-distance metric row (limit moved into the speed block) -->
-          <div class="trk-metrics" id="trkMetrics">
-            <div class="trk-metric is-grade">
-              <div class="trk-metric-l">Уклон</div>
-              <div class="trk-metric-v num" id="trkGrade">—</div>
-            </div>
-            <div class="trk-metric is-reach">
-              <div class="trk-metric-l">Далее</div>
-              <div class="trk-metric-v num" id="trkReach">—</div>
-            </div>
-          </div>
-
-          <!-- Add speed/limit entry (3 categories inside the editor) -->
-          <div class="trk-edit-actions">
-            <button type="button" class="trk-edit-btn" id="trkAddSpeed">
-              <span class="trk-edit-plus" aria-hidden="true">+</span> Скорость / ограничение
-            </button>
-          </div>
-
-          <!-- Profile container — canvas occupies all free space until bottom tiles -->
+          <!-- Profile container -->
           <div class="trk-profile-card">
             <div class="trk-profile-canvas-wrap">
               <canvas id="poekhaliCanvas" class="poekhali-canvas trk-profile-canvas" aria-label="Профиль пути"></canvas>
             </div>
           </div>
 
-          <!-- Bottom two tiles -->
-          <div class="trk-bottom">
-            <div class="timer-tile">
-              <span class="timer-dot"></span>
-              <div class="timer-info">
-                <div class="l">В пути</div>
-                <div class="v num" id="trkTimer">—</div>
-              </div>
-            </div>
-            <div class="mode-tile mode-info">
-              <div class="brk-ico">
-                <svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4.2 13.5a6.3 6.3 0 1 1 11.6 0"/><path d="M10 10.4l3.2-2.5"/></svg>
-              </div>
-              <div class="timer-info">
-                <div class="l">Тех. скорость</div>
-                <div class="v num" id="trkTechSpeed">—</div>
-              </div>
-            </div>
+          <!-- Add speed/limit entry — kept at the bottom so it doesn't block driving -->
+          <div class="trk-edit-actions">
+            <button type="button" class="trk-edit-btn" id="trkAddSpeed">
+              <span class="trk-edit-plus" aria-hidden="true">+</span> Скорость / ограничение
+            </button>
           </div>
         </div>
 

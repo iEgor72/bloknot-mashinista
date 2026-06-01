@@ -1,9 +1,10 @@
 # Recent Commits
 
-Generated: 2026-06-01 11:38:26 +1000
+Generated: 2026-06-01 11:46:55 +1000
 
 | Hash | Date | Author | Message |
 | --- | --- | --- | --- |
+| `177ee66` | 2026-06-01T11:46:53+10:00 | iEgor72 | feat(poekhali): per-category speed lists, temporary-first, red delete, cleaner header |
 | `80fe503` | 2026-06-01T11:38:25+10:00 | iEgor72 | feat(poekhali): editor shows only the speed editor (drop ПР & Карта tabs) |
 | `97dcd24` | 2026-06-01T11:23:12+10:00 | iEgor72 | feat(poekhali): single speed/limit add button with 3-category toggle |
 | `a2c99e8` | 2026-06-01T11:20:24+10:00 | iEgor72 | fix(poekhali): ops editor sheet was invisible (rendered inside hidden shell) |
@@ -43,4 +44,3 @@ Generated: 2026-06-01 11:38:26 +1000
 | `b2b0fff` | 2026-05-07T01:13:53Z | iEgor72 | chore(memory): refresh after styled dropdown restore |
 | `fa0fedd` | 2026-05-07T01:13:32Z | iEgor72 | fix(ui): restore styled locomotive series dropdown |
 | `c14d64e` | 2026-05-07T01:09:02Z | iEgor72 | chore(memory): refresh after native select refactor |
-| `2169e63` | 2026-05-07T01:08:38Z | iEgor72 | refactor(ui): use single native locomotive series select |

@@ -1278,18 +1278,23 @@ body::after { content: none; }
   color: var(--bad); margin-top: 6px;
   text-shadow: 0 0 12px color-mix(in oklch, var(--bad) 35%, transparent);
 }
-.speedo-foot {
-  width: 100%; display: flex; justify-content: space-between; align-items: center;
-  border-top: 1px solid var(--hair); padding-top: 8px;
+/* Integrated stats under the gauge (Голова/Время/Уклон/Далее/В пути/Тех.скорость) */
+.speedo-stats {
+  width: 100%;
+  display: grid; grid-template-columns: 1fr 1fr; gap: 9px 14px;
+  border-top: 1px solid var(--hair); padding-top: 10px; margin-top: 2px;
 }
-.speedo-foot-cell { display: flex; flex-direction: column; gap: 3px; min-width: 0; }
-.speedo-foot-cell.is-right { align-items: flex-end; text-align: right; }
-.speedo-foot-l {
+.speedo-stat { display: flex; flex-direction: column; gap: 3px; min-width: 0; }
+.speedo-stat .l {
   font: 600 8.5px/1 'Manrope'; letter-spacing: 0.14em; text-transform: uppercase; color: var(--ink-3);
 }
-.speedo-foot-v {
+.speedo-stat .v {
   font: 700 16px/1 'JetBrains Mono'; font-variant-numeric: tabular-nums; color: var(--ink);
+  white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
 }
+.speedo-stat.is-grade .v { color: var(--good); }
+.speedo-stat.is-reach .v { color: var(--warn); }
+.speedo-stat.is-tech .v { color: var(--accent); }
 
 /* Уклон · Далее metric row (Лимит moved into the speed block) */
 .trk-metrics {
