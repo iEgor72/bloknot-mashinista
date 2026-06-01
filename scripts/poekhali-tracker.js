@@ -17307,9 +17307,13 @@
   }
 
   function bindControls() {
-    // Entry point for the new-design layer (app-init.js) to open the speed editor.
+    // Entry points for the new-design layer (app-init.js) to open the editor sheet.
     window.poekhaliOpenSpeedEditor = function() {
       tracker.opsView = 'drive';
+      openOpsSheet();
+    };
+    window.poekhaliOpenWarningsEditor = function() {
+      tracker.opsView = 'warnings';
       openOpsSheet();
     };
 

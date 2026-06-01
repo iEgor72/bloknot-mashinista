@@ -1,14 +1,14 @@
 # Project State
 
 <!-- AUTO_STATUS:START -->
-Generated: 2026-05-31 20:08:13 +1000
+Generated: 2026-06-01 10:51:35 +1000
 
 ## Repository Snapshot
 - Local repo path: `D:\work\bloknot-mashinista-tg`
 - Project memory path: `D:\work\bloknot-mashinista-tg\ai-memory`
 - Branch: `poekhali-rework`
-- HEAD: `0537747`
-- Last commit: `0537747 feat(poekhali): show actual + allowed speed together (КЛУБ-style)`
+- HEAD: `d579bde`
+- Last commit: `d579bde feat(poekhali): round speedometer + head position; category-colored profile bands`
 
 ## Git Remote
 ```text
@@ -21,13 +21,13 @@ origin	https://github.com/iEgor72/bloknot-mashinista.git (push)
 codex/next-direction b044dd5 offline mvp
   codex/tabs-ui        117f1fa [origin/codex/tabs-ui] tabs ui
   main                 ad53dff [origin/main] chore(memory): record poekhali deploy
-* poekhali-rework      0537747 feat(poekhali): show actual + allowed speed together (КЛУБ-style)
+* poekhali-rework      d579bde feat(poekhali): round speedometer + head position; category-colored profile bands
 ```
 
 ## Worktree
 ```text
 M ai-memory/CHANGELOG.md
- M ai-memory/sessions/2026-05-31.md
+?? ai-memory/sessions/2026-06-01.md
 ```
 <!-- AUTO_STATUS:END -->
 
