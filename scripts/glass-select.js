@@ -28,18 +28,42 @@
     return root.getAttribute('data-placeholder') || '—';
   }
 
-  function emitOption(opt) {
+  // Initials + a deterministic colour from a name, for mini avatars.
+  function initials(name) {
+    var parts = String(name || '').trim().split(/\s+/).filter(Boolean);
+    if (!parts.length) return '';
+    if (parts.length === 1) return parts[0].charAt(0).toUpperCase();
+    return (parts[0].charAt(0) + parts[1].charAt(0)).toUpperCase();
+  }
+  function hueOf(s) {
+    var h = 0; s = String(s || '');
+    for (var i = 0; i < s.length; i++) h = (h * 31 + s.charCodeAt(i)) >>> 0;
+    return h % 360;
+  }
+  function avatarHtml(name) {
+    var ini = initials(name);
+    if (!ini) return '<span class="glass-select-avatar is-empty" aria-hidden="true"></span>';
+    var h = hueOf(name);
+    return '<span class="glass-select-avatar" aria-hidden="true" style="background:hsl(' + h +
+      ' 42% 30%);color:hsl(' + h + ' 65% 85%)">' + esc(ini) + '</span>';
+  }
+
+  function emitOption(opt, withAvatars) {
     if (!opt) return '';
     // Skip the hidden placeholder option (value="" + disabled/hidden).
     if (!opt.value && (opt.disabled || opt.hidden)) return '';
-    return '<button type="button" class="glass-select-option" role="option" aria-selected="false" data-value="' +
-      esc(opt.value) + '">' + esc(opt.textContent) + '</button>';
+    var label = opt.textContent;
+    var avatar = withAvatars ? avatarHtml(opt.value ? label : '') : '';
+    return '<button type="button" class="glass-select-option' + (withAvatars ? ' has-avatar' : '') +
+      '" role="option" aria-selected="false" data-value="' + esc(opt.value) + '">' +
+      avatar + '<span class="glass-select-option-label">' + esc(label) + '</span></button>';
   }
 
   function buildMenu(root) {
     var sel = q(root, 'select');
     var menu = q(root, '.glass-select-menu');
     if (!sel || !menu) return;
+    var withAvatars = root.hasAttribute('data-option-avatars');
     var html = '';
     var kids = sel.children;
     for (var i = 0; i < kids.length; i++) {
@@ -47,9 +71,9 @@
       var tag = (node.tagName || '').toUpperCase();
       if (tag === 'OPTGROUP') {
         html += '<div class="glass-select-group" role="presentation">' + esc(node.label || '') + '</div>';
-        for (var j = 0; j < node.children.length; j++) html += emitOption(node.children[j]);
+        for (var j = 0; j < node.children.length; j++) html += emitOption(node.children[j], withAvatars);
       } else if (tag === 'OPTION') {
-        html += emitOption(node);
+        html += emitOption(node, withAvatars);
       }
     }
     menu.innerHTML = html;

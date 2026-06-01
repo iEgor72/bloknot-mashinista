@@ -830,7 +830,7 @@
 
           <div class="shift-share-row hidden" id="shiftShareRow">
             <span class="shift-share-label">Поделиться сменой</span>
-            <div class="glass-select shift-share-glass" id="shiftShareSelectWrap" data-glass-auto data-placeholder="Не делиться">
+            <div class="glass-select shift-share-glass" id="shiftShareSelectWrap" data-glass-auto data-option-avatars data-placeholder="Не делиться">
               <button class="glass-select-trigger" type="button" aria-haspopup="listbox" aria-expanded="false">
                 <span class="glass-select-value is-placeholder">Не делиться</span>
                 <span class="glass-select-chevron" aria-hidden="true"><svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 8l5 5 5-5"></path></svg></span>
@@ -1382,6 +1382,23 @@
         <span class="salary-settings-header-spacer" aria-hidden="true"></span>
       </div>
 
+      <div class="profile-edit-avatar">
+        <button class="profile-edit-avatar-trigger" id="btnProfilePickPhoto" type="button" aria-label="Изменить фото профиля">
+          <span class="profile-edit-avatar-preview" id="profileEditAvatarPreview" aria-hidden="true"></span>
+          <span class="profile-edit-avatar-badge" aria-hidden="true">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M4 8h3l1.5-2h7L17 8h3v11H4z"></path>
+              <circle cx="12" cy="13" r="3.2"></circle>
+            </svg>
+          </span>
+        </button>
+        <div class="profile-edit-avatar-actions">
+          <div class="profile-edit-avatar-hint">Нажмите на фото, чтобы изменить</div>
+          <button class="btn-link profile-photo-clear hidden" id="btnProfileClearPhoto" type="button">Убрать фото</button>
+        </div>
+        <input type="file" id="inputProfilePhoto" accept="image/*" hidden />
+      </div>
+
       <div class="settings-section-title">Должность</div>
       <div class="settings-card">
         <div class="settings-row settings-row-stack profile-field-row">
@@ -1417,6 +1434,31 @@
 
       <div class="salary-settings-actions">
         <button class="btn-sheet-save" id="btnSaveProfileEdit" type="button">Сохранить</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Avatar Crop Bottom Sheet -->
+  <div class="overlay" id="overlayAvatarCrop">
+    <div class="bottom-sheet avatar-crop-sheet">
+      <div class="salary-settings-header">
+        <span class="salary-settings-header-spacer" aria-hidden="true"></span>
+        <div class="sheet-title">Фото профиля</div>
+        <span class="salary-settings-header-spacer" aria-hidden="true"></span>
+      </div>
+      <div class="avatar-crop-stage" id="avatarCropStage">
+        <img class="avatar-crop-img" id="avatarCropImg" alt="" draggable="false" />
+        <div class="avatar-crop-mask" aria-hidden="true"></div>
+      </div>
+      <div class="avatar-crop-zoom-row">
+        <span class="avatar-crop-zoom-ico avatar-crop-zoom-min" aria-hidden="true">−</span>
+        <input type="range" class="avatar-crop-zoom" id="avatarCropZoom" min="1" max="3" step="0.01" value="1" aria-label="Масштаб" />
+        <span class="avatar-crop-zoom-ico avatar-crop-zoom-max" aria-hidden="true">+</span>
+      </div>
+      <div class="avatar-crop-hint">Перетащите и приблизьте — что в круге, то и будет на аватарке</div>
+      <div class="avatar-crop-actions">
+        <button class="btn-link" id="btnAvatarCropCancel" type="button">Отмена</button>
+        <button class="btn-sheet-save" id="btnAvatarCropSave" type="button">Сохранить</button>
       </div>
     </div>
   </div>

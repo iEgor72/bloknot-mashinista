@@ -163,6 +163,163 @@
 }
 .profile-field-row .glass-select { width: 100%; }
 
+/* Mini avatars inside a glass-select menu (e.g. recipient picker) */
+.glass-select-option.has-avatar {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+.glass-select-option-label {
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.glass-select-avatar {
+  flex: 0 0 auto;
+  width: 26px;
+  height: 26px;
+  border-radius: 50%;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  font-family: 'Manrope', sans-serif;
+  font-weight: 800;
+  font-size: 11px;
+  letter-spacing: 0.01em;
+}
+.glass-select-avatar.is-empty {
+  background: var(--hair-strong, rgba(255, 255, 255, 0.14));
+}
+
+/* Tappable avatar in the profile edit sheet */
+.profile-edit-avatar {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  padding: 2px 0 10px;
+}
+.profile-edit-avatar-trigger {
+  position: relative;
+  flex: 0 0 auto;
+  width: 64px;
+  height: 64px;
+  padding: 0;
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  -webkit-tap-highlight-color: transparent;
+}
+.profile-edit-avatar-trigger:active { transform: scale(0.96); }
+.profile-edit-avatar-preview {
+  width: 100%;
+  height: 100%;
+  border-radius: 50%;
+  overflow: hidden;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--accent, #38bdf8);
+  background: color-mix(in oklch, var(--accent, #38bdf8) 16%, transparent);
+  border: 1px solid color-mix(in oklch, var(--accent, #38bdf8) 30%, transparent);
+  font-family: 'Manrope', sans-serif;
+  font-weight: 800;
+  font-size: 23px;
+}
+.profile-edit-avatar-preview img { width: 100%; height: 100%; object-fit: cover; display: block; }
+.profile-edit-avatar-preview svg { width: 32px; height: 32px; }
+.profile-edit-avatar-badge {
+  position: absolute;
+  right: -2px;
+  bottom: -2px;
+  width: 24px;
+  height: 24px;
+  border-radius: 50%;
+  background: var(--accent, #38bdf8);
+  color: #000e1a;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: 2px solid var(--bg-rise, #16161c);
+}
+.profile-edit-avatar-badge svg { width: 13px; height: 13px; }
+.profile-edit-avatar-actions {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 4px;
+}
+.profile-edit-avatar-hint {
+  font-size: 12.5px;
+  color: var(--ink-3, #8b93a7);
+}
+.profile-photo-clear { font-size: 13px; }
+
+/* ── Avatar crop sheet (pan + zoom, circular) ── */
+.avatar-crop-stage {
+  position: relative;
+  width: 100%;
+  max-width: 280px;
+  margin: 4px auto 0;
+  aspect-ratio: 1 / 1;
+  border-radius: 14px;
+  overflow: hidden;
+  background: #000;
+  touch-action: none;
+  cursor: grab;
+  user-select: none;
+  -webkit-user-select: none;
+}
+.avatar-crop-stage:active { cursor: grabbing; }
+.avatar-crop-img {
+  position: absolute;
+  left: 0;
+  top: 0;
+  max-width: none;
+  pointer-events: none;
+  user-select: none;
+  -webkit-user-drag: none;
+}
+/* Dim everything outside a centred circle (classic crop guide). */
+.avatar-crop-mask {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  border-radius: 50%;
+  box-shadow: 0 0 0 9999px rgba(0, 0, 0, 0.55);
+  outline: 2px solid rgba(255, 255, 255, 0.5);
+  outline-offset: -2px;
+}
+.avatar-crop-zoom-row {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin: 16px 4px 4px;
+}
+.avatar-crop-zoom { flex: 1 1 auto; accent-color: var(--accent, #38bdf8); }
+.avatar-crop-zoom-ico {
+  flex: 0 0 auto;
+  color: var(--ink-3, #8b93a7);
+  font-size: 18px;
+  font-weight: 700;
+  width: 16px;
+  text-align: center;
+}
+.avatar-crop-hint {
+  font-size: 12px;
+  color: var(--ink-3, #8b93a7);
+  text-align: center;
+  margin: 4px 8px 0;
+}
+.avatar-crop-actions {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 14px;
+  margin-top: 14px;
+}
+.avatar-crop-actions .btn-sheet-save { flex: 1 1 auto; }
+
 /* Community stats footer */
 .profile-footer-stats {
   margin: 22px 4px 4px;

@@ -728,22 +728,14 @@ body::after { content: none; }
 .home-calendar-day.is-today {
   box-shadow: inset 0 0 0 1px color-mix(in oklch, white 4%, transparent) !important;
 }
-.home-calendar-day.is-outside-month,
-.home-calendar-day.is-outside,
-.home-calendar-day.out {
-  background: transparent !important;
-  box-shadow: none !important;
-  border-color: transparent !important;
-  opacity: 1 !important;
-}
-.home-calendar-day.is-outside-month .home-calendar-day-number,
-.home-calendar-day.is-outside .home-calendar-day-number {
-  color: var(--ink-4) !important;
-}
 .home-calendar-day.is-weekend .home-calendar-day-number,
 .home-calendar-day.is-holiday .home-calendar-day-number {
   color: var(--holiday) !important;
 }
+/* Out-of-month days: a single uniform fade of the whole cell via opacity
+   (defined once in 10-navigation-and-cards.css: .is-outside-month{opacity:.38}).
+   The number keeps its natural colour — white on weekdays, red on weekends —
+   just dimmed. Identical in every month, no per-colour overrides. */
 .home-calendar-day.is-today {
   outline: 2px solid var(--accent) !important;
   outline-offset: -1px !important;

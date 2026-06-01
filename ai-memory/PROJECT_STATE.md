@@ -1,14 +1,14 @@
 # Project State
 
 <!-- AUTO_STATUS:START -->
-Generated: 2026-06-01 22:10:30 +1000
+Generated: 2026-06-01 22:12:23 +1000
 
 ## Repository Snapshot
 - Local repo path: `D:\work\bloknot-mashinista-tg`
 - Project memory path: `D:\work\bloknot-mashinista-tg\ai-memory`
 - Branch: `poekhali-rework`
-- HEAD: `3cb1085`
-- Last commit: `3cb1085 Real Profile identity + reusable styled dropdown (GlassSelect)`
+- HEAD: `a1a43dc`
+- Last commit: `a1a43dc Поехали screen polish: drop duplicate GPS toasts, redesign speedometer`
 
 ## Git Remote
 ```text
@@ -21,15 +21,13 @@ origin	https://github.com/iEgor72/bloknot-mashinista.git (push)
 codex/next-direction b044dd5 offline mvp
   codex/tabs-ui        117f1fa [origin/codex/tabs-ui] tabs ui
   main                 ad53dff [origin/main] chore(memory): record poekhali deploy
-* poekhali-rework      3cb1085 Real Profile identity + reusable styled dropdown (GlassSelect)
+* poekhali-rework      a1a43dc Поехали screen polish: drop duplicate GPS toasts, redesign speedometer
 ```
 
 ## Worktree
 ```text
 M ai-memory/CHANGELOG.md
  M ai-memory/sessions/2026-06-01.md
- M scripts/poekhali-tracker.js
- M styles/50-design-refresh.css
 ```
 <!-- AUTO_STATUS:END -->
 

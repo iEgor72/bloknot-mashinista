@@ -1,9 +1,10 @@
 # Recent Commits
 
-Generated: 2026-06-01 22:10:31 +1000
+Generated: 2026-06-01 22:12:23 +1000
 
 | Hash | Date | Author | Message |
 | --- | --- | --- | --- |
+| `a1a43dc` | 2026-06-01T22:12:22+10:00 | iEgor72 | Поехали screen polish: drop duplicate GPS toasts, redesign speedometer |
 | `3cb1085` | 2026-06-01T22:10:29+10:00 | iEgor72 | Real Profile identity + reusable styled dropdown (GlassSelect) |
 | `7a83190` | 2026-06-01T21:46:14+10:00 | iEgor72 | Nav redesign: add Профиль, drop Зарплата tab, per-shift partner picker, Поехали from shift card |
 | `6340af6` | 2026-06-01T11:56:58+10:00 | iEgor72 | refactor(poekhali): remove dead editor UI (map/warnings/learning/speed-docs) |
@@ -43,4 +44,3 @@ Generated: 2026-06-01 22:10:31 +1000
 | `241d11c` | 2026-05-07T06:23:33Z | iEgor72 | fix(tracker): auto resume gps after pause |
 | `9275743` | 2026-05-07T05:58:39Z | iEgor72 | chore(memory): refresh project snapshot |
 | `3fedb4b` | 2026-05-07T05:58:23Z | iEgor72 | fix(tracker): separate speed lanes on map |
-| `3986476` | 2026-05-07T01:18:30Z | iEgor72 | chore(memory): refresh after dropdown recursion fix |

@@ -376,12 +376,19 @@ if (typeof bootstrapAppStartup === 'function') {
         return (o && typeof o === 'object') ? o : {};
       } catch (e) { return {}; }
     }
-    function saveExtras(extras) {
+    // Merge-save so updating role/depot keeps the manual avatar and vice versa.
+    function saveExtras(patch) {
       try {
-        window.localStorage.setItem(PROFILE_KEY, JSON.stringify({
-          role: (extras.role || '').trim(),
-          depot: (extras.depot || '').trim()
-        }));
+        var cur = loadExtras();
+        var next = {
+          role: (cur.role || '').trim(),
+          depot: (cur.depot || '').trim(),
+          avatar: cur.avatar || ''
+        };
+        if (patch && 'role' in patch) next.role = (patch.role || '').trim();
+        if (patch && 'depot' in patch) next.depot = (patch.depot || '').trim();
+        if (patch && 'avatar' in patch) next.avatar = patch.avatar || '';
+        window.localStorage.setItem(PROFILE_KEY, JSON.stringify(next));
       } catch (e) {}
     }
     // Exposed so the Home top-bar subtitle can use the user's real depot.
@@ -420,6 +427,36 @@ if (typeof bootstrapAppStartup === 'function') {
       return (parts[0].charAt(0) + parts[1].charAt(0)).toUpperCase();
     }
 
+    // Priority: manual photo → live Telegram photo → initials → generic icon.
+    function currentAvatarSrc() {
+      var manual = (loadExtras().avatar || '').trim();
+      if (manual) return manual;
+      return telegramPhoto();
+    }
+    function paintAvatar(el) {
+      if (!el) return;
+      el.classList.remove('has-photo', 'has-initials');
+      var src = currentAvatarSrc();
+      if (src) {
+        el.innerHTML = '';
+        var img = document.createElement('img');
+        img.src = src;
+        img.alt = '';
+        img.className = 'profile-avatar-img';
+        el.appendChild(img);
+        el.classList.add('has-photo');
+        return;
+      }
+      var name = resolveName(getUser());
+      var ini = (name && name !== 'Без имени') ? initials(name) : '';
+      if (ini) {
+        el.textContent = ini;
+        el.classList.add('has-initials');
+      } else {
+        el.innerHTML = avatarIconHtml;
+      }
+    }
+
     function renderHeader() {
       var nameEl = document.getElementById('profileName');
       var subEl2 = document.getElementById('profileSub');
@@ -433,27 +470,141 @@ if (typeof bootstrapAppStartup === 'function') {
       if (extras.depot) parts.push(extras.depot);
       if (subEl2) subEl2.textContent = parts.length ? parts.join(' · ') : 'Добавьте должность и депо';
 
-      if (avatarEl) {
-        avatarEl.classList.remove('has-photo', 'has-initials');
-        var photo = telegramPhoto();
-        if (photo) {
-          avatarEl.innerHTML = '';
-          var img = document.createElement('img');
-          img.src = photo;
-          img.alt = '';
-          img.className = 'profile-avatar-img';
-          avatarEl.appendChild(img);
-          avatarEl.classList.add('has-photo');
-        } else {
-          var ini = (name && name !== 'Без имени') ? initials(name) : '';
-          if (ini) {
-            avatarEl.textContent = ini;
-            avatarEl.classList.add('has-initials');
-          } else {
-            avatarEl.innerHTML = avatarIconHtml;
-          }
-        }
+      paintAvatar(avatarEl);
+    }
+
+    // ── Manual avatar: tap avatar → pick file → circular crop (pan + zoom) ──
+    function updateClearPhotoBtn() {
+      var clearBtn = document.getElementById('btnProfileClearPhoto');
+      if (clearBtn) clearBtn.classList.toggle('hidden', !(loadExtras().avatar || '').trim());
+    }
+    function fileToDataUrl(file, cb) {
+      var r = new FileReader();
+      r.onload = function () { cb(r.result); };
+      r.onerror = function () { cb(''); };
+      r.readAsDataURL(file);
+    }
+
+    var crop = { natW: 0, natH: 0, V: 0, base: 1, z: 1, scale: 1, tx: 0, ty: 0, drag: false, lastX: 0, lastY: 0 };
+    var cropImgEl = document.getElementById('avatarCropImg');
+    var cropStageEl = document.getElementById('avatarCropStage');
+    var cropZoomEl = document.getElementById('avatarCropZoom');
+
+    function cropApply() {
+      crop.scale = crop.base * crop.z;
+      var w = crop.natW * crop.scale, h = crop.natH * crop.scale;
+      var minTx = crop.V - w, minTy = crop.V - h;
+      if (crop.tx > 0) crop.tx = 0;
+      if (crop.tx < minTx) crop.tx = minTx;
+      if (crop.ty > 0) crop.ty = 0;
+      if (crop.ty < minTy) crop.ty = minTy;
+      if (cropImgEl) {
+        cropImgEl.style.width = w + 'px';
+        cropImgEl.style.height = h + 'px';
+        cropImgEl.style.left = crop.tx + 'px';
+        cropImgEl.style.top = crop.ty + 'px';
       }
+    }
+    function openCropWith(dataUrl) {
+      var probe = new Image();
+      probe.onload = function () {
+        crop.natW = probe.naturalWidth;
+        crop.natH = probe.naturalHeight;
+        if (typeof openOverlay === 'function') openOverlay('overlayAvatarCrop');
+        window.requestAnimationFrame(function () {
+          crop.V = (cropStageEl && cropStageEl.clientWidth) || 260;
+          crop.base = crop.V / Math.max(1, Math.min(crop.natW, crop.natH));
+          crop.z = 1;
+          if (cropZoomEl) cropZoomEl.value = '1';
+          crop.scale = crop.base;
+          crop.tx = (crop.V - crop.natW * crop.scale) / 2;
+          crop.ty = (crop.V - crop.natH * crop.scale) / 2;
+          if (cropImgEl) cropImgEl.src = dataUrl;
+          cropApply();
+        });
+      };
+      probe.onerror = function () {};
+      probe.src = dataUrl;
+    }
+    if (cropStageEl) {
+      cropStageEl.addEventListener('pointerdown', function (e) {
+        crop.drag = true; crop.lastX = e.clientX; crop.lastY = e.clientY;
+        if (cropStageEl.setPointerCapture) { try { cropStageEl.setPointerCapture(e.pointerId); } catch (er) {} }
+      });
+      cropStageEl.addEventListener('pointermove', function (e) {
+        if (!crop.drag) return;
+        crop.tx += e.clientX - crop.lastX;
+        crop.ty += e.clientY - crop.lastY;
+        crop.lastX = e.clientX; crop.lastY = e.clientY;
+        cropApply();
+      });
+      var endDrag = function () { crop.drag = false; };
+      cropStageEl.addEventListener('pointerup', endDrag);
+      cropStageEl.addEventListener('pointercancel', endDrag);
+    }
+    if (cropZoomEl) {
+      cropZoomEl.addEventListener('input', function () {
+        var newZ = parseFloat(cropZoomEl.value) || 1;
+        var oldScale = crop.base * crop.z;
+        var newScale = crop.base * newZ;
+        var c = crop.V / 2;
+        crop.tx = c - (c - crop.tx) * (newScale / oldScale);
+        crop.ty = c - (c - crop.ty) * (newScale / oldScale);
+        crop.z = newZ;
+        cropApply();
+      });
+    }
+    function cropToDataUrl() {
+      if (!cropImgEl || !crop.scale) return '';
+      var O = 320;
+      var canvas = document.createElement('canvas');
+      canvas.width = O; canvas.height = O;
+      var ctx = canvas.getContext('2d');
+      var sV = crop.V / crop.scale;
+      var sx = -crop.tx / crop.scale;
+      var sy = -crop.ty / crop.scale;
+      try { ctx.drawImage(cropImgEl, sx, sy, sV, sV, 0, 0, O, O); }
+      catch (e) { return ''; }
+      return canvas.toDataURL('image/jpeg', 0.85);
+    }
+
+    var pickPhotoBtn = document.getElementById('btnProfilePickPhoto');
+    var photoInput = document.getElementById('inputProfilePhoto');
+    var clearPhotoBtn = document.getElementById('btnProfileClearPhoto');
+    if (pickPhotoBtn && photoInput) {
+      pickPhotoBtn.addEventListener('click', function () { photoInput.click(); });
+      photoInput.addEventListener('change', function () {
+        var file = photoInput.files && photoInput.files[0];
+        if (file) fileToDataUrl(file, function (url) { if (url) openCropWith(url); });
+        photoInput.value = '';
+      });
+    }
+    var cropSaveBtn = document.getElementById('btnAvatarCropSave');
+    var cropCancelBtn = document.getElementById('btnAvatarCropCancel');
+    if (cropSaveBtn) {
+      cropSaveBtn.addEventListener('click', function () {
+        var url = cropToDataUrl();
+        if (url) {
+          saveExtras({ avatar: url });
+          paintAvatar(avatarEl);
+          paintAvatar(document.getElementById('profileEditAvatarPreview'));
+          updateClearPhotoBtn();
+        }
+        if (typeof closeOverlay === 'function') closeOverlay('overlayAvatarCrop');
+      });
+    }
+    if (cropCancelBtn) {
+      cropCancelBtn.addEventListener('click', function () {
+        if (typeof closeOverlay === 'function') closeOverlay('overlayAvatarCrop');
+      });
+    }
+    if (clearPhotoBtn) {
+      clearPhotoBtn.addEventListener('click', function () {
+        saveExtras({ avatar: '' });
+        paintAvatar(avatarEl);
+        paintAvatar(document.getElementById('profileEditAvatarPreview'));
+        updateClearPhotoBtn();
+      });
     }
 
     var editBtn = document.getElementById('btnProfileEdit');
@@ -467,6 +618,8 @@ if (typeof bootstrapAppStartup === 'function') {
         if (window.GlassSelect && typeof GlassSelect.sync === 'function') {
           GlassSelect.sync(document.getElementById('profileRoleSelect'));
         }
+        paintAvatar(document.getElementById('profileEditAvatarPreview'));
+        updateClearPhotoBtn();
         if (typeof openOverlay === 'function') openOverlay('overlayProfileEdit');
       });
     }
