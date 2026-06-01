@@ -6373,7 +6373,9 @@
     if (tracker.opsSheet && tracker.opsSheet.root && tracker.opsSheet.root.parentNode) {
       return tracker.opsSheet;
     }
-    var shell = byId('poekhaliModeShell');
+    // Attach to <body> as a fixed overlay. The legacy #poekhaliModeShell is hidden
+    // (opacity:0, off-screen) in the new design, so a sheet inside it never shows.
+    var shell = document.body;
     if (!shell) return null;
 
     var root = document.createElement('div');

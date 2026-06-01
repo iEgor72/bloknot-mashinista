@@ -1,9 +1,10 @@
 # Recent Commits
 
-Generated: 2026-06-01 11:10:24 +1000
+Generated: 2026-06-01 11:14:46 +1000
 
 | Hash | Date | Author | Message |
 | --- | --- | --- | --- |
+| `6903a27` | 2026-06-01T11:14:45+10:00 | iEgor72 | feat(dashboard): clean empty state for income sparkline |
 | `cac5a52` | 2026-06-01T11:10:23+10:00 | iEgor72 | feat(poekhali): visible + Скорость / + Предупреждение buttons above profile |
 | `d579bde` | 2026-06-01T10:51:35+10:00 | iEgor72 | feat(poekhali): round speedometer + head position; category-colored profile bands |
 | `0537747` | 2026-05-31T20:08:12+10:00 | iEgor72 | feat(poekhali): show actual + allowed speed together (КЛУБ-style) |
@@ -43,4 +44,3 @@ Generated: 2026-06-01 11:10:24 +1000
 | `aee4c07` | 2026-05-07T01:06:14Z | iEgor72 | chore(memory): refresh after native select fix |
 | `fcd5d04` | 2026-05-07T01:05:55Z | iEgor72 | fix(ui): use native locomotive series select |
 | `b21c70e` | 2026-05-07T00:58:58Z | iEgor72 | chore(memory): refresh after loco menu fix |
-| `e58cff8` | 2026-05-07T00:58:39Z | iEgor72 | fix(ui): make locomotive series menu touch-safe |
