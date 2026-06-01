@@ -1,9 +1,10 @@
 # Recent Commits
 
-Generated: 2026-06-01 11:20:25 +1000
+Generated: 2026-06-01 11:23:13 +1000
 
 | Hash | Date | Author | Message |
 | --- | --- | --- | --- |
+| `97dcd24` | 2026-06-01T11:23:12+10:00 | iEgor72 | feat(poekhali): single speed/limit add button with 3-category toggle |
 | `a2c99e8` | 2026-06-01T11:20:24+10:00 | iEgor72 | fix(poekhali): ops editor sheet was invisible (rendered inside hidden shell) |
 | `6903a27` | 2026-06-01T11:14:45+10:00 | iEgor72 | feat(dashboard): clean empty state for income sparkline |
 | `cac5a52` | 2026-06-01T11:10:23+10:00 | iEgor72 | feat(poekhali): visible + Скорость / + Предупреждение buttons above profile |
@@ -43,4 +44,3 @@ Generated: 2026-06-01 11:20:25 +1000
 | `c14d64e` | 2026-05-07T01:09:02Z | iEgor72 | chore(memory): refresh after native select refactor |
 | `2169e63` | 2026-05-07T01:08:38Z | iEgor72 | refactor(ui): use single native locomotive series select |
 | `aee4c07` | 2026-05-07T01:06:14Z | iEgor72 | chore(memory): refresh after native select fix |
-| `fcd5d04` | 2026-05-07T01:05:55Z | iEgor72 | fix(ui): use native locomotive series select |

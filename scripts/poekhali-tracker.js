@@ -6458,8 +6458,9 @@
   }
 
   function normalizeOpsView(value) {
+    // Only the speed editor is user-facing now. Map is auto-selected (no manual pick)
+    // and the legacy ПР (warnings) tab was removed; 'service' stays behind the debug flag.
     var view = String(value || '').trim();
-    if (view === 'warnings' || view === 'map') return view;
     if (view === 'service') return isPoekhaliDebugUiEnabled() ? view : 'drive';
     return 'drive';
   }
@@ -6482,13 +6483,13 @@
 
   function renderOpsTabs(parent) {
     var tabs = [
-      { id: 'drive', label: 'Скорости' },
-      { id: 'warnings', label: 'ПР' },
-      { id: 'map', label: 'Карта' }
+      { id: 'drive', label: 'Скорости' }
     ];
     if (isPoekhaliDebugUiEnabled()) {
       tabs.push({ id: 'service', label: 'Сервис' });
     }
+    // Single editor — no tab bar needed (map auto-selects, ПР removed).
+    if (tabs.length < 2) return;
     var wrap = document.createElement('div');
     wrap.className = 'poekhali-ops-tabs';
     wrap.style.setProperty('--poekhali-ops-tab-count', String(tabs.length));
@@ -7894,7 +7895,7 @@
       saveSpeedDocReviewState();
     }
 
-    tracker.backupMessage = 'Импортировано: ПР ' + importedWarnings.length + ' · поездок ' + importedRuns.length +
+    tracker.backupMessage = 'Импортировано: ПР ' + importedWarnings.length +
       ' · GPS точек ' + (learningCounts.samples + learningCounts.rawSamples) + ' · GPS участков ' + learningCounts.userSections + '.';
     tracker.backupMessageTone = 'success';
     renderOpsSheet();
@@ -10269,9 +10270,8 @@
     tracker.opsSheetRenderPending = false;
     clearElement(sheet.content);
     var details = getPoekhaliTrainDetails();
-    var warningCount = getCurrentWarnings().length;
     sheet.subtitle.textContent = (details.hasShift ? getShiftSourceLabel(details.source) : 'карточка не найдена') +
-      ' · ' + formatPoekhaliCompositionLength(details) + ' · ПР ' + warningCount;
+      ' · ' + formatPoekhaliCompositionLength(details);
     tracker.opsView = normalizeOpsView(tracker.opsView);
     renderOpsTabs(sheet.content);
     if (tracker.opsView === 'warnings') {
@@ -17312,10 +17312,6 @@
     // Entry points for the new-design layer (app-init.js) to open the editor sheet.
     window.poekhaliOpenSpeedEditor = function() {
       tracker.opsView = 'drive';
-      openOpsSheet();
-    };
-    window.poekhaliOpenWarningsEditor = function() {
-      tracker.opsView = 'warnings';
       openOpsSheet();
     };
 
