@@ -1,14 +1,14 @@
 # Project State
 
 <!-- AUTO_STATUS:START -->
-Generated: 2026-06-01 22:12:23 +1000
+Generated: 2026-06-01 22:39:36 +1000
 
 ## Repository Snapshot
 - Local repo path: `D:\work\bloknot-mashinista-tg`
 - Project memory path: `D:\work\bloknot-mashinista-tg\ai-memory`
 - Branch: `poekhali-rework`
-- HEAD: `a1a43dc`
-- Last commit: `a1a43dc Поехали screen polish: drop duplicate GPS toasts, redesign speedometer`
+- HEAD: `a6854b4`
+- Last commit: `a6854b4 Profile avatar crop, dropdown mini-avatars, inclusive wording, calendar dimming fix`
 
 ## Git Remote
 ```text
@@ -21,7 +21,7 @@ origin	https://github.com/iEgor72/bloknot-mashinista.git (push)
 codex/next-direction b044dd5 offline mvp
   codex/tabs-ui        117f1fa [origin/codex/tabs-ui] tabs ui
   main                 ad53dff [origin/main] chore(memory): record poekhali deploy
-* poekhali-rework      a1a43dc Поехали screen polish: drop duplicate GPS toasts, redesign speedometer
+* poekhali-rework      a6854b4 Profile avatar crop, dropdown mini-avatars, inclusive wording, calendar dimming fix
 ```
 
 ## Worktree

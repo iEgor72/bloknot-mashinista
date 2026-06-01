@@ -828,12 +828,16 @@
 
           </div>
 
-          <div class="shift-share-row hidden" id="shiftShareRow">
-            <span class="shift-share-label">Поделиться сменой</span>
+          <div class="optional-card shift-share-card hidden" id="shiftShareRow">
             <div class="glass-select shift-share-glass" id="shiftShareSelectWrap" data-glass-auto data-option-avatars data-placeholder="Не делиться">
-              <button class="glass-select-trigger" type="button" aria-haspopup="listbox" aria-expanded="false">
-                <span class="glass-select-value is-placeholder">Не делиться</span>
-                <span class="glass-select-chevron" aria-hidden="true"><svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 8l5 5 5-5"></path></svg></span>
+              <button class="glass-select-trigger optional-summary" type="button" aria-haspopup="listbox" aria-expanded="false">
+                <div class="optional-summary-main">
+                  <div class="optional-summary-title">Поделиться сменой</div>
+                  <div class="optional-summary-subtitle glass-select-value is-placeholder">Не делиться</div>
+                </div>
+                <div class="optional-summary-chevron glass-select-chevron" aria-hidden="true">
+                  <svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 8l5 5 5-5"></path></svg>
+                </div>
               </button>
               <div class="glass-select-menu hidden" role="listbox" aria-label="Получатель смены"></div>
               <select class="hidden" id="shiftShareSelect" tabindex="-1" aria-hidden="true">
@@ -1393,7 +1397,6 @@
           </span>
         </button>
         <div class="profile-edit-avatar-actions">
-          <div class="profile-edit-avatar-hint">Нажмите на фото, чтобы изменить</div>
           <button class="btn-link profile-photo-clear hidden" id="btnProfileClearPhoto" type="button">Убрать фото</button>
         </div>
         <input type="file" id="inputProfilePhoto" accept="image/*" hidden />
@@ -1404,7 +1407,6 @@
         <div class="settings-row settings-row-stack profile-field-row">
           <div>
             <div class="settings-label">Кем работаете</div>
-            <div class="settings-note">Можно сменить, если повысят</div>
           </div>
           <div class="glass-select profile-role-select" id="profileRoleSelect" data-glass-auto data-placeholder="Не указано">
             <button class="glass-select-trigger" type="button" aria-haspopup="listbox" aria-expanded="false">
@@ -1426,9 +1428,8 @@
         <div class="settings-row settings-row-stack">
           <div>
             <div class="settings-label">Предприятие / депо</div>
-            <div class="settings-note">Например: ТЧЭ-9 Комсомольск</div>
           </div>
-          <input class="settings-input" id="inputProfileDepot" type="text" maxlength="60" placeholder="ТЧЭ-…" />
+          <input class="settings-input" id="inputProfileDepot" type="text" maxlength="60" placeholder="ТЧЭ-9 Комсомольск" />
         </div>
       </div>
 

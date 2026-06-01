@@ -189,7 +189,30 @@
   letter-spacing: 0.01em;
 }
 .glass-select-avatar.is-empty {
-  background: var(--hair-strong, rgba(255, 255, 255, 0.14));
+  background: transparent;
+  border: 1px solid var(--hair-strong, rgba(255, 255, 255, 0.18));
+  color: var(--ink-3, #8b93a7);
+}
+.glass-select-avatar.is-empty svg { width: 14px; height: 14px; }
+
+/* Flip the dropdown menu upward when there's no room below (set by JS). */
+.glass-select.is-flip-up .glass-select-menu {
+  top: auto;
+  bottom: calc(100% + 8px);
+}
+
+/* Avatar shown in the trigger (selected value) */
+.glass-select-value.has-avatar {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  overflow: visible;
+}
+.glass-select-value-label {
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
 }
 
 /* Tappable avatar in the profile edit sheet */
@@ -248,10 +271,6 @@
   flex-direction: column;
   align-items: flex-start;
   gap: 4px;
-}
-.profile-edit-avatar-hint {
-  font-size: 12.5px;
-  color: var(--ink-3, #8b93a7);
 }
 .profile-photo-clear { font-size: 13px; }
 

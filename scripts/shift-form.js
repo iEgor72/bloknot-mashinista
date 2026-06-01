@@ -1196,6 +1196,10 @@
         (function(card) {
           var summary = card.querySelector('.optional-summary');
           if (!summary) return;
+          // Cards whose summary is a glass-select trigger manage their own
+          // open/close (the dropdown), so skip the disclosure toggle here —
+          // otherwise both fire and the 'open' attribute sticks on a <div>.
+          if (card.querySelector('.glass-select')) return;
           summary.addEventListener('click', function(e) {
             e.preventDefault();
             if (card.open) {

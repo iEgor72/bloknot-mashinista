@@ -42,7 +42,12 @@
   }
   function avatarHtml(name) {
     var ini = initials(name);
-    if (!ini) return '<span class="glass-select-avatar is-empty" aria-hidden="true"></span>';
+    if (!ini) {
+      // "Не делиться" / empty: a muted crossed-circle stub instead of a faceless dot.
+      return '<span class="glass-select-avatar is-empty" aria-hidden="true">' +
+        '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round">' +
+        '<circle cx="12" cy="12" r="8"></circle><path d="M6.5 17.5 17.5 6.5"></path></svg></span>';
+    }
     var h = hueOf(name);
     return '<span class="glass-select-avatar" aria-hidden="true" style="background:hsl(' + h +
       ' 42% 30%);color:hsl(' + h + ' 65% 85%)">' + esc(ini) + '</span>';
@@ -89,7 +94,20 @@
     var selected = sel.options[sel.selectedIndex];
     var hasValue = !!sel.value;
     if (valueEl) {
-      valueEl.textContent = (hasValue && selected) ? selected.textContent : placeholderFor(root);
+      var withAvatars = root.hasAttribute('data-option-avatars');
+      if (hasValue && selected) {
+        if (withAvatars) {
+          valueEl.classList.add('has-avatar');
+          valueEl.innerHTML = avatarHtml(selected.textContent) +
+            '<span class="glass-select-value-label">' + esc(selected.textContent) + '</span>';
+        } else {
+          valueEl.classList.remove('has-avatar');
+          valueEl.textContent = selected.textContent;
+        }
+      } else {
+        valueEl.classList.remove('has-avatar');
+        valueEl.textContent = placeholderFor(root);
+      }
       valueEl.classList.toggle('is-placeholder', !hasValue);
     }
     if (trigger) trigger.classList.toggle('is-placeholder', !hasValue);
@@ -112,8 +130,20 @@
     if (trigger) { trigger.classList.add('is-open'); trigger.setAttribute('aria-expanded', 'true'); }
     root.classList.add('is-open');
     // Let an enclosing sheet/card grow so the absolute menu is not clipped.
-    var holder = root.closest && root.closest('.bottom-sheet, .settings-card, .shift-share-row');
+    var holder = root.closest && root.closest('.bottom-sheet, .settings-card, .shift-share-card');
     if (holder) holder.classList.add('has-open-glass-select');
+    // Flip the menu upward when there isn't room below (e.g. above the bottom
+    // nav), so the last option is never hidden/unreachable.
+    root.classList.remove('is-flip-up');
+    if (menu && trigger) {
+      var tr = trigger.getBoundingClientRect();
+      var menuH = menu.offsetHeight || 0;
+      var spaceBelow = window.innerHeight - tr.bottom;
+      var bottomGuard = 100; // bottom nav + breathing room
+      if (spaceBelow - bottomGuard < menuH && tr.top > spaceBelow) {
+        root.classList.add('is-flip-up');
+      }
+    }
   }
 
   function close() {
@@ -125,6 +155,7 @@
     if (menu) menu.classList.add('hidden');
     if (trigger) { trigger.classList.remove('is-open'); trigger.setAttribute('aria-expanded', 'false'); }
     root.classList.remove('is-open');
+    root.classList.remove('is-flip-up');
     var holders = document.querySelectorAll('.has-open-glass-select');
     for (var i = 0; i < holders.length; i++) holders[i].classList.remove('has-open-glass-select');
   }

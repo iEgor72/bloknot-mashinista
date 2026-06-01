@@ -5299,3 +5299,12 @@ Append-only журнал действий ИИ-агентов по проект�
 - Methods: `git post-commit hook`, `automatic memory update`
 - Files: `ai-memory/CHANGELOG.md`, `ai-memory/INDEX.md`, `ai-memory/PROJECT_STATE.md`, `ai-memory/RECENT_COMMITS.md`, `ai-memory/WORKTREE_STATUS.md`, `ai-memory/sessions/2026-06-01.md`, `scripts/poekhali-tracker.js`, `styles/50-design-refresh.css`
 - Notes: Commit: `a1a43dc9efea50ba3207e9f1a81b868d2a80d216` (`a1a43dc`) | Author: `iEgor72`
+
+## 2026-06-01 22:39:36 +1000
+
+- Source: `post-commit`
+- Task: Profile avatar crop, dropdown mini-avatars, inclusive wording, calendar dimming fix
+- Branch: `poekhali-rework`
+- Methods: `git post-commit hook`, `automatic memory update`
+- Files: `ai-memory/CHANGELOG.md`, `ai-memory/INDEX.md`, `ai-memory/PROJECT_STATE.md`, `ai-memory/RECENT_COMMITS.md`, `ai-memory/WORKTREE_STATUS.md`, `ai-memory/sessions/2026-06-01.md`, `index.html`, `scripts/app-init.js`, `scripts/app.js`, `scripts/glass-select.js`, `styles/50-design-refresh.css`, `styles/56-profile.css`
+- Notes: Commit: `a6854b490e22a7ca3cf6018b8b40a4b03cb4f16a` (`a6854b4`) | Author: `iEgor72`
