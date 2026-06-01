@@ -1,14 +1,14 @@
 # Project State
 
 <!-- AUTO_STATUS:START -->
-Generated: 2026-06-01 21:46:43 +1000
+Generated: 2026-06-01 22:10:30 +1000
 
 ## Repository Snapshot
 - Local repo path: `D:\work\bloknot-mashinista-tg`
 - Project memory path: `D:\work\bloknot-mashinista-tg\ai-memory`
 - Branch: `poekhali-rework`
-- HEAD: `7a83190`
-- Last commit: `7a83190 Nav redesign: add Профиль, drop Зарплата tab, per-shift partner picker, Поехали from shift card`
+- HEAD: `3cb1085`
+- Last commit: `3cb1085 Real Profile identity + reusable styled dropdown (GlassSelect)`
 
 ## Git Remote
 ```text
@@ -21,16 +21,12 @@ origin	https://github.com/iEgor72/bloknot-mashinista.git (push)
 codex/next-direction b044dd5 offline mvp
   codex/tabs-ui        117f1fa [origin/codex/tabs-ui] tabs ui
   main                 ad53dff [origin/main] chore(memory): record poekhali deploy
-* poekhali-rework      7a83190 Nav redesign: add Профиль, drop Зарплата tab, per-shift partner picker, Поехали from shift card
+* poekhali-rework      3cb1085 Real Profile identity + reusable styled dropdown (GlassSelect)
 ```
 
 ## Worktree
 ```text
 M ai-memory/CHANGELOG.md
- M ai-memory/INDEX.md
- M ai-memory/PROJECT_STATE.md
- M ai-memory/RECENT_COMMITS.md
- M ai-memory/WORKTREE_STATUS.md
  M ai-memory/sessions/2026-06-01.md
  M scripts/poekhali-tracker.js
  M styles/50-design-refresh.css

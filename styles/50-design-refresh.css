@@ -1237,10 +1237,29 @@ body::after { content: none; }
 }
 /* Round speedometer (КЛУБ-style) */
 .speedo-round {
-  display: flex; flex-direction: column; align-items: center; gap: 8px;
-  padding: 12px 16px 14px;
+  display: flex; flex-direction: column; align-items: center; gap: 4px;
+  padding: 10px 14px 12px;
+  /* Centre the glow behind the gauge so the light carries through the whole
+     card — keeps the gauge and the surrounding metrics reading as one
+     continuous instrument panel. */
+  background:
+    radial-gradient(320px 260px at 50% 42%, color-mix(in oklch, var(--accent) 15%, transparent), transparent 70%),
+    var(--bg-rise);
 }
-.gauge { position: relative; width: 196px; height: 196px; }
+/* Middle row: metrics flank the gauge left and right. The side columns stretch
+   to the gauge height and distribute their two metrics top-and-bottom, so the
+   space beside the gauge reads as a full instrument frame, not empty air. */
+.speedo-mid {
+  width: 100%;
+  display: flex; align-items: stretch; justify-content: center; gap: 8px;
+}
+.speedo-col {
+  display: flex; flex-direction: column; justify-content: space-evenly;
+  flex: 1 1 0; min-width: 0;
+}
+.speedo-col-l { align-items: flex-end; text-align: right; }
+.speedo-col-r { align-items: flex-start; text-align: left; }
+.gauge { position: relative; width: 142px; height: 142px; flex: 0 0 auto; }
 .gauge-svg { width: 100%; height: 100%; display: block; overflow: visible; }
 .gauge-track { stroke: var(--hair-strong); stroke-width: 9; stroke-linecap: round; }
 .gauge-progress {
@@ -1262,7 +1281,7 @@ body::after { content: none; }
   display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 0;
 }
 .gauge-fact {
-  font: 700 52px/0.9 'JetBrains Mono'; letter-spacing: -0.03em;
+  font: 700 42px/0.9 'JetBrains Mono'; letter-spacing: -0.03em;
   font-variant-numeric: tabular-nums; color: var(--accent);
   text-shadow: 0 0 18px color-mix(in oklch, var(--accent) 40%, transparent);
 }
@@ -1278,20 +1297,19 @@ body::after { content: none; }
   color: var(--bad); margin-top: 6px;
   text-shadow: 0 0 12px color-mix(in oklch, var(--bad) 35%, transparent);
 }
-/* Integrated stats under the gauge (Голова/Время/Уклон/Далее/В пути/Тех.скорость) */
-.speedo-stats {
-  width: 100%;
-  display: grid; grid-template-columns: 1fr 1fr; gap: 9px 14px;
-  border-top: 1px solid var(--hair); padding-top: 10px; margin-top: 2px;
-}
+/* Metrics arranged seamlessly around the gauge — no tiles, no divider.
+   Clock sits centred on top, four metrics flank the gauge, timer below. */
 .speedo-stat { display: flex; flex-direction: column; gap: 3px; min-width: 0; }
+.speedo-stat.is-clock, .speedo-stat.is-coord { align-items: center; text-align: center; }
 .speedo-stat .l {
-  font: 600 8.5px/1 'Manrope'; letter-spacing: 0.14em; text-transform: uppercase; color: var(--ink-3);
+  font: 600 8px/1.15 'Manrope'; letter-spacing: 0.12em; text-transform: uppercase; color: var(--ink-3);
 }
 .speedo-stat .v {
-  font: 700 16px/1 'JetBrains Mono'; font-variant-numeric: tabular-nums; color: var(--ink);
-  white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+  font: 700 14px/1.05 'JetBrains Mono'; font-variant-numeric: tabular-nums; color: var(--ink);
+  overflow-wrap: anywhere;
 }
+/* Clock is the headline of the cluster — give it a touch more presence. */
+.speedo-stat.is-clock .v { font-size: 18px; }
 .speedo-stat.is-grade .v { color: var(--good); }
 .speedo-stat.is-reach .v { color: var(--warn); }
 .speedo-stat.is-tech .v { color: var(--accent); }
@@ -1642,12 +1660,12 @@ body::after { content: none; }
   margin: 8px 0 0;
   padding: 12px 14px;
   border-radius: var(--r-card);
+  /* Matte finish — no glossy top sheen, so it reads as part of the same
+     instrument panel set as the speedometer/profile below. */
   background:
-    linear-gradient(180deg, color-mix(in oklch, white 5%, transparent), transparent),
+    linear-gradient(180deg, color-mix(in oklch, white 3%, transparent), transparent),
     var(--bg-rise);
-  box-shadow:
-    inset 0 1px 0 color-mix(in oklch, white 10%, transparent),
-    inset 0 0 0 1px var(--hair);
+  box-shadow: inset 0 0 0 1px var(--hair);
   display: grid;
   grid-template-columns: 1fr auto;
   gap: 10px;

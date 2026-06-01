@@ -432,26 +432,10 @@
   }
 
   function maybeEnqueueGpsConnectionToast(fullText, tone) {
-    if (!isPoekhaliPanelActive()) return;
-    var enqueue = typeof window !== 'undefined' ? window.enqueueAppToast : null;
-    if (typeof enqueue !== 'function') return;
-    var now = Date.now();
-    if (now < gpsConnectionToastState.suppressUntil) return;
-
-    var hasError = tone === 'is-error';
-    if (hasError) {
-      var message = mapGpsStatusToBriefError(fullText);
-      var errorKey = String(message || fullText || 'gps-error');
-      var canRepeat = gpsConnectionToastState.lastErrorKey !== errorKey || now - gpsConnectionToastState.lastErrorToastAt >= GPS_ERROR_TOAST_MIN_INTERVAL_MS;
-      gpsConnectionToastState.hadErrorUi = true;
-      if (canRepeat) {
-        gpsConnectionToastState.lastErrorKey = errorKey;
-        gpsConnectionToastState.lastErrorToastAt = now;
-        enqueue(message, 'danger', 2400);
-      }
-      return;
-    }
-    gpsConnectionToastState.hadErrorUi = false;
+    // GPS connection status is already shown by the persistent GPS chip in the
+    // top bar (same wording, e.g. «GPS · нет доступа»). The toast popups only
+    // duplicated that and were distracting, so we no longer surface them.
+    return;
   }
 
   function byId(id) {

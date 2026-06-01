@@ -5281,3 +5281,12 @@ Append-only журнал действий ИИ-агентов по проект�
 - Methods: `git post-commit hook`, `automatic memory update`
 - Files: `ai-memory/CHANGELOG.md`, `ai-memory/INDEX.md`, `ai-memory/PROJECT_STATE.md`, `ai-memory/RECENT_COMMITS.md`, `ai-memory/WORKTREE_STATUS.md`, `ai-memory/sessions/2026-06-01.md`, `index.html`, `scripts/app-init.js`, `scripts/app.js`, `scripts/auth.js`, `scripts/partners.js`, `scripts/render.js`, `scripts/shift-form.js`, `styles/15-bottom-nav.css`, `styles/55-partners.css`, `styles/56-profile.css`
 - Notes: Commit: `7a83190eb28e73a4fba8088af2600f10f9515004` (`7a83190`) | Author: `iEgor72`
+
+## 2026-06-01 22:10:30 +1000
+
+- Source: `post-commit`
+- Task: Real Profile identity + reusable styled dropdown (GlassSelect)
+- Branch: `poekhali-rework`
+- Methods: `git post-commit hook`, `automatic memory update`
+- Files: `ai-memory/CHANGELOG.md`, `ai-memory/INDEX.md`, `ai-memory/PROJECT_STATE.md`, `ai-memory/RECENT_COMMITS.md`, `ai-memory/WORKTREE_STATUS.md`, `ai-memory/sessions/2026-06-01.md`, `index.html`, `scripts/app-init.js`, `scripts/glass-select.js`, `scripts/shift-form.js`, `styles/55-partners.css`, `styles/56-profile.css`
+- Notes: Commit: `3cb1085a38f07573e5e66728522dfbb9aab7cc8c` (`3cb1085`) | Author: `iEgor72`
