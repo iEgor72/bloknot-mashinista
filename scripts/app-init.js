@@ -295,6 +295,8 @@ if (typeof bootstrapAppStartup === 'function') {
       if (!raw) return '';
       var u = JSON.parse(raw);
       if (!u) return '';
+      var dn = (u.display_name || '').trim();
+      if (dn) return dn;
       var first = (u.first_name || '').trim();
       var last = (u.last_name || '').trim();
       if (first) return first + (last ? ' ' + last.charAt(0) + '.' : '');
@@ -307,7 +309,9 @@ if (typeof bootstrapAppStartup === 'function') {
     var sub = cfg.sub;
     if (tab === 'home') {
       var name = getUserLabel();
-      sub = name ? (name + ' · ТЧЭ-9 Комсомольск') : 'ТЧЭ-9 Комсомольск';
+      var depot = (typeof window.getProfileDepot === 'function') ? window.getProfileDepot() : '';
+      if (name && depot) sub = name + ' · ' + depot;
+      else sub = name || depot || '';
     }
     if (sub) {
       subEl.textContent = sub;
@@ -359,17 +363,129 @@ if (typeof bootstrapAppStartup === 'function') {
       if (legacy) legacy.click();
     });
   })();
-  // Profile panel identity — reuse the cached Telegram user.
+  // Profile panel identity — real name/avatar from Telegram + editable должность/депо.
   (function bindProfileIdentity() {
-    var nameEl = document.getElementById('profileName');
-    var subEl2 = document.getElementById('profileSub');
-    function syncProfileIdentity() {
-      var label = getUserLabel();
-      if (nameEl) nameEl.textContent = label || 'Машинист';
-      if (subEl2) subEl2.textContent = 'ТЧЭ-9 Комсомольск';
+    var PROFILE_KEY = 'shift_tracker_profile_v1';
+    var avatarEl = document.getElementById('profileAvatar');
+    var avatarIconHtml = avatarEl ? avatarEl.innerHTML : '';
+
+    function loadExtras() {
+      try {
+        var raw = window.localStorage && window.localStorage.getItem(PROFILE_KEY);
+        var o = raw ? JSON.parse(raw) : {};
+        return (o && typeof o === 'object') ? o : {};
+      } catch (e) { return {}; }
     }
-    syncProfileIdentity();
-    window.syncProfileIdentity = syncProfileIdentity;
+    function saveExtras(extras) {
+      try {
+        window.localStorage.setItem(PROFILE_KEY, JSON.stringify({
+          role: (extras.role || '').trim(),
+          depot: (extras.depot || '').trim()
+        }));
+      } catch (e) {}
+    }
+    // Exposed so the Home top-bar subtitle can use the user's real depot.
+    window.getProfileDepot = function() { return (loadExtras().depot || '').trim(); };
+
+    function getUser() {
+      try {
+        var cu = window.CURRENT_USER;
+        if (cu && cu.id !== undefined && cu.id !== null && String(cu.id) !== 'guest') return cu;
+      } catch (e) {}
+      try {
+        var raw = window.localStorage.getItem('shift_tracker_cached_user_v1');
+        return raw ? (JSON.parse(raw) || {}) : {};
+      } catch (e) { return {}; }
+    }
+    function resolveName(u) {
+      u = u || {};
+      var dn = String(u.display_name || '').trim();
+      if (dn) return dn;
+      var fn = (String(u.first_name || '') + ' ' + String(u.last_name || '')).trim();
+      if (fn) return fn;
+      if (u.username) return String(u.username);
+      return 'Без имени';
+    }
+    function telegramPhoto() {
+      try {
+        var tg = window.Telegram && window.Telegram.WebApp;
+        var user = tg && tg.initDataUnsafe && tg.initDataUnsafe.user;
+        return user && user.photo_url ? String(user.photo_url) : '';
+      } catch (e) { return ''; }
+    }
+    function initials(name) {
+      var parts = String(name || '').trim().split(/\s+/).filter(Boolean);
+      if (!parts.length) return '';
+      if (parts.length === 1) return parts[0].charAt(0).toUpperCase();
+      return (parts[0].charAt(0) + parts[1].charAt(0)).toUpperCase();
+    }
+
+    function renderHeader() {
+      var nameEl = document.getElementById('profileName');
+      var subEl2 = document.getElementById('profileSub');
+      var u = getUser();
+      var name = resolveName(u);
+      if (nameEl) nameEl.textContent = name;
+
+      var extras = loadExtras();
+      var parts = [];
+      if (extras.role) parts.push(extras.role);
+      if (extras.depot) parts.push(extras.depot);
+      if (subEl2) subEl2.textContent = parts.length ? parts.join(' · ') : 'Добавьте должность и депо';
+
+      if (avatarEl) {
+        avatarEl.classList.remove('has-photo', 'has-initials');
+        var photo = telegramPhoto();
+        if (photo) {
+          avatarEl.innerHTML = '';
+          var img = document.createElement('img');
+          img.src = photo;
+          img.alt = '';
+          img.className = 'profile-avatar-img';
+          avatarEl.appendChild(img);
+          avatarEl.classList.add('has-photo');
+        } else {
+          var ini = (name && name !== 'Без имени') ? initials(name) : '';
+          if (ini) {
+            avatarEl.textContent = ini;
+            avatarEl.classList.add('has-initials');
+          } else {
+            avatarEl.innerHTML = avatarIconHtml;
+          }
+        }
+      }
+    }
+
+    var editBtn = document.getElementById('btnProfileEdit');
+    if (editBtn) {
+      editBtn.addEventListener('click', function() {
+        var extras = loadExtras();
+        var roleSel = document.getElementById('inputProfileRole');
+        var depotInp = document.getElementById('inputProfileDepot');
+        if (roleSel) roleSel.value = extras.role || '';
+        if (depotInp) depotInp.value = extras.depot || '';
+        if (window.GlassSelect && typeof GlassSelect.sync === 'function') {
+          GlassSelect.sync(document.getElementById('profileRoleSelect'));
+        }
+        if (typeof openOverlay === 'function') openOverlay('overlayProfileEdit');
+      });
+    }
+    var saveBtn = document.getElementById('btnSaveProfileEdit');
+    if (saveBtn) {
+      saveBtn.addEventListener('click', function() {
+        var roleSel = document.getElementById('inputProfileRole');
+        var depotInp = document.getElementById('inputProfileDepot');
+        saveExtras({
+          role: roleSel ? roleSel.value : '',
+          depot: depotInp ? depotInp.value : ''
+        });
+        renderHeader();
+        if (typeof closeOverlay === 'function') closeOverlay('overlayProfileEdit');
+      });
+    }
+
+    renderHeader();
+    window.syncProfileIdentity = renderHeader;
   })();
 
   // Initial

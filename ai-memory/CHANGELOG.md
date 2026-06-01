@@ -5263,3 +5263,21 @@ Append-only журнал действий ИИ-агентов по проект�
 - Branch: `poekhali-rework`
 - Methods: `preview verification`, `SW cache clearing`, `grep dependency mapping`
 - Files: `index.html`, `scripts/app-init.js`, `scripts/app.js`, `scripts/auth.js`, `scripts/shift-form.js`, `scripts/render.js`, `scripts/partners.js`, `styles/15-bottom-nav.css`, `styles/55-partners.css`, `styles/56-profile.css`
+
+## 2026-06-01 21:46:14 +1000
+
+- Source: `post-commit`
+- Task: @ Nav redesign: add Профиль, drop Зарплата tab, per-shift partner picker, Поехали from shift card
+- Branch: `poekhali-rework`
+- Methods: `git post-commit hook`, `automatic memory update`
+- Files: `ai-memory/CHANGELOG.md`, `ai-memory/INDEX.md`, `ai-memory/PROJECT_STATE.md`, `ai-memory/RECENT_COMMITS.md`, `ai-memory/WORKTREE_STATUS.md`, `ai-memory/sessions/2026-06-01.md`, `index.html`, `scripts/app-init.js`, `scripts/app.js`, `scripts/auth.js`, `scripts/partners.js`, `scripts/render.js`, `scripts/shift-form.js`, `styles/15-bottom-nav.css`, `styles/55-partners.css`, `styles/56-profile.css`
+- Notes: Commit: `6bada4471645a12e1bd07eeaa474390a90973129` (`6bada44`) | Author: `iEgor72`
+
+## 2026-06-01 21:46:43 +1000
+
+- Source: `post-commit`
+- Task: Nav redesign: add Профиль, drop Зарплата tab, per-shift partner picker, Поехали from shift card
+- Branch: `poekhali-rework`
+- Methods: `git post-commit hook`, `automatic memory update`
+- Files: `ai-memory/CHANGELOG.md`, `ai-memory/INDEX.md`, `ai-memory/PROJECT_STATE.md`, `ai-memory/RECENT_COMMITS.md`, `ai-memory/WORKTREE_STATUS.md`, `ai-memory/sessions/2026-06-01.md`, `index.html`, `scripts/app-init.js`, `scripts/app.js`, `scripts/auth.js`, `scripts/partners.js`, `scripts/render.js`, `scripts/shift-form.js`, `styles/15-bottom-nav.css`, `styles/55-partners.css`, `styles/56-profile.css`
+- Notes: Commit: `7a83190eb28e73a4fba8088af2600f10f9515004` (`7a83190`) | Author: `iEgor72`

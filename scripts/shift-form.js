@@ -589,6 +589,10 @@
       });
       // Pre-select the default partner; user can override for this one shift.
       select.value = defaultId || '';
+      // Rebuild the styled dropdown from the freshly populated options.
+      if (window.GlassSelect && typeof GlassSelect.refresh === 'function') {
+        GlassSelect.refresh(document.getElementById('shiftShareSelectWrap'));
+      }
       row.classList.remove('hidden');
     }
 

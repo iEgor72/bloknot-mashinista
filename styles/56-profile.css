@@ -3,19 +3,27 @@
   padding: 16px 16px calc(var(--bottom-nav-height, 76px) + env(safe-area-inset-bottom, 0px) + 24px);
 }
 
-/* Identity header */
+/* Identity header (tappable → edit sheet) */
 .profile-head {
   display: flex;
   align-items: center;
   gap: 14px;
   padding: 6px 2px 18px;
+  width: 100%;
+  background: transparent;
+  border: none;
+  text-align: left;
+  cursor: pointer;
+  -webkit-tap-highlight-color: transparent;
 }
+.profile-head:active { opacity: 0.85; }
 
 .profile-avatar {
   flex: 0 0 auto;
   width: 56px;
   height: 56px;
   border-radius: 50%;
+  overflow: hidden;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -25,8 +33,22 @@
 }
 
 .profile-avatar svg { width: 30px; height: 30px; display: block; }
+.profile-avatar.has-initials {
+  font-family: 'Manrope', sans-serif;
+  font-weight: 800;
+  font-size: 21px;
+  letter-spacing: 0.01em;
+}
+.profile-avatar-img { width: 100%; height: 100%; object-fit: cover; display: block; }
 
-.profile-identity { min-width: 0; }
+.profile-identity { min-width: 0; flex: 1 1 auto; }
+
+.profile-edit-chevron {
+  flex: 0 0 auto;
+  font-size: 22px;
+  color: var(--ink-3, #8b93a7);
+  line-height: 1;
+}
 
 .profile-name {
   font-family: 'Manrope', sans-serif;
@@ -131,6 +153,15 @@
 
 /* Rows for features not migrated yet */
 .profile-soon { opacity: 0.62; }
+
+/* Full-width field row in the profile edit sheet — stacks the label above a
+   full-width control so a glass dropdown spans the card (no right-edge clip). */
+.profile-field-row {
+  flex-direction: column;
+  align-items: stretch;
+  gap: 10px;
+}
+.profile-field-row .glass-select { width: 100%; }
 
 /* Community stats footer */
 .profile-footer-stats {

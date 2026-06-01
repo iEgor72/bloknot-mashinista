@@ -829,10 +829,17 @@
           </div>
 
           <div class="shift-share-row hidden" id="shiftShareRow">
-            <label class="shift-share-label" for="shiftShareSelect">Поделиться сменой</label>
-            <select class="shift-share-select" id="shiftShareSelect">
-              <option value="">Не делиться</option>
-            </select>
+            <span class="shift-share-label">Поделиться сменой</span>
+            <div class="glass-select shift-share-glass" id="shiftShareSelectWrap" data-glass-auto data-placeholder="Не делиться">
+              <button class="glass-select-trigger" type="button" aria-haspopup="listbox" aria-expanded="false">
+                <span class="glass-select-value is-placeholder">Не делиться</span>
+                <span class="glass-select-chevron" aria-hidden="true"><svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 8l5 5 5-5"></path></svg></span>
+              </button>
+              <div class="glass-select-menu hidden" role="listbox" aria-label="Получатель смены"></div>
+              <select class="hidden" id="shiftShareSelect" tabindex="-1" aria-hidden="true">
+                <option value="">Не делиться</option>
+              </select>
+            </div>
           </div>
 
           <div class="form-actions">
@@ -1101,7 +1108,7 @@
 
       <!-- Profile Tab -->
       <section class="tab-panel profile-panel" data-tab="profile">
-        <div class="profile-head">
+        <button class="profile-head" id="btnProfileEdit" type="button">
           <div class="profile-avatar" id="profileAvatar" aria-hidden="true">
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round">
               <circle cx="12" cy="8" r="3.4"></circle>
@@ -1109,10 +1116,11 @@
             </svg>
           </div>
           <div class="profile-identity">
-            <div class="profile-name" id="profileName">Машинист</div>
-            <div class="profile-sub" id="profileSub">Личный кабинет</div>
+            <div class="profile-name" id="profileName">—</div>
+            <div class="profile-sub" id="profileSub">Личные данные</div>
           </div>
-        </div>
+          <span class="profile-edit-chevron" aria-hidden="true">›</span>
+        </button>
 
         <div class="profile-section-title">Расчёт зарплаты</div>
         <div class="profile-card">
@@ -1365,6 +1373,54 @@
     </div>
   </div>
 
+  <!-- Profile Edit Bottom Sheet -->
+  <div class="overlay" id="overlayProfileEdit">
+    <div class="bottom-sheet profile-edit-sheet">
+      <div class="salary-settings-header">
+        <span class="salary-settings-header-spacer" aria-hidden="true"></span>
+        <div class="sheet-title">Личные данные</div>
+        <span class="salary-settings-header-spacer" aria-hidden="true"></span>
+      </div>
+
+      <div class="settings-section-title">Должность</div>
+      <div class="settings-card">
+        <div class="settings-row settings-row-stack profile-field-row">
+          <div>
+            <div class="settings-label">Кем работаете</div>
+            <div class="settings-note">Можно сменить, если повысят</div>
+          </div>
+          <div class="glass-select profile-role-select" id="profileRoleSelect" data-glass-auto data-placeholder="Не указано">
+            <button class="glass-select-trigger" type="button" aria-haspopup="listbox" aria-expanded="false">
+              <span class="glass-select-value is-placeholder">Не указано</span>
+              <span class="glass-select-chevron" aria-hidden="true"><svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 8l5 5 5-5"></path></svg></span>
+            </button>
+            <div class="glass-select-menu hidden" role="listbox" aria-label="Должность"></div>
+            <select class="hidden" id="inputProfileRole" tabindex="-1" aria-hidden="true">
+              <option value="" selected>Не указано</option>
+              <option value="Машинист">Машинист</option>
+              <option value="Помощник машиниста">Помощник машиниста</option>
+            </select>
+          </div>
+        </div>
+      </div>
+
+      <div class="settings-section-title">Депо</div>
+      <div class="settings-card">
+        <div class="settings-row settings-row-stack">
+          <div>
+            <div class="settings-label">Предприятие / депо</div>
+            <div class="settings-note">Например: ТЧЭ-9 Комсомольск</div>
+          </div>
+          <input class="settings-input" id="inputProfileDepot" type="text" maxlength="60" placeholder="ТЧЭ-…" />
+        </div>
+      </div>
+
+      <div class="salary-settings-actions">
+        <button class="btn-sheet-save" id="btnSaveProfileEdit" type="button">Сохранить</button>
+      </div>
+    </div>
+  </div>
+
   <!-- Edit Shift Bottom Sheet -->
   <div class="overlay" id="overlayEditShift">
     <div class="bottom-sheet edit-shift-sheet">
@@ -1545,6 +1601,7 @@
 
   <!-- Runtime Scripts -->
   <script src="/scripts/app-constants.js" defer></script>
+  <script src="/scripts/glass-select.js" defer></script>
   <script src="/scripts/auth.js" defer></script>
   <script src="/scripts/viewport.js" defer></script>
   <script src="/scripts/time-utils.js" defer></script>

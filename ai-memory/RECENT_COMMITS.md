@@ -1,9 +1,10 @@
 # Recent Commits
 
-Generated: 2026-06-01 21:44:26 +1000
+Generated: 2026-06-01 21:46:44 +1000
 
 | Hash | Date | Author | Message |
 | --- | --- | --- | --- |
+| `7a83190` | 2026-06-01T21:46:14+10:00 | iEgor72 | Nav redesign: add Профиль, drop Зарплата tab, per-shift partner picker, Поехали from shift card |
 | `6340af6` | 2026-06-01T11:56:58+10:00 | iEgor72 | refactor(poekhali): remove dead editor UI (map/warnings/learning/speed-docs) |
 | `fed8ebc` | 2026-06-01T11:52:36+10:00 | iEgor72 | feat(poekhali): integrate metrics into speedometer card, move add button to bottom |
 | `177ee66` | 2026-06-01T11:46:53+10:00 | iEgor72 | feat(poekhali): per-category speed lists, temporary-first, red delete, cleaner header |
@@ -43,4 +44,3 @@ Generated: 2026-06-01 21:44:26 +1000
 | `3fedb4b` | 2026-05-07T05:58:23Z | iEgor72 | fix(tracker): separate speed lanes on map |
 | `3986476` | 2026-05-07T01:18:30Z | iEgor72 | chore(memory): refresh after dropdown recursion fix |
 | `24bffb8` | 2026-05-07T01:16:52Z | iEgor72 | fix(ui): remove locomotive dropdown sync recursion |
-| `b2b0fff` | 2026-05-07T01:13:53Z | iEgor72 | chore(memory): refresh after styled dropdown restore |
