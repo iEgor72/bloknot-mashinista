@@ -273,29 +273,39 @@
       });
     }
 
+    function pluralMachinists(n) {
+      var abs = Math.abs(n) % 100;
+      var d = abs % 10;
+      if (abs > 10 && abs < 20) return 'машинистов';
+      if (d === 1) return 'машинист';
+      if (d > 1 && d < 5) return 'машиниста';
+      return 'машинистов';
+    }
+
     function renderUserStatsFooter() {
       var el = document.getElementById('userStatsFooter');
       var cacheEl = document.getElementById('userStatsShellCache');
       if (!el) return;
-      var onlineText = navigator.onLine && userStatsState.onlineUsers !== null
-        ? String(userStatsState.onlineUsers)
-        : '—';
-      var totalText = userStatsState.totalUsers !== null
-        ? String(userStatsState.totalUsers)
-        : '—';
-      var nextText = 'Сейчас онлайн: ' + onlineText + ' · Всего пользователей: ' + totalText;
-      if (el.textContent !== nextText) {
-        el.textContent = nextText;
+      // Light social proof: only the total count, only when we actually have a
+      // number — never a bare dash. "Сейчас онлайн" was dropped (vanity metric;
+      // still visible to the dev in the admin panel).
+      var total = userStatsState.totalUsers;
+      if (total !== null && total !== undefined) {
+        var nextText = 'С нами уже ' + total + ' ' + pluralMachinists(total);
+        if (el.textContent !== nextText) el.textContent = nextText;
+        el.classList.remove('hidden');
+      } else {
+        el.classList.add('hidden');
       }
-      el.setAttribute('data-state', navigator.onLine ? 'online' : 'offline');
 
       var cacheVer =
         typeof SHELL_CACHE_VERSION !== 'undefined' && SHELL_CACHE_VERSION
           ? String(SHELL_CACHE_VERSION)
           : '—';
-      var cacheLine = 'Версия кэша: ' + cacheVer;
-      if (cacheEl && cacheEl.textContent !== cacheLine) {
-        cacheEl.textContent = cacheLine;
+      // Cache version now lives in Профиль → О приложении as a title/value row,
+      // so the element shows only the value (the "Версия кэша" label is in markup).
+      if (cacheEl && cacheEl.textContent !== cacheVer) {
+        cacheEl.textContent = cacheVer;
       }
     }
 
@@ -1354,8 +1364,11 @@
 
     function renderInstallPromptCard() {
       var card = document.getElementById('installPromptCard');
-      if (!card) return;
-      card.classList.toggle('hidden', !shouldShowInstallPromptCard());
+      if (card) card.classList.toggle('hidden', !shouldShowInstallPromptCard());
+      // Profile install entry: a permanent menu item, shown unless the app is
+      // already installed (standalone). Unlike the popup, it ignores "dismissed".
+      var profileInstall = document.getElementById('profileInstallSection');
+      if (profileInstall) profileInstall.classList.toggle('hidden', isStandalonePwa());
     }
 
     function dismissInstallPromptCard() {
@@ -1529,34 +1542,6 @@
         ndflCoeffs: ndflCoeffs,
         netAmount: netAmount
       };
-    }
-
-    function getSalaryRowIcon(code) {
-      var key = String(code || '').toUpperCase();
-      if (key.indexOf('023') === 0) return { name: 'moon', tone: 'night-icon' };
-      if (key === '027A')           return { name: 'snow', tone: 'snow-icon' };
-      if (key.indexOf('024') === 0) return { name: 'star', tone: 'holiday-icon' };
-      if (key.indexOf('025') === 0) return { name: 'star', tone: 'holiday-icon' };
-      if (key.indexOf('018') === 0) return { name: 'up',   tone: 'bonus-icon' };
-      if (key === '027L')           return { name: 'income', tone: '' };
-      if (key.indexOf('029') === 0 || key.indexOf('030') === 0) return { name: 'flag', tone: 'bonus-icon' };
-      if (key.indexOf('026') === 0 || key.indexOf('028') === 0) return { name: 'percent', tone: '' };
-      return { name: 'sun', tone: '' };
-    }
-
-    function createSalaryRowHtml(code, title, detail, value) {
-      var detailHtml = detail ? '<div class="salary-row-sub salary-note">' + detail + '</div>' : '';
-      var ic = getSalaryRowIcon(code);
-      var iconSvg = (typeof getShiftInlineIconSvg === 'function') ? getShiftInlineIconSvg(ic.name) : '';
-      var iconCls = 'salary-row-icon' + (ic.tone ? ' ' + ic.tone : '');
-      return '<div class="salary-row salary-row-v2" data-code="' + code + '">' +
-        '<div class="' + iconCls + '" aria-hidden="true">' + iconSvg + '</div>' +
-        '<div class="salary-main">' +
-          '<div class="salary-row-name">' + title + ' <span class="salary-row-code">' + code + '</span></div>' +
-          detailHtml +
-        '</div>' +
-        '<div class="salary-row-value num">' + value + '</div>' +
-      '</div>';
     }
 
     function buildSalarySummary(monthShifts, bounds) {
@@ -1755,178 +1740,6 @@
       }
     }
 
-    function renderSalaryPanel() {
-      var bounds = getMonthBounds(currentYear, currentMonth);
-      var monthShiftSets = buildMonthCalculationShifts(currentYear, currentMonth, bounds);
-      var monthShifts = monthShiftSets.calculationShifts;
-
-      var summary = buildSalarySummary(monthShifts, bounds);
-      renderMonthHeader('salaryMonthTitle', 'salaryMonthQuarter', 'salaryMonthTabs', currentYear, currentMonth, function(targetMonth) {
-        if (targetMonth === currentMonth) return;
-        triggerHapticSelection();
-        currentMonth = targetMonth;
-        render();
-      });
-
-      var salaryNetTop = document.getElementById('salaryNetTop');
-      var salaryNetBottom = document.getElementById('salaryNetBottom');
-      var salaryAccrued = document.getElementById('salaryAccrued');
-      var salaryNdflBase = document.getElementById('salaryNdflBase');
-      var salaryNdflCoeffs = document.getElementById('salaryNdflCoeffs');
-      var salaryBaseTotal = document.getElementById('salaryBaseTotal');
-      var salaryKomRow = document.getElementById('salaryKomRow');
-      var salaryKom = document.getElementById('salaryKom');
-      if (salaryNetTop) salaryNetTop.textContent = formatRub(summary.netAmount);
-      if (salaryNetBottom) salaryNetBottom.textContent = formatRub(summary.netAmount);
-      if (salaryAccrued) salaryAccrued.textContent = formatRub(summary.accruedAmount);
-      if (salaryNdflBase) salaryNdflBase.textContent = '-' + formatRub(summary.ndflBase);
-      if (salaryNdflCoeffs) salaryNdflCoeffs.textContent = '-' + formatRub(summary.ndflCoeffs);
-      if (salaryBaseTotal) salaryBaseTotal.textContent = formatRub(summary.baseAmount);
-      if (salaryKomRow) salaryKomRow.classList.toggle('hidden', !(summary.komAmount > 0));
-      if (salaryKom) salaryKom.textContent = formatRub(summary.komAmount);
-
-      var baseRows = [];
-      baseRows.push(createSalaryRowHtml(
-        '004L',
-        'Тариф в норме <span>(' + summary.regularHours.toFixed(2).replace('.', ',') + ' ч × ' + Number(appSettings.tariffRate).toFixed(2).replace('.', ',') + ' ₽)</span>',
-        '',
-        formatRub(summary.tariffAmount)
-      ));
-      baseRows.push(createSalaryRowHtml(
-        '027L',
-        'Доплата 4% <span>(' + summary.workedHours.toFixed(2).replace('.', ',') + ' ч × тариф)</span>',
-        '',
-        formatRub(summary.monthlyBonusAmount)
-      ));
-      baseRows.push(createSalaryRowHtml(
-        '023L',
-        'Ночные <span>(' + summary.nightHours.toFixed(2).replace('.', ',') + ' ч × ' + formatPercent(appSettings.nightPercent) + ')</span>',
-        '',
-        formatRub(summary.nightAmount)
-      ));
-      if (summary.overNormHours > 0) {
-        baseRows.push(createSalaryRowHtml(
-          '018L',
-          'Сверх нормы <span>(' + summary.overNormHours.toFixed(2).replace('.', ',') + ' ч, норма ' + summary.normHours.toFixed(2).replace('.', ',') + ' ч)</span>',
-          'По схеме из APK: час сверх нормы оплачивается тарифом, доплата за сверхурочные добавляется отдельной строкой.',
-          formatRub(summary.overtimeAmount + summary.extraOvertimeAmount + summary.travelOvertimeAmount)
-        ));
-      }
-      baseRows.push(createSalaryRowHtml(
-        '025L',
-        'Классная квалификация <span>(' + formatPercent(appSettings.classPercent) + ')</span>',
-        '',
-        formatRub(summary.classAmount)
-      ));
-      if (summary.holidayHours > 0) {
-        baseRows.push(createSalaryRowHtml(
-          '024L',
-          'Праздничные <span>(' + summary.holidayHours.toFixed(2).replace('.', ',') + ' ч × 100%)</span>',
-          '',
-          formatRub(summary.holidayAmount)
-        ));
-      }
-      if (summary.zoneAmount > 0) {
-        baseRows.push(createSalaryRowHtml(
-          '029A',
-          'Зональная надбавка <span>(' + formatPercent(appSettings.zonePercent) + ')</span>',
-          '',
-          formatRub(summary.zoneAmount)
-        ));
-      }
-      if (summary.bamAmount > 0) {
-        baseRows.push(createSalaryRowHtml(
-          '030A',
-          'Бамовская надбавка <span>(' + formatPercent(appSettings.bamPercent) + ')</span>',
-          '',
-          formatRub(summary.bamAmount)
-        ));
-      }
-      var coeffRows = [
-        createSalaryRowHtml('026A', 'Районный коэфф. РФ <span>(' + formatPercent(appSettings.districtPercent) + ')</span>', '', formatRub(summary.districtAmount)),
-        createSalaryRowHtml('027A', 'Северная надбавка <span>(' + formatPercent(appSettings.northPercent) + ')</span>', '', formatRub(summary.northAmount)),
-        createSalaryRowHtml('028A', 'Местный коэфф. <span>(' + formatPercent(appSettings.localPercent) + ')</span>', '', formatRub(summary.localAmount))
-      ];
-
-      var baseList = document.getElementById('salaryBaseList');
-      var coeffList = document.getElementById('salaryCoeffList');
-      if (baseList) baseList.innerHTML = baseRows.join('');
-      if (coeffList) coeffList.innerHTML = coeffRows.join('');
-
-      // ── Hero stack-bar + legend ──
-      renderSalaryHeroStack(summary);
-      // ── 6-month trend bars ──
-      renderSalaryTrend();
-    }
-
-    function renderSalaryTrend() {
-      var barsEl = document.getElementById('salaryTrendBars');
-      var labelsEl = document.getElementById('salaryTrendLabels');
-      if (!barsEl || !labelsEl) return;
-      var monthNames = ['Янв','Фев','Мар','Апр','Май','Июн','Июл','Авг','Сен','Окт','Ноя','Дек'];
-      var rows = [];
-      var maxV = 0;
-      for (var off = 5; off >= 0; off--) {
-        var d = new Date(currentYear, currentMonth - off, 1);
-        var y = d.getFullYear();
-        var m = d.getMonth();
-        var bounds = getMonthBounds(y, m);
-        var sets = buildMonthCalculationShifts(y, m, bounds);
-        var summary = (function() {
-          try { return buildSalarySummary(sets.calculationShifts, bounds); }
-          catch (e) { return { netAmount: 0 }; }
-        })();
-        var v = Math.round((summary.netAmount || 0) / 1000); // thousands ₽
-        rows.push({ label: monthNames[m], v: v, current: (off === 0) });
-        if (v > maxV) maxV = v;
-      }
-      if (maxV <= 0) maxV = 1;
-      var barsHtml = '';
-      var labelsHtml = '';
-      for (var i = 0; i < rows.length; i++) {
-        var r = rows[i];
-        var h = Math.max(8, Math.round((r.v / maxV) * 100));
-        barsHtml += '<div class="salary-trend-bar' + (r.current ? ' cur' : '') + '" data-value="' + r.v + '" style="height:' + h + '%"></div>';
-        labelsHtml += '<span' + (r.current ? ' class="cur"' : '') + '>' + r.label + '</span>';
-      }
-      barsEl.innerHTML = barsHtml;
-      labelsEl.innerHTML = labelsHtml;
-    }
-
-    function renderSalaryHeroStack(summary) {
-      var stackEl = document.getElementById('salaryHeroStack');
-      var legendEl = document.getElementById('salaryHeroLegend');
-      if (!stackEl || !legendEl) return;
-      var segs = [];
-      var tariffBase = (summary.tariffAmount || 0) + (summary.monthlyBonusAmount || 0) + (summary.classAmount || 0);
-      if (tariffBase > 0) segs.push({ label: 'Оклад', v: tariffBase, color: 'var(--accent)' });
-      if ((summary.nightAmount || 0) > 0) segs.push({ label: 'Ночные · ' + (summary.nightHours || 0).toFixed(1).replace('.', ',') + ' ч', v: summary.nightAmount, color: 'var(--night)' });
-      if ((summary.holidayAmount || 0) > 0) segs.push({ label: 'Праздничные · ' + (summary.holidayHours || 0).toFixed(1).replace('.', ',') + ' ч', v: summary.holidayAmount, color: 'var(--holiday)' });
-      var coeffTotal = (summary.districtAmount || 0) + (summary.northAmount || 0) + (summary.localAmount || 0);
-      if (coeffTotal > 0) segs.push({ label: 'Коэффициенты', v: coeffTotal, color: 'var(--good)' });
-      var overtime = (summary.overtimeAmount || 0) + (summary.extraOvertimeAmount || 0) + (summary.travelOvertimeAmount || 0);
-      if (overtime > 0) segs.push({ label: 'Сверх нормы', v: overtime, color: 'var(--warn)' });
-      var total = 0;
-      for (var i = 0; i < segs.length; i++) total += segs[i].v;
-      if (total <= 0) {
-        stackEl.innerHTML = '';
-        legendEl.innerHTML = '';
-        return;
-      }
-      var stackHtml = '';
-      for (var k = 0; k < segs.length; k++) {
-        var s = segs[k];
-        var pct = (s.v / total) * 100;
-        stackHtml += '<span style="width:' + pct.toFixed(2) + '%;background:linear-gradient(180deg,' + s.color + ',color-mix(in oklch,' + s.color + ' 55%,black));box-shadow:inset 0 1px 0 color-mix(in oklch,white 30%,transparent);"></span>';
-      }
-      stackEl.innerHTML = stackHtml;
-      var legendHtml = '';
-      for (var n = 0; n < segs.length; n++) {
-        var seg = segs[n];
-        legendHtml += '<div class="salary-hero-legend-row"><span class="dot" style="background:' + seg.color + '"></span><span>' + seg.label + '</span><span class="v num">' + formatRub(seg.v) + '</span></div>';
-      }
-      legendEl.innerHTML = legendHtml;
-    }
     // ── Documentation & PDF Viewer — see scripts/docs-app.js ──
     var saveToastHideTimer = null;
     var saveToastDoneTimer = null;

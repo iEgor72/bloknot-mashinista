@@ -74,9 +74,9 @@
     if (!sub) return;
     var label = activePartnerLabel();
     if (label) {
-      sub.textContent = 'Активный напарник: ' + label;
+      sub.textContent = 'Напарник по умолчанию: ' + label;
     } else if (state.partners.length) {
-      sub.textContent = 'Напарников: ' + state.partners.length + ' · активный не выбран';
+      sub.textContent = 'Напарников: ' + state.partners.length + ' · по умолчанию не выбран';
     } else {
       sub.textContent = 'Свяжитесь с напарником, чтобы делиться сменами';
     }
@@ -99,7 +99,7 @@
     if (valueEl) valueEl.textContent = label || 'Не выбран';
     if (hintEl) {
       if (!label) {
-        hintEl.textContent = 'Новые смены ни с кем не делятся.';
+        hintEl.textContent = 'Подставляется в выбор получателя при добавлении смены.';
       } else if (activePartnerTrusted()) {
         hintEl.textContent = 'Смены этого напарника добавляются автоматически. Ваши — уходят ему.';
       } else {
@@ -122,8 +122,8 @@
     var html = state.partners.map(function(p) {
       var isActive = p.pairingId === state.activePairingId;
       var activeBtn = isActive
-        ? '<button class="partners-item-active is-on" type="button" data-action="deactivate" data-id="' + escapeHtml(p.pairingId) + '">Активный ✓</button>'
-        : '<button class="partners-item-active" type="button" data-action="activate" data-id="' + escapeHtml(p.pairingId) + '">Сделать активным</button>';
+        ? '<button class="partners-item-active is-on" type="button" data-action="deactivate" data-id="' + escapeHtml(p.pairingId) + '">По умолчанию ✓</button>'
+        : '<button class="partners-item-active" type="button" data-action="activate" data-id="' + escapeHtml(p.pairingId) + '">Сделать по умолчанию</button>';
       return '' +
         '<div class="partners-item' + (isActive ? ' is-active' : '') + '">' +
           '<div class="partners-item-main">' +
@@ -534,7 +534,9 @@
     }).then(function() { setBusy(false); });
   }
 
-  function openPartnersScreen() {
+  var partnersOriginTab = 'home';
+  function openPartnersScreen(fromTab) {
+    partnersOriginTab = fromTab || 'home';
     if (typeof setActiveTab === 'function') setActiveTab('partners');
     showFeedback('');
     loadPartners();
@@ -543,12 +545,16 @@
   function bind() {
     var entry = $('homeCrewEntry');
     if (entry) {
-      entry.addEventListener('click', function() { openPartnersScreen(); });
+      entry.addEventListener('click', function() { openPartnersScreen('home'); });
+    }
+    var profileEntry = $('btnProfileCrew');
+    if (profileEntry) {
+      profileEntry.addEventListener('click', function() { openPartnersScreen('profile'); });
     }
     var back = $('partnersBack');
     if (back) {
       back.addEventListener('click', function() {
-        if (typeof setActiveTab === 'function') setActiveTab('home');
+        if (typeof setActiveTab === 'function') setActiveTab(partnersOriginTab);
       });
     }
     var genBtn = $('partnersGenerateBtn');
@@ -590,6 +596,18 @@
   function getActivePartner() {
     if (!state.activePairingId) return null;
     return { pairingId: state.activePairingId, label: activePartnerLabel() };
+  }
+
+  // All linked partners, for the per-shift recipient picker.
+  function getPartners() {
+    return state.partners.map(function(p) {
+      return { pairingId: p.pairingId, label: p.partnerLabel || '' };
+    });
+  }
+
+  // The default recipient (formerly "active partner") — pre-selected in the picker.
+  function getDefaultPairingId() {
+    return state.activePairingId || '';
   }
 
   // ── Offline-durable share queue ──
@@ -689,6 +707,8 @@
 
   window.BrigadePartners = {
     getActivePartner: getActivePartner,
+    getPartners: getPartners,
+    getDefaultPairingId: getDefaultPairingId,
     shareShift: shareShift,
     shareShiftTo: shareShiftTo,
     getSharedPairing: getSharedPairing,

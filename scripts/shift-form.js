@@ -249,8 +249,6 @@
     bindCurrentMonthNavButton('btnNextMonth', 1);
     bindCurrentMonthNavButton('btnPrevShiftsMonth', -1);
     bindCurrentMonthNavButton('btnNextShiftsMonth', 1);
-    bindCurrentMonthNavButton('btnPrevSalaryMonth', -1);
-    bindCurrentMonthNavButton('btnNextSalaryMonth', 1);
 
     // ── Add shift form ──
     function clearErrors() {
@@ -567,26 +565,41 @@
     // an active partner exists; deliver facts to the partner on a successful save. ──
     function syncShiftShareRow() {
       var row = document.getElementById('shiftShareRow');
-      if (!row) return;
-      var active = (window.BrigadePartners && typeof BrigadePartners.getActivePartner === 'function')
-        ? BrigadePartners.getActivePartner() : null;
-      if (editingShiftId || !active) {
+      var select = document.getElementById('shiftShareSelect');
+      if (!row || !select) return;
+      var bp = window.BrigadePartners;
+      var partners = (bp && typeof bp.getPartners === 'function') ? bp.getPartners() : [];
+      // Per-shift recipient picker: only when adding a NEW shift and at least one
+      // partner is linked. The recipient is chosen per shift, not a global mode.
+      if (editingShiftId || !partners.length) {
         row.classList.add('hidden');
         return;
       }
+      var defaultId = (bp && typeof bp.getDefaultPairingId === 'function') ? bp.getDefaultPairingId() : '';
+      select.innerHTML = '';
+      var noneOpt = document.createElement('option');
+      noneOpt.value = '';
+      noneOpt.textContent = 'Не делиться';
+      select.appendChild(noneOpt);
+      partners.forEach(function(p) {
+        var opt = document.createElement('option');
+        opt.value = p.pairingId;
+        opt.textContent = p.label || 'Напарник';
+        select.appendChild(opt);
+      });
+      // Pre-select the default partner; user can override for this one shift.
+      select.value = defaultId || '';
       row.classList.remove('hidden');
-      var partnerEl = document.getElementById('shiftSharePartner');
-      if (partnerEl) partnerEl.textContent = active.label || '';
     }
 
     function maybeShareSavedShift(shift) {
       try {
         var row = document.getElementById('shiftShareRow');
-        var toggle = document.getElementById('shiftShareToggle');
+        var select = document.getElementById('shiftShareSelect');
         if (!row || row.classList.contains('hidden')) return;
-        if (!toggle || !toggle.checked) return;
-        if (!window.BrigadePartners || typeof BrigadePartners.shareShift !== 'function') return;
-        BrigadePartners.shareShift(shift).then(function(r) {
+        if (!select || !select.value) return; // "Не делиться"
+        if (!window.BrigadePartners || typeof BrigadePartners.shareShiftTo !== 'function') return;
+        BrigadePartners.shareShiftTo(shift, select.value).then(function(r) {
           if (r && r.delivered) {
             var fs = document.getElementById('formSuccess');
             if (fs && fs.textContent.indexOf('сохранена') !== -1) {
@@ -851,17 +864,21 @@
     }
 
     // ── Add to Screen ──
-    var showInstallGuideBtn = document.getElementById('btnShowInstallGuide');
-    if (showInstallGuideBtn) {
-      showInstallGuideBtn.addEventListener('click', function() {
-        maybeShowNativeInstallPrompt().then(function(result) {
-          if (result && result.outcome === 'accepted') {
-            return;
-          }
-          openInstallGuideSheet();
-        });
+    function handleInstallGuideTrigger() {
+      maybeShowNativeInstallPrompt().then(function(result) {
+        if (result && result.outcome === 'accepted') {
+          return;
+        }
+        openInstallGuideSheet();
       });
     }
+    [
+      document.getElementById('btnShowInstallGuide'),
+      document.getElementById('btnProfileInstall')
+    ].forEach(function(installTriggerBtn) {
+      if (!installTriggerBtn) return;
+      installTriggerBtn.addEventListener('click', handleInstallGuideTrigger);
+    });
     var dismissInstallCardBtn = document.getElementById('btnDismissInstallCard');
     if (dismissInstallCardBtn) {
       dismissInstallCardBtn.addEventListener('click', function() {
@@ -869,14 +886,18 @@
       });
     }
 
-    var openSalarySettingsBtn = document.getElementById('btnOpenSalarySettings');
-    if (openSalarySettingsBtn) {
+    var openSalarySettingsTriggers = [
+      document.getElementById('btnOpenSalarySettings'),
+      document.getElementById('btnProfileSalarySettings')
+    ];
+    openSalarySettingsTriggers.forEach(function(openSalarySettingsBtn) {
+      if (!openSalarySettingsBtn) return;
       openSalarySettingsBtn.addEventListener('click', function() {
         triggerHapticSelection();
         updateSettingsControls();
         openOverlay('overlaySalarySettings');
       });
-    }
+    });
     var saveSalarySettingsBtn = document.getElementById('btnSaveSalarySettings');
     if (saveSalarySettingsBtn) {
       saveSalarySettingsBtn.addEventListener('click', function() {

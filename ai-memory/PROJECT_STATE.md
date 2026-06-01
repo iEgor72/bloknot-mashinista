@@ -1,14 +1,14 @@
 # Project State
 
 <!-- AUTO_STATUS:START -->
-Generated: 2026-06-01 11:52:37 +1000
+Generated: 2026-06-01 21:44:26 +1000
 
 ## Repository Snapshot
 - Local repo path: `D:\work\bloknot-mashinista-tg`
 - Project memory path: `D:\work\bloknot-mashinista-tg\ai-memory`
 - Branch: `poekhali-rework`
-- HEAD: `fed8ebc`
-- Last commit: `fed8ebc feat(poekhali): integrate metrics into speedometer card, move add button to bottom`
+- HEAD: `6340af6`
+- Last commit: `6340af6 refactor(poekhali): remove dead editor UI (map/warnings/learning/speed-docs)`
 
 ## Git Remote
 ```text
@@ -21,13 +21,29 @@ origin	https://github.com/iEgor72/bloknot-mashinista.git (push)
 codex/next-direction b044dd5 offline mvp
   codex/tabs-ui        117f1fa [origin/codex/tabs-ui] tabs ui
   main                 ad53dff [origin/main] chore(memory): record poekhali deploy
-* poekhali-rework      fed8ebc feat(poekhali): integrate metrics into speedometer card, move add button to bottom
+* poekhali-rework      6340af6 refactor(poekhali): remove dead editor UI (map/warnings/learning/speed-docs)
 ```
 
 ## Worktree
 ```text
 M ai-memory/CHANGELOG.md
+ M ai-memory/INDEX.md
+ M ai-memory/PROJECT_STATE.md
+ M ai-memory/RECENT_COMMITS.md
+ M ai-memory/WORKTREE_STATUS.md
  M ai-memory/sessions/2026-06-01.md
+ M index.html
+ M scripts/app-init.js
+ M scripts/app.js
+ M scripts/auth.js
+ M scripts/partners.js
+ M scripts/poekhali-tracker.js
+ M scripts/render.js
+ M scripts/shift-form.js
+ M styles/15-bottom-nav.css
+ M styles/50-design-refresh.css
+ M styles/55-partners.css
+?? styles/56-profile.css
 ```
 <!-- AUTO_STATUS:END -->
 

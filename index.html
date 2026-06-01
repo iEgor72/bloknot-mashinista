@@ -147,6 +147,10 @@
     rel="stylesheet"
     href="/styles/55-partners.css"
   />
+  <link
+    rel="stylesheet"
+    href="/styles/56-profile.css"
+  />
   <noscript><link rel="stylesheet" href="/styles/00-base.css" /></noscript>
   <noscript><link rel="stylesheet" href="/styles/10-navigation-and-cards.css" /></noscript>
   <noscript><link rel="stylesheet" href="/styles/15-bottom-nav.css" /></noscript>
@@ -156,6 +160,7 @@
   <noscript><link rel="stylesheet" href="/styles/40-premium-refresh.css" /></noscript>
   <noscript><link rel="stylesheet" href="/styles/50-design-refresh.css" /></noscript>
   <noscript><link rel="stylesheet" href="/styles/55-partners.css" /></noscript>
+  <noscript><link rel="stylesheet" href="/styles/56-profile.css" /></noscript>
   <script>
     window.CURRENT_USER = window.CURRENT_USER || null;
   </script>
@@ -374,17 +379,6 @@
           <a class="section-link" href="#" id="homeAllShiftsLink" role="button">Все смены ›</a>
         </div>
         <div id="homeShiftsList"></div>
-
-        <div class="install-prompt-card hidden" id="installPromptCard">
-          <div class="install-prompt-title">Установить приложение</div>
-          <div class="install-prompt-text">Запускайте Блокнот Машиниста в один тап, как обычное приложение.</div>
-          <div class="install-prompt-actions">
-            <button class="btn-secondary" id="btnShowInstallGuide" type="button">Как установить</button>
-            <button class="btn-link install-dismiss-btn" id="btnDismissInstallCard" type="button">Позже</button>
-          </div>
-        </div>
-        <div class="usage-stats-note" id="userStatsFooter" aria-live="polite">Сейчас онлайн: — · Всего пользователей: —</div>
-        <div class="usage-stats-shell-cache" id="userStatsShellCache" aria-live="polite">Версия кэша: —</div>
       </section>
 
       <!-- Poekhali Tab -->
@@ -407,29 +401,34 @@
             </div>
           </div>
 
-          <!-- Round speedometer (КЛУБ-style) with integrated stats -->
+          <!-- Round speedometer (КЛУБ-style) — seamless instrument cluster:
+               clock on top, metrics flanking the gauge, timer below. -->
           <div class="speedo speedo-round" id="trkSpeedo">
-            <div class="gauge" id="trkGauge">
-              <svg class="gauge-svg" viewBox="0 0 220 220" aria-hidden="true">
-                <g class="gauge-ticks" id="trkGaugeTicks"></g>
-                <path class="gauge-track" id="trkGaugeTrack" fill="none"></path>
-                <path class="gauge-progress" id="trkGaugeProgress" fill="none"></path>
-                <line class="gauge-allow-mark" id="trkGaugeAllowMark"></line>
-              </svg>
-              <div class="gauge-center">
-                <div class="gauge-fact num" id="trkSpeed">0</div>
-                <div class="gauge-unit">км/ч</div>
-                <div class="gauge-allow num" id="trkAllow">—</div>
+            <div class="speedo-stat is-clock"><span class="l">Время МСК</span><span class="v num" id="trkClock">—</span></div>
+            <div class="speedo-mid">
+              <div class="speedo-col speedo-col-l">
+                <div class="speedo-stat is-timer"><span class="l">В пути</span><span class="v num" id="trkTimer">—</span></div>
+                <div class="speedo-stat is-grade"><span class="l">Уклон</span><span class="v num" id="trkGrade">—</span></div>
+              </div>
+              <div class="gauge" id="trkGauge">
+                <svg class="gauge-svg" viewBox="0 0 220 220" aria-hidden="true">
+                  <g class="gauge-ticks" id="trkGaugeTicks"></g>
+                  <path class="gauge-track" id="trkGaugeTrack" fill="none"></path>
+                  <path class="gauge-progress" id="trkGaugeProgress" fill="none"></path>
+                  <line class="gauge-allow-mark" id="trkGaugeAllowMark"></line>
+                </svg>
+                <div class="gauge-center">
+                  <div class="gauge-fact num" id="trkSpeed">0</div>
+                  <div class="gauge-unit">км/ч</div>
+                  <div class="gauge-allow num" id="trkAllow">—</div>
+                </div>
+              </div>
+              <div class="speedo-col speedo-col-r">
+                <div class="speedo-stat is-tech"><span class="l">Тех. скорость</span><span class="v num" id="trkTechSpeed">—</span></div>
+                <div class="speedo-stat is-reach"><span class="l">Далее</span><span class="v num" id="trkReach">—</span></div>
               </div>
             </div>
-            <div class="speedo-stats">
-              <div class="speedo-stat"><span class="l">Голова состава</span><span class="v num" id="trkHeadPos">—</span></div>
-              <div class="speedo-stat"><span class="l">Время МСК</span><span class="v num" id="trkClock">—</span></div>
-              <div class="speedo-stat is-grade"><span class="l">Уклон</span><span class="v num" id="trkGrade">—</span></div>
-              <div class="speedo-stat is-reach"><span class="l">Далее</span><span class="v num" id="trkReach">—</span></div>
-              <div class="speedo-stat"><span class="l">В пути</span><span class="v num" id="trkTimer">—</span></div>
-              <div class="speedo-stat is-tech"><span class="l">Тех. скорость</span><span class="v num" id="trkTechSpeed">—</span></div>
-            </div>
+            <div class="speedo-stat is-coord"><span class="l">Координата</span><span class="v num" id="trkHeadPos">—</span></div>
           </div>
 
           <!-- Profile container -->
@@ -829,13 +828,12 @@
 
           </div>
 
-          <label class="shift-share-row hidden" id="shiftShareRow">
-            <input type="checkbox" id="shiftShareToggle" checked />
-            <span class="shift-share-text">
-              <span class="shift-share-title">Поделиться с напарником</span>
-              <span class="shift-share-partner" id="shiftSharePartner">—</span>
-            </span>
-          </label>
+          <div class="shift-share-row hidden" id="shiftShareRow">
+            <label class="shift-share-label" for="shiftShareSelect">Поделиться сменой</label>
+            <select class="shift-share-select" id="shiftShareSelect">
+              <option value="">Не делиться</option>
+            </select>
+          </div>
 
           <div class="form-actions">
             <button class="btn-primary" id="btnAdd">Сохранить смену</button>
@@ -843,87 +841,6 @@
             <button class="btn-danger btn-delete-edit hidden" id="btnDeleteEdit" type="button">Удалить запись</button>
           </div>
           <div class="form-success" id="formSuccess"></div>
-        </div>
-      </section>
-
-      <!-- Salary Tab -->
-      <section class="tab-panel" data-tab="salary">
-        <div class="month-nav salary-month-nav">
-          <div class="month-nav-top">
-            <button class="month-btn" id="btnPrevSalaryMonth" type="button" aria-label="Предыдущий месяц">‹</button>
-            <div class="month-header">
-              <div class="month-title" id="salaryMonthTitle"></div>
-              <div class="month-quarter" id="salaryMonthQuarter"></div>
-            </div>
-            <button class="month-btn" id="btnNextSalaryMonth" type="button" aria-label="Следующий месяц">›</button>
-          </div>
-          <div class="month-tabs" id="salaryMonthTabs" aria-label="Месяцы квартала"></div>
-        </div>
-
-        <div class="salary-card salary-summary-card">
-          <div class="salary-total-amount" id="salaryNetTop">0 ₽</div>
-          <div class="salary-total-caption">на руки (после НДФЛ)</div>
-          <div class="salary-hero-stack" id="salaryHeroStack" aria-hidden="true"></div>
-          <div class="salary-hero-legend" id="salaryHeroLegend"></div>
-        </div>
-
-        <div class="salary-disclaimer">* Все суммы примерные. Это ориентир для будущего расчёта, а не точный расчет заработка.</div>
-
-        <section class="salary-trend" id="salaryTrend" aria-label="История за 6 месяцев">
-          <div class="salary-trend-head">
-            <span class="t">История · последние 6 месяцев</span>
-            <span class="u">тыс. ₽</span>
-          </div>
-          <div class="salary-trend-bars" id="salaryTrendBars"></div>
-          <div class="salary-trend-labels" id="salaryTrendLabels"></div>
-        </section>
-
-        <div class="section-header section-header-row salary-section-header">
-          <span>Основные начисления</span>
-          <button class="icon-glass-btn" id="btnOpenSalarySettings" type="button" aria-label="Открыть параметры расчёта">
-            <svg viewBox="0 0 24 24" aria-hidden="true">
-              <path d="M12 8.3a3.7 3.7 0 1 1 0 7.4 3.7 3.7 0 0 1 0-7.4z"></path>
-              <path d="M19 12a7.7 7.7 0 0 0-.1-1l2-1.5-2-3.5-2.4 1a7.8 7.8 0 0 0-1.7-1l-.4-2.6H9.6l-.4 2.6c-.6.2-1.2.6-1.7 1l-2.4-1-2 3.5 2 1.5A7.7 7.7 0 0 0 5 12c0 .3 0 .7.1 1l-2 1.5 2 3.5 2.4-1c.5.4 1.1.7 1.7 1l.4 2.6h4.8l.4-2.6c.6-.2 1.2-.6 1.7-1l2.4 1 2-3.5-2-1.5c.1-.3.1-.7.1-1z"></path>
-            </svg>
-          </button>
-        </div>
-        <div class="salary-card">
-          <div class="salary-list" id="salaryBaseList"></div>
-          <div class="salary-subtotal-row">
-            <span class="salary-subtotal-label">Итого база</span>
-            <span class="salary-subtotal-value" id="salaryBaseTotal">0 ₽</span>
-          </div>
-        </div>
-
-        <div class="section-header">Коэффициенты</div>
-        <div class="salary-card">
-          <div class="salary-list" id="salaryCoeffList"></div>
-        </div>
-
-        <div class="section-header">Итого</div>
-        <div class="salary-card">
-          <div class="salary-summary-list">
-            <div class="salary-summary-row hidden" id="salaryKomRow">
-              <span>Командировочные</span>
-              <span id="salaryKom">0 ₽</span>
-            </div>
-            <div class="salary-summary-row">
-              <span>Начислено</span>
-              <span id="salaryAccrued">0 ₽</span>
-            </div>
-            <div class="salary-summary-row">
-              <span>НДФЛ основной (13%)</span>
-              <span id="salaryNdflBase">0 ₽</span>
-            </div>
-            <div class="salary-summary-row">
-              <span>НДФЛ на РК и СН (13%)</span>
-              <span id="salaryNdflCoeffs">0 ₽</span>
-            </div>
-          </div>
-          <div class="salary-net-row">
-            <span>НА РУКИ</span>
-            <span id="salaryNetBottom">0 ₽</span>
-          </div>
         </div>
       </section>
 
@@ -1135,8 +1052,8 @@
         </div>
 
         <div class="partners-intro">
-          Один член бригады добавляет смену — у второго она появляется автоматически.
-          Свяжитесь по короткому коду, выберите активного напарника, и можно делиться.
+          Свяжитесь по короткому коду. Получателя можно выбрать у каждой смены — а здесь
+          задаётся напарник по умолчанию, который будет подставляться сразу.
         </div>
 
         <div class="partners-inbox" id="partnersInbox" hidden aria-live="polite">
@@ -1145,9 +1062,9 @@
         </div>
 
         <div class="partners-active-card" id="partnersActiveCard" aria-live="polite">
-          <div class="partners-active-label">Активный напарник</div>
+          <div class="partners-active-label">Напарник по умолчанию</div>
           <div class="partners-active-value" id="partnersActiveValue">Не выбран</div>
-          <div class="partners-active-hint" id="partnersActiveHint">Новые смены ни с кем не делятся.</div>
+          <div class="partners-active-hint" id="partnersActiveHint">Подставляется в выбор получателя при добавлении смены.</div>
         </div>
 
         <div class="partners-link-card">
@@ -1181,6 +1098,106 @@
           <div class="partners-book-empty" id="partnersBookEmpty">Пока никого нет. Создайте код или введите код напарника выше.</div>
         </div>
       </section>
+
+      <!-- Profile Tab -->
+      <section class="tab-panel profile-panel" data-tab="profile">
+        <div class="profile-head">
+          <div class="profile-avatar" id="profileAvatar" aria-hidden="true">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round">
+              <circle cx="12" cy="8" r="3.4"></circle>
+              <path d="M5 20c0-3.6 3.1-5.7 7-5.7s7 2.1 7 5.7"></path>
+            </svg>
+          </div>
+          <div class="profile-identity">
+            <div class="profile-name" id="profileName">Машинист</div>
+            <div class="profile-sub" id="profileSub">Личный кабинет</div>
+          </div>
+        </div>
+
+        <div class="profile-section-title">Расчёт зарплаты</div>
+        <div class="profile-card">
+          <button class="profile-row" id="btnProfileSalarySettings" type="button">
+            <span class="profile-row-icon" aria-hidden="true">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round">
+                <circle cx="12" cy="12" r="3"></circle>
+                <path d="M19.4 13a1.7 1.7 0 0 0 .34 1.87l.05.05a2 2 0 1 1-2.83 2.83l-.05-.05a1.7 1.7 0 0 0-2.87 1.2V20a2 2 0 1 1-4 0v-.09A1.7 1.7 0 0 0 7 18.24l-.05.05a2 2 0 1 1-2.83-2.83l.05-.05A1.7 1.7 0 0 0 4 13H3.9a2 2 0 1 1 0-4H4a1.7 1.7 0 0 0 1.2-2.87l-.05-.05a2 2 0 1 1 2.83-2.83l.05.05A1.7 1.7 0 0 0 11 3.9V3.8a2 2 0 1 1 4 0v.1A1.7 1.7 0 0 0 17.94 5.2l.05-.05a2 2 0 1 1 2.83 2.83l-.05.05A1.7 1.7 0 0 0 20.1 11H20a2 2 0 1 1 0 4z"></path>
+              </svg>
+            </span>
+            <span class="profile-row-body">
+              <span class="profile-row-title">Параметры расчёта</span>
+              <span class="profile-row-note">Тариф, доплаты и коэффициенты</span>
+            </span>
+            <span class="profile-row-chevron" aria-hidden="true">›</span>
+          </button>
+        </div>
+
+        <div class="profile-section-title">Бригада</div>
+        <div class="profile-card">
+          <button class="profile-row" id="btnProfileCrew" type="button">
+            <span class="profile-row-icon" aria-hidden="true">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round">
+                <circle cx="9" cy="8" r="3.2"></circle>
+                <path d="M3.5 19c0-3 2.5-4.8 5.5-4.8s5.5 1.8 5.5 4.8"></path>
+                <path d="M16 11.2a3 3 0 0 0 0-6"></path>
+                <path d="M15.5 14.4c2.6.2 4.5 1.9 4.5 4.6"></path>
+              </svg>
+            </span>
+            <span class="profile-row-body">
+              <span class="profile-row-title">Напарники</span>
+              <span class="profile-row-note">Связь по коду, список и выбор напарника</span>
+            </span>
+            <span class="profile-row-chevron" aria-hidden="true">›</span>
+          </button>
+        </div>
+
+        <div class="profile-section-title">Данные</div>
+        <div class="profile-card">
+          <div class="profile-row profile-row-static profile-soon">
+            <span class="profile-row-body">
+              <span class="profile-row-title">Экспорт и резервная копия</span>
+              <span class="profile-row-note">Скоро</span>
+            </span>
+          </div>
+        </div>
+
+        <div id="profileInstallSection">
+          <div class="profile-section-title">Приложение</div>
+          <div class="profile-card">
+            <button class="profile-row" id="btnProfileInstall" type="button">
+              <span class="profile-row-icon" aria-hidden="true">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round">
+                  <path d="M12 4v10"></path>
+                  <path d="M8 11l4 4 4-4"></path>
+                  <path d="M5 19h14"></path>
+                </svg>
+              </span>
+              <span class="profile-row-body">
+                <span class="profile-row-title">Установить приложение</span>
+                <span class="profile-row-note">Запуск с домашнего экрана в один тап</span>
+              </span>
+              <span class="profile-row-chevron" aria-hidden="true">›</span>
+            </button>
+          </div>
+        </div>
+
+        <div class="profile-section-title">О приложении</div>
+        <div class="profile-card">
+          <div class="profile-row profile-row-static">
+            <span class="profile-row-body">
+              <span class="profile-row-title">Версия</span>
+              <span class="profile-row-note" id="profileVersion">—</span>
+            </span>
+          </div>
+          <div class="profile-row profile-row-static">
+            <span class="profile-row-body">
+              <span class="profile-row-title">Версия кэша</span>
+              <span class="profile-row-note" id="userStatsShellCache" aria-live="polite">—</span>
+            </span>
+          </div>
+        </div>
+
+        <div class="profile-footer-stats usage-stats-note hidden" id="userStatsFooter" aria-live="polite"></div>
+      </section>
     </div>
 
     <div class="docs-pro-gate hidden" id="docsProGate" role="region" aria-live="polite" aria-label="Подтверждение доступа к документам">
@@ -1208,13 +1225,16 @@
         </span>
         <span class="tab-label">Главная</span>
       </button>
-      <button class="tab-btn nav-item" type="button" data-tab="poekhali">
+      <button class="tab-btn nav-item" type="button" data-tab="shifts">
         <span class="tab-icon" aria-hidden="true">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
-            <path d="M3 12h3l3-8 4 16 3-8h5"></path>
+          <svg viewBox="0 0 24 24">
+            <rect x="5" y="4" width="14" height="16" rx="2"></rect>
+            <path d="M9 9h6"></path>
+            <path d="M9 13h6"></path>
+            <path d="M9 17h4"></path>
           </svg>
         </span>
-        <span class="tab-label">Поехали</span>
+        <span class="tab-label">Смены</span>
       </button>
 
       <!-- FAB — inline grid slot, center action -->
@@ -1227,17 +1247,6 @@
         <span class="fab-label">Добавить</span>
       </button>
 
-      <button class="tab-btn nav-item" type="button" data-tab="salary">
-        <span class="tab-icon" aria-hidden="true">
-          <svg viewBox="0 0 24 24">
-            <path d="M4 8h16v10H4z"></path>
-            <path d="M8 8V6h8v2"></path>
-            <path d="M7 12h10"></path>
-            <path d="M7 15h6"></path>
-          </svg>
-        </span>
-        <span class="tab-label">Зарплата</span>
-      </button>
       <button class="tab-btn nav-item" type="button" data-tab="instructions">
         <span class="tab-icon" aria-hidden="true">
           <svg viewBox="0 0 24 24">
@@ -1246,6 +1255,15 @@
           </svg>
         </span>
         <span class="tab-label">Документы</span>
+      </button>
+      <button class="tab-btn nav-item" type="button" data-tab="profile">
+        <span class="tab-icon" aria-hidden="true">
+          <svg viewBox="0 0 24 24">
+            <circle cx="12" cy="8" r="3.4"></circle>
+            <path d="M5 20c0-3.6 3.1-5.7 7-5.7s7 2.1 7 5.7"></path>
+          </svg>
+        </span>
+        <span class="tab-label">Профиль</span>
       </button>
     </nav>
 

@@ -62,9 +62,9 @@ if (typeof bootstrapAppStartup === 'function') {
   }
   var legacy = document.getElementById('installPromptCard');
   if (legacy) legacy.classList.add('hidden');
-  if (!isStandalone() && !dismissed()) {
-    window.setTimeout(open, 1500);
-  }
+  // Install invitation now lives in Профиль (a permanent, non-intrusive entry).
+  // The auto-popup is intentionally disabled; the banner stays only as the
+  // fallback target some code may still click.
   var later = document.getElementById('btnInstallPopupLater');
   if (later) later.addEventListener('click', function(e) {
     e.stopPropagation();
@@ -283,34 +283,12 @@ if (typeof bootstrapAppStartup === 'function') {
   if (!titleEl || !subEl || !bar) return;
   var BAR_BY_TAB = {
     home:         { title: 'Блокнот машиниста', sub: '' },
-    poekhali:     { title: 'Поехали',           sub: '' },
+    poekhali:     { title: 'Поехали',           sub: 'Режим реального времени' },
     add:          { title: 'Новая смена',       sub: 'Сначала только время' },
-    salary:       { title: 'Зарплата',          sub: 'Промежуточная оценка' },
     instructions: { title: 'Документы',         sub: 'Локальная библиотека' },
-    shifts:       { title: 'Смены',             sub: 'Журнал поездок' }
+    shifts:       { title: 'Смены',             sub: 'Журнал поездок' },
+    profile:      { title: 'Профиль',           sub: 'Личный кабинет' }
   };
-  function getRecentShiftRouteLabel() {
-    try {
-      var keys = Object.keys(window.localStorage || {});
-      var picked = null;
-      for (var i = 0; i < keys.length; i++) {
-        if (keys[i].indexOf('shift_tracker_shifts_cache_v1_') === 0) {
-          var raw = window.localStorage.getItem(keys[i]);
-          if (!raw) continue;
-          var parsed = JSON.parse(raw);
-          var arr = (parsed && parsed.items) ? parsed.items : (Array.isArray(parsed) ? parsed : []);
-          if (!arr.length) continue;
-          arr.sort(function(a, b) { var sa = String(a.start_msk || ''); var sb = String(b.start_msk || ''); return sa < sb ? 1 : (sa > sb ? -1 : 0); });
-          if (!picked || String(arr[0].start_msk || '') > String(picked.start_msk || '')) picked = arr[0];
-        }
-      }
-      if (!picked) return '';
-      var route = '';
-      if (picked.route_from && picked.route_to) route = picked.route_from + ' → ' + picked.route_to;
-      var num = picked.train_number ? ' · поезд №' + picked.train_number : '';
-      return route + num;
-    } catch (e) { return ''; }
-  }
   function getUserLabel() {
     try {
       var raw = window.localStorage && window.localStorage.getItem('shift_tracker_cached_user_v1');
@@ -331,10 +309,15 @@ if (typeof bootstrapAppStartup === 'function') {
       var name = getUserLabel();
       sub = name ? (name + ' · ТЧЭ-9 Комсомольск') : 'ТЧЭ-9 Комсомольск';
     }
-    if (tab === 'poekhali') {
-      sub = getRecentShiftRouteLabel() || 'Режим реального времени';
+    if (sub) {
+      subEl.textContent = sub;
+      subEl.classList.remove('hidden');
+    } else {
+      // No subtitle for this tab (e.g. Поехали) — hide it rather than show a
+      // placeholder dash.
+      subEl.textContent = '';
+      subEl.classList.add('hidden');
     }
-    subEl.textContent = sub || '—';
     bar.setAttribute('data-tab', tab);
     bar.classList.remove('hidden');
     // Swap top-bar trailing icon: show GPS chip on Poekhali, bell elsewhere.
@@ -376,6 +359,19 @@ if (typeof bootstrapAppStartup === 'function') {
       if (legacy) legacy.click();
     });
   })();
+  // Profile panel identity — reuse the cached Telegram user.
+  (function bindProfileIdentity() {
+    var nameEl = document.getElementById('profileName');
+    var subEl2 = document.getElementById('profileSub');
+    function syncProfileIdentity() {
+      var label = getUserLabel();
+      if (nameEl) nameEl.textContent = label || 'Машинист';
+      if (subEl2) subEl2.textContent = 'ТЧЭ-9 Комсомольск';
+    }
+    syncProfileIdentity();
+    window.syncProfileIdentity = syncProfileIdentity;
+  })();
+
   // Initial
   var initial = document.querySelector('.tab-panel.active');
   applyForTab(initial ? initial.getAttribute('data-tab') : 'home');

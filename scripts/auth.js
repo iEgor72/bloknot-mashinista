@@ -714,6 +714,8 @@
       if (instructionsPageTitle) instructionsPageTitle.textContent = 'Инструкции';
       var appVersionValue = document.getElementById('appVersionValue');
       if (appVersionValue) appVersionValue.textContent = APP_VERSION;
+      var profileVersionValue = document.getElementById('profileVersion');
+      if (profileVersionValue) profileVersionValue.textContent = APP_VERSION;
 
       var addScreenBtn = document.getElementById('btnShowInstallGuide');
       if (addScreenBtn) addScreenBtn.textContent = 'Как установить';

@@ -61,32 +61,40 @@
 }
 .crew-entry-chevron { flex: 0 0 auto; font-size: 22px; color: var(--ink-3, #8b93a7); }
 
-/* ── Share toggle inside the shift form ─────────────────────────── */
+/* ── Recipient picker inside the shift form ─────────────────────── */
 .shift-share-row {
   display: flex;
   align-items: center;
+  justify-content: space-between;
   gap: 12px;
   margin: 4px 0 14px;
   padding: 12px 14px;
   border: 1px solid color-mix(in oklch, var(--accent, #38bdf8) 35%, transparent);
   border-radius: 14px;
   background: color-mix(in oklch, var(--accent, #38bdf8) 7%, transparent);
+}
+.shift-share-label {
+  font-weight: 600;
+  font-size: 14px;
+  color: var(--ink, #eef2f8);
+}
+.shift-share-select {
+  flex: 0 1 auto;
+  max-width: 58%;
+  appearance: none;
+  -webkit-appearance: none;
+  border: 1px solid var(--hair-strong, rgba(255, 255, 255, 0.16));
+  border-radius: 10px;
+  background-color: var(--bg-rise-2, #23232c);
+  color: var(--ink, #eef2f8);
+  font-size: 13.5px;
+  font-weight: 600;
+  padding: 8px 30px 8px 12px;
   cursor: pointer;
-}
-.shift-share-row input[type="checkbox"] {
-  flex: 0 0 auto;
-  width: 20px;
-  height: 20px;
-  accent-color: var(--accent, #38bdf8);
-}
-.shift-share-text { display: flex; flex-direction: column; min-width: 0; }
-.shift-share-title { font-weight: 600; font-size: 14px; }
-.shift-share-partner {
-  font-size: 12.5px;
-  color: var(--ink-2, #b6bdce);
-  overflow: hidden;
-  text-overflow: ellipsis;
-  white-space: nowrap;
+  background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%238b93a7' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'><path d='M6 9l6 6 6-6'/></svg>");
+  background-repeat: no-repeat;
+  background-position: right 10px center;
+  background-size: 12px;
 }
 
 /* ── Shared marker on shift cards ───────────────────────────────── */

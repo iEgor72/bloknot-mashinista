@@ -5246,3 +5246,20 @@ Append-only журнал действий ИИ-агентов по проект�
 - Methods: `git post-commit hook`, `automatic memory update`
 - Files: `ai-memory/CHANGELOG.md`, `ai-memory/INDEX.md`, `ai-memory/PROJECT_STATE.md`, `ai-memory/RECENT_COMMITS.md`, `ai-memory/WORKTREE_STATUS.md`, `ai-memory/sessions/2026-06-01.md`, `index.html`, `styles/50-design-refresh.css`
 - Notes: Commit: `fed8ebcee4e066deb78d4989e2594ab910b74bf4` (`fed8ebc`) | Author: `iEgor72`
+
+## 2026-06-01 11:56:58 +1000
+
+- Source: `post-commit`
+- Task: refactor(poekhali): remove dead editor UI (map/warnings/learning/speed-docs)
+- Branch: `poekhali-rework`
+- Methods: `git post-commit hook`, `automatic memory update`
+- Files: `ai-memory/CHANGELOG.md`, `ai-memory/INDEX.md`, `ai-memory/PROJECT_STATE.md`, `ai-memory/RECENT_COMMITS.md`, `ai-memory/WORKTREE_STATUS.md`, `ai-memory/sessions/2026-06-01.md`, `scripts/poekhali-tracker.js`
+- Notes: Commit: `6340af6cccd9bb34cbb3f1d3251ad6de257f6c92` (`6340af6`) | Author: `iEgor72`
+
+## 2026-06-01 21:44:20 +1000
+
+- Source: `manual`
+- Task: Nav/IA redesign steps 1-4: new Профиль tab; removed Зарплата tab (kept calc engine); per-shift recipient picker replacing global active-partner; bottom nav now Главная·Смены·➕·Документы·Профиль (Поехали launched from shift card); install prompt+meta moved to Профиль
+- Branch: `poekhali-rework`
+- Methods: `preview verification`, `SW cache clearing`, `grep dependency mapping`
+- Files: `index.html`, `scripts/app-init.js`, `scripts/app.js`, `scripts/auth.js`, `scripts/shift-form.js`, `scripts/render.js`, `scripts/partners.js`, `styles/15-bottom-nav.css`, `styles/55-partners.css`, `styles/56-profile.css`

@@ -40,8 +40,8 @@
     .bottom-nav [data-tab="poekhali"] { grid-column: 2; }
     .bottom-nav [data-tab="shifts"] { grid-column: 2; }
     .bottom-nav [data-tab="add"] { grid-column: 3; }
-    .bottom-nav [data-tab="salary"] { grid-column: 4; }
-    .bottom-nav [data-tab="instructions"] { grid-column: 5; }
+    .bottom-nav [data-tab="instructions"] { grid-column: 4; }
+    .bottom-nav [data-tab="profile"] { grid-column: 5; }
 
     /* ── Base tab button reset ── */
     .tab-btn {

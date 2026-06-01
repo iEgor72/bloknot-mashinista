@@ -1112,7 +1112,6 @@
         shiftDurationLevelMap
       );
 
-      renderSalaryPanel();
       renderInstallPromptCard();
       renderDocumentationScreen();
 
