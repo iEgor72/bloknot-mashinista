@@ -15596,6 +15596,13 @@
     return 'rgba(248, 81, 97, ' + alpha + ')';
   }
 
+  // Speed-scale colour by user category (установленная — зелёный, постоянное —
+  // оранжевый, временное — красный). Warnings (ПР) render as temporary/red.
+  function speedScaleCategoryColor(rule, alpha) {
+    var category = rule && rule.source === 'warning' ? 'temporary' : normalizeUserSpeedCategory(rule && rule.category);
+    return 'rgba(' + getUserSpeedCategoryRgb(category) + ', ' + alpha + ')';
+  }
+
   // HTML-HUD speed scale: a continuous speed axis where each posted-speed segment
   // is a horizontal line whose height is proportional to the speed (higher → up).
   // Where segments overlap the lower speed wins (sampled with a min reducer). Each
@@ -15649,22 +15656,23 @@
     for (var x = x0; x <= x1; x += stepPx) {
       var coord = coordinateAtApkX(x, center, layout);
       var eff = Infinity;
+      var effRule = null;
       for (var r2 = 0; r2 < rules.length; r2++) {
         var rl = rules[r2];
         var rs = Math.min(Number(rl.coordinate), Number(rl.end));
         var re = Math.max(Number(rl.coordinate), Number(rl.end));
         if (coord >= rs && coord <= re) {
           var sv = getSpeedRuleValue(rl);
-          if (isFinite(sv) && sv < eff) eff = sv;
+          if (isFinite(sv) && sv < eff) { eff = sv; effRule = rl; }
         }
       }
       // No posted speed at this coordinate → no band (speeds are user-managed only).
-      if (!isFinite(eff)) eff = 0;
+      if (!isFinite(eff)) { eff = 0; effRule = null; }
       if (debugSim) {
         var fr = (x - x0) / (x1 - x0);
         eff = fr < 0.34 ? 70 : (fr < 0.62 ? 25 : 60);
       }
-      samples.push({ x: x, v: eff, py: getProfileYAt(coord, center, sector, layout) });
+      samples.push({ x: x, v: eff, rule: effRule, py: getProfileYAt(coord, center, sector, layout) });
     }
     if (!samples.length) return;
 
@@ -15674,12 +15682,20 @@
     ctx.beginPath();
     ctx.rect(x0, topY - 4, x1 - x0, (layout.profileBottom || baseY) - (topY - 4));
     ctx.clip();
+    function runCatKey(rule) {
+      if (!rule) return '';
+      return rule.source === 'warning' ? 'temporary' : normalizeUserSpeedCategory(rule.category);
+    }
+    function sameSpeedRun(a, b) {
+      return Math.abs(samples[a].v - samples[b].v) <= 0.1 && runCatKey(samples[a].rule) === runCatKey(samples[b].rule);
+    }
     var runStart = 0;
     for (var k = 1; k <= samples.length; k++) {
-      var changed = k === samples.length || Math.abs(samples[k].v - samples[runStart].v) > 0.1;
+      var changed = k === samples.length || !sameSpeedRun(k, runStart);
       if (!changed) continue;
       var v = samples[runStart].v;
       if (!(v > 0)) { runStart = k; continue; }
+      var runRule = samples[runStart].rule;
       var y = speedToY(v);
       var sx = samples[runStart].x;
       var ex = samples[k - 1].x;
@@ -15693,32 +15709,30 @@
       for (var j = k - 1; j >= runStart; j--) { ctx.lineTo(samples[j].x, samples[j].py); }
       ctx.closePath();
       var grad = ctx.createLinearGradient(0, y, 0, Math.max(y + 6, maxPy));
-      grad.addColorStop(0, speedScaleToneColor(v, 0.32));
-      grad.addColorStop(1, speedScaleToneColor(v, 0.0));
+      grad.addColorStop(0, speedScaleCategoryColor(runRule, 0.32));
+      grad.addColorStop(1, speedScaleCategoryColor(runRule, 0.0));
       ctx.fillStyle = grad;
       ctx.fill();
 
-      // Horizontal speed line (dark underlay + colour).
+      // Horizontal speed line (dark underlay + category colour).
       ctx.lineCap = 'butt';
       ctx.strokeStyle = 'rgba(3, 7, 18, 0.7)';
       ctx.lineWidth = 4.4;
       ctx.beginPath(); ctx.moveTo(sx, y); ctx.lineTo(ex, y); ctx.stroke();
-      ctx.strokeStyle = speedScaleToneColor(v, 0.98);
+      ctx.strokeStyle = speedScaleCategoryColor(runRule, 0.98);
       ctx.lineWidth = 2.6;
       ctx.beginPath(); ctx.moveTo(sx, y); ctx.lineTo(ex, y); ctx.stroke();
 
-      // Dashed drop to the terrain at the step.
-      if (k < samples.length) {
-        ctx.save();
-        ctx.strokeStyle = speedScaleToneColor(Math.min(v, samples[k].v), 0.7);
-        ctx.lineWidth = 1.4;
-        ctx.setLineDash([3, 3]);
-        ctx.beginPath();
-        ctx.moveTo(ex, y);
-        ctx.lineTo(ex, samples[k - 1].py);
-        ctx.stroke();
-        ctx.restore();
-      }
+      // Dashed drops down to the terrain on BOTH ends of the segment (its own colour).
+      ctx.save();
+      ctx.strokeStyle = speedScaleCategoryColor(runRule, 0.75);
+      ctx.lineWidth = 1.4;
+      ctx.setLineDash([3, 3]);
+      ctx.beginPath();
+      ctx.moveTo(sx, y); ctx.lineTo(sx, samples[runStart].py);
+      ctx.moveTo(ex, y); ctx.lineTo(ex, samples[k - 1].py);
+      ctx.stroke();
+      ctx.restore();
       runStart = k;
     }
     ctx.restore();
@@ -15726,7 +15740,7 @@
     // Speed value pills at the centre of wide-enough runs.
     runStart = 0;
     for (var k2 = 1; k2 <= samples.length; k2++) {
-      var ch2 = k2 === samples.length || Math.abs(samples[k2].v - samples[runStart].v) > 0.1;
+      var ch2 = k2 === samples.length || !sameSpeedRun(k2, runStart);
       if (!ch2) continue;
       var v2 = samples[runStart].v;
       var sx2 = samples[runStart].x;
@@ -15737,7 +15751,7 @@
         var lbl = String(Math.round(v2));
         var pw = lbl.length * 7 + 12;
         var ph = 15;
-        fillRoundRect(ctx, midX - pw / 2, pillCY - ph / 2, pw, ph, 7, speedScaleToneColor(v2, 0.96));
+        fillRoundRect(ctx, midX - pw / 2, pillCY - ph / 2, pw, ph, 7, speedScaleCategoryColor(samples[runStart].rule, 0.96));
         drawText(ctx, lbl, midX, pillCY, { size: 10, weight: 850, color: '#04131f', align: 'center', baseline: 'middle' });
       }
       runStart = k2;
@@ -16976,6 +16990,10 @@
     var timerMs = 0;
     try { timerMs = getTimerElapsed(); } catch (e) {}
     var techSpeed = getTripTechnicalSpeedKmh();
+    var headProjection = (tracker.projection && tracker.projection.onTrack) ? tracker.projection : (tracker.nearestProjection || null);
+    if (!headProjection) { try { headProjection = getPreviewProjection(); } catch (e) { headProjection = null; } }
+    var headPos = headProjection && isRealNumber(headProjection.lineCoordinate)
+      ? formatLineCoordinate(headProjection.lineCoordinate) : '—';
     window.poekhaliHud = {
       at: Date.now(),
       hasProjection: !!hasProjection,
@@ -16984,6 +17002,7 @@
       speedKmh: speedKmh,
       speedMeters: !!tracker.speedMeters,
       limitKmh: limit,
+      headPos: headPos,
       gradeText: hud.gradeText || '—',
       gradeTone: hud.gradeTone || 'info',
       reachText: hud.reachText || '—',

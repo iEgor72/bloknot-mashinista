@@ -406,27 +406,31 @@
             </div>
           </div>
 
-          <!-- Speed: фактическая + допустимая together (КЛУБ-style) + МСК clock -->
-          <div class="speedo" id="trkSpeedo">
-            <div class="speedo-main">
-              <div class="speedo-pair">
-                <div class="speedo-cell">
-                  <div class="speedo-label">Факт.</div>
-                  <div class="speedo-speed">
-                    <span class="speedo-speed-val num" id="trkSpeed">0</span>
-                  </div>
-                </div>
-                <div class="speedo-sep" aria-hidden="true"></div>
-                <div class="speedo-cell">
-                  <div class="speedo-label">Доп.</div>
-                  <div class="speedo-speed">
-                    <span class="speedo-allow-val num" id="trkAllow">—</span>
-                  </div>
-                </div>
-                <span class="speedo-speed-unit">км/ч</span>
+          <!-- Round speedometer (КЛУБ-style): фактическая в центре, допустимая красным -->
+          <div class="speedo speedo-round" id="trkSpeedo">
+            <div class="gauge" id="trkGauge">
+              <svg class="gauge-svg" viewBox="0 0 220 220" aria-hidden="true">
+                <g class="gauge-ticks" id="trkGaugeTicks"></g>
+                <path class="gauge-track" id="trkGaugeTrack" fill="none"></path>
+                <path class="gauge-progress" id="trkGaugeProgress" fill="none"></path>
+                <line class="gauge-allow-mark" id="trkGaugeAllowMark"></line>
+              </svg>
+              <div class="gauge-center">
+                <div class="gauge-fact num" id="trkSpeed">0</div>
+                <div class="gauge-unit">км/ч</div>
+                <div class="gauge-allow num" id="trkAllow">—</div>
               </div>
             </div>
-            <div class="speedo-clock num" id="trkClock">—</div>
+            <div class="speedo-foot">
+              <div class="speedo-foot-cell">
+                <span class="speedo-foot-l">Голова состава</span>
+                <span class="speedo-foot-v num" id="trkHeadPos">—</span>
+              </div>
+              <div class="speedo-foot-cell is-right">
+                <span class="speedo-foot-l">Время МСК</span>
+                <span class="speedo-foot-v num" id="trkClock">—</span>
+              </div>
+            </div>
           </div>
 
           <!-- Grade · next-distance metric row (limit moved into the speed block) -->

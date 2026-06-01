@@ -1,14 +1,14 @@
 # Project State
 
 <!-- AUTO_STATUS:START -->
-Generated: 2026-05-31 19:46:44 +1000
+Generated: 2026-05-31 20:08:13 +1000
 
 ## Repository Snapshot
 - Local repo path: `D:\work\bloknot-mashinista-tg`
 - Project memory path: `D:\work\bloknot-mashinista-tg\ai-memory`
 - Branch: `poekhali-rework`
-- HEAD: `081b7ae`
-- Last commit: `081b7ae refactor(poekhali): delete the dead run subsystem (~2000 lines)`
+- HEAD: `0537747`
+- Last commit: `0537747 feat(poekhali): show actual + allowed speed together (КЛУБ-style)`
 
 ## Git Remote
 ```text
@@ -21,7 +21,7 @@ origin	https://github.com/iEgor72/bloknot-mashinista.git (push)
 codex/next-direction b044dd5 offline mvp
   codex/tabs-ui        117f1fa [origin/codex/tabs-ui] tabs ui
   main                 ad53dff [origin/main] chore(memory): record poekhali deploy
-* poekhali-rework      081b7ae refactor(poekhali): delete the dead run subsystem (~2000 lines)
+* poekhali-rework      0537747 feat(poekhali): show actual + allowed speed together (КЛУБ-style)
 ```
 
 ## Worktree

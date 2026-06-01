@@ -401,6 +401,68 @@ if (typeof bootstrapAppStartup === 'function') {
   var design = document.getElementById('trkDesign');
   if (!design) return;
 
+  // --- Round speedometer geometry (КЛУБ-style 270° dial) ---
+  var GAUGE = { cx: 110, cy: 110, r: 88, start: 135, sweep: 270, max: 120 };
+  var SVGNS = 'http://www.w3.org/2000/svg';
+  function gaugePolar(r, deg) {
+    var a = deg * Math.PI / 180;
+    return [GAUGE.cx + r * Math.cos(a), GAUGE.cy + r * Math.sin(a)];
+  }
+  function gaugeArc(r, a0, a1) {
+    var p0 = gaugePolar(r, a0), p1 = gaugePolar(r, a1);
+    var large = (a1 - a0) > 180 ? 1 : 0;
+    return 'M' + p0[0].toFixed(2) + ' ' + p0[1].toFixed(2) +
+      ' A' + r + ' ' + r + ' 0 ' + large + ' 1 ' + p1[0].toFixed(2) + ' ' + p1[1].toFixed(2);
+  }
+  function gaugeValAngle(v) {
+    var t = Math.max(0, Math.min(1, (Number(v) || 0) / GAUGE.max));
+    return GAUGE.start + t * GAUGE.sweep;
+  }
+  function buildGaugeStatic() {
+    var track = document.getElementById('trkGaugeTrack');
+    if (track) track.setAttribute('d', gaugeArc(GAUGE.r, GAUGE.start, GAUGE.start + GAUGE.sweep));
+    var ticks = document.getElementById('trkGaugeTicks');
+    if (ticks && !ticks.childNodes.length) {
+      for (var v = 0; v <= GAUGE.max; v += 10) {
+        var ang = gaugeValAngle(v);
+        var big = v % 20 === 0;
+        var pa = gaugePolar(GAUGE.r - (big ? 12 : 7), ang);
+        var pb = gaugePolar(GAUGE.r - 1, ang);
+        var ln = document.createElementNS(SVGNS, 'line');
+        ln.setAttribute('x1', pa[0].toFixed(2)); ln.setAttribute('y1', pa[1].toFixed(2));
+        ln.setAttribute('x2', pb[0].toFixed(2)); ln.setAttribute('y2', pb[1].toFixed(2));
+        ticks.appendChild(ln);
+        if (big) {
+          var pl = gaugePolar(GAUGE.r - 24, ang);
+          var tx = document.createElementNS(SVGNS, 'text');
+          tx.setAttribute('x', pl[0].toFixed(2)); tx.setAttribute('y', pl[1].toFixed(2));
+          tx.textContent = String(v);
+          ticks.appendChild(tx);
+        }
+      }
+    }
+  }
+  function updateGauge(actual, allowed) {
+    var prog = document.getElementById('trkGaugeProgress');
+    if (prog) {
+      if (actual > 0.5) prog.setAttribute('d', gaugeArc(GAUGE.r, GAUGE.start, gaugeValAngle(actual)));
+      else prog.removeAttribute('d');
+    }
+    var mark = document.getElementById('trkGaugeAllowMark');
+    if (mark) {
+      if (isFinite(allowed) && allowed > 0) {
+        var ang = gaugeValAngle(allowed);
+        var a = gaugePolar(GAUGE.r - 13, ang), b = gaugePolar(GAUGE.r + 3, ang);
+        mark.setAttribute('x1', a[0].toFixed(2)); mark.setAttribute('y1', a[1].toFixed(2));
+        mark.setAttribute('x2', b[0].toFixed(2)); mark.setAttribute('y2', b[1].toFixed(2));
+        mark.style.display = '';
+      } else {
+        mark.style.display = 'none';
+      }
+    }
+  }
+  buildGaugeStatic();
+
   function ruNum(n) { try { return Number(n).toLocaleString('ru-RU'); } catch (e) { return String(n); } }
   function pad(n) { return n < 10 ? '0' + n : String(n); }
   function fmtTimer(ms) {
@@ -472,17 +534,22 @@ if (typeof bootstrapAppStartup === 'function') {
     var speedKmh = isFinite(hud.speedKmh) ? Math.max(0, Number(hud.speedKmh)) : 0;
     set('trkSpeed', hud.speedMeters ? speedKmh.toFixed(1) : String(Math.round(speedKmh)));
 
-    // Допустимая (allowed) speed — shown next to the actual one.
-    set('trkAllow', (isFinite(hud.limitKmh) && hud.limitKmh > 0) ? String(Math.round(hud.limitKmh)) : '—');
+    // Допустимая (allowed) speed — shown red in the gauge centre.
+    var allowKmh = (isFinite(hud.limitKmh) && hud.limitKmh > 0) ? Math.round(hud.limitKmh) : null;
+    set('trkAllow', allowKmh != null ? String(allowKmh) : '—');
+
+    // Drive the round gauge (progress arc + allowed mark).
+    updateGauge(speedKmh, allowKmh != null ? allowKmh : 0);
 
     // Overspeed: flip the actual-speed colour when above the allowed limit.
     var speedo = document.getElementById('trkSpeedo');
     if (speedo) {
-      var over = isFinite(hud.limitKmh) && hud.limitKmh > 0 && speedKmh > hud.limitKmh + 1;
+      var over = allowKmh != null && speedKmh > allowKmh + 1;
       speedo.classList.toggle('is-over', !!over);
     }
 
-    // Уклон / Далее
+    // Голова состава (head position) + Уклон / Далее
+    set('trkHeadPos', hud.headPos || '—');
     set('trkGrade', hud.gradeText || '—');
     set('trkReach', hud.reachText || '—');
 

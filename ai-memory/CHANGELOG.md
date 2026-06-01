@@ -5165,3 +5165,12 @@ Append-only журнал действий ИИ-агентов по проект�
 - Branch: `poekhali-rework`
 - Methods: `sed-delete run point/lifecycle/sync/format/alert/auto-run clusters`, `getActiveRun/updateActiveRunNavigationState inert stubs`, `strip run refs from diagnostics/prod-audit/backup`, `keep learning store for user speed sections`
 - Files: `scripts/poekhali-tracker.js`, `server.js`
+
+## 2026-05-31 20:08:13 +1000
+
+- Source: `post-commit`
+- Task: feat(poekhali): show actual + allowed speed together (КЛУБ-style)
+- Branch: `poekhali-rework`
+- Methods: `git post-commit hook`, `automatic memory update`
+- Files: `ai-memory/CHANGELOG.md`, `ai-memory/INDEX.md`, `ai-memory/PROJECT_STATE.md`, `ai-memory/RECENT_COMMITS.md`, `ai-memory/WORKTREE_STATUS.md`, `ai-memory/sessions/2026-05-31.md`, `index.html`, `scripts/app-init.js`, `styles/50-design-refresh.css`
+- Notes: Commit: `05377479a89902b6825d77ef961f0f904f5376e3` (`0537747`) | Author: `iEgor72`
