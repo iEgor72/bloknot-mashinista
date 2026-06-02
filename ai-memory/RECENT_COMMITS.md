@@ -1,9 +1,10 @@
 # Recent Commits
 
-Generated: 2026-06-02 19:39:08 +1000
+Generated: 2026-06-02 19:45:27 +1000
 
 | Hash | Date | Author | Message |
 | --- | --- | --- | --- |
+| `c3ff360` | 2026-06-02T19:45:25+10:00 | iEgor72 | Fix: fuel "выберите серию" hint stayed after selecting a series when editing |
 | `3459f12` | 2026-06-02T19:39:07+10:00 | iEgor72 | Flat shift card (no accent badges) + edit recipient after the fact (#d) |
 | `736c663` | 2026-06-02T19:30:55+10:00 | iEgor72 | Shift card data redesign: logical grouping (#c) |
 | `deaa85e` | 2026-06-02T19:25:58+10:00 | iEgor72 | Shift card tweaks: drop weekday, colour-coded share chip, fix chip alignment |
@@ -43,4 +44,3 @@ Generated: 2026-06-02 19:39:08 +1000
 | `5bf61c2` | 2026-05-13T16:27:31+10:00 | iEgor72 | feat(poehali): refine visual warning editors |
 | `eddb094` | 2026-05-13T01:32:20+10:00 | iEgor72 | feat(admin): add visual Poekhali map editor |
 | `12b83a3` | 2026-05-13T00:49:02+10:00 | iEgor72 | feat(admin): add visual constructor tools |
-| `6a41adc` | 2026-05-13T00:12:35+10:00 | iEgor72 | feat(admin): make panel more user friendly |

@@ -1,14 +1,14 @@
 # Project State
 
 <!-- AUTO_STATUS:START -->
-Generated: 2026-06-02 19:39:08 +1000
+Generated: 2026-06-02 19:45:26 +1000
 
 ## Repository Snapshot
 - Local repo path: `D:\work\bloknot-mashinista-tg`
 - Project memory path: `D:\work\bloknot-mashinista-tg\ai-memory`
 - Branch: `poekhali-rework`
-- HEAD: `3459f12`
-- Last commit: `3459f12 Flat shift card (no accent badges) + edit recipient after the fact (#d)`
+- HEAD: `c3ff360`
+- Last commit: `c3ff360 Fix: fuel "выберите серию" hint stayed after selecting a series when editing`
 
 ## Git Remote
 ```text
@@ -21,7 +21,7 @@ origin	https://github.com/iEgor72/bloknot-mashinista.git (push)
 codex/next-direction b044dd5 offline mvp
   codex/tabs-ui        117f1fa [origin/codex/tabs-ui] tabs ui
   main                 ad53dff [origin/main] chore(memory): record poekhali deploy
-* poekhali-rework      3459f12 Flat shift card (no accent badges) + edit recipient after the fact (#d)
+* poekhali-rework      c3ff360 Fix: fuel "выберите серию" hint stayed after selecting a series when editing
 ```
 
 ## Worktree

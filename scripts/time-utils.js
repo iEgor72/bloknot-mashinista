@@ -653,19 +653,18 @@
       if (c.length > 0) {
         items.push('<span class="sc-item">' + getShiftInlineIconSvg('length') + '<span class="num">' + ruNum(c.length) + ' усл.</span></span>');
       }
-      // Money + fuel, same flat style — no boxes, no accent badges.
-      var incomeStr = (incomeText && String(incomeText).trim()) ? String(incomeText).trim() : '';
-      if (incomeStr) {
-        items.push('<span class="sc-item">' + getShiftInlineIconSvg('income') + '<span class="num">' + escapeHtml(incomeStr) + '</span></span>');
-      }
+      // Money + fuel — always shown (same flat style, no boxes/accent), "—" when
+      // not filled in, so the shift's income & fuel are always part of the plate.
+      var incomeStr = (incomeText && String(incomeText).trim()) ? String(incomeText).trim() : '—';
+      items.push('<span class="sc-item">' + getShiftInlineIconSvg('income') + '<span class="num">' + escapeHtml(incomeStr) + '</span></span>');
+      var fuelStr = '—';
       try {
         if (typeof hasFuelData === 'function' && hasFuelData(shift) && typeof getFuelConsumptionTotalsFromShift === 'function') {
           var ft = getFuelConsumptionTotalsFromShift(shift);
-          if (ft && ft.liters > 0) {
-            items.push('<span class="sc-item">' + getShiftInlineIconSvg('fuel') + '<span class="num">' + ruNum(ft.liters) + ' л</span></span>');
-          }
+          if (ft && ft.liters > 0) fuelStr = ruNum(ft.liters) + ' л';
         }
       } catch (e) {}
+      items.push('<span class="sc-item">' + getShiftInlineIconSvg('fuel') + '<span class="num">' + fuelStr + '</span></span>');
       if (!items.length) return '';
       return '<div class="shift-consist">' + items.join('') + '</div>';
     }

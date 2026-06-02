@@ -5371,3 +5371,12 @@ Append-only журнал действий ИИ-агентов по проект�
 - Methods: `git post-commit hook`, `automatic memory update`
 - Files: `ai-memory/CHANGELOG.md`, `ai-memory/INDEX.md`, `ai-memory/PROJECT_STATE.md`, `ai-memory/RECENT_COMMITS.md`, `ai-memory/WORKTREE_STATUS.md`, `ai-memory/sessions/2026-06-02.md`, `scripts/partners.js`, `scripts/render.js`, `scripts/shift-form.js`, `scripts/time-utils.js`
 - Notes: Commit: `3459f12205f756b68f400803aee907a31e430df8` (`3459f12`) | Author: `iEgor72`
+
+## 2026-06-02 19:45:26 +1000
+
+- Source: `post-commit`
+- Task: Fix: fuel "выберите серию" hint stayed after selecting a series when editing
+- Branch: `poekhali-rework`
+- Methods: `git post-commit hook`, `automatic memory update`
+- Files: `ai-memory/CHANGELOG.md`, `ai-memory/INDEX.md`, `ai-memory/PROJECT_STATE.md`, `ai-memory/RECENT_COMMITS.md`, `ai-memory/WORKTREE_STATUS.md`, `ai-memory/sessions/2026-06-02.md`, `scripts/app-init.js`, `styles/50-design-refresh.css`
+- Notes: Commit: `c3ff36078c9d541f0f644619801e3e635562389a` (`c3ff360`) | Author: `iEgor72`

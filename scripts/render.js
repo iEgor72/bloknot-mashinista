@@ -39,7 +39,7 @@
         ? buildShiftMarkHtml(sh, isHolidayShift)
         : '';
       var consistHtml = (typeof buildShiftConsistHtml === 'function')
-        ? buildShiftConsistHtml(sh, incomeVm && incomeVm.label) : '';
+        ? buildShiftConsistHtml(sh, incomeVm && incomeVm.amountText) : '';
 
       var pendingDotHtml = shiftIsPending ? '<span class="shift-sync-inline" aria-label="Не синхронизировано" title="Не синхронизировано">' + docOnlineOnlyIcon + '</span>' : '';
       var shareBadgeHtml = (typeof buildShiftShareBadgeHtml === 'function') ? buildShiftShareBadgeHtml(sh) : '';
