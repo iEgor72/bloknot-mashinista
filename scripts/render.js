@@ -115,10 +115,8 @@
       } else {
         av = '<span class="shift-share-chip-av is-empty"></span>';
       }
-      var arrow = dir === 'in' ? '←' : '→';
       var titleTxt = (dir === 'in' ? 'Получено от' : 'Отправлено') + ': ' + (label || 'напарник');
       return '<span class="shift-share-chip ' + cls + '" title="' + escapeHtml(titleTxt) + '">' +
-        '<span class="shift-share-chip-arrow" aria-hidden="true">' + arrow + '</span>' +
         av +
         '<span class="shift-share-chip-name">' + escapeHtml(name || 'напарник') + '</span>' +
       '</span>';

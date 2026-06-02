@@ -678,7 +678,7 @@
         // Overnight shift: show the end date too, so it's clear work ends next day.
         var sameDay = sp.d === ep.d && sp.mo === ep.mo;
         var endLabel = sameDay ? endHM : (ep.d + ' ' + months[ep.mo] + ' ' + endHM);
-        return sp.d + ' ' + months[sp.mo] + ' · ' + dows[sp.dow] + ' · ' + startHM + ' → ' + endLabel;
+        return sp.d + ' ' + months[sp.mo] + ' · ' + startHM + ' → ' + endLabel;
       } catch (err) { return ''; }
     }
 

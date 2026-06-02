@@ -1,9 +1,10 @@
 # Recent Commits
 
-Generated: 2026-06-02 19:04:41 +1000
+Generated: 2026-06-02 19:17:57 +1000
 
 | Hash | Date | Author | Message |
 | --- | --- | --- | --- |
+| `3922a5d` | 2026-06-02T19:17:56+10:00 | iEgor72 | Shift card: visible "Поехали" launch + recipient chip |
 | `a220475` | 2026-06-02T19:04:40+10:00 | iEgor72 | Shift card: show MSK time + end date for overnight shifts |
 | `d67d40e` | 2026-06-02T18:47:49+10:00 | iEgor72 | Fix recipient picker reset; bump version to 1.1.0; drop "+" on overtime |
 | `77f271f` | 2026-06-01T23:11:43+10:00 | iEgor72 | Polish profile edit sheet + share picker; fix dropdown flip near bottom nav |
@@ -43,4 +44,3 @@ Generated: 2026-06-02 19:04:41 +1000
 | `73feedd` | 2026-05-13T00:00:57+10:00 | iEgor72 | fix(admin): require auth before rendering panel |
 | `f0eac10` | 2026-05-12T23:55:15+10:00 | iEgor72 | fix(admin): bypass app shell fallback |
 | `67517c5` | 2026-05-12T23:47:02+10:00 | iEgor72 | fix(admin): load admin ids from ecosystem config |
-| `5dcdf17` | 2026-05-12T23:38:15+10:00 | iEgor72 | feat(admin): add isolated admin panel |

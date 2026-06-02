@@ -1028,9 +1028,10 @@ body::after { content: none; }
   font: 700 13px/1.2 'Manrope';
   letter-spacing: -0.005em;
   color: var(--ink);
-  overflow: hidden;
-  text-overflow: ellipsis;
-  white-space: nowrap;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  min-width: 0;
 }
 .shift-card-v2 .shift-card-sub {
   font: 500 11px/1 'JetBrains Mono';
