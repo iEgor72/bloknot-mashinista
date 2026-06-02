@@ -14,8 +14,10 @@ if (typeof bootstrapAppStartup === 'function') {
 // Fuel sections — show A/B/V depending on loco series (3* → A/B/V, 2* → A/B, else → A).
 (function bindLocoSections() {
   var selectEl = document.getElementById('inputLocoSeries');
-  var panel = document.querySelector('.tab-panel[data-tab="add"]');
-  if (!selectEl || !panel) return;
+  // Gate on the form section (not the add panel) — the form moves into the edit
+  // sheet when editing, so the panel would no longer contain the fuel section.
+  var form = document.getElementById('shiftFormSection');
+  if (!selectEl || !form) return;
   function sectionsFor(value) {
     var v = String(value || '').trim().toUpperCase();
     if (!v) return '';
@@ -25,8 +27,8 @@ if (typeof bootstrapAppStartup === 'function') {
   }
   function apply() {
     var s = sectionsFor(selectEl.value);
-    if (s) panel.setAttribute('data-loco-sections', s);
-    else panel.removeAttribute('data-loco-sections');
+    if (s) form.setAttribute('data-loco-sections', s);
+    else form.removeAttribute('data-loco-sections');
   }
   selectEl.addEventListener('change', apply);
   // Also reapply when the legacy glass-select sets the value programmatically.

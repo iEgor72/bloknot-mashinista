@@ -1,14 +1,14 @@
 # Project State
 
 <!-- AUTO_STATUS:START -->
-Generated: 2026-06-02 19:30:56 +1000
+Generated: 2026-06-02 19:39:08 +1000
 
 ## Repository Snapshot
 - Local repo path: `D:\work\bloknot-mashinista-tg`
 - Project memory path: `D:\work\bloknot-mashinista-tg\ai-memory`
 - Branch: `poekhali-rework`
-- HEAD: `736c663`
-- Last commit: `736c663 Shift card data redesign: logical grouping (#c)`
+- HEAD: `3459f12`
+- Last commit: `3459f12 Flat shift card (no accent badges) + edit recipient after the fact (#d)`
 
 ## Git Remote
 ```text
@@ -21,7 +21,7 @@ origin	https://github.com/iEgor72/bloknot-mashinista.git (push)
 codex/next-direction b044dd5 offline mvp
   codex/tabs-ui        117f1fa [origin/codex/tabs-ui] tabs ui
   main                 ad53dff [origin/main] chore(memory): record poekhali deploy
-* poekhali-rework      736c663 Shift card data redesign: logical grouping (#c)
+* poekhali-rework      3459f12 Flat shift card (no accent badges) + edit recipient after the fact (#d)
 ```
 
 ## Worktree

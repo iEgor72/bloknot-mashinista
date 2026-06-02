@@ -1,9 +1,10 @@
 # Recent Commits
 
-Generated: 2026-06-02 19:30:56 +1000
+Generated: 2026-06-02 19:39:08 +1000
 
 | Hash | Date | Author | Message |
 | --- | --- | --- | --- |
+| `3459f12` | 2026-06-02T19:39:07+10:00 | iEgor72 | Flat shift card (no accent badges) + edit recipient after the fact (#d) |
 | `736c663` | 2026-06-02T19:30:55+10:00 | iEgor72 | Shift card data redesign: logical grouping (#c) |
 | `deaa85e` | 2026-06-02T19:25:58+10:00 | iEgor72 | Shift card tweaks: drop weekday, colour-coded share chip, fix chip alignment |
 | `3922a5d` | 2026-06-02T19:17:56+10:00 | iEgor72 | Shift card: visible "Поехали" launch + recipient chip |
@@ -43,4 +44,3 @@ Generated: 2026-06-02 19:30:56 +1000
 | `eddb094` | 2026-05-13T01:32:20+10:00 | iEgor72 | feat(admin): add visual Poekhali map editor |
 | `12b83a3` | 2026-05-13T00:49:02+10:00 | iEgor72 | feat(admin): add visual constructor tools |
 | `6a41adc` | 2026-05-13T00:12:35+10:00 | iEgor72 | feat(admin): make panel more user friendly |
-| `73feedd` | 2026-05-13T00:00:57+10:00 | iEgor72 | fix(admin): require auth before rendering panel |

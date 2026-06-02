@@ -2905,43 +2905,40 @@ details.optional-card[open] .optional-summary-chevron {
   color: var(--ink-3);
   margin-top: 4px;
 }
-/* By default (no data-loco-sections) hide all sections and show placeholder. */
-.tab-panel[data-tab="add"] .fuel-columns,
-.tab-panel[data-tab="add"] .fuel-consumption-note {
+/* Fuel sections are gated by data-loco-sections on #shiftFormSection — which
+   moves with the form between the Add tab and the edit sheet (so the gating
+   works in both, unlike keying off the add panel). */
+#shiftFormSection .fuel-columns,
+#shiftFormSection .fuel-consumption-note {
   display: none;
 }
-.tab-panel[data-tab="add"] .fuel-needs-loco {
+#shiftFormSection .fuel-needs-loco {
   display: flex;
 }
-.tab-panel[data-tab="add"][data-loco-sections="1"] .fuel-columns,
-.tab-panel[data-tab="add"][data-loco-sections="2"] .fuel-columns,
-.tab-panel[data-tab="add"][data-loco-sections="3"] .fuel-columns {
+#shiftFormSection[data-loco-sections="1"] .fuel-columns,
+#shiftFormSection[data-loco-sections="2"] .fuel-columns,
+#shiftFormSection[data-loco-sections="3"] .fuel-columns {
   display: flex;
 }
-.tab-panel[data-tab="add"][data-loco-sections="1"] .fuel-consumption-note,
-.tab-panel[data-tab="add"][data-loco-sections="2"] .fuel-consumption-note,
-.tab-panel[data-tab="add"][data-loco-sections="3"] .fuel-consumption-note {
+#shiftFormSection[data-loco-sections="1"] .fuel-consumption-note,
+#shiftFormSection[data-loco-sections="2"] .fuel-consumption-note,
+#shiftFormSection[data-loco-sections="3"] .fuel-consumption-note {
   display: block;
 }
-.tab-panel[data-tab="add"][data-loco-sections="1"] .fuel-needs-loco,
-.tab-panel[data-tab="add"][data-loco-sections="2"] .fuel-needs-loco,
-.tab-panel[data-tab="add"][data-loco-sections="3"] .fuel-needs-loco {
+#shiftFormSection[data-loco-sections="1"] .fuel-needs-loco,
+#shiftFormSection[data-loco-sections="2"] .fuel-needs-loco,
+#shiftFormSection[data-loco-sections="3"] .fuel-needs-loco {
   display: none;
 }
 
 /* Loco-series-driven fuel sections — show A/B/V depending on loco type. */
-.tab-panel[data-tab="add"] [data-fuel-section="b"],
-.tab-panel[data-tab="add"] [data-fuel-section="v"] {
+#shiftFormSection [data-fuel-section="b"],
+#shiftFormSection [data-fuel-section="v"] {
   display: none;
 }
-.tab-panel[data-tab="add"][data-loco-sections="2"] [data-fuel-section="b"] {
-  display: '';
-}
-.tab-panel[data-tab="add"][data-loco-sections="2"] [data-fuel-section="b"] {
-  display: revert;
-}
-.tab-panel[data-tab="add"][data-loco-sections="3"] [data-fuel-section="b"],
-.tab-panel[data-tab="add"][data-loco-sections="3"] [data-fuel-section="v"] {
+#shiftFormSection[data-loco-sections="2"] [data-fuel-section="b"],
+#shiftFormSection[data-loco-sections="3"] [data-fuel-section="b"],
+#shiftFormSection[data-loco-sections="3"] [data-fuel-section="v"] {
   display: revert;
 }
 .draft-stat-value {
