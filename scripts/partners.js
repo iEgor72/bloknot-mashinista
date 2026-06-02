@@ -237,6 +237,7 @@
       id: newId,
       created_at: new Date().toISOString(),
       shared_source_id: sharedSourceKey(item),
+      shared_by_name: item.sharedByName || '',
     });
     if (typeof inferShiftWorkCodeByLocalTime === 'function') {
       shift.code = shift.code || inferShiftWorkCodeByLocalTime(shift) || '';

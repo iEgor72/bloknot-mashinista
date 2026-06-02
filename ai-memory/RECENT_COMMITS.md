@@ -1,9 +1,10 @@
 # Recent Commits
 
-Generated: 2026-06-02 18:47:50 +1000
+Generated: 2026-06-02 19:04:41 +1000
 
 | Hash | Date | Author | Message |
 | --- | --- | --- | --- |
+| `a220475` | 2026-06-02T19:04:40+10:00 | iEgor72 | Shift card: show MSK time + end date for overnight shifts |
 | `d67d40e` | 2026-06-02T18:47:49+10:00 | iEgor72 | Fix recipient picker reset; bump version to 1.1.0; drop "+" on overtime |
 | `77f271f` | 2026-06-01T23:11:43+10:00 | iEgor72 | Polish profile edit sheet + share picker; fix dropdown flip near bottom nav |
 | `a6854b4` | 2026-06-01T22:39:35+10:00 | iEgor72 | Profile avatar crop, dropdown mini-avatars, inclusive wording, calendar dimming fix |
@@ -43,4 +44,3 @@ Generated: 2026-06-02 18:47:50 +1000
 | `f0eac10` | 2026-05-12T23:55:15+10:00 | iEgor72 | fix(admin): bypass app shell fallback |
 | `67517c5` | 2026-05-12T23:47:02+10:00 | iEgor72 | fix(admin): load admin ids from ecosystem config |
 | `5dcdf17` | 2026-05-12T23:38:15+10:00 | iEgor72 | feat(admin): add isolated admin panel |
-| `6c8040b` | 2026-05-07T06:23:41Z | iEgor72 | chore(memory): refresh gps auto-resume snapshot |

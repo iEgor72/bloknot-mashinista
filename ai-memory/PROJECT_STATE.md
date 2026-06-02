@@ -1,14 +1,14 @@
 # Project State
 
 <!-- AUTO_STATUS:START -->
-Generated: 2026-06-02 18:47:50 +1000
+Generated: 2026-06-02 19:04:41 +1000
 
 ## Repository Snapshot
 - Local repo path: `D:\work\bloknot-mashinista-tg`
 - Project memory path: `D:\work\bloknot-mashinista-tg\ai-memory`
 - Branch: `poekhali-rework`
-- HEAD: `d67d40e`
-- Last commit: `d67d40e Fix recipient picker reset; bump version to 1.1.0; drop "+" on overtime`
+- HEAD: `a220475`
+- Last commit: `a220475 Shift card: show MSK time + end date for overnight shifts`
 
 ## Git Remote
 ```text
@@ -21,13 +21,13 @@ origin	https://github.com/iEgor72/bloknot-mashinista.git (push)
 codex/next-direction b044dd5 offline mvp
   codex/tabs-ui        117f1fa [origin/codex/tabs-ui] tabs ui
   main                 ad53dff [origin/main] chore(memory): record poekhali deploy
-* poekhali-rework      d67d40e Fix recipient picker reset; bump version to 1.1.0; drop "+" on overtime
+* poekhali-rework      a220475 Shift card: show MSK time + end date for overnight shifts
 ```
 
 ## Worktree
 ```text
 M ai-memory/CHANGELOG.md
-?? ai-memory/sessions/2026-06-02.md
+ M ai-memory/sessions/2026-06-02.md
 ```
 <!-- AUTO_STATUS:END -->
 

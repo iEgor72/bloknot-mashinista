@@ -107,6 +107,40 @@
 .shift-share-mark.is-out { color: var(--accent, #38bdf8); }
 .shift-share-mark.is-in { color: var(--good, #34d399); }
 
+/* ── Shared-with chip on a shift card (who it went to / came from) ── */
+.shift-share-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  margin-left: 8px;
+  padding: 2px 8px 2px 3px;
+  border-radius: 999px;
+  background: var(--glass, rgba(255, 255, 255, 0.06));
+  border: 1px solid var(--hair, rgba(255, 255, 255, 0.08));
+  font-size: 11px;
+  font-weight: 600;
+  color: var(--ink-2, #b6bdce);
+  vertical-align: middle;
+  max-width: 132px;
+}
+.shift-share-chip-arrow { font-weight: 700; color: var(--ink-3, #8b93a7); }
+.shift-share-chip.is-out .shift-share-chip-arrow { color: var(--accent, #38bdf8); }
+.shift-share-chip.is-in .shift-share-chip-arrow { color: var(--good, #34d399); }
+.shift-share-chip-av {
+  flex: 0 0 auto;
+  width: 16px;
+  height: 16px;
+  border-radius: 50%;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  font-family: 'Manrope', sans-serif;
+  font-weight: 800;
+  font-size: 8px;
+}
+.shift-share-chip-av.is-empty { background: var(--hair-strong, rgba(255, 255, 255, 0.16)); }
+.shift-share-chip-name { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+
 /* ── Undo toast for auto-inserted shifts ────────────────────────── */
 .partners-undo-toast {
   position: fixed;
