@@ -5380,3 +5380,12 @@ Append-only журнал действий ИИ-агентов по проект�
 - Methods: `git post-commit hook`, `automatic memory update`
 - Files: `ai-memory/CHANGELOG.md`, `ai-memory/INDEX.md`, `ai-memory/PROJECT_STATE.md`, `ai-memory/RECENT_COMMITS.md`, `ai-memory/WORKTREE_STATUS.md`, `ai-memory/sessions/2026-06-02.md`, `scripts/app-init.js`, `styles/50-design-refresh.css`
 - Notes: Commit: `c3ff36078c9d541f0f644619801e3e635562389a` (`c3ff360`) | Author: `iEgor72`
+
+## 2026-06-02 19:49:23 +1000
+
+- Source: `post-commit`
+- Task: Shift card: always show доход + расход in the flat plate (fix missing income)
+- Branch: `poekhali-rework`
+- Methods: `git post-commit hook`, `automatic memory update`
+- Files: `ai-memory/CHANGELOG.md`, `ai-memory/INDEX.md`, `ai-memory/PROJECT_STATE.md`, `ai-memory/RECENT_COMMITS.md`, `ai-memory/WORKTREE_STATUS.md`, `ai-memory/sessions/2026-06-02.md`, `scripts/render.js`, `scripts/time-utils.js`
+- Notes: Commit: `593e77b27d7d86beff046894f3bd7857cbb96c66` (`593e77b`) | Author: `iEgor72`

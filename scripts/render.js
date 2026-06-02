@@ -1611,7 +1611,12 @@
         el.value = String(value || '');
       }
       updateSelectPlaceholderState(el);
-      if (id === 'inputLocoSeries') syncLocoSeriesTrigger();
+      if (id === 'inputLocoSeries') {
+        syncLocoSeriesTrigger();
+        // Notify listeners (fuel A/Б/В gating) since a programmatic value set
+        // (e.g. populating the edit form) doesn't fire 'change' on its own.
+        if (el) el.dispatchEvent(new Event('change', { bubbles: true }));
+      }
     }
 
     function updateSelectPlaceholderState(elOrId) {

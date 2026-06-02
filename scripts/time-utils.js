@@ -600,12 +600,16 @@
     function getShiftConsistDescriptor(shift) {
       if (!shift) return null;
       var loco = '';
-      if (shift.loco_series && shift.loco_number) {
-        loco = String(shift.loco_series) + ' № ' + String(shift.loco_number);
-      } else if (shift.loco_series) {
-        loco = String(shift.loco_series);
-      } else if (shift.loco_number) {
-        loco = '№ ' + String(shift.loco_number);
+      // Shifts are saved with locomotive_series/_number; keep loco_series/_number
+      // as a fallback for any older records.
+      var locoSeries = shift.locomotive_series || shift.loco_series || '';
+      var locoNumber = shift.locomotive_number || shift.loco_number || '';
+      if (locoSeries && locoNumber) {
+        loco = String(locoSeries) + ' № ' + String(locoNumber);
+      } else if (locoSeries) {
+        loco = String(locoSeries);
+      } else if (locoNumber) {
+        loco = '№ ' + String(locoNumber);
       }
       var weight = shift.train_weight ? Number(shift.train_weight) : 0;
       var axles = shift.train_axles ? Number(shift.train_axles) : 0;

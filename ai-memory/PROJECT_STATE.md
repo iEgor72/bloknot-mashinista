@@ -1,14 +1,14 @@
 # Project State
 
 <!-- AUTO_STATUS:START -->
-Generated: 2026-06-02 19:45:26 +1000
+Generated: 2026-06-02 19:49:23 +1000
 
 ## Repository Snapshot
 - Local repo path: `D:\work\bloknot-mashinista-tg`
 - Project memory path: `D:\work\bloknot-mashinista-tg\ai-memory`
 - Branch: `poekhali-rework`
-- HEAD: `c3ff360`
-- Last commit: `c3ff360 Fix: fuel "выберите серию" hint stayed after selecting a series when editing`
+- HEAD: `593e77b`
+- Last commit: `593e77b Shift card: always show доход + расход in the flat plate (fix missing income)`
 
 ## Git Remote
 ```text
@@ -21,7 +21,7 @@ origin	https://github.com/iEgor72/bloknot-mashinista.git (push)
 codex/next-direction b044dd5 offline mvp
   codex/tabs-ui        117f1fa [origin/codex/tabs-ui] tabs ui
   main                 ad53dff [origin/main] chore(memory): record poekhali deploy
-* poekhali-rework      c3ff360 Fix: fuel "выберите серию" hint stayed after selecting a series when editing
+* poekhali-rework      593e77b Shift card: always show доход + расход in the flat plate (fix missing income)
 ```
 
 ## Worktree
