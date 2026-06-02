@@ -1,14 +1,14 @@
 # Project State
 
 <!-- AUTO_STATUS:START -->
-Generated: 2026-06-01 22:39:36 +1000
+Generated: 2026-06-01 23:11:44 +1000
 
 ## Repository Snapshot
 - Local repo path: `D:\work\bloknot-mashinista-tg`
 - Project memory path: `D:\work\bloknot-mashinista-tg\ai-memory`
 - Branch: `poekhali-rework`
-- HEAD: `a6854b4`
-- Last commit: `a6854b4 Profile avatar crop, dropdown mini-avatars, inclusive wording, calendar dimming fix`
+- HEAD: `77f271f`
+- Last commit: `77f271f Polish profile edit sheet + share picker; fix dropdown flip near bottom nav`
 
 ## Git Remote
 ```text
@@ -21,7 +21,7 @@ origin	https://github.com/iEgor72/bloknot-mashinista.git (push)
 codex/next-direction b044dd5 offline mvp
   codex/tabs-ui        117f1fa [origin/codex/tabs-ui] tabs ui
   main                 ad53dff [origin/main] chore(memory): record poekhali deploy
-* poekhali-rework      a6854b4 Profile avatar crop, dropdown mini-avatars, inclusive wording, calendar dimming fix
+* poekhali-rework      77f271f Polish profile edit sheet + share picker; fix dropdown flip near bottom nav
 ```
 
 ## Worktree

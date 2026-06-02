@@ -5308,3 +5308,12 @@ Append-only журнал действий ИИ-агентов по проект�
 - Methods: `git post-commit hook`, `automatic memory update`
 - Files: `ai-memory/CHANGELOG.md`, `ai-memory/INDEX.md`, `ai-memory/PROJECT_STATE.md`, `ai-memory/RECENT_COMMITS.md`, `ai-memory/WORKTREE_STATUS.md`, `ai-memory/sessions/2026-06-01.md`, `index.html`, `scripts/app-init.js`, `scripts/app.js`, `scripts/glass-select.js`, `styles/50-design-refresh.css`, `styles/56-profile.css`
 - Notes: Commit: `a6854b490e22a7ca3cf6018b8b40a4b03cb4f16a` (`a6854b4`) | Author: `iEgor72`
+
+## 2026-06-01 23:11:44 +1000
+
+- Source: `post-commit`
+- Task: Polish profile edit sheet + share picker; fix dropdown flip near bottom nav
+- Branch: `poekhali-rework`
+- Methods: `git post-commit hook`, `automatic memory update`
+- Files: `ai-memory/CHANGELOG.md`, `ai-memory/INDEX.md`, `ai-memory/PROJECT_STATE.md`, `ai-memory/RECENT_COMMITS.md`, `ai-memory/WORKTREE_STATUS.md`, `ai-memory/sessions/2026-06-01.md`, `index.html`, `scripts/glass-select.js`, `scripts/shift-form.js`, `styles/55-partners.css`, `styles/56-profile.css`
+- Notes: Commit: `77f271f8e0e679231e694364c88a5bbe38f60e1c` (`77f271f`) | Author: `iEgor72`

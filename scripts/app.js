@@ -66,7 +66,7 @@
       tapLockUntil: 0
     };
     // ── Viewport / Keyboard / Haptic — see scripts/viewport.js ──
-    var APP_VERSION = '1.0.0 (1)';
+    var APP_VERSION = '1.1.0 (2)';
     var INSTALL_PROMPT_STATE_STORAGE_KEY = 'shift_tracker_install_prompt_state_v1';
     var LEGACY_SETTINGS_STORAGE_KEY = 'shift_tracker_settings_v1';
     var SALARY_PARAMS_STORAGE_KEY = 'shift_tracker_salary_params_v1';

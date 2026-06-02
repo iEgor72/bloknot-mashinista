@@ -1065,7 +1065,7 @@
             if (dashboardCardEl) dashboardCardEl.classList.add('state-ok');
           }
         } else if (diffMin > 0) {
-          diffEl.textContent = '+' + fmtMin(diffAbs);
+          diffEl.textContent = fmtMin(diffAbs);
           if (statDiffLabelEl) statDiffLabelEl.textContent = 'Переработка';
           diffEl.classList.add('overtime');
           if (dashboardCardEl) dashboardCardEl.classList.add('state-overtime');

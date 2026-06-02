@@ -623,9 +623,10 @@
       } catch (e) {}
     }
 
-    // Keep the toggle in sync when the Add tab opens and after partner state loads.
+    // Re-sync the picker only when the Add tab is OPENED via its nav button —
+    // not on every click inside the form (that reset the chosen recipient).
     document.addEventListener('click', function(e) {
-      if (e.target.closest && e.target.closest('[data-tab="add"]')) {
+      if (e.target.closest && e.target.closest('.tab-btn[data-tab="add"]')) {
         window.setTimeout(syncShiftShareRow, 60);
       }
     });

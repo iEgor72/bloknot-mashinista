@@ -1,9 +1,10 @@
 # Recent Commits
 
-Generated: 2026-06-01 22:39:36 +1000
+Generated: 2026-06-01 23:11:44 +1000
 
 | Hash | Date | Author | Message |
 | --- | --- | --- | --- |
+| `77f271f` | 2026-06-01T23:11:43+10:00 | iEgor72 | Polish profile edit sheet + share picker; fix dropdown flip near bottom nav |
 | `a6854b4` | 2026-06-01T22:39:35+10:00 | iEgor72 | Profile avatar crop, dropdown mini-avatars, inclusive wording, calendar dimming fix |
 | `a1a43dc` | 2026-06-01T22:12:22+10:00 | iEgor72 | Поехали screen polish: drop duplicate GPS toasts, redesign speedometer |
 | `3cb1085` | 2026-06-01T22:10:29+10:00 | iEgor72 | Real Profile identity + reusable styled dropdown (GlassSelect) |
@@ -43,4 +44,3 @@ Generated: 2026-06-01 22:39:36 +1000
 | `5dcdf17` | 2026-05-12T23:38:15+10:00 | iEgor72 | feat(admin): add isolated admin panel |
 | `6c8040b` | 2026-05-07T06:23:41Z | iEgor72 | chore(memory): refresh gps auto-resume snapshot |
 | `241d11c` | 2026-05-07T06:23:33Z | iEgor72 | fix(tracker): auto resume gps after pause |
-| `9275743` | 2026-05-07T05:58:39Z | iEgor72 | chore(memory): refresh project snapshot |
