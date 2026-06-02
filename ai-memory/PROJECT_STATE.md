@@ -1,14 +1,14 @@
 # Project State
 
 <!-- AUTO_STATUS:START -->
-Generated: 2026-06-01 23:11:44 +1000
+Generated: 2026-06-02 18:47:50 +1000
 
 ## Repository Snapshot
 - Local repo path: `D:\work\bloknot-mashinista-tg`
 - Project memory path: `D:\work\bloknot-mashinista-tg\ai-memory`
 - Branch: `poekhali-rework`
-- HEAD: `77f271f`
-- Last commit: `77f271f Polish profile edit sheet + share picker; fix dropdown flip near bottom nav`
+- HEAD: `d67d40e`
+- Last commit: `d67d40e Fix recipient picker reset; bump version to 1.1.0; drop "+" on overtime`
 
 ## Git Remote
 ```text
@@ -21,13 +21,13 @@ origin	https://github.com/iEgor72/bloknot-mashinista.git (push)
 codex/next-direction b044dd5 offline mvp
   codex/tabs-ui        117f1fa [origin/codex/tabs-ui] tabs ui
   main                 ad53dff [origin/main] chore(memory): record poekhali deploy
-* poekhali-rework      77f271f Polish profile edit sheet + share picker; fix dropdown flip near bottom nav
+* poekhali-rework      d67d40e Fix recipient picker reset; bump version to 1.1.0; drop "+" on overtime
 ```
 
 ## Worktree
 ```text
 M ai-memory/CHANGELOG.md
- M ai-memory/sessions/2026-06-01.md
+?? ai-memory/sessions/2026-06-02.md
 ```
 <!-- AUTO_STATUS:END -->
 

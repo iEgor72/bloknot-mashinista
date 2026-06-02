@@ -664,17 +664,21 @@
         if (!s || !e) return '';
         var dows = ['вс','пн','вт','ср','чт','пт','сб'];
         var months = ['янв','фев','мар','апр','май','июн','июл','авг','сен','окт','ноя','дек'];
-        var d = s.getDate();
-        var m = months[s.getMonth()];
-        var dow = dows[s.getDay()];
-        function hhmm(d) {
-          var h = String(d.getHours()).padStart(2, '0');
-          var mi = String(d.getMinutes()).padStart(2, '0');
-          return h + ':' + mi;
+        // parseMsk returns the UTC instant; read MSK clock by shifting +MSK_OFFSET
+        // and using UTC getters, so the display is Moscow time on any device.
+        function mskParts(dt) {
+          var x = new Date(dt.getTime() + MSK_OFFSET * 3600000);
+          return { d: x.getUTCDate(), mo: x.getUTCMonth(), dow: x.getUTCDay(), h: x.getUTCHours(), mi: x.getUTCMinutes() };
         }
-        var startHM = hhmm(s);
-        var endHM = hhmm(e);
-        return d + ' ' + m + ' · ' + dow + ' · ' + startHM + ' → ' + endHM;
+        function hhmm(p) { return String(p.h).padStart(2, '0') + ':' + String(p.mi).padStart(2, '0'); }
+        var sp = mskParts(s);
+        var ep = mskParts(e);
+        var startHM = hhmm(sp);
+        var endHM = hhmm(ep);
+        // Overnight shift: show the end date too, so it's clear work ends next day.
+        var sameDay = sp.d === ep.d && sp.mo === ep.mo;
+        var endLabel = sameDay ? endHM : (ep.d + ' ' + months[ep.mo] + ' ' + endHM);
+        return sp.d + ' ' + months[sp.mo] + ' · ' + dows[sp.dow] + ' · ' + startHM + ' → ' + endLabel;
       } catch (err) { return ''; }
     }
 

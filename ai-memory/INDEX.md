@@ -1,6 +1,6 @@
 # AI Memory Index
 
-Updated: 2026-06-01 23:11:44 +1000
+Updated: 2026-06-02 18:47:50 +1000
 
 - [START_HERE.md](START_HERE.md)
 - [PROJECT_STATE.md](PROJECT_STATE.md)

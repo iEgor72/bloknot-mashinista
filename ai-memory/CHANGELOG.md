@@ -5317,3 +5317,12 @@ Append-only журнал действий ИИ-агентов по проект�
 - Methods: `git post-commit hook`, `automatic memory update`
 - Files: `ai-memory/CHANGELOG.md`, `ai-memory/INDEX.md`, `ai-memory/PROJECT_STATE.md`, `ai-memory/RECENT_COMMITS.md`, `ai-memory/WORKTREE_STATUS.md`, `ai-memory/sessions/2026-06-01.md`, `index.html`, `scripts/glass-select.js`, `scripts/shift-form.js`, `styles/55-partners.css`, `styles/56-profile.css`
 - Notes: Commit: `77f271f8e0e679231e694364c88a5bbe38f60e1c` (`77f271f`) | Author: `iEgor72`
+
+## 2026-06-02 18:47:49 +1000
+
+- Source: `post-commit`
+- Task: Fix recipient picker reset; bump version to 1.1.0; drop "+" on overtime
+- Branch: `poekhali-rework`
+- Methods: `git post-commit hook`, `automatic memory update`
+- Files: `ai-memory/CHANGELOG.md`, `ai-memory/INDEX.md`, `ai-memory/PROJECT_STATE.md`, `ai-memory/RECENT_COMMITS.md`, `ai-memory/WORKTREE_STATUS.md`, `ai-memory/sessions/2026-06-01.md`, `scripts/app.js`, `scripts/render.js`, `scripts/shift-form.js`
+- Notes: Commit: `d67d40e9d98393c020c17e7f65e26cb78e5b933a` (`d67d40e`) | Author: `iEgor72`
