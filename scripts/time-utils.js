@@ -683,42 +683,25 @@
     }
 
     function buildShiftMetaCellsHtml(shift, durationText, incomeText) {
-      var c = getShiftConsistDescriptor(shift) || {};
-      // Cell 1: Длительность (всегда)
-      // Cell 2: Топливо (если есть данные) иначе Поезд №
-      // Cell 3: Доход (если есть) иначе Состав (длина)
-      var fuelCell = '—';
+      // Financial group only: Доход + Расход(топливо). Duration now lives on the
+      // time line and loco/train in the consist line — kept logically grouped.
+      var fuelVal = '—';
       try {
         if (typeof hasFuelData === 'function' && hasFuelData(shift) && typeof getFuelConsumptionTotalsFromShift === 'function') {
           var ft = getFuelConsumptionTotalsFromShift(shift);
-          if (ft && ft.liters > 0) fuelCell = ruNum(ft.liters) + ' л';
+          if (ft && ft.liters > 0) fuelVal = ruNum(ft.liters) + ' л';
         }
       } catch (e) {}
-      var middleLabel = 'Топливо';
-      var middleVal = fuelCell;
-      if (fuelCell === '—') {
-        middleLabel = 'Поезд';
-        middleVal = c.trainNumber ? '№ ' + escapeHtml(c.trainNumber) : '—';
-      }
-      var rightLabel = 'Доход';
-      var rightVal = (incomeText && String(incomeText).trim()) ? escapeHtml(String(incomeText).trim()) : '—';
-      if (rightVal === '—') {
-        rightLabel = 'Состав';
-        rightVal = c.length > 0 ? (ruNum(c.length) + ' усл.') : (c.weight > 0 ? (ruNum(c.weight) + ' т') : '—');
-      }
+      var incomeVal = (incomeText && String(incomeText).trim()) ? escapeHtml(String(incomeText).trim()) : '—';
       return '' +
-        '<div class="shift-meta">' +
-          '<div class="shift-meta-item">' +
-            '<div class="shift-meta-label">Длительность</div>' +
-            '<div class="shift-meta-value">' + escapeHtml(durationText || '—') + '</div>' +
-          '</div>' +
-          '<div class="shift-meta-item">' +
-            '<div class="shift-meta-label">' + middleLabel + '</div>' +
-            '<div class="shift-meta-value num">' + middleVal + '</div>' +
-          '</div>' +
+        '<div class="shift-meta shift-meta-fin">' +
           '<div class="shift-meta-item income">' +
-            '<div class="shift-meta-label">' + rightLabel + '</div>' +
-            '<div class="shift-meta-value num">' + rightVal + '</div>' +
+            '<div class="shift-meta-label">Доход</div>' +
+            '<div class="shift-meta-value num">' + incomeVal + '</div>' +
+          '</div>' +
+          '<div class="shift-meta-item">' +
+            '<div class="shift-meta-label">Расход</div>' +
+            '<div class="shift-meta-value num">' + fuelVal + '</div>' +
           '</div>' +
         '</div>';
     }

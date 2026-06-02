@@ -1,9 +1,10 @@
 # Recent Commits
 
-Generated: 2026-06-02 19:17:57 +1000
+Generated: 2026-06-02 19:25:59 +1000
 
 | Hash | Date | Author | Message |
 | --- | --- | --- | --- |
+| `deaa85e` | 2026-06-02T19:25:58+10:00 | iEgor72 | Shift card tweaks: drop weekday, colour-coded share chip, fix chip alignment |
 | `3922a5d` | 2026-06-02T19:17:56+10:00 | iEgor72 | Shift card: visible "Поехали" launch + recipient chip |
 | `a220475` | 2026-06-02T19:04:40+10:00 | iEgor72 | Shift card: show MSK time + end date for overnight shifts |
 | `d67d40e` | 2026-06-02T18:47:49+10:00 | iEgor72 | Fix recipient picker reset; bump version to 1.1.0; drop "+" on overtime |
@@ -43,4 +44,3 @@ Generated: 2026-06-02 19:17:57 +1000
 | `6a41adc` | 2026-05-13T00:12:35+10:00 | iEgor72 | feat(admin): make panel more user friendly |
 | `73feedd` | 2026-05-13T00:00:57+10:00 | iEgor72 | fix(admin): require auth before rendering panel |
 | `f0eac10` | 2026-05-12T23:55:15+10:00 | iEgor72 | fix(admin): bypass app shell fallback |
-| `67517c5` | 2026-05-12T23:47:02+10:00 | iEgor72 | fix(admin): load admin ids from ecosystem config |

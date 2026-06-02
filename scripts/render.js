@@ -66,7 +66,9 @@
       '</div>';
 
       var compactDate = (typeof buildShiftCompactDateLine === 'function') ? buildShiftCompactDateLine(sh) : '';
-      var subText = (compactDate || dateTimeText) + (isHolidayShift ? ' · праздник' : '');
+      var subText = (compactDate || dateTimeText) +
+        (durationText ? ' · ' + durationText : '') +
+        (isHolidayShift ? ' · праздник' : '');
 
       var html = '<div class="' + itemClass + '" data-shift-id="' + shiftIdAttr + '" data-pending="' + (shiftIsPending ? '1' : '0') + '" data-shift-open="1" role="button" tabindex="0" aria-label="Редактировать смену: ' + escapeHtml(shiftTitle) + '">' +
         '<div class="shift-card-top">' +

@@ -1,6 +1,6 @@
 # Worktree Status
 
-Generated: 2026-06-02 19:17:57 +1000
+Generated: 2026-06-02 19:25:59 +1000
 
 ## git status -sb
 ```text
@@ -15,21 +15,21 @@ Generated: 2026-06-02 19:17:57 +1000
 codex/next-direction b044dd5 offline mvp
   codex/tabs-ui        117f1fa [origin/codex/tabs-ui] tabs ui
   main                 ad53dff [origin/main] chore(memory): record poekhali deploy
-* poekhali-rework      3922a5d Shift card: visible "Поехали" launch + recipient chip
+* poekhali-rework      deaa85e Shift card tweaks: drop weekday, colour-coded share chip, fix chip alignment
 ```
 
 ## HEAD
 ```text
-3922a5d Shift card: visible "Поехали" launch + recipient chip
- ai-memory/CHANGELOG.md           |  9 +++++
+deaa85e Shift card tweaks: drop weekday, colour-coded share chip, fix chip alignment
+ ai-memory/CHANGELOG.md           |  9 +++++++++
  ai-memory/INDEX.md               |  2 +-
- ai-memory/PROJECT_STATE.md       | 10 +++---
- ai-memory/RECENT_COMMITS.md      |  4 +--
- ai-memory/WORKTREE_STATUS.md     | 20 +++++------
+ ai-memory/PROJECT_STATE.md       |  8 ++++----
+ ai-memory/RECENT_COMMITS.md      |  4 ++--
+ ai-memory/WORKTREE_STATUS.md     | 23 +++++++++++++----------
  ai-memory/sessions/2026-06-02.md |  1 +
- scripts/partners.js              |  1 +
- scripts/render.js                | 73 +++++++++++++++++++++++++++++++++++-----
- styles/50-design-refresh.css     | 21 ++++++++++++
- styles/55-partners.css           | 34 +++++++++++++++++++
- 10 files changed, 147 insertions(+), 28 deletions(-)
+ scripts/render.js                |  2 --
+ scripts/time-utils.js            |  2 +-
+ styles/50-design-refresh.css     |  7 ++++---
+ styles/55-partners.css           | 28 ++++++++++++++++------------
+ 10 files changed, 51 insertions(+), 35 deletions(-)
 ```

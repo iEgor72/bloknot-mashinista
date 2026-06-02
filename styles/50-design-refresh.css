@@ -1104,6 +1104,10 @@ body::after { content: none; }
   grid-template-columns: repeat(3, 1fr);
   gap: 8px;
 }
+/* Financial group (Доход + Расход) — two columns. */
+.shift-card-v2 .shift-meta.shift-meta-fin {
+  grid-template-columns: repeat(2, 1fr);
+}
 .shift-card-v2 .shift-meta-item {
   padding: 8px 10px;
   border-radius: 12px;
