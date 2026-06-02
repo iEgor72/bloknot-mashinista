@@ -39,14 +39,8 @@
         ? buildShiftMarkHtml(sh, isHolidayShift)
         : '';
       var consistHtml = (typeof buildShiftConsistHtml === 'function')
-        ? buildShiftConsistHtml(sh) : '';
-      var metaHtml = (typeof buildShiftMetaCellsHtml === 'function')
-        ? buildShiftMetaCellsHtml(sh, durationText, incomeVm && incomeVm.label) : '';
+        ? buildShiftConsistHtml(sh, incomeVm && incomeVm.label) : '';
 
-      var incomeAmountHtml = '';
-      if (incomeVm && incomeVm.label) {
-        incomeAmountHtml = '<div class="shift-amount num">' + escapeHtml(String(incomeVm.label).trim()) + '</div>';
-      }
       var pendingDotHtml = shiftIsPending ? '<span class="shift-sync-inline" aria-label="Не синхронизировано" title="Не синхронизировано">' + docOnlineOnlyIcon + '</span>' : '';
       var shareBadgeHtml = (typeof buildShiftShareBadgeHtml === 'function') ? buildShiftShareBadgeHtml(sh) : '';
       var poekhaliBtnHtml = '<button class="shift-poekhali-btn" type="button" data-id="' + shiftIdAttr + '" aria-label="Открыть режим Поехали" title="Поехали">' +
@@ -77,12 +71,10 @@
             '<div class="shift-card-title">' + escapeHtml(shiftTitle) + shareBadgeHtml + pendingDotHtml + '</div>' +
             '<div class="shift-card-sub">' + escapeHtml(subText) + '</div>' +
           '</div>' +
-          incomeAmountHtml +
           poekhaliBtnHtml +
           actionsHtml +
         '</div>' +
         consistHtml +
-        (compact ? '' : metaHtml) +
       '</div>';
 
       return html;

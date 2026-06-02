@@ -694,6 +694,20 @@
     });
   }
 
+  // Stop sharing a shift: clear the local "shared out" mark + any queued send,
+  // so the card no longer shows a recipient and edits won't re-push. (Local
+  // un-mark; a true server-side recall is a separate, future concern.)
+  function unshareShift(shiftId) {
+    if (!shiftId) return;
+    try {
+      var map = readSharedOut();
+      if (map[shiftId]) { delete map[shiftId]; window.localStorage.setItem(SHARED_OUT_KEY, JSON.stringify(map)); }
+    } catch (e) {}
+    try {
+      writeShareQueue(readShareQueue().filter(function(e) { return e.sourceId !== shiftId; }));
+    } catch (e) {}
+  }
+
   // Share with the currently active partner (used when adding a new shift).
   function shareShift(shift) {
     var active = getActivePartner();
@@ -712,6 +726,7 @@
     getDefaultPairingId: getDefaultPairingId,
     shareShift: shareShift,
     shareShiftTo: shareShiftTo,
+    unshareShift: unshareShift,
     getSharedPairing: getSharedPairing,
     flushShareQueue: flushShareQueue,
     ensureLoaded: ensureLoaded,

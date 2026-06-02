@@ -569,13 +569,12 @@
       if (!row || !select) return;
       var bp = window.BrigadePartners;
       var partners = (bp && typeof bp.getPartners === 'function') ? bp.getPartners() : [];
-      // Per-shift recipient picker: only when adding a NEW shift and at least one
-      // partner is linked. The recipient is chosen per shift, not a global mode.
-      if (editingShiftId || !partners.length) {
+      // Per-shift recipient picker — shown whenever at least one partner is linked,
+      // for both new shifts AND edits (so a wrong recipient can be fixed later).
+      if (!partners.length) {
         row.classList.add('hidden');
         return;
       }
-      var defaultId = (bp && typeof bp.getDefaultPairingId === 'function') ? bp.getDefaultPairingId() : '';
       select.innerHTML = '';
       var noneOpt = document.createElement('option');
       noneOpt.value = '';
@@ -587,8 +586,14 @@
         opt.textContent = p.label || 'Напарник';
         select.appendChild(opt);
       });
-      // Pre-select the default partner; user can override for this one shift.
-      select.value = defaultId || '';
+      // Editing: pre-select the shift's current recipient. New shift: the default.
+      var preselect;
+      if (editingShiftId) {
+        preselect = (bp && typeof bp.getSharedPairing === 'function') ? bp.getSharedPairing(editingShiftId) : '';
+      } else {
+        preselect = (bp && typeof bp.getDefaultPairingId === 'function') ? bp.getDefaultPairingId() : '';
+      }
+      select.value = preselect || '';
       // Rebuild the styled dropdown from the freshly populated options.
       if (window.GlassSelect && typeof GlassSelect.refresh === 'function') {
         GlassSelect.refresh(document.getElementById('shiftShareSelectWrap'));
@@ -614,12 +619,23 @@
       } catch (e) {}
     }
 
-    // Editing a shift I previously shared pushes the update to the same partner.
+    // On editing: apply the recipient chosen in the picker — re-share to a new/
+    // same partner, or un-share if switched to "Не делиться". Lets a wrong
+    // recipient be fixed after the fact. Falls back to the existing pairing when
+    // the picker isn't shown (no partners linked).
     function maybeReshareEditedShift(shift) {
       try {
-        if (!shift || !window.BrigadePartners || typeof BrigadePartners.shareShiftTo !== 'function') return;
-        var pid = BrigadePartners.getSharedPairing(shift.id);
-        if (pid) BrigadePartners.shareShiftTo(shift, pid);
+        if (!shift || !window.BrigadePartners) return;
+        var row = document.getElementById('shiftShareRow');
+        var select = document.getElementById('shiftShareSelect');
+        var pickerShown = row && !row.classList.contains('hidden') && select;
+        var current = (typeof BrigadePartners.getSharedPairing === 'function') ? BrigadePartners.getSharedPairing(shift.id) : '';
+        var chosen = pickerShown ? (select.value || '') : current;
+        if (chosen) {
+          if (typeof BrigadePartners.shareShiftTo === 'function') BrigadePartners.shareShiftTo(shift, chosen);
+        } else if (current) {
+          if (typeof BrigadePartners.unshareShift === 'function') BrigadePartners.unshareShift(shift.id);
+        }
       } catch (e) {}
     }
 

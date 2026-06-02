@@ -634,7 +634,7 @@
       catch (e) { return String(n); }
     }
 
-    function buildShiftConsistHtml(shift) {
+    function buildShiftConsistHtml(shift, incomeText) {
       var c = getShiftConsistDescriptor(shift);
       if (!c) return '';
       var items = [];
@@ -647,12 +647,25 @@
       if (c.weight > 0) {
         items.push('<span class="sc-item">' + getShiftInlineIconSvg('axles') + '<span class="num">' + ruNum(c.weight) + ' т</span></span>');
       }
-      if (c.axles > 0 || c.length > 0) {
-        var parts = [];
-        if (c.axles > 0) parts.push(ruNum(c.axles) + ' ось');
-        if (c.length > 0) parts.push(ruNum(c.length) + ' усл.');
-        items.push('<span class="sc-item dim"><span class="num">' + parts.join(' · ') + '</span></span>');
+      if (c.axles > 0) {
+        items.push('<span class="sc-item">' + getShiftInlineIconSvg('wagon') + '<span class="num">' + ruNum(c.axles) + ' ось</span></span>');
       }
+      if (c.length > 0) {
+        items.push('<span class="sc-item">' + getShiftInlineIconSvg('length') + '<span class="num">' + ruNum(c.length) + ' усл.</span></span>');
+      }
+      // Money + fuel, same flat style — no boxes, no accent badges.
+      var incomeStr = (incomeText && String(incomeText).trim()) ? String(incomeText).trim() : '';
+      if (incomeStr) {
+        items.push('<span class="sc-item">' + getShiftInlineIconSvg('income') + '<span class="num">' + escapeHtml(incomeStr) + '</span></span>');
+      }
+      try {
+        if (typeof hasFuelData === 'function' && hasFuelData(shift) && typeof getFuelConsumptionTotalsFromShift === 'function') {
+          var ft = getFuelConsumptionTotalsFromShift(shift);
+          if (ft && ft.liters > 0) {
+            items.push('<span class="sc-item">' + getShiftInlineIconSvg('fuel') + '<span class="num">' + ruNum(ft.liters) + ' л</span></span>');
+          }
+        }
+      } catch (e) {}
       if (!items.length) return '';
       return '<div class="shift-consist">' + items.join('') + '</div>';
     }
