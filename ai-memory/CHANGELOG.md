@@ -4680,3 +4680,11 @@ Append-only журнал действий ИИ-агентов по проект�
 - Branch: `main`
 - Methods: `Созданы коммиты 5bf61c2 и memory-синки до cd733de`, `выполнен git push origin main`, `на VPS /opt/bloknot-mashinista подтверждены main/origin-main и intended commit cd733de`, `выполнены git pull --ff-only`, `node -c server/admin/poekhali`, `pm2 reload bloknot-mashinista`, `проверены PM2 online`, `локальные HTTP 200 для /admin и /`, `внешний curl.exe /admin вернул 200 при повторной проверке`, `Invoke-WebRequest и одна curl-проверка были нестабильны по timeout`
 - Files: `admin.html`, `scripts/admin.js`, `scripts/docs-app.js`, `scripts/poekhali-tracker.js`, `server.js`, `styles/10-navigation-and-cards.css`, `styles/admin.css`, `ai-memory`
+
+## 2026-06-04 23:19:57 +0000
+
+- Source: `manual`
+- Task: Исправлен Telegram PWA-login при раннем клике на auth pending
+- Branch: `main`
+- Methods: `Нашёл`, `что pending auth-состояние открывало обычный t.me без login request`, `заменил pending primaryAction на telegram-request и поднял cache version v328`, `проверил node -c`, `npm run smoke:local и Playwright-клик на публичном домене`
+- Files: `scripts/auth.js`, `sw.js`, `scripts/app-constants.js`
