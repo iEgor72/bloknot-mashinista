@@ -18751,10 +18751,6 @@
     loadRuns();
     bindRunSyncEvents();
     updateModeButtons();
-    loadManifest();
-    loadSpeedDocs();
-    loadRegimeMaps();
-    loadAdminMap();
     resizeCanvas();
     drawCanvas();
     if (isPoekhaliPanelActive() || (document.body && document.body.classList.contains('is-poekhali-mode'))) {

@@ -4688,3 +4688,11 @@ Append-only журнал действий ИИ-агентов по проект�
 - Branch: `main`
 - Methods: `Нашёл`, `что pending auth-состояние открывало обычный t.me без login request`, `заменил pending primaryAction на telegram-request и поднял cache version v328`, `проверил node -c`, `npm run smoke:local и Playwright-клик на публичном домене`
 - Files: `scripts/auth.js`, `sw.js`, `scripts/app-constants.js`
+
+## 2026-06-04 23:37:57 +0000
+
+- Source: `manual`
+- Task: Ускорен холодный старт Блокнота без поломки offline shell
+- Branch: `main`
+- Methods: `Нашёл`, `что service worker critical install и старт poekhali-tracker тянули тяжёлые tracker/docs assets`, `оставил в install/warmup только HTML/CSS/JS/иконки/шрифт`, `WARMUP_CACHE перевёл на install shell`, `загрузку карт/режимок отложил до входа в Поехали`, `проверил node -c`, `npm run smoke:local`, `Playwright offline и отсутствие тяжёлых startup-запросов`
+- Files: `sw.js`, `scripts/app-constants.js`, `scripts/poekhali-tracker.js`
