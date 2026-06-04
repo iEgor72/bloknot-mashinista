@@ -1,9 +1,11 @@
 # Recent Commits
 
-Generated: 2026-05-13 16:33:39 +1000
+Generated: 2026-06-04 23:20:18 +0000
 
 | Hash | Date | Author | Message |
 | --- | --- | --- | --- |
+| `99cb7cf` | 2026-06-04T23:20:05+00:00 | iEgor72 | fix(auth): create PWA login request from pending gate |
+| `ad53dff` | 2026-05-13T16:34:08+10:00 | iEgor72 | chore(memory): record poekhali deploy |
 | `cd733de` | 2026-05-13T16:28:32+10:00 | iEgor72 | chore(memory): record memory sync commit |
 | `fe93d44` | 2026-05-13T16:28:14+10:00 | iEgor72 | chore(memory): record poekhali editor commit |
 | `5bf61c2` | 2026-05-13T16:27:31+10:00 | iEgor72 | feat(poehali): refine visual warning editors |
@@ -14,33 +16,31 @@ Generated: 2026-05-13 16:33:39 +1000
 | `f0eac10` | 2026-05-12T23:55:15+10:00 | iEgor72 | fix(admin): bypass app shell fallback |
 | `67517c5` | 2026-05-12T23:47:02+10:00 | iEgor72 | fix(admin): load admin ids from ecosystem config |
 | `5dcdf17` | 2026-05-12T23:38:15+10:00 | iEgor72 | feat(admin): add isolated admin panel |
-| `6c8040b` | 2026-05-07T06:23:41Z | iEgor72 | chore(memory): refresh gps auto-resume snapshot |
-| `241d11c` | 2026-05-07T06:23:33Z | iEgor72 | fix(tracker): auto resume gps after pause |
-| `9275743` | 2026-05-07T05:58:39Z | iEgor72 | chore(memory): refresh project snapshot |
-| `3fedb4b` | 2026-05-07T05:58:23Z | iEgor72 | fix(tracker): separate speed lanes on map |
-| `3986476` | 2026-05-07T01:18:30Z | iEgor72 | chore(memory): refresh after dropdown recursion fix |
-| `24bffb8` | 2026-05-07T01:16:52Z | iEgor72 | fix(ui): remove locomotive dropdown sync recursion |
-| `b2b0fff` | 2026-05-07T01:13:53Z | iEgor72 | chore(memory): refresh after styled dropdown restore |
-| `fa0fedd` | 2026-05-07T01:13:32Z | iEgor72 | fix(ui): restore styled locomotive series dropdown |
-| `c14d64e` | 2026-05-07T01:09:02Z | iEgor72 | chore(memory): refresh after native select refactor |
-| `2169e63` | 2026-05-07T01:08:38Z | iEgor72 | refactor(ui): use single native locomotive series select |
-| `aee4c07` | 2026-05-07T01:06:14Z | iEgor72 | chore(memory): refresh after native select fix |
-| `fcd5d04` | 2026-05-07T01:05:55Z | iEgor72 | fix(ui): use native locomotive series select |
-| `b21c70e` | 2026-05-07T00:58:58Z | iEgor72 | chore(memory): refresh after loco menu fix |
-| `e58cff8` | 2026-05-07T00:58:39Z | iEgor72 | fix(ui): make locomotive series menu touch-safe |
-| `0a8760d` | 2026-05-06T23:53:28Z | iEgor72 | chore(memory): refresh after poekhali hang fix |
-| `1ba44a2` | 2026-05-06T23:53:11Z | iEgor72 | fix(poekhali): cache signal direction during drawing |
-| `5257931` | 2026-05-06T22:46:12Z | iEgor72 | chore(memory): refresh after station hud fix |
-| `c99b6dc` | 2026-05-06T22:46:03Z | iEgor72 | fix(poekhali): show current station separately from next target |
-| `f46a6a6` | 2026-05-06T22:42:19Z | iEgor72 | chore(memory): refresh after signal focus fix |
-| `1989653` | 2026-05-06T22:42:04Z | iEgor72 | fix(poekhali): focus signals ahead of train head |
-| `fb99c42` | 2026-05-06T22:37:46Z | iEgor72 | chore(memory): refresh after station signal fix |
-| `974c916` | 2026-05-06T22:37:34Z | iEgor72 | fix(poekhali): keep station name while inside station |
-| `1e19b9e` | 2026-05-06T22:32:37Z | iEgor72 | chore(memory): refresh after Apkan signal fix |
-| `bef206f` | 2026-05-06T22:32:25Z | iEgor72 | fix(poekhali): add manual Apkan signals |
-| `19cd27d` | 2026-05-06T22:28:34Z | iEgor72 | chore(memory): refresh after speed label cleanup |
-| `1b10f81` | 2026-05-06T22:28:23Z | iEgor72 | fix(poekhali): show speed labels without source prefix |
-| `a469c9c` | 2026-05-06T22:23:54Z | iEgor72 | chore(memory): refresh after hiding legacy speed UI |
-| `7ef0e22` | 2026-05-06T22:23:41Z | iEgor72 | fix(poekhali): hide legacy speed sources in UI |
-| `2492408` | 2026-05-06T19:51:21Z | iEgor72 | chore(memory): refresh after station navigation fix |
-| `28537cf` | 2026-05-06T19:51:07Z | iEgor72 | fix(poekhali): use station points for navigation |
+| `6c8040b` | 2026-05-07T06:23:41+00:00 | iEgor72 | chore(memory): refresh gps auto-resume snapshot |
+| `241d11c` | 2026-05-07T06:23:33+00:00 | iEgor72 | fix(tracker): auto resume gps after pause |
+| `9275743` | 2026-05-07T05:58:39+00:00 | iEgor72 | chore(memory): refresh project snapshot |
+| `3fedb4b` | 2026-05-07T05:58:23+00:00 | iEgor72 | fix(tracker): separate speed lanes on map |
+| `3986476` | 2026-05-07T01:18:30+00:00 | iEgor72 | chore(memory): refresh after dropdown recursion fix |
+| `24bffb8` | 2026-05-07T01:16:52+00:00 | iEgor72 | fix(ui): remove locomotive dropdown sync recursion |
+| `b2b0fff` | 2026-05-07T01:13:53+00:00 | iEgor72 | chore(memory): refresh after styled dropdown restore |
+| `fa0fedd` | 2026-05-07T01:13:32+00:00 | iEgor72 | fix(ui): restore styled locomotive series dropdown |
+| `c14d64e` | 2026-05-07T01:09:02+00:00 | iEgor72 | chore(memory): refresh after native select refactor |
+| `2169e63` | 2026-05-07T01:08:38+00:00 | iEgor72 | refactor(ui): use single native locomotive series select |
+| `aee4c07` | 2026-05-07T01:06:14+00:00 | iEgor72 | chore(memory): refresh after native select fix |
+| `fcd5d04` | 2026-05-07T01:05:55+00:00 | iEgor72 | fix(ui): use native locomotive series select |
+| `b21c70e` | 2026-05-07T00:58:58+00:00 | iEgor72 | chore(memory): refresh after loco menu fix |
+| `e58cff8` | 2026-05-07T00:58:39+00:00 | iEgor72 | fix(ui): make locomotive series menu touch-safe |
+| `0a8760d` | 2026-05-06T23:53:28+00:00 | iEgor72 | chore(memory): refresh after poekhali hang fix |
+| `1ba44a2` | 2026-05-06T23:53:11+00:00 | iEgor72 | fix(poekhali): cache signal direction during drawing |
+| `5257931` | 2026-05-06T22:46:12+00:00 | iEgor72 | chore(memory): refresh after station hud fix |
+| `c99b6dc` | 2026-05-06T22:46:03+00:00 | iEgor72 | fix(poekhali): show current station separately from next target |
+| `f46a6a6` | 2026-05-06T22:42:19+00:00 | iEgor72 | chore(memory): refresh after signal focus fix |
+| `1989653` | 2026-05-06T22:42:04+00:00 | iEgor72 | fix(poekhali): focus signals ahead of train head |
+| `fb99c42` | 2026-05-06T22:37:46+00:00 | iEgor72 | chore(memory): refresh after station signal fix |
+| `974c916` | 2026-05-06T22:37:34+00:00 | iEgor72 | fix(poekhali): keep station name while inside station |
+| `1e19b9e` | 2026-05-06T22:32:37+00:00 | iEgor72 | chore(memory): refresh after Apkan signal fix |
+| `bef206f` | 2026-05-06T22:32:25+00:00 | iEgor72 | fix(poekhali): add manual Apkan signals |
+| `19cd27d` | 2026-05-06T22:28:34+00:00 | iEgor72 | chore(memory): refresh after speed label cleanup |
+| `1b10f81` | 2026-05-06T22:28:23+00:00 | iEgor72 | fix(poekhali): show speed labels without source prefix |
+| `a469c9c` | 2026-05-06T22:23:54+00:00 | iEgor72 | chore(memory): refresh after hiding legacy speed UI |
+| `7ef0e22` | 2026-05-06T22:23:41+00:00 | iEgor72 | fix(poekhali): hide legacy speed sources in UI |
