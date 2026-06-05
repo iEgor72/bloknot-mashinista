@@ -1,14 +1,14 @@
 # Project State
 
 <!-- AUTO_STATUS:START -->
-Generated: 2026-06-02 19:52:43 +1000
+Generated: 2026-06-05 12:23:55 +1000
 
 ## Repository Snapshot
 - Local repo path: `D:\work\bloknot-mashinista-tg`
 - Project memory path: `D:\work\bloknot-mashinista-tg\ai-memory`
 - Branch: `poekhali-rework`
-- HEAD: `89333db`
-- Last commit: `89333db Fix loco on card + fuel hint when editing (programmatic loco-series set)`
+- HEAD: `153426a`
+- Last commit: `153426a Fix расход always "—": wrong field (ft.liters → ft.consumptionLiters)`
 
 ## Git Remote
 ```text
@@ -21,13 +21,14 @@ origin	https://github.com/iEgor72/bloknot-mashinista.git (push)
 codex/next-direction b044dd5 offline mvp
   codex/tabs-ui        117f1fa [origin/codex/tabs-ui] tabs ui
   main                 ad53dff [origin/main] chore(memory): record poekhali deploy
-* poekhali-rework      89333db Fix loco on card + fuel hint when editing (programmatic loco-series set)
+* poekhali-rework      153426a Fix расход always "—": wrong field (ft.liters → ft.consumptionLiters)
 ```
 
 ## Worktree
 ```text
 M ai-memory/CHANGELOG.md
- M ai-memory/sessions/2026-06-02.md
+?? ai-memory/sessions/2026-06-05.md
+?? nul
 ```
 <!-- AUTO_STATUS:END -->
 

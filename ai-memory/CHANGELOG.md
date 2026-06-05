@@ -5398,3 +5398,12 @@ Append-only журнал действий ИИ-агентов по проект�
 - Methods: `git post-commit hook`, `automatic memory update`
 - Files: `ai-memory/CHANGELOG.md`, `ai-memory/INDEX.md`, `ai-memory/PROJECT_STATE.md`, `ai-memory/RECENT_COMMITS.md`, `ai-memory/WORKTREE_STATUS.md`, `ai-memory/sessions/2026-06-02.md`, `scripts/render.js`, `scripts/time-utils.js`
 - Notes: Commit: `89333db93452b422d6ec75e1314a82bd999e978f` (`89333db`) | Author: `iEgor72`
+
+## 2026-06-05 12:23:54 +1000
+
+- Source: `post-commit`
+- Task: Fix расход always "—": wrong field (ft.liters → ft.consumptionLiters)
+- Branch: `poekhali-rework`
+- Methods: `git post-commit hook`, `automatic memory update`
+- Files: `ai-memory/CHANGELOG.md`, `ai-memory/INDEX.md`, `ai-memory/PROJECT_STATE.md`, `ai-memory/RECENT_COMMITS.md`, `ai-memory/WORKTREE_STATUS.md`, `ai-memory/sessions/2026-06-02.md`, `scripts/time-utils.js`
+- Notes: Commit: `153426a2b007cf51a528e200536104b3a44c3b9b` (`153426a`) | Author: `iEgor72`

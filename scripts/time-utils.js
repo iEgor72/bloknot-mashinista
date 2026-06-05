@@ -657,18 +657,20 @@
       if (c.length > 0) {
         items.push('<span class="sc-item">' + getShiftInlineIconSvg('length') + '<span class="num">' + ruNum(c.length) + ' усл.</span></span>');
       }
-      // Money + fuel — always shown (same flat style, no boxes/accent), "—" when
-      // not filled in, so the shift's income & fuel are always part of the plate.
-      var incomeStr = (incomeText && String(incomeText).trim()) ? String(incomeText).trim() : '—';
-      items.push('<span class="sc-item">' + getShiftInlineIconSvg('income') + '<span class="num">' + escapeHtml(incomeStr) + '</span></span>');
-      var fuelStr = '—';
+      // Money + fuel, same flat style (no boxes/accent) — shown only when there's
+      // actual data, like the other items (no empty "—" placeholders).
+      var incomeStr = (incomeText && String(incomeText).trim() && String(incomeText).trim() !== '—') ? String(incomeText).trim() : '';
+      if (incomeStr) {
+        items.push('<span class="sc-item">' + getShiftInlineIconSvg('income') + '<span class="num">' + escapeHtml(incomeStr) + '</span></span>');
+      }
       try {
         if (typeof hasFuelData === 'function' && hasFuelData(shift) && typeof getFuelConsumptionTotalsFromShift === 'function') {
           var ft = getFuelConsumptionTotalsFromShift(shift);
-          if (ft && ft.consumptionLiters > 0) fuelStr = ruNum(ft.consumptionLiters) + ' л';
+          if (ft && ft.consumptionLiters > 0) {
+            items.push('<span class="sc-item">' + getShiftInlineIconSvg('fuel') + '<span class="num">' + ruNum(ft.consumptionLiters) + ' л</span></span>');
+          }
         }
       } catch (e) {}
-      items.push('<span class="sc-item">' + getShiftInlineIconSvg('fuel') + '<span class="num">' + fuelStr + '</span></span>');
       if (!items.length) return '';
       return '<div class="shift-consist">' + items.join('') + '</div>';
     }

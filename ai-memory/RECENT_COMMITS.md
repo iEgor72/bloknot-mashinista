@@ -1,9 +1,10 @@
 # Recent Commits
 
-Generated: 2026-06-02 19:52:44 +1000
+Generated: 2026-06-05 12:23:55 +1000
 
 | Hash | Date | Author | Message |
 | --- | --- | --- | --- |
+| `153426a` | 2026-06-05T12:23:54+10:00 | iEgor72 | Fix расход always "—": wrong field (ft.liters → ft.consumptionLiters) |
 | `89333db` | 2026-06-02T19:52:42+10:00 | iEgor72 | Fix loco on card + fuel hint when editing (programmatic loco-series set) |
 | `593e77b` | 2026-06-02T19:49:22+10:00 | iEgor72 | Shift card: always show доход + расход in the flat plate (fix missing income) |
 | `c3ff360` | 2026-06-02T19:45:25+10:00 | iEgor72 | Fix: fuel "выберите серию" hint stayed after selecting a series when editing |
@@ -43,4 +44,3 @@ Generated: 2026-06-02 19:52:44 +1000
 | `ad53dff` | 2026-05-13T16:34:08+10:00 | iEgor72 | chore(memory): record poekhali deploy |
 | `cd733de` | 2026-05-13T16:28:32+10:00 | iEgor72 | chore(memory): record memory sync commit |
 | `fe93d44` | 2026-05-13T16:28:14+10:00 | iEgor72 | chore(memory): record poekhali editor commit |
-| `5bf61c2` | 2026-05-13T16:27:31+10:00 | iEgor72 | feat(poehali): refine visual warning editors |
