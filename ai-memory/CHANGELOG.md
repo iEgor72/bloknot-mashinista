@@ -5564,3 +5564,12 @@ Append-only журнал действий ИИ-агентов по проект�
 - Methods: `git post-commit hook`, `automatic memory update`
 - Files: `ai-memory/CHANGELOG.md`, `ai-memory/INDEX.md`, `ai-memory/PROJECT_STATE.md`, `ai-memory/RECENT_COMMITS.md`, `ai-memory/WORKTREE_STATUS.md`, `ai-memory/sessions/2026-06-06.md`
 - Notes: Commit: `82a90883eb0ee3d44a297ec79dee879baf9f1443` (`82a9088`) | Author: `iEgor72`
+
+## 2026-06-06 00:18:16 +1000
+
+- Source: `post-commit`
+- Task: Merge remote-tracking branch 'origin/main' into poekhali-rework
+- Branch: `poekhali-rework`
+- Methods: `git post-commit hook`, `automatic memory update`
+- Files: `scripts/auth.js`, `scripts/poekhali-tracker.js`, `sw.js`
+- Notes: Commit: `38732ba588ebd1f2c59515f239b625523c95102f` (`38732ba`) | Author: `iEgor72`

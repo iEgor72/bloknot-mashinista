@@ -1,14 +1,14 @@
 # Project State
 
 <!-- AUTO_STATUS:START -->
-Generated: 2026-06-06 00:16:10 +1000
+Generated: 2026-06-06 00:18:30 +1000
 
 ## Repository Snapshot
 - Local repo path: `D:\work\bloknot-mashinista-tg`
 - Project memory path: `D:\work\bloknot-mashinista-tg\ai-memory`
 - Branch: `poekhali-rework`
-- HEAD: `82a9088`
-- Last commit: `82a9088 chore(memory): record docs landing polish`
+- HEAD: `38732ba`
+- Last commit: `38732ba Merge remote-tracking branch 'origin/main' into poekhali-rework`
 
 ## Git Remote
 ```text
@@ -21,12 +21,16 @@ origin	https://github.com/iEgor72/bloknot-mashinista.git (push)
 codex/next-direction b044dd5 offline mvp
   codex/tabs-ui        117f1fa [origin/codex/tabs-ui] tabs ui
   main                 ad53dff [origin/main: behind 3] chore(memory): record poekhali deploy
-* poekhali-rework      82a9088 chore(memory): record docs landing polish
+* poekhali-rework      38732ba Merge remote-tracking branch 'origin/main' into poekhali-rework
 ```
 
 ## Worktree
 ```text
 M ai-memory/CHANGELOG.md
+ M ai-memory/INDEX.md
+ M ai-memory/PROJECT_STATE.md
+ M ai-memory/RECENT_COMMITS.md
+ M ai-memory/WORKTREE_STATUS.md
  M ai-memory/sessions/2026-06-06.md
 ```
 <!-- AUTO_STATUS:END -->

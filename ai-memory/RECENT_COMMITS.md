@@ -1,9 +1,11 @@
 # Recent Commits
 
-Generated: 2026-06-06 00:16:11 +1000
+Generated: 2026-06-06 00:18:31 +1000
 
 | Hash | Date | Author | Message |
 | --- | --- | --- | --- |
+| `38732ba` | 2026-06-06T00:18:15+10:00 | iEgor72 | Merge remote-tracking branch 'origin/main' into poekhali-rework |
+| `6621b33` | 2026-06-06T00:16:31+10:00 | iEgor72 | chore(memory): refresh after docs memory commit |
 | `82a9088` | 2026-06-06T00:16:09+10:00 | iEgor72 | chore(memory): record docs landing polish |
 | `3213fcd` | 2026-06-06T00:15:46+10:00 | iEgor72 | docs: polish documents landing |
 | `80b1cbe` | 2026-06-05T23:53:19+10:00 | iEgor72 | chore(memory): update ai-memory logs for calendar bar + warnings fix |
@@ -16,6 +18,9 @@ Generated: 2026-06-06 00:16:11 +1000
 | `baede9d` | 2026-06-05T12:56:46+10:00 | iEgor72 | Shift card: redesign data as a calm labelled key→value grid |
 | `7f2f04e` | 2026-06-05T12:26:07+10:00 | iEgor72 | Shift card: show доход/расход only when present (no empty "—") |
 | `153426a` | 2026-06-05T12:23:54+10:00 | iEgor72 | Fix расход always "—": wrong field (ft.liters → ft.consumptionLiters) |
+| `85a6f95` | 2026-06-04T23:37:57Z | iEgor72 | fix(pwa): defer heavy offline assets during startup |
+| `71b2d3f` | 2026-06-04T23:20:28Z | iEgor72 | chore(memory): refresh after PWA login fix |
+| `99cb7cf` | 2026-06-04T23:20:05Z | iEgor72 | fix(auth): create PWA login request from pending gate |
 | `89333db` | 2026-06-02T19:52:42+10:00 | iEgor72 | Fix loco on card + fuel hint when editing (programmatic loco-series set) |
 | `593e77b` | 2026-06-02T19:49:22+10:00 | iEgor72 | Shift card: always show доход + расход in the flat plate (fix missing income) |
 | `c3ff360` | 2026-06-02T19:45:25+10:00 | iEgor72 | Fix: fuel "выберите серию" hint stayed after selecting a series when editing |
@@ -39,8 +44,3 @@ Generated: 2026-06-06 00:16:11 +1000
 | `6903a27` | 2026-06-01T11:14:45+10:00 | iEgor72 | feat(dashboard): clean empty state for income sparkline |
 | `cac5a52` | 2026-06-01T11:10:23+10:00 | iEgor72 | feat(poekhali): visible + Скорость / + Предупреждение buttons above profile |
 | `d579bde` | 2026-06-01T10:51:35+10:00 | iEgor72 | feat(poekhali): round speedometer + head position; category-colored profile bands |
-| `0537747` | 2026-05-31T20:08:12+10:00 | iEgor72 | feat(poekhali): show actual + allowed speed together (КЛУБ-style) |
-| `081b7ae` | 2026-05-31T19:46:43+10:00 | iEgor72 | refactor(poekhali): delete the dead run subsystem (~2000 lines) |
-| `d5096d9` | 2026-05-31T19:35:27+10:00 | iEgor72 | refactor(poekhali): remove run journal UI and run refs from debug/backup |
-| `6b54c1c` | 2026-05-31T19:28:09+10:00 | iEgor72 | refactor(poekhali): drop auto-run triggers and run/learning sync init wiring |
-| `9064eac` | 2026-05-31T19:26:27+10:00 | iEgor72 | refactor(poekhali): delete GPS learning-sample capture functions |
