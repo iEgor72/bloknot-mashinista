@@ -1,9 +1,10 @@
 # Recent Commits
 
-Generated: 2026-06-05 23:53:06 +1000
+Generated: 2026-06-06 00:06:15 +1000
 
 | Hash | Date | Author | Message |
 | --- | --- | --- | --- |
+| `80b1cbe` | 2026-06-05T23:53:19+10:00 | iEgor72 | chore(memory): update ai-memory logs for calendar bar + warnings fix |
 | `c3f683b` | 2026-06-05T23:53:05+10:00 | iEgor72 | fix: Поехали warnings are map-scoped, not per-shift |
 | `f3f2e2f` | 2026-06-05T23:52:38+10:00 | iEgor72 | feat: timeline day/night worked-time bar on calendar cells |
 | `a0bbd10` | 2026-06-05T22:19:27+10:00 | iEgor72 | chore(memory): update ai-memory logs for admin removal + nav cleanup |
@@ -43,4 +44,3 @@ Generated: 2026-06-05 23:53:06 +1000
 | `9064eac` | 2026-05-31T19:26:27+10:00 | iEgor72 | refactor(poekhali): delete GPS learning-sample capture functions |
 | `3303580` | 2026-05-31T19:23:46+10:00 | iEgor72 | refactor(poekhali): drop run/learning server endpoints, neutralize runs |
 | `fdd07e7` | 2026-05-31T19:18:10+10:00 | iEgor72 | chore(memory): log Poekhali rework session |
-| `b14e056` | 2026-05-31T13:47:13+10:00 | iEgor72 | refactor(poekhali): drop dead recording UI and speed-import buttons |

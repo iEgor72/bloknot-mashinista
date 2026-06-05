@@ -5529,3 +5529,20 @@ Append-only журнал действий ИИ-агентов по проект�
 - Methods: `git post-commit hook`, `automatic memory update`
 - Files: `scripts/poekhali-tracker.js`, `sw.js`
 - Notes: Commit: `c3f683b98ff363ed2ea9f2849c3fcbc2b82ddf4a` (`c3f683b`) | Author: `iEgor72`
+
+## 2026-06-05 23:53:20 +1000
+
+- Source: `post-commit`
+- Task: chore(memory): update ai-memory logs for calendar bar + warnings fix
+- Branch: `poekhali-rework`
+- Methods: `git post-commit hook`, `automatic memory update`
+- Files: `ai-memory/CHANGELOG.md`, `ai-memory/INDEX.md`, `ai-memory/PROJECT_STATE.md`, `ai-memory/RECENT_COMMITS.md`, `ai-memory/WORKTREE_STATUS.md`, `ai-memory/sessions/2026-06-05.md`
+- Notes: Commit: `80b1cbe35e89e2ce7f8f10c61559c0b78226afb8` (`80b1cbe`) | Author: `iEgor72`
+
+## 2026-06-06 00:05:56 +1000
+
+- Source: `manual`
+- Task: Docs landing polish: wide Папки card preview
+- Branch: `poekhali-rework`
+- Methods: `Adjusted docs bento grid`, `shortened subtitles`, `bumped shell cache to v338`, `verified local browser preview`
+- Files: `index.html`, `styles/50-design-refresh.css`, `sw.js`, `scripts/app-constants.js`

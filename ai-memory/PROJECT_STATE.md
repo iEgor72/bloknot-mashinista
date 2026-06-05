@@ -1,14 +1,14 @@
 # Project State
 
 <!-- AUTO_STATUS:START -->
-Generated: 2026-06-05 23:53:06 +1000
+Generated: 2026-06-06 00:06:15 +1000
 
 ## Repository Snapshot
 - Local repo path: `D:\work\bloknot-mashinista-tg`
 - Project memory path: `D:\work\bloknot-mashinista-tg\ai-memory`
 - Branch: `poekhali-rework`
-- HEAD: `c3f683b`
-- Last commit: `c3f683b fix: Поехали warnings are map-scoped, not per-shift`
+- HEAD: `80b1cbe`
+- Last commit: `80b1cbe chore(memory): update ai-memory logs for calendar bar + warnings fix`
 
 ## Git Remote
 ```text
@@ -21,7 +21,7 @@ origin	https://github.com/iEgor72/bloknot-mashinista.git (push)
 codex/next-direction b044dd5 offline mvp
   codex/tabs-ui        117f1fa [origin/codex/tabs-ui] tabs ui
   main                 ad53dff [origin/main] chore(memory): record poekhali deploy
-* poekhali-rework      c3f683b fix: Поехали warnings are map-scoped, not per-shift
+* poekhali-rework      80b1cbe chore(memory): update ai-memory logs for calendar bar + warnings fix
 ```
 
 ## Worktree
@@ -32,6 +32,11 @@ M ai-memory/CHANGELOG.md
  M ai-memory/RECENT_COMMITS.md
  M ai-memory/WORKTREE_STATUS.md
  M ai-memory/sessions/2026-06-05.md
+ M index.html
+ M scripts/app-constants.js
+ M styles/50-design-refresh.css
+ M sw.js
+?? ai-memory/sessions/2026-06-06.md
 ```
 <!-- AUTO_STATUS:END -->
 
