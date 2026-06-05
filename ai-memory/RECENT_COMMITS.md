@@ -1,9 +1,14 @@
 # Recent Commits
 
-Generated: 2026-06-05 12:23:55 +1000
+Generated: 2026-06-05 22:18:56 +1000
 
 | Hash | Date | Author | Message |
 | --- | --- | --- | --- |
+| `88d8382` | 2026-06-05T22:18:55+10:00 | iEgor72 | nav: drop dead Поехали-tab click listeners |
+| `00f9d8c` | 2026-06-05T22:18:39+10:00 | iEgor72 | Remove dead admin /api backend |
+| `5af9bc7` | 2026-06-05T21:51:19+10:00 | iEgor72 | Remove admin panel frontend |
+| `baede9d` | 2026-06-05T12:56:46+10:00 | iEgor72 | Shift card: redesign data as a calm labelled key→value grid |
+| `7f2f04e` | 2026-06-05T12:26:07+10:00 | iEgor72 | Shift card: show доход/расход only when present (no empty "—") |
 | `153426a` | 2026-06-05T12:23:54+10:00 | iEgor72 | Fix расход always "—": wrong field (ft.liters → ft.consumptionLiters) |
 | `89333db` | 2026-06-02T19:52:42+10:00 | iEgor72 | Fix loco on card + fuel hint when editing (programmatic loco-series set) |
 | `593e77b` | 2026-06-02T19:49:22+10:00 | iEgor72 | Shift card: always show доход + расход in the flat plate (fix missing income) |
@@ -39,8 +44,3 @@ Generated: 2026-06-05 12:23:55 +1000
 | `e7bb43e` | 2026-05-31T13:43:25+10:00 | iEgor72 | fix(poekhali): remove phantom default 60 km/h prevailing-speed band |
 | `b181470` | 2026-05-31T13:31:45+10:00 | iEgor72 | feat(poekhali): add speed-editor entry point from profile/limit tile |
 | `35786d8` | 2026-05-31T13:28:43+10:00 | iEgor72 | feat(poekhali): manual speeds with 3 categories, replace recording UI |
-| `fd5d6d2` | 2026-05-31T13:16:39+10:00 | iEgor72 | feat(poekhali): GPS passive status + neutralize trip recording |
-| `65fcb69` | 2026-05-31T13:08:55+10:00 | iEgor72 | chore: checkpoint working tree before Poekhali rework |
-| `ad53dff` | 2026-05-13T16:34:08+10:00 | iEgor72 | chore(memory): record poekhali deploy |
-| `cd733de` | 2026-05-13T16:28:32+10:00 | iEgor72 | chore(memory): record memory sync commit |
-| `fe93d44` | 2026-05-13T16:28:14+10:00 | iEgor72 | chore(memory): record poekhali editor commit |

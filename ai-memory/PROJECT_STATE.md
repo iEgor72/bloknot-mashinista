@@ -1,14 +1,14 @@
 # Project State
 
 <!-- AUTO_STATUS:START -->
-Generated: 2026-06-05 12:23:55 +1000
+Generated: 2026-06-05 22:18:56 +1000
 
 ## Repository Snapshot
 - Local repo path: `D:\work\bloknot-mashinista-tg`
 - Project memory path: `D:\work\bloknot-mashinista-tg\ai-memory`
 - Branch: `poekhali-rework`
-- HEAD: `153426a`
-- Last commit: `153426a Fix расход always "—": wrong field (ft.liters → ft.consumptionLiters)`
+- HEAD: `88d8382`
+- Last commit: `88d8382 nav: drop dead Поехали-tab click listeners`
 
 ## Git Remote
 ```text
@@ -21,14 +21,18 @@ origin	https://github.com/iEgor72/bloknot-mashinista.git (push)
 codex/next-direction b044dd5 offline mvp
   codex/tabs-ui        117f1fa [origin/codex/tabs-ui] tabs ui
   main                 ad53dff [origin/main] chore(memory): record poekhali deploy
-* poekhali-rework      153426a Fix расход always "—": wrong field (ft.liters → ft.consumptionLiters)
+* poekhali-rework      88d8382 nav: drop dead Поехали-tab click listeners
 ```
 
 ## Worktree
 ```text
 M ai-memory/CHANGELOG.md
-?? ai-memory/sessions/2026-06-05.md
-?? nul
+ M ai-memory/INDEX.md
+ M ai-memory/PROJECT_STATE.md
+ M ai-memory/RECENT_COMMITS.md
+ M ai-memory/WORKTREE_STATUS.md
+ M ai-memory/sessions/2026-06-05.md
+?? server_fe.patch
 ```
 <!-- AUTO_STATUS:END -->
 

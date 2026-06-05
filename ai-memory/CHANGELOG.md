@@ -5407,3 +5407,98 @@ Append-only журнал действий ИИ-агентов по проект�
 - Methods: `git post-commit hook`, `automatic memory update`
 - Files: `ai-memory/CHANGELOG.md`, `ai-memory/INDEX.md`, `ai-memory/PROJECT_STATE.md`, `ai-memory/RECENT_COMMITS.md`, `ai-memory/WORKTREE_STATUS.md`, `ai-memory/sessions/2026-06-02.md`, `scripts/time-utils.js`
 - Notes: Commit: `153426a2b007cf51a528e200536104b3a44c3b9b` (`153426a`) | Author: `iEgor72`
+
+## 2026-06-05 12:26:08 +1000
+
+- Source: `post-commit`
+- Task: Shift card: show доход/расход only when present (no empty "—")
+- Branch: `poekhali-rework`
+- Methods: `git post-commit hook`, `automatic memory update`
+- Files: `ai-memory/CHANGELOG.md`, `ai-memory/INDEX.md`, `ai-memory/PROJECT_STATE.md`, `ai-memory/RECENT_COMMITS.md`, `ai-memory/WORKTREE_STATUS.md`, `ai-memory/sessions/2026-06-05.md`, `scripts/time-utils.js`
+- Notes: Commit: `7f2f04e6e980aae33de33df311113e768e2f4143` (`7f2f04e`) | Author: `iEgor72`
+
+## 2026-06-05 12:56:46 +1000
+
+- Source: `post-commit`
+- Task: @ Shift card: redesign data as a calm labelled key→value grid
+- Branch: `poekhali-rework`
+- Methods: `git post-commit hook`, `automatic memory update`
+- Files: `scripts/render.js`, `scripts/time-utils.js`, `styles/50-design-refresh.css`
+- Notes: Commit: `43b2fcdc5e9165d509159bd231223f40a2cad688` (`43b2fcd`) | Author: `iEgor72`
+
+## 2026-06-05 12:57:03 +1000
+
+- Source: `post-commit`
+- Task: Shift card: redesign data as a calm labelled key→value grid
+- Branch: `poekhali-rework`
+- Methods: `git post-commit hook`, `automatic memory update`
+- Files: `scripts/render.js`, `scripts/time-utils.js`, `styles/50-design-refresh.css`
+- Notes: Commit: `baede9d4813ec6c6a39e39f36328cc96e08db8b7` (`baede9d`) | Author: `iEgor72`
+
+## 2026-06-05 14:01:16 +1000
+
+- Source: `manual`
+- Task: Chrome expense filing blocked: Codex Chrome Extension missing
+- Branch: `poekhali-rework`
+- Methods: `Ran Chrome plugin connection retry and setup checks`, `Chrome/native host OK`, `selected Chrome profile lacks extension`
+- Files: `ai-memory/CHANGELOG.md`
+
+## 2026-06-05 14:06:37 +1000
+
+- Source: `manual`
+- Task: Chrome plugin remains blocked after toggle
+- Branch: `poekhali-rework`
+- Methods: `Retried extension browser connection`, `checked Chrome plugin cache and found missing browser-client/diagnostic scripts after disable-enable`
+- Files: `ai-memory/CHANGELOG.md`
+
+## 2026-06-05 14:11:38 +1000
+
+- Source: `manual`
+- Task: Retried Chrome after plugin restore
+- Branch: `poekhali-rework`
+- Methods: `Found updated Chrome plugin 26.602.30954 with browser-client restored`, `connection still fails because Codex Chrome Extension is absent in Default Chrome profile while native host is correct`
+- Files: `ai-memory/CHANGELOG.md`
+
+## 2026-06-05 21:44:31 +1000
+
+- Source: `manual`
+- Task: Remove dead admin /api backend + finish nav-redesign cleanup (dead poekhali click-listeners); drop MAX from memory
+- Branch: `poekhali-rework`
+- Methods: `dead-code-removal`, `boot-smoke-test`
+- Files: `server.js`, `ecosystem.config.js`, `scripts/app-init.js`
+
+## 2026-06-05 21:51:20 +1000
+
+- Source: `post-commit`
+- Task: @ Remove admin panel frontend
+- Branch: `poekhali-rework`
+- Methods: `git post-commit hook`, `automatic memory update`
+- Files: `admin.html`, `scripts/admin.js`, `server.js`, `styles/admin-design-refresh.css`, `styles/admin.css`, `sw.js`
+- Notes: Commit: `13143564059868d32d4a9632214611b9efbb6037` (`1314356`) | Author: `iEgor72`
+
+## 2026-06-05 21:58:24 +1000
+
+- Source: `post-commit`
+- Task: Remove admin panel frontend
+- Branch: `poekhali-rework`
+- Methods: `git post-commit hook`, `automatic memory update`
+- Files: `admin.html`, `scripts/admin.js`, `server.js`, `styles/admin-design-refresh.css`, `styles/admin.css`, `sw.js`
+- Notes: Commit: `5af9bc7a4168bc4e09451852d287ef8fd00a27ea` (`5af9bc7`) | Author: `iEgor72`
+
+## 2026-06-05 22:18:40 +1000
+
+- Source: `post-commit`
+- Task: Remove dead admin /api backend
+- Branch: `poekhali-rework`
+- Methods: `git post-commit hook`, `automatic memory update`
+- Files: `ecosystem.config.js`, `server.js`
+- Notes: Commit: `00f9d8c905515025fcfa2a31266cd4622c5e5fb2` (`00f9d8c`) | Author: `iEgor72`
+
+## 2026-06-05 22:18:55 +1000
+
+- Source: `post-commit`
+- Task: nav: drop dead Поехали-tab click listeners
+- Branch: `poekhali-rework`
+- Methods: `git post-commit hook`, `automatic memory update`
+- Files: `scripts/app-init.js`
+- Notes: Commit: `88d83820484464e267981d410d4b2177c2c02d18` (`88d8382`) | Author: `iEgor72`
