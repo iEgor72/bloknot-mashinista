@@ -2168,12 +2168,12 @@
 
   function getWarningsForShiftSnapshot(shift, includeInactive) {
     if (!shift || !shift.id) return [];
-    var shiftId = String(shift.id);
     var scope = getWarningStorageScope();
+    // Stamp the shift with every active warning on its map (the rules in effect for
+    // the trip) — map-scoped, not filtered to warnings created during this one shift.
     return tracker.warnings.filter(function(item) {
       if (!item || item.deletedAt) return false;
       if (item.mapId !== scope) return false;
-      if (String(item.shiftId || '') !== shiftId) return false;
       if (!includeInactive && !isWarningUsable(item)) return false;
       return true;
     });
@@ -2452,13 +2452,11 @@
 
   function getScopedWarnings(includeInactive) {
     var scope = getWarningStorageScope();
-    var context = getPoekhaliShiftContext();
-    var shiftId = context && context.shift && context.shift.id ? String(context.shift.id) : '';
+    // Warnings are track data scoped to the MAP and bounded by validUntil — NOT to
+    // a single shift. They stay visible on every trip over the same map.
     return tracker.warnings.filter(function(item) {
       if (!item || item.mapId !== scope) return false;
       if (item.deletedAt) return false;
-      if (item.shiftId && shiftId && item.shiftId !== shiftId) return false;
-      if (item.shiftId && !shiftId) return false;
       if (!includeInactive && !isWarningUsable(item)) return false;
       return true;
     });
@@ -2529,11 +2527,9 @@
   }
 
   function createWarning(sector, start, end, speed, note, validUntil) {
-    var context = getPoekhaliShiftContext();
-    var shift = context && context.shift ? context.shift : null;
     var item = normalizeWarning({
       mapId: getWarningStorageScope(),
-      shiftId: shift && shift.id ? shift.id : '',
+      shiftId: '',
       sector: sector,
       start: start,
       end: end,
@@ -2659,8 +2655,6 @@
 
   function createWarningsFromBulkText(text, defaultSector, validUntil) {
     var lines = String(text || '').split(/\r?\n|;/);
-    var context = getPoekhaliShiftContext();
-    var shift = context && context.shift ? context.shift : null;
     var created = [];
     var errors = [];
     var now = new Date().toISOString();
@@ -2673,7 +2667,7 @@
       }
       var item = normalizeWarning({
         mapId: getWarningStorageScope(),
-        shiftId: shift && shift.id ? shift.id : '',
+        shiftId: '',
         sector: parsed.sector,
         start: parsed.start,
         end: parsed.end,
