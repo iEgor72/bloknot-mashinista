@@ -1,9 +1,10 @@
 # Recent Commits
 
-Generated: 2026-06-06 00:18:31 +1000
+Generated: 2026-06-06 00:24:03 +1000
 
 | Hash | Date | Author | Message |
 | --- | --- | --- | --- |
+| `2d5f0af` | 2026-06-06T00:18:44+10:00 | iEgor72 | chore(memory): refresh after main merge |
 | `38732ba` | 2026-06-06T00:18:15+10:00 | iEgor72 | Merge remote-tracking branch 'origin/main' into poekhali-rework |
 | `6621b33` | 2026-06-06T00:16:31+10:00 | iEgor72 | chore(memory): refresh after docs memory commit |
 | `82a9088` | 2026-06-06T00:16:09+10:00 | iEgor72 | chore(memory): record docs landing polish |
@@ -43,4 +44,3 @@ Generated: 2026-06-06 00:18:31 +1000
 | `a2c99e8` | 2026-06-01T11:20:24+10:00 | iEgor72 | fix(poekhali): ops editor sheet was invisible (rendered inside hidden shell) |
 | `6903a27` | 2026-06-01T11:14:45+10:00 | iEgor72 | feat(dashboard): clean empty state for income sparkline |
 | `cac5a52` | 2026-06-01T11:10:23+10:00 | iEgor72 | feat(poekhali): visible + Скорость / + Предупреждение buttons above profile |
-| `d579bde` | 2026-06-01T10:51:35+10:00 | iEgor72 | feat(poekhali): round speedometer + head position; category-colored profile bands |
