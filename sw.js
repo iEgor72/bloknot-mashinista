@@ -32,19 +32,6 @@ const INSTALL_SHELL_URLS = [
   '/icon-192.png',
   '/icon-512.png',
   '/assets/fonts/plus-jakarta-sans/plus-jakarta-sans-cyrillic-ext.woff2',
-  '/assets/tracker/data.xml',
-  '/assets/tracker/profile.xml',
-  '/assets/tracker/maps/komsomol-sk-tche-9/data.xml',
-  '/assets/tracker/maps/komsomol-sk-tche-9/profile.xml',
-  '/assets/tracker/maps/komsomol-sk-tche-9/speed.xml',
-  '/assets/tracker/maps/komsomol-sk-tche-9/1.xml',
-  '/assets/tracker/maps/komsomol-sk-tche-9/1n.xml',
-  '/assets/tracker/maps/komsomol-sk-tche-9/2.xml',
-  '/assets/tracker/maps/komsomol-sk-tche-9/2n.xml',
-  '/assets/tracker/maps-manifest.json',
-  '/assets/tracker/tch9-reference.json',
-  '/assets/tracker/speed-docs.json',
-  '/assets/tracker/regime-maps.json',
   '/scripts/safe-area.js',
   '/scripts/nav-debug.js',
   '/scripts/utils/haptics.js',
@@ -69,9 +56,9 @@ const CRITICAL_INSTALL_URLS = [
   '/styles/00-base.css',
   '/styles/10-navigation-and-cards.css',
   '/styles/15-bottom-nav.css',
+  '/styles/16-press-feedback.css',
   '/styles/20-form-and-stats.css',
   '/styles/30-shifts-and-overlays.css',
-  '/styles/16-press-feedback.css',
   '/styles/40-premium-refresh.css',
   '/styles/50-design-refresh.css',
   '/manifest.webmanifest',
@@ -79,15 +66,10 @@ const CRITICAL_INSTALL_URLS = [
   '/icon-192.png',
   '/icon-512.png',
   '/assets/fonts/plus-jakarta-sans/plus-jakarta-sans-cyrillic-ext.woff2',
-  '/assets/tracker/data.xml',
-  '/assets/tracker/profile.xml',
-  '/assets/tracker/maps/komsomol-sk-tche-9/data.xml',
-  '/assets/tracker/maps/komsomol-sk-tche-9/profile.xml',
-  '/assets/tracker/maps-manifest.json',
-  '/assets/tracker/tch9-reference.json',
-  '/assets/tracker/speed-docs.json',
-  '/assets/tracker/regime-maps.json',
   '/scripts/safe-area.js',
+  '/scripts/nav-debug.js',
+  '/scripts/utils/haptics.js',
+  '/scripts/press-feedback.js',
   '/scripts/app-constants.js',
   '/scripts/viewport.js',
   '/scripts/time-utils.js',
@@ -100,9 +82,7 @@ const CRITICAL_INSTALL_URLS = [
   '/scripts/partners.js',
   '/scripts/app-init.js',
   '/scripts/sw-register.js',
-  '/scripts/utils/haptics.js',
-  '/scripts/press-feedback.js',
-  '/scripts/nav-debug.js'
+  '/sw.js'
 ];
 const EXTENDED_SHELL_URLS = [
   '/assets/fonts/plus-jakarta-sans/plus-jakarta-sans-cyrillic-ext.woff2',
@@ -155,7 +135,7 @@ self.addEventListener('message', (event) => {
     self.skipWaiting();
   }
   if (data && data.type === 'WARMUP_CACHE') {
-    event.waitUntil(warmShellCache({ mode: 'full' }));
+    event.waitUntil(warmShellCache({ mode: 'install' }));
   }
 });
 
