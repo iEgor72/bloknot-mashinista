@@ -5546,3 +5546,12 @@ Append-only журнал действий ИИ-агентов по проект�
 - Branch: `poekhali-rework`
 - Methods: `Adjusted docs bento grid`, `shortened subtitles`, `bumped shell cache to v338`, `verified local browser preview`
 - Files: `index.html`, `styles/50-design-refresh.css`, `sw.js`, `scripts/app-constants.js`
+
+## 2026-06-06 00:15:47 +1000
+
+- Source: `post-commit`
+- Task: docs: polish documents landing
+- Branch: `poekhali-rework`
+- Methods: `git post-commit hook`, `automatic memory update`
+- Files: `ai-memory/CHANGELOG.md`, `ai-memory/INDEX.md`, `ai-memory/PROJECT_STATE.md`, `ai-memory/RECENT_COMMITS.md`, `ai-memory/WORKTREE_STATUS.md`, `ai-memory/sessions/2026-06-05.md`, `ai-memory/sessions/2026-06-06.md`, `index.html`, `scripts/app-constants.js`, `styles/50-design-refresh.css`, `sw.js`
+- Notes: Commit: `3213fcda17815614043d51cfbcc5610d1777c6da` (`3213fcd`) | Author: `iEgor72`
