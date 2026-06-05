@@ -1,9 +1,12 @@
 # Recent Commits
 
-Generated: 2026-06-05 22:18:56 +1000
+Generated: 2026-06-05 23:53:06 +1000
 
 | Hash | Date | Author | Message |
 | --- | --- | --- | --- |
+| `c3f683b` | 2026-06-05T23:53:05+10:00 | iEgor72 | fix: Поехали warnings are map-scoped, not per-shift |
+| `f3f2e2f` | 2026-06-05T23:52:38+10:00 | iEgor72 | feat: timeline day/night worked-time bar on calendar cells |
+| `a0bbd10` | 2026-06-05T22:19:27+10:00 | iEgor72 | chore(memory): update ai-memory logs for admin removal + nav cleanup |
 | `88d8382` | 2026-06-05T22:18:55+10:00 | iEgor72 | nav: drop dead Поехали-tab click listeners |
 | `00f9d8c` | 2026-06-05T22:18:39+10:00 | iEgor72 | Remove dead admin /api backend |
 | `5af9bc7` | 2026-06-05T21:51:19+10:00 | iEgor72 | Remove admin panel frontend |
@@ -41,6 +44,3 @@ Generated: 2026-06-05 22:18:56 +1000
 | `3303580` | 2026-05-31T19:23:46+10:00 | iEgor72 | refactor(poekhali): drop run/learning server endpoints, neutralize runs |
 | `fdd07e7` | 2026-05-31T19:18:10+10:00 | iEgor72 | chore(memory): log Poekhali rework session |
 | `b14e056` | 2026-05-31T13:47:13+10:00 | iEgor72 | refactor(poekhali): drop dead recording UI and speed-import buttons |
-| `e7bb43e` | 2026-05-31T13:43:25+10:00 | iEgor72 | fix(poekhali): remove phantom default 60 km/h prevailing-speed band |
-| `b181470` | 2026-05-31T13:31:45+10:00 | iEgor72 | feat(poekhali): add speed-editor entry point from profile/limit tile |
-| `35786d8` | 2026-05-31T13:28:43+10:00 | iEgor72 | feat(poekhali): manual speeds with 3 categories, replace recording UI |

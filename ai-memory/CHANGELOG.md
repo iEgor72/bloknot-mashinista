@@ -5502,3 +5502,30 @@ Append-only журнал действий ИИ-агентов по проект�
 - Methods: `git post-commit hook`, `automatic memory update`
 - Files: `scripts/app-init.js`
 - Notes: Commit: `88d83820484464e267981d410d4b2177c2c02d18` (`88d8382`) | Author: `iEgor72`
+
+## 2026-06-05 22:19:28 +1000
+
+- Source: `post-commit`
+- Task: chore(memory): update ai-memory logs for admin removal + nav cleanup
+- Branch: `poekhali-rework`
+- Methods: `git post-commit hook`, `automatic memory update`
+- Files: `ai-memory/CHANGELOG.md`, `ai-memory/INDEX.md`, `ai-memory/PROJECT_STATE.md`, `ai-memory/RECENT_COMMITS.md`, `ai-memory/WORKTREE_STATUS.md`, `ai-memory/sessions/2026-06-05.md`
+- Notes: Commit: `a0bbd10c719abc5929c3f68405b22d3894951d51` (`a0bbd10`) | Author: `iEgor72`
+
+## 2026-06-05 23:52:39 +1000
+
+- Source: `post-commit`
+- Task: feat: timeline day/night worked-time bar on calendar cells
+- Branch: `poekhali-rework`
+- Methods: `git post-commit hook`, `automatic memory update`
+- Files: `scripts/render.js`, `styles/50-design-refresh.css`
+- Notes: Commit: `f3f2e2fe063b0c2db10f79da32594c84d5700d63` (`f3f2e2f`) | Author: `iEgor72`
+
+## 2026-06-05 23:53:06 +1000
+
+- Source: `post-commit`
+- Task: fix: Поехали warnings are map-scoped, not per-shift
+- Branch: `poekhali-rework`
+- Methods: `git post-commit hook`, `automatic memory update`
+- Files: `scripts/poekhali-tracker.js`, `sw.js`
+- Notes: Commit: `c3f683b98ff363ed2ea9f2849c3fcbc2b82ddf4a` (`c3f683b`) | Author: `iEgor72`

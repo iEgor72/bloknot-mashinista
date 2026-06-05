@@ -1,6 +1,6 @@
 # Worktree Status
 
-Generated: 2026-06-05 22:18:56 +1000
+Generated: 2026-06-05 23:53:06 +1000
 
 ## git status -sb
 ```text
@@ -11,7 +11,6 @@ Generated: 2026-06-05 22:18:56 +1000
  M ai-memory/RECENT_COMMITS.md
  M ai-memory/WORKTREE_STATUS.md
  M ai-memory/sessions/2026-06-05.md
-?? server_fe.patch
 ```
 
 ## git branch -vv
@@ -19,12 +18,13 @@ Generated: 2026-06-05 22:18:56 +1000
 codex/next-direction b044dd5 offline mvp
   codex/tabs-ui        117f1fa [origin/codex/tabs-ui] tabs ui
   main                 ad53dff [origin/main] chore(memory): record poekhali deploy
-* poekhali-rework      88d8382 nav: drop dead Поехали-tab click listeners
+* poekhali-rework      c3f683b fix: Поехали warnings are map-scoped, not per-shift
 ```
 
 ## HEAD
 ```text
-88d8382 nav: drop dead Поехали-tab click listeners
- scripts/app-init.js | 29 +++++++++--------------------
- 1 file changed, 9 insertions(+), 20 deletions(-)
+c3f683b fix: Поехали warnings are map-scoped, not per-shift
+ scripts/poekhali-tracker.js | 18 ++++++------------
+ sw.js                       |  2 +-
+ 2 files changed, 7 insertions(+), 13 deletions(-)
 ```
