@@ -89,7 +89,6 @@ const DOC_DISPLAY_META_BY_PATH = {
 };
 const PUBLIC_TOP_LEVEL_FILES = new Set([
   'index.html',
-  'admin.html',
   'manifest.webmanifest',
   'sw.js',
   'apple-touch-icon.png',
@@ -3710,11 +3709,6 @@ const server = http.createServer(async (req, res) => {
 
   if (SEO_PAGE_ROUTES[pathname]) {
     serveFile(res, path.join(ROOT, SEO_PAGE_ROUTES[pathname]));
-    return;
-  }
-
-  if (pathname === '/admin') {
-    serveFile(res, path.join(ROOT, 'admin.html'));
     return;
   }
 
