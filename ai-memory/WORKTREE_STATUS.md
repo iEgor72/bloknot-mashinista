@@ -1,6 +1,6 @@
 # Worktree Status
 
-Generated: 2026-06-06 00:15:48 +1000
+Generated: 2026-06-06 00:16:10 +1000
 
 ## git status -sb
 ```text
@@ -15,22 +15,17 @@ Generated: 2026-06-06 00:15:48 +1000
 codex/next-direction b044dd5 offline mvp
   codex/tabs-ui        117f1fa [origin/codex/tabs-ui] tabs ui
   main                 ad53dff [origin/main: behind 3] chore(memory): record poekhali deploy
-* poekhali-rework      3213fcd docs: polish documents landing
+* poekhali-rework      82a9088 chore(memory): record docs landing polish
 ```
 
 ## HEAD
 ```text
-3213fcd docs: polish documents landing
- ai-memory/CHANGELOG.md           | 17 ++++++++++++++++
+82a9088 chore(memory): record docs landing polish
+ ai-memory/CHANGELOG.md           |  9 +++++++++
  ai-memory/INDEX.md               |  2 +-
- ai-memory/PROJECT_STATE.md       | 13 +++++++++----
+ ai-memory/PROJECT_STATE.md       | 21 ++++++---------------
  ai-memory/RECENT_COMMITS.md      |  4 ++--
- ai-memory/WORKTREE_STATUS.md     | 21 ++++++++++++++------
- ai-memory/sessions/2026-06-05.md |  1 +
- ai-memory/sessions/2026-06-06.md |  2 ++
- index.html                       | 10 +++++-----
- scripts/app-constants.js         |  2 +-
- styles/50-design-refresh.css     | 42 ++++++++++++++++------------------------
- sw.js                            |  4 +++-
- 11 files changed, 73 insertions(+), 45 deletions(-)
+ ai-memory/WORKTREE_STATUS.md     | 35 ++++++++++++++++-------------------
+ ai-memory/sessions/2026-06-06.md |  1 +
+ 6 files changed, 35 insertions(+), 37 deletions(-)
 ```

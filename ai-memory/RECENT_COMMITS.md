@@ -1,9 +1,10 @@
 # Recent Commits
 
-Generated: 2026-06-06 00:15:48 +1000
+Generated: 2026-06-06 00:16:11 +1000
 
 | Hash | Date | Author | Message |
 | --- | --- | --- | --- |
+| `82a9088` | 2026-06-06T00:16:09+10:00 | iEgor72 | chore(memory): record docs landing polish |
 | `3213fcd` | 2026-06-06T00:15:46+10:00 | iEgor72 | docs: polish documents landing |
 | `80b1cbe` | 2026-06-05T23:53:19+10:00 | iEgor72 | chore(memory): update ai-memory logs for calendar bar + warnings fix |
 | `c3f683b` | 2026-06-05T23:53:05+10:00 | iEgor72 | fix: Поехали warnings are map-scoped, not per-shift |
@@ -43,4 +44,3 @@ Generated: 2026-06-06 00:15:48 +1000
 | `d5096d9` | 2026-05-31T19:35:27+10:00 | iEgor72 | refactor(poekhali): remove run journal UI and run refs from debug/backup |
 | `6b54c1c` | 2026-05-31T19:28:09+10:00 | iEgor72 | refactor(poekhali): drop auto-run triggers and run/learning sync init wiring |
 | `9064eac` | 2026-05-31T19:26:27+10:00 | iEgor72 | refactor(poekhali): delete GPS learning-sample capture functions |
-| `3303580` | 2026-05-31T19:23:46+10:00 | iEgor72 | refactor(poekhali): drop run/learning server endpoints, neutralize runs |

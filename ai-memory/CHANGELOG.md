@@ -5555,3 +5555,12 @@ Append-only журнал действий ИИ-агентов по проект�
 - Methods: `git post-commit hook`, `automatic memory update`
 - Files: `ai-memory/CHANGELOG.md`, `ai-memory/INDEX.md`, `ai-memory/PROJECT_STATE.md`, `ai-memory/RECENT_COMMITS.md`, `ai-memory/WORKTREE_STATUS.md`, `ai-memory/sessions/2026-06-05.md`, `ai-memory/sessions/2026-06-06.md`, `index.html`, `scripts/app-constants.js`, `styles/50-design-refresh.css`, `sw.js`
 - Notes: Commit: `3213fcda17815614043d51cfbcc5610d1777c6da` (`3213fcd`) | Author: `iEgor72`
+
+## 2026-06-06 00:16:10 +1000
+
+- Source: `post-commit`
+- Task: chore(memory): record docs landing polish
+- Branch: `poekhali-rework`
+- Methods: `git post-commit hook`, `automatic memory update`
+- Files: `ai-memory/CHANGELOG.md`, `ai-memory/INDEX.md`, `ai-memory/PROJECT_STATE.md`, `ai-memory/RECENT_COMMITS.md`, `ai-memory/WORKTREE_STATUS.md`, `ai-memory/sessions/2026-06-06.md`
+- Notes: Commit: `82a90883eb0ee3d44a297ec79dee879baf9f1443` (`82a9088`) | Author: `iEgor72`

@@ -1,14 +1,14 @@
 # Project State
 
 <!-- AUTO_STATUS:START -->
-Generated: 2026-06-06 00:15:47 +1000
+Generated: 2026-06-06 00:16:10 +1000
 
 ## Repository Snapshot
 - Local repo path: `D:\work\bloknot-mashinista-tg`
 - Project memory path: `D:\work\bloknot-mashinista-tg\ai-memory`
 - Branch: `poekhali-rework`
-- HEAD: `3213fcd`
-- Last commit: `3213fcd docs: polish documents landing`
+- HEAD: `82a9088`
+- Last commit: `82a9088 chore(memory): record docs landing polish`
 
 ## Git Remote
 ```text
@@ -21,7 +21,7 @@ origin	https://github.com/iEgor72/bloknot-mashinista.git (push)
 codex/next-direction b044dd5 offline mvp
   codex/tabs-ui        117f1fa [origin/codex/tabs-ui] tabs ui
   main                 ad53dff [origin/main: behind 3] chore(memory): record poekhali deploy
-* poekhali-rework      3213fcd docs: polish documents landing
+* poekhali-rework      82a9088 chore(memory): record docs landing polish
 ```
 
 ## Worktree
