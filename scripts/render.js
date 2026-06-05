@@ -833,13 +833,49 @@
       var code = displayShift && typeof inferShiftWorkCodeByLocalTime === 'function'
         ? inferShiftWorkCodeByLocalTime(displayShift)
         : '';
+
+      // Positioned timeline segments for this calendar day: the bar spans
+      // 00:00→24:00 (MSK), each shift drawn at its actual clock position and
+      // coloured day (06:00–22:00, cyan) vs night (22:00–06:00, purple). An
+      // overnight shift fills to the right edge here and continues next day.
+      var segments = [];
+      var workedMinutes = 0;
+      var winStart = typeof parseMsk === 'function' ? parseMsk(dateKey + 'T00:00') : null;
+      if (shifts.length && winStart) {
+        var dayMs = 24 * 60 * 60 * 1000;
+        var w0 = winStart.getTime();
+        var w1 = w0 + dayMs;
+        var zones = [[0, 360, 'night'], [360, 1320, 'day'], [1320, 1440, 'night']];
+        for (var w = 0; w < shifts.length; w++) {
+          var s = parseMsk(shifts[w].start_msk);
+          var e = parseMsk(shifts[w].end_msk);
+          if (!s || !e) continue;
+          var a = Math.max(w0, s.getTime());
+          var b = Math.min(w1, e.getTime());
+          if (b <= a) continue;
+          workedMinutes += Math.round((b - a) / 60000);
+          for (var z = 0; z < zones.length; z++) {
+            var segStart = Math.max(a, w0 + zones[z][0] * 60000);
+            var segEnd = Math.min(b, w0 + zones[z][1] * 60000);
+            if (segEnd <= segStart) continue;
+            segments.push({
+              left: Math.round(((segStart - w0) / dayMs) * 1000) / 10,
+              width: Math.round(((segEnd - segStart) / dayMs) * 1000) / 10,
+              kind: zones[z][2]
+            });
+          }
+        }
+      }
+
       return {
         shifts: shifts,
         shiftCount: shifts.length,
         hasShift: shifts.length > 0,
         carryIn: !!carryShift,
         carryOut: carryOut,
-        code: code
+        code: code,
+        segments: segments,
+        workedMinutes: workedMinutes
       };
     }
 
@@ -865,6 +901,21 @@
       if (meta.carryIn) ariaParts.push('переход с прошлого дня');
       if (meta.carryOut) ariaParts.push('переход на следующий день');
       if (!meta.hasShift) ariaParts.push('день свободен для новой смены');
+
+      // Timeline worked-time bar: the track is the 24h day, each segment sits at
+      // its real clock position — cyan = day hours, purple = night hours.
+      var barHtml = '';
+      if (meta.hasShift && meta.segments && meta.segments.length) {
+        var segHtml = '';
+        for (var sgi = 0; sgi < meta.segments.length; sgi++) {
+          var sg = meta.segments[sgi];
+          segHtml += '<span class="home-calendar-day-bar-fill is-' + (sg.kind === 'night' ? 'night' : 'day') +
+            '" style="left:' + sg.left + '%;width:' + sg.width + '%"></span>';
+        }
+        barHtml = '<span class="home-calendar-day-bar" aria-hidden="true">' + segHtml + '</span>';
+        if (typeof fmtMin === 'function' && meta.workedMinutes > 0) ariaParts.push('отработано ' + fmtMin(meta.workedMinutes));
+      }
+
       return '<button type="button" class="' + className + '" data-date-key="' + escapeHtml(dateKey) + '" aria-label="' + escapeHtml(ariaParts.join('. ')) + '">' +
         '<span class="home-calendar-day-number">' + dateObj.getDate() + '</span>' +
         (meta.shiftCount > 0 ? '<span class="home-calendar-day-count">' + meta.shiftCount + '</span>' : '') +
@@ -872,6 +923,7 @@
           '<span class="home-calendar-arrow home-calendar-arrow-in' + (meta.carryIn ? ' is-visible' : '') + '">←</span>' +
           '<span class="home-calendar-arrow home-calendar-arrow-out' + (meta.carryOut ? ' is-visible' : '') + '">→</span>' +
         '</span>' +
+        barHtml +
       '</button>';
     }
 

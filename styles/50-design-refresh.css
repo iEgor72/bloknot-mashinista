@@ -759,18 +759,38 @@ body::after { content: none; }
   display: none !important;
 }
 
-/* Indicator bar at bottom of a shift cell */
+/* Worked-time bar at the bottom of a shift cell.
+   ::after is the faint full-width track; .home-calendar-day-bar overlays the
+   proportional fill — cyan = day hours, purple = night hours, width ∝ worked
+   share of the 24h day. */
 .home-calendar-day.has-shift::after {
   content: '';
   position: absolute;
   left: 6px;
   right: 6px;
   bottom: 5px;
-  height: 2px;
-  border-radius: 2px;
-  background: var(--accent);
+  height: 3px;
+  border-radius: 3px;
+  background: color-mix(in oklch, white 9%, transparent);
 }
-.home-calendar-day.has-shift.shift-night::after { background: var(--night); }
+.home-calendar-day-bar {
+  position: absolute;
+  left: 6px;
+  right: 6px;
+  bottom: 5px;
+  height: 3px;
+  border-radius: 3px;
+  overflow: hidden;
+  z-index: 1;
+}
+.home-calendar-day-bar-fill {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  min-width: 2px;
+}
+.home-calendar-day-bar-fill.is-day { background: var(--accent); }
+.home-calendar-day-bar-fill.is-night { background: var(--night); }
 
 .home-calendar-day-arrows {
   display: flex;
