@@ -260,16 +260,15 @@ if (typeof bootstrapAppStartup === 'function') {
 
   // New design announcement — seeded once, read state persists.
   addNotification(
-    'Большое обновление дизайна',
-    'Мы обновили почти всё приложение:\n' +
-    '• Главная — список смен переехал сюда, с обновлённой лентой\n' +
-    '• Поехали — теперь отдельная вкладка на нижней панели\n' +
-    '• Зарплата — новый, более наглядный экран расчёта\n' +
-    '• Документы — свежий вид и избранные документы\n' +
-    '• Календарь — обновлённое оформление\n' +
-    'Загляните в каждый раздел — стало удобнее и приятнее.',
+    'Большое обновление',
+    'Мы переработали навигацию и карточку смены:\n' +
+    '• Профиль — новая вкладка: данные, настройки расчёта, напарники, установка приложения\n' +
+    '• Смены — журнал и запуск «Поехали» прямо с карточки смены\n' +
+    '• Напарники — получателя смены теперь выбираете на самой смене\n' +
+    '• Карточка смены — спокойный вид с доходом, расходом и локомотивом\n' +
+    'Загляните в каждый раздел — стало удобнее и понятнее.',
     'success',
-    { key: 'design_refresh_2026_05_v2' }
+    { key: 'nav_refresh_2026_06_v1' }
   );
 
   // Expose for other modules.
@@ -885,12 +884,6 @@ if (typeof bootstrapAppStartup === 'function') {
   // poll every 500ms while tab open
   window.setInterval(updateLive, 500);
   window.setInterval(updatePlate, 5000);
-  // Repaint when poekhali tab is opened
-  document.addEventListener('click', function(e) {
-    var btn = e.target.closest && e.target.closest('.tab-btn[data-tab="poekhali"]');
-    if (!btn) return;
-    window.setTimeout(function() { updatePlate(); updateLive(); }, 80);
-  });
 })();
 
 // Poekhali — fill train info plate from the most recent manual shift.
@@ -949,11 +942,7 @@ if (typeof bootstrapAppStartup === 'function') {
     if (axlesEl)  axlesEl.textContent  = s.train_axles ? String(s.train_axles) : '—';
     if (lengthEl) lengthEl.innerHTML  = (s.train_length ? ruNum(s.train_length) : '—') + '<span class="u">усл</span>';
   }
-  // Fill on first poekhali open and on storage update.
-  document.addEventListener('click', function(e) {
-    var btn = e.target.closest && e.target.closest('.tab-btn[data-tab="poekhali"]');
-    if (btn) window.setTimeout(fill, 80);
-  });
+  // Fill on load and on storage update.
   window.addEventListener('storage', fill);
   window.setTimeout(fill, 1500);
 })();
