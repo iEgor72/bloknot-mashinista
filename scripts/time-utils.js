@@ -638,41 +638,39 @@
       catch (e) { return String(n); }
     }
 
-    function buildShiftConsistHtml(shift, incomeText) {
-      var c = getShiftConsistDescriptor(shift);
-      if (!c) return '';
-      var items = [];
-      if (c.loco) {
-        items.push('<span class="sc-item">' + getShiftInlineIconSvg('locomotive') + '<span class="num">' + escapeHtml(c.loco) + '</span></span>');
+    function buildShiftConsistHtml(shift, incomeText, durationText) {
+      // Calm labelled key→value grid (two columns). Every value gets a small
+      // label so nothing needs to be guessed by icon, and all fields read with
+      // equal weight. Only Время (accent) and Доход (green) carry a colour, as a
+      // quiet summary pair at the bottom; everything else stays neutral.
+      var c = getShiftConsistDescriptor(shift) || {};
+      var rows = [];
+      function pushRow(label, value, cls) {
+        rows.push('<div class="sc-row"><span class="sc-lab">' + escapeHtml(label) + '</span>' +
+          '<span class="sc-val' + (cls ? ' ' + cls : '') + '">' + escapeHtml(value) + '</span></div>');
       }
-      if (c.trainNumber) {
-        items.push('<span class="sc-item">' + getShiftInlineIconSvg('train') + '<span class="num">№ ' + escapeHtml(c.trainNumber) + '</span></span>');
-      }
-      if (c.weight > 0) {
-        items.push('<span class="sc-item">' + getShiftInlineIconSvg('axles') + '<span class="num">' + ruNum(c.weight) + ' т</span></span>');
-      }
-      if (c.axles > 0) {
-        items.push('<span class="sc-item">' + getShiftInlineIconSvg('wagon') + '<span class="num">' + ruNum(c.axles) + ' ось</span></span>');
-      }
-      if (c.length > 0) {
-        items.push('<span class="sc-item">' + getShiftInlineIconSvg('length') + '<span class="num">' + ruNum(c.length) + ' усл.</span></span>');
-      }
-      // Money + fuel, same flat style (no boxes/accent) — shown only when there's
-      // actual data, like the other items (no empty "—" placeholders).
-      var incomeStr = (incomeText && String(incomeText).trim() && String(incomeText).trim() !== '—') ? String(incomeText).trim() : '';
-      if (incomeStr) {
-        items.push('<span class="sc-item">' + getShiftInlineIconSvg('income') + '<span class="num">' + escapeHtml(incomeStr) + '</span></span>');
-      }
+      if (c.loco) pushRow('Локомотив', c.loco);
+      if (c.trainNumber) pushRow('Поезд', '№ ' + c.trainNumber);
+      if (c.weight > 0) pushRow('Вес', ruNum(c.weight) + ' т');
+      if (c.length > 0) pushRow('Длина', ruNum(c.length) + ' усл.');
+      if (c.axles > 0) pushRow('Оси', ruNum(c.axles));
+      // Fuel consumption — neutral, like any other data point.
       try {
         if (typeof hasFuelData === 'function' && hasFuelData(shift) && typeof getFuelConsumptionTotalsFromShift === 'function') {
           var ft = getFuelConsumptionTotalsFromShift(shift);
           if (ft && ft.consumptionLiters > 0) {
-            items.push('<span class="sc-item">' + getShiftInlineIconSvg('fuel') + '<span class="num">' + ruNum(ft.consumptionLiters) + ' л</span></span>');
+            pushRow('Расход', ruNum(ft.consumptionLiters) + ' л');
           }
         }
       } catch (e) {}
-      if (!items.length) return '';
-      return '<div class="shift-consist">' + items.join('') + '</div>';
+      // Время + Доход close the grid as the accented summary pair.
+      var durStr = (durationText && String(durationText).trim() && String(durationText).trim() !== '—') ? String(durationText).trim() : '';
+      if (durStr) pushRow('Время', durStr, 'is-time');
+      var incomeStr = (incomeText && String(incomeText).trim() && String(incomeText).trim() !== '—') ? String(incomeText).trim() : '';
+      if (incomeStr) pushRow('Доход', incomeStr, 'is-income');
+
+      if (!rows.length) return '';
+      return '<div class="shift-consist-grid">' + rows.join('') + '</div>';
     }
 
     function buildShiftCompactDateLine(shift) {

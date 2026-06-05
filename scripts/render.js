@@ -39,7 +39,7 @@
         ? buildShiftMarkHtml(sh, isHolidayShift)
         : '';
       var consistHtml = (typeof buildShiftConsistHtml === 'function')
-        ? buildShiftConsistHtml(sh, incomeVm && incomeVm.amountText) : '';
+        ? buildShiftConsistHtml(sh, incomeVm && incomeVm.amountText, rangeState.hasValidInterval ? durationText : '') : '';
 
       var pendingDotHtml = shiftIsPending ? '<span class="shift-sync-inline" aria-label="Не синхронизировано" title="Не синхронизировано">' + docOnlineOnlyIcon + '</span>' : '';
       var shareBadgeHtml = (typeof buildShiftShareBadgeHtml === 'function') ? buildShiftShareBadgeHtml(sh) : '';
@@ -60,8 +60,8 @@
       '</div>';
 
       var compactDate = (typeof buildShiftCompactDateLine === 'function') ? buildShiftCompactDateLine(sh) : '';
+      // Duration moved out of the subtitle into the data grid below (as "Время").
       var subText = (compactDate || dateTimeText) +
-        (durationText ? ' · ' + durationText : '') +
         (isHolidayShift ? ' · праздник' : '');
 
       var html = '<div class="' + itemClass + '" data-shift-id="' + shiftIdAttr + '" data-pending="' + (shiftIsPending ? '1' : '0') + '" data-shift-open="1" role="button" tabindex="0" aria-label="Редактировать смену: ' + escapeHtml(shiftTitle) + '">' +
