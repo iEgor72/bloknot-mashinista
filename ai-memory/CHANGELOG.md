@@ -5573,3 +5573,11 @@ Append-only журнал действий ИИ-агентов по проект�
 - Methods: `git post-commit hook`, `automatic memory update`
 - Files: `scripts/auth.js`, `scripts/poekhali-tracker.js`, `sw.js`
 - Notes: Commit: `38732ba588ebd1f2c59515f239b625523c95102f` (`38732ba`) | Author: `iEgor72`
+
+## 2026-06-06 00:23:49 +1000
+
+- Source: `manual`
+- Task: Deploy docs landing polish to production
+- Branch: `main`
+- Methods: `git push origin main to 2d5f0af`, `VPS git pull --ff-only origin main`, `pm2 reload bloknot-mashinista`, `verified PM2 online`, `production HEAD 2d5f0af`, `local HTTP 200`, `external HTTPS 200`, `sw.js v338`
+- Files: `index.html`, `styles/50-design-refresh.css`, `sw.js`, `scripts/app-constants.js`, `ai-memory`
