@@ -19,15 +19,11 @@ const PARTNERSHIPS_FILE = path.join(DATA_DIR, 'partnerships.json');
 const PARTNER_INVITES_FILE = path.join(DATA_DIR, 'partner-invites.json');
 const PARTNER_STATE_DIR = path.join(DATA_DIR, 'partner-state');
 const SHIFT_INBOX_DIR = path.join(DATA_DIR, 'shift-inbox');
-const ADMIN_CONFIG_FILE = path.join(DATA_DIR, 'admin-config.json');
 const ADMIN_POEKHALI_MAP_FILE = path.join(DATA_DIR, 'admin-poekhali-map.json');
 const DOCS_ROOT_DIR = path.join(ROOT, 'assets', 'docs');
 const DOCS_STATIC_MANIFEST_FILE = path.join(DOCS_ROOT_DIR, 'manifest.json');
 const DOCS_MANIFEST_FILE = path.join(DATA_DIR, 'docs-manifest.json');
 const ADMIN_DOC_FILES_DIR = path.join(DATA_DIR, 'admin-docs');
-const ADMIN_DOC_UPLOAD_MAX_BYTES = 25 * 1024 * 1024;
-const ADMIN_DOC_UPLOAD_BODY_MAX_BYTES = 35 * 1024 * 1024;
-const ADMIN_DOC_UPLOAD_EXTENSIONS = new Set(['.pdf', '.doc', '.docx', '.jpg', '.jpeg', '.png', '.txt']);
 const DOC_MIME_BY_EXTENSION = {
   '.pdf': 'application/pdf',
   '.doc': 'application/msword',
@@ -144,10 +140,6 @@ const DEFAULT_SALARY_PARAMS = {
 };
 const SALARY_PARAM_KEYS = Object.keys(DEFAULT_SALARY_PARAMS);
 const PUBLIC_SITE_URL = process.env.PUBLIC_SITE_URL || 'https://bloknot-mashinista-bot.ru';
-const ADMIN_USER_IDS = new Set([
-  ...parseAdminUserIdList(process.env.ADMIN_TELEGRAM_IDS || process.env.ADMIN_USER_IDS || ''),
-  ...readAdminUserIdsFromEcosystemConfig(),
-]);
 const LOCAL_DEV_USER = {
   id: 'dev-local',
   first_name: 'Dev',
@@ -156,25 +148,6 @@ const LOCAL_DEV_USER = {
   display_name: 'Local Dev',
 };
 
-function parseAdminUserIdList(rawValue) {
-  return String(rawValue || '')
-    .split(/[\s,;]+/)
-    .map(value => value.trim())
-    .filter(Boolean);
-}
-
-function readAdminUserIdsFromEcosystemConfig() {
-  try {
-    const ecosystem = require(path.join(ROOT, 'ecosystem.config.js'));
-    const apps = Array.isArray(ecosystem && ecosystem.apps) ? ecosystem.apps : [];
-    return apps.reduce((ids, app) => {
-      const env = app && app.env && typeof app.env === 'object' ? app.env : {};
-      return ids.concat(parseAdminUserIdList(env.ADMIN_TELEGRAM_IDS || env.ADMIN_USER_IDS || ''));
-    }, []);
-  } catch (_) {
-    return [];
-  }
-}
 const SEO_PAGE_ROUTES = {
   '/uchet-marshrutov': 'docs/seo/uchet-marshrutov.html',
   '/zarplata-mashinista': 'docs/seo/zarplata-mashinista.html',
@@ -2123,18 +2096,6 @@ function readUserPresenceStats() {
   return buildUserPresenceStats(readUserPresenceStore());
 }
 
-function isAdminUser(user, req) {
-  if (!user || !user.id) return false;
-  if (isLocalAuthBypassEnabled(req)) return true;
-  if (user.is_admin === true) return true;
-  return ADMIN_USER_IDS.has(String(user.id));
-}
-
-function getAdminUserFromRequest(req) {
-  const user = getUserFromRequest(req);
-  return isAdminUser(user, req) ? user : null;
-}
-
 function readJsonFileForAdmin(filePath, fallback) {
   try {
     if (!fs.existsSync(filePath)) return fallback;
@@ -2182,181 +2143,6 @@ function enrichDocsManifestDisplay(manifest, forceKnownTitles) {
     });
   });
   return result;
-}
-
-function getDirectoryJsonStats(dirPath) {
-  try {
-    if (!fs.existsSync(dirPath)) return { files: 0, bytes: 0 };
-    return fs.readdirSync(dirPath).reduce((acc, fileName) => {
-      if (!fileName.endsWith('.json')) return acc;
-      const fullPath = path.join(dirPath, fileName);
-      try {
-        const stat = fs.statSync(fullPath);
-        if (stat.isFile()) {
-          acc.files += 1;
-          acc.bytes += stat.size;
-        }
-      } catch (_) {}
-      return acc;
-    }, { files: 0, bytes: 0 });
-  } catch (err) {
-    logStructuredRateLimited('warn', 'admin.dir_stats_failed', dirPath, {
-      dir: dirPath,
-      error: toErrorMeta(err),
-    });
-    return { files: 0, bytes: 0 };
-  }
-}
-
-function collectJsonFileIds(dirPath) {
-  const ids = new Set();
-  try {
-    if (!fs.existsSync(dirPath)) return ids;
-    fs.readdirSync(dirPath).forEach(fileName => {
-      if (!fileName.endsWith('.json')) return;
-      const id = normalizeStatsUserId(fileName.slice(0, -5));
-      if (id && id !== 'default') ids.add(id);
-    });
-  } catch (err) {
-    logStructuredRateLimited('warn', 'admin.collect_ids_failed', dirPath, {
-      dir: dirPath,
-      error: toErrorMeta(err),
-    });
-  }
-  return ids;
-}
-
-function getArrayFileCount(readFn, sid) {
-  try {
-    const value = readFn(sid);
-    return Array.isArray(value) ? value.length : 0;
-  } catch (_) {
-    return 0;
-  }
-}
-
-function getObjectMapCount(value) {
-  if (!value || typeof value !== 'object' || Array.isArray(value)) return 0;
-  return Object.keys(value).length;
-}
-
-function getPoekhaliLearningSummary(sid) {
-  const learning = readPoekhaliLearning(sid);
-  const maps = learning && learning.maps ? learning.maps : {};
-  return Object.keys(maps).reduce((acc, mapId) => {
-    const map = maps[mapId] || {};
-    acc.maps += 1;
-    acc.sectors += getObjectMapCount(map.sectors);
-    acc.rawTracks += getObjectMapCount(map.rawTracks);
-    acc.userSections += getObjectMapCount(map.userSections);
-    return acc;
-  }, { maps: 0, sectors: 0, rawTracks: 0, userSections: 0 });
-}
-
-function listAdminUsers() {
-  const presence = readUserPresenceStore();
-  const ids = new Set(Object.keys((presence && presence.users) || {}));
-  [
-    USERS_DIR,
-    SALARY_PARAMS_DIR,
-    POEKHALI_LEARNING_DIR,
-    POEKHALI_WARNINGS_DIR,
-    POEKHALI_RUNS_DIR,
-  ].forEach(dir => collectJsonFileIds(dir).forEach(id => ids.add(id)));
-  listShiftUserIds().forEach(id => ids.add(id));
-
-  const nowMs = Date.now();
-  return Array.from(ids)
-    .filter(id => id && id !== 'guest' && id !== 'default')
-    .sort((a, b) => {
-      const aSeen = Date.parse(((presence.users || {})[a] || {}).lastSeenAt || '') || 0;
-      const bSeen = Date.parse(((presence.users || {})[b] || {}).lastSeenAt || '') || 0;
-      return bSeen - aSeen || String(a).localeCompare(String(b));
-    })
-    .map(id => {
-      const row = ((presence && presence.users) || {})[id] || {};
-      const lastSeenMs = Date.parse(row.lastSeenAt || '');
-      const sessions = Object.keys((presence && presence.sessions) || {}).filter(sessionId => {
-        const session = presence.sessions[sessionId] || {};
-        return normalizeStatsUserId(session.userId) === id;
-      });
-      return {
-        id,
-        firstSeenAt: row.firstSeenAt || '',
-        lastSeenAt: row.lastSeenAt || '',
-        platform: normalizePlatform(row.platform),
-        online: Number.isFinite(lastSeenMs) && nowMs - lastSeenMs <= ONLINE_WINDOW_MS,
-        sessions: sessions.length,
-        shifts: getArrayFileCount(readShifts, id),
-        warnings: getArrayFileCount(readPoekhaliWarnings, id),
-        runs: getArrayFileCount(readPoekhaliRuns, id),
-        learning: getPoekhaliLearningSummary(id),
-        hasSalaryParams: fs.existsSync(getUserSalaryParamsFile(id)),
-      };
-    });
-}
-
-function getAdminOverview() {
-  const docsManifest = readDocsManifestForAdmin();
-  const docCategories = Object.keys(docsManifest || {});
-  const docCount = docCategories.reduce((sum, key) => sum + (Array.isArray(docsManifest[key]) ? docsManifest[key].length : 0), 0);
-  return {
-    generatedAt: new Date().toISOString(),
-    app: {
-      cacheVersion: 'v327',
-      nodeEnv: process.env.NODE_ENV || '',
-      port: String(PORT),
-      adminIdsConfigured: ADMIN_USER_IDS.size > 0,
-    },
-    stats: readUserPresenceStats(),
-    users: {
-      total: listAdminUsers().length,
-    },
-    storage: {
-      shifts: getDirectoryJsonStats(USERS_DIR),
-      salaryParams: getDirectoryJsonStats(SALARY_PARAMS_DIR),
-      poekhaliLearning: getDirectoryJsonStats(POEKHALI_LEARNING_DIR),
-      poekhaliWarnings: getDirectoryJsonStats(POEKHALI_WARNINGS_DIR),
-      poekhaliRuns: getDirectoryJsonStats(POEKHALI_RUNS_DIR),
-      presence: fs.existsSync(USER_STATS_FILE) ? fs.statSync(USER_STATS_FILE).size : 0,
-    },
-    docs: {
-      categories: docCategories,
-      totalFiles: docCount,
-    },
-    config: readJsonFileForAdmin(ADMIN_CONFIG_FILE, getDefaultAdminConfig()),
-  };
-}
-
-function getDefaultAdminConfig() {
-  return {
-    version: 1,
-    features: [],
-    calculationVariants: [],
-    notes: '',
-    updatedAt: '',
-  };
-}
-
-function sanitizeAdminConfig(payload) {
-  const source = payload && typeof payload === 'object' && !Array.isArray(payload) ? payload : {};
-  const normalizeList = (items, maxItems) => (Array.isArray(items) ? items : []).slice(0, maxItems).map((item, index) => {
-    const row = item && typeof item === 'object' && !Array.isArray(item) ? item : {};
-    return {
-      id: String(row.id || `item-${index + 1}`).trim().replace(/[^\w.-]+/g, '-').slice(0, 80) || `item-${index + 1}`,
-      title: String(row.title || '').trim().slice(0, 120),
-      status: String(row.status || 'draft').trim().slice(0, 40),
-      enabled: row.enabled === true,
-      description: String(row.description || '').trim().slice(0, 1000),
-    };
-  }).filter(item => item.title);
-  return {
-    version: 1,
-    features: normalizeList(source.features, 120),
-    calculationVariants: normalizeList(source.calculationVariants, 80),
-    notes: String(source.notes || '').slice(0, 10000),
-    updatedAt: new Date().toISOString(),
-  };
 }
 
 function getDefaultPoekhaliMapConfig() {
@@ -2466,150 +2252,6 @@ function sanitizeDocsManifest(payload) {
 
 function sanitizeDocsCategory(category) {
   return String(category || '').trim().replace(/[^\w-]+/g, '').slice(0, 40);
-}
-
-function sanitizeAdminUploadBaseName(value) {
-  return String(value || '')
-    .trim()
-    .replace(/[<>:"/\\|?*\x00-\x1f]+/g, ' ')
-    .replace(/\s+/g, ' ')
-    .slice(0, 140)
-    .trim();
-}
-
-function sanitizeAdminUploadFileName(fileName, displayName, mimeType) {
-  const rawFileName = path.basename(String(fileName || displayName || 'document').replace(/[/\\]+/g, ' '));
-  let ext = path.extname(rawFileName).toLowerCase();
-  if (!ext && mimeType) {
-    const mime = String(mimeType || '').toLowerCase();
-    ext = Object.keys(DOC_MIME_BY_EXTENSION).find(key => DOC_MIME_BY_EXTENSION[key].split(';')[0] === mime.split(';')[0]) || '';
-  }
-  if (!ADMIN_DOC_UPLOAD_EXTENSIONS.has(ext)) {
-    throw new Error('Unsupported document file type');
-  }
-  const base = sanitizeAdminUploadBaseName(path.basename(rawFileName, path.extname(rawFileName))) ||
-    sanitizeAdminUploadBaseName(displayName) ||
-    'document';
-  return `${base}${ext}`;
-}
-
-function getUniqueAdminDocPath(dir, fileName) {
-  const ext = path.extname(fileName);
-  const base = path.basename(fileName, ext);
-  let candidate = path.join(dir, fileName);
-  let index = 2;
-  while (fs.existsSync(candidate) && index < 1000) {
-    candidate = path.join(dir, `${base}-${index}${ext}`);
-    index += 1;
-  }
-  return candidate;
-}
-
-function getAdminUploadBuffer(payload) {
-  const raw = String(payload && payload.base64 || '').trim();
-  const clean = raw.includes(',') ? raw.slice(raw.indexOf(',') + 1) : raw;
-  let buffer;
-  try {
-    buffer = Buffer.from(clean.replace(/\s+/g, ''), 'base64');
-  } catch (_) {
-    throw new Error('Invalid file payload');
-  }
-  if (!buffer || !buffer.length) throw new Error('Empty file payload');
-  if (buffer.length > ADMIN_DOC_UPLOAD_MAX_BYTES) throw new Error('Payload too large');
-  return buffer;
-}
-
-function handleAdminDocUpload(payload) {
-  const source = payload && typeof payload === 'object' && !Array.isArray(payload) ? payload : {};
-  const category = sanitizeDocsCategory(source.category || 'uploads');
-  if (!category) throw new Error('Missing document category');
-  const buffer = getAdminUploadBuffer(source);
-  const fileName = sanitizeAdminUploadFileName(source.fileName, source.name, source.mimeType);
-  const ext = path.extname(fileName).toLowerCase();
-  const displayName = String(source.name || path.basename(fileName, ext)).trim().slice(0, 180) || path.basename(fileName, ext);
-  const caption = String(source.caption || '').trim().slice(0, 280);
-  const categoryDir = path.join(ADMIN_DOC_FILES_DIR, category);
-  fs.mkdirSync(categoryDir, { recursive: true });
-  const filePath = getUniqueAdminDocPath(categoryDir, fileName);
-  const resolvedDocsRoot = path.resolve(ADMIN_DOC_FILES_DIR);
-  const resolvedFilePath = path.resolve(filePath);
-  if (!resolvedFilePath.startsWith(resolvedDocsRoot + path.sep)) {
-    throw new Error('Invalid document path');
-  }
-  atomicWriteFileSync(resolvedFilePath, buffer);
-
-  const relativePath = `/admin-docs/${category}/${encodeURIComponent(path.basename(resolvedFilePath))}`;
-  const documentRow = {
-    name: displayName,
-    caption,
-    path: relativePath,
-    mime_type: DOC_MIME_BY_EXTENSION[ext] || String(source.mimeType || '').trim().slice(0, 120) || 'application/octet-stream',
-    size: buffer.length,
-    updated_at: new Date().toISOString().slice(0, 10),
-  };
-  const manifest = readDocsManifestForAdmin();
-  if (!Array.isArray(manifest[category])) manifest[category] = [];
-  manifest[category] = [documentRow]
-    .concat(manifest[category].filter(item => item && item.path !== documentRow.path))
-    .slice(0, 300);
-  atomicWriteFileSync(DOCS_MANIFEST_FILE, JSON.stringify(manifest, null, 2));
-  return { category, document: documentRow, manifest };
-}
-
-function getAdminUserPayload(sid) {
-  const safeSid = normalizeSid(sid);
-  return {
-    sid: safeSid,
-    shifts: readShifts(safeSid),
-    salaryParams: readSalaryParams(safeSid),
-    poekhaliWarnings: readPoekhaliWarnings(safeSid),
-    poekhaliRuns: readPoekhaliRuns(safeSid),
-    poekhaliLearning: readPoekhaliLearning(safeSid),
-  };
-}
-
-function sendAdminResource(res, resource, sid) {
-  if (resource === 'overview') {
-    sendJson(res, 200, getAdminOverview());
-    return true;
-  }
-  if (resource === 'users') {
-    sendJson(res, 200, { users: listAdminUsers() });
-    return true;
-  }
-  if (resource === 'user') {
-    if (!sid) {
-      sendJson(res, 400, { error: 'Missing sid' });
-      return true;
-    }
-    sendJson(res, 200, getAdminUserPayload(sid));
-    return true;
-  }
-  if (resource === 'docsManifest') {
-    sendJson(res, 200, { manifest: readDocsManifestForAdmin() });
-    return true;
-  }
-  if (resource === 'adminConfig') {
-    sendJson(res, 200, { config: readJsonFileForAdmin(ADMIN_CONFIG_FILE, getDefaultAdminConfig()) });
-    return true;
-  }
-  if (resource === 'poekhaliMap') {
-    sendJson(res, 200, { map: readPoekhaliMapConfig() });
-    return true;
-  }
-  sendJson(res, 404, { error: 'Unknown admin resource' });
-  return true;
-}
-
-function writeAdminUserPayload(sid, payload) {
-  const safeSid = normalizeSid(sid);
-  const source = payload && typeof payload === 'object' && !Array.isArray(payload) ? payload : {};
-  if (Array.isArray(source.shifts)) writeShifts(safeSid, sanitizeAndValidateShiftsPayload({ shifts: source.shifts }));
-  if (source.salaryParams && typeof source.salaryParams === 'object') writeSalaryParams(safeSid, source.salaryParams);
-  if (Array.isArray(source.poekhaliWarnings)) writePoekhaliWarnings(safeSid, source.poekhaliWarnings);
-  if (Array.isArray(source.poekhaliRuns)) writePoekhaliRuns(safeSid, source.poekhaliRuns);
-  if (source.poekhaliLearning && typeof source.poekhaliLearning === 'object') writePoekhaliLearning(safeSid, source.poekhaliLearning);
-  return getAdminUserPayload(safeSid);
 }
 
 async function handlePartnersApi(req, res, pathname, sid, user) {
@@ -2905,95 +2547,6 @@ async function handleShiftShareApi(req, res, pathname, sid, user) {
   sendJson(res, 405, { error: 'Method not allowed' });
 }
 
-async function handleAdminApi(req, res, pathname, parsedUrl) {
-  const adminUser = getAdminUserFromRequest(req);
-  if (!adminUser) {
-    sendJson(res, 403, { error: 'Admin access is not configured for this account' });
-    return;
-  }
-
-  const resource = String(parsedUrl.query.resource || '').trim();
-  const sid = String(parsedUrl.query.sid || '').trim();
-
-  if (pathname === '/api/admin/me') {
-    sendJson(res, 200, { user: adminUser, admin: true });
-    return;
-  }
-
-  if (pathname === '/api/admin' && req.method === 'GET') {
-    sendAdminResource(res, resource || 'overview', sid);
-    return;
-  }
-
-  if (pathname === '/api/admin' && req.method === 'PUT') {
-    try {
-      const body = await readBody(req);
-      const payload = body ? JSON.parse(body) : {};
-      if (resource === 'user') {
-        if (!sid) {
-          sendJson(res, 400, { error: 'Missing sid' });
-          return;
-        }
-        sendJson(res, 200, { ok: true, userData: writeAdminUserPayload(sid, payload) });
-        return;
-      }
-      if (resource === 'docsManifest') {
-        const manifest = sanitizeDocsManifest(payload.manifest || payload);
-        atomicWriteFileSync(DOCS_MANIFEST_FILE, JSON.stringify(manifest, null, 2));
-        sendJson(res, 200, { ok: true, manifest });
-        return;
-      }
-      if (resource === 'adminConfig') {
-        const config = sanitizeAdminConfig(payload.config || payload);
-        atomicWriteFileSync(ADMIN_CONFIG_FILE, JSON.stringify(config, null, 2));
-        sendJson(res, 200, { ok: true, config });
-        return;
-      }
-      if (resource === 'poekhaliMap') {
-        const map = sanitizePoekhaliMapConfig(payload.map || payload);
-        map.updatedAt = new Date().toISOString();
-        atomicWriteFileSync(ADMIN_POEKHALI_MAP_FILE, JSON.stringify(map, null, 2));
-        sendJson(res, 200, { ok: true, map });
-        return;
-      }
-      sendJson(res, 404, { error: 'Unknown admin resource' });
-    } catch (err) {
-      const message = err && err.message ? err.message : 'Invalid payload';
-      const status = /^(Expected|Too many|Invalid|Missing|Payload too large)/.test(message) ? 400 : 500;
-      logStructuredRateLimited(status === 400 ? 'warn' : 'error', 'admin.write_failed', `${resource}:${sid}:${message}`, {
-        resource,
-        sid: sid ? normalizeSid(sid) : '',
-        error: toErrorMeta(err),
-      });
-      sendJson(res, status, { error: message });
-    }
-    return;
-  }
-
-  if (pathname === '/api/admin' && req.method === 'POST') {
-    try {
-      const body = await readBodyWithLimit(req, ADMIN_DOC_UPLOAD_BODY_MAX_BYTES);
-      const payload = body ? JSON.parse(body) : {};
-      if (resource === 'uploadDoc') {
-        sendJson(res, 200, { ok: true, ...handleAdminDocUpload(payload) });
-        return;
-      }
-      sendJson(res, 404, { error: 'Unknown admin resource' });
-    } catch (err) {
-      const message = err && err.message ? err.message : 'Invalid payload';
-      const status = /^(Unsupported|Expected|Too many|Invalid|Missing|Payload too large|Empty)/.test(message) ? 400 : 500;
-      logStructuredRateLimited(status === 400 ? 'warn' : 'error', 'admin.post_failed', `${resource}:${message}`, {
-        resource,
-        error: toErrorMeta(err),
-      });
-      sendJson(res, status, { error: message });
-    }
-    return;
-  }
-
-  sendJson(res, 405, { error: 'Method not allowed' });
-}
-
 function touchUserPresence(userId, sessionId, platform) {
   const store = readUserPresenceStore();
   const nowIso = new Date().toISOString();
@@ -3278,11 +2831,6 @@ const server = http.createServer(async (req, res) => {
   if (req.method === 'OPTIONS') {
     res.writeHead(204);
     res.end();
-    return;
-  }
-
-  if (pathname === '/api/admin' || pathname === '/api/admin/me') {
-    await handleAdminApi(req, res, pathname, parsedUrl);
     return;
   }
 
