@@ -1,14 +1,14 @@
 # Project State
 
 <!-- AUTO_STATUS:START -->
-Generated: 2026-06-02 19:49:23 +1000
+Generated: 2026-06-02 19:52:43 +1000
 
 ## Repository Snapshot
 - Local repo path: `D:\work\bloknot-mashinista-tg`
 - Project memory path: `D:\work\bloknot-mashinista-tg\ai-memory`
 - Branch: `poekhali-rework`
-- HEAD: `593e77b`
-- Last commit: `593e77b Shift card: always show доход + расход in the flat plate (fix missing income)`
+- HEAD: `89333db`
+- Last commit: `89333db Fix loco on card + fuel hint when editing (programmatic loco-series set)`
 
 ## Git Remote
 ```text
@@ -21,7 +21,7 @@ origin	https://github.com/iEgor72/bloknot-mashinista.git (push)
 codex/next-direction b044dd5 offline mvp
   codex/tabs-ui        117f1fa [origin/codex/tabs-ui] tabs ui
   main                 ad53dff [origin/main] chore(memory): record poekhali deploy
-* poekhali-rework      593e77b Shift card: always show доход + расход in the flat plate (fix missing income)
+* poekhali-rework      89333db Fix loco on card + fuel hint when editing (programmatic loco-series set)
 ```
 
 ## Worktree

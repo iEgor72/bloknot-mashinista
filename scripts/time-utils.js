@@ -665,7 +665,7 @@
       try {
         if (typeof hasFuelData === 'function' && hasFuelData(shift) && typeof getFuelConsumptionTotalsFromShift === 'function') {
           var ft = getFuelConsumptionTotalsFromShift(shift);
-          if (ft && ft.liters > 0) fuelStr = ruNum(ft.liters) + ' л';
+          if (ft && ft.consumptionLiters > 0) fuelStr = ruNum(ft.consumptionLiters) + ' л';
         }
       } catch (e) {}
       items.push('<span class="sc-item">' + getShiftInlineIconSvg('fuel') + '<span class="num">' + fuelStr + '</span></span>');

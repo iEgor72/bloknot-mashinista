@@ -5389,3 +5389,12 @@ Append-only журнал действий ИИ-агентов по проект�
 - Methods: `git post-commit hook`, `automatic memory update`
 - Files: `ai-memory/CHANGELOG.md`, `ai-memory/INDEX.md`, `ai-memory/PROJECT_STATE.md`, `ai-memory/RECENT_COMMITS.md`, `ai-memory/WORKTREE_STATUS.md`, `ai-memory/sessions/2026-06-02.md`, `scripts/render.js`, `scripts/time-utils.js`
 - Notes: Commit: `593e77b27d7d86beff046894f3bd7857cbb96c66` (`593e77b`) | Author: `iEgor72`
+
+## 2026-06-02 19:52:43 +1000
+
+- Source: `post-commit`
+- Task: Fix loco on card + fuel hint when editing (programmatic loco-series set)
+- Branch: `poekhali-rework`
+- Methods: `git post-commit hook`, `automatic memory update`
+- Files: `ai-memory/CHANGELOG.md`, `ai-memory/INDEX.md`, `ai-memory/PROJECT_STATE.md`, `ai-memory/RECENT_COMMITS.md`, `ai-memory/WORKTREE_STATUS.md`, `ai-memory/sessions/2026-06-02.md`, `scripts/render.js`, `scripts/time-utils.js`
+- Notes: Commit: `89333db93452b422d6ec75e1314a82bd999e978f` (`89333db`) | Author: `iEgor72`
