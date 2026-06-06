@@ -509,8 +509,8 @@
     .dashboard-card > * { position: relative; z-index: 1; }
 
     body.is-poekhali-mode {
-      --app-shell-bottom-reserve: 92px;
-      --page-padding-bottom: 92px;
+      --app-shell-bottom-reserve: var(--bottom-nav-height);
+      --page-padding-bottom: var(--bottom-nav-clearance);
       background: var(--bg);
     }
 
@@ -522,7 +522,8 @@
     }
 
     body.is-poekhali-mode .app-content {
-      padding: 0;
+      padding-bottom: var(--bottom-nav-clearance);
+      scroll-padding-bottom: var(--bottom-nav-clearance);
       min-height: 100vh;
     }
 
@@ -921,7 +922,7 @@
       z-index: 260;
       display: grid;
       align-items: end;
-      padding: 16px 16px calc(96px + env(safe-area-inset-bottom));
+      padding: 16px 16px calc(var(--bottom-nav-clearance) + 2px);
       pointer-events: auto;
     }
 
@@ -1268,7 +1269,7 @@
       position: absolute;
       left: max(12px, env(safe-area-inset-left));
       right: max(12px, env(safe-area-inset-right));
-      bottom: calc(154px + env(safe-area-inset-bottom));
+      bottom: calc(var(--bottom-nav-clearance) + 60px);
       z-index: 6;
       display: block;
       pointer-events: auto;
@@ -1793,7 +1794,7 @@
       z-index: 260;
       display: grid;
       align-items: end;
-      padding: 16px 16px calc(96px + env(safe-area-inset-bottom));
+      padding: 16px 16px calc(var(--bottom-nav-clearance) + 2px);
       pointer-events: auto;
       -webkit-user-select: none;
       user-select: none;

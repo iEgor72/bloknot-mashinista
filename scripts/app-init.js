@@ -742,6 +742,12 @@ if (typeof bootstrapAppStartup === 'function') {
 
   function pickRecentShift() {
     try {
+      if (typeof window.getPoekhaliTrainDetails === 'function') {
+        var details = window.getPoekhaliTrainDetails();
+        if (details && details.hasShift && details.shift) return details.shift;
+      }
+    } catch (e) {}
+    try {
       if (window.shifts && Array.isArray(window.shifts) && window.shifts.length) {
         return window.shifts.slice().sort(function(a, b) {
           var sa = String(a.start_msk || ''); var sb = String(b.start_msk || '');
@@ -756,7 +762,7 @@ if (typeof bootstrapAppStartup === 'function') {
           var raw = window.localStorage.getItem(keys[i]);
           if (!raw) continue;
           var parsed = JSON.parse(raw);
-          var arr = (parsed && parsed.items) ? parsed.items : (Array.isArray(parsed) ? parsed : []);
+          var arr = (parsed && parsed.shifts) ? parsed.shifts : ((parsed && parsed.items) ? parsed.items : (Array.isArray(parsed) ? parsed : []));
           if (!arr.length) continue;
           arr.sort(function(a, b) {
             var sa = String(a.start_msk || ''); var sb = String(b.start_msk || '');
@@ -772,9 +778,11 @@ if (typeof bootstrapAppStartup === 'function') {
   function updatePlate() {
     var s = pickRecentShift() || {};
     var locoStr = '';
-    if (s.loco_series && s.loco_number) locoStr = s.loco_series + ' № ' + s.loco_number;
-    else if (s.loco_series) locoStr = s.loco_series;
-    else if (s.loco_number) locoStr = '№ ' + s.loco_number;
+    var locoSeries = s.locomotive_series || s.loco_series || '';
+    var locoNumber = s.locomotive_number || s.loco_number || '';
+    if (locoSeries && locoNumber) locoStr = locoSeries + ' № ' + locoNumber;
+    else if (locoSeries) locoStr = locoSeries;
+    else if (locoNumber) locoStr = '№ ' + locoNumber;
     var set = function(id, val) { var el = document.getElementById(id); if (el) el.textContent = val; };
     set('trkPlateLoco', locoStr || '—');
     set('trkPlateTrain', s.train_number ? ('поезд №' + s.train_number) : 'нет активной смены');

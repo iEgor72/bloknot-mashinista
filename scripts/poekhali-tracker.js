@@ -14878,6 +14878,7 @@
       ? formatLineCoordinate(headProjection.lineCoordinate) : '—';
     window.poekhaliHud = {
       at: Date.now(),
+      shift: getPoekhaliTrainDetails(),
       hasProjection: !!hasProjection,
       status: tracker.status,
       live: tracker.status === 'gps-live',
@@ -15280,4 +15281,6 @@
   window.syncPoekhaliTrackerMode = syncPoekhaliTrackerMode;
   window.openPoekhaliForShift = openPoekhaliForShift;
   window.preparePoekhaliModeEntry = preparePoekhaliModeEntry;
+  window.getPoekhaliTrainDetails = getPoekhaliTrainDetails;
+  window.setSelectedPoekhaliShiftId = setSelectedPoekhaliShiftId;
 })();

@@ -756,6 +756,13 @@
         allShifts.push(shift);
       }
       pendingMutationIds = [shiftId];
+      try {
+        if (typeof setSelectedPoekhaliShiftId === 'function') {
+          setSelectedPoekhaliShiftId(shiftId);
+        } else if (window.localStorage) {
+          window.localStorage.setItem('poekhali.shiftId', shiftId);
+        }
+      } catch (selectPoekhaliError) {}
 
       // Disable button during save
       var btn = document.getElementById('btnAdd');
