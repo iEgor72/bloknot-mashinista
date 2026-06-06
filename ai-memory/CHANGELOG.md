@@ -5589,3 +5589,11 @@ Append-only журнал действий ИИ-агентов по проект�
 - Branch: `main`
 - Methods: `CSS: app-content reserve включает offset плавающего bottom-nav`, `добавлен невидимый spacer active tab`, `cache bump v339`
 - Files: `styles/10-navigation-and-cards.css`, `sw.js`, `scripts/app-constants.js`
+
+## 2026-06-06 00:16:54 +0000
+
+- Source: `manual`
+- Task: Уменьшен нижний зазор журнала смен после фикса bottom-nav
+- Branch: `main`
+- Methods: `Удалён лишний псевдо-spacer active tab`, `оставлен один нижний reserve в app-content`, `cache bump v340`
+- Files: `styles/10-navigation-and-cards.css`, `sw.js`, `scripts/app-constants.js`

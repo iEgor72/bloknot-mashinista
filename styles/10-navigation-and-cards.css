@@ -69,12 +69,6 @@
       scroll-padding-bottom: calc(var(--app-shell-bottom-reserve) + var(--bottom-nav-offset) + var(--page-padding-bottom));
     }
 
-    body:not(.is-poekhali-mode) .tab-panel.active::after {
-      content: '';
-      display: block;
-      height: calc(var(--bottom-nav-height) + var(--bottom-nav-offset) + 18px);
-      pointer-events: none;
-    }
 
     .is-standalone-pwa .app-content {
       /* iOS standalone can freeze nested momentum scrollers after edge-swipe attempts. */
