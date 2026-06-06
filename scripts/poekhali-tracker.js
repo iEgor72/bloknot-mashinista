@@ -872,6 +872,24 @@
     return { shift: shifts[0], source: 'latest' };
   }
 
+  function getNewestRecentlyCreatedShift(shifts, maxAgeMs) {
+    if (!Array.isArray(shifts) || !shifts.length) return null;
+    var now = Date.now();
+    var best = null;
+    var bestCreated = 0;
+    for (var i = 0; i < shifts.length; i++) {
+      var shift = shifts[i];
+      var created = new Date(shift && shift.created_at ? shift.created_at : 0).getTime();
+      if (!isFinite(created) || created <= 0) continue;
+      if (maxAgeMs && now - created > maxAgeMs) continue;
+      if (!best || created > bestCreated) {
+        best = shift;
+        bestCreated = created;
+      }
+    }
+    return best;
+  }
+
   function getPoekhaliEntryShiftContext(pinnedShiftId) {
     var shifts = getPoekhaliCandidateShifts();
     if (!shifts.length) return null;
@@ -888,6 +906,16 @@
       if (pinnedShift) return { shift: pinnedShift, source: 'selected' };
     }
 
+    var recentId = '';
+    try {
+      if (typeof recentAddedShiftId !== 'undefined' && recentAddedShiftId) recentId = String(recentAddedShiftId);
+    } catch (error) {}
+    var recent = findShiftByGlobalId(recentId);
+    if (recent) return { shift: recent, source: 'recent' };
+
+    var newlyCreated = getNewestRecentlyCreatedShift(shifts, 10 * 60 * 1000);
+    if (newlyCreated) return { shift: newlyCreated, source: 'recent' };
+
     var now = Date.now();
     var active = shifts.filter(function(shift) {
       var start = getShiftStartMs(shift);
@@ -895,13 +923,6 @@
       return isFinite(start) && isFinite(end) && start <= now && end >= now;
     }).sort(compareShiftsRecentFirst);
     if (active.length) return { shift: active[0], source: 'active' };
-
-    var recentId = '';
-    try {
-      if (typeof recentAddedShiftId !== 'undefined' && recentAddedShiftId) recentId = String(recentAddedShiftId);
-    } catch (error) {}
-    var recent = findShiftByGlobalId(recentId);
-    if (recent) return { shift: recent, source: 'recent' };
 
     var selectedShiftId = getSelectedPoekhaliShiftId();
     if (selectedShiftId) {

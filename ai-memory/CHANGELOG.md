@@ -5597,3 +5597,11 @@ Append-only журнал действий ИИ-агентов по проект�
 - Branch: `main`
 - Methods: `Удалён лишний псевдо-spacer active tab`, `оставлен один нижний reserve в app-content`, `cache bump v340`
 - Files: `styles/10-navigation-and-cards.css`, `sw.js`, `scripts/app-constants.js`
+
+## 2026-06-06 00:23:24 +0000
+
+- Source: `manual`
+- Task: Исправлен вход в Поехали после создания смены и позиция кнопки ограничений
+- Branch: `main`
+- Methods: `Poekhali entry теперь предпочитает смену`, `созданную за последние 10 минут`, `перед старым выбранным ID`, `нижняя кнопка ограничений/направления позиционируется от фактической высоты bottom-nav`, `cache bump v341`
+- Files: `scripts/poekhali-tracker.js`, `styles/10-navigation-and-cards.css`, `sw.js`, `scripts/app-constants.js`

@@ -677,7 +677,7 @@
       top: auto;
       left: max(16px, var(--safe-left));
       right: max(16px, var(--safe-right));
-      bottom: calc(94px + var(--safe-bottom));
+      bottom: calc(var(--bottom-nav-height) + var(--bottom-nav-offset) + 10px);
       width: auto;
       min-width: 0;
       height: 48px;
@@ -900,7 +900,7 @@
     .poekhali-ops-btn {
       left: max(16px, var(--safe-left));
       right: max(16px, var(--safe-right));
-      bottom: calc(94px + var(--safe-bottom));
+      bottom: calc(var(--bottom-nav-height) + var(--bottom-nav-offset) + 10px);
       height: 46px;
       min-width: 0;
       background: rgba(56, 189, 248, 0.10);
