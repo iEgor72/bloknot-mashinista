@@ -26,6 +26,16 @@
   var SW_URL = '/sw.js';
   var STANDALONE_RELOAD_FLAG = 'shift_tracker_sw_standalone_reload_v1';
 
+  try {
+    if (window.sessionStorage && sessionStorage.getItem(STANDALONE_RELOAD_FLAG) === '1') {
+      window.setTimeout(function() {
+        try {
+          sessionStorage.removeItem(STANDALONE_RELOAD_FLAG);
+        } catch (error) {}
+      }, 5000);
+    }
+  } catch (error) {}
+
   function isStandalonePwa() {
     try {
       return (
@@ -64,6 +74,14 @@
     }
   }
 
+  function rememberStandaloneReload() {
+    try {
+      if (window.sessionStorage) {
+        sessionStorage.setItem(STANDALONE_RELOAD_FLAG, '1');
+      }
+    } catch (error) {}
+  }
+
   navigator.serviceWorker.addEventListener('controllerchange', function() {
     var activeController = navigator.serviceWorker.controller;
     if (!activeController) return;
@@ -72,17 +90,16 @@
       initialController = activeController;
       return;
     }
-    // Never call window.location.reload() here, even in standalone PWA:
-    // the reload paints a brief white frame between unload and re-paint.
-    // The next cold launch already gets the fresh cached shell because
-    // the SW now serves shell assets cache-first and refreshes them in the
-    // background. Keep the current session stable and let the new shell
-    // be picked up the next time the user opens the app.
-    try {
-      if (window.sessionStorage) {
-        sessionStorage.removeItem(STANDALONE_RELOAD_FLAG);
-      }
-    } catch (error) {}
+    if (isStandalonePwa()) {
+      try {
+        if (window.sessionStorage && sessionStorage.getItem(STANDALONE_RELOAD_FLAG) === '1') {
+          return;
+        }
+      } catch (error) {}
+      rememberStandaloneReload();
+      window.location.reload();
+      return;
+    }
     console.info('[SW] Controller updated; new shell will be used on next launch.');
   });
 

@@ -14,6 +14,45 @@
   <title>Блокнот машиниста</title>
   <script>
     (function() {
+      var readyPosted = false;
+
+      function postTelegramEvent(eventType, eventData) {
+        var payload = eventData === undefined ? '' : eventData;
+        try {
+          if (window.TelegramWebviewProxy && typeof window.TelegramWebviewProxy.postEvent === 'function') {
+            window.TelegramWebviewProxy.postEvent(eventType, JSON.stringify(payload));
+            return true;
+          }
+        } catch (e) {}
+
+        try {
+          if (window.external && typeof window.external.notify === 'function') {
+            window.external.notify(JSON.stringify({ eventType: eventType, eventData: payload }));
+            return true;
+          }
+        } catch (e2) {}
+
+        return false;
+      }
+
+      function markTelegramShellReady() {
+        if (readyPosted) return;
+        if (postTelegramEvent('web_app_ready')) {
+          readyPosted = true;
+        }
+        postTelegramEvent('web_app_expand');
+      }
+
+      window.__telegramWebAppPostEvent = postTelegramEvent;
+      window.__telegramMarkShellReady = markTelegramShellReady;
+
+      markTelegramShellReady();
+      window.setTimeout(markTelegramShellReady, 50);
+      window.setTimeout(markTelegramShellReady, 250);
+    })();
+  </script>
+  <script>
+    (function() {
       var root = document.documentElement;
 
       function hasCachedBootstrapState() {

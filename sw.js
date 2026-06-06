@@ -1,4 +1,4 @@
-const CACHE_VERSION = 'v356';
+const CACHE_VERSION = 'v358';
 const CACHE_NAME = `shift-tracker-shell-${CACHE_VERSION}`;
 const NAVIGATION_FALLBACK_URL = '/index.html';
 const NETWORK_TIMEOUT_MS = 4500;
@@ -126,6 +126,7 @@ self.addEventListener('activate', (event) => {
         .map((name) => caches.delete(name))
     );
     await self.clients.claim();
+    await refreshControlledAppShellClients();
   })());
 });
 
@@ -349,6 +350,26 @@ function shouldBypassNavigationFallback(pathname) {
   return SEO_PAGE_PATHS.has(pathname);
 }
 
+async function refreshControlledAppShellClients() {
+  if (!self.clients || typeof self.clients.matchAll !== 'function') return;
+  try {
+    const clients = await self.clients.matchAll({ type: 'window', includeUncontrolled: true });
+    await Promise.all(
+      clients.map(async (client) => {
+        try {
+          if (!client || !client.url || typeof client.navigate !== 'function') return;
+          const url = new URL(client.url);
+          if (url.origin !== self.location.origin) return;
+          if (!isAppShellPath(url.pathname)) return;
+          await client.navigate(url.href);
+        } catch (error) {}
+      })
+    );
+  } catch (error) {
+    console.warn('[SW] Failed to refresh app shell clients after activation:', error && error.message ? error.message : error);
+  }
+}
+
 async function networkOnlyNoStore(request) {
   try {
     const response = await fetch(request, { cache: 'no-store' });
@@ -418,14 +439,8 @@ async function networkFirstDocument(request, event) {
     })
     .catch(() => null);
 
-  if (cached && allowAppShellFallback) {
-    if (event && event.waitUntil) {
-      event.waitUntil(networkPromise.then(() => undefined));
-    }
-    return cached;
-  }
-
-  const fastResponse = await withTimeout(networkPromise, NETWORK_TIMEOUT_MS);
+  const timeoutMs = cached && allowAppShellFallback ? 1600 : NETWORK_TIMEOUT_MS;
+  const fastResponse = await withTimeout(networkPromise, timeoutMs);
   if (fastResponse) return fastResponse;
 
   if (cached) return cached;

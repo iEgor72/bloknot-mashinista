@@ -1,6 +1,11 @@
 ﻿    // ── Telegram WebApp chrome (не блокировать bootstrap: SDK подключается последним defer в index.html)
     function applyTelegramWebAppChrome() {
       try {
+        if (typeof window.__telegramMarkShellReady === 'function') {
+          window.__telegramMarkShellReady();
+        }
+      } catch (earlyReadyError) {}
+      try {
         if (window.Telegram && Telegram.WebApp) {
           Telegram.WebApp.ready();
           Telegram.WebApp.expand();
