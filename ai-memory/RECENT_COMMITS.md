@@ -1,12 +1,16 @@
 # Recent Commits
 
-Generated: 2026-06-06 00:23:40 +0000
+Generated: 2026-06-06 11:03:56 +1000
 
 | Hash | Date | Author | Message |
 | --- | --- | --- | --- |
-| `47de739` | 2026-06-06T00:23:31+00:00 | iEgor72 | fix(poehali): prefer new shift and clear bottom controls |
-| `489a9ff` | 2026-06-06T00:16:59+00:00 | iEgor72 | fix(ui): reduce shifts bottom spacing |
-| `dd77b82` | 2026-06-06T00:11:17+00:00 | iEgor72 | fix(ui): keep shifts clear of bottom nav |
+| `7c9454b` | 2026-06-06T11:03:54+10:00 | iEgor72 | chore(memory): refresh after rebase completion |
+| `801441c` | 2026-06-06T10:55:56+10:00 | iEgor72 | fix: polish poekhali layout and home crew entry |
+| `a66d67c` | 2026-06-06T00:28:12Z | iEgor72 | fix(poehali): prioritize fresh shift and lift controls |
+| `6ce8e42` | 2026-06-06T00:23:46Z | iEgor72 | chore(memory): refresh after poekhali fixes |
+| `47de739` | 2026-06-06T00:23:31Z | iEgor72 | fix(poehali): prefer new shift and clear bottom controls |
+| `489a9ff` | 2026-06-06T00:16:59Z | iEgor72 | fix(ui): reduce shifts bottom spacing |
+| `dd77b82` | 2026-06-06T00:11:17Z | iEgor72 | fix(ui): keep shifts clear of bottom nav |
 | `920cb04` | 2026-06-06T00:24:57+10:00 | iEgor72 | chore(memory): refresh deploy status |
 | `44804ba` | 2026-06-06T00:24:28+10:00 | iEgor72 | chore(memory): record production deploy |
 | `2d5f0af` | 2026-06-06T00:18:44+10:00 | iEgor72 | chore(memory): refresh after main merge |
@@ -24,9 +28,9 @@ Generated: 2026-06-06 00:23:40 +0000
 | `baede9d` | 2026-06-05T12:56:46+10:00 | iEgor72 | Shift card: redesign data as a calm labelled key→value grid |
 | `7f2f04e` | 2026-06-05T12:26:07+10:00 | iEgor72 | Shift card: show доход/расход only when present (no empty "—") |
 | `153426a` | 2026-06-05T12:23:54+10:00 | iEgor72 | Fix расход always "—": wrong field (ft.liters → ft.consumptionLiters) |
-| `85a6f95` | 2026-06-04T23:37:57+00:00 | iEgor72 | fix(pwa): defer heavy offline assets during startup |
-| `71b2d3f` | 2026-06-04T23:20:28+00:00 | iEgor72 | chore(memory): refresh after PWA login fix |
-| `99cb7cf` | 2026-06-04T23:20:05+00:00 | iEgor72 | fix(auth): create PWA login request from pending gate |
+| `85a6f95` | 2026-06-04T23:37:57Z | iEgor72 | fix(pwa): defer heavy offline assets during startup |
+| `71b2d3f` | 2026-06-04T23:20:28Z | iEgor72 | chore(memory): refresh after PWA login fix |
+| `99cb7cf` | 2026-06-04T23:20:05Z | iEgor72 | fix(auth): create PWA login request from pending gate |
 | `89333db` | 2026-06-02T19:52:42+10:00 | iEgor72 | Fix loco on card + fuel hint when editing (programmatic loco-series set) |
 | `593e77b` | 2026-06-02T19:49:22+10:00 | iEgor72 | Shift card: always show доход + расход in the flat plate (fix missing income) |
 | `c3ff360` | 2026-06-02T19:45:25+10:00 | iEgor72 | Fix: fuel "выберите серию" hint stayed after selecting a series when editing |
@@ -40,7 +44,3 @@ Generated: 2026-06-06 00:23:40 +0000
 | `a6854b4` | 2026-06-01T22:39:35+10:00 | iEgor72 | Profile avatar crop, dropdown mini-avatars, inclusive wording, calendar dimming fix |
 | `a1a43dc` | 2026-06-01T22:12:22+10:00 | iEgor72 | Поехали screen polish: drop duplicate GPS toasts, redesign speedometer |
 | `3cb1085` | 2026-06-01T22:10:29+10:00 | iEgor72 | Real Profile identity + reusable styled dropdown (GlassSelect) |
-| `7a83190` | 2026-06-01T21:46:14+10:00 | iEgor72 | Nav redesign: add Профиль, drop Зарплата tab, per-shift partner picker, Поехали from shift card |
-| `6340af6` | 2026-06-01T11:56:58+10:00 | iEgor72 | refactor(poekhali): remove dead editor UI (map/warnings/learning/speed-docs) |
-| `fed8ebc` | 2026-06-01T11:52:36+10:00 | iEgor72 | feat(poekhali): integrate metrics into speedometer card, move add button to bottom |
-| `177ee66` | 2026-06-01T11:46:53+10:00 | iEgor72 | feat(poekhali): per-category speed lists, temporary-first, red delete, cleaner header |

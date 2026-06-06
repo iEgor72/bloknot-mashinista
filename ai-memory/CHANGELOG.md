@@ -5613,3 +5613,29 @@ Append-only журнал действий ИИ-агентов по проект�
 - Branch: `main`
 - Methods: `Общий shift context теперь предпочитает recent/newly-created перед selected`, `media-query bottom overrides заменены на max от bottom-nav reserve`, `cache bump v342`
 - Files: `scripts/poekhali-tracker.js`, `styles/10-navigation-and-cards.css`, `sw.js`, `scripts/app-constants.js`
+
+## 2026-06-06 11:02:39 +1000
+
+- Source: `post-commit`
+- Task: fix: polish poekhali layout and home crew entry
+- Branch: `<empty>`
+- Methods: `git post-commit hook`, `automatic memory update`
+- Files: `index.html`, `scripts/app-constants.js`, `scripts/app-init.js`, `scripts/poekhali-tracker.js`, `scripts/shift-form.js`, `styles/00-base.css`, `styles/10-navigation-and-cards.css`, `styles/50-design-refresh.css`, `sw.js`
+- Notes: Commit: `801441cf5ef8ef13ee97857018e72777d796dc39` (`801441c`) | Author: `iEgor72`
+
+## 2026-06-06 11:03:04 +1000
+
+- Source: `manual`
+- Task: Завершён оборванный rebase правок Поехали поверх origin/main
+- Branch: `main`
+- Methods: `Разрешены конфликты rebase`, `cache поднят до v343`, `CSS сохранён с актуальной bottom-nav-clearance логикой origin/main`, `main обновлён до нового коммита 801441c`
+- Files: `scripts/app-constants.js`, `styles/10-navigation-and-cards.css`, `sw.js`, `ai-memory`
+
+## 2026-06-06 11:03:55 +1000
+
+- Source: `post-commit`
+- Task: chore(memory): refresh after rebase completion
+- Branch: `main`
+- Methods: `git post-commit hook`, `automatic memory update`
+- Files: `ai-memory/CHANGELOG.md`, `ai-memory/INDEX.md`, `ai-memory/PROJECT_STATE.md`, `ai-memory/RECENT_COMMITS.md`, `ai-memory/WORKTREE_STATUS.md`, `ai-memory/sessions/2026-06-06.md`
+- Notes: Commit: `7c9454bfc42bd339b52b4c14f18b767ca135a202` (`7c9454b`) | Author: `iEgor72`
