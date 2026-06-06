@@ -5724,3 +5724,75 @@ Append-only журнал действий ИИ-агентов по проект�
 - Methods: `git post-commit hook`, `automatic memory update`
 - Files: `ai-memory/CHANGELOG.md`, `ai-memory/INDEX.md`, `ai-memory/PROJECT_STATE.md`, `ai-memory/RECENT_COMMITS.md`, `ai-memory/WORKTREE_STATUS.md`, `ai-memory/sessions/2026-06-06.md`
 - Notes: Commit: `f51a55b0d65a737fb6cc5abd390c02cd85043609` (`f51a55b`) | Author: `iEgor72`
+
+## 2026-06-06 14:32:27 +1000
+
+- Source: `manual`
+- Task: Ужата вертикальная компоновка экрана Поехали
+- Branch: `main`
+- Methods: `Убран min-height 100vh у poekhali-panel`, `добавлены viewport-aware размеры для speedo/profile/button`, `cache bump v346`
+- Files: `styles/10-navigation-and-cards.css`, `styles/50-design-refresh.css`, `scripts/app-constants.js`, `sw.js`
+
+## 2026-06-06 14:47:23 +1000
+
+- Source: `manual`
+- Task: Вернул рабочую высоту профиля Поехали
+- Branch: `main`
+- Methods: `Профиль увеличен до clamp(205px`, `30vh`, `280px)`, `приборка сделана компактнее`, `cache bump v347`, `проверены мобильные viewport без scroll`
+- Files: `styles/50-design-refresh.css`, `scripts/app-constants.js`, `sw.js`
+
+## 2026-06-06 16:28:32 +1000
+
+- Source: `manual`
+- Task: Перенес кнопку скорости в профиль Поехали
+- Branch: `main`
+- Methods: `trkAddSpeed оставлен для JS`, `визуально сделан плавающим круглым плюсом поверх canvas`, `профиль увеличен до clamp(250px`, `38vh`, `340px)`, `cache bump v349`, `проверены viewport 390x740/360x680`
+- Files: `index.html`, `styles/50-design-refresh.css`, `scripts/app-constants.js`, `sw.js`
+
+## 2026-06-06 16:34:10 +1000
+
+- Source: `manual`
+- Task: Исправлено отображение локомотива в карточке смены
+- Branch: `main`
+- Methods: `Для строки локомотива добавлен класс is-loco`, `значение уложено второй строкой внутри sc-row`, `проверено на 390x740 что 3ТЭ25 № 0456 помещается без ellipsis`, `cache bump v350`
+- Files: `scripts/time-utils.js`, `styles/50-design-refresh.css`, `scripts/app-constants.js`, `sw.js`
+
+## 2026-06-06 16:37:44 +1000
+
+- Source: `manual`
+- Task: Еще увеличено поле профиля Поехали
+- Branch: `main`
+- Methods: `Профиль на обычной ширине поднят до clamp(260px`, `42vh`, `360px)`, `для узких экранов оставлены защитные media-query`, `проверено 390x740 profile 311px gap 31px без scroll`, `cache bump v351`
+- Files: `styles/50-design-refresh.css`, `scripts/app-constants.js`, `sw.js`
+
+## 2026-06-06 16:40:51 +1000
+
+- Source: `manual`
+- Task: Вернул локомотив в карточке смены в одну строку
+- Branch: `main`
+- Methods: `Подпись Локомотив сокращена до Лок.`, `is-loco двухстрочная раскладка убрана`, `проверено 390x740 что 3ТЭ25 № 0456 помещается в одной строке`, `cache bump v352`
+- Files: `scripts/time-utils.js`, `styles/50-design-refresh.css`, `scripts/app-constants.js`, `sw.js`
+
+## 2026-06-06 16:45:30 +1000
+
+- Source: `manual`
+- Task: Полирован вид кнопки добавления скорости Поехали
+- Branch: `main`
+- Methods: `Плавающая кнопка trkAddSpeed заменена с яркой круглой cyan-заливки на темный glass-control 44px с тонким accent-контуром`, `blur и аккуратным плюсом`, `проверено на 390x740/360x740/360x680`, `cache bump v353`
+- Files: `styles/50-design-refresh.css`, `scripts/app-constants.js`, `sw.js`
+
+## 2026-06-06 16:48:52 +1000
+
+- Source: `manual`
+- Task: Исправлено центрирование плюса в кнопке Поехали
+- Branch: `main`
+- Methods: `Текстовый плюс скрыт`, `иконка нарисована двумя CSS pseudo-element линиями по 50% центра кнопки`, `проверено`, `что before/after центрируются на 390x740 и 360x680`, `cache bump v354`
+- Files: `styles/50-design-refresh.css`, `scripts/app-constants.js`, `sw.js`
+
+## 2026-06-06 16:57:02 +1000
+
+- Source: `manual`
+- Task: Откат чрезмерного стеклянного эффекта кнопки Поехали
+- Branch: `main`
+- Methods: `После замечания пользователя v355 возвращен к более спокойному v354-подобному виду: убраны сильные radial/linear блики`, `blur снижен до 12px`, `фон снова темный с мягкой прозрачностью`, `cache bump v356`, `проверено в браузере localhost:3003 preview v356`
+- Files: `styles/50-design-refresh.css`, `scripts/app-constants.js`, `sw.js`

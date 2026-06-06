@@ -1,14 +1,14 @@
 # Project State
 
 <!-- AUTO_STATUS:START -->
-Generated: 2026-06-06 11:40:27 +1000
+Generated: 2026-06-06 16:57:09 +1000
 
 ## Repository Snapshot
 - Local repo path: `D:\work\bloknot-mashinista-tg`
 - Project memory path: `D:\work\bloknot-mashinista-tg\ai-memory`
 - Branch: `main`
-- HEAD: `f51a55b`
-- Last commit: `f51a55b chore(memory): record poekhali layout deploy`
+- HEAD: `a068636`
+- Last commit: `a068636 chore(memory): record poekhali layout deploy`
 
 ## Git Remote
 ```text
@@ -20,14 +20,24 @@ origin	https://github.com/iEgor72/bloknot-mashinista.git (push)
 ```text
 codex/next-direction b044dd5 offline mvp
   codex/tabs-ui        117f1fa [origin/codex/tabs-ui] tabs ui
-* main                 f51a55b [origin/main: ahead 1] chore(memory): record poekhali layout deploy
+* main                 a068636 [origin/main] chore(memory): record poekhali layout deploy
   poekhali-rework      2d5f0af chore(memory): refresh after main merge
 ```
 
 ## Worktree
 ```text
 M ai-memory/CHANGELOG.md
+ M ai-memory/INDEX.md
+ M ai-memory/PROJECT_STATE.md
+ M ai-memory/RECENT_COMMITS.md
+ M ai-memory/WORKTREE_STATUS.md
  M ai-memory/sessions/2026-06-06.md
+ M index.html
+ M scripts/app-constants.js
+ M scripts/time-utils.js
+ M styles/10-navigation-and-cards.css
+ M styles/50-design-refresh.css
+ M sw.js
 ```
 <!-- AUTO_STATUS:END -->
 

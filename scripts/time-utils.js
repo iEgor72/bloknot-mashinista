@@ -649,7 +649,7 @@
         rows.push('<div class="sc-row"><span class="sc-lab">' + escapeHtml(label) + '</span>' +
           '<span class="sc-val' + (cls ? ' ' + cls : '') + '">' + escapeHtml(value) + '</span></div>');
       }
-      if (c.loco) pushRow('Локомотив', c.loco);
+      if (c.loco) pushRow('Лок.', c.loco);
       if (c.trainNumber) pushRow('Поезд', '№ ' + c.trainNumber);
       if (c.weight > 0) pushRow('Вес', ruNum(c.weight) + ' т');
       if (c.length > 0) pushRow('Длина', ruNum(c.length) + ' усл.');
