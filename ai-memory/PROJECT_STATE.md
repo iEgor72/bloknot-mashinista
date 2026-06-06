@@ -1,14 +1,14 @@
 # Project State
 
 <!-- AUTO_STATUS:START -->
-Generated: 2026-06-06 11:38:12 +1000
+Generated: 2026-06-06 11:40:27 +1000
 
 ## Repository Snapshot
 - Local repo path: `D:\work\bloknot-mashinista-tg`
 - Project memory path: `D:\work\bloknot-mashinista-tg\ai-memory`
 - Branch: `main`
-- HEAD: `e8b0a2e`
-- Last commit: `e8b0a2e fix(poehali): keep speed editor clear of bottom nav`
+- HEAD: `f51a55b`
+- Last commit: `f51a55b chore(memory): record poekhali layout deploy`
 
 ## Git Remote
 ```text
@@ -20,7 +20,7 @@ origin	https://github.com/iEgor72/bloknot-mashinista.git (push)
 ```text
 codex/next-direction b044dd5 offline mvp
   codex/tabs-ui        117f1fa [origin/codex/tabs-ui] tabs ui
-* main                 e8b0a2e [origin/main: ahead 1] fix(poehali): keep speed editor clear of bottom nav
+* main                 f51a55b [origin/main: ahead 1] chore(memory): record poekhali layout deploy
   poekhali-rework      2d5f0af chore(memory): refresh after main merge
 ```
 

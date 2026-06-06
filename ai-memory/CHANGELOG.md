@@ -5707,3 +5707,20 @@ Append-only журнал действий ИИ-агентов по проект�
 - Methods: `git post-commit hook`, `automatic memory update`
 - Files: `ai-memory/CHANGELOG.md`, `ai-memory/sessions/2026-06-06.md`, `scripts/app-constants.js`, `styles/00-base.css`, `styles/10-navigation-and-cards.css`, `styles/50-design-refresh.css`, `sw.js`
 - Notes: Commit: `e8b0a2ef2681e29c80dd445009da5041ba12cca9` (`e8b0a2e`) | Author: `iEgor72`
+
+## 2026-06-06 11:40:04 +1000
+
+- Source: `manual`
+- Task: Deploy correct Poekhali speed editor bottom-nav layout fix
+- Branch: `main`
+- Methods: `Pushed 60e052a`, `VPS clean main fast-forwarded c99cac0..60e052a`, `pm2 reload bloknot-mashinista --update-env`, `verified production HEAD 60e052a`, `PM2 online`, `local HTTP 200`, `external HTTPS 200`, `sw.js v345`
+- Files: `styles/50-design-refresh.css`, `styles/10-navigation-and-cards.css`, `styles/00-base.css`, `scripts/app-constants.js`, `sw.js`, `ai-memory`
+
+## 2026-06-06 11:40:27 +1000
+
+- Source: `post-commit`
+- Task: chore(memory): record poekhali layout deploy
+- Branch: `main`
+- Methods: `git post-commit hook`, `automatic memory update`
+- Files: `ai-memory/CHANGELOG.md`, `ai-memory/INDEX.md`, `ai-memory/PROJECT_STATE.md`, `ai-memory/RECENT_COMMITS.md`, `ai-memory/WORKTREE_STATUS.md`, `ai-memory/sessions/2026-06-06.md`
+- Notes: Commit: `f51a55b0d65a737fb6cc5abd390c02cd85043609` (`f51a55b`) | Author: `iEgor72`
