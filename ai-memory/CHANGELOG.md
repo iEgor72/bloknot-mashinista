@@ -5605,3 +5605,11 @@ Append-only журнал действий ИИ-агентов по проект�
 - Branch: `main`
 - Methods: `Poekhali entry теперь предпочитает смену`, `созданную за последние 10 минут`, `перед старым выбранным ID`, `нижняя кнопка ограничений/направления позиционируется от фактической высоты bottom-nav`, `cache bump v341`
 - Files: `scripts/poekhali-tracker.js`, `styles/10-navigation-and-cards.css`, `sw.js`, `scripts/app-constants.js`
+
+## 2026-06-06 00:28:05 +0000
+
+- Source: `manual`
+- Task: Дожат фикс Поехали v342: свежая смена и нижняя кнопка
+- Branch: `main`
+- Methods: `Общий shift context теперь предпочитает recent/newly-created перед selected`, `media-query bottom overrides заменены на max от bottom-nav reserve`, `cache bump v342`
+- Files: `scripts/poekhali-tracker.js`, `styles/10-navigation-and-cards.css`, `sw.js`, `scripts/app-constants.js`
