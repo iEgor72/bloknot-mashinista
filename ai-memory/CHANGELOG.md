@@ -5639,3 +5639,20 @@ Append-only журнал действий ИИ-агентов по проект�
 - Methods: `git post-commit hook`, `automatic memory update`
 - Files: `ai-memory/CHANGELOG.md`, `ai-memory/INDEX.md`, `ai-memory/PROJECT_STATE.md`, `ai-memory/RECENT_COMMITS.md`, `ai-memory/WORKTREE_STATUS.md`, `ai-memory/sessions/2026-06-06.md`
 - Notes: Commit: `7c9454bfc42bd339b52b4c14f18b767ca135a202` (`7c9454b`) | Author: `iEgor72`
+
+## 2026-06-06 11:12:09 +1000
+
+- Source: `manual`
+- Task: Deploy Poekhali layout and home crew entry fixes to production
+- Branch: `main`
+- Methods: `origin/main c2c8d5f verified`, `VPS /opt/bloknot-mashinista clean on main`, `git pull --ff-only origin main`, `pm2 reload bloknot-mashinista --update-env`, `verified production HEAD c2c8d5f`, `PM2 online`, `local HTTP 200`, `external HTTPS 200`, `sw.js v343`
+- Files: `index.html`, `scripts/app-constants.js`, `scripts/app-init.js`, `scripts/poekhali-tracker.js`, `scripts/shift-form.js`, `styles/00-base.css`, `styles/10-navigation-and-cards.css`, `styles/50-design-refresh.css`, `sw.js`, `ai-memory`
+
+## 2026-06-06 11:12:30 +1000
+
+- Source: `post-commit`
+- Task: chore(memory): record production deploy
+- Branch: `main`
+- Methods: `git post-commit hook`, `automatic memory update`
+- Files: `ai-memory/CHANGELOG.md`, `ai-memory/INDEX.md`, `ai-memory/PROJECT_STATE.md`, `ai-memory/RECENT_COMMITS.md`, `ai-memory/WORKTREE_STATUS.md`, `ai-memory/sessions/2026-06-06.md`
+- Notes: Commit: `74ff835ab204a75b557bcc2e70b40e746be4e2db` (`74ff835`) | Author: `iEgor72`
