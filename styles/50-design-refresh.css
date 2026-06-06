@@ -1507,13 +1507,8 @@ body::after { content: none; }
   display: flex;
   flex-direction: column;
   gap: 10px;
-  /* Fits one screen height without scroll on phones. The top inset (--page-padding-top)
-     is applied by .app, so account for it here too. */
-  height: calc(var(--app-viewport-height, 100dvh) - 56px - var(--bottom-nav-clearance, 110px) - var(--page-padding-top, 0px));
   min-height: 0;
-  overflow-y: auto;
-  overscroll-behavior: contain;
-  padding-bottom: 16px;
+  overflow: visible;
 }
 /* The HTML HUD layout renders speed/clock/limit/grade/distance/timer/tech-speed
    as cards around the canvas, so these panels are visible (the canvas only

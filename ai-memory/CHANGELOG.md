@@ -5690,3 +5690,20 @@ Append-only журнал действий ИИ-агентов по проект�
 - Methods: `git post-commit hook`, `automatic memory update`
 - Files: `ai-memory/CHANGELOG.md`, `ai-memory/INDEX.md`, `ai-memory/PROJECT_STATE.md`, `ai-memory/RECENT_COMMITS.md`, `ai-memory/WORKTREE_STATUS.md`, `ai-memory/sessions/2026-06-06.md`
 - Notes: Commit: `ea5a3bdbac598f592adaa38829f22a11f56ac654` (`ea5a3bd`) | Author: `iEgor72`
+
+## 2026-06-06 11:37:52 +1000
+
+- Source: `manual`
+- Task: Правильно исправлено перекрытие кнопки Скорость / ограничение навигацией
+- Branch: `main`
+- Methods: `Найден фактический элемент trkAddSpeed`, `убран вложенный scroll/height у trk-design`, `Poekhali app-content reserve переведён на nav height + offset + page gap`, `убран предыдущий poekhali-bottom-control-clearance костыль`, `cache bump v345`, `Playwright layout check показал 44px gap между кнопкой и nav`
+- Files: `styles/50-design-refresh.css`, `styles/10-navigation-and-cards.css`, `styles/00-base.css`, `scripts/app-constants.js`, `sw.js`
+
+## 2026-06-06 11:38:12 +1000
+
+- Source: `post-commit`
+- Task: fix(poehali): keep speed editor clear of bottom nav
+- Branch: `main`
+- Methods: `git post-commit hook`, `automatic memory update`
+- Files: `ai-memory/CHANGELOG.md`, `ai-memory/sessions/2026-06-06.md`, `scripts/app-constants.js`, `styles/00-base.css`, `styles/10-navigation-and-cards.css`, `styles/50-design-refresh.css`, `sw.js`
+- Notes: Commit: `e8b0a2ef2681e29c80dd445009da5041ba12cca9` (`e8b0a2e`) | Author: `iEgor72`

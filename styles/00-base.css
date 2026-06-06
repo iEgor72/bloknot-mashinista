@@ -129,7 +129,6 @@
       --bottom-safe-fill-height: calc(14px + var(--bottom-nav-safe-bottom));
       --app-shell-bottom-reserve: var(--bottom-nav-height);
       --bottom-nav-clearance: calc(var(--bottom-nav-height) + 14px);
-      --poekhali-bottom-control-clearance: max(calc(var(--bottom-nav-height) + var(--bottom-nav-offset) + 64px), calc(188px + var(--safe-bottom)));
       --page-padding-x:    var(--h-pad);
       --page-padding-top:  calc(16px + var(--safe-top));
       --page-padding-bottom: 20px;
