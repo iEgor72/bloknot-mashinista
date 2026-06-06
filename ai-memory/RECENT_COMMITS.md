@@ -1,10 +1,11 @@
 # Recent Commits
 
-Generated: 2026-06-06 11:26:09 +1000
+Generated: 2026-06-06 11:28:16 +1000
 
 | Hash | Date | Author | Message |
 | --- | --- | --- | --- |
-| `9c130a0` | 2026-06-06T11:26:08+10:00 | iEgor72 | fix(poehali): lift speed controls above bottom nav |
+| `ea5a3bd` | 2026-06-06T11:28:15+10:00 | iEgor72 | chore(memory): record speed control deploy |
+| `bd5d049` | 2026-06-06T11:26:08+10:00 | iEgor72 | fix(poehali): lift speed controls above bottom nav |
 | `6368206` | 2026-06-06T11:12:29+10:00 | iEgor72 | chore(memory): record production deploy |
 | `c2c8d5f` | 2026-06-06T11:03:54+10:00 | iEgor72 | chore(memory): refresh after rebase completion |
 | `801441c` | 2026-06-06T10:55:56+10:00 | iEgor72 | fix: polish poekhali layout and home crew entry |
@@ -43,4 +44,3 @@ Generated: 2026-06-06 11:26:09 +1000
 | `a220475` | 2026-06-02T19:04:40+10:00 | iEgor72 | Shift card: show MSK time + end date for overnight shifts |
 | `d67d40e` | 2026-06-02T18:47:49+10:00 | iEgor72 | Fix recipient picker reset; bump version to 1.1.0; drop "+" on overtime |
 | `77f271f` | 2026-06-01T23:11:43+10:00 | iEgor72 | Polish profile edit sheet + share picker; fix dropdown flip near bottom nav |
-| `a6854b4` | 2026-06-01T22:39:35+10:00 | iEgor72 | Profile avatar crop, dropdown mini-avatars, inclusive wording, calendar dimming fix |

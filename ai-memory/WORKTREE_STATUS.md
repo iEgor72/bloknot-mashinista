@@ -1,6 +1,6 @@
 # Worktree Status
 
-Generated: 2026-06-06 11:26:09 +1000
+Generated: 2026-06-06 11:28:16 +1000
 
 ## git status -sb
 ```text
@@ -14,18 +14,18 @@ Generated: 2026-06-06 11:26:09 +1000
 ```text
 codex/next-direction b044dd5 offline mvp
   codex/tabs-ui        117f1fa [origin/codex/tabs-ui] tabs ui
-* main                 9c130a0 [origin/main: ahead 1] fix(poehali): lift speed controls above bottom nav
+* main                 ea5a3bd [origin/main: ahead 1] chore(memory): record speed control deploy
   poekhali-rework      2d5f0af chore(memory): refresh after main merge
 ```
 
 ## HEAD
 ```text
-9c130a0 fix(poehali): lift speed controls above bottom nav
- ai-memory/CHANGELOG.md             | 8 ++++++++
- ai-memory/sessions/2026-06-06.md   | 1 +
- scripts/app-constants.js           | 2 +-
- styles/00-base.css                 | 1 +
- styles/10-navigation-and-cards.css | 8 ++++----
- sw.js                              | 2 +-
- 6 files changed, 16 insertions(+), 6 deletions(-)
+ea5a3bd chore(memory): record speed control deploy
+ ai-memory/CHANGELOG.md           |  8 ++++++++
+ ai-memory/INDEX.md               |  2 +-
+ ai-memory/PROJECT_STATE.md       |  8 ++++----
+ ai-memory/RECENT_COMMITS.md      |  4 ++--
+ ai-memory/WORKTREE_STATUS.md     | 26 +++++++++++++++-----------
+ ai-memory/sessions/2026-06-06.md |  1 +
+ 6 files changed, 31 insertions(+), 18 deletions(-)
 ```

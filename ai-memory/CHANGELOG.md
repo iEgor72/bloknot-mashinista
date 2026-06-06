@@ -5673,3 +5673,20 @@ Append-only журнал действий ИИ-агентов по проект�
 - Methods: `git post-commit hook`, `automatic memory update`
 - Files: `ai-memory/CHANGELOG.md`, `ai-memory/sessions/2026-06-06.md`, `scripts/app-constants.js`, `styles/00-base.css`, `styles/10-navigation-and-cards.css`, `sw.js`
 - Notes: Commit: `9c130a0db74f5c4e87d90845fe4bb278863e2a50` (`9c130a0`) | Author: `iEgor72`
+
+## 2026-06-06 11:27:54 +1000
+
+- Source: `manual`
+- Task: Deploy Poekhali speed control clearance fix
+- Branch: `main`
+- Methods: `Pushed bd5d049 to origin/main`, `VPS clean main fast-forwarded from 6368206 to bd5d049`, `pm2 reload bloknot-mashinista --update-env`, `verified PM2 online`, `local HTTP 200`, `external HTTPS 200`, `sw.js v344`
+- Files: `styles/00-base.css`, `styles/10-navigation-and-cards.css`, `scripts/app-constants.js`, `sw.js`, `ai-memory`
+
+## 2026-06-06 11:28:16 +1000
+
+- Source: `post-commit`
+- Task: chore(memory): record speed control deploy
+- Branch: `main`
+- Methods: `git post-commit hook`, `automatic memory update`
+- Files: `ai-memory/CHANGELOG.md`, `ai-memory/INDEX.md`, `ai-memory/PROJECT_STATE.md`, `ai-memory/RECENT_COMMITS.md`, `ai-memory/WORKTREE_STATUS.md`, `ai-memory/sessions/2026-06-06.md`
+- Notes: Commit: `ea5a3bdbac598f592adaa38829f22a11f56ac654` (`ea5a3bd`) | Author: `iEgor72`
