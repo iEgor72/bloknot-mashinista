@@ -1,9 +1,14 @@
 # Recent Commits
 
-Generated: 2026-06-06 00:24:03 +1000
+Generated: 2026-06-06 00:23:40 +0000
 
 | Hash | Date | Author | Message |
 | --- | --- | --- | --- |
+| `47de739` | 2026-06-06T00:23:31+00:00 | iEgor72 | fix(poehali): prefer new shift and clear bottom controls |
+| `489a9ff` | 2026-06-06T00:16:59+00:00 | iEgor72 | fix(ui): reduce shifts bottom spacing |
+| `dd77b82` | 2026-06-06T00:11:17+00:00 | iEgor72 | fix(ui): keep shifts clear of bottom nav |
+| `920cb04` | 2026-06-06T00:24:57+10:00 | iEgor72 | chore(memory): refresh deploy status |
+| `44804ba` | 2026-06-06T00:24:28+10:00 | iEgor72 | chore(memory): record production deploy |
 | `2d5f0af` | 2026-06-06T00:18:44+10:00 | iEgor72 | chore(memory): refresh after main merge |
 | `38732ba` | 2026-06-06T00:18:15+10:00 | iEgor72 | Merge remote-tracking branch 'origin/main' into poekhali-rework |
 | `6621b33` | 2026-06-06T00:16:31+10:00 | iEgor72 | chore(memory): refresh after docs memory commit |
@@ -19,9 +24,9 @@ Generated: 2026-06-06 00:24:03 +1000
 | `baede9d` | 2026-06-05T12:56:46+10:00 | iEgor72 | Shift card: redesign data as a calm labelled key→value grid |
 | `7f2f04e` | 2026-06-05T12:26:07+10:00 | iEgor72 | Shift card: show доход/расход only when present (no empty "—") |
 | `153426a` | 2026-06-05T12:23:54+10:00 | iEgor72 | Fix расход always "—": wrong field (ft.liters → ft.consumptionLiters) |
-| `85a6f95` | 2026-06-04T23:37:57Z | iEgor72 | fix(pwa): defer heavy offline assets during startup |
-| `71b2d3f` | 2026-06-04T23:20:28Z | iEgor72 | chore(memory): refresh after PWA login fix |
-| `99cb7cf` | 2026-06-04T23:20:05Z | iEgor72 | fix(auth): create PWA login request from pending gate |
+| `85a6f95` | 2026-06-04T23:37:57+00:00 | iEgor72 | fix(pwa): defer heavy offline assets during startup |
+| `71b2d3f` | 2026-06-04T23:20:28+00:00 | iEgor72 | chore(memory): refresh after PWA login fix |
+| `99cb7cf` | 2026-06-04T23:20:05+00:00 | iEgor72 | fix(auth): create PWA login request from pending gate |
 | `89333db` | 2026-06-02T19:52:42+10:00 | iEgor72 | Fix loco on card + fuel hint when editing (programmatic loco-series set) |
 | `593e77b` | 2026-06-02T19:49:22+10:00 | iEgor72 | Shift card: always show доход + расход in the flat plate (fix missing income) |
 | `c3ff360` | 2026-06-02T19:45:25+10:00 | iEgor72 | Fix: fuel "выберите серию" hint stayed after selecting a series when editing |
@@ -39,8 +44,3 @@ Generated: 2026-06-06 00:24:03 +1000
 | `6340af6` | 2026-06-01T11:56:58+10:00 | iEgor72 | refactor(poekhali): remove dead editor UI (map/warnings/learning/speed-docs) |
 | `fed8ebc` | 2026-06-01T11:52:36+10:00 | iEgor72 | feat(poekhali): integrate metrics into speedometer card, move add button to bottom |
 | `177ee66` | 2026-06-01T11:46:53+10:00 | iEgor72 | feat(poekhali): per-category speed lists, temporary-first, red delete, cleaner header |
-| `80fe503` | 2026-06-01T11:38:25+10:00 | iEgor72 | feat(poekhali): editor shows only the speed editor (drop ПР & Карта tabs) |
-| `97dcd24` | 2026-06-01T11:23:12+10:00 | iEgor72 | feat(poekhali): single speed/limit add button with 3-category toggle |
-| `a2c99e8` | 2026-06-01T11:20:24+10:00 | iEgor72 | fix(poekhali): ops editor sheet was invisible (rendered inside hidden shell) |
-| `6903a27` | 2026-06-01T11:14:45+10:00 | iEgor72 | feat(dashboard): clean empty state for income sparkline |
-| `cac5a52` | 2026-06-01T11:10:23+10:00 | iEgor72 | feat(poekhali): visible + Скорость / + Предупреждение buttons above profile |
