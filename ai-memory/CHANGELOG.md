@@ -5656,3 +5656,20 @@ Append-only журнал действий ИИ-агентов по проект�
 - Methods: `git post-commit hook`, `automatic memory update`
 - Files: `ai-memory/CHANGELOG.md`, `ai-memory/INDEX.md`, `ai-memory/PROJECT_STATE.md`, `ai-memory/RECENT_COMMITS.md`, `ai-memory/WORKTREE_STATUS.md`, `ai-memory/sessions/2026-06-06.md`
 - Notes: Commit: `74ff835ab204a75b557bcc2e70b40e746be4e2db` (`74ff835`) | Author: `iEgor72`
+
+## 2026-06-06 11:25:50 +1000
+
+- Source: `manual`
+- Task: Поднята нижняя кнопка скоростей Поехали над bottom-nav
+- Branch: `main`
+- Methods: `Добавлена CSS-переменная poekhali-bottom-control-clearance с большим минимальным зазором`, `direction/ops bottom buttons переведены на неё`, `cache bump v344`, `проверены node --check app-constants/sw`, `smoke:local упал на unsettled cleanup local-smoke.mjs`
+- Files: `styles/00-base.css`, `styles/10-navigation-and-cards.css`, `scripts/app-constants.js`, `sw.js`
+
+## 2026-06-06 11:26:09 +1000
+
+- Source: `post-commit`
+- Task: fix(poehali): lift speed controls above bottom nav
+- Branch: `main`
+- Methods: `git post-commit hook`, `automatic memory update`
+- Files: `ai-memory/CHANGELOG.md`, `ai-memory/sessions/2026-06-06.md`, `scripts/app-constants.js`, `styles/00-base.css`, `styles/10-navigation-and-cards.css`, `sw.js`
+- Notes: Commit: `9c130a0db74f5c4e87d90845fe4bb278863e2a50` (`9c130a0`) | Author: `iEgor72`

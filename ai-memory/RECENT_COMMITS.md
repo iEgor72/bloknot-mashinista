@@ -1,10 +1,11 @@
 # Recent Commits
 
-Generated: 2026-06-06 11:12:30 +1000
+Generated: 2026-06-06 11:26:09 +1000
 
 | Hash | Date | Author | Message |
 | --- | --- | --- | --- |
-| `74ff835` | 2026-06-06T11:12:29+10:00 | iEgor72 | chore(memory): record production deploy |
+| `9c130a0` | 2026-06-06T11:26:08+10:00 | iEgor72 | fix(poehali): lift speed controls above bottom nav |
+| `6368206` | 2026-06-06T11:12:29+10:00 | iEgor72 | chore(memory): record production deploy |
 | `c2c8d5f` | 2026-06-06T11:03:54+10:00 | iEgor72 | chore(memory): refresh after rebase completion |
 | `801441c` | 2026-06-06T10:55:56+10:00 | iEgor72 | fix: polish poekhali layout and home crew entry |
 | `a66d67c` | 2026-06-06T00:28:12Z | iEgor72 | fix(poehali): prioritize fresh shift and lift controls |
@@ -43,4 +44,3 @@ Generated: 2026-06-06 11:12:30 +1000
 | `d67d40e` | 2026-06-02T18:47:49+10:00 | iEgor72 | Fix recipient picker reset; bump version to 1.1.0; drop "+" on overtime |
 | `77f271f` | 2026-06-01T23:11:43+10:00 | iEgor72 | Polish profile edit sheet + share picker; fix dropdown flip near bottom nav |
 | `a6854b4` | 2026-06-01T22:39:35+10:00 | iEgor72 | Profile avatar crop, dropdown mini-avatars, inclusive wording, calendar dimming fix |
-| `a1a43dc` | 2026-06-01T22:12:22+10:00 | iEgor72 | Поехали screen polish: drop duplicate GPS toasts, redesign speedometer |
