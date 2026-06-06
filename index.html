@@ -32,6 +32,18 @@
           }
         } catch (e2) {}
 
+        // Telegram Web (web.telegram.org): the mini app runs inside an iframe and
+        // the only "ready" transport is postMessage to the parent frame. Without
+        // this branch the early shim is a no-op on Telegram Web and the app stays
+        // stuck on Telegram's gray loading placeholder until the late external
+        // telegram-web-app.js SDK loads (which can be slow/blocked on RU networks).
+        try {
+          if (window.parent && window.parent !== window) {
+            window.parent.postMessage(JSON.stringify({ eventType: eventType, eventData: payload }), '*');
+            return true;
+          }
+        } catch (e3) {}
+
         return false;
       }
 

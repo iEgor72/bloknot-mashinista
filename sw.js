@@ -1,4 +1,4 @@
-const CACHE_VERSION = 'v358';
+const CACHE_VERSION = 'v359';
 const CACHE_NAME = `shift-tracker-shell-${CACHE_VERSION}`;
 const NAVIGATION_FALLBACK_URL = '/index.html';
 const NETWORK_TIMEOUT_MS = 4500;
@@ -211,14 +211,29 @@ async function warmShellCache(options) {
 
 async function precacheCriticalInstallShell(cache) {
   const criticalUrls = uniqueShellUrls(CRITICAL_INSTALL_URLS);
-  try {
-    await cache.addAll(criticalUrls);
-    console.info('[SW] Critical install shell precached:', criticalUrls.length);
-    return criticalUrls.length;
-  } catch (error) {
-    console.error('[SW] Critical install shell precache failed:', error && error.message ? error.message : error);
-    throw error;
-  }
+  // Fetch each asset individually instead of cache.addAll(): addAll is atomic, so a
+  // single failed fetch (flaky VPN / RU throttling) would reject the whole install,
+  // the new SW would never activate, and the PWA would stay stuck on the old worker
+  // — i.e. "updates don't arrive". Tolerate per-asset failures so install always
+  // completes; missing assets get picked up later by warmup / stale-while-revalidate.
+  let cachedCount = 0;
+  await Promise.all(
+    criticalUrls.map(async (assetUrl) => {
+      try {
+        const response = await fetch(new Request(assetUrl, { cache: 'no-store' }));
+        if (response && response.ok) {
+          await cache.put(assetUrl, response.clone());
+          cachedCount += 1;
+        } else {
+          console.warn('[SW] Critical install asset skipped (bad response):', assetUrl, response ? response.status : 'no-response');
+        }
+      } catch (error) {
+        console.warn('[SW] Critical install asset fetch failed (will retry later):', assetUrl, error && error.message ? error.message : error);
+      }
+    })
+  );
+  console.info('[SW] Critical install shell precached:', `${cachedCount}/${criticalUrls.length}`);
+  return cachedCount;
 }
 
 async function resolveShellUrls(mode) {
