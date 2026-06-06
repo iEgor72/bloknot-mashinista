@@ -5581,3 +5581,11 @@ Append-only журнал действий ИИ-агентов по проект�
 - Branch: `main`
 - Methods: `git push origin main to 2d5f0af`, `VPS git pull --ff-only origin main`, `pm2 reload bloknot-mashinista`, `verified PM2 online`, `production HEAD 2d5f0af`, `local HTTP 200`, `external HTTPS 200`, `sw.js v338`
 - Files: `index.html`, `styles/50-design-refresh.css`, `sw.js`, `scripts/app-constants.js`, `ai-memory`
+
+## 2026-06-06 00:11:13 +0000
+
+- Source: `manual`
+- Task: Исправлен нижний запас прокрутки журнала смен
+- Branch: `main`
+- Methods: `CSS: app-content reserve включает offset плавающего bottom-nav`, `добавлен невидимый spacer active tab`, `cache bump v339`
+- Files: `styles/10-navigation-and-cards.css`, `sw.js`, `scripts/app-constants.js`
