@@ -1,4 +1,4 @@
-const CACHE_VERSION = 'v359';
+const CACHE_VERSION = 'v360';
 const CACHE_NAME = `shift-tracker-shell-${CACHE_VERSION}`;
 const NAVIGATION_FALLBACK_URL = '/index.html';
 const NETWORK_TIMEOUT_MS = 4500;
@@ -110,6 +110,47 @@ const EXTENDED_SHELL_URLS = [
 const INSTALL_SHELL_SET = new Set(INSTALL_SHELL_URLS.map((url) => normalizeShellUrl(url)).filter(Boolean));
 const CRITICAL_INSTALL_SET = new Set(CRITICAL_INSTALL_URLS.map((url) => normalizeShellUrl(url)).filter(Boolean));
 
+// Many users reach prod only through an anti-censorship VPN whose tunnel drops a
+// noticeable fraction of requests (random "Failed to fetch"). A few retries on a
+// channel with ~10% independent loss cut the effective failure rate to ~0.1%,
+// which is the difference between a populated cache and a broken/gray shell.
+const NETWORK_RETRY_ATTEMPTS = 2; // extra attempts after the first (3 tries total)
+const NETWORK_RETRY_BASE_DELAY_MS = 250;
+const NETWORK_RETRY_ATTEMPT_TIMEOUT_MS = 5000; // abort a single hung attempt so the retry can fire
+
+function delay(ms) {
+  return new Promise((resolve) => setTimeout(resolve, ms));
+}
+
+async function fetchWithRetry(input, options) {
+  const opts = Object.assign({ cache: 'no-store' }, options || {});
+  let lastError = null;
+  for (let attempt = 0; attempt <= NETWORK_RETRY_ATTEMPTS; attempt += 1) {
+    const controller = typeof AbortController !== 'undefined' ? new AbortController() : null;
+    const timer = controller
+      ? setTimeout(() => { try { controller.abort(); } catch (e) {} }, NETWORK_RETRY_ATTEMPT_TIMEOUT_MS)
+      : null;
+    try {
+      const request = typeof input === 'string' ? new Request(input, opts) : input;
+      const attemptOpts = controller ? Object.assign({}, opts, { signal: controller.signal }) : opts;
+      const response = await fetch(request, attemptOpts);
+      if (timer) clearTimeout(timer);
+      if (response && response.ok) return response;
+      // A definitive 4xx (e.g. a real 404) won't change on retry — return it as-is.
+      if (response && response.status >= 400 && response.status < 500) return response;
+      lastError = new Error('Unexpected response status: ' + (response ? response.status : 'none'));
+    } catch (error) {
+      if (timer) clearTimeout(timer);
+      lastError = error;
+    }
+    if (attempt < NETWORK_RETRY_ATTEMPTS) {
+      await delay(NETWORK_RETRY_BASE_DELAY_MS * (attempt + 1));
+    }
+  }
+  if (lastError) throw lastError;
+  return null;
+}
+
 self.addEventListener('install', (event) => {
   event.waitUntil((async () => {
     await warmShellCache({ mode: 'install' });
@@ -186,7 +227,7 @@ async function warmShellCache(options) {
         return;
       }
       try {
-        const response = await fetch(new Request(assetUrl, { cache: 'no-store' }));
+        const response = await fetchWithRetry(assetUrl);
         if (response && response.ok) {
           await cache.put(assetUrl, response.clone());
           cachedCount += 1;
@@ -220,7 +261,7 @@ async function precacheCriticalInstallShell(cache) {
   await Promise.all(
     criticalUrls.map(async (assetUrl) => {
       try {
-        const response = await fetch(new Request(assetUrl, { cache: 'no-store' }));
+        const response = await fetchWithRetry(assetUrl);
         if (response && response.ok) {
           await cache.put(assetUrl, response.clone());
           cachedCount += 1;
@@ -257,7 +298,7 @@ async function resolveShellUrls(mode) {
 
 async function discoverIndexAssets() {
   try {
-    const response = await fetch(new Request(NAVIGATION_FALLBACK_URL, { cache: 'no-store' }));
+    const response = await fetchWithRetry(NAVIGATION_FALLBACK_URL);
     if (!response || !response.ok) return [];
 
     const html = await response.text();
@@ -441,7 +482,7 @@ async function networkFirstDocument(request, event) {
       (await cache.match('/'));
   }
 
-  const networkPromise = fetch(request, { cache: 'no-store' })
+  const networkPromise = fetchWithRetry(request)
     .then((response) => {
       if (response && response.ok) {
         cache.put(request, response.clone());
@@ -482,7 +523,7 @@ async function staleWhileRevalidate(request, event) {
   const cache = await caches.open(CACHE_NAME);
   const cached = await cache.match(request, { ignoreSearch: true });
 
-  const networkPromise = fetch(request, { cache: 'no-store' })
+  const networkPromise = fetchWithRetry(request)
     .then((response) => {
       if (response && response.ok) {
         cache.put(request, response.clone());
