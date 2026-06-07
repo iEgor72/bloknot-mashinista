@@ -1208,9 +1208,11 @@ if (typeof bootstrapAppStartup === 'function') {
       var star = removeStar.replace('__PATH__', function() { return safePath; });
 
       // Preferred path: replay the captured section markup verbatim so the row
-      // looks identical (file icon + title + subtitle + footer).
+      // looks identical (file icon + title + subtitle + footer). The download
+      // state is NOT taken from the snapshot — it was often stale (captured
+      // before the async download check resolved) — but recomputed live below.
       if (it.iconHTML && it.bodyHTML) {
-        html += '<div class="docs-item is-favorite has-fav-toggle ' + (it.stateClass || '') + '"' + fileAttrs +
+        html += '<div class="docs-item is-favorite has-fav-toggle"' + fileAttrs +
             ' data-doc-path="' + escapeAttr(it.path) + '">' +
           it.iconHTML +
           it.bodyHTML +
@@ -1229,6 +1231,37 @@ if (typeof bootstrapAppStartup === 'function') {
       '</div>';
     });
     favoritesList.innerHTML = html;
+    refreshFavoritesDownloadState();
+  }
+
+  // Download state is dynamic (resolved asynchronously by docs-app.js), so the
+  // snapshot baked into a favorite can be stale. Recompute it live per row and
+  // sync the row class + corner badge to match the section list.
+  function refreshFavoritesDownloadState() {
+    if (!favoritesList) return;
+    if (typeof checkDocDownloaded !== 'function') return;
+    var rows = favoritesList.querySelectorAll('.docs-item[data-file-path]');
+    Array.prototype.forEach.call(rows, function(row) {
+      var enc = row.getAttribute('data-file-path') || '';
+      var docPath = '';
+      try { docPath = decodeURIComponent(enc); } catch (e) { docPath = enc; }
+      if (!docPath) return;
+      // Drop any stale badge immediately so the wrong state never lingers.
+      var iconWrap = row.querySelector('.docs-item-icon');
+      var stale = iconWrap && iconWrap.querySelector('.docs-download-icon');
+      if (stale && stale.parentNode) stale.parentNode.removeChild(stale);
+      row.classList.remove('is-downloaded', 'is-online-only');
+      Promise.resolve(checkDocDownloaded(docPath)).then(function(isDownloaded) {
+        row.classList.toggle('is-downloaded', !!isDownloaded);
+        row.classList.toggle('is-online-only', !isDownloaded);
+        row.setAttribute('data-doc-downloaded', isDownloaded ? '1' : '0');
+        if (iconWrap && typeof buildDocDownloadStatusIcon === 'function') {
+          var existing = iconWrap.querySelector('.docs-download-icon');
+          if (existing && existing.parentNode) existing.parentNode.removeChild(existing);
+          iconWrap.insertAdjacentHTML('beforeend', buildDocDownloadStatusIcon(!!isDownloaded));
+        }
+      }).catch(function() {});
+    });
   }
   function escapeHtml(s){ return String(s||'').replace(/[&<>"']/g, function(c){return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c];}); }
   function escapeAttr(s){ return escapeHtml(s); }

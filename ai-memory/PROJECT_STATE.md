@@ -1,14 +1,14 @@
 # Project State
 
 <!-- AUTO_STATUS:START -->
-Generated: 2026-06-07 20:38:51 +1000
+Generated: 2026-06-07 20:45:52 +1000
 
 ## Repository Snapshot
 - Local repo path: `D:\work\bloknot-mashinista-tg`
 - Project memory path: `D:\work\bloknot-mashinista-tg\ai-memory`
 - Branch: `main`
-- HEAD: `9cc50ef`
-- Last commit: `9cc50ef fix(profile,docs): sync avatar across contexts + open favorited docs`
+- HEAD: `eadc828`
+- Last commit: `eadc828 fix(docs): render favorites identically to section rows`
 
 ## Git Remote
 ```text
@@ -20,7 +20,7 @@ origin	https://github.com/iEgor72/bloknot-mashinista.git (push)
 ```text
 codex/next-direction b044dd5 offline mvp
   codex/tabs-ui        117f1fa [origin/codex/tabs-ui] tabs ui
-* main                 9cc50ef [origin/main: ahead 1] fix(profile,docs): sync avatar across contexts + open favorited docs
+* main                 eadc828 [origin/main: ahead 1] fix(docs): render favorites identically to section rows
   poekhali-rework      2d5f0af chore(memory): refresh after main merge
 ```
 
