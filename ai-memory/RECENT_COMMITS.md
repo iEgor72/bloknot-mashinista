@@ -1,9 +1,15 @@
 # Recent Commits
 
-Generated: 2026-06-06 16:57:10 +1000
+Generated: 2026-06-07 12:44:12 +1000
 
 | Hash | Date | Author | Message |
 | --- | --- | --- | --- |
+| `d542765` | 2026-06-07T12:44:10+10:00 | iEgor72 | chore(diag): serve probe page from /assets (top-level files are whitelisted) |
+| `08752ec` | 2026-06-07T12:42:58+10:00 | iEgor72 | chore(diag): add /diag.html network probe page |
+| `fe36e40` | 2026-06-06T18:44:52+10:00 | iEgor72 | fix(pwa): retry flaky asset fetches in service worker |
+| `edc64d9` | 2026-06-06T18:31:10+10:00 | iEgor72 | fix(pwa): reliable telegram web ready + resilient SW install |
+| `91f9a03` | 2026-06-06T18:02:17+10:00 | iEgor72 | fix(pwa): unblock telegram webview startup |
+| `dbdd99a` | 2026-06-06T17:00:30+10:00 | iEgor72 | fix(poehali): refine mobile driving layout |
 | `a068636` | 2026-06-06T11:40:26+10:00 | iEgor72 | chore(memory): record poekhali layout deploy |
 | `60e052a` | 2026-06-06T11:38:11+10:00 | iEgor72 | fix(poehali): keep speed editor clear of bottom nav |
 | `c99cac0` | 2026-06-06T11:28:15+10:00 | iEgor72 | chore(memory): record speed control deploy |
@@ -38,9 +44,3 @@ Generated: 2026-06-06 16:57:10 +1000
 | `99cb7cf` | 2026-06-04T23:20:05Z | iEgor72 | fix(auth): create PWA login request from pending gate |
 | `89333db` | 2026-06-02T19:52:42+10:00 | iEgor72 | Fix loco on card + fuel hint when editing (programmatic loco-series set) |
 | `593e77b` | 2026-06-02T19:49:22+10:00 | iEgor72 | Shift card: always show доход + расход in the flat plate (fix missing income) |
-| `c3ff360` | 2026-06-02T19:45:25+10:00 | iEgor72 | Fix: fuel "выберите серию" hint stayed after selecting a series when editing |
-| `3459f12` | 2026-06-02T19:39:07+10:00 | iEgor72 | Flat shift card (no accent badges) + edit recipient after the fact (#d) |
-| `736c663` | 2026-06-02T19:30:55+10:00 | iEgor72 | Shift card data redesign: logical grouping (#c) |
-| `deaa85e` | 2026-06-02T19:25:58+10:00 | iEgor72 | Shift card tweaks: drop weekday, colour-coded share chip, fix chip alignment |
-| `3922a5d` | 2026-06-02T19:17:56+10:00 | iEgor72 | Shift card: visible "Поехали" launch + recipient chip |
-| `a220475` | 2026-06-02T19:04:40+10:00 | iEgor72 | Shift card: show MSK time + end date for overnight shifts |

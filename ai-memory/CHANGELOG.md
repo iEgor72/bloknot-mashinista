@@ -5796,3 +5796,105 @@ Append-only журнал действий ИИ-агентов по проект�
 - Branch: `main`
 - Methods: `После замечания пользователя v355 возвращен к более спокойному v354-подобному виду: убраны сильные radial/linear блики`, `blur снижен до 12px`, `фон снова темный с мягкой прозрачностью`, `cache bump v356`, `проверено в браузере localhost:3003 preview v356`
 - Files: `styles/50-design-refresh.css`, `scripts/app-constants.js`, `sw.js`
+
+## 2026-06-06 17:00:31 +1000
+
+- Source: `post-commit`
+- Task: fix(poehali): refine mobile driving layout
+- Branch: `main`
+- Methods: `git post-commit hook`, `automatic memory update`
+- Files: `ai-memory/CHANGELOG.md`, `ai-memory/INDEX.md`, `ai-memory/PROJECT_STATE.md`, `ai-memory/RECENT_COMMITS.md`, `ai-memory/WORKTREE_STATUS.md`, `ai-memory/sessions/2026-06-06.md`, `index.html`, `scripts/app-constants.js`, `scripts/time-utils.js`, `styles/10-navigation-and-cards.css`, `styles/50-design-refresh.css`, `sw.js`
+- Notes: Commit: `dbdd99a921d2eeb7bdffa9daad0c1fc72e80596a` (`dbdd99a`) | Author: `iEgor72`
+
+## 2026-06-06 17:02:46 +1000
+
+- Source: `manual`
+- Task: Commit push deploy Poekhali mobile layout v356
+- Branch: `main`
+- Methods: `Создан commit dbdd99a fix(poehali): refine mobile driving layout`, `pushed origin/main`, `на VPS /opt/bloknot-mashinista проверены clean main и origin/main=dbdd99a`, `выполнен git pull --ff-only origin main и pm2 reload bloknot-mashinista --update-env`, `проверены PM2 online`, `production HEAD dbdd99a`, `local HTTP 200`, `external HTTPS 200`, `external sw.js CACHE_VERSION v356`
+- Files: `index.html`, `scripts/app-constants.js`, `scripts/time-utils.js`, `styles/10-navigation-and-cards.css`, `styles/50-design-refresh.css`, `sw.js`, `ai-memory`
+
+## 2026-06-06 17:10:38 +1000
+
+- Source: `manual`
+- Task: Диагностика недоступности production HTTPS
+- Branch: `main`
+- Methods: `Проверены DNS`, `TCP 80/443`, `HTTP redirect`, `HTTPS curl/Invoke-WebRequest timeout`, `вывод: домен резолвится`, `80 отвечает`, `443 TCP открыт но TLS/HTTPS зависает`
+- Files: `ai-memory`
+
+## 2026-06-06 17:15:56 +1000
+
+- Source: `manual`
+- Task: Восстановлен production HTTPS
+- Branch: `main`
+- Methods: `Через SSH bloknot-vps проверены nginx -t`, `PM2`, `локальный backend 127.0.0.1:3000 и nginx HTTPS`, `nginx reload не помог`, `выполнен systemctl restart nginx`, `внешний HTTPS снова вернул 200`, `sw.js CACHE_VERSION v356`, `PM2 online`, `production HEAD dbdd99a`
+- Files: `ai-memory`, `nginx`, `production`
+
+## 2026-06-06 17:25:31 +1000
+
+- Source: `manual`
+- Task: Добавлен аварийный HTTP fallback для production
+- Branch: `main`
+- Methods: `Выявлено`, `что /zarplata-mashinista изнутри VPS и backend возвращают 200`, `но внешний TLS с сети 92.37.161.24 флапает до ClientHello`, `изменен nginx server:80 с редиректа на прямой proxy_pass к 127.0.0.1:3000`, `создан backup /etc/nginx/sites-available/bloknot.bak-20260606072449`, `nginx -t и reload успешны`, `внешний http://bloknot-mashinista-bot.ru/zarplata-mashinista возвращает 200 и title страницы`
+- Files: `ai-memory`, `nginx`, `production`
+
+## 2026-06-06 17:46:50 +1000
+
+- Source: `manual`
+- Task: Приведен production HTTPS к чистой конфигурации
+- Branch: `main`
+- Methods: `Диагностированы TLS handshake timeout на 443: backend и nginx локально 200`, `Chrome/iPhone запросы с IP пользователя обслуживаются 200`, `Windows curl/PowerShell/Python с рабочей машины не отправляют/не завершают TLS ClientHello на 443`, `проверено что openssl s_server и минимальный nginx на 8445 работают`, `перевыпущен Let's Encrypt сертификат с ECDSA на RSA`, `nginx site очищен до минимального TLS 1.2/1.3 без certbot include/dhparam`, `HTTP fallback и тестовые порты/NAT удалены`, `80 снова 301 на HTTPS`, `443 активен`, `production curl с VPS: /zarplata-mashinista 200`, `sw.js v356`, `PM2 online`
+- Files: `ai-memory`, `nginx`, `production`
+
+## 2026-06-06 18:02:18 +1000
+
+- Source: `post-commit`
+- Task: fix(pwa): unblock telegram webview startup
+- Branch: `main`
+- Methods: `git post-commit hook`, `automatic memory update`
+- Files: `index.html`, `scripts/app-constants.js`, `scripts/app.js`, `scripts/sw-register.js`, `sw.js`
+- Notes: Commit: `91f9a03f768a417f25eb009ba26835eb2bac24a1` (`91f9a03`) | Author: `iEgor72`
+
+## 2026-06-06 18:04:02 +1000
+
+- Source: `manual`
+- Task: Исправлен старт Telegram WebView и PWA shell
+- Branch: `main`
+- Methods: `Добавлен ранний Telegram native bridge web_app_ready/web_app_expand до загрузки внешнего SDK`, `основной app bootstrap повторно дергает bridge и штатный Telegram.WebApp.ready`, `service worker поднят до v358`, `навигации стали network-first с коротким cache fallback`, `при активации новый worker обновляет открытые app shell clients`, `standalone PWA делает одноразовый reload после controllerchange`, `проверены node --check`, `git diff --check`, `inline bridge simulation`, `production deploy 91f9a03`, `PM2 online`, `HTTPS 200`, `sw.js v358`, `API salary/auth 401 без 500`
+- Files: `index.html`, `scripts/app.js`, `scripts/sw-register.js`, `sw.js`, `scripts/app-constants.js`
+
+## 2026-06-06 18:31:11 +1000
+
+- Source: `post-commit`
+- Task: fix(pwa): reliable telegram web ready + resilient SW install
+- Branch: `main`
+- Methods: `git post-commit hook`, `automatic memory update`
+- Files: `index.html`, `scripts/app-constants.js`, `sw.js`
+- Notes: Commit: `edc64d97c2f6d6ddba118f0047e447d29461b4d0` (`edc64d9`) | Author: `iEgor72`
+
+## 2026-06-06 18:44:53 +1000
+
+- Source: `post-commit`
+- Task: fix(pwa): retry flaky asset fetches in service worker
+- Branch: `main`
+- Methods: `git post-commit hook`, `automatic memory update`
+- Files: `scripts/app-constants.js`, `sw.js`
+- Notes: Commit: `fe36e406c1631a3d50bfd60f2efe3e6854c6738e` (`fe36e40`) | Author: `iEgor72`
+
+## 2026-06-07 12:42:58 +1000
+
+- Source: `post-commit`
+- Task: chore(diag): add /diag.html network probe page
+- Branch: `main`
+- Methods: `git post-commit hook`, `automatic memory update`
+- Files: `diag.html`
+- Notes: Commit: `08752ec2a593e51480654f4a10d90930bde6f306` (`08752ec`) | Author: `iEgor72`
+
+## 2026-06-07 12:44:11 +1000
+
+- Source: `post-commit`
+- Task: chore(diag): serve probe page from /assets (top-level files are whitelisted)
+- Branch: `main`
+- Methods: `git post-commit hook`, `automatic memory update`
+- Files: `assets/diag.html`
+- Notes: Commit: `d5427657a520546e164392b42a0b7d0ecbfce8e7` (`d542765`) | Author: `iEgor72`

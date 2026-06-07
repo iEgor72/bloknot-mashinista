@@ -10,6 +10,7 @@ const PORT = process.env.PORT || 3000;
 const DATA_DIR = path.join(ROOT, 'data');
 const USERS_DIR = path.join(DATA_DIR, 'local-shifts');
 const SALARY_PARAMS_DIR = path.join(DATA_DIR, 'local-salary-params');
+const PROFILE_DIR = path.join(DATA_DIR, 'local-profiles');
 const POEKHALI_LEARNING_DIR = path.join(DATA_DIR, 'poekhali-learning');
 const POEKHALI_WARNINGS_DIR = path.join(DATA_DIR, 'poekhali-warnings');
 const POEKHALI_RUNS_DIR = path.join(DATA_DIR, 'poekhali-runs');
@@ -546,6 +547,9 @@ function ensureDirs() {
   if (!fs.existsSync(SALARY_PARAMS_DIR)) {
     fs.mkdirSync(SALARY_PARAMS_DIR, { recursive: true });
   }
+  if (!fs.existsSync(PROFILE_DIR)) {
+    fs.mkdirSync(PROFILE_DIR, { recursive: true });
+  }
   if (!fs.existsSync(POEKHALI_LEARNING_DIR)) {
     fs.mkdirSync(POEKHALI_LEARNING_DIR, { recursive: true });
   }
@@ -577,6 +581,11 @@ function getUserFile(sid) {
 function getUserSalaryParamsFile(sid) {
   ensureDirs();
   return path.join(SALARY_PARAMS_DIR, `${normalizeSid(sid)}.json`);
+}
+
+function getUserProfileFile(sid) {
+  ensureDirs();
+  return path.join(PROFILE_DIR, `${normalizeSid(sid)}.json`);
 }
 
 function getUserPoekhaliLearningFile(sid) {
@@ -939,6 +948,58 @@ function readSalaryParams(sid) {
 function writeSalaryParams(sid, salaryParams) {
   const file = getUserSalaryParamsFile(sid);
   const serialized = JSON.stringify(sanitizeAndValidateSalaryParamsPayload(salaryParams), null, 2);
+  atomicWriteFileSync(file, serialized);
+}
+
+const DEFAULT_PROFILE = { role: '', depot: '', avatar: '' };
+// Avatar is stored as a data URL (cropped image) or a remote https URL. Cap the
+// size so a single profile file can't balloon: ~1.5MB of base64 ≈ ~1.1MB image.
+const PROFILE_AVATAR_MAX_LEN = 1500000;
+const PROFILE_TEXT_MAX_LEN = 120;
+
+function sanitizeProfilePayload(payload) {
+  if (!payload || typeof payload !== 'object' || Array.isArray(payload)) {
+    throw new Error('Expected JSON object payload');
+  }
+  const source = payload.profile && typeof payload.profile === 'object' && !Array.isArray(payload.profile)
+    ? payload.profile
+    : payload;
+
+  const role = String(source.role == null ? '' : source.role).trim().slice(0, PROFILE_TEXT_MAX_LEN);
+  const depot = String(source.depot == null ? '' : source.depot).trim().slice(0, PROFILE_TEXT_MAX_LEN);
+
+  let avatar = String(source.avatar == null ? '' : source.avatar).trim();
+  if (avatar) {
+    if (!/^data:image\/[a-zA-Z0-9.+-]+;base64,/.test(avatar) && !/^https:\/\//i.test(avatar)) {
+      throw new Error('Invalid avatar: expected data:image URL or https URL');
+    }
+    if (avatar.length > PROFILE_AVATAR_MAX_LEN) {
+      throw new Error('Invalid avatar: image too large');
+    }
+  }
+
+  return { role, depot, avatar };
+}
+
+function readProfile(sid) {
+  const file = getUserProfileFile(sid);
+  try {
+    if (!fs.existsSync(file)) return { ...DEFAULT_PROFILE };
+    const raw = fs.readFileSync(file, 'utf8');
+    return sanitizeProfilePayload(JSON.parse(raw || '{}'));
+  } catch (err) {
+    logStructuredRateLimited('error', 'storage.profile.read_failed', file, {
+      sid: normalizeSid(sid),
+      file,
+      error: toErrorMeta(err),
+    });
+    return { ...DEFAULT_PROFILE };
+  }
+}
+
+function writeProfile(sid, profile) {
+  const file = getUserProfileFile(sid);
+  const serialized = JSON.stringify(sanitizeProfilePayload(profile), null, 2);
   atomicWriteFileSync(file, serialized);
 }
 
@@ -3181,6 +3242,40 @@ const server = http.createServer(async (req, res) => {
         const errorMessage = err && err.message ? err.message : 'Invalid payload';
         const isValidationError = /^(Expected|Invalid|Missing)/.test(errorMessage);
         logStructuredRateLimited(isValidationError ? 'warn' : 'error', 'storage.salary_params.write_rejected', `${sid}:${errorMessage}`, {
+          sid,
+          error: toErrorMeta(err),
+        });
+        sendJson(res, isValidationError ? 400 : 500, { error: errorMessage });
+      }
+      return;
+    }
+
+    sendJson(res, 405, { error: 'Method not allowed' });
+    return;
+  }
+
+  if (pathname === '/api/profile') {
+    if (!sid) {
+      sendJson(res, 401, { error: 'Unauthorized' });
+      return;
+    }
+
+    if (req.method === 'GET') {
+      sendJson(res, 200, { sid, profile: readProfile(sid) });
+      return;
+    }
+
+    if (req.method === 'PUT') {
+      try {
+        const body = await readBody(req);
+        const payload = body ? JSON.parse(body) : {};
+        const profile = sanitizeProfilePayload(payload);
+        writeProfile(sid, profile);
+        sendJson(res, 200, { ok: true, sid, profile });
+      } catch (err) {
+        const errorMessage = err && err.message ? err.message : 'Invalid payload';
+        const isValidationError = /^(Expected|Invalid|Missing)/.test(errorMessage);
+        logStructuredRateLimited(isValidationError ? 'warn' : 'error', 'storage.profile.write_rejected', `${sid}:${errorMessage}`, {
           sid,
           error: toErrorMeta(err),
         });

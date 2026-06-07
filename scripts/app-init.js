@@ -395,6 +395,50 @@ if (typeof bootstrapAppStartup === 'function') {
     // Exposed so the Home top-bar subtitle can use the user's real depot.
     window.getProfileDepot = function() { return (loadExtras().depot || '').trim(); };
 
+    // ── Cross-device profile sync ──────────────────────────────────────────
+    // localStorage is per-context (the PWA and the Telegram webview keep
+    // separate stores), so role/depot/avatar set in one never showed up in the
+    // other. Mirror them to the server keyed by the authenticated user.
+    var PROFILE_API_URL = (window.SHIFT_API_BASE_URL || '') + '/api/profile';
+    var profileSyncInFlight = false;
+
+    function loadProfileFromServer() {
+      if (!navigator.onLine || typeof fetchJson !== 'function') return;
+      fetchJson(PROFILE_API_URL, {
+        method: 'GET',
+        headers: { 'Accept': 'application/json' }
+      }, 6000).then(function(result) {
+        if (!result || !result.ok || !result.body || !result.body.profile) return;
+        var p = result.body.profile;
+        var cur = loadExtras();
+        // Server is the source of truth for cross-device fields. Only repaint
+        // when something actually changed to avoid clobbering a local edit.
+        if ((p.role || '') === (cur.role || '') &&
+            (p.depot || '') === (cur.depot || '') &&
+            (p.avatar || '') === (cur.avatar || '')) return;
+        saveExtras({ role: p.role || '', depot: p.depot || '', avatar: p.avatar || '' });
+        renderHeader();
+        paintAvatar(document.getElementById('profileEditAvatarPreview'));
+        updateClearPhotoBtn();
+      }).catch(function() {});
+    }
+
+    function syncProfileToServer() {
+      if (!navigator.onLine || typeof fetchJson !== 'function') return;
+      if (profileSyncInFlight) return;
+      var ex = loadExtras();
+      profileSyncInFlight = true;
+      fetchJson(PROFILE_API_URL, {
+        method: 'PUT',
+        headers: { 'Content-Type': 'application/json', 'Accept': 'application/json' },
+        body: JSON.stringify({ profile: { role: ex.role || '', depot: ex.depot || '', avatar: ex.avatar || '' } })
+      }, 9000).then(function() {
+        profileSyncInFlight = false;
+      }).catch(function() {
+        profileSyncInFlight = false;
+      });
+    }
+
     function getUser() {
       try {
         var cu = window.CURRENT_USER;
@@ -590,6 +634,7 @@ if (typeof bootstrapAppStartup === 'function') {
           paintAvatar(avatarEl);
           paintAvatar(document.getElementById('profileEditAvatarPreview'));
           updateClearPhotoBtn();
+          syncProfileToServer();
         }
         if (typeof closeOverlay === 'function') closeOverlay('overlayAvatarCrop');
       });
@@ -605,6 +650,7 @@ if (typeof bootstrapAppStartup === 'function') {
         paintAvatar(avatarEl);
         paintAvatar(document.getElementById('profileEditAvatarPreview'));
         updateClearPhotoBtn();
+        syncProfileToServer();
       });
     }
 
@@ -634,12 +680,17 @@ if (typeof bootstrapAppStartup === 'function') {
           depot: depotInp ? depotInp.value : ''
         });
         renderHeader();
+        syncProfileToServer();
         if (typeof closeOverlay === 'function') closeOverlay('overlayProfileEdit');
       });
     }
 
     renderHeader();
     window.syncProfileIdentity = renderHeader;
+    // Pull any avatar/role/depot saved from another device/context. Also exposed
+    // so the auth flow can re-pull once the session is actually established.
+    window.loadProfileFromServer = loadProfileFromServer;
+    loadProfileFromServer();
   })();
 
   // Initial
@@ -1006,7 +1057,10 @@ if (typeof bootstrapAppStartup === 'function') {
 
 // Documents — favorites: star indicator on each document, separate "Избранное" panel.
 (function bindDocsFavorites() {
-  var STORAGE_KEY = 'shift_tracker_docs_favorites_v1';
+  // v2: store the real file attributes (path/name/mime) so favorites can be
+  // opened. v1 entries captured a garbled name and no file path, so they are
+  // intentionally dropped on upgrade.
+  var STORAGE_KEY = 'shift_tracker_docs_favorites_v2';
   var entryCard = document.getElementById('docsEntryCard');
   var subnavCard = document.getElementById('docsSubnavCard');
   var favoritesPanel = document.getElementById('docsFavoritesPanel');
@@ -1043,22 +1097,30 @@ if (typeof bootstrapAppStartup === 'function') {
   }
 
   function buildItemDescriptor(rowEl) {
-    var name = (rowEl.querySelector('.docs-item-name, .docs-file-name, [data-doc-name]') || rowEl).textContent;
-    var path = rowEl.getAttribute('data-doc-path')
-      || rowEl.dataset.path
-      || (rowEl.querySelector('[data-doc-path]') && rowEl.querySelector('[data-doc-path]').getAttribute('data-doc-path'))
-      || rowEl.id
-      || '';
-    if (!path) {
-      // Fallback: use the displayed name as path (stable enough for static docs)
-      path = 'doc:' + String(name).trim().toLowerCase().replace(/\s+/g, '_');
-    }
-    var meta = (rowEl.querySelector('.docs-item-meta, .docs-file-meta') || {textContent: ''}).textContent;
+    // Real docs rows (rendered by docs-app.js) carry the file identity on data
+    // attributes (URI-encoded) and show the title/footer in dedicated nodes.
+    var filePath = rowEl.getAttribute('data-file-path') || '';
+    var fileName = rowEl.getAttribute('data-file-name') || '';
+    var mimeType = rowEl.getAttribute('data-mime-type') || '';
+
+    var titleEl = rowEl.querySelector('.docs-item-title');
+    var name = titleEl ? titleEl.textContent : '';
+    if (!name) name = rowEl.textContent || '';
+    name = name.trim();
+
+    var metaEl = rowEl.querySelector('.docs-item-footer') || rowEl.querySelector('.docs-item-subtitle');
+    var meta = metaEl ? (metaEl.textContent || '').trim() : '';
+
+    // Identity for de-duplication: the file path when available, otherwise a
+    // stable slug from the name (covers any non-file rows).
+    var path = filePath || ('doc:' + name.toLowerCase().replace(/\s+/g, '_'));
+
     var ext = 'PDF';
-    var low = (name + '').toLowerCase();
+    var low = (fileName || name).toLowerCase();
     if (low.indexOf('.docx') >= 0) ext = 'DOCX';
     else if (low.indexOf('реж') >= 0) ext = 'РЕЖ';
-    return { path: path, name: (name || '').trim(), meta: (meta || '').trim(), ext: ext };
+
+    return { path: path, name: name, meta: meta, ext: ext, filePath: filePath, fileName: fileName, mimeType: mimeType };
   }
 
   function ensureStarButton(rowEl) {
@@ -1112,7 +1174,15 @@ if (typeof bootstrapAppStartup === 'function') {
     }
     var html = '';
     items.forEach(function(it) {
-      html += '<div class="docs-item is-favorite" data-doc-path="' + escapeAttr(it.path) + '">' +
+      // Re-emit the file identity so the shared #docsShell open handler
+      // (matches `.docs-item[data-file-path]`) can open the favorite.
+      var fileAttrs = it.filePath
+        ? ' role="button" tabindex="0"' +
+          ' data-file-path="' + escapeAttr(it.filePath) + '"' +
+          ' data-file-name="' + escapeAttr(it.fileName || '') + '"' +
+          ' data-mime-type="' + escapeAttr(it.mimeType || '') + '"'
+        : '';
+      html += '<div class="docs-item is-favorite has-fav-toggle"' + fileAttrs + ' data-doc-path="' + escapeAttr(it.path) + '">' +
         '<div class="docs-item-main">' +
           '<div class="docs-item-name">' + escapeHtml(it.name) + '</div>' +
           (it.meta ? '<div class="docs-item-meta">' + escapeHtml(it.meta) + '</div>' : '') +
@@ -1130,6 +1200,11 @@ if (typeof bootstrapAppStartup === 'function') {
   favoritesList && favoritesList.addEventListener('click', function(e) {
     var btn = e.target.closest && e.target.closest('[data-fav-remove]');
     if (!btn) return;
+    // The favorite row now carries data-file-path, so without this the click
+    // would bubble to the #docsShell open handler and open the doc we just
+    // removed.
+    e.preventDefault();
+    e.stopPropagation();
     var path = btn.getAttribute('data-fav-remove');
     var items = load().filter(function(it){ return it.path !== path; });
     save(items);

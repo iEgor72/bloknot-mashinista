@@ -499,6 +499,7 @@
       repairUiText();
       if (typeof render === 'function') render();
       if (typeof loadSalaryParamsFromServer === 'function') loadSalaryParamsFromServer();
+      if (typeof window.loadProfileFromServer === 'function') window.loadProfileFromServer();
       updateSettingsControls();
       updateOfflineUiState();
       setActiveTab(activeTab || 'home');
