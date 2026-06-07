@@ -1,10 +1,10 @@
 # Recent Commits
 
-Generated: 2026-06-07 23:52:37 +1000
+Generated: 2026-06-07 23:53:12 +1000
 
 | Hash | Date | Author | Message |
 | --- | --- | --- | --- |
-| `803177a` | 2026-06-07T23:52:36+10:00 | iEgor72 | feat: add community links and launch posts |
+| `2e15db1` | 2026-06-07T23:52:36+10:00 | iEgor72 | feat: add community links and launch posts |
 | `7f786ff` | 2026-06-07T21:10:20+10:00 | iEgor72 | fix(docs): refresh favorite/recent download badge on download completion |
 | `53a0f80` | 2026-06-07T21:00:09+10:00 | iEgor72 | fix(docs): recently-opened renders as real cards, opens, refreshes live |
 | `6eb0dad` | 2026-06-07T20:52:22+10:00 | iEgor72 | fix(docs): recompute favorite download badge live (not from stale snapshot) |

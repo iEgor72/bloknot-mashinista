@@ -6,6 +6,31 @@ const url = require('url');
 const crypto = require('crypto');
 
 const ROOT = __dirname;
+
+function loadDotEnvFile() {
+  const envFile = path.join(ROOT, '.env');
+  if (!fs.existsSync(envFile)) return;
+  try {
+    const lines = fs.readFileSync(envFile, 'utf8').split(/\r?\n/);
+    lines.forEach((line) => {
+      const trimmed = String(line || '').trim();
+      if (!trimmed || trimmed.startsWith('#') || !trimmed.includes('=')) return;
+      const eqIndex = trimmed.indexOf('=');
+      const key = trimmed.slice(0, eqIndex).trim();
+      if (!key || Object.prototype.hasOwnProperty.call(process.env, key)) return;
+      let value = trimmed.slice(eqIndex + 1).trim();
+      if ((value.startsWith('"') && value.endsWith('"')) || (value.startsWith("'") && value.endsWith("'"))) {
+        value = value.slice(1, -1);
+      }
+      process.env[key] = value;
+    });
+  } catch (err) {
+    console.warn('[env] failed to load .env:', err && err.message ? err.message : err);
+  }
+}
+
+loadDotEnvFile();
+
 const PORT = process.env.PORT || 3000;
 const DATA_DIR = path.join(ROOT, 'data');
 const USERS_DIR = path.join(DATA_DIR, 'local-shifts');

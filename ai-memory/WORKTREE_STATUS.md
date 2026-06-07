@@ -1,6 +1,6 @@
 # Worktree Status
 
-Generated: 2026-06-07 23:52:37 +1000
+Generated: 2026-06-07 23:53:12 +1000
 
 ## git status -sb
 ```text
@@ -14,19 +14,19 @@ Generated: 2026-06-07 23:52:37 +1000
 ```text
 codex/next-direction b044dd5 offline mvp
   codex/tabs-ui        117f1fa [origin/codex/tabs-ui] tabs ui
-* main                 803177a [origin/main: ahead 1] feat: add community links and launch posts
+* main                 2e15db1 [origin/main: ahead 1] feat: add community links and launch posts
   poekhali-rework      2d5f0af chore(memory): refresh after main merge
 ```
 
 ## HEAD
 ```text
-803177a feat: add community links and launch posts
- ai-memory/CHANGELOG.md           | 161 ++++++++++++++++++++++++++++++
+2e15db1 feat: add community links and launch posts
+ ai-memory/CHANGELOG.md           | 170 ++++++++++++++++++++++++++++++++
  ai-memory/INDEX.md               |   2 +-
- ai-memory/PROJECT_STATE.md       |  23 ++++-
- ai-memory/RECENT_COMMITS.md      |   4 +-
- ai-memory/WORKTREE_STATUS.md     |  36 ++++---
- ai-memory/sessions/2026-06-07.md |  20 ++++
+ ai-memory/PROJECT_STATE.md       |   8 +-
+ ai-memory/RECENT_COMMITS.md      |   6 +-
+ ai-memory/WORKTREE_STATUS.md     |  33 ++++---
+ ai-memory/sessions/2026-06-07.md |  21 ++++
  index.html                       | 121 +++++++++++++++++++++--
  scripts/app-constants.js         |   2 +-
  scripts/app-init.js              |  98 +++++++++++++++++-
@@ -38,5 +38,5 @@ codex/next-direction b044dd5 offline mvp
  server.js                        | 207 +++++++++++++++++++++++++++++++++------
  styles/56-profile.css            | 106 ++++++++++++++++++++
  sw.js                            |   6 +-
- 17 files changed, 750 insertions(+), 79 deletions(-)
+ 17 files changed, 742 insertions(+), 81 deletions(-)
 ```

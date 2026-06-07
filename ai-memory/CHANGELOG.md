@@ -6104,3 +6104,20 @@ Append-only журнал действий ИИ-агентов по проект�
 - Methods: `git post-commit hook`, `automatic memory update`
 - Files: `ai-memory/CHANGELOG.md`, `ai-memory/INDEX.md`, `ai-memory/PROJECT_STATE.md`, `ai-memory/RECENT_COMMITS.md`, `ai-memory/WORKTREE_STATUS.md`, `ai-memory/sessions/2026-06-07.md`, `index.html`, `scripts/app-constants.js`, `scripts/app-init.js`, `scripts/app.js`, `scripts/partners.js`, `scripts/render.js`, `scripts/setup-bot-webhook.py`, `scripts/shift-form.js`, `server.js`, `styles/56-profile.css`, `sw.js`
 - Notes: Commit: `803177ae736857a15f86ac467ae47ba9177d1dd4` (`803177a`) | Author: `iEgor72`
+
+## 2026-06-07 23:53:12 +1000
+
+- Source: `post-commit`
+- Task: feat: add community links and launch posts
+- Branch: `main`
+- Methods: `git post-commit hook`, `automatic memory update`
+- Files: `ai-memory/CHANGELOG.md`, `ai-memory/INDEX.md`, `ai-memory/PROJECT_STATE.md`, `ai-memory/RECENT_COMMITS.md`, `ai-memory/WORKTREE_STATUS.md`, `ai-memory/sessions/2026-06-07.md`, `index.html`, `scripts/app-constants.js`, `scripts/app-init.js`, `scripts/app.js`, `scripts/partners.js`, `scripts/render.js`, `scripts/setup-bot-webhook.py`, `scripts/shift-form.js`, `server.js`, `styles/56-profile.css`, `sw.js`
+- Notes: Commit: `2e15db1bf8615785c4450a3d7aba040410b1a6c6` (`2e15db1`) | Author: `iEgor72`
+
+## 2026-06-07 23:58:44 +1000
+
+- Source: `manual`
+- Task: Добавлена загрузка .env в backend для production community config
+- Branch: `main`
+- Methods: `После деплоя выявлено что PM2 не подхватывает .env при reload и /api/community не видит PUBLIC_* и TELEGRAM_SUPPORT_CHAT_ID`, `добавлен тихий loadDotEnvFile в server.js без вывода секретов и без перезаписи process.env`, `проверен node --check и diff check`
+- Files: `server.js`
