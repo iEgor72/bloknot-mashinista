@@ -1,0 +1,150 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+  <meta name="robots" content="noindex" />
+  <title>Диагностика сети — Блокнот машиниста</title>
+  <style>
+    html, body { margin: 0; background: #0c0c10; color: #f5f5f7;
+      font-family: -apple-system, system-ui, Segoe UI, Roboto, sans-serif; }
+    .wrap { padding: 16px 14px 60px; max-width: 720px; margin: 0 auto; }
+    h1 { font-size: 18px; margin: 0 0 4px; }
+    .sub { font-size: 12px; color: #9aa0ad; margin: 0 0 14px; line-height: 1.4; }
+    button { font-size: 16px; padding: 12px 18px; border-radius: 12px; border: 0;
+      background: #2da6ff; color: #04121f; font-weight: 700; width: 100%; margin: 6px 0 14px; }
+    .summary { font-size: 15px; font-weight: 700; padding: 10px 12px; border-radius: 12px;
+      background: #15161c; margin: 0 0 12px; line-height: 1.5; }
+    .row { display: flex; align-items: baseline; gap: 8px; font-size: 13px;
+      padding: 7px 10px; border-radius: 9px; margin: 4px 0; background: #15161c; word-break: break-all; }
+    .ok { border-left: 4px solid #34d36b; }
+    .bad { border-left: 4px solid #ff5d5d; }
+    .pending { border-left: 4px solid #c9a227; opacity: .8; }
+    .name { flex: 1; }
+    .meta { color: #9aa0ad; white-space: nowrap; font-variant-numeric: tabular-nums; }
+    .env { font-size: 12px; color: #9aa0ad; background: #15161c; border-radius: 10px;
+      padding: 10px 12px; margin: 0 0 12px; line-height: 1.5; word-break: break-all; }
+  </style>
+</head>
+<body>
+  <div class="wrap">
+    <h1>Диагностика сети</h1>
+    <p class="sub">Проверяет, какие файлы приложения доходят через ваше соединение. Сделайте скриншот результата и пришлите.</p>
+    <button id="run">Запустить проверку ещё раз</button>
+    <div id="summary" class="summary">Запуск…</div>
+    <div id="env" class="env"></div>
+    <div id="list"></div>
+  </div>
+  <script>
+    (function () {
+      var TIMEOUT_MS = 9000;
+      var PASSES = 2;
+      var TARGETS = [
+        { label: 'Документ /', url: '/' },
+        { label: 'app.js (крупный скрипт)', url: '/scripts/app.js' },
+        { label: 'app-constants.js', url: '/scripts/app-constants.js' },
+        { label: 'render.js', url: '/scripts/render.js' },
+        { label: 'poekhali-tracker.js', url: '/scripts/poekhali-tracker.js' },
+        { label: 'styles/00-base.css', url: '/styles/00-base.css' },
+        { label: 'styles/50-design-refresh.css', url: '/styles/50-design-refresh.css' },
+        { label: 'styles/56-profile.css', url: '/styles/56-profile.css' },
+        { label: 'sw.js', url: '/sw.js' },
+        { label: 'manifest', url: '/manifest.webmanifest' },
+        { label: 'шрифт woff2', url: '/assets/fonts/plus-jakarta-sans/plus-jakarta-sans-cyrillic-ext.woff2' },
+        { label: 'API /api/stats', url: '/api/stats' },
+        { label: 'ВНЕШНИЙ telegram.org SDK', url: 'https://telegram.org/js/telegram-web-app.js', cross: true }
+      ];
+
+      var listEl = document.getElementById('summary') ? document.getElementById('list') : null;
+      var summaryEl = document.getElementById('summary');
+      var envEl = document.getElementById('env');
+      var runBtn = document.getElementById('run');
+
+      function showEnv() {
+        var c = navigator.connection || {};
+        envEl.textContent =
+          'online: ' + navigator.onLine +
+          ' | сеть: ' + (c.effectiveType || '?') +
+          (c.downlink ? ' ~' + c.downlink + 'Mb' : '') +
+          (c.rtt ? ' rtt' + c.rtt : '') +
+          ' | SW: ' + ('serviceWorker' in navigator ? (navigator.serviceWorker.controller ? 'управляет' : 'есть, не управляет') : 'нет') +
+          ' | ' + navigator.userAgent;
+      }
+
+      function probe(target) {
+        var started = Date.now();
+        var ctrl = ('AbortController' in window) ? new AbortController() : null;
+        var timer = ctrl ? setTimeout(function () { try { ctrl.abort(); } catch (e) {} }, TIMEOUT_MS) : null;
+        var bust = (target.url.indexOf('?') >= 0 ? '&' : '?') + 'diag=' + Date.now() + Math.random().toString(36).slice(2);
+        var opts = { cache: 'no-store' };
+        if (ctrl) opts.signal = ctrl.signal;
+        if (target.cross) opts.mode = 'no-cors';
+        return fetch(target.url + bust, opts).then(function (resp) {
+          if (timer) clearTimeout(timer);
+          var ms = Date.now() - started;
+          // no-cors -> opaque (status 0) but resolving means it reached.
+          var ok = target.cross ? true : (resp && resp.ok);
+          return { ok: ok, code: (target.cross ? 'opaque' : (resp ? resp.status : '—')), ms: ms };
+        }).catch(function (err) {
+          if (timer) clearTimeout(timer);
+          var ms = Date.now() - started;
+          return { ok: false, code: (err && err.name === 'AbortError') ? 'TIMEOUT ' + TIMEOUT_MS + 'ms' : ('FAIL ' + (err && err.name ? err.name : 'error')), ms: ms };
+        });
+      }
+
+      function addRow(target) {
+        var row = document.createElement('div');
+        row.className = 'row pending';
+        var name = document.createElement('div');
+        name.className = 'name';
+        name.textContent = target.label;
+        var meta = document.createElement('div');
+        meta.className = 'meta';
+        meta.textContent = '⏳';
+        row.appendChild(name);
+        row.appendChild(meta);
+        listEl.appendChild(row);
+        return { row: row, meta: meta };
+      }
+
+      function runAll() {
+        listEl.innerHTML = '';
+        summaryEl.textContent = 'Идёт проверка…';
+        showEnv();
+        var rows = TARGETS.map(addRow);
+        var okCount = 0, total = 0, slowest = 0;
+        var seq = Promise.resolve();
+        TARGETS.forEach(function (target, i) {
+          seq = seq.then(function () {
+            var passResults = [];
+            var p = Promise.resolve();
+            for (var k = 0; k < PASSES; k++) {
+              (function () { p = p.then(function () { return probe(target).then(function (r) { passResults.push(r); }); }); })();
+            }
+            return p.then(function () {
+              var okAll = passResults.every(function (r) { return r.ok; });
+              var okAny = passResults.some(function (r) { return r.ok; });
+              var times = passResults.map(function (r) { return r.ms; }).join('/');
+              var codes = passResults.map(function (r) { return r.code; }).join(' · ');
+              total += 1; if (okAll) okCount += 1;
+              passResults.forEach(function (r) { if (r.ms > slowest) slowest = r.ms; });
+              rows[i].row.className = 'row ' + (okAll ? 'ok' : (okAny ? 'pending' : 'bad'));
+              rows[i].meta.textContent = (okAll ? '✅' : (okAny ? '⚠️' : '❌')) + ' ' + codes + ' · ' + times + 'ms';
+              summaryEl.textContent = 'Прошло ' + okCount + ' из ' + total + ' (из ' + TARGETS.length + '). Макс. время: ' + slowest + 'ms';
+            });
+          });
+        });
+        seq.then(function () {
+          var verdict = okCount === TARGETS.length ? '✅ Всё доходит стабильно.'
+            : (okCount === 0 ? '❌ Не доходит вообще ничего.'
+            : '⚠️ Часть файлов теряется — канал рвётся.');
+          summaryEl.textContent = verdict + ' Прошло ' + okCount + '/' + TARGETS.length + '. Макс. время: ' + slowest + 'ms';
+        });
+      }
+
+      runBtn.addEventListener('click', runAll);
+      runAll();
+    })();
+  </script>
+</body>
+</html>
