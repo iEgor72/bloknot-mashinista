@@ -74,11 +74,11 @@
     if (!sub) return;
     var label = activePartnerLabel();
     if (label) {
-      sub.textContent = 'Напарник по умолчанию: ' + label;
+      sub.textContent = 'Бригада: ' + label;
     } else if (state.partners.length) {
-      sub.textContent = 'Напарников: ' + state.partners.length + ' · по умолчанию не выбран';
+      sub.textContent = 'Бригада: ' + state.partners.length + ' · получатель не выбран';
     } else {
-      sub.textContent = 'Свяжитесь с напарником, чтобы делиться сменами';
+      sub.textContent = 'Настройте бригаду, чтобы делиться сменами';
     }
   }
 
@@ -101,9 +101,9 @@
       if (!label) {
         hintEl.textContent = 'Подставляется в выбор получателя при добавлении смены.';
       } else if (activePartnerTrusted()) {
-        hintEl.textContent = 'Смены этого напарника добавляются автоматически. Ваши — уходят ему.';
+        hintEl.textContent = 'Смены этого участника бригады добавляются автоматически. Ваши — уходят ему.';
       } else {
-        hintEl.textContent = 'Новые смены по умолчанию делятся с этим напарником.';
+        hintEl.textContent = 'Новые смены по умолчанию делятся с этим участником бригады.';
       }
     }
     if (card) card.classList.toggle('is-set', !!label);
@@ -132,7 +132,7 @@
           '</div>' +
           '<div class="partners-item-actions">' +
             activeBtn +
-            '<button class="partners-item-remove" type="button" data-action="unpair" data-id="' + escapeHtml(p.pairingId) + '" aria-label="Удалить напарника">✕</button>' +
+            '<button class="partners-item-remove" type="button" data-action="unpair" data-id="' + escapeHtml(p.pairingId) + '" aria-label="Удалить участника бригады">✕</button>' +
           '</div>' +
         '</div>';
     }).join('');
@@ -189,7 +189,7 @@
     list.innerHTML = state.inbox.map(function(item) {
       return '' +
         '<div class="partners-inbox-item" data-id="' + escapeHtml(item.id) + '">' +
-          '<div class="partners-inbox-from">' + escapeHtml(item.sharedByName || 'Напарник') + ' поделился сменой</div>' +
+          '<div class="partners-inbox-from">' + escapeHtml(item.sharedByName || 'Участник бригады') + ' поделился сменой</div>' +
           '<div class="partners-inbox-summary">' + escapeHtml(formatProposalSummary(item.facts)) + '</div>' +
           '<div class="partners-inbox-actions">' +
             '<button class="btn-primary partners-inbox-accept" type="button" data-action="accept" data-id="' + escapeHtml(item.id) + '">Принять</button>' +
@@ -288,7 +288,7 @@
         var r = upsertSharedShift(item);
         if (r.action === 'inserted') inserted.push(r.shift);
         else updated.push(r.shift);
-        senders[item.sharedByName || 'напарника'] = true;
+        senders[item.sharedByName || 'бригады'] = true;
         shiftsApi('POST', '/inbox/resolve', { id: item.id, action: 'accept' }).catch(function() {});
       } else {
         manual.push(item);
@@ -301,7 +301,7 @@
       }
       if (typeof render === 'function') render();
       saveShifts(function() {});
-      var who = Object.keys(senders).join(', ') || 'напарника';
+      var who = Object.keys(senders).join(', ') || 'бригады';
       if (inserted.length) {
         showShareToast(inserted.length === 1
           ? ('Смена от ' + who + ' добавлена')
@@ -334,8 +334,8 @@
       loadPartners();
     }).catch(function() {});
     showFeedback(r.action === 'updated'
-      ? 'Смена обновлена по данным напарника.'
-      : 'Смена добавлена. Дальше смены этого напарника будут появляться сами.', 'ok');
+      ? 'Смена обновлена по данным бригады.'
+      : 'Смена добавлена. Дальше смены этой бригады будут появляться сами.', 'ok');
   }
 
   function dismissProposal(id) {
@@ -446,7 +446,7 @@
     api('POST', '/redeem', { code: code }).then(function(res) {
       if (res && res.ok && res.body && res.body.pairing) {
         clearCode();
-        showFeedback('Готово! Напарник «' + (res.body.pairing.partnerLabel || '') + '» в книжке.', 'ok');
+        showFeedback('Готово! Бригада «' + (res.body.pairing.partnerLabel || '') + '» добавлена.', 'ok');
         return loadPartners();
       }
       var msg = (res && res.body && res.body.error) || 'Не удалось связать.';
@@ -522,7 +522,7 @@
 
   function unpair(pairingId) {
     if (state.busy || !pairingId) return;
-    var ok = window.confirm('Удалить напарника из книжки? Связь разорвётся у обоих.');
+    var ok = window.confirm('Удалить участника из бригады? Связь разорвётся у обоих.');
     if (!ok) return;
     setBusy(true);
     api('DELETE', '/' + encodeURIComponent(pairingId)).then(function(res) {

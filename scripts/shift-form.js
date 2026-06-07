@@ -583,7 +583,7 @@
       partners.forEach(function(p) {
         var opt = document.createElement('option');
         opt.value = p.pairingId;
-        opt.textContent = p.label || 'Напарник';
+        opt.textContent = p.label || 'Бригада';
         select.appendChild(opt);
       });
       // Editing: pre-select the shift's current recipient. New shift: the default.
@@ -612,7 +612,7 @@
           if (r && r.delivered) {
             var fs = document.getElementById('formSuccess');
             if (fs && fs.textContent.indexOf('сохранена') !== -1) {
-              fs.textContent = '✓ Смена сохранена и отправлена напарнику';
+              fs.textContent = '✓ Смена сохранена и отправлена в бригаду';
             }
           }
         });

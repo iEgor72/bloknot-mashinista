@@ -1924,7 +1924,7 @@
       if (entry === 'folders') {
         return {
           title: 'Папки',
-          subtitle: 'Материалы собраны по темам',
+          subtitle: 'Материалы по нарушениям БД',
           tabs: ['folders']
         };
       }

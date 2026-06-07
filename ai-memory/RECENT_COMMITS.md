@@ -1,9 +1,11 @@
 # Recent Commits
 
-Generated: 2026-06-07 21:00:11 +1000
+Generated: 2026-06-07 23:52:37 +1000
 
 | Hash | Date | Author | Message |
 | --- | --- | --- | --- |
+| `803177a` | 2026-06-07T23:52:36+10:00 | iEgor72 | feat: add community links and launch posts |
+| `7f786ff` | 2026-06-07T21:10:20+10:00 | iEgor72 | fix(docs): refresh favorite/recent download badge on download completion |
 | `53a0f80` | 2026-06-07T21:00:09+10:00 | iEgor72 | fix(docs): recently-opened renders as real cards, opens, refreshes live |
 | `6eb0dad` | 2026-06-07T20:52:22+10:00 | iEgor72 | fix(docs): recompute favorite download badge live (not from stale snapshot) |
 | `eadc828` | 2026-06-07T20:45:51+10:00 | iEgor72 | fix(docs): render favorites identically to section rows |
@@ -42,5 +44,3 @@ Generated: 2026-06-07 21:00:11 +1000
 | `5af9bc7` | 2026-06-05T21:51:19+10:00 | iEgor72 | Remove admin panel frontend |
 | `baede9d` | 2026-06-05T12:56:46+10:00 | iEgor72 | Shift card: redesign data as a calm labelled key→value grid |
 | `7f2f04e` | 2026-06-05T12:26:07+10:00 | iEgor72 | Shift card: show доход/расход only when present (no empty "—") |
-| `153426a` | 2026-06-05T12:23:54+10:00 | iEgor72 | Fix расход always "—": wrong field (ft.liters → ft.consumptionLiters) |
-| `85a6f95` | 2026-06-04T23:37:57Z | iEgor72 | fix(pwa): defer heavy offline assets during startup |

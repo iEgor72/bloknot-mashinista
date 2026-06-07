@@ -1,4 +1,4 @@
-const CACHE_VERSION = 'v360';
+const CACHE_VERSION = 'v363';
 const CACHE_NAME = `shift-tracker-shell-${CACHE_VERSION}`;
 const NAVIGATION_FALLBACK_URL = '/index.html';
 const NETWORK_TIMEOUT_MS = 4500;
@@ -27,6 +27,8 @@ const INSTALL_SHELL_URLS = [
   '/styles/30-shifts-and-overlays.css',
   '/styles/40-premium-refresh.css',
   '/styles/50-design-refresh.css',
+  '/styles/55-partners.css',
+  '/styles/56-profile.css',
   '/manifest.webmanifest',
   '/apple-touch-icon.png',
   '/icon-192.png',
@@ -61,6 +63,8 @@ const CRITICAL_INSTALL_URLS = [
   '/styles/30-shifts-and-overlays.css',
   '/styles/40-premium-refresh.css',
   '/styles/50-design-refresh.css',
+  '/styles/55-partners.css',
+  '/styles/56-profile.css',
   '/manifest.webmanifest',
   '/apple-touch-icon.png',
   '/icon-192.png',

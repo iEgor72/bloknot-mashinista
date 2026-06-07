@@ -75,7 +75,12 @@ print('5. Setting bot commands...')
 tg('setMyCommands', {
     'commands': [
         {'command': 'start', 'description': 'Открыть мини-апп'},
-        {'command': 'help',  'description': 'Помощь'},
+        {'command': 'help',  'description': 'Помощь и ссылки'},
+        {'command': 'news',  'description': 'Новости проекта'},
+        {'command': 'chat',  'description': 'Обсуждение и обратная связь'},
+        {'command': 'bug',   'description': 'Сообщить о проблеме'},
+        {'command': 'idea',  'description': 'Предложить идею'},
+        {'command': 'myid',  'description': 'Показать Telegram ID'},
     ]
 })
 

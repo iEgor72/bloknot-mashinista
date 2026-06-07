@@ -5934,3 +5934,173 @@ Append-only журнал действий ИИ-агентов по проект�
 - Methods: `git post-commit hook`, `automatic memory update`
 - Files: `ai-memory/CHANGELOG.md`, `ai-memory/INDEX.md`, `ai-memory/PROJECT_STATE.md`, `ai-memory/RECENT_COMMITS.md`, `ai-memory/WORKTREE_STATUS.md`, `ai-memory/sessions/2026-06-07.md`, `scripts/app-init.js`, `scripts/docs-app.js`
 - Notes: Commit: `53a0f8071a9e12b79d6c13236519e45a4fa13bcd` (`53a0f80`) | Author: `iEgor72`
+
+## 2026-06-07 21:10:21 +1000
+
+- Source: `post-commit`
+- Task: fix(docs): refresh favorite/recent download badge on download completion
+- Branch: `main`
+- Methods: `git post-commit hook`, `automatic memory update`
+- Files: `ai-memory/CHANGELOG.md`, `ai-memory/INDEX.md`, `ai-memory/PROJECT_STATE.md`, `ai-memory/RECENT_COMMITS.md`, `ai-memory/WORKTREE_STATUS.md`, `ai-memory/sessions/2026-06-07.md`, `scripts/app-init.js`, `scripts/docs-app.js`
+- Notes: Commit: `7f786ff8a10db3315a47980c34cb9f066718aa0c` (`7f786ff`) | Author: `iEgor72`
+
+## 2026-06-07 21:33:49 +1000
+
+- Source: `manual`
+- Task: Обсужден контур обратной связи для работающего Telegram/PWA приложения
+- Branch: `main`
+- Methods: `Предложить начать с Telegram-канала новостей и отдельной группы/чата для фидбека без немедленных production-изменений`
+- Files: `ai-memory`
+
+## 2026-06-07 21:36:04 +1000
+
+- Source: `manual`
+- Task: Сформирована концепция единой коммуникационной системы вокруг существующего Telegram-бота
+- Branch: `main`
+- Methods: `Связать бот`, `PWA/site`, `новостной канал`, `группу обсуждений и входящие обращения через единые ссылки`, `роли и сценарии без немедленного деплоя`
+- Files: `ai-memory`
+
+## 2026-06-07 21:48:55 +1000
+
+- Source: `manual`
+- Task: Начата связка бота, PWA, сайта и будущих Telegram-каналов обратной связи
+- Branch: `main`
+- Methods: `Добавлены публичный /api/community`, `конфигурируемые ссылки PUBLIC_NEWS_CHANNEL_URL/PUBLIC_DISCUSSION_CHAT_URL`, `команды бота /news /chat /bug /idea`, `профильный bottom sheet Помощь и связь`, `обновлен setup-bot-webhook и PWA cache v361`, `проверено node --check`, `py_compile`, `git diff --check`, `локальный /api/community и Playwright-сценарий профиля`
+- Files: `server.js`, `index.html`, `scripts/app-init.js`, `scripts/setup-bot-webhook.py`, `scripts/app-constants.js`, `styles/56-profile.css`, `sw.js`
+
+## 2026-06-07 21:52:45 +1000
+
+- Source: `manual`
+- Task: Показан локальный предпросмотр новой системы Помощь и связь
+- Branch: `main`
+- Methods: `Запущен локальный сервер на PORT=3010`, `открыт in-app Browser в мобильном viewport`, `переключен профиль и открыт bottom sheet Помощь и связь`, `сохранен скриншот artifacts/community-preview.png`
+- Files: `artifacts/community-preview.png`, `ai-memory`
+
+## 2026-06-07 22:02:55 +1000
+
+- Source: `manual`
+- Task: Получены ссылки Telegram-канала/обсуждения и support Telegram ID
+- Branch: `main`
+- Methods: `Приняты две invite-ссылки в порядке новости затем обсуждение`, `принят Telegram ID для TELEGRAM_SUPPORT_CHAT_ID`, `локальный предпросмотр на PORT=3010 перезапущен с env и проверен /api/community: HasNews/HasDiscussion/SupportEnabled true`, `production не тронут`
+- Files: `ai-memory`
+
+## 2026-06-07 22:08:14 +1000
+
+- Source: `manual`
+- Task: Подготовлен безопасный стартовый контент для Telegram-канала и группы
+- Branch: `main`
+- Methods: `Рекомендовано не вести пользователей в пустые каналы`, `использовать существующие bot_avatar.png/icon-512.png`, `заполнить описания`, `закрепы и первые посты до деплоя ссылок`
+- Files: `bot_avatar.png`, `icon-512.png`, `ai-memory`
+
+## 2026-06-07 22:15:26 +1000
+
+- Source: `manual`
+- Task: Обновлены Telegram launch assets и тексты под публичный канал
+- Branch: `main`
+- Methods: `Публичный URL канала принят как основной`, `локальный предпросмотр перезапущен с PUBLIC_NEWS_CHANNEL_URL=t.me/bloknot_mashinista`, `обе аватарки сделаны на базе локомотивной иконки с разными плашками НОВОСТИ/ЧАТ`, `подготовлен artifacts/telegram-launch-pack.md с более живыми стартовыми постами`
+- Files: `artifacts/telegram-news-avatar.png`, `artifacts/telegram-chat-avatar.png`, `artifacts/telegram-avatars-preview.png`, `artifacts/telegram-launch-pack.md`, `ai-memory`
+
+## 2026-06-07 22:39:36 +1000
+
+- Source: `manual`
+- Task: Переделаны Telegram-карточки постов в темном минималистичном стиле
+- Branch: `main`
+- Methods: `Пересобраны 1080x1350 изображения с реальными скриншотами интерфейса внутри ровного phone mockup`, `убраны белые подписи/диагональный фон/внутренние фразы`, `сохранены dark-файлы и обновлен launch pack`
+- Files: `artifacts/telegram-post-01-community-dark.png`, `artifacts/telegram-post-02-docs-dark.png`, `artifacts/telegram-post-03-feedback-dark.png`, `artifacts/telegram-posts-preview-dark.png`, `artifacts/telegram-launch-pack.md`
+
+## 2026-06-07 23:02:02 +1000
+
+- Source: `manual`
+- Task: Подготовлены финальные Telegram-карточки с полным экраном приложения в корпусе iPhone
+- Branch: `main`
+- Methods: `Пересобраны 4 финальные квадратные карточки: первый пост про глобальный редизайн`, `затем помощь и связь`, `документы и обратная связь`, `убраны старые промежуточные iphone/dark варианты и временные скриншоты`, `launch pack обновлен на финальные файлы`
+- Files: `artifacts/telegram-post-01-redesign.png`, `artifacts/telegram-post-02-community.png`, `artifacts/telegram-post-03-docs.png`, `artifacts/telegram-post-04-feedback.png`, `artifacts/telegram-posts-preview.png`, `artifacts/telegram-launch-pack.md`
+
+## 2026-06-07 23:05:05 +1000
+
+- Source: `manual`
+- Task: Проверена готовность к публикации Telegram-постов
+- Branch: `main`
+- Methods: `Проверены имена env-переменных без вывода секретов`, `TELEGRAM_BOT_TOKEN/BOT_TOKEN/TG_BOT_TOKEN отсутствуют`, `.env отсутствует`, `публикация в канал не выполнялась`
+- Files: `artifacts/telegram-launch-pack.md`, `artifacts/telegram-post-01-redesign.png`, `artifacts/telegram-post-02-community.png`, `artifacts/telegram-post-03-docs.png`, `artifacts/telegram-post-04-feedback.png`
+
+## 2026-06-07 23:11:59 +1000
+
+- Source: `manual`
+- Task: Проверены права бота для публикации Telegram-постов
+- Branch: `main`
+- Methods: `Без вывода токена загружен TELEGRAM_BOT_TOKEN из .env`, `проверены getMe/getChat/getChatMember для публичного канала`, `бот найден`, `канал найден`, `статус administrator`, `can_post_messages true`, `публикация не выполнялась без финального подтверждения`
+- Files: `artifacts/telegram-launch-pack.md`, `artifacts/telegram-post-01-redesign.png`, `artifacts/telegram-post-02-community.png`, `artifacts/telegram-post-03-docs.png`, `artifacts/telegram-post-04-feedback.png`
+
+## 2026-06-07 23:14:25 +1000
+
+- Source: `manual`
+- Task: Опубликованы 4 стартовых поста в Telegram-канал
+- Branch: `main`
+- Methods: `По явному подтверждению пользователя отправлены 4 sendPhoto-поста в @bloknot_mashinista через Telegram Bot API`, `опубликованы посты 1-4 из launch pack`, `message_id 4`, `5`, `6`, `7`, `токен не выводился`
+- Files: `artifacts/telegram-launch-pack.md`, `artifacts/telegram-post-01-redesign.png`, `artifacts/telegram-post-02-community.png`, `artifacts/telegram-post-03-docs.png`, `artifacts/telegram-post-04-feedback.png`
+
+## 2026-06-07 23:20:12 +1000
+
+- Source: `manual`
+- Task: Обновлена подпись раздела Папки
+- Branch: `main`
+- Methods: `Поменял копирайтинг карточки и экрана Папки на Материалы по нарушениям БД`, `обновил текст третьего Telegram-поста и поднял PWA cache до v362`
+- Files: `index.html`, `scripts/app.js`, `artifacts/telegram-launch-pack.md`, `scripts/app-constants.js`, `sw.js`
+
+## 2026-06-07 23:25:12 +1000
+
+- Source: `manual`
+- Task: Обновлен Telegram-пост про документы
+- Branch: `main`
+- Methods: `Переснят локальный экран Документы с новой подписью Папки`, `заменен экран внутри artifacts/telegram-post-03-docs.png`, `обновлен preview`, `через Telegram Bot API отредактированы фото и подпись опубликованного message_id 6`
+- Files: `artifacts/telegram-post-03-docs.png`, `artifacts/telegram-posts-preview.png`, `artifacts/telegram-launch-pack.md`
+
+## 2026-06-07 23:29:15 +1000
+
+- Source: `manual`
+- Task: Отключен дефолтный спам-ответ бота в группе обсуждения
+- Branch: `main`
+- Methods: `Нашел причину в fallback ветке Telegram webhook: бот отвечал подсказкой на любые нераспознанные апдейты`, `включая фото/посты в linked discussion group`, `ограничил fallback только личными чатами и сделал /start`, `/help строгими командами`, `проверил node --check`, `git diff --check и локальный smoke для групповых фото/текста`
+- Files: `server.js`
+
+## 2026-06-07 23:39:05 +1000
+
+- Source: `manual`
+- Task: Подготовлен Telegram-пост про Бригаду и унифицировано название функции
+- Branch: `main`
+- Methods: `Переименовал пользовательские строки Напарники/напарник в Бригада/участник бригады`, `поднял PWA cache до v363`, `переснял локальный экран Бригада`, `собрал artifacts/telegram-post-05-brigade.png в стиле стартовых карточек`, `добавил Пост 5 в launch pack`, `проверил rg`, `node --check и git diff --check`
+- Files: `index.html`, `server.js`, `scripts/app-init.js`, `scripts/partners.js`, `scripts/render.js`, `scripts/shift-form.js`, `scripts/app-constants.js`, `sw.js`, `artifacts/telegram-post-05-brigade.png`, `artifacts/telegram-posts-preview.png`, `artifacts/telegram-launch-pack.md`
+
+## 2026-06-07 23:41:46 +1000
+
+- Source: `manual`
+- Task: Исправлена старая подпись Напарники в Telegram-посте обратной связи
+- Branch: `main`
+- Methods: `Переснял профиль с новым названием Бригада`, `заменил экран внутри artifacts/telegram-post-04-feedback.png`, `обновил общий preview`, `через Telegram Bot API отредактировал фото опубликованного message_id 7`, `удалил временные скриншоты`
+- Files: `artifacts/telegram-post-04-feedback.png`, `artifacts/telegram-posts-preview.png`
+
+## 2026-06-07 23:48:36 +1000
+
+- Source: `manual`
+- Task: Подготовлен Telegram-пост про режим Поехали
+- Branch: `main`
+- Methods: `Снял локальный экран Поехали с понятными демо-показателями`, `собрал artifacts/telegram-post-06-poekhali.png в стиле стартовых карточек`, `обновил общий preview`, `добавил Пост 6 в launch pack`, `проверил ссылки и diff check`, `временные скриншоты удалены`
+- Files: `artifacts/telegram-post-06-poekhali.png`, `artifacts/telegram-posts-preview.png`, `artifacts/telegram-launch-pack.md`
+
+## 2026-06-07 23:51:34 +1000
+
+- Source: `manual`
+- Task: Опубликованы Telegram-посты про Бригаду и Поехали
+- Branch: `main`
+- Methods: `По явному запросу пользователя отправлены sendPhoto-посты 5 и 6 в @bloknot_mashinista через Telegram Bot API`, `message_id 8 и 9`, `токен не выводился`
+- Files: `artifacts/telegram-launch-pack.md`, `artifacts/telegram-post-05-brigade.png`, `artifacts/telegram-post-06-poekhali.png`
+
+## 2026-06-07 23:52:37 +1000
+
+- Source: `post-commit`
+- Task: feat: add community links and launch posts
+- Branch: `main`
+- Methods: `git post-commit hook`, `automatic memory update`
+- Files: `ai-memory/CHANGELOG.md`, `ai-memory/INDEX.md`, `ai-memory/PROJECT_STATE.md`, `ai-memory/RECENT_COMMITS.md`, `ai-memory/WORKTREE_STATUS.md`, `ai-memory/sessions/2026-06-07.md`, `index.html`, `scripts/app-constants.js`, `scripts/app-init.js`, `scripts/app.js`, `scripts/partners.js`, `scripts/render.js`, `scripts/setup-bot-webhook.py`, `scripts/shift-form.js`, `server.js`, `styles/56-profile.css`, `sw.js`
+- Notes: Commit: `803177ae736857a15f86ac467ae47ba9177d1dd4` (`803177a`) | Author: `iEgor72`

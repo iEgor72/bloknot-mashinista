@@ -89,6 +89,100 @@ if (typeof bootstrapAppStartup === 'function') {
   });
 })();
 
+// Community links — one place that connects the PWA, bot, news channel and discussion group.
+(function bindCommunitySheet() {
+  var btn = document.getElementById('btnProfileCommunity');
+  var closeBtn = document.getElementById('btnCloseCommunity');
+  var overlay = document.getElementById('overlayCommunity');
+  var linksLoaded = false;
+  var fallbackLinks = {
+    appUrl: window.location && window.location.origin ? window.location.origin : 'https://bloknot-mashinista-bot.ru',
+    siteUrl: 'https://bloknot-mashinista-bot.ru',
+    botUrl: 'https://t.me/bloknot_mashinista_bot',
+    newsChannelUrl: '',
+    discussionChatUrl: ''
+  };
+
+  function setLink(kind, url) {
+    var el = document.querySelector('[data-community-link="' + kind + '"]');
+    if (!el) return;
+    if (!url) {
+      el.classList.add('hidden');
+      el.setAttribute('aria-hidden', 'true');
+      el.setAttribute('tabindex', '-1');
+      return;
+    }
+    el.href = url;
+    el.classList.remove('hidden');
+    el.removeAttribute('aria-hidden');
+    el.removeAttribute('tabindex');
+  }
+
+  function applyLinks(data) {
+    var links = data || fallbackLinks;
+    setLink('bot', links.botUrl || fallbackLinks.botUrl);
+    setLink('news', links.newsChannelUrl || '');
+    setLink('discussion', links.discussionChatUrl || '');
+    setLink('site', links.siteUrl || links.appUrl || fallbackLinks.siteUrl);
+  }
+
+  function loadLinks() {
+    if (linksLoaded) return Promise.resolve();
+    linksLoaded = true;
+    applyLinks(fallbackLinks);
+    return fetch('/api/community', { cache: 'no-store', credentials: 'same-origin' })
+      .then(function(res) {
+        if (!res || !res.ok) throw new Error('community links unavailable');
+        return res.json();
+      })
+      .then(function(data) {
+        applyLinks(data);
+      })
+      .catch(function() {
+        applyLinks(fallbackLinks);
+      });
+  }
+
+  function close() {
+    if (typeof closeOverlay === 'function') closeOverlay('overlayCommunity');
+    else if (overlay) {
+      overlay.classList.remove('is-open', 'visible');
+      if (document.body) document.body.classList.remove('has-open-overlay');
+    }
+  }
+
+  if (btn) {
+    btn.addEventListener('click', function() {
+      loadLinks();
+      if (typeof openOverlay === 'function') openOverlay('overlayCommunity');
+      else if (overlay) {
+        overlay.classList.add('is-open', 'visible');
+        if (document.body) document.body.classList.add('has-open-overlay');
+      }
+    });
+  }
+  if (closeBtn) closeBtn.addEventListener('click', close);
+  if (overlay) {
+    overlay.addEventListener('click', function(e) {
+      if (e.target === overlay) close();
+    });
+  }
+
+  document.addEventListener('click', function(e) {
+    var link = e.target && e.target.closest ? e.target.closest('[data-community-link]') : null;
+    if (!link || link.classList.contains('hidden')) return;
+    var href = link.getAttribute('href') || '';
+    if (!/^https:\/\/t\.me\//i.test(href)) return;
+    try {
+      var tg = window.Telegram && window.Telegram.WebApp;
+      if (tg && typeof tg.openTelegramLink === 'function') {
+        e.preventDefault();
+        tg.openTelegramLink(href);
+      }
+    } catch (err) {}
+  });
+})();
+
 // Notifications system — backed by localStorage, surfaced via the top-bar bell.
 (function bindNotifications() {
   var STORAGE_KEY = 'shift_tracker_notifications_v1';
@@ -262,9 +356,9 @@ if (typeof bootstrapAppStartup === 'function') {
   addNotification(
     'Большое обновление',
     'Мы переработали навигацию и карточку смены:\n' +
-    '• Профиль — новая вкладка: данные, настройки расчёта, напарники, установка приложения\n' +
+    '• Профиль — новая вкладка: данные, настройки расчёта, бригада, установка приложения\n' +
     '• Смены — журнал и запуск «Поехали» прямо с карточки смены\n' +
-    '• Напарники — получателя смены теперь выбираете на самой смене\n' +
+    '• Бригада — получателя смены теперь выбираете на самой смене\n' +
     '• Карточка смены — спокойный вид с доходом, расходом и локомотивом\n' +
     'Загляните в каждый раздел — стало удобнее и понятнее.',
     'success',

@@ -1,6 +1,6 @@
 # Worktree Status
 
-Generated: 2026-06-07 21:00:11 +1000
+Generated: 2026-06-07 23:52:37 +1000
 
 ## git status -sb
 ```text
@@ -14,20 +14,29 @@ Generated: 2026-06-07 21:00:11 +1000
 ```text
 codex/next-direction b044dd5 offline mvp
   codex/tabs-ui        117f1fa [origin/codex/tabs-ui] tabs ui
-* main                 53a0f80 [origin/main: ahead 1] fix(docs): recently-opened renders as real cards, opens, refreshes live
+* main                 803177a [origin/main: ahead 1] feat: add community links and launch posts
   poekhali-rework      2d5f0af chore(memory): refresh after main merge
 ```
 
 ## HEAD
 ```text
-53a0f80 fix(docs): recently-opened renders as real cards, opens, refreshes live
- ai-memory/CHANGELOG.md           |  9 +++++++
- ai-memory/INDEX.md               |  2 +-
- ai-memory/PROJECT_STATE.md       |  8 +++---
- ai-memory/RECENT_COMMITS.md      |  4 +--
- ai-memory/WORKTREE_STATUS.md     | 16 +++++------
- ai-memory/sessions/2026-06-07.md |  1 +
- scripts/app-init.js              | 58 ++++++++++++++++++++++++++++++++++++----
- scripts/docs-app.js              | 28 +++++++++++++++++--
- 8 files changed, 104 insertions(+), 22 deletions(-)
+803177a feat: add community links and launch posts
+ ai-memory/CHANGELOG.md           | 161 ++++++++++++++++++++++++++++++
+ ai-memory/INDEX.md               |   2 +-
+ ai-memory/PROJECT_STATE.md       |  23 ++++-
+ ai-memory/RECENT_COMMITS.md      |   4 +-
+ ai-memory/WORKTREE_STATUS.md     |  36 ++++---
+ ai-memory/sessions/2026-06-07.md |  20 ++++
+ index.html                       | 121 +++++++++++++++++++++--
+ scripts/app-constants.js         |   2 +-
+ scripts/app-init.js              |  98 +++++++++++++++++-
+ scripts/app.js                   |   2 +-
+ scripts/partners.js              |  26 ++---
+ scripts/render.js                |   4 +-
+ scripts/setup-bot-webhook.py     |   7 +-
+ scripts/shift-form.js            |   4 +-
+ server.js                        | 207 +++++++++++++++++++++++++++++++++------
+ styles/56-profile.css            | 106 ++++++++++++++++++++
+ sw.js                            |   6 +-
+ 17 files changed, 750 insertions(+), 79 deletions(-)
 ```

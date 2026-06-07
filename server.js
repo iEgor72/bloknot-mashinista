@@ -141,6 +141,11 @@ const DEFAULT_SALARY_PARAMS = {
 };
 const SALARY_PARAM_KEYS = Object.keys(DEFAULT_SALARY_PARAMS);
 const PUBLIC_SITE_URL = process.env.PUBLIC_SITE_URL || 'https://bloknot-mashinista-bot.ru';
+const TELEGRAM_BOT_USERNAME = (process.env.PUBLIC_TELEGRAM_BOT_USERNAME || 'bloknot_mashinista_bot').replace(/^@+/, '').trim();
+const TELEGRAM_BOT_URL = normalizePublicUrl(process.env.PUBLIC_TELEGRAM_BOT_URL) || (TELEGRAM_BOT_USERNAME ? `https://t.me/${TELEGRAM_BOT_USERNAME}` : '');
+const NEWS_CHANNEL_URL = normalizePublicUrl(process.env.PUBLIC_NEWS_CHANNEL_URL);
+const DISCUSSION_CHAT_URL = normalizePublicUrl(process.env.PUBLIC_DISCUSSION_CHAT_URL);
+const SUPPORT_ADMIN_CHAT_ID = String(process.env.TELEGRAM_SUPPORT_CHAT_ID || process.env.TELEGRAM_ADMIN_CHAT_ID || '').trim();
 const LOCAL_DEV_USER = {
   id: 'dev-local',
   first_name: 'Dev',
@@ -164,6 +169,18 @@ let userPresenceStoreDirty = false;
 let userPresenceStoreFlushTimer = null;
 let userPresenceStoreWriteInFlight = false;
 let userPresenceStoreFlushQueued = false;
+
+function normalizePublicUrl(value) {
+  const raw = String(value || '').trim();
+  if (!raw) return '';
+  try {
+    const parsed = new URL(raw);
+    if (parsed.protocol === 'https:' || parsed.protocol === 'http:' || parsed.protocol === 'tg:') {
+      return parsed.toString();
+    }
+  } catch (_) {}
+  return '';
+}
 
 let shiftUserIdsCache = new Set();
 let shiftUserIdsCacheExpiresAtMs = 0;
@@ -2372,7 +2389,7 @@ async function handlePartnersApi(req, res, pathname, sid, user) {
 
     const store = readPartnershipsStore();
     if (listUserPairingIds(store, sid).length >= MAX_PARTNERSHIPS_PER_USER) {
-      sendJson(res, 400, { error: 'Слишком много напарников в книжке' });
+      sendJson(res, 400, { error: 'Слишком много участников в бригаде' });
       return;
     }
     let pairingId = findActivePairingBetween(store, sid, invite.inviterSid);
@@ -2494,7 +2511,7 @@ async function handleShiftShareApi(req, res, pathname, sid, user) {
     const requestedPairingId = body && body.pairingId ? String(body.pairingId) : '';
     const targetPairingId = requestedPairingId || readPartnerState(sid).activePairingId;
     if (!targetPairingId) {
-      sendJson(res, 409, { error: 'Нет активного напарника' });
+      sendJson(res, 409, { error: 'Бригада не выбрана' });
       return;
     }
     const store = readPartnershipsStore();
@@ -2505,7 +2522,7 @@ async function handleShiftShareApi(req, res, pathname, sid, user) {
     }
     const partnerSid = pairing.members.find((m) => m !== sid) || '';
     if (!partnerSid) {
-      sendJson(res, 409, { error: 'Напарник не найден' });
+      sendJson(res, 409, { error: 'Участник бригады не найден' });
       return;
     }
 
@@ -2792,7 +2809,7 @@ function readBodyWithLimit(req, maxBytes) {
   });
 }
 
-const APP_URL = 'https://bloknot-mashinista-bot.ru';
+const APP_URL = PUBLIC_SITE_URL;
 const APP_ORIGIN = (() => {
   try {
     return new URL(APP_URL).origin;
@@ -2849,6 +2866,34 @@ function callTelegramApi(token, method, payload) {
   });
 }
 
+function buildCommunityLinks() {
+  return {
+    appUrl: APP_URL,
+    siteUrl: PUBLIC_SITE_URL,
+    botUrl: TELEGRAM_BOT_URL,
+    newsChannelUrl: NEWS_CHANNEL_URL,
+    discussionChatUrl: DISCUSSION_CHAT_URL,
+    supportEnabled: !!SUPPORT_ADMIN_CHAT_ID,
+  };
+}
+
+function buildCommunityKeyboard() {
+  const keyboard = [
+    [{ text: '✈️ Открыть в Telegram', web_app: { url: APP_URL } }],
+    [{ text: '🌐 Открыть в браузере', url: APP_URL }],
+  ];
+  if (NEWS_CHANNEL_URL) {
+    keyboard.push([{ text: '📣 Новости', url: NEWS_CHANNEL_URL }]);
+  }
+  if (DISCUSSION_CHAT_URL) {
+    keyboard.push([{ text: '💬 Обсуждение', url: DISCUSSION_CHAT_URL }]);
+  }
+  if (TELEGRAM_BOT_URL) {
+    keyboard.push([{ text: '🤖 Открыть бота', url: TELEGRAM_BOT_URL }]);
+  }
+  return { inline_keyboard: keyboard };
+}
+
 function buildWelcomeMessage(chatId, firstName) {
   const greeting = firstName ? `👋 Привет, ${firstName}!` : '👋 Привет!';
   return {
@@ -2864,15 +2909,83 @@ function buildWelcomeMessage(chatId, firstName) {
       '📚 быстро открывать документы и инструкции\n' +
       '📝 сохранять заметки по сменам\n\n' +
       '🔒 Данные привязаны к твоему Telegram-аккаунту.\n\n' +
-      'Открывай приложение по кнопке ниже.',
-    reply_markup: {
-      inline_keyboard: [
-        [{ text: '✈️ Открыть в Telegram', web_app: { url: APP_URL } }],
-        [{ text: '🤖 Открыть бота', url: 'https://t.me/bloknot_mashinista_bot' }],
-        [{ text: '🌐 Открыть в браузере', url: APP_URL }],
-      ],
-    },
+      'Открывай приложение по кнопке ниже. Новости и обсуждение будут здесь же.',
+    reply_markup: buildCommunityKeyboard(),
   };
+}
+
+function buildPlainWelcomeText(firstName) {
+  return (firstName ? `👋 Привет, ${firstName}!\n\n` : '👋 Привет!\n\n') +
+    'Блокнот Машиниста помогает вести смены, смотреть часы и хранить рабочую историю в одном месте.\n\n' +
+    'Команды:\n' +
+    '/start — открыть приложение\n' +
+    '/news — новости проекта\n' +
+    '/chat — обсуждение и обратная связь\n' +
+    '/bug — сообщить о проблеме\n' +
+    '/idea — предложить идею';
+}
+
+function buildCommunityReply(chatId, text) {
+  return {
+    chat_id: chatId,
+    text,
+    reply_markup: buildCommunityKeyboard(),
+    disable_web_page_preview: true,
+  };
+}
+
+function isPrivateTelegramChat(message) {
+  return !!(message && message.chat && message.chat.type === 'private');
+}
+
+function formatTelegramUserForReport(message) {
+  const from = message && message.from ? message.from : {};
+  const parts = [];
+  if (from.first_name || from.last_name) parts.push([from.first_name || '', from.last_name || ''].join(' ').trim());
+  if (from.username) parts.push('@' + from.username);
+  if (from.id) parts.push('id ' + String(from.id));
+  return parts.filter(Boolean).join(' · ') || 'unknown';
+}
+
+async function handleTelegramFeedbackCommand(token, message, chatId, normalizedText, kind) {
+  const commandPattern = kind === 'bug' ? /^\/bug(?:@\w+)?\s*/i : /^\/idea(?:@\w+)?\s*/i;
+  const text = String(normalizedText || '').replace(commandPattern, '').trim();
+  const promptText = kind === 'bug'
+    ? 'Опиши проблему после команды /bug: что не работает, где открыл приложение, Android/iPhone, Telegram или браузер.'
+    : 'Напиши идею после команды /idea: что хочется добавить или изменить.';
+  if (!text) {
+    await callTelegramApi(token, 'sendMessage', {
+      chat_id: chatId,
+      text: promptText,
+      disable_web_page_preview: true,
+    });
+    return;
+  }
+
+  if (SUPPORT_ADMIN_CHAT_ID) {
+    const title = kind === 'bug' ? '🐞 Баг-репорт' : '💡 Идея';
+    await callTelegramApi(token, 'sendMessage', {
+      chat_id: SUPPORT_ADMIN_CHAT_ID,
+      text:
+        `${title}\n\n` +
+        `От: ${formatTelegramUserForReport(message)}\n` +
+        `Чат: ${String(chatId || '')}\n\n` +
+        text,
+      disable_web_page_preview: true,
+    });
+  }
+
+  const fallback = DISCUSSION_CHAT_URL
+    ? '\n\nДля обсуждения с другими пользователями можно также написать в общий чат.'
+    : '';
+  await callTelegramApi(token, 'sendMessage', {
+    chat_id: chatId,
+    text: SUPPORT_ADMIN_CHAT_ID
+      ? 'Принял. Передал сообщение администратору.' + fallback
+      : 'Принял. Админ-чат пока не настроен, поэтому лучше продублировать сообщение в обсуждении.' + fallback,
+    reply_markup: buildCommunityKeyboard(),
+    disable_web_page_preview: true,
+  });
 }
 
 const server = http.createServer(async (req, res) => {
@@ -2911,6 +3024,15 @@ const server = http.createServer(async (req, res) => {
       return;
     }
     sendJson(res, 200, readPoekhaliMapConfig());
+    return;
+  }
+
+  if (pathname === '/api/community') {
+    if (req.method !== 'GET') {
+      sendJson(res, 405, { error: 'Method not allowed' });
+      return;
+    }
+    sendJson(res, 200, buildCommunityLinks());
     return;
   }
 
@@ -2966,21 +3088,12 @@ const server = http.createServer(async (req, res) => {
               error: toErrorMeta(err),
             });
           });
-        } else if (normalizedText.startsWith('/start') || normalizedText.startsWith('/help')) {
+        } else if (/^\/(?:start|help)(?:@\w+)?(?:\s|$)/i.test(normalizedText)) {
           callTelegramApi(token, 'sendPhoto', buildWelcomeMessage(chatId, firstName))
             .then(result => {
               if (!result || result.ok !== true) {
                 return callTelegramApi(token, 'sendMessage', {
-                  chat_id: chatId,
-                  text: (firstName ? `👋 Привет, ${firstName}!\n\n` : '👋 Привет!\n\n') +
-                    'Блокнот Машиниста помогает вести смены, смотреть часы и хранить свою рабочую историю в одном месте.\n\nЕсли удобнее, начни через бота: https://t.me/bloknot_mashinista_bot',
-                  reply_markup: {
-                    inline_keyboard: [
-                      [{ text: '✈️ Открыть в Telegram', web_app: { url: APP_URL } }],
-                      [{ text: '🤖 Открыть бота', url: 'https://t.me/bloknot_mashinista_bot' }],
-                      [{ text: '🌐 Открыть в браузере', url: APP_URL }],
-                    ],
-                  },
+                  ...buildCommunityReply(chatId, buildPlainWelcomeText(firstName)),
                 });
               }
               return null;
@@ -2991,6 +3104,44 @@ const server = http.createServer(async (req, res) => {
                 error: toErrorMeta(err),
               });
             });
+        } else if (/^\/news(?:@\w+)?$/i.test(normalizedText)) {
+          callTelegramApi(token, 'sendMessage', buildCommunityReply(
+            chatId,
+            NEWS_CHANNEL_URL
+              ? 'Новости проекта публикуются в канале.'
+              : 'Канал новостей еще не подключен. Пока важные ссылки доступны ниже.'
+          )).catch((err) => {
+            logStructuredRateLimited('error', 'telegram.webhook.send_news_failed', `news:${chatId || 'unknown'}`, {
+              chatId: chatId || null,
+              error: toErrorMeta(err),
+            });
+          });
+        } else if (/^\/chat(?:@\w+)?$/i.test(normalizedText)) {
+          callTelegramApi(token, 'sendMessage', buildCommunityReply(
+            chatId,
+            DISCUSSION_CHAT_URL
+              ? 'Обсуждение и обратная связь открыты в группе.'
+              : 'Группа обсуждения еще не подключена. Пока можно написать сюда через /bug или /idea.'
+          )).catch((err) => {
+            logStructuredRateLimited('error', 'telegram.webhook.send_chat_failed', `chat:${chatId || 'unknown'}`, {
+              chatId: chatId || null,
+              error: toErrorMeta(err),
+            });
+          });
+        } else if (/^\/bug(?:@\w+)?(?:\s|$)/i.test(normalizedText)) {
+          handleTelegramFeedbackCommand(token, message, chatId, normalizedText, 'bug').catch((err) => {
+            logStructuredRateLimited('error', 'telegram.webhook.send_bug_failed', `bug:${chatId || 'unknown'}`, {
+              chatId: chatId || null,
+              error: toErrorMeta(err),
+            });
+          });
+        } else if (/^\/idea(?:@\w+)?(?:\s|$)/i.test(normalizedText)) {
+          handleTelegramFeedbackCommand(token, message, chatId, normalizedText, 'idea').catch((err) => {
+            logStructuredRateLimited('error', 'telegram.webhook.send_idea_failed', `idea:${chatId || 'unknown'}`, {
+              chatId: chatId || null,
+              error: toErrorMeta(err),
+            });
+          });
         } else if (/^\/myid(?:@\w+)?$/i.test(normalizedText)) {
           callTelegramApi(token, 'sendMessage', {
             chat_id: chatId,
@@ -3001,11 +3152,11 @@ const server = http.createServer(async (req, res) => {
               error: toErrorMeta(err),
             });
           });
-        } else {
-          callTelegramApi(token, 'sendMessage', {
-            chat_id: chatId,
-            text: 'Используй кнопку «Открыть мини-апп» в сообщении или в меню бота.',
-          }).catch((err) => {
+        } else if (isPrivateTelegramChat(message)) {
+          callTelegramApi(token, 'sendMessage', buildCommunityReply(
+            chatId,
+            'Используй кнопку «Открыть мини-апп» в сообщении или в меню бота. Для обратной связи: /bug или /idea.'
+          )).catch((err) => {
             logStructuredRateLimited('error', 'telegram.webhook.send_default_reply_failed', `default:${chatId || 'unknown'}`, {
               chatId: chatId || null,
               error: toErrorMeta(err),
