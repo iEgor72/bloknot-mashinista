@@ -1,14 +1,14 @@
 # Project State
 
 <!-- AUTO_STATUS:START -->
-Generated: 2026-06-07 20:52:24 +1000
+Generated: 2026-06-07 21:00:10 +1000
 
 ## Repository Snapshot
 - Local repo path: `D:\work\bloknot-mashinista-tg`
 - Project memory path: `D:\work\bloknot-mashinista-tg\ai-memory`
 - Branch: `main`
-- HEAD: `6eb0dad`
-- Last commit: `6eb0dad fix(docs): recompute favorite download badge live (not from stale snapshot)`
+- HEAD: `53a0f80`
+- Last commit: `53a0f80 fix(docs): recently-opened renders as real cards, opens, refreshes live`
 
 ## Git Remote
 ```text
@@ -20,7 +20,7 @@ origin	https://github.com/iEgor72/bloknot-mashinista.git (push)
 ```text
 codex/next-direction b044dd5 offline mvp
   codex/tabs-ui        117f1fa [origin/codex/tabs-ui] tabs ui
-* main                 6eb0dad [origin/main: ahead 1] fix(docs): recompute favorite download badge live (not from stale snapshot)
+* main                 53a0f80 [origin/main: ahead 1] fix(docs): recently-opened renders as real cards, opens, refreshes live
   poekhali-rework      2d5f0af chore(memory): refresh after main merge
 ```
 

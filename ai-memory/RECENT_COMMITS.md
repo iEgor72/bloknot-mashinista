@@ -1,9 +1,10 @@
 # Recent Commits
 
-Generated: 2026-06-07 20:52:24 +1000
+Generated: 2026-06-07 21:00:11 +1000
 
 | Hash | Date | Author | Message |
 | --- | --- | --- | --- |
+| `53a0f80` | 2026-06-07T21:00:09+10:00 | iEgor72 | fix(docs): recently-opened renders as real cards, opens, refreshes live |
 | `6eb0dad` | 2026-06-07T20:52:22+10:00 | iEgor72 | fix(docs): recompute favorite download badge live (not from stale snapshot) |
 | `eadc828` | 2026-06-07T20:45:51+10:00 | iEgor72 | fix(docs): render favorites identically to section rows |
 | `9cc50ef` | 2026-06-07T20:38:50+10:00 | iEgor72 | fix(profile,docs): sync avatar across contexts + open favorited docs |
@@ -43,4 +44,3 @@ Generated: 2026-06-07 20:52:24 +1000
 | `7f2f04e` | 2026-06-05T12:26:07+10:00 | iEgor72 | Shift card: show доход/расход only when present (no empty "—") |
 | `153426a` | 2026-06-05T12:23:54+10:00 | iEgor72 | Fix расход always "—": wrong field (ft.liters → ft.consumptionLiters) |
 | `85a6f95` | 2026-06-04T23:37:57Z | iEgor72 | fix(pwa): defer heavy offline assets during startup |
-| `71b2d3f` | 2026-06-04T23:20:28Z | iEgor72 | chore(memory): refresh after PWA login fix |

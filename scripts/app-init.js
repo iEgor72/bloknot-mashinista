@@ -1311,6 +1311,9 @@ if (typeof bootstrapAppStartup === 'function') {
   // Initial counts/render
   updateCount();
   renderFavoritesList();
+  // Exposed so docs-app.js can refresh the favorites badges the moment a doc
+  // finishes downloading (markDocAsDownloaded), like the section list does.
+  window.renderDocsFavorites = renderFavoritesList;
 })();
 
 // Documents bento: live counts from manifest.json + Recent opened from localStorage.

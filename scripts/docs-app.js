@@ -22,6 +22,12 @@
       if (activeFiles && activeFiles.length) {
         renderDocFileList(documentationStore.activeTab, activeFiles);
       }
+
+      // Favorites and "Недавно открытые" cache their own snapshots, so they
+      // must be refreshed on the same trigger or their badge stays stale until
+      // the list is re-opened.
+      try { if (typeof window.renderDocsFavorites === 'function') window.renderDocsFavorites(); } catch (e) {}
+      try { if (typeof window.renderRecentDocs === 'function') window.renderRecentDocs(); } catch (e) {}
     }
 
     function buildDocCacheLookupCandidates(pathKey) {
