@@ -2314,10 +2314,34 @@
           var dd = String(now.getDate()).padStart(2, '0');
           var months = ['янв','фев','мар','апр','май','июн','июл','авг','сен','окт','ноя','дек'];
           var meta = dd + ' ' + months[now.getMonth()] + ' · только что';
-          items.unshift({ path: localPath, name: name, meta: meta, ext: ext });
+
+          // Snapshot the source row's icon + body so "Недавно открытые" can
+          // render the exact same card as the section list. The doc was just
+          // opened from a visible row, so it's in the DOM.
+          var recIconHTML = '', recBodyHTML = '';
+          try {
+            var sel = (window.CSS && CSS.escape)
+              ? CSS.escape(String(filePath || ''))
+              : String(filePath || '').replace(/["\\]/g, '\\$&');
+            var srcRow = document.querySelector('.docs-item[data-file-path="' + sel + '"]');
+            if (srcRow) {
+              var srcIcon = srcRow.querySelector('.docs-item-icon');
+              var srcBody = srcRow.querySelector('.docs-item-body');
+              if (srcIcon) recIconHTML = srcIcon.outerHTML;
+              if (srcBody) recBodyHTML = srcBody.outerHTML;
+            }
+          } catch (snapErr) { /* ignore */ }
+
+          items.unshift({
+            path: localPath, name: name, meta: meta, ext: ext,
+            filePath: filePath || '', fileName: fileName || '', mimeType: mimeType || '',
+            iconHTML: recIconHTML, bodyHTML: recBodyHTML
+          });
           items = items.slice(0, 8);
           window.localStorage.setItem('shift_tracker_docs_recent_v1', JSON.stringify(items));
-          // Notify app-init's listener even within the same tab
+          // Same-tab refresh: a synthetic 'storage' event has no `.key`, so the
+          // listener can't filter on it — call the renderer directly instead.
+          if (typeof window.renderRecentDocs === 'function') window.renderRecentDocs();
           try { window.dispatchEvent(new Event('storage')); } catch (e) {}
         }
       } catch (e) { /* ignore */ }

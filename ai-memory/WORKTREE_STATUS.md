@@ -1,6 +1,6 @@
 # Worktree Status
 
-Generated: 2026-06-07 20:45:52 +1000
+Generated: 2026-06-07 20:52:24 +1000
 
 ## git status -sb
 ```text
@@ -14,19 +14,19 @@ Generated: 2026-06-07 20:45:52 +1000
 ```text
 codex/next-direction b044dd5 offline mvp
   codex/tabs-ui        117f1fa [origin/codex/tabs-ui] tabs ui
-* main                 eadc828 [origin/main: ahead 1] fix(docs): render favorites identically to section rows
+* main                 6eb0dad [origin/main: ahead 1] fix(docs): recompute favorite download badge live (not from stale snapshot)
   poekhali-rework      2d5f0af chore(memory): refresh after main merge
 ```
 
 ## HEAD
 ```text
-eadc828 fix(docs): render favorites identically to section rows
- ai-memory/CHANGELOG.md           |  9 ++++++++
+6eb0dad fix(docs): recompute favorite download badge live (not from stale snapshot)
+ ai-memory/CHANGELOG.md           |  9 +++++++++
  ai-memory/INDEX.md               |  2 +-
- ai-memory/PROJECT_STATE.md       | 17 +++++---------
+ ai-memory/PROJECT_STATE.md       |  8 ++++----
  ai-memory/RECENT_COMMITS.md      |  4 ++--
- ai-memory/WORKTREE_STATUS.md     | 29 +++++++++++++----------
+ ai-memory/WORKTREE_STATUS.md     | 25 +++++++++++--------------
  ai-memory/sessions/2026-06-07.md |  1 +
- scripts/app-init.js              | 50 ++++++++++++++++++++++++++++++++++------
- 7 files changed, 79 insertions(+), 33 deletions(-)
+ scripts/app-init.js              | 37 +++++++++++++++++++++++++++++++++++--
+ 7 files changed, 63 insertions(+), 23 deletions(-)
 ```

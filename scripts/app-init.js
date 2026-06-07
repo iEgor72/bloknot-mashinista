@@ -1342,6 +1342,35 @@ if (typeof bootstrapAppStartup === 'function') {
   } catch (e) {}
 
   // Recent docs from localStorage (key written by docs-app.js if available)
+  function recentEscapeHtml(s){ return String(s||'').replace(/[&<>"']/g, function(c){return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c];}); }
+
+  // Recompute the corner download badge live (the snapshot can be stale), the
+  // same way the section/favorites lists do.
+  function refreshRecentDownloadState(rowsEl) {
+    if (!rowsEl || typeof checkDocDownloaded !== 'function') return;
+    var rows = rowsEl.querySelectorAll('.docs-item[data-file-path]');
+    Array.prototype.forEach.call(rows, function(row) {
+      var enc = row.getAttribute('data-file-path') || '';
+      var docPath = '';
+      try { docPath = decodeURIComponent(enc); } catch (e) { docPath = enc; }
+      if (!docPath) return;
+      var iconWrap = row.querySelector('.docs-item-icon');
+      var stale = iconWrap && iconWrap.querySelector('.docs-download-icon');
+      if (stale && stale.parentNode) stale.parentNode.removeChild(stale);
+      row.classList.remove('is-downloaded', 'is-online-only');
+      Promise.resolve(checkDocDownloaded(docPath)).then(function(isDownloaded) {
+        row.classList.toggle('is-downloaded', !!isDownloaded);
+        row.classList.toggle('is-online-only', !isDownloaded);
+        row.setAttribute('data-doc-downloaded', isDownloaded ? '1' : '0');
+        if (iconWrap && typeof buildDocDownloadStatusIcon === 'function') {
+          var existing = iconWrap.querySelector('.docs-download-icon');
+          if (existing && existing.parentNode) existing.parentNode.removeChild(existing);
+          iconWrap.insertAdjacentHTML('beforeend', buildDocDownloadStatusIcon(!!isDownloaded));
+        }
+      }).catch(function() {});
+    });
+  }
+
   function renderRecentDocs() {
     var rowsEl = document.getElementById('docsRecentRows');
     var emptyEl = document.getElementById('docsRecentEmpty');
@@ -1361,15 +1390,34 @@ if (typeof bootstrapAppStartup === 'function') {
     items.slice(0, 4).forEach(function(d) {
       var name = (d && d.name) ? String(d.name) : 'Документ';
       var meta = (d && d.meta) ? String(d.meta) : '';
-      var ext = (d && d.ext) ? String(d.ext).toUpperCase() : 'PDF';
-      html += '<div class="doc-recent-row">' +
-        '<div class="doc-recent-ico"><svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M14 3H7a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h7a2 2 0 0 0 2-2V6z"></path><path d="M14 3v3h3"></path></svg></div>' +
-        '<div><div class="doc-recent-name">' + name.replace(/[<>&]/g, '') + '</div><div class="doc-recent-meta">' + meta.replace(/[<>&]/g, '') + '</div></div>' +
-        '<div class="doc-recent-meta-pill">' + ext.replace(/[^A-ZА-Я0-9]/gi, '') + '</div>' +
+      // Re-emit the file identity so the shared #docsShell handler opens it.
+      var fileAttrs = (d && d.filePath)
+        ? ' role="button" tabindex="0"' +
+          ' data-file-path="' + recentEscapeHtml(d.filePath) + '"' +
+          ' data-file-name="' + recentEscapeHtml(d.fileName || '') + '"' +
+          ' data-mime-type="' + recentEscapeHtml(d.mimeType || '') + '"'
+        : '';
+
+      // Preferred: replay the captured section markup verbatim (identical card).
+      if (d && d.iconHTML && d.bodyHTML) {
+        html += '<div class="docs-item"' + fileAttrs + '>' + d.iconHTML + d.bodyHTML + '</div>';
+        return;
+      }
+
+      // Fallback for entries saved before snapshots existed — still a real card.
+      html += '<div class="docs-item"' + fileAttrs + '>' +
+        '<div class="docs-item-body">' +
+          '<div class="docs-item-title">' + recentEscapeHtml(name) + '</div>' +
+          (meta ? '<div class="docs-item-footer">' + recentEscapeHtml(meta) + '</div>' : '') +
+        '</div>' +
       '</div>';
     });
     rowsEl.innerHTML = html;
+    refreshRecentDownloadState(rowsEl);
   }
+  // Exposed so docs-app.js can refresh the list right after a doc is opened
+  // (a synthetic 'storage' event carries no `.key` to filter on).
+  window.renderRecentDocs = renderRecentDocs;
   renderRecentDocs();
   window.addEventListener('storage', function(e) {
     if (e && e.key === 'shift_tracker_docs_recent_v1') renderRecentDocs();

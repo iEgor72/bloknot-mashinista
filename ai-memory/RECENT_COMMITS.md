@@ -1,9 +1,10 @@
 # Recent Commits
 
-Generated: 2026-06-07 20:45:52 +1000
+Generated: 2026-06-07 20:52:24 +1000
 
 | Hash | Date | Author | Message |
 | --- | --- | --- | --- |
+| `6eb0dad` | 2026-06-07T20:52:22+10:00 | iEgor72 | fix(docs): recompute favorite download badge live (not from stale snapshot) |
 | `eadc828` | 2026-06-07T20:45:51+10:00 | iEgor72 | fix(docs): render favorites identically to section rows |
 | `9cc50ef` | 2026-06-07T20:38:50+10:00 | iEgor72 | fix(profile,docs): sync avatar across contexts + open favorited docs |
 | `d542765` | 2026-06-07T12:44:10+10:00 | iEgor72 | chore(diag): serve probe page from /assets (top-level files are whitelisted) |
@@ -43,4 +44,3 @@ Generated: 2026-06-07 20:45:52 +1000
 | `153426a` | 2026-06-05T12:23:54+10:00 | iEgor72 | Fix расход always "—": wrong field (ft.liters → ft.consumptionLiters) |
 | `85a6f95` | 2026-06-04T23:37:57Z | iEgor72 | fix(pwa): defer heavy offline assets during startup |
 | `71b2d3f` | 2026-06-04T23:20:28Z | iEgor72 | chore(memory): refresh after PWA login fix |
-| `99cb7cf` | 2026-06-04T23:20:05Z | iEgor72 | fix(auth): create PWA login request from pending gate |

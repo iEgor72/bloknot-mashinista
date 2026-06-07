@@ -5916,3 +5916,12 @@ Append-only журнал действий ИИ-агентов по проект�
 - Methods: `git post-commit hook`, `automatic memory update`
 - Files: `ai-memory/CHANGELOG.md`, `ai-memory/INDEX.md`, `ai-memory/PROJECT_STATE.md`, `ai-memory/RECENT_COMMITS.md`, `ai-memory/WORKTREE_STATUS.md`, `ai-memory/sessions/2026-06-07.md`, `scripts/app-init.js`
 - Notes: Commit: `eadc828758ab58f7def4c959d233cbcb34500797` (`eadc828`) | Author: `iEgor72`
+
+## 2026-06-07 20:52:23 +1000
+
+- Source: `post-commit`
+- Task: fix(docs): recompute favorite download badge live (not from stale snapshot)
+- Branch: `main`
+- Methods: `git post-commit hook`, `automatic memory update`
+- Files: `ai-memory/CHANGELOG.md`, `ai-memory/INDEX.md`, `ai-memory/PROJECT_STATE.md`, `ai-memory/RECENT_COMMITS.md`, `ai-memory/WORKTREE_STATUS.md`, `ai-memory/sessions/2026-06-07.md`, `scripts/app-init.js`
+- Notes: Commit: `6eb0dad58b376a1dd39a752eae0350f9a00a7bd6` (`6eb0dad`) | Author: `iEgor72`
