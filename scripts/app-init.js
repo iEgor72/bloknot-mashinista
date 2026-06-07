@@ -1120,7 +1120,24 @@ if (typeof bootstrapAppStartup === 'function') {
     if (low.indexOf('.docx') >= 0) ext = 'DOCX';
     else if (low.indexOf('реж') >= 0) ext = 'РЕЖ';
 
-    return { path: path, name: name, meta: meta, ext: ext, filePath: filePath, fileName: fileName, mimeType: mimeType };
+    // Snapshot the real icon + body markup so the favorites list renders
+    // pixel-identically to the section rows (colored file icon, title,
+    // subtitle, footer) instead of a stripped-down variant.
+    var iconEl = rowEl.querySelector('.docs-item-icon');
+    var bodyEl = rowEl.querySelector('.docs-item-body');
+    var iconHTML = iconEl ? iconEl.outerHTML : '';
+    var bodyHTML = bodyEl ? bodyEl.outerHTML : '';
+    var stateClass = '';
+    if (rowEl.classList) {
+      if (rowEl.classList.contains('is-downloaded')) stateClass = 'is-downloaded';
+      else if (rowEl.classList.contains('is-online-only')) stateClass = 'is-online-only';
+    }
+
+    return {
+      path: path, name: name, meta: meta, ext: ext,
+      filePath: filePath, fileName: fileName, mimeType: mimeType,
+      iconHTML: iconHTML, bodyHTML: bodyHTML, stateClass: stateClass
+    };
   }
 
   function ensureStarButton(rowEl) {
@@ -1172,6 +1189,11 @@ if (typeof bootstrapAppStartup === 'function') {
       favoritesList.innerHTML = '<div class="docs-fav-empty">Здесь пока пусто. Нажми на ⭐ у любого документа, чтобы добавить его сюда.</div>';
       return;
     }
+    var removeStar =
+      '<button class="docs-fav-toggle is-on" type="button" data-fav-remove="__PATH__" aria-label="Убрать из избранного">' +
+        '<svg viewBox="0 0 20 20" fill="currentColor" stroke="currentColor" stroke-width="1.5" stroke-linejoin="round" stroke-linecap="round"><path d="m10 3 2.2 5 5.3.5-4 3.6 1.2 5.3L10 14.4 5.3 17.4l1.2-5.3-4-3.6 5.3-.5Z"/></svg>' +
+      '</button>';
+
     var html = '';
     items.forEach(function(it) {
       // Re-emit the file identity so the shared #docsShell open handler
@@ -1182,14 +1204,28 @@ if (typeof bootstrapAppStartup === 'function') {
           ' data-file-name="' + escapeAttr(it.fileName || '') + '"' +
           ' data-mime-type="' + escapeAttr(it.mimeType || '') + '"'
         : '';
+      var safePath = escapeAttr(it.path);
+      var star = removeStar.replace('__PATH__', function() { return safePath; });
+
+      // Preferred path: replay the captured section markup verbatim so the row
+      // looks identical (file icon + title + subtitle + footer).
+      if (it.iconHTML && it.bodyHTML) {
+        html += '<div class="docs-item is-favorite has-fav-toggle ' + (it.stateClass || '') + '"' + fileAttrs +
+            ' data-doc-path="' + escapeAttr(it.path) + '">' +
+          it.iconHTML +
+          it.bodyHTML +
+          star +
+        '</div>';
+        return;
+      }
+
+      // Fallback for entries saved before markup snapshots existed.
       html += '<div class="docs-item is-favorite has-fav-toggle"' + fileAttrs + ' data-doc-path="' + escapeAttr(it.path) + '">' +
-        '<div class="docs-item-main">' +
-          '<div class="docs-item-name">' + escapeHtml(it.name) + '</div>' +
-          (it.meta ? '<div class="docs-item-meta">' + escapeHtml(it.meta) + '</div>' : '') +
+        '<div class="docs-item-body">' +
+          '<div class="docs-item-title">' + escapeHtml(it.name) + '</div>' +
+          (it.meta ? '<div class="docs-item-footer">' + escapeHtml(it.meta) + '</div>' : '') +
         '</div>' +
-        '<button class="docs-fav-toggle is-on" type="button" data-fav-remove="' + escapeAttr(it.path) + '" aria-label="Убрать из избранного">' +
-          '<svg viewBox="0 0 20 20" fill="currentColor" stroke="currentColor" stroke-width="1.5" stroke-linejoin="round" stroke-linecap="round"><path d="m10 3 2.2 5 5.3.5-4 3.6 1.2 5.3L10 14.4 5.3 17.4l1.2-5.3-4-3.6 5.3-.5Z"/></svg>' +
-        '</button>' +
+        star +
       '</div>';
     });
     favoritesList.innerHTML = html;

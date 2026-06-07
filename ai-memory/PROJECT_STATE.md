@@ -1,14 +1,14 @@
 # Project State
 
 <!-- AUTO_STATUS:START -->
-Generated: 2026-06-07 12:44:11 +1000
+Generated: 2026-06-07 20:38:51 +1000
 
 ## Repository Snapshot
 - Local repo path: `D:\work\bloknot-mashinista-tg`
 - Project memory path: `D:\work\bloknot-mashinista-tg\ai-memory`
 - Branch: `main`
-- HEAD: `d542765`
-- Last commit: `d542765 chore(diag): serve probe page from /assets (top-level files are whitelisted)`
+- HEAD: `9cc50ef`
+- Last commit: `9cc50ef fix(profile,docs): sync avatar across contexts + open favorited docs`
 
 ## Git Remote
 ```text
@@ -20,19 +20,14 @@ origin	https://github.com/iEgor72/bloknot-mashinista.git (push)
 ```text
 codex/next-direction b044dd5 offline mvp
   codex/tabs-ui        117f1fa [origin/codex/tabs-ui] tabs ui
-* main                 d542765 [origin/main: ahead 1] chore(diag): serve probe page from /assets (top-level files are whitelisted)
+* main                 9cc50ef [origin/main: ahead 1] fix(profile,docs): sync avatar across contexts + open favorited docs
   poekhali-rework      2d5f0af chore(memory): refresh after main merge
 ```
 
 ## Worktree
 ```text
-MM ai-memory/CHANGELOG.md
-M  ai-memory/INDEX.md
-M  ai-memory/PROJECT_STATE.md
-M  ai-memory/RECENT_COMMITS.md
-M  ai-memory/WORKTREE_STATUS.md
-M  ai-memory/sessions/2026-06-06.md
-AM ai-memory/sessions/2026-06-07.md
+M ai-memory/CHANGELOG.md
+ M ai-memory/sessions/2026-06-07.md
 ```
 <!-- AUTO_STATUS:END -->
 

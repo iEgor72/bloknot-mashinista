@@ -1,9 +1,10 @@
 # Recent Commits
 
-Generated: 2026-06-07 12:44:12 +1000
+Generated: 2026-06-07 20:38:52 +1000
 
 | Hash | Date | Author | Message |
 | --- | --- | --- | --- |
+| `9cc50ef` | 2026-06-07T20:38:50+10:00 | iEgor72 | fix(profile,docs): sync avatar across contexts + open favorited docs |
 | `d542765` | 2026-06-07T12:44:10+10:00 | iEgor72 | chore(diag): serve probe page from /assets (top-level files are whitelisted) |
 | `08752ec` | 2026-06-07T12:42:58+10:00 | iEgor72 | chore(diag): add /diag.html network probe page |
 | `fe36e40` | 2026-06-06T18:44:52+10:00 | iEgor72 | fix(pwa): retry flaky asset fetches in service worker |
@@ -43,4 +44,3 @@ Generated: 2026-06-07 12:44:12 +1000
 | `71b2d3f` | 2026-06-04T23:20:28Z | iEgor72 | chore(memory): refresh after PWA login fix |
 | `99cb7cf` | 2026-06-04T23:20:05Z | iEgor72 | fix(auth): create PWA login request from pending gate |
 | `89333db` | 2026-06-02T19:52:42+10:00 | iEgor72 | Fix loco on card + fuel hint when editing (programmatic loco-series set) |
-| `593e77b` | 2026-06-02T19:49:22+10:00 | iEgor72 | Shift card: always show доход + расход in the flat plate (fix missing income) |

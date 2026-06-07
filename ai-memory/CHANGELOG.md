@@ -5898,3 +5898,12 @@ Append-only журнал действий ИИ-агентов по проект�
 - Methods: `git post-commit hook`, `automatic memory update`
 - Files: `assets/diag.html`
 - Notes: Commit: `d5427657a520546e164392b42a0b7d0ecbfce8e7` (`d542765`) | Author: `iEgor72`
+
+## 2026-06-07 20:38:51 +1000
+
+- Source: `post-commit`
+- Task: fix(profile,docs): sync avatar across contexts + open favorited docs
+- Branch: `main`
+- Methods: `git post-commit hook`, `automatic memory update`
+- Files: `ai-memory/CHANGELOG.md`, `ai-memory/INDEX.md`, `ai-memory/PROJECT_STATE.md`, `ai-memory/RECENT_COMMITS.md`, `ai-memory/WORKTREE_STATUS.md`, `ai-memory/sessions/2026-06-06.md`, `ai-memory/sessions/2026-06-07.md`, `scripts/app-init.js`, `scripts/auth.js`, `server.js`
+- Notes: Commit: `9cc50ef8b595c9cf2150d1e18b5b417e4c354a94` (`9cc50ef`) | Author: `iEgor72`
