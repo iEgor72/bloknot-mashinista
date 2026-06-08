@@ -4071,6 +4071,7 @@ details.optional-card[open] .optional-summary-chevron {
   margin-top: 2px;
 }
 .auth-retry {
+  display: none !important;
   background: var(--glass);
   border: 1px solid var(--hair);
   color: var(--ink-2);
@@ -4080,6 +4081,7 @@ details.optional-card[open] .optional-summary-chevron {
   font: 600 12px/1 'Manrope';
   cursor: pointer;
 }
+.auth-retry.visible { display: none !important; }
 .auth-error {
   margin-top: 10px;
   padding: 10px 12px;
@@ -4089,7 +4091,14 @@ details.optional-card[open] .optional-summary-chevron {
   font: 600 12px/1.4 'Manrope';
   box-shadow: inset 0 0 0 1px color-mix(in oklch, var(--bad) 28%, transparent);
 }
-.auth-error:empty { display: none; }
+.auth-error:empty,
+.auth-card[data-auth-state="error"] .auth-error:empty {
+  display: none !important;
+  min-height: 0;
+  margin: 0;
+  padding: 0;
+  box-shadow: none;
+}
 .auth-status {
   margin-top: 12px;
   font: 500 12px/1.4 'JetBrains Mono', monospace;

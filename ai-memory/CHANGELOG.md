@@ -6121,3 +6121,116 @@ Append-only журнал действий ИИ-агентов по проект�
 - Branch: `main`
 - Methods: `После деплоя выявлено что PM2 не подхватывает .env при reload и /api/community не видит PUBLIC_* и TELEGRAM_SUPPORT_CHAT_ID`, `добавлен тихий loadDotEnvFile в server.js без вывода секретов и без перезаписи process.env`, `проверен node --check и diff check`
 - Files: `server.js`
+
+## 2026-06-07 23:58:59 +1000
+
+- Source: `post-commit`
+- Task: fix(server): load env file on startup
+- Branch: `main`
+- Methods: `git post-commit hook`, `automatic memory update`
+- Files: `ai-memory/CHANGELOG.md`, `ai-memory/INDEX.md`, `ai-memory/PROJECT_STATE.md`, `ai-memory/RECENT_COMMITS.md`, `ai-memory/WORKTREE_STATUS.md`, `ai-memory/sessions/2026-06-07.md`, `server.js`
+- Notes: Commit: `347f6ea3e14f7925e0f80bdc86dd43a18733f486` (`347f6ea`) | Author: `iEgor72`
+
+## 2026-06-08 00:01:38 +1000
+
+- Source: `manual`
+- Task: Commit push deploy community launch updates to production
+- Branch: `main`
+- Methods: `Опубликованы посты 5 и 6 в Telegram message_id 8 и 9`, `создан и запушен commit 2e15db1 с community/bot/profile/brigade changes`, `после production-проверки добавлен commit 347f6ea для тихой загрузки .env в server.js`, `production VPS fast-forward до 347f6ea`, `PM2 reload bloknot-mashinista --update-env`, `проверены внешний /`, `/api/community с news/discussion/support true`, `sw.js v363`, `обновлены bot commands без сброса webhook`
+- Files: `server.js`, `index.html`, `scripts/app-init.js`, `scripts/app.js`, `scripts/partners.js`, `scripts/render.js`, `scripts/shift-form.js`, `scripts/setup-bot-webhook.py`, `scripts/app-constants.js`, `styles/56-profile.css`, `sw.js`
+
+## 2026-06-08 00:09:14 +1000
+
+- Source: `manual`
+- Task: Проверен повторный дефолтный ответ Telegram-бота в группе обсуждения
+- Branch: `main`
+- Methods: `Сверен production server.js на VPS с условием isPrivateTelegramChat для fallback`, `проверен PM2 online`, `выполнен безопасный localhost webhook smoke с фейковой supergroup и без упоминания реальной группы`, `grep PM2 log-файлов не нашел попыток ответа на fake chat id`, `установлено что скриновые сообщения относятся к публикации постов 23:51 до production deploy 00:01`
+- Files: `server.js`, `ai-memory`
+
+## 2026-06-08 00:11:10 +1000
+
+- Source: `manual`
+- Task: Проверена роль колокольчика уведомлений в приложении
+- Branch: `main`
+- Methods: `Найден локальный notifications-модуль в scripts/app-init.js`, `установлено что уведомления хранятся в localStorage и сейчас автоматически seeded один раз объявление Большое обновление`, `подтверждено что серверного канала in-app новостей пока нет`
+- Files: `scripts/app-init.js`, `index.html`, `ai-memory`
+
+## 2026-06-08 00:23:47 +1000
+
+- Source: `manual`
+- Task: Добавлены рабочие in-app уведомления для колокольчика
+- Branch: `main`
+- Methods: `В scripts/app-init.js вынесены системные объявления в список с idempotent ключами и replace без сброса read-state`, `добавлены объявления про редизайн`, `помощь`, `документы`, `Бригаду и Поехали`, `в scripts/partners.js добавлены уведомления для входящих и автоматически принятых смен Бригады`, `PWA cache поднят до v364`, `проверены node --check`, `git diff --check и отдельный Playwright smoke колокольчика на localhost`
+- Files: `scripts/app-init.js`, `scripts/partners.js`, `scripts/app-constants.js`, `sw.js`, `ai-memory`
+
+## 2026-06-08 00:29:53 +1000
+
+- Source: `manual`
+- Task: Исправлен нижний блок auth error screen
+- Branch: `main`
+- Methods: `Скрыт legacy btnAuthRetry в error-state`, `потому что основной CTA уже повторяет Telegram-вход`, `auth-error теперь не отображается при пустом тексте даже внутри auth-card[data-auth-state=error]`, `PWA cache поднят до v365`, `проверены node --check`, `git diff --check и Playwright воспроизведение error-state`
+- Files: `scripts/auth.js`, `styles/50-design-refresh.css`, `scripts/app-constants.js`, `sw.js`, `ai-memory`
+
+## 2026-06-08 01:06:00 +1000
+
+- Source: `manual`
+- Task: Обновлена публичная SEO-витрина сайта
+- Branch: `main`
+- Methods: `Пересобраны нейтральные hero-изображения с текущими экранами приложения`, `переписаны SEO-страницы как связанная продуктовая витрина`, `добавлены страницы Документы`, `Бригада и Поехали`, `обновлены маршруты и sitemap`
+- Files: `assets/seo/landing-overview.jpg`, `assets/seo/landing-salary-screen.jpg`, `docs/seo`, `server.js`
+
+## 2026-06-08 01:31:30 +1000
+
+- Source: `manual`
+- Task: Переработана публичная главная сайта после визуальной правки
+- Branch: `main`
+- Methods: `Убран внутренний блок и лишний текст`, `заменены видимые hero-баннеры на реальные скриншоты приложения в CSS-рамке телефона`, `обновлены OG-изображения`, `исправлен layout внутренних SEO-страниц и проверены маршруты`
+- Files: `docs/seo/prilozhenie-dlya-mashinista.html`, `docs/seo/seo.css`, `docs/seo/*.html`, `assets/seo/*.jpg`, `assets/seo/screen-*.png`
+
+## 2026-06-08 01:39:04 +1000
+
+- Source: `manual`
+- Task: Обновлены SEO-заголовки и описания для поисковиков
+- Branch: `main`
+- Methods: `Добавлены meta description`, `canonical`, `Open Graph`, `Twitter и JSON-LD для главной страницы`, `переписаны title/description/og для SEO-страниц`, `убраны видимые старые фразы про один тап и фидбек`, `проверены served metadata на localhost`
+- Files: `index.html`, `docs/seo/*.html`, `scripts/app.js`
+
+## 2026-06-08 02:17:03 +1000
+
+- Source: `manual`
+- Task: Добавлено редактирование имени и фамилии в профиле
+- Branch: `main`
+- Methods: `Добавил поля имени/фамилии в лист Личные данные`, `расширил localStorage/server profile`, `сделал ручное имя приоритетнее Telegram`, `обновил подписи активных связок Бригады и sharedByName`, `поднял PWA cache до v366`, `проверил UI`, `API профиля и обновление partner labels`
+- Files: `index.html`, `scripts/app-init.js`, `scripts/partners.js`, `server.js`, `scripts/app-constants.js`, `sw.js`
+
+## 2026-06-08 02:28:27 +1000
+
+- Source: `manual`
+- Task: Упрощена публичная SEO-витрина после замечаний по лишним кнопкам
+- Branch: `main`
+- Methods: `Механически удалил из hero SEO-страниц внутренние CTA`, `small-links`, `hero-points и quick-stats`, `упростил общий CSS витрины`, `убрал лишние hero-чипы и ссылки-кнопки в карточках`, `переписал страницу смен/часов без видимого калькуляторного позиционирования`, `старый URL калькулятора направлен на страницу смен и часов и убран из sitemap`, `проверены desktop/mobile screenshots и served HTML`
+- Files: `docs/seo/*.html`, `docs/seo/seo.css`, `server.js`
+
+## 2026-06-08 14:43:10 +1000
+
+- Source: `manual`
+- Task: Переработана публичная SEO-главная в темном стиле приложения
+- Branch: `main`
+- Methods: `Переписал hero и карточки на более человеческий продуктовый текст`, `заменил общий SEO CSS на темную палитру приложения с реальными скриншотами в компактной рамке`, `проверил desktop/mobile в браузере`, `SEO routes и git diff --check`
+- Files: `docs/seo/prilozhenie-dlya-mashinista.html`, `docs/seo/seo.css`
+
+## 2026-06-08 14:46:37 +1000
+
+- Source: `manual`
+- Task: Исправлена SEO-рамка телефона на iPhone-мокап
+- Branch: `main`
+- Methods: `Переделал .hero-media в docs/seo/seo.css: вернул высокую iPhone-пропорцию`, `добавил черную лицевую панель`, `Dynamic Island и боковую кнопку`, `проверил страницу Документы и главную в in-app browser на mobile/desktop`, `проверил SEO routes и git diff --check`
+- Files: `docs/seo/seo.css`
+
+## 2026-06-08 14:50:47 +1000
+
+- Source: `manual`
+- Task: Переписан текст публичной главной на более человеческий
+- Branch: `main`
+- Methods: `Убрал фразы вроде темное мобильное приложение и описания из ТЗ`, `переписал hero`, `чипы`, `карточки`, `Telegram-блок`, `footer и SEO meta`, `проверил desktop/mobile в браузере`, `отсутствие старых фраз`, `served page и git diff --check`
+- Files: `docs/seo/prilozhenie-dlya-mashinista.html`

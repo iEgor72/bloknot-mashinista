@@ -1,9 +1,10 @@
 # Recent Commits
 
-Generated: 2026-06-07 23:53:12 +1000
+Generated: 2026-06-08 14:50:57 +1000
 
 | Hash | Date | Author | Message |
 | --- | --- | --- | --- |
+| `347f6ea` | 2026-06-07T23:58:58+10:00 | iEgor72 | fix(server): load env file on startup |
 | `2e15db1` | 2026-06-07T23:52:36+10:00 | iEgor72 | feat: add community links and launch posts |
 | `7f786ff` | 2026-06-07T21:10:20+10:00 | iEgor72 | fix(docs): refresh favorite/recent download badge on download completion |
 | `53a0f80` | 2026-06-07T21:00:09+10:00 | iEgor72 | fix(docs): recently-opened renders as real cards, opens, refreshes live |
@@ -43,4 +44,3 @@ Generated: 2026-06-07 23:53:12 +1000
 | `00f9d8c` | 2026-06-05T22:18:39+10:00 | iEgor72 | Remove dead admin /api backend |
 | `5af9bc7` | 2026-06-05T21:51:19+10:00 | iEgor72 | Remove admin panel frontend |
 | `baede9d` | 2026-06-05T12:56:46+10:00 | iEgor72 | Shift card: redesign data as a calm labelled key→value grid |
-| `7f2f04e` | 2026-06-05T12:26:07+10:00 | iEgor72 | Shift card: show доход/расход only when present (no empty "—") |

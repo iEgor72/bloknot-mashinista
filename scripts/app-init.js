@@ -227,6 +227,10 @@ if (typeof bootstrapAppStartup === 'function') {
   function genId() {
     return 'n_' + Date.now().toString(36) + Math.random().toString(36).slice(2, 7);
   }
+  function releaseTime(value) {
+    var parsed = Date.parse(value);
+    return isFinite(parsed) ? parsed : Date.now();
+  }
   function updateBell(items) {
     if (!dotEl) return;
     var n = unreadCount(items || load());
@@ -245,7 +249,9 @@ if (typeof bootstrapAppStartup === 'function') {
       return;
     }
     var html = '';
-    items.slice(0, 30).forEach(function(it) {
+    items.slice().sort(function(a, b) {
+      return ((b && b.ts) || 0) - ((a && a.ts) || 0);
+    }).slice(0, 30).forEach(function(it) {
       var tone = it.tone || 'info';
       var hasText = !!it.text;
       html += '<div class="notif-row notif-tone-' + escape(tone) + (it.read ? ' is-read' : ' is-unread') + '"' +
@@ -292,7 +298,19 @@ if (typeof bootstrapAppStartup === 'function') {
     var now = Date.now();
     if (opts.key) {
       // Idempotent announcement: never re-add, so its read state sticks.
-      if (items.some(function(it){ return it.key === opts.key; })) { render(); return; }
+      for (var k = 0; k < items.length; k++) {
+        if (items[k].key === opts.key) {
+          if (opts.replace) {
+            items[k].title = title;
+            items[k].text = text || '';
+            items[k].tone = tone || 'info';
+            items[k].ts = opts.ts || items[k].ts || now;
+            save(items);
+          }
+          render();
+          return;
+        }
+      }
     } else if (items.some(function(it){ return it.title === title && (now - (it.ts || 0)) < 24*3600*1000; })) {
       // Dedup transient notifications by title within last 24h.
       render();
@@ -352,18 +370,68 @@ if (typeof bootstrapAppStartup === 'function') {
     });
   }
 
-  // New design announcement — seeded once, read state persists.
-  addNotification(
-    'Большое обновление',
-    'Мы переработали навигацию и карточку смены:\n' +
-    '• Профиль — новая вкладка: данные, настройки расчёта, бригада, установка приложения\n' +
-    '• Смены — журнал и запуск «Поехали» прямо с карточки смены\n' +
-    '• Бригада — получателя смены теперь выбираете на самой смене\n' +
-    '• Карточка смены — спокойный вид с доходом, расходом и локомотивом\n' +
-    'Загляните в каждый раздел — стало удобнее и понятнее.',
-    'success',
-    { key: 'nav_refresh_2026_06_v1' }
-  );
+  var SYSTEM_ANNOUNCEMENTS = [
+    {
+      key: 'nav_refresh_2026_06_v1',
+      title: 'Большое обновление',
+      tone: 'success',
+      ts: releaseTime('2026-06-08T00:12:00+10:00'),
+      text:
+        'Обновили навигацию и карточку смены:\n' +
+        '• Профиль — данные, расчёт, Бригада и установка приложения\n' +
+        '• Смены — журнал и запуск «Поехали» прямо с карточки\n' +
+        '• Документы — разделы открываются быстрее и понятнее\n' +
+        '• Карточка смены — спокойный вид с доходом, расходом и локомотивом'
+    },
+    {
+      key: 'feedback_links_2026_06_v1',
+      title: 'Помощь и обратная связь',
+      tone: 'info',
+      ts: releaseTime('2026-06-08T00:13:00+10:00'),
+      text:
+        'В Профиле появился блок «Помощь и связь».\n' +
+        'Оттуда можно открыть бота, канал новостей, обсуждение и быстро написать о проблеме или идее.'
+    },
+    {
+      key: 'docs_bd_folders_2026_06_v1',
+      title: 'Документы и Папки',
+      tone: 'info',
+      ts: releaseTime('2026-06-08T00:14:00+10:00'),
+      text:
+        'Раздел «Папки» теперь подписан как материалы по нарушениям БД.\n' +
+        'Инструкции, скорости, режимки, памятки и избранное остаются в одной вкладке «Документы».'
+    },
+    {
+      key: 'brigade_launch_2026_06_v1',
+      title: 'Бригада',
+      tone: 'success',
+      ts: releaseTime('2026-06-08T00:15:00+10:00'),
+      text:
+        'Можно связаться по короткому коду и делиться сменами внутри приложения.\n' +
+        'Один участник открывает Профиль → Бригада и нажимает «Создать код», второй вводит этот код у себя.'
+    },
+    {
+      key: 'poekhali_launch_2026_06_v1',
+      title: 'Поехали',
+      tone: 'success',
+      ts: releaseTime('2026-06-08T00:16:00+10:00'),
+      text:
+        'Если смена уже создана, из неё можно открыть рабочий экран «Поехали».\n' +
+        'Откройте нужную смену, нажмите «Поехали» и следите за скоростью, профилем пути и ограничениями.'
+    }
+  ];
+
+  function seedSystemAnnouncements() {
+    SYSTEM_ANNOUNCEMENTS.forEach(function(item) {
+      addNotification(item.title, item.text, item.tone, {
+        key: item.key,
+        ts: item.ts,
+        replace: true
+      });
+    });
+  }
+
+  seedSystemAnnouncements();
 
   // Expose for other modules.
   window.appNotify = addNotification;
@@ -458,7 +526,7 @@ if (typeof bootstrapAppStartup === 'function') {
       if (legacy) legacy.click();
     });
   })();
-  // Profile panel identity — real name/avatar from Telegram + editable должность/депо.
+  // Profile panel identity — Telegram fallback + editable name, role, depot, avatar.
   (function bindProfileIdentity() {
     var PROFILE_KEY = 'shift_tracker_profile_v1';
     var avatarEl = document.getElementById('profileAvatar');
@@ -471,17 +539,25 @@ if (typeof bootstrapAppStartup === 'function') {
         return (o && typeof o === 'object') ? o : {};
       } catch (e) { return {}; }
     }
-    // Merge-save so updating role/depot keeps the manual avatar and vice versa.
+    function normalizeProfileText(value, maxLen) {
+      var limit = maxLen || 120;
+      return String(value == null ? '' : value).replace(/\s+/g, ' ').trim().slice(0, limit);
+    }
+    // Merge-save so updating one profile field keeps the rest.
     function saveExtras(patch) {
       try {
         var cur = loadExtras();
         var next = {
-          role: (cur.role || '').trim(),
-          depot: (cur.depot || '').trim(),
+          firstName: normalizeProfileText(cur.firstName, 80),
+          lastName: normalizeProfileText(cur.lastName, 80),
+          role: normalizeProfileText(cur.role),
+          depot: normalizeProfileText(cur.depot),
           avatar: cur.avatar || ''
         };
-        if (patch && 'role' in patch) next.role = (patch.role || '').trim();
-        if (patch && 'depot' in patch) next.depot = (patch.depot || '').trim();
+        if (patch && 'firstName' in patch) next.firstName = normalizeProfileText(patch.firstName, 80);
+        if (patch && 'lastName' in patch) next.lastName = normalizeProfileText(patch.lastName, 80);
+        if (patch && 'role' in patch) next.role = normalizeProfileText(patch.role);
+        if (patch && 'depot' in patch) next.depot = normalizeProfileText(patch.depot);
         if (patch && 'avatar' in patch) next.avatar = patch.avatar || '';
         window.localStorage.setItem(PROFILE_KEY, JSON.stringify(next));
       } catch (e) {}
@@ -495,6 +571,7 @@ if (typeof bootstrapAppStartup === 'function') {
     // other. Mirror them to the server keyed by the authenticated user.
     var PROFILE_API_URL = (window.SHIFT_API_BASE_URL || '') + '/api/profile';
     var profileSyncInFlight = false;
+    var profileSyncQueued = false;
 
     function loadProfileFromServer() {
       if (!navigator.onLine || typeof fetchJson !== 'function') return;
@@ -504,13 +581,22 @@ if (typeof bootstrapAppStartup === 'function') {
       }, 6000).then(function(result) {
         if (!result || !result.ok || !result.body || !result.body.profile) return;
         var p = result.body.profile;
+        var serverProfile = {
+          firstName: p.firstName || p.first_name || '',
+          lastName: p.lastName || p.last_name || '',
+          role: p.role || '',
+          depot: p.depot || '',
+          avatar: p.avatar || ''
+        };
         var cur = loadExtras();
         // Server is the source of truth for cross-device fields. Only repaint
         // when something actually changed to avoid clobbering a local edit.
-        if ((p.role || '') === (cur.role || '') &&
-            (p.depot || '') === (cur.depot || '') &&
-            (p.avatar || '') === (cur.avatar || '')) return;
-        saveExtras({ role: p.role || '', depot: p.depot || '', avatar: p.avatar || '' });
+        if (serverProfile.firstName === (cur.firstName || '') &&
+            serverProfile.lastName === (cur.lastName || '') &&
+            serverProfile.role === (cur.role || '') &&
+            serverProfile.depot === (cur.depot || '') &&
+            serverProfile.avatar === (cur.avatar || '')) return;
+        saveExtras(serverProfile);
         renderHeader();
         paintAvatar(document.getElementById('profileEditAvatarPreview'));
         updateClearPhotoBtn();
@@ -519,18 +605,39 @@ if (typeof bootstrapAppStartup === 'function') {
 
     function syncProfileToServer() {
       if (!navigator.onLine || typeof fetchJson !== 'function') return;
-      if (profileSyncInFlight) return;
+      if (profileSyncInFlight) {
+        profileSyncQueued = true;
+        return;
+      }
       var ex = loadExtras();
       profileSyncInFlight = true;
+      profileSyncQueued = false;
+      function finishProfileSync() {
+        profileSyncInFlight = false;
+        if (profileSyncQueued) {
+          syncProfileToServer();
+        }
+      }
       fetchJson(PROFILE_API_URL, {
         method: 'PUT',
         headers: { 'Content-Type': 'application/json', 'Accept': 'application/json' },
-        body: JSON.stringify({ profile: { role: ex.role || '', depot: ex.depot || '', avatar: ex.avatar || '' } })
+        body: JSON.stringify({
+          profile: {
+            firstName: ex.firstName || '',
+            lastName: ex.lastName || '',
+            role: ex.role || '',
+            depot: ex.depot || '',
+            avatar: ex.avatar || ''
+          }
+        })
       }, 9000).then(function() {
-        profileSyncInFlight = false;
-      }).catch(function() {
-        profileSyncInFlight = false;
-      });
+        try {
+          if (window.BrigadePartners && typeof window.BrigadePartners.refresh === 'function') {
+            window.BrigadePartners.refresh();
+          }
+        } catch (e) {}
+        finishProfileSync();
+      }).catch(finishProfileSync);
     }
 
     function getUser() {
@@ -551,6 +658,11 @@ if (typeof bootstrapAppStartup === 'function') {
       if (fn) return fn;
       if (u.username) return String(u.username);
       return 'Без имени';
+    }
+    function resolveProfileName(extras, u) {
+      extras = extras || loadExtras();
+      var manual = (normalizeProfileText(extras.firstName, 80) + ' ' + normalizeProfileText(extras.lastName, 80)).trim();
+      return manual || resolveName(u || getUser());
     }
     function telegramPhoto() {
       try {
@@ -586,7 +698,7 @@ if (typeof bootstrapAppStartup === 'function') {
         el.classList.add('has-photo');
         return;
       }
-      var name = resolveName(getUser());
+      var name = resolveProfileName(loadExtras(), getUser());
       var ini = (name && name !== 'Без имени') ? initials(name) : '';
       if (ini) {
         el.textContent = ini;
@@ -600,10 +712,10 @@ if (typeof bootstrapAppStartup === 'function') {
       var nameEl = document.getElementById('profileName');
       var subEl2 = document.getElementById('profileSub');
       var u = getUser();
-      var name = resolveName(u);
+      var extras = loadExtras();
+      var name = resolveProfileName(extras, u);
       if (nameEl) nameEl.textContent = name;
 
-      var extras = loadExtras();
       var parts = [];
       if (extras.role) parts.push(extras.role);
       if (extras.depot) parts.push(extras.depot);
@@ -752,8 +864,13 @@ if (typeof bootstrapAppStartup === 'function') {
     if (editBtn) {
       editBtn.addEventListener('click', function() {
         var extras = loadExtras();
+        var u = getUser();
+        var firstNameInp = document.getElementById('inputProfileFirstName');
+        var lastNameInp = document.getElementById('inputProfileLastName');
         var roleSel = document.getElementById('inputProfileRole');
         var depotInp = document.getElementById('inputProfileDepot');
+        if (firstNameInp) firstNameInp.value = extras.firstName || normalizeProfileText(u.first_name, 80);
+        if (lastNameInp) lastNameInp.value = extras.lastName || normalizeProfileText(u.last_name, 80);
         if (roleSel) roleSel.value = extras.role || '';
         if (depotInp) depotInp.value = extras.depot || '';
         if (window.GlassSelect && typeof GlassSelect.sync === 'function') {
@@ -767,9 +884,13 @@ if (typeof bootstrapAppStartup === 'function') {
     var saveBtn = document.getElementById('btnSaveProfileEdit');
     if (saveBtn) {
       saveBtn.addEventListener('click', function() {
+        var firstNameInp = document.getElementById('inputProfileFirstName');
+        var lastNameInp = document.getElementById('inputProfileLastName');
         var roleSel = document.getElementById('inputProfileRole');
         var depotInp = document.getElementById('inputProfileDepot');
         saveExtras({
+          firstName: firstNameInp ? firstNameInp.value : '',
+          lastName: lastNameInp ? lastNameInp.value : '',
           role: roleSel ? roleSel.value : '',
           depot: depotInp ? depotInp.value : ''
         });
@@ -781,7 +902,8 @@ if (typeof bootstrapAppStartup === 'function') {
 
     renderHeader();
     window.syncProfileIdentity = renderHeader;
-    // Pull any avatar/role/depot saved from another device/context. Also exposed
+    window.getProfileDisplayName = function() { return resolveProfileName(loadExtras(), getUser()); };
+    // Pull profile fields saved from another device/context. Also exposed
     // so the auth flow can re-pull once the session is actually established.
     window.loadProfileFromServer = loadProfileFromServer;
     loadProfileFromServer();

@@ -95,7 +95,7 @@
     var deferredInstallPromptEvent = null;
     var installGuideCopyFeedbackTimer = null;
     var INSTALL_GUIDE_COPY = {
-      subtitle: 'Открой приложение в один тап — как обычное приложение',
+      subtitle: 'Добавь приложение на домашний экран для быстрого запуска',
       warning: 'В Telegram установка может не работать — открой ссылку в браузере',
       buttons: {
         open: 'Открыть в браузере',

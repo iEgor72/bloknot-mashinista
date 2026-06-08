@@ -11,7 +11,30 @@
   <meta name="color-scheme" content="dark" />
   <link rel="manifest" href="/manifest.webmanifest" />
   <link rel="apple-touch-icon" href="/apple-touch-icon.png" />
-  <title>Блокнот машиниста</title>
+  <title>Блокнот машиниста — приложение и Telegram-бот</title>
+  <meta name="description" content="Учет смен, часов, документов и поездок для машиниста. Открывайте приложение через Telegram-бота, читайте новости и пишите вопросы в обсуждение." />
+  <meta name="robots" content="index,follow,max-image-preview:large" />
+  <link rel="canonical" href="https://bloknot-mashinista-bot.ru/" />
+  <meta property="og:type" content="website" />
+  <meta property="og:title" content="Блокнот машиниста — приложение и Telegram-бот" />
+  <meta property="og:description" content="Смены, документы, бригада, режим Поехали, Telegram-бот, канал новостей и обсуждение рядом с приложением." />
+  <meta property="og:url" content="https://bloknot-mashinista-bot.ru/" />
+  <meta property="og:image" content="https://bloknot-mashinista-bot.ru/assets/seo/landing-overview.jpg" />
+  <meta name="twitter:card" content="summary_large_image" />
+  <meta name="twitter:title" content="Блокнот машиниста — приложение и Telegram-бот" />
+  <meta name="twitter:description" content="Учет смен, часов, документов и поездок для машиниста. Бот, новости и обсуждение рядом с приложением." />
+  <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "SoftwareApplication",
+      "name": "Блокнот машиниста",
+      "applicationCategory": "BusinessApplication",
+      "operatingSystem": "Web, iOS, Android",
+      "url": "https://bloknot-mashinista-bot.ru/",
+      "image": "https://bloknot-mashinista-bot.ru/assets/seo/landing-overview.jpg",
+      "description": "Мобильное приложение для учета смен, часов, документов, бригады и поездок машиниста."
+    }
+  </script>
   <script>
     (function() {
       var readyPosted = false;
@@ -1219,7 +1242,7 @@
               </span>
               <span class="profile-row-body">
                 <span class="profile-row-title">Установить приложение</span>
-                <span class="profile-row-note">Запуск с домашнего экрана в один тап</span>
+                <span class="profile-row-note">Быстрый запуск с домашнего экрана</span>
               </span>
               <span class="profile-row-chevron" aria-hidden="true">›</span>
             </button>
@@ -1454,6 +1477,22 @@
         <input type="file" id="inputProfilePhoto" accept="image/*" hidden />
       </div>
 
+      <div class="settings-section-title">Имя</div>
+      <div class="settings-card">
+        <div class="settings-row settings-row-stack">
+          <div>
+            <div class="settings-label">Имя</div>
+          </div>
+          <input class="settings-input" id="inputProfileFirstName" type="text" maxlength="80" autocomplete="given-name" placeholder="Алексей" />
+        </div>
+        <div class="settings-row settings-row-stack">
+          <div>
+            <div class="settings-label">Фамилия</div>
+          </div>
+          <input class="settings-input" id="inputProfileLastName" type="text" maxlength="80" autocomplete="family-name" placeholder="Иванов" />
+        </div>
+      </div>
+
       <div class="settings-section-title">Должность</div>
       <div class="settings-card">
         <div class="settings-row settings-row-stack profile-field-row">
@@ -1542,7 +1581,7 @@
           </span>
           <span class="community-link-body">
             <span class="community-link-title">Обсуждение</span>
-            <span class="community-link-note">Вопросы, фидбек и предложения</span>
+            <span class="community-link-note">Вопросы, ошибки и предложения</span>
           </span>
           <span class="community-link-chevron" aria-hidden="true">›</span>
         </a>
@@ -1564,7 +1603,7 @@
       </div>
 
       <div class="community-help-card">
-        <div class="community-help-title">Быстрый фидбек</div>
+        <div class="community-help-title">Быстрая обратная связь</div>
         <div class="community-help-text">В боте можно написать: /bug описание проблемы или /idea что добавить.</div>
       </div>
 
@@ -1619,7 +1658,7 @@
         <div class="sheet-title">Добавить на экран</div>
       </div>
 
-      <div class="install-guide-subtitle" id="installGuideSubtitle">Открой приложение в один тап — как обычное приложение</div>
+      <div class="install-guide-subtitle" id="installGuideSubtitle">Добавь приложение на домашний экран для быстрого запуска</div>
       <div class="install-guide-platforms" id="installGuidePlatforms"></div>
 
       <div class="install-guide-note" id="installGuideRuntimeNote">В Telegram установка может не работать — открой ссылку в браузере</div>
@@ -1666,7 +1705,7 @@
     </div>
     <div class="install-banner-copy">
       <div class="install-banner-title">Установить приложение</div>
-      <div class="install-banner-text">Запускайте Блокнот Машиниста в один тап с домашнего экрана.</div>
+      <div class="install-banner-text">Добавьте Блокнот машиниста на домашний экран для быстрого запуска.</div>
     </div>
     <button class="install-banner-close" id="btnInstallPopupLater" type="button" aria-label="Закрыть">
       <svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M5 5l10 10M15 5L5 15"/></svg>

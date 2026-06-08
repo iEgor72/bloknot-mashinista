@@ -102,7 +102,7 @@
           bannerIcon: '!',
           showBanner: true,
           showWidget: false,
-          showRetry: true,
+          showRetry: false,
           primaryBusy: false
         },
         authenticated: {
@@ -159,7 +159,7 @@
           bannerIcon: '!',
           showBanner: true,
           showWidget: false,
-          showRetry: true,
+          showRetry: false,
           primaryBusy: false
         },
         authenticated: {

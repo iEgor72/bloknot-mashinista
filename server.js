@@ -183,9 +183,12 @@ const SEO_PAGE_ROUTES = {
   '/uchet-marshrutov': 'docs/seo/uchet-marshrutov.html',
   '/zarplata-mashinista': 'docs/seo/zarplata-mashinista.html',
   '/zhurnal-smen-mashinista': 'docs/seo/zhurnal-smen-mashinista.html',
-  '/kalkulyator-zarplaty-mashinista': 'docs/seo/kalkulyator-zarplaty-mashinista.html',
+  '/kalkulyator-zarplaty-mashinista': 'docs/seo/zarplata-mashinista.html',
   '/grafik-smen-mashinista': 'docs/seo/grafik-smen-mashinista.html',
   '/prilozhenie-dlya-mashinista': 'docs/seo/prilozhenie-dlya-mashinista.html',
+  '/dokumenty-mashinista': 'docs/seo/dokumenty-mashinista.html',
+  '/brigada-mashinista': 'docs/seo/brigada-mashinista.html',
+  '/poekhali-rezhim': 'docs/seo/poekhali-rezhim.html',
 };
 
 let userPresenceStoreCache = null;
@@ -757,6 +760,17 @@ function displayNameFromSessionUser(user) {
   return user.id ? ('ID ' + String(user.id)) : '';
 }
 
+function displayNameFromProfile(profile) {
+  const firstName = String(profile && profile.firstName ? profile.firstName : '').trim();
+  const lastName = String(profile && profile.lastName ? profile.lastName : '').trim();
+  return [firstName, lastName].join(' ').trim();
+}
+
+function displayNameForSid(sid, user) {
+  const profileName = sid ? displayNameFromProfile(readProfile(sid)) : '';
+  return profileName || displayNameFromSessionUser(user);
+}
+
 function readJsonObjectFile(file) {
   try {
     if (!fs.existsSync(file)) return {};
@@ -780,6 +794,27 @@ function readPartnershipsStore() {
 
 function writePartnershipsStore(store) {
   atomicWriteFileSync(PARTNERSHIPS_FILE, JSON.stringify(store || { pairings: {} }, null, 2));
+}
+
+function updatePartnerLabelsForSid(sid, label) {
+  const normalizedSid = normalizeSid(sid);
+  const nextLabel = String(label || '').trim();
+  if (!normalizedSid || !nextLabel) return;
+  const store = readPartnershipsStore();
+  const pairings = store.pairings || {};
+  let changed = false;
+  Object.keys(pairings).forEach((id) => {
+    const pairing = pairings[id];
+    if (!pairing || pairing.status !== 'active' || !Array.isArray(pairing.members) || !pairing.members.includes(normalizedSid)) return;
+    if (!pairing.labels || typeof pairing.labels !== 'object' || Array.isArray(pairing.labels)) {
+      pairing.labels = {};
+    }
+    if (pairing.labels[normalizedSid] !== nextLabel) {
+      pairing.labels[normalizedSid] = nextLabel;
+      changed = true;
+    }
+  });
+  if (changed) writePartnershipsStore(store);
 }
 
 function readPartnerInvitesStore() {
@@ -993,11 +1028,16 @@ function writeSalaryParams(sid, salaryParams) {
   atomicWriteFileSync(file, serialized);
 }
 
-const DEFAULT_PROFILE = { role: '', depot: '', avatar: '' };
+const DEFAULT_PROFILE = { firstName: '', lastName: '', role: '', depot: '', avatar: '' };
 // Avatar is stored as a data URL (cropped image) or a remote https URL. Cap the
 // size so a single profile file can't balloon: ~1.5MB of base64 ≈ ~1.1MB image.
 const PROFILE_AVATAR_MAX_LEN = 1500000;
 const PROFILE_TEXT_MAX_LEN = 120;
+const PROFILE_NAME_MAX_LEN = 80;
+
+function sanitizeProfileText(value, maxLen = PROFILE_TEXT_MAX_LEN) {
+  return String(value == null ? '' : value).replace(/\s+/g, ' ').trim().slice(0, maxLen);
+}
 
 function sanitizeProfilePayload(payload) {
   if (!payload || typeof payload !== 'object' || Array.isArray(payload)) {
@@ -1007,8 +1047,10 @@ function sanitizeProfilePayload(payload) {
     ? payload.profile
     : payload;
 
-  const role = String(source.role == null ? '' : source.role).trim().slice(0, PROFILE_TEXT_MAX_LEN);
-  const depot = String(source.depot == null ? '' : source.depot).trim().slice(0, PROFILE_TEXT_MAX_LEN);
+  const firstName = sanitizeProfileText(source.firstName == null ? source.first_name : source.firstName, PROFILE_NAME_MAX_LEN);
+  const lastName = sanitizeProfileText(source.lastName == null ? source.last_name : source.lastName, PROFILE_NAME_MAX_LEN);
+  const role = sanitizeProfileText(source.role, PROFILE_TEXT_MAX_LEN);
+  const depot = sanitizeProfileText(source.depot, PROFILE_TEXT_MAX_LEN);
 
   let avatar = String(source.avatar == null ? '' : source.avatar).trim();
   if (avatar) {
@@ -1020,7 +1062,7 @@ function sanitizeProfilePayload(payload) {
     }
   }
 
-  return { role, depot, avatar };
+  return { firstName, lastName, role, depot, avatar };
 }
 
 function readProfile(sid) {
@@ -2371,7 +2413,7 @@ async function handlePartnersApi(req, res, pathname, sid, user) {
     store[code] = {
       code,
       inviterSid: sid,
-      inviterName: displayNameFromSessionUser(user),
+      inviterName: displayNameForSid(sid, user),
       createdAt: nowIso,
       expiresAt: new Date(Date.now() + PARTNER_INVITE_TTL_MS).toISOString(),
       consumedAt: '',
@@ -2427,7 +2469,7 @@ async function handlePartnersApi(req, res, pathname, sid, user) {
         trust: { [invite.inviterSid]: 'pending', [sid]: 'pending' },
         labels: {
           [invite.inviterSid]: invite.inviterName || ('ID ' + invite.inviterSid),
-          [sid]: displayNameFromSessionUser(user) || ('ID ' + sid),
+          [sid]: displayNameForSid(sid, user) || ('ID ' + sid),
         },
         createdAt: new Date().toISOString(),
       };
@@ -2567,7 +2609,7 @@ async function handleShiftShareApi(req, res, pathname, sid, user) {
     const proposal = {
       id: crypto.randomBytes(10).toString('hex'),
       sharedBy: sid,
-      sharedByName: displayNameFromSessionUser(user) || ('ID ' + sid),
+      sharedByName: displayNameForSid(sid, user) || ('ID ' + sid),
       pairingId: targetPairingId,
       sourceId,
       facts,
@@ -2729,7 +2771,17 @@ function isPublicFilePath(filePath) {
 }
 
 function buildSeoSitemapXml() {
-  const urls = ['/', '/uchet-marshrutov', '/zarplata-mashinista', '/zhurnal-smen-mashinista', '/kalkulyator-zarplaty-mashinista', '/grafik-smen-mashinista', '/prilozhenie-dlya-mashinista'];
+  const urls = [
+    '/',
+    '/prilozhenie-dlya-mashinista',
+    '/dokumenty-mashinista',
+    '/brigada-mashinista',
+    '/poekhali-rezhim',
+    '/uchet-marshrutov',
+    '/zarplata-mashinista',
+    '/zhurnal-smen-mashinista',
+    '/grafik-smen-mashinista',
+  ];
   const now = new Date().toISOString();
   return [
     '<?xml version="1.0" encoding="UTF-8"?>',
@@ -3016,7 +3068,8 @@ async function handleTelegramFeedbackCommand(token, message, chatId, normalizedT
 const server = http.createServer(async (req, res) => {
   const parsedUrl = url.parse(req.url, true);
   const pathname = parsedUrl.pathname || '/';
-  const telegramUserId = getUserIdFromRequest(req);
+  const requestUser = getUserFromRequest(req);
+  const telegramUserId = requestUser ? String(requestUser.id || '') : '';
   const sid = telegramUserId ? normalizeSid(telegramUserId) : '';
   const allowedCorsOrigin = getAllowedCorsOrigin(req);
 
@@ -3034,12 +3087,12 @@ const server = http.createServer(async (req, res) => {
   }
 
   if (pathname === '/api/partners' || pathname.startsWith('/api/partners/')) {
-    await handlePartnersApi(req, res, pathname, sid, getUserFromRequest(req));
+    await handlePartnersApi(req, res, pathname, sid, requestUser);
     return;
   }
 
   if (pathname === '/api/shifts/share' || pathname.startsWith('/api/shifts/inbox')) {
-    await handleShiftShareApi(req, res, pathname, sid, getUserFromRequest(req));
+    await handleShiftShareApi(req, res, pathname, sid, requestUser);
     return;
   }
 
@@ -3447,6 +3500,7 @@ const server = http.createServer(async (req, res) => {
         const payload = body ? JSON.parse(body) : {};
         const profile = sanitizeProfilePayload(payload);
         writeProfile(sid, profile);
+        updatePartnerLabelsForSid(sid, displayNameForSid(sid, requestUser) || ('ID ' + sid));
         sendJson(res, 200, { ok: true, sid, profile });
       } catch (err) {
         const errorMessage = err && err.message ? err.message : 'Invalid payload';

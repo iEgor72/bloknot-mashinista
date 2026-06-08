@@ -167,6 +167,46 @@
     return parts.join(' · ');
   }
 
+  function notifyApp(title, text, tone, opts) {
+    if (typeof window.appNotify !== 'function') return;
+    try {
+      window.appNotify(title, text, tone || 'info', opts || {});
+    } catch (e) {}
+  }
+
+  function notifyManualInbox(items) {
+    (items || []).forEach(function(item) {
+      if (!item || !item.id) return;
+      var who = item.sharedByName || 'Участник бригады';
+      var summary = formatProposalSummary(item.facts);
+      notifyApp(
+        'Смена от бригады',
+        who + ' поделился сменой.' +
+          (summary ? '\n' + summary : '') +
+          '\nОткройте Бригаду и нажмите «Принять», если всё верно.',
+        'info',
+        { key: 'brigade_inbox_' + item.id }
+      );
+    });
+  }
+
+  function notifyAutoInbox(events) {
+    (events || []).forEach(function(event) {
+      var item = event && event.item;
+      if (!item || !item.id) return;
+      var who = item.sharedByName || 'участника бригады';
+      var summary = formatProposalSummary(item.facts);
+      var inserted = event.action === 'inserted';
+      notifyApp(
+        inserted ? 'Смена от бригады добавлена' : 'Смена от бригады обновлена',
+        'Данные от ' + who + (inserted ? ' добавлены в журнал.' : ' обновили смену в журнале.') +
+          (summary ? '\n' + summary : ''),
+        'success',
+        { key: 'brigade_auto_' + item.id + '_' + event.action }
+      );
+    });
+  }
+
   function updateInboxBadge() {
     var badge = $('homeCrewBadge');
     if (!badge) return;
@@ -282,12 +322,14 @@
     var manual = [];
     var inserted = [];
     var updated = [];
+    var autoEvents = [];
     var senders = {};
     (items || []).forEach(function(item) {
       if (item.autoAccept && appReady()) {
         var r = upsertSharedShift(item);
         if (r.action === 'inserted') inserted.push(r.shift);
         else updated.push(r.shift);
+        autoEvents.push({ item: item, action: r.action });
         senders[item.sharedByName || 'бригады'] = true;
         shiftsApi('POST', '/inbox/resolve', { id: item.id, action: 'accept' }).catch(function() {});
       } else {
@@ -295,6 +337,7 @@
       }
     });
     state.inbox = manual;
+    notifyManualInbox(manual);
     if (inserted.length || updated.length) {
       if (typeof pendingMutationIds !== 'undefined') {
         pendingMutationIds = inserted.concat(updated).map(function(s) { return s.id; });
@@ -310,6 +353,7 @@
       } else {
         showShareToast('Смена от ' + who + ' обновлена', null);
       }
+      notifyAutoInbox(autoEvents);
     }
     renderInbox();
   }
@@ -730,6 +774,7 @@
     getSharedPairing: getSharedPairing,
     flushShareQueue: flushShareQueue,
     ensureLoaded: ensureLoaded,
+    refresh: loadPartners,
     refreshInbox: loadInbox,
   };
 
