@@ -6234,3 +6234,12 @@ Append-only журнал действий ИИ-агентов по проект�
 - Branch: `main`
 - Methods: `Убрал фразы вроде темное мобильное приложение и описания из ТЗ`, `переписал hero`, `чипы`, `карточки`, `Telegram-блок`, `footer и SEO meta`, `проверил desktop/mobile в браузере`, `отсутствие старых фраз`, `served page и git diff --check`
 - Files: `docs/seo/prilozhenie-dlya-mashinista.html`
+
+## 2026-06-08 14:54:02 +1000
+
+- Source: `post-commit`
+- Task: feat: refresh public site and app updates
+- Branch: `main`
+- Methods: `git post-commit hook`, `automatic memory update`
+- Files: `ai-memory/CHANGELOG.md`, `ai-memory/INDEX.md`, `ai-memory/PROJECT_STATE.md`, `ai-memory/RECENT_COMMITS.md`, `ai-memory/WORKTREE_STATUS.md`, `ai-memory/sessions/2026-06-07.md`, `ai-memory/sessions/2026-06-08.md`, `assets/seo/landing-overview.jpg`, `assets/seo/landing-salary-screen.jpg`, `assets/seo/screen-brigade.png`, `assets/seo/screen-docs.png`, `assets/seo/screen-home.png`, `assets/seo/screen-poekhali.png`, `assets/seo/screen-profile.png`, `docs/seo/brigada-mashinista.html`, `docs/seo/dokumenty-mashinista.html`, `docs/seo/grafik-smen-mashinista.html`, `docs/seo/kalkulyator-zarplaty-mashinista.html`, `docs/seo/poekhali-rezhim.html`, `docs/seo/prilozhenie-dlya-mashinista.html`, `docs/seo/seo.css`, `docs/seo/uchet-marshrutov.html`, `docs/seo/zarplata-mashinista.html`, `docs/seo/zhurnal-smen-mashinista.html`, `index.html`, `scripts/app-constants.js`, `scripts/app-init.js`, `scripts/app.js`, `scripts/auth.js`, `scripts/partners.js`, `server.js`, `styles/50-design-refresh.css`, `sw.js`
+- Notes: Commit: `478e7590019c702ff811bc6f11807012ce5ac5bc` (`478e759`) | Author: `iEgor72`
