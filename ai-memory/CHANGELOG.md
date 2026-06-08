@@ -6243,3 +6243,11 @@ Append-only журнал действий ИИ-агентов по проект�
 - Methods: `git post-commit hook`, `automatic memory update`
 - Files: `ai-memory/CHANGELOG.md`, `ai-memory/INDEX.md`, `ai-memory/PROJECT_STATE.md`, `ai-memory/RECENT_COMMITS.md`, `ai-memory/WORKTREE_STATUS.md`, `ai-memory/sessions/2026-06-07.md`, `ai-memory/sessions/2026-06-08.md`, `assets/seo/landing-overview.jpg`, `assets/seo/landing-salary-screen.jpg`, `assets/seo/screen-brigade.png`, `assets/seo/screen-docs.png`, `assets/seo/screen-home.png`, `assets/seo/screen-poekhali.png`, `assets/seo/screen-profile.png`, `docs/seo/brigada-mashinista.html`, `docs/seo/dokumenty-mashinista.html`, `docs/seo/grafik-smen-mashinista.html`, `docs/seo/kalkulyator-zarplaty-mashinista.html`, `docs/seo/poekhali-rezhim.html`, `docs/seo/prilozhenie-dlya-mashinista.html`, `docs/seo/seo.css`, `docs/seo/uchet-marshrutov.html`, `docs/seo/zarplata-mashinista.html`, `docs/seo/zhurnal-smen-mashinista.html`, `index.html`, `scripts/app-constants.js`, `scripts/app-init.js`, `scripts/app.js`, `scripts/auth.js`, `scripts/partners.js`, `server.js`, `styles/50-design-refresh.css`, `sw.js`
 - Notes: Commit: `478e7590019c702ff811bc6f11807012ce5ac5bc` (`478e759`) | Author: `iEgor72`
+
+## 2026-06-08 15:00:12 +1000
+
+- Source: `manual`
+- Task: Commit push deploy public site and app updates
+- Branch: `main`
+- Methods: `Created commits 478e759 and 4ac79e1`, `pushed origin/main`, `production VPS /opt/bloknot-mashinista clean main fast-forwarded to 4ac79e1`, `node --check server.js passed`, `PM2 reload bloknot-mashinista --update-env`, `verified PM2 online`, `local HTTP 200 for /`, `/prilozhenie-dlya-mashinista`, `/dokumenty-mashinista`, `/api/community`, `external HTTPS 200 for /`, `sw.js v366`
+- Files: `index.html`, `scripts/app-constants.js`, `scripts/app-init.js`, `scripts/app.js`, `scripts/auth.js`, `scripts/partners.js`, `server.js`, `styles/50-design-refresh.css`, `sw.js`, `docs/seo`, `assets/seo`, `ai-memory`

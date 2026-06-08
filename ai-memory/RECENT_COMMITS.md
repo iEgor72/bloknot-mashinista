@@ -1,9 +1,10 @@
 # Recent Commits
 
-Generated: 2026-06-08 14:54:02 +1000
+Generated: 2026-06-08 15:00:26 +1000
 
 | Hash | Date | Author | Message |
 | --- | --- | --- | --- |
+| `4ac79e1` | 2026-06-08T14:54:54+10:00 | iEgor72 | chore(memory): record public site update |
 | `478e759` | 2026-06-08T14:53:59+10:00 | iEgor72 | feat: refresh public site and app updates |
 | `347f6ea` | 2026-06-07T23:58:58+10:00 | iEgor72 | fix(server): load env file on startup |
 | `2e15db1` | 2026-06-07T23:52:36+10:00 | iEgor72 | feat: add community links and launch posts |
@@ -43,4 +44,3 @@ Generated: 2026-06-08 14:54:02 +1000
 | `a0bbd10` | 2026-06-05T22:19:27+10:00 | iEgor72 | chore(memory): update ai-memory logs for admin removal + nav cleanup |
 | `88d8382` | 2026-06-05T22:18:55+10:00 | iEgor72 | nav: drop dead Поехали-tab click listeners |
 | `00f9d8c` | 2026-06-05T22:18:39+10:00 | iEgor72 | Remove dead admin /api backend |
-| `5af9bc7` | 2026-06-05T21:51:19+10:00 | iEgor72 | Remove admin panel frontend |
