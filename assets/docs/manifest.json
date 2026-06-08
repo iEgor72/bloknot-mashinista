@@ -24,6 +24,27 @@
   ],
   "folders": [
     {
+      "name": "Папка №13",
+      "path": "/assets/docs/folders/Папка №13.pdf",
+      "mime_type": "application/pdf",
+      "size": 202237,
+      "updated_at": "2026-06-08"
+    },
+    {
+      "name": "Папка №12",
+      "path": "/assets/docs/folders/Папка №12.pdf",
+      "mime_type": "application/pdf",
+      "size": 207771,
+      "updated_at": "2026-06-08"
+    },
+    {
+      "name": "Папка №11",
+      "path": "/assets/docs/folders/Папка №11.pdf",
+      "mime_type": "application/pdf",
+      "size": 216604,
+      "updated_at": "2026-06-08"
+    },
+    {
       "name": "Папка №10",
       "path": "/assets/docs/folders/Папка №10.docx",
       "mime_type": "application/vnd.openxmlformats-officedocument.wordprocessingml.document",

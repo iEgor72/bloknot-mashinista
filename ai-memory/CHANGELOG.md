@@ -6251,3 +6251,12 @@ Append-only журнал действий ИИ-агентов по проект�
 - Branch: `main`
 - Methods: `Created commits 478e759 and 4ac79e1`, `pushed origin/main`, `production VPS /opt/bloknot-mashinista clean main fast-forwarded to 4ac79e1`, `node --check server.js passed`, `PM2 reload bloknot-mashinista --update-env`, `verified PM2 online`, `local HTTP 200 for /`, `/prilozhenie-dlya-mashinista`, `/dokumenty-mashinista`, `/api/community`, `external HTTPS 200 for /`, `sw.js v366`
 - Files: `index.html`, `scripts/app-constants.js`, `scripts/app-init.js`, `scripts/app.js`, `scripts/auth.js`, `scripts/partners.js`, `server.js`, `styles/50-design-refresh.css`, `sw.js`, `docs/seo`, `assets/seo`, `ai-memory`
+
+## 2026-06-08 07:12:00 +0000
+
+- Source: `manual`
+- Task: Добавлены папки БД №11-13 в документы
+- Branch: `main`
+- Methods: `Скопировал присланные PDF в assets/docs/folders`, `добавил записи Папка №13/№12/№11 в assets/docs/manifest.json`, `поднял cache/SHELL version до v367`, `перезапустил PM2 bloknot-mashinista`
+- Files: `assets/docs/folders/Папка №11.pdf`, `assets/docs/folders/Папка №12.pdf`, `assets/docs/folders/Папка №13.pdf`, `assets/docs/manifest.json`, `sw.js`, `scripts/app-constants.js`
+- Notes: Check: python3 -m json.tool assets/docs/manifest.json; node --check server.js scripts/docs-app.js scripts/app-constants.js scripts/app-init.js; git diff --check; SMOKE_PORT=49213 npm run smoke:local; curl localhost manifest and PDF HEAD; pm2 online

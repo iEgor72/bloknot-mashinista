@@ -1,9 +1,10 @@
 # Recent Commits
 
-Generated: 2026-06-08 15:00:26 +1000
+Generated: 2026-06-08 07:12:01 +0000
 
 | Hash | Date | Author | Message |
 | --- | --- | --- | --- |
+| `7315f08` | 2026-06-08T15:01:10+10:00 | iEgor72 | chore(memory): record public site deploy |
 | `4ac79e1` | 2026-06-08T14:54:54+10:00 | iEgor72 | chore(memory): record public site update |
 | `478e759` | 2026-06-08T14:53:59+10:00 | iEgor72 | feat: refresh public site and app updates |
 | `347f6ea` | 2026-06-07T23:58:58+10:00 | iEgor72 | fix(server): load env file on startup |
@@ -26,11 +27,11 @@ Generated: 2026-06-08 15:00:26 +1000
 | `6368206` | 2026-06-06T11:12:29+10:00 | iEgor72 | chore(memory): record production deploy |
 | `c2c8d5f` | 2026-06-06T11:03:54+10:00 | iEgor72 | chore(memory): refresh after rebase completion |
 | `801441c` | 2026-06-06T10:55:56+10:00 | iEgor72 | fix: polish poekhali layout and home crew entry |
-| `a66d67c` | 2026-06-06T00:28:12Z | iEgor72 | fix(poehali): prioritize fresh shift and lift controls |
-| `6ce8e42` | 2026-06-06T00:23:46Z | iEgor72 | chore(memory): refresh after poekhali fixes |
-| `47de739` | 2026-06-06T00:23:31Z | iEgor72 | fix(poehali): prefer new shift and clear bottom controls |
-| `489a9ff` | 2026-06-06T00:16:59Z | iEgor72 | fix(ui): reduce shifts bottom spacing |
-| `dd77b82` | 2026-06-06T00:11:17Z | iEgor72 | fix(ui): keep shifts clear of bottom nav |
+| `a66d67c` | 2026-06-06T00:28:12+00:00 | iEgor72 | fix(poehali): prioritize fresh shift and lift controls |
+| `6ce8e42` | 2026-06-06T00:23:46+00:00 | iEgor72 | chore(memory): refresh after poekhali fixes |
+| `47de739` | 2026-06-06T00:23:31+00:00 | iEgor72 | fix(poehali): prefer new shift and clear bottom controls |
+| `489a9ff` | 2026-06-06T00:16:59+00:00 | iEgor72 | fix(ui): reduce shifts bottom spacing |
+| `dd77b82` | 2026-06-06T00:11:17+00:00 | iEgor72 | fix(ui): keep shifts clear of bottom nav |
 | `920cb04` | 2026-06-06T00:24:57+10:00 | iEgor72 | chore(memory): refresh deploy status |
 | `44804ba` | 2026-06-06T00:24:28+10:00 | iEgor72 | chore(memory): record production deploy |
 | `2d5f0af` | 2026-06-06T00:18:44+10:00 | iEgor72 | chore(memory): refresh after main merge |
@@ -43,4 +44,3 @@ Generated: 2026-06-08 15:00:26 +1000
 | `f3f2e2f` | 2026-06-05T23:52:38+10:00 | iEgor72 | feat: timeline day/night worked-time bar on calendar cells |
 | `a0bbd10` | 2026-06-05T22:19:27+10:00 | iEgor72 | chore(memory): update ai-memory logs for admin removal + nav cleanup |
 | `88d8382` | 2026-06-05T22:18:55+10:00 | iEgor72 | nav: drop dead Поехали-tab click listeners |
-| `00f9d8c` | 2026-06-05T22:18:39+10:00 | iEgor72 | Remove dead admin /api backend |
