@@ -6260,3 +6260,12 @@ Append-only журнал действий ИИ-агентов по проект�
 - Methods: `Скопировал присланные PDF в assets/docs/folders`, `добавил записи Папка №13/№12/№11 в assets/docs/manifest.json`, `поднял cache/SHELL version до v367`, `перезапустил PM2 bloknot-mashinista`
 - Files: `assets/docs/folders/Папка №11.pdf`, `assets/docs/folders/Папка №12.pdf`, `assets/docs/folders/Папка №13.pdf`, `assets/docs/manifest.json`, `sw.js`, `scripts/app-constants.js`
 - Notes: Check: python3 -m json.tool assets/docs/manifest.json; node --check server.js scripts/docs-app.js scripts/app-constants.js scripts/app-init.js; git diff --check; SMOKE_PORT=49213 npm run smoke:local; curl localhost manifest and PDF HEAD; pm2 online
+
+## 2026-06-08 09:52:24 +0000
+
+- Source: `manual`
+- Task: Переименовал коллег в пользователей в футере статистики
+- Branch: `main`
+- Methods: `Заменил pluralColleagues на pluralUsers`, `текст теперь склоняется как пользователь/пользователя/пользователей`, `поднял cache/SHELL version до v368`, `перезапустил PM2`
+- Files: `scripts/app.js`, `sw.js`, `scripts/app-constants.js`
+- Notes: Check: grep без коллег в runtime-файлах; node --check scripts/app.js scripts/app-constants.js sw.js; git diff --check; повторный npm run smoke:local; curl localhost; pm2 online

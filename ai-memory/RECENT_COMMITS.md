@@ -1,9 +1,10 @@
 # Recent Commits
 
-Generated: 2026-06-08 07:12:01 +0000
+Generated: 2026-06-08 09:52:24 +0000
 
 | Hash | Date | Author | Message |
 | --- | --- | --- | --- |
+| `432a68b` | 2026-06-08T07:12:01+00:00 | iEgor72 | docs: add folders 11-13 |
 | `7315f08` | 2026-06-08T15:01:10+10:00 | iEgor72 | chore(memory): record public site deploy |
 | `4ac79e1` | 2026-06-08T14:54:54+10:00 | iEgor72 | chore(memory): record public site update |
 | `478e759` | 2026-06-08T14:53:59+10:00 | iEgor72 | feat: refresh public site and app updates |
@@ -43,4 +44,3 @@ Generated: 2026-06-08 07:12:01 +0000
 | `c3f683b` | 2026-06-05T23:53:05+10:00 | iEgor72 | fix: Поехали warnings are map-scoped, not per-shift |
 | `f3f2e2f` | 2026-06-05T23:52:38+10:00 | iEgor72 | feat: timeline day/night worked-time bar on calendar cells |
 | `a0bbd10` | 2026-06-05T22:19:27+10:00 | iEgor72 | chore(memory): update ai-memory logs for admin removal + nav cleanup |
-| `88d8382` | 2026-06-05T22:18:55+10:00 | iEgor72 | nav: drop dead Поехали-tab click listeners |

@@ -278,14 +278,13 @@
       });
     }
 
-    // Inclusive of both машинисты and помощники — "коллег".
-    function pluralColleagues(n) {
+    function pluralUsers(n) {
       var abs = Math.abs(n) % 100;
       var d = abs % 10;
-      if (abs > 10 && abs < 20) return 'коллег';
-      if (d === 1) return 'коллега';
-      if (d > 1 && d < 5) return 'коллеги';
-      return 'коллег';
+      if (abs > 10 && abs < 20) return 'пользователей';
+      if (d === 1) return 'пользователь';
+      if (d > 1 && d < 5) return 'пользователя';
+      return 'пользователей';
     }
 
     function renderUserStatsFooter() {
@@ -297,7 +296,7 @@
       // still visible to the dev in the admin panel).
       var total = userStatsState.totalUsers;
       if (total !== null && total !== undefined) {
-        var nextText = 'С нами уже ' + total + ' ' + pluralColleagues(total);
+        var nextText = 'С нами уже ' + total + ' ' + pluralUsers(total);
         if (el.textContent !== nextText) el.textContent = nextText;
         el.classList.remove('hidden');
       } else {
