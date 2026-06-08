@@ -186,6 +186,7 @@ if (typeof bootstrapAppStartup === 'function') {
 // Notifications system — backed by localStorage, surfaced via the top-bar bell.
 (function bindNotifications() {
   var STORAGE_KEY = 'shift_tracker_notifications_v1';
+  var READ_STORAGE_KEY = 'shift_tracker_notifications_read_v1';
   var bell = document.getElementById('appTopBarBell');
   var dotEl = bell && bell.querySelector('.app-top-bar-icon-dot');
   var overlay = document.getElementById('overlayNotifications');
@@ -203,6 +204,59 @@ if (typeof bootstrapAppStartup === 'function') {
   }
   function save(items) {
     try { window.localStorage && window.localStorage.setItem(STORAGE_KEY, JSON.stringify(items)); } catch (e) {}
+  }
+  function normalizeReadKey(value) {
+    var key = String(value || '').trim();
+    return key ? key.slice(0, 160) : '';
+  }
+  function getReadKey(item) {
+    item = item || {};
+    return normalizeReadKey(item.readKey || item.key || (item.id ? ('id:' + item.id) : ''));
+  }
+  function loadReadKeys() {
+    try {
+      var raw = window.localStorage && window.localStorage.getItem(READ_STORAGE_KEY);
+      var parsed = raw ? JSON.parse(raw) : {};
+      var map = {};
+      if (Array.isArray(parsed)) {
+        parsed.forEach(function(key) {
+          key = normalizeReadKey(key);
+          if (key) map[key] = Date.now();
+        });
+      } else if (parsed && typeof parsed === 'object') {
+        Object.keys(parsed).forEach(function(key) {
+          key = normalizeReadKey(key);
+          if (key) map[key] = parsed[key] || Date.now();
+        });
+      }
+      return map;
+    } catch (e) { return {}; }
+  }
+  function saveReadKeys(map) {
+    try { window.localStorage && window.localStorage.setItem(READ_STORAGE_KEY, JSON.stringify(map || {})); } catch (e) {}
+  }
+  function rememberReadKey(key, map) {
+    key = normalizeReadKey(key);
+    if (!key) return false;
+    map = map || loadReadKeys();
+    if (map[key]) return false;
+    map[key] = Date.now();
+    return true;
+  }
+  function isReadRemembered(item) {
+    var key = getReadKey(item);
+    if (!key) return false;
+    return !!loadReadKeys()[key];
+  }
+  function rememberReadItems(items) {
+    var map = loadReadKeys();
+    var changed = false;
+    (items || []).forEach(function(item) {
+      if (item && item.read) {
+        changed = rememberReadKey(getReadKey(item), map) || changed;
+      }
+    });
+    if (changed) saveReadKeys(map);
   }
   function fmtAgo(ts) {
     if (!ts) return '';
@@ -271,11 +325,15 @@ if (typeof bootstrapAppStartup === 'function') {
   function setRead(id) {
     if (!id) return false;
     var items = load();
+    var readKeys = loadReadKeys();
     var changed = false;
     for (var i = 0; i < items.length; i++) {
-      if (items[i].id === id && !items[i].read) { items[i].read = true; changed = true; }
+      if (items[i].id === id) {
+        if (!items[i].read) { items[i].read = true; changed = true; }
+        if (rememberReadKey(getReadKey(items[i]), readKeys)) changed = true;
+      }
     }
-    if (changed) { save(items); updateBell(items); }
+    if (changed) { save(items); saveReadKeys(readKeys); updateBell(items); }
     return changed;
   }
   function activateRow(row) {
@@ -296,10 +354,13 @@ if (typeof bootstrapAppStartup === 'function') {
     opts = opts || {};
     var items = load();
     var now = Date.now();
+    var readKey = normalizeReadKey(opts.readKey || opts.key || '');
     if (opts.key) {
       // Idempotent announcement: never re-add, so its read state sticks.
       for (var k = 0; k < items.length; k++) {
         if (items[k].key === opts.key) {
+          items[k].readKey = readKey || items[k].readKey || null;
+          if (!items[k].read && isReadRemembered(items[k])) items[k].read = true;
           if (opts.replace) {
             items[k].title = title;
             items[k].text = text || '';
@@ -319,11 +380,12 @@ if (typeof bootstrapAppStartup === 'function') {
     items.unshift({
       id: genId(),
       key: opts.key || null,
+      readKey: readKey || null,
       title: title,
       text: text || '',
       tone: tone || 'info',
       ts: opts.ts || now,
-      read: false
+      read: isReadRemembered({ readKey: readKey })
     });
     items = items.slice(0, 50);
     save(items);
@@ -364,8 +426,11 @@ if (typeof bootstrapAppStartup === 'function') {
   if (btnRead) {
     btnRead.addEventListener('click', function() {
       var items = load();
+      var readKeys = loadReadKeys();
       for (var i = 0; i < items.length; i++) items[i].read = true;
+      for (var k = 0; k < items.length; k++) rememberReadKey(getReadKey(items[k]), readKeys);
       save(items);
+      saveReadKeys(readKeys);
       render();
     });
   }
@@ -373,6 +438,7 @@ if (typeof bootstrapAppStartup === 'function') {
   var SYSTEM_ANNOUNCEMENTS = [
     {
       key: 'nav_refresh_2026_06_v1',
+      readKey: 'announcement_nav_refresh_2026_06',
       title: 'Большое обновление',
       tone: 'success',
       ts: releaseTime('2026-06-08T00:12:00+10:00'),
@@ -385,6 +451,7 @@ if (typeof bootstrapAppStartup === 'function') {
     },
     {
       key: 'feedback_links_2026_06_v1',
+      readKey: 'announcement_feedback_links_2026_06',
       title: 'Помощь и обратная связь',
       tone: 'info',
       ts: releaseTime('2026-06-08T00:13:00+10:00'),
@@ -394,6 +461,7 @@ if (typeof bootstrapAppStartup === 'function') {
     },
     {
       key: 'docs_bd_folders_2026_06_v1',
+      readKey: 'announcement_docs_bd_folders_2026_06',
       title: 'Документы и Папки',
       tone: 'info',
       ts: releaseTime('2026-06-08T00:14:00+10:00'),
@@ -403,6 +471,7 @@ if (typeof bootstrapAppStartup === 'function') {
     },
     {
       key: 'brigade_launch_2026_06_v1',
+      readKey: 'announcement_brigade_launch_2026_06',
       title: 'Бригада',
       tone: 'success',
       ts: releaseTime('2026-06-08T00:15:00+10:00'),
@@ -412,6 +481,7 @@ if (typeof bootstrapAppStartup === 'function') {
     },
     {
       key: 'poekhali_launch_2026_06_v1',
+      readKey: 'announcement_poekhali_launch_2026_06',
       title: 'Поехали',
       tone: 'success',
       ts: releaseTime('2026-06-08T00:16:00+10:00'),
@@ -421,16 +491,37 @@ if (typeof bootstrapAppStartup === 'function') {
     }
   ];
 
+  function rememberReadSystemAnnouncements(items) {
+    var readKeys = loadReadKeys();
+    var changed = false;
+    (items || []).forEach(function(stored) {
+      if (!stored || !stored.read) return;
+      SYSTEM_ANNOUNCEMENTS.forEach(function(announcement) {
+        if (
+          stored.readKey === announcement.readKey ||
+          stored.key === announcement.key ||
+          stored.title === announcement.title
+        ) {
+          changed = rememberReadKey(announcement.readKey || announcement.key, readKeys) || changed;
+        }
+      });
+    });
+    if (changed) saveReadKeys(readKeys);
+  }
+
   function seedSystemAnnouncements() {
     SYSTEM_ANNOUNCEMENTS.forEach(function(item) {
       addNotification(item.title, item.text, item.tone, {
         key: item.key,
+        readKey: item.readKey,
         ts: item.ts,
         replace: true
       });
     });
   }
 
+  rememberReadItems(load());
+  rememberReadSystemAnnouncements(load());
   seedSystemAnnouncements();
 
   // Expose for other modules.
