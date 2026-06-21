@@ -6444,3 +6444,11 @@ Append-only журнал действий ИИ-агентов по проект�
 - Methods: `git post-commit hook`, `automatic memory update`
 - Files: `ai-memory/CHANGELOG.md`, `ai-memory/sessions/2026-06-21.md`, `index.html`, `scripts/app-constants.js`, `scripts/sw-register.js`, `server.js`, `sw-bootstrap-v373.js`, `sw.js`
 - Notes: Commit: `2a1d27787304b7fdaf26f82b439a43b73d11cd80` (`2a1d277`) | Author: `iEgor72`
+
+## 2026-06-21 12:27:10 +1000
+
+- Source: `manual`
+- Task: Versioned changed runtime script URLs for Cloudflare stale cache
+- Branch: `main`
+- Methods: `Added v373 query strings to app-constants`, `auth`, `app`, `and sw-register script tags after production showed unversioned app-constants.js still served v372 from Cloudflare HIT`
+- Files: `index.html`
