@@ -1,14 +1,14 @@
 # Project State
 
 <!-- AUTO_STATUS:START -->
-Generated: 2026-06-21 11:18:14 +1000
+Generated: 2026-06-21 11:21:19 +1000
 
 ## Repository Snapshot
 - Local repo path: `D:\work\bloknot-mashinista-tg`
 - Project memory path: `D:\work\bloknot-mashinista-tg\ai-memory`
 - Branch: `main`
-- HEAD: `efeaf36`
-- Last commit: `efeaf36 fix: preserve notification read state`
+- HEAD: `7b0976b`
+- Last commit: `7b0976b chore(memory): refresh after offline shell fix`
 
 ## Git Remote
 ```text
@@ -20,22 +20,14 @@ origin	https://github.com/iEgor72/bloknot-mashinista.git (push)
 ```text
 codex/next-direction b044dd5 offline mvp
   codex/tabs-ui        117f1fa [origin/codex/tabs-ui] tabs ui
-* main                 efeaf36 [origin/main] fix: preserve notification read state
+* main                 7b0976b [origin/main: ahead 2] chore(memory): refresh after offline shell fix
   poekhali-rework      2d5f0af chore(memory): refresh after main merge
 ```
 
 ## Worktree
 ```text
 M ai-memory/CHANGELOG.md
- M ai-memory/INDEX.md
- M ai-memory/PROJECT_STATE.md
- M ai-memory/RECENT_COMMITS.md
- M ai-memory/WORKTREE_STATUS.md
- M ai-memory/sessions/2026-06-08.md
- M scripts/app-constants.js
- M scripts/local-smoke.mjs
- M sw.js
-?? ai-memory/sessions/2026-06-21.md
+ M ai-memory/sessions/2026-06-21.md
 ```
 <!-- AUTO_STATUS:END -->
 

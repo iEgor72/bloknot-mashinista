@@ -6325,3 +6325,21 @@ Append-only журнал действий ИИ-агентов по проект�
 - Branch: `main`
 - Methods: `После проверки убрал не относящуюся к фиксу cleanup-правку local-smoke`, `оставлен только guard`, `который падает при расхождении ресурсов index.html и INSTALL/CRITICAL shell cache`
 - Files: `scripts/local-smoke.mjs`
+
+## 2026-06-21 11:20:57 +1000
+
+- Source: `post-commit`
+- Task: fix: restore offline pwa shell
+- Branch: `main`
+- Methods: `git post-commit hook`, `automatic memory update`
+- Files: `ai-memory/CHANGELOG.md`, `ai-memory/INDEX.md`, `ai-memory/PROJECT_STATE.md`, `ai-memory/RECENT_COMMITS.md`, `ai-memory/WORKTREE_STATUS.md`, `ai-memory/sessions/2026-06-08.md`, `ai-memory/sessions/2026-06-21.md`, `scripts/app-constants.js`, `scripts/local-smoke.mjs`, `sw.js`
+- Notes: Commit: `8887146cbf028c43c5fdc182ee23c2d30fedbacb` (`8887146`) | Author: `iEgor72`
+
+## 2026-06-21 11:21:19 +1000
+
+- Source: `post-commit`
+- Task: chore(memory): refresh after offline shell fix
+- Branch: `main`
+- Methods: `git post-commit hook`, `automatic memory update`
+- Files: `ai-memory/CHANGELOG.md`, `ai-memory/INDEX.md`, `ai-memory/PROJECT_STATE.md`, `ai-memory/RECENT_COMMITS.md`, `ai-memory/WORKTREE_STATUS.md`, `ai-memory/sessions/2026-06-21.md`
+- Notes: Commit: `7b0976b05447b92fd6729085e283700198b2b4df` (`7b0976b`) | Author: `iEgor72`

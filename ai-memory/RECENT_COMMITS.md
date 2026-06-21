@@ -1,9 +1,11 @@
 # Recent Commits
 
-Generated: 2026-06-21 11:18:14 +1000
+Generated: 2026-06-21 11:21:19 +1000
 
 | Hash | Date | Author | Message |
 | --- | --- | --- | --- |
+| `7b0976b` | 2026-06-21T11:21:18+10:00 | iEgor72 | chore(memory): refresh after offline shell fix |
+| `8887146` | 2026-06-21T11:20:56+10:00 | iEgor72 | fix: restore offline pwa shell |
 | `efeaf36` | 2026-06-08T20:06:53+10:00 | iEgor72 | fix: preserve notification read state |
 | `0058d83` | 2026-06-08T09:52:24Z | iEgor72 | ui: rename colleagues to users |
 | `432a68b` | 2026-06-08T07:12:01Z | iEgor72 | docs: add folders 11-13 |
@@ -42,5 +44,3 @@ Generated: 2026-06-21 11:18:14 +1000
 | `6621b33` | 2026-06-06T00:16:31+10:00 | iEgor72 | chore(memory): refresh after docs memory commit |
 | `82a9088` | 2026-06-06T00:16:09+10:00 | iEgor72 | chore(memory): record docs landing polish |
 | `3213fcd` | 2026-06-06T00:15:46+10:00 | iEgor72 | docs: polish documents landing |
-| `80b1cbe` | 2026-06-05T23:53:19+10:00 | iEgor72 | chore(memory): update ai-memory logs for calendar bar + warnings fix |
-| `c3f683b` | 2026-06-05T23:53:05+10:00 | iEgor72 | fix: Поехали warnings are map-scoped, not per-shift |
