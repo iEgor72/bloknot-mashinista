@@ -1,4 +1,4 @@
-const CACHE_VERSION = 'v377';
+const CACHE_VERSION = 'v378';
 const CACHE_NAME = `shift-tracker-shell-${CACHE_VERSION}`;
 const NAVIGATION_FALLBACK_URL = '/index.html';
 const NETWORK_TIMEOUT_MS = 4500;
@@ -52,7 +52,7 @@ const INSTALL_SHELL_URLS = [
   '/scripts/partners.js',
   '/scripts/app-init.js',
   '/scripts/sw-register.js',
-  '/sw-bootstrap-v377.js'
+  '/sw-bootstrap-v378.js'
 ];
 const CRITICAL_INSTALL_URLS = [
   '/',
@@ -90,7 +90,7 @@ const CRITICAL_INSTALL_URLS = [
   '/scripts/partners.js',
   '/scripts/app-init.js',
   '/scripts/sw-register.js',
-  '/sw-bootstrap-v377.js'
+  '/sw-bootstrap-v378.js'
 ];
 const EXTENDED_SHELL_URLS = [
   '/assets/fonts/plus-jakarta-sans/plus-jakarta-sans-cyrillic-ext.woff2',
@@ -119,9 +119,13 @@ const INSTALL_SHELL_SET = new Set(INSTALL_SHELL_URLS.map((url) => normalizeShell
 const CRITICAL_INSTALL_SET = new Set(CRITICAL_INSTALL_URLS.map((url) => normalizeShellUrl(url)).filter(Boolean));
 const UPDATE_CONTROL_PATHS = new Set([
   '/scripts/app-constants.js',
+  '/scripts/app-init.js',
+  '/scripts/app.js',
+  '/scripts/auth.js',
   '/scripts/sw-register.js',
   '/sw.js'
 ]);
+const UPDATE_CONTROL_FAST_TIMEOUT_MS = 1400;
 
 // Many users reach prod only through an anti-censorship VPN whose tunnel drops a
 // noticeable fraction of requests (random "Failed to fetch"). A few retries on a
@@ -229,7 +233,7 @@ self.addEventListener('fetch', (event) => {
 
   if (isStaticAssetRequest(request, url)) {
     if (isUpdateControlRequest(url)) {
-      event.respondWith(networkFirstStatic(request));
+      event.respondWith(networkFirstFastFallbackStatic(request, event));
       return;
     }
     if (isShellCodeRequest(request, url) || isTrackerDataRequest(url)) {
@@ -699,6 +703,37 @@ async function cacheFirst(request) {
   } catch (error) {
     return matchShellCache(request, { ignoreSearch: true });
   }
+}
+
+async function networkFirstFastFallbackStatic(request, event) {
+  const cache = await caches.open(CACHE_NAME);
+  const cached = await matchShellCache(request, { ignoreSearch: true });
+  const networkPromise = fetchWithRetry(request)
+    .then(async (response) => {
+      if (response && response.ok) {
+        await putShellCacheResponse(cache, request, response.clone());
+      }
+      return response;
+    })
+    .catch(() => null);
+
+  const response = await withTimeout(
+    networkPromise,
+    cached ? UPDATE_CONTROL_FAST_TIMEOUT_MS : ASSET_NETWORK_TIMEOUT_MS
+  );
+  if (response) return response;
+
+  if (cached) {
+    if (event && event.waitUntil) {
+      event.waitUntil(networkPromise.then(() => undefined));
+    }
+    return cached;
+  }
+
+  const lateStatic = await networkPromise;
+  if (lateStatic && lateStatic.ok) return lateStatic;
+
+  throw new Error('Update-control asset unavailable');
 }
 
 async function putShellCacheResponse(cache, request, response) {

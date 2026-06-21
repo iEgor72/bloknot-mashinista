@@ -130,6 +130,9 @@ async function verifyPwaControlHeaders() {
     '/index.html',
     '/sw.js',
     '/scripts/app-constants.js',
+    '/scripts/auth.js',
+    '/scripts/app.js',
+    '/scripts/app-init.js',
     '/scripts/sw-register.js',
   ]) {
     const cacheControl = await fetchCacheControl(pathname);
@@ -214,6 +217,7 @@ async function main() {
       lastSyncAt: now,
     }));
     const oldTs = Date.now() - 60 * 24 * 60 * 60 * 1000;
+    const legacyAnnouncementTs = Date.now() - 13 * 24 * 60 * 60 * 1000;
     const recentTs = Date.now() - 5 * 60 * 1000;
     localStorage.setItem('shift_tracker_notifications_v1', JSON.stringify([
       {
@@ -224,6 +228,46 @@ async function main() {
         text: 'Retired announcement seed',
         tone: 'success',
         ts: oldTs,
+        read: false,
+      },
+      {
+        id: 'legacy-poekhali-announcement',
+        title: 'Поехали',
+        text: 'Если смена уже создана, из неё можно открыть рабочий экран «Поехали»...',
+        tone: 'success',
+        ts: legacyAnnouncementTs,
+        read: false,
+      },
+      {
+        id: 'legacy-brigade-announcement',
+        title: 'Бригада',
+        text: 'Можно связаться по короткому коду и делиться сменами внутри приложения...',
+        tone: 'success',
+        ts: legacyAnnouncementTs,
+        read: false,
+      },
+      {
+        id: 'legacy-docs-announcement',
+        title: 'Документы и Папки',
+        text: 'Раздел «Папки» теперь подписан как материалы по нарушениям БД...',
+        tone: 'info',
+        ts: legacyAnnouncementTs,
+        read: false,
+      },
+      {
+        id: 'legacy-feedback-announcement',
+        title: 'Помощь и обратная связь',
+        text: 'В Профиле появился блок «Помощь и связь»...',
+        tone: 'info',
+        ts: legacyAnnouncementTs,
+        read: false,
+      },
+      {
+        id: 'legacy-big-update-announcement',
+        title: 'Большое обновление',
+        text: 'Обновили навигацию и карточку смены...',
+        tone: 'success',
+        ts: legacyAnnouncementTs,
         read: false,
       },
       {
@@ -341,8 +385,16 @@ async function main() {
   if (notificationState.titles.includes('Старое прочитанное')) {
     throw new Error('Read notification stayed in notification inbox');
   }
-  if (!notificationState.keys.includes('offline_mode_restored_2026_06_v1')) {
-    throw new Error('Offline restored announcement was not seeded');
+  for (const retiredTitle of ['Поехали', 'Бригада', 'Документы и Папки', 'Помощь и обратная связь', 'Большое обновление']) {
+    if (notificationState.titles.includes(retiredTitle)) {
+      throw new Error(`Retired legacy announcement stayed in notification inbox: ${retiredTitle}`);
+    }
+  }
+  if (notificationState.keys.includes('offline_mode_restored_2026_06_v1')) {
+    throw new Error('Old offline announcement stayed in notification inbox');
+  }
+  if (!notificationState.keys.includes('offline_mode_fixed_2026_06_v2')) {
+    throw new Error('Updated offline announcement was not seeded');
   }
   if (!notificationState.titles.includes('Свежая служебная заметка')) {
     throw new Error('Recent unread transient notification was removed unexpectedly');
@@ -351,21 +403,21 @@ async function main() {
   await page.evaluate(() => {
     const items = JSON.parse(localStorage.getItem('shift_tracker_notifications_v1') || '[]');
     const nextItems = items.map((item) => (
-      item && item.key === 'offline_mode_restored_2026_06_v1'
+      item && item.key === 'offline_mode_fixed_2026_06_v2'
         ? { ...item, read: true }
         : item
     ));
     const readKeys = JSON.parse(localStorage.getItem('shift_tracker_notifications_read_v1') || '{}');
-    readKeys.announcement_offline_mode_restored_2026_06 = Date.now();
+    readKeys.announcement_offline_mode_fixed_2026_06_v2 = Date.now();
     localStorage.setItem('shift_tracker_notifications_v1', JSON.stringify(nextItems));
     localStorage.setItem('shift_tracker_notifications_read_v1', JSON.stringify(readKeys));
     window.appNotify(
-      'Оффлайн режим снова работает',
-      'Откройте блокнот один раз при интернете, чтобы обновился кэш.',
+      'Оффлайн режим обновлён',
+      'Кэш обновился до v378. Откройте Блокнот один раз при интернете.',
       'success',
       {
-        key: 'offline_mode_restored_2026_06_v1',
-        readKey: 'announcement_offline_mode_restored_2026_06',
+        key: 'offline_mode_fixed_2026_06_v2',
+        readKey: 'announcement_offline_mode_fixed_2026_06_v2',
         replace: true,
       }
     );
@@ -379,11 +431,11 @@ async function main() {
     };
   });
   report.checks.notificationsAfterRead = notificationAfterRead;
-  if (notificationAfterRead.keys.includes('offline_mode_restored_2026_06_v1')) {
-    throw new Error('Read system announcement stayed in notification inbox');
+  if (notificationAfterRead.keys.includes('offline_mode_fixed_2026_06_v2')) {
+    throw new Error('Read updated offline system announcement stayed in notification inbox');
   }
-  if (!notificationAfterRead.readKeys.announcement_offline_mode_restored_2026_06) {
-    throw new Error('Read key for archived system announcement was not persisted');
+  if (!notificationAfterRead.readKeys.announcement_offline_mode_fixed_2026_06_v2) {
+    throw new Error('Read key for updated offline announcement was not persisted');
   }
 
   const overlayRecoveryState = await page.evaluate(() => {

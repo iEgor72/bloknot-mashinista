@@ -112,9 +112,18 @@ async function main() {
   assertHeaderIncludes(constants.headers, 'cache-control', 'no-store', 'versioned app constants');
   assertIncludes(constants.text, `SHELL_CACHE_VERSION = '${version}'`, 'versioned app constants');
 
+  const auth = await fetchText(`${baseUrl}/scripts/auth.js?v=${version}`);
+  assertOk(auth, 'versioned auth runtime');
+  assertHeaderIncludes(auth.headers, 'cache-control', 'no-store', 'versioned auth runtime');
+
+  const app = await fetchText(`${baseUrl}/scripts/app.js?v=${version}`);
+  assertOk(app, 'versioned app runtime');
+  assertHeaderIncludes(app.headers, 'cache-control', 'no-store', 'versioned app runtime');
+
   const appInit = await fetchText(`${baseUrl}/scripts/app-init.js?v=${version}`);
   assertOk(appInit, 'versioned app init');
-  assertIncludes(appInit.text, 'offline_mode_restored_2026_06_v1', 'versioned app init');
+  assertHeaderIncludes(appInit.headers, 'cache-control', 'no-store', 'versioned app init');
+  assertIncludes(appInit.text, 'offline_mode_fixed_2026_06_v2', 'versioned app init');
 
   const sw = await fetchText(`${baseUrl}/sw.js?v=${version}`);
   assertOk(sw, 'versioned service worker');
@@ -134,6 +143,16 @@ async function main() {
     status: constants.status,
     cacheControl: constants.headers['cache-control'] || '',
     cfCacheStatus: constants.headers['cf-cache-status'] || '',
+  };
+  report.checks.versionedAuthRuntime = {
+    status: auth.status,
+    cacheControl: auth.headers['cache-control'] || '',
+    cfCacheStatus: auth.headers['cf-cache-status'] || '',
+  };
+  report.checks.versionedAppRuntime = {
+    status: app.status,
+    cacheControl: app.headers['cache-control'] || '',
+    cfCacheStatus: app.headers['cf-cache-status'] || '',
   };
   report.checks.versionedServiceWorker = {
     status: sw.status,

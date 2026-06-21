@@ -119,6 +119,7 @@ const PUBLIC_TOP_LEVEL_FILES = new Set([
   'sw-bootstrap-v375.js',
   'sw-bootstrap-v376.js',
   'sw-bootstrap-v377.js',
+  'sw-bootstrap-v378.js',
   'apple-touch-icon.png',
   'icon-192.png',
   'icon-512.png',
@@ -2819,6 +2820,9 @@ function getPublicFileCacheControl(filePath, publicPath) {
     normalizedPath === '/sw.js' ||
     baseName === 'sw.js' ||
     normalizedPath === '/scripts/app-constants.js' ||
+    normalizedPath === '/scripts/app-init.js' ||
+    normalizedPath === '/scripts/app.js' ||
+    normalizedPath === '/scripts/auth.js' ||
     normalizedPath === '/scripts/sw-register.js' ||
     /^\/sw-bootstrap-v\d+\.js$/.test(normalizedPath)
   ) {

@@ -346,8 +346,29 @@ if (typeof bootstrapAppStartup === 'function') {
     return (
       (announcement.key && item.key === announcement.key) ||
       (announcement.readKey && item.readKey === announcement.readKey) ||
-      (announcement.title && item.title === announcement.title)
+      (announcement.title && normalizeAnnouncementTitle(item.title) === normalizeAnnouncementTitle(announcement.title))
     );
+  }
+  function normalizeAnnouncementTitle(value) {
+    return String(value || '')
+      .replace(/\u00a0/g, ' ')
+      .replace(/ё/g, 'е')
+      .replace(/Ё/g, 'Е')
+      .replace(/\s+/g, ' ')
+      .trim()
+      .toLowerCase();
+  }
+  function buildTitleLookup(titles) {
+    var lookup = {};
+    (titles || []).forEach(function(title) {
+      var key = normalizeAnnouncementTitle(title);
+      if (key) lookup[key] = true;
+    });
+    return lookup;
+  }
+  function isRetiredAnnouncement(item) {
+    if (isKnownAnnouncement(item, RETIRED_SYSTEM_ANNOUNCEMENTS)) return true;
+    return !!RETIRED_SYSTEM_ANNOUNCEMENT_TITLE_LOOKUP[normalizeAnnouncementTitle(item && item.title)];
   }
   function isKnownAnnouncement(item, announcements) {
     announcements = announcements || [];
@@ -390,7 +411,7 @@ if (typeof bootstrapAppStartup === 'function') {
         return;
       }
       var isActiveSystem = isKnownAnnouncement(item, SYSTEM_ANNOUNCEMENTS);
-      if (isKnownAnnouncement(item, RETIRED_SYSTEM_ANNOUNCEMENTS) || isExpired(item, now)) {
+      if (isRetiredAnnouncement(item) || isExpired(item, now)) {
         changed = true;
         return;
       }
@@ -600,19 +621,33 @@ if (typeof bootstrapAppStartup === 'function') {
       key: 'poekhali_launch_2026_06_v1',
       readKey: 'announcement_poekhali_launch_2026_06',
       title: 'Поехали'
-    }
-  ];
-
-  var SYSTEM_ANNOUNCEMENTS = [
+    },
     {
       key: 'offline_mode_restored_2026_06_v1',
       readKey: 'announcement_offline_mode_restored_2026_06',
-      title: 'Оффлайн режим снова работает',
+      title: 'Оффлайн режим снова работает'
+    }
+  ];
+  var RETIRED_SYSTEM_ANNOUNCEMENT_TITLE_LOOKUP = buildTitleLookup([
+    'Большое обновление',
+    'Помощь и обратная связь',
+    'Документы и Папки',
+    'Документы и папки',
+    'Бригада',
+    'Поехали',
+    'Оффлайн режим снова работает'
+  ]);
+
+  var SYSTEM_ANNOUNCEMENTS = [
+    {
+      key: 'offline_mode_fixed_2026_06_v2',
+      readKey: 'announcement_offline_mode_fixed_2026_06_v2',
+      title: 'Оффлайн режим обновлён',
       tone: 'success',
-      ts: releaseTime('2026-06-21T13:05:00+10:00'),
-      expiresAt: releaseTime('2026-07-21T13:05:00+10:00'),
+      ts: releaseTime('2026-06-21T13:58:00+10:00'),
+      expiresAt: releaseTime('2026-07-21T13:58:00+10:00'),
       text:
-        'Откройте блокнот один раз при интернете, чтобы обновился кэш.\n' +
+        'Кэш обновился до v378. Откройте Блокнот один раз при интернете.\n' +
         'После этого сохраненные данные будут открываться без связи.'
     }
   ];

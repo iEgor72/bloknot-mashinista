@@ -6587,3 +6587,11 @@ Append-only журнал действий ИИ-агентов по проект�
 - Branch: `main`
 - Methods: `Pushed main to GitHub`, `fast-forward pulled VPS to c26f784`, `reloaded PM2 bloknot-mashinista`, `verified production v377 and no-store update-control headers with npm run smoke:prod-cache`
 - Files: `sw.js`, `scripts/sw-register.js`, `server.js`, `index.html`, `scripts/app-constants.js`, `sw-bootstrap-v377.js`, `scripts/app-init.js`, `scripts/shift-form.js`, `scripts/time-utils.js`, `scripts/local-smoke.mjs`, `scripts/prod-cache-smoke.mjs`
+
+## 2026-06-21 14:06:36 +1000
+
+- Source: `manual`
+- Task: Fixed bell announcement migration and offline announcement delivery
+- Branch: `main`
+- Methods: `Retired legacy announcement titles by normalized title`, `seeded new offline fixed announcement v2`, `bumped PWA shell to v378`, `made app-init/auth/app update-control no-store with fast network-first SW fallback`, `expanded local/prod smoke coverage`
+- Files: `scripts/app-init.js`, `sw.js`, `server.js`, `index.html`, `scripts/app-constants.js`, `sw-bootstrap-v378.js`, `scripts/local-smoke.mjs`, `scripts/prod-cache-smoke.mjs`
