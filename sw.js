@@ -1,4 +1,4 @@
-const CACHE_VERSION = 'v371';
+const CACHE_VERSION = 'v372';
 const CACHE_NAME = `shift-tracker-shell-${CACHE_VERSION}`;
 const NAVIGATION_FALLBACK_URL = '/index.html';
 const NETWORK_TIMEOUT_MS = 4500;
@@ -43,6 +43,7 @@ const INSTALL_SHELL_URLS = [
   '/scripts/viewport.js',
   '/scripts/time-utils.js',
   '/scripts/docs-app.js',
+  '/scripts/telegram-sdk-loader.js',
   '/scripts/app.js',
   '/scripts/poekhali-tracker.js',
   '/scripts/auth.js',
@@ -80,6 +81,7 @@ const CRITICAL_INSTALL_URLS = [
   '/scripts/viewport.js',
   '/scripts/time-utils.js',
   '/scripts/docs-app.js',
+  '/scripts/telegram-sdk-loader.js',
   '/scripts/app.js',
   '/scripts/poekhali-tracker.js',
   '/scripts/auth.js',
@@ -187,9 +189,12 @@ self.addEventListener('message', (event) => {
   }
   if (data && data.type === 'WARMUP_CACHE') {
     event.waitUntil(
-      warmShellCache({ mode: 'full' })
+      warmShellCache({ mode: 'shell' })
         .then(() => cleanupStaleShellCachesIfSafe())
     );
+  }
+  if (data && data.type === 'WARMUP_EXTENDED_CACHE') {
+    event.waitUntil(warmShellCache({ mode: 'full' }));
   }
 });
 
@@ -224,7 +229,7 @@ self.addEventListener('fetch', (event) => {
 });
 
 async function warmShellCache(options) {
-  const mode = options && options.mode === 'install' ? 'install' : 'full';
+  const mode = options && options.mode === 'install' ? 'install' : (options && options.mode === 'shell' ? 'shell' : 'full');
   const cache = await caches.open(CACHE_NAME);
   const shellUrls = await resolveShellUrls(mode);
   let cachedCount = 0;
@@ -257,6 +262,10 @@ async function warmShellCache(options) {
 
   if (mode === 'install') {
     console.info('[SW] Install shell cache ready:', `${cachedCount}/${shellUrls.length}`);
+    return;
+  }
+  if (mode === 'shell') {
+    console.info('[SW] App shell cache updated:', `${cachedCount}/${shellUrls.length}`);
     return;
   }
   console.info('[SW] Extended warmup cache updated:', `${cachedCount}/${shellUrls.length}`);
@@ -335,6 +344,15 @@ async function resolveShellUrls(mode) {
   }
 
   const discoveredAssets = await discoverIndexAssets();
+  if (mode === 'shell') {
+    return uniqueShellUrls([
+      NAVIGATION_FALLBACK_URL,
+      '/',
+      ...INSTALL_SHELL_URLS,
+      ...discoveredAssets
+    ]);
+  }
+
   return uniqueShellUrls([
     NAVIGATION_FALLBACK_URL,
     '/',
@@ -457,7 +475,7 @@ function shouldBypassNavigationFallback(pathname) {
 async function refreshControlledAppShellClients() {
   if (!self.clients || typeof self.clients.matchAll !== 'function') return;
   try {
-    const clients = await self.clients.matchAll({ type: 'window', includeUncontrolled: true });
+    const clients = await self.clients.matchAll({ type: 'window', includeUncontrolled: false });
     await Promise.all(
       clients.map(async (client) => {
         try {

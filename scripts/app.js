@@ -23,11 +23,15 @@
     applyTelegramWebAppChrome();
 
     (function hookTelegramSdkLoad() {
-      var el = document.getElementById('telegram-webapp-sdk');
-      if (!el || el.dataset.shellHook === '1') return;
-      el.dataset.shellHook = '1';
-      el.addEventListener('load', applyTelegramWebAppChrome);
-      el.addEventListener('error', applyTelegramWebAppChrome);
+      function bindElement(el) {
+        if (!el || el.dataset.shellHook === '1') return;
+        el.dataset.shellHook = '1';
+        el.addEventListener('load', applyTelegramWebAppChrome);
+        el.addEventListener('error', applyTelegramWebAppChrome);
+      }
+      bindElement(document.getElementById('telegram-webapp-sdk'));
+      window.addEventListener('telegram-webapp-sdk-ready', applyTelegramWebAppChrome);
+      window.addEventListener('telegram-webapp-sdk-error', applyTelegramWebAppChrome);
     })();
 
     // ── Constants — see scripts/app-constants.js ──

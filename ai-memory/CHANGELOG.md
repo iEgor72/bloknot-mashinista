@@ -6384,3 +6384,11 @@ Append-only журнал действий ИИ-агентов по проект�
 - Branch: `main`
 - Methods: `Коммиты bb5b9b3 runtime и f699279 memory созданы`, `push origin/main выполнен`, `production VPS проверен main behind origin/main на 2 коммита`, `dirty server.js сохранен`, `intended commit f699279 present`, `git pull --ff-only до f699279`, `node --check server.js sw.js app-constants sw-register прошли`, `pm2 reload bloknot-mashinista --update-env`, `PM2 online`, `внешние и VPS HTTPS проверки / и /api/community 200`, `sw.js и app-constants отдают v371`, `sw-register больше не отдает Telegram unregister`
 - Files: `scripts/sw-register.js`, `sw.js`, `scripts/app-constants.js`, `ai-memory`
+
+## 2026-06-21 12:04:26 +1000
+
+- Source: `manual`
+- Task: Diagnosed offline cold-start blank screen and changed startup to cache-first architecture
+- Branch: `main`
+- Methods: `Found WebKit cold offline launch reaches about:blank before app code`, `added HTTP cache fallback for shell assets`, `local non-blocking Telegram SDK loader`, `shell-only SW startup warmup`, `controlled-client activation refresh only`, `and cache-first auth bootstrap independent of navigator.onLine`
+- Files: `server.js`, `index.html`, `scripts/auth.js`, `scripts/app.js`, `scripts/telegram-sdk-loader.js`, `sw.js`, `scripts/app-constants.js`, `styles/50-design-refresh.css`

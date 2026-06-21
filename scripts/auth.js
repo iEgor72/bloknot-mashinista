@@ -932,24 +932,22 @@
 
     function hasCachedBootstrapData() {
       var storedUser = getStoredCachedUser();
+      var cachedShifts = readShiftsCache() || readAnyShiftsCache();
+      var cachedMeta = readOfflineMeta() || readAnyOfflineMeta();
+      var pendingSnapshot = readPendingSnapshot();
       var hasAnyCache =
         !!storedUser ||
-        !!readShiftsCache() ||
-        !!readAnyShiftsCache() ||
-        !!readOfflineMeta() ||
-        !!readAnyOfflineMeta() ||
-        !!readPendingSnapshot();
+        !!cachedShifts ||
+        !!cachedMeta ||
+        !!pendingSnapshot;
 
       if (!hasAnyCache) return false;
 
-      // Offline startup must remain instant even without a live session.
-      if (!navigator.onLine) return true;
-
-      // Online startup should skip shell bootstrap when there is no proven
-      // authenticated context, otherwise users see app first and auth later.
-      var hasStoredSession = !!getStoredSessionToken();
-      var hasKnownIdentity = hasKnownUserIdentity(storedUser);
-      return hasStoredSession && hasKnownIdentity;
+      // Cache-first startup must not depend on navigator.onLine: iOS/Telegram
+      // WebViews can report "online" during a cold launch while network,
+      // Telegram SDK and API requests are unavailable. Start from local state
+      // immediately; startBackgroundBootstrap validates the session later.
+      return hasKnownUserIdentity(storedUser) || !!cachedShifts || !!cachedMeta || !!pendingSnapshot;
     }
 
     function bootstrapCachedShellFromStorage() {

@@ -2800,7 +2800,38 @@ function buildSeoSitemapXml() {
   ].join('\n');
 }
 
-function serveFile(res, filePath) {
+function getPublicFileCacheControl(filePath, publicPath) {
+  const normalizedPath = String(publicPath || '').replace(/\\/g, '/');
+  const ext = path.extname(filePath).toLowerCase();
+  const baseName = path.basename(filePath).toLowerCase();
+  const shellFallbackCache = 'public, max-age=86400, stale-while-revalidate=604800, stale-if-error=604800';
+
+  if (baseName === 'sw.js' || normalizedPath === '/sw.js') {
+    return 'no-cache';
+  }
+
+  if (
+    normalizedPath === '/' ||
+    normalizedPath === '/index.html' ||
+    baseName === 'index.html' ||
+    normalizedPath === '/manifest.webmanifest' ||
+    normalizedPath.startsWith('/styles/') ||
+    normalizedPath.startsWith('/scripts/') ||
+    normalizedPath.startsWith('/assets/fonts/') ||
+    normalizedPath.startsWith('/assets/tracker/') ||
+    normalizedPath === '/apple-touch-icon.png' ||
+    normalizedPath === '/icon-192.png' ||
+    normalizedPath === '/icon-512.png' ||
+    ext === '.woff' ||
+    ext === '.woff2'
+  ) {
+    return shellFallbackCache;
+  }
+
+  return 'no-store';
+}
+
+function serveFile(res, filePath, publicPath) {
   if (!isPublicFilePath(filePath)) {
     sendText(res, 404, 'Not found');
     return;
@@ -2831,7 +2862,7 @@ function serveFile(res, filePath) {
 
   res.writeHead(200, {
     'Content-Type': types[ext] || 'application/octet-stream',
-    'Cache-Control': 'no-store',
+    'Cache-Control': getPublicFileCacheControl(filePath, publicPath),
     'X-Content-Type-Options': 'nosniff',
     'Referrer-Policy': 'strict-origin-when-cross-origin',
   });
@@ -3581,7 +3612,7 @@ const server = http.createServer(async (req, res) => {
   }
 
   if (SEO_PAGE_ROUTES[pathname]) {
-    serveFile(res, path.join(ROOT, SEO_PAGE_ROUTES[pathname]));
+    serveFile(res, path.join(ROOT, SEO_PAGE_ROUTES[pathname]), pathname);
     return;
   }
 
@@ -3614,7 +3645,7 @@ const server = http.createServer(async (req, res) => {
     return;
   }
 
-  serveFile(res, filePath);
+  serveFile(res, filePath, normalized);
 });
 
 server.listen(PORT, () => {

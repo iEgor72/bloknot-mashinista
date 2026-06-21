@@ -93,7 +93,6 @@
       function hasCachedBootstrapState() {
         try {
           if (!window.localStorage) return false;
-          var sessionToken = window.localStorage.getItem('shift_tracker_session_token');
           var cachedUserRaw = window.localStorage.getItem('shift_tracker_cached_user_v1');
           var cachedUser = null;
 
@@ -113,11 +112,11 @@
             String(cachedUser.id).trim() !== 'guest'
           );
 
-          // Online: hide auth gate only if there is a persisted authenticated context.
-          if (sessionToken && hasKnownUser) return true;
+          if (hasKnownUser) return true;
 
-          // Offline: allow immediate cached shell startup.
-          if (navigator.onLine !== false) return false;
+          // iOS/Telegram WebViews do not always flip navigator.onLine before a
+          // cold offline launch. Treat any local shift state as enough to paint
+          // the cached shell; auth.js validates the session in the background.
           for (var i = 0; i < window.localStorage.length; i++) {
             var key = window.localStorage.key(i) || '';
             if (
@@ -152,7 +151,7 @@
       }
     })();
   </script>
-  <!-- Telegram SDK загружается последним defer в конце body — иначе офлайн ждёт таймаут telegram.org и блокирует весь bootstrap -->
+  <!-- Telegram SDK is injected by a local non-blocking loader; cross-origin scripts stay out of the offline-critical path. -->
   <style>
     html, body {
       margin: 0;
@@ -1823,6 +1822,7 @@
   <script src="/scripts/viewport.js" defer></script>
   <script src="/scripts/time-utils.js" defer></script>
   <script src="/scripts/docs-app.js" defer></script>
+  <script src="/scripts/telegram-sdk-loader.js" defer></script>
   <script src="/scripts/app.js" defer></script>
   <script src="/scripts/poekhali-tracker.js" defer></script>
   <script src="/scripts/render.js" defer></script>
@@ -1833,6 +1833,5 @@
   <script src="/scripts/utils/haptics.js" defer></script>
   <script src="/scripts/press-feedback.js" defer></script>
   <script src="/scripts/nav-debug.js" defer></script>
-  <script defer src="https://telegram.org/js/telegram-web-app.js" id="telegram-webapp-sdk"></script>
 </body>
 </html>
