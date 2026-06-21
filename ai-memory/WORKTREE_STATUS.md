@@ -1,10 +1,10 @@
 # Worktree Status
 
-Generated: 2026-06-21 11:25:43 +1000
+Generated: 2026-06-21 11:36:07 +1000
 
 ## git status -sb
 ```text
-## main...origin/main
+## main...origin/main [ahead 1]
  M ai-memory/CHANGELOG.md
  M ai-memory/PROJECT_STATE.md
  M ai-memory/sessions/2026-06-21.md
@@ -14,18 +14,15 @@ Generated: 2026-06-21 11:25:43 +1000
 ```text
 codex/next-direction b044dd5 offline mvp
   codex/tabs-ui        117f1fa [origin/codex/tabs-ui] tabs ui
-* main                 93a685f [origin/main] chore(memory): refresh after offline shell fix
+* main                 bb5b9b3 [origin/main: ahead 1] fix: keep service worker in telegram webview
   poekhali-rework      2d5f0af chore(memory): refresh after main merge
 ```
 
 ## HEAD
 ```text
-93a685f chore(memory): refresh after offline shell fix
- ai-memory/CHANGELOG.md           | 18 ++++++++++++++++++
- ai-memory/INDEX.md               |  2 +-
- ai-memory/PROJECT_STATE.md       | 18 +++++-------------
- ai-memory/RECENT_COMMITS.md      |  6 +++---
- ai-memory/WORKTREE_STATUS.md     | 28 ++++++++++++----------------
- ai-memory/sessions/2026-06-21.md |  2 ++
- 6 files changed, 41 insertions(+), 33 deletions(-)
+bb5b9b3 fix: keep service worker in telegram webview
+ scripts/app-constants.js |  2 +-
+ scripts/sw-register.js   | 11 +++--------
+ sw.js                    |  2 +-
+ 3 files changed, 5 insertions(+), 10 deletions(-)
 ```

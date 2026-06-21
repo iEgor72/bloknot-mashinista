@@ -1,9 +1,11 @@
 # Recent Commits
 
-Generated: 2026-06-21 11:25:43 +1000
+Generated: 2026-06-21 11:36:07 +1000
 
 | Hash | Date | Author | Message |
 | --- | --- | --- | --- |
+| `bb5b9b3` | 2026-06-21T11:36:06+10:00 | iEgor72 | fix: keep service worker in telegram webview |
+| `7eb73f1` | 2026-06-21T11:25:52+10:00 | iEgor72 | chore(memory): record offline shell deploy |
 | `93a685f` | 2026-06-21T11:21:18+10:00 | iEgor72 | chore(memory): refresh after offline shell fix |
 | `8887146` | 2026-06-21T11:20:56+10:00 | iEgor72 | fix: restore offline pwa shell |
 | `efeaf36` | 2026-06-08T20:06:53+10:00 | iEgor72 | fix: preserve notification read state |
@@ -42,5 +44,3 @@ Generated: 2026-06-21 11:25:43 +1000
 | `2d5f0af` | 2026-06-06T00:18:44+10:00 | iEgor72 | chore(memory): refresh after main merge |
 | `38732ba` | 2026-06-06T00:18:15+10:00 | iEgor72 | Merge remote-tracking branch 'origin/main' into poekhali-rework |
 | `6621b33` | 2026-06-06T00:16:31+10:00 | iEgor72 | chore(memory): refresh after docs memory commit |
-| `82a9088` | 2026-06-06T00:16:09+10:00 | iEgor72 | chore(memory): record docs landing polish |
-| `3213fcd` | 2026-06-06T00:15:46+10:00 | iEgor72 | docs: polish documents landing |
