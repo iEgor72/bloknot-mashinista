@@ -12,14 +12,9 @@
     }
   }
 
-  if (isLikelyTelegramEmbeddedWebView()) {
-    navigator.serviceWorker.getRegistrations().then(function(registrations) {
-      registrations.forEach(function(registration) {
-        registration.unregister().catch(function() {});
-      });
-    }).catch(function() {});
-    console.info('[SW] Skipped in Telegram WebView (unregistered workers). Scripts load directly from network.');
-    return;
+  var isTelegramEmbeddedWebView = isLikelyTelegramEmbeddedWebView();
+  if (isTelegramEmbeddedWebView) {
+    console.info('[SW] Telegram WebView detected; attempting registration for offline shell cache.');
   }
 
   var initialController = navigator.serviceWorker.controller;
