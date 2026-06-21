@@ -1,14 +1,14 @@
 # Project State
 
 <!-- AUTO_STATUS:START -->
-Generated: 2026-06-21 12:56:37 +1000
+Generated: 2026-06-21 13:17:12 +1000
 
 ## Repository Snapshot
 - Local repo path: `D:\work\bloknot-mashinista-tg`
 - Project memory path: `D:\work\bloknot-mashinista-tg\ai-memory`
 - Branch: `main`
-- HEAD: `f8271a4`
-- Last commit: `f8271a4 chore(memory): record offline fallback safeguards`
+- HEAD: `42f7046`
+- Last commit: `42f7046 fix(notifications): archive read bell announcements`
 
 ## Git Remote
 ```text
@@ -20,7 +20,7 @@ origin	https://github.com/iEgor72/bloknot-mashinista.git (push)
 ```text
 codex/next-direction b044dd5 offline mvp
   codex/tabs-ui        117f1fa [origin/codex/tabs-ui] tabs ui
-* main                 f8271a4 [origin/main] chore(memory): record offline fallback safeguards
+* main                 42f7046 [origin/main: ahead 1] fix(notifications): archive read bell announcements
   poekhali-rework      2d5f0af chore(memory): refresh after main merge
 ```
 

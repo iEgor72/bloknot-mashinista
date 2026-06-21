@@ -1,9 +1,11 @@
 # Recent Commits
 
-Generated: 2026-06-21 12:56:37 +1000
+Generated: 2026-06-21 13:17:12 +1000
 
 | Hash | Date | Author | Message |
 | --- | --- | --- | --- |
+| `42f7046` | 2026-06-21T13:17:11+10:00 | iEgor72 | fix(notifications): archive read bell announcements |
+| `01fb72a` | 2026-06-21T12:56:52+10:00 | iEgor72 | chore(memory): record offline fallback deploy |
 | `f8271a4` | 2026-06-21T12:55:37+10:00 | iEgor72 | chore(memory): record offline fallback safeguards |
 | `aba9e66` | 2026-06-21T12:55:19+10:00 | iEgor72 | fix(pwa): add offline boot fallback safeguards |
 | `086652f` | 2026-06-21T12:28:38+10:00 | iEgor72 | chore(memory): refresh after pwa deploy |
@@ -42,5 +44,3 @@ Generated: 2026-06-21 12:56:37 +1000
 | `91f9a03` | 2026-06-06T18:02:17+10:00 | iEgor72 | fix(pwa): unblock telegram webview startup |
 | `dbdd99a` | 2026-06-06T17:00:30+10:00 | iEgor72 | fix(poehali): refine mobile driving layout |
 | `a068636` | 2026-06-06T11:40:26+10:00 | iEgor72 | chore(memory): record poekhali layout deploy |
-| `60e052a` | 2026-06-06T11:38:11+10:00 | iEgor72 | fix(poehali): keep speed editor clear of bottom nav |
-| `c99cac0` | 2026-06-06T11:28:15+10:00 | iEgor72 | chore(memory): record speed control deploy |
