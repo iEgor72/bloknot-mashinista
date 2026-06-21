@@ -6579,3 +6579,11 @@ Append-only журнал действий ИИ-агентов по проект�
 - Methods: `git post-commit hook`, `automatic memory update`
 - Files: `ai-memory/CHANGELOG.md`, `ai-memory/INDEX.md`, `ai-memory/PROJECT_STATE.md`, `ai-memory/RECENT_COMMITS.md`, `ai-memory/WORKTREE_STATUS.md`, `ai-memory/sessions/2026-06-21.md`
 - Notes: Commit: `17d9913eb497b7a854594a685b41150244d6965a` (`17d9913`) | Author: `iEgor72`
+
+## 2026-06-21 13:52:57 +1000
+
+- Source: `manual`
+- Task: Deployed PWA shell self-heal fix
+- Branch: `main`
+- Methods: `Pushed main to GitHub`, `fast-forward pulled VPS to c26f784`, `reloaded PM2 bloknot-mashinista`, `verified production v377 and no-store update-control headers with npm run smoke:prod-cache`
+- Files: `sw.js`, `scripts/sw-register.js`, `server.js`, `index.html`, `scripts/app-constants.js`, `sw-bootstrap-v377.js`, `scripts/app-init.js`, `scripts/shift-form.js`, `scripts/time-utils.js`, `scripts/local-smoke.mjs`, `scripts/prod-cache-smoke.mjs`
