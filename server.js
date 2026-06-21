@@ -117,6 +117,7 @@ const PUBLIC_TOP_LEVEL_FILES = new Set([
   'sw-bootstrap-v373.js',
   'sw-bootstrap-v374.js',
   'sw-bootstrap-v375.js',
+  'sw-bootstrap-v376.js',
   'apple-touch-icon.png',
   'icon-192.png',
   'icon-512.png',

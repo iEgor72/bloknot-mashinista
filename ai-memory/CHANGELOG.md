@@ -6511,3 +6511,11 @@ Append-only журнал действий ИИ-агентов по проект�
 - Branch: `main`
 - Methods: `Pushed main`, `fast-forward pulled VPS to 4ee4eb1`, `reloaded PM2 bloknot-mashinista`, `verified production v375 with npm run smoke:prod-cache`
 - Files: `scripts/app-init.js`, `scripts/local-smoke.mjs`, `scripts/prod-cache-smoke.mjs`, `index.html`, `scripts/app-constants.js`, `sw.js`, `server.js`, `sw-bootstrap-v375.js`
+
+## 2026-06-21 13:29:03 +1000
+
+- Source: `manual`
+- Task: Removed blocking boot fallback overlay
+- Branch: `main`
+- Methods: `Converted boot fallback from full-screen blocker to nonblocking diagnostic toast`, `suppress fallback when app shell or auth gate is already visible`, `bumped PWA cache to v376`, `verified with npm run smoke:predeploy`
+- Files: `index.html`, `scripts/local-smoke.mjs`, `scripts/offline-smoke.mjs`, `scripts/app-constants.js`, `sw.js`, `server.js`, `sw-bootstrap-v376.js`

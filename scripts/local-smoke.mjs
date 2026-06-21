@@ -285,6 +285,20 @@ async function main() {
   report.checks.authGateHidden = authGateHidden;
   if (!authGateHidden) throw new Error('Auth gate remained visible in local smoke run');
 
+  const bootFallbackState = await page.evaluate(() => {
+    const fallback = document.getElementById('bootFallback');
+    return {
+      bootComplete: document.documentElement.classList.contains('boot-complete'),
+      bootFallbackVisible: document.documentElement.classList.contains('boot-fallback-visible'),
+      fallbackDisplay: fallback ? getComputedStyle(fallback).display : '',
+    };
+  });
+  report.checks.bootFallback = bootFallbackState;
+  if (!bootFallbackState.bootComplete) throw new Error('Boot did not complete after the app shell rendered');
+  if (bootFallbackState.bootFallbackVisible || bootFallbackState.fallbackDisplay !== 'none') {
+    throw new Error('Boot fallback is visible over a usable app shell');
+  }
+
   const notificationState = await page.evaluate(() => {
     const raw = localStorage.getItem('shift_tracker_notifications_v1') || '[]';
     const items = JSON.parse(raw);

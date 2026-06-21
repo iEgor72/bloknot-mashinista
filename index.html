@@ -187,13 +187,39 @@
       window.__shiftTrackerBootComplete = markBootComplete;
       writeBootDiagnostic('html-loaded');
 
+      function isVisible(el) {
+        if (!el) return false;
+        var styles = window.getComputedStyle ? window.getComputedStyle(el) : null;
+        if (!styles || styles.display === 'none' || styles.visibility === 'hidden') return false;
+        return !!(el.offsetWidth || el.offsetHeight || el.getClientRects().length);
+      }
+
+      function visibleBootStage() {
+        try {
+          if (isVisible(document.getElementById('appShell'))) return 'visible-app-shell';
+          if (isVisible(document.getElementById('authGate'))) return 'visible-auth-gate';
+        } catch (error) {}
+        return '';
+      }
+
+      function completeIfVisible() {
+        var stage = visibleBootStage();
+        if (stage) markBootComplete(stage);
+      }
+
       fallbackTimer = window.setTimeout(function() {
         if (root.classList.contains('boot-complete')) return;
+        if (visibleBootStage()) {
+          completeIfVisible();
+          return;
+        }
         root.classList.add('boot-fallback-visible');
         writeBootDiagnostic('fallback-visible', { reason: 'boot-timeout' });
-      }, 2800);
+      }, 8000);
 
       document.addEventListener('DOMContentLoaded', function() {
+        completeIfVisible();
+        window.setTimeout(completeIfVisible, 0);
         var reloadBtn = document.getElementById('bootFallbackReload');
         if (reloadBtn) {
           reloadBtn.addEventListener('click', function() {
@@ -223,31 +249,39 @@
     html.boot-has-cache #appShell.hidden { display: block !important; }
     .boot-fallback {
       position: fixed;
-      inset: 0;
-      z-index: 9999;
+      left: max(12px, env(safe-area-inset-left));
+      right: max(12px, env(safe-area-inset-right));
+      bottom: max(14px, env(safe-area-inset-bottom));
+      z-index: 80;
       display: none;
       align-items: center;
       justify-content: center;
-      padding: max(24px, env(safe-area-inset-top)) 22px max(24px, env(safe-area-inset-bottom));
-      background: #0C0C10;
+      pointer-events: none;
       color: #EEF2F8;
-      text-align: center;
+      text-align: left;
       box-sizing: border-box;
     }
     html.boot-fallback-visible:not(.boot-complete) .boot-fallback { display: flex; }
     html.boot-complete .boot-fallback { display: none !important; }
     .boot-fallback-inner {
-      width: min(100%, 360px);
+      width: min(100%, 420px);
       display: grid;
-      justify-items: center;
-      gap: 14px;
+      grid-template-columns: auto 1fr auto;
+      align-items: center;
+      gap: 10px;
+      pointer-events: auto;
+      padding: 12px;
+      border-radius: 14px;
+      background: rgba(12, 12, 16, 0.9);
+      box-shadow: 0 14px 38px rgba(0, 0, 0, 0.36), inset 0 0 0 1px rgba(238, 242, 248, 0.08);
+      backdrop-filter: blur(14px);
     }
     .boot-fallback-mark {
-      width: 48px;
-      height: 48px;
+      width: 34px;
+      height: 34px;
       display: grid;
       place-items: center;
-      border-radius: 14px;
+      border-radius: 10px;
       background: #EEF2F8;
       color: #0C0C10;
       font-weight: 800;
@@ -255,24 +289,25 @@
     }
     .boot-fallback-title {
       margin: 0;
-      font-size: 20px;
+      font-size: 14px;
       line-height: 1.2;
       font-weight: 800;
     }
     .boot-fallback-text {
       margin: 0;
       color: #B9C0CE;
-      font-size: 14px;
-      line-height: 1.45;
+      font-size: 12px;
+      line-height: 1.35;
     }
     .boot-fallback-action {
-      min-height: 42px;
-      padding: 0 18px;
+      min-height: 34px;
+      padding: 0 12px;
       border: 0;
       border-radius: 8px;
       background: #EEF2F8;
       color: #0C0C10;
       font: inherit;
+      font-size: 12px;
       font-weight: 750;
     }
     /* Critical docs gate placement to avoid cold-start jump before full CSS loads */
@@ -350,9 +385,11 @@
   <div class="boot-fallback" id="bootFallback" role="status" aria-live="polite">
     <div class="boot-fallback-inner">
       <div class="boot-fallback-mark" aria-hidden="true">БМ</div>
-      <h1 class="boot-fallback-title">Открываем блокнот</h1>
-      <p class="boot-fallback-text">Если сеть пропала, приложение попробует открыть сохраненные данные из кэша. Нажми «Повторить», когда связь появится.</p>
-      <button class="boot-fallback-action" id="bootFallbackReload" type="button">Повторить</button>
+      <div>
+        <h1 class="boot-fallback-title">Блокнот работает локально</h1>
+        <p class="boot-fallback-text">Сеть не обязательна для сохраненных данных. Если экран не обновился, можно перезапустить.</p>
+      </div>
+      <button class="boot-fallback-action" id="bootFallbackReload" type="button">Обновить</button>
     </div>
   </div>
 
@@ -1932,21 +1969,21 @@
   </div>
 
   <!-- Runtime Scripts -->
-  <script src="/scripts/app-constants.js?v=v375" defer></script>
+  <script src="/scripts/app-constants.js?v=v376" defer></script>
   <script src="/scripts/glass-select.js" defer></script>
-  <script src="/scripts/auth.js?v=v375" defer></script>
+  <script src="/scripts/auth.js?v=v376" defer></script>
   <script src="/scripts/viewport.js" defer></script>
   <script src="/scripts/time-utils.js" defer></script>
   <script src="/scripts/docs-app.js" defer></script>
   <script src="/scripts/telegram-sdk-loader.js" defer></script>
-  <script src="/scripts/app.js?v=v375" defer></script>
+  <script src="/scripts/app.js?v=v376" defer></script>
   <script src="/scripts/poekhali-tracker.js" defer></script>
   <script src="/scripts/render.js" defer></script>
   <script src="/scripts/shift-form.js" defer></script>
   <script src="/scripts/partners.js" defer></script>
-  <script src="/scripts/app-init.js?v=v375" defer></script>
-  <script src="/scripts/sw-register.js?v=v375" defer></script>
-  <script src="/sw-bootstrap-v375.js" defer></script>
+  <script src="/scripts/app-init.js?v=v376" defer></script>
+  <script src="/scripts/sw-register.js?v=v376" defer></script>
+  <script src="/sw-bootstrap-v376.js" defer></script>
   <script src="/scripts/utils/haptics.js" defer></script>
   <script src="/scripts/press-feedback.js" defer></script>
   <script src="/scripts/nav-debug.js" defer></script>

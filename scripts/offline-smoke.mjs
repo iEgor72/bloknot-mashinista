@@ -355,25 +355,63 @@ async function runBootFallbackCheck() {
   const response = await page.goto(baseUrl, { waitUntil: 'domcontentloaded', timeout: startupTimeoutMs });
   if (!response || !response.ok()) throw new Error(`GET ${baseUrl} for fallback failed with status ${response ? response.status() : 'none'}`);
 
-  await page.waitForFunction(() => {
-    const fallback = document.getElementById('bootFallback');
-    return !!fallback && getComputedStyle(fallback).display !== 'none';
-  }, null, { timeout: uiTimeoutMs });
+  await delay(8500);
 
   const state = await page.evaluate(() => {
     const fallback = document.getElementById('bootFallback');
+    const inner = fallback && fallback.querySelector ? fallback.querySelector('.boot-fallback-inner') : null;
+    const appShell = document.getElementById('appShell');
+    const authGate = document.getElementById('authGate');
+    const fallbackRect = fallback ? fallback.getBoundingClientRect() : null;
+    const innerRect = inner ? inner.getBoundingClientRect() : null;
+    const fallbackStyles = fallback ? getComputedStyle(fallback) : null;
+    const innerStyles = inner ? getComputedStyle(inner) : null;
+    const appShellStyles = appShell ? getComputedStyle(appShell) : null;
+    const authGateStyles = authGate ? getComputedStyle(authGate) : null;
     return {
       title: document.title,
       fallbackText: fallback ? fallback.innerText : '',
       bootComplete: document.documentElement.classList.contains('boot-complete'),
       bootFallbackVisible: document.documentElement.classList.contains('boot-fallback-visible'),
+      fallbackDisplay: fallbackStyles ? fallbackStyles.display : '',
+      fallbackPointerEvents: fallbackStyles ? fallbackStyles.pointerEvents : '',
+      innerPointerEvents: innerStyles ? innerStyles.pointerEvents : '',
+      appShellVisible: appShell ? appShellStyles.display !== 'none' && appShellStyles.visibility !== 'hidden' : false,
+      authGateVisible: authGate ? authGateStyles.display !== 'none' && authGateStyles.visibility !== 'hidden' : false,
+      fallbackRect: fallbackRect ? {
+        width: fallbackRect.width,
+        height: fallbackRect.height,
+      } : null,
+      innerRect: innerRect ? {
+        width: innerRect.width,
+        height: innerRect.height,
+      } : null,
+      viewport: {
+        width: window.innerWidth,
+        height: window.innerHeight,
+      },
       diagnostics: localStorage.getItem('shift_tracker_boot_diagnostics_v1') || '',
     };
   });
   report.checks.bootFallback = state;
-  if (state.bootComplete) throw new Error('Fallback test unexpectedly marked boot complete');
-  if (!/Открываем блокнот/.test(state.fallbackText)) throw new Error('Fallback text is missing expected title');
-  if (!/fallback-visible/.test(state.diagnostics)) throw new Error('Fallback diagnostic was not recorded');
+  if (state.bootComplete && state.fallbackDisplay !== 'none') {
+    throw new Error('Fallback is visible after a usable boot surface completed startup');
+  }
+  if (state.bootComplete && !state.appShellVisible && !state.authGateVisible) {
+    throw new Error('Boot completed without a visible app shell or auth gate');
+  }
+  if (!state.bootComplete) {
+    if (!state.bootFallbackVisible || state.fallbackDisplay === 'none') {
+      throw new Error('Slow boot did not expose either a usable UI or nonblocking fallback diagnostics');
+    }
+    if (!/Блокнот работает локально/.test(state.fallbackText)) throw new Error('Fallback text is missing expected title');
+    if (state.fallbackPointerEvents !== 'none') throw new Error('Fallback container can intercept app interactions');
+    if (state.fallbackRect && state.viewport && state.fallbackRect.height > state.viewport.height * 0.35) {
+      throw new Error('Fallback takes too much vertical space and may block the app');
+    }
+    if (state.innerPointerEvents !== 'auto') throw new Error('Fallback action surface is not interactive');
+    if (!/fallback-visible/.test(state.diagnostics)) throw new Error('Fallback diagnostic was not recorded');
+  }
   await page.screenshot({ path: path.join(artifactsDir, 'boot-fallback.png'), fullPage: true });
   await closeContextSafely(context, 'bootFallback');
   context = null;
