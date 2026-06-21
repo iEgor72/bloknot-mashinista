@@ -1,9 +1,10 @@
 # Recent Commits
 
-Generated: 2026-06-21 14:07:39 +1000
+Generated: 2026-06-21 14:50:52 +1000
 
 | Hash | Date | Author | Message |
 | --- | --- | --- | --- |
+| `608c43b` | 2026-06-21T14:07:51+10:00 | iEgor72 | chore(memory): refresh after notification migration |
 | `201654b` | 2026-06-21T14:07:18+10:00 | iEgor72 | chore(memory): record notification migration fix |
 | `dbd02c8` | 2026-06-21T14:07:06+10:00 | iEgor72 | fix(notifications): migrate legacy bell announcements |
 | `2a84b00` | 2026-06-21T13:53:13+10:00 | iEgor72 | chore(memory): record pwa shell deploy |
@@ -43,4 +44,3 @@ Generated: 2026-06-21 14:07:39 +1000
 | `7315f08` | 2026-06-08T15:01:10+10:00 | iEgor72 | chore(memory): record public site deploy |
 | `4ac79e1` | 2026-06-08T14:54:54+10:00 | iEgor72 | chore(memory): record public site update |
 | `478e759` | 2026-06-08T14:53:59+10:00 | iEgor72 | feat: refresh public site and app updates |
-| `347f6ea` | 2026-06-07T23:58:58+10:00 | iEgor72 | fix(server): load env file on startup |

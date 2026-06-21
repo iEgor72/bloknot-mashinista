@@ -6604,3 +6604,11 @@ Append-only журнал действий ИИ-агентов по проект�
 - Methods: `git post-commit hook`, `automatic memory update`
 - Files: `ai-memory/CHANGELOG.md`, `ai-memory/sessions/2026-06-21.md`, `index.html`, `scripts/app-constants.js`, `scripts/app-init.js`, `scripts/local-smoke.mjs`, `scripts/prod-cache-smoke.mjs`, `server.js`, `sw-bootstrap-v378.js`, `sw.js`
 - Notes: Commit: `dbd02c8f49f09c927528550216b1c1cecebf1b89` (`dbd02c8`) | Author: `iEgor72`
+
+## 2026-06-21 14:50:48 +1000
+
+- Source: `manual`
+- Task: Deployed notification migration and offline announcement v378
+- Branch: `main`
+- Methods: `Fast-forward pulled VPS to 608c43b`, `reloaded PM2 bloknot-mashinista with update-env`, `verified production v378 and no-store update-control headers with npm run smoke:prod-cache`
+- Files: `scripts/app-init.js`, `sw.js`, `server.js`, `index.html`, `scripts/app-constants.js`, `sw-bootstrap-v378.js`, `scripts/local-smoke.mjs`, `scripts/prod-cache-smoke.mjs`

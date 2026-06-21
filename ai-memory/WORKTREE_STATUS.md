@@ -1,11 +1,13 @@
 # Worktree Status
 
-Generated: 2026-06-21 14:07:39 +1000
+Generated: 2026-06-21 14:50:52 +1000
 
 ## git status -sb
 ```text
 ## main...origin/main
+ M ai-memory/CHANGELOG.md
  M ai-memory/PROJECT_STATE.md
+ M ai-memory/sessions/2026-06-21.md
 ?? .codex/
 ```
 
@@ -13,18 +15,16 @@ Generated: 2026-06-21 14:07:39 +1000
 ```text
 codex/next-direction b044dd5 offline mvp
   codex/tabs-ui        117f1fa [origin/codex/tabs-ui] tabs ui
-* main                 201654b [origin/main] chore(memory): record notification migration fix
+* main                 608c43b [origin/main] chore(memory): refresh after notification migration
   poekhali-rework      2d5f0af chore(memory): refresh after main merge
 ```
 
 ## HEAD
 ```text
-201654b chore(memory): record notification migration fix
- ai-memory/CHANGELOG.md           |  9 +++++++++
- ai-memory/INDEX.md               |  2 +-
- ai-memory/PROJECT_STATE.md       |  8 ++++----
- ai-memory/RECENT_COMMITS.md      |  6 +++---
- ai-memory/WORKTREE_STATUS.md     | 24 ++++++++++++++----------
- ai-memory/sessions/2026-06-21.md |  1 +
- 6 files changed, 32 insertions(+), 18 deletions(-)
+608c43b chore(memory): refresh after notification migration
+ ai-memory/INDEX.md           |  2 +-
+ ai-memory/PROJECT_STATE.md   | 10 ++++------
+ ai-memory/RECENT_COMMITS.md  |  4 ++--
+ ai-memory/WORKTREE_STATUS.md | 26 ++++++++++----------------
+ 4 files changed, 17 insertions(+), 25 deletions(-)
 ```
