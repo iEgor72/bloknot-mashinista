@@ -1,10 +1,10 @@
 # Worktree Status
 
-Generated: 2026-06-21 13:17:12 +1000
+Generated: 2026-06-21 13:18:09 +1000
 
 ## git status -sb
 ```text
-## main...origin/main [ahead 1]
+## main...origin/main
  M ai-memory/CHANGELOG.md
  M ai-memory/PROJECT_STATE.md
  M ai-memory/sessions/2026-06-21.md
@@ -15,22 +15,18 @@ Generated: 2026-06-21 13:17:12 +1000
 ```text
 codex/next-direction b044dd5 offline mvp
   codex/tabs-ui        117f1fa [origin/codex/tabs-ui] tabs ui
-* main                 42f7046 [origin/main: ahead 1] fix(notifications): archive read bell announcements
+* main                 4ee4eb1 [origin/main] chore(memory): record bell cleanup change
   poekhali-rework      2d5f0af chore(memory): refresh after main merge
 ```
 
 ## HEAD
 ```text
-42f7046 fix(notifications): archive read bell announcements
- ai-memory/CHANGELOG.md           |   8 +++
- ai-memory/sessions/2026-06-21.md |   1 +
- index.html                       |  12 ++--
- scripts/app-constants.js         |   2 +-
- scripts/app-init.js              | 151 +++++++++++++++++++++++++++++----------
- scripts/local-smoke.mjs          |  95 ++++++++++++++++++++++++
- scripts/prod-cache-smoke.mjs     |  10 +++
- server.js                        |   1 +
- sw-bootstrap-v375.js             |  26 +++++++
- sw.js                            |   2 +-
- 10 files changed, 263 insertions(+), 45 deletions(-)
+4ee4eb1 chore(memory): record bell cleanup change
+ ai-memory/CHANGELOG.md           |  9 +++++++++
+ ai-memory/INDEX.md               |  2 +-
+ ai-memory/PROJECT_STATE.md       |  8 ++++----
+ ai-memory/RECENT_COMMITS.md      |  6 +++---
+ ai-memory/WORKTREE_STATUS.md     | 26 +++++++++++++++-----------
+ ai-memory/sessions/2026-06-21.md |  1 +
+ 6 files changed, 33 insertions(+), 19 deletions(-)
 ```

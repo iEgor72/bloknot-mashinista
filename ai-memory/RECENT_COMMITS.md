@@ -1,9 +1,10 @@
 # Recent Commits
 
-Generated: 2026-06-21 13:17:12 +1000
+Generated: 2026-06-21 13:18:09 +1000
 
 | Hash | Date | Author | Message |
 | --- | --- | --- | --- |
+| `4ee4eb1` | 2026-06-21T13:17:24+10:00 | iEgor72 | chore(memory): record bell cleanup change |
 | `42f7046` | 2026-06-21T13:17:11+10:00 | iEgor72 | fix(notifications): archive read bell announcements |
 | `01fb72a` | 2026-06-21T12:56:52+10:00 | iEgor72 | chore(memory): record offline fallback deploy |
 | `f8271a4` | 2026-06-21T12:55:37+10:00 | iEgor72 | chore(memory): record offline fallback safeguards |
@@ -43,4 +44,3 @@ Generated: 2026-06-21 13:17:12 +1000
 | `edc64d9` | 2026-06-06T18:31:10+10:00 | iEgor72 | fix(pwa): reliable telegram web ready + resilient SW install |
 | `91f9a03` | 2026-06-06T18:02:17+10:00 | iEgor72 | fix(pwa): unblock telegram webview startup |
 | `dbdd99a` | 2026-06-06T17:00:30+10:00 | iEgor72 | fix(poehali): refine mobile driving layout |
-| `a068636` | 2026-06-06T11:40:26+10:00 | iEgor72 | chore(memory): record poekhali layout deploy |
