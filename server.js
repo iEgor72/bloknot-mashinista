@@ -41,6 +41,7 @@ const POEKHALI_WARNINGS_DIR = path.join(DATA_DIR, 'poekhali-warnings');
 const POEKHALI_RUNS_DIR = path.join(DATA_DIR, 'poekhali-runs');
 const USER_STATS_FILE = path.join(DATA_DIR, 'user-presence.json');
 const LOGIN_REQUESTS_FILE = path.join(DATA_DIR, 'auth-login-requests.json');
+const FEEDBACK_FILE = path.join(DATA_DIR, 'feedback.json');
 const PARTNERSHIPS_FILE = path.join(DATA_DIR, 'partnerships.json');
 const PARTNER_INVITES_FILE = path.join(DATA_DIR, 'partner-invites.json');
 const PARTNER_STATE_DIR = path.join(DATA_DIR, 'partner-state');
@@ -3055,6 +3056,39 @@ function formatTelegramUserForReport(message) {
   return parts.filter(Boolean).join(' · ') || 'unknown';
 }
 
+function storeTelegramFeedback(message, chatId, kind, text) {
+  const trimmedText = String(text || '').trim();
+  if (!trimmedText) return;
+  const from = message && message.from ? message.from : {};
+  const entry = {
+    id: crypto.randomUUID ? crypto.randomUUID() : crypto.randomBytes(16).toString('hex'),
+    kind: kind === 'bug' ? 'bug' : 'idea',
+    text: trimmedText.slice(0, 4000),
+    createdAt: new Date().toISOString(),
+    chatId: chatId === undefined || chatId === null ? '' : String(chatId),
+    user: {
+      id: from.id === undefined || from.id === null ? '' : String(from.id),
+      username: String(from.username || '').slice(0, 64),
+      firstName: String(from.first_name || '').slice(0, 80),
+      lastName: String(from.last_name || '').slice(0, 80),
+    },
+  };
+
+  try {
+    const current = readJsonFile(FEEDBACK_FILE, []);
+    const items = Array.isArray(current) ? current : [];
+    items.push(entry);
+    const capped = items.slice(-1000);
+    atomicWriteFileSync(FEEDBACK_FILE, JSON.stringify(capped, null, 2));
+  } catch (err) {
+    logStructuredRateLimited('error', 'storage.feedback.write_failed', `feedback:${kind}`, {
+      file: FEEDBACK_FILE,
+      kind,
+      error: toErrorMeta(err),
+    });
+  }
+}
+
 async function handleTelegramFeedbackCommand(token, message, chatId, normalizedText, kind) {
   const commandPattern = kind === 'bug' ? /^\/bug(?:@\w+)?\s*/i : /^\/idea(?:@\w+)?\s*/i;
   const text = String(normalizedText || '').replace(commandPattern, '').trim();
@@ -3069,6 +3103,8 @@ async function handleTelegramFeedbackCommand(token, message, chatId, normalizedT
     });
     return;
   }
+
+  storeTelegramFeedback(message, chatId, kind, text);
 
   if (SUPPORT_ADMIN_CHAT_ID) {
     const title = kind === 'bug' ? '🐞 Баг-репорт' : '💡 Идея';

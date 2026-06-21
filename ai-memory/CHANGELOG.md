@@ -6410,3 +6410,11 @@ Append-only журнал действий ИИ-агентов по проект�
 - Methods: `git post-commit hook`, `automatic memory update`
 - Files: `ai-memory/CHANGELOG.md`, `ai-memory/INDEX.md`, `ai-memory/PROJECT_STATE.md`, `ai-memory/RECENT_COMMITS.md`, `ai-memory/WORKTREE_STATUS.md`, `ai-memory/sessions/2026-06-21.md`
 - Notes: Commit: `7bcadcb806b1540451ba316ba983a0b495aec406` (`7bcadcb`) | Author: `iEgor72`
+
+## 2026-06-21 12:18:01 +1000
+
+- Source: `manual`
+- Task: Preserved production-only Telegram feedback storage before deploy
+- Branch: `main`
+- Methods: `Detected dirty production server.js`, `inspected diff over SSH`, `ported FEEDBACK_FILE/storeTelegramFeedback into tracked server.js to avoid losing production behavior during deploy`
+- Files: `server.js`
