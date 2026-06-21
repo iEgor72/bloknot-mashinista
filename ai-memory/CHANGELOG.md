@@ -6469,3 +6469,12 @@ Append-only журнал действий ИИ-агентов по проект�
 - Branch: `main`
 - Methods: `Added inline HTML boot fallback with diagnostics`, `bumped shell cache to v374`, `added Playwright offline smoke and production cache smoke`, `verified with npm run smoke:predeploy`
 - Files: `index.html`, `scripts/auth.js`, `scripts/offline-smoke.mjs`, `scripts/prod-cache-smoke.mjs`, `package.json`, `sw.js`, `scripts/app-constants.js`, `server.js`, `sw-bootstrap-v374.js`
+
+## 2026-06-21 12:55:19 +1000
+
+- Source: `post-commit`
+- Task: fix(pwa): add offline boot fallback safeguards
+- Branch: `main`
+- Methods: `git post-commit hook`, `automatic memory update`
+- Files: `ai-memory/CHANGELOG.md`, `ai-memory/sessions/2026-06-21.md`, `index.html`, `package.json`, `scripts/app-constants.js`, `scripts/auth.js`, `scripts/offline-smoke.mjs`, `scripts/prod-cache-smoke.mjs`, `server.js`, `sw-bootstrap-v374.js`, `sw.js`
+- Notes: Commit: `aba9e6680c9987b0922852a3a5e85193784df57f` (`aba9e66`) | Author: `iEgor72`
