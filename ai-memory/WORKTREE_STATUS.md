@@ -1,13 +1,11 @@
 # Worktree Status
 
-Generated: 2026-06-21 14:07:07 +1000
+Generated: 2026-06-21 14:07:39 +1000
 
 ## git status -sb
 ```text
-## main...origin/main [ahead 1]
- M ai-memory/CHANGELOG.md
+## main...origin/main
  M ai-memory/PROJECT_STATE.md
- M ai-memory/sessions/2026-06-21.md
 ?? .codex/
 ```
 
@@ -15,22 +13,18 @@ Generated: 2026-06-21 14:07:07 +1000
 ```text
 codex/next-direction b044dd5 offline mvp
   codex/tabs-ui        117f1fa [origin/codex/tabs-ui] tabs ui
-* main                 dbd02c8 [origin/main: ahead 1] fix(notifications): migrate legacy bell announcements
+* main                 201654b [origin/main] chore(memory): record notification migration fix
   poekhali-rework      2d5f0af chore(memory): refresh after main merge
 ```
 
 ## HEAD
 ```text
-dbd02c8 fix(notifications): migrate legacy bell announcements
- ai-memory/CHANGELOG.md           |  8 +++++
+201654b chore(memory): record notification migration fix
+ ai-memory/CHANGELOG.md           |  9 +++++++++
+ ai-memory/INDEX.md               |  2 +-
+ ai-memory/PROJECT_STATE.md       |  8 ++++----
+ ai-memory/RECENT_COMMITS.md      |  6 +++---
+ ai-memory/WORKTREE_STATUS.md     | 24 ++++++++++++++----------
  ai-memory/sessions/2026-06-21.md |  1 +
- index.html                       | 12 +++----
- scripts/app-constants.js         |  2 +-
- scripts/app-init.js              | 51 ++++++++++++++++++++++-----
- scripts/local-smoke.mjs          | 76 +++++++++++++++++++++++++++++++++-------
- scripts/prod-cache-smoke.mjs     | 21 ++++++++++-
- server.js                        |  4 +++
- sw-bootstrap-v378.js             | 26 ++++++++++++++
- sw.js                            | 43 ++++++++++++++++++++---
- 10 files changed, 212 insertions(+), 32 deletions(-)
+ 6 files changed, 32 insertions(+), 18 deletions(-)
 ```

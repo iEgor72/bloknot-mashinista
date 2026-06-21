@@ -1,14 +1,14 @@
 # Project State
 
 <!-- AUTO_STATUS:START -->
-Generated: 2026-06-21 14:07:07 +1000
+Generated: 2026-06-21 14:07:39 +1000
 
 ## Repository Snapshot
 - Local repo path: `D:\work\bloknot-mashinista-tg`
 - Project memory path: `D:\work\bloknot-mashinista-tg\ai-memory`
 - Branch: `main`
-- HEAD: `dbd02c8`
-- Last commit: `dbd02c8 fix(notifications): migrate legacy bell announcements`
+- HEAD: `201654b`
+- Last commit: `201654b chore(memory): record notification migration fix`
 
 ## Git Remote
 ```text
@@ -20,14 +20,12 @@ origin	https://github.com/iEgor72/bloknot-mashinista.git (push)
 ```text
 codex/next-direction b044dd5 offline mvp
   codex/tabs-ui        117f1fa [origin/codex/tabs-ui] tabs ui
-* main                 dbd02c8 [origin/main: ahead 1] fix(notifications): migrate legacy bell announcements
+* main                 201654b [origin/main] chore(memory): record notification migration fix
   poekhali-rework      2d5f0af chore(memory): refresh after main merge
 ```
 
 ## Worktree
 ```text
-M ai-memory/CHANGELOG.md
- M ai-memory/sessions/2026-06-21.md
 ?? .codex/
 ```
 <!-- AUTO_STATUS:END -->
