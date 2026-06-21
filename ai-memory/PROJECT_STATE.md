@@ -1,14 +1,14 @@
 # Project State
 
 <!-- AUTO_STATUS:START -->
-Generated: 2026-06-21 13:20:06 +1000
+Generated: 2026-06-21 13:29:19 +1000
 
 ## Repository Snapshot
 - Local repo path: `D:\work\bloknot-mashinista-tg`
 - Project memory path: `D:\work\bloknot-mashinista-tg\ai-memory`
 - Branch: `main`
-- HEAD: `7d6ba99`
-- Last commit: `7d6ba99 chore(memory): record bell cleanup deploy`
+- HEAD: `47904e2`
+- Last commit: `47904e2 fix(pwa): make boot fallback nonblocking`
 
 ## Git Remote
 ```text
@@ -20,12 +20,14 @@ origin	https://github.com/iEgor72/bloknot-mashinista.git (push)
 ```text
 codex/next-direction b044dd5 offline mvp
   codex/tabs-ui        117f1fa [origin/codex/tabs-ui] tabs ui
-* main                 7d6ba99 [origin/main] chore(memory): record bell cleanup deploy
+* main                 47904e2 [origin/main: ahead 1] fix(pwa): make boot fallback nonblocking
   poekhali-rework      2d5f0af chore(memory): refresh after main merge
 ```
 
 ## Worktree
 ```text
+M ai-memory/CHANGELOG.md
+ M ai-memory/sessions/2026-06-21.md
 ?? .codex/
 ```
 <!-- AUTO_STATUS:END -->

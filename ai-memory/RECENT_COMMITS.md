@@ -1,9 +1,11 @@
 # Recent Commits
 
-Generated: 2026-06-21 13:20:06 +1000
+Generated: 2026-06-21 13:29:20 +1000
 
 | Hash | Date | Author | Message |
 | --- | --- | --- | --- |
+| `47904e2` | 2026-06-21T13:29:18+10:00 | iEgor72 | fix(pwa): make boot fallback nonblocking |
+| `1358823` | 2026-06-21T13:20:17+10:00 | iEgor72 | chore(memory): refresh final project state |
 | `7d6ba99` | 2026-06-21T13:18:22+10:00 | iEgor72 | chore(memory): record bell cleanup deploy |
 | `4ee4eb1` | 2026-06-21T13:17:24+10:00 | iEgor72 | chore(memory): record bell cleanup change |
 | `42f7046` | 2026-06-21T13:17:11+10:00 | iEgor72 | fix(notifications): archive read bell announcements |
@@ -42,5 +44,3 @@ Generated: 2026-06-21 13:20:06 +1000
 | `d542765` | 2026-06-07T12:44:10+10:00 | iEgor72 | chore(diag): serve probe page from /assets (top-level files are whitelisted) |
 | `08752ec` | 2026-06-07T12:42:58+10:00 | iEgor72 | chore(diag): add /diag.html network probe page |
 | `fe36e40` | 2026-06-06T18:44:52+10:00 | iEgor72 | fix(pwa): retry flaky asset fetches in service worker |
-| `edc64d9` | 2026-06-06T18:31:10+10:00 | iEgor72 | fix(pwa): reliable telegram web ready + resilient SW install |
-| `91f9a03` | 2026-06-06T18:02:17+10:00 | iEgor72 | fix(pwa): unblock telegram webview startup |

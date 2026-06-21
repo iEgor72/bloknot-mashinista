@@ -6519,3 +6519,12 @@ Append-only журнал действий ИИ-агентов по проект�
 - Branch: `main`
 - Methods: `Converted boot fallback from full-screen blocker to nonblocking diagnostic toast`, `suppress fallback when app shell or auth gate is already visible`, `bumped PWA cache to v376`, `verified with npm run smoke:predeploy`
 - Files: `index.html`, `scripts/local-smoke.mjs`, `scripts/offline-smoke.mjs`, `scripts/app-constants.js`, `sw.js`, `server.js`, `sw-bootstrap-v376.js`
+
+## 2026-06-21 13:29:19 +1000
+
+- Source: `post-commit`
+- Task: fix(pwa): make boot fallback nonblocking
+- Branch: `main`
+- Methods: `git post-commit hook`, `automatic memory update`
+- Files: `ai-memory/CHANGELOG.md`, `ai-memory/sessions/2026-06-21.md`, `index.html`, `scripts/app-constants.js`, `scripts/local-smoke.mjs`, `scripts/offline-smoke.mjs`, `server.js`, `sw-bootstrap-v376.js`, `sw.js`
+- Notes: Commit: `47904e2da099d58086e21ef64c836685d71c2871` (`47904e2`) | Author: `iEgor72`
