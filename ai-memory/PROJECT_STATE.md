@@ -1,14 +1,14 @@
 # Project State
 
 <!-- AUTO_STATUS:START -->
-Generated: 2026-06-21 12:15:13 +1000
+Generated: 2026-06-21 12:15:37 +1000
 
 ## Repository Snapshot
 - Local repo path: `D:\work\bloknot-mashinista-tg`
 - Project memory path: `D:\work\bloknot-mashinista-tg\ai-memory`
 - Branch: `main`
-- HEAD: `90a3f17`
-- Last commit: `90a3f17 fix: make offline shell cold-start cache-first`
+- HEAD: `7bcadcb`
+- Last commit: `7bcadcb chore(memory): record offline shell cold-start fix`
 
 ## Git Remote
 ```text
@@ -20,7 +20,7 @@ origin	https://github.com/iEgor72/bloknot-mashinista.git (push)
 ```text
 codex/next-direction b044dd5 offline mvp
   codex/tabs-ui        117f1fa [origin/codex/tabs-ui] tabs ui
-* main                 90a3f17 [origin/main: ahead 1] fix: make offline shell cold-start cache-first
+* main                 7bcadcb [origin/main: ahead 2] chore(memory): record offline shell cold-start fix
   poekhali-rework      2d5f0af chore(memory): refresh after main merge
 ```
 

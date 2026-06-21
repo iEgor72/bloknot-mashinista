@@ -6401,3 +6401,12 @@ Append-only журнал действий ИИ-агентов по проект�
 - Methods: `git post-commit hook`, `automatic memory update`
 - Files: `ai-memory/CHANGELOG.md`, `ai-memory/INDEX.md`, `ai-memory/PROJECT_STATE.md`, `ai-memory/RECENT_COMMITS.md`, `ai-memory/WORKTREE_STATUS.md`, `ai-memory/sessions/2026-06-21.md`, `index.html`, `scripts/app-constants.js`, `scripts/app.js`, `scripts/auth.js`, `scripts/telegram-sdk-loader.js`, `server.js`, `styles/50-design-refresh.css`, `sw.js`
 - Notes: Commit: `90a3f17db8b39967365fbee30b14a13d04355566` (`90a3f17`) | Author: `iEgor72`
+
+## 2026-06-21 12:15:37 +1000
+
+- Source: `post-commit`
+- Task: chore(memory): record offline shell cold-start fix
+- Branch: `main`
+- Methods: `git post-commit hook`, `automatic memory update`
+- Files: `ai-memory/CHANGELOG.md`, `ai-memory/INDEX.md`, `ai-memory/PROJECT_STATE.md`, `ai-memory/RECENT_COMMITS.md`, `ai-memory/WORKTREE_STATUS.md`, `ai-memory/sessions/2026-06-21.md`
+- Notes: Commit: `7bcadcb806b1540451ba316ba983a0b495aec406` (`7bcadcb`) | Author: `iEgor72`
