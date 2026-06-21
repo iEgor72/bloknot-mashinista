@@ -6486,3 +6486,11 @@ Append-only журнал действий ИИ-агентов по проект�
 - Branch: `main`
 - Methods: `Pushed main`, `fast-forward pulled VPS to f8271a4`, `reloaded PM2 bloknot-mashinista`, `verified production with npm run smoke:prod-cache`
 - Files: `index.html`, `scripts/auth.js`, `scripts/offline-smoke.mjs`, `scripts/prod-cache-smoke.mjs`, `sw.js`, `scripts/app-constants.js`, `server.js`, `sw-bootstrap-v374.js`, `package.json`
+
+## 2026-06-21 13:16:49 +1000
+
+- Source: `manual`
+- Task: Added bell notification cleanup lifecycle and offline announcement
+- Branch: `main`
+- Methods: `Changed notifications inbox to archive read items via durable readKey`, `retired old system announcements`, `seeded offline restored announcement`, `bumped PWA cache to v375`, `added local smoke assertions for notification cleanup`
+- Files: `scripts/app-init.js`, `scripts/local-smoke.mjs`, `scripts/prod-cache-smoke.mjs`, `index.html`, `scripts/app-constants.js`, `sw.js`, `server.js`, `sw-bootstrap-v375.js`

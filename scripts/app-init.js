@@ -193,6 +193,9 @@ if (typeof bootstrapAppStartup === 'function') {
   var listEl = document.getElementById('notifList');
   var btnRead = document.getElementById('btnNotifMarkRead');
   var btnClose = document.getElementById('btnNotifClose');
+  var DAY_MS = 24 * 60 * 60 * 1000;
+  var MAX_STORED_ITEMS = 30;
+  var UNREAD_RETENTION_MS = 45 * DAY_MS;
 
   function load() {
     try {
@@ -285,9 +288,94 @@ if (typeof bootstrapAppStartup === 'function') {
     var parsed = Date.parse(value);
     return isFinite(parsed) ? parsed : Date.now();
   }
+  function optionalTime(value) {
+    if (value === null || typeof value === 'undefined' || value === '') return 0;
+    var parsed = typeof value === 'number' ? value : Date.parse(value);
+    return isFinite(parsed) ? parsed : 0;
+  }
+  function sameAnnouncement(item, announcement) {
+    if (!item || !announcement) return false;
+    return (
+      (announcement.key && item.key === announcement.key) ||
+      (announcement.readKey && item.readKey === announcement.readKey) ||
+      (announcement.title && item.title === announcement.title)
+    );
+  }
+  function isKnownAnnouncement(item, announcements) {
+    announcements = announcements || [];
+    for (var i = 0; i < announcements.length; i++) {
+      if (sameAnnouncement(item, announcements[i])) return true;
+    }
+    return false;
+  }
+  function isExpired(item, now) {
+    var expiresAt = optionalTime(item && item.expiresAt);
+    return !!expiresAt && expiresAt <= now;
+  }
+  function compactNotifications(items) {
+    var now = Date.now();
+    var readKeys = loadReadKeys();
+    var readKeysChanged = false;
+    var changed = false;
+    var source = Array.isArray(items) ? items : [];
+    var kept = [];
+
+    source.forEach(function(item) {
+      if (!item || typeof item !== 'object') {
+        changed = true;
+        return;
+      }
+      if (!item.id) {
+        item.id = genId();
+        changed = true;
+      }
+      var readKey = getReadKey(item);
+      if (readKey && readKeys[readKey] && !item.read) {
+        item.read = true;
+        changed = true;
+      }
+      if (item.read && rememberReadKey(readKey, readKeys)) {
+        readKeysChanged = true;
+      }
+      if (item.read) {
+        changed = true;
+        return;
+      }
+      var isActiveSystem = isKnownAnnouncement(item, SYSTEM_ANNOUNCEMENTS);
+      if (isKnownAnnouncement(item, RETIRED_SYSTEM_ANNOUNCEMENTS) || isExpired(item, now)) {
+        changed = true;
+        return;
+      }
+      if (!isActiveSystem) {
+        var ts = optionalTime(item.ts) || now;
+        var age = now - ts;
+        if (!item.read && age > UNREAD_RETENTION_MS) {
+          changed = true;
+          return;
+        }
+      }
+      kept.push(item);
+    });
+
+    kept.sort(function(a, b) {
+      return ((b && b.ts) || 0) - ((a && a.ts) || 0);
+    });
+    if (kept.length > MAX_STORED_ITEMS) {
+      kept = kept.slice(0, MAX_STORED_ITEMS);
+      changed = true;
+    }
+    if (readKeysChanged) saveReadKeys(readKeys);
+    return { items: kept, changed: changed };
+  }
+  function loadClean() {
+    var items = load();
+    var compacted = compactNotifications(items);
+    if (compacted.changed) save(compacted.items);
+    return compacted.items;
+  }
   function updateBell(items) {
     if (!dotEl) return;
-    var n = unreadCount(items || load());
+    var n = unreadCount(items || loadClean());
     dotEl.style.display = n > 0 ? 'block' : 'none';
     dotEl.setAttribute('data-count', String(n));
   }
@@ -295,7 +383,7 @@ if (typeof bootstrapAppStartup === 'function') {
     '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m6 9 6 6 6-6"/></svg>' +
     '</div>';
   function render() {
-    var items = load();
+    var items = loadClean();
     updateBell(items);
     if (!listEl) return;
     if (!items.length) {
@@ -352,7 +440,7 @@ if (typeof bootstrapAppStartup === 'function') {
   }
   function addNotification(title, text, tone, opts) {
     opts = opts || {};
-    var items = load();
+    var items = loadClean();
     var now = Date.now();
     var readKey = normalizeReadKey(opts.readKey || opts.key || '');
     if (opts.key) {
@@ -366,6 +454,7 @@ if (typeof bootstrapAppStartup === 'function') {
             items[k].text = text || '';
             items[k].tone = tone || 'info';
             items[k].ts = opts.ts || items[k].ts || now;
+            items[k].expiresAt = opts.expiresAt || null;
             save(items);
           }
           render();
@@ -385,9 +474,10 @@ if (typeof bootstrapAppStartup === 'function') {
       text: text || '',
       tone: tone || 'info',
       ts: opts.ts || now,
+      expiresAt: opts.expiresAt || null,
       read: isReadRemembered({ readKey: readKey })
     });
-    items = items.slice(0, 50);
+    items = compactNotifications(items).items;
     save(items);
     render();
   }
@@ -435,59 +525,45 @@ if (typeof bootstrapAppStartup === 'function') {
     });
   }
 
-  var SYSTEM_ANNOUNCEMENTS = [
+  var RETIRED_SYSTEM_ANNOUNCEMENTS = [
     {
       key: 'nav_refresh_2026_06_v1',
       readKey: 'announcement_nav_refresh_2026_06',
-      title: 'Большое обновление',
-      tone: 'success',
-      ts: releaseTime('2026-06-08T00:12:00+10:00'),
-      text:
-        'Обновили навигацию и карточку смены:\n' +
-        '• Профиль — данные, расчёт, Бригада и установка приложения\n' +
-        '• Смены — журнал и запуск «Поехали» прямо с карточки\n' +
-        '• Документы — разделы открываются быстрее и понятнее\n' +
-        '• Карточка смены — спокойный вид с доходом, расходом и локомотивом'
+      title: 'Большое обновление'
     },
     {
       key: 'feedback_links_2026_06_v1',
       readKey: 'announcement_feedback_links_2026_06',
-      title: 'Помощь и обратная связь',
-      tone: 'info',
-      ts: releaseTime('2026-06-08T00:13:00+10:00'),
-      text:
-        'В Профиле появился блок «Помощь и связь».\n' +
-        'Оттуда можно открыть бота, канал новостей, обсуждение и быстро написать о проблеме или идее.'
+      title: 'Помощь и обратная связь'
     },
     {
       key: 'docs_bd_folders_2026_06_v1',
       readKey: 'announcement_docs_bd_folders_2026_06',
-      title: 'Документы и Папки',
-      tone: 'info',
-      ts: releaseTime('2026-06-08T00:14:00+10:00'),
-      text:
-        'Раздел «Папки» теперь подписан как материалы по нарушениям БД.\n' +
-        'Инструкции, скорости, режимки, памятки и избранное остаются в одной вкладке «Документы».'
+      title: 'Документы и Папки'
     },
     {
       key: 'brigade_launch_2026_06_v1',
       readKey: 'announcement_brigade_launch_2026_06',
-      title: 'Бригада',
-      tone: 'success',
-      ts: releaseTime('2026-06-08T00:15:00+10:00'),
-      text:
-        'Можно связаться по короткому коду и делиться сменами внутри приложения.\n' +
-        'Один участник открывает Профиль → Бригада и нажимает «Создать код», второй вводит этот код у себя.'
+      title: 'Бригада'
     },
     {
       key: 'poekhali_launch_2026_06_v1',
       readKey: 'announcement_poekhali_launch_2026_06',
-      title: 'Поехали',
+      title: 'Поехали'
+    }
+  ];
+
+  var SYSTEM_ANNOUNCEMENTS = [
+    {
+      key: 'offline_mode_restored_2026_06_v1',
+      readKey: 'announcement_offline_mode_restored_2026_06',
+      title: 'Оффлайн режим снова работает',
       tone: 'success',
-      ts: releaseTime('2026-06-08T00:16:00+10:00'),
+      ts: releaseTime('2026-06-21T13:05:00+10:00'),
+      expiresAt: releaseTime('2026-07-21T13:05:00+10:00'),
       text:
-        'Если смена уже создана, из неё можно открыть рабочий экран «Поехали».\n' +
-        'Откройте нужную смену, нажмите «Поехали» и следите за скоростью, профилем пути и ограничениями.'
+        'Откройте блокнот один раз при интернете, чтобы обновился кэш.\n' +
+        'После этого сохраненные данные будут открываться без связи.'
     }
   ];
 
@@ -496,7 +572,7 @@ if (typeof bootstrapAppStartup === 'function') {
     var changed = false;
     (items || []).forEach(function(stored) {
       if (!stored || !stored.read) return;
-      SYSTEM_ANNOUNCEMENTS.forEach(function(announcement) {
+      SYSTEM_ANNOUNCEMENTS.concat(RETIRED_SYSTEM_ANNOUNCEMENTS).forEach(function(announcement) {
         if (
           stored.readKey === announcement.readKey ||
           stored.key === announcement.key ||
@@ -515,6 +591,7 @@ if (typeof bootstrapAppStartup === 'function') {
         key: item.key,
         readKey: item.readKey,
         ts: item.ts,
+        expiresAt: item.expiresAt,
         replace: true
       });
     });

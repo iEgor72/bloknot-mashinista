@@ -188,6 +188,39 @@ async function main() {
       lastError: '',
       lastSyncAt: now,
     }));
+    const oldTs = Date.now() - 60 * 24 * 60 * 60 * 1000;
+    const recentTs = Date.now() - 5 * 60 * 1000;
+    localStorage.setItem('shift_tracker_notifications_v1', JSON.stringify([
+      {
+        id: 'old-system-announcement',
+        key: 'nav_refresh_2026_06_v1',
+        readKey: 'announcement_nav_refresh_2026_06',
+        title: 'Большое обновление',
+        text: 'Retired announcement seed',
+        tone: 'success',
+        ts: oldTs,
+        read: false,
+      },
+      {
+        id: 'old-read-transient',
+        title: 'Старое прочитанное',
+        text: 'Should be archived',
+        tone: 'info',
+        ts: oldTs,
+        read: true,
+      },
+      {
+        id: 'recent-unread-transient',
+        title: 'Свежая служебная заметка',
+        text: 'Should stay in the inbox',
+        tone: 'info',
+        ts: recentTs,
+        read: false,
+      },
+    ]));
+    localStorage.setItem('shift_tracker_notifications_read_v1', JSON.stringify({
+      announcement_nav_refresh_2026_06: oldTs,
+    }));
   });
 
   await page.route('**/api/**', async (route) => {
@@ -251,6 +284,68 @@ async function main() {
   });
   report.checks.authGateHidden = authGateHidden;
   if (!authGateHidden) throw new Error('Auth gate remained visible in local smoke run');
+
+  const notificationState = await page.evaluate(() => {
+    const raw = localStorage.getItem('shift_tracker_notifications_v1') || '[]';
+    const items = JSON.parse(raw);
+    return {
+      keys: items.map((item) => item.key || ''),
+      titles: items.map((item) => item.title || ''),
+      unreadCount: items.filter((item) => !item.read).length,
+      count: items.length,
+    };
+  });
+  report.checks.notificationsInitial = notificationState;
+  if (notificationState.keys.includes('nav_refresh_2026_06_v1')) {
+    throw new Error('Retired system announcement stayed in notification inbox');
+  }
+  if (notificationState.titles.includes('Старое прочитанное')) {
+    throw new Error('Read notification stayed in notification inbox');
+  }
+  if (!notificationState.keys.includes('offline_mode_restored_2026_06_v1')) {
+    throw new Error('Offline restored announcement was not seeded');
+  }
+  if (!notificationState.titles.includes('Свежая служебная заметка')) {
+    throw new Error('Recent unread transient notification was removed unexpectedly');
+  }
+
+  await page.evaluate(() => {
+    const items = JSON.parse(localStorage.getItem('shift_tracker_notifications_v1') || '[]');
+    const nextItems = items.map((item) => (
+      item && item.key === 'offline_mode_restored_2026_06_v1'
+        ? { ...item, read: true }
+        : item
+    ));
+    const readKeys = JSON.parse(localStorage.getItem('shift_tracker_notifications_read_v1') || '{}');
+    readKeys.announcement_offline_mode_restored_2026_06 = Date.now();
+    localStorage.setItem('shift_tracker_notifications_v1', JSON.stringify(nextItems));
+    localStorage.setItem('shift_tracker_notifications_read_v1', JSON.stringify(readKeys));
+    window.appNotify(
+      'Оффлайн режим снова работает',
+      'Откройте блокнот один раз при интернете, чтобы обновился кэш.',
+      'success',
+      {
+        key: 'offline_mode_restored_2026_06_v1',
+        readKey: 'announcement_offline_mode_restored_2026_06',
+        replace: true,
+      }
+    );
+  });
+  const notificationAfterRead = await page.evaluate(() => {
+    const items = JSON.parse(localStorage.getItem('shift_tracker_notifications_v1') || '[]');
+    const readKeys = JSON.parse(localStorage.getItem('shift_tracker_notifications_read_v1') || '{}');
+    return {
+      keys: items.map((item) => item.key || ''),
+      readKeys,
+    };
+  });
+  report.checks.notificationsAfterRead = notificationAfterRead;
+  if (notificationAfterRead.keys.includes('offline_mode_restored_2026_06_v1')) {
+    throw new Error('Read system announcement stayed in notification inbox');
+  }
+  if (!notificationAfterRead.readKeys.announcement_offline_mode_restored_2026_06) {
+    throw new Error('Read key for archived system announcement was not persisted');
+  }
 
   await page.screenshot({ path: path.join(artifactsDir, 'smoke-home.png'), fullPage: true });
 

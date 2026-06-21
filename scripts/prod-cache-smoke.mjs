@@ -99,6 +99,7 @@ async function main() {
     `/scripts/app-constants.js?v=${version}`,
     `/scripts/auth.js?v=${version}`,
     `/scripts/app.js?v=${version}`,
+    `/scripts/app-init.js?v=${version}`,
     `/scripts/sw-register.js?v=${version}`,
     `/sw-bootstrap-${version}.js`,
   ]) {
@@ -108,6 +109,10 @@ async function main() {
   const constants = await fetchText(`${baseUrl}/scripts/app-constants.js?v=${version}`);
   assertOk(constants, 'versioned app constants');
   assertIncludes(constants.text, `SHELL_CACHE_VERSION = '${version}'`, 'versioned app constants');
+
+  const appInit = await fetchText(`${baseUrl}/scripts/app-init.js?v=${version}`);
+  assertOk(appInit, 'versioned app init');
+  assertIncludes(appInit.text, 'offline_mode_restored_2026_06_v1', 'versioned app init');
 
   const sw = await fetchText(`${baseUrl}/sw.js?v=${version}`);
   assertOk(sw, 'versioned service worker');
@@ -126,6 +131,11 @@ async function main() {
     status: sw.status,
     cacheControl: sw.headers['cache-control'] || '',
     cfCacheStatus: sw.headers['cf-cache-status'] || '',
+  };
+  report.checks.versionedAppInit = {
+    status: appInit.status,
+    cacheControl: appInit.headers['cache-control'] || '',
+    cfCacheStatus: appInit.headers['cf-cache-status'] || '',
   };
   report.checks.serviceWorkerBootstrap = {
     status: bootstrapHead.status,
