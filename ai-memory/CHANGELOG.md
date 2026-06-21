@@ -6418,3 +6418,12 @@ Append-only журнал действий ИИ-агентов по проект�
 - Branch: `main`
 - Methods: `Detected dirty production server.js`, `inspected diff over SSH`, `ported FEEDBACK_FILE/storeTelegramFeedback into tracked server.js to avoid losing production behavior during deploy`
 - Files: `server.js`
+
+## 2026-06-21 12:18:12 +1000
+
+- Source: `post-commit`
+- Task: fix(server): preserve telegram feedback storage
+- Branch: `main`
+- Methods: `git post-commit hook`, `automatic memory update`
+- Files: `ai-memory/CHANGELOG.md`, `ai-memory/sessions/2026-06-21.md`, `server.js`
+- Notes: Commit: `8841066a163a990f76c33d70a09f5be0c2af1499` (`8841066`) | Author: `iEgor72`

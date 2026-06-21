@@ -1,10 +1,10 @@
 # Worktree Status
 
-Generated: 2026-06-21 12:15:37 +1000
+Generated: 2026-06-21 12:18:13 +1000
 
 ## git status -sb
 ```text
-## main...origin/main [ahead 2]
+## main...origin/main [ahead 1]
  M ai-memory/CHANGELOG.md
  M ai-memory/PROJECT_STATE.md
  M ai-memory/sessions/2026-06-21.md
@@ -15,18 +15,15 @@ Generated: 2026-06-21 12:15:37 +1000
 ```text
 codex/next-direction b044dd5 offline mvp
   codex/tabs-ui        117f1fa [origin/codex/tabs-ui] tabs ui
-* main                 7bcadcb [origin/main: ahead 2] chore(memory): record offline shell cold-start fix
+* main                 8841066 [origin/main: ahead 1] fix(server): preserve telegram feedback storage
   poekhali-rework      2d5f0af chore(memory): refresh after main merge
 ```
 
 ## HEAD
 ```text
-7bcadcb chore(memory): record offline shell cold-start fix
- ai-memory/CHANGELOG.md           |  9 +++++++++
- ai-memory/INDEX.md               |  2 +-
- ai-memory/PROJECT_STATE.md       | 16 ++++------------
- ai-memory/RECENT_COMMITS.md      |  4 ++--
- ai-memory/WORKTREE_STATUS.md     | 32 ++++++++++++++++----------------
+8841066 fix(server): preserve telegram feedback storage
+ ai-memory/CHANGELOG.md           |  8 ++++++++
  ai-memory/sessions/2026-06-21.md |  1 +
- 6 files changed, 33 insertions(+), 31 deletions(-)
+ server.js                        | 36 ++++++++++++++++++++++++++++++++++++
+ 3 files changed, 45 insertions(+)
 ```

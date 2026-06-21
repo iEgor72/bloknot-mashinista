@@ -1,9 +1,11 @@
 # Recent Commits
 
-Generated: 2026-06-21 12:15:37 +1000
+Generated: 2026-06-21 12:18:13 +1000
 
 | Hash | Date | Author | Message |
 | --- | --- | --- | --- |
+| `8841066` | 2026-06-21T12:18:12+10:00 | iEgor72 | fix(server): preserve telegram feedback storage |
+| `79a9b21` | 2026-06-21T12:16:10+10:00 | iEgor72 | chore(memory): record memory hook update |
 | `7bcadcb` | 2026-06-21T12:15:36+10:00 | iEgor72 | chore(memory): record offline shell cold-start fix |
 | `90a3f17` | 2026-06-21T12:15:12+10:00 | iEgor72 | fix: make offline shell cold-start cache-first |
 | `77fe712` | 2026-06-21T11:38:58+10:00 | iEgor72 | chore(memory): record telegram offline deploy |
@@ -42,5 +44,3 @@ Generated: 2026-06-21 12:15:37 +1000
 | `6ce8e42` | 2026-06-06T00:23:46Z | iEgor72 | chore(memory): refresh after poekhali fixes |
 | `47de739` | 2026-06-06T00:23:31Z | iEgor72 | fix(poehali): prefer new shift and clear bottom controls |
 | `489a9ff` | 2026-06-06T00:16:59Z | iEgor72 | fix(ui): reduce shifts bottom spacing |
-| `dd77b82` | 2026-06-06T00:11:17Z | iEgor72 | fix(ui): keep shifts clear of bottom nav |
-| `920cb04` | 2026-06-06T00:24:57+10:00 | iEgor72 | chore(memory): refresh deploy status |
