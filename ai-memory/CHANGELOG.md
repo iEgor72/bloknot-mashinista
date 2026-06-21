@@ -6269,3 +6269,59 @@ Append-only журнал действий ИИ-агентов по проект�
 - Methods: `Заменил pluralColleagues на pluralUsers`, `текст теперь склоняется как пользователь/пользователя/пользователей`, `поднял cache/SHELL version до v368`, `перезапустил PM2`
 - Files: `scripts/app.js`, `sw.js`, `scripts/app-constants.js`
 - Notes: Check: grep без коллег в runtime-файлах; node --check scripts/app.js scripts/app-constants.js sw.js; git diff --check; повторный npm run smoke:local; curl localhost; pm2 online
+
+## 2026-06-08 20:15:37 +1000
+
+- Source: `manual`
+- Task: Commit push deploy фикса прочитанных уведомлений
+- Branch: `main`
+- Methods: `Создан commit efeaf36 после rebase поверх origin/main`, `push origin main выполнен`, `production VPS fast-forward 0058d83..efeaf36`, `node --check app-init/app-constants/sw на production`, `PM2 reload bloknot-mashinista --update-env`, `проверены local/external HTTP 200 и sw/app-constants v369`
+- Files: `scripts/app-init.js`, `scripts/app-constants.js`, `sw.js`, `ai-memory`
+
+## 2026-06-08 20:18:11 +1000
+
+- Source: `manual`
+- Task: Остановлены локальные dev-серверы
+- Branch: `main`
+- Methods: `Найдены LISTEN-процессы node server.js на портах 3000`, `3001`, `3002`, `3010`, `3011`, `3020`, `4317`, `остановлены по PID`, `повторная проверка не нашла dev/test процессов на слушающих портах`, `внутренние Codex/MCP node-процессы без LISTEN-портов не трогались`
+- Files: `ai-memory`
+
+## 2026-06-21 11:05:53 +1000
+
+- Source: `manual`
+- Task: Диагностирован пустой офлайн-экран PWA
+- Branch: `main`
+- Methods: `Сравнил ресурсы index.html со списками INSTALL/CRITICAL в sw.js`, `найден отсутствующий /scripts/glass-select.js и риск частичного SW-кэша после удаления старых cache`
+- Files: `index.html`, `sw.js`, `scripts/local-smoke.mjs`
+
+## 2026-06-21 11:06:22 +1000
+
+- Source: `manual`
+- Task: Диагностирован пустой офлайн-экран PWA
+- Branch: `main`
+- Methods: `Сравнил ресурсы index.html со списками INSTALL/CRITICAL в sw.js`, `найден отсутствующий /scripts/glass-select.js и риск частичного SW-кэша после удаления старых cache`
+- Files: `index.html`, `sw.js`, `scripts/local-smoke.mjs`
+
+## 2026-06-21 11:12:30 +1000
+
+- Source: `manual`
+- Task: Исправлен офлайн-старт PWA после пустого экрана
+- Branch: `main`
+- Methods: `Добавил /scripts/glass-select.js в install и critical shell cache`, `поднял CACHE_VERSION/SHELL_CACHE_VERSION до v370`, `service worker теперь сохраняет старые shell caches как fallback при частично заполненном новом кэше и чистит их только после успешной warmup-проверки`, `local-smoke получил guard покрытия index.html assets в INSTALL/CRITICAL cache`
+- Files: `sw.js`, `scripts/app-constants.js`, `scripts/local-smoke.mjs`
+
+## 2026-06-21 11:17:01 +1000
+
+- Source: `manual`
+- Task: Усилена smoke-проверка PWA shell
+- Branch: `main`
+- Methods: `Добавил browser-free coverage guard для ресурсов index.html в INSTALL/CRITICAL cache`, `сделал cleanup local-smoke ограниченным по времени`, `чтобы зависший browser/server close не блокировал запись отчёта`
+- Files: `scripts/local-smoke.mjs`
+
+## 2026-06-21 11:18:10 +1000
+
+- Source: `manual`
+- Task: Сужена правка smoke до PWA cache guard
+- Branch: `main`
+- Methods: `После проверки убрал не относящуюся к фиксу cleanup-правку local-smoke`, `оставлен только guard`, `который падает при расхождении ресурсов index.html и INSTALL/CRITICAL shell cache`
+- Files: `scripts/local-smoke.mjs`

@@ -28,6 +28,66 @@ const report = {
   screenshot: path.relative(repoRoot, path.join(artifactsDir, 'smoke-home.png')),
 };
 
+function normalizeLocalPath(rawUrl) {
+  if (!rawUrl || typeof rawUrl !== 'string') return '';
+  try {
+    return new URL(rawUrl, 'https://bloknot-mashinista-bot.ru').pathname;
+  } catch {
+    return '';
+  }
+}
+
+function extractQuotedUrls(source) {
+  return [...source.matchAll(/['"]([^'"]+)['"]/g)]
+    .map((match) => normalizeLocalPath(match[1]))
+    .filter(Boolean);
+}
+
+function extractSwArrayUrls(swSource, arrayName) {
+  const match = swSource.match(new RegExp(`const\\s+${arrayName}\\s*=\\s*\\[([\\s\\S]*?)\\];`));
+  if (!match) throw new Error(`Could not find ${arrayName} in sw.js`);
+  return new Set(extractQuotedUrls(match[1]));
+}
+
+function extractIndexShellAssets(htmlSource) {
+  const urls = [...htmlSource.matchAll(/\b(?:href|src)=["'](\/[^"'?#]+)(?:\?[^"']*)?["']/g)]
+    .map((match) => normalizeLocalPath(match[1]))
+    .filter((url) => (
+      url.startsWith('/styles/') ||
+      url.startsWith('/scripts/') ||
+      url.startsWith('/assets/') ||
+      url === '/manifest.webmanifest' ||
+      url === '/apple-touch-icon.png' ||
+      url === '/icon-192.png' ||
+      url === '/icon-512.png'
+    ));
+  return [...new Set(urls)].sort();
+}
+
+function verifyAppShellCacheCoverage() {
+  const htmlSource = fs.readFileSync(path.join(repoRoot, 'index.html'), 'utf8');
+  const swSource = fs.readFileSync(path.join(repoRoot, 'sw.js'), 'utf8');
+  const indexAssets = extractIndexShellAssets(htmlSource);
+  const installUrls = extractSwArrayUrls(swSource, 'INSTALL_SHELL_URLS');
+  const criticalUrls = extractSwArrayUrls(swSource, 'CRITICAL_INSTALL_URLS');
+  const missingFromInstall = indexAssets.filter((url) => !installUrls.has(url));
+  const missingFromCritical = indexAssets.filter((url) => !criticalUrls.has(url));
+
+  report.checks.appShellAssetsCovered = {
+    indexAssetCount: indexAssets.length,
+    missingFromInstall,
+    missingFromCritical,
+  };
+
+  if (missingFromInstall.length || missingFromCritical.length) {
+    throw new Error(
+      'PWA shell cache coverage mismatch: ' +
+      `INSTALL missing [${missingFromInstall.join(', ') || 'none'}], ` +
+      `CRITICAL missing [${missingFromCritical.join(', ') || 'none'}]`
+    );
+  }
+}
+
 const serverLogStream = fs.createWriteStream(path.join(artifactsDir, 'server.log'), { flags: 'w' });
 let server;
 let browser;
@@ -71,6 +131,8 @@ async function cleanup(exitCode = 0) {
 }
 
 async function main() {
+  verifyAppShellCacheCoverage();
+
   server = spawn(process.execPath, ['server.js'], {
     cwd: repoRoot,
     env: {

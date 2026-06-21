@@ -1,4 +1,4 @@
-const CACHE_VERSION = 'v369';
+const CACHE_VERSION = 'v370';
 const CACHE_NAME = `shift-tracker-shell-${CACHE_VERSION}`;
 const NAVIGATION_FALLBACK_URL = '/index.html';
 const NETWORK_TIMEOUT_MS = 4500;
@@ -39,6 +39,7 @@ const INSTALL_SHELL_URLS = [
   '/scripts/utils/haptics.js',
   '/scripts/press-feedback.js',
   '/scripts/app-constants.js',
+  '/scripts/glass-select.js',
   '/scripts/viewport.js',
   '/scripts/time-utils.js',
   '/scripts/docs-app.js',
@@ -75,6 +76,7 @@ const CRITICAL_INSTALL_URLS = [
   '/scripts/utils/haptics.js',
   '/scripts/press-feedback.js',
   '/scripts/app-constants.js',
+  '/scripts/glass-select.js',
   '/scripts/viewport.js',
   '/scripts/time-utils.js',
   '/scripts/docs-app.js',
@@ -165,11 +167,14 @@ self.addEventListener('install', (event) => {
 self.addEventListener('activate', (event) => {
   event.waitUntil((async () => {
     const cacheNames = await caches.keys();
-    await Promise.all(
-      cacheNames
-        .filter((name) => name.startsWith('shift-tracker-shell-') && name !== CACHE_NAME)
-        .map((name) => caches.delete(name))
-    );
+    const cache = await caches.open(CACHE_NAME);
+    const audit = await auditCriticalInstallShell(cache);
+    const staleShellCaches = cacheNames.filter((name) => name.startsWith('shift-tracker-shell-') && name !== CACHE_NAME);
+    if (audit.ok) {
+      await Promise.all(staleShellCaches.map((name) => caches.delete(name)));
+    } else if (staleShellCaches.length) {
+      console.warn('[SW] Current shell cache is partial; keeping previous shell caches as fallback:', audit.missing.join(', '));
+    }
     await self.clients.claim();
     await refreshControlledAppShellClients();
   })());
@@ -181,7 +186,10 @@ self.addEventListener('message', (event) => {
     self.skipWaiting();
   }
   if (data && data.type === 'WARMUP_CACHE') {
-    event.waitUntil(warmShellCache({ mode: 'install' }));
+    event.waitUntil(
+      warmShellCache({ mode: 'full' })
+        .then(() => cleanupStaleShellCachesIfSafe())
+    );
   }
 });
 
@@ -279,6 +287,42 @@ async function precacheCriticalInstallShell(cache) {
   );
   console.info('[SW] Critical install shell precached:', `${cachedCount}/${criticalUrls.length}`);
   return cachedCount;
+}
+
+async function auditCriticalInstallShell(cache) {
+  const criticalUrls = uniqueShellUrls(CRITICAL_INSTALL_URLS);
+  const missing = [];
+  await Promise.all(
+    criticalUrls.map(async (assetUrl) => {
+      try {
+        const cached = await cache.match(assetUrl);
+        if (!cached) missing.push(assetUrl);
+      } catch (error) {
+        missing.push(assetUrl);
+      }
+    })
+  );
+  missing.sort();
+  return { ok: missing.length === 0, missing };
+}
+
+async function cleanupStaleShellCachesIfSafe() {
+  try {
+    const cache = await caches.open(CACHE_NAME);
+    const audit = await auditCriticalInstallShell(cache);
+    if (!audit.ok) {
+      console.warn('[SW] Current shell cache is still partial; stale shell caches retained:', audit.missing.join(', '));
+      return;
+    }
+    const cacheNames = await caches.keys();
+    await Promise.all(
+      cacheNames
+        .filter((name) => name.startsWith('shift-tracker-shell-') && name !== CACHE_NAME)
+        .map((name) => caches.delete(name))
+    );
+  } catch (error) {
+    console.warn('[SW] Failed to cleanup stale shell caches:', error && error.message ? error.message : error);
+  }
 }
 
 async function resolveShellUrls(mode) {
@@ -479,11 +523,11 @@ async function networkFirstDocument(request, event) {
   const allowAppShellFallback = !shouldBypassNavigationFallback(pathname);
   const isShellPath = isAppShellPath(pathname);
 
-  let cached = await cache.match(request, { ignoreSearch: true });
+  let cached = await matchShellCache(request, { ignoreSearch: true });
   if (!cached && allowAppShellFallback) {
     cached =
-      (await cache.match(NAVIGATION_FALLBACK_URL)) ||
-      (await cache.match('/'));
+      (await matchShellCache(NAVIGATION_FALLBACK_URL)) ||
+      (await matchShellCache('/'));
   }
 
   const networkPromise = fetchWithRetry(request)
@@ -507,8 +551,8 @@ async function networkFirstDocument(request, event) {
 
   if (allowAppShellFallback) {
     const fallback =
-      (await cache.match(NAVIGATION_FALLBACK_URL)) ||
-      (await cache.match('/'));
+      (await matchShellCache(NAVIGATION_FALLBACK_URL)) ||
+      (await matchShellCache('/'));
 
     if (fallback) {
       console.warn('[SW] Navigation fallback served from cache for:', pathname);
@@ -525,7 +569,7 @@ async function networkFirstDocument(request, event) {
 
 async function staleWhileRevalidate(request, event) {
   const cache = await caches.open(CACHE_NAME);
-  const cached = await cache.match(request, { ignoreSearch: true });
+  const cached = await matchShellCache(request, { ignoreSearch: true });
 
   const networkPromise = fetchWithRetry(request)
     .then((response) => {
@@ -549,7 +593,7 @@ async function staleWhileRevalidate(request, event) {
     return response;
   }
 
-  const fallback = await cache.match(request, { ignoreSearch: true });
+  const fallback = await matchShellCache(request, { ignoreSearch: true });
   if (fallback) return fallback;
 
   if (isStyleRequest(request)) {
@@ -583,7 +627,7 @@ async function networkFirstStatic(request) {
   const response = await withTimeout(networkPromise, ASSET_NETWORK_TIMEOUT_MS);
   if (response) return response;
 
-  const cached = await cache.match(request, { ignoreSearch: true });
+  const cached = await matchShellCache(request, { ignoreSearch: true });
   if (cached) return cached;
 
   if (isStyleRequest(request)) {
@@ -604,7 +648,7 @@ async function networkFirstStatic(request) {
 
 async function cacheFirst(request) {
   const cache = await caches.open(CACHE_NAME);
-  const cached = await cache.match(request, { ignoreSearch: true });
+  const cached = await matchShellCache(request, { ignoreSearch: true });
   if (cached) return cached;
 
   try {
@@ -614,8 +658,26 @@ async function cacheFirst(request) {
     }
     return response;
   } catch (error) {
-    return cache.match(request, { ignoreSearch: true });
+    return matchShellCache(request, { ignoreSearch: true });
   }
+}
+
+async function matchShellCache(request, options) {
+  const currentCache = await caches.open(CACHE_NAME);
+  const currentMatch = await currentCache.match(request, options);
+  if (currentMatch) return currentMatch;
+
+  try {
+    const cacheNames = await caches.keys();
+    for (const name of cacheNames) {
+      if (!name.startsWith('shift-tracker-shell-') || name === CACHE_NAME) continue;
+      const cache = await caches.open(name);
+      const cached = await cache.match(request, options);
+      if (cached) return cached;
+    }
+  } catch (error) {}
+
+  return null;
 }
 
 function createOfflineDocumentFallback() {
