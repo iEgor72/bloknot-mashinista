@@ -6561,3 +6561,12 @@ Append-only журнал действий ИИ-агентов по проект�
 - Methods: `git post-commit hook`, `automatic memory update`
 - Files: `ai-memory/CHANGELOG.md`, `ai-memory/sessions/2026-06-21.md`, `index.html`, `scripts/app-constants.js`, `scripts/app-init.js`, `scripts/local-smoke.mjs`, `scripts/prod-cache-smoke.mjs`, `scripts/shift-form.js`, `scripts/sw-register.js`, `scripts/time-utils.js`, `server.js`, `sw-bootstrap-v377.js`, `sw.js`
 - Notes: Commit: `360170e933f9b75d6c59eb0c9ca93d3201217415` (`360170e`) | Author: `iEgor72`
+
+## 2026-06-21 13:51:10 +1000
+
+- Source: `post-commit`
+- Task: chore(memory): record pwa shell update fix
+- Branch: `main`
+- Methods: `git post-commit hook`, `automatic memory update`
+- Files: `ai-memory/CHANGELOG.md`, `ai-memory/INDEX.md`, `ai-memory/PROJECT_STATE.md`, `ai-memory/RECENT_COMMITS.md`, `ai-memory/WORKTREE_STATUS.md`, `ai-memory/sessions/2026-06-21.md`
+- Notes: Commit: `695f9b3ec10bcc90506daf47384324df89eab61a` (`695f9b3`) | Author: `iEgor72`
