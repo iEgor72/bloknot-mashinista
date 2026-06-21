@@ -1,14 +1,14 @@
 # Project State
 
 <!-- AUTO_STATUS:START -->
-Generated: 2026-06-21 11:36:07 +1000
+Generated: 2026-06-21 11:38:52 +1000
 
 ## Repository Snapshot
 - Local repo path: `D:\work\bloknot-mashinista-tg`
 - Project memory path: `D:\work\bloknot-mashinista-tg\ai-memory`
 - Branch: `main`
-- HEAD: `bb5b9b3`
-- Last commit: `bb5b9b3 fix: keep service worker in telegram webview`
+- HEAD: `f699279`
+- Last commit: `f699279 chore(memory): record telegram offline fix`
 
 ## Git Remote
 ```text
@@ -20,7 +20,7 @@ origin	https://github.com/iEgor72/bloknot-mashinista.git (push)
 ```text
 codex/next-direction b044dd5 offline mvp
   codex/tabs-ui        117f1fa [origin/codex/tabs-ui] tabs ui
-* main                 bb5b9b3 [origin/main: ahead 1] fix: keep service worker in telegram webview
+* main                 f699279 [origin/main] chore(memory): record telegram offline fix
   poekhali-rework      2d5f0af chore(memory): refresh after main merge
 ```
 

@@ -6376,3 +6376,11 @@ Append-only журнал действий ИИ-агентов по проект�
 - Methods: `git post-commit hook`, `automatic memory update`
 - Files: `scripts/app-constants.js`, `scripts/sw-register.js`, `sw.js`
 - Notes: Commit: `bb5b9b3d8545013ebf70f376437679b4a26bd1a7` (`bb5b9b3`) | Author: `iEgor72`
+
+## 2026-06-21 11:38:47 +1000
+
+- Source: `manual`
+- Task: Commit push deploy Telegram offline service worker fix
+- Branch: `main`
+- Methods: `Коммиты bb5b9b3 runtime и f699279 memory созданы`, `push origin/main выполнен`, `production VPS проверен main behind origin/main на 2 коммита`, `dirty server.js сохранен`, `intended commit f699279 present`, `git pull --ff-only до f699279`, `node --check server.js sw.js app-constants sw-register прошли`, `pm2 reload bloknot-mashinista --update-env`, `PM2 online`, `внешние и VPS HTTPS проверки / и /api/community 200`, `sw.js и app-constants отдают v371`, `sw-register больше не отдает Telegram unregister`
+- Files: `scripts/sw-register.js`, `sw.js`, `scripts/app-constants.js`, `ai-memory`
