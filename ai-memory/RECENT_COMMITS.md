@@ -1,10 +1,10 @@
 # Recent Commits
 
-Generated: 2026-06-21 11:21:19 +1000
+Generated: 2026-06-21 11:25:43 +1000
 
 | Hash | Date | Author | Message |
 | --- | --- | --- | --- |
-| `7b0976b` | 2026-06-21T11:21:18+10:00 | iEgor72 | chore(memory): refresh after offline shell fix |
+| `93a685f` | 2026-06-21T11:21:18+10:00 | iEgor72 | chore(memory): refresh after offline shell fix |
 | `8887146` | 2026-06-21T11:20:56+10:00 | iEgor72 | fix: restore offline pwa shell |
 | `efeaf36` | 2026-06-08T20:06:53+10:00 | iEgor72 | fix: preserve notification read state |
 | `0058d83` | 2026-06-08T09:52:24Z | iEgor72 | ui: rename colleagues to users |

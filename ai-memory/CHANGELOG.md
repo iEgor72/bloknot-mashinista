@@ -6343,3 +6343,19 @@ Append-only журнал действий ИИ-агентов по проект�
 - Methods: `git post-commit hook`, `automatic memory update`
 - Files: `ai-memory/CHANGELOG.md`, `ai-memory/INDEX.md`, `ai-memory/PROJECT_STATE.md`, `ai-memory/RECENT_COMMITS.md`, `ai-memory/WORKTREE_STATUS.md`, `ai-memory/sessions/2026-06-21.md`
 - Notes: Commit: `7b0976b05447b92fd6729085e283700198b2b4df` (`7b0976b`) | Author: `iEgor72`
+
+## 2026-06-21 11:24:10 +1000
+
+- Source: `manual`
+- Task: Начат deploy offline PWA shell fix
+- Branch: `main`
+- Methods: `Локальный main чист и запушен до 93a685f`, `production /opt/bloknot-mashinista на main...origin/main`, `после fetch origin/main=93a685f`, `intended commit present`, `production имеет dirty server.js +36 строк`, `но deploy diff затрагивает только sw/app-constants/local-smoke/ai-memory`
+- Files: `sw.js`, `scripts/app-constants.js`, `scripts/local-smoke.mjs`, `ai-memory`
+
+## 2026-06-21 11:25:37 +1000
+
+- Source: `manual`
+- Task: Commit push deploy offline PWA shell fix
+- Branch: `main`
+- Methods: `Созданы коммиты 8887146 fix: restore offline pwa shell и 93a685f memory refresh`, `push origin/main выполнен`, `production VPS bloknot-vps /opt/bloknot-mashinista проверен main...origin/main`, `dirty server.js сохранен`, `intended commit present`, `git pull --ff-only до 93a685f`, `node --check server.js sw.js app-constants local-smoke прошли`, `pm2 reload bloknot-mashinista --update-env`, `PM2 online`, `локально на VPS /`, `/api/community`, `/sw.js вернули 200`, `внешний HTTPS / вернул 200`, `/api/community GET 200`, `sw.js и app-constants отдают v370`
+- Files: `sw.js`, `scripts/app-constants.js`, `scripts/local-smoke.mjs`, `ai-memory`
