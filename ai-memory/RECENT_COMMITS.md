@@ -1,9 +1,11 @@
 # Recent Commits
 
-Generated: 2026-06-21 12:18:13 +1000
+Generated: 2026-06-21 12:25:24 +1000
 
 | Hash | Date | Author | Message |
 | --- | --- | --- | --- |
+| `2a1d277` | 2026-06-21T12:25:23+10:00 | iEgor72 | fix(pwa): bypass cached service worker script |
+| `5c1fe99` | 2026-06-21T12:18:28+10:00 | iEgor72 | chore(memory): record feedback storage preservation |
 | `8841066` | 2026-06-21T12:18:12+10:00 | iEgor72 | fix(server): preserve telegram feedback storage |
 | `79a9b21` | 2026-06-21T12:16:10+10:00 | iEgor72 | chore(memory): record memory hook update |
 | `7bcadcb` | 2026-06-21T12:15:36+10:00 | iEgor72 | chore(memory): record offline shell cold-start fix |
@@ -42,5 +44,3 @@ Generated: 2026-06-21 12:18:13 +1000
 | `801441c` | 2026-06-06T10:55:56+10:00 | iEgor72 | fix: polish poekhali layout and home crew entry |
 | `a66d67c` | 2026-06-06T00:28:12Z | iEgor72 | fix(poehali): prioritize fresh shift and lift controls |
 | `6ce8e42` | 2026-06-06T00:23:46Z | iEgor72 | chore(memory): refresh after poekhali fixes |
-| `47de739` | 2026-06-06T00:23:31Z | iEgor72 | fix(poehali): prefer new shift and clear bottom controls |
-| `489a9ff` | 2026-06-06T00:16:59Z | iEgor72 | fix(ui): reduce shifts bottom spacing |

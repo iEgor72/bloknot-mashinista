@@ -6435,3 +6435,12 @@ Append-only журнал действий ИИ-агентов по проект�
 - Branch: `main`
 - Methods: `Found public Cloudflare response overriding /sw.js to max-age=14400 while Node sent no-cache`, `bumped cache to v373`, `registered service worker through /sw.js?v=v373`, `added uncached top-level sw-bootstrap-v373.js to bypass stale old SW cached sw-register.js`, `and removed /sw.js from SW shell precache`
 - Files: `index.html`, `scripts/app-constants.js`, `scripts/sw-register.js`, `sw-bootstrap-v373.js`, `server.js`, `sw.js`
+
+## 2026-06-21 12:25:23 +1000
+
+- Source: `post-commit`
+- Task: fix(pwa): bypass cached service worker script
+- Branch: `main`
+- Methods: `git post-commit hook`, `automatic memory update`
+- Files: `ai-memory/CHANGELOG.md`, `ai-memory/sessions/2026-06-21.md`, `index.html`, `scripts/app-constants.js`, `scripts/sw-register.js`, `server.js`, `sw-bootstrap-v373.js`, `sw.js`
+- Notes: Commit: `2a1d27787304b7fdaf26f82b439a43b73d11cd80` (`2a1d277`) | Author: `iEgor72`

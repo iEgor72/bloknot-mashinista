@@ -1,6 +1,6 @@
 # Worktree Status
 
-Generated: 2026-06-21 12:18:13 +1000
+Generated: 2026-06-21 12:25:24 +1000
 
 ## git status -sb
 ```text
@@ -15,15 +15,20 @@ Generated: 2026-06-21 12:18:13 +1000
 ```text
 codex/next-direction b044dd5 offline mvp
   codex/tabs-ui        117f1fa [origin/codex/tabs-ui] tabs ui
-* main                 8841066 [origin/main: ahead 1] fix(server): preserve telegram feedback storage
+* main                 2a1d277 [origin/main: ahead 1] fix(pwa): bypass cached service worker script
   poekhali-rework      2d5f0af chore(memory): refresh after main merge
 ```
 
 ## HEAD
 ```text
-8841066 fix(server): preserve telegram feedback storage
+2a1d277 fix(pwa): bypass cached service worker script
  ai-memory/CHANGELOG.md           |  8 ++++++++
  ai-memory/sessions/2026-06-21.md |  1 +
- server.js                        | 36 ++++++++++++++++++++++++++++++++++++
- 3 files changed, 45 insertions(+)
+ index.html                       |  3 ++-
+ scripts/app-constants.js         |  2 +-
+ scripts/sw-register.js           | 14 +++++++++++++-
+ server.js                        |  1 +
+ sw-bootstrap-v373.js             | 26 ++++++++++++++++++++++++++
+ sw.js                            |  8 +++-----
+ 8 files changed, 55 insertions(+), 8 deletions(-)
 ```
