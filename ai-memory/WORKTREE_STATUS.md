@@ -1,13 +1,11 @@
 # Worktree Status
 
-Generated: 2026-06-21 12:27:20 +1000
+Generated: 2026-06-21 12:28:25 +1000
 
 ## git status -sb
 ```text
-## main...origin/main [ahead 1]
- M ai-memory/CHANGELOG.md
+## main...origin/main
  M ai-memory/PROJECT_STATE.md
- M ai-memory/sessions/2026-06-21.md
 ?? .codex/
 ```
 
@@ -15,15 +13,18 @@ Generated: 2026-06-21 12:27:20 +1000
 ```text
 codex/next-direction b044dd5 offline mvp
   codex/tabs-ui        117f1fa [origin/codex/tabs-ui] tabs ui
-* main                 ccd1bce [origin/main: ahead 1] fix(pwa): version changed runtime scripts
+* main                 a31a35a [origin/main] chore(memory): record runtime script versioning
   poekhali-rework      2d5f0af chore(memory): refresh after main merge
 ```
 
 ## HEAD
 ```text
-ccd1bce fix(pwa): version changed runtime scripts
- ai-memory/CHANGELOG.md           | 8 ++++++++
- ai-memory/sessions/2026-06-21.md | 1 +
- index.html                       | 6 +++---
- 3 files changed, 12 insertions(+), 3 deletions(-)
+a31a35a chore(memory): record runtime script versioning
+ ai-memory/CHANGELOG.md           |  9 +++++++++
+ ai-memory/INDEX.md               |  2 +-
+ ai-memory/PROJECT_STATE.md       |  8 ++++----
+ ai-memory/RECENT_COMMITS.md      |  6 +++---
+ ai-memory/WORKTREE_STATUS.md     | 19 +++++++------------
+ ai-memory/sessions/2026-06-21.md |  1 +
+ 6 files changed, 25 insertions(+), 20 deletions(-)
 ```
