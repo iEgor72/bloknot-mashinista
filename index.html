@@ -151,6 +151,59 @@
       }
     })();
   </script>
+  <script>
+    (function() {
+      var root = document.documentElement;
+      var STORAGE_KEY = 'shift_tracker_boot_diagnostics_v1';
+      var fallbackTimer = null;
+
+      function writeBootDiagnostic(phase, extra) {
+        try {
+          var payload = {
+            phase: phase,
+            at: new Date().toISOString(),
+            href: window.location.href,
+            online: navigator.onLine !== false
+          };
+          if (extra && typeof extra === 'object') {
+            for (var key in extra) {
+              if (Object.prototype.hasOwnProperty.call(extra, key)) payload[key] = extra[key];
+            }
+          }
+          localStorage.setItem(STORAGE_KEY, JSON.stringify(payload));
+        } catch (error) {}
+      }
+
+      function markBootComplete(stage) {
+        root.classList.add('boot-complete');
+        root.classList.remove('boot-fallback-visible');
+        if (fallbackTimer) {
+          clearTimeout(fallbackTimer);
+          fallbackTimer = null;
+        }
+        writeBootDiagnostic('complete', { stage: stage || 'runtime' });
+      }
+
+      window.__shiftTrackerBootComplete = markBootComplete;
+      writeBootDiagnostic('html-loaded');
+
+      fallbackTimer = window.setTimeout(function() {
+        if (root.classList.contains('boot-complete')) return;
+        root.classList.add('boot-fallback-visible');
+        writeBootDiagnostic('fallback-visible', { reason: 'boot-timeout' });
+      }, 2800);
+
+      document.addEventListener('DOMContentLoaded', function() {
+        var reloadBtn = document.getElementById('bootFallbackReload');
+        if (reloadBtn) {
+          reloadBtn.addEventListener('click', function() {
+            writeBootDiagnostic('fallback-reload', { manual: true });
+            window.location.reload();
+          });
+        }
+      });
+    })();
+  </script>
   <!-- Telegram SDK is injected by a local non-blocking loader; cross-origin scripts stay out of the offline-critical path. -->
   <style>
     html, body {
@@ -168,6 +221,60 @@
        login screen flash before deferred scripts wake up. */
     html.boot-has-cache #authGate { display: none !important; }
     html.boot-has-cache #appShell.hidden { display: block !important; }
+    .boot-fallback {
+      position: fixed;
+      inset: 0;
+      z-index: 9999;
+      display: none;
+      align-items: center;
+      justify-content: center;
+      padding: max(24px, env(safe-area-inset-top)) 22px max(24px, env(safe-area-inset-bottom));
+      background: #0C0C10;
+      color: #EEF2F8;
+      text-align: center;
+      box-sizing: border-box;
+    }
+    html.boot-fallback-visible:not(.boot-complete) .boot-fallback { display: flex; }
+    html.boot-complete .boot-fallback { display: none !important; }
+    .boot-fallback-inner {
+      width: min(100%, 360px);
+      display: grid;
+      justify-items: center;
+      gap: 14px;
+    }
+    .boot-fallback-mark {
+      width: 48px;
+      height: 48px;
+      display: grid;
+      place-items: center;
+      border-radius: 14px;
+      background: #EEF2F8;
+      color: #0C0C10;
+      font-weight: 800;
+      letter-spacing: 0;
+    }
+    .boot-fallback-title {
+      margin: 0;
+      font-size: 20px;
+      line-height: 1.2;
+      font-weight: 800;
+    }
+    .boot-fallback-text {
+      margin: 0;
+      color: #B9C0CE;
+      font-size: 14px;
+      line-height: 1.45;
+    }
+    .boot-fallback-action {
+      min-height: 42px;
+      padding: 0 18px;
+      border: 0;
+      border-radius: 8px;
+      background: #EEF2F8;
+      color: #0C0C10;
+      font: inherit;
+      font-weight: 750;
+    }
     /* Critical docs gate placement to avoid cold-start jump before full CSS loads */
     .docs-pro-gate {
       position: fixed;
@@ -240,6 +347,15 @@
   <script src="/scripts/safe-area.js" defer></script>
 </head>
 <body style="background-color:#0C0C10;color:#EEF2F8;margin:0">
+  <div class="boot-fallback" id="bootFallback" role="status" aria-live="polite">
+    <div class="boot-fallback-inner">
+      <div class="boot-fallback-mark" aria-hidden="true">БМ</div>
+      <h1 class="boot-fallback-title">Открываем блокнот</h1>
+      <p class="boot-fallback-text">Если сеть пропала, приложение попробует открыть сохраненные данные из кэша. Нажми «Повторить», когда связь появится.</p>
+      <button class="boot-fallback-action" id="bootFallbackReload" type="button">Повторить</button>
+    </div>
+  </div>
+
   <!-- Auth Gate -->
   <div class="auth-gate" id="authGate">
     <div class="auth-card" id="authCard">
@@ -1816,21 +1932,21 @@
   </div>
 
   <!-- Runtime Scripts -->
-  <script src="/scripts/app-constants.js?v=v373" defer></script>
+  <script src="/scripts/app-constants.js?v=v374" defer></script>
   <script src="/scripts/glass-select.js" defer></script>
-  <script src="/scripts/auth.js?v=v373" defer></script>
+  <script src="/scripts/auth.js?v=v374" defer></script>
   <script src="/scripts/viewport.js" defer></script>
   <script src="/scripts/time-utils.js" defer></script>
   <script src="/scripts/docs-app.js" defer></script>
   <script src="/scripts/telegram-sdk-loader.js" defer></script>
-  <script src="/scripts/app.js?v=v373" defer></script>
+  <script src="/scripts/app.js?v=v374" defer></script>
   <script src="/scripts/poekhali-tracker.js" defer></script>
   <script src="/scripts/render.js" defer></script>
   <script src="/scripts/shift-form.js" defer></script>
   <script src="/scripts/partners.js" defer></script>
   <script src="/scripts/app-init.js" defer></script>
-  <script src="/scripts/sw-register.js?v=v373" defer></script>
-  <script src="/sw-bootstrap-v373.js" defer></script>
+  <script src="/scripts/sw-register.js?v=v374" defer></script>
+  <script src="/sw-bootstrap-v374.js" defer></script>
   <script src="/scripts/utils/haptics.js" defer></script>
   <script src="/scripts/press-feedback.js" defer></script>
   <script src="/scripts/nav-debug.js" defer></script>

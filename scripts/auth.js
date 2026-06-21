@@ -354,6 +354,9 @@
     }
 
     function showAuthGate(envState, authState) {
+      if (typeof window.__shiftTrackerBootComplete === 'function') {
+        window.__shiftTrackerBootComplete('auth-gate');
+      }
       try {
         document.documentElement.classList.remove('boot-has-cache');
       } catch (e) {}
@@ -492,6 +495,9 @@
     }
 
     function showAppShell() {
+      if (typeof window.__shiftTrackerBootComplete === 'function') {
+        window.__shiftTrackerBootComplete('app-shell');
+      }
       AUTH_STATE = 'authenticated';
       if (AUTH_GATE) AUTH_GATE.classList.add('hidden');
       if (APP_SHELL) APP_SHELL.classList.remove('hidden');

@@ -17,7 +17,10 @@
     "reference:import:tch9": "python scripts/import-tch9-reference.py",
     "speeds:import": "python scripts/import-speed-docs.py",
     "regime:import": "python scripts/import-regime-maps.py",
-    "smoke:local": "node scripts/local-smoke.mjs"
+    "smoke:local": "node scripts/local-smoke.mjs",
+    "smoke:offline": "node scripts/offline-smoke.mjs",
+    "smoke:predeploy": "npm run smoke:local && npm run smoke:offline",
+    "smoke:prod-cache": "node scripts/prod-cache-smoke.mjs"
   },
   "devDependencies": {
     "@playwright/test": "^1.54.2"

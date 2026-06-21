@@ -6461,3 +6461,11 @@ Append-only журнал действий ИИ-агентов по проект�
 - Methods: `git post-commit hook`, `automatic memory update`
 - Files: `ai-memory/CHANGELOG.md`, `ai-memory/sessions/2026-06-21.md`, `index.html`
 - Notes: Commit: `ccd1bcee7488560cbf3252c6edf4345e2c5d443a` (`ccd1bce`) | Author: `iEgor72`
+
+## 2026-06-21 12:54:54 +1000
+
+- Source: `manual`
+- Task: Added offline boot fallback and cache smoke gates
+- Branch: `main`
+- Methods: `Added inline HTML boot fallback with diagnostics`, `bumped shell cache to v374`, `added Playwright offline smoke and production cache smoke`, `verified with npm run smoke:predeploy`
+- Files: `index.html`, `scripts/auth.js`, `scripts/offline-smoke.mjs`, `scripts/prod-cache-smoke.mjs`, `package.json`, `sw.js`, `scripts/app-constants.js`, `server.js`, `sw-bootstrap-v374.js`
