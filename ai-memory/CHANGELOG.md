@@ -6528,3 +6528,11 @@ Append-only журнал действий ИИ-агентов по проект�
 - Methods: `git post-commit hook`, `automatic memory update`
 - Files: `ai-memory/CHANGELOG.md`, `ai-memory/sessions/2026-06-21.md`, `index.html`, `scripts/app-constants.js`, `scripts/local-smoke.mjs`, `scripts/offline-smoke.mjs`, `server.js`, `sw-bootstrap-v376.js`, `sw.js`
 - Notes: Commit: `47904e2da099d58086e21ef64c836685d71c2871` (`47904e2`) | Author: `iEgor72`
+
+## 2026-06-21 13:30:13 +1000
+
+- Source: `manual`
+- Task: Deployed nonblocking boot fallback fix
+- Branch: `main`
+- Methods: `Pushed main`, `fast-forward pulled VPS to d6dfbea`, `reloaded PM2 bloknot-mashinista`, `verified production v376 with npm run smoke:prod-cache`
+- Files: `index.html`, `scripts/local-smoke.mjs`, `scripts/offline-smoke.mjs`, `scripts/app-constants.js`, `sw.js`, `server.js`, `sw-bootstrap-v376.js`

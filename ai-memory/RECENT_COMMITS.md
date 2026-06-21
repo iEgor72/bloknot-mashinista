@@ -1,9 +1,10 @@
 # Recent Commits
 
-Generated: 2026-06-21 13:29:20 +1000
+Generated: 2026-06-21 13:30:14 +1000
 
 | Hash | Date | Author | Message |
 | --- | --- | --- | --- |
+| `d6dfbea` | 2026-06-21T13:29:32+10:00 | iEgor72 | chore(memory): record nonblocking fallback fix |
 | `47904e2` | 2026-06-21T13:29:18+10:00 | iEgor72 | fix(pwa): make boot fallback nonblocking |
 | `1358823` | 2026-06-21T13:20:17+10:00 | iEgor72 | chore(memory): refresh final project state |
 | `7d6ba99` | 2026-06-21T13:18:22+10:00 | iEgor72 | chore(memory): record bell cleanup deploy |
@@ -43,4 +44,3 @@ Generated: 2026-06-21 13:29:20 +1000
 | `9cc50ef` | 2026-06-07T20:38:50+10:00 | iEgor72 | fix(profile,docs): sync avatar across contexts + open favorited docs |
 | `d542765` | 2026-06-07T12:44:10+10:00 | iEgor72 | chore(diag): serve probe page from /assets (top-level files are whitelisted) |
 | `08752ec` | 2026-06-07T12:42:58+10:00 | iEgor72 | chore(diag): add /diag.html network probe page |
-| `fe36e40` | 2026-06-06T18:44:52+10:00 | iEgor72 | fix(pwa): retry flaky asset fetches in service worker |

@@ -1,10 +1,10 @@
 # Worktree Status
 
-Generated: 2026-06-21 13:29:20 +1000
+Generated: 2026-06-21 13:30:14 +1000
 
 ## git status -sb
 ```text
-## main...origin/main [ahead 1]
+## main...origin/main
  M ai-memory/CHANGELOG.md
  M ai-memory/PROJECT_STATE.md
  M ai-memory/sessions/2026-06-21.md
@@ -15,21 +15,18 @@ Generated: 2026-06-21 13:29:20 +1000
 ```text
 codex/next-direction b044dd5 offline mvp
   codex/tabs-ui        117f1fa [origin/codex/tabs-ui] tabs ui
-* main                 47904e2 [origin/main: ahead 1] fix(pwa): make boot fallback nonblocking
+* main                 d6dfbea [origin/main] chore(memory): record nonblocking fallback fix
   poekhali-rework      2d5f0af chore(memory): refresh after main merge
 ```
 
 ## HEAD
 ```text
-47904e2 fix(pwa): make boot fallback nonblocking
- ai-memory/CHANGELOG.md           |  8 ++++
+d6dfbea chore(memory): record nonblocking fallback fix
+ ai-memory/CHANGELOG.md           |  9 +++++++++
+ ai-memory/INDEX.md               |  2 +-
+ ai-memory/PROJECT_STATE.md       | 10 ++++++----
+ ai-memory/RECENT_COMMITS.md      |  6 +++---
+ ai-memory/WORKTREE_STATUS.md     | 25 +++++++++++++++----------
  ai-memory/sessions/2026-06-21.md |  1 +
- index.html                       | 89 ++++++++++++++++++++++++++++------------
- scripts/app-constants.js         |  2 +-
- scripts/local-smoke.mjs          | 14 +++++++
- scripts/offline-smoke.mjs        | 52 +++++++++++++++++++----
- server.js                        |  1 +
- sw-bootstrap-v376.js             | 26 ++++++++++++
- sw.js                            |  2 +-
- 9 files changed, 160 insertions(+), 35 deletions(-)
+ 6 files changed, 35 insertions(+), 18 deletions(-)
 ```
