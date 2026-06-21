@@ -1,14 +1,14 @@
 # Project State
 
 <!-- AUTO_STATUS:START -->
-Generated: 2026-06-21 12:25:24 +1000
+Generated: 2026-06-21 12:27:20 +1000
 
 ## Repository Snapshot
 - Local repo path: `D:\work\bloknot-mashinista-tg`
 - Project memory path: `D:\work\bloknot-mashinista-tg\ai-memory`
 - Branch: `main`
-- HEAD: `2a1d277`
-- Last commit: `2a1d277 fix(pwa): bypass cached service worker script`
+- HEAD: `ccd1bce`
+- Last commit: `ccd1bce fix(pwa): version changed runtime scripts`
 
 ## Git Remote
 ```text
@@ -20,7 +20,7 @@ origin	https://github.com/iEgor72/bloknot-mashinista.git (push)
 ```text
 codex/next-direction b044dd5 offline mvp
   codex/tabs-ui        117f1fa [origin/codex/tabs-ui] tabs ui
-* main                 2a1d277 [origin/main: ahead 1] fix(pwa): bypass cached service worker script
+* main                 ccd1bce [origin/main: ahead 1] fix(pwa): version changed runtime scripts
   poekhali-rework      2d5f0af chore(memory): refresh after main merge
 ```
 

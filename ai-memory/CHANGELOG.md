@@ -6452,3 +6452,12 @@ Append-only журнал действий ИИ-агентов по проект�
 - Branch: `main`
 - Methods: `Added v373 query strings to app-constants`, `auth`, `app`, `and sw-register script tags after production showed unversioned app-constants.js still served v372 from Cloudflare HIT`
 - Files: `index.html`
+
+## 2026-06-21 12:27:20 +1000
+
+- Source: `post-commit`
+- Task: fix(pwa): version changed runtime scripts
+- Branch: `main`
+- Methods: `git post-commit hook`, `automatic memory update`
+- Files: `ai-memory/CHANGELOG.md`, `ai-memory/sessions/2026-06-21.md`, `index.html`
+- Notes: Commit: `ccd1bcee7488560cbf3252c6edf4345e2c5d443a` (`ccd1bce`) | Author: `iEgor72`

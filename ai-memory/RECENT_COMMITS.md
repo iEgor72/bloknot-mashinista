@@ -1,9 +1,11 @@
 # Recent Commits
 
-Generated: 2026-06-21 12:25:24 +1000
+Generated: 2026-06-21 12:27:20 +1000
 
 | Hash | Date | Author | Message |
 | --- | --- | --- | --- |
+| `ccd1bce` | 2026-06-21T12:27:19+10:00 | iEgor72 | fix(pwa): version changed runtime scripts |
+| `dfc0bef` | 2026-06-21T12:25:32+10:00 | iEgor72 | chore(memory): record service worker cache bypass |
 | `2a1d277` | 2026-06-21T12:25:23+10:00 | iEgor72 | fix(pwa): bypass cached service worker script |
 | `5c1fe99` | 2026-06-21T12:18:28+10:00 | iEgor72 | chore(memory): record feedback storage preservation |
 | `8841066` | 2026-06-21T12:18:12+10:00 | iEgor72 | fix(server): preserve telegram feedback storage |
@@ -42,5 +44,3 @@ Generated: 2026-06-21 12:25:24 +1000
 | `6368206` | 2026-06-06T11:12:29+10:00 | iEgor72 | chore(memory): record production deploy |
 | `c2c8d5f` | 2026-06-06T11:03:54+10:00 | iEgor72 | chore(memory): refresh after rebase completion |
 | `801441c` | 2026-06-06T10:55:56+10:00 | iEgor72 | fix: polish poekhali layout and home crew entry |
-| `a66d67c` | 2026-06-06T00:28:12Z | iEgor72 | fix(poehali): prioritize fresh shift and lift controls |
-| `6ce8e42` | 2026-06-06T00:23:46Z | iEgor72 | chore(memory): refresh after poekhali fixes |
