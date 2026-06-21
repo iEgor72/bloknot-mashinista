@@ -1,4 +1,4 @@
-const CACHE_VERSION = 'v372';
+const CACHE_VERSION = 'v373';
 const CACHE_NAME = `shift-tracker-shell-${CACHE_VERSION}`;
 const NAVIGATION_FALLBACK_URL = '/index.html';
 const NETWORK_TIMEOUT_MS = 4500;
@@ -51,8 +51,7 @@ const INSTALL_SHELL_URLS = [
   '/scripts/shift-form.js',
   '/scripts/partners.js',
   '/scripts/app-init.js',
-  '/scripts/sw-register.js',
-  '/sw.js'
+  '/scripts/sw-register.js'
 ];
 const CRITICAL_INSTALL_URLS = [
   '/',
@@ -89,8 +88,7 @@ const CRITICAL_INSTALL_URLS = [
   '/scripts/shift-form.js',
   '/scripts/partners.js',
   '/scripts/app-init.js',
-  '/scripts/sw-register.js',
-  '/sw.js'
+  '/scripts/sw-register.js'
 ];
 const EXTENDED_SHELL_URLS = [
   '/assets/fonts/plus-jakarta-sans/plus-jakarta-sans-cyrillic-ext.woff2',

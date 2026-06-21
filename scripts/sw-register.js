@@ -18,7 +18,19 @@
   }
 
   var initialController = navigator.serviceWorker.controller;
-  var SW_URL = '/sw.js';
+  function getServiceWorkerUrl() {
+    try {
+      if (window.__SHIFT_TRACKER_SW_URL) return String(window.__SHIFT_TRACKER_SW_URL);
+    } catch (error) {}
+    var version = 'v0';
+    try {
+      if (typeof SHELL_CACHE_VERSION === 'string' && SHELL_CACHE_VERSION) {
+        version = SHELL_CACHE_VERSION;
+      }
+    } catch (error2) {}
+    return '/sw.js?v=' + encodeURIComponent(version);
+  }
+  var SW_URL = getServiceWorkerUrl();
   var STANDALONE_RELOAD_FLAG = 'shift_tracker_sw_standalone_reload_v1';
 
   try {

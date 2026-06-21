@@ -114,6 +114,7 @@ const PUBLIC_TOP_LEVEL_FILES = new Set([
   'index.html',
   'manifest.webmanifest',
   'sw.js',
+  'sw-bootstrap-v373.js',
   'apple-touch-icon.png',
   'icon-192.png',
   'icon-512.png',
