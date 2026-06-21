@@ -117,6 +117,30 @@ async function waitForServer() {
   throw new Error(`Server did not become ready within ${startupTimeoutMs}ms at ${baseUrl}`);
 }
 
+async function fetchCacheControl(pathname) {
+  const response = await fetch(`${baseUrl}${pathname}`, { cache: 'no-store' });
+  if (!response.ok) throw new Error(`GET ${pathname} failed with status ${response.status}`);
+  return response.headers.get('cache-control') || '';
+}
+
+async function verifyPwaControlHeaders() {
+  const checks = {};
+  for (const pathname of [
+    '/',
+    '/index.html',
+    '/sw.js',
+    '/scripts/app-constants.js',
+    '/scripts/sw-register.js',
+  ]) {
+    const cacheControl = await fetchCacheControl(pathname);
+    checks[pathname] = cacheControl;
+    if (!cacheControl.toLowerCase().includes('no-store')) {
+      throw new Error(`${pathname} should be served with Cache-Control: no-store, got ${cacheControl || 'empty'}`);
+    }
+  }
+  report.checks.pwaControlHeaders = checks;
+}
+
 async function cleanup(exitCode = 0) {
   if (context) await context.close().catch(() => {});
   if (browser) await browser.close().catch(() => {});
@@ -149,6 +173,7 @@ async function main() {
   });
 
   await waitForServer();
+  await verifyPwaControlHeaders();
 
   browser = await chromium.launch({ headless: true });
   context = await browser.newContext();
@@ -359,6 +384,26 @@ async function main() {
   }
   if (!notificationAfterRead.readKeys.announcement_offline_mode_restored_2026_06) {
     throw new Error('Read key for archived system announcement was not persisted');
+  }
+
+  const overlayRecoveryState = await page.evaluate(() => {
+    const overlay = document.getElementById('overlayNotifications');
+    const backdrop = document.getElementById('shiftActionsBackdrop');
+    if (overlay) overlay.classList.add('hidden', 'is-open', 'visible');
+    if (backdrop) backdrop.classList.remove('hidden');
+    document.body.classList.add('has-open-overlay');
+    if (typeof window.__shiftTrackerSyncOverlayUiState === 'function') {
+      window.__shiftTrackerSyncOverlayUiState();
+    }
+    return {
+      bodyLocked: document.body.classList.contains('has-open-overlay'),
+      overlayOpen: overlay ? (overlay.classList.contains('is-open') || overlay.classList.contains('visible')) : false,
+      backdropHidden: backdrop ? backdrop.classList.contains('hidden') : true,
+    };
+  });
+  report.checks.overlayRecovery = overlayRecoveryState;
+  if (overlayRecoveryState.bodyLocked || overlayRecoveryState.overlayOpen || !overlayRecoveryState.backdropHidden) {
+    throw new Error('Overlay recovery did not release stale click blockers');
   }
 
   await page.screenshot({ path: path.join(artifactsDir, 'smoke-home.png'), fullPage: true });

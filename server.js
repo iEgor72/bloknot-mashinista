@@ -118,6 +118,7 @@ const PUBLIC_TOP_LEVEL_FILES = new Set([
   'sw-bootstrap-v374.js',
   'sw-bootstrap-v375.js',
   'sw-bootstrap-v376.js',
+  'sw-bootstrap-v377.js',
   'apple-touch-icon.png',
   'icon-192.png',
   'icon-512.png',
@@ -2811,14 +2812,20 @@ function getPublicFileCacheControl(filePath, publicPath) {
   const baseName = path.basename(filePath).toLowerCase();
   const shellFallbackCache = 'public, max-age=86400, stale-while-revalidate=604800, stale-if-error=604800';
 
-  if (baseName === 'sw.js' || normalizedPath === '/sw.js') {
-    return 'no-cache';
-  }
-
   if (
     normalizedPath === '/' ||
     normalizedPath === '/index.html' ||
     baseName === 'index.html' ||
+    normalizedPath === '/sw.js' ||
+    baseName === 'sw.js' ||
+    normalizedPath === '/scripts/app-constants.js' ||
+    normalizedPath === '/scripts/sw-register.js' ||
+    /^\/sw-bootstrap-v\d+\.js$/.test(normalizedPath)
+  ) {
+    return 'no-store';
+  }
+
+  if (
     normalizedPath === '/manifest.webmanifest' ||
     normalizedPath.startsWith('/styles/') ||
     normalizedPath.startsWith('/scripts/') ||

@@ -2,14 +2,60 @@
 if (typeof bootstrapAppStartup === 'function') {
   bootstrapAppStartup();
 } else {
-  bootstrapCachedShellFromStorage();
-  window.requestAnimationFrame(function() {
-    window.setTimeout(startBackgroundBootstrap, 320);
-  });
+  if (typeof bootstrapCachedShellFromStorage === 'function') {
+    bootstrapCachedShellFromStorage();
+  }
+  if (typeof startBackgroundBootstrap === 'function') {
+    window.requestAnimationFrame(function() {
+      window.setTimeout(startBackgroundBootstrap, 320);
+    });
+  }
 }
 
 // Quick-add bottom sheet removed — FAB now opens the form directly.
 (function dropQuickAddSheet(){ var o = document.getElementById("overlayQuickAdd"); if (o && o.parentNode) o.parentNode.removeChild(o); })();
+
+// Keep modal/sheet state derived from DOM classes. This prevents an invisible
+// overlay/backdrop from capturing taps after a failed transition or interrupted
+// navigation in standalone PWA mode.
+(function bindOverlayRecovery() {
+  function sync() {
+    try {
+      if (typeof window.__shiftTrackerSyncOverlayUiState === 'function') {
+        window.__shiftTrackerSyncOverlayUiState();
+      }
+    } catch (e) {}
+  }
+
+  var scheduled = false;
+  function scheduleSync() {
+    if (scheduled) return;
+    scheduled = true;
+    window.requestAnimationFrame(function() {
+      scheduled = false;
+      sync();
+    });
+  }
+
+  document.addEventListener('click', scheduleSync, true);
+  document.addEventListener('pointerdown', scheduleSync, true);
+  window.addEventListener('pageshow', scheduleSync);
+  window.addEventListener('focus', scheduleSync);
+  document.addEventListener('visibilitychange', function() {
+    if (!document.hidden) scheduleSync();
+  });
+
+  try {
+    var observer = new MutationObserver(scheduleSync);
+    var targets = document.querySelectorAll('.overlay, .shift-detail-overlay, .docs-viewer-overlay, #shiftActionsBackdrop');
+    for (var i = 0; i < targets.length; i++) {
+      observer.observe(targets[i], { attributes: true, attributeFilter: ['class', 'style', 'aria-hidden'] });
+    }
+  } catch (e2) {}
+
+  window.setInterval(sync, 2500);
+  scheduleSync();
+})();
 
 // Fuel sections — show A/B/V depending on loco series (3* → A/B/V, 2* → A/B, else → A).
 (function bindLocoSections() {
@@ -147,7 +193,8 @@ if (typeof bootstrapAppStartup === 'function') {
     if (typeof closeOverlay === 'function') closeOverlay('overlayCommunity');
     else if (overlay) {
       overlay.classList.remove('is-open', 'visible');
-      if (document.body) document.body.classList.remove('has-open-overlay');
+      if (typeof window.__shiftTrackerSyncOverlayUiState === 'function') window.__shiftTrackerSyncOverlayUiState();
+      else if (document.body) document.body.classList.remove('has-open-overlay');
     }
   }
 
@@ -157,7 +204,8 @@ if (typeof bootstrapAppStartup === 'function') {
       if (typeof openOverlay === 'function') openOverlay('overlayCommunity');
       else if (overlay) {
         overlay.classList.add('is-open', 'visible');
-        if (document.body) document.body.classList.add('has-open-overlay');
+        if (typeof window.__shiftTrackerSyncOverlayUiState === 'function') window.__shiftTrackerSyncOverlayUiState();
+        else if (document.body) document.body.classList.add('has-open-overlay');
       }
     });
   }
@@ -483,13 +531,15 @@ if (typeof bootstrapAppStartup === 'function') {
   }
   function open() {
     if (!overlay) return;
-    overlay.classList.add('is-open');
-    document.body && document.body.classList.add('has-open-overlay');
+    overlay.classList.add('is-open', 'visible');
+    if (typeof window.__shiftTrackerSyncOverlayUiState === 'function') window.__shiftTrackerSyncOverlayUiState();
+    else document.body && document.body.classList.add('has-open-overlay');
   }
   function close() {
     if (!overlay) return;
-    overlay.classList.remove('is-open');
-    document.body && document.body.classList.remove('has-open-overlay');
+    overlay.classList.remove('is-open', 'visible');
+    if (typeof window.__shiftTrackerSyncOverlayUiState === 'function') window.__shiftTrackerSyncOverlayUiState();
+    else document.body && document.body.classList.remove('has-open-overlay');
   }
   if (bell) {
     bell.addEventListener('click', function(e) {

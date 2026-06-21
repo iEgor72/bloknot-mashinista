@@ -6536,3 +6536,19 @@ Append-only журнал действий ИИ-агентов по проект�
 - Branch: `main`
 - Methods: `Pushed main`, `fast-forward pulled VPS to d6dfbea`, `reloaded PM2 bloknot-mashinista`, `verified production v376 with npm run smoke:prod-cache`
 - Files: `index.html`, `scripts/local-smoke.mjs`, `scripts/offline-smoke.mjs`, `scripts/app-constants.js`, `sw.js`, `server.js`, `sw-bootstrap-v376.js`
+
+## 2026-06-21 13:47:01 +1000
+
+- Source: `manual`
+- Task: Fixed PWA cache refresh and stale overlay click locks
+- Branch: `main`
+- Methods: `Bumped shell to v377`, `made update-control files no-store`, `normalized SW cache writes by pathname`, `added live version self-heal in sw-register`, `added overlay sync/recovery and smoke coverage`
+- Files: `sw.js`, `scripts/sw-register.js`, `server.js`, `index.html`, `scripts/app-constants.js`, `sw-bootstrap-v377.js`, `scripts/app-init.js`, `scripts/shift-form.js`, `scripts/local-smoke.mjs`, `scripts/prod-cache-smoke.mjs`
+
+## 2026-06-21 13:50:25 +1000
+
+- Source: `manual`
+- Task: Hardened partial PWA shell boot guards
+- Branch: `main`
+- Methods: `Guarded app-init bootstrap fallback and time-utils defaults when core app globals are unavailable during partial cached shell startup`
+- Files: `scripts/app-init.js`, `scripts/time-utils.js`

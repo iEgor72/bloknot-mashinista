@@ -89,6 +89,7 @@ async function main() {
 
   const root = await fetchText(`${baseUrl}/`);
   assertOk(root, 'root');
+  assertHeaderIncludes(root.headers, 'cache-control', 'no-store', 'root HTML');
   report.checks.root = {
     status: root.status,
     cacheControl: root.headers['cache-control'] || '',
@@ -108,6 +109,7 @@ async function main() {
 
   const constants = await fetchText(`${baseUrl}/scripts/app-constants.js?v=${version}`);
   assertOk(constants, 'versioned app constants');
+  assertHeaderIncludes(constants.headers, 'cache-control', 'no-store', 'versioned app constants');
   assertIncludes(constants.text, `SHELL_CACHE_VERSION = '${version}'`, 'versioned app constants');
 
   const appInit = await fetchText(`${baseUrl}/scripts/app-init.js?v=${version}`);
@@ -116,7 +118,13 @@ async function main() {
 
   const sw = await fetchText(`${baseUrl}/sw.js?v=${version}`);
   assertOk(sw, 'versioned service worker');
+  assertHeaderIncludes(sw.headers, 'cache-control', 'no-store', 'versioned service worker');
   assertIncludes(sw.text, `CACHE_VERSION = '${version}'`, 'versioned service worker');
+
+  const swRegister = await fetchText(`${baseUrl}/scripts/sw-register.js?v=${version}`);
+  assertOk(swRegister, 'versioned service worker register');
+  assertHeaderIncludes(swRegister.headers, 'cache-control', 'no-store', 'versioned service worker register');
+  assertIncludes(swRegister.text, 'checkLiveShellVersion', 'versioned service worker register');
 
   const bootstrapHead = await fetchHead(`${baseUrl}/sw-bootstrap-${version}.js`);
   assertOk(bootstrapHead, 'service worker bootstrap');
@@ -136,6 +144,11 @@ async function main() {
     status: appInit.status,
     cacheControl: appInit.headers['cache-control'] || '',
     cfCacheStatus: appInit.headers['cf-cache-status'] || '',
+  };
+  report.checks.versionedServiceWorkerRegister = {
+    status: swRegister.status,
+    cacheControl: swRegister.headers['cache-control'] || '',
+    cfCacheStatus: swRegister.headers['cf-cache-status'] || '',
   };
   report.checks.serviceWorkerBootstrap = {
     status: bootstrapHead.status,

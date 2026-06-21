@@ -832,18 +832,57 @@
     });
 
     // ── Overlays ──
+    function isBlockingOverlayOpen(overlay) {
+      if (!overlay || !overlay.classList) return false;
+      if (overlay.classList.contains('hidden')) return false;
+      if (overlay.classList.contains('docs-viewer-overlay')) return true;
+      return overlay.classList.contains('is-open') ||
+        overlay.classList.contains('visible') ||
+        overlay.classList.contains('is-visible');
+    }
+
+    function isRenderedOverlay(overlay) {
+      if (!overlay) return false;
+      try {
+        var styles = window.getComputedStyle ? window.getComputedStyle(overlay) : null;
+        if (styles && (styles.display === 'none' || styles.visibility === 'hidden')) return false;
+        return !!(overlay.offsetWidth || overlay.offsetHeight || overlay.getClientRects().length);
+      } catch (e) {
+        return false;
+      }
+    }
+
     function syncOverlayUiState() {
-      var overlays = document.querySelectorAll('.overlay');
+      var overlays = document.querySelectorAll('.overlay, .shift-detail-overlay, .docs-viewer-overlay');
       var hasOpenOverlay = false;
       for (var i = 0; i < overlays.length; i++) {
-        var isOpen = overlays[i].classList.contains('is-open') || overlays[i].classList.contains('visible');
+        var hasOpenClass = overlays[i].classList.contains('is-open') ||
+          overlays[i].classList.contains('visible') ||
+          overlays[i].classList.contains('is-visible');
+        if (hasOpenClass && overlays[i].classList.contains('hidden')) {
+          overlays[i].classList.remove('is-open', 'visible', 'is-visible');
+          overlays[i].setAttribute('aria-hidden', 'true');
+        }
+        var isOpen = isBlockingOverlayOpen(overlays[i]);
+        if (isOpen && !isRenderedOverlay(overlays[i])) {
+          overlays[i].classList.remove('is-open', 'visible', 'is-visible');
+          overlays[i].setAttribute('aria-hidden', 'true');
+          isOpen = false;
+        }
         if (isOpen) hasOpenOverlay = true;
         overlays[i].setAttribute('aria-hidden', isOpen ? 'false' : 'true');
+      }
+      var staleBackdrop = document.getElementById('shiftActionsBackdrop');
+      if (staleBackdrop && !staleBackdrop.classList.contains('hidden')) {
+        staleBackdrop.classList.add('hidden');
+        staleBackdrop.setAttribute('aria-hidden', 'true');
       }
       if (document.body) {
         document.body.classList.toggle('has-open-overlay', hasOpenOverlay);
       }
+      return hasOpenOverlay;
     }
+    window.__shiftTrackerSyncOverlayUiState = syncOverlayUiState;
 
     function setOverlayOpenState(id, isOpen) {
       var overlay = document.getElementById(id);

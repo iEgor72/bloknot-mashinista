@@ -1,4 +1,4 @@
-const CACHE_VERSION = 'v376';
+const CACHE_VERSION = 'v377';
 const CACHE_NAME = `shift-tracker-shell-${CACHE_VERSION}`;
 const NAVIGATION_FALLBACK_URL = '/index.html';
 const NETWORK_TIMEOUT_MS = 4500;
@@ -51,7 +51,8 @@ const INSTALL_SHELL_URLS = [
   '/scripts/shift-form.js',
   '/scripts/partners.js',
   '/scripts/app-init.js',
-  '/scripts/sw-register.js'
+  '/scripts/sw-register.js',
+  '/sw-bootstrap-v377.js'
 ];
 const CRITICAL_INSTALL_URLS = [
   '/',
@@ -88,7 +89,8 @@ const CRITICAL_INSTALL_URLS = [
   '/scripts/shift-form.js',
   '/scripts/partners.js',
   '/scripts/app-init.js',
-  '/scripts/sw-register.js'
+  '/scripts/sw-register.js',
+  '/sw-bootstrap-v377.js'
 ];
 const EXTENDED_SHELL_URLS = [
   '/assets/fonts/plus-jakarta-sans/plus-jakarta-sans-cyrillic-ext.woff2',
@@ -115,6 +117,11 @@ const EXTENDED_SHELL_URLS = [
 ];
 const INSTALL_SHELL_SET = new Set(INSTALL_SHELL_URLS.map((url) => normalizeShellUrl(url)).filter(Boolean));
 const CRITICAL_INSTALL_SET = new Set(CRITICAL_INSTALL_URLS.map((url) => normalizeShellUrl(url)).filter(Boolean));
+const UPDATE_CONTROL_PATHS = new Set([
+  '/scripts/app-constants.js',
+  '/scripts/sw-register.js',
+  '/sw.js'
+]);
 
 // Many users reach prod only through an anti-censorship VPN whose tunnel drops a
 // noticeable fraction of requests (random "Failed to fetch"). A few retries on a
@@ -191,6 +198,12 @@ self.addEventListener('message', (event) => {
         .then(() => cleanupStaleShellCachesIfSafe())
     );
   }
+  if (data && data.type === 'PURGE_STALE_SHELL_CACHES') {
+    event.waitUntil(cleanupStaleShellCachesIfSafe());
+  }
+  if (data && data.type === 'GET_CACHE_VERSION' && event.source && typeof event.source.postMessage === 'function') {
+    event.source.postMessage({ type: 'CACHE_VERSION', version: CACHE_VERSION });
+  }
   if (data && data.type === 'WARMUP_EXTENDED_CACHE') {
     event.waitUntil(warmShellCache({ mode: 'full' }));
   }
@@ -215,6 +228,10 @@ self.addEventListener('fetch', (event) => {
   }
 
   if (isStaticAssetRequest(request, url)) {
+    if (isUpdateControlRequest(url)) {
+      event.respondWith(networkFirstStatic(request));
+      return;
+    }
     if (isShellCodeRequest(request, url) || isTrackerDataRequest(url)) {
       event.respondWith(staleWhileRevalidate(request, event));
       return;
@@ -244,7 +261,7 @@ async function warmShellCache(options) {
       try {
         const response = await fetchWithRetry(assetUrl);
         if (response && response.ok) {
-          await cache.put(assetUrl, response.clone());
+          await putShellCacheResponse(cache, assetUrl, response.clone());
           cachedCount += 1;
         } else if (INSTALL_SHELL_SET.has(assetUrl)) {
           console.warn('[SW] Failed to precache install shell asset:', assetUrl, response ? response.status : 'no-response');
@@ -282,7 +299,7 @@ async function precacheCriticalInstallShell(cache) {
       try {
         const response = await fetchWithRetry(assetUrl);
         if (response && response.ok) {
-          await cache.put(assetUrl, response.clone());
+          await putShellCacheResponse(cache, assetUrl, response.clone());
           cachedCount += 1;
         } else {
           console.warn('[SW] Critical install asset skipped (bad response):', assetUrl, response ? response.status : 'no-response');
@@ -444,6 +461,12 @@ function isShellCodeRequest(request, url) {
     url.pathname === '/sw.js';
 }
 
+function isUpdateControlRequest(url) {
+  if (!url) return false;
+  return UPDATE_CONTROL_PATHS.has(url.pathname) ||
+    /^\/sw-bootstrap-v\d+\.js$/.test(url.pathname);
+}
+
 function isTrackerDataRequest(url) {
   return url.pathname === '/assets/tracker/maps-manifest.json' ||
     url.pathname === '/assets/tracker/tch9-reference.json' ||
@@ -588,9 +611,9 @@ async function staleWhileRevalidate(request, event) {
   const cached = await matchShellCache(request, { ignoreSearch: true });
 
   const networkPromise = fetchWithRetry(request)
-    .then((response) => {
+    .then(async (response) => {
       if (response && response.ok) {
-        cache.put(request, response.clone());
+        await putShellCacheResponse(cache, request, response.clone());
       }
       return response;
     })
@@ -631,10 +654,10 @@ async function staleWhileRevalidate(request, event) {
 
 async function networkFirstStatic(request) {
   const cache = await caches.open(CACHE_NAME);
-  const networkPromise = fetch(request, { cache: 'no-store' })
-    .then((response) => {
+  const networkPromise = fetchWithRetry(request)
+    .then(async (response) => {
       if (response && response.ok) {
-        cache.put(request, response.clone());
+        await putShellCacheResponse(cache, request, response.clone());
       }
       return response;
     })
@@ -670,12 +693,35 @@ async function cacheFirst(request) {
   try {
     const response = await fetch(request, { cache: 'no-store' });
     if (response && response.ok) {
-      cache.put(request, response.clone());
+      await putShellCacheResponse(cache, request, response.clone());
     }
     return response;
   } catch (error) {
     return matchShellCache(request, { ignoreSearch: true });
   }
+}
+
+async function putShellCacheResponse(cache, request, response) {
+  if (!cache || !response) return;
+
+  let url = null;
+  try {
+    const rawUrl = typeof request === 'string' ? request : request.url;
+    url = new URL(rawUrl, self.location.origin);
+  } catch (error) {}
+
+  if (url && url.origin === self.location.origin) {
+    const normalized = normalizeShellUrl(url.href);
+    if (normalized) {
+      try {
+        await cache.delete(normalized, { ignoreSearch: true });
+      } catch (error) {}
+      await cache.put(normalized, response.clone());
+      return;
+    }
+  }
+
+  await cache.put(request, response.clone());
 }
 
 async function matchShellCache(request, options) {

@@ -93,12 +93,13 @@
     }
 
     function setDefaultShiftTimeInputs() {
-      if (editingShiftId) return;
+      if (typeof editingShiftId !== 'undefined' && editingShiftId) return;
 
       var startDateEl = document.getElementById('inputStartDate');
       var startTimeEl = document.getElementById('inputStartTime');
       var endDateEl = document.getElementById('inputEndDate');
       var endTimeEl = document.getElementById('inputEndTime');
+      if (!startDateEl || !startTimeEl || !endDateEl || !endTimeEl) return;
 
       if (!startDateEl.value) {
         var now = new Date();
@@ -112,16 +113,17 @@
         syncEndFromStart();
       }
 
-      renderDraftShiftSummary();
+      if (typeof renderDraftShiftSummary === 'function') renderDraftShiftSummary();
     }
 
     function syncEndFromStart() {
-      if (editingShiftId) return;
+      if (typeof editingShiftId !== 'undefined' && editingShiftId) return;
 
       var startDateEl = document.getElementById('inputStartDate');
       var startTimeEl = document.getElementById('inputStartTime');
       var endDateEl = document.getElementById('inputEndDate');
       var endTimeEl = document.getElementById('inputEndTime');
+      if (!startDateEl || !startTimeEl || !endDateEl || !endTimeEl) return;
       var startDate = parseMsk(composeMskDateTime(startDateEl.value, startTimeEl.value));
       if (!startDate) return;
 
