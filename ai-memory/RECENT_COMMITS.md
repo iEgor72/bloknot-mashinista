@@ -1,9 +1,11 @@
 # Recent Commits
 
-Generated: 2026-06-21 13:53:01 +1000
+Generated: 2026-06-21 14:07:07 +1000
 
 | Hash | Date | Author | Message |
 | --- | --- | --- | --- |
+| `dbd02c8` | 2026-06-21T14:07:06+10:00 | iEgor72 | fix(notifications): migrate legacy bell announcements |
+| `2a84b00` | 2026-06-21T13:53:13+10:00 | iEgor72 | chore(memory): record pwa shell deploy |
 | `c26f784` | 2026-06-21T13:51:52+10:00 | iEgor72 | chore(memory): record post-commit memory update |
 | `17d9913` | 2026-06-21T13:51:27+10:00 | iEgor72 | chore(memory): record memory commit |
 | `695f9b3` | 2026-06-21T13:51:09+10:00 | iEgor72 | chore(memory): record pwa shell update fix |
@@ -42,5 +44,3 @@ Generated: 2026-06-21 13:53:01 +1000
 | `478e759` | 2026-06-08T14:53:59+10:00 | iEgor72 | feat: refresh public site and app updates |
 | `347f6ea` | 2026-06-07T23:58:58+10:00 | iEgor72 | fix(server): load env file on startup |
 | `2e15db1` | 2026-06-07T23:52:36+10:00 | iEgor72 | feat: add community links and launch posts |
-| `7f786ff` | 2026-06-07T21:10:20+10:00 | iEgor72 | fix(docs): refresh favorite/recent download badge on download completion |
-| `53a0f80` | 2026-06-07T21:00:09+10:00 | iEgor72 | fix(docs): recently-opened renders as real cards, opens, refreshes live |

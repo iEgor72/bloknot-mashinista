@@ -6595,3 +6595,12 @@ Append-only журнал действий ИИ-агентов по проект�
 - Branch: `main`
 - Methods: `Retired legacy announcement titles by normalized title`, `seeded new offline fixed announcement v2`, `bumped PWA shell to v378`, `made app-init/auth/app update-control no-store with fast network-first SW fallback`, `expanded local/prod smoke coverage`
 - Files: `scripts/app-init.js`, `sw.js`, `server.js`, `index.html`, `scripts/app-constants.js`, `sw-bootstrap-v378.js`, `scripts/local-smoke.mjs`, `scripts/prod-cache-smoke.mjs`
+
+## 2026-06-21 14:07:07 +1000
+
+- Source: `post-commit`
+- Task: fix(notifications): migrate legacy bell announcements
+- Branch: `main`
+- Methods: `git post-commit hook`, `automatic memory update`
+- Files: `ai-memory/CHANGELOG.md`, `ai-memory/sessions/2026-06-21.md`, `index.html`, `scripts/app-constants.js`, `scripts/app-init.js`, `scripts/local-smoke.mjs`, `scripts/prod-cache-smoke.mjs`, `server.js`, `sw-bootstrap-v378.js`, `sw.js`
+- Notes: Commit: `dbd02c8f49f09c927528550216b1c1cecebf1b89` (`dbd02c8`) | Author: `iEgor72`
