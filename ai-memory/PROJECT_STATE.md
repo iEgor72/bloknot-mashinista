@@ -1,14 +1,14 @@
 # Project State
 
 <!-- AUTO_STATUS:START -->
-Generated: 2026-06-21 12:14:45 +1000
+Generated: 2026-06-21 12:15:13 +1000
 
 ## Repository Snapshot
 - Local repo path: `D:\work\bloknot-mashinista-tg`
 - Project memory path: `D:\work\bloknot-mashinista-tg\ai-memory`
 - Branch: `main`
-- HEAD: `77fe712`
-- Last commit: `77fe712 chore(memory): record telegram offline deploy`
+- HEAD: `90a3f17`
+- Last commit: `90a3f17 fix: make offline shell cold-start cache-first`
 
 ## Git Remote
 ```text
@@ -20,7 +20,7 @@ origin	https://github.com/iEgor72/bloknot-mashinista.git (push)
 ```text
 codex/next-direction b044dd5 offline mvp
   codex/tabs-ui        117f1fa [origin/codex/tabs-ui] tabs ui
-* main                 77fe712 [origin/main] chore(memory): record telegram offline deploy
+* main                 90a3f17 [origin/main: ahead 1] fix: make offline shell cold-start cache-first
   poekhali-rework      2d5f0af chore(memory): refresh after main merge
 ```
 
@@ -28,15 +28,7 @@ codex/next-direction b044dd5 offline mvp
 ```text
 M ai-memory/CHANGELOG.md
  M ai-memory/sessions/2026-06-21.md
- M index.html
- M scripts/app-constants.js
- M scripts/app.js
- M scripts/auth.js
- M server.js
- M styles/50-design-refresh.css
- M sw.js
 ?? .codex/
-?? scripts/telegram-sdk-loader.js
 ```
 <!-- AUTO_STATUS:END -->
 
