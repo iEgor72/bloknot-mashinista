@@ -1,9 +1,11 @@
 # Recent Commits
 
-Generated: 2026-06-21 13:30:14 +1000
+Generated: 2026-06-21 13:50:54 +1000
 
 | Hash | Date | Author | Message |
 | --- | --- | --- | --- |
+| `360170e` | 2026-06-21T13:50:53+10:00 | iEgor72 | fix(pwa): make shell updates self-healing |
+| `72c7625` | 2026-06-21T13:30:30+10:00 | iEgor72 | chore(memory): record nonblocking fallback deploy |
 | `d6dfbea` | 2026-06-21T13:29:32+10:00 | iEgor72 | chore(memory): record nonblocking fallback fix |
 | `47904e2` | 2026-06-21T13:29:18+10:00 | iEgor72 | fix(pwa): make boot fallback nonblocking |
 | `1358823` | 2026-06-21T13:20:17+10:00 | iEgor72 | chore(memory): refresh final project state |
@@ -42,5 +44,3 @@ Generated: 2026-06-21 13:30:14 +1000
 | `6eb0dad` | 2026-06-07T20:52:22+10:00 | iEgor72 | fix(docs): recompute favorite download badge live (not from stale snapshot) |
 | `eadc828` | 2026-06-07T20:45:51+10:00 | iEgor72 | fix(docs): render favorites identically to section rows |
 | `9cc50ef` | 2026-06-07T20:38:50+10:00 | iEgor72 | fix(profile,docs): sync avatar across contexts + open favorited docs |
-| `d542765` | 2026-06-07T12:44:10+10:00 | iEgor72 | chore(diag): serve probe page from /assets (top-level files are whitelisted) |
-| `08752ec` | 2026-06-07T12:42:58+10:00 | iEgor72 | chore(diag): add /diag.html network probe page |

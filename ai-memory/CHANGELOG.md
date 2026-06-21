@@ -6552,3 +6552,12 @@ Append-only журнал действий ИИ-агентов по проект�
 - Branch: `main`
 - Methods: `Guarded app-init bootstrap fallback and time-utils defaults when core app globals are unavailable during partial cached shell startup`
 - Files: `scripts/app-init.js`, `scripts/time-utils.js`
+
+## 2026-06-21 13:50:53 +1000
+
+- Source: `post-commit`
+- Task: fix(pwa): make shell updates self-healing
+- Branch: `main`
+- Methods: `git post-commit hook`, `automatic memory update`
+- Files: `ai-memory/CHANGELOG.md`, `ai-memory/sessions/2026-06-21.md`, `index.html`, `scripts/app-constants.js`, `scripts/app-init.js`, `scripts/local-smoke.mjs`, `scripts/prod-cache-smoke.mjs`, `scripts/shift-form.js`, `scripts/sw-register.js`, `scripts/time-utils.js`, `server.js`, `sw-bootstrap-v377.js`, `sw.js`
+- Notes: Commit: `360170e933f9b75d6c59eb0c9ca93d3201217415` (`360170e`) | Author: `iEgor72`
