@@ -46,6 +46,7 @@
   };
   var ASSET_PATHS = {
     manifest: '/assets/tracker/maps-manifest.json',
+    sectionIndex: '/assets/tracker/sections/index.json',
     reference: '/assets/tracker/tch9-reference.json',
     speedDocs: '/assets/tracker/speed-docs.json',
     regimeMaps: '/assets/tracker/regime-maps.json',
@@ -304,6 +305,7 @@
     routeSegments: [],
     profilePoints: [],
     profileBySector: {},
+    profileGapsBySector: {},
     trackObjectsByFile: {},
     speedLimits: [],
     speedLimitsBySector: {},
@@ -337,6 +339,7 @@
     availableMaps: [DEFAULT_MAP],
     remoteMaps: [],
     currentMap: DEFAULT_MAP,
+    sectionBundleCache: {},
     mapProbeCache: {},
     mapReadinessCache: {},
     mapsReadinessChecking: false,
@@ -1092,8 +1095,8 @@
   }
 
   function getWayNumberFromObjectFileKey(fileKey) {
-    var match = String(fileKey || '').match(/[12]/);
-    return match ? normalizeWayNumber(match[0]) : 0;
+    var match = String(fileKey || '').trim().toLowerCase().match(/^([12])n?$/);
+    return match ? normalizeWayNumber(match[1]) : 0;
   }
 
   function getRouteObjectFileLabel(fileKey) {
@@ -1527,6 +1530,25 @@
       });
     }
     if (tracker.routeMapProbeCache[key]) return tracker.routeMapProbeCache[key];
+    if (normalized.sections.length) {
+      tracker.routeMapProbeCache[key] = loadSectionMapBundle(normalized)
+        .then(function(bundle) {
+          return {
+            map: normalized,
+            stations: collectRouteStationsFromStores(bundle.objectStores || []),
+            objectsLoaded: (bundle.objectStores || []).length
+          };
+        })
+        .catch(function(error) {
+          return {
+            map: normalized,
+            stations: [],
+            objectsLoaded: 0,
+            error: error && error.message ? error.message : 'JSON участка не прочитан'
+          };
+        });
+      return tracker.routeMapProbeCache[key];
+    }
     var entries = getObjectFileEntries(normalized);
     if (!entries.length) {
       tracker.routeMapProbeCache[key] = Promise.resolve({
@@ -1593,6 +1615,7 @@
     if (!ready.length) return null;
     ready.sort(function(a, b) {
       if (b.confidence !== a.confidence) return b.confidence - a.confidence;
+      if (isSectionMapConfig(a.map) !== isSectionMapConfig(b.map)) return isSectionMapConfig(a.map) ? -1 : 1;
       if (isCurrentMap(a.map) !== isCurrentMap(b.map)) return isCurrentMap(a.map) ? -1 : 1;
       return b.distance - a.distance;
     });
@@ -1633,7 +1656,7 @@
       return Promise.resolve(false);
     }
     var maps = tracker.availableMaps.filter(function(map) {
-      return getMapDownloadState(map) === 'ready';
+      return getMapDownloadState(map) === 'ready' && (isMapAutoSelectable(map) || isCurrentMap(map));
     });
     if (!maps.length) return Promise.resolve(false);
 
@@ -5789,18 +5812,120 @@
   }
 
   function normalizeMapConfig(item) {
-    if (!item || !item.data || !item.profile) return null;
+    if (!item) return null;
+    var sectionFiles = [];
+    if (Array.isArray(item.sections)) sectionFiles = item.sections.map(String).filter(Boolean);
+    else if (Array.isArray(item.section_files)) sectionFiles = item.section_files.map(String).filter(Boolean);
+    else if (item.section) sectionFiles = [String(item.section)];
+    else if (item.file && /\.json(?:$|\?)/i.test(String(item.file))) sectionFiles = [String(item.file)];
+    var hasLegacyFiles = !!(item.data && item.profile);
+    if (!sectionFiles.length && !hasLegacyFiles) return null;
     return {
-      id: String(item.id || item.title || item.data || 'map'),
+      id: String(item.id || item.title || item.data || sectionFiles[0] || 'map'),
       title: String(item.title || item.id || 'Карта ЭК'),
       sourceName: item.sourceName ? String(item.sourceName) : '',
-      data: String(item.data),
-      profile: String(item.profile),
+      data: item.data ? String(item.data) : '',
+      profile: item.profile ? String(item.profile) : '',
       speed: item.speed ? String(item.speed) : '',
-      files: Array.isArray(item.files) ? item.files.map(String) : [],
+      files: Array.isArray(item.files) ? item.files.map(String) : sectionFiles.slice(),
+      sections: sectionFiles,
+      routeFrom: item.routeFrom ? String(item.routeFrom) : (item.from ? String(item.from) : ''),
+      routeTo: item.routeTo ? String(item.routeTo) : (item.to ? String(item.to) : ''),
+      fromAliases: Array.isArray(item.fromAliases) ? item.fromAliases.map(String) : [],
+      toAliases: Array.isArray(item.toAliases) ? item.toAliases.map(String) : [],
+      direction: item.direction ? String(item.direction) : '',
+      railway: item.railway ? String(item.railway) : '',
+      bbox: Array.isArray(item.bbox) ? item.bbox.map(Number) : [],
       objects: item.objects && typeof item.objects === 'object' ? item.objects : null,
+      releaseStatus: String(item.releaseStatus || item.release_status || item.status || (sectionFiles.length ? 'draft' : 'verified')).toLowerCase(),
       downloaded: item.downloaded !== false
     };
+  }
+
+  function buildSectionMapConfigs(index) {
+    if (!index || typeof index !== 'object') return [];
+    var sections = Array.isArray(index.sections) ? index.sections : [];
+    var sectionPathsById = {};
+    var sectionStatusByPath = {};
+    var indexBase = ASSET_PATHS.sectionIndex.replace(/[^/]+$/, '');
+    function resolveSectionPath(value) {
+      var path = String(value || '');
+      if (!path) return '';
+      return path.charAt(0) === '/' ? path : indexBase + path.replace(/^\.\//, '');
+    }
+    for (var i = 0; i < sections.length; i++) {
+      var section = sections[i] || {};
+      var sectionId = String(section.id || '');
+      var sectionPath = resolveSectionPath(section.file || section.path);
+      if (sectionId && sectionPath) sectionPathsById[sectionId] = sectionPath;
+      if (sectionPath) sectionStatusByPath[sectionPath] = String(section.status || 'draft').toLowerCase();
+    }
+
+    var routes = Array.isArray(index.routes) && index.routes.length ? index.routes : sections;
+    var result = [];
+    function resolveFiles(routePart) {
+      var files = [];
+      var directFiles = routePart.section_files || routePart.sectionFiles || routePart.sections;
+      if (Array.isArray(directFiles)) {
+        for (var fileIndex = 0; fileIndex < directFiles.length; fileIndex++) {
+          var directValue = String(directFiles[fileIndex] || '');
+          var resolved = sectionPathsById[directValue] || resolveSectionPath(directValue);
+          if (resolved && files.indexOf(resolved) === -1) files.push(resolved);
+        }
+      }
+      var sectionIds = routePart.section_ids || routePart.sectionIds;
+      if (Array.isArray(sectionIds)) {
+        for (var idIndex = 0; idIndex < sectionIds.length; idIndex++) {
+          var path = sectionPathsById[String(sectionIds[idIndex] || '')];
+          if (path && files.indexOf(path) === -1) files.push(path);
+        }
+      }
+      if (!files.length) {
+        var ownPath = resolveSectionPath(routePart.file || routePart.path);
+        if (ownPath) files.push(ownPath);
+      }
+      return files;
+    }
+    for (var routeIndex = 0; routeIndex < routes.length; routeIndex++) {
+      var route = routes[routeIndex] || {};
+      var variants = Array.isArray(route.variants) && route.variants.length ? route.variants : [route];
+      var defaultVariant = String(route.default_variant || route.defaultVariant || (variants[0] && variants[0].id) || 'main');
+      for (var variantIndex = 0; variantIndex < variants.length; variantIndex++) {
+        var variant = variants[variantIndex] || {};
+        var files = resolveFiles(variant === route ? route : variant);
+        var variantId = String(variant.id || defaultVariant || ('variant-' + (variantIndex + 1)));
+        var hasMultipleVariants = variants.length > 1;
+        var routeTitle = route.title || route.section_name || route.name || route.id;
+        var variantTitle = variant.name || variant.title || variantId;
+        var fileStatuses = files.map(function(file) {
+          return sectionStatusByPath[file] || 'draft';
+        });
+        var releaseStatus = String(variant.status || route.status || '').toLowerCase();
+        if (!releaseStatus) {
+          releaseStatus = fileStatuses.length && fileStatuses.every(function(status) {
+            return status === 'verified';
+          }) ? 'verified' : 'draft';
+        }
+        var normalized = normalizeMapConfig({
+          id: String(route.id || routeTitle || 'section-route') + (hasMultipleVariants ? '--' + variantId : ''),
+          title: String(routeTitle || 'JSON маршрут') + (hasMultipleVariants ? ' · ' + variantTitle : ''),
+          sourceName: route.sourceName || route.source_name || 'JSON режимной карты',
+          sections: files,
+          files: files,
+          routeFrom: route.routeFrom || route.from,
+          routeTo: route.routeTo || route.to,
+          fromAliases: route.fromAliases || route.from_aliases,
+          toAliases: route.toAliases || route.to_aliases,
+          direction: variant.direction || route.direction,
+          railway: route.railway || (index.railway && (index.railway.name || index.railway.id)),
+          bbox: variant.bbox || route.bbox,
+          releaseStatus: releaseStatus,
+          downloaded: route.downloaded !== false && variant.downloaded !== false
+        });
+        if (normalized) result.push(normalized);
+      }
+    }
+    return result;
   }
 
   function setCurrentMap(map) {
@@ -5813,6 +5938,14 @@
     return String(map && map.id ? map.id : (map && map.data ? map.data : 'map'));
   }
 
+  function isSectionMapConfig(map) {
+    return !!(map && Array.isArray(map.sections) && map.sections.length);
+  }
+
+  function isMapAutoSelectable(map) {
+    return !isSectionMapConfig(map) || String(map.releaseStatus || '').toLowerCase() === 'verified';
+  }
+
   function isCurrentMap(map) {
     return !!(map && tracker.currentMap && getMapKey(map) === getMapKey(tracker.currentMap));
   }
@@ -5820,7 +5953,7 @@
   function getMapDownloadState(map) {
     if (!map) return 'missing';
     if (map.downloaded === false) return 'remote';
-    if (!map.data || !map.profile) return 'broken';
+    if (!(map.sections && map.sections.length) && (!map.data || !map.profile)) return 'broken';
     return 'ready';
   }
 
@@ -5921,6 +6054,25 @@
       });
     }
     if (tracker.mapProbeCache[key]) return tracker.mapProbeCache[key];
+    if (normalized.sections.length) {
+      tracker.mapProbeCache[key] = loadSectionMapBundle(normalized)
+        .then(function(bundle) {
+          return {
+            map: normalized,
+            points: bundle.mapData.points || [],
+            segments: bundle.mapData.segments || []
+          };
+        })
+        .catch(function(error) {
+          return {
+            map: normalized,
+            points: [],
+            segments: [],
+            error: error && error.message ? error.message : 'JSON участка не прочитан'
+          };
+        });
+      return tracker.mapProbeCache[key];
+    }
     tracker.mapProbeCache[key] = fetchText(normalized.data)
       .then(function(text) {
         var parsed = parseMapXml(text);
@@ -5961,20 +6113,51 @@
   function loadManifest() {
     if (tracker.manifestPromise) return tracker.manifestPromise;
 
-    tracker.manifestPromise = fetchText(ASSET_PATHS.manifest)
-      .then(function(text) {
-        var manifest = JSON.parse(text);
-        var maps = Array.isArray(manifest.maps) ? manifest.maps.map(normalizeMapConfig).filter(Boolean) : [];
-        tracker.mapManifestGeneratedAt = manifest && manifest.generatedAt ? String(manifest.generatedAt) : '';
+    tracker.manifestPromise = Promise.all([
+      fetchText(ASSET_PATHS.manifest).catch(function() { return ''; }),
+      fetchText(ASSET_PATHS.sectionIndex).catch(function() { return ''; })
+    ])
+      .then(function(texts) {
+        var manifest = { maps: [], remote: [] };
+        if (texts[0]) {
+          try {
+            manifest = JSON.parse(texts[0]);
+          } catch (error) {
+            manifest = { maps: [], remote: [] };
+          }
+        }
+        var sectionIndex = null;
+        if (texts[1]) {
+          try {
+            sectionIndex = JSON.parse(texts[1]);
+          } catch (error) {
+            sectionIndex = null;
+          }
+        }
+        var legacyMaps = Array.isArray(manifest.maps) ? manifest.maps.map(normalizeMapConfig).filter(Boolean) : [];
+        var sectionMaps = buildSectionMapConfigs(sectionIndex);
+        var maps = sectionMaps.concat(legacyMaps);
+        if (!maps.length) throw new Error('Каталог участков пуст');
+        tracker.mapManifestGeneratedAt = sectionIndex && (sectionIndex.generated_at || sectionIndex.generatedAt)
+          ? String(sectionIndex.generated_at || sectionIndex.generatedAt)
+          : (manifest && manifest.generatedAt ? String(manifest.generatedAt) : '');
         tracker.remoteMaps = Array.isArray(manifest.remote) ? manifest.remote : [];
         tracker.availableMaps = maps.length ? maps : [DEFAULT_MAP];
+        var autoSectionMaps = sectionMaps.filter(isMapAutoSelectable);
         var storedId = '';
         try {
           storedId = localStorage.getItem(MAP_STORAGE_KEY) || '';
         } catch (error) {}
-        var selected = tracker.availableMaps.find(function(item) {
+        var migrateLegacyMap = autoSectionMaps.length && (storedId === DEFAULT_MAP.id || storedId === 'apk-embedded');
+        var selected = !migrateLegacyMap && tracker.availableMaps.find(function(item) {
           return item.id === storedId;
-        }) || tracker.availableMaps[0] || DEFAULT_MAP;
+        }) || legacyMaps[0] || autoSectionMaps[0] || tracker.availableMaps[0] || DEFAULT_MAP;
+        if (migrateLegacyMap) {
+          selected = autoSectionMaps[0];
+          try {
+            localStorage.setItem(MAP_STORAGE_KEY, selected.id);
+          } catch (error) {}
+        }
         setCurrentMap(selected);
         return selected;
       })
@@ -5996,6 +6179,7 @@
     tracker.routeSegments = [];
     tracker.profilePoints = [];
     tracker.profileBySector = {};
+    tracker.profileGapsBySector = {};
     tracker.trackObjectsByFile = {};
     tracker.speedLimits = [];
     tracker.speedLimitsBySector = {};
@@ -6205,7 +6389,9 @@
         title.textContent = map.title || ('Карта ' + (index + 1));
         var source = document.createElement('span');
         var readiness = getCachedDownloadedMapReadiness(map);
+        var isDraftMap = isSectionMapConfig(map) && !isMapAutoSelectable(map);
         source.textContent = (map.sourceName || 'локальная карта') +
+          (isDraftMap ? ' · черновик' : '') +
           (readiness && readiness.sectors ? ' · готово ' + readiness.ready + '/' + readiness.sectors : '');
         text.appendChild(title);
         text.appendChild(source);
@@ -6225,7 +6411,9 @@
                 ? 'Проверить'
                 : readiness && readiness.state === 'review'
                   ? 'Нужно сверить'
-                  : 'Выбрать';
+                  : isDraftMap
+                    ? 'Тест'
+                    : 'Выбрать';
 
         row.appendChild(text);
         row.appendChild(status);
@@ -8466,6 +8654,574 @@
     };
   }
 
+  function getSectionCoordinateOffset(section) {
+    var runtime = section && section.runtime && typeof section.runtime === 'object' ? section.runtime : {};
+    var candidates = [
+      runtime.coordinate_offset_m,
+      runtime.coordinateOffsetM,
+      section && section.coordinate_offset_m,
+      section && section.coordinateOffsetM
+    ];
+    for (var i = 0; i < candidates.length; i++) {
+      var value = Number(candidates[i]);
+      if (isFinite(value)) return value;
+    }
+    return 0;
+  }
+
+  function getSectionGeometryPaths(section) {
+    var runtime = section && section.runtime && typeof section.runtime === 'object' ? section.runtime : {};
+    var geometry = section && section.geometry && typeof section.geometry === 'object'
+      ? section.geometry
+      : (runtime.geometry && typeof runtime.geometry === 'object' ? runtime.geometry : {});
+    if (Array.isArray(geometry.paths)) return geometry.paths;
+    if (Array.isArray(geometry.points)) {
+      return [{ id: geometry.id || 'main', points: geometry.points }];
+    }
+    if (Array.isArray(runtime.geometry_points)) {
+      return [{ id: 'main', points: runtime.geometry_points }];
+    }
+    return [];
+  }
+
+  function getSectionPointCoordinate(point, offset) {
+    if (!point || typeof point !== 'object') return NaN;
+    var chainage = Number(point.chainage_m !== undefined ? point.chainage_m : point.chainageM);
+    if (isFinite(chainage)) return Math.round(chainage + offset);
+    var km = Number(point.km);
+    if (isFinite(km)) return Math.round(km * 1000 + offset);
+    var ordinate = Number(point.ordinate);
+    return isFinite(ordinate) ? Math.round(ordinate) : NaN;
+  }
+
+  function buildSectionRouteData(section) {
+    var offset = getSectionCoordinateOffset(section);
+    var paths = getSectionGeometryPaths(section);
+    var sectionId = String(section && (section.id || section.section_name) || 'section');
+    var points = [];
+    for (var pathIndex = 0; pathIndex < paths.length; pathIndex++) {
+      var path = paths[pathIndex] || {};
+      var rawPathId = String(path.id || path.path_id || ('path-' + (pathIndex + 1)));
+      var pathId = sectionId + ':' + rawPathId;
+      var sourcePoints = Array.isArray(path.points) ? path.points : [];
+      for (var pointIndex = 0; pointIndex < sourcePoints.length; pointIndex++) {
+        var sourcePoint = sourcePoints[pointIndex] || {};
+        var lat = Number(sourcePoint.lat !== undefined ? sourcePoint.lat : sourcePoint.latitude);
+        var lon = Number(sourcePoint.lon !== undefined ? sourcePoint.lon : sourcePoint.longitude);
+        var ordinate = getSectionPointCoordinate(sourcePoint, offset);
+        var sector = Number(sourcePoint.sector !== undefined ? sourcePoint.sector : path.sector);
+        if (!isFinite(lat) || !isFinite(lon) || !isFinite(ordinate) || !isFinite(sector)) continue;
+        points.push({
+          lat: lat,
+          lon: lon,
+          ordinate: ordinate,
+          sector: sector,
+          pathId: pathId,
+          position: points.length
+        });
+      }
+    }
+
+    var groups = {};
+    for (var groupIndex = 0; groupIndex < points.length; groupIndex++) {
+      var point = points[groupIndex];
+      var groupKey = point.pathId + ':' + point.sector;
+      if (!groups[groupKey]) groups[groupKey] = [];
+      groups[groupKey].push(point);
+    }
+
+    var unique = [];
+    var segments = [];
+    Object.keys(groups).forEach(function(groupKey) {
+      var group = groups[groupKey].sort(function(a, b) {
+        return a.ordinate - b.ordinate;
+      });
+      var deduped = [];
+      var seen = {};
+      for (var i = 0; i < group.length; i++) {
+        var pointKey = group[i].ordinate + ':' + group[i].lat.toFixed(7) + ':' + group[i].lon.toFixed(7);
+        if (seen[pointKey]) continue;
+        seen[pointKey] = true;
+        deduped.push(group[i]);
+        unique.push(group[i]);
+      }
+      for (var segmentIndex = 0; segmentIndex < deduped.length - 1; segmentIndex++) {
+        var a = deduped[segmentIndex];
+        var b = deduped[segmentIndex + 1];
+        var ordinateGap = Math.abs(b.ordinate - a.ordinate);
+        var geoDistance = haversine(a.lat, a.lon, b.lat, b.lon);
+        if (ordinateGap <= 0 || ordinateGap > MAX_SEGMENT_ORDINATE_GAP_M || geoDistance > 2200) continue;
+        segments.push({
+          start: a,
+          end: b,
+          sector: a.sector,
+          pathId: a.pathId,
+          length: geoDistance,
+          ordinateGap: ordinateGap
+        });
+      }
+    });
+    unique.sort(function(a, b) {
+      if (a.sector !== b.sector) return a.sector - b.sector;
+      return a.ordinate - b.ordinate;
+    });
+    if (unique.length < 2 || !segments.length) throw new Error('JSON участка не содержит рабочей GPS-линии');
+    return {
+      points: unique,
+      segments: segments
+    };
+  }
+
+  function getSectionRouteRanges(mapData) {
+    var ranges = {};
+    var points = mapData && Array.isArray(mapData.points) ? mapData.points : [];
+    for (var i = 0; i < points.length; i++) {
+      var key = getSectorKey(points[i].sector);
+      if (!ranges[key]) {
+        ranges[key] = { sector: points[i].sector, min: points[i].ordinate, max: points[i].ordinate };
+      } else {
+        ranges[key].min = Math.min(ranges[key].min, points[i].ordinate);
+        ranges[key].max = Math.max(ranges[key].max, points[i].ordinate);
+      }
+    }
+    return ranges;
+  }
+
+  function findSectionSectorForCoordinate(mapData, coordinate) {
+    var ranges = getSectionRouteRanges(mapData);
+    var keys = Object.keys(ranges);
+    var best = null;
+    for (var i = 0; i < keys.length; i++) {
+      var range = ranges[keys[i]];
+      var distance = coordinate < range.min
+        ? range.min - coordinate
+        : (coordinate > range.max ? coordinate - range.max : 0);
+      if (!best || distance < best.distance) best = { sector: range.sector, distance: distance };
+    }
+    return best ? best.sector : NaN;
+  }
+
+  function findSectionSectorsForCoordinate(mapData, coordinate) {
+    var ranges = getSectionRouteRanges(mapData);
+    var result = [];
+    Object.keys(ranges).forEach(function(key) {
+      var range = ranges[key];
+      if (coordinate >= range.min && coordinate <= range.max) result.push(range.sector);
+    });
+    if (!result.length) {
+      var nearest = findSectionSectorForCoordinate(mapData, coordinate);
+      if (isFinite(nearest)) result.push(nearest);
+    }
+    return result;
+  }
+
+  function buildSectionProfile(section, mapData) {
+    var offset = getSectionCoordinateOffset(section);
+    var elements = section && Array.isArray(section.elements) ? section.elements : [];
+    var ranges = getSectionRouteRanges(mapData);
+    var rangeKeys = Object.keys(ranges);
+    var all = [];
+    var bySector = {};
+
+    function appendPoint(sector, start, end, grade, element) {
+      if (!isFinite(sector) || !isFinite(start) || !isFinite(end) || end <= start || !isFinite(grade)) return;
+      var point = {
+        start: Math.round(start),
+        end: Math.round(end),
+        length: Math.round(end - start),
+        grade: grade,
+        sector: sector,
+        confidence: element.confidence ? String(element.confidence) : '',
+        sourcePage: element.source_page !== undefined ? element.source_page : element.page,
+        source: 'section-json'
+      };
+      all.push(point);
+      var key = getSectorKey(sector);
+      if (!bySector[key]) bySector[key] = [];
+      bySector[key].push(point);
+    }
+
+    for (var elementIndex = 0; elementIndex < elements.length; elementIndex++) {
+      var element = elements[elementIndex] || {};
+      var officialStart = Number(element.start_m !== undefined ? element.start_m : element.startM);
+      var length = Number(element.len_m !== undefined ? element.len_m : element.length_m);
+      var grade = Number(element.grad_permille !== undefined ? element.grad_permille : element.grade);
+      if (!isFinite(officialStart) || !isFinite(length) || length <= 0 || !isFinite(grade)) continue;
+      var start = officialStart + offset;
+      var end = start + length;
+      var explicitSectors = [];
+      if (Array.isArray(element.sectors)) explicitSectors = element.sectors.map(Number).filter(isFinite);
+      else if (isFinite(Number(element.sector))) explicitSectors = [Number(element.sector)];
+      if (explicitSectors.length) {
+        for (var explicitIndex = 0; explicitIndex < explicitSectors.length; explicitIndex++) {
+          appendPoint(explicitSectors[explicitIndex], start, end, grade, element);
+        }
+        continue;
+      }
+
+      var intersections = [];
+      for (var rangeIndex = 0; rangeIndex < rangeKeys.length; rangeIndex++) {
+        var range = ranges[rangeKeys[rangeIndex]];
+        var partStart = Math.max(start, range.min);
+        var partEnd = Math.min(end, range.max);
+        if (partEnd > partStart) intersections.push({ sector: range.sector, start: partStart, end: partEnd });
+      }
+      if (!intersections.length) {
+        appendPoint(findSectionSectorForCoordinate(mapData, (start + end) / 2), start, end, grade, element);
+      } else if (intersections.length === 1) {
+        appendPoint(intersections[0].sector, start, end, grade, element);
+      } else {
+        for (var partIndex = 0; partIndex < intersections.length; partIndex++) {
+          appendPoint(intersections[partIndex].sector, intersections[partIndex].start, intersections[partIndex].end, grade, element);
+        }
+      }
+    }
+
+    Object.keys(bySector).forEach(function(sectorKey) {
+      indexProfileElevations(bySector[sectorKey]);
+    });
+    all.sort(function(a, b) {
+      if (a.sector !== b.sector) return a.sector - b.sector;
+      return a.start - b.start;
+    });
+    return { all: all, bySector: bySector };
+  }
+
+  function buildSectionProfileGaps(section, mapData) {
+    var runtime = section && section.runtime && typeof section.runtime === 'object' ? section.runtime : {};
+    var source = Array.isArray(runtime.profile_gaps) ? runtime.profile_gaps : [];
+    var offset = getSectionCoordinateOffset(section);
+    var ranges = getSectionRouteRanges(mapData);
+    var rangeKeys = Object.keys(ranges);
+    var bySector = {};
+    function appendGap(sector, start, end, gap) {
+      if (!isFinite(sector) || !isFinite(start) || !isFinite(end) || end <= start) return;
+      var key = getSectorKey(sector);
+      if (!bySector[key]) bySector[key] = [];
+      bySector[key].push({
+        sector: sector,
+        start: Math.round(start),
+        end: Math.round(end),
+        length: Math.round(end - start),
+        reason: String(gap.reason || 'профиль требует проверки'),
+        source: 'section-json'
+      });
+    }
+    for (var gapIndex = 0; gapIndex < source.length; gapIndex++) {
+      var gap = source[gapIndex] || {};
+      var officialStart = Number(gap.start_m !== undefined ? gap.start_m : gap.startM);
+      var officialEnd = Number(gap.end_m !== undefined ? gap.end_m : gap.endM);
+      if (!isFinite(officialStart) || !isFinite(officialEnd) || officialEnd <= officialStart) continue;
+      var start = officialStart + offset;
+      var end = officialEnd + offset;
+      if (isFinite(Number(gap.sector))) {
+        appendGap(Number(gap.sector), start, end, gap);
+        continue;
+      }
+      var matched = false;
+      for (var rangeIndex = 0; rangeIndex < rangeKeys.length; rangeIndex++) {
+        var range = ranges[rangeKeys[rangeIndex]];
+        var partStart = Math.max(start, range.min);
+        var partEnd = Math.min(end, range.max);
+        if (partEnd <= partStart) continue;
+        appendGap(range.sector, partStart, partEnd, gap);
+        matched = true;
+      }
+      if (!matched) appendGap(findSectionSectorForCoordinate(mapData, (start + end) / 2), start, end, gap);
+    }
+    Object.keys(bySector).forEach(function(sectorKey) {
+      bySector[sectorKey].sort(function(a, b) { return a.start - b.start; });
+    });
+    return bySector;
+  }
+
+  function getSectionObjectCoordinate(item, offset) {
+    if (!item || typeof item !== 'object') return NaN;
+    var chainage = Number(item.chainage_m !== undefined ? item.chainage_m : item.coordinate_m);
+    if (isFinite(chainage)) return Math.round(chainage + offset);
+    var km = Number(item.km);
+    if (isFinite(km)) return Math.round(km * 1000 + offset);
+    var coordinate = Number(item.coordinate);
+    return isFinite(coordinate) ? Math.round(coordinate) : NaN;
+  }
+
+  function buildSectionObjectStore(section, mapData, fileKey) {
+    var offset = getSectionCoordinateOffset(section);
+    var sources = [
+      { type: '2', items: section && Array.isArray(section.stations) ? section.stations : [] },
+      { type: '1', items: section && Array.isArray(section.signals) ? section.signals : [] },
+      { type: '4', items: section && Array.isArray(section.whistle_points) ? section.whistle_points : [] }
+    ];
+    var all = [];
+    var bySector = {};
+    for (var sourceIndex = 0; sourceIndex < sources.length; sourceIndex++) {
+      var source = sources[sourceIndex];
+      for (var itemIndex = 0; itemIndex < source.items.length; itemIndex++) {
+        var item = source.items[itemIndex] || {};
+        var coordinate = getSectionObjectCoordinate(item, offset);
+        var name = String(item.name || item.note || '').trim();
+        if (!isFinite(coordinate) || !name) continue;
+        var sectors = isFinite(Number(item.sector))
+          ? [Number(item.sector)]
+          : findSectionSectorsForCoordinate(mapData, coordinate);
+        var length = Math.max(0, Math.round(Number(item.length_m || item.len_m || 0)));
+        for (var sectorIndex = 0; sectorIndex < sectors.length; sectorIndex++) {
+          var sector = sectors[sectorIndex];
+          if (!isFinite(sector)) continue;
+          var object = {
+            fileKey: fileKey,
+            sector: sector,
+            type: source.type,
+            name: name,
+            coordinate: coordinate,
+            length: length,
+            end: coordinate + length,
+            speed: null,
+            confidence: item.confidence ? String(item.confidence) : '',
+            signalType: item.type ? String(item.type) : '',
+            source: 'section-json'
+          };
+          all.push(object);
+          var key = getSectorKey(sector);
+          if (!bySector[key]) bySector[key] = [];
+          bySector[key].push(object);
+        }
+      }
+    }
+    Object.keys(bySector).forEach(function(sectorKey) {
+      bySector[sectorKey].sort(function(a, b) { return a.coordinate - b.coordinate; });
+    });
+    all.sort(function(a, b) {
+      if (a.sector !== b.sector) return a.sector - b.sector;
+      return a.coordinate - b.coordinate;
+    });
+    return {
+      all: all,
+      bySector: bySector,
+      directionEven: null,
+      directionStats: { evenSignals: 0, oddSignals: 0 }
+    };
+  }
+
+  function parseSectionPackage(text, fileKey) {
+    var section = typeof text === 'string' ? JSON.parse(text) : text;
+    if (!section || typeof section !== 'object') throw new Error('Пустой JSON участка');
+    var schemaVersion = String(section.schema_version || section.schemaVersion || '');
+    if (!/^1(?:\.|$)/.test(schemaVersion)) throw new Error('Неподдерживаемая версия JSON участка: ' + (schemaVersion || 'не указана'));
+    var mapData = buildSectionRouteData(section);
+    var profile = buildSectionProfile(section, mapData);
+    if (!profile.all.length) throw new Error('JSON участка не содержит профиль пути');
+    profile.gapsBySector = buildSectionProfileGaps(section, mapData);
+    var store = buildSectionObjectStore(section, mapData, fileKey || String(section.id || 'section'));
+    return {
+      section: section,
+      mapData: mapData,
+      profile: profile,
+      speed: { all: [], bySector: {} },
+      objectStores: [store]
+    };
+  }
+
+  function mergeSectionMapBundles(parts) {
+    var points = [];
+    var segments = [];
+    var profileAll = [];
+    var profileBySector = {};
+    var profileGapsBySector = {};
+    var objectStores = [];
+    var pointSeen = {};
+    var segmentSeen = {};
+    var profileSeen = {};
+    for (var partIndex = 0; partIndex < parts.length; partIndex++) {
+      var part = parts[partIndex];
+      var partPoints = part.mapData.points || [];
+      for (var pointIndex = 0; pointIndex < partPoints.length; pointIndex++) {
+        var point = partPoints[pointIndex];
+        var pointKey = [point.pathId, point.sector, point.ordinate, point.lat.toFixed(7), point.lon.toFixed(7)].join(':');
+        if (pointSeen[pointKey]) continue;
+        pointSeen[pointKey] = true;
+        points.push(point);
+      }
+      var partSegments = part.mapData.segments || [];
+      for (var segmentIndex = 0; segmentIndex < partSegments.length; segmentIndex++) {
+        var segment = partSegments[segmentIndex];
+        var segmentKey = [segment.pathId, segment.sector, segment.start.ordinate, segment.end.ordinate].join(':');
+        if (segmentSeen[segmentKey]) continue;
+        segmentSeen[segmentKey] = true;
+        segments.push(segment);
+      }
+      var partProfile = part.profile.all || [];
+      for (var profileIndex = 0; profileIndex < partProfile.length; profileIndex++) {
+        var profilePoint = partProfile[profileIndex];
+        var profileKey = [profilePoint.sector, profilePoint.start, profilePoint.end, profilePoint.grade].join(':');
+        if (profileSeen[profileKey]) continue;
+        profileSeen[profileKey] = true;
+        profileAll.push(profilePoint);
+        var sectorKey = getSectorKey(profilePoint.sector);
+        if (!profileBySector[sectorKey]) profileBySector[sectorKey] = [];
+        profileBySector[sectorKey].push(profilePoint);
+      }
+      var partGaps = part.profile.gapsBySector || {};
+      Object.keys(partGaps).forEach(function(gapSectorKey) {
+        if (!profileGapsBySector[gapSectorKey]) profileGapsBySector[gapSectorKey] = [];
+        profileGapsBySector[gapSectorKey] = profileGapsBySector[gapSectorKey].concat(partGaps[gapSectorKey] || []);
+      });
+      objectStores = objectStores.concat(part.objectStores || []);
+    }
+    points.sort(function(a, b) {
+      if (a.sector !== b.sector) return a.sector - b.sector;
+      return a.ordinate - b.ordinate;
+    });
+    profileAll = [];
+    Object.keys(profileBySector).forEach(function(sectorKey) {
+      var source = profileBySector[sectorKey].sort(function(a, b) { return a.start - b.start; });
+      var normalized = [];
+      for (var profileIndex = 0; profileIndex < source.length; profileIndex++) {
+        var current = source[profileIndex];
+        var previous = normalized.length ? normalized[normalized.length - 1] : null;
+        if (previous && current.start < previous.end) {
+          if (Math.abs(Number(previous.grade) - Number(current.grade)) > 0.0001) {
+            throw new Error(
+              'Конфликт профиля в секторе ' + sectorKey + ': ' +
+              Math.round(current.start) + '–' + Math.round(Math.min(previous.end, current.end)) + ' м'
+            );
+          }
+          previous.end = Math.max(previous.end, current.end);
+          previous.length = previous.end - previous.start;
+          continue;
+        }
+        normalized.push(current);
+      }
+      profileBySector[sectorKey] = indexProfileElevations(normalized);
+      profileAll = profileAll.concat(profileBySector[sectorKey]);
+    });
+    profileAll.sort(function(a, b) {
+      if (a.sector !== b.sector) return a.sector - b.sector;
+      return a.start - b.start;
+    });
+    Object.keys(profileGapsBySector).forEach(function(sectorKey) {
+      var source = profileGapsBySector[sectorKey].sort(function(a, b) { return a.start - b.start; });
+      var merged = [];
+      for (var gapIndex = 0; gapIndex < source.length; gapIndex++) {
+        var gap = source[gapIndex];
+        var previous = merged.length ? merged[merged.length - 1] : null;
+        if (previous && gap.start <= previous.end) {
+          previous.end = Math.max(previous.end, gap.end);
+          previous.length = previous.end - previous.start;
+          if (previous.reason.indexOf(gap.reason) === -1) previous.reason += '; ' + gap.reason;
+        } else {
+          merged.push(gap);
+        }
+      }
+      profileGapsBySector[sectorKey] = merged;
+    });
+    var mergedObjects = [];
+    var mergedObjectsBySector = {};
+    var objectSeen = {};
+    for (var storeIndex = 0; storeIndex < objectStores.length; storeIndex++) {
+      var storeObjects = objectStores[storeIndex] && Array.isArray(objectStores[storeIndex].all)
+        ? objectStores[storeIndex].all
+        : [];
+      for (var objectIndex = 0; objectIndex < storeObjects.length; objectIndex++) {
+        var object = storeObjects[objectIndex];
+        var objectKey = [object.type, normalizeRouteName(object.name), object.sector, object.coordinate].join(':');
+        if (objectSeen[objectKey]) continue;
+        objectSeen[objectKey] = true;
+        object.fileKey = 'section-json';
+        mergedObjects.push(object);
+        var objectSectorKey = getSectorKey(object.sector);
+        if (!mergedObjectsBySector[objectSectorKey]) mergedObjectsBySector[objectSectorKey] = [];
+        mergedObjectsBySector[objectSectorKey].push(object);
+      }
+    }
+    mergedObjects.sort(function(a, b) {
+      if (a.sector !== b.sector) return a.sector - b.sector;
+      return a.coordinate - b.coordinate;
+    });
+    Object.keys(mergedObjectsBySector).forEach(function(sectorKey) {
+      mergedObjectsBySector[sectorKey].sort(function(a, b) { return a.coordinate - b.coordinate; });
+    });
+    var mergedObjectStore = {
+      all: mergedObjects,
+      bySector: mergedObjectsBySector,
+      directionEven: null,
+      directionStats: { evenSignals: 0, oddSignals: 0 }
+    };
+    return {
+      mapData: { points: points, segments: segments },
+      profile: { all: profileAll, bySector: profileBySector, gapsBySector: profileGapsBySector },
+      speed: { all: [], bySector: {} },
+      objectStores: [mergedObjectStore],
+      objectKeys: ['section-json'],
+      sections: parts.map(function(part) { return part.section; })
+    };
+  }
+
+  function loadSectionMapBundle(map) {
+    var normalized = normalizeMapConfig(map);
+    if (!normalized || !normalized.sections.length) return Promise.reject(new Error('JSON участки не указаны'));
+    var key = getMapKey(normalized);
+    if (tracker.sectionBundleCache[key]) return tracker.sectionBundleCache[key];
+    tracker.sectionBundleCache[key] = Promise.all(normalized.sections.map(function(path, index) {
+      return fetchText(path).then(function(text) {
+        return parseSectionPackage(text, 'section-' + (index + 1));
+      });
+    })).then(mergeSectionMapBundles).catch(function(error) {
+      delete tracker.sectionBundleCache[key];
+      throw error;
+    });
+    return tracker.sectionBundleCache[key];
+  }
+
+  function loadLegacyMapBundle(map) {
+    var objectEntries = getObjectFileEntries(map);
+    var speedPath = getSpeedFilePath(map);
+    return Promise.all([
+      fetchText(map.data),
+      fetchText(map.profile),
+      Promise.all(objectEntries.map(function(entry) {
+        return fetchText(entry.path).then(function(text) {
+          return { key: entry.key, text: text };
+        });
+      })),
+      speedPath ? fetchText(speedPath).catch(function() { return ''; }) : Promise.resolve('')
+    ]).then(function(texts) {
+      var stores = [];
+      for (var i = 0; i < texts[2].length; i++) {
+        stores.push(parseTrackObjectsXml(texts[2][i].text, texts[2][i].key));
+      }
+      return {
+        mapData: parseMapXml(texts[0]),
+        profile: parseProfileXml(texts[1]),
+        speed: parseSpeedXml(texts[3]),
+        objectStores: stores,
+        objectKeys: texts[2].map(function(item) { return item.key; })
+      };
+    });
+  }
+
+  function loadRuntimeMapBundle(map) {
+    return map && map.sections && map.sections.length
+      ? loadSectionMapBundle(map)
+      : loadLegacyMapBundle(map);
+  }
+
+  function applyRuntimeMapBundle(bundle) {
+    tracker.routePoints = bundle.mapData.points || [];
+    tracker.routeSegments = bundle.mapData.segments || [];
+    tracker.profilePoints = bundle.profile.all || [];
+    tracker.profileBySector = bundle.profile.bySector || {};
+    tracker.profileGapsBySector = bundle.profile.gapsBySector || {};
+    tracker.trackObjectsByFile = {};
+    var stores = bundle.objectStores || [];
+    var keys = bundle.objectKeys || [];
+    for (var i = 0; i < stores.length; i++) {
+      tracker.trackObjectsByFile[keys[i] || ('section-' + (i + 1))] = stores[i];
+    }
+    tracker.speedLimits = bundle.speed.all || [];
+    tracker.speedLimitsBySector = bundle.speed.bySector || {};
+  }
+
   function loadAssets() {
     if (tracker.assetPromise && tracker.assetMapId === tracker.currentMap.id) return tracker.assetPromise;
 
@@ -8476,36 +9232,9 @@
     tracker.assetPromise = loadManifest().then(function(mapConfig) {
       var map = tracker.currentMap || mapConfig || DEFAULT_MAP;
       tracker.assetMapId = map.id;
-      var objectEntries = getObjectFileEntries(map);
-      var speedPath = getSpeedFilePath(map);
-      return Promise.all([
-        fetchText(map.data),
-        fetchText(map.profile),
-        Promise.all(objectEntries.map(function(entry) {
-          return fetchText(entry.path).then(function(text) {
-            return {
-              key: entry.key,
-              text: text
-            };
-          });
-        })),
-        speedPath ? fetchText(speedPath).catch(function() { return ''; }) : Promise.resolve('')
-      ]);
-    }).then(function(texts) {
-      var map = parseMapXml(texts[0]);
-      var profile = parseProfileXml(texts[1]);
-      var speed = parseSpeedXml(texts[3]);
-      tracker.routePoints = map.points;
-      tracker.routeSegments = map.segments;
-      tracker.profilePoints = profile.all;
-      tracker.profileBySector = profile.bySector;
-      tracker.trackObjectsByFile = {};
-      for (var i = 0; i < texts[2].length; i++) {
-        var parsedObjects = parseTrackObjectsXml(texts[2][i].text, texts[2][i].key);
-        tracker.trackObjectsByFile[texts[2][i].key] = parsedObjects;
-      }
-      tracker.speedLimits = speed.all;
-      tracker.speedLimitsBySector = speed.bySector;
+      return loadRuntimeMapBundle(map);
+    }).then(function(bundle) {
+      applyRuntimeMapBundle(bundle);
       if (tracker.speedDocs) refreshSpeedDocsSectorIndex();
       tracker.assetsLoaded = true;
       tracker.assetsError = '';
@@ -8760,7 +9489,7 @@
       return Promise.resolve(false);
     }
     var maps = tracker.availableMaps.filter(function(map) {
-      return getMapDownloadState(map) === 'ready';
+      return getMapDownloadState(map) === 'ready' && (isMapAutoSelectable(map) || isCurrentMap(map));
     });
     if (maps.length <= 1) return Promise.resolve(false);
 
@@ -9790,9 +10519,12 @@
   }
 
   function getCurrentTrackObjectStore() {
-    return tracker.trackObjectsByFile[getCurrentObjectFileKey()] ||
+    var stores = tracker.trackObjectsByFile || {};
+    var keys = Object.keys(stores);
+    return stores[getCurrentObjectFileKey()] ||
       tracker.trackObjectsByFile[String(tracker.wayNumber)] ||
       tracker.trackObjectsByFile['1'] ||
+      (keys.length ? stores[keys[0]] : null) ||
       null;
   }
 
@@ -10230,6 +10962,7 @@
   function buildDownloadedMapReadiness(map, mapData, profile, speed, objectStores, errors) {
     var sectors = getParsedSectorKeys(mapData, profile, speed, objectStores);
     var profileBySector = profile && profile.bySector ? profile.bySector : {};
+    var profileGapsBySector = profile && profile.gapsBySector ? profile.gapsBySector : {};
     var speedBySector = speed && speed.bySector ? speed.bySector : {};
     var items = [];
     var ready = 0;
@@ -10247,10 +10980,12 @@
       var objectCounts = getParsedObjectCounts(objectStores, sector);
       var speedCount = (speedBySector[key] || []).length + objectCounts.speeds;
       var hasProfile = !!(profileBySector[key] && profileBySector[key].length);
+      var profileGapCount = (profileGapsBySector[key] || []).length;
       var blocking = [];
       var reviewIssues = [];
       if (routeCounts.points < 2 || routeCounts.segments < 1) blocking.push('нет линии');
       if (!hasProfile) blocking.push('нет профиля');
+      if (profileGapCount) reviewIssues.push('в профиле ' + profileGapCount + ' непроверенный разрыв');
       if (!speedCount) reviewIssues.push('нет скоростей');
       if (!objectCounts.stations) reviewIssues.push('нет станций');
       if (!objectCounts.signals) reviewIssues.push('нет светофоров');
@@ -10309,6 +11044,43 @@
     if (!normalized) return Promise.resolve(null);
     var key = getMapKey(normalized);
     if (!force && tracker.mapReadinessCache[key]) return tracker.mapReadinessCache[key];
+    if (normalized.sections.length) {
+      tracker.mapReadinessCache[key] = loadSectionMapBundle(normalized).then(function(bundle) {
+        var summary = buildDownloadedMapReadiness(
+          normalized,
+          bundle.mapData,
+          bundle.profile,
+          bundle.speed,
+          bundle.objectStores,
+          []
+        );
+        tracker.mapReadinessCache[key] = summary;
+        return summary;
+      }).catch(function(error) {
+        var summary = {
+          map: normalized,
+          mapId: key,
+          title: normalized.title || 'JSON участка',
+          sourceName: normalized.sourceName || '',
+          state: 'blocked',
+          checkedAt: Date.now(),
+          sectors: 0,
+          ready: 0,
+          review: 0,
+          blocked: 0,
+          routeReady: 0,
+          profileReady: 0,
+          speedReady: 0,
+          objectReady: 0,
+          errors: [error && error.message ? error.message : 'JSON участка не прочитан'],
+          items: [],
+          issues: []
+        };
+        tracker.mapReadinessCache[key] = summary;
+        return summary;
+      });
+      return tracker.mapReadinessCache[key];
+    }
     var objectEntries = getObjectFileEntries(normalized);
     var speedPath = getSpeedFilePath(normalized);
     tracker.mapReadinessCache[key] = Promise.all([
@@ -11174,6 +11946,31 @@
 
   function getEMapProfilePointsForSector(sector) {
     return tracker.profileBySector[getSectorKey(sector)] || [];
+  }
+
+  function getProfileGapsForSector(sector) {
+    return tracker.profileGapsBySector[getSectorKey(sector)] || [];
+  }
+
+  function getProfileGapAt(coordinate, sector) {
+    var gaps = getProfileGapsForSector(sector);
+    for (var i = 0; i < gaps.length; i++) {
+      if (coordinate >= gaps[i].start && coordinate <= gaps[i].end) return gaps[i];
+      if (gaps[i].start > coordinate) break;
+    }
+    return null;
+  }
+
+  function profileIntervalIntersectsGap(start, end, sector) {
+    var left = Math.min(start, end);
+    var right = Math.max(start, end);
+    var gaps = getProfileGapsForSector(sector);
+    for (var i = 0; i < gaps.length; i++) {
+      if (gaps[i].end < left) continue;
+      if (gaps[i].start > right) break;
+      return true;
+    }
+    return false;
   }
 
   function getProfilePointsForSector(sector) {
@@ -13005,6 +13802,9 @@
 
   function drawApkProfile(ctx, layout, center, sector, bounds) {
     var segments = getVisibleProfileSegmentsForWindow(bounds.left, bounds.right, sector);
+    var gaps = getProfileGapsForSector(sector).filter(function(gap) {
+      return gap.end >= bounds.left && gap.start <= bounds.right;
+    });
     var learnedProfile = segments.length && segments[0].learned;
     var regimeDrawProfile = segments.length && segments[0].regime;
     var rawDraftProfile = segments.length && segments[0].rawDraft;
@@ -13021,6 +13821,10 @@
     for (var i = 0; i < segments.length; i++) {
       addSample(clamp(segments[i].start, bounds.left, bounds.right));
       addSample(clamp(segments[i].end, bounds.left, bounds.right));
+    }
+    for (var gapIndex = 0; gapIndex < gaps.length; gapIndex++) {
+      addSample(clamp(gaps[gapIndex].start, bounds.left, bounds.right));
+      addSample(clamp(gaps[gapIndex].end, bounds.left, bounds.right));
     }
     if (!segments.length) {
       var fallbackFirst = Math.ceil(bounds.left / 500) * 500;
@@ -13050,9 +13854,13 @@
     ctx.clip();
 
     ctx.beginPath();
-    ctx.moveTo(points[0].x, points[0].y);
+    var hasKnownProfilePath = false;
     for (var s = 1; s < points.length; s++) {
+      var intervalMidpoint = (points[s - 1].coord + points[s].coord) / 2;
+      if (getProfileGapAt(intervalMidpoint, sector)) continue;
+      ctx.moveTo(points[s - 1].x, points[s - 1].y);
       ctx.lineTo(points[s].x, points[s].y);
+      hasKnownProfilePath = true;
     }
     ctx.strokeStyle = segments.length
       ? (rawDraftProfile ? 'rgba(196, 181, 253, 0.92)' : userDrawProfile ? 'rgba(134, 239, 172, 0.94)' : learnedProfile ? 'rgba(74, 222, 128, 0.88)' : regimeDrawProfile ? 'rgba(250, 204, 21, 0.86)' : 'rgba(91, 210, 255, 0.96)')
@@ -13060,7 +13868,28 @@
     ctx.lineWidth = segments.length ? 3.2 : 2;
     ctx.lineJoin = 'round';
     ctx.lineCap = 'round';
-    ctx.stroke();
+    if (hasKnownProfilePath) ctx.stroke();
+    if (gaps.length) {
+      ctx.setLineDash([5, 5]);
+      ctx.strokeStyle = 'rgba(251, 146, 60, 0.92)';
+      ctx.lineWidth = 2.2;
+      ctx.beginPath();
+      for (var visibleGapIndex = 0; visibleGapIndex < gaps.length; visibleGapIndex++) {
+        var visibleGap = gaps[visibleGapIndex];
+        var gapStart = clamp(visibleGap.start, bounds.left, bounds.right);
+        var gapEnd = clamp(visibleGap.end, bounds.left, bounds.right);
+        ctx.moveTo(
+          coordinateToApkX(gapStart, center, layout),
+          yForProfileCoordinate(gapStart, center, sector, layout, centerVisual)
+        );
+        ctx.lineTo(
+          coordinateToApkX(gapEnd, center, layout),
+          yForProfileCoordinate(gapEnd, center, sector, layout, centerVisual)
+        );
+      }
+      ctx.stroke();
+      ctx.setLineDash([]);
+    }
     ctx.restore();
     if (!segments.length || learnedProfile || regimeDrawProfile || rawDraftProfile || userDrawProfile) {
       var regimeProfile = !segments.length && hasRegimeProfileForSector(sector);
@@ -13076,6 +13905,22 @@
         color: rawDraftProfile ? '#ddd6fe' : (userDrawProfile || learnedProfile) ? THEME.green : (regimeDrawProfile || regimeProfile) ? '#fde68a' : 'rgba(244, 63, 94, 0.82)',
         align: 'center',
         maxWidth: labelWidth - 10
+      });
+    }
+    var currentGap = getProfileGapAt(center, sector);
+    if (currentGap) {
+      var gapLabel = 'ПРОФИЛЬ НЕ ПРОВЕРЕН';
+      var gapLabelWidth = Math.min(layout.viewportWidth - 36, 188);
+      var gapLabelX = layout.viewportX + gapLabelWidth / 2 + 12;
+      var gapLabelY = layout.profileTop + 34;
+      fillRoundRect(ctx, gapLabelX - gapLabelWidth / 2, gapLabelY - 15, gapLabelWidth, 23, 8, 'rgba(124, 45, 18, 0.74)');
+      strokeRoundRect(ctx, gapLabelX - gapLabelWidth / 2 + 0.5, gapLabelY - 14.5, gapLabelWidth - 1, 22, 8, 'rgba(251, 146, 60, 0.62)');
+      drawText(ctx, gapLabel, gapLabelX, gapLabelY + 1, {
+        size: 9,
+        weight: 850,
+        color: '#fed7aa',
+        align: 'center',
+        maxWidth: gapLabelWidth - 10
       });
     }
     return true;
@@ -13098,6 +13943,7 @@
     for (var i = 0; i < stations.length; i++) {
       var station = stations[i];
       var isRegimeStation = station.source === 'regime';
+      var isJsonPointStation = station.source === 'section-json' && (!station.length || station.end <= station.coordinate);
       var start = Math.max(station.coordinate, bounds.left);
       var end = Math.min(station.end, bounds.right);
       if (end < start) continue;
@@ -13106,9 +13952,25 @@
       var span = getObjectXSpan({ coordinate: start, end: end, length: end - start }, center, layout);
       var visibleWidth = span.x2 - span.x1;
       var labelX = clamp(coordinateToApkX(mid, center, layout), layout.viewportX + 30, layout.viewportRight - 30);
-      var shouldLabel = visibleWidth > 70 && (isRangeNearCenter(start, end, center, APK_LABEL_CONTEXT_RADIUS_M) || isRegimeStation);
+      if (isJsonPointStation) {
+        var markerX = coordinateToApkX(station.coordinate, center, layout);
+        var markerY = getProfileYAt(station.coordinate, center, sector, layout);
+        ctx.strokeStyle = 'rgba(186, 230, 253, 0.58)';
+        ctx.fillStyle = 'rgba(14, 116, 144, 0.92)';
+        ctx.lineWidth = 1.2;
+        ctx.beginPath();
+        ctx.moveTo(markerX, markerY - 2);
+        ctx.lineTo(markerX, markerY - 17);
+        ctx.stroke();
+        ctx.beginPath();
+        ctx.arc(markerX, markerY - 20, 3.2, 0, Math.PI * 2);
+        ctx.fill();
+      }
+      var shouldLabel = isJsonPointStation
+        ? Math.abs(station.coordinate - center) <= APK_LABEL_CONTEXT_RADIUS_M
+        : (visibleWidth > 70 && (isRangeNearCenter(start, end, center, APK_LABEL_CONTEXT_RADIUS_M) || isRegimeStation));
       var minGap = isPreview ? 88 : 112;
-      if (shouldLabel && labelX - minGap > labelRight) {
+      if (shouldLabel && (isJsonPointStation || labelX - minGap > labelRight)) {
         var stationLabel = formatHumanTrackObjectName(station.name, 'station', station.coordinate).toUpperCase();
         var stationLabelWidth = Math.min(220, Math.max(64, stationLabel.length * 7.2));
         var stationLabelY = layout.profileTop - 8;
@@ -13116,9 +13978,9 @@
         drawText(ctx, stationLabel, labelX, stationLabelY, {
           size: 10,
           weight: 850,
-          color: isRegimeStation ? 'rgba(251, 146, 60, 0.36)' : 'rgba(238, 242, 248, 0.32)',
+          color: isJsonPointStation ? 'rgba(224, 242, 254, 0.74)' : (isRegimeStation ? 'rgba(251, 146, 60, 0.36)' : 'rgba(238, 242, 248, 0.32)'),
           align: 'center',
-          maxWidth: Math.min(visibleWidth + 60, stationLabelWidth)
+          maxWidth: isJsonPointStation ? stationLabelWidth : Math.min(visibleWidth + 60, stationLabelWidth)
         });
         labelRight = labelX + stationLabelWidth / 2 + 14;
       }
@@ -14050,11 +14912,110 @@
     ctx.restore();
   }
 
+  function normalizeTrainUnitAngle(value) {
+    var angle = Number(value) || 0;
+    while (angle > Math.PI) angle -= Math.PI * 2;
+    while (angle <= -Math.PI) angle += Math.PI * 2;
+    // Keep the visual "roof" above the rail even if a future map layout mirrors
+    // the coordinate axis. Direction is applied to the locomotive nose separately.
+    if (angle > Math.PI / 2) angle -= Math.PI;
+    else if (angle < -Math.PI / 2) angle += Math.PI;
+    return angle;
+  }
+
+  function getTrainUnitProfilePose(coordinate, center, sector, layout, lift) {
+    var angle = normalizeTrainUnitAngle(getProfileTangentAngle(coordinate, center, sector, layout));
+    var offset = Math.max(0, Number(lift) || 0);
+    return {
+      x: coordinateToApkX(coordinate, center, layout) + Math.sin(angle) * offset,
+      y: getProfileYAt(coordinate, center, sector, layout) - Math.cos(angle) * offset,
+      angle: angle
+    };
+  }
+
+  function getApkTrainCompositionModel(details) {
+    var source = details || getPoekhaliTrainDetails();
+    var compositionType = String(source && source.compositionType || '');
+    var hasWagons = compositionType === 'train' || compositionType === 'estimated';
+    var recordedMeters = Math.max(1, Number(source && source.lengthMeters) || getTrainLengthMeters());
+    var locoMeters = hasWagons
+      ? Math.max(1, Number(source && source.locoLengthMeters) || TRAIN_LOCO_LENGTH_M)
+      : recordedMeters;
+    return {
+      totalMeters: hasWagons ? locoMeters + recordedMeters : recordedMeters
+    };
+  }
+
+  function collectTrainConsistCenterline(center, sector, layout, totalMeters, lift) {
+    var points = collectTrainProfilePath(center, sector, layout, totalMeters);
+    return points.map(function(point) {
+      var pose = getTrainUnitProfilePose(point.coordinate, center, sector, layout, lift);
+      return {
+        coordinate: point.coordinate,
+        x: pose.x,
+        y: pose.y
+      };
+    });
+  }
+
+  function drawApkTrainConsist(ctx, layout, center, sector, details, isPreview) {
+    var model = getApkTrainCompositionModel(details);
+    var bodyHeight = Math.max(10, Math.min(13, layout.xUnit * 1.65));
+    var lift = bodyHeight / 2 + 2.4;
+    var centerline = collectTrainConsistCenterline(center, sector, layout, model.totalMeters, lift);
+    if (!centerline || centerline.length < 2) return;
+    var tailCoordinate = center - getCurrentCoordinateDirection() * model.totalMeters;
+    var crossesProfileGap = profileIntervalIntersectsGap(center, tailCoordinate, sector);
+
+    ctx.save();
+    ctx.beginPath();
+    ctx.rect(layout.viewportX + 1, layout.profileTop - 24, layout.viewportWidth - 2, layout.profileBottom - layout.profileTop + 32);
+    ctx.clip();
+    if (!crossesProfileGap) {
+      strokeTrainProfilePath(ctx, centerline, bodyHeight + 4, 'rgba(3, 7, 18, 0.92)', null, isPreview ? 0.76 : 1);
+      strokeTrainProfilePath(ctx, centerline, bodyHeight, 'rgba(91, 210, 255, 0.92)', null, isPreview ? 0.72 : 1);
+      strokeTrainProfilePath(ctx, centerline, 1.2, 'rgba(224, 242, 254, 0.76)', null, isPreview ? 0.52 : 0.82);
+      var headPose = getTrainUnitProfilePose(center, center, sector, layout, lift);
+      ctx.save();
+      ctx.translate(headPose.x, headPose.y);
+      ctx.rotate(headPose.angle);
+      ctx.scale(getCurrentCoordinateDirection() * layout.direction >= 0 ? 1 : -1, 1);
+      ctx.fillStyle = isPreview ? 'rgba(224, 242, 254, 0.72)' : '#e0f2fe';
+      ctx.beginPath();
+      ctx.arc(1.6, 0, 1.5, 0, Math.PI * 2);
+      ctx.fill();
+      ctx.restore();
+    } else {
+      var headOnlyPose = getTrainUnitProfilePose(center, center, sector, layout, lift);
+      if (!getProfileGapAt(center, sector)) {
+        ctx.fillStyle = isPreview ? 'rgba(91, 210, 255, 0.72)' : 'rgba(91, 210, 255, 0.94)';
+        ctx.beginPath();
+        ctx.arc(headOnlyPose.x, headOnlyPose.y, bodyHeight / 2, 0, Math.PI * 2);
+        ctx.fill();
+      }
+    }
+    ctx.restore();
+    if (crossesProfileGap) {
+      var warningX = clamp(coordinateToApkX(center, center, layout), layout.viewportX + 52, layout.viewportRight - 52);
+      var warningY = getProfileYAt(center, center, sector, layout) - bodyHeight - 18;
+      fillRoundRect(ctx, warningX - 48, warningY - 7, 96, 14, 7, 'rgba(124, 45, 18, 0.86)');
+      drawText(ctx, 'ПРОФИЛЬ НЕИЗВ.', warningX, warningY, {
+        size: 8.5,
+        weight: 850,
+        color: '#fed7aa',
+        align: 'center',
+        baseline: 'middle',
+        maxWidth: 88
+      });
+    }
+    drawApkTrainLengthLabel(ctx, layout, center, sector, details, bodyHeight, isPreview);
+  }
+
   function drawApkTrain(ctx, layout, center, sector, avgAngle, isPreview) {
     var details = getPoekhaliTrainDetails();
     var trainMeters = Math.max(1, Math.round(Number(details && details.lengthMeters) || getTrainLengthMeters()));
     if (!POEKHALI_HTML_HUD) drawApkTrainProfileBar(ctx, layout, center, sector, trainMeters, isPreview);
-    if (POEKHALI_HTML_HUD) drawApkTrainLengthLabel(ctx, layout, center, sector, details);
+    if (POEKHALI_HTML_HUD) drawApkTrainConsist(ctx, layout, center, sector, details, isPreview);
   }
 
   // Head/tail screen geometry of the train (head at the live coordinate, tail
@@ -14079,31 +15040,67 @@
     };
   }
 
-  // The train: a plain rectangle on the profile spanning head→tail with the
-  // composition length inside it (re-homed from the removed km-scale train).
-  function drawApkTrainLengthLabel(ctx, layout, center, sector, details) {
+  // Keep the composition length inside the train by laying out each glyph on
+  // its own profile pose. A single rotated text run cuts across grade changes.
+  function drawApkTrainLengthLabel(ctx, layout, center, sector, details, bodyHeight, isPreview) {
     var labels = getTrainKmScaleLengthLabels(details);
     var ext = getApkTrainExtentX(layout, center, details);
     var left = Math.max(ext.left, layout.viewportX + 4);
     var right = Math.min(ext.right, layout.viewportRight - 4);
     var span = right - left;
-    if (span < 8) return;
-    var py = getProfileYAt(ext.midCoord, center, sector, layout);
-    var bandH = Math.max(14, Math.min(18, layout.xUnit * 1.9));
-    var cy = py - Math.max(8, bandH / 2 + 1);   // sit the body on the rail
-    // Plain rectangle body.
-    fillRoundRect(ctx, left, cy - bandH / 2, span, bandH, 3, 'rgba(91, 210, 255, 0.82)');
-    strokeRoundRect(ctx, left + 0.5, cy - bandH / 2 + 0.5, span - 1, bandH - 1, 3, 'rgba(186, 230, 253, 0.9)');
-    // Longest length label that fits inside the rectangle.
+    if (span < 18) return;
+    var fontSize = Math.max(6.8, Math.min(7.6, (Number(bodyHeight) || 10) * 0.65));
+    var letterSpacing = 0.15;
+    var maxWidth = Math.min(68, span - 10);
     ctx.save();
-    ctx.font = '850 9.5px "Plus Jakarta Sans", system-ui, sans-serif';
+    ctx.font = '850 ' + fontSize + 'px "Plus Jakarta Sans", system-ui, sans-serif';
     var label = '';
+    var glyphWidths = [];
+    var labelWidth = 0;
     for (var i = 0; i < (labels || []).length; i++) {
-      if (ctx.measureText(labels[i]).width + 8 <= span) { label = labels[i]; break; }
+      var candidate = String(labels[i] || '');
+      var candidateWidths = [];
+      var measured = 0;
+      for (var j = 0; j < candidate.length; j++) {
+        var glyphWidth = Math.max(1, ctx.measureText(candidate.charAt(j)).width);
+        candidateWidths.push(glyphWidth);
+        measured += glyphWidth + (j > 0 ? letterSpacing : 0);
+      }
+      if (candidate && measured <= maxWidth) {
+        label = candidate;
+        glyphWidths = candidateWidths;
+        labelWidth = measured;
+        break;
+      }
     }
     ctx.restore();
     if (label) {
-      drawText(ctx, label, (left + right) / 2, cy, { size: 9.5, weight: 850, color: '#04131f', align: 'center', baseline: 'middle', maxWidth: Math.max(8, span - 6) });
+      var lift = (Number(bodyHeight) || 10) / 2 + 2.4;
+      var anchorX = coordinateToApkX(ext.midCoord, center, layout);
+      var cursorX = anchorX - labelWidth / 2;
+      ctx.save();
+      ctx.globalAlpha = isPreview ? 0.78 : 1;
+      ctx.font = '850 ' + fontSize + 'px "Plus Jakarta Sans", system-ui, sans-serif';
+      ctx.textAlign = 'center';
+      ctx.textBaseline = 'middle';
+      ctx.lineJoin = 'round';
+      ctx.lineWidth = Math.max(1, fontSize * 0.18);
+      ctx.strokeStyle = 'rgba(3, 7, 18, 0.88)';
+      ctx.fillStyle = '#f0f9ff';
+      for (var k = 0; k < label.length; k++) {
+        var width = glyphWidths[k];
+        var glyphX = cursorX + width / 2;
+        var coordinate = coordinateAtApkX(glyphX, center, layout);
+        var pose = getTrainUnitProfilePose(coordinate, center, sector, layout, lift);
+        ctx.save();
+        ctx.translate(pose.x, pose.y);
+        ctx.rotate(pose.angle);
+        ctx.strokeText(label.charAt(k), 0, 0);
+        ctx.fillText(label.charAt(k), 0, 0);
+        ctx.restore();
+        cursorX += width + letterSpacing;
+      }
+      ctx.restore();
     }
   }
 

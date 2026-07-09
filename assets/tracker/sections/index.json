@@ -1,0 +1,168 @@
+{
+  "schema_version": "1.0",
+  "generated_at": "2026-07-10",
+  "railway": {
+    "id": "dvost",
+    "name": "Дальневосточная железная дорога"
+  },
+  "sections": [
+    {
+      "id": "dvost-volochaevka-ii-dzemgi",
+      "file": "dvost-volochaevka-ii-dzemgi.json",
+      "section_name": "Волочаевка II — Комсомольск-Сортировочный — Дзёмги",
+      "status": "draft",
+      "direction": "нечётное",
+      "km_start": 9,
+      "km_end": 361,
+      "profile_status": "legacy_seed_complete_pending_pdf_verification",
+      "geometry_status": "draft_from_legacy_centerline"
+    },
+    {
+      "id": "dvost-postyshevo-komsomolsk",
+      "file": "dvost-postyshevo-komsomolsk.json",
+      "section_name": "Постышево — Комсомольск-Сортировочный",
+      "status": "draft",
+      "direction": "оба направления",
+      "km_start": 3614,
+      "km_end": 3816,
+      "profile_status": "legacy_seed_complete_pending_pdf_verification",
+      "geometry_status": "draft_from_legacy_centerline"
+    },
+    {
+      "id": "dvost-postyshevo-novyi-urgal-odd",
+      "file": "dvost-postyshevo-novyi-urgal-odd.json",
+      "section_name": "Постышево — Новый Ургал",
+      "status": "draft",
+      "direction": "нечётное",
+      "km_start": 3299,
+      "km_end": 3616.9,
+      "profile_status": "draft_pdf_extracted_needs_review",
+      "geometry_status": "draft_from_legacy_centerline"
+    },
+    {
+      "id": "dvost-vysokogornaya-oune-via-sollu",
+      "file": "dvost-vysokogornaya-oune-via-sollu.json",
+      "section_name": "Высокогорная — Оунэ (через Соллу — Кузнецовский — Откосную — Косграмбо)",
+      "status": "draft",
+      "direction": "требует проверки",
+      "km_start": 183,
+      "km_end": 220.9,
+      "profile_status": "legacy_seed_complete_pending_pdf_verification",
+      "geometry_status": "draft_from_legacy_centerline"
+    },
+    {
+      "id": "dvost-vysokogornaya-oune-via-muli",
+      "file": "dvost-vysokogornaya-oune-via-muli.json",
+      "section_name": "Высокогорная — Оунэ (через Мули — блок-пост 197 км — Новый Кузнецовский)",
+      "status": "draft",
+      "direction": "требует проверки",
+      "km_start": 183,
+      "km_end": 210,
+      "profile_status": "legacy_seed_partial_pending_pdf_verification",
+      "geometry_status": "draft_from_legacy_centerline"
+    },
+    {
+      "id": "dvost-oune-pivan",
+      "file": "dvost-oune-pivan.json",
+      "section_name": "Оунэ — Пивань",
+      "status": "draft",
+      "direction": "требует проверки",
+      "km_start": 1,
+      "km_end": 184,
+      "profile_status": "legacy_seed_partial_pending_pdf_verification",
+      "geometry_status": "draft_from_legacy_centerline"
+    },
+    {
+      "id": "dvost-pivan-novyi-mir",
+      "file": "dvost-pivan-novyi-mir.json",
+      "section_name": "Пивань — Амурский разъезд — Новый Мир",
+      "status": "draft",
+      "direction": "требует проверки",
+      "km_start": 1,
+      "km_end": 17,
+      "profile_status": "legacy_seed_partial_pending_pdf_verification",
+      "geometry_status": "draft_from_legacy_centerline"
+    }
+  ],
+  "routes": [
+    {
+      "id": "dvost-volochaevka-ii-dzemgi",
+      "name": "Волочаевка II — Дзёмги",
+      "from": "Волочаевка II",
+      "to": "Дзёмги",
+      "default_variant": "main",
+      "variants": [
+        {
+          "id": "main",
+          "name": "Основной путь",
+          "section_ids": [
+            "dvost-volochaevka-ii-dzemgi"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "dvost-postyshevo-komsomolsk",
+      "name": "Постышево — Комсомольск-Сортировочный",
+      "from": "Постышево",
+      "to": "Комсомольск-Сортировочный",
+      "default_variant": "main",
+      "variants": [
+        {
+          "id": "main",
+          "name": "Основной путь",
+          "section_ids": [
+            "dvost-postyshevo-komsomolsk"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "dvost-postyshevo-novyi-urgal-odd",
+      "name": "Постышево — Новый Ургал (нечётное)",
+      "from": "Постышево",
+      "to": "Новый Ургал",
+      "default_variant": "main",
+      "variants": [
+        {
+          "id": "main",
+          "name": "Основной путь",
+          "section_ids": [
+            "dvost-postyshevo-novyi-urgal-odd"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "dvost-vysokogornaya-novyi-mir-passenger",
+      "name": "Высокогорная — Новый Мир (пассажирский; титул КСМ)",
+      "from": "Высокогорная",
+      "to": "Новый Мир",
+      "default_variant": "via-sollu",
+      "variants": [
+        {
+          "id": "via-sollu",
+          "name": "Через Соллу — Кузнецовский — Откосную — Косграмбо",
+          "section_ids": [
+            "dvost-vysokogornaya-oune-via-sollu",
+            "dvost-oune-pivan",
+            "dvost-pivan-novyi-mir"
+          ]
+        },
+        {
+          "id": "via-muli",
+          "name": "Через Мули — блок-пост 197 км — Новый Кузнецовский",
+          "section_ids": [
+            "dvost-vysokogornaya-oune-via-muli",
+            "dvost-oune-pivan",
+            "dvost-pivan-novyi-mir"
+          ]
+        }
+      ],
+      "flags_for_review": [
+        "Последняя профильная страница заканчивается станцией Новый Мир, хотя титул файла заявляет КСМ",
+        "После Пивани километраж сбрасывается; поэтому маршрут собран из отдельных section JSON"
+      ]
+    }
+  ]
+}

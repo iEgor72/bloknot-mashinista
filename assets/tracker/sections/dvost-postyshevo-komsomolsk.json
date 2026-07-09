@@ -1,0 +1,5851 @@
+{
+  "schema_version": "1.0",
+  "id": "dvost-postyshevo-komsomolsk",
+  "status": "draft",
+  "railway": {
+    "id": "dvost",
+    "name": "Дальневосточная железная дорога"
+  },
+  "section_name": "Постышево — Комсомольск-Сортировочный",
+  "direction": "оба направления",
+  "km_start": 3614,
+  "km_end": 3816,
+  "generator_format": "Б",
+  "elements": [
+    {
+      "start_m": 3614000,
+      "len_m": 1500,
+      "grad_permille": -1.5,
+      "confidence": "legacy_xml_clipped_unverified"
+    },
+    {
+      "start_m": 3615500,
+      "len_m": 400,
+      "grad_permille": -3.4,
+      "confidence": "legacy_xml_unverified"
+    },
+    {
+      "start_m": 3615900,
+      "len_m": 400,
+      "grad_permille": -0.2,
+      "confidence": "legacy_xml_unverified"
+    },
+    {
+      "start_m": 3616300,
+      "len_m": 700,
+      "grad_permille": -1,
+      "confidence": "legacy_xml_unverified"
+    },
+    {
+      "start_m": 3617000,
+      "len_m": 1600,
+      "grad_permille": -2.1,
+      "confidence": "legacy_xml_unverified"
+    },
+    {
+      "start_m": 3618600,
+      "len_m": 1100,
+      "grad_permille": -0.9,
+      "confidence": "legacy_xml_unverified"
+    },
+    {
+      "start_m": 3619700,
+      "len_m": 500,
+      "grad_permille": 0.5,
+      "confidence": "legacy_xml_unverified"
+    },
+    {
+      "start_m": 3620200,
+      "len_m": 800,
+      "grad_permille": 2,
+      "confidence": "legacy_xml_unverified"
+    },
+    {
+      "start_m": 3621000,
+      "len_m": 400,
+      "grad_permille": -0.7,
+      "confidence": "legacy_xml_unverified"
+    },
+    {
+      "start_m": 3621400,
+      "len_m": 300,
+      "grad_permille": 0.2,
+      "confidence": "legacy_xml_unverified"
+    },
+    {
+      "start_m": 3621700,
+      "len_m": 400,
+      "grad_permille": -2.7,
+      "confidence": "legacy_xml_unverified"
+    },
+    {
+      "start_m": 3622100,
+      "len_m": 400,
+      "grad_permille": -0.2,
+      "confidence": "legacy_xml_unverified"
+    },
+    {
+      "start_m": 3622500,
+      "len_m": 500,
+      "grad_permille": 2.1,
+      "confidence": "legacy_xml_unverified"
+    },
+    {
+      "start_m": 3623000,
+      "len_m": 900,
+      "grad_permille": -3.8,
+      "confidence": "legacy_xml_unverified"
+    },
+    {
+      "start_m": 3623900,
+      "len_m": 400,
+      "grad_permille": 0.7,
+      "confidence": "legacy_xml_unverified"
+    },
+    {
+      "start_m": 3624300,
+      "len_m": 900,
+      "grad_permille": 2.9,
+      "confidence": "legacy_xml_unverified"
+    },
+    {
+      "start_m": 3625200,
+      "len_m": 300,
+      "grad_permille": -0.7,
+      "confidence": "legacy_xml_unverified"
+    },
+    {
+      "start_m": 3625500,
+      "len_m": 1000,
+      "grad_permille": 2.3,
+      "confidence": "legacy_xml_unverified"
+    },
+    {
+      "start_m": 3626500,
+      "len_m": 300,
+      "grad_permille": 0.4,
+      "confidence": "legacy_xml_unverified"
+    },
+    {
+      "start_m": 3626800,
+      "len_m": 500,
+      "grad_permille": 1.1,
+      "confidence": "legacy_xml_unverified"
+    },
+    {
+      "start_m": 3627300,
+      "len_m": 600,
+      "grad_permille": -0.6,
+      "confidence": "legacy_xml_unverified"
+    },
+    {
+      "start_m": 3627900,
+      "len_m": 400,
+      "grad_permille": 0.1,
+      "confidence": "legacy_xml_unverified"
+    },
+    {
+      "start_m": 3628300,
+      "len_m": 400,
+      "grad_permille": 0.6,
+      "confidence": "legacy_xml_unverified"
+    },
+    {
+      "start_m": 3628700,
+      "len_m": 500,
+      "grad_permille": -0.7,
+      "confidence": "legacy_xml_unverified"
+    },
+    {
+      "start_m": 3629200,
+      "len_m": 200,
+      "grad_permille": 1,
+      "confidence": "legacy_xml_unverified"
+    },
+    {
+      "start_m": 3629400,
+      "len_m": 200,
+      "grad_permille": -1.1,
+      "confidence": "legacy_xml_unverified"
+    },
+    {
+      "start_m": 3629600,
+      "len_m": 300,
+      "grad_permille": 0.3,
+      "confidence": "legacy_xml_unverified"
+    },
+    {
+      "start_m": 3629900,
+      "len_m": 400,
+      "grad_permille": -0.6,
+      "confidence": "legacy_xml_unverified"
+    },
+    {
+      "start_m": 3630300,
+      "len_m": 400,
+      "grad_permille": -1,
+      "confidence": "legacy_xml_unverified"
+    },
+    {
+      "start_m": 3630700,
+      "len_m": 500,
+      "grad_permille": 0.2,
+      "confidence": "legacy_xml_unverified"
+    },
+    {
+      "start_m": 3631200,
+      "len_m": 600,
+      "grad_permille": 1.3,
+      "confidence": "legacy_xml_unverified"
+    },
+    {
+      "start_m": 3631800,
+      "len_m": 900,
+      "grad_permille": 0.1,
+      "confidence": "legacy_xml_unverified"
+    },
+    {
+      "start_m": 3632700,
+      "len_m": 700,
+      "grad_permille": -2,
+      "confidence": "legacy_xml_unverified"
+    },
+    {
+      "start_m": 3633400,
+      "len_m": 300,
+      "grad_permille": 0.3,
+      "confidence": "legacy_xml_unverified"
+    },
+    {
+      "start_m": 3633700,
+      "len_m": 400,
+      "grad_permille": 0,
+      "confidence": "legacy_xml_unverified"
+    },
+    {
+      "start_m": 3634100,
+      "len_m": 300,
+      "grad_permille": -1.1,
+      "confidence": "legacy_xml_unverified"
+    },
+    {
+      "start_m": 3634400,
+      "len_m": 500,
+      "grad_permille": 1.1,
+      "confidence": "legacy_xml_unverified"
+    },
+    {
+      "start_m": 3634900,
+      "len_m": 700,
+      "grad_permille": -1.7,
+      "confidence": "legacy_xml_unverified"
+    },
+    {
+      "start_m": 3635600,
+      "len_m": 100,
+      "grad_permille": 1,
+      "confidence": "legacy_xml_unverified"
+    },
+    {
+      "start_m": 3635700,
+      "len_m": 300,
+      "grad_permille": -1.9,
+      "confidence": "legacy_xml_unverified"
+    },
+    {
+      "start_m": 3636000,
+      "len_m": 900,
+      "grad_permille": 0,
+      "confidence": "legacy_xml_unverified"
+    },
+    {
+      "start_m": 3636900,
+      "len_m": 400,
+      "grad_permille": 3.3,
+      "confidence": "legacy_xml_unverified"
+    },
+    {
+      "start_m": 3637300,
+      "len_m": 500,
+      "grad_permille": 7,
+      "confidence": "legacy_xml_unverified"
+    },
+    {
+      "start_m": 3637800,
+      "len_m": 400,
+      "grad_permille": 1.7,
+      "confidence": "legacy_xml_unverified"
+    },
+    {
+      "start_m": 3638200,
+      "len_m": 700,
+      "grad_permille": 1,
+      "confidence": "legacy_xml_unverified"
+    },
+    {
+      "start_m": 3638900,
+      "len_m": 700,
+      "grad_permille": -2.4,
+      "confidence": "legacy_xml_unverified"
+    },
+    {
+      "start_m": 3639600,
+      "len_m": 500,
+      "grad_permille": -0.2,
+      "confidence": "legacy_xml_unverified"
+    },
+    {
+      "start_m": 3640100,
+      "len_m": 300,
+      "grad_permille": 1,
+      "confidence": "legacy_xml_unverified"
+    },
+    {
+      "start_m": 3640400,
+      "len_m": 600,
+      "grad_permille": -0.5,
+      "confidence": "legacy_xml_unverified"
+    },
+    {
+      "start_m": 3641000,
+      "len_m": 900,
+      "grad_permille": 9.2,
+      "confidence": "legacy_xml_unverified"
+    },
+    {
+      "start_m": 3641900,
+      "len_m": 200,
+      "grad_permille": 9.2,
+      "confidence": "legacy_xml_unverified"
+    },
+    {
+      "start_m": 3642100,
+      "len_m": 300,
+      "grad_permille": 2.4,
+      "confidence": "legacy_xml_unverified"
+    },
+    {
+      "start_m": 3642400,
+      "len_m": 900,
+      "grad_permille": -4.8,
+      "confidence": "legacy_xml_unverified"
+    },
+    {
+      "start_m": 3643300,
+      "len_m": 300,
+      "grad_permille": -0.4,
+      "confidence": "legacy_xml_unverified"
+    },
+    {
+      "start_m": 3643600,
+      "len_m": 400,
+      "grad_permille": 4.6,
+      "confidence": "legacy_xml_unverified"
+    },
+    {
+      "start_m": 3644000,
+      "len_m": 800,
+      "grad_permille": 8.8,
+      "confidence": "legacy_xml_unverified"
+    },
+    {
+      "start_m": 3644800,
+      "len_m": 300,
+      "grad_permille": 4.2,
+      "confidence": "legacy_xml_unverified"
+    },
+    {
+      "start_m": 3645100,
+      "len_m": 400,
+      "grad_permille": -2.1,
+      "confidence": "legacy_xml_unverified"
+    },
+    {
+      "start_m": 3645500,
+      "len_m": 500,
+      "grad_permille": 0,
+      "confidence": "legacy_xml_unverified"
+    },
+    {
+      "start_m": 3646000,
+      "len_m": 400,
+      "grad_permille": 5.9,
+      "confidence": "legacy_xml_unverified"
+    },
+    {
+      "start_m": 3646400,
+      "len_m": 300,
+      "grad_permille": 0.3,
+      "confidence": "legacy_xml_unverified"
+    },
+    {
+      "start_m": 3646700,
+      "len_m": 300,
+      "grad_permille": -0.6,
+      "confidence": "legacy_xml_unverified"
+    },
+    {
+      "start_m": 3647000,
+      "len_m": 900,
+      "grad_permille": 6,
+      "confidence": "legacy_xml_unverified"
+    },
+    {
+      "start_m": 3647900,
+      "len_m": 400,
+      "grad_permille": 1.7,
+      "confidence": "legacy_xml_unverified"
+    },
+    {
+      "start_m": 3648300,
+      "len_m": 400,
+      "grad_permille": 3,
+      "confidence": "legacy_xml_unverified"
+    },
+    {
+      "start_m": 3648700,
+      "len_m": 300,
+      "grad_permille": 8.2,
+      "confidence": "legacy_xml_unverified"
+    },
+    {
+      "start_m": 3649000,
+      "len_m": 800,
+      "grad_permille": 9.1,
+      "confidence": "legacy_xml_unverified"
+    },
+    {
+      "start_m": 3649800,
+      "len_m": 500,
+      "grad_permille": 8.1,
+      "confidence": "legacy_xml_unverified"
+    },
+    {
+      "start_m": 3650300,
+      "len_m": 900,
+      "grad_permille": 3.7,
+      "confidence": "legacy_xml_unverified"
+    },
+    {
+      "start_m": 3651200,
+      "len_m": 400,
+      "grad_permille": 0.6,
+      "confidence": "legacy_xml_unverified"
+    },
+    {
+      "start_m": 3651600,
+      "len_m": 300,
+      "grad_permille": -1.9,
+      "confidence": "legacy_xml_unverified"
+    },
+    {
+      "start_m": 3651900,
+      "len_m": 500,
+      "grad_permille": -0.2,
+      "confidence": "legacy_xml_unverified"
+    },
+    {
+      "start_m": 3652400,
+      "len_m": 600,
+      "grad_permille": 2.4,
+      "confidence": "legacy_xml_unverified"
+    },
+    {
+      "start_m": 3653000,
+      "len_m": 400,
+      "grad_permille": -1.4,
+      "confidence": "legacy_xml_unverified"
+    },
+    {
+      "start_m": 3653400,
+      "len_m": 500,
+      "grad_permille": -2.9,
+      "confidence": "legacy_xml_unverified"
+    },
+    {
+      "start_m": 3653900,
+      "len_m": 300,
+      "grad_permille": 0.9,
+      "confidence": "legacy_xml_unverified"
+    },
+    {
+      "start_m": 3654200,
+      "len_m": 1200,
+      "grad_permille": 17,
+      "confidence": "legacy_xml_unverified"
+    },
+    {
+      "start_m": 3655400,
+      "len_m": 500,
+      "grad_permille": 15.8,
+      "confidence": "legacy_xml_unverified"
+    },
+    {
+      "start_m": 3655900,
+      "len_m": 600,
+      "grad_permille": 16.1,
+      "confidence": "legacy_xml_unverified"
+    },
+    {
+      "start_m": 3656500,
+      "len_m": 900,
+      "grad_permille": 17.3,
+      "confidence": "legacy_xml_unverified"
+    },
+    {
+      "start_m": 3657400,
+      "len_m": 600,
+      "grad_permille": 17.9,
+      "confidence": "legacy_xml_unverified"
+    },
+    {
+      "start_m": 3658000,
+      "len_m": 200,
+      "grad_permille": 13.2,
+      "confidence": "legacy_xml_unverified"
+    },
+    {
+      "start_m": 3658200,
+      "len_m": 900,
+      "grad_permille": 17.4,
+      "confidence": "legacy_xml_unverified"
+    },
+    {
+      "start_m": 3659100,
+      "len_m": 300,
+      "grad_permille": 10.7,
+      "confidence": "legacy_xml_unverified"
+    },
+    {
+      "start_m": 3659400,
+      "len_m": 800,
+      "grad_permille": 2.6,
+      "confidence": "legacy_xml_unverified"
+    },
+    {
+      "start_m": 3660200,
+      "len_m": 400,
+      "grad_permille": -2.8,
+      "confidence": "legacy_xml_unverified"
+    },
+    {
+      "start_m": 3660600,
+      "len_m": 200,
+      "grad_permille": -13.6,
+      "confidence": "legacy_xml_unverified"
+    },
+    {
+      "start_m": 3660800,
+      "len_m": 400,
+      "grad_permille": -15,
+      "confidence": "legacy_xml_unverified"
+    },
+    {
+      "start_m": 3661200,
+      "len_m": 200,
+      "grad_permille": -20.1,
+      "confidence": "legacy_xml_unverified"
+    },
+    {
+      "start_m": 3661400,
+      "len_m": 700,
+      "grad_permille": -16.6,
+      "confidence": "legacy_xml_unverified"
+    },
+    {
+      "start_m": 3662100,
+      "len_m": 200,
+      "grad_permille": -14.3,
+      "confidence": "legacy_xml_unverified"
+    },
+    {
+      "start_m": 3662300,
+      "len_m": 200,
+      "grad_permille": -20.6,
+      "confidence": "legacy_xml_unverified"
+    },
+    {
+      "start_m": 3662500,
+      "len_m": 400,
+      "grad_permille": -14.8,
+      "confidence": "legacy_xml_unverified"
+    },
+    {
+      "start_m": 3662900,
+      "len_m": 800,
+      "grad_permille": -16.9,
+      "confidence": "legacy_xml_unverified"
+    },
+    {
+      "start_m": 3663700,
+      "len_m": 400,
+      "grad_permille": -13.8,
+      "confidence": "legacy_xml_unverified"
+    },
+    {
+      "start_m": 3664100,
+      "len_m": 1300,
+      "grad_permille": -17.2,
+      "confidence": "legacy_xml_unverified"
+    },
+    {
+      "start_m": 3665400,
+      "len_m": 500,
+      "grad_permille": -15.4,
+      "confidence": "legacy_xml_unverified"
+    },
+    {
+      "start_m": 3665900,
+      "len_m": 600,
+      "grad_permille": -14.4,
+      "confidence": "legacy_xml_unverified"
+    },
+    {
+      "start_m": 3666500,
+      "len_m": 400,
+      "grad_permille": -15.6,
+      "confidence": "legacy_xml_unverified"
+    },
+    {
+      "start_m": 3666900,
+      "len_m": 1000,
+      "grad_permille": -16.1,
+      "confidence": "legacy_xml_unverified"
+    },
+    {
+      "start_m": 3667900,
+      "len_m": 900,
+      "grad_permille": -16.5,
+      "confidence": "legacy_xml_unverified"
+    },
+    {
+      "start_m": 3668800,
+      "len_m": 200,
+      "grad_permille": -20.6,
+      "confidence": "legacy_xml_unverified"
+    },
+    {
+      "start_m": 3669000,
+      "len_m": 300,
+      "grad_permille": -11.2,
+      "confidence": "legacy_xml_unverified"
+    },
+    {
+      "start_m": 3669300,
+      "len_m": 500,
+      "grad_permille": -4.5,
+      "confidence": "legacy_xml_unverified"
+    },
+    {
+      "start_m": 3669800,
+      "len_m": 400,
+      "grad_permille": -1.9,
+      "confidence": "legacy_xml_unverified"
+    },
+    {
+      "start_m": 3670200,
+      "len_m": 300,
+      "grad_permille": -9.5,
+      "confidence": "legacy_xml_unverified"
+    },
+    {
+      "start_m": 3670500,
+      "len_m": 900,
+      "grad_permille": -17.6,
+      "confidence": "legacy_xml_unverified"
+    },
+    {
+      "start_m": 3671400,
+      "len_m": 400,
+      "grad_permille": -16.5,
+      "confidence": "legacy_xml_unverified"
+    },
+    {
+      "start_m": 3671800,
+      "len_m": 800,
+      "grad_permille": -16.8,
+      "confidence": "legacy_xml_unverified"
+    },
+    {
+      "start_m": 3672600,
+      "len_m": 800,
+      "grad_permille": -17.3,
+      "confidence": "legacy_xml_unverified"
+    },
+    {
+      "start_m": 3673400,
+      "len_m": 300,
+      "grad_permille": -3.5,
+      "confidence": "legacy_xml_unverified"
+    },
+    {
+      "start_m": 3673700,
+      "len_m": 500,
+      "grad_permille": -2.1,
+      "confidence": "legacy_xml_unverified"
+    },
+    {
+      "start_m": 3674200,
+      "len_m": 500,
+      "grad_permille": -3.1,
+      "confidence": "legacy_xml_unverified"
+    },
+    {
+      "start_m": 3674700,
+      "len_m": 800,
+      "grad_permille": -2.1,
+      "confidence": "legacy_xml_unverified"
+    },
+    {
+      "start_m": 3675500,
+      "len_m": 400,
+      "grad_permille": 0.7,
+      "confidence": "legacy_xml_unverified"
+    },
+    {
+      "start_m": 3675900,
+      "len_m": 900,
+      "grad_permille": 6.3,
+      "confidence": "legacy_xml_unverified"
+    },
+    {
+      "start_m": 3676800,
+      "len_m": 200,
+      "grad_permille": 2.2,
+      "confidence": "legacy_xml_unverified"
+    },
+    {
+      "start_m": 3677000,
+      "len_m": 200,
+      "grad_permille": -0.7,
+      "confidence": "legacy_xml_unverified"
+    },
+    {
+      "start_m": 3677200,
+      "len_m": 200,
+      "grad_permille": 0,
+      "confidence": "legacy_xml_unverified"
+    },
+    {
+      "start_m": 3677400,
+      "len_m": 800,
+      "grad_permille": -4.8,
+      "confidence": "legacy_xml_unverified"
+    },
+    {
+      "start_m": 3678200,
+      "len_m": 500,
+      "grad_permille": 0.5,
+      "confidence": "legacy_xml_unverified"
+    },
+    {
+      "start_m": 3678700,
+      "len_m": 400,
+      "grad_permille": 1.3,
+      "confidence": "legacy_xml_unverified"
+    },
+    {
+      "start_m": 3679100,
+      "len_m": 300,
+      "grad_permille": 0.6,
+      "confidence": "legacy_xml_unverified"
+    },
+    {
+      "start_m": 3679400,
+      "len_m": 500,
+      "grad_permille": -0.9,
+      "confidence": "legacy_xml_unverified"
+    },
+    {
+      "start_m": 3679900,
+      "len_m": 500,
+      "grad_permille": 0.3,
+      "confidence": "legacy_xml_unverified"
+    },
+    {
+      "start_m": 3680400,
+      "len_m": 300,
+      "grad_permille": -2.3,
+      "confidence": "legacy_xml_unverified"
+    },
+    {
+      "start_m": 3680700,
+      "len_m": 500,
+      "grad_permille": -7.6,
+      "confidence": "legacy_xml_unverified"
+    },
+    {
+      "start_m": 3681200,
+      "len_m": 400,
+      "grad_permille": -6.9,
+      "confidence": "legacy_xml_unverified"
+    },
+    {
+      "start_m": 3681600,
+      "len_m": 400,
+      "grad_permille": -8.5,
+      "confidence": "legacy_xml_unverified"
+    },
+    {
+      "start_m": 3682000,
+      "len_m": 300,
+      "grad_permille": -3.4,
+      "confidence": "legacy_xml_unverified"
+    },
+    {
+      "start_m": 3682300,
+      "len_m": 400,
+      "grad_permille": 0,
+      "confidence": "legacy_xml_unverified"
+    },
+    {
+      "start_m": 3682700,
+      "len_m": 200,
+      "grad_permille": 0.5,
+      "confidence": "legacy_xml_unverified"
+    },
+    {
+      "start_m": 3682900,
+      "len_m": 300,
+      "grad_permille": -1.3,
+      "confidence": "legacy_xml_unverified"
+    },
+    {
+      "start_m": 3683200,
+      "len_m": 300,
+      "grad_permille": 0.5,
+      "confidence": "legacy_xml_unverified"
+    },
+    {
+      "start_m": 3683500,
+      "len_m": 400,
+      "grad_permille": 0.4,
+      "confidence": "legacy_xml_unverified"
+    },
+    {
+      "start_m": 3683900,
+      "len_m": 600,
+      "grad_permille": -0.4,
+      "confidence": "legacy_xml_unverified"
+    },
+    {
+      "start_m": 3684500,
+      "len_m": 400,
+      "grad_permille": 0.1,
+      "confidence": "legacy_xml_unverified"
+    },
+    {
+      "start_m": 3684900,
+      "len_m": 1200,
+      "grad_permille": 3.5,
+      "confidence": "legacy_xml_unverified"
+    },
+    {
+      "start_m": 3686100,
+      "len_m": 300,
+      "grad_permille": 4.3,
+      "confidence": "legacy_xml_unverified"
+    },
+    {
+      "start_m": 3686400,
+      "len_m": 500,
+      "grad_permille": 0.5,
+      "confidence": "legacy_xml_unverified"
+    },
+    {
+      "start_m": 3686900,
+      "len_m": 600,
+      "grad_permille": -4.6,
+      "confidence": "legacy_xml_unverified"
+    },
+    {
+      "start_m": 3687500,
+      "len_m": 600,
+      "grad_permille": -0.3,
+      "confidence": "legacy_xml_unverified"
+    },
+    {
+      "start_m": 3688100,
+      "len_m": 600,
+      "grad_permille": 0.7,
+      "confidence": "legacy_xml_unverified"
+    },
+    {
+      "start_m": 3688700,
+      "len_m": 300,
+      "grad_permille": 1.4,
+      "confidence": "legacy_xml_unverified"
+    },
+    {
+      "start_m": 3689000,
+      "len_m": 900,
+      "grad_permille": 2.5,
+      "confidence": "legacy_xml_unverified"
+    },
+    {
+      "start_m": 3689900,
+      "len_m": 200,
+      "grad_permille": 0.6,
+      "confidence": "legacy_xml_unverified"
+    },
+    {
+      "start_m": 3690100,
+      "len_m": 900,
+      "grad_permille": 8.1,
+      "confidence": "legacy_xml_unverified"
+    },
+    {
+      "start_m": 3691000,
+      "len_m": 600,
+      "grad_permille": 9.5,
+      "confidence": "legacy_xml_unverified"
+    },
+    {
+      "start_m": 3691600,
+      "len_m": 300,
+      "grad_permille": -0.3,
+      "confidence": "legacy_xml_unverified"
+    },
+    {
+      "start_m": 3691900,
+      "len_m": 500,
+      "grad_permille": -0.4,
+      "confidence": "legacy_xml_unverified"
+    },
+    {
+      "start_m": 3692400,
+      "len_m": 800,
+      "grad_permille": 8.2,
+      "confidence": "legacy_xml_unverified"
+    },
+    {
+      "start_m": 3693200,
+      "len_m": 200,
+      "grad_permille": -1.8,
+      "confidence": "legacy_xml_unverified"
+    },
+    {
+      "start_m": 3693400,
+      "len_m": 600,
+      "grad_permille": -8.2,
+      "confidence": "legacy_xml_unverified"
+    },
+    {
+      "start_m": 3694000,
+      "len_m": 300,
+      "grad_permille": -1.7,
+      "confidence": "legacy_xml_unverified"
+    },
+    {
+      "start_m": 3694300,
+      "len_m": 300,
+      "grad_permille": 2,
+      "confidence": "legacy_xml_unverified"
+    },
+    {
+      "start_m": 3694600,
+      "len_m": 200,
+      "grad_permille": 0,
+      "confidence": "legacy_xml_unverified"
+    },
+    {
+      "start_m": 3694800,
+      "len_m": 700,
+      "grad_permille": 8.1,
+      "confidence": "legacy_xml_unverified"
+    },
+    {
+      "start_m": 3695500,
+      "len_m": 800,
+      "grad_permille": 8.6,
+      "confidence": "legacy_xml_unverified"
+    },
+    {
+      "start_m": 3696300,
+      "len_m": 200,
+      "grad_permille": 5.2,
+      "confidence": "legacy_xml_unverified"
+    },
+    {
+      "start_m": 3696500,
+      "len_m": 200,
+      "grad_permille": -0.8,
+      "confidence": "legacy_xml_unverified"
+    },
+    {
+      "start_m": 3696700,
+      "len_m": 1200,
+      "grad_permille": -8.6,
+      "confidence": "legacy_xml_unverified"
+    },
+    {
+      "start_m": 3697900,
+      "len_m": 2200,
+      "grad_permille": -8.6,
+      "confidence": "legacy_xml_unverified"
+    },
+    {
+      "start_m": 3700100,
+      "len_m": 300,
+      "grad_permille": -4.2,
+      "confidence": "legacy_xml_unverified"
+    },
+    {
+      "start_m": 3700400,
+      "len_m": 1600,
+      "grad_permille": -2,
+      "confidence": "legacy_xml_unverified"
+    },
+    {
+      "start_m": 3702000,
+      "len_m": 400,
+      "grad_permille": 1,
+      "confidence": "legacy_xml_unverified"
+    },
+    {
+      "start_m": 3702400,
+      "len_m": 300,
+      "grad_permille": -0.9,
+      "confidence": "legacy_xml_unverified"
+    },
+    {
+      "start_m": 3702700,
+      "len_m": 300,
+      "grad_permille": 0.1,
+      "confidence": "legacy_xml_unverified"
+    },
+    {
+      "start_m": 3703000,
+      "len_m": 600,
+      "grad_permille": -0.1,
+      "confidence": "legacy_xml_unverified"
+    },
+    {
+      "start_m": 3703600,
+      "len_m": 400,
+      "grad_permille": -0.2,
+      "confidence": "legacy_xml_unverified"
+    },
+    {
+      "start_m": 3704000,
+      "len_m": 1200,
+      "grad_permille": 0.8,
+      "confidence": "legacy_xml_unverified"
+    },
+    {
+      "start_m": 3705200,
+      "len_m": 600,
+      "grad_permille": -2.1,
+      "confidence": "legacy_xml_unverified"
+    },
+    {
+      "start_m": 3705800,
+      "len_m": 900,
+      "grad_permille": 0.2,
+      "confidence": "legacy_xml_unverified"
+    },
+    {
+      "start_m": 3706700,
+      "len_m": 700,
+      "grad_permille": -0.1,
+      "confidence": "legacy_xml_unverified"
+    },
+    {
+      "start_m": 3707400,
+      "len_m": 600,
+      "grad_permille": -1,
+      "confidence": "legacy_xml_unverified"
+    },
+    {
+      "start_m": 3708000,
+      "len_m": 800,
+      "grad_permille": -0.3,
+      "confidence": "legacy_xml_unverified"
+    },
+    {
+      "start_m": 3708800,
+      "len_m": 700,
+      "grad_permille": 0.3,
+      "confidence": "legacy_xml_unverified"
+    },
+    {
+      "start_m": 3709500,
+      "len_m": 500,
+      "grad_permille": -0.4,
+      "confidence": "legacy_xml_unverified"
+    },
+    {
+      "start_m": 3710000,
+      "len_m": 500,
+      "grad_permille": -0.7,
+      "confidence": "legacy_xml_unverified"
+    },
+    {
+      "start_m": 3710500,
+      "len_m": 500,
+      "grad_permille": 0.1,
+      "confidence": "legacy_xml_unverified"
+    },
+    {
+      "start_m": 3711000,
+      "len_m": 200,
+      "grad_permille": 0.1,
+      "confidence": "legacy_xml_unverified"
+    },
+    {
+      "start_m": 3711200,
+      "len_m": 300,
+      "grad_permille": 2.6,
+      "confidence": "legacy_xml_unverified"
+    },
+    {
+      "start_m": 3711500,
+      "len_m": 400,
+      "grad_permille": 4,
+      "confidence": "legacy_xml_unverified"
+    },
+    {
+      "start_m": 3711900,
+      "len_m": 300,
+      "grad_permille": 4.2,
+      "confidence": "legacy_xml_unverified"
+    },
+    {
+      "start_m": 3712200,
+      "len_m": 400,
+      "grad_permille": -0.8,
+      "confidence": "legacy_xml_unverified"
+    },
+    {
+      "start_m": 3712600,
+      "len_m": 400,
+      "grad_permille": -3.8,
+      "confidence": "legacy_xml_unverified"
+    },
+    {
+      "start_m": 3713000,
+      "len_m": 300,
+      "grad_permille": -4.1,
+      "confidence": "legacy_xml_unverified"
+    },
+    {
+      "start_m": 3713300,
+      "len_m": 400,
+      "grad_permille": -2.9,
+      "confidence": "legacy_xml_unverified"
+    },
+    {
+      "start_m": 3713700,
+      "len_m": 600,
+      "grad_permille": -3.3,
+      "confidence": "legacy_xml_unverified"
+    },
+    {
+      "start_m": 3714300,
+      "len_m": 1500,
+      "grad_permille": -1.7,
+      "confidence": "legacy_xml_unverified"
+    },
+    {
+      "start_m": 3715800,
+      "len_m": 1100,
+      "grad_permille": -1.6,
+      "confidence": "legacy_xml_unverified"
+    },
+    {
+      "start_m": 3716900,
+      "len_m": 800,
+      "grad_permille": -0.1,
+      "confidence": "legacy_xml_unverified"
+    },
+    {
+      "start_m": 3717700,
+      "len_m": 500,
+      "grad_permille": -1.8,
+      "confidence": "legacy_xml_unverified"
+    },
+    {
+      "start_m": 3718200,
+      "len_m": 500,
+      "grad_permille": -1,
+      "confidence": "legacy_xml_unverified"
+    },
+    {
+      "start_m": 3718700,
+      "len_m": 300,
+      "grad_permille": -0.6,
+      "confidence": "legacy_xml_unverified"
+    },
+    {
+      "start_m": 3719000,
+      "len_m": 500,
+      "grad_permille": 0.2,
+      "confidence": "legacy_xml_unverified"
+    },
+    {
+      "start_m": 3719500,
+      "len_m": 1000,
+      "grad_permille": -1.6,
+      "confidence": "legacy_xml_unverified"
+    },
+    {
+      "start_m": 3720500,
+      "len_m": 100,
+      "grad_permille": 0.5,
+      "confidence": "legacy_xml_unverified"
+    },
+    {
+      "start_m": 3720600,
+      "len_m": 300,
+      "grad_permille": -1.7,
+      "confidence": "legacy_xml_unverified"
+    },
+    {
+      "start_m": 3720900,
+      "len_m": 1200,
+      "grad_permille": 0,
+      "confidence": "legacy_xml_unverified"
+    },
+    {
+      "start_m": 3722100,
+      "len_m": 500,
+      "grad_permille": 8.3,
+      "confidence": "legacy_xml_unverified"
+    },
+    {
+      "start_m": 3722600,
+      "len_m": 900,
+      "grad_permille": 9.4,
+      "confidence": "legacy_xml_unverified"
+    },
+    {
+      "start_m": 3723500,
+      "len_m": 600,
+      "grad_permille": 7.6,
+      "confidence": "legacy_xml_unverified"
+    },
+    {
+      "start_m": 3724100,
+      "len_m": 600,
+      "grad_permille": 9.4,
+      "confidence": "legacy_xml_unverified"
+    },
+    {
+      "start_m": 3724700,
+      "len_m": 1200,
+      "grad_permille": 8.7,
+      "confidence": "legacy_xml_unverified"
+    },
+    {
+      "start_m": 3725900,
+      "len_m": 500,
+      "grad_permille": 7.2,
+      "confidence": "legacy_xml_unverified"
+    },
+    {
+      "start_m": 3726400,
+      "len_m": 600,
+      "grad_permille": 9.1,
+      "confidence": "legacy_xml_unverified"
+    },
+    {
+      "start_m": 3727000,
+      "len_m": 300,
+      "grad_permille": 11.4,
+      "confidence": "legacy_xml_unverified"
+    },
+    {
+      "start_m": 3727300,
+      "len_m": 300,
+      "grad_permille": 4.2,
+      "confidence": "legacy_xml_unverified"
+    },
+    {
+      "start_m": 3727600,
+      "len_m": 100,
+      "grad_permille": -0.5,
+      "confidence": "legacy_xml_unverified"
+    },
+    {
+      "start_m": 3727700,
+      "len_m": 900,
+      "grad_permille": 2.7,
+      "confidence": "legacy_xml_unverified"
+    },
+    {
+      "start_m": 3728600,
+      "len_m": 700,
+      "grad_permille": 7.1,
+      "confidence": "legacy_xml_unverified"
+    },
+    {
+      "start_m": 3729300,
+      "len_m": 700,
+      "grad_permille": 8.1,
+      "confidence": "legacy_xml_unverified"
+    },
+    {
+      "start_m": 3730000,
+      "len_m": 900,
+      "grad_permille": 7.3,
+      "confidence": "legacy_xml_unverified"
+    },
+    {
+      "start_m": 3730900,
+      "len_m": 400,
+      "grad_permille": -5.3,
+      "confidence": "legacy_xml_unverified"
+    },
+    {
+      "start_m": 3731300,
+      "len_m": 900,
+      "grad_permille": -9,
+      "confidence": "legacy_xml_unverified"
+    },
+    {
+      "start_m": 3732200,
+      "len_m": 500,
+      "grad_permille": -8.9,
+      "confidence": "legacy_xml_unverified"
+    },
+    {
+      "start_m": 3732700,
+      "len_m": 700,
+      "grad_permille": -6.2,
+      "confidence": "legacy_xml_unverified"
+    },
+    {
+      "start_m": 3733400,
+      "len_m": 800,
+      "grad_permille": -1.2,
+      "confidence": "legacy_xml_unverified"
+    },
+    {
+      "start_m": 3734200,
+      "len_m": 300,
+      "grad_permille": -3.4,
+      "confidence": "legacy_xml_unverified"
+    },
+    {
+      "start_m": 3734500,
+      "len_m": 500,
+      "grad_permille": -9,
+      "confidence": "legacy_xml_unverified"
+    },
+    {
+      "start_m": 3735000,
+      "len_m": 500,
+      "grad_permille": -7.4,
+      "confidence": "legacy_xml_unverified"
+    },
+    {
+      "start_m": 3735500,
+      "len_m": 600,
+      "grad_permille": -8.5,
+      "confidence": "legacy_xml_unverified"
+    },
+    {
+      "start_m": 3736100,
+      "len_m": 1000,
+      "grad_permille": -9.1,
+      "confidence": "legacy_xml_unverified"
+    },
+    {
+      "start_m": 3737100,
+      "len_m": 1300,
+      "grad_permille": -7.8,
+      "confidence": "legacy_xml_unverified"
+    },
+    {
+      "start_m": 3738400,
+      "len_m": 400,
+      "grad_permille": 0.2,
+      "confidence": "legacy_xml_unverified"
+    },
+    {
+      "start_m": 3738800,
+      "len_m": 400,
+      "grad_permille": 1.9,
+      "confidence": "legacy_xml_unverified"
+    },
+    {
+      "start_m": 3739200,
+      "len_m": 700,
+      "grad_permille": 1.6,
+      "confidence": "legacy_xml_unverified"
+    },
+    {
+      "start_m": 3739900,
+      "len_m": 700,
+      "grad_permille": 2.1,
+      "confidence": "legacy_xml_unverified"
+    },
+    {
+      "start_m": 3740600,
+      "len_m": 200,
+      "grad_permille": 6.8,
+      "confidence": "legacy_xml_unverified"
+    },
+    {
+      "start_m": 3740800,
+      "len_m": 500,
+      "grad_permille": 9.9,
+      "confidence": "legacy_xml_unverified"
+    },
+    {
+      "start_m": 3741300,
+      "len_m": 300,
+      "grad_permille": 6.9,
+      "confidence": "legacy_xml_unverified"
+    },
+    {
+      "start_m": 3741600,
+      "len_m": 1000,
+      "grad_permille": 4.7,
+      "confidence": "legacy_xml_unverified"
+    },
+    {
+      "start_m": 3742600,
+      "len_m": 500,
+      "grad_permille": 2.3,
+      "confidence": "legacy_xml_unverified"
+    },
+    {
+      "start_m": 3743100,
+      "len_m": 500,
+      "grad_permille": 1.5,
+      "confidence": "legacy_xml_unverified"
+    },
+    {
+      "start_m": 3743600,
+      "len_m": 500,
+      "grad_permille": -0.3,
+      "confidence": "legacy_xml_unverified"
+    },
+    {
+      "start_m": 3744100,
+      "len_m": 1700,
+      "grad_permille": -7.6,
+      "confidence": "legacy_xml_unverified"
+    },
+    {
+      "start_m": 3745800,
+      "len_m": 900,
+      "grad_permille": -8.6,
+      "confidence": "legacy_xml_unverified"
+    },
+    {
+      "start_m": 3746700,
+      "len_m": 500,
+      "grad_permille": -7.7,
+      "confidence": "legacy_xml_unverified"
+    },
+    {
+      "start_m": 3747200,
+      "len_m": 1300,
+      "grad_permille": -8,
+      "confidence": "legacy_xml_unverified"
+    },
+    {
+      "start_m": 3748500,
+      "len_m": 600,
+      "grad_permille": -3.9,
+      "confidence": "legacy_xml_unverified"
+    },
+    {
+      "start_m": 3749100,
+      "len_m": 300,
+      "grad_permille": 0,
+      "confidence": "legacy_xml_unverified"
+    },
+    {
+      "start_m": 3749400,
+      "len_m": 700,
+      "grad_permille": 4.6,
+      "confidence": "legacy_xml_unverified"
+    },
+    {
+      "start_m": 3750100,
+      "len_m": 400,
+      "grad_permille": 0.1,
+      "confidence": "legacy_xml_unverified"
+    },
+    {
+      "start_m": 3750500,
+      "len_m": 300,
+      "grad_permille": 0.6,
+      "confidence": "legacy_xml_unverified"
+    },
+    {
+      "start_m": 3750800,
+      "len_m": 400,
+      "grad_permille": -0.6,
+      "confidence": "legacy_xml_unverified"
+    },
+    {
+      "start_m": 3751200,
+      "len_m": 600,
+      "grad_permille": 1.2,
+      "confidence": "legacy_xml_unverified"
+    },
+    {
+      "start_m": 3751800,
+      "len_m": 800,
+      "grad_permille": 3.9,
+      "confidence": "legacy_xml_unverified"
+    },
+    {
+      "start_m": 3752600,
+      "len_m": 800,
+      "grad_permille": 1.6,
+      "confidence": "legacy_xml_unverified"
+    },
+    {
+      "start_m": 3753400,
+      "len_m": 500,
+      "grad_permille": -3.1,
+      "confidence": "legacy_xml_unverified"
+    },
+    {
+      "start_m": 3753900,
+      "len_m": 400,
+      "grad_permille": -3.1,
+      "confidence": "legacy_xml_unverified"
+    },
+    {
+      "start_m": 3754300,
+      "len_m": 300,
+      "grad_permille": -0.4,
+      "confidence": "legacy_xml_unverified"
+    },
+    {
+      "start_m": 3754600,
+      "len_m": 400,
+      "grad_permille": 0.8,
+      "confidence": "legacy_xml_unverified"
+    },
+    {
+      "start_m": 3755000,
+      "len_m": 100,
+      "grad_permille": -0.5,
+      "confidence": "legacy_xml_unverified"
+    },
+    {
+      "start_m": 3755100,
+      "len_m": 700,
+      "grad_permille": 1.1,
+      "confidence": "legacy_xml_unverified"
+    },
+    {
+      "start_m": 3755800,
+      "len_m": 100,
+      "grad_permille": 0,
+      "confidence": "legacy_xml_unverified"
+    },
+    {
+      "start_m": 3755900,
+      "len_m": 300,
+      "grad_permille": 0.4,
+      "confidence": "legacy_xml_unverified"
+    },
+    {
+      "start_m": 3756200,
+      "len_m": 800,
+      "grad_permille": -2.1,
+      "confidence": "legacy_xml_unverified"
+    },
+    {
+      "start_m": 3757000,
+      "len_m": 700,
+      "grad_permille": 2,
+      "confidence": "legacy_xml_unverified"
+    },
+    {
+      "start_m": 3757700,
+      "len_m": 400,
+      "grad_permille": -2.1,
+      "confidence": "legacy_xml_unverified"
+    },
+    {
+      "start_m": 3758100,
+      "len_m": 200,
+      "grad_permille": 1,
+      "confidence": "legacy_xml_unverified"
+    },
+    {
+      "start_m": 3758300,
+      "len_m": 600,
+      "grad_permille": -0.8,
+      "confidence": "legacy_xml_unverified"
+    },
+    {
+      "start_m": 3758900,
+      "len_m": 1100,
+      "grad_permille": 1.1,
+      "confidence": "legacy_xml_unverified"
+    },
+    {
+      "start_m": 3760000,
+      "len_m": 800,
+      "grad_permille": -1.5,
+      "confidence": "legacy_xml_unverified"
+    },
+    {
+      "start_m": 3760800,
+      "len_m": 200,
+      "grad_permille": -1,
+      "confidence": "legacy_xml_unverified"
+    },
+    {
+      "start_m": 3761000,
+      "len_m": 200,
+      "grad_permille": 0,
+      "confidence": "legacy_xml_unverified"
+    },
+    {
+      "start_m": 3761200,
+      "len_m": 600,
+      "grad_permille": -0.9,
+      "confidence": "legacy_xml_unverified"
+    },
+    {
+      "start_m": 3761800,
+      "len_m": 500,
+      "grad_permille": 0.8,
+      "confidence": "legacy_xml_unverified"
+    },
+    {
+      "start_m": 3762300,
+      "len_m": 600,
+      "grad_permille": -0.8,
+      "confidence": "legacy_xml_unverified"
+    },
+    {
+      "start_m": 3762900,
+      "len_m": 600,
+      "grad_permille": 0,
+      "confidence": "legacy_xml_unverified"
+    },
+    {
+      "start_m": 3763500,
+      "len_m": 300,
+      "grad_permille": 0.6,
+      "confidence": "legacy_xml_unverified"
+    },
+    {
+      "start_m": 3763800,
+      "len_m": 800,
+      "grad_permille": 4,
+      "confidence": "legacy_xml_unverified"
+    },
+    {
+      "start_m": 3764600,
+      "len_m": 600,
+      "grad_permille": 2.9,
+      "confidence": "legacy_xml_unverified"
+    },
+    {
+      "start_m": 3765200,
+      "len_m": 1400,
+      "grad_permille": 3.2,
+      "confidence": "legacy_xml_unverified"
+    },
+    {
+      "start_m": 3766600,
+      "len_m": 600,
+      "grad_permille": 2.4,
+      "confidence": "legacy_xml_unverified"
+    },
+    {
+      "start_m": 3767200,
+      "len_m": 400,
+      "grad_permille": 0.5,
+      "confidence": "legacy_xml_unverified"
+    },
+    {
+      "start_m": 3767600,
+      "len_m": 300,
+      "grad_permille": -0.3,
+      "confidence": "legacy_xml_unverified"
+    },
+    {
+      "start_m": 3767900,
+      "len_m": 400,
+      "grad_permille": 0.3,
+      "confidence": "legacy_xml_unverified"
+    },
+    {
+      "start_m": 3768300,
+      "len_m": 600,
+      "grad_permille": -2.7,
+      "confidence": "legacy_xml_unverified"
+    },
+    {
+      "start_m": 3768900,
+      "len_m": 1000,
+      "grad_permille": 0,
+      "confidence": "legacy_xml_unverified"
+    },
+    {
+      "start_m": 3769900,
+      "len_m": 1400,
+      "grad_permille": 5.9,
+      "confidence": "legacy_xml_unverified"
+    },
+    {
+      "start_m": 3771300,
+      "len_m": 1400,
+      "grad_permille": 8.9,
+      "confidence": "legacy_xml_unverified"
+    },
+    {
+      "start_m": 3772700,
+      "len_m": 1300,
+      "grad_permille": 8.5,
+      "confidence": "legacy_xml_unverified"
+    },
+    {
+      "start_m": 3774000,
+      "len_m": 1000,
+      "grad_permille": 1,
+      "confidence": "legacy_xml_unverified"
+    },
+    {
+      "start_m": 3775000,
+      "len_m": 700,
+      "grad_permille": 1.6,
+      "confidence": "legacy_xml_unverified"
+    },
+    {
+      "start_m": 3775700,
+      "len_m": 600,
+      "grad_permille": 5.4,
+      "confidence": "legacy_xml_unverified"
+    },
+    {
+      "start_m": 3776300,
+      "len_m": 500,
+      "grad_permille": 3.2,
+      "confidence": "legacy_xml_unverified"
+    },
+    {
+      "start_m": 3776800,
+      "len_m": 700,
+      "grad_permille": 2.2,
+      "confidence": "legacy_xml_unverified"
+    },
+    {
+      "start_m": 3777500,
+      "len_m": 500,
+      "grad_permille": 1.4,
+      "confidence": "legacy_xml_unverified"
+    },
+    {
+      "start_m": 3778000,
+      "len_m": 300,
+      "grad_permille": 2.3,
+      "confidence": "legacy_xml_unverified"
+    },
+    {
+      "start_m": 3778300,
+      "len_m": 700,
+      "grad_permille": 1,
+      "confidence": "legacy_xml_unverified"
+    },
+    {
+      "start_m": 3779000,
+      "len_m": 300,
+      "grad_permille": -0.8,
+      "confidence": "legacy_xml_unverified"
+    },
+    {
+      "start_m": 3779300,
+      "len_m": 400,
+      "grad_permille": 0.2,
+      "confidence": "legacy_xml_unverified"
+    },
+    {
+      "start_m": 3779700,
+      "len_m": 700,
+      "grad_permille": 3,
+      "confidence": "legacy_xml_unverified"
+    },
+    {
+      "start_m": 3780400,
+      "len_m": 700,
+      "grad_permille": 2.7,
+      "confidence": "legacy_xml_unverified"
+    },
+    {
+      "start_m": 3781100,
+      "len_m": 800,
+      "grad_permille": 3.3,
+      "confidence": "legacy_xml_unverified"
+    },
+    {
+      "start_m": 3781900,
+      "len_m": 1600,
+      "grad_permille": 2.7,
+      "confidence": "legacy_xml_unverified"
+    },
+    {
+      "start_m": 3783500,
+      "len_m": 300,
+      "grad_permille": 4.4,
+      "confidence": "legacy_xml_unverified"
+    },
+    {
+      "start_m": 3783800,
+      "len_m": 300,
+      "grad_permille": 6.3,
+      "confidence": "legacy_xml_unverified"
+    },
+    {
+      "start_m": 3784100,
+      "len_m": 800,
+      "grad_permille": 4.5,
+      "confidence": "legacy_xml_unverified"
+    },
+    {
+      "start_m": 3784900,
+      "len_m": 700,
+      "grad_permille": 1.9,
+      "confidence": "legacy_xml_unverified"
+    },
+    {
+      "start_m": 3785600,
+      "len_m": 1100,
+      "grad_permille": 2.8,
+      "confidence": "legacy_xml_unverified"
+    },
+    {
+      "start_m": 3786700,
+      "len_m": 300,
+      "grad_permille": 4.7,
+      "confidence": "legacy_xml_unverified"
+    },
+    {
+      "start_m": 3787000,
+      "len_m": 300,
+      "grad_permille": 8.4,
+      "confidence": "legacy_xml_unverified"
+    },
+    {
+      "start_m": 3787300,
+      "len_m": 600,
+      "grad_permille": 7.3,
+      "confidence": "legacy_xml_unverified"
+    },
+    {
+      "start_m": 3787900,
+      "len_m": 300,
+      "grad_permille": 5.9,
+      "confidence": "legacy_xml_unverified"
+    },
+    {
+      "start_m": 3788200,
+      "len_m": 800,
+      "grad_permille": 6.6,
+      "confidence": "legacy_xml_unverified"
+    },
+    {
+      "start_m": 3789000,
+      "len_m": 300,
+      "grad_permille": 2.5,
+      "confidence": "legacy_xml_unverified"
+    },
+    {
+      "start_m": 3789300,
+      "len_m": 600,
+      "grad_permille": 1.2,
+      "confidence": "legacy_xml_unverified"
+    },
+    {
+      "start_m": 3789900,
+      "len_m": 300,
+      "grad_permille": 0.3,
+      "confidence": "legacy_xml_unverified"
+    },
+    {
+      "start_m": 3790200,
+      "len_m": 500,
+      "grad_permille": 0,
+      "confidence": "legacy_xml_unverified"
+    },
+    {
+      "start_m": 3790700,
+      "len_m": 500,
+      "grad_permille": -3.9,
+      "confidence": "legacy_xml_unverified"
+    },
+    {
+      "start_m": 3791200,
+      "len_m": 400,
+      "grad_permille": -6.8,
+      "confidence": "legacy_xml_unverified"
+    },
+    {
+      "start_m": 3791600,
+      "len_m": 700,
+      "grad_permille": -9.5,
+      "confidence": "legacy_xml_unverified"
+    },
+    {
+      "start_m": 3792300,
+      "len_m": 600,
+      "grad_permille": -6.6,
+      "confidence": "legacy_xml_unverified"
+    },
+    {
+      "start_m": 3792900,
+      "len_m": 400,
+      "grad_permille": -8.1,
+      "confidence": "legacy_xml_unverified"
+    },
+    {
+      "start_m": 3793300,
+      "len_m": 200,
+      "grad_permille": -3.4,
+      "confidence": "legacy_xml_unverified"
+    },
+    {
+      "start_m": 3793500,
+      "len_m": 100,
+      "grad_permille": 3,
+      "confidence": "legacy_xml_unverified"
+    },
+    {
+      "start_m": 3793600,
+      "len_m": 400,
+      "grad_permille": -3.3,
+      "confidence": "legacy_xml_unverified"
+    },
+    {
+      "start_m": 3794000,
+      "len_m": 400,
+      "grad_permille": -7.3,
+      "confidence": "legacy_xml_unverified"
+    },
+    {
+      "start_m": 3794400,
+      "len_m": 300,
+      "grad_permille": -8.8,
+      "confidence": "legacy_xml_unverified"
+    },
+    {
+      "start_m": 3794700,
+      "len_m": 800,
+      "grad_permille": -7.1,
+      "confidence": "legacy_xml_unverified"
+    },
+    {
+      "start_m": 3795500,
+      "len_m": 400,
+      "grad_permille": -4.3,
+      "confidence": "legacy_xml_unverified"
+    },
+    {
+      "start_m": 3795900,
+      "len_m": 1100,
+      "grad_permille": -4.2,
+      "confidence": "legacy_xml_unverified"
+    },
+    {
+      "start_m": 3797000,
+      "len_m": 400,
+      "grad_permille": -9.4,
+      "confidence": "legacy_xml_unverified"
+    },
+    {
+      "start_m": 3797400,
+      "len_m": 900,
+      "grad_permille": -8.4,
+      "confidence": "legacy_xml_unverified"
+    },
+    {
+      "start_m": 3798300,
+      "len_m": 800,
+      "grad_permille": -9,
+      "confidence": "legacy_xml_unverified"
+    },
+    {
+      "start_m": 3799100,
+      "len_m": 600,
+      "grad_permille": -4.9,
+      "confidence": "legacy_xml_unverified"
+    },
+    {
+      "start_m": 3799700,
+      "len_m": 600,
+      "grad_permille": -2.5,
+      "confidence": "legacy_xml_unverified"
+    },
+    {
+      "start_m": 3800300,
+      "len_m": 1100,
+      "grad_permille": -7.7,
+      "confidence": "legacy_xml_unverified"
+    },
+    {
+      "start_m": 3801400,
+      "len_m": 700,
+      "grad_permille": -8.5,
+      "confidence": "legacy_xml_unverified"
+    },
+    {
+      "start_m": 3802100,
+      "len_m": 400,
+      "grad_permille": -4.9,
+      "confidence": "legacy_xml_unverified"
+    },
+    {
+      "start_m": 3802500,
+      "len_m": 500,
+      "grad_permille": -3.3,
+      "confidence": "legacy_xml_unverified"
+    },
+    {
+      "start_m": 3803000,
+      "len_m": 400,
+      "grad_permille": -1.7,
+      "confidence": "legacy_xml_unverified"
+    },
+    {
+      "start_m": 3803400,
+      "len_m": 200,
+      "grad_permille": -0.5,
+      "confidence": "legacy_xml_unverified"
+    },
+    {
+      "start_m": 3803600,
+      "len_m": 200,
+      "grad_permille": 2.4,
+      "confidence": "legacy_xml_unverified"
+    },
+    {
+      "start_m": 3803800,
+      "len_m": 200,
+      "grad_permille": 0,
+      "confidence": "legacy_xml_unverified"
+    },
+    {
+      "start_m": 3804000,
+      "len_m": 1200,
+      "grad_permille": 8.3,
+      "confidence": "legacy_xml_unverified"
+    },
+    {
+      "start_m": 3805200,
+      "len_m": 200,
+      "grad_permille": 2.3,
+      "confidence": "legacy_xml_unverified"
+    },
+    {
+      "start_m": 3805400,
+      "len_m": 200,
+      "grad_permille": -2.2,
+      "confidence": "legacy_xml_unverified"
+    },
+    {
+      "start_m": 3805600,
+      "len_m": 700,
+      "grad_permille": -7.7,
+      "confidence": "legacy_xml_unverified"
+    },
+    {
+      "start_m": 3806300,
+      "len_m": 400,
+      "grad_permille": -9.5,
+      "confidence": "legacy_xml_unverified"
+    },
+    {
+      "start_m": 3806700,
+      "len_m": 600,
+      "grad_permille": -6.9,
+      "confidence": "legacy_xml_unverified"
+    },
+    {
+      "start_m": 3807300,
+      "len_m": 500,
+      "grad_permille": -8.5,
+      "confidence": "legacy_xml_unverified"
+    },
+    {
+      "start_m": 3807800,
+      "len_m": 400,
+      "grad_permille": -9.4,
+      "confidence": "legacy_xml_unverified"
+    },
+    {
+      "start_m": 3808200,
+      "len_m": 400,
+      "grad_permille": -6.3,
+      "confidence": "legacy_xml_unverified"
+    },
+    {
+      "start_m": 3808600,
+      "len_m": 500,
+      "grad_permille": -8.9,
+      "confidence": "legacy_xml_unverified"
+    },
+    {
+      "start_m": 3809100,
+      "len_m": 500,
+      "grad_permille": -7.2,
+      "confidence": "legacy_xml_unverified"
+    },
+    {
+      "start_m": 3809600,
+      "len_m": 300,
+      "grad_permille": -9.4,
+      "confidence": "legacy_xml_unverified"
+    },
+    {
+      "start_m": 3809900,
+      "len_m": 700,
+      "grad_permille": -9,
+      "confidence": "legacy_xml_unverified"
+    },
+    {
+      "start_m": 3810600,
+      "len_m": 300,
+      "grad_permille": -5.9,
+      "confidence": "legacy_xml_unverified"
+    },
+    {
+      "start_m": 3810900,
+      "len_m": 500,
+      "grad_permille": 2.3,
+      "confidence": "legacy_xml_unverified"
+    },
+    {
+      "start_m": 3811400,
+      "len_m": 300,
+      "grad_permille": -6.5,
+      "confidence": "legacy_xml_unverified"
+    },
+    {
+      "start_m": 3811700,
+      "len_m": 500,
+      "grad_permille": -9.3,
+      "confidence": "legacy_xml_unverified"
+    },
+    {
+      "start_m": 3812200,
+      "len_m": 600,
+      "grad_permille": -3.1,
+      "confidence": "legacy_xml_unverified"
+    },
+    {
+      "start_m": 3812800,
+      "len_m": 800,
+      "grad_permille": -1.2,
+      "confidence": "legacy_xml_unverified"
+    },
+    {
+      "start_m": 3813600,
+      "len_m": 200,
+      "grad_permille": -0.5,
+      "confidence": "legacy_xml_unverified"
+    },
+    {
+      "start_m": 3813800,
+      "len_m": 400,
+      "grad_permille": -5,
+      "confidence": "legacy_xml_unverified"
+    },
+    {
+      "start_m": 3814200,
+      "len_m": 300,
+      "grad_permille": -7.6,
+      "confidence": "legacy_xml_unverified"
+    },
+    {
+      "start_m": 3814500,
+      "len_m": 700,
+      "grad_permille": -0.1,
+      "confidence": "legacy_xml_unverified"
+    },
+    {
+      "start_m": 3815200,
+      "len_m": 500,
+      "grad_permille": 5.9,
+      "confidence": "legacy_xml_unverified"
+    },
+    {
+      "start_m": 3815700,
+      "len_m": 300,
+      "grad_permille": 0.5,
+      "confidence": "legacy_xml_unverified"
+    }
+  ],
+  "stations": [
+    {
+      "name": "Постышево",
+      "km": 3614.8,
+      "confidence": "legacy_anchor_named"
+    },
+    {
+      "name": "ДУКИ",
+      "km": 3626.36,
+      "confidence": "legacy_label_truncated"
+    },
+    {
+      "name": "БОЛЕН",
+      "km": 3634.716,
+      "confidence": "legacy_label_truncated"
+    },
+    {
+      "name": "МОНИ",
+      "km": 3659.458,
+      "confidence": "legacy_label_truncated"
+    },
+    {
+      "name": "ЭВОРОН",
+      "km": 3678.625,
+      "confidence": "legacy_label_truncated"
+    },
+    {
+      "name": "КАТАМА",
+      "km": 3687.926,
+      "confidence": "legacy_label_truncated"
+    },
+    {
+      "name": "ХАРПИЧ",
+      "km": 3702.207,
+      "confidence": "legacy_label_truncated"
+    },
+    {
+      "name": "ГОРИН",
+      "km": 3716.453,
+      "confidence": "legacy_label_truncated"
+    },
+    {
+      "name": "ПИЛЬ",
+      "km": 3728.4,
+      "confidence": "legacy_label_truncated"
+    },
+    {
+      "name": "МАВРИН",
+      "km": 3741.241,
+      "confidence": "legacy_label_truncated"
+    },
+    {
+      "name": "ХУРМУЛ",
+      "km": 3752.329,
+      "confidence": "legacy_label_truncated"
+    },
+    {
+      "name": "ХОЛОНИ",
+      "km": 3764.395,
+      "confidence": "legacy_label_truncated"
+    },
+    {
+      "name": "ЛИАН",
+      "km": 3776.256,
+      "confidence": "legacy_label_truncated"
+    },
+    {
+      "name": "ХАЛЬГА",
+      "km": 3790.976,
+      "confidence": "legacy_label_truncated"
+    },
+    {
+      "name": "СИЛИНК",
+      "km": 3800.896,
+      "confidence": "legacy_label_truncated"
+    },
+    {
+      "name": "Комсомольск-Сортировочный",
+      "km": 3814.5,
+      "confidence": "legacy_anchor_needs_review"
+    }
+  ],
+  "signals": [],
+  "whistle_points": [],
+  "speed": {
+    "established": null,
+    "permanent_restrictions": [],
+    "temporary_warnings": [],
+    "source": "manual_required"
+  },
+  "flags_for_review": [
+    {
+      "km": null,
+      "reason": "Светофоры и точки свистка ещё не перенесены вручную из PDF"
+    },
+    {
+      "km": null,
+      "reason": "Названия промежуточных станций из legacy XML местами обрезаны и требуют сверки с PDF"
+    },
+    {
+      "km": null,
+      "reason": "PDF содержит эксплуатационные стрелки для обоих направлений; физический профиль общий, режимные слои по направлениям ещё не разделены"
+    },
+    {
+      "km": null,
+      "reason": "Знаки и границы уклонов пока мигрированы из profile.xml, а не сверены по границам элементов PDF"
+    },
+    {
+      "km": null,
+      "reason": "Отдельный фрагмент Комсомольского узла на странице 17 не приклеен автоматически из-за неоднозначной шкалы"
+    }
+  ],
+  "provenance": [
+    {
+      "kind": "regime_map_pdf",
+      "file_name": "2-постышево-режимка-.pdf",
+      "sha256": "d0f282190ab71099961e635343106990acbb8509fa5b7d2a9562a1b608b4bb02",
+      "pages": 17,
+      "profile_pages": "2-16",
+      "role": "authoritative_map_pending_row_by_row_verification"
+    },
+    {
+      "kind": "legacy_profile_xml",
+      "path": "assets/tracker/maps/komsomol-sk-tche-9/profile.xml",
+      "role": "temporary_profile_seed_not_pdf_verified"
+    },
+    {
+      "kind": "legacy_geometry_xml",
+      "path": "assets/tracker/maps/komsomol-sk-tche-9/data.xml",
+      "role": "offline_gps_map_matching_seed"
+    }
+  ],
+  "runtime": {
+    "coordinate_unit": "m",
+    "coordinate_kind": "official_railway_chainage",
+    "coordinate_offset_m": -1000,
+    "movement_order": "ascending",
+    "default_path_id": "postyshevo-komsomolsk-sector-18",
+    "route_legs": [
+      {
+        "path_id": "postyshevo-komsomolsk-sector-18",
+        "sector": 18,
+        "from_chainage_m": 3614000,
+        "to_chainage_m": 3816000
+      }
+    ],
+    "profile_status": "legacy_seed_complete_pending_pdf_verification",
+    "profile_coverage": [
+      {
+        "start_m": 3614000,
+        "end_m": 3816000
+      }
+    ],
+    "profile_gaps": [],
+    "profile_applies_both_directions": true
+  },
+  "geometry": {
+    "status": "draft_from_legacy_centerline",
+    "source": {
+      "kind": "legacy_geometry_xml",
+      "path": "assets/tracker/maps/komsomol-sk-tche-9/data.xml",
+      "role": "offline_gps_map_matching_seed"
+    },
+    "paths": [
+      {
+        "path_id": "postyshevo-komsomolsk-sector-18",
+        "sector": 18,
+        "source": "assets/tracker/maps/komsomol-sk-tche-9/data.xml",
+        "points": [
+          {
+            "lat": 51.65823519944607,
+            "lon": 135.661229380896,
+            "sector": 18,
+            "path_id": "postyshevo-komsomolsk-sector-18",
+            "ordinate": 3613000,
+            "chainage_m": 3614000
+          },
+          {
+            "lat": 51.66268364376746,
+            "lon": 135.67388888337942,
+            "sector": 18,
+            "path_id": "postyshevo-komsomolsk-sector-18",
+            "ordinate": 3614000,
+            "chainage_m": 3615000
+          },
+          {
+            "lat": 51.66706906273139,
+            "lon": 135.6865294782556,
+            "sector": 18,
+            "path_id": "postyshevo-komsomolsk-sector-18",
+            "ordinate": 3615000,
+            "chainage_m": 3616000
+          },
+          {
+            "lat": 51.67139031042227,
+            "lon": 135.69914658186218,
+            "sector": 18,
+            "path_id": "postyshevo-komsomolsk-sector-18",
+            "ordinate": 3616000,
+            "chainage_m": 3617000
+          },
+          {
+            "lat": 51.67577171868163,
+            "lon": 135.71180837617678,
+            "sector": 18,
+            "path_id": "postyshevo-komsomolsk-sector-18",
+            "ordinate": 3617000,
+            "chainage_m": 3618000
+          },
+          {
+            "lat": 51.67997035340435,
+            "lon": 135.7245389254268,
+            "sector": 18,
+            "path_id": "postyshevo-komsomolsk-sector-18",
+            "ordinate": 3618000,
+            "chainage_m": 3619000
+          },
+          {
+            "lat": 51.680083799047786,
+            "lon": 135.73875572719737,
+            "sector": 18,
+            "path_id": "postyshevo-komsomolsk-sector-18",
+            "ordinate": 3619000,
+            "chainage_m": 3620000
+          },
+          {
+            "lat": 51.67939739560922,
+            "lon": 135.7414142513668,
+            "sector": 18,
+            "path_id": "postyshevo-komsomolsk-sector-18",
+            "ordinate": 3619200,
+            "chainage_m": 3620200
+          },
+          {
+            "lat": 51.67850415440661,
+            "lon": 135.74392495242503,
+            "sector": 18,
+            "path_id": "postyshevo-komsomolsk-sector-18",
+            "ordinate": 3619400,
+            "chainage_m": 3620400
+          },
+          {
+            "lat": 51.677416680511456,
+            "lon": 135.7462110540276,
+            "sector": 18,
+            "path_id": "postyshevo-komsomolsk-sector-18",
+            "ordinate": 3619600,
+            "chainage_m": 3620600
+          },
+          {
+            "lat": 51.676148724910824,
+            "lon": 135.74824620011591,
+            "sector": 18,
+            "path_id": "postyshevo-komsomolsk-sector-18",
+            "ordinate": 3619800,
+            "chainage_m": 3620800
+          },
+          {
+            "lat": 51.674746697186144,
+            "lon": 135.7500481523816,
+            "sector": 18,
+            "path_id": "postyshevo-komsomolsk-sector-18",
+            "ordinate": 3620000,
+            "chainage_m": 3621000
+          },
+          {
+            "lat": 51.67332748072761,
+            "lon": 135.75182718633548,
+            "sector": 18,
+            "path_id": "postyshevo-komsomolsk-sector-18",
+            "ordinate": 3620200,
+            "chainage_m": 3621200
+          },
+          {
+            "lat": 51.671912847931424,
+            "lon": 135.75363085747458,
+            "sector": 18,
+            "path_id": "postyshevo-komsomolsk-sector-18",
+            "ordinate": 3620400,
+            "chainage_m": 3621400
+          },
+          {
+            "lat": 51.67048618302155,
+            "lon": 135.75536921142498,
+            "sector": 18,
+            "path_id": "postyshevo-komsomolsk-sector-18",
+            "ordinate": 3620600,
+            "chainage_m": 3621600
+          },
+          {
+            "lat": 51.669080717550095,
+            "lon": 135.75715855861915,
+            "sector": 18,
+            "path_id": "postyshevo-komsomolsk-sector-18",
+            "ordinate": 3620800,
+            "chainage_m": 3621800
+          },
+          {
+            "lat": 51.6676557715136,
+            "lon": 135.75894103031982,
+            "sector": 18,
+            "path_id": "postyshevo-komsomolsk-sector-18",
+            "ordinate": 3621000,
+            "chainage_m": 3622000
+          },
+          {
+            "lat": 51.66434464841554,
+            "lon": 135.77205488833476,
+            "sector": 18,
+            "path_id": "postyshevo-komsomolsk-sector-18",
+            "ordinate": 3622000,
+            "chainage_m": 3623000
+          },
+          {
+            "lat": 51.66390977344904,
+            "lon": 135.77485779786858,
+            "sector": 18,
+            "path_id": "postyshevo-komsomolsk-sector-18",
+            "ordinate": 3622200,
+            "chainage_m": 3623200
+          },
+          {
+            "lat": 51.66347432552474,
+            "lon": 135.7776652910647,
+            "sector": 18,
+            "path_id": "postyshevo-komsomolsk-sector-18",
+            "ordinate": 3622400,
+            "chainage_m": 3623400
+          },
+          {
+            "lat": 51.66156809494034,
+            "lon": 135.78560304835844,
+            "sector": 18,
+            "path_id": "postyshevo-komsomolsk-sector-18",
+            "ordinate": 3623000,
+            "chainage_m": 3624000
+          },
+          {
+            "lat": 51.65334958832698,
+            "lon": 135.79124038010474,
+            "sector": 18,
+            "path_id": "postyshevo-komsomolsk-sector-18",
+            "ordinate": 3624000,
+            "chainage_m": 3625000
+          },
+          {
+            "lat": 51.65158659719137,
+            "lon": 135.79190730297827,
+            "sector": 18,
+            "path_id": "postyshevo-komsomolsk-sector-18",
+            "ordinate": 3624200,
+            "chainage_m": 3625200
+          },
+          {
+            "lat": 51.64821359465143,
+            "lon": 135.79384848398817,
+            "sector": 18,
+            "path_id": "postyshevo-komsomolsk-sector-18",
+            "ordinate": 3624600,
+            "chainage_m": 3625600
+          },
+          {
+            "lat": 51.64676916804991,
+            "lon": 135.79554501201955,
+            "sector": 18,
+            "path_id": "postyshevo-komsomolsk-sector-18",
+            "ordinate": 3624800,
+            "chainage_m": 3625800
+          },
+          {
+            "lat": 51.64543417638725,
+            "lon": 135.7974793175359,
+            "sector": 18,
+            "path_id": "postyshevo-komsomolsk-sector-18",
+            "ordinate": 3625000,
+            "chainage_m": 3626000
+          },
+          {
+            "lat": 51.642770495597695,
+            "lon": 135.80135766885115,
+            "sector": 18,
+            "path_id": "postyshevo-komsomolsk-sector-18",
+            "ordinate": 3625400,
+            "chainage_m": 3626400
+          },
+          {
+            "lat": 51.641433212103856,
+            "lon": 135.80330572535462,
+            "sector": 18,
+            "path_id": "postyshevo-komsomolsk-sector-18",
+            "ordinate": 3625600,
+            "chainage_m": 3626600
+          },
+          {
+            "lat": 51.64009936635679,
+            "lon": 135.80524289565992,
+            "sector": 18,
+            "path_id": "postyshevo-komsomolsk-sector-18",
+            "ordinate": 3625800,
+            "chainage_m": 3626800
+          },
+          {
+            "lat": 51.63880104399302,
+            "lon": 135.8071273538481,
+            "sector": 18,
+            "path_id": "postyshevo-komsomolsk-sector-18",
+            "ordinate": 3626000,
+            "chainage_m": 3627000
+          },
+          {
+            "lat": 51.63206649806906,
+            "lon": 135.81671637550744,
+            "sector": 18,
+            "path_id": "postyshevo-komsomolsk-sector-18",
+            "ordinate": 3627000,
+            "chainage_m": 3628000
+          },
+          {
+            "lat": 51.6233414967648,
+            "lon": 135.8194132878491,
+            "sector": 18,
+            "path_id": "postyshevo-komsomolsk-sector-18",
+            "ordinate": 3628000,
+            "chainage_m": 3629000
+          },
+          {
+            "lat": 51.62155100365502,
+            "lon": 135.81950782588532,
+            "sector": 18,
+            "path_id": "postyshevo-komsomolsk-sector-18",
+            "ordinate": 3628200,
+            "chainage_m": 3629200
+          },
+          {
+            "lat": 51.619759364629644,
+            "lon": 135.81959892617473,
+            "sector": 18,
+            "path_id": "postyshevo-komsomolsk-sector-18",
+            "ordinate": 3628400,
+            "chainage_m": 3629400
+          },
+          {
+            "lat": 51.61795913123735,
+            "lon": 135.81969346421093,
+            "sector": 18,
+            "path_id": "postyshevo-komsomolsk-sector-18",
+            "ordinate": 3628600,
+            "chainage_m": 3629600
+          },
+          {
+            "lat": 51.614378145017774,
+            "lon": 135.81953647377506,
+            "sector": 18,
+            "path_id": "postyshevo-komsomolsk-sector-18",
+            "ordinate": 3629000,
+            "chainage_m": 3630000
+          },
+          {
+            "lat": 51.60570184512611,
+            "lon": 135.81579677824624,
+            "sector": 18,
+            "path_id": "postyshevo-komsomolsk-sector-18",
+            "ordinate": 3630000,
+            "chainage_m": 3631000
+          },
+          {
+            "lat": 51.603899892860426,
+            "lon": 135.8150129719825,
+            "sector": 18,
+            "path_id": "postyshevo-komsomolsk-sector-18",
+            "ordinate": 3630200,
+            "chainage_m": 3631200
+          },
+          {
+            "lat": 51.596901213392904,
+            "lon": 135.81326258591838,
+            "sector": 18,
+            "path_id": "postyshevo-komsomolsk-sector-18",
+            "ordinate": 3631000,
+            "chainage_m": 3632000
+          },
+          {
+            "lat": 51.59152744223237,
+            "lon": 135.81432313079716,
+            "sector": 18,
+            "path_id": "postyshevo-komsomolsk-sector-18",
+            "ordinate": 3631600,
+            "chainage_m": 3632600
+          },
+          {
+            "lat": 51.5897002798237,
+            "lon": 135.81473852519863,
+            "sector": 18,
+            "path_id": "postyshevo-komsomolsk-sector-18",
+            "ordinate": 3631800,
+            "chainage_m": 3632800
+          },
+          {
+            "lat": 51.58799744925657,
+            "lon": 135.81512641762595,
+            "sector": 18,
+            "path_id": "postyshevo-komsomolsk-sector-18",
+            "ordinate": 3632000,
+            "chainage_m": 3633000
+          },
+          {
+            "lat": 51.58619205924411,
+            "lon": 135.81553493653388,
+            "sector": 18,
+            "path_id": "postyshevo-komsomolsk-sector-18",
+            "ordinate": 3632200,
+            "chainage_m": 3633200
+          },
+          {
+            "lat": 51.57938302880678,
+            "lon": 135.8187773046965,
+            "sector": 18,
+            "path_id": "postyshevo-komsomolsk-sector-18",
+            "ordinate": 3633000,
+            "chainage_m": 3634000
+          },
+          {
+            "lat": 51.575559108482075,
+            "lon": 135.82981476366191,
+            "sector": 18,
+            "path_id": "postyshevo-komsomolsk-sector-18",
+            "ordinate": 3633800,
+            "chainage_m": 3634800
+          },
+          {
+            "lat": 51.575355708464805,
+            "lon": 135.83120304039952,
+            "sector": 18,
+            "path_id": "postyshevo-komsomolsk-sector-18",
+            "ordinate": 3634000,
+            "chainage_m": 3635000
+          },
+          {
+            "lat": 51.57498385885576,
+            "lon": 135.83402600345613,
+            "sector": 18,
+            "path_id": "postyshevo-komsomolsk-sector-18",
+            "ordinate": 3634200,
+            "chainage_m": 3635200
+          },
+          {
+            "lat": 51.574475645291486,
+            "lon": 135.8367842222819,
+            "sector": 18,
+            "path_id": "postyshevo-komsomolsk-sector-18",
+            "ordinate": 3634400,
+            "chainage_m": 3635400
+          },
+          {
+            "lat": 51.57372449762207,
+            "lon": 135.83940951489916,
+            "sector": 18,
+            "path_id": "postyshevo-komsomolsk-sector-18",
+            "ordinate": 3634600,
+            "chainage_m": 3635600
+          },
+          {
+            "lat": 51.57227204961141,
+            "lon": 135.8446555164714,
+            "sector": 18,
+            "path_id": "postyshevo-komsomolsk-sector-18",
+            "ordinate": 3635000,
+            "chainage_m": 3636000
+          },
+          {
+            "lat": 51.57111181007627,
+            "lon": 135.85028368089294,
+            "sector": 18,
+            "path_id": "postyshevo-komsomolsk-sector-18",
+            "ordinate": 3635400,
+            "chainage_m": 3636400
+          },
+          {
+            "lat": 51.57057666749562,
+            "lon": 135.85287803378932,
+            "sector": 18,
+            "path_id": "postyshevo-komsomolsk-sector-18",
+            "ordinate": 3635600,
+            "chainage_m": 3636600
+          },
+          {
+            "lat": 51.57001230406742,
+            "lon": 135.8556087506409,
+            "sector": 18,
+            "path_id": "postyshevo-komsomolsk-sector-18",
+            "ordinate": 3635800,
+            "chainage_m": 3636800
+          },
+          {
+            "lat": 51.56944736768141,
+            "lon": 135.85834748890161,
+            "sector": 18,
+            "path_id": "postyshevo-komsomolsk-sector-18",
+            "ordinate": 3636000,
+            "chainage_m": 3637000
+          },
+          {
+            "lat": 51.56661122659552,
+            "lon": 135.87207842246193,
+            "sector": 18,
+            "path_id": "postyshevo-komsomolsk-sector-18",
+            "ordinate": 3637000,
+            "chainage_m": 3638000
+          },
+          {
+            "lat": 51.56378597170773,
+            "lon": 135.88573945517123,
+            "sector": 18,
+            "path_id": "postyshevo-komsomolsk-sector-18",
+            "ordinate": 3638000,
+            "chainage_m": 3639000
+          },
+          {
+            "lat": 51.56011216632535,
+            "lon": 135.8987496078253,
+            "sector": 18,
+            "path_id": "postyshevo-komsomolsk-sector-18",
+            "ordinate": 3639000,
+            "chainage_m": 3640000
+          },
+          {
+            "lat": 51.556186832470914,
+            "lon": 135.90469003424522,
+            "sector": 18,
+            "path_id": "postyshevo-komsomolsk-sector-18",
+            "ordinate": 3639600,
+            "chainage_m": 3640600
+          },
+          {
+            "lat": 51.55488048869801,
+            "lon": 135.90666215497606,
+            "sector": 18,
+            "path_id": "postyshevo-komsomolsk-sector-18",
+            "ordinate": 3639800,
+            "chainage_m": 3640800
+          },
+          {
+            "lat": 51.553564977600395,
+            "lon": 135.90864802669395,
+            "sector": 18,
+            "path_id": "postyshevo-komsomolsk-sector-18",
+            "ordinate": 3640000,
+            "chainage_m": 3641000
+          },
+          {
+            "lat": 51.54611824513707,
+            "lon": 135.91654739581543,
+            "sector": 18,
+            "path_id": "postyshevo-komsomolsk-sector-18",
+            "ordinate": 3641000,
+            "chainage_m": 3642000
+          },
+          {
+            "lat": 51.54453172500236,
+            "lon": 135.91806286918356,
+            "sector": 18,
+            "path_id": "postyshevo-komsomolsk-sector-18",
+            "ordinate": 3641200,
+            "chainage_m": 3642200
+          },
+          {
+            "lat": 51.542983593039914,
+            "lon": 135.9195405273372,
+            "sector": 18,
+            "path_id": "postyshevo-komsomolsk-sector-18",
+            "ordinate": 3641400,
+            "chainage_m": 3642400
+          },
+          {
+            "lat": 51.53835867771762,
+            "lon": 135.92395975081104,
+            "sector": 18,
+            "path_id": "postyshevo-komsomolsk-sector-18",
+            "ordinate": 3642000,
+            "chainage_m": 3643000
+          },
+          {
+            "lat": 51.53062775818792,
+            "lon": 135.93133887425452,
+            "sector": 18,
+            "path_id": "postyshevo-komsomolsk-sector-18",
+            "ordinate": 3643000,
+            "chainage_m": 3644000
+          },
+          {
+            "lat": 51.52293637274608,
+            "lon": 135.9386841931881,
+            "sector": 18,
+            "path_id": "postyshevo-komsomolsk-sector-18",
+            "ordinate": 3644000,
+            "chainage_m": 3645000
+          },
+          {
+            "lat": 51.51689968941658,
+            "lon": 135.94931943578132,
+            "sector": 18,
+            "path_id": "postyshevo-komsomolsk-sector-18",
+            "ordinate": 3645000,
+            "chainage_m": 3646000
+          },
+          {
+            "lat": 51.515891856654946,
+            "lon": 135.95165939541664,
+            "sector": 18,
+            "path_id": "postyshevo-komsomolsk-sector-18",
+            "ordinate": 3645200,
+            "chainage_m": 3646200
+          },
+          {
+            "lat": 51.51529368871683,
+            "lon": 135.9543580266317,
+            "sector": 18,
+            "path_id": "postyshevo-komsomolsk-sector-18",
+            "ordinate": 3645400,
+            "chainage_m": 3646400
+          },
+          {
+            "lat": 51.514575772599535,
+            "lon": 135.96287046059396,
+            "sector": 18,
+            "path_id": "postyshevo-komsomolsk-sector-18",
+            "ordinate": 3646000,
+            "chainage_m": 3647000
+          },
+          {
+            "lat": 51.51369628238401,
+            "lon": 135.96537371320088,
+            "sector": 18,
+            "path_id": "postyshevo-komsomolsk-sector-18",
+            "ordinate": 3646200,
+            "chainage_m": 3647200
+          },
+          {
+            "lat": 51.51277725808062,
+            "lon": 135.96785118270705,
+            "sector": 18,
+            "path_id": "postyshevo-komsomolsk-sector-18",
+            "ordinate": 3646400,
+            "chainage_m": 3647400
+          },
+          {
+            "lat": 51.510023622917224,
+            "lon": 135.97529619629697,
+            "sector": 18,
+            "path_id": "postyshevo-komsomolsk-sector-18",
+            "ordinate": 3647000,
+            "chainage_m": 3648000
+          },
+          {
+            "lat": 51.5091074634028,
+            "lon": 135.97777022805633,
+            "sector": 18,
+            "path_id": "postyshevo-komsomolsk-sector-18",
+            "ordinate": 3647200,
+            "chainage_m": 3648200
+          },
+          {
+            "lat": 51.50543365802043,
+            "lon": 135.98766406326266,
+            "sector": 18,
+            "path_id": "postyshevo-komsomolsk-sector-18",
+            "ordinate": 3648000,
+            "chainage_m": 3649000
+          },
+          {
+            "lat": 51.500970316796355,
+            "lon": 136.00016199164784,
+            "sector": 18,
+            "path_id": "postyshevo-komsomolsk-sector-18",
+            "ordinate": 3649000,
+            "chainage_m": 3650000
+          },
+          {
+            "lat": 51.49922909805696,
+            "lon": 136.01421550044682,
+            "sector": 18,
+            "path_id": "postyshevo-komsomolsk-sector-18",
+            "ordinate": 3650000,
+            "chainage_m": 3651000
+          },
+          {
+            "lat": 51.49849571207919,
+            "lon": 136.01678979982034,
+            "sector": 18,
+            "path_id": "postyshevo-komsomolsk-sector-18",
+            "ordinate": 3650200,
+            "chainage_m": 3651200
+          },
+          {
+            "lat": 51.497748575114336,
+            "lon": 136.0194150924376,
+            "sector": 18,
+            "path_id": "postyshevo-komsomolsk-sector-18",
+            "ordinate": 3650400,
+            "chainage_m": 3651400
+          },
+          {
+            "lat": 51.49700487589626,
+            "lon": 136.0220300718146,
+            "sector": 18,
+            "path_id": "postyshevo-komsomolsk-sector-18",
+            "ordinate": 3650600,
+            "chainage_m": 3651600
+          },
+          {
+            "lat": 51.49541549097256,
+            "lon": 136.02716606549015,
+            "sector": 18,
+            "path_id": "postyshevo-komsomolsk-sector-18",
+            "ordinate": 3651000,
+            "chainage_m": 3652000
+          },
+          {
+            "lat": 51.49137613851689,
+            "lon": 136.0400324057376,
+            "sector": 18,
+            "path_id": "postyshevo-komsomolsk-sector-18",
+            "ordinate": 3652000,
+            "chainage_m": 3653000
+          },
+          {
+            "lat": 51.49215937182284,
+            "lon": 136.0514004613508,
+            "sector": 18,
+            "path_id": "postyshevo-komsomolsk-sector-18",
+            "ordinate": 3652800,
+            "chainage_m": 3653800
+          },
+          {
+            "lat": 51.492940313297595,
+            "lon": 136.05403434833502,
+            "sector": 18,
+            "path_id": "postyshevo-komsomolsk-sector-18",
+            "ordinate": 3653000,
+            "chainage_m": 3654000
+          },
+          {
+            "lat": 51.493690315051424,
+            "lon": 136.05657197840966,
+            "sector": 18,
+            "path_id": "postyshevo-komsomolsk-sector-18",
+            "ordinate": 3653200,
+            "chainage_m": 3654200
+          },
+          {
+            "lat": 51.49396877253986,
+            "lon": 136.05939379555068,
+            "sector": 18,
+            "path_id": "postyshevo-komsomolsk-sector-18",
+            "ordinate": 3653400,
+            "chainage_m": 3654400
+          },
+          {
+            "lat": 51.49281540849826,
+            "lon": 136.06475266980854,
+            "sector": 18,
+            "path_id": "postyshevo-komsomolsk-sector-18",
+            "ordinate": 3653800,
+            "chainage_m": 3654800
+          },
+          {
+            "lat": 51.49179267883395,
+            "lon": 136.06719977255153,
+            "sector": 18,
+            "path_id": "postyshevo-komsomolsk-sector-18",
+            "ordinate": 3654000,
+            "chainage_m": 3655000
+          },
+          {
+            "lat": 51.49093496101464,
+            "lon": 136.06964687529455,
+            "sector": 18,
+            "path_id": "postyshevo-komsomolsk-sector-18",
+            "ordinate": 3654200,
+            "chainage_m": 3655200
+          },
+          {
+            "lat": 51.49041356942107,
+            "lon": 136.07240795890925,
+            "sector": 18,
+            "path_id": "postyshevo-komsomolsk-sector-18",
+            "ordinate": 3654400,
+            "chainage_m": 3655400
+          },
+          {
+            "lat": 51.48992540937962,
+            "lon": 136.0751810746377,
+            "sector": 18,
+            "path_id": "postyshevo-komsomolsk-sector-18",
+            "ordinate": 3654600,
+            "chainage_m": 3655600
+          },
+          {
+            "lat": 51.48918457495052,
+            "lon": 136.07779376218352,
+            "sector": 18,
+            "path_id": "postyshevo-komsomolsk-sector-18",
+            "ordinate": 3654800,
+            "chainage_m": 3655800
+          },
+          {
+            "lat": 51.48797162329822,
+            "lon": 136.0799343325061,
+            "sector": 18,
+            "path_id": "postyshevo-komsomolsk-sector-18",
+            "ordinate": 3655000,
+            "chainage_m": 3656000
+          },
+          {
+            "lat": 51.486669863187686,
+            "lon": 136.08186863802246,
+            "sector": 18,
+            "path_id": "postyshevo-komsomolsk-sector-18",
+            "ordinate": 3655200,
+            "chainage_m": 3656200
+          },
+          {
+            "lat": 51.48388987196571,
+            "lon": 136.08921567582942,
+            "sector": 18,
+            "path_id": "postyshevo-komsomolsk-sector-18",
+            "ordinate": 3655800,
+            "chainage_m": 3656800
+          },
+          {
+            "lat": 51.483030435273015,
+            "lon": 136.0917750783003,
+            "sector": 18,
+            "path_id": "postyshevo-komsomolsk-sector-18",
+            "ordinate": 3656000,
+            "chainage_m": 3657000
+          },
+          {
+            "lat": 51.480747198459426,
+            "lon": 136.0961736752935,
+            "sector": 18,
+            "path_id": "postyshevo-komsomolsk-sector-18",
+            "ordinate": 3656400,
+            "chainage_m": 3657400
+          },
+          {
+            "lat": 51.476816707984824,
+            "lon": 136.10203617945328,
+            "sector": 18,
+            "path_id": "postyshevo-komsomolsk-sector-18",
+            "ordinate": 3657000,
+            "chainage_m": 3658000
+          },
+          {
+            "lat": 51.475340195746774,
+            "lon": 136.1036353046595,
+            "sector": 18,
+            "path_id": "postyshevo-komsomolsk-sector-18",
+            "ordinate": 3657200,
+            "chainage_m": 3658200
+          },
+          {
+            "lat": 51.473011122309565,
+            "lon": 136.1144120678281,
+            "sector": 18,
+            "path_id": "postyshevo-komsomolsk-sector-18",
+            "ordinate": 3658000,
+            "chainage_m": 3659000
+          },
+          {
+            "lat": 51.47244045634561,
+            "lon": 136.11715424383559,
+            "sector": 18,
+            "path_id": "postyshevo-komsomolsk-sector-18",
+            "ordinate": 3658200,
+            "chainage_m": 3659200
+          },
+          {
+            "lat": 51.47242097578058,
+            "lon": 136.1200155950645,
+            "sector": 18,
+            "path_id": "postyshevo-komsomolsk-sector-18",
+            "ordinate": 3658400,
+            "chainage_m": 3659400
+          },
+          {
+            "lat": 51.47261750030431,
+            "lon": 136.12581106316225,
+            "sector": 18,
+            "path_id": "postyshevo-komsomolsk-sector-18",
+            "ordinate": 3658800,
+            "chainage_m": 3659800
+          },
+          {
+            "lat": 51.4727126112983,
+            "lon": 136.12868215467364,
+            "sector": 18,
+            "path_id": "postyshevo-komsomolsk-sector-18",
+            "ordinate": 3659000,
+            "chainage_m": 3660000
+          },
+          {
+            "lat": 51.47255275607346,
+            "lon": 136.1315910613995,
+            "sector": 18,
+            "path_id": "postyshevo-komsomolsk-sector-18",
+            "ordinate": 3659200,
+            "chainage_m": 3660200
+          },
+          {
+            "lat": 51.46846126445843,
+            "lon": 136.14088500979432,
+            "sector": 18,
+            "path_id": "postyshevo-komsomolsk-sector-18",
+            "ordinate": 3660000,
+            "chainage_m": 3661000
+          },
+          {
+            "lat": 51.46823265429817,
+            "lon": 136.14369651369503,
+            "sector": 18,
+            "path_id": "postyshevo-komsomolsk-sector-18",
+            "ordinate": 3660200,
+            "chainage_m": 3661200
+          },
+          {
+            "lat": 51.46886233491502,
+            "lon": 136.14633383842602,
+            "sector": 18,
+            "path_id": "postyshevo-komsomolsk-sector-18",
+            "ordinate": 3660400,
+            "chainage_m": 3661400
+          },
+          {
+            "lat": 51.47022597446744,
+            "lon": 136.14822517210777,
+            "sector": 18,
+            "path_id": "postyshevo-komsomolsk-sector-18",
+            "ordinate": 3660600,
+            "chainage_m": 3661600
+          },
+          {
+            "lat": 51.47338870149655,
+            "lon": 136.15107334530734,
+            "sector": 18,
+            "path_id": "postyshevo-komsomolsk-sector-18",
+            "ordinate": 3661000,
+            "chainage_m": 3662000
+          },
+          {
+            "lat": 51.47473515231511,
+            "lon": 136.15307984350588,
+            "sector": 18,
+            "path_id": "postyshevo-komsomolsk-sector-18",
+            "ordinate": 3661200,
+            "chainage_m": 3662200
+          },
+          {
+            "lat": 51.475302953490086,
+            "lon": 136.1557160223213,
+            "sector": 18,
+            "path_id": "postyshevo-komsomolsk-sector-18",
+            "ordinate": 3661400,
+            "chainage_m": 3662400
+          },
+          {
+            "lat": 51.47500215064765,
+            "lon": 136.1584805436828,
+            "sector": 18,
+            "path_id": "postyshevo-komsomolsk-sector-18",
+            "ordinate": 3661600,
+            "chainage_m": 3662600
+          },
+          {
+            "lat": 51.47296528568596,
+            "lon": 136.16309285393362,
+            "sector": 18,
+            "path_id": "postyshevo-komsomolsk-sector-18",
+            "ordinate": 3662000,
+            "chainage_m": 3663000
+          },
+          {
+            "lat": 51.47256879889172,
+            "lon": 136.16621661983265,
+            "sector": 18,
+            "path_id": "postyshevo-komsomolsk-sector-18",
+            "ordinate": 3662200,
+            "chainage_m": 3663200
+          },
+          {
+            "lat": 51.47242326761176,
+            "lon": 136.16907338739918,
+            "sector": 18,
+            "path_id": "postyshevo-komsomolsk-sector-18",
+            "ordinate": 3662400,
+            "chainage_m": 3663400
+          },
+          {
+            "lat": 51.47284095384441,
+            "lon": 136.1718470760854,
+            "sector": 18,
+            "path_id": "postyshevo-komsomolsk-sector-18",
+            "ordinate": 3662600,
+            "chainage_m": 3663600
+          },
+          {
+            "lat": 51.47356230770848,
+            "lon": 136.1745067461704,
+            "sector": 18,
+            "path_id": "postyshevo-komsomolsk-sector-18",
+            "ordinate": 3662800,
+            "chainage_m": 3663800
+          },
+          {
+            "lat": 51.473672888562945,
+            "lon": 136.17705984610552,
+            "sector": 18,
+            "path_id": "postyshevo-komsomolsk-sector-18",
+            "ordinate": 3663000,
+            "chainage_m": 3664000
+          },
+          {
+            "lat": 51.4728661639874,
+            "lon": 136.17989140352904,
+            "sector": 18,
+            "path_id": "postyshevo-komsomolsk-sector-18",
+            "ordinate": 3663200,
+            "chainage_m": 3664200
+          },
+          {
+            "lat": 51.47149163823688,
+            "lon": 136.18170424199283,
+            "sector": 18,
+            "path_id": "postyshevo-komsomolsk-sector-18",
+            "ordinate": 3663400,
+            "chainage_m": 3664400
+          },
+          {
+            "lat": 51.470069556989365,
+            "lon": 136.18348785960907,
+            "sector": 18,
+            "path_id": "postyshevo-komsomolsk-sector-18",
+            "ordinate": 3663600,
+            "chainage_m": 3664600
+          },
+          {
+            "lat": 51.46816676415173,
+            "lon": 136.1879947456256,
+            "sector": 18,
+            "path_id": "postyshevo-komsomolsk-sector-18",
+            "ordinate": 3664000,
+            "chainage_m": 3665000
+          },
+          {
+            "lat": 51.46676989304721,
+            "lon": 136.19017026637368,
+            "sector": 18,
+            "path_id": "postyshevo-komsomolsk-sector-18",
+            "ordinate": 3664200,
+            "chainage_m": 3665200
+          },
+          {
+            "lat": 51.46511920163944,
+            "lon": 136.1914067092956,
+            "sector": 18,
+            "path_id": "postyshevo-komsomolsk-sector-18",
+            "ordinate": 3664400,
+            "chainage_m": 3665400
+          },
+          {
+            "lat": 51.46342611135482,
+            "lon": 136.19233490092367,
+            "sector": 18,
+            "path_id": "postyshevo-komsomolsk-sector-18",
+            "ordinate": 3664600,
+            "chainage_m": 3665600
+          },
+          {
+            "lat": 51.46204299123738,
+            "lon": 136.19408242219885,
+            "sector": 18,
+            "path_id": "postyshevo-komsomolsk-sector-18",
+            "ordinate": 3664800,
+            "chainage_m": 3665800
+          },
+          {
+            "lat": 51.4616167106378,
+            "lon": 136.19656046466278,
+            "sector": 18,
+            "path_id": "postyshevo-komsomolsk-sector-18",
+            "ordinate": 3665000,
+            "chainage_m": 3666000
+          },
+          {
+            "lat": 51.461415029493914,
+            "lon": 136.19967219844813,
+            "sector": 18,
+            "path_id": "postyshevo-komsomolsk-sector-18",
+            "ordinate": 3665200,
+            "chainage_m": 3666200
+          },
+          {
+            "lat": 51.46018889981233,
+            "lon": 136.2019348087811,
+            "sector": 18,
+            "path_id": "postyshevo-komsomolsk-sector-18",
+            "ordinate": 3665400,
+            "chainage_m": 3666400
+          },
+          {
+            "lat": 51.456816470230194,
+            "lon": 136.20257365672268,
+            "sector": 18,
+            "path_id": "postyshevo-komsomolsk-sector-18",
+            "ordinate": 3665800,
+            "chainage_m": 3666800
+          },
+          {
+            "lat": 51.45525917094302,
+            "lon": 136.20348408665913,
+            "sector": 18,
+            "path_id": "postyshevo-komsomolsk-sector-18",
+            "ordinate": 3666000,
+            "chainage_m": 3667000
+          },
+          {
+            "lat": 51.45399408013138,
+            "lon": 136.20577820967083,
+            "sector": 18,
+            "path_id": "postyshevo-komsomolsk-sector-18",
+            "ordinate": 3666200,
+            "chainage_m": 3667200
+          },
+          {
+            "lat": 51.4531443837212,
+            "lon": 136.20837198960942,
+            "sector": 18,
+            "path_id": "postyshevo-komsomolsk-sector-18",
+            "ordinate": 3666400,
+            "chainage_m": 3667400
+          },
+          {
+            "lat": 51.45198987376401,
+            "lon": 136.21052287317232,
+            "sector": 18,
+            "path_id": "postyshevo-komsomolsk-sector-18",
+            "ordinate": 3666600,
+            "chainage_m": 3667600
+          },
+          {
+            "lat": 51.44875781884168,
+            "lon": 136.21204636794957,
+            "sector": 18,
+            "path_id": "postyshevo-komsomolsk-sector-18",
+            "ordinate": 3667000,
+            "chainage_m": 3668000
+          },
+          {
+            "lat": 51.446797157266744,
+            "lon": 136.21196844568945,
+            "sector": 18,
+            "path_id": "postyshevo-komsomolsk-sector-18",
+            "ordinate": 3667200,
+            "chainage_m": 3668200
+          },
+          {
+            "lat": 51.44155975006145,
+            "lon": 136.2132232232608,
+            "sector": 18,
+            "path_id": "postyshevo-komsomolsk-sector-18",
+            "ordinate": 3667800,
+            "chainage_m": 3668800
+          },
+          {
+            "lat": 51.44012792853142,
+            "lon": 136.2146344183102,
+            "sector": 18,
+            "path_id": "postyshevo-komsomolsk-sector-18",
+            "ordinate": 3668000,
+            "chainage_m": 3669000
+          },
+          {
+            "lat": 51.435483532644085,
+            "lon": 136.2194317939288,
+            "sector": 18,
+            "path_id": "postyshevo-komsomolsk-sector-18",
+            "ordinate": 3668600,
+            "chainage_m": 3669600
+          },
+          {
+            "lat": 51.43396805927597,
+            "lon": 136.2210102926544,
+            "sector": 18,
+            "path_id": "postyshevo-komsomolsk-sector-18",
+            "ordinate": 3668800,
+            "chainage_m": 3669800
+          },
+          {
+            "lat": 51.43272187607156,
+            "lon": 136.2226924967409,
+            "sector": 18,
+            "path_id": "postyshevo-komsomolsk-sector-18",
+            "ordinate": 3669000,
+            "chainage_m": 3670000
+          },
+          {
+            "lat": 51.427139548273594,
+            "lon": 136.23350822103959,
+            "sector": 18,
+            "path_id": "postyshevo-komsomolsk-sector-18",
+            "ordinate": 3670000,
+            "chainage_m": 3671000
+          },
+          {
+            "lat": 51.425481981372286,
+            "lon": 136.23515203695382,
+            "sector": 18,
+            "path_id": "postyshevo-komsomolsk-sector-18",
+            "ordinate": 3670200,
+            "chainage_m": 3671200
+          },
+          {
+            "lat": 51.42241150054818,
+            "lon": 136.23820017242392,
+            "sector": 18,
+            "path_id": "postyshevo-komsomolsk-sector-18",
+            "ordinate": 3670600,
+            "chainage_m": 3671600
+          },
+          {
+            "lat": 51.420980824933736,
+            "lon": 136.23987951172143,
+            "sector": 18,
+            "path_id": "postyshevo-komsomolsk-sector-18",
+            "ordinate": 3670800,
+            "chainage_m": 3671800
+          },
+          {
+            "lat": 51.42000679668202,
+            "lon": 136.2419576296444,
+            "sector": 18,
+            "path_id": "postyshevo-komsomolsk-sector-18",
+            "ordinate": 3671000,
+            "chainage_m": 3672000
+          },
+          {
+            "lat": 51.41836699147235,
+            "lon": 136.25334745765377,
+            "sector": 18,
+            "path_id": "postyshevo-komsomolsk-sector-18",
+            "ordinate": 3671800,
+            "chainage_m": 3672800
+          },
+          {
+            "lat": 51.41798310974961,
+            "lon": 136.2559463942125,
+            "sector": 18,
+            "path_id": "postyshevo-komsomolsk-sector-18",
+            "ordinate": 3672000,
+            "chainage_m": 3673000
+          },
+          {
+            "lat": 51.41736660716205,
+            "lon": 136.25892806657836,
+            "sector": 18,
+            "path_id": "postyshevo-komsomolsk-sector-18",
+            "ordinate": 3672200,
+            "chainage_m": 3673200
+          },
+          {
+            "lat": 51.41506159795224,
+            "lon": 136.26956445508716,
+            "sector": 18,
+            "path_id": "postyshevo-komsomolsk-sector-18",
+            "ordinate": 3673000,
+            "chainage_m": 3674000
+          },
+          {
+            "lat": 51.41211774080086,
+            "lon": 136.28311605285762,
+            "sector": 18,
+            "path_id": "postyshevo-komsomolsk-sector-18",
+            "ordinate": 3674000,
+            "chainage_m": 3675000
+          },
+          {
+            "lat": 51.409022049833766,
+            "lon": 136.29651008723437,
+            "sector": 18,
+            "path_id": "postyshevo-komsomolsk-sector-18",
+            "ordinate": 3675000,
+            "chainage_m": 3676000
+          },
+          {
+            "lat": 51.40525542528857,
+            "lon": 136.30628073651474,
+            "sector": 18,
+            "path_id": "postyshevo-komsomolsk-sector-18",
+            "ordinate": 3675800,
+            "chainage_m": 3676800
+          },
+          {
+            "lat": 51.404192015620815,
+            "lon": 136.3085559519192,
+            "sector": 18,
+            "path_id": "postyshevo-komsomolsk-sector-18",
+            "ordinate": 3676000,
+            "chainage_m": 3677000
+          },
+          {
+            "lat": 51.402732692116615,
+            "lon": 136.3102352912167,
+            "sector": 18,
+            "path_id": "postyshevo-komsomolsk-sector-18",
+            "ordinate": 3676200,
+            "chainage_m": 3677200
+          },
+          {
+            "lat": 51.39669027920917,
+            "lon": 136.31605482354186,
+            "sector": 18,
+            "path_id": "postyshevo-komsomolsk-sector-18",
+            "ordinate": 3677000,
+            "chainage_m": 3678000
+          },
+          {
+            "lat": 51.39601304309532,
+            "lon": 136.31863657136674,
+            "sector": 18,
+            "path_id": "postyshevo-komsomolsk-sector-18",
+            "ordinate": 3677200,
+            "chainage_m": 3678200
+          },
+          {
+            "lat": 51.39586751181536,
+            "lon": 136.3273002661869,
+            "sector": 18,
+            "path_id": "postyshevo-komsomolsk-sector-18",
+            "ordinate": 3677800,
+            "chainage_m": 3678800
+          },
+          {
+            "lat": 51.39591506731235,
+            "lon": 136.33014614755533,
+            "sector": 18,
+            "path_id": "postyshevo-komsomolsk-sector-18",
+            "ordinate": 3678000,
+            "chainage_m": 3679000
+          },
+          {
+            "lat": 51.39596491464053,
+            "lon": 136.33301609315112,
+            "sector": 18,
+            "path_id": "postyshevo-komsomolsk-sector-18",
+            "ordinate": 3678200,
+            "chainage_m": 3679200
+          },
+          {
+            "lat": 51.39601361605312,
+            "lon": 136.33590208156522,
+            "sector": 18,
+            "path_id": "postyshevo-komsomolsk-sector-18",
+            "ordinate": 3678400,
+            "chainage_m": 3679400
+          },
+          {
+            "lat": 51.39621930790157,
+            "lon": 136.3445187938462,
+            "sector": 18,
+            "path_id": "postyshevo-komsomolsk-sector-18",
+            "ordinate": 3679000,
+            "chainage_m": 3680000
+          },
+          {
+            "lat": 51.39804532439465,
+            "lon": 136.3585430817976,
+            "sector": 18,
+            "path_id": "postyshevo-komsomolsk-sector-18",
+            "ordinate": 3680000,
+            "chainage_m": 3681000
+          },
+          {
+            "lat": 51.39962496903583,
+            "lon": 136.36359370476168,
+            "sector": 18,
+            "path_id": "postyshevo-komsomolsk-sector-18",
+            "ordinate": 3680400,
+            "chainage_m": 3681400
+          },
+          {
+            "lat": 51.40042596403342,
+            "lon": 136.36616055568385,
+            "sector": 18,
+            "path_id": "postyshevo-komsomolsk-sector-18",
+            "ordinate": 3680600,
+            "chainage_m": 3681600
+          },
+          {
+            "lat": 51.401239564102504,
+            "lon": 136.3687560544958,
+            "sector": 18,
+            "path_id": "postyshevo-komsomolsk-sector-18",
+            "ordinate": 3680800,
+            "chainage_m": 3681800
+          },
+          {
+            "lat": 51.40206920698986,
+            "lon": 136.37140884908726,
+            "sector": 18,
+            "path_id": "postyshevo-komsomolsk-sector-18",
+            "ordinate": 3681000,
+            "chainage_m": 3682000
+          },
+          {
+            "lat": 51.40607876564018,
+            "lon": 136.38425857355867,
+            "sector": 18,
+            "path_id": "postyshevo-komsomolsk-sector-18",
+            "ordinate": 3682000,
+            "chainage_m": 3683000
+          },
+          {
+            "lat": 51.408011925240956,
+            "lon": 136.39765661863999,
+            "sector": 18,
+            "path_id": "postyshevo-komsomolsk-sector-18",
+            "ordinate": 3683000,
+            "chainage_m": 3684000
+          },
+          {
+            "lat": 51.405558519962206,
+            "lon": 136.40523627731176,
+            "sector": 18,
+            "path_id": "postyshevo-komsomolsk-sector-18",
+            "ordinate": 3683600,
+            "chainage_m": 3684600
+          },
+          {
+            "lat": 51.4043461412677,
+            "lon": 136.40736939918307,
+            "sector": 18,
+            "path_id": "postyshevo-komsomolsk-sector-18",
+            "ordinate": 3683800,
+            "chainage_m": 3684800
+          },
+          {
+            "lat": 51.40313318961542,
+            "lon": 136.40949564556078,
+            "sector": 18,
+            "path_id": "postyshevo-komsomolsk-sector-18",
+            "ordinate": 3684000,
+            "chainage_m": 3685000
+          },
+          {
+            "lat": 51.40070728631083,
+            "lon": 136.4137326684558,
+            "sector": 18,
+            "path_id": "postyshevo-komsomolsk-sector-18",
+            "ordinate": 3684400,
+            "chainage_m": 3685400
+          },
+          {
+            "lat": 51.399487459164995,
+            "lon": 136.41586349849587,
+            "sector": 18,
+            "path_id": "postyshevo-komsomolsk-sector-18",
+            "ordinate": 3684600,
+            "chainage_m": 3685600
+          },
+          {
+            "lat": 51.397015146279,
+            "lon": 136.42018589210232,
+            "sector": 18,
+            "path_id": "postyshevo-komsomolsk-sector-18",
+            "ordinate": 3685000,
+            "chainage_m": 3686000
+          },
+          {
+            "lat": 51.390257682043234,
+            "lon": 136.4294855700751,
+            "sector": 18,
+            "path_id": "postyshevo-komsomolsk-sector-18",
+            "ordinate": 3686000,
+            "chainage_m": 3687000
+          },
+          {
+            "lat": 51.385791476030185,
+            "lon": 136.43413168483582,
+            "sector": 18,
+            "path_id": "postyshevo-komsomolsk-sector-18",
+            "ordinate": 3686600,
+            "chainage_m": 3687600
+          },
+          {
+            "lat": 51.38433845506174,
+            "lon": 136.43564601228834,
+            "sector": 18,
+            "path_id": "postyshevo-komsomolsk-sector-18",
+            "ordinate": 3686800,
+            "chainage_m": 3687800
+          },
+          {
+            "lat": 51.38270495238782,
+            "lon": 136.43734884285547,
+            "sector": 18,
+            "path_id": "postyshevo-komsomolsk-sector-18",
+            "ordinate": 3687000,
+            "chainage_m": 3688000
+          },
+          {
+            "lat": 51.3751636818883,
+            "lon": 136.4452058131001,
+            "sector": 18,
+            "path_id": "postyshevo-komsomolsk-sector-18",
+            "ordinate": 3688000,
+            "chainage_m": 3689000
+          },
+          {
+            "lat": 51.367636162375874,
+            "lon": 136.4530541889778,
+            "sector": 18,
+            "path_id": "postyshevo-komsomolsk-sector-18",
+            "ordinate": 3689000,
+            "chainage_m": 3690000
+          },
+          {
+            "lat": 51.360176824841076,
+            "lon": 136.46083037217332,
+            "sector": 18,
+            "path_id": "postyshevo-komsomolsk-sector-18",
+            "ordinate": 3690000,
+            "chainage_m": 3691000
+          },
+          {
+            "lat": 51.352566226448346,
+            "lon": 136.4687618269313,
+            "sector": 18,
+            "path_id": "postyshevo-komsomolsk-sector-18",
+            "ordinate": 3691000,
+            "chainage_m": 3692000
+          },
+          {
+            "lat": 51.34507995989717,
+            "lon": 136.47654946928273,
+            "sector": 18,
+            "path_id": "postyshevo-komsomolsk-sector-18",
+            "ordinate": 3692000,
+            "chainage_m": 3693000
+          },
+          {
+            "lat": 51.33657554734405,
+            "lon": 136.4797316768769,
+            "sector": 18,
+            "path_id": "postyshevo-komsomolsk-sector-18",
+            "ordinate": 3693000,
+            "chainage_m": 3694000
+          },
+          {
+            "lat": 51.333074202258,
+            "lon": 136.47962338785362,
+            "sector": 18,
+            "path_id": "postyshevo-komsomolsk-sector-18",
+            "ordinate": 3693400,
+            "chainage_m": 3694400
+          },
+          {
+            "lat": 51.331261363794205,
+            "lon": 136.47956895686306,
+            "sector": 18,
+            "path_id": "postyshevo-komsomolsk-sector-18",
+            "ordinate": 3693600,
+            "chainage_m": 3694600
+          },
+          {
+            "lat": 51.32757839108711,
+            "lon": 136.47946238671318,
+            "sector": 18,
+            "path_id": "postyshevo-komsomolsk-sector-18",
+            "ordinate": 3694000,
+            "chainage_m": 3695000
+          },
+          {
+            "lat": 51.32006691439294,
+            "lon": 136.4862284453159,
+            "sector": 18,
+            "path_id": "postyshevo-komsomolsk-sector-18",
+            "ordinate": 3695000,
+            "chainage_m": 3696000
+          },
+          {
+            "lat": 51.319173673190335,
+            "lon": 136.48858043706488,
+            "sector": 18,
+            "path_id": "postyshevo-komsomolsk-sector-18",
+            "ordinate": 3695200,
+            "chainage_m": 3696200
+          },
+          {
+            "lat": 51.31817844550019,
+            "lon": 136.49097024402838,
+            "sector": 18,
+            "path_id": "postyshevo-komsomolsk-sector-18",
+            "ordinate": 3695400,
+            "chainage_m": 3696400
+          },
+          {
+            "lat": 51.31681824369455,
+            "lon": 136.49281688700208,
+            "sector": 18,
+            "path_id": "postyshevo-komsomolsk-sector-18",
+            "ordinate": 3695600,
+            "chainage_m": 3696600
+          },
+          {
+            "lat": 51.315154947215284,
+            "lon": 136.49385909723142,
+            "sector": 18,
+            "path_id": "postyshevo-komsomolsk-sector-18",
+            "ordinate": 3695800,
+            "chainage_m": 3696800
+          },
+          {
+            "lat": 51.313316898608505,
+            "lon": 136.4939691051281,
+            "sector": 18,
+            "path_id": "postyshevo-komsomolsk-sector-18",
+            "ordinate": 3696000,
+            "chainage_m": 3697000
+          },
+          {
+            "lat": 51.30981612648025,
+            "lon": 136.49320821717617,
+            "sector": 18,
+            "path_id": "postyshevo-komsomolsk-sector-18",
+            "ordinate": 3696400,
+            "chainage_m": 3697400
+          },
+          {
+            "lat": 51.308017039003545,
+            "lon": 136.49283006503137,
+            "sector": 18,
+            "path_id": "postyshevo-komsomolsk-sector-18",
+            "ordinate": 3696600,
+            "chainage_m": 3697600
+          },
+          {
+            "lat": 51.30622081631581,
+            "lon": 136.4928375134827,
+            "sector": 18,
+            "path_id": "postyshevo-komsomolsk-sector-18",
+            "ordinate": 3696800,
+            "chainage_m": 3697800
+          },
+          {
+            "lat": 51.30442287475469,
+            "lon": 136.49343797325201,
+            "sector": 18,
+            "path_id": "postyshevo-komsomolsk-sector-18",
+            "ordinate": 3697000,
+            "chainage_m": 3698000
+          },
+          {
+            "lat": 51.29872366356653,
+            "lon": 136.5000865755067,
+            "sector": 18,
+            "path_id": "postyshevo-komsomolsk-sector-18",
+            "ordinate": 3697800,
+            "chainage_m": 3698800
+          },
+          {
+            "lat": 51.29737663979017,
+            "lon": 136.50211541905927,
+            "sector": 18,
+            "path_id": "postyshevo-komsomolsk-sector-18",
+            "ordinate": 3698000,
+            "chainage_m": 3699000
+          },
+          {
+            "lat": 51.29611154897852,
+            "lon": 136.50402107668586,
+            "sector": 18,
+            "path_id": "postyshevo-komsomolsk-sector-18",
+            "ordinate": 3698200,
+            "chainage_m": 3699200
+          },
+          {
+            "lat": 51.29481437253035,
+            "lon": 136.50597658164065,
+            "sector": 18,
+            "path_id": "postyshevo-komsomolsk-sector-18",
+            "ordinate": 3698400,
+            "chainage_m": 3699400
+          },
+          {
+            "lat": 51.2908420561367,
+            "lon": 136.51196742834654,
+            "sector": 18,
+            "path_id": "postyshevo-komsomolsk-sector-18",
+            "ordinate": 3699000,
+            "chainage_m": 3700000
+          },
+          {
+            "lat": 51.28428570008702,
+            "lon": 136.52185324214375,
+            "sector": 18,
+            "path_id": "postyshevo-komsomolsk-sector-18",
+            "ordinate": 3700000,
+            "chainage_m": 3701000
+          },
+          {
+            "lat": 51.2777814831967,
+            "lon": 136.53167316579447,
+            "sector": 18,
+            "path_id": "postyshevo-komsomolsk-sector-18",
+            "ordinate": 3701000,
+            "chainage_m": 3702000
+          },
+          {
+            "lat": 51.27137524208934,
+            "lon": 136.54133323422036,
+            "sector": 18,
+            "path_id": "postyshevo-komsomolsk-sector-18",
+            "ordinate": 3702000,
+            "chainage_m": 3703000
+          },
+          {
+            "lat": 51.26471747250992,
+            "lon": 136.5513680170443,
+            "sector": 18,
+            "path_id": "postyshevo-komsomolsk-sector-18",
+            "ordinate": 3703000,
+            "chainage_m": 3704000
+          },
+          {
+            "lat": 51.25817486744732,
+            "lon": 136.56122804774068,
+            "sector": 18,
+            "path_id": "postyshevo-komsomolsk-sector-18",
+            "ordinate": 3704000,
+            "chainage_m": 3705000
+          },
+          {
+            "lat": 51.25164544041401,
+            "lon": 136.5710531280116,
+            "sector": 18,
+            "path_id": "postyshevo-komsomolsk-sector-18",
+            "ordinate": 3705000,
+            "chainage_m": 3706000
+          },
+          {
+            "lat": 51.24509939760464,
+            "lon": 136.58090227250992,
+            "sector": 18,
+            "path_id": "postyshevo-komsomolsk-sector-18",
+            "ordinate": 3706000,
+            "chainage_m": 3707000
+          },
+          {
+            "lat": 51.23858257564282,
+            "lon": 136.59070729925799,
+            "sector": 18,
+            "path_id": "postyshevo-komsomolsk-sector-18",
+            "ordinate": 3707000,
+            "chainage_m": 3708000
+          },
+          {
+            "lat": 51.2320548674829,
+            "lon": 136.60052550403535,
+            "sector": 18,
+            "path_id": "postyshevo-komsomolsk-sector-18",
+            "ordinate": 3708000,
+            "chainage_m": 3709000
+          },
+          {
+            "lat": 51.22548132269936,
+            "lon": 136.6104130367059,
+            "sector": 18,
+            "path_id": "postyshevo-komsomolsk-sector-18",
+            "ordinate": 3709000,
+            "chainage_m": 3710000
+          },
+          {
+            "lat": 51.21893929059456,
+            "lon": 136.6202392628924,
+            "sector": 18,
+            "path_id": "postyshevo-komsomolsk-sector-18",
+            "ordinate": 3710000,
+            "chainage_m": 3711000
+          },
+          {
+            "lat": 51.21242189567494,
+            "lon": 136.6300328304846,
+            "sector": 18,
+            "path_id": "postyshevo-komsomolsk-sector-18",
+            "ordinate": 3711000,
+            "chainage_m": 3712000
+          },
+          {
+            "lat": 51.20620071993542,
+            "lon": 136.64027101332576,
+            "sector": 18,
+            "path_id": "postyshevo-komsomolsk-sector-18",
+            "ordinate": 3712000,
+            "chainage_m": 3713000
+          },
+          {
+            "lat": 51.2048611446104,
+            "lon": 136.65141332356768,
+            "sector": 18,
+            "path_id": "postyshevo-komsomolsk-sector-18",
+            "ordinate": 3712800,
+            "chainage_m": 3713800
+          },
+          {
+            "lat": 51.20475858516507,
+            "lon": 136.65426035085167,
+            "sector": 18,
+            "path_id": "postyshevo-komsomolsk-sector-18",
+            "ordinate": 3713000,
+            "chainage_m": 3714000
+          },
+          {
+            "lat": 51.20422172371103,
+            "lon": 136.66850236276525,
+            "sector": 18,
+            "path_id": "postyshevo-komsomolsk-sector-18",
+            "ordinate": 3714000,
+            "chainage_m": 3715000
+          },
+          {
+            "lat": 51.203685435214794,
+            "lon": 136.68274380172102,
+            "sector": 18,
+            "path_id": "postyshevo-komsomolsk-sector-18",
+            "ordinate": 3715000,
+            "chainage_m": 3716000
+          },
+          {
+            "lat": 51.20022706196338,
+            "lon": 136.69573447381003,
+            "sector": 18,
+            "path_id": "postyshevo-komsomolsk-sector-18",
+            "ordinate": 3716000,
+            "chainage_m": 3717000
+          },
+          {
+            "lat": 51.19836265729803,
+            "lon": 136.70050778520127,
+            "sector": 18,
+            "path_id": "postyshevo-komsomolsk-sector-18",
+            "ordinate": 3716400,
+            "chainage_m": 3717400
+          },
+          {
+            "lat": 51.19741154735811,
+            "lon": 136.70294170991497,
+            "sector": 18,
+            "path_id": "postyshevo-komsomolsk-sector-18",
+            "ordinate": 3716600,
+            "chainage_m": 3717600
+          },
+          {
+            "lat": 51.195480106630725,
+            "lon": 136.70788461681357,
+            "sector": 18,
+            "path_id": "postyshevo-komsomolsk-sector-18",
+            "ordinate": 3717000,
+            "chainage_m": 3718000
+          },
+          {
+            "lat": 51.19072455693114,
+            "lon": 136.72003074911254,
+            "sector": 18,
+            "path_id": "postyshevo-komsomolsk-sector-18",
+            "ordinate": 3718000,
+            "chainage_m": 3719000
+          },
+          {
+            "lat": 51.185973017936114,
+            "lon": 136.73217057887575,
+            "sector": 18,
+            "path_id": "postyshevo-komsomolsk-sector-18",
+            "ordinate": 3719000,
+            "chainage_m": 3720000
+          },
+          {
+            "lat": 51.181208300911806,
+            "lon": 136.74436369371395,
+            "sector": 18,
+            "path_id": "postyshevo-komsomolsk-sector-18",
+            "ordinate": 3720000,
+            "chainage_m": 3721000
+          },
+          {
+            "lat": 51.17646249149474,
+            "lon": 136.7564903454479,
+            "sector": 18,
+            "path_id": "postyshevo-komsomolsk-sector-18",
+            "ordinate": 3721000,
+            "chainage_m": 3722000
+          },
+          {
+            "lat": 51.17170636883736,
+            "lon": 136.76862788337993,
+            "sector": 18,
+            "path_id": "postyshevo-komsomolsk-sector-18",
+            "ordinate": 3722000,
+            "chainage_m": 3723000
+          },
+          {
+            "lat": 51.17079307411192,
+            "lon": 136.77095638385936,
+            "sector": 18,
+            "path_id": "postyshevo-komsomolsk-sector-18",
+            "ordinate": 3722200,
+            "chainage_m": 3723200
+          },
+          {
+            "lat": 51.16982935910051,
+            "lon": 136.7734143728005,
+            "sector": 18,
+            "path_id": "postyshevo-komsomolsk-sector-18",
+            "ordinate": 3722400,
+            "chainage_m": 3723400
+          },
+          {
+            "lat": 51.1687607928126,
+            "lon": 136.77562140622732,
+            "sector": 18,
+            "path_id": "postyshevo-komsomolsk-sector-18",
+            "ordinate": 3722600,
+            "chainage_m": 3723600
+          },
+          {
+            "lat": 51.16532992153535,
+            "lon": 136.77679310491837,
+            "sector": 18,
+            "path_id": "postyshevo-komsomolsk-sector-18",
+            "ordinate": 3723000,
+            "chainage_m": 3724000
+          },
+          {
+            "lat": 51.1610178411692,
+            "lon": 136.77186624083802,
+            "sector": 18,
+            "path_id": "postyshevo-komsomolsk-sector-18",
+            "ordinate": 3723600,
+            "chainage_m": 3724600
+          },
+          {
+            "lat": 51.159599770626244,
+            "lon": 136.77007803955942,
+            "sector": 18,
+            "path_id": "postyshevo-komsomolsk-sector-18",
+            "ordinate": 3723800,
+            "chainage_m": 3724800
+          },
+          {
+            "lat": 51.15811924768363,
+            "lon": 136.76828640053407,
+            "sector": 18,
+            "path_id": "postyshevo-komsomolsk-sector-18",
+            "ordinate": 3724000,
+            "chainage_m": 3725000
+          },
+          {
+            "lat": 51.156538457126864,
+            "lon": 136.76718746748298,
+            "sector": 18,
+            "path_id": "postyshevo-komsomolsk-sector-18",
+            "ordinate": 3724200,
+            "chainage_m": 3725200
+          },
+          {
+            "lat": 51.15473421303,
+            "lon": 136.7669479711246,
+            "sector": 18,
+            "path_id": "postyshevo-komsomolsk-sector-18",
+            "ordinate": 3724400,
+            "chainage_m": 3725400
+          },
+          {
+            "lat": 51.153018777391374,
+            "lon": 136.7676446878035,
+            "sector": 18,
+            "path_id": "postyshevo-komsomolsk-sector-18",
+            "ordinate": 3724600,
+            "chainage_m": 3725600
+          },
+          {
+            "lat": 51.150406089845575,
+            "lon": 136.77153163348567,
+            "sector": 18,
+            "path_id": "postyshevo-komsomolsk-sector-18",
+            "ordinate": 3725000,
+            "chainage_m": 3726000
+          },
+          {
+            "lat": 51.14986349881359,
+            "lon": 136.77412369455084,
+            "sector": 18,
+            "path_id": "postyshevo-komsomolsk-sector-18",
+            "ordinate": 3725200,
+            "chainage_m": 3726200
+          },
+          {
+            "lat": 51.14986922839154,
+            "lon": 136.77702114212082,
+            "sector": 18,
+            "path_id": "postyshevo-komsomolsk-sector-18",
+            "ordinate": 3725400,
+            "chainage_m": 3726400
+          },
+          {
+            "lat": 51.15019065771461,
+            "lon": 136.77981889503442,
+            "sector": 18,
+            "path_id": "postyshevo-komsomolsk-sector-18",
+            "ordinate": 3725600,
+            "chainage_m": 3726600
+          },
+          {
+            "lat": 51.15051724365784,
+            "lon": 136.7826240963994,
+            "sector": 18,
+            "path_id": "postyshevo-komsomolsk-sector-18",
+            "ordinate": 3725800,
+            "chainage_m": 3726800
+          },
+          {
+            "lat": 51.15085127805239,
+            "lon": 136.78550550115114,
+            "sector": 18,
+            "path_id": "postyshevo-komsomolsk-sector-18",
+            "ordinate": 3726000,
+            "chainage_m": 3727000
+          },
+          {
+            "lat": 51.151151507937044,
+            "lon": 136.78817892222318,
+            "sector": 18,
+            "path_id": "postyshevo-komsomolsk-sector-18",
+            "ordinate": 3726200,
+            "chainage_m": 3727200
+          },
+          {
+            "lat": 51.15104150004038,
+            "lon": 136.7910036041532,
+            "sector": 18,
+            "path_id": "postyshevo-komsomolsk-sector-18",
+            "ordinate": 3726400,
+            "chainage_m": 3727400
+          },
+          {
+            "lat": 51.14936216074285,
+            "lon": 136.79925878006543,
+            "sector": 18,
+            "path_id": "postyshevo-komsomolsk-sector-18",
+            "ordinate": 3727000,
+            "chainage_m": 3728000
+          },
+          {
+            "lat": 51.149601657101215,
+            "lon": 136.80509893887123,
+            "sector": 18,
+            "path_id": "postyshevo-komsomolsk-sector-18",
+            "ordinate": 3727400,
+            "chainage_m": 3728400
+          },
+          {
+            "lat": 51.15222293901394,
+            "lon": 136.81231820708985,
+            "sector": 18,
+            "path_id": "postyshevo-komsomolsk-sector-18",
+            "ordinate": 3728000,
+            "chainage_m": 3729000
+          },
+          {
+            "lat": 51.15200292322061,
+            "lon": 136.81531706818956,
+            "sector": 18,
+            "path_id": "postyshevo-komsomolsk-sector-18",
+            "ordinate": 3728200,
+            "chainage_m": 3729200
+          },
+          {
+            "lat": 51.150956129328904,
+            "lon": 136.817572803029,
+            "sector": 18,
+            "path_id": "postyshevo-komsomolsk-sector-18",
+            "ordinate": 3728400,
+            "chainage_m": 3729400
+          },
+          {
+            "lat": 51.14947675230188,
+            "lon": 136.81917880372876,
+            "sector": 18,
+            "path_id": "postyshevo-komsomolsk-sector-18",
+            "ordinate": 3728600,
+            "chainage_m": 3729600
+          },
+          {
+            "lat": 51.14805753584334,
+            "lon": 136.8209142928902,
+            "sector": 18,
+            "path_id": "postyshevo-komsomolsk-sector-18",
+            "ordinate": 3728800,
+            "chainage_m": 3729800
+          },
+          {
+            "lat": 51.14724393577425,
+            "lon": 136.82319065421026,
+            "sector": 18,
+            "path_id": "postyshevo-komsomolsk-sector-18",
+            "ordinate": 3729000,
+            "chainage_m": 3730000
+          },
+          {
+            "lat": 51.147234195491734,
+            "lon": 136.82623076827122,
+            "sector": 18,
+            "path_id": "postyshevo-komsomolsk-sector-18",
+            "ordinate": 3729200,
+            "chainage_m": 3730200
+          },
+          {
+            "lat": 51.14804894147641,
+            "lon": 136.8287632417257,
+            "sector": 18,
+            "path_id": "postyshevo-komsomolsk-sector-18",
+            "ordinate": 3729400,
+            "chainage_m": 3730400
+          },
+          {
+            "lat": 51.14911235114417,
+            "lon": 136.83405278809033,
+            "sector": 18,
+            "path_id": "postyshevo-komsomolsk-sector-18",
+            "ordinate": 3729800,
+            "chainage_m": 3730800
+          },
+          {
+            "lat": 51.14848324348512,
+            "lon": 136.83645405420975,
+            "sector": 18,
+            "path_id": "postyshevo-komsomolsk-sector-18",
+            "ordinate": 3730000,
+            "chainage_m": 3731000
+          },
+          {
+            "lat": 51.14730237746935,
+            "lon": 136.83888683300788,
+            "sector": 18,
+            "path_id": "postyshevo-komsomolsk-sector-18",
+            "ordinate": 3730200,
+            "chainage_m": 3731200
+          },
+          {
+            "lat": 51.146120365538,
+            "lon": 136.84101537121677,
+            "sector": 18,
+            "path_id": "postyshevo-komsomolsk-sector-18",
+            "ordinate": 3730400,
+            "chainage_m": 3731400
+          },
+          {
+            "lat": 51.14449030061085,
+            "lon": 136.8421555572291,
+            "sector": 18,
+            "path_id": "postyshevo-komsomolsk-sector-18",
+            "ordinate": 3730600,
+            "chainage_m": 3731600
+          },
+          {
+            "lat": 51.142729028348626,
+            "lon": 136.84267924065384,
+            "sector": 18,
+            "path_id": "postyshevo-komsomolsk-sector-18",
+            "ordinate": 3730800,
+            "chainage_m": 3731800
+          },
+          {
+            "lat": 51.141088077223365,
+            "lon": 136.8431645359063,
+            "sector": 18,
+            "path_id": "postyshevo-komsomolsk-sector-18",
+            "ordinate": 3731000,
+            "chainage_m": 3732000
+          },
+          {
+            "lat": 51.13741656367217,
+            "lon": 136.84425200980147,
+            "sector": 18,
+            "path_id": "postyshevo-komsomolsk-sector-18",
+            "ordinate": 3731400,
+            "chainage_m": 3732400
+          },
+          {
+            "lat": 51.13570055507575,
+            "lon": 136.84509253888692,
+            "sector": 18,
+            "path_id": "postyshevo-komsomolsk-sector-18",
+            "ordinate": 3731600,
+            "chainage_m": 3732600
+          },
+          {
+            "lat": 51.13388313294959,
+            "lon": 136.84953811841933,
+            "sector": 18,
+            "path_id": "postyshevo-komsomolsk-sector-18",
+            "ordinate": 3732000,
+            "chainage_m": 3733000
+          },
+          {
+            "lat": 51.134099138038366,
+            "lon": 136.85820696985968,
+            "sector": 18,
+            "path_id": "postyshevo-komsomolsk-sector-18",
+            "ordinate": 3732600,
+            "chainage_m": 3733600
+          },
+          {
+            "lat": 51.133233971767716,
+            "lon": 136.8607113683822,
+            "sector": 18,
+            "path_id": "postyshevo-komsomolsk-sector-18",
+            "ordinate": 3732800,
+            "chainage_m": 3733800
+          },
+          {
+            "lat": 51.13214248716799,
+            "lon": 136.86265942488563,
+            "sector": 18,
+            "path_id": "postyshevo-komsomolsk-sector-18",
+            "ordinate": 3733000,
+            "chainage_m": 3734000
+          },
+          {
+            "lat": 51.1310578780618,
+            "lon": 136.86519820087585,
+            "sector": 18,
+            "path_id": "postyshevo-komsomolsk-sector-18",
+            "ordinate": 3733200,
+            "chainage_m": 3734200
+          },
+          {
+            "lat": 51.129883887539584,
+            "lon": 136.87059947401056,
+            "sector": 18,
+            "path_id": "postyshevo-komsomolsk-sector-18",
+            "ordinate": 3733600,
+            "chainage_m": 3734600
+          },
+          {
+            "lat": 51.129306346082096,
+            "lon": 136.87332789903095,
+            "sector": 18,
+            "path_id": "postyshevo-komsomolsk-sector-18",
+            "ordinate": 3733800,
+            "chainage_m": 3734800
+          },
+          {
+            "lat": 51.12874771223184,
+            "lon": 136.87587870713492,
+            "sector": 18,
+            "path_id": "postyshevo-komsomolsk-sector-18",
+            "ordinate": 3734000,
+            "chainage_m": 3735000
+          },
+          {
+            "lat": 51.12779259158735,
+            "lon": 136.8784919676385,
+            "sector": 18,
+            "path_id": "postyshevo-komsomolsk-sector-18",
+            "ordinate": 3734200,
+            "chainage_m": 3735200
+          },
+          {
+            "lat": 51.12159146937066,
+            "lon": 136.88302520971354,
+            "sector": 18,
+            "path_id": "postyshevo-komsomolsk-sector-18",
+            "ordinate": 3735000,
+            "chainage_m": 3736000
+          },
+          {
+            "lat": 51.11970013568893,
+            "lon": 136.88326757086088,
+            "sector": 18,
+            "path_id": "postyshevo-komsomolsk-sector-18",
+            "ordinate": 3735200,
+            "chainage_m": 3736200
+          },
+          {
+            "lat": 51.11790735074796,
+            "lon": 136.88349675397896,
+            "sector": 18,
+            "path_id": "postyshevo-komsomolsk-sector-18",
+            "ordinate": 3735400,
+            "chainage_m": 3736400
+          },
+          {
+            "lat": 51.11611227397582,
+            "lon": 136.88372479118144,
+            "sector": 18,
+            "path_id": "postyshevo-komsomolsk-sector-18",
+            "ordinate": 3735600,
+            "chainage_m": 3736600
+          },
+          {
+            "lat": 51.114326364528395,
+            "lon": 136.88395454725725,
+            "sector": 18,
+            "path_id": "postyshevo-komsomolsk-sector-18",
+            "ordinate": 3735800,
+            "chainage_m": 3736800
+          },
+          {
+            "lat": 51.11262467987686,
+            "lon": 136.884173417135,
+            "sector": 18,
+            "path_id": "postyshevo-komsomolsk-sector-18",
+            "ordinate": 3736000,
+            "chainage_m": 3737000
+          },
+          {
+            "lat": 51.10370372700667,
+            "lon": 136.88531818680966,
+            "sector": 18,
+            "path_id": "postyshevo-komsomolsk-sector-18",
+            "ordinate": 3737000,
+            "chainage_m": 3738000
+          },
+          {
+            "lat": 51.09471860286343,
+            "lon": 136.88642686014325,
+            "sector": 18,
+            "path_id": "postyshevo-komsomolsk-sector-18",
+            "ordinate": 3738000,
+            "chainage_m": 3739000
+          },
+          {
+            "lat": 51.08678371035867,
+            "lon": 136.87947516321495,
+            "sector": 18,
+            "path_id": "postyshevo-komsomolsk-sector-18",
+            "ordinate": 3739000,
+            "chainage_m": 3740000
+          },
+          {
+            "lat": 51.085183439236864,
+            "lon": 136.8781699653576,
+            "sector": 18,
+            "path_id": "postyshevo-komsomolsk-sector-18",
+            "ordinate": 3739200,
+            "chainage_m": 3740200
+          },
+          {
+            "lat": 51.08348347345871,
+            "lon": 136.87733230106113,
+            "sector": 18,
+            "path_id": "postyshevo-komsomolsk-sector-18",
+            "ordinate": 3739400,
+            "chainage_m": 3740400
+          },
+          {
+            "lat": 51.07847868711824,
+            "lon": 136.8751143814362,
+            "sector": 18,
+            "path_id": "postyshevo-komsomolsk-sector-18",
+            "ordinate": 3740000,
+            "chainage_m": 3741000
+          },
+          {
+            "lat": 51.076674443021375,
+            "lon": 136.8743139593964,
+            "sector": 18,
+            "path_id": "postyshevo-komsomolsk-sector-18",
+            "ordinate": 3740200,
+            "chainage_m": 3741200
+          },
+          {
+            "lat": 51.07507990147753,
+            "lon": 136.873607502435,
+            "sector": 18,
+            "path_id": "postyshevo-komsomolsk-sector-18",
+            "ordinate": 3740400,
+            "chainage_m": 3741400
+          },
+          {
+            "lat": 51.069743372573676,
+            "lon": 136.87176143241908,
+            "sector": 18,
+            "path_id": "postyshevo-komsomolsk-sector-18",
+            "ordinate": 3741000,
+            "chainage_m": 3742000
+          },
+          {
+            "lat": 51.06260374548855,
+            "lon": 136.87295203871736,
+            "sector": 18,
+            "path_id": "postyshevo-komsomolsk-sector-18",
+            "ordinate": 3741800,
+            "chainage_m": 3742800
+          },
+          {
+            "lat": 51.060873985905054,
+            "lon": 136.8733468066382,
+            "sector": 18,
+            "path_id": "postyshevo-komsomolsk-sector-18",
+            "ordinate": 3742000,
+            "chainage_m": 3743000
+          },
+          {
+            "lat": 51.05898207926553,
+            "lon": 136.8735811463764,
+            "sector": 18,
+            "path_id": "postyshevo-komsomolsk-sector-18",
+            "ordinate": 3742200,
+            "chainage_m": 3743200
+          },
+          {
+            "lat": 51.05729529151667,
+            "lon": 136.8728448956097,
+            "sector": 18,
+            "path_id": "postyshevo-komsomolsk-sector-18",
+            "ordinate": 3742400,
+            "chainage_m": 3743400
+          },
+          {
+            "lat": 51.052266440948806,
+            "lon": 136.8732740409982,
+            "sector": 18,
+            "path_id": "postyshevo-komsomolsk-sector-18",
+            "ordinate": 3743000,
+            "chainage_m": 3744000
+          },
+          {
+            "lat": 51.0510431760562,
+            "lon": 136.8753853904733,
+            "sector": 18,
+            "path_id": "postyshevo-komsomolsk-sector-18",
+            "ordinate": 3743200,
+            "chainage_m": 3744200
+          },
+          {
+            "lat": 51.05043469487777,
+            "lon": 136.87817970564012,
+            "sector": 18,
+            "path_id": "postyshevo-komsomolsk-sector-18",
+            "ordinate": 3743400,
+            "chainage_m": 3744400
+          },
+          {
+            "lat": 51.05053324361853,
+            "lon": 136.88114418927213,
+            "sector": 18,
+            "path_id": "postyshevo-komsomolsk-sector-18",
+            "ordinate": 3743600,
+            "chainage_m": 3744600
+          },
+          {
+            "lat": 51.050609447005286,
+            "lon": 136.88394652584813,
+            "sector": 18,
+            "path_id": "postyshevo-komsomolsk-sector-18",
+            "ordinate": 3743800,
+            "chainage_m": 3744800
+          },
+          {
+            "lat": 51.05009263907408,
+            "lon": 136.88642686014325,
+            "sector": 18,
+            "path_id": "postyshevo-komsomolsk-sector-18",
+            "ordinate": 3744000,
+            "chainage_m": 3745000
+          },
+          {
+            "lat": 51.04886479051911,
+            "lon": 136.88868775160284,
+            "sector": 18,
+            "path_id": "postyshevo-komsomolsk-sector-18",
+            "ordinate": 3744200,
+            "chainage_m": 3745200
+          },
+          {
+            "lat": 51.047285145877936,
+            "lon": 136.88990643283307,
+            "sector": 18,
+            "path_id": "postyshevo-komsomolsk-sector-18",
+            "ordinate": 3744400,
+            "chainage_m": 3745400
+          },
+          {
+            "lat": 51.045519862911135,
+            "lon": 136.89011900017508,
+            "sector": 18,
+            "path_id": "postyshevo-komsomolsk-sector-18",
+            "ordinate": 3744600,
+            "chainage_m": 3745600
+          },
+          {
+            "lat": 51.043728223885765,
+            "lon": 136.89014822102263,
+            "sector": 18,
+            "path_id": "postyshevo-komsomolsk-sector-18",
+            "ordinate": 3744800,
+            "chainage_m": 3745800
+          },
+          {
+            "lat": 51.0420769595202,
+            "lon": 136.89121334956377,
+            "sector": 18,
+            "path_id": "postyshevo-komsomolsk-sector-18",
+            "ordinate": 3745000,
+            "chainage_m": 3746000
+          },
+          {
+            "lat": 51.03925456942138,
+            "lon": 136.8948109515594,
+            "sector": 18,
+            "path_id": "postyshevo-komsomolsk-sector-18",
+            "ordinate": 3745400,
+            "chainage_m": 3746400
+          },
+          {
+            "lat": 51.037638828439114,
+            "lon": 136.89595744010745,
+            "sector": 18,
+            "path_id": "postyshevo-komsomolsk-sector-18",
+            "ordinate": 3745600,
+            "chainage_m": 3746600
+          },
+          {
+            "lat": 51.035971521255284,
+            "lon": 136.89707298893458,
+            "sector": 18,
+            "path_id": "postyshevo-komsomolsk-sector-18",
+            "ordinate": 3745800,
+            "chainage_m": 3746800
+          },
+          {
+            "lat": 51.034305359987044,
+            "lon": 136.89778574843172,
+            "sector": 18,
+            "path_id": "postyshevo-komsomolsk-sector-18",
+            "ordinate": 3746000,
+            "chainage_m": 3747000
+          },
+          {
+            "lat": 51.02969247677844,
+            "lon": 136.90118510703022,
+            "sector": 18,
+            "path_id": "postyshevo-komsomolsk-sector-18",
+            "ordinate": 3746600,
+            "chainage_m": 3747600
+          },
+          {
+            "lat": 51.02835977694697,
+            "lon": 136.90645402691428,
+            "sector": 18,
+            "path_id": "postyshevo-komsomolsk-sector-18",
+            "ordinate": 3747000,
+            "chainage_m": 3748000
+          },
+          {
+            "lat": 51.025154651041014,
+            "lon": 136.90847828680444,
+            "sector": 18,
+            "path_id": "postyshevo-komsomolsk-sector-18",
+            "ordinate": 3747400,
+            "chainage_m": 3748400
+          },
+          {
+            "lat": 51.02350224075985,
+            "lon": 136.9074584219291,
+            "sector": 18,
+            "path_id": "postyshevo-komsomolsk-sector-18",
+            "ordinate": 3747600,
+            "chainage_m": 3748600
+          },
+          {
+            "lat": 51.0207314168626,
+            "lon": 136.90376399006612,
+            "sector": 18,
+            "path_id": "postyshevo-komsomolsk-sector-18",
+            "ordinate": 3748000,
+            "chainage_m": 3749000
+          },
+          {
+            "lat": 51.01956143704494,
+            "lon": 136.90161940903894,
+            "sector": 18,
+            "path_id": "postyshevo-komsomolsk-sector-18",
+            "ordinate": 3748200,
+            "chainage_m": 3749200
+          },
+          {
+            "lat": 51.018440158639876,
+            "lon": 136.8993997705406,
+            "sector": 18,
+            "path_id": "postyshevo-komsomolsk-sector-18",
+            "ordinate": 3748400,
+            "chainage_m": 3749400
+          },
+          {
+            "lat": 51.01740940756643,
+            "lon": 136.89736061374774,
+            "sector": 18,
+            "path_id": "postyshevo-komsomolsk-sector-18",
+            "ordinate": 3748600,
+            "chainage_m": 3749600
+          },
+          {
+            "lat": 51.014164174614805,
+            "lon": 136.895044145382,
+            "sector": 18,
+            "path_id": "postyshevo-komsomolsk-sector-18",
+            "ordinate": 3749000,
+            "chainage_m": 3750000
+          },
+          {
+            "lat": 51.00751041573995,
+            "lon": 136.89958082520386,
+            "sector": 18,
+            "path_id": "postyshevo-komsomolsk-sector-18",
+            "ordinate": 3749800,
+            "chainage_m": 3750800
+          },
+          {
+            "lat": 51.00607458350536,
+            "lon": 136.90129568788467,
+            "sector": 18,
+            "path_id": "postyshevo-komsomolsk-sector-18",
+            "ordinate": 3750000,
+            "chainage_m": 3751000
+          },
+          {
+            "lat": 51.00487824762913,
+            "lon": 136.9033640655251,
+            "sector": 18,
+            "path_id": "postyshevo-komsomolsk-sector-18",
+            "ordinate": 3750200,
+            "chainage_m": 3751200
+          },
+          {
+            "lat": 51.00088645067045,
+            "lon": 136.9126706189914,
+            "sector": 18,
+            "path_id": "postyshevo-komsomolsk-sector-18",
+            "ordinate": 3751000,
+            "chainage_m": 3752000
+          },
+          {
+            "lat": 50.999332589130056,
+            "lon": 136.9138469013448,
+            "sector": 18,
+            "path_id": "postyshevo-komsomolsk-sector-18",
+            "ordinate": 3751200,
+            "chainage_m": 3752200
+          },
+          {
+            "lat": 50.99246568995541,
+            "lon": 136.9109775287068,
+            "sector": 18,
+            "path_id": "postyshevo-komsomolsk-sector-18",
+            "ordinate": 3752000,
+            "chainage_m": 3753000
+          },
+          {
+            "lat": 50.98392460810339,
+            "lon": 136.9086839786529,
+            "sector": 18,
+            "path_id": "postyshevo-komsomolsk-sector-18",
+            "ordinate": 3753000,
+            "chainage_m": 3754000
+          },
+          {
+            "lat": 50.978748507382186,
+            "lon": 136.90792882027893,
+            "sector": 18,
+            "path_id": "postyshevo-komsomolsk-sector-18",
+            "ordinate": 3753600,
+            "chainage_m": 3754600
+          },
+          {
+            "lat": 50.97711557766606,
+            "lon": 136.9090512445996,
+            "sector": 18,
+            "path_id": "postyshevo-komsomolsk-sector-18",
+            "ordinate": 3753800,
+            "chainage_m": 3754800
+          },
+          {
+            "lat": 50.9753457110369,
+            "lon": 136.90960758661865,
+            "sector": 18,
+            "path_id": "postyshevo-komsomolsk-sector-18",
+            "ordinate": 3754000,
+            "chainage_m": 3755000
+          },
+          {
+            "lat": 50.973576417365535,
+            "lon": 136.90927355222408,
+            "sector": 18,
+            "path_id": "postyshevo-komsomolsk-sector-18",
+            "ordinate": 3754200,
+            "chainage_m": 3755200
+          },
+          {
+            "lat": 50.97182259355465,
+            "lon": 136.90865647667874,
+            "sector": 18,
+            "path_id": "postyshevo-komsomolsk-sector-18",
+            "ordinate": 3754400,
+            "chainage_m": 3755400
+          },
+          {
+            "lat": 50.970052153967686,
+            "lon": 136.90803023380866,
+            "sector": 18,
+            "path_id": "postyshevo-komsomolsk-sector-18",
+            "ordinate": 3754600,
+            "chainage_m": 3755600
+          },
+          {
+            "lat": 50.96831093522829,
+            "lon": 136.9074131582633,
+            "sector": 18,
+            "path_id": "postyshevo-komsomolsk-sector-18",
+            "ordinate": 3754800,
+            "chainage_m": 3755800
+          },
+          {
+            "lat": 50.96657659198243,
+            "lon": 136.9066717508764,
+            "sector": 18,
+            "path_id": "postyshevo-komsomolsk-sector-18",
+            "ordinate": 3755000,
+            "chainage_m": 3756000
+          },
+          {
+            "lat": 50.96489954451608,
+            "lon": 136.9056713665661,
+            "sector": 18,
+            "path_id": "postyshevo-komsomolsk-sector-18",
+            "ordinate": 3755200,
+            "chainage_m": 3756200
+          },
+          {
+            "lat": 50.95861534341909,
+            "lon": 136.90009706017727,
+            "sector": 18,
+            "path_id": "postyshevo-komsomolsk-sector-18",
+            "ordinate": 3756000,
+            "chainage_m": 3757000
+          },
+          {
+            "lat": 50.957060908920894,
+            "lon": 136.89867326005637,
+            "sector": 18,
+            "path_id": "postyshevo-komsomolsk-sector-18",
+            "ordinate": 3756200,
+            "chainage_m": 3757200
+          },
+          {
+            "lat": 50.955500744844755,
+            "lon": 136.8972431573997,
+            "sector": 18,
+            "path_id": "postyshevo-komsomolsk-sector-18",
+            "ordinate": 3756400,
+            "chainage_m": 3757400
+          },
+          {
+            "lat": 50.950843743885926,
+            "lon": 136.8929648815435,
+            "sector": 18,
+            "path_id": "postyshevo-komsomolsk-sector-18",
+            "ordinate": 3757000,
+            "chainage_m": 3758000
+          },
+          {
+            "lat": 50.94351217593944,
+            "lon": 136.884950920863,
+            "sector": 18,
+            "path_id": "postyshevo-komsomolsk-sector-18",
+            "ordinate": 3758000,
+            "chainage_m": 3759000
+          },
+          {
+            "lat": 50.938996695556014,
+            "lon": 136.87608210715217,
+            "sector": 18,
+            "path_id": "postyshevo-komsomolsk-sector-18",
+            "ordinate": 3758800,
+            "chainage_m": 3759800
+          },
+          {
+            "lat": 50.93786510391063,
+            "lon": 136.8738641875272,
+            "sector": 18,
+            "path_id": "postyshevo-komsomolsk-sector-18",
+            "ordinate": 3759000,
+            "chainage_m": 3760000
+          },
+          {
+            "lat": 50.931519023371756,
+            "lon": 136.86418463853627,
+            "sector": 18,
+            "path_id": "postyshevo-komsomolsk-sector-18",
+            "ordinate": 3760000,
+            "chainage_m": 3761000
+          },
+          {
+            "lat": 50.924338143325386,
+            "lon": 136.86450205715477,
+            "sector": 18,
+            "path_id": "postyshevo-komsomolsk-sector-18",
+            "ordinate": 3760800,
+            "chainage_m": 3761800
+          },
+          {
+            "lat": 50.92255051500458,
+            "lon": 136.86468368477585,
+            "sector": 18,
+            "path_id": "postyshevo-komsomolsk-sector-18",
+            "ordinate": 3761000,
+            "chainage_m": 3762000
+          },
+          {
+            "lat": 50.9207588759792,
+            "lon": 136.86486703127025,
+            "sector": 18,
+            "path_id": "postyshevo-komsomolsk-sector-18",
+            "ordinate": 3761200,
+            "chainage_m": 3762200
+          },
+          {
+            "lat": 50.9135808607218,
+            "lon": 136.86558552034538,
+            "sector": 18,
+            "path_id": "postyshevo-komsomolsk-sector-18",
+            "ordinate": 3762000,
+            "chainage_m": 3763000
+          },
+          {
+            "lat": 50.90460662277667,
+            "lon": 136.866498242113,
+            "sector": 18,
+            "path_id": "postyshevo-komsomolsk-sector-18",
+            "ordinate": 3763000,
+            "chainage_m": 3764000
+          },
+          {
+            "lat": 50.89564670877642,
+            "lon": 136.86741039092286,
+            "sector": 18,
+            "path_id": "postyshevo-komsomolsk-sector-18",
+            "ordinate": 3764000,
+            "chainage_m": 3765000
+          },
+          {
+            "lat": 50.886661584633174,
+            "lon": 136.8683225397327,
+            "sector": 18,
+            "path_id": "postyshevo-komsomolsk-sector-18",
+            "ordinate": 3765000,
+            "chainage_m": 3766000
+          },
+          {
+            "lat": 50.87769307626599,
+            "lon": 136.86922724009122,
+            "sector": 18,
+            "path_id": "postyshevo-komsomolsk-sector-18",
+            "ordinate": 3766000,
+            "chainage_m": 3767000
+          },
+          {
+            "lat": 50.86875378874636,
+            "lon": 136.87013022157632,
+            "sector": 18,
+            "path_id": "postyshevo-komsomolsk-sector-18",
+            "ordinate": 3767000,
+            "chainage_m": 3768000
+          },
+          {
+            "lat": 50.860908277657636,
+            "lon": 136.87524558877126,
+            "sector": 18,
+            "path_id": "postyshevo-komsomolsk-sector-18",
+            "ordinate": 3768000,
+            "chainage_m": 3769000
+          },
+          {
+            "lat": 50.858823284241154,
+            "lon": 136.88300859393752,
+            "sector": 18,
+            "path_id": "postyshevo-komsomolsk-sector-18",
+            "ordinate": 3768600,
+            "chainage_m": 3769600
+          },
+          {
+            "lat": 50.85744933144843,
+            "lon": 136.88493430508692,
+            "sector": 18,
+            "path_id": "postyshevo-komsomolsk-sector-18",
+            "ordinate": 3768800,
+            "chainage_m": 3769800
+          },
+          {
+            "lat": 50.856112620912384,
+            "lon": 136.88671104720964,
+            "sector": 18,
+            "path_id": "postyshevo-komsomolsk-sector-18",
+            "ordinate": 3769000,
+            "chainage_m": 3770000
+          },
+          {
+            "lat": 50.854737522204076,
+            "lon": 136.8885399284917,
+            "sector": 18,
+            "path_id": "postyshevo-komsomolsk-sector-18",
+            "ordinate": 3769200,
+            "chainage_m": 3770200
+          },
+          {
+            "lat": 50.85197987633611,
+            "lon": 136.8922097231695,
+            "sector": 18,
+            "path_id": "postyshevo-komsomolsk-sector-18",
+            "ordinate": 3769600,
+            "chainage_m": 3770600
+          },
+          {
+            "lat": 50.850596756218664,
+            "lon": 136.89404662586068,
+            "sector": 18,
+            "path_id": "postyshevo-komsomolsk-sector-18",
+            "ordinate": 3769800,
+            "chainage_m": 3770800
+          },
+          {
+            "lat": 50.84921936567917,
+            "lon": 136.89587321531155,
+            "sector": 18,
+            "path_id": "postyshevo-komsomolsk-sector-18",
+            "ordinate": 3770000,
+            "chainage_m": 3771000
+          },
+          {
+            "lat": 50.842366790449404,
+            "lon": 136.90498152538078,
+            "sector": 18,
+            "path_id": "postyshevo-komsomolsk-sector-18",
+            "ordinate": 3771000,
+            "chainage_m": 3772000
+          },
+          {
+            "lat": 50.83547410817398,
+            "lon": 136.91413452615797,
+            "sector": 18,
+            "path_id": "postyshevo-komsomolsk-sector-18",
+            "ordinate": 3772000,
+            "chainage_m": 3773000
+          },
+          {
+            "lat": 50.830213209699096,
+            "lon": 136.92502072426547,
+            "sector": 18,
+            "path_id": "postyshevo-komsomolsk-sector-18",
+            "ordinate": 3773000,
+            "chainage_m": 3774000
+          },
+          {
+            "lat": 50.82612572878863,
+            "lon": 136.93069300643725,
+            "sector": 18,
+            "path_id": "postyshevo-komsomolsk-sector-18",
+            "ordinate": 3773600,
+            "chainage_m": 3774600
+          },
+          {
+            "lat": 50.824724846979535,
+            "lon": 136.93251443926798,
+            "sector": 18,
+            "path_id": "postyshevo-komsomolsk-sector-18",
+            "ordinate": 3773800,
+            "chainage_m": 3774800
+          },
+          {
+            "lat": 50.82336063446933,
+            "lon": 136.93424763659826,
+            "sector": 18,
+            "path_id": "postyshevo-komsomolsk-sector-18",
+            "ordinate": 3774000,
+            "chainage_m": 3775000
+          },
+          {
+            "lat": 50.82202678872226,
+            "lon": 136.93592468406462,
+            "sector": 18,
+            "path_id": "postyshevo-komsomolsk-sector-18",
+            "ordinate": 3774200,
+            "chainage_m": 3775200
+          },
+          {
+            "lat": 50.81636367387519,
+            "lon": 136.94312905538055,
+            "sector": 18,
+            "path_id": "postyshevo-komsomolsk-sector-18",
+            "ordinate": 3775000,
+            "chainage_m": 3776000
+          },
+          {
+            "lat": 50.80792056780614,
+            "lon": 136.94601275196345,
+            "sector": 18,
+            "path_id": "postyshevo-komsomolsk-sector-18",
+            "ordinate": 3776000,
+            "chainage_m": 3777000
+          },
+          {
+            "lat": 50.80611231300471,
+            "lon": 136.94493501835083,
+            "sector": 18,
+            "path_id": "postyshevo-komsomolsk-sector-18",
+            "ordinate": 3776200,
+            "chainage_m": 3777200
+          },
+          {
+            "lat": 50.804455892018986,
+            "lon": 136.94387504642984,
+            "sector": 18,
+            "path_id": "postyshevo-komsomolsk-sector-18",
+            "ordinate": 3776400,
+            "chainage_m": 3777400
+          },
+          {
+            "lat": 50.80111039145322,
+            "lon": 136.9417339031494,
+            "sector": 18,
+            "path_id": "postyshevo-komsomolsk-sector-18",
+            "ordinate": 3776800,
+            "chainage_m": 3777800
+          },
+          {
+            "lat": 50.79958403188699,
+            "lon": 136.94075586419316,
+            "sector": 18,
+            "path_id": "postyshevo-komsomolsk-sector-18",
+            "ordinate": 3777000,
+            "chainage_m": 3778000
+          },
+          {
+            "lat": 50.79777635004335,
+            "lon": 136.93960020832037,
+            "sector": 18,
+            "path_id": "postyshevo-komsomolsk-sector-18",
+            "ordinate": 3777200,
+            "chainage_m": 3778200
+          },
+          {
+            "lat": 50.79126697653287,
+            "lon": 136.93544683726347,
+            "sector": 18,
+            "path_id": "postyshevo-komsomolsk-sector-18",
+            "ordinate": 3778000,
+            "chainage_m": 3779000
+          },
+          {
+            "lat": 50.78332119783,
+            "lon": 136.92878677585287,
+            "sector": 18,
+            "path_id": "postyshevo-komsomolsk-sector-18",
+            "ordinate": 3779000,
+            "chainage_m": 3780000
+          },
+          {
+            "lat": 50.781622950925225,
+            "lon": 136.92731370136158,
+            "sector": 18,
+            "path_id": "postyshevo-komsomolsk-sector-18",
+            "ordinate": 3779200,
+            "chainage_m": 3780200
+          },
+          {
+            "lat": 50.77541438025719,
+            "lon": 136.92193821132767,
+            "sector": 18,
+            "path_id": "postyshevo-komsomolsk-sector-18",
+            "ordinate": 3780000,
+            "chainage_m": 3781000
+          },
+          {
+            "lat": 50.767563139590514,
+            "lon": 136.9151435048352,
+            "sector": 18,
+            "path_id": "postyshevo-komsomolsk-sector-18",
+            "ordinate": 3781000,
+            "chainage_m": 3782000
+          },
+          {
+            "lat": 50.759167016060665,
+            "lon": 136.910649796848,
+            "sector": 18,
+            "path_id": "postyshevo-komsomolsk-sector-18",
+            "ordinate": 3782000,
+            "chainage_m": 3783000
+          },
+          {
+            "lat": 50.75366203756505,
+            "lon": 136.9098035381846,
+            "sector": 18,
+            "path_id": "postyshevo-komsomolsk-sector-18",
+            "ordinate": 3782600,
+            "chainage_m": 3783600
+          },
+          {
+            "lat": 50.75187154445526,
+            "lon": 136.90952737252735,
+            "sector": 18,
+            "path_id": "postyshevo-komsomolsk-sector-18",
+            "ordinate": 3782800,
+            "chainage_m": 3783800
+          },
+          {
+            "lat": 50.750244344317096,
+            "lon": 136.90927756292865,
+            "sector": 18,
+            "path_id": "postyshevo-komsomolsk-sector-18",
+            "ordinate": 3783000,
+            "chainage_m": 3784000
+          },
+          {
+            "lat": 50.74130333792408,
+            "lon": 136.9079059019671,
+            "sector": 18,
+            "path_id": "postyshevo-komsomolsk-sector-18",
+            "ordinate": 3784000,
+            "chainage_m": 3785000
+          },
+          {
+            "lat": 50.732322797443196,
+            "lon": 136.9065308032588,
+            "sector": 18,
+            "path_id": "postyshevo-komsomolsk-sector-18",
+            "ordinate": 3785000,
+            "chainage_m": 3786000
+          },
+          {
+            "lat": 50.72339840682624,
+            "lon": 136.90516086117066,
+            "sector": 18,
+            "path_id": "postyshevo-komsomolsk-sector-18",
+            "ordinate": 3786000,
+            "chainage_m": 3787000
+          },
+          {
+            "lat": 50.71444479536173,
+            "lon": 136.90379378387146,
+            "sector": 18,
+            "path_id": "postyshevo-komsomolsk-sector-18",
+            "ordinate": 3787000,
+            "chainage_m": 3788000
+          },
+          {
+            "lat": 50.70547800586793,
+            "lon": 136.90241639333195,
+            "sector": 18,
+            "path_id": "postyshevo-komsomolsk-sector-18",
+            "ordinate": 3788000,
+            "chainage_m": 3789000
+          },
+          {
+            "lat": 50.696539291306095,
+            "lon": 136.9010619211043,
+            "sector": 18,
+            "path_id": "postyshevo-komsomolsk-sector-18",
+            "ordinate": 3789000,
+            "chainage_m": 3790000
+          },
+          {
+            "lat": 50.687600576744266,
+            "lon": 136.89970687591878,
+            "sector": 18,
+            "path_id": "postyshevo-komsomolsk-sector-18",
+            "ordinate": 3790000,
+            "chainage_m": 3791000
+          },
+          {
+            "lat": 50.68370904739974,
+            "lon": 136.88988752522584,
+            "sector": 18,
+            "path_id": "postyshevo-komsomolsk-sector-18",
+            "ordinate": 3791000,
+            "chainage_m": 3792000
+          },
+          {
+            "lat": 50.68408146996657,
+            "lon": 136.88696085680832,
+            "sector": 18,
+            "path_id": "postyshevo-komsomolsk-sector-18",
+            "ordinate": 3791200,
+            "chainage_m": 3792200
+          },
+          {
+            "lat": 50.68443842267294,
+            "lon": 136.88415852023232,
+            "sector": 18,
+            "path_id": "postyshevo-komsomolsk-sector-18",
+            "ordinate": 3791400,
+            "chainage_m": 3792400
+          },
+          {
+            "lat": 50.68479193763253,
+            "lon": 136.88138655041948,
+            "sector": 18,
+            "path_id": "postyshevo-komsomolsk-sector-18",
+            "ordinate": 3791600,
+            "chainage_m": 3792600
+          },
+          {
+            "lat": 50.685373489794586,
+            "lon": 136.87869364878236,
+            "sector": 18,
+            "path_id": "postyshevo-komsomolsk-sector-18",
+            "ordinate": 3791800,
+            "chainage_m": 3792800
+          },
+          {
+            "lat": 50.68610515689897,
+            "lon": 136.87628378829604,
+            "sector": 18,
+            "path_id": "postyshevo-komsomolsk-sector-18",
+            "ordinate": 3792000,
+            "chainage_m": 3793000
+          },
+          {
+            "lat": 50.683354959482344,
+            "lon": 136.86714625737932,
+            "sector": 18,
+            "path_id": "postyshevo-komsomolsk-sector-18",
+            "ordinate": 3792800,
+            "chainage_m": 3793800
+          },
+          {
+            "lat": 50.6818664151306,
+            "lon": 136.8659184088243,
+            "sector": 18,
+            "path_id": "postyshevo-komsomolsk-sector-18",
+            "ordinate": 3793000,
+            "chainage_m": 3794000
+          },
+          {
+            "lat": 50.67998252990021,
+            "lon": 136.86579006627824,
+            "sector": 18,
+            "path_id": "postyshevo-komsomolsk-sector-18",
+            "ordinate": 3793200,
+            "chainage_m": 3794200
+          },
+          {
+            "lat": 50.67841090666816,
+            "lon": 136.86703338469366,
+            "sector": 18,
+            "path_id": "postyshevo-komsomolsk-sector-18",
+            "ordinate": 3793400,
+            "chainage_m": 3794400
+          },
+          {
+            "lat": 50.6774059386955,
+            "lon": 136.8693338102411,
+            "sector": 18,
+            "path_id": "postyshevo-komsomolsk-sector-18",
+            "ordinate": 3793600,
+            "chainage_m": 3794600
+          },
+          {
+            "lat": 50.676369458044114,
+            "lon": 136.87422228614918,
+            "sector": 18,
+            "path_id": "postyshevo-komsomolsk-sector-18",
+            "ordinate": 3794000,
+            "chainage_m": 3795000
+          },
+          {
+            "lat": 50.67540173232813,
+            "lon": 136.87670605819105,
+            "sector": 18,
+            "path_id": "postyshevo-komsomolsk-sector-18",
+            "ordinate": 3794200,
+            "chainage_m": 3795200
+          },
+          {
+            "lat": 50.674121744613814,
+            "lon": 136.87871828596755,
+            "sector": 18,
+            "path_id": "postyshevo-komsomolsk-sector-18",
+            "ordinate": 3794400,
+            "chainage_m": 3795400
+          },
+          {
+            "lat": 50.67273232196062,
+            "lon": 136.88070530360108,
+            "sector": 18,
+            "path_id": "postyshevo-komsomolsk-sector-18",
+            "ordinate": 3794600,
+            "chainage_m": 3795600
+          },
+          {
+            "lat": 50.670029107083195,
+            "lon": 136.88457735238057,
+            "sector": 18,
+            "path_id": "postyshevo-komsomolsk-sector-18",
+            "ordinate": 3795000,
+            "chainage_m": 3796000
+          },
+          {
+            "lat": 50.66860931766686,
+            "lon": 136.8866102066377,
+            "sector": 18,
+            "path_id": "postyshevo-komsomolsk-sector-18",
+            "ordinate": 3795200,
+            "chainage_m": 3796200
+          },
+          {
+            "lat": 50.66727833670877,
+            "lon": 136.88851414539093,
+            "sector": 18,
+            "path_id": "postyshevo-komsomolsk-sector-18",
+            "ordinate": 3795400,
+            "chainage_m": 3796400
+          },
+          {
+            "lat": 50.66281327661132,
+            "lon": 136.89275632490606,
+            "sector": 18,
+            "path_id": "postyshevo-komsomolsk-sector-18",
+            "ordinate": 3796000,
+            "chainage_m": 3797000
+          },
+          {
+            "lat": 50.65821758213657,
+            "lon": 136.9011982850595,
+            "sector": 18,
+            "path_id": "postyshevo-komsomolsk-sector-18",
+            "ordinate": 3796800,
+            "chainage_m": 3797800
+          },
+          {
+            "lat": 50.65687170427581,
+            "lon": 136.9030919105724,
+            "sector": 18,
+            "path_id": "postyshevo-komsomolsk-sector-18",
+            "ordinate": 3797000,
+            "chainage_m": 3798000
+          },
+          {
+            "lat": 50.655542442191106,
+            "lon": 136.90500444369258,
+            "sector": 18,
+            "path_id": "postyshevo-komsomolsk-sector-18",
+            "ordinate": 3797200,
+            "chainage_m": 3798200
+          },
+          {
+            "lat": 50.65422292038892,
+            "lon": 136.90690322582563,
+            "sector": 18,
+            "path_id": "postyshevo-komsomolsk-sector-18",
+            "ordinate": 3797400,
+            "chainage_m": 3798400
+          },
+          {
+            "lat": 50.650346287947066,
+            "lon": 136.9124718026365,
+            "sector": 18,
+            "path_id": "postyshevo-komsomolsk-sector-18",
+            "ordinate": 3798000,
+            "chainage_m": 3799000
+          },
+          {
+            "lat": 50.642917317175396,
+            "lon": 136.9214626563577,
+            "sector": 18,
+            "path_id": "postyshevo-komsomolsk-sector-18",
+            "ordinate": 3799000,
+            "chainage_m": 3800000
+          },
+          {
+            "lat": 50.63548891936153,
+            "lon": 136.93045293712112,
+            "sector": 18,
+            "path_id": "postyshevo-komsomolsk-sector-18",
+            "ordinate": 3800000,
+            "chainage_m": 3801000
+          },
+          {
+            "lat": 50.62930899658325,
+            "lon": 136.92345998723152,
+            "sector": 18,
+            "path_id": "postyshevo-komsomolsk-sector-18",
+            "ordinate": 3801000,
+            "chainage_m": 3802000
+          },
+          {
+            "lat": 50.62119706011979,
+            "lon": 136.91806444367478,
+            "sector": 18,
+            "path_id": "postyshevo-komsomolsk-sector-18",
+            "ordinate": 3802000,
+            "chainage_m": 3803000
+          },
+          {
+            "lat": 50.61243424360105,
+            "lon": 136.91487192284032,
+            "sector": 18,
+            "path_id": "postyshevo-komsomolsk-sector-18",
+            "ordinate": 3803000,
+            "chainage_m": 3804000
+          },
+          {
+            "lat": 50.60508434100512,
+            "lon": 136.92221953360507,
+            "sector": 18,
+            "path_id": "postyshevo-komsomolsk-sector-18",
+            "ordinate": 3804000,
+            "chainage_m": 3805000
+          },
+          {
+            "lat": 50.5971677831498,
+            "lon": 136.92237423220976,
+            "sector": 18,
+            "path_id": "postyshevo-komsomolsk-sector-18",
+            "ordinate": 3805000,
+            "chainage_m": 3806000
+          },
+          {
+            "lat": 50.5959788957249,
+            "lon": 136.90927641701307,
+            "sector": 18,
+            "path_id": "postyshevo-komsomolsk-sector-18",
+            "ordinate": 3806000,
+            "chainage_m": 3807000
+          },
+          {
+            "lat": 50.59939830784624,
+            "lon": 136.89751244756346,
+            "sector": 18,
+            "path_id": "postyshevo-komsomolsk-sector-18",
+            "ordinate": 3807000,
+            "chainage_m": 3808000
+          },
+          {
+            "lat": 50.59538703032253,
+            "lon": 136.88708289681867,
+            "sector": 18,
+            "path_id": "postyshevo-komsomolsk-sector-18",
+            "ordinate": 3808000,
+            "chainage_m": 3809000
+          },
+          {
+            "lat": 50.58937154643145,
+            "lon": 136.89694693821966,
+            "sector": 18,
+            "path_id": "postyshevo-komsomolsk-sector-18",
+            "ordinate": 3809000,
+            "chainage_m": 3810000
+          },
+          {
+            "lat": 50.58392271779975,
+            "lon": 136.90814196057872,
+            "sector": 18,
+            "path_id": "postyshevo-komsomolsk-sector-18",
+            "ordinate": 3810000,
+            "chainage_m": 3811000
+          },
+          {
+            "lat": 50.57830314774511,
+            "lon": 136.9130401767693,
+            "sector": 18,
+            "path_id": "postyshevo-komsomolsk-sector-18",
+            "ordinate": 3810700,
+            "chainage_m": 3811700
+          },
+          {
+            "lat": 50.575909903034855,
+            "lon": 136.91384174472466,
+            "sector": 18,
+            "path_id": "postyshevo-komsomolsk-sector-18",
+            "ordinate": 3811000,
+            "chainage_m": 3812000
+          },
+          {
+            "lat": 50.57127753926122,
+            "lon": 136.9153881578137,
+            "sector": 18,
+            "path_id": "postyshevo-komsomolsk-sector-18",
+            "ordinate": 3811500,
+            "chainage_m": 3812500
+          },
+          {
+            "lat": 50.56681305212156,
+            "lon": 136.9158728801084,
+            "sector": 18,
+            "path_id": "postyshevo-komsomolsk-sector-18",
+            "ordinate": 3812000,
+            "chainage_m": 3813000
+          },
+          {
+            "lat": 50.55874236861935,
+            "lon": 136.91602127617736,
+            "sector": 18,
+            "path_id": "postyshevo-komsomolsk-sector-18",
+            "ordinate": 3812900,
+            "chainage_m": 3813900
+          },
+          {
+            "lat": 50.55800554489481,
+            "lon": 136.91627566943836,
+            "sector": 18,
+            "path_id": "postyshevo-komsomolsk-sector-18",
+            "ordinate": 3813000,
+            "chainage_m": 3814000
+          },
+          {
+            "lat": 50.55500840266848,
+            "lon": 136.9197088325468,
+            "sector": 18,
+            "path_id": "postyshevo-komsomolsk-sector-18",
+            "ordinate": 3813400,
+            "chainage_m": 3814400
+          },
+          {
+            "lat": 50.55360351015482,
+            "lon": 136.92151536847484,
+            "sector": 18,
+            "path_id": "postyshevo-komsomolsk-sector-18",
+            "ordinate": 3813600,
+            "chainage_m": 3814600
+          },
+          {
+            "lat": 50.550187535780246,
+            "lon": 136.9225931020875,
+            "sector": 18,
+            "path_id": "postyshevo-komsomolsk-sector-18",
+            "ordinate": 3814000,
+            "chainage_m": 3815000
+          },
+          {
+            "lat": 50.54669192027216,
+            "lon": 136.92133832451617,
+            "sector": 18,
+            "path_id": "postyshevo-komsomolsk-sector-18",
+            "ordinate": 3814400,
+            "chainage_m": 3815400
+          },
+          {
+            "lat": 50.54275398134622,
+            "lon": 136.9156603127664,
+            "sector": 18,
+            "path_id": "postyshevo-komsomolsk-sector-18",
+            "ordinate": 3815000,
+            "chainage_m": 3816000
+          }
+        ]
+      }
+    ]
+  }
+}

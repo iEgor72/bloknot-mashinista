@@ -1,0 +1,1432 @@
+{
+  "schema_version": "1.0",
+  "id": "dvost-vysokogornaya-oune-via-sollu",
+  "status": "draft",
+  "railway": {
+    "id": "dvost",
+    "name": "Дальневосточная железная дорога"
+  },
+  "section_name": "Высокогорная — Оунэ (через Соллу — Кузнецовский — Откосную — Косграмбо)",
+  "direction": "требует проверки",
+  "km_start": 183,
+  "km_end": 220.9,
+  "generator_format": "Б",
+  "elements": [
+    {
+      "start_m": 183000,
+      "len_m": 400,
+      "grad_permille": 2.4,
+      "confidence": "legacy_xml_clipped_unverified"
+    },
+    {
+      "start_m": 183400,
+      "len_m": 600,
+      "grad_permille": 16.55,
+      "confidence": "legacy_xml_unverified"
+    },
+    {
+      "start_m": 184000,
+      "len_m": 100,
+      "grad_permille": 16.9,
+      "confidence": "legacy_xml_unverified"
+    },
+    {
+      "start_m": 184100,
+      "len_m": 400,
+      "grad_permille": 16,
+      "confidence": "legacy_xml_unverified"
+    },
+    {
+      "start_m": 184500,
+      "len_m": 300,
+      "grad_permille": 14.6,
+      "confidence": "legacy_xml_unverified"
+    },
+    {
+      "start_m": 184800,
+      "len_m": 200,
+      "grad_permille": 15.7,
+      "confidence": "legacy_xml_unverified"
+    },
+    {
+      "start_m": 185000,
+      "len_m": 200,
+      "grad_permille": 17.9,
+      "confidence": "legacy_xml_unverified"
+    },
+    {
+      "start_m": 185200,
+      "len_m": 300,
+      "grad_permille": 15.4,
+      "confidence": "legacy_xml_unverified"
+    },
+    {
+      "start_m": 185500,
+      "len_m": 200,
+      "grad_permille": 10.9,
+      "confidence": "legacy_xml_unverified"
+    },
+    {
+      "start_m": 185700,
+      "len_m": 500,
+      "grad_permille": 17.7,
+      "confidence": "legacy_xml_unverified"
+    },
+    {
+      "start_m": 186200,
+      "len_m": 200,
+      "grad_permille": 8.8,
+      "confidence": "legacy_xml_unverified"
+    },
+    {
+      "start_m": 186400,
+      "len_m": 200,
+      "grad_permille": 17.4,
+      "confidence": "legacy_xml_unverified"
+    },
+    {
+      "start_m": 186600,
+      "len_m": 500,
+      "grad_permille": 17.1,
+      "confidence": "legacy_xml_unverified"
+    },
+    {
+      "start_m": 187100,
+      "len_m": 200,
+      "grad_permille": 14.5,
+      "confidence": "legacy_xml_unverified"
+    },
+    {
+      "start_m": 187300,
+      "len_m": 300,
+      "grad_permille": 16.4,
+      "confidence": "legacy_xml_unverified"
+    },
+    {
+      "start_m": 187600,
+      "len_m": 400,
+      "grad_permille": 0.3,
+      "confidence": "legacy_xml_unverified"
+    },
+    {
+      "start_m": 188000,
+      "len_m": 400,
+      "grad_permille": -0.2,
+      "confidence": "legacy_xml_unverified"
+    },
+    {
+      "start_m": 188400,
+      "len_m": 500,
+      "grad_permille": 6.5,
+      "confidence": "legacy_xml_unverified"
+    },
+    {
+      "start_m": 188900,
+      "len_m": 400,
+      "grad_permille": 16.3,
+      "confidence": "legacy_xml_unverified"
+    },
+    {
+      "start_m": 189300,
+      "len_m": 400,
+      "grad_permille": 2.9,
+      "confidence": "legacy_xml_unverified"
+    },
+    {
+      "start_m": 189700,
+      "len_m": 500,
+      "grad_permille": 17.7,
+      "confidence": "legacy_xml_unverified"
+    },
+    {
+      "start_m": 190200,
+      "len_m": 300,
+      "grad_permille": -1.7,
+      "confidence": "legacy_xml_unverified"
+    },
+    {
+      "start_m": 190500,
+      "len_m": 300,
+      "grad_permille": 17.6,
+      "confidence": "legacy_xml_unverified"
+    },
+    {
+      "start_m": 190800,
+      "len_m": 200,
+      "grad_permille": 14.8,
+      "confidence": "legacy_xml_unverified"
+    },
+    {
+      "start_m": 191000,
+      "len_m": 300,
+      "grad_permille": 13.7,
+      "confidence": "legacy_xml_unverified"
+    },
+    {
+      "start_m": 191300,
+      "len_m": 300,
+      "grad_permille": 18,
+      "confidence": "legacy_xml_unverified"
+    },
+    {
+      "start_m": 191600,
+      "len_m": 300,
+      "grad_permille": 13.4,
+      "confidence": "legacy_xml_unverified"
+    },
+    {
+      "start_m": 191900,
+      "len_m": 300,
+      "grad_permille": 24.4,
+      "confidence": "legacy_xml_unverified"
+    },
+    {
+      "start_m": 192200,
+      "len_m": 300,
+      "grad_permille": 2.9,
+      "confidence": "legacy_xml_unverified"
+    },
+    {
+      "start_m": 192500,
+      "len_m": 400,
+      "grad_permille": 23.3,
+      "confidence": "legacy_xml_unverified"
+    },
+    {
+      "start_m": 192900,
+      "len_m": 600,
+      "grad_permille": 24.9,
+      "confidence": "legacy_xml_unverified"
+    },
+    {
+      "start_m": 193500,
+      "len_m": 400,
+      "grad_permille": 25,
+      "confidence": "legacy_xml_unverified"
+    },
+    {
+      "start_m": 193900,
+      "len_m": 200,
+      "grad_permille": 21,
+      "confidence": "legacy_xml_unverified"
+    },
+    {
+      "start_m": 194100,
+      "len_m": 400,
+      "grad_permille": 23,
+      "confidence": "legacy_xml_unverified"
+    },
+    {
+      "start_m": 194500,
+      "len_m": 400,
+      "grad_permille": 21,
+      "confidence": "legacy_xml_unverified"
+    },
+    {
+      "start_m": 194900,
+      "len_m": 200,
+      "grad_permille": 6.5,
+      "confidence": "legacy_xml_unverified"
+    },
+    {
+      "start_m": 195100,
+      "len_m": 200,
+      "grad_permille": 2.9,
+      "confidence": "legacy_xml_unverified"
+    },
+    {
+      "start_m": 195300,
+      "len_m": 200,
+      "grad_permille": 2.8,
+      "confidence": "legacy_xml_unverified"
+    },
+    {
+      "start_m": 195500,
+      "len_m": 200,
+      "grad_permille": 3,
+      "confidence": "legacy_xml_unverified"
+    },
+    {
+      "start_m": 195700,
+      "len_m": 200,
+      "grad_permille": 0.9,
+      "confidence": "legacy_xml_unverified"
+    },
+    {
+      "start_m": 195900,
+      "len_m": 200,
+      "grad_permille": 0.5,
+      "confidence": "legacy_xml_unverified"
+    },
+    {
+      "start_m": 196100,
+      "len_m": 200,
+      "grad_permille": 26.6,
+      "confidence": "legacy_xml_unverified"
+    },
+    {
+      "start_m": 196300,
+      "len_m": 400,
+      "grad_permille": 25.2,
+      "confidence": "legacy_xml_unverified"
+    },
+    {
+      "start_m": 196700,
+      "len_m": 200,
+      "grad_permille": 21,
+      "confidence": "legacy_xml_unverified"
+    },
+    {
+      "start_m": 196900,
+      "len_m": 200,
+      "grad_permille": 5.1,
+      "confidence": "legacy_xml_unverified"
+    },
+    {
+      "start_m": 197100,
+      "len_m": 400,
+      "grad_permille": 22.7,
+      "confidence": "legacy_xml_unverified"
+    },
+    {
+      "start_m": 197500,
+      "len_m": 200,
+      "grad_permille": 23.2,
+      "confidence": "legacy_xml_unverified"
+    },
+    {
+      "start_m": 197700,
+      "len_m": 200,
+      "grad_permille": 24.2,
+      "confidence": "legacy_xml_unverified"
+    },
+    {
+      "start_m": 197900,
+      "len_m": 300,
+      "grad_permille": 23,
+      "confidence": "legacy_xml_unverified"
+    },
+    {
+      "start_m": 198200,
+      "len_m": 300,
+      "grad_permille": 24.8,
+      "confidence": "legacy_xml_unverified"
+    },
+    {
+      "start_m": 198500,
+      "len_m": 200,
+      "grad_permille": 22.7,
+      "confidence": "legacy_xml_unverified"
+    },
+    {
+      "start_m": 198700,
+      "len_m": 200,
+      "grad_permille": 24,
+      "confidence": "legacy_xml_unverified"
+    },
+    {
+      "start_m": 198900,
+      "len_m": 400,
+      "grad_permille": 22.9,
+      "confidence": "legacy_xml_unverified"
+    },
+    {
+      "start_m": 199300,
+      "len_m": 200,
+      "grad_permille": 18,
+      "confidence": "legacy_xml_unverified"
+    },
+    {
+      "start_m": 199500,
+      "len_m": 200,
+      "grad_permille": 17.4,
+      "confidence": "legacy_xml_unverified"
+    },
+    {
+      "start_m": 199700,
+      "len_m": 200,
+      "grad_permille": 17,
+      "confidence": "legacy_xml_unverified"
+    },
+    {
+      "start_m": 199900,
+      "len_m": 500,
+      "grad_permille": 20,
+      "confidence": "legacy_xml_unverified"
+    },
+    {
+      "start_m": 200400,
+      "len_m": 200,
+      "grad_permille": 25,
+      "confidence": "legacy_xml_unverified"
+    },
+    {
+      "start_m": 200600,
+      "len_m": 300,
+      "grad_permille": 22,
+      "confidence": "legacy_xml_unverified"
+    },
+    {
+      "start_m": 200900,
+      "len_m": 500,
+      "grad_permille": 22,
+      "confidence": "legacy_xml_unverified"
+    },
+    {
+      "start_m": 201400,
+      "len_m": 200,
+      "grad_permille": 19.4,
+      "confidence": "legacy_xml_unverified"
+    },
+    {
+      "start_m": 201600,
+      "len_m": 300,
+      "grad_permille": 23,
+      "confidence": "legacy_xml_unverified"
+    },
+    {
+      "start_m": 201900,
+      "len_m": 700,
+      "grad_permille": 23,
+      "confidence": "legacy_xml_unverified"
+    },
+    {
+      "start_m": 202600,
+      "len_m": 300,
+      "grad_permille": 25,
+      "confidence": "legacy_xml_unverified"
+    },
+    {
+      "start_m": 202900,
+      "len_m": 400,
+      "grad_permille": 24,
+      "confidence": "legacy_xml_unverified"
+    },
+    {
+      "start_m": 203300,
+      "len_m": 300,
+      "grad_permille": 1.2,
+      "confidence": "legacy_xml_unverified"
+    },
+    {
+      "start_m": 203600,
+      "len_m": 400,
+      "grad_permille": -4,
+      "confidence": "legacy_xml_unverified"
+    },
+    {
+      "start_m": 204000,
+      "len_m": 200,
+      "grad_permille": -9.8,
+      "confidence": "legacy_xml_unverified"
+    },
+    {
+      "start_m": 204200,
+      "len_m": 500,
+      "grad_permille": -11.8,
+      "confidence": "legacy_xml_unverified"
+    },
+    {
+      "start_m": 204700,
+      "len_m": 200,
+      "grad_permille": -24.6,
+      "confidence": "legacy_xml_unverified"
+    },
+    {
+      "start_m": 204900,
+      "len_m": 200,
+      "grad_permille": -28.4,
+      "confidence": "legacy_xml_unverified"
+    },
+    {
+      "start_m": 205100,
+      "len_m": 300,
+      "grad_permille": -25,
+      "confidence": "legacy_xml_unverified"
+    },
+    {
+      "start_m": 205400,
+      "len_m": 400,
+      "grad_permille": -20,
+      "confidence": "legacy_xml_unverified"
+    },
+    {
+      "start_m": 205800,
+      "len_m": 100,
+      "grad_permille": -24,
+      "confidence": "legacy_xml_unverified"
+    },
+    {
+      "start_m": 205900,
+      "len_m": 200,
+      "grad_permille": -22,
+      "confidence": "legacy_xml_unverified"
+    },
+    {
+      "start_m": 206100,
+      "len_m": 300,
+      "grad_permille": -23,
+      "confidence": "legacy_xml_unverified"
+    },
+    {
+      "start_m": 206400,
+      "len_m": 500,
+      "grad_permille": -24,
+      "confidence": "legacy_xml_unverified"
+    },
+    {
+      "start_m": 206900,
+      "len_m": 400,
+      "grad_permille": -21,
+      "confidence": "legacy_xml_unverified"
+    },
+    {
+      "start_m": 207300,
+      "len_m": 200,
+      "grad_permille": -24,
+      "confidence": "legacy_xml_unverified"
+    },
+    {
+      "start_m": 207500,
+      "len_m": 200,
+      "grad_permille": -13.5,
+      "confidence": "legacy_xml_unverified"
+    },
+    {
+      "start_m": 207700,
+      "len_m": 200,
+      "grad_permille": -22,
+      "confidence": "legacy_xml_unverified"
+    },
+    {
+      "start_m": 207900,
+      "len_m": 500,
+      "grad_permille": -22.5,
+      "confidence": "legacy_xml_unverified"
+    },
+    {
+      "start_m": 208400,
+      "len_m": 200,
+      "grad_permille": -12.5,
+      "confidence": "legacy_xml_unverified"
+    },
+    {
+      "start_m": 208600,
+      "len_m": 300,
+      "grad_permille": -22,
+      "confidence": "legacy_xml_unverified"
+    },
+    {
+      "start_m": 208900,
+      "len_m": 500,
+      "grad_permille": -21,
+      "confidence": "legacy_xml_unverified"
+    },
+    {
+      "start_m": 209400,
+      "len_m": 500,
+      "grad_permille": 0,
+      "confidence": "legacy_xml_unverified"
+    },
+    {
+      "start_m": 209900,
+      "len_m": 300,
+      "grad_permille": 0.7,
+      "confidence": "legacy_xml_unverified"
+    },
+    {
+      "start_m": 210200,
+      "len_m": 300,
+      "grad_permille": 0,
+      "confidence": "legacy_xml_unverified"
+    },
+    {
+      "start_m": 210500,
+      "len_m": 400,
+      "grad_permille": -6.4,
+      "confidence": "legacy_xml_unverified"
+    },
+    {
+      "start_m": 210900,
+      "len_m": 200,
+      "grad_permille": -6.9,
+      "confidence": "legacy_xml_unverified"
+    },
+    {
+      "start_m": 211100,
+      "len_m": 200,
+      "grad_permille": -14.5,
+      "confidence": "legacy_xml_unverified"
+    },
+    {
+      "start_m": 211300,
+      "len_m": 400,
+      "grad_permille": -18,
+      "confidence": "legacy_xml_unverified"
+    },
+    {
+      "start_m": 211700,
+      "len_m": 200,
+      "grad_permille": -13.8,
+      "confidence": "legacy_xml_unverified"
+    },
+    {
+      "start_m": 211900,
+      "len_m": 600,
+      "grad_permille": -16,
+      "confidence": "legacy_xml_unverified"
+    },
+    {
+      "start_m": 212500,
+      "len_m": 400,
+      "grad_permille": -17.7,
+      "confidence": "legacy_xml_unverified"
+    },
+    {
+      "start_m": 212900,
+      "len_m": 200,
+      "grad_permille": -16,
+      "confidence": "legacy_xml_unverified"
+    },
+    {
+      "start_m": 213100,
+      "len_m": 200,
+      "grad_permille": -18,
+      "confidence": "legacy_xml_unverified"
+    },
+    {
+      "start_m": 213300,
+      "len_m": 200,
+      "grad_permille": -16,
+      "confidence": "legacy_xml_unverified"
+    },
+    {
+      "start_m": 213500,
+      "len_m": 400,
+      "grad_permille": -17,
+      "confidence": "legacy_xml_unverified"
+    },
+    {
+      "start_m": 213900,
+      "len_m": 1000,
+      "grad_permille": -17,
+      "confidence": "legacy_xml_unverified"
+    },
+    {
+      "start_m": 214900,
+      "len_m": 500,
+      "grad_permille": -17,
+      "confidence": "legacy_xml_unverified"
+    },
+    {
+      "start_m": 215400,
+      "len_m": 200,
+      "grad_permille": -17,
+      "confidence": "legacy_xml_unverified"
+    },
+    {
+      "start_m": 215600,
+      "len_m": 300,
+      "grad_permille": -14.7,
+      "confidence": "legacy_xml_unverified"
+    },
+    {
+      "start_m": 215900,
+      "len_m": 200,
+      "grad_permille": -17,
+      "confidence": "legacy_xml_unverified"
+    },
+    {
+      "start_m": 216100,
+      "len_m": 200,
+      "grad_permille": -8.6,
+      "confidence": "legacy_xml_unverified"
+    },
+    {
+      "start_m": 216300,
+      "len_m": 300,
+      "grad_permille": -17,
+      "confidence": "legacy_xml_unverified"
+    },
+    {
+      "start_m": 216600,
+      "len_m": 300,
+      "grad_permille": -17,
+      "confidence": "legacy_xml_unverified"
+    },
+    {
+      "start_m": 216900,
+      "len_m": 300,
+      "grad_permille": -22,
+      "confidence": "legacy_xml_unverified"
+    },
+    {
+      "start_m": 217200,
+      "len_m": 700,
+      "grad_permille": -14,
+      "confidence": "legacy_xml_unverified"
+    },
+    {
+      "start_m": 217900,
+      "len_m": 1000,
+      "grad_permille": -11.5,
+      "confidence": "legacy_xml_unverified"
+    },
+    {
+      "start_m": 218900,
+      "len_m": 1000,
+      "grad_permille": -10,
+      "confidence": "legacy_xml_unverified"
+    },
+    {
+      "start_m": 219900,
+      "len_m": 400,
+      "grad_permille": -1.1,
+      "confidence": "legacy_xml_unverified"
+    },
+    {
+      "start_m": 220300,
+      "len_m": 200,
+      "grad_permille": 1.3,
+      "confidence": "legacy_xml_unverified"
+    },
+    {
+      "start_m": 220500,
+      "len_m": 400,
+      "grad_permille": -2.4,
+      "confidence": "legacy_xml_unverified"
+    }
+  ],
+  "stations": [
+    {
+      "name": "Оунэ",
+      "km": 183.7,
+      "confidence": "legacy_anchor_named"
+    },
+    {
+      "name": "Косграмбо",
+      "km": 190.143,
+      "confidence": "legacy_anchor_named"
+    },
+    {
+      "name": "Откосная",
+      "km": 196.572,
+      "confidence": "legacy_anchor_named"
+    },
+    {
+      "name": "Кузнецовский",
+      "km": 205.242,
+      "confidence": "legacy_anchor_named"
+    },
+    {
+      "name": "Соллу",
+      "km": 211.145,
+      "confidence": "legacy_anchor_named"
+    },
+    {
+      "name": "Высокогорная",
+      "km": 220,
+      "confidence": "pdf_anchor"
+    }
+  ],
+  "signals": [],
+  "whistle_points": [],
+  "speed": {
+    "established": null,
+    "permanent_restrictions": [],
+    "temporary_warnings": [],
+    "source": "manual_required"
+  },
+  "flags_for_review": [
+    {
+      "km": null,
+      "reason": "Светофоры и точки свистка ещё не перенесены вручную из PDF"
+    },
+    {
+      "km": null,
+      "reason": "Названия промежуточных станций из legacy XML местами обрезаны и требуют сверки с PDF"
+    },
+    {
+      "km": null,
+      "reason": "Направление чётное/нечётное не подтверждено по титулу карты"
+    },
+    {
+      "km": null,
+      "reason": "Знаки и границы уклонов пока мигрированы из profile.xml, а не сверены по границам элементов PDF"
+    },
+    {
+      "km": 220,
+      "reason": "GPS-геометрия продолжается примерно до 221,5 км; границу титульной станции Высокогорная сверить с PDF"
+    }
+  ],
+  "provenance": [
+    {
+      "kind": "regime_map_pdf",
+      "file_name": "ВСКГ- КСМ новый 2 пассажир.pdf",
+      "repo_path": "assets/docs/memos/ВСКГ- КСМ новый 2 пассажир.pdf",
+      "sha256": "834155ea6be7fccaf02b744c49d0aef06ec35d7cd6ebbaebf4d7eb7c60f80118",
+      "pages": 63,
+      "profile_pages": "5,7,9,11,13,15,17,19,21,23,25,27,29,31,33,35,37,39,41,43",
+      "role": "authoritative_map_pending_row_by_row_verification"
+    },
+    {
+      "kind": "legacy_profile_xml",
+      "path": "assets/tracker/maps/komsomol-sk-tche-9/profile.xml",
+      "role": "temporary_profile_seed_not_pdf_verified"
+    },
+    {
+      "kind": "legacy_geometry_xml",
+      "path": "assets/tracker/maps/komsomol-sk-tche-9/data.xml",
+      "role": "offline_gps_map_matching_seed"
+    }
+  ],
+  "runtime": {
+    "coordinate_unit": "m",
+    "coordinate_kind": "official_railway_chainage",
+    "coordinate_offset_m": -1000,
+    "movement_order": "descending",
+    "default_path_id": "vysokogornaya-oune-sector-13",
+    "route_legs": [
+      {
+        "path_id": "vysokogornaya-oune-sector-13",
+        "sector": 13,
+        "from_chainage_m": 220900,
+        "to_chainage_m": 183000
+      }
+    ],
+    "profile_status": "legacy_seed_complete_pending_pdf_verification",
+    "profile_coverage": [
+      {
+        "start_m": 183000,
+        "end_m": 220900
+      }
+    ],
+    "profile_gaps": [],
+    "profile_applies_both_directions": false
+  },
+  "geometry": {
+    "status": "draft_from_legacy_centerline",
+    "source": {
+      "kind": "legacy_geometry_xml",
+      "path": "assets/tracker/maps/komsomol-sk-tche-9/data.xml",
+      "role": "offline_gps_map_matching_seed"
+    },
+    "paths": [
+      {
+        "path_id": "vysokogornaya-oune-sector-13",
+        "sector": 13,
+        "source": "assets/tracker/maps/komsomol-sk-tche-9/data.xml",
+        "points": [
+          {
+            "lat": 50.20703852861405,
+            "lon": 138.8582250157448,
+            "sector": 13,
+            "path_id": "vysokogornaya-oune-sector-13",
+            "ordinate": 182000,
+            "chainage_m": 183000
+          },
+          {
+            "lat": 50.21159640787432,
+            "lon": 138.87016144549077,
+            "sector": 13,
+            "path_id": "vysokogornaya-oune-sector-13",
+            "ordinate": 183000,
+            "chainage_m": 184000
+          },
+          {
+            "lat": 50.2119516417073,
+            "lon": 138.8837617446738,
+            "sector": 13,
+            "path_id": "vysokogornaya-oune-sector-13",
+            "ordinate": 184000,
+            "chainage_m": 185000
+          },
+          {
+            "lat": 50.21219686764361,
+            "lon": 138.8978799977036,
+            "sector": 13,
+            "path_id": "vysokogornaya-oune-sector-13",
+            "ordinate": 185000,
+            "chainage_m": 186000
+          },
+          {
+            "lat": 50.20905419413732,
+            "lon": 138.90995909394056,
+            "sector": 13,
+            "path_id": "vysokogornaya-oune-sector-13",
+            "ordinate": 186000,
+            "chainage_m": 187000
+          },
+          {
+            "lat": 50.20409008780031,
+            "lon": 138.9216485788768,
+            "sector": 13,
+            "path_id": "vysokogornaya-oune-sector-13",
+            "ordinate": 187000,
+            "chainage_m": 188000
+          },
+          {
+            "lat": 50.19959695277089,
+            "lon": 138.93323894211449,
+            "sector": 13,
+            "path_id": "vysokogornaya-oune-sector-13",
+            "ordinate": 188000,
+            "chainage_m": 189000
+          },
+          {
+            "lat": 50.19727647370061,
+            "lon": 138.94685814890477,
+            "sector": 13,
+            "path_id": "vysokogornaya-oune-sector-13",
+            "ordinate": 189000,
+            "chainage_m": 190000
+          },
+          {
+            "lat": 50.195220128173894,
+            "lon": 138.96037995286986,
+            "sector": 13,
+            "path_id": "vysokogornaya-oune-sector-13",
+            "ordinate": 190000,
+            "chainage_m": 191000
+          },
+          {
+            "lat": 50.19226824961337,
+            "lon": 138.97339182439728,
+            "sector": 13,
+            "path_id": "vysokogornaya-oune-sector-13",
+            "ordinate": 191000,
+            "chainage_m": 192000
+          },
+          {
+            "lat": 50.18969509615544,
+            "lon": 138.9868884182194,
+            "sector": 13,
+            "path_id": "vysokogornaya-oune-sector-13",
+            "ordinate": 192000,
+            "chainage_m": 193000
+          },
+          {
+            "lat": 50.19023654127184,
+            "lon": 139.0007230571406,
+            "sector": 13,
+            "path_id": "vysokogornaya-oune-sector-13",
+            "ordinate": 193000,
+            "chainage_m": 194000
+          },
+          {
+            "lat": 50.19024742746995,
+            "lon": 139.0076529816727,
+            "sector": 13,
+            "path_id": "vysokogornaya-oune-sector-13",
+            "ordinate": 193500,
+            "chainage_m": 194500
+          },
+          {
+            "lat": 50.190431919879984,
+            "lon": 139.01452331859412,
+            "sector": 13,
+            "path_id": "vysokogornaya-oune-sector-13",
+            "ordinate": 194000,
+            "chainage_m": 195000
+          },
+          {
+            "lat": 50.190144868024625,
+            "lon": 139.01848818653642,
+            "sector": 13,
+            "path_id": "vysokogornaya-oune-sector-13",
+            "ordinate": 194300,
+            "chainage_m": 195300
+          },
+          {
+            "lat": 50.19022508211594,
+            "lon": 139.02127505325194,
+            "sector": 13,
+            "path_id": "vysokogornaya-oune-sector-13",
+            "ordinate": 194500,
+            "chainage_m": 195500
+          },
+          {
+            "lat": 50.1902651891616,
+            "lon": 139.02416677124398,
+            "sector": 13,
+            "path_id": "vysokogornaya-oune-sector-13",
+            "ordinate": 194700,
+            "chainage_m": 195700
+          },
+          {
+            "lat": 50.19007324830023,
+            "lon": 139.02840494005454,
+            "sector": 13,
+            "path_id": "vysokogornaya-oune-sector-13",
+            "ordinate": 195000,
+            "chainage_m": 196000
+          },
+          {
+            "lat": 50.18986812940957,
+            "lon": 139.03106346422396,
+            "sector": 13,
+            "path_id": "vysokogornaya-oune-sector-13",
+            "ordinate": 195200,
+            "chainage_m": 196200
+          },
+          {
+            "lat": 50.18966988601246,
+            "lon": 139.03385835234863,
+            "sector": 13,
+            "path_id": "vysokogornaya-oune-sector-13",
+            "ordinate": 195400,
+            "chainage_m": 196400
+          },
+          {
+            "lat": 50.1896532702364,
+            "lon": 139.0364349435533,
+            "sector": 13,
+            "path_id": "vysokogornaya-oune-sector-13",
+            "ordinate": 195600,
+            "chainage_m": 196600
+          },
+          {
+            "lat": 50.19007324830023,
+            "lon": 139.0393318181655,
+            "sector": 13,
+            "path_id": "vysokogornaya-oune-sector-13",
+            "ordinate": 195800,
+            "chainage_m": 196800
+          },
+          {
+            "lat": 50.19051327988689,
+            "lon": 139.0420969124848,
+            "sector": 13,
+            "path_id": "vysokogornaya-oune-sector-13",
+            "ordinate": 196000,
+            "chainage_m": 197000
+          },
+          {
+            "lat": 50.18993860321837,
+            "lon": 139.04458641410463,
+            "sector": 13,
+            "path_id": "vysokogornaya-oune-sector-13",
+            "ordinate": 196200,
+            "chainage_m": 197200
+          },
+          {
+            "lat": 50.18843000534379,
+            "lon": 139.04520692739675,
+            "sector": 13,
+            "path_id": "vysokogornaya-oune-sector-13",
+            "ordinate": 196400,
+            "chainage_m": 197400
+          },
+          {
+            "lat": 50.18701995620998,
+            "lon": 139.04328981061425,
+            "sector": 13,
+            "path_id": "vysokogornaya-oune-sector-13",
+            "ordinate": 196600,
+            "chainage_m": 197600
+          },
+          {
+            "lat": 50.187256587779366,
+            "lon": 139.04071321940955,
+            "sector": 13,
+            "path_id": "vysokogornaya-oune-sector-13",
+            "ordinate": 196800,
+            "chainage_m": 197800
+          },
+          {
+            "lat": 50.18780834613607,
+            "lon": 139.03787650536586,
+            "sector": 13,
+            "path_id": "vysokogornaya-oune-sector-13",
+            "ordinate": 197000,
+            "chainage_m": 198000
+          },
+          {
+            "lat": 50.18868153381586,
+            "lon": 139.0356614505299,
+            "sector": 13,
+            "path_id": "vysokogornaya-oune-sector-13",
+            "ordinate": 197200,
+            "chainage_m": 198200
+          },
+          {
+            "lat": 50.18885685890117,
+            "lon": 139.0328367685999,
+            "sector": 13,
+            "path_id": "vysokogornaya-oune-sector-13",
+            "ordinate": 197400,
+            "chainage_m": 198400
+          },
+          {
+            "lat": 50.18909520934394,
+            "lon": 139.03000005455618,
+            "sector": 13,
+            "path_id": "vysokogornaya-oune-sector-13",
+            "ordinate": 197600,
+            "chainage_m": 198600
+          },
+          {
+            "lat": 50.1887468510045,
+            "lon": 139.02730486108788,
+            "sector": 13,
+            "path_id": "vysokogornaya-oune-sector-13",
+            "ordinate": 197800,
+            "chainage_m": 198800
+          },
+          {
+            "lat": 50.188801854952835,
+            "lon": 139.02451684845678,
+            "sector": 13,
+            "path_id": "vysokogornaya-oune-sector-13",
+            "ordinate": 198000,
+            "chainage_m": 199000
+          },
+          {
+            "lat": 50.189044789057974,
+            "lon": 139.02180160146568,
+            "sector": 13,
+            "path_id": "vysokogornaya-oune-sector-13",
+            "ordinate": 198200,
+            "chainage_m": 199200
+          },
+          {
+            "lat": 50.18854345098723,
+            "lon": 139.0192347505435,
+            "sector": 13,
+            "path_id": "vysokogornaya-oune-sector-13",
+            "ordinate": 198400,
+            "chainage_m": 199400
+          },
+          {
+            "lat": 50.18642350714524,
+            "lon": 139.01658997736115,
+            "sector": 13,
+            "path_id": "vysokogornaya-oune-sector-13",
+            "ordinate": 198700,
+            "chainage_m": 199700
+          },
+          {
+            "lat": 50.185686683420705,
+            "lon": 139.01270761534136,
+            "sector": 13,
+            "path_id": "vysokogornaya-oune-sector-13",
+            "ordinate": 199000,
+            "chainage_m": 200000
+          },
+          {
+            "lat": 50.18492694138436,
+            "lon": 139.00882525332153,
+            "sector": 13,
+            "path_id": "vysokogornaya-oune-sector-13",
+            "ordinate": 199300,
+            "chainage_m": 200300
+          },
+          {
+            "lat": 50.18752816977426,
+            "lon": 139.00543334317436,
+            "sector": 13,
+            "path_id": "vysokogornaya-oune-sector-13",
+            "ordinate": 199700,
+            "chainage_m": 200700
+          },
+          {
+            "lat": 50.18667331674392,
+            "lon": 139.00172000370412,
+            "sector": 13,
+            "path_id": "vysokogornaya-oune-sector-13",
+            "ordinate": 200000,
+            "chainage_m": 201000
+          },
+          {
+            "lat": 50.18236639299793,
+            "lon": 139.00199158569902,
+            "sector": 13,
+            "path_id": "vysokogornaya-oune-sector-13",
+            "ordinate": 200500,
+            "chainage_m": 201500
+          },
+          {
+            "lat": 50.18078502948336,
+            "lon": 138.9990368423495,
+            "sector": 13,
+            "path_id": "vysokogornaya-oune-sector-13",
+            "ordinate": 200800,
+            "chainage_m": 201800
+          },
+          {
+            "lat": 50.18167139519243,
+            "lon": 138.9965714049571,
+            "sector": 13,
+            "path_id": "vysokogornaya-oune-sector-13",
+            "ordinate": 201000,
+            "chainage_m": 202000
+          },
+          {
+            "lat": 50.18211142677909,
+            "lon": 138.99399825149916,
+            "sector": 13,
+            "path_id": "vysokogornaya-oune-sector-13",
+            "ordinate": 201200,
+            "chainage_m": 202200
+          },
+          {
+            "lat": 50.181136825569574,
+            "lon": 138.99179694765024,
+            "sector": 13,
+            "path_id": "vysokogornaya-oune-sector-13",
+            "ordinate": 201400,
+            "chainage_m": 202400
+          },
+          {
+            "lat": 50.17620022120673,
+            "lon": 138.98865656597513,
+            "sector": 13,
+            "path_id": "vysokogornaya-oune-sector-13",
+            "ordinate": 202000,
+            "chainage_m": 203000
+          },
+          {
+            "lat": 50.17485319743037,
+            "lon": 138.986486774805,
+            "sector": 13,
+            "path_id": "vysokogornaya-oune-sector-13",
+            "ordinate": 202200,
+            "chainage_m": 203200
+          },
+          {
+            "lat": 50.175199836896425,
+            "lon": 138.98385689852535,
+            "sector": 13,
+            "path_id": "vysokogornaya-oune-sector-13",
+            "ordinate": 202400,
+            "chainage_m": 203400
+          },
+          {
+            "lat": 50.17573154173031,
+            "lon": 138.98120009322932,
+            "sector": 13,
+            "path_id": "vysokogornaya-oune-sector-13",
+            "ordinate": 202600,
+            "chainage_m": 203600
+          },
+          {
+            "lat": 50.17452661148715,
+            "lon": 138.97621650632726,
+            "sector": 13,
+            "path_id": "vysokogornaya-oune-sector-13",
+            "ordinate": 203000,
+            "chainage_m": 204000
+          },
+          {
+            "lat": 50.16975845671607,
+            "lon": 138.96469661689835,
+            "sector": 13,
+            "path_id": "vysokogornaya-oune-sector-13",
+            "ordinate": 204000,
+            "chainage_m": 205000
+          },
+          {
+            "lat": 50.16814156981822,
+            "lon": 138.9614582594403,
+            "sector": 13,
+            "path_id": "vysokogornaya-oune-sector-13",
+            "ordinate": 204300,
+            "chainage_m": 205300
+          },
+          {
+            "lat": 50.16649718094619,
+            "lon": 138.9623388955714,
+            "sector": 13,
+            "path_id": "vysokogornaya-oune-sector-13",
+            "ordinate": 204500,
+            "chainage_m": 205500
+          },
+          {
+            "lat": 50.16581650708557,
+            "lon": 138.9649750743868,
+            "sector": 13,
+            "path_id": "vysokogornaya-oune-sector-13",
+            "ordinate": 204700,
+            "chainage_m": 205700
+          },
+          {
+            "lat": 50.16715321762161,
+            "lon": 138.9683881839724,
+            "sector": 13,
+            "path_id": "vysokogornaya-oune-sector-13",
+            "ordinate": 205000,
+            "chainage_m": 206000
+          },
+          {
+            "lat": 50.16343815927799,
+            "lon": 138.98054806725844,
+            "sector": 13,
+            "path_id": "vysokogornaya-oune-sector-13",
+            "ordinate": 206000,
+            "chainage_m": 207000
+          },
+          {
+            "lat": 50.15937760738389,
+            "lon": 138.9820280172433,
+            "sector": 13,
+            "path_id": "vysokogornaya-oune-sector-13",
+            "ordinate": 206500,
+            "chainage_m": 207500
+          },
+          {
+            "lat": 50.15778077400886,
+            "lon": 138.98498619833953,
+            "sector": 13,
+            "path_id": "vysokogornaya-oune-sector-13",
+            "ordinate": 206800,
+            "chainage_m": 207800
+          },
+          {
+            "lat": 50.158826421984976,
+            "lon": 138.98732844980603,
+            "sector": 13,
+            "path_id": "vysokogornaya-oune-sector-13",
+            "ordinate": 207000,
+            "chainage_m": 208000
+          },
+          {
+            "lat": 50.15935010540972,
+            "lon": 138.98994973171875,
+            "sector": 13,
+            "path_id": "vysokogornaya-oune-sector-13",
+            "ordinate": 207200,
+            "chainage_m": 208200
+          },
+          {
+            "lat": 50.15537148648034,
+            "lon": 138.99874979049417,
+            "sector": 13,
+            "path_id": "vysokogornaya-oune-sector-13",
+            "ordinate": 208000,
+            "chainage_m": 209000
+          },
+          {
+            "lat": 50.152227667058455,
+            "lon": 139.00370301063307,
+            "sector": 13,
+            "path_id": "vysokogornaya-oune-sector-13",
+            "ordinate": 208500,
+            "chainage_m": 209500
+          },
+          {
+            "lat": 50.14815852079744,
+            "lon": 139.00648586664403,
+            "sector": 13,
+            "path_id": "vysokogornaya-oune-sector-13",
+            "ordinate": 209000,
+            "chainage_m": 210000
+          },
+          {
+            "lat": 50.14361496548205,
+            "lon": 139.01795820057595,
+            "sector": 13,
+            "path_id": "vysokogornaya-oune-sector-13",
+            "ordinate": 210000,
+            "chainage_m": 211000
+          },
+          {
+            "lat": 50.141156403583146,
+            "lon": 139.0311648777537,
+            "sector": 13,
+            "path_id": "vysokogornaya-oune-sector-13",
+            "ordinate": 211000,
+            "chainage_m": 212000
+          },
+          {
+            "lat": 50.13744650185967,
+            "lon": 139.04379859713634,
+            "sector": 13,
+            "path_id": "vysokogornaya-oune-sector-13",
+            "ordinate": 212000,
+            "chainage_m": 213000
+          },
+          {
+            "lat": 50.13096978694351,
+            "lon": 139.05349648077672,
+            "sector": 13,
+            "path_id": "vysokogornaya-oune-sector-13",
+            "ordinate": 213000,
+            "chainage_m": 214000
+          },
+          {
+            "lat": 50.12437332384817,
+            "lon": 139.06274974916806,
+            "sector": 13,
+            "path_id": "vysokogornaya-oune-sector-13",
+            "ordinate": 214000,
+            "chainage_m": 215000
+          },
+          {
+            "lat": 50.1205333607052,
+            "lon": 139.06613306494833,
+            "sector": 13,
+            "path_id": "vysokogornaya-oune-sector-13",
+            "ordinate": 214500,
+            "chainage_m": 215500
+          },
+          {
+            "lat": 50.11938687215715,
+            "lon": 139.07292662552518,
+            "sector": 13,
+            "path_id": "vysokogornaya-oune-sector-13",
+            "ordinate": 215000,
+            "chainage_m": 216000
+          },
+          {
+            "lat": 50.11553487690048,
+            "lon": 139.08525323952964,
+            "sector": 13,
+            "path_id": "vysokogornaya-oune-sector-13",
+            "ordinate": 216000,
+            "chainage_m": 217000
+          },
+          {
+            "lat": 50.11090537791582,
+            "lon": 139.09737244281223,
+            "sector": 13,
+            "path_id": "vysokogornaya-oune-sector-13",
+            "ordinate": 217000,
+            "chainage_m": 218000
+          },
+          {
+            "lat": 50.107311213666975,
+            "lon": 139.1071081416671,
+            "sector": 13,
+            "path_id": "vysokogornaya-oune-sector-13",
+            "ordinate": 217800,
+            "chainage_m": 218800
+          },
+          {
+            "lat": 50.10647813303285,
+            "lon": 139.10933694749016,
+            "sector": 13,
+            "path_id": "vysokogornaya-oune-sector-13",
+            "ordinate": 218000,
+            "chainage_m": 219000
+          },
+          {
+            "lat": 50.10188071968472,
+            "lon": 139.1213358296358,
+            "sector": 13,
+            "path_id": "vysokogornaya-oune-sector-13",
+            "ordinate": 219000,
+            "chainage_m": 220000
+          },
+          {
+            "lat": 50.09969144794953,
+            "lon": 139.12746361325472,
+            "sector": 13,
+            "path_id": "vysokogornaya-oune-sector-13",
+            "ordinate": 219500,
+            "chainage_m": 220500
+          }
+        ]
+      }
+    ]
+  }
+}

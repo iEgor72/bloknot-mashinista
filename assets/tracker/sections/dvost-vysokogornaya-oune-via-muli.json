@@ -1,0 +1,603 @@
+{
+  "schema_version": "1.0",
+  "id": "dvost-vysokogornaya-oune-via-muli",
+  "status": "draft",
+  "railway": {
+    "id": "dvost",
+    "name": "Дальневосточная железная дорога"
+  },
+  "section_name": "Высокогорная — Оунэ (через Мули — блок-пост 197 км — Новый Кузнецовский)",
+  "direction": "требует проверки",
+  "km_start": 183,
+  "km_end": 210,
+  "generator_format": "Б",
+  "elements": [
+    {
+      "start_m": 184000,
+      "len_m": 400,
+      "grad_permille": 14.4,
+      "confidence": "legacy_xml_unverified"
+    },
+    {
+      "start_m": 184400,
+      "len_m": 1300,
+      "grad_permille": 16,
+      "confidence": "legacy_xml_unverified"
+    },
+    {
+      "start_m": 185700,
+      "len_m": 300,
+      "grad_permille": 10.7,
+      "confidence": "legacy_xml_unverified"
+    },
+    {
+      "start_m": 186000,
+      "len_m": 1100,
+      "grad_permille": 15.6,
+      "confidence": "legacy_xml_unverified"
+    },
+    {
+      "start_m": 187100,
+      "len_m": 300,
+      "grad_permille": 6.4,
+      "confidence": "legacy_xml_unverified"
+    },
+    {
+      "start_m": 187400,
+      "len_m": 600,
+      "grad_permille": 15,
+      "confidence": "legacy_xml_unverified"
+    },
+    {
+      "start_m": 188000,
+      "len_m": 300,
+      "grad_permille": 12,
+      "confidence": "legacy_xml_unverified"
+    },
+    {
+      "start_m": 188300,
+      "len_m": 700,
+      "grad_permille": 18,
+      "confidence": "legacy_xml_unverified"
+    },
+    {
+      "start_m": 189000,
+      "len_m": 800,
+      "grad_permille": 18.6,
+      "confidence": "legacy_xml_unverified"
+    },
+    {
+      "start_m": 189800,
+      "len_m": 1100,
+      "grad_permille": 17.6,
+      "confidence": "legacy_xml_unverified"
+    },
+    {
+      "start_m": 190900,
+      "len_m": 600,
+      "grad_permille": 7.4,
+      "confidence": "legacy_xml_unverified"
+    },
+    {
+      "start_m": 191500,
+      "len_m": 1000,
+      "grad_permille": 8.6,
+      "confidence": "legacy_xml_unverified"
+    },
+    {
+      "start_m": 192500,
+      "len_m": 400,
+      "grad_permille": 15.6,
+      "confidence": "legacy_xml_unverified"
+    },
+    {
+      "start_m": 192900,
+      "len_m": 1000,
+      "grad_permille": 17.9,
+      "confidence": "legacy_xml_unverified"
+    },
+    {
+      "start_m": 193900,
+      "len_m": 700,
+      "grad_permille": 19.1,
+      "confidence": "legacy_xml_unverified"
+    },
+    {
+      "start_m": 194600,
+      "len_m": 700,
+      "grad_permille": 17.5,
+      "confidence": "legacy_xml_unverified"
+    },
+    {
+      "start_m": 195300,
+      "len_m": 400,
+      "grad_permille": 18.7,
+      "confidence": "legacy_xml_unverified"
+    },
+    {
+      "start_m": 195700,
+      "len_m": 300,
+      "grad_permille": 18.7,
+      "confidence": "legacy_xml_unverified"
+    },
+    {
+      "start_m": 196000,
+      "len_m": 600,
+      "grad_permille": 18,
+      "confidence": "legacy_xml_unverified"
+    },
+    {
+      "start_m": 196600,
+      "len_m": 700,
+      "grad_permille": 12.8,
+      "confidence": "legacy_xml_unverified"
+    },
+    {
+      "start_m": 197300,
+      "len_m": 600,
+      "grad_permille": 12.5,
+      "confidence": "legacy_xml_unverified"
+    },
+    {
+      "start_m": 197900,
+      "len_m": 300,
+      "grad_permille": 16.7,
+      "confidence": "legacy_xml_unverified"
+    },
+    {
+      "start_m": 198200,
+      "len_m": 300,
+      "grad_permille": 12.5,
+      "confidence": "legacy_xml_unverified"
+    },
+    {
+      "start_m": 198500,
+      "len_m": 300,
+      "grad_permille": 0,
+      "confidence": "legacy_xml_unverified"
+    },
+    {
+      "start_m": 198800,
+      "len_m": 3500,
+      "grad_permille": -11.4,
+      "confidence": "legacy_xml_unverified"
+    },
+    {
+      "start_m": 202300,
+      "len_m": 700,
+      "grad_permille": -8.2,
+      "confidence": "legacy_xml_unverified"
+    },
+    {
+      "start_m": 203000,
+      "len_m": 800,
+      "grad_permille": -7.7,
+      "confidence": "legacy_xml_unverified"
+    },
+    {
+      "start_m": 203800,
+      "len_m": 600,
+      "grad_permille": -17.6,
+      "confidence": "legacy_xml_unverified"
+    },
+    {
+      "start_m": 204400,
+      "len_m": 1000,
+      "grad_permille": -18.7,
+      "confidence": "legacy_xml_unverified"
+    },
+    {
+      "start_m": 205400,
+      "len_m": 2200,
+      "grad_permille": -18.2,
+      "confidence": "legacy_xml_unverified"
+    },
+    {
+      "start_m": 207600,
+      "len_m": 700,
+      "grad_permille": -17.2,
+      "confidence": "legacy_xml_unverified"
+    },
+    {
+      "start_m": 208300,
+      "len_m": 600,
+      "grad_permille": -11.5,
+      "confidence": "legacy_xml_unverified"
+    },
+    {
+      "start_m": 208900,
+      "len_m": 200,
+      "grad_permille": -2.5,
+      "confidence": "legacy_xml_unverified"
+    },
+    {
+      "start_m": 209100,
+      "len_m": 400,
+      "grad_permille": 0.5,
+      "confidence": "legacy_xml_unverified"
+    },
+    {
+      "start_m": 209500,
+      "len_m": 500,
+      "grad_permille": -2.3,
+      "confidence": "legacy_xml_unverified"
+    }
+  ],
+  "stations": [
+    {
+      "name": "Оунэ",
+      "km": 183,
+      "confidence": "route_join_needs_review"
+    },
+    {
+      "name": "НОВЫЙ",
+      "km": 192.518,
+      "confidence": "legacy_label_truncated"
+    },
+    {
+      "name": "197 КМ",
+      "km": 198.213,
+      "confidence": "legacy_label_truncated"
+    },
+    {
+      "name": "Мули",
+      "km": 204.247,
+      "confidence": "legacy_anchor_named"
+    },
+    {
+      "name": "Высокогорная",
+      "km": 208,
+      "confidence": "legacy_anchor_needs_review"
+    }
+  ],
+  "signals": [],
+  "whistle_points": [],
+  "speed": {
+    "established": null,
+    "permanent_restrictions": [],
+    "temporary_warnings": [],
+    "source": "manual_required"
+  },
+  "flags_for_review": [
+    {
+      "km": null,
+      "reason": "Светофоры и точки свистка ещё не перенесены вручную из PDF"
+    },
+    {
+      "km": null,
+      "reason": "Названия промежуточных станций из legacy XML местами обрезаны и требуют сверки с PDF"
+    },
+    {
+      "km": null,
+      "reason": "Направление чётное/нечётное не подтверждено по титулу карты"
+    },
+    {
+      "km": null,
+      "reason": "Знаки и границы уклонов пока мигрированы из profile.xml, а не сверены по границам элементов PDF"
+    },
+    {
+      "km": 183,
+      "reason": "В legacy profile.xml отсутствует подтверждённый элемент 183–184 км; диапазон оставлен как gap"
+    },
+    {
+      "km": 208,
+      "reason": "Профиль и GPS-геометрия имеют разные крайние координаты 208–210 км; границу станции Высокогорная сверить вручную"
+    }
+  ],
+  "provenance": [
+    {
+      "kind": "regime_map_pdf",
+      "file_name": "ВСКГ- КСМ новый 2 пассажир.pdf",
+      "repo_path": "assets/docs/memos/ВСКГ- КСМ новый 2 пассажир.pdf",
+      "sha256": "834155ea6be7fccaf02b744c49d0aef06ec35d7cd6ebbaebf4d7eb7c60f80118",
+      "pages": 63,
+      "profile_pages": "5,7,9,11,13,15,17,19,21,23,25,27,29,31,33,35,37,39,41,43",
+      "role": "authoritative_map_pending_row_by_row_verification"
+    },
+    {
+      "kind": "legacy_profile_xml",
+      "path": "assets/tracker/maps/komsomol-sk-tche-9/profile.xml",
+      "role": "temporary_profile_seed_not_pdf_verified"
+    },
+    {
+      "kind": "legacy_geometry_xml",
+      "path": "assets/tracker/maps/komsomol-sk-tche-9/data.xml",
+      "role": "offline_gps_map_matching_seed"
+    }
+  ],
+  "runtime": {
+    "coordinate_unit": "m",
+    "coordinate_kind": "official_railway_chainage",
+    "coordinate_offset_m": -1000,
+    "movement_order": "descending",
+    "default_path_id": "vysokogornaya-oune-sector-14",
+    "route_legs": [
+      {
+        "path_id": "vysokogornaya-oune-sector-14",
+        "sector": 14,
+        "from_chainage_m": 210000,
+        "to_chainage_m": 183000
+      }
+    ],
+    "profile_status": "legacy_seed_partial_pending_pdf_verification",
+    "profile_coverage": [
+      {
+        "start_m": 184000,
+        "end_m": 210000
+      }
+    ],
+    "profile_gaps": [
+      {
+        "start_m": 183000,
+        "end_m": 184000,
+        "reason": "Нет подтверждённого элемента профиля"
+      }
+    ],
+    "profile_applies_both_directions": false
+  },
+  "geometry": {
+    "status": "draft_from_legacy_centerline",
+    "source": {
+      "kind": "legacy_geometry_xml",
+      "path": "assets/tracker/maps/komsomol-sk-tche-9/data.xml",
+      "role": "offline_gps_map_matching_seed"
+    },
+    "paths": [
+      {
+        "path_id": "vysokogornaya-oune-sector-14",
+        "sector": 14,
+        "source": "assets/tracker/maps/komsomol-sk-tche-9/data.xml",
+        "points": [
+          {
+            "lat": 50.20703852861405,
+            "lon": 138.8582250157448,
+            "sector": 14,
+            "path_id": "vysokogornaya-oune-sector-14",
+            "ordinate": 182000,
+            "chainage_m": 183000
+          },
+          {
+            "lat": 50.21159640787432,
+            "lon": 138.87016144549077,
+            "sector": 14,
+            "path_id": "vysokogornaya-oune-sector-14",
+            "ordinate": 183000,
+            "chainage_m": 184000
+          },
+          {
+            "lat": 50.2119516417073,
+            "lon": 138.8837617446738,
+            "sector": 14,
+            "path_id": "vysokogornaya-oune-sector-14",
+            "ordinate": 184000,
+            "chainage_m": 185000
+          },
+          {
+            "lat": 50.21219686764361,
+            "lon": 138.8978799977036,
+            "sector": 14,
+            "path_id": "vysokogornaya-oune-sector-14",
+            "ordinate": 185000,
+            "chainage_m": 186000
+          },
+          {
+            "lat": 50.209091436394004,
+            "lon": 138.90991153844357,
+            "sector": 14,
+            "path_id": "vysokogornaya-oune-sector-14",
+            "ordinate": 186000,
+            "chainage_m": 187000
+          },
+          {
+            "lat": 50.202827861777635,
+            "lon": 138.91991137084196,
+            "sector": 14,
+            "path_id": "vysokogornaya-oune-sector-14",
+            "ordinate": 187000,
+            "chainage_m": 188000
+          },
+          {
+            "lat": 50.19775661233293,
+            "lon": 138.9311201441881,
+            "sector": 14,
+            "path_id": "vysokogornaya-oune-sector-14",
+            "ordinate": 188000,
+            "chainage_m": 189000
+          },
+          {
+            "lat": 50.19507516985172,
+            "lon": 138.9444431317983,
+            "sector": 14,
+            "path_id": "vysokogornaya-oune-sector-14",
+            "ordinate": 189000,
+            "chainage_m": 190000
+          },
+          {
+            "lat": 50.19299647897098,
+            "lon": 138.95791336956182,
+            "sector": 14,
+            "path_id": "vysokogornaya-oune-sector-14",
+            "ordinate": 190000,
+            "chainage_m": 191000
+          },
+          {
+            "lat": 50.1907235553977,
+            "lon": 138.97153658705665,
+            "sector": 14,
+            "path_id": "vysokogornaya-oune-sector-14",
+            "ordinate": 191000,
+            "chainage_m": 192000
+          },
+          {
+            "lat": 50.18889524707344,
+            "lon": 138.98509849806737,
+            "sector": 14,
+            "path_id": "vysokogornaya-oune-sector-14",
+            "ordinate": 192000,
+            "chainage_m": 193000
+          },
+          {
+            "lat": 50.189759840386294,
+            "lon": 138.99906835502827,
+            "sector": 14,
+            "path_id": "vysokogornaya-oune-sector-14",
+            "ordinate": 193000,
+            "chainage_m": 194000
+          },
+          {
+            "lat": 50.191247238822456,
+            "lon": 139.0122343522026,
+            "sector": 14,
+            "path_id": "vysokogornaya-oune-sector-14",
+            "ordinate": 194000,
+            "chainage_m": 195000
+          },
+          {
+            "lat": 50.19266473640761,
+            "lon": 139.02571318433303,
+            "sector": 14,
+            "path_id": "vysokogornaya-oune-sector-14",
+            "ordinate": 195000,
+            "chainage_m": 196000
+          },
+          {
+            "lat": 50.19154173912915,
+            "lon": 139.03939828126974,
+            "sector": 14,
+            "path_id": "vysokogornaya-oune-sector-14",
+            "ordinate": 196000,
+            "chainage_m": 197000
+          },
+          {
+            "lat": 50.19089143203168,
+            "lon": 139.04342502865393,
+            "sector": 14,
+            "path_id": "vysokogornaya-oune-sector-14",
+            "ordinate": 196300,
+            "chainage_m": 197300
+          },
+          {
+            "lat": 50.18973806799008,
+            "lon": 139.04567847166217,
+            "sector": 14,
+            "path_id": "vysokogornaya-oune-sector-14",
+            "ordinate": 196500,
+            "chainage_m": 197500
+          },
+          {
+            "lat": 50.185439738611,
+            "lon": 139.04815021159035,
+            "sector": 14,
+            "path_id": "vysokogornaya-oune-sector-14",
+            "ordinate": 197000,
+            "chainage_m": 198000
+          },
+          {
+            "lat": 50.184018230321286,
+            "lon": 139.04980835144946,
+            "sector": 14,
+            "path_id": "vysokogornaya-oune-sector-14",
+            "ordinate": 197200,
+            "chainage_m": 198200
+          },
+          {
+            "lat": 50.17843303773435,
+            "lon": 139.0557814364637,
+            "sector": 14,
+            "path_id": "vysokogornaya-oune-sector-14",
+            "ordinate": 198000,
+            "chainage_m": 199000
+          },
+          {
+            "lat": 50.17273898316634,
+            "lon": 139.06643615962196,
+            "sector": 14,
+            "path_id": "vysokogornaya-oune-sector-14",
+            "ordinate": 199000,
+            "chainage_m": 200000
+          },
+          {
+            "lat": 50.16615569810029,
+            "lon": 139.07519725726732,
+            "sector": 14,
+            "path_id": "vysokogornaya-oune-sector-14",
+            "ordinate": 200000,
+            "chainage_m": 201000
+          },
+          {
+            "lat": 50.15876969916326,
+            "lon": 139.0825723700062,
+            "sector": 14,
+            "path_id": "vysokogornaya-oune-sector-14",
+            "ordinate": 201000,
+            "chainage_m": 202000
+          },
+          {
+            "lat": 50.15463867346037,
+            "lon": 139.0854136677123,
+            "sector": 14,
+            "path_id": "vysokogornaya-oune-sector-14",
+            "ordinate": 201500,
+            "chainage_m": 202500
+          },
+          {
+            "lat": 50.15023033618463,
+            "lon": 139.0860834553748,
+            "sector": 14,
+            "path_id": "vysokogornaya-oune-sector-14",
+            "ordinate": 202000,
+            "chainage_m": 203000
+          },
+          {
+            "lat": 50.14127844359351,
+            "lon": 139.08687814783664,
+            "sector": 14,
+            "path_id": "vysokogornaya-oune-sector-14",
+            "ordinate": 203000,
+            "chainage_m": 204000
+          },
+          {
+            "lat": 50.13314186994485,
+            "lon": 139.09288847510754,
+            "sector": 14,
+            "path_id": "vysokogornaya-oune-sector-14",
+            "ordinate": 204000,
+            "chainage_m": 205000
+          },
+          {
+            "lat": 50.12520812335568,
+            "lon": 139.09946660355342,
+            "sector": 14,
+            "path_id": "vysokogornaya-oune-sector-14",
+            "ordinate": 205000,
+            "chainage_m": 206000
+          },
+          {
+            "lat": 50.1173099001498,
+            "lon": 139.10537494433686,
+            "sector": 14,
+            "path_id": "vysokogornaya-oune-sector-14",
+            "ordinate": 206000,
+            "chainage_m": 207000
+          },
+          {
+            "lat": 50.108516716867925,
+            "lon": 139.10538697645052,
+            "sector": 14,
+            "path_id": "vysokogornaya-oune-sector-14",
+            "ordinate": 207000,
+            "chainage_m": 208000
+          },
+          {
+            "lat": 50.10781942723125,
+            "lon": 139.10630829258508,
+            "sector": 14,
+            "path_id": "vysokogornaya-oune-sector-14",
+            "ordinate": 207100,
+            "chainage_m": 208100
+          }
+        ]
+      }
+    ]
+  }
+}

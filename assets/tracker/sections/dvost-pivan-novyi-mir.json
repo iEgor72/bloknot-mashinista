@@ -1,0 +1,582 @@
+{
+  "schema_version": "1.0",
+  "id": "dvost-pivan-novyi-mir",
+  "status": "draft",
+  "railway": {
+    "id": "dvost",
+    "name": "Дальневосточная железная дорога"
+  },
+  "section_name": "Пивань — Амурский разъезд — Новый Мир",
+  "direction": "требует проверки",
+  "km_start": 1,
+  "km_end": 17,
+  "generator_format": "Б",
+  "elements": [
+    {
+      "start_m": 1400,
+      "len_m": 200,
+      "grad_permille": -5.5,
+      "confidence": "legacy_xml_unverified"
+    },
+    {
+      "start_m": 1600,
+      "len_m": 1200,
+      "grad_permille": -2.8,
+      "confidence": "legacy_xml_unverified"
+    },
+    {
+      "start_m": 2800,
+      "len_m": 400,
+      "grad_permille": 0,
+      "confidence": "legacy_xml_unverified"
+    },
+    {
+      "start_m": 3200,
+      "len_m": 600,
+      "grad_permille": 0.1,
+      "confidence": "legacy_xml_unverified"
+    },
+    {
+      "start_m": 3800,
+      "len_m": 500,
+      "grad_permille": 1.4,
+      "confidence": "legacy_xml_unverified"
+    },
+    {
+      "start_m": 4300,
+      "len_m": 300,
+      "grad_permille": 0.6,
+      "confidence": "legacy_xml_unverified"
+    },
+    {
+      "start_m": 4600,
+      "len_m": 1100,
+      "grad_permille": 0,
+      "confidence": "legacy_xml_unverified"
+    },
+    {
+      "start_m": 5700,
+      "len_m": 500,
+      "grad_permille": 2.7,
+      "confidence": "legacy_xml_unverified"
+    },
+    {
+      "start_m": 6200,
+      "len_m": 100,
+      "grad_permille": 0,
+      "confidence": "legacy_xml_unverified"
+    },
+    {
+      "start_m": 6300,
+      "len_m": 200,
+      "grad_permille": -1.2,
+      "confidence": "legacy_xml_unverified"
+    },
+    {
+      "start_m": 6500,
+      "len_m": 700,
+      "grad_permille": 0.2,
+      "confidence": "legacy_xml_unverified"
+    },
+    {
+      "start_m": 7200,
+      "len_m": 900,
+      "grad_permille": 0.75,
+      "confidence": "legacy_xml_unverified"
+    },
+    {
+      "start_m": 8100,
+      "len_m": 600,
+      "grad_permille": 4.8,
+      "confidence": "legacy_xml_unverified"
+    },
+    {
+      "start_m": 8700,
+      "len_m": 300,
+      "grad_permille": 7.5,
+      "confidence": "legacy_xml_unverified"
+    },
+    {
+      "start_m": 9000,
+      "len_m": 800,
+      "grad_permille": 8.8,
+      "confidence": "legacy_xml_unverified"
+    },
+    {
+      "start_m": 9800,
+      "len_m": 900,
+      "grad_permille": 4.25,
+      "confidence": "legacy_xml_unverified"
+    },
+    {
+      "start_m": 10700,
+      "len_m": 500,
+      "grad_permille": 3.7,
+      "confidence": "legacy_xml_unverified"
+    },
+    {
+      "start_m": 11200,
+      "len_m": 300,
+      "grad_permille": 6.7,
+      "confidence": "legacy_xml_unverified"
+    },
+    {
+      "start_m": 11500,
+      "len_m": 500,
+      "grad_permille": 9,
+      "confidence": "legacy_xml_unverified"
+    },
+    {
+      "start_m": 12000,
+      "len_m": 300,
+      "grad_permille": 6.4,
+      "confidence": "legacy_xml_unverified"
+    },
+    {
+      "start_m": 12300,
+      "len_m": 600,
+      "grad_permille": 7.6,
+      "confidence": "legacy_xml_unverified"
+    },
+    {
+      "start_m": 12900,
+      "len_m": 300,
+      "grad_permille": 1,
+      "confidence": "legacy_xml_unverified"
+    },
+    {
+      "start_m": 13200,
+      "len_m": 600,
+      "grad_permille": 0.1,
+      "confidence": "legacy_xml_unverified"
+    },
+    {
+      "start_m": 13800,
+      "len_m": 400,
+      "grad_permille": -6.7,
+      "confidence": "legacy_xml_unverified"
+    },
+    {
+      "start_m": 14200,
+      "len_m": 300,
+      "grad_permille": -5,
+      "confidence": "legacy_xml_unverified"
+    },
+    {
+      "start_m": 14500,
+      "len_m": 500,
+      "grad_permille": -7.5,
+      "confidence": "legacy_xml_unverified"
+    },
+    {
+      "start_m": 15000,
+      "len_m": 400,
+      "grad_permille": -1,
+      "confidence": "legacy_xml_unverified"
+    },
+    {
+      "start_m": 15400,
+      "len_m": 300,
+      "grad_permille": 1,
+      "confidence": "legacy_xml_unverified"
+    },
+    {
+      "start_m": 15700,
+      "len_m": 600,
+      "grad_permille": -7.7,
+      "confidence": "legacy_xml_unverified"
+    },
+    {
+      "start_m": 16300,
+      "len_m": 600,
+      "grad_permille": -6.4,
+      "confidence": "legacy_xml_unverified"
+    },
+    {
+      "start_m": 16900,
+      "len_m": 100,
+      "grad_permille": -8.9,
+      "confidence": "legacy_xml_clipped_unverified"
+    }
+  ],
+  "stations": [
+    {
+      "name": "Комсомольск-Сортировочный",
+      "km": 1.083,
+      "confidence": "legacy_anchor_named"
+    },
+    {
+      "name": "Новый Мир",
+      "km": 2,
+      "confidence": "pdf_anchor_needs_review"
+    },
+    {
+      "name": "Амурский разъезд",
+      "km": 13,
+      "confidence": "pdf_anchor_needs_review"
+    },
+    {
+      "name": "Пивань",
+      "km": 17,
+      "confidence": "pdf_anchor_needs_review"
+    }
+  ],
+  "signals": [],
+  "whistle_points": [],
+  "speed": {
+    "established": null,
+    "permanent_restrictions": [],
+    "temporary_warnings": [],
+    "source": "manual_required"
+  },
+  "flags_for_review": [
+    {
+      "km": null,
+      "reason": "Светофоры и точки свистка ещё не перенесены вручную из PDF"
+    },
+    {
+      "km": null,
+      "reason": "Названия промежуточных станций из legacy XML местами обрезаны и требуют сверки с PDF"
+    },
+    {
+      "km": null,
+      "reason": "Направление чётное/нечётное не подтверждено по титулу карты"
+    },
+    {
+      "km": null,
+      "reason": "Знаки и границы уклонов пока мигрированы из profile.xml, а не сверены по границам элементов PDF"
+    },
+    {
+      "km": 1,
+      "reason": "В legacy profile.xml отсутствует подтверждённый элемент 1,0–1,4 км; диапазон оставлен как gap"
+    },
+    {
+      "km": null,
+      "reason": "Титул файла заявляет Комсомольск, но последняя профильная страница заканчивается станцией Новый Мир; конечную точку маршрута подтвердить"
+    }
+  ],
+  "provenance": [
+    {
+      "kind": "regime_map_pdf",
+      "file_name": "ВСКГ- КСМ новый 2 пассажир.pdf",
+      "repo_path": "assets/docs/memos/ВСКГ- КСМ новый 2 пассажир.pdf",
+      "sha256": "834155ea6be7fccaf02b744c49d0aef06ec35d7cd6ebbaebf4d7eb7c60f80118",
+      "pages": 63,
+      "profile_pages": "5,7,9,11,13,15,17,19,21,23,25,27,29,31,33,35,37,39,41,43",
+      "role": "authoritative_map_pending_row_by_row_verification"
+    },
+    {
+      "kind": "legacy_profile_xml",
+      "path": "assets/tracker/maps/komsomol-sk-tche-9/profile.xml",
+      "role": "temporary_profile_seed_not_pdf_verified"
+    },
+    {
+      "kind": "legacy_geometry_xml",
+      "path": "assets/tracker/maps/komsomol-sk-tche-9/data.xml",
+      "role": "offline_gps_map_matching_seed"
+    }
+  ],
+  "runtime": {
+    "coordinate_unit": "m",
+    "coordinate_kind": "official_railway_chainage",
+    "coordinate_offset_m": -1000,
+    "movement_order": "descending",
+    "default_path_id": "pivan-novyi-mir-sector-12",
+    "route_legs": [
+      {
+        "path_id": "pivan-novyi-mir-sector-12",
+        "sector": 12,
+        "from_chainage_m": 17000,
+        "to_chainage_m": 1000
+      }
+    ],
+    "profile_status": "legacy_seed_partial_pending_pdf_verification",
+    "profile_coverage": [
+      {
+        "start_m": 1400,
+        "end_m": 17000
+      }
+    ],
+    "profile_gaps": [
+      {
+        "start_m": 1000,
+        "end_m": 1400,
+        "reason": "Нет подтверждённого элемента профиля"
+      }
+    ],
+    "profile_applies_both_directions": false
+  },
+  "geometry": {
+    "status": "draft_from_legacy_centerline",
+    "source": {
+      "kind": "legacy_geometry_xml",
+      "path": "assets/tracker/maps/komsomol-sk-tche-9/data.xml",
+      "role": "offline_gps_map_matching_seed"
+    },
+    "paths": [
+      {
+        "path_id": "pivan-novyi-mir-sector-12",
+        "sector": 12,
+        "source": "assets/tracker/maps/komsomol-sk-tche-9/data.xml",
+        "points": [
+          {
+            "lat": 50.454455455538614,
+            "lon": 136.90678634243542,
+            "sector": 12,
+            "path_id": "pivan-novyi-mir-sector-12",
+            "ordinate": 1,
+            "chainage_m": 1001
+          },
+          {
+            "lat": 50.452819661033516,
+            "lon": 136.907802769564,
+            "sector": 12,
+            "path_id": "pivan-novyi-mir-sector-12",
+            "ordinate": 200,
+            "chainage_m": 1200
+          },
+          {
+            "lat": 50.451419352182214,
+            "lon": 136.9108583534854,
+            "sector": 12,
+            "path_id": "pivan-novyi-mir-sector-12",
+            "ordinate": 500,
+            "chainage_m": 1500
+          },
+          {
+            "lat": 50.45130017696083,
+            "lon": 136.91225579754774,
+            "sector": 12,
+            "path_id": "pivan-novyi-mir-sector-12",
+            "ordinate": 600,
+            "chainage_m": 1600
+          },
+          {
+            "lat": 50.45139700682821,
+            "lon": 136.9137999188056,
+            "sector": 12,
+            "path_id": "pivan-novyi-mir-sector-12",
+            "ordinate": 700,
+            "chainage_m": 1700
+          },
+          {
+            "lat": 50.45188860461643,
+            "lon": 136.91649453931612,
+            "sector": 12,
+            "path_id": "pivan-novyi-mir-sector-12",
+            "ordinate": 1000,
+            "chainage_m": 2000
+          },
+          {
+            "lat": 50.45454999357481,
+            "lon": 136.92996133933286,
+            "sector": 12,
+            "path_id": "pivan-novyi-mir-sector-12",
+            "ordinate": 2000,
+            "chainage_m": 3000
+          },
+          {
+            "lat": 50.455313746315724,
+            "lon": 136.93396917910982,
+            "sector": 12,
+            "path_id": "pivan-novyi-mir-sector-12",
+            "ordinate": 2200,
+            "chainage_m": 3200
+          },
+          {
+            "lat": 50.45740275043677,
+            "lon": 136.944794643691,
+            "sector": 12,
+            "path_id": "pivan-novyi-mir-sector-12",
+            "ordinate": 3000,
+            "chainage_m": 4000
+          },
+          {
+            "lat": 50.45766401919135,
+            "lon": 136.9459388404079,
+            "sector": 12,
+            "path_id": "pivan-novyi-mir-sector-12",
+            "ordinate": 3100,
+            "chainage_m": 4100
+          },
+          {
+            "lat": 50.45793617414403,
+            "lon": 136.94729445855117,
+            "sector": 12,
+            "path_id": "pivan-novyi-mir-sector-12",
+            "ordinate": 3200,
+            "chainage_m": 4200
+          },
+          {
+            "lat": 50.460069296015305,
+            "lon": 136.95834452258808,
+            "sector": 12,
+            "path_id": "pivan-novyi-mir-sector-12",
+            "ordinate": 4000,
+            "chainage_m": 5000
+          },
+          {
+            "lat": 50.46266364891166,
+            "lon": 136.97160849554535,
+            "sector": 12,
+            "path_id": "pivan-novyi-mir-sector-12",
+            "ordinate": 5000,
+            "chainage_m": 6000
+          },
+          {
+            "lat": 50.465355404633186,
+            "lon": 136.98504206400997,
+            "sector": 12,
+            "path_id": "pivan-novyi-mir-sector-12",
+            "ordinate": 6000,
+            "chainage_m": 7000
+          },
+          {
+            "lat": 50.46799158344858,
+            "lon": 136.99867215699834,
+            "sector": 12,
+            "path_id": "pivan-novyi-mir-sector-12",
+            "ordinate": 7000,
+            "chainage_m": 8000
+          },
+          {
+            "lat": 50.470602552120994,
+            "lon": 137.012125206028,
+            "sector": 12,
+            "path_id": "pivan-novyi-mir-sector-12",
+            "ordinate": 8000,
+            "chainage_m": 9000
+          },
+          {
+            "lat": 50.47332753939463,
+            "lon": 137.0254332967355,
+            "sector": 12,
+            "path_id": "pivan-novyi-mir-sector-12",
+            "ordinate": 9000,
+            "chainage_m": 10000
+          },
+          {
+            "lat": 50.47597804215491,
+            "lon": 137.03895567365842,
+            "sector": 12,
+            "path_id": "pivan-novyi-mir-sector-12",
+            "ordinate": 10000,
+            "chainage_m": 11000
+          },
+          {
+            "lat": 50.4768386247632,
+            "lon": 137.04289991512007,
+            "sector": 12,
+            "path_id": "pivan-novyi-mir-sector-12",
+            "ordinate": 10300,
+            "chainage_m": 11300
+          },
+          {
+            "lat": 50.47993603460367,
+            "lon": 137.04795855949328,
+            "sector": 12,
+            "path_id": "pivan-novyi-mir-sector-12",
+            "ordinate": 10800,
+            "chainage_m": 11800
+          },
+          {
+            "lat": 50.48066082621452,
+            "lon": 137.04894461985873,
+            "sector": 12,
+            "path_id": "pivan-novyi-mir-sector-12",
+            "ordinate": 11000,
+            "chainage_m": 12000
+          },
+          {
+            "lat": 50.48198894238363,
+            "lon": 137.0524751857923,
+            "sector": 12,
+            "path_id": "pivan-novyi-mir-sector-12",
+            "ordinate": 11300,
+            "chainage_m": 12300
+          },
+          {
+            "lat": 50.48139707698125,
+            "lon": 137.05653058106626,
+            "sector": 12,
+            "path_id": "pivan-novyi-mir-sector-12",
+            "ordinate": 11600,
+            "chainage_m": 12600
+          },
+          {
+            "lat": 50.478391913345796,
+            "lon": 137.0593248962331,
+            "sector": 12,
+            "path_id": "pivan-novyi-mir-sector-12",
+            "ordinate": 12000,
+            "chainage_m": 13000
+          },
+          {
+            "lat": 50.4740970217135,
+            "lon": 137.06139728457808,
+            "sector": 12,
+            "path_id": "pivan-novyi-mir-sector-12",
+            "ordinate": 12500,
+            "chainage_m": 13500
+          },
+          {
+            "lat": 50.46979983825001,
+            "lon": 137.06350806109535,
+            "sector": 12,
+            "path_id": "pivan-novyi-mir-sector-12",
+            "ordinate": 13000,
+            "chainage_m": 14000
+          },
+          {
+            "lat": 50.46736362170511,
+            "lon": 137.0652085998313,
+            "sector": 12,
+            "path_id": "pivan-novyi-mir-sector-12",
+            "ordinate": 13300,
+            "chainage_m": 14300
+          },
+          {
+            "lat": 50.46613348131897,
+            "lon": 137.06880562886914,
+            "sector": 12,
+            "path_id": "pivan-novyi-mir-sector-12",
+            "ordinate": 13600,
+            "chainage_m": 14600
+          },
+          {
+            "lat": 50.46717511859052,
+            "lon": 137.07402527438276,
+            "sector": 12,
+            "path_id": "pivan-novyi-mir-sector-12",
+            "ordinate": 14000,
+            "chainage_m": 15000
+          },
+          {
+            "lat": 50.47138062880678,
+            "lon": 137.08647220952417,
+            "sector": 12,
+            "path_id": "pivan-novyi-mir-sector-12",
+            "ordinate": 15000,
+            "chainage_m": 16000
+          },
+          {
+            "lat": 50.47152157642438,
+            "lon": 137.0949565685545,
+            "sector": 12,
+            "path_id": "pivan-novyi-mir-sector-12",
+            "ordinate": 15600,
+            "chainage_m": 16600
+          },
+          {
+            "lat": 50.47409186509334,
+            "lon": 137.09865558407984,
+            "sector": 12,
+            "path_id": "pivan-novyi-mir-sector-12",
+            "ordinate": 16000,
+            "chainage_m": 17000
+          }
+        ]
+      }
+    ]
+  }
+}

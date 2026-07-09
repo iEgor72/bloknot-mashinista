@@ -3520,7 +3520,9 @@ details.optional-card[open] .optional-summary-chevron {
   overflow: hidden;
 }
 .notif-row.is-expanded .notif-row-text {
-  -webkit-line-clamp: unset;
+  display: block;
+  -webkit-line-clamp: initial;
+  line-clamp: none;
   overflow: visible;
 }
 .notif-row-time {

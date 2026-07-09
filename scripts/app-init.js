@@ -552,30 +552,56 @@ if (typeof bootstrapAppStartup === 'function') {
   }
   function open() {
     if (!overlay) return;
+    if (typeof openOverlay === 'function') {
+      openOverlay('overlayNotifications');
+      return;
+    }
     overlay.classList.add('is-open', 'visible');
+    overlay.setAttribute('aria-hidden', 'false');
     if (typeof window.__shiftTrackerSyncOverlayUiState === 'function') window.__shiftTrackerSyncOverlayUiState();
     else document.body && document.body.classList.add('has-open-overlay');
   }
   function close() {
     if (!overlay) return;
-    overlay.classList.remove('is-open', 'visible');
-    if (typeof window.__shiftTrackerSyncOverlayUiState === 'function') window.__shiftTrackerSyncOverlayUiState();
-    else document.body && document.body.classList.remove('has-open-overlay');
+    if (typeof closeOverlay === 'function') {
+      closeOverlay('overlayNotifications');
+    } else {
+      overlay.classList.remove('is-open', 'visible');
+      overlay.setAttribute('aria-hidden', 'true');
+      if (typeof window.__shiftTrackerSyncOverlayUiState === 'function') window.__shiftTrackerSyncOverlayUiState();
+      else document.body && document.body.classList.remove('has-open-overlay');
+    }
+    render();
   }
   if (bell) {
     bell.addEventListener('click', function(e) {
       e.preventDefault();
-      open();
-      // Re-render so freshly added items appear
       render();
+      open();
+      if (typeof triggerHapticTapLight === 'function') { try { triggerHapticTapLight(); } catch (e2) {} }
     });
   }
-  if (btnClose) btnClose.addEventListener('click', close);
-  if (overlay) overlay.addEventListener('click', function(e) { if (e.target === overlay) close(); });
+  if (btnClose) {
+    btnClose.addEventListener('click', function(e) {
+      e.preventDefault();
+      e.stopPropagation();
+      close();
+    });
+  }
+  if (overlay) overlay.addEventListener('click', function(e) {
+    if (e.target === overlay) {
+      e.preventDefault();
+      close();
+    }
+  });
   if (listEl) {
     listEl.addEventListener('click', function(e) {
       var row = e.target.closest ? e.target.closest('.notif-row') : null;
-      if (row) activateRow(row);
+      if (row) {
+        e.preventDefault();
+        e.stopPropagation();
+        activateRow(row);
+      }
     });
     listEl.addEventListener('keydown', function(e) {
       if (e.key === 'Enter' || e.key === ' ' || e.key === 'Spacebar') {
@@ -585,7 +611,9 @@ if (typeof bootstrapAppStartup === 'function') {
     });
   }
   if (btnRead) {
-    btnRead.addEventListener('click', function() {
+    btnRead.addEventListener('click', function(e) {
+      e.preventDefault();
+      e.stopPropagation();
       var items = load();
       var readKeys = loadReadKeys();
       for (var i = 0; i < items.length; i++) items[i].read = true;
@@ -642,13 +670,13 @@ if (typeof bootstrapAppStartup === 'function') {
     {
       key: 'offline_mode_fixed_2026_06_v2',
       readKey: 'announcement_offline_mode_fixed_2026_06_v2',
-      title: 'Оффлайн режим обновлён',
+      title: 'Оффлайн режим работает',
       tone: 'success',
       ts: releaseTime('2026-06-21T13:58:00+10:00'),
       expiresAt: releaseTime('2026-07-21T13:58:00+10:00'),
       text:
-        'Кэш обновился до v378. Откройте Блокнот один раз при интернете.\n' +
-        'После этого сохраненные данные будут открываться без связи.'
+        'Блокнот снова открывается без связи после одного запуска с интернетом.\n' +
+        'Сохраненные смены и данные останутся доступны оффлайн.'
     }
   ];
 

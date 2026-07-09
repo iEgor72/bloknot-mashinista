@@ -9,7 +9,7 @@ import { chromium } from '@playwright/test';
 
 const repoRoot = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
 const artifactsDir = path.join(repoRoot, 'artifacts', 'local-smoke');
-const port = Number(process.env.SMOKE_PORT || process.env.PORT || 49173);
+const port = Number(process.env.SMOKE_PORT || process.env.PORT || 4317);
 const baseUrl = `http://127.0.0.1:${port}`;
 const startupTimeoutMs = Number(process.env.SMOKE_START_TIMEOUT_MS || 15000);
 const uiTimeoutMs = Number(process.env.SMOKE_UI_TIMEOUT_MS || 12000);
@@ -102,11 +102,55 @@ function isIgnorableRequestFailure(failure) {
   }
 }
 
+async function clickElementCenter(page, selector, label) {
+  const hit = await page.evaluate((targetSelector) => {
+    const element = document.querySelector(targetSelector);
+    if (!element) return { found: false };
+    const rect = element.getBoundingClientRect();
+    const x = rect.x + Math.min(rect.width - 8, Math.max(8, rect.width / 2));
+    const y = rect.y + Math.min(rect.height - 8, Math.max(8, rect.height / 2));
+    const top = document.elementFromPoint(x, y);
+    const topMatches = top === element || element.contains(top);
+    if (topMatches && typeof element.click === 'function') element.click();
+    return {
+      found: true,
+      topMatches,
+      x,
+      y,
+      width: rect.width,
+      height: rect.height,
+      topTag: top ? top.tagName : '',
+      topId: top ? top.id : '',
+      topClass: top ? String(top.className || '') : '',
+    };
+  }, selector);
+  if (!hit.found || hit.width <= 0 || hit.height <= 0) {
+    throw new Error(`${label || selector} has no clickable bounding box`);
+  }
+  if (!hit.topMatches) {
+    throw new Error(`${label || selector} is covered at click point: ${JSON.stringify(hit)}`);
+  }
+}
+
+async function waitForPageCondition(page, predicate, label, timeoutMs = uiTimeoutMs) {
+  const start = Date.now();
+  let lastError = '';
+  while (Date.now() - start < timeoutMs) {
+    try {
+      if (await page.evaluate(predicate)) return;
+    } catch (error) {
+      lastError = String(error && error.message ? error.message : error);
+    }
+    await delay(100);
+  }
+  throw new Error(`${label} did not become ready within ${timeoutMs}ms${lastError ? `: ${lastError}` : ''}`);
+}
+
 async function waitForServer() {
   const start = Date.now();
   while (Date.now() - start < startupTimeoutMs) {
     try {
-      const response = await fetch(`${baseUrl}/`, { redirect: 'manual' });
+      const response = await fetchWithTimeout(`${baseUrl}/`, { redirect: 'manual' }, 1500);
       if (response.ok) {
         report.checks.serverHttpOk = true;
         return;
@@ -117,8 +161,18 @@ async function waitForServer() {
   throw new Error(`Server did not become ready within ${startupTimeoutMs}ms at ${baseUrl}`);
 }
 
+async function fetchWithTimeout(url, options = {}, timeoutMs = 5000) {
+  const controller = new AbortController();
+  const timer = setTimeout(() => controller.abort(), timeoutMs);
+  try {
+    return await fetch(url, { ...options, signal: controller.signal });
+  } finally {
+    clearTimeout(timer);
+  }
+}
+
 async function fetchCacheControl(pathname) {
-  const response = await fetch(`${baseUrl}${pathname}`, { cache: 'no-store' });
+  const response = await fetchWithTimeout(`${baseUrl}${pathname}`, { cache: 'no-store' }, 5000);
   if (!response.ok) throw new Error(`GET ${pathname} failed with status ${response.status}`);
   return response.headers.get('cache-control') || '';
 }
@@ -148,8 +202,23 @@ async function cleanup(exitCode = 0) {
   if (context) await context.close().catch(() => {});
   if (browser) await browser.close().catch(() => {});
   if (server && !server.killed) {
+    let serverExited = false;
+    const serverExitPromise = new Promise((resolve) => {
+      server.once('exit', () => {
+        serverExited = true;
+        resolve();
+      });
+    });
     server.kill('SIGTERM');
-    await new Promise((resolve) => server.once('exit', resolve));
+    await Promise.race([
+      serverExitPromise,
+      delay(3000).then(async () => {
+        if (!serverExited) {
+          try { server.kill('SIGKILL'); } catch {}
+          await Promise.race([serverExitPromise, delay(1000)]);
+        }
+      }),
+    ]);
   }
   serverLogStream.end();
   report.finishedAt = new Date().toISOString();
@@ -331,17 +400,22 @@ async function main() {
   report.checks.pageStatus = response ? response.status() : null;
   if (!response || !response.ok()) throw new Error(`GET ${baseUrl} failed with status ${report.checks.pageStatus}`);
 
-  await page.waitForSelector('#appShell', { state: 'attached', timeout: uiTimeoutMs });
-  await page.waitForFunction(() => {
+  await waitForPageCondition(page, () => !!document.getElementById('appShell'), 'app shell attached');
+  await waitForPageCondition(page, () => {
     const shell = document.getElementById('appShell');
     return !!shell && !shell.classList.contains('hidden');
-  }, null, { timeout: uiTimeoutMs });
+  }, 'app shell visible');
   report.checks.appShellVisible = true;
 
-  await page.waitForSelector('[data-tab="home"]', { state: 'visible', timeout: uiTimeoutMs });
+  await waitForPageCondition(page, () => {
+    const panel = document.querySelector('.tab-panel[data-tab="home"]');
+    if (!panel) return false;
+    const styles = window.getComputedStyle(panel);
+    return panel.classList.contains('active') && styles.display !== 'none' && styles.visibility !== 'hidden';
+  }, 'home tab visible');
   report.checks.homeTabVisible = true;
 
-  const monthTitleText = await page.locator('#monthTitle').textContent();
+  const monthTitleText = await page.evaluate(() => document.getElementById('monthTitle')?.textContent || '');
   report.checks.monthTitlePresent = !!(monthTitleText && monthTitleText.trim());
   if (!report.checks.monthTitlePresent) throw new Error('Month title is empty; root UI did not finish rendering');
 
@@ -374,6 +448,12 @@ async function main() {
     return {
       keys: items.map((item) => item.key || ''),
       titles: items.map((item) => item.title || ''),
+      items: items.map((item) => ({
+        key: item.key || '',
+        title: item.title || '',
+        text: item.text || '',
+        read: !!item.read,
+      })),
       unreadCount: items.filter((item) => !item.read).length,
       count: items.length,
     };
@@ -396,24 +476,107 @@ async function main() {
   if (!notificationState.keys.includes('offline_mode_fixed_2026_06_v2')) {
     throw new Error('Updated offline announcement was not seeded');
   }
+  const offlineAnnouncement = notificationState.items.find((item) => item.key === 'offline_mode_fixed_2026_06_v2');
+  if (!offlineAnnouncement) {
+    throw new Error('Updated offline announcement payload was not found');
+  }
+  if (offlineAnnouncement.title !== 'Оффлайн режим работает') {
+    throw new Error(`Offline announcement title is not user-facing: ${offlineAnnouncement.title}`);
+  }
+  if (/кэш|cache|v\d+/i.test(offlineAnnouncement.text)) {
+    throw new Error('Offline announcement exposes technical cache copy');
+  }
+  if (!offlineAnnouncement.text.includes('без связи')) {
+    throw new Error('Offline announcement does not explain offline availability');
+  }
   if (!notificationState.titles.includes('Свежая служебная заметка')) {
     throw new Error('Recent unread transient notification was removed unexpectedly');
   }
 
-  await page.evaluate(() => {
+  await clickElementCenter(page, '#appTopBarBell', 'notification bell button');
+  await waitForPageCondition(page, () => {
+    const overlay = document.getElementById('overlayNotifications');
+    return !!overlay && (overlay.classList.contains('is-open') || overlay.classList.contains('visible'));
+  }, 'notification sheet open');
+  const notificationAfterOpen = await page.evaluate(() => {
+    const overlay = document.getElementById('overlayNotifications');
+    const list = document.getElementById('notifList');
+    return {
+      overlayClass: overlay ? overlay.className : '',
+      overlayHidden: overlay ? overlay.classList.contains('hidden') : false,
+      overlayAriaHidden: overlay ? overlay.getAttribute('aria-hidden') : '',
+      bodyLocked: document.body.classList.contains('has-open-overlay'),
+      listText: list ? list.textContent : '',
+      rows: Array.from(document.querySelectorAll('#notifList .notif-row')).map((row) => ({
+        title: (row.querySelector('.notif-row-title')?.textContent || '').trim(),
+        visible: !!(row.offsetWidth || row.offsetHeight || row.getClientRects().length),
+        className: row.className,
+      })),
+    };
+  });
+  report.checks.notificationsAfterOpen = notificationAfterOpen;
+  if (!notificationAfterOpen.rows.some((row) => row.title === 'Оффлайн режим работает')) {
+    throw new Error(`Offline notification row was not rendered after opening bell: ${JSON.stringify(notificationAfterOpen)}`);
+  }
+  const offlineRowIndex = notificationAfterOpen.rows.findIndex((row) => row.title === 'Оффлайн режим работает');
+  await clickElementCenter(page, `#notifList .notif-row:nth-child(${offlineRowIndex + 1})`, 'offline notification row');
+  const notificationInteraction = await page.evaluate(() => {
+    const overlay = document.getElementById('overlayNotifications');
+    const rows = Array.from(document.querySelectorAll('#notifList .notif-row'));
+    const row = rows.find((node) => node.textContent.includes('Оффлайн режим работает'));
+    const text = row ? row.querySelector('.notif-row-text') : null;
+    const styles = text ? window.getComputedStyle(text) : null;
     const items = JSON.parse(localStorage.getItem('shift_tracker_notifications_v1') || '[]');
-    const nextItems = items.map((item) => (
-      item && item.key === 'offline_mode_fixed_2026_06_v2'
-        ? { ...item, read: true }
-        : item
-    ));
+    const item = items.find((entry) => entry.key === 'offline_mode_fixed_2026_06_v2');
+    return {
+      overlayOpen: overlay ? (overlay.classList.contains('is-open') || overlay.classList.contains('visible')) : false,
+      bodyLocked: document.body.classList.contains('has-open-overlay'),
+      rowPresent: !!row,
+      rowExpanded: row ? row.getAttribute('aria-expanded') === 'true' && row.classList.contains('is-expanded') : false,
+      rowReadClass: row ? row.classList.contains('is-read') : false,
+      rowUnreadClass: row ? row.classList.contains('is-unread') : false,
+      textDisplay: styles ? styles.display : '',
+      storedRead: item ? !!item.read : false,
+    };
+  });
+  report.checks.notificationInteraction = notificationInteraction;
+  if (!notificationInteraction.overlayOpen || !notificationInteraction.bodyLocked) {
+    throw new Error('Notification sheet did not stay open after tapping a notification');
+  }
+  if (!notificationInteraction.rowPresent || !notificationInteraction.rowExpanded || notificationInteraction.textDisplay === '-webkit-box') {
+    throw new Error('Notification row did not expand after tap');
+  }
+  if (!notificationInteraction.rowReadClass || notificationInteraction.rowUnreadClass || !notificationInteraction.storedRead) {
+    throw new Error('Tapped notification was not marked as read');
+  }
+
+  await clickElementCenter(page, '#btnNotifClose', 'notification close button');
+  const notificationAfterClose = await page.evaluate(() => {
+    const items = JSON.parse(localStorage.getItem('shift_tracker_notifications_v1') || '[]');
     const readKeys = JSON.parse(localStorage.getItem('shift_tracker_notifications_read_v1') || '{}');
-    readKeys.announcement_offline_mode_fixed_2026_06_v2 = Date.now();
-    localStorage.setItem('shift_tracker_notifications_v1', JSON.stringify(nextItems));
-    localStorage.setItem('shift_tracker_notifications_read_v1', JSON.stringify(readKeys));
+    const overlay = document.getElementById('overlayNotifications');
+    return {
+      overlayOpen: overlay ? (overlay.classList.contains('is-open') || overlay.classList.contains('visible')) : false,
+      bodyLocked: document.body.classList.contains('has-open-overlay'),
+      keys: items.map((item) => item.key || ''),
+      readKeys,
+    };
+  });
+  report.checks.notificationsAfterClose = notificationAfterClose;
+  if (notificationAfterClose.overlayOpen || notificationAfterClose.bodyLocked) {
+    throw new Error('Notification close left an overlay click lock active');
+  }
+  if (notificationAfterClose.keys.includes('offline_mode_fixed_2026_06_v2')) {
+    throw new Error('Read offline announcement stayed in notification inbox after close');
+  }
+  if (!notificationAfterClose.readKeys.announcement_offline_mode_fixed_2026_06_v2) {
+    throw new Error('Read key for tapped offline announcement was not persisted');
+  }
+
+  await page.evaluate(() => {
     window.appNotify(
-      'Оффлайн режим обновлён',
-      'Кэш обновился до v378. Откройте Блокнот один раз при интернете.',
+      'Оффлайн режим работает',
+      'Блокнот снова открывается без связи после одного запуска с интернетом.',
       'success',
       {
         key: 'offline_mode_fixed_2026_06_v2',
@@ -432,10 +595,63 @@ async function main() {
   });
   report.checks.notificationsAfterRead = notificationAfterRead;
   if (notificationAfterRead.keys.includes('offline_mode_fixed_2026_06_v2')) {
-    throw new Error('Read updated offline system announcement stayed in notification inbox');
+    throw new Error('Read updated offline system announcement was re-added to notification inbox');
   }
   if (!notificationAfterRead.readKeys.announcement_offline_mode_fixed_2026_06_v2) {
     throw new Error('Read key for updated offline announcement was not persisted');
+  }
+
+  await clickElementCenter(page, '#appTopBarBell', 'notification bell button after read');
+  await waitForPageCondition(page, () => {
+    const overlay = document.getElementById('overlayNotifications');
+    return !!overlay && (overlay.classList.contains('is-open') || overlay.classList.contains('visible'));
+  }, 'notification sheet open after read');
+  await clickElementCenter(page, '#btnNotifMarkRead', 'notification mark-read button');
+  const notificationAfterMarkAll = await page.evaluate(() => {
+    const items = JSON.parse(localStorage.getItem('shift_tracker_notifications_v1') || '[]');
+    const list = document.getElementById('notifList');
+    return {
+      itemCount: items.length,
+      emptyVisible: !!(list && list.textContent.includes('Уведомлений нет')),
+    };
+  });
+  report.checks.notificationsAfterMarkAll = notificationAfterMarkAll;
+  if (notificationAfterMarkAll.itemCount !== 0 || !notificationAfterMarkAll.emptyVisible) {
+    throw new Error('Mark all read did not archive visible notifications');
+  }
+  await clickElementCenter(page, '#btnNotifClose', 'notification close button after mark-all');
+  const notificationAfterMarkAllClose = await page.evaluate(() => {
+    const overlay = document.getElementById('overlayNotifications');
+    return {
+      overlayOpen: overlay ? (overlay.classList.contains('is-open') || overlay.classList.contains('visible')) : false,
+      bodyLocked: document.body.classList.contains('has-open-overlay'),
+    };
+  });
+  report.checks.notificationsAfterMarkAllClose = notificationAfterMarkAllClose;
+  if (notificationAfterMarkAllClose.overlayOpen || notificationAfterMarkAllClose.bodyLocked) {
+    throw new Error('Notification sheet stayed as a click blocker after mark-all close');
+  }
+  const profileClickState = await page.evaluate(() => {
+    const button = document.querySelector('.tab-btn[data-tab="profile"]');
+    const rect = button ? button.getBoundingClientRect() : null;
+    const x = rect ? rect.x + Math.min(rect.width - 8, Math.max(8, rect.width / 2)) : 0;
+    const y = rect ? rect.y + Math.min(rect.height - 8, Math.max(8, rect.height / 2)) : 0;
+    const top = rect ? document.elementFromPoint(x, y) : null;
+    return {
+      topMatches: !!(button && top && (top === button || button.contains(top))),
+      bodyLocked: document.body.classList.contains('has-open-overlay'),
+      overlayOpen: !!Array.from(document.querySelectorAll('.overlay')).find((overlay) => (
+        !overlay.classList.contains('hidden') &&
+        (overlay.classList.contains('is-open') || overlay.classList.contains('visible'))
+      )),
+      topTag: top ? top.tagName : '',
+      topId: top ? top.id : '',
+      topClass: top ? String(top.className || '') : '',
+    };
+  });
+  report.checks.profileTabClickableAfterNotifications = profileClickState;
+  if (!profileClickState.topMatches || profileClickState.bodyLocked || profileClickState.overlayOpen) {
+    throw new Error(`Profile tab is covered after notification close: ${JSON.stringify(profileClickState)}`);
   }
 
   const overlayRecoveryState = await page.evaluate(() => {

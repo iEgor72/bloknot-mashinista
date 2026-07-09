@@ -124,6 +124,10 @@ async function main() {
   assertOk(appInit, 'versioned app init');
   assertHeaderIncludes(appInit.headers, 'cache-control', 'no-store', 'versioned app init');
   assertIncludes(appInit.text, 'offline_mode_fixed_2026_06_v2', 'versioned app init');
+  assertIncludes(appInit.text, 'Оффлайн режим работает', 'versioned app init');
+  if (/Кэш обновился|v378/i.test(appInit.text)) {
+    throw new Error('Versioned app init still contains technical offline announcement copy');
+  }
 
   const sw = await fetchText(`${baseUrl}/sw.js?v=${version}`);
   assertOk(sw, 'versioned service worker');

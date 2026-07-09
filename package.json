@@ -17,6 +17,8 @@
     "reference:import:tch9": "python scripts/import-tch9-reference.py",
     "speeds:import": "python scripts/import-speed-docs.py",
     "regime:import": "python scripts/import-regime-maps.py",
+    "sections:validate": "node scripts/validate-tracker-sections.mjs",
+    "smoke:poekhali-json": "node scripts/poekhali-json-smoke.mjs",
     "smoke:local": "node scripts/local-smoke.mjs",
     "smoke:offline": "node scripts/offline-smoke.mjs",
     "smoke:predeploy": "npm run smoke:local && npm run smoke:offline",

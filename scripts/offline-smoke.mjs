@@ -9,7 +9,7 @@ import { chromium } from '@playwright/test';
 
 const repoRoot = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
 const artifactsDir = path.join(repoRoot, 'artifacts', 'offline-smoke');
-const port = Number(process.env.OFFLINE_SMOKE_PORT || process.env.PORT || 49174);
+const port = Number(process.env.OFFLINE_SMOKE_PORT || process.env.PORT || 4318);
 const baseUrl = `http://127.0.0.1:${port}`;
 const startupTimeoutMs = Number(process.env.OFFLINE_SMOKE_START_TIMEOUT_MS || 15000);
 const uiTimeoutMs = Number(process.env.OFFLINE_SMOKE_UI_TIMEOUT_MS || 12000);

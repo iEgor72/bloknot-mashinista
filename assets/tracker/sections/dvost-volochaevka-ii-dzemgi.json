@@ -1,0 +1,7009 @@
+{
+  "schema_version": "1.0",
+  "id": "dvost-volochaevka-ii-dzemgi",
+  "status": "draft",
+  "railway": {
+    "id": "dvost",
+    "name": "Дальневосточная железная дорога"
+  },
+  "section_name": "Волочаевка II — Комсомольск-Сортировочный — Дзёмги",
+  "direction": "нечётное",
+  "km_start": 9,
+  "km_end": 361,
+  "generator_format": "Б",
+  "elements": [
+    {
+      "start_m": 9000,
+      "len_m": 300,
+      "grad_permille": 0,
+      "confidence": "legacy_xml_unverified"
+    },
+    {
+      "start_m": 9300,
+      "len_m": 700,
+      "grad_permille": 0.1,
+      "confidence": "legacy_xml_unverified"
+    },
+    {
+      "start_m": 10000,
+      "len_m": 600,
+      "grad_permille": -0.2,
+      "confidence": "legacy_xml_unverified"
+    },
+    {
+      "start_m": 10600,
+      "len_m": 400,
+      "grad_permille": 1,
+      "confidence": "legacy_xml_unverified"
+    },
+    {
+      "start_m": 11000,
+      "len_m": 1000,
+      "grad_permille": -0.8,
+      "confidence": "legacy_xml_unverified"
+    },
+    {
+      "start_m": 12000,
+      "len_m": 800,
+      "grad_permille": -0.1,
+      "confidence": "legacy_xml_unverified"
+    },
+    {
+      "start_m": 12800,
+      "len_m": 300,
+      "grad_permille": -1.5,
+      "confidence": "legacy_xml_unverified"
+    },
+    {
+      "start_m": 13100,
+      "len_m": 1000,
+      "grad_permille": 0.7,
+      "confidence": "legacy_xml_unverified"
+    },
+    {
+      "start_m": 14100,
+      "len_m": 1300,
+      "grad_permille": 7.2,
+      "confidence": "legacy_xml_unverified"
+    },
+    {
+      "start_m": 15400,
+      "len_m": 1000,
+      "grad_permille": -0.8,
+      "confidence": "legacy_xml_unverified"
+    },
+    {
+      "start_m": 16400,
+      "len_m": 1200,
+      "grad_permille": -6.8,
+      "confidence": "legacy_xml_unverified"
+    },
+    {
+      "start_m": 17600,
+      "len_m": 2500,
+      "grad_permille": -0.2,
+      "confidence": "legacy_xml_unverified"
+    },
+    {
+      "start_m": 20100,
+      "len_m": 500,
+      "grad_permille": -0.6,
+      "confidence": "legacy_xml_unverified"
+    },
+    {
+      "start_m": 20600,
+      "len_m": 600,
+      "grad_permille": 0.2,
+      "confidence": "legacy_xml_unverified"
+    },
+    {
+      "start_m": 21200,
+      "len_m": 600,
+      "grad_permille": 0.8,
+      "confidence": "legacy_xml_unverified"
+    },
+    {
+      "start_m": 21800,
+      "len_m": 1100,
+      "grad_permille": 0.4,
+      "confidence": "legacy_xml_unverified"
+    },
+    {
+      "start_m": 22900,
+      "len_m": 700,
+      "grad_permille": -0.7,
+      "confidence": "legacy_xml_unverified"
+    },
+    {
+      "start_m": 23600,
+      "len_m": 300,
+      "grad_permille": 0.2,
+      "confidence": "legacy_xml_unverified"
+    },
+    {
+      "start_m": 23900,
+      "len_m": 600,
+      "grad_permille": -1.3,
+      "confidence": "legacy_xml_unverified"
+    },
+    {
+      "start_m": 24500,
+      "len_m": 400,
+      "grad_permille": 3,
+      "confidence": "legacy_xml_unverified"
+    },
+    {
+      "start_m": 24900,
+      "len_m": 900,
+      "grad_permille": -0.2,
+      "confidence": "legacy_xml_unverified"
+    },
+    {
+      "start_m": 25800,
+      "len_m": 400,
+      "grad_permille": 0.6,
+      "confidence": "legacy_xml_unverified"
+    },
+    {
+      "start_m": 26200,
+      "len_m": 400,
+      "grad_permille": -3.5,
+      "confidence": "legacy_xml_unverified"
+    },
+    {
+      "start_m": 26600,
+      "len_m": 500,
+      "grad_permille": 0.3,
+      "confidence": "legacy_xml_unverified"
+    },
+    {
+      "start_m": 27100,
+      "len_m": 1400,
+      "grad_permille": 4.2,
+      "confidence": "legacy_xml_unverified"
+    },
+    {
+      "start_m": 28500,
+      "len_m": 800,
+      "grad_permille": 0.7,
+      "confidence": "legacy_xml_unverified"
+    },
+    {
+      "start_m": 29300,
+      "len_m": 600,
+      "grad_permille": 3.1,
+      "confidence": "legacy_xml_unverified"
+    },
+    {
+      "start_m": 29900,
+      "len_m": 500,
+      "grad_permille": 0.9,
+      "confidence": "legacy_xml_unverified"
+    },
+    {
+      "start_m": 30400,
+      "len_m": 200,
+      "grad_permille": -0.6,
+      "confidence": "legacy_xml_unverified"
+    },
+    {
+      "start_m": 30600,
+      "len_m": 500,
+      "grad_permille": 0.7,
+      "confidence": "legacy_xml_unverified"
+    },
+    {
+      "start_m": 31100,
+      "len_m": 500,
+      "grad_permille": -0.7,
+      "confidence": "legacy_xml_unverified"
+    },
+    {
+      "start_m": 31600,
+      "len_m": 400,
+      "grad_permille": -3.5,
+      "confidence": "legacy_xml_unverified"
+    },
+    {
+      "start_m": 32000,
+      "len_m": 700,
+      "grad_permille": -5.3,
+      "confidence": "legacy_xml_unverified"
+    },
+    {
+      "start_m": 32700,
+      "len_m": 300,
+      "grad_permille": 1,
+      "confidence": "legacy_xml_unverified"
+    },
+    {
+      "start_m": 33000,
+      "len_m": 500,
+      "grad_permille": 4.9,
+      "confidence": "legacy_xml_unverified"
+    },
+    {
+      "start_m": 33500,
+      "len_m": 1100,
+      "grad_permille": 3,
+      "confidence": "legacy_xml_unverified"
+    },
+    {
+      "start_m": 34600,
+      "len_m": 1200,
+      "grad_permille": 5.9,
+      "confidence": "legacy_xml_unverified"
+    },
+    {
+      "start_m": 35800,
+      "len_m": 200,
+      "grad_permille": 1.9,
+      "confidence": "legacy_xml_unverified"
+    },
+    {
+      "start_m": 36000,
+      "len_m": 200,
+      "grad_permille": -1,
+      "confidence": "legacy_xml_unverified"
+    },
+    {
+      "start_m": 36200,
+      "len_m": 700,
+      "grad_permille": 3.5,
+      "confidence": "legacy_xml_unverified"
+    },
+    {
+      "start_m": 36900,
+      "len_m": 700,
+      "grad_permille": -0.4,
+      "confidence": "legacy_xml_unverified"
+    },
+    {
+      "start_m": 37600,
+      "len_m": 200,
+      "grad_permille": 2.9,
+      "confidence": "legacy_xml_unverified"
+    },
+    {
+      "start_m": 37800,
+      "len_m": 500,
+      "grad_permille": 0.4,
+      "confidence": "legacy_xml_unverified"
+    },
+    {
+      "start_m": 38300,
+      "len_m": 500,
+      "grad_permille": 0.7,
+      "confidence": "legacy_xml_unverified"
+    },
+    {
+      "start_m": 38800,
+      "len_m": 500,
+      "grad_permille": -0.2,
+      "confidence": "legacy_xml_unverified"
+    },
+    {
+      "start_m": 39300,
+      "len_m": 200,
+      "grad_permille": 1.1,
+      "confidence": "legacy_xml_unverified"
+    },
+    {
+      "start_m": 39500,
+      "len_m": 700,
+      "grad_permille": -9.4,
+      "confidence": "legacy_xml_unverified"
+    },
+    {
+      "start_m": 40200,
+      "len_m": 200,
+      "grad_permille": -4.4,
+      "confidence": "legacy_xml_unverified"
+    },
+    {
+      "start_m": 40400,
+      "len_m": 200,
+      "grad_permille": -1.2,
+      "confidence": "legacy_xml_unverified"
+    },
+    {
+      "start_m": 40600,
+      "len_m": 1400,
+      "grad_permille": -3.3,
+      "confidence": "legacy_xml_unverified"
+    },
+    {
+      "start_m": 42000,
+      "len_m": 200,
+      "grad_permille": -1.1,
+      "confidence": "legacy_xml_unverified"
+    },
+    {
+      "start_m": 42200,
+      "len_m": 400,
+      "grad_permille": 1.2,
+      "confidence": "legacy_xml_unverified"
+    },
+    {
+      "start_m": 42600,
+      "len_m": 600,
+      "grad_permille": 0,
+      "confidence": "legacy_xml_unverified"
+    },
+    {
+      "start_m": 43200,
+      "len_m": 500,
+      "grad_permille": -3.6,
+      "confidence": "legacy_xml_unverified"
+    },
+    {
+      "start_m": 43700,
+      "len_m": 300,
+      "grad_permille": -0.4,
+      "confidence": "legacy_xml_unverified"
+    },
+    {
+      "start_m": 44000,
+      "len_m": 400,
+      "grad_permille": 1.8,
+      "confidence": "legacy_xml_unverified"
+    },
+    {
+      "start_m": 44400,
+      "len_m": 1200,
+      "grad_permille": 10.4,
+      "confidence": "legacy_xml_unverified"
+    },
+    {
+      "start_m": 45600,
+      "len_m": 600,
+      "grad_permille": 5.9,
+      "confidence": "legacy_xml_unverified"
+    },
+    {
+      "start_m": 46200,
+      "len_m": 200,
+      "grad_permille": 0.9,
+      "confidence": "legacy_xml_unverified"
+    },
+    {
+      "start_m": 46400,
+      "len_m": 600,
+      "grad_permille": -1.4,
+      "confidence": "legacy_xml_unverified"
+    },
+    {
+      "start_m": 47000,
+      "len_m": 500,
+      "grad_permille": 0.9,
+      "confidence": "legacy_xml_unverified"
+    },
+    {
+      "start_m": 47500,
+      "len_m": 500,
+      "grad_permille": -0.6,
+      "confidence": "legacy_xml_unverified"
+    },
+    {
+      "start_m": 48000,
+      "len_m": 1200,
+      "grad_permille": -0.2,
+      "confidence": "legacy_xml_unverified"
+    },
+    {
+      "start_m": 49200,
+      "len_m": 200,
+      "grad_permille": -5.3,
+      "confidence": "legacy_xml_unverified"
+    },
+    {
+      "start_m": 49400,
+      "len_m": 500,
+      "grad_permille": -10.2,
+      "confidence": "legacy_xml_unverified"
+    },
+    {
+      "start_m": 49900,
+      "len_m": 500,
+      "grad_permille": -5.5,
+      "confidence": "legacy_xml_unverified"
+    },
+    {
+      "start_m": 50400,
+      "len_m": 500,
+      "grad_permille": -10.9,
+      "confidence": "legacy_xml_unverified"
+    },
+    {
+      "start_m": 50900,
+      "len_m": 1200,
+      "grad_permille": -10.1,
+      "confidence": "legacy_xml_unverified"
+    },
+    {
+      "start_m": 52100,
+      "len_m": 500,
+      "grad_permille": -1.8,
+      "confidence": "legacy_xml_unverified"
+    },
+    {
+      "start_m": 52600,
+      "len_m": 300,
+      "grad_permille": 6.8,
+      "confidence": "legacy_xml_unverified"
+    },
+    {
+      "start_m": 52900,
+      "len_m": 400,
+      "grad_permille": 1.6,
+      "confidence": "legacy_xml_unverified"
+    },
+    {
+      "start_m": 53300,
+      "len_m": 500,
+      "grad_permille": -2.6,
+      "confidence": "legacy_xml_unverified"
+    },
+    {
+      "start_m": 53800,
+      "len_m": 1800,
+      "grad_permille": 8.9,
+      "confidence": "legacy_xml_unverified"
+    },
+    {
+      "start_m": 55600,
+      "len_m": 1000,
+      "grad_permille": 0,
+      "confidence": "legacy_xml_unverified"
+    },
+    {
+      "start_m": 56600,
+      "len_m": 600,
+      "grad_permille": -2.8,
+      "confidence": "legacy_xml_unverified"
+    },
+    {
+      "start_m": 57200,
+      "len_m": 300,
+      "grad_permille": 1.8,
+      "confidence": "legacy_xml_unverified"
+    },
+    {
+      "start_m": 57500,
+      "len_m": 400,
+      "grad_permille": -1.1,
+      "confidence": "legacy_xml_unverified"
+    },
+    {
+      "start_m": 57900,
+      "len_m": 700,
+      "grad_permille": 1.9,
+      "confidence": "legacy_xml_unverified"
+    },
+    {
+      "start_m": 58600,
+      "len_m": 200,
+      "grad_permille": -2.1,
+      "confidence": "legacy_xml_unverified"
+    },
+    {
+      "start_m": 58800,
+      "len_m": 1200,
+      "grad_permille": -8.7,
+      "confidence": "legacy_xml_unverified"
+    },
+    {
+      "start_m": 60000,
+      "len_m": 300,
+      "grad_permille": -2.9,
+      "confidence": "legacy_xml_unverified"
+    },
+    {
+      "start_m": 60300,
+      "len_m": 1700,
+      "grad_permille": 1.9,
+      "confidence": "legacy_xml_unverified"
+    },
+    {
+      "start_m": 62000,
+      "len_m": 200,
+      "grad_permille": -2,
+      "confidence": "legacy_xml_unverified"
+    },
+    {
+      "start_m": 62200,
+      "len_m": 1900,
+      "grad_permille": 2,
+      "confidence": "legacy_xml_unverified"
+    },
+    {
+      "start_m": 64100,
+      "len_m": 800,
+      "grad_permille": 7.9,
+      "confidence": "legacy_xml_unverified"
+    },
+    {
+      "start_m": 64900,
+      "len_m": 900,
+      "grad_permille": 2.4,
+      "confidence": "legacy_xml_unverified"
+    },
+    {
+      "start_m": 65800,
+      "len_m": 400,
+      "grad_permille": 9,
+      "confidence": "legacy_xml_unverified"
+    },
+    {
+      "start_m": 66200,
+      "len_m": 4500,
+      "grad_permille": 10.4,
+      "confidence": "legacy_xml_unverified"
+    },
+    {
+      "start_m": 70700,
+      "len_m": 700,
+      "grad_permille": 9.4,
+      "confidence": "legacy_xml_unverified"
+    },
+    {
+      "start_m": 71400,
+      "len_m": 600,
+      "grad_permille": 1.7,
+      "confidence": "legacy_xml_unverified"
+    },
+    {
+      "start_m": 72000,
+      "len_m": 400,
+      "grad_permille": 3.4,
+      "confidence": "legacy_xml_unverified"
+    },
+    {
+      "start_m": 72400,
+      "len_m": 500,
+      "grad_permille": 7,
+      "confidence": "legacy_xml_unverified"
+    },
+    {
+      "start_m": 72900,
+      "len_m": 1000,
+      "grad_permille": 8.6,
+      "confidence": "legacy_xml_unverified"
+    },
+    {
+      "start_m": 73900,
+      "len_m": 300,
+      "grad_permille": 10.7,
+      "confidence": "legacy_xml_unverified"
+    },
+    {
+      "start_m": 74200,
+      "len_m": 1000,
+      "grad_permille": 8.5,
+      "confidence": "legacy_xml_unverified"
+    },
+    {
+      "start_m": 75200,
+      "len_m": 600,
+      "grad_permille": 10.6,
+      "confidence": "legacy_xml_unverified"
+    },
+    {
+      "start_m": 75800,
+      "len_m": 400,
+      "grad_permille": 6.4,
+      "confidence": "legacy_xml_unverified"
+    },
+    {
+      "start_m": 76200,
+      "len_m": 1400,
+      "grad_permille": -1.1,
+      "confidence": "legacy_xml_unverified"
+    },
+    {
+      "start_m": 77600,
+      "len_m": 600,
+      "grad_permille": 3.4,
+      "confidence": "legacy_xml_unverified"
+    },
+    {
+      "start_m": 78200,
+      "len_m": 700,
+      "grad_permille": -7.2,
+      "confidence": "legacy_xml_unverified"
+    },
+    {
+      "start_m": 78900,
+      "len_m": 200,
+      "grad_permille": -4.6,
+      "confidence": "legacy_xml_unverified"
+    },
+    {
+      "start_m": 79100,
+      "len_m": 600,
+      "grad_permille": -1.8,
+      "confidence": "legacy_xml_unverified"
+    },
+    {
+      "start_m": 79700,
+      "len_m": 500,
+      "grad_permille": 0.5,
+      "confidence": "legacy_xml_unverified"
+    },
+    {
+      "start_m": 80200,
+      "len_m": 400,
+      "grad_permille": -1,
+      "confidence": "legacy_xml_unverified"
+    },
+    {
+      "start_m": 80600,
+      "len_m": 400,
+      "grad_permille": -8.7,
+      "confidence": "legacy_xml_unverified"
+    },
+    {
+      "start_m": 81000,
+      "len_m": 400,
+      "grad_permille": -11.9,
+      "confidence": "legacy_xml_unverified"
+    },
+    {
+      "start_m": 81400,
+      "len_m": 700,
+      "grad_permille": -11.4,
+      "confidence": "legacy_xml_unverified"
+    },
+    {
+      "start_m": 82100,
+      "len_m": 600,
+      "grad_permille": -8.6,
+      "confidence": "legacy_xml_unverified"
+    },
+    {
+      "start_m": 82700,
+      "len_m": 900,
+      "grad_permille": -10.1,
+      "confidence": "legacy_xml_unverified"
+    },
+    {
+      "start_m": 83600,
+      "len_m": 300,
+      "grad_permille": -6,
+      "confidence": "legacy_xml_unverified"
+    },
+    {
+      "start_m": 83900,
+      "len_m": 1600,
+      "grad_permille": -9.2,
+      "confidence": "legacy_xml_unverified"
+    },
+    {
+      "start_m": 85500,
+      "len_m": 300,
+      "grad_permille": -0.7,
+      "confidence": "legacy_xml_unverified"
+    },
+    {
+      "start_m": 85800,
+      "len_m": 300,
+      "grad_permille": 0,
+      "confidence": "legacy_xml_unverified"
+    },
+    {
+      "start_m": 86100,
+      "len_m": 600,
+      "grad_permille": 2.2,
+      "confidence": "legacy_xml_unverified"
+    },
+    {
+      "start_m": 86700,
+      "len_m": 200,
+      "grad_permille": -0.6,
+      "confidence": "legacy_xml_unverified"
+    },
+    {
+      "start_m": 86900,
+      "len_m": 600,
+      "grad_permille": 3.2,
+      "confidence": "legacy_xml_unverified"
+    },
+    {
+      "start_m": 87500,
+      "len_m": 700,
+      "grad_permille": 1.3,
+      "confidence": "legacy_xml_unverified"
+    },
+    {
+      "start_m": 88200,
+      "len_m": 600,
+      "grad_permille": 4.2,
+      "confidence": "legacy_xml_unverified"
+    },
+    {
+      "start_m": 88800,
+      "len_m": 200,
+      "grad_permille": -0.6,
+      "confidence": "legacy_xml_unverified"
+    },
+    {
+      "start_m": 89000,
+      "len_m": 500,
+      "grad_permille": 0,
+      "confidence": "legacy_xml_unverified"
+    },
+    {
+      "start_m": 89500,
+      "len_m": 300,
+      "grad_permille": 2.8,
+      "confidence": "legacy_xml_unverified"
+    },
+    {
+      "start_m": 89800,
+      "len_m": 600,
+      "grad_permille": 9,
+      "confidence": "legacy_xml_unverified"
+    },
+    {
+      "start_m": 90400,
+      "len_m": 300,
+      "grad_permille": 2.4,
+      "confidence": "legacy_xml_unverified"
+    },
+    {
+      "start_m": 90700,
+      "len_m": 100,
+      "grad_permille": -1,
+      "confidence": "legacy_xml_unverified"
+    },
+    {
+      "start_m": 90800,
+      "len_m": 100,
+      "grad_permille": 0,
+      "confidence": "legacy_xml_unverified"
+    },
+    {
+      "start_m": 90900,
+      "len_m": 100,
+      "grad_permille": 1,
+      "confidence": "legacy_xml_unverified"
+    },
+    {
+      "start_m": 91000,
+      "len_m": 700,
+      "grad_permille": 7.2,
+      "confidence": "legacy_xml_unverified"
+    },
+    {
+      "start_m": 91700,
+      "len_m": 1200,
+      "grad_permille": -9,
+      "confidence": "legacy_xml_unverified"
+    },
+    {
+      "start_m": 92900,
+      "len_m": 200,
+      "grad_permille": -7.6,
+      "confidence": "legacy_xml_unverified"
+    },
+    {
+      "start_m": 93100,
+      "len_m": 400,
+      "grad_permille": -3.7,
+      "confidence": "legacy_xml_unverified"
+    },
+    {
+      "start_m": 93500,
+      "len_m": 100,
+      "grad_permille": 1,
+      "confidence": "legacy_xml_unverified"
+    },
+    {
+      "start_m": 93600,
+      "len_m": 400,
+      "grad_permille": -2.5,
+      "confidence": "legacy_xml_unverified"
+    },
+    {
+      "start_m": 94000,
+      "len_m": 400,
+      "grad_permille": -8.8,
+      "confidence": "legacy_xml_unverified"
+    },
+    {
+      "start_m": 94400,
+      "len_m": 300,
+      "grad_permille": -6.2,
+      "confidence": "legacy_xml_unverified"
+    },
+    {
+      "start_m": 94700,
+      "len_m": 500,
+      "grad_permille": -8,
+      "confidence": "legacy_xml_unverified"
+    },
+    {
+      "start_m": 95200,
+      "len_m": 800,
+      "grad_permille": -2.7,
+      "confidence": "legacy_xml_unverified"
+    },
+    {
+      "start_m": 96000,
+      "len_m": 200,
+      "grad_permille": 1.5,
+      "confidence": "legacy_xml_unverified"
+    },
+    {
+      "start_m": 96200,
+      "len_m": 500,
+      "grad_permille": -9.6,
+      "confidence": "legacy_xml_unverified"
+    },
+    {
+      "start_m": 96700,
+      "len_m": 800,
+      "grad_permille": -14.7,
+      "confidence": "legacy_xml_unverified"
+    },
+    {
+      "start_m": 97500,
+      "len_m": 400,
+      "grad_permille": -2.2,
+      "confidence": "legacy_xml_unverified"
+    },
+    {
+      "start_m": 97900,
+      "len_m": 1200,
+      "grad_permille": -10.9,
+      "confidence": "legacy_xml_unverified"
+    },
+    {
+      "start_m": 99100,
+      "len_m": 1100,
+      "grad_permille": -6.1,
+      "confidence": "legacy_xml_unverified"
+    },
+    {
+      "start_m": 100200,
+      "len_m": 400,
+      "grad_permille": 4.3,
+      "confidence": "legacy_xml_unverified"
+    },
+    {
+      "start_m": 100600,
+      "len_m": 400,
+      "grad_permille": 6.8,
+      "confidence": "legacy_xml_unverified"
+    },
+    {
+      "start_m": 101000,
+      "len_m": 700,
+      "grad_permille": -2.5,
+      "confidence": "legacy_xml_unverified"
+    },
+    {
+      "start_m": 101700,
+      "len_m": 600,
+      "grad_permille": 0,
+      "confidence": "legacy_xml_unverified"
+    },
+    {
+      "start_m": 102300,
+      "len_m": 600,
+      "grad_permille": -3.6,
+      "confidence": "legacy_xml_unverified"
+    },
+    {
+      "start_m": 102900,
+      "len_m": 400,
+      "grad_permille": 0.7,
+      "confidence": "legacy_xml_unverified"
+    },
+    {
+      "start_m": 103300,
+      "len_m": 400,
+      "grad_permille": 2,
+      "confidence": "legacy_xml_unverified"
+    },
+    {
+      "start_m": 103700,
+      "len_m": 900,
+      "grad_permille": 2.3,
+      "confidence": "legacy_xml_unverified"
+    },
+    {
+      "start_m": 104600,
+      "len_m": 1200,
+      "grad_permille": 10.9,
+      "confidence": "legacy_xml_unverified"
+    },
+    {
+      "start_m": 105800,
+      "len_m": 1100,
+      "grad_permille": 6.4,
+      "confidence": "legacy_xml_unverified"
+    },
+    {
+      "start_m": 106900,
+      "len_m": 500,
+      "grad_permille": -13,
+      "confidence": "legacy_xml_unverified"
+    },
+    {
+      "start_m": 107400,
+      "len_m": 1300,
+      "grad_permille": -12.4,
+      "confidence": "legacy_xml_unverified"
+    },
+    {
+      "start_m": 108700,
+      "len_m": 600,
+      "grad_permille": -9.6,
+      "confidence": "legacy_xml_unverified"
+    },
+    {
+      "start_m": 109300,
+      "len_m": 900,
+      "grad_permille": 1.3,
+      "confidence": "legacy_xml_unverified"
+    },
+    {
+      "start_m": 110200,
+      "len_m": 500,
+      "grad_permille": -5.4,
+      "confidence": "legacy_xml_unverified"
+    },
+    {
+      "start_m": 110700,
+      "len_m": 500,
+      "grad_permille": -9.4,
+      "confidence": "legacy_xml_unverified"
+    },
+    {
+      "start_m": 111200,
+      "len_m": 400,
+      "grad_permille": -3,
+      "confidence": "legacy_xml_unverified"
+    },
+    {
+      "start_m": 111600,
+      "len_m": 600,
+      "grad_permille": -10.1,
+      "confidence": "legacy_xml_unverified"
+    },
+    {
+      "start_m": 112200,
+      "len_m": 400,
+      "grad_permille": 1.2,
+      "confidence": "legacy_xml_unverified"
+    },
+    {
+      "start_m": 112600,
+      "len_m": 1100,
+      "grad_permille": -1,
+      "confidence": "legacy_xml_unverified"
+    },
+    {
+      "start_m": 113700,
+      "len_m": 1500,
+      "grad_permille": 0.9,
+      "confidence": "legacy_xml_unverified"
+    },
+    {
+      "start_m": 115200,
+      "len_m": 500,
+      "grad_permille": 6.6,
+      "confidence": "legacy_xml_unverified"
+    },
+    {
+      "start_m": 115700,
+      "len_m": 500,
+      "grad_permille": 0.8,
+      "confidence": "legacy_xml_unverified"
+    },
+    {
+      "start_m": 116200,
+      "len_m": 700,
+      "grad_permille": 9,
+      "confidence": "legacy_xml_unverified"
+    },
+    {
+      "start_m": 116900,
+      "len_m": 400,
+      "grad_permille": 6.1,
+      "confidence": "legacy_xml_unverified"
+    },
+    {
+      "start_m": 117300,
+      "len_m": 600,
+      "grad_permille": 0.9,
+      "confidence": "legacy_xml_unverified"
+    },
+    {
+      "start_m": 117900,
+      "len_m": 500,
+      "grad_permille": -5.4,
+      "confidence": "legacy_xml_unverified"
+    },
+    {
+      "start_m": 118400,
+      "len_m": 300,
+      "grad_permille": -0.9,
+      "confidence": "legacy_xml_unverified"
+    },
+    {
+      "start_m": 118700,
+      "len_m": 600,
+      "grad_permille": 2.1,
+      "confidence": "legacy_xml_unverified"
+    },
+    {
+      "start_m": 119300,
+      "len_m": 800,
+      "grad_permille": -1.5,
+      "confidence": "legacy_xml_unverified"
+    },
+    {
+      "start_m": 120100,
+      "len_m": 800,
+      "grad_permille": 1,
+      "confidence": "legacy_xml_unverified"
+    },
+    {
+      "start_m": 120900,
+      "len_m": 300,
+      "grad_permille": -0.7,
+      "confidence": "legacy_xml_unverified"
+    },
+    {
+      "start_m": 121200,
+      "len_m": 800,
+      "grad_permille": 3.4,
+      "confidence": "legacy_xml_unverified"
+    },
+    {
+      "start_m": 122000,
+      "len_m": 1200,
+      "grad_permille": 0.7,
+      "confidence": "legacy_xml_unverified"
+    },
+    {
+      "start_m": 123200,
+      "len_m": 1100,
+      "grad_permille": 4.8,
+      "confidence": "legacy_xml_unverified"
+    },
+    {
+      "start_m": 124300,
+      "len_m": 900,
+      "grad_permille": 3,
+      "confidence": "legacy_xml_unverified"
+    },
+    {
+      "start_m": 125200,
+      "len_m": 500,
+      "grad_permille": 6.5,
+      "confidence": "legacy_xml_unverified"
+    },
+    {
+      "start_m": 125700,
+      "len_m": 400,
+      "grad_permille": 10.9,
+      "confidence": "legacy_xml_unverified"
+    },
+    {
+      "start_m": 126100,
+      "len_m": 400,
+      "grad_permille": 7.7,
+      "confidence": "legacy_xml_unverified"
+    },
+    {
+      "start_m": 126500,
+      "len_m": 300,
+      "grad_permille": 11.3,
+      "confidence": "legacy_xml_unverified"
+    },
+    {
+      "start_m": 126800,
+      "len_m": 700,
+      "grad_permille": 9.5,
+      "confidence": "legacy_xml_unverified"
+    },
+    {
+      "start_m": 127500,
+      "len_m": 300,
+      "grad_permille": 8.1,
+      "confidence": "legacy_xml_unverified"
+    },
+    {
+      "start_m": 127800,
+      "len_m": 1100,
+      "grad_permille": 2.8,
+      "confidence": "legacy_xml_unverified"
+    },
+    {
+      "start_m": 128900,
+      "len_m": 100,
+      "grad_permille": 0,
+      "confidence": "legacy_xml_unverified"
+    },
+    {
+      "start_m": 129000,
+      "len_m": 700,
+      "grad_permille": 9.4,
+      "confidence": "legacy_xml_unverified"
+    },
+    {
+      "start_m": 129700,
+      "len_m": 1100,
+      "grad_permille": 9.5,
+      "confidence": "legacy_xml_unverified"
+    },
+    {
+      "start_m": 130800,
+      "len_m": 900,
+      "grad_permille": 8.1,
+      "confidence": "legacy_xml_unverified"
+    },
+    {
+      "start_m": 131700,
+      "len_m": 700,
+      "grad_permille": -3.1,
+      "confidence": "legacy_xml_unverified"
+    },
+    {
+      "start_m": 132400,
+      "len_m": 2100,
+      "grad_permille": 2.3,
+      "confidence": "legacy_xml_unverified"
+    },
+    {
+      "start_m": 134500,
+      "len_m": 400,
+      "grad_permille": 3.1,
+      "confidence": "legacy_xml_unverified"
+    },
+    {
+      "start_m": 134900,
+      "len_m": 600,
+      "grad_permille": 4.8,
+      "confidence": "legacy_xml_unverified"
+    },
+    {
+      "start_m": 135500,
+      "len_m": 700,
+      "grad_permille": -0.8,
+      "confidence": "legacy_xml_unverified"
+    },
+    {
+      "start_m": 136200,
+      "len_m": 900,
+      "grad_permille": -1,
+      "confidence": "legacy_xml_unverified"
+    },
+    {
+      "start_m": 137100,
+      "len_m": 200,
+      "grad_permille": -5,
+      "confidence": "legacy_xml_unverified"
+    },
+    {
+      "start_m": 137300,
+      "len_m": 1200,
+      "grad_permille": -0.5,
+      "confidence": "legacy_xml_unverified"
+    },
+    {
+      "start_m": 138500,
+      "len_m": 500,
+      "grad_permille": 3.6,
+      "confidence": "legacy_xml_unverified"
+    },
+    {
+      "start_m": 139000,
+      "len_m": 300,
+      "grad_permille": -5,
+      "confidence": "legacy_xml_unverified"
+    },
+    {
+      "start_m": 139300,
+      "len_m": 400,
+      "grad_permille": -0.2,
+      "confidence": "legacy_xml_unverified"
+    },
+    {
+      "start_m": 139700,
+      "len_m": 1500,
+      "grad_permille": 0,
+      "confidence": "legacy_xml_unverified"
+    },
+    {
+      "start_m": 141200,
+      "len_m": 600,
+      "grad_permille": -0.9,
+      "confidence": "legacy_xml_unverified"
+    },
+    {
+      "start_m": 141800,
+      "len_m": 700,
+      "grad_permille": -4.4,
+      "confidence": "legacy_xml_unverified"
+    },
+    {
+      "start_m": 142500,
+      "len_m": 500,
+      "grad_permille": -2.4,
+      "confidence": "legacy_xml_unverified"
+    },
+    {
+      "start_m": 143000,
+      "len_m": 400,
+      "grad_permille": -2,
+      "confidence": "legacy_xml_unverified"
+    },
+    {
+      "start_m": 143400,
+      "len_m": 1000,
+      "grad_permille": 0,
+      "confidence": "legacy_xml_unverified"
+    },
+    {
+      "start_m": 144400,
+      "len_m": 500,
+      "grad_permille": -5.4,
+      "confidence": "legacy_xml_unverified"
+    },
+    {
+      "start_m": 144900,
+      "len_m": 300,
+      "grad_permille": 3.3,
+      "confidence": "legacy_xml_unverified"
+    },
+    {
+      "start_m": 145200,
+      "len_m": 700,
+      "grad_permille": -1.1,
+      "confidence": "legacy_xml_unverified"
+    },
+    {
+      "start_m": 145900,
+      "len_m": 600,
+      "grad_permille": 1.1,
+      "confidence": "legacy_xml_unverified"
+    },
+    {
+      "start_m": 146500,
+      "len_m": 500,
+      "grad_permille": -2,
+      "confidence": "legacy_xml_unverified"
+    },
+    {
+      "start_m": 147000,
+      "len_m": 600,
+      "grad_permille": -1.1,
+      "confidence": "legacy_xml_unverified"
+    },
+    {
+      "start_m": 147600,
+      "len_m": 1300,
+      "grad_permille": 0,
+      "confidence": "legacy_xml_unverified"
+    },
+    {
+      "start_m": 148900,
+      "len_m": 700,
+      "grad_permille": -10.7,
+      "confidence": "legacy_xml_unverified"
+    },
+    {
+      "start_m": 149600,
+      "len_m": 800,
+      "grad_permille": -5.3,
+      "confidence": "legacy_xml_unverified"
+    },
+    {
+      "start_m": 150400,
+      "len_m": 600,
+      "grad_permille": -8.3,
+      "confidence": "legacy_xml_unverified"
+    },
+    {
+      "start_m": 151000,
+      "len_m": 800,
+      "grad_permille": -8.8,
+      "confidence": "legacy_xml_unverified"
+    },
+    {
+      "start_m": 151800,
+      "len_m": 1700,
+      "grad_permille": -9.5,
+      "confidence": "legacy_xml_unverified"
+    },
+    {
+      "start_m": 153500,
+      "len_m": 400,
+      "grad_permille": -9.2,
+      "confidence": "legacy_xml_unverified"
+    },
+    {
+      "start_m": 153900,
+      "len_m": 800,
+      "grad_permille": -1.1,
+      "confidence": "legacy_xml_unverified"
+    },
+    {
+      "start_m": 154700,
+      "len_m": 800,
+      "grad_permille": 2.3,
+      "confidence": "legacy_xml_unverified"
+    },
+    {
+      "start_m": 155500,
+      "len_m": 300,
+      "grad_permille": -3.3,
+      "confidence": "legacy_xml_unverified"
+    },
+    {
+      "start_m": 155800,
+      "len_m": 700,
+      "grad_permille": 0.5,
+      "confidence": "legacy_xml_unverified"
+    },
+    {
+      "start_m": 156500,
+      "len_m": 800,
+      "grad_permille": 5.2,
+      "confidence": "legacy_xml_unverified"
+    },
+    {
+      "start_m": 157300,
+      "len_m": 800,
+      "grad_permille": 4.2,
+      "confidence": "legacy_xml_unverified"
+    },
+    {
+      "start_m": 158100,
+      "len_m": 1100,
+      "grad_permille": -10.4,
+      "confidence": "legacy_xml_unverified"
+    },
+    {
+      "start_m": 159200,
+      "len_m": 1100,
+      "grad_permille": -10.9,
+      "confidence": "legacy_xml_unverified"
+    },
+    {
+      "start_m": 160300,
+      "len_m": 700,
+      "grad_permille": -8,
+      "confidence": "legacy_xml_unverified"
+    },
+    {
+      "start_m": 161000,
+      "len_m": 600,
+      "grad_permille": 1,
+      "confidence": "legacy_xml_unverified"
+    },
+    {
+      "start_m": 161600,
+      "len_m": 500,
+      "grad_permille": 7.4,
+      "confidence": "legacy_xml_unverified"
+    },
+    {
+      "start_m": 162100,
+      "len_m": 800,
+      "grad_permille": 1.9,
+      "confidence": "legacy_xml_unverified"
+    },
+    {
+      "start_m": 162900,
+      "len_m": 500,
+      "grad_permille": -2.1,
+      "confidence": "legacy_xml_unverified"
+    },
+    {
+      "start_m": 163400,
+      "len_m": 800,
+      "grad_permille": -5.1,
+      "confidence": "legacy_xml_unverified"
+    },
+    {
+      "start_m": 164200,
+      "len_m": 1000,
+      "grad_permille": -0.1,
+      "confidence": "legacy_xml_unverified"
+    },
+    {
+      "start_m": 165200,
+      "len_m": 1900,
+      "grad_permille": 0,
+      "confidence": "legacy_xml_unverified"
+    },
+    {
+      "start_m": 167100,
+      "len_m": 400,
+      "grad_permille": -1.7,
+      "confidence": "legacy_xml_unverified"
+    },
+    {
+      "start_m": 167500,
+      "len_m": 300,
+      "grad_permille": 0,
+      "confidence": "legacy_xml_unverified"
+    },
+    {
+      "start_m": 167800,
+      "len_m": 500,
+      "grad_permille": 3.4,
+      "confidence": "legacy_xml_unverified"
+    },
+    {
+      "start_m": 168300,
+      "len_m": 1200,
+      "grad_permille": -6.9,
+      "confidence": "legacy_xml_unverified"
+    },
+    {
+      "start_m": 169500,
+      "len_m": 900,
+      "grad_permille": 3.8,
+      "confidence": "legacy_xml_unverified"
+    },
+    {
+      "start_m": 170400,
+      "len_m": 500,
+      "grad_permille": 0,
+      "confidence": "legacy_xml_unverified"
+    },
+    {
+      "start_m": 170900,
+      "len_m": 600,
+      "grad_permille": -2.1,
+      "confidence": "legacy_xml_unverified"
+    },
+    {
+      "start_m": 171500,
+      "len_m": 300,
+      "grad_permille": 0.6,
+      "confidence": "legacy_xml_unverified"
+    },
+    {
+      "start_m": 171800,
+      "len_m": 500,
+      "grad_permille": -3.3,
+      "confidence": "legacy_xml_unverified"
+    },
+    {
+      "start_m": 172300,
+      "len_m": 600,
+      "grad_permille": 1.3,
+      "confidence": "legacy_xml_unverified"
+    },
+    {
+      "start_m": 172900,
+      "len_m": 800,
+      "grad_permille": -4.2,
+      "confidence": "legacy_xml_unverified"
+    },
+    {
+      "start_m": 173700,
+      "len_m": 800,
+      "grad_permille": 0.3,
+      "confidence": "legacy_xml_unverified"
+    },
+    {
+      "start_m": 174500,
+      "len_m": 800,
+      "grad_permille": -0.3,
+      "confidence": "legacy_xml_unverified"
+    },
+    {
+      "start_m": 175300,
+      "len_m": 700,
+      "grad_permille": 6.8,
+      "confidence": "legacy_xml_unverified"
+    },
+    {
+      "start_m": 176000,
+      "len_m": 300,
+      "grad_permille": 0,
+      "confidence": "legacy_xml_unverified"
+    },
+    {
+      "start_m": 176300,
+      "len_m": 600,
+      "grad_permille": -3.5,
+      "confidence": "legacy_xml_unverified"
+    },
+    {
+      "start_m": 176900,
+      "len_m": 600,
+      "grad_permille": -7.7,
+      "confidence": "legacy_xml_unverified"
+    },
+    {
+      "start_m": 177500,
+      "len_m": 400,
+      "grad_permille": -2,
+      "confidence": "legacy_xml_unverified"
+    },
+    {
+      "start_m": 177900,
+      "len_m": 400,
+      "grad_permille": 1.2,
+      "confidence": "legacy_xml_unverified"
+    },
+    {
+      "start_m": 178300,
+      "len_m": 400,
+      "grad_permille": -1,
+      "confidence": "legacy_xml_unverified"
+    },
+    {
+      "start_m": 178700,
+      "len_m": 1000,
+      "grad_permille": 0.4,
+      "confidence": "legacy_xml_unverified"
+    },
+    {
+      "start_m": 179700,
+      "len_m": 900,
+      "grad_permille": -1.3,
+      "confidence": "legacy_xml_unverified"
+    },
+    {
+      "start_m": 180600,
+      "len_m": 500,
+      "grad_permille": 0.8,
+      "confidence": "legacy_xml_unverified"
+    },
+    {
+      "start_m": 181100,
+      "len_m": 500,
+      "grad_permille": 0,
+      "confidence": "legacy_xml_unverified"
+    },
+    {
+      "start_m": 181600,
+      "len_m": 900,
+      "grad_permille": -2.2,
+      "confidence": "legacy_xml_unverified"
+    },
+    {
+      "start_m": 182500,
+      "len_m": 500,
+      "grad_permille": -1.8,
+      "confidence": "legacy_xml_unverified"
+    },
+    {
+      "start_m": 183000,
+      "len_m": 600,
+      "grad_permille": -1.1,
+      "confidence": "legacy_xml_unverified"
+    },
+    {
+      "start_m": 183600,
+      "len_m": 1800,
+      "grad_permille": 0,
+      "confidence": "legacy_xml_unverified"
+    },
+    {
+      "start_m": 185400,
+      "len_m": 1100,
+      "grad_permille": -0.1,
+      "confidence": "legacy_xml_unverified"
+    },
+    {
+      "start_m": 186500,
+      "len_m": 600,
+      "grad_permille": 0.5,
+      "confidence": "legacy_xml_unverified"
+    },
+    {
+      "start_m": 187100,
+      "len_m": 1000,
+      "grad_permille": 0,
+      "confidence": "legacy_xml_unverified"
+    },
+    {
+      "start_m": 188100,
+      "len_m": 700,
+      "grad_permille": -3.1,
+      "confidence": "legacy_xml_unverified"
+    },
+    {
+      "start_m": 188800,
+      "len_m": 400,
+      "grad_permille": -3,
+      "confidence": "legacy_xml_unverified"
+    },
+    {
+      "start_m": 189200,
+      "len_m": 400,
+      "grad_permille": 2,
+      "confidence": "legacy_xml_unverified"
+    },
+    {
+      "start_m": 189600,
+      "len_m": 900,
+      "grad_permille": 0,
+      "confidence": "legacy_xml_unverified"
+    },
+    {
+      "start_m": 190500,
+      "len_m": 400,
+      "grad_permille": 2,
+      "confidence": "legacy_xml_unverified"
+    },
+    {
+      "start_m": 190900,
+      "len_m": 600,
+      "grad_permille": 0.9,
+      "confidence": "legacy_xml_unverified"
+    },
+    {
+      "start_m": 191500,
+      "len_m": 300,
+      "grad_permille": -2.4,
+      "confidence": "legacy_xml_unverified"
+    },
+    {
+      "start_m": 191800,
+      "len_m": 300,
+      "grad_permille": 2.4,
+      "confidence": "legacy_xml_unverified"
+    },
+    {
+      "start_m": 192100,
+      "len_m": 2000,
+      "grad_permille": -0.5,
+      "confidence": "legacy_xml_unverified"
+    },
+    {
+      "start_m": 194100,
+      "len_m": 800,
+      "grad_permille": 7.8,
+      "confidence": "legacy_xml_unverified"
+    },
+    {
+      "start_m": 194900,
+      "len_m": 900,
+      "grad_permille": -3,
+      "confidence": "legacy_xml_unverified"
+    },
+    {
+      "start_m": 195800,
+      "len_m": 900,
+      "grad_permille": -4.4,
+      "confidence": "legacy_xml_unverified"
+    },
+    {
+      "start_m": 196700,
+      "len_m": 600,
+      "grad_permille": -1.3,
+      "confidence": "legacy_xml_unverified"
+    },
+    {
+      "start_m": 197300,
+      "len_m": 400,
+      "grad_permille": -1,
+      "confidence": "legacy_xml_unverified"
+    },
+    {
+      "start_m": 197700,
+      "len_m": 500,
+      "grad_permille": 0.4,
+      "confidence": "legacy_xml_unverified"
+    },
+    {
+      "start_m": 198200,
+      "len_m": 900,
+      "grad_permille": -2.3,
+      "confidence": "legacy_xml_unverified"
+    },
+    {
+      "start_m": 199100,
+      "len_m": 1000,
+      "grad_permille": -0.7,
+      "confidence": "legacy_xml_unverified"
+    },
+    {
+      "start_m": 200100,
+      "len_m": 500,
+      "grad_permille": 0,
+      "confidence": "legacy_xml_unverified"
+    },
+    {
+      "start_m": 200600,
+      "len_m": 1100,
+      "grad_permille": 1.1,
+      "confidence": "legacy_xml_unverified"
+    },
+    {
+      "start_m": 201700,
+      "len_m": 1200,
+      "grad_permille": -0.1,
+      "confidence": "legacy_xml_unverified"
+    },
+    {
+      "start_m": 202900,
+      "len_m": 1400,
+      "grad_permille": -0.5,
+      "confidence": "legacy_xml_unverified"
+    },
+    {
+      "start_m": 204300,
+      "len_m": 600,
+      "grad_permille": 0,
+      "confidence": "legacy_xml_unverified"
+    },
+    {
+      "start_m": 204900,
+      "len_m": 700,
+      "grad_permille": 0.2,
+      "confidence": "legacy_xml_unverified"
+    },
+    {
+      "start_m": 205600,
+      "len_m": 700,
+      "grad_permille": 0.4,
+      "confidence": "legacy_xml_unverified"
+    },
+    {
+      "start_m": 206300,
+      "len_m": 1400,
+      "grad_permille": 0.2,
+      "confidence": "legacy_xml_unverified"
+    },
+    {
+      "start_m": 207700,
+      "len_m": 500,
+      "grad_permille": -1.6,
+      "confidence": "legacy_xml_unverified"
+    },
+    {
+      "start_m": 208200,
+      "len_m": 1000,
+      "grad_permille": 0,
+      "confidence": "legacy_xml_unverified"
+    },
+    {
+      "start_m": 209200,
+      "len_m": 700,
+      "grad_permille": 1.1,
+      "confidence": "legacy_xml_unverified"
+    },
+    {
+      "start_m": 209900,
+      "len_m": 800,
+      "grad_permille": -1.2,
+      "confidence": "legacy_xml_unverified"
+    },
+    {
+      "start_m": 210700,
+      "len_m": 600,
+      "grad_permille": 1.5,
+      "confidence": "legacy_xml_unverified"
+    },
+    {
+      "start_m": 211300,
+      "len_m": 500,
+      "grad_permille": -1.2,
+      "confidence": "legacy_xml_unverified"
+    },
+    {
+      "start_m": 211800,
+      "len_m": 600,
+      "grad_permille": 0,
+      "confidence": "legacy_xml_unverified"
+    },
+    {
+      "start_m": 212400,
+      "len_m": 800,
+      "grad_permille": 1.1,
+      "confidence": "legacy_xml_unverified"
+    },
+    {
+      "start_m": 213200,
+      "len_m": 500,
+      "grad_permille": 7.6,
+      "confidence": "legacy_xml_unverified"
+    },
+    {
+      "start_m": 213700,
+      "len_m": 900,
+      "grad_permille": 3.6,
+      "confidence": "legacy_xml_unverified"
+    },
+    {
+      "start_m": 214600,
+      "len_m": 400,
+      "grad_permille": 1,
+      "confidence": "legacy_xml_unverified"
+    },
+    {
+      "start_m": 215000,
+      "len_m": 500,
+      "grad_permille": 0.6,
+      "confidence": "legacy_xml_unverified"
+    },
+    {
+      "start_m": 215500,
+      "len_m": 400,
+      "grad_permille": 15,
+      "confidence": "legacy_xml_unverified"
+    },
+    {
+      "start_m": 215900,
+      "len_m": 1000,
+      "grad_permille": 8.7,
+      "confidence": "legacy_xml_unverified"
+    },
+    {
+      "start_m": 216900,
+      "len_m": 400,
+      "grad_permille": 0,
+      "confidence": "legacy_xml_unverified"
+    },
+    {
+      "start_m": 217300,
+      "len_m": 800,
+      "grad_permille": -8,
+      "confidence": "legacy_xml_unverified"
+    },
+    {
+      "start_m": 218100,
+      "len_m": 400,
+      "grad_permille": -2.2,
+      "confidence": "legacy_xml_unverified"
+    },
+    {
+      "start_m": 218500,
+      "len_m": 400,
+      "grad_permille": 8.2,
+      "confidence": "legacy_xml_unverified"
+    },
+    {
+      "start_m": 218900,
+      "len_m": 600,
+      "grad_permille": 9.8,
+      "confidence": "legacy_xml_unverified"
+    },
+    {
+      "start_m": 219500,
+      "len_m": 900,
+      "grad_permille": -0.4,
+      "confidence": "legacy_xml_unverified"
+    },
+    {
+      "start_m": 220400,
+      "len_m": 300,
+      "grad_permille": 1,
+      "confidence": "legacy_xml_unverified"
+    },
+    {
+      "start_m": 220700,
+      "len_m": 500,
+      "grad_permille": 10,
+      "confidence": "legacy_xml_unverified"
+    },
+    {
+      "start_m": 221200,
+      "len_m": 200,
+      "grad_permille": 4.4,
+      "confidence": "legacy_xml_unverified"
+    },
+    {
+      "start_m": 221400,
+      "len_m": 200,
+      "grad_permille": -4,
+      "confidence": "legacy_xml_unverified"
+    },
+    {
+      "start_m": 221600,
+      "len_m": 700,
+      "grad_permille": -10.5,
+      "confidence": "legacy_xml_unverified"
+    },
+    {
+      "start_m": 222300,
+      "len_m": 200,
+      "grad_permille": -1.2,
+      "confidence": "legacy_xml_unverified"
+    },
+    {
+      "start_m": 222500,
+      "len_m": 900,
+      "grad_permille": 1,
+      "confidence": "legacy_xml_unverified"
+    },
+    {
+      "start_m": 223400,
+      "len_m": 500,
+      "grad_permille": 7.2,
+      "confidence": "legacy_xml_unverified"
+    },
+    {
+      "start_m": 223900,
+      "len_m": 300,
+      "grad_permille": -2.3,
+      "confidence": "legacy_xml_unverified"
+    },
+    {
+      "start_m": 224200,
+      "len_m": 900,
+      "grad_permille": -9.6,
+      "confidence": "legacy_xml_unverified"
+    },
+    {
+      "start_m": 225100,
+      "len_m": 700,
+      "grad_permille": -2,
+      "confidence": "legacy_xml_unverified"
+    },
+    {
+      "start_m": 225800,
+      "len_m": 600,
+      "grad_permille": -8.1,
+      "confidence": "legacy_xml_unverified"
+    },
+    {
+      "start_m": 226400,
+      "len_m": 500,
+      "grad_permille": -0.7,
+      "confidence": "legacy_xml_unverified"
+    },
+    {
+      "start_m": 226900,
+      "len_m": 1000,
+      "grad_permille": 6.4,
+      "confidence": "legacy_xml_unverified"
+    },
+    {
+      "start_m": 227900,
+      "len_m": 1000,
+      "grad_permille": -0.1,
+      "confidence": "legacy_xml_unverified"
+    },
+    {
+      "start_m": 228900,
+      "len_m": 1100,
+      "grad_permille": -3.9,
+      "confidence": "legacy_xml_unverified"
+    },
+    {
+      "start_m": 230000,
+      "len_m": 400,
+      "grad_permille": -10.4,
+      "confidence": "legacy_xml_unverified"
+    },
+    {
+      "start_m": 230400,
+      "len_m": 600,
+      "grad_permille": -7.7,
+      "confidence": "legacy_xml_unverified"
+    },
+    {
+      "start_m": 231000,
+      "len_m": 1000,
+      "grad_permille": 4.4,
+      "confidence": "legacy_xml_unverified"
+    },
+    {
+      "start_m": 232000,
+      "len_m": 900,
+      "grad_permille": 9.2,
+      "confidence": "legacy_xml_unverified"
+    },
+    {
+      "start_m": 232900,
+      "len_m": 100,
+      "grad_permille": 4,
+      "confidence": "legacy_xml_unverified"
+    },
+    {
+      "start_m": 233000,
+      "len_m": 600,
+      "grad_permille": -0.6,
+      "confidence": "legacy_xml_unverified"
+    },
+    {
+      "start_m": 233600,
+      "len_m": 700,
+      "grad_permille": -4.7,
+      "confidence": "legacy_xml_unverified"
+    },
+    {
+      "start_m": 234300,
+      "len_m": 400,
+      "grad_permille": -0.6,
+      "confidence": "legacy_xml_unverified"
+    },
+    {
+      "start_m": 234700,
+      "len_m": 800,
+      "grad_permille": 8.1,
+      "confidence": "legacy_xml_unverified"
+    },
+    {
+      "start_m": 235500,
+      "len_m": 300,
+      "grad_permille": 0.9,
+      "confidence": "legacy_xml_unverified"
+    },
+    {
+      "start_m": 235800,
+      "len_m": 1400,
+      "grad_permille": -8.7,
+      "confidence": "legacy_xml_unverified"
+    },
+    {
+      "start_m": 237200,
+      "len_m": 600,
+      "grad_permille": -5.1,
+      "confidence": "legacy_xml_unverified"
+    },
+    {
+      "start_m": 237800,
+      "len_m": 900,
+      "grad_permille": -1.3,
+      "confidence": "legacy_xml_unverified"
+    },
+    {
+      "start_m": 238700,
+      "len_m": 500,
+      "grad_permille": 0.8,
+      "confidence": "legacy_xml_unverified"
+    },
+    {
+      "start_m": 239200,
+      "len_m": 600,
+      "grad_permille": -0.8,
+      "confidence": "legacy_xml_unverified"
+    },
+    {
+      "start_m": 239800,
+      "len_m": 900,
+      "grad_permille": 0.7,
+      "confidence": "legacy_xml_unverified"
+    },
+    {
+      "start_m": 240700,
+      "len_m": 300,
+      "grad_permille": -5,
+      "confidence": "legacy_xml_unverified"
+    },
+    {
+      "start_m": 241000,
+      "len_m": 1800,
+      "grad_permille": 0.1,
+      "confidence": "legacy_xml_unverified"
+    },
+    {
+      "start_m": 242800,
+      "len_m": 1500,
+      "grad_permille": 9.7,
+      "confidence": "legacy_xml_unverified"
+    },
+    {
+      "start_m": 244300,
+      "len_m": 500,
+      "grad_permille": 2.5,
+      "confidence": "legacy_xml_unverified"
+    },
+    {
+      "start_m": 244800,
+      "len_m": 700,
+      "grad_permille": -0.1,
+      "confidence": "legacy_xml_unverified"
+    },
+    {
+      "start_m": 245500,
+      "len_m": 1300,
+      "grad_permille": -1.2,
+      "confidence": "legacy_xml_unverified"
+    },
+    {
+      "start_m": 246800,
+      "len_m": 100,
+      "grad_permille": 3,
+      "confidence": "legacy_xml_unverified"
+    },
+    {
+      "start_m": 246900,
+      "len_m": 300,
+      "grad_permille": 8.4,
+      "confidence": "legacy_xml_unverified"
+    },
+    {
+      "start_m": 247200,
+      "len_m": 300,
+      "grad_permille": 11,
+      "confidence": "legacy_xml_unverified"
+    },
+    {
+      "start_m": 247500,
+      "len_m": 600,
+      "grad_permille": 7.8,
+      "confidence": "legacy_xml_unverified"
+    },
+    {
+      "start_m": 248100,
+      "len_m": 400,
+      "grad_permille": 1.2,
+      "confidence": "legacy_xml_unverified"
+    },
+    {
+      "start_m": 248500,
+      "len_m": 800,
+      "grad_permille": -1.2,
+      "confidence": "legacy_xml_unverified"
+    },
+    {
+      "start_m": 249300,
+      "len_m": 500,
+      "grad_permille": 10.8,
+      "confidence": "legacy_xml_unverified"
+    },
+    {
+      "start_m": 249800,
+      "len_m": 300,
+      "grad_permille": 1.5,
+      "confidence": "legacy_xml_unverified"
+    },
+    {
+      "start_m": 250100,
+      "len_m": 800,
+      "grad_permille": -1.2,
+      "confidence": "legacy_xml_unverified"
+    },
+    {
+      "start_m": 250900,
+      "len_m": 300,
+      "grad_permille": 1.2,
+      "confidence": "legacy_xml_unverified"
+    },
+    {
+      "start_m": 251200,
+      "len_m": 300,
+      "grad_permille": -2.6,
+      "confidence": "legacy_xml_unverified"
+    },
+    {
+      "start_m": 251500,
+      "len_m": 400,
+      "grad_permille": -7.4,
+      "confidence": "legacy_xml_unverified"
+    },
+    {
+      "start_m": 251900,
+      "len_m": 300,
+      "grad_permille": -2.2,
+      "confidence": "legacy_xml_unverified"
+    },
+    {
+      "start_m": 252200,
+      "len_m": 100,
+      "grad_permille": -2.2,
+      "confidence": "legacy_xml_unverified"
+    },
+    {
+      "start_m": 252300,
+      "len_m": 800,
+      "grad_permille": 8.9,
+      "confidence": "legacy_xml_unverified"
+    },
+    {
+      "start_m": 253100,
+      "len_m": 900,
+      "grad_permille": -4,
+      "confidence": "legacy_xml_unverified"
+    },
+    {
+      "start_m": 254000,
+      "len_m": 300,
+      "grad_permille": 4.2,
+      "confidence": "legacy_xml_unverified"
+    },
+    {
+      "start_m": 254300,
+      "len_m": 900,
+      "grad_permille": 9.7,
+      "confidence": "legacy_xml_unverified"
+    },
+    {
+      "start_m": 255200,
+      "len_m": 500,
+      "grad_permille": 5.1,
+      "confidence": "legacy_xml_unverified"
+    },
+    {
+      "start_m": 255700,
+      "len_m": 500,
+      "grad_permille": 8.7,
+      "confidence": "legacy_xml_unverified"
+    },
+    {
+      "start_m": 256200,
+      "len_m": 300,
+      "grad_permille": 2.1,
+      "confidence": "legacy_xml_unverified"
+    },
+    {
+      "start_m": 256500,
+      "len_m": 500,
+      "grad_permille": -1,
+      "confidence": "legacy_xml_unverified"
+    },
+    {
+      "start_m": 257000,
+      "len_m": 1000,
+      "grad_permille": 9.5,
+      "confidence": "legacy_xml_unverified"
+    },
+    {
+      "start_m": 258000,
+      "len_m": 400,
+      "grad_permille": 4.3,
+      "confidence": "legacy_xml_unverified"
+    },
+    {
+      "start_m": 258400,
+      "len_m": 800,
+      "grad_permille": -2.8,
+      "confidence": "legacy_xml_unverified"
+    },
+    {
+      "start_m": 259200,
+      "len_m": 1200,
+      "grad_permille": -10.6,
+      "confidence": "legacy_xml_unverified"
+    },
+    {
+      "start_m": 260400,
+      "len_m": 300,
+      "grad_permille": -1.2,
+      "confidence": "legacy_xml_unverified"
+    },
+    {
+      "start_m": 260700,
+      "len_m": 200,
+      "grad_permille": 2,
+      "confidence": "legacy_xml_unverified"
+    },
+    {
+      "start_m": 260900,
+      "len_m": 400,
+      "grad_permille": 1.9,
+      "confidence": "legacy_xml_unverified"
+    },
+    {
+      "start_m": 261300,
+      "len_m": 1000,
+      "grad_permille": -6.9,
+      "confidence": "legacy_xml_unverified"
+    },
+    {
+      "start_m": 262300,
+      "len_m": 300,
+      "grad_permille": 0.6,
+      "confidence": "legacy_xml_unverified"
+    },
+    {
+      "start_m": 262600,
+      "len_m": 300,
+      "grad_permille": -0.6,
+      "confidence": "legacy_xml_unverified"
+    },
+    {
+      "start_m": 262900,
+      "len_m": 1300,
+      "grad_permille": -9.4,
+      "confidence": "legacy_xml_unverified"
+    },
+    {
+      "start_m": 264200,
+      "len_m": 500,
+      "grad_permille": 1.7,
+      "confidence": "legacy_xml_unverified"
+    },
+    {
+      "start_m": 264700,
+      "len_m": 1300,
+      "grad_permille": 9.6,
+      "confidence": "legacy_xml_unverified"
+    },
+    {
+      "start_m": 266000,
+      "len_m": 600,
+      "grad_permille": 1.4,
+      "confidence": "legacy_xml_unverified"
+    },
+    {
+      "start_m": 266600,
+      "len_m": 700,
+      "grad_permille": 0.1,
+      "confidence": "legacy_xml_unverified"
+    },
+    {
+      "start_m": 267300,
+      "len_m": 600,
+      "grad_permille": 4.1,
+      "confidence": "legacy_xml_unverified"
+    },
+    {
+      "start_m": 267900,
+      "len_m": 1600,
+      "grad_permille": -8.6,
+      "confidence": "legacy_xml_unverified"
+    },
+    {
+      "start_m": 269500,
+      "len_m": 700,
+      "grad_permille": 0.4,
+      "confidence": "legacy_xml_unverified"
+    },
+    {
+      "start_m": 270200,
+      "len_m": 700,
+      "grad_permille": -8.5,
+      "confidence": "legacy_xml_unverified"
+    },
+    {
+      "start_m": 270900,
+      "len_m": 300,
+      "grad_permille": -2,
+      "confidence": "legacy_xml_unverified"
+    },
+    {
+      "start_m": 271200,
+      "len_m": 1300,
+      "grad_permille": -0.4,
+      "confidence": "legacy_xml_unverified"
+    },
+    {
+      "start_m": 272500,
+      "len_m": 1000,
+      "grad_permille": 1.4,
+      "confidence": "legacy_xml_unverified"
+    },
+    {
+      "start_m": 273500,
+      "len_m": 1500,
+      "grad_permille": 3.1,
+      "confidence": "legacy_xml_unverified"
+    },
+    {
+      "start_m": 275000,
+      "len_m": 1100,
+      "grad_permille": 3.9,
+      "confidence": "legacy_xml_unverified"
+    },
+    {
+      "start_m": 276100,
+      "len_m": 900,
+      "grad_permille": 1.9,
+      "confidence": "legacy_xml_unverified"
+    },
+    {
+      "start_m": 277000,
+      "len_m": 1100,
+      "grad_permille": 3.5,
+      "confidence": "legacy_xml_unverified"
+    },
+    {
+      "start_m": 278100,
+      "len_m": 1000,
+      "grad_permille": 1.2,
+      "confidence": "legacy_xml_unverified"
+    },
+    {
+      "start_m": 279100,
+      "len_m": 1000,
+      "grad_permille": 3.7,
+      "confidence": "legacy_xml_unverified"
+    },
+    {
+      "start_m": 280100,
+      "len_m": 1500,
+      "grad_permille": 2.8,
+      "confidence": "legacy_xml_unverified"
+    },
+    {
+      "start_m": 281600,
+      "len_m": 1600,
+      "grad_permille": 0.03,
+      "confidence": "legacy_xml_unverified"
+    },
+    {
+      "start_m": 283200,
+      "len_m": 1300,
+      "grad_permille": -1.3,
+      "confidence": "legacy_xml_unverified"
+    },
+    {
+      "start_m": 284500,
+      "len_m": 700,
+      "grad_permille": -4.1,
+      "confidence": "legacy_xml_unverified"
+    },
+    {
+      "start_m": 285200,
+      "len_m": 1900,
+      "grad_permille": -0.6,
+      "confidence": "legacy_xml_unverified"
+    },
+    {
+      "start_m": 287100,
+      "len_m": 500,
+      "grad_permille": -5,
+      "confidence": "legacy_xml_unverified"
+    },
+    {
+      "start_m": 287600,
+      "len_m": 1100,
+      "grad_permille": -0.6,
+      "confidence": "legacy_xml_unverified"
+    },
+    {
+      "start_m": 288700,
+      "len_m": 300,
+      "grad_permille": 2.1,
+      "confidence": "legacy_xml_unverified"
+    },
+    {
+      "start_m": 289000,
+      "len_m": 1400,
+      "grad_permille": 7.1,
+      "confidence": "legacy_xml_unverified"
+    },
+    {
+      "start_m": 290400,
+      "len_m": 800,
+      "grad_permille": -5.5,
+      "confidence": "legacy_xml_unverified"
+    },
+    {
+      "start_m": 291200,
+      "len_m": 600,
+      "grad_permille": 4.2,
+      "confidence": "legacy_xml_unverified"
+    },
+    {
+      "start_m": 291800,
+      "len_m": 600,
+      "grad_permille": 0.2,
+      "confidence": "legacy_xml_unverified"
+    },
+    {
+      "start_m": 292400,
+      "len_m": 1100,
+      "grad_permille": 4.2,
+      "confidence": "legacy_xml_unverified"
+    },
+    {
+      "start_m": 293500,
+      "len_m": 500,
+      "grad_permille": 0.3,
+      "confidence": "legacy_xml_unverified"
+    },
+    {
+      "start_m": 294000,
+      "len_m": 700,
+      "grad_permille": 4.4,
+      "confidence": "legacy_xml_unverified"
+    },
+    {
+      "start_m": 294700,
+      "len_m": 600,
+      "grad_permille": -0.1,
+      "confidence": "legacy_xml_unverified"
+    },
+    {
+      "start_m": 295300,
+      "len_m": 1500,
+      "grad_permille": -8,
+      "confidence": "legacy_xml_unverified"
+    },
+    {
+      "start_m": 296800,
+      "len_m": 1400,
+      "grad_permille": -0.2,
+      "confidence": "legacy_xml_unverified"
+    },
+    {
+      "start_m": 298200,
+      "len_m": 800,
+      "grad_permille": -5.4,
+      "confidence": "legacy_xml_unverified"
+    },
+    {
+      "start_m": 299000,
+      "len_m": 600,
+      "grad_permille": 7.1,
+      "confidence": "legacy_xml_unverified"
+    },
+    {
+      "start_m": 299600,
+      "len_m": 500,
+      "grad_permille": 6.4,
+      "confidence": "legacy_xml_unverified"
+    },
+    {
+      "start_m": 300100,
+      "len_m": 2900,
+      "grad_permille": 12.5,
+      "confidence": "legacy_xml_unverified"
+    },
+    {
+      "start_m": 303000,
+      "len_m": 1200,
+      "grad_permille": 2,
+      "confidence": "legacy_xml_unverified"
+    },
+    {
+      "start_m": 304200,
+      "len_m": 2100,
+      "grad_permille": 7.9,
+      "confidence": "legacy_xml_unverified"
+    },
+    {
+      "start_m": 306300,
+      "len_m": 3100,
+      "grad_permille": -8.9,
+      "confidence": "legacy_xml_unverified"
+    },
+    {
+      "start_m": 309400,
+      "len_m": 1100,
+      "grad_permille": -2.2,
+      "confidence": "legacy_xml_unverified"
+    },
+    {
+      "start_m": 310500,
+      "len_m": 2500,
+      "grad_permille": -6,
+      "confidence": "legacy_xml_unverified"
+    },
+    {
+      "start_m": 313000,
+      "len_m": 700,
+      "grad_permille": -5.5,
+      "confidence": "legacy_xml_unverified"
+    },
+    {
+      "start_m": 313700,
+      "len_m": 1500,
+      "grad_permille": -2,
+      "confidence": "legacy_xml_unverified"
+    },
+    {
+      "start_m": 315200,
+      "len_m": 400,
+      "grad_permille": -8.5,
+      "confidence": "legacy_xml_unverified"
+    },
+    {
+      "start_m": 315600,
+      "len_m": 1100,
+      "grad_permille": -0.7,
+      "confidence": "legacy_xml_unverified"
+    },
+    {
+      "start_m": 316700,
+      "len_m": 300,
+      "grad_permille": 12,
+      "confidence": "legacy_xml_unverified"
+    },
+    {
+      "start_m": 317000,
+      "len_m": 600,
+      "grad_permille": 0.6,
+      "confidence": "legacy_xml_unverified"
+    },
+    {
+      "start_m": 317600,
+      "len_m": 300,
+      "grad_permille": -3,
+      "confidence": "legacy_xml_unverified"
+    },
+    {
+      "start_m": 317900,
+      "len_m": 400,
+      "grad_permille": 0,
+      "confidence": "legacy_xml_unverified"
+    },
+    {
+      "start_m": 318300,
+      "len_m": 500,
+      "grad_permille": -6.2,
+      "confidence": "legacy_xml_unverified"
+    },
+    {
+      "start_m": 318800,
+      "len_m": 700,
+      "grad_permille": -2.1,
+      "confidence": "legacy_xml_unverified"
+    },
+    {
+      "start_m": 319500,
+      "len_m": 500,
+      "grad_permille": 1,
+      "confidence": "legacy_xml_unverified"
+    },
+    {
+      "start_m": 320000,
+      "len_m": 600,
+      "grad_permille": -8.1,
+      "confidence": "legacy_xml_unverified"
+    },
+    {
+      "start_m": 320600,
+      "len_m": 400,
+      "grad_permille": 0,
+      "confidence": "legacy_xml_unverified"
+    },
+    {
+      "start_m": 321000,
+      "len_m": 700,
+      "grad_permille": 4.5,
+      "confidence": "legacy_xml_unverified"
+    },
+    {
+      "start_m": 321700,
+      "len_m": 300,
+      "grad_permille": 1,
+      "confidence": "legacy_xml_unverified"
+    },
+    {
+      "start_m": 322000,
+      "len_m": 900,
+      "grad_permille": -1.7,
+      "confidence": "legacy_xml_unverified"
+    },
+    {
+      "start_m": 322900,
+      "len_m": 1200,
+      "grad_permille": -0.7,
+      "confidence": "legacy_xml_unverified"
+    },
+    {
+      "start_m": 324100,
+      "len_m": 800,
+      "grad_permille": -5.5,
+      "confidence": "legacy_xml_unverified"
+    },
+    {
+      "start_m": 324900,
+      "len_m": 400,
+      "grad_permille": 1,
+      "confidence": "legacy_xml_unverified"
+    },
+    {
+      "start_m": 325300,
+      "len_m": 500,
+      "grad_permille": 4.2,
+      "confidence": "legacy_xml_unverified"
+    },
+    {
+      "start_m": 325800,
+      "len_m": 1200,
+      "grad_permille": 1,
+      "confidence": "legacy_xml_unverified"
+    },
+    {
+      "start_m": 327000,
+      "len_m": 500,
+      "grad_permille": -0.8,
+      "confidence": "legacy_xml_unverified"
+    },
+    {
+      "start_m": 327500,
+      "len_m": 1200,
+      "grad_permille": 2.6,
+      "confidence": "legacy_xml_unverified"
+    },
+    {
+      "start_m": 328700,
+      "len_m": 900,
+      "grad_permille": 0,
+      "confidence": "legacy_xml_unverified"
+    },
+    {
+      "start_m": 329600,
+      "len_m": 800,
+      "grad_permille": 2.7,
+      "confidence": "legacy_xml_unverified"
+    },
+    {
+      "start_m": 330400,
+      "len_m": 1900,
+      "grad_permille": 0,
+      "confidence": "legacy_xml_unverified"
+    },
+    {
+      "start_m": 332300,
+      "len_m": 400,
+      "grad_permille": -1.2,
+      "confidence": "legacy_xml_unverified"
+    },
+    {
+      "start_m": 332700,
+      "len_m": 600,
+      "grad_permille": 1.3,
+      "confidence": "legacy_xml_unverified"
+    },
+    {
+      "start_m": 333300,
+      "len_m": 700,
+      "grad_permille": -3.5,
+      "confidence": "legacy_xml_unverified"
+    },
+    {
+      "start_m": 334000,
+      "len_m": 800,
+      "grad_permille": 0.2,
+      "confidence": "legacy_xml_unverified"
+    },
+    {
+      "start_m": 334800,
+      "len_m": 1000,
+      "grad_permille": -8.6,
+      "confidence": "legacy_xml_unverified"
+    },
+    {
+      "start_m": 335800,
+      "len_m": 3700,
+      "grad_permille": -3,
+      "confidence": "legacy_xml_unverified"
+    },
+    {
+      "start_m": 339500,
+      "len_m": 1400,
+      "grad_permille": 1.3,
+      "confidence": "legacy_xml_unverified"
+    },
+    {
+      "start_m": 340900,
+      "len_m": 500,
+      "grad_permille": -3,
+      "confidence": "legacy_xml_unverified"
+    },
+    {
+      "start_m": 341400,
+      "len_m": 700,
+      "grad_permille": 4.8,
+      "confidence": "legacy_xml_unverified"
+    },
+    {
+      "start_m": 342100,
+      "len_m": 400,
+      "grad_permille": 1.5,
+      "confidence": "legacy_xml_unverified"
+    },
+    {
+      "start_m": 342500,
+      "len_m": 800,
+      "grad_permille": -3,
+      "confidence": "legacy_xml_unverified"
+    },
+    {
+      "start_m": 343300,
+      "len_m": 1200,
+      "grad_permille": 0,
+      "confidence": "legacy_xml_unverified"
+    },
+    {
+      "start_m": 344500,
+      "len_m": 500,
+      "grad_permille": 1,
+      "confidence": "legacy_xml_unverified"
+    },
+    {
+      "start_m": 345000,
+      "len_m": 400,
+      "grad_permille": 0,
+      "confidence": "legacy_xml_unverified"
+    },
+    {
+      "start_m": 345400,
+      "len_m": 600,
+      "grad_permille": 6.8,
+      "confidence": "legacy_xml_unverified"
+    },
+    {
+      "start_m": 346000,
+      "len_m": 300,
+      "grad_permille": -1.3,
+      "confidence": "legacy_xml_unverified"
+    },
+    {
+      "start_m": 346300,
+      "len_m": 500,
+      "grad_permille": -1.7,
+      "confidence": "legacy_xml_unverified"
+    },
+    {
+      "start_m": 346800,
+      "len_m": 2200,
+      "grad_permille": -0.2,
+      "confidence": "legacy_xml_unverified"
+    },
+    {
+      "start_m": 349000,
+      "len_m": 800,
+      "grad_permille": -6.2,
+      "confidence": "legacy_xml_unverified"
+    },
+    {
+      "start_m": 349800,
+      "len_m": 300,
+      "grad_permille": -2.6,
+      "confidence": "legacy_xml_unverified"
+    },
+    {
+      "start_m": 350100,
+      "len_m": 300,
+      "grad_permille": -3.3,
+      "confidence": "legacy_xml_unverified"
+    },
+    {
+      "start_m": 350400,
+      "len_m": 1000,
+      "grad_permille": 1,
+      "confidence": "legacy_xml_unverified"
+    },
+    {
+      "start_m": 351400,
+      "len_m": 400,
+      "grad_permille": 1.6,
+      "confidence": "legacy_xml_unverified"
+    },
+    {
+      "start_m": 351800,
+      "len_m": 700,
+      "grad_permille": 3.8,
+      "confidence": "legacy_xml_unverified"
+    },
+    {
+      "start_m": 352500,
+      "len_m": 1000,
+      "grad_permille": 0.5,
+      "confidence": "legacy_xml_unverified"
+    },
+    {
+      "start_m": 353500,
+      "len_m": 700,
+      "grad_permille": -1.7,
+      "confidence": "legacy_xml_unverified"
+    },
+    {
+      "start_m": 354200,
+      "len_m": 700,
+      "grad_permille": 1.5,
+      "confidence": "legacy_xml_unverified"
+    },
+    {
+      "start_m": 354900,
+      "len_m": 1000,
+      "grad_permille": -2.2,
+      "confidence": "legacy_xml_unverified"
+    },
+    {
+      "start_m": 355900,
+      "len_m": 2000,
+      "grad_permille": 3.1,
+      "confidence": "legacy_xml_unverified"
+    },
+    {
+      "start_m": 357900,
+      "len_m": 1800,
+      "grad_permille": 6.8,
+      "confidence": "legacy_xml_unverified"
+    },
+    {
+      "start_m": 359700,
+      "len_m": 500,
+      "grad_permille": 5.5,
+      "confidence": "legacy_xml_unverified"
+    },
+    {
+      "start_m": 360200,
+      "len_m": 300,
+      "grad_permille": 0,
+      "confidence": "legacy_xml_unverified"
+    },
+    {
+      "start_m": 360500,
+      "len_m": 500,
+      "grad_permille": 4.9,
+      "confidence": "legacy_xml_clipped_unverified"
+    }
+  ],
+  "stations": [
+    {
+      "name": "Волочаевка II",
+      "km": 9,
+      "confidence": "pdf_anchor"
+    },
+    {
+      "name": "УТИНЫЙ",
+      "km": 21.742,
+      "confidence": "legacy_label_truncated"
+    },
+    {
+      "name": "ДЖАРМЕ",
+      "km": 31.26,
+      "confidence": "legacy_label_truncated"
+    },
+    {
+      "name": "ПАРТИЗ",
+      "km": 49.198,
+      "confidence": "legacy_label_truncated"
+    },
+    {
+      "name": "ДЖЕЛЮМ",
+      "km": 66.29,
+      "confidence": "legacy_label_truncated"
+    },
+    {
+      "name": "ВАНДАН",
+      "km": 80.943,
+      "confidence": "legacy_label_truncated"
+    },
+    {
+      "name": "ФОРЕЛЬ",
+      "km": 96.755,
+      "confidence": "legacy_label_truncated"
+    },
+    {
+      "name": "ДАЛЬНЕ",
+      "km": 110.85,
+      "confidence": "legacy_label_truncated"
+    },
+    {
+      "name": "ЛИТОВК",
+      "km": 120.667,
+      "confidence": "legacy_label_truncated"
+    },
+    {
+      "name": "САНБОЛ",
+      "km": 138.756,
+      "confidence": "legacy_label_truncated"
+    },
+    {
+      "name": "НУСХИ",
+      "km": 156.897,
+      "confidence": "legacy_label_truncated"
+    },
+    {
+      "name": "СЕЛЬГО",
+      "km": 172.029,
+      "confidence": "legacy_label_truncated"
+    },
+    {
+      "name": "N 18",
+      "km": 193.65,
+      "confidence": "legacy_label_truncated"
+    },
+    {
+      "name": "ХЕВЧЕН",
+      "km": 204.348,
+      "confidence": "legacy_label_truncated"
+    },
+    {
+      "name": "№21",
+      "km": 224,
+      "confidence": "legacy_label_truncated"
+    },
+    {
+      "name": "БОЛОНЬ",
+      "km": 241.555,
+      "confidence": "legacy_label_truncated"
+    },
+    {
+      "name": "МЕНГОН",
+      "km": 259.7,
+      "confidence": "legacy_label_truncated"
+    },
+    {
+      "name": "ТЕЙСИН",
+      "km": 268.11,
+      "confidence": "legacy_label_truncated"
+    },
+    {
+      "name": "ЭЛЬБАН",
+      "km": 277.387,
+      "confidence": "legacy_label_truncated"
+    },
+    {
+      "name": "ПОДАЛИ",
+      "km": 298.256,
+      "confidence": "legacy_label_truncated"
+    },
+    {
+      "name": "303 КМ",
+      "km": 304.677,
+      "confidence": "legacy_label_truncated"
+    },
+    {
+      "name": "МЫЛКИ",
+      "km": 320.4,
+      "confidence": "legacy_label_truncated"
+    },
+    {
+      "name": "Комсомольск-Сортировочный",
+      "km": 333.291,
+      "confidence": "legacy_anchor_named"
+    },
+    {
+      "name": "Комсомольск-Сортировочный",
+      "km": 333.291,
+      "confidence": "legacy_anchor_named"
+    },
+    {
+      "name": "Дзёмги",
+      "km": 360.6,
+      "confidence": "pdf_approx_needs_review"
+    }
+  ],
+  "signals": [],
+  "whistle_points": [],
+  "speed": {
+    "established": null,
+    "permanent_restrictions": [],
+    "temporary_warnings": [],
+    "source": "manual_required"
+  },
+  "flags_for_review": [
+    {
+      "km": null,
+      "reason": "Светофоры и точки свистка ещё не перенесены вручную из PDF"
+    },
+    {
+      "km": null,
+      "reason": "Названия промежуточных станций из legacy XML местами обрезаны и требуют сверки с PDF"
+    },
+    {
+      "km": 331,
+      "reason": "Переход sector 9 → sector 10 в узле Комсомольска имеет перекрывающийся километраж; точку переключения пути проверить контрольной поездкой"
+    },
+    {
+      "km": null,
+      "reason": "Знаки и границы уклонов пока мигрированы из profile.xml, а не сверены по границам элементов PDF"
+    }
+  ],
+  "provenance": [
+    {
+      "kind": "regime_map_pdf",
+      "file_name": "1-Волочаевка-2-дзёмги-3тэ10-25км.pdf",
+      "sha256": "2b6cbac77860dea0a62c3f1adbaf7bbe4e0b18d51c1c773ec9a3aaf0307bd471",
+      "pages": 45,
+      "profile_pages": "2-26",
+      "role": "authoritative_map_pending_row_by_row_verification"
+    },
+    {
+      "kind": "legacy_profile_xml",
+      "path": "assets/tracker/maps/komsomol-sk-tche-9/profile.xml",
+      "role": "temporary_profile_seed_not_pdf_verified"
+    },
+    {
+      "kind": "legacy_geometry_xml",
+      "path": "assets/tracker/maps/komsomol-sk-tche-9/data.xml",
+      "role": "offline_gps_map_matching_seed"
+    }
+  ],
+  "runtime": {
+    "coordinate_unit": "m",
+    "coordinate_kind": "official_railway_chainage",
+    "coordinate_offset_m": -1000,
+    "movement_order": "ascending",
+    "default_path_id": "volochaevka-komsomolsk-sector-9",
+    "route_legs": [
+      {
+        "path_id": "volochaevka-komsomolsk-sector-9",
+        "sector": 9,
+        "from_chainage_m": 9000,
+        "to_chainage_m": 354000
+      },
+      {
+        "path_id": "komsomolsk-dzemgi-sector-10",
+        "sector": 10,
+        "from_chainage_m": 332000,
+        "to_chainage_m": 361000
+      }
+    ],
+    "profile_status": "legacy_seed_complete_pending_pdf_verification",
+    "profile_coverage": [
+      {
+        "start_m": 9000,
+        "end_m": 361000
+      }
+    ],
+    "profile_gaps": [],
+    "profile_applies_both_directions": false
+  },
+  "geometry": {
+    "status": "draft_from_legacy_centerline",
+    "source": {
+      "kind": "legacy_geometry_xml",
+      "path": "assets/tracker/maps/komsomol-sk-tche-9/data.xml",
+      "role": "offline_gps_map_matching_seed"
+    },
+    "paths": [
+      {
+        "path_id": "volochaevka-komsomolsk-sector-9",
+        "sector": 9,
+        "source": "assets/tracker/maps/komsomol-sk-tche-9/data.xml",
+        "points": [
+          {
+            "lat": 48.560491897532195,
+            "lon": 134.57353890769122,
+            "sector": 9,
+            "path_id": "volochaevka-komsomolsk-sector-9",
+            "ordinate": 8000,
+            "chainage_m": 9000
+          },
+          {
+            "lat": 48.56907767009223,
+            "lon": 134.57762753451723,
+            "sector": 9,
+            "path_id": "volochaevka-komsomolsk-sector-9",
+            "ordinate": 9000,
+            "chainage_m": 10000
+          },
+          {
+            "lat": 48.577666880399036,
+            "lon": 134.58161933147593,
+            "sector": 9,
+            "path_id": "volochaevka-komsomolsk-sector-9",
+            "ordinate": 10000,
+            "chainage_m": 11000
+          },
+          {
+            "lat": 48.58626926873513,
+            "lon": 134.58531089854995,
+            "sector": 9,
+            "path_id": "volochaevka-komsomolsk-sector-9",
+            "ordinate": 11000,
+            "chainage_m": 12000
+          },
+          {
+            "lat": 48.59410274771015,
+            "lon": 134.59173604726456,
+            "sector": 9,
+            "path_id": "volochaevka-komsomolsk-sector-9",
+            "ordinate": 12000,
+            "chainage_m": 13000
+          },
+          {
+            "lat": 48.59969997241079,
+            "lon": 134.60233863126342,
+            "sector": 9,
+            "path_id": "volochaevka-komsomolsk-sector-9",
+            "ordinate": 13000,
+            "chainage_m": 14000
+          },
+          {
+            "lat": 48.60523589062734,
+            "lon": 134.61302200231145,
+            "sector": 9,
+            "path_id": "volochaevka-komsomolsk-sector-9",
+            "ordinate": 14000,
+            "chainage_m": 15000
+          },
+          {
+            "lat": 48.608222146655564,
+            "lon": 134.6180640309086,
+            "sector": 9,
+            "path_id": "volochaevka-komsomolsk-sector-9",
+            "ordinate": 14500,
+            "chainage_m": 15500
+          },
+          {
+            "lat": 48.61246661800189,
+            "lon": 134.61993072740512,
+            "sector": 9,
+            "path_id": "volochaevka-komsomolsk-sector-9",
+            "ordinate": 15000,
+            "chainage_m": 16000
+          },
+          {
+            "lat": 48.621277562975415,
+            "lon": 134.62289177329038,
+            "sector": 9,
+            "path_id": "volochaevka-komsomolsk-sector-9",
+            "ordinate": 16000,
+            "chainage_m": 17000
+          },
+          {
+            "lat": 48.62574434194626,
+            "lon": 134.62242767747634,
+            "sector": 9,
+            "path_id": "volochaevka-komsomolsk-sector-9",
+            "ordinate": 16500,
+            "chainage_m": 17500
+          },
+          {
+            "lat": 48.629474870150354,
+            "lon": 134.61890857069864,
+            "sector": 9,
+            "path_id": "volochaevka-komsomolsk-sector-9",
+            "ordinate": 17000,
+            "chainage_m": 18000
+          },
+          {
+            "lat": 48.636581838641156,
+            "lon": 134.61051359308436,
+            "sector": 9,
+            "path_id": "volochaevka-komsomolsk-sector-9",
+            "ordinate": 18000,
+            "chainage_m": 19000
+          },
+          {
+            "lat": 48.64020808852654,
+            "lon": 134.60644444682336,
+            "sector": 9,
+            "path_id": "volochaevka-komsomolsk-sector-9",
+            "ordinate": 18500,
+            "chainage_m": 19500
+          },
+          {
+            "lat": 48.64455282748702,
+            "lon": 134.60495532951379,
+            "sector": 9,
+            "path_id": "volochaevka-komsomolsk-sector-9",
+            "ordinate": 19000,
+            "chainage_m": 20000
+          },
+          {
+            "lat": 48.6534388299317,
+            "lon": 134.6029780521628,
+            "sector": 9,
+            "path_id": "volochaevka-komsomolsk-sector-9",
+            "ordinate": 20000,
+            "chainage_m": 21000
+          },
+          {
+            "lat": 48.662344312941414,
+            "lon": 134.6010024936852,
+            "sector": 9,
+            "path_id": "volochaevka-komsomolsk-sector-9",
+            "ordinate": 21000,
+            "chainage_m": 22000
+          },
+          {
+            "lat": 48.6668053623343,
+            "lon": 134.6002387409443,
+            "sector": 9,
+            "path_id": "volochaevka-komsomolsk-sector-9",
+            "ordinate": 21500,
+            "chainage_m": 22500
+          },
+          {
+            "lat": 48.67091404268319,
+            "lon": 134.60275860932728,
+            "sector": 9,
+            "path_id": "volochaevka-komsomolsk-sector-9",
+            "ordinate": 22000,
+            "chainage_m": 23000
+          },
+          {
+            "lat": 48.67718907645546,
+            "lon": 134.6121946512553,
+            "sector": 9,
+            "path_id": "volochaevka-komsomolsk-sector-9",
+            "ordinate": 23000,
+            "chainage_m": 24000
+          },
+          {
+            "lat": 48.68291693553338,
+            "lon": 134.62261675354873,
+            "sector": 9,
+            "path_id": "volochaevka-komsomolsk-sector-9",
+            "ordinate": 24000,
+            "chainage_m": 25000
+          },
+          {
+            "lat": 48.69133483145944,
+            "lon": 134.62699357814571,
+            "sector": 9,
+            "path_id": "volochaevka-komsomolsk-sector-9",
+            "ordinate": 25000,
+            "chainage_m": 26000
+          },
+          {
+            "lat": 48.694514174264626,
+            "lon": 134.62962517329876,
+            "sector": 9,
+            "path_id": "volochaevka-komsomolsk-sector-9",
+            "ordinate": 25400,
+            "chainage_m": 26400
+          },
+          {
+            "lat": 48.69828882021895,
+            "lon": 134.63544184083491,
+            "sector": 9,
+            "path_id": "volochaevka-komsomolsk-sector-9",
+            "ordinate": 26000,
+            "chainage_m": 27000
+          },
+          {
+            "lat": 48.70451400666304,
+            "lon": 134.6452250951868,
+            "sector": 9,
+            "path_id": "volochaevka-komsomolsk-sector-9",
+            "ordinate": 27000,
+            "chainage_m": 28000
+          },
+          {
+            "lat": 48.71072830690903,
+            "lon": 134.65498142052226,
+            "sector": 9,
+            "path_id": "volochaevka-komsomolsk-sector-9",
+            "ordinate": 28000,
+            "chainage_m": 29000
+          },
+          {
+            "lat": 48.71694146123943,
+            "lon": 134.6648752557286,
+            "sector": 9,
+            "path_id": "volochaevka-komsomolsk-sector-9",
+            "ordinate": 29000,
+            "chainage_m": 30000
+          },
+          {
+            "lat": 48.71863340560845,
+            "lon": 134.66801105374134,
+            "sector": 9,
+            "path_id": "volochaevka-komsomolsk-sector-9",
+            "ordinate": 29300,
+            "chainage_m": 30300
+          },
+          {
+            "lat": 48.72114467962451,
+            "lon": 134.67675267082163,
+            "sector": 9,
+            "path_id": "volochaevka-komsomolsk-sector-9",
+            "ordinate": 30000,
+            "chainage_m": 31000
+          },
+          {
+            "lat": 48.724510233713104,
+            "lon": 134.68937836879516,
+            "sector": 9,
+            "path_id": "volochaevka-komsomolsk-sector-9",
+            "ordinate": 31000,
+            "chainage_m": 32000
+          },
+          {
+            "lat": 48.727164747177945,
+            "lon": 134.70228195129928,
+            "sector": 9,
+            "path_id": "volochaevka-komsomolsk-sector-9",
+            "ordinate": 32000,
+            "chainage_m": 33000
+          },
+          {
+            "lat": 48.72886929661846,
+            "lon": 134.7156112414452,
+            "sector": 9,
+            "path_id": "volochaevka-komsomolsk-sector-9",
+            "ordinate": 33000,
+            "chainage_m": 34000
+          },
+          {
+            "lat": 48.730603066906525,
+            "lon": 134.7289084459546,
+            "sector": 9,
+            "path_id": "volochaevka-komsomolsk-sector-9",
+            "ordinate": 34000,
+            "chainage_m": 35000
+          },
+          {
+            "lat": 48.73304329415599,
+            "lon": 134.74196328931666,
+            "sector": 9,
+            "path_id": "volochaevka-komsomolsk-sector-9",
+            "ordinate": 35000,
+            "chainage_m": 36000
+          },
+          {
+            "lat": 48.73543883069743,
+            "lon": 134.75075303485178,
+            "sector": 9,
+            "path_id": "volochaevka-komsomolsk-sector-9",
+            "ordinate": 35700,
+            "chainage_m": 36700
+          },
+          {
+            "lat": 48.73729177620689,
+            "lon": 134.75366136861985,
+            "sector": 9,
+            "path_id": "volochaevka-komsomolsk-sector-9",
+            "ordinate": 36000,
+            "chainage_m": 37000
+          },
+          {
+            "lat": 48.740186358987884,
+            "lon": 134.75881684286045,
+            "sector": 9,
+            "path_id": "volochaevka-komsomolsk-sector-9",
+            "ordinate": 36500,
+            "chainage_m": 37500
+          },
+          {
+            "lat": 48.74174193940166,
+            "lon": 134.76515833973693,
+            "sector": 9,
+            "path_id": "volochaevka-komsomolsk-sector-9",
+            "ordinate": 37000,
+            "chainage_m": 38000
+          },
+          {
+            "lat": 48.74271138399103,
+            "lon": 134.76893585048026,
+            "sector": 9,
+            "path_id": "volochaevka-komsomolsk-sector-9",
+            "ordinate": 37300,
+            "chainage_m": 38300
+          },
+          {
+            "lat": 48.7469633037887,
+            "lon": 134.7758715045903,
+            "sector": 9,
+            "path_id": "volochaevka-komsomolsk-sector-9",
+            "ordinate": 38000,
+            "chainage_m": 39000
+          },
+          {
+            "lat": 48.75271522709401,
+            "lon": 134.78629360688373,
+            "sector": 9,
+            "path_id": "volochaevka-komsomolsk-sector-9",
+            "ordinate": 39000,
+            "chainage_m": 40000
+          },
+          {
+            "lat": 48.75722211311051,
+            "lon": 134.79809424563223,
+            "sector": 9,
+            "path_id": "volochaevka-komsomolsk-sector-9",
+            "ordinate": 40000,
+            "chainage_m": 41000
+          },
+          {
+            "lat": 48.76167800588324,
+            "lon": 134.80986967423777,
+            "sector": 9,
+            "path_id": "volochaevka-komsomolsk-sector-9",
+            "ordinate": 41000,
+            "chainage_m": 42000
+          },
+          {
+            "lat": 48.76623588514351,
+            "lon": 134.82159181776836,
+            "sector": 9,
+            "path_id": "volochaevka-komsomolsk-sector-9",
+            "ordinate": 42000,
+            "chainage_m": 43000
+          },
+          {
+            "lat": 48.77265186653338,
+            "lon": 134.83068981459724,
+            "sector": 9,
+            "path_id": "volochaevka-komsomolsk-sector-9",
+            "ordinate": 43000,
+            "chainage_m": 44000
+          },
+          {
+            "lat": 48.780173083510064,
+            "lon": 134.8380231014171,
+            "sector": 9,
+            "path_id": "volochaevka-komsomolsk-sector-9",
+            "ordinate": 44000,
+            "chainage_m": 45000
+          },
+          {
+            "lat": 48.78564311158018,
+            "lon": 134.84880674007928,
+            "sector": 9,
+            "path_id": "volochaevka-komsomolsk-sector-9",
+            "ordinate": 45000,
+            "chainage_m": 46000
+          },
+          {
+            "lat": 48.792236709886545,
+            "lon": 134.8572297926255,
+            "sector": 9,
+            "path_id": "volochaevka-komsomolsk-sector-9",
+            "ordinate": 46000,
+            "chainage_m": 47000
+          },
+          {
+            "lat": 48.8006202283449,
+            "lon": 134.8626333575914,
+            "sector": 9,
+            "path_id": "volochaevka-komsomolsk-sector-9",
+            "ordinate": 47000,
+            "chainage_m": 48000
+          },
+          {
+            "lat": 48.80926329668445,
+            "lon": 134.8662183545155,
+            "sector": 9,
+            "path_id": "volochaevka-komsomolsk-sector-9",
+            "ordinate": 48000,
+            "chainage_m": 49000
+          },
+          {
+            "lat": 48.816633252803214,
+            "lon": 134.87389025939228,
+            "sector": 9,
+            "path_id": "volochaevka-komsomolsk-sector-9",
+            "ordinate": 49000,
+            "chainage_m": 50000
+          },
+          {
+            "lat": 48.822231623419434,
+            "lon": 134.88434330140666,
+            "sector": 9,
+            "path_id": "volochaevka-komsomolsk-sector-9",
+            "ordinate": 50000,
+            "chainage_m": 51000
+          },
+          {
+            "lat": 48.82722323173061,
+            "lon": 134.8955400426391,
+            "sector": 9,
+            "path_id": "volochaevka-komsomolsk-sector-9",
+            "ordinate": 51000,
+            "chainage_m": 52000
+          },
+          {
+            "lat": 48.83562852258519,
+            "lon": 134.9000601066849,
+            "sector": 9,
+            "path_id": "volochaevka-komsomolsk-sector-9",
+            "ordinate": 52000,
+            "chainage_m": 53000
+          },
+          {
+            "lat": 48.84425497514867,
+            "lon": 134.90402841237398,
+            "sector": 9,
+            "path_id": "volochaevka-komsomolsk-sector-9",
+            "ordinate": 53000,
+            "chainage_m": 54000
+          },
+          {
+            "lat": 48.85269521642874,
+            "lon": 134.90911341280577,
+            "sector": 9,
+            "path_id": "volochaevka-komsomolsk-sector-9",
+            "ordinate": 54000,
+            "chainage_m": 55000
+          },
+          {
+            "lat": 48.85980848745529,
+            "lon": 134.91727175885063,
+            "sector": 9,
+            "path_id": "volochaevka-komsomolsk-sector-9",
+            "ordinate": 55000,
+            "chainage_m": 56000
+          },
+          {
+            "lat": 48.86828998169662,
+            "lon": 134.9201250886704,
+            "sector": 9,
+            "path_id": "volochaevka-komsomolsk-sector-9",
+            "ordinate": 56000,
+            "chainage_m": 57000
+          },
+          {
+            "lat": 48.874478498841825,
+            "lon": 134.92951185622803,
+            "sector": 9,
+            "path_id": "volochaevka-komsomolsk-sector-9",
+            "ordinate": 57000,
+            "chainage_m": 58000
+          },
+          {
+            "lat": 48.87616872433746,
+            "lon": 134.93263905987385,
+            "sector": 9,
+            "path_id": "volochaevka-komsomolsk-sector-9",
+            "ordinate": 57300,
+            "chainage_m": 58300
+          },
+          {
+            "lat": 48.87764982023787,
+            "lon": 134.94217193166924,
+            "sector": 9,
+            "path_id": "volochaevka-komsomolsk-sector-9",
+            "ordinate": 58000,
+            "chainage_m": 59000
+          },
+          {
+            "lat": 48.8788702203415,
+            "lon": 134.94408618366276,
+            "sector": 9,
+            "path_id": "volochaevka-komsomolsk-sector-9",
+            "ordinate": 58200,
+            "chainage_m": 59200
+          },
+          {
+            "lat": 48.880625763025776,
+            "lon": 134.9442431740986,
+            "sector": 9,
+            "path_id": "volochaevka-komsomolsk-sector-9",
+            "ordinate": 58400,
+            "chainage_m": 59400
+          },
+          {
+            "lat": 48.882334896128654,
+            "lon": 134.94336597571427,
+            "sector": 9,
+            "path_id": "volochaevka-komsomolsk-sector-9",
+            "ordinate": 58600,
+            "chainage_m": 59600
+          },
+          {
+            "lat": 48.8840829903616,
+            "lon": 134.94365073573846,
+            "sector": 9,
+            "path_id": "volochaevka-komsomolsk-sector-9",
+            "ordinate": 58800,
+            "chainage_m": 59800
+          },
+          {
+            "lat": 48.88560992288562,
+            "lon": 134.94546643899122,
+            "sector": 9,
+            "path_id": "volochaevka-komsomolsk-sector-9",
+            "ordinate": 59000,
+            "chainage_m": 60000
+          },
+          {
+            "lat": 48.88765194446747,
+            "lon": 134.95429514565637,
+            "sector": 9,
+            "path_id": "volochaevka-komsomolsk-sector-9",
+            "ordinate": 59700,
+            "chainage_m": 60700
+          },
+          {
+            "lat": 48.890161499610144,
+            "lon": 134.95522849390466,
+            "sector": 9,
+            "path_id": "volochaevka-komsomolsk-sector-9",
+            "ordinate": 60000,
+            "chainage_m": 61000
+          },
+          {
+            "lat": 48.89915521812031,
+            "lon": 134.95638644160863,
+            "sector": 9,
+            "path_id": "volochaevka-komsomolsk-sector-9",
+            "ordinate": 61000,
+            "chainage_m": 62000
+          },
+          {
+            "lat": 48.907504932068754,
+            "lon": 134.96117350398694,
+            "sector": 9,
+            "path_id": "volochaevka-komsomolsk-sector-9",
+            "ordinate": 62000,
+            "chainage_m": 63000
+          },
+          {
+            "lat": 48.915858083763965,
+            "lon": 134.96679192812599,
+            "sector": 9,
+            "path_id": "volochaevka-komsomolsk-sector-9",
+            "ordinate": 63000,
+            "chainage_m": 64000
+          },
+          {
+            "lat": 48.92441979209661,
+            "lon": 134.96942982581476,
+            "sector": 9,
+            "path_id": "volochaevka-komsomolsk-sector-9",
+            "ordinate": 64000,
+            "chainage_m": 65000
+          },
+          {
+            "lat": 48.93322672636556,
+            "lon": 134.96722336534572,
+            "sector": 9,
+            "path_id": "volochaevka-komsomolsk-sector-9",
+            "ordinate": 65000,
+            "chainage_m": 66000
+          },
+          {
+            "lat": 48.941858335549206,
+            "lon": 134.96971687767015,
+            "sector": 9,
+            "path_id": "volochaevka-komsomolsk-sector-9",
+            "ordinate": 66000,
+            "chainage_m": 67000
+          },
+          {
+            "lat": 48.950579899106685,
+            "lon": 134.9732147850094,
+            "sector": 9,
+            "path_id": "volochaevka-komsomolsk-sector-9",
+            "ordinate": 67000,
+            "chainage_m": 68000
+          },
+          {
+            "lat": 48.95926479336528,
+            "lon": 134.9768066574271,
+            "sector": 9,
+            "path_id": "volochaevka-komsomolsk-sector-9",
+            "ordinate": 68000,
+            "chainage_m": 69000
+          },
+          {
+            "lat": 48.96514162146994,
+            "lon": 134.98728319071103,
+            "sector": 9,
+            "path_id": "volochaevka-komsomolsk-sector-9",
+            "ordinate": 69000,
+            "chainage_m": 70000
+          },
+          {
+            "lat": 48.9719351820468,
+            "lon": 134.99583687763456,
+            "sector": 9,
+            "path_id": "volochaevka-komsomolsk-sector-9",
+            "ordinate": 70000,
+            "chainage_m": 71000
+          },
+          {
+            "lat": 48.97708492670944,
+            "lon": 135.00662166221232,
+            "sector": 9,
+            "path_id": "volochaevka-komsomolsk-sector-9",
+            "ordinate": 71000,
+            "chainage_m": 72000
+          },
+          {
+            "lat": 48.9826666815496,
+            "lon": 135.01639173853488,
+            "sector": 9,
+            "path_id": "volochaevka-komsomolsk-sector-9",
+            "ordinate": 72000,
+            "chainage_m": 73000
+          },
+          {
+            "lat": 48.97939681141279,
+            "lon": 135.02083330736272,
+            "sector": 9,
+            "path_id": "volochaevka-komsomolsk-sector-9",
+            "ordinate": 72500,
+            "chainage_m": 73500
+          },
+          {
+            "lat": 48.98041323854135,
+            "lon": 135.02660184644412,
+            "sector": 9,
+            "path_id": "volochaevka-komsomolsk-sector-9",
+            "ordinate": 73000,
+            "chainage_m": 74000
+          },
+          {
+            "lat": 48.9816433789275,
+            "lon": 135.03900351791972,
+            "sector": 9,
+            "path_id": "volochaevka-komsomolsk-sector-9",
+            "ordinate": 74000,
+            "chainage_m": 75000
+          },
+          {
+            "lat": 48.97456333945306,
+            "lon": 135.046383214321,
+            "sector": 9,
+            "path_id": "volochaevka-komsomolsk-sector-9",
+            "ordinate": 75000,
+            "chainage_m": 76000
+          },
+          {
+            "lat": 48.97819646483199,
+            "lon": 135.05802514376026,
+            "sector": 9,
+            "path_id": "volochaevka-komsomolsk-sector-9",
+            "ordinate": 76000,
+            "chainage_m": 77000
+          },
+          {
+            "lat": 48.9777249205666,
+            "lon": 135.07155840688125,
+            "sector": 9,
+            "path_id": "volochaevka-komsomolsk-sector-9",
+            "ordinate": 77000,
+            "chainage_m": 78000
+          },
+          {
+            "lat": 48.98046308586953,
+            "lon": 135.08450668009343,
+            "sector": 9,
+            "path_id": "volochaevka-komsomolsk-sector-9",
+            "ordinate": 78000,
+            "chainage_m": 79000
+          },
+          {
+            "lat": 48.98488059046999,
+            "lon": 135.09775002657005,
+            "sector": 9,
+            "path_id": "volochaevka-komsomolsk-sector-9",
+            "ordinate": 79000,
+            "chainage_m": 80000
+          },
+          {
+            "lat": 48.99044171882953,
+            "lon": 135.10688010903547,
+            "sector": 9,
+            "path_id": "volochaevka-komsomolsk-sector-9",
+            "ordinate": 80000,
+            "chainage_m": 81000
+          },
+          {
+            "lat": 48.99730346138401,
+            "lon": 135.11565495766789,
+            "sector": 9,
+            "path_id": "volochaevka-komsomolsk-sector-9",
+            "ordinate": 81000,
+            "chainage_m": 82000
+          },
+          {
+            "lat": 48.99976660694528,
+            "lon": 135.12129744603433,
+            "sector": 9,
+            "path_id": "volochaevka-komsomolsk-sector-9",
+            "ordinate": 81500,
+            "chainage_m": 82500
+          },
+          {
+            "lat": 49.004169787600866,
+            "lon": 135.12028502961036,
+            "sector": 9,
+            "path_id": "volochaevka-komsomolsk-sector-9",
+            "ordinate": 82000,
+            "chainage_m": 83000
+          },
+          {
+            "lat": 49.00669423964621,
+            "lon": 135.1147582787185,
+            "sector": 9,
+            "path_id": "volochaevka-komsomolsk-sector-9",
+            "ordinate": 82500,
+            "chainage_m": 83500
+          },
+          {
+            "lat": 49.0109902771941,
+            "lon": 135.11502814184004,
+            "sector": 9,
+            "path_id": "volochaevka-komsomolsk-sector-9",
+            "ordinate": 83000,
+            "chainage_m": 84000
+          },
+          {
+            "lat": 49.015401479258806,
+            "lon": 135.12634176646267,
+            "sector": 9,
+            "path_id": "volochaevka-komsomolsk-sector-9",
+            "ordinate": 84000,
+            "chainage_m": 85000
+          },
+          {
+            "lat": 49.02409153013756,
+            "lon": 135.12819528492994,
+            "sector": 9,
+            "path_id": "volochaevka-komsomolsk-sector-9",
+            "ordinate": 85000,
+            "chainage_m": 86000
+          },
+          {
+            "lat": 49.032723139321206,
+            "lon": 135.1321148892064,
+            "sector": 9,
+            "path_id": "volochaevka-komsomolsk-sector-9",
+            "ordinate": 86000,
+            "chainage_m": 87000
+          },
+          {
+            "lat": 49.04140344991743,
+            "lon": 135.13254689938395,
+            "sector": 9,
+            "path_id": "volochaevka-komsomolsk-sector-9",
+            "ordinate": 87000,
+            "chainage_m": 88000
+          },
+          {
+            "lat": 49.049046706904484,
+            "lon": 135.1255631168191,
+            "sector": 9,
+            "path_id": "volochaevka-komsomolsk-sector-9",
+            "ordinate": 88000,
+            "chainage_m": 89000
+          },
+          {
+            "lat": 49.05748179156439,
+            "lon": 135.13038512962294,
+            "sector": 9,
+            "path_id": "volochaevka-komsomolsk-sector-9",
+            "ordinate": 89000,
+            "chainage_m": 90000
+          },
+          {
+            "lat": 49.066251483576664,
+            "lon": 135.12963169012232,
+            "sector": 9,
+            "path_id": "volochaevka-komsomolsk-sector-9",
+            "ordinate": 90000,
+            "chainage_m": 91000
+          },
+          {
+            "lat": 49.073094318523914,
+            "lon": 135.13778029588468,
+            "sector": 9,
+            "path_id": "volochaevka-komsomolsk-sector-9",
+            "ordinate": 91000,
+            "chainage_m": 92000
+          },
+          {
+            "lat": 49.07738004283149,
+            "lon": 135.13629347040632,
+            "sector": 9,
+            "path_id": "volochaevka-komsomolsk-sector-9",
+            "ordinate": 91500,
+            "chainage_m": 92500
+          },
+          {
+            "lat": 49.0812148493543,
+            "lon": 135.13281160588528,
+            "sector": 9,
+            "path_id": "volochaevka-komsomolsk-sector-9",
+            "ordinate": 92000,
+            "chainage_m": 93000
+          },
+          {
+            "lat": 49.08388082197504,
+            "lon": 135.13287520420056,
+            "sector": 9,
+            "path_id": "volochaevka-komsomolsk-sector-9",
+            "ordinate": 92300,
+            "chainage_m": 93300
+          },
+          {
+            "lat": 49.08666998052174,
+            "lon": 135.1410713654599,
+            "sector": 9,
+            "path_id": "volochaevka-komsomolsk-sector-9",
+            "ordinate": 93000,
+            "chainage_m": 94000
+          },
+          {
+            "lat": 49.08417818707072,
+            "lon": 135.15411818741282,
+            "sector": 9,
+            "path_id": "volochaevka-komsomolsk-sector-9",
+            "ordinate": 94000,
+            "chainage_m": 95000
+          },
+          {
+            "lat": 49.083211034312534,
+            "lon": 135.1686065711783,
+            "sector": 9,
+            "path_id": "volochaevka-komsomolsk-sector-9",
+            "ordinate": 95000,
+            "chainage_m": 96000
+          },
+          {
+            "lat": 49.085818565238185,
+            "lon": 135.18033845499139,
+            "sector": 9,
+            "path_id": "volochaevka-komsomolsk-sector-9",
+            "ordinate": 96000,
+            "chainage_m": 97000
+          },
+          {
+            "lat": 49.09351682617356,
+            "lon": 135.18759496546673,
+            "sector": 9,
+            "path_id": "volochaevka-komsomolsk-sector-9",
+            "ordinate": 97000,
+            "chainage_m": 98000
+          },
+          {
+            "lat": 49.10228021565008,
+            "lon": 135.19128653254074,
+            "sector": 9,
+            "path_id": "volochaevka-komsomolsk-sector-9",
+            "ordinate": 98000,
+            "chainage_m": 99000
+          },
+          {
+            "lat": 49.10979971375338,
+            "lon": 135.18695497160957,
+            "sector": 9,
+            "path_id": "volochaevka-komsomolsk-sector-9",
+            "ordinate": 99000,
+            "chainage_m": 100000
+          },
+          {
+            "lat": 49.11305296811413,
+            "lon": 135.18500806102173,
+            "sector": 9,
+            "path_id": "volochaevka-komsomolsk-sector-9",
+            "ordinate": 99400,
+            "chainage_m": 100400
+          },
+          {
+            "lat": 49.11762345244589,
+            "lon": 135.190385269929,
+            "sector": 9,
+            "path_id": "volochaevka-komsomolsk-sector-9",
+            "ordinate": 100000,
+            "chainage_m": 101000
+          },
+          {
+            "lat": 49.12472812910551,
+            "lon": 135.1973999922148,
+            "sector": 9,
+            "path_id": "volochaevka-komsomolsk-sector-9",
+            "ordinate": 101000,
+            "chainage_m": 102000
+          },
+          {
+            "lat": 49.13277646725372,
+            "lon": 135.1921184672593,
+            "sector": 9,
+            "path_id": "volochaevka-komsomolsk-sector-9",
+            "ordinate": 102000,
+            "chainage_m": 103000
+          },
+          {
+            "lat": 49.14076980145359,
+            "lon": 135.18795993958224,
+            "sector": 9,
+            "path_id": "volochaevka-komsomolsk-sector-9",
+            "ordinate": 103000,
+            "chainage_m": 104000
+          },
+          {
+            "lat": 49.14382996903738,
+            "lon": 135.17607335716446,
+            "sector": 9,
+            "path_id": "volochaevka-komsomolsk-sector-9",
+            "ordinate": 104000,
+            "chainage_m": 105000
+          },
+          {
+            "lat": 49.15037314705777,
+            "lon": 135.1826331509609,
+            "sector": 9,
+            "path_id": "volochaevka-komsomolsk-sector-9",
+            "ordinate": 105000,
+            "chainage_m": 106000
+          },
+          {
+            "lat": 49.15882140974697,
+            "lon": 135.18365186992065,
+            "sector": 9,
+            "path_id": "volochaevka-komsomolsk-sector-9",
+            "ordinate": 106000,
+            "chainage_m": 107000
+          },
+          {
+            "lat": 49.1608668690756,
+            "lon": 135.18120820492442,
+            "sector": 9,
+            "path_id": "volochaevka-komsomolsk-sector-9",
+            "ordinate": 106300,
+            "chainage_m": 107300
+          },
+          {
+            "lat": 49.16444155275941,
+            "lon": 135.1749469221392,
+            "sector": 9,
+            "path_id": "volochaevka-komsomolsk-sector-9",
+            "ordinate": 107000,
+            "chainage_m": 108000
+          },
+          {
+            "lat": 49.172229768068625,
+            "lon": 135.17130978605573,
+            "sector": 9,
+            "path_id": "volochaevka-komsomolsk-sector-9",
+            "ordinate": 108000,
+            "chainage_m": 109000
+          },
+          {
+            "lat": 49.18045343130214,
+            "lon": 135.17459340717963,
+            "sector": 9,
+            "path_id": "volochaevka-komsomolsk-sector-9",
+            "ordinate": 109000,
+            "chainage_m": 110000
+          },
+          {
+            "lat": 49.18849145621002,
+            "lon": 135.17035180062226,
+            "sector": 9,
+            "path_id": "volochaevka-komsomolsk-sector-9",
+            "ordinate": 110000,
+            "chainage_m": 111000
+          },
+          {
+            "lat": 49.192726760231636,
+            "lon": 135.158474958487,
+            "sector": 9,
+            "path_id": "volochaevka-komsomolsk-sector-9",
+            "ordinate": 111000,
+            "chainage_m": 112000
+          },
+          {
+            "lat": 49.194519545172604,
+            "lon": 135.15258036869068,
+            "sector": 9,
+            "path_id": "volochaevka-komsomolsk-sector-9",
+            "ordinate": 111500,
+            "chainage_m": 112500
+          },
+          {
+            "lat": 49.198690104963354,
+            "lon": 135.15385004316468,
+            "sector": 9,
+            "path_id": "volochaevka-komsomolsk-sector-9",
+            "ordinate": 112000,
+            "chainage_m": 113000
+          },
+          {
+            "lat": 49.206516708444845,
+            "lon": 135.1607135045926,
+            "sector": 9,
+            "path_id": "volochaevka-komsomolsk-sector-9",
+            "ordinate": 113000,
+            "chainage_m": 114000
+          },
+          {
+            "lat": 49.21451004264471,
+            "lon": 135.16768009842357,
+            "sector": 9,
+            "path_id": "volochaevka-komsomolsk-sector-9",
+            "ordinate": 114000,
+            "chainage_m": 115000
+          },
+          {
+            "lat": 49.2223366461262,
+            "lon": 135.1745235063286,
+            "sector": 9,
+            "path_id": "volochaevka-komsomolsk-sector-9",
+            "ordinate": 115000,
+            "chainage_m": 116000
+          },
+          {
+            "lat": 49.226316983928974,
+            "lon": 135.1778907792906,
+            "sector": 9,
+            "path_id": "volochaevka-komsomolsk-sector-9",
+            "ordinate": 115500,
+            "chainage_m": 116500
+          },
+          {
+            "lat": 49.22815789732473,
+            "lon": 135.18083119869522,
+            "sector": 9,
+            "path_id": "volochaevka-komsomolsk-sector-9",
+            "ordinate": 115800,
+            "chainage_m": 116800
+          },
+          {
+            "lat": 49.228974935140585,
+            "lon": 135.18329491721425,
+            "sector": 9,
+            "path_id": "volochaevka-komsomolsk-sector-9",
+            "ordinate": 116000,
+            "chainage_m": 117000
+          },
+          {
+            "lat": 49.2301729898902,
+            "lon": 135.1868930921677,
+            "sector": 9,
+            "path_id": "volochaevka-komsomolsk-sector-9",
+            "ordinate": 116300,
+            "chainage_m": 117300
+          },
+          {
+            "lat": 49.230917835023874,
+            "lon": 135.1894461921028,
+            "sector": 9,
+            "path_id": "volochaevka-komsomolsk-sector-9",
+            "ordinate": 116500,
+            "chainage_m": 117500
+          },
+          {
+            "lat": 49.23167585818683,
+            "lon": 135.1917850058225,
+            "sector": 9,
+            "path_id": "volochaevka-komsomolsk-sector-9",
+            "ordinate": 116700,
+            "chainage_m": 117700
+          },
+          {
+            "lat": 49.23284297321551,
+            "lon": 135.19401724939235,
+            "sector": 9,
+            "path_id": "volochaevka-komsomolsk-sector-9",
+            "ordinate": 116900,
+            "chainage_m": 117900
+          },
+          {
+            "lat": 49.23350473946889,
+            "lon": 135.19465667029172,
+            "sector": 9,
+            "path_id": "volochaevka-komsomolsk-sector-9",
+            "ordinate": 117000,
+            "chainage_m": 118000
+          },
+          {
+            "lat": 49.23538977061487,
+            "lon": 135.1944458218231,
+            "sector": 9,
+            "path_id": "volochaevka-komsomolsk-sector-9",
+            "ordinate": 117200,
+            "chainage_m": 118200
+          },
+          {
+            "lat": 49.23630306534031,
+            "lon": 135.1936087304844,
+            "sector": 9,
+            "path_id": "volochaevka-komsomolsk-sector-9",
+            "ordinate": 117300,
+            "chainage_m": 118300
+          },
+          {
+            "lat": 49.23713213526986,
+            "lon": 135.19146414945726,
+            "sector": 9,
+            "path_id": "volochaevka-komsomolsk-sector-9",
+            "ordinate": 117500,
+            "chainage_m": 118500
+          },
+          {
+            "lat": 49.237834008568896,
+            "lon": 135.18899584727583,
+            "sector": 9,
+            "path_id": "volochaevka-komsomolsk-sector-9",
+            "ordinate": 117700,
+            "chainage_m": 118700
+          },
+          {
+            "lat": 49.238593177647445,
+            "lon": 135.1864209749445,
+            "sector": 9,
+            "path_id": "volochaevka-komsomolsk-sector-9",
+            "ordinate": 117900,
+            "chainage_m": 118900
+          },
+          {
+            "lat": 49.239346617148044,
+            "lon": 135.18389480402578,
+            "sector": 9,
+            "path_id": "volochaevka-komsomolsk-sector-9",
+            "ordinate": 118000,
+            "chainage_m": 119000
+          },
+          {
+            "lat": 49.24233344613406,
+            "lon": 135.17381361162046,
+            "sector": 9,
+            "path_id": "volochaevka-komsomolsk-sector-9",
+            "ordinate": 119000,
+            "chainage_m": 120000
+          },
+          {
+            "lat": 49.24903017684355,
+            "lon": 135.16547306499675,
+            "sector": 9,
+            "path_id": "volochaevka-komsomolsk-sector-9",
+            "ordinate": 120000,
+            "chainage_m": 121000
+          },
+          {
+            "lat": 49.256448261417106,
+            "lon": 135.1713000457732,
+            "sector": 9,
+            "path_id": "volochaevka-komsomolsk-sector-9",
+            "ordinate": 121000,
+            "chainage_m": 122000
+          },
+          {
+            "lat": 49.262939873235936,
+            "lon": 135.18069311586657,
+            "sector": 9,
+            "path_id": "volochaevka-komsomolsk-sector-9",
+            "ordinate": 122000,
+            "chainage_m": 123000
+          },
+          {
+            "lat": 49.271499862695194,
+            "lon": 135.1843050418071,
+            "sector": 9,
+            "path_id": "volochaevka-komsomolsk-sector-9",
+            "ordinate": 123000,
+            "chainage_m": 124000
+          },
+          {
+            "lat": 49.27820346889822,
+            "lon": 135.1765385988941,
+            "sector": 9,
+            "path_id": "volochaevka-komsomolsk-sector-9",
+            "ordinate": 124000,
+            "chainage_m": 125000
+          },
+          {
+            "lat": 49.28255164560547,
+            "lon": 135.16702520766373,
+            "sector": 9,
+            "path_id": "volochaevka-komsomolsk-sector-9",
+            "ordinate": 125000,
+            "chainage_m": 126000
+          },
+          {
+            "lat": 49.287110097823536,
+            "lon": 135.17594501461835,
+            "sector": 9,
+            "path_id": "volochaevka-komsomolsk-sector-9",
+            "ordinate": 126000,
+            "chainage_m": 127000
+          },
+          {
+            "lat": 49.289680386492485,
+            "lon": 135.18141389677285,
+            "sector": 9,
+            "path_id": "volochaevka-komsomolsk-sector-9",
+            "ordinate": 126500,
+            "chainage_m": 127500
+          },
+          {
+            "lat": 49.293466491602715,
+            "lon": 135.17887512078264,
+            "sector": 9,
+            "path_id": "volochaevka-komsomolsk-sector-9",
+            "ordinate": 127000,
+            "chainage_m": 128000
+          },
+          {
+            "lat": 49.298673532044866,
+            "lon": 135.16780328434953,
+            "sector": 9,
+            "path_id": "volochaevka-komsomolsk-sector-9",
+            "ordinate": 128000,
+            "chainage_m": 129000
+          },
+          {
+            "lat": 49.30397511052321,
+            "lon": 135.15777824180813,
+            "sector": 9,
+            "path_id": "volochaevka-komsomolsk-sector-9",
+            "ordinate": 129000,
+            "chainage_m": 130000
+          },
+          {
+            "lat": 49.31225148587387,
+            "lon": 135.1592730886956,
+            "sector": 9,
+            "path_id": "volochaevka-komsomolsk-sector-9",
+            "ordinate": 130000,
+            "chainage_m": 131000
+          },
+          {
+            "lat": 49.31501944498215,
+            "lon": 135.16631932366013,
+            "sector": 9,
+            "path_id": "volochaevka-komsomolsk-sector-9",
+            "ordinate": 130600,
+            "chainage_m": 131600
+          },
+          {
+            "lat": 49.31823488412842,
+            "lon": 135.16682639130883,
+            "sector": 9,
+            "path_id": "volochaevka-komsomolsk-sector-9",
+            "ordinate": 131000,
+            "chainage_m": 132000
+          },
+          {
+            "lat": 49.326899724864184,
+            "lon": 135.1678565694245,
+            "sector": 9,
+            "path_id": "volochaevka-komsomolsk-sector-9",
+            "ordinate": 132000,
+            "chainage_m": 133000
+          },
+          {
+            "lat": 49.335525031512084,
+            "lon": 135.1714885488878,
+            "sector": 9,
+            "path_id": "volochaevka-komsomolsk-sector-9",
+            "ordinate": 133000,
+            "chainage_m": 134000
+          },
+          {
+            "lat": 49.339638868481124,
+            "lon": 135.17018621581946,
+            "sector": 9,
+            "path_id": "volochaevka-komsomolsk-sector-9",
+            "ordinate": 133500,
+            "chainage_m": 134500
+          },
+          {
+            "lat": 49.34127007932386,
+            "lon": 135.1757582303771,
+            "sector": 9,
+            "path_id": "volochaevka-komsomolsk-sector-9",
+            "ordinate": 134000,
+            "chainage_m": 135000
+          },
+          {
+            "lat": 49.348759783621816,
+            "lon": 135.18129644042486,
+            "sector": 9,
+            "path_id": "volochaevka-komsomolsk-sector-9",
+            "ordinate": 135000,
+            "chainage_m": 136000
+          },
+          {
+            "lat": 49.351944283047146,
+            "lon": 135.1837389595055,
+            "sector": 9,
+            "path_id": "volochaevka-komsomolsk-sector-9",
+            "ordinate": 135400,
+            "chainage_m": 136400
+          },
+          {
+            "lat": 49.35712496743072,
+            "lon": 135.18107814350492,
+            "sector": 9,
+            "path_id": "volochaevka-komsomolsk-sector-9",
+            "ordinate": 136000,
+            "chainage_m": 137000
+          },
+          {
+            "lat": 49.35976687582407,
+            "lon": 135.1812334150674,
+            "sector": 9,
+            "path_id": "volochaevka-komsomolsk-sector-9",
+            "ordinate": 136300,
+            "chainage_m": 137300
+          },
+          {
+            "lat": 49.36351516571982,
+            "lon": 135.18860852780634,
+            "sector": 9,
+            "path_id": "volochaevka-komsomolsk-sector-9",
+            "ordinate": 137000,
+            "chainage_m": 138000
+          },
+          {
+            "lat": 49.370358573624856,
+            "lon": 135.19662649919138,
+            "sector": 9,
+            "path_id": "volochaevka-komsomolsk-sector-9",
+            "ordinate": 138000,
+            "chainage_m": 139000
+          },
+          {
+            "lat": 49.37667314148499,
+            "lon": 135.20490000975306,
+            "sector": 9,
+            "path_id": "volochaevka-komsomolsk-sector-9",
+            "ordinate": 139000,
+            "chainage_m": 140000
+          },
+          {
+            "lat": 49.38105283087098,
+            "lon": 135.20614160929512,
+            "sector": 9,
+            "path_id": "volochaevka-komsomolsk-sector-9",
+            "ordinate": 139500,
+            "chainage_m": 140500
+          },
+          {
+            "lat": 49.383106884566516,
+            "lon": 135.2122264210794,
+            "sector": 9,
+            "path_id": "volochaevka-komsomolsk-sector-9",
+            "ordinate": 140000,
+            "chainage_m": 141000
+          },
+          {
+            "lat": 49.385191877983,
+            "lon": 135.21451653338656,
+            "sector": 9,
+            "path_id": "volochaevka-komsomolsk-sector-9",
+            "ordinate": 140300,
+            "chainage_m": 141300
+          },
+          {
+            "lat": 49.391406751186786,
+            "lon": 135.21409025278697,
+            "sector": 9,
+            "path_id": "volochaevka-komsomolsk-sector-9",
+            "ordinate": 141000,
+            "chainage_m": 142000
+          },
+          {
+            "lat": 49.39862659236323,
+            "lon": 135.21913858391986,
+            "sector": 9,
+            "path_id": "volochaevka-komsomolsk-sector-9",
+            "ordinate": 142000,
+            "chainage_m": 143000
+          },
+          {
+            "lat": 49.40339646600769,
+            "lon": 135.23012848738827,
+            "sector": 9,
+            "path_id": "volochaevka-komsomolsk-sector-9",
+            "ordinate": 143000,
+            "chainage_m": 144000
+          },
+          {
+            "lat": 49.41191692137908,
+            "lon": 135.23057825925744,
+            "sector": 9,
+            "path_id": "volochaevka-komsomolsk-sector-9",
+            "ordinate": 144000,
+            "chainage_m": 145000
+          },
+          {
+            "lat": 49.419213538900074,
+            "lon": 135.23800150045116,
+            "sector": 9,
+            "path_id": "volochaevka-komsomolsk-sector-9",
+            "ordinate": 145000,
+            "chainage_m": 146000
+          },
+          {
+            "lat": 49.42681496996807,
+            "lon": 135.2446701562287,
+            "sector": 9,
+            "path_id": "volochaevka-komsomolsk-sector-9",
+            "ordinate": 146000,
+            "chainage_m": 147000
+          },
+          {
+            "lat": 49.43371510069483,
+            "lon": 135.2526130701426,
+            "sector": 9,
+            "path_id": "volochaevka-komsomolsk-sector-9",
+            "ordinate": 147000,
+            "chainage_m": 148000
+          },
+          {
+            "lat": 49.44242348622303,
+            "lon": 135.25722824518238,
+            "sector": 9,
+            "path_id": "volochaevka-komsomolsk-sector-9",
+            "ordinate": 148000,
+            "chainage_m": 149000
+          },
+          {
+            "lat": 49.45094336863662,
+            "lon": 135.25666330879636,
+            "sector": 9,
+            "path_id": "volochaevka-komsomolsk-sector-9",
+            "ordinate": 149000,
+            "chainage_m": 150000
+          },
+          {
+            "lat": 49.45830358447287,
+            "lon": 135.26388658771958,
+            "sector": 9,
+            "path_id": "volochaevka-komsomolsk-sector-9",
+            "ordinate": 150000,
+            "chainage_m": 151000
+          },
+          {
+            "lat": 49.46496307292567,
+            "lon": 135.27391678688113,
+            "sector": 9,
+            "path_id": "volochaevka-komsomolsk-sector-9",
+            "ordinate": 151000,
+            "chainage_m": 152000
+          },
+          {
+            "lat": 49.468991539183236,
+            "lon": 135.28353846713478,
+            "sector": 9,
+            "path_id": "volochaevka-komsomolsk-sector-9",
+            "ordinate": 152000,
+            "chainage_m": 153000
+          },
+          {
+            "lat": 49.47051675283387,
+            "lon": 135.2947117170976,
+            "sector": 9,
+            "path_id": "volochaevka-komsomolsk-sector-9",
+            "ordinate": 153000,
+            "chainage_m": 154000
+          },
+          {
+            "lat": 49.47778816021189,
+            "lon": 135.2899802316254,
+            "sector": 9,
+            "path_id": "volochaevka-komsomolsk-sector-9",
+            "ordinate": 154000,
+            "chainage_m": 155000
+          },
+          {
+            "lat": 49.48582160145741,
+            "lon": 135.2923465473193,
+            "sector": 9,
+            "path_id": "volochaevka-komsomolsk-sector-9",
+            "ordinate": 155000,
+            "chainage_m": 156000
+          },
+          {
+            "lat": 49.493965050599606,
+            "lon": 135.297208094211,
+            "sector": 9,
+            "path_id": "volochaevka-komsomolsk-sector-9",
+            "ordinate": 156000,
+            "chainage_m": 157000
+          },
+          {
+            "lat": 49.49874638339997,
+            "lon": 135.30833665346583,
+            "sector": 9,
+            "path_id": "volochaevka-komsomolsk-sector-9",
+            "ordinate": 157000,
+            "chainage_m": 158000
+          },
+          {
+            "lat": 49.504925160262665,
+            "lon": 135.31776009032234,
+            "sector": 9,
+            "path_id": "volochaevka-komsomolsk-sector-9",
+            "ordinate": 158000,
+            "chainage_m": 159000
+          },
+          {
+            "lat": 49.51153480138729,
+            "lon": 135.32672172319596,
+            "sector": 9,
+            "path_id": "volochaevka-komsomolsk-sector-9",
+            "ordinate": 159000,
+            "chainage_m": 160000
+          },
+          {
+            "lat": 49.51619982375525,
+            "lon": 135.3383315669987,
+            "sector": 9,
+            "path_id": "volochaevka-komsomolsk-sector-9",
+            "ordinate": 160000,
+            "chainage_m": 161000
+          },
+          {
+            "lat": 49.52349013874049,
+            "lon": 135.34514174335163,
+            "sector": 9,
+            "path_id": "volochaevka-komsomolsk-sector-9",
+            "ordinate": 161000,
+            "chainage_m": 162000
+          },
+          {
+            "lat": 49.529514789956295,
+            "lon": 135.35496682362256,
+            "sector": 9,
+            "path_id": "volochaevka-komsomolsk-sector-9",
+            "ordinate": 162000,
+            "chainage_m": 163000
+          },
+          {
+            "lat": 49.538455223391516,
+            "lon": 135.35578844510076,
+            "sector": 9,
+            "path_id": "volochaevka-komsomolsk-sector-9",
+            "ordinate": 163000,
+            "chainage_m": 164000
+          },
+          {
+            "lat": 49.54610191812532,
+            "lon": 135.3624450687646,
+            "sector": 9,
+            "path_id": "volochaevka-komsomolsk-sector-9",
+            "ordinate": 164000,
+            "chainage_m": 165000
+          },
+          {
+            "lat": 49.55361167594611,
+            "lon": 135.3702917257689,
+            "sector": 9,
+            "path_id": "volochaevka-komsomolsk-sector-9",
+            "ordinate": 165000,
+            "chainage_m": 166000
+          },
+          {
+            "lat": 49.560706612323216,
+            "lon": 135.37771324808924,
+            "sector": 9,
+            "path_id": "volochaevka-komsomolsk-sector-9",
+            "ordinate": 166000,
+            "chainage_m": 167000
+          },
+          {
+            "lat": 49.56815506365991,
+            "lon": 135.38545161607027,
+            "sector": 9,
+            "path_id": "volochaevka-komsomolsk-sector-9",
+            "ordinate": 167000,
+            "chainage_m": 168000
+          },
+          {
+            "lat": 49.57568487500352,
+            "lon": 135.39213516875046,
+            "sector": 9,
+            "path_id": "volochaevka-komsomolsk-sector-9",
+            "ordinate": 168000,
+            "chainage_m": 169000
+          },
+          {
+            "lat": 49.58173015269995,
+            "lon": 135.40231662876994,
+            "sector": 9,
+            "path_id": "volochaevka-komsomolsk-sector-9",
+            "ordinate": 169000,
+            "chainage_m": 170000
+          },
+          {
+            "lat": 49.583568201306726,
+            "lon": 135.4124402200521,
+            "sector": 9,
+            "path_id": "volochaevka-komsomolsk-sector-9",
+            "ordinate": 169700,
+            "chainage_m": 170700
+          },
+          {
+            "lat": 49.584216789530814,
+            "lon": 135.41595531612523,
+            "sector": 9,
+            "path_id": "volochaevka-komsomolsk-sector-9",
+            "ordinate": 170000,
+            "chainage_m": 171000
+          },
+          {
+            "lat": 49.58855809074452,
+            "lon": 135.42270819669866,
+            "sector": 9,
+            "path_id": "volochaevka-komsomolsk-sector-9",
+            "ordinate": 170700,
+            "chainage_m": 171700
+          },
+          {
+            "lat": 49.590981702217924,
+            "lon": 135.42429643570674,
+            "sector": 9,
+            "path_id": "volochaevka-komsomolsk-sector-9",
+            "ordinate": 171000,
+            "chainage_m": 172000
+          },
+          {
+            "lat": 49.59836139861921,
+            "lon": 135.431916774382,
+            "sector": 9,
+            "path_id": "volochaevka-komsomolsk-sector-9",
+            "ordinate": 172000,
+            "chainage_m": 173000
+          },
+          {
+            "lat": 49.60185644116951,
+            "lon": 135.44438147121508,
+            "sector": 9,
+            "path_id": "volochaevka-komsomolsk-sector-9",
+            "ordinate": 173000,
+            "chainage_m": 174000
+          },
+          {
+            "lat": 49.6037282942862,
+            "lon": 135.45789639968663,
+            "sector": 9,
+            "path_id": "volochaevka-komsomolsk-sector-9",
+            "ordinate": 174000,
+            "chainage_m": 175000
+          },
+          {
+            "lat": 49.604761337190816,
+            "lon": 135.46465558279576,
+            "sector": 9,
+            "path_id": "volochaevka-komsomolsk-sector-9",
+            "ordinate": 174500,
+            "chainage_m": 175500
+          },
+          {
+            "lat": 49.608248358331984,
+            "lon": 135.46901808344788,
+            "sector": 9,
+            "path_id": "volochaevka-komsomolsk-sector-9",
+            "ordinate": 175000,
+            "chainage_m": 176000
+          },
+          {
+            "lat": 49.61207227865669,
+            "lon": 135.4808433593816,
+            "sector": 9,
+            "path_id": "volochaevka-komsomolsk-sector-9",
+            "ordinate": 176000,
+            "chainage_m": 177000
+          },
+          {
+            "lat": 49.61820006227561,
+            "lon": 135.4907652695199,
+            "sector": 9,
+            "path_id": "volochaevka-komsomolsk-sector-9",
+            "ordinate": 177000,
+            "chainage_m": 178000
+          },
+          {
+            "lat": 49.62147165128581,
+            "lon": 135.50353649877334,
+            "sector": 9,
+            "path_id": "volochaevka-komsomolsk-sector-9",
+            "ordinate": 178000,
+            "chainage_m": 179000
+          },
+          {
+            "lat": 49.62861815386447,
+            "lon": 135.5103667286491,
+            "sector": 9,
+            "path_id": "volochaevka-komsomolsk-sector-9",
+            "ordinate": 179000,
+            "chainage_m": 180000
+          },
+          {
+            "lat": 49.63696500302394,
+            "lon": 135.515154936943,
+            "sector": 9,
+            "path_id": "volochaevka-komsomolsk-sector-9",
+            "ordinate": 180000,
+            "chainage_m": 181000
+          },
+          {
+            "lat": 49.64233992010006,
+            "lon": 135.52564350234067,
+            "sector": 9,
+            "path_id": "volochaevka-komsomolsk-sector-9",
+            "ordinate": 181000,
+            "chainage_m": 182000
+          },
+          {
+            "lat": 49.6453599806382,
+            "lon": 135.53863474738745,
+            "sector": 9,
+            "path_id": "volochaevka-komsomolsk-sector-9",
+            "ordinate": 182000,
+            "chainage_m": 183000
+          },
+          {
+            "lat": 49.64927156350556,
+            "lon": 135.55089489828768,
+            "sector": 9,
+            "path_id": "volochaevka-komsomolsk-sector-9",
+            "ordinate": 183000,
+            "chainage_m": 184000
+          },
+          {
+            "lat": 49.65462528114326,
+            "lon": 135.562058407968,
+            "sector": 9,
+            "path_id": "volochaevka-komsomolsk-sector-9",
+            "ordinate": 184000,
+            "chainage_m": 185000
+          },
+          {
+            "lat": 49.65992972441058,
+            "lon": 135.57315488158628,
+            "sector": 9,
+            "path_id": "volochaevka-komsomolsk-sector-9",
+            "ordinate": 185000,
+            "chainage_m": 186000
+          },
+          {
+            "lat": 49.66693642528723,
+            "lon": 135.58131150875778,
+            "sector": 9,
+            "path_id": "volochaevka-komsomolsk-sector-9",
+            "ordinate": 186000,
+            "chainage_m": 187000
+          },
+          {
+            "lat": 49.67379473009495,
+            "lon": 135.59045190446352,
+            "sector": 9,
+            "path_id": "volochaevka-komsomolsk-sector-9",
+            "ordinate": 187000,
+            "chainage_m": 188000
+          },
+          {
+            "lat": 49.67242192321782,
+            "lon": 135.60378978897637,
+            "sector": 9,
+            "path_id": "volochaevka-komsomolsk-sector-9",
+            "ordinate": 188000,
+            "chainage_m": 189000
+          },
+          {
+            "lat": 49.67520993584892,
+            "lon": 135.61560647054313,
+            "sector": 9,
+            "path_id": "volochaevka-komsomolsk-sector-9",
+            "ordinate": 189000,
+            "chainage_m": 190000
+          },
+          {
+            "lat": 49.68295002270334,
+            "lon": 135.622235019275,
+            "sector": 9,
+            "path_id": "volochaevka-komsomolsk-sector-9",
+            "ordinate": 190000,
+            "chainage_m": 191000
+          },
+          {
+            "lat": 49.691299736651786,
+            "lon": 135.62857995389828,
+            "sector": 9,
+            "path_id": "volochaevka-komsomolsk-sector-9",
+            "ordinate": 191000,
+            "chainage_m": 192000
+          },
+          {
+            "lat": 49.69572812745035,
+            "lon": 135.6409919386142,
+            "sector": 9,
+            "path_id": "volochaevka-komsomolsk-sector-9",
+            "ordinate": 192000,
+            "chainage_m": 193000
+          },
+          {
+            "lat": 49.70287978664918,
+            "lon": 135.64653473232428,
+            "sector": 9,
+            "path_id": "volochaevka-komsomolsk-sector-9",
+            "ordinate": 193000,
+            "chainage_m": 194000
+          },
+          {
+            "lat": 49.70743308224708,
+            "lon": 135.6576535512966,
+            "sector": 9,
+            "path_id": "volochaevka-komsomolsk-sector-9",
+            "ordinate": 194000,
+            "chainage_m": 195000
+          },
+          {
+            "lat": 49.707858216931065,
+            "lon": 135.6711598854012,
+            "sector": 9,
+            "path_id": "volochaevka-komsomolsk-sector-9",
+            "ordinate": 195000,
+            "chainage_m": 196000
+          },
+          {
+            "lat": 49.712936914827104,
+            "lon": 135.6823652210006,
+            "sector": 9,
+            "path_id": "volochaevka-komsomolsk-sector-9",
+            "ordinate": 196000,
+            "chainage_m": 197000
+          },
+          {
+            "lat": 49.71826656823741,
+            "lon": 135.69343190081355,
+            "sector": 9,
+            "path_id": "volochaevka-komsomolsk-sector-9",
+            "ordinate": 197000,
+            "chainage_m": 198000
+          },
+          {
+            "lat": 49.72098353410192,
+            "lon": 135.70668842531947,
+            "sector": 9,
+            "path_id": "volochaevka-komsomolsk-sector-9",
+            "ordinate": 198000,
+            "chainage_m": 199000
+          },
+          {
+            "lat": 49.72213517927013,
+            "lon": 135.72024517971008,
+            "sector": 9,
+            "path_id": "volochaevka-komsomolsk-sector-9",
+            "ordinate": 199000,
+            "chainage_m": 200000
+          },
+          {
+            "lat": 49.71781335862146,
+            "lon": 135.73143848319575,
+            "sector": 9,
+            "path_id": "volochaevka-komsomolsk-sector-9",
+            "ordinate": 200000,
+            "chainage_m": 201000
+          },
+          {
+            "lat": 49.71366170643795,
+            "lon": 135.74360180422858,
+            "sector": 9,
+            "path_id": "volochaevka-komsomolsk-sector-9",
+            "ordinate": 201000,
+            "chainage_m": 202000
+          },
+          {
+            "lat": 49.71511128965963,
+            "lon": 135.7530275329163,
+            "sector": 9,
+            "path_id": "volochaevka-komsomolsk-sector-9",
+            "ordinate": 201700,
+            "chainage_m": 202700
+          },
+          {
+            "lat": 49.71602802213183,
+            "lon": 135.75694427240379,
+            "sector": 9,
+            "path_id": "volochaevka-komsomolsk-sector-9",
+            "ordinate": 202000,
+            "chainage_m": 203000
+          },
+          {
+            "lat": 49.71643081146181,
+            "lon": 135.75864423818194,
+            "sector": 9,
+            "path_id": "volochaevka-komsomolsk-sector-9",
+            "ordinate": 202130,
+            "chainage_m": 203130
+          },
+          {
+            "lat": 49.71697225657821,
+            "lon": 135.76041639664228,
+            "sector": 9,
+            "path_id": "volochaevka-komsomolsk-sector-9",
+            "ordinate": 202200,
+            "chainage_m": 203200
+          },
+          {
+            "lat": 49.719305340719984,
+            "lon": 135.7709444961278,
+            "sector": 9,
+            "path_id": "volochaevka-komsomolsk-sector-9",
+            "ordinate": 203000,
+            "chainage_m": 204000
+          },
+          {
+            "lat": 49.71948181172088,
+            "lon": 135.78469548321095,
+            "sector": 9,
+            "path_id": "volochaevka-komsomolsk-sector-9",
+            "ordinate": 204000,
+            "chainage_m": 205000
+          },
+          {
+            "lat": 49.72220508012114,
+            "lon": 135.79758187698124,
+            "sector": 9,
+            "path_id": "volochaevka-komsomolsk-sector-9",
+            "ordinate": 205000,
+            "chainage_m": 206000
+          },
+          {
+            "lat": 49.72664149232884,
+            "lon": 135.8096151365946,
+            "sector": 9,
+            "path_id": "volochaevka-komsomolsk-sector-9",
+            "ordinate": 206000,
+            "chainage_m": 207000
+          },
+          {
+            "lat": 49.732043338421335,
+            "lon": 135.82074999838514,
+            "sector": 9,
+            "path_id": "volochaevka-komsomolsk-sector-9",
+            "ordinate": 207000,
+            "chainage_m": 208000
+          },
+          {
+            "lat": 49.73942647256939,
+            "lon": 135.828768542728,
+            "sector": 9,
+            "path_id": "volochaevka-komsomolsk-sector-9",
+            "ordinate": 208000,
+            "chainage_m": 209000
+          },
+          {
+            "lat": 49.74726510816457,
+            "lon": 135.83487168916173,
+            "sector": 9,
+            "path_id": "volochaevka-komsomolsk-sector-9",
+            "ordinate": 209000,
+            "chainage_m": 210000
+          },
+          {
+            "lat": 49.755735143249986,
+            "lon": 135.839331592639,
+            "sector": 9,
+            "path_id": "volochaevka-komsomolsk-sector-9",
+            "ordinate": 210000,
+            "chainage_m": 211000
+          },
+          {
+            "lat": 49.76327354896053,
+            "lon": 135.8436568510345,
+            "sector": 9,
+            "path_id": "volochaevka-komsomolsk-sector-9",
+            "ordinate": 211000,
+            "chainage_m": 212000
+          },
+          {
+            "lat": 49.772125173937496,
+            "lon": 135.84605811715386,
+            "sector": 9,
+            "path_id": "volochaevka-komsomolsk-sector-9",
+            "ordinate": 212000,
+            "chainage_m": 213000
+          },
+          {
+            "lat": 49.78102836511604,
+            "lon": 135.84718168739013,
+            "sector": 9,
+            "path_id": "volochaevka-komsomolsk-sector-9",
+            "ordinate": 213000,
+            "chainage_m": 214000
+          },
+          {
+            "lat": 49.78993671291474,
+            "lon": 135.8458083075552,
+            "sector": 9,
+            "path_id": "volochaevka-komsomolsk-sector-9",
+            "ordinate": 214000,
+            "chainage_m": 215000
+          },
+          {
+            "lat": 49.79807672431016,
+            "lon": 135.85341317636997,
+            "sector": 9,
+            "path_id": "volochaevka-komsomolsk-sector-9",
+            "ordinate": 215000,
+            "chainage_m": 216000
+          },
+          {
+            "lat": 49.80278185372377,
+            "lon": 135.8652481925862,
+            "sector": 9,
+            "path_id": "volochaevka-komsomolsk-sector-9",
+            "ordinate": 216000,
+            "chainage_m": 217000
+          },
+          {
+            "lat": 49.807446876091724,
+            "lon": 135.87711472148115,
+            "sector": 9,
+            "path_id": "volochaevka-komsomolsk-sector-9",
+            "ordinate": 217000,
+            "chainage_m": 218000
+          },
+          {
+            "lat": 49.81055689100369,
+            "lon": 135.89006012990433,
+            "sector": 9,
+            "path_id": "volochaevka-komsomolsk-sector-9",
+            "ordinate": 218000,
+            "chainage_m": 219000
+          },
+          {
+            "lat": 49.81456014711827,
+            "lon": 135.90236497151255,
+            "sector": 9,
+            "path_id": "volochaevka-komsomolsk-sector-9",
+            "ordinate": 219000,
+            "chainage_m": 220000
+          },
+          {
+            "lat": 49.82016825801701,
+            "lon": 135.91319330088274,
+            "sector": 9,
+            "path_id": "volochaevka-komsomolsk-sector-9",
+            "ordinate": 220000,
+            "chainage_m": 221000
+          },
+          {
+            "lat": 49.82293163346293,
+            "lon": 135.9257531087098,
+            "sector": 9,
+            "path_id": "volochaevka-komsomolsk-sector-9",
+            "ordinate": 221000,
+            "chainage_m": 222000
+          },
+          {
+            "lat": 49.82239477200889,
+            "lon": 135.93949149072145,
+            "sector": 9,
+            "path_id": "volochaevka-komsomolsk-sector-9",
+            "ordinate": 222000,
+            "chainage_m": 223000
+          },
+          {
+            "lat": 49.82645475094519,
+            "lon": 135.9503232578384,
+            "sector": 9,
+            "path_id": "volochaevka-komsomolsk-sector-9",
+            "ordinate": 223000,
+            "chainage_m": 224000
+          },
+          {
+            "lat": 49.8340785273672,
+            "lon": 135.95666017105253,
+            "sector": 9,
+            "path_id": "volochaevka-komsomolsk-sector-9",
+            "ordinate": 224000,
+            "chainage_m": 225000
+          },
+          {
+            "lat": 49.8386564601503,
+            "lon": 135.96852841882088,
+            "sector": 9,
+            "path_id": "volochaevka-komsomolsk-sector-9",
+            "ordinate": 225000,
+            "chainage_m": 226000
+          },
+          {
+            "lat": 49.84292155797725,
+            "lon": 135.98070663675637,
+            "sector": 9,
+            "path_id": "volochaevka-komsomolsk-sector-9",
+            "ordinate": 226000,
+            "chainage_m": 227000
+          },
+          {
+            "lat": 49.843561551834405,
+            "lon": 135.99426854776715,
+            "sector": 9,
+            "path_id": "volochaevka-komsomolsk-sector-9",
+            "ordinate": 227000,
+            "chainage_m": 228000
+          },
+          {
+            "lat": 49.8407150975082,
+            "lon": 136.00752163452628,
+            "sector": 9,
+            "path_id": "volochaevka-komsomolsk-sector-9",
+            "ordinate": 228000,
+            "chainage_m": 229000
+          },
+          {
+            "lat": 49.84447484655985,
+            "lon": 136.0193348783463,
+            "sector": 9,
+            "path_id": "volochaevka-komsomolsk-sector-9",
+            "ordinate": 229000,
+            "chainage_m": 230000
+          },
+          {
+            "lat": 49.85147352602738,
+            "lon": 136.02752015340755,
+            "sector": 9,
+            "path_id": "volochaevka-komsomolsk-sector-9",
+            "ordinate": 230000,
+            "chainage_m": 231000
+          },
+          {
+            "lat": 49.857921593053774,
+            "lon": 136.03699343759226,
+            "sector": 9,
+            "path_id": "volochaevka-komsomolsk-sector-9",
+            "ordinate": 231000,
+            "chainage_m": 232000
+          },
+          {
+            "lat": 49.86088149302342,
+            "lon": 136.05032673844272,
+            "sector": 9,
+            "path_id": "volochaevka-komsomolsk-sector-9",
+            "ordinate": 232000,
+            "chainage_m": 233000
+          },
+          {
+            "lat": 49.86808872912837,
+            "lon": 136.05828626813266,
+            "sector": 9,
+            "path_id": "volochaevka-komsomolsk-sector-9",
+            "ordinate": 233000,
+            "chainage_m": 234000
+          },
+          {
+            "lat": 49.8736275121339,
+            "lon": 136.0685697146397,
+            "sector": 9,
+            "path_id": "volochaevka-komsomolsk-sector-9",
+            "ordinate": 234000,
+            "chainage_m": 235000
+          },
+          {
+            "lat": 49.87791094461029,
+            "lon": 136.08078861257866,
+            "sector": 9,
+            "path_id": "volochaevka-komsomolsk-sector-9",
+            "ordinate": 235000,
+            "chainage_m": 236000
+          },
+          {
+            "lat": 49.88218062609961,
+            "lon": 136.0931140806675,
+            "sector": 9,
+            "path_id": "volochaevka-komsomolsk-sector-9",
+            "ordinate": 236000,
+            "chainage_m": 237000
+          },
+          {
+            "lat": 49.88646405857601,
+            "lon": 136.10539428509054,
+            "sector": 9,
+            "path_id": "volochaevka-komsomolsk-sector-9",
+            "ordinate": 237000,
+            "chainage_m": 238000
+          },
+          {
+            "lat": 49.89045012595673,
+            "lon": 136.11793346643697,
+            "sector": 9,
+            "path_id": "volochaevka-komsomolsk-sector-9",
+            "ordinate": 238000,
+            "chainage_m": 239000
+          },
+          {
+            "lat": 49.89504639338928,
+            "lon": 136.12992833787803,
+            "sector": 9,
+            "path_id": "volochaevka-komsomolsk-sector-9",
+            "ordinate": 239000,
+            "chainage_m": 240000
+          },
+          {
+            "lat": 49.90154488070164,
+            "lon": 136.1396164812359,
+            "sector": 9,
+            "path_id": "volochaevka-komsomolsk-sector-9",
+            "ordinate": 240000,
+            "chainage_m": 241000
+          },
+          {
+            "lat": 49.90672499212742,
+            "lon": 136.15054679709363,
+            "sector": 9,
+            "path_id": "volochaevka-komsomolsk-sector-9",
+            "ordinate": 241000,
+            "chainage_m": 242000
+          },
+          {
+            "lat": 49.909821829010106,
+            "lon": 136.16310832379406,
+            "sector": 9,
+            "path_id": "volochaevka-komsomolsk-sector-9",
+            "ordinate": 242000,
+            "chainage_m": 243000
+          },
+          {
+            "lat": 49.911651856207754,
+            "lon": 136.1761413947599,
+            "sector": 9,
+            "path_id": "volochaevka-komsomolsk-sector-9",
+            "ordinate": 243000,
+            "chainage_m": 244000
+          },
+          {
+            "lat": 49.91654663465155,
+            "lon": 136.18779822110184,
+            "sector": 9,
+            "path_id": "volochaevka-komsomolsk-sector-9",
+            "ordinate": 244000,
+            "chainage_m": 245000
+          },
+          {
+            "lat": 49.91596508248949,
+            "lon": 136.20138992591794,
+            "sector": 9,
+            "path_id": "volochaevka-komsomolsk-sector-9",
+            "ordinate": 245000,
+            "chainage_m": 246000
+          },
+          {
+            "lat": 49.91508845706295,
+            "lon": 136.21499308988993,
+            "sector": 9,
+            "path_id": "volochaevka-komsomolsk-sector-9",
+            "ordinate": 246000,
+            "chainage_m": 247000
+          },
+          {
+            "lat": 49.9193300636203,
+            "lon": 136.22677023736884,
+            "sector": 9,
+            "path_id": "volochaevka-komsomolsk-sector-9",
+            "ordinate": 247000,
+            "chainage_m": 248000
+          },
+          {
+            "lat": 49.92359516144725,
+            "lon": 136.23911346714934,
+            "sector": 9,
+            "path_id": "volochaevka-komsomolsk-sector-9",
+            "ordinate": 248000,
+            "chainage_m": 249000
+          },
+          {
+            "lat": 49.93077489557804,
+            "lon": 136.24716524304432,
+            "sector": 9,
+            "path_id": "volochaevka-komsomolsk-sector-9",
+            "ordinate": 249000,
+            "chainage_m": 250000
+          },
+          {
+            "lat": 49.93717139640288,
+            "lon": 136.2568980771102,
+            "sector": 9,
+            "path_id": "volochaevka-komsomolsk-sector-9",
+            "ordinate": 250000,
+            "chainage_m": 251000
+          },
+          {
+            "lat": 49.94349341271435,
+            "lon": 136.26686353204093,
+            "sector": 9,
+            "path_id": "volochaevka-komsomolsk-sector-9",
+            "ordinate": 251000,
+            "chainage_m": 252000
+          },
+          {
+            "lat": 49.952273417966936,
+            "lon": 136.26954153677536,
+            "sector": 9,
+            "path_id": "volochaevka-komsomolsk-sector-9",
+            "ordinate": 252000,
+            "chainage_m": 253000
+          },
+          {
+            "lat": 49.95986338987903,
+            "lon": 136.27577646350198,
+            "sector": 9,
+            "path_id": "volochaevka-komsomolsk-sector-9",
+            "ordinate": 253000,
+            "chainage_m": 254000
+          },
+          {
+            "lat": 49.9673164248781,
+            "lon": 136.28285191931403,
+            "sector": 9,
+            "path_id": "volochaevka-komsomolsk-sector-9",
+            "ordinate": 254000,
+            "chainage_m": 255000
+          },
+          {
+            "lat": 49.97283343548741,
+            "lon": 136.2936716543173,
+            "sector": 9,
+            "path_id": "volochaevka-komsomolsk-sector-9",
+            "ordinate": 255000,
+            "chainage_m": 256000
+          },
+          {
+            "lat": 49.97510005652495,
+            "lon": 136.30264990296698,
+            "sector": 9,
+            "path_id": "volochaevka-komsomolsk-sector-9",
+            "ordinate": 255700,
+            "chainage_m": 256700
+          },
+          {
+            "lat": 49.977066447677835,
+            "lon": 136.30542760235778,
+            "sector": 9,
+            "path_id": "volochaevka-komsomolsk-sector-9",
+            "ordinate": 256000,
+            "chainage_m": 257000
+          },
+          {
+            "lat": 49.98100553251936,
+            "lon": 136.30869460770563,
+            "sector": 9,
+            "path_id": "volochaevka-komsomolsk-sector-9",
+            "ordinate": 256500,
+            "chainage_m": 257500
+          },
+          {
+            "lat": 49.98396829727798,
+            "lon": 136.31390508589456,
+            "sector": 9,
+            "path_id": "volochaevka-komsomolsk-sector-9",
+            "ordinate": 257000,
+            "chainage_m": 258000
+          },
+          {
+            "lat": 49.99003305553944,
+            "lon": 136.32432489635679,
+            "sector": 9,
+            "path_id": "volochaevka-komsomolsk-sector-9",
+            "ordinate": 258000,
+            "chainage_m": 259000
+          },
+          {
+            "lat": 49.995783259971375,
+            "lon": 136.3349366476804,
+            "sector": 9,
+            "path_id": "volochaevka-komsomolsk-sector-9",
+            "ordinate": 259000,
+            "chainage_m": 260000
+          },
+          {
+            "lat": 49.99863028725538,
+            "lon": 136.34816968091675,
+            "sector": 9,
+            "path_id": "volochaevka-komsomolsk-sector-9",
+            "ordinate": 260000,
+            "chainage_m": 261000
+          },
+          {
+            "lat": 50.00138334946099,
+            "lon": 136.36146115584822,
+            "sector": 9,
+            "path_id": "volochaevka-komsomolsk-sector-9",
+            "ordinate": 261000,
+            "chainage_m": 262000
+          },
+          {
+            "lat": 50.004138703497766,
+            "lon": 136.3747193992275,
+            "sector": 9,
+            "path_id": "volochaevka-komsomolsk-sector-9",
+            "ordinate": 262000,
+            "chainage_m": 263000
+          },
+          {
+            "lat": 50.00827488582082,
+            "lon": 136.3867807337728,
+            "sector": 9,
+            "path_id": "volochaevka-komsomolsk-sector-9",
+            "ordinate": 263000,
+            "chainage_m": 264000
+          },
+          {
+            "lat": 50.00938069436542,
+            "lon": 136.40061365382067,
+            "sector": 9,
+            "path_id": "volochaevka-komsomolsk-sector-9",
+            "ordinate": 264000,
+            "chainage_m": 265000
+          },
+          {
+            "lat": 50.0101473118953,
+            "lon": 136.4059610689226,
+            "sector": 9,
+            "path_id": "volochaevka-komsomolsk-sector-9",
+            "ordinate": 264400,
+            "chainage_m": 265400
+          },
+          {
+            "lat": 50.013530054717755,
+            "lon": 136.41252659229704,
+            "sector": 9,
+            "path_id": "volochaevka-komsomolsk-sector-9",
+            "ordinate": 265000,
+            "chainage_m": 266000
+          },
+          {
+            "lat": 50.01929973971472,
+            "lon": 136.42324147602378,
+            "sector": 9,
+            "path_id": "volochaevka-komsomolsk-sector-9",
+            "ordinate": 266000,
+            "chainage_m": 267000
+          },
+          {
+            "lat": 50.02343878682675,
+            "lon": 136.4306389341167,
+            "sector": 9,
+            "path_id": "volochaevka-komsomolsk-sector-9",
+            "ordinate": 266700,
+            "chainage_m": 267700
+          },
+          {
+            "lat": 50.02467694862203,
+            "lon": 136.43434826288237,
+            "sector": 9,
+            "path_id": "volochaevka-komsomolsk-sector-9",
+            "ordinate": 267000,
+            "chainage_m": 268000
+          },
+          {
+            "lat": 50.02576499547498,
+            "lon": 136.44790501727297,
+            "sector": 9,
+            "path_id": "volochaevka-komsomolsk-sector-9",
+            "ordinate": 268000,
+            "chainage_m": 269000
+          },
+          {
+            "lat": 50.03290347664451,
+            "lon": 136.45580324047884,
+            "sector": 9,
+            "path_id": "volochaevka-komsomolsk-sector-9",
+            "ordinate": 269000,
+            "chainage_m": 270000
+          },
+          {
+            "lat": 50.04148638441558,
+            "lon": 136.4589613838456,
+            "sector": 9,
+            "path_id": "volochaevka-komsomolsk-sector-9",
+            "ordinate": 270000,
+            "chainage_m": 271000
+          },
+          {
+            "lat": 50.04506966246632,
+            "lon": 136.4624942416104,
+            "sector": 9,
+            "path_id": "volochaevka-komsomolsk-sector-9",
+            "ordinate": 270500,
+            "chainage_m": 271500
+          },
+          {
+            "lat": 50.04595832000657,
+            "lon": 136.4692585813397,
+            "sector": 9,
+            "path_id": "volochaevka-komsomolsk-sector-9",
+            "ordinate": 271000,
+            "chainage_m": 272000
+          },
+          {
+            "lat": 50.05244649407863,
+            "lon": 136.47803973250788,
+            "sector": 9,
+            "path_id": "volochaevka-komsomolsk-sector-9",
+            "ordinate": 272000,
+            "chainage_m": 273000
+          },
+          {
+            "lat": 50.06138692751385,
+            "lon": 136.48055501722848,
+            "sector": 9,
+            "path_id": "volochaevka-komsomolsk-sector-9",
+            "ordinate": 273000,
+            "chainage_m": 274000
+          },
+          {
+            "lat": 50.069749819491584,
+            "lon": 136.48505330887807,
+            "sector": 9,
+            "path_id": "volochaevka-komsomolsk-sector-9",
+            "ordinate": 274000,
+            "chainage_m": 275000
+          },
+          {
+            "lat": 50.0779499914555,
+            "lon": 136.49098685980442,
+            "sector": 9,
+            "path_id": "volochaevka-komsomolsk-sector-9",
+            "ordinate": 275000,
+            "chainage_m": 276000
+          },
+          {
+            "lat": 50.07960010990547,
+            "lon": 136.49215855849548,
+            "sector": 9,
+            "path_id": "volochaevka-komsomolsk-sector-9",
+            "ordinate": 275200,
+            "chainage_m": 276200
+          },
+          {
+            "lat": 50.0837276978616,
+            "lon": 136.49515856551076,
+            "sector": 9,
+            "path_id": "volochaevka-komsomolsk-sector-9",
+            "ordinate": 275700,
+            "chainage_m": 276700
+          },
+          {
+            "lat": 50.086170216942236,
+            "lon": 136.4969467667894,
+            "sector": 9,
+            "path_id": "volochaevka-komsomolsk-sector-9",
+            "ordinate": 276000,
+            "chainage_m": 277000
+          },
+          {
+            "lat": 50.09416527001549,
+            "lon": 136.50275140221186,
+            "sector": 9,
+            "path_id": "volochaevka-komsomolsk-sector-9",
+            "ordinate": 277000,
+            "chainage_m": 278000
+          },
+          {
+            "lat": 50.102406694940655,
+            "lon": 136.50871016328122,
+            "sector": 9,
+            "path_id": "volochaevka-komsomolsk-sector-9",
+            "ordinate": 278000,
+            "chainage_m": 279000
+          },
+          {
+            "lat": 50.11032783645834,
+            "lon": 136.51518917002855,
+            "sector": 9,
+            "path_id": "volochaevka-komsomolsk-sector-9",
+            "ordinate": 279000,
+            "chainage_m": 280000
+          },
+          {
+            "lat": 50.11587521383079,
+            "lon": 136.52602494785006,
+            "sector": 9,
+            "path_id": "volochaevka-komsomolsk-sector-9",
+            "ordinate": 280000,
+            "chainage_m": 281000
+          },
+          {
+            "lat": 50.12137503570625,
+            "lon": 136.53734430205068,
+            "sector": 9,
+            "path_id": "volochaevka-komsomolsk-sector-9",
+            "ordinate": 281000,
+            "chainage_m": 282000
+          },
+          {
+            "lat": 50.124422025260756,
+            "lon": 136.55034987104236,
+            "sector": 9,
+            "path_id": "volochaevka-komsomolsk-sector-9",
+            "ordinate": 282000,
+            "chainage_m": 283000
+          },
+          {
+            "lat": 50.12490846642882,
+            "lon": 136.55522516892114,
+            "sector": 9,
+            "path_id": "volochaevka-komsomolsk-sector-9",
+            "ordinate": 282400,
+            "chainage_m": 283400
+          },
+          {
+            "lat": 50.12577248678388,
+            "lon": 136.5635611318825,
+            "sector": 9,
+            "path_id": "volochaevka-komsomolsk-sector-9",
+            "ordinate": 283000,
+            "chainage_m": 284000
+          },
+          {
+            "lat": 50.127169357888405,
+            "lon": 136.5774668175703,
+            "sector": 9,
+            "path_id": "volochaevka-komsomolsk-sector-9",
+            "ordinate": 284000,
+            "chainage_m": 285000
+          },
+          {
+            "lat": 50.12862237885686,
+            "lon": 136.59135302269308,
+            "sector": 9,
+            "path_id": "volochaevka-komsomolsk-sector-9",
+            "ordinate": 285000,
+            "chainage_m": 286000
+          },
+          {
+            "lat": 50.13483324135608,
+            "lon": 136.6012720680424,
+            "sector": 9,
+            "path_id": "volochaevka-komsomolsk-sector-9",
+            "ordinate": 286000,
+            "chainage_m": 287000
+          },
+          {
+            "lat": 50.14158898671847,
+            "lon": 136.61049439671282,
+            "sector": 9,
+            "path_id": "volochaevka-komsomolsk-sector-9",
+            "ordinate": 287000,
+            "chainage_m": 288000
+          },
+          {
+            "lat": 50.14834186729188,
+            "lon": 136.6197001096072,
+            "sector": 9,
+            "path_id": "volochaevka-komsomolsk-sector-9",
+            "ordinate": 288000,
+            "chainage_m": 289000
+          },
+          {
+            "lat": 50.15508328870939,
+            "lon": 136.62893045968673,
+            "sector": 9,
+            "path_id": "volochaevka-komsomolsk-sector-9",
+            "ordinate": 289000,
+            "chainage_m": 290000
+          },
+          {
+            "lat": 50.158027718818566,
+            "lon": 136.6320164103713,
+            "sector": 9,
+            "path_id": "volochaevka-komsomolsk-sector-9",
+            "ordinate": 289400,
+            "chainage_m": 290400
+          },
+          {
+            "lat": 50.163347058988556,
+            "lon": 136.63136381144264,
+            "sector": 9,
+            "path_id": "volochaevka-komsomolsk-sector-9",
+            "ordinate": 290000,
+            "chainage_m": 291000
+          },
+          {
+            "lat": 50.16598037301498,
+            "lon": 136.6315248125831,
+            "sector": 9,
+            "path_id": "volochaevka-komsomolsk-sector-9",
+            "ordinate": 290300,
+            "chainage_m": 291300
+          },
+          {
+            "lat": 50.16867785831445,
+            "lon": 136.6351585109198,
+            "sector": 9,
+            "path_id": "volochaevka-komsomolsk-sector-9",
+            "ordinate": 290700,
+            "chainage_m": 291700
+          },
+          {
+            "lat": 50.1712613250127,
+            "lon": 136.63575553294234,
+            "sector": 9,
+            "path_id": "volochaevka-komsomolsk-sector-9",
+            "ordinate": 291000,
+            "chainage_m": 292000
+          },
+          {
+            "lat": 50.17475006502725,
+            "lon": 136.63466118355365,
+            "sector": 9,
+            "path_id": "volochaevka-komsomolsk-sector-9",
+            "ordinate": 291400,
+            "chainage_m": 292400
+          },
+          {
+            "lat": 50.180077999564176,
+            "lon": 136.63623910932142,
+            "sector": 9,
+            "path_id": "volochaevka-komsomolsk-sector-9",
+            "ordinate": 292000,
+            "chainage_m": 293000
+          },
+          {
+            "lat": 50.18902760032412,
+            "lon": 136.63580824505948,
+            "sector": 9,
+            "path_id": "volochaevka-komsomolsk-sector-9",
+            "ordinate": 293000,
+            "chainage_m": 294000
+          },
+          {
+            "lat": 50.19787979825889,
+            "lon": 136.63571829068567,
+            "sector": 9,
+            "path_id": "volochaevka-komsomolsk-sector-9",
+            "ordinate": 294000,
+            "chainage_m": 295000
+          },
+          {
+            "lat": 50.205668586525896,
+            "lon": 136.64143984722784,
+            "sector": 9,
+            "path_id": "volochaevka-komsomolsk-sector-9",
+            "ordinate": 295000,
+            "chainage_m": 296000
+          },
+          {
+            "lat": 50.21298640348531,
+            "lon": 136.64821335428186,
+            "sector": 9,
+            "path_id": "volochaevka-komsomolsk-sector-9",
+            "ordinate": 296000,
+            "chainage_m": 297000
+          },
+          {
+            "lat": 50.21917778541949,
+            "lon": 136.64990529865088,
+            "sector": 9,
+            "path_id": "volochaevka-komsomolsk-sector-9",
+            "ordinate": 296700,
+            "chainage_m": 297700
+          },
+          {
+            "lat": 50.22185693606952,
+            "lon": 136.65064326829102,
+            "sector": 9,
+            "path_id": "volochaevka-komsomolsk-sector-9",
+            "ordinate": 297000,
+            "chainage_m": 298000
+          },
+          {
+            "lat": 50.224486239391375,
+            "lon": 136.65048627785515,
+            "sector": 9,
+            "path_id": "volochaevka-komsomolsk-sector-9",
+            "ordinate": 297300,
+            "chainage_m": 298300
+          },
+          {
+            "lat": 50.22879831975753,
+            "lon": 136.64362682713187,
+            "sector": 9,
+            "path_id": "volochaevka-komsomolsk-sector-9",
+            "ordinate": 298000,
+            "chainage_m": 299000
+          },
+          {
+            "lat": 50.23140527772537,
+            "lon": 136.64409722548166,
+            "sector": 9,
+            "path_id": "volochaevka-komsomolsk-sector-9",
+            "ordinate": 298300,
+            "chainage_m": 299300
+          },
+          {
+            "lat": 50.233100086883375,
+            "lon": 136.64513599796422,
+            "sector": 9,
+            "path_id": "volochaevka-komsomolsk-sector-9",
+            "ordinate": 298500,
+            "chainage_m": 299500
+          },
+          {
+            "lat": 50.234808074070656,
+            "lon": 136.64468909088401,
+            "sector": 9,
+            "path_id": "volochaevka-komsomolsk-sector-9",
+            "ordinate": 298700,
+            "chainage_m": 299700
+          },
+          {
+            "lat": 50.23729184611255,
+            "lon": 136.64617018678445,
+            "sector": 9,
+            "path_id": "volochaevka-komsomolsk-sector-9",
+            "ordinate": 299000,
+            "chainage_m": 300000
+          },
+          {
+            "lat": 50.23884456173735,
+            "lon": 136.65260564873935,
+            "sector": 9,
+            "path_id": "volochaevka-komsomolsk-sector-9",
+            "ordinate": 299500,
+            "chainage_m": 300500
+          },
+          {
+            "lat": 50.24315836097689,
+            "lon": 136.65255580141115,
+            "sector": 9,
+            "path_id": "volochaevka-komsomolsk-sector-9",
+            "ordinate": 300000,
+            "chainage_m": 301000
+          },
+          {
+            "lat": 50.245502904274566,
+            "lon": 136.65111366664084,
+            "sector": 9,
+            "path_id": "volochaevka-komsomolsk-sector-9",
+            "ordinate": 300300,
+            "chainage_m": 301300
+          },
+          {
+            "lat": 50.24820554619421,
+            "lon": 136.6473751170276,
+            "sector": 9,
+            "path_id": "volochaevka-komsomolsk-sector-9",
+            "ordinate": 300700,
+            "chainage_m": 301700
+          },
+          {
+            "lat": 50.25084172500959,
+            "lon": 136.64748856267104,
+            "sector": 9,
+            "path_id": "volochaevka-komsomolsk-sector-9",
+            "ordinate": 301000,
+            "chainage_m": 302000
+          },
+          {
+            "lat": 50.253000057023854,
+            "lon": 136.65346393951646,
+            "sector": 9,
+            "path_id": "volochaevka-komsomolsk-sector-9",
+            "ordinate": 301500,
+            "chainage_m": 302500
+          },
+          {
+            "lat": 50.25724682020137,
+            "lon": 136.65485336216963,
+            "sector": 9,
+            "path_id": "volochaevka-komsomolsk-sector-9",
+            "ordinate": 302000,
+            "chainage_m": 303000
+          },
+          {
+            "lat": 50.262333539506535,
+            "lon": 136.65765283395666,
+            "sector": 9,
+            "path_id": "volochaevka-komsomolsk-sector-9",
+            "ordinate": 302600,
+            "chainage_m": 303600
+          },
+          {
+            "lat": 50.26609443447378,
+            "lon": 136.65824183457005,
+            "sector": 9,
+            "path_id": "volochaevka-komsomolsk-sector-9",
+            "ordinate": 303000,
+            "chainage_m": 304000
+          },
+          {
+            "lat": 50.274588533786584,
+            "lon": 136.65829168189822,
+            "sector": 9,
+            "path_id": "volochaevka-komsomolsk-sector-9",
+            "ordinate": 304000,
+            "chainage_m": 305000
+          },
+          {
+            "lat": 50.278608405677225,
+            "lon": 136.65551111771845,
+            "sector": 9,
+            "path_id": "volochaevka-komsomolsk-sector-9",
+            "ordinate": 304500,
+            "chainage_m": 305500
+          },
+          {
+            "lat": 50.281503561416024,
+            "lon": 136.66027182403818,
+            "sector": 9,
+            "path_id": "volochaevka-komsomolsk-sector-9",
+            "ordinate": 305000,
+            "chainage_m": 306000
+          },
+          {
+            "lat": 50.28671690439392,
+            "lon": 136.66530296643725,
+            "sector": 9,
+            "path_id": "volochaevka-komsomolsk-sector-9",
+            "ordinate": 305700,
+            "chainage_m": 306700
+          },
+          {
+            "lat": 50.2880364261961,
+            "lon": 136.66891489237776,
+            "sector": 9,
+            "path_id": "volochaevka-komsomolsk-sector-9",
+            "ordinate": 306000,
+            "chainage_m": 307000
+          },
+          {
+            "lat": 50.290013703547096,
+            "lon": 136.67477796949532,
+            "sector": 9,
+            "path_id": "volochaevka-komsomolsk-sector-9",
+            "ordinate": 306500,
+            "chainage_m": 307500
+          },
+          {
+            "lat": 50.29401638670389,
+            "lon": 136.67613989017434,
+            "sector": 9,
+            "path_id": "volochaevka-komsomolsk-sector-9",
+            "ordinate": 307000,
+            "chainage_m": 308000
+          },
+          {
+            "lat": 50.30261361841983,
+            "lon": 136.67244316648015,
+            "sector": 9,
+            "path_id": "volochaevka-komsomolsk-sector-9",
+            "ordinate": 308000,
+            "chainage_m": 309000
+          },
+          {
+            "lat": 50.30650285593317,
+            "lon": 136.67644699555254,
+            "sector": 9,
+            "path_id": "volochaevka-komsomolsk-sector-9",
+            "ordinate": 308500,
+            "chainage_m": 309500
+          },
+          {
+            "lat": 50.30875343415244,
+            "lon": 136.68244643662536,
+            "sector": 9,
+            "path_id": "volochaevka-komsomolsk-sector-9",
+            "ordinate": 309000,
+            "chainage_m": 310000
+          },
+          {
+            "lat": 50.31020530920531,
+            "lon": 136.68909160113327,
+            "sector": 9,
+            "path_id": "volochaevka-komsomolsk-sector-9",
+            "ordinate": 309500,
+            "chainage_m": 310500
+          },
+          {
+            "lat": 50.31404355347489,
+            "lon": 136.69189336475145,
+            "sector": 9,
+            "path_id": "volochaevka-komsomolsk-sector-9",
+            "ordinate": 310000,
+            "chainage_m": 311000
+          },
+          {
+            "lat": 50.321760149059706,
+            "lon": 136.69868692532833,
+            "sector": 9,
+            "path_id": "volochaevka-komsomolsk-sector-9",
+            "ordinate": 311000,
+            "chainage_m": 312000
+          },
+          {
+            "lat": 50.32668586722444,
+            "lon": 136.71004982432137,
+            "sector": 9,
+            "path_id": "volochaevka-komsomolsk-sector-9",
+            "ordinate": 312000,
+            "chainage_m": 313000
+          },
+          {
+            "lat": 50.33001360609857,
+            "lon": 136.7229390828806,
+            "sector": 9,
+            "path_id": "volochaevka-komsomolsk-sector-9",
+            "ordinate": 313000,
+            "chainage_m": 314000
+          },
+          {
+            "lat": 50.32830848370026,
+            "lon": 136.73666084911622,
+            "sector": 9,
+            "path_id": "volochaevka-komsomolsk-sector-9",
+            "ordinate": 314000,
+            "chainage_m": 315000
+          },
+          {
+            "lat": 50.32531649809408,
+            "lon": 136.74364463168106,
+            "sector": 9,
+            "path_id": "volochaevka-komsomolsk-sector-9",
+            "ordinate": 314600,
+            "chainage_m": 315600
+          },
+          {
+            "lat": 50.325294725697866,
+            "lon": 136.74902757016633,
+            "sector": 9,
+            "path_id": "volochaevka-komsomolsk-sector-9",
+            "ordinate": 315000,
+            "chainage_m": 316000
+          },
+          {
+            "lat": 50.33063583826408,
+            "lon": 136.76012232491124,
+            "sector": 9,
+            "path_id": "volochaevka-komsomolsk-sector-9",
+            "ordinate": 316000,
+            "chainage_m": 317000
+          },
+          {
+            "lat": 50.32729434840288,
+            "lon": 136.7730196048796,
+            "sector": 9,
+            "path_id": "volochaevka-komsomolsk-sector-9",
+            "ordinate": 317000,
+            "chainage_m": 318000
+          },
+          {
+            "lat": 50.32499506877102,
+            "lon": 136.78659813166644,
+            "sector": 9,
+            "path_id": "volochaevka-komsomolsk-sector-9",
+            "ordinate": 318000,
+            "chainage_m": 319000
+          },
+          {
+            "lat": 50.32500652792692,
+            "lon": 136.80009014182616,
+            "sector": 9,
+            "path_id": "volochaevka-komsomolsk-sector-9",
+            "ordinate": 319000,
+            "chainage_m": 320000
+          },
+          {
+            "lat": 50.327981897757034,
+            "lon": 136.81327332773432,
+            "sector": 9,
+            "path_id": "volochaevka-komsomolsk-sector-9",
+            "ordinate": 320000,
+            "chainage_m": 321000
+          },
+          {
+            "lat": 50.330766472641365,
+            "lon": 136.8266696539423,
+            "sector": 9,
+            "path_id": "volochaevka-komsomolsk-sector-9",
+            "ordinate": 321000,
+            "chainage_m": 322000
+          },
+          {
+            "lat": 50.332619991108615,
+            "lon": 136.84054841061374,
+            "sector": 9,
+            "path_id": "volochaevka-komsomolsk-sector-9",
+            "ordinate": 322000,
+            "chainage_m": 323000
+          },
+          {
+            "lat": 50.33531174683014,
+            "lon": 136.85382498864251,
+            "sector": 9,
+            "path_id": "volochaevka-komsomolsk-sector-9",
+            "ordinate": 323000,
+            "chainage_m": 324000
+          },
+          {
+            "lat": 50.337764006193304,
+            "lon": 136.8578030346141,
+            "sector": 9,
+            "path_id": "volochaevka-komsomolsk-sector-9",
+            "ordinate": 323400,
+            "chainage_m": 324400
+          },
+          {
+            "lat": 50.34305355255795,
+            "lon": 136.85906182289,
+            "sector": 9,
+            "path_id": "volochaevka-komsomolsk-sector-9",
+            "ordinate": 324000,
+            "chainage_m": 325000
+          },
+          {
+            "lat": 50.35198825641522,
+            "lon": 136.85864184482617,
+            "sector": 9,
+            "path_id": "volochaevka-komsomolsk-sector-9",
+            "ordinate": 325000,
+            "chainage_m": 326000
+          },
+          {
+            "lat": 50.360948170415476,
+            "lon": 136.85755494388883,
+            "sector": 9,
+            "path_id": "volochaevka-komsomolsk-sector-9",
+            "ordinate": 326000,
+            "chainage_m": 327000
+          },
+          {
+            "lat": 50.369918397656036,
+            "lon": 136.85650528520813,
+            "sector": 9,
+            "path_id": "volochaevka-komsomolsk-sector-9",
+            "ordinate": 327000,
+            "chainage_m": 328000
+          },
+          {
+            "lat": 50.378886906023226,
+            "lon": 136.8554384377936,
+            "sector": 9,
+            "path_id": "volochaevka-komsomolsk-sector-9",
+            "ordinate": 328000,
+            "chainage_m": 329000
+          },
+          {
+            "lat": 50.3878915107315,
+            "lon": 136.85453488335065,
+            "sector": 9,
+            "path_id": "volochaevka-komsomolsk-sector-9",
+            "ordinate": 329000,
+            "chainage_m": 330000
+          },
+          {
+            "lat": 50.39610027706234,
+            "lon": 136.85981927309518,
+            "sector": 9,
+            "path_id": "volochaevka-komsomolsk-sector-9",
+            "ordinate": 330000,
+            "chainage_m": 331000
+          },
+          {
+            "lat": 50.40325480105014,
+            "lon": 136.86830477804105,
+            "sector": 9,
+            "path_id": "volochaevka-komsomolsk-sector-9",
+            "ordinate": 331000,
+            "chainage_m": 332000
+          },
+          {
+            "lat": 50.409710889485666,
+            "lon": 136.87807485436363,
+            "sector": 9,
+            "path_id": "volochaevka-komsomolsk-sector-9",
+            "ordinate": 332000,
+            "chainage_m": 333000
+          },
+          {
+            "lat": 50.41612858974893,
+            "lon": 136.88782659603675,
+            "sector": 9,
+            "path_id": "volochaevka-komsomolsk-sector-9",
+            "ordinate": 333000,
+            "chainage_m": 334000
+          },
+          {
+            "lat": 50.42304419033616,
+            "lon": 136.8939973514903,
+            "sector": 9,
+            "path_id": "volochaevka-komsomolsk-sector-9",
+            "ordinate": 333900,
+            "chainage_m": 334900
+          },
+          {
+            "lat": 50.424047439435434,
+            "lon": 136.8940563661432,
+            "sector": 9,
+            "path_id": "volochaevka-komsomolsk-sector-9",
+            "ordinate": 334000,
+            "chainage_m": 335000
+          },
+          {
+            "lat": 50.425741675635635,
+            "lon": 136.89462760506495,
+            "sector": 9,
+            "path_id": "volochaevka-komsomolsk-sector-9",
+            "ordinate": 334100,
+            "chainage_m": 335100
+          },
+          {
+            "lat": 50.42840019980504,
+            "lon": 136.8953501048446,
+            "sector": 9,
+            "path_id": "volochaevka-komsomolsk-sector-9",
+            "ordinate": 334400,
+            "chainage_m": 335400
+          },
+          {
+            "lat": 50.433605521373806,
+            "lon": 136.8975279174239,
+            "sector": 9,
+            "path_id": "volochaevka-komsomolsk-sector-9",
+            "ordinate": 335000,
+            "chainage_m": 336000
+          },
+          {
+            "lat": 50.442311042113026,
+            "lon": 136.90101665743848,
+            "sector": 9,
+            "path_id": "volochaevka-komsomolsk-sector-9",
+            "ordinate": 336000,
+            "chainage_m": 337000
+          },
+          {
+            "lat": 50.44500279783455,
+            "lon": 136.9007972146029,
+            "sector": 9,
+            "path_id": "volochaevka-komsomolsk-sector-9",
+            "ordinate": 336300,
+            "chainage_m": 337300
+          },
+          {
+            "lat": 50.45119990934668,
+            "lon": 136.90250290995903,
+            "sector": 9,
+            "path_id": "volochaevka-komsomolsk-sector-9",
+            "ordinate": 337000,
+            "chainage_m": 338000
+          },
+          {
+            "lat": 50.45470812992627,
+            "lon": 136.90361673991276,
+            "sector": 9,
+            "path_id": "volochaevka-komsomolsk-sector-9",
+            "ordinate": 337400,
+            "chainage_m": 338400
+          },
+          {
+            "lat": 50.45630553625909,
+            "lon": 136.90496089890013,
+            "sector": 9,
+            "path_id": "volochaevka-komsomolsk-sector-9",
+            "ordinate": 337600,
+            "chainage_m": 338600
+          },
+          {
+            "lat": 50.45894171507449,
+            "lon": 136.9058472646092,
+            "sector": 9,
+            "path_id": "volochaevka-komsomolsk-sector-9",
+            "ordinate": 337900,
+            "chainage_m": 338900
+          },
+          {
+            "lat": 50.45943617765168,
+            "lon": 136.9060248815257,
+            "sector": 9,
+            "path_id": "volochaevka-komsomolsk-sector-9",
+            "ordinate": 338000,
+            "chainage_m": 339000
+          },
+          {
+            "lat": 50.463855401125535,
+            "lon": 136.90725273008064,
+            "sector": 9,
+            "path_id": "volochaevka-komsomolsk-sector-9",
+            "ordinate": 338500,
+            "chainage_m": 339500
+          },
+          {
+            "lat": 50.468291813333224,
+            "lon": 136.9084141155314,
+            "sector": 9,
+            "path_id": "volochaevka-komsomolsk-sector-9",
+            "ordinate": 339000,
+            "chainage_m": 340000
+          },
+          {
+            "lat": 50.471786282925734,
+            "lon": 136.9097915060709,
+            "sector": 9,
+            "path_id": "volochaevka-komsomolsk-sector-9",
+            "ordinate": 339400,
+            "chainage_m": 340400
+          },
+          {
+            "lat": 50.47373892309153,
+            "lon": 136.91076954502716,
+            "sector": 9,
+            "path_id": "volochaevka-komsomolsk-sector-9",
+            "ordinate": 339700,
+            "chainage_m": 340700
+          },
+          {
+            "lat": 50.47642494923511,
+            "lon": 136.91131671972153,
+            "sector": 9,
+            "path_id": "volochaevka-komsomolsk-sector-9",
+            "ordinate": 340000,
+            "chainage_m": 341000
+          },
+          {
+            "lat": 50.48088084200784,
+            "lon": 136.9110611805449,
+            "sector": 9,
+            "path_id": "volochaevka-komsomolsk-sector-9",
+            "ordinate": 340500,
+            "chainage_m": 341500
+          },
+          {
+            "lat": 50.48523073758847,
+            "lon": 136.91351114807688,
+            "sector": 9,
+            "path_id": "volochaevka-komsomolsk-sector-9",
+            "ordinate": 341000,
+            "chainage_m": 342000
+          },
+          {
+            "lat": 50.493811926486146,
+            "lon": 136.9155084789507,
+            "sector": 9,
+            "path_id": "volochaevka-komsomolsk-sector-9",
+            "ordinate": 342000,
+            "chainage_m": 343000
+          },
+          {
+            "lat": 50.502718555411455,
+            "lon": 136.9155800986751,
+            "sector": 9,
+            "path_id": "volochaevka-komsomolsk-sector-9",
+            "ordinate": 343000,
+            "chainage_m": 344000
+          },
+          {
+            "lat": 50.50985990136997,
+            "lon": 136.90753691714704,
+            "sector": 9,
+            "path_id": "volochaevka-komsomolsk-sector-9",
+            "ordinate": 344000,
+            "chainage_m": 345000
+          },
+          {
+            "lat": 50.51883012861054,
+            "lon": 136.90781652055108,
+            "sector": 9,
+            "path_id": "volochaevka-komsomolsk-sector-9",
+            "ordinate": 345000,
+            "chainage_m": 346000
+          },
+          {
+            "lat": 50.527689774996645,
+            "lon": 136.90614978632505,
+            "sector": 9,
+            "path_id": "volochaevka-komsomolsk-sector-9",
+            "ordinate": 346000,
+            "chainage_m": 347000
+          },
+          {
+            "lat": 50.53612142190978,
+            "lon": 136.9091102592525,
+            "sector": 9,
+            "path_id": "volochaevka-komsomolsk-sector-9",
+            "ordinate": 347000,
+            "chainage_m": 348000
+          },
+          {
+            "lat": 50.54360482367199,
+            "lon": 136.91682857371066,
+            "sector": 9,
+            "path_id": "volochaevka-komsomolsk-sector-9",
+            "ordinate": 348000,
+            "chainage_m": 349000
+          },
+          {
+            "lat": 50.54966156052432,
+            "lon": 136.9271217605002,
+            "sector": 9,
+            "path_id": "volochaevka-komsomolsk-sector-9",
+            "ordinate": 349000,
+            "chainage_m": 350000
+          },
+          {
+            "lat": 50.551908128039024,
+            "lon": 136.9408887904016,
+            "sector": 9,
+            "path_id": "volochaevka-komsomolsk-sector-9",
+            "ordinate": 350000,
+            "chainage_m": 351000
+          },
+          {
+            "lat": 50.55333593886449,
+            "lon": 136.95485807440468,
+            "sector": 9,
+            "path_id": "volochaevka-komsomolsk-sector-9",
+            "ordinate": 351000,
+            "chainage_m": 352000
+          },
+          {
+            "lat": 50.55383326623066,
+            "lon": 136.9618223764045,
+            "sector": 9,
+            "path_id": "volochaevka-komsomolsk-sector-9",
+            "ordinate": 351500,
+            "chainage_m": 352500
+          },
+          {
+            "lat": 50.55407505442021,
+            "lon": 136.96888064348272,
+            "sector": 9,
+            "path_id": "volochaevka-komsomolsk-sector-9",
+            "ordinate": 352000,
+            "chainage_m": 353000
+          },
+          {
+            "lat": 50.55453915023427,
+            "lon": 136.97588333365482,
+            "sector": 9,
+            "path_id": "volochaevka-komsomolsk-sector-9",
+            "ordinate": 352500,
+            "chainage_m": 353500
+          },
+          {
+            "lat": 50.55481130518696,
+            "lon": 136.98010259485818,
+            "sector": 9,
+            "path_id": "volochaevka-komsomolsk-sector-9",
+            "ordinate": 352800,
+            "chainage_m": 353800
+          },
+          {
+            "lat": 50.554172457245386,
+            "lon": 136.9839225044783,
+            "sector": 9,
+            "path_id": "volochaevka-komsomolsk-sector-9",
+            "ordinate": 353000,
+            "chainage_m": 354000
+          }
+        ]
+      },
+      {
+        "path_id": "komsomolsk-dzemgi-sector-10",
+        "sector": 10,
+        "source": "assets/tracker/maps/komsomol-sk-tche-9/data.xml",
+        "points": [
+          {
+            "lat": 50.40325480105014,
+            "lon": 136.86830477804105,
+            "sector": 10,
+            "path_id": "komsomolsk-dzemgi-sector-10",
+            "ordinate": 331000,
+            "chainage_m": 332000
+          },
+          {
+            "lat": 50.409710889485666,
+            "lon": 136.87807485436363,
+            "sector": 10,
+            "path_id": "komsomolsk-dzemgi-sector-10",
+            "ordinate": 332000,
+            "chainage_m": 333000
+          },
+          {
+            "lat": 50.41612858974893,
+            "lon": 136.88782659603675,
+            "sector": 10,
+            "path_id": "komsomolsk-dzemgi-sector-10",
+            "ordinate": 333000,
+            "chainage_m": 334000
+          },
+          {
+            "lat": 50.42304419033616,
+            "lon": 136.8939973514903,
+            "sector": 10,
+            "path_id": "komsomolsk-dzemgi-sector-10",
+            "ordinate": 333900,
+            "chainage_m": 334900
+          },
+          {
+            "lat": 50.424047439435434,
+            "lon": 136.8940563661432,
+            "sector": 10,
+            "path_id": "komsomolsk-dzemgi-sector-10",
+            "ordinate": 334000,
+            "chainage_m": 335000
+          },
+          {
+            "lat": 50.425741675635635,
+            "lon": 136.89462760506495,
+            "sector": 10,
+            "path_id": "komsomolsk-dzemgi-sector-10",
+            "ordinate": 334100,
+            "chainage_m": 335100
+          },
+          {
+            "lat": 50.42840019980504,
+            "lon": 136.8953501048446,
+            "sector": 10,
+            "path_id": "komsomolsk-dzemgi-sector-10",
+            "ordinate": 334400,
+            "chainage_m": 335400
+          },
+          {
+            "lat": 50.433605521373806,
+            "lon": 136.8975279174239,
+            "sector": 10,
+            "path_id": "komsomolsk-dzemgi-sector-10",
+            "ordinate": 335000,
+            "chainage_m": 336000
+          },
+          {
+            "lat": 50.442311042113026,
+            "lon": 136.90101665743848,
+            "sector": 10,
+            "path_id": "komsomolsk-dzemgi-sector-10",
+            "ordinate": 336000,
+            "chainage_m": 337000
+          },
+          {
+            "lat": 50.44500279783455,
+            "lon": 136.9007972146029,
+            "sector": 10,
+            "path_id": "komsomolsk-dzemgi-sector-10",
+            "ordinate": 336300,
+            "chainage_m": 337300
+          },
+          {
+            "lat": 50.45119990934668,
+            "lon": 136.90250290995903,
+            "sector": 10,
+            "path_id": "komsomolsk-dzemgi-sector-10",
+            "ordinate": 337000,
+            "chainage_m": 338000
+          },
+          {
+            "lat": 50.45470812992627,
+            "lon": 136.90361673991276,
+            "sector": 10,
+            "path_id": "komsomolsk-dzemgi-sector-10",
+            "ordinate": 337400,
+            "chainage_m": 338400
+          },
+          {
+            "lat": 50.45630553625909,
+            "lon": 136.90496089890013,
+            "sector": 10,
+            "path_id": "komsomolsk-dzemgi-sector-10",
+            "ordinate": 337600,
+            "chainage_m": 338600
+          },
+          {
+            "lat": 50.45894171507449,
+            "lon": 136.9058472646092,
+            "sector": 10,
+            "path_id": "komsomolsk-dzemgi-sector-10",
+            "ordinate": 337900,
+            "chainage_m": 338900
+          },
+          {
+            "lat": 50.45943617765168,
+            "lon": 136.9060248815257,
+            "sector": 10,
+            "path_id": "komsomolsk-dzemgi-sector-10",
+            "ordinate": 338000,
+            "chainage_m": 339000
+          },
+          {
+            "lat": 50.463855401125535,
+            "lon": 136.90725273008064,
+            "sector": 10,
+            "path_id": "komsomolsk-dzemgi-sector-10",
+            "ordinate": 338500,
+            "chainage_m": 339500
+          },
+          {
+            "lat": 50.468291813333224,
+            "lon": 136.9084141155314,
+            "sector": 10,
+            "path_id": "komsomolsk-dzemgi-sector-10",
+            "ordinate": 339000,
+            "chainage_m": 340000
+          },
+          {
+            "lat": 50.471786282925734,
+            "lon": 136.9097915060709,
+            "sector": 10,
+            "path_id": "komsomolsk-dzemgi-sector-10",
+            "ordinate": 339400,
+            "chainage_m": 340400
+          },
+          {
+            "lat": 50.47373892309153,
+            "lon": 136.91076954502716,
+            "sector": 10,
+            "path_id": "komsomolsk-dzemgi-sector-10",
+            "ordinate": 339700,
+            "chainage_m": 340700
+          },
+          {
+            "lat": 50.47642494923511,
+            "lon": 136.91131671972153,
+            "sector": 10,
+            "path_id": "komsomolsk-dzemgi-sector-10",
+            "ordinate": 340000,
+            "chainage_m": 341000
+          },
+          {
+            "lat": 50.48088084200784,
+            "lon": 136.9110611805449,
+            "sector": 10,
+            "path_id": "komsomolsk-dzemgi-sector-10",
+            "ordinate": 340500,
+            "chainage_m": 341500
+          },
+          {
+            "lat": 50.48523073758847,
+            "lon": 136.91351114807688,
+            "sector": 10,
+            "path_id": "komsomolsk-dzemgi-sector-10",
+            "ordinate": 341000,
+            "chainage_m": 342000
+          },
+          {
+            "lat": 50.493811926486146,
+            "lon": 136.9155084789507,
+            "sector": 10,
+            "path_id": "komsomolsk-dzemgi-sector-10",
+            "ordinate": 342000,
+            "chainage_m": 343000
+          },
+          {
+            "lat": 50.502718555411455,
+            "lon": 136.9155800986751,
+            "sector": 10,
+            "path_id": "komsomolsk-dzemgi-sector-10",
+            "ordinate": 343000,
+            "chainage_m": 344000
+          },
+          {
+            "lat": 50.50985990136997,
+            "lon": 136.90753691714704,
+            "sector": 10,
+            "path_id": "komsomolsk-dzemgi-sector-10",
+            "ordinate": 344000,
+            "chainage_m": 345000
+          },
+          {
+            "lat": 50.51883012861054,
+            "lon": 136.90781652055108,
+            "sector": 10,
+            "path_id": "komsomolsk-dzemgi-sector-10",
+            "ordinate": 345000,
+            "chainage_m": 346000
+          },
+          {
+            "lat": 50.527689774996645,
+            "lon": 136.90614978632505,
+            "sector": 10,
+            "path_id": "komsomolsk-dzemgi-sector-10",
+            "ordinate": 346000,
+            "chainage_m": 347000
+          },
+          {
+            "lat": 50.53612142190978,
+            "lon": 136.9091102592525,
+            "sector": 10,
+            "path_id": "komsomolsk-dzemgi-sector-10",
+            "ordinate": 347000,
+            "chainage_m": 348000
+          },
+          {
+            "lat": 50.54360482367199,
+            "lon": 136.91682857371066,
+            "sector": 10,
+            "path_id": "komsomolsk-dzemgi-sector-10",
+            "ordinate": 348000,
+            "chainage_m": 349000
+          },
+          {
+            "lat": 50.54966156052432,
+            "lon": 136.9271217605002,
+            "sector": 10,
+            "path_id": "komsomolsk-dzemgi-sector-10",
+            "ordinate": 349000,
+            "chainage_m": 350000
+          },
+          {
+            "lat": 50.551908128039024,
+            "lon": 136.9408887904016,
+            "sector": 10,
+            "path_id": "komsomolsk-dzemgi-sector-10",
+            "ordinate": 350000,
+            "chainage_m": 351000
+          },
+          {
+            "lat": 50.55333593886449,
+            "lon": 136.95485807440468,
+            "sector": 10,
+            "path_id": "komsomolsk-dzemgi-sector-10",
+            "ordinate": 351000,
+            "chainage_m": 352000
+          },
+          {
+            "lat": 50.55383326623066,
+            "lon": 136.9618223764045,
+            "sector": 10,
+            "path_id": "komsomolsk-dzemgi-sector-10",
+            "ordinate": 351500,
+            "chainage_m": 352500
+          },
+          {
+            "lat": 50.55407505442021,
+            "lon": 136.96888064348272,
+            "sector": 10,
+            "path_id": "komsomolsk-dzemgi-sector-10",
+            "ordinate": 352000,
+            "chainage_m": 353000
+          },
+          {
+            "lat": 50.55453915023427,
+            "lon": 136.97588333365482,
+            "sector": 10,
+            "path_id": "komsomolsk-dzemgi-sector-10",
+            "ordinate": 352500,
+            "chainage_m": 353500
+          },
+          {
+            "lat": 50.55481130518696,
+            "lon": 136.98010259485818,
+            "sector": 10,
+            "path_id": "komsomolsk-dzemgi-sector-10",
+            "ordinate": 352800,
+            "chainage_m": 353800
+          },
+          {
+            "lat": 50.554172457245386,
+            "lon": 136.9839225044783,
+            "sector": 10,
+            "path_id": "komsomolsk-dzemgi-sector-10",
+            "ordinate": 353000,
+            "chainage_m": 354000
+          },
+          {
+            "lat": 50.55447211417224,
+            "lon": 136.99812784709297,
+            "sector": 10,
+            "path_id": "komsomolsk-dzemgi-sector-10",
+            "ordinate": 354000,
+            "chainage_m": 355000
+          },
+          {
+            "lat": 50.556322194892715,
+            "lon": 137.01176653444827,
+            "sector": 10,
+            "path_id": "komsomolsk-dzemgi-sector-10",
+            "ordinate": 355000,
+            "chainage_m": 356000
+          },
+          {
+            "lat": 50.559750201380986,
+            "lon": 137.01602762157063,
+            "sector": 10,
+            "path_id": "komsomolsk-dzemgi-sector-10",
+            "ordinate": 355500,
+            "chainage_m": 356500
+          },
+          {
+            "lat": 50.5640198828703,
+            "lon": 137.0148885814739,
+            "sector": 10,
+            "path_id": "komsomolsk-dzemgi-sector-10",
+            "ordinate": 356000,
+            "chainage_m": 357000
+          },
+          {
+            "lat": 50.569166762743954,
+            "lon": 137.00370501827078,
+            "sector": 10,
+            "path_id": "komsomolsk-dzemgi-sector-10",
+            "ordinate": 357000,
+            "chainage_m": 358000
+          },
+          {
+            "lat": 50.57595344782728,
+            "lon": 136.9945015972076,
+            "sector": 10,
+            "path_id": "komsomolsk-dzemgi-sector-10",
+            "ordinate": 358000,
+            "chainage_m": 359000
+          },
+          {
+            "lat": 50.58069983020214,
+            "lon": 136.99087763915338,
+            "sector": 10,
+            "path_id": "komsomolsk-dzemgi-sector-10",
+            "ordinate": 358600,
+            "chainage_m": 359600
+          },
+          {
+            "lat": 50.58421664514866,
+            "lon": 136.99270823930885,
+            "sector": 10,
+            "path_id": "komsomolsk-dzemgi-sector-10",
+            "ordinate": 359000,
+            "chainage_m": 360000
+          },
+          {
+            "lat": 50.59148977140005,
+            "lon": 137.00090841127275,
+            "sector": 10,
+            "path_id": "komsomolsk-dzemgi-sector-10",
+            "ordinate": 360000,
+            "chainage_m": 361000
+          }
+        ]
+      }
+    ]
+  }
+}

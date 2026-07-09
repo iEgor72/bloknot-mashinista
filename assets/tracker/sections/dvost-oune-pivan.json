@@ -1,0 +1,4556 @@
+{
+  "schema_version": "1.0",
+  "id": "dvost-oune-pivan",
+  "status": "draft",
+  "railway": {
+    "id": "dvost",
+    "name": "Дальневосточная железная дорога"
+  },
+  "section_name": "Оунэ — Пивань",
+  "direction": "требует проверки",
+  "km_start": 1,
+  "km_end": 184,
+  "generator_format": "Б",
+  "elements": [
+    {
+      "start_m": 1000,
+      "len_m": 500,
+      "grad_permille": -1.2,
+      "confidence": "legacy_xml_unverified"
+    },
+    {
+      "start_m": 1500,
+      "len_m": 300,
+      "grad_permille": 5.8,
+      "confidence": "legacy_xml_unverified"
+    },
+    {
+      "start_m": 1800,
+      "len_m": 300,
+      "grad_permille": 10.3,
+      "confidence": "legacy_xml_unverified"
+    },
+    {
+      "start_m": 2100,
+      "len_m": 500,
+      "grad_permille": 7.3,
+      "confidence": "legacy_xml_unverified"
+    },
+    {
+      "start_m": 2600,
+      "len_m": 500,
+      "grad_permille": 5.8,
+      "confidence": "legacy_xml_unverified"
+    },
+    {
+      "start_m": 3100,
+      "len_m": 1000,
+      "grad_permille": 7.5,
+      "confidence": "legacy_xml_unverified"
+    },
+    {
+      "start_m": 4100,
+      "len_m": 400,
+      "grad_permille": 8.6,
+      "confidence": "legacy_xml_unverified"
+    },
+    {
+      "start_m": 4500,
+      "len_m": 900,
+      "grad_permille": 7.8,
+      "confidence": "legacy_xml_unverified"
+    },
+    {
+      "start_m": 5400,
+      "len_m": 200,
+      "grad_permille": 9,
+      "confidence": "legacy_xml_unverified"
+    },
+    {
+      "start_m": 5600,
+      "len_m": 200,
+      "grad_permille": 10.6,
+      "confidence": "legacy_xml_unverified"
+    },
+    {
+      "start_m": 5800,
+      "len_m": 400,
+      "grad_permille": 7,
+      "confidence": "legacy_xml_unverified"
+    },
+    {
+      "start_m": 6200,
+      "len_m": 400,
+      "grad_permille": 4.9,
+      "confidence": "legacy_xml_unverified"
+    },
+    {
+      "start_m": 6600,
+      "len_m": 900,
+      "grad_permille": 7.6,
+      "confidence": "legacy_xml_unverified"
+    },
+    {
+      "start_m": 7500,
+      "len_m": 300,
+      "grad_permille": 6,
+      "confidence": "legacy_xml_unverified"
+    },
+    {
+      "start_m": 7800,
+      "len_m": 700,
+      "grad_permille": 8.6,
+      "confidence": "legacy_xml_unverified"
+    },
+    {
+      "start_m": 8500,
+      "len_m": 200,
+      "grad_permille": 5.5,
+      "confidence": "legacy_xml_unverified"
+    },
+    {
+      "start_m": 8700,
+      "len_m": 200,
+      "grad_permille": 2.9,
+      "confidence": "legacy_xml_unverified"
+    },
+    {
+      "start_m": 8900,
+      "len_m": 400,
+      "grad_permille": 1.3,
+      "confidence": "legacy_xml_unverified"
+    },
+    {
+      "start_m": 9300,
+      "len_m": 500,
+      "grad_permille": 4.2,
+      "confidence": "legacy_xml_unverified"
+    },
+    {
+      "start_m": 9800,
+      "len_m": 500,
+      "grad_permille": 7.2,
+      "confidence": "legacy_xml_unverified"
+    },
+    {
+      "start_m": 10300,
+      "len_m": 300,
+      "grad_permille": 4.9,
+      "confidence": "legacy_xml_unverified"
+    },
+    {
+      "start_m": 10600,
+      "len_m": 900,
+      "grad_permille": 8.2,
+      "confidence": "legacy_xml_unverified"
+    },
+    {
+      "start_m": 11500,
+      "len_m": 500,
+      "grad_permille": 6.6,
+      "confidence": "legacy_xml_unverified"
+    },
+    {
+      "start_m": 12000,
+      "len_m": 1000,
+      "grad_permille": 7.7,
+      "confidence": "legacy_xml_unverified"
+    },
+    {
+      "start_m": 13000,
+      "len_m": 700,
+      "grad_permille": 9,
+      "confidence": "legacy_xml_unverified"
+    },
+    {
+      "start_m": 13700,
+      "len_m": 900,
+      "grad_permille": 7.9,
+      "confidence": "legacy_xml_unverified"
+    },
+    {
+      "start_m": 14600,
+      "len_m": 300,
+      "grad_permille": 3.2,
+      "confidence": "legacy_xml_unverified"
+    },
+    {
+      "start_m": 14900,
+      "len_m": 900,
+      "grad_permille": -8.3,
+      "confidence": "legacy_xml_unverified"
+    },
+    {
+      "start_m": 15800,
+      "len_m": 600,
+      "grad_permille": -6.9,
+      "confidence": "legacy_xml_unverified"
+    },
+    {
+      "start_m": 16400,
+      "len_m": 300,
+      "grad_permille": -8.1,
+      "confidence": "legacy_xml_unverified"
+    },
+    {
+      "start_m": 16700,
+      "len_m": 700,
+      "grad_permille": -9.6,
+      "confidence": "legacy_xml_unverified"
+    },
+    {
+      "start_m": 17400,
+      "len_m": 600,
+      "grad_permille": -8.3,
+      "confidence": "legacy_xml_unverified"
+    },
+    {
+      "start_m": 18000,
+      "len_m": 700,
+      "grad_permille": -7,
+      "confidence": "legacy_xml_unverified"
+    },
+    {
+      "start_m": 18700,
+      "len_m": 300,
+      "grad_permille": -4.7,
+      "confidence": "legacy_xml_unverified"
+    },
+    {
+      "start_m": 19000,
+      "len_m": 300,
+      "grad_permille": -1.9,
+      "confidence": "legacy_xml_unverified"
+    },
+    {
+      "start_m": 19300,
+      "len_m": 500,
+      "grad_permille": -3,
+      "confidence": "legacy_xml_unverified"
+    },
+    {
+      "start_m": 19800,
+      "len_m": 500,
+      "grad_permille": -5.7,
+      "confidence": "legacy_xml_unverified"
+    },
+    {
+      "start_m": 20300,
+      "len_m": 700,
+      "grad_permille": -7.2,
+      "confidence": "legacy_xml_unverified"
+    },
+    {
+      "start_m": 21000,
+      "len_m": 600,
+      "grad_permille": -7.6,
+      "confidence": "legacy_xml_unverified"
+    },
+    {
+      "start_m": 21600,
+      "len_m": 400,
+      "grad_permille": -9,
+      "confidence": "legacy_xml_unverified"
+    },
+    {
+      "start_m": 22000,
+      "len_m": 400,
+      "grad_permille": -6.9,
+      "confidence": "legacy_xml_unverified"
+    },
+    {
+      "start_m": 22400,
+      "len_m": 700,
+      "grad_permille": -7.9,
+      "confidence": "legacy_xml_unverified"
+    },
+    {
+      "start_m": 23100,
+      "len_m": 300,
+      "grad_permille": -5.6,
+      "confidence": "legacy_xml_unverified"
+    },
+    {
+      "start_m": 23400,
+      "len_m": 1000,
+      "grad_permille": -8.4,
+      "confidence": "legacy_xml_unverified"
+    },
+    {
+      "start_m": 24400,
+      "len_m": 700,
+      "grad_permille": -8.2,
+      "confidence": "legacy_xml_unverified"
+    },
+    {
+      "start_m": 25100,
+      "len_m": 300,
+      "grad_permille": -5.9,
+      "confidence": "legacy_xml_unverified"
+    },
+    {
+      "start_m": 25400,
+      "len_m": 600,
+      "grad_permille": -8.6,
+      "confidence": "legacy_xml_unverified"
+    },
+    {
+      "start_m": 26000,
+      "len_m": 1500,
+      "grad_permille": -9.45,
+      "confidence": "legacy_xml_unverified"
+    },
+    {
+      "start_m": 27500,
+      "len_m": 700,
+      "grad_permille": -7.8,
+      "confidence": "legacy_xml_unverified"
+    },
+    {
+      "start_m": 28200,
+      "len_m": 300,
+      "grad_permille": 1.3,
+      "confidence": "legacy_xml_unverified"
+    },
+    {
+      "start_m": 28500,
+      "len_m": 500,
+      "grad_permille": -1.2,
+      "confidence": "legacy_xml_unverified"
+    },
+    {
+      "start_m": 29000,
+      "len_m": 400,
+      "grad_permille": 1.05,
+      "confidence": "legacy_xml_unverified"
+    },
+    {
+      "start_m": 29400,
+      "len_m": 700,
+      "grad_permille": -0.6,
+      "confidence": "legacy_xml_unverified"
+    },
+    {
+      "start_m": 30100,
+      "len_m": 200,
+      "grad_permille": 1.5,
+      "confidence": "legacy_xml_unverified"
+    },
+    {
+      "start_m": 30300,
+      "len_m": 200,
+      "grad_permille": -1,
+      "confidence": "legacy_xml_unverified"
+    },
+    {
+      "start_m": 30500,
+      "len_m": 300,
+      "grad_permille": 1.3,
+      "confidence": "legacy_xml_unverified"
+    },
+    {
+      "start_m": 30800,
+      "len_m": 400,
+      "grad_permille": -1.9,
+      "confidence": "legacy_xml_unverified"
+    },
+    {
+      "start_m": 31200,
+      "len_m": 300,
+      "grad_permille": 1.1,
+      "confidence": "legacy_xml_unverified"
+    },
+    {
+      "start_m": 31500,
+      "len_m": 700,
+      "grad_permille": -8.5,
+      "confidence": "legacy_xml_unverified"
+    },
+    {
+      "start_m": 32200,
+      "len_m": 400,
+      "grad_permille": 0,
+      "confidence": "legacy_xml_unverified"
+    },
+    {
+      "start_m": 32600,
+      "len_m": 600,
+      "grad_permille": 8,
+      "confidence": "legacy_xml_unverified"
+    },
+    {
+      "start_m": 33200,
+      "len_m": 100,
+      "grad_permille": -1,
+      "confidence": "legacy_xml_unverified"
+    },
+    {
+      "start_m": 33300,
+      "len_m": 300,
+      "grad_permille": 7,
+      "confidence": "legacy_xml_unverified"
+    },
+    {
+      "start_m": 33600,
+      "len_m": 200,
+      "grad_permille": -0.1,
+      "confidence": "legacy_xml_unverified"
+    },
+    {
+      "start_m": 33800,
+      "len_m": 400,
+      "grad_permille": -1.9,
+      "confidence": "legacy_xml_unverified"
+    },
+    {
+      "start_m": 34200,
+      "len_m": 400,
+      "grad_permille": 1.4,
+      "confidence": "legacy_xml_unverified"
+    },
+    {
+      "start_m": 34600,
+      "len_m": 400,
+      "grad_permille": -1.2,
+      "confidence": "legacy_xml_unverified"
+    },
+    {
+      "start_m": 35000,
+      "len_m": 400,
+      "grad_permille": 0.1,
+      "confidence": "legacy_xml_unverified"
+    },
+    {
+      "start_m": 35400,
+      "len_m": 300,
+      "grad_permille": -2.4,
+      "confidence": "legacy_xml_unverified"
+    },
+    {
+      "start_m": 35700,
+      "len_m": 300,
+      "grad_permille": -2.4,
+      "confidence": "legacy_xml_unverified"
+    },
+    {
+      "start_m": 36000,
+      "len_m": 400,
+      "grad_permille": 4.1,
+      "confidence": "legacy_xml_unverified"
+    },
+    {
+      "start_m": 36400,
+      "len_m": 800,
+      "grad_permille": -6.8,
+      "confidence": "legacy_xml_unverified"
+    },
+    {
+      "start_m": 37200,
+      "len_m": 800,
+      "grad_permille": 7,
+      "confidence": "legacy_xml_unverified"
+    },
+    {
+      "start_m": 38000,
+      "len_m": 500,
+      "grad_permille": 0,
+      "confidence": "legacy_xml_unverified"
+    },
+    {
+      "start_m": 38500,
+      "len_m": 400,
+      "grad_permille": 3.1,
+      "confidence": "legacy_xml_unverified"
+    },
+    {
+      "start_m": 38900,
+      "len_m": 100,
+      "grad_permille": 0,
+      "confidence": "legacy_xml_unverified"
+    },
+    {
+      "start_m": 39000,
+      "len_m": 1000,
+      "grad_permille": -8.3,
+      "confidence": "legacy_xml_unverified"
+    },
+    {
+      "start_m": 40000,
+      "len_m": 200,
+      "grad_permille": -1.4,
+      "confidence": "legacy_xml_unverified"
+    },
+    {
+      "start_m": 40200,
+      "len_m": 1000,
+      "grad_permille": 5.7,
+      "confidence": "legacy_xml_unverified"
+    },
+    {
+      "start_m": 41200,
+      "len_m": 300,
+      "grad_permille": 0.1,
+      "confidence": "legacy_xml_unverified"
+    },
+    {
+      "start_m": 41500,
+      "len_m": 1100,
+      "grad_permille": -1.6,
+      "confidence": "legacy_xml_unverified"
+    },
+    {
+      "start_m": 42600,
+      "len_m": 800,
+      "grad_permille": -8.1,
+      "confidence": "legacy_xml_unverified"
+    },
+    {
+      "start_m": 43400,
+      "len_m": 400,
+      "grad_permille": -2,
+      "confidence": "legacy_xml_unverified"
+    },
+    {
+      "start_m": 43800,
+      "len_m": 500,
+      "grad_permille": 7.8,
+      "confidence": "legacy_xml_unverified"
+    },
+    {
+      "start_m": 44300,
+      "len_m": 300,
+      "grad_permille": 0.5,
+      "confidence": "legacy_xml_unverified"
+    },
+    {
+      "start_m": 44600,
+      "len_m": 700,
+      "grad_permille": -1,
+      "confidence": "legacy_xml_unverified"
+    },
+    {
+      "start_m": 45300,
+      "len_m": 300,
+      "grad_permille": 0.2,
+      "confidence": "legacy_xml_unverified"
+    },
+    {
+      "start_m": 45600,
+      "len_m": 500,
+      "grad_permille": -5.2,
+      "confidence": "legacy_xml_unverified"
+    },
+    {
+      "start_m": 46100,
+      "len_m": 500,
+      "grad_permille": 0,
+      "confidence": "legacy_xml_unverified"
+    },
+    {
+      "start_m": 46600,
+      "len_m": 400,
+      "grad_permille": 5.3,
+      "confidence": "legacy_xml_unverified"
+    },
+    {
+      "start_m": 47000,
+      "len_m": 300,
+      "grad_permille": -3.9,
+      "confidence": "legacy_xml_unverified"
+    },
+    {
+      "start_m": 47300,
+      "len_m": 400,
+      "grad_permille": 6.7,
+      "confidence": "legacy_xml_unverified"
+    },
+    {
+      "start_m": 47700,
+      "len_m": 400,
+      "grad_permille": 4.3,
+      "confidence": "legacy_xml_unverified"
+    },
+    {
+      "start_m": 48100,
+      "len_m": 300,
+      "grad_permille": 0,
+      "confidence": "legacy_xml_unverified"
+    },
+    {
+      "start_m": 48400,
+      "len_m": 300,
+      "grad_permille": -2.7,
+      "confidence": "legacy_xml_unverified"
+    },
+    {
+      "start_m": 48700,
+      "len_m": 300,
+      "grad_permille": 0.8,
+      "confidence": "legacy_xml_unverified"
+    },
+    {
+      "start_m": 49000,
+      "len_m": 500,
+      "grad_permille": 2.7,
+      "confidence": "legacy_xml_unverified"
+    },
+    {
+      "start_m": 49500,
+      "len_m": 800,
+      "grad_permille": -10,
+      "confidence": "legacy_xml_unverified"
+    },
+    {
+      "start_m": 50300,
+      "len_m": 300,
+      "grad_permille": -2.6,
+      "confidence": "legacy_xml_unverified"
+    },
+    {
+      "start_m": 50600,
+      "len_m": 300,
+      "grad_permille": -0.3,
+      "confidence": "legacy_xml_unverified"
+    },
+    {
+      "start_m": 50900,
+      "len_m": 400,
+      "grad_permille": 1.6,
+      "confidence": "legacy_xml_unverified"
+    },
+    {
+      "start_m": 51300,
+      "len_m": 300,
+      "grad_permille": 0.5,
+      "confidence": "legacy_xml_unverified"
+    },
+    {
+      "start_m": 51600,
+      "len_m": 200,
+      "grad_permille": -2.4,
+      "confidence": "legacy_xml_unverified"
+    },
+    {
+      "start_m": 51800,
+      "len_m": 300,
+      "grad_permille": 1.5,
+      "confidence": "legacy_xml_unverified"
+    },
+    {
+      "start_m": 52100,
+      "len_m": 600,
+      "grad_permille": 0,
+      "confidence": "legacy_xml_unverified"
+    },
+    {
+      "start_m": 52700,
+      "len_m": 100,
+      "grad_permille": 1,
+      "confidence": "legacy_xml_unverified"
+    },
+    {
+      "start_m": 52800,
+      "len_m": 400,
+      "grad_permille": -1.9,
+      "confidence": "legacy_xml_unverified"
+    },
+    {
+      "start_m": 53200,
+      "len_m": 400,
+      "grad_permille": -5.4,
+      "confidence": "legacy_xml_unverified"
+    },
+    {
+      "start_m": 53600,
+      "len_m": 300,
+      "grad_permille": -1.1,
+      "confidence": "legacy_xml_unverified"
+    },
+    {
+      "start_m": 53900,
+      "len_m": 100,
+      "grad_permille": 0,
+      "confidence": "legacy_xml_unverified"
+    },
+    {
+      "start_m": 54000,
+      "len_m": 500,
+      "grad_permille": 2,
+      "confidence": "legacy_xml_unverified"
+    },
+    {
+      "start_m": 54500,
+      "len_m": 900,
+      "grad_permille": 7.9,
+      "confidence": "legacy_xml_unverified"
+    },
+    {
+      "start_m": 55400,
+      "len_m": 700,
+      "grad_permille": 9.4,
+      "confidence": "legacy_xml_unverified"
+    },
+    {
+      "start_m": 56100,
+      "len_m": 700,
+      "grad_permille": 8.6,
+      "confidence": "legacy_xml_unverified"
+    },
+    {
+      "start_m": 56800,
+      "len_m": 700,
+      "grad_permille": 8.4,
+      "confidence": "legacy_xml_unverified"
+    },
+    {
+      "start_m": 57500,
+      "len_m": 700,
+      "grad_permille": 9,
+      "confidence": "legacy_xml_unverified"
+    },
+    {
+      "start_m": 58200,
+      "len_m": 600,
+      "grad_permille": 8.2,
+      "confidence": "legacy_xml_unverified"
+    },
+    {
+      "start_m": 58800,
+      "len_m": 900,
+      "grad_permille": 6.7,
+      "confidence": "legacy_xml_unverified"
+    },
+    {
+      "start_m": 59700,
+      "len_m": 600,
+      "grad_permille": 8.4,
+      "confidence": "legacy_xml_unverified"
+    },
+    {
+      "start_m": 60300,
+      "len_m": 200,
+      "grad_permille": 5.6,
+      "confidence": "legacy_xml_unverified"
+    },
+    {
+      "start_m": 60500,
+      "len_m": 700,
+      "grad_permille": 9.3,
+      "confidence": "legacy_xml_unverified"
+    },
+    {
+      "start_m": 61200,
+      "len_m": 600,
+      "grad_permille": 7.6,
+      "confidence": "legacy_xml_unverified"
+    },
+    {
+      "start_m": 61800,
+      "len_m": 300,
+      "grad_permille": 10.3,
+      "confidence": "legacy_xml_unverified"
+    },
+    {
+      "start_m": 62100,
+      "len_m": 700,
+      "grad_permille": 7.4,
+      "confidence": "legacy_xml_unverified"
+    },
+    {
+      "start_m": 62800,
+      "len_m": 300,
+      "grad_permille": 5.2,
+      "confidence": "legacy_xml_unverified"
+    },
+    {
+      "start_m": 63100,
+      "len_m": 600,
+      "grad_permille": 2.8,
+      "confidence": "legacy_xml_unverified"
+    },
+    {
+      "start_m": 63700,
+      "len_m": 300,
+      "grad_permille": 1.6,
+      "confidence": "legacy_xml_unverified"
+    },
+    {
+      "start_m": 64000,
+      "len_m": 400,
+      "grad_permille": 2.8,
+      "confidence": "legacy_xml_unverified"
+    },
+    {
+      "start_m": 64400,
+      "len_m": 300,
+      "grad_permille": -5.7,
+      "confidence": "legacy_xml_unverified"
+    },
+    {
+      "start_m": 64700,
+      "len_m": 1100,
+      "grad_permille": -6.9,
+      "confidence": "legacy_xml_unverified"
+    },
+    {
+      "start_m": 65800,
+      "len_m": 200,
+      "grad_permille": 0,
+      "confidence": "legacy_xml_unverified"
+    },
+    {
+      "start_m": 66000,
+      "len_m": 200,
+      "grad_permille": 13.5,
+      "confidence": "legacy_xml_unverified"
+    },
+    {
+      "start_m": 66200,
+      "len_m": 600,
+      "grad_permille": 16.4,
+      "confidence": "legacy_xml_unverified"
+    },
+    {
+      "start_m": 66800,
+      "len_m": 200,
+      "grad_permille": 16.4,
+      "confidence": "legacy_xml_unverified"
+    },
+    {
+      "start_m": 67000,
+      "len_m": 1000,
+      "grad_permille": 16.9,
+      "confidence": "legacy_xml_unverified"
+    },
+    {
+      "start_m": 68000,
+      "len_m": 1100,
+      "grad_permille": 16.4,
+      "confidence": "legacy_xml_unverified"
+    },
+    {
+      "start_m": 69100,
+      "len_m": 900,
+      "grad_permille": 17,
+      "confidence": "legacy_xml_unverified"
+    },
+    {
+      "start_m": 70000,
+      "len_m": 500,
+      "grad_permille": 14.4,
+      "confidence": "legacy_xml_unverified"
+    },
+    {
+      "start_m": 70500,
+      "len_m": 300,
+      "grad_permille": 6.3,
+      "confidence": "legacy_xml_unverified"
+    },
+    {
+      "start_m": 70800,
+      "len_m": 1100,
+      "grad_permille": 13.7,
+      "confidence": "legacy_xml_unverified"
+    },
+    {
+      "start_m": 71900,
+      "len_m": 100,
+      "grad_permille": 0,
+      "confidence": "legacy_xml_unverified"
+    },
+    {
+      "start_m": 72000,
+      "len_m": 700,
+      "grad_permille": -6.4,
+      "confidence": "legacy_xml_unverified"
+    },
+    {
+      "start_m": 72700,
+      "len_m": 400,
+      "grad_permille": -4,
+      "confidence": "legacy_xml_unverified"
+    },
+    {
+      "start_m": 73100,
+      "len_m": 400,
+      "grad_permille": -2,
+      "confidence": "legacy_xml_unverified"
+    },
+    {
+      "start_m": 73500,
+      "len_m": 500,
+      "grad_permille": -7.8,
+      "confidence": "legacy_xml_unverified"
+    },
+    {
+      "start_m": 74000,
+      "len_m": 600,
+      "grad_permille": -4.4,
+      "confidence": "legacy_xml_unverified"
+    },
+    {
+      "start_m": 74600,
+      "len_m": 100,
+      "grad_permille": 0,
+      "confidence": "legacy_xml_unverified"
+    },
+    {
+      "start_m": 74700,
+      "len_m": 500,
+      "grad_permille": 4.15,
+      "confidence": "legacy_xml_unverified"
+    },
+    {
+      "start_m": 75200,
+      "len_m": 900,
+      "grad_permille": 5.1,
+      "confidence": "legacy_xml_unverified"
+    },
+    {
+      "start_m": 76100,
+      "len_m": 900,
+      "grad_permille": 9.2,
+      "confidence": "legacy_xml_unverified"
+    },
+    {
+      "start_m": 77000,
+      "len_m": 300,
+      "grad_permille": 5.5,
+      "confidence": "legacy_xml_unverified"
+    },
+    {
+      "start_m": 77300,
+      "len_m": 300,
+      "grad_permille": 0.5,
+      "confidence": "legacy_xml_unverified"
+    },
+    {
+      "start_m": 77600,
+      "len_m": 300,
+      "grad_permille": -3.4,
+      "confidence": "legacy_xml_unverified"
+    },
+    {
+      "start_m": 77900,
+      "len_m": 300,
+      "grad_permille": 0.8,
+      "confidence": "legacy_xml_unverified"
+    },
+    {
+      "start_m": 78200,
+      "len_m": 500,
+      "grad_permille": 7.7,
+      "confidence": "legacy_xml_unverified"
+    },
+    {
+      "start_m": 78700,
+      "len_m": 300,
+      "grad_permille": 4,
+      "confidence": "legacy_xml_unverified"
+    },
+    {
+      "start_m": 79000,
+      "len_m": 100,
+      "grad_permille": -1,
+      "confidence": "legacy_xml_unverified"
+    },
+    {
+      "start_m": 79100,
+      "len_m": 500,
+      "grad_permille": 8.1,
+      "confidence": "legacy_xml_unverified"
+    },
+    {
+      "start_m": 79600,
+      "len_m": 400,
+      "grad_permille": 2.6,
+      "confidence": "legacy_xml_unverified"
+    },
+    {
+      "start_m": 80000,
+      "len_m": 500,
+      "grad_permille": 0.5,
+      "confidence": "legacy_xml_unverified"
+    },
+    {
+      "start_m": 80500,
+      "len_m": 400,
+      "grad_permille": -0.8,
+      "confidence": "legacy_xml_unverified"
+    },
+    {
+      "start_m": 80900,
+      "len_m": 100,
+      "grad_permille": 1,
+      "confidence": "legacy_xml_unverified"
+    },
+    {
+      "start_m": 81000,
+      "len_m": 400,
+      "grad_permille": -2.7,
+      "confidence": "legacy_xml_unverified"
+    },
+    {
+      "start_m": 81400,
+      "len_m": 600,
+      "grad_permille": 5.7,
+      "confidence": "legacy_xml_unverified"
+    },
+    {
+      "start_m": 82000,
+      "len_m": 400,
+      "grad_permille": 10.7,
+      "confidence": "legacy_xml_unverified"
+    },
+    {
+      "start_m": 82400,
+      "len_m": 400,
+      "grad_permille": 3.2,
+      "confidence": "legacy_xml_unverified"
+    },
+    {
+      "start_m": 82800,
+      "len_m": 300,
+      "grad_permille": 1.2,
+      "confidence": "legacy_xml_unverified"
+    },
+    {
+      "start_m": 83100,
+      "len_m": 400,
+      "grad_permille": 5.75,
+      "confidence": "legacy_xml_unverified"
+    },
+    {
+      "start_m": 83500,
+      "len_m": 700,
+      "grad_permille": 16.1,
+      "confidence": "legacy_xml_unverified"
+    },
+    {
+      "start_m": 84200,
+      "len_m": 800,
+      "grad_permille": 17.6,
+      "confidence": "legacy_xml_unverified"
+    },
+    {
+      "start_m": 85000,
+      "len_m": 1000,
+      "grad_permille": 16.6,
+      "confidence": "legacy_xml_unverified"
+    },
+    {
+      "start_m": 86000,
+      "len_m": 800,
+      "grad_permille": 15.9,
+      "confidence": "legacy_xml_unverified"
+    },
+    {
+      "start_m": 86800,
+      "len_m": 200,
+      "grad_permille": 6.9,
+      "confidence": "legacy_xml_unverified"
+    },
+    {
+      "start_m": 87000,
+      "len_m": 400,
+      "grad_permille": -1.7,
+      "confidence": "legacy_xml_unverified"
+    },
+    {
+      "start_m": 87400,
+      "len_m": 400,
+      "grad_permille": -9,
+      "confidence": "legacy_xml_unverified"
+    },
+    {
+      "start_m": 87800,
+      "len_m": 400,
+      "grad_permille": -16.4,
+      "confidence": "legacy_xml_unverified"
+    },
+    {
+      "start_m": 88200,
+      "len_m": 1300,
+      "grad_permille": -17.45,
+      "confidence": "legacy_xml_unverified"
+    },
+    {
+      "start_m": 89500,
+      "len_m": 400,
+      "grad_permille": -17.45,
+      "confidence": "legacy_xml_unverified"
+    },
+    {
+      "start_m": 89900,
+      "len_m": 1000,
+      "grad_permille": -16.8,
+      "confidence": "legacy_xml_unverified"
+    },
+    {
+      "start_m": 90900,
+      "len_m": 400,
+      "grad_permille": -16.2,
+      "confidence": "legacy_xml_unverified"
+    },
+    {
+      "start_m": 94000,
+      "len_m": 1000,
+      "grad_permille": -16.3,
+      "confidence": "legacy_xml_unverified"
+    },
+    {
+      "start_m": 95000,
+      "len_m": 400,
+      "grad_permille": -2.1,
+      "confidence": "legacy_xml_unverified"
+    },
+    {
+      "start_m": 95400,
+      "len_m": 600,
+      "grad_permille": -2.4,
+      "confidence": "legacy_xml_unverified"
+    },
+    {
+      "start_m": 96000,
+      "len_m": 300,
+      "grad_permille": -5.4,
+      "confidence": "legacy_xml_unverified"
+    },
+    {
+      "start_m": 96300,
+      "len_m": 300,
+      "grad_permille": -8.7,
+      "confidence": "legacy_xml_unverified"
+    },
+    {
+      "start_m": 96600,
+      "len_m": 400,
+      "grad_permille": -5.45,
+      "confidence": "legacy_xml_unverified"
+    },
+    {
+      "start_m": 97000,
+      "len_m": 200,
+      "grad_permille": 0,
+      "confidence": "legacy_xml_unverified"
+    },
+    {
+      "start_m": 97200,
+      "len_m": 600,
+      "grad_permille": -5.4,
+      "confidence": "legacy_xml_unverified"
+    },
+    {
+      "start_m": 97800,
+      "len_m": 300,
+      "grad_permille": 3.7,
+      "confidence": "legacy_xml_unverified"
+    },
+    {
+      "start_m": 98100,
+      "len_m": 100,
+      "grad_permille": 1,
+      "confidence": "legacy_xml_unverified"
+    },
+    {
+      "start_m": 98200,
+      "len_m": 200,
+      "grad_permille": -1.5,
+      "confidence": "legacy_xml_unverified"
+    },
+    {
+      "start_m": 98400,
+      "len_m": 300,
+      "grad_permille": -6.7,
+      "confidence": "legacy_xml_unverified"
+    },
+    {
+      "start_m": 98700,
+      "len_m": 400,
+      "grad_permille": -2.9,
+      "confidence": "legacy_xml_unverified"
+    },
+    {
+      "start_m": 99100,
+      "len_m": 400,
+      "grad_permille": -4.5,
+      "confidence": "legacy_xml_unverified"
+    },
+    {
+      "start_m": 99500,
+      "len_m": 1300,
+      "grad_permille": 6.75,
+      "confidence": "legacy_xml_unverified"
+    },
+    {
+      "start_m": 100800,
+      "len_m": 300,
+      "grad_permille": 2,
+      "confidence": "legacy_xml_unverified"
+    },
+    {
+      "start_m": 101100,
+      "len_m": 600,
+      "grad_permille": -2.1,
+      "confidence": "legacy_xml_unverified"
+    },
+    {
+      "start_m": 101700,
+      "len_m": 100,
+      "grad_permille": 1,
+      "confidence": "legacy_xml_unverified"
+    },
+    {
+      "start_m": 101800,
+      "len_m": 1800,
+      "grad_permille": -3.24,
+      "confidence": "legacy_xml_unverified"
+    },
+    {
+      "start_m": 103600,
+      "len_m": 400,
+      "grad_permille": 2.3,
+      "confidence": "legacy_xml_unverified"
+    },
+    {
+      "start_m": 104000,
+      "len_m": 900,
+      "grad_permille": -1.7,
+      "confidence": "legacy_xml_unverified"
+    },
+    {
+      "start_m": 104900,
+      "len_m": 1100,
+      "grad_permille": -7.15,
+      "confidence": "legacy_xml_unverified"
+    },
+    {
+      "start_m": 106000,
+      "len_m": 200,
+      "grad_permille": -1.5,
+      "confidence": "legacy_xml_unverified"
+    },
+    {
+      "start_m": 106200,
+      "len_m": 400,
+      "grad_permille": -4.5,
+      "confidence": "legacy_xml_unverified"
+    },
+    {
+      "start_m": 106600,
+      "len_m": 400,
+      "grad_permille": -1.85,
+      "confidence": "legacy_xml_unverified"
+    },
+    {
+      "start_m": 107000,
+      "len_m": 500,
+      "grad_permille": -6,
+      "confidence": "legacy_xml_unverified"
+    },
+    {
+      "start_m": 107500,
+      "len_m": 700,
+      "grad_permille": 0.1,
+      "confidence": "legacy_xml_unverified"
+    },
+    {
+      "start_m": 108200,
+      "len_m": 600,
+      "grad_permille": 3.2,
+      "confidence": "legacy_xml_unverified"
+    },
+    {
+      "start_m": 108800,
+      "len_m": 700,
+      "grad_permille": 7,
+      "confidence": "legacy_xml_unverified"
+    },
+    {
+      "start_m": 109500,
+      "len_m": 300,
+      "grad_permille": -2,
+      "confidence": "legacy_xml_unverified"
+    },
+    {
+      "start_m": 109800,
+      "len_m": 400,
+      "grad_permille": 2.4,
+      "confidence": "legacy_xml_unverified"
+    },
+    {
+      "start_m": 110200,
+      "len_m": 600,
+      "grad_permille": -2.2,
+      "confidence": "legacy_xml_unverified"
+    },
+    {
+      "start_m": 110800,
+      "len_m": 300,
+      "grad_permille": -0.7,
+      "confidence": "legacy_xml_unverified"
+    },
+    {
+      "start_m": 111100,
+      "len_m": 500,
+      "grad_permille": 5.7,
+      "confidence": "legacy_xml_unverified"
+    },
+    {
+      "start_m": 111600,
+      "len_m": 1200,
+      "grad_permille": -2.15,
+      "confidence": "legacy_xml_unverified"
+    },
+    {
+      "start_m": 112800,
+      "len_m": 400,
+      "grad_permille": 0.5,
+      "confidence": "legacy_xml_unverified"
+    },
+    {
+      "start_m": 113200,
+      "len_m": 400,
+      "grad_permille": 5.4,
+      "confidence": "legacy_xml_unverified"
+    },
+    {
+      "start_m": 113600,
+      "len_m": 400,
+      "grad_permille": 6.5,
+      "confidence": "legacy_xml_unverified"
+    },
+    {
+      "start_m": 114000,
+      "len_m": 1200,
+      "grad_permille": -1.8,
+      "confidence": "legacy_xml_unverified"
+    },
+    {
+      "start_m": 115200,
+      "len_m": 500,
+      "grad_permille": 1.3,
+      "confidence": "legacy_xml_unverified"
+    },
+    {
+      "start_m": 115700,
+      "len_m": 200,
+      "grad_permille": 7.4,
+      "confidence": "legacy_xml_unverified"
+    },
+    {
+      "start_m": 115900,
+      "len_m": 500,
+      "grad_permille": 0.3,
+      "confidence": "legacy_xml_unverified"
+    },
+    {
+      "start_m": 116400,
+      "len_m": 500,
+      "grad_permille": 1.3,
+      "confidence": "legacy_xml_unverified"
+    },
+    {
+      "start_m": 116900,
+      "len_m": 400,
+      "grad_permille": 4.9,
+      "confidence": "legacy_xml_unverified"
+    },
+    {
+      "start_m": 117300,
+      "len_m": 300,
+      "grad_permille": 1.5,
+      "confidence": "legacy_xml_unverified"
+    },
+    {
+      "start_m": 117600,
+      "len_m": 400,
+      "grad_permille": -2,
+      "confidence": "legacy_xml_unverified"
+    },
+    {
+      "start_m": 118000,
+      "len_m": 700,
+      "grad_permille": 1.15,
+      "confidence": "legacy_xml_unverified"
+    },
+    {
+      "start_m": 118700,
+      "len_m": 900,
+      "grad_permille": -0.1,
+      "confidence": "legacy_xml_unverified"
+    },
+    {
+      "start_m": 119600,
+      "len_m": 400,
+      "grad_permille": 6.8,
+      "confidence": "legacy_xml_unverified"
+    },
+    {
+      "start_m": 120000,
+      "len_m": 500,
+      "grad_permille": -0.6,
+      "confidence": "legacy_xml_unverified"
+    },
+    {
+      "start_m": 120500,
+      "len_m": 700,
+      "grad_permille": 0.2,
+      "confidence": "legacy_xml_unverified"
+    },
+    {
+      "start_m": 121200,
+      "len_m": 300,
+      "grad_permille": 5.7,
+      "confidence": "legacy_xml_unverified"
+    },
+    {
+      "start_m": 121500,
+      "len_m": 1300,
+      "grad_permille": 8.5,
+      "confidence": "legacy_xml_unverified"
+    },
+    {
+      "start_m": 122800,
+      "len_m": 400,
+      "grad_permille": -0.5,
+      "confidence": "legacy_xml_unverified"
+    },
+    {
+      "start_m": 123200,
+      "len_m": 300,
+      "grad_permille": 1.5,
+      "confidence": "legacy_xml_unverified"
+    },
+    {
+      "start_m": 123500,
+      "len_m": 700,
+      "grad_permille": -5.5,
+      "confidence": "legacy_xml_unverified"
+    },
+    {
+      "start_m": 124200,
+      "len_m": 600,
+      "grad_permille": 0.5,
+      "confidence": "legacy_xml_unverified"
+    },
+    {
+      "start_m": 124800,
+      "len_m": 700,
+      "grad_permille": -0.8,
+      "confidence": "legacy_xml_unverified"
+    },
+    {
+      "start_m": 125500,
+      "len_m": 1900,
+      "grad_permille": 1.6,
+      "confidence": "legacy_xml_unverified"
+    },
+    {
+      "start_m": 127400,
+      "len_m": 500,
+      "grad_permille": 4.65,
+      "confidence": "legacy_xml_unverified"
+    },
+    {
+      "start_m": 127900,
+      "len_m": 600,
+      "grad_permille": -1.15,
+      "confidence": "legacy_xml_unverified"
+    },
+    {
+      "start_m": 128500,
+      "len_m": 1000,
+      "grad_permille": 1.8,
+      "confidence": "legacy_xml_unverified"
+    },
+    {
+      "start_m": 129500,
+      "len_m": 2000,
+      "grad_permille": 1.5,
+      "confidence": "legacy_xml_unverified"
+    },
+    {
+      "start_m": 131500,
+      "len_m": 900,
+      "grad_permille": 1.1,
+      "confidence": "legacy_xml_unverified"
+    },
+    {
+      "start_m": 132400,
+      "len_m": 800,
+      "grad_permille": 1.9,
+      "confidence": "legacy_xml_unverified"
+    },
+    {
+      "start_m": 133200,
+      "len_m": 400,
+      "grad_permille": 3.3,
+      "confidence": "legacy_xml_unverified"
+    },
+    {
+      "start_m": 133600,
+      "len_m": 300,
+      "grad_permille": 0.6,
+      "confidence": "legacy_xml_unverified"
+    },
+    {
+      "start_m": 133900,
+      "len_m": 300,
+      "grad_permille": 1.6,
+      "confidence": "legacy_xml_unverified"
+    },
+    {
+      "start_m": 134200,
+      "len_m": 300,
+      "grad_permille": 3,
+      "confidence": "legacy_xml_unverified"
+    },
+    {
+      "start_m": 134500,
+      "len_m": 500,
+      "grad_permille": 0.9,
+      "confidence": "legacy_xml_unverified"
+    },
+    {
+      "start_m": 135000,
+      "len_m": 1100,
+      "grad_permille": 2.3,
+      "confidence": "legacy_xml_unverified"
+    },
+    {
+      "start_m": 136100,
+      "len_m": 700,
+      "grad_permille": 0,
+      "confidence": "legacy_xml_unverified"
+    },
+    {
+      "start_m": 136800,
+      "len_m": 300,
+      "grad_permille": 3.2,
+      "confidence": "legacy_xml_unverified"
+    },
+    {
+      "start_m": 137100,
+      "len_m": 500,
+      "grad_permille": 2.7,
+      "confidence": "legacy_xml_unverified"
+    },
+    {
+      "start_m": 137600,
+      "len_m": 300,
+      "grad_permille": 0.7,
+      "confidence": "legacy_xml_unverified"
+    },
+    {
+      "start_m": 137900,
+      "len_m": 400,
+      "grad_permille": 2.4,
+      "confidence": "legacy_xml_unverified"
+    },
+    {
+      "start_m": 138300,
+      "len_m": 1200,
+      "grad_permille": 1.7,
+      "confidence": "legacy_xml_unverified"
+    },
+    {
+      "start_m": 139500,
+      "len_m": 300,
+      "grad_permille": 0.35,
+      "confidence": "legacy_xml_unverified"
+    },
+    {
+      "start_m": 139800,
+      "len_m": 200,
+      "grad_permille": 3.3,
+      "confidence": "legacy_xml_unverified"
+    },
+    {
+      "start_m": 140000,
+      "len_m": 400,
+      "grad_permille": 6.45,
+      "confidence": "legacy_xml_unverified"
+    },
+    {
+      "start_m": 140400,
+      "len_m": 500,
+      "grad_permille": -2.4,
+      "confidence": "legacy_xml_unverified"
+    },
+    {
+      "start_m": 140900,
+      "len_m": 500,
+      "grad_permille": 1.45,
+      "confidence": "legacy_xml_unverified"
+    },
+    {
+      "start_m": 141400,
+      "len_m": 400,
+      "grad_permille": -0.35,
+      "confidence": "legacy_xml_unverified"
+    },
+    {
+      "start_m": 141800,
+      "len_m": 400,
+      "grad_permille": 0.8,
+      "confidence": "legacy_xml_unverified"
+    },
+    {
+      "start_m": 142200,
+      "len_m": 600,
+      "grad_permille": 4.45,
+      "confidence": "legacy_xml_unverified"
+    },
+    {
+      "start_m": 142800,
+      "len_m": 400,
+      "grad_permille": -0.7,
+      "confidence": "legacy_xml_unverified"
+    },
+    {
+      "start_m": 143200,
+      "len_m": 1200,
+      "grad_permille": 2.6,
+      "confidence": "legacy_xml_unverified"
+    },
+    {
+      "start_m": 144400,
+      "len_m": 300,
+      "grad_permille": 4.4,
+      "confidence": "legacy_xml_unverified"
+    },
+    {
+      "start_m": 144700,
+      "len_m": 400,
+      "grad_permille": 1.5,
+      "confidence": "legacy_xml_unverified"
+    },
+    {
+      "start_m": 145100,
+      "len_m": 500,
+      "grad_permille": 3.6,
+      "confidence": "legacy_xml_unverified"
+    },
+    {
+      "start_m": 145600,
+      "len_m": 400,
+      "grad_permille": 5.85,
+      "confidence": "legacy_xml_unverified"
+    },
+    {
+      "start_m": 146000,
+      "len_m": 200,
+      "grad_permille": 1,
+      "confidence": "legacy_xml_unverified"
+    },
+    {
+      "start_m": 146200,
+      "len_m": 500,
+      "grad_permille": -4,
+      "confidence": "legacy_xml_unverified"
+    },
+    {
+      "start_m": 146700,
+      "len_m": 500,
+      "grad_permille": 6.8,
+      "confidence": "legacy_xml_unverified"
+    },
+    {
+      "start_m": 147200,
+      "len_m": 600,
+      "grad_permille": 2.5,
+      "confidence": "legacy_xml_unverified"
+    },
+    {
+      "start_m": 147800,
+      "len_m": 900,
+      "grad_permille": 0.7,
+      "confidence": "legacy_xml_unverified"
+    },
+    {
+      "start_m": 148700,
+      "len_m": 900,
+      "grad_permille": 5.5,
+      "confidence": "legacy_xml_unverified"
+    },
+    {
+      "start_m": 149600,
+      "len_m": 400,
+      "grad_permille": -3.8,
+      "confidence": "legacy_xml_unverified"
+    },
+    {
+      "start_m": 150000,
+      "len_m": 300,
+      "grad_permille": 1.9,
+      "confidence": "legacy_xml_unverified"
+    },
+    {
+      "start_m": 150300,
+      "len_m": 200,
+      "grad_permille": -1,
+      "confidence": "legacy_xml_unverified"
+    },
+    {
+      "start_m": 150500,
+      "len_m": 500,
+      "grad_permille": 3.7,
+      "confidence": "legacy_xml_unverified"
+    },
+    {
+      "start_m": 151000,
+      "len_m": 500,
+      "grad_permille": -3.1,
+      "confidence": "legacy_xml_unverified"
+    },
+    {
+      "start_m": 151500,
+      "len_m": 500,
+      "grad_permille": 0,
+      "confidence": "legacy_xml_unverified"
+    },
+    {
+      "start_m": 152000,
+      "len_m": 200,
+      "grad_permille": 2.4,
+      "confidence": "legacy_xml_unverified"
+    },
+    {
+      "start_m": 152200,
+      "len_m": 500,
+      "grad_permille": 5.35,
+      "confidence": "legacy_xml_unverified"
+    },
+    {
+      "start_m": 152700,
+      "len_m": 300,
+      "grad_permille": -1.2,
+      "confidence": "legacy_xml_unverified"
+    },
+    {
+      "start_m": 153000,
+      "len_m": 500,
+      "grad_permille": 1.8,
+      "confidence": "legacy_xml_unverified"
+    },
+    {
+      "start_m": 153500,
+      "len_m": 500,
+      "grad_permille": -3.8,
+      "confidence": "legacy_xml_unverified"
+    },
+    {
+      "start_m": 154000,
+      "len_m": 200,
+      "grad_permille": 1.7,
+      "confidence": "legacy_xml_unverified"
+    },
+    {
+      "start_m": 154200,
+      "len_m": 300,
+      "grad_permille": 4.3,
+      "confidence": "legacy_xml_unverified"
+    },
+    {
+      "start_m": 154500,
+      "len_m": 500,
+      "grad_permille": -1.5,
+      "confidence": "legacy_xml_unverified"
+    },
+    {
+      "start_m": 155000,
+      "len_m": 1100,
+      "grad_permille": 1.9,
+      "confidence": "legacy_xml_unverified"
+    },
+    {
+      "start_m": 156100,
+      "len_m": 400,
+      "grad_permille": -0.6,
+      "confidence": "legacy_xml_unverified"
+    },
+    {
+      "start_m": 156500,
+      "len_m": 600,
+      "grad_permille": 2.6,
+      "confidence": "legacy_xml_unverified"
+    },
+    {
+      "start_m": 157100,
+      "len_m": 500,
+      "grad_permille": 6.5,
+      "confidence": "legacy_xml_unverified"
+    },
+    {
+      "start_m": 157600,
+      "len_m": 300,
+      "grad_permille": -1,
+      "confidence": "legacy_xml_unverified"
+    },
+    {
+      "start_m": 157900,
+      "len_m": 100,
+      "grad_permille": 0,
+      "confidence": "legacy_xml_unverified"
+    },
+    {
+      "start_m": 158000,
+      "len_m": 300,
+      "grad_permille": -4,
+      "confidence": "legacy_xml_unverified"
+    },
+    {
+      "start_m": 158300,
+      "len_m": 100,
+      "grad_permille": 1,
+      "confidence": "legacy_xml_unverified"
+    },
+    {
+      "start_m": 158400,
+      "len_m": 300,
+      "grad_permille": -0.5,
+      "confidence": "legacy_xml_unverified"
+    },
+    {
+      "start_m": 158700,
+      "len_m": 600,
+      "grad_permille": 3.7,
+      "confidence": "legacy_xml_unverified"
+    },
+    {
+      "start_m": 159300,
+      "len_m": 300,
+      "grad_permille": 0,
+      "confidence": "legacy_xml_unverified"
+    },
+    {
+      "start_m": 159600,
+      "len_m": 800,
+      "grad_permille": 2.8,
+      "confidence": "legacy_xml_unverified"
+    },
+    {
+      "start_m": 160400,
+      "len_m": 700,
+      "grad_permille": 7.5,
+      "confidence": "legacy_xml_unverified"
+    },
+    {
+      "start_m": 161100,
+      "len_m": 500,
+      "grad_permille": 2.65,
+      "confidence": "legacy_xml_unverified"
+    },
+    {
+      "start_m": 161600,
+      "len_m": 200,
+      "grad_permille": 7.2,
+      "confidence": "legacy_xml_unverified"
+    },
+    {
+      "start_m": 161800,
+      "len_m": 1100,
+      "grad_permille": 2.7,
+      "confidence": "legacy_xml_unverified"
+    },
+    {
+      "start_m": 162900,
+      "len_m": 600,
+      "grad_permille": 7.4,
+      "confidence": "legacy_xml_unverified"
+    },
+    {
+      "start_m": 163500,
+      "len_m": 700,
+      "grad_permille": 6.2,
+      "confidence": "legacy_xml_unverified"
+    },
+    {
+      "start_m": 164200,
+      "len_m": 500,
+      "grad_permille": 3.85,
+      "confidence": "legacy_xml_unverified"
+    },
+    {
+      "start_m": 164700,
+      "len_m": 500,
+      "grad_permille": 5.9,
+      "confidence": "legacy_xml_unverified"
+    },
+    {
+      "start_m": 165200,
+      "len_m": 1100,
+      "grad_permille": 8.8,
+      "confidence": "legacy_xml_unverified"
+    },
+    {
+      "start_m": 166300,
+      "len_m": 400,
+      "grad_permille": -4.5,
+      "confidence": "legacy_xml_unverified"
+    },
+    {
+      "start_m": 166700,
+      "len_m": 300,
+      "grad_permille": -0.7,
+      "confidence": "legacy_xml_unverified"
+    },
+    {
+      "start_m": 167000,
+      "len_m": 600,
+      "grad_permille": 7.6,
+      "confidence": "legacy_xml_unverified"
+    },
+    {
+      "start_m": 167600,
+      "len_m": 600,
+      "grad_permille": 9,
+      "confidence": "legacy_xml_unverified"
+    },
+    {
+      "start_m": 168200,
+      "len_m": 300,
+      "grad_permille": 5.3,
+      "confidence": "legacy_xml_unverified"
+    },
+    {
+      "start_m": 168500,
+      "len_m": 100,
+      "grad_permille": -1,
+      "confidence": "legacy_xml_unverified"
+    },
+    {
+      "start_m": 168600,
+      "len_m": 300,
+      "grad_permille": 2.4,
+      "confidence": "legacy_xml_unverified"
+    },
+    {
+      "start_m": 168900,
+      "len_m": 1100,
+      "grad_permille": 8.4,
+      "confidence": "legacy_xml_unverified"
+    },
+    {
+      "start_m": 170000,
+      "len_m": 200,
+      "grad_permille": 3,
+      "confidence": "legacy_xml_unverified"
+    },
+    {
+      "start_m": 170200,
+      "len_m": 300,
+      "grad_permille": -5.7,
+      "confidence": "legacy_xml_unverified"
+    },
+    {
+      "start_m": 170500,
+      "len_m": 100,
+      "grad_permille": 0,
+      "confidence": "legacy_xml_unverified"
+    },
+    {
+      "start_m": 170600,
+      "len_m": 400,
+      "grad_permille": -1.6,
+      "confidence": "legacy_xml_unverified"
+    },
+    {
+      "start_m": 171000,
+      "len_m": 500,
+      "grad_permille": 5,
+      "confidence": "legacy_xml_unverified"
+    },
+    {
+      "start_m": 171500,
+      "len_m": 1600,
+      "grad_permille": 7.4,
+      "confidence": "legacy_xml_unverified"
+    },
+    {
+      "start_m": 173100,
+      "len_m": 900,
+      "grad_permille": 2.4,
+      "confidence": "legacy_xml_unverified"
+    },
+    {
+      "start_m": 174000,
+      "len_m": 300,
+      "grad_permille": 5.1,
+      "confidence": "legacy_xml_unverified"
+    },
+    {
+      "start_m": 174300,
+      "len_m": 300,
+      "grad_permille": -2,
+      "confidence": "legacy_xml_unverified"
+    },
+    {
+      "start_m": 174600,
+      "len_m": 2300,
+      "grad_permille": 6.4,
+      "confidence": "legacy_xml_unverified"
+    },
+    {
+      "start_m": 176900,
+      "len_m": 1300,
+      "grad_permille": 8.4,
+      "confidence": "legacy_xml_unverified"
+    },
+    {
+      "start_m": 178200,
+      "len_m": 1000,
+      "grad_permille": 8.9,
+      "confidence": "legacy_xml_unverified"
+    },
+    {
+      "start_m": 179200,
+      "len_m": 1000,
+      "grad_permille": 7.45,
+      "confidence": "legacy_xml_unverified"
+    },
+    {
+      "start_m": 180200,
+      "len_m": 700,
+      "grad_permille": 7.2,
+      "confidence": "legacy_xml_unverified"
+    },
+    {
+      "start_m": 180900,
+      "len_m": 700,
+      "grad_permille": 8.3,
+      "confidence": "legacy_xml_unverified"
+    },
+    {
+      "start_m": 181600,
+      "len_m": 600,
+      "grad_permille": 6.4,
+      "confidence": "legacy_xml_unverified"
+    },
+    {
+      "start_m": 182200,
+      "len_m": 1200,
+      "grad_permille": 2.4,
+      "confidence": "legacy_xml_unverified"
+    },
+    {
+      "start_m": 183400,
+      "len_m": 600,
+      "grad_permille": 16.55,
+      "confidence": "legacy_xml_unverified"
+    }
+  ],
+  "stations": [
+    {
+      "name": "Пивань",
+      "km": 1,
+      "confidence": "pdf_boundary_needs_review"
+    },
+    {
+      "name": "БЛОКПО",
+      "km": 9.928,
+      "confidence": "legacy_label_truncated"
+    },
+    {
+      "name": "КУМТЭ",
+      "km": 20.706,
+      "confidence": "legacy_label_truncated"
+    },
+    {
+      "name": "Гайтер",
+      "km": 30.737,
+      "confidence": "legacy_label_truncated"
+    },
+    {
+      "name": "КАРТЕЛ",
+      "km": 42.738,
+      "confidence": "legacy_label_truncated"
+    },
+    {
+      "name": "СЕЛИХИ",
+      "km": 53.652,
+      "confidence": "legacy_label_truncated"
+    },
+    {
+      "name": "ЭЛЬДИГ",
+      "km": 64.33,
+      "confidence": "legacy_label_truncated"
+    },
+    {
+      "name": "ТУДУР",
+      "km": 76.338,
+      "confidence": "legacy_label_truncated"
+    },
+    {
+      "name": "ПОНИ",
+      "km": 83.999,
+      "confidence": "legacy_label_truncated"
+    },
+    {
+      "name": "КУН",
+      "km": 96.763,
+      "confidence": "legacy_label_truncated"
+    },
+    {
+      "name": "ХУММА",
+      "km": 105.558,
+      "confidence": "legacy_label_truncated"
+    },
+    {
+      "name": "ГУРСКО",
+      "km": 115.818,
+      "confidence": "legacy_label_truncated"
+    },
+    {
+      "name": "ПОЧЕПТ",
+      "km": 126.06,
+      "confidence": "legacy_label_truncated"
+    },
+    {
+      "name": "САГДЖЕ",
+      "km": 132.615,
+      "confidence": "legacy_label_truncated"
+    },
+    {
+      "name": "УКТУР",
+      "km": 140.164,
+      "confidence": "legacy_label_truncated"
+    },
+    {
+      "name": "АКСАКА",
+      "km": 148.628,
+      "confidence": "legacy_label_truncated"
+    },
+    {
+      "name": "ГАЛИЦК",
+      "km": 156.098,
+      "confidence": "legacy_label_truncated"
+    },
+    {
+      "name": "КЕНАЙ",
+      "km": 163.437,
+      "confidence": "legacy_label_truncated"
+    },
+    {
+      "name": "УДОМИ",
+      "km": 174.5,
+      "confidence": "legacy_label_truncated"
+    },
+    {
+      "name": "Оунэ",
+      "km": 183.7,
+      "confidence": "legacy_anchor_named"
+    }
+  ],
+  "signals": [],
+  "whistle_points": [],
+  "speed": {
+    "established": null,
+    "permanent_restrictions": [],
+    "temporary_warnings": [],
+    "source": "manual_required"
+  },
+  "flags_for_review": [
+    {
+      "km": null,
+      "reason": "Светофоры и точки свистка ещё не перенесены вручную из PDF"
+    },
+    {
+      "km": null,
+      "reason": "Названия промежуточных станций из legacy XML местами обрезаны и требуют сверки с PDF"
+    },
+    {
+      "km": null,
+      "reason": "Направление чётное/нечётное не подтверждено по титулу карты"
+    },
+    {
+      "km": null,
+      "reason": "Знаки и границы уклонов пока мигрированы из profile.xml, а не сверены по границам элементов PDF"
+    },
+    {
+      "km": 1,
+      "reason": "После Пивани шкала километража в PDF сбрасывается; следующий участок вынесен в отдельный JSON"
+    },
+    {
+      "km": null,
+      "reason": "Страницы 29, 31 и 33 частично перекрываются и конфликтуют; legacy seed требует постраничной сверки"
+    }
+  ],
+  "provenance": [
+    {
+      "kind": "regime_map_pdf",
+      "file_name": "ВСКГ- КСМ новый 2 пассажир.pdf",
+      "repo_path": "assets/docs/memos/ВСКГ- КСМ новый 2 пассажир.pdf",
+      "sha256": "834155ea6be7fccaf02b744c49d0aef06ec35d7cd6ebbaebf4d7eb7c60f80118",
+      "pages": 63,
+      "profile_pages": "5,7,9,11,13,15,17,19,21,23,25,27,29,31,33,35,37,39,41,43",
+      "role": "authoritative_map_pending_row_by_row_verification"
+    },
+    {
+      "kind": "legacy_profile_xml",
+      "path": "assets/tracker/maps/komsomol-sk-tche-9/profile.xml",
+      "role": "temporary_profile_seed_not_pdf_verified"
+    },
+    {
+      "kind": "legacy_geometry_xml",
+      "path": "assets/tracker/maps/komsomol-sk-tche-9/data.xml",
+      "role": "offline_gps_map_matching_seed"
+    }
+  ],
+  "runtime": {
+    "coordinate_unit": "m",
+    "coordinate_kind": "official_railway_chainage",
+    "coordinate_offset_m": -1000,
+    "movement_order": "descending",
+    "default_path_id": "oune-pivan-sector-13",
+    "route_legs": [
+      {
+        "path_id": "oune-pivan-sector-13",
+        "sector": 13,
+        "from_chainage_m": 184000,
+        "to_chainage_m": 1000
+      }
+    ],
+    "profile_status": "legacy_seed_partial_pending_pdf_verification",
+    "profile_coverage": [
+      {
+        "start_m": 1000,
+        "end_m": 91300
+      },
+      {
+        "start_m": 94000,
+        "end_m": 184000
+      }
+    ],
+    "profile_gaps": [
+      {
+        "start_m": 91300,
+        "end_m": 94000,
+        "reason": "Нет подтверждённого элемента профиля"
+      }
+    ],
+    "profile_applies_both_directions": false
+  },
+  "geometry": {
+    "status": "draft_from_legacy_centerline",
+    "source": {
+      "kind": "legacy_geometry_xml",
+      "path": "assets/tracker/maps/komsomol-sk-tche-9/data.xml",
+      "role": "offline_gps_map_matching_seed"
+    },
+    "paths": [
+      {
+        "path_id": "oune-pivan-sector-13",
+        "sector": 13,
+        "source": "assets/tracker/maps/komsomol-sk-tche-9/data.xml",
+        "points": [
+          {
+            "lat": 50.48215853789099,
+            "lon": 137.0898360447394,
+            "sector": 13,
+            "path_id": "oune-pivan-sector-13",
+            "ordinate": 0,
+            "chainage_m": 1000
+          },
+          {
+            "lat": 50.48345284955018,
+            "lon": 137.08786678879753,
+            "sector": 13,
+            "path_id": "oune-pivan-sector-13",
+            "ordinate": 200,
+            "chainage_m": 1200
+          },
+          {
+            "lat": 50.485433564647956,
+            "lon": 137.08499741615952,
+            "sector": 13,
+            "path_id": "oune-pivan-sector-13",
+            "ordinate": 500,
+            "chainage_m": 1500
+          },
+          {
+            "lat": 50.48675824307029,
+            "lon": 137.083102644731,
+            "sector": 13,
+            "path_id": "oune-pivan-sector-13",
+            "ordinate": 700,
+            "chainage_m": 1700
+          },
+          {
+            "lat": 50.488722342392,
+            "lon": 137.0801862895538,
+            "sector": 13,
+            "path_id": "oune-pivan-sector-13",
+            "ordinate": 1000,
+            "chainage_m": 2000
+          },
+          {
+            "lat": 50.49004988560332,
+            "lon": 137.07828349671618,
+            "sector": 13,
+            "path_id": "oune-pivan-sector-13",
+            "ordinate": 1200,
+            "chainage_m": 2200
+          },
+          {
+            "lat": 50.49174182997234,
+            "lon": 137.0776360544077,
+            "sector": 13,
+            "path_id": "oune-pivan-sector-13",
+            "ordinate": 1400,
+            "chainage_m": 2400
+          },
+          {
+            "lat": 50.49266028131794,
+            "lon": 137.07796149443533,
+            "sector": 13,
+            "path_id": "oune-pivan-sector-13",
+            "ordinate": 1500,
+            "chainage_m": 2500
+          },
+          {
+            "lat": 50.49390302677557,
+            "lon": 137.07986084952617,
+            "sector": 13,
+            "path_id": "oune-pivan-sector-13",
+            "ordinate": 1700,
+            "chainage_m": 2700
+          },
+          {
+            "lat": 50.494744701776625,
+            "lon": 137.08381655014375,
+            "sector": 13,
+            "path_id": "oune-pivan-sector-13",
+            "ordinate": 2000,
+            "chainage_m": 3000
+          },
+          {
+            "lat": 50.49393625832769,
+            "lon": 137.08632495937084,
+            "sector": 13,
+            "path_id": "oune-pivan-sector-13",
+            "ordinate": 2200,
+            "chainage_m": 3200
+          },
+          {
+            "lat": 50.4923583325599,
+            "lon": 137.08758317468894,
+            "sector": 13,
+            "path_id": "oune-pivan-sector-13",
+            "ordinate": 2400,
+            "chainage_m": 3400
+          },
+          {
+            "lat": 50.49145993473714,
+            "lon": 137.08753504623417,
+            "sector": 13,
+            "path_id": "oune-pivan-sector-13",
+            "ordinate": 2500,
+            "chainage_m": 3500
+          },
+          {
+            "lat": 50.48879167028522,
+            "lon": 137.0869775582995,
+            "sector": 13,
+            "path_id": "oune-pivan-sector-13",
+            "ordinate": 2800,
+            "chainage_m": 3800
+          },
+          {
+            "lat": 50.48701320928913,
+            "lon": 137.08762843835476,
+            "sector": 13,
+            "path_id": "oune-pivan-sector-13",
+            "ordinate": 3000,
+            "chainage_m": 4000
+          },
+          {
+            "lat": 50.485497162963206,
+            "lon": 137.08912786890463,
+            "sector": 13,
+            "path_id": "oune-pivan-sector-13",
+            "ordinate": 3200,
+            "chainage_m": 4200
+          },
+          {
+            "lat": 50.484447504282535,
+            "lon": 137.09112749160963,
+            "sector": 13,
+            "path_id": "oune-pivan-sector-13",
+            "ordinate": 3400,
+            "chainage_m": 4400
+          },
+          {
+            "lat": 50.48370265914886,
+            "lon": 137.09524705815662,
+            "sector": 13,
+            "path_id": "oune-pivan-sector-13",
+            "ordinate": 3700,
+            "chainage_m": 4700
+          },
+          {
+            "lat": 50.484333485681304,
+            "lon": 137.09934141456063,
+            "sector": 13,
+            "path_id": "oune-pivan-sector-13",
+            "ordinate": 4000,
+            "chainage_m": 5000
+          },
+          {
+            "lat": 50.48729453156654,
+            "lon": 137.10468080825345,
+            "sector": 13,
+            "path_id": "oune-pivan-sector-13",
+            "ordinate": 4500,
+            "chainage_m": 5500
+          },
+          {
+            "lat": 50.488661035907924,
+            "lon": 137.10684429688786,
+            "sector": 13,
+            "path_id": "oune-pivan-sector-13",
+            "ordinate": 4700,
+            "chainage_m": 5700
+          },
+          {
+            "lat": 50.48980809741377,
+            "lon": 137.11036512253892,
+            "sector": 13,
+            "path_id": "oune-pivan-sector-13",
+            "ordinate": 5000,
+            "chainage_m": 6000
+          },
+          {
+            "lat": 50.48864442013186,
+            "lon": 137.113911158333,
+            "sector": 13,
+            "path_id": "oune-pivan-sector-13",
+            "ordinate": 5300,
+            "chainage_m": 6300
+          },
+          {
+            "lat": 50.486947319142686,
+            "lon": 137.114713872204,
+            "sector": 13,
+            "path_id": "oune-pivan-sector-13",
+            "ordinate": 5500,
+            "chainage_m": 6500
+          },
+          {
+            "lat": 50.48532527562467,
+            "lon": 137.11364702478946,
+            "sector": 13,
+            "path_id": "oune-pivan-sector-13",
+            "ordinate": 5700,
+            "chainage_m": 6700
+          },
+          {
+            "lat": 50.483969657481396,
+            "lon": 137.1099835326474,
+            "sector": 13,
+            "path_id": "oune-pivan-sector-13",
+            "ordinate": 6000,
+            "chainage_m": 7000
+          },
+          {
+            "lat": 50.482533252289,
+            "lon": 137.10840274209062,
+            "sector": 13,
+            "path_id": "oune-pivan-sector-13",
+            "ordinate": 6200,
+            "chainage_m": 7200
+          },
+          {
+            "lat": 50.480777709604716,
+            "lon": 137.108524782101,
+            "sector": 13,
+            "path_id": "oune-pivan-sector-13",
+            "ordinate": 6400,
+            "chainage_m": 7400
+          },
+          {
+            "lat": 50.47945532301356,
+            "lon": 137.11041382395152,
+            "sector": 13,
+            "path_id": "oune-pivan-sector-13",
+            "ordinate": 6600,
+            "chainage_m": 7600
+          },
+          {
+            "lat": 50.47911670495663,
+            "lon": 137.11586952807676,
+            "sector": 13,
+            "path_id": "oune-pivan-sector-13",
+            "ordinate": 7000,
+            "chainage_m": 8000
+          },
+          {
+            "lat": 50.479091494813645,
+            "lon": 137.13004163913934,
+            "sector": 13,
+            "path_id": "oune-pivan-sector-13",
+            "ordinate": 8000,
+            "chainage_m": 9000
+          },
+          {
+            "lat": 50.474649925985794,
+            "lon": 137.14205026156745,
+            "sector": 13,
+            "path_id": "oune-pivan-sector-13",
+            "ordinate": 9000,
+            "chainage_m": 10000
+          },
+          {
+            "lat": 50.47416119298655,
+            "lon": 137.14897216469046,
+            "sector": 13,
+            "path_id": "oune-pivan-sector-13",
+            "ordinate": 9500,
+            "chainage_m": 10500
+          },
+          {
+            "lat": 50.47065641015373,
+            "lon": 137.1526133114785,
+            "sector": 13,
+            "path_id": "oune-pivan-sector-13",
+            "ordinate": 10000,
+            "chainage_m": 11000
+          },
+          {
+            "lat": 50.467152773236506,
+            "lon": 137.15291640615214,
+            "sector": 13,
+            "path_id": "oune-pivan-sector-13",
+            "ordinate": 10400,
+            "chainage_m": 11400
+          },
+          {
+            "lat": 50.46540811675033,
+            "lon": 137.15605850670062,
+            "sector": 13,
+            "path_id": "oune-pivan-sector-13",
+            "ordinate": 10700,
+            "chainage_m": 11700
+          },
+          {
+            "lat": 50.4655416159166,
+            "lon": 137.16021932620887,
+            "sector": 13,
+            "path_id": "oune-pivan-sector-13",
+            "ordinate": 11000,
+            "chainage_m": 12000
+          },
+          {
+            "lat": 50.46798356203945,
+            "lon": 137.16605260952107,
+            "sector": 13,
+            "path_id": "oune-pivan-sector-13",
+            "ordinate": 11500,
+            "chainage_m": 12500
+          },
+          {
+            "lat": 50.46751660143642,
+            "lon": 137.1728776827767,
+            "sector": 13,
+            "path_id": "oune-pivan-sector-13",
+            "ordinate": 12000,
+            "chainage_m": 13000
+          },
+          {
+            "lat": 50.46543332689332,
+            "lon": 137.18629463546526,
+            "sector": 13,
+            "path_id": "oune-pivan-sector-13",
+            "ordinate": 13000,
+            "chainage_m": 14000
+          },
+          {
+            "lat": 50.45796023837143,
+            "lon": 137.19364682989237,
+            "sector": 13,
+            "path_id": "oune-pivan-sector-13",
+            "ordinate": 14000,
+            "chainage_m": 15000
+          },
+          {
+            "lat": 50.45543635928388,
+            "lon": 137.19463861983576,
+            "sector": 13,
+            "path_id": "oune-pivan-sector-13",
+            "ordinate": 14300,
+            "chainage_m": 15300
+          },
+          {
+            "lat": 50.44988898191142,
+            "lon": 137.1903723760932,
+            "sector": 13,
+            "path_id": "oune-pivan-sector-13",
+            "ordinate": 15000,
+            "chainage_m": 16000
+          },
+          {
+            "lat": 50.447314109580105,
+            "lon": 137.18966133546945,
+            "sector": 13,
+            "path_id": "oune-pivan-sector-13",
+            "ordinate": 15300,
+            "chainage_m": 16300
+          },
+          {
+            "lat": 50.44222509844376,
+            "lon": 137.1953066886249,
+            "sector": 13,
+            "path_id": "oune-pivan-sector-13",
+            "ordinate": 16000,
+            "chainage_m": 17000
+          },
+          {
+            "lat": 50.435875007200316,
+            "lon": 137.20461954462692,
+            "sector": 13,
+            "path_id": "oune-pivan-sector-13",
+            "ordinate": 17000,
+            "chainage_m": 18000
+          },
+          {
+            "lat": 50.42738319971868,
+            "lon": 137.20761382206427,
+            "sector": 13,
+            "path_id": "oune-pivan-sector-13",
+            "ordinate": 18000,
+            "chainage_m": 19000
+          },
+          {
+            "lat": 50.41881404293471,
+            "lon": 137.2107415986679,
+            "sector": 13,
+            "path_id": "oune-pivan-sector-13",
+            "ordinate": 19000,
+            "chainage_m": 20000
+          },
+          {
+            "lat": 50.41458332257547,
+            "lon": 137.2090582486658,
+            "sector": 13,
+            "path_id": "oune-pivan-sector-13",
+            "ordinate": 19500,
+            "chainage_m": 20500
+          },
+          {
+            "lat": 50.41382644532809,
+            "lon": 137.2025752312139,
+            "sector": 13,
+            "path_id": "oune-pivan-sector-13",
+            "ordinate": 20000,
+            "chainage_m": 21000
+          },
+          {
+            "lat": 50.420846897191836,
+            "lon": 137.194019825417,
+            "sector": 13,
+            "path_id": "oune-pivan-sector-13",
+            "ordinate": 21000,
+            "chainage_m": 22000
+          },
+          {
+            "lat": 50.421941819538326,
+            "lon": 137.18772015445956,
+            "sector": 13,
+            "path_id": "oune-pivan-sector-13",
+            "ordinate": 21500,
+            "chainage_m": 22500
+          },
+          {
+            "lat": 50.418386043461744,
+            "lon": 137.18397759414177,
+            "sector": 13,
+            "path_id": "oune-pivan-sector-13",
+            "ordinate": 22000,
+            "chainage_m": 23000
+          },
+          {
+            "lat": 50.41060011998371,
+            "lon": 137.18974441434975,
+            "sector": 13,
+            "path_id": "oune-pivan-sector-13",
+            "ordinate": 23000,
+            "chainage_m": 24000
+          },
+          {
+            "lat": 50.4044001436826,
+            "lon": 137.1988555892079,
+            "sector": 13,
+            "path_id": "oune-pivan-sector-13",
+            "ordinate": 24000,
+            "chainage_m": 25000
+          },
+          {
+            "lat": 50.39813886089741,
+            "lon": 137.2084251303022,
+            "sector": 13,
+            "path_id": "oune-pivan-sector-13",
+            "ordinate": 25000,
+            "chainage_m": 26000
+          },
+          {
+            "lat": 50.38971351652002,
+            "lon": 137.2132597481775,
+            "sector": 13,
+            "path_id": "oune-pivan-sector-13",
+            "ordinate": 26000,
+            "chainage_m": 27000
+          },
+          {
+            "lat": 50.3844915791752,
+            "lon": 137.21503305255342,
+            "sector": 13,
+            "path_id": "oune-pivan-sector-13",
+            "ordinate": 26600,
+            "chainage_m": 27600
+          },
+          {
+            "lat": 50.38184737895066,
+            "lon": 137.21858596384104,
+            "sector": 13,
+            "path_id": "oune-pivan-sector-13",
+            "ordinate": 27000,
+            "chainage_m": 28000
+          },
+          {
+            "lat": 50.38037774220615,
+            "lon": 137.22514976834208,
+            "sector": 13,
+            "path_id": "oune-pivan-sector-13",
+            "ordinate": 27500,
+            "chainage_m": 28500
+          },
+          {
+            "lat": 50.376289115380104,
+            "lon": 137.22816123451327,
+            "sector": 13,
+            "path_id": "oune-pivan-sector-13",
+            "ordinate": 28000,
+            "chainage_m": 29000
+          },
+          {
+            "lat": 50.367510256043104,
+            "lon": 137.23130390801956,
+            "sector": 13,
+            "path_id": "oune-pivan-sector-13",
+            "ordinate": 29000,
+            "chainage_m": 30000
+          },
+          {
+            "lat": 50.36145008144401,
+            "lon": 137.23662210227397,
+            "sector": 13,
+            "path_id": "oune-pivan-sector-13",
+            "ordinate": 29800,
+            "chainage_m": 30800
+          },
+          {
+            "lat": 50.36060496869619,
+            "lon": 137.23868646920982,
+            "sector": 13,
+            "path_id": "oune-pivan-sector-13",
+            "ordinate": 30000,
+            "chainage_m": 31000
+          },
+          {
+            "lat": 50.35715347093833,
+            "lon": 137.2515149942428,
+            "sector": 13,
+            "path_id": "oune-pivan-sector-13",
+            "ordinate": 31000,
+            "chainage_m": 32000
+          },
+          {
+            "lat": 50.35602187929294,
+            "lon": 137.26540807485915,
+            "sector": 13,
+            "path_id": "oune-pivan-sector-13",
+            "ordinate": 32000,
+            "chainage_m": 33000
+          },
+          {
+            "lat": 50.355786393639136,
+            "lon": 137.26963306564042,
+            "sector": 13,
+            "path_id": "oune-pivan-sector-13",
+            "ordinate": 32300,
+            "chainage_m": 33300
+          },
+          {
+            "lat": 50.3577218450711,
+            "lon": 137.27893675431775,
+            "sector": 13,
+            "path_id": "oune-pivan-sector-13",
+            "ordinate": 33000,
+            "chainage_m": 34000
+          },
+          {
+            "lat": 50.36166952427954,
+            "lon": 137.2915916731388,
+            "sector": 13,
+            "path_id": "oune-pivan-sector-13",
+            "ordinate": 34000,
+            "chainage_m": 35000
+          },
+          {
+            "lat": 50.36558053418911,
+            "lon": 137.3041640860374,
+            "sector": 13,
+            "path_id": "oune-pivan-sector-13",
+            "ordinate": 35000,
+            "chainage_m": 36000
+          },
+          {
+            "lat": 50.369458312546556,
+            "lon": 137.31678348147514,
+            "sector": 13,
+            "path_id": "oune-pivan-sector-13",
+            "ordinate": 36000,
+            "chainage_m": 37000
+          },
+          {
+            "lat": 50.37331661033896,
+            "lon": 137.32936964536077,
+            "sector": 13,
+            "path_id": "oune-pivan-sector-13",
+            "ordinate": 37000,
+            "chainage_m": 38000
+          },
+          {
+            "lat": 50.37721386926144,
+            "lon": 137.34204461770463,
+            "sector": 13,
+            "path_id": "oune-pivan-sector-13",
+            "ordinate": 38000,
+            "chainage_m": 39000
+          },
+          {
+            "lat": 50.38110826339494,
+            "lon": 137.35473047624666,
+            "sector": 13,
+            "path_id": "oune-pivan-sector-13",
+            "ordinate": 39000,
+            "chainage_m": 40000
+          },
+          {
+            "lat": 50.382424920408155,
+            "lon": 137.36019190994983,
+            "sector": 13,
+            "path_id": "oune-pivan-sector-13",
+            "ordinate": 39400,
+            "chainage_m": 40400
+          },
+          {
+            "lat": 50.383194975684816,
+            "lon": 137.36848833882334,
+            "sector": 13,
+            "path_id": "oune-pivan-sector-13",
+            "ordinate": 40000,
+            "chainage_m": 41000
+          },
+          {
+            "lat": 50.3843025031028,
+            "lon": 137.38103038495873,
+            "sector": 13,
+            "path_id": "oune-pivan-sector-13",
+            "ordinate": 40900,
+            "chainage_m": 41900
+          },
+          {
+            "lat": 50.38444975325615,
+            "lon": 137.3822347422441,
+            "sector": 13,
+            "path_id": "oune-pivan-sector-13",
+            "ordinate": 41000,
+            "chainage_m": 42000
+          },
+          {
+            "lat": 50.38562259786278,
+            "lon": 137.39620001554263,
+            "sector": 13,
+            "path_id": "oune-pivan-sector-13",
+            "ordinate": 42000,
+            "chainage_m": 43000
+          },
+          {
+            "lat": 50.38687794839191,
+            "lon": 137.4100999716525,
+            "sector": 13,
+            "path_id": "oune-pivan-sector-13",
+            "ordinate": 43000,
+            "chainage_m": 44000
+          },
+          {
+            "lat": 50.38814704990813,
+            "lon": 137.42409733058753,
+            "sector": 13,
+            "path_id": "oune-pivan-sector-13",
+            "ordinate": 44000,
+            "chainage_m": 45000
+          },
+          {
+            "lat": 50.389383492830014,
+            "lon": 137.43794743936922,
+            "sector": 13,
+            "path_id": "oune-pivan-sector-13",
+            "ordinate": 45000,
+            "chainage_m": 46000
+          },
+          {
+            "lat": 50.39060160110247,
+            "lon": 137.4519299014016,
+            "sector": 13,
+            "path_id": "oune-pivan-sector-13",
+            "ordinate": 46000,
+            "chainage_m": 47000
+          },
+          {
+            "lat": 50.38854181782897,
+            "lon": 137.45786918190592,
+            "sector": 13,
+            "path_id": "oune-pivan-sector-13",
+            "ordinate": 46500,
+            "chainage_m": 47500
+          },
+          {
+            "lat": 50.384258385352574,
+            "lon": 137.45825191771308,
+            "sector": 13,
+            "path_id": "oune-pivan-sector-13",
+            "ordinate": 47000,
+            "chainage_m": 48000
+          },
+          {
+            "lat": 50.38010845204244,
+            "lon": 137.45584721384694,
+            "sector": 13,
+            "path_id": "oune-pivan-sector-13",
+            "ordinate": 47500,
+            "chainage_m": 48500
+          },
+          {
+            "lat": 50.37620832833099,
+            "lon": 137.45890337072612,
+            "sector": 13,
+            "path_id": "oune-pivan-sector-13",
+            "ordinate": 48000,
+            "chainage_m": 49000
+          },
+          {
+            "lat": 50.371333603410015,
+            "lon": 137.47037799648922,
+            "sector": 13,
+            "path_id": "oune-pivan-sector-13",
+            "ordinate": 49000,
+            "chainage_m": 50000
+          },
+          {
+            "lat": 50.370119505842126,
+            "lon": 137.47410565990435,
+            "sector": 13,
+            "path_id": "oune-pivan-sector-13",
+            "ordinate": 49300,
+            "chainage_m": 50300
+          },
+          {
+            "lat": 50.36485516962047,
+            "lon": 137.47948172289605,
+            "sector": 13,
+            "path_id": "oune-pivan-sector-13",
+            "ordinate": 50000,
+            "chainage_m": 51000
+          },
+          {
+            "lat": 50.362211542353734,
+            "lon": 137.4829865057289,
+            "sector": 13,
+            "path_id": "oune-pivan-sector-13",
+            "ordinate": 50400,
+            "chainage_m": 51400
+          },
+          {
+            "lat": 50.361808180065964,
+            "lon": 137.4858644727338,
+            "sector": 13,
+            "path_id": "oune-pivan-sector-13",
+            "ordinate": 50600,
+            "chainage_m": 51600
+          },
+          {
+            "lat": 50.362144506291706,
+            "lon": 137.49142216334658,
+            "sector": 13,
+            "path_id": "oune-pivan-sector-13",
+            "ordinate": 51000,
+            "chainage_m": 52000
+          },
+          {
+            "lat": 50.3628973728345,
+            "lon": 137.50538629072952,
+            "sector": 13,
+            "path_id": "oune-pivan-sector-13",
+            "ordinate": 52000,
+            "chainage_m": 53000
+          },
+          {
+            "lat": 50.3627335069051,
+            "lon": 137.5122973076544,
+            "sector": 13,
+            "path_id": "oune-pivan-sector-13",
+            "ordinate": 52500,
+            "chainage_m": 53500
+          },
+          {
+            "lat": 50.35984178891307,
+            "lon": 137.51758341627223,
+            "sector": 13,
+            "path_id": "oune-pivan-sector-13",
+            "ordinate": 53000,
+            "chainage_m": 54000
+          },
+          {
+            "lat": 50.35374437205729,
+            "lon": 137.52790295912035,
+            "sector": 13,
+            "path_id": "oune-pivan-sector-13",
+            "ordinate": 54000,
+            "chainage_m": 55000
+          },
+          {
+            "lat": 50.349675225796275,
+            "lon": 137.54047250722994,
+            "sector": 13,
+            "path_id": "oune-pivan-sector-13",
+            "ordinate": 55000,
+            "chainage_m": 56000
+          },
+          {
+            "lat": 50.345869640121016,
+            "lon": 137.55321107788907,
+            "sector": 13,
+            "path_id": "oune-pivan-sector-13",
+            "ordinate": 56000,
+            "chainage_m": 57000
+          },
+          {
+            "lat": 50.343777771210995,
+            "lon": 137.56651916859659,
+            "sector": 13,
+            "path_id": "oune-pivan-sector-13",
+            "ordinate": 57000,
+            "chainage_m": 58000
+          },
+          {
+            "lat": 50.3478131129621,
+            "lon": 137.57873348287316,
+            "sector": 13,
+            "path_id": "oune-pivan-sector-13",
+            "ordinate": 58000,
+            "chainage_m": 59000
+          },
+          {
+            "lat": 50.34693877936673,
+            "lon": 137.5826026668637,
+            "sector": 13,
+            "path_id": "oune-pivan-sector-13",
+            "ordinate": 58300,
+            "chainage_m": 59300
+          },
+          {
+            "lat": 50.34170309103482,
+            "lon": 137.58817525437914,
+            "sector": 13,
+            "path_id": "oune-pivan-sector-13",
+            "ordinate": 59000,
+            "chainage_m": 60000
+          },
+          {
+            "lat": 50.34292349113845,
+            "lon": 137.6017348735587,
+            "sector": 13,
+            "path_id": "oune-pivan-sector-13",
+            "ordinate": 60000,
+            "chainage_m": 61000
+          },
+          {
+            "lat": 50.34333315596197,
+            "lon": 137.6157499941854,
+            "sector": 13,
+            "path_id": "oune-pivan-sector-13",
+            "ordinate": 61000,
+            "chainage_m": 62000
+          },
+          {
+            "lat": 50.34419488448585,
+            "lon": 137.6195865195816,
+            "sector": 13,
+            "path_id": "oune-pivan-sector-13",
+            "ordinate": 61300,
+            "chainage_m": 62300
+          },
+          {
+            "lat": 50.34415993406034,
+            "lon": 137.6238968810744,
+            "sector": 13,
+            "path_id": "oune-pivan-sector-13",
+            "ordinate": 61600,
+            "chainage_m": 62600
+          },
+          {
+            "lat": 50.34332857229961,
+            "lon": 137.6293164888585,
+            "sector": 13,
+            "path_id": "oune-pivan-sector-13",
+            "ordinate": 62000,
+            "chainage_m": 63000
+          },
+          {
+            "lat": 50.34281692098856,
+            "lon": 137.63626990466022,
+            "sector": 13,
+            "path_id": "oune-pivan-sector-13",
+            "ordinate": 62500,
+            "chainage_m": 63500
+          },
+          {
+            "lat": 50.344418338025946,
+            "lon": 137.64292194466168,
+            "sector": 13,
+            "path_id": "oune-pivan-sector-13",
+            "ordinate": 63000,
+            "chainage_m": 64000
+          },
+          {
+            "lat": 50.34598193984886,
+            "lon": 137.6494416314125,
+            "sector": 13,
+            "path_id": "oune-pivan-sector-13",
+            "ordinate": 63500,
+            "chainage_m": 64500
+          },
+          {
+            "lat": 50.34458163099756,
+            "lon": 137.65570520602884,
+            "sector": 13,
+            "path_id": "oune-pivan-sector-13",
+            "ordinate": 64000,
+            "chainage_m": 65000
+          },
+          {
+            "lat": 50.345083542026096,
+            "lon": 137.65972221313052,
+            "sector": 13,
+            "path_id": "oune-pivan-sector-13",
+            "ordinate": 64300,
+            "chainage_m": 65300
+          },
+          {
+            "lat": 50.34597850210209,
+            "lon": 137.66214009502596,
+            "sector": 13,
+            "path_id": "oune-pivan-sector-13",
+            "ordinate": 64500,
+            "chainage_m": 65500
+          },
+          {
+            "lat": 50.34504973751618,
+            "lon": 137.6658414023825,
+            "sector": 13,
+            "path_id": "oune-pivan-sector-13",
+            "ordinate": 64800,
+            "chainage_m": 65800
+          },
+          {
+            "lat": 50.34330851877678,
+            "lon": 137.66630549819655,
+            "sector": 13,
+            "path_id": "oune-pivan-sector-13",
+            "ordinate": 65000,
+            "chainage_m": 66000
+          },
+          {
+            "lat": 50.34075656475727,
+            "lon": 137.66248157787186,
+            "sector": 13,
+            "path_id": "oune-pivan-sector-13",
+            "ordinate": 65400,
+            "chainage_m": 66400
+          },
+          {
+            "lat": 50.33553520037024,
+            "lon": 137.66192810064175,
+            "sector": 13,
+            "path_id": "oune-pivan-sector-13",
+            "ordinate": 66000,
+            "chainage_m": 67000
+          },
+          {
+            "lat": 50.33408332531738,
+            "lon": 137.66538590093538,
+            "sector": 13,
+            "path_id": "oune-pivan-sector-13",
+            "ordinate": 66300,
+            "chainage_m": 67300
+          },
+          {
+            "lat": 50.33356136076601,
+            "lon": 137.67503909386772,
+            "sector": 13,
+            "path_id": "oune-pivan-sector-13",
+            "ordinate": 67000,
+            "chainage_m": 68000
+          },
+          {
+            "lat": 50.3361052933764,
+            "lon": 137.68297799707707,
+            "sector": 13,
+            "path_id": "oune-pivan-sector-13",
+            "ordinate": 67600,
+            "chainage_m": 68600
+          },
+          {
+            "lat": 50.337128023040705,
+            "lon": 137.6876917208576,
+            "sector": 13,
+            "path_id": "oune-pivan-sector-13",
+            "ordinate": 68000,
+            "chainage_m": 69000
+          },
+          {
+            "lat": 50.338580471051365,
+            "lon": 137.68940543762287,
+            "sector": 13,
+            "path_id": "oune-pivan-sector-13",
+            "ordinate": 68200,
+            "chainage_m": 69200
+          },
+          {
+            "lat": 50.343941637140404,
+            "lon": 137.6889304556107,
+            "sector": 13,
+            "path_id": "oune-pivan-sector-13",
+            "ordinate": 68800,
+            "chainage_m": 69800
+          },
+          {
+            "lat": 50.34566681306154,
+            "lon": 137.68942205339889,
+            "sector": 13,
+            "path_id": "oune-pivan-sector-13",
+            "ordinate": 69000,
+            "chainage_m": 70000
+          },
+          {
+            "lat": 50.3473192233427,
+            "lon": 137.6924696159112,
+            "sector": 13,
+            "path_id": "oune-pivan-sector-13",
+            "ordinate": 69300,
+            "chainage_m": 70300
+          },
+          {
+            "lat": 50.34718056755627,
+            "lon": 137.695250180091,
+            "sector": 13,
+            "path_id": "oune-pivan-sector-13",
+            "ordinate": 69500,
+            "chainage_m": 70500
+          },
+          {
+            "lat": 50.344876704262056,
+            "lon": 137.70119519017328,
+            "sector": 13,
+            "path_id": "oune-pivan-sector-13",
+            "ordinate": 70000,
+            "chainage_m": 71000
+          },
+          {
+            "lat": 50.34394736671835,
+            "lon": 137.70346410304197,
+            "sector": 13,
+            "path_id": "oune-pivan-sector-13",
+            "ordinate": 70200,
+            "chainage_m": 71200
+          },
+          {
+            "lat": 50.34226688150524,
+            "lon": 137.7044249532644,
+            "sector": 13,
+            "path_id": "oune-pivan-sector-13",
+            "ordinate": 70400,
+            "chainage_m": 71400
+          },
+          {
+            "lat": 50.339355682948174,
+            "lon": 137.70945552270567,
+            "sector": 13,
+            "path_id": "oune-pivan-sector-13",
+            "ordinate": 70900,
+            "chainage_m": 71900
+          },
+          {
+            "lat": 50.338508278369176,
+            "lon": 137.7100886410693,
+            "sector": 13,
+            "path_id": "oune-pivan-sector-13",
+            "ordinate": 71000,
+            "chainage_m": 72000
+          },
+          {
+            "lat": 50.33455028592041,
+            "lon": 137.72214138124767,
+            "sector": 13,
+            "path_id": "oune-pivan-sector-13",
+            "ordinate": 72000,
+            "chainage_m": 73000
+          },
+          {
+            "lat": 50.32936158012771,
+            "lon": 137.73316508922596,
+            "sector": 13,
+            "path_id": "oune-pivan-sector-13",
+            "ordinate": 73000,
+            "chainage_m": 74000
+          },
+          {
+            "lat": 50.321333295502335,
+            "lon": 137.73961086442117,
+            "sector": 13,
+            "path_id": "oune-pivan-sector-13",
+            "ordinate": 74000,
+            "chainage_m": 75000
+          },
+          {
+            "lat": 50.31669749398193,
+            "lon": 137.7447749330287,
+            "sector": 13,
+            "path_id": "oune-pivan-sector-13",
+            "ordinate": 75000,
+            "chainage_m": 76000
+          },
+          {
+            "lat": 50.30976814240762,
+            "lon": 137.7535767106775,
+            "sector": 13,
+            "path_id": "oune-pivan-sector-13",
+            "ordinate": 76000,
+            "chainage_m": 77000
+          },
+          {
+            "lat": 50.30106663237297,
+            "lon": 137.7570723261856,
+            "sector": 13,
+            "path_id": "oune-pivan-sector-13",
+            "ordinate": 77000,
+            "chainage_m": 78000
+          },
+          {
+            "lat": 50.29236111163375,
+            "lon": 137.760530699437,
+            "sector": 13,
+            "path_id": "oune-pivan-sector-13",
+            "ordinate": 78000,
+            "chainage_m": 79000
+          },
+          {
+            "lat": 50.2841414591048,
+            "lon": 137.7660946925855,
+            "sector": 13,
+            "path_id": "oune-pivan-sector-13",
+            "ordinate": 79000,
+            "chainage_m": 80000
+          },
+          {
+            "lat": 50.27608509954747,
+            "lon": 137.77238634213384,
+            "sector": 13,
+            "path_id": "oune-pivan-sector-13",
+            "ordinate": 80000,
+            "chainage_m": 81000
+          },
+          {
+            "lat": 50.271738641713604,
+            "lon": 137.78355558139214,
+            "sector": 13,
+            "path_id": "oune-pivan-sector-13",
+            "ordinate": 81000,
+            "chainage_m": 82000
+          },
+          {
+            "lat": 50.2651502000274,
+            "lon": 137.7929251602159,
+            "sector": 13,
+            "path_id": "oune-pivan-sector-13",
+            "ordinate": 82000,
+            "chainage_m": 83000
+          },
+          {
+            "lat": 50.26393610245952,
+            "lon": 137.80400272622694,
+            "sector": 13,
+            "path_id": "oune-pivan-sector-13",
+            "ordinate": 82800,
+            "chainage_m": 83800
+          },
+          {
+            "lat": 50.26364332102621,
+            "lon": 137.8067735501242,
+            "sector": 13,
+            "path_id": "oune-pivan-sector-13",
+            "ordinate": 83000,
+            "chainage_m": 84000
+          },
+          {
+            "lat": 50.26258048431623,
+            "lon": 137.82082476709198,
+            "sector": 13,
+            "path_id": "oune-pivan-sector-13",
+            "ordinate": 84000,
+            "chainage_m": 85000
+          },
+          {
+            "lat": 50.262999889422275,
+            "lon": 137.8249082372979,
+            "sector": 13,
+            "path_id": "oune-pivan-sector-13",
+            "ordinate": 84300,
+            "chainage_m": 85300
+          },
+          {
+            "lat": 50.26511926030646,
+            "lon": 137.82939449683377,
+            "sector": 13,
+            "path_id": "oune-pivan-sector-13",
+            "ordinate": 84700,
+            "chainage_m": 85700
+          },
+          {
+            "lat": 50.26756980079623,
+            "lon": 137.83110477585225,
+            "sector": 13,
+            "path_id": "oune-pivan-sector-13",
+            "ordinate": 85000,
+            "chainage_m": 86000
+          },
+          {
+            "lat": 50.26896094232281,
+            "lon": 137.83450012374618,
+            "sector": 13,
+            "path_id": "oune-pivan-sector-13",
+            "ordinate": 85300,
+            "chainage_m": 86300
+          },
+          {
+            "lat": 50.26826136085496,
+            "lon": 137.83701082480442,
+            "sector": 13,
+            "path_id": "oune-pivan-sector-13",
+            "ordinate": 85500,
+            "chainage_m": 86500
+          },
+          {
+            "lat": 50.26662212860309,
+            "lon": 137.83795276741964,
+            "sector": 13,
+            "path_id": "oune-pivan-sector-13",
+            "ordinate": 85700,
+            "chainage_m": 86700
+          },
+          {
+            "lat": 50.26421971656811,
+            "lon": 137.83667679040988,
+            "sector": 13,
+            "path_id": "oune-pivan-sector-13",
+            "ordinate": 86000,
+            "chainage_m": 87000
+          },
+          {
+            "lat": 50.260085826076235,
+            "lon": 137.8341941642836,
+            "sector": 13,
+            "path_id": "oune-pivan-sector-13",
+            "ordinate": 86500,
+            "chainage_m": 87500
+          },
+          {
+            "lat": 50.256036160380255,
+            "lon": 137.83699993860634,
+            "sector": 13,
+            "path_id": "oune-pivan-sector-13",
+            "ordinate": 87000,
+            "chainage_m": 88000
+          },
+          {
+            "lat": 50.25502775466082,
+            "lon": 137.839347346693,
+            "sector": 13,
+            "path_id": "oune-pivan-sector-13",
+            "ordinate": 87200,
+            "chainage_m": 88200
+          },
+          {
+            "lat": 50.25503864085893,
+            "lon": 137.8433695104148,
+            "sector": 13,
+            "path_id": "oune-pivan-sector-13",
+            "ordinate": 87500,
+            "chainage_m": 88500
+          },
+          {
+            "lat": 50.25635300604096,
+            "lon": 137.84523907170032,
+            "sector": 13,
+            "path_id": "oune-pivan-sector-13",
+            "ordinate": 87700,
+            "chainage_m": 88700
+          },
+          {
+            "lat": 50.25854743439631,
+            "lon": 137.84737219357157,
+            "sector": 13,
+            "path_id": "oune-pivan-sector-13",
+            "ordinate": 88000,
+            "chainage_m": 89000
+          },
+          {
+            "lat": 50.259975245221774,
+            "lon": 137.84894152497245,
+            "sector": 13,
+            "path_id": "oune-pivan-sector-13",
+            "ordinate": 88200,
+            "chainage_m": 89200
+          },
+          {
+            "lat": 50.26159442395081,
+            "lon": 137.84802479250024,
+            "sector": 13,
+            "path_id": "oune-pivan-sector-13",
+            "ordinate": 88400,
+            "chainage_m": 89400
+          },
+          {
+            "lat": 50.263041715341316,
+            "lon": 137.84637524700807,
+            "sector": 13,
+            "path_id": "oune-pivan-sector-13",
+            "ordinate": 88600,
+            "chainage_m": 89600
+          },
+          {
+            "lat": 50.264713606187506,
+            "lon": 137.84698888480665,
+            "sector": 13,
+            "path_id": "oune-pivan-sector-13",
+            "ordinate": 88800,
+            "chainage_m": 89800
+          },
+          {
+            "lat": 50.26534328680436,
+            "lon": 137.849513336852,
+            "sector": 13,
+            "path_id": "oune-pivan-sector-13",
+            "ordinate": 89000,
+            "chainage_m": 90000
+          },
+          {
+            "lat": 50.262449849938946,
+            "lon": 137.85455020882898,
+            "sector": 13,
+            "path_id": "oune-pivan-sector-13",
+            "ordinate": 89500,
+            "chainage_m": 90500
+          },
+          {
+            "lat": 50.2619250205986,
+            "lon": 137.86133689391232,
+            "sector": 13,
+            "path_id": "oune-pivan-sector-13",
+            "ordinate": 90000,
+            "chainage_m": 91000
+          },
+          {
+            "lat": 50.26117501884478,
+            "lon": 137.86386363778882,
+            "sector": 13,
+            "path_id": "oune-pivan-sector-13",
+            "ordinate": 90200,
+            "chainage_m": 91200
+          },
+          {
+            "lat": 50.26117215405581,
+            "lon": 137.86803591645298,
+            "sector": 13,
+            "path_id": "oune-pivan-sector-13",
+            "ordinate": 90500,
+            "chainage_m": 91500
+          },
+          {
+            "lat": 50.26248823811122,
+            "lon": 137.8747034263149,
+            "sector": 13,
+            "path_id": "oune-pivan-sector-13",
+            "ordinate": 91000,
+            "chainage_m": 92000
+          },
+          {
+            "lat": 50.26325256380993,
+            "lon": 137.87878059398506,
+            "sector": 13,
+            "path_id": "oune-pivan-sector-13",
+            "ordinate": 91300,
+            "chainage_m": 92300
+          },
+          {
+            "lat": 50.264505622507876,
+            "lon": 137.88230027372057,
+            "sector": 13,
+            "path_id": "oune-pivan-sector-13",
+            "ordinate": 91600,
+            "chainage_m": 92600
+          },
+          {
+            "lat": 50.26792216984024,
+            "lon": 137.88363068172086,
+            "sector": 13,
+            "path_id": "oune-pivan-sector-13",
+            "ordinate": 92000,
+            "chainage_m": 93000
+          },
+          {
+            "lat": 50.269074960924044,
+            "lon": 137.88573630161798,
+            "sector": 13,
+            "path_id": "oune-pivan-sector-13",
+            "ordinate": 92200,
+            "chainage_m": 93200
+          },
+          {
+            "lat": 50.2679026892752,
+            "lon": 137.89219181709572,
+            "sector": 13,
+            "path_id": "oune-pivan-sector-13",
+            "ordinate": 92700,
+            "chainage_m": 93700
+          },
+          {
+            "lat": 50.268813692169466,
+            "lon": 137.8961446529243,
+            "sector": 13,
+            "path_id": "oune-pivan-sector-13",
+            "ordinate": 93000,
+            "chainage_m": 94000
+          },
+          {
+            "lat": 50.26772220756974,
+            "lon": 137.90995007099798,
+            "sector": 13,
+            "path_id": "oune-pivan-sector-13",
+            "ordinate": 94000,
+            "chainage_m": 95000
+          },
+          {
+            "lat": 50.26566929978979,
+            "lon": 137.9235973527202,
+            "sector": 13,
+            "path_id": "oune-pivan-sector-13",
+            "ordinate": 95000,
+            "chainage_m": 96000
+          },
+          {
+            "lat": 50.2639269351348,
+            "lon": 137.930021928477,
+            "sector": 13,
+            "path_id": "oune-pivan-sector-13",
+            "ordinate": 95500,
+            "chainage_m": 96500
+          },
+          {
+            "lat": 50.26385015879025,
+            "lon": 137.93633076675917,
+            "sector": 13,
+            "path_id": "oune-pivan-sector-13",
+            "ordinate": 96000,
+            "chainage_m": 97000
+          },
+          {
+            "lat": 50.265817122900934,
+            "lon": 137.93891366049962,
+            "sector": 13,
+            "path_id": "oune-pivan-sector-13",
+            "ordinate": 96300,
+            "chainage_m": 97300
+          },
+          {
+            "lat": 50.26876384484129,
+            "lon": 137.93810292521954,
+            "sector": 13,
+            "path_id": "oune-pivan-sector-13",
+            "ordinate": 96600,
+            "chainage_m": 97600
+          },
+          {
+            "lat": 50.27024436778391,
+            "lon": 137.93958344816215,
+            "sector": 13,
+            "path_id": "oune-pivan-sector-13",
+            "ordinate": 96800,
+            "chainage_m": 97800
+          },
+          {
+            "lat": 50.270569234853745,
+            "lon": 137.94213597513945,
+            "sector": 13,
+            "path_id": "oune-pivan-sector-13",
+            "ordinate": 97000,
+            "chainage_m": 98000
+          },
+          {
+            "lat": 50.27003867593545,
+            "lon": 137.9474472939003,
+            "sector": 13,
+            "path_id": "oune-pivan-sector-13",
+            "ordinate": 97400,
+            "chainage_m": 98400
+          },
+          {
+            "lat": 50.27224169865773,
+            "lon": 137.94949160731335,
+            "sector": 13,
+            "path_id": "oune-pivan-sector-13",
+            "ordinate": 97700,
+            "chainage_m": 98700
+          },
+          {
+            "lat": 50.274808549579916,
+            "lon": 137.94930253124096,
+            "sector": 13,
+            "path_id": "oune-pivan-sector-13",
+            "ordinate": 98000,
+            "chainage_m": 99000
+          },
+          {
+            "lat": 50.277308364440074,
+            "lon": 137.95038599443154,
+            "sector": 13,
+            "path_id": "oune-pivan-sector-13",
+            "ordinate": 98300,
+            "chainage_m": 99300
+          },
+          {
+            "lat": 50.27762750193197,
+            "lon": 137.95436117561417,
+            "sector": 13,
+            "path_id": "oune-pivan-sector-13",
+            "ordinate": 98600,
+            "chainage_m": 99600
+          },
+          {
+            "lat": 50.27513341664976,
+            "lon": 137.95840854947897,
+            "sector": 13,
+            "path_id": "oune-pivan-sector-13",
+            "ordinate": 99000,
+            "chainage_m": 100000
+          },
+          {
+            "lat": 50.274102665576315,
+            "lon": 137.96218892501125,
+            "sector": 13,
+            "path_id": "oune-pivan-sector-13",
+            "ordinate": 99300,
+            "chainage_m": 100300
+          },
+          {
+            "lat": 50.27625297618144,
+            "lon": 137.9713585415645,
+            "sector": 13,
+            "path_id": "oune-pivan-sector-13",
+            "ordinate": 100000,
+            "chainage_m": 101000
+          },
+          {
+            "lat": 50.279152715582605,
+            "lon": 137.9845749590248,
+            "sector": 13,
+            "path_id": "oune-pivan-sector-13",
+            "ordinate": 101000,
+            "chainage_m": 102000
+          },
+          {
+            "lat": 50.2812944318208,
+            "lon": 137.99807212580467,
+            "sector": 13,
+            "path_id": "oune-pivan-sector-13",
+            "ordinate": 102000,
+            "chainage_m": 103000
+          },
+          {
+            "lat": 50.2848834394495,
+            "lon": 138.0107665787136,
+            "sector": 13,
+            "path_id": "oune-pivan-sector-13",
+            "ordinate": 103000,
+            "chainage_m": 104000
+          },
+          {
+            "lat": 50.29070354473244,
+            "lon": 138.02123509058845,
+            "sector": 13,
+            "path_id": "oune-pivan-sector-13",
+            "ordinate": 104000,
+            "chainage_m": 105000
+          },
+          {
+            "lat": 50.29493082734491,
+            "lon": 138.033569726002,
+            "sector": 13,
+            "path_id": "oune-pivan-sector-13",
+            "ordinate": 105000,
+            "chainage_m": 106000
+          },
+          {
+            "lat": 50.29370355174775,
+            "lon": 138.04744332605333,
+            "sector": 13,
+            "path_id": "oune-pivan-sector-13",
+            "ordinate": 106000,
+            "chainage_m": 107000
+          },
+          {
+            "lat": 50.29506088876441,
+            "lon": 138.05097790269147,
+            "sector": 13,
+            "path_id": "oune-pivan-sector-13",
+            "ordinate": 106300,
+            "chainage_m": 107300
+          },
+          {
+            "lat": 50.29761398869951,
+            "lon": 138.0517502497993,
+            "sector": 13,
+            "path_id": "oune-pivan-sector-13",
+            "ordinate": 106600,
+            "chainage_m": 107600
+          },
+          {
+            "lat": 50.30087239968042,
+            "lon": 138.04953347608995,
+            "sector": 13,
+            "path_id": "oune-pivan-sector-13",
+            "ordinate": 107000,
+            "chainage_m": 108000
+          },
+          {
+            "lat": 50.30519994990704,
+            "lon": 138.05133313652445,
+            "sector": 13,
+            "path_id": "oune-pivan-sector-13",
+            "ordinate": 107500,
+            "chainage_m": 108500
+          },
+          {
+            "lat": 50.30799140028492,
+            "lon": 138.05663815274957,
+            "sector": 13,
+            "path_id": "oune-pivan-sector-13",
+            "ordinate": 108000,
+            "chainage_m": 109000
+          },
+          {
+            "lat": 50.31327177932484,
+            "lon": 138.0675902410035,
+            "sector": 13,
+            "path_id": "oune-pivan-sector-13",
+            "ordinate": 109000,
+            "chainage_m": 110000
+          },
+          {
+            "lat": 50.31652847143237,
+            "lon": 138.08014832995715,
+            "sector": 13,
+            "path_id": "oune-pivan-sector-13",
+            "ordinate": 110000,
+            "chainage_m": 111000
+          },
+          {
+            "lat": 50.31786346309502,
+            "lon": 138.09397666634266,
+            "sector": 13,
+            "path_id": "oune-pivan-sector-13",
+            "ordinate": 111000,
+            "chainage_m": 112000
+          },
+          {
+            "lat": 50.31916407728997,
+            "lon": 138.10791672949819,
+            "sector": 13,
+            "path_id": "oune-pivan-sector-13",
+            "ordinate": 112000,
+            "chainage_m": 113000
+          },
+          {
+            "lat": 50.32039421767611,
+            "lon": 138.11755044186552,
+            "sector": 13,
+            "path_id": "oune-pivan-sector-13",
+            "ordinate": 112700,
+            "chainage_m": 113700
+          },
+          {
+            "lat": 50.32099811519218,
+            "lon": 138.12187856504994,
+            "sector": 13,
+            "path_id": "oune-pivan-sector-13",
+            "ordinate": 113000,
+            "chainage_m": 114000
+          },
+          {
+            "lat": 50.322006520911614,
+            "lon": 138.12866525013325,
+            "sector": 13,
+            "path_id": "oune-pivan-sector-13",
+            "ordinate": 113500,
+            "chainage_m": 114500
+          },
+          {
+            "lat": 50.3209247765944,
+            "lon": 138.1352141577316,
+            "sector": 13,
+            "path_id": "oune-pivan-sector-13",
+            "ordinate": 114000,
+            "chainage_m": 115000
+          },
+          {
+            "lat": 50.32100556364352,
+            "lon": 138.13956405331223,
+            "sector": 13,
+            "path_id": "oune-pivan-sector-13",
+            "ordinate": 114300,
+            "chainage_m": 115300
+          },
+          {
+            "lat": 50.32461176000607,
+            "lon": 138.14724684438715,
+            "sector": 13,
+            "path_id": "oune-pivan-sector-13",
+            "ordinate": 115000,
+            "chainage_m": 116000
+          },
+          {
+            "lat": 50.33167174595768,
+            "lon": 138.1558784535708,
+            "sector": 13,
+            "path_id": "oune-pivan-sector-13",
+            "ordinate": 116000,
+            "chainage_m": 117000
+          },
+          {
+            "lat": 50.33839139497897,
+            "lon": 138.16490024701292,
+            "sector": 13,
+            "path_id": "oune-pivan-sector-13",
+            "ordinate": 117000,
+            "chainage_m": 118000
+          },
+          {
+            "lat": 50.34479649017074,
+            "lon": 138.17444515092203,
+            "sector": 13,
+            "path_id": "oune-pivan-sector-13",
+            "ordinate": 118000,
+            "chainage_m": 119000
+          },
+          {
+            "lat": 50.34821647524987,
+            "lon": 138.18737508948473,
+            "sector": 13,
+            "path_id": "oune-pivan-sector-13",
+            "ordinate": 119000,
+            "chainage_m": 120000
+          },
+          {
+            "lat": 50.35236182489765,
+            "lon": 138.19980655476567,
+            "sector": 13,
+            "path_id": "oune-pivan-sector-13",
+            "ordinate": 120000,
+            "chainage_m": 121000
+          },
+          {
+            "lat": 50.3530608334077,
+            "lon": 138.20952220009772,
+            "sector": 13,
+            "path_id": "oune-pivan-sector-13",
+            "ordinate": 120700,
+            "chainage_m": 121700
+          },
+          {
+            "lat": 50.35199169416199,
+            "lon": 138.21321090238277,
+            "sector": 13,
+            "path_id": "oune-pivan-sector-13",
+            "ordinate": 121000,
+            "chainage_m": 122000
+          },
+          {
+            "lat": 50.35194184683381,
+            "lon": 138.22288071109116,
+            "sector": 13,
+            "path_id": "oune-pivan-sector-13",
+            "ordinate": 121700,
+            "chainage_m": 122700
+          },
+          {
+            "lat": 50.35292332353687,
+            "lon": 138.22684500607568,
+            "sector": 13,
+            "path_id": "oune-pivan-sector-13",
+            "ordinate": 122000,
+            "chainage_m": 123000
+          },
+          {
+            "lat": 50.35635190298294,
+            "lon": 138.23953659419564,
+            "sector": 13,
+            "path_id": "oune-pivan-sector-13",
+            "ordinate": 123000,
+            "chainage_m": 124000
+          },
+          {
+            "lat": 50.35610266634205,
+            "lon": 138.24538305553716,
+            "sector": 13,
+            "path_id": "oune-pivan-sector-13",
+            "ordinate": 123400,
+            "chainage_m": 124400
+          },
+          {
+            "lat": 50.3550381107587,
+            "lon": 138.25340159988,
+            "sector": 13,
+            "path_id": "oune-pivan-sector-13",
+            "ordinate": 124000,
+            "chainage_m": 125000
+          },
+          {
+            "lat": 50.353202926940895,
+            "lon": 138.26718868330425,
+            "sector": 13,
+            "path_id": "oune-pivan-sector-13",
+            "ordinate": 125000,
+            "chainage_m": 126000
+          },
+          {
+            "lat": 50.3509082309714,
+            "lon": 138.28088352052347,
+            "sector": 13,
+            "path_id": "oune-pivan-sector-13",
+            "ordinate": 126000,
+            "chainage_m": 127000
+          },
+          {
+            "lat": 50.345141410763404,
+            "lon": 138.29113144364715,
+            "sector": 13,
+            "path_id": "oune-pivan-sector-13",
+            "ordinate": 127000,
+            "chainage_m": 128000
+          },
+          {
+            "lat": 50.341122111830565,
+            "lon": 138.303672343867,
+            "sector": 13,
+            "path_id": "oune-pivan-sector-13",
+            "ordinate": 128000,
+            "chainage_m": 129000
+          },
+          {
+            "lat": 50.34129170733792,
+            "lon": 138.31778658619226,
+            "sector": 13,
+            "path_id": "oune-pivan-sector-13",
+            "ordinate": 129000,
+            "chainage_m": 130000
+          },
+          {
+            "lat": 50.34159823975832,
+            "lon": 138.3319466651411,
+            "sector": 13,
+            "path_id": "oune-pivan-sector-13",
+            "ordinate": 130000,
+            "chainage_m": 131000
+          },
+          {
+            "lat": 50.341921960912565,
+            "lon": 138.34600017394007,
+            "sector": 13,
+            "path_id": "oune-pivan-sector-13",
+            "ordinate": 131000,
+            "chainage_m": 132000
+          },
+          {
+            "lat": 50.342234795868706,
+            "lon": 138.36013332387256,
+            "sector": 13,
+            "path_id": "oune-pivan-sector-13",
+            "ordinate": 132000,
+            "chainage_m": 133000
+          },
+          {
+            "lat": 50.34258028941917,
+            "lon": 138.37413583942777,
+            "sector": 13,
+            "path_id": "oune-pivan-sector-13",
+            "ordinate": 133000,
+            "chainage_m": 134000
+          },
+          {
+            "lat": 50.34297792212899,
+            "lon": 138.38797792680032,
+            "sector": 13,
+            "path_id": "oune-pivan-sector-13",
+            "ordinate": 134000,
+            "chainage_m": 135000
+          },
+          {
+            "lat": 50.34003349201981,
+            "lon": 138.40112673524078,
+            "sector": 13,
+            "path_id": "oune-pivan-sector-13",
+            "ordinate": 135000,
+            "chainage_m": 136000
+          },
+          {
+            "lat": 50.33736981123025,
+            "lon": 138.41476656851168,
+            "sector": 13,
+            "path_id": "oune-pivan-sector-13",
+            "ordinate": 136000,
+            "chainage_m": 137000
+          },
+          {
+            "lat": 50.338126688477615,
+            "lon": 138.42852328517276,
+            "sector": 13,
+            "path_id": "oune-pivan-sector-13",
+            "ordinate": 137000,
+            "chainage_m": 138000
+          },
+          {
+            "lat": 50.33920843279483,
+            "lon": 138.4424971528382,
+            "sector": 13,
+            "path_id": "oune-pivan-sector-13",
+            "ordinate": 138000,
+            "chainage_m": 139000
+          },
+          {
+            "lat": 50.340081620474606,
+            "lon": 138.4564314864158,
+            "sector": 13,
+            "path_id": "oune-pivan-sector-13",
+            "ordinate": 139000,
+            "chainage_m": 140000
+          },
+          {
+            "lat": 50.33628004550391,
+            "lon": 138.4684097420808,
+            "sector": 13,
+            "path_id": "oune-pivan-sector-13",
+            "ordinate": 140000,
+            "chainage_m": 141000
+          },
+          {
+            "lat": 50.32725309544163,
+            "lon": 138.46839312630473,
+            "sector": 13,
+            "path_id": "oune-pivan-sector-13",
+            "ordinate": 141000,
+            "chainage_m": 142000
+          },
+          {
+            "lat": 50.31837683327946,
+            "lon": 138.4658085136909,
+            "sector": 13,
+            "path_id": "oune-pivan-sector-13",
+            "ordinate": 142000,
+            "chainage_m": 143000
+          },
+          {
+            "lat": 50.30978361226809,
+            "lon": 138.46591393792522,
+            "sector": 13,
+            "path_id": "oune-pivan-sector-13",
+            "ordinate": 143000,
+            "chainage_m": 144000
+          },
+          {
+            "lat": 50.30171923130162,
+            "lon": 138.47164466179208,
+            "sector": 13,
+            "path_id": "oune-pivan-sector-13",
+            "ordinate": 144000,
+            "chainage_m": 145000
+          },
+          {
+            "lat": 50.29393502669698,
+            "lon": 138.4787298578867,
+            "sector": 13,
+            "path_id": "oune-pivan-sector-13",
+            "ordinate": 145000,
+            "chainage_m": 146000
+          },
+          {
+            "lat": 50.28537503723772,
+            "lon": 138.48266665089704,
+            "sector": 13,
+            "path_id": "oune-pivan-sector-13",
+            "ordinate": 146000,
+            "chainage_m": 147000
+          },
+          {
+            "lat": 50.27645007366297,
+            "lon": 138.4841557682066,
+            "sector": 13,
+            "path_id": "oune-pivan-sector-13",
+            "ordinate": 147000,
+            "chainage_m": 148000
+          },
+          {
+            "lat": 50.267401924162264,
+            "lon": 138.48587979821212,
+            "sector": 13,
+            "path_id": "oune-pivan-sector-13",
+            "ordinate": 148000,
+            "chainage_m": 149000
+          },
+          {
+            "lat": 50.26365821792888,
+            "lon": 138.48890845311718,
+            "sector": 13,
+            "path_id": "oune-pivan-sector-13",
+            "ordinate": 148500,
+            "chainage_m": 149500
+          },
+          {
+            "lat": 50.26127012983878,
+            "lon": 138.4947531955853,
+            "sector": 13,
+            "path_id": "oune-pivan-sector-13",
+            "ordinate": 149000,
+            "chainage_m": 150000
+          },
+          {
+            "lat": 50.26191814510507,
+            "lon": 138.5011915223292,
+            "sector": 13,
+            "path_id": "oune-pivan-sector-13",
+            "ordinate": 149500,
+            "chainage_m": 150500
+          },
+          {
+            "lat": 50.265495120620066,
+            "lon": 138.5041783513152,
+            "sector": 13,
+            "path_id": "oune-pivan-sector-13",
+            "ordinate": 150000,
+            "chainage_m": 151000
+          },
+          {
+            "lat": 50.26381692723813,
+            "lon": 138.5102402447877,
+            "sector": 13,
+            "path_id": "oune-pivan-sector-13",
+            "ordinate": 150500,
+            "chainage_m": 151500
+          },
+          {
+            "lat": 50.259618292515405,
+            "lon": 138.50913672807428,
+            "sector": 13,
+            "path_id": "oune-pivan-sector-13",
+            "ordinate": 151000,
+            "chainage_m": 152000
+          },
+          {
+            "lat": 50.25064520048586,
+            "lon": 138.50902328243083,
+            "sector": 13,
+            "path_id": "oune-pivan-sector-13",
+            "ordinate": 152000,
+            "chainage_m": 153000
+          },
+          {
+            "lat": 50.242746977279985,
+            "lon": 138.5135823076067,
+            "sector": 13,
+            "path_id": "oune-pivan-sector-13",
+            "ordinate": 153000,
+            "chainage_m": 154000
+          },
+          {
+            "lat": 50.235238365374805,
+            "lon": 138.52202655959132,
+            "sector": 13,
+            "path_id": "oune-pivan-sector-13",
+            "ordinate": 154000,
+            "chainage_m": 155000
+          },
+          {
+            "lat": 50.22822307013122,
+            "lon": 138.53089651921775,
+            "sector": 13,
+            "path_id": "oune-pivan-sector-13",
+            "ordinate": 155000,
+            "chainage_m": 156000
+          },
+          {
+            "lat": 50.22503341408573,
+            "lon": 138.54346320253836,
+            "sector": 13,
+            "path_id": "oune-pivan-sector-13",
+            "ordinate": 156000,
+            "chainage_m": 157000
+          },
+          {
+            "lat": 50.22318677111202,
+            "lon": 138.55518821085792,
+            "sector": 13,
+            "path_id": "oune-pivan-sector-13",
+            "ordinate": 157000,
+            "chainage_m": 158000
+          },
+          {
+            "lat": 50.22159738618833,
+            "lon": 138.5614363156138,
+            "sector": 13,
+            "path_id": "oune-pivan-sector-13",
+            "ordinate": 157500,
+            "chainage_m": 158500
+          },
+          {
+            "lat": 50.21729504610469,
+            "lon": 138.56174857761218,
+            "sector": 13,
+            "path_id": "oune-pivan-sector-13",
+            "ordinate": 158000,
+            "chainage_m": 159000
+          },
+          {
+            "lat": 50.20874823467472,
+            "lon": 138.56348521268922,
+            "sector": 13,
+            "path_id": "oune-pivan-sector-13",
+            "ordinate": 159000,
+            "chainage_m": 160000
+          },
+          {
+            "lat": 50.2026668606372,
+            "lon": 138.5736053662246,
+            "sector": 13,
+            "path_id": "oune-pivan-sector-13",
+            "ordinate": 160000,
+            "chainage_m": 161000
+          },
+          {
+            "lat": 50.20100528303133,
+            "lon": 138.58729733865482,
+            "sector": 13,
+            "path_id": "oune-pivan-sector-13",
+            "ordinate": 161000,
+            "chainage_m": 162000
+          },
+          {
+            "lat": 50.19963075728081,
+            "lon": 138.6011279668715,
+            "sector": 13,
+            "path_id": "oune-pivan-sector-13",
+            "ordinate": 162000,
+            "chainage_m": 163000
+          },
+          {
+            "lat": 50.198301495196105,
+            "lon": 138.6149780756532,
+            "sector": 13,
+            "path_id": "oune-pivan-sector-13",
+            "ordinate": 163000,
+            "chainage_m": 164000
+          },
+          {
+            "lat": 50.195985026830385,
+            "lon": 138.62859499061227,
+            "sector": 13,
+            "path_id": "oune-pivan-sector-13",
+            "ordinate": 164000,
+            "chainage_m": 165000
+          },
+          {
+            "lat": 50.19454002727107,
+            "lon": 138.6420434559796,
+            "sector": 13,
+            "path_id": "oune-pivan-sector-13",
+            "ordinate": 165000,
+            "chainage_m": 166000
+          },
+          {
+            "lat": 50.19362673254563,
+            "lon": 138.65611186168124,
+            "sector": 13,
+            "path_id": "oune-pivan-sector-13",
+            "ordinate": 166000,
+            "chainage_m": 167000
+          },
+          {
+            "lat": 50.19305262883491,
+            "lon": 138.67005249779456,
+            "sector": 13,
+            "path_id": "oune-pivan-sector-13",
+            "ordinate": 167000,
+            "chainage_m": 168000
+          },
+          {
+            "lat": 50.19383643509865,
+            "lon": 138.68389343925153,
+            "sector": 13,
+            "path_id": "oune-pivan-sector-13",
+            "ordinate": 168000,
+            "chainage_m": 169000
+          },
+          {
+            "lat": 50.1942065658343,
+            "lon": 138.69737341729757,
+            "sector": 13,
+            "path_id": "oune-pivan-sector-13",
+            "ordinate": 169000,
+            "chainage_m": 170000
+          },
+          {
+            "lat": 50.18969853390221,
+            "lon": 138.70821492469705,
+            "sector": 13,
+            "path_id": "oune-pivan-sector-13",
+            "ordinate": 170000,
+            "chainage_m": 171000
+          },
+          {
+            "lat": 50.18624990093332,
+            "lon": 138.72011640401752,
+            "sector": 13,
+            "path_id": "oune-pivan-sector-13",
+            "ordinate": 171000,
+            "chainage_m": 172000
+          },
+          {
+            "lat": 50.18980567700991,
+            "lon": 138.73257479831483,
+            "sector": 13,
+            "path_id": "oune-pivan-sector-13",
+            "ordinate": 172000,
+            "chainage_m": 173000
+          },
+          {
+            "lat": 50.19644167419311,
+            "lon": 138.74207501151588,
+            "sector": 13,
+            "path_id": "oune-pivan-sector-13",
+            "ordinate": 173000,
+            "chainage_m": 174000
+          },
+          {
+            "lat": 50.200734846952024,
+            "lon": 138.75395471844013,
+            "sector": 13,
+            "path_id": "oune-pivan-sector-13",
+            "ordinate": 174000,
+            "chainage_m": 175000
+          },
+          {
+            "lat": 50.20168481097635,
+            "lon": 138.76808156583687,
+            "sector": 13,
+            "path_id": "oune-pivan-sector-13",
+            "ordinate": 175000,
+            "chainage_m": 176000
+          },
+          {
+            "lat": 50.20109523740516,
+            "lon": 138.7821281991423,
+            "sector": 13,
+            "path_id": "oune-pivan-sector-13",
+            "ordinate": 176000,
+            "chainage_m": 177000
+          },
+          {
+            "lat": 50.19732173736643,
+            "lon": 138.7945201303354,
+            "sector": 13,
+            "path_id": "oune-pivan-sector-13",
+            "ordinate": 177000,
+            "chainage_m": 178000
+          },
+          {
+            "lat": 50.1973836168083,
+            "lon": 138.80842810785438,
+            "sector": 13,
+            "path_id": "oune-pivan-sector-13",
+            "ordinate": 178000,
+            "chainage_m": 179000
+          },
+          {
+            "lat": 50.1953834211455,
+            "lon": 138.82162676362304,
+            "sector": 13,
+            "path_id": "oune-pivan-sector-13",
+            "ordinate": 179000,
+            "chainage_m": 180000
+          },
+          {
+            "lat": 50.19773082923215,
+            "lon": 138.83304982318455,
+            "sector": 13,
+            "path_id": "oune-pivan-sector-13",
+            "ordinate": 179900,
+            "chainage_m": 180900
+          },
+          {
+            "lat": 50.19818174701692,
+            "lon": 138.8341619342649,
+            "sector": 13,
+            "path_id": "oune-pivan-sector-13",
+            "ordinate": 180000,
+            "chainage_m": 181000
+          },
+          {
+            "lat": 50.20171002111933,
+            "lon": 138.84686326266734,
+            "sector": 13,
+            "path_id": "oune-pivan-sector-13",
+            "ordinate": 181000,
+            "chainage_m": 182000
+          },
+          {
+            "lat": 50.20703852861405,
+            "lon": 138.8582250157448,
+            "sector": 13,
+            "path_id": "oune-pivan-sector-13",
+            "ordinate": 182000,
+            "chainage_m": 183000
+          },
+          {
+            "lat": 50.21159640787432,
+            "lon": 138.87016144549077,
+            "sector": 13,
+            "path_id": "oune-pivan-sector-13",
+            "ordinate": 183000,
+            "chainage_m": 184000
+          }
+        ]
+      }
+    ]
+  }
+}
