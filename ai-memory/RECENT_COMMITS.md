@@ -1,9 +1,11 @@
 # Recent Commits
 
-Generated: 2026-06-21 14:50:52 +1000
+Generated: 2026-07-10 09:25:15 +1000
 
 | Hash | Date | Author | Message |
 | --- | --- | --- | --- |
+| `a45b009` | 2026-07-10T09:25:05+10:00 | iEgor72 | feat: ship JSON track profiles and v379 shell |
+| `60b30a5` | 2026-06-21T14:51:07+10:00 | iEgor72 | chore(memory): record notification migration deploy |
 | `608c43b` | 2026-06-21T14:07:51+10:00 | iEgor72 | chore(memory): refresh after notification migration |
 | `201654b` | 2026-06-21T14:07:18+10:00 | iEgor72 | chore(memory): record notification migration fix |
 | `dbd02c8` | 2026-06-21T14:07:06+10:00 | iEgor72 | fix(notifications): migrate legacy bell announcements |
@@ -42,5 +44,3 @@ Generated: 2026-06-21 14:50:52 +1000
 | `0058d83` | 2026-06-08T09:52:24Z | iEgor72 | ui: rename colleagues to users |
 | `432a68b` | 2026-06-08T07:12:01Z | iEgor72 | docs: add folders 11-13 |
 | `7315f08` | 2026-06-08T15:01:10+10:00 | iEgor72 | chore(memory): record public site deploy |
-| `4ac79e1` | 2026-06-08T14:54:54+10:00 | iEgor72 | chore(memory): record public site update |
-| `478e759` | 2026-06-08T14:53:59+10:00 | iEgor72 | feat: refresh public site and app updates |

@@ -6612,3 +6612,180 @@ Append-only журнал действий ИИ-агентов по проект�
 - Branch: `main`
 - Methods: `Fast-forward pulled VPS to 608c43b`, `reloaded PM2 bloknot-mashinista with update-env`, `verified production v378 and no-store update-control headers with npm run smoke:prod-cache`
 - Files: `scripts/app-init.js`, `sw.js`, `server.js`, `index.html`, `scripts/app-constants.js`, `sw-bootstrap-v378.js`, `scripts/local-smoke.mjs`, `scripts/prod-cache-smoke.mjs`
+
+## 2026-06-21 15:04:14 +1000
+
+- Source: `manual`
+- Task: Fixed notification bell interaction and user-facing offline announcement copy
+- Branch: `main`
+- Methods: `Routed notification sheet through shared overlay open/close helpers`, `stopped notification click bubbling`, `archived read items on close`, `changed offline announcement copy`, `bumped PWA shell to v379`, `added smoke coverage for tap-expand-read-close and mark-all-close flows`
+- Files: `scripts/app-init.js`, `styles/50-design-refresh.css`, `scripts/local-smoke.mjs`, `scripts/prod-cache-smoke.mjs`, `index.html`, `scripts/app-constants.js`, `sw.js`, `server.js`, `sw-bootstrap-v379.js`
+
+## 2026-06-21 15:42:21 +1000
+
+- Source: `manual`
+- Task: Verified notification bell interaction fix
+- Branch: `main`
+- Methods: `Ran npm run smoke:predeploy after replacing fragile Playwright waits in local smoke with bounded DOM polling and hit-tested DOM clicks`, `confirmed notification expands`, `marks read`, `archives on close`, `mark-all clears list`, `and overlay no longer blocks profile tab hit target`
+- Files: `scripts/app-init.js`, `styles/50-design-refresh.css`, `scripts/local-smoke.mjs`, `scripts/prod-cache-smoke.mjs`, `index.html`, `scripts/app-constants.js`, `sw.js`, `server.js`, `sw-bootstrap-v379.js`
+
+## 2026-07-10 06:14:56 +1000
+
+- Source: `manual`
+- Task: Разобран промпт конвейера режимная карта PDF в JSON, общее KMP-ядро и веб-рендерер
+- Branch: `main`
+- Methods: `Проверена цель`, `границы трех слоев`, `строгая JSON-схема`, `ручная модерация`, `запрет генерации скоростей и архитектурный стык с текущим plain-JS приложением`
+- Files: `D:\Загрузки\prompt_rezhimnaya_karta_to_app_v2.md`
+
+## 2026-07-10 06:30:33 +1000
+
+- Source: `manual`
+- Task: Уточнена целевая переработка режима Поехали и проверены три исходные режимные карты
+- Branch: `main`
+- Methods: `Read-only аудит подтвердил XML-first профиль`, `монолитный regime-maps.json как fallback`, `пригодность трех PDF с текстовым и векторным слоями`, `форматы A и Б`, `и целевую схему index плюс отдельный JSON на маршрут и направление`
+- Files: `scripts/poekhali-tracker.js`, `scripts/import-regime-maps.py`, `assets/tracker/regime-maps.json`, `assets/tracker/maps/komsomol-sk-tche-9/profile.xml`, `C:\Users\shkur\.codex\codex-remote-attachments\019f4883-e95b-7e53-90f6-4010cdbf9698\619BD6FA-4C7E-4648-A299-D0F628BD1919`
+
+## 2026-07-10 06:30:40 +1000
+
+- Source: `manual`
+- Task: Зафиксирована граница первого этапа миграции Поехали
+- Branch: `main`
+- Methods: `Рекомендовано заменить profile.xml на per-section JSON`, `временно сохранив data.xml только для GPS-проекции`, `полное удаление XML требует расширить контракт маршрутной геометрией и объектами и должно быть подтверждено отдельно`
+- Files: `scripts/poekhali-tracker.js`, `assets/tracker/maps/komsomol-sk-tche-9/data.xml`, `assets/tracker/maps/komsomol-sk-tche-9/profile.xml`
+
+## 2026-07-10 06:44:33 +1000
+
+- Source: `manual`
+- Task: Спроектирована стратегия всероссийского режима Поехали
+- Branch: `main`
+- Methods: `Выбран подход data-platform-first: раздельные физический профиль`, `GPS-геометрия и режимные слои`, `JSON Schema и golden-корпус до KMP`, `текущий HTML Canvas сохраняется`, `KMP/Compose рассматривается для native после стабилизации контракта`, `предусмотрены модерация`, `версии`, `immutable-пакеты`, `offline rollback и capability levels`
+- Files: `scripts/poekhali-tracker.js`, `scripts/import-regime-maps.py`, `assets/tracker/regime-maps.json`, `D:\Загрузки\prompt_rezhimnaya_karta_to_app_v2.md`
+
+## 2026-07-10 06:44:41 +1000
+
+- Source: `manual`
+- Task: Пересмотрена последовательность внедрения KMP для Поехали
+- Branch: `main`
+- Methods: `KMP признан подходящим будущим mobile-стеком`, `но преждевременным для текущего WebApp: сначала schema v0.x`, `20-30 разнородных карт`, `Python-конвертер`, `JS/TS adapter и shadow comparison`, `затем измеримый Kotlin-JS spike и native MVP`
+- Files: `scripts/poekhali-tracker.js`, `ai-memory/ARCHITECTURE.md`
+
+## 2026-07-10 06:58:00 +1000
+
+- Source: `manual`
+- Task: Упрощен процесс добавления участков Поехали до ручной работы пользователя и Codex
+- Branch: `main`
+- Methods: `Отказались от массового автоматического конвертера и отдельной модерации: пользователь передает PDF`, `Codex вручную создает и сверяет JSON каждого участка`, `каталог остается набором отдельных файлов`
+- Files: `D:\Загрузки\prompt_rezhimnaya_karta_to_app_v2.md`, `scripts/poekhali-tracker.js`
+
+## 2026-07-10 06:58:08 +1000
+
+- Source: `manual`
+- Task: Найден способ работы Поехали без заранее известных GPS-точек
+- Branch: `main`
+- Methods: `Профиль строится только из PDF`, `live-позиция может начинаться с выбранной станции или км-пк и двигаться по относительному GPS-одометру`, `который частично уже реализован через tripDistanceM`, `абсолютная геометрия опционально берется из отдельного OSM-слоя либо одной записанной GPX-поездки с ручной калибровкой по станциям и км-пк`
+- Files: `scripts/poekhali-tracker.js`, `assets/tracker/maps/komsomol-sk-tche-9/data.xml`
+
+## 2026-07-10 07:13:09 +1000
+
+- Source: `manual`
+- Task: Спроектирована навигаторная модель Поехали: автоматическое офлайн-определение положения по GPS и железнодорожному графу OSM, с маршрутом смены как ограничением, а не ручным указанием позиции
+- Branch: `main`
+- Methods: `Проверена текущая GPS-реализация`, `сопоставлены OSM/OpenRailwayMap`, `офлайн-каталог путей`, `map matching`, `точность телефонного GPS и процесс первого контрольного проезда`
+- Files: `scripts/poekhali-tracker.js`, `server.js`, `ai-memory/ARCHITECTURE.md`, `ai-memory/PROJECT_STATE.md`
+
+## 2026-07-10 07:50:09 +1000
+
+- Source: `manual`
+- Task: Уточнен дефект режима Поехали и спроектирован переход на JSON участков
+- Branch: `main`
+- Methods: `Нашел`, `что при HTML HUD состав рисуется одним горизонтальным прямоугольником`, `выбрана отрисовка локально ориентированных секций по касательной профиля. Сохранены действующие GPS/map matching и Canvas`, `для данных выбран отдельный JSON на участок по согласованной schema_version 1.0 с runtime-геометрией и legacy offset.`
+- Files: `scripts/poekhali-tracker.js`, `D:/Загрузки/prompt_rezhimnaya_karta_to_app_v2.md`, `assets/tracker/regime-maps.json`
+
+## 2026-07-10 07:51:51 +1000
+
+- Source: `manual`
+- Task: Исправлен рендер состава Поехали: поезд изгибается по профилю
+- Branch: `main`
+- Methods: `Заменен HTML-HUD прямоугольник на масштабируемые группы вагонов и локомотив`, `каждая группа ставится на собственную координату и поворачивается по локальной касательной`, `проверены четное и нечетное направления`
+- Files: `scripts/poekhali-tracker.js`
+
+## 2026-07-10 07:56:41 +1000
+
+- Source: `manual`
+- Task: Создан foundation отдельных JSON-участков режима Поехали
+- Branch: `main`
+- Methods: `Сохранена core schema 1.0 из промпта`, `добавлены 7 draft section JSON и index с 4 маршрутами/вариантами`, `официальный километраж отделён от legacy ordinate offset -1000`, `скорости не импортировались`, `пробелы профиля явно отмечены`, `добавлен Node-валидатор ссылок`, `профиля и GPS`
+- Files: `assets/tracker/sections/index.json`, `assets/tracker/sections/README.md`, `assets/tracker/sections/dvost-volochaevka-ii-dzemgi.json`, `assets/tracker/sections/dvost-postyshevo-komsomolsk.json`, `assets/tracker/sections/dvost-postyshevo-novyi-urgal-odd.json`, `assets/tracker/sections/dvost-vysokogornaya-oune-via-sollu.json`, `assets/tracker/sections/dvost-vysokogornaya-oune-via-muli.json`, `assets/tracker/sections/dvost-oune-pivan.json`, `assets/tracker/sections/dvost-pivan-novyi-mir.json`, `scripts/validate-tracker-sections.mjs`
+
+## 2026-07-10 08:05:46 +1000
+
+- Source: `manual`
+- Task: Извлечён и интегрирован черновой профиль Постышево — Новый Ургал из PDF
+- Branch: `main`
+- Methods: `Чёрная векторная трасса и границы ячеек уклонов`, `898 непрерывных элементов 3299.0–3616.9 км`, `51 значение оставлено needs_review`, `сохранены GPS-геометрия и метаданные участка`, `валидатор каталога пройден`
+- Files: `assets/tracker/sections/dvost-postyshevo-novyi-urgal-odd.json`, `assets/tracker/sections/index.json`, `tmp/pdfs/manual-profile/postyshevo-novyi-urgal-odd.draft.json`, `tmp/pdfs/manual-profile/postyshevo-novyi-urgal-odd.analysis.json`
+
+## 2026-07-10 08:42:07 +1000
+
+- Source: `manual`
+- Task: Вернул отображение поезда единым составом и завершил переход режима Поехали на секционные JSON-карты
+- Branch: `main`
+- Methods: `Единое непрерывное тело состава строится по локальной геометрии профиля`, `добавлен JSON-загрузчик участков`, `профиль Постышево–Новый Ургал из PDF`, `офлайн-кэш`, `валидатор и Playwright smoke`, `проверены синтаксис`, `local/offline smoke и отдельный JSON smoke`
+- Files: `scripts/poekhali-tracker.js`, `assets/tracker/sections/index.json`, `assets/tracker/sections/dvost-postyshevo-novyi-urgal-odd.json`, `scripts/validate-tracker-sections.mjs`, `scripts/poekhali-json-smoke.mjs`, `sw.js`, `package.json`
+
+## 2026-07-10 08:45:09 +1000
+
+- Source: `manual`
+- Task: Диагностирована прямая белая скоба над изгибающимся составом в режиме Поехали
+- Branch: `main`
+- Methods: `Сопоставлен скриншот с Canvas-рендерером: голубой состав следует профилю`, `а отдельный индикатор фактической скорости растягивается по прямой между экранными координатами головы и хвоста и визуально выглядит как второй состав`
+- Files: `scripts/poekhali-tracker.js`
+
+## 2026-07-10 08:51:48 +1000
+
+- Source: `manual`
+- Task: Убрана прямая плашка длины из изгибающегося состава режима Поехали
+- Branch: `main`
+- Methods: `Фон-прямоугольник удалён`, `длина состава рисуется компактным текстом с тёмной обводкой в средней точке и поворотом по локальной касательной профиля`, `node --check и профильный Playwright smoke прошли`, `ошибок страницы и запросов нет`, `офлайн-кэш 8/8`
+- Files: `scripts/poekhali-tracker.js`
+
+## 2026-07-10 08:55:32 +1000
+
+- Source: `manual`
+- Task: Надпись длины состава привязана к изгибу профиля посимвольно
+- Branch: `main`
+- Methods: `Вместо одной прямой повёрнутой строки каждый символ получает собственную координату и локальную касательную на центральной линии состава`, `размер шрифта и обводки ограничены толщиной корпуса`, `профильный Playwright smoke и визуальная проверка прошли`, `ошибок нет`, `офлайн-кэш 8/8`
+- Files: `scripts/poekhali-tracker.js`
+
+## 2026-07-10 09:06:16 +1000
+
+- Source: `manual`
+- Task: Проведён фактический аудит секционных JSON, PDF-профилей и runtime режима Поехали
+- Branch: `main`
+- Methods: `Запущен sections:validate`, `пересчитаны 7 файлов`, `2262 элемента профиля`, `1998 GPS-точек и 3 разрыва`, `сверены происхождение PDF/legacy`, `хеши и реальное число страниц четырёх PDF`, `проверены JSON-first loader`, `XML-резерв`, `offline cache`, `GPS map matching`, `route selection и focused smoke`, `выявлены stale metadata`, `отсутствие verified-файлов`, `неисполняемые speed/route metadata и отсутствие полевого GPS-теста`
+- Files: `assets/tracker/sections/index.json`, `assets/tracker/sections/README.md`, `assets/tracker/sections/dvost-postyshevo-novyi-urgal-odd.json`, `scripts/validate-tracker-sections.mjs`, `scripts/poekhali-json-smoke.mjs`, `scripts/poekhali-tracker.js`, `sw.js`
+
+## 2026-07-10 09:20:44 +1000
+
+- Source: `manual`
+- Task: Подготовлен безопасный релиз v379 и JSON-каталога режима Поехали
+- Branch: `main`
+- Methods: `Проведён аудит локального и production состояния`, `черновые JSON-карты помечены releaseStatus и исключены из автоматического выбора и миграции`, `но оставлены для ручного теста`, `исправлены provenance PDF и добавлен smoke-контроль безопасного выбора`
+- Files: `scripts/poekhali-tracker.js`, `scripts/poekhali-json-smoke.mjs`, `assets/tracker/sections/*.json`
+
+## 2026-07-10 09:22:18 +1000
+
+- Source: `manual`
+- Task: Исправлен локальный преддеплойный smoke на Windows
+- Branch: `main`
+- Methods: `Диагностирован listen EACCES: стандартные порты 49173-49174 входят в системный excluded range 49152-49251`, `локальный и offline smoke переведены на свободные 4317-4318`
+- Files: `scripts/local-smoke.mjs`, `scripts/offline-smoke.mjs`
+
+## 2026-07-10 09:25:05 +1000
+
+- Source: `post-commit`
+- Task: feat: ship JSON track profiles and v379 shell
+- Branch: `main`
+- Methods: `git post-commit hook`, `automatic memory update`
+- Files: `assets/tracker/sections/README.md`, `assets/tracker/sections/dvost-oune-pivan.json`, `assets/tracker/sections/dvost-pivan-novyi-mir.json`, `assets/tracker/sections/dvost-postyshevo-komsomolsk.json`, `assets/tracker/sections/dvost-postyshevo-novyi-urgal-odd.json`, `assets/tracker/sections/dvost-volochaevka-ii-dzemgi.json`, `assets/tracker/sections/dvost-vysokogornaya-oune-via-muli.json`, `assets/tracker/sections/dvost-vysokogornaya-oune-via-sollu.json`, `assets/tracker/sections/index.json`, `index.html`, `package.json`, `scripts/app-constants.js`, `scripts/app-init.js`, `scripts/local-smoke.mjs`, `scripts/offline-smoke.mjs`, `scripts/poekhali-json-smoke.mjs`, `scripts/poekhali-tracker.js`, `scripts/prod-cache-smoke.mjs`, `scripts/validate-tracker-sections.mjs`, `server.js`, `styles/50-design-refresh.css`, `sw-bootstrap-v379.js`, `sw.js`
+- Notes: Commit: `a45b0093cdddb0511bf862b41b0ed48ce47a8b61` (`a45b009`) | Author: `iEgor72`
