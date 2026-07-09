@@ -10,12 +10,12 @@
   "direction": "нечётное",
   "km_start": 3299,
   "km_end": 3616.9,
-  "generator_format": "А",
+  "generator_format": "Б",
   "elements": [
     {
       "start_m": 3299000,
       "len_m": 300,
-      "grad_permille": -1.4,
+      "grad_permille": 1.4,
       "confidence": "auto"
     },
     {
@@ -57,7 +57,7 @@
     {
       "start_m": 3301600,
       "len_m": 300,
-      "grad_permille": -2.1,
+      "grad_permille": 2.1,
       "confidence": "auto"
     },
     {
@@ -123,13 +123,13 @@
     {
       "start_m": 3305800,
       "len_m": 300,
-      "grad_permille": -6.2,
+      "grad_permille": 6.2,
       "confidence": "auto"
     },
     {
       "start_m": 3306100,
       "len_m": 200,
-      "grad_permille": 3.5,
+      "grad_permille": -3.5,
       "confidence": "auto"
     },
     {
@@ -147,14 +147,14 @@
     {
       "start_m": 3306700,
       "len_m": 300,
-      "grad_permille": 2.4,
+      "grad_permille": -2.4,
       "confidence": "auto"
     },
     {
       "start_m": 3307000,
       "len_m": 200,
       "grad_permille": 4.8,
-      "confidence": "needs_review"
+      "confidence": "auto"
     },
     {
       "start_m": 3307200,
@@ -166,12 +166,12 @@
       "start_m": 3307500,
       "len_m": 200,
       "grad_permille": 1.7,
-      "confidence": "needs_review"
+      "confidence": "auto"
     },
     {
       "start_m": 3307700,
       "len_m": 200,
-      "grad_permille": 2.0,
+      "grad_permille": -2.0,
       "confidence": "auto"
     },
     {
@@ -189,7 +189,7 @@
     {
       "start_m": 3308500,
       "len_m": 200,
-      "grad_permille": -13.1,
+      "grad_permille": 13.1,
       "confidence": "auto"
     },
     {
@@ -201,13 +201,13 @@
     {
       "start_m": 3308900,
       "len_m": 100,
-      "grad_permille": -6.3,
+      "grad_permille": 6.3,
       "confidence": "auto"
     },
     {
       "start_m": 3309000,
       "len_m": 100,
-      "grad_permille": -6.3,
+      "grad_permille": 6.3,
       "confidence": "auto"
     },
     {
@@ -226,7 +226,7 @@
       "start_m": 3309600,
       "len_m": 300,
       "grad_permille": 0.6,
-      "confidence": "needs_review"
+      "confidence": "auto"
     },
     {
       "start_m": 3309900,
@@ -285,7 +285,7 @@
     {
       "start_m": 3313300,
       "len_m": 1000,
-      "grad_permille": -2.2,
+      "grad_permille": 2.2,
       "confidence": "auto"
     },
     {
@@ -303,7 +303,7 @@
     {
       "start_m": 3315000,
       "len_m": 200,
-      "grad_permille": -4.6,
+      "grad_permille": 4.6,
       "confidence": "auto"
     },
     {
@@ -315,13 +315,13 @@
     {
       "start_m": 3315500,
       "len_m": 300,
-      "grad_permille": -5.9,
+      "grad_permille": 5.9,
       "confidence": "auto"
     },
     {
       "start_m": 3315800,
       "len_m": 200,
-      "grad_permille": 1.0,
+      "grad_permille": -1.0,
       "confidence": "auto"
     },
     {
@@ -363,7 +363,7 @@
     {
       "start_m": 3318600,
       "len_m": 400,
-      "grad_permille": -5.0,
+      "grad_permille": 5.0,
       "confidence": "auto"
     },
     {
@@ -382,12 +382,12 @@
       "start_m": 3319600,
       "len_m": 300,
       "grad_permille": 3.0,
-      "confidence": "needs_review"
+      "confidence": "auto"
     },
     {
       "start_m": 3319900,
       "len_m": 300,
-      "grad_permille": 0.9,
+      "grad_permille": -0.9,
       "confidence": "auto"
     },
     {
@@ -399,7 +399,7 @@
     {
       "start_m": 3320800,
       "len_m": 1800,
-      "grad_permille": -8.6,
+      "grad_permille": 8.6,
       "confidence": "auto"
     },
     {
@@ -417,7 +417,7 @@
     {
       "start_m": 3323200,
       "len_m": 1000,
-      "grad_permille": -1.5,
+      "grad_permille": 1.5,
       "confidence": "auto"
     },
     {
@@ -429,7 +429,7 @@
     {
       "start_m": 3324500,
       "len_m": 200,
-      "grad_permille": -7.2,
+      "grad_permille": 7.2,
       "confidence": "auto"
     },
     {
@@ -477,7 +477,7 @@
     {
       "start_m": 3326700,
       "len_m": 300,
-      "grad_permille": -7.8,
+      "grad_permille": 7.8,
       "confidence": "auto"
     },
     {
@@ -501,7 +501,7 @@
     {
       "start_m": 3327800,
       "len_m": 1200,
-      "grad_permille": -8.0,
+      "grad_permille": 8.0,
       "confidence": "auto"
     },
     {
@@ -513,7 +513,7 @@
     {
       "start_m": 3329300,
       "len_m": 400,
-      "grad_permille": -5.3,
+      "grad_permille": 5.3,
       "confidence": "auto"
     },
     {
@@ -525,7 +525,7 @@
     {
       "start_m": 3330200,
       "len_m": 300,
-      "grad_permille": 1.7,
+      "grad_permille": -1.7,
       "confidence": "auto"
     },
     {
@@ -537,7 +537,7 @@
     {
       "start_m": 3330800,
       "len_m": 300,
-      "grad_permille": -3.3,
+      "grad_permille": 3.3,
       "confidence": "auto"
     },
     {
@@ -597,13 +597,13 @@
     {
       "start_m": 3333700,
       "len_m": 300,
-      "grad_permille": 5.0,
+      "grad_permille": -5.0,
       "confidence": "auto"
     },
     {
       "start_m": 3334000,
       "len_m": 1000,
-      "grad_permille": -2.5,
+      "grad_permille": 2.5,
       "confidence": "auto"
     },
     {
@@ -646,18 +646,18 @@
       "start_m": 3337000,
       "len_m": 400,
       "grad_permille": 3.2,
-      "confidence": "needs_review"
+      "confidence": "auto"
     },
     {
       "start_m": 3337400,
       "len_m": 300,
-      "grad_permille": 1.7,
+      "grad_permille": -1.7,
       "confidence": "auto"
     },
     {
       "start_m": 3337700,
       "len_m": 300,
-      "grad_permille": -5.5,
+      "grad_permille": 5.5,
       "confidence": "auto"
     },
     {
@@ -682,12 +682,12 @@
       "start_m": 3338900,
       "len_m": 100,
       "grad_permille": 2.4,
-      "confidence": "needs_review"
+      "confidence": "auto"
     },
     {
       "start_m": 3339000,
       "len_m": 100,
-      "grad_permille": -2.4,
+      "grad_permille": 2.4,
       "confidence": "auto"
     },
     {
@@ -705,7 +705,7 @@
     {
       "start_m": 3339700,
       "len_m": 300,
-      "grad_permille": -5.0,
+      "grad_permille": 5.0,
       "confidence": "auto"
     },
     {
@@ -753,7 +753,7 @@
     {
       "start_m": 3342600,
       "len_m": 300,
-      "grad_permille": -10.3,
+      "grad_permille": 10.3,
       "confidence": "auto"
     },
     {
@@ -777,7 +777,7 @@
     {
       "start_m": 3344300,
       "len_m": 200,
-      "grad_permille": -4.1,
+      "grad_permille": 4.1,
       "confidence": "auto"
     },
     {
@@ -789,7 +789,7 @@
     {
       "start_m": 3344900,
       "len_m": 500,
-      "grad_permille": -2.4,
+      "grad_permille": 2.4,
       "confidence": "auto"
     },
     {
@@ -808,7 +808,7 @@
       "start_m": 3346200,
       "len_m": 200,
       "grad_permille": 8.9,
-      "confidence": "needs_review"
+      "confidence": "auto"
     },
     {
       "start_m": 3346400,
@@ -838,7 +838,7 @@
       "start_m": 3347600,
       "len_m": 200,
       "grad_permille": 3.7,
-      "confidence": "needs_review"
+      "confidence": "auto"
     },
     {
       "start_m": 3347800,
@@ -861,7 +861,7 @@
     {
       "start_m": 3348500,
       "len_m": 500,
-      "grad_permille": -2.4,
+      "grad_permille": 2.4,
       "confidence": "auto"
     },
     {
@@ -909,7 +909,7 @@
     {
       "start_m": 3351100,
       "len_m": 800,
-      "grad_permille": -9.3,
+      "grad_permille": 9.3,
       "confidence": "auto"
     },
     {
@@ -975,25 +975,25 @@
     {
       "start_m": 3355700,
       "len_m": 200,
-      "grad_permille": 2.7,
+      "grad_permille": -2.7,
       "confidence": "auto"
     },
     {
       "start_m": 3355900,
       "len_m": 200,
       "grad_permille": 6.0,
-      "confidence": "needs_review"
+      "confidence": "auto"
     },
     {
       "start_m": 3356100,
       "len_m": 300,
-      "grad_permille": 2.4,
+      "grad_permille": -2.4,
       "confidence": "auto"
     },
     {
       "start_m": 3356400,
       "len_m": 300,
-      "grad_permille": -7.0,
+      "grad_permille": 7.0,
       "confidence": "auto"
     },
     {
@@ -1029,7 +1029,7 @@
     {
       "start_m": 3358500,
       "len_m": 500,
-      "grad_permille": -5.7,
+      "grad_permille": 5.7,
       "confidence": "auto"
     },
     {
@@ -1047,7 +1047,7 @@
     {
       "start_m": 3359400,
       "len_m": 200,
-      "grad_permille": -4.6,
+      "grad_permille": 4.6,
       "confidence": "auto"
     },
     {
@@ -1089,7 +1089,7 @@
     {
       "start_m": 3361300,
       "len_m": 300,
-      "grad_permille": -9.4,
+      "grad_permille": 9.4,
       "confidence": "auto"
     },
     {
@@ -1125,7 +1125,7 @@
     {
       "start_m": 3363000,
       "len_m": 500,
-      "grad_permille": -8.9,
+      "grad_permille": 8.9,
       "confidence": "auto"
     },
     {
@@ -1143,7 +1143,7 @@
     {
       "start_m": 3364400,
       "len_m": 600,
-      "grad_permille": -2.0,
+      "grad_permille": 2.0,
       "confidence": "auto"
     },
     {
@@ -1161,7 +1161,7 @@
     {
       "start_m": 3366000,
       "len_m": 300,
-      "grad_permille": -14.1,
+      "grad_permille": 14.1,
       "confidence": "auto"
     },
     {
@@ -1179,7 +1179,7 @@
     {
       "start_m": 3367200,
       "len_m": 400,
-      "grad_permille": -7.4,
+      "grad_permille": 7.4,
       "confidence": "auto"
     },
     {
@@ -1203,7 +1203,7 @@
     {
       "start_m": 3368700,
       "len_m": 300,
-      "grad_permille": -9.0,
+      "grad_permille": 9.0,
       "confidence": "auto"
     },
     {
@@ -1215,7 +1215,7 @@
     {
       "start_m": 3369100,
       "len_m": 300,
-      "grad_permille": -12.5,
+      "grad_permille": 12.5,
       "confidence": "auto"
     },
     {
@@ -1251,7 +1251,7 @@
     {
       "start_m": 3372000,
       "len_m": 400,
-      "grad_permille": -18.0,
+      "grad_permille": 18.0,
       "confidence": "auto"
     },
     {
@@ -1269,13 +1269,13 @@
     {
       "start_m": 3372800,
       "len_m": 400,
-      "grad_permille": -18.0,
+      "grad_permille": 18.0,
       "confidence": "auto"
     },
     {
       "start_m": 3373200,
       "len_m": 300,
-      "grad_permille": -17.0,
+      "grad_permille": 17.0,
       "confidence": "auto"
     },
     {
@@ -1299,13 +1299,13 @@
     {
       "start_m": 3374500,
       "len_m": 300,
-      "grad_permille": -2.5,
+      "grad_permille": 2.5,
       "confidence": "auto"
     },
     {
       "start_m": 3374800,
       "len_m": 400,
-      "grad_permille": -3.5,
+      "grad_permille": 3.5,
       "confidence": "auto"
     },
     {
@@ -1347,7 +1347,7 @@
     {
       "start_m": 3377100,
       "len_m": 200,
-      "grad_permille": -17.3,
+      "grad_permille": 17.3,
       "confidence": "auto"
     },
     {
@@ -1359,13 +1359,13 @@
     {
       "start_m": 3377500,
       "len_m": 400,
-      "grad_permille": -18.1,
+      "grad_permille": 18.1,
       "confidence": "auto"
     },
     {
       "start_m": 3377900,
       "len_m": 300,
-      "grad_permille": -16.5,
+      "grad_permille": 16.5,
       "confidence": "auto"
     },
     {
@@ -1383,7 +1383,7 @@
     {
       "start_m": 3378900,
       "len_m": 100,
-      "grad_permille": -20.0,
+      "grad_permille": 20.0,
       "confidence": "auto"
     },
     {
@@ -1413,7 +1413,7 @@
     {
       "start_m": 3381600,
       "len_m": 300,
-      "grad_permille": -13.0,
+      "grad_permille": 13.0,
       "confidence": "auto"
     },
     {
@@ -1437,7 +1437,7 @@
     {
       "start_m": 3383000,
       "len_m": 300,
-      "grad_permille": -16.0,
+      "grad_permille": 16.0,
       "confidence": "auto"
     },
     {
@@ -1449,7 +1449,7 @@
     {
       "start_m": 3384300,
       "len_m": 300,
-      "grad_permille": -6.0,
+      "grad_permille": 6.0,
       "confidence": "auto"
     },
     {
@@ -2019,20 +2019,20 @@
     {
       "start_m": 3416600,
       "len_m": 200,
-      "grad_permille": -0.9,
+      "grad_permille": 0.9,
       "confidence": "auto"
     },
     {
       "start_m": 3416800,
       "len_m": 300,
-      "grad_permille": 1.4,
+      "grad_permille": -1.4,
       "confidence": "auto"
     },
     {
       "start_m": 3417100,
       "len_m": 400,
       "grad_permille": 1.6,
-      "confidence": "needs_review"
+      "confidence": "auto"
     },
     {
       "start_m": 3417500,
@@ -2043,14 +2043,14 @@
     {
       "start_m": 3417600,
       "len_m": 200,
-      "grad_permille": 1.6,
+      "grad_permille": -1.6,
       "confidence": "auto"
     },
     {
       "start_m": 3417800,
       "len_m": 500,
       "grad_permille": 4.5,
-      "confidence": "needs_review"
+      "confidence": "auto"
     },
     {
       "start_m": 3418300,
@@ -2062,13 +2062,13 @@
       "start_m": 3418600,
       "len_m": 300,
       "grad_permille": 1.7,
-      "confidence": "needs_review"
+      "confidence": "auto"
     },
     {
       "start_m": 3418900,
       "len_m": 100,
       "grad_permille": 0.0,
-      "confidence": "needs_review"
+      "confidence": "verified"
     },
     {
       "start_m": 3419000,
@@ -2097,7 +2097,7 @@
     {
       "start_m": 3420100,
       "len_m": 300,
-      "grad_permille": -7.5,
+      "grad_permille": 7.5,
       "confidence": "auto"
     },
     {
@@ -2109,7 +2109,7 @@
     {
       "start_m": 3420600,
       "len_m": 300,
-      "grad_permille": -0.6,
+      "grad_permille": 0.6,
       "confidence": "auto"
     },
     {
@@ -2140,7 +2140,7 @@
       "start_m": 3422300,
       "len_m": 200,
       "grad_permille": 2.2,
-      "confidence": "needs_review"
+      "confidence": "auto"
     },
     {
       "start_m": 3422500,
@@ -2157,7 +2157,7 @@
     {
       "start_m": 3423000,
       "len_m": 400,
-      "grad_permille": -0.4,
+      "grad_permille": 0.4,
       "confidence": "auto"
     },
     {
@@ -2170,12 +2170,12 @@
       "start_m": 3423800,
       "len_m": 300,
       "grad_permille": 1.4,
-      "confidence": "needs_review"
+      "confidence": "auto"
     },
     {
       "start_m": 3424100,
       "len_m": 300,
-      "grad_permille": 1.4,
+      "grad_permille": -1.4,
       "confidence": "auto"
     },
     {
@@ -2187,13 +2187,13 @@
     {
       "start_m": 3424600,
       "len_m": 200,
-      "grad_permille": 2.6,
+      "grad_permille": -2.6,
       "confidence": "auto"
     },
     {
       "start_m": 3424800,
       "len_m": 200,
-      "grad_permille": -5.3,
+      "grad_permille": 5.3,
       "confidence": "auto"
     },
     {
@@ -2235,7 +2235,7 @@
     {
       "start_m": 3426500,
       "len_m": 300,
-      "grad_permille": -2.0,
+      "grad_permille": 2.0,
       "confidence": "auto"
     },
     {
@@ -2332,7 +2332,7 @@
       "start_m": 3432000,
       "len_m": 300,
       "grad_permille": 3.0,
-      "confidence": "needs_review"
+      "confidence": "auto"
     },
     {
       "start_m": 3432300,
@@ -2349,7 +2349,7 @@
     {
       "start_m": 3433400,
       "len_m": 600,
-      "grad_permille": -2.4,
+      "grad_permille": 2.4,
       "confidence": "auto"
     },
     {
@@ -2422,7 +2422,7 @@
       "start_m": 3439000,
       "len_m": 400,
       "grad_permille": 0.5,
-      "confidence": "needs_review"
+      "confidence": "auto"
     },
     {
       "start_m": 3439400,
@@ -2433,13 +2433,13 @@
     {
       "start_m": 3439900,
       "len_m": 300,
-      "grad_permille": 1.3,
+      "grad_permille": -1.3,
       "confidence": "auto"
     },
     {
       "start_m": 3440200,
       "len_m": 300,
-      "grad_permille": -3.0,
+      "grad_permille": 3.0,
       "confidence": "auto"
     },
     {
@@ -2451,14 +2451,14 @@
     {
       "start_m": 3440800,
       "len_m": 300,
-      "grad_permille": 2.7,
-      "confidence": "needs_review"
+      "grad_permille": -2.7,
+      "confidence": "auto"
     },
     {
       "start_m": 3441100,
       "len_m": 300,
       "grad_permille": 2.7,
-      "confidence": "needs_review"
+      "confidence": "auto"
     },
     {
       "start_m": 3441400,
@@ -2589,7 +2589,7 @@
     {
       "start_m": 3449400,
       "len_m": 200,
-      "grad_permille": -2.9,
+      "grad_permille": 2.9,
       "confidence": "auto"
     },
     {
@@ -2601,7 +2601,7 @@
     {
       "start_m": 3450200,
       "len_m": 300,
-      "grad_permille": -1.9,
+      "grad_permille": 1.9,
       "confidence": "auto"
     },
     {
@@ -2637,7 +2637,7 @@
     {
       "start_m": 3452200,
       "len_m": 300,
-      "grad_permille": -2.6,
+      "grad_permille": 2.6,
       "confidence": "auto"
     },
     {
@@ -2649,7 +2649,7 @@
     {
       "start_m": 3452800,
       "len_m": 300,
-      "grad_permille": -1.1,
+      "grad_permille": 1.1,
       "confidence": "auto"
     },
     {
@@ -2697,7 +2697,7 @@
     {
       "start_m": 3455200,
       "len_m": 200,
-      "grad_permille": 1.0,
+      "grad_permille": -1.0,
       "confidence": "auto"
     },
     {
@@ -2722,13 +2722,13 @@
       "start_m": 3456500,
       "len_m": 800,
       "grad_permille": 0.1,
-      "confidence": "auto"
+      "confidence": "needs_review"
     },
     {
       "start_m": 3457300,
       "len_m": 300,
       "grad_permille": 1.0,
-      "confidence": "needs_review"
+      "confidence": "auto"
     },
     {
       "start_m": 3457600,
@@ -2746,7 +2746,7 @@
       "start_m": 3458300,
       "len_m": 300,
       "grad_permille": 0.3,
-      "confidence": "needs_review"
+      "confidence": "auto"
     },
     {
       "start_m": 3458600,
@@ -2860,7 +2860,7 @@
       "start_m": 3464800,
       "len_m": 200,
       "grad_permille": 1.4,
-      "confidence": "needs_review"
+      "confidence": "auto"
     },
     {
       "start_m": 3465000,
@@ -2871,7 +2871,7 @@
     {
       "start_m": 3465300,
       "len_m": 200,
-      "grad_permille": -1.3,
+      "grad_permille": 1.3,
       "confidence": "auto"
     },
     {
@@ -2890,13 +2890,13 @@
       "start_m": 3466100,
       "len_m": 300,
       "grad_permille": 1.5,
-      "confidence": "needs_review"
+      "confidence": "auto"
     },
     {
       "start_m": 3466400,
       "len_m": 300,
       "grad_permille": 0.7,
-      "confidence": "auto"
+      "confidence": "needs_review"
     },
     {
       "start_m": 3466700,
@@ -2919,7 +2919,7 @@
     {
       "start_m": 3467800,
       "len_m": 300,
-      "grad_permille": 0.5,
+      "grad_permille": -0.5,
       "confidence": "auto"
     },
     {
@@ -2937,7 +2937,7 @@
     {
       "start_m": 3468800,
       "len_m": 200,
-      "grad_permille": -2.0,
+      "grad_permille": 2.0,
       "confidence": "auto"
     },
     {
@@ -2956,7 +2956,7 @@
       "start_m": 3469600,
       "len_m": 600,
       "grad_permille": 0.7,
-      "confidence": "needs_review"
+      "confidence": "auto"
     },
     {
       "start_m": 3470200,
@@ -2992,7 +2992,7 @@
       "start_m": 3471800,
       "len_m": 300,
       "grad_permille": 1.8,
-      "confidence": "needs_review"
+      "confidence": "auto"
     },
     {
       "start_m": 3472100,
@@ -3249,14 +3249,14 @@
     {
       "start_m": 3488800,
       "len_m": 200,
-      "grad_permille": -2.1,
+      "grad_permille": 2.1,
       "confidence": "auto"
     },
     {
       "start_m": 3489000,
       "len_m": 100,
       "grad_permille": 2.1,
-      "confidence": "needs_review"
+      "confidence": "auto"
     },
     {
       "start_m": 3489100,
@@ -3315,7 +3315,7 @@
     {
       "start_m": 3492200,
       "len_m": 400,
-      "grad_permille": -0.7,
+      "grad_permille": 0.7,
       "confidence": "auto"
     },
     {
@@ -3345,7 +3345,7 @@
     {
       "start_m": 3493500,
       "len_m": 200,
-      "grad_permille": -2.2,
+      "grad_permille": 2.2,
       "confidence": "auto"
     },
     {
@@ -3453,7 +3453,7 @@
     {
       "start_m": 3499000,
       "len_m": 500,
-      "grad_permille": 0.7,
+      "grad_permille": -0.7,
       "confidence": "auto"
     },
     {
@@ -3484,7 +3484,7 @@
       "start_m": 3500600,
       "len_m": 300,
       "grad_permille": 3.2,
-      "confidence": "needs_review"
+      "confidence": "auto"
     },
     {
       "start_m": 3500900,
@@ -3531,7 +3531,7 @@
     {
       "start_m": 3502700,
       "len_m": 200,
-      "grad_permille": 1.7,
+      "grad_permille": -1.7,
       "confidence": "auto"
     },
     {
@@ -3850,7 +3850,7 @@
       "start_m": 3520900,
       "len_m": 200,
       "grad_permille": 0.9,
-      "confidence": "needs_review"
+      "confidence": "auto"
     },
     {
       "start_m": 3521100,
@@ -3934,7 +3934,7 @@
       "start_m": 3524800,
       "len_m": 400,
       "grad_permille": 0.7,
-      "confidence": "needs_review"
+      "confidence": "auto"
     },
     {
       "start_m": 3525200,
@@ -3981,7 +3981,7 @@
     {
       "start_m": 3527200,
       "len_m": 400,
-      "grad_permille": -0.4,
+      "grad_permille": 0.4,
       "confidence": "auto"
     },
     {
@@ -4089,7 +4089,7 @@
     {
       "start_m": 3533100,
       "len_m": 200,
-      "grad_permille": -2.5,
+      "grad_permille": 2.5,
       "confidence": "auto"
     },
     {
@@ -4191,7 +4191,7 @@
     {
       "start_m": 3538000,
       "len_m": 300,
-      "grad_permille": 1.8,
+      "grad_permille": -1.8,
       "confidence": "auto"
     },
     {
@@ -4203,14 +4203,14 @@
     {
       "start_m": 3538900,
       "len_m": 100,
-      "grad_permille": -3.2,
+      "grad_permille": 3.2,
       "confidence": "auto"
     },
     {
       "start_m": 3539000,
       "len_m": 100,
       "grad_permille": 3.2,
-      "confidence": "needs_review"
+      "confidence": "auto"
     },
     {
       "start_m": 3539100,
@@ -4311,7 +4311,7 @@
     {
       "start_m": 3545500,
       "len_m": 200,
-      "grad_permille": -1.0,
+      "grad_permille": 1.0,
       "confidence": "auto"
     },
     {
@@ -4365,26 +4365,26 @@
     {
       "start_m": 3548400,
       "len_m": 200,
-      "grad_permille": 1.5,
+      "grad_permille": -1.5,
       "confidence": "auto"
     },
     {
       "start_m": 3548600,
       "len_m": 300,
-      "grad_permille": -2.2,
+      "grad_permille": 2.2,
       "confidence": "auto"
     },
     {
       "start_m": 3548900,
       "len_m": 100,
-      "grad_permille": -1.0,
+      "grad_permille": 1.0,
       "confidence": "auto"
     },
     {
       "start_m": 3549000,
       "len_m": 200,
       "grad_permille": 1.0,
-      "confidence": "needs_review"
+      "confidence": "auto"
     },
     {
       "start_m": 3549200,
@@ -4485,7 +4485,7 @@
     {
       "start_m": 3554900,
       "len_m": 300,
-      "grad_permille": -3.4,
+      "grad_permille": 3.4,
       "confidence": "auto"
     },
     {
@@ -4545,7 +4545,7 @@
     {
       "start_m": 3559000,
       "len_m": 400,
-      "grad_permille": 0.7,
+      "grad_permille": -0.7,
       "confidence": "auto"
     },
     {
@@ -4557,7 +4557,7 @@
     {
       "start_m": 3559700,
       "len_m": 200,
-      "grad_permille": -4.6,
+      "grad_permille": 4.6,
       "confidence": "auto"
     },
     {
@@ -4576,7 +4576,7 @@
       "start_m": 3560600,
       "len_m": 400,
       "grad_permille": 5.7,
-      "confidence": "needs_review"
+      "confidence": "auto"
     },
     {
       "start_m": 3561000,
@@ -4689,7 +4689,7 @@
     {
       "start_m": 3568200,
       "len_m": 200,
-      "grad_permille": 2.3,
+      "grad_permille": -2.3,
       "confidence": "auto"
     },
     {
@@ -4701,7 +4701,7 @@
     {
       "start_m": 3568800,
       "len_m": 200,
-      "grad_permille": -0.4,
+      "grad_permille": 0.4,
       "confidence": "auto"
     },
     {
@@ -4756,7 +4756,7 @@
       "start_m": 3571200,
       "len_m": 500,
       "grad_permille": 0.5,
-      "confidence": "needs_review"
+      "confidence": "auto"
     },
     {
       "start_m": 3571700,
@@ -4779,19 +4779,19 @@
     {
       "start_m": 3572600,
       "len_m": 300,
-      "grad_permille": 1.3,
+      "grad_permille": -1.3,
       "confidence": "auto"
     },
     {
       "start_m": 3572900,
       "len_m": 200,
-      "grad_permille": -3.7,
+      "grad_permille": 3.7,
       "confidence": "auto"
     },
     {
       "start_m": 3573100,
       "len_m": 200,
-      "grad_permille": -3.8,
+      "grad_permille": 3.8,
       "confidence": "auto"
     },
     {
@@ -4803,8 +4803,8 @@
     {
       "start_m": 3573600,
       "len_m": 200,
-      "grad_permille": 0.6,
-      "confidence": "needs_review"
+      "grad_permille": -0.6,
+      "confidence": "auto"
     },
     {
       "start_m": 3573800,
@@ -5014,7 +5014,7 @@
       "start_m": 3588400,
       "len_m": 200,
       "grad_permille": 5.0,
-      "confidence": "needs_review"
+      "confidence": "auto"
     },
     {
       "start_m": 3588600,
@@ -5073,7 +5073,7 @@
     {
       "start_m": 3592500,
       "len_m": 300,
-      "grad_permille": 0.4,
+      "grad_permille": -0.4,
       "confidence": "auto"
     },
     {
@@ -5121,7 +5121,7 @@
     {
       "start_m": 3597000,
       "len_m": 200,
-      "grad_permille": 1.0,
+      "grad_permille": -1.0,
       "confidence": "auto"
     },
     {
@@ -5133,7 +5133,7 @@
     {
       "start_m": 3597500,
       "len_m": 800,
-      "grad_permille": -2.4,
+      "grad_permille": 2.4,
       "confidence": "auto"
     },
     {
@@ -5146,7 +5146,7 @@
       "start_m": 3598600,
       "len_m": 300,
       "grad_permille": 1.5,
-      "confidence": "needs_review"
+      "confidence": "auto"
     },
     {
       "start_m": 3598900,
@@ -5163,7 +5163,7 @@
     {
       "start_m": 3599200,
       "len_m": 300,
-      "grad_permille": -0.8,
+      "grad_permille": 0.8,
       "confidence": "auto"
     },
     {
@@ -5199,14 +5199,14 @@
     {
       "start_m": 3601100,
       "len_m": 400,
-      "grad_permille": 0.5,
-      "confidence": "needs_review"
+      "grad_permille": -0.5,
+      "confidence": "auto"
     },
     {
       "start_m": 3601500,
       "len_m": 300,
       "grad_permille": 0.7,
-      "confidence": "needs_review"
+      "confidence": "auto"
     },
     {
       "start_m": 3601800,
@@ -5230,7 +5230,7 @@
       "start_m": 3602800,
       "len_m": 200,
       "grad_permille": 3.8,
-      "confidence": "needs_review"
+      "confidence": "auto"
     },
     {
       "start_m": 3603000,
@@ -5536,103 +5536,31 @@
       "reason": "Названия промежуточных станций из legacy XML местами обрезаны и требуют сверки с PDF"
     },
     {
-      "km": null,
-      "reason": "Физический профиль извлечён из PDF; 51 элемент требует ручной сверки"
-    },
-    {
-      "km": null,
-      "reason": "Профиль извлечён из чёрной векторной трассы PDF одноразовым инструментом; требуется контрольная постраничная сверка"
-    },
-    {
       "km": 3299,
       "reason": "Граница участка Новый Ургал и GPS-якорь станции требуют ручной сверки: legacy объект станции лежит вне указанной в PDF границы"
+    },
+    {
+      "km": null,
+      "reason": "Физический профиль извлечён из PDF; 14 элементов требуют ручной сверки"
+    },
+    {
+      "km": null,
+      "reason": "Профиль повторно извлечён из ориентированных pts чёрной векторной трассы PDF; требуется контрольная постраничная сверка"
     },
     {
       "km": 3603.3,
       "reason": "ненулевой уклон, но высоты профиля на границах почти равны (страница 2)"
     },
     {
-      "km": 3602.8,
-      "reason": "ненулевой уклон, но высоты профиля на границах почти равны (страница 2)"
-    },
-    {
-      "km": 3601.5,
-      "reason": "ненулевой уклон, но высоты профиля на границах почти равны (страница 2)"
-    },
-    {
-      "km": 3601.1,
-      "reason": "ненулевой уклон, но высоты профиля на границах почти равны (страница 2)"
-    },
-    {
-      "km": 3598.6,
-      "reason": "ненулевой уклон, но высоты профиля на границах почти равны (страница 3)"
-    },
-    {
-      "km": 3588.4,
-      "reason": "ненулевой уклон, но высоты профиля на границах почти равны (страница 4)"
-    },
-    {
-      "km": 3573.6,
-      "reason": "ненулевой уклон, но высоты профиля на границах почти равны (страница 5)"
-    },
-    {
-      "km": 3571.2,
-      "reason": "ненулевой уклон, но высоты профиля на границах почти равны (страница 5)"
-    },
-    {
-      "km": 3560.6,
-      "reason": "ненулевой уклон, но высоты профиля на границах почти равны (страница 6)"
-    },
-    {
-      "km": 3549.0,
-      "reason": "ненулевой уклон, но высоты профиля на границах почти равны (страница 7)"
-    },
-    {
-      "km": 3539.0,
-      "reason": "ненулевой уклон, но высоты профиля на границах почти равны (страница 8)"
-    },
-    {
-      "km": 3524.8,
-      "reason": "ненулевой уклон, но высоты профиля на границах почти равны (страница 10)"
-    },
-    {
-      "km": 3520.9,
-      "reason": "ненулевой уклон, но высоты профиля на границах почти равны (страница 10)"
-    },
-    {
-      "km": 3500.6,
-      "reason": "ненулевой уклон, но высоты профиля на границах почти равны (страница 12)"
-    },
-    {
-      "km": 3489.0,
-      "reason": "ненулевой уклон, но высоты профиля на границах почти равны (страница 13)"
-    },
-    {
-      "km": 3471.8,
-      "reason": "ненулевой уклон, но высоты профиля на границах почти равны (страница 15)"
-    },
-    {
-      "km": 3469.6,
-      "reason": "ненулевой уклон, но высоты профиля на границах почти равны (страница 15)"
-    },
-    {
       "km": 3467.5,
       "reason": "ненулевой уклон, но высоты профиля на границах почти равны (страница 16)"
     },
     {
-      "km": 3466.1,
+      "km": 3466.4,
       "reason": "ненулевой уклон, но высоты профиля на границах почти равны (страница 16)"
     },
     {
-      "km": 3464.8,
-      "reason": "ненулевой уклон, но высоты профиля на границах почти равны (страница 16)"
-    },
-    {
-      "km": 3458.3,
-      "reason": "ненулевой уклон, но высоты профиля на границах почти равны (страница 17)"
-    },
-    {
-      "km": 3457.3,
+      "km": 3456.5,
       "reason": "ненулевой уклон, но высоты профиля на границах почти равны (страница 17)"
     },
     {
@@ -5648,27 +5576,11 @@
       "reason": "ненулевой уклон, но высоты профиля на границах почти равны (страница 18)"
     },
     {
-      "km": 3441.1,
-      "reason": "ненулевой уклон, но высоты профиля на границах почти равны (страница 18)"
-    },
-    {
-      "km": 3440.8,
-      "reason": "ненулевой уклон, но высоты профиля на границах почти равны (страница 18)"
-    },
-    {
-      "km": 3439.0,
-      "reason": "ненулевой уклон, но высоты профиля на границах почти равны (страница 18)"
-    },
-    {
       "km": 3438.2,
       "reason": "ненулевой уклон, но высоты профиля на границах почти равны (страница 19)"
     },
     {
       "km": 3434.7,
-      "reason": "ненулевой уклон, но высоты профиля на границах почти равны (страница 19)"
-    },
-    {
-      "km": 3432.0,
       "reason": "ненулевой уклон, но высоты профиля на границах почти равны (страница 19)"
     },
     {
@@ -5680,26 +5592,6 @@
       "reason": "ненулевой уклон, но высоты профиля на границах почти равны (страница 20)"
     },
     {
-      "km": 3423.8,
-      "reason": "ненулевой уклон, но высоты профиля на границах почти равны (страница 20)"
-    },
-    {
-      "km": 3422.3,
-      "reason": "ненулевой уклон, но высоты профиля на границах почти равны (страница 20)"
-    },
-    {
-      "km": 3418.6,
-      "reason": "ненулевой уклон, но высоты профиля на границах почти равны (страница 21)"
-    },
-    {
-      "km": 3417.8,
-      "reason": "ненулевой уклон, но высоты профиля на границах почти равны (страница 21)"
-    },
-    {
-      "km": 3417.1,
-      "reason": "ненулевой уклон, но высоты профиля на границах почти равны (страница 21)"
-    },
-    {
       "km": 3412.0,
       "reason": "ненулевой уклон, но высоты профиля на границах почти равны (страница 21)"
     },
@@ -5708,48 +5600,8 @@
       "reason": "ненулевой уклон, но высоты профиля на границах почти равны (страница 21)"
     },
     {
-      "km": 3355.9,
-      "reason": "ненулевой уклон, но высоты профиля на границах почти равны (страница 27)"
-    },
-    {
-      "km": 3347.6,
-      "reason": "ненулевой уклон, но высоты профиля на границах почти равны (страница 28)"
-    },
-    {
-      "km": 3346.2,
-      "reason": "ненулевой уклон, но высоты профиля на границах почти равны (страница 28)"
-    },
-    {
-      "km": 3338.9,
-      "reason": "ненулевой уклон, но высоты профиля на границах почти равны (страница 29)"
-    },
-    {
-      "km": 3337.0,
-      "reason": "ненулевой уклон, но высоты профиля на границах почти равны (страница 29)"
-    },
-    {
-      "km": 3319.6,
-      "reason": "ненулевой уклон, но высоты профиля на границах почти равны (страница 30)"
-    },
-    {
-      "km": 3309.6,
-      "reason": "ненулевой уклон, но высоты профиля на границах почти равны (страница 31)"
-    },
-    {
-      "km": 3307.5,
-      "reason": "ненулевой уклон, но высоты профиля на границах почти равны (страница 32)"
-    },
-    {
-      "km": 3307.0,
-      "reason": "ненулевой уклон, но высоты профиля на границах почти равны (страница 32)"
-    },
-    {
       "km": 3302.4,
       "reason": "ненулевой уклон, но высоты профиля на границах почти равны (страница 32)"
-    },
-    {
-      "km": 3418.9,
-      "reason": "стык страниц 20/21: восстановлена обрезанная ячейка 100 м со значением 0,0"
     }
   ],
   "provenance": [

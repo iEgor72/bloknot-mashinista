@@ -17,11 +17,13 @@
     "reference:import:tch9": "python scripts/import-tch9-reference.py",
     "speeds:import": "python scripts/import-speed-docs.py",
     "regime:import": "python scripts/import-regime-maps.py",
+    "regime:test": "python scripts/import-regime-maps-smoke.py",
     "sections:validate": "node scripts/validate-tracker-sections.mjs",
+    "sections:test": "node scripts/validate-tracker-sections-smoke.mjs",
     "smoke:poekhali-json": "node scripts/poekhali-json-smoke.mjs",
     "smoke:local": "node scripts/local-smoke.mjs",
     "smoke:offline": "node scripts/offline-smoke.mjs",
-    "smoke:predeploy": "npm run smoke:local && npm run smoke:offline",
+    "smoke:predeploy": "npm run regime:test && npm run sections:validate && npm run sections:test && npm run smoke:poekhali-json && npm run smoke:local && npm run smoke:offline",
     "smoke:prod-cache": "node scripts/prod-cache-smoke.mjs"
   },
   "devDependencies": {

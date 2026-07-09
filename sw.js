@@ -244,7 +244,11 @@ self.addEventListener('fetch', (event) => {
       event.respondWith(networkFirstFastFallbackStatic(request, event));
       return;
     }
-    if (isShellCodeRequest(request, url) || isTrackerDataRequest(url)) {
+    if (isTrackerDataRequest(url)) {
+      event.respondWith(networkFirstFastFallbackStatic(request, event));
+      return;
+    }
+    if (isShellCodeRequest(request, url)) {
       event.respondWith(staleWhileRevalidate(request, event));
       return;
     }
@@ -480,7 +484,8 @@ function isUpdateControlRequest(url) {
 }
 
 function isTrackerDataRequest(url) {
-  return url.pathname === '/assets/tracker/maps-manifest.json' ||
+  return url.pathname.startsWith('/assets/tracker/sections/') ||
+    url.pathname === '/assets/tracker/maps-manifest.json' ||
     url.pathname === '/assets/tracker/tch9-reference.json' ||
     url.pathname === '/assets/tracker/speed-docs.json' ||
     url.pathname === '/assets/tracker/regime-maps.json';

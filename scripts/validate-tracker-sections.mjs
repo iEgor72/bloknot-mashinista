@@ -16,6 +16,11 @@ function warn(scope, message) {
   warnings.push(`${scope}: ${message}`);
 }
 
+function releaseGateIssue(section, scope, message) {
+  if (section.status === 'verified') fail(scope, message);
+  else warn(scope, message);
+}
+
 function readJson(filePath, scope) {
   try {
     return JSON.parse(fs.readFileSync(filePath, 'utf8'));
@@ -174,12 +179,42 @@ function validateSection(section, expectedId, scope) {
   }
   if (cursor < maxM - EPSILON) fail(scope, `неописанный хвост профиля ${cursor}..${maxM}`);
 
+  if (section.status === 'verified') {
+    const reviewFlags = Array.isArray(section.flags_for_review) ? section.flags_for_review : [];
+    const elements = Array.isArray(section.elements) ? section.elements : [];
+    const stations = Array.isArray(section.stations) ? section.stations : [];
+    if (reviewFlags.length) fail(scope, 'verified требует пустой flags_for_review');
+    if (declaredGaps.length) fail(scope, 'verified не допускает runtime.profile_gaps');
+    if (declaredCoverage.length !== 1
+        || Math.abs(declaredCoverage[0].start_m - minM) > EPSILON
+        || Math.abs(declaredCoverage[0].end_m - maxM) > EPSILON) {
+      fail(scope, 'verified требует единого полного profile_coverage от km_start до km_end');
+    }
+    const unverifiedElement = elements.findIndex((element) => element.confidence !== 'verified');
+    if (unverifiedElement !== -1) fail(scope, `verified требует elements[].confidence=verified (первый: ${unverifiedElement})`);
+    const unverifiedStation = stations.findIndex((station) => station.confidence !== 'verified');
+    if (unverifiedStation !== -1) fail(scope, `verified требует stations[].confidence=verified (первая: ${unverifiedStation})`);
+    if (runtime?.profile_status !== 'pdf_verified') fail(scope, 'verified требует runtime.profile_status=pdf_verified');
+    if (section.geometry?.status !== 'field_run_verified') fail(scope, 'verified требует geometry.status=field_run_verified');
+    const pdfProvenance = Array.isArray(section.provenance)
+      ? section.provenance.find((item) => item?.kind === 'regime_map_pdf')
+      : null;
+    if (!pdfProvenance
+        || !/^[a-f0-9]{64}$/i.test(String(pdfProvenance.sha256 || ''))
+        || !Number.isInteger(pdfProvenance.pages)
+        || pdfProvenance.pages <= 0
+        || pdfProvenance.role !== 'authoritative_map_profile_verified') {
+      fail(scope, 'verified требует PDF provenance с sha256, pages и role=authoritative_map_profile_verified');
+    }
+  }
+
   const geometry = section.geometry;
   if (!geometry || !Array.isArray(geometry.paths) || !geometry.paths.length) {
     fail(scope, 'geometry.paths должен содержать хотя бы один GPS-путь');
     return { elements: elementRanges.length, geometryPoints: 0 };
   }
   const pathIds = new Set();
+  const pathDetails = new Map();
   let geometryPoints = 0;
   for (const [pathIndex, geometryPath] of geometry.paths.entries()) {
     const pathScope = `${scope}.geometry.paths[${pathIndex}]`;
@@ -192,6 +227,8 @@ function validateSection(section, expectedId, scope) {
       continue;
     }
     let previousChainage = -Infinity;
+    let minimumChainage = Infinity;
+    let maximumChainage = -Infinity;
     geometryPath.points.forEach((point, pointIndex) => {
       const pointScope = `${pathScope}.points[${pointIndex}]`;
       geometryPoints += 1;
@@ -205,7 +242,19 @@ function validateSection(section, expectedId, scope) {
       if (point.sector !== geometryPath.sector) fail(pointScope, 'sector точки не совпадает с sector пути');
       if (point.path_id !== geometryPath.path_id) fail(pointScope, 'path_id точки не совпадает с path_id пути');
       if (point.chainage_m < previousChainage - EPSILON) fail(pointScope, 'GPS-точки должны идти по возрастанию chainage_m');
+      if (isFiniteNumber(point.chainage_m)) {
+        minimumChainage = Math.min(minimumChainage, point.chainage_m);
+        maximumChainage = Math.max(maximumChainage, point.chainage_m);
+        if (point.chainage_m < minM - EPSILON || point.chainage_m > maxM + EPSILON) {
+          releaseGateIssue(section, pointScope, 'GPS-точка выходит за физический диапазон участка');
+        }
+      }
       previousChainage = point.chainage_m;
+    });
+    pathDetails.set(geometryPath.path_id, {
+      sector: geometryPath.sector,
+      minimumChainage,
+      maximumChainage,
     });
   }
 
@@ -213,9 +262,26 @@ function validateSection(section, expectedId, scope) {
     fail(scope, 'runtime.route_legs должен содержать хотя бы одно звено');
   } else {
     runtime.route_legs.forEach((leg, index) => {
-      if (!pathIds.has(leg.path_id)) fail(`${scope}.runtime.route_legs[${index}]`, `неизвестный path_id ${leg.path_id}`);
+      const legScope = `${scope}.runtime.route_legs[${index}]`;
+      if (!pathIds.has(leg.path_id)) fail(legScope, `неизвестный path_id ${leg.path_id}`);
       if (!isFiniteNumber(leg.from_chainage_m) || !isFiniteNumber(leg.to_chainage_m)) {
-        fail(`${scope}.runtime.route_legs[${index}]`, 'from_chainage_m/to_chainage_m обязательны');
+        fail(legScope, 'from_chainage_m/to_chainage_m обязательны');
+        return;
+      }
+      const pathDetail = pathDetails.get(leg.path_id);
+      if (pathDetail) {
+        if (leg.sector !== pathDetail.sector) fail(legScope, 'sector звена не совпадает с geometry path');
+        const legIsCovered = [leg.from_chainage_m, leg.to_chainage_m].every((chainage) => (
+          chainage >= pathDetail.minimumChainage - EPSILON
+          && chainage <= pathDetail.maximumChainage + EPSILON
+        ));
+        if (!legIsCovered) {
+          releaseGateIssue(
+            section,
+            legScope,
+            `границы звена не покрыты GPS-путём ${pathDetail.minimumChainage}..${pathDetail.maximumChainage}`,
+          );
+        }
       }
     });
   }
@@ -257,6 +323,23 @@ for (const [indexPosition, entry] of (index.sections || []).entries()) {
   const section = readJson(filePath, entry.file);
   if (!section) continue;
   const counts = validateSection(section, entry.id, entry.file);
+  const mirrors = [
+    ['status', entry.status, section.status],
+    ['section_name', entry.section_name, section.section_name],
+    ['direction', entry.direction, section.direction],
+    ['profile_status', entry.profile_status, section.runtime?.profile_status],
+    ['geometry_status', entry.geometry_status, section.geometry?.status],
+  ];
+  for (const [field, catalogValue, sectionValue] of mirrors) {
+    if (catalogValue !== sectionValue) {
+      fail(scope, `${field} каталога ${JSON.stringify(catalogValue)} не совпадает с файлом ${JSON.stringify(sectionValue)}`);
+    }
+  }
+  for (const field of ['km_start', 'km_end']) {
+    if (!isFiniteNumber(entry[field]) || !isFiniteNumber(section[field]) || Math.abs(entry[field] - section[field]) > EPSILON) {
+      fail(scope, `${field} каталога не совпадает с файлом`);
+    }
+  }
   totalElements += counts.elements;
   totalGeometryPoints += counts.geometryPoints;
 }
@@ -271,6 +354,7 @@ for (const [routeIndex, route] of (index.routes || []).entries()) {
   if (typeof route.id !== 'string' || !route.id) fail(scope, 'id обязателен');
   if (routeIds.has(route.id)) fail(scope, `дублируется id ${route.id}`);
   routeIds.add(route.id);
+  if ('status' in route) fail(scope, 'status маршрута запрещён: готовность вычисляется только из section_ids');
   if (!Array.isArray(route.variants) || !route.variants.length) {
     fail(scope, 'variants должен быть непустым массивом');
     continue;
@@ -281,6 +365,7 @@ for (const [routeIndex, route] of (index.routes || []).entries()) {
     if (typeof variant.id !== 'string' || !variant.id) fail(variantScope, 'id обязателен');
     if (variantIds.has(variant.id)) fail(variantScope, `дублируется id ${variant.id}`);
     variantIds.add(variant.id);
+    if ('status' in variant) fail(variantScope, 'status варианта запрещён: готовность вычисляется только из section_ids');
     if (!Array.isArray(variant.section_ids) || !variant.section_ids.length) {
       fail(variantScope, 'section_ids должен быть непустым массивом');
       continue;

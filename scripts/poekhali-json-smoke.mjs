@@ -225,6 +225,23 @@ try {
         (async () => {
           const registration = await navigator.serviceWorker.ready;
           if (registration.active) registration.active.postMessage({ type: 'WARMUP_CACHE' });
+          const controlDeadline = Date.now() + 5_000;
+          while (!navigator.serviceWorker.controller && Date.now() < controlDeadline) {
+            await new Promise((resolve) => setTimeout(resolve, 100));
+          }
+          const controlled = Boolean(navigator.serviceWorker.controller);
+          let networkFresh = false;
+          const probeAsset = expected.assets.find((asset) => asset.includes('postyshevo-novyi-urgal'));
+          const shellCacheName = (await caches.keys()).find((name) => name.startsWith('shift-tracker-shell-'));
+          if (controlled && shellCacheName && probeAsset) {
+            const shellCache = await caches.open(shellCacheName);
+            await shellCache.put(probeAsset, new Response(JSON.stringify({ stale: true }), {
+              headers: { 'Content-Type': 'application/json' }
+            }));
+            const probeResponse = await fetch(probeAsset, { cache: 'no-store' });
+            const probeData = await probeResponse.json();
+            networkFresh = probeData && probeData.id === expected.mapId;
+          }
           const deadline = Date.now() + 15_000;
           let cached = 0;
           while (Date.now() < deadline) {
@@ -246,7 +263,7 @@ try {
           fetch('/__poekhali_cache_report__', {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ cached, total: expected.assets.length })
+            body: JSON.stringify({ cached, total: expected.assets.length, controlled, networkFresh })
           }).catch(() => {});
         })().catch(() => {});
       }
@@ -280,6 +297,9 @@ try {
   ]);
   if (report.checks.offlineCache.cached !== sectionAssets.length) {
     throw new Error(`Only ${report.checks.offlineCache.cached}/${sectionAssets.length} section assets were cached`);
+  }
+  if (!report.checks.offlineCache.controlled || !report.checks.offlineCache.networkFresh) {
+    throw new Error('Section JSON did not use a controlled network-first refresh');
   }
   await mark('offline section cache ready');
 

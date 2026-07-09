@@ -96,7 +96,27 @@ def load_pdf_pages(path: Path) -> list[tuple[int, str, list[dict], list[dict]]]:
                     )
 
                 for line in page.lines:
-                    append_vector(line.get("x0", 0), line.get("y0", 0), line.get("x1", 0), line.get("y1", 0), line)
+                    points = line.get("pts") or []
+                    if len(points) >= 2:
+                        # pdfplumber x0/y0/x1/y1 are the line bounding box, not
+                        # oriented endpoints. The real direction is preserved
+                        # only in pts/path, whose Y coordinates are top-origin.
+                        for start, end in zip(points, points[1:]):
+                            append_vector(
+                                float(start[0]),
+                                float(page.height) - float(start[1]),
+                                float(end[0]),
+                                float(page.height) - float(end[1]),
+                                line,
+                            )
+                    else:
+                        append_vector(
+                            line.get("x0", 0),
+                            line.get("y0", 0),
+                            line.get("x1", 0),
+                            line.get("y1", 0),
+                            line,
+                        )
                 for curve in page.curves:
                     points = curve.get("pts") or []
                     for start, end in zip(points, points[1:]):

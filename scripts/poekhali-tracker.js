@@ -5900,12 +5900,9 @@
         var fileStatuses = files.map(function(file) {
           return sectionStatusByPath[file] || 'draft';
         });
-        var releaseStatus = String(variant.status || route.status || '').toLowerCase();
-        if (!releaseStatus) {
-          releaseStatus = fileStatuses.length && fileStatuses.every(function(status) {
-            return status === 'verified';
-          }) ? 'verified' : 'draft';
-        }
+        var releaseStatus = fileStatuses.length && fileStatuses.every(function(status) {
+          return status === 'verified';
+        }) ? 'verified' : 'draft';
         var normalized = normalizeMapConfig({
           id: String(route.id || routeTitle || 'section-route') + (hasMultipleVariants ? '--' + variantId : ''),
           title: String(routeTitle || 'JSON маршрут') + (hasMultipleVariants ? ' · ' + variantTitle : ''),
