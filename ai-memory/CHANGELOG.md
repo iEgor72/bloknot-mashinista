@@ -7058,3 +7058,292 @@ Append-only журнал действий ИИ-агентов по проект�
 - Methods: `git post-commit hook`, `automatic memory update`
 - Files: `ai-memory/CHANGELOG.md`, `ai-memory/INDEX.md`, `ai-memory/PROJECT_STATE.md`, `ai-memory/RECENT_COMMITS.md`, `ai-memory/WORKTREE_STATUS.md`, `ai-memory/sessions/2026-07-10.md`, `assets/seo/screen-add-iphone.jpg`, `assets/seo/screen-docs-iphone.jpg`, `assets/seo/screen-home-iphone.jpg`, `assets/seo/screen-poekhali-iphone.jpg`, `assets/seo/screen-profile-iphone.jpg`, `assets/seo/screen-shifts-iphone.jpg`, `assets/seo/site-icons.svg`, `docs/seo/brigada-mashinista.html`, `docs/seo/dokumenty-mashinista.html`, `docs/seo/grafik-smen-mashinista.html`, `docs/seo/kalkulyator-zarplaty-mashinista.html`, `docs/seo/poekhali-rezhim.html`, `docs/seo/prilozhenie-dlya-mashinista.html`, `docs/seo/seo.css`, `docs/seo/uchet-marshrutov.html`, `docs/seo/zarplata-mashinista.html`, `docs/seo/zhurnal-smen-mashinista.html`
 - Notes: Commit: `7f402ec749be92a036ffbea61f81950700ceff62` (`7f402ec`) | Author: `iEgor72`
+
+## 2026-07-10 17:59:17 +1000
+
+- Source: `post-commit`
+- Task: chore(memory): record SEO landing redesign
+- Branch: `main`
+- Methods: `git post-commit hook`, `automatic memory update`
+- Files: `ai-memory/CHANGELOG.md`, `ai-memory/INDEX.md`, `ai-memory/PROJECT_STATE.md`, `ai-memory/RECENT_COMMITS.md`, `ai-memory/WORKTREE_STATUS.md`, `ai-memory/sessions/2026-07-10.md`
+- Notes: Commit: `2a24639d78f930c04f736c1115147c757fb333f7` (`2a24639`) | Author: `iEgor72`
+
+## 2026-07-10 18:01:43 +1000
+
+- Source: `manual`
+- Task: Новый дизайн публичных SEO-страниц выпущен в production
+- Branch: `main`
+- Methods: `Коммиты 7f402ec и 2a24639 отправлены в origin/main`, `production main обновлён fast-forward до 2a24639`, `функциональный commit подтверждён ancestor`, `PM2 bloknot-mashinista reload --update-env`, `9 публичных страниц`, `site-icons.svg и 6 iPhone JPG вернули HTTP 200`, `production HTML содержит новый iPhone markup`, `smoke:predeploy и smoke:prod-cache прошли`
+- Files: `docs/seo`, `assets/seo/site-icons.svg`, `assets/seo/screen-home-iphone.jpg`, `assets/seo/screen-shifts-iphone.jpg`, `assets/seo/screen-add-iphone.jpg`, `assets/seo/screen-docs-iphone.jpg`, `assets/seo/screen-profile-iphone.jpg`, `assets/seo/screen-poekhali-iphone.jpg`
+
+## 2026-07-10 18:13:35 +1000
+
+- Source: `manual`
+- Task: Диагностированы предупреждения Яндекс Вебмастера по robots.txt
+- Branch: `main`
+- Methods: `Сравнены public robots через Cloudflare и origin 127.0.0.1:3000`, `установлено`, `что Cloudflare Managed robots.txt добавляет Content-Signal`, `AI-crawler blocks и второй User-agent wildcard перед чистым origin robots`, `Яндекс помечает Content-Signal неизвестной директивой и дубликат wildcard рекомендацией`, `но оба блока разрешают обход`, `sitemap HTTP 200`
+- Files: `server.js`
+
+## 2026-07-10 18:22:27 +1000
+
+- Source: `manual`
+- Task: Проверена настройка Cloudflare Managed robots.txt через Chrome
+- Branch: `main`
+- Methods: `Открыта Security Settings Bot traffic`, `найдено Manage your robots.txt`, `проверено текущее выбранное значение ai-bots`, `изменения не сохранялись`
+- Files: _not specified_
+
+## 2026-07-10 18:47:30 +1000
+
+- Source: `manual`
+- Task: Проведена независимая визуальная проверка PDF Волочаевка II - Дзёмги
+- Branch: `main`
+- Methods: `Рендер репрезентативных страниц`, `визуальная проверка шкалы и диагональной таблицы`, `анализ PDF chars/vectors`, `проверка текущего auto-inspect и выявление ложной классификации`
+- Files: `tmp/pdfs/volochaevka-visual/REPORT.md`, `tmp/pdfs/volochaevka-visual/contact-sheet.png`, `tmp/pdfs/volochaevka-visual/page-02-grade-table.png`, `tmp/pdfs/volochaevka-visual/page-26-grade-table.png`, `tmp/pdfs/volochaevka-visual/builder-inspect/inspect.json`
+
+## 2026-07-10 18:50:02 +1000
+
+- Source: `manual`
+- Task: Проведен read-only acceptance PDF Волочаевка II - Дзёмги для regime profile builder
+- Branch: `main`
+- Methods: `Existing inspect`, `vector geometry audit`, `visual render`, `false-positive adapter metrics`, `Format-B axis and trace diagnostics`, `product JSON не изменялся`
+- Files: `tmp/pdfs/volochaevka-builder-audit/config.json`, `tmp/pdfs/volochaevka-builder-audit/inspect/inspect.json`, `tmp/pdfs/volochaevka-builder-audit/audit.py`, `tmp/pdfs/volochaevka-builder-audit/audit.json`, `tmp/pdfs/volochaevka-builder-audit/REPORT.md`, `tmp/pdfs/volochaevka-builder-audit/rendered/contact-sheet.png`, `tmp/pdfs/volochaevka-builder-audit/rendered/page-09.png`
+
+## 2026-07-10 19:04:46 +1000
+
+- Source: `manual`
+- Task: Проведен read-only аудит seed и PDF Волочаевка II - Дзёмги
+- Branch: `main`
+- Methods: `Проверены continuity/confidence/runtime/GPS/provenance`, `текущий builder inspect`, `audit-only векторный probe доказал 485 PDF-ячеек на страницах 2-26`, `441 величину`, `437 длин и 484 trace evidence`, `сформированы acceptance-инварианты нового адаптера без изменения product JSON`
+- Files: `tmp/pdfs/volochaevka-seed-audit/REPORT.md`, `tmp/pdfs/volochaevka-seed-audit/audit.json`, `tmp/pdfs/volochaevka-seed-audit/geometry-probe.json`, `tmp/pdfs/volochaevka-seed-audit/audit.py`, `tmp/pdfs/volochaevka-seed-audit/geometry_probe.py`, `assets/tracker/sections/dvost-volochaevka-ii-dzemgi.json`
+
+## 2026-07-10 19:25:21 +1000
+
+- Source: `manual`
+- Task: Проверена регрессия diagonal_grade_table на двух acceptance PDF
+- Branch: `main`
+- Methods: `Свежие inspect/build/check в отдельных tmp каталогах`, `подтвержден routing 15 страниц blue_bottom_table и 32 страниц black_grade_strokes`, `summaries и profile SHA сопоставлены с эталонными runs`
+- Files: `tmp/pdfs/regime-profile-builder/runs/regression-diagonal-postyshevo-komsomolsk-inspect-v2`, `tmp/pdfs/regime-profile-builder/runs/regression-diagonal-postyshevo-komsomolsk-build-v2`, `tmp/pdfs/regime-profile-builder/runs/regression-diagonal-postyshevo-novyi-urgal-inspect-v2`, `tmp/pdfs/regime-profile-builder/runs/regression-diagonal-postyshevo-novyi-urgal-build-v2`
+
+## 2026-07-10 20:54:56 +1000
+
+- Source: `manual`
+- Task: Обновлена документация ручного workflow regime profile builder
+- Branch: `main`
+- Methods: `Описаны diagonal_grade_table`, `reviewed.profile.json`, `check --require-clean и безопасный in-place promote с проверками`
+- Files: `docs/REGIME_PROFILE_BUILDER.md`
+
+## 2026-07-10 21:00:04 +1000
+
+- Source: `manual`
+- Task: Исправлена регрессия выбора адаптера на частичной blue-странице
+- Branch: `main`
+- Methods: `Positive blue score признан строгим legacy-layout invariant`, `добавлен тест score 83`, `повторены реальные build/check Постышево-Комсомольск и Постышево-Новый Ургал`
+- Files: `tools/regime_profile_builder/pipeline.py`, `tests/regime_profile_builder/test_pipeline.py`, `tmp/pdfs/regime-profile-builder/runs/regression-final-postyshevo-komsomolsk-v4`, `tmp/pdfs/regime-profile-builder/runs/regression-final-postyshevo-novyi-urgal-v4`
+
+## 2026-07-10 21:09:21 +1000
+
+- Source: `manual`
+- Task: Завершён PDF-профиль Волочаевка II — Дзёмги и безопасное продвижение в продуктовый JSON
+- Branch: `main`
+- Methods: `Добавлен диагональный адаптер и устойчивое распознавание границ/пикетов`, `вручную закрыты 26 вопросов`, `профиль 482 элемента установлен с двойным SHA и явной маркировкой 10 legacy fallback`, `catalog синхронизируется promote-командой`, `пройдены реальные регрессии двух других PDF и smoke:predeploy`
+- Files: `assets/tracker/sections/dvost-volochaevka-ii-dzemgi.json`, `assets/tracker/sections/index.json`, `tools/regime_profile_builder/cli.py`, `tools/regime_profile_builder/pipeline.py`, `tools/regime_profile_builder/adapters/diagonal_grade_table.py`, `tools/regime_profile_builder/review.py`, `docs/REGIME_PROFILE_BUILDER.md`, `scripts/poekhali-json-smoke.mjs`, `tests/regime_profile_builder`
+
+## 2026-07-10 22:59:27 +1000
+
+- Source: `manual`
+- Task: Профиль Постышево — Комсомольск переведён в воспроизводимый reviewed/promoted workflow
+- Branch: `main`
+- Methods: `Закрыты 2 конфликтные печатные длины по пикетной сетке и 6 нечитаемых величин как явный legacy fallback`, `числовой SHA 358 элементов не изменился`, `добавлены confidence SHA и review provenance`
+- Files: `assets/tracker/sections/dvost-postyshevo-komsomolsk.json`, `assets/tracker/sections/index.json`, `scripts/poekhali-json-smoke.mjs`, `tmp/pdfs/regime-profile-builder/configs/postyshevo-komsomolsk-decisions.json`
+
+## 2026-07-10 23:07:51 +1000
+
+- Source: `manual`
+- Task: Обнаружен системный риск знака в black_grade_strokes
+- Branch: `main`
+- Methods: `Полный аудит 775 ненулевых ячеек выявил 6 скрытых pdf_vector_confirmed с конфликтом чёрной диагонали и верхней трассы`, `продвижение Новый Ургал остановлено до смены первичного источника знака на диагональ таблицы`
+- Files: `tools/regime_profile_builder/adapters/black_grade_strokes.py`, `tmp/pdfs/regime-profile-builder/runs/regression-final-postyshevo-novyi-urgal-v4`
+
+## 2026-07-10 23:13:13 +1000
+
+- Source: `manual`
+- Task: Исправлен источник знака black_grade_strokes
+- Branch: `main`
+- Methods: `Компактная диагональ стала первичным знаком по sign((dy/dx)*axis_slope)`, `толстая трасса оставлена QA/conflict`, `добавлены focused tests для descending/ascending axis`, `сильного конфликта и малых уклонов`, `56 builder unit tests прошли`
+- Files: `tools/regime_profile_builder/adapters/black_grade_strokes.py`, `tests/regime_profile_builder/test_black_grade_strokes.py`
+
+## 2026-07-10 23:16:28 +1000
+
+- Source: `manual`
+- Task: Постышево — Новый Ургал переведён на PDF-проверенный профиль
+- Branch: `main`
+- Methods: `Знак black_grade_strokes переключён на диагональ таблицы с нормализацией по axis slope`, `6 сильных конфликтов верхней трассы и обрезанная ячейка проверены вручную`, `879 элементов`, `872 vector-confirmed`, `7 manual`, `0 unresolved`, `удалены устаревшие profile flags`
+- Files: `tools/regime_profile_builder/adapters/black_grade_strokes.py`, `tests/regime_profile_builder/test_black_grade_strokes.py`, `assets/tracker/sections/dvost-postyshevo-novyi-urgal-odd.json`, `assets/tracker/sections/index.json`, `scripts/poekhali-json-smoke.mjs`, `docs/REGIME_PROFILE_BUILDER.md`
+
+## 2026-07-10 23:30:17 +1000
+
+- Source: `manual`
+- Task: Разобраны короткие ветви карты Высокогорная-КСМ
+- Branch: `main`
+- Methods: `Векторный аудит страниц 5-13 выявил смещенную нижнюю километровую фазу на Соллу`, `наложенные текстовые объекты оси и опечатку 219 вместо 209 на Мули`, `определены точные исправления конвейера и единственное ручное значение Соллу +2.4`
+- Files: `assets/docs/memos/ВСКГ- КСМ новый 2 пассажир.pdf`, `tmp/pdfs/vysokogornaya-audit/SOLLU_ISSUES.md`, `tools/regime_profile_builder/adapters/diagonal_grade_table.py`, `tools/regime_profile_builder/axis.py`
+
+## 2026-07-10 23:32:26 +1000
+
+- Source: `manual`
+- Task: Исправлена фазовая калибровка diagonal adapter по нижней километровой строке
+- Branch: `main`
+- Methods: `нижняя km-строка возле km_top приоритетнее верхней оси`, `fallback при неполной строке`, `unit tests`, `реальный via Sollu и Волочаевка regression`
+- Files: `tools/regime_profile_builder/adapters/diagonal_grade_table.py`, `tests/regime_profile_builder/test_diagonal_grade_table.py`
+
+## 2026-07-10 23:34:41 +1000
+
+- Source: `manual`
+- Task: PDF-профиль ветви Высокогорная-Оунэ через Соллу переведен в product
+- Branch: `main`
+- Methods: `Исправлена нижняя километровая фазовая калибровка`, `выполнен чистый build 33 элементов`, `вручную подтвержден краевой уклон +2.4 по перекрывающей странице 13`, `затем check --require-clean и promote`
+- Files: `tools/regime_profile_builder/adapters/diagonal_grade_table.py`, `tests/regime_profile_builder/test_diagonal_grade_table.py`, `assets/tracker/sections/dvost-vysokogornaya-oune-via-sollu.json`, `assets/tracker/sections/index.json`
+
+## 2026-07-10 23:44:38 +1000
+
+- Source: `manual`
+- Task: PDF-профиль ветви Высокогорная-Оунэ через Мули переведен в product
+- Branch: `main`
+- Methods: `Восстановлены наложенные CAD-метки оси по порядку символов`, `добавлены явные page offsets +100 м и robust axis residual`, `чистый build дал 36 непрерывных элементов`, `25 auto и 11 manual PDF-reviewed`, `0 legacy fallback`, `после 12 решений выполнены check --require-clean и promote`
+- Files: `tools/regime_profile_builder/axis.py`, `tools/regime_profile_builder/pipeline.py`, `tools/regime_profile_builder/cli.py`, `tests/regime_profile_builder/test_axis_trace.py`, `tests/regime_profile_builder/test_pipeline.py`, `assets/tracker/sections/dvost-vysokogornaya-oune-via-muli.json`, `assets/tracker/sections/index.json`
+
+## 2026-07-10 23:49:06 +1000
+
+- Source: `manual`
+- Task: Зафиксирована повторяемость PDF-конвейера после promote
+- Branch: `main`
+- Methods: `Добавлено повторное распознавание confidence pdf_manual_evidence_replayed и robust p90 axis residual`, `regression builds подтвердили прежние SHA Волочаевки`, `Постышево-Комсомольск и Постышево-Новый Ургал без повторной полной ручной работы`
+- Files: `tools/regime_profile_builder/pipeline.py`, `tools/regime_profile_builder/axis.py`, `tests/regime_profile_builder/test_pipeline.py`, `tests/regime_profile_builder/test_axis_trace.py`
+
+## 2026-07-11 00:01:12 +1000
+
+- Source: `manual`
+- Task: Добавлена поддержка page_windows и page_priorities в PDF-конвейер режимных карт
+- Branch: `main`
+- Methods: `Явные окна страницы с keep_m и несколькими axis_override`, `безопасное отключение auto-stitch`, `разрешение только межстраничных overlap по уникальному приоритету`, `tie и same-page остаются blocked`, `диагностика и evidence`, `синтетические тесты и реальный in-memory build Уне-Пивань`
+- Files: `tools/regime_profile_builder/pipeline.py`, `tools/regime_profile_builder/config.example.json`, `tests/regime_profile_builder/test_pipeline.py`, `tests/regime_profile_builder/test_safety.py`
+
+## 2026-07-11 00:12:14 +1000
+
+- Source: `manual`
+- Task: Профиль Пивань-Новый Мир переведен на PDF JSON
+- Branch: `main`
+- Methods: `Добавлены page_windows/axis_override/page_priorities и безопасные allowed_profile_gaps`, `шкала после сброса на стр.41 отделена от старого километража`, `стр.43 пристыкована без overlaps`, `11 PDF-ячеек проверены вручную`, `300-метровый недорисованный край сохранен как явный gap`, `check clean и promote`
+- Files: `tools/regime_profile_builder/pipeline.py`, `tools/regime_profile_builder/review.py`, `tools/regime_profile_builder/cli.py`, `assets/tracker/sections/dvost-pivan-novyi-mir.json`, `assets/tracker/sections/index.json`, `docs/REGIME_PROFILE_BUILDER.md`, `scripts/poekhali-json-smoke.mjs`
+
+## 2026-07-11 00:20:27 +1000
+
+- Source: `manual`
+- Task: Конвейер научился читать повернутые числа синих таблиц
+- Branch: `main`
+- Methods: `Добавлен source-order char fallback с однозначным назначением ближайшей ячейке и отсечением нижней служебной строки`, `защищенные SHA трех ранее принятых профилей не изменились`, `builder suite 82 теста`
+- Files: `tools/regime_profile_builder/adapters/blue_bottom_table.py`, `tests/regime_profile_builder/test_blue_bottom_table.py`, `docs/REGIME_PROFILE_BUILDER.md`
+
+## 2026-07-11 00:34:27 +1000
+
+- Source: `manual`
+- Task: Проверены нижние страницы профиля Оунэ-Пивань
+- Branch: `main`
+- Methods: `Визуальный PDF-аудит страниц 33`, `35`, `37`, `39`, `41`, `сверка диагоналей`, `подписей и 100-м сетки`, `83 issue закрыты решениями`, `seam 67`, `9-68`, `0 км оставлен defer из-за неоднозначного подавленного профиля стр.31`, `apply-review validation`
+- Files: `tmp/pdfs/vysokogornaya-audit/decisions-oune-lower.json`, `tmp/pdfs/vysokogornaya-audit/run-oune-pivan-windows-v2/reviewed-lower.profile.json`
+
+## 2026-07-11 00:50:34 +1000
+
+- Source: `manual`
+- Task: Проверена нижняя геометрия Оунэ-Пивань и устранен искусственный seam 67.9-68.0 км
+- Branch: `main`
+- Methods: `Визуальная и векторная сверка PDF страниц 29`, `31`, `33`, `стр.31 идентифицирована как соседний четный путь по сигналам Н2/2Н и несовместимому профилю`, `для стр.33 подтвержден фазовый сдвиг на один пикет и проверен явный offset +100 м`, `отдельный lower-only build 1-82 км дал ноль gap/overlap`
+- Files: `tmp/pdfs/vysokogornaya-audit/config-oune-lower-geometry.json`, `tmp/pdfs/vysokogornaya-audit/run-oune-lower-geometry`
+
+## 2026-07-11 00:50:39 +1000
+
+- Source: `manual`
+- Task: Проверена и восстановлена геометрия среднего блока Оунэ-Пивань
+- Branch: `main`
+- Methods: `Визуальная сверка PDF страниц 23`, `25 и 27`, `точечные page_windows по пикетам`, `offset +100 м для синей линейки страницы 25`, `переходящие через лист уклоны собраны из реальных PDF-фрагментов`, `проверена непрерывность 94000-140000`
+- Files: `tmp/pdfs/vysokogornaya-audit/config-oune-middle-geometry.json`, `tmp/pdfs/vysokogornaya-audit/run-oune-middle-geometry`, `tmp/pdfs/vysokogornaya-audit/OUNE_MIDDLE_GEOMETRY.md`
+
+## 2026-07-11 00:52:34 +1000
+
+- Source: `manual`
+- Task: Проверена и закреплена геометрия верхнего блока Оунэ-Пивань 140-183 км
+- Branch: `main`
+- Methods: `Изолированный build страниц 13`, `15`, `17`, `19`, `визуальная сверка PDF км/пикетов`, `offsets +100`, `+100`, `-300`, `явные page windows`, `проверка всех printed lengths и seam split`, `check без структурных ошибок`
+- Files: `tmp/pdfs/vysokogornaya-audit/config-oune-upper-geometry.json`, `tmp/pdfs/vysokogornaya-audit/run-oune-upper-geometry-final`
+
+## 2026-07-11 01:04:29 +1000
+
+- Source: `manual`
+- Task: Собран и продвинут PDF-профиль Оунэ—Пивань
+- Branch: `main`
+- Methods: `Исправлены пикетные фазы страниц`, `page windows и приоритеты`, `восстановлена крайняя CAD-ячейка по синей трассе и печатным значениям`, `206 решений применены`, `профиль 344 элемента проверен браузерным smoke`
+- Files: `tools/regime_profile_builder/adapters/blue_bottom_table.py`, `tests/regime_profile_builder/test_blue_bottom_table.py`, `assets/tracker/sections/dvost-oune-pivan.json`, `assets/tracker/sections/index.json`, `scripts/poekhali-json-smoke.mjs`, `docs/REGIME_PROFILE_BUILDER.md`
+
+## 2026-07-11 01:17:00 +1000
+
+- Source: `manual`
+- Task: Smoke-проверка режимных профилей пересчитывает canonical SHA из elements
+- Branch: `main`
+- Methods: `Node createHash и стабильная сериализация`, `эквивалентная Python _canonical_profile_digest`, `сравнение с expected и provenance`, `уточнён safety-текст build/promote`, `node check и smoke на порту 4331`
+- Files: `scripts/poekhali-json-smoke.mjs`, `tools/regime_profile_builder/review.py`
+
+## 2026-07-11 01:20:30 +1000
+
+- Source: `manual`
+- Task: Исправлено восстановление крайних делителей синей таблицы
+- Branch: `main`
+- Methods: `Правая граница стала симметричной`, `край берется только из единственного connected component`, `пересекающего ближайший внутренний divider`, `неоднозначные несвязанные трассы блокируют recovery`, `добавлены positive right и negative disconnected tests`, `реальный лист 19 сохранил левый край 53.096`, `86 builder tests прошли`
+- Files: `tools/regime_profile_builder/adapters/blue_bottom_table.py`, `tests/regime_profile_builder/test_blue_bottom_table.py`
+
+## 2026-07-11 01:24:04 +1000
+
+- Source: `manual`
+- Task: Усилена целостность PDF builder review/promotion
+- Branch: `main`
+- Methods: `Force rebuild очищает stale reviewed/profile crops`, `apply-review сверяет draft SHA с run`, `review хранит base SHA`, `check/promote проверяют binding`, `NaN/Infinity и нечисловые поля блокируются`, `JSON пишется с allow_nan=False`, `добавлены regression tests`, `92 builder tests прошли`
+- Files: `tools/regime_profile_builder/cli.py`, `tools/regime_profile_builder/review.py`, `tests/regime_profile_builder/test_cli.py`, `tests/regime_profile_builder/test_safety.py`
+
+## 2026-07-11 08:20:56 +1000
+
+- Source: `manual`
+- Task: Закреплён воспроизводимый профиль Оунэ—Пивань и усилена безопасность builder
+- Branch: `main`
+- Methods: `Канонически объединены одинаковые page-break уклоны до 341 элемента`, `повторная сборка дала тот же SHA`, `force очищает stale review`, `reviewed привязан к draft/run двумя SHA`, `non-finite числа запрещены`, `smoke пересчитывает SHA из элементов`
+- Files: `assets/tracker/sections/dvost-oune-pivan.json`, `assets/tracker/sections/index.json`, `tools/regime_profile_builder/cli.py`, `tools/regime_profile_builder/review.py`, `tools/regime_profile_builder/adapters/blue_bottom_table.py`, `tests/regime_profile_builder/test_cli.py`, `tests/regime_profile_builder/test_safety.py`, `tests/regime_profile_builder/test_blue_bottom_table.py`, `scripts/poekhali-json-smoke.mjs`, `docs/REGIME_PROFILE_BUILDER.md`
+
+## 2026-07-11 08:23:18 +1000
+
+- Source: `manual`
+- Task: Завершена переработка конвейера режимных карт и аудит профиля Оунэ—Пивань
+- Branch: `main`
+- Methods: `Добавлены адаптеры PDF`, `восстановление геометрии`, `безопасный review/promote`, `контроль SHA и полный smoke:predeploy`, `профиль Оунэ—Пивань воспроизводимо собран из 341 элемента с честно описанным разрывом 91`, `3–94`, `0 км`
+- Files: `tools/regime_profile_builder`, `scripts/poekhali-json-smoke.mjs`, `tests/regime_profile_builder`, `docs/REGIME_PROFILE_BUILDER.md`, `assets/tracker/sections`
+
+## 2026-07-11 09:26:46 +1000
+
+- Source: `manual`
+- Task: Убраны два legacy fallback из профиля Оунэ—Пивань
+- Branch: `main`
+- Methods: `Две непечатные 100-метровые ячейки страницы 15 проверены визуально и по синей трассе`, `калибровка на 12 подписанных уклонах подтвердила -1`, `7‰ и +2`, `5‰`, `профиль повторно применён`, `проверен и promoted со статусом pdf_verified`, `SHA и smoke-защита обновлены`
+- Files: `assets/tracker/sections/dvost-oune-pivan.json`, `assets/tracker/sections/index.json`, `scripts/poekhali-json-smoke.mjs`, `docs/REGIME_PROFILE_BUILDER.md`
+
+## 2026-07-11 09:32:16 +1000
+
+- Source: `manual`
+- Task: Read-only production preflight перед публикацией режима Поехали
+- Branch: `main`
+- Methods: `Проверены ssh -G bloknot-vps`, `git status/branch/HEAD/origin/upstream в /opt/bloknot-mashinista`, `PM2 status и HTTP GET 127.0.0.1:3000`, `без pull`, `reload и правок`
+- Files: `ai-memory/PROJECT_STATE.md`, `ai-memory/METHODS.md`
+
+## 2026-07-11 09:34:38 +1000
+
+- Source: `manual`
+- Task: Подготовлен выпуск JSON-профилей и PDF-конвейера режима Поехали
+- Branch: `main`
+- Methods: `Локальная main синхронна origin/main`, `полный smoke:predeploy прошёл`, `production /opt/bloknot-mashinista чист на main 2a24639`, `PM2 bloknot-mashinista online и HTTP 200`, `перед коммитом подтверждён безопасный deploy через ssh alias bloknot-vps`
+- Files: `assets/tracker/sections`, `tools/regime_profile_builder`, `tests/regime_profile_builder`, `scripts/poekhali-json-smoke.mjs`, `docs/REGIME_PROFILE_BUILDER.md`

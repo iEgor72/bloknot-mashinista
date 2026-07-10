@@ -14,7 +14,7 @@
       "direction": "нечётное",
       "km_start": 9,
       "km_end": 361,
-      "profile_status": "legacy_seed_complete_pending_pdf_verification",
+      "profile_status": "pdf_profile_audited_10_legacy_magnitudes",
       "geometry_status": "draft_from_legacy_centerline"
     },
     {
@@ -36,7 +36,7 @@
       "direction": "нечётное",
       "km_start": 3299,
       "km_end": 3616.9,
-      "profile_status": "draft_pdf_extracted_needs_review",
+      "profile_status": "pdf_verified",
       "geometry_status": "draft_from_legacy_centerline"
     },
     {
@@ -47,7 +47,7 @@
       "direction": "требует проверки",
       "km_start": 183,
       "km_end": 220.9,
-      "profile_status": "legacy_seed_complete_pending_pdf_verification",
+      "profile_status": "pdf_verified",
       "geometry_status": "draft_from_legacy_centerline"
     },
     {
@@ -58,7 +58,7 @@
       "direction": "требует проверки",
       "km_start": 183,
       "km_end": 210,
-      "profile_status": "legacy_seed_partial_pending_pdf_verification",
+      "profile_status": "pdf_verified",
       "geometry_status": "draft_from_legacy_centerline"
     },
     {
@@ -69,7 +69,7 @@
       "direction": "требует проверки",
       "km_start": 1,
       "km_end": 184,
-      "profile_status": "legacy_seed_partial_pending_pdf_verification",
+      "profile_status": "pdf_verified",
       "geometry_status": "draft_from_legacy_centerline"
     },
     {
@@ -80,7 +80,7 @@
       "direction": "требует проверки",
       "km_start": 1,
       "km_end": 17,
-      "profile_status": "legacy_seed_partial_pending_pdf_verification",
+      "profile_status": "pdf_verified",
       "geometry_status": "draft_from_legacy_centerline"
     }
   ],

@@ -1,9 +1,10 @@
 # Recent Commits
 
-Generated: 2026-07-10 17:59:15 +1000
+Generated: 2026-07-11 09:35:08 +1000
 
 | Hash | Date | Author | Message |
 | --- | --- | --- | --- |
+| `2a24639` | 2026-07-10T17:59:16+10:00 | iEgor72 | chore(memory): record SEO landing redesign |
 | `7f402ec` | 2026-07-10T17:59:04+10:00 | iEgor72 | feat(seo): redesign public landing pages |
 | `d3b0405` | 2026-07-10T14:32:13+10:00 | iEgor72 | chore(memory): record regime profile builder release |
 | `68752d5` | 2026-07-10T14:30:09+10:00 | iEgor72 | feat: add regime PDF profile builder |
@@ -43,4 +44,3 @@ Generated: 2026-07-10 17:59:15 +1000
 | `77fe712` | 2026-06-21T11:38:58+10:00 | iEgor72 | chore(memory): record telegram offline deploy |
 | `f699279` | 2026-06-21T11:36:21+10:00 | iEgor72 | chore(memory): record telegram offline fix |
 | `bb5b9b3` | 2026-06-21T11:36:06+10:00 | iEgor72 | fix: keep service worker in telegram webview |
-| `7eb73f1` | 2026-06-21T11:25:52+10:00 | iEgor72 | chore(memory): record offline shell deploy |

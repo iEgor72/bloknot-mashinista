@@ -14,687 +14,201 @@
   "elements": [
     {
       "start_m": 183000,
-      "len_m": 400,
+      "len_m": 200,
       "grad_permille": 2.4,
-      "confidence": "legacy_xml_clipped_unverified"
+      "confidence": "manual_reviewed"
     },
     {
-      "start_m": 183400,
+      "start_m": 183200,
+      "len_m": 2400,
+      "grad_permille": 15.0,
+      "confidence": "pdf_vector_confirmed"
+    },
+    {
+      "start_m": 185600,
       "len_m": 600,
-      "grad_permille": 16.55,
-      "confidence": "legacy_xml_unverified"
-    },
-    {
-      "start_m": 184000,
-      "len_m": 100,
-      "grad_permille": 16.9,
-      "confidence": "legacy_xml_unverified"
-    },
-    {
-      "start_m": 184100,
-      "len_m": 400,
-      "grad_permille": 16,
-      "confidence": "legacy_xml_unverified"
-    },
-    {
-      "start_m": 184500,
-      "len_m": 300,
-      "grad_permille": 14.6,
-      "confidence": "legacy_xml_unverified"
-    },
-    {
-      "start_m": 184800,
-      "len_m": 200,
-      "grad_permille": 15.7,
-      "confidence": "legacy_xml_unverified"
-    },
-    {
-      "start_m": 185000,
-      "len_m": 200,
-      "grad_permille": 17.9,
-      "confidence": "legacy_xml_unverified"
-    },
-    {
-      "start_m": 185200,
-      "len_m": 300,
-      "grad_permille": 15.4,
-      "confidence": "legacy_xml_unverified"
-    },
-    {
-      "start_m": 185500,
-      "len_m": 200,
-      "grad_permille": 10.9,
-      "confidence": "legacy_xml_unverified"
-    },
-    {
-      "start_m": 185700,
-      "len_m": 500,
-      "grad_permille": 17.7,
-      "confidence": "legacy_xml_unverified"
+      "grad_permille": 13.0,
+      "confidence": "pdf_vector_confirmed"
     },
     {
       "start_m": 186200,
-      "len_m": 200,
-      "grad_permille": 8.8,
-      "confidence": "legacy_xml_unverified"
-    },
-    {
-      "start_m": 186400,
-      "len_m": 200,
-      "grad_permille": 17.4,
-      "confidence": "legacy_xml_unverified"
-    },
-    {
-      "start_m": 186600,
-      "len_m": 500,
-      "grad_permille": 17.1,
-      "confidence": "legacy_xml_unverified"
+      "len_m": 900,
+      "grad_permille": 16.0,
+      "confidence": "pdf_vector_confirmed"
     },
     {
       "start_m": 187100,
-      "len_m": 200,
-      "grad_permille": 14.5,
-      "confidence": "legacy_xml_unverified"
+      "len_m": 800,
+      "grad_permille": 0.2,
+      "confidence": "pdf_vector_confirmed"
     },
     {
-      "start_m": 187300,
-      "len_m": 300,
-      "grad_permille": 16.4,
-      "confidence": "legacy_xml_unverified"
-    },
-    {
-      "start_m": 187600,
-      "len_m": 400,
-      "grad_permille": 0.3,
-      "confidence": "legacy_xml_unverified"
-    },
-    {
-      "start_m": 188000,
-      "len_m": 400,
-      "grad_permille": -0.2,
-      "confidence": "legacy_xml_unverified"
-    },
-    {
-      "start_m": 188400,
-      "len_m": 500,
-      "grad_permille": 6.5,
-      "confidence": "legacy_xml_unverified"
-    },
-    {
-      "start_m": 188900,
-      "len_m": 400,
-      "grad_permille": 16.3,
-      "confidence": "legacy_xml_unverified"
+      "start_m": 187900,
+      "len_m": 1400,
+      "grad_permille": 0.4,
+      "confidence": "pdf_vector_confirmed"
     },
     {
       "start_m": 189300,
-      "len_m": 400,
-      "grad_permille": 2.9,
-      "confidence": "legacy_xml_unverified"
+      "len_m": 600,
+      "grad_permille": 0.8,
+      "confidence": "pdf_vector_confirmed"
     },
     {
-      "start_m": 189700,
-      "len_m": 500,
-      "grad_permille": 17.7,
-      "confidence": "legacy_xml_unverified"
-    },
-    {
-      "start_m": 190200,
-      "len_m": 300,
-      "grad_permille": -1.7,
-      "confidence": "legacy_xml_unverified"
+      "start_m": 189900,
+      "len_m": 600,
+      "grad_permille": 0.9,
+      "confidence": "pdf_vector_confirmed"
     },
     {
       "start_m": 190500,
+      "len_m": 1900,
+      "grad_permille": 18.3,
+      "confidence": "pdf_vector_confirmed"
+    },
+    {
+      "start_m": 192400,
       "len_m": 300,
-      "grad_permille": 17.6,
-      "confidence": "legacy_xml_unverified"
+      "grad_permille": 2.1,
+      "confidence": "pdf_vector_confirmed"
     },
     {
-      "start_m": 190800,
-      "len_m": 200,
-      "grad_permille": 14.8,
-      "confidence": "legacy_xml_unverified"
+      "start_m": 192700,
+      "len_m": 2500,
+      "grad_permille": 24.5,
+      "confidence": "pdf_vector_confirmed"
     },
     {
-      "start_m": 191000,
-      "len_m": 300,
-      "grad_permille": 13.7,
-      "confidence": "legacy_xml_unverified"
-    },
-    {
-      "start_m": 191300,
-      "len_m": 300,
-      "grad_permille": 18,
-      "confidence": "legacy_xml_unverified"
-    },
-    {
-      "start_m": 191600,
-      "len_m": 300,
-      "grad_permille": 13.4,
-      "confidence": "legacy_xml_unverified"
-    },
-    {
-      "start_m": 191900,
-      "len_m": 300,
-      "grad_permille": 24.4,
-      "confidence": "legacy_xml_unverified"
-    },
-    {
-      "start_m": 192200,
-      "len_m": 300,
-      "grad_permille": 2.9,
-      "confidence": "legacy_xml_unverified"
-    },
-    {
-      "start_m": 192500,
+      "start_m": 195200,
       "len_m": 400,
-      "grad_permille": 23.3,
-      "confidence": "legacy_xml_unverified"
+      "grad_permille": 5.0,
+      "confidence": "pdf_vector_confirmed"
     },
     {
-      "start_m": 192900,
-      "len_m": 600,
-      "grad_permille": 24.9,
-      "confidence": "legacy_xml_unverified"
-    },
-    {
-      "start_m": 193500,
-      "len_m": 400,
-      "grad_permille": 25,
-      "confidence": "legacy_xml_unverified"
-    },
-    {
-      "start_m": 193900,
-      "len_m": 200,
-      "grad_permille": 21,
-      "confidence": "legacy_xml_unverified"
-    },
-    {
-      "start_m": 194100,
-      "len_m": 400,
-      "grad_permille": 23,
-      "confidence": "legacy_xml_unverified"
-    },
-    {
-      "start_m": 194500,
-      "len_m": 400,
-      "grad_permille": 21,
-      "confidence": "legacy_xml_unverified"
-    },
-    {
-      "start_m": 194900,
-      "len_m": 200,
-      "grad_permille": 6.5,
-      "confidence": "legacy_xml_unverified"
-    },
-    {
-      "start_m": 195100,
-      "len_m": 200,
-      "grad_permille": 2.9,
-      "confidence": "legacy_xml_unverified"
-    },
-    {
-      "start_m": 195300,
-      "len_m": 200,
-      "grad_permille": 2.8,
-      "confidence": "legacy_xml_unverified"
-    },
-    {
-      "start_m": 195500,
-      "len_m": 200,
-      "grad_permille": 3,
-      "confidence": "legacy_xml_unverified"
-    },
-    {
-      "start_m": 195700,
-      "len_m": 200,
-      "grad_permille": 0.9,
-      "confidence": "legacy_xml_unverified"
-    },
-    {
-      "start_m": 195900,
-      "len_m": 200,
-      "grad_permille": 0.5,
-      "confidence": "legacy_xml_unverified"
-    },
-    {
-      "start_m": 196100,
-      "len_m": 200,
-      "grad_permille": 26.6,
-      "confidence": "legacy_xml_unverified"
+      "start_m": 195600,
+      "len_m": 700,
+      "grad_permille": 4.0,
+      "confidence": "pdf_vector_confirmed"
     },
     {
       "start_m": 196300,
-      "len_m": 400,
-      "grad_permille": 25.2,
-      "confidence": "legacy_xml_unverified"
-    },
-    {
-      "start_m": 196700,
-      "len_m": 200,
-      "grad_permille": 21,
-      "confidence": "legacy_xml_unverified"
+      "len_m": 600,
+      "grad_permille": 25.0,
+      "confidence": "pdf_vector_confirmed"
     },
     {
       "start_m": 196900,
-      "len_m": 200,
-      "grad_permille": 5.1,
-      "confidence": "legacy_xml_unverified"
+      "len_m": 1700,
+      "grad_permille": 22.0,
+      "confidence": "pdf_vector_confirmed"
     },
     {
-      "start_m": 197100,
-      "len_m": 400,
-      "grad_permille": 22.7,
-      "confidence": "legacy_xml_unverified"
-    },
-    {
-      "start_m": 197500,
-      "len_m": 200,
-      "grad_permille": 23.2,
-      "confidence": "legacy_xml_unverified"
-    },
-    {
-      "start_m": 197700,
-      "len_m": 200,
-      "grad_permille": 24.2,
-      "confidence": "legacy_xml_unverified"
-    },
-    {
-      "start_m": 197900,
-      "len_m": 300,
-      "grad_permille": 23,
-      "confidence": "legacy_xml_unverified"
-    },
-    {
-      "start_m": 198200,
-      "len_m": 300,
-      "grad_permille": 24.8,
-      "confidence": "legacy_xml_unverified"
-    },
-    {
-      "start_m": 198500,
-      "len_m": 200,
-      "grad_permille": 22.7,
-      "confidence": "legacy_xml_unverified"
-    },
-    {
-      "start_m": 198700,
-      "len_m": 200,
-      "grad_permille": 24,
-      "confidence": "legacy_xml_unverified"
-    },
-    {
-      "start_m": 198900,
-      "len_m": 400,
-      "grad_permille": 22.9,
-      "confidence": "legacy_xml_unverified"
-    },
-    {
-      "start_m": 199300,
-      "len_m": 200,
-      "grad_permille": 18,
-      "confidence": "legacy_xml_unverified"
-    },
-    {
-      "start_m": 199500,
-      "len_m": 200,
-      "grad_permille": 17.4,
-      "confidence": "legacy_xml_unverified"
-    },
-    {
-      "start_m": 199700,
-      "len_m": 200,
-      "grad_permille": 17,
-      "confidence": "legacy_xml_unverified"
+      "start_m": 198600,
+      "len_m": 1300,
+      "grad_permille": 25.6,
+      "confidence": "pdf_vector_confirmed"
     },
     {
       "start_m": 199900,
-      "len_m": 500,
-      "grad_permille": 20,
-      "confidence": "legacy_xml_unverified"
-    },
-    {
-      "start_m": 200400,
-      "len_m": 200,
-      "grad_permille": 25,
-      "confidence": "legacy_xml_unverified"
+      "len_m": 700,
+      "grad_permille": 17.3,
+      "confidence": "pdf_vector_confirmed"
     },
     {
       "start_m": 200600,
       "len_m": 300,
-      "grad_permille": 22,
-      "confidence": "legacy_xml_unverified"
+      "grad_permille": 2.3,
+      "confidence": "pdf_vector_confirmed"
     },
     {
       "start_m": 200900,
-      "len_m": 500,
-      "grad_permille": 22,
-      "confidence": "legacy_xml_unverified"
+      "len_m": 2500,
+      "grad_permille": 22.0,
+      "confidence": "pdf_vector_confirmed"
     },
     {
-      "start_m": 201400,
-      "len_m": 200,
-      "grad_permille": 19.4,
-      "confidence": "legacy_xml_unverified"
+      "start_m": 203400,
+      "len_m": 400,
+      "grad_permille": 12.7,
+      "confidence": "pdf_vector_confirmed"
     },
     {
-      "start_m": 201600,
-      "len_m": 300,
-      "grad_permille": 23,
-      "confidence": "legacy_xml_unverified"
-    },
-    {
-      "start_m": 201900,
+      "start_m": 203800,
       "len_m": 700,
-      "grad_permille": 23,
-      "confidence": "legacy_xml_unverified"
+      "grad_permille": -6.7,
+      "confidence": "pdf_vector_confirmed"
     },
     {
-      "start_m": 202600,
-      "len_m": 300,
-      "grad_permille": 25,
-      "confidence": "legacy_xml_unverified"
-    },
-    {
-      "start_m": 202900,
+      "start_m": 204500,
       "len_m": 400,
-      "grad_permille": 24,
-      "confidence": "legacy_xml_unverified"
-    },
-    {
-      "start_m": 203300,
-      "len_m": 300,
-      "grad_permille": 1.2,
-      "confidence": "legacy_xml_unverified"
-    },
-    {
-      "start_m": 203600,
-      "len_m": 400,
-      "grad_permille": -4,
-      "confidence": "legacy_xml_unverified"
-    },
-    {
-      "start_m": 204000,
-      "len_m": 200,
-      "grad_permille": -9.8,
-      "confidence": "legacy_xml_unverified"
-    },
-    {
-      "start_m": 204200,
-      "len_m": 500,
-      "grad_permille": -11.8,
-      "confidence": "legacy_xml_unverified"
-    },
-    {
-      "start_m": 204700,
-      "len_m": 200,
-      "grad_permille": -24.6,
-      "confidence": "legacy_xml_unverified"
+      "grad_permille": -20.0,
+      "confidence": "pdf_vector_confirmed"
     },
     {
       "start_m": 204900,
-      "len_m": 200,
-      "grad_permille": -28.4,
-      "confidence": "legacy_xml_unverified"
+      "len_m": 4100,
+      "grad_permille": -22.2,
+      "confidence": "pdf_vector_confirmed"
     },
     {
-      "start_m": 205100,
+      "start_m": 209000,
+      "len_m": 800,
+      "grad_permille": -18.7,
+      "confidence": "pdf_vector_confirmed"
+    },
+    {
+      "start_m": 209800,
+      "len_m": 900,
+      "grad_permille": -0.2,
+      "confidence": "pdf_vector_confirmed"
+    },
+    {
+      "start_m": 210700,
       "len_m": 300,
-      "grad_permille": -25,
-      "confidence": "legacy_xml_unverified"
+      "grad_permille": -3.7,
+      "confidence": "pdf_vector_confirmed"
     },
     {
-      "start_m": 205400,
-      "len_m": 400,
-      "grad_permille": -20,
-      "confidence": "legacy_xml_unverified"
-    },
-    {
-      "start_m": 205800,
-      "len_m": 100,
-      "grad_permille": -24,
-      "confidence": "legacy_xml_unverified"
-    },
-    {
-      "start_m": 205900,
-      "len_m": 200,
-      "grad_permille": -22,
-      "confidence": "legacy_xml_unverified"
-    },
-    {
-      "start_m": 206100,
-      "len_m": 300,
-      "grad_permille": -23,
-      "confidence": "legacy_xml_unverified"
-    },
-    {
-      "start_m": 206400,
-      "len_m": 500,
-      "grad_permille": -24,
-      "confidence": "legacy_xml_unverified"
-    },
-    {
-      "start_m": 206900,
-      "len_m": 400,
-      "grad_permille": -21,
-      "confidence": "legacy_xml_unverified"
-    },
-    {
-      "start_m": 207300,
-      "len_m": 200,
-      "grad_permille": -24,
-      "confidence": "legacy_xml_unverified"
-    },
-    {
-      "start_m": 207500,
-      "len_m": 200,
-      "grad_permille": -13.5,
-      "confidence": "legacy_xml_unverified"
-    },
-    {
-      "start_m": 207700,
-      "len_m": 200,
-      "grad_permille": -22,
-      "confidence": "legacy_xml_unverified"
-    },
-    {
-      "start_m": 207900,
-      "len_m": 500,
-      "grad_permille": -22.5,
-      "confidence": "legacy_xml_unverified"
-    },
-    {
-      "start_m": 208400,
-      "len_m": 200,
-      "grad_permille": -12.5,
-      "confidence": "legacy_xml_unverified"
-    },
-    {
-      "start_m": 208600,
-      "len_m": 300,
-      "grad_permille": -22,
-      "confidence": "legacy_xml_unverified"
-    },
-    {
-      "start_m": 208900,
-      "len_m": 500,
-      "grad_permille": -21,
-      "confidence": "legacy_xml_unverified"
-    },
-    {
-      "start_m": 209400,
-      "len_m": 500,
-      "grad_permille": 0,
-      "confidence": "legacy_xml_unverified"
-    },
-    {
-      "start_m": 209900,
-      "len_m": 300,
-      "grad_permille": 0.7,
-      "confidence": "legacy_xml_unverified"
-    },
-    {
-      "start_m": 210200,
-      "len_m": 300,
-      "grad_permille": 0,
-      "confidence": "legacy_xml_unverified"
-    },
-    {
-      "start_m": 210500,
-      "len_m": 400,
-      "grad_permille": -6.4,
-      "confidence": "legacy_xml_unverified"
-    },
-    {
-      "start_m": 210900,
-      "len_m": 200,
-      "grad_permille": -6.9,
-      "confidence": "legacy_xml_unverified"
-    },
-    {
-      "start_m": 211100,
-      "len_m": 200,
-      "grad_permille": -14.5,
-      "confidence": "legacy_xml_unverified"
-    },
-    {
-      "start_m": 211300,
-      "len_m": 400,
-      "grad_permille": -18,
-      "confidence": "legacy_xml_unverified"
-    },
-    {
-      "start_m": 211700,
-      "len_m": 200,
-      "grad_permille": -13.8,
-      "confidence": "legacy_xml_unverified"
-    },
-    {
-      "start_m": 211900,
-      "len_m": 600,
-      "grad_permille": -16,
-      "confidence": "legacy_xml_unverified"
-    },
-    {
-      "start_m": 212500,
-      "len_m": 400,
-      "grad_permille": -17.7,
-      "confidence": "legacy_xml_unverified"
-    },
-    {
-      "start_m": 212900,
-      "len_m": 200,
-      "grad_permille": -16,
-      "confidence": "legacy_xml_unverified"
-    },
-    {
-      "start_m": 213100,
-      "len_m": 200,
-      "grad_permille": -18,
-      "confidence": "legacy_xml_unverified"
+      "start_m": 211000,
+      "len_m": 2300,
+      "grad_permille": -15.6,
+      "confidence": "pdf_vector_confirmed"
     },
     {
       "start_m": 213300,
       "len_m": 200,
-      "grad_permille": -16,
-      "confidence": "legacy_xml_unverified"
+      "grad_permille": -9.0,
+      "confidence": "pdf_vector_confirmed"
     },
     {
       "start_m": 213500,
-      "len_m": 400,
-      "grad_permille": -17,
-      "confidence": "legacy_xml_unverified"
+      "len_m": 2500,
+      "grad_permille": -21.0,
+      "confidence": "pdf_vector_confirmed"
     },
     {
-      "start_m": 213900,
-      "len_m": 1000,
-      "grad_permille": -17,
-      "confidence": "legacy_xml_unverified"
-    },
-    {
-      "start_m": 214900,
-      "len_m": 500,
-      "grad_permille": -17,
-      "confidence": "legacy_xml_unverified"
-    },
-    {
-      "start_m": 215400,
-      "len_m": 200,
-      "grad_permille": -17,
-      "confidence": "legacy_xml_unverified"
-    },
-    {
-      "start_m": 215600,
-      "len_m": 300,
-      "grad_permille": -14.7,
-      "confidence": "legacy_xml_unverified"
-    },
-    {
-      "start_m": 215900,
-      "len_m": 200,
-      "grad_permille": -17,
-      "confidence": "legacy_xml_unverified"
+      "start_m": 216000,
+      "len_m": 100,
+      "grad_permille": 0.0,
+      "confidence": "pdf_vector_confirmed"
     },
     {
       "start_m": 216100,
-      "len_m": 200,
-      "grad_permille": -8.6,
-      "confidence": "legacy_xml_unverified"
-    },
-    {
-      "start_m": 216300,
-      "len_m": 300,
-      "grad_permille": -17,
-      "confidence": "legacy_xml_unverified"
-    },
-    {
-      "start_m": 216600,
-      "len_m": 300,
-      "grad_permille": -17,
-      "confidence": "legacy_xml_unverified"
-    },
-    {
-      "start_m": 216900,
-      "len_m": 300,
-      "grad_permille": -22,
-      "confidence": "legacy_xml_unverified"
-    },
-    {
-      "start_m": 217200,
       "len_m": 700,
-      "grad_permille": -14,
-      "confidence": "legacy_xml_unverified"
+      "grad_permille": -18.0,
+      "confidence": "pdf_vector_confirmed"
     },
     {
-      "start_m": 217900,
-      "len_m": 1000,
-      "grad_permille": -11.5,
-      "confidence": "legacy_xml_unverified"
+      "start_m": 216800,
+      "len_m": 2200,
+      "grad_permille": -10.8,
+      "confidence": "pdf_vector_confirmed"
     },
     {
-      "start_m": 218900,
-      "len_m": 1000,
-      "grad_permille": -10,
-      "confidence": "legacy_xml_unverified"
-    },
-    {
-      "start_m": 219900,
-      "len_m": 400,
-      "grad_permille": -1.1,
-      "confidence": "legacy_xml_unverified"
-    },
-    {
-      "start_m": 220300,
-      "len_m": 200,
-      "grad_permille": 1.3,
-      "confidence": "legacy_xml_unverified"
-    },
-    {
-      "start_m": 220500,
-      "len_m": 400,
-      "grad_permille": -2.4,
-      "confidence": "legacy_xml_unverified"
+      "start_m": 219000,
+      "len_m": 1900,
+      "grad_permille": -0.2,
+      "confidence": "pdf_vector_confirmed"
     }
   ],
   "stations": [
@@ -751,10 +265,6 @@
       "reason": "Направление чётное/нечётное не подтверждено по титулу карты"
     },
     {
-      "km": null,
-      "reason": "Знаки и границы уклонов пока мигрированы из profile.xml, а не сверены по границам элементов PDF"
-    },
-    {
       "km": 220,
       "reason": "GPS-геометрия продолжается примерно до 221,5 км; границу титульной станции Высокогорная сверить с PDF"
     }
@@ -767,7 +277,7 @@
       "sha256": "834155ea6be7fccaf02b744c49d0aef06ec35d7cd6ebbaebf4d7eb7c60f80118",
       "pages": 63,
       "profile_pages": "5,7,9,11,13,15,17,19,21,23,25,27,29,31,33,35,37,39,41,43",
-      "role": "authoritative_map_pending_row_by_row_verification"
+      "role": "authoritative_profile_manually_reviewed"
     },
     {
       "kind": "legacy_profile_xml",
@@ -778,6 +288,17 @@
       "kind": "legacy_geometry_xml",
       "path": "assets/tracker/maps/komsomol-sk-tche-9/data.xml",
       "role": "offline_gps_map_matching_seed"
+    },
+    {
+      "kind": "regime_profile_builder_review",
+      "builder_version": "0.2.0",
+      "promotion_version": "0.2.0",
+      "pdf_sha256": "834155ea6be7fccaf02b744c49d0aef06ec35d7cd6ebbaebf4d7eb7c60f80118",
+      "profile_sha256": "885c6028212cd9d3916dd4bebb4b826ff946d17342801dacbdf87d1c227b32f2",
+      "profile_with_confidence_sha256": "2ad71dbce860cd52afd1ed89bbd0ccd17090c317f439ed2874f68f021a78330a",
+      "resolved_issues": 1,
+      "legacy_fallback_elements": 0,
+      "role": "authoritative_profile_review"
     }
   ],
   "runtime": {
@@ -794,7 +315,7 @@
         "to_chainage_m": 183000
       }
     ],
-    "profile_status": "legacy_seed_complete_pending_pdf_verification",
+    "profile_status": "pdf_verified",
     "profile_coverage": [
       {
         "start_m": 183000,

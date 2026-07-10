@@ -16,2149 +16,2149 @@
       "start_m": 3614000,
       "len_m": 1500,
       "grad_permille": -1.5,
-      "confidence": "pdf_table_trace_verified"
+      "confidence": "pdf_manual_evidence_replayed"
     },
     {
       "start_m": 3615500,
       "len_m": 400,
       "grad_permille": -3.4,
-      "confidence": "pdf_table_trace_verified"
+      "confidence": "pdf_manual_evidence_replayed"
     },
     {
       "start_m": 3615900,
       "len_m": 400,
       "grad_permille": -0.2,
-      "confidence": "pdf_table_trace_verified"
+      "confidence": "pdf_manual_evidence_replayed"
     },
     {
       "start_m": 3616300,
       "len_m": 700,
       "grad_permille": -1.0,
-      "confidence": "pdf_table_trace_verified"
+      "confidence": "pdf_manual_evidence_replayed"
     },
     {
       "start_m": 3617000,
       "len_m": 1600,
       "grad_permille": -2.1,
-      "confidence": "pdf_table_trace_verified"
+      "confidence": "pdf_manual_evidence_replayed"
     },
     {
       "start_m": 3618600,
       "len_m": 1200,
       "grad_permille": -0.9,
-      "confidence": "pdf_table_trace_verified"
+      "confidence": "manual_reviewed"
     },
     {
       "start_m": 3619800,
       "len_m": 500,
       "grad_permille": 0.5,
-      "confidence": "pdf_table_trace_verified"
+      "confidence": "pdf_manual_evidence_replayed"
     },
     {
       "start_m": 3620300,
       "len_m": 800,
       "grad_permille": 2.0,
-      "confidence": "pdf_table_trace_verified"
+      "confidence": "pdf_manual_evidence_replayed"
     },
     {
       "start_m": 3621100,
       "len_m": 300,
       "grad_permille": -0.7,
-      "confidence": "pdf_table_trace_verified"
+      "confidence": "pdf_manual_evidence_replayed"
     },
     {
       "start_m": 3621400,
       "len_m": 300,
       "grad_permille": 0.2,
-      "confidence": "pdf_table_trace_verified"
+      "confidence": "pdf_manual_evidence_replayed"
     },
     {
       "start_m": 3621700,
       "len_m": 400,
       "grad_permille": -2.7,
-      "confidence": "pdf_table_trace_verified"
+      "confidence": "pdf_manual_evidence_replayed"
     },
     {
       "start_m": 3622100,
       "len_m": 400,
       "grad_permille": -0.2,
-      "confidence": "pdf_table_trace_verified"
+      "confidence": "pdf_manual_evidence_replayed"
     },
     {
       "start_m": 3622500,
       "len_m": 500,
       "grad_permille": 2.1,
-      "confidence": "pdf_table_trace_verified"
+      "confidence": "pdf_manual_evidence_replayed"
     },
     {
       "start_m": 3623000,
       "len_m": 900,
       "grad_permille": -3.8,
-      "confidence": "pdf_table_trace_verified"
+      "confidence": "pdf_manual_evidence_replayed"
     },
     {
       "start_m": 3623900,
       "len_m": 400,
       "grad_permille": 0.7,
-      "confidence": "pdf_table_trace_verified"
+      "confidence": "pdf_manual_evidence_replayed"
     },
     {
       "start_m": 3624300,
       "len_m": 900,
       "grad_permille": 2.9,
-      "confidence": "pdf_table_trace_verified"
+      "confidence": "pdf_manual_evidence_replayed"
     },
     {
       "start_m": 3625200,
       "len_m": 300,
       "grad_permille": -0.7,
-      "confidence": "pdf_table_trace_verified"
+      "confidence": "pdf_manual_evidence_replayed"
     },
     {
       "start_m": 3625500,
       "len_m": 1000,
       "grad_permille": 2.3,
-      "confidence": "pdf_table_trace_verified"
+      "confidence": "pdf_manual_evidence_replayed"
     },
     {
       "start_m": 3626500,
       "len_m": 300,
       "grad_permille": 0.4,
-      "confidence": "pdf_table_trace_verified"
+      "confidence": "pdf_manual_evidence_replayed"
     },
     {
       "start_m": 3626800,
       "len_m": 500,
       "grad_permille": 1.1,
-      "confidence": "pdf_table_trace_verified"
+      "confidence": "pdf_manual_evidence_replayed"
     },
     {
       "start_m": 3627300,
       "len_m": 600,
       "grad_permille": -0.6,
-      "confidence": "pdf_table_trace_verified"
+      "confidence": "pdf_manual_evidence_replayed"
     },
     {
       "start_m": 3627900,
       "len_m": 400,
       "grad_permille": 0.1,
-      "confidence": "pdf_table_trace_verified"
+      "confidence": "pdf_manual_evidence_replayed"
     },
     {
       "start_m": 3628300,
       "len_m": 400,
       "grad_permille": 0.6,
-      "confidence": "pdf_table_trace_verified"
+      "confidence": "pdf_manual_evidence_replayed"
     },
     {
       "start_m": 3628700,
       "len_m": 500,
       "grad_permille": -0.7,
-      "confidence": "pdf_table_trace_verified"
+      "confidence": "pdf_manual_evidence_replayed"
     },
     {
       "start_m": 3629200,
       "len_m": 200,
       "grad_permille": 1.0,
-      "confidence": "pdf_table_trace_verified"
+      "confidence": "pdf_manual_evidence_replayed"
     },
     {
       "start_m": 3629400,
       "len_m": 200,
       "grad_permille": -1.1,
-      "confidence": "pdf_table_trace_verified"
+      "confidence": "pdf_manual_evidence_replayed"
     },
     {
       "start_m": 3629600,
       "len_m": 300,
       "grad_permille": 0.3,
-      "confidence": "pdf_table_trace_verified"
+      "confidence": "pdf_manual_evidence_replayed"
     },
     {
       "start_m": 3629900,
       "len_m": 400,
       "grad_permille": -0.6,
-      "confidence": "pdf_table_trace_verified"
+      "confidence": "pdf_manual_evidence_replayed"
     },
     {
       "start_m": 3630300,
       "len_m": 400,
       "grad_permille": -1.0,
-      "confidence": "pdf_table_trace_verified"
+      "confidence": "pdf_manual_evidence_replayed"
     },
     {
       "start_m": 3630700,
       "len_m": 500,
       "grad_permille": 0.2,
-      "confidence": "pdf_table_trace_verified"
+      "confidence": "pdf_manual_evidence_replayed"
     },
     {
       "start_m": 3631200,
       "len_m": 600,
       "grad_permille": 1.3,
-      "confidence": "pdf_table_trace_verified"
+      "confidence": "pdf_manual_evidence_replayed"
     },
     {
       "start_m": 3631800,
       "len_m": 900,
       "grad_permille": 0.1,
-      "confidence": "pdf_table_trace_verified"
+      "confidence": "pdf_manual_evidence_replayed"
     },
     {
       "start_m": 3632700,
       "len_m": 700,
       "grad_permille": -2.0,
-      "confidence": "pdf_table_trace_verified"
+      "confidence": "pdf_manual_evidence_replayed"
     },
     {
       "start_m": 3633400,
       "len_m": 300,
       "grad_permille": 0.3,
-      "confidence": "pdf_table_trace_verified"
+      "confidence": "pdf_manual_evidence_replayed"
     },
     {
       "start_m": 3633700,
       "len_m": 400,
       "grad_permille": 0.0,
-      "confidence": "pdf_table_trace_verified"
+      "confidence": "pdf_manual_evidence_replayed"
     },
     {
       "start_m": 3634100,
       "len_m": 300,
       "grad_permille": -1.1,
-      "confidence": "pdf_table_trace_verified"
+      "confidence": "pdf_manual_evidence_replayed"
     },
     {
       "start_m": 3634400,
       "len_m": 500,
       "grad_permille": 1.1,
-      "confidence": "pdf_table_trace_verified"
+      "confidence": "pdf_manual_evidence_replayed"
     },
     {
       "start_m": 3634900,
       "len_m": 700,
       "grad_permille": -1.7,
-      "confidence": "pdf_table_trace_verified"
+      "confidence": "pdf_manual_evidence_replayed"
     },
     {
       "start_m": 3635600,
       "len_m": 100,
       "grad_permille": 1.0,
-      "confidence": "pdf_table_trace_verified"
+      "confidence": "pdf_manual_evidence_replayed"
     },
     {
       "start_m": 3635700,
       "len_m": 300,
       "grad_permille": -1.9,
-      "confidence": "pdf_table_trace_verified"
+      "confidence": "pdf_manual_evidence_replayed"
     },
     {
       "start_m": 3636000,
       "len_m": 900,
       "grad_permille": 0.0,
-      "confidence": "pdf_table_trace_verified"
+      "confidence": "pdf_manual_evidence_replayed"
     },
     {
       "start_m": 3636900,
       "len_m": 400,
       "grad_permille": 3.3,
-      "confidence": "pdf_table_trace_verified"
+      "confidence": "pdf_manual_evidence_replayed"
     },
     {
       "start_m": 3637300,
       "len_m": 500,
       "grad_permille": 7.0,
-      "confidence": "pdf_table_trace_verified"
+      "confidence": "pdf_manual_evidence_replayed"
     },
     {
       "start_m": 3637800,
       "len_m": 400,
       "grad_permille": 1.7,
-      "confidence": "pdf_table_trace_verified"
+      "confidence": "pdf_manual_evidence_replayed"
     },
     {
       "start_m": 3638200,
       "len_m": 700,
       "grad_permille": 1.0,
-      "confidence": "pdf_table_trace_verified"
+      "confidence": "pdf_manual_evidence_replayed"
     },
     {
       "start_m": 3638900,
       "len_m": 700,
       "grad_permille": -2.4,
-      "confidence": "pdf_table_trace_verified"
+      "confidence": "pdf_manual_evidence_replayed"
     },
     {
       "start_m": 3639600,
       "len_m": 500,
       "grad_permille": -0.2,
-      "confidence": "pdf_table_trace_verified"
+      "confidence": "pdf_manual_evidence_replayed"
     },
     {
       "start_m": 3640100,
       "len_m": 300,
       "grad_permille": 1.0,
-      "confidence": "pdf_table_trace_verified"
+      "confidence": "pdf_manual_evidence_replayed"
     },
     {
       "start_m": 3640400,
       "len_m": 600,
       "grad_permille": -0.5,
-      "confidence": "pdf_table_trace_verified"
+      "confidence": "pdf_manual_evidence_replayed"
     },
     {
       "start_m": 3641000,
       "len_m": 1100,
       "grad_permille": 9.2,
-      "confidence": "pdf_table_trace_verified"
+      "confidence": "pdf_manual_evidence_replayed"
     },
     {
       "start_m": 3642100,
       "len_m": 300,
       "grad_permille": 2.4,
-      "confidence": "pdf_table_trace_verified"
+      "confidence": "pdf_manual_evidence_replayed"
     },
     {
       "start_m": 3642400,
       "len_m": 900,
       "grad_permille": -4.8,
-      "confidence": "pdf_table_trace_verified"
+      "confidence": "pdf_manual_evidence_replayed"
     },
     {
       "start_m": 3643300,
       "len_m": 300,
       "grad_permille": -0.4,
-      "confidence": "pdf_table_trace_verified"
+      "confidence": "pdf_manual_evidence_replayed"
     },
     {
       "start_m": 3643600,
       "len_m": 400,
       "grad_permille": 4.6,
-      "confidence": "pdf_table_trace_verified"
+      "confidence": "pdf_manual_evidence_replayed"
     },
     {
       "start_m": 3644000,
       "len_m": 800,
       "grad_permille": 8.8,
-      "confidence": "pdf_table_trace_verified"
+      "confidence": "pdf_manual_evidence_replayed"
     },
     {
       "start_m": 3644800,
       "len_m": 300,
       "grad_permille": 4.2,
-      "confidence": "pdf_table_trace_verified"
+      "confidence": "pdf_manual_evidence_replayed"
     },
     {
       "start_m": 3645100,
       "len_m": 400,
       "grad_permille": -2.1,
-      "confidence": "pdf_table_trace_verified"
+      "confidence": "pdf_manual_evidence_replayed"
     },
     {
       "start_m": 3645500,
       "len_m": 500,
       "grad_permille": 0.0,
-      "confidence": "pdf_table_trace_verified"
+      "confidence": "pdf_manual_evidence_replayed"
     },
     {
       "start_m": 3646000,
       "len_m": 400,
       "grad_permille": 5.9,
-      "confidence": "pdf_table_trace_verified"
+      "confidence": "pdf_manual_evidence_replayed"
     },
     {
       "start_m": 3646400,
       "len_m": 300,
       "grad_permille": 0.3,
-      "confidence": "pdf_table_trace_verified"
+      "confidence": "pdf_manual_evidence_replayed"
     },
     {
       "start_m": 3646700,
       "len_m": 300,
       "grad_permille": -0.6,
-      "confidence": "pdf_table_trace_verified"
+      "confidence": "pdf_manual_evidence_replayed"
     },
     {
       "start_m": 3647000,
       "len_m": 900,
       "grad_permille": 6.0,
-      "confidence": "pdf_table_trace_verified"
+      "confidence": "pdf_manual_evidence_replayed"
     },
     {
       "start_m": 3647900,
       "len_m": 400,
       "grad_permille": 1.7,
-      "confidence": "pdf_table_trace_verified"
+      "confidence": "pdf_manual_evidence_replayed"
     },
     {
       "start_m": 3648300,
       "len_m": 400,
       "grad_permille": 3.0,
-      "confidence": "pdf_table_trace_verified"
+      "confidence": "pdf_manual_evidence_replayed"
     },
     {
       "start_m": 3648700,
       "len_m": 300,
       "grad_permille": 8.2,
-      "confidence": "pdf_table_trace_verified"
+      "confidence": "pdf_manual_evidence_replayed"
     },
     {
       "start_m": 3649000,
       "len_m": 800,
       "grad_permille": 9.1,
-      "confidence": "pdf_table_trace_verified"
+      "confidence": "pdf_manual_evidence_replayed"
     },
     {
       "start_m": 3649800,
       "len_m": 500,
       "grad_permille": 8.1,
-      "confidence": "pdf_table_trace_verified"
+      "confidence": "pdf_manual_evidence_replayed"
     },
     {
       "start_m": 3650300,
       "len_m": 900,
       "grad_permille": 3.7,
-      "confidence": "pdf_table_trace_verified"
+      "confidence": "pdf_manual_evidence_replayed"
     },
     {
       "start_m": 3651200,
       "len_m": 400,
       "grad_permille": 0.6,
-      "confidence": "pdf_table_trace_verified"
+      "confidence": "pdf_manual_evidence_replayed"
     },
     {
       "start_m": 3651600,
       "len_m": 300,
       "grad_permille": -1.9,
-      "confidence": "pdf_table_trace_verified"
+      "confidence": "pdf_manual_evidence_replayed"
     },
     {
       "start_m": 3651900,
       "len_m": 500,
       "grad_permille": -0.2,
-      "confidence": "pdf_table_trace_verified"
+      "confidence": "pdf_manual_evidence_replayed"
     },
     {
       "start_m": 3652400,
       "len_m": 600,
       "grad_permille": 2.4,
-      "confidence": "pdf_table_trace_verified"
+      "confidence": "pdf_manual_evidence_replayed"
     },
     {
       "start_m": 3653000,
       "len_m": 400,
       "grad_permille": -1.4,
-      "confidence": "pdf_table_trace_verified"
+      "confidence": "pdf_manual_evidence_replayed"
     },
     {
       "start_m": 3653400,
       "len_m": 500,
       "grad_permille": -2.9,
-      "confidence": "pdf_table_trace_verified"
+      "confidence": "pdf_manual_evidence_replayed"
     },
     {
       "start_m": 3653900,
       "len_m": 300,
       "grad_permille": 0.9,
-      "confidence": "pdf_table_trace_verified"
+      "confidence": "pdf_manual_evidence_replayed"
     },
     {
       "start_m": 3654200,
       "len_m": 1200,
       "grad_permille": 17.0,
-      "confidence": "pdf_table_trace_verified"
+      "confidence": "pdf_manual_evidence_replayed"
     },
     {
       "start_m": 3655400,
       "len_m": 500,
       "grad_permille": 15.8,
-      "confidence": "pdf_table_trace_verified"
+      "confidence": "pdf_manual_evidence_replayed"
     },
     {
       "start_m": 3655900,
       "len_m": 600,
       "grad_permille": 16.1,
-      "confidence": "pdf_table_trace_verified"
+      "confidence": "pdf_manual_evidence_replayed"
     },
     {
       "start_m": 3656500,
       "len_m": 900,
       "grad_permille": 17.3,
-      "confidence": "pdf_table_trace_verified"
+      "confidence": "pdf_manual_evidence_replayed"
     },
     {
       "start_m": 3657400,
       "len_m": 600,
       "grad_permille": 17.9,
-      "confidence": "pdf_table_trace_verified"
+      "confidence": "pdf_manual_evidence_replayed"
     },
     {
       "start_m": 3658000,
       "len_m": 200,
       "grad_permille": 13.2,
-      "confidence": "pdf_table_trace_verified"
+      "confidence": "pdf_manual_evidence_replayed"
     },
     {
       "start_m": 3658200,
       "len_m": 900,
       "grad_permille": 17.4,
-      "confidence": "pdf_table_trace_verified"
+      "confidence": "pdf_manual_evidence_replayed"
     },
     {
       "start_m": 3659100,
       "len_m": 300,
       "grad_permille": 10.7,
-      "confidence": "pdf_table_trace_verified"
+      "confidence": "pdf_manual_evidence_replayed"
     },
     {
       "start_m": 3659400,
       "len_m": 800,
       "grad_permille": 2.6,
-      "confidence": "pdf_table_trace_verified"
+      "confidence": "pdf_manual_evidence_replayed"
     },
     {
       "start_m": 3660200,
       "len_m": 400,
       "grad_permille": -2.8,
-      "confidence": "pdf_table_trace_verified"
+      "confidence": "pdf_manual_evidence_replayed"
     },
     {
       "start_m": 3660600,
       "len_m": 200,
       "grad_permille": -13.6,
-      "confidence": "pdf_table_trace_verified"
+      "confidence": "pdf_manual_evidence_replayed"
     },
     {
       "start_m": 3660800,
       "len_m": 400,
       "grad_permille": -15.0,
-      "confidence": "pdf_table_trace_verified"
+      "confidence": "pdf_manual_evidence_replayed"
     },
     {
       "start_m": 3661200,
       "len_m": 200,
       "grad_permille": -20.1,
-      "confidence": "pdf_table_trace_verified"
+      "confidence": "pdf_manual_evidence_replayed"
     },
     {
       "start_m": 3661400,
       "len_m": 700,
       "grad_permille": -16.6,
-      "confidence": "pdf_table_trace_verified"
+      "confidence": "pdf_manual_evidence_replayed"
     },
     {
       "start_m": 3662100,
       "len_m": 200,
       "grad_permille": -14.3,
-      "confidence": "pdf_table_trace_verified"
+      "confidence": "pdf_manual_evidence_replayed"
     },
     {
       "start_m": 3662300,
       "len_m": 200,
       "grad_permille": -20.6,
-      "confidence": "pdf_table_trace_verified"
+      "confidence": "pdf_manual_evidence_replayed"
     },
     {
       "start_m": 3662500,
       "len_m": 400,
       "grad_permille": -14.8,
-      "confidence": "pdf_table_trace_verified"
+      "confidence": "pdf_manual_evidence_replayed"
     },
     {
       "start_m": 3662900,
       "len_m": 800,
       "grad_permille": -16.9,
-      "confidence": "pdf_table_trace_verified"
+      "confidence": "pdf_manual_evidence_replayed"
     },
     {
       "start_m": 3663700,
       "len_m": 400,
       "grad_permille": -13.8,
-      "confidence": "pdf_table_trace_verified"
+      "confidence": "pdf_manual_evidence_replayed"
     },
     {
       "start_m": 3664100,
       "len_m": 1300,
       "grad_permille": -17.2,
-      "confidence": "pdf_table_trace_verified"
+      "confidence": "pdf_manual_evidence_replayed"
     },
     {
       "start_m": 3665400,
       "len_m": 500,
       "grad_permille": -15.4,
-      "confidence": "pdf_table_trace_verified"
+      "confidence": "pdf_manual_evidence_replayed"
     },
     {
       "start_m": 3665900,
       "len_m": 600,
       "grad_permille": -14.4,
-      "confidence": "pdf_table_trace_verified"
+      "confidence": "pdf_manual_evidence_replayed"
     },
     {
       "start_m": 3666500,
       "len_m": 400,
       "grad_permille": -15.6,
-      "confidence": "pdf_table_trace_verified"
+      "confidence": "pdf_manual_evidence_replayed"
     },
     {
       "start_m": 3666900,
       "len_m": 1000,
       "grad_permille": -16.1,
-      "confidence": "pdf_table_trace_verified"
+      "confidence": "pdf_manual_evidence_replayed"
     },
     {
       "start_m": 3667900,
       "len_m": 900,
       "grad_permille": -16.5,
-      "confidence": "pdf_table_trace_verified"
+      "confidence": "pdf_manual_evidence_replayed"
     },
     {
       "start_m": 3668800,
       "len_m": 200,
       "grad_permille": -20.6,
-      "confidence": "pdf_table_trace_verified"
+      "confidence": "pdf_manual_evidence_replayed"
     },
     {
       "start_m": 3669000,
       "len_m": 300,
       "grad_permille": -11.2,
-      "confidence": "pdf_table_trace_verified"
+      "confidence": "pdf_manual_evidence_replayed"
     },
     {
       "start_m": 3669300,
       "len_m": 500,
       "grad_permille": -4.5,
-      "confidence": "pdf_table_trace_verified"
+      "confidence": "pdf_manual_evidence_replayed"
     },
     {
       "start_m": 3669800,
       "len_m": 400,
       "grad_permille": -1.9,
-      "confidence": "pdf_table_trace_verified"
+      "confidence": "pdf_manual_evidence_replayed"
     },
     {
       "start_m": 3670200,
       "len_m": 300,
       "grad_permille": -9.5,
-      "confidence": "pdf_table_trace_verified"
+      "confidence": "pdf_manual_evidence_replayed"
     },
     {
       "start_m": 3670500,
       "len_m": 900,
       "grad_permille": -17.6,
-      "confidence": "pdf_table_trace_verified"
+      "confidence": "pdf_manual_evidence_replayed"
     },
     {
       "start_m": 3671400,
       "len_m": 400,
       "grad_permille": -16.5,
-      "confidence": "pdf_table_trace_verified"
+      "confidence": "pdf_manual_evidence_replayed"
     },
     {
       "start_m": 3671800,
       "len_m": 800,
       "grad_permille": -16.8,
-      "confidence": "pdf_table_trace_verified"
+      "confidence": "pdf_manual_evidence_replayed"
     },
     {
       "start_m": 3672600,
       "len_m": 800,
       "grad_permille": -17.3,
-      "confidence": "pdf_table_trace_verified"
+      "confidence": "pdf_manual_evidence_replayed"
     },
     {
       "start_m": 3673400,
       "len_m": 300,
       "grad_permille": -3.5,
-      "confidence": "pdf_table_trace_verified"
+      "confidence": "pdf_manual_evidence_replayed"
     },
     {
       "start_m": 3673700,
       "len_m": 500,
       "grad_permille": -2.1,
-      "confidence": "pdf_table_trace_verified"
+      "confidence": "pdf_manual_evidence_replayed"
     },
     {
       "start_m": 3674200,
       "len_m": 500,
       "grad_permille": -3.1,
-      "confidence": "pdf_table_trace_verified"
+      "confidence": "pdf_manual_evidence_replayed"
     },
     {
       "start_m": 3674700,
       "len_m": 800,
       "grad_permille": -2.1,
-      "confidence": "pdf_table_trace_verified"
+      "confidence": "pdf_manual_evidence_replayed"
     },
     {
       "start_m": 3675500,
       "len_m": 400,
       "grad_permille": 0.7,
-      "confidence": "pdf_table_trace_verified"
+      "confidence": "pdf_manual_evidence_replayed"
     },
     {
       "start_m": 3675900,
       "len_m": 900,
       "grad_permille": 6.3,
-      "confidence": "pdf_table_trace_verified"
+      "confidence": "pdf_manual_evidence_replayed"
     },
     {
       "start_m": 3676800,
       "len_m": 200,
       "grad_permille": 2.2,
-      "confidence": "pdf_table_trace_verified"
+      "confidence": "pdf_manual_evidence_replayed"
     },
     {
       "start_m": 3677000,
       "len_m": 200,
       "grad_permille": -0.7,
-      "confidence": "pdf_table_trace_verified"
+      "confidence": "pdf_manual_evidence_replayed"
     },
     {
       "start_m": 3677200,
       "len_m": 200,
       "grad_permille": 0.0,
-      "confidence": "pdf_table_trace_verified"
+      "confidence": "pdf_manual_evidence_replayed"
     },
     {
       "start_m": 3677400,
       "len_m": 800,
       "grad_permille": -4.8,
-      "confidence": "pdf_table_trace_verified"
+      "confidence": "pdf_manual_evidence_replayed"
     },
     {
       "start_m": 3678200,
       "len_m": 500,
       "grad_permille": 0.5,
-      "confidence": "pdf_table_trace_verified"
+      "confidence": "pdf_manual_evidence_replayed"
     },
     {
       "start_m": 3678700,
       "len_m": 400,
       "grad_permille": 1.3,
-      "confidence": "pdf_table_trace_verified"
+      "confidence": "pdf_manual_evidence_replayed"
     },
     {
       "start_m": 3679100,
       "len_m": 300,
       "grad_permille": 0.6,
-      "confidence": "pdf_table_trace_verified"
+      "confidence": "pdf_manual_evidence_replayed"
     },
     {
       "start_m": 3679400,
       "len_m": 500,
       "grad_permille": -0.9,
-      "confidence": "pdf_table_trace_verified"
+      "confidence": "pdf_manual_evidence_replayed"
     },
     {
       "start_m": 3679900,
       "len_m": 500,
       "grad_permille": 0.3,
-      "confidence": "pdf_table_trace_verified"
+      "confidence": "pdf_manual_evidence_replayed"
     },
     {
       "start_m": 3680400,
       "len_m": 300,
       "grad_permille": -2.3,
-      "confidence": "pdf_table_trace_verified"
+      "confidence": "pdf_manual_evidence_replayed"
     },
     {
       "start_m": 3680700,
       "len_m": 500,
       "grad_permille": -7.6,
-      "confidence": "pdf_table_trace_verified"
+      "confidence": "pdf_manual_evidence_replayed"
     },
     {
       "start_m": 3681200,
       "len_m": 400,
       "grad_permille": -6.9,
-      "confidence": "pdf_table_trace_verified"
+      "confidence": "pdf_manual_evidence_replayed"
     },
     {
       "start_m": 3681600,
       "len_m": 400,
       "grad_permille": -8.5,
-      "confidence": "pdf_table_trace_verified"
+      "confidence": "pdf_manual_evidence_replayed"
     },
     {
       "start_m": 3682000,
       "len_m": 300,
       "grad_permille": -3.4,
-      "confidence": "pdf_table_trace_verified"
+      "confidence": "pdf_manual_evidence_replayed"
     },
     {
       "start_m": 3682300,
       "len_m": 400,
       "grad_permille": 0.0,
-      "confidence": "pdf_table_trace_verified"
+      "confidence": "pdf_manual_evidence_replayed"
     },
     {
       "start_m": 3682700,
       "len_m": 200,
       "grad_permille": 0.5,
-      "confidence": "pdf_table_trace_verified"
+      "confidence": "pdf_manual_evidence_replayed"
     },
     {
       "start_m": 3682900,
       "len_m": 300,
       "grad_permille": -1.3,
-      "confidence": "pdf_table_trace_verified"
+      "confidence": "pdf_manual_evidence_replayed"
     },
     {
       "start_m": 3683200,
       "len_m": 300,
       "grad_permille": 0.5,
-      "confidence": "pdf_table_trace_verified"
+      "confidence": "pdf_manual_evidence_replayed"
     },
     {
       "start_m": 3683500,
       "len_m": 400,
       "grad_permille": 0.4,
-      "confidence": "pdf_table_trace_verified"
+      "confidence": "pdf_manual_evidence_replayed"
     },
     {
       "start_m": 3683900,
       "len_m": 600,
       "grad_permille": -0.4,
-      "confidence": "pdf_table_trace_verified"
+      "confidence": "pdf_manual_evidence_replayed"
     },
     {
       "start_m": 3684500,
       "len_m": 400,
       "grad_permille": 0.1,
-      "confidence": "pdf_table_trace_verified"
+      "confidence": "pdf_manual_evidence_replayed"
     },
     {
       "start_m": 3684900,
       "len_m": 1200,
       "grad_permille": 3.5,
-      "confidence": "pdf_table_trace_verified"
+      "confidence": "pdf_manual_evidence_replayed"
     },
     {
       "start_m": 3686100,
       "len_m": 300,
       "grad_permille": 4.3,
-      "confidence": "pdf_table_trace_verified"
+      "confidence": "pdf_manual_evidence_replayed"
     },
     {
       "start_m": 3686400,
       "len_m": 500,
       "grad_permille": 0.5,
-      "confidence": "pdf_table_trace_verified"
+      "confidence": "pdf_manual_evidence_replayed"
     },
     {
       "start_m": 3686900,
       "len_m": 600,
       "grad_permille": -4.6,
-      "confidence": "pdf_table_trace_verified"
+      "confidence": "pdf_manual_evidence_replayed"
     },
     {
       "start_m": 3687500,
       "len_m": 600,
       "grad_permille": -0.3,
-      "confidence": "pdf_table_trace_verified"
+      "confidence": "pdf_manual_evidence_replayed"
     },
     {
       "start_m": 3688100,
       "len_m": 600,
       "grad_permille": 0.7,
-      "confidence": "pdf_table_trace_verified"
+      "confidence": "pdf_manual_evidence_replayed"
     },
     {
       "start_m": 3688700,
       "len_m": 300,
       "grad_permille": 1.4,
-      "confidence": "pdf_table_trace_verified"
+      "confidence": "pdf_manual_evidence_replayed"
     },
     {
       "start_m": 3689000,
       "len_m": 900,
       "grad_permille": 2.5,
-      "confidence": "pdf_table_trace_verified"
+      "confidence": "pdf_manual_evidence_replayed"
     },
     {
       "start_m": 3689900,
       "len_m": 200,
       "grad_permille": 0.6,
-      "confidence": "pdf_table_trace_verified"
+      "confidence": "pdf_manual_evidence_replayed"
     },
     {
       "start_m": 3690100,
       "len_m": 900,
       "grad_permille": 8.1,
-      "confidence": "pdf_table_trace_verified"
+      "confidence": "pdf_manual_evidence_replayed"
     },
     {
       "start_m": 3691000,
       "len_m": 600,
       "grad_permille": 9.5,
-      "confidence": "pdf_table_trace_verified"
+      "confidence": "pdf_manual_evidence_replayed"
     },
     {
       "start_m": 3691600,
       "len_m": 300,
       "grad_permille": -0.3,
-      "confidence": "pdf_table_trace_verified"
+      "confidence": "pdf_manual_evidence_replayed"
     },
     {
       "start_m": 3691900,
       "len_m": 500,
       "grad_permille": -0.4,
-      "confidence": "pdf_table_trace_verified"
+      "confidence": "pdf_manual_evidence_replayed"
     },
     {
       "start_m": 3692400,
       "len_m": 800,
       "grad_permille": 8.2,
-      "confidence": "pdf_table_trace_verified"
+      "confidence": "pdf_manual_evidence_replayed"
     },
     {
       "start_m": 3693200,
       "len_m": 200,
       "grad_permille": -1.8,
-      "confidence": "pdf_table_trace_verified"
+      "confidence": "pdf_manual_evidence_replayed"
     },
     {
       "start_m": 3693400,
       "len_m": 600,
       "grad_permille": -8.2,
-      "confidence": "pdf_table_trace_verified"
+      "confidence": "pdf_manual_evidence_replayed"
     },
     {
       "start_m": 3694000,
       "len_m": 300,
       "grad_permille": -1.7,
-      "confidence": "pdf_table_trace_verified"
+      "confidence": "pdf_manual_evidence_replayed"
     },
     {
       "start_m": 3694300,
       "len_m": 300,
       "grad_permille": 2.0,
-      "confidence": "pdf_table_trace_verified"
+      "confidence": "pdf_manual_evidence_replayed"
     },
     {
       "start_m": 3694600,
       "len_m": 200,
       "grad_permille": 0.0,
-      "confidence": "pdf_table_trace_verified"
+      "confidence": "pdf_manual_evidence_replayed"
     },
     {
       "start_m": 3694800,
       "len_m": 700,
       "grad_permille": 8.1,
-      "confidence": "pdf_table_trace_verified"
+      "confidence": "pdf_manual_evidence_replayed"
     },
     {
       "start_m": 3695500,
       "len_m": 800,
       "grad_permille": 8.6,
-      "confidence": "pdf_table_trace_verified"
+      "confidence": "pdf_manual_evidence_replayed"
     },
     {
       "start_m": 3696300,
       "len_m": 200,
       "grad_permille": 5.2,
-      "confidence": "pdf_table_trace_verified"
+      "confidence": "pdf_manual_evidence_replayed"
     },
     {
       "start_m": 3696500,
       "len_m": 200,
       "grad_permille": -0.8,
-      "confidence": "pdf_table_trace_verified"
+      "confidence": "pdf_manual_evidence_replayed"
     },
     {
       "start_m": 3696700,
       "len_m": 1200,
       "grad_permille": -8.6,
-      "confidence": "pdf_table_trace_verified"
+      "confidence": "pdf_manual_evidence_replayed"
     },
     {
       "start_m": 3697900,
       "len_m": 2200,
       "grad_permille": -8.8,
-      "confidence": "pdf_table_trace_verified"
+      "confidence": "pdf_manual_evidence_replayed"
     },
     {
       "start_m": 3700100,
       "len_m": 300,
       "grad_permille": -4.2,
-      "confidence": "pdf_table_trace_verified"
+      "confidence": "pdf_manual_evidence_replayed"
     },
     {
       "start_m": 3700400,
       "len_m": 1600,
       "grad_permille": -2.0,
-      "confidence": "pdf_table_trace_verified"
+      "confidence": "pdf_manual_evidence_replayed"
     },
     {
       "start_m": 3702000,
       "len_m": 400,
       "grad_permille": 1.0,
-      "confidence": "pdf_table_trace_verified"
+      "confidence": "pdf_manual_evidence_replayed"
     },
     {
       "start_m": 3702400,
       "len_m": 300,
       "grad_permille": -0.9,
-      "confidence": "pdf_table_trace_verified"
+      "confidence": "pdf_manual_evidence_replayed"
     },
     {
       "start_m": 3702700,
       "len_m": 300,
       "grad_permille": 0.1,
-      "confidence": "pdf_table_trace_verified"
+      "confidence": "pdf_manual_evidence_replayed"
     },
     {
       "start_m": 3703000,
       "len_m": 600,
       "grad_permille": -0.1,
-      "confidence": "pdf_table_trace_verified"
+      "confidence": "pdf_manual_evidence_replayed"
     },
     {
       "start_m": 3703600,
       "len_m": 400,
       "grad_permille": -0.2,
-      "confidence": "pdf_table_trace_verified"
+      "confidence": "pdf_manual_evidence_replayed"
     },
     {
       "start_m": 3704000,
       "len_m": 1200,
       "grad_permille": 0.8,
-      "confidence": "pdf_table_trace_verified"
+      "confidence": "pdf_manual_evidence_replayed"
     },
     {
       "start_m": 3705200,
       "len_m": 600,
       "grad_permille": -2.1,
-      "confidence": "pdf_table_trace_verified"
+      "confidence": "pdf_manual_evidence_replayed"
     },
     {
       "start_m": 3705800,
       "len_m": 900,
       "grad_permille": 0.2,
-      "confidence": "pdf_table_trace_verified"
+      "confidence": "pdf_manual_evidence_replayed"
     },
     {
       "start_m": 3706700,
       "len_m": 700,
       "grad_permille": -0.1,
-      "confidence": "pdf_table_trace_verified"
+      "confidence": "pdf_manual_evidence_replayed"
     },
     {
       "start_m": 3707400,
       "len_m": 600,
       "grad_permille": -1.0,
-      "confidence": "pdf_table_trace_verified"
+      "confidence": "pdf_manual_evidence_replayed"
     },
     {
       "start_m": 3708000,
       "len_m": 800,
       "grad_permille": -0.3,
-      "confidence": "pdf_table_trace_verified"
+      "confidence": "pdf_manual_evidence_replayed"
     },
     {
       "start_m": 3708800,
       "len_m": 700,
       "grad_permille": 0.3,
-      "confidence": "pdf_table_trace_verified"
+      "confidence": "pdf_manual_evidence_replayed"
     },
     {
       "start_m": 3709500,
       "len_m": 500,
       "grad_permille": -0.4,
-      "confidence": "pdf_table_trace_verified"
+      "confidence": "pdf_manual_evidence_replayed"
     },
     {
       "start_m": 3710000,
       "len_m": 500,
       "grad_permille": -0.7,
-      "confidence": "pdf_table_trace_verified"
+      "confidence": "pdf_manual_evidence_replayed"
     },
     {
       "start_m": 3710500,
       "len_m": 700,
       "grad_permille": 0.1,
-      "confidence": "pdf_table_trace_verified"
+      "confidence": "pdf_manual_evidence_replayed"
     },
     {
       "start_m": 3711200,
       "len_m": 300,
       "grad_permille": 2.6,
-      "confidence": "pdf_table_trace_verified"
+      "confidence": "pdf_manual_evidence_replayed"
     },
     {
       "start_m": 3711500,
       "len_m": 400,
       "grad_permille": 4.0,
-      "confidence": "pdf_table_trace_verified"
+      "confidence": "pdf_manual_evidence_replayed"
     },
     {
       "start_m": 3711900,
       "len_m": 300,
       "grad_permille": 4.2,
-      "confidence": "pdf_table_trace_verified"
+      "confidence": "pdf_manual_evidence_replayed"
     },
     {
       "start_m": 3712200,
       "len_m": 400,
       "grad_permille": -0.8,
-      "confidence": "pdf_table_trace_verified"
+      "confidence": "pdf_manual_evidence_replayed"
     },
     {
       "start_m": 3712600,
       "len_m": 400,
       "grad_permille": -3.8,
-      "confidence": "pdf_table_trace_verified"
+      "confidence": "pdf_manual_evidence_replayed"
     },
     {
       "start_m": 3713000,
       "len_m": 300,
       "grad_permille": -4.1,
-      "confidence": "pdf_table_trace_verified"
+      "confidence": "pdf_manual_evidence_replayed"
     },
     {
       "start_m": 3713300,
       "len_m": 400,
       "grad_permille": -2.9,
-      "confidence": "pdf_table_trace_verified"
+      "confidence": "pdf_manual_evidence_replayed"
     },
     {
       "start_m": 3713700,
       "len_m": 600,
       "grad_permille": -3.3,
-      "confidence": "pdf_table_trace_verified"
+      "confidence": "pdf_manual_evidence_replayed"
     },
     {
       "start_m": 3714300,
       "len_m": 1500,
       "grad_permille": -1.7,
-      "confidence": "pdf_table_trace_verified"
+      "confidence": "pdf_manual_evidence_replayed"
     },
     {
       "start_m": 3715800,
       "len_m": 1100,
       "grad_permille": -1.6,
-      "confidence": "pdf_table_trace_verified"
+      "confidence": "pdf_manual_evidence_replayed"
     },
     {
       "start_m": 3716900,
       "len_m": 800,
       "grad_permille": -0.1,
-      "confidence": "pdf_table_trace_verified"
+      "confidence": "pdf_manual_evidence_replayed"
     },
     {
       "start_m": 3717700,
       "len_m": 500,
       "grad_permille": -1.8,
-      "confidence": "pdf_table_trace_verified"
+      "confidence": "pdf_manual_evidence_replayed"
     },
     {
       "start_m": 3718200,
       "len_m": 500,
       "grad_permille": 1.0,
-      "confidence": "pdf_table_trace_verified"
+      "confidence": "pdf_manual_evidence_replayed"
     },
     {
       "start_m": 3718700,
       "len_m": 300,
       "grad_permille": -0.6,
-      "confidence": "pdf_table_trace_verified"
+      "confidence": "pdf_manual_evidence_replayed"
     },
     {
       "start_m": 3719000,
       "len_m": 500,
       "grad_permille": 0.2,
-      "confidence": "pdf_table_trace_verified"
+      "confidence": "pdf_manual_evidence_replayed"
     },
     {
       "start_m": 3719500,
       "len_m": 1000,
       "grad_permille": -1.6,
-      "confidence": "pdf_table_trace_verified"
+      "confidence": "pdf_manual_evidence_replayed"
     },
     {
       "start_m": 3720500,
       "len_m": 100,
       "grad_permille": 0.5,
-      "confidence": "pdf_trace_legacy_magnitude"
+      "confidence": "manual_reviewed_legacy_fallback"
     },
     {
       "start_m": 3720600,
       "len_m": 300,
       "grad_permille": -1.7,
-      "confidence": "pdf_table_trace_verified"
+      "confidence": "pdf_manual_evidence_replayed"
     },
     {
       "start_m": 3720900,
       "len_m": 1200,
       "grad_permille": 0.0,
-      "confidence": "pdf_table_trace_verified"
+      "confidence": "pdf_manual_evidence_replayed"
     },
     {
       "start_m": 3722100,
       "len_m": 500,
       "grad_permille": 8.3,
-      "confidence": "pdf_table_trace_verified"
+      "confidence": "pdf_manual_evidence_replayed"
     },
     {
       "start_m": 3722600,
       "len_m": 500,
       "grad_permille": 9.4,
-      "confidence": "pdf_table_trace_verified"
+      "confidence": "pdf_manual_evidence_replayed"
     },
     {
       "start_m": 3723100,
       "len_m": 1000,
       "grad_permille": 7.6,
-      "confidence": "pdf_table_trace_verified"
+      "confidence": "pdf_manual_evidence_replayed"
     },
     {
       "start_m": 3724100,
       "len_m": 600,
       "grad_permille": 9.4,
-      "confidence": "pdf_table_trace_verified"
+      "confidence": "pdf_manual_evidence_replayed"
     },
     {
       "start_m": 3724700,
       "len_m": 1200,
       "grad_permille": 8.7,
-      "confidence": "pdf_table_trace_verified"
+      "confidence": "pdf_manual_evidence_replayed"
     },
     {
       "start_m": 3725900,
       "len_m": 500,
       "grad_permille": 7.2,
-      "confidence": "pdf_table_trace_verified"
+      "confidence": "pdf_manual_evidence_replayed"
     },
     {
       "start_m": 3726400,
       "len_m": 600,
       "grad_permille": 9.1,
-      "confidence": "pdf_table_trace_verified"
+      "confidence": "pdf_manual_evidence_replayed"
     },
     {
       "start_m": 3727000,
       "len_m": 300,
       "grad_permille": 11.4,
-      "confidence": "pdf_table_trace_verified"
+      "confidence": "pdf_manual_evidence_replayed"
     },
     {
       "start_m": 3727300,
       "len_m": 300,
       "grad_permille": 4.2,
-      "confidence": "pdf_table_trace_verified"
+      "confidence": "pdf_manual_evidence_replayed"
     },
     {
       "start_m": 3727600,
       "len_m": 100,
       "grad_permille": -0.5,
-      "confidence": "pdf_trace_legacy_magnitude"
+      "confidence": "manual_reviewed_legacy_fallback"
     },
     {
       "start_m": 3727700,
       "len_m": 900,
       "grad_permille": 2.7,
-      "confidence": "pdf_table_trace_verified"
+      "confidence": "pdf_manual_evidence_replayed"
     },
     {
       "start_m": 3728600,
       "len_m": 700,
       "grad_permille": 7.1,
-      "confidence": "pdf_table_trace_verified"
+      "confidence": "pdf_manual_evidence_replayed"
     },
     {
       "start_m": 3729300,
       "len_m": 700,
       "grad_permille": 8.1,
-      "confidence": "pdf_table_trace_verified"
+      "confidence": "pdf_manual_evidence_replayed"
     },
     {
       "start_m": 3730000,
       "len_m": 900,
       "grad_permille": 7.3,
-      "confidence": "pdf_table_trace_verified"
+      "confidence": "pdf_manual_evidence_replayed"
     },
     {
       "start_m": 3730900,
       "len_m": 400,
       "grad_permille": -5.3,
-      "confidence": "pdf_table_trace_verified"
+      "confidence": "pdf_manual_evidence_replayed"
     },
     {
       "start_m": 3731300,
       "len_m": 900,
       "grad_permille": -9.0,
-      "confidence": "pdf_table_trace_verified"
+      "confidence": "pdf_manual_evidence_replayed"
     },
     {
       "start_m": 3732200,
       "len_m": 500,
       "grad_permille": -8.9,
-      "confidence": "pdf_table_trace_verified"
+      "confidence": "pdf_manual_evidence_replayed"
     },
     {
       "start_m": 3732700,
       "len_m": 700,
       "grad_permille": -6.2,
-      "confidence": "pdf_table_trace_verified"
+      "confidence": "pdf_manual_evidence_replayed"
     },
     {
       "start_m": 3733400,
       "len_m": 800,
       "grad_permille": -1.2,
-      "confidence": "pdf_table_trace_verified"
+      "confidence": "pdf_manual_evidence_replayed"
     },
     {
       "start_m": 3734200,
       "len_m": 300,
       "grad_permille": -3.4,
-      "confidence": "pdf_table_trace_verified"
+      "confidence": "pdf_manual_evidence_replayed"
     },
     {
       "start_m": 3734500,
       "len_m": 500,
       "grad_permille": -9.0,
-      "confidence": "pdf_table_trace_verified"
+      "confidence": "pdf_manual_evidence_replayed"
     },
     {
       "start_m": 3735000,
       "len_m": 500,
       "grad_permille": -7.4,
-      "confidence": "pdf_table_trace_verified"
+      "confidence": "pdf_manual_evidence_replayed"
     },
     {
       "start_m": 3735500,
       "len_m": 600,
       "grad_permille": -8.5,
-      "confidence": "pdf_table_trace_verified"
+      "confidence": "pdf_manual_evidence_replayed"
     },
     {
       "start_m": 3736100,
       "len_m": 1000,
       "grad_permille": -9.1,
-      "confidence": "pdf_table_trace_verified"
+      "confidence": "pdf_manual_evidence_replayed"
     },
     {
       "start_m": 3737100,
       "len_m": 1300,
       "grad_permille": -7.8,
-      "confidence": "pdf_table_trace_verified"
+      "confidence": "pdf_manual_evidence_replayed"
     },
     {
       "start_m": 3738400,
       "len_m": 400,
       "grad_permille": 0.2,
-      "confidence": "pdf_table_trace_verified"
+      "confidence": "pdf_manual_evidence_replayed"
     },
     {
       "start_m": 3738800,
       "len_m": 400,
       "grad_permille": 1.9,
-      "confidence": "pdf_table_trace_verified"
+      "confidence": "pdf_manual_evidence_replayed"
     },
     {
       "start_m": 3739200,
       "len_m": 700,
       "grad_permille": 1.6,
-      "confidence": "pdf_table_trace_verified"
+      "confidence": "pdf_manual_evidence_replayed"
     },
     {
       "start_m": 3739900,
       "len_m": 700,
       "grad_permille": 2.1,
-      "confidence": "pdf_table_trace_verified"
+      "confidence": "pdf_manual_evidence_replayed"
     },
     {
       "start_m": 3740600,
       "len_m": 200,
       "grad_permille": 6.8,
-      "confidence": "pdf_table_trace_verified"
+      "confidence": "pdf_manual_evidence_replayed"
     },
     {
       "start_m": 3740800,
       "len_m": 500,
       "grad_permille": 9.9,
-      "confidence": "pdf_table_trace_verified"
+      "confidence": "pdf_manual_evidence_replayed"
     },
     {
       "start_m": 3741300,
       "len_m": 300,
       "grad_permille": 6.9,
-      "confidence": "pdf_table_trace_verified"
+      "confidence": "pdf_manual_evidence_replayed"
     },
     {
       "start_m": 3741600,
       "len_m": 1000,
       "grad_permille": 4.7,
-      "confidence": "pdf_table_trace_verified"
+      "confidence": "pdf_manual_evidence_replayed"
     },
     {
       "start_m": 3742600,
       "len_m": 500,
       "grad_permille": 2.3,
-      "confidence": "pdf_table_trace_verified"
+      "confidence": "pdf_manual_evidence_replayed"
     },
     {
       "start_m": 3743100,
       "len_m": 500,
       "grad_permille": 1.5,
-      "confidence": "pdf_table_trace_verified"
+      "confidence": "pdf_manual_evidence_replayed"
     },
     {
       "start_m": 3743600,
       "len_m": 500,
       "grad_permille": -0.3,
-      "confidence": "pdf_table_trace_verified"
+      "confidence": "pdf_manual_evidence_replayed"
     },
     {
       "start_m": 3744100,
       "len_m": 1700,
       "grad_permille": -7.6,
-      "confidence": "pdf_table_trace_verified"
+      "confidence": "pdf_manual_evidence_replayed"
     },
     {
       "start_m": 3745800,
       "len_m": 900,
       "grad_permille": -8.6,
-      "confidence": "pdf_table_trace_verified"
+      "confidence": "pdf_manual_evidence_replayed"
     },
     {
       "start_m": 3746700,
       "len_m": 500,
       "grad_permille": -7.7,
-      "confidence": "pdf_table_trace_verified"
+      "confidence": "pdf_manual_evidence_replayed"
     },
     {
       "start_m": 3747200,
       "len_m": 1300,
       "grad_permille": -8.0,
-      "confidence": "pdf_table_trace_verified"
+      "confidence": "pdf_manual_evidence_replayed"
     },
     {
       "start_m": 3748500,
       "len_m": 600,
       "grad_permille": -3.9,
-      "confidence": "pdf_table_trace_verified"
+      "confidence": "pdf_manual_evidence_replayed"
     },
     {
       "start_m": 3749100,
       "len_m": 300,
       "grad_permille": 0.0,
-      "confidence": "pdf_table_trace_verified"
+      "confidence": "pdf_manual_evidence_replayed"
     },
     {
       "start_m": 3749400,
       "len_m": 700,
       "grad_permille": 4.6,
-      "confidence": "pdf_table_trace_verified"
+      "confidence": "pdf_manual_evidence_replayed"
     },
     {
       "start_m": 3750100,
       "len_m": 400,
       "grad_permille": 0.1,
-      "confidence": "pdf_table_trace_verified"
+      "confidence": "pdf_manual_evidence_replayed"
     },
     {
       "start_m": 3750500,
       "len_m": 300,
       "grad_permille": 0.6,
-      "confidence": "pdf_table_trace_verified"
+      "confidence": "pdf_manual_evidence_replayed"
     },
     {
       "start_m": 3750800,
       "len_m": 400,
       "grad_permille": -0.6,
-      "confidence": "pdf_table_trace_verified"
+      "confidence": "pdf_manual_evidence_replayed"
     },
     {
       "start_m": 3751200,
       "len_m": 600,
       "grad_permille": 1.2,
-      "confidence": "pdf_table_trace_verified"
+      "confidence": "pdf_manual_evidence_replayed"
     },
     {
       "start_m": 3751800,
       "len_m": 800,
       "grad_permille": 3.9,
-      "confidence": "pdf_table_trace_verified"
+      "confidence": "pdf_manual_evidence_replayed"
     },
     {
       "start_m": 3752600,
       "len_m": 800,
       "grad_permille": 1.6,
-      "confidence": "pdf_table_trace_verified"
+      "confidence": "pdf_manual_evidence_replayed"
     },
     {
       "start_m": 3753400,
       "len_m": 900,
       "grad_permille": -3.1,
-      "confidence": "pdf_table_trace_verified"
+      "confidence": "pdf_manual_evidence_replayed"
     },
     {
       "start_m": 3754300,
       "len_m": 300,
       "grad_permille": -0.4,
-      "confidence": "pdf_table_trace_verified"
+      "confidence": "pdf_manual_evidence_replayed"
     },
     {
       "start_m": 3754600,
       "len_m": 400,
       "grad_permille": 0.8,
-      "confidence": "pdf_table_trace_verified"
+      "confidence": "pdf_manual_evidence_replayed"
     },
     {
       "start_m": 3755000,
       "len_m": 100,
       "grad_permille": -0.5,
-      "confidence": "pdf_trace_legacy_magnitude"
+      "confidence": "manual_reviewed_legacy_fallback"
     },
     {
       "start_m": 3755100,
       "len_m": 700,
       "grad_permille": 1.1,
-      "confidence": "pdf_table_trace_verified"
+      "confidence": "pdf_manual_evidence_replayed"
     },
     {
       "start_m": 3755800,
       "len_m": 100,
       "grad_permille": 0.0,
-      "confidence": "pdf_trace_legacy_magnitude"
+      "confidence": "manual_reviewed_legacy_fallback"
     },
     {
       "start_m": 3755900,
       "len_m": 300,
       "grad_permille": 0.4,
-      "confidence": "pdf_table_trace_verified"
+      "confidence": "pdf_manual_evidence_replayed"
     },
     {
       "start_m": 3756200,
       "len_m": 800,
       "grad_permille": -2.1,
-      "confidence": "pdf_table_trace_verified"
+      "confidence": "pdf_manual_evidence_replayed"
     },
     {
       "start_m": 3757000,
       "len_m": 700,
       "grad_permille": 2.0,
-      "confidence": "pdf_table_trace_verified"
+      "confidence": "pdf_manual_evidence_replayed"
     },
     {
       "start_m": 3757700,
       "len_m": 400,
       "grad_permille": -2.1,
-      "confidence": "pdf_table_trace_verified"
+      "confidence": "pdf_manual_evidence_replayed"
     },
     {
       "start_m": 3758100,
       "len_m": 200,
       "grad_permille": 1.0,
-      "confidence": "pdf_table_trace_verified"
+      "confidence": "pdf_manual_evidence_replayed"
     },
     {
       "start_m": 3758300,
       "len_m": 600,
       "grad_permille": -0.8,
-      "confidence": "pdf_table_trace_verified"
+      "confidence": "pdf_manual_evidence_replayed"
     },
     {
       "start_m": 3758900,
       "len_m": 1100,
       "grad_permille": 1.1,
-      "confidence": "pdf_table_trace_verified"
+      "confidence": "pdf_manual_evidence_replayed"
     },
     {
       "start_m": 3760000,
       "len_m": 800,
       "grad_permille": -1.5,
-      "confidence": "pdf_table_trace_verified"
+      "confidence": "pdf_manual_evidence_replayed"
     },
     {
       "start_m": 3760800,
       "len_m": 200,
       "grad_permille": -1.0,
-      "confidence": "pdf_table_trace_verified"
+      "confidence": "pdf_manual_evidence_replayed"
     },
     {
       "start_m": 3761000,
       "len_m": 200,
       "grad_permille": 0.0,
-      "confidence": "pdf_table_trace_verified"
+      "confidence": "pdf_manual_evidence_replayed"
     },
     {
       "start_m": 3761200,
       "len_m": 600,
       "grad_permille": -0.9,
-      "confidence": "pdf_table_trace_verified"
+      "confidence": "pdf_manual_evidence_replayed"
     },
     {
       "start_m": 3761800,
       "len_m": 500,
       "grad_permille": 0.8,
-      "confidence": "pdf_table_trace_verified"
+      "confidence": "pdf_manual_evidence_replayed"
     },
     {
       "start_m": 3762300,
       "len_m": 600,
       "grad_permille": -0.8,
-      "confidence": "pdf_table_trace_verified"
+      "confidence": "pdf_manual_evidence_replayed"
     },
     {
       "start_m": 3762900,
       "len_m": 600,
       "grad_permille": 0.0,
-      "confidence": "pdf_table_trace_verified"
+      "confidence": "pdf_manual_evidence_replayed"
     },
     {
       "start_m": 3763500,
       "len_m": 300,
       "grad_permille": 0.6,
-      "confidence": "pdf_table_trace_verified"
+      "confidence": "pdf_manual_evidence_replayed"
     },
     {
       "start_m": 3763800,
       "len_m": 800,
       "grad_permille": 4.0,
-      "confidence": "pdf_table_trace_verified"
+      "confidence": "pdf_manual_evidence_replayed"
     },
     {
       "start_m": 3764600,
       "len_m": 600,
       "grad_permille": 2.9,
-      "confidence": "pdf_table_trace_verified"
+      "confidence": "pdf_manual_evidence_replayed"
     },
     {
       "start_m": 3765200,
       "len_m": 1400,
       "grad_permille": 3.2,
-      "confidence": "pdf_table_trace_verified"
+      "confidence": "pdf_manual_evidence_replayed"
     },
     {
       "start_m": 3766600,
       "len_m": 600,
       "grad_permille": 2.4,
-      "confidence": "pdf_table_trace_verified"
+      "confidence": "pdf_manual_evidence_replayed"
     },
     {
       "start_m": 3767200,
       "len_m": 400,
       "grad_permille": 0.5,
-      "confidence": "pdf_table_trace_verified"
+      "confidence": "pdf_manual_evidence_replayed"
     },
     {
       "start_m": 3767600,
       "len_m": 300,
       "grad_permille": -0.3,
-      "confidence": "pdf_table_trace_verified"
+      "confidence": "pdf_manual_evidence_replayed"
     },
     {
       "start_m": 3767900,
       "len_m": 400,
       "grad_permille": 0.3,
-      "confidence": "pdf_table_trace_verified"
+      "confidence": "pdf_manual_evidence_replayed"
     },
     {
       "start_m": 3768300,
       "len_m": 600,
       "grad_permille": -2.7,
-      "confidence": "pdf_table_trace_verified"
+      "confidence": "pdf_manual_evidence_replayed"
     },
     {
       "start_m": 3768900,
       "len_m": 1000,
       "grad_permille": 0.0,
-      "confidence": "pdf_table_trace_verified"
+      "confidence": "pdf_manual_evidence_replayed"
     },
     {
       "start_m": 3769900,
       "len_m": 1400,
       "grad_permille": 5.9,
-      "confidence": "pdf_table_trace_verified"
+      "confidence": "pdf_manual_evidence_replayed"
     },
     {
       "start_m": 3771300,
       "len_m": 1400,
       "grad_permille": 8.9,
-      "confidence": "pdf_table_trace_verified"
+      "confidence": "pdf_manual_evidence_replayed"
     },
     {
       "start_m": 3772700,
       "len_m": 1300,
       "grad_permille": 8.5,
-      "confidence": "pdf_table_trace_verified"
+      "confidence": "pdf_manual_evidence_replayed"
     },
     {
       "start_m": 3774000,
       "len_m": 1000,
       "grad_permille": 1.0,
-      "confidence": "pdf_table_trace_verified"
+      "confidence": "manual_reviewed"
     },
     {
       "start_m": 3775000,
       "len_m": 700,
       "grad_permille": 1.6,
-      "confidence": "pdf_table_trace_verified"
+      "confidence": "pdf_manual_evidence_replayed"
     },
     {
       "start_m": 3775700,
       "len_m": 600,
       "grad_permille": 5.4,
-      "confidence": "pdf_table_trace_verified"
+      "confidence": "pdf_manual_evidence_replayed"
     },
     {
       "start_m": 3776300,
       "len_m": 500,
       "grad_permille": 3.2,
-      "confidence": "pdf_table_trace_verified"
+      "confidence": "pdf_manual_evidence_replayed"
     },
     {
       "start_m": 3776800,
       "len_m": 700,
       "grad_permille": 2.2,
-      "confidence": "pdf_table_trace_verified"
+      "confidence": "pdf_manual_evidence_replayed"
     },
     {
       "start_m": 3777500,
       "len_m": 500,
       "grad_permille": 1.4,
-      "confidence": "pdf_table_trace_verified"
+      "confidence": "pdf_manual_evidence_replayed"
     },
     {
       "start_m": 3778000,
       "len_m": 300,
       "grad_permille": 2.3,
-      "confidence": "pdf_table_trace_verified"
+      "confidence": "pdf_manual_evidence_replayed"
     },
     {
       "start_m": 3778300,
       "len_m": 700,
       "grad_permille": 1.0,
-      "confidence": "pdf_table_trace_verified"
+      "confidence": "pdf_manual_evidence_replayed"
     },
     {
       "start_m": 3779000,
       "len_m": 300,
       "grad_permille": -0.8,
-      "confidence": "pdf_table_trace_verified"
+      "confidence": "pdf_manual_evidence_replayed"
     },
     {
       "start_m": 3779300,
       "len_m": 400,
       "grad_permille": 0.2,
-      "confidence": "pdf_table_trace_verified"
+      "confidence": "pdf_manual_evidence_replayed"
     },
     {
       "start_m": 3779700,
       "len_m": 700,
       "grad_permille": 3.0,
-      "confidence": "pdf_table_trace_verified"
+      "confidence": "pdf_manual_evidence_replayed"
     },
     {
       "start_m": 3780400,
       "len_m": 700,
       "grad_permille": 2.7,
-      "confidence": "pdf_table_trace_verified"
+      "confidence": "pdf_manual_evidence_replayed"
     },
     {
       "start_m": 3781100,
       "len_m": 800,
       "grad_permille": 3.3,
-      "confidence": "pdf_table_trace_verified"
+      "confidence": "pdf_manual_evidence_replayed"
     },
     {
       "start_m": 3781900,
       "len_m": 1600,
       "grad_permille": 2.7,
-      "confidence": "pdf_table_trace_verified"
+      "confidence": "pdf_manual_evidence_replayed"
     },
     {
       "start_m": 3783500,
       "len_m": 300,
       "grad_permille": 4.4,
-      "confidence": "pdf_table_trace_verified"
+      "confidence": "pdf_manual_evidence_replayed"
     },
     {
       "start_m": 3783800,
       "len_m": 300,
       "grad_permille": 6.3,
-      "confidence": "pdf_table_trace_verified"
+      "confidence": "pdf_manual_evidence_replayed"
     },
     {
       "start_m": 3784100,
       "len_m": 800,
       "grad_permille": 4.5,
-      "confidence": "pdf_table_trace_verified"
+      "confidence": "pdf_manual_evidence_replayed"
     },
     {
       "start_m": 3784900,
       "len_m": 700,
       "grad_permille": 1.9,
-      "confidence": "pdf_table_trace_verified"
+      "confidence": "pdf_manual_evidence_replayed"
     },
     {
       "start_m": 3785600,
       "len_m": 1100,
       "grad_permille": 2.8,
-      "confidence": "pdf_table_trace_verified"
+      "confidence": "pdf_manual_evidence_replayed"
     },
     {
       "start_m": 3786700,
       "len_m": 300,
       "grad_permille": 4.7,
-      "confidence": "pdf_table_trace_verified"
+      "confidence": "pdf_manual_evidence_replayed"
     },
     {
       "start_m": 3787000,
       "len_m": 300,
       "grad_permille": 8.4,
-      "confidence": "pdf_table_trace_verified"
+      "confidence": "pdf_manual_evidence_replayed"
     },
     {
       "start_m": 3787300,
       "len_m": 600,
       "grad_permille": 7.3,
-      "confidence": "pdf_table_trace_verified"
+      "confidence": "pdf_manual_evidence_replayed"
     },
     {
       "start_m": 3787900,
       "len_m": 300,
       "grad_permille": 5.9,
-      "confidence": "pdf_table_trace_verified"
+      "confidence": "pdf_manual_evidence_replayed"
     },
     {
       "start_m": 3788200,
       "len_m": 800,
       "grad_permille": 6.6,
-      "confidence": "pdf_table_trace_verified"
+      "confidence": "pdf_manual_evidence_replayed"
     },
     {
       "start_m": 3789000,
       "len_m": 300,
       "grad_permille": 2.5,
-      "confidence": "pdf_table_trace_verified"
+      "confidence": "pdf_manual_evidence_replayed"
     },
     {
       "start_m": 3789300,
       "len_m": 600,
       "grad_permille": 1.2,
-      "confidence": "pdf_table_trace_verified"
+      "confidence": "pdf_manual_evidence_replayed"
     },
     {
       "start_m": 3789900,
       "len_m": 300,
       "grad_permille": 0.3,
-      "confidence": "pdf_table_trace_verified"
+      "confidence": "pdf_manual_evidence_replayed"
     },
     {
       "start_m": 3790200,
       "len_m": 500,
       "grad_permille": 0.0,
-      "confidence": "pdf_table_trace_verified"
+      "confidence": "pdf_manual_evidence_replayed"
     },
     {
       "start_m": 3790700,
       "len_m": 500,
       "grad_permille": -3.9,
-      "confidence": "pdf_table_trace_verified"
+      "confidence": "pdf_manual_evidence_replayed"
     },
     {
       "start_m": 3791200,
       "len_m": 400,
       "grad_permille": -6.8,
-      "confidence": "pdf_table_trace_verified"
+      "confidence": "pdf_manual_evidence_replayed"
     },
     {
       "start_m": 3791600,
       "len_m": 700,
       "grad_permille": -9.5,
-      "confidence": "pdf_table_trace_verified"
+      "confidence": "pdf_manual_evidence_replayed"
     },
     {
       "start_m": 3792300,
       "len_m": 600,
       "grad_permille": -6.6,
-      "confidence": "pdf_table_trace_verified"
+      "confidence": "pdf_manual_evidence_replayed"
     },
     {
       "start_m": 3792900,
       "len_m": 400,
       "grad_permille": -8.1,
-      "confidence": "pdf_table_trace_verified"
+      "confidence": "pdf_manual_evidence_replayed"
     },
     {
       "start_m": 3793300,
       "len_m": 200,
       "grad_permille": -3.4,
-      "confidence": "pdf_table_trace_verified"
+      "confidence": "pdf_manual_evidence_replayed"
     },
     {
       "start_m": 3793500,
       "len_m": 100,
       "grad_permille": 3.0,
-      "confidence": "pdf_trace_legacy_magnitude"
+      "confidence": "manual_reviewed_legacy_fallback"
     },
     {
       "start_m": 3793600,
       "len_m": 400,
       "grad_permille": -3.3,
-      "confidence": "pdf_table_trace_verified"
+      "confidence": "pdf_manual_evidence_replayed"
     },
     {
       "start_m": 3794000,
       "len_m": 400,
       "grad_permille": -7.3,
-      "confidence": "pdf_table_trace_verified"
+      "confidence": "pdf_manual_evidence_replayed"
     },
     {
       "start_m": 3794400,
       "len_m": 300,
       "grad_permille": -8.8,
-      "confidence": "pdf_table_trace_verified"
+      "confidence": "pdf_manual_evidence_replayed"
     },
     {
       "start_m": 3794700,
       "len_m": 800,
       "grad_permille": -7.1,
-      "confidence": "pdf_table_trace_verified"
+      "confidence": "pdf_manual_evidence_replayed"
     },
     {
       "start_m": 3795500,
       "len_m": 400,
       "grad_permille": -4.3,
-      "confidence": "pdf_table_trace_verified"
+      "confidence": "pdf_manual_evidence_replayed"
     },
     {
       "start_m": 3795900,
       "len_m": 1100,
       "grad_permille": -4.2,
-      "confidence": "pdf_table_trace_verified"
+      "confidence": "pdf_manual_evidence_replayed"
     },
     {
       "start_m": 3797000,
       "len_m": 400,
       "grad_permille": -9.4,
-      "confidence": "pdf_table_trace_verified"
+      "confidence": "pdf_manual_evidence_replayed"
     },
     {
       "start_m": 3797400,
       "len_m": 900,
       "grad_permille": -8.4,
-      "confidence": "pdf_table_trace_verified"
+      "confidence": "pdf_manual_evidence_replayed"
     },
     {
       "start_m": 3798300,
       "len_m": 800,
       "grad_permille": -9.0,
-      "confidence": "pdf_table_trace_verified"
+      "confidence": "pdf_manual_evidence_replayed"
     },
     {
       "start_m": 3799100,
       "len_m": 600,
       "grad_permille": -4.9,
-      "confidence": "pdf_table_trace_verified"
+      "confidence": "pdf_manual_evidence_replayed"
     },
     {
       "start_m": 3799700,
       "len_m": 600,
       "grad_permille": -2.5,
-      "confidence": "pdf_table_trace_verified"
+      "confidence": "pdf_manual_evidence_replayed"
     },
     {
       "start_m": 3800300,
       "len_m": 1100,
       "grad_permille": -7.7,
-      "confidence": "pdf_table_trace_verified"
+      "confidence": "pdf_manual_evidence_replayed"
     },
     {
       "start_m": 3801400,
       "len_m": 700,
       "grad_permille": -8.5,
-      "confidence": "pdf_table_trace_verified"
+      "confidence": "pdf_manual_evidence_replayed"
     },
     {
       "start_m": 3802100,
       "len_m": 400,
       "grad_permille": -4.9,
-      "confidence": "pdf_table_trace_verified"
+      "confidence": "pdf_manual_evidence_replayed"
     },
     {
       "start_m": 3802500,
       "len_m": 500,
       "grad_permille": -3.3,
-      "confidence": "pdf_table_trace_verified"
+      "confidence": "pdf_manual_evidence_replayed"
     },
     {
       "start_m": 3803000,
       "len_m": 400,
       "grad_permille": -1.7,
-      "confidence": "pdf_table_trace_verified"
+      "confidence": "pdf_manual_evidence_replayed"
     },
     {
       "start_m": 3803400,
       "len_m": 200,
       "grad_permille": -0.5,
-      "confidence": "pdf_table_trace_verified"
+      "confidence": "pdf_manual_evidence_replayed"
     },
     {
       "start_m": 3803600,
       "len_m": 200,
       "grad_permille": 2.4,
-      "confidence": "pdf_table_trace_verified"
+      "confidence": "pdf_manual_evidence_replayed"
     },
     {
       "start_m": 3803800,
       "len_m": 200,
       "grad_permille": 0.0,
-      "confidence": "pdf_table_trace_verified"
+      "confidence": "pdf_manual_evidence_replayed"
     },
     {
       "start_m": 3804000,
       "len_m": 1200,
       "grad_permille": 8.3,
-      "confidence": "pdf_table_trace_verified"
+      "confidence": "pdf_manual_evidence_replayed"
     },
     {
       "start_m": 3805200,
       "len_m": 200,
       "grad_permille": 2.3,
-      "confidence": "pdf_table_trace_verified"
+      "confidence": "pdf_manual_evidence_replayed"
     },
     {
       "start_m": 3805400,
       "len_m": 200,
       "grad_permille": -2.2,
-      "confidence": "pdf_table_trace_verified"
+      "confidence": "pdf_manual_evidence_replayed"
     },
     {
       "start_m": 3805600,
       "len_m": 700,
       "grad_permille": -7.7,
-      "confidence": "pdf_table_trace_verified"
+      "confidence": "pdf_manual_evidence_replayed"
     },
     {
       "start_m": 3806300,
       "len_m": 400,
       "grad_permille": -9.5,
-      "confidence": "pdf_table_trace_verified"
+      "confidence": "pdf_manual_evidence_replayed"
     },
     {
       "start_m": 3806700,
       "len_m": 600,
       "grad_permille": -6.9,
-      "confidence": "pdf_table_trace_verified"
+      "confidence": "pdf_manual_evidence_replayed"
     },
     {
       "start_m": 3807300,
       "len_m": 500,
       "grad_permille": -8.5,
-      "confidence": "pdf_table_trace_verified"
+      "confidence": "pdf_manual_evidence_replayed"
     },
     {
       "start_m": 3807800,
       "len_m": 400,
       "grad_permille": -9.4,
-      "confidence": "pdf_table_trace_verified"
+      "confidence": "pdf_manual_evidence_replayed"
     },
     {
       "start_m": 3808200,
       "len_m": 400,
       "grad_permille": -6.3,
-      "confidence": "pdf_table_trace_verified"
+      "confidence": "pdf_manual_evidence_replayed"
     },
     {
       "start_m": 3808600,
       "len_m": 500,
       "grad_permille": -8.9,
-      "confidence": "pdf_table_trace_verified"
+      "confidence": "pdf_manual_evidence_replayed"
     },
     {
       "start_m": 3809100,
       "len_m": 500,
       "grad_permille": -7.2,
-      "confidence": "pdf_table_trace_verified"
+      "confidence": "pdf_manual_evidence_replayed"
     },
     {
       "start_m": 3809600,
       "len_m": 300,
       "grad_permille": -9.4,
-      "confidence": "pdf_table_trace_verified"
+      "confidence": "pdf_manual_evidence_replayed"
     },
     {
       "start_m": 3809900,
       "len_m": 700,
       "grad_permille": -9.0,
-      "confidence": "pdf_table_trace_verified"
+      "confidence": "pdf_manual_evidence_replayed"
     },
     {
       "start_m": 3810600,
       "len_m": 300,
       "grad_permille": -5.9,
-      "confidence": "pdf_table_trace_verified"
+      "confidence": "pdf_manual_evidence_replayed"
     },
     {
       "start_m": 3810900,
       "len_m": 500,
       "grad_permille": -2.3,
-      "confidence": "pdf_table_trace_verified"
+      "confidence": "pdf_manual_evidence_replayed"
     },
     {
       "start_m": 3811400,
       "len_m": 300,
       "grad_permille": -6.5,
-      "confidence": "pdf_table_trace_verified"
+      "confidence": "pdf_manual_evidence_replayed"
     },
     {
       "start_m": 3811700,
       "len_m": 500,
       "grad_permille": -9.3,
-      "confidence": "pdf_table_trace_verified"
+      "confidence": "pdf_manual_evidence_replayed"
     },
     {
       "start_m": 3812200,
       "len_m": 600,
       "grad_permille": -3.1,
-      "confidence": "pdf_table_trace_verified"
+      "confidence": "pdf_manual_evidence_replayed"
     },
     {
       "start_m": 3812800,
       "len_m": 800,
       "grad_permille": -1.2,
-      "confidence": "pdf_table_trace_verified"
+      "confidence": "pdf_manual_evidence_replayed"
     },
     {
       "start_m": 3813600,
       "len_m": 200,
       "grad_permille": -0.5,
-      "confidence": "pdf_table_trace_verified"
+      "confidence": "pdf_manual_evidence_replayed"
     },
     {
       "start_m": 3813800,
       "len_m": 400,
       "grad_permille": -5.0,
-      "confidence": "pdf_trace_legacy_magnitude"
+      "confidence": "manual_reviewed_legacy_fallback"
     },
     {
       "start_m": 3814200,
       "len_m": 300,
       "grad_permille": -7.6,
-      "confidence": "pdf_table_trace_verified"
+      "confidence": "pdf_manual_evidence_replayed"
     },
     {
       "start_m": 3814500,
       "len_m": 700,
       "grad_permille": -0.1,
-      "confidence": "pdf_table_trace_verified"
+      "confidence": "pdf_manual_evidence_replayed"
     },
     {
       "start_m": 3815200,
       "len_m": 500,
       "grad_permille": 5.9,
-      "confidence": "pdf_table_trace_verified"
+      "confidence": "pdf_manual_evidence_replayed"
     },
     {
       "start_m": 3815700,
       "len_m": 300,
       "grad_permille": 0.5,
-      "confidence": "pdf_table_trace_verified"
+      "confidence": "pdf_manual_evidence_replayed"
     }
   ],
   "stations": [
@@ -2292,7 +2292,7 @@
       "sha256": "d0f282190ab71099961e635343106990acbb8509fa5b7d2a9562a1b608b4bb02",
       "pages": 17,
       "profile_pages": "2-16",
-      "role": "authoritative_profile_pages_2_16_manually_audited"
+      "role": "authoritative_profile_manually_reviewed"
     },
     {
       "kind": "legacy_profile_xml",
@@ -2303,6 +2303,17 @@
       "kind": "legacy_geometry_xml",
       "path": "assets/tracker/maps/komsomol-sk-tche-9/data.xml",
       "role": "offline_gps_map_matching_seed"
+    },
+    {
+      "kind": "regime_profile_builder_review",
+      "builder_version": "0.1.0",
+      "promotion_version": "0.2.0",
+      "pdf_sha256": "d0f282190ab71099961e635343106990acbb8509fa5b7d2a9562a1b608b4bb02",
+      "profile_sha256": "132964a51de4256300bfabd654d3cb0326c597fe73b04c56acbafab1434a878b",
+      "profile_with_confidence_sha256": "5fc9f700d77346224208d95756c2c2c32b9150098597b80aed610880f8ad93f7",
+      "resolved_issues": 8,
+      "legacy_fallback_elements": 6,
+      "role": "authoritative_profile_review"
     }
   ],
   "runtime": {

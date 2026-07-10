@@ -1,12 +1,27 @@
 from __future__ import annotations
 
+import copy
 import json
+import shutil
 from pathlib import Path
+
+from .pdf_io import PdfBuilderError
 
 
 def _write_json(path: Path, payload) -> None:
     temporary = path.with_name(path.name + ".tmp")
-    temporary.write_text(json.dumps(payload, ensure_ascii=False, indent=2) + "\n", encoding="utf-8")
+    try:
+        serialized = json.dumps(
+            payload,
+            ensure_ascii=False,
+            indent=2,
+            allow_nan=False,
+        )
+    except (TypeError, ValueError) as error:
+        raise PdfBuilderError(
+            f"refusing to write non-JSON or non-finite data to {path.name}"
+        ) from error
+    temporary.write_text(serialized + "\n", encoding="utf-8")
     temporary.replace(path)
 
 
@@ -37,18 +52,45 @@ def ensure_safe_output(output_dir: Path, repository_root: Path) -> Path:
     return resolved
 
 
-def _profile_gaps(elements: list[dict], range_start_m: int, range_end_m: int) -> list[dict]:
+def _profile_gaps(
+    elements: list[dict],
+    range_start_m: int,
+    range_end_m: int,
+    allowed_gaps: list[dict] | None = None,
+) -> list[dict]:
+    reasons = {
+        (int(item["start_m"]), int(item["end_m"])): str(item.get("reason", ""))
+        for item in allowed_gaps or []
+    }
     gaps: list[dict] = []
     cursor = range_start_m
     for element in elements:
         start = int(element["start_m"])
         end = start + int(element["len_m"])
         if start > cursor:
-            gaps.append({"start_m": cursor, "end_m": start})
+            gap = {"start_m": cursor, "end_m": start}
+            if reasons.get((cursor, start)):
+                gap["reason"] = reasons[(cursor, start)]
+            gaps.append(gap)
         cursor = max(cursor, end)
     if cursor < range_end_m:
-        gaps.append({"start_m": cursor, "end_m": range_end_m})
+        gap = {"start_m": cursor, "end_m": range_end_m}
+        if reasons.get((cursor, range_end_m)):
+            gap["reason"] = reasons[(cursor, range_end_m)]
+        gaps.append(gap)
     return gaps
+
+
+def _profile_coverage(elements: list[dict]) -> list[dict]:
+    coverage: list[dict] = []
+    for element in elements:
+        start_m = int(element["start_m"])
+        end_m = start_m + int(element["len_m"])
+        if coverage and start_m == int(coverage[-1]["end_m"]):
+            coverage[-1]["end_m"] = end_m
+        else:
+            coverage.append({"start_m": start_m, "end_m": end_m})
+    return coverage
 
 
 def _summary_markdown(result: dict) -> str:
@@ -88,7 +130,7 @@ def _summary_markdown(result: dict) -> str:
             "",
             "## Safety",
             "",
-            "This run is a draft review artifact. The builder did not modify product section JSON files and never assigns product `verified` status.",
+            "This build run is a draft review artifact. The `build` command did not modify product section JSON files or assign product `verified` status; only the separate `promote` command can write a reviewed profile to a product section.",
             "",
         ]
     )
@@ -113,23 +155,41 @@ def write_artifacts(
         "review.json",
         "decisions.example.json",
         "summary.md",
+        "reviewed.profile.json",
+        "review-render.json",
     ]
     existing = [name for name in known_outputs if (output / name).exists()]
+    review_dir = output / "review"
+    if review_dir.exists():
+        existing.append("review/")
     if existing and not force:
         raise ValueError(
             f"builder run already exists in {output}; use --force to overwrite: {existing}"
         )
+    if force:
+        for stale_name in ("reviewed.profile.json", "review-render.json"):
+            stale_path = output / stale_name
+            if stale_path.is_file():
+                stale_path.unlink()
+        if review_dir.exists():
+            if not review_dir.is_dir():
+                raise PdfBuilderError(
+                    f"review artifact path is not a directory: {review_dir}"
+                )
+            shutil.rmtree(review_dir)
     run_payload = {
         "schema_version": "1.0",
         "builder_version": result["builder_version"],
         "config": _public_config(config),
         "source": {key: value for key, value in result["document"].items() if key != "path"},
         "summary": result["summary"],
+        "seed_reconciliation": result.get("seed_reconciliation") or {"enabled": False},
     }
     pages_payload = {
         "inspection": result["inspection"],
         "diagnostics": result["page_diagnostics"],
         "calibration": result["calibration"],
+        "seed_reconciliation": result.get("seed_reconciliation") or {"enabled": False},
     }
     draft_payload = {
         "schema_version": "1.0",
@@ -141,19 +201,17 @@ def write_artifacts(
             "end_m": int(config["range_end_m"]),
         },
         "elements": result["elements"],
-        "profile_coverage": [
-            {
-                "start_m": result["summary"]["coverage_start_m"],
-                "end_m": result["summary"]["coverage_end_m"],
-            }
-        ] if result["elements"] else [],
+        "profile_coverage": _profile_coverage(result["elements"]),
         "profile_gaps": _profile_gaps(
             result["elements"],
             int(config["range_start_m"]),
             int(config["range_end_m"]),
+            config.get("allowed_profile_gaps"),
         ),
+        "allowed_profile_gaps": copy.deepcopy(config.get("allowed_profile_gaps") or []),
         "summary": result["summary"],
         "seed_comparison": result["seed_comparison"],
+        "seed_reconciliation": result.get("seed_reconciliation") or {"enabled": False},
         "status": "builder_draft_needs_manual_approval",
     }
     review_payload = {
@@ -174,7 +232,9 @@ def write_artifacts(
                 "action": (
                     "insert_gap_or_defer"
                     if str(issue.get("kind", "")).startswith("profile_")
-                    else "accept_suggestion_or_set_grade_or_defer"
+                    else "dismiss_unmatched_pdf_cell_or_defer"
+                    if str(issue.get("kind", "")) == "unmatched_pdf_cell_during_seed_reconciliation"
+                    else "accept_suggestion_or_set_grade_or_set_grade_from_legacy_or_defer"
                 ),
                 "grade_permille": issue.get("suggested_grade"),
                 "note": "",

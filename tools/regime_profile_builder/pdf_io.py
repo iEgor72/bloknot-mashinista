@@ -28,9 +28,13 @@ def _word_record(word: dict) -> dict:
     }
 
 
-def _char_record(char: dict) -> dict:
+def _char_record(char: dict, order: int) -> dict:
     return {
         "text": str(char.get("text", "")),
+        # Keep the PDF content-stream order.  Rotated numeric labels are often
+        # rendered bottom-to-top, so geometric sorting reverses values such as
+        # ``0,6`` into ``6,0``.  Source order retains the semantic text.
+        "order": int(order),
         "x0": float(char.get("x0", 0)),
         "x1": float(char.get("x1", 0)),
         "top": float(char.get("top", 0)),
@@ -122,7 +126,10 @@ def load_vector_pdf(path: Path) -> dict:
                                 keep_blank_chars=False,
                             )
                         ],
-                        "chars": [_char_record(char) for char in page.chars],
+                        "chars": [
+                            _char_record(char, order)
+                            for order, char in enumerate(page.chars)
+                        ],
                         "vectors": vectors,
                         "lines": [_raw_line_record(line) for line in page.lines],
                     }

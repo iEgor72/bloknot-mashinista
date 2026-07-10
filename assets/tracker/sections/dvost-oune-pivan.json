@@ -16,2029 +16,2047 @@
       "start_m": 1000,
       "len_m": 500,
       "grad_permille": -1.2,
-      "confidence": "legacy_xml_unverified"
+      "confidence": "pdf_vector_confirmed"
     },
     {
       "start_m": 1500,
       "len_m": 300,
       "grad_permille": 5.8,
-      "confidence": "legacy_xml_unverified"
+      "confidence": "manual_reviewed"
     },
     {
       "start_m": 1800,
       "len_m": 300,
       "grad_permille": 10.3,
-      "confidence": "legacy_xml_unverified"
+      "confidence": "manual_reviewed"
     },
     {
       "start_m": 2100,
       "len_m": 500,
       "grad_permille": 7.3,
-      "confidence": "legacy_xml_unverified"
+      "confidence": "pdf_vector_confirmed"
     },
     {
       "start_m": 2600,
       "len_m": 500,
       "grad_permille": 5.8,
-      "confidence": "legacy_xml_unverified"
+      "confidence": "pdf_vector_confirmed"
     },
     {
       "start_m": 3100,
       "len_m": 1000,
       "grad_permille": 7.5,
-      "confidence": "legacy_xml_unverified"
+      "confidence": "pdf_vector_confirmed"
     },
     {
       "start_m": 4100,
       "len_m": 400,
       "grad_permille": 8.6,
-      "confidence": "legacy_xml_unverified"
+      "confidence": "pdf_vector_confirmed"
     },
     {
       "start_m": 4500,
       "len_m": 900,
       "grad_permille": 7.8,
-      "confidence": "legacy_xml_unverified"
+      "confidence": "pdf_vector_confirmed"
     },
     {
       "start_m": 5400,
       "len_m": 200,
-      "grad_permille": 9,
-      "confidence": "legacy_xml_unverified"
+      "grad_permille": 9.0,
+      "confidence": "manual_reviewed"
     },
     {
       "start_m": 5600,
       "len_m": 200,
       "grad_permille": 10.6,
-      "confidence": "legacy_xml_unverified"
+      "confidence": "manual_reviewed"
     },
     {
       "start_m": 5800,
       "len_m": 400,
-      "grad_permille": 7,
-      "confidence": "legacy_xml_unverified"
+      "grad_permille": 7.0,
+      "confidence": "pdf_vector_confirmed"
     },
     {
       "start_m": 6200,
       "len_m": 400,
       "grad_permille": 4.9,
-      "confidence": "legacy_xml_unverified"
+      "confidence": "pdf_vector_confirmed"
     },
     {
       "start_m": 6600,
       "len_m": 900,
       "grad_permille": 7.6,
-      "confidence": "legacy_xml_unverified"
+      "confidence": "pdf_vector_confirmed"
     },
     {
       "start_m": 7500,
       "len_m": 300,
-      "grad_permille": 6,
-      "confidence": "legacy_xml_unverified"
+      "grad_permille": 6.0,
+      "confidence": "manual_reviewed"
     },
     {
       "start_m": 7800,
       "len_m": 700,
       "grad_permille": 8.6,
-      "confidence": "legacy_xml_unverified"
+      "confidence": "pdf_vector_confirmed"
     },
     {
       "start_m": 8500,
       "len_m": 200,
       "grad_permille": 5.5,
-      "confidence": "legacy_xml_unverified"
+      "confidence": "manual_reviewed"
     },
     {
       "start_m": 8700,
       "len_m": 200,
       "grad_permille": 2.9,
-      "confidence": "legacy_xml_unverified"
+      "confidence": "manual_reviewed"
     },
     {
       "start_m": 8900,
       "len_m": 400,
       "grad_permille": 1.3,
-      "confidence": "legacy_xml_unverified"
+      "confidence": "pdf_vector_confirmed"
     },
     {
       "start_m": 9300,
       "len_m": 500,
       "grad_permille": 4.2,
-      "confidence": "legacy_xml_unverified"
+      "confidence": "pdf_vector_confirmed"
     },
     {
       "start_m": 9800,
       "len_m": 500,
       "grad_permille": 7.2,
-      "confidence": "legacy_xml_unverified"
+      "confidence": "pdf_vector_confirmed"
     },
     {
       "start_m": 10300,
       "len_m": 300,
       "grad_permille": 4.9,
-      "confidence": "legacy_xml_unverified"
+      "confidence": "manual_reviewed"
     },
     {
       "start_m": 10600,
       "len_m": 900,
       "grad_permille": 8.2,
-      "confidence": "legacy_xml_unverified"
+      "confidence": "pdf_vector_confirmed"
     },
     {
       "start_m": 11500,
       "len_m": 500,
       "grad_permille": 6.6,
-      "confidence": "legacy_xml_unverified"
+      "confidence": "pdf_vector_confirmed"
     },
     {
       "start_m": 12000,
       "len_m": 1000,
       "grad_permille": 7.7,
-      "confidence": "legacy_xml_unverified"
+      "confidence": "manual_reviewed"
     },
     {
       "start_m": 13000,
       "len_m": 700,
-      "grad_permille": 9,
-      "confidence": "legacy_xml_unverified"
+      "grad_permille": 9.0,
+      "confidence": "manual_reviewed"
     },
     {
       "start_m": 13700,
       "len_m": 900,
       "grad_permille": 7.9,
-      "confidence": "legacy_xml_unverified"
+      "confidence": "manual_reviewed"
     },
     {
       "start_m": 14600,
       "len_m": 300,
       "grad_permille": 3.2,
-      "confidence": "legacy_xml_unverified"
+      "confidence": "manual_reviewed"
     },
     {
       "start_m": 14900,
       "len_m": 900,
       "grad_permille": -8.3,
-      "confidence": "legacy_xml_unverified"
+      "confidence": "manual_reviewed"
     },
     {
       "start_m": 15800,
       "len_m": 600,
       "grad_permille": -6.9,
-      "confidence": "legacy_xml_unverified"
+      "confidence": "manual_reviewed"
     },
     {
       "start_m": 16400,
-      "len_m": 300,
+      "len_m": 200,
       "grad_permille": -8.1,
-      "confidence": "legacy_xml_unverified"
+      "confidence": "manual_reviewed"
+    },
+    {
+      "start_m": 16600,
+      "len_m": 100,
+      "grad_permille": -8.1,
+      "confidence": "manual_reviewed"
     },
     {
       "start_m": 16700,
       "len_m": 700,
       "grad_permille": -9.6,
-      "confidence": "legacy_xml_unverified"
+      "confidence": "manual_reviewed"
     },
     {
       "start_m": 17400,
       "len_m": 600,
       "grad_permille": -8.3,
-      "confidence": "legacy_xml_unverified"
+      "confidence": "manual_reviewed"
     },
     {
       "start_m": 18000,
       "len_m": 700,
-      "grad_permille": -7,
-      "confidence": "legacy_xml_unverified"
+      "grad_permille": -7.0,
+      "confidence": "manual_reviewed"
     },
     {
       "start_m": 18700,
       "len_m": 300,
       "grad_permille": -4.7,
-      "confidence": "legacy_xml_unverified"
+      "confidence": "manual_reviewed"
     },
     {
       "start_m": 19000,
       "len_m": 300,
       "grad_permille": -1.9,
-      "confidence": "legacy_xml_unverified"
+      "confidence": "manual_reviewed"
     },
     {
       "start_m": 19300,
       "len_m": 500,
-      "grad_permille": -3,
-      "confidence": "legacy_xml_unverified"
+      "grad_permille": -3.0,
+      "confidence": "manual_reviewed"
     },
     {
       "start_m": 19800,
       "len_m": 500,
       "grad_permille": -5.7,
-      "confidence": "legacy_xml_unverified"
+      "confidence": "manual_reviewed"
     },
     {
       "start_m": 20300,
       "len_m": 700,
       "grad_permille": -7.2,
-      "confidence": "legacy_xml_unverified"
+      "confidence": "manual_reviewed"
     },
     {
       "start_m": 21000,
       "len_m": 600,
       "grad_permille": -7.6,
-      "confidence": "legacy_xml_unverified"
+      "confidence": "manual_reviewed"
     },
     {
       "start_m": 21600,
       "len_m": 400,
-      "grad_permille": -9,
-      "confidence": "legacy_xml_unverified"
+      "grad_permille": -9.0,
+      "confidence": "manual_reviewed"
     },
     {
       "start_m": 22000,
       "len_m": 400,
       "grad_permille": -6.9,
-      "confidence": "legacy_xml_unverified"
+      "confidence": "manual_reviewed"
     },
     {
       "start_m": 22400,
       "len_m": 700,
       "grad_permille": -7.9,
-      "confidence": "legacy_xml_unverified"
+      "confidence": "manual_reviewed"
     },
     {
       "start_m": 23100,
       "len_m": 300,
       "grad_permille": -5.6,
-      "confidence": "legacy_xml_unverified"
+      "confidence": "manual_reviewed"
     },
     {
       "start_m": 23400,
       "len_m": 1000,
       "grad_permille": -8.4,
-      "confidence": "legacy_xml_unverified"
+      "confidence": "manual_reviewed"
     },
     {
       "start_m": 24400,
       "len_m": 700,
       "grad_permille": -8.2,
-      "confidence": "legacy_xml_unverified"
+      "confidence": "manual_reviewed"
     },
     {
       "start_m": 25100,
       "len_m": 300,
       "grad_permille": -5.9,
-      "confidence": "legacy_xml_unverified"
+      "confidence": "manual_reviewed"
     },
     {
       "start_m": 25400,
       "len_m": 600,
       "grad_permille": -8.6,
-      "confidence": "legacy_xml_unverified"
+      "confidence": "manual_reviewed"
     },
     {
       "start_m": 26000,
       "len_m": 1500,
       "grad_permille": -9.45,
-      "confidence": "legacy_xml_unverified"
+      "confidence": "pdf_vector_confirmed"
     },
     {
       "start_m": 27500,
       "len_m": 700,
       "grad_permille": -7.8,
-      "confidence": "legacy_xml_unverified"
+      "confidence": "pdf_vector_confirmed"
     },
     {
       "start_m": 28200,
       "len_m": 300,
       "grad_permille": 1.3,
-      "confidence": "legacy_xml_unverified"
+      "confidence": "manual_reviewed"
     },
     {
       "start_m": 28500,
       "len_m": 500,
       "grad_permille": -1.2,
-      "confidence": "legacy_xml_unverified"
+      "confidence": "pdf_vector_confirmed"
     },
     {
       "start_m": 29000,
       "len_m": 400,
       "grad_permille": 1.05,
-      "confidence": "legacy_xml_unverified"
+      "confidence": "pdf_vector_confirmed"
     },
     {
       "start_m": 29400,
       "len_m": 700,
       "grad_permille": -0.6,
-      "confidence": "legacy_xml_unverified"
+      "confidence": "pdf_vector_confirmed"
     },
     {
       "start_m": 30100,
       "len_m": 200,
       "grad_permille": 1.5,
-      "confidence": "legacy_xml_unverified"
+      "confidence": "manual_reviewed"
     },
     {
       "start_m": 30300,
       "len_m": 200,
-      "grad_permille": -1,
-      "confidence": "legacy_xml_unverified"
+      "grad_permille": -1.0,
+      "confidence": "manual_reviewed"
     },
     {
       "start_m": 30500,
       "len_m": 300,
       "grad_permille": 1.3,
-      "confidence": "legacy_xml_unverified"
+      "confidence": "manual_reviewed"
     },
     {
       "start_m": 30800,
       "len_m": 400,
       "grad_permille": -1.9,
-      "confidence": "legacy_xml_unverified"
+      "confidence": "pdf_vector_confirmed"
     },
     {
       "start_m": 31200,
       "len_m": 300,
       "grad_permille": 1.1,
-      "confidence": "legacy_xml_unverified"
+      "confidence": "manual_reviewed"
     },
     {
       "start_m": 31500,
       "len_m": 700,
       "grad_permille": -8.5,
-      "confidence": "legacy_xml_unverified"
+      "confidence": "pdf_vector_confirmed"
     },
     {
       "start_m": 32200,
       "len_m": 400,
-      "grad_permille": 0,
-      "confidence": "legacy_xml_unverified"
+      "grad_permille": 0.0,
+      "confidence": "pdf_vector_confirmed"
     },
     {
       "start_m": 32600,
       "len_m": 600,
-      "grad_permille": 8,
-      "confidence": "legacy_xml_unverified"
+      "grad_permille": 8.0,
+      "confidence": "pdf_vector_confirmed"
     },
     {
       "start_m": 33200,
       "len_m": 100,
-      "grad_permille": -1,
-      "confidence": "legacy_xml_unverified"
+      "grad_permille": -1.0,
+      "confidence": "manual_reviewed"
     },
     {
       "start_m": 33300,
       "len_m": 300,
-      "grad_permille": 7,
-      "confidence": "legacy_xml_unverified"
+      "grad_permille": 7.0,
+      "confidence": "manual_reviewed"
     },
     {
       "start_m": 33600,
       "len_m": 200,
       "grad_permille": -0.1,
-      "confidence": "legacy_xml_unverified"
+      "confidence": "manual_reviewed"
     },
     {
       "start_m": 33800,
       "len_m": 400,
       "grad_permille": -1.9,
-      "confidence": "legacy_xml_unverified"
+      "confidence": "pdf_vector_confirmed"
     },
     {
       "start_m": 34200,
       "len_m": 400,
       "grad_permille": 1.4,
-      "confidence": "legacy_xml_unverified"
+      "confidence": "pdf_vector_confirmed"
     },
     {
       "start_m": 34600,
       "len_m": 400,
       "grad_permille": -1.2,
-      "confidence": "legacy_xml_unverified"
+      "confidence": "pdf_vector_confirmed"
     },
     {
       "start_m": 35000,
-      "len_m": 400,
+      "len_m": 700,
       "grad_permille": 0.1,
-      "confidence": "legacy_xml_unverified"
-    },
-    {
-      "start_m": 35400,
-      "len_m": 300,
-      "grad_permille": -2.4,
-      "confidence": "legacy_xml_unverified"
+      "confidence": "manual_reviewed"
     },
     {
       "start_m": 35700,
-      "len_m": 300,
+      "len_m": 400,
       "grad_permille": -2.4,
-      "confidence": "legacy_xml_unverified"
+      "confidence": "manual_reviewed"
     },
     {
-      "start_m": 36000,
+      "start_m": 36100,
       "len_m": 400,
       "grad_permille": 4.1,
-      "confidence": "legacy_xml_unverified"
+      "confidence": "pdf_vector_confirmed"
     },
     {
-      "start_m": 36400,
+      "start_m": 36500,
       "len_m": 800,
       "grad_permille": -6.8,
-      "confidence": "legacy_xml_unverified"
+      "confidence": "pdf_vector_confirmed"
     },
     {
-      "start_m": 37200,
-      "len_m": 800,
-      "grad_permille": 7,
-      "confidence": "legacy_xml_unverified"
+      "start_m": 37300,
+      "len_m": 900,
+      "grad_permille": 7.0,
+      "confidence": "pdf_vector_confirmed"
     },
     {
-      "start_m": 38000,
-      "len_m": 500,
-      "grad_permille": 0,
-      "confidence": "legacy_xml_unverified"
-    },
-    {
-      "start_m": 38500,
+      "start_m": 38200,
       "len_m": 400,
+      "grad_permille": 0.0,
+      "confidence": "pdf_vector_confirmed"
+    },
+    {
+      "start_m": 38600,
+      "len_m": 200,
       "grad_permille": 3.1,
-      "confidence": "legacy_xml_unverified"
+      "confidence": "manual_reviewed"
+    },
+    {
+      "start_m": 38800,
+      "len_m": 100,
+      "grad_permille": 3.1,
+      "confidence": "manual_reviewed"
     },
     {
       "start_m": 38900,
       "len_m": 100,
-      "grad_permille": 0,
-      "confidence": "legacy_xml_unverified"
+      "grad_permille": 0.0,
+      "confidence": "pdf_vector_confirmed"
     },
     {
       "start_m": 39000,
       "len_m": 1000,
       "grad_permille": -8.3,
-      "confidence": "legacy_xml_unverified"
+      "confidence": "pdf_vector_confirmed"
     },
     {
       "start_m": 40000,
       "len_m": 200,
       "grad_permille": -1.4,
-      "confidence": "legacy_xml_unverified"
+      "confidence": "manual_reviewed"
     },
     {
       "start_m": 40200,
       "len_m": 1000,
       "grad_permille": 5.7,
-      "confidence": "legacy_xml_unverified"
+      "confidence": "pdf_vector_confirmed"
     },
     {
       "start_m": 41200,
       "len_m": 300,
       "grad_permille": 0.1,
-      "confidence": "legacy_xml_unverified"
+      "confidence": "manual_reviewed"
     },
     {
       "start_m": 41500,
       "len_m": 1100,
       "grad_permille": -1.6,
-      "confidence": "legacy_xml_unverified"
+      "confidence": "pdf_vector_confirmed"
     },
     {
       "start_m": 42600,
       "len_m": 800,
       "grad_permille": -8.1,
-      "confidence": "legacy_xml_unverified"
+      "confidence": "pdf_vector_confirmed"
     },
     {
       "start_m": 43400,
       "len_m": 400,
-      "grad_permille": -2,
-      "confidence": "legacy_xml_unverified"
+      "grad_permille": -2.0,
+      "confidence": "pdf_vector_confirmed"
     },
     {
       "start_m": 43800,
       "len_m": 500,
       "grad_permille": 7.8,
-      "confidence": "legacy_xml_unverified"
+      "confidence": "pdf_vector_confirmed"
     },
     {
       "start_m": 44300,
       "len_m": 300,
       "grad_permille": 0.5,
-      "confidence": "legacy_xml_unverified"
+      "confidence": "manual_reviewed"
     },
     {
       "start_m": 44600,
       "len_m": 700,
-      "grad_permille": -1,
-      "confidence": "legacy_xml_unverified"
+      "grad_permille": -1.0,
+      "confidence": "pdf_vector_confirmed"
     },
     {
       "start_m": 45300,
       "len_m": 300,
       "grad_permille": 0.2,
-      "confidence": "legacy_xml_unverified"
+      "confidence": "manual_reviewed"
     },
     {
       "start_m": 45600,
       "len_m": 500,
       "grad_permille": -5.2,
-      "confidence": "legacy_xml_unverified"
+      "confidence": "pdf_vector_confirmed"
     },
     {
       "start_m": 46100,
       "len_m": 500,
-      "grad_permille": 0,
-      "confidence": "legacy_xml_unverified"
+      "grad_permille": 0.0,
+      "confidence": "pdf_vector_confirmed"
     },
     {
       "start_m": 46600,
       "len_m": 400,
       "grad_permille": 5.3,
-      "confidence": "legacy_xml_unverified"
+      "confidence": "pdf_vector_confirmed"
     },
     {
       "start_m": 47000,
       "len_m": 300,
       "grad_permille": -3.9,
-      "confidence": "legacy_xml_unverified"
+      "confidence": "manual_reviewed"
     },
     {
       "start_m": 47300,
       "len_m": 400,
       "grad_permille": 6.7,
-      "confidence": "legacy_xml_unverified"
+      "confidence": "pdf_vector_confirmed"
     },
     {
       "start_m": 47700,
       "len_m": 400,
       "grad_permille": 4.3,
-      "confidence": "legacy_xml_unverified"
+      "confidence": "pdf_vector_confirmed"
     },
     {
       "start_m": 48100,
       "len_m": 300,
-      "grad_permille": 0,
-      "confidence": "legacy_xml_unverified"
+      "grad_permille": 0.0,
+      "confidence": "pdf_vector_confirmed"
     },
     {
       "start_m": 48400,
       "len_m": 300,
       "grad_permille": -2.7,
-      "confidence": "legacy_xml_unverified"
+      "confidence": "manual_reviewed"
     },
     {
       "start_m": 48700,
       "len_m": 300,
       "grad_permille": 0.8,
-      "confidence": "legacy_xml_unverified"
+      "confidence": "manual_reviewed"
     },
     {
       "start_m": 49000,
       "len_m": 500,
       "grad_permille": 2.7,
-      "confidence": "legacy_xml_unverified"
+      "confidence": "pdf_vector_confirmed"
     },
     {
       "start_m": 49500,
       "len_m": 800,
-      "grad_permille": -10,
-      "confidence": "legacy_xml_unverified"
+      "grad_permille": -1.0,
+      "confidence": "pdf_vector_confirmed"
     },
     {
       "start_m": 50300,
       "len_m": 300,
       "grad_permille": -2.6,
-      "confidence": "legacy_xml_unverified"
+      "confidence": "manual_reviewed"
     },
     {
       "start_m": 50600,
       "len_m": 300,
       "grad_permille": -0.3,
-      "confidence": "legacy_xml_unverified"
+      "confidence": "manual_reviewed"
     },
     {
       "start_m": 50900,
       "len_m": 400,
       "grad_permille": 1.6,
-      "confidence": "legacy_xml_unverified"
+      "confidence": "pdf_vector_confirmed"
     },
     {
       "start_m": 51300,
       "len_m": 300,
       "grad_permille": 0.5,
-      "confidence": "legacy_xml_unverified"
+      "confidence": "manual_reviewed"
     },
     {
       "start_m": 51600,
       "len_m": 200,
       "grad_permille": -2.4,
-      "confidence": "legacy_xml_unverified"
+      "confidence": "manual_reviewed"
     },
     {
       "start_m": 51800,
       "len_m": 300,
       "grad_permille": 1.5,
-      "confidence": "legacy_xml_unverified"
+      "confidence": "manual_reviewed"
     },
     {
       "start_m": 52100,
       "len_m": 600,
-      "grad_permille": 0,
-      "confidence": "legacy_xml_unverified"
+      "grad_permille": 0.0,
+      "confidence": "pdf_vector_confirmed"
     },
     {
       "start_m": 52700,
       "len_m": 100,
-      "grad_permille": 1,
-      "confidence": "legacy_xml_unverified"
+      "grad_permille": 1.0,
+      "confidence": "manual_reviewed"
     },
     {
       "start_m": 52800,
       "len_m": 400,
       "grad_permille": -1.9,
-      "confidence": "legacy_xml_unverified"
+      "confidence": "pdf_vector_confirmed"
     },
     {
       "start_m": 53200,
       "len_m": 400,
       "grad_permille": -5.4,
-      "confidence": "legacy_xml_unverified"
+      "confidence": "pdf_vector_confirmed"
     },
     {
       "start_m": 53600,
       "len_m": 300,
       "grad_permille": -1.1,
-      "confidence": "legacy_xml_unverified"
+      "confidence": "manual_reviewed"
     },
     {
       "start_m": 53900,
       "len_m": 100,
-      "grad_permille": 0,
-      "confidence": "legacy_xml_unverified"
+      "grad_permille": 0.0,
+      "confidence": "pdf_vector_confirmed"
     },
     {
       "start_m": 54000,
       "len_m": 500,
-      "grad_permille": 2,
-      "confidence": "legacy_xml_unverified"
+      "grad_permille": 2.0,
+      "confidence": "pdf_manual_evidence_replayed"
     },
     {
       "start_m": 54500,
       "len_m": 900,
       "grad_permille": 7.9,
-      "confidence": "legacy_xml_unverified"
+      "confidence": "pdf_manual_evidence_replayed"
     },
     {
       "start_m": 55400,
       "len_m": 700,
       "grad_permille": 9.4,
-      "confidence": "legacy_xml_unverified"
+      "confidence": "pdf_manual_evidence_replayed"
     },
     {
       "start_m": 56100,
       "len_m": 700,
       "grad_permille": 8.6,
-      "confidence": "legacy_xml_unverified"
+      "confidence": "pdf_manual_evidence_replayed"
     },
     {
       "start_m": 56800,
       "len_m": 700,
       "grad_permille": 8.4,
-      "confidence": "legacy_xml_unverified"
+      "confidence": "pdf_manual_evidence_replayed"
     },
     {
       "start_m": 57500,
       "len_m": 700,
-      "grad_permille": 9,
-      "confidence": "legacy_xml_unverified"
+      "grad_permille": 9.0,
+      "confidence": "pdf_manual_evidence_replayed"
     },
     {
       "start_m": 58200,
       "len_m": 600,
       "grad_permille": 8.2,
-      "confidence": "legacy_xml_unverified"
+      "confidence": "pdf_manual_evidence_replayed"
     },
     {
       "start_m": 58800,
       "len_m": 900,
       "grad_permille": 6.7,
-      "confidence": "legacy_xml_unverified"
+      "confidence": "pdf_manual_evidence_replayed"
     },
     {
       "start_m": 59700,
       "len_m": 600,
       "grad_permille": 8.4,
-      "confidence": "legacy_xml_unverified"
+      "confidence": "pdf_manual_evidence_replayed"
     },
     {
       "start_m": 60300,
       "len_m": 200,
       "grad_permille": 5.6,
-      "confidence": "legacy_xml_unverified"
+      "confidence": "pdf_manual_evidence_replayed"
     },
     {
       "start_m": 60500,
       "len_m": 700,
       "grad_permille": 9.3,
-      "confidence": "legacy_xml_unverified"
+      "confidence": "pdf_manual_evidence_replayed"
     },
     {
       "start_m": 61200,
       "len_m": 600,
       "grad_permille": 7.6,
-      "confidence": "legacy_xml_unverified"
+      "confidence": "pdf_manual_evidence_replayed"
     },
     {
       "start_m": 61800,
       "len_m": 300,
       "grad_permille": 10.3,
-      "confidence": "legacy_xml_unverified"
+      "confidence": "pdf_manual_evidence_replayed"
     },
     {
       "start_m": 62100,
       "len_m": 700,
       "grad_permille": 7.4,
-      "confidence": "legacy_xml_unverified"
+      "confidence": "pdf_manual_evidence_replayed"
     },
     {
       "start_m": 62800,
       "len_m": 300,
       "grad_permille": 5.2,
-      "confidence": "legacy_xml_unverified"
+      "confidence": "pdf_manual_evidence_replayed"
     },
     {
       "start_m": 63100,
       "len_m": 600,
       "grad_permille": 2.8,
-      "confidence": "legacy_xml_unverified"
+      "confidence": "pdf_manual_evidence_replayed"
     },
     {
       "start_m": 63700,
       "len_m": 300,
       "grad_permille": 1.6,
-      "confidence": "legacy_xml_unverified"
+      "confidence": "pdf_manual_evidence_replayed"
     },
     {
       "start_m": 64000,
       "len_m": 400,
       "grad_permille": 2.8,
-      "confidence": "legacy_xml_unverified"
+      "confidence": "pdf_manual_evidence_replayed"
     },
     {
       "start_m": 64400,
       "len_m": 300,
       "grad_permille": -5.7,
-      "confidence": "legacy_xml_unverified"
+      "confidence": "pdf_manual_evidence_replayed"
     },
     {
       "start_m": 64700,
       "len_m": 1100,
       "grad_permille": -6.9,
-      "confidence": "legacy_xml_unverified"
+      "confidence": "pdf_manual_evidence_replayed"
     },
     {
       "start_m": 65800,
       "len_m": 200,
-      "grad_permille": 0,
-      "confidence": "legacy_xml_unverified"
+      "grad_permille": 0.0,
+      "confidence": "pdf_manual_evidence_replayed"
     },
     {
       "start_m": 66000,
+      "len_m": 100,
+      "grad_permille": 5.0,
+      "confidence": "pdf_manual_evidence_replayed"
+    },
+    {
+      "start_m": 66100,
       "len_m": 200,
       "grad_permille": 13.5,
-      "confidence": "legacy_xml_unverified"
+      "confidence": "pdf_manual_evidence_replayed"
     },
     {
-      "start_m": 66200,
-      "len_m": 600,
+      "start_m": 66300,
+      "len_m": 700,
       "grad_permille": 16.4,
-      "confidence": "legacy_xml_unverified"
-    },
-    {
-      "start_m": 66800,
-      "len_m": 200,
-      "grad_permille": 16.4,
-      "confidence": "legacy_xml_unverified"
+      "confidence": "pdf_manual_evidence_replayed"
     },
     {
       "start_m": 67000,
       "len_m": 1000,
       "grad_permille": 16.9,
-      "confidence": "legacy_xml_unverified"
+      "confidence": "pdf_manual_evidence_replayed"
     },
     {
       "start_m": 68000,
       "len_m": 1100,
       "grad_permille": 16.4,
-      "confidence": "legacy_xml_unverified"
+      "confidence": "pdf_vector_confirmed"
     },
     {
       "start_m": 69100,
       "len_m": 900,
-      "grad_permille": 17,
-      "confidence": "legacy_xml_unverified"
+      "grad_permille": 17.0,
+      "confidence": "pdf_vector_confirmed"
     },
     {
       "start_m": 70000,
       "len_m": 500,
       "grad_permille": 14.4,
-      "confidence": "legacy_xml_unverified"
+      "confidence": "pdf_vector_confirmed"
     },
     {
       "start_m": 70500,
       "len_m": 300,
       "grad_permille": 6.3,
-      "confidence": "legacy_xml_unverified"
+      "confidence": "manual_reviewed"
     },
     {
       "start_m": 70800,
       "len_m": 1100,
       "grad_permille": 13.7,
-      "confidence": "legacy_xml_unverified"
+      "confidence": "pdf_vector_confirmed"
     },
     {
       "start_m": 71900,
       "len_m": 100,
-      "grad_permille": 0,
-      "confidence": "legacy_xml_unverified"
+      "grad_permille": 0.0,
+      "confidence": "pdf_vector_confirmed"
     },
     {
       "start_m": 72000,
       "len_m": 700,
       "grad_permille": -6.4,
-      "confidence": "legacy_xml_unverified"
+      "confidence": "pdf_vector_confirmed"
     },
     {
       "start_m": 72700,
       "len_m": 400,
-      "grad_permille": -4,
-      "confidence": "legacy_xml_unverified"
+      "grad_permille": -4.0,
+      "confidence": "pdf_vector_confirmed"
     },
     {
       "start_m": 73100,
       "len_m": 400,
-      "grad_permille": -2,
-      "confidence": "legacy_xml_unverified"
+      "grad_permille": -2.0,
+      "confidence": "pdf_vector_confirmed"
     },
     {
       "start_m": 73500,
       "len_m": 500,
       "grad_permille": -7.8,
-      "confidence": "legacy_xml_unverified"
+      "confidence": "pdf_vector_confirmed"
     },
     {
       "start_m": 74000,
       "len_m": 600,
       "grad_permille": -4.4,
-      "confidence": "legacy_xml_unverified"
+      "confidence": "pdf_vector_confirmed"
     },
     {
       "start_m": 74600,
       "len_m": 100,
-      "grad_permille": 0,
-      "confidence": "legacy_xml_unverified"
+      "grad_permille": 0.0,
+      "confidence": "pdf_vector_confirmed"
     },
     {
       "start_m": 74700,
       "len_m": 500,
       "grad_permille": 4.15,
-      "confidence": "legacy_xml_unverified"
+      "confidence": "pdf_vector_confirmed"
     },
     {
       "start_m": 75200,
       "len_m": 900,
       "grad_permille": 5.1,
-      "confidence": "legacy_xml_unverified"
+      "confidence": "pdf_vector_confirmed"
     },
     {
       "start_m": 76100,
       "len_m": 900,
       "grad_permille": 9.2,
-      "confidence": "legacy_xml_unverified"
+      "confidence": "pdf_vector_confirmed"
     },
     {
       "start_m": 77000,
       "len_m": 300,
       "grad_permille": 5.5,
-      "confidence": "legacy_xml_unverified"
+      "confidence": "manual_reviewed"
     },
     {
       "start_m": 77300,
       "len_m": 300,
       "grad_permille": 0.5,
-      "confidence": "legacy_xml_unverified"
+      "confidence": "manual_reviewed"
     },
     {
       "start_m": 77600,
       "len_m": 300,
       "grad_permille": -3.4,
-      "confidence": "legacy_xml_unverified"
+      "confidence": "manual_reviewed"
     },
     {
       "start_m": 77900,
       "len_m": 300,
       "grad_permille": 0.8,
-      "confidence": "legacy_xml_unverified"
+      "confidence": "manual_reviewed"
     },
     {
       "start_m": 78200,
       "len_m": 500,
       "grad_permille": 7.7,
-      "confidence": "legacy_xml_unverified"
+      "confidence": "pdf_vector_confirmed"
     },
     {
       "start_m": 78700,
       "len_m": 300,
-      "grad_permille": 4,
-      "confidence": "legacy_xml_unverified"
+      "grad_permille": 4.0,
+      "confidence": "manual_reviewed"
     },
     {
       "start_m": 79000,
       "len_m": 100,
-      "grad_permille": -1,
-      "confidence": "legacy_xml_unverified"
+      "grad_permille": -1.0,
+      "confidence": "manual_reviewed"
     },
     {
       "start_m": 79100,
       "len_m": 500,
       "grad_permille": 8.1,
-      "confidence": "legacy_xml_unverified"
+      "confidence": "pdf_vector_confirmed"
     },
     {
       "start_m": 79600,
       "len_m": 400,
       "grad_permille": 2.6,
-      "confidence": "legacy_xml_unverified"
+      "confidence": "pdf_vector_confirmed"
     },
     {
       "start_m": 80000,
       "len_m": 500,
       "grad_permille": 0.5,
-      "confidence": "legacy_xml_unverified"
+      "confidence": "pdf_vector_confirmed"
     },
     {
       "start_m": 80500,
       "len_m": 400,
       "grad_permille": -0.8,
-      "confidence": "legacy_xml_unverified"
+      "confidence": "pdf_vector_confirmed"
     },
     {
       "start_m": 80900,
       "len_m": 100,
-      "grad_permille": 1,
-      "confidence": "legacy_xml_unverified"
+      "grad_permille": 1.0,
+      "confidence": "manual_reviewed"
     },
     {
       "start_m": 81000,
       "len_m": 400,
       "grad_permille": -2.7,
-      "confidence": "legacy_xml_unverified"
+      "confidence": "pdf_vector_confirmed"
     },
     {
       "start_m": 81400,
       "len_m": 600,
       "grad_permille": 5.7,
-      "confidence": "legacy_xml_unverified"
+      "confidence": "pdf_vector_confirmed"
     },
     {
       "start_m": 82000,
       "len_m": 400,
       "grad_permille": 10.7,
-      "confidence": "legacy_xml_unverified"
+      "confidence": "pdf_vector_confirmed"
     },
     {
       "start_m": 82400,
       "len_m": 400,
       "grad_permille": 3.2,
-      "confidence": "legacy_xml_unverified"
+      "confidence": "pdf_vector_confirmed"
     },
     {
       "start_m": 82800,
       "len_m": 300,
       "grad_permille": 1.2,
-      "confidence": "legacy_xml_unverified"
+      "confidence": "manual_reviewed"
     },
     {
       "start_m": 83100,
       "len_m": 400,
       "grad_permille": 5.75,
-      "confidence": "legacy_xml_unverified"
+      "confidence": "pdf_vector_confirmed"
     },
     {
       "start_m": 83500,
       "len_m": 700,
       "grad_permille": 16.1,
-      "confidence": "legacy_xml_unverified"
+      "confidence": "pdf_vector_confirmed"
     },
     {
       "start_m": 84200,
       "len_m": 800,
       "grad_permille": 17.6,
-      "confidence": "legacy_xml_unverified"
+      "confidence": "pdf_vector_confirmed"
     },
     {
       "start_m": 85000,
       "len_m": 1000,
       "grad_permille": 16.6,
-      "confidence": "legacy_xml_unverified"
+      "confidence": "pdf_vector_confirmed"
     },
     {
       "start_m": 86000,
       "len_m": 800,
       "grad_permille": 15.9,
-      "confidence": "legacy_xml_unverified"
+      "confidence": "pdf_vector_confirmed"
     },
     {
       "start_m": 86800,
       "len_m": 200,
       "grad_permille": 6.9,
-      "confidence": "legacy_xml_unverified"
+      "confidence": "manual_reviewed"
     },
     {
       "start_m": 87000,
       "len_m": 400,
       "grad_permille": -1.7,
-      "confidence": "legacy_xml_unverified"
+      "confidence": "pdf_vector_confirmed"
     },
     {
       "start_m": 87400,
       "len_m": 400,
-      "grad_permille": -9,
-      "confidence": "legacy_xml_unverified"
+      "grad_permille": -9.0,
+      "confidence": "pdf_vector_confirmed"
     },
     {
       "start_m": 87800,
-      "len_m": 400,
+      "len_m": 600,
       "grad_permille": -16.4,
-      "confidence": "legacy_xml_unverified"
+      "confidence": "manual_reviewed"
     },
     {
-      "start_m": 88200,
-      "len_m": 1300,
+      "start_m": 88400,
+      "len_m": 1500,
       "grad_permille": -17.45,
-      "confidence": "legacy_xml_unverified"
-    },
-    {
-      "start_m": 89500,
-      "len_m": 400,
-      "grad_permille": -17.45,
-      "confidence": "legacy_xml_unverified"
+      "confidence": "pdf_vector_confirmed"
     },
     {
       "start_m": 89900,
       "len_m": 1000,
       "grad_permille": -16.8,
-      "confidence": "legacy_xml_unverified"
+      "confidence": "pdf_vector_confirmed"
     },
     {
       "start_m": 90900,
       "len_m": 400,
       "grad_permille": -16.2,
-      "confidence": "legacy_xml_unverified"
+      "confidence": "pdf_vector_confirmed"
     },
     {
       "start_m": 94000,
       "len_m": 1000,
       "grad_permille": -16.3,
-      "confidence": "legacy_xml_unverified"
+      "confidence": "pdf_vector_confirmed"
     },
     {
       "start_m": 95000,
       "len_m": 400,
       "grad_permille": -2.1,
-      "confidence": "legacy_xml_unverified"
+      "confidence": "pdf_vector_confirmed"
     },
     {
       "start_m": 95400,
       "len_m": 600,
       "grad_permille": -2.4,
-      "confidence": "legacy_xml_unverified"
+      "confidence": "pdf_vector_confirmed"
     },
     {
       "start_m": 96000,
       "len_m": 300,
       "grad_permille": -5.4,
-      "confidence": "legacy_xml_unverified"
+      "confidence": "manual_reviewed"
     },
     {
       "start_m": 96300,
       "len_m": 300,
       "grad_permille": -8.7,
-      "confidence": "legacy_xml_unverified"
+      "confidence": "manual_reviewed"
     },
     {
       "start_m": 96600,
       "len_m": 400,
       "grad_permille": -5.45,
-      "confidence": "legacy_xml_unverified"
+      "confidence": "pdf_vector_confirmed"
     },
     {
       "start_m": 97000,
       "len_m": 200,
-      "grad_permille": 0,
-      "confidence": "legacy_xml_unverified"
+      "grad_permille": 0.0,
+      "confidence": "pdf_vector_confirmed"
     },
     {
       "start_m": 97200,
       "len_m": 600,
       "grad_permille": -5.4,
-      "confidence": "legacy_xml_unverified"
+      "confidence": "pdf_vector_confirmed"
     },
     {
       "start_m": 97800,
-      "len_m": 300,
+      "len_m": 200,
       "grad_permille": 3.7,
-      "confidence": "legacy_xml_unverified"
+      "confidence": "manual_reviewed"
+    },
+    {
+      "start_m": 98000,
+      "len_m": 100,
+      "grad_permille": 3.7,
+      "confidence": "pdf_manual_evidence_replayed"
     },
     {
       "start_m": 98100,
-      "len_m": 100,
-      "grad_permille": 1,
-      "confidence": "legacy_xml_unverified"
-    },
-    {
-      "start_m": 98200,
       "len_m": 200,
       "grad_permille": -1.5,
-      "confidence": "legacy_xml_unverified"
+      "confidence": "pdf_manual_evidence_replayed"
     },
     {
-      "start_m": 98400,
+      "start_m": 98300,
       "len_m": 300,
       "grad_permille": -6.7,
-      "confidence": "legacy_xml_unverified"
+      "confidence": "pdf_manual_evidence_replayed"
     },
     {
-      "start_m": 98700,
+      "start_m": 98600,
       "len_m": 400,
       "grad_permille": -2.9,
-      "confidence": "legacy_xml_unverified"
+      "confidence": "pdf_manual_evidence_replayed"
+    },
+    {
+      "start_m": 99000,
+      "len_m": 100,
+      "grad_permille": 1.7,
+      "confidence": "pdf_manual_evidence_replayed"
     },
     {
       "start_m": 99100,
       "len_m": 400,
       "grad_permille": -4.5,
-      "confidence": "legacy_xml_unverified"
+      "confidence": "pdf_manual_evidence_replayed"
     },
     {
       "start_m": 99500,
       "len_m": 1300,
       "grad_permille": 6.75,
-      "confidence": "legacy_xml_unverified"
+      "confidence": "pdf_manual_evidence_replayed"
     },
     {
       "start_m": 100800,
       "len_m": 300,
-      "grad_permille": 2,
-      "confidence": "legacy_xml_unverified"
+      "grad_permille": 2.0,
+      "confidence": "pdf_manual_evidence_replayed"
     },
     {
       "start_m": 101100,
       "len_m": 600,
       "grad_permille": -2.1,
-      "confidence": "legacy_xml_unverified"
+      "confidence": "pdf_manual_evidence_replayed"
     },
     {
       "start_m": 101700,
       "len_m": 100,
-      "grad_permille": 1,
-      "confidence": "legacy_xml_unverified"
+      "grad_permille": 3.6,
+      "confidence": "pdf_manual_evidence_replayed"
     },
     {
       "start_m": 101800,
       "len_m": 1800,
       "grad_permille": -3.24,
-      "confidence": "legacy_xml_unverified"
+      "confidence": "pdf_manual_evidence_replayed"
     },
     {
       "start_m": 103600,
       "len_m": 400,
       "grad_permille": 2.3,
-      "confidence": "legacy_xml_unverified"
+      "confidence": "pdf_manual_evidence_replayed"
     },
     {
       "start_m": 104000,
       "len_m": 900,
       "grad_permille": -1.7,
-      "confidence": "legacy_xml_unverified"
+      "confidence": "pdf_manual_evidence_replayed"
     },
     {
       "start_m": 104900,
       "len_m": 1100,
       "grad_permille": -7.15,
-      "confidence": "legacy_xml_unverified"
+      "confidence": "pdf_manual_evidence_replayed"
     },
     {
       "start_m": 106000,
       "len_m": 200,
       "grad_permille": -1.5,
-      "confidence": "legacy_xml_unverified"
+      "confidence": "pdf_manual_evidence_replayed"
     },
     {
       "start_m": 106200,
       "len_m": 400,
       "grad_permille": -4.5,
-      "confidence": "legacy_xml_unverified"
+      "confidence": "pdf_manual_evidence_replayed"
     },
     {
       "start_m": 106600,
       "len_m": 400,
       "grad_permille": -1.85,
-      "confidence": "legacy_xml_unverified"
+      "confidence": "pdf_manual_evidence_replayed"
     },
     {
       "start_m": 107000,
       "len_m": 500,
-      "grad_permille": -6,
-      "confidence": "legacy_xml_unverified"
+      "grad_permille": -6.0,
+      "confidence": "pdf_manual_evidence_replayed"
     },
     {
       "start_m": 107500,
       "len_m": 700,
       "grad_permille": 0.1,
-      "confidence": "legacy_xml_unverified"
+      "confidence": "pdf_manual_evidence_replayed"
     },
     {
       "start_m": 108200,
       "len_m": 600,
       "grad_permille": 3.2,
-      "confidence": "legacy_xml_unverified"
+      "confidence": "pdf_manual_evidence_replayed"
     },
     {
       "start_m": 108800,
       "len_m": 700,
-      "grad_permille": 7,
-      "confidence": "legacy_xml_unverified"
+      "grad_permille": 7.0,
+      "confidence": "pdf_manual_evidence_replayed"
     },
     {
       "start_m": 109500,
       "len_m": 300,
-      "grad_permille": -2,
-      "confidence": "legacy_xml_unverified"
+      "grad_permille": -0.2,
+      "confidence": "pdf_manual_evidence_replayed"
     },
     {
       "start_m": 109800,
       "len_m": 400,
       "grad_permille": 2.4,
-      "confidence": "legacy_xml_unverified"
+      "confidence": "pdf_manual_evidence_replayed"
     },
     {
       "start_m": 110200,
       "len_m": 600,
       "grad_permille": -2.2,
-      "confidence": "legacy_xml_unverified"
+      "confidence": "pdf_manual_evidence_replayed"
     },
     {
       "start_m": 110800,
       "len_m": 300,
       "grad_permille": -0.7,
-      "confidence": "legacy_xml_unverified"
+      "confidence": "pdf_manual_evidence_replayed"
     },
     {
       "start_m": 111100,
       "len_m": 500,
       "grad_permille": 5.7,
-      "confidence": "legacy_xml_unverified"
+      "confidence": "pdf_manual_evidence_replayed"
     },
     {
       "start_m": 111600,
       "len_m": 1200,
       "grad_permille": -2.15,
-      "confidence": "legacy_xml_unverified"
+      "confidence": "pdf_manual_evidence_replayed"
     },
     {
       "start_m": 112800,
       "len_m": 400,
       "grad_permille": 0.5,
-      "confidence": "legacy_xml_unverified"
+      "confidence": "manual_reviewed"
     },
     {
       "start_m": 113200,
       "len_m": 400,
       "grad_permille": 5.4,
-      "confidence": "legacy_xml_unverified"
+      "confidence": "pdf_vector_confirmed"
     },
     {
       "start_m": 113600,
       "len_m": 400,
       "grad_permille": 6.5,
-      "confidence": "legacy_xml_unverified"
+      "confidence": "pdf_vector_confirmed"
     },
     {
       "start_m": 114000,
       "len_m": 1200,
       "grad_permille": -1.8,
-      "confidence": "legacy_xml_unverified"
+      "confidence": "pdf_vector_confirmed"
     },
     {
       "start_m": 115200,
       "len_m": 500,
       "grad_permille": 1.3,
-      "confidence": "legacy_xml_unverified"
+      "confidence": "pdf_vector_confirmed"
     },
     {
       "start_m": 115700,
       "len_m": 200,
       "grad_permille": 7.4,
-      "confidence": "legacy_xml_unverified"
+      "confidence": "manual_reviewed"
     },
     {
       "start_m": 115900,
       "len_m": 500,
       "grad_permille": 0.3,
-      "confidence": "legacy_xml_unverified"
+      "confidence": "pdf_vector_confirmed"
     },
     {
       "start_m": 116400,
       "len_m": 500,
       "grad_permille": 1.3,
-      "confidence": "legacy_xml_unverified"
+      "confidence": "pdf_vector_confirmed"
     },
     {
       "start_m": 116900,
       "len_m": 400,
       "grad_permille": 4.9,
-      "confidence": "legacy_xml_unverified"
+      "confidence": "pdf_vector_confirmed"
     },
     {
       "start_m": 117300,
       "len_m": 300,
       "grad_permille": 1.5,
-      "confidence": "legacy_xml_unverified"
+      "confidence": "manual_reviewed"
     },
     {
       "start_m": 117600,
       "len_m": 400,
-      "grad_permille": -2,
-      "confidence": "legacy_xml_unverified"
+      "grad_permille": -2.0,
+      "confidence": "pdf_vector_confirmed"
     },
     {
       "start_m": 118000,
       "len_m": 700,
       "grad_permille": 1.15,
-      "confidence": "legacy_xml_unverified"
+      "confidence": "pdf_vector_confirmed"
     },
     {
       "start_m": 118700,
       "len_m": 900,
       "grad_permille": -0.1,
-      "confidence": "legacy_xml_unverified"
+      "confidence": "pdf_vector_confirmed"
     },
     {
       "start_m": 119600,
       "len_m": 400,
       "grad_permille": 6.8,
-      "confidence": "legacy_xml_unverified"
+      "confidence": "pdf_vector_confirmed"
     },
     {
       "start_m": 120000,
       "len_m": 500,
       "grad_permille": -0.6,
-      "confidence": "legacy_xml_unverified"
+      "confidence": "pdf_vector_confirmed"
     },
     {
       "start_m": 120500,
       "len_m": 700,
       "grad_permille": 0.2,
-      "confidence": "legacy_xml_unverified"
+      "confidence": "pdf_vector_confirmed"
     },
     {
       "start_m": 121200,
       "len_m": 300,
       "grad_permille": 5.7,
-      "confidence": "legacy_xml_unverified"
+      "confidence": "manual_reviewed"
     },
     {
       "start_m": 121500,
       "len_m": 1300,
       "grad_permille": 8.5,
-      "confidence": "legacy_xml_unverified"
+      "confidence": "pdf_vector_confirmed"
     },
     {
       "start_m": 122800,
       "len_m": 400,
       "grad_permille": -0.5,
-      "confidence": "legacy_xml_unverified"
+      "confidence": "pdf_vector_confirmed"
     },
     {
       "start_m": 123200,
       "len_m": 300,
       "grad_permille": 1.5,
-      "confidence": "legacy_xml_unverified"
+      "confidence": "manual_reviewed"
     },
     {
       "start_m": 123500,
       "len_m": 700,
       "grad_permille": -5.5,
-      "confidence": "legacy_xml_unverified"
+      "confidence": "pdf_vector_confirmed"
     },
     {
       "start_m": 124200,
       "len_m": 600,
       "grad_permille": 0.5,
-      "confidence": "legacy_xml_unverified"
+      "confidence": "pdf_vector_confirmed"
     },
     {
       "start_m": 124800,
       "len_m": 700,
       "grad_permille": -0.8,
-      "confidence": "legacy_xml_unverified"
+      "confidence": "pdf_vector_confirmed"
     },
     {
       "start_m": 125500,
       "len_m": 1900,
       "grad_permille": 1.6,
-      "confidence": "legacy_xml_unverified"
+      "confidence": "manual_reviewed"
     },
     {
       "start_m": 127400,
       "len_m": 500,
       "grad_permille": 4.65,
-      "confidence": "legacy_xml_unverified"
+      "confidence": "pdf_vector_confirmed"
     },
     {
       "start_m": 127900,
       "len_m": 600,
       "grad_permille": -1.15,
-      "confidence": "legacy_xml_unverified"
+      "confidence": "pdf_vector_confirmed"
     },
     {
       "start_m": 128500,
       "len_m": 1000,
       "grad_permille": 1.8,
-      "confidence": "legacy_xml_unverified"
+      "confidence": "pdf_vector_confirmed"
     },
     {
       "start_m": 129500,
       "len_m": 2000,
       "grad_permille": 1.5,
-      "confidence": "legacy_xml_unverified"
+      "confidence": "pdf_vector_confirmed"
     },
     {
       "start_m": 131500,
       "len_m": 900,
       "grad_permille": 1.1,
-      "confidence": "legacy_xml_unverified"
+      "confidence": "pdf_vector_confirmed"
     },
     {
       "start_m": 132400,
       "len_m": 800,
       "grad_permille": 1.9,
-      "confidence": "legacy_xml_unverified"
+      "confidence": "pdf_vector_confirmed"
     },
     {
       "start_m": 133200,
       "len_m": 400,
       "grad_permille": 3.3,
-      "confidence": "legacy_xml_unverified"
+      "confidence": "pdf_vector_confirmed"
     },
     {
       "start_m": 133600,
       "len_m": 300,
       "grad_permille": 0.6,
-      "confidence": "legacy_xml_unverified"
+      "confidence": "manual_reviewed"
     },
     {
       "start_m": 133900,
       "len_m": 300,
       "grad_permille": 1.6,
-      "confidence": "legacy_xml_unverified"
+      "confidence": "manual_reviewed"
     },
     {
       "start_m": 134200,
       "len_m": 300,
-      "grad_permille": 3,
-      "confidence": "legacy_xml_unverified"
+      "grad_permille": 3.0,
+      "confidence": "manual_reviewed"
     },
     {
       "start_m": 134500,
       "len_m": 500,
       "grad_permille": 0.9,
-      "confidence": "legacy_xml_unverified"
+      "confidence": "pdf_vector_confirmed"
     },
     {
       "start_m": 135000,
       "len_m": 1100,
       "grad_permille": 2.3,
-      "confidence": "legacy_xml_unverified"
+      "confidence": "pdf_vector_confirmed"
     },
     {
       "start_m": 136100,
       "len_m": 700,
-      "grad_permille": 0,
-      "confidence": "legacy_xml_unverified"
+      "grad_permille": 0.0,
+      "confidence": "pdf_vector_confirmed"
     },
     {
       "start_m": 136800,
       "len_m": 300,
       "grad_permille": 3.2,
-      "confidence": "legacy_xml_unverified"
+      "confidence": "manual_reviewed"
     },
     {
       "start_m": 137100,
       "len_m": 500,
       "grad_permille": 2.7,
-      "confidence": "legacy_xml_unverified"
+      "confidence": "pdf_vector_confirmed"
     },
     {
       "start_m": 137600,
       "len_m": 300,
       "grad_permille": 0.7,
-      "confidence": "legacy_xml_unverified"
+      "confidence": "manual_reviewed"
     },
     {
       "start_m": 137900,
       "len_m": 400,
       "grad_permille": 2.4,
-      "confidence": "legacy_xml_unverified"
+      "confidence": "pdf_vector_confirmed"
     },
     {
       "start_m": 138300,
       "len_m": 1200,
       "grad_permille": 1.7,
-      "confidence": "legacy_xml_unverified"
+      "confidence": "pdf_vector_confirmed"
     },
     {
       "start_m": 139500,
-      "len_m": 300,
+      "len_m": 100,
       "grad_permille": 0.35,
-      "confidence": "legacy_xml_unverified"
+      "confidence": "manual_reviewed"
+    },
+    {
+      "start_m": 139600,
+      "len_m": 200,
+      "grad_permille": 0.35,
+      "confidence": "manual_reviewed"
     },
     {
       "start_m": 139800,
-      "len_m": 200,
+      "len_m": 100,
       "grad_permille": 3.3,
-      "confidence": "legacy_xml_unverified"
+      "confidence": "manual_reviewed"
+    },
+    {
+      "start_m": 139900,
+      "len_m": 100,
+      "grad_permille": 3.3,
+      "confidence": "manual_reviewed"
     },
     {
       "start_m": 140000,
       "len_m": 400,
       "grad_permille": 6.45,
-      "confidence": "legacy_xml_unverified"
+      "confidence": "pdf_manual_evidence_replayed"
     },
     {
       "start_m": 140400,
       "len_m": 500,
       "grad_permille": -2.4,
-      "confidence": "legacy_xml_unverified"
+      "confidence": "pdf_manual_evidence_replayed"
     },
     {
       "start_m": 140900,
       "len_m": 500,
       "grad_permille": 1.45,
-      "confidence": "legacy_xml_unverified"
+      "confidence": "pdf_manual_evidence_replayed"
     },
     {
       "start_m": 141400,
       "len_m": 400,
       "grad_permille": -0.35,
-      "confidence": "legacy_xml_unverified"
+      "confidence": "pdf_manual_evidence_replayed"
     },
     {
       "start_m": 141800,
       "len_m": 400,
       "grad_permille": 0.8,
-      "confidence": "legacy_xml_unverified"
+      "confidence": "pdf_manual_evidence_replayed"
     },
     {
       "start_m": 142200,
       "len_m": 600,
       "grad_permille": 4.45,
-      "confidence": "legacy_xml_unverified"
+      "confidence": "pdf_manual_evidence_replayed"
     },
     {
       "start_m": 142800,
       "len_m": 400,
       "grad_permille": -0.7,
-      "confidence": "legacy_xml_unverified"
+      "confidence": "pdf_manual_evidence_replayed"
     },
     {
       "start_m": 143200,
       "len_m": 1200,
       "grad_permille": 2.6,
-      "confidence": "legacy_xml_unverified"
+      "confidence": "pdf_manual_evidence_replayed"
     },
     {
       "start_m": 144400,
       "len_m": 300,
       "grad_permille": 4.4,
-      "confidence": "legacy_xml_unverified"
+      "confidence": "pdf_manual_evidence_replayed"
     },
     {
       "start_m": 144700,
       "len_m": 400,
       "grad_permille": 1.5,
-      "confidence": "legacy_xml_unverified"
+      "confidence": "pdf_manual_evidence_replayed"
     },
     {
       "start_m": 145100,
       "len_m": 500,
       "grad_permille": 3.6,
-      "confidence": "legacy_xml_unverified"
+      "confidence": "pdf_manual_evidence_replayed"
     },
     {
       "start_m": 145600,
       "len_m": 400,
       "grad_permille": 5.85,
-      "confidence": "legacy_xml_unverified"
+      "confidence": "pdf_manual_evidence_replayed"
     },
     {
       "start_m": 146000,
       "len_m": 200,
-      "grad_permille": 1,
-      "confidence": "legacy_xml_unverified"
+      "grad_permille": 1.0,
+      "confidence": "pdf_manual_evidence_replayed"
     },
     {
       "start_m": 146200,
       "len_m": 500,
-      "grad_permille": -4,
-      "confidence": "legacy_xml_unverified"
+      "grad_permille": -4.0,
+      "confidence": "pdf_manual_evidence_replayed"
     },
     {
       "start_m": 146700,
       "len_m": 500,
       "grad_permille": 6.8,
-      "confidence": "legacy_xml_unverified"
+      "confidence": "pdf_manual_evidence_replayed"
     },
     {
       "start_m": 147200,
       "len_m": 600,
       "grad_permille": 2.5,
-      "confidence": "legacy_xml_unverified"
+      "confidence": "pdf_manual_evidence_replayed"
     },
     {
       "start_m": 147800,
       "len_m": 900,
       "grad_permille": 0.7,
-      "confidence": "legacy_xml_unverified"
+      "confidence": "pdf_manual_evidence_replayed"
     },
     {
       "start_m": 148700,
       "len_m": 900,
       "grad_permille": 5.5,
-      "confidence": "legacy_xml_unverified"
+      "confidence": "pdf_manual_evidence_replayed"
     },
     {
       "start_m": 149600,
       "len_m": 400,
       "grad_permille": -3.8,
-      "confidence": "legacy_xml_unverified"
+      "confidence": "pdf_manual_evidence_replayed"
     },
     {
       "start_m": 150000,
       "len_m": 300,
       "grad_permille": 1.9,
-      "confidence": "legacy_xml_unverified"
+      "confidence": "pdf_manual_evidence_replayed"
     },
     {
       "start_m": 150300,
       "len_m": 200,
-      "grad_permille": -1,
-      "confidence": "legacy_xml_unverified"
+      "grad_permille": -0.1,
+      "confidence": "pdf_manual_evidence_replayed"
     },
     {
       "start_m": 150500,
       "len_m": 500,
       "grad_permille": 3.7,
-      "confidence": "legacy_xml_unverified"
+      "confidence": "pdf_manual_evidence_replayed"
     },
     {
       "start_m": 151000,
       "len_m": 500,
       "grad_permille": -3.1,
-      "confidence": "legacy_xml_unverified"
+      "confidence": "pdf_manual_evidence_replayed"
     },
     {
       "start_m": 151500,
       "len_m": 500,
-      "grad_permille": 0,
-      "confidence": "legacy_xml_unverified"
+      "grad_permille": 0.0,
+      "confidence": "pdf_manual_evidence_replayed"
     },
     {
       "start_m": 152000,
       "len_m": 200,
       "grad_permille": 2.4,
-      "confidence": "legacy_xml_unverified"
+      "confidence": "pdf_manual_evidence_replayed"
     },
     {
       "start_m": 152200,
       "len_m": 500,
       "grad_permille": 5.35,
-      "confidence": "legacy_xml_unverified"
+      "confidence": "pdf_manual_evidence_replayed"
     },
     {
       "start_m": 152700,
       "len_m": 300,
       "grad_permille": -1.2,
-      "confidence": "legacy_xml_unverified"
+      "confidence": "pdf_manual_evidence_replayed"
     },
     {
       "start_m": 153000,
       "len_m": 500,
       "grad_permille": 1.8,
-      "confidence": "legacy_xml_unverified"
+      "confidence": "pdf_manual_evidence_replayed"
     },
     {
       "start_m": 153500,
       "len_m": 500,
       "grad_permille": -3.8,
-      "confidence": "legacy_xml_unverified"
+      "confidence": "pdf_manual_evidence_replayed"
     },
     {
       "start_m": 154000,
       "len_m": 200,
       "grad_permille": 1.7,
-      "confidence": "legacy_xml_unverified"
+      "confidence": "pdf_manual_evidence_replayed"
     },
     {
       "start_m": 154200,
       "len_m": 300,
       "grad_permille": 4.3,
-      "confidence": "legacy_xml_unverified"
+      "confidence": "pdf_manual_evidence_replayed"
     },
     {
       "start_m": 154500,
       "len_m": 500,
       "grad_permille": -1.5,
-      "confidence": "legacy_xml_unverified"
+      "confidence": "pdf_manual_evidence_replayed"
     },
     {
       "start_m": 155000,
       "len_m": 1100,
       "grad_permille": 1.9,
-      "confidence": "legacy_xml_unverified"
+      "confidence": "pdf_manual_evidence_replayed"
     },
     {
       "start_m": 156100,
       "len_m": 400,
       "grad_permille": -0.6,
-      "confidence": "legacy_xml_unverified"
+      "confidence": "pdf_manual_evidence_replayed"
     },
     {
       "start_m": 156500,
       "len_m": 600,
       "grad_permille": 2.6,
-      "confidence": "legacy_xml_unverified"
+      "confidence": "pdf_manual_evidence_replayed"
     },
     {
       "start_m": 157100,
       "len_m": 500,
       "grad_permille": 6.5,
-      "confidence": "legacy_xml_unverified"
+      "confidence": "pdf_manual_evidence_replayed"
     },
     {
       "start_m": 157600,
       "len_m": 300,
-      "grad_permille": -1,
-      "confidence": "legacy_xml_unverified"
+      "grad_permille": -1.0,
+      "confidence": "pdf_manual_evidence_replayed"
     },
     {
       "start_m": 157900,
       "len_m": 100,
-      "grad_permille": 0,
-      "confidence": "legacy_xml_unverified"
+      "grad_permille": 0.0,
+      "confidence": "pdf_manual_evidence_replayed"
     },
     {
       "start_m": 158000,
       "len_m": 300,
-      "grad_permille": -4,
-      "confidence": "legacy_xml_unverified"
+      "grad_permille": -4.0,
+      "confidence": "pdf_manual_evidence_replayed"
     },
     {
       "start_m": 158300,
       "len_m": 100,
-      "grad_permille": 1,
-      "confidence": "legacy_xml_unverified"
+      "grad_permille": 1.0,
+      "confidence": "pdf_manual_evidence_replayed"
     },
     {
       "start_m": 158400,
       "len_m": 300,
       "grad_permille": -0.5,
-      "confidence": "legacy_xml_unverified"
+      "confidence": "pdf_manual_evidence_replayed"
     },
     {
       "start_m": 158700,
       "len_m": 600,
       "grad_permille": 3.7,
-      "confidence": "legacy_xml_unverified"
+      "confidence": "pdf_manual_evidence_replayed"
     },
     {
       "start_m": 159300,
       "len_m": 300,
-      "grad_permille": 0,
-      "confidence": "legacy_xml_unverified"
+      "grad_permille": 0.0,
+      "confidence": "pdf_manual_evidence_replayed"
     },
     {
       "start_m": 159600,
       "len_m": 800,
       "grad_permille": 2.8,
-      "confidence": "legacy_xml_unverified"
+      "confidence": "pdf_manual_evidence_replayed"
     },
     {
       "start_m": 160400,
       "len_m": 700,
       "grad_permille": 7.5,
-      "confidence": "legacy_xml_unverified"
+      "confidence": "pdf_manual_evidence_replayed"
     },
     {
       "start_m": 161100,
       "len_m": 500,
       "grad_permille": 2.65,
-      "confidence": "legacy_xml_unverified"
+      "confidence": "pdf_manual_evidence_replayed"
     },
     {
       "start_m": 161600,
       "len_m": 200,
       "grad_permille": 7.2,
-      "confidence": "legacy_xml_unverified"
+      "confidence": "pdf_manual_evidence_replayed"
     },
     {
       "start_m": 161800,
       "len_m": 1100,
       "grad_permille": 2.7,
-      "confidence": "legacy_xml_unverified"
+      "confidence": "manual_reviewed"
     },
     {
       "start_m": 162900,
       "len_m": 600,
       "grad_permille": 7.4,
-      "confidence": "legacy_xml_unverified"
+      "confidence": "pdf_manual_evidence_replayed"
     },
     {
       "start_m": 163500,
       "len_m": 700,
       "grad_permille": 6.2,
-      "confidence": "legacy_xml_unverified"
+      "confidence": "pdf_manual_evidence_replayed"
     },
     {
       "start_m": 164200,
       "len_m": 500,
       "grad_permille": 3.85,
-      "confidence": "legacy_xml_unverified"
+      "confidence": "pdf_manual_evidence_replayed"
     },
     {
       "start_m": 164700,
       "len_m": 500,
       "grad_permille": 5.9,
-      "confidence": "legacy_xml_unverified"
+      "confidence": "pdf_manual_evidence_replayed"
     },
     {
       "start_m": 165200,
       "len_m": 1100,
       "grad_permille": 8.8,
-      "confidence": "legacy_xml_unverified"
+      "confidence": "pdf_manual_evidence_replayed"
     },
     {
       "start_m": 166300,
       "len_m": 400,
       "grad_permille": -4.5,
-      "confidence": "legacy_xml_unverified"
+      "confidence": "pdf_manual_evidence_replayed"
     },
     {
       "start_m": 166700,
       "len_m": 300,
       "grad_permille": -0.7,
-      "confidence": "legacy_xml_unverified"
+      "confidence": "pdf_manual_evidence_replayed"
     },
     {
       "start_m": 167000,
       "len_m": 600,
       "grad_permille": 7.6,
-      "confidence": "legacy_xml_unverified"
+      "confidence": "pdf_manual_evidence_replayed"
     },
     {
       "start_m": 167600,
       "len_m": 600,
-      "grad_permille": 9,
-      "confidence": "legacy_xml_unverified"
+      "grad_permille": 9.0,
+      "confidence": "pdf_manual_evidence_replayed"
     },
     {
       "start_m": 168200,
       "len_m": 300,
       "grad_permille": 5.3,
-      "confidence": "legacy_xml_unverified"
+      "confidence": "pdf_manual_evidence_replayed"
     },
     {
       "start_m": 168500,
       "len_m": 100,
-      "grad_permille": -1,
-      "confidence": "legacy_xml_unverified"
+      "grad_permille": -1.7,
+      "confidence": "manual_reviewed"
     },
     {
       "start_m": 168600,
       "len_m": 300,
       "grad_permille": 2.4,
-      "confidence": "legacy_xml_unverified"
+      "confidence": "pdf_manual_evidence_replayed"
     },
     {
       "start_m": 168900,
       "len_m": 1100,
       "grad_permille": 8.4,
-      "confidence": "legacy_xml_unverified"
+      "confidence": "pdf_manual_evidence_replayed"
     },
     {
       "start_m": 170000,
       "len_m": 200,
-      "grad_permille": 3,
-      "confidence": "legacy_xml_unverified"
+      "grad_permille": 3.0,
+      "confidence": "pdf_manual_evidence_replayed"
     },
     {
       "start_m": 170200,
       "len_m": 300,
       "grad_permille": -5.7,
-      "confidence": "legacy_xml_unverified"
+      "confidence": "pdf_manual_evidence_replayed"
     },
     {
       "start_m": 170500,
       "len_m": 100,
-      "grad_permille": 0,
-      "confidence": "legacy_xml_unverified"
+      "grad_permille": 2.5,
+      "confidence": "manual_reviewed"
     },
     {
       "start_m": 170600,
       "len_m": 400,
       "grad_permille": -1.6,
-      "confidence": "legacy_xml_unverified"
+      "confidence": "pdf_manual_evidence_replayed"
     },
     {
       "start_m": 171000,
       "len_m": 500,
-      "grad_permille": 5,
-      "confidence": "legacy_xml_unverified"
+      "grad_permille": 5.0,
+      "confidence": "pdf_manual_evidence_replayed"
     },
     {
       "start_m": 171500,
       "len_m": 1600,
       "grad_permille": 7.4,
-      "confidence": "legacy_xml_unverified"
+      "confidence": "pdf_manual_evidence_replayed"
     },
     {
       "start_m": 173100,
       "len_m": 900,
       "grad_permille": 2.4,
-      "confidence": "legacy_xml_unverified"
+      "confidence": "pdf_manual_evidence_replayed"
     },
     {
       "start_m": 174000,
       "len_m": 300,
       "grad_permille": 5.1,
-      "confidence": "legacy_xml_unverified"
+      "confidence": "pdf_manual_evidence_replayed"
     },
     {
       "start_m": 174300,
       "len_m": 300,
-      "grad_permille": -2,
-      "confidence": "legacy_xml_unverified"
+      "grad_permille": -2.0,
+      "confidence": "pdf_manual_evidence_replayed"
     },
     {
       "start_m": 174600,
       "len_m": 2300,
       "grad_permille": 6.4,
-      "confidence": "legacy_xml_unverified"
+      "confidence": "pdf_manual_evidence_replayed"
     },
     {
       "start_m": 176900,
       "len_m": 1300,
       "grad_permille": 8.4,
-      "confidence": "legacy_xml_unverified"
+      "confidence": "pdf_manual_evidence_replayed"
     },
     {
       "start_m": 178200,
       "len_m": 1000,
       "grad_permille": 8.9,
-      "confidence": "legacy_xml_unverified"
+      "confidence": "pdf_manual_evidence_replayed"
     },
     {
       "start_m": 179200,
       "len_m": 1000,
       "grad_permille": 7.45,
-      "confidence": "legacy_xml_unverified"
+      "confidence": "pdf_manual_evidence_replayed"
     },
     {
       "start_m": 180200,
       "len_m": 700,
       "grad_permille": 7.2,
-      "confidence": "legacy_xml_unverified"
+      "confidence": "pdf_manual_evidence_replayed"
     },
     {
       "start_m": 180900,
       "len_m": 700,
       "grad_permille": 8.3,
-      "confidence": "legacy_xml_unverified"
+      "confidence": "pdf_manual_evidence_replayed"
     },
     {
       "start_m": 181600,
       "len_m": 600,
       "grad_permille": 6.4,
-      "confidence": "legacy_xml_unverified"
+      "confidence": "pdf_manual_evidence_replayed"
     },
     {
       "start_m": 182200,
       "len_m": 1200,
       "grad_permille": 2.4,
-      "confidence": "legacy_xml_unverified"
+      "confidence": "pdf_manual_evidence_replayed"
     },
     {
       "start_m": 183400,
       "len_m": 600,
       "grad_permille": 16.55,
-      "confidence": "legacy_xml_unverified"
+      "confidence": "pdf_manual_evidence_replayed"
     }
   ],
   "stations": [
@@ -2165,16 +2183,8 @@
       "reason": "Направление чётное/нечётное не подтверждено по титулу карты"
     },
     {
-      "km": null,
-      "reason": "Знаки и границы уклонов пока мигрированы из profile.xml, а не сверены по границам элементов PDF"
-    },
-    {
       "km": 1,
       "reason": "После Пивани шкала километража в PDF сбрасывается; следующий участок вынесен в отдельный JSON"
-    },
-    {
-      "km": null,
-      "reason": "Страницы 29, 31 и 33 частично перекрываются и конфликтуют; legacy seed требует постраничной сверки"
     }
   ],
   "provenance": [
@@ -2185,7 +2195,7 @@
       "sha256": "834155ea6be7fccaf02b744c49d0aef06ec35d7cd6ebbaebf4d7eb7c60f80118",
       "pages": 63,
       "profile_pages": "5,7,9,11,13,15,17,19,21,23,25,27,29,31,33,35,37,39,41,43",
-      "role": "authoritative_map_pending_row_by_row_verification"
+      "role": "authoritative_profile_manually_reviewed"
     },
     {
       "kind": "legacy_profile_xml",
@@ -2196,6 +2206,17 @@
       "kind": "legacy_geometry_xml",
       "path": "assets/tracker/maps/komsomol-sk-tche-9/data.xml",
       "role": "offline_gps_map_matching_seed"
+    },
+    {
+      "kind": "regime_profile_builder_review",
+      "builder_version": "0.2.0",
+      "promotion_version": "0.2.0",
+      "pdf_sha256": "834155ea6be7fccaf02b744c49d0aef06ec35d7cd6ebbaebf4d7eb7c60f80118",
+      "profile_sha256": "a56166828963d590ce337262492830fafe6a87e80211fa729e2fde0a3df335db",
+      "profile_with_confidence_sha256": "d14ca096e531f6ece7bfe8566cb7e8949607d54fb774006e2b4b5fc81adcd95e",
+      "resolved_issues": 92,
+      "legacy_fallback_elements": 0,
+      "role": "authoritative_profile_review"
     }
   ],
   "runtime": {
@@ -2212,7 +2233,7 @@
         "to_chainage_m": 1000
       }
     ],
-    "profile_status": "legacy_seed_partial_pending_pdf_verification",
+    "profile_status": "pdf_verified",
     "profile_coverage": [
       {
         "start_m": 1000,
@@ -2227,7 +2248,7 @@
       {
         "start_m": 91300,
         "end_m": 94000,
-        "reason": "Нет подтверждённого элемента профиля"
+        "reason": "На странице 27 километровая шкала разрывается с 94,0 до 91,3 км; это физический разрыв chainage, а не пропущенная ячейка."
       }
     ],
     "profile_applies_both_directions": false

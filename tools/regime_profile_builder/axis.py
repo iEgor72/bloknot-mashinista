@@ -27,50 +27,150 @@ def _longest_consecutive_run(candidates: list[dict]) -> list[dict]:
     return best
 
 
-def _axis_from_chars(chars: list[dict], page_height: float) -> list[dict]:
-    top_limit = max(90.0, page_height * 0.20)
-    numeric = [
-        char
-        for char in chars
-        if str(char.get("text", "")).isdigit()
-        and float(char.get("top", 9999)) <= top_limit
-        and float(char.get("size", 0)) >= 8
+def _axis_run_quality(run: list[dict]) -> tuple:
+    """Rank a consecutive axis run by coverage and geometric regularity."""
+
+    if not run:
+        return (0, 0, -math.inf, -math.inf, -math.inf)
+    spacings = [
+        abs(float(right["x"]) - float(left["x"]))
+        for left, right in zip(run, run[1:])
     ]
-    by_row: list[list[dict]] = []
-    for char in sorted(numeric, key=lambda item: (float(item["top"]), float(item["x0"]))):
-        target = None
-        for row in by_row:
-            if abs(float(row[0]["top"]) - float(char["top"])) <= 0.06:
-                target = row
-                break
+    spacing_cv = (
+        statistics.pstdev(spacings) / statistics.mean(spacings)
+        if len(spacings) >= 2 and statistics.mean(spacings) > 0
+        else 0.0
+    )
+    tops = [float(item["top"]) for item in run]
+    top_spread = max(tops) - min(tops) if tops else math.inf
+    span = (
+        abs(float(run[-1]["x"]) - float(run[0]["x"]))
+        if len(run) >= 2
+        else 0.0
+    )
+    return (
+        len(run),
+        sum(int(item["km"]) >= 10 for item in run),
+        -spacing_cv,
+        -top_spread,
+        span,
+    )
+
+
+def _best_axis_run(candidates: list[dict], row_tolerance: float = 8.0) -> list[dict]:
+    """Choose the strongest numeric row instead of blindly taking the topmost."""
+    rows: list[list[dict]] = []
+    for candidate in sorted(candidates, key=lambda item: (float(item["top"]), float(item["x"]))):
+        target = next(
+            (
+                row
+                for row in rows
+                if abs(statistics.median(float(item["top"]) for item in row) - float(candidate["top"]))
+                <= row_tolerance
+            ),
+            None,
+        )
         if target is None:
             target = []
-            by_row.append(target)
-        target.append(char)
+            rows.append(target)
+        target.append(candidate)
+
+    ranked: list[tuple[tuple, list[dict]]] = []
+    for row in rows:
+        run = _longest_consecutive_run(list(row))
+        if not run:
+            continue
+        ranked.append(
+            (
+                _axis_run_quality(run)
+                + (statistics.mean(float(item["top"]) for item in run),),
+                run,
+            )
+        )
+    return max(ranked, key=lambda item: item[0])[1] if ranked else []
+
+
+def _char_baseline(char: dict) -> float:
+    top = float(char.get("top", 0))
+    return float(char.get("bottom", top + float(char.get("size", 0) or 0)))
+
+
+def _char_token_candidates(chars: list[dict], page_height: float) -> list[dict]:
+    """Recover numeric tokens without geometrically merging overlaid text.
+
+    Some CAD-authored PDFs draw an unrelated number and a kilometre label at
+    almost the same X/Y coordinates. ``extract_words`` then concatenates both
+    streams (for example ``148`` over ``204`` becomes ``124084``). Character
+    source order still keeps each draw operation contiguous, so use it together
+    with baseline, size and rightward X continuity to reconstruct the tokens.
+    """
+
+    top_limit = max(90.0, page_height * 0.20)
+    numeric: list[dict] = []
+    for sequence, char in enumerate(chars):
+        if (
+            not str(char.get("text", "")).isdigit()
+            or float(char.get("top", 9999)) > top_limit
+            or float(char.get("size", 0) or 0) < 8
+            or not bool(char.get("upright", True))
+        ):
+            continue
+        prepared = dict(char)
+        prepared["_sequence"] = sequence
+        try:
+            prepared["_order"] = int(char.get("order", sequence))
+        except (TypeError, ValueError):
+            prepared["_order"] = sequence
+        numeric.append(prepared)
+
+    groups: list[list[dict]] = []
+    current: list[dict] = []
+    for char in sorted(numeric, key=lambda item: (item["_order"], item["_sequence"])):
+        if current:
+            previous = current[-1]
+            size = max(float(previous.get("size", 0) or 0), float(char.get("size", 0) or 0))
+            x_gap = float(char.get("x0", 0)) - float(previous.get("x1", 0))
+            continues = (
+                int(char["_order"]) == int(previous["_order"]) + 1
+                and abs(_char_baseline(char) - _char_baseline(previous))
+                <= max(0.25, size * 0.04)
+                and abs(float(char.get("size", 0) or 0) - float(previous.get("size", 0) or 0))
+                <= max(0.15, size * 0.03)
+                and -max(0.5, size * 0.10) <= x_gap <= max(2.0, size * 0.60)
+                and float(char.get("x0", 0)) > float(previous.get("x0", 0))
+            )
+            if not continues:
+                groups.append(current)
+                current = []
+        current.append(char)
+    if current:
+        groups.append(current)
 
     candidates: list[dict] = []
-    for row in by_row:
-        groups: list[list[dict]] = []
-        for char in sorted(row, key=lambda item: float(item["x0"])):
-            if not groups or float(char["x0"]) - float(groups[-1][-1]["x1"]) > 1.5:
-                groups.append([char])
-            else:
-                groups[-1].append(char)
-        for group in groups:
-            text = "".join(str(char["text"]) for char in group)
-            if not re.fullmatch(r"\d{2,4}", text):
-                continue
-            value = int(text)
-            if not 80 <= value <= 9999:
-                continue
-            candidates.append(
-                {
-                    "km": value,
-                    "x": (float(group[0]["x0"]) + float(group[-1]["x1"])) / 2,
-                    "top": statistics.mean(float(char["top"]) for char in group),
-                }
-            )
-    return _longest_consecutive_run(candidates)
+    for group in groups:
+        text = "".join(str(char["text"]) for char in group)
+        if not re.fullmatch(r"\d{1,4}", text):
+            continue
+        value = int(text)
+        if not 0 <= value <= 9999:
+            continue
+        left = min(float(char.get("x0", 0)) for char in group)
+        right = max(float(char.get("x1", 0)) for char in group)
+        candidates.append(
+            {
+                "km": value,
+                "x": (left + right) / 2,
+                "top": statistics.mean(float(char.get("top", 0)) for char in group),
+            }
+        )
+    return candidates
+
+
+def _axis_from_chars(chars: list[dict], page_height: float) -> list[dict]:
+    return _best_axis_run(
+        _char_token_candidates(chars, page_height),
+        row_tolerance=3.0,
+    )
 
 
 def extract_km_axis(
@@ -82,10 +182,10 @@ def extract_km_axis(
     top_limit = max(90.0, page_height * 0.20)
     for word in words:
         text = str(word.get("text", "")).strip()
-        if not re.fullmatch(r"\d{2,4}", text):
+        if not re.fullmatch(r"\d{1,4}", text):
             continue
         value = int(text)
-        if not 80 <= value <= 9999:
+        if not 0 <= value <= 9999:
             continue
         if float(word.get("top", 9999)) > top_limit:
             continue
@@ -99,14 +199,13 @@ def extract_km_axis(
                 "top": float(word.get("top", 0)),
             }
         )
-    if candidates:
-        first_row_top = min(item["top"] for item in candidates)
-        candidates = [item for item in candidates if item["top"] <= first_row_top + 8]
-    best = _longest_consecutive_run(candidates)
-    if len(best) >= 4:
-        return best
+    word_axis = _best_axis_run(candidates)
     char_axis = _axis_from_chars(chars or [], page_height)
-    return char_axis if len(char_axis) >= 4 else []
+    return (
+        char_axis
+        if _axis_run_quality(char_axis) > _axis_run_quality(word_axis)
+        else word_axis
+    )
 
 
 def fit_km_axis(labels: list[dict]) -> dict:
@@ -124,11 +223,19 @@ def fit_km_axis(labels: list[dict]) -> dict:
     ) / denominator
     intercept = mean_coordinate - slope * mean_x
     residuals = [abs((slope * x + intercept) - coordinate) for x, coordinate in pairs]
+    sorted_residuals = sorted(residuals)
+    p90_index = int(math.floor((len(sorted_residuals) - 1) * 0.9))
     return {
         "slope": slope,
         "intercept": intercept,
         "direction": "ascending" if slope > 0 else "descending",
         "labels": labels,
+        # A single CAD text object can be physically displaced even when the
+        # remaining kilometre row and the vector ruler agree. Keep the strict
+        # maximum for diagnostics, and expose a robust value for per-cell
+        # confidence so one outlier does not downgrade a complete page.
+        "median_residual_m": statistics.median(residuals),
+        "p90_residual_m": sorted_residuals[p90_index],
         "max_residual_m": max(residuals, default=math.inf),
     }
 

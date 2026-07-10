@@ -1,8 +1,12 @@
 """Adapter for vector maps with black grade strokes and a black profile trace.
 
 This layout is used by the Postyshevo - Novyi Urgal regime map. The short
-strokes in a compact row encode cell boundaries, numeric PDF characters encode
-the unsigned magnitude, and the thicker profile trace supplies the sign.
+strokes in a compact row encode both cell boundaries and the primary sign,
+numeric PDF characters encode the unsigned magnitude, and the thicker profile
+trace is only secondary QA evidence. A compact stroke rising to the right is a
+negative grade on the descending-chainage source map, a stroke falling to the
+right is positive, and a horizontal stroke is zero. The general sign is
+``sign((dy / dx) * axis_slope)`` so ascending-chainage pages work as well.
 
 The adapter deliberately has no access to legacy/seed data and never emits the
 product-level ``verified`` confidence.
@@ -54,6 +58,54 @@ def _vector_geometry(vector: dict) -> tuple[float, float, float, float] | None:
     if not all(math.isfinite(value) for value in values):
         return None
     return values
+
+
+def _table_stroke_orientation(stroke: dict) -> tuple[int | None, float | None]:
+    """Return visual rightward orientation and delta Y for a compact stroke."""
+
+    vector = (
+        stroke.get("vector")
+        if isinstance(stroke.get("vector"), dict)
+        else stroke
+    )
+    geometry = _vector_geometry(vector)
+    if geometry is None:
+        return None, None
+    x0, y0, x1, y1 = geometry
+    if math.isclose(x0, x1, abs_tol=1e-9):
+        return None, None
+    if x0 <= x1:
+        left_y, right_y = y0, y1
+    else:
+        left_y, right_y = y1, y0
+    delta_y = right_y - left_y
+    span = abs(x1 - x0)
+    horizontal_tolerance = max(0.25, span * 0.003)
+    if abs(delta_y) <= horizontal_tolerance:
+        return 0, delta_y
+    return (1 if delta_y > 0 else -1), delta_y
+
+
+def _table_stroke_sign(
+    stroke: dict,
+    axis_slope: float,
+) -> tuple[int | None, float | None]:
+    """Return grade sign in increasing-chainage coordinates.
+
+    PDF endpoints are normalized left-to-right by
+    :func:`_table_stroke_orientation`. Multiplying that orientation by the
+    kilometre-axis direction is equivalent to ``sign(dy / dchainage)``.
+    """
+
+    orientation, delta_y = _table_stroke_orientation(stroke)
+    if orientation is None:
+        return None, delta_y
+    if orientation == 0:
+        return 0, delta_y
+    if not math.isfinite(axis_slope) or math.isclose(axis_slope, 0.0, abs_tol=1e-9):
+        return None, delta_y
+    axis_direction = 1 if axis_slope > 0 else -1
+    return orientation * axis_direction, delta_y
 
 
 def _union_length(intervals: Iterable[tuple[float, float]]) -> float:
@@ -574,18 +626,26 @@ def extract_page(page: dict, axis_fit: dict) -> dict:
                 "reason": "no compact row of black grade strokes was found",
             }
         )
-    if strokes and not trace:
-        issues.append(
-            {
-                "kind": "profile_trace_not_found",
-                "reason": "no thick black profile trace was found",
-            }
-        )
-
-    trace_coverage = _number(diagnostics.get("trace_coverage_ratio"))
     for index, stroke in enumerate(strokes, start=1):
         reasons: list[str] = []
         evidence = ["cell_boundary_vector"]
+        table_stroke_orientation, table_stroke_delta_y = _table_stroke_orientation(stroke)
+        table_stroke_sign, _ = _table_stroke_sign(stroke, slope)
+        if table_stroke_sign is None:
+            reasons.append("invalid_table_stroke_orientation")
+        elif table_stroke_sign == 0:
+            evidence.append("pdf_table_stroke_horizontal")
+        else:
+            evidence.append(
+                "pdf_table_stroke_rising_right"
+                if table_stroke_orientation == 1
+                else "pdf_table_stroke_falling_right"
+            )
+            evidence.append(
+                "pdf_table_stroke_sign_negative"
+                if table_stroke_sign < 0
+                else "pdf_table_stroke_sign_positive"
+            )
         labels = _label_candidates(page, stroke, row_y)
         best_label_kind = labels[0]["kind"] if labels else None
         preferred_labels = [item for item in labels if item["kind"] == best_label_kind]
@@ -620,13 +680,22 @@ def extract_page(page: dict, axis_fit: dict) -> dict:
         trace_slope: float | None = None
         trace_y0: float | None = None
         trace_y1: float | None = None
+        trace_sign: int | None = None
+        cell_trace_coverage = _trace_coverage(trace, stroke["left"], stroke["right"])
         if magnitude is not None:
             if math.isclose(magnitude, 0.0, abs_tol=1e-9):
                 grade = 0.0
                 evidence.append("zero_magnitude")
-            elif not trace:
-                reasons.append("missing_profile_trace")
+            elif table_stroke_sign is None:
+                grade = None
+            elif table_stroke_sign == 0:
+                grade = 0.0
+                reasons.append("nonzero_magnitude_on_horizontal_table_stroke")
             else:
+                grade = magnitude * table_stroke_sign
+                evidence.append("pdf_table_stroke_sign")
+
+            if trace:
                 samples = None
                 for inset_ratio in (0.0, 0.05, 0.12):
                     span = stroke["right"] - stroke["left"]
@@ -637,9 +706,7 @@ def extract_page(page: dict, axis_fit: dict) -> dict:
                     if left_y is not None and right_y is not None:
                         samples = (left_x, left_y, right_x, right_y)
                         break
-                if samples is None:
-                    reasons.append("missing_trace_height")
-                else:
+                if samples is not None:
                     left_x, left_y, right_x, right_y = samples
                     trace_y0 = left_y
                     trace_y1 = right_y
@@ -655,16 +722,18 @@ def extract_page(page: dict, axis_fit: dict) -> dict:
                     trace_delta_y = high_y - low_y
                     threshold = max(0.08, (stroke["right"] - stroke["left"]) * 0.0008)
                     if abs(trace_delta_y) < threshold:
-                        reasons.append("weak_trace_sign")
-                        if not math.isclose(trace_delta_y, 0.0, abs_tol=1e-6):
-                            grade = magnitude if trace_delta_y > 0 else -magnitude
-                            evidence.append("pdf_profile_trace_weak")
+                        trace_sign = 0
+                        evidence.append("pdf_profile_trace_qa_weak")
                     else:
-                        grade = magnitude if trace_delta_y > 0 else -magnitude
-                        evidence.append("pdf_profile_trace")
-
-        if trace and trace_coverage < 0.85:
-            reasons.append("incomplete_trace_coverage")
+                        trace_sign = 1 if trace_delta_y > 0 else -1
+                        evidence.append("pdf_profile_trace_qa")
+                        if (
+                            table_stroke_sign not in (None, 0)
+                            and not math.isclose(magnitude, 0.0, abs_tol=1e-9)
+                            and trace_sign != table_stroke_sign
+                            and cell_trace_coverage >= 0.85
+                        ):
+                            reasons.append("table_trace_sign_conflict")
 
         confidence = "pdf_vector_confirmed" if not reasons and grade is not None else "needs_review"
         cell = {
@@ -682,8 +751,16 @@ def extract_page(page: dict, axis_fit: dict) -> dict:
             "length_text": None,
             "length_evidence": [],
             "axis_slope": slope if axis_valid else None,
+            "table_stroke_orientation": table_stroke_orientation,
+            "table_stroke_sign": table_stroke_sign,
+            "table_stroke_delta_y": (
+                round(table_stroke_delta_y, 4)
+                if table_stroke_delta_y is not None
+                else None
+            ),
             "trace_slope": trace_slope,
-            "trace_coverage": round(_trace_coverage(trace, stroke["left"], stroke["right"]), 4),
+            "trace_sign": trace_sign,
+            "trace_coverage": round(cell_trace_coverage, 4),
             "trace_y0": trace_y0,
             "trace_y1": trace_y1,
             "grade": round(grade, 4) if grade is not None else None,

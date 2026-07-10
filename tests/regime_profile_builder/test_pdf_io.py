@@ -12,7 +12,15 @@ from tools.regime_profile_builder.pdf_io import load_vector_pdf
 class FakePage:
     width = 100.0
     height = 100.0
-    chars = []
+    chars = [{
+        "text": "7",
+        "x0": 1.0,
+        "x1": 2.0,
+        "top": 3.0,
+        "bottom": 4.0,
+        "upright": True,
+        "size": 8.0,
+    }]
     lines = [
         {
             "x0": 10.0,
@@ -60,6 +68,7 @@ class PdfIoTest(unittest.TestCase):
         vector = document["pages"][0]["vectors"][0]
         actual = {key: vector[key] for key in ("x0", "y0", "x1", "y1")}
         self.assertEqual(actual, {"x0": 30.0, "y0": 40.0, "x1": 10.0, "y1": 20.0})
+        self.assertEqual(document["pages"][0]["chars"][0]["order"], 0)
 
 
 if __name__ == "__main__":

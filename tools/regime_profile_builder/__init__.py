@@ -1,7 +1,7 @@
 """Internal semi-automatic regime-map profile builder.
 
-The package produces review artifacts only. It never writes product section
-JSON and never assigns product-level ``verified`` status.
+Extraction stays outside product data. A separate guarded promotion command
+can install a fully reviewed profile while preserving the section metadata.
 """
 
-BUILDER_VERSION = "0.1.0"
+BUILDER_VERSION = "0.2.0"

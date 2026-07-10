@@ -1,14 +1,14 @@
 # Project State
 
 <!-- AUTO_STATUS:START -->
-Generated: 2026-07-10 17:59:15 +1000
+Generated: 2026-07-11 09:35:08 +1000
 
 ## Repository Snapshot
 - Local repo path: `D:\work\bloknot-mashinista-tg`
 - Project memory path: `D:\work\bloknot-mashinista-tg\ai-memory`
 - Branch: `main`
-- HEAD: `7f402ec`
-- Last commit: `7f402ec feat(seo): redesign public landing pages`
+- HEAD: `2a24639`
+- Last commit: `2a24639 chore(memory): record SEO landing redesign`
 
 ## Git Remote
 ```text
@@ -20,7 +20,7 @@ origin	https://github.com/iEgor72/bloknot-mashinista.git (push)
 ```text
 codex/next-direction b044dd5 offline mvp
   codex/tabs-ui        117f1fa [origin/codex/tabs-ui] tabs ui
-* main                 7f402ec [origin/main: ahead 1] feat(seo): redesign public landing pages
+* main                 2a24639 [origin/main] chore(memory): record SEO landing redesign
   poekhali-rework      2d5f0af chore(memory): refresh after main merge
 ```
 
@@ -32,7 +32,37 @@ M ai-memory/CHANGELOG.md
  M ai-memory/RECENT_COMMITS.md
  M ai-memory/WORKTREE_STATUS.md
  M ai-memory/sessions/2026-07-10.md
+ M assets/tracker/sections/dvost-oune-pivan.json
+ M assets/tracker/sections/dvost-pivan-novyi-mir.json
+ M assets/tracker/sections/dvost-postyshevo-komsomolsk.json
+ M assets/tracker/sections/dvost-postyshevo-novyi-urgal-odd.json
+ M assets/tracker/sections/dvost-volochaevka-ii-dzemgi.json
+ M assets/tracker/sections/dvost-vysokogornaya-oune-via-muli.json
+ M assets/tracker/sections/dvost-vysokogornaya-oune-via-sollu.json
+ M assets/tracker/sections/index.json
+ M docs/REGIME_PROFILE_BUILDER.md
+ M scripts/poekhali-json-smoke.mjs
+ M tests/regime_profile_builder/test_axis_trace.py
+ M tests/regime_profile_builder/test_cli.py
+ M tests/regime_profile_builder/test_pdf_io.py
+ M tests/regime_profile_builder/test_pipeline.py
+ M tests/regime_profile_builder/test_safety.py
+ M tools/regime_profile_builder/__init__.py
+ M tools/regime_profile_builder/adapters/__init__.py
+ M tools/regime_profile_builder/adapters/black_grade_strokes.py
+ M tools/regime_profile_builder/adapters/blue_bottom_table.py
+ M tools/regime_profile_builder/axis.py
+ M tools/regime_profile_builder/cli.py
+ M tools/regime_profile_builder/config.example.json
+ M tools/regime_profile_builder/pdf_io.py
+ M tools/regime_profile_builder/pipeline.py
+ M tools/regime_profile_builder/review.py
 ?? .codex/
+?? ai-memory/sessions/2026-07-11.md
+?? tests/regime_profile_builder/test_black_grade_strokes.py
+?? tests/regime_profile_builder/test_blue_bottom_table.py
+?? tests/regime_profile_builder/test_diagonal_grade_table.py
+?? tools/regime_profile_builder/adapters/diagonal_grade_table.py
 ```
 <!-- AUTO_STATUS:END -->
 

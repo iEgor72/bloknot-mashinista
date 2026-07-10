@@ -10,7 +10,12 @@
   "adapter": "auto",
   "movement_order": "ascending",
   "snap_m": 100,
+  "page_coordinate_offsets_m": {},
+  "page_windows": [],
+  "page_priorities": {},
+  "allowed_profile_gaps": [],
   "compare_seed": null,
+  "reconcile_seed_order": false,
   "review_dpi": 220,
   "max_review_crops": 40
 }

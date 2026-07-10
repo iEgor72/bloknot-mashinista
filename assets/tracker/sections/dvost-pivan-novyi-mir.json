@@ -13,190 +13,196 @@
   "generator_format": "Б",
   "elements": [
     {
-      "start_m": 1400,
+      "start_m": 1300,
       "len_m": 200,
       "grad_permille": -5.5,
-      "confidence": "legacy_xml_unverified"
+      "confidence": "manual_reviewed"
     },
     {
-      "start_m": 1600,
+      "start_m": 1500,
       "len_m": 1200,
       "grad_permille": -2.8,
-      "confidence": "legacy_xml_unverified"
+      "confidence": "manual_reviewed"
     },
     {
-      "start_m": 2800,
+      "start_m": 2700,
       "len_m": 400,
-      "grad_permille": 0,
-      "confidence": "legacy_xml_unverified"
+      "grad_permille": 0.0,
+      "confidence": "pdf_vector_confirmed"
     },
     {
-      "start_m": 3200,
+      "start_m": 3100,
       "len_m": 600,
       "grad_permille": 0.1,
-      "confidence": "legacy_xml_unverified"
+      "confidence": "pdf_vector_confirmed"
     },
     {
-      "start_m": 3800,
+      "start_m": 3700,
       "len_m": 500,
       "grad_permille": 1.4,
-      "confidence": "legacy_xml_unverified"
+      "confidence": "pdf_vector_confirmed"
     },
     {
-      "start_m": 4300,
+      "start_m": 4200,
       "len_m": 300,
       "grad_permille": 0.6,
-      "confidence": "legacy_xml_unverified"
+      "confidence": "manual_reviewed"
     },
     {
-      "start_m": 4600,
+      "start_m": 4500,
       "len_m": 1100,
-      "grad_permille": 0,
-      "confidence": "legacy_xml_unverified"
+      "grad_permille": 0.0,
+      "confidence": "pdf_vector_confirmed"
     },
     {
-      "start_m": 5700,
+      "start_m": 5600,
       "len_m": 500,
       "grad_permille": 2.7,
-      "confidence": "legacy_xml_unverified"
+      "confidence": "pdf_vector_confirmed"
+    },
+    {
+      "start_m": 6100,
+      "len_m": 100,
+      "grad_permille": 0.0,
+      "confidence": "pdf_vector_confirmed"
     },
     {
       "start_m": 6200,
-      "len_m": 100,
-      "grad_permille": 0,
-      "confidence": "legacy_xml_unverified"
-    },
-    {
-      "start_m": 6300,
       "len_m": 200,
       "grad_permille": -1.2,
-      "confidence": "legacy_xml_unverified"
+      "confidence": "manual_reviewed"
     },
     {
-      "start_m": 6500,
+      "start_m": 6400,
       "len_m": 700,
       "grad_permille": 0.2,
-      "confidence": "legacy_xml_unverified"
+      "confidence": "pdf_vector_confirmed"
     },
     {
-      "start_m": 7200,
+      "start_m": 7100,
       "len_m": 900,
       "grad_permille": 0.75,
-      "confidence": "legacy_xml_unverified"
+      "confidence": "pdf_vector_confirmed"
     },
     {
-      "start_m": 8100,
+      "start_m": 8000,
       "len_m": 600,
       "grad_permille": 4.8,
-      "confidence": "legacy_xml_unverified"
+      "confidence": "pdf_vector_confirmed"
     },
     {
-      "start_m": 8700,
+      "start_m": 8600,
       "len_m": 300,
       "grad_permille": 7.5,
-      "confidence": "legacy_xml_unverified"
+      "confidence": "manual_reviewed"
     },
     {
-      "start_m": 9000,
-      "len_m": 800,
+      "start_m": 8900,
+      "len_m": 900,
       "grad_permille": 8.8,
-      "confidence": "legacy_xml_unverified"
+      "confidence": "pdf_vector_confirmed"
     },
     {
       "start_m": 9800,
       "len_m": 900,
       "grad_permille": 4.25,
-      "confidence": "legacy_xml_unverified"
+      "confidence": "pdf_vector_confirmed"
     },
     {
       "start_m": 10700,
       "len_m": 500,
       "grad_permille": 3.7,
-      "confidence": "legacy_xml_unverified"
+      "confidence": "pdf_vector_confirmed"
     },
     {
       "start_m": 11200,
       "len_m": 300,
       "grad_permille": 6.7,
-      "confidence": "legacy_xml_unverified"
+      "confidence": "manual_reviewed"
     },
     {
       "start_m": 11500,
       "len_m": 500,
-      "grad_permille": 9,
-      "confidence": "legacy_xml_unverified"
+      "grad_permille": 9.0,
+      "confidence": "pdf_vector_confirmed"
     },
     {
       "start_m": 12000,
       "len_m": 300,
       "grad_permille": 6.4,
-      "confidence": "legacy_xml_unverified"
+      "confidence": "manual_reviewed"
     },
     {
       "start_m": 12300,
       "len_m": 600,
       "grad_permille": 7.6,
-      "confidence": "legacy_xml_unverified"
+      "confidence": "pdf_vector_confirmed"
     },
     {
       "start_m": 12900,
-      "len_m": 300,
-      "grad_permille": 1,
-      "confidence": "legacy_xml_unverified"
+      "len_m": 100,
+      "grad_permille": 1.0,
+      "confidence": "manual_reviewed"
+    },
+    {
+      "start_m": 13000,
+      "len_m": 200,
+      "grad_permille": 1.0,
+      "confidence": "manual_reviewed"
     },
     {
       "start_m": 13200,
       "len_m": 600,
       "grad_permille": 0.1,
-      "confidence": "legacy_xml_unverified"
+      "confidence": "pdf_vector_confirmed"
     },
     {
       "start_m": 13800,
       "len_m": 400,
       "grad_permille": -6.7,
-      "confidence": "legacy_xml_unverified"
+      "confidence": "pdf_vector_confirmed"
     },
     {
       "start_m": 14200,
       "len_m": 300,
-      "grad_permille": -5,
-      "confidence": "legacy_xml_unverified"
+      "grad_permille": -5.0,
+      "confidence": "manual_reviewed"
     },
     {
       "start_m": 14500,
       "len_m": 500,
-      "grad_permille": -7.5,
-      "confidence": "legacy_xml_unverified"
+      "grad_permille": -7.15,
+      "confidence": "pdf_vector_confirmed"
     },
     {
       "start_m": 15000,
       "len_m": 400,
-      "grad_permille": -1,
-      "confidence": "legacy_xml_unverified"
+      "grad_permille": -1.0,
+      "confidence": "pdf_vector_confirmed"
     },
     {
       "start_m": 15400,
       "len_m": 300,
-      "grad_permille": 1,
-      "confidence": "legacy_xml_unverified"
+      "grad_permille": 1.0,
+      "confidence": "manual_reviewed"
     },
     {
       "start_m": 15700,
       "len_m": 600,
       "grad_permille": -7.7,
-      "confidence": "legacy_xml_unverified"
+      "confidence": "pdf_vector_confirmed"
     },
     {
       "start_m": 16300,
       "len_m": 600,
       "grad_permille": -6.4,
-      "confidence": "legacy_xml_unverified"
+      "confidence": "pdf_vector_confirmed"
     },
     {
       "start_m": 16900,
       "len_m": 100,
       "grad_permille": -8.9,
-      "confidence": "legacy_xml_clipped_unverified"
+      "confidence": "pdf_vector_confirmed"
     }
   ],
   "stations": [
@@ -244,14 +250,6 @@
     },
     {
       "km": null,
-      "reason": "Знаки и границы уклонов пока мигрированы из profile.xml, а не сверены по границам элементов PDF"
-    },
-    {
-      "km": 1,
-      "reason": "В legacy profile.xml отсутствует подтверждённый элемент 1,0–1,4 км; диапазон оставлен как gap"
-    },
-    {
-      "km": null,
       "reason": "Титул файла заявляет Комсомольск, но последняя профильная страница заканчивается станцией Новый Мир; конечную точку маршрута подтвердить"
     }
   ],
@@ -263,7 +261,7 @@
       "sha256": "834155ea6be7fccaf02b744c49d0aef06ec35d7cd6ebbaebf4d7eb7c60f80118",
       "pages": 63,
       "profile_pages": "5,7,9,11,13,15,17,19,21,23,25,27,29,31,33,35,37,39,41,43",
-      "role": "authoritative_map_pending_row_by_row_verification"
+      "role": "authoritative_profile_manually_reviewed"
     },
     {
       "kind": "legacy_profile_xml",
@@ -274,6 +272,17 @@
       "kind": "legacy_geometry_xml",
       "path": "assets/tracker/maps/komsomol-sk-tche-9/data.xml",
       "role": "offline_gps_map_matching_seed"
+    },
+    {
+      "kind": "regime_profile_builder_review",
+      "builder_version": "0.2.0",
+      "promotion_version": "0.2.0",
+      "pdf_sha256": "834155ea6be7fccaf02b744c49d0aef06ec35d7cd6ebbaebf4d7eb7c60f80118",
+      "profile_sha256": "90cb56dd74ec82f30dce99c3d2e36afa00c0395c24be168daeb50db3682ae4cc",
+      "profile_with_confidence_sha256": "1671c58f2f03d9e8792e8780d6de8bfa6eea138a7e83947277e655323f4c9057",
+      "resolved_issues": 11,
+      "legacy_fallback_elements": 0,
+      "role": "authoritative_profile_review"
     }
   ],
   "runtime": {
@@ -290,18 +299,18 @@
         "to_chainage_m": 1000
       }
     ],
-    "profile_status": "legacy_seed_partial_pending_pdf_verification",
+    "profile_status": "pdf_verified",
     "profile_coverage": [
       {
-        "start_m": 1400,
+        "start_m": 1300,
         "end_m": 17000
       }
     ],
     "profile_gaps": [
       {
         "start_m": 1000,
-        "end_m": 1400,
-        "reason": "Нет подтверждённого элемента профиля"
+        "end_m": 1300,
+        "reason": "Профильная таблица PDF начинается с 1,3 км; участок 1,0–1,3 км не дорисован в исходной режимной карте."
       }
     ],
     "profile_applies_both_directions": false
