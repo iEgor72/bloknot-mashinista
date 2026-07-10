@@ -7049,3 +7049,12 @@ Append-only журнал действий ИИ-агентов по проект�
 - Branch: `main`
 - Methods: `Корпус iPhone перенесён из обновлённого пользовательского HTML: металлическая рамка`, `боковые кнопки`, `Dynamic Island`, `home indicator`, `aspect 589:1280`, `шесть JPG назначены девяти маршрутам по смыслу`, `Browser QA подтвердил все маршруты`, `размеры 589x1280`, `отсутствие overflow`, `переход Главная-Документы и clean console`, `smoke:local и HTTP 200 пройдены`
 - Files: `docs/seo/seo.css`, `docs/seo/prilozhenie-dlya-mashinista.html`, `docs/seo/zhurnal-smen-mashinista.html`, `docs/seo/grafik-smen-mashinista.html`, `docs/seo/dokumenty-mashinista.html`, `docs/seo/brigada-mashinista.html`, `docs/seo/poekhali-rezhim.html`, `docs/seo/uchet-marshrutov.html`, `docs/seo/zarplata-mashinista.html`, `docs/seo/kalkulyator-zarplaty-mashinista.html`, `assets/seo/screen-home-iphone.jpg`, `assets/seo/screen-shifts-iphone.jpg`, `assets/seo/screen-add-iphone.jpg`, `assets/seo/screen-docs-iphone.jpg`, `assets/seo/screen-profile-iphone.jpg`, `assets/seo/screen-poekhali-iphone.jpg`
+
+## 2026-07-10 17:59:04 +1000
+
+- Source: `post-commit`
+- Task: feat(seo): redesign public landing pages
+- Branch: `main`
+- Methods: `git post-commit hook`, `automatic memory update`
+- Files: `ai-memory/CHANGELOG.md`, `ai-memory/INDEX.md`, `ai-memory/PROJECT_STATE.md`, `ai-memory/RECENT_COMMITS.md`, `ai-memory/WORKTREE_STATUS.md`, `ai-memory/sessions/2026-07-10.md`, `assets/seo/screen-add-iphone.jpg`, `assets/seo/screen-docs-iphone.jpg`, `assets/seo/screen-home-iphone.jpg`, `assets/seo/screen-poekhali-iphone.jpg`, `assets/seo/screen-profile-iphone.jpg`, `assets/seo/screen-shifts-iphone.jpg`, `assets/seo/site-icons.svg`, `docs/seo/brigada-mashinista.html`, `docs/seo/dokumenty-mashinista.html`, `docs/seo/grafik-smen-mashinista.html`, `docs/seo/kalkulyator-zarplaty-mashinista.html`, `docs/seo/poekhali-rezhim.html`, `docs/seo/prilozhenie-dlya-mashinista.html`, `docs/seo/seo.css`, `docs/seo/uchet-marshrutov.html`, `docs/seo/zarplata-mashinista.html`, `docs/seo/zhurnal-smen-mashinista.html`
+- Notes: Commit: `7f402ec749be92a036ffbea61f81950700ceff62` (`7f402ec`) | Author: `iEgor72`

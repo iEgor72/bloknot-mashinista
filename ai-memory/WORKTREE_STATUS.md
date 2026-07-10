@@ -1,57 +1,52 @@
 # Worktree Status
 
-Generated: 2026-07-10 17:54:30 +1000
+Generated: 2026-07-10 17:59:15 +1000
 
 ## git status -sb
 ```text
-## main...origin/main
+## main...origin/main [ahead 1]
  M ai-memory/CHANGELOG.md
  M ai-memory/INDEX.md
  M ai-memory/PROJECT_STATE.md
  M ai-memory/RECENT_COMMITS.md
  M ai-memory/WORKTREE_STATUS.md
  M ai-memory/sessions/2026-07-10.md
- M docs/seo/brigada-mashinista.html
- M docs/seo/dokumenty-mashinista.html
- M docs/seo/grafik-smen-mashinista.html
- M docs/seo/kalkulyator-zarplaty-mashinista.html
- M docs/seo/poekhali-rezhim.html
- M docs/seo/prilozhenie-dlya-mashinista.html
- M docs/seo/seo.css
- M docs/seo/uchet-marshrutov.html
- M docs/seo/zarplata-mashinista.html
- M docs/seo/zhurnal-smen-mashinista.html
 ?? .codex/
-?? assets/seo/screen-add-iphone.jpg
-?? assets/seo/screen-add-v380.webp
-?? assets/seo/screen-docs-iphone.jpg
-?? assets/seo/screen-docs-v380.webp
-?? assets/seo/screen-home-iphone.jpg
-?? assets/seo/screen-home-v380.webp
-?? assets/seo/screen-poekhali-iphone.jpg
-?? assets/seo/screen-profile-iphone.jpg
-?? assets/seo/screen-profile-v380.webp
-?? assets/seo/screen-shifts-iphone.jpg
-?? assets/seo/screen-shifts-v380.webp
-?? assets/seo/site-icons.svg
 ```
 
 ## git branch -vv
 ```text
 codex/next-direction b044dd5 offline mvp
   codex/tabs-ui        117f1fa [origin/codex/tabs-ui] tabs ui
-* main                 d3b0405 [origin/main] chore(memory): record regime profile builder release
+* main                 7f402ec [origin/main: ahead 1] feat(seo): redesign public landing pages
   poekhali-rework      2d5f0af chore(memory): refresh after main merge
 ```
 
 ## HEAD
 ```text
-d3b0405 chore(memory): record regime profile builder release
- ai-memory/CHANGELOG.md           | 220 +++++++++++++++++++++++++++++++++++++++
- ai-memory/INDEX.md               |   2 +-
- ai-memory/PROJECT_STATE.md       |  25 +++--
- ai-memory/RECENT_COMMITS.md      |  10 +-
- ai-memory/WORKTREE_STATUS.md     |  73 +++++++------
- ai-memory/sessions/2026-07-10.md |  27 +++++
- 6 files changed, 315 insertions(+), 42 deletions(-)
+7f402ec feat(seo): redesign public landing pages
+ ai-memory/CHANGELOG.md                        |  40 ++
+ ai-memory/INDEX.md                            |   2 +-
+ ai-memory/PROJECT_STATE.md                    |  16 +-
+ ai-memory/RECENT_COMMITS.md                   |   4 +-
+ ai-memory/WORKTREE_STATUS.md                  |  45 +-
+ ai-memory/sessions/2026-07-10.md              |   5 +
+ assets/seo/screen-add-iphone.jpg              | Bin 0 -> 44534 bytes
+ assets/seo/screen-docs-iphone.jpg             | Bin 0 -> 51718 bytes
+ assets/seo/screen-home-iphone.jpg             | Bin 0 -> 51810 bytes
+ assets/seo/screen-poekhali-iphone.jpg         | Bin 0 -> 45296 bytes
+ assets/seo/screen-profile-iphone.jpg          | Bin 0 -> 38101 bytes
+ assets/seo/screen-shifts-iphone.jpg           | Bin 0 -> 58853 bytes
+ assets/seo/site-icons.svg                     |  23 +
+ docs/seo/brigada-mashinista.html              |  33 +-
+ docs/seo/dokumenty-mashinista.html            |  33 +-
+ docs/seo/grafik-smen-mashinista.html          |  33 +-
+ docs/seo/kalkulyator-zarplaty-mashinista.html |  33 +-
+ docs/seo/poekhali-rezhim.html                 |  33 +-
+ docs/seo/prilozhenie-dlya-mashinista.html     |  67 +-
+ docs/seo/seo.css                              | 910 +++++++++++---------------
+ docs/seo/uchet-marshrutov.html                |  33 +-
+ docs/seo/zarplata-mashinista.html             |  33 +-
+ docs/seo/zhurnal-smen-mashinista.html         |  33 +-
+ 23 files changed, 717 insertions(+), 659 deletions(-)
 ```
