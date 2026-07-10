@@ -852,6 +852,14 @@
       }
     }
 
+    function setAriaHidden(overlay, hidden) {
+      if (!overlay) return;
+      var value = hidden ? 'true' : 'false';
+      if (overlay.getAttribute('aria-hidden') !== value) {
+        overlay.setAttribute('aria-hidden', value);
+      }
+    }
+
     function syncOverlayUiState() {
       var overlays = document.querySelectorAll('.overlay, .shift-detail-overlay, .docs-viewer-overlay');
       var hasOpenOverlay = false;
@@ -861,21 +869,21 @@
           overlays[i].classList.contains('is-visible');
         if (hasOpenClass && overlays[i].classList.contains('hidden')) {
           overlays[i].classList.remove('is-open', 'visible', 'is-visible');
-          overlays[i].setAttribute('aria-hidden', 'true');
+          setAriaHidden(overlays[i], true);
         }
         var isOpen = isBlockingOverlayOpen(overlays[i]);
         if (isOpen && !isRenderedOverlay(overlays[i])) {
           overlays[i].classList.remove('is-open', 'visible', 'is-visible');
-          overlays[i].setAttribute('aria-hidden', 'true');
+          setAriaHidden(overlays[i], true);
           isOpen = false;
         }
         if (isOpen) hasOpenOverlay = true;
-        overlays[i].setAttribute('aria-hidden', isOpen ? 'false' : 'true');
+        setAriaHidden(overlays[i], !isOpen);
       }
       var staleBackdrop = document.getElementById('shiftActionsBackdrop');
       if (staleBackdrop && !staleBackdrop.classList.contains('hidden')) {
         staleBackdrop.classList.add('hidden');
-        staleBackdrop.setAttribute('aria-hidden', 'true');
+        setAriaHidden(staleBackdrop, true);
       }
       if (document.body) {
         document.body.classList.toggle('has-open-overlay', hasOpenOverlay);

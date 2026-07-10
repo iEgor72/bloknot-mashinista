@@ -1,4 +1,4 @@
-const CACHE_VERSION = 'v379';
+const CACHE_VERSION = 'v380';
 const CACHE_NAME = `shift-tracker-shell-${CACHE_VERSION}`;
 const NAVIGATION_FALLBACK_URL = '/index.html';
 const NETWORK_TIMEOUT_MS = 4500;
@@ -60,7 +60,7 @@ const INSTALL_SHELL_URLS = [
   '/assets/tracker/sections/dvost-vysokogornaya-oune-via-muli.json',
   '/assets/tracker/sections/dvost-oune-pivan.json',
   '/assets/tracker/sections/dvost-pivan-novyi-mir.json',
-  '/sw-bootstrap-v379.js'
+  '/sw-bootstrap-v380.js'
 ];
 const CRITICAL_INSTALL_URLS = [
   '/',
@@ -98,7 +98,7 @@ const CRITICAL_INSTALL_URLS = [
   '/scripts/partners.js',
   '/scripts/app-init.js',
   '/scripts/sw-register.js',
-  '/sw-bootstrap-v379.js'
+  '/sw-bootstrap-v380.js'
 ];
 const EXTENDED_SHELL_URLS = [
   '/assets/fonts/plus-jakarta-sans/plus-jakarta-sans-cyrillic-ext.woff2',
@@ -130,6 +130,8 @@ const UPDATE_CONTROL_PATHS = new Set([
   '/scripts/app-init.js',
   '/scripts/app.js',
   '/scripts/auth.js',
+  '/scripts/poekhali-tracker.js',
+  '/scripts/shift-form.js',
   '/scripts/sw-register.js',
   '/sw.js'
 ]);
@@ -195,7 +197,6 @@ self.addEventListener('activate', (event) => {
       console.warn('[SW] Current shell cache is partial; keeping previous shell caches as fallback:', audit.missing.join(', '));
     }
     await self.clients.claim();
-    await refreshControlledAppShellClients();
   })());
 });
 
@@ -508,26 +509,6 @@ function isAppShellPath(pathname) {
 
 function shouldBypassNavigationFallback(pathname) {
   return SEO_PAGE_PATHS.has(pathname);
-}
-
-async function refreshControlledAppShellClients() {
-  if (!self.clients || typeof self.clients.matchAll !== 'function') return;
-  try {
-    const clients = await self.clients.matchAll({ type: 'window', includeUncontrolled: false });
-    await Promise.all(
-      clients.map(async (client) => {
-        try {
-          if (!client || !client.url || typeof client.navigate !== 'function') return;
-          const url = new URL(client.url);
-          if (url.origin !== self.location.origin) return;
-          if (!isAppShellPath(url.pathname)) return;
-          await client.navigate(url.href);
-        } catch (error) {}
-      })
-    );
-  } catch (error) {
-    console.warn('[SW] Failed to refresh app shell clients after activation:', error && error.message ? error.message : error);
-  }
 }
 
 async function networkOnlyNoStore(request) {

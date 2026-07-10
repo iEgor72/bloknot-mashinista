@@ -31,32 +31,20 @@
     return '/sw.js?v=' + encodeURIComponent(version);
   }
   var SW_URL = getServiceWorkerUrl();
-  var STANDALONE_RELOAD_FLAG = 'shift_tracker_sw_standalone_reload_v1';
+  var CONTROLLER_RELOAD_FLAG = 'shift_tracker_sw_controller_reload_v2';
   var LIVE_VERSION_RELOAD_KEY = 'shift_tracker_live_version_reload_v1';
   var liveVersionCheckInFlight = false;
   var lastLiveVersionCheckAt = 0;
 
   try {
-    if (window.sessionStorage && sessionStorage.getItem(STANDALONE_RELOAD_FLAG) === '1') {
+    if (window.sessionStorage && sessionStorage.getItem(CONTROLLER_RELOAD_FLAG) === '1') {
       window.setTimeout(function() {
         try {
-          sessionStorage.removeItem(STANDALONE_RELOAD_FLAG);
+          sessionStorage.removeItem(CONTROLLER_RELOAD_FLAG);
         } catch (error) {}
       }, 5000);
     }
   } catch (error) {}
-
-  function isStandalonePwa() {
-    try {
-      return (
-        (window.matchMedia && window.matchMedia('(display-mode: standalone)').matches) ||
-        window.navigator.standalone === true ||
-        document.documentElement.classList.contains('is-standalone-pwa')
-      );
-    } catch (error) {
-      return false;
-    }
-  }
 
   function postToWorker(registration, payload) {
     var target = registration && (registration.active || registration.waiting || registration.installing);
@@ -125,6 +113,7 @@
   function refreshForLiveVersion(registration, liveVersion) {
     if (!liveVersion || getRecentReloadVersion() === liveVersion) return;
     rememberLiveVersionReload(liveVersion);
+    rememberControllerReload();
     requestSkipWaiting(registration);
     requestStaleCachePurge(registration);
     try {
@@ -164,10 +153,10 @@
     });
   }
 
-  function rememberStandaloneReload() {
+  function rememberControllerReload() {
     try {
       if (window.sessionStorage) {
-        sessionStorage.setItem(STANDALONE_RELOAD_FLAG, '1');
+        sessionStorage.setItem(CONTROLLER_RELOAD_FLAG, '1');
       }
     } catch (error) {}
   }
@@ -180,17 +169,16 @@
       initialController = activeController;
       return;
     }
-    if (isStandalonePwa()) {
-      try {
-        if (window.sessionStorage && sessionStorage.getItem(STANDALONE_RELOAD_FLAG) === '1') {
-          return;
-        }
-      } catch (error) {}
-      rememberStandaloneReload();
-      window.location.reload();
-      return;
-    }
-    console.info('[SW] Controller updated; new shell will be used on next launch.');
+    try {
+      if (window.sessionStorage && sessionStorage.getItem(CONTROLLER_RELOAD_FLAG) === '1') {
+        return;
+      }
+    } catch (error) {}
+    // Reload only this startup tab once after a real controller upgrade. The
+    // worker itself must never navigate every controlled client: that can tear
+    // down an active tracker or form in another tab.
+    rememberControllerReload();
+    window.location.reload();
   });
 
   function refreshServiceWorker(registration) {

@@ -8471,11 +8471,15 @@
     });
 
     var elevation = 0;
+    var visualOffset = 0;
     for (var i = 0; i < points.length; i++) {
       var point = points[i];
       point.elevationStart = elevation;
       point.elevationEnd = elevation + point.grade * point.length / 1000;
       elevation = point.elevationEnd;
+      point.visualStart = visualOffset;
+      point.visualEnd = visualOffset + getProfileDeltaForLength(Number(point.grade), Number(point.length), 1);
+      visualOffset = point.visualEnd;
     }
     return points;
   }
@@ -12998,6 +13002,27 @@
 
   function getProfileVisualOffsetAt(coordinate, sector, layout) {
     var source = getProfilePointsForSectorOrFallback(sector);
+    if (source.length && isFinite(source[0].visualStart)) {
+      var low = 0;
+      var high = source.length - 1;
+      var matchIndex = -1;
+      while (low <= high) {
+        var middle = Math.floor((low + high) / 2);
+        if (source[middle].start <= coordinate) {
+          matchIndex = middle;
+          low = middle + 1;
+        } else {
+          high = middle - 1;
+        }
+      }
+      if (matchIndex < 0) return 0;
+      var matchedPoint = source[matchIndex];
+      if (coordinate <= matchedPoint.end) {
+        var matchedLength = Math.max(0, coordinate - matchedPoint.start);
+        return matchedPoint.visualStart + getProfileDeltaForLength(Number(matchedPoint.grade), matchedLength, 1);
+      }
+      return matchedPoint.visualEnd;
+    }
     var total = 0;
     for (var i = 0; i < source.length; i++) {
       var point = source[i];

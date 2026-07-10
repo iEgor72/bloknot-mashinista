@@ -1,5 +1,5 @@
 import { spawn } from 'node:child_process';
-import { appendFile, mkdir, writeFile } from 'node:fs/promises';
+import { appendFile, mkdir, readFile, writeFile } from 'node:fs/promises';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { chromium } from '@playwright/test';
@@ -9,6 +9,7 @@ const port = Number(process.env.POEKHALI_SMOKE_PORT || 4319);
 const baseUrl = `http://127.0.0.1:${port}`;
 const artifactDir = path.join(root, 'artifacts', 'poekhali-json-smoke');
 const screenshotPath = path.join(artifactDir, 'postyshevo-novyi-urgal.png');
+const postyshevoKomsomolskScreenshotPath = path.join(artifactDir, 'postyshevo-komsomolsk.png');
 const reportPath = path.join(artifactDir, 'report.json');
 const progressPath = path.join(artifactDir, 'progress.log');
 const mapId = 'dvost-postyshevo-novyi-urgal-odd';
@@ -53,6 +54,23 @@ const report = {
   pageErrors: [],
   requestFailures: []
 };
+
+const postyshevoKomsomolskSection = JSON.parse(await readFile(
+  path.join(root, 'assets', 'tracker', 'sections', 'dvost-postyshevo-komsomolsk.json'),
+  'utf8'
+));
+const correctedProfileAnchors = [
+  { startM: 3718200, grade: 1.0 },
+  { startM: 3810900, grade: -2.3 }
+].map((expected) => {
+  const element = postyshevoKomsomolskSection.elements.find((item) => Number(item.start_m) === expected.startM);
+  const actualGrade = element ? Number(element.grad_permille) : NaN;
+  if (!element || Math.abs(actualGrade - expected.grade) > 0.0001) {
+    throw new Error(`PDF-corrected profile anchor ${expected.startM} expected ${expected.grade}‰, got ${actualGrade}`);
+  }
+  return { startM: expected.startM, grade: actualGrade };
+});
+report.checks.pdfCorrectedProfileAnchors = correctedProfileAnchors;
 
 await mkdir(artifactDir, { recursive: true });
 await writeFile(progressPath, '', 'utf8');
@@ -121,6 +139,75 @@ try {
   });
   await defaultContext.close();
   await mark('draft maps excluded from automatic selection');
+
+  const secondMapId = 'dvost-postyshevo-komsomolsk';
+  const secondPreview = {
+    mapId: secondMapId,
+    // Section JSON stores official chainage and applies the legacy geometry
+    // coordinate_offset_m (-1000) at runtime. Use a point inside (not exactly
+    // on the shared boundary of) the official 3718200–3718700 +1.0‰ element.
+    lineCoordinate: 3717250,
+    sector: 18,
+    even: true,
+    wayNumber: 1,
+    savedAt: Date.now()
+  };
+  const secondShift = {
+    ...shift,
+    id: 'poekhali-json-smoke-postyshevo-komsomolsk',
+    train_number: '2102'
+  };
+  const secondContext = await browser.newContext({ viewport: { width: 390, height: 844 }, deviceScaleFactor: 1 });
+  await secondContext.addInitScript(({ storedMapId, storedPreview }) => {
+    localStorage.setItem('poekhali.mapId', storedMapId);
+    localStorage.setItem('poekhali.previewProjection', JSON.stringify(storedPreview));
+  }, { storedMapId: secondMapId, storedPreview: secondPreview });
+  const secondPage = await secondContext.newPage();
+  await secondPage.goto(baseUrl, { waitUntil: 'domcontentloaded', timeout: 20_000 });
+  await mark('Postyshevo-Komsomolsk page loaded');
+  await secondPage.waitForFunction(() => typeof window.startPoekhaliTrackerMode === 'function' && typeof window.setActiveTab === 'function', null, { timeout: 15_000 });
+  await mark('Postyshevo-Komsomolsk tracker API ready');
+  await Promise.race([
+    secondPage.evaluate((testShift) => {
+      window.allShifts = [testShift];
+      if (typeof window.setSelectedPoekhaliShiftId === 'function') {
+        window.setSelectedPoekhaliShiftId(testShift.id);
+      }
+      window.setActiveTab('poekhali');
+      window.startPoekhaliTrackerMode();
+    }, secondShift),
+    new Promise((_, reject) => setTimeout(() => reject(new Error('Postyshevo-Komsomolsk tracker start timeout')), 15_000))
+  ]);
+  await mark('Postyshevo-Komsomolsk tracker started');
+  await secondPage.waitForFunction((expected) => {
+    return window.poekhaliHud && window.poekhaliHud.hasProjection &&
+      window.poekhaliHud.shift && window.poekhaliHud.shift.compositionType === 'train' &&
+      localStorage.getItem('poekhali.mapId') === expected.mapId;
+  }, { mapId: secondMapId }, { timeout: 20_000 });
+  const secondState = await secondPage.evaluate(() => ({
+    mapId: localStorage.getItem('poekhali.mapId') || '',
+    mapTitle: document.getElementById('btnPoekhaliMap')?.title || '',
+    headPos: String(window.poekhaliHud?.headPos || ''),
+    gradeText: String(window.poekhaliHud?.gradeText || ''),
+    compositionType: String(window.poekhaliHud?.shift?.compositionType || '')
+  }));
+  if (!secondState.mapTitle.includes('Постышево')) {
+    throw new Error(`Unexpected Postyshevo-Komsomolsk map title: ${JSON.stringify(secondState)}`);
+  }
+  if (!secondState.headPos.includes('3718 км 2 пк')) {
+    throw new Error(`Unexpected Postyshevo-Komsomolsk preview coordinate: ${JSON.stringify(secondState)}`);
+  }
+  if (!secondState.gradeText.includes('+1.0')) {
+    throw new Error(`PDF-corrected +1.0‰ grade is not active: ${JSON.stringify(secondState)}`);
+  }
+  await secondPage.screenshot({ path: postyshevoKomsomolskScreenshotPath });
+  secondState.screenshot = path.relative(root, postyshevoKomsomolskScreenshotPath);
+  report.checks.postyshevoKomsomolsk = secondState;
+  await secondPage.evaluate(() => {
+    if (typeof window.stopPoekhaliTrackerMode === 'function') window.stopPoekhaliTrackerMode();
+  });
+  await secondContext.close();
+  await mark('Postyshevo-Komsomolsk PDF sign correction ready');
 
   const context = await browser.newContext({ viewport: { width: 390, height: 844 }, deviceScaleFactor: 1 });
   await context.addInitScript(({ storedMapId, storedPreview }) => {
