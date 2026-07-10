@@ -7009,3 +7009,43 @@ Append-only журнал действий ИИ-агентов по проект�
 - Branch: `main`
 - Methods: `Коммит 68752d5 отправлен в origin/main`, `production fast-forward`, `SHA проверен`, `PM2 reload`, `public HTTP 200`, `prod-cache smoke`, `публичный JSON подтвержден: 358 элементов`, `352 PDF-confirmed и 6 legacy magnitude`
 - Files: `tools/regime_profile_builder`, `scripts/regime-profile-builder.py`, `docs/REGIME_PROFILE_BUILDER.md`, `assets/tracker/sections/dvost-postyshevo-komsomolsk.json`, `package.json`
+
+## 2026-07-10 14:36:39 +1000
+
+- Source: `manual`
+- Task: Проверен новый дизайн публичных страниц
+- Branch: `main`
+- Methods: `Сопоставлены эталонный HTML и локальный рендер на 1280x720 через in-app Browser и view_image`, `проверены mobile 390x844`, `внутренняя страница Документы`, `навигация`, `отсутствие horizontal overflow`, `HTTP 200 для 9 маршрутов и 5 новых WEBP`, `smoke:local и node --check прошли`
+- Files: `docs/seo/seo.css`, `docs/seo/prilozhenie-dlya-mashinista.html`, `docs/seo/*.html`, `assets/seo/screen-*-v380.webp`
+
+## 2026-07-10 14:42:01 +1000
+
+- Source: `manual`
+- Task: Добавлена последовательная плавная подсветка пунктов возможностей на SEO-главной
+- Branch: `main`
+- Methods: `CSS keyframes с шестью задержками по 1.6 секунды`, `плавный набор cyan glow и затухание`, `hover/focus сохраняют ручную подсветку`, `prefers-reduced-motion отключает анимацию`, `Browser QA desktop/mobile и console clean`
+- Files: `docs/seo/seo.css`
+
+## 2026-07-10 14:44:37 +1000
+
+- Source: `manual`
+- Task: Уточнена подсветка пунктов возможностей: только по hover
+- Branch: `main`
+- Methods: `Удалены автоматические keyframes и задержки`, `добавлены плавные transitions 0.32-0.5s для фона`, `цвета`, `рамки`, `свечения и подъёма`, `Browser QA через временное hover pseudo-state подтвердил промежуточную фазу`, `полную подсветку и полное затухание`, `pseudo-state очищен`
+- Files: `docs/seo/seo.css`
+
+## 2026-07-10 14:59:28 +1000
+
+- Source: `manual`
+- Task: Все публичные SEO-страницы приведены к точному шаблону главной и фирменным иконкам приложения
+- Branch: `main`
+- Methods: `Восемь внутренних страниц переведены на landing-page detail-page`, `старые навигация и карточные секции исключены из визуального потока`, `добавлены те же hero CTA`, `feature strip`, `statement`, `contact и final CTA`, `длинная visible copy сокращена до плотности главной при сохранении SEO metadata`, `SVG смен`, `документов`, `бригады`, `Поехали`, `маршрутов и расчета перенесены из PWA в общий sprite`, `Browser QA 1280x720 и 390x844`, `HTTP 200 по всем маршрутам`, `console clean и smoke:local`
+- Files: `docs/seo/seo.css`, `docs/seo/zhurnal-smen-mashinista.html`, `docs/seo/grafik-smen-mashinista.html`, `docs/seo/dokumenty-mashinista.html`, `docs/seo/brigada-mashinista.html`, `docs/seo/poekhali-rezhim.html`, `docs/seo/uchet-marshrutov.html`, `docs/seo/zarplata-mashinista.html`, `docs/seo/kalkulyator-zarplaty-mashinista.html`, `docs/seo/prilozhenie-dlya-mashinista.html`, `assets/seo/site-icons.svg`
+
+## 2026-07-10 17:54:29 +1000
+
+- Source: `manual`
+- Task: Все публичные SEO-страницы переведены на новый iPhone-мокап и новые JPG экраны
+- Branch: `main`
+- Methods: `Корпус iPhone перенесён из обновлённого пользовательского HTML: металлическая рамка`, `боковые кнопки`, `Dynamic Island`, `home indicator`, `aspect 589:1280`, `шесть JPG назначены девяти маршрутам по смыслу`, `Browser QA подтвердил все маршруты`, `размеры 589x1280`, `отсутствие overflow`, `переход Главная-Документы и clean console`, `smoke:local и HTTP 200 пройдены`
+- Files: `docs/seo/seo.css`, `docs/seo/prilozhenie-dlya-mashinista.html`, `docs/seo/zhurnal-smen-mashinista.html`, `docs/seo/grafik-smen-mashinista.html`, `docs/seo/dokumenty-mashinista.html`, `docs/seo/brigada-mashinista.html`, `docs/seo/poekhali-rezhim.html`, `docs/seo/uchet-marshrutov.html`, `docs/seo/zarplata-mashinista.html`, `docs/seo/kalkulyator-zarplaty-mashinista.html`, `assets/seo/screen-home-iphone.jpg`, `assets/seo/screen-shifts-iphone.jpg`, `assets/seo/screen-add-iphone.jpg`, `assets/seo/screen-docs-iphone.jpg`, `assets/seo/screen-profile-iphone.jpg`, `assets/seo/screen-poekhali-iphone.jpg`
