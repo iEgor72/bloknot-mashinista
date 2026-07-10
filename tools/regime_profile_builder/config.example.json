@@ -1,0 +1,16 @@
+{
+  "schema_version": "1.0",
+  "id": "railway-section-id",
+  "section_name": "Станция отправления - станция прибытия",
+  "pdf": "C:/path/to/regime-map.pdf",
+  "km_start_m": 100000,
+  "km_end_m": 200000,
+  "profile_pages": "1-10",
+  "excluded_pages": [],
+  "adapter": "auto",
+  "movement_order": "ascending",
+  "snap_m": 100,
+  "compare_seed": null,
+  "review_dpi": 220,
+  "max_review_crops": 40
+}

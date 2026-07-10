@@ -60,17 +60,58 @@ const postyshevoKomsomolskSection = JSON.parse(await readFile(
   'utf8'
 ));
 const correctedProfileAnchors = [
-  { startM: 3718200, grade: 1.0 },
-  { startM: 3810900, grade: -2.3 }
+  { startM: 3618600, lenM: 1200, grade: -0.9 },
+  { startM: 3619800, lenM: 500, grade: 0.5 },
+  { startM: 3620300, lenM: 800, grade: 2.0 },
+  { startM: 3621100, lenM: 300, grade: -0.7 },
+  { startM: 3641000, lenM: 1100, grade: 9.2 },
+  { startM: 3697900, lenM: 2200, grade: -8.8 },
+  { startM: 3710500, lenM: 700, grade: 0.1 },
+  { startM: 3718200, lenM: 500, grade: 1.0 },
+  { startM: 3722600, lenM: 500, grade: 9.4 },
+  { startM: 3723100, lenM: 1000, grade: 7.6 },
+  { startM: 3753400, lenM: 900, grade: -3.1 },
+  { startM: 3810900, lenM: 500, grade: -2.3 }
 ].map((expected) => {
   const element = postyshevoKomsomolskSection.elements.find((item) => Number(item.start_m) === expected.startM);
   const actualGrade = element ? Number(element.grad_permille) : NaN;
-  if (!element || Math.abs(actualGrade - expected.grade) > 0.0001) {
-    throw new Error(`PDF-corrected profile anchor ${expected.startM} expected ${expected.grade}‰, got ${actualGrade}`);
+  const actualLength = element ? Number(element.len_m) : NaN;
+  if (!element || actualLength !== expected.lenM || Math.abs(actualGrade - expected.grade) > 0.0001) {
+    throw new Error(
+      `PDF-audited profile segment ${expected.startM} expected ${expected.lenM}m/${expected.grade}‰, ` +
+      `got ${actualLength}m/${actualGrade}‰`
+    );
   }
-  return { startM: expected.startM, grade: actualGrade };
+  return { startM: expected.startM, lenM: actualLength, grade: actualGrade };
 });
+const obsoleteProfileBoundaries = [3619700, 3620200, 3621000, 3641900, 3711000, 3723500, 3753900]
+  .filter((startM) => postyshevoKomsomolskSection.elements.some((item) => Number(item.start_m) === startM));
+if (obsoleteProfileBoundaries.length) {
+  throw new Error(`Obsolete Postyshevo-Komsomolsk profile boundaries remain: ${obsoleteProfileBoundaries.join(', ')}`);
+}
+const postyshevoKomsomolskConfidence = Object.fromEntries(
+  Object.entries(postyshevoKomsomolskSection.elements.reduce((counts, element) => {
+    const key = String(element.confidence || '');
+    counts[key] = (counts[key] || 0) + 1;
+    return counts;
+  }, {})).sort(([left], [right]) => left.localeCompare(right))
+);
+if (
+  postyshevoKomsomolskSection.elements.length !== 358 ||
+  postyshevoKomsomolskConfidence.pdf_table_trace_verified !== 352 ||
+  postyshevoKomsomolskConfidence.pdf_trace_legacy_magnitude !== 6
+) {
+  throw new Error(
+    `Unexpected Postyshevo-Komsomolsk audit coverage: elements=${postyshevoKomsomolskSection.elements.length}, ` +
+    `confidence=${JSON.stringify(postyshevoKomsomolskConfidence)}`
+  );
+}
 report.checks.pdfCorrectedProfileAnchors = correctedProfileAnchors;
+report.checks.postyshevoKomsomolskAuditCoverage = {
+  elements: postyshevoKomsomolskSection.elements.length,
+  confidence: postyshevoKomsomolskConfidence,
+  obsoleteBoundaries: obsoleteProfileBoundaries
+};
 
 await mkdir(artifactDir, { recursive: true });
 await writeFile(progressPath, '', 'utf8');

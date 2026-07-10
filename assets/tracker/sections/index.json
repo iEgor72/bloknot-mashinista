@@ -25,7 +25,7 @@
       "direction": "оба направления",
       "km_start": 3614,
       "km_end": 3816,
-      "profile_status": "draft_pdf_trace_signs_legacy_magnitudes_needs_review",
+      "profile_status": "pdf_profile_audited_6_legacy_magnitudes",
       "geometry_status": "draft_from_legacy_centerline"
     },
     {
