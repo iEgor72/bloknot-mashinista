@@ -1,9 +1,13 @@
 # Recent Commits
 
-Generated: 2026-07-10 09:25:15 +1000
+Generated: 2026-07-10 14:31:38 +1000
 
 | Hash | Date | Author | Message |
 | --- | --- | --- | --- |
+| `68752d5` | 2026-07-10T14:30:09+10:00 | iEgor72 | feat: add regime PDF profile builder |
+| `360ed3c` | 2026-07-10T10:46:32+10:00 | iEgor72 | feat: add Postyshevo Komsomolsk profile and v380 |
+| `a2897ea` | 2026-07-10T09:51:19+10:00 | iEgor72 | fix: correct PDF profile signs and release gates |
+| `4b28e59` | 2026-07-10T09:25:29+10:00 | iEgor72 | chore(memory): record JSON profile release |
 | `a45b009` | 2026-07-10T09:25:05+10:00 | iEgor72 | feat: ship JSON track profiles and v379 shell |
 | `60b30a5` | 2026-06-21T14:51:07+10:00 | iEgor72 | chore(memory): record notification migration deploy |
 | `608c43b` | 2026-06-21T14:07:51+10:00 | iEgor72 | chore(memory): refresh after notification migration |
@@ -40,7 +44,3 @@ Generated: 2026-07-10 09:25:15 +1000
 | `7eb73f1` | 2026-06-21T11:25:52+10:00 | iEgor72 | chore(memory): record offline shell deploy |
 | `93a685f` | 2026-06-21T11:21:18+10:00 | iEgor72 | chore(memory): refresh after offline shell fix |
 | `8887146` | 2026-06-21T11:20:56+10:00 | iEgor72 | fix: restore offline pwa shell |
-| `efeaf36` | 2026-06-08T20:06:53+10:00 | iEgor72 | fix: preserve notification read state |
-| `0058d83` | 2026-06-08T09:52:24Z | iEgor72 | ui: rename colleagues to users |
-| `432a68b` | 2026-06-08T07:12:01Z | iEgor72 | docs: add folders 11-13 |
-| `7315f08` | 2026-06-08T15:01:10+10:00 | iEgor72 | chore(memory): record public site deploy |

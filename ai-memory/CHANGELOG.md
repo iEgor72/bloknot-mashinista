@@ -6789,3 +6789,223 @@ Append-only журнал действий ИИ-агентов по проект�
 - Methods: `git post-commit hook`, `automatic memory update`
 - Files: `assets/tracker/sections/README.md`, `assets/tracker/sections/dvost-oune-pivan.json`, `assets/tracker/sections/dvost-pivan-novyi-mir.json`, `assets/tracker/sections/dvost-postyshevo-komsomolsk.json`, `assets/tracker/sections/dvost-postyshevo-novyi-urgal-odd.json`, `assets/tracker/sections/dvost-volochaevka-ii-dzemgi.json`, `assets/tracker/sections/dvost-vysokogornaya-oune-via-muli.json`, `assets/tracker/sections/dvost-vysokogornaya-oune-via-sollu.json`, `assets/tracker/sections/index.json`, `index.html`, `package.json`, `scripts/app-constants.js`, `scripts/app-init.js`, `scripts/local-smoke.mjs`, `scripts/offline-smoke.mjs`, `scripts/poekhali-json-smoke.mjs`, `scripts/poekhali-tracker.js`, `scripts/prod-cache-smoke.mjs`, `scripts/validate-tracker-sections.mjs`, `server.js`, `styles/50-design-refresh.css`, `sw-bootstrap-v379.js`, `sw.js`
 - Notes: Commit: `a45b0093cdddb0511bf862b41b0ed48ce47a8b61` (`a45b009`) | Author: `iEgor72`
+
+## 2026-07-10 09:25:30 +1000
+
+- Source: `post-commit`
+- Task: chore(memory): record JSON profile release
+- Branch: `main`
+- Methods: `git post-commit hook`, `automatic memory update`
+- Files: `ai-memory/CHANGELOG.md`, `ai-memory/INDEX.md`, `ai-memory/PROJECT_STATE.md`, `ai-memory/RECENT_COMMITS.md`, `ai-memory/WORKTREE_STATUS.md`, `ai-memory/sessions/2026-06-21.md`, `ai-memory/sessions/2026-07-10.md`
+- Notes: Commit: `4b28e59ee2f0d151e85093509b9bbd25344d6bbd` (`4b28e59`) | Author: `iEgor72`
+
+## 2026-07-10 09:34:50 +1000
+
+- Source: `manual`
+- Task: Добавлен строгий release-gate для verified JSON-участков Поехали
+- Branch: `main`
+- Methods: `Убраны route/variant overrides статуса`, `валидатор сверяет index и section`, `требует полный проверенный PDF-профиль и контрольный GPS-проезд для verified`, `проверяет покрытие route legs`, `добавлен негативный smoke и включение JSON-проверок в predeploy`
+- Files: `scripts/poekhali-tracker.js`, `scripts/validate-tracker-sections.mjs`, `scripts/validate-tracker-sections-smoke.mjs`, `assets/tracker/sections/README.md`, `package.json`
+
+## 2026-07-10 09:41:04 +1000
+
+- Source: `manual`
+- Task: Исправлено направление PDF-векторов и пересчитан профиль Постышево — Новый Ургал
+- Branch: `main`
+- Methods: `pdfplumber bbox заменён на ориентированные pts/path для page.lines`, `повторно извлечены все 898 элементов по чёрной трассе`, `исправлены 107 знаков уклона`, `needs_review сокращены с 51 до 15`, `формат карты исправлен на Б`
+- Files: `scripts/import-regime-maps.py`, `assets/tracker/sections/dvost-postyshevo-novyi-urgal-odd.json`
+
+## 2026-07-10 09:49:52 +1000
+
+- Source: `manual`
+- Task: Усилено обновление и офлайн-кэширование JSON-карт Поехали
+- Branch: `main`
+- Methods: `Section JSON переведены на network-first с быстрым fallback в service worker`, `focused smoke подменяет кэш устаревшим JSON и доказывает получение свежего файла при управляемом SW`, `затем проверяет офлайн-кэш 8/8`
+- Files: `sw.js`, `scripts/poekhali-json-smoke.mjs`
+
+## 2026-07-10 09:51:20 +1000
+
+- Source: `post-commit`
+- Task: fix: correct PDF profile signs and release gates
+- Branch: `main`
+- Methods: `git post-commit hook`, `automatic memory update`
+- Files: `assets/tracker/sections/README.md`, `assets/tracker/sections/dvost-postyshevo-novyi-urgal-odd.json`, `package.json`, `scripts/import-regime-maps-smoke.py`, `scripts/import-regime-maps.py`, `scripts/poekhali-json-smoke.mjs`, `scripts/poekhali-tracker.js`, `scripts/validate-tracker-sections-smoke.mjs`, `scripts/validate-tracker-sections.mjs`, `sw.js`
+- Notes: Commit: `a2897ea2443cd49124b92f0310ee38787479f870` (`a2897ea`) | Author: `iEgor72`
+
+## 2026-07-10 09:52:35 +1000
+
+- Source: `manual`
+- Task: Развёрнут корректирующий релиз профиля Постышево — Новый Ургал
+- Branch: `main`
+- Methods: `Коммит a2897ea отправлен в origin/main`, `production fast-forward и PM2 reload`, `публично проверены 898 элементов`, `14 needs_review`, `исправленный знак -3.5‰`, `network-first section JSON и зелёный prod-cache smoke`
+- Files: `assets/tracker/sections/dvost-postyshevo-novyi-urgal-odd.json`, `scripts/import-regime-maps.py`, `scripts/validate-tracker-sections.mjs`, `sw.js`
+
+## 2026-07-10 10:32:58 +1000
+
+- Source: `manual`
+- Task: Подготовлен PDF-проверенный черновик Постышево—Комсомольск и устранена самоперезагрузка режима Поехали
+- Branch: `main`
+- Methods: `Независимо сверены знаки профиля по PDF`, `добавлены 361 элемент и 5 needs_review`, `браузерным smoke выявлены coordinate_offset -1000 и client.navigate при activate service worker`, `тест переведен на внутреннюю координату 3717250`, `принудительная навигация удалена`, `оболочка поднята до v380`
+- Files: `assets/tracker/sections/dvost-postyshevo-komsomolsk.json`, `assets/tracker/sections/index.json`, `scripts/poekhali-json-smoke.mjs`, `scripts/poekhali-tracker.js`, `scripts/shift-form.js`, `sw.js`, `sw-bootstrap-v380.js`, `index.html`, `scripts/app-constants.js`, `server.js`
+
+## 2026-07-10 10:46:13 +1000
+
+- Source: `manual`
+- Task: Закрыт переход service worker v379→v380 без выдачи старого runtime
+- Branch: `main`
+- Methods: `Независимый review выявил stale fallback старого worker`, `уникальный sw-bootstrap-v380 получил session-guarded controllerchange reload`, `v380 worker перевел poekhali-tracker и shift-form в update-control`, `smoke моделирует старый controller и доказывает первый install без reload и upgrade с одним reload`
+- Files: `sw-bootstrap-v380.js`, `scripts/sw-register.js`, `sw.js`, `scripts/sw-update-smoke.mjs`, `package.json`, `index.html`
+
+## 2026-07-10 10:46:32 +1000
+
+- Source: `post-commit`
+- Task: feat: add Postyshevo Komsomolsk profile and v380
+- Branch: `main`
+- Methods: `git post-commit hook`, `automatic memory update`
+- Files: `assets/tracker/sections/dvost-postyshevo-komsomolsk.json`, `assets/tracker/sections/index.json`, `index.html`, `package.json`, `scripts/app-constants.js`, `scripts/poekhali-json-smoke.mjs`, `scripts/poekhali-tracker.js`, `scripts/shift-form.js`, `scripts/sw-register.js`, `scripts/sw-update-smoke.mjs`, `server.js`, `sw-bootstrap-v380.js`, `sw.js`
+- Notes: Commit: `360ed3cf52bf3a343344dcf4d11e989b54db5aa8` (`360ed3c`) | Author: `iEgor72`
+
+## 2026-07-10 10:48:53 +1000
+
+- Source: `manual`
+- Task: Выпущен PDF-проверенный черновик Постышево—Комсомольск и оболочка v380
+- Branch: `main`
+- Methods: `Коммит 360ed3c отправлен в origin/main и fast-forward развернут на /opt/bloknot-mashinista`, `PM2 reload`, `подтверждены public HTTP 200`, `production-cache smoke`, `v380 no-store bootstrap`, `361 элементов`, `якоря +1.0/-2.3 и отсутствие client.navigate`
+- Files: `assets/tracker/sections/dvost-postyshevo-komsomolsk.json`, `sw.js`, `sw-bootstrap-v380.js`, `scripts/sw-register.js`, `scripts/sw-update-smoke.mjs`
+
+## 2026-07-10 12:54:12 +1000
+
+- Source: `manual`
+- Task: Построен независимый аудит величин уклонов по текстовому слою PDF Постышево—Комсомольск
+- Branch: `main`
+- Methods: `Динамически найден табличный ряд на страницах 2–16`, `подписи привязаны к километровым ячейкам через координаты PDF`, `подтверждены 263 величины`, `выявлено одно расхождение -8.6 против 8.8 и отдельно проверяются неоднозначные длины`
+- Files: `tmp/pdfs/postyshevo-komsomolsk-root-audit/audit_magnitudes.py`, `tmp/pdfs/postyshevo-komsomolsk-root-audit/magnitude-audit.json`, `assets/tracker/sections/dvost-postyshevo-komsomolsk.json`
+
+## 2026-07-10 12:54:34 +1000
+
+- Source: `manual`
+- Task: Разрешены пять слабых уклонов 0,1‰ участка Постышево—Комсомольск
+- Branch: `main`
+- Methods: `Высокодетальный рендер 1200/2400 DPI`, `визуальная сверка ячеек уклона`, `проверка ориентированных pdfplumber pts/path синего профиля и диагоналей`, `все пять подтверждены как +0`, `1‰`
+- Files: `tmp/pdfs/postyshevo-komsomolsk-weak-signs/weak-signs-review.md`, `tmp/pdfs/postyshevo-komsomolsk-weak-signs/*.png`
+
+## 2026-07-10 12:58:54 +1000
+
+- Source: `manual`
+- Task: Проведен независимый аудит величин уклонов и границ PDF страниц 10-16 участка Постышево-Комсомольск
+- Branch: `main`
+- Methods: `Текстовый слой pdfplumber`, `рендер pypdfium2 3x`, `визуальная постраничная сверка`, `сопоставление вертикальных границ таблицы с километровой шкалой и текущими JSON elements`, `продуктовые файлы не менялись`
+- Files: `tmp/pdfs/postyshevo-komsomolsk-magnitude-late/magnitude-boundary-audit.json`, `tmp/pdfs/postyshevo-komsomolsk-magnitude-late/REPORT.md`
+
+## 2026-07-10 13:03:03 +1000
+
+- Source: `manual`
+- Task: Проверены спорные границы профиля Постышево-Кomsomolsk по PDF
+- Branch: `main`
+- Methods: `Визуальная сверка страниц 2`, `3`, `4`, `8`, `9`, `11`, `12`, `13`, `сопоставление текстовых длин с километровой шкалой`, `проверка ориентированных blue-vector pts/path. Найдена реальная ошибка границы 3723100`, `лишние page-split/internal splits и опечатка PDF 1300 вместо 1000 на 3774-3775 км.`
+- Files: `tmp/pdfs/postyshevo-komsomolsk-boundaries/boundary-audit.md`, `assets/tracker/sections/dvost-postyshevo-komsomolsk.json`
+
+## 2026-07-10 13:07:33 +1000
+
+- Source: `manual`
+- Task: Проведён независимый PDF-аудит величин и границ профиля Постышево—Комсомольск на страницах 2–9
+- Branch: `main`
+- Methods: `Текстовый слой pdfplumber`, `3.5x визуальный рендер`, `ориентированные векторные делители таблицы и калибровка по км/ПК`, `продуктовые JSON не изменялись`
+- Files: `tmp/pdfs/postyshevo-komsomolsk-magnitude-early/audit.json`, `tmp/pdfs/postyshevo-komsomolsk-magnitude-early/README.md`, `tmp/pdfs/postyshevo-komsomolsk-magnitude-early/audit_magnitude_early.py`
+
+## 2026-07-10 13:13:07 +1000
+
+- Source: `manual`
+- Task: Профиль Постышево—Комсомольск переведён с legacy seed на постранично сверенные PDF-данные
+- Branch: `main`
+- Methods: `Три независимых аудита PDF страниц 2–16`, `величины сверены по тексту/визуалу`, `знаки по ориентированной синей трассе`, `границы по вертикальным делителям км/ПК. Исправлены -8.6→-8.8`, `граница 3723500→3723100`, `конфликтная геометрия страницы 2`, `объединены три одинаковых соседних уклона`, `352/358 элементов помечены PDF-подтверждёнными`, `6 нечитаемых модулей оставлены из legacy с явным флагом`
+- Files: `assets/tracker/sections/dvost-postyshevo-komsomolsk.json`, `assets/tracker/sections/index.json`, `tmp/pdfs/postyshevo-komsomolsk-magnitude-early/README.md`, `tmp/pdfs/postyshevo-komsomolsk-magnitude-late/REPORT.md`, `tmp/pdfs/postyshevo-komsomolsk-boundaries/boundary-audit.md`
+
+## 2026-07-10 13:17:00 +1000
+
+- Source: `manual`
+- Task: Закреплён и проверен PDF-аудит профиля Постышево—Комсомольск
+- Branch: `main`
+- Methods: `Расширен poekhali-json smoke: 12 контрольных сегментов`, `отсутствие 7 старых границ`, `покрытие confidence 352+6. Пройдены node --check`, `sections:validate`, `sections:test`, `smoke:poekhali-json и полный smoke:predeploy без ошибок`
+- Files: `scripts/poekhali-json-smoke.mjs`, `assets/tracker/sections/dvost-postyshevo-komsomolsk.json`, `assets/tracker/sections/index.json`
+
+## 2026-07-10 13:26:42 +1000
+
+- Source: `manual`
+- Task: Спроектирован внутренний полуавтоматический builder профиля из векторных PDF
+- Branch: `main`
+- Methods: `Разобраны import-regime-maps.py`, `оба семейства временных PDF-экстракторов`, `section-контракт и validator`, `определены adapter architecture`, `безопасный confidence gate`, `CLI и review artifacts без записи в product JSON`
+- Files: `tmp/pdfs/regime-profile-builder/architecture.md`, `scripts/import-regime-maps.py`, `assets/tracker/sections/README.md`
+
+## 2026-07-10 13:30:16 +1000
+
+- Source: `manual`
+- Task: Спроектирована автоматизированная проверка внутреннего PDF profile builder
+- Branch: `main`
+- Methods: `Проанализированы package scripts`, `importer smoke`, `section validator и browser JSON smoke`, `предложены stdlib unit tests`, `record-replay PDF IR fixture без attachment path`, `Postyshevo-Komsomolsk golden assertions и отдельный live PDF acceptance`, `подтверждены regime:test`, `sections:validate и sections:test`
+- Files: `tmp/pdfs/regime-profile-builder/testing.md`, `package.json`, `scripts/import-regime-maps-smoke.py`, `scripts/validate-tracker-sections.mjs`, `scripts/validate-tracker-sections-smoke.mjs`, `scripts/poekhali-json-smoke.mjs`
+
+## 2026-07-10 13:42:38 +1000
+
+- Source: `manual`
+- Task: Реализован адаптер black_grade_strokes для полуавтоматического PDF builder
+- Branch: `main`
+- Methods: `Динамическая кластеризация ряда штрихов`, `чтение upright/rotated PDF chars`, `выбор чёрной трассы по доминирующей толщине`, `привязка к axis_fit`, `безопасные confidence/review reasons`, `py_compile и реальный прогон 32 страниц дали 897 исходных ячеек`, `883 подтверждённых`, `14 review`, `один известный межстраничный gap остаётся pipeline-review`
+- Files: `tools/regime_profile_builder/adapters/black_grade_strokes.py`, `tools/regime_profile_builder/adapters/__init__.py`
+
+## 2026-07-10 13:43:39 +1000
+
+- Source: `manual`
+- Task: Проверен Постышево - Новый Ургал как приемочный образец regime-profile-builder
+- Branch: `main`
+- Methods: `Визуальный рендер 5 страниц`, `pdfplumber char-cell реконструкция`, `анализ километровой оси`, `черного связного профиля и синих делителей`, `сравнение 898 элементов с текущим JSON`, `сформированы точные acceptance metrics`
+- Files: `tmp/pdfs/regime-profile-builder/next-map/REPORT.md`, `tmp/pdfs/regime-profile-builder/next-map/audit.json`, `tmp/pdfs/regime-profile-builder/next-map/audit_next_map.py`, `tmp/pdfs/regime-profile-builder/next-map/page-01.png`, `tmp/pdfs/regime-profile-builder/next-map/page-05.png`, `tmp/pdfs/regime-profile-builder/next-map/page-16.png`, `tmp/pdfs/regime-profile-builder/next-map/page-26.png`, `tmp/pdfs/regime-profile-builder/next-map/page-32.png`
+
+## 2026-07-10 14:06:09 +1000
+
+- Source: `manual`
+- Task: Создан полуавтоматический конвейер PDF режимной карты в draft JSON и очередь ручной проверки
+- Branch: `main`
+- Methods: `Добавлены CLI inspect/build/check/apply-review`, `безопасные артефакты запуска`, `адаптеры blue_bottom_table и black_grade_strokes`, `векторная калибровка км/пк`, `review crops и запрет автоматической записи в product JSON`
+- Files: `tools/regime_profile_builder`, `scripts/regime-profile-builder.py`, `docs/REGIME_PROFILE_BUILDER.md`, `package.json`, `tests/regime_profile_builder`
+
+## 2026-07-10 14:06:09 +1000
+
+- Source: `manual`
+- Task: Проведен acceptance builder на двух реальных режимных картах
+- Branch: `main`
+- Methods: `Постышево-Комсомольск: точное совпадение 358 элементов с ручным JSON и 8 review`, `Постышево-Новый Ургал: 897 raw`, `880 logical`, `865 vector-confirmed`, `15 review`, `0 blocked`, `визуально проверены contact sheets`
+- Files: `tmp/pdfs/regime-profile-builder/runs/postyshevo-komsomolsk`, `tmp/pdfs/regime-profile-builder/runs/postyshevo-novyi-urgal`
+
+## 2026-07-10 14:08:07 +1000
+
+- Source: `manual`
+- Task: Проверен полуавтоматический builder и текущий режим Поехали перед передачей
+- Branch: `main`
+- Methods: `14 unit tests`, `compileall`, `check двух acceptance runs и полный npm run smoke:predeploy`, `первый smoke:local дал разовый перекрытый click target`, `отдельный повтор и полный повтор прошли`
+- Files: `tests/regime_profile_builder`, `tools/regime_profile_builder`, `package.json`
+
+## 2026-07-10 14:30:10 +1000
+
+- Source: `post-commit`
+- Task: feat: add regime PDF profile builder
+- Branch: `main`
+- Methods: `git post-commit hook`, `automatic memory update`
+- Files: `assets/tracker/sections/dvost-postyshevo-komsomolsk.json`, `assets/tracker/sections/index.json`, `docs/REGIME_PROFILE_BUILDER.md`, `package.json`, `scripts/poekhali-json-smoke.mjs`, `scripts/regime-profile-builder.py`, `tests/regime_profile_builder/test_axis_trace.py`, `tests/regime_profile_builder/test_cli.py`, `tests/regime_profile_builder/test_pdf_io.py`, `tests/regime_profile_builder/test_pipeline.py`, `tests/regime_profile_builder/test_safety.py`, `tools/regime_profile_builder/__init__.py`, `tools/regime_profile_builder/adapters/__init__.py`, `tools/regime_profile_builder/adapters/black_grade_strokes.py`, `tools/regime_profile_builder/adapters/blue_bottom_table.py`, `tools/regime_profile_builder/axis.py`, `tools/regime_profile_builder/cli.py`, `tools/regime_profile_builder/common.py`, `tools/regime_profile_builder/config.example.json`, `tools/regime_profile_builder/pdf_io.py`, `tools/regime_profile_builder/pipeline.py`, `tools/regime_profile_builder/review.py`, `tools/regime_profile_builder/trace.py`
+- Notes: Commit: `68752d534eac961b1f536abf76fb8b8ea0ce31fe` (`68752d5`) | Author: `iEgor72`
+
+## 2026-07-10 14:31:36 +1000
+
+- Source: `manual`
+- Task: Публичные SEO-страницы переведены на новый минималистичный макет
+- Branch: `main`
+- Methods: `Главная собрана по переданному HTML-макету`, `общий CSS внутренних страниц приведён к той же дизайн-системе`, `пользовательские WEBP назначены смысловым страницам`, `логика PWA не менялась`
+- Files: `docs/seo/seo.css`, `docs/seo/prilozhenie-dlya-mashinista.html`, `docs/seo/zhurnal-smen-mashinista.html`, `docs/seo/grafik-smen-mashinista.html`, `docs/seo/dokumenty-mashinista.html`, `docs/seo/brigada-mashinista.html`, `docs/seo/zarplata-mashinista.html`, `docs/seo/kalkulyator-zarplaty-mashinista.html`, `docs/seo/uchet-marshrutov.html`, `assets/seo/screen-home-v380.webp`, `assets/seo/screen-shifts-v380.webp`, `assets/seo/screen-add-v380.webp`, `assets/seo/screen-docs-v380.webp`, `assets/seo/screen-profile-v380.webp`
+
+## 2026-07-10 14:31:37 +1000
+
+- Source: `manual`
+- Task: Выпущен полуавтоматический PDF profile builder и финальный аудит Постышево-Комсомольск
+- Branch: `main`
+- Methods: `Коммит 68752d5 отправлен в origin/main`, `production fast-forward`, `SHA проверен`, `PM2 reload`, `public HTTP 200`, `prod-cache smoke`, `публичный JSON подтвержден: 358 элементов`, `352 PDF-confirmed и 6 legacy magnitude`
+- Files: `tools/regime_profile_builder`, `scripts/regime-profile-builder.py`, `docs/REGIME_PROFILE_BUILDER.md`, `assets/tracker/sections/dvost-postyshevo-komsomolsk.json`, `package.json`
