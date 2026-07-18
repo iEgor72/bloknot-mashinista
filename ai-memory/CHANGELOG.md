@@ -7615,3 +7615,11 @@ Append-only журнал действий ИИ-агентов по проект�
 - Branch: `main`
 - Methods: `Коммит 5c556b0`, `origin/main и VPS fast-forward`, `PM2 reload online`, `SQLite integrity ok`, `Telegram setChatMenuButton переведен на ?app=v385`, `production HTTP`, `browser DOM`, `navigation`, `console и loaded script versions проверены`
 - Files: `server.js`, `scripts/setup-bot-webhook.py`, `manifest.webmanifest`, `index.html`, `scripts/app-constants.js`, `sw.js`, `sw-bootstrap-v385.js`, `scripts/sw-update-smoke.mjs`, `tests/server/api.test.js`
+
+## 2026-07-18 16:56:50 +1000
+
+- Source: `manual`
+- Task: Исправлен смешанный кэш PWA для расхода топлива
+- Branch: `main`
+- Methods: `PWA v386 активируется только с полным runtime JS/CSS`, `shell-code не берется из старых cache namespaces`, `все runtime JS no-store`, `mixed-cache regression удаляет current time-utils`, `подсовывает старый liters runtime и подтверждает сетевое восстановление 2058 кг`
+- Files: `sw.js`, `sw-bootstrap-v386.js`, `index.html`, `manifest.webmanifest`, `scripts/app-constants.js`, `server.js`, `scripts/offline-smoke.mjs`, `scripts/prod-cache-smoke.mjs`, `scripts/sw-update-smoke.mjs`

@@ -1,4 +1,4 @@
-const CACHE_VERSION = 'v385';
+const CACHE_VERSION = 'v386';
 const CACHE_NAME = `shift-tracker-shell-${CACHE_VERSION}`;
 const NAVIGATION_FALLBACK_URL = '/index.html';
 const NETWORK_TIMEOUT_MS = 4500;
@@ -78,7 +78,7 @@ const INSTALL_SHELL_URLS = [
   '/assets/tracker/sections/dvost-vysokogornaya-oune-via-muli.json',
   '/assets/tracker/sections/dvost-oune-pivan.json',
   '/assets/tracker/sections/dvost-pivan-novyi-mir.json',
-  '/sw-bootstrap-v385.js'
+  '/sw-bootstrap-v386.js'
 ];
 const CRITICAL_INSTALL_URLS = [
   '/',
@@ -134,7 +134,7 @@ const CRITICAL_INSTALL_URLS = [
   '/scripts/partners.js',
   '/scripts/app-init.js',
   '/scripts/sw-register.js',
-  '/sw-bootstrap-v385.js'
+  '/sw-bootstrap-v386.js'
 ];
 const EXTENDED_SHELL_URLS = [
   '/assets/fonts/plus-jakarta-sans/plus-jakarta-sans-cyrillic-ext.woff2',
@@ -161,6 +161,15 @@ const EXTENDED_SHELL_URLS = [
 ];
 const INSTALL_SHELL_SET = new Set(INSTALL_SHELL_URLS.map((url) => normalizeShellUrl(url)).filter(Boolean));
 const CRITICAL_INSTALL_SET = new Set(CRITICAL_INSTALL_URLS.map((url) => normalizeShellUrl(url)).filter(Boolean));
+const COHERENT_RUNTIME_URLS = uniqueShellUrls([
+  '/',
+  NAVIGATION_FALLBACK_URL,
+  ...CRITICAL_INSTALL_URLS.filter((url) => (
+    url.startsWith('/scripts/') ||
+    url.startsWith('/styles/') ||
+    /^\/sw-bootstrap-v\d+\.js$/.test(url)
+  )),
+]);
 const UPDATE_CONTROL_PATHS = new Set([
   '/scripts/app-constants.js',
   '/scripts/app-init.js',
@@ -218,6 +227,11 @@ async function fetchWithRetry(input, options) {
 self.addEventListener('install', (event) => {
   event.waitUntil((async () => {
     await warmShellCache({ mode: 'install' });
+    const cache = await caches.open(CACHE_NAME);
+    const coherence = await auditCachedShellUrls(cache, COHERENT_RUNTIME_URLS);
+    if (!coherence.ok) {
+      throw new Error('Refusing to activate an incomplete runtime cache: ' + coherence.missing.join(', '));
+    }
     await self.skipWaiting();
   })());
 });
@@ -226,7 +240,7 @@ self.addEventListener('activate', (event) => {
   event.waitUntil((async () => {
     const cacheNames = await caches.keys();
     const cache = await caches.open(CACHE_NAME);
-    const audit = await auditCriticalInstallShell(cache);
+    const audit = await auditCachedShellUrls(cache, COHERENT_RUNTIME_URLS);
     const staleShellCaches = cacheNames.filter((name) => name.startsWith('shift-tracker-shell-') && name !== CACHE_NAME);
     if (audit.ok) {
       await Promise.all(staleShellCaches.map((name) => caches.delete(name)));
@@ -279,7 +293,7 @@ self.addEventListener('fetch', (event) => {
 
   if (isStaticAssetRequest(request, url)) {
     if (isUpdateControlRequest(url)) {
-      event.respondWith(networkFirstFastFallbackStatic(request, event));
+      event.respondWith(networkFirstFastFallbackStatic(request, event, { currentVersionOnly: true }));
       return;
     }
     if (isTrackerDataRequest(url)) {
@@ -287,7 +301,7 @@ self.addEventListener('fetch', (event) => {
       return;
     }
     if (isShellCodeRequest(request, url)) {
-      event.respondWith(staleWhileRevalidate(request, event));
+      event.respondWith(staleWhileRevalidate(request, event, { currentVersionOnly: true }));
       return;
     }
     event.respondWith(staleWhileRevalidate(request, event));
@@ -343,10 +357,9 @@ async function warmShellCache(options) {
 async function precacheCriticalInstallShell(cache) {
   const criticalUrls = uniqueShellUrls(CRITICAL_INSTALL_URLS);
   // Fetch each asset individually instead of cache.addAll(): addAll is atomic, so a
-  // single failed fetch (flaky VPN / RU throttling) would reject the whole install,
-  // the new SW would never activate, and the PWA would stay stuck on the old worker
-  // — i.e. "updates don't arrive". Tolerate per-asset failures so install always
-  // completes; missing assets get picked up later by warmup / stale-while-revalidate.
+  // single failed fetch (flaky VPN / RU throttling) would reject the whole batch.
+  // Fetch independently, then let the coherent-runtime audit decide whether this
+  // worker is safe to activate. Optional assets may fail; mixed JS/CSS may not.
   let cachedCount = 0;
   await Promise.all(
     criticalUrls.map(async (assetUrl) => {
@@ -367,11 +380,10 @@ async function precacheCriticalInstallShell(cache) {
   return cachedCount;
 }
 
-async function auditCriticalInstallShell(cache) {
-  const criticalUrls = uniqueShellUrls(CRITICAL_INSTALL_URLS);
+async function auditCachedShellUrls(cache, urls) {
   const missing = [];
   await Promise.all(
-    criticalUrls.map(async (assetUrl) => {
+    urls.map(async (assetUrl) => {
       try {
         const cached = await cache.match(assetUrl);
         if (!cached) missing.push(assetUrl);
@@ -387,7 +399,7 @@ async function auditCriticalInstallShell(cache) {
 async function cleanupStaleShellCachesIfSafe() {
   try {
     const cache = await caches.open(CACHE_NAME);
-    const audit = await auditCriticalInstallShell(cache);
+    const audit = await auditCachedShellUrls(cache, COHERENT_RUNTIME_URLS);
     if (!audit.ok) {
       console.warn('[SW] Current shell cache is still partial; stale shell caches retained:', audit.missing.join(', '));
       return;
@@ -641,9 +653,12 @@ async function networkFirstDocument(request, event) {
   return createOfflineDocumentFallback();
 }
 
-async function staleWhileRevalidate(request, event) {
+async function staleWhileRevalidate(request, event, options) {
   const cache = await caches.open(CACHE_NAME);
-  const cached = await matchShellCache(request, { ignoreSearch: true });
+  const currentVersionOnly = !!(options && options.currentVersionOnly);
+  const cached = currentVersionOnly
+    ? await matchCurrentShellCache(request, { ignoreSearch: true })
+    : await matchShellCache(request, { ignoreSearch: true });
 
   const networkPromise = fetchWithRetry(request)
     .then(async (response) => {
@@ -667,7 +682,9 @@ async function staleWhileRevalidate(request, event) {
     return response;
   }
 
-  const fallback = await matchShellCache(request, { ignoreSearch: true });
+  const fallback = currentVersionOnly
+    ? await matchCurrentShellCache(request, { ignoreSearch: true })
+    : await matchShellCache(request, { ignoreSearch: true });
   if (fallback) return fallback;
 
   if (isStyleRequest(request)) {
@@ -703,9 +720,12 @@ async function cacheFirst(request) {
   }
 }
 
-async function networkFirstFastFallbackStatic(request, event) {
+async function networkFirstFastFallbackStatic(request, event, options) {
   const cache = await caches.open(CACHE_NAME);
-  const cached = await matchShellCache(request, { ignoreSearch: true });
+  const currentVersionOnly = !!(options && options.currentVersionOnly);
+  const cached = currentVersionOnly
+    ? await matchCurrentShellCache(request, { ignoreSearch: true })
+    : await matchShellCache(request, { ignoreSearch: true });
   const networkPromise = fetchWithRetry(request)
     .then(async (response) => {
       if (response && response.ok) {
@@ -758,8 +778,7 @@ async function putShellCacheResponse(cache, request, response) {
 }
 
 async function matchShellCache(request, options) {
-  const currentCache = await caches.open(CACHE_NAME);
-  const currentMatch = await currentCache.match(request, options);
+  const currentMatch = await matchCurrentShellCache(request, options);
   if (currentMatch) return currentMatch;
 
   try {
@@ -773,6 +792,11 @@ async function matchShellCache(request, options) {
   } catch (error) {}
 
   return null;
+}
+
+async function matchCurrentShellCache(request, options) {
+  const currentCache = await caches.open(CACHE_NAME);
+  return currentCache.match(request, options);
 }
 
 function createOfflineDocumentFallback() {

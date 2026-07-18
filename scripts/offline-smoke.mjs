@@ -326,6 +326,71 @@ async function runOfflineReloadCheck() {
     if (!controlled) throw new Error('Service worker did not control the page after online reload');
   }
 
+  setPhase('offline-reload:mixed-cache-regression');
+  const mixedCacheSeed = await page.evaluate(async () => {
+    const version = typeof SHELL_CACHE_VERSION === 'string' ? SHELL_CACHE_VERSION : '';
+    const liveResponse = await fetch('/scripts/time-utils.js?mixed-cache-source=' + Date.now(), { cache: 'no-store' });
+    const liveSource = await liveResponse.text();
+    const staleSource = liveSource.replace(
+      /if \(ft && ft\.consumptionKg > 0\) \{\s+pushRow\('Расход', ruNum\(ft\.consumptionKg\) \+ ' кг'\);/,
+      "if (ft && ft.consumptionLiters > 0) {\n            pushRow('Расход', ruNum(ft.consumptionLiters) + ' л');"
+    );
+    if (staleSource === liveSource) throw new Error('Could not create stale time-utils fixture');
+
+    const staleCacheName = 'shift-tracker-shell-v000-mixed-regression';
+    const staleCache = await caches.open(staleCacheName);
+    await staleCache.put('/scripts/time-utils.js', new Response(staleSource, {
+      status: 200,
+      headers: { 'Content-Type': 'application/javascript; charset=utf-8' },
+    }));
+
+    const currentCacheName = 'shift-tracker-shell-' + version;
+    const currentCache = await caches.open(currentCacheName);
+    const currentKeys = await currentCache.keys();
+    const runtimeKeys = currentKeys.filter((request) => new URL(request.url).pathname === '/scripts/time-utils.js');
+    const deleteResults = await Promise.all(runtimeKeys.map((request) => currentCache.delete(request)));
+    return {
+      version,
+      staleCacheName,
+      currentCacheName,
+      controllerUrl: navigator.serviceWorker.controller ? navigator.serviceWorker.controller.scriptURL : '',
+      runtimeKeys: runtimeKeys.map((request) => request.url),
+      deletedCurrentRuntime: runtimeKeys.length > 0 && deleteResults.every(Boolean),
+    };
+  });
+  if (!mixedCacheSeed.version || !mixedCacheSeed.deletedCurrentRuntime) {
+    throw new Error(`Mixed-cache fixture was not prepared: ${JSON.stringify(mixedCacheSeed)}`);
+  }
+
+  await reloadAndKeepPage(page, 'mixedCache');
+  await assertAppShellVisible(page, 'mixedCacheReload');
+  const mixedCacheResult = await page.evaluate(async (staleCacheName) => {
+    const html = buildShiftConsistHtml({
+      locomotive_series: '3ТЭ10',
+      locomotive_number: '1431',
+      fuel_receive_coeff_a: '0.840',
+      fuel_receive_liters_a: '5000',
+      fuel_handover_coeff_a: '0.840',
+      fuel_handover_liters_a: '2550',
+    }, '', '12ч');
+    const holder = document.createElement('div');
+    holder.innerHTML = html;
+    const text = (holder.textContent || '').replace(/\u00a0/g, ' ').replace(/\s+/g, ' ').trim();
+    await caches.delete(staleCacheName);
+    return {
+      text,
+      hasKg: /Расход\s*2 058 кг/.test(text),
+      hasLiters: /Расход\s*2 450 л/.test(text),
+    };
+  }, mixedCacheSeed.staleCacheName);
+  report.checks.mixedVersionRuntimeIsolation = {
+    ...mixedCacheSeed,
+    ...mixedCacheResult,
+  };
+  if (!mixedCacheResult.hasKg || mixedCacheResult.hasLiters) {
+    throw new Error(`PWA mixed-cache regression served stale runtime: ${JSON.stringify(mixedCacheResult)}`);
+  }
+
   setPhase('offline-reload:cdp-offline');
   const client = await context.newCDPSession(page);
   await client.send('Network.enable');

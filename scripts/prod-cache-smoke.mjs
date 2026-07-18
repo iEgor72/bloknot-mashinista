@@ -99,7 +99,9 @@ async function main() {
   for (const scriptPath of [
     `/scripts/app-constants.js?v=${version}`,
     `/scripts/auth.js?v=${version}`,
+    `/scripts/time-utils.js?v=${version}`,
     `/scripts/app.js?v=${version}`,
+    `/scripts/render.js?v=${version}`,
     `/scripts/app-init.js?v=${version}`,
     `/scripts/sw-register.js?v=${version}`,
     `/sw-bootstrap-${version}.js`,
@@ -119,6 +121,19 @@ async function main() {
   const app = await fetchText(`${baseUrl}/scripts/app.js?v=${version}`);
   assertOk(app, 'versioned app runtime');
   assertHeaderIncludes(app.headers, 'cache-control', 'no-store', 'versioned app runtime');
+
+  const timeUtils = await fetchText(`${baseUrl}/scripts/time-utils.js?v=${version}`);
+  assertOk(timeUtils, 'versioned time utils runtime');
+  assertHeaderIncludes(timeUtils.headers, 'cache-control', 'no-store', 'versioned time utils runtime');
+  assertIncludes(timeUtils.text, "ruNum(ft.consumptionKg) + ' кг'", 'versioned time utils runtime');
+  if (timeUtils.text.includes("ruNum(ft.consumptionLiters) + ' л'")) {
+    throw new Error('Versioned time utils runtime still renders shift-card consumption in liters');
+  }
+
+  const render = await fetchText(`${baseUrl}/scripts/render.js?v=${version}`);
+  assertOk(render, 'versioned render runtime');
+  assertHeaderIncludes(render.headers, 'cache-control', 'no-store', 'versioned render runtime');
+  assertIncludes(render.text, "formatFuelKgSignedValue(totals.consumptionKg) + ' кг'", 'versioned render runtime');
 
   const appInit = await fetchText(`${baseUrl}/scripts/app-init.js?v=${version}`);
   assertOk(appInit, 'versioned app init');
@@ -157,6 +172,13 @@ async function main() {
     status: app.status,
     cacheControl: app.headers['cache-control'] || '',
     cfCacheStatus: app.headers['cf-cache-status'] || '',
+  };
+  report.checks.versionedShiftCardRuntime = {
+    timeUtilsStatus: timeUtils.status,
+    renderStatus: render.status,
+    timeUtilsCacheControl: timeUtils.headers['cache-control'] || '',
+    renderCacheControl: render.headers['cache-control'] || '',
+    unit: 'кг',
   };
   report.checks.versionedServiceWorker = {
     status: sw.status,

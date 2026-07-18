@@ -125,6 +125,7 @@ const PUBLIC_TOP_LEVEL_FILES = new Set([
   'sw-bootstrap-v383.js',
   'sw-bootstrap-v384.js',
   'sw-bootstrap-v385.js',
+  'sw-bootstrap-v386.js',
   'apple-touch-icon.png',
   'icon-192.png',
   'icon-512.png',
@@ -1967,6 +1968,7 @@ function getPublicFileCacheControl(filePath, publicPath) {
     normalizedPath === '/scripts/app.js' ||
     normalizedPath === '/scripts/auth.js' ||
     normalizedPath === '/scripts/sw-register.js' ||
+    (normalizedPath.startsWith('/scripts/') && (ext === '.js' || ext === '.mjs')) ||
     /^\/sw-bootstrap-v\d+\.js$/.test(normalizedPath)
   ) {
     return 'no-store';
@@ -2076,7 +2078,7 @@ function readBodyWithLimit(req, maxBytes) {
   });
 }
 
-const APP_RELEASE_VERSION = 'v385';
+const APP_RELEASE_VERSION = 'v386';
 const APP_URL = PUBLIC_SITE_URL;
 const TELEGRAM_APP_URL = buildVersionedAppUrl('/');
 

@@ -80,7 +80,16 @@ test('community links use a versioned app entry URL', async () => {
   assert.equal(result.response.status, 200);
   const appUrl = new URL(result.body.appUrl);
   assert.equal(appUrl.pathname, '/');
-  assert.equal(appUrl.searchParams.get('app'), 'v385');
+  assert.equal(appUrl.searchParams.get('app'), 'v386');
+});
+
+test('shift-card runtime is never HTTP-cached and renders fuel in kilograms', async () => {
+  const response = await fetch(baseUrl + '/scripts/time-utils.js?v=v386');
+  const source = await response.text();
+  assert.equal(response.status, 200);
+  assert.match(response.headers.get('cache-control') || '', /no-store/i);
+  assert.match(source, /ruNum\(ft\.consumptionKg\) \+ ' кг'/);
+  assert.doesNotMatch(source, /ruNum\(ft\.consumptionLiters\) \+ ' л'/);
 });
 
 test('auth rejects unsigned requests and accepts valid Telegram initData', async () => {
