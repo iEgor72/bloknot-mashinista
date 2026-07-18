@@ -1,6 +1,6 @@
 # Worktree Status
 
-Generated: 2026-07-18 16:30:37 +1000
+Generated: 2026-07-18 16:44:43 +1000
 
 ## git status -sb
 ```text
@@ -17,25 +17,23 @@ Generated: 2026-07-18 16:30:37 +1000
 ```text
 codex/next-direction b044dd5 offline mvp
   codex/tabs-ui        117f1fa [origin/codex/tabs-ui] tabs ui
-* main                 110c581 [origin/main] fix: correct shift fuel units and Poekhali scope
+* main                 5c556b0 [origin/main] fix: force fresh app entry for cached clients
   poekhali-rework      2d5f0af chore(memory): refresh after main merge
 ```
 
 ## HEAD
 ```text
-110c581 fix: correct shift fuel units and Poekhali scope
- ai-memory/CHANGELOG.md           |  8 +++++
+5c556b0 fix: force fresh app entry for cached clients
+ ai-memory/CHANGELOG.md           |  8 ++++++++
  ai-memory/sessions/2026-07-18.md |  1 +
- index.html                       | 28 ++++++++--------
+ index.html                       | 28 +++++++++++++--------------
+ manifest.webmanifest             |  2 +-
  scripts/app-constants.js         |  2 +-
- scripts/local-smoke.mjs          | 70 ++++++++++++++++++++++++++++++++++++++++
- scripts/poekhali-json-smoke.mjs  |  2 +-
- scripts/poekhali-tracker.js      | 37 +++++++++++++--------
- scripts/render.js                | 56 ++++++++++++++++++++++----------
- scripts/sw-update-smoke.mjs      | 18 +++++------
- scripts/time-utils.js            | 26 +++++++++++++++
- server.js                        |  1 +
- sw-bootstrap-v384.js             | 42 ++++++++++++++++++++++++
- sw.js                            |  6 ++--
- 13 files changed, 239 insertions(+), 58 deletions(-)
+ scripts/setup-bot-webhook.py     | 24 ++++++++++++++++-------
+ scripts/sw-update-smoke.mjs      | 18 ++++++++---------
+ server.js                        | 19 +++++++++++++-----
+ sw-bootstrap-v385.js             | 42 ++++++++++++++++++++++++++++++++++++++++
+ sw.js                            |  6 +++---
+ tests/server/api.test.js         |  8 ++++++++
+ 11 files changed, 118 insertions(+), 40 deletions(-)
 ```

@@ -7598,3 +7598,20 @@ Append-only журнал действий ИИ-агентов по проект�
 - Branch: `main`
 - Methods: `Добавлен версионированный entry URL ?app=v385 для Telegram`, `manifest и community API`, `menu-only обновление кнопки`, `PWA cache v385`, `серверный и SW regression tests`
 - Files: `server.js`, `scripts/setup-bot-webhook.py`, `manifest.webmanifest`, `index.html`, `scripts/app-constants.js`, `sw.js`, `sw-bootstrap-v385.js`, `scripts/sw-update-smoke.mjs`, `tests/server/api.test.js`
+
+## 2026-07-18 16:41:17 +1000
+
+- Source: `post-commit`
+- Task: fix: force fresh app entry for cached clients
+- Branch: `main`
+- Methods: `git post-commit hook`, `automatic memory update`
+- Files: `ai-memory/CHANGELOG.md`, `ai-memory/sessions/2026-07-18.md`, `index.html`, `manifest.webmanifest`, `scripts/app-constants.js`, `scripts/setup-bot-webhook.py`, `scripts/sw-update-smoke.mjs`, `server.js`, `sw-bootstrap-v385.js`, `sw.js`, `tests/server/api.test.js`
+- Notes: Commit: `5c556b0824277187a358b7d44d5740072a2b0d4e` (`5c556b0`) | Author: `iEgor72`
+
+## 2026-07-18 16:44:42 +1000
+
+- Source: `manual`
+- Task: Production hotfix v385 доставлен старым клиентам
+- Branch: `main`
+- Methods: `Коммит 5c556b0`, `origin/main и VPS fast-forward`, `PM2 reload online`, `SQLite integrity ok`, `Telegram setChatMenuButton переведен на ?app=v385`, `production HTTP`, `browser DOM`, `navigation`, `console и loaded script versions проверены`
+- Files: `server.js`, `scripts/setup-bot-webhook.py`, `manifest.webmanifest`, `index.html`, `scripts/app-constants.js`, `sw.js`, `sw-bootstrap-v385.js`, `scripts/sw-update-smoke.mjs`, `tests/server/api.test.js`

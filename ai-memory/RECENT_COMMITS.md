@@ -1,9 +1,11 @@
 # Recent Commits
 
-Generated: 2026-07-18 16:30:37 +1000
+Generated: 2026-07-18 16:44:43 +1000
 
 | Hash | Date | Author | Message |
 | --- | --- | --- | --- |
+| `5c556b0` | 2026-07-18T16:41:16+10:00 | iEgor72 | fix: force fresh app entry for cached clients |
+| `87e4f02` | 2026-07-18T16:30:55+10:00 | iEgor72 | chore(memory): record shift card hotfix |
 | `110c581` | 2026-07-18T16:28:37+10:00 | iEgor72 | fix: correct shift fuel units and Poekhali scope |
 | `5064734` | 2026-07-18T16:10:48+10:00 | iEgor72 | chore(memory): record production release |
 | `8afcaef` | 2026-07-18T16:05:29+10:00 | iEgor72 | feat: harden runtime and migrate storage to SQLite |
@@ -42,5 +44,3 @@ Generated: 2026-07-18 16:30:37 +1000
 | `2a1d277` | 2026-06-21T12:25:23+10:00 | iEgor72 | fix(pwa): bypass cached service worker script |
 | `5c1fe99` | 2026-06-21T12:18:28+10:00 | iEgor72 | chore(memory): record feedback storage preservation |
 | `8841066` | 2026-06-21T12:18:12+10:00 | iEgor72 | fix(server): preserve telegram feedback storage |
-| `79a9b21` | 2026-06-21T12:16:10+10:00 | iEgor72 | chore(memory): record memory hook update |
-| `7bcadcb` | 2026-06-21T12:15:36+10:00 | iEgor72 | chore(memory): record offline shell cold-start fix |
