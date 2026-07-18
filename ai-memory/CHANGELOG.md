@@ -7656,3 +7656,20 @@ Append-only журнал действий ИИ-агентов по проект�
 - Branch: `main`
 - Methods: `Основной регистратор помечает запуск`, `bootstrap служит только резервным каналом`, `update не вызывается во время первой установки. Полный smoke:predeploy прошёл`, `включая серверные тесты`, `режимные карты`, `Поехали`, `карточки смен`, `смешанный runtime и офлайн-перезагрузку`
 - Files: `scripts/sw-register.js`, `sw-bootstrap-v386.js`, `sw-bootstrap-v387.js`, `scripts/poekhali-json-smoke.mjs`, `scripts/offline-smoke.mjs`
+
+## 2026-07-18 17:25:29 +1000
+
+- Source: `post-commit`
+- Task: fix: self-heal mixed PWA runtimes
+- Branch: `main`
+- Methods: `git post-commit hook`, `automatic memory update`
+- Files: `ai-memory/CHANGELOG.md`, `ai-memory/sessions/2026-07-18.md`, `index.html`, `manifest.webmanifest`, `scripts/app-constants.js`, `scripts/app-init.js`, `scripts/app.js`, `scripts/auth.js`, `scripts/offline-smoke.mjs`, `scripts/poekhali-backup.js`, `scripts/poekhali-json-smoke.mjs`, `scripts/poekhali-map-parser.js`, `scripts/poekhali-tracker.js`, `scripts/poekhali-utils.js`, `scripts/poekhali-warnings.js`, `scripts/render.js`, `scripts/setup-bot-webhook.py`, `scripts/shift-form.js`, `scripts/sw-register.js`, `scripts/sw-update-smoke.mjs`, `scripts/time-utils.js`, `server.js`, `sw-bootstrap-v386.js`, `sw-bootstrap-v387.js`, `sw.js`, `tests/server/api.test.js`
+- Notes: Commit: `d50db9ddc0dc4581aaac9d39f8886fd7923b8d25` (`d50db9d`) | Author: `iEgor72`
+
+## 2026-07-18 17:29:20 +1000
+
+- Source: `manual`
+- Task: PWA runtime v387 развернут в production
+- Branch: `main`
+- Methods: `Перед деплоем сверены clean main/upstream и production SHA`, `выполнены fast-forward`, `npm ci`, `PM2 reload`, `storage:check`, `обновление Telegram menu button. smoke:prod-cache подтвердил v387/no-store/кг`, `production browser QA подтвердил загрузку v387 runtime без ошибок`
+- Files: `index.html`, `scripts/app-constants.js`, `scripts/time-utils.js`, `scripts/render.js`, `scripts/poekhali-tracker.js`, `scripts/sw-register.js`, `sw.js`, `sw-bootstrap-v387.js`

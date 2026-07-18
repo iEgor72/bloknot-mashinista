@@ -1,9 +1,11 @@
 # Recent Commits
 
-Generated: 2026-07-18 17:01:02 +1000
+Generated: 2026-07-18 17:29:20 +1000
 
 | Hash | Date | Author | Message |
 | --- | --- | --- | --- |
+| `d50db9d` | 2026-07-18T17:25:28+10:00 | iEgor72 | fix: self-heal mixed PWA runtimes |
+| `6272cc7` | 2026-07-18T17:01:18+10:00 | iEgor72 | chore(memory): record coherent PWA cache fix |
 | `026561c` | 2026-07-18T16:58:43+10:00 | iEgor72 | fix: prevent mixed-version PWA runtime |
 | `324cd5b` | 2026-07-18T16:46:13+10:00 | iEgor72 | chore(memory): record cached client hotfix |
 | `5c556b0` | 2026-07-18T16:41:16+10:00 | iEgor72 | fix: force fresh app entry for cached clients |
@@ -42,5 +44,3 @@ Generated: 2026-07-18 17:01:02 +1000
 | `086652f` | 2026-06-21T12:28:38+10:00 | iEgor72 | chore(memory): refresh after pwa deploy |
 | `a31a35a` | 2026-06-21T12:27:27+10:00 | iEgor72 | chore(memory): record runtime script versioning |
 | `ccd1bce` | 2026-06-21T12:27:19+10:00 | iEgor72 | fix(pwa): version changed runtime scripts |
-| `dfc0bef` | 2026-06-21T12:25:32+10:00 | iEgor72 | chore(memory): record service worker cache bypass |
-| `2a1d277` | 2026-06-21T12:25:23+10:00 | iEgor72 | fix(pwa): bypass cached service worker script |

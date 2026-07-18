@@ -1,14 +1,14 @@
 # Project State
 
 <!-- AUTO_STATUS:START -->
-Generated: 2026-07-18 17:01:02 +1000
+Generated: 2026-07-18 17:29:20 +1000
 
 ## Repository Snapshot
 - Local repo path: `D:\work\bloknot-mashinista-tg`
 - Project memory path: `D:\work\bloknot-mashinista-tg\ai-memory`
 - Branch: `main`
-- HEAD: `026561c`
-- Last commit: `026561c fix: prevent mixed-version PWA runtime`
+- HEAD: `d50db9d`
+- Last commit: `d50db9d fix: self-heal mixed PWA runtimes`
 
 ## Git Remote
 ```text
@@ -20,7 +20,7 @@ origin	https://github.com/iEgor72/bloknot-mashinista.git (push)
 ```text
 codex/next-direction b044dd5 offline mvp
   codex/tabs-ui        117f1fa [origin/codex/tabs-ui] tabs ui
-* main                 026561c [origin/main] fix: prevent mixed-version PWA runtime
+* main                 d50db9d [origin/main] fix: self-heal mixed PWA runtimes
   poekhali-rework      2d5f0af chore(memory): refresh after main merge
 ```
 
