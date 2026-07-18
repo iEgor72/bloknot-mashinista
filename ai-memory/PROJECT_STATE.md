@@ -1,14 +1,14 @@
 # Project State
 
 <!-- AUTO_STATUS:START -->
-Generated: 2026-07-18 15:59:07 +1000
+Generated: 2026-07-18 16:10:29 +1000
 
 ## Repository Snapshot
 - Local repo path: `D:\work\bloknot-mashinista-tg`
 - Project memory path: `D:\work\bloknot-mashinista-tg\ai-memory`
 - Branch: `main`
-- HEAD: `28f6838`
-- Last commit: `28f6838 feat: rebuild regime profiles from PDF maps`
+- HEAD: `8afcaef`
+- Last commit: `8afcaef feat: harden runtime and migrate storage to SQLite`
 
 ## Git Remote
 ```text
@@ -20,72 +20,18 @@ origin	https://github.com/iEgor72/bloknot-mashinista.git (push)
 ```text
 codex/next-direction b044dd5 offline mvp
   codex/tabs-ui        117f1fa [origin/codex/tabs-ui] tabs ui
-* main                 28f6838 [origin/main] feat: rebuild regime profiles from PDF maps
+* main                 8afcaef [origin/main] feat: harden runtime and migrate storage to SQLite
   poekhali-rework      2d5f0af chore(memory): refresh after main merge
 ```
 
 ## Worktree
 ```text
-M README.md
- M ai-memory/ARCHITECTURE.md
- M ai-memory/CHANGELOG.md
+M ai-memory/CHANGELOG.md
  M ai-memory/INDEX.md
- M ai-memory/METHODS.md
  M ai-memory/PROJECT_STATE.md
  M ai-memory/RECENT_COMMITS.md
  M ai-memory/WORKTREE_STATUS.md
- M ai-memory/sessions/2026-07-11.md
- M assets/tracker/sections/index.json
- M index.html
- M package-lock.json
- M package.json
- M scripts/README.md
- M scripts/app-constants.js
- M scripts/app-init.js
- M scripts/app.js
- M scripts/auth.js
- M scripts/docs-app.js
- M scripts/local-smoke.mjs
- M scripts/offline-smoke.mjs
- M scripts/poekhali-json-smoke.mjs
- M scripts/poekhali-tracker.js
- M scripts/render.js
- M scripts/shift-form.js
- M scripts/sw-update-smoke.mjs
- M scripts/time-utils.js
- M scripts/viewport.js
- M server.js
- M styles/00-base.css
- M styles/10-navigation-and-cards.css
- M styles/50-design-refresh.css
- M sw.js
-?? .codex/
-?? ai-memory/sessions/2026-07-17.md
-?? ai-memory/sessions/2026-07-18.md
-?? scripts/poekhali-backup.js
-?? scripts/poekhali-map-parser.js
-?? scripts/poekhali-utils.js
-?? scripts/poekhali-warnings.js
-?? scripts/storage-maintenance.js
-?? server/
-?? styles/10-shell-navigation.css
-?? styles/11-poekhali-entry.css
-?? styles/12-cards.css
-?? styles/13-dashboard-cards.css
-?? styles/14-stats-and-salary.css
-?? styles/15-settings-and-docs.css
-?? styles/16-overlays-and-actions.css
-?? styles/50-theme-shell.css
-?? styles/51-shifts.css
-?? styles/52-poekhali.css
-?? styles/53-salary.css
-?? styles/54-docs.css
-?? styles/55-forms.css
-?? styles/56-overlays.css
-?? sw-bootstrap-v381.js
-?? sw-bootstrap-v382.js
-?? sw-bootstrap-v383.js
-?? tests/server/
+ M ai-memory/sessions/2026-07-18.md
 ```
 <!-- AUTO_STATUS:END -->
 

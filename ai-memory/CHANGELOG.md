@@ -7548,3 +7548,20 @@ Append-only журнал действий ИИ-агентов по проект�
 - Branch: `main`
 - Methods: `Локальная main и origin/main совпадают на 28f6838`, `production clean на том же SHA`, `PM2 online`, `localhost 200`, `Node 22 совместим`, `61 changed files просканированы без секретов`, `npm audit 0 vulnerabilities`, `.codex исключен как локальный артефакт`
 - Files: `.gitignore`, `ai-memory/PROJECT_STATE.md`, `ai-memory/METHODS.md`
+
+## 2026-07-18 16:05:30 +1000
+
+- Source: `post-commit`
+- Task: feat: harden runtime and migrate storage to SQLite
+- Branch: `main`
+- Methods: `git post-commit hook`, `automatic memory update`
+- Files: `.gitignore`, `README.md`, `ai-memory/ARCHITECTURE.md`, `ai-memory/CHANGELOG.md`, `ai-memory/INDEX.md`, `ai-memory/METHODS.md`, `ai-memory/PROJECT_STATE.md`, `ai-memory/RECENT_COMMITS.md`, `ai-memory/WORKTREE_STATUS.md`, `ai-memory/sessions/2026-07-11.md`, `ai-memory/sessions/2026-07-17.md`, `ai-memory/sessions/2026-07-18.md`, `assets/tracker/sections/index.json`, `index.html`, `package-lock.json`, `package.json`, `scripts/README.md`, `scripts/app-constants.js`, `scripts/app-init.js`, `scripts/app.js`, `scripts/auth.js`, `scripts/docs-app.js`, `scripts/local-smoke.mjs`, `scripts/offline-smoke.mjs`, `scripts/poekhali-backup.js`, `scripts/poekhali-json-smoke.mjs`, `scripts/poekhali-map-parser.js`, `scripts/poekhali-tracker.js`, `scripts/poekhali-utils.js`, `scripts/poekhali-warnings.js`, `scripts/render.js`, `scripts/shift-form.js`, `scripts/storage-maintenance.js`, `scripts/sw-update-smoke.mjs`, `scripts/time-utils.js`, `scripts/viewport.js`, `server.js`, `server/sqlite-storage.js`, `styles/00-base.css`, `styles/10-navigation-and-cards.css`, `styles/10-shell-navigation.css`, `styles/11-poekhali-entry.css`, `styles/12-cards.css`, `styles/13-dashboard-cards.css`, `styles/14-stats-and-salary.css`, `styles/15-settings-and-docs.css`, `styles/16-overlays-and-actions.css`, `styles/50-design-refresh.css`, `styles/50-theme-shell.css`, `styles/51-shifts.css`, `styles/52-poekhali.css`, `styles/53-salary.css`, `styles/54-docs.css`, `styles/55-forms.css`, `styles/56-overlays.css`, `sw-bootstrap-v381.js`, `sw-bootstrap-v382.js`, `sw-bootstrap-v383.js`, `sw.js`, `tests/server/api.test.js`, `tests/server/storage.test.js`
+- Notes: Commit: `8afcaef81c86a510a00769ea7e18d615ca773006` (`8afcaef`) | Author: `iEgor72`
+
+## 2026-07-18 16:10:29 +1000
+
+- Source: `manual`
+- Task: Production release 8afcaef с миграцией JSON в SQLite
+- Branch: `main`
+- Methods: `Full smoke:predeploy passed`, `origin/main and production fast-forwarded to 8afcaef`, `pre-SQLite data archive verified`, `npm ci audit clean`, `PM2 reload online`, `legacy 19 journals and 169 shifts exactly matched SQLite`, `integrity and backup checks passed`, `external HTTP/PWA checks passed`
+- Files: `.gitignore`, `package.json`, `package-lock.json`, `server.js`, `server/sqlite-storage.js`, `scripts/storage-maintenance.js`, `scripts/poekhali-tracker.js`, `scripts/poekhali-backup.js`, `sw.js`, `index.html`, `tests/server/api.test.js`, `tests/server/storage.test.js`
