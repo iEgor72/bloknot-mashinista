@@ -1,14 +1,14 @@
 # Project State
 
 <!-- AUTO_STATUS:START -->
-Generated: 2026-07-18 16:10:29 +1000
+Generated: 2026-07-18 16:30:37 +1000
 
 ## Repository Snapshot
 - Local repo path: `D:\work\bloknot-mashinista-tg`
 - Project memory path: `D:\work\bloknot-mashinista-tg\ai-memory`
 - Branch: `main`
-- HEAD: `8afcaef`
-- Last commit: `8afcaef feat: harden runtime and migrate storage to SQLite`
+- HEAD: `110c581`
+- Last commit: `110c581 fix: correct shift fuel units and Poekhali scope`
 
 ## Git Remote
 ```text
@@ -20,7 +20,7 @@ origin	https://github.com/iEgor72/bloknot-mashinista.git (push)
 ```text
 codex/next-direction b044dd5 offline mvp
   codex/tabs-ui        117f1fa [origin/codex/tabs-ui] tabs ui
-* main                 8afcaef [origin/main] feat: harden runtime and migrate storage to SQLite
+* main                 110c581 [origin/main] fix: correct shift fuel units and Poekhali scope
   poekhali-rework      2d5f0af chore(memory): refresh after main merge
 ```
 

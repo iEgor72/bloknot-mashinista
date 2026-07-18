@@ -7573,3 +7573,20 @@ Append-only журнал действий ИИ-агентов по проект�
 - Branch: `main`
 - Methods: `Расход карточки проверяется через consumptionKg`, `latest shift определяется по времени начала с created_at tie-break`, `кнопка и menu action скрыты у истории`, `прямой openPoekhaliForShift для старой смены блокируется`, `PWA cache поднят до v384`, `local`, `SW и Poekhali smoke прошли`
 - Files: `scripts/time-utils.js`, `scripts/render.js`, `scripts/poekhali-tracker.js`, `scripts/local-smoke.mjs`, `scripts/poekhali-json-smoke.mjs`, `scripts/app-constants.js`, `scripts/sw-update-smoke.mjs`, `index.html`, `sw.js`, `sw-bootstrap-v384.js`, `server.js`
+
+## 2026-07-18 16:28:37 +1000
+
+- Source: `post-commit`
+- Task: fix: correct shift fuel units and Poekhali scope
+- Branch: `main`
+- Methods: `git post-commit hook`, `automatic memory update`
+- Files: `ai-memory/CHANGELOG.md`, `ai-memory/sessions/2026-07-18.md`, `index.html`, `scripts/app-constants.js`, `scripts/local-smoke.mjs`, `scripts/poekhali-json-smoke.mjs`, `scripts/poekhali-tracker.js`, `scripts/render.js`, `scripts/sw-update-smoke.mjs`, `scripts/time-utils.js`, `server.js`, `sw-bootstrap-v384.js`, `sw.js`
+- Notes: Commit: `110c5815004ddda36e229c25f6be2636fb62d92a` (`110c581`) | Author: `iEgor72`
+
+## 2026-07-18 16:30:37 +1000
+
+- Source: `manual`
+- Task: Production hotfix 110c581: расход смен в кг и Поехали только на последней смене
+- Branch: `main`
+- Methods: `Full smoke:predeploy passed`, `DOM contract verified 2450 liters delta renders 2058 kg`, `old/latest card and menu actions verified 0/1`, `historical direct open blocked`, `PWA v384 deployed`, `PM2 online`, `SQLite integrity ok`, `external HTTP and browser console checks passed`
+- Files: `scripts/time-utils.js`, `scripts/render.js`, `scripts/poekhali-tracker.js`, `scripts/local-smoke.mjs`, `scripts/poekhali-json-smoke.mjs`, `scripts/app-constants.js`, `scripts/sw-update-smoke.mjs`, `index.html`, `sw.js`, `sw-bootstrap-v384.js`, `server.js`

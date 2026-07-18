@@ -1,9 +1,11 @@
 # Recent Commits
 
-Generated: 2026-07-18 16:10:30 +1000
+Generated: 2026-07-18 16:30:37 +1000
 
 | Hash | Date | Author | Message |
 | --- | --- | --- | --- |
+| `110c581` | 2026-07-18T16:28:37+10:00 | iEgor72 | fix: correct shift fuel units and Poekhali scope |
+| `5064734` | 2026-07-18T16:10:48+10:00 | iEgor72 | chore(memory): record production release |
 | `8afcaef` | 2026-07-18T16:05:29+10:00 | iEgor72 | feat: harden runtime and migrate storage to SQLite |
 | `28f6838` | 2026-07-11T09:36:28+10:00 | iEgor72 | feat: rebuild regime profiles from PDF maps |
 | `2a24639` | 2026-07-10T17:59:16+10:00 | iEgor72 | chore(memory): record SEO landing redesign |
@@ -42,5 +44,3 @@ Generated: 2026-07-18 16:10:30 +1000
 | `8841066` | 2026-06-21T12:18:12+10:00 | iEgor72 | fix(server): preserve telegram feedback storage |
 | `79a9b21` | 2026-06-21T12:16:10+10:00 | iEgor72 | chore(memory): record memory hook update |
 | `7bcadcb` | 2026-06-21T12:15:36+10:00 | iEgor72 | chore(memory): record offline shell cold-start fix |
-| `90a3f17` | 2026-06-21T12:15:12+10:00 | iEgor72 | fix: make offline shell cold-start cache-first |
-| `77fe712` | 2026-06-21T11:38:58+10:00 | iEgor72 | chore(memory): record telegram offline deploy |
