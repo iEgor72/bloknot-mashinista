@@ -410,6 +410,29 @@ async function main() {
   }, 'app shell visible');
   report.checks.appShellVisible = true;
 
+  const userFacingDataTools = await page.evaluate(() => {
+    const profile = document.querySelector('.tab-panel[data-tab="profile"]');
+    const gpsButton = document.getElementById('btnPoekhaliLive');
+    const routeNote = document.querySelector('#optionalRouteCard .optional-note');
+    const profileText = (profile?.textContent || '').replace(/\s+/g, ' ').trim();
+    return {
+      exportButtonPresent: !!document.getElementById('btnProfileExportGps'),
+      clearButtonPresent: !!document.getElementById('btnProfileClearGps'),
+      profileHasTechnicalCopy: /JSON|GPS-маршрут|резервн(?:ая|ой) копи|Версия кэша/i.test(profileText),
+      gpsLabel: gpsButton?.getAttribute('aria-label') || '',
+      routeNote: (routeNote?.textContent || '').replace(/\s+/g, ' ').trim(),
+      exportApiPresent: typeof window.exportPoekhaliGpsCaptures === 'function'
+    };
+  });
+  report.checks.userFacingDataToolsRemoved = userFacingDataTools;
+  if (userFacingDataTools.exportButtonPresent || userFacingDataTools.clearButtonPresent ||
+      userFacingDataTools.profileHasTechnicalCopy || userFacingDataTools.exportApiPresent) {
+    throw new Error(`Technical GPS/backup controls remain user-facing: ${JSON.stringify(userFacingDataTools)}`);
+  }
+  if (/запис|контрольн/i.test(userFacingDataTools.gpsLabel) || /запис|контрольн/i.test(userFacingDataTools.routeNote)) {
+    throw new Error(`GPS capture instructions remain user-facing: ${JSON.stringify(userFacingDataTools)}`);
+  }
+
   const shiftFormContract = await page.evaluate(() => {
     const select = document.getElementById('inputLocoSeries');
     const form = document.getElementById('shiftFormSection');

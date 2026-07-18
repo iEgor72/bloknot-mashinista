@@ -1,5 +1,5 @@
 ﻿    // ── Telegram WebApp chrome (не блокировать bootstrap: SDK подключается последним defer в index.html)
-    if (typeof registerShiftTrackerRuntimeModule === 'function') registerShiftTrackerRuntimeModule('app', 'v387');
+    if (typeof registerShiftTrackerRuntimeModule === 'function') registerShiftTrackerRuntimeModule('app', 'v388');
 
     function applyTelegramWebAppChrome() {
       try {
@@ -299,7 +299,6 @@
 
     function renderUserStatsFooter() {
       var el = document.getElementById('userStatsFooter');
-      var cacheEl = document.getElementById('userStatsShellCache');
       if (!el) return;
       // Light social proof: only the total count, only when we actually have a
       // number — never a bare dash. "Сейчас онлайн" was dropped (vanity metric;
@@ -311,16 +310,6 @@
         el.classList.remove('hidden');
       } else {
         el.classList.add('hidden');
-      }
-
-      var cacheVer =
-        typeof SHELL_CACHE_VERSION !== 'undefined' && SHELL_CACHE_VERSION
-          ? String(SHELL_CACHE_VERSION)
-          : '—';
-      // Cache version now lives in Профиль → О приложении as a title/value row,
-      // so the element shows only the value (the "Версия кэша" label is in markup).
-      if (cacheEl && cacheEl.textContent !== cacheVer) {
-        cacheEl.textContent = cacheVer;
       }
     }
 

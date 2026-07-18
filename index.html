@@ -664,7 +664,7 @@
           <button class="poekhali-overlay-btn poekhali-map-btn is-hidden" id="btnPoekhaliMap" type="button" data-control-label="Карта" title="Электронная карта">ЭК</button>
           <div class="poekhali-top-tray">
             <button class="poekhali-overlay-btn poekhali-way-btn is-hidden" id="btnPoekhaliWay" type="button" data-control-label="Путь" title="Путь">П:1</button>
-            <button class="poekhali-overlay-btn poekhali-live-btn" id="btnPoekhaliLive" type="button" aria-label="GPS и запись поездки" title="GPS и запись поездки"><span class="poekhali-live-dot" aria-hidden="true">●</span><span class="poekhali-live-gps"><span class="poekhali-live-gps-stack"><span class="poekhali-live-gps-word">GPS</span><span class="poekhali-live-gps-meta">—</span></span></span></button>
+            <button class="poekhali-overlay-btn poekhali-live-btn" id="btnPoekhaliLive" type="button" aria-label="Статус GPS" title="Статус GPS"><span class="poekhali-live-dot" aria-hidden="true">●</span><span class="poekhali-live-gps"><span class="poekhali-live-gps-stack"><span class="poekhali-live-gps-word">GPS</span><span class="poekhali-live-gps-meta">—</span></span></span></button>
           </div>
           <button class="poekhali-overlay-btn poekhali-ops-btn is-hidden" id="btnPoekhaliOps" type="button" hidden data-control-label="Панель" aria-hidden="true" tabindex="-1" aria-label="Данные поездки">Поездка</button>
         </div>
@@ -776,7 +776,7 @@
                     <input class="optional-control" type="text" id="inputRouteTo" maxlength="64" placeholder="Станция прибытия" />
                   </div>
                 </div>
-                <div class="optional-note">Маршрут выбирает нужный профиль. Чтобы записать контрольный проезд только на этом устройстве, откройте «Поехали» и нажмите GPS; во время записи держите экран включённым.</div>
+                <div class="optional-note">Маршрут автоматически выбирает нужный профиль в режиме «Поехали».</div>
               </div>
             </div>
           </details>
@@ -1372,37 +1372,6 @@
           </button>
         </div>
 
-        <div class="profile-section-title">Данные</div>
-        <div class="profile-card">
-          <button class="profile-row" id="btnProfileExportGps" type="button">
-            <span class="profile-row-icon" aria-hidden="true">
-              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round">
-                <path d="M12 4v10"></path>
-                <path d="M8 11l4 4 4-4"></path>
-                <path d="M5 19h14"></path>
-              </svg>
-            </span>
-            <span class="profile-row-body">
-              <span class="profile-row-title">GPS-маршруты «Поехали»</span>
-              <span class="profile-row-note" id="profileGpsExportNote">Скачать контрольные проезды в JSON</span>
-            </span>
-            <span class="profile-row-chevron" aria-hidden="true">›</span>
-          </button>
-          <button class="profile-row" id="btnProfileClearGps" type="button">
-            <span class="profile-row-body">
-              <span class="profile-row-title">Удалить GPS-маршрут с устройства</span>
-              <span class="profile-row-note">После скачивания JSON освободите место для следующей записи</span>
-            </span>
-            <span class="profile-row-chevron" aria-hidden="true">›</span>
-          </button>
-          <div class="profile-row profile-row-static profile-soon">
-            <span class="profile-row-body">
-              <span class="profile-row-title">Полная резервная копия</span>
-              <span class="profile-row-note">Скоро</span>
-            </span>
-          </div>
-        </div>
-
         <div id="profileInstallSection">
           <div class="profile-section-title">Приложение</div>
           <div class="profile-card">
@@ -1447,12 +1416,6 @@
             <span class="profile-row-body">
               <span class="profile-row-title">Версия</span>
               <span class="profile-row-note" id="profileVersion">—</span>
-            </span>
-          </div>
-          <div class="profile-row profile-row-static">
-            <span class="profile-row-body">
-              <span class="profile-row-title">Версия кэша</span>
-              <span class="profile-row-note" id="userStatsShellCache" aria-live="polite">—</span>
             </span>
           </div>
         </div>
@@ -1956,25 +1919,25 @@
       } catch (error) {}
     }, true);
   </script>
-  <script src="/scripts/app-constants.js?v=v387" defer></script>
+  <script src="/scripts/app-constants.js?v=v388" defer></script>
   <script src="/scripts/glass-select.js" defer></script>
-  <script src="/scripts/auth.js?v=v387" defer></script>
+  <script src="/scripts/auth.js?v=v388" defer></script>
   <script src="/scripts/viewport.js" defer></script>
-  <script src="/scripts/time-utils.js?v=v387" defer></script>
+  <script src="/scripts/time-utils.js?v=v388" defer></script>
   <script src="/scripts/docs-app.js" defer></script>
   <script src="/scripts/telegram-sdk-loader.js" defer></script>
-  <script src="/scripts/app.js?v=v387" defer></script>
-  <script src="/scripts/poekhali-utils.js?v=v387" defer></script>
-  <script src="/scripts/poekhali-map-parser.js?v=v387" defer></script>
-  <script src="/scripts/poekhali-warnings.js?v=v387" defer></script>
-  <script src="/scripts/poekhali-backup.js?v=v387" defer></script>
-  <script src="/scripts/poekhali-tracker.js?v=v387" defer></script>
-  <script src="/scripts/render.js?v=v387" defer></script>
-  <script src="/scripts/shift-form.js?v=v387" defer></script>
+  <script src="/scripts/app.js?v=v388" defer></script>
+  <script src="/scripts/poekhali-utils.js?v=v388" defer></script>
+  <script src="/scripts/poekhali-map-parser.js?v=v388" defer></script>
+  <script src="/scripts/poekhali-warnings.js?v=v388" defer></script>
+  <script src="/scripts/poekhali-backup.js?v=v388" defer></script>
+  <script src="/scripts/poekhali-tracker.js?v=v388" defer></script>
+  <script src="/scripts/render.js?v=v388" defer></script>
+  <script src="/scripts/shift-form.js?v=v388" defer></script>
   <script src="/scripts/partners.js" defer></script>
-  <script src="/scripts/app-init.js?v=v387" defer></script>
-  <script src="/scripts/sw-register.js?v=v387" defer></script>
-  <script src="/sw-bootstrap-v387.js" defer></script>
+  <script src="/scripts/app-init.js?v=v388" defer></script>
+  <script src="/scripts/sw-register.js?v=v388" defer></script>
+  <script src="/sw-bootstrap-v388.js" defer></script>
   <script src="/scripts/utils/haptics.js" defer></script>
   <script src="/scripts/press-feedback.js" defer></script>
   <script src="/scripts/nav-debug.js" defer></script>

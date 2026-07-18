@@ -7673,3 +7673,19 @@ Append-only журнал действий ИИ-агентов по проект�
 - Branch: `main`
 - Methods: `Перед деплоем сверены clean main/upstream и production SHA`, `выполнены fast-forward`, `npm ci`, `PM2 reload`, `storage:check`, `обновление Telegram menu button. smoke:prod-cache подтвердил v387/no-store/кг`, `production browser QA подтвердил загрузку v387 runtime без ошибок`
 - Files: `index.html`, `scripts/app-constants.js`, `scripts/time-utils.js`, `scripts/render.js`, `scripts/poekhali-tracker.js`, `scripts/sw-register.js`, `sw.js`, `sw-bootstrap-v387.js`
+
+## 2026-07-18 17:42:02 +1000
+
+- Source: `manual`
+- Task: Убран технический экспорт данных из пользовательского интерфейса
+- Branch: `main`
+- Methods: `Удалён раздел профиля с GPS JSON`, `удалением маршрута и обещанием резервной копии`, `убран backup/import UI из служебной панели`, `кнопка GPS теперь только отображает статус и повторяет подключение`, `не запускает скрытую запись`, `серверные SQLite backups сохранены как невидимая эксплуатационная защита`, `подготовлен PWA v388`
+- Files: `index.html`, `scripts/app-init.js`, `scripts/poekhali-tracker.js`, `scripts/local-smoke.mjs`, `scripts/poekhali-json-smoke.mjs`, `sw.js`, `sw-bootstrap-v388.js`
+
+## 2026-07-18 17:46:40 +1000
+
+- Source: `manual`
+- Task: Завершена очистка пользовательского интерфейса от технических инструментов данных
+- Branch: `main`
+- Methods: `Убраны экспорт и удаление GPS JSON`, `резервная копия и версия кэша из профиля`, `GPS-кнопка оставлена только для статуса`, `релиз поднят до v388`, `выполнены браузерная проверка и полный smoke:predeploy`
+- Files: `index.html`, `scripts/app-init.js`, `scripts/app.js`, `scripts/poekhali-tracker.js`, `scripts/local-smoke.mjs`, `scripts/poekhali-json-smoke.mjs`, `sw.js`, `sw-bootstrap-v388.js`

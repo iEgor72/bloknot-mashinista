@@ -1,4 +1,4 @@
-if (typeof registerShiftTrackerRuntimeModule === 'function') registerShiftTrackerRuntimeModule('app-init', 'v387');
+if (typeof registerShiftTrackerRuntimeModule === 'function') registerShiftTrackerRuntimeModule('app-init', 'v388');
 
 // ── Init ──
 function startShiftTrackerRuntime() {
@@ -23,35 +23,6 @@ if (window.__SHIFT_TRACKER_RUNTIME_GUARD_PENDING) {
 } else {
   startShiftTrackerRuntime();
 }
-
-// A privacy-scoped export for field GPS traces. Unlike the full diagnostic
-// package, this file contains only route metadata and captured coordinates.
-(function bindProfileGpsExport() {
-  var button = document.getElementById('btnProfileExportGps');
-  var clearButton = document.getElementById('btnProfileClearGps');
-  var note = document.getElementById('profileGpsExportNote');
-  if (!button) return;
-  button.addEventListener('click', function() {
-    if (typeof window.exportPoekhaliGpsCaptures !== 'function') {
-      if (note) note.textContent = 'Экспорт пока недоступен';
-      return;
-    }
-    var exported = window.exportPoekhaliGpsCaptures();
-    if (note) note.textContent = exported
-      ? 'JSON сохранён — его можно отправить разработчику'
-      : 'Пока нет записанных контрольных проездов';
-  });
-  if (clearButton) {
-    clearButton.addEventListener('click', function() {
-      if (typeof window.clearPoekhaliGpsCaptures !== 'function') return;
-      if (!window.confirm('Удалить записанный GPS-маршрут с этого устройства? Сначала скачайте JSON, если хотите отправить его разработчику.')) return;
-      var removed = window.clearPoekhaliGpsCaptures();
-      if (note) note.textContent = removed
-        ? 'GPS-маршрут удалён — можно записывать следующий'
-        : 'Записанных GPS-маршрутов нет';
-    });
-  }
-})();
 
 // Keep modal/sheet state derived from DOM classes. This prevents an invisible
 // overlay/backdrop from capturing taps after a failed transition or interrupted

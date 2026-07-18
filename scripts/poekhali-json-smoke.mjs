@@ -781,6 +781,19 @@ async function assertLocalGpsCapture(browser) {
   if (beforeExplicitStart.capture.active || beforeExplicitStart.capture.samples || beforeExplicitStart.stored) {
     throw new Error(`GPS capture started without explicit consent: ${JSON.stringify(beforeExplicitStart)}`);
   }
+  await page.evaluate(() => document.getElementById('btnPoekhaliLive')?.click());
+  await page.waitForTimeout(100);
+  const afterUserGpsClick = await page.evaluate(() => {
+    const button = document.getElementById('btnPoekhaliLive');
+    return {
+      capture: window.getPoekhaliGpsCaptureState(),
+      label: button?.getAttribute('aria-label') || '',
+      title: button?.title || ''
+    };
+  });
+  if (afterUserGpsClick.capture.active || /запис|контрольн/i.test(afterUserGpsClick.label + ' ' + afterUserGpsClick.title)) {
+    throw new Error(`User GPS status control exposed diagnostic capture: ${JSON.stringify(afterUserGpsClick)}`);
+  }
   const started = await page.evaluate(() => window.startPoekhaliGpsCapture());
   if (!started) throw new Error('Explicit GPS capture did not start');
   const fixes = [

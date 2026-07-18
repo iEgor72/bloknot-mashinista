@@ -1,4 +1,4 @@
-if (typeof registerShiftTrackerRuntimeModule === 'function') registerShiftTrackerRuntimeModule('poekhali-tracker', 'v387');
+if (typeof registerShiftTrackerRuntimeModule === 'function') registerShiftTrackerRuntimeModule('poekhali-tracker', 'v388');
 
 (function() {
   'use strict';
@@ -2948,8 +2948,7 @@ if (typeof registerShiftTrackerRuntimeModule === 'function') registerShiftTracke
   }
 
   function saveLearningStore() {
-    // Local-only: GPS traces and user sections never leave the device
-    // automatically. They are shared only through an explicit JSON export.
+    // Local-only: GPS traces and user sections never leave the device.
     if (tracker.learningSaveTimer) {
       clearTimeout(tracker.learningSaveTimer);
       tracker.learningSaveTimer = null;
@@ -2973,7 +2972,7 @@ if (typeof registerShiftTrackerRuntimeModule === 'function') registerShiftTracke
       }
       session.active = false;
     }
-    tracker.rawCaptureStorageError = 'Не хватает локальной памяти. Скачайте GPS-маршруты и освободите место.';
+    tracker.rawCaptureStorageError = 'Не хватает памяти для служебных данных GPS. Запись остановлена.';
     setTimeout(function() {
       if (tracker.active) restartWatchingGps();
     }, 0);
@@ -3137,7 +3136,7 @@ if (typeof registerShiftTrackerRuntimeModule === 'function') registerShiftTracke
       return tracker.rawCaptureSession;
     }
     if (storedCaptures.length) {
-      tracker.rawCaptureStorageError = 'Сначала скачайте и удалите предыдущий GPS-маршрут в профиле.';
+      tracker.rawCaptureStorageError = 'На устройстве уже сохранён контрольный маршрут.';
       syncPoekhaliLiveButton();
       requestDraw();
       return null;
@@ -6334,16 +6333,8 @@ if (typeof registerShiftTrackerRuntimeModule === 'function') registerShiftTracke
     createShiftInfoCell: createShiftInfoCell
   });
 
-  function exportPoekhaliGpsCaptures() {
-    return POEKHALI_BACKUP.exportGpsCaptures();
-  }
-
   function buildPoekhaliGpsCapturePackage() {
     return POEKHALI_BACKUP.buildGpsCapturePackage();
-  }
-
-  function renderBackupSection(parent) {
-    return POEKHALI_BACKUP.renderBackupSection(parent);
   }
 
   function renderDownloadedMapsReadinessSection(parent) {
@@ -6870,7 +6861,6 @@ if (typeof registerShiftTrackerRuntimeModule === 'function') registerShiftTracke
     tracker.opsView = normalizeOpsView(tracker.opsView);
     renderOpsTabs(sheet.content);
     if (tracker.opsView === 'service' && isPoekhaliDebugUiEnabled()) {
-      renderBackupSection(sheet.content);
       renderDiagnosticsSection(sheet.content);
       renderProdAuditSection(sheet.content);
       renderDownloadedMapsReadinessSection(sheet.content);
@@ -8212,10 +8202,7 @@ if (typeof registerShiftTrackerRuntimeModule === 'function') registerShiftTracke
 
     var tone = getPoekhaliGpsStackToneClass();
 
-    var capture = getRawLearningCaptureState();
     el.classList.remove('is-recording', 'is-preparing', 'is-paused', 'is-blocked');
-    el.classList.toggle('is-recording', capture.active && capture.samples > 0);
-    el.classList.toggle('is-blocked', !!capture.error);
 
     dot.classList.remove('is-dot-rec', 'is-dot-preparing', 'is-dot-pause', 'is-dot-idle', 'is-gps-ok', 'is-gps-warn', 'is-gps-muted', 'is-gps-error');
     dot.textContent = '●';
@@ -8236,15 +8223,6 @@ if (typeof registerShiftTrackerRuntimeModule === 'function') registerShiftTracke
     var gpsHint = String(el.dataset.fullText || '').trim();
     if (gpsHint && gpsHint !== 'GPS') {
       title = title + ' · ' + gpsHint;
-    }
-    if (capture.error) {
-      title = capture.error;
-    } else if (capture.active) {
-      title = title + (capture.samples > 0
-        ? ' · Контрольный проезд записывается только на устройстве: ' + capture.samples + ' точек. Нажмите, чтобы остановить'
-        : ' · Запись включена; жду GPS не хуже ±' + RAW_CAPTURE_MAX_ACCURACY_M + ' м. Нажмите, чтобы остановить');
-    } else if (capture.available) {
-      title = title + ' · Нажмите GPS, чтобы начать локальную запись контрольного проезда';
     }
     el.title = title;
     el.setAttribute('aria-label', title);
@@ -12644,13 +12622,7 @@ if (typeof registerShiftTrackerRuntimeModule === 'function') registerShiftTracke
     if (liveBtn) {
       liveBtn.addEventListener('click', function() {
         closeMapPicker();
-        var capture = getRawLearningCaptureState();
-        if (capture.active || capture.available) {
-          toggleRawLearningCapture();
-        } else {
-          // Without a complete route, tapping still retries a stalled/denied GPS.
-          restartWatchingGps();
-        }
+        restartWatchingGps();
         syncPoekhaliLiveButton();
       });
     }
@@ -12718,5 +12690,4 @@ if (typeof registerShiftTrackerRuntimeModule === 'function') registerShiftTracke
   window.togglePoekhaliGpsCapture = toggleRawLearningCapture;
   window.clearPoekhaliGpsCaptures = clearPoekhaliGpsCaptures;
   window.buildPoekhaliGpsCapturePackage = buildPoekhaliGpsCapturePackage;
-  window.exportPoekhaliGpsCaptures = exportPoekhaliGpsCaptures;
 })();
