@@ -2,9 +2,7 @@
     var AUTH_API_URL = API_BASE_URL + '/api/auth';
     var SHIFTS_API_URL = API_BASE_URL + '/api/shifts';
     var SALARY_PARAMS_API_URL = API_BASE_URL + '/api/salary-params';
-    var POEKHALI_LEARNING_API_URL = API_BASE_URL + '/api/poekhali-learning';
     var POEKHALI_WARNINGS_API_URL = API_BASE_URL + '/api/poekhali-warnings';
-    var POEKHALI_RUNS_API_URL = API_BASE_URL + '/api/poekhali-runs';
     var USER_STATS_API_URL = API_BASE_URL + '/api/stats';
     var TELEGRAM_BOT_USERNAME = 'bloknot_mashinista_bot';
     var CURRENT_USER = null;
@@ -854,22 +852,6 @@
           return result.body.user;
         }
         return null;
-      });
-    }
-
-    function logout() {
-      return fetchJson(AUTH_API_URL, {
-        method: 'DELETE',
-        headers: { 'Accept': 'application/json' }
-      }).then(function() {
-        CURRENT_USER = null;
-        CURRENT_SESSION_TOKEN = '';
-        setStoredSessionToken('');
-        setStoredCachedUser(null);
-        allShifts = [];
-        authBootstrapPromise = null;
-        updateFooter();
-        showAuthGate(AUTH_ENV_STATE, 'guest');
       });
     }
 

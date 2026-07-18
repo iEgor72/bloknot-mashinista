@@ -13,6 +13,7 @@ tmp_*.html
 tmp-*.png
 assets/tracker/icons/
 .claude/
+.codex/
 bot_avatar.png
 .agent-memory.local.json
 .agent-memory.watcher.pid

@@ -1,0 +1,618 @@
+
+    .poekhali-sector-option-text {
+      min-width: 0;
+      display: grid;
+      gap: 3px;
+    }
+    .poekhali-sector-option-text strong {
+      font-size: 12px;
+      line-height: 1.15;
+      font-weight: 850;
+    }
+
+    .poekhali-sector-option-text span {
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+      color: var(--sub);
+      font-size: 9px;
+      line-height: 1.2;
+      font-weight: 750;
+    }
+
+    .poekhali-sector-option-status {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 6px;
+      min-width: 0;
+    }
+
+    .poekhali-sector-badge {
+      flex: 0 0 auto;
+      border-radius: 999px;
+      padding: 4px 7px;
+      font-size: 8px;
+      line-height: 1;
+      font-weight: 850;
+      color: var(--accent-strong);
+      background: rgba(56, 189, 248, 0.12);
+      border: 1px solid rgba(56, 189, 248, 0.22);
+    }
+
+    .poekhali-sector-badge.is-ready {
+      color: var(--green);
+      background: rgba(74, 222, 128, 0.12);
+      border-color: rgba(74, 222, 128, 0.22);
+    }
+
+    .poekhali-sector-badge.is-learned {
+      color: var(--green);
+      background: rgba(74, 222, 128, 0.12);
+      border-color: rgba(74, 222, 128, 0.28);
+    }
+
+    .poekhali-sector-badge.is-route-only {
+      color: var(--danger);
+      background: rgba(244, 63, 94, 0.10);
+      border-color: rgba(244, 63, 94, 0.20);
+    }
+
+    .poekhali-sector-counts {
+      min-width: 0;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+      color: var(--sub);
+      font-size: 8.5px;
+      font-weight: 750;
+    }
+
+    @media (max-width: 420px) {
+      .poekhali-overlay-btn {
+        height: 40px;
+        min-width: 32px;
+        padding: 0 5px;
+        border-radius: 12px;
+        font-size: 10.5px;
+      }
+
+      .poekhali-overlay-btn[data-control-label] {
+        height: 40px;
+        padding: 3px 6px 4px;
+        gap: 2px;
+      }
+
+      .poekhali-overlay-btn[data-control-label]::before {
+        font-size: 6.8px;
+      }
+
+      .poekhali-back-btn {
+        width: 36px;
+        height: 40px;
+      }
+
+      .poekhali-top-tray {
+        top: max(8px, var(--safe-top));
+        right: max(8px, var(--safe-right));
+        gap: 6px;
+      }
+
+      .poekhali-k-btn {
+        display: none;
+      }
+
+      .poekhali-direction-btn {
+        left: calc(max(8px, var(--safe-left)) + 44px);
+        width: 62px;
+        height: 40px;
+      }
+
+      .poekhali-overlay-btn.poekhali-direction-btn.poekhali-direction-bar {
+        top: auto;
+        left: max(12px, var(--safe-left));
+        right: max(12px, var(--safe-right));
+        bottom: max(calc(var(--bottom-nav-height) + var(--bottom-nav-offset) + 18px), calc(132px + var(--safe-bottom)));
+        width: auto;
+        height: 44px;
+        border-radius: 17px;
+      }
+
+      .poekhali-way-btn {
+        left: calc(max(8px, var(--safe-left)) + 112px);
+        width: 48px;
+      }
+
+      .poekhali-top-tray .poekhali-way-btn {
+        min-width: 52px;
+        max-width: 60px;
+        height: 42px;
+        padding: 5px 9px;
+      }
+
+      .poekhali-map-btn {
+        display: none;
+      }
+
+      .poekhali-live-btn {
+        min-width: 108px;
+        max-width: min(168px, 48vw);
+        height: 42px;
+        padding: 5px 9px;
+        gap: 7px;
+      }
+
+      .poekhali-live-dot {
+        width: 20px;
+        font-size: 16px;
+      }
+
+      .poekhali-live-gps-word {
+        font-size: 9.5px;
+      }
+
+      .poekhali-live-gps-meta {
+        font-size: 11px;
+      }
+
+      .poekhali-ops-btn {
+        left: max(12px, var(--safe-left));
+        right: max(12px, var(--safe-right));
+      }
+
+      .poekhali-ops-btn.has-warnings {
+        min-width: 0;
+      }
+
+      .poekhali-ops-grid.is-warning-grid {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+      }
+
+      .poekhali-ops-grid.is-user-section-meta {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+      }
+
+      .poekhali-sector-list {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    @media (max-width: 370px) {
+      .poekhali-overlay-btn {
+        height: 40px;
+        min-width: 32px;
+        padding: 0 5px;
+        border-radius: 12px;
+        font-size: 10.5px;
+      }
+
+      .poekhali-overlay-btn[data-control-label] {
+        height: 40px;
+        padding: 3px 6px 4px;
+        gap: 2px;
+      }
+
+      .poekhali-overlay-btn[data-control-label]::before {
+        font-size: 6.8px;
+      }
+
+      .poekhali-back-btn {
+        left: max(8px, var(--safe-left));
+        width: 36px;
+        height: 40px;
+      }
+
+      .poekhali-top-tray {
+        top: max(8px, var(--safe-top));
+        right: max(8px, var(--safe-right));
+        gap: 5px;
+      }
+
+      .poekhali-k-btn {
+        display: none;
+      }
+
+      .poekhali-direction-btn {
+        left: calc(max(8px, var(--safe-left)) + 42px);
+        width: 56px;
+        height: 40px;
+      }
+
+      .poekhali-overlay-btn.poekhali-direction-btn.poekhali-direction-bar {
+        top: auto;
+        left: max(10px, var(--safe-left));
+        right: max(10px, var(--safe-right));
+        bottom: max(calc(var(--bottom-nav-height) + var(--bottom-nav-offset) + 18px), calc(132px + var(--safe-bottom)));
+        width: auto;
+        height: 44px;
+        border-radius: 16px;
+      }
+
+      .poekhali-way-btn {
+        left: calc(max(8px, var(--safe-left)) + 104px);
+        width: 42px;
+      }
+
+      .poekhali-top-tray .poekhali-way-btn {
+        min-width: 48px;
+        max-width: 54px;
+        height: 40px;
+        padding: 4px 8px;
+        font-size: 11px;
+      }
+
+      .poekhali-map-btn {
+        display: none;
+      }
+
+      .poekhali-live-btn {
+        min-width: 102px;
+        max-width: min(158px, 50vw);
+        height: 40px;
+        padding: 4px 8px;
+        gap: 6px;
+      }
+
+      .poekhali-live-dot {
+        width: 18px;
+        font-size: 15px;
+      }
+
+      .poekhali-live-dot.is-dot-pause {
+        font-size: 10px;
+      }
+
+      .poekhali-live-gps-word {
+        font-size: 8.5px;
+      }
+
+      .poekhali-live-gps-meta {
+        font-size: 11px;
+      }
+
+      .poekhali-ops-btn {
+        left: max(10px, var(--safe-left));
+        right: max(10px, var(--safe-right));
+        min-width: 0;
+      }
+
+      .poekhali-ops-panel {
+        padding: 12px;
+      }
+
+      .poekhali-shift-info-grid,
+      .poekhali-ops-grid.is-user-section-meta,
+      .poekhali-ops-grid.is-warning-grid {
+        grid-template-columns: 1fr;
+      }
+
+      body.is-poekhali-mode .bottom-nav {
+        padding: 8px 6px max(6px, env(safe-area-inset-bottom));
+      }
+
+      body.is-poekhali-mode .nav-item {
+        gap: 3px;
+        padding: 4px 0 2px;
+        border-radius: 12px;
+      }
+
+      body.is-poekhali-mode .nav-item .tab-icon svg {
+        width: 18px;
+        height: 18px;
+      }
+
+      body.is-poekhali-mode .nav-item .tab-label,
+      body.is-poekhali-mode .fab-label {
+        font-size: 9px;
+      }
+
+      body.is-poekhali-mode .nav-item:not(.active) .tab-label {
+        display: none;
+      }
+
+      body.is-poekhali-mode .nav-fab {
+        gap: 3px;
+        padding-bottom: 2px;
+      }
+
+      body.is-poekhali-mode .fab-btn {
+        width: 44px;
+        height: 44px;
+        border-radius: 15px;
+      }
+    }
+
+    /* Accent risk line above label */
+    .dashboard-head {
+      display: grid;
+      gap: 8px;
+      margin-bottom: 16px;
+      padding-bottom: 10px;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+    }
+
+    .dashboard-head::before {
+      content: none;
+      display: none;
+    }
+
+    .dashboard-eyebrow {
+      font-size: 10px;
+      font-weight: 800;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: rgba(238, 242, 248, 0.58);
+    }
+
+    .dashboard-value {
+      display: flex;
+      align-items: flex-end;
+      flex-wrap: wrap;
+      gap: 8px;
+      min-width: 0;
+      font-family: 'JetBrains Mono', monospace;
+      font-size: clamp(40px, 11.5vw, 56px);
+      font-weight: 700;
+      line-height: 1;
+      letter-spacing: -0.03em;
+      color: var(--text);
+      -webkit-text-fill-color: var(--text);
+      font-variant-numeric: tabular-nums;
+    }
+
+    .dashboard-value #statWorked {
+      white-space: nowrap;
+      min-width: 0;
+    }
+
+    .dashboard-total {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: clamp(18px, 5vw, 22px);
+      font-weight: 500;
+      color: var(--sub);
+      vertical-align: baseline;
+    }
+
+    /* Progress bar — 2px thin */
+    .progress-track {
+      margin-top: 2px;
+      background: rgba(255, 255, 255, 0.06);
+      border-radius: var(--r-pill);
+      height: 4px;
+      overflow: visible;
+      position: relative;
+    }
+
+    .progress-fill {
+      height: 100%;
+      width: 0%;
+      border-radius: inherit;
+      background: var(--accent);
+      transition: width 0.3s ease;
+      position: relative;
+    }
+
+    /* Dot at the end of progress bar */
+    .progress-fill::after {
+      content: '';
+      position: absolute;
+      right: -4px;
+      top: 50%;
+      transform: translateY(-50%);
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      background: var(--accent);
+      box-shadow: 0 0 12px var(--accent-glow);
+    }
+
+    .progress-marker {
+      position: absolute;
+      top: 50%;
+      transform: translate(-50%, -50%);
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      border: 2px solid currentColor;
+      background: var(--card-hi);
+      color: var(--sub);
+      pointer-events: none;
+      z-index: 2;
+    }
+
+    .progress-marker::after {
+      content: '';
+      position: absolute;
+      left: 50%;
+      top: -11px;
+      transform: translateX(-50%);
+      width: 1px;
+      height: 9px;
+      background: currentColor;
+      opacity: 0.55;
+    }
+
+    .progress-marker-today { color: var(--accent); }
+    .progress-marker-month { color: var(--holiday); }
+
+    .dashboard-meta-grid {
+      margin-top: 12px;
+      display: grid;
+      grid-template-columns: minmax(0, 1fr);
+      gap: 8px;
+    }
+
+    .dashboard-meta-item {
+      display: grid;
+      gap: 3px;
+      min-width: 0;
+      padding: 11px 12px;
+      border-radius: 16px;
+      border: 1px solid var(--border);
+      background: linear-gradient(180deg, rgba(255, 255, 255, 0.035), rgba(255, 255, 255, 0.015)), var(--card);
+      box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.03), 0 8px 18px rgba(0, 0, 0, 0.10);
+    }
+
+    .dashboard-month-income {
+      margin-top: 0;
+      min-height: auto;
+      display: flex;
+      align-items: baseline;
+      justify-content: space-between;
+      gap: 12px;
+    }
+
+    .dashboard-norms {
+      margin-top: 14px;
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 10px;
+    }
+
+    .dashboard-norm-item {
+      display: grid;
+      gap: 3px;
+      padding: 10px 10px;
+      border-radius: 16px;
+      border: 1px solid var(--border);
+      background: linear-gradient(180deg, rgba(255, 255, 255, 0.03), rgba(255, 255, 255, 0.015)), var(--card);
+      min-width: 0;
+      justify-items: center;
+      text-align: center;
+      box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.03), 0 8px 18px rgba(0, 0, 0, 0.10);
+    }
+
+    .dashboard-norm-item--today {
+      border-color: rgba(56, 189, 248, 0.32);
+      background:
+        linear-gradient(180deg, rgba(56, 189, 248, 0.14), rgba(56, 189, 248, 0.05)),
+        var(--card-hi);
+      box-shadow:
+        inset 0 1px 0 rgba(56, 189, 248, 0.12),
+        0 8px 20px rgba(0, 0, 0, 0.12);
+    }
+
+    .dashboard-norm-item--today .dashboard-norm-label {
+      color: rgba(165, 220, 255, 0.88);
+    }
+
+    .dashboard-norm-item--today .dashboard-norm-value {
+      color: var(--accent-strong);
+    }
+
+    .dashboard-norm-item--month {
+      border-color: rgba(244, 114, 182, 0.34);
+      background:
+        linear-gradient(180deg, rgba(244, 114, 182, 0.12), rgba(244, 114, 182, 0.045)),
+        var(--card-hi);
+      box-shadow:
+        inset 0 1px 0 rgba(244, 114, 182, 0.10),
+        0 8px 20px rgba(0, 0, 0, 0.12);
+    }
+
+    .dashboard-norm-item--month .dashboard-norm-label {
+      color: rgba(251, 191, 216, 0.88);
+    }
+
+    .dashboard-norm-item--month .dashboard-norm-value {
+      color: var(--holiday);
+    }
+
+    .dashboard-norm-label {
+      font-size: 9px;
+      font-weight: 800;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: rgba(238, 242, 248, 0.56);
+      min-width: 0;
+    }
+
+    .dashboard-norm-value {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 14px;
+      line-height: 1.15;
+      font-weight: 700;
+      color: var(--text);
+      white-space: nowrap;
+      min-width: 0;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      font-variant-numeric: tabular-nums;
+    }
+
+    .dashboard-month-income-label {
+      font-size: 13px;
+      color: var(--sub);
+      font-weight: 600;
+      letter-spacing: 0.01em;
+      text-transform: none;
+      line-height: 1.25;
+      min-width: 0;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    .dashboard-month-income-value {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: clamp(20px, 5.3vw, 25px);
+      font-weight: 700;
+      line-height: 1.2;
+      color: var(--green);
+      font-variant-numeric: tabular-nums;
+      letter-spacing: -0.02em;
+      white-space: nowrap;
+      flex-shrink: 0;
+      text-align: right;
+    }
+
+    .dashboard-sub {
+      margin-top: 11px;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      width: 100%;
+      justify-content: center;
+      padding: 0;
+      color: var(--sub);
+      font-size: 12px;
+      font-weight: 700;
+      line-height: 1.3;
+      border: none;
+      background: transparent;
+    }
+
+    .dashboard-sub::before {
+      content: '';
+      width: 7px;
+      height: 7px;
+      border-radius: 50%;
+      background: currentColor;
+      opacity: 0.92;
+      box-shadow: 0 0 0 4px rgba(255, 255, 255, 0.04);
+      flex: 0 0 auto;
+    }
+
+    .dashboard-sub.ok {
+      color: var(--green);
+    }
+
+    .dashboard-sub.overtime {
+      color: var(--warn);
+    }
+
+    .dashboard-sub.remaining {
+      color: var(--holiday);
+    }
+
+    .dashboard-card.state-ok .progress-fill,
+    .dashboard-card.state-ok .progress-fill::after {
+      background: var(--green);
+      box-shadow: 0 0 10px rgba(74, 222, 128, 0.24);
+    }
+
+    .dashboard-card.state-overtime .progress-fill,
+    .dashboard-card.state-overtime .progress-fill::after {
+      background: var(--warn);
+      box-shadow: 0 0 10px rgba(245, 158, 11, 0.24);
+    }

@@ -461,7 +461,10 @@ async function main() {
   setPhase('wait-server');
   await waitForServer();
   setPhase('launch-browser');
-  browser = await withTimeout(chromium.launch({ headless: true }), 15000, 'chromium launch');
+  browser = await withTimeout(chromium.launch({
+    headless: true,
+    executablePath: process.env.PLAYWRIGHT_EXECUTABLE_PATH || undefined
+  }), 15000, 'chromium launch');
   setPhase('offline-reload-check');
   await withTimeout(runOfflineReloadCheck(), 45000, 'offline reload check');
   setPhase('boot-fallback-check');

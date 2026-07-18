@@ -1,0 +1,375 @@
+/* ── Docs bento grid ────────────────────────────────────────────── */
+.docs-entry-card {
+  background:
+    linear-gradient(180deg, color-mix(in oklch, white 4%, transparent), transparent),
+    var(--bg-rise);
+  box-shadow:
+    inset 0 1px 0 color-mix(in oklch, white 10%, transparent),
+    inset 0 0 0 1px var(--hair);
+  border: 0;
+  border-radius: var(--r-card);
+  padding: 14px;
+}
+.docs-nav-title {
+  font: 700 16px/1.1 'Manrope';
+  color: var(--ink);
+}
+.docs-entry-grid {
+  display: grid;
+  grid-template-columns: repeat(6, 1fr);
+  gap: 8px;
+  margin-top: 12px;
+}
+.docs-entry-tile {
+  border-radius: 18px;
+  padding: 14px;
+  background:
+    linear-gradient(180deg, color-mix(in oklch, white 5%, transparent), transparent 40%),
+    var(--bg-rise-2);
+  box-shadow: inset 0 0 0 1px var(--hair);
+  border: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  justify-content: space-between;
+  min-height: 124px;
+  text-align: left;
+  gap: 10px;
+  position: relative;
+  overflow: hidden;
+  cursor: pointer;
+  transition: transform .25s, box-shadow .25s;
+  color: var(--ink);
+}
+.docs-entry-tile:active { transform: scale(.985); }
+.docs-entry-tile[data-docs-entry="instructions"],
+.docs-entry-tile[data-docs-entry="speeds"],
+.docs-entry-tile[data-docs-entry="memos"],
+.docs-entry-tile[data-docs-entry="reminders"] {
+  grid-column: span 3;
+}
+.docs-entry-tile[data-docs-entry="folders"] {
+  grid-column: span 4;
+  min-height: 112px;
+  background:
+    linear-gradient(180deg, color-mix(in oklch, var(--night) 16%, transparent), transparent 52%),
+    var(--bg-rise-2);
+  box-shadow:
+    inset 0 1px 0 color-mix(in oklch, white 12%, transparent),
+    inset 0 0 0 1px color-mix(in oklch, var(--night) 28%, transparent);
+}
+.docs-entry-tile[data-docs-entry="favorites"] {
+  grid-column: span 2;
+  min-height: 112px;
+}
+
+.docs-entry-icon {
+  width: 38px;
+  height: 38px;
+  border-radius: 12px;
+  display: grid;
+  place-items: center;
+  background: var(--accent-soft);
+  color: var(--accent);
+  box-shadow: inset 0 0 0 1px color-mix(in oklch, var(--accent) 28%, transparent);
+  flex-shrink: 0;
+}
+.docs-entry-icon svg { width: 18px; height: 18px; stroke: currentColor; fill: none; stroke-width: 1.6; stroke-linecap: round; stroke-linejoin: round; }
+.docs-entry-icon-speeds  { background: var(--good-soft);    color: var(--good);    box-shadow: inset 0 0 0 1px color-mix(in oklch, var(--good) 28%, transparent); }
+.docs-entry-icon-memos   { background: var(--warn-soft);    color: var(--warn);    box-shadow: inset 0 0 0 1px color-mix(in oklch, var(--warn) 28%, transparent); }
+.docs-entry-icon-reminders { background: var(--holiday-soft); color: var(--holiday); box-shadow: inset 0 0 0 1px color-mix(in oklch, var(--holiday) 28%, transparent); }
+.docs-entry-icon-folders   { background: var(--night-soft);   color: var(--night);   box-shadow: inset 0 0 0 1px color-mix(in oklch, var(--night) 28%, transparent); }
+.docs-entry-icon-favorites { background: var(--warn-soft);    color: var(--warn);    box-shadow: inset 0 0 0 1px color-mix(in oklch, var(--warn) 28%, transparent); }
+
+/* Docs file row — star toggle + favorite state */
+.docs-item {
+  position: relative;
+}
+.docs-fav-toggle {
+  flex-shrink: 0;
+  width: 34px;
+  height: 34px;
+  display: grid;
+  place-items: center;
+  background: var(--glass);
+  border: 1px solid var(--hair);
+  border-radius: 11px;
+  color: var(--ink-3);
+  cursor: pointer;
+  padding: 0;
+  transition: color .18s ease, background .18s ease, border-color .18s ease;
+}
+.docs-fav-toggle svg { width: 16px; height: 16px; }
+.docs-fav-toggle:hover {
+  color: var(--warn);
+  border-color: color-mix(in oklch, var(--warn) 28%, transparent);
+}
+.docs-fav-toggle.is-on {
+  color: var(--warn);
+  background: var(--warn-soft);
+  border-color: color-mix(in oklch, var(--warn) 32%, transparent);
+  box-shadow: 0 0 12px color-mix(in oklch, var(--warn) 28%, transparent);
+}
+.docs-fav-toggle.is-on svg { fill: currentColor; }
+.docs-item.is-favorite {
+  box-shadow: inset 0 0 0 1px color-mix(in oklch, var(--warn) 22%, transparent),
+              0 0 0 0 transparent !important;
+}
+
+/* "Недавно открытые" виден только в режиме бенто (не в подразделах/избранном) */
+.docs-shell:has(.docs-nav-card:not(.hidden)) .doc-recent,
+.docs-shell:has(#docsFavoritesPanel:not(.hidden)) .doc-recent {
+  display: none;
+}
+
+/* Docs file card — allow meta to wrap (or ellipsis) instead of being clipped */
+.docs-item {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+.docs-item-body {
+  flex: 1 1 auto;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+}
+.docs-item-title {
+  /* Document names are long — wrap fully instead of clipping them.
+     Reset the 2-line clamp inherited from the base docs rule. */
+  white-space: normal;
+  display: block;
+  -webkit-line-clamp: none;
+  -webkit-box-orient: horizontal;
+  max-height: none;
+  overflow: visible;
+  text-overflow: clip;
+  overflow-wrap: anywhere;
+  margin-bottom: 0;
+  font: 700 14px/1.3 'Manrope';
+}
+.docs-item-subtitle {
+  white-space: normal;
+  overflow-wrap: anywhere;
+  margin-bottom: 0;
+  font: 500 12px/1.35 'Manrope';
+  color: var(--ink-3);
+}
+/* File-type + download-state badges, sitting under the name. */
+.docs-item-badges {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  flex-wrap: wrap;
+}
+/* "обновлено … · размер" — muted footer at the very bottom of the card. */
+.docs-item-footer {
+  font: 600 10.5px/1.3 'Manrope';
+  letter-spacing: 0.02em;
+  color: var(--ink-4);
+  font-variant-numeric: tabular-nums;
+}
+/* Download status rides in the bottom-right corner of the file icon, lifted off
+   it with a ring in the card colour (like a file-manager status badge). */
+.docs-item-icon { position: relative; overflow: visible; }
+.docs-item-icon .docs-download-icon {
+  position: absolute;
+  right: -5px;
+  bottom: -5px;
+  width: 18px;
+  height: 18px;
+  border-radius: 999px;
+  box-shadow: 0 0 0 2px var(--card);
+}
+.docs-item-icon .docs-download-icon svg {
+  width: 11px;
+  height: 11px;
+}
+.docs-item-meta {
+  white-space: normal !important;
+  overflow: visible !important;
+  text-overflow: clip !important;
+  word-wrap: break-word;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 4px 8px;
+}
+/* The "open" chevron is redundant (the whole row is a button) and its orange
+   "online-only" tint read as broken — drop it; download state stays on the
+   cloud icon in the meta row. The star sits inline at the right. */
+.docs-item-action {
+  display: none !important;
+}
+
+.doc-favorites-overlay {
+  margin-top: 10px;
+}
+.doc-favorites-overlay.hidden { display: none; }
+.docs-fav-empty {
+  padding: 22px 14px;
+  text-align: center;
+  font: 500 13px/1.4 'Manrope';
+  color: var(--ink-3);
+  background:
+    linear-gradient(180deg, color-mix(in oklch, white 3%, transparent), transparent),
+    var(--bg-rise);
+  box-shadow: inset 0 0 0 1px var(--hair);
+  border-radius: 14px;
+}
+
+.docs-entry-content {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  flex: 1;
+  min-width: 0;
+}
+.docs-entry-eyebrow {
+  font: 600 9px/1 'Manrope';
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--ink-3);
+}
+.docs-entry-name {
+  font: 700 14px/1.15 'Manrope';
+  letter-spacing: -0.005em;
+  color: var(--ink);
+}
+.docs-entry-note {
+  font: 500 11px/1.3 'Manrope';
+  color: var(--ink-3);
+}
+.docs-entry-arrow {
+  color: var(--ink-3);
+  font-size: 18px;
+  align-self: center;
+  flex-shrink: 0;
+  display: none;
+}
+.docs-entry-count {
+  position: absolute;
+  top: 10px;
+  right: 12px;
+  font: 700 11px/1 'JetBrains Mono';
+  color: var(--ink-2);
+  padding: 4px 8px;
+  border-radius: 999px;
+  background: color-mix(in oklch, white 6%, transparent);
+  box-shadow: inset 0 0 0 1px var(--hair);
+  font-variant-numeric: tabular-nums;
+}
+
+.doc-recent {
+  margin-top: 14px;
+  padding: 14px;
+  border-radius: var(--r-card);
+  background: var(--bg-rise);
+  box-shadow: inset 0 0 0 1px var(--hair);
+}
+.doc-recent .section-header {
+  margin: 0 0 8px;
+}
+.doc-recent-empty {
+  font: 500 11px/1 'Manrope';
+  color: var(--ink-4);
+}
+.doc-recent-row {
+  display: grid;
+  grid-template-columns: 32px 1fr auto;
+  gap: 12px;
+  align-items: center;
+  padding: 10px 0;
+  border-bottom: 1px solid color-mix(in oklch, white 5%, transparent);
+}
+.doc-recent-row:last-child { border-bottom: 0; }
+.doc-recent-ico {
+  width: 32px;
+  height: 32px;
+  border-radius: 10px;
+  background: var(--accent-soft);
+  color: var(--accent);
+  box-shadow: inset 0 0 0 1px color-mix(in oklch, var(--accent) 25%, transparent);
+  display: grid;
+  place-items: center;
+}
+.doc-recent-ico svg { width: 16px; height: 16px; }
+.doc-recent-name {
+  font: 600 13px/1.2 'Manrope';
+  color: var(--ink);
+}
+.doc-recent-meta {
+  font: 500 11px/1 'JetBrains Mono';
+  color: var(--ink-3);
+  margin-top: 4px;
+}
+.doc-recent-meta-pill {
+  padding: 4px 8px;
+  border-radius: 999px;
+  font: 700 10px/1 'JetBrains Mono';
+  background: var(--glass);
+  color: var(--ink-2);
+  box-shadow: inset 0 0 0 1px var(--hair);
+}
+
+/* Docs subnav card */
+.docs-nav-card {
+  background:
+    linear-gradient(180deg, color-mix(in oklch, white 4%, transparent), transparent),
+    var(--bg-rise);
+  box-shadow: inset 0 0 0 1px var(--hair);
+  border: 0;
+  border-radius: var(--r-card);
+  padding: 12px 14px;
+}
+.docs-back-btn {
+  background: var(--glass);
+  border: 1px solid var(--hair);
+  color: var(--ink-2);
+  border-radius: 12px;
+  padding: 6px 10px;
+  font: 600 11px/1 'Manrope';
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+}
+.docs-back-btn-leading {
+  width: 36px;
+  height: 36px;
+  padding: 0;
+  display: grid;
+  place-items: center;
+  flex-shrink: 0;
+}
+.docs-back-btn-leading svg { width: 16px; height: 16px; }
+.docs-nav-copy-with-back {
+  display: flex !important;
+  flex-direction: row !important;
+  align-items: center !important;
+  justify-content: flex-start !important;
+  gap: 12px !important;
+}
+.docs-nav-copy-with-back .docs-nav-heading-group {
+  flex: 1 1 auto;
+  min-width: 0;
+  text-align: left;
+  display: block;
+}
+.docs-nav-copy-with-back .docs-nav-title {
+  text-align: left;
+}
+.docs-tab-btn {
+  background: var(--glass);
+  border: 1px solid var(--hair);
+  color: var(--ink-2);
+  border-radius: 999px;
+  padding: 8px 14px;
+  font: 600 12px/1 'Manrope';
+}
+.docs-tab-btn.active {
+  background: linear-gradient(180deg, var(--accent), var(--accent-2));
+  color: var(--accent-ink);
+  border-color: color-mix(in oklch, var(--accent) 50%, transparent);
+  box-shadow: 0 6px 14px -6px var(--accent-glow), inset 0 1px 0 color-mix(in oklch, white 40%, transparent);
+}

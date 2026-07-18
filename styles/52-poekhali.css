@@ -1,0 +1,598 @@
+/* ── Poekhali mock screen (design layout) ─────────────────────── */
+.trk-mock { padding-bottom: 24px; }
+.trk-chips {
+  display: flex; gap: 6px; overflow-x: auto; padding: 4px 0; margin-bottom: 10px;
+  scrollbar-width: none;
+}
+.trk-chips::-webkit-scrollbar { display: none; }
+.trk-chip {
+  flex: 0 0 auto;
+  padding: 6px 10px;
+  border-radius: 12px;
+  background: var(--glass);
+  box-shadow: inset 0 0 0 1px var(--hair);
+  display: flex; flex-direction: column; align-items: center; gap: 2px;
+}
+.trk-chip .label {
+  font: 600 8px/1 'Manrope'; letter-spacing: 0.12em;
+  color: var(--ink-3); text-transform: uppercase;
+}
+.trk-chip .v {
+  font: 700 12px/1 'JetBrains Mono'; font-variant-numeric: tabular-nums; color: var(--ink);
+}
+.trk-chip.is-on .v { color: var(--accent); }
+
+.speedo {
+  margin-top: 10px; padding: 14px 16px;
+  border-radius: var(--r-card);
+  background:
+    radial-gradient(420px 180px at 30% 0%, color-mix(in oklch, var(--accent) 16%, transparent), transparent 60%),
+    var(--bg-rise);
+  box-shadow:
+    inset 0 1px 0 color-mix(in oklch, white 12%, transparent),
+    inset 0 0 0 1px var(--hair-strong);
+  display: grid; grid-template-columns: 1fr auto; gap: 14px; align-items: end;
+}
+/* Round speedometer (КЛУБ-style) */
+.speedo-round {
+  display: flex; flex-direction: column; align-items: center; gap: 4px;
+  padding: 10px 14px 12px;
+  /* Centre the glow behind the gauge so the light carries through the whole
+     card — keeps the gauge and the surrounding metrics reading as one
+     continuous instrument panel. */
+  background:
+    radial-gradient(320px 260px at 50% 42%, color-mix(in oklch, var(--accent) 15%, transparent), transparent 70%),
+    var(--bg-rise);
+}
+/* Middle row: metrics flank the gauge left and right. The side columns stretch
+   to the gauge height and distribute their two metrics top-and-bottom, so the
+   space beside the gauge reads as a full instrument frame, not empty air. */
+.speedo-mid {
+  width: 100%;
+  display: flex; align-items: stretch; justify-content: center; gap: 8px;
+}
+.speedo-col {
+  display: flex; flex-direction: column; justify-content: space-evenly;
+  flex: 1 1 0; min-width: 0;
+}
+.speedo-col-l { align-items: flex-end; text-align: right; }
+.speedo-col-r { align-items: flex-start; text-align: left; }
+.gauge { position: relative; width: 142px; height: 142px; flex: 0 0 auto; }
+.gauge-svg { width: 100%; height: 100%; display: block; overflow: visible; }
+.gauge-track { stroke: var(--hair-strong); stroke-width: 9; stroke-linecap: round; }
+.gauge-progress {
+  stroke: var(--accent); stroke-width: 9; stroke-linecap: round;
+  filter: drop-shadow(0 0 6px color-mix(in oklch, var(--accent) 50%, transparent));
+  transition: none;
+}
+.speedo.is-over .gauge-progress {
+  stroke: var(--bad);
+  filter: drop-shadow(0 0 6px color-mix(in oklch, var(--bad) 55%, transparent));
+}
+.gauge-allow-mark { stroke: var(--bad); stroke-width: 3.5; stroke-linecap: round; }
+.gauge-ticks line { stroke: var(--ink-3); stroke-width: 1.4; opacity: 0.5; }
+.gauge-ticks text {
+  fill: var(--ink-3); font: 700 9px 'JetBrains Mono'; text-anchor: middle; dominant-baseline: middle;
+}
+.gauge-center {
+  position: absolute; inset: 0;
+  display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 0;
+}
+.gauge-fact {
+  font: 700 42px/0.9 'JetBrains Mono'; letter-spacing: -0.03em;
+  font-variant-numeric: tabular-nums; color: var(--accent);
+  text-shadow: 0 0 18px color-mix(in oklch, var(--accent) 40%, transparent);
+}
+.speedo.is-over .gauge-fact {
+  color: var(--bad); text-shadow: 0 0 18px color-mix(in oklch, var(--bad) 40%, transparent);
+}
+.gauge-unit {
+  font: 700 10px/1 'Manrope'; letter-spacing: 0.14em; text-transform: uppercase;
+  color: var(--ink-3); margin-top: 2px;
+}
+.gauge-allow {
+  font: 700 22px/1 'JetBrains Mono'; font-variant-numeric: tabular-nums;
+  color: var(--bad); margin-top: 6px;
+  text-shadow: 0 0 12px color-mix(in oklch, var(--bad) 35%, transparent);
+}
+/* Metrics arranged seamlessly around the gauge — no tiles, no divider.
+   Clock sits centred on top, four metrics flank the gauge, timer below. */
+.speedo-stat { display: flex; flex-direction: column; gap: 3px; min-width: 0; }
+.speedo-stat.is-clock, .speedo-stat.is-coord { align-items: center; text-align: center; }
+.speedo-stat .l {
+  font: 600 8px/1.15 'Manrope'; letter-spacing: 0.12em; text-transform: uppercase; color: var(--ink-3);
+}
+.speedo-stat .v {
+  font: 700 14px/1.05 'JetBrains Mono'; font-variant-numeric: tabular-nums; color: var(--ink);
+  overflow-wrap: anywhere;
+}
+/* Clock is the headline of the cluster — give it a touch more presence. */
+.speedo-stat.is-clock .v { font-size: 18px; }
+.speedo-stat.is-grade .v { color: var(--good); }
+.speedo-stat.is-reach .v { color: var(--warn); }
+.speedo-stat.is-tech .v { color: var(--accent); }
+
+/* Уклон · Далее metric row (Лимит moved into the speed block) */
+.trk-metrics {
+  margin-top: 8px;
+  display: grid; grid-template-columns: 1fr 1fr; gap: 8px;
+}
+.trk-metric {
+  padding: 10px 12px; border-radius: 14px;
+  background:
+    linear-gradient(180deg, color-mix(in oklch, white 4%, transparent), transparent),
+    var(--bg-rise);
+  box-shadow: inset 0 0 0 1px var(--hair);
+}
+.trk-metric-l {
+  font: 600 8.5px/1 'Manrope'; letter-spacing: 0.14em;
+  color: var(--ink-3); text-transform: uppercase;
+}
+.trk-metric-v {
+  font: 700 17px/1 'JetBrains Mono'; margin-top: 6px;
+  font-variant-numeric: tabular-nums; color: var(--ink);
+}
+.trk-metric.is-limit .trk-metric-v { color: var(--bad); }
+.trk-metric.is-grade .trk-metric-v { color: var(--good); }
+.trk-metric.is-reach .trk-metric-v { color: var(--warn); }
+
+/* Add speed/limit entry button (floating on the profile) */
+.trk-edit-actions {
+  position: absolute;
+  right: 14px;
+  bottom: 14px;
+  z-index: 4;
+  margin: 0;
+  display: block;
+}
+.trk-edit-btn {
+  appearance: none; cursor: pointer;
+  position: relative;
+  display: inline-flex; align-items: center; justify-content: center; gap: 7px;
+  width: 44px; height: 44px; min-height: 0; padding: 0; border-radius: 16px;
+  font: 800 0/1 'Manrope'; letter-spacing: 0; color: transparent;
+  background:
+    linear-gradient(180deg, color-mix(in oklch, var(--accent) 14%, transparent), transparent),
+    color-mix(in oklch, var(--bg-rise) 88%, transparent);
+  border: 1px solid color-mix(in oklch, var(--accent) 32%, transparent);
+  backdrop-filter: blur(12px) saturate(130%);
+  -webkit-backdrop-filter: blur(12px) saturate(130%);
+  box-shadow: inset 0 1px 0 color-mix(in oklch, white 10%, transparent);
+}
+.trk-edit-btn::before,
+.trk-edit-btn::after {
+  content: '';
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  width: 15px;
+  height: 2px;
+  border-radius: 999px;
+  background: var(--accent);
+  box-shadow:
+    0 0 10px color-mix(in oklch, var(--accent) 48%, transparent),
+    0 1px 0 color-mix(in oklch, black 22%, transparent);
+  transform: translate(-50%, -50%);
+}
+.trk-edit-btn::after {
+  transform: translate(-50%, -50%) rotate(90deg);
+}
+.trk-edit-btn:active { transform: translateY(1px); }
+.trk-edit-plus {
+  position: absolute;
+  width: 0;
+  height: 0;
+  overflow: hidden;
+  font-size: 0;
+}
+.profile {
+  margin-top: 10px; padding: 12px;
+  border-radius: var(--r-card);
+  background:
+    linear-gradient(180deg, color-mix(in oklch, white 3%, transparent), transparent 40%),
+    var(--bg-rise);
+  box-shadow: inset 0 0 0 1px var(--hair);
+  position: relative; overflow: hidden;
+}
+.profile-head {
+  display: flex; align-items: center; justify-content: space-between; margin-bottom: 6px;
+}
+.profile-head .t {
+  font: 700 11px/1 'Manrope'; letter-spacing: 0.1em;
+  text-transform: uppercase; color: var(--ink-3);
+}
+.profile-head .r { font: 600 11px/1 'Manrope'; color: var(--ink-2); }
+.profile svg { width: 100%; height: 220px; display: block; }
+
+#trkTrainMarker {
+  animation: trkTrainMove 40s linear infinite;
+}
+@keyframes trkTrainMove {
+  0%   { transform: translate(60px, 118px); }
+  100% { transform: translate(340px, 118px); }
+}
+@media (prefers-reduced-motion: reduce) {
+  #trkTrainMarker { animation: none; transform: translate(200px, 118px); }
+}
+
+.trk-bottom {
+  display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-top: 10px;
+}
+.timer-tile, .mode-tile {
+  padding: 12px 14px; border-radius: var(--r-card);
+  background:
+    linear-gradient(180deg, color-mix(in oklch, white 4%, transparent), transparent),
+    var(--bg-rise);
+  box-shadow: inset 0 0 0 1px var(--hair);
+  display: flex; align-items: center; gap: 12px;
+}
+.timer-dot {
+  width: 8px; height: 8px; border-radius: 999px;
+  background: var(--good); box-shadow: 0 0 10px var(--good);
+  animation: trkPulse 2s infinite ease-in-out; flex-shrink: 0;
+}
+@keyframes trkPulse {
+  0%,100% { opacity: 1; transform: scale(1); }
+  50%     { opacity: .55; transform: scale(.86); }
+}
+.timer-info { display: flex; flex-direction: column; gap: 2px; flex: 1; min-width: 0; }
+.timer-info .l {
+  font: 600 9px/1 'Manrope'; letter-spacing: 0.14em;
+  color: var(--ink-3); text-transform: uppercase;
+}
+.timer-info .v {
+  font: 700 18px/1 'JetBrains Mono'; font-variant-numeric: tabular-nums;
+}
+.mode-info .v { color: var(--accent); }
+/* Tech-speed tile icon (gauge) — a rounded accent square, matching the design. */
+.trk-bottom .brk-ico {
+  width: 34px; height: 34px; border-radius: 11px;
+  display: flex; align-items: center; justify-content: center; flex-shrink: 0;
+  background: color-mix(in oklch, var(--accent) 14%, transparent);
+  box-shadow: inset 0 0 0 1px color-mix(in oklch, var(--accent) 24%, transparent);
+  color: var(--accent);
+}
+.trk-bottom .brk-ico svg { width: 18px; height: 18px; display: block; }
+
+.trk-start-btn {
+  margin-top: 14px; width: 100%; height: 48px; border-radius: 16px;
+}
+
+.poekhali-mode-shell[hidden] { display: none !important; }
+
+/* ── Поехали Design layout ────────────────────────────────────── */
+.tab-panel[data-tab="poekhali"] {
+  display: none;
+  flex-direction: column;
+  min-height: 0;
+}
+.tab-panel[data-tab="poekhali"].active {
+  display: flex;
+}
+.trk-design {
+  display: flex;
+  flex-direction: column;
+  gap: clamp(6px, 1.1vh, 10px);
+  min-height: 0;
+  overflow: visible;
+  position: relative;
+}
+/* The HTML HUD layout renders speed/clock/limit/grade/distance/timer/tech-speed
+   as cards around the canvas, so these panels are visible (the canvas only
+   holds the path profile + speed scale + train). */
+.trk-profile-card {
+  flex: 0 0 clamp(260px, 42vh, 360px);
+  min-height: clamp(260px, 42vh, 360px);
+  margin: 0;
+  padding: 0;
+  border-radius: var(--r-card);
+  background:
+    linear-gradient(180deg, color-mix(in oklch, white 3%, transparent), transparent 40%),
+    var(--bg-rise);
+  box-shadow: inset 0 0 0 1px var(--hair);
+  position: relative;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+}
+.trk-profile-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 8px;
+}
+.trk-profile-title {
+  font: 700 11px/1 'Manrope';
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--ink-3);
+}
+.trk-profile-sub {
+  font: 600 11px/1 'Manrope';
+  color: var(--ink-2);
+}
+.trk-profile-canvas-wrap {
+  position: relative;
+  width: 100%;
+  flex: 1 1 auto;
+  min-height: clamp(260px, 42vh, 360px);
+  border-radius: var(--r-card);
+  overflow: hidden;
+}
+.trk-profile-canvas {
+  width: 100% !important;
+  height: 100% !important;
+  display: block;
+  position: relative !important;
+  inset: auto !important;
+}
+
+/* Hide the legacy overlay shell — keep its buttons in DOM so tracker.js can attach handlers, but make them invisible. */
+.poekhali-mode-shell-hidden {
+  position: absolute !important;
+  width: 1px !important;
+  height: 1px !important;
+  opacity: 0 !important;
+  pointer-events: none !important;
+  overflow: hidden !important;
+  left: -9999px !important;
+  top: -9999px !important;
+}
+
+/* ── Поехали overlay buttons (canvas mode) — design chip look ─── */
+.poekhali-overlay-btn {
+  background: color-mix(in oklch, var(--bg-deeper) 76%, transparent);
+  border: 1px solid var(--hair);
+  color: var(--ink);
+  backdrop-filter: blur(22px) saturate(140%);
+  -webkit-backdrop-filter: blur(22px) saturate(140%);
+  border-radius: 14px;
+  box-shadow:
+    inset 0 1px 0 color-mix(in oklch, white 12%, transparent),
+    0 6px 16px -8px rgba(0,0,0,0.45);
+  font: 700 13px/1 'JetBrains Mono', monospace;
+  font-variant-numeric: tabular-nums;
+  letter-spacing: 0.04em;
+  padding: 8px 12px;
+  min-height: 38px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+}
+/* Двухстрочный chip: маленький Label сверху + значение снизу */
+.poekhali-overlay-btn[data-control-label]:not(.poekhali-back-btn) {
+  display: inline-flex;
+  flex-direction: column;
+  gap: 2px;
+  padding: 6px 12px;
+  min-width: 56px;
+}
+.poekhali-overlay-btn[data-control-label]:not(.poekhali-back-btn)::before {
+  content: attr(data-control-label);
+  display: block;
+  font: 600 8px/1 'Manrope', sans-serif;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--ink-3);
+}
+.poekhali-overlay-btn.is-on[data-control-label]::before,
+.poekhali-overlay-btn[aria-pressed="true"][data-control-label]::before {
+  color: color-mix(in oklch, var(--accent-ink) 70%, transparent);
+}
+.poekhali-overlay-btn.poekhali-back-btn {
+  width: 40px;
+  height: 40px;
+  padding: 0;
+}
+.poekhali-overlay-btn.poekhali-back-btn svg {
+  width: 18px;
+  height: 18px;
+  stroke: var(--ink);
+  fill: none;
+  stroke-width: 2;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+.poekhali-overlay-btn.is-on,
+.poekhali-overlay-btn[aria-pressed="true"] {
+  background: linear-gradient(180deg, var(--accent), var(--accent-2));
+  color: var(--accent-ink);
+  border-color: color-mix(in oklch, var(--accent) 50%, transparent);
+  box-shadow:
+    0 6px 16px -8px var(--accent-glow),
+    inset 0 1px 0 color-mix(in oklch, white 40%, transparent);
+}
+.poekhali-live-btn .poekhali-live-dot { color: var(--bad); }
+.poekhali-live-btn.is-on .poekhali-live-dot { color: var(--good); }
+
+/* GPS chip — two-row layout (GPS / value) with leading status dot. */
+.poekhali-overlay-btn.poekhali-live-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 6px 12px;
+  min-width: 76px;
+}
+.poekhali-live-btn .poekhali-live-dot {
+  font-size: 10px;
+  line-height: 1;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+}
+.poekhali-live-btn .poekhali-live-gps {
+  display: inline-flex;
+  align-items: center;
+}
+.poekhali-live-btn .poekhali-live-gps-stack {
+  display: inline-flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 2px;
+}
+.poekhali-live-btn .poekhali-live-gps-word {
+  font: 600 8px/1 'Manrope', sans-serif !important;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--ink-3);
+}
+.poekhali-live-btn .poekhali-live-gps-meta {
+  font: 700 13px/1 'JetBrains Mono', monospace !important;
+  font-variant-numeric: tabular-nums;
+  color: var(--ink);
+  letter-spacing: 0.04em;
+}
+.poekhali-live-btn.is-on .poekhali-live-gps-meta { color: var(--good); }
+
+/* Direction button (АВТО / ЧЕТ / НЕЧЕТ) — sit at bottom centre, design chip */
+.poekhali-direction-bar {
+  border-radius: 16px;
+}
+.poekhali-direction-bar.is-on,
+.poekhali-direction-bar[aria-pressed="true"] {
+  background: linear-gradient(180deg, var(--accent), var(--accent-2));
+  color: var(--accent-ink);
+}
+
+/* Top tray chips spacing */
+.poekhali-top-tray {
+  gap: 8px;
+}
+
+.poekhali-direction-btn,
+.poekhali-direction-bar {
+  font: 700 12px/1 'JetBrains Mono';
+  letter-spacing: 0.05em;
+}
+
+/* Poekhali train plate — absolute overlay above the canvas */
+.poekhali-train-plate {
+  position: absolute;
+  top: calc(env(safe-area-inset-top, 0px) + 66px);
+  left: 12px;
+  right: 12px;
+  z-index: 6;
+}
+.poekhali-train-plate[hidden] { display: none; }
+
+/* Train info plate — injected; can also be styled on existing markup */
+.train-plate {
+  margin: 0;
+  padding: clamp(8px, 1.4vh, 12px) 14px;
+  border-radius: var(--r-card);
+  /* Matte finish — no glossy top sheen, so it reads as part of the same
+     instrument panel set as the speedometer/profile below. */
+  background:
+    linear-gradient(180deg, color-mix(in oklch, white 3%, transparent), transparent),
+    var(--bg-rise);
+  box-shadow: inset 0 0 0 1px var(--hair);
+  display: grid;
+  grid-template-columns: 1fr auto;
+  gap: 10px;
+  align-items: center;
+}
+.train-plate-loco {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  color: var(--accent);
+  min-width: 0;
+}
+.train-plate-loco > svg {
+  width: 18px !important;
+  height: 18px !important;
+  flex-shrink: 0;
+}
+.train-plate-loco-num {
+  font: 700 13px/1.1 'JetBrains Mono';
+  color: var(--ink);
+  font-variant-numeric: tabular-nums;
+}
+.train-plate-loco-sub {
+  font: 500 10px/1 'Manrope';
+  color: var(--ink-3);
+  margin-top: 3px;
+  letter-spacing: 0.04em;
+}
+.train-plate-stats {
+  display: grid;
+  grid-template-columns: repeat(4, auto);
+  gap: 4px 12px;
+  padding-left: 12px;
+  border-left: 1px solid var(--hair);
+}
+.train-plate-stats > div { display: flex; flex-direction: column; gap: 3px; }
+.train-plate-stats .l {
+  font: 600 8.5px/1 'Manrope';
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--ink-3);
+}
+.train-plate-stats .v {
+  font: 700 13px/1 'JetBrains Mono';
+  font-variant-numeric: tabular-nums;
+  color: var(--ink);
+}
+.train-plate-stats .v .u {
+  font: 500 9px/1 'Manrope';
+  color: var(--ink-3);
+  margin-left: 2px;
+}
+
+body.is-poekhali-mode .speedo-round {
+  margin-top: 0;
+  padding: clamp(6px, 1vh, 9px) 12px clamp(7px, 1.15vh, 10px);
+  gap: clamp(1px, 0.35vh, 3px);
+}
+
+body.is-poekhali-mode .speedo-mid {
+  gap: clamp(4px, 0.8vh, 7px);
+}
+
+body.is-poekhali-mode .gauge {
+  width: clamp(104px, 15vh, 128px);
+  height: clamp(104px, 15vh, 128px);
+}
+
+body.is-poekhali-mode .gauge-fact {
+  font-size: clamp(31px, 4.45vh, 38px);
+}
+
+body.is-poekhali-mode .gauge-allow {
+  font-size: clamp(16px, 2.35vh, 20px);
+  margin-top: clamp(2px, 0.6vh, 5px);
+}
+
+body.is-poekhali-mode .speedo-stat .v {
+  font-size: clamp(11px, 1.6vh, 13px);
+}
+
+body.is-poekhali-mode .speedo-stat.is-clock .v {
+  font-size: clamp(14px, 2vh, 16px);
+}
+
+body.is-poekhali-mode .trk-edit-actions {
+  margin: 0;
+}
+
+body.is-poekhali-mode .trk-edit-btn {
+  width: clamp(40px, 6vh, 44px);
+  height: clamp(40px, 6vh, 44px);
+  min-height: 0;
+}
+
+@media (max-height: 700px) and (max-width: 380px) {
+  body.is-poekhali-mode .trk-profile-card,
+  body.is-poekhali-mode .trk-profile-canvas-wrap {
+    flex-basis: clamp(230px, 34vh, 300px);
+    min-height: clamp(230px, 34vh, 300px);
+  }
+}
+
+@media (max-width: 380px) and (min-height: 701px) {
+  body.is-poekhali-mode .trk-profile-card,
+  body.is-poekhali-mode .trk-profile-canvas-wrap {
+    flex-basis: clamp(250px, 38vh, 340px);
+    min-height: clamp(250px, 38vh, 340px);
+  }
+}

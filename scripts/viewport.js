@@ -7,14 +7,12 @@
     var footerEl = document.getElementById('timezoneFooter');
     var APP_CONTENT = document.querySelector('.app-content');
     var BOTTOM_NAV = document.querySelector('.bottom-nav');
-    var BOTTOM_NAV_INNER = document.querySelector('.bottom-nav-inner');
     var SHIFT_DETAIL_OVERLAY = document.getElementById('shiftDetailOverlay');
     var SHIFT_DETAIL_SURFACE = document.getElementById('shiftDetailSurface');
     var SHIFT_DETAIL_HERO_SLOT = document.getElementById('shiftDetailHeroSlot');
     var SHIFT_DETAIL_CONTENT = document.getElementById('shiftDetailContent');
     var SHIFT_DETAIL_TITLE = document.getElementById('shiftDetailTitle');
     var SHIFT_DETAIL_CLOSE_BUTTON = document.getElementById('btnCloseShiftDetail');
-    var ADD_TAB_PANEL = document.querySelector('.tab-panel[data-tab="add"]');
     var keyboardFocusField = null;
     var keyboardStateOpen = false;
     var keyboardSyncTimer = null;

@@ -2,8 +2,8 @@ const http = require('http');
 const https = require('https');
 const fs = require('fs');
 const path = require('path');
-const url = require('url');
 const crypto = require('crypto');
+const { createSqliteStorage } = require('./server/sqlite-storage');
 
 const ROOT = __dirname;
 
@@ -32,13 +32,11 @@ function loadDotEnvFile() {
 loadDotEnvFile();
 
 const PORT = process.env.PORT || 3000;
-const DATA_DIR = path.join(ROOT, 'data');
+const DATA_DIR = path.resolve(process.env.APP_DATA_DIR || path.join(ROOT, 'data'));
 const USERS_DIR = path.join(DATA_DIR, 'local-shifts');
 const SALARY_PARAMS_DIR = path.join(DATA_DIR, 'local-salary-params');
 const PROFILE_DIR = path.join(DATA_DIR, 'local-profiles');
-const POEKHALI_LEARNING_DIR = path.join(DATA_DIR, 'poekhali-learning');
 const POEKHALI_WARNINGS_DIR = path.join(DATA_DIR, 'poekhali-warnings');
-const POEKHALI_RUNS_DIR = path.join(DATA_DIR, 'poekhali-runs');
 const USER_STATS_FILE = path.join(DATA_DIR, 'user-presence.json');
 const LOGIN_REQUESTS_FILE = path.join(DATA_DIR, 'auth-login-requests.json');
 const FEEDBACK_FILE = path.join(DATA_DIR, 'feedback.json');
@@ -122,6 +120,9 @@ const PUBLIC_TOP_LEVEL_FILES = new Set([
   'sw-bootstrap-v378.js',
   'sw-bootstrap-v379.js',
   'sw-bootstrap-v380.js',
+  'sw-bootstrap-v381.js',
+  'sw-bootstrap-v382.js',
+  'sw-bootstrap-v383.js',
   'apple-touch-icon.png',
   'icon-192.png',
   'icon-512.png',
@@ -141,26 +142,9 @@ const MAX_SHIFT_ID_LENGTH = 128;
 const MAX_SHIFT_TEXT_LENGTH = 512;
 const MAX_SHIFT_NOTES_LENGTH = 4000;
 const MAX_SHIFT_ISO_LENGTH = 40;
-const MAX_POEKHALI_LEARNING_MAPS = 64;
-const MAX_POEKHALI_LEARNING_SECTORS_PER_MAP = 512;
-const MAX_POEKHALI_LEARNING_SAMPLES_PER_SECTOR = 450;
-const MAX_POEKHALI_LEARNING_RAW_TRACKS_PER_MAP = 160;
-const MAX_POEKHALI_LEARNING_RAW_SAMPLES_PER_TRACK = 1800;
-const MAX_POEKHALI_LEARNING_USER_SECTIONS_PER_MAP = 240;
-const MAX_POEKHALI_LEARNING_USER_POINTS_PER_SECTION = 1800;
-const MAX_POEKHALI_LEARNING_USER_PROFILE_SEGMENTS_PER_SECTION = 1800;
-const MAX_POEKHALI_LEARNING_USER_OBJECTS_PER_SECTION = 420;
-const MAX_POEKHALI_LEARNING_USER_SPEEDS_PER_SECTION = 420;
-const MAX_POEKHALI_LEARNING_USER_HISTORY_PER_SECTION = 80;
-const MAX_POEKHALI_LEARNING_MAP_ID_LENGTH = 128;
-const MAX_POEKHALI_LEARNING_SHIFT_ID_LENGTH = 128;
-const MAX_POEKHALI_LEARNING_RUN_ID_LENGTH = 128;
 const MAX_POEKHALI_WARNINGS_PER_PAYLOAD = 1000;
 const MAX_POEKHALI_WARNING_ID_LENGTH = 128;
 const MAX_POEKHALI_WARNING_TEXT_LENGTH = 240;
-const MAX_POEKHALI_RUNS_PER_PAYLOAD = 500;
-const MAX_POEKHALI_RUN_ID_LENGTH = 128;
-const MAX_POEKHALI_RUN_POINTS_PER_RUN = 1800;
 const DEFAULT_SALARY_PARAMS = {
   tariffRate: 380,
   monthlyNormHours: 0,
@@ -222,6 +206,8 @@ function normalizePublicUrl(value) {
 let shiftUserIdsCache = new Set();
 let shiftUserIdsCacheExpiresAtMs = 0;
 const structuredLogRateLimit = new Map();
+let appStorage = null;
+let storageBackupTimer = null;
 
 // Load .env file if present (simple key=value parser, no deps)
 (function loadDotEnv() {
@@ -371,11 +357,6 @@ function getUserFromRequest(req) {
   return decodeSessionToken(cookies.bm_session, botToken);
 }
 
-function getUserIdFromRequest(req) {
-  const user = getUserFromRequest(req);
-  return user ? String(user.id || '') : null;
-}
-
 // Verify Telegram Login Widget params
 function verifyTelegramLoginParams(params, botToken) {
   const hash = params.get('hash');
@@ -471,31 +452,64 @@ function logStructuredRateLimited(level, event, rateKey, meta) {
   logStructured(level, event, meta);
 }
 
-function atomicWriteFileSync(filePath, content) {
+function initializeStorage() {
+  if (appStorage) return appStorage;
   ensureDirs();
-  const dir = path.dirname(filePath);
-  const tmpPath = path.join(dir, `.${path.basename(filePath)}.${process.pid}.${Date.now()}.tmp`);
-  fs.writeFileSync(tmpPath, content, 'utf8');
-  fs.renameSync(tmpPath, filePath);
+  appStorage = createSqliteStorage({
+    dataDir: DATA_DIR,
+    logger(event, meta) {
+      logStructured('info', event, meta);
+    },
+  });
+  const report = appStorage.importLegacyJson({
+    globalFiles: [
+      { path: LOGIN_REQUESTS_FILE, key: 'auth_login_requests', fallback: {} },
+      { path: FEEDBACK_FILE, key: 'feedback', fallback: [] },
+      { path: PARTNERSHIPS_FILE, key: 'partnerships', fallback: { pairings: {} } },
+      { path: PARTNER_INVITES_FILE, key: 'partner_invites', fallback: {} },
+      { path: USER_STATS_FILE, key: 'user_presence', fallback: { users: {}, sessions: {} } },
+      { path: ADMIN_POEKHALI_MAP_FILE, key: 'admin_poekhali_map', fallback: null },
+      { path: DOCS_MANIFEST_FILE, key: 'docs_manifest', fallback: null },
+    ],
+    userDirectories: [
+      { path: USERS_DIR, kind: 'shifts', fallback: [] },
+      { path: SALARY_PARAMS_DIR, kind: 'salary_params', fallback: {} },
+      { path: PROFILE_DIR, kind: 'profile', fallback: {} },
+      { path: POEKHALI_WARNINGS_DIR, kind: 'poekhali_warnings', fallback: [] },
+      { path: PARTNER_STATE_DIR, kind: 'partner_state', fallback: {} },
+      { path: SHIFT_INBOX_DIR, kind: 'shift_inbox', fallback: [] },
+    ],
+  });
+
+  if (process.env.DISABLE_STORAGE_BACKUPS !== '1') {
+    if (report.imported.length) {
+      appStorage.createBackup('legacy-import').catch((error) => {
+        logStructuredRateLimited('error', 'storage.backup_failed', 'legacy-import', { error: toErrorMeta(error) });
+      });
+    }
+    storageBackupTimer = setInterval(() => {
+      appStorage.createBackup('automatic').catch((error) => {
+        logStructuredRateLimited('error', 'storage.backup_failed', 'automatic', { error: toErrorMeta(error) });
+      });
+    }, 24 * 60 * 60 * 1000);
+    if (typeof storageBackupTimer.unref === 'function') storageBackupTimer.unref();
+  }
+  return appStorage;
 }
 
-function atomicWriteFile(filePath, content, callback) {
-  ensureDirs();
-  const dir = path.dirname(filePath);
-  const tmpPath = path.join(dir, `.${path.basename(filePath)}.${process.pid}.${Date.now()}.tmp`);
-  fs.writeFile(tmpPath, content, 'utf8', (writeErr) => {
-    if (writeErr) {
-      callback(writeErr);
-      return;
-    }
-    fs.rename(tmpPath, filePath, (renameErr) => {
-      if (!renameErr) {
-        callback(null);
-        return;
-      }
-      fs.unlink(tmpPath, () => callback(renameErr));
-    });
-  });
+function getStorage() {
+  return appStorage || initializeStorage();
+}
+
+function closeStorage() {
+  if (storageBackupTimer) {
+    clearInterval(storageBackupTimer);
+    storageBackupTimer = null;
+  }
+  if (appStorage) {
+    appStorage.close();
+    appStorage = null;
+  }
 }
 
 function validateIsoLikeString(value, fieldName) {
@@ -604,14 +618,8 @@ function ensureDirs() {
   if (!fs.existsSync(PROFILE_DIR)) {
     fs.mkdirSync(PROFILE_DIR, { recursive: true });
   }
-  if (!fs.existsSync(POEKHALI_LEARNING_DIR)) {
-    fs.mkdirSync(POEKHALI_LEARNING_DIR, { recursive: true });
-  }
   if (!fs.existsSync(POEKHALI_WARNINGS_DIR)) {
     fs.mkdirSync(POEKHALI_WARNINGS_DIR, { recursive: true });
-  }
-  if (!fs.existsSync(POEKHALI_RUNS_DIR)) {
-    fs.mkdirSync(POEKHALI_RUNS_DIR, { recursive: true });
   }
   if (!fs.existsSync(PARTNER_STATE_DIR)) {
     fs.mkdirSync(PARTNER_STATE_DIR, { recursive: true });
@@ -627,37 +635,9 @@ function normalizeSid(rawSid) {
   return safe.length > 0 ? safe : 'default';
 }
 
-function getUserFile(sid) {
-  ensureDirs();
-  return path.join(USERS_DIR, `${normalizeSid(sid)}.json`);
-}
-
-function getUserSalaryParamsFile(sid) {
-  ensureDirs();
-  return path.join(SALARY_PARAMS_DIR, `${normalizeSid(sid)}.json`);
-}
-
-function getUserProfileFile(sid) {
-  ensureDirs();
-  return path.join(PROFILE_DIR, `${normalizeSid(sid)}.json`);
-}
-
-function getUserPoekhaliLearningFile(sid) {
-  ensureDirs();
-  return path.join(POEKHALI_LEARNING_DIR, `${normalizeSid(sid)}.json`);
-}
-
-function getUserPoekhaliWarningsFile(sid) {
-  ensureDirs();
-  return path.join(POEKHALI_WARNINGS_DIR, `${normalizeSid(sid)}.json`);
-}
-
 function readLoginRequestsStore() {
-  ensureDirs();
   try {
-    if (!fs.existsSync(LOGIN_REQUESTS_FILE)) return {};
-    const raw = fs.readFileSync(LOGIN_REQUESTS_FILE, 'utf8');
-    const parsed = raw ? JSON.parse(raw) : {};
+    const parsed = getStorage().readAppState('auth_login_requests', {});
     return parsed && typeof parsed === 'object' ? parsed : {};
   } catch (err) {
     logStructuredRateLimited('error', 'auth.login_requests.read_failed', LOGIN_REQUESTS_FILE, {
@@ -669,7 +649,7 @@ function readLoginRequestsStore() {
 }
 
 function writeLoginRequestsStore(store) {
-  atomicWriteFileSync(LOGIN_REQUESTS_FILE, JSON.stringify(store || {}, null, 2));
+  getStorage().writeAppState('auth_login_requests', store || {});
 }
 
 function pruneLoginRequestsStore(store) {
@@ -780,21 +760,8 @@ function displayNameForSid(sid, user) {
   return profileName || displayNameFromSessionUser(user);
 }
 
-function readJsonObjectFile(file) {
-  try {
-    if (!fs.existsSync(file)) return {};
-    const raw = fs.readFileSync(file, 'utf8');
-    const parsed = raw ? JSON.parse(raw) : {};
-    return parsed && typeof parsed === 'object' && !Array.isArray(parsed) ? parsed : {};
-  } catch (err) {
-    logStructuredRateLimited('error', 'storage.partner.read_failed', file, { file, error: toErrorMeta(err) });
-    return {};
-  }
-}
-
 function readPartnershipsStore() {
-  ensureDirs();
-  const store = readJsonObjectFile(PARTNERSHIPS_FILE);
+  const store = getStorage().readAppState('partnerships', { pairings: {} });
   if (!store.pairings || typeof store.pairings !== 'object' || Array.isArray(store.pairings)) {
     store.pairings = {};
   }
@@ -802,7 +769,7 @@ function readPartnershipsStore() {
 }
 
 function writePartnershipsStore(store) {
-  atomicWriteFileSync(PARTNERSHIPS_FILE, JSON.stringify(store || { pairings: {} }, null, 2));
+  getStorage().writeAppState('partnerships', store || { pairings: {} });
 }
 
 function updatePartnerLabelsForSid(sid, label) {
@@ -827,12 +794,12 @@ function updatePartnerLabelsForSid(sid, label) {
 }
 
 function readPartnerInvitesStore() {
-  ensureDirs();
-  return readJsonObjectFile(PARTNER_INVITES_FILE);
+  const store = getStorage().readAppState('partner_invites', {});
+  return store && typeof store === 'object' && !Array.isArray(store) ? store : {};
 }
 
 function writePartnerInvitesStore(store) {
-  atomicWriteFileSync(PARTNER_INVITES_FILE, JSON.stringify(store || {}, null, 2));
+  getStorage().writeAppState('partner_invites', store || {});
 }
 
 function prunePartnerInvitesStore(store) {
@@ -849,19 +816,14 @@ function prunePartnerInvitesStore(store) {
   return next;
 }
 
-function getPartnerStateFile(sid) {
-  ensureDirs();
-  return path.join(PARTNER_STATE_DIR, `${normalizeSid(sid)}.json`);
-}
-
 function readPartnerState(sid) {
-  const state = readJsonObjectFile(getPartnerStateFile(sid));
+  const state = getStorage().readUserState('partner_state', normalizeSid(sid), {});
   return { activePairingId: typeof state.activePairingId === 'string' ? state.activePairingId : '' };
 }
 
 function writePartnerState(sid, state) {
   const payload = { activePairingId: state && typeof state.activePairingId === 'string' ? state.activePairingId : '' };
-  atomicWriteFileSync(getPartnerStateFile(sid), JSON.stringify(payload, null, 2));
+  getStorage().writeUserState('partner_state', normalizeSid(sid), payload);
 }
 
 // Codes are dictated aloud in a noisy cab, so they are digits only (easy to say,
@@ -951,27 +913,19 @@ function sanitizeSharedShiftFacts(shift) {
   return facts;
 }
 
-function getShiftInboxFile(sid) {
-  ensureDirs();
-  return path.join(SHIFT_INBOX_DIR, `${normalizeSid(sid)}.json`);
-}
-
 function readShiftInbox(sid) {
-  const file = getShiftInboxFile(sid);
   try {
-    if (!fs.existsSync(file)) return [];
-    const raw = fs.readFileSync(file, 'utf8');
-    const parsed = JSON.parse(raw || '[]');
+    const parsed = getStorage().readUserState('shift_inbox', normalizeSid(sid), []);
     return Array.isArray(parsed) ? parsed : [];
   } catch (err) {
-    logStructuredRateLimited('error', 'storage.inbox.read_failed', file, { file, error: toErrorMeta(err) });
+    logStructuredRateLimited('error', 'storage.inbox.read_failed', normalizeSid(sid), { sid: normalizeSid(sid), error: toErrorMeta(err) });
     return [];
   }
 }
 
 function writeShiftInbox(sid, items) {
   const list = Array.isArray(items) ? items.slice(-MAX_INBOX_ITEMS_PER_USER) : [];
-  atomicWriteFileSync(getShiftInboxFile(sid), JSON.stringify(list, null, 2));
+  getStorage().writeUserState('shift_inbox', normalizeSid(sid), list);
 }
 
 // In-memory throttle so a numeric redeem code cannot be brute-forced. Per account.
@@ -987,11 +941,6 @@ function allowRedeemAttempt(sid) {
   redeemAttemptsBySid.set(sid, recent);
   if (redeemAttemptsBySid.size > 5000) redeemAttemptsBySid.clear(); // crude cap
   return true;
-}
-
-function getUserPoekhaliRunsFile(sid) {
-  ensureDirs();
-  return path.join(POEKHALI_RUNS_DIR, `${normalizeSid(sid)}.json`);
 }
 
 function sanitizeAndValidateSalaryParamsPayload(payload) {
@@ -1016,15 +965,13 @@ function sanitizeAndValidateSalaryParamsPayload(payload) {
 }
 
 function readSalaryParams(sid) {
-  const file = getUserSalaryParamsFile(sid);
   try {
-    if (!fs.existsSync(file)) return { ...DEFAULT_SALARY_PARAMS };
-    const raw = fs.readFileSync(file, 'utf8');
-    return sanitizeAndValidateSalaryParamsPayload(JSON.parse(raw || '{}'));
+    return sanitizeAndValidateSalaryParamsPayload(
+      getStorage().readUserState('salary_params', normalizeSid(sid), DEFAULT_SALARY_PARAMS)
+    );
   } catch (err) {
-    logStructuredRateLimited('error', 'storage.salary_params.read_failed', file, {
+    logStructuredRateLimited('error', 'storage.salary_params.read_failed', normalizeSid(sid), {
       sid: normalizeSid(sid),
-      file,
       error: toErrorMeta(err),
     });
     return { ...DEFAULT_SALARY_PARAMS };
@@ -1032,9 +979,11 @@ function readSalaryParams(sid) {
 }
 
 function writeSalaryParams(sid, salaryParams) {
-  const file = getUserSalaryParamsFile(sid);
-  const serialized = JSON.stringify(sanitizeAndValidateSalaryParamsPayload(salaryParams), null, 2);
-  atomicWriteFileSync(file, serialized);
+  getStorage().writeUserState(
+    'salary_params',
+    normalizeSid(sid),
+    sanitizeAndValidateSalaryParamsPayload(salaryParams)
+  );
 }
 
 const DEFAULT_PROFILE = { firstName: '', lastName: '', role: '', depot: '', avatar: '' };
@@ -1075,15 +1024,11 @@ function sanitizeProfilePayload(payload) {
 }
 
 function readProfile(sid) {
-  const file = getUserProfileFile(sid);
   try {
-    if (!fs.existsSync(file)) return { ...DEFAULT_PROFILE };
-    const raw = fs.readFileSync(file, 'utf8');
-    return sanitizeProfilePayload(JSON.parse(raw || '{}'));
+    return sanitizeProfilePayload(getStorage().readUserState('profile', normalizeSid(sid), DEFAULT_PROFILE));
   } catch (err) {
-    logStructuredRateLimited('error', 'storage.profile.read_failed', file, {
+    logStructuredRateLimited('error', 'storage.profile.read_failed', normalizeSid(sid), {
       sid: normalizeSid(sid),
-      file,
       error: toErrorMeta(err),
     });
     return { ...DEFAULT_PROFILE };
@@ -1091,617 +1036,7 @@ function readProfile(sid) {
 }
 
 function writeProfile(sid, profile) {
-  const file = getUserProfileFile(sid);
-  const serialized = JSON.stringify(sanitizeProfilePayload(profile), null, 2);
-  atomicWriteFileSync(file, serialized);
-}
-
-function normalizeLearningTrackState(value) {
-  let state = String(value || '').toLowerCase();
-  if (state === 'on-track') state = 'ontrack';
-  if (state === 'neartrack') state = 'near';
-  if (state === 'off-track') state = 'offtrack';
-  if (state === 'ontrack' || state === 'near' || state === 'offtrack') return state;
-  return 'ontrack';
-}
-
-function sanitizeFiniteNumber(value, fallback) {
-  const parsed = Number(value);
-  return Number.isFinite(parsed) ? parsed : fallback;
-}
-
-function sanitizePoekhaliLearningSample(sample, fallbackMapId) {
-  if (!sample || typeof sample !== 'object' || Array.isArray(sample)) return null;
-
-  const sector = Number(sample.sector);
-  const coordinate = Number(sample.coordinate);
-  const lat = Number(sample.lat);
-  const lon = Number(sample.lon);
-  if (!Number.isFinite(sector) || !Number.isFinite(coordinate) || !Number.isFinite(lat) || !Number.isFinite(lon)) return null;
-  if (lat < -90 || lat > 90 || lon < -180 || lon > 180) return null;
-
-  const roundedCoordinate = Math.max(0, Math.round(coordinate));
-  const meters = ((roundedCoordinate % 1000) + 1000) % 1000;
-  const mapId = String(sample.mapId || fallbackMapId || '').slice(0, MAX_POEKHALI_LEARNING_MAP_ID_LENGTH);
-  const shiftId = String(sample.shiftId || '').slice(0, MAX_POEKHALI_LEARNING_SHIFT_ID_LENGTH);
-
-  return {
-    mapId,
-    sector,
-    coordinate: roundedCoordinate,
-    km: Math.floor(roundedCoordinate / 1000),
-    pk: Math.floor(meters / 100) + 1,
-    lat,
-    lon,
-    altitude: sample.altitude === null || sample.altitude === undefined || sample.altitude === ''
-      ? null
-      : sanitizeFiniteNumber(sample.altitude, null),
-    accuracy: Math.max(0, Math.round(sanitizeFiniteNumber(sample.accuracy, 0))),
-    speed: sanitizeFiniteNumber(sample.speed, 0),
-    distance: sample.distance === null || sample.distance === undefined || sample.distance === ''
-      ? null
-      : Math.round(sanitizeFiniteNumber(sample.distance, 0)),
-    trackState: normalizeLearningTrackState(sample.trackState),
-    shiftId,
-    ts: sanitizeFiniteNumber(sample.ts, Date.now()),
-  };
-}
-
-function normalizePoekhaliRawTrackKey(value) {
-  const key = String(value || '').trim().replace(/[^\w.:-]+/g, '-').slice(0, 160);
-  return key || `raw-${Date.now()}`;
-}
-
-function sanitizePoekhaliRawLearningSample(sample, fallbackMapId) {
-  if (!sample || typeof sample !== 'object' || Array.isArray(sample)) return null;
-
-  const lat = Number(sample.lat);
-  const lon = Number(sample.lon);
-  if (!Number.isFinite(lat) || !Number.isFinite(lon)) return null;
-  if (lat < -90 || lat > 90 || lon < -180 || lon > 180) return null;
-
-  const nearestSector = Number(sample.nearestSector);
-  const nearestCoordinate = Number(sample.nearestCoordinate);
-  const roundedNearestCoordinate = Number.isFinite(nearestCoordinate)
-    ? Math.max(0, Math.round(nearestCoordinate))
-    : null;
-  const meters = roundedNearestCoordinate === null
-    ? null
-    : ((roundedNearestCoordinate % 1000) + 1000) % 1000;
-
-  return {
-    mapId: String(sample.mapId || fallbackMapId || '').slice(0, MAX_POEKHALI_LEARNING_MAP_ID_LENGTH),
-    lat,
-    lon,
-    altitude: sample.altitude === null || sample.altitude === undefined || sample.altitude === ''
-      ? null
-      : sanitizeFiniteNumber(sample.altitude, null),
-    accuracy: Math.max(0, Math.round(sanitizeFiniteNumber(sample.accuracy, 0))),
-    speed: sanitizeFiniteNumber(sample.speed, 0),
-    distance: sample.distance === null || sample.distance === undefined || sample.distance === ''
-      ? null
-      : Math.round(sanitizeFiniteNumber(sample.distance, 0)),
-    trackState: 'raw',
-    shiftId: String(sample.shiftId || '').slice(0, MAX_POEKHALI_LEARNING_SHIFT_ID_LENGTH),
-    runId: String(sample.runId || '').slice(0, MAX_POEKHALI_LEARNING_RUN_ID_LENGTH),
-    nearestSector: Number.isFinite(nearestSector) ? nearestSector : null,
-    nearestCoordinate: roundedNearestCoordinate,
-    nearestKm: roundedNearestCoordinate === null ? null : Math.floor(roundedNearestCoordinate / 1000),
-    nearestPk: meters === null ? null : Math.floor(meters / 100) + 1,
-    ts: sanitizeFiniteNumber(sample.ts, Date.now()),
-  };
-}
-
-function thinPayloadArray(items, maxItems) {
-  const source = Array.isArray(items) ? items.filter(Boolean) : [];
-  const max = Math.max(2, Math.round(Number(maxItems) || 0));
-  if (source.length <= max) return source.slice();
-  const result = [];
-  let lastIndex = -1;
-  for (let i = 0; i < max; i += 1) {
-    const index = Math.round((i * (source.length - 1)) / (max - 1));
-    if (index === lastIndex) continue;
-    result.push(source[index]);
-    lastIndex = index;
-  }
-  return result;
-}
-
-function sanitizePoekhaliUserPoint(point, fallbackSector) {
-  if (!point || typeof point !== 'object' || Array.isArray(point)) return null;
-  const lat = Number(point.lat);
-  const lon = Number(point.lon);
-  const ordinate = Number(point.ordinate !== undefined ? point.ordinate : point.coordinate);
-  const sector = Number.isFinite(Number(point.sector)) ? Number(point.sector) : Number(fallbackSector);
-  if (!Number.isFinite(lat) || !Number.isFinite(lon) || !Number.isFinite(ordinate) || !Number.isFinite(sector)) return null;
-  if (lat < -90 || lat > 90 || lon < -180 || lon > 180) return null;
-  return {
-    lat,
-    lon,
-    ordinate: Math.max(0, Math.round(ordinate)),
-    sector,
-    altitude: point.altitude === null || point.altitude === undefined || point.altitude === ''
-      ? null
-      : sanitizeFiniteNumber(point.altitude, null),
-    accuracy: Math.max(0, Math.round(sanitizeFiniteNumber(point.accuracy, 0))),
-    ts: Math.max(0, sanitizeFiniteNumber(point.ts, 0)),
-  };
-}
-
-function sanitizePoekhaliUserProfileSegment(segment, fallbackSector) {
-  if (!segment || typeof segment !== 'object' || Array.isArray(segment)) return null;
-  let start = Math.max(0, Math.round(Number(segment.start)));
-  let end = Math.max(0, Math.round(Number(segment.end)));
-  const sector = Number.isFinite(Number(segment.sector)) ? Number(segment.sector) : Number(fallbackSector);
-  let length = Math.max(0, Math.round(sanitizeFiniteNumber(segment.length, Math.abs(end - start))));
-  const grade = sanitizeFiniteNumber(segment.grade, NaN);
-  if (!Number.isFinite(start) || !Number.isFinite(end) || !Number.isFinite(length) || !Number.isFinite(grade) || !Number.isFinite(sector)) return null;
-  if (end < start) {
-    const swap = start;
-    start = end;
-    end = swap;
-  }
-  length = Math.max(1, end - start);
-  return {
-    start,
-    end,
-    length,
-    grade: Math.max(-45, Math.min(45, grade)),
-    sector,
-    userSection: true,
-    altitudeMissing: !!segment.altitudeMissing,
-    sampleCount: Math.max(1, Math.round(sanitizeFiniteNumber(segment.sampleCount, 1))),
-  };
-}
-
-function sanitizePoekhaliUserObject(item, fallbackSector) {
-  if (!item || typeof item !== 'object' || Array.isArray(item)) return null;
-  const coordinate = Math.max(0, Math.round(Number(item.coordinate)));
-  const length = Math.max(0, Math.round(sanitizeFiniteNumber(item.length, 0)));
-  const sector = Number.isFinite(Number(item.sector)) ? Number(item.sector) : Number(fallbackSector);
-  const type = String(item.type || '').trim().slice(0, 16);
-  const name = String(item.name || '').trim().slice(0, 80);
-  if (!Number.isFinite(coordinate) || !Number.isFinite(sector) || !type || !name) return null;
-  const speed = sanitizeFiniteNumber(item.speed, NaN);
-  const id = normalizePoekhaliRawTrackKey(item.id || item.key || `obj-${sector}-${type}-${coordinate}-${name}`).slice(0, 128);
-  return {
-    id,
-    fileKey: 'user',
-    sector,
-    type,
-    name,
-    coordinate,
-    length,
-    end: coordinate + length,
-    speed: Number.isFinite(speed) ? speed : null,
-    source: sanitizePoekhaliUserEntitySource(item.source),
-  };
-}
-
-function sanitizePoekhaliUserSpeed(rule, fallbackSector) {
-  if (!rule || typeof rule !== 'object' || Array.isArray(rule)) return null;
-  const coordinate = Math.max(0, Math.round(Number(rule.coordinate)));
-  let end = Math.round(sanitizeFiniteNumber(rule.end, NaN));
-  const length = Math.max(0, Math.round(sanitizeFiniteNumber(rule.length, 0)));
-  if (!Number.isFinite(end)) end = coordinate + length;
-  end = Math.max(coordinate, end);
-  const sector = Number.isFinite(Number(rule.sector)) ? Number(rule.sector) : Number(fallbackSector);
-  const speed = sanitizeFiniteNumber(rule.speed, NaN);
-  if (!Number.isFinite(coordinate) || !Number.isFinite(end) || !Number.isFinite(speed) || !Number.isFinite(sector)) return null;
-  const id = normalizePoekhaliRawTrackKey(rule.id || rule.key || `speed-${sector}-${coordinate}-${end}-${Math.round(speed)}`).slice(0, 128);
-  return {
-    id,
-    sector,
-    wayNumber: Math.max(0, Math.round(sanitizeFiniteNumber(rule.wayNumber, 0))),
-    coordinate,
-    length: Math.max(0, end - coordinate),
-    end,
-    speed,
-    name: String(rule.name || Math.round(speed)).trim().slice(0, 80),
-    source: sanitizePoekhaliUserEntitySource(rule.source),
-  };
-}
-
-function sanitizePoekhaliUserEntitySource(source) {
-  const value = String(source || 'user').trim().toLowerCase();
-  if (value === 'document' || value === 'doc') return 'document';
-  if (value === 'regime' || value === 'rk') return 'regime';
-  if (value === 'emap' || value === 'object' || value === 'speed') return 'emap';
-  return 'user';
-}
-
-function sanitizePoekhaliUserHistoryItem(item) {
-  if (!item || typeof item !== 'object' || Array.isArray(item)) return null;
-  const ts = Math.max(0, sanitizeFiniteNumber(item.ts || item.time, 0));
-  const action = String(item.action || '').trim().slice(0, 48);
-  const detail = String(item.detail || item.note || '').trim().slice(0, 160);
-  if (!ts || !action) return null;
-  return { ts, action, detail };
-}
-
-function sanitizePoekhaliUserSection(section, fallbackMapId, fallbackKey) {
-  if (!section || typeof section !== 'object' || Array.isArray(section)) return null;
-  const sector = Number(section.sector);
-  if (!Number.isFinite(sector)) return null;
-  let points = thinPayloadArray(
-    Array.isArray(section.routePoints) ? section.routePoints : Array.isArray(section.points) ? section.points : [],
-    MAX_POEKHALI_LEARNING_USER_POINTS_PER_SECTION,
-  ).map((point) => sanitizePoekhaliUserPoint(point, sector)).filter(Boolean)
-    .sort((a, b) => a.ordinate - b.ordinate || a.ts - b.ts);
-  if (points.length < 2) return null;
-  points = points.map((point, index) => ({ ...point, sector, position: index }));
-
-  const profileSource = Array.isArray(section.profileSegments)
-    ? section.profileSegments
-    : Array.isArray(section.profile)
-      ? section.profile
-      : [];
-  const profileSegments = thinPayloadArray(profileSource, MAX_POEKHALI_LEARNING_USER_PROFILE_SEGMENTS_PER_SECTION)
-    .map((segment) => sanitizePoekhaliUserProfileSegment(segment, sector))
-    .filter(Boolean)
-    .sort((a, b) => a.start - b.start);
-
-  const objects = thinPayloadArray(section.objects, MAX_POEKHALI_LEARNING_USER_OBJECTS_PER_SECTION)
-    .map((item) => sanitizePoekhaliUserObject(item, sector))
-    .filter(Boolean)
-    .sort((a, b) => a.coordinate - b.coordinate || String(a.type || '').localeCompare(String(b.type || '')));
-  const speeds = thinPayloadArray(section.speeds, MAX_POEKHALI_LEARNING_USER_SPEEDS_PER_SECTION)
-    .map((rule) => sanitizePoekhaliUserSpeed(rule, sector))
-    .filter(Boolean)
-    .sort((a, b) => a.coordinate - b.coordinate || a.speed - b.speed);
-  const history = thinPayloadArray(section.history, MAX_POEKHALI_LEARNING_USER_HISTORY_PER_SECTION)
-    .map((item) => sanitizePoekhaliUserHistoryItem(item))
-    .filter(Boolean)
-    .sort((a, b) => a.ts - b.ts)
-    .slice(-MAX_POEKHALI_LEARNING_USER_HISTORY_PER_SECTION);
-  const updatedAt = Math.max(0, sanitizeFiniteNumber(section.updatedAt, 0));
-  const verifiedAt = Math.max(0, sanitizeFiniteNumber(section.verifiedAt, 0));
-  const referenceSector = sanitizeFiniteNumber(section.referenceSector, NaN);
-  const id = normalizePoekhaliRawTrackKey(section.id || fallbackKey || `user-${sector}`);
-  return {
-    id,
-    mapId: String(section.mapId || fallbackMapId || '').slice(0, MAX_POEKHALI_LEARNING_MAP_ID_LENGTH),
-    sector,
-    referenceSector: Number.isFinite(referenceSector) ? referenceSector : null,
-    title: String(section.title || `GPS участок ${Math.round(sector)}`).trim().slice(0, 80),
-    sourceTrackKey: String(section.sourceTrackKey || '').slice(0, 160),
-    createdAt: Math.max(0, sanitizeFiniteNumber(section.createdAt, verifiedAt || updatedAt)),
-    updatedAt: updatedAt || verifiedAt,
-    verifiedAt,
-    routePoints: points,
-    profileSegments,
-    objects,
-    speeds,
-    history,
-  };
-}
-
-function sanitizeAndValidatePoekhaliLearningPayload(payload) {
-  if (!payload || typeof payload !== 'object' || Array.isArray(payload)) {
-    throw new Error('Expected JSON object payload');
-  }
-
-  const source = payload.learning && typeof payload.learning === 'object' && !Array.isArray(payload.learning)
-    ? payload.learning
-    : payload;
-  const maps = source.maps && typeof source.maps === 'object' && !Array.isArray(source.maps)
-    ? source.maps
-    : {};
-  const mapIds = Object.keys(maps);
-  if (mapIds.length > MAX_POEKHALI_LEARNING_MAPS) {
-    throw new Error('Too many Poekhali learning maps');
-  }
-
-  const normalized = {
-    version: 1,
-    maps: {},
-  };
-
-  mapIds.forEach((rawMapId) => {
-    const mapId = String(rawMapId || '').trim().slice(0, MAX_POEKHALI_LEARNING_MAP_ID_LENGTH);
-    if (!mapId) return;
-
-    const map = maps[rawMapId] && typeof maps[rawMapId] === 'object' && !Array.isArray(maps[rawMapId])
-      ? maps[rawMapId]
-      : {};
-    const sectors = map.sectors && typeof map.sectors === 'object' && !Array.isArray(map.sectors)
-      ? map.sectors
-      : {};
-    const rawTracks = map.rawTracks && typeof map.rawTracks === 'object' && !Array.isArray(map.rawTracks)
-      ? map.rawTracks
-      : {};
-    const userSections = map.userSections && typeof map.userSections === 'object' && !Array.isArray(map.userSections)
-      ? map.userSections
-      : {};
-    const sectorKeys = Object.keys(sectors);
-    if (sectorKeys.length > MAX_POEKHALI_LEARNING_SECTORS_PER_MAP) {
-      throw new Error('Too many Poekhali learning sectors');
-    }
-    const rawTrackKeys = Object.keys(rawTracks);
-    if (rawTrackKeys.length > MAX_POEKHALI_LEARNING_RAW_TRACKS_PER_MAP) {
-      throw new Error('Too many Poekhali raw learning tracks');
-    }
-    const userSectionKeys = Object.keys(userSections);
-    if (userSectionKeys.length > MAX_POEKHALI_LEARNING_USER_SECTIONS_PER_MAP) {
-      throw new Error('Too many Poekhali user learning sections');
-    }
-
-    const nextMap = {
-      updatedAt: Math.max(0, sanitizeFiniteNumber(map.updatedAt, 0)),
-      sectors: {},
-      rawTracks: {},
-      userSections: {},
-    };
-
-    sectorKeys.forEach((sectorKey) => {
-      const bucket = sectors[sectorKey] && typeof sectors[sectorKey] === 'object' && !Array.isArray(sectors[sectorKey])
-        ? sectors[sectorKey]
-        : {};
-      const samples = Array.isArray(bucket.samples) ? bucket.samples : [];
-      let normalizedSamples = samples
-        .map((sample) => sanitizePoekhaliLearningSample(sample, mapId))
-        .filter(Boolean)
-        .sort((a, b) => a.coordinate - b.coordinate || a.ts - b.ts);
-
-      if (normalizedSamples.length > MAX_POEKHALI_LEARNING_SAMPLES_PER_SECTOR) {
-        normalizedSamples = normalizedSamples.slice(normalizedSamples.length - MAX_POEKHALI_LEARNING_SAMPLES_PER_SECTOR);
-      }
-      if (!normalizedSamples.length) return;
-
-      const safeSectorKey = String(sectorKey || normalizedSamples[0].sector);
-      const updatedAt = Math.max(0, sanitizeFiniteNumber(bucket.updatedAt, nextMap.updatedAt));
-      nextMap.sectors[safeSectorKey] = {
-        samples: normalizedSamples,
-        updatedAt,
-        verifiedAt: Math.max(0, sanitizeFiniteNumber(bucket.verifiedAt, 0)),
-        verifiedSamples: Math.max(0, Math.round(sanitizeFiniteNumber(bucket.verifiedSamples, 0))),
-        verifiedProfileSegments: Math.max(0, Math.round(sanitizeFiniteNumber(bucket.verifiedProfileSegments, 0))),
-      };
-      nextMap.updatedAt = Math.max(nextMap.updatedAt, updatedAt);
-    });
-
-    rawTrackKeys.forEach((rawTrackKey) => {
-      const bucket = rawTracks[rawTrackKey] && typeof rawTracks[rawTrackKey] === 'object' && !Array.isArray(rawTracks[rawTrackKey])
-        ? rawTracks[rawTrackKey]
-        : {};
-      const samples = Array.isArray(bucket.samples) ? bucket.samples : [];
-      let normalizedSamples = samples
-        .map((sample) => sanitizePoekhaliRawLearningSample(sample, mapId))
-        .filter(Boolean)
-        .sort((a, b) => a.ts - b.ts);
-
-      if (normalizedSamples.length > MAX_POEKHALI_LEARNING_RAW_SAMPLES_PER_TRACK) {
-        normalizedSamples = normalizedSamples.slice(normalizedSamples.length - MAX_POEKHALI_LEARNING_RAW_SAMPLES_PER_TRACK);
-      }
-      if (!normalizedSamples.length) return;
-
-      const safeRawTrackKey = normalizePoekhaliRawTrackKey(rawTrackKey);
-      const updatedAt = Math.max(0, sanitizeFiniteNumber(bucket.updatedAt, nextMap.updatedAt));
-      nextMap.rawTracks[safeRawTrackKey] = {
-        samples: normalizedSamples,
-        updatedAt,
-        promotedAt: Math.max(0, sanitizeFiniteNumber(bucket.promotedAt, 0)),
-      };
-      nextMap.updatedAt = Math.max(nextMap.updatedAt, updatedAt);
-    });
-
-    userSectionKeys.forEach((sectionKey) => {
-      const normalizedSection = sanitizePoekhaliUserSection(userSections[sectionKey], mapId, sectionKey);
-      if (!normalizedSection) return;
-      nextMap.userSections[normalizedSection.id] = normalizedSection;
-      nextMap.updatedAt = Math.max(nextMap.updatedAt, normalizedSection.updatedAt || 0);
-    });
-
-    if (Object.keys(nextMap.sectors).length || Object.keys(nextMap.rawTracks).length || Object.keys(nextMap.userSections).length) {
-      normalized.maps[mapId] = nextMap;
-    }
-  });
-
-  return normalized;
-}
-
-function readPoekhaliLearning(sid) {
-  const file = getUserPoekhaliLearningFile(sid);
-  try {
-    if (!fs.existsSync(file)) return { version: 1, maps: {} };
-    const raw = fs.readFileSync(file, 'utf8');
-    return sanitizeAndValidatePoekhaliLearningPayload(JSON.parse(raw || '{}'));
-  } catch (err) {
-    logStructuredRateLimited('error', 'storage.poekhali_learning.read_failed', file, {
-      sid: normalizeSid(sid),
-      file,
-      error: toErrorMeta(err),
-    });
-    return { version: 1, maps: {} };
-  }
-}
-
-function writePoekhaliLearning(sid, learning) {
-  const file = getUserPoekhaliLearningFile(sid);
-  const normalized = sanitizeAndValidatePoekhaliLearningPayload(learning);
-  atomicWriteFileSync(file, JSON.stringify(normalized, null, 2));
-  return normalized;
-}
-
-function readPoekhaliLearningFile(file) {
-  try {
-    const raw = fs.readFileSync(file, 'utf8');
-    return sanitizeAndValidatePoekhaliLearningPayload(JSON.parse(raw || '{}'));
-  } catch (err) {
-    logStructuredRateLimited('warn', 'storage.poekhali_learning.shared_read_failed', file, {
-      file,
-      error: toErrorMeta(err),
-    });
-    return { version: 1, maps: {} };
-  }
-}
-
-function getPoekhaliLearningSampleSharedKey(sample) {
-  return [
-    sample.mapId,
-    Math.round(Number(sample.sector) || 0),
-    Math.round((Number(sample.coordinate) || 0) / 20),
-  ].join(':');
-}
-
-function chooseBetterPoekhaliLearningSample(current, incoming) {
-  if (!current) return incoming;
-  const currentAccuracy = Number.isFinite(Number(current.accuracy)) && Number(current.accuracy) > 0
-    ? Number(current.accuracy)
-    : 9999;
-  const incomingAccuracy = Number.isFinite(Number(incoming.accuracy)) && Number(incoming.accuracy) > 0
-    ? Number(incoming.accuracy)
-    : 9999;
-  if (incomingAccuracy + 2 < currentAccuracy) return incoming;
-  if (Math.abs(incomingAccuracy - currentAccuracy) <= 2 && (Number(incoming.ts) || 0) >= (Number(current.ts) || 0)) {
-    return incoming;
-  }
-  return current;
-}
-
-function mergeSharedPoekhaliLearningBucket(baseBucket, incomingBucket, mapId) {
-  const byKey = new Map();
-  let updatedAt = 0;
-  let verifiedAt = 0;
-  let verifiedSamples = 0;
-  let verifiedProfileSegments = 0;
-  [baseBucket, incomingBucket].forEach((bucket) => {
-    if (!bucket || typeof bucket !== 'object' || Array.isArray(bucket)) return;
-    updatedAt = Math.max(updatedAt, Math.max(0, sanitizeFiniteNumber(bucket.updatedAt, 0)));
-    const bucketVerifiedAt = Math.max(0, sanitizeFiniteNumber(bucket.verifiedAt, 0));
-    if (bucketVerifiedAt >= verifiedAt) {
-      verifiedAt = bucketVerifiedAt;
-      verifiedSamples = Math.max(0, Math.round(sanitizeFiniteNumber(bucket.verifiedSamples, 0)));
-      verifiedProfileSegments = Math.max(0, Math.round(sanitizeFiniteNumber(bucket.verifiedProfileSegments, 0)));
-    }
-    (Array.isArray(bucket.samples) ? bucket.samples : []).forEach((item) => {
-      const sample = sanitizePoekhaliLearningSample(item, mapId);
-      if (!sample) return;
-      const key = getPoekhaliLearningSampleSharedKey(sample);
-      byKey.set(key, chooseBetterPoekhaliLearningSample(byKey.get(key), sample));
-    });
-  });
-  let samples = Array.from(byKey.values()).sort((a, b) => a.coordinate - b.coordinate || a.ts - b.ts);
-  samples = thinPayloadArray(samples, MAX_POEKHALI_LEARNING_SAMPLES_PER_SECTOR);
-  if (!samples.length) return null;
-  return {
-    samples,
-    updatedAt: updatedAt || samples[samples.length - 1].ts || 0,
-    verifiedAt,
-    verifiedSamples,
-    verifiedProfileSegments,
-  };
-}
-
-function getPoekhaliSharedSectionKey(section) {
-  return `shared-${Math.round(Number(section && section.sector) || 0)}`;
-}
-
-function getPoekhaliSharedSectionScore(section) {
-  if (!section) return -1;
-  const verifiedBonus = section.verifiedAt ? 100000000000000 : 0;
-  const pointBonus = Array.isArray(section.routePoints) ? section.routePoints.length * 1000 : 0;
-  return verifiedBonus + pointBonus + Math.max(Number(section.updatedAt) || 0, Number(section.verifiedAt) || 0);
-}
-
-function mergeSharedPoekhaliUserSection(current, incoming, sharedKey) {
-  if (!incoming) return current || null;
-  const next = !current || getPoekhaliSharedSectionScore(incoming) >= getPoekhaliSharedSectionScore(current)
-    ? incoming
-    : current;
-  return {
-    ...next,
-    id: sharedKey,
-    title: next.title || `GPS участок ${Math.round(Number(next.sector) || 0)}`,
-  };
-}
-
-function buildSharedPoekhaliLearning(stores) {
-  const shared = { version: 1, maps: {} };
-  (Array.isArray(stores) ? stores : []).forEach((store) => {
-    const normalized = sanitizeAndValidatePoekhaliLearningPayload(store);
-    Object.keys(normalized.maps || {}).forEach((mapId) => {
-      const sourceMap = normalized.maps[mapId] || {};
-      if (!shared.maps[mapId]) {
-        shared.maps[mapId] = {
-          updatedAt: 0,
-          sectors: {},
-          rawTracks: {},
-          userSections: {},
-        };
-      }
-      const targetMap = shared.maps[mapId];
-      targetMap.updatedAt = Math.max(targetMap.updatedAt, Math.max(0, sanitizeFiniteNumber(sourceMap.updatedAt, 0)));
-      Object.keys(sourceMap.sectors || {}).forEach((sectorKey) => {
-        const mergedBucket = mergeSharedPoekhaliLearningBucket(targetMap.sectors[sectorKey], sourceMap.sectors[sectorKey], mapId);
-        if (!mergedBucket) return;
-        targetMap.sectors[sectorKey] = mergedBucket;
-        targetMap.updatedAt = Math.max(targetMap.updatedAt, mergedBucket.updatedAt || 0);
-      });
-      Object.keys(sourceMap.userSections || {}).forEach((sectionKey) => {
-        const section = sanitizePoekhaliUserSection(sourceMap.userSections[sectionKey], mapId, sectionKey);
-        if (!section) return;
-        const sharedKey = getPoekhaliSharedSectionKey(section);
-        const mergedSection = mergeSharedPoekhaliUserSection(targetMap.userSections[sharedKey], section, sharedKey);
-        if (!mergedSection) return;
-        targetMap.userSections[sharedKey] = mergedSection;
-        targetMap.updatedAt = Math.max(targetMap.updatedAt, mergedSection.updatedAt || 0, mergedSection.verifiedAt || 0);
-      });
-    });
-  });
-  Object.keys(shared.maps || {}).forEach((mapId) => {
-    const map = shared.maps[mapId];
-    const sectorKeys = Object.keys(map.sectors || {});
-    if (sectorKeys.length > MAX_POEKHALI_LEARNING_SECTORS_PER_MAP) {
-      const keep = new Set(sectorKeys
-        .sort((a, b) => (Number(map.sectors[b].updatedAt) || 0) - (Number(map.sectors[a].updatedAt) || 0))
-        .slice(0, MAX_POEKHALI_LEARNING_SECTORS_PER_MAP));
-      sectorKeys.forEach((key) => {
-        if (!keep.has(key)) delete map.sectors[key];
-      });
-    }
-    const sectionKeys = Object.keys(map.userSections || {});
-    if (sectionKeys.length > MAX_POEKHALI_LEARNING_USER_SECTIONS_PER_MAP) {
-      const keep = new Set(sectionKeys
-        .sort((a, b) => getPoekhaliSharedSectionScore(map.userSections[b]) - getPoekhaliSharedSectionScore(map.userSections[a]))
-        .slice(0, MAX_POEKHALI_LEARNING_USER_SECTIONS_PER_MAP));
-      sectionKeys.forEach((key) => {
-        if (!keep.has(key)) delete map.userSections[key];
-      });
-    }
-    if (!Object.keys(map.sectors || {}).length && !Object.keys(map.userSections || {}).length) {
-      delete shared.maps[mapId];
-    }
-  });
-  const mapKeys = Object.keys(shared.maps || {});
-  if (mapKeys.length > MAX_POEKHALI_LEARNING_MAPS) {
-    const keep = new Set(mapKeys
-      .sort((a, b) => (Number(shared.maps[b].updatedAt) || 0) - (Number(shared.maps[a].updatedAt) || 0))
-      .slice(0, MAX_POEKHALI_LEARNING_MAPS));
-    mapKeys.forEach((key) => {
-      if (!keep.has(key)) delete shared.maps[key];
-    });
-  }
-  return sanitizeAndValidatePoekhaliLearningPayload(shared);
-}
-
-function readSharedPoekhaliLearning(sid) {
-  ensureDirs();
-  const excludedSid = normalizeSid(sid);
-  let files = [];
-  try {
-    files = fs.readdirSync(POEKHALI_LEARNING_DIR)
-      .filter((name) => name.endsWith('.json'))
-      .filter((name) => path.basename(name, '.json') !== excludedSid)
-      .map((name) => path.join(POEKHALI_LEARNING_DIR, name));
-  } catch (err) {
-    logStructuredRateLimited('warn', 'storage.poekhali_learning.shared_scan_failed', excludedSid, {
-      sid: excludedSid,
-      error: toErrorMeta(err),
-    });
-    return { version: 1, maps: {} };
-  }
-  return buildSharedPoekhaliLearning(files.map((file) => readPoekhaliLearningFile(file)));
+  getStorage().writeUserState('profile', normalizeSid(sid), sanitizeProfilePayload(profile));
 }
 
 function normalizeDateOnly(value) {
@@ -1734,8 +1069,8 @@ function sanitizePoekhaliWarningItem(item) {
 
   return {
     id,
-    mapId: String(item.mapId || '').trim().slice(0, MAX_POEKHALI_LEARNING_MAP_ID_LENGTH),
-    shiftId: String(item.shiftId || '').trim().slice(0, MAX_POEKHALI_LEARNING_SHIFT_ID_LENGTH),
+    mapId: String(item.mapId || '').trim().slice(0, MAX_SHIFT_ID_LENGTH),
+    shiftId: String(item.shiftId || '').trim().slice(0, MAX_SHIFT_ID_LENGTH),
     sector,
     coordinate: left,
     start: left,
@@ -1774,15 +1109,13 @@ function sanitizeAndValidatePoekhaliWarningsPayload(payload) {
 }
 
 function readPoekhaliWarnings(sid) {
-  const file = getUserPoekhaliWarningsFile(sid);
   try {
-    if (!fs.existsSync(file)) return [];
-    const raw = fs.readFileSync(file, 'utf8');
-    return sanitizeAndValidatePoekhaliWarningsPayload({ warnings: JSON.parse(raw || '[]') });
+    return sanitizeAndValidatePoekhaliWarningsPayload({
+      warnings: getStorage().readUserState('poekhali_warnings', normalizeSid(sid), []),
+    });
   } catch (err) {
-    logStructuredRateLimited('error', 'storage.poekhali_warnings.read_failed', file, {
+    logStructuredRateLimited('error', 'storage.poekhali_warnings.read_failed', normalizeSid(sid), {
       sid: normalizeSid(sid),
-      file,
       error: toErrorMeta(err),
     });
     return [];
@@ -1790,208 +1123,22 @@ function readPoekhaliWarnings(sid) {
 }
 
 function writePoekhaliWarnings(sid, warnings) {
-  const file = getUserPoekhaliWarningsFile(sid);
   const normalized = sanitizeAndValidatePoekhaliWarningsPayload({ warnings: Array.isArray(warnings) ? warnings : [] });
-  atomicWriteFileSync(file, JSON.stringify(normalized, null, 2));
-  return normalized;
-}
-
-function sanitizePoekhaliRunPoint(point) {
-  if (!point || typeof point !== 'object' || Array.isArray(point)) return null;
-  const sector = Number(point.sector);
-  const coordinate = Number(point.coordinate);
-  if (!Number.isFinite(sector) || !Number.isFinite(coordinate)) return null;
-  const roundedCoordinate = Math.max(0, Math.round(coordinate));
-  const meters = ((roundedCoordinate % 1000) + 1000) % 1000;
-  const lat = Number(point.lat);
-  const lon = Number(point.lon);
-  const result = {
-    sector,
-    coordinate: roundedCoordinate,
-    km: Math.floor(roundedCoordinate / 1000),
-    pk: Math.floor(meters / 100) + 1,
-    ts: sanitizeFiniteNumber(point.ts, Date.now()),
-  };
-  if (Number.isFinite(lat) && lat >= -90 && lat <= 90) result.lat = lat;
-  if (Number.isFinite(lon) && lon >= -180 && lon <= 180) result.lon = lon;
-  const accuracy = Number(point.accuracy);
-  if (Number.isFinite(accuracy)) result.accuracy = Math.max(0, Math.round(accuracy));
-  const speedKmh = Number(point.speedKmh);
-  if (Number.isFinite(speedKmh)) result.speedKmh = Math.max(0, Math.round(speedKmh));
-  return result;
-}
-
-function sanitizePoekhaliRunItem(item) {
-  if (!item || typeof item !== 'object' || Array.isArray(item)) return null;
-  const id = String(item.id || '').trim().slice(0, MAX_POEKHALI_RUN_ID_LENGTH);
-  if (!id) return null;
-  const nowIso = new Date().toISOString();
-  const startedAt = normalizeIsoish(item.startedAt) || normalizeIsoish(item.createdAt) || nowIso;
-  const status = ['active', 'paused', 'finished'].includes(String(item.status || '')) ? String(item.status) : 'finished';
-  const points = thinPayloadArray(
-    Array.isArray(item.points) ? item.points : [],
-    MAX_POEKHALI_RUN_POINTS_PER_RUN,
-  )
-    .map((point) => sanitizePoekhaliRunPoint(point))
-    .filter(Boolean)
-    .sort((a, b) => (a.ts || 0) - (b.ts || 0));
-  const startPoint = sanitizePoekhaliRunPoint(item.startPoint) || points[0] || null;
-  const endPoint = sanitizePoekhaliRunPoint(item.endPoint || item.lastPoint) || points[points.length - 1] || null;
-  const lastPoint = sanitizePoekhaliRunPoint(item.lastPoint || item.endPoint || item.startPoint) || endPoint || startPoint;
-
-  return {
-    id,
-    shiftId: String(item.shiftId || '').trim().slice(0, MAX_POEKHALI_LEARNING_SHIFT_ID_LENGTH),
-    mapId: String(item.mapId || '').trim().slice(0, MAX_POEKHALI_LEARNING_MAP_ID_LENGTH),
-    mapTitle: String(item.mapTitle || '').trim().slice(0, MAX_SHIFT_TEXT_LENGTH),
-    route: String(item.route || '').trim().slice(0, MAX_SHIFT_TEXT_LENGTH),
-    trainNumber: String(item.trainNumber || '').trim().slice(0, 32),
-    loco: String(item.loco || '').trim().slice(0, MAX_SHIFT_TEXT_LENGTH),
-    weight: String(item.weight || '').trim().slice(0, 32),
-    axles: String(item.axles || '').trim().slice(0, 32),
-    conditionalLength: Math.max(0, Math.round(sanitizeFiniteNumber(item.conditionalLength, 0))),
-    lengthMeters: Math.max(0, Math.round(sanitizeFiniteNumber(item.lengthMeters, 0))),
-    lengthLabel: String(item.lengthLabel || '').trim().slice(0, 64),
-    lengthSource: String(item.lengthSource || '').trim().slice(0, 64),
-    compositionType: String(item.compositionType || '').trim().slice(0, 64),
-    compositionReadiness: String(item.compositionReadiness || '').trim().slice(0, 64),
-    direction: String(item.direction || '').trim().slice(0, 16),
-    track: String(item.track || '').trim().slice(0, 24),
-    status,
-    startedAt,
-    endedAt: normalizeIsoish(item.endedAt),
-    durationMs: Math.max(0, Math.round(sanitizeFiniteNumber(item.durationMs, 0))),
-    movingDurationMs: Math.max(0, Math.round(sanitizeFiniteNumber(item.movingDurationMs, 0))),
-    idleDurationMs: Math.max(0, Math.round(sanitizeFiniteNumber(item.idleDurationMs, 0))),
-    distanceMeters: Math.max(0, Math.round(sanitizeFiniteNumber(item.distanceMeters, 0))),
-    maxSpeedKmh: Math.max(0, Math.round(sanitizeFiniteNumber(item.maxSpeedKmh, 0))),
-    averageSpeedKmh: Math.max(0, Math.round(sanitizeFiniteNumber(item.averageSpeedKmh, 0) * 10) / 10),
-    technicalSpeedKmh: Math.max(0, Math.round(sanitizeFiniteNumber(item.technicalSpeedKmh, 0) * 10) / 10),
-    overspeedMaxKmh: Math.max(0, Math.round(sanitizeFiniteNumber(item.overspeedMaxKmh, 0))),
-    overspeedDurationMs: Math.max(0, Math.round(sanitizeFiniteNumber(item.overspeedDurationMs, 0))),
-    overspeedDistanceMeters: Math.max(0, Math.round(sanitizeFiniteNumber(item.overspeedDistanceMeters, 0))),
-    warningsCount: Math.max(0, Math.round(sanitizeFiniteNumber(item.warningsCount, 0))),
-    alertCount: Math.max(0, Math.round(sanitizeFiniteNumber(item.alertCount, 0))),
-    lastAlertKind: String(item.lastAlertKind || '').trim().slice(0, 32),
-    lastAlertLevel: String(item.lastAlertLevel || '').trim().slice(0, 16),
-    lastAlertTitle: String(item.lastAlertTitle || '').trim().slice(0, 80),
-    lastAlertText: String(item.lastAlertText || '').trim().slice(0, 160),
-    lastAlertDistanceMeters: Math.max(0, Math.round(sanitizeFiniteNumber(item.lastAlertDistanceMeters, 0))),
-    lastAlertAt: normalizeIsoish(item.lastAlertAt),
-    activeRestrictionLabel: String(item.activeRestrictionLabel || '').trim().slice(0, 64),
-    activeRestrictionSource: String(item.activeRestrictionSource || '').trim().slice(0, 32),
-    activeRestrictionSpeedKmh: Math.max(0, Math.round(sanitizeFiniteNumber(item.activeRestrictionSpeedKmh, 0))),
-    activeRestrictionSector: Math.max(0, Math.round(sanitizeFiniteNumber(item.activeRestrictionSector, 0))),
-    activeRestrictionStart: Math.max(0, Math.round(sanitizeFiniteNumber(item.activeRestrictionStart, 0))),
-    activeRestrictionEnd: Math.max(0, Math.round(sanitizeFiniteNumber(item.activeRestrictionEnd, 0))),
-    activeRestrictionDistanceToEnd: Math.max(0, Math.round(sanitizeFiniteNumber(item.activeRestrictionDistanceToEnd, 0))),
-    activeRestrictionUpdatedAt: normalizeIsoish(item.activeRestrictionUpdatedAt),
-    nextRestrictionLabel: String(item.nextRestrictionLabel || '').trim().slice(0, 64),
-    nextRestrictionSource: String(item.nextRestrictionSource || '').trim().slice(0, 32),
-    nextRestrictionSpeedKmh: Math.max(0, Math.round(sanitizeFiniteNumber(item.nextRestrictionSpeedKmh, 0))),
-    nextRestrictionSector: Math.max(0, Math.round(sanitizeFiniteNumber(item.nextRestrictionSector, 0))),
-    nextRestrictionCoordinate: Math.max(0, Math.round(sanitizeFiniteNumber(item.nextRestrictionCoordinate, 0))),
-    nextRestrictionDistanceMeters: Math.max(0, Math.round(sanitizeFiniteNumber(item.nextRestrictionDistanceMeters, 0))),
-    nextRestrictionEtaSeconds: Math.max(0, Math.round(sanitizeFiniteNumber(item.nextRestrictionEtaSeconds, 0))),
-    nextRestrictionUpdatedAt: normalizeIsoish(item.nextRestrictionUpdatedAt),
-    nextSignalName: String(item.nextSignalName || '').trim().slice(0, 64),
-    nextSignalSource: String(item.nextSignalSource || '').trim().slice(0, 32),
-    nextSignalSector: Math.max(0, Math.round(sanitizeFiniteNumber(item.nextSignalSector, 0))),
-    nextSignalCoordinate: Math.max(0, Math.round(sanitizeFiniteNumber(item.nextSignalCoordinate, 0))),
-    nextSignalDistanceMeters: Math.max(0, Math.round(sanitizeFiniteNumber(item.nextSignalDistanceMeters, 0))),
-    nextSignalEtaSeconds: Math.max(0, Math.round(sanitizeFiniteNumber(item.nextSignalEtaSeconds, 0))),
-    nextStationName: String(item.nextStationName || '').trim().slice(0, 96),
-    nextStationSource: String(item.nextStationSource || '').trim().slice(0, 32),
-    nextStationSector: Math.max(0, Math.round(sanitizeFiniteNumber(item.nextStationSector, 0))),
-    nextStationCoordinate: Math.max(0, Math.round(sanitizeFiniteNumber(item.nextStationCoordinate, 0))),
-    nextStationDistanceMeters: Math.max(0, Math.round(sanitizeFiniteNumber(item.nextStationDistanceMeters, 0))),
-    nextStationEtaSeconds: Math.max(0, Math.round(sanitizeFiniteNumber(item.nextStationEtaSeconds, 0))),
-    nextTargetKind: String(item.nextTargetKind || '').trim().slice(0, 32),
-    nextTargetLabel: String(item.nextTargetLabel || '').trim().slice(0, 96),
-    nextTargetSource: String(item.nextTargetSource || '').trim().slice(0, 32),
-    nextTargetSector: Math.max(0, Math.round(sanitizeFiniteNumber(item.nextTargetSector, 0))),
-    nextTargetCoordinate: Math.max(0, Math.round(sanitizeFiniteNumber(item.nextTargetCoordinate, 0))),
-    nextTargetDistanceMeters: Math.max(0, Math.round(sanitizeFiniteNumber(item.nextTargetDistanceMeters, 0))),
-    nextTargetEtaSeconds: Math.max(0, Math.round(sanitizeFiniteNumber(item.nextTargetEtaSeconds, 0))),
-    nextTargetUpdatedAt: normalizeIsoish(item.nextTargetUpdatedAt),
-    routeFromName: String(item.routeFromName || '').trim().slice(0, 96),
-    routeToName: String(item.routeToName || '').trim().slice(0, 96),
-    routeStatus: String(item.routeStatus || '').trim().slice(0, 32),
-    routeFromCoordinate: Math.max(0, Math.round(sanitizeFiniteNumber(item.routeFromCoordinate, 0))),
-    routeToCoordinate: Math.max(0, Math.round(sanitizeFiniteNumber(item.routeToCoordinate, 0))),
-    routeDistanceMeters: Math.max(0, Math.round(sanitizeFiniteNumber(item.routeDistanceMeters, 0))),
-    routePassedMeters: Math.max(0, Math.round(sanitizeFiniteNumber(item.routePassedMeters, 0))),
-    routeRemainingMeters: Math.max(0, Math.round(sanitizeFiniteNumber(item.routeRemainingMeters, 0))),
-    routeOutsideMeters: Math.max(0, Math.round(sanitizeFiniteNumber(item.routeOutsideMeters, 0))),
-    routeProgressPct: Math.max(0, Math.min(100, Math.round(sanitizeFiniteNumber(item.routeProgressPct, 0) * 10) / 10)),
-    routeEtaSeconds: Math.max(0, Math.round(sanitizeFiniteNumber(item.routeEtaSeconds, 0))),
-    points,
-    startPoint,
-    endPoint,
-    lastPoint,
-    createdAt: normalizeIsoish(item.createdAt) || startedAt,
-    updatedAt: normalizeIsoish(item.updatedAt) || normalizeIsoish(item.endedAt) || startedAt,
-    deletedAt: normalizeIsoish(item.deletedAt),
-  };
-}
-
-function sanitizeAndValidatePoekhaliRunsPayload(payload) {
-  if (!payload || typeof payload !== 'object' || Array.isArray(payload)) {
-    throw new Error('Expected JSON object payload');
-  }
-  const source = Array.isArray(payload.runs) ? payload.runs : [];
-  if (source.length > MAX_POEKHALI_RUNS_PER_PAYLOAD) {
-    throw new Error('Too many Poekhali runs');
-  }
-  return source
-    .map((item) => sanitizePoekhaliRunItem(item))
-    .filter(Boolean)
-    .sort((a, b) => {
-      const aTime = Date.parse(a.startedAt || a.createdAt || '') || 0;
-      const bTime = Date.parse(b.startedAt || b.createdAt || '') || 0;
-      if (aTime !== bTime) return bTime - aTime;
-      return a.id.localeCompare(b.id);
-    });
-}
-
-function readPoekhaliRuns(sid) {
-  const file = getUserPoekhaliRunsFile(sid);
-  try {
-    if (!fs.existsSync(file)) return [];
-    const raw = fs.readFileSync(file, 'utf8');
-    return sanitizeAndValidatePoekhaliRunsPayload({ runs: JSON.parse(raw || '[]') });
-  } catch (err) {
-    logStructuredRateLimited('error', 'storage.poekhali_runs.read_failed', file, {
-      sid: normalizeSid(sid),
-      file,
-      error: toErrorMeta(err),
-    });
-    return [];
-  }
-}
-
-function writePoekhaliRuns(sid, runs) {
-  const file = getUserPoekhaliRunsFile(sid);
-  const normalized = sanitizeAndValidatePoekhaliRunsPayload({ runs: Array.isArray(runs) ? runs : [] });
-  atomicWriteFileSync(file, JSON.stringify(normalized, null, 2));
+  getStorage().writeUserState('poekhali_warnings', normalizeSid(sid), normalized);
   return normalized;
 }
 
 function readShifts(sid) {
-  const file = getUserFile(sid);
   try {
-    if (!fs.existsSync(file)) return [];
-    const raw = fs.readFileSync(file, 'utf8');
-    const parsed = JSON.parse(raw || '[]');
+    const parsed = getStorage().readShifts(normalizeSid(sid));
     if (!Array.isArray(parsed)) {
-      logStructuredRateLimited('warn', 'storage.shifts.invalid_file_shape', file, { sid: normalizeSid(sid), file });
+      logStructuredRateLimited('warn', 'storage.shifts.invalid_shape', normalizeSid(sid), { sid: normalizeSid(sid) });
       return [];
     }
     return parsed;
   } catch (err) {
-    logStructuredRateLimited('error', 'storage.shifts.read_failed', file, {
+    logStructuredRateLimited('error', 'storage.shifts.read_failed', normalizeSid(sid), {
       sid: normalizeSid(sid),
-      file,
       error: toErrorMeta(err),
     });
     return [];
@@ -1999,9 +1146,7 @@ function readShifts(sid) {
 }
 
 function writeShifts(sid, shifts) {
-  const file = getUserFile(sid);
-  const serialized = JSON.stringify(Array.isArray(shifts) ? shifts : [], null, 2);
-  atomicWriteFileSync(file, serialized);
+  getStorage().replaceShifts(normalizeSid(sid), Array.isArray(shifts) ? shifts : []);
   rememberShiftUserId(normalizeSid(sid));
 }
 
@@ -2031,17 +1176,13 @@ function listShiftUserIds() {
 
   const next = new Set();
   try {
-    if (fs.existsSync(USERS_DIR)) {
-      fs.readdirSync(USERS_DIR).forEach(fname => {
-        if (!fname.endsWith('.json')) return;
-        const uid = normalizeStatsUserId(fname.slice(0, -5));
-        if (!uid || uid === 'default') return;
-        next.add(uid);
-      });
-    }
+    getStorage().listShiftUserIds().forEach((rawSid) => {
+      const uid = normalizeStatsUserId(rawSid);
+      if (!uid || uid === 'default') return;
+      next.add(uid);
+    });
   } catch (e) {
-    logStructuredRateLimited('error', 'storage.shifts.list_user_ids_failed', USERS_DIR, {
-      dir: USERS_DIR,
+    logStructuredRateLimited('error', 'storage.shifts.list_user_ids_failed', 'sqlite', {
       error: toErrorMeta(e),
     });
   }
@@ -2110,17 +1251,11 @@ function sanitizeUserPresenceStore(rawStore) {
 }
 
 function loadUserPresenceStoreFromDisk() {
-  ensureDirs();
   try {
-    if (!fs.existsSync(USER_STATS_FILE)) {
-      return { users: {}, sessions: {} };
-    }
-    const raw = fs.readFileSync(USER_STATS_FILE, 'utf8');
-    const parsed = raw ? JSON.parse(raw) : {};
+    const parsed = getStorage().readAppState('user_presence', { users: {}, sessions: {} });
     return sanitizeUserPresenceStore(parsed);
   } catch (err) {
-    logStructuredRateLimited('error', 'storage.user_presence.read_failed', USER_STATS_FILE, {
-      file: USER_STATS_FILE,
+    logStructuredRateLimited('error', 'storage.user_presence.read_failed', 'sqlite', {
       error: toErrorMeta(err),
     });
     return { users: {}, sessions: {} };
@@ -2159,18 +1294,20 @@ function flushUserPresenceStoreNow() {
     return;
   }
 
-  ensureDirs();
   userPresenceStoreWriteInFlight = true;
   userPresenceStoreDirty = false;
   const snapshot = sanitizeUserPresenceStore(userPresenceStoreCache);
-  const serialized = JSON.stringify(snapshot, null, 2);
-
-  atomicWriteFile(USER_STATS_FILE, serialized, (err) => {
+  let err = null;
+  try {
+    getStorage().writeAppState('user_presence', snapshot);
+  } catch (error) {
+    err = error;
+  }
+  {
     userPresenceStoreWriteInFlight = false;
     if (err) {
       userPresenceStoreDirty = true;
-      logStructuredRateLimited('error', 'storage.user_presence.write_failed', USER_STATS_FILE, {
-        file: USER_STATS_FILE,
+      logStructuredRateLimited('error', 'storage.user_presence.write_failed', 'sqlite', {
         error: toErrorMeta(err),
       });
     } else {
@@ -2181,7 +1318,7 @@ function flushUserPresenceStoreNow() {
       userPresenceStoreFlushQueued = false;
       scheduleUserPresenceStoreFlush(USER_PRESENCE_FLUSH_DELAY_MS);
     }
-  });
+  }
 }
 
 function flushUserPresenceStoreSyncOnShutdown() {
@@ -2191,14 +1328,12 @@ function flushUserPresenceStoreSyncOnShutdown() {
     userPresenceStoreFlushTimer = null;
   }
   try {
-    ensureDirs();
     const snapshot = sanitizeUserPresenceStore(userPresenceStoreCache);
-    atomicWriteFileSync(USER_STATS_FILE, JSON.stringify(snapshot, null, 2));
+    getStorage().writeAppState('user_presence', snapshot);
     userPresenceStoreCache = snapshot;
     userPresenceStoreDirty = false;
   } catch (e) {
-    logStructuredRateLimited('error', 'storage.user_presence.shutdown_flush_failed', USER_STATS_FILE, {
-      file: USER_STATS_FILE,
+    logStructuredRateLimited('error', 'storage.user_presence.shutdown_flush_failed', 'sqlite', {
       error: toErrorMeta(e),
     });
   }
@@ -2266,7 +1401,7 @@ function readJsonFileForAdmin(filePath, fallback) {
 }
 
 function readDocsManifestForAdmin() {
-  const dynamicManifest = readJsonFileForAdmin(DOCS_MANIFEST_FILE, null);
+  const dynamicManifest = getStorage().readAppState('docs_manifest', null);
   if (dynamicManifest && typeof dynamicManifest === 'object' && !Array.isArray(dynamicManifest)) {
     return enrichDocsManifestDisplay(sanitizeDocsManifest(dynamicManifest), false);
   }
@@ -2380,7 +1515,9 @@ function sanitizePoekhaliMapConfig(payload) {
 }
 
 function readPoekhaliMapConfig() {
-  return sanitizePoekhaliMapConfig(readJsonFileForAdmin(ADMIN_POEKHALI_MAP_FILE, getDefaultPoekhaliMapConfig()));
+  return sanitizePoekhaliMapConfig(
+    getStorage().readAppState('admin_poekhali_map', getDefaultPoekhaliMapConfig())
+  );
 }
 
 function sanitizeDocsManifest(payload) {
@@ -2732,11 +1869,13 @@ function touchUserPresence(userId, sessionId, platform) {
 
 process.on('SIGINT', () => {
   flushUserPresenceStoreSyncOnShutdown();
+  closeStorage();
   process.exit(0);
 });
 
 process.on('SIGTERM', () => {
   flushUserPresenceStoreSyncOnShutdown();
+  closeStorage();
   process.exit(0);
 });
 
@@ -3092,14 +2231,13 @@ function storeTelegramFeedback(message, chatId, kind, text) {
   };
 
   try {
-    const current = readJsonFile(FEEDBACK_FILE, []);
+    const current = getStorage().readAppState('feedback', []);
     const items = Array.isArray(current) ? current : [];
     items.push(entry);
     const capped = items.slice(-1000);
-    atomicWriteFileSync(FEEDBACK_FILE, JSON.stringify(capped, null, 2));
+    getStorage().writeAppState('feedback', capped);
   } catch (err) {
     logStructuredRateLimited('error', 'storage.feedback.write_failed', `feedback:${kind}`, {
-      file: FEEDBACK_FILE,
       kind,
       error: toErrorMeta(err),
     });
@@ -3150,7 +2288,11 @@ async function handleTelegramFeedbackCommand(token, message, chatId, normalizedT
 }
 
 const server = http.createServer(async (req, res) => {
-  const parsedUrl = url.parse(req.url, true);
+  const requestUrl = new URL(req.url || '/', `http://${req.headers.host || 'localhost'}`);
+  const parsedUrl = {
+    pathname: requestUrl.pathname,
+    query: Object.fromEntries(requestUrl.searchParams.entries()),
+  };
   const pathname = parsedUrl.pathname || '/';
   const requestUser = getUserFromRequest(req);
   const telegramUserId = requestUser ? String(requestUser.id || '') : '';
@@ -3496,8 +2638,6 @@ const server = http.createServer(async (req, res) => {
     return;
   }
 
-  // /api/poekhali-learning removed: GPS-track learning and its sync were dropped.
-
   if (pathname === '/api/poekhali-warnings') {
     if (!sid) {
       sendJson(res, 401, { error: 'Unauthorized' });
@@ -3530,8 +2670,6 @@ const server = http.createServer(async (req, res) => {
     sendJson(res, 405, { error: 'Method not allowed' });
     return;
   }
-
-  // /api/poekhali-runs removed: trip recording was dropped.
 
   if (pathname === '/api/salary-params') {
     if (!sid) {
@@ -3701,6 +2839,22 @@ const server = http.createServer(async (req, res) => {
   serveFile(res, filePath, normalized);
 });
 
-server.listen(PORT, () => {
-  console.log(`Shift tracker server listening on http://localhost:${PORT}`);
-});
+function startServer(port) {
+  initializeStorage();
+  const listenPort = port === undefined ? PORT : port;
+  return server.listen(listenPort, () => {
+    const address = server.address();
+    const actualPort = address && typeof address === 'object' ? address.port : listenPort;
+    console.log(`Shift tracker server listening on http://localhost:${actualPort}`);
+  });
+}
+
+if (require.main === module) {
+  startServer();
+}
+
+module.exports = {
+  server,
+  startServer,
+  closeStorage,
+};

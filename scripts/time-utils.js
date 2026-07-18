@@ -660,8 +660,8 @@
       try {
         if (typeof hasFuelData === 'function' && hasFuelData(shift) && typeof getFuelConsumptionTotalsFromShift === 'function') {
           var ft = getFuelConsumptionTotalsFromShift(shift);
-          if (ft && ft.consumptionLiters > 0) {
-            pushRow('Расход', ruNum(ft.consumptionLiters) + ' л');
+          if (ft && ft.consumptionKg > 0) {
+            pushRow('Расход', ruNum(ft.consumptionKg) + ' кг');
           }
         }
       } catch (e) {}
@@ -680,7 +680,6 @@
         var s = parseMsk(shift && shift.start_msk);
         var e = parseMsk(shift && shift.end_msk);
         if (!s || !e) return '';
-        var dows = ['вс','пн','вт','ср','чт','пт','сб'];
         var months = ['янв','фев','мар','апр','май','июн','июл','авг','сен','окт','ноя','дек'];
         // parseMsk returns the UTC instant; read MSK clock by shifting +MSK_OFFSET
         // and using UTC getters, so the display is Moscow time on any device.
@@ -698,30 +697,6 @@
         var endLabel = sameDay ? endHM : (ep.d + ' ' + months[ep.mo] + ' ' + endHM);
         return sp.d + ' ' + months[sp.mo] + ' · ' + startHM + ' → ' + endLabel;
       } catch (err) { return ''; }
-    }
-
-    function buildShiftMetaCellsHtml(shift, durationText, incomeText) {
-      // Financial group only: Доход + Расход(топливо). Duration now lives on the
-      // time line and loco/train in the consist line — kept logically grouped.
-      var fuelVal = '—';
-      try {
-        if (typeof hasFuelData === 'function' && hasFuelData(shift) && typeof getFuelConsumptionTotalsFromShift === 'function') {
-          var ft = getFuelConsumptionTotalsFromShift(shift);
-          if (ft && ft.liters > 0) fuelVal = ruNum(ft.liters) + ' л';
-        }
-      } catch (e) {}
-      var incomeVal = (incomeText && String(incomeText).trim()) ? escapeHtml(String(incomeText).trim()) : '—';
-      return '' +
-        '<div class="shift-meta shift-meta-fin">' +
-          '<div class="shift-meta-item income">' +
-            '<div class="shift-meta-label">Доход</div>' +
-            '<div class="shift-meta-value num">' + incomeVal + '</div>' +
-          '</div>' +
-          '<div class="shift-meta-item">' +
-            '<div class="shift-meta-label">Расход</div>' +
-            '<div class="shift-meta-value num">' + fuelVal + '</div>' +
-          '</div>' +
-        '</div>';
     }
 
     function getShiftTypeLabel(shift) {
@@ -918,18 +893,6 @@
       var eta = formatPoekhaliTargetEta(target.etaSeconds);
       var text = distance > 0 ? title + ' через ' + formatShiftPoekhaliDistance(distance) : title;
       if (eta && distance > 0) text += ' | ' + eta;
-      return text;
-    }
-
-    function formatShiftPoekhaliTrainLength(shift) {
-      var meters = getShiftPoekhaliNumber(shift, 'poekhali_train_length_m');
-      if (!meters) return '';
-      var source = String(shift && shift.poekhali_train_length_source || '').trim();
-      var label = String(shift && shift.poekhali_train_length_label || '').trim();
-      var text = meters + ' м';
-      if (source === 'по осям') text = '~' + text;
-      if (label && label !== text) text += ' · ' + label;
-      if (source) text += ' · ' + source;
       return text;
     }
 

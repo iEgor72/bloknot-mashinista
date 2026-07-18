@@ -1,0 +1,583 @@
+/* ── Forms — preserve structure, restyle ────────────────────────── */
+.form-section {
+  padding: 0;
+}
+.form-stage,
+.form-intro-card {
+  background:
+    linear-gradient(180deg, color-mix(in oklch, white 4%, transparent), transparent),
+    var(--bg-rise);
+  box-shadow: inset 0 0 0 1px var(--hair);
+  border: 0;
+  border-radius: var(--r-card);
+  padding: 14px;
+  margin-bottom: 12px;
+}
+.form-title {
+  font: 700 22px/1.05 'Manrope';
+  letter-spacing: -0.02em;
+  color: var(--ink);
+}
+/* Top-bar already shows the page title — hide duplicated inner titles. */
+.tab-panel[data-tab="add"] .form-title-row,
+.tab-panel[data-tab="add"] .form-intro-card {
+  display: none;
+}
+/* When the same form is mounted inside the edit overlay — keep the title row visible
+   (it shows "Редактировать смену" + edit badge), but still hide the intro card. */
+#editShiftMount .form-title-row { display: flex !important; }
+#editShiftMount .form-intro-card { display: none !important; }
+.tab-panel[data-tab="instructions"] .docs-entry-card > .docs-nav-copy .docs-nav-title {
+  display: none;
+}
+.tab-panel[data-tab="instructions"] .docs-entry-card > .docs-nav-copy {
+  padding-bottom: 0;
+  margin-bottom: 4px;
+}
+.tab-panel[data-tab="shifts"] #shiftsHeader { display: none; }
+
+/* Edit-shift overlay polish */
+.edit-shift-sheet {
+  padding: 16px 14px 32px !important;
+  max-height: 92vh;
+  overflow-y: auto;
+}
+#editShiftMount {
+  padding: 0;
+}
+/* The form-section is set to padding:0 globally; inside the edit sheet it still
+   shows the amber `is-editing` frame, so without interior padding the title and
+   badge hug its left border. Give the framed card breathing room. */
+#editShiftMount > .form-section {
+  padding: 16px;
+}
+#editShiftMount .form-title-row {
+  /* Title on the left, edit badge pinned to the right, vertically centred. */
+  flex-direction: row;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  margin: 6px 0 20px;
+}
+#editShiftMount .form-title-leading { min-width: 0; }
+#editShiftMount .edit-badge { order: 0; flex: 0 0 auto; }
+#editShiftMount .form-title {
+  font: 700 22px/1.1 'Manrope';
+  letter-spacing: -0.01em;
+}
+#editShiftMount .edit-badge {
+  display: inline-flex;
+  align-items: center;
+  padding: 5px 10px;
+  border-radius: 999px;
+  background: var(--warn-soft);
+  color: var(--warn);
+  font: 700 10px/1 'Manrope';
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  box-shadow: inset 0 0 0 1px color-mix(in oklch, var(--warn) 28%, transparent);
+}
+#editShiftMount .form-edit-banner {
+  background: var(--warn-soft);
+  box-shadow: inset 0 0 0 1px color-mix(in oklch, var(--warn) 28%, transparent);
+  border: 0;
+  border-radius: 14px;
+  padding: 12px;
+  margin-bottom: 14px;
+  color: var(--ink);
+}
+#editShiftMount .form-edit-banner-title {
+  font: 700 13px/1.2 'Manrope';
+  color: var(--ink);
+}
+#editShiftMount .form-edit-banner-text {
+  font: 500 12px/1.4 'Manrope';
+  color: var(--ink-2);
+  margin-top: 4px;
+}
+#editShiftMount .form-actions {
+  display: grid;
+  gap: 8px;
+  margin-top: 16px;
+}
+#editShiftMount .btn-primary {
+  width: 100%;
+  height: 48px;
+  border-radius: 14px;
+}
+#editShiftMount .btn-secondary {
+  width: 100%;
+  height: 44px;
+  border-radius: 12px;
+}
+#editShiftMount .btn-danger {
+  width: 100%;
+  height: 44px;
+  border-radius: 12px;
+}
+.form-stage-kicker {
+  font: 600 10px/1 'Manrope';
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--ink-3);
+}
+.form-stage-title {
+  font: 700 14px/1.2 'Manrope';
+  color: var(--ink);
+  margin-top: 4px;
+}
+
+.optional-card {
+  background: var(--bg-rise-2) !important;
+  box-shadow: inset 0 0 0 1px var(--hair);
+  border: 0 !important;
+  border-radius: 16px;
+  margin-bottom: 8px;
+}
+.optional-summary {
+  padding: 14px;
+}
+.optional-summary-title {
+  font: 700 14px/1.15 'Manrope';
+  color: var(--ink);
+}
+.optional-summary-subtitle {
+  font: 500 11px/1.3 'Manrope';
+  color: var(--ink-3);
+}
+.optional-control,
+.field input[type="date"],
+.field input[type="time"],
+.field input[type="text"],
+.field input[type="number"],
+.field textarea {
+  background: color-mix(in oklch, black 24%, transparent) !important;
+  border: 1px solid var(--hair) !important;
+  box-shadow: inset 0 0 0 1px var(--hair);
+  color: var(--ink);
+  border-radius: 12px;
+  font-family: 'Manrope', sans-serif;
+  padding: 10px 14px !important;
+  min-height: 44px;
+}
+.field input[type="date"],
+.field input[type="time"] {
+  padding-right: 10px !important;
+}
+.tab-panel[data-tab="add"] .field {
+  min-width: 0;
+}
+.tab-panel[data-tab="add"] .field input {
+  width: 100%;
+}
+.optional-control:focus,
+.field input:focus,
+.field textarea:focus {
+  border-color: color-mix(in oklch, var(--accent) 50%, transparent) !important;
+  box-shadow:
+    inset 0 0 0 1px color-mix(in oklch, var(--accent) 50%, transparent),
+    0 0 0 3px color-mix(in oklch, var(--accent) 18%, transparent);
+}
+
+.draft-stats-grid {
+  background:
+    linear-gradient(180deg, color-mix(in oklch, white 3%, transparent), transparent),
+    var(--bg-rise);
+  box-shadow: inset 0 0 0 1px var(--hair);
+  border-radius: 14px;
+  padding: 14px 10px;
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 0;
+  align-items: center;
+}
+.draft-stat {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 4px;
+  padding: 0 8px;
+  border-right: 1px solid color-mix(in oklch, white 6%, transparent);
+}
+.draft-stat:last-child { border-right: 0; }
+
+/* Segmented (Поездка / Смена) — full-width with two equal columns */
+.tab-panel[data-tab="add"] .segmented,
+.tab-panel[data-tab="add"] .route-segmented {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  padding: 4px;
+  border-radius: 14px;
+  background: color-mix(in oklch, black 28%, transparent);
+  box-shadow: inset 0 0 0 1px var(--hair);
+  gap: 4px;
+  margin-bottom: 12px;
+  width: 100%;
+}
+.tab-panel[data-tab="add"] .segmented-btn {
+  background: transparent !important;
+  border: 0 !important;
+  border-radius: 10px !important;
+  color: var(--ink-2) !important;
+  padding: 10px 12px !important;
+  min-height: 38px;
+  font: 600 13px/1 'Manrope' !important;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+}
+.tab-panel[data-tab="add"] .segmented-btn:hover {
+  color: var(--ink) !important;
+}
+.tab-panel[data-tab="add"] .segmented-btn.is-active,
+.tab-panel[data-tab="add"] .segmented-btn[aria-pressed="true"],
+.tab-panel[data-tab="add"] .segmented-btn.active {
+  background: linear-gradient(180deg, var(--accent), var(--accent-2)) !important;
+  color: var(--accent-ink) !important;
+  box-shadow:
+    0 6px 14px -6px var(--accent-glow),
+    inset 0 1px 0 color-mix(in oklch, white 40%, transparent) !important;
+}
+
+/* Disclosure toggle (Открыть/Скрыть детали) */
+.details-disclosure-btn {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 14px;
+  border: 0;
+  border-radius: var(--r-card);
+  background:
+    linear-gradient(180deg, color-mix(in oklch, white 4%, transparent), transparent),
+    var(--bg-rise);
+  box-shadow: inset 0 0 0 1px var(--hair);
+  color: var(--ink);
+  cursor: pointer;
+  text-align: left;
+  margin: 12px 0;
+}
+.details-disclosure-btn:hover {
+  background:
+    linear-gradient(180deg, color-mix(in oklch, white 6%, transparent), transparent),
+    var(--bg-rise);
+  box-shadow: inset 0 0 0 1px var(--hair-strong);
+}
+.details-disclosure-copy {
+  flex: 1;
+  min-width: 0;
+}
+.details-disclosure-title {
+  font: 700 13px/1.2 'Manrope';
+  color: var(--ink);
+  display: block;
+}
+.details-disclosure-note {
+  font: 500 11px/1.4 'Manrope';
+  color: var(--ink-3);
+  display: block;
+  margin-top: 4px;
+}
+.details-disclosure-icon {
+  width: 32px;
+  height: 32px;
+  border-radius: 11px;
+  background: var(--accent-soft);
+  color: var(--accent);
+  display: grid;
+  place-items: center;
+  flex-shrink: 0;
+  box-shadow: inset 0 0 0 1px color-mix(in oklch, var(--accent) 28%, transparent);
+  transition: transform .25s cubic-bezier(.2, .7, .3, 1), background .2s ease, box-shadow .2s ease;
+}
+.details-disclosure-icon svg {
+  width: 16px;
+  height: 16px;
+  display: block;
+}
+.details-disclosure-btn:hover .details-disclosure-icon {
+  background: color-mix(in oklch, var(--accent) 26%, transparent);
+  box-shadow: inset 0 0 0 1px color-mix(in oklch, var(--accent) 44%, transparent);
+}
+.details-disclosure-btn[aria-expanded="true"] .details-disclosure-icon {
+  transform: rotate(180deg);
+  background: color-mix(in oklch, var(--accent) 26%, transparent);
+  box-shadow: inset 0 0 0 1px color-mix(in oklch, var(--accent) 44%, transparent);
+}
+
+.optional-section-title {
+  font: 700 11px/1 'Manrope';
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--ink-3);
+  margin: 14px 4px 8px;
+}
+
+.optional-summary-chevron {
+  color: var(--ink-2);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 26px;
+  height: 26px;
+  border-radius: 9px;
+  background: var(--glass);
+  box-shadow: inset 0 0 0 1px var(--hair);
+  flex-shrink: 0;
+  transition: transform .2s ease, background .2s ease, color .2s ease, box-shadow .2s ease;
+}
+.optional-summary-chevron svg {
+  width: 14px;
+  height: 14px;
+  display: block;
+}
+details.optional-card[open] .optional-summary-chevron {
+  transform: rotate(180deg);
+  color: var(--accent);
+  background: var(--accent-soft);
+  box-shadow: inset 0 0 0 1px color-mix(in oklch, var(--accent) 26%, transparent);
+}
+
+/* Fuel sections — stack Прием → Сдача vertically (was 2-col, columns clipped on phones) */
+.fuel-columns {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+.fuel-column-title {
+  font: 700 11px/1 'Manrope';
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--ink-3);
+  margin-bottom: 10px;
+}
+.fuel-sections {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+.fuel-section-row {
+  background: color-mix(in oklch, black 24%, transparent);
+  border-radius: 12px;
+  padding: 12px;
+  box-shadow: inset 0 0 0 1px var(--hair);
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+.fuel-section-top,
+.fuel-section-bottom {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  min-width: 0;
+}
+.fuel-section-bottom {
+  padding-top: 10px;
+  border-top: 1px dashed color-mix(in oklch, white 6%, transparent);
+}
+.fuel-section-label {
+  font: 700 14px/1 'JetBrains Mono';
+  color: var(--accent);
+  letter-spacing: 0.04em;
+  width: 26px;
+  min-width: 26px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+.fuel-inline-wrap {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  min-width: 0;
+}
+.fuel-section-top .fuel-inline-wrap {
+  margin-left: auto;
+}
+/* Bottom row: K should align with A — give first wrap its own 26px prefix slot */
+.fuel-section-bottom > .fuel-inline-wrap:first-child {
+  flex: 0 0 auto;
+}
+.fuel-section-bottom > .fuel-inline-wrap:first-child .fuel-inline-prefix {
+  width: 26px;
+  min-width: 26px;
+  text-align: center;
+  margin: 0;
+  font: 700 13px/1 'JetBrains Mono';
+  color: var(--accent);
+  flex-shrink: 0;
+}
+.fuel-section-bottom > .fuel-inline-wrap:last-child {
+  margin-left: auto;
+}
+.fuel-inline-input {
+  width: 84px;
+  min-width: 0;
+  text-align: center;
+  padding: 6px 8px !important;
+  min-height: 34px !important;
+  font: 700 13px/1 'JetBrains Mono', monospace !important;
+  font-variant-numeric: tabular-nums;
+  letter-spacing: 0.04em;
+}
+.fuel-coeff-inline {
+  width: 70px;
+}
+.fuel-kg-output {
+  width: 76px;
+  opacity: 0.75;
+}
+.fuel-inline-unit,
+.fuel-inline-prefix {
+  font: 600 11px/1 'Manrope';
+  color: var(--ink-3);
+  flex-shrink: 0;
+}
+.fuel-kg-output {
+  opacity: 0.7;
+}
+.fuel-consumption-note {
+  margin-top: 12px;
+  padding: 12px;
+  border-radius: 12px;
+  background: var(--accent-soft);
+  box-shadow: inset 0 0 0 1px color-mix(in oklch, var(--accent) 22%, transparent);
+}
+.fuel-consumption-sections {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  margin-bottom: 6px;
+}
+.fuel-consumption-chip {
+  font: 600 11px/1 'JetBrains Mono';
+  color: var(--ink-2);
+  background: var(--glass);
+  padding: 5px 8px;
+  border-radius: 999px;
+  box-shadow: inset 0 0 0 1px var(--hair);
+}
+.fuel-consumption-chip strong {
+  color: var(--accent);
+}
+.fuel-consumption-total {
+  font: 700 13px/1.2 'JetBrains Mono';
+  color: var(--accent);
+}
+
+/* Loco series dropdown — optgroup headings */
+.glass-select-group {
+  font: 600 9px/1 'Manrope', sans-serif;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--ink-3);
+  padding: 12px 14px 6px;
+  background: transparent;
+  user-select: none;
+  -webkit-user-select: none;
+}
+.glass-select-group:first-child { padding-top: 6px; }
+
+/* Fuel placeholder when no loco series is selected. */
+.fuel-needs-loco {
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+  padding: 14px;
+  border-radius: 14px;
+  background: color-mix(in oklch, var(--warn) 10%, transparent);
+  box-shadow: inset 0 0 0 1px color-mix(in oklch, var(--warn) 25%, transparent);
+}
+.fuel-needs-loco-ico {
+  width: 32px;
+  height: 32px;
+  border-radius: 10px;
+  background: var(--warn-soft);
+  color: var(--warn);
+  display: grid;
+  place-items: center;
+  flex-shrink: 0;
+  box-shadow: inset 0 0 0 1px color-mix(in oklch, var(--warn) 28%, transparent);
+}
+.fuel-needs-loco-ico svg { width: 18px; height: 18px; }
+.fuel-needs-loco-title {
+  font: 700 13px/1.2 'Manrope';
+  color: var(--ink);
+}
+.fuel-needs-loco-text {
+  font: 500 11px/1.4 'Manrope';
+  color: var(--ink-3);
+  margin-top: 4px;
+}
+/* Fuel sections are gated by data-loco-sections on #shiftFormSection — which
+   moves with the form between the Add tab and the edit sheet (so the gating
+   works in both, unlike keying off the add panel). */
+#shiftFormSection .fuel-columns,
+#shiftFormSection .fuel-consumption-note {
+  display: none;
+}
+#shiftFormSection .fuel-needs-loco {
+  display: flex;
+}
+#shiftFormSection[data-loco-sections="1"] .fuel-columns,
+#shiftFormSection[data-loco-sections="2"] .fuel-columns,
+#shiftFormSection[data-loco-sections="3"] .fuel-columns {
+  display: flex;
+}
+#shiftFormSection[data-loco-sections="1"] .fuel-consumption-note,
+#shiftFormSection[data-loco-sections="2"] .fuel-consumption-note,
+#shiftFormSection[data-loco-sections="3"] .fuel-consumption-note {
+  display: block;
+}
+#shiftFormSection[data-loco-sections="1"] .fuel-needs-loco,
+#shiftFormSection[data-loco-sections="2"] .fuel-needs-loco,
+#shiftFormSection[data-loco-sections="3"] .fuel-needs-loco {
+  display: none;
+}
+
+/* Loco-series-driven fuel sections — show A/B/V depending on loco type. */
+#shiftFormSection [data-fuel-section="b"],
+#shiftFormSection [data-fuel-section="v"] {
+  display: none;
+}
+#shiftFormSection[data-loco-sections="2"] [data-fuel-section="b"],
+#shiftFormSection[data-loco-sections="3"] [data-fuel-section="b"],
+#shiftFormSection[data-loco-sections="3"] [data-fuel-section="v"] {
+  display: revert;
+}
+.draft-stat-value {
+  font: 700 18px/1 'JetBrains Mono';
+  font-variant-numeric: tabular-nums;
+}
+.draft-stat-value.night { color: var(--night); }
+.draft-stat-value.holiday { color: var(--holiday); }
+
+/* ── Primary buttons ────────────────────────────────────────────── */
+.btn-primary,
+.btn-sheet-save {
+  background: linear-gradient(180deg, var(--accent), var(--accent-2));
+  color: var(--accent-ink);
+  border: 0;
+  border-radius: 14px;
+  box-shadow:
+    0 14px 28px -8px var(--accent-glow),
+    inset 0 1px 0 color-mix(in oklch, white 50%, transparent),
+    inset 0 -1px 0 color-mix(in oklch, black 14%, transparent);
+  font: 700 14px/1 'Manrope';
+  letter-spacing: 0.01em;
+}
+.btn-primary:active,
+.btn-sheet-save:active {
+  filter: brightness(0.96);
+}
+
+.btn-secondary {
+  background: var(--accent-soft);
+  border: 1px solid color-mix(in oklch, var(--accent) 28%, transparent);
+  color: var(--accent);
+  border-radius: 12px;
+}
+.btn-link { color: var(--accent); }

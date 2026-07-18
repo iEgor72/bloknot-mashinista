@@ -1,0 +1,449 @@
+    /* ── Quick stats grid (3 columns) ── */
+    .quick-stats-grid {
+      display: grid;
+      gap: 12px;
+      margin-bottom: 20px;
+      padding: 16px;
+      border-radius: var(--r-card);
+      background: var(--card);
+      border: 1px solid var(--border);
+      box-shadow: none;
+      overflow: visible;
+    }
+    .quick-stats-grid::before,
+    .quick-stats-grid::after { content: none; }
+
+    .quick-stats-grid > * { position: relative; z-index: 1; }
+
+    .quick-stats-head {
+      display: flex;
+      align-items: baseline;
+      justify-content: space-between;
+      gap: 10px;
+      min-width: 0;
+    }
+
+    .quick-stats-title {
+      font-size: 10px;
+      font-weight: 800;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: var(--muted);
+    }
+
+    .quick-stats-note {
+      font-size: 11px;
+      color: var(--sub);
+      font-weight: 700;
+      letter-spacing: 0.04em;
+      text-transform: none;
+    }
+
+    .quick-stats-row {
+      display: grid;
+      grid-template-columns: minmax(0, 1fr) minmax(0, 1.22fr) minmax(0, 1fr);
+      align-items: stretch;
+      gap: 10px;
+    }
+
+    .quick-stat {
+      position: relative;
+      padding: 14px 10px 12px;
+      display: grid;
+      grid-template-rows: minmax(0, 1fr) auto;
+      align-items: center;
+      justify-items: center;
+      text-align: center;
+      min-height: 92px;
+      min-width: 0;
+      border-radius: 16px;
+      border: 1px solid var(--border);
+      background: var(--card-hi);
+      box-shadow: none;
+    }
+
+    .quick-stat + .quick-stat {
+      border-left: none;
+      padding-left: 10px;
+    }
+
+    .quick-stat-value {
+      position: static;
+      transform: none;
+      font-family: 'JetBrains Mono', monospace;
+      font-size: clamp(16px, 4.4vw, 21px);
+      font-weight: 700;
+      line-height: 1.05;
+      letter-spacing: -0.05em;
+      color: var(--text);
+      min-width: 0;
+      width: 100%;
+      max-width: 100%;
+      text-align: center;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: clip;
+      font-variant-numeric: tabular-nums;
+      align-self: center;
+      padding-top: 4px;
+    }
+
+    .quick-stat-value.night   { color: var(--accent); }
+    .quick-stat-value.holiday { color: var(--holiday); }
+    .quick-stat-value.shifts  { color: var(--text); }
+
+    .quick-stat.quick-stat-primary {
+      background: var(--card-hi);
+      border-color: var(--border-hi);
+      min-height: 102px;
+      padding-bottom: 14px;
+    }
+
+    .quick-stat.quick-stat-primary .quick-stat-value {
+      font-size: 27px;
+      font-weight: 700;
+      letter-spacing: -0.03em;
+    }
+
+    .quick-stat.quick-stat-primary .stat-label {
+      font-size: 10px;
+      letter-spacing: 0.06em;
+    }
+
+    .quick-stats-grid .stat-label {
+      display: block;
+      width: 100%;
+      margin-top: 10px;
+      padding: 0 4px 2px;
+      font-size: 10px;
+      font-weight: 700;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+      color: rgba(238, 242, 248, 0.74);
+      text-align: center;
+      line-height: 1.3;
+      min-height: 2.6em;
+      overflow: visible;
+    }
+
+    @media (max-width: 380px) {
+      .quick-stats-row {
+        gap: 8px;
+      }
+
+      .quick-stat {
+        padding: 14px 8px 12px;
+      }
+
+      .quick-stat-value {
+        font-size: 15px;
+      }
+
+      .quick-stat.quick-stat-primary .quick-stat-value {
+        font-size: 25px;
+      }
+    }
+
+    .quick-stat-value.is-updated {
+      animation: quickMetricPulse 0.45s ease;
+    }
+
+    @keyframes quickMetricPulse {
+      0%   { opacity: 1; }
+      30%  { opacity: 0.6; }
+      100% { opacity: 1; }
+    }
+
+    /* ── Section headers ── */
+    .section-header {
+      font-size: 10px;
+      font-weight: 800;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: rgba(238, 242, 248, 0.60);
+      margin-bottom: 12px;
+    }
+
+    .section-header-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 10px;
+      margin-bottom: 14px;
+      padding-top: 2px;
+    }
+
+    .section-link {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      min-height: 34px;
+      padding: 0 13px;
+      background: rgba(56, 189, 248, 0.08);
+      border: 1px solid rgba(56, 189, 248, 0.18);
+      color: var(--accent);
+      font-family: 'Manrope', sans-serif;
+      font-size: 12px;
+      font-weight: 700;
+      cursor: pointer;
+      border-radius: 999px;
+      box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.03);
+      transition: border-color 0.16s ease, background 0.16s ease, color 0.16s ease, transform 0.12s ease;
+      -webkit-tap-highlight-color: transparent;
+    }
+
+    .section-link:active {
+      border-color: rgba(56, 189, 248, 0.22);
+      background: rgba(56, 189, 248, 0.08);
+      transform: translateY(1px);
+    }
+
+    .usage-stats-note {
+      margin-top: 10px;
+      text-align: center;
+      color: var(--sub);
+      opacity: 0.92;
+    }
+
+    .usage-stats-shell-cache {
+      margin-top: 5px;
+      text-align: center;
+      font-size: 10px;
+      font-weight: 600;
+      letter-spacing: 0.03em;
+      color: var(--sub);
+      opacity: 0.62;
+    }
+
+    /* ── Stat cards (standalone) ── */
+    .stats-grid {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 10px;
+      margin-bottom: 20px;
+    }
+
+    .stat-card {
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: var(--r-card);
+      padding: 14px;
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+    }
+
+    .stat-label {
+      font-size: 10px;
+      font-weight: 800;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: var(--muted);
+    }
+
+    .stat-value {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 18px;
+      font-weight: 700;
+      color: var(--text);
+      line-height: 1.2;
+    }
+
+    .stat-value.overtime  { color: var(--warn); }
+    .stat-value.ok        { color: var(--green); }
+    .stat-value.remaining { color: var(--sub); }
+    .stat-value.night     { color: var(--accent); }
+    .stat-value.holiday   { color: var(--holiday); }
+
+    /* ── Salary cards ── */
+    .salary-card,
+    .settings-card {
+      background: linear-gradient(180deg, rgba(255, 255, 255, 0.025), rgba(255, 255, 255, 0.012)), var(--card);
+      border: 1px solid var(--border);
+      border-radius: var(--r-card);
+      padding: 18px;
+      margin-bottom: 14px;
+      overflow: visible;
+      box-shadow: 0 14px 30px rgba(0, 0, 0, 0.14);
+    }
+
+    .settings-card {
+      display: grid;
+      gap: 14px;
+    }
+
+    .salary-summary-card {
+      padding: 20px 18px;
+    }
+
+    .salary-month-nav {
+      margin-bottom: 12px;
+    }
+
+    .salary-total-amount {
+      margin-top: 8px;
+      font-family: 'JetBrains Mono', monospace;
+      font-size: clamp(40px, 10vw, 54px);
+      line-height: 1;
+      font-weight: 700;
+      letter-spacing: -0.04em;
+      color: var(--green);
+      font-variant-numeric: tabular-nums;
+    }
+
+    .salary-total-caption {
+      margin-top: 8px;
+      color: rgba(238, 242, 248, 0.62);
+      font-size: 13px;
+      line-height: 1.45;
+    }
+
+    .salary-disclaimer {
+      font-size: 11px;
+      line-height: 1.5;
+      color: rgba(238, 242, 248, 0.54);
+      margin: 8px 4px 16px;
+    }
+
+    .salary-list {
+      display: grid;
+      gap: 0;
+      margin-bottom: 12px;
+    }
+
+    .salary-row {
+      display: flex;
+      align-items: baseline;
+      justify-content: space-between;
+      gap: 12px;
+      padding: 10px 0;
+      border-bottom: 1px solid var(--border);
+    }
+
+    .salary-row:last-child { border-bottom: none; }
+
+    .salary-row-label {
+      font-size: 13px;
+      color: rgba(238, 242, 248, 0.68);
+      line-height: 1.42;
+      min-width: 0;
+    }
+
+    .salary-row-amount {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 14px;
+      font-weight: 700;
+      color: var(--green);
+      white-space: nowrap;
+      flex-shrink: 0;
+    }
+
+    .salary-subtotal-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      padding-top: 12px;
+      border-top: 1px solid var(--border);
+      margin-top: 4px;
+    }
+
+    .salary-subtotal-label {
+      font-size: 12px;
+      font-weight: 700;
+      color: var(--sub);
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+    }
+
+    .salary-subtotal-value {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 16px;
+      font-weight: 700;
+      color: var(--green);
+    }
+
+    .salary-summary-list {
+      display: grid;
+      gap: 0;
+      margin-bottom: 12px;
+    }
+
+    .salary-summary-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      padding: 9px 0;
+      border-bottom: 1px solid var(--border);
+      font-size: 13px;
+      color: rgba(238, 242, 248, 0.66);
+    }
+
+    .salary-summary-row:last-child { border-bottom: none; }
+
+    .salary-summary-row span:last-child {
+      font-family: 'JetBrains Mono', monospace;
+      font-weight: 600;
+      color: var(--sub);
+    }
+
+    .salary-net-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      padding-top: 14px;
+      border-top: 1px solid var(--border-hi);
+      margin-top: 4px;
+      font-size: 13px;
+      font-weight: 800;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+      color: var(--sub);
+    }
+
+    .salary-net-row span:last-child {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 20px;
+      font-weight: 700;
+      color: var(--green);
+      text-transform: none;
+      letter-spacing: -0.02em;
+    }
+
+    .salary-hero {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+
+    .salary-title {
+      font-size: 22px;
+      font-weight: 800;
+      line-height: 1.1;
+      letter-spacing: -0.02em;
+      color: var(--text);
+    }
+
+    .salary-text {
+      color: var(--sub);
+      font-size: 14px;
+      line-height: 1.6;
+    }
+
+    .salary-chip {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 4px 10px;
+      border-radius: var(--r-pill);
+      background: var(--accent-dim);
+      border: 1px solid rgba(56, 189, 248, 0.2);
+      color: var(--accent);
+      font-size: 11px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+      width: fit-content;
+    }

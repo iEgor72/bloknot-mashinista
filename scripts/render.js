@@ -415,89 +415,6 @@
       } catch (e) {}
     }
 
-    function pushShiftDetailHistoryState(shiftId) {
-      shiftDetailState.shouldPopOnClose = false;
-      try {
-        window.history.pushState({ bmView: 'shift-detail', shiftId: String(shiftId || '') }, '');
-        shiftDetailState.shouldPopOnClose = true;
-      } catch (e) {
-        shiftDetailState.shouldPopOnClose = false;
-      }
-    }
-
-    function finalizeShiftDetailOpen(token) {
-      if (token !== shiftDetailState.transitionToken) return;
-      shiftDetailState.isAnimating = false;
-      shiftDetailState.isOpen = true;
-      if (SHIFT_DETAIL_OVERLAY) {
-        SHIFT_DETAIL_OVERLAY.classList.add('is-open', 'is-visible');
-        SHIFT_DETAIL_OVERLAY.classList.remove('hidden');
-        SHIFT_DETAIL_OVERLAY.setAttribute('aria-hidden', 'false');
-      }
-      setShiftDetailSourceCardHidden(true);
-      setShiftDetailHeroVisible(true);
-      setShiftDetailContentVisible(true);
-      syncTelegramBackButton();
-    }
-
-    function openShiftDetailFromCard(cardEl, listId, options) {
-      if (!SHIFT_DETAIL_OVERLAY || !SHIFT_DETAIL_SURFACE) return;
-      if (!cardEl || !cardEl.getAttribute) return;
-      if (shiftDetailState.isAnimating) return;
-      var shiftId = String(cardEl.getAttribute('data-shift-id') || '');
-      if (!shiftId || !findShiftById(shiftId)) return;
-
-      var nowTs = Date.now();
-      if (shiftDetailState.tapLockUntil > nowTs) return;
-      shiftDetailState.tapLockUntil = nowTs + 360;
-
-      var sourceRect = cardEl.getBoundingClientRect ? cardEl.getBoundingClientRect() : null;
-      closeShiftActionsMenu(true);
-      closeLocoSeriesMenu();
-      triggerHapticTapSoft();
-
-      if (shiftDetailState.isOpen && shiftDetailState.shiftId === shiftId) {
-        return;
-      }
-
-      shiftDetailState.transitionToken += 1;
-      var token = shiftDetailState.transitionToken;
-      shiftDetailState.isAnimating = true;
-      shiftDetailState.isOpen = false;
-      shiftDetailState.shiftId = shiftId;
-      shiftDetailState.sourceShiftId = shiftId;
-      shiftDetailState.sourceListId = listId || '';
-      shiftDetailState.sourceTab = activeTab || '';
-      shiftDetailState.sourceCardEl = cardEl;
-      shiftDetailState.sourceScrollTop = APP_CONTENT ? APP_CONTENT.scrollTop : 0;
-
-      renderShiftDetailById(shiftId);
-      setShiftDetailHeroVisible(false);
-      setShiftDetailContentVisible(false);
-
-      if (SHIFT_DETAIL_OVERLAY) {
-        SHIFT_DETAIL_OVERLAY.classList.remove('hidden');
-        SHIFT_DETAIL_OVERLAY.setAttribute('aria-hidden', 'false');
-      }
-      var detailScrollEl = document.getElementById('shiftDetailScroll');
-      if (detailScrollEl) detailScrollEl.scrollTop = 0;
-      var targetRect = SHIFT_DETAIL_SURFACE.getBoundingClientRect ? SHIFT_DETAIL_SURFACE.getBoundingClientRect() : null;
-      var sourceRadius = getShiftCardRadiusPx(cardEl);
-      setShiftDetailSourceCardHidden(true);
-
-      window.requestAnimationFrame(function() {
-        if (token !== shiftDetailState.transitionToken) return;
-        if (SHIFT_DETAIL_OVERLAY) SHIFT_DETAIL_OVERLAY.classList.add('is-open', 'is-visible');
-        runShiftSharedAnimation(cardEl, sourceRect, targetRect, sourceRadius, 0, function() {
-          finalizeShiftDetailOpen(token);
-        });
-      });
-
-      if (!(options && options.skipHistoryPush)) {
-        pushShiftDetailHistoryState(shiftId);
-      }
-    }
-
     function resetShiftDetailState() {
       shiftDetailState.isOpen = false;
       shiftDetailState.isAnimating = false;
@@ -1356,7 +1273,7 @@
 
     function getFuelConsumptionInlineText(totals) {
       totals = totals || {};
-      return formatFuelLitersSignedValue(totals.consumptionLiters) + 'л | ' + formatFuelKgSignedValue(totals.consumptionKg) + 'кг';
+      return formatFuelKgSignedValue(totals.consumptionKg) + ' кг';
     }
 
     function getFuelKgText(litersRaw, coeffRaw, fallbackCoeff) {
@@ -1779,10 +1696,6 @@
       else openLocoSeriesMenu();
     }
 
-    function updateLocoSeriesMenuPosition() {
-      // Inline dropdown: CSS positions it under the trigger; no JS geometry needed.
-    }
-
     function setLocoSeriesValue(value) {
       var selectEl = document.getElementById('inputLocoSeries');
       if (!selectEl) return;
@@ -1832,7 +1745,16 @@
     }
 
     function collectOptionalShiftData() {
-      var routeKind = getRouteType() === 'trip' ? 'trip' : 'depot';
+      var routeFrom = getFieldValue('inputRouteFrom');
+      var routeTo = getFieldValue('inputRouteTo');
+      var routeChooser = document.getElementById('routeTypeSegmented');
+      var routeChooserVisible = routeChooser && !routeChooser.classList.contains('hidden');
+      // The trip/depot switch is currently hidden, while the station inputs stay
+      // visible. Treat any entered endpoint as a trip so the visible values are
+      // not silently discarded when the shift is saved.
+      var routeKind = routeChooserVisible
+        ? (getRouteType() === 'trip' ? 'trip' : 'depot')
+        : (routeFrom || routeTo ? 'trip' : 'depot');
       var receiveCoeffA = normalizeFuelCoeff(getFieldValue('inputFuelReceiveCoeffA'), DEFAULT_FUEL_COEFF);
       var receiveCoeffB = normalizeFuelCoeff(getFieldValue('inputFuelReceiveCoeffB'), receiveCoeffA);
       var receiveCoeffV = normalizeFuelCoeff(getFieldValue('inputFuelReceiveCoeffV'), receiveCoeffA);
@@ -1848,8 +1770,8 @@
         train_length: cleanDigits(getFieldValue('inputTrainLength'), 3),
         notes: getFieldValue('inputShiftNotes').trim(),
         route_kind: routeKind,
-        route_from: routeKind === 'trip' ? getFieldValue('inputRouteFrom') : '',
-        route_to: routeKind === 'trip' ? getFieldValue('inputRouteTo') : '',
+        route_from: routeKind === 'trip' ? routeFrom : '',
+        route_to: routeKind === 'trip' ? routeTo : '',
         fuel_receive_coeff: receiveCoeffA,
         fuel_receive_coeff_a: receiveCoeffA,
         fuel_receive_coeff_b: receiveCoeffB,

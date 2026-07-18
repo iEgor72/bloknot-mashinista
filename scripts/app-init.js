@@ -12,8 +12,34 @@ if (typeof bootstrapAppStartup === 'function') {
   }
 }
 
-// Quick-add bottom sheet removed — FAB now opens the form directly.
-(function dropQuickAddSheet(){ var o = document.getElementById("overlayQuickAdd"); if (o && o.parentNode) o.parentNode.removeChild(o); })();
+// A privacy-scoped export for field GPS traces. Unlike the full diagnostic
+// package, this file contains only route metadata and captured coordinates.
+(function bindProfileGpsExport() {
+  var button = document.getElementById('btnProfileExportGps');
+  var clearButton = document.getElementById('btnProfileClearGps');
+  var note = document.getElementById('profileGpsExportNote');
+  if (!button) return;
+  button.addEventListener('click', function() {
+    if (typeof window.exportPoekhaliGpsCaptures !== 'function') {
+      if (note) note.textContent = 'Экспорт пока недоступен';
+      return;
+    }
+    var exported = window.exportPoekhaliGpsCaptures();
+    if (note) note.textContent = exported
+      ? 'JSON сохранён — его можно отправить разработчику'
+      : 'Пока нет записанных контрольных проездов';
+  });
+  if (clearButton) {
+    clearButton.addEventListener('click', function() {
+      if (typeof window.clearPoekhaliGpsCaptures !== 'function') return;
+      if (!window.confirm('Удалить записанный GPS-маршрут с этого устройства? Сначала скачайте JSON, если хотите отправить его разработчику.')) return;
+      var removed = window.clearPoekhaliGpsCaptures();
+      if (note) note.textContent = removed
+        ? 'GPS-маршрут удалён — можно записывать следующий'
+        : 'Записанных GPS-маршрутов нет';
+    });
+  }
+})();
 
 // Keep modal/sheet state derived from DOM classes. This prevents an invisible
 // overlay/backdrop from capturing taps after a failed transition or interrupted
@@ -83,56 +109,6 @@ if (typeof bootstrapAppStartup === 'function') {
   // Custom event from glass-select dispatches 'input' on the native select.
   selectEl.addEventListener('input', apply);
   apply();
-})();
-
-// Install-app banner — slides from top; dismissed for the rest of the session.
-(function bindInstallBanner() {
-  var banner = document.getElementById('installBanner');
-  if (!banner) return;
-  function isStandalone() {
-    try {
-      return (window.matchMedia && window.matchMedia('(display-mode: standalone)').matches) || window.navigator.standalone === true;
-    } catch (e) { return false; }
-  }
-  function dismissed() {
-    try { return sessionStorage.getItem('shift_tracker_install_dismissed_v1') === '1'; } catch (e) { return false; }
-  }
-  function markDismissed() {
-    try { sessionStorage.setItem('shift_tracker_install_dismissed_v1', '1'); } catch (e) {}
-  }
-  function open() {
-    banner.classList.add('is-open');
-    banner.setAttribute('aria-hidden', 'false');
-  }
-  function close() {
-    banner.classList.remove('is-open');
-    banner.setAttribute('aria-hidden', 'true');
-  }
-  var legacy = document.getElementById('installPromptCard');
-  if (legacy) legacy.classList.add('hidden');
-  // Install invitation now lives in Профиль (a permanent, non-intrusive entry).
-  // The auto-popup is intentionally disabled; the banner stays only as the
-  // fallback target some code may still click.
-  var later = document.getElementById('btnInstallPopupLater');
-  if (later) later.addEventListener('click', function(e) {
-    e.stopPropagation();
-    markDismissed();
-    close();
-  });
-  // Whole banner is clickable: opens the existing "Как установить" guide.
-  banner.addEventListener('click', function(e) {
-    if (e.target && e.target.closest && e.target.closest('#btnInstallPopupLater')) return;
-    markDismissed();
-    close();
-    var openGuide = document.getElementById('btnShowInstallGuide');
-    if (openGuide) openGuide.click();
-  });
-  banner.addEventListener('keydown', function(e) {
-    if (e.key === 'Enter' || e.key === ' ') {
-      e.preventDefault();
-      banner.click();
-    }
-  });
 })();
 
 // Community links — one place that connects the PWA, bot, news channel and discussion group.
@@ -798,7 +774,8 @@ if (typeof bootstrapAppStartup === 'function') {
     window.setInterval(syncWayLabel, 1000);
   })();
 
-  // Top-bar GPS chip → re-kick the always-on GPS watch (passive status, no recording).
+  // Top-bar GPS chip → re-kick the always-on GPS watch. A route-linked field
+  // capture is automatic and local-only; its state is mirrored by the HUD.
   (function bindGpsChip() {
     var gpsChip = document.getElementById('appTopBarGps');
     if (!gpsChip) return;
@@ -1407,14 +1384,28 @@ if (typeof bootstrapAppStartup === 'function') {
       var v = dirChip.querySelector('.v');
       if (v) v.textContent = (dirBtn.textContent || '').trim() || 'АВТО';
     }
-    // GPS status chip (top bar) — passive connection indicator fed by poekhaliHud.
+    // GPS status chip (top bar) — connection and local field-capture indicator.
     var gpsChip = document.getElementById('appTopBarGps');
     if (gpsChip) {
       var tone = hud.gpsTone || 'is-gps-muted';
       gpsChip.classList.remove('is-gps-ok', 'is-gps-warn', 'is-gps-muted', 'is-gps-error', 'is-on');
       gpsChip.classList.add(tone);
+      gpsChip.classList.toggle('is-on', Boolean(hud.gpsCaptureActive));
       var gpsWord = gpsChip.querySelector('.app-top-bar-gps-word');
-      if (gpsWord) gpsWord.textContent = hud.gpsMeta && hud.gpsMeta !== '—' ? ('GPS · ' + hud.gpsMeta) : 'GPS';
+      if (gpsWord) {
+        gpsWord.textContent = hud.gpsCaptureError
+          ? 'GPS · ПАМЯТЬ'
+          : hud.gpsCaptureActive
+          ? ('GPS · REC ' + String(hud.gpsRecordedSamples || 0))
+          : (hud.gpsMeta && hud.gpsMeta !== '—' ? ('GPS · ' + hud.gpsMeta) : 'GPS');
+      }
+      gpsChip.title = hud.gpsCaptureError
+        ? hud.gpsCaptureError
+        : hud.gpsCaptureActive
+          ? 'Контрольный проезд записывается локально: ' + String(hud.gpsRecordedSamples || 0) + ' точек. Нажмите, чтобы остановить'
+          : hud.gpsCaptureAvailable
+            ? 'Нажмите, чтобы начать локальную запись контрольного проезда'
+        : 'GPS-позиционирование';
     }
   }
 

@@ -7347,3 +7347,204 @@ Append-only журнал действий ИИ-агентов по проект�
 - Branch: `main`
 - Methods: `Локальная main синхронна origin/main`, `полный smoke:predeploy прошёл`, `production /opt/bloknot-mashinista чист на main 2a24639`, `PM2 bloknot-mashinista online и HTTP 200`, `перед коммитом подтверждён безопасный deploy через ssh alias bloknot-vps`
 - Files: `assets/tracker/sections`, `tools/regime_profile_builder`, `tests/regime_profile_builder`, `scripts/poekhali-json-smoke.mjs`, `docs/REGIME_PROFILE_BUILDER.md`
+
+## 2026-07-11 09:36:29 +1000
+
+- Source: `post-commit`
+- Task: feat: rebuild regime profiles from PDF maps
+- Branch: `main`
+- Methods: `git post-commit hook`, `automatic memory update`
+- Files: `ai-memory/CHANGELOG.md`, `ai-memory/INDEX.md`, `ai-memory/PROJECT_STATE.md`, `ai-memory/RECENT_COMMITS.md`, `ai-memory/WORKTREE_STATUS.md`, `ai-memory/sessions/2026-07-10.md`, `ai-memory/sessions/2026-07-11.md`, `assets/tracker/sections/dvost-oune-pivan.json`, `assets/tracker/sections/dvost-pivan-novyi-mir.json`, `assets/tracker/sections/dvost-postyshevo-komsomolsk.json`, `assets/tracker/sections/dvost-postyshevo-novyi-urgal-odd.json`, `assets/tracker/sections/dvost-volochaevka-ii-dzemgi.json`, `assets/tracker/sections/dvost-vysokogornaya-oune-via-muli.json`, `assets/tracker/sections/dvost-vysokogornaya-oune-via-sollu.json`, `assets/tracker/sections/index.json`, `docs/REGIME_PROFILE_BUILDER.md`, `scripts/poekhali-json-smoke.mjs`, `tests/regime_profile_builder/test_axis_trace.py`, `tests/regime_profile_builder/test_black_grade_strokes.py`, `tests/regime_profile_builder/test_blue_bottom_table.py`, `tests/regime_profile_builder/test_cli.py`, `tests/regime_profile_builder/test_diagonal_grade_table.py`, `tests/regime_profile_builder/test_pdf_io.py`, `tests/regime_profile_builder/test_pipeline.py`, `tests/regime_profile_builder/test_safety.py`, `tools/regime_profile_builder/__init__.py`, `tools/regime_profile_builder/adapters/__init__.py`, `tools/regime_profile_builder/adapters/black_grade_strokes.py`, `tools/regime_profile_builder/adapters/blue_bottom_table.py`, `tools/regime_profile_builder/adapters/diagonal_grade_table.py`, `tools/regime_profile_builder/axis.py`, `tools/regime_profile_builder/cli.py`, `tools/regime_profile_builder/config.example.json`, `tools/regime_profile_builder/pdf_io.py`, `tools/regime_profile_builder/pipeline.py`, `tools/regime_profile_builder/review.py`
+- Notes: Commit: `28f68382e39a4f14cc8af9018b80efa0d380ef5a` (`28f6838`) | Author: `iEgor72`
+
+## 2026-07-11 09:38:48 +1000
+
+- Source: `manual`
+- Task: Выпущен PDF-конвейер и JSON-профили режима Поехали
+- Branch: `main`
+- Methods: `Коммит 28f6838 после полного smoke:predeploy запушен в origin/main`, `production /opt/bloknot-mashinista fast-forward до того же SHA`, `каталог 7 участков валиден`, `PM2 bloknot-mashinista reload --update-env`, `процесс online`, `localhost и внешний домен HTTP 200`, `внешний Оунэ—Пивань отдаёт 341 элемент`, `pdf_verified`, `уклоны -1`, `7‰ и +2`, `5‰`
+- Files: `assets/tracker/sections`, `tools/regime_profile_builder`, `tests/regime_profile_builder`, `scripts/poekhali-json-smoke.mjs`, `docs/REGIME_PROFILE_BUILDER.md`
+
+## 2026-07-11 09:59:46 +1000
+
+- Source: `manual`
+- Task: Read-only аудит автоматического выбора JSON-участка по смене и GPS
+- Branch: `main`
+- Methods: `Прослежены контракты catalog-route-shift-GPS-preview`, `draft gate`, `browser smoke и validator`, `выявлены неиспользуемые route metadata`, `широкие GPS thresholds и конфликт multi-section профиля via-sollu`
+- Files: `scripts/poekhali-tracker.js`, `assets/tracker/sections/index.json`, `assets/tracker/sections/README.md`, `scripts/validate-tracker-sections.mjs`, `scripts/validate-tracker-sections-smoke.mjs`, `scripts/poekhali-json-smoke.mjs`, `index.html`, `scripts/render.js`, `scripts/shift-form.js`, `server.js`
+
+## 2026-07-11 10:00:05 +1000
+
+- Source: `manual`
+- Task: Read-only аудит автоматического выбора маршрута режима Поехали
+- Branch: `main`
+- Methods: `Прослежены поля смены route_kind/route_from/route_to`, `каталог routes/variants`, `сопоставление станций`, `направление`, `GPS map matching и service worker cache`, `выявлены скрытый depot при вводе маршрута`, `draft-gate`, `конфликт составного маршрута via-sollu и отсутствие масштабируемого индекса`
+- Files: `index.html`, `scripts/render.js`, `scripts/shift-form.js`, `scripts/app.js`, `scripts/poekhali-tracker.js`, `assets/tracker/sections/index.json`, `sw.js`, `scripts/poekhali-json-smoke.mjs`, `scripts/validate-tracker-sections.mjs`
+
+## 2026-07-11 10:00:18 +1000
+
+- Source: `manual`
+- Task: Проведен read-only аудит GPS и офлайн-позиционирования режима Поехали
+- Branch: `main`
+- Methods: `Проверены JSON schema geometry.paths/runtime.route_legs`, `nearest-segment projection`, `GPS accuracy/direction/map selection`, `PWA cache`, `тесты и метрики 7 legacy centerline`, `подготовлена архитектура stateful route-constrained matcher`
+- Files: `scripts/poekhali-tracker.js`, `scripts/validate-tracker-sections.mjs`, `scripts/poekhali-json-smoke.mjs`, `sw.js`, `assets/tracker/sections`
+
+## 2026-07-11 10:17:29 +1000
+
+- Source: `manual`
+- Task: Сопоставлена удалённая raw GPS capture с текущим local-only learning store
+- Branch: `main`
+- Methods: `Git history fd5d6d2/9064eac/081b7ae`, `анализ старых capture функций и текущих normalizer/rawTracks/backup`, `лимитов localStorage`, `вызовов GPS и тестовой стратегии без backend`
+- Files: `scripts/poekhali-tracker.js`, `scripts/poekhali-json-smoke.mjs`, `package.json`
+
+## 2026-07-11 10:24:39 +1000
+
+- Source: `manual`
+- Task: Автовыбор JSON по маршруту смены и локальная запись контрольного GPS-проезда
+- Branch: `main`
+- Methods: `Исправлено определение trip при скрытом переключателе`, `добавлен точечный shift_route_auto_select для пилота Постышево—Комсомольск`, `защищена загрузка карт от устаревших Promise`, `возвращён local-only field GPS capture с фильтрами качества`, `отдельным экспортом и Playwright smoke`
+- Files: `scripts/render.js`, `scripts/poekhali-tracker.js`, `scripts/app-init.js`, `scripts/poekhali-json-smoke.mjs`, `assets/tracker/sections/index.json`, `index.html`
+
+## 2026-07-11 10:53:50 +1000
+
+- Source: `manual`
+- Task: Усилена безопасность и надёжность автопрофиля и полевой GPS-записи
+- Branch: `main`
+- Methods: `Запись сделана явной кнопкой GPS`, `добавлены owner-scoped storage и one-time migration`, `resume по сегментам`, `quota/compaction/null guards`, `export и delete`, `draft endpoints требуют полного нормализованного совпадения`, `route selection защищён токеном`, `PWA cache поднят до v381`, `browser smoke покрывает race`, `privacy`, `quota`, `7000-point compaction и offline`
+- Files: `scripts/poekhali-tracker.js`, `scripts/poekhali-json-smoke.mjs`, `scripts/app.js`, `scripts/app-init.js`, `index.html`, `server.js`, `sw.js`, `sw-bootstrap-v381.js`, `scripts/app-constants.js`, `scripts/sw-update-smoke.mjs`
+
+## 2026-07-17 21:41:59 +1000
+
+- Source: `manual`
+- Task: Проведен read-only аудит лишнего и недостижимого кода
+- Branch: `<git error: [WinError 2] Не удается найти указанный файл>`
+- Methods: `Memory preflight`, `repository-wide reference scan`, `named-function occurrence analysis`, `removed API/client sync tracing`, `partial smoke:predeploy`
+- Files: `server.js`, `scripts/poekhali-tracker.js`, `scripts/app.js`, `scripts/auth.js`, `scripts/docs-app.js`, `scripts/render.js`, `scripts/shift-form.js`, `scripts/time-utils.js`, `scripts/nav-debug.js`, `sw.js`, `sw-bootstrap-v373.js`, `sw-bootstrap-v374.js`, `sw-bootstrap-v375.js`, `sw-bootstrap-v376.js`, `sw-bootstrap-v377.js`, `sw-bootstrap-v378.js`, `sw-bootstrap-v379.js`, `sw-bootstrap-v380.js`
+
+## 2026-07-17 21:55:06 +1000
+
+- Source: `manual`
+- Task: Проведен второй углубленный аудит лишнего кода и артефактов
+- Branch: `<git error: [WinError 2] Не удается найти указанный файл>`
+- Methods: `Unused variable scan`, `DOM id/reference scan`, `CSS class reachability scan`, `duplicate file hashing`, `removed Poekhali subsystems tracing`
+- Files: `index.html`, `scripts/app-init.js`, `scripts/app.js`, `scripts/auth.js`, `scripts/poekhali-tracker.js`, `scripts/viewport.js`, `server.js`, `styles/00-base.css`, `styles/10-navigation-and-cards.css`, `styles/50-design-refresh.css`
+
+## 2026-07-17 22:05:42 +1000
+
+- Source: `manual`
+- Task: Оценена стоимость разработки приложения у фрилансера по полному объему кода
+- Branch: `<git error: [WinError 2] Не удается найти указанный файл>`
+- Methods: `Memory preflight`, `классификация строк приложения/тестов/инструментов отдельно от XML/JSON данных`, `сверка актуальных рыночных ставок 2026`
+- Files: `server.js`, `scripts`, `styles`, `index.html`, `tools/regime_profile_builder`, `tests`
+
+## 2026-07-17 22:12:36 +1000
+
+- Source: `manual`
+- Task: Дополнена оценка проекта с учетом публичного охвата, SEO и стоимости цифрового актива
+- Branch: `<git error: [WinError 2] Не удается найти указанный файл>`
+- Methods: `Проверка публичной поисковой выдачи и индексации SEO-страниц`, `публичных Telegram-счетчиков`, `privacy-safe агрегатов локального dev-хранилища`, `сценарная оценка по replacement cost и рыночным мультипликаторам`
+- Files: `server.js`, `index.html`, `docs/seo`, `data`
+
+## 2026-07-17 22:13:37 +1000
+
+- Source: `manual`
+- Task: Удален подтвержденный мертвый runtime-код без изменения активных функций
+- Branch: `<git error: [WinError 2] Не удается найти указанный файл>`
+- Methods: `Удалены inert Quick Add/install banner`, `zero-reference helpers`, `remote Poekhali learning/runs client and server paths`, `obsolete CSS`, `сохранены local-only GPS capture`, `warnings`, `SW compatibility`, `node --check`, `92 tests`, `section validators`, `SW smoke`, `local HTTP smoke`
+- Files: `index.html`, `scripts/app-constants.js`, `scripts/app-init.js`, `scripts/app.js`, `scripts/auth.js`, `scripts/docs-app.js`, `scripts/poekhali-tracker.js`, `scripts/render.js`, `scripts/shift-form.js`, `scripts/time-utils.js`, `scripts/viewport.js`, `server.js`, `styles/00-base.css`, `styles/10-navigation-and-cards.css`, `styles/50-design-refresh.css`, `sw.js`
+
+## 2026-07-17 22:18:38 +1000
+
+- Source: `manual`
+- Task: Повторный аудит лишнего кода после очистки
+- Branch: `<git error: [WinError 2] Не удается найти указанный файл>`
+- Methods: `Статический подсчет ссылок по runtime JS/HTML`, `проверка глобальных экспортов и обработчиков`, `найдено 75 именованных функций без вызовов и 2 неиспользуемые переменные`, `изменения в код не вносились`
+- Files: `scripts/poekhali-tracker.js`, `scripts/render.js`, `scripts/time-utils.js`, `scripts/nav-debug.js`, `index.html`, `sw.js`
+
+## 2026-07-17 22:26:20 +1000
+
+- Source: `manual`
+- Task: Независимый read-only аудит мертвого runtime JavaScript сабагентом
+- Branch: `<git error: [WinError 2] Не удается найти указанный файл>`
+- Methods: `Memory preflight`, `полный token-reference scan runtime JS/HTML`, `проверка IIFE и global exports`, `поиск eval/computed globals/inline handlers`, `консервативный граф входящих ссылок и каскадных зависимостей`
+- Files: `scripts/poekhali-tracker.js`, `scripts/render.js`, `scripts/time-utils.js`, `scripts/nav-debug.js`, `index.html`, `sw.js`
+
+## 2026-07-17 22:27:07 +1000
+
+- Source: `manual`
+- Task: Независимый read-only аудит UI CSS и PWA после очистки
+- Branch: `<git error: [WinError 2] Не удается найти указанный файл>`
+- Methods: `Проверены HTML inline/global/event ссылки`, `CSS/DOM достижимость`, `nav-debug`, `SW precache/update paths и compatibility bootstrap`, `файлы приложения не изменялись`
+- Files: `index.html`, `scripts/nav-debug.js`, `scripts/sw-register.js`, `sw.js`, `sw-bootstrap-v373.js`, `sw-bootstrap-v374.js`, `sw-bootstrap-v375.js`, `sw-bootstrap-v376.js`, `sw-bootstrap-v377.js`, `sw-bootstrap-v378.js`, `sw-bootstrap-v379.js`, `sw-bootstrap-v380.js`, `sw-bootstrap-v381.js`, `styles/10-navigation-and-cards.css`, `styles/30-shifts-and-overlays.css`, `styles/50-design-refresh.css`, `styles/55-partners.css`
+
+## 2026-07-17 22:29:21 +1000
+
+- Source: `manual`
+- Task: Расход топлива в сменах переведён на килограммы, добавлен локомотив 3ТЭ28
+- Branch: `<git error: [WinError 2] Не удается найти указанный файл>`
+- Methods: `Карточки и сводка смен теперь выводят consumptionKg`, `формат хранения исходных литров и коэффициентов сохранён для совместимости`, `3ТЭ28 добавлен в трёхсекционную группу формы`
+- Files: `index.html`, `scripts/render.js`, `scripts/time-utils.js`
+
+## 2026-07-17 22:50:16 +1000
+
+- Source: `manual`
+- Task: Завершена безопасная каскадная очистка и декомпозиция крупных runtime-файлов
+- Branch: `<git error: [WinError 2] Не удается найти указанный файл>`
+- Methods: `Три независимых аудита подтвердили 123 мёртвые функции`, `удалены они и 4 каскадные переменные/константы`, `fixed-point scan=0`, `два CSS-монолита механически разделены на 14 тематических файлов с совместимыми агрегаторами`, `29 чистых функций Poekhali вынесены в явный poekhali-utils API`, `PWA cache поднят v381→v382`, `nav-debug и старые bootstrap сохранены`
+- Files: `scripts/poekhali-tracker.js`, `scripts/poekhali-utils.js`, `scripts/README.md`, `styles/10-navigation-and-cards.css`, `styles/10-shell-navigation.css`, `styles/11-poekhali-entry.css`, `styles/12-cards.css`, `styles/13-dashboard-cards.css`, `styles/14-stats-and-salary.css`, `styles/15-settings-and-docs.css`, `styles/16-overlays-and-actions.css`, `styles/50-design-refresh.css`, `styles/50-theme-shell.css`, `styles/51-shifts.css`, `styles/52-poekhali.css`, `styles/53-salary.css`, `styles/54-docs.css`, `styles/55-forms.css`, `styles/56-overlays.css`, `index.html`, `sw.js`, `sw-bootstrap-v382.js`, `server.js`, `scripts/app-constants.js`, `scripts/sw-update-smoke.mjs`
+
+## 2026-07-17 22:50:16 +1000
+
+- Source: `manual`
+- Task: Расширена проверка приложения системным Chrome
+- Branch: `<git error: [WinError 2] Не удается найти указанный файл>`
+- Methods: `Smoke-скрипты получили необязательный PLAYWRIGHT_EXECUTABLE_PATH`, `local smoke проверяет 3ТЭ28 как трёхсекционный локомотив и расход 12`, `34 кг`, `успешно пройдены local`, `offline и полный Poekhali JSON browser smoke без console/page/request errors`
+- Files: `scripts/local-smoke.mjs`, `scripts/offline-smoke.mjs`, `scripts/poekhali-json-smoke.mjs`
+
+## 2026-07-17 23:35:10 +1000
+
+- Source: `manual`
+- Task: Продолжена декомпозиция Poekhali: вынесены предупреждения и разбор карт
+- Branch: `<git error: [WinError 2] Не удается найти указанный файл>`
+- Methods: `Подсистемы оформлены как фабрики с явными зависимостями`, `обновлены порядок загрузки`, `документация и PWA-кэш`, `выполнены статический аудит`, `92 unit-теста`, `валидаторы`, `service-worker и браузерные smoke-тесты`
+- Files: `scripts/poekhali-warnings.js`, `scripts/poekhali-map-parser.js`, `scripts/poekhali-tracker.js`, `index.html`, `sw.js`, `scripts/README.md`
+
+## 2026-07-18 15:35:09 +1000
+
+- Source: `manual`
+- Task: Подготовлены предложения по новым функциям и дальнейшему развитию проекта
+- Branch: `main`
+- Methods: `Memory preflight`, `анализ текущих UI-сценариев`, `API`, `PWA/GPS/бригады/документов`, `сверка актуальных функций конкурентов 2026`, `приоритизация по ценности`, `сложности и архитектурному риску`
+- Files: `README.md`, `index.html`, `server.js`, `scripts/poekhali-tracker.js`, `docs/2026-04-21-product-minimalism-principles.md`, `docs/2026-04-21-wave-2-ux-spec.md`, `ai-memory/CHANGELOG.md`
+
+## 2026-07-18 15:45:38 +1000
+
+- Source: `manual`
+- Task: Добавлен базовый SQLite storage layer
+- Branch: `main`
+- Methods: `better-sqlite3`, `schema migrations`, `WAL/FULL sync`, `транзакционные shifts`, `app/user state`, `idempotent legacy JSON import без удаления источников`, `integrity-check backup/restore CLI`, `temp runtime smoke`
+- Files: `server/sqlite-storage.js`, `scripts/storage-maintenance.js`, `server.js`, `package.json`, `package-lock.json`
+
+## 2026-07-18 15:53:36 +1000
+
+- Source: `manual`
+- Task: Переведен активный backend storage на SQLite и выполнен локальный legacy import
+- Branch: `main`
+- Methods: `Сохранены исходные JSON`, `schema_migrations v1`, `legacy_imports SHA-256`, `сверены 3 пользователя и 6 смен без расхождений`, `PRAGMA integrity_check=ok`, `создан legacy-import backup`
+- Files: `server.js`, `server/sqlite-storage.js`, `data/bloknot.sqlite3`, `README.md`, `ai-memory/ARCHITECTURE.md`, `ai-memory/METHODS.md`, `ai-memory/PROJECT_STATE.md`
+
+## 2026-07-18 15:59:07 +1000
+
+- Source: `manual`
+- Task: Завершено техническое развитие: SQLite, декомпозиция Poekhali и серверные тесты
+- Branch: `main`
+- Methods: `SQLite migrations v1/v2`, `WAL/FULL`, `idempotent JSON import`, `verified backup/restore including WAL sidecars`, `server storage API`, `Poekhali backup factory`, `PWA v383`, `6 HTTP/storage tests`, `full smoke:predeploy`, `url.parse replaced with WHATWG URL`
+- Files: `server/sqlite-storage.js`, `server.js`, `scripts/storage-maintenance.js`, `scripts/poekhali-backup.js`, `scripts/poekhali-tracker.js`, `tests/server/api.test.js`, `tests/server/storage.test.js`, `package.json`, `package-lock.json`, `index.html`, `sw.js`, `sw-bootstrap-v383.js`, `scripts/sw-update-smoke.mjs`, `README.md`, `ai-memory/ARCHITECTURE.md`, `ai-memory/METHODS.md`, `ai-memory/PROJECT_STATE.md`
+
+## 2026-07-18 16:02:21 +1000
+
+- Source: `manual`
+- Task: Read-only preflight полного production release
+- Branch: `main`
+- Methods: `Локальная main и origin/main совпадают на 28f6838`, `production clean на том же SHA`, `PM2 online`, `localhost 200`, `Node 22 совместим`, `61 changed files просканированы без секретов`, `npm audit 0 vulnerabilities`, `.codex исключен как локальный артефакт`
+- Files: `.gitignore`, `ai-memory/PROJECT_STATE.md`, `ai-memory/METHODS.md`

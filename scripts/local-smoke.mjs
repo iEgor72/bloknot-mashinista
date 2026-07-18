@@ -247,7 +247,10 @@ async function main() {
   await waitForServer();
   await verifyPwaControlHeaders();
 
-  browser = await chromium.launch({ headless: true });
+  browser = await chromium.launch({
+    headless: true,
+    executablePath: process.env.PLAYWRIGHT_EXECUTABLE_PATH || undefined
+  });
   context = await browser.newContext();
   const page = await context.newPage();
 
@@ -406,6 +409,31 @@ async function main() {
     return !!shell && !shell.classList.contains('hidden');
   }, 'app shell visible');
   report.checks.appShellVisible = true;
+
+  const shiftFormContract = await page.evaluate(() => {
+    const select = document.getElementById('inputLocoSeries');
+    const form = document.getElementById('shiftFormSection');
+    const has3te28 = !!select && Array.from(select.options).some((option) => option.value === '3ТЭ28');
+    if (select && has3te28) {
+      select.value = '3ТЭ28';
+      select.dispatchEvent(new Event('input', { bubbles: true }));
+    }
+    const consumptionText = typeof getFuelConsumptionInlineText === 'function'
+      ? getFuelConsumptionInlineText({ consumptionLiters: 14, consumptionKg: 12.34 })
+      : '';
+    return {
+      has3te28,
+      fuelSections: form ? form.getAttribute('data-loco-sections') : '',
+      consumptionText
+    };
+  });
+  report.checks.shiftFormContract = shiftFormContract;
+  if (!shiftFormContract.has3te28 || shiftFormContract.fuelSections !== '3') {
+    throw new Error('3ТЭ28 is missing or is not configured as a three-section locomotive');
+  }
+  if (shiftFormContract.consumptionText !== '12,34 кг') {
+    throw new Error(`Fuel consumption must be displayed in kilograms: ${shiftFormContract.consumptionText}`);
+  }
 
   await waitForPageCondition(page, () => {
     const panel = document.querySelector('.tab-panel[data-tab="home"]');

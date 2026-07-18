@@ -1,0 +1,836 @@
+/* ════════════════════════════════════════════════════════════════════
+   50-design-refresh.css — Modern dark refresh
+   Loaded last; overrides legacy tokens with the oklch+color-mix palette,
+   reskins the bottom nav, dashboard hero, KPI grid, calendar, shift cards,
+   tracker, salary, docs bento and modals to match the design prototype.
+   ──────────────────────────────────────────────────────────────────── */
+
+/* ── Tokens ─────────────────────────────────────────────────────── */
+:root {
+  --hue: 220;
+  --chroma: 0.16;
+
+  /* OLED-deep cool-tinted base */
+  --bg:        oklch(0.13 0.012 260);
+  --bg-deeper: oklch(0.09 0.010 260);
+  --bg-rise:   oklch(0.17 0.014 260);
+  --bg-rise-2: oklch(0.21 0.014 260);
+
+  --glass:        color-mix(in oklch, white 4%, transparent);
+  --glass-strong: color-mix(in oklch, white 7%, transparent);
+
+  --hair:        color-mix(in oklch, white 8%, transparent);
+  --hair-strong: color-mix(in oklch, white 14%, transparent);
+
+  --ink:   oklch(0.97 0.005 260);
+  --ink-2: oklch(0.78 0.012 260);
+  --ink-3: oklch(0.58 0.014 260);
+  --ink-4: oklch(0.42 0.014 260);
+
+  --accent:      oklch(0.80 var(--chroma) var(--hue));
+  --accent-2:    oklch(0.72 var(--chroma) var(--hue));
+  --accent-3:    oklch(0.55 var(--chroma) var(--hue));
+  --accent-ink:  oklch(0.20 0.04 var(--hue));
+  --accent-soft: color-mix(in oklch, var(--accent) 14%, transparent);
+  --accent-glow: color-mix(in oklch, var(--accent) 40%, transparent);
+
+  --night:        oklch(0.74 0.16 305);
+  --night-soft:   color-mix(in oklch, var(--night) 18%, transparent);
+  --holiday:      oklch(0.74 0.18 20);
+  --holiday-soft: color-mix(in oklch, var(--holiday) 18%, transparent);
+  --good:         oklch(0.80 0.16 150);
+  --good-soft:    color-mix(in oklch, var(--good) 16%, transparent);
+  --warn:         oklch(0.82 0.16 75);
+  --warn-soft:    color-mix(in oklch, var(--warn) 16%, transparent);
+  --bad:          oklch(0.70 0.18 25);
+  --bad-soft:     color-mix(in oklch, var(--bad) 16%, transparent);
+
+  /* Map legacy semantic vars onto the new palette so existing components inherit */
+  --text:           var(--ink);
+  --sub:            var(--ink-2);
+  --muted:          var(--ink-3);
+  --card:           var(--bg-rise);
+  --card-hi:        var(--bg-rise-2);
+  --border:         var(--hair);
+  --border-hi:      var(--hair-strong);
+  --accent-dim:     var(--accent-soft);
+  --accent-strong:  var(--accent-2);
+  --green:          var(--good);
+  --green-dim:      var(--good-soft);
+  --color-surface-base:     var(--bg-rise);
+  --color-surface-elevated: var(--bg-rise-2);
+  --color-surface-soft:     var(--glass);
+  --color-border-soft:      var(--hair);
+  --color-border-strong:    var(--hair-strong);
+  --color-text-primary:     var(--ink);
+  --color-text-secondary:   var(--ink-2);
+  --color-text-muted:       var(--ink-3);
+  --color-primary:          var(--accent);
+  --color-primary-strong:   var(--accent-2);
+  --color-primary-soft:     var(--accent-soft);
+  --color-primary-glow:     var(--accent-glow);
+  --color-success:          var(--good);
+  --color-success-soft:     var(--good-soft);
+  --color-warning:          var(--warn);
+  --color-warning-soft:     var(--warn-soft);
+  --color-danger:           var(--bad);
+  --color-danger-soft:      var(--bad-soft);
+  --holiday-dim:            var(--holiday-soft);
+  --control-primary-bg:     linear-gradient(180deg, var(--accent), var(--accent-2));
+  --control-primary-text:   var(--accent-ink);
+
+  --r-card: 22px;
+  --r-inner: 14px;
+  --r-pill: 999px;
+
+  /* Reserve more bottom space because nav is now floating above the edge. */
+  --bottom-nav-height: 96px;
+  --app-shell-bottom-reserve: var(--bottom-nav-height);
+}
+/* ── Body ambient ───────────────────────────────────────────────── */
+html, body {
+  background: var(--bg);
+  color: var(--ink);
+  font-family: 'Manrope', system-ui, sans-serif;
+  font-feature-settings: 'cv11', 'ss01';
+}
+
+body::before {
+  content: '';
+  position: fixed;
+  inset: 0;
+  background:
+    radial-gradient(1200px 600px at 18% 0%,
+      color-mix(in oklch, var(--accent) 9%, transparent), transparent 60%),
+    radial-gradient(900px 500px at 84% 100%,
+      color-mix(in oklch, var(--night) 10%, transparent), transparent 60%);
+  pointer-events: none;
+  z-index: var(--layer-bg);
+  width: auto;
+  height: auto;
+  top: 0;
+  right: 0;
+}
+
+body::after { content: none; }
+
+/* App container — keep size but soften with new ambient */
+.app::before {
+  content: '';
+  position: absolute;
+  inset: -1px;
+  background:
+    radial-gradient(540px 340px at 50% -10%,
+      color-mix(in oklch, var(--accent) 12%, transparent), transparent 60%),
+    radial-gradient(420px 360px at 100% 70%,
+      color-mix(in oklch, var(--night) 10%, transparent), transparent 60%);
+  pointer-events: none;
+  z-index: 0;
+}
+.app > .app-content { position: relative; z-index: 1; }
+
+/* ── Typography helpers ─────────────────────────────────────────── */
+.eyebrow,
+.dashboard-eyebrow,
+.section-header,
+.form-stage-kicker,
+.shifts-overview-label,
+.docs-entry-eyebrow,
+.salary-total-caption,
+.quick-stats-note,
+.fab-label,
+.tab-label {
+  font-family: 'Manrope', sans-serif;
+}
+.eyebrow {
+  font: 600 10px/1 'Manrope';
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--ink-3);
+}
+.num,
+.money,
+.mono {
+  font-family: 'JetBrains Mono', ui-monospace, monospace;
+  font-variant-numeric: tabular-nums;
+  font-feature-settings: 'tnum';
+}
+
+/* ── App top bar (above month-nav) ──────────────────────────────── */
+.app-top-bar {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 4px 4px 12px;
+  gap: 12px;
+  z-index: 4;
+}
+.app-top-bar.hidden { display: none; }
+.app-top-bar-leading { min-width: 0; }
+.app-top-bar-title {
+  font: 700 15px/1.1 'Manrope';
+  letter-spacing: -0.01em;
+  color: var(--ink);
+}
+.app-top-bar-sub {
+  font: 500 11px/1.2 'Manrope';
+  color: var(--ink-3);
+  margin-top: 4px;
+}
+.app-top-bar-icon {
+  position: relative;
+  width: 36px;
+  height: 36px;
+  display: grid;
+  place-items: center;
+  border-radius: 12px;
+  background: var(--glass);
+  border: 1px solid var(--hair);
+  color: var(--ink-2);
+  cursor: pointer;
+  flex-shrink: 0;
+}
+.app-top-bar-icon svg { width: 16px; height: 16px; }
+.app-top-bar-icon-dot {
+  position: absolute;
+  top: 6px;
+  right: 6px;
+  width: 6px;
+  height: 6px;
+  border-radius: 999px;
+  background: var(--accent);
+  box-shadow: 0 0 6px var(--accent-glow);
+}
+
+/* ── Bottom Nav reskin — floating pill aligned with page padding ── */
+.bottom-nav {
+  position: fixed;
+  bottom: calc(14px + env(safe-area-inset-bottom, 0px));
+  left: 50%;
+  right: auto;
+  transform: translateX(-50%);
+  width: calc(min(480px, 100%) - 2 * var(--page-padding-x, 16px));
+  height: 68px;
+  background:
+    linear-gradient(180deg, color-mix(in oklch, white 8%, transparent), transparent 50%),
+    color-mix(in oklch, var(--bg-deeper) 70%, transparent);
+  backdrop-filter: blur(28px) saturate(140%);
+  -webkit-backdrop-filter: blur(28px) saturate(140%);
+  border: 0;
+  border-top: 0;
+  box-shadow:
+    inset 0 1px 0 color-mix(in oklch, white 14%, transparent),
+    inset 0 0 0 1px var(--hair-strong),
+    0 18px 40px -20px rgba(0,0,0,0.7);
+  border-radius: 28px;
+  padding: 0 4px;
+  align-items: center;
+  z-index: 100;
+}
+
+.nav-item {
+  padding: 0;
+  background: transparent !important;
+  gap: 3px;
+}
+.nav-item .tab-icon {
+  width: 22px;
+  height: 22px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  opacity: 1;
+  color: var(--ink-3);
+}
+.nav-item .tab-icon svg { width: 22px; height: 22px; stroke-width: 1.8; }
+.nav-item .tab-label {
+  color: var(--ink-3);
+  font-size: 10px;
+  font-weight: 600;
+  letter-spacing: 0.04em;
+}
+
+.nav-item.active .tab-icon { color: var(--accent); opacity: 1; }
+.nav-item.active .tab-label { color: var(--accent); }
+.nav-item.active::after {
+  background: transparent;
+}
+.nav-item.active::before {
+  content: '';
+  position: absolute;
+  top: 6px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 16px;
+  height: 2px;
+  border-radius: 2px;
+  background: var(--accent);
+  box-shadow: 0 0 8px var(--accent-glow);
+}
+
+/* FAB raised slot */
+.nav-fab { padding: 0; gap: 3px; }
+.nav-fab .fab-btn {
+  width: 50px;
+  height: 50px;
+  margin-top: -18px;
+  border-radius: 18px;
+  background: linear-gradient(180deg, var(--accent), var(--accent-2));
+  color: var(--accent-ink);
+  box-shadow:
+    0 14px 28px -8px var(--accent-glow),
+    inset 0 1px 0 color-mix(in oklch, white 50%, transparent),
+    inset 0 -1px 0 color-mix(in oklch, black 14%, transparent);
+  animation: none !important;
+}
+.nav-fab .fab-btn svg { width: 22px; height: 22px; stroke: var(--accent-ink); stroke-width: 2.5; }
+.fab-label { color: var(--accent); font-size: 9.5px; font-weight: 600; letter-spacing: 0.04em; }
+
+/* ── Top app bar (month-nav reskin) ─────────────────────────────── */
+.month-nav {
+  background:
+    linear-gradient(180deg, color-mix(in oklch, white 4%, transparent), transparent),
+    var(--bg-rise);
+  box-shadow:
+    inset 0 1px 0 color-mix(in oklch, white 10%, transparent),
+    inset 0 0 0 1px var(--hair);
+  border: 0;
+  border-radius: var(--r-card);
+  padding: 10px;
+}
+.month-nav-top { gap: 10px; align-items: center; }
+.month-btn {
+  width: 36px;
+  height: 36px;
+  border-radius: 12px;
+  background: var(--glass);
+  border: 1px solid var(--hair);
+  color: var(--ink-2);
+  font-size: 18px;
+  font-weight: 700;
+}
+.month-btn:active { background: var(--glass-strong); }
+.month-header { gap: 2px; align-items: center; }
+.month-title {
+  font: 700 14px/1 'Manrope';
+  color: var(--ink);
+  letter-spacing: -0.01em;
+}
+.month-quarter {
+  font: 600 9px/1 'Manrope';
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: var(--ink-3);
+}
+
+.month-tabs {
+  background: color-mix(in oklch, black 28%, transparent);
+  box-shadow: inset 0 0 0 1px var(--hair);
+  border-radius: 14px;
+  border: 0;
+  padding: 4px;
+  gap: 4px;
+}
+.month-tab {
+  font: 600 12px/1 'Manrope';
+  color: var(--ink-2);
+  padding: 8px 0;
+  border-radius: 10px;
+  background: transparent;
+  border: 0;
+}
+.month-tab.active,
+.month-tab.is-active {
+  background: linear-gradient(180deg, var(--accent), var(--accent-2));
+  color: var(--accent-ink);
+  font-weight: 700;
+  box-shadow:
+    0 6px 16px -8px var(--accent-glow),
+    inset 0 1px 0 color-mix(in oklch, white 40%, transparent);
+}
+
+/* ── Dashboard hero (conic gauge + KPIs) ─────────────────────────── */
+.dashboard-card {
+  margin-top: 14px;
+  padding: 18px;
+  border-radius: var(--r-card);
+  background:
+    linear-gradient(180deg, color-mix(in oklch, white 5%, transparent), transparent 35%),
+    radial-gradient(380px 200px at 100% 0%, color-mix(in oklch, var(--accent) 14%, transparent), transparent 60%),
+    var(--bg-rise);
+  box-shadow:
+    inset 0 1px 0 color-mix(in oklch, white 10%, transparent),
+    inset 0 0 0 1px var(--hair),
+    0 16px 40px -22px color-mix(in oklch, var(--accent) 22%, transparent);
+  border: 0;
+  position: relative;
+}
+
+.dashboard-head {
+  display: grid;
+  grid-template-columns: 116px 1fr;
+  gap: 16px;
+  align-items: center;
+  margin-bottom: 14px;
+}
+
+.dashboard-eyebrow {
+  font: 600 10px/1 'Manrope';
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--ink-3);
+  margin-bottom: 6px;
+}
+.dashboard-value {
+  font: 700 22px/1 'Manrope';
+  letter-spacing: -0.01em;
+  color: var(--ink);
+}
+.dashboard-value .num,
+.dashboard-value [data-num] {
+  font-family: 'JetBrains Mono', monospace;
+  font-variant-numeric: tabular-nums;
+}
+
+/* Conic gauge wrapper — injected via index.html */
+.dashboard-gauge {
+  width: 116px;
+  height: 116px;
+  position: relative;
+  display: grid;
+  place-items: center;
+}
+.dashboard-gauge svg { position: absolute; inset: 0; width: 100%; height: 100%; }
+.dashboard-gauge .gauge-track { stroke: color-mix(in oklch, white 6%, transparent); }
+.dashboard-gauge .gauge-fill {
+  stroke: url(#gradAccent);
+  stroke-linecap: round;
+  filter: drop-shadow(0 0 6px var(--accent-glow));
+}
+.dashboard-gauge .gauge-over {
+  stroke: url(#gradOver);
+  stroke-linecap: round;
+  filter: drop-shadow(0 0 6px color-mix(in oklch, var(--good) 40%, transparent));
+}
+.dashboard-gauge-inner {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  line-height: 1;
+  z-index: 1;
+}
+.dashboard-gauge-num {
+  font: 700 24px/1 'JetBrains Mono';
+  font-variant-numeric: tabular-nums;
+  letter-spacing: -0.02em;
+  color: var(--ink);
+}
+.dashboard-gauge-num .u {
+  font-size: 13px;
+  margin-left: 2px;
+  color: var(--ink-2);
+}
+.dashboard-gauge-unit {
+  font: 600 9px/1 'Manrope';
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
+  color: var(--ink-3);
+  margin-top: 6px;
+}
+.dashboard-gauge.is-over .dashboard-gauge-num {
+  color: var(--good);
+  text-shadow: 0 0 12px color-mix(in oklch, var(--good) 40%, transparent);
+}
+
+/* Norm lines — repurpose existing dashboard-norms */
+.dashboard-norms {
+  display: flex !important;
+  flex-direction: column !important;
+  gap: 10px !important;
+  grid-template-columns: none !important;
+  margin: 0 !important;
+}
+.dashboard-norms .dashboard-norm-item,
+.dashboard-norm-item,
+.dashboard-norm-item--today,
+.dashboard-norm-item--month,
+.dashboard-norm-item--diff {
+  display: flex !important;
+  align-items: baseline !important;
+  justify-content: space-between !important;
+  background: transparent !important;
+  border: 0 !important;
+  padding: 0 !important;
+  box-shadow: none !important;
+  border-radius: 0 !important;
+  text-align: left !important;
+  justify-items: stretch !important;
+}
+.dashboard-norms .dashboard-norm-item + .dashboard-norm-item {
+  border-top: 1px solid color-mix(in oklch, white 6%, transparent) !important;
+  padding-top: 10px !important;
+  margin-top: 0 !important;
+}
+.dashboard-norm-item--today .dashboard-norm-value { color: var(--ink) !important; }
+.dashboard-norm-item--month .dashboard-norm-value { color: var(--ink) !important; }
+.dashboard-norm-item--today .dashboard-norm-label,
+.dashboard-norm-item--month .dashboard-norm-label {
+  color: var(--ink-3) !important;
+}
+.dashboard-norm-label {
+  font: 600 10px/1 'Manrope';
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--ink-3);
+}
+.dashboard-norm-value {
+  font: 600 13px/1 'JetBrains Mono';
+  font-variant-numeric: tabular-nums;
+  color: var(--ink);
+}
+
+/* Hide the legacy progress bar inside the hero — gauge already conveys it. */
+.dashboard-card .progress-track {
+  display: none;
+}
+
+.dashboard-sub {
+  font: 600 12px/1.3 'Manrope';
+  color: var(--ink-2);
+  margin-top: 0;
+  display: inline;
+  padding: 0;
+  background: transparent;
+  border: 0;
+  width: auto;
+  gap: 0;
+}
+/* Suppress the legacy dot bullet ::before in the new layout */
+.dashboard-norm-item .dashboard-sub::before,
+.dashboard-norms .dashboard-sub::before {
+  content: none;
+}
+
+/* Income meta row — bottom of hero */
+.dashboard-meta-grid {
+  margin-top: 14px;
+  padding-top: 14px;
+  border-top: 1px dashed color-mix(in oklch, white 8%, transparent);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  background: transparent;
+  grid-template-columns: none;
+}
+.dashboard-month-income {
+  background: transparent;
+  padding: 0;
+  border: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+.dashboard-month-income-label {
+  font: 600 10px/1 'Manrope';
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--ink-3);
+}
+.dashboard-month-income-value {
+  font: 700 22px/1 'Manrope';
+  letter-spacing: -0.01em;
+  color: var(--good);
+  font-variant-numeric: tabular-nums;
+}
+.dashboard-month-income-spark {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 6px;
+  background: transparent;
+  border: 0;
+  padding: 0;
+}
+.dashboard-month-income-spark svg {
+  filter: drop-shadow(0 0 6px color-mix(in oklch, var(--good) 32%, transparent));
+}
+.dashboard-spark-empty {
+  font: 600 10px/1 'Manrope', system-ui, sans-serif;
+  letter-spacing: 0.06em;
+  color: var(--ink-3);
+  opacity: 0.8;
+}
+.dashboard-spark-empty[hidden] { display: none; }
+.hero-income-delta {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  padding: 4px 8px;
+  border-radius: 999px;
+  background: var(--good-soft);
+  color: var(--good);
+  font: 700 11px/1 'JetBrains Mono';
+  font-variant-numeric: tabular-nums;
+}
+
+/* ── KPI / quick stats grid ─────────────────────────────────────── */
+.quick-stats-grid {
+  margin-top: 12px;
+  padding: 0;
+  background: transparent;
+  border: 0;
+  box-shadow: none;
+}
+.quick-stats-head { display: none; }
+.quick-stats-row {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 8px;
+  margin: 0;
+}
+.quick-stat {
+  padding: 12px 10px 12px;
+  border-radius: 14px;
+  background:
+    linear-gradient(180deg, color-mix(in oklch, white 5%, transparent), transparent),
+    var(--bg-rise);
+  box-shadow: inset 0 0 0 1px var(--hair);
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  border: 0;
+  align-items: stretch;
+  justify-content: flex-start;
+}
+.quick-stat-value {
+  font: 700 18px/1 'JetBrains Mono';
+  font-variant-numeric: tabular-nums;
+  letter-spacing: -0.01em;
+  color: var(--ink);
+}
+.quick-stat-value.night    { color: var(--night); }
+.quick-stat-value.shifts   { color: var(--ink); }
+.quick-stat-value.holiday  { color: var(--holiday); }
+.stat-label,
+.quick-stat .stat-label {
+  font: 600 10px/1 'Manrope';
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--ink-3);
+}
+.quick-stat.quick-stat-primary {
+  background:
+    linear-gradient(180deg, color-mix(in oklch, var(--accent) 12%, transparent), transparent 60%),
+    var(--bg-rise);
+  box-shadow:
+    inset 0 1px 0 color-mix(in oklch, white 12%, transparent),
+    inset 0 0 0 1px color-mix(in oklch, var(--accent) 22%, transparent);
+}
+
+/* ── Home calendar reskin ───────────────────────────────────────── */
+.home-calendar-card {
+  margin-top: 16px;
+  padding: 14px;
+  border-radius: var(--r-card);
+  background:
+    linear-gradient(180deg, color-mix(in oklch, white 4%, transparent), transparent),
+    var(--bg-rise);
+  box-shadow: inset 0 0 0 1px var(--hair);
+  border: 0;
+}
+.home-calendar-card-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 10px;
+}
+.home-calendar-card-title {
+  font: 700 13px/1 'Manrope';
+  color: var(--ink);
+}
+.home-calendar-legend {
+  display: flex;
+  gap: 8px;
+  align-items: center;
+  font: 600 9px/1 'Manrope';
+  color: var(--ink-3);
+  letter-spacing: 0.05em;
+  flex-wrap: wrap;
+}
+.home-calendar-legend-dot {
+  width: 6px;
+  height: 6px;
+  border-radius: 999px;
+  display: inline-block;
+  margin-right: 4px;
+}
+.home-calendar-legend-dot.is-day { background: var(--accent); }
+.home-calendar-legend-dot.is-night { background: var(--night); }
+.home-calendar-legend-arrows {
+  display: none;
+}
+
+.home-calendar-weekdays {
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  gap: 4px;
+  font: 600 9px/1 'Manrope';
+  color: var(--ink-4);
+  text-transform: uppercase;
+  letter-spacing: 0.12em;
+  text-align: center;
+  margin-bottom: 6px;
+}
+.home-calendar-grid {
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  gap: 4px;
+}
+.home-calendar-day {
+  aspect-ratio: 1 / 1 !important;
+  border-radius: 10px !important;
+  padding: 6px 8px !important;
+  display: flex !important;
+  flex-direction: column !important;
+  justify-content: flex-start !important;
+  align-items: flex-start !important;
+  font-family: 'JetBrains Mono', monospace;
+  color: var(--ink-2);
+  background: color-mix(in oklch, white 2%, transparent) !important;
+  box-shadow: inset 0 0 0 1px color-mix(in oklch, white 4%, transparent) !important;
+  border: 0 !important;
+  position: relative;
+  cursor: pointer;
+  min-width: 0 !important;
+  min-height: 0 !important;
+  overflow: hidden;
+}
+.home-calendar-day-number {
+  font: 600 12px/1 'JetBrains Mono' !important;
+  font-variant-numeric: tabular-nums;
+  color: var(--ink-2) !important;
+  align-self: flex-start !important;
+  position: relative;
+  z-index: 1;
+}
+/* Reset legacy backgrounds: weekend/holiday cells should be plain except for digit color */
+.home-calendar-day.is-weekend:not(.has-shift),
+.home-calendar-day.is-holiday:not(.has-shift) {
+  background: color-mix(in oklch, white 2%, transparent) !important;
+  border-color: transparent !important;
+  box-shadow: inset 0 0 0 1px color-mix(in oklch, white 4%, transparent) !important;
+}
+.home-calendar-day.is-today {
+  box-shadow: inset 0 0 0 1px color-mix(in oklch, white 4%, transparent) !important;
+}
+.home-calendar-day.is-weekend .home-calendar-day-number,
+.home-calendar-day.is-holiday .home-calendar-day-number {
+  color: var(--holiday) !important;
+}
+/* Out-of-month days: a single uniform fade of the whole cell via opacity
+   (defined once in 10-navigation-and-cards.css: .is-outside-month{opacity:.38}).
+   The number keeps its natural colour — white on weekdays, red on weekends —
+   just dimmed. Identical in every month, no per-colour overrides. */
+.home-calendar-day.is-today {
+  outline: 2px solid var(--accent) !important;
+  outline-offset: -1px !important;
+}
+.home-calendar-day.has-shift.shift-day {
+  background:
+    linear-gradient(180deg, var(--accent-soft), transparent),
+    color-mix(in oklch, white 2%, transparent) !important;
+  box-shadow: inset 0 0 0 1px color-mix(in oklch, var(--accent) 26%, transparent) !important;
+}
+.home-calendar-day.has-shift.shift-night {
+  background:
+    linear-gradient(180deg, var(--night-soft), transparent),
+    color-mix(in oklch, white 2%, transparent) !important;
+  box-shadow: inset 0 0 0 1px color-mix(in oklch, var(--night) 26%, transparent) !important;
+}
+/* Hide day counters and carry-arrows — not part of the design */
+.home-calendar-day-count,
+.home-calendar-day-arrows,
+.home-calendar-arrow {
+  display: none !important;
+}
+
+/* Worked-time bar at the bottom of a shift cell.
+   ::after is the faint full-width track; .home-calendar-day-bar overlays the
+   proportional fill — cyan = day hours, purple = night hours, width ∝ worked
+   share of the 24h day. */
+.home-calendar-day.has-shift::after {
+  content: '';
+  position: absolute;
+  left: 6px;
+  right: 6px;
+  bottom: 5px;
+  height: 3px;
+  border-radius: 3px;
+  background: color-mix(in oklch, white 9%, transparent);
+}
+.home-calendar-day-bar {
+  position: absolute;
+  left: 6px;
+  right: 6px;
+  bottom: 5px;
+  height: 3px;
+  border-radius: 3px;
+  overflow: hidden;
+  z-index: 1;
+}
+.home-calendar-day-bar-fill {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  min-width: 2px;
+}
+.home-calendar-day-bar-fill.is-day { background: var(--accent); }
+.home-calendar-day-bar-fill.is-night { background: var(--night); }
+
+.home-calendar-day-arrows {
+  display: flex;
+  justify-content: space-between;
+  font-size: 10px;
+  color: var(--ink-3);
+  margin-top: auto;
+  position: relative;
+  z-index: 1;
+}
+.home-calendar-arrow { opacity: 0; transition: opacity .2s; }
+.home-calendar-arrow.is-visible { opacity: 1; color: var(--accent); }
+.home-calendar-day.shift-night .home-calendar-arrow.is-visible { color: var(--night); }
+
+.home-calendar-latest-shift {
+  margin-top: 14px;
+  padding-top: 14px;
+  border-top: 1px solid color-mix(in oklch, white 6%, transparent);
+}
+
+/* ── Section header (used in Home: Смены ›, Зарплата: Расчёт ›) ─── */
+.section-header {
+  margin: 18px 4px 8px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  font: 700 12px/1 'Manrope';
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--ink-3);
+}
+.section-header-row { padding: 0 4px; }
+.section-link,
+.section-header .a {
+  font: 600 11px/1 'Manrope';
+  color: var(--accent);
+  background: var(--accent-soft);
+  padding: 6px 10px;
+  border-radius: 999px;
+  border: 1px solid color-mix(in oklch, var(--accent) 28%, transparent);
+  cursor: pointer;
+  text-decoration: none;
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+}

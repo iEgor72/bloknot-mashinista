@@ -538,16 +538,538 @@ async function waitForServer() {
   throw new Error(`Server did not become ready at ${baseUrl}`);
 }
 
+async function assertShiftRouteAutoSelection(browser, { id, from, to, expectedMapId, expectedHeadPos }) {
+  const context = await browser.newContext({ viewport: { width: 390, height: 844 }, deviceScaleFactor: 1 });
+  await context.addInitScript((legacyMapId) => {
+    localStorage.setItem('poekhali.mapId', legacyMapId);
+    localStorage.removeItem('poekhali.previewProjection');
+  }, 'komsomol-sk-tche-9');
+  const page = await context.newPage();
+  await page.goto(baseUrl, { waitUntil: 'domcontentloaded', timeout: 20_000 });
+  await page.waitForFunction(() => (
+    typeof window.startPoekhaliTrackerMode === 'function' &&
+    typeof window.setActiveTab === 'function'
+  ), null, { timeout: 15_000 });
+  const routeShift = {
+    ...shift,
+    id,
+    route_kind: 'trip',
+    route_from: from,
+    route_to: to
+  };
+  await page.evaluate((testShift) => {
+    window.allShifts = [testShift];
+    if (typeof window.setSelectedPoekhaliShiftId === 'function') {
+      window.setSelectedPoekhaliShiftId(testShift.id);
+    }
+    window.setActiveTab('poekhali');
+    window.startPoekhaliTrackerMode();
+  }, routeShift);
+  try {
+    await page.waitForFunction(({ mapId, headPos }) => (
+      localStorage.getItem('poekhali.mapId') === mapId &&
+      window.poekhaliHud && window.poekhaliHud.hasProjection &&
+      String(window.poekhaliHud.headPos || '').includes(headPos) &&
+      String(document.getElementById('btnPoekhaliMap')?.title || '').includes('Постышево')
+    ), { mapId: expectedMapId, headPos: expectedHeadPos }, { timeout: 20_000 });
+  } catch (error) {
+    const state = await page.evaluate(() => ({
+      mapId: localStorage.getItem('poekhali.mapId') || '',
+      mapTitle: document.getElementById('btnPoekhaliMap')?.title || '',
+      hud: window.poekhaliHud || null
+    }));
+    throw new Error(`Shift route did not settle at ${expectedHeadPos}: ${JSON.stringify(state)}`, { cause: error });
+  }
+  const result = await page.evaluate(() => ({
+    mapId: localStorage.getItem('poekhali.mapId') || '',
+    mapTitle: document.getElementById('btnPoekhaliMap')?.title || '',
+    headPos: String(window.poekhaliHud?.headPos || '')
+  }));
+  if (!result.mapTitle.includes('Постышево') || !result.mapTitle.includes('Комсомольск')) {
+    throw new Error(`Unexpected auto-selected route map: ${JSON.stringify(result)}`);
+  }
+  await page.evaluate(() => {
+    if (typeof window.stopPoekhaliTrackerMode === 'function') window.stopPoekhaliTrackerMode();
+  });
+  await context.close();
+  return result;
+}
+
+async function assertPartialRouteDoesNotSelectDraft(browser) {
+  const context = await browser.newContext({ viewport: { width: 390, height: 844 }, deviceScaleFactor: 1 });
+  await context.addInitScript(() => {
+    localStorage.setItem('poekhali.mapId', 'komsomol-sk-tche-9');
+    localStorage.removeItem('poekhali.previewProjection');
+  });
+  const page = await context.newPage();
+  await page.goto(baseUrl, { waitUntil: 'domcontentloaded', timeout: 20_000 });
+  await page.waitForFunction(() => typeof window.setActiveTab === 'function', null, { timeout: 15_000 });
+  const partialShift = {
+    ...shift,
+    id: 'poekhali-json-smoke-partial-route',
+    route_kind: 'trip',
+    route_from: 'П',
+    route_to: 'К'
+  };
+  await page.evaluate((testShift) => {
+    window.allShifts = [testShift];
+    window.setSelectedPoekhaliShiftId(testShift.id);
+    window.setActiveTab('poekhali');
+  }, partialShift);
+  await page.waitForFunction(() => {
+    const mapTitle = document.getElementById('btnPoekhaliMap')?.title || '';
+    return localStorage.getItem('poekhali.mapId') === 'komsomol-sk-tche-9' && mapTitle.includes('Комсомольск ТЧЭ-9');
+  }, null, { timeout: 15_000 });
+  await page.waitForTimeout(1200);
+  const result = await page.evaluate(() => ({
+    mapId: localStorage.getItem('poekhali.mapId') || '',
+    mapTitle: document.getElementById('btnPoekhaliMap')?.title || ''
+  }));
+  if (result.mapId !== 'komsomol-sk-tche-9') {
+    throw new Error(`Partial station names selected a draft map: ${JSON.stringify(result)}`);
+  }
+  await page.evaluate(() => window.stopPoekhaliTrackerMode());
+  await context.close();
+  return result;
+}
+
+async function assertStaleRouteSelectionCannotWin(browser) {
+  const context = await browser.newContext({
+    viewport: { width: 390, height: 844 },
+    deviceScaleFactor: 1,
+    serviceWorkers: 'block'
+  });
+  await context.addInitScript(() => {
+    localStorage.setItem('poekhali.mapId', 'komsomol-sk-tche-9');
+    localStorage.removeItem('poekhali.previewProjection');
+  });
+  const page = await context.newPage();
+  await page.route('**/assets/tracker/sections/dvost-postyshevo-komsomolsk.json', async (route) => {
+    await new Promise((resolve) => setTimeout(resolve, 700));
+    await route.continue();
+  });
+  await page.goto(baseUrl, { waitUntil: 'domcontentloaded', timeout: 20_000 });
+  await page.waitForFunction(() => typeof window.openPoekhaliForShift === 'function', null, { timeout: 15_000 });
+  const staleShift = {
+    ...shift,
+    id: 'poekhali-json-smoke-stale-route',
+    created_at: new Date(Date.now() - 3_600_000).toISOString(),
+    route_kind: 'trip',
+    route_from: 'Постышево',
+    route_to: 'Комсомольск-Сортировочный'
+  };
+  const currentShift = {
+    ...shift,
+    id: 'poekhali-json-smoke-current-no-route',
+    created_at: new Date(Date.now() - 3_600_000).toISOString(),
+    route_kind: 'work',
+    route_from: '',
+    route_to: ''
+  };
+  await page.evaluate(({ first, second }) => {
+    window.allShifts = [first, second];
+    window.setSelectedPoekhaliShiftId(first.id);
+    window.setActiveTab('poekhali');
+  }, { first: staleShift, second: currentShift });
+  await page.waitForTimeout(80);
+  const switched = await page.evaluate((shiftId) => window.openPoekhaliForShift(shiftId), currentShift.id);
+  if (!switched) throw new Error('Rapid shift switch could not select the second shift');
+  await page.waitForTimeout(1400);
+  const result = await page.evaluate(() => ({
+    shiftId: window.getPoekhaliTrainDetails()?.shift?.id || '',
+    mapId: localStorage.getItem('poekhali.mapId') || '',
+    mapTitle: document.getElementById('btnPoekhaliMap')?.title || ''
+  }));
+  if (result.shiftId !== currentShift.id || result.mapId !== 'komsomol-sk-tche-9') {
+    throw new Error(`Stale route selection won the race: ${JSON.stringify(result)}`);
+  }
+  await page.evaluate(() => window.stopPoekhaliTrackerMode());
+  await context.close();
+  return result;
+}
+
+async function assertLocalGpsCapture(browser) {
+  const context = await browser.newContext({ viewport: { width: 390, height: 844 }, deviceScaleFactor: 1 });
+  await context.addInitScript(() => {
+    localStorage.setItem('poekhali.mapId', 'komsomol-sk-tche-9');
+    localStorage.removeItem('poekhali.previewProjection');
+    for (let index = localStorage.length - 1; index >= 0; index -= 1) {
+      const key = localStorage.key(index);
+      if (key && key.startsWith('poekhali.mapLearning.v1')) localStorage.removeItem(key);
+    }
+    const originalStorageSetItem = Storage.prototype.setItem;
+    Storage.prototype.setItem = function(key, value) {
+      if (window.__failPoekhaliLearningStorage && key.startsWith('poekhali.mapLearning.v1:')) {
+        throw new DOMException('quota test', 'QuotaExceededError');
+      }
+      return originalStorageSetItem.call(this, key, value);
+    };
+    const watchers = new Map();
+    let nextWatchId = 1;
+    const geolocation = {
+      watchPosition(success, error, options) {
+        const id = nextWatchId++;
+        watchers.set(id, { success, error, options });
+        return id;
+      },
+      clearWatch(id) {
+        watchers.delete(id);
+      },
+      getCurrentPosition() {}
+    };
+    Object.defineProperty(navigator, 'geolocation', {
+      configurable: true,
+      value: geolocation
+    });
+    window.__emitPoekhaliGpsFix = (fix) => {
+      const position = {
+        timestamp: fix.ts,
+        coords: {
+          latitude: fix.lat,
+          longitude: fix.lon,
+          altitude: fix.altitude ?? 40,
+          accuracy: fix.accuracy,
+          speed: Object.prototype.hasOwnProperty.call(fix, 'speed') ? fix.speed : 20,
+          heading: Object.prototype.hasOwnProperty.call(fix, 'heading') ? fix.heading : 90
+        }
+      };
+      for (const watcher of watchers.values()) watcher.success(position);
+    };
+  });
+  const learningRequests = [];
+  const page = await context.newPage();
+  page.on('request', (request) => {
+    if (request.url().includes('/api/poekhali-learning')) learningRequests.push(request.url());
+  });
+  await page.goto(baseUrl, { waitUntil: 'domcontentloaded', timeout: 20_000 });
+  await page.waitForFunction(() => (
+    typeof window.startPoekhaliTrackerMode === 'function' &&
+    typeof window.getPoekhaliGpsCaptureState === 'function'
+  ), null, { timeout: 15_000 });
+  const captureShift = {
+    ...shift,
+    id: 'poekhali-json-smoke-gps-capture',
+    route_kind: 'trip',
+    route_from: 'Постышево',
+    route_to: 'Комсомольск-Сортировочный'
+  };
+  await page.evaluate((testShift) => {
+    window.allShifts = [testShift];
+    window.setSelectedPoekhaliShiftId(testShift.id);
+    window.setActiveTab('poekhali');
+  }, captureShift);
+  await page.waitForFunction(() => (
+    localStorage.getItem('poekhali.mapId') === 'dvost-postyshevo-komsomolsk' &&
+    window.poekhaliHud && window.poekhaliHud.hasProjection
+  ), null, { timeout: 20_000 });
+
+  const a = { lat: 51.65823519944607, lon: 135.661229380896 };
+  const b = { lat: 51.66268364376746, lon: 135.67388888337942 };
+  const interpolate = (factor) => ({
+    lat: a.lat + (b.lat - a.lat) * factor,
+    lon: a.lon + (b.lon - a.lon) * factor
+  });
+  const t0 = Date.now();
+  await page.evaluate((value) => window.__emitPoekhaliGpsFix(value), { ...a, accuracy: 10, ts: t0 - 1000 });
+  const beforeExplicitStart = await page.evaluate(() => ({
+    capture: window.getPoekhaliGpsCaptureState(),
+    stored: Array.from({ length: localStorage.length }, (_, index) => localStorage.key(index))
+      .some((key) => key && key.startsWith('poekhali.mapLearning.v1:'))
+  }));
+  if (beforeExplicitStart.capture.active || beforeExplicitStart.capture.samples || beforeExplicitStart.stored) {
+    throw new Error(`GPS capture started without explicit consent: ${JSON.stringify(beforeExplicitStart)}`);
+  }
+  const started = await page.evaluate(() => window.startPoekhaliGpsCapture());
+  if (!started) throw new Error('Explicit GPS capture did not start');
+  const fixes = [
+    { ...a, accuracy: 12, ts: t0 },
+    { ...interpolate(0.04), accuracy: 120, ts: t0 + 1000 },
+    { ...a, accuracy: 10, ts: t0 + 20_000 },
+    { ...interpolate(0.08), accuracy: 10, ts: t0 + 22_000 },
+    { ...interpolate(0.09), accuracy: 9, ts: t0 + 42_000 },
+    { ...interpolate(0.1), accuracy: 9, ts: t0 + 21_000 },
+    { ...b, accuracy: 8, ts: t0 + 43_000 }
+  ];
+  for (const fix of fixes) {
+    await page.evaluate((value) => window.__emitPoekhaliGpsFix(value), fix);
+  }
+  await page.waitForFunction(() => (
+    window.getPoekhaliGpsCaptureState().samples === 3 &&
+    window.poekhaliHud?.gpsRecording === true &&
+    window.poekhaliHud?.gpsRecordedSamples === 3
+  ), null, { timeout: 10_000 });
+  const liveState = await page.evaluate(() => ({
+    capture: window.getPoekhaliGpsCaptureState(),
+    hud: {
+      gpsRecording: window.poekhaliHud?.gpsRecording,
+      gpsRecordedSamples: window.poekhaliHud?.gpsRecordedSamples
+    }
+  }));
+  await page.evaluate(() => window.stopPoekhaliTrackerMode());
+  await page.evaluate(() => window.startPoekhaliTrackerMode());
+  await page.waitForFunction(() => window.getPoekhaliGpsCaptureState().available === true, null, { timeout: 15_000 });
+  const resumed = await page.evaluate(() => ({
+    started: window.startPoekhaliGpsCapture(),
+    state: window.getPoekhaliGpsCaptureState()
+  }));
+  if (!resumed.started || resumed.state.trackKey !== liveState.capture.trackKey) {
+    throw new Error(`Interrupted GPS capture did not resume: ${JSON.stringify({ liveState, resumed })}`);
+  }
+  await page.evaluate((value) => window.__emitPoekhaliGpsFix(value), {
+    ...interpolate(0.17),
+    accuracy: 8,
+    ts: t0 + 100_000
+  });
+  await page.waitForFunction(() => window.getPoekhaliGpsCaptureState().samples === 4, null, { timeout: 10_000 });
+  await page.evaluate(() => {
+    window.stopPoekhaliGpsCapture();
+    window.stopPoekhaliTrackerMode();
+  });
+  const persisted = await page.evaluate(() => {
+    const storageKey = Array.from({ length: localStorage.length }, (_, index) => localStorage.key(index))
+      .find((key) => key && key.startsWith('poekhali.mapLearning.v1:'));
+    const store = JSON.parse(storageKey ? localStorage.getItem(storageKey) : '{}');
+    const map = store.maps?.['dvost-postyshevo-komsomolsk'];
+    const entries = Object.entries(map?.rawTracks || {});
+    const gpsPackage = window.buildPoekhaliGpsCapturePackage();
+    return {
+      storageKey,
+      entries,
+      gpsPackage
+    };
+  });
+  if (persisted.entries.length !== 1) {
+    throw new Error(`Expected one local GPS capture, got ${persisted.entries.length}`);
+  }
+  const [captureId, bucket] = persisted.entries[0];
+  if (bucket.samples?.length !== 4 || bucket.purpose !== 'field_geometry_capture' ||
+      bucket.status !== 'completed' || bucket.routeFrom !== 'Постышево' ||
+      bucket.routeTo !== 'Комсомольск-Сортировочный' ||
+      bucket.samples.some((sample) => sample.heading !== 90) ||
+      new Set(bucket.samples.map((sample) => sample.segmentId)).size !== 2) {
+    throw new Error(`Unexpected persisted GPS capture: ${JSON.stringify({ captureId, bucket })}`);
+  }
+  if (persisted.gpsPackage?.schema !== 'bloknot.poekhali.gps-captures' || persisted.gpsPackage.captures?.length !== 1) {
+    throw new Error(`Unexpected GPS-only export package: ${JSON.stringify(persisted.gpsPackage)}`);
+  }
+  if (persisted.gpsPackage.captures[0].samples.some((sample) => sample.heading !== 90 || sample.shiftId !== undefined)) {
+    throw new Error(`GPS-only export leaked or lost sample fields: ${JSON.stringify(persisted.gpsPackage.captures[0].samples)}`);
+  }
+  if (learningRequests.length) {
+    throw new Error(`GPS capture attempted backend sync: ${learningRequests.join(', ')}`);
+  }
+
+  const ownerIsolation = await page.evaluate(() => {
+    const originalOwnerGetter = window.getOfflineStorageUserId;
+    const ownOwner = originalOwnerGetter();
+    window.getOfflineStorageUserId = () => 'smoke-other-owner';
+    const otherPackage = window.buildPoekhaliGpsCapturePackage();
+    window.getOfflineStorageUserId = originalOwnerGetter;
+    const ownPackage = window.buildPoekhaliGpsCapturePackage();
+    return {
+      ownOwner,
+      otherCaptures: otherPackage.captures.length,
+      ownCaptures: ownPackage.captures.length,
+      scopedKeys: Array.from({ length: localStorage.length }, (_, index) => localStorage.key(index))
+        .filter((key) => key && key.startsWith('poekhali.mapLearning.v1:'))
+    };
+  });
+  if (ownerIsolation.otherCaptures !== 0 || ownerIsolation.ownCaptures !== 1 || ownerIsolation.scopedKeys.length < 1) {
+    throw new Error(`Per-owner GPS isolation failed: ${JSON.stringify(ownerIsolation)}`);
+  }
+
+  const migration = await page.evaluate(() => {
+    const originalOwnerGetter = window.getOfflineStorageUserId;
+    const ownOwner = originalOwnerGetter();
+    const ownKey = 'poekhali.mapLearning.v1:' + String(ownOwner).replace(/[^a-zA-Z0-9_.:-]+/g, '_').slice(0, 120);
+    localStorage.setItem('poekhali.mapLearning.v1', localStorage.getItem(ownKey));
+    window.getOfflineStorageUserId = () => 'smoke-migration-owner';
+    const migratedPackage = window.buildPoekhaliGpsCapturePackage();
+    const migratedKey = 'poekhali.mapLearning.v1:smoke-migration-owner';
+    const result = {
+      captures: migratedPackage.captures.length,
+      scopedExists: Boolean(localStorage.getItem(migratedKey)),
+      legacyRemoved: !localStorage.getItem('poekhali.mapLearning.v1')
+    };
+    window.clearPoekhaliGpsCaptures();
+    window.getOfflineStorageUserId = originalOwnerGetter;
+    window.buildPoekhaliGpsCapturePackage();
+    return result;
+  });
+  if (migration.captures !== 1 || !migration.scopedExists || !migration.legacyRemoved) {
+    throw new Error(`Legacy GPS store migration failed: ${JSON.stringify(migration)}`);
+  }
+
+  const cleared = await page.evaluate(() => ({
+    removed: window.clearPoekhaliGpsCaptures(),
+    remaining: window.buildPoekhaliGpsCapturePackage().captures.length
+  }));
+  if (cleared.removed !== 1 || cleared.remaining !== 0) {
+    throw new Error(`GPS export/clear lifecycle failed: ${JSON.stringify(cleared)}`);
+  }
+
+  await page.evaluate(() => window.startPoekhaliTrackerMode());
+  await page.waitForFunction(() => window.getPoekhaliGpsCaptureState().available === true, null, { timeout: 15_000 });
+  const quotaCaptureStarted = await page.evaluate(() => {
+    window.__failPoekhaliLearningStorage = true;
+    return window.startPoekhaliGpsCapture();
+  });
+  if (!quotaCaptureStarted) throw new Error('Quota failure capture did not start');
+  await page.evaluate((value) => window.__emitPoekhaliGpsFix(value), {
+    ...a,
+    accuracy: 8,
+    heading: null,
+    speed: null,
+    ts: Date.now()
+  });
+  await page.waitForFunction(() => {
+    const state = window.getPoekhaliGpsCaptureState();
+    return !state.active && Boolean(state.error) && window.poekhaliHud?.gpsCaptureError;
+  }, null, { timeout: 10_000 });
+  const quotaFailure = await page.evaluate(() => {
+    const state = window.getPoekhaliGpsCaptureState();
+    const gpsPackage = window.buildPoekhaliGpsCapturePackage();
+    window.__failPoekhaliLearningStorage = false;
+    return { state, gpsPackage };
+  });
+  if (!quotaFailure.state.error || quotaFailure.gpsPackage.captures.length !== 1 ||
+      quotaFailure.gpsPackage.captures[0].status !== 'storage-error' ||
+      quotaFailure.gpsPackage.captures[0].samples[0].heading !== null) {
+    throw new Error(`Quota error was not surfaced truthfully: ${JSON.stringify(quotaFailure)}`);
+  }
+  await page.evaluate(() => {
+    window.clearPoekhaliGpsCaptures();
+    window.stopPoekhaliTrackerMode();
+  });
+  const compaction = await page.evaluate(() => {
+    const originalOwnerGetter = window.getOfflineStorageUserId;
+    const ownerId = 'smoke-compaction-owner';
+    const samples = [];
+    for (let index = 0; index < 7000; index += 1) {
+      samples.push({
+        mapId: 'compact-map',
+        lat: 50 + index * 0.0000001,
+        lon: 130,
+        altitude: null,
+        accuracy: 10,
+        speed: null,
+        heading: null,
+        distance: null,
+        shiftId: 'compact-shift',
+        runId: '',
+        nearestSector: null,
+        nearestCoordinate: null,
+        ts: index + 1
+      });
+    }
+    localStorage.setItem('poekhali.mapLearning.v1:' + ownerId, JSON.stringify({
+      version: 1,
+      maps: {
+        'compact-map': {
+          updatedAt: 7000,
+          sectors: {},
+          userSections: {},
+          rawTracks: {
+            'compact-capture': {
+              samples,
+              purpose: 'field_geometry_capture',
+              status: 'completed',
+              routeFrom: 'А',
+              routeTo: 'Б',
+              startedAt: 1,
+              endedAt: 7000,
+              updatedAt: 7000
+            }
+          }
+        }
+      }
+    }));
+    window.getOfflineStorageUserId = () => ownerId;
+    const gpsPackage = window.buildPoekhaliGpsCapturePackage();
+    const compacted = gpsPackage.captures[0].samples;
+    let maxGap = 0;
+    for (let index = 1; index < compacted.length; index += 1) {
+      maxGap = Math.max(maxGap, compacted[index].ts - compacted[index - 1].ts);
+    }
+    const result = {
+      samples: compacted.length,
+      firstTs: compacted[0].ts,
+      lastTs: compacted[compacted.length - 1].ts,
+      maxGap,
+      nullsPreserved: compacted.every((sample) => (
+        sample.heading === null && sample.speed === null && sample.distance === null &&
+        sample.nearestSector === null && sample.nearestCoordinate === null
+      ))
+    };
+    window.clearPoekhaliGpsCaptures();
+    window.getOfflineStorageUserId = originalOwnerGetter;
+    window.buildPoekhaliGpsCapturePackage();
+    return result;
+  });
+  if (compaction.samples !== 3000 || compaction.firstTs !== 1 || compaction.lastTs !== 7000 ||
+      compaction.maxGap > 3 || !compaction.nullsPreserved) {
+    throw new Error(`Long GPS trace compaction failed: ${JSON.stringify(compaction)}`);
+  }
+  await context.close();
+  return {
+    samples: bucket.samples.length,
+    rejectedFixes: fixes.length + 1 - bucket.samples.length,
+    purpose: bucket.purpose,
+    status: bucket.status,
+    route: `${bucket.routeFrom} → ${bucket.routeTo}`,
+    hudRecording: Boolean(liveState.hud.gpsRecording),
+    exportSchema: persisted.gpsPackage.schema,
+    ownerIsolation: true,
+    legacyMigration: true,
+    resumedSegments: 2,
+    clearAndRestart: true,
+    quotaFailureVisible: true,
+    compaction,
+    backendRequests: learningRequests.length
+  };
+}
+
 let browser;
 try {
   await waitForServer();
   await mark('server ready');
-  browser = await chromium.launch({ headless: true });
+  browser = await chromium.launch({
+    headless: true,
+    executablePath: process.env.PLAYWRIGHT_EXECUTABLE_PATH || undefined
+  });
 
   const defaultContext = await browser.newContext({ viewport: { width: 390, height: 844 }, deviceScaleFactor: 1 });
   const defaultPage = await defaultContext.newPage();
   await defaultPage.goto(baseUrl, { waitUntil: 'domcontentloaded', timeout: 20_000 });
   await defaultPage.waitForFunction(() => typeof window.startPoekhaliTrackerMode === 'function' && typeof window.setActiveTab === 'function', null, { timeout: 15_000 });
+  const routeFormInference = await defaultPage.evaluate(() => {
+    const from = document.getElementById('inputRouteFrom');
+    const to = document.getElementById('inputRouteTo');
+    const chooser = document.getElementById('routeTypeSegmented');
+    from.value = 'Постышево';
+    to.value = 'Комсомольск-Сортировочный';
+    const filled = window.collectOptionalShiftData();
+    from.value = '';
+    to.value = '';
+    const empty = window.collectOptionalShiftData();
+    return {
+      chooserHidden: Boolean(chooser && chooser.classList.contains('hidden')),
+      filled: {
+        routeKind: filled.route_kind,
+        routeFrom: filled.route_from,
+        routeTo: filled.route_to
+      },
+      emptyRouteKind: empty.route_kind
+    };
+  });
+  if (!routeFormInference.chooserHidden ||
+      routeFormInference.filled.routeKind !== 'trip' ||
+      routeFormInference.filled.routeFrom !== 'Постышево' ||
+      routeFormInference.filled.routeTo !== 'Комсомольск-Сортировочный' ||
+      routeFormInference.emptyRouteKind !== 'depot') {
+    throw new Error(`Hidden route chooser inference failed: ${JSON.stringify(routeFormInference)}`);
+  }
+  report.checks.routeFormInference = routeFormInference;
   await defaultPage.evaluate((testShift) => {
     window.allShifts = [testShift];
     if (typeof window.setSelectedPoekhaliShiftId === 'function') {
@@ -576,6 +1098,31 @@ try {
   });
   await defaultContext.close();
   await mark('draft maps excluded from automatic selection');
+
+  const directAutoSelection = await assertShiftRouteAutoSelection(browser, {
+    id: 'poekhali-json-smoke-route-direct',
+    from: 'ст. Постышево',
+    to: 'станция Комсомольск-Сортировочный',
+    expectedMapId: 'dvost-postyshevo-komsomolsk',
+    expectedHeadPos: '3614 км 8 пк'
+  });
+  const reverseAutoSelection = await assertShiftRouteAutoSelection(browser, {
+    id: 'poekhali-json-smoke-route-reverse',
+    from: 'Комсомольск-Сортировочный',
+    to: 'Постышево',
+    expectedMapId: 'dvost-postyshevo-komsomolsk',
+    expectedHeadPos: '3814 км 5 пк'
+  });
+  report.checks.shiftRouteAutoSelection = {
+    direct: directAutoSelection,
+    reverse: reverseAutoSelection,
+    partialRejected: await assertPartialRouteDoesNotSelectDraft(browser),
+    staleSelectionRejected: await assertStaleRouteSelectionCannotWin(browser)
+  };
+  await mark('pilot JSON map selected from shift route in both directions');
+
+  report.checks.localGpsCapture = await assertLocalGpsCapture(browser);
+  await mark('local-only GPS field capture filtered and persisted');
 
   const secondMapId = 'dvost-postyshevo-komsomolsk';
   const secondPreview = {

@@ -2404,24 +2404,6 @@
         });
     }
 
-    function showDocsToast(text, success) {
-      var existing = document.getElementById('docsToast');
-      if (existing) existing.remove();
-      var toast = document.createElement('div');
-      toast.id = 'docsToast';
-      toast.className = 'docs-toast' + (success ? ' docs-toast-ok' : '');
-      toast.textContent = text;
-      document.body.appendChild(toast);
-      // Animate in
-      requestAnimationFrame(function() {
-        requestAnimationFrame(function() { toast.classList.add('docs-toast-show'); });
-      });
-      setTimeout(function() {
-        toast.classList.remove('docs-toast-show');
-        setTimeout(function() { if (toast.parentNode) toast.parentNode.removeChild(toast); }, 350);
-      }, success ? 3500 : 4000);
-    }
-
     document.addEventListener('keydown', function(e) {
       if (!e || e.defaultPrevented) return;
       if (!(e.key === 'Enter' || e.key === ' ')) return;

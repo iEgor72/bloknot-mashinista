@@ -5,7 +5,8 @@ Telegram Mini App / PWA для учета смен локомотивных бр
 ## Что делает приложение
 
 - Авторизует пользователя через Telegram WebApp `initData` или Telegram Login Widget.
-- Хранит смены, параметры расчета зарплаты и присутствие пользователей на VPS в локальных JSON-файлах под `data/`.
+- Хранит смены, параметры расчета зарплаты, бригаду и присутствие пользователей в SQLite `data/bloknot.sqlite3`.
+- При первом запуске безопасно импортирует прежние JSON-файлы; исходники сохраняются как read-only источник отката.
 - Показывает журнал смен, календарь, расчет часов/доплат и раздел документов.
 - Работает как PWA с оффлайн-кэшем оболочки и очередью pending-изменений смен.
 
@@ -32,8 +33,17 @@ Cloudflare Pages/D1 runtime больше не является активным 
 
 ```bash
 npm run smoke:local
+npm run test:server
 node --check server.js
 ```
+
+## SQLite и резервные копии
+
+- `npm run storage:check` — `PRAGMA integrity_check` основной базы.
+- `npm run storage:backup -- manual` — согласованная SQLite-копия в `data/backups/`.
+- `npm run storage:restore -- <backup.sqlite3> --confirm` — восстановление после остановки приложения; прежняя база сохраняется рядом с суффиксом `before-restore`.
+
+Для тестов и отдельного окружения путь можно переопределить через `APP_DATA_DIR`.
 
 ## AI memory
 

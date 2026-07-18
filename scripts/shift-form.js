@@ -1,22 +1,3 @@
-    // ── Delete handler ──
-    function handleDeleteClick(e) {
-      if (e) {
-        e.preventDefault();
-        e.stopPropagation();
-      }
-      var id = e.currentTarget.getAttribute('data-id');
-      var shift = null;
-      for (var i = 0; i < allShifts.length; i++) {
-        if (allShifts[i].id === id) { shift = allShifts[i]; break; }
-      }
-      if (!shift) return;
-
-      triggerHapticWarning();
-      pendingDeleteId = id;
-      render();
-      openOverlay('overlayConfirm');
-    }
-
     function findShiftById(id) {
       for (var i = 0; i < allShifts.length; i++) {
         if (allShifts[i].id === id) return allShifts[i];
@@ -55,11 +36,6 @@
       var el = getShiftFormElement(id);
       if (el) el.classList.toggle(className, enabled !== false);
       return el;
-    }
-
-    function isOverlayOpen(id) {
-      var overlay = document.getElementById(id);
-      return !!(overlay && (overlay.classList.contains('is-open') || overlay.classList.contains('visible')));
     }
 
     function mountEditFormIntoOverlay() {
@@ -163,18 +139,6 @@
       editReturnTab = 'shifts';
       setActiveTab(targetTab);
       render();
-    }
-
-    function handleEditClick(e) {
-      if (e) {
-        e.preventDefault();
-        e.stopPropagation();
-      }
-      var id = e.currentTarget.getAttribute('data-id');
-      var shift = findShiftById(id);
-      if (!shift) return;
-      triggerHapticTapLight();
-      enterEditMode(shift, { returnTab: activeTab });
     }
 
     function bindClickById(id, handler) {
@@ -981,18 +945,6 @@
         closeOverlay('overlaySalarySettings');
         showActionToast('saved');
       });
-    }
-
-    function setSegmentedValue(containerId, value) {
-      var buttons = document.querySelectorAll('#' + containerId + ' .segmented-btn');
-      for (var i = 0; i < buttons.length; i++) {
-        buttons[i].classList.toggle('active', buttons[i].getAttribute('data-value') === value);
-      }
-    }
-
-    function getSegmentedValue(containerId, fallback) {
-      var active = document.querySelector('#' + containerId + ' .segmented-btn.active');
-      return active ? active.getAttribute('data-value') : fallback;
     }
 
     var unlockDocsProBtn = document.getElementById('btnUnlockDocsPro');

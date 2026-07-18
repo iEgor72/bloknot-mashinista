@@ -106,6 +106,7 @@
       "name": "Постышево — Комсомольск-Сортировочный",
       "from": "Постышево",
       "to": "Комсомольск-Сортировочный",
+      "shift_route_auto_select": true,
       "default_variant": "main",
       "variants": [
         {

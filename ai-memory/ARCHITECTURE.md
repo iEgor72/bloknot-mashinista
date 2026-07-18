@@ -16,8 +16,11 @@ Generated: 2026-04-17 23:20 +10:00
 - Removed Cloudflare-style handlers are no longer part of the codebase. Do not reference `functions/api/*`, `functions/features/*`, or `wrangler.toml` unless a future migration reintroduces them.
 
 ## Persistent Data
-- Active VPS runtime persists data locally under `data/`, especially `data/local-shifts/` and `data/user-presence.json`.
-- Cloudflare D1 schema and bindings are no longer present in the active repo. Production state is VPS local JSON storage.
+- Active VPS runtime persists mutable application state in SQLite `data/bloknot.sqlite3` through `server/sqlite-storage.js`.
+- Schema changes are versioned in `schema_migrations`; shifts use transactional row replacement, while bounded app/user documents use JSON payload columns.
+- On first startup, legacy JSON under `data/` is imported idempotently and retained unchanged for rollback evidence.
+- Consistent backups live under `data/backups/`; maintenance commands are exposed as `npm run storage:check|backup|restore`.
+- Cloudflare D1 schema and bindings are no longer present in the active repo.
 
 ## Operational Architecture
 - `ecosystem.config.js` defines PM2 app `bloknot-mashinista`, `server.js`, `PORT=3000`, `NODE_ENV=production`.

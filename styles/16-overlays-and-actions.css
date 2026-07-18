@@ -1,0 +1,688 @@
+    /* ── Sheet / overlay common ── */
+    .docs-pro-wrap {
+      position: relative;
+      min-height: 0;
+    }
+
+    .docs-pro-wrap.is-locked .docs-shell {
+      filter: blur(6px) saturate(0.92);
+      opacity: 0.66;
+      pointer-events: none;
+      user-select: none;
+      transition: filter 0.22s ease, opacity 0.22s ease;
+    }
+
+    .docs-pro-wrap:not(.is-locked) .docs-shell {
+      filter: none;
+      opacity: 1;
+      transition: filter 0.22s ease, opacity 0.22s ease;
+    }
+
+    .docs-pro-gate {
+      position: fixed;
+      inset: 0;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 12px;
+      z-index: calc(var(--layer-scrim) + 5);
+      pointer-events: none;
+    }
+
+    .docs-pro-gate.hidden {
+      display: none;
+    }
+
+    .docs-pro-card {
+      width: min(100%, 380px);
+      background: rgba(14, 18, 28, 0.96);
+      border: 1px solid rgba(65, 176, 255, 0.2);
+      border-radius: var(--r-card);
+      padding: 18px 16px;
+      text-align: center;
+      box-shadow: 0 10px 28px rgba(0, 0, 0, 0.28);
+      pointer-events: auto;
+    }
+
+    .docs-pro-icon {
+      width: 34px;
+      height: 34px;
+      margin: 0 auto 8px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background: rgba(56, 189, 248, 0.12);
+      border: 1px solid rgba(56, 189, 248, 0.28);
+      color: #74d5ff;
+    }
+
+    .docs-pro-icon svg {
+      width: 18px;
+      height: 18px;
+      display: block;
+    }
+
+    .docs-pro-icon svg path,
+    .docs-pro-icon svg rect {
+      fill: none;
+      stroke: currentColor;
+      stroke-width: 1.9;
+      stroke-linecap: round;
+      stroke-linejoin: round;
+    }
+
+    .docs-pro-icon svg rect {
+      stroke-width: 1.8;
+    }
+
+    .docs-pro-icon svg path:last-child {
+      stroke-width: 2;
+    }
+
+    .docs-pro-title {
+      font-size: 16px;
+      font-weight: 800;
+      color: var(--text);
+      margin-bottom: 6px;
+    }
+
+    .docs-pro-text {
+      font-size: 13px;
+      line-height: 1.5;
+      color: var(--sub);
+      margin-bottom: 14px;
+    }
+
+    .docs-pro-unlock-btn {
+      width: 100%;
+      min-height: 42px;
+      justify-content: center;
+    }
+
+    .overlay {
+      position: fixed;
+      inset: 0;
+      z-index: var(--layer-scrim);
+      display: flex;
+      align-items: flex-end;
+      background: rgba(0, 0, 0, 0.6);
+      opacity: 0;
+      visibility: hidden;
+      transition: opacity 0.22s ease, visibility 0.22s ease;
+      pointer-events: none;
+    }
+
+    .overlay.is-open,
+    .overlay.visible {
+      opacity: 1;
+      visibility: visible;
+      pointer-events: auto;
+    }
+
+    body.has-open-overlay .bottom-nav {
+      opacity: 0;
+      visibility: hidden;
+      pointer-events: none;
+    }
+
+    .bottom-sheet {
+      width: 100%;
+      max-width: 480px;
+      margin: 0 auto;
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: var(--r-card) var(--r-card) 0 0;
+      padding: 20px 20px calc(30px + var(--safe-bottom));
+      max-height: 90dvh;
+      overflow-y: auto;
+      -webkit-overflow-scrolling: touch;
+      transform: translateY(100%);
+      transition: transform 0.28s cubic-bezier(0.25, 1, 0.35, 1);
+    }
+
+    .overlay.is-open .bottom-sheet,
+    .overlay.visible .bottom-sheet {
+      transform: translateY(0);
+    }
+
+
+    @keyframes tabSheetUp {
+      from {
+        opacity: 0;
+        transform: translateY(52px) scale(0.985);
+      }
+      72% {
+        opacity: 1;
+        transform: translateY(-2px) scale(1);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0) scale(1);
+      }
+    }
+
+    .sheet-title {
+      font-size: 18px;
+      font-weight: 800;
+      color: var(--text);
+      margin-bottom: 20px;
+      letter-spacing: -0.02em;
+      line-height: 1.18;
+    }
+
+    .sheet-url-text {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 12px;
+      color: var(--sub);
+      padding: 10px 12px;
+      background: var(--card-hi);
+      border-radius: var(--r-inner);
+      border: 1px solid var(--border);
+      word-break: break-all;
+    }
+
+    .sheet-url-row {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      margin-bottom: 14px;
+    }
+
+    .btn-sheet-close,
+    .btn-copy {
+      height: 36px;
+      padding: 0 13px;
+      border-radius: 12px;
+      background: rgba(255, 255, 255, 0.05);
+      border: 1px solid rgba(255, 255, 255, 0.10);
+      color: var(--sub);
+      font-family: 'Manrope', sans-serif;
+      font-size: 12px;
+      font-weight: 700;
+      cursor: pointer;
+      flex-shrink: 0;
+      box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.03);
+      transition: transform 0.14s ease, background 0.14s ease, border-color 0.14s ease, color 0.14s ease;
+      -webkit-tap-highlight-color: transparent;
+    }
+
+    .btn-sheet-close {
+      height: auto;
+      min-height: 46px;
+      min-width: 112px;
+      padding: 0 18px;
+      border-radius: 14px;
+      background: rgba(255, 255, 255, 0.06);
+      border-color: rgba(255, 255, 255, 0.12);
+      color: rgba(238, 242, 248, 0.92);
+      font-size: 14px;
+      font-weight: 800;
+    }
+
+    .btn-sheet-close:active,
+    .btn-copy:active {
+      transform: scale(0.99);
+      background: rgba(255, 255, 255, 0.10);
+      border-color: rgba(255, 255, 255, 0.20);
+      color: var(--text);
+    }
+
+    .install-guide-sheet {
+      position: relative;
+      display: grid;
+      gap: 14px;
+      padding-top: 18px;
+      background: linear-gradient(180deg, rgba(56, 189, 248, 0.05) 0%, rgba(56, 189, 248, 0) 28%);
+    }
+
+    #overlayAddScreen {
+      z-index: calc(var(--layer-scrim) + 10);
+      align-items: flex-end;
+      justify-content: center;
+      padding:
+        max(14px, var(--safe-top))
+        12px
+        0;
+      background: rgba(3, 7, 16, 0.68);
+      backdrop-filter: blur(6px);
+      -webkit-backdrop-filter: blur(6px);
+      overscroll-behavior: contain;
+      touch-action: none;
+    }
+
+    #overlayAddScreen .install-guide-sheet {
+      width: min(480px, 100%);
+      max-width: 480px;
+      margin: 0 auto;
+      padding: 10px 20px calc(24px + var(--safe-bottom));
+      max-height: 90dvh;
+      border-radius: var(--r-card) var(--r-card) 0 0;
+      border: 1px solid var(--border);
+      background:
+        linear-gradient(180deg, rgba(56, 189, 248, 0.05) 0%, rgba(56, 189, 248, 0) 22%),
+        var(--card);
+      box-shadow: 0 22px 56px rgba(0, 0, 0, 0.38);
+      overflow-y: auto;
+      touch-action: pan-y;
+      transform: translateY(100%);
+      transition: transform 0.28s cubic-bezier(0.25, 1, 0.35, 1);
+    }
+
+    #overlayAddScreen.is-open .install-guide-sheet,
+    #overlayAddScreen.visible .install-guide-sheet {
+      transform: translateY(0);
+    }
+
+    .install-guide-sheet > * {
+      opacity: 0;
+      transform: translateY(6px);
+      transition: opacity 0.2s ease, transform 0.2s ease;
+    }
+
+    #overlayAddScreen .install-guide-sheet > * {
+      position: relative;
+      opacity: 1;
+      transform: none;
+      transition: none;
+    }
+
+    .overlay.is-open .install-guide-sheet > *,
+    .overlay.visible .install-guide-sheet > * {
+      opacity: 1;
+      transform: translateY(0);
+    }
+
+    .overlay.is-open .install-guide-sheet > *:nth-child(2),
+    .overlay.visible .install-guide-sheet > *:nth-child(2) { transition-delay: 20ms; }
+    .overlay.is-open .install-guide-sheet > *:nth-child(3),
+    .overlay.visible .install-guide-sheet > *:nth-child(3) { transition-delay: 40ms; }
+    .overlay.is-open .install-guide-sheet > *:nth-child(4),
+    .overlay.visible .install-guide-sheet > *:nth-child(4) { transition-delay: 60ms; }
+    .overlay.is-open .install-guide-sheet > *:nth-child(5),
+    .overlay.visible .install-guide-sheet > *:nth-child(5) { transition-delay: 80ms; }
+
+    .install-guide-handle-wrap {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      padding: 2px 0 12px;
+      margin-bottom: 2px;
+      pointer-events: none;
+    }
+
+    .install-guide-handle {
+      display: block;
+      width: 38px;
+      height: 4px;
+      border-radius: 999px;
+      background: rgba(255, 255, 255, 0.14);
+      box-shadow: 0 1px 0 rgba(255, 255, 255, 0.05);
+    }
+
+    .install-guide-header {
+      display: grid;
+      gap: 8px;
+    }
+
+    .install-guide-kicker {
+      display: inline-flex;
+      justify-self: start;
+      align-items: center;
+      padding: 4px 10px;
+      border-radius: var(--r-pill);
+      border: 1px solid rgba(56, 189, 248, 0.24);
+      background: rgba(56, 189, 248, 0.1);
+      color: var(--accent);
+      font-size: 11px;
+      font-weight: 700;
+      letter-spacing: 0.04em;
+      text-transform: uppercase;
+      line-height: 1.2;
+    }
+
+    .install-guide-sheet .sheet-title {
+      margin-bottom: 0;
+      font-size: 20px;
+      line-height: 1.12;
+      letter-spacing: -0.02em;
+      text-align: center;
+    }
+
+    .install-guide-subtitle {
+      max-width: 36ch;
+      font-size: 14px;
+      line-height: 1.5;
+      color: rgba(238, 242, 248, 0.82);
+    }
+
+    .install-guide-platforms {
+      display: grid;
+      gap: 10px;
+    }
+
+    .install-guide-note {
+      font-size: 12px;
+      line-height: 1.45;
+      color: rgba(255, 227, 176, 0.96);
+      background: rgba(245, 158, 11, 0.1);
+      border: 1px solid rgba(245, 158, 11, 0.24);
+      border-radius: 12px;
+      padding: 9px 11px;
+    }
+
+    #overlayAddScreen .install-guide-note {
+      z-index: 0;
+    }
+
+    .install-guide-card {
+      background:
+        linear-gradient(180deg, rgba(255, 255, 255, 0.03) 0%, rgba(255, 255, 255, 0) 120%),
+        var(--card-hi);
+      border: 1px solid var(--border);
+      border-radius: 14px;
+      padding: 13px 12px;
+      display: grid;
+      gap: 10px;
+      box-shadow: 0 12px 24px rgba(3, 7, 18, 0.22);
+      overflow: hidden;
+    }
+
+    .install-guide-card.is-primary {
+      border-color: rgba(56, 189, 248, 0.34);
+      background:
+        linear-gradient(180deg, rgba(56, 189, 248, 0.11) 0%, rgba(56, 189, 248, 0.03) 100%),
+        var(--card-hi);
+    }
+
+    .install-guide-card.is-secondary {
+      opacity: 0.95;
+    }
+
+    .install-guide-card-title {
+      font-size: 14px;
+      font-weight: 700;
+      color: var(--text);
+      line-height: 1.3;
+    }
+
+    .install-guide-steps {
+      margin: 0;
+      padding: 0;
+      display: grid;
+      gap: 8px;
+      list-style: none;
+      counter-reset: install-step;
+    }
+
+    .install-guide-steps li {
+      position: relative;
+      min-height: 24px;
+      padding-left: 32px;
+      color: var(--sub);
+      font-size: 13px;
+      line-height: 1.4;
+    }
+
+    .install-guide-steps li::before {
+      counter-increment: install-step;
+      content: counter(install-step);
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 22px;
+      height: 22px;
+      border-radius: 999px;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 11px;
+      font-weight: 700;
+      color: var(--accent);
+      border: 1px solid rgba(56, 189, 248, 0.28);
+      background: rgba(56, 189, 248, 0.08);
+      line-height: 1;
+    }
+
+    .install-guide-steps li .ig-browser-icon,
+    .install-guide-steps li .ig-share-icon,
+    .install-guide-steps li .ig-add-icon,
+    .install-guide-steps li .ig-dots-icon {
+      display: inline-block;
+      vertical-align: middle;
+      position: relative;
+      top: -1px;
+      flex-shrink: 0;
+    }
+    .install-guide-steps li .ig-browser-icon { width: 15px; height: 15px; }
+    .install-guide-steps li .ig-share-icon   { width: 14px; height: 16px; }
+    .install-guide-steps li .ig-add-icon     { width: 15px; height: 15px; }
+    .install-guide-steps li .ig-dots-icon    { width:  5px; height: 14px; }
+
+    .install-guide-link-block {
+      display: grid;
+      gap: 8px;
+      background:
+        linear-gradient(180deg, rgba(255, 255, 255, 0.02), rgba(255, 255, 255, 0)),
+        rgba(255, 255, 255, 0.01);
+      border: 1px solid var(--border);
+      border-radius: 14px;
+      padding: 12px;
+      overflow: hidden;
+    }
+
+    .install-guide-link-label {
+      font-size: 11px;
+      font-weight: 700;
+      color: var(--muted);
+      letter-spacing: 0.07em;
+      text-transform: uppercase;
+    }
+
+    .install-guide-link-row {
+      display: grid;
+      grid-template-columns: minmax(0, 1fr) auto;
+      gap: 8px;
+      align-items: stretch;
+    }
+
+    .install-guide-link-value {
+      min-width: 0;
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 12px;
+      color: rgba(238, 242, 248, 0.9);
+      background: rgba(255, 255, 255, 0.025);
+      border: 1px solid rgba(255, 255, 255, 0.08);
+      border-radius: 10px;
+      padding: 10px 12px;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    .install-guide-link-actions {
+      display: block;
+    }
+
+    .install-guide-open-btn {
+      width: 100%;
+      min-height: 36px;
+      border: 1px solid var(--border-hi);
+      background: rgba(255, 255, 255, 0.03);
+      color: var(--text);
+    }
+
+    .install-guide-open-btn:active {
+      background: rgba(255, 255, 255, 0.05);
+    }
+
+    .install-guide-copy-btn {
+      min-width: 96px;
+      height: 36px;
+      background: var(--accent-dim);
+      border: 1px solid rgba(56, 189, 248, 0.22);
+      color: var(--accent);
+      transition: background 0.15s, color 0.15s, border-color 0.15s;
+      align-self: stretch;
+    }
+
+    .install-guide-copy-btn:active {
+      background: rgba(56, 189, 248, 0.18);
+    }
+
+    .install-guide-copy-btn.is-success {
+      background: rgba(56, 189, 248, 0.18);
+      border-color: rgba(56, 189, 248, 0.32);
+      color: var(--accent);
+    }
+
+    .install-guide-copy-btn.is-error {
+      background: rgba(244, 63, 94, 0.08);
+      color: var(--danger);
+      border-color: rgba(244, 63, 94, 0.22);
+    }
+
+    .install-guide-actions {
+      display: grid;
+      grid-template-columns: minmax(0, 1fr);
+      justify-items: center;
+      width: 100%;
+      padding-top: 6px;
+    }
+
+    .install-guide-close-btn {
+      min-width: 0;
+      width: 100%;
+      min-height: 44px;
+      background: rgba(255, 255, 255, 0.03);
+      color: var(--sub);
+    }
+
+    .install-guide-close-btn:hover,
+    .install-guide-close-btn:active {
+      color: var(--text);
+      border-color: var(--border-hi);
+    }
+
+    @media (max-width: 380px) {
+      .install-guide-sheet {
+        gap: 12px;
+      }
+
+      #overlayAddScreen {
+        padding: max(10px, var(--safe-top)) 10px 0;
+      }
+
+      #overlayAddScreen .install-guide-sheet {
+        width: 100%;
+        max-height: 92dvh;
+        border-radius: 18px 18px 0 0;
+        padding: 10px 16px calc(22px + var(--safe-bottom));
+      }
+
+      .install-guide-sheet .sheet-title {
+        font-size: 20px;
+      }
+
+      .install-guide-link-row {
+        grid-template-columns: minmax(0, 1fr) auto;
+      }
+
+      .install-guide-open-btn,
+      .install-guide-close-btn {
+        width: 100%;
+      }
+
+      .install-guide-actions {
+        justify-content: stretch;
+      }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      .install-guide-sheet > * {
+        opacity: 1;
+        transform: none;
+        transition: none !important;
+      }
+    }
+
+    .confirm-btns {
+      display: grid;
+      gap: 10px;
+      margin-top: 16px;
+    }
+
+    .confirm-note {
+      font-size: 12px;
+      line-height: 1.5;
+      color: rgba(255, 233, 195, 0.88);
+      background: rgba(245, 158, 11, 0.08);
+      border: 1px solid rgba(245, 158, 11, 0.18);
+      border-radius: 12px;
+      padding: 10px 12px;
+      margin-top: 12px;
+    }
+
+    /* ── Shift actions menu ── */
+    .shift-actions-backdrop {
+      position: fixed;
+      inset: 0;
+      z-index: 2;
+      background: transparent;
+      pointer-events: auto;
+      touch-action: manipulation;
+    }
+
+    .shift-actions-backdrop.hidden { display: none; }
+
+    .shift-actions-menu {
+      position: fixed;
+      z-index: var(--layer-overlay);
+      background: var(--card);
+      border: 1px solid var(--border-hi);
+      border-radius: var(--r-card);
+      padding: 6px;
+      min-width: 180px;
+      box-shadow: 0 16px 40px rgba(0, 0, 0, 0.5);
+      display: grid;
+      gap: 2px;
+    }
+
+    .shift-actions-menu.hidden { display: none; }
+
+    .shift-action-btn {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding: 10px 12px;
+      border: none;
+      background: transparent;
+      color: var(--text);
+      font-family: 'Manrope', sans-serif;
+      font-size: 14px;
+      font-weight: 600;
+      cursor: pointer;
+      border-radius: var(--r-inner);
+      text-align: left;
+      -webkit-tap-highlight-color: transparent;
+      transition: background 0.12s;
+    }
+
+    .shift-action-btn:hover,
+    .shift-action-btn:active {
+      background: var(--card-hi);
+    }
+
+    .shift-action-btn.danger { color: var(--danger); }
+
+    /* ── UI overlay root ── */
+    .ui-overlay-root {
+      position: fixed;
+      inset: 0;
+      z-index: var(--layer-overlay);
+      pointer-events: none;
+      overflow: visible;
+    }
+
+    .ui-overlay-root > * { pointer-events: auto; }

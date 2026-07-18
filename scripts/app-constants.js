@@ -1,6 +1,6 @@
     // ── Constants ──
     // Держите в синхроне с CACHE_VERSION в sw.js — показывается на главной рядом со статистикой пользователей.
-    var SHELL_CACHE_VERSION = 'v380';
+    var SHELL_CACHE_VERSION = 'v383';
 
     var MONTH_NAMES = [
       'Январь','Февраль','Март','Апрель','Май','Июнь',
@@ -116,4 +116,3 @@
     var STORAGE_KEY = 'shifts';
     var MSK_OFFSET = 3; // Moscow = UTC+3
     var SHORT_REST_THRESHOLD_MIN = 8 * 60;
-    var MIN_SHIFTS_FOR_AVERAGE = 2;

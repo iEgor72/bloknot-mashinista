@@ -1,0 +1,982 @@
+/* ── Modals / Bottom sheets ─────────────────────────────────────── */
+.overlay { background: color-mix(in oklch, black 60%, transparent); backdrop-filter: blur(12px) saturate(140%); }
+.bottom-sheet {
+  background:
+    linear-gradient(180deg, color-mix(in oklch, white 6%, transparent), transparent 30%),
+    var(--bg-rise) !important;
+  box-shadow:
+    inset 0 1px 0 color-mix(in oklch, white 12%, transparent),
+    inset 0 0 0 1px var(--hair-strong);
+  border: 0 !important;
+  border-radius: 28px 28px 0 0;
+  padding: 14px 22px 30px;
+}
+.sheet-title {
+  font: 700 18px/1.15 'Manrope';
+  letter-spacing: -0.01em;
+  color: var(--ink);
+}
+.edit-shift-handle,
+.install-guide-handle {
+  background: color-mix(in oklch, white 22%, transparent);
+}
+
+/* Salary settings sheet */
+.salary-settings-sheet .salary-settings-header {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  /* Plain (non-sticky) header — scrolls with the content. A sticky bar here
+     fought the sheet's rounded top and read as a floating band. */
+  position: static;
+  background: transparent;
+  margin: 2px 0 16px;
+  padding: 0;
+}
+.salary-settings-sheet .settings-section-title {
+  font: 700 10px/1 'Manrope';
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--ink-3);
+  margin: 18px 4px 8px;
+}
+.salary-settings-sheet .settings-card {
+  background:
+    linear-gradient(180deg, color-mix(in oklch, white 4%, transparent), transparent),
+    var(--bg-rise-2);
+  box-shadow: inset 0 0 0 1px var(--hair);
+  border: 0;
+  border-radius: var(--r-card);
+  padding: 4px 12px;
+}
+.salary-settings-sheet .settings-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 12px 4px;
+  border-bottom: 1px solid color-mix(in oklch, white 5%, transparent);
+  background: transparent !important;
+  border-radius: 0 !important;
+  box-shadow: none !important;
+}
+.salary-settings-sheet .settings-row:last-child { border-bottom: 0; }
+.salary-settings-sheet .settings-row-stack { flex-direction: row; align-items: center; }
+.salary-settings-sheet .settings-label {
+  font: 600 13px/1.2 'Manrope';
+  color: var(--ink);
+}
+.salary-settings-sheet .settings-note {
+  font: 500 11px/1.35 'JetBrains Mono', monospace;
+  color: var(--ink-3);
+  margin-top: 4px;
+}
+.salary-settings-sheet .settings-inline-field {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  flex-shrink: 0;
+}
+.salary-settings-sheet .settings-input {
+  width: 96px;
+  height: 38px;
+  padding: 0 10px;
+  border-radius: 10px;
+  background: color-mix(in oklch, black 24%, transparent) !important;
+  border: 1px solid var(--hair) !important;
+  color: var(--ink) !important;
+  font: 700 13px/1 'JetBrains Mono', monospace;
+  font-variant-numeric: tabular-nums;
+  text-align: right;
+}
+.salary-settings-sheet .settings-input:focus {
+  border-color: color-mix(in oklch, var(--accent) 50%, transparent) !important;
+  outline: none;
+  box-shadow: 0 0 0 3px color-mix(in oklch, var(--accent) 18%, transparent);
+}
+.salary-settings-sheet .settings-unit {
+  font: 600 11px/1 'Manrope';
+  color: var(--ink-3);
+}
+.salary-settings-sheet .settings-help-block {
+  font: 500 11px/1.45 'Manrope';
+  color: var(--ink-4);
+  margin: 14px 4px 10px;
+}
+.salary-settings-actions {
+  margin-top: 12px;
+}
+.btn-sheet-save {
+  width: 100%;
+  height: 48px;
+  border-radius: 14px;
+  background: linear-gradient(180deg, var(--accent), var(--accent-2));
+  color: var(--accent-ink);
+  border: 0;
+  font: 700 14px/1 'Manrope';
+  cursor: pointer;
+  box-shadow:
+    0 14px 28px -8px var(--accent-glow),
+    inset 0 1px 0 color-mix(in oklch, white 50%, transparent);
+}
+.btn-sheet-close {
+  width: 100%;
+  height: 44px;
+  border-radius: 12px;
+  background: var(--glass);
+  border: 1px solid var(--hair);
+  color: var(--ink);
+  font: 600 13px/1 'Manrope';
+  cursor: pointer;
+  margin-top: 8px;
+}
+
+/* Install guide sheet */
+.install-guide-sheet .install-guide-header {
+  margin: 6px 0 6px;
+  text-align: center;
+}
+.install-guide-sheet .install-guide-subtitle {
+  font: 500 12px/1.4 'Manrope';
+  color: var(--ink-3);
+  text-align: center;
+  margin: 4px 0 14px;
+}
+.install-guide-sheet .install-guide-platforms {
+  /* Two platform cards (iPhone / Android) with multi-line steps — stack them
+     vertically full-width instead of squeezing side-by-side (which clipped). */
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  margin-bottom: 14px;
+}
+.install-guide-sheet .install-guide-platforms button,
+.install-guide-sheet .install-guide-platforms .tab {
+  background: transparent !important;
+  border: 0 !important;
+  border-radius: 10px !important;
+  color: var(--ink-2) !important;
+  padding: 8px 14px !important;
+  font: 600 12px/1 'Manrope' !important;
+  flex: 1 0 auto;
+  cursor: pointer;
+}
+.install-guide-sheet .install-guide-platforms button.is-active,
+.install-guide-sheet .install-guide-platforms .tab.is-active {
+  background: linear-gradient(180deg, var(--accent), var(--accent-2)) !important;
+  color: var(--accent-ink) !important;
+  box-shadow:
+    0 6px 14px -6px var(--accent-glow),
+    inset 0 1px 0 color-mix(in oklch, white 40%, transparent) !important;
+}
+.install-guide-sheet .install-guide-note {
+  font: 500 11px/1.4 'Manrope';
+  color: var(--warn);
+  background: var(--warn-soft);
+  padding: 10px 12px;
+  border-radius: 12px;
+  box-shadow: inset 0 0 0 1px color-mix(in oklch, var(--warn) 26%, transparent);
+  margin-bottom: 14px;
+}
+.install-guide-sheet .install-guide-link-block {
+  padding: 12px;
+  border-radius: 14px;
+  background: var(--bg-rise-2);
+  box-shadow: inset 0 0 0 1px var(--hair);
+}
+.install-guide-sheet .install-guide-link-label {
+  font: 600 10px/1 'Manrope';
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--ink-3);
+  margin-bottom: 8px;
+}
+.install-guide-sheet .install-guide-link-row {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+.install-guide-sheet .install-guide-link-value {
+  flex: 1;
+  min-width: 0;
+  font: 600 12px/1.3 'JetBrains Mono', monospace;
+  color: var(--ink);
+  background: color-mix(in oklch, black 24%, transparent);
+  padding: 8px 10px;
+  border-radius: 10px;
+  box-shadow: inset 0 0 0 1px var(--hair);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.install-guide-sheet .btn-copy {
+  height: 36px;
+  padding: 0 12px;
+  border-radius: 10px;
+  background: var(--accent-soft);
+  border: 1px solid color-mix(in oklch, var(--accent) 28%, transparent);
+  color: var(--accent);
+  font: 700 11px/1 'Manrope';
+  cursor: pointer;
+  flex-shrink: 0;
+}
+.install-guide-sheet .install-guide-link-actions {
+  display: flex;
+  gap: 8px;
+  margin-top: 10px;
+}
+.install-guide-sheet .install-guide-open-btn {
+  flex: 1;
+  height: 38px;
+  border-radius: 10px;
+}
+.install-guide-sheet .install-guide-actions {
+  margin-top: 14px;
+}
+
+/* Calendar day sheet */
+.home-calendar-day-sheet .home-calendar-day-sheet-head {
+  margin: 6px 0 14px;
+}
+.home-calendar-day-sheet .home-calendar-day-sheet-note {
+  font: 500 12px/1.4 'Manrope';
+  color: var(--ink-3);
+  margin-top: 4px;
+}
+.home-calendar-day-sheet .home-calendar-day-sheet-content {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+.home-calendar-day-sheet .home-calendar-day-sheet-actions {
+  display: grid;
+  gap: 8px;
+  margin-top: 14px;
+}
+
+/* Confirm-delete sheet */
+.bottom-sheet .confirm-shift-card-slot {
+  margin: 8px 0;
+}
+.bottom-sheet .confirm-note {
+  font: 500 12px/1.4 'Manrope';
+  color: var(--ink-3);
+  text-align: center;
+  margin: 8px 0 14px;
+}
+.bottom-sheet .confirm-btns {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 8px;
+}
+.btn-confirm-cancel,
+.btn-confirm-delete {
+  height: 46px;
+  border-radius: 12px;
+  font: 700 13px/1 'Manrope';
+}
+
+/* ── Notifications sheet ──────────────────────────────────────── */
+.notif-sheet { padding: 12px 16px 28px !important; }
+.notif-head { margin: 6px 4px 12px; }
+.notif-list {
+  display: flex; flex-direction: column; gap: 6px;
+  max-height: 50vh; overflow-y: auto;
+  scrollbar-width: none;
+}
+.notif-list::-webkit-scrollbar { display: none; }
+.notif-empty {
+  font: 500 13px/1.4 'Manrope';
+  color: var(--ink-3);
+  padding: 18px 6px;
+  text-align: center;
+}
+.notif-row {
+  display: grid;
+  grid-template-columns: 14px 1fr auto;
+  align-items: start;
+  gap: 12px;
+  padding: 12px 12px;
+  border-radius: 14px;
+  background: var(--bg-rise-2);
+  box-shadow: inset 0 0 0 1px var(--hair);
+  cursor: pointer;
+  -webkit-tap-highlight-color: transparent;
+  transition: background 0.15s ease, box-shadow 0.15s ease, transform 0.08s ease, opacity 0.2s ease;
+}
+.notif-row:hover { background: var(--bg-rise-3, var(--bg-rise-2)); }
+.notif-row:active { transform: scale(0.99); }
+.notif-row:focus-visible {
+  outline: none;
+  box-shadow: inset 0 0 0 1px var(--hair), 0 0 0 2px var(--accent-glow);
+}
+.notif-row.is-unread { box-shadow: inset 0 0 0 1px color-mix(in oklch, var(--accent) 26%, var(--hair)); }
+.notif-row.is-read { opacity: .55; }
+.notif-row-dot {
+  width: 8px; height: 8px; border-radius: 999px;
+  background: var(--accent);
+  box-shadow: 0 0 8px var(--accent-glow);
+  margin-top: 6px;
+}
+.notif-row-chevron {
+  align-self: center;
+  color: var(--ink-4);
+  display: grid;
+  place-items: center;
+  transition: transform 0.2s ease, color 0.15s ease;
+}
+.notif-row-chevron svg { width: 16px; height: 16px; }
+.notif-row.is-expanded .notif-row-chevron { transform: rotate(180deg); color: var(--ink-2); }
+.notif-tone-success .notif-row-dot { background: var(--good); box-shadow: 0 0 8px color-mix(in oklch, var(--good) 40%, transparent); }
+.notif-tone-warn    .notif-row-dot { background: var(--warn); box-shadow: 0 0 8px color-mix(in oklch, var(--warn) 40%, transparent); }
+.notif-tone-danger  .notif-row-dot { background: var(--bad);  box-shadow: 0 0 8px color-mix(in oklch, var(--bad) 40%, transparent); }
+.notif-row.is-read .notif-row-dot { box-shadow: none; opacity: .5; }
+.notif-row-title {
+  font: 700 13px/1.2 'Manrope';
+  color: var(--ink);
+}
+.notif-row-text {
+  font: 500 12px/1.4 'Manrope';
+  color: var(--ink-2);
+  margin-top: 4px;
+  white-space: pre-line;
+  display: -webkit-box;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 2;
+  overflow: hidden;
+}
+.notif-row.is-expanded .notif-row-text {
+  display: block;
+  -webkit-line-clamp: initial;
+  line-clamp: none;
+  overflow: visible;
+}
+.notif-row-time {
+  font: 500 10px/1 'JetBrains Mono';
+  font-variant-numeric: tabular-nums;
+  color: var(--ink-4);
+  margin-top: 6px;
+  letter-spacing: 0.04em;
+}
+.notif-foot {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 8px;
+  margin-top: 12px;
+}
+.notif-foot .btn-secondary {
+  width: 100%; height: 44px; border-radius: 14px;
+}
+
+/* Bell dot — show count when there are unread items */
+.app-top-bar-icon-dot[data-count="0"] { display: none !important; }
+.app-top-bar-icon-dot {
+  min-width: 16px; height: 16px; padding: 0 4px;
+  border-radius: 999px;
+  display: grid; place-items: center;
+  font: 700 9px/1 'JetBrains Mono';
+  color: var(--accent-ink);
+  background: var(--accent);
+  top: 4px; right: 4px;
+  box-shadow: 0 0 6px var(--accent-glow), 0 0 0 2px var(--bg-rise);
+}
+
+/* GPS chip in top bar (Poekhali only) */
+.app-top-bar-gps {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 6px 12px;
+  border-radius: 12px;
+  background: color-mix(in oklch, var(--bad) 18%, transparent);
+  border: 1px solid color-mix(in oklch, var(--bad) 32%, transparent);
+  color: var(--bad);
+  font: 700 11px/1 'JetBrains Mono', monospace;
+  letter-spacing: 0.06em;
+  cursor: pointer;
+  flex-shrink: 0;
+}
+.app-top-bar-gps.hidden { display: none !important; }
+.app-top-bar-gps-dot {
+  width: 8px; height: 8px; border-radius: 999px;
+  background: var(--bad);
+  box-shadow: 0 0 6px color-mix(in oklch, var(--bad) 60%, transparent);
+}
+.app-top-bar-gps.is-on {
+  background: color-mix(in oklch, var(--good) 18%, transparent);
+  border-color: color-mix(in oklch, var(--good) 32%, transparent);
+  color: var(--good);
+}
+.app-top-bar-gps.is-on .app-top-bar-gps-dot {
+  background: var(--good);
+  box-shadow: 0 0 6px color-mix(in oklch, var(--good) 60%, transparent);
+}
+
+/* Passive GPS connection tones (set from poekhaliHud) */
+.app-top-bar-gps.is-gps-ok {
+  background: color-mix(in oklch, var(--good) 18%, transparent);
+  border-color: color-mix(in oklch, var(--good) 32%, transparent);
+  color: var(--good);
+}
+.app-top-bar-gps.is-gps-ok .app-top-bar-gps-dot {
+  background: var(--good);
+  box-shadow: 0 0 6px color-mix(in oklch, var(--good) 60%, transparent);
+}
+.app-top-bar-gps.is-gps-warn {
+  background: color-mix(in oklch, #f5b417 18%, transparent);
+  border-color: color-mix(in oklch, #f5b417 32%, transparent);
+  color: #f5b417;
+}
+.app-top-bar-gps.is-gps-warn .app-top-bar-gps-dot {
+  background: #f5b417;
+  box-shadow: 0 0 6px color-mix(in oklch, #f5b417 60%, transparent);
+}
+.app-top-bar-gps.is-gps-muted {
+  background: color-mix(in oklch, var(--ink-3) 14%, transparent);
+  border-color: color-mix(in oklch, var(--ink-3) 28%, transparent);
+  color: var(--ink-3);
+}
+.app-top-bar-gps.is-gps-muted .app-top-bar-gps-dot {
+  background: var(--ink-3);
+  box-shadow: none;
+}
+.app-top-bar-gps.is-gps-error {
+  background: color-mix(in oklch, var(--bad) 18%, transparent);
+  border-color: color-mix(in oklch, var(--bad) 32%, transparent);
+  color: var(--bad);
+}
+.app-top-bar-gps.is-gps-error .app-top-bar-gps-dot {
+  background: var(--bad);
+  box-shadow: 0 0 6px color-mix(in oklch, var(--bad) 60%, transparent);
+}
+
+/* Way chip in top bar (Poekhali only) — Путь · П 1 */
+.app-top-bar-way {
+  display: inline-flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 2px;
+  padding: 5px 12px;
+  border-radius: 12px;
+  background: var(--glass);
+  border: 1px solid var(--hair);
+  color: var(--ink);
+  cursor: pointer;
+  flex-shrink: 0;
+  min-height: 36px;
+  justify-content: center;
+}
+.app-top-bar-way.hidden { display: none !important; }
+.app-top-bar-way-label {
+  font: 600 8px/1 'Manrope', sans-serif;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--ink-3);
+}
+.app-top-bar-way-value {
+  font: 700 12px/1 'JetBrains Mono', monospace;
+  font-variant-numeric: tabular-nums;
+  color: var(--ink);
+  letter-spacing: 0.04em;
+}
+.app-top-bar-icon-dot::after {
+  content: attr(data-count);
+  display: block;
+}
+
+/* ── Shift detail hero (sd-hero) ───────────────────────────────── */
+.sd-hero {
+  padding: 16px;
+  border-radius: var(--r-card);
+  background:
+    radial-gradient(280px 140px at 100% 0%, color-mix(in oklch, var(--good) 14%, transparent), transparent 60%),
+    var(--bg-rise-2);
+  box-shadow:
+    inset 0 1px 0 color-mix(in oklch, white 10%, transparent),
+    inset 0 0 0 1px var(--hair);
+  display: grid;
+  gap: 12px;
+}
+.sd-hero-head {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+.sd-hero-head .shift-type-mark {
+  width: 38px;
+  height: 38px;
+  border-radius: 12px;
+}
+.sd-hero-title-wrap { flex: 1; min-width: 0; }
+.sd-route {
+  font: 700 18px/1.1 'Manrope';
+  letter-spacing: -0.01em;
+  color: var(--ink);
+  margin-top: 2px;
+}
+.sd-info {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+.sd-info .ln {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font: 500 12px/1.2 'JetBrains Mono';
+  color: var(--ink-2);
+  font-variant-numeric: tabular-nums;
+}
+.sd-info .ln-ico {
+  display: inline-grid;
+  place-items: center;
+  width: 18px;
+  height: 18px;
+  color: var(--ink-3);
+  flex-shrink: 0;
+}
+.sd-info .ln-ico svg { width: 14px; height: 14px; }
+.sd-income {
+  margin-top: 4px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding-top: 10px;
+  border-top: 1px dashed color-mix(in oklch, white 8%, transparent);
+}
+.sd-income .l {
+  font: 600 10px/1 'Manrope';
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--ink-3);
+}
+.sd-income .v {
+  font: 700 22px/1 'JetBrains Mono';
+  color: var(--good);
+  font-variant-numeric: tabular-nums;
+}
+
+/* 4-cell metric grid inside Shift detail */
+.shift-detail-metrics {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 8px;
+  margin-bottom: 14px;
+}
+.shift-detail-metric {
+  padding: 12px;
+  border-radius: 14px;
+  background:
+    linear-gradient(180deg, color-mix(in oklch, white 4%, transparent), transparent),
+    var(--bg-rise-2);
+  box-shadow: inset 0 0 0 1px var(--hair);
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+.shift-detail-metric-label {
+  font: 600 9px/1 'Manrope';
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--ink-3);
+}
+.shift-detail-metric-value {
+  font: 700 16px/1 'JetBrains Mono', monospace;
+  font-variant-numeric: tabular-nums;
+  letter-spacing: -0.01em;
+  color: var(--ink);
+}
+.shift-detail-metric.is-success .shift-detail-metric-value { color: var(--good); }
+.shift-detail-metric.is-accent .shift-detail-metric-value { color: var(--accent); }
+.shift-detail-metric.is-warn .shift-detail-metric-value { color: var(--warn); }
+
+/* Detail content sections (existing markup) get glass treatment */
+.shift-detail-section {
+  margin-top: 14px;
+  padding: 14px;
+  border-radius: var(--r-card);
+  background: var(--bg-rise);
+  box-shadow: inset 0 0 0 1px var(--hair);
+}
+.shift-detail-section-title {
+  font: 700 11px/1 'Manrope';
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--ink-3);
+  margin-bottom: 10px;
+}
+.shift-detail-list {
+  display: flex;
+  flex-direction: column;
+}
+.shift-detail-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  padding: 10px 4px;
+  border-bottom: 1px solid color-mix(in oklch, white 5%, transparent);
+  font: 600 13px/1.2 'Manrope';
+  color: var(--ink-2);
+}
+.shift-detail-row:last-child { border-bottom: 0; }
+.shift-detail-row > :last-child {
+  font-family: 'JetBrains Mono', monospace;
+  font-variant-numeric: tabular-nums;
+  color: var(--ink);
+  font-weight: 700;
+}
+
+/* ── Shift detail overlay header ───────────────────────────────── */
+.shift-detail-overlay { background: color-mix(in oklch, black 70%, transparent); backdrop-filter: blur(12px) saturate(140%); }
+.shift-detail-surface {
+  background:
+    linear-gradient(180deg, color-mix(in oklch, white 6%, transparent), transparent 30%),
+    var(--bg-rise);
+  border: 0;
+  box-shadow:
+    inset 0 1px 0 color-mix(in oklch, white 12%, transparent),
+    inset 0 0 0 1px var(--hair-strong);
+  border-radius: 28px 28px 0 0;
+}
+.shift-detail-header-kicker {
+  font: 600 10px/1 'Manrope';
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--ink-3);
+}
+.shift-detail-header-title {
+  font: 700 18px/1.15 'Manrope';
+  letter-spacing: -0.01em;
+  color: var(--ink);
+}
+.shift-detail-back-btn {
+  background: var(--glass);
+  border: 1px solid var(--hair);
+  color: var(--ink-2);
+  border-radius: 12px;
+}
+
+/* ── Auth screen ────────────────────────────────────────────────── */
+.auth-gate {
+  background:
+    radial-gradient(1200px 600px at 18% 0%,
+      color-mix(in oklch, var(--accent) 12%, transparent), transparent 60%),
+    radial-gradient(900px 500px at 84% 100%,
+      color-mix(in oklch, var(--night) 12%, transparent), transparent 60%),
+    var(--bg);
+}
+.auth-card {
+  background:
+    linear-gradient(180deg, color-mix(in oklch, white 6%, transparent), transparent 30%),
+    var(--bg-rise);
+  box-shadow:
+    inset 0 1px 0 color-mix(in oklch, white 12%, transparent),
+    inset 0 0 0 1px var(--hair-strong),
+    0 20px 48px rgba(0, 0, 0, 0.36);
+  border: 0;
+  padding: 22px 20px 20px;
+  border-radius: var(--r-card);
+  max-width: 400px;
+}
+
+.auth-brand {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding-bottom: 16px;
+  border-bottom: 1px solid var(--hair);
+  margin-bottom: 18px;
+}
+.auth-brand-mark {
+  width: 44px;
+  height: 44px;
+  border-radius: 14px;
+  background: linear-gradient(180deg, var(--accent), var(--accent-2));
+  color: var(--accent-ink);
+  display: grid;
+  place-items: center;
+  font: 800 14px/1 'Manrope';
+  letter-spacing: -0.02em;
+  box-shadow:
+    0 12px 24px -6px var(--accent-glow),
+    inset 0 1px 0 color-mix(in oklch, white 45%, transparent);
+  flex-shrink: 0;
+}
+.auth-brand-meta { display: flex; flex-direction: column; gap: 3px; min-width: 0; }
+.auth-brand-name {
+  font: 700 14px/1.1 'Manrope';
+  color: var(--ink);
+}
+.auth-brand-sub {
+  font: 500 10px/1 'Manrope';
+  color: var(--ink-3);
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.auth-kicker {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  width: fit-content;
+  padding: 5px 10px;
+  border-radius: 999px;
+  margin-bottom: 14px;
+  border: 0;
+  background: var(--accent-soft);
+  box-shadow: inset 0 0 0 1px color-mix(in oklch, var(--accent) 28%, transparent);
+  color: var(--accent);
+  font: 600 10px/1 'Manrope';
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+}
+.auth-kicker:empty { display: none; }
+.auth-kicker::before {
+  content: '';
+  width: 6px;
+  height: 6px;
+  border-radius: 999px;
+  background: var(--accent);
+  box-shadow: 0 0 6px var(--accent-glow);
+}
+
+.auth-title {
+  font: 700 24px/1.15 'Manrope';
+  letter-spacing: -0.02em;
+  color: var(--ink);
+}
+.auth-text {
+  font: 500 13px/1.5 'Manrope';
+  color: var(--ink-2);
+  margin-top: 8px;
+}
+.auth-note {
+  font: 500 11px/1.45 'Manrope';
+  color: var(--ink-3);
+  margin-top: 12px;
+}
+
+.auth-banner {
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+  margin: 14px 0 0;
+  padding: 12px;
+  border-radius: 14px;
+  border: 0;
+  background: var(--glass);
+  box-shadow: inset 0 0 0 1px var(--hair);
+  color: var(--ink);
+}
+.auth-banner.is-error {
+  background: var(--bad-soft);
+  box-shadow: inset 0 0 0 1px color-mix(in oklch, var(--bad) 28%, transparent);
+}
+.auth-banner-icon {
+  width: 32px;
+  height: 32px;
+  border-radius: 10px;
+  background: var(--accent-soft);
+  color: var(--accent);
+  display: grid;
+  place-items: center;
+  flex-shrink: 0;
+  box-shadow: inset 0 0 0 1px color-mix(in oklch, var(--accent) 25%, transparent);
+}
+.auth-banner.is-error .auth-banner-icon {
+  background: var(--bad-soft);
+  color: var(--bad);
+  box-shadow: inset 0 0 0 1px color-mix(in oklch, var(--bad) 28%, transparent);
+}
+
+.auth-actions {
+  margin-top: 16px;
+  display: grid;
+  gap: 8px;
+}
+.auth-primary {
+  background: linear-gradient(180deg, var(--accent), var(--accent-2));
+  color: var(--accent-ink);
+  border: 0;
+  border-radius: 14px;
+  min-height: 48px;
+  font: 700 14px/1 'Manrope';
+  cursor: pointer;
+  box-shadow:
+    0 14px 28px -8px var(--accent-glow),
+    inset 0 1px 0 color-mix(in oklch, white 50%, transparent);
+  transition: filter .15s ease;
+}
+.auth-primary:hover { filter: brightness(1.04); }
+.auth-primary:active { filter: brightness(0.97); }
+.auth-primary-hint {
+  font: 500 11px/1.4 'Manrope';
+  color: var(--ink-3);
+  text-align: center;
+  margin-top: 2px;
+}
+.auth-retry {
+  display: none !important;
+  background: var(--glass);
+  border: 1px solid var(--hair);
+  color: var(--ink-2);
+  border-radius: 12px;
+  height: 40px;
+  margin-top: 8px;
+  font: 600 12px/1 'Manrope';
+  cursor: pointer;
+}
+.auth-retry.visible { display: none !important; }
+.auth-error {
+  margin-top: 10px;
+  padding: 10px 12px;
+  border-radius: 12px;
+  background: var(--bad-soft);
+  color: var(--bad);
+  font: 600 12px/1.4 'Manrope';
+  box-shadow: inset 0 0 0 1px color-mix(in oklch, var(--bad) 28%, transparent);
+}
+.auth-error:empty,
+.auth-card[data-auth-state="error"] .auth-error:empty {
+  display: none !important;
+  min-height: 0;
+  margin: 0;
+  padding: 0;
+  box-shadow: none;
+}
+.auth-status {
+  margin-top: 12px;
+  font: 500 12px/1.4 'JetBrains Mono', monospace;
+  color: var(--ink-3);
+}
+.auth-status:empty { display: none; }
+
+/* ── Confirm sheet buttons ─────────────────────────────────────── */
+.btn-confirm-cancel {
+  background: var(--glass);
+  border: 1px solid var(--hair);
+  color: var(--ink-2);
+}
+.btn-confirm-delete {
+  background: var(--bad-soft);
+  border: 1px solid color-mix(in oklch, var(--bad) 28%, transparent);
+  color: var(--bad);
+}
+
+/* ── Tab panel scroll padding (so content clears bottom nav) ─── */
+.app-content,
+.tab-panel {
+  /* preserve existing */
+}
+
+/* ── PR/Поехали screen content panel (when not in canvas mode) ── */
+.poekhali-content {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+.poekhali-content .train-plate { margin-top: 0; }
+
+/* Speedometer card */
+.poekhali-speedo {
+  padding: 14px;
+  border-radius: var(--r-card);
+  background:
+    radial-gradient(420px 180px at 50% 0%, color-mix(in oklch, var(--accent) 16%, transparent), transparent 60%),
+    var(--bg-rise);
+  box-shadow:
+    inset 0 1px 0 color-mix(in oklch, white 12%, transparent),
+    inset 0 0 0 1px var(--hair-strong);
+  display: grid;
+  grid-template-columns: 1fr auto;
+  gap: 14px;
+  align-items: end;
+  position: relative;
+}
+.poekhali-speedo .label {
+  font: 600 9px/1 'Manrope';
+  letter-spacing: 0.16em;
+  color: var(--ink-3);
+  text-transform: uppercase;
+}
+.poekhali-speedo .speed-big {
+  font: 700 56px/1 'JetBrains Mono';
+  letter-spacing: -0.03em;
+  font-variant-numeric: tabular-nums;
+  color: var(--accent);
+  text-shadow: 0 0 18px color-mix(in oklch, var(--accent) 40%, transparent);
+  display: flex;
+  align-items: baseline;
+  gap: 6px;
+}
+.poekhali-speedo .speed-big .u {
+  font: 700 14px/1 'Manrope';
+  letter-spacing: 0.04em;
+  color: var(--ink-2);
+}
+.poekhali-speedo-clock {
+  font: 700 16px/1 'JetBrains Mono';
+  color: var(--ink-2);
+  font-variant-numeric: tabular-nums;
+}
+
+.poekhali-speedo-aux {
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr;
+  gap: 8px;
+  margin-top: 8px;
+}
+.aux {
+  padding: 8px 10px;
+  border-radius: 12px;
+  background: color-mix(in oklch, black 24%, transparent);
+  box-shadow: inset 0 0 0 1px var(--hair);
+}
+.aux .l {
+  font: 600 9px/1 'Manrope';
+  letter-spacing: 0.14em;
+  color: var(--ink-3);
+  text-transform: uppercase;
+}
+.aux .v {
+  font: 700 14px/1 'JetBrains Mono';
+  margin-top: 4px;
+  font-variant-numeric: tabular-nums;
+  color: var(--ink);
+}
+.aux.limit .v { color: var(--bad); }
+.aux.grade .v { color: var(--good); }
+.aux.next .v  { color: var(--warn); }
+
+/* ── Quick stats footer (shell-cache version etc.) ──────────────── */
+.usage-stats-note,
+.usage-stats-shell-cache {
+  color: var(--ink-4);
+  font: 500 11px/1.4 'Manrope';
+}
+
+/* ── Misc surface overrides ─────────────────────────────────────── */
+.card { background: var(--bg-rise); border-color: var(--hair); }
+.divider { background: var(--hair); }
+
+/* Hide section on extreme small widths gracefully */
+@media (max-width: 360px) {
+  .train-plate-stats {
+    grid-template-columns: repeat(2, auto);
+    border-left: 0;
+    padding-left: 8px;
+  }
+  .docs-entry-grid { grid-template-columns: repeat(2, 1fr); }
+  .docs-entry-tile,
+  .docs-entry-tile[data-docs-entry] { grid-column: span 1; }
+  .docs-entry-tile[data-docs-entry="folders"] {
+    grid-column: span 2;
+    flex-direction: row;
+  }
+}
+
+/* Reduced motion */
+@media (prefers-reduced-motion: reduce) {
+  .nav-fab .fab-btn { animation: none !important; }
+  .shift-list-reveal .shift-item { transition: none !important; }
+}

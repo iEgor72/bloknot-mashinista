@@ -39,7 +39,7 @@ Generated: 2026-04-17 23:20 +10:00
 - Reference PM2 deploy command only; do not run without explicit user request:
 
 ```bash
-cd /opt/bloknot-mashinista && git pull --ff-only origin main && pm2 reload bloknot-mashinista --update-env && pm2 status bloknot-mashinista && git rev-parse --short HEAD
+cd /opt/bloknot-mashinista && git pull --ff-only origin main && npm ci --omit=dev && pm2 reload bloknot-mashinista --update-env && npm run storage:check && pm2 status bloknot-mashinista && git rev-parse --short HEAD
 ```
 
 ## Existing Project Methods
@@ -50,3 +50,9 @@ cd /opt/bloknot-mashinista && git pull --ff-only origin main && pm2 reload blokn
 - Offline handling uses service worker shell caching plus frontend pending mutation queue.
 - Instructions search uses Russian stemming and fuzzy matching.
 - Docs UI reads static docs manifest/assets and checks offline cache state.
+
+## SQLite Storage Method
+- Mutable backend state is stored in `data/bloknot.sqlite3`; use `APP_DATA_DIR` for isolated tests.
+- Never delete legacy JSON during migration. `legacy_imports` makes import idempotent and records source SHA-256.
+- Before restore, stop the PM2 application. Run `npm run storage:check -- <backup>` first, then `npm run storage:restore -- <backup> --confirm`.
+- Restore preserves the displaced database and WAL/SHM sidecars with a `before-restore` timestamp.

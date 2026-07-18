@@ -1,11 +1,41 @@
 (function() {
   'use strict';
 
-  var EARTH_RADIUS_M = 6371000;
+  var POEKHALI_UTILS = window.PoekhaliUtils;
+  if (!POEKHALI_UTILS) throw new Error('PoekhaliUtils must load before poekhali-tracker.js');
+  var parseNumber = POEKHALI_UTILS.parseNumber;
+  var isRealNumber = POEKHALI_UTILS.isRealNumber;
+  var getElementsByLocalName = POEKHALI_UTILS.getElementsByLocalName;
+  var getFirstTextByLocalName = POEKHALI_UTILS.getFirstTextByLocalName;
+  var normalizeOrdinate = POEKHALI_UTILS.normalizeOrdinate;
+  var fetchText = POEKHALI_UTILS.fetchText;
+  var getFileName = POEKHALI_UTILS.getFileName;
+  var uniqueStrings = POEKHALI_UTILS.uniqueStrings;
+  var readJsonStorage = POEKHALI_UTILS.readJsonStorage;
+  var writeJsonStorage = POEKHALI_UTILS.writeJsonStorage;
+  var readStringStorage = POEKHALI_UTILS.readStringStorage;
+  var writeStringStorage = POEKHALI_UTILS.writeStringStorage;
+  var haversine = POEKHALI_UTILS.haversine;
+  var projectToSegment = POEKHALI_UTILS.projectToSegment;
+  var findNearestPointInList = POEKHALI_UTILS.findNearestPointInList;
+  var getRailKmPkParts = POEKHALI_UTILS.getRailKmPkParts;
+  var formatLineCoordinate = POEKHALI_UTILS.formatLineCoordinate;
+  var formatTime = POEKHALI_UTILS.formatTime;
+  var coordinateToKmPk = POEKHALI_UTILS.coordinateToKmPk;
+  var coordinateToKmPkMeter = POEKHALI_UTILS.coordinateToKmPkMeter;
+  var coordinateFromKmPk = POEKHALI_UTILS.coordinateFromKmPk;
+  var coordinateFromKmPkMeter = POEKHALI_UTILS.coordinateFromKmPkMeter;
+  var formatDistanceLabel = POEKHALI_UTILS.formatDistanceLabel;
+  var formatGradeLabel = POEKHALI_UTILS.formatGradeLabel;
+  var clamp = POEKHALI_UTILS.clamp;
+  var estimateEtaSeconds = POEKHALI_UTILS.estimateEtaSeconds;
+  var getNavigationTargetPriority = POEKHALI_UTILS.getNavigationTargetPriority;
+  var normalizeNavigationTargetCandidate = POEKHALI_UTILS.normalizeNavigationTargetCandidate;
+  var selectNavigationTarget = POEKHALI_UTILS.selectNavigationTarget;
+
   var MATCH_THRESHOLD_M = 550;
   var SECOND_POINT_THRESHOLD_M = 1100;
   var MAX_SEGMENT_ORDINATE_GAP_M = 1600;
-  var TRACK_METERS_PER_PIXEL = 16;
   var APK_VISIBLE_PICKETS = 60;
   // When true, the live HUD readouts (speed, clock, limit, grade, distance,
   // timer, tech-speed) are rendered as HTML cards around the canvas instead of
@@ -62,28 +92,16 @@
   var WARNINGS_SYNC_DEBOUNCE_MS = 900;
   var PROD_AUDIT_STORAGE_KEY = 'poekhali.prodAudit.v1';
   var SPEED_DOC_REVIEW_STORAGE_KEY = 'poekhali.speedDocsReview.v1';
-  var RUNS_STORAGE_KEY = 'poekhali.runs.v1';
-  var RUNS_SYNC_STORAGE_KEY = 'poekhali.runs.sync.v1';
-  var RUNS_SYNC_DEBOUNCE_MS = 1200;
-  var RUNS_LIVE_SYNC_DELAY_MS = 120000;
-  var RUNS_MAX_ITEMS = 200;
-  var RUN_TRACE_MAX_POINTS = 1800;
-  var RUN_TRACE_MIN_TIME_MS = 2500;
-  var RUN_TRACE_FORCE_TIME_MS = 15000;
-  var RUN_TRACE_MIN_COORDINATE_DELTA_M = 8;
-  var RUN_LIVE_SAVE_INTERVAL_MS = 30000;
-  var RUN_LIVE_SHIFT_WRITE_INTERVAL_MS = 120000;
-  var RUN_ACTIVE_RESUME_GRACE_MS = 45 * 60 * 1000;
-  var RUN_MAX_REASONABLE_DURATION_MS = 18 * 60 * 60 * 1000;
   var DRAW_LIVE_INTERVAL_MS = 10000;
   var DRAW_IDLE_INTERVAL_MS = 0;
   var DRAW_HIDDEN_INTERVAL_MS = 5000;
   var DRAW_ACTIVE_THROTTLE_MS = 900;
   var DRAW_DRAG_THROTTLE_MS = 80;
-  var AUTO_RUN_START_DELAY_MS = 650;
   var GPS_START_POLL_INTERVAL_MS = 5000;
   var GPS_FAST_POLL_INTERVAL_MS = 8000;
   var GPS_ACTIVE_POLL_INTERVAL_MS = 12000;
+  var GPS_CAPTURE_POLL_INTERVAL_MS = 3000;
+  var GPS_CAPTURE_WATCHDOG_INTERVAL_MS = 15000;
   var GPS_SLOW_POLL_INTERVAL_MS = 18000;
   var GPS_HIDDEN_POLL_INTERVAL_MS = 60000;
   var GPS_ERROR_POLL_INTERVAL_MS = 30000;
@@ -91,6 +109,11 @@
     enableHighAccuracy: true,
     maximumAge: 5000,
     timeout: 20000
+  };
+  var GPS_CAPTURE_OPTIONS = {
+    enableHighAccuracy: true,
+    maximumAge: 0,
+    timeout: 12000
   };
   var GPS_START_OPTIONS = {
     enableHighAccuracy: true,
@@ -102,23 +125,19 @@
     maximumAge: 60000,
     timeout: 15000
   };
-  var GPS_IDLE_OPTIONS = {
-    enableHighAccuracy: false,
-    maximumAge: 60000,
-    timeout: 12000
-  };
   var LEARNING_STORAGE_KEY = 'poekhali.mapLearning.v1';
-  var LEARNING_SYNC_STORAGE_KEY = 'poekhali.mapLearning.sync.v1';
-  var LEARNING_SYNC_DEBOUNCE_MS = 1200;
-  var LEARNING_LIVE_SYNC_DELAY_MS = 180000;
   var LEARNING_MAX_ACCURACY_M = 150;
-  var LEARNING_MIN_COORDINATE_DELTA_M = 35;
-  var LEARNING_MIN_DISTANCE_DELTA_M = 120;
   var LEARNING_NEAR_TRACK_DISTANCE_M = 1600;
-  var LEARNING_MIN_TIME_DELTA_MS = 5000;
+  var RAW_CAPTURE_MAX_ACCURACY_M = 50;
+  var RAW_CAPTURE_MIN_DISTANCE_M = 75;
+  var RAW_CAPTURE_SLOW_DISTANCE_M = 8;
+  var RAW_CAPTURE_MIN_TIME_DELTA_MS = 15000;
+  var RAW_CAPTURE_MAX_IMPLIED_SPEED_MPS = 70;
+  var RAW_CAPTURE_SAVE_DEBOUNCE_MS = 30000;
   var LEARNING_MAX_SAMPLES_PER_SECTOR = 450;
   var LEARNING_MAX_RAW_TRACKS_PER_MAP = 160;
-  var LEARNING_MAX_SAMPLES_PER_RAW_TRACK = 1800;
+  var LEARNING_MAX_SAMPLES_PER_RAW_TRACK = 4500;
+  var LEARNING_RAW_COMPACT_TARGET = 3000;
   var LEARNING_MAX_USER_SECTIONS_PER_MAP = 240;
   var LEARNING_MAX_POINTS_PER_USER_SECTION = 1800;
   var LEARNING_MAX_PROFILE_SEGMENTS_PER_USER_SECTION = 1800;
@@ -138,11 +157,6 @@
   var AUTO_MAP_SWITCH_MARGIN_M = 160;
   var ROUTE_MAP_MIN_SCORE = 64;
   var NEXT_RESTRICTION_LOOKAHEAD_M = 5000;
-  var LIVE_ALERT_AHEAD_M = 1000;
-  var LIVE_ALERT_NEAR_M = 300;
-  var LIVE_ALERT_VISIBLE_MS = 9000;
-  var LIVE_ALERT_REPEAT_MS = 30000;
-  var LIVE_ALERT_DANGER_REPEAT_MS = 12000;
   var PROD_AUDIT_MANUAL_CHECKS = [
     { id: 'mobile320', title: 'Мобильная ширина 320', detail: 'Профиль, HUD, ПР и нижнее меню не налезают друг на друга на 320 px.' },
     { id: 'mobile360', title: 'Мобильная ширина 360', detail: 'Рабочий экран и ПР читаются на типовом Android-экране 360 px.' },
@@ -151,54 +165,6 @@
     { id: 'apkVisualParity', title: 'Сверка с APK', detail: 'Поезд, станции, светофоры, скорости, уклоны и км/пк визуально сверены с реальным Поехали.' },
     { id: 'profileOverlap', title: 'Нет критичных наложений', detail: 'На рабочих участках профиль, состав, ПР, скорости, РК и объекты не мешают чтению.' }
   ];
-  var MANUAL_BAM_SPEED_RULES = [
-    { sector: 18, start: 3799896, end: 3801977, speed: 70, wayNumber: 1, name: 'БАМ 70 · Силинка П1' },
-    { sector: 18, start: 3795000, end: 3799896, speed: 70, name: 'БАМ 70 · Силинка — ПП 3796' },
-    { sector: 18, start: 3788300, end: 3789700, speed: 60, wayNumber: 1, name: 'БАМ 60 · ПП 3796 П1' },
-    { sector: 18, start: 3789800, end: 3793800, speed: 60, wayNumber: 1, name: 'БАМ 60 · ПП 3796 П1' },
-    { sector: 18, start: 3793900, end: 3795100, speed: 70, wayNumber: 1, name: 'БАМ 70 · ПП 3796 П1' },
-    { sector: 18, start: 3787846, end: 3795100, speed: 70, wayNumber: 2, name: 'БАМ 70 · ПП 3796 П2' },
-    { sector: 18, start: 3789976, end: 3792106, speed: 40, wayNumber: 1, name: 'БАМ 40 · Хальгасо П1' },
-    { sector: 18, start: 3787846, end: 3789976, speed: 70, wayNumber: 2, name: 'БАМ 70 · Хальгасо П2' },
-    { sector: 18, start: 3775256, end: 3789976, speed: 70, name: 'БАМ 70 · Хальгасо — Лиан' },
-    { sector: 18, start: 3775256, end: 3777532, speed: 60, name: 'БАМ 60 · Лиан' },
-    { sector: 18, start: 3763395, end: 3775256, speed: 70, name: 'БАМ 70 · Лиан — Холони' },
-    { sector: 18, start: 3763395, end: 3766487, speed: 80, wayNumber: 1, name: 'БАМ 80 · Холони П1' },
-    { sector: 18, start: 3760303, end: 3763395, speed: 60, wayNumber: 2, name: 'БАМ 60 · Холони П2' },
-    { sector: 18, start: 3751329, end: 3763395, speed: 80, name: 'БАМ 80 · Холони — Хурмули' },
-    { sector: 18, start: 3751000, end: 3751700, speed: 60, name: 'БАМ 60 · 3751км10пк—3752км7пк' },
-    { sector: 18, start: 3751329, end: 3753840, speed: 60, wayNumber: 1, name: 'БАМ 60 · Хурмули П1' },
-    { sector: 18, start: 3740241, end: 3751329, speed: 60, name: 'БАМ 60 · Хурмули — Мавринский' },
-    { sector: 18, start: 3740241, end: 3742434, speed: 60, wayNumber: 1, name: 'БАМ 60 · Мавринский П1' },
-    { sector: 18, start: 3732000, end: 3740241, speed: 70, name: 'БАМ 70 · Мавринский — ПП 3732' },
-    { sector: 18, start: 3727400, end: 3732000, speed: 60, wayNumber: 1, name: 'БАМ 60 · ПП 3732 — Пиль П1' },
-    { sector: 18, start: 3727400, end: 3732000, speed: 60, wayNumber: 2, name: 'БАМ 60 · ПП 3732 — Пиль П2' },
-    { sector: 18, start: 3732800, end: 3732900, speed: 40, wayNumber: 2, name: 'БАМ 40 · 3732км9пк П2' },
-    { sector: 18, start: 3732800, end: 3732900, speed: 40, wayNumber: 1, name: 'БАМ 40 · 3732км9пк П1' },
-    { sector: 18, start: 3723685, end: 3731115, speed: 60, name: 'БАМ 60 · Пиль П1/П2' },
-    { sector: 18, start: 3715453, end: 3723685, speed: 70, name: 'БАМ 70 · Пиль — Горин' },
-    { sector: 18, start: 3722500, end: 3723800, speed: 60, name: 'БАМ 60 · 3723км5пк—3724км8пк' },
-    { sector: 18, start: 3715453, end: 3717863, speed: 70, wayNumber: 1, name: 'БАМ 70 · Горин П1' },
-    { sector: 18, start: 3701207, end: 3715453, speed: 60, name: 'БАМ 60 · Горин — Харпичан' },
-    { sector: 18, start: 3701207, end: 3703007, speed: 60, wayNumber: 1, name: 'БАМ 60 · Харпичан П1' },
-    { sector: 18, start: 3686926, end: 3701207, speed: 70, name: 'БАМ 70 · Харпичан — Катама' },
-    { sector: 18, start: 3686926, end: 3689415, speed: 60, wayNumber: 1, name: 'БАМ 60 · Катама П1' },
-    { sector: 18, start: 3677625, end: 3686926, speed: 70, name: 'БАМ 70 · Катама — Эворон' },
-    { sector: 18, start: 3677625, end: 3679549, speed: 60, wayNumber: 1, name: 'БАМ 60 · Эворон П1' },
-    { sector: 18, start: 3660000, end: 3677625, speed: 60, name: 'БАМ 60 · Эворон — Апкан — Мони' },
-    { sector: 18, start: 3658458, end: 3660072, speed: 60, wayNumber: 1, name: 'БАМ 60 · Мони П1' },
-    { sector: 18, start: 3658006, end: 3659645, speed: 60, wayNumber: 2, name: 'БАМ 60 · Мони П2' },
-    { sector: 18, start: 3633716, end: 3658458, speed: 70, wayNumber: 1, name: 'БАМ 70 · Мони — Болен П1' },
-    { sector: 18, start: 3633530, end: 3658006, speed: 70, wayNumber: 2, name: 'БАМ 70 · Мони — Болен П2' },
-    { sector: 18, start: 3633716, end: 3638813, speed: 70, wayNumber: 1, name: 'БАМ 70 · Болен П1' },
-    { sector: 18, start: 3633530, end: 3638022, speed: 70, wayNumber: 2, name: 'БАМ 70 · Болен П2' },
-    { sector: 18, start: 3625360, end: 3633716, speed: 70, name: 'БАМ 70 · Болен — Дуки' },
-    { sector: 18, start: 3625300, end: 3627700, speed: 60, name: 'БАМ 60 · 3626км3пк—3628км7пк' },
-    { sector: 18, start: 3625360, end: 3628048, speed: 70, wayNumber: 1, name: 'БАМ 70 · Дуки П1' },
-    { sector: 18, start: 3615693, end: 3625360, speed: 70, name: 'БАМ 70 · Дуки — Постышево' },
-    { sector: 18, start: 3613632, end: 3615693, speed: 60, wayNumber: 1, name: 'БАМ 60 · Постышево П1' }
-  ];
-
   var MANUAL_BAM_TRACK_OBJECTS = [
     // Апкан отсутствует в импортированном XML: добавляем станцию и сигналы вручную,
     // чтобы не висел один случайный Н1 посреди перегона.
@@ -254,6 +220,11 @@
     gpsPollToken: 0,
     gpsPollLastAt: 0,
     assetPromise: null,
+    assetLoadToken: 0,
+    learningSaveTimer: null,
+    learningOwnerId: '',
+    rawCaptureSession: null,
+    rawCaptureStorageError: '',
     manifestPromise: null,
     referencePromise: null,
     speedDocsPromise: null,
@@ -311,14 +282,6 @@
     speedLimitsBySector: {},
     learning: null,
     sharedLearning: null,
-    learningSync: {
-      state: 'idle',
-      pending: false,
-      lastSyncAt: 0,
-      error: '',
-      inFlight: false,
-      timer: null
-    },
     learnedProfilesBySector: {},
     userSections: [],
     userSectionsBySector: {},
@@ -346,6 +309,7 @@
     mapsReadinessCheckedAt: 0,
     routeMapProbeCache: {},
     routeMapSelecting: false,
+    routeSelectionToken: 0,
     routeMapCandidate: null,
     routeMapLastCheckedAt: 0,
     entryShiftLockId: '',
@@ -355,18 +319,6 @@
     warnings: [],
     warningBulkMessage: '',
     warningSync: {
-      state: 'idle',
-      pending: false,
-      lastSyncAt: 0,
-      error: '',
-      inFlight: false,
-      timer: null
-    },
-    runs: [],
-    activeRunId: '',
-    lastShiftRunWriteAt: 0,
-    lastRunPersistAt: 0,
-    runSync: {
       state: 'idle',
       pending: false,
       lastSyncAt: 0,
@@ -415,7 +367,90 @@
     poekhaliMskClockDisplay: ''
   };
 
-  var GPS_ERROR_TOAST_MIN_INTERVAL_MS = 45000;
+  if (typeof window.createPoekhaliWarnings !== 'function') {
+    throw new Error('poekhali-warnings.js must load before poekhali-tracker.js');
+  }
+  var POEKHALI_WARNINGS = window.createPoekhaliWarnings({
+    state: tracker,
+    config: {
+      storageKey: WARNINGS_STORAGE_KEY,
+      syncStorageKey: WARNINGS_SYNC_STORAGE_KEY,
+      syncDebounceMs: WARNINGS_SYNC_DEBOUNCE_MS
+    },
+    normalizeOrdinate: normalizeOrdinate,
+    parseNumber: parseNumber,
+    isRealNumber: isRealNumber,
+    readJsonStorage: readJsonStorage,
+    writeJsonStorage: writeJsonStorage,
+    fetchJson: function() {
+      return fetchJson.apply(null, arguments);
+    },
+    getStorageScope: function() {
+      return tracker.currentMap && tracker.currentMap.id ? tracker.currentMap.id : DEFAULT_MAP.id;
+    },
+    getApiUrl: function() {
+      if (typeof POEKHALI_WARNINGS_API_URL === 'string' && POEKHALI_WARNINGS_API_URL) {
+        return POEKHALI_WARNINGS_API_URL;
+      }
+      var base = typeof API_BASE_URL === 'string' ? API_BASE_URL : '';
+      return base + '/api/poekhali-warnings';
+    },
+    onSyncStateChanged: function() {
+      if (tracker.opsSheet && tracker.opsSheet.root && !tracker.opsSheet.root.classList.contains('hidden')) {
+        renderOpsSheet();
+      }
+    },
+    onWarningsSaved: function() {
+      writeWarningsToLinkedShift();
+      if (tracker.opsSheet && tracker.opsSheet.root && !tracker.opsSheet.root.classList.contains('hidden')) {
+        renderOpsSheet();
+      }
+      requestDraw();
+    },
+    isPageHidden: isPageHidden,
+    getCurrentProjection: getCurrentProjectionForForm,
+    getSectorKey: getSectorKey,
+    getDirection: getCurrentCoordinateDirection,
+    isObjectInRange: isObjectInRange
+  });
+  var getWarningStorageScope = POEKHALI_WARNINGS.getWarningStorageScope;
+  var formatDateLabel = POEKHALI_WARNINGS.formatDateLabel;
+  var normalizeWarningsList = POEKHALI_WARNINGS.normalizeWarningsList;
+  var mergeWarningsLists = POEKHALI_WARNINGS.mergeWarningsLists;
+  var loadWarnings = POEKHALI_WARNINGS.loadWarnings;
+  var saveWarnings = POEKHALI_WARNINGS.saveWarnings;
+  var scheduleWarningSync = POEKHALI_WARNINGS.scheduleWarningSync;
+  var bindWarningSyncEvents = POEKHALI_WARNINGS.bindWarningSyncEvents;
+  var isWarningUsable = POEKHALI_WARNINGS.isWarningUsable;
+  var getScopedWarnings = POEKHALI_WARNINGS.getScopedWarnings;
+  var getCurrentWarnings = POEKHALI_WARNINGS.getCurrentWarnings;
+  var getWarningRuntimeStatus = POEKHALI_WARNINGS.getWarningRuntimeStatus;
+  var getWarningsForSector = POEKHALI_WARNINGS.getWarningsForSector;
+
+  if (typeof window.createPoekhaliMapParser !== 'function') {
+    throw new Error('poekhali-map-parser.js must load before poekhali-tracker.js');
+  }
+  var POEKHALI_MAP_PARSER = window.createPoekhaliMapParser({
+    config: {
+      maxSegmentOrdinateGapM: MAX_SEGMENT_ORDINATE_GAP_M
+    },
+    getElementsByLocalName: getElementsByLocalName,
+    getFirstTextByLocalName: getFirstTextByLocalName,
+    normalizeOrdinate: normalizeOrdinate,
+    parseNumber: parseNumber,
+    haversine: haversine,
+    getProfileDeltaForLength: getProfileDeltaForLength,
+    getSectorKey: getSectorKey,
+    normalizeRouteName: normalizeRouteName
+  });
+  var parseMapXml = POEKHALI_MAP_PARSER.parseMapXml;
+  var indexProfileElevations = POEKHALI_MAP_PARSER.indexProfileElevations;
+  var parseProfileXml = POEKHALI_MAP_PARSER.parseProfileXml;
+  var parseTrackObjectsXml = POEKHALI_MAP_PARSER.parseTrackObjectsXml;
+  var parseSpeedXml = POEKHALI_MAP_PARSER.parseSpeedXml;
+  var parseSectionPackage = POEKHALI_MAP_PARSER.parseSectionPackage;
+  var mergeSectionMapBundles = POEKHALI_MAP_PARSER.mergeSectionMapBundles;
+
 
   var gpsConnectionToastState = {
     suppressUntil: 0,
@@ -423,16 +458,6 @@
     lastErrorKey: '',
     lastErrorToastAt: 0
   };
-
-  function mapGpsStatusToBriefError(fullText) {
-    var v = String(fullText || '').trim();
-    if (v === 'НЕТ GPS') return 'Нет сигнала GPS';
-    if (v.indexOf('ВНЕ') === 0) return 'GPS далеко от линии карты';
-    if (v === 'МАРШРУТ') return 'Нужен маршрут или GPS';
-    if (v === 'КАРТА') return 'Карта недоступна';
-    if (v.indexOf('ПОИСК') === 0) return 'Ищем карту по координате…';
-    return 'Нет стабильной связи с GPS';
-  }
 
   function maybeEnqueueGpsConnectionToast(fullText, tone) {
     // GPS connection status is already shown by the persistent GPS chip in the
@@ -482,100 +507,6 @@
     el.dataset.fullText = value;
     syncPoekhaliLiveButton();
     maybeEnqueueGpsConnectionToast(value, tone);
-  }
-
-  function parseNumber(value) {
-    if (value === null || value === undefined) return NaN;
-    return parseFloat(String(value).replace(',', '.'));
-  }
-
-  function isRealNumber(value) {
-    return typeof value === 'number' && isFinite(value);
-  }
-
-  function getElementsByLocalName(root, localName) {
-    var all = root ? root.getElementsByTagName('*') : [];
-    var result = [];
-    for (var i = 0; i < all.length; i++) {
-      if (all[i].localName === localName || all[i].tagName === localName) {
-        result.push(all[i]);
-      }
-    }
-    return result;
-  }
-
-  function getFirstTextByLocalName(root, localName) {
-    var items = getElementsByLocalName(root, localName);
-    if (!items.length) return '';
-    return (items[0].textContent || '').trim();
-  }
-
-  function normalizeOrdinate(rawValue) {
-    var value = parseNumber(rawValue);
-    if (!isFinite(value)) return NaN;
-    return Math.round(value);
-  }
-
-  function fetchText(path) {
-    return fetch(path, { cache: 'no-store' }).then(function(response) {
-      if (!response || !response.ok) {
-        throw new Error('Не удалось загрузить ' + path);
-      }
-      return response.text();
-    });
-  }
-
-  function getFileName(path) {
-    return String(path || '').split(/[\\/]/).pop().toLowerCase();
-  }
-
-  function uniqueStrings(values) {
-    var seen = {};
-    var result = [];
-    for (var i = 0; i < values.length; i++) {
-      var value = values[i] ? String(values[i]) : '';
-      if (!value || seen[value]) continue;
-      seen[value] = true;
-      result.push(value);
-    }
-    return result;
-  }
-
-  function readJsonStorage(key, fallback) {
-    try {
-      var raw = localStorage.getItem(key);
-      if (!raw) return fallback;
-      var parsed = JSON.parse(raw);
-      return parsed === null || parsed === undefined ? fallback : parsed;
-    } catch (error) {
-      return fallback;
-    }
-  }
-
-  function writeJsonStorage(key, value) {
-    try {
-      localStorage.setItem(key, JSON.stringify(value));
-    } catch (error) {
-      // localStorage can be blocked in restricted browser contexts.
-    }
-  }
-
-  function readStringStorage(key) {
-    try {
-      return String(localStorage.getItem(key) || '').trim();
-    } catch (error) {
-      return '';
-    }
-  }
-
-  function writeStringStorage(key, value) {
-    try {
-      var text = String(value || '').trim();
-      if (text) localStorage.setItem(key, text);
-      else localStorage.removeItem(key);
-    } catch (error) {
-      // localStorage can be blocked in restricted browser contexts.
-    }
   }
 
   function normalizeProdAuditState(raw) {
@@ -683,51 +614,6 @@
       note: '',
       updatedAt: 0
     };
-  }
-
-  function setSpeedDocRuleReview(rule, status, note) {
-    var key = getSpeedDocReviewKey(rule);
-    if (!key) return;
-    var value = String(status || 'pending').toLowerCase();
-    var state = getSpeedDocReviewState();
-    if (value !== 'verified' && value !== 'problem') {
-      delete state.items[key];
-    } else {
-      state.items[key] = {
-        status: value,
-        note: String(note || '').slice(0, 240),
-        updatedAt: Date.now()
-      };
-    }
-    saveSpeedDocReviewState();
-  }
-
-  function getSpeedDocReviewLabel(review) {
-    var status = review && review.status;
-    if (status === 'verified') return 'сверено';
-    if (status === 'problem') return 'ошибка';
-    return 'не сверено';
-  }
-
-  function getSpeedDocReviewTone(review) {
-    var status = review && review.status;
-    if (status === 'verified') return 'success';
-    if (status === 'problem') return 'danger';
-    return 'warning';
-  }
-
-  function getSpeedDocSourceUrl(rule) {
-    if (!rule || !rule.sourcePath) return '';
-    var url = String(rule.sourcePath);
-    if (rule.page) url += '#page=' + encodeURIComponent(String(rule.page));
-    return url;
-  }
-
-  function openSpeedDocSource(rule) {
-    var url = getSpeedDocSourceUrl(rule);
-    if (!url) return false;
-    window.open(url, '_blank', 'noopener');
-    return true;
   }
 
   function getSpeedDocsReviewSummary(items) {
@@ -922,6 +808,13 @@
     var newlyCreated = getNewestRecentlyCreatedShift(shifts, 10 * 60 * 1000);
     if (newlyCreated) return { shift: newlyCreated, source: 'recent' };
 
+    var selectedShiftId = getSelectedPoekhaliShiftId();
+    if (selectedShiftId) {
+      var selectedShift = findShiftInListById(shifts, selectedShiftId);
+      if (selectedShift) return { shift: selectedShift, source: 'selected' };
+      setSelectedPoekhaliShiftId('');
+    }
+
     var now = Date.now();
     var active = shifts.filter(function(shift) {
       var start = getShiftStartMs(shift);
@@ -930,23 +823,8 @@
     }).sort(compareShiftsRecentFirst);
     if (active.length) return { shift: active[0], source: 'active' };
 
-    var selectedShiftId = getSelectedPoekhaliShiftId();
-    if (selectedShiftId) {
-      var selectedShift = findShiftInListById(shifts, selectedShiftId);
-      if (selectedShift) return { shift: selectedShift, source: 'selected' };
-      setSelectedPoekhaliShiftId('');
-    }
-
     shifts.sort(compareShiftsRecentFirst);
     return { shift: shifts[0], source: 'latest' };
-  }
-
-  function getShiftSourceLabel(source) {
-    if (source === 'recording') return 'запись Поехали';
-    if (source === 'selected') return 'выбрана вручную';
-    if (source === 'active') return 'текущая смена';
-    if (source === 'recent') return 'только что добавлена';
-    return 'последняя смена';
   }
 
   function formatLocoSummary(shift) {
@@ -963,24 +841,25 @@
     return shift && shift.route_kind === 'trip' ? 'Поездка' : 'Смена';
   }
 
-  function formatPoekhaliShiftOption(shift) {
-    if (!shift) return '—';
-    var start = String(shift.start_msk || '').trim();
-    var date = /^\d{4}-\d{2}-\d{2}/.test(start) ? start.substring(8, 10) + '.' + start.substring(5, 7) : 'без даты';
-    var route = formatRouteSummary(shift);
-    var train = shift.train_number ? ' · №' + String(shift.train_number).trim() : '';
-    var loco = formatLocoSummary(shift);
-    return date + ' · ' + route + train + (loco ? ' · ' + loco : '');
-  }
-
   function normalizeRouteName(value) {
-    return String(value || '')
+    var normalized = String(value || '')
       .toLowerCase()
       .replace(/ё/g, 'е')
-      .replace(/\b(ст|станция|разъезд|рзд|остановочный|пункт|оп)\b/g, ' ')
       .replace(/[^a-zа-я0-9]+/g, ' ')
       .trim()
       .replace(/\s+/g, ' ');
+    var serviceWords = {
+      'ст': true,
+      'станция': true,
+      'разъезд': true,
+      'рзд': true,
+      'остановочный': true,
+      'пункт': true,
+      'оп': true
+    };
+    return normalized.split(' ').filter(function(word) {
+      return word && !serviceWords[word];
+    }).join(' ');
   }
 
   function getRouteMatchScore(query, candidate) {
@@ -1088,10 +967,6 @@
   function normalizeWayNumber(value) {
     var way = Math.round(Number(value) || 1);
     return way === 2 ? 2 : 1;
-  }
-
-  function getCurrentTrackLabel() {
-    return 'П ' + normalizeWayNumber(tracker.wayNumber);
   }
 
   function getWayNumberFromObjectFileKey(fileKey) {
@@ -1308,15 +1183,6 @@
     return score;
   }
 
-  function applyRunNavigationState(run) {
-    if (!run) return;
-    var direction = String(run.direction || '').toUpperCase().replace(/\s+/g, '');
-    if (direction.indexOf('НЕЧ') === 0) tracker.even = false;
-    else if (direction.indexOf('ЧЕТ') === 0) tracker.even = true;
-    var trackMatch = String(run.track || '').match(/[12]/);
-    if (trackMatch) tracker.wayNumber = normalizeWayNumber(trackMatch[0]);
-  }
-
   function applyProjectionNavigationState(projection) {
     if (!projection) return;
     if (projection.even !== undefined) tracker.even = !!projection.even;
@@ -1436,10 +1302,6 @@
   function findRouteStationInList(name, stations) {
     var matches = getRouteStationMatchesInList(name, stations);
     return matches.length ? matches[0] : null;
-  }
-
-  function findRouteStation(name) {
-    return findRouteStationInList(name, getRouteStationsFromCurrentMap());
   }
 
   function buildShiftRouteSuggestion(details, from, to, fromMatch, toMatch, map) {
@@ -1646,17 +1508,24 @@
 
   function maybeAutoSelectMapForShiftRoute(options) {
     options = options || {};
-    if (tracker.routeMapSelecting || !tracker.availableMaps || tracker.availableMaps.length <= 1) {
+    var selectionToken = ++tracker.routeSelectionToken;
+    if (!tracker.availableMaps || tracker.availableMaps.length <= 1) {
       return Promise.resolve(false);
     }
     var details = getPoekhaliTrainDetails();
     var route = getShiftRouteRequest(details);
+    var routeKey = getShiftRouteRequestKey(route);
     if (!route) {
       tracker.routeMapCandidate = null;
+      tracker.routeMapSelecting = false;
       return Promise.resolve(false);
     }
     var maps = tracker.availableMaps.filter(function(map) {
-      return getMapDownloadState(map) === 'ready' && (isMapAutoSelectable(map) || isCurrentMap(map));
+      return getMapDownloadState(map) === 'ready' && (
+        isMapAutoSelectable(map) ||
+        isCurrentMap(map) ||
+        isDraftMapSelectableForShiftRoute(map, route)
+      );
     });
     if (!maps.length) return Promise.resolve(false);
 
@@ -1669,6 +1538,7 @@
     return Promise.all(maps.map(function(map) {
       return scoreMapForShiftRoute(map, route);
     })).then(function(candidates) {
+      if (selectionToken !== tracker.routeSelectionToken || !isShiftRouteRequestCurrent(routeKey)) return false;
       var best = chooseBestRouteMapCandidate(candidates);
       tracker.routeMapCandidate = best || candidates.filter(Boolean).sort(function(a, b) {
         return (b.score || 0) - (a.score || 0);
@@ -1681,6 +1551,7 @@
           lineCoordinate: best.coordinate
         }, 'Переключаю ЭК по маршруту смены: ' + formatRouteMapCandidate(best) + '.');
         return selectMap(best.map, { keepPicker: true }).then(function() {
+          if (selectionToken !== tracker.routeSelectionToken || !isShiftRouteRequestCurrent(routeKey)) return false;
           if (options.applyPreview !== false) applyShiftRouteSuggestion();
           return true;
         });
@@ -1690,12 +1561,14 @@
       }
       return false;
     }).catch(function(error) {
+      if (selectionToken !== tracker.routeSelectionToken) return false;
       tracker.routeMapCandidate = {
         status: 'error',
         error: error && error.message ? error.message : 'карта маршрута не подобрана'
       };
       return false;
     }).then(function(result) {
+      if (selectionToken !== tracker.routeSelectionToken) return result;
       tracker.routeMapSelecting = false;
       if (tracker.opsSheet && tracker.opsSheet.root && !tracker.opsSheet.root.classList.contains('hidden')) {
         renderOpsSheet();
@@ -1851,317 +1724,6 @@
       ? 'Состав '
       : 'Локомотив ';
     return prefix + formatPoekhaliCompositionLength(source);
-  }
-
-  function getWarningStorageScope() {
-    return tracker.currentMap && tracker.currentMap.id ? tracker.currentMap.id : DEFAULT_MAP.id;
-  }
-
-  function normalizeDateValue(value) {
-    var text = String(value || '').trim();
-    if (/^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}(:\d{2})?$/.test(text)) return text.slice(0, 16);
-    if (/^\d{4}-\d{2}-\d{2}$/.test(text)) return text;
-    return '';
-  }
-
-  function getMoscowDateTimeString() {
-    var now = new Date();
-    var moscow = new Date(now.getTime() + (3 * 60 * 60 * 1000) + (now.getTimezoneOffset() * 60 * 1000));
-    var pad = function(n) { return String(n).padStart(2, '0'); };
-    return moscow.getFullYear() + '-' + pad(moscow.getMonth() + 1) + '-' + pad(moscow.getDate()) +
-      'T' + pad(moscow.getHours()) + ':' + pad(moscow.getMinutes());
-  }
-
-  function getMoscowDateString() {
-    return getMoscowDateTimeString().slice(0, 10);
-  }
-
-  function getTodayDateString() {
-    return getMoscowDateString();
-  }
-
-  function formatDateLabel(value) {
-    var date = normalizeDateValue(value);
-    if (!date) return '';
-    if (date.indexOf('T') >= 0) {
-      var parts = date.split('T');
-      var d = parts[0].split('-');
-      return d[2] + '.' + d[1] + '.' + d[0] + ' ' + parts[1];
-    }
-    var p = date.split('-');
-    return p[2] + '.' + p[1] + '.' + p[0];
-  }
-
-  function normalizeWarning(item) {
-    if (!item || typeof item !== 'object') return null;
-    var mapId = String(item.mapId || getWarningStorageScope());
-    var sector = Number(item.sector);
-    var start = normalizeOrdinate(item.start);
-    var end = normalizeOrdinate(item.end);
-    var speed = parseNumber(item.speed);
-    if (!isRealNumber(sector) || !isFinite(start) || !isFinite(end) || !isFinite(speed)) return null;
-    var left = Math.min(start, end);
-    var right = Math.max(start, end);
-    if (left === right) right = left + 100;
-    return {
-      id: String(item.id || ('warning-' + Date.now() + '-' + Math.round(Math.random() * 10000))),
-      mapId: mapId,
-      shiftId: String(item.shiftId || ''),
-      sector: sector,
-      coordinate: left,
-      start: left,
-      end: right,
-      length: Math.max(0, right - left),
-      speed: Math.round(speed),
-      name: String(item.name || item.note || '').trim(),
-      note: String(item.note || item.name || '').trim(),
-      enabled: item.enabled !== false,
-      validUntil: normalizeDateValue(item.validUntil || item.until || item.dateTo),
-      createdAt: String(item.createdAt || new Date().toISOString()),
-      updatedAt: String(item.updatedAt || item.createdAt || new Date().toISOString()),
-      deletedAt: String(item.deletedAt || ''),
-      source: 'warning'
-    };
-  }
-
-  function normalizeWarningsList(raw) {
-    var items = Array.isArray(raw) ? raw : [];
-    return items.map(normalizeWarning).filter(Boolean);
-  }
-
-  function normalizeWarningSyncMeta(raw) {
-    var meta = raw && typeof raw === 'object' ? raw : {};
-    return {
-      pending: !!meta.pending,
-      lastSyncAt: Math.max(0, Number(meta.lastSyncAt) || 0),
-      error: String(meta.error || '').slice(0, 240)
-    };
-  }
-
-  function loadWarningSyncState() {
-    var meta = normalizeWarningSyncMeta(readJsonStorage(WARNINGS_SYNC_STORAGE_KEY, null));
-    tracker.warningSync.pending = meta.pending;
-    tracker.warningSync.lastSyncAt = meta.lastSyncAt;
-    tracker.warningSync.error = meta.error;
-    tracker.warningSync.state = meta.pending ? 'pending' : meta.lastSyncAt ? 'synced' : 'idle';
-  }
-
-  function saveWarningSyncState() {
-    writeJsonStorage(WARNINGS_SYNC_STORAGE_KEY, {
-      pending: !!tracker.warningSync.pending,
-      lastSyncAt: tracker.warningSync.lastSyncAt || 0,
-      error: tracker.warningSync.error || ''
-    });
-  }
-
-  function setWarningSyncState(patch) {
-    var next = patch || {};
-    if (next.state !== undefined) tracker.warningSync.state = String(next.state || 'idle');
-    if (next.pending !== undefined) tracker.warningSync.pending = !!next.pending;
-    if (next.lastSyncAt !== undefined) tracker.warningSync.lastSyncAt = Math.max(0, Number(next.lastSyncAt) || 0);
-    if (next.error !== undefined) tracker.warningSync.error = String(next.error || '').slice(0, 240);
-    saveWarningSyncState();
-    if (tracker.opsSheet && tracker.opsSheet.root && !tracker.opsSheet.root.classList.contains('hidden')) {
-      renderOpsSheet();
-    }
-  }
-
-  function getWarningApiUrl() {
-    if (typeof POEKHALI_WARNINGS_API_URL === 'string' && POEKHALI_WARNINGS_API_URL) {
-      return POEKHALI_WARNINGS_API_URL;
-    }
-    var base = typeof API_BASE_URL === 'string' ? API_BASE_URL : '';
-    return base + '/api/poekhali-warnings';
-  }
-
-  function isWarningSyncAvailable() {
-    return typeof fetchJson === 'function' && typeof navigator !== 'undefined';
-  }
-
-  function createWarningSyncError(message, code) {
-    var error = new Error(message || 'Warnings sync failed');
-    error.code = code || '';
-    return error;
-  }
-
-  function getWarningRevisionTime(item) {
-    if (!item) return 0;
-    var candidates = [item.deletedAt, item.updatedAt, item.createdAt];
-    for (var i = 0; i < candidates.length; i++) {
-      var ts = Date.parse(candidates[i] || '');
-      if (isFinite(ts)) return ts;
-    }
-    return 0;
-  }
-
-  function mergeWarningsLists(baseWarnings, incomingWarnings) {
-    var base = normalizeWarningsList(baseWarnings);
-    var incoming = normalizeWarningsList(incomingWarnings);
-    var byId = {};
-
-    function put(item, preferExistingOnTie) {
-      if (!item || !item.id) return;
-      var existing = byId[item.id];
-      if (!existing) {
-        byId[item.id] = item;
-        return;
-      }
-      var existingTime = getWarningRevisionTime(existing);
-      var nextTime = getWarningRevisionTime(item);
-      if (nextTime > existingTime || (nextTime === existingTime && !preferExistingOnTie)) {
-        byId[item.id] = item;
-      }
-    }
-
-    for (var i = 0; i < incoming.length; i++) put(incoming[i], false);
-    for (var j = 0; j < base.length; j++) put(base[j], true);
-
-    return Object.keys(byId).map(function(id) {
-      return byId[id];
-    }).sort(function(a, b) {
-      if (a.mapId !== b.mapId) return a.mapId < b.mapId ? -1 : 1;
-      if (a.shiftId !== b.shiftId) return a.shiftId < b.shiftId ? -1 : 1;
-      if (a.sector !== b.sector) return a.sector - b.sector;
-      if (a.start !== b.start) return a.start - b.start;
-      return a.id < b.id ? -1 : a.id > b.id ? 1 : 0;
-    });
-  }
-
-  function hasWarningsData(warnings) {
-    return normalizeWarningsList(warnings).length > 0;
-  }
-
-  function loadWarnings() {
-    loadWarningSyncState();
-    var raw = readJsonStorage(WARNINGS_STORAGE_KEY, []);
-    tracker.warnings = normalizeWarningsList(raw);
-  }
-
-  function saveWarnings(options) {
-    tracker.warnings = normalizeWarningsList(tracker.warnings);
-    writeJsonStorage(WARNINGS_STORAGE_KEY, tracker.warnings);
-    if (!(options && options.skipSync)) {
-      setWarningSyncState({
-        state: typeof navigator !== 'undefined' && navigator.onLine ? 'pending' : 'offline',
-        pending: true,
-        error: ''
-      });
-      scheduleWarningSync();
-    }
-    writeWarningsToLinkedShift();
-    if (tracker.opsSheet && tracker.opsSheet.root && !tracker.opsSheet.root.classList.contains('hidden')) {
-      renderOpsSheet();
-    }
-    requestDraw();
-  }
-
-  function scheduleWarningSync(delayMs) {
-    if (!isWarningSyncAvailable()) return;
-    if (tracker.warningSync.timer) {
-      clearTimeout(tracker.warningSync.timer);
-      tracker.warningSync.timer = null;
-    }
-    if (isPageHidden()) return;
-    var delay = Number(delayMs);
-    if (!isFinite(delay) || delay < 0) delay = WARNINGS_SYNC_DEBOUNCE_MS;
-    tracker.warningSync.timer = setTimeout(function() {
-      tracker.warningSync.timer = null;
-      syncWarningsWithServer('scheduled');
-    }, delay);
-  }
-
-  function syncWarningsWithServer(reason) {
-    if (!isWarningSyncAvailable()) return Promise.resolve(false);
-    if (tracker.warningSync.inFlight) {
-      scheduleWarningSync(WARNINGS_SYNC_DEBOUNCE_MS);
-      return Promise.resolve(false);
-    }
-    if (typeof navigator !== 'undefined' && !navigator.onLine) {
-      if (hasWarningsData(tracker.warnings) || tracker.warningSync.pending) {
-        setWarningSyncState({ state: 'offline', pending: true, error: '' });
-      }
-      return Promise.resolve(false);
-    }
-
-    var apiUrl = getWarningApiUrl();
-    var localBefore = normalizeWarningsList(tracker.warnings);
-    tracker.warningSync.inFlight = true;
-    setWarningSyncState({ state: reason === 'load' ? 'loading' : 'syncing', error: '' });
-
-    return fetchJson(apiUrl, {
-      method: 'GET',
-      headers: { 'Accept': 'application/json' }
-    }, 7000).then(function(result) {
-      if (!result.ok) {
-        if (result.status === 401) throw createWarningSyncError('Unauthorized', 'unauthorized');
-        if (result.status === 404) throw createWarningSyncError('Warnings sync unavailable', 'unavailable');
-        throw new Error((result.body && result.body.error) || 'Warnings load failed');
-      }
-
-      var remoteWarnings = normalizeWarningsList(result.body && result.body.warnings);
-      var mergedWarnings = mergeWarningsLists(localBefore, remoteWarnings);
-      var mergedJson = JSON.stringify(mergedWarnings);
-      var remoteJson = JSON.stringify(remoteWarnings);
-      var localJson = JSON.stringify(localBefore);
-      var localChanged = mergedJson !== localJson;
-      var shouldPush = tracker.warningSync.pending || mergedJson !== remoteJson;
-
-      if (localChanged) {
-        tracker.warnings = mergedWarnings;
-        saveWarnings({ skipSync: true });
-      }
-
-      if (!shouldPush) {
-        tracker.warningSync.inFlight = false;
-        setWarningSyncState({
-          state: 'synced',
-          pending: false,
-          lastSyncAt: Date.now(),
-          error: ''
-        });
-        return true;
-      }
-
-      return fetchJson(apiUrl, {
-        method: 'PUT',
-        headers: { 'Content-Type': 'application/json', 'Accept': 'application/json' },
-        body: JSON.stringify({ warnings: mergedWarnings })
-      }, 9000).then(function(saveResult) {
-        if (!saveResult.ok) {
-          if (saveResult.status === 401) throw createWarningSyncError('Unauthorized', 'unauthorized');
-          if (saveResult.status === 404) throw createWarningSyncError('Warnings sync unavailable', 'unavailable');
-          throw new Error((saveResult.body && saveResult.body.error) || 'Warnings save failed');
-        }
-        tracker.warnings = normalizeWarningsList(saveResult.body && saveResult.body.warnings ? saveResult.body.warnings : mergedWarnings);
-        saveWarnings({ skipSync: true });
-        tracker.warningSync.inFlight = false;
-        setWarningSyncState({
-          state: 'synced',
-          pending: false,
-          lastSyncAt: Date.now(),
-          error: ''
-        });
-        return true;
-      });
-    }).catch(function(error) {
-      tracker.warningSync.inFlight = false;
-      var unavailable = error && error.code === 'unavailable';
-      setWarningSyncState({
-        state: unavailable ? 'local' : 'error',
-        pending: hasWarningsData(tracker.warnings) || tracker.warningSync.pending,
-        error: unavailable ? '' : (error && error.message ? error.message : 'Warnings sync failed')
-      });
-      return false;
-    });
-  }
-
-  function bindWarningSyncEvents() {
-    if (typeof window === 'undefined' || !window.addEventListener) return;
-    window.addEventListener('online', function() {
-      if (tracker.warningSync.pending || hasWarningsData(tracker.warnings)) {
-        scheduleWarningSync(250);
-      }
-    });
   }
 
   function getShiftRunNumber(value) {
@@ -2333,6 +1895,8 @@
   function selectPoekhaliShift(shiftId, options) {
     var shift = findShiftInListById(getPoekhaliCandidateShifts(), shiftId);
     if (!shift || !shift.id) return false;
+    tracker.routeSelectionToken++;
+    tracker.routeMapSelecting = false;
     setSelectedPoekhaliShiftId(shift.id);
     tracker.routeMapCandidate = null;
 
@@ -2485,309 +2049,6 @@
     return tracker.liveAlert || null;
   }
 
-  function isWarningExpired(item) {
-    if (!item || !item.validUntil) return false;
-    if (String(item.validUntil).indexOf('T') >= 0) {
-      return item.validUntil < getMoscowDateTimeString();
-    }
-    return item.validUntil < getMoscowDateString();
-  }
-
-  function isWarningUsable(item) {
-    return !!(item && item.enabled !== false && !isWarningExpired(item));
-  }
-
-  function getScopedWarnings(includeInactive) {
-    var scope = getWarningStorageScope();
-    // Warnings are track data scoped to the MAP and bounded by validUntil — NOT to
-    // a single shift. They stay visible on every trip over the same map.
-    return tracker.warnings.filter(function(item) {
-      if (!item || item.mapId !== scope) return false;
-      if (item.deletedAt) return false;
-      if (!includeInactive && !isWarningUsable(item)) return false;
-      return true;
-    });
-  }
-
-  function getCurrentWarnings() {
-    return getScopedWarnings(false);
-  }
-
-  function getWarningById(id) {
-    var target = String(id || '');
-    if (!target) return null;
-    for (var i = 0; i < tracker.warnings.length; i++) {
-      if (tracker.warnings[i] && tracker.warnings[i].id === target && !tracker.warnings[i].deletedAt) return tracker.warnings[i];
-    }
-    return null;
-  }
-
-  function getWarningRuntimeStatus(item, projection) {
-    if (!item) return 'ready';
-    if (item.enabled === false) return 'disabled';
-    if (isWarningExpired(item)) return 'expired';
-    var current = projection || getCurrentProjectionForForm();
-    if (!current || getSectorKey(current.sector) !== getSectorKey(item.sector) || !isRealNumber(current.lineCoordinate)) {
-      return 'ready';
-    }
-    var coordinate = current.lineCoordinate;
-    if (coordinate >= item.start && coordinate <= item.end) return 'active';
-    if (getCurrentCoordinateDirection() > 0) return item.start > coordinate ? 'ahead' : 'passed';
-    return item.end < coordinate ? 'ahead' : 'passed';
-  }
-
-  function getWarningStatusText(status) {
-    if (status === 'active') return 'Действует';
-    if (status === 'ahead') return 'Впереди';
-    if (status === 'passed') return 'Пройдено';
-    if (status === 'disabled') return 'Откл.';
-    if (status === 'expired') return 'Истекло';
-    return 'Готово';
-  }
-
-  function getWarningsForSector(sector, left, right) {
-    var sectorKey = getSectorKey(sector);
-    return getCurrentWarnings().filter(function(item) {
-      if (getSectorKey(item.sector) !== sectorKey) return false;
-      if (isFinite(left) && isFinite(right) && !isObjectInRange(item, left, right)) return false;
-      return true;
-    });
-  }
-
-  function getWarningFormDraft() {
-    return tracker.warningFormDraft && typeof tracker.warningFormDraft === 'object' ? tracker.warningFormDraft : null;
-  }
-
-  function setWarningFormDraft(draft) {
-    tracker.warningFormDraft = draft && typeof draft === 'object' ? draft : null;
-  }
-
-  function updateWarningFormDraft(sector, start, end, speed, note, validUntil) {
-    setWarningFormDraft({
-      sector: Number(sector),
-      start: Number(start),
-      end: Number(end),
-      speed: Number(speed),
-      note: String(note || ''),
-      validUntil: String(validUntil || '')
-    });
-  }
-
-  function createWarning(sector, start, end, speed, note, validUntil) {
-    var item = normalizeWarning({
-      mapId: getWarningStorageScope(),
-      shiftId: '',
-      sector: sector,
-      start: start,
-      end: end,
-      speed: speed,
-      note: note,
-      validUntil: validUntil,
-      enabled: true,
-      createdAt: new Date().toISOString(),
-      updatedAt: new Date().toISOString()
-    });
-    if (!item) return null;
-    tracker.warnings.push(item);
-    saveWarnings();
-    return item;
-  }
-
-  function parseWarningCoordinateAtStart(text) {
-    var source = String(text || '');
-    var match = source.match(/^\s*(\d{1,4})(?:\s*(?:км|km|k))?(?:(?:\s*[\/.,]\s*([1-9]|10))|(?:\s*(?:пк|pk)\s*([1-9]|10))|(?:\s*([1-9]|10)\s*(?:пк|pk))|(?:\s+([1-9]|10)\b))?(?:\s*\+\s*(\d{1,2})\s*(?:м)?)?/i);
-    if (!match) return null;
-    var pkText = match[2] || match[3] || match[4] || match[5] || '';
-    return {
-      coordinate: coordinateFromKmPkMeter(match[1], pkText || 0, match[6] || 0),
-      length: match[0].length,
-      label: source.slice(0, match[0].length).trim()
-    };
-  }
-
-  function parseSinglePointWarningLine(rawLine, defaultSector, defaultValidUntil) {
-    var original = String(rawLine || '');
-    var line = original.replace(/[–—]/g, '-').replace(/\s+/g, ' ').trim();
-    if (!line) return null;
-    line = line.replace(/^\s*(?:пр|огр|предупреждение)\s*[:№#-]?\s*/i, '');
-    var sector = Number(defaultSector);
-    var sectorMatch = line.match(/\b(?:уч|участок|сектор)\s*\.?\s*(\d+(?:[.,]\d+)?)/i);
-    if (sectorMatch) {
-      sector = Number(String(sectorMatch[1]).replace(',', '.'));
-      line = line.replace(sectorMatch[0], '').trim();
-    }
-    if (!isRealNumber(sector)) return { error: 'не найден участок', raw: original };
-    var point = parseWarningCoordinateAtStart(line);
-    if (!point) return { error: 'не прочитан км/пк', raw: original };
-    var tail = line.slice(point.length).trim();
-    var speedMatch = tail.match(/(?:^|\s)(?:(?:v|скор(?:ость)?|огр(?:аничение)?|до)\s*)?(\d{1,3})(?:\s*(?:км\s*\/?\s*ч|кмч))?\b/i);
-    if (!speedMatch) return { error: 'не найдена скорость', raw: original };
-    var speed = Number(speedMatch[1]);
-    if (!isFinite(speed) || speed < 1 || speed > 200) return { error: 'скорость вне диапазона', raw: original };
-    var direction = getCurrentCoordinateDirection();
-    var start = point.coordinate;
-    var end = start + direction * 1000;
-    var note = (tail.slice(0, speedMatch.index) + ' ' + tail.slice(speedMatch.index + speedMatch[0].length))
-      .replace(/^[\s:;,.#-]+/, '')
-      .trim();
-    return {
-      sector: sector,
-      start: start,
-      end: end,
-      speed: speed,
-      note: note || point.label,
-      validUntil: defaultValidUntil || ''
-    };
-  }
-
-  function createWarningFromQuickText(text, defaultSector, validUntil) {
-    var parsed = parseBulkWarningLine(text, defaultSector, validUntil);
-    if (!parsed || parsed.error) parsed = parseSinglePointWarningLine(text, defaultSector, validUntil);
-    if (!parsed || parsed.error) return { warning: null, error: parsed && parsed.error ? parsed.error : 'не прочитано предупреждение' };
-    var warning = createWarning(parsed.sector, parsed.start, parsed.end, parsed.speed, parsed.note, parsed.validUntil);
-    return warning ? { warning: warning, error: '' } : { warning: null, error: 'предупреждение не сохранено' };
-  }
-
-  function parseBulkWarningLine(rawLine, defaultSector, defaultValidUntil) {
-    var original = String(rawLine || '');
-    var line = original.replace(/[–—]/g, '-').replace(/\s+/g, ' ').trim();
-    if (!line || line.charAt(0) === '#') return null;
-    line = line.replace(/^\s*(?:пр|огр|предупреждение)\s*[:№#-]?\s*/i, '');
-
-    var sector = Number(defaultSector);
-    var sectorMatch = line.match(/\b(?:уч|участок|сектор)\s*\.?\s*(\d+(?:[.,]\d+)?)/i);
-    if (sectorMatch) {
-      sector = Number(String(sectorMatch[1]).replace(',', '.'));
-      line = line.replace(sectorMatch[0], '').trim();
-    }
-    if (!isRealNumber(sector)) {
-      return { error: 'не найден участок', raw: original };
-    }
-
-    var separator = line.match(/\s+до\s+|-/i);
-    if (!separator) {
-      return { error: 'нет диапазона км/пк', raw: original };
-    }
-
-    var startText = line.slice(0, separator.index).trim();
-    var restText = line.slice(separator.index + separator[0].length).trim();
-    var start = parseWarningCoordinateAtStart(startText);
-    var end = parseWarningCoordinateAtStart(restText);
-    if (!start || !end) {
-      return { error: 'не прочитан диапазон км/пк', raw: original };
-    }
-
-    var tail = restText.slice(end.length).trim();
-    var speedMatch = tail.match(/(?:^|\s)(?:(?:v|скор(?:ость)?|огр(?:аничение)?|до)\s*)?(\d{1,3})(?:\s*(?:км\s*\/?\s*ч|кмч))?\b/i);
-    if (!speedMatch) {
-      return { error: 'не найдена скорость', raw: original };
-    }
-    var speed = Number(speedMatch[1]);
-    if (!isFinite(speed) || speed < 1 || speed > 200) {
-      return { error: 'скорость вне диапазона', raw: original };
-    }
-    var note = (tail.slice(0, speedMatch.index) + ' ' + tail.slice(speedMatch.index + speedMatch[0].length))
-      .replace(/^[\s:;,.#-]+/, '')
-      .trim();
-
-    return {
-      sector: sector,
-      start: start.coordinate,
-      end: end.coordinate,
-      speed: speed,
-      note: note,
-      validUntil: defaultValidUntil || ''
-    };
-  }
-
-  function createWarningsFromBulkText(text, defaultSector, validUntil) {
-    var lines = String(text || '').split(/\r?\n|;/);
-    var created = [];
-    var errors = [];
-    var now = new Date().toISOString();
-    for (var i = 0; i < lines.length; i++) {
-      var parsed = parseBulkWarningLine(lines[i], defaultSector, validUntil);
-      if (!parsed) continue;
-      if (parsed.error) {
-        errors.push((i + 1) + ': ' + parsed.error + ' — ' + String(parsed.raw || '').trim());
-        continue;
-      }
-      var item = normalizeWarning({
-        mapId: getWarningStorageScope(),
-        shiftId: '',
-        sector: parsed.sector,
-        start: parsed.start,
-        end: parsed.end,
-        speed: parsed.speed,
-        note: parsed.note,
-        validUntil: parsed.validUntil,
-        enabled: true,
-        createdAt: now,
-        updatedAt: now
-      });
-      if (item) {
-        tracker.warnings.push(item);
-        created.push(item);
-      } else {
-        errors.push((i + 1) + ': строка не прошла проверку');
-      }
-    }
-    if (created.length) saveWarnings();
-    return {
-      created: created,
-      errors: errors
-    };
-  }
-
-  function saveWarningFromForm(id, sector, start, end, speed, note, validUntil) {
-    var existing = id ? getWarningById(id) : null;
-    if (!existing) {
-      return createWarning(sector, start, end, speed, note, validUntil);
-    }
-    var item = normalizeWarning({
-      id: existing.id,
-      mapId: existing.mapId,
-      shiftId: existing.shiftId,
-      sector: sector,
-      start: start,
-      end: end,
-      speed: speed,
-      note: note,
-      validUntil: validUntil,
-      enabled: existing.enabled !== false,
-      createdAt: existing.createdAt,
-      updatedAt: new Date().toISOString()
-    });
-    if (!item) return null;
-    for (var i = 0; i < tracker.warnings.length; i++) {
-      if (tracker.warnings[i] && tracker.warnings[i].id === existing.id) {
-        tracker.warnings[i] = item;
-        break;
-      }
-    }
-    tracker.editingWarningId = '';
-    saveWarnings();
-    return item;
-  }
-
-  function deleteWarning(id) {
-    var target = getWarningById(id);
-    if (target) {
-      target.enabled = false;
-      target.deletedAt = new Date().toISOString();
-      target.updatedAt = target.deletedAt;
-    }
-    if (tracker.editingWarningId === id) tracker.editingWarningId = '';
-    saveWarnings();
-  }
-
-  function toggleWarningEnabled(item) {
-    if (!item) return;
-    item.enabled = item.enabled === false;
-    item.updatedAt = new Date().toISOString();
-    saveWarnings();
-  }
-
   function getLearningMapScope() {
     return tracker.currentMap && tracker.currentMap.id ? tracker.currentMap.id : DEFAULT_MAP.id;
   }
@@ -2799,27 +2060,6 @@
     if (state === 'off-track') state = 'offtrack';
     if (state === 'ontrack' || state === 'near' || state === 'offtrack') return state;
     return onTrack === false ? 'offtrack' : 'ontrack';
-  }
-
-  function getLearningTrackState(projection) {
-    if (!projection) return 'offtrack';
-    if (projection.onTrack) return 'ontrack';
-    if (isFinite(projection.distance) && projection.distance <= LEARNING_NEAR_TRACK_DISTANCE_M) return 'near';
-    return 'offtrack';
-  }
-
-  function getLearningTrackStateLabel(state) {
-    if (state === 'ontrack') return 'на карте';
-    if (state === 'near') return 'рядом';
-    if (state === 'offtrack') return 'вне карты';
-    return '—';
-  }
-
-  function getLearningTrackStateTone(state) {
-    if (state === 'ontrack') return 'success';
-    if (state === 'near') return 'warning';
-    if (state === 'offtrack') return 'danger';
-    return 'muted';
   }
 
   function normalizeLearningSample(sample, fallbackMapId) {
@@ -2844,6 +2084,7 @@
       altitude: sample.altitude !== null && sample.altitude !== undefined && sample.altitude !== '' && isFinite(Number(sample.altitude)) ? Number(sample.altitude) : null,
       accuracy: isFinite(accuracy) ? Math.max(0, Math.round(accuracy)) : 0,
       speed: isFinite(Number(sample.speed)) ? Number(sample.speed) : 0,
+      heading: isFinite(Number(sample.heading)) ? Number(sample.heading) : null,
       distance: isFinite(Number(sample.distance)) ? Math.round(Number(sample.distance)) : null,
       trackState: trackState,
       shiftId: String(sample.shiftId || ''),
@@ -2877,8 +2118,13 @@
     var lon = Number(sample.lon);
     if (!isFinite(lat) || !isFinite(lon) || lat < -90 || lat > 90 || lon < -180 || lon > 180) return null;
     var accuracy = Number(sample.accuracy);
-    var nearestCoordinate = Number(sample.nearestCoordinate);
-    var nearestSector = Number(sample.nearestSector);
+    var nearestCoordinate = sample.nearestCoordinate === null || sample.nearestCoordinate === undefined || sample.nearestCoordinate === ''
+      ? NaN : Number(sample.nearestCoordinate);
+    var nearestSector = sample.nearestSector === null || sample.nearestSector === undefined || sample.nearestSector === ''
+      ? NaN : Number(sample.nearestSector);
+    var rawSpeed = sample.speed === null || sample.speed === undefined || sample.speed === '' ? NaN : Number(sample.speed);
+    var rawHeading = sample.heading === null || sample.heading === undefined || sample.heading === '' ? NaN : Number(sample.heading);
+    var rawDistance = sample.distance === null || sample.distance === undefined || sample.distance === '' ? NaN : Number(sample.distance);
     var roundedNearestCoordinate = isFinite(nearestCoordinate) ? Math.max(0, Math.round(nearestCoordinate)) : null;
     var meters = roundedNearestCoordinate === null ? null : ((roundedNearestCoordinate % 1000) + 1000) % 1000;
     return {
@@ -2887,15 +2133,18 @@
       lon: lon,
       altitude: sample.altitude !== null && sample.altitude !== undefined && sample.altitude !== '' && isFinite(Number(sample.altitude)) ? Number(sample.altitude) : null,
       accuracy: isFinite(accuracy) ? Math.max(0, Math.round(accuracy)) : 0,
-      speed: isFinite(Number(sample.speed)) ? Number(sample.speed) : 0,
-      distance: isFinite(Number(sample.distance)) ? Math.round(Number(sample.distance)) : null,
+      speed: isFinite(rawSpeed) ? rawSpeed : null,
+      heading: isFinite(rawHeading) ? ((rawHeading % 360) + 360) % 360 : null,
+      distance: isFinite(rawDistance) ? Math.round(rawDistance) : null,
       trackState: 'raw',
       shiftId: String(sample.shiftId || ''),
       runId: String(sample.runId || ''),
+      segmentId: Math.max(1, Math.round(Number(sample.segmentId) || 1)),
       nearestSector: isRealNumber(nearestSector) ? nearestSector : null,
       nearestCoordinate: roundedNearestCoordinate,
       nearestKm: roundedNearestCoordinate === null ? null : getRailKmPkParts(roundedNearestCoordinate).km,
       nearestPk: roundedNearestCoordinate === null ? null : getRailKmPkParts(roundedNearestCoordinate).pk,
+      nearestPathId: String(sample.nearestPathId || sample.nearest_path_id || '').slice(0, 160),
       ts: isFinite(Number(sample.ts)) ? Number(sample.ts) : Date.now()
     };
   }
@@ -2909,11 +2158,20 @@
       return a.ts - b.ts;
     });
     if (normalizedSamples.length > LEARNING_MAX_SAMPLES_PER_RAW_TRACK) {
-      normalizedSamples = normalizedSamples.slice(normalizedSamples.length - LEARNING_MAX_SAMPLES_PER_RAW_TRACK);
+      normalizedSamples = compactLearningRawSamples(normalizedSamples);
     }
     if (!normalizedSamples.length) return null;
     return {
       samples: normalizedSamples,
+      shiftId: String(source.shiftId || normalizedSamples[0].shiftId || '').slice(0, 160),
+      routeFrom: String(source.routeFrom || source.route_from || '').trim().slice(0, 96),
+      routeTo: String(source.routeTo || source.route_to || '').trim().slice(0, 96),
+      trainNumber: String(source.trainNumber || source.train_number || '').trim().slice(0, 32),
+      mapTitle: String(source.mapTitle || source.map_title || '').trim().slice(0, 160),
+      purpose: String(source.purpose || '').trim().slice(0, 64),
+      status: String(source.status || 'completed').trim().slice(0, 32),
+      startedAt: Number(source.startedAt) || normalizedSamples[0].ts || 0,
+      endedAt: Math.max(0, Number(source.endedAt) || 0),
       updatedAt: Number(source.updatedAt) || normalizedSamples[normalizedSamples.length - 1].ts || 0,
       promotedAt: Math.max(0, Number(source.promotedAt) || 0)
     };
@@ -2982,14 +2240,6 @@
     if (value === 'regime' || value === 'rk') return 'regime';
     if (value === 'emap' || value === 'object' || value === 'speed') return 'emap';
     return 'user';
-  }
-
-  function getUserSectionEntitySourceLabel(source) {
-    var value = normalizeUserSectionEntitySource(source);
-    if (value === 'document') return 'ДОК';
-    if (value === 'regime') return 'РК';
-    if (value === 'emap') return 'ЭК';
-    return 'USER';
   }
 
   function appendUserSectionHistory(section, action, detail) {
@@ -3231,35 +2481,6 @@
     };
   }
 
-  function getUserSectionKeyForDraft(draft) {
-    return normalizeLearningRawTrackKey('gps-' + (draft && draft.key ? draft.key : Date.now()));
-  }
-
-  function buildUserSectionFromRawDraft(draft) {
-    if (!draft || !isRealNumber(draft.sector) || !Array.isArray(draft.routePoints) || draft.routePoints.length < 2) return null;
-    var now = Date.now();
-    return normalizeLearningUserSection({
-      id: getUserSectionKeyForDraft(draft),
-      mapId: getLearningMapScope(),
-      sector: draft.sector,
-      referenceSector: isRealNumber(draft.referenceSector) ? draft.referenceSector : null,
-      title: String(draft.title || 'GPS участок').replace(/^GPS черновик/i, 'GPS участок'),
-      sourceTrackKey: draft.key || '',
-      createdAt: now,
-      updatedAt: now,
-      verifiedAt: 0,
-      routePoints: draft.routePoints,
-      profileSegments: draft.profileSegments,
-      objects: [],
-      speeds: [],
-      history: [{
-        ts: now,
-        action: 'Принят черновик',
-        detail: draft.samples + ' GPS-точек'
-      }]
-    }, getLearningMapScope(), getUserSectionKeyForDraft(draft));
-  }
-
   function getRawDraftSectorForKey(trackKey) {
     var text = String(trackKey || '');
     var hash = 0;
@@ -3468,73 +2689,6 @@
     return normalized;
   }
 
-  function normalizeLearningSyncMeta(raw) {
-    var meta = raw && typeof raw === 'object' ? raw : {};
-    return {
-      pending: !!meta.pending,
-      lastSyncAt: Math.max(0, Number(meta.lastSyncAt) || 0),
-      error: String(meta.error || '').slice(0, 240)
-    };
-  }
-
-  function loadLearningSyncState() {
-    var meta = normalizeLearningSyncMeta(readJsonStorage(LEARNING_SYNC_STORAGE_KEY, null));
-    tracker.learningSync.pending = meta.pending;
-    tracker.learningSync.lastSyncAt = meta.lastSyncAt;
-    tracker.learningSync.error = meta.error;
-    tracker.learningSync.state = meta.pending ? 'pending' : meta.lastSyncAt ? 'synced' : 'idle';
-  }
-
-  function saveLearningSyncState() {
-    writeJsonStorage(LEARNING_SYNC_STORAGE_KEY, {
-      pending: !!tracker.learningSync.pending,
-      lastSyncAt: tracker.learningSync.lastSyncAt || 0,
-      error: tracker.learningSync.error || ''
-    });
-  }
-
-  function setLearningSyncState(patch) {
-    var next = patch || {};
-    if (next.state !== undefined) tracker.learningSync.state = String(next.state || 'idle');
-    if (next.pending !== undefined) tracker.learningSync.pending = !!next.pending;
-    if (next.lastSyncAt !== undefined) tracker.learningSync.lastSyncAt = Math.max(0, Number(next.lastSyncAt) || 0);
-    if (next.error !== undefined) tracker.learningSync.error = String(next.error || '').slice(0, 240);
-    saveLearningSyncState();
-    if (tracker.opsSheet && tracker.opsSheet.root && !tracker.opsSheet.root.classList.contains('hidden')) {
-      renderOpsSheet();
-    }
-  }
-
-  function getLearningApiUrl() {
-    if (typeof POEKHALI_LEARNING_API_URL === 'string' && POEKHALI_LEARNING_API_URL) {
-      return POEKHALI_LEARNING_API_URL;
-    }
-    var base = typeof API_BASE_URL === 'string' ? API_BASE_URL : '';
-    return base + '/api/poekhali-learning';
-  }
-
-  function isLearningSyncAvailable() {
-    return typeof fetchJson === 'function' && typeof navigator !== 'undefined';
-  }
-
-  function createLearningSyncError(message, code) {
-    var error = new Error(message || 'Learning sync failed');
-    error.code = code || '';
-    return error;
-  }
-
-  function hasLearningStoreData(store) {
-    var normalized = normalizeLearningStore(store);
-    var mapIds = Object.keys(normalized.maps || {});
-    for (var i = 0; i < mapIds.length; i++) {
-      var map = normalized.maps[mapIds[i]];
-      if (map && map.sectors && Object.keys(map.sectors).length) return true;
-      if (map && map.rawTracks && Object.keys(map.rawTracks).length) return true;
-      if (map && map.userSections && Object.keys(map.userSections).length) return true;
-    }
-    return false;
-  }
-
   function getLearningSampleMergeKey(sample) {
     return [
       sample.mapId,
@@ -3610,12 +2764,16 @@
     var samples = [];
     var updatedAt = 0;
     var promotedAt = 0;
+    var metadata = null;
 
     for (var b = 0; b < buckets.length; b++) {
       var bucket = buckets[b];
       if (!bucket || typeof bucket !== 'object') continue;
       updatedAt = Math.max(updatedAt, Number(bucket.updatedAt) || 0);
       promotedAt = Math.max(promotedAt, Number(bucket.promotedAt) || 0);
+      if (!metadata || (Number(bucket.updatedAt) || 0) >= (Number(metadata.updatedAt) || 0)) {
+        metadata = bucket;
+      }
       var sourceSamples = Array.isArray(bucket.samples) ? bucket.samples : [];
       for (var s = 0; s < sourceSamples.length; s++) {
         var sample = normalizeLearningRawSample(sourceSamples[s], mapId);
@@ -3631,12 +2789,21 @@
       return a.ts - b.ts;
     });
     if (samples.length > LEARNING_MAX_SAMPLES_PER_RAW_TRACK) {
-      samples = samples.slice(samples.length - LEARNING_MAX_SAMPLES_PER_RAW_TRACK);
+      samples = compactLearningRawSamples(samples);
     }
     if (!samples.length) return null;
 
     return {
       samples: samples,
+      shiftId: String(metadata && metadata.shiftId || samples[0].shiftId || '').slice(0, 160),
+      routeFrom: String(metadata && (metadata.routeFrom || metadata.route_from) || '').trim().slice(0, 96),
+      routeTo: String(metadata && (metadata.routeTo || metadata.route_to) || '').trim().slice(0, 96),
+      trainNumber: String(metadata && (metadata.trainNumber || metadata.train_number) || '').trim().slice(0, 32),
+      mapTitle: String(metadata && (metadata.mapTitle || metadata.map_title) || '').trim().slice(0, 160),
+      purpose: String(metadata && metadata.purpose || '').trim().slice(0, 64),
+      status: String(metadata && metadata.status || 'completed').trim().slice(0, 32),
+      startedAt: Number(metadata && metadata.startedAt) || samples[0].ts || 0,
+      endedAt: Math.max(0, Number(metadata && metadata.endedAt) || 0),
       updatedAt: updatedAt || samples[samples.length - 1].ts || 0,
       promotedAt: promotedAt
     };
@@ -3710,152 +2877,114 @@
     requestDraw();
   }
 
+  function getLearningOwnerId() {
+    var value = '';
+    try {
+      if (typeof window !== 'undefined' && typeof window.getOfflineStorageUserId === 'function') {
+        value = window.getOfflineStorageUserId();
+      }
+    } catch (error) {}
+    value = String(value || 'guest').trim();
+    return value || 'guest';
+  }
+
+  function getLearningStorageKey(ownerId) {
+    var safeOwner = String(ownerId || getLearningOwnerId() || 'guest')
+      .replace(/[^a-zA-Z0-9_.:-]+/g, '_')
+      .slice(0, 120) || 'guest';
+    return LEARNING_STORAGE_KEY + ':' + safeOwner;
+  }
+
+  function readLearningStoreForOwner(ownerId) {
+    var scopedKey = getLearningStorageKey(ownerId);
+    var scoped = readJsonStorage(scopedKey, null);
+    if (scoped) return normalizeLearningStore(scoped);
+    // One-time upgrade for the pre-namespace store. Never attach legacy data to
+    // an anonymous guest; wait until the app knows the signed-in account, then
+    // move it atomically to that account's key.
+    if (String(ownerId || '') !== 'guest') {
+      var legacy = readJsonStorage(LEARNING_STORAGE_KEY, null);
+      if (legacy) {
+        var migrated = normalizeLearningStore(legacy);
+        if (writeJsonStorage(scopedKey, migrated)) {
+          try { localStorage.removeItem(LEARNING_STORAGE_KEY); } catch (error) {}
+        }
+        return migrated;
+      }
+    }
+    return normalizeLearningStore(null);
+  }
+
+  function ensureLearningOwnerScope() {
+    var ownerId = getLearningOwnerId();
+    if (tracker.learningOwnerId === ownerId && tracker.learning) return true;
+    // Never switch the backing store beneath an active location capture.
+    if (tracker.rawCaptureSession && tracker.rawCaptureSession.active) return false;
+    tracker.learningOwnerId = ownerId;
+    tracker.learning = readLearningStoreForOwner(ownerId);
+    tracker.sharedLearning = normalizeLearningStore(null);
+    rebuildLearnedProfiles();
+    return true;
+  }
+
   function loadLearningStore() {
-    loadLearningSyncState();
-    tracker.learning = normalizeLearningStore(readJsonStorage(LEARNING_STORAGE_KEY, null));
+    tracker.learningOwnerId = getLearningOwnerId();
+    tracker.learning = readLearningStoreForOwner(tracker.learningOwnerId);
     tracker.sharedLearning = normalizeLearningStore(null);
     rebuildLearnedProfiles();
   }
 
   function saveLearningStore() {
-    // Local-only now: persists user speed sections. No server sync.
+    // Local-only: GPS traces and user sections never leave the device
+    // automatically. They are shared only through an explicit JSON export.
+    if (tracker.learningSaveTimer) {
+      clearTimeout(tracker.learningSaveTimer);
+      tracker.learningSaveTimer = null;
+    }
     if (!tracker.learning) tracker.learning = normalizeLearningStore(null);
     tracker.learning = normalizeLearningStore(tracker.learning);
-    writeJsonStorage(LEARNING_STORAGE_KEY, tracker.learning);
+    var ownerId = tracker.learningOwnerId || getLearningOwnerId();
+    tracker.learningOwnerId = ownerId;
+    return writeJsonStorage(getLearningStorageKey(ownerId), tracker.learning);
   }
 
-  function scheduleLearningSync(delayMs) {
-    // GPS-track learning removed: never sync learning data to the server.
-    return;
-    if (!isLearningSyncAvailable()) return;
-    if (tracker.learningSync.timer) {
-      clearTimeout(tracker.learningSync.timer);
-      tracker.learningSync.timer = null;
+  function handleRawCaptureStorageFailure() {
+    var session = tracker.rawCaptureSession;
+    if (session) {
+      var map = tracker.learning && tracker.learning.maps ? tracker.learning.maps[session.mapId] : null;
+      var bucket = map && map.rawTracks ? map.rawTracks[session.trackKey] : null;
+      if (bucket) {
+        bucket.status = 'storage-error';
+        bucket.endedAt = Date.now();
+        bucket.updatedAt = Math.max(Number(bucket.updatedAt) || 0, bucket.endedAt);
+      }
+      session.active = false;
     }
-    if (isPageHidden()) return;
-    var delay = Number(delayMs);
-    if (!isFinite(delay) || delay < 0) delay = LEARNING_SYNC_DEBOUNCE_MS;
-    tracker.learningSync.timer = setTimeout(function() {
-      tracker.learningSync.timer = null;
-      syncLearningStoreWithServer('scheduled');
-    }, delay);
+    tracker.rawCaptureStorageError = 'Не хватает локальной памяти. Скачайте GPS-маршруты и освободите место.';
+    setTimeout(function() {
+      if (tracker.active) restartWatchingGps();
+    }, 0);
+    syncPoekhaliLiveButton();
+    requestDraw();
   }
 
-  function syncLearningStoreWithServer(reason) {
-    if (!isLearningSyncAvailable()) return Promise.resolve(false);
-    if (tracker.learningSync.inFlight) {
-      scheduleLearningSync(tracker.timerRunning ? LEARNING_LIVE_SYNC_DELAY_MS : LEARNING_SYNC_DEBOUNCE_MS);
-      return Promise.resolve(false);
-    }
-    if (typeof navigator !== 'undefined' && !navigator.onLine) {
-      if (hasLearningStoreData(tracker.learning) || tracker.learningSync.pending) {
-        setLearningSyncState({ state: 'offline', pending: true, error: '' });
-      }
-      return Promise.resolve(false);
-    }
-
-    var apiUrl = getLearningApiUrl();
-    var localBefore = normalizeLearningStore(tracker.learning);
-    tracker.learningSync.inFlight = true;
-    setLearningSyncState({ state: reason === 'load' ? 'loading' : 'syncing', error: '' });
-
-    return fetchJson(apiUrl, {
-      method: 'GET',
-      headers: { 'Accept': 'application/json' }
-    }, 7000).then(function(result) {
-      if (!result.ok) {
-        if (result.status === 401) {
-          throw createLearningSyncError('Unauthorized', 'unauthorized');
-        }
-        if (result.status === 404) {
-          throw createLearningSyncError('Learning sync unavailable', 'unavailable');
-        }
-        throw new Error((result.body && result.body.error) || 'Learning load failed');
-      }
-
-      var remoteStore = normalizeLearningStore(result.body && result.body.learning);
-      var sharedStore = normalizeLearningStore(result.body && result.body.sharedLearning);
-      var mergedStore = mergeLearningStores(localBefore, remoteStore);
-      var mergedJson = JSON.stringify(mergedStore);
-      var remoteJson = JSON.stringify(remoteStore);
-      var localJson = JSON.stringify(localBefore);
-      var sharedJson = JSON.stringify(sharedStore);
-      var previousSharedJson = JSON.stringify(normalizeLearningStore(tracker.sharedLearning));
-      var localChanged = mergedJson !== localJson;
-      var sharedChanged = sharedJson !== previousSharedJson;
-      var shouldPush = tracker.learningSync.pending || mergedJson !== remoteJson;
-      tracker.sharedLearning = sharedStore;
-
-      if (localChanged) {
-        tracker.learning = mergedStore;
-        saveLearningStore({ skipSync: true });
-      }
-      if (localChanged || sharedChanged) {
-        renderAfterLearningSyncChange();
-      }
-
-      if (!shouldPush) {
-        setLearningSyncState({
-          state: 'synced',
-          pending: false,
-          lastSyncAt: Date.now(),
-          error: ''
-        });
-        tracker.learningSync.inFlight = false;
-        return true;
-      }
-
-      return fetchJson(apiUrl, {
-        method: 'PUT',
-        headers: { 'Content-Type': 'application/json', 'Accept': 'application/json' },
-        body: JSON.stringify({ learning: mergedStore })
-      }, 9000).then(function(saveResult) {
-        if (!saveResult.ok) {
-          if (saveResult.status === 401) {
-            throw createLearningSyncError('Unauthorized', 'unauthorized');
-          }
-          if (saveResult.status === 404) {
-            throw createLearningSyncError('Learning sync unavailable', 'unavailable');
-          }
-          throw new Error((saveResult.body && saveResult.body.error) || 'Learning save failed');
-        }
-        tracker.learning = normalizeLearningStore(saveResult.body && saveResult.body.learning ? saveResult.body.learning : mergedStore);
-        tracker.sharedLearning = normalizeLearningStore(saveResult.body && saveResult.body.sharedLearning !== undefined
-          ? saveResult.body.sharedLearning
-          : tracker.sharedLearning);
-        saveLearningStore({ skipSync: true });
-        setLearningSyncState({
-          state: 'synced',
-          pending: false,
-          lastSyncAt: Date.now(),
-          error: ''
-        });
-        tracker.learningSync.inFlight = false;
-        renderAfterLearningSyncChange();
-        return true;
-      });
-    }).catch(function(error) {
-      tracker.learningSync.inFlight = false;
-      var unavailable = error && error.code === 'unavailable';
-      setLearningSyncState({
-        state: unavailable ? 'local' : 'error',
-        pending: hasLearningStoreData(tracker.learning) || tracker.learningSync.pending,
-        error: unavailable ? '' : (error && error.message ? error.message : 'Learning sync failed')
-      });
-      return false;
-    });
+  function scheduleLocalLearningSave() {
+    if (tracker.learningSaveTimer) return;
+    tracker.learningSaveTimer = setTimeout(function() {
+      tracker.learningSaveTimer = null;
+      if (!saveLearningStore()) handleRawCaptureStorageFailure();
+    }, RAW_CAPTURE_SAVE_DEBOUNCE_MS);
   }
 
-  function bindLearningSyncEvents() {
-    if (typeof window === 'undefined' || !window.addEventListener) return;
-    window.addEventListener('online', function() {
-      if (tracker.learningSync.pending || hasLearningStoreData(tracker.learning)) {
-        scheduleLearningSync(tracker.timerRunning ? LEARNING_LIVE_SYNC_DELAY_MS : 250);
-      }
-    });
+  function flushLocalLearningSave() {
+    if (!tracker.learningSaveTimer) return;
+    clearTimeout(tracker.learningSaveTimer);
+    tracker.learningSaveTimer = null;
+    if (!saveLearningStore()) handleRawCaptureStorageFailure();
   }
 
   function getLearningMap(mapId) {
+    ensureLearningOwnerScope();
     if (!tracker.learning) tracker.learning = normalizeLearningStore(null);
     var id = String(mapId || getLearningMapScope());
     if (!tracker.learning.maps[id]) {
@@ -3869,6 +2998,298 @@
     if (!tracker.learning.maps[id].rawTracks) tracker.learning.maps[id].rawTracks = {};
     if (!tracker.learning.maps[id].userSections) tracker.learning.maps[id].userSections = {};
     return tracker.learning.maps[id];
+  }
+
+  function getRawLearningCaptureContext() {
+    if (!tracker.active) return null;
+    var context = getPoekhaliShiftContext();
+    var shift = context && context.shift ? context.shift : null;
+    var routeFrom = shift && shift.route_from ? String(shift.route_from).trim() : '';
+    var routeTo = shift && shift.route_to ? String(shift.route_to).trim() : '';
+    if (!shift || !shift.id || shift.route_kind !== 'trip' || !routeFrom || !routeTo) return null;
+    return {
+      shift: shift,
+      shiftId: String(shift.id),
+      routeFrom: routeFrom,
+      routeTo: routeTo
+    };
+  }
+
+  function getShiftRouteRequestKey(route) {
+    if (!route || !route.shift) return '';
+    return [
+      String(route.shift.id || ''),
+      normalizeRouteName(route.from),
+      normalizeRouteName(route.to)
+    ].join('|');
+  }
+
+  function isShiftRouteRequestCurrent(routeKey) {
+    var current = getShiftRouteRequest(getPoekhaliTrainDetails());
+    return !!routeKey && getShiftRouteRequestKey(current) === routeKey;
+  }
+
+  function getRawLearningCaptureState() {
+    ensureLearningOwnerScope();
+    var context = getRawLearningCaptureContext();
+    var available = !!(context && tracker.assetsLoaded && !tracker.routeMapSelecting);
+    if (!available && !tracker.rawCaptureSession) {
+      return { available: false, active: false, samples: 0, lastAt: 0, error: tracker.rawCaptureStorageError || '' };
+    }
+    var session = tracker.rawCaptureSession;
+    var mapId = session ? session.mapId : getLearningMapScope();
+    var trackKey = session ? session.trackKey : '';
+    var map = tracker.learning && tracker.learning.maps ? tracker.learning.maps[mapId] : null;
+    var bucket = trackKey && map && map.rawTracks ? map.rawTracks[trackKey] : null;
+    return {
+      available: available,
+      active: !!(session && session.active),
+      mapId: mapId,
+      trackKey: trackKey,
+      samples: bucket && Array.isArray(bucket.samples) ? bucket.samples.length : 0,
+      lastAt: bucket ? Number(bucket.updatedAt) || 0 : 0,
+      routeFrom: session ? session.routeFrom : (context ? context.routeFrom : ''),
+      routeTo: session ? session.routeTo : (context ? context.routeTo : ''),
+      error: tracker.rawCaptureStorageError || ''
+    };
+  }
+
+  function finalizeRawLearningCaptureSession(status) {
+    var session = tracker.rawCaptureSession;
+    if (!session || !session.active) return false;
+    session.active = false;
+    var map = tracker.learning && tracker.learning.maps ? tracker.learning.maps[session.mapId] : null;
+    var bucket = map && map.rawTracks ? map.rawTracks[session.trackKey] : null;
+    if (bucket) {
+      bucket.status = String(status || 'completed');
+      bucket.endedAt = Date.now();
+      bucket.updatedAt = Math.max(Number(bucket.updatedAt) || 0, bucket.endedAt);
+      map.updatedAt = Math.max(Number(map.updatedAt) || 0, bucket.updatedAt);
+      if (!saveLearningStore()) handleRawCaptureStorageFailure();
+    } else {
+      flushLocalLearningSave();
+    }
+    tracker.rawCaptureSession = null;
+    setTimeout(function() {
+      if (tracker.active) restartWatchingGps();
+    }, 0);
+    syncPoekhaliLiveButton();
+    return !!bucket;
+  }
+
+  function startRawLearningCaptureSession() {
+    if (!ensureLearningOwnerScope()) return null;
+    var capture = getRawLearningCaptureContext();
+    if (!capture || !tracker.assetsLoaded || tracker.routeMapSelecting) return null;
+    var mapId = getLearningMapScope();
+    var current = tracker.rawCaptureSession;
+    if (current && current.active && current.shiftId === capture.shiftId && current.mapId === mapId) return current;
+    if (current && current.active) finalizeRawLearningCaptureSession('restarted');
+    var storedCaptures = getStoredFieldGeometryCaptures();
+    var resumable = null;
+    for (var storedIndex = 0; storedIndex < storedCaptures.length; storedIndex++) {
+      var stored = storedCaptures[storedIndex];
+      if (stored.mapId !== mapId || stored.bucket.status !== 'interrupted') continue;
+      if (String(stored.bucket.shiftId || '') !== capture.shiftId) continue;
+      if (normalizeRouteName(stored.bucket.routeFrom) !== normalizeRouteName(capture.routeFrom) ||
+          normalizeRouteName(stored.bucket.routeTo) !== normalizeRouteName(capture.routeTo)) continue;
+      resumable = stored;
+      break;
+    }
+    if (resumable) {
+      var resumeSamples = Array.isArray(resumable.bucket.samples) ? resumable.bucket.samples : [];
+      var nextSegmentId = resumeSamples.reduce(function(max, sample) {
+        return Math.max(max, Math.round(Number(sample && sample.segmentId) || 1));
+      }, 0) + 1;
+      resumable.bucket.status = 'active';
+      resumable.bucket.endedAt = 0;
+      tracker.rawCaptureStorageError = '';
+      tracker.rawCaptureSession = {
+        active: true,
+        mapId: mapId,
+        mapTitle: resumable.bucket.mapTitle || (tracker.currentMap && tracker.currentMap.title) || '',
+        trackKey: resumable.trackKey,
+        shiftId: capture.shiftId,
+        routeFrom: capture.routeFrom,
+        routeTo: capture.routeTo,
+        trainNumber: resumable.bucket.trainNumber || (capture.shift && capture.shift.train_number) || '',
+        startedAt: Number(resumable.bucket.startedAt) || Date.now(),
+        resumedAt: Date.now(),
+        segmentId: nextSegmentId,
+        lastSample: null
+      };
+      restartWatchingGps();
+      syncPoekhaliLiveButton();
+      requestDraw();
+      return tracker.rawCaptureSession;
+    }
+    if (storedCaptures.length) {
+      tracker.rawCaptureStorageError = 'Сначала скачайте и удалите предыдущий GPS-маршрут в профиле.';
+      syncPoekhaliLiveButton();
+      requestDraw();
+      return null;
+    }
+    tracker.rawCaptureStorageError = '';
+    var startedAt = Date.now();
+    var trackKey = normalizeLearningRawTrackKey('capture-' + capture.shiftId + '-' + startedAt);
+    tracker.rawCaptureSession = {
+      active: true,
+      mapId: mapId,
+      mapTitle: tracker.currentMap && tracker.currentMap.title ? tracker.currentMap.title : '',
+      trackKey: trackKey,
+      shiftId: capture.shiftId,
+      routeFrom: capture.routeFrom,
+      routeTo: capture.routeTo,
+      trainNumber: capture.shift && capture.shift.train_number ? String(capture.shift.train_number).trim() : '',
+      startedAt: startedAt,
+      resumedAt: startedAt,
+      segmentId: 1,
+      lastSample: null
+    };
+    restartWatchingGps();
+    syncPoekhaliLiveButton();
+    requestDraw();
+    return tracker.rawCaptureSession;
+  }
+
+  function ensureRawLearningCaptureSession() {
+    var session = tracker.rawCaptureSession;
+    if (!session || !session.active) return null;
+    var capture = getRawLearningCaptureContext();
+    if (!capture || !tracker.assetsLoaded || tracker.routeMapSelecting ||
+        capture.shiftId !== session.shiftId || getLearningMapScope() !== session.mapId) {
+      finalizeRawLearningCaptureSession('context-changed');
+      return null;
+    }
+    return session;
+  }
+
+  function getStoredFieldGeometryCaptures() {
+    var result = [];
+    var maps = tracker.learning && tracker.learning.maps ? tracker.learning.maps : {};
+    Object.keys(maps).forEach(function(mapId) {
+      var rawTracks = maps[mapId] && maps[mapId].rawTracks ? maps[mapId].rawTracks : {};
+      Object.keys(rawTracks).forEach(function(trackKey) {
+        var bucket = rawTracks[trackKey];
+        if (bucket && bucket.purpose === 'field_geometry_capture') {
+          result.push({ mapId: mapId, trackKey: trackKey, bucket: bucket });
+        }
+      });
+    });
+    return result;
+  }
+
+  function clearPoekhaliGpsCaptures() {
+    ensureLearningOwnerScope();
+    var captures = getStoredFieldGeometryCaptures();
+    if (!captures.length) return 0;
+    if (tracker.rawCaptureSession) tracker.rawCaptureSession.active = false;
+    for (var i = 0; i < captures.length; i++) {
+      var item = captures[i];
+      var map = tracker.learning.maps[item.mapId];
+      if (map && map.rawTracks) delete map.rawTracks[item.trackKey];
+    }
+    tracker.rawCaptureSession = null;
+    tracker.rawCaptureStorageError = '';
+    if (!saveLearningStore()) {
+      handleRawCaptureStorageFailure();
+      return 0;
+    }
+    restartWatchingGps();
+    syncPoekhaliLiveButton();
+    requestDraw();
+    return captures.length;
+  }
+
+  function toggleRawLearningCapture() {
+    var session = tracker.rawCaptureSession;
+    if (session && session.active) return finalizeRawLearningCaptureSession('completed');
+    return !!startRawLearningCaptureSession();
+  }
+
+  function shouldRecordRawLearningSample(sample, session) {
+    if (!sample || !isFinite(sample.accuracy) || sample.accuracy <= 0 || sample.accuracy > RAW_CAPTURE_MAX_ACCURACY_M) {
+      return false;
+    }
+    if (session && session.resumedAt && sample.ts < session.resumedAt - 60000) return false;
+    var last = session && session.lastSample ? session.lastSample : null;
+    if (!last) return true;
+    if (sample.ts <= last.ts) return false;
+    var moved = haversine(last.lat, last.lon, sample.lat, sample.lon);
+    if (!isFinite(moved)) return false;
+    var elapsedSeconds = Math.max(0.001, (sample.ts - last.ts) / 1000);
+    if (moved / elapsedSeconds > RAW_CAPTURE_MAX_IMPLIED_SPEED_MPS) return false;
+    if (moved >= RAW_CAPTURE_MIN_DISTANCE_M) return true;
+    return moved >= RAW_CAPTURE_SLOW_DISTANCE_M && sample.ts - last.ts >= RAW_CAPTURE_MIN_TIME_DELTA_MS;
+  }
+
+  function recordRawLearningSample(position, projection) {
+    if (!position || !position.coords) return false;
+    var session = ensureRawLearningCaptureSession();
+    if (!session) return false;
+    var coords = position.coords;
+    var mapId = session.mapId;
+    var sample = normalizeLearningRawSample({
+      mapId: mapId,
+      lat: coords.latitude,
+      lon: coords.longitude,
+      altitude: coords.altitude,
+      accuracy: coords.accuracy,
+      speed: coords.speed,
+      heading: coords.heading,
+      distance: projection && isFinite(Number(projection.distance)) ? projection.distance : null,
+      shiftId: session.shiftId,
+      runId: '',
+      segmentId: session.segmentId,
+      nearestSector: projection && isRealNumber(projection.sector) ? projection.sector : null,
+      nearestCoordinate: projection && isFinite(Number(projection.lineCoordinate)) ? projection.lineCoordinate : null,
+      nearestPathId: projection && (projection.pathId || projection.path_id || (projection.start && projection.start.pathId)) || '',
+      ts: position.timestamp || Date.now()
+    }, mapId);
+    if (!shouldRecordRawLearningSample(sample, session)) return false;
+
+    var map = getLearningMap(mapId);
+    var trackKey = session.trackKey;
+    if (!map.rawTracks[trackKey]) {
+      map.rawTracks[trackKey] = {
+        samples: [],
+        shiftId: session.shiftId,
+        routeFrom: session.routeFrom,
+        routeTo: session.routeTo,
+        trainNumber: session.trainNumber,
+        mapTitle: session.mapTitle,
+        purpose: 'field_geometry_capture',
+        status: 'active',
+        startedAt: session.startedAt,
+        endedAt: 0,
+        updatedAt: 0,
+        promotedAt: 0
+      };
+    }
+    var bucket = map.rawTracks[trackKey];
+    bucket.samples.push(sample);
+    if (bucket.samples.length > LEARNING_MAX_SAMPLES_PER_RAW_TRACK) {
+      bucket.samples = compactLearningRawSamples(bucket.samples);
+    }
+    bucket.shiftId = session.shiftId;
+    bucket.routeFrom = session.routeFrom;
+    bucket.routeTo = session.routeTo;
+    bucket.trainNumber = session.trainNumber;
+    bucket.mapTitle = session.mapTitle;
+    bucket.purpose = 'field_geometry_capture';
+    bucket.status = 'active';
+    bucket.startedAt = session.startedAt;
+    bucket.updatedAt = sample.ts;
+    map.updatedAt = sample.ts;
+    session.lastSample = sample;
+    tracker.lastRawLearningSample = sample;
+    if (bucket.samples.length === 1 && !saveLearningStore()) {
+      handleRawCaptureStorageFailure();
+      return false;
+    }
+    else scheduleLocalLearningSave();
+    syncPoekhaliLiveButton();
+    return true;
   }
 
   function getLearnedSamplesForSector(sector) {
@@ -3973,6 +3394,10 @@
         if (!includeRawDrafts) return;
         var rawTracks = map && map.rawTracks ? map.rawTracks : {};
         Object.keys(rawTracks).forEach(function(trackKey) {
+          // Field geometry captures are evidence for export/review only. Feeding
+          // them back into the matcher would let an unreviewed ride hide errors
+          // in the official route geometry after the next app restart.
+          if (rawTracks[trackKey] && rawTracks[trackKey].purpose === 'field_geometry_capture') return;
           var draft = buildRawLearningDraft(trackKey, rawTracks[trackKey]);
           if (!draft) return;
           if (draft.promotedAt && draft.updatedAt <= draft.promotedAt) return;
@@ -4082,28 +3507,6 @@
     return result;
   }
 
-  function appendManualBamSpeedRules(rules, left, right, sector) {
-    if (getSectorKey(sector) !== '18') return;
-    for (var i = 0; i < MANUAL_BAM_SPEED_RULES.length; i++) {
-      var item = MANUAL_BAM_SPEED_RULES[i];
-      if (!item || getSectorKey(item.sector) !== getSectorKey(sector)) continue;
-      if (item.wayNumber && normalizeWayNumber(item.wayNumber) !== normalizeWayNumber(tracker.wayNumber)) continue;
-      var rule = {
-        coordinate: Math.min(item.start, item.end),
-        end: Math.max(item.start, item.end),
-        length: Math.abs(item.end - item.start),
-        speed: item.speed,
-        name: item.name || ('БАМ ' + item.speed),
-        source: 'manual',
-        sourceName: 'Сверено вручную',
-        sourceCode: 'BAM-MANUAL',
-        confidence: 'manual-user'
-      };
-      if (isFinite(left) && isFinite(right) && !isObjectInRange(rule, left, right)) continue;
-      rules.push(rule);
-    }
-  }
-
   function getManualBamTrackObjectsForSector(sector) {
     if (getSectorKey(sector) !== '18') return [];
     var currentWay = normalizeWayNumber(tracker.wayNumber);
@@ -4130,32 +3533,6 @@
       });
     }
     return result;
-  }
-
-  function appendAdminMapSpeedRules(rules, left, right, sector) {
-    var adminMap = tracker.adminMap && Array.isArray(tracker.adminMap.speedRules) ? tracker.adminMap.speedRules : [];
-    for (var i = 0; i < adminMap.length; i++) {
-      var item = adminMap[i];
-      if (!item || getSectorKey(item.sector) !== getSectorKey(sector)) continue;
-      if (item.wayNumber && normalizeWayNumber(item.wayNumber) !== normalizeWayNumber(tracker.wayNumber)) continue;
-      var start = Math.min(Number(item.start || item.coordinate) || 0, Number(item.end) || 0);
-      var end = Math.max(Number(item.start || item.coordinate) || 0, Number(item.end) || 0);
-      var speed = Math.round(Number(item.speed) || 0);
-      if (!start || !end || end < start || speed <= 0) continue;
-      var rule = {
-        coordinate: start,
-        end: end,
-        length: Math.max(0, end - start),
-        speed: speed,
-        name: item.name || ('Админ ' + speed),
-        source: 'admin',
-        sourceName: 'Админка',
-        sourceCode: 'ADMIN-MAP',
-        confidence: 'admin'
-      };
-      if (isFinite(left) && isFinite(right) && !isObjectInRange(rule, left, right)) continue;
-      rules.push(rule);
-    }
   }
 
   function getAdminMapTrackObjectsForSector(sector) {
@@ -4349,94 +3726,6 @@
     return summary;
   }
 
-  function getLearningVerificationLabel(state) {
-    if (state === 'verified') return 'проверено';
-    if (state === 'changed') return 'изменено';
-    if (state === 'draft') return 'черновик';
-    return '—';
-  }
-
-  function getLearningVerificationTone(state) {
-    if (state === 'verified') return 'success';
-    if (state === 'changed') return 'warning';
-    if (state === 'draft') return 'danger';
-    return 'muted';
-  }
-
-  function setLearningSectorVerified(sector, verified) {
-    if (!isRealNumber(sector)) return false;
-    var map = getLearningMap();
-    var sectorKey = getSectorKey(sector);
-    var bucket = map.sectors[sectorKey];
-    if (!bucket || !Array.isArray(bucket.samples) || !bucket.samples.length) return false;
-    var now = Date.now();
-    if (verified) {
-      bucket.verifiedAt = now;
-      bucket.verifiedSamples = bucket.samples.length;
-      bucket.verifiedProfileSegments = getLearnedProfilePointsForSector(sector).length;
-    } else {
-      bucket.verifiedAt = 0;
-      bucket.verifiedSamples = 0;
-      bucket.verifiedProfileSegments = 0;
-    }
-    map.updatedAt = now;
-    saveLearningStore();
-    if (tracker.opsSheet && tracker.opsSheet.root && !tracker.opsSheet.root.classList.contains('hidden')) {
-      renderOpsSheet();
-    }
-    requestDraw();
-    return true;
-  }
-
-  function focusRawLearningDraft(draft) {
-    if (!draft || !isRealNumber(draft.sector) || !draft.routePoints || !draft.routePoints.length) return false;
-    var coordinate = draft.lengthMeters ? Math.round(draft.lengthMeters / 2) : draft.routePoints[0].ordinate;
-    if (draft.end && isFinite(draft.end.ordinate)) coordinate = Math.round(draft.end.ordinate / 2);
-    setPreviewProjection({
-      sector: draft.sector,
-      lineCoordinate: coordinate,
-      rawDraft: true
-    }, true);
-    closeOpsSheet();
-    requestDraw();
-    return true;
-  }
-
-  function focusUserLearningSection(section) {
-    if (!section || !isRealNumber(section.sector) || !section.routePoints || !section.routePoints.length) return false;
-    var first = section.routePoints[0].ordinate;
-    var last = section.routePoints[section.routePoints.length - 1].ordinate;
-    setPreviewProjection({
-      sector: section.sector,
-      lineCoordinate: Math.round((first + last) / 2),
-      userSection: true
-    }, true);
-    closeOpsSheet();
-    requestDraw();
-    return true;
-  }
-
-  function promoteRawLearningDraft(draft) {
-    if (!draft || !draft.key) return false;
-    var section = buildUserSectionFromRawDraft(draft);
-    if (!section) return false;
-    var map = getLearningMap(section.mapId);
-    if (!map.userSections) map.userSections = {};
-    if (!map.rawTracks) map.rawTracks = {};
-    map.userSections[section.id] = section;
-    var rawKey = normalizeLearningRawTrackKey(draft.key);
-    if (map.rawTracks[rawKey]) {
-      map.rawTracks[rawKey].promotedAt = section.updatedAt;
-      map.rawTracks[rawKey].updatedAt = Math.max(Number(map.rawTracks[rawKey].updatedAt) || 0, section.updatedAt);
-    }
-    map.updatedAt = Math.max(Number(map.updatedAt) || 0, section.updatedAt);
-    rebuildLearnedProfiles();
-    saveLearningStore();
-    writeUserSectionToLinkedShift(section, { force: true });
-    focusUserLearningSection(section);
-    return true;
-  }
-
   function getStoredUserLearningSection(section) {
     if (!section || !section.id || !isRealNumber(section.sector)) return null;
     var map = getLearningMap(section.mapId);
@@ -4480,14 +3769,6 @@
     return 'verified';
   }
 
-  function getUserSectionVerificationLabel(section) {
-    var state = getUserSectionVerificationState(section);
-    if (state === 'verified') return 'проверено';
-    if (state === 'changed') return 'изменено';
-    if (state === 'draft') return 'на проверку';
-    return 'нет участка';
-  }
-
   function getUserSectionQuality(section) {
     var result = {
       ready: false,
@@ -4529,45 +3810,6 @@
     return null;
   }
 
-  function addReferenceSectorOption(seen, result, sector) {
-    var numeric = Number(sector);
-    if (!isRealNumber(numeric) || isSyntheticLearningSector(numeric)) return;
-    var key = getSectorKey(numeric);
-    if (!key || seen[key]) return;
-    seen[key] = true;
-    result.push(numeric);
-  }
-
-  function getReferenceSectorOptions(section) {
-    var seen = {};
-    var result = [];
-    var points = tracker.routePoints || [];
-    for (var i = 0; i < points.length; i++) addReferenceSectorOption(seen, result, points[i].sector);
-    Object.keys(tracker.speedLimitsBySector || {}).forEach(function(key) {
-      addReferenceSectorOption(seen, result, key);
-    });
-    Object.keys(tracker.speedDocsBySector || {}).forEach(function(key) {
-      addReferenceSectorOption(seen, result, key);
-    });
-    Object.keys(tracker.regimeSpeedRulesBySector || {}).forEach(function(key) {
-      addReferenceSectorOption(seen, result, key);
-    });
-    Object.keys(tracker.regimeObjectsBySector || {}).forEach(function(key) {
-      addReferenceSectorOption(seen, result, key);
-    });
-    Object.keys(tracker.trackObjectsByFile || {}).forEach(function(fileKey) {
-      var store = tracker.trackObjectsByFile[fileKey];
-      Object.keys((store && store.bySector) || {}).forEach(function(key) {
-        addReferenceSectorOption(seen, result, key);
-      });
-    });
-    addReferenceSectorOption(seen, result, getUserSectionReferenceSector(section));
-    result.sort(function(a, b) {
-      return a - b;
-    });
-    return result;
-  }
-
   function getUserSectionBounds(section) {
     var points = section && Array.isArray(section.routePoints) ? section.routePoints : [];
     if (!points.length) return null;
@@ -4581,316 +3823,6 @@
       left: left,
       right: right
     };
-  }
-
-  function getReferenceEMapObjectsForSector(sector, left, right, allowedTypes) {
-    var store = getCurrentTrackObjectStore();
-    var base = store && store.bySector && store.bySector[getSectorKey(sector)] ? store.bySector[getSectorKey(sector)] : [];
-    var typeMap = {};
-    for (var t = 0; t < allowedTypes.length; t++) typeMap[String(allowedTypes[t])] = true;
-    return base.filter(function(item) {
-      if (!item || !typeMap[String(item.type || '')]) return false;
-      if (isFinite(left) && isFinite(right) && !isObjectInRange(item, left, right)) return false;
-      return true;
-    });
-  }
-
-  function getReferenceEMapSpeedRulesForSector(sector, left, right) {
-    var result = [];
-    var objects = getReferenceEMapObjectsForSector(sector, left, right, ['3']);
-    for (var i = 0; i < objects.length; i++) {
-      result.push({
-        coordinate: objects[i].coordinate,
-        length: objects[i].length,
-        end: objects[i].end,
-        speed: objects[i].speed,
-        name: objects[i].name,
-        source: 'emap'
-      });
-    }
-    var sectorSpeeds = tracker.speedLimitsBySector[getSectorKey(sector)] || [];
-    for (var j = 0; j < sectorSpeeds.length; j++) {
-      var speed = sectorSpeeds[j];
-      if (speed.wayNumber && speed.wayNumber !== tracker.wayNumber) continue;
-      if (isFinite(left) && isFinite(right) && !isObjectInRange(speed, left, right)) continue;
-      result.push({
-        coordinate: speed.coordinate,
-        length: speed.length,
-        end: speed.end,
-        speed: speed.speed,
-        name: speed.name,
-        source: 'emap'
-      });
-    }
-    return result;
-  }
-
-  function getReferenceSpeedRulesForUserSection(section, source) {
-    var referenceSector = getUserSectionReferenceSector(section);
-    var bounds = getUserSectionBounds(section);
-    if (!isRealNumber(referenceSector) || !bounds) return [];
-    if (source === 'document') return getDocumentSpeedRulesForSector(referenceSector, bounds.left, bounds.right);
-    if (source === 'regime') return getRegimeSpeedRulesForSector(referenceSector, bounds.left, bounds.right);
-    if (source === 'emap') return getReferenceEMapSpeedRulesForSector(referenceSector, bounds.left, bounds.right);
-    return [];
-  }
-
-  function getReferenceObjectsForUserSection(section, source) {
-    var referenceSector = getUserSectionReferenceSector(section);
-    var bounds = getUserSectionBounds(section);
-    if (!isRealNumber(referenceSector) || !bounds) return [];
-    var items = source === 'regime'
-      ? getRegimeTrackObjectsForSector(referenceSector)
-      : getReferenceEMapObjectsForSector(referenceSector, bounds.left, bounds.right, ['1', '2']);
-    return items.filter(function(item) {
-      if (!item || (String(item.type || '') !== '1' && String(item.type || '') !== '2')) return false;
-      if (isFinite(bounds.left) && isFinite(bounds.right) && !isObjectInRange(item, bounds.left, bounds.right)) return false;
-      return true;
-    });
-  }
-
-  function buildReferenceSpeedItem(rule, stored, source) {
-    if (!rule || !stored) return null;
-    var coordinate = Math.max(0, Math.round(Number(rule.coordinate)));
-    var end = Math.max(coordinate, Math.round(Number(rule.end) || coordinate + Math.max(0, Number(rule.length) || 0)));
-    var speed = Math.round(getSpeedRuleValue(rule));
-    if (!isFinite(coordinate) || !isFinite(end) || !isFinite(speed) || speed <= 0) return null;
-    var sourceKey = normalizeUserSectionEntitySource(source || rule.source);
-    var label = getUserSectionEntitySourceLabel(sourceKey);
-    var name = String(rule.name || Math.round(speed)).trim();
-    if (!name || name === String(Math.round(speed))) name = label + ' ' + Math.round(speed);
-    else if (name.indexOf(label) !== 0) name = label + ' ' + name;
-    return {
-      id: makeLearningUserEntityId('speed-' + sourceKey),
-      sector: stored.sector,
-      wayNumber: normalizeWayNumber(rule.wayNumber || tracker.wayNumber),
-      coordinate: coordinate,
-      length: Math.max(0, end - coordinate),
-      end: end,
-      speed: speed,
-      name: name.slice(0, 80),
-      source: sourceKey
-    };
-  }
-
-  function buildReferenceObjectItem(item, stored, source) {
-    if (!item || !stored) return null;
-    var type = String(item.type || '');
-    if (type !== '1' && type !== '2') return null;
-    var coordinate = Math.max(0, Math.round(Number(item.coordinate)));
-    var length = Math.max(0, Math.round(Number(item.length) || 0));
-    var name = String(item.name || '').trim().slice(0, 80);
-    if (!name || !isFinite(coordinate)) return null;
-    var sourceKey = normalizeUserSectionEntitySource(source || item.source);
-    return {
-      id: makeLearningUserEntityId((type === '1' ? 'signal-' : 'station-') + sourceKey),
-      fileKey: sourceKey,
-      sector: stored.sector,
-      type: type,
-      name: name,
-      coordinate: coordinate,
-      length: length,
-      end: coordinate + length,
-      speed: null,
-      source: sourceKey
-    };
-  }
-
-  function addReferenceSpeedsToUserSection(section, source) {
-    var ref = getStoredUserLearningSection(section);
-    if (!ref) return false;
-    var stored = ref.section;
-    if (!Array.isArray(stored.speeds)) stored.speeds = [];
-    var rules = getReferenceSpeedRulesForUserSection(stored, source);
-    var added = 0;
-    for (var i = 0; i < rules.length; i++) {
-      var item = buildReferenceSpeedItem(rules[i], stored, source);
-      if (!item) continue;
-      if (findUserSectionSpeedDuplicate(stored.speeds, item, '') >= 0) continue;
-      stored.speeds.push(item);
-      added++;
-    }
-    if (!added) return false;
-    stored.updatedAt = Date.now();
-    appendUserSectionHistory(stored, 'Импорт скоростей ' + getUserSectionEntitySourceLabel(source), added + ' правил');
-    return saveStoredUserLearningSection(ref.map, stored, { touch: false });
-  }
-
-  function addReferenceObjectsToUserSection(section, source) {
-    var ref = getStoredUserLearningSection(section);
-    if (!ref) return false;
-    var stored = ref.section;
-    if (!Array.isArray(stored.objects)) stored.objects = [];
-    var objects = getReferenceObjectsForUserSection(stored, source);
-    var added = 0;
-    for (var i = 0; i < objects.length; i++) {
-      var item = buildReferenceObjectItem(objects[i], stored, source);
-      if (!item) continue;
-      if (findUserSectionObjectDuplicate(stored.objects, item, '') >= 0) continue;
-      stored.objects.push(item);
-      added++;
-    }
-    if (!added) return false;
-    stored.updatedAt = Date.now();
-    appendUserSectionHistory(stored, 'Импорт объектов ' + getUserSectionEntitySourceLabel(source), added + ' объектов');
-    return saveStoredUserLearningSection(ref.map, stored, { touch: false });
-  }
-
-  function getUserSectionReferenceSummary(section) {
-    return {
-      referenceSector: getUserSectionReferenceSector(section),
-      emapObjects: getReferenceObjectsForUserSection(section, 'emap').length,
-      regimeObjects: getReferenceObjectsForUserSection(section, 'regime').length,
-      emapSpeeds: getReferenceSpeedRulesForUserSection(section, 'emap').length,
-      regimeSpeeds: getReferenceSpeedRulesForUserSection(section, 'regime').length,
-      documentSpeeds: getReferenceSpeedRulesForUserSection(section, 'document').length
-    };
-  }
-
-  function addReferenceObjectsToStoredSection(stored, source) {
-    if (!stored) return 0;
-    if (!Array.isArray(stored.objects)) stored.objects = [];
-    var objects = getReferenceObjectsForUserSection(stored, source);
-    var added = 0;
-    for (var i = 0; i < objects.length; i++) {
-      var item = buildReferenceObjectItem(objects[i], stored, source);
-      if (!item) continue;
-      if (findUserSectionObjectDuplicate(stored.objects, item, '') >= 0) continue;
-      stored.objects.push(item);
-      added++;
-    }
-    return added;
-  }
-
-  function addReferenceSpeedsToStoredSection(stored, source) {
-    if (!stored) return 0;
-    if (!Array.isArray(stored.speeds)) stored.speeds = [];
-    var rules = getReferenceSpeedRulesForUserSection(stored, source);
-    var added = 0;
-    for (var i = 0; i < rules.length; i++) {
-      var item = buildReferenceSpeedItem(rules[i], stored, source);
-      if (!item) continue;
-      if (findUserSectionSpeedDuplicate(stored.speeds, item, '') >= 0) continue;
-      stored.speeds.push(item);
-      added++;
-    }
-    return added;
-  }
-
-  function autoCompleteUserLearningSection(section) {
-    var ref = getStoredUserLearningSection(section);
-    if (!ref) return false;
-    var stored = ref.section;
-    var details = [];
-    if (!isRealNumber(getUserSectionReferenceSector(stored))) {
-      var suggestion = getShiftRouteSuggestion();
-      if (suggestion && suggestion.status === 'ready' && isRealNumber(suggestion.sector)) {
-        stored.referenceSector = suggestion.sector;
-        details.push('опорный ЭК уч. ' + suggestion.sector);
-      }
-    }
-    if (!isRealNumber(getUserSectionReferenceSector(stored))) return false;
-    var emapObjects = addReferenceObjectsToStoredSection(stored, 'emap');
-    var regimeObjects = addReferenceObjectsToStoredSection(stored, 'regime');
-    var documentSpeeds = addReferenceSpeedsToStoredSection(stored, 'document');
-    var regimeSpeeds = addReferenceSpeedsToStoredSection(stored, 'regime');
-    var emapSpeeds = addReferenceSpeedsToStoredSection(stored, 'emap');
-    if (emapObjects) details.push('ЭК объекты ' + emapObjects);
-    if (regimeObjects) details.push('РК объекты ' + regimeObjects);
-    if (documentSpeeds) details.push('ДОК скорости ' + documentSpeeds);
-    if (regimeSpeeds) details.push('РК скорости ' + regimeSpeeds);
-    if (emapSpeeds) details.push('ЭК скорости ' + emapSpeeds);
-    if (!details.length) return false;
-    stored.updatedAt = Date.now();
-    appendUserSectionHistory(stored, 'Автосборка участка', details.join(' · '));
-    return saveStoredUserLearningSection(ref.map, stored, { touch: false });
-  }
-
-  function setUserLearningSectionVerified(section, verified) {
-    var ref = getStoredUserLearningSection(section);
-    if (!ref) return false;
-    var stored = ref.section;
-    var now = Date.now();
-    if (verified) {
-      stored.verifiedAt = now;
-      appendUserSectionHistory(stored, 'Проверка', 'GPS-участок подтвержден');
-    } else {
-      stored.verifiedAt = 0;
-      appendUserSectionHistory(stored, 'Проверка снята', 'GPS-участок возвращен в проверку');
-    }
-    return saveStoredUserLearningSection(ref.map, stored, { touch: false });
-  }
-
-  function updateUserLearningSectionMeta(section, payload) {
-    var ref = getStoredUserLearningSection(section);
-    if (!ref) return false;
-    var stored = ref.section;
-    var title = String(payload && payload.title || '').trim().slice(0, 80);
-    if (title) stored.title = title;
-    if (payload && Object.prototype.hasOwnProperty.call(payload, 'referenceSector')) {
-      var rawReferenceSector = String(payload.referenceSector || '').trim();
-      var referenceSector = Number(rawReferenceSector);
-      stored.referenceSector = rawReferenceSector && isRealNumber(referenceSector) && !isSyntheticLearningSector(referenceSector)
-        ? referenceSector
-        : null;
-    }
-    var nextStart = Math.max(0, Math.round(Number(payload && payload.startCoordinate)));
-    if (isFinite(nextStart) && stored.routePoints && stored.routePoints.length) {
-      var first = stored.routePoints[0].ordinate;
-      var delta = nextStart - first;
-      if (delta) {
-        stored.routePoints = stored.routePoints.map(function(point) {
-          var copy = Object.assign({}, point);
-          copy.ordinate = Math.max(0, Math.round(copy.ordinate + delta));
-          return copy;
-        });
-        stored.profileSegments = (stored.profileSegments || []).map(function(segment) {
-          var copy = Object.assign({}, segment);
-          copy.start = Math.max(0, Math.round(copy.start + delta));
-          copy.end = Math.max(copy.start + 1, Math.round(copy.end + delta));
-          copy.length = Math.max(1, copy.end - copy.start);
-          return copy;
-        });
-        stored.objects = (stored.objects || []).map(function(item) {
-          var copy = Object.assign({}, item);
-          copy.coordinate = Math.max(0, Math.round(copy.coordinate + delta));
-          copy.end = Math.max(copy.coordinate, Math.round((copy.end !== undefined ? copy.end : copy.coordinate + (copy.length || 0)) + delta));
-          copy.length = Math.max(0, copy.end - copy.coordinate);
-          return copy;
-        });
-        stored.speeds = (stored.speeds || []).map(function(rule) {
-          var copy = Object.assign({}, rule);
-          copy.coordinate = Math.max(0, Math.round(copy.coordinate + delta));
-          copy.end = Math.max(copy.coordinate, Math.round((copy.end !== undefined ? copy.end : copy.coordinate + (copy.length || 0)) + delta));
-          copy.length = Math.max(0, copy.end - copy.coordinate);
-          return copy;
-        });
-      }
-    }
-    stored.updatedAt = Date.now();
-    appendUserSectionHistory(stored, 'Привязка км/ПК', (title || stored.title || '') +
-      (isRealNumber(stored.referenceSector) ? ' · ЭК уч. ' + stored.referenceSector : ''));
-    return saveStoredUserLearningSection(ref.map, stored, { touch: false });
-  }
-
-  function getEditingUserSectionEntity(section) {
-    var edit = tracker.editingUserSectionEntity;
-    if (!edit || !section || edit.sectionId !== section.id) return null;
-    var ref = getStoredUserLearningSection(section);
-    if (!ref) return null;
-    var id = String(edit.id || '');
-    var kind = String(edit.kind || '');
-    var source = kind === 'speed' ? ref.section.speeds : ref.section.objects;
-    for (var i = 0; i < source.length; i++) {
-      if (String(source[i].id || '') === id) {
-        return {
-          kind: kind,
-          item: source[i]
-        };
-      }
-    }
-    tracker.editingUserSectionEntity = null;
-    return null;
   }
 
   function findUserSectionObjectDuplicate(objects, candidate, ignoreId) {
@@ -5015,48 +3947,6 @@
       tracker.editingUserSectionEntity = null;
     }
     stored.updatedAt = Date.now();
-    return saveStoredUserLearningSection(ref.map, stored, { touch: false });
-  }
-
-  function addShiftRouteStationsToUserSection(section) {
-    var ref = getStoredUserLearningSection(section);
-    if (!ref) return false;
-    var details = getPoekhaliTrainDetails();
-    var route = getShiftRouteRequest(details);
-    if (!route || !route.from || !route.to) return false;
-    var stored = ref.section;
-    if (!Array.isArray(stored.objects)) stored.objects = [];
-    var first = stored.routePoints[0].ordinate;
-    var last = stored.routePoints[stored.routePoints.length - 1].ordinate;
-    var added = 0;
-    [
-      { name: route.from, coordinate: first },
-      { name: route.to, coordinate: last }
-    ].forEach(function(item) {
-      var objectItem = {
-        id: makeLearningUserEntityId('station'),
-        fileKey: 'user',
-        sector: stored.sector,
-        type: '2',
-        name: item.name,
-        coordinate: item.coordinate,
-        length: 0,
-        end: item.coordinate,
-        speed: null,
-        source: 'user'
-      };
-      var index = findUserSectionObjectDuplicate(stored.objects, objectItem, '');
-      if (index >= 0) {
-        stored.objects[index] = Object.assign({}, stored.objects[index], objectItem, {
-          id: stored.objects[index].id || objectItem.id
-        });
-      } else {
-        stored.objects.push(objectItem);
-        added++;
-      }
-    });
-    stored.updatedAt = Date.now();
-    appendUserSectionHistory(stored, added ? 'Станции из смены' : 'Станции обновлены', route.from + ' -> ' + route.to);
     return saveStoredUserLearningSection(ref.map, stored, { touch: false });
   }
 
@@ -5658,16 +4548,6 @@
     return false;
   }
 
-  function getBestRegimeMapCoverageForSector(sector) {
-    var items = getRegimeMapCoverageForSector(sector);
-    if (!items.length) return null;
-    for (var i = 0; i < items.length; i++) {
-      var hints = items[i] && items[i].profileHints ? items[i].profileHints : null;
-      if (hints && hints.grades > 0 && hints.lengths > 0) return items[i];
-    }
-    return items[0];
-  }
-
   function getRegimeMapsSummary() {
     var data = tracker.regimeMaps;
     if (!data) {
@@ -5746,71 +4626,6 @@
     return 'ТЧЭ-9: ' + hauls + ' уч. / ' + stations + ' ст.';
   }
 
-  function isCurrentMapTch9() {
-    var map = tracker.currentMap || {};
-    var text = String((map.id || '') + ' ' + (map.title || '') + ' ' + (map.sourceName || '')).toLowerCase();
-    return text.indexOf('комсом') !== -1 ||
-      text.indexOf('тчэ-9') !== -1 ||
-      text.indexOf('tch9') !== -1 ||
-      text.indexOf('tche-9') !== -1;
-  }
-
-  function findNearestReferenceStation(stations, km) {
-    var best = null;
-    var prev = null;
-    var next = null;
-    if (!Array.isArray(stations)) return null;
-    for (var i = 0; i < stations.length; i++) {
-      var station = stations[i];
-      var stationKm = Number(station.km);
-      if (!isFinite(stationKm)) continue;
-      if (stationKm <= km) prev = station;
-      if (stationKm >= km && !next) next = station;
-      var delta = Math.abs(stationKm - km);
-      if (!best || delta < best.deltaKm) {
-        best = {
-          station: station,
-          deltaKm: delta
-        };
-      }
-    }
-    if (!best) return null;
-    best.prev = prev;
-    best.next = next;
-    return best;
-  }
-
-  function getReferenceContext(lineCoordinate) {
-    var reference = tracker.reference;
-    if (!reference || !isCurrentMapTch9() || !isFinite(lineCoordinate)) return null;
-    var km = Math.max(0, Math.floor(lineCoordinate / 1000));
-    var hauls = Array.isArray(reference.hauls) ? reference.hauls : [];
-    var candidates = [];
-    for (var i = 0; i < hauls.length; i++) {
-      var haul = hauls[i];
-      var lengthKm = Number(haul.lengthKm);
-      if (!isFinite(lengthKm) || km < 0 || km > lengthKm) continue;
-      var nearest = findNearestReferenceStation(haul.stations, km);
-      if (!nearest) continue;
-      candidates.push({
-        haul: haul,
-        station: nearest.station,
-        prev: nearest.prev,
-        next: nearest.next,
-        km: km,
-        deltaKm: nearest.deltaKm
-      });
-    }
-    candidates.sort(function(a, b) {
-      return a.deltaKm - b.deltaKm;
-    });
-    if (!candidates.length) return null;
-    if (candidates.length > 1 && candidates[0].deltaKm >= candidates[1].deltaKm - 0.1) {
-      return null;
-    }
-    return candidates[0];
-  }
-
   function normalizeMapConfig(item) {
     if (!item) return null;
     var sectionFiles = [];
@@ -5838,6 +4653,7 @@
       bbox: Array.isArray(item.bbox) ? item.bbox.map(Number) : [],
       objects: item.objects && typeof item.objects === 'object' ? item.objects : null,
       releaseStatus: String(item.releaseStatus || item.release_status || item.status || (sectionFiles.length ? 'draft' : 'verified')).toLowerCase(),
+      shiftRouteAutoSelect: item.shiftRouteAutoSelect === true || item.shift_route_auto_select === true,
       downloaded: item.downloaded !== false
     };
   }
@@ -5917,12 +4733,22 @@
           railway: route.railway || (index.railway && (index.railway.name || index.railway.id)),
           bbox: variant.bbox || route.bbox,
           releaseStatus: releaseStatus,
+          shiftRouteAutoSelect: variant.shift_route_auto_select === true || route.shift_route_auto_select === true,
           downloaded: route.downloaded !== false && variant.downloaded !== false
         });
         if (normalized) result.push(normalized);
       }
     }
     return result;
+  }
+
+  function compactLearningRawSamples(samples) {
+    var source = Array.isArray(samples) ? samples : [];
+    if (source.length <= LEARNING_MAX_SAMPLES_PER_RAW_TRACK) return source;
+    // Leave headroom on overflow. Repeated compaction then stays uniform over
+    // the whole journey instead of deleting one middle point per new fix and
+    // eventually creating a many-kilometre hole.
+    return thinLearningArray(source, LEARNING_RAW_COMPACT_TARGET);
   }
 
   function setCurrentMap(map) {
@@ -5941,6 +4767,25 @@
 
   function isMapAutoSelectable(map) {
     return !isSectionMapConfig(map) || String(map.releaseStatus || '').toLowerCase() === 'verified';
+  }
+
+  function isDeclaredRouteEndpointMatch(value, primary, aliases) {
+    var candidates = [primary].concat(Array.isArray(aliases) ? aliases : []).filter(Boolean);
+    var normalizedValue = normalizeRouteName(value);
+    if (!normalizedValue) return false;
+    for (var i = 0; i < candidates.length; i++) {
+      if (normalizedValue === normalizeRouteName(candidates[i])) return true;
+    }
+    return false;
+  }
+
+  function isDraftMapSelectableForShiftRoute(map, route) {
+    if (!isSectionMapConfig(map) || !map.shiftRouteAutoSelect || !route || !route.from || !route.to) return false;
+    var direct = isDeclaredRouteEndpointMatch(route.from, map.routeFrom, map.fromAliases) &&
+      isDeclaredRouteEndpointMatch(route.to, map.routeTo, map.toAliases);
+    var reverse = isDeclaredRouteEndpointMatch(route.from, map.routeTo, map.toAliases) &&
+      isDeclaredRouteEndpointMatch(route.to, map.routeFrom, map.fromAliases);
+    return direct || reverse;
   }
 
   function isCurrentMap(map) {
@@ -6204,15 +5049,6 @@
     var loaded = loadAssets();
     requestDraw();
     return loaded;
-  }
-
-  function cycleMap() {
-    if (!tracker.availableMaps.length) return;
-    var currentIndex = tracker.availableMaps.findIndex(function(item) {
-      return item.id === tracker.currentMap.id;
-    });
-    var nextIndex = (currentIndex + 1) % tracker.availableMaps.length;
-    selectMap(tracker.availableMaps[nextIndex]);
   }
 
   function getMapPicker() {
@@ -6969,8 +5805,6 @@
     var regimeSummary = getRegimeMapsSummary();
     var learningSummary = getLearningSummary();
     var warningState = tracker.warningSync && tracker.warningSync.state;
-    var runState = tracker.runSync && tracker.runSync.state;
-    var activeRun = getActiveRun();
     var warnings = getScopedWarnings(true);
     var manual = getProdAuditState();
     var items = [];
@@ -7101,9 +5935,7 @@
       'точек ' + learningSummary.totalSamples + ' · GPS участков ' + learningSummary.userSections +
         ' · проверено ' + learningSummary.verifiedSectors + ' · вне ЭК ' + learningSummary.offTrack +
         ' · сервер ' + getLearningSyncLabel(),
-      tracker.learningSync && tracker.learningSync.state === 'error'
-        ? 'blocked'
-        : learningSummary.userSections || learningSummary.totalSamples
+      learningSummary.userSections || learningSummary.totalSamples
           ? (learningSummary.changedSectors || learningSummary.offTrack ? 'review' : 'ready')
           : 'review',
       { badge: learningSummary.userSections ? 'GPS уч.' : 'GPS' }
@@ -7442,369 +6274,63 @@
     parent.appendChild(section);
   }
 
-  function getLearningBackupCounts(store) {
-    var learning = normalizeLearningStore(store || tracker.learning);
-    var maps = Object.keys(learning.maps || {});
-    var samples = 0;
-    var rawSamples = 0;
-    var userSections = 0;
-    for (var i = 0; i < maps.length; i++) {
-      var map = learning.maps[maps[i]] || {};
-      var sectors = map.sectors || {};
-      Object.keys(sectors).forEach(function(key) {
-        var bucket = sectors[key];
-        samples += bucket && Array.isArray(bucket.samples) ? bucket.samples.length : 0;
-      });
-      var rawTracks = map.rawTracks || {};
-      Object.keys(rawTracks).forEach(function(key) {
-        var raw = rawTracks[key];
-        rawSamples += raw && Array.isArray(raw.samples) ? raw.samples.length : 0;
-      });
-      userSections += Object.keys(map.userSections || {}).length;
-    }
-    return {
-      maps: maps.length,
-      samples: samples,
-      rawSamples: rawSamples,
-      userSections: userSections
-    };
+  if (typeof window.createPoekhaliBackup !== 'function') {
+    throw new Error('poekhali-backup.js must be loaded before poekhali-tracker.js');
   }
-
-  function getPoekhaliBackupStats() {
-    var learning = getLearningBackupCounts(tracker.learning);
-    return {
-      warnings: normalizeWarningsList(tracker.warnings).filter(function(item) { return !item.deletedAt; }).length,
-      learningSamples: learning.samples + learning.rawSamples,
-      userSections: learning.userSections
-    };
-  }
-
-  function cloneForBackup(value) {
-    try {
-      return JSON.parse(JSON.stringify(value));
-    } catch (error) {
-      return null;
-    }
-  }
-
-  function buildPoekhaliBackupPackage() {
-    ensureDownloadedMapsReadiness();
-    var packageData = {
-      schema: 'bloknot.poekhali.backup',
-      schemaVersion: BACKUP_SCHEMA_VERSION,
-      appVersion: POEKHALI_DIAGNOSTIC_VERSION,
-      exportedAt: new Date().toISOString(),
-      currentMap: tracker.currentMap ? {
-        id: tracker.currentMap.id || '',
-        title: tracker.currentMap.title || '',
-        sourceName: tracker.currentMap.sourceName || ''
-      } : null,
-      selectedShiftId: readStringStorage(SELECTED_SHIFT_STORAGE_KEY),
-      lastProjection: readJsonStorage(LAST_PROJECTION_STORAGE_KEY, null),
-      previewProjection: readJsonStorage(PREVIEW_PROJECTION_STORAGE_KEY, null),
-      diagnostics: getPoekhaliDiagnosticsSnapshot(),
-      prodAudit: cloneForBackup(getProdAuditState()),
-      speedDocReview: cloneForBackup(getSpeedDocReviewState()),
-      warnings: normalizeWarningsList(tracker.warnings),
-      learning: normalizeLearningStore(tracker.learning),
-      mapReadiness: cloneForBackup(getMapReadinessSummary()),
-      downloadedMaps: cloneForBackup(getDownloadedMapsReadinessSnapshot()),
-      catalog: cloneForBackup(getMapCatalogSnapshot())
-    };
-    packageData.stats = {
-      warnings: packageData.warnings.filter(function(item) { return !item.deletedAt; }).length,
-      learning: getLearningBackupCounts(packageData.learning),
-      userSections: getLearningBackupCounts(packageData.learning).userSections
-    };
-    return packageData;
-  }
-
-  function getPoekhaliBackupFileName() {
-    var stamp = new Date().toISOString().replace(/[:.]/g, '-');
-    return 'poekhali-diagnostic-' + stamp + '.json';
-  }
-
-  function downloadJsonFile(fileName, payload) {
-    var blob = new Blob([JSON.stringify(payload, null, 2)], { type: 'application/json;charset=utf-8' });
-    var url = URL.createObjectURL(blob);
-    var link = document.createElement('a');
-    link.href = url;
-    link.download = fileName;
-    document.body.appendChild(link);
-    link.click();
-    document.body.removeChild(link);
-    setTimeout(function() {
-      URL.revokeObjectURL(url);
-    }, 1000);
-  }
-
-  function exportPoekhaliBackupPackage() {
-    var payload = buildPoekhaliBackupPackage();
-    downloadJsonFile(getPoekhaliBackupFileName(), payload);
-    var stats = getPoekhaliBackupStats();
-    tracker.backupMessage = 'Пакет собран: ПР ' + stats.warnings + ' · GPS точек ' + stats.learningSamples + ' · GPS участков ' + stats.userSections + '.';
-    tracker.backupMessageTone = 'success';
-    renderOpsSheet();
-  }
-
-  function mergeProdAuditStates(baseRaw, incomingRaw) {
-    var base = normalizeProdAuditState(baseRaw);
-    var incoming = normalizeProdAuditState(incomingRaw);
-    PROD_AUDIT_MANUAL_CHECKS.forEach(function(config) {
-      var key = config.id;
-      var baseItem = base.checks[key] || { status: 'pending', updatedAt: 0 };
-      var incomingItem = incoming.checks[key] || { status: 'pending', updatedAt: 0 };
-      if ((incomingItem.updatedAt || 0) >= (baseItem.updatedAt || 0) && incomingItem.status !== 'pending') {
-        base.checks[key] = incomingItem;
+  var POEKHALI_BACKUP = window.createPoekhaliBackup({
+    state: tracker,
+    config: {
+      backupSchemaVersion: BACKUP_SCHEMA_VERSION,
+      diagnosticVersion: POEKHALI_DIAGNOSTIC_VERSION,
+      selectedShiftStorageKey: SELECTED_SHIFT_STORAGE_KEY,
+      lastProjectionStorageKey: LAST_PROJECTION_STORAGE_KEY,
+      previewProjectionStorageKey: PREVIEW_PROJECTION_STORAGE_KEY,
+      prodAuditChecks: PROD_AUDIT_MANUAL_CHECKS,
+      captureRules: {
+        maxAccuracyM: RAW_CAPTURE_MAX_ACCURACY_M,
+        minDistanceM: RAW_CAPTURE_MIN_DISTANCE_M,
+        slowDistanceM: RAW_CAPTURE_SLOW_DISTANCE_M,
+        slowIntervalMs: RAW_CAPTURE_MIN_TIME_DELTA_MS,
+        maxImpliedSpeedMps: RAW_CAPTURE_MAX_IMPLIED_SPEED_MPS
       }
-    });
-    base.updatedAt = Math.max(Number(base.updatedAt) || 0, Number(incoming.updatedAt) || 0);
-    return normalizeProdAuditState(base);
+    },
+    normalizeLearningStore: normalizeLearningStore,
+    normalizeWarningsList: normalizeWarningsList,
+    ensureDownloadedMapsReadiness: ensureDownloadedMapsReadiness,
+    readStringStorage: readStringStorage,
+    readJsonStorage: readJsonStorage,
+    getDiagnosticsSnapshot: getPoekhaliDiagnosticsSnapshot,
+    getProdAuditState: getProdAuditState,
+    getSpeedDocReviewState: getSpeedDocReviewState,
+    getMapReadinessSummary: getMapReadinessSummary,
+    getDownloadedMapsReadinessSnapshot: getDownloadedMapsReadinessSnapshot,
+    getMapCatalogSnapshot: getMapCatalogSnapshot,
+    ensureLearningOwnerScope: ensureLearningOwnerScope,
+    flushLocalLearningSave: flushLocalLearningSave,
+    renderOpsSheet: renderOpsSheet,
+    normalizeProdAuditState: normalizeProdAuditState,
+    normalizeSpeedDocReviewState: normalizeSpeedDocReviewState,
+    mergeWarningsLists: mergeWarningsLists,
+    saveWarnings: saveWarnings,
+    mergeLearningStores: mergeLearningStores,
+    saveLearningStore: saveLearningStore,
+    renderAfterLearningSyncChange: renderAfterLearningSyncChange,
+    saveProdAuditState: saveProdAuditState,
+    saveSpeedDocReviewState: saveSpeedDocReviewState,
+    requestDraw: requestDraw,
+    createShiftInfoCell: createShiftInfoCell
+  });
+
+  function exportPoekhaliGpsCaptures() {
+    return POEKHALI_BACKUP.exportGpsCaptures();
   }
 
-  function mergeSpeedDocReviewStates(baseRaw, incomingRaw) {
-    var base = normalizeSpeedDocReviewState(baseRaw);
-    var incoming = normalizeSpeedDocReviewState(incomingRaw);
-    Object.keys(incoming.items || {}).forEach(function(key) {
-      var current = base.items[key];
-      var next = incoming.items[key];
-      if (!current || (next.updatedAt || 0) >= (current.updatedAt || 0)) {
-        base.items[key] = next;
-      }
-    });
-    base.updatedAt = Math.max(Number(base.updatedAt) || 0, Number(incoming.updatedAt) || 0);
-    return normalizeSpeedDocReviewState(base);
-  }
-
-  function normalizePoekhaliBackupPayload(raw) {
-    var payload = raw && typeof raw === 'object' ? raw : {};
-    if (payload.poekhali && typeof payload.poekhali === 'object') payload = payload.poekhali;
-    if (payload.data && payload.data.schema === 'bloknot.poekhali.backup') payload = payload.data;
-    if (payload.schema && payload.schema !== 'bloknot.poekhali.backup') return null;
-    return payload;
-  }
-
-  function applyPoekhaliBackupPackage(raw) {
-    var payload = normalizePoekhaliBackupPayload(raw);
-    if (!payload) throw new Error('Это не пакет Поехали.');
-    var importedWarnings = normalizeWarningsList(payload.warnings);
-    var importedLearning = normalizeLearningStore(payload.learning);
-    var learningCounts = getLearningBackupCounts(importedLearning);
-
-    if (importedWarnings.length) {
-      tracker.warnings = mergeWarningsLists(tracker.warnings, importedWarnings);
-      saveWarnings();
-    }
-    if (learningCounts.samples || learningCounts.rawSamples || learningCounts.userSections) {
-      tracker.learning = mergeLearningStores(tracker.learning, importedLearning);
-      saveLearningStore();
-      renderAfterLearningSyncChange();
-    }
-    if (payload.prodAudit) {
-      tracker.prodAudit = mergeProdAuditStates(getProdAuditState(), payload.prodAudit);
-      saveProdAuditState();
-    }
-    if (payload.speedDocReview) {
-      tracker.speedDocReview = mergeSpeedDocReviewStates(getSpeedDocReviewState(), payload.speedDocReview);
-      saveSpeedDocReviewState();
-    }
-
-    tracker.backupMessage = 'Импортировано: ПР ' + importedWarnings.length +
-      ' · GPS точек ' + (learningCounts.samples + learningCounts.rawSamples) + ' · GPS участков ' + learningCounts.userSections + '.';
-    tracker.backupMessageTone = 'success';
-    renderOpsSheet();
-    requestDraw();
-  }
-
-  function readTextFile(file) {
-    if (file && typeof file.text === 'function') return file.text();
-    return new Promise(function(resolve, reject) {
-      var reader = new FileReader();
-      reader.onload = function() { resolve(String(reader.result || '')); };
-      reader.onerror = function() { reject(reader.error || new Error('Файл не прочитан')); };
-      reader.readAsText(file);
-    });
-  }
-
-  function importPoekhaliBackupFile(file) {
-    if (!file) return;
-    readTextFile(file).then(function(text) {
-      var parsed = JSON.parse(text);
-      applyPoekhaliBackupPackage(parsed);
-    }).catch(function(error) {
-      tracker.backupMessage = 'Импорт не выполнен: ' + (error && error.message ? error.message : 'ошибка файла');
-      tracker.backupMessageTone = 'danger';
-      renderOpsSheet();
-    });
+  function buildPoekhaliGpsCapturePackage() {
+    return POEKHALI_BACKUP.buildGpsCapturePackage();
   }
 
   function renderBackupSection(parent) {
-    var stats = getPoekhaliBackupStats();
-    var section = document.createElement('section');
-    section.className = 'poekhali-ops-section';
-    var head = document.createElement('div');
-    head.className = 'poekhali-ops-section-head';
-    var title = document.createElement('div');
-    title.textContent = 'Резерв и диагностика';
-    var total = document.createElement('div');
-    total.className = 'poekhali-ops-total';
-    total.textContent = 'JSON';
-    head.appendChild(title);
-    head.appendChild(total);
-
-    var grid = document.createElement('div');
-    grid.className = 'poekhali-shift-info-grid';
-    grid.appendChild(createShiftInfoCell('ПР', String(stats.warnings), stats.warnings ? 'success' : 'muted'));
-    grid.appendChild(createShiftInfoCell('Поездки', String(stats.runs), stats.runs ? 'success' : 'muted'));
-    grid.appendChild(createShiftInfoCell('GPS точки', String(stats.learningSamples), stats.learningSamples ? 'success' : 'muted'));
-    grid.appendChild(createShiftInfoCell('GPS участки', String(stats.userSections), stats.userSections ? 'success' : 'muted'));
-
-    var note = document.createElement('div');
-    note.className = 'poekhali-shift-route ' + (tracker.backupMessageTone ? 'is-' + tracker.backupMessageTone : 'is-muted');
-    note.textContent = tracker.backupMessage || 'Пакет сохраняет поездки, предупреждения, GPS-дообучение, ручную приемку, сверку ДОК и диагностику режима. Внешний источник карт не нужен.';
-
-    var actions = document.createElement('div');
-    actions.className = 'poekhali-warning-form-actions poekhali-backup-actions';
-
-    var exportBtn = document.createElement('button');
-    exportBtn.type = 'button';
-    exportBtn.className = 'poekhali-primary-action';
-    exportBtn.textContent = 'Скачать пакет';
-    exportBtn.addEventListener('click', exportPoekhaliBackupPackage);
-
-    var importFileInput = document.createElement('input');
-    importFileInput.type = 'file';
-    importFileInput.accept = '.json,application/json';
-    importFileInput.className = 'poekhali-warning-file-input';
-    importFileInput.addEventListener('change', function() {
-      var file = importFileInput.files && importFileInput.files[0] ? importFileInput.files[0] : null;
-      importFileInput.value = '';
-      importPoekhaliBackupFile(file);
-    });
-
-    var importBtn = document.createElement('button');
-    importBtn.type = 'button';
-    importBtn.className = 'poekhali-secondary-action';
-    importBtn.textContent = 'Импорт пакета';
-    importBtn.addEventListener('click', function() {
-      importFileInput.click();
-    });
-
-    actions.appendChild(exportBtn);
-    actions.appendChild(importBtn);
-    actions.appendChild(importFileInput);
-    section.appendChild(head);
-    section.appendChild(grid);
-    section.appendChild(note);
-    section.appendChild(actions);
-    parent.appendChild(section);
-  }
-
-  function renderMapReadinessSection(parent) {
-    var summary = getMapReadinessSummary();
-    var section = document.createElement('section');
-    section.className = 'poekhali-ops-section';
-    var head = document.createElement('div');
-    head.className = 'poekhali-ops-section-head';
-    var title = document.createElement('div');
-    title.textContent = 'Готовность карты';
-    var total = document.createElement('div');
-    total.className = 'poekhali-ops-total';
-    total.textContent = summary.sectors ? ('готово ' + summary.ready + '/' + summary.sectors) : 'нет участков';
-    head.appendChild(title);
-    head.appendChild(total);
-
-    var grid = document.createElement('div');
-    grid.className = 'poekhali-shift-info-grid';
-    grid.appendChild(createShiftInfoCell('Карта', summary.title));
-    grid.appendChild(createShiftInfoCell('Участки', summary.sectors ? String(summary.sectors) : '0', summary.sectors ? '' : 'danger'));
-    grid.appendChild(createShiftInfoCell('Профиль', summary.profileReady + '/' + summary.sectors +
-      (summary.learnedProfiles ? ' · GPS ' + summary.learnedProfiles : '') +
-      (summary.regimeProfiles ? ' · РК ' + summary.regimeProfiles : '') +
-      (summary.fallbackProfiles ? ' · общ. ' + summary.fallbackProfiles : ''),
-      summary.profileReady === summary.sectors && !summary.fallbackProfiles ? '' : 'danger'));
-    grid.appendChild(createShiftInfoCell('Скорости', summary.speedReady + '/' + summary.sectors, summary.speedReady === summary.sectors ? '' : 'danger'));
-    grid.appendChild(createShiftInfoCell('Объекты', summary.objectReady + '/' + summary.sectors, summary.objectReady === summary.sectors ? '' : 'danger'));
-    grid.appendChild(createShiftInfoCell('GPS проверено', summary.gpsVerifiedSectors ? summary.gpsVerifiedSectors + ' уч.' : '—', summary.gpsVerifiedSectors ? 'success' : 'muted'));
-    grid.appendChild(createShiftInfoCell('GPS изменено', summary.gpsChangedSectors ? summary.gpsChangedSectors + ' уч.' : '—', summary.gpsChangedSectors ? 'warning' : 'muted'));
-    grid.appendChild(createShiftInfoCell('GPS/ЭК', summary.gpsConflictSectors ? summary.gpsConflictSectors + ' уч.' : '—', summary.gpsConflictSectors ? 'warning' : 'muted'));
-    grid.appendChild(createShiftInfoCell('Обновлено', formatIsoDateLabel(summary.generatedAt), summary.generatedAt ? '' : 'muted'));
-
-    var note = document.createElement('div');
-    note.className = 'poekhali-shift-route ' + (summary.blocked ? 'is-danger' : summary.review ? '' : 'is-success');
-    if (!summary.loaded) {
-      note.className = 'poekhali-shift-route is-muted';
-      note.textContent = tracker.assetsError || 'Карта еще загружается.';
-    } else if (!summary.sectors) {
-      note.className = 'poekhali-shift-route is-danger';
-      note.textContent = 'В карте нет рабочих участков для режима Поехали.';
-    } else if (summary.issues.length) {
-      note.textContent = 'Проблемные участки показаны ниже: профиль, скорости, станции, светофоры и GPS-расхождения проверяются отдельно, чтобы не выдавать черновик за готовую карту.';
-    } else {
-      note.textContent = 'Все участки текущей карты имеют линию, профиль, скорости и объекты для рабочего режима.';
-    }
-
-    section.appendChild(head);
-    section.appendChild(grid);
-    section.appendChild(note);
-
-    if (summary.issues.length) {
-      var actionBtn = document.createElement('button');
-      actionBtn.type = 'button';
-      actionBtn.className = 'poekhali-secondary-action';
-      actionBtn.textContent = 'Открыть первый проблемный';
-      actionBtn.addEventListener('click', function() {
-        selectPreviewSector(summary.issues[0].sector, 'middle');
-        closeOpsSheet();
-      });
-      section.appendChild(actionBtn);
-
-      var list = document.createElement('div');
-      list.className = 'poekhali-map-health-list';
-      var visible = summary.issues.slice(0, 8);
-      for (var i = 0; i < visible.length; i++) {
-        (function(item) {
-          var row = document.createElement('button');
-          row.type = 'button';
-          row.className = 'poekhali-map-health-row is-' + item.state;
-          row.title = 'Открыть участок ' + item.sector + ' на профиле';
-          row.addEventListener('click', function() {
-            selectPreviewSector(item.sector, 'middle');
-            closeOpsSheet();
-          });
-
-          var text = document.createElement('span');
-          text.className = 'poekhali-map-health-text';
-          var strong = document.createElement('strong');
-          strong.textContent = 'Участок ' + item.sector + ' · ' + item.range;
-          var meta = document.createElement('span');
-          meta.textContent = item.issueText;
-          text.appendChild(strong);
-          text.appendChild(meta);
-
-          var badge = document.createElement('span');
-          badge.className = 'poekhali-map-health-badge';
-          badge.textContent = item.learning && item.learning.verificationState === 'changed'
-            ? 'GPS изм.'
-            : item.learning && item.learning.verificationState !== 'verified' && (item.learning.nearTrack || item.learning.offTrack)
-            ? 'GPS/ЭК'
-            : getProfileSourceLabel(item.profileStatus);
-
-          row.appendChild(text);
-          row.appendChild(badge);
-          list.appendChild(row);
-        })(visible[i]);
-      }
-      if (summary.issues.length > visible.length) {
-        var more = document.createElement('div');
-        more.className = 'poekhali-map-health-more';
-        more.textContent = 'Еще ' + (summary.issues.length - visible.length) + ' участков требуют проверки';
-        list.appendChild(more);
-      }
-      section.appendChild(list);
-    }
-
-    parent.appendChild(section);
+    return POEKHALI_BACKUP.renderBackupSection(parent);
   }
 
   function renderDownloadedMapsReadinessSection(parent) {
@@ -8286,23 +6812,10 @@
   }
 
   function getLearningSyncLabel() {
-    var state = tracker.learningSync && tracker.learningSync.state;
-    if (state === 'synced') return 'сохранено';
-    if (state === 'syncing' || state === 'loading') return 'синхр.';
-    if (state === 'local') return 'локально';
-    if (state === 'offline') return 'оффлайн';
-    if (state === 'error') return 'ошибка';
-    if (tracker.learningSync && tracker.learningSync.pending) return 'ожидает';
-    return '—';
+    return 'локально';
   }
 
   function getLearningSyncTone() {
-    var state = tracker.learningSync && tracker.learningSync.state;
-    if (state === 'synced') return 'success';
-    if (state === 'syncing' || state === 'loading' || state === 'pending') return 'warning';
-    if (state === 'local') return 'muted';
-    if (state === 'offline' || state === 'error') return 'danger';
-    if (tracker.learningSync && tracker.learningSync.pending) return 'warning';
     return 'muted';
   }
 
@@ -8374,790 +6887,6 @@
     }
   }
 
-  function parseMapXml(xmlText) {
-    var doc = new DOMParser().parseFromString(xmlText, 'application/xml');
-    var parseError = doc.getElementsByTagName('parsererror')[0];
-    if (parseError) throw new Error('Ошибка чтения data.xml');
-
-    var sectorNodes = getElementsByLocalName(doc, 'sector');
-    var wpts = [];
-    var points = [];
-
-    if (!sectorNodes.length) {
-      sectorNodes = [doc];
-    }
-
-    for (var sectorIndex = 0; sectorIndex < sectorNodes.length; sectorIndex++) {
-      var sectorNode = sectorNodes[sectorIndex];
-      var rawSector = sectorNode.getAttribute ? sectorNode.getAttribute('id') : '';
-      var sector = parseNumber(rawSector);
-      if (!isFinite(sector)) sector = sectorIndex + 1;
-      wpts = getElementsByLocalName(sectorNode, 'wpt');
-
-      for (var i = 0; i < wpts.length; i++) {
-        var node = wpts[i];
-        var lat = parseNumber(node.getAttribute('lat') || getFirstTextByLocalName(node, 'lat'));
-        var lon = parseNumber(node.getAttribute('lon') || getFirstTextByLocalName(node, 'lon'));
-        var ordinate = normalizeOrdinate(
-          getFirstTextByLocalName(node, 'ord') ||
-          getFirstTextByLocalName(node, 'name') ||
-          node.getAttribute('ord')
-        );
-
-        if (!isFinite(lat) || !isFinite(lon) || !isFinite(ordinate)) continue;
-        points.push({
-          lat: lat,
-          lon: lon,
-          ordinate: ordinate,
-          sector: sector,
-          position: points.length
-        });
-      }
-    }
-
-    points.sort(function(a, b) {
-      if (a.sector !== b.sector) return a.sector - b.sector;
-      return a.ordinate - b.ordinate;
-    });
-
-    var unique = [];
-    var seen = {};
-    for (var j = 0; j < points.length; j++) {
-      var key = points[j].sector + ':' + points[j].ordinate;
-      if (seen[key]) continue;
-      seen[key] = true;
-      unique.push(points[j]);
-    }
-
-    var segments = [];
-    var sectorGroups = {};
-    for (var u = 0; u < unique.length; u++) {
-      var groupKey = String(unique[u].sector);
-      if (!sectorGroups[groupKey]) sectorGroups[groupKey] = [];
-      sectorGroups[groupKey].push(unique[u]);
-    }
-
-    Object.keys(sectorGroups).forEach(function(sectorKey) {
-      var group = sectorGroups[sectorKey];
-      for (var k = 0; k < group.length - 1; k++) {
-        var a = group[k];
-        var b = group[k + 1];
-        var ordinateGap = Math.abs(b.ordinate - a.ordinate);
-        var geoDistance = haversine(a.lat, a.lon, b.lat, b.lon);
-        if (ordinateGap <= 0 || ordinateGap > MAX_SEGMENT_ORDINATE_GAP_M || geoDistance > 2200) continue;
-        segments.push({
-          start: a,
-          end: b,
-          sector: a.sector,
-          length: geoDistance,
-          ordinateGap: ordinateGap
-        });
-      }
-    });
-
-    if (unique.length < 2 || !segments.length) {
-      throw new Error('Карта ЭК не содержит рабочих участков');
-    }
-
-    return {
-      points: unique,
-      segments: segments
-    };
-  }
-
-  function indexProfileElevations(points) {
-    points.sort(function(a, b) {
-      return a.start - b.start;
-    });
-
-    var elevation = 0;
-    var visualOffset = 0;
-    for (var i = 0; i < points.length; i++) {
-      var point = points[i];
-      point.elevationStart = elevation;
-      point.elevationEnd = elevation + point.grade * point.length / 1000;
-      elevation = point.elevationEnd;
-      point.visualStart = visualOffset;
-      point.visualEnd = visualOffset + getProfileDeltaForLength(Number(point.grade), Number(point.length), 1);
-      visualOffset = point.visualEnd;
-    }
-    return points;
-  }
-
-  function parseProfileXml(xmlText) {
-    var doc = new DOMParser().parseFromString(xmlText, 'application/xml');
-    var parseError = doc.getElementsByTagName('parsererror')[0];
-    if (parseError) throw new Error('Ошибка чтения profile.xml');
-
-    var sectorNodes = getElementsByLocalName(doc, 'sector');
-    if (!sectorNodes.length) sectorNodes = [doc];
-    var points = [];
-    var bySector = {};
-
-    for (var sectorIndex = 0; sectorIndex < sectorNodes.length; sectorIndex++) {
-      var sectorNode = sectorNodes[sectorIndex];
-      var rawSector = sectorNode.getAttribute ? sectorNode.getAttribute('id') : '';
-      var sector = parseNumber(rawSector);
-      if (!isFinite(sector)) sector = sectorIndex;
-      var sectorKey = String(sector);
-      var nodes = getElementsByLocalName(sectorNode, 'pt');
-
-      for (var i = 0; i < nodes.length; i++) {
-        var node = nodes[i];
-        var start = normalizeOrdinate(getFirstTextByLocalName(node, 'start'));
-        var length = Math.round(parseNumber(getFirstTextByLocalName(node, 'len')));
-        var grade = parseNumber(getFirstTextByLocalName(node, 'grad'));
-        if (!isFinite(start) || !isFinite(length) || length <= 0 || !isFinite(grade)) continue;
-        var point = {
-          start: start,
-          end: start + length,
-          length: length,
-          grade: grade,
-          sector: sector
-        };
-        points.push(point);
-        if (!bySector[sectorKey]) bySector[sectorKey] = [];
-        bySector[sectorKey].push(point);
-      }
-    }
-
-    Object.keys(bySector).forEach(function(sectorKey) {
-      indexProfileElevations(bySector[sectorKey]);
-    });
-    points.sort(function(a, b) {
-      if (a.sector !== b.sector) return a.sector - b.sector;
-      return a.start - b.start;
-    });
-    return {
-      all: points,
-      bySector: bySector
-    };
-  }
-
-  function parseTrackObjectsXml(xmlText, fileKey) {
-    var doc = new DOMParser().parseFromString(xmlText, 'application/xml');
-    var parseError = doc.getElementsByTagName('parsererror')[0];
-    if (parseError) throw new Error('Ошибка чтения ' + fileKey + '.xml');
-
-    var sectorNodes = getElementsByLocalName(doc, 'sector');
-    if (!sectorNodes.length) sectorNodes = [doc];
-    var all = [];
-    var bySector = {};
-    var signalNEven = 0;
-    var signalEven = 0;
-
-    for (var sectorIndex = 0; sectorIndex < sectorNodes.length; sectorIndex++) {
-      var sectorNode = sectorNodes[sectorIndex];
-      var rawSector = sectorNode.getAttribute ? sectorNode.getAttribute('id') : '';
-      var sector = parseNumber(rawSector);
-      if (!isFinite(sector)) sector = sectorIndex + 1;
-      var sectorKey = String(sector);
-      var nodes = getElementsByLocalName(sectorNode, 'wpt');
-
-      for (var i = 0; i < nodes.length; i++) {
-        var node = nodes[i];
-        var coordinate = normalizeOrdinate(getFirstTextByLocalName(node, 'coordinate'));
-        var length = Math.max(0, Math.round(parseNumber(getFirstTextByLocalName(node, 'length')) || 0));
-        var type = String(getFirstTextByLocalName(node, 'type') || '').trim();
-        var name = String(getFirstTextByLocalName(node, 'name') || '').trim();
-        var speed = parseNumber(getFirstTextByLocalName(node, 'speed'));
-        if (!isFinite(coordinate) || !type || !name) continue;
-        if (type === '1') {
-          if (/^Ч/i.test(name)) signalEven += 1;
-          else if (/^[НH]/i.test(name)) signalNEven += 1;
-        }
-        var item = {
-          fileKey: fileKey,
-          sector: sector,
-          type: type,
-          name: name,
-          coordinate: coordinate,
-          length: length,
-          end: coordinate + length,
-          speed: isFinite(speed) ? speed : null
-        };
-        all.push(item);
-        if (!bySector[sectorKey]) bySector[sectorKey] = [];
-        bySector[sectorKey].push(item);
-      }
-    }
-
-    Object.keys(bySector).forEach(function(sectorKey) {
-      bySector[sectorKey].sort(function(a, b) {
-        if (a.coordinate !== b.coordinate) return a.coordinate - b.coordinate;
-        return a.type.localeCompare(b.type);
-      });
-    });
-    all.sort(function(a, b) {
-      if (a.sector !== b.sector) return a.sector - b.sector;
-      return a.coordinate - b.coordinate;
-    });
-    var directionEven = null;
-    if (signalEven > signalNEven) directionEven = true;
-    else if (signalNEven > signalEven) directionEven = false;
-    if (directionEven !== null) {
-      for (var itemIndex = 0; itemIndex < all.length; itemIndex++) {
-        all[itemIndex].directionEven = directionEven;
-      }
-    }
-    return {
-      all: all,
-      bySector: bySector,
-      directionEven: directionEven,
-      directionStats: {
-        evenSignals: signalEven,
-        oddSignals: signalNEven
-      }
-    };
-  }
-
-  function parseSpeedXml(xmlText) {
-    if (!xmlText) return { all: [], bySector: {} };
-    var body = String(xmlText).replace(/<\?xml[^>]*\?>/i, '');
-    var doc = new DOMParser().parseFromString('<speed-points>' + body + '</speed-points>', 'application/xml');
-    var parseError = doc.getElementsByTagName('parsererror')[0];
-    if (parseError) return { all: [], bySector: {} };
-
-    var nodes = getElementsByLocalName(doc, 'wpt');
-    var all = [];
-    var bySector = {};
-    for (var i = 0; i < nodes.length; i++) {
-      var node = nodes[i];
-      var coordinate = normalizeOrdinate(getFirstTextByLocalName(node, 'coordinate'));
-      var length = Math.max(0, Math.round(parseNumber(getFirstTextByLocalName(node, 'length')) || 0));
-      var sector = parseNumber(getFirstTextByLocalName(node, 'sector'));
-      var wayNumber = Math.round(parseNumber(getFirstTextByLocalName(node, 'way_number')) || 0);
-      var speed = parseNumber(getFirstTextByLocalName(node, 'speed'));
-      var name = String(getFirstTextByLocalName(node, 'name') || '').trim();
-      if (!isFinite(coordinate) || !isFinite(sector) || !isFinite(speed)) continue;
-      var item = {
-        sector: sector,
-        wayNumber: wayNumber || 0,
-        name: name || String(Math.round(speed)),
-        coordinate: coordinate,
-        length: length,
-        end: coordinate + length,
-        speed: speed
-      };
-      all.push(item);
-      var sectorKey = String(sector);
-      if (!bySector[sectorKey]) bySector[sectorKey] = [];
-      bySector[sectorKey].push(item);
-    }
-    Object.keys(bySector).forEach(function(sectorKey) {
-      bySector[sectorKey].sort(function(a, b) {
-        return a.coordinate - b.coordinate;
-      });
-    });
-    return {
-      all: all,
-      bySector: bySector
-    };
-  }
-
-  function getSectionCoordinateOffset(section) {
-    var runtime = section && section.runtime && typeof section.runtime === 'object' ? section.runtime : {};
-    var candidates = [
-      runtime.coordinate_offset_m,
-      runtime.coordinateOffsetM,
-      section && section.coordinate_offset_m,
-      section && section.coordinateOffsetM
-    ];
-    for (var i = 0; i < candidates.length; i++) {
-      var value = Number(candidates[i]);
-      if (isFinite(value)) return value;
-    }
-    return 0;
-  }
-
-  function getSectionGeometryPaths(section) {
-    var runtime = section && section.runtime && typeof section.runtime === 'object' ? section.runtime : {};
-    var geometry = section && section.geometry && typeof section.geometry === 'object'
-      ? section.geometry
-      : (runtime.geometry && typeof runtime.geometry === 'object' ? runtime.geometry : {});
-    if (Array.isArray(geometry.paths)) return geometry.paths;
-    if (Array.isArray(geometry.points)) {
-      return [{ id: geometry.id || 'main', points: geometry.points }];
-    }
-    if (Array.isArray(runtime.geometry_points)) {
-      return [{ id: 'main', points: runtime.geometry_points }];
-    }
-    return [];
-  }
-
-  function getSectionPointCoordinate(point, offset) {
-    if (!point || typeof point !== 'object') return NaN;
-    var chainage = Number(point.chainage_m !== undefined ? point.chainage_m : point.chainageM);
-    if (isFinite(chainage)) return Math.round(chainage + offset);
-    var km = Number(point.km);
-    if (isFinite(km)) return Math.round(km * 1000 + offset);
-    var ordinate = Number(point.ordinate);
-    return isFinite(ordinate) ? Math.round(ordinate) : NaN;
-  }
-
-  function buildSectionRouteData(section) {
-    var offset = getSectionCoordinateOffset(section);
-    var paths = getSectionGeometryPaths(section);
-    var sectionId = String(section && (section.id || section.section_name) || 'section');
-    var points = [];
-    for (var pathIndex = 0; pathIndex < paths.length; pathIndex++) {
-      var path = paths[pathIndex] || {};
-      var rawPathId = String(path.id || path.path_id || ('path-' + (pathIndex + 1)));
-      var pathId = sectionId + ':' + rawPathId;
-      var sourcePoints = Array.isArray(path.points) ? path.points : [];
-      for (var pointIndex = 0; pointIndex < sourcePoints.length; pointIndex++) {
-        var sourcePoint = sourcePoints[pointIndex] || {};
-        var lat = Number(sourcePoint.lat !== undefined ? sourcePoint.lat : sourcePoint.latitude);
-        var lon = Number(sourcePoint.lon !== undefined ? sourcePoint.lon : sourcePoint.longitude);
-        var ordinate = getSectionPointCoordinate(sourcePoint, offset);
-        var sector = Number(sourcePoint.sector !== undefined ? sourcePoint.sector : path.sector);
-        if (!isFinite(lat) || !isFinite(lon) || !isFinite(ordinate) || !isFinite(sector)) continue;
-        points.push({
-          lat: lat,
-          lon: lon,
-          ordinate: ordinate,
-          sector: sector,
-          pathId: pathId,
-          position: points.length
-        });
-      }
-    }
-
-    var groups = {};
-    for (var groupIndex = 0; groupIndex < points.length; groupIndex++) {
-      var point = points[groupIndex];
-      var groupKey = point.pathId + ':' + point.sector;
-      if (!groups[groupKey]) groups[groupKey] = [];
-      groups[groupKey].push(point);
-    }
-
-    var unique = [];
-    var segments = [];
-    Object.keys(groups).forEach(function(groupKey) {
-      var group = groups[groupKey].sort(function(a, b) {
-        return a.ordinate - b.ordinate;
-      });
-      var deduped = [];
-      var seen = {};
-      for (var i = 0; i < group.length; i++) {
-        var pointKey = group[i].ordinate + ':' + group[i].lat.toFixed(7) + ':' + group[i].lon.toFixed(7);
-        if (seen[pointKey]) continue;
-        seen[pointKey] = true;
-        deduped.push(group[i]);
-        unique.push(group[i]);
-      }
-      for (var segmentIndex = 0; segmentIndex < deduped.length - 1; segmentIndex++) {
-        var a = deduped[segmentIndex];
-        var b = deduped[segmentIndex + 1];
-        var ordinateGap = Math.abs(b.ordinate - a.ordinate);
-        var geoDistance = haversine(a.lat, a.lon, b.lat, b.lon);
-        if (ordinateGap <= 0 || ordinateGap > MAX_SEGMENT_ORDINATE_GAP_M || geoDistance > 2200) continue;
-        segments.push({
-          start: a,
-          end: b,
-          sector: a.sector,
-          pathId: a.pathId,
-          length: geoDistance,
-          ordinateGap: ordinateGap
-        });
-      }
-    });
-    unique.sort(function(a, b) {
-      if (a.sector !== b.sector) return a.sector - b.sector;
-      return a.ordinate - b.ordinate;
-    });
-    if (unique.length < 2 || !segments.length) throw new Error('JSON участка не содержит рабочей GPS-линии');
-    return {
-      points: unique,
-      segments: segments
-    };
-  }
-
-  function getSectionRouteRanges(mapData) {
-    var ranges = {};
-    var points = mapData && Array.isArray(mapData.points) ? mapData.points : [];
-    for (var i = 0; i < points.length; i++) {
-      var key = getSectorKey(points[i].sector);
-      if (!ranges[key]) {
-        ranges[key] = { sector: points[i].sector, min: points[i].ordinate, max: points[i].ordinate };
-      } else {
-        ranges[key].min = Math.min(ranges[key].min, points[i].ordinate);
-        ranges[key].max = Math.max(ranges[key].max, points[i].ordinate);
-      }
-    }
-    return ranges;
-  }
-
-  function findSectionSectorForCoordinate(mapData, coordinate) {
-    var ranges = getSectionRouteRanges(mapData);
-    var keys = Object.keys(ranges);
-    var best = null;
-    for (var i = 0; i < keys.length; i++) {
-      var range = ranges[keys[i]];
-      var distance = coordinate < range.min
-        ? range.min - coordinate
-        : (coordinate > range.max ? coordinate - range.max : 0);
-      if (!best || distance < best.distance) best = { sector: range.sector, distance: distance };
-    }
-    return best ? best.sector : NaN;
-  }
-
-  function findSectionSectorsForCoordinate(mapData, coordinate) {
-    var ranges = getSectionRouteRanges(mapData);
-    var result = [];
-    Object.keys(ranges).forEach(function(key) {
-      var range = ranges[key];
-      if (coordinate >= range.min && coordinate <= range.max) result.push(range.sector);
-    });
-    if (!result.length) {
-      var nearest = findSectionSectorForCoordinate(mapData, coordinate);
-      if (isFinite(nearest)) result.push(nearest);
-    }
-    return result;
-  }
-
-  function buildSectionProfile(section, mapData) {
-    var offset = getSectionCoordinateOffset(section);
-    var elements = section && Array.isArray(section.elements) ? section.elements : [];
-    var ranges = getSectionRouteRanges(mapData);
-    var rangeKeys = Object.keys(ranges);
-    var all = [];
-    var bySector = {};
-
-    function appendPoint(sector, start, end, grade, element) {
-      if (!isFinite(sector) || !isFinite(start) || !isFinite(end) || end <= start || !isFinite(grade)) return;
-      var point = {
-        start: Math.round(start),
-        end: Math.round(end),
-        length: Math.round(end - start),
-        grade: grade,
-        sector: sector,
-        confidence: element.confidence ? String(element.confidence) : '',
-        sourcePage: element.source_page !== undefined ? element.source_page : element.page,
-        source: 'section-json'
-      };
-      all.push(point);
-      var key = getSectorKey(sector);
-      if (!bySector[key]) bySector[key] = [];
-      bySector[key].push(point);
-    }
-
-    for (var elementIndex = 0; elementIndex < elements.length; elementIndex++) {
-      var element = elements[elementIndex] || {};
-      var officialStart = Number(element.start_m !== undefined ? element.start_m : element.startM);
-      var length = Number(element.len_m !== undefined ? element.len_m : element.length_m);
-      var grade = Number(element.grad_permille !== undefined ? element.grad_permille : element.grade);
-      if (!isFinite(officialStart) || !isFinite(length) || length <= 0 || !isFinite(grade)) continue;
-      var start = officialStart + offset;
-      var end = start + length;
-      var explicitSectors = [];
-      if (Array.isArray(element.sectors)) explicitSectors = element.sectors.map(Number).filter(isFinite);
-      else if (isFinite(Number(element.sector))) explicitSectors = [Number(element.sector)];
-      if (explicitSectors.length) {
-        for (var explicitIndex = 0; explicitIndex < explicitSectors.length; explicitIndex++) {
-          appendPoint(explicitSectors[explicitIndex], start, end, grade, element);
-        }
-        continue;
-      }
-
-      var intersections = [];
-      for (var rangeIndex = 0; rangeIndex < rangeKeys.length; rangeIndex++) {
-        var range = ranges[rangeKeys[rangeIndex]];
-        var partStart = Math.max(start, range.min);
-        var partEnd = Math.min(end, range.max);
-        if (partEnd > partStart) intersections.push({ sector: range.sector, start: partStart, end: partEnd });
-      }
-      if (!intersections.length) {
-        appendPoint(findSectionSectorForCoordinate(mapData, (start + end) / 2), start, end, grade, element);
-      } else if (intersections.length === 1) {
-        appendPoint(intersections[0].sector, start, end, grade, element);
-      } else {
-        for (var partIndex = 0; partIndex < intersections.length; partIndex++) {
-          appendPoint(intersections[partIndex].sector, intersections[partIndex].start, intersections[partIndex].end, grade, element);
-        }
-      }
-    }
-
-    Object.keys(bySector).forEach(function(sectorKey) {
-      indexProfileElevations(bySector[sectorKey]);
-    });
-    all.sort(function(a, b) {
-      if (a.sector !== b.sector) return a.sector - b.sector;
-      return a.start - b.start;
-    });
-    return { all: all, bySector: bySector };
-  }
-
-  function buildSectionProfileGaps(section, mapData) {
-    var runtime = section && section.runtime && typeof section.runtime === 'object' ? section.runtime : {};
-    var source = Array.isArray(runtime.profile_gaps) ? runtime.profile_gaps : [];
-    var offset = getSectionCoordinateOffset(section);
-    var ranges = getSectionRouteRanges(mapData);
-    var rangeKeys = Object.keys(ranges);
-    var bySector = {};
-    function appendGap(sector, start, end, gap) {
-      if (!isFinite(sector) || !isFinite(start) || !isFinite(end) || end <= start) return;
-      var key = getSectorKey(sector);
-      if (!bySector[key]) bySector[key] = [];
-      bySector[key].push({
-        sector: sector,
-        start: Math.round(start),
-        end: Math.round(end),
-        length: Math.round(end - start),
-        reason: String(gap.reason || 'профиль требует проверки'),
-        source: 'section-json'
-      });
-    }
-    for (var gapIndex = 0; gapIndex < source.length; gapIndex++) {
-      var gap = source[gapIndex] || {};
-      var officialStart = Number(gap.start_m !== undefined ? gap.start_m : gap.startM);
-      var officialEnd = Number(gap.end_m !== undefined ? gap.end_m : gap.endM);
-      if (!isFinite(officialStart) || !isFinite(officialEnd) || officialEnd <= officialStart) continue;
-      var start = officialStart + offset;
-      var end = officialEnd + offset;
-      if (isFinite(Number(gap.sector))) {
-        appendGap(Number(gap.sector), start, end, gap);
-        continue;
-      }
-      var matched = false;
-      for (var rangeIndex = 0; rangeIndex < rangeKeys.length; rangeIndex++) {
-        var range = ranges[rangeKeys[rangeIndex]];
-        var partStart = Math.max(start, range.min);
-        var partEnd = Math.min(end, range.max);
-        if (partEnd <= partStart) continue;
-        appendGap(range.sector, partStart, partEnd, gap);
-        matched = true;
-      }
-      if (!matched) appendGap(findSectionSectorForCoordinate(mapData, (start + end) / 2), start, end, gap);
-    }
-    Object.keys(bySector).forEach(function(sectorKey) {
-      bySector[sectorKey].sort(function(a, b) { return a.start - b.start; });
-    });
-    return bySector;
-  }
-
-  function getSectionObjectCoordinate(item, offset) {
-    if (!item || typeof item !== 'object') return NaN;
-    var chainage = Number(item.chainage_m !== undefined ? item.chainage_m : item.coordinate_m);
-    if (isFinite(chainage)) return Math.round(chainage + offset);
-    var km = Number(item.km);
-    if (isFinite(km)) return Math.round(km * 1000 + offset);
-    var coordinate = Number(item.coordinate);
-    return isFinite(coordinate) ? Math.round(coordinate) : NaN;
-  }
-
-  function buildSectionObjectStore(section, mapData, fileKey) {
-    var offset = getSectionCoordinateOffset(section);
-    var sources = [
-      { type: '2', items: section && Array.isArray(section.stations) ? section.stations : [] },
-      { type: '1', items: section && Array.isArray(section.signals) ? section.signals : [] },
-      { type: '4', items: section && Array.isArray(section.whistle_points) ? section.whistle_points : [] }
-    ];
-    var all = [];
-    var bySector = {};
-    for (var sourceIndex = 0; sourceIndex < sources.length; sourceIndex++) {
-      var source = sources[sourceIndex];
-      for (var itemIndex = 0; itemIndex < source.items.length; itemIndex++) {
-        var item = source.items[itemIndex] || {};
-        var coordinate = getSectionObjectCoordinate(item, offset);
-        var name = String(item.name || item.note || '').trim();
-        if (!isFinite(coordinate) || !name) continue;
-        var sectors = isFinite(Number(item.sector))
-          ? [Number(item.sector)]
-          : findSectionSectorsForCoordinate(mapData, coordinate);
-        var length = Math.max(0, Math.round(Number(item.length_m || item.len_m || 0)));
-        for (var sectorIndex = 0; sectorIndex < sectors.length; sectorIndex++) {
-          var sector = sectors[sectorIndex];
-          if (!isFinite(sector)) continue;
-          var object = {
-            fileKey: fileKey,
-            sector: sector,
-            type: source.type,
-            name: name,
-            coordinate: coordinate,
-            length: length,
-            end: coordinate + length,
-            speed: null,
-            confidence: item.confidence ? String(item.confidence) : '',
-            signalType: item.type ? String(item.type) : '',
-            source: 'section-json'
-          };
-          all.push(object);
-          var key = getSectorKey(sector);
-          if (!bySector[key]) bySector[key] = [];
-          bySector[key].push(object);
-        }
-      }
-    }
-    Object.keys(bySector).forEach(function(sectorKey) {
-      bySector[sectorKey].sort(function(a, b) { return a.coordinate - b.coordinate; });
-    });
-    all.sort(function(a, b) {
-      if (a.sector !== b.sector) return a.sector - b.sector;
-      return a.coordinate - b.coordinate;
-    });
-    return {
-      all: all,
-      bySector: bySector,
-      directionEven: null,
-      directionStats: { evenSignals: 0, oddSignals: 0 }
-    };
-  }
-
-  function parseSectionPackage(text, fileKey) {
-    var section = typeof text === 'string' ? JSON.parse(text) : text;
-    if (!section || typeof section !== 'object') throw new Error('Пустой JSON участка');
-    var schemaVersion = String(section.schema_version || section.schemaVersion || '');
-    if (!/^1(?:\.|$)/.test(schemaVersion)) throw new Error('Неподдерживаемая версия JSON участка: ' + (schemaVersion || 'не указана'));
-    var mapData = buildSectionRouteData(section);
-    var profile = buildSectionProfile(section, mapData);
-    if (!profile.all.length) throw new Error('JSON участка не содержит профиль пути');
-    profile.gapsBySector = buildSectionProfileGaps(section, mapData);
-    var store = buildSectionObjectStore(section, mapData, fileKey || String(section.id || 'section'));
-    return {
-      section: section,
-      mapData: mapData,
-      profile: profile,
-      speed: { all: [], bySector: {} },
-      objectStores: [store]
-    };
-  }
-
-  function mergeSectionMapBundles(parts) {
-    var points = [];
-    var segments = [];
-    var profileAll = [];
-    var profileBySector = {};
-    var profileGapsBySector = {};
-    var objectStores = [];
-    var pointSeen = {};
-    var segmentSeen = {};
-    var profileSeen = {};
-    for (var partIndex = 0; partIndex < parts.length; partIndex++) {
-      var part = parts[partIndex];
-      var partPoints = part.mapData.points || [];
-      for (var pointIndex = 0; pointIndex < partPoints.length; pointIndex++) {
-        var point = partPoints[pointIndex];
-        var pointKey = [point.pathId, point.sector, point.ordinate, point.lat.toFixed(7), point.lon.toFixed(7)].join(':');
-        if (pointSeen[pointKey]) continue;
-        pointSeen[pointKey] = true;
-        points.push(point);
-      }
-      var partSegments = part.mapData.segments || [];
-      for (var segmentIndex = 0; segmentIndex < partSegments.length; segmentIndex++) {
-        var segment = partSegments[segmentIndex];
-        var segmentKey = [segment.pathId, segment.sector, segment.start.ordinate, segment.end.ordinate].join(':');
-        if (segmentSeen[segmentKey]) continue;
-        segmentSeen[segmentKey] = true;
-        segments.push(segment);
-      }
-      var partProfile = part.profile.all || [];
-      for (var profileIndex = 0; profileIndex < partProfile.length; profileIndex++) {
-        var profilePoint = partProfile[profileIndex];
-        var profileKey = [profilePoint.sector, profilePoint.start, profilePoint.end, profilePoint.grade].join(':');
-        if (profileSeen[profileKey]) continue;
-        profileSeen[profileKey] = true;
-        profileAll.push(profilePoint);
-        var sectorKey = getSectorKey(profilePoint.sector);
-        if (!profileBySector[sectorKey]) profileBySector[sectorKey] = [];
-        profileBySector[sectorKey].push(profilePoint);
-      }
-      var partGaps = part.profile.gapsBySector || {};
-      Object.keys(partGaps).forEach(function(gapSectorKey) {
-        if (!profileGapsBySector[gapSectorKey]) profileGapsBySector[gapSectorKey] = [];
-        profileGapsBySector[gapSectorKey] = profileGapsBySector[gapSectorKey].concat(partGaps[gapSectorKey] || []);
-      });
-      objectStores = objectStores.concat(part.objectStores || []);
-    }
-    points.sort(function(a, b) {
-      if (a.sector !== b.sector) return a.sector - b.sector;
-      return a.ordinate - b.ordinate;
-    });
-    profileAll = [];
-    Object.keys(profileBySector).forEach(function(sectorKey) {
-      var source = profileBySector[sectorKey].sort(function(a, b) { return a.start - b.start; });
-      var normalized = [];
-      for (var profileIndex = 0; profileIndex < source.length; profileIndex++) {
-        var current = source[profileIndex];
-        var previous = normalized.length ? normalized[normalized.length - 1] : null;
-        if (previous && current.start < previous.end) {
-          if (Math.abs(Number(previous.grade) - Number(current.grade)) > 0.0001) {
-            throw new Error(
-              'Конфликт профиля в секторе ' + sectorKey + ': ' +
-              Math.round(current.start) + '–' + Math.round(Math.min(previous.end, current.end)) + ' м'
-            );
-          }
-          previous.end = Math.max(previous.end, current.end);
-          previous.length = previous.end - previous.start;
-          continue;
-        }
-        normalized.push(current);
-      }
-      profileBySector[sectorKey] = indexProfileElevations(normalized);
-      profileAll = profileAll.concat(profileBySector[sectorKey]);
-    });
-    profileAll.sort(function(a, b) {
-      if (a.sector !== b.sector) return a.sector - b.sector;
-      return a.start - b.start;
-    });
-    Object.keys(profileGapsBySector).forEach(function(sectorKey) {
-      var source = profileGapsBySector[sectorKey].sort(function(a, b) { return a.start - b.start; });
-      var merged = [];
-      for (var gapIndex = 0; gapIndex < source.length; gapIndex++) {
-        var gap = source[gapIndex];
-        var previous = merged.length ? merged[merged.length - 1] : null;
-        if (previous && gap.start <= previous.end) {
-          previous.end = Math.max(previous.end, gap.end);
-          previous.length = previous.end - previous.start;
-          if (previous.reason.indexOf(gap.reason) === -1) previous.reason += '; ' + gap.reason;
-        } else {
-          merged.push(gap);
-        }
-      }
-      profileGapsBySector[sectorKey] = merged;
-    });
-    var mergedObjects = [];
-    var mergedObjectsBySector = {};
-    var objectSeen = {};
-    for (var storeIndex = 0; storeIndex < objectStores.length; storeIndex++) {
-      var storeObjects = objectStores[storeIndex] && Array.isArray(objectStores[storeIndex].all)
-        ? objectStores[storeIndex].all
-        : [];
-      for (var objectIndex = 0; objectIndex < storeObjects.length; objectIndex++) {
-        var object = storeObjects[objectIndex];
-        var objectKey = [object.type, normalizeRouteName(object.name), object.sector, object.coordinate].join(':');
-        if (objectSeen[objectKey]) continue;
-        objectSeen[objectKey] = true;
-        object.fileKey = 'section-json';
-        mergedObjects.push(object);
-        var objectSectorKey = getSectorKey(object.sector);
-        if (!mergedObjectsBySector[objectSectorKey]) mergedObjectsBySector[objectSectorKey] = [];
-        mergedObjectsBySector[objectSectorKey].push(object);
-      }
-    }
-    mergedObjects.sort(function(a, b) {
-      if (a.sector !== b.sector) return a.sector - b.sector;
-      return a.coordinate - b.coordinate;
-    });
-    Object.keys(mergedObjectsBySector).forEach(function(sectorKey) {
-      mergedObjectsBySector[sectorKey].sort(function(a, b) { return a.coordinate - b.coordinate; });
-    });
-    var mergedObjectStore = {
-      all: mergedObjects,
-      bySector: mergedObjectsBySector,
-      directionEven: null,
-      directionStats: { evenSignals: 0, oddSignals: 0 }
-    };
-    return {
-      mapData: { points: points, segments: segments },
-      profile: { all: profileAll, bySector: profileBySector, gapsBySector: profileGapsBySector },
-      speed: { all: [], bySector: {} },
-      objectStores: [mergedObjectStore],
-      objectKeys: ['section-json'],
-      sections: parts.map(function(part) { return part.section; })
-    };
-  }
-
   function loadSectionMapBundle(map) {
     var normalized = normalizeMapConfig(map);
     if (!normalized || !normalized.sections.length) return Promise.reject(new Error('JSON участки не указаны'));
@@ -9227,14 +6956,17 @@
     if (tracker.assetPromise && tracker.assetMapId === tracker.currentMap.id) return tracker.assetPromise;
 
     var requestedMap = tracker.currentMap || DEFAULT_MAP;
+    var loadToken = ++tracker.assetLoadToken;
     tracker.assetMapId = requestedMap.id;
     resetMapData();
     tracker.status = 'loading';
-    tracker.assetPromise = loadManifest().then(function(mapConfig) {
-      var map = tracker.currentMap || mapConfig || DEFAULT_MAP;
-      tracker.assetMapId = map.id;
-      return loadRuntimeMapBundle(map);
+    tracker.assetPromise = loadManifest().then(function() {
+      if (!tracker.currentMap || tracker.currentMap.id !== requestedMap.id) return null;
+      return loadRuntimeMapBundle(requestedMap);
     }).then(function(bundle) {
+      if (!bundle || loadToken !== tracker.assetLoadToken || !tracker.currentMap || tracker.currentMap.id !== requestedMap.id) {
+        return false;
+      }
       applyRuntimeMapBundle(bundle);
       if (tracker.speedDocs) refreshSpeedDocsSectorIndex();
       tracker.assetsLoaded = true;
@@ -9251,7 +6983,11 @@
       if (tracker.mapPicker && tracker.mapPicker.root && !tracker.mapPicker.root.classList.contains('hidden')) {
         renderMapPicker();
       }
+      return true;
     }).catch(function(error) {
+      if (loadToken !== tracker.assetLoadToken || !tracker.currentMap || tracker.currentMap.id !== requestedMap.id) {
+        return false;
+      }
       tracker.assetsLoaded = false;
       tracker.assetsError = error && error.message ? error.message : 'Карта ЭК не загружена';
       tracker.status = 'asset-error';
@@ -9260,74 +6996,10 @@
       if (tracker.mapPicker && tracker.mapPicker.root && !tracker.mapPicker.root.classList.contains('hidden')) {
         renderMapPicker();
       }
+      return false;
     });
 
     return tracker.assetPromise;
-  }
-
-  function haversine(lat1, lon1, lat2, lon2) {
-    var p1 = lat1 * Math.PI / 180;
-    var p2 = lat2 * Math.PI / 180;
-    var dLat = (lat2 - lat1) * Math.PI / 180;
-    var dLon = (lon2 - lon1) * Math.PI / 180;
-    var a = Math.sin(dLat / 2) * Math.sin(dLat / 2) +
-      Math.cos(p1) * Math.cos(p2) * Math.sin(dLon / 2) * Math.sin(dLon / 2);
-    return EARTH_RADIUS_M * 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
-  }
-
-  function projectToSegment(location, segment) {
-    var a = segment.start;
-    var b = segment.end;
-    var lat0 = ((a.lat + b.lat + location.lat) / 3) * Math.PI / 180;
-    var ax = 0;
-    var ay = 0;
-    var bx = (b.lon - a.lon) * Math.PI / 180 * Math.cos(lat0) * EARTH_RADIUS_M;
-    var by = (b.lat - a.lat) * Math.PI / 180 * EARTH_RADIUS_M;
-    var px = (location.lon - a.lon) * Math.PI / 180 * Math.cos(lat0) * EARTH_RADIUS_M;
-    var py = (location.lat - a.lat) * Math.PI / 180 * EARTH_RADIUS_M;
-    var vx = bx - ax;
-    var vy = by - ay;
-    var lenSq = vx * vx + vy * vy;
-    if (lenSq <= 0) return null;
-    var t = ((px - ax) * vx + (py - ay) * vy) / lenSq;
-    var clamped = Math.max(0, Math.min(1, t));
-    var qx = ax + vx * clamped;
-    var qy = ay + vy * clamped;
-    var distance = Math.sqrt(Math.pow(px - qx, 2) + Math.pow(py - qy, 2));
-    var lineCoordinate = a.ordinate + (b.ordinate - a.ordinate) * clamped;
-
-    return {
-      distance: distance,
-      lineCoordinate: lineCoordinate,
-      sector: segment.sector,
-      start: a,
-      end: b,
-      t: clamped
-    };
-  }
-
-  function findNearestPoint(location) {
-    return findNearestPointInList(location, tracker.routePoints);
-  }
-
-  function findNearestPointInList(location, points) {
-    var best = null;
-    var source = Array.isArray(points) ? points : [];
-    for (var i = 0; i < source.length; i++) {
-      var point = source[i];
-      var distance = haversine(location.lat, location.lon, point.lat, point.lon);
-      if (!best || distance < best.distance) {
-        best = {
-          distance: distance,
-          lineCoordinate: point.ordinate,
-          sector: point.sector,
-          start: point,
-          end: point,
-          t: 0
-        };
-      }
-    }
-    return best;
   }
 
   function findProjectionInRoute(coords, routeSegments, routePoints) {
@@ -9819,54 +7491,6 @@
     });
   }
 
-  function getRailKmPkParts(value) {
-    if (!isFinite(value)) return { km: null, pk: null, meters: null };
-    var coordinate = Math.max(0, Math.round(value));
-    var meters = coordinate % 1000;
-    return {
-      // ЭК хранит метры после предыдущего километрового знака: 3749+373
-      // в рабочей записи отображается как 3750 км 3 пк.
-      km: Math.floor(coordinate / 1000) + 1,
-      pk: Math.floor(meters / 100),
-      meters: meters
-    };
-  }
-
-  function formatLineCoordinate(value) {
-    if (!isFinite(value)) return '—';
-    var parts = getRailKmPkParts(value);
-    return parts.km + ' км ' + parts.pk + ' пк';
-  }
-
-  function formatTimer(ms) {
-    var total = Math.max(0, Math.floor(ms / 1000));
-    var h = Math.floor(total / 3600);
-    var m = Math.floor((total % 3600) / 60);
-    var s = total % 60;
-    if (h > 0) {
-      return String(h).padStart(2, '0') + ':' + String(m).padStart(2, '0') + ':' + String(s).padStart(2, '0');
-    }
-    return String(m).padStart(2, '0') + ':' + String(s).padStart(2, '0');
-  }
-
-  function formatTime(date) {
-    try {
-      return new Intl.DateTimeFormat('ru-RU', {
-        timeZone: 'Europe/Moscow',
-        hour: '2-digit',
-        minute: '2-digit',
-        second: '2-digit',
-        hour12: false
-      }).format(date).replace(/\./g, ':');
-    } catch (error) {
-      var utcMs = date.getTime() + date.getTimezoneOffset() * 60000;
-      var msk = new Date(utcMs + 3 * 60 * 60000);
-      return String(msk.getHours()).padStart(2, '0') + ':' +
-        String(msk.getMinutes()).padStart(2, '0') + ':' +
-        String(msk.getSeconds()).padStart(2, '0');
-    }
-  }
-
   function getTimerElapsed() {
     var elapsed = tracker.timerElapsedMs;
     if (tracker.timerRunning) {
@@ -9905,12 +7529,14 @@
     setGpsStatus('GPS', 'is-live');
     updateTripMetricsFromPosition(position);
 
+    var projection = null;
     if (!tracker.assetsLoaded) {
       tracker.projection = null;
       tracker.status = 'loading';
       updateAutoPositionState('loading', null, 'GPS получен, карта еще загружается.');
     } else {
-      applyTrackProjection(position.coords);
+      projection = applyTrackProjection(position.coords);
+      recordRawLearningSample(position, projection);
     }
     requestDraw();
   }
@@ -9987,6 +7613,7 @@
 
   function getGpsPollOptions() {
     if (isPageHidden()) return GPS_HIDDEN_OPTIONS;
+    if (tracker.rawCaptureSession && tracker.rawCaptureSession.active) return GPS_CAPTURE_OPTIONS;
     return GPS_ACTIVE_OPTIONS;
   }
 
@@ -9994,6 +7621,9 @@
     if (!shouldKeepGpsWatching()) return 0;
     if (hasError) return GPS_ERROR_POLL_INTERVAL_MS;
     if (isPageHidden()) return GPS_HIDDEN_POLL_INTERVAL_MS;
+    if (tracker.rawCaptureSession && tracker.rawCaptureSession.active) {
+      return tracker.watchId !== null ? GPS_CAPTURE_WATCHDOG_INTERVAL_MS : GPS_CAPTURE_POLL_INTERVAL_MS;
+    }
     var rawSpeed = tracker.lastLocation && tracker.lastLocation.coords
       ? Number(tracker.lastLocation.coords.speed)
       : NaN;
@@ -10213,7 +7843,9 @@
 
     // watchPosition keeps Android/Telegram WebView GPS warm; polling remains a fallback
     // and helps recover from WebView implementations that stop watch callbacks.
-    scheduleGpsPoll(tracker.watchId !== null ? GPS_START_POLL_INTERVAL_MS : 0);
+    scheduleGpsPoll(tracker.watchId !== null
+      ? (tracker.rawCaptureSession && tracker.rawCaptureSession.active ? GPS_CAPTURE_WATCHDOG_INTERVAL_MS : GPS_START_POLL_INTERVAL_MS)
+      : 0);
   }
 
   function stopWatchingGps() {
@@ -10439,86 +8071,6 @@
     ctx.restore();
   }
 
-  function getBottomMetricRect(w, h) {
-    var inset = getPanelInset(w);
-    var height = h < 560 ? 52 : 58;
-    var y = h - height - 74;
-    y = Math.max(172, y);
-    if (y + height > h - 58) y = Math.max(172, h - height - 58);
-    return {
-      x: inset,
-      y: Math.round(y),
-      width: w - inset * 2,
-      height: height
-    };
-  }
-
-  function getProfilePanelRect(w, h) {
-    var inset = getPanelInset(w);
-    var metrics = getBottomMetricRect(w, h);
-    var height = h < 620 ? 104 : 124;
-    var y = Math.min(Math.round(h * 0.59), metrics.y - height - 18);
-    y = Math.max(150, y);
-    if (y + height > metrics.y - 12) {
-      y = Math.max(150, metrics.y - height - 12);
-    }
-    return {
-      x: inset,
-      y: Math.round(y),
-      width: w - inset * 2,
-      height: height
-    };
-  }
-
-  function getRoutePanelRect(w, h) {
-    var inset = getPanelInset(w);
-    var profile = getProfilePanelRect(w, h);
-    var height = h < 620 ? 104 : 142;
-    var y = Math.round(h * 0.34);
-    if (y + height > profile.y - 18) {
-      y = profile.y - height - 18;
-    }
-    y = Math.max(140, y);
-    if (y + height > profile.y - 12) {
-      height = Math.max(82, profile.y - y - 12);
-    }
-    return {
-      x: inset,
-      y: Math.round(y),
-      width: w - inset * 2,
-      height: height
-    };
-  }
-
-  function getJourneyPanelRect(w, h) {
-    var inset = getPanelInset(w);
-    var metrics = getBottomMetricRect(w, h);
-    var y = h < 620 ? 142 : 148;
-    var height = Math.max(h < 620 ? 236 : 320, metrics.y - y - 18);
-    return {
-      x: inset,
-      y: Math.round(y),
-      width: w - inset * 2,
-      height: Math.round(height)
-    };
-  }
-
-  function drawMetricTile(ctx, label, value, x, y, width, height, tone) {
-    var valueSize = String(value).length > 9 ? 13 : 18;
-    var valueColor = tone === 'success' ? THEME.green : tone === 'danger' ? THEME.danger : THEME.text;
-    drawPanel(ctx, x, y, width, height, 14, 'rgba(19, 19, 24, 0.74)', THEME.border);
-    drawText(ctx, label, x + 12, y + 20, {
-      size: 10,
-      weight: 800,
-      color: THEME.sub
-    });
-    drawText(ctx, String(value), x + 12, y + height - 14, {
-      size: valueSize,
-      weight: 850,
-      color: valueColor
-    });
-  }
-
   function getCurrentTrackObjectStore() {
     var stores = tracker.trackObjectsByFile || {};
     var keys = Object.keys(stores);
@@ -10629,6 +8181,7 @@
     var acc = tracker.accuracy;
     var n = tracker.gpsSatellitesCount;
     if (n != null && isFinite(n) && n <= 3) return 'is-gps-warn';
+    if (tracker.rawCaptureSession && tracker.rawCaptureSession.active && isFinite(acc) && acc > RAW_CAPTURE_MAX_ACCURACY_M) return 'is-gps-warn';
     if (isFinite(acc) && acc > 75) return 'is-gps-warn';
     return 'is-gps-ok';
   }
@@ -10646,9 +8199,10 @@
 
     var tone = getPoekhaliGpsStackToneClass();
 
-    // The button is now a passive GPS connection indicator. The dot just mirrors
-    // the connection quality tone; there are no recording states.
+    var capture = getRawLearningCaptureState();
     el.classList.remove('is-recording', 'is-preparing', 'is-paused', 'is-blocked');
+    el.classList.toggle('is-recording', capture.active && capture.samples > 0);
+    el.classList.toggle('is-blocked', !!capture.error);
 
     dot.classList.remove('is-dot-rec', 'is-dot-preparing', 'is-dot-pause', 'is-dot-idle', 'is-gps-ok', 'is-gps-warn', 'is-gps-muted', 'is-gps-error');
     dot.textContent = '●';
@@ -10669,6 +8223,15 @@
     var gpsHint = String(el.dataset.fullText || '').trim();
     if (gpsHint && gpsHint !== 'GPS') {
       title = title + ' · ' + gpsHint;
+    }
+    if (capture.error) {
+      title = capture.error;
+    } else if (capture.active) {
+      title = title + (capture.samples > 0
+        ? ' · Контрольный проезд записывается только на устройстве: ' + capture.samples + ' точек. Нажмите, чтобы остановить'
+        : ' · Запись включена; жду GPS не хуже ±' + RAW_CAPTURE_MAX_ACCURACY_M + ' м. Нажмите, чтобы остановить');
+    } else if (capture.available) {
+      title = title + ' · Нажмите GPS, чтобы начать локальную запись контрольного проезда';
     }
     el.title = title;
     el.setAttribute('aria-label', title);
@@ -10766,16 +8329,6 @@
     }
     count += getUserRouteSegmentsForSector(sector).length;
     return count;
-  }
-
-  function getProfileSourceLabel(status) {
-    if (status === 'emap') return 'ЭК';
-    if (status === 'user') return 'GPS уч.';
-    if (status === 'learned') return 'GPS';
-    if (status === 'regime') return 'РК';
-    if (status === 'raw') return 'GPS черн.';
-    if (status === 'fallback') return 'общий';
-    return 'нет';
   }
 
   function getSectorReadiness(sector) {
@@ -11251,74 +8804,6 @@
       null;
   }
 
-  function coordinateToKmPk(value) {
-    var coordinate = Math.max(0, Math.round(Number(value) || 0));
-    var parts = getRailKmPkParts(coordinate);
-    return {
-      km: parts.km,
-      pk: parts.pk
-    };
-  }
-
-  function coordinateToKmPkMeter(value) {
-    var coordinate = Math.max(0, Math.round(Number(value) || 0));
-    var base = coordinateToKmPk(coordinate);
-    return {
-      km: base.km,
-      pk: base.pk,
-      meter: coordinate % 100
-    };
-  }
-
-  function coordinateFromKmPk(km, pk) {
-    var numericKm = Math.max(1, Math.round(Number(km) || 1));
-    var numericPk = Math.max(0, Math.min(9, Math.round(Number(pk) || 0)));
-    return (numericKm - 1) * 1000 + numericPk * 100;
-  }
-
-  function coordinateFromKmPkMeter(km, pk, meter) {
-    var numericMeter = Math.max(0, Math.min(99, Math.round(Number(meter) || 0)));
-    return coordinateFromKmPk(km, pk) + numericMeter;
-  }
-
-  function formatWarningRange(item) {
-    if (!item) return '—';
-    return formatLineCoordinate(item.start) + ' — ' + formatLineCoordinate(item.end);
-  }
-
-  function formatDistanceLabel(value) {
-    if (!isFinite(value)) return '—';
-    var distance = Math.max(0, Math.round(value));
-    if (distance >= 10000) return (distance / 1000).toFixed(0) + ' км';
-    if (distance >= 1000) return (distance / 1000).toFixed(1).replace('.0', '') + ' км';
-    return distance + ' м';
-  }
-
-  function formatGradeLabel(value) {
-    if (!isFinite(value)) return '—';
-    var rounded = Math.round(value * 10) / 10;
-    return (rounded > 0 ? '+' : '') + rounded.toFixed(1) + '‰';
-  }
-
-  function isBamProfileContext(sector) {
-    var map = tracker.currentMap || {};
-    var mapText = String([map.id, map.title, map.sourceName].join(' ')).toLowerCase();
-    if (mapText.indexOf('bam') !== -1 || mapText.indexOf('бам') !== -1) return true;
-
-    var objects = getTrackObjectsForSector(sector);
-    for (var i = 0; i < objects.length; i++) {
-      var objectText = String([objects[i].name, objects[i].fileKey, objects[i].sourceCode, objects[i].sourceName].join(' ')).toLowerCase();
-      if (objectText.indexOf('bam') !== -1 || objectText.indexOf('бам') !== -1) return true;
-    }
-
-    var regimes = getRegimeProfilePointsForSector(sector);
-    for (var r = 0; r < regimes.length; r++) {
-      var regimeText = String([regimes[r].sourceCode, regimes[r].sourceName, regimes[r].sourcePath].join(' ')).toLowerCase();
-      if (regimeText.indexOf('bam') !== -1 || regimeText.indexOf('бам') !== -1) return true;
-    }
-    return false;
-  }
-
   function shouldInvertProfileForDirection(sector) {
     // XML profile grade is stored by increasing ЭК coordinate. The driver needs
     // uphill/downhill by train movement direction. For even direction the train
@@ -11331,16 +8816,6 @@
     return shouldInvertProfileForDirection(sector !== undefined && sector !== null ? sector : point.sector)
       ? -Number(point.grade)
       : Number(point.grade);
-  }
-
-  function maybeApplyRunGpsDirectionFromDelta(lastPoint, nextPoint) {
-    if (!lastPoint || !nextPoint) return false;
-    if (getSectorKey(lastPoint.sector) !== getSectorKey(nextPoint.sector)) return false;
-    var delta = Number(nextPoint.coordinate) - Number(lastPoint.coordinate);
-    if (!isFinite(delta) || Math.abs(delta) < GPS_DIRECTION_MIN_DELTA_M || Math.abs(delta) > 3000) return false;
-    var nextEven = getEvenFromCoordinateDelta(delta);
-    if (nextEven === tracker.even && tracker.directionSource === 'gps') return false;
-    return applyDetectedDirection(nextEven, 'gps', { force: true, updateRun: false });
   }
 
   function formatProfileGradeLabel(point) {
@@ -11435,10 +8910,6 @@
     }
   }
 
-  function clamp(value, min, max) {
-    return Math.max(min, Math.min(max, value));
-  }
-
   function getSectorKey(sector) {
     return isRealNumber(sector) ? String(Math.round(sector)) : '';
   }
@@ -11525,66 +8996,6 @@
   function isObjectInRange(item, left, right) {
     var end = item.length > 0 ? item.end : item.coordinate;
     return end >= left && item.coordinate <= right;
-  }
-
-  function getVisibleTrackObjects(center, halfWindow, sector) {
-    var left = center - halfWindow;
-    var right = center + halfWindow;
-    return getTrackObjectsForSector(sector).filter(function(item) {
-      return isObjectInRange(item, left, right);
-    });
-  }
-
-  function getVisibleSpeedRules(center, halfWindow, sector, visibleObjects) {
-    var left = center - halfWindow;
-    var right = center + halfWindow;
-    var rules = visibleObjects.filter(function(item) {
-      return item.type === '3';
-    }).map(function(item) {
-      return {
-        coordinate: item.coordinate,
-        length: item.length,
-        end: item.end,
-        speed: item.speed,
-        name: item.name,
-        source: 'object'
-      };
-    });
-    var sectorSpeeds = tracker.speedLimitsBySector[getSectorKey(sector)] || [];
-    for (var i = 0; i < sectorSpeeds.length; i++) {
-      var speed = sectorSpeeds[i];
-      if (speed.wayNumber && speed.wayNumber !== tracker.wayNumber) continue;
-      if (!isObjectInRange(speed, left, right)) continue;
-      rules.push({
-        coordinate: speed.coordinate,
-        length: speed.length,
-        end: speed.end,
-        speed: speed.speed,
-        name: speed.name,
-        source: 'speed'
-      });
-    }
-    var userSpeeds = getUserSpeedRulesForSector(sector, left, right);
-    for (var u = 0; u < userSpeeds.length; u++) {
-      var userSpeed = userSpeeds[u];
-      if (userSpeed.wayNumber && userSpeed.wayNumber !== tracker.wayNumber) continue;
-      rules.push({
-        coordinate: userSpeed.coordinate,
-        length: userSpeed.length,
-        end: userSpeed.end,
-        speed: userSpeed.speed,
-        name: userSpeed.name,
-        source: 'user'
-      });
-    }
-    appendRegimeSpeedRules(rules, left, right, sector);
-    appendDocumentSpeedRules(rules, left, right, sector);
-    appendManualBamSpeedRules(rules, left, right, sector);
-    appendAdminMapSpeedRules(rules, left, right, sector);
-    rules.sort(function(a, b) {
-      return a.coordinate - b.coordinate;
-    });
-    return normalizeSpeedRules(rules);
   }
 
   function isDocumentSpeedRuleUsable(rule) {
@@ -11740,211 +9151,6 @@
     return items;
   }
 
-  function formatSpeedDocConflictLine(item) {
-    var direction = item.delta < 0 ? 'строже на ' : 'выше на ';
-    return 'ДОК ' + Math.round(item.docSpeed) +
-      ' · ЭК ' + Math.round(item.ekSpeed) +
-      ' · ' + direction + Math.abs(Math.round(item.delta));
-  }
-
-  function getConflictCard() {
-    if (tracker.conflictCard && tracker.conflictCard.root && tracker.conflictCard.root.parentNode) {
-      return tracker.conflictCard;
-    }
-    var shell = byId('poekhaliModeShell');
-    if (!shell) return null;
-
-    var root = document.createElement('div');
-    root.id = 'poekhaliConflictCard';
-    root.className = 'poekhali-conflict-card hidden';
-    root.setAttribute('aria-live', 'polite');
-
-    var content = document.createElement('div');
-    content.className = 'poekhali-conflict-card-content';
-    root.appendChild(content);
-    shell.appendChild(root);
-
-    tracker.conflictCard = {
-      root: root,
-      content: content
-    };
-    return tracker.conflictCard;
-  }
-
-  function createConflictMetric(labelText, valueText, tone) {
-    var cell = document.createElement('div');
-    cell.className = 'poekhali-conflict-metric';
-    if (tone) cell.classList.add('is-' + tone);
-    var label = document.createElement('span');
-    label.textContent = labelText;
-    var value = document.createElement('strong');
-    value.textContent = valueText || '—';
-    cell.appendChild(label);
-    cell.appendChild(value);
-    return cell;
-  }
-
-  function renderActiveSpeedConflictCard() {
-    var card = getConflictCard();
-    if (!card) return;
-    clearElement(card.content);
-    var item = tracker.activeSpeedConflict;
-    if (!item) {
-      card.root.classList.add('hidden');
-      return;
-    }
-
-    var head = document.createElement('div');
-    head.className = 'poekhali-conflict-card-head';
-    var titleWrap = document.createElement('div');
-    var title = document.createElement('strong');
-    title.textContent = 'Конфликт ЭК/ДОК';
-    var subtitle = document.createElement('span');
-    subtitle.textContent = 'Участок ' + item.sector + ' · ' + formatLineCoordinate(item.coordinate) + ' — ' + formatLineCoordinate(item.end);
-    titleWrap.appendChild(title);
-    titleWrap.appendChild(subtitle);
-    var closeBtn = document.createElement('button');
-    closeBtn.type = 'button';
-    closeBtn.className = 'poekhali-conflict-card-close';
-    closeBtn.textContent = '×';
-    closeBtn.setAttribute('aria-label', 'Закрыть карточку конфликта');
-    closeBtn.addEventListener('click', closeActiveSpeedConflict);
-    head.appendChild(titleWrap);
-    head.appendChild(closeBtn);
-
-    var grid = document.createElement('div');
-    grid.className = 'poekhali-conflict-metrics';
-    grid.appendChild(createConflictMetric('ДОК', Math.round(item.docSpeed), item.delta < 0 ? 'warning' : 'info'));
-    grid.appendChild(createConflictMetric('ЭК', Math.round(item.ekSpeed), 'muted'));
-    grid.appendChild(createConflictMetric('Разница', (item.delta > 0 ? '+' : '') + Math.round(item.delta), item.delta < 0 ? 'warning' : 'info'));
-    var review = getSpeedDocRuleReview(item.doc);
-    grid.appendChild(createConflictMetric('Сверка', getSpeedDocReviewLabel(review), getSpeedDocReviewTone(review)));
-
-    var note = document.createElement('div');
-    note.className = 'poekhali-conflict-card-note';
-    note.textContent = 'В движении применяется документная скорость: слой ДОК имеет приоритет выше старой карты ЭК.';
-
-    var fragment = document.createElement('div');
-    fragment.className = 'poekhali-conflict-card-fragment';
-    var fragmentLabel = document.createElement('span');
-    fragmentLabel.textContent = 'Исходная строка';
-    var fragmentText = document.createElement('b');
-    fragmentText.textContent = item.doc.note || 'не сохранена в индексе';
-    fragment.appendChild(fragmentLabel);
-    fragment.appendChild(fragmentText);
-
-    var source = document.createElement('div');
-    source.className = 'poekhali-conflict-card-source';
-    source.textContent = (item.doc.sourceName || 'Документ') +
-      (item.doc.sourceUpdatedAt ? ' · ' + item.doc.sourceUpdatedAt : '') +
-      (item.doc.page ? ' · стр. ' + item.doc.page : '') +
-      (review.updatedAt ? ' · сверка ' + formatLearningTime(review.updatedAt) : '');
-
-    var actions = document.createElement('div');
-    actions.className = 'poekhali-conflict-card-actions';
-    var sourceBtn = document.createElement('button');
-    sourceBtn.type = 'button';
-    sourceBtn.className = 'poekhali-secondary-action';
-    sourceBtn.textContent = item.doc.sourcePath ? 'Открыть PDF' : 'PDF не найден';
-    sourceBtn.disabled = !item.doc.sourcePath;
-    sourceBtn.addEventListener('click', function() {
-      openSpeedDocSource(item.doc);
-    });
-    var okBtn = document.createElement('button');
-    okBtn.type = 'button';
-    okBtn.className = review.status === 'verified' ? 'poekhali-secondary-action' : 'poekhali-primary-action';
-    okBtn.textContent = review.status === 'verified' ? 'Снять OK' : 'Сверено OK';
-    okBtn.addEventListener('click', function() {
-      setSpeedDocRuleReview(item.doc, review.status === 'verified' ? 'pending' : 'verified');
-      renderActiveSpeedConflictCard();
-      if (tracker.opsSheet && tracker.opsSheet.root && !tracker.opsSheet.root.classList.contains('hidden')) renderOpsSheet();
-    });
-    var problemBtn = document.createElement('button');
-    problemBtn.type = 'button';
-    problemBtn.className = 'poekhali-warning-delete';
-    problemBtn.textContent = review.status === 'problem' ? 'Снять ошибку' : 'Ошибка парсера';
-    problemBtn.addEventListener('click', function() {
-      setSpeedDocRuleReview(item.doc, review.status === 'problem' ? 'pending' : 'problem');
-      renderActiveSpeedConflictCard();
-      if (tracker.opsSheet && tracker.opsSheet.root && !tracker.opsSheet.root.classList.contains('hidden')) renderOpsSheet();
-    });
-    actions.appendChild(sourceBtn);
-    actions.appendChild(okBtn);
-    actions.appendChild(problemBtn);
-
-    card.content.appendChild(head);
-    card.content.appendChild(grid);
-    card.content.appendChild(note);
-    card.content.appendChild(fragment);
-    card.content.appendChild(source);
-    card.content.appendChild(actions);
-    card.root.classList.remove('hidden');
-  }
-
-  function closeActiveSpeedConflict() {
-    tracker.activeSpeedConflict = null;
-    renderActiveSpeedConflictCard();
-  }
-
-  function focusSpeedDocConflict(item) {
-    if (!item) return;
-    tracker.activeSpeedConflict = item;
-    setPreviewProjection({
-      lineCoordinate: item.midpoint,
-      sector: item.sector
-    }, true);
-    closeOpsSheet();
-    renderActiveSpeedConflictCard();
-    requestDraw();
-  }
-
-  function appendDocumentSpeedRules(rules, left, right, sector) {
-    var docs = getDocumentSpeedRulesForSector(sector, left, right);
-    for (var i = 0; i < docs.length; i++) {
-      var doc = docs[i];
-      var conflict = findDocumentSpeedConflict(doc, sector);
-      rules.push({
-        coordinate: doc.coordinate,
-        length: doc.length,
-        end: doc.end,
-        speed: doc.speed,
-        name: doc.name,
-        note: doc.note,
-        source: 'document',
-        sourceName: doc.sourceName,
-        sourceCode: doc.sourceCode,
-        sourceUpdatedAt: doc.sourceUpdatedAt,
-        sourcePath: doc.sourcePath,
-        appliesTo: doc.appliesTo,
-        confidence: doc.confidence,
-        page: doc.page,
-        conflict: conflict
-      });
-    }
-  }
-
-  function appendRegimeSpeedRules(rules, left, right, sector) {
-    var regimeRules = getRegimeSpeedRulesForSector(sector, left, right);
-    for (var i = 0; i < regimeRules.length; i++) {
-      var rule = regimeRules[i];
-      rules.push({
-        coordinate: rule.coordinate,
-        length: rule.length,
-        end: rule.end,
-        speed: rule.speed,
-        name: rule.name || 'РК',
-        note: rule.note,
-        source: 'regime',
-        sourceName: rule.sourceName,
-        sourceCode: rule.sourceCode,
-        sourceUpdatedAt: rule.sourceUpdatedAt,
-        sourcePath: rule.sourcePath,
-        confidence: rule.confidence,
-        page: rule.page
-      });
-    }
-  }
-
   function getEMapProfilePointsForSector(sector) {
     return tracker.profileBySector[getSectorKey(sector)] || [];
   }
@@ -11986,20 +9192,6 @@
     return getRawDraftProfilePointsForSector(sector);
   }
 
-  function getVisibleProfile(center, halfWindow, sector) {
-    var left = center - halfWindow;
-    var right = center + halfWindow;
-    var source = getProfilePointsForSector(sector);
-    var result = [];
-    for (var i = 0; i < source.length; i++) {
-      var p = source[i];
-      if (p.end < left) continue;
-      if (p.start > right) break;
-      result.push(p);
-    }
-    return result;
-  }
-
   function getCurrentProfilePoint(lineCoordinate, sector) {
     var source = getProfilePointsForSectorOrFallback(sector);
     for (var i = 0; i < source.length; i++) {
@@ -12008,13 +9200,6 @@
       if (p.start > lineCoordinate) break;
     }
     return null;
-  }
-
-  function getProfileElevationAt(lineCoordinate, sector) {
-    var point = getCurrentProfilePoint(lineCoordinate, sector);
-    if (!point) return null;
-    var ratio = clamp((lineCoordinate - point.start) / point.length, 0, 1);
-    return point.elevationStart + (point.elevationEnd - point.elevationStart) * ratio;
   }
 
   function findStationContext(center, objects) {
@@ -12033,14 +9218,6 @@
       }
     }
     return best ? best.item : null;
-  }
-
-  function findNextSignal(center, sector) {
-    var objects = getTrackObjectsForSector(sector);
-    for (var i = 0; i < objects.length; i++) {
-      if (objects[i].type === '1' && objects[i].coordinate >= center) return objects[i];
-    }
-    return null;
   }
 
   function findActiveSpeedRule(center, speedRules) {
@@ -12151,10 +9328,6 @@
     var prefix = getSpeedRulePrefix(rule);
     var speed = formatSpeedLabel(rule);
     return prefix ? prefix + ' ' + speed : speed;
-  }
-
-  function xForCoordinate(value, center, centerX) {
-    return centerX + (value - center) / TRACK_METERS_PER_PIXEL;
   }
 
   function getNamedSpeedValue(rule) {
@@ -12303,33 +9476,6 @@
     }
     var next = findNextSpeedRule(center, (rules || []).filter(isFactualSpeedRuleSource));
     return normalizeNextRestriction(next, projection);
-  }
-
-  function applyActiveRestrictionToRun(run, projection, activeRestriction) {
-    if (!run) return null;
-    var active = activeRestriction || resolveActiveRestrictionForProjection(projection || getCurrentProjectionForForm());
-    run.activeRestrictionLabel = active ? active.label : '';
-    run.activeRestrictionSource = active ? active.source : '';
-    run.activeRestrictionSpeedKmh = active ? active.speedKmh : 0;
-    run.activeRestrictionSector = active ? active.sector : 0;
-    run.activeRestrictionStart = active ? active.start : 0;
-    run.activeRestrictionEnd = active ? active.end : 0;
-    run.activeRestrictionDistanceToEnd = active ? active.distanceToEnd : 0;
-    run.activeRestrictionUpdatedAt = active ? active.updatedAt : '';
-    return active;
-  }
-
-  function applyNextRestrictionToRun(run, projection, nextRestriction) {
-    if (!run) return null;
-    var next = nextRestriction || resolveNextRestrictionForProjection(projection || getCurrentProjectionForForm());
-    run.nextRestrictionLabel = next ? next.label : '';
-    run.nextRestrictionSource = next ? next.source : '';
-    run.nextRestrictionSpeedKmh = next ? next.speedKmh : 0;
-    run.nextRestrictionSector = next ? next.sector : 0;
-    run.nextRestrictionCoordinate = next ? next.coordinate : 0;
-    run.nextRestrictionDistanceMeters = next ? next.distance : 0;
-    run.nextRestrictionUpdatedAt = next ? next.updatedAt : '';
-    return next;
   }
 
   function getTrackObjectSourceLabel(item) {
@@ -12494,30 +9640,6 @@
     );
   }
 
-  function applyNextTrackObjectsToRun(run, projection, nextSignal, nextStation) {
-    if (!run) return {
-      signal: null,
-      station: null
-    };
-    var sourceProjection = projection || getCurrentProjectionForForm();
-    var signal = nextSignal || resolveNextSignalForProjection(sourceProjection);
-    var station = nextStation || resolveNextStationForProjection(sourceProjection);
-    run.nextSignalName = signal ? formatSignalNameForDirection(signal.name, getEffectiveSignalDirectionEven()) : '';
-    run.nextSignalSource = signal ? signal.source : '';
-    run.nextSignalSector = signal ? signal.sector : 0;
-    run.nextSignalCoordinate = signal ? signal.coordinate : 0;
-    run.nextSignalDistanceMeters = signal ? signal.distance : 0;
-    run.nextStationName = station ? station.name : '';
-    run.nextStationSource = station ? station.source : '';
-    run.nextStationSector = station ? station.sector : 0;
-    run.nextStationCoordinate = station ? station.coordinate : 0;
-    run.nextStationDistanceMeters = station ? station.distance : 0;
-    return {
-      signal: signal,
-      station: station
-    };
-  }
-
   function getRouteProgressAnchor(station, even, role) {
     if (!station || !isFinite(station.coordinate)) return null;
     var start = Math.max(0, Math.round(Number(station.coordinate) || 0));
@@ -12567,210 +9689,10 @@
     };
   }
 
-  function applyRouteProgressToRun(run, projection, routeProgress) {
-    if (!run) return null;
-    var progress = routeProgress || resolveRouteProgressForProjection(projection || getCurrentProjectionForForm());
-    run.routeFromName = progress ? progress.fromName : '';
-    run.routeToName = progress ? progress.toName : '';
-    run.routeStatus = progress ? progress.status : '';
-    run.routeFromCoordinate = progress ? progress.fromCoordinate : 0;
-    run.routeToCoordinate = progress ? progress.toCoordinate : 0;
-    run.routeDistanceMeters = progress ? progress.distanceMeters : 0;
-    run.routePassedMeters = progress ? progress.passedMeters : 0;
-    run.routeRemainingMeters = progress ? progress.remainingMeters : 0;
-    run.routeOutsideMeters = progress ? progress.outsideMeters : 0;
-    run.routeProgressPct = progress ? progress.progressPct : 0;
-    return progress;
-  }
-
-  function estimateEtaSeconds(distanceMeters, speedKmh) {
-    var distance = Math.max(0, Math.round(Number(distanceMeters) || 0));
-    var speed = Math.max(0, Number(speedKmh) || 0);
-    if (!distance) return 0;
-    if (speed < 3) return 0;
-    return Math.max(1, Math.round(distance / (speed / 3.6)));
-  }
-
   function getCurrentEtaSpeedKmh(fallbackSpeedKmh) {
     var fallback = Number(fallbackSpeedKmh);
     if (isFinite(fallback) && fallback > 0) return fallback;
     return Math.max(0, (Number(tracker.speedMps) || 0) * 3.6);
-  }
-
-  function applyNavigationEtaToRun(run, speedKmh) {
-    if (!run) return run;
-    var speed = getCurrentEtaSpeedKmh(speedKmh);
-    run.nextRestrictionEtaSeconds = estimateEtaSeconds(run.nextRestrictionDistanceMeters, speed);
-    run.nextSignalEtaSeconds = estimateEtaSeconds(run.nextSignalDistanceMeters, speed);
-    run.nextStationEtaSeconds = estimateEtaSeconds(run.nextStationDistanceMeters, speed);
-    var routeDistance = 0;
-    if (run.routeStatus === 'before') {
-      routeDistance = Math.max(0, Math.round(Number(run.routeOutsideMeters) || 0));
-    } else if (run.routeStatus === 'route') {
-      routeDistance = Math.max(0, Math.round(Number(run.routeRemainingMeters) || 0));
-    }
-    run.routeEtaSeconds = estimateEtaSeconds(routeDistance, speed);
-    return run;
-  }
-
-  function getNavigationTargetPriority(kind) {
-    if (kind === 'restriction_end') return 70;
-    if (kind === 'warning') return 65;
-    if (kind === 'restriction') return 60;
-    if (kind === 'signal') return 45;
-    if (kind === 'station') return 40;
-    if (kind === 'route_start') return 30;
-    if (kind === 'route_finish') return 25;
-    return 10;
-  }
-
-  function normalizeNavigationTargetCandidate(candidate) {
-    if (!candidate) return null;
-    var label = String(candidate.label || '').trim();
-    if (!label) return null;
-    var distance = Math.max(0, Math.round(Number(candidate.distanceMeters) || 0));
-    var coordinate = Math.max(0, Math.round(Number(candidate.coordinate) || 0));
-    return {
-      kind: String(candidate.kind || 'target'),
-      label: label,
-      source: String(candidate.source || ''),
-      sector: Math.max(0, Math.round(Number(candidate.sector) || 0)),
-      coordinate: coordinate,
-      distanceMeters: distance,
-      etaSeconds: Math.max(0, Math.round(Number(candidate.etaSeconds) || 0)),
-      priority: isFinite(Number(candidate.priority)) ? Number(candidate.priority) : getNavigationTargetPriority(candidate.kind),
-      speedKmh: Math.max(0, Math.round(Number(candidate.speedKmh) || 0)),
-      updatedAt: String(candidate.updatedAt || new Date().toISOString())
-    };
-  }
-
-  function selectNavigationTarget(candidates) {
-    var best = null;
-    for (var i = 0; i < (candidates || []).length; i++) {
-      var item = normalizeNavigationTargetCandidate(candidates[i]);
-      if (!item) continue;
-      if (!best) {
-        best = item;
-        continue;
-      }
-      if (item.priority >= 90 && best.priority < 90) {
-        best = item;
-        continue;
-      }
-      if (best.priority >= 90 && item.priority < 90) continue;
-      if (item.distanceMeters < best.distanceMeters - 5) {
-        best = item;
-        continue;
-      }
-      if (Math.abs(item.distanceMeters - best.distanceMeters) <= 5 && item.priority > best.priority) {
-        best = item;
-      }
-    }
-    return best;
-  }
-
-  function getRestrictionTargetLabel(label, speedKmh) {
-    var text = String(label || '').trim();
-    var speed = Math.max(0, Math.round(Number(speedKmh) || 0));
-    if (/^скор(?:ость|о)?\.?$/i.test(text)) text = '';
-    if (!text && speed > 0) text = speed + ' км/ч';
-    if (speed > 0 && text && text.indexOf('км/ч') < 0) text += ' км/ч';
-    return text;
-  }
-
-  function resolveNavigationTargetForRun(run, speedKmh) {
-    if (!run) return null;
-    var speed = getCurrentEtaSpeedKmh(speedKmh);
-    var candidates = [];
-    var activeLabel = getRestrictionTargetLabel(run.activeRestrictionLabel, run.activeRestrictionSpeedKmh);
-    var activeDistance = Math.max(0, Math.round(Number(run.activeRestrictionDistanceToEnd) || 0));
-    if (activeLabel && activeDistance > 0) {
-      candidates.push({
-        kind: 'restriction_end',
-        label: 'Конец ' + activeLabel,
-        source: run.activeRestrictionSource,
-        speedKmh: run.activeRestrictionSpeedKmh,
-        sector: run.activeRestrictionSector,
-        coordinate: getDirectionEndCoordinate(run.activeRestrictionStart, run.activeRestrictionEnd, tracker.even),
-        distanceMeters: activeDistance,
-        etaSeconds: estimateEtaSeconds(activeDistance, speed),
-        priority: run.activeRestrictionSource === 'warning' ? 95 : undefined,
-        updatedAt: run.activeRestrictionUpdatedAt
-      });
-    }
-    var restrictionLabel = getRestrictionTargetLabel(run.nextRestrictionLabel, run.nextRestrictionSpeedKmh);
-    if (restrictionLabel) {
-      candidates.push({
-        kind: run.nextRestrictionSource === 'warning' ? 'warning' : 'restriction',
-        label: restrictionLabel,
-        source: run.nextRestrictionSource,
-        speedKmh: run.nextRestrictionSpeedKmh,
-        sector: run.nextRestrictionSector,
-        coordinate: run.nextRestrictionCoordinate,
-        distanceMeters: run.nextRestrictionDistanceMeters,
-        etaSeconds: run.nextRestrictionEtaSeconds,
-        updatedAt: run.nextRestrictionUpdatedAt
-      });
-    }
-    if (run.nextSignalName) {
-      candidates.push({
-        kind: 'signal',
-        label: formatSignalNameForDirection(run.nextSignalName, getEffectiveSignalDirectionEven()),
-        source: run.nextSignalSource,
-        sector: run.nextSignalSector,
-        coordinate: run.nextSignalCoordinate,
-        distanceMeters: run.nextSignalDistanceMeters,
-        etaSeconds: run.nextSignalEtaSeconds
-      });
-    }
-    if (run.nextStationName) {
-      candidates.push({
-        kind: 'station',
-        label: run.nextStationName,
-        source: run.nextStationSource,
-        sector: run.nextStationSector,
-        coordinate: run.nextStationCoordinate,
-        distanceMeters: run.nextStationDistanceMeters,
-        etaSeconds: run.nextStationEtaSeconds
-      });
-    }
-    var routeSector = (run.lastPoint && run.lastPoint.sector) || (run.endPoint && run.endPoint.sector) || (run.startPoint && run.startPoint.sector) || 0;
-    if (run.routeDistanceMeters && run.routeStatus === 'before' && run.routeOutsideMeters > 0) {
-      candidates.push({
-        kind: 'route_start',
-        label: 'Старт ' + (run.routeFromName || 'маршрута'),
-        source: 'route',
-        sector: routeSector,
-        coordinate: run.routeFromCoordinate,
-        distanceMeters: run.routeOutsideMeters,
-        etaSeconds: run.routeEtaSeconds
-      });
-    } else if (run.routeDistanceMeters && run.routeStatus === 'route' && run.routeRemainingMeters > 0) {
-      candidates.push({
-        kind: 'route_finish',
-        label: 'Финиш ' + (run.routeToName || 'маршрута'),
-        source: 'route',
-        sector: routeSector,
-        coordinate: run.routeToCoordinate,
-        distanceMeters: run.routeRemainingMeters,
-        etaSeconds: run.routeEtaSeconds
-      });
-    }
-    return selectNavigationTarget(candidates);
-  }
-
-  function applyNavigationTargetToRun(run, speedKmh) {
-    if (!run) return null;
-    var target = resolveNavigationTargetForRun(run, speedKmh);
-    run.nextTargetKind = target ? target.kind : '';
-    run.nextTargetLabel = target ? target.label : '';
-    run.nextTargetSource = target ? target.source : '';
-    run.nextTargetSector = target ? target.sector : 0;
-    run.nextTargetCoordinate = target ? target.coordinate : 0;
-    run.nextTargetDistanceMeters = target ? target.distanceMeters : 0;
-    run.nextTargetEtaSeconds = target ? target.etaSeconds : 0;
-    run.nextTargetUpdatedAt = target ? target.updatedAt : '';
-    return target;
   }
 
   function normalizeSpeedRules(rules) {
@@ -12839,18 +9761,6 @@
     var source = getProfilePointsForSector(sector);
     if (source.length) return source;
     return getProfilePointsForSector(0);
-  }
-
-  function getVisualTrainLengthMeters(trainMeters, isPreview) {
-    var lengthMeters = Math.max(1, Math.round(Number(trainMeters) || getTrainLengthMeters()));
-    var cap = isPreview ? 260 : 330;
-    return Math.min(lengthMeters, cap);
-  }
-
-  function getTrainTailGuideLengthMeters(trainMeters, visualMeters, isPreview) {
-    var lengthMeters = Math.max(1, Math.round(Number(trainMeters) || getTrainLengthMeters()));
-    if (lengthMeters <= visualMeters + 40) return 0;
-    return Math.min(lengthMeters, visualMeters + (isPreview ? 220 : 360));
   }
 
   function getApkTrackerLayout(w, h) {
@@ -13063,56 +9973,6 @@
     return Math.atan2(y2 - y1, x2 - x1);
   }
 
-  function collectProfileCoordinates(start, end, sector) {
-    var left = Math.min(start, end);
-    var right = Math.max(start, end);
-    var points = {};
-    points[String(Math.round(left))] = left;
-    points[String(Math.round(right))] = right;
-    var source = getProfilePointsForSectorOrFallback(sector);
-    for (var i = 0; i < source.length; i++) {
-      if (source[i].end < left) continue;
-      if (source[i].start > right) break;
-      points[String(Math.round(clamp(source[i].start, left, right)))] = clamp(source[i].start, left, right);
-      points[String(Math.round(clamp(source[i].end, left, right)))] = clamp(source[i].end, left, right);
-    }
-    return Object.keys(points).map(function(key) {
-      return points[key];
-    }).sort(function(a, b) {
-      return a - b;
-    });
-  }
-
-  function drawProfileRange(ctx, layout, center, sector, start, end, offset, stroke, width) {
-    var samples = collectProfileCoordinates(start, end, sector);
-    if (samples.length < 2) return false;
-    var screenPoints = samples.map(function(coord) {
-      return {
-        x: coordinateToApkX(coord, center, layout),
-        y: getProfileYAt(coord, center, sector, layout) + offset
-      };
-    }).sort(function(a, b) {
-      return a.x - b.x;
-    });
-
-    ctx.save();
-    ctx.beginPath();
-    ctx.rect(layout.viewportX, layout.profileTop - 76, layout.viewportWidth, layout.trackY - layout.profileTop + 40);
-    ctx.clip();
-    ctx.strokeStyle = stroke;
-    ctx.lineWidth = width;
-    ctx.lineCap = 'round';
-    ctx.lineJoin = 'round';
-    ctx.beginPath();
-    ctx.moveTo(screenPoints[0].x, screenPoints[0].y);
-    for (var i = 1; i < screenPoints.length; i++) {
-      ctx.lineTo(screenPoints[i].x, screenPoints[i].y);
-    }
-    ctx.stroke();
-    ctx.restore();
-    return true;
-  }
-
   function drawApkTrackerHeader(ctx, layout, center, sector, visibleObjects) {
     return;
     var profileStatus = getProfileStatusForSector(sector);
@@ -13227,10 +10087,6 @@
     var right = Math.max(start, end);
     if (center >= left && center <= right) return 0;
     return Math.min(Math.abs(center - left), Math.abs(center - right));
-  }
-
-  function isCoordinateNearCenter(coordinate, center, radiusMeters) {
-    return isFinite(coordinate) && Math.abs(coordinate - center) <= radiusMeters;
   }
 
   function isRangeNearCenter(start, end, center, radiusMeters) {
@@ -14185,63 +11041,6 @@
     return priority;
   }
 
-  function getSpeedRuleStroke(rule, isActive, isDimmed, isPreview) {
-    var speed = getSpeedRuleValue(rule);
-    var alpha = isActive ? (isPreview ? 0.86 : 0.96) : isDimmed ? (isPreview ? 0.22 : 0.26) : (isPreview ? 0.48 : 0.58);
-    if (rule.source === 'warning') return 'rgba(251, 113, 133, ' + (isActive ? 0.96 : isDimmed ? 0.38 : 0.82) + ')';
-    if (rule.source === 'document' && rule.conflict) return 'rgba(168, 85, 247, ' + (isActive ? 0.96 : isDimmed ? 0.36 : 0.74) + ')';
-    if (rule.source === 'document') return 'rgba(56, 189, 248, ' + (isActive ? 0.94 : isDimmed ? 0.34 : 0.70) + ')';
-    if (rule.source === 'regime') return 'rgba(251, 146, 60, ' + (isActive ? 0.94 : isDimmed ? 0.30 : 0.62) + ')';
-    if (rule.source === 'user') return 'rgba(' + getUserSpeedCategoryRgb(rule.category) + ', ' + (isActive ? 0.94 : isDimmed ? 0.32 : 0.68) + ')';
-    if (isFinite(speed) && speed <= 45) return 'rgba(244, 63, 94, ' + alpha + ')';
-    if (isFinite(speed) && speed <= 65) return 'rgba(250, 204, 21, ' + alpha + ')';
-    return 'rgba(74, 222, 128, ' + alpha + ')';
-  }
-
-  function getSpeedRuleLabelTone(rule, isWarning, isDocConflict, isDocument, isRegime) {
-    if (isWarning) {
-      return {
-        fill: 'rgba(88, 20, 36, 0.84)',
-        stroke: 'rgba(251, 113, 133, 0.40)',
-        text: '#fecdd3'
-      };
-    }
-    if (isDocConflict) {
-      return {
-        fill: 'rgba(59, 7, 100, 0.82)',
-        stroke: 'rgba(168, 85, 247, 0.42)',
-        text: '#e9d5ff'
-      };
-    }
-    if (isDocument) {
-      return {
-        fill: 'rgba(8, 47, 73, 0.82)',
-        stroke: 'rgba(56, 189, 248, 0.42)',
-        text: '#bae6fd'
-      };
-    }
-    if (isRegime) {
-      return {
-        fill: 'rgba(124, 45, 18, 0.80)',
-        stroke: 'rgba(251, 146, 60, 0.40)',
-        text: '#fed7aa'
-      };
-    }
-    if (rule && rule.source === 'user') {
-      var rgb = getUserSpeedCategoryRgb(rule.category);
-      return {
-        fill: 'rgba(' + rgb + ', 0.18)',
-        stroke: 'rgba(' + rgb + ', 0.42)',
-        text: 'rgba(' + rgb + ', 1)'
-      };
-    }
-    return {
-      fill: 'rgba(9, 10, 15, 0.78)',
-      stroke: 'rgba(255, 255, 255, 0.10)',
-      text: THEME.text
-    };
-  }
-
   function getSpeedRowColor(rule, isDimmed) {
     var speed = getSpeedRuleValue(rule);
     var alpha = isDimmed ? 0.46 : 0.92;
@@ -14355,13 +11154,6 @@
   }
 
   // Speed → colour ramp: 0–39 red, 40–59 yellow, 60+ green.
-  function speedScaleToneColor(v, alpha) {
-    if (!isFinite(v)) return 'rgba(136, 146, 164, ' + alpha + ')';
-    if (v >= 60) return 'rgba(74, 222, 128, ' + alpha + ')';
-    if (v >= 40) return 'rgba(250, 204, 21, ' + alpha + ')';
-    return 'rgba(248, 81, 97, ' + alpha + ')';
-  }
-
   // Speed-scale colour by user category (установленная — зелёный, постоянное —
   // оранжевый, временное — красный). Warnings (ПР) render as temporary/red.
   function speedScaleCategoryColor(rule, alpha) {
@@ -14740,58 +11532,6 @@
     ctx.restore();
   }
 
-  function drawTrainBodyDivisions(ctx, layout, center, sector, trainMeters, bodyHeight, isPreview) {
-    var lengthMeters = Math.max(1, Math.round(Number(trainMeters) || 0));
-    if (lengthMeters < 120) return;
-    var divisionStep = Math.max(120, Math.round(16 / Math.max(0.01, layout.oneMeter)));
-    var maxLines = Math.min(12, Math.floor(lengthMeters / divisionStep));
-    ctx.save();
-    ctx.strokeStyle = isPreview ? 'rgba(3, 7, 18, 0.28)' : 'rgba(3, 7, 18, 0.42)';
-    ctx.lineWidth = 1;
-    for (var i = 1; i <= maxLines; i++) {
-      var offset = Math.min(lengthMeters - 12, i * divisionStep);
-      var coordinate = center - getCurrentCoordinateDirection() * offset;
-      var x = coordinateToApkX(coordinate, center, layout);
-      if (x < layout.viewportX - 14 || x > layout.viewportRight + 14) continue;
-      var y = getProfileYAt(coordinate, center, sector, layout);
-      var angle = getProfileTangentAngle(coordinate, center, sector, layout);
-      ctx.save();
-      ctx.translate(x, y);
-      ctx.rotate(angle);
-      ctx.beginPath();
-      ctx.moveTo(0, -bodyHeight / 2 + 2);
-      ctx.lineTo(0, bodyHeight / 2 - 2);
-      ctx.stroke();
-      ctx.restore();
-    }
-    ctx.restore();
-  }
-
-  function drawTrainProfileWheels(ctx, layout, center, sector, trainMeters, bodyHeight, isPreview) {
-    var lengthMeters = Math.max(1, Math.round(Number(trainMeters) || 0));
-    if (lengthMeters < 80) return;
-    var wheelStep = Math.max(150, Math.round(22 / Math.max(0.01, layout.oneMeter)));
-    var maxWheels = Math.min(10, Math.floor(lengthMeters / wheelStep) + 1);
-    ctx.save();
-    ctx.fillStyle = isPreview ? 'rgba(3, 7, 18, 0.50)' : 'rgba(3, 7, 18, 0.74)';
-    for (var i = 0; i < maxWheels; i++) {
-      var offset = Math.min(lengthMeters - 8, 12 + i * wheelStep);
-      var coordinate = center - getCurrentCoordinateDirection() * offset;
-      var x = coordinateToApkX(coordinate, center, layout);
-      if (x < layout.viewportX - 12 || x > layout.viewportRight + 12) continue;
-      var y = getProfileYAt(coordinate, center, sector, layout);
-      var angle = getProfileTangentAngle(coordinate, center, sector, layout);
-      ctx.save();
-      ctx.translate(x, y);
-      ctx.rotate(angle);
-      ctx.beginPath();
-      ctx.arc(0, bodyHeight / 2 + 2, Math.max(2, layout.xUnit * 0.35), 0, Math.PI * 2);
-      ctx.fill();
-      ctx.restore();
-    }
-    ctx.restore();
-  }
-
   function drawApkTrainProfileBar(ctx, layout, center, sector, trainMeters, isPreview) {
     var points = collectTrainProfilePath(center, sector, layout, trainMeters);
     if (!points || points.length < 2) return;
@@ -14823,114 +11563,6 @@
     ctx.clip();
     stroke(height + 2, 'rgba(0, 0, 0, 0.96)');
     stroke(height, fill);
-    ctx.restore();
-  }
-
-  function getTrainHeadingAngle(center, sector, layout, trainMeters) {
-    var lengthMeters = Math.max(1, Math.round(Number(trainMeters) || getTrainLengthMeters()));
-    var tailCoordinate = center - getCurrentCoordinateDirection() * lengthMeters;
-    var headX = coordinateToApkX(center, center, layout);
-    var headY = getProfileYAt(center, center, sector, layout);
-    var tailX = coordinateToApkX(tailCoordinate, center, layout);
-    var tailY = getProfileYAt(tailCoordinate, center, sector, layout);
-    return Math.atan2(headY - tailY, headX - tailX);
-  }
-
-  function drawTrainHead(ctx, layout, center, sector, trainMeters, bodyHeight, bodyColor, isLive, isPreview) {
-    var headX = layout.headX;
-    var headY = getProfileYAt(center, center, sector, layout);
-    var angle = getTrainHeadingAngle(center, sector, layout, trainMeters);
-    var nose = Math.max(11, Math.min(21, layout.xUnit * 3.0));
-    var cabWidth = Math.max(24, Math.min(42, layout.xUnit * 5.7));
-    var roofLift = Math.max(2, bodyHeight * 0.18);
-    var lowerY = bodyHeight / 2;
-    var upperY = -bodyHeight / 2;
-    var headlight = isLive ? '#dcfce7' : '#e0f2fe';
-    ctx.save();
-    ctx.translate(headX, headY);
-    ctx.rotate(angle);
-    ctx.globalAlpha = isPreview ? 0.90 : 1;
-    ctx.shadowColor = isLive ? 'rgba(74, 222, 128, 0.42)' : 'rgba(56, 189, 248, 0.24)';
-    ctx.shadowBlur = isPreview ? 7 : 11;
-
-    ctx.fillStyle = 'rgba(3, 7, 18, 0.92)';
-    ctx.beginPath();
-    roundRectPath(ctx, -cabWidth - 3, upperY - 2, cabWidth + nose + 6, bodyHeight + 4, 6);
-    ctx.fill();
-
-    ctx.fillStyle = bodyColor;
-    ctx.beginPath();
-    ctx.moveTo(-cabWidth + 6, upperY - roofLift);
-    ctx.lineTo(-4, upperY - roofLift);
-    ctx.quadraticCurveTo(3, upperY - roofLift, 7, upperY + 2);
-    ctx.lineTo(nose, -1);
-    ctx.quadraticCurveTo(nose + 2, 0, nose, 1);
-    ctx.lineTo(7, lowerY - 2);
-    ctx.quadraticCurveTo(3, lowerY + roofLift, -4, lowerY + roofLift);
-    ctx.lineTo(-cabWidth + 5, lowerY + roofLift);
-    ctx.quadraticCurveTo(-cabWidth, lowerY, -cabWidth, lowerY - 4);
-    ctx.lineTo(-cabWidth, upperY + 4);
-    ctx.quadraticCurveTo(-cabWidth, upperY, -cabWidth + 6, upperY - roofLift);
-    ctx.closePath();
-    ctx.fill();
-    ctx.shadowBlur = 0;
-    ctx.strokeStyle = 'rgba(187, 247, 208, 0.78)';
-    ctx.lineWidth = 1.15;
-    ctx.stroke();
-
-    ctx.strokeStyle = 'rgba(3, 7, 18, 0.82)';
-    ctx.lineWidth = 2.2;
-    ctx.beginPath();
-    ctx.moveTo(-cabWidth + 4, lowerY + 1);
-    ctx.lineTo(6, lowerY + 1);
-    ctx.stroke();
-
-    ctx.fillStyle = 'rgba(236, 253, 245, 0.88)';
-    ctx.beginPath();
-    ctx.moveTo(-cabWidth + 6, upperY + 4);
-    ctx.lineTo(-Math.max(9, cabWidth * 0.40), upperY + 4);
-    ctx.lineTo(-Math.max(11, cabWidth * 0.48), -1);
-    ctx.lineTo(-cabWidth + 5, -2);
-    ctx.closePath();
-    ctx.fill();
-
-    ctx.fillStyle = 'rgba(224, 242, 254, 0.78)';
-    fillRoundRect(ctx, -Math.max(17, cabWidth * 0.42), -bodyHeight * 0.22, Math.max(10, cabWidth * 0.24), bodyHeight * 0.42, 2, ctx.fillStyle);
-
-    ctx.fillStyle = headlight;
-    ctx.beginPath();
-    ctx.arc(Math.max(5, nose * 0.58), 0, Math.max(2.1, layout.xUnit * 0.32), 0, Math.PI * 2);
-    ctx.fill();
-    ctx.restore();
-  }
-
-  function drawTrainProfileGuide(ctx, layout, center, sector, trainMeters, isLive, isPreview) {
-    var span = Math.max(130, Math.min(360, Math.round((Number(trainMeters) || getTrainLengthMeters()) * 0.22)));
-    var rear = center - getCurrentCoordinateDirection() * span;
-    var nose = center + getCurrentCoordinateDirection() * Math.min(80, span * 0.28);
-    var left = Math.min(rear, nose);
-    var right = Math.max(rear, nose);
-    ctx.save();
-    drawProfileRange(ctx, layout, center, sector, left, right, 0, 'rgba(3, 7, 18, 0.72)', Math.max(3.2, layout.xUnit * 0.54));
-    drawProfileRange(ctx, layout, center, sector, left, right, 0, isLive ? 'rgba(98, 255, 151, 0.90)' : 'rgba(91, 210, 255, 0.90)', Math.max(2.0, layout.xUnit * 0.34));
-    ctx.restore();
-  }
-
-  function drawApkTrainLengthBlock(ctx, layout, center, sector, trainMeters, isLive, isPreview) {
-    var realMeters = Math.max(TRAIN_LOCO_LENGTH_M, Math.round(Number(trainMeters) || TRAIN_LOCO_LENGTH_M));
-    var minVisibleMeters = Math.round((isPreview ? 34 : 38) / Math.max(0.01, layout.oneMeter));
-    var visualMeters = Math.max(realMeters, minVisibleMeters);
-    var points = collectTrainProfilePath(center, sector, layout, visualMeters);
-    if (!points || points.length < 2) return;
-    var bodyHeight = Math.max(10, Math.min(isPreview ? 15 : 17, layout.xUnit * 2.45));
-    var fill = isLive ? 'rgba(74, 222, 128, 0.56)' : 'rgba(56, 189, 248, 0.42)';
-    var edge = isLive ? 'rgba(187, 247, 208, 0.80)' : 'rgba(125, 211, 252, 0.86)';
-    ctx.save();
-    strokeTrainProfilePath(ctx, points, bodyHeight + 5, 'rgba(3, 7, 18, 0.84)', null, isPreview ? 0.76 : 0.88);
-    strokeTrainProfilePath(ctx, points, bodyHeight, fill, isLive ? 'rgba(74, 222, 128, 0.18)' : 'rgba(56, 189, 248, 0.16)', isPreview ? 0.82 : 0.94);
-    strokeTrainProfilePath(ctx, points, Math.max(2.2, bodyHeight * 0.22), edge, null, isPreview ? 0.56 : 0.72);
-    drawTrainBodyDivisions(ctx, layout, center, sector, visualMeters, bodyHeight, isPreview);
-    drawTrainProfileWheels(ctx, layout, center, sector, visualMeters, bodyHeight, isPreview);
     ctx.restore();
   }
 
@@ -15126,21 +11758,6 @@
     }
   }
 
-  function drawApkPreviewCursor(ctx, layout, center, sector) {
-    var y = getProfileYAt(center, center, sector, layout);
-    ctx.save();
-    ctx.strokeStyle = 'rgba(91, 210, 255, 0.54)';
-    ctx.lineWidth = 1.4;
-    ctx.setLineDash([5, 7]);
-    ctx.beginPath();
-    ctx.moveTo(layout.headX, y + 11);
-    ctx.lineTo(layout.headX, layout.trackY - 16);
-    ctx.stroke();
-    ctx.setLineDash([]);
-
-    ctx.restore();
-  }
-
   function drawApkGradeLabels(ctx, layout, center, sector, bounds, isPreview, labelLayout) {
     var segments = getVisibleProfileSegmentsForWindow(bounds.left, bounds.right, sector);
     var lastX = -Infinity;
@@ -15177,24 +11794,6 @@
       lastX = x + width / 2;
     }
     ctx.restore();
-  }
-
-  function findNextSignalForDirection(center, sector) {
-    var objects = getTrackObjectsForSector(sector).filter(function(item) {
-      return item.type === '1';
-    }).sort(function(a, b) {
-      return a.coordinate - b.coordinate;
-    });
-    if (getCurrentCoordinateDirection() > 0) {
-      for (var i = 0; i < objects.length; i++) {
-        if (objects[i].coordinate >= center) return objects[i];
-      }
-      return null;
-    }
-    for (var j = objects.length - 1; j >= 0; j--) {
-      if (objects[j].coordinate <= center) return objects[j];
-    }
-    return null;
   }
 
   function findNextRegimeControlMarkForDirection(center, sector, kind) {
@@ -15507,229 +12106,6 @@
     ctx.restore();
   }
 
-  function drawReferenceBadge(ctx, panel, center) {
-    if (!tracker.referenceLoaded) return;
-    var context = getReferenceContext(center);
-    var label = context ? context.haul.name : getReferenceSummary();
-    var value = context
-      ? (context.station.name + ' · ' + context.km + ' км')
-      : 'справочник';
-
-    drawText(ctx, label, panel.x + panel.width - 14, panel.y + 24, {
-      size: 10,
-      weight: 850,
-      color: context ? THEME.accentStrong : THEME.sub,
-      align: 'right',
-      maxWidth: Math.max(110, panel.width - 170)
-    });
-    drawText(ctx, value, panel.x + panel.width - 14, panel.y + 44, {
-      size: 11,
-      weight: 800,
-      color: context ? THEME.text : THEME.muted,
-      align: 'right',
-      maxWidth: Math.max(110, panel.width - 170)
-    });
-  }
-
-  function drawKmGrid(ctx, panel, plotTop, speedBottom, trackY, center, halfWindow) {
-    var centerX = panel.x + panel.width / 2;
-    var left = center - halfWindow;
-    var right = center + halfWindow;
-    var firstKm = Math.floor(left / 1000) * 1000;
-    ctx.save();
-    ctx.strokeStyle = 'rgba(136, 146, 164, 0.16)';
-    ctx.lineWidth = 1;
-    for (var km = firstKm; km <= right + 1000; km += 1000) {
-      var x = Math.round(xForCoordinate(km, center, centerX));
-      if (x < panel.x + 12 || x > panel.x + panel.width - 12) continue;
-      ctx.beginPath();
-      ctx.moveTo(x, plotTop);
-      ctx.lineTo(x, speedBottom);
-      ctx.stroke();
-      drawText(ctx, String(getRailKmPkParts(km).km), x, trackY + 36, {
-        size: 10,
-        weight: 750,
-        color: 'rgba(238, 242, 248, 0.62)',
-        align: 'center'
-      });
-    }
-    ctx.restore();
-  }
-
-  function drawProfileLine(ctx, panel, plotTop, plotBottom, center, halfWindow, sector) {
-    var visible = getVisibleProfile(center, halfWindow, sector);
-    if (!visible.length) {
-      ctx.strokeStyle = 'rgba(136, 146, 164, 0.18)';
-      ctx.lineWidth = 1;
-      ctx.beginPath();
-      ctx.moveTo(panel.x + 16, Math.round((plotTop + plotBottom) / 2));
-      ctx.lineTo(panel.x + panel.width - 16, Math.round((plotTop + plotBottom) / 2));
-      ctx.stroke();
-      drawText(ctx, 'ПРОФИЛЬ', panel.x + 14, panel.y + 48, {
-        size: 10,
-        weight: 850,
-        color: THEME.muted
-      });
-      return null;
-    }
-
-    var centerX = panel.x + panel.width / 2;
-    var minElevation = Infinity;
-    var maxElevation = -Infinity;
-    for (var i = 0; i < visible.length; i++) {
-      minElevation = Math.min(minElevation, visible[i].elevationStart, visible[i].elevationEnd);
-      maxElevation = Math.max(maxElevation, visible[i].elevationStart, visible[i].elevationEnd);
-    }
-    var range = Math.max(8, maxElevation - minElevation);
-    var yForElevation = function(elevation) {
-      return plotBottom - ((elevation - minElevation) / range) * (plotBottom - plotTop);
-    };
-
-    ctx.save();
-    ctx.beginPath();
-    roundRectPath(ctx, panel.x + 12, plotTop - 8, panel.width - 24, plotBottom - plotTop + 16, 12);
-    ctx.clip();
-
-    ctx.strokeStyle = 'rgba(136, 146, 164, 0.16)';
-    ctx.lineWidth = 1;
-    ctx.beginPath();
-    ctx.moveTo(panel.x + 16, yForElevation((minElevation + maxElevation) / 2));
-    ctx.lineTo(panel.x + panel.width - 16, yForElevation((minElevation + maxElevation) / 2));
-    ctx.stroke();
-
-    ctx.strokeStyle = 'rgba(91, 210, 255, 0.90)';
-    ctx.lineWidth = 3;
-    ctx.lineCap = 'round';
-    ctx.lineJoin = 'round';
-    ctx.beginPath();
-    var started = false;
-    for (var p = 0; p < visible.length; p++) {
-      var point = visible[p];
-      var x1 = xForCoordinate(point.start, center, centerX);
-      var x2 = xForCoordinate(point.end, center, centerX);
-      var y1 = yForElevation(point.elevationStart);
-      var y2 = yForElevation(point.elevationEnd);
-      if (!started) {
-        ctx.moveTo(x1, y1);
-        started = true;
-      } else {
-        ctx.lineTo(x1, y1);
-      }
-      ctx.lineTo(x2, y2);
-    }
-    ctx.stroke();
-    ctx.restore();
-
-    drawText(ctx, 'ПРОФИЛЬ', panel.x + 14, panel.y + 48, {
-      size: 10,
-      weight: 850,
-      color: THEME.sub
-    });
-
-    var elevation = getProfileElevationAt(center, sector);
-    return elevation === null ? Math.round((plotTop + plotBottom) / 2) : yForElevation(elevation);
-  }
-
-  function drawStations(ctx, panel, trackY, center, objects) {
-    var centerX = panel.x + panel.width / 2;
-    var stations = objects.filter(function(item) { return item.type === '2'; });
-    ctx.save();
-    for (var i = 0; i < stations.length; i++) {
-      var station = stations[i];
-      var x1 = clamp(xForCoordinate(station.coordinate, center, centerX), panel.x + 16, panel.x + panel.width - 16);
-      var x2 = clamp(xForCoordinate(station.end, center, centerX), panel.x + 16, panel.x + panel.width - 16);
-      var width = Math.max(34, x2 - x1);
-      fillRoundRect(ctx, x1, trackY - 58, width, 22, 8, 'rgba(56, 189, 248, 0.14)');
-      strokeRoundRect(ctx, x1 + 0.5, trackY - 57.5, width - 1, 21, 8, 'rgba(56, 189, 248, 0.34)');
-      drawText(ctx, formatHumanTrackObjectName(station.name, 'station', station.coordinate), x1 + width / 2, trackY - 43, {
-        size: 10,
-        weight: 850,
-        color: THEME.accentStrong,
-        align: 'center',
-        maxWidth: width - 8
-      });
-    }
-    ctx.restore();
-  }
-
-  function drawSignals(ctx, panel, trackY, center, objects) {
-    var centerX = panel.x + panel.width / 2;
-    var signals = objects.filter(function(item) { return item.type === '1'; }).slice(0, 28);
-    ctx.save();
-    ctx.strokeStyle = 'rgba(238, 242, 248, 0.62)';
-    ctx.fillStyle = THEME.text;
-    for (var i = 0; i < signals.length; i++) {
-      var signal = signals[i];
-      var x = xForCoordinate(signal.coordinate, center, centerX);
-      if (x < panel.x + 12 || x > panel.x + panel.width - 12) continue;
-      ctx.beginPath();
-      ctx.moveTo(x, trackY - 24);
-      ctx.lineTo(x, trackY + 12);
-      ctx.stroke();
-      ctx.beginPath();
-      ctx.arc(x, trackY - 27, 4, 0, Math.PI * 2);
-      ctx.fill();
-      if (i % 2 === 0) {
-        drawText(ctx, getDisplayTrackObjectName(signal), x, trackY - 36, {
-          size: 9,
-          weight: 800,
-          color: THEME.text,
-          align: 'center',
-          maxWidth: 46
-        });
-      }
-    }
-    ctx.restore();
-  }
-
-  function drawSpeedBands(ctx, panel, y, center, speedRules) {
-    var centerX = panel.x + panel.width / 2;
-    ctx.save();
-    drawText(ctx, 'СКОРОСТИ', panel.x + 14, y - 7, {
-      size: 10,
-      weight: 850,
-      color: THEME.sub
-    });
-    for (var i = 0; i < speedRules.length; i++) {
-      var rule = speedRules[i];
-      var x1 = clamp(xForCoordinate(rule.coordinate, center, centerX), panel.x + 16, panel.x + panel.width - 16);
-      var x2 = clamp(xForCoordinate(rule.end, center, centerX), panel.x + 16, panel.x + panel.width - 16);
-      var width = Math.max(24, x2 - x1);
-      var speed = isFinite(rule.speed) ? rule.speed : 0;
-      var fill = speed <= 40 ? 'rgba(244, 63, 94, 0.28)' : speed <= 60 ? 'rgba(250, 204, 21, 0.24)' : 'rgba(74, 222, 128, 0.18)';
-      var stroke = speed <= 40 ? 'rgba(244, 63, 94, 0.52)' : speed <= 60 ? 'rgba(250, 204, 21, 0.45)' : 'rgba(74, 222, 128, 0.42)';
-      fillRoundRect(ctx, x1, y, width, 18, 7, fill);
-      strokeRoundRect(ctx, x1 + 0.5, y + 0.5, width - 1, 17, 7, stroke);
-      drawText(ctx, formatSpeedLabel(rule), x1 + width / 2, y + 13, {
-        size: 10,
-        weight: 850,
-        color: THEME.text,
-        align: 'center',
-        maxWidth: width - 6
-      });
-    }
-    ctx.restore();
-  }
-
-  function drawTrainMarker(ctx, x, y) {
-    var trainColor = tracker.status === 'gps-live' ? THEME.green : THEME.danger;
-    ctx.save();
-    ctx.shadowColor = tracker.status === 'gps-live' ? 'rgba(74, 222, 128, 0.42)' : 'rgba(244, 63, 94, 0.32)';
-    ctx.shadowBlur = 18;
-    ctx.fillStyle = trainColor;
-    ctx.strokeStyle = THEME.bg;
-    ctx.lineWidth = 3;
-    ctx.beginPath();
-    ctx.moveTo(x, y - 27);
-    ctx.lineTo(x + 17, y + 18);
-    ctx.lineTo(x - 17, y + 18);
-    ctx.closePath();
-    ctx.fill();
-    ctx.shadowBlur = 0;
-    ctx.stroke();
-    ctx.restore();
-  }
-
   function drawRouteStrip(ctx, w, h, displayProjection) {
     var projection = displayProjection || tracker.projection;
     if (!projection || (!projection.onTrack && !projection.preview)) {
@@ -15891,6 +12267,7 @@
     var timerMs = 0;
     try { timerMs = getTimerElapsed(); } catch (e) {}
     var techSpeed = getTripTechnicalSpeedKmh();
+    var gpsCapture = getRawLearningCaptureState();
     var headProjection = (tracker.projection && tracker.projection.onTrack) ? tracker.projection : (tracker.nearestProjection || null);
     if (!headProjection) { try { headProjection = getPreviewProjection(); } catch (e) { headProjection = null; } }
     var headPos = headProjection && isRealNumber(headProjection.lineCoordinate)
@@ -15915,7 +12292,12 @@
       timerMs: timerMs,
       techSpeedKmh: techSpeed,
       gpsTone: getPoekhaliGpsStackToneClass(),
-      gpsMeta: getPoekhaliGpsMetaLine()
+      gpsMeta: getPoekhaliGpsMetaLine(),
+      gpsRecording: gpsCapture.active && gpsCapture.samples > 0,
+      gpsCaptureActive: gpsCapture.active,
+      gpsCaptureAvailable: gpsCapture.available,
+      gpsCaptureError: gpsCapture.error || '',
+      gpsRecordedSamples: gpsCapture.samples || 0
     };
   }
 
@@ -16189,6 +12571,8 @@
     resetTripMetrics();
     tracker.runStartPreparing = false;
     tracker.runStartToken = 0;
+    finalizeRawLearningCaptureSession('interrupted');
+    flushLocalLearningSave();
     tracker.active = false;
     resetPoekhaliLiveAlert();
     stopWatchingGps();
@@ -16247,9 +12631,13 @@
     if (liveBtn) {
       liveBtn.addEventListener('click', function() {
         closeMapPicker();
-        // GPS is a passive status indicator now. Tapping only re-kicks the always-on
-        // watch so a stalled/denied fix can be retried (it may re-prompt permission).
-        restartWatchingGps();
+        var capture = getRawLearningCaptureState();
+        if (capture.active || capture.available) {
+          toggleRawLearningCapture();
+        } else {
+          // Without a complete route, tapping still retries a stalled/denied GPS.
+          restartWatchingGps();
+        }
         syncPoekhaliLiveButton();
       });
     }
@@ -16270,6 +12658,15 @@
     });
     if (typeof document !== 'undefined' && document.addEventListener) {
       document.addEventListener('visibilitychange', syncPoekhaliPowerMode);
+      document.addEventListener('visibilitychange', function() {
+        if (document.hidden) flushLocalLearningSave();
+      });
+    }
+    if (typeof window !== 'undefined' && window.addEventListener) {
+      window.addEventListener('pagehide', function() {
+        finalizeRawLearningCaptureSession('interrupted');
+        flushLocalLearningSave();
+      });
     }
   }
 
@@ -16302,4 +12699,11 @@
   window.preparePoekhaliModeEntry = preparePoekhaliModeEntry;
   window.getPoekhaliTrainDetails = getPoekhaliTrainDetails;
   window.setSelectedPoekhaliShiftId = setSelectedPoekhaliShiftId;
+  window.getPoekhaliGpsCaptureState = getRawLearningCaptureState;
+  window.startPoekhaliGpsCapture = function() { return !!startRawLearningCaptureSession(); };
+  window.stopPoekhaliGpsCapture = function() { return finalizeRawLearningCaptureSession('completed'); };
+  window.togglePoekhaliGpsCapture = toggleRawLearningCapture;
+  window.clearPoekhaliGpsCaptures = clearPoekhaliGpsCaptures;
+  window.buildPoekhaliGpsCapturePackage = buildPoekhaliGpsCapturePackage;
+  window.exportPoekhaliGpsCaptures = exportPoekhaliGpsCaptures;
 })();

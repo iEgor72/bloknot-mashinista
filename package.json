@@ -12,6 +12,10 @@
     "memory:log": "python tools/agent_memory.py log",
     "memory:install-hooks": "python tools/agent_memory.py install-hooks",
     "memory:sync": "python tools/agent_memory.py sync --direction push",
+    "storage:backup": "node scripts/storage-maintenance.js backup",
+    "storage:check": "node scripts/storage-maintenance.js check",
+    "storage:restore": "node scripts/storage-maintenance.js restore",
+    "test:server": "node --test \"tests/server/*.test.js\"",
     "maps:download": "node scripts/download-poekhali-maps.mjs",
     "maps:import:android-backup": "python scripts/import-poekhali-android-backup.py",
     "reference:import:tch9": "python scripts/import-tch9-reference.py",
@@ -26,10 +30,13 @@
     "smoke:sw-update": "node scripts/sw-update-smoke.mjs",
     "smoke:local": "node scripts/local-smoke.mjs",
     "smoke:offline": "node scripts/offline-smoke.mjs",
-    "smoke:predeploy": "npm run regime:test && npm run regime:builder:test && npm run sections:validate && npm run sections:test && npm run smoke:sw-update && npm run smoke:poekhali-json && npm run smoke:local && npm run smoke:offline",
+    "smoke:predeploy": "npm run test:server && npm run regime:test && npm run regime:builder:test && npm run sections:validate && npm run sections:test && npm run smoke:sw-update && npm run smoke:poekhali-json && npm run smoke:local && npm run smoke:offline",
     "smoke:prod-cache": "node scripts/prod-cache-smoke.mjs"
   },
   "devDependencies": {
     "@playwright/test": "^1.54.2"
+  },
+  "dependencies": {
+    "better-sqlite3": "12.11.1"
   }
 }

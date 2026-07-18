@@ -177,6 +177,10 @@
       return 'guest';
     }
 
+    // Shared by offline subsystems that keep privacy-sensitive data in
+    // per-account browser storage (for example field GPS captures).
+    window.getOfflineStorageUserId = getOfflineStorageUserId;
+
     function getOfflineStorageKey(baseKey) {
       return baseKey + '_' + getOfflineStorageUserId();
     }
@@ -1006,18 +1010,6 @@
       return formatUtcDateKey(new Date(baseTs + (Number(offsetDays) || 0) * 86400000));
     }
 
-    function isProductionHolidayDateKey(dateKey) {
-      var safeDate = normalizeDateKey(dateKey);
-      if (!safeDate) return false;
-      return !!PRODUCTION_NON_WORKING_DAY_MAP[safeDate];
-    }
-
-    function isProductionShortDayDateKey(dateKey) {
-      var safeDate = normalizeDateKey(dateKey);
-      if (!safeDate) return false;
-      return !!PRODUCTION_SHORT_DAY_MAP[safeDate];
-    }
-
     function compareDateKeys(a, b) {
       var left = normalizeDateKey(a);
       var right = normalizeDateKey(b);
@@ -1027,13 +1019,6 @@
       if (left > right) return 1;
       if (left < right) return -1;
       return 0;
-    }
-
-    function getDaysBetweenDateKeys(startDateKey, endDateKey) {
-      var startTs = parseDateKeyUtc(startDateKey);
-      var endTs = parseDateKeyUtc(endDateKey);
-      if (!isFinite(startTs) || !isFinite(endTs)) return 0;
-      return Math.round((endTs - startTs) / 86400000);
     }
 
     function getShiftsForDate(dateKey) {
@@ -1143,11 +1128,6 @@
       }, 80);
     }
 
-    // Stub — retained so any lingering references don't throw.
-    // Re-implement when PRO gating is needed again (flip ACCESS_UNRESTRICTED).
-    function setAccessRestricted(/*isRestricted*/) {}
-    // function loadProStore() { return { isActive: false }; }
-
     function formatRub(value) {
       var rounded = Math.round(value || 0);
       return rounded.toLocaleString('ru-RU') + ' ₽';
@@ -1157,11 +1137,6 @@
       var monthName = MONTH_NAMES[month0];
       if (!monthName) return 'Доход за месяц';
       return 'Доход за ' + monthName.toLowerCase();
-    }
-
-    function formatPercent(value) {
-      var rounded = Math.round((value || 0) * 10) / 10;
-      return String(rounded).replace(/\.0$/, '') + '%';
     }
 
     function logInstallDebug(message, payload) {
@@ -1299,16 +1274,6 @@
       if (!btn) return;
       btn.textContent = INSTALL_GUIDE_COPY.buttons.copy;
       btn.classList.remove('is-success', 'is-error');
-    }
-
-    function isTelegramWebView() {
-      try {
-        var webApp = getTelegramWebApp();
-        if (webApp && typeof webApp.initData === 'string' && webApp.initData.length > 0) {
-          return true;
-        }
-      } catch (e) {}
-      return /Telegram/i.test(navigator.userAgent || '');
     }
 
     function hasDeferredInstallPrompt() {
@@ -1685,68 +1650,6 @@
       }
 
       return incomeMap;
-    }
-
-    function buildAverageShiftSummary(monthShifts, bounds, shiftIncomeMap) {
-      var shifts = monthShifts || [];
-      var totalDurationMin = 0;
-      var durationCount = 0;
-      var totalIncome = 0;
-      var incomeCount = 0;
-
-      for (var i = 0; i < shifts.length; i++) {
-        var shift = shifts[i];
-        var durationMin = shiftMinutesInRange(shift, bounds.start, bounds.end);
-        if (durationMin > 0) {
-          totalDurationMin += durationMin;
-          durationCount++;
-        }
-
-        var incomeData = shiftIncomeMap ? shiftIncomeMap[String(shift.id)] : null;
-        var incomeAmount = incomeData ? Number(incomeData.amount) : NaN;
-        if (isFinite(incomeAmount) && incomeAmount >= 0) {
-          totalIncome += incomeAmount;
-          incomeCount++;
-        }
-      }
-
-      return {
-        shiftCount: shifts.length,
-        durationCount: durationCount,
-        incomeCount: incomeCount,
-        averageDurationMin: durationCount ? (totalDurationMin / durationCount) : 0,
-        averageIncome: incomeCount ? (totalIncome / incomeCount) : 0
-      };
-    }
-
-    function renderAverageShiftSummary(summary) {
-      var averageEl = document.getElementById('dashboardAverageShift');
-      if (!averageEl) return;
-      averageEl.className = 'dashboard-average';
-
-      if (!summary || summary.shiftCount === 0) {
-        averageEl.textContent = 'Пока нет данных';
-        averageEl.classList.add('is-muted');
-        return;
-      }
-
-      if (summary.shiftCount < MIN_SHIFTS_FOR_AVERAGE) {
-        averageEl.textContent = 'Нужно больше записей';
-        averageEl.classList.add('is-muted');
-        return;
-      }
-
-      var incomeText = summary.incomeCount > 0
-        ? formatRub(summary.averageIncome)
-        : '—';
-      var durationText = summary.durationCount > 0
-        ? formatHoursAndMinutes(summary.averageDurationMin)
-        : '—';
-
-      averageEl.textContent = incomeText + ' · ' + durationText;
-      if (summary.incomeCount === 0 || summary.durationCount === 0) {
-        averageEl.classList.add('is-muted');
-      }
     }
 
     // ── Documentation & PDF Viewer — see scripts/docs-app.js ──
