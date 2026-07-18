@@ -1,14 +1,14 @@
 # Project State
 
 <!-- AUTO_STATUS:START -->
-Generated: 2026-07-18 17:47:05 +1000
+Generated: 2026-07-18 17:50:35 +1000
 
 ## Repository Snapshot
 - Local repo path: `D:\work\bloknot-mashinista-tg`
 - Project memory path: `D:\work\bloknot-mashinista-tg\ai-memory`
 - Branch: `main`
-- HEAD: `9c93d25`
-- Last commit: `9c93d25 fix: remove technical data controls from profile`
+- HEAD: `0291c34`
+- Last commit: `0291c34 chore(memory): record profile data cleanup`
 
 ## Git Remote
 ```text
@@ -20,17 +20,13 @@ origin	https://github.com/iEgor72/bloknot-mashinista.git (push)
 ```text
 codex/next-direction b044dd5 offline mvp
   codex/tabs-ui        117f1fa [origin/codex/tabs-ui] tabs ui
-* main                 9c93d25 [origin/main: ahead 1] fix: remove technical data controls from profile
+* main                 0291c34 [origin/main] chore(memory): record profile data cleanup
   poekhali-rework      2d5f0af chore(memory): refresh after main merge
 ```
 
 ## Worktree
 ```text
 M ai-memory/CHANGELOG.md
- M ai-memory/INDEX.md
- M ai-memory/PROJECT_STATE.md
- M ai-memory/RECENT_COMMITS.md
- M ai-memory/WORKTREE_STATUS.md
  M ai-memory/sessions/2026-07-18.md
 ```
 <!-- AUTO_STATUS:END -->
