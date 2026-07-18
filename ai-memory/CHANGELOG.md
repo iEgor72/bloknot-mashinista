@@ -7689,3 +7689,12 @@ Append-only журнал действий ИИ-агентов по проект�
 - Branch: `main`
 - Methods: `Убраны экспорт и удаление GPS JSON`, `резервная копия и версия кэша из профиля`, `GPS-кнопка оставлена только для статуса`, `релиз поднят до v388`, `выполнены браузерная проверка и полный smoke:predeploy`
 - Files: `index.html`, `scripts/app-init.js`, `scripts/app.js`, `scripts/poekhali-tracker.js`, `scripts/local-smoke.mjs`, `scripts/poekhali-json-smoke.mjs`, `sw.js`, `sw-bootstrap-v388.js`
+
+## 2026-07-18 17:47:00 +1000
+
+- Source: `post-commit`
+- Task: fix: remove technical data controls from profile
+- Branch: `main`
+- Methods: `git post-commit hook`, `automatic memory update`
+- Files: `ai-memory/CHANGELOG.md`, `ai-memory/INDEX.md`, `ai-memory/PROJECT_STATE.md`, `ai-memory/RECENT_COMMITS.md`, `ai-memory/WORKTREE_STATUS.md`, `ai-memory/sessions/2026-07-18.md`, `index.html`, `manifest.webmanifest`, `scripts/app-constants.js`, `scripts/app-init.js`, `scripts/app.js`, `scripts/auth.js`, `scripts/local-smoke.mjs`, `scripts/offline-smoke.mjs`, `scripts/poekhali-backup.js`, `scripts/poekhali-json-smoke.mjs`, `scripts/poekhali-map-parser.js`, `scripts/poekhali-tracker.js`, `scripts/poekhali-utils.js`, `scripts/poekhali-warnings.js`, `scripts/render.js`, `scripts/setup-bot-webhook.py`, `scripts/shift-form.js`, `scripts/sw-update-smoke.mjs`, `scripts/time-utils.js`, `server.js`, `sw-bootstrap-v388.js`, `sw.js`, `tests/server/api.test.js`
+- Notes: Commit: `9c93d2514631d79135aa969f2fc7f7a0f1b8250d` (`9c93d25`) | Author: `iEgor72`
