@@ -7623,3 +7623,20 @@ Append-only журнал действий ИИ-агентов по проект�
 - Branch: `main`
 - Methods: `PWA v386 активируется только с полным runtime JS/CSS`, `shell-code не берется из старых cache namespaces`, `все runtime JS no-store`, `mixed-cache regression удаляет current time-utils`, `подсовывает старый liters runtime и подтверждает сетевое восстановление 2058 кг`
 - Files: `sw.js`, `sw-bootstrap-v386.js`, `index.html`, `manifest.webmanifest`, `scripts/app-constants.js`, `server.js`, `scripts/offline-smoke.mjs`, `scripts/prod-cache-smoke.mjs`, `scripts/sw-update-smoke.mjs`
+
+## 2026-07-18 16:58:44 +1000
+
+- Source: `post-commit`
+- Task: fix: prevent mixed-version PWA runtime
+- Branch: `main`
+- Methods: `git post-commit hook`, `automatic memory update`
+- Files: `ai-memory/CHANGELOG.md`, `ai-memory/sessions/2026-07-18.md`, `index.html`, `manifest.webmanifest`, `scripts/app-constants.js`, `scripts/offline-smoke.mjs`, `scripts/prod-cache-smoke.mjs`, `scripts/setup-bot-webhook.py`, `scripts/sw-update-smoke.mjs`, `server.js`, `sw-bootstrap-v386.js`, `sw.js`, `tests/server/api.test.js`
+- Notes: Commit: `026561c1da3cdb3ba076c9fefe024b2079dcb374` (`026561c`) | Author: `iEgor72`
+
+## 2026-07-18 17:01:01 +1000
+
+- Source: `manual`
+- Task: Production v386: устранено смешивание PWA runtime версий
+- Branch: `main`
+- Methods: `Коммит 026561c`, `full predeploy passed`, `mixed-cache regression 2450 л fixture -> 2058 кг`, `VPS fast-forward and PM2 reload online`, `SQLite integrity ok`, `Telegram menu v386`, `prod-cache smoke confirms time-utils/render no-store and кг`, `browser loads v386 scripts without console errors`
+- Files: `sw.js`, `sw-bootstrap-v386.js`, `index.html`, `manifest.webmanifest`, `scripts/app-constants.js`, `server.js`, `scripts/offline-smoke.mjs`, `scripts/prod-cache-smoke.mjs`, `scripts/sw-update-smoke.mjs`, `tests/server/api.test.js`

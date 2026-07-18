@@ -1,14 +1,14 @@
 # Project State
 
 <!-- AUTO_STATUS:START -->
-Generated: 2026-07-18 16:44:42 +1000
+Generated: 2026-07-18 17:01:02 +1000
 
 ## Repository Snapshot
 - Local repo path: `D:\work\bloknot-mashinista-tg`
 - Project memory path: `D:\work\bloknot-mashinista-tg\ai-memory`
 - Branch: `main`
-- HEAD: `5c556b0`
-- Last commit: `5c556b0 fix: force fresh app entry for cached clients`
+- HEAD: `026561c`
+- Last commit: `026561c fix: prevent mixed-version PWA runtime`
 
 ## Git Remote
 ```text
@@ -20,7 +20,7 @@ origin	https://github.com/iEgor72/bloknot-mashinista.git (push)
 ```text
 codex/next-direction b044dd5 offline mvp
   codex/tabs-ui        117f1fa [origin/codex/tabs-ui] tabs ui
-* main                 5c556b0 [origin/main] fix: force fresh app entry for cached clients
+* main                 026561c [origin/main] fix: prevent mixed-version PWA runtime
   poekhali-rework      2d5f0af chore(memory): refresh after main merge
 ```
 

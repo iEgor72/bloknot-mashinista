@@ -1,6 +1,6 @@
 # Worktree Status
 
-Generated: 2026-07-18 16:44:43 +1000
+Generated: 2026-07-18 17:01:02 +1000
 
 ## git status -sb
 ```text
@@ -17,23 +17,25 @@ Generated: 2026-07-18 16:44:43 +1000
 ```text
 codex/next-direction b044dd5 offline mvp
   codex/tabs-ui        117f1fa [origin/codex/tabs-ui] tabs ui
-* main                 5c556b0 [origin/main] fix: force fresh app entry for cached clients
+* main                 026561c [origin/main] fix: prevent mixed-version PWA runtime
   poekhali-rework      2d5f0af chore(memory): refresh after main merge
 ```
 
 ## HEAD
 ```text
-5c556b0 fix: force fresh app entry for cached clients
- ai-memory/CHANGELOG.md           |  8 ++++++++
+026561c fix: prevent mixed-version PWA runtime
+ ai-memory/CHANGELOG.md           |  8 +++++
  ai-memory/sessions/2026-07-18.md |  1 +
- index.html                       | 28 +++++++++++++--------------
+ index.html                       | 28 ++++++++---------
  manifest.webmanifest             |  2 +-
  scripts/app-constants.js         |  2 +-
- scripts/setup-bot-webhook.py     | 24 ++++++++++++++++-------
- scripts/sw-update-smoke.mjs      | 18 ++++++++---------
- server.js                        | 19 +++++++++++++-----
- sw-bootstrap-v385.js             | 42 ++++++++++++++++++++++++++++++++++++++++
- sw.js                            |  6 +++---
- tests/server/api.test.js         |  8 ++++++++
- 11 files changed, 118 insertions(+), 40 deletions(-)
+ scripts/offline-smoke.mjs        | 65 +++++++++++++++++++++++++++++++++++++++
+ scripts/prod-cache-smoke.mjs     | 22 ++++++++++++++
+ scripts/setup-bot-webhook.py     |  2 +-
+ scripts/sw-update-smoke.mjs      | 21 +++++++------
+ server.js                        |  4 ++-
+ sw-bootstrap-v386.js             | 42 +++++++++++++++++++++++++
+ sw.js                            | 66 +++++++++++++++++++++++++++-------------
+ tests/server/api.test.js         | 11 ++++++-
+ 13 files changed, 225 insertions(+), 49 deletions(-)
 ```

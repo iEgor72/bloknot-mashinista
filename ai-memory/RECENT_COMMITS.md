@@ -1,9 +1,11 @@
 # Recent Commits
 
-Generated: 2026-07-18 16:44:43 +1000
+Generated: 2026-07-18 17:01:02 +1000
 
 | Hash | Date | Author | Message |
 | --- | --- | --- | --- |
+| `026561c` | 2026-07-18T16:58:43+10:00 | iEgor72 | fix: prevent mixed-version PWA runtime |
+| `324cd5b` | 2026-07-18T16:46:13+10:00 | iEgor72 | chore(memory): record cached client hotfix |
 | `5c556b0` | 2026-07-18T16:41:16+10:00 | iEgor72 | fix: force fresh app entry for cached clients |
 | `87e4f02` | 2026-07-18T16:30:55+10:00 | iEgor72 | chore(memory): record shift card hotfix |
 | `110c581` | 2026-07-18T16:28:37+10:00 | iEgor72 | fix: correct shift fuel units and Poekhali scope |
@@ -42,5 +44,3 @@ Generated: 2026-07-18 16:44:43 +1000
 | `ccd1bce` | 2026-06-21T12:27:19+10:00 | iEgor72 | fix(pwa): version changed runtime scripts |
 | `dfc0bef` | 2026-06-21T12:25:32+10:00 | iEgor72 | chore(memory): record service worker cache bypass |
 | `2a1d277` | 2026-06-21T12:25:23+10:00 | iEgor72 | fix(pwa): bypass cached service worker script |
-| `5c1fe99` | 2026-06-21T12:18:28+10:00 | iEgor72 | chore(memory): record feedback storage preservation |
-| `8841066` | 2026-06-21T12:18:12+10:00 | iEgor72 | fix(server): preserve telegram feedback storage |
