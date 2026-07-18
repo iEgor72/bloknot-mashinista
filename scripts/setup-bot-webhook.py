@@ -30,7 +30,9 @@ if not TOKEN:
     sys.exit(1)
 
 WEBHOOK_SECRET = os.environ.get('TELEGRAM_WEBHOOK_SECRET', '').strip()
+APP_RELEASE_VERSION = 'v385'
 APP_URL = 'https://bloknot-mashinista-bot.ru'
+TELEGRAM_APP_URL = f'{APP_URL}/?app={APP_RELEASE_VERSION}'
 WEBHOOK_URL = f'{APP_URL}/api/telegram-webhook'
 
 def tg(method, payload=None):
@@ -42,6 +44,20 @@ def tg(method, payload=None):
     ok = result.get('ok', False)
     print(f'  {"OK" if ok else "FAIL"} {method}: {json.dumps(result.get("result") or result.get("description") or result)[:120]}')
     return result
+
+def set_menu_button():
+    return tg('setChatMenuButton', {
+        'menu_button': {
+            'type': 'web_app',
+            'text': 'Открыть',
+            'web_app': {'url': TELEGRAM_APP_URL},
+        }
+    })
+
+if '--menu-only' in sys.argv:
+    print(f'Updating Telegram menu button to {APP_RELEASE_VERSION}...')
+    result = set_menu_button()
+    sys.exit(0 if result.get('ok') else 1)
 
 print('=== Setting up Telegram bot ===\n')
 
@@ -63,13 +79,7 @@ print('3. Verifying webhook info...')
 tg('getWebhookInfo')
 
 print('4. Setting menu button (mini-app)...')
-tg('setChatMenuButton', {
-    'menu_button': {
-        'type': 'web_app',
-        'text': 'Открыть',
-        'web_app': {'url': APP_URL},
-    }
-})
+set_menu_button()
 
 print('5. Setting bot commands...')
 tg('setMyCommands', {

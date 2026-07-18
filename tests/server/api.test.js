@@ -75,6 +75,14 @@ test.after(async () => {
   }
 });
 
+test('community links use a versioned app entry URL', async () => {
+  const result = await jsonRequest('/api/community');
+  assert.equal(result.response.status, 200);
+  const appUrl = new URL(result.body.appUrl);
+  assert.equal(appUrl.pathname, '/');
+  assert.equal(appUrl.searchParams.get('app'), 'v385');
+});
+
 test('auth rejects unsigned requests and accepts valid Telegram initData', async () => {
   const unauthorized = await jsonRequest('/api/shifts');
   assert.equal(unauthorized.response.status, 401);

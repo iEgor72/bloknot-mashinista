@@ -7590,3 +7590,11 @@ Append-only журнал действий ИИ-агентов по проект�
 - Branch: `main`
 - Methods: `Full smoke:predeploy passed`, `DOM contract verified 2450 liters delta renders 2058 kg`, `old/latest card and menu actions verified 0/1`, `historical direct open blocked`, `PWA v384 deployed`, `PM2 online`, `SQLite integrity ok`, `external HTTP and browser console checks passed`
 - Files: `scripts/time-utils.js`, `scripts/render.js`, `scripts/poekhali-tracker.js`, `scripts/local-smoke.mjs`, `scripts/poekhali-json-smoke.mjs`, `scripts/app-constants.js`, `scripts/sw-update-smoke.mjs`, `index.html`, `sw.js`, `sw-bootstrap-v384.js`, `server.js`
+
+## 2026-07-18 16:39:54 +1000
+
+- Source: `manual`
+- Task: Исправлен канал доставки hotfix расхода кг на старые Telegram/PWA клиенты
+- Branch: `main`
+- Methods: `Добавлен версионированный entry URL ?app=v385 для Telegram`, `manifest и community API`, `menu-only обновление кнопки`, `PWA cache v385`, `серверный и SW regression tests`
+- Files: `server.js`, `scripts/setup-bot-webhook.py`, `manifest.webmanifest`, `index.html`, `scripts/app-constants.js`, `sw.js`, `sw-bootstrap-v385.js`, `scripts/sw-update-smoke.mjs`, `tests/server/api.test.js`

@@ -124,6 +124,7 @@ const PUBLIC_TOP_LEVEL_FILES = new Set([
   'sw-bootstrap-v382.js',
   'sw-bootstrap-v383.js',
   'sw-bootstrap-v384.js',
+  'sw-bootstrap-v385.js',
   'apple-touch-icon.png',
   'icon-192.png',
   'icon-512.png',
@@ -2075,7 +2076,15 @@ function readBodyWithLimit(req, maxBytes) {
   });
 }
 
+const APP_RELEASE_VERSION = 'v385';
 const APP_URL = PUBLIC_SITE_URL;
+const TELEGRAM_APP_URL = buildVersionedAppUrl('/');
+
+function buildVersionedAppUrl(rawPath) {
+  const target = new URL(safeRedirectTarget(rawPath || '/'), PUBLIC_SITE_URL);
+  target.searchParams.set('app', APP_RELEASE_VERSION);
+  return target.toString();
+}
 const APP_ORIGIN = (() => {
   try {
     return new URL(APP_URL).origin;
@@ -2134,7 +2143,7 @@ function callTelegramApi(token, method, payload) {
 
 function buildCommunityLinks() {
   return {
-    appUrl: APP_URL,
+    appUrl: TELEGRAM_APP_URL,
     siteUrl: PUBLIC_SITE_URL,
     botUrl: TELEGRAM_BOT_URL,
     newsChannelUrl: NEWS_CHANNEL_URL,
@@ -2145,8 +2154,8 @@ function buildCommunityLinks() {
 
 function buildCommunityKeyboard() {
   const keyboard = [
-    [{ text: '✈️ Открыть в Telegram', web_app: { url: APP_URL } }],
-    [{ text: '🌐 Открыть в браузере', url: APP_URL }],
+    [{ text: '✈️ Открыть в Telegram', web_app: { url: TELEGRAM_APP_URL } }],
+    [{ text: '🌐 Открыть в браузере', url: TELEGRAM_APP_URL }],
   ];
   if (NEWS_CHANNEL_URL) {
     keyboard.push([{ text: '📣 Новости', url: NEWS_CHANNEL_URL }]);
@@ -2383,8 +2392,8 @@ const server = http.createServer(async (req, res) => {
               : '⚠️ Этот запрос на вход уже устарел или не найден. Открой PWA снова и запроси вход ещё раз.',
             reply_markup: approved ? {
               inline_keyboard: [
-                [{ text: '🌐 Открыть Блокнот', url: APP_URL + safeRedirectTarget(approved.returnPath) }],
-                [{ text: '✈️ Открыть в Telegram', web_app: { url: APP_URL } }],
+                [{ text: '🌐 Открыть Блокнот', url: buildVersionedAppUrl(approved.returnPath) }],
+                [{ text: '✈️ Открыть в Telegram', web_app: { url: TELEGRAM_APP_URL } }],
               ],
             } : undefined,
           }).catch((err) => {
