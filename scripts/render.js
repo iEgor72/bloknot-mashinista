@@ -1,3 +1,5 @@
+    if (typeof registerShiftTrackerRuntimeModule === 'function') registerShiftTrackerRuntimeModule('render', 'v387');
+
     function buildShiftItemHtml(sh, compact, pendingMap, shiftIncomeMap, durationBounds, durationLevelMap, latestManualShiftId) {
       var p = getShiftDisplayParts(sh);
       var itemClass = 'shift-item shift-card-v2' + (compact ? ' compact-shift' : '');

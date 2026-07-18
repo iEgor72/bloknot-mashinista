@@ -346,6 +346,10 @@ async function runOfflineReloadCheck() {
 
     const currentCacheName = 'shift-tracker-shell-' + version;
     const currentCache = await caches.open(currentCacheName);
+    await currentCache.put('/scripts/time-utils.js', new Response(liveSource, {
+      status: 200,
+      headers: { 'Content-Type': 'application/javascript; charset=utf-8' },
+    }));
     const currentKeys = await currentCache.keys();
     const runtimeKeys = currentKeys.filter((request) => new URL(request.url).pathname === '/scripts/time-utils.js');
     const deleteResults = await Promise.all(runtimeKeys.map((request) => currentCache.delete(request)));
@@ -389,6 +393,68 @@ async function runOfflineReloadCheck() {
   };
   if (!mixedCacheResult.hasKg || mixedCacheResult.hasLiters) {
     throw new Error(`PWA mixed-cache regression served stale runtime: ${JSON.stringify(mixedCacheResult)}`);
+  }
+
+  setPhase('offline-reload:mixed-runtime-self-repair');
+  const repairSentinelKey = 'shift_tracker_runtime_repair_test_sentinel';
+  const repairNavigation = page.waitForURL((url) => (
+    url.searchParams.get('runtime_repair') === 'v387' && Boolean(url.searchParams.get('repair_nonce'))
+  ), { timeout: uiTimeoutMs });
+  const repairTrigger = await page.evaluate((sentinelKey) => {
+    localStorage.setItem(sentinelKey, 'preserved');
+    window.__SHIFT_TRACKER_RUNTIME_MODULES['time-utils'] = 'v000';
+    window.__SHIFT_TRACKER_RUNTIME_MODULES.render = 'v000';
+    window.__SHIFT_TRACKER_RUNTIME_MODULES['poekhali-tracker'] = 'v000';
+    return window.__SHIFT_TRACKER_VERIFY_RUNTIME();
+  }, repairSentinelKey);
+  if (repairTrigger.ok || repairTrigger.mismatches.length < 3) {
+    throw new Error(`Mixed runtime was not detected: ${JSON.stringify(repairTrigger)}`);
+  }
+  await repairNavigation;
+  await page.waitForLoadState('domcontentloaded');
+  await assertAppShellVisible(page, 'mixedRuntimeRepairReload');
+  const repairResult = await page.evaluate((sentinelKey) => {
+    const integrity = window.__SHIFT_TRACKER_RUNTIME_INTEGRITY || {};
+    const modules = window.__SHIFT_TRACKER_RUNTIME_MODULES || {};
+    const required = Array.isArray(SHIFT_TRACKER_REQUIRED_RUNTIME_MODULES)
+      ? SHIFT_TRACKER_REQUIRED_RUNTIME_MODULES.slice()
+      : [];
+    const html = buildShiftConsistHtml({
+      locomotive_series: '3ТЭ10',
+      locomotive_number: '1431',
+      fuel_receive_coeff_a: '0.840',
+      fuel_receive_liters_a: '5000',
+      fuel_handover_coeff_a: '0.840',
+      fuel_handover_liters_a: '2550',
+    }, '', '12ч');
+    const holder = document.createElement('div');
+    holder.innerHTML = html;
+    const text = (holder.textContent || '').replace(/\u00a0/g, ' ').replace(/\s+/g, ' ').trim();
+    const staleModules = required.filter((name) => modules[name] !== SHELL_CACHE_VERSION);
+    const result = {
+      integrity,
+      required,
+      staleModules,
+      sentinelPreserved: localStorage.getItem(sentinelKey) === 'preserved',
+      hasKg: /Расход\s*2 058 кг/.test(text),
+      hasLiters: /Расход\s*2 450 л/.test(text),
+      href: location.href,
+    };
+    localStorage.removeItem(sentinelKey);
+    return result;
+  }, repairSentinelKey);
+  report.checks.mixedRuntimeSelfRepair = {
+    trigger: repairTrigger,
+    result: repairResult,
+  };
+  if (!repairResult.integrity.ok || repairResult.staleModules.length || !repairResult.sentinelPreserved || !repairResult.hasKg || repairResult.hasLiters) {
+    throw new Error(`Mixed runtime self-repair failed: ${JSON.stringify(repairResult)}`);
+  }
+
+  const repairedSwState = await waitForServiceWorker(page);
+  if (!repairedSwState.controller) {
+    await reloadAndKeepPage(page, 'mixedRuntimeRepairControlled');
+    await assertAppShellVisible(page, 'mixedRuntimeRepairControlledReload');
   }
 
   setPhase('offline-reload:cdp-offline');

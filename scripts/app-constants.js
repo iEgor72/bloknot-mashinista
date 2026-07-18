@@ -1,6 +1,202 @@
     // ── Constants ──
     // Держите в синхроне с CACHE_VERSION в sw.js — показывается на главной рядом со статистикой пользователей.
-    var SHELL_CACHE_VERSION = 'v386';
+    var SHELL_CACHE_VERSION = 'v387';
+
+    var SHIFT_TRACKER_REQUIRED_RUNTIME_MODULES = [
+      'auth',
+      'time-utils',
+      'app',
+      'poekhali-utils',
+      'poekhali-map-parser',
+      'poekhali-warnings',
+      'poekhali-backup',
+      'poekhali-tracker',
+      'render',
+      'shift-form',
+      'app-init'
+    ];
+
+    window.__SHIFT_TRACKER_RUNTIME_MODULES = window.__SHIFT_TRACKER_RUNTIME_MODULES || {};
+    window.__SHIFT_TRACKER_RUNTIME_LOAD_FAILURES = window.__SHIFT_TRACKER_RUNTIME_LOAD_FAILURES || {};
+    window.__SHIFT_TRACKER_RUNTIME_GUARD_PENDING = true;
+
+    window.addEventListener('error', function(event) {
+      var target = event && event.target;
+      if (!target || String(target.tagName || '').toUpperCase() !== 'SCRIPT' || !target.src) return;
+      try {
+        window.__SHIFT_TRACKER_RUNTIME_LOAD_FAILURES[new URL(target.src, window.location.href).pathname] = true;
+      } catch (error) {}
+    }, true);
+
+    function registerShiftTrackerRuntimeModule(moduleName, version) {
+      var name = String(moduleName || '').trim();
+      if (!name) return;
+      window.__SHIFT_TRACKER_RUNTIME_MODULES[name] = String(version || '');
+    }
+
+    registerShiftTrackerRuntimeModule('app-constants', SHELL_CACHE_VERSION);
+
+    (function installRuntimeIntegrityGuard() {
+      var REPAIR_STATE_KEY = 'shift_tracker_runtime_repair_v1';
+      var readyDispatched = false;
+      var repairStarted = false;
+
+      function readRepairState() {
+        try {
+          var raw = window.sessionStorage && sessionStorage.getItem(REPAIR_STATE_KEY);
+          var parsed = raw ? JSON.parse(raw) : null;
+          return parsed && typeof parsed === 'object' ? parsed : {};
+        } catch (error) {
+          return {};
+        }
+      }
+
+      function writeRepairState(state) {
+        try {
+          if (window.sessionStorage) sessionStorage.setItem(REPAIR_STATE_KEY, JSON.stringify(state || {}));
+        } catch (error) {}
+      }
+
+      function clearRepairState() {
+        try {
+          if (window.sessionStorage) sessionStorage.removeItem(REPAIR_STATE_KEY);
+        } catch (error) {}
+      }
+
+      function collectRuntimeMismatches() {
+        var modules = window.__SHIFT_TRACKER_RUNTIME_MODULES || {};
+        var mismatches = [];
+        for (var i = 0; i < SHIFT_TRACKER_REQUIRED_RUNTIME_MODULES.length; i++) {
+          var moduleName = SHIFT_TRACKER_REQUIRED_RUNTIME_MODULES[i];
+          var actualVersion = String(modules[moduleName] || '');
+          if (actualVersion !== SHELL_CACHE_VERSION) {
+            var scriptPath = '/scripts/' + moduleName + '.js';
+            mismatches.push({
+              module: moduleName,
+              expected: SHELL_CACHE_VERSION,
+              actual: actualVersion || 'missing',
+              loadFailed: !!window.__SHIFT_TRACKER_RUNTIME_LOAD_FAILURES[scriptPath]
+            });
+          }
+        }
+        return mismatches;
+      }
+
+      function reloadWithoutRuntimeCaches(mismatches) {
+        if (repairStarted) return;
+        if (navigator.onLine === false) {
+          window.__SHIFT_TRACKER_RUNTIME_INTEGRITY = {
+            ok: false,
+            status: 'waiting-online',
+            expected: SHELL_CACHE_VERSION,
+            mismatches: mismatches
+          };
+          var retryOnline = function() {
+            window.removeEventListener('online', retryOnline);
+            reloadWithoutRuntimeCaches(mismatches);
+          };
+          window.addEventListener('online', retryOnline);
+          return;
+        }
+
+        var previous = readRepairState();
+        var now = Date.now();
+        var sameVersion = previous.version === SHELL_CACHE_VERSION && (now - Number(previous.at || 0)) < 120000;
+        var attempt = sameVersion ? (Number(previous.attempt || 0) + 1) : 1;
+        if (attempt > 2) {
+          window.__SHIFT_TRACKER_RUNTIME_INTEGRITY = {
+            ok: false,
+            status: 'repair-failed',
+            expected: SHELL_CACHE_VERSION,
+            mismatches: mismatches
+          };
+          console.warn('[runtime] Mixed application modules remain after two safe repair attempts.', mismatches);
+          return;
+        }
+
+        repairStarted = true;
+        writeRepairState({ version: SHELL_CACHE_VERSION, attempt: attempt, at: now });
+        window.__SHIFT_TRACKER_RUNTIME_INTEGRITY = {
+          ok: false,
+          status: 'repairing',
+          expected: SHELL_CACHE_VERSION,
+          attempt: attempt,
+          mismatches: mismatches
+        };
+
+        var unregisterPromise = Promise.resolve();
+        if (navigator.serviceWorker && typeof navigator.serviceWorker.getRegistrations === 'function') {
+          unregisterPromise = navigator.serviceWorker.getRegistrations().then(function(registrations) {
+            return Promise.all((registrations || []).map(function(registration) {
+              return registration.unregister().catch(function() { return false; });
+            }));
+          }).catch(function() {});
+        }
+
+        var purgeCaches = function() {
+          if (!window.caches || typeof caches.keys !== 'function') return Promise.resolve();
+          return caches.keys().then(function(cacheNames) {
+            return Promise.all((cacheNames || [])
+              .filter(function(cacheName) { return String(cacheName || '').indexOf('shift-tracker-shell-') === 0; })
+              .map(function(cacheName) { return caches.delete(cacheName).catch(function() { return false; }); }));
+          }).catch(function() {});
+        };
+
+        unregisterPromise.then(purgeCaches).then(function() {
+          var target;
+          try {
+            target = new URL(window.location.href);
+            target.searchParams.set('runtime_repair', SHELL_CACHE_VERSION);
+            target.searchParams.set('repair_nonce', String(Date.now()));
+          } catch (error) {
+            target = '/?runtime_repair=' + encodeURIComponent(SHELL_CACHE_VERSION) + '&repair_nonce=' + Date.now();
+          }
+          window.location.replace(String(target));
+        });
+      }
+
+      function verifyRuntimeIntegrity() {
+        var mismatches = collectRuntimeMismatches();
+        if (mismatches.length) {
+          window.__SHIFT_TRACKER_RUNTIME_GUARD_PENDING = true;
+          if (mismatches.some(function(mismatch) { return mismatch.loadFailed; })) {
+            window.__SHIFT_TRACKER_RUNTIME_INTEGRITY = {
+              ok: false,
+              status: 'load-failed',
+              expected: SHELL_CACHE_VERSION,
+              mismatches: mismatches
+            };
+            return { ok: false, expected: SHELL_CACHE_VERSION, mismatches: mismatches };
+          }
+          reloadWithoutRuntimeCaches(mismatches);
+          return { ok: false, expected: SHELL_CACHE_VERSION, mismatches: mismatches };
+        }
+
+        clearRepairState();
+        window.__SHIFT_TRACKER_RUNTIME_GUARD_PENDING = false;
+        window.__SHIFT_TRACKER_RUNTIME_INTEGRITY = {
+          ok: true,
+          status: 'ready',
+          expected: SHELL_CACHE_VERSION,
+          modules: Object.assign({}, window.__SHIFT_TRACKER_RUNTIME_MODULES || {})
+        };
+        if (!readyDispatched) {
+          readyDispatched = true;
+          var readyEvent;
+          try {
+            readyEvent = new CustomEvent('shifttracker:runtime-ready');
+          } catch (error) {
+            readyEvent = document.createEvent('Event');
+            readyEvent.initEvent('shifttracker:runtime-ready', false, false);
+          }
+          window.dispatchEvent(readyEvent);
+        }
+        return window.__SHIFT_TRACKER_RUNTIME_INTEGRITY;
+      }
+
+      window.__SHIFT_TRACKER_VERIFY_RUNTIME = verifyRuntimeIntegrity;
+      document.addEventListener('DOMContentLoaded', verifyRuntimeIntegrity, { once: true });
+    })();
 
     var MONTH_NAMES = [
       'Январь','Февраль','Март','Апрель','Май','Июнь',

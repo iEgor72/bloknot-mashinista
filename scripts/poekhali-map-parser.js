@@ -1,3 +1,5 @@
+if (typeof registerShiftTrackerRuntimeModule === 'function') registerShiftTrackerRuntimeModule('poekhali-map-parser', 'v387');
+
 (function(global) {
   'use strict';
 

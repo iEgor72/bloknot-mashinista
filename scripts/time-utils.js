@@ -1,3 +1,5 @@
+    if (typeof registerShiftTrackerRuntimeModule === 'function') registerShiftTrackerRuntimeModule('time-utils', 'v387');
+
     // ── Time helpers ──
 
     // Parse "YYYY-MM-DDTHH:MM" as MSK → returns UTC Date

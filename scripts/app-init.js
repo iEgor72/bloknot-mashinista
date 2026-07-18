@@ -1,15 +1,27 @@
+if (typeof registerShiftTrackerRuntimeModule === 'function') registerShiftTrackerRuntimeModule('app-init', 'v387');
+
 // ── Init ──
-if (typeof bootstrapAppStartup === 'function') {
-  bootstrapAppStartup();
+function startShiftTrackerRuntime() {
+  if (startShiftTrackerRuntime.started) return;
+  startShiftTrackerRuntime.started = true;
+  if (typeof bootstrapAppStartup === 'function') {
+    bootstrapAppStartup();
+  } else {
+    if (typeof bootstrapCachedShellFromStorage === 'function') {
+      bootstrapCachedShellFromStorage();
+    }
+    if (typeof startBackgroundBootstrap === 'function') {
+      window.requestAnimationFrame(function() {
+        window.setTimeout(startBackgroundBootstrap, 320);
+      });
+    }
+  }
+}
+
+if (window.__SHIFT_TRACKER_RUNTIME_GUARD_PENDING) {
+  window.addEventListener('shifttracker:runtime-ready', startShiftTrackerRuntime, { once: true });
 } else {
-  if (typeof bootstrapCachedShellFromStorage === 'function') {
-    bootstrapCachedShellFromStorage();
-  }
-  if (typeof startBackgroundBootstrap === 'function') {
-    window.requestAnimationFrame(function() {
-      window.setTimeout(startBackgroundBootstrap, 320);
-    });
-  }
+  startShiftTrackerRuntime();
 }
 
 // A privacy-scoped export for field GPS traces. Unlike the full diagnostic

@@ -31,6 +31,9 @@
     return '/sw.js?v=' + encodeURIComponent(version);
   }
   var SW_URL = getServiceWorkerUrl();
+  try {
+    window.__SHIFT_TRACKER_SW_REGISTRATION_STARTED = SW_URL;
+  } catch (error3) {}
   var CONTROLLER_RELOAD_FLAG = 'shift_tracker_sw_controller_reload_v2';
   var LIVE_VERSION_RELOAD_KEY = 'shift_tracker_live_version_reload_v1';
   var liveVersionCheckInFlight = false;
@@ -183,7 +186,10 @@
 
   function refreshServiceWorker(registration) {
     if (!registration) return;
-    if (registration.update) {
+    // Do not race a first install with an explicit update from both runtime
+    // registrars. Chromium can invalidate the just-created registration as
+    // "Unknown: Not found" when update() runs while it is still installing.
+    if (!registration.installing && registration.update) {
       registration.update().catch(function(error) {
         console.warn('[SW] registration.update() failed:', error);
       });

@@ -1,3 +1,5 @@
+if (typeof registerShiftTrackerRuntimeModule === 'function') registerShiftTrackerRuntimeModule('poekhali-tracker', 'v387');
+
 (function() {
   'use strict';
 

@@ -52,6 +52,8 @@ const report = {
   mapId,
   checks: {},
   consoleErrors: [],
+  consoleWarnings: [],
+  workerMessages: [],
   pageErrors: [],
   requestFailures: []
 };
@@ -1194,6 +1196,11 @@ try {
   await mark('Postyshevo-Komsomolsk PDF sign correction ready');
 
   const context = await browser.newContext({ viewport: { width: 390, height: 844 }, deviceScaleFactor: 1 });
+  context.on('serviceworker', (worker) => {
+    report.workerMessages.push(`created: ${worker.url()}`);
+    worker.on('console', (message) => report.workerMessages.push(`${message.type()}: ${message.text()}`));
+    worker.on('close', () => report.workerMessages.push(`closed: ${worker.url()}`));
+  });
   await context.addInitScript(({ storedMapId, storedPreview }) => {
     localStorage.setItem('poekhali.mapId', storedMapId);
     localStorage.setItem('poekhali.previewProjection', JSON.stringify(storedPreview));
@@ -1245,6 +1252,7 @@ try {
   });
   page.on('console', (message) => {
     if (message.type() === 'error') report.consoleErrors.push(message.text());
+    if (message.type() === 'warning') report.consoleWarnings.push(message.text());
   });
   page.on('pageerror', (error) => report.pageErrors.push(String(error && error.stack || error)));
   page.on('requestfailed', (request) => {
@@ -1255,6 +1263,33 @@ try {
 
   await page.goto(baseUrl, { waitUntil: 'domcontentloaded', timeout: 20_000 });
   await mark('page loaded');
+  const initialWorkerState = await page.evaluate(() => Promise.race([
+    navigator.serviceWorker.ready.then((registration) => ({
+      active: Boolean(registration && registration.active),
+      controlled: Boolean(navigator.serviceWorker.controller),
+    })),
+    new Promise((resolve) => setTimeout(() => resolve({ timeout: true, controlled: false }), 8_000)),
+  ]));
+  if (initialWorkerState.timeout || !initialWorkerState.active) {
+    const runtimeState = await page.evaluate(async () => ({
+      integrity: window.__SHIFT_TRACKER_RUNTIME_INTEGRITY || null,
+      modules: window.__SHIFT_TRACKER_RUNTIME_MODULES || null,
+      loadFailures: window.__SHIFT_TRACKER_RUNTIME_LOAD_FAILURES || null,
+      registrations: 'serviceWorker' in navigator
+        ? (await navigator.serviceWorker.getRegistrations()).map((registration) => ({
+            active: registration.active && registration.active.scriptURL,
+            installing: registration.installing && registration.installing.scriptURL,
+            waiting: registration.waiting && registration.waiting.scriptURL,
+          }))
+        : [],
+    }));
+    throw new Error(`service worker did not become active: ${JSON.stringify({ initialWorkerState, runtimeState })}`);
+  }
+  if (!initialWorkerState.controlled) {
+    await page.reload({ waitUntil: 'domcontentloaded', timeout: 20_000 });
+    await page.waitForFunction(() => Boolean(navigator.serviceWorker.controller), null, { timeout: 8_000 });
+    await mark('page controlled by service worker');
+  }
   await page.waitForFunction(() => typeof window.startPoekhaliTrackerMode === 'function' && typeof window.setActiveTab === 'function', null, { timeout: 15_000 });
   await mark('tracker API ready');
   await Promise.race([page.evaluate((testShift) => {

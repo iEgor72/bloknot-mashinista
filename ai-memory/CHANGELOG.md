@@ -7640,3 +7640,19 @@ Append-only журнал действий ИИ-агентов по проект�
 - Branch: `main`
 - Methods: `Коммит 026561c`, `full predeploy passed`, `mixed-cache regression 2450 л fixture -> 2058 кг`, `VPS fast-forward and PM2 reload online`, `SQLite integrity ok`, `Telegram menu v386`, `prod-cache smoke confirms time-utils/render no-store and кг`, `browser loads v386 scripts without console errors`
 - Files: `sw.js`, `sw-bootstrap-v386.js`, `index.html`, `manifest.webmanifest`, `scripts/app-constants.js`, `server.js`, `scripts/offline-smoke.mjs`, `scripts/prod-cache-smoke.mjs`, `scripts/sw-update-smoke.mjs`, `tests/server/api.test.js`
+
+## 2026-07-18 17:13:23 +1000
+
+- Source: `manual`
+- Task: Добавлена самодиагностика и безопасное самовосстановление смешанного PWA runtime v387
+- Branch: `main`
+- Methods: `Манифест версий критичных JS-модулей`, `блокировка запуска до проверки`, `удаление только shift-tracker-shell кэшей и старых SW-регистраций с сохранением localStorage`, `Playwright-регрессия подменяет time-utils/render/poekhali-tracker и проверяет восстановление`, `кг и сохранность данных`
+- Files: `scripts/app-constants.js`, `scripts/app-init.js`, `scripts/offline-smoke.mjs`, `index.html`, `sw.js`, `sw-bootstrap-v387.js`, `scripts/render.js`, `scripts/time-utils.js`, `scripts/poekhali-tracker.js`
+
+## 2026-07-18 17:25:13 +1000
+
+- Source: `manual`
+- Task: Устранена гонка двойной регистрации service worker и завершена проверка PWA v387
+- Branch: `main`
+- Methods: `Основной регистратор помечает запуск`, `bootstrap служит только резервным каналом`, `update не вызывается во время первой установки. Полный smoke:predeploy прошёл`, `включая серверные тесты`, `режимные карты`, `Поехали`, `карточки смен`, `смешанный runtime и офлайн-перезагрузку`
+- Files: `scripts/sw-register.js`, `sw-bootstrap-v386.js`, `sw-bootstrap-v387.js`, `scripts/poekhali-json-smoke.mjs`, `scripts/offline-smoke.mjs`

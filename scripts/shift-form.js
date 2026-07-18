@@ -1,3 +1,5 @@
+    if (typeof registerShiftTrackerRuntimeModule === 'function') registerShiftTrackerRuntimeModule('shift-form', 'v387');
+
     function findShiftById(id) {
       for (var i = 0; i < allShifts.length; i++) {
         if (allShifts[i].id === id) return allShifts[i];
