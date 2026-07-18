@@ -26,6 +26,7 @@ const report = {
   requestFailures: [],
   screenshots: {
     offlineReload: path.relative(repoRoot, path.join(artifactsDir, 'offline-reload.png')),
+    staleOfflineRuntime: path.relative(repoRoot, path.join(artifactsDir, 'stale-offline-runtime.png')),
     bootFallback: path.relative(repoRoot, path.join(artifactsDir, 'boot-fallback.png')),
   },
   serverLog: path.relative(repoRoot, path.join(artifactsDir, 'server.log')),
@@ -156,8 +157,8 @@ function seedOfflineStorageScript() {
       updatedAt: now,
       shifts: [{
         id: 'offline-smoke-shift',
-        start_msk: '2026-04-21T08:00:00+03:00',
-        end_msk: '2026-04-21T20:00:00+03:00',
+        start_msk: '2026-07-17T08:00',
+        end_msk: '2026-07-17T20:00',
         created_at: now,
         route: 'OFFLINE',
         notes: 'Offline smoke seed',
@@ -187,8 +188,8 @@ async function mockApiRoutes(page) {
         sid: 'offline-smoke',
         shifts: [{
           id: 'offline-smoke-shift',
-          start_msk: '2026-04-21T08:00:00+03:00',
-          end_msk: '2026-04-21T20:00:00+03:00',
+          start_msk: '2026-07-17T08:00',
+          end_msk: '2026-07-17T20:00',
           created_at: now,
           route: 'OFFLINE',
           notes: 'Offline smoke seed',
@@ -278,7 +279,7 @@ async function reloadAndKeepPage(page, label) {
 async function assertAppShellVisible(page, label) {
   await page.waitForFunction(() => {
     const shell = document.getElementById('appShell');
-    if (!shell || shell.classList.contains('hidden')) return false;
+    if (!shell) return false;
     const styles = getComputedStyle(shell);
     return styles.display !== 'none' && styles.visibility !== 'hidden';
   }, null, { timeout: uiTimeoutMs });
@@ -293,6 +294,11 @@ async function assertAppShellVisible(page, label) {
       bootComplete: document.documentElement.classList.contains('boot-complete'),
       fallbackVisible: fallback ? getComputedStyle(fallback).display !== 'none' : null,
       monthTitle: monthTitle ? monthTitle.textContent.trim() : '',
+      allShiftsCount: Array.isArray(window.allShifts) ? window.allShifts.length : -1,
+      hasSeededShift: Array.isArray(window.allShifts) && window.allShifts.some((shift) => shift && shift.id === 'offline-smoke-shift'),
+      seededShiftRendered: !!document.querySelector('[data-shift-id="offline-smoke-shift"]'),
+      runtimeIntegrity: window.__SHIFT_TRACKER_RUNTIME_INTEGRITY || null,
+      runtimeModules: Object.assign({}, window.__SHIFT_TRACKER_RUNTIME_MODULES || {}),
       bodyText: document.body ? document.body.innerText.slice(0, 600) : '',
     };
   });
@@ -300,6 +306,7 @@ async function assertAppShellVisible(page, label) {
   if (!state.bootComplete) throw new Error(`${label}: boot-complete class was not set`);
   if (state.fallbackVisible) throw new Error(`${label}: boot fallback is visible over app shell`);
   if (!state.monthTitle) throw new Error(`${label}: month title is empty`);
+  return state;
 }
 
 async function runOfflineReloadCheck() {
@@ -398,7 +405,7 @@ async function runOfflineReloadCheck() {
   setPhase('offline-reload:mixed-runtime-self-repair');
   const repairSentinelKey = 'shift_tracker_runtime_repair_test_sentinel';
   const repairNavigation = page.waitForURL((url) => (
-    url.searchParams.get('runtime_repair') === 'v388' && Boolean(url.searchParams.get('repair_nonce'))
+    url.searchParams.get('runtime_repair') === 'v389' && Boolean(url.searchParams.get('repair_nonce'))
   ), { timeout: uiTimeoutMs });
   const repairTrigger = await page.evaluate((sentinelKey) => {
     localStorage.setItem(sentinelKey, 'preserved');
@@ -469,10 +476,63 @@ async function runOfflineReloadCheck() {
   setPhase('offline-reload:offline-page-reload');
   await reloadAndKeepPage(page, 'offline');
   setPhase('offline-reload:assert-offline-shell');
-  await assertAppShellVisible(page, 'offlineReload');
+  const offlineReloadState = await assertAppShellVisible(page, 'offlineReload');
+  if (!offlineReloadState.hasSeededShift || !offlineReloadState.seededShiftRendered || offlineReloadState.allShiftsCount !== 1) {
+    throw new Error(`Offline reload did not restore cached shifts: ${JSON.stringify(offlineReloadState)}`);
+  }
   await page.screenshot({ path: path.join(artifactsDir, 'offline-reload.png'), fullPage: true });
   setPhase('offline-reload:close-context');
   await closeContextSafely(context, 'offlineReload');
+  context = null;
+}
+
+async function runStaleOfflineRuntimeCheck() {
+  setPhase('stale-offline-runtime:create-context');
+  context = await browser.newContext({
+    serviceWorkers: 'block',
+    viewport: { width: 390, height: 844 },
+  });
+  const page = await context.newPage();
+  watchPage(page, 'stale-offline-runtime');
+  await page.addInitScript(seedOfflineStorageScript());
+  await page.addInitScript(() => {
+    Object.defineProperty(window.navigator, 'onLine', {
+      configurable: true,
+      get: () => false,
+    });
+  });
+
+  const liveSource = fs.readFileSync(path.join(repoRoot, 'scripts', 'poekhali-utils.js'), 'utf8');
+  const staleSource = liveSource.replace(
+    /registerShiftTrackerRuntimeModule\('poekhali-utils',\s*'v\d+'\)/,
+    "registerShiftTrackerRuntimeModule('poekhali-utils', 'v000')"
+  );
+  if (staleSource === liveSource) throw new Error('Could not create stale offline runtime fixture');
+  await page.route('**/scripts/poekhali-utils.js*', (route) => route.fulfill({
+    status: 200,
+    contentType: 'application/javascript; charset=utf-8',
+    body: staleSource,
+  }));
+
+  setPhase('stale-offline-runtime:first-load');
+  const response = await page.goto(baseUrl, { waitUntil: 'domcontentloaded', timeout: startupTimeoutMs });
+  if (!response || !response.ok()) {
+    throw new Error(`GET ${baseUrl} for stale offline runtime failed with status ${response ? response.status() : 'none'}`);
+  }
+
+  setPhase('stale-offline-runtime:assert-cached-shifts');
+  const state = await assertAppShellVisible(page, 'staleOfflineRuntime');
+  if (!state.runtimeModules || state.runtimeModules['poekhali-utils'] !== 'v000') {
+    throw new Error(`Stale offline runtime fixture was not served: ${JSON.stringify(state)}`);
+  }
+  if (!state.runtimeIntegrity || state.runtimeIntegrity.status !== 'degraded-offline') {
+    throw new Error(`Stale offline runtime did not enter degraded-offline mode: ${JSON.stringify(state)}`);
+  }
+  if (!state.hasSeededShift || !state.seededShiftRendered || state.allShiftsCount !== 1) {
+    throw new Error(`Stale offline runtime did not restore cached shifts: ${JSON.stringify(state)}`);
+  }
+  await page.screenshot({ path: path.join(artifactsDir, 'stale-offline-runtime.png'), fullPage: true });
+  await closeContextSafely(context, 'staleOfflineRuntime');
   context = null;
 }
 
@@ -598,6 +658,8 @@ async function main() {
   }), 15000, 'chromium launch');
   setPhase('offline-reload-check');
   await withTimeout(runOfflineReloadCheck(), 45000, 'offline reload check');
+  setPhase('stale-offline-runtime-check');
+  await withTimeout(runStaleOfflineRuntimeCheck(), 30000, 'stale offline runtime check');
   setPhase('boot-fallback-check');
   await withTimeout(runBootFallbackCheck(), 30000, 'boot fallback check');
 

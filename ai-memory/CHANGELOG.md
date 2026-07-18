@@ -7706,3 +7706,43 @@ Append-only журнал действий ИИ-агентов по проект�
 - Branch: `main`
 - Methods: `main pushed до 0291c34`, `production clean main fast-forward`, `npm ci --omit=dev`, `PM2 reload online`, `SQLite integrity ok`, `Telegram webhook/menu updated`, `smoke:prod-cache подтвердил v388`, `no-store и кг`, `внешний контракт подтвердил отсутствие JSON`, `GPS export/delete`, `backup UI и cache version`, `local/external HTTP 200`
 - Files: `index.html`, `scripts/app-init.js`, `scripts/app.js`, `scripts/poekhali-tracker.js`, `sw.js`, `sw-bootstrap-v388.js`
+
+## 2026-07-18 17:56:10 +1000
+
+- Source: `manual`
+- Task: Подготовлен черновик анонса режима Поехали для Telegram-канала
+- Branch: `main`
+- Methods: `Текст сокращён и структурирован для Telegram`, `создана квадратная обложка в фирменной тёмно-синей и голубой стилистике`, `публикация не выполнялась`, `материалы переданы на согласование`
+- Files: `none`
+
+## 2026-07-18 20:57:18 +1000
+
+- Source: `manual`
+- Task: Добавлена регрессия офлайн-запуска со старым runtime-модулем
+- Branch: `main`
+- Methods: `Smoke подменяет poekhali-tracker в текущем PWA-кэше на v000`, `переводит браузер офлайн и требует восстановить локально сохранённую смену`
+- Files: `scripts/offline-smoke.mjs`
+
+## 2026-07-18 21:04:37 +1000
+
+- Source: `manual`
+- Task: Исправлена блокировка офлайн-runtime при смешанном PWA-кэше
+- Branch: `main`
+- Methods: `При наличии пригодных локальных данных guard запускает cached runtime в degraded-offline/degraded-cache`, `а очистку кэшей откладывает до успешной сетевой пробы`
+- Files: `scripts/app-constants.js`, `scripts/offline-smoke.mjs`
+
+## 2026-07-18 21:08:23 +1000
+
+- Source: `manual`
+- Task: Подготовлен PWA release v389 для восстановления офлайн-смен
+- Branch: `main`
+- Methods: `Синхронно подняты runtime markers`, `versioned entry`, `manifest`, `service worker/bootstrap`, `Telegram URL и regression expectations`
+- Files: `index.html`, `manifest.webmanifest`, `scripts/app-constants.js`, `scripts/auth.js`, `scripts/app.js`, `scripts/app-init.js`, `scripts/time-utils.js`, `scripts/poekhali-utils.js`, `scripts/poekhali-map-parser.js`, `scripts/poekhali-warnings.js`, `scripts/poekhali-backup.js`, `scripts/poekhali-tracker.js`, `scripts/render.js`, `scripts/shift-form.js`, `scripts/offline-smoke.mjs`, `scripts/sw-update-smoke.mjs`, `scripts/setup-bot-webhook.py`, `sw.js`, `sw-bootstrap-v389.js`, `server.js`, `tests/server/api.test.js`
+
+## 2026-07-18 21:18:20 +1000
+
+- Source: `manual`
+- Task: Завершена и проверена починка офлайн-смен PWA v389
+- Branch: `main`
+- Methods: `Регрессия подтверждает degraded-offline при poekhali-utils v000`, `allShifts=1 и видимую карточку`, `full smoke:predeploy`, `mobile Browser QA`, `console и interaction checks прошли`
+- Files: `scripts/app-constants.js`, `scripts/offline-smoke.mjs`, `index.html`, `manifest.webmanifest`, `sw.js`, `sw-bootstrap-v389.js`, `server.js`, `scripts/sw-update-smoke.mjs`

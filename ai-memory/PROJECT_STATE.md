@@ -1,14 +1,14 @@
 # Project State
 
 <!-- AUTO_STATUS:START -->
-Generated: 2026-07-18 17:50:35 +1000
+Generated: 2026-07-18 21:18:20 +1000
 
 ## Repository Snapshot
 - Local repo path: `D:\work\bloknot-mashinista-tg`
 - Project memory path: `D:\work\bloknot-mashinista-tg\ai-memory`
 - Branch: `main`
-- HEAD: `0291c34`
-- Last commit: `0291c34 chore(memory): record profile data cleanup`
+- HEAD: `a096028`
+- Last commit: `a096028 chore(memory): record v388 production deploy`
 
 ## Git Remote
 ```text
@@ -20,14 +20,39 @@ origin	https://github.com/iEgor72/bloknot-mashinista.git (push)
 ```text
 codex/next-direction b044dd5 offline mvp
   codex/tabs-ui        117f1fa [origin/codex/tabs-ui] tabs ui
-* main                 0291c34 [origin/main] chore(memory): record profile data cleanup
+* main                 a096028 [origin/main] chore(memory): record v388 production deploy
   poekhali-rework      2d5f0af chore(memory): refresh after main merge
 ```
 
 ## Worktree
 ```text
 M ai-memory/CHANGELOG.md
+ M ai-memory/INDEX.md
+ M ai-memory/PROJECT_STATE.md
+ M ai-memory/RECENT_COMMITS.md
+ M ai-memory/WORKTREE_STATUS.md
  M ai-memory/sessions/2026-07-18.md
+ M index.html
+ M manifest.webmanifest
+ M scripts/app-constants.js
+ M scripts/app-init.js
+ M scripts/app.js
+ M scripts/auth.js
+ M scripts/offline-smoke.mjs
+ M scripts/poekhali-backup.js
+ M scripts/poekhali-map-parser.js
+ M scripts/poekhali-tracker.js
+ M scripts/poekhali-utils.js
+ M scripts/poekhali-warnings.js
+ M scripts/render.js
+ M scripts/setup-bot-webhook.py
+ M scripts/shift-form.js
+ M scripts/sw-update-smoke.mjs
+ M scripts/time-utils.js
+ M server.js
+ M sw.js
+ M tests/server/api.test.js
+?? sw-bootstrap-v389.js
 ```
 <!-- AUTO_STATUS:END -->
 

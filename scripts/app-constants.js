@@ -1,6 +1,6 @@
     // ── Constants ──
     // Держите в синхроне с CACHE_VERSION в sw.js — показывается на главной рядом со статистикой пользователей.
-    var SHELL_CACHE_VERSION = 'v388';
+    var SHELL_CACHE_VERSION = 'v389';
 
     var SHIFT_TRACKER_REQUIRED_RUNTIME_MODULES = [
       'auth',
@@ -40,6 +40,7 @@
       var REPAIR_STATE_KEY = 'shift_tracker_runtime_repair_v1';
       var readyDispatched = false;
       var repairStarted = false;
+      var deferredRepairScheduled = false;
 
       function readRepairState() {
         try {
@@ -61,6 +62,70 @@
         try {
           if (window.sessionStorage) sessionStorage.removeItem(REPAIR_STATE_KEY);
         } catch (error) {}
+      }
+
+      function dispatchRuntimeReady() {
+        window.__SHIFT_TRACKER_RUNTIME_GUARD_PENDING = false;
+        if (readyDispatched) return;
+        readyDispatched = true;
+        var readyEvent;
+        try {
+          readyEvent = new CustomEvent('shifttracker:runtime-ready');
+        } catch (error) {
+          readyEvent = document.createEvent('Event');
+          readyEvent.initEvent('shifttracker:runtime-ready', false, false);
+        }
+        window.dispatchEvent(readyEvent);
+      }
+
+      function canStartCachedRuntime() {
+        try {
+          return (
+            typeof hasCachedBootstrapData === 'function' &&
+            hasCachedBootstrapData() &&
+            typeof bootstrapAppStartup === 'function' &&
+            typeof render === 'function'
+          );
+        } catch (error) {
+          return false;
+        }
+      }
+
+      function scheduleRuntimeRepairWhenReachable(mismatches) {
+        if (deferredRepairScheduled || repairStarted) return;
+        deferredRepairScheduled = true;
+
+        var retryOnOnline = function() {
+          window.removeEventListener('online', retryOnOnline);
+          deferredRepairScheduled = false;
+          scheduleRuntimeRepairWhenReachable(mismatches);
+        };
+        if (navigator.onLine === false || typeof window.fetch !== 'function') {
+          window.addEventListener('online', retryOnOnline);
+          return;
+        }
+
+        window.setTimeout(function() {
+          var timeoutId;
+          var timeoutPromise = new Promise(function(resolve, reject) {
+            timeoutId = window.setTimeout(function() { reject(new Error('runtime repair probe timeout')); }, 4500);
+          });
+          var probeUrl = '/api/stats?runtime_repair_probe=1&ts=' + Date.now();
+          Promise.race([
+            window.fetch(probeUrl, { cache: 'no-store', credentials: 'same-origin' }),
+            timeoutPromise
+          ]).then(function() {
+            window.clearTimeout(timeoutId);
+            deferredRepairScheduled = false;
+            reloadWithoutRuntimeCaches(mismatches);
+          }).catch(function() {
+            window.clearTimeout(timeoutId);
+            deferredRepairScheduled = false;
+            if (navigator.onLine === false) {
+              window.addEventListener('online', retryOnOnline);
+            }
+          });
+        }, 600);
       }
 
       function collectRuntimeMismatches() {
@@ -159,6 +224,20 @@
         var mismatches = collectRuntimeMismatches();
         if (mismatches.length) {
           window.__SHIFT_TRACKER_RUNTIME_GUARD_PENDING = true;
+          // Offline data is more important than enforcing a perfectly uniform
+          // optional runtime. If the core cached app is usable, paint it now and
+          // repair the shell only after a real network probe succeeds.
+          if (!readyDispatched && canStartCachedRuntime()) {
+            window.__SHIFT_TRACKER_RUNTIME_INTEGRITY = {
+              ok: false,
+              status: navigator.onLine === false ? 'degraded-offline' : 'degraded-cache',
+              expected: SHELL_CACHE_VERSION,
+              mismatches: mismatches
+            };
+            dispatchRuntimeReady();
+            scheduleRuntimeRepairWhenReachable(mismatches);
+            return window.__SHIFT_TRACKER_RUNTIME_INTEGRITY;
+          }
           if (mismatches.some(function(mismatch) { return mismatch.loadFailed; })) {
             window.__SHIFT_TRACKER_RUNTIME_INTEGRITY = {
               ok: false,
@@ -173,24 +252,13 @@
         }
 
         clearRepairState();
-        window.__SHIFT_TRACKER_RUNTIME_GUARD_PENDING = false;
         window.__SHIFT_TRACKER_RUNTIME_INTEGRITY = {
           ok: true,
           status: 'ready',
           expected: SHELL_CACHE_VERSION,
           modules: Object.assign({}, window.__SHIFT_TRACKER_RUNTIME_MODULES || {})
         };
-        if (!readyDispatched) {
-          readyDispatched = true;
-          var readyEvent;
-          try {
-            readyEvent = new CustomEvent('shifttracker:runtime-ready');
-          } catch (error) {
-            readyEvent = document.createEvent('Event');
-            readyEvent.initEvent('shifttracker:runtime-ready', false, false);
-          }
-          window.dispatchEvent(readyEvent);
-        }
+        dispatchRuntimeReady();
         return window.__SHIFT_TRACKER_RUNTIME_INTEGRITY;
       }
 
