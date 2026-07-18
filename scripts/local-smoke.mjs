@@ -435,6 +435,76 @@ async function main() {
     throw new Error(`Fuel consumption must be displayed in kilograms: ${shiftFormContract.consumptionText}`);
   }
 
+  const shiftCardContract = await page.evaluate(() => {
+    const originalShifts = Array.isArray(window.allShifts) ? window.allShifts.slice() : [];
+    const oldShift = {
+      id: 'fuel-card-old',
+      start_msk: '2026-07-05T20:00',
+      end_msk: '2026-07-06T08:00',
+      created_at: '2026-07-06T08:01:00.000Z',
+      locomotive_series: '3ТЭ10',
+      locomotive_number: '1431',
+      fuel_receive_coeff_a: '0.840',
+      fuel_receive_liters_a: '5000',
+      fuel_handover_coeff_a: '0.840',
+      fuel_handover_liters_a: '2550'
+    };
+    const latestShift = {
+      ...oldShift,
+      id: 'fuel-card-latest',
+      start_msk: '2026-07-12T20:00',
+      end_msk: '2026-07-13T08:00',
+      created_at: '2026-07-13T08:01:00.000Z'
+    };
+    const testShifts = [oldShift, latestShift];
+    window.allShifts = testShifts;
+    const latestId = getLatestManualShiftId(testShifts);
+    const inspect = (shift) => {
+      const root = document.createElement('div');
+      root.innerHTML = buildShiftItemHtml(shift, false, null, Object.create(null), null, null, latestId);
+      const rows = Array.from(root.querySelectorAll('.sc-row'));
+      const fuelRow = rows.find((row) => row.querySelector('.sc-lab')?.textContent.trim() === 'Расход');
+      return {
+        poekhaliButtons: root.querySelectorAll('.shift-poekhali-btn').length,
+        fuelText: (fuelRow?.querySelector('.sc-val')?.textContent || '').replace(/\s+/g, ' ').trim()
+      };
+    };
+    const activeTabBefore = window.activeTab;
+    const oldPoekhaliResult = window.openPoekhaliForShift(oldShift.id);
+    const activeTabAfter = window.activeTab;
+    renderShiftActionsMenu(oldShift.id);
+    const oldMenuPoekhaliActions = document.querySelectorAll('#shiftActionsMenu [data-action="poekhali"]').length;
+    renderShiftActionsMenu(latestShift.id);
+    const latestMenuPoekhaliActions = document.querySelectorAll('#shiftActionsMenu [data-action="poekhali"]').length;
+    const result = {
+      latestId,
+      oldCard: inspect(oldShift),
+      latestCard: inspect(latestShift),
+      oldPoekhaliResult,
+      oldPoekhaliKeptTab: activeTabBefore === activeTabAfter,
+      oldMenuPoekhaliActions,
+      latestMenuPoekhaliActions
+    };
+    window.allShifts = originalShifts;
+    return result;
+  });
+  report.checks.shiftCardContract = shiftCardContract;
+  if (shiftCardContract.latestId !== 'fuel-card-latest') {
+    throw new Error(`Latest shift was not determined by start time: ${JSON.stringify(shiftCardContract)}`);
+  }
+  if (shiftCardContract.oldCard.poekhaliButtons !== 0 || shiftCardContract.latestCard.poekhaliButtons !== 1) {
+    throw new Error(`Poekhali button must exist only on the latest shift: ${JSON.stringify(shiftCardContract)}`);
+  }
+  if (shiftCardContract.oldMenuPoekhaliActions !== 0 || shiftCardContract.latestMenuPoekhaliActions !== 1) {
+    throw new Error(`Poekhali menu action must exist only on the latest shift: ${JSON.stringify(shiftCardContract)}`);
+  }
+  if (shiftCardContract.oldCard.fuelText !== '2 058 кг' || shiftCardContract.latestCard.fuelText !== '2 058 кг') {
+    throw new Error(`Shift card fuel consumption must use kilograms: ${JSON.stringify(shiftCardContract)}`);
+  }
+  if (shiftCardContract.oldPoekhaliResult !== false || !shiftCardContract.oldPoekhaliKeptTab) {
+    throw new Error(`Historical shift must not open Poekhali mode: ${JSON.stringify(shiftCardContract)}`);
+  }
+
   await waitForPageCondition(page, () => {
     const panel = document.querySelector('.tab-panel[data-tab="home"]');
     if (!panel) return false;

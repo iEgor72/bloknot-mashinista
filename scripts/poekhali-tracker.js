@@ -710,6 +710,15 @@
     return null;
   }
 
+  function isLatestPoekhaliCandidate(shifts, shift) {
+    return !!(
+      Array.isArray(shifts) &&
+      shifts.length &&
+      shift &&
+      String(shifts[0] && shifts[0].id || '') === String(shift.id || '')
+    );
+  }
+
   function getSelectedPoekhaliShiftId() {
     return readStringStorage(SELECTED_SHIFT_STORAGE_KEY);
   }
@@ -740,15 +749,15 @@
       if (typeof recentAddedShiftId !== 'undefined' && recentAddedShiftId) recentId = String(recentAddedShiftId);
     } catch (error) {}
     var recent = findShiftByGlobalId(recentId);
-    if (recent) return { shift: recent, source: 'recent' };
+    if (isLatestPoekhaliCandidate(shifts, recent)) return { shift: recent, source: 'recent' };
 
     var newlyCreated = getNewestRecentlyCreatedShift(shifts, 10 * 60 * 1000);
-    if (newlyCreated) return { shift: newlyCreated, source: 'recent' };
+    if (isLatestPoekhaliCandidate(shifts, newlyCreated)) return { shift: newlyCreated, source: 'recent' };
 
     var selectedShiftId = getSelectedPoekhaliShiftId();
     if (selectedShiftId) {
       var selectedShift = findShiftInListById(shifts, selectedShiftId);
-      if (selectedShift) return { shift: selectedShift, source: 'selected' };
+      if (isLatestPoekhaliCandidate(shifts, selectedShift)) return { shift: selectedShift, source: 'selected' };
       setSelectedPoekhaliShiftId('');
     }
 
@@ -758,7 +767,7 @@
       var end = getShiftEndMs(shift);
       return isFinite(start) && isFinite(end) && start <= now && end >= now;
     }).sort(compareShiftsRecentFirst);
-    if (active.length) return { shift: active[0], source: 'active' };
+    if (active.length && isLatestPoekhaliCandidate(shifts, active[0])) return { shift: active[0], source: 'active' };
 
     shifts.sort(compareShiftsRecentFirst);
     return { shift: shifts[0], source: 'latest' };
@@ -795,7 +804,7 @@
     var pinnedId = String(pinnedShiftId || '').trim();
     if (pinnedId) {
       var pinnedShift = findShiftInListById(shifts, pinnedId);
-      if (pinnedShift) return { shift: pinnedShift, source: 'selected' };
+      if (isLatestPoekhaliCandidate(shifts, pinnedShift)) return { shift: pinnedShift, source: 'selected' };
     }
 
     var recentId = '';
@@ -803,15 +812,15 @@
       if (typeof recentAddedShiftId !== 'undefined' && recentAddedShiftId) recentId = String(recentAddedShiftId);
     } catch (error) {}
     var recent = findShiftByGlobalId(recentId);
-    if (recent) return { shift: recent, source: 'recent' };
+    if (isLatestPoekhaliCandidate(shifts, recent)) return { shift: recent, source: 'recent' };
 
     var newlyCreated = getNewestRecentlyCreatedShift(shifts, 10 * 60 * 1000);
-    if (newlyCreated) return { shift: newlyCreated, source: 'recent' };
+    if (isLatestPoekhaliCandidate(shifts, newlyCreated)) return { shift: newlyCreated, source: 'recent' };
 
     var selectedShiftId = getSelectedPoekhaliShiftId();
     if (selectedShiftId) {
       var selectedShift = findShiftInListById(shifts, selectedShiftId);
-      if (selectedShift) return { shift: selectedShift, source: 'selected' };
+      if (isLatestPoekhaliCandidate(shifts, selectedShift)) return { shift: selectedShift, source: 'selected' };
       setSelectedPoekhaliShiftId('');
     }
 
@@ -821,7 +830,7 @@
       var end = getShiftEndMs(shift);
       return isFinite(start) && isFinite(end) && start <= now && end >= now;
     }).sort(compareShiftsRecentFirst);
-    if (active.length) return { shift: active[0], source: 'active' };
+    if (active.length && isLatestPoekhaliCandidate(shifts, active[0])) return { shift: active[0], source: 'active' };
 
     shifts.sort(compareShiftsRecentFirst);
     return { shift: shifts[0], source: 'latest' };
@@ -1893,7 +1902,10 @@
   }
 
   function selectPoekhaliShift(shiftId, options) {
-    var shift = findShiftInListById(getPoekhaliCandidateShifts(), shiftId);
+    var candidates = getPoekhaliCandidateShifts();
+    var latest = candidates.length ? candidates[0] : null;
+    if (!latest || String(latest.id || '') !== String(shiftId || '')) return false;
+    var shift = findShiftInListById(candidates, shiftId);
     if (!shift || !shift.id) return false;
     tracker.routeSelectionToken++;
     tracker.routeMapSelecting = false;
@@ -1962,7 +1974,8 @@
 
   function openPoekhaliForShift(shiftId) {
     var selected = selectPoekhaliShift(shiftId, { skipRoutePreview: true });
-    if (selected) tracker.entryShiftLockId = String(shiftId || '');
+    if (!selected) return false;
+    tracker.entryShiftLockId = String(shiftId || '');
     closeMapPicker();
     closeOpsSheet();
     if (typeof closeShiftDetail === 'function') {
@@ -1972,8 +1985,6 @@
     updateModeButtons();
     setOpsButton();
     requestDraw();
-    if (!selected) return false;
-
     preparePoekhaliModeEntry({ pinnedShiftId: shiftId });
 
     return true;

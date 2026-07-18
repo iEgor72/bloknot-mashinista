@@ -661,7 +661,7 @@ async function assertStaleRouteSelectionCannotWin(browser) {
   const currentShift = {
     ...shift,
     id: 'poekhali-json-smoke-current-no-route',
-    created_at: new Date(Date.now() - 3_600_000).toISOString(),
+    created_at: new Date().toISOString(),
     route_kind: 'work',
     route_from: '',
     route_to: ''

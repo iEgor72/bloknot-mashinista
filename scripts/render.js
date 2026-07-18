@@ -1,4 +1,4 @@
-    function buildShiftItemHtml(sh, compact, pendingMap, shiftIncomeMap, durationBounds, durationLevelMap) {
+    function buildShiftItemHtml(sh, compact, pendingMap, shiftIncomeMap, durationBounds, durationLevelMap, latestManualShiftId) {
       var p = getShiftDisplayParts(sh);
       var itemClass = 'shift-item shift-card-v2' + (compact ? ' compact-shift' : '');
       var shiftIsPending = pendingMap ? !!pendingMap[String(sh.id)] : isShiftPending(sh);
@@ -33,6 +33,7 @@
       itemClass += ' income-' + incomeVm.level;
       var shiftIdStr = String(sh.id);
       var shiftIdAttr = escapeHtml(shiftIdStr);
+      var canOpenPoekhali = !!latestManualShiftId && shiftIdStr === String(latestManualShiftId);
       var isActionsOpen = activeShiftMenuId !== null && String(activeShiftMenuId) === shiftIdStr;
 
       var markHtml = (typeof buildShiftMarkHtml === 'function')
@@ -43,12 +44,14 @@
 
       var pendingDotHtml = shiftIsPending ? '<span class="shift-sync-inline" aria-label="Не синхронизировано" title="Не синхронизировано">' + docOnlineOnlyIcon + '</span>' : '';
       var shareBadgeHtml = (typeof buildShiftShareBadgeHtml === 'function') ? buildShiftShareBadgeHtml(sh) : '';
-      var poekhaliBtnHtml = '<button class="shift-poekhali-btn" type="button" data-id="' + shiftIdAttr + '" aria-label="Открыть режим Поехали" title="Поехали">' +
-          '<svg viewBox="0 0 24 24" aria-hidden="true" focusable="false">' +
-            '<path fill="currentColor" d="M12 3a9 9 0 0 1 8.94 8H18.9A7 7 0 1 0 11 18.9V21A9 9 0 0 1 12 3Zm.9 5.15 5.1 7.7a1 1 0 0 1-1.15 1.48l-3.85-1.37-3.85 1.37A1 1 0 0 1 8 15.85l5.1-7.7Zm.1 2.36-2.25 3.4 1.92-.68a1 1 0 0 1 .66 0l1.92.68L13 10.51Z"></path>' +
-          '</svg>' +
-          '<span class="shift-poekhali-btn-label">Поехали</span>' +
-        '</button>';
+      var poekhaliBtnHtml = canOpenPoekhali
+        ? '<button class="shift-poekhali-btn" type="button" data-id="' + shiftIdAttr + '" aria-label="Открыть режим Поехали" title="Поехали">' +
+            '<svg viewBox="0 0 24 24" aria-hidden="true" focusable="false">' +
+              '<path fill="currentColor" d="M12 3a9 9 0 0 1 8.94 8H18.9A7 7 0 1 0 11 18.9V21A9 9 0 0 1 12 3Zm.9 5.15 5.1 7.7a1 1 0 0 1-1.15 1.48l-3.85-1.37-3.85 1.37A1 1 0 0 1 8 15.85l5.1-7.7Zm.1 2.36-2.25 3.4 1.92-.68a1 1 0 0 1 .66 0l1.92.68L13 10.51Z"></path>' +
+            '</svg>' +
+            '<span class="shift-poekhali-btn-label">Поехали</span>' +
+          '</button>'
+        : '';
       var actionsHtml = '<div class="shift-actions-wrap">' +
         '<button class="shift-actions-trigger' + (isActionsOpen ? ' is-open' : '') + '" type="button" data-id="' + shiftIdAttr + '" aria-label="Действия" aria-haspopup="menu" aria-expanded="' + (isActionsOpen ? 'true' : 'false') + '">' +
           '<svg class="shift-actions-trigger-icon" viewBox="0 0 24 24" aria-hidden="true" focusable="false">' +
@@ -689,8 +692,11 @@
       }
 
       var html = '';
+      var latestManualShiftId = typeof getLatestManualShiftId === 'function'
+        ? getLatestManualShiftId(allShifts)
+        : '';
       for (var i = 0; i < shifts.length; i++) {
-        html += buildShiftItemHtml(shifts[i], compact, pendingMap, shiftIncomeMap, durationBounds, durationLevelMap);
+        html += buildShiftItemHtml(shifts[i], compact, pendingMap, shiftIncomeMap, durationBounds, durationLevelMap, latestManualShiftId);
         if (i < shifts.length - 1) {
           html += buildRestGapHtml(getRestGapInfo(shifts[i], shifts[i + 1]), compact);
         }
@@ -885,8 +891,11 @@
         ? ('Смен за день: ' + shifts.length + ' · всего ' + fmtMin(totalMinutes))
         : ('Смена за день · ' + fmtMin(totalMinutes));
       var html = '';
+      var latestManualShiftId = typeof getLatestManualShiftId === 'function'
+        ? getLatestManualShiftId(allShifts)
+        : '';
       for (var si = 0; si < shifts.length; si++) {
-        html += buildShiftItemHtml(shifts[si], true, null, shiftIncomeMap, bounds, durationLevelMap);
+        html += buildShiftItemHtml(shifts[si], true, null, shiftIncomeMap, bounds, durationLevelMap, latestManualShiftId);
       }
       contentEl.innerHTML = html;
       if (!opts.skipBind) bindShiftListDetailHandlers(contentEl);
@@ -1969,15 +1978,21 @@
     function renderShiftActionsMenu(shiftId) {
       if (!SHIFT_ACTIONS_MENU) return;
       var safeShiftId = escapeHtml(String(shiftId || ''));
+      var latestManualShiftId = typeof getLatestManualShiftId === 'function'
+        ? getLatestManualShiftId(allShifts)
+        : '';
+      var poekhaliActionHtml = String(shiftId || '') === latestManualShiftId
+        ? '<button class="shift-actions-item is-poekhali" type="button" data-action="poekhali" data-id="' + safeShiftId + '" role="menuitem">' +
+            '<span class="shift-actions-item-icon" aria-hidden="true">' +
+              '<svg viewBox="0 0 24 24" focusable="false">' +
+                '<path fill="currentColor" d="M12 3a9 9 0 0 1 8.94 8H18.9A7 7 0 1 0 11 18.9V21A9 9 0 0 1 12 3Zm.9 5.15 5.1 7.7a1 1 0 0 1-1.15 1.48l-3.85-1.37-3.85 1.37A1 1 0 0 1 8 15.85l5.1-7.7Zm.1 2.36-2.25 3.4 1.92-.68a1 1 0 0 1 .66 0l1.92.68L13 10.51Z"></path>' +
+              '</svg>' +
+            '</span>' +
+            '<span class="shift-actions-item-label">Поехали</span>' +
+          '</button>'
+        : '';
       SHIFT_ACTIONS_MENU.innerHTML =
-        '<button class="shift-actions-item is-poekhali" type="button" data-action="poekhali" data-id="' + safeShiftId + '" role="menuitem">' +
-          '<span class="shift-actions-item-icon" aria-hidden="true">' +
-            '<svg viewBox="0 0 24 24" focusable="false">' +
-              '<path fill="currentColor" d="M12 3a9 9 0 0 1 8.94 8H18.9A7 7 0 1 0 11 18.9V21A9 9 0 0 1 12 3Zm.9 5.15 5.1 7.7a1 1 0 0 1-1.15 1.48l-3.85-1.37-3.85 1.37A1 1 0 0 1 8 15.85l5.1-7.7Zm.1 2.36-2.25 3.4 1.92-.68a1 1 0 0 1 .66 0l1.92.68L13 10.51Z"></path>' +
-            '</svg>' +
-          '</span>' +
-          '<span class="shift-actions-item-label">Поехали</span>' +
-        '</button>' +
+        poekhaliActionHtml +
         '<button class="shift-actions-item is-edit" type="button" data-action="edit" data-id="' + safeShiftId + '" role="menuitem">' +
           '<span class="shift-actions-item-icon" aria-hidden="true">' +
             '<svg viewBox="0 0 24 24" focusable="false">' +
@@ -2076,6 +2091,13 @@
       }
 
       if (action === 'poekhali') {
+        var latestManualShiftId = typeof getLatestManualShiftId === 'function'
+          ? getLatestManualShiftId(allShifts)
+          : '';
+        if (!latestManualShiftId || String(id || '') !== latestManualShiftId) {
+          closeShiftActionsMenu(true);
+          return;
+        }
         triggerHapticSelection();
         closeShiftActionsMenu(true);
         if (typeof openPoekhaliForShift === 'function') {

@@ -7565,3 +7565,11 @@ Append-only журнал действий ИИ-агентов по проект�
 - Branch: `main`
 - Methods: `Full smoke:predeploy passed`, `origin/main and production fast-forwarded to 8afcaef`, `pre-SQLite data archive verified`, `npm ci audit clean`, `PM2 reload online`, `legacy 19 journals and 169 shifts exactly matched SQLite`, `integrity and backup checks passed`, `external HTTP/PWA checks passed`
 - Files: `.gitignore`, `package.json`, `package-lock.json`, `server.js`, `server/sqlite-storage.js`, `scripts/storage-maintenance.js`, `scripts/poekhali-tracker.js`, `scripts/poekhali-backup.js`, `sw.js`, `index.html`, `tests/server/api.test.js`, `tests/server/storage.test.js`
+
+## 2026-07-18 16:25:26 +1000
+
+- Source: `manual`
+- Task: Исправлены карточки смен: расход в кг и Поехали только для последней смены
+- Branch: `main`
+- Methods: `Расход карточки проверяется через consumptionKg`, `latest shift определяется по времени начала с created_at tie-break`, `кнопка и menu action скрыты у истории`, `прямой openPoekhaliForShift для старой смены блокируется`, `PWA cache поднят до v384`, `local`, `SW и Poekhali smoke прошли`
+- Files: `scripts/time-utils.js`, `scripts/render.js`, `scripts/poekhali-tracker.js`, `scripts/local-smoke.mjs`, `scripts/poekhali-json-smoke.mjs`, `scripts/app-constants.js`, `scripts/sw-update-smoke.mjs`, `index.html`, `sw.js`, `sw-bootstrap-v384.js`, `server.js`

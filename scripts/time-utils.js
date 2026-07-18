@@ -72,6 +72,32 @@
       return 0;
     }
 
+    function getLatestManualShiftId(shifts) {
+      if (!Array.isArray(shifts) || !shifts.length) return '';
+      var latest = null;
+      for (var i = 0; i < shifts.length; i++) {
+        var candidate = shifts[i];
+        if (!candidate || candidate.id === null || candidate.id === undefined || candidate.id === '') continue;
+        if (typeof isLegacyGeneratedShift === 'function' && isLegacyGeneratedShift(candidate)) continue;
+        if (!latest) {
+          latest = candidate;
+          continue;
+        }
+        var byStart = compareShiftsByStartDesc(candidate, latest);
+        if (byStart < 0) {
+          latest = candidate;
+          continue;
+        }
+        if (byStart !== 0) continue;
+        var candidateCreated = new Date(candidate.created_at || 0).getTime();
+        var latestCreated = new Date(latest.created_at || 0).getTime();
+        if ((isFinite(candidateCreated) ? candidateCreated : 0) > (isFinite(latestCreated) ? latestCreated : 0)) {
+          latest = candidate;
+        }
+      }
+      return latest ? String(latest.id) : '';
+    }
+
     function formatMskDatePart(date) {
       var msk = new Date(date.getTime() + MSK_OFFSET * 60 * 60 * 1000);
       var year = msk.getUTCFullYear();
