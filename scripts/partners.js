@@ -449,6 +449,7 @@
     showFeedback('');
     api('POST', '/invite').then(function(res) {
       if (res && res.ok && res.body && res.body.code) {
+        if (window.ProductAnalytics) window.ProductAnalytics.track('partner_invite_created', { result: 'success' });
         var box = $('partnersCodeBox');
         var val = $('partnersCodeValue');
         var exp = $('partnersCodeExpiry');
@@ -489,6 +490,7 @@
     showFeedback('');
     api('POST', '/redeem', { code: code }).then(function(res) {
       if (res && res.ok && res.body && res.body.pairing) {
+        if (window.ProductAnalytics) window.ProductAnalytics.track('partner_connected', { result: 'success' });
         clearCode();
         showFeedback('Готово! Бригада «' + (res.body.pairing.partnerLabel || '') + '» добавлена.', 'ok');
         return loadPartners();
@@ -734,6 +736,7 @@
     enqueueShare(shift, pairingId);
     return flushShareQueue().then(function() {
       var stillQueued = readShareQueue().some(function(e) { return e.sourceId === (shift.id || ''); });
+      if (window.ProductAnalytics) window.ProductAnalytics.track('shift_shared', { result: stillQueued ? 'queued' : 'delivered', offline: navigator.onLine === false });
       return { delivered: !stillQueued };
     });
   }

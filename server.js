@@ -4,6 +4,13 @@ const fs = require('fs');
 const path = require('path');
 const crypto = require('crypto');
 const { createSqliteStorage } = require('./server/sqlite-storage');
+const {
+  ANALYTICS_POLICY_VERSION,
+  ANALYTICS_RETENTION_DAYS,
+  sanitizeAnalyticsBatch,
+  sanitizeConsentPayload,
+  isAnalyticsAdmin,
+} = require('./server/analytics');
 
 const ROOT = __dirname;
 
@@ -129,6 +136,7 @@ const PUBLIC_TOP_LEVEL_FILES = new Set([
   'sw-bootstrap-v387.js',
   'sw-bootstrap-v388.js',
   'sw-bootstrap-v389.js',
+  'sw-bootstrap-v390.js',
   'apple-touch-icon.png',
   'icon-192.png',
   'icon-512.png',
@@ -2081,7 +2089,7 @@ function readBodyWithLimit(req, maxBytes) {
   });
 }
 
-const APP_RELEASE_VERSION = 'v389';
+const APP_RELEASE_VERSION = 'v390';
 const APP_URL = PUBLIC_SITE_URL;
 const TELEGRAM_APP_URL = buildVersionedAppUrl('/');
 
@@ -2352,6 +2360,104 @@ const server = http.createServer(async (req, res) => {
       return;
     }
     sendJson(res, 200, buildCommunityLinks());
+    return;
+  }
+
+  if (pathname === '/api/analytics/consent') {
+    if (!sid) {
+      sendJson(res, 401, { error: 'Unauthorized' });
+      return;
+    }
+    if (req.method === 'GET') {
+      sendJson(res, 200, {
+        consent: getStorage().readAnalyticsConsent(sid),
+        policyVersion: ANALYTICS_POLICY_VERSION,
+      });
+      return;
+    }
+    if (req.method === 'PUT') {
+      try {
+        const body = await readBody(req);
+        const consent = sanitizeConsentPayload(body ? JSON.parse(body) : {});
+        const saved = getStorage().writeAnalyticsConsent(sid, consent.status, consent.policyVersion);
+        if (consent.status === 'denied') getStorage().deleteAnalyticsForUser(sid, true);
+        sendJson(res, 200, { ok: true, consent: saved });
+      } catch (err) {
+        sendJson(res, 400, { error: err && err.message ? err.message : 'Invalid consent payload' });
+      }
+      return;
+    }
+    if (req.method === 'DELETE') {
+      const removed = getStorage().deleteAnalyticsForUser(sid, true);
+      const consent = getStorage().writeAnalyticsConsent(sid, 'denied', ANALYTICS_POLICY_VERSION);
+      sendJson(res, 200, { ok: true, removed, consent });
+      return;
+    }
+    sendJson(res, 405, { error: 'Method not allowed' });
+    return;
+  }
+
+  if (pathname === '/api/events') {
+    if (!sid) {
+      sendJson(res, 401, { error: 'Unauthorized' });
+      return;
+    }
+    if (req.method !== 'POST') {
+      sendJson(res, 405, { error: 'Method not allowed' });
+      return;
+    }
+    const consent = getStorage().readAnalyticsConsent(sid);
+    if (!consent || consent.status !== 'granted' || consent.policyVersion !== ANALYTICS_POLICY_VERSION) {
+      sendJson(res, 403, { error: 'Analytics consent required', policyVersion: ANALYTICS_POLICY_VERSION });
+      return;
+    }
+    try {
+      const body = await readBody(req);
+      const events = sanitizeAnalyticsBatch(body ? JSON.parse(body) : {});
+      const result = getStorage().recordAnalyticsEvents(sid, events, ANALYTICS_RETENTION_DAYS);
+      sendJson(res, 200, { ok: true, accepted: result.inserted, receivedAt: result.receivedAt });
+    } catch (err) {
+      logStructuredRateLimited('warn', 'analytics.invalid_payload', sid, {
+        sid,
+        error: toErrorMeta(err),
+      });
+      sendJson(res, 400, { error: err && err.message ? err.message : 'Invalid analytics payload' });
+    }
+    return;
+  }
+
+  if (pathname === '/api/admin/analytics') {
+    if (!requestUser) {
+      sendJson(res, 401, { error: 'Unauthorized' });
+      return;
+    }
+    if (!isAnalyticsAdmin(requestUser)) {
+      sendJson(res, 403, { error: 'Forbidden' });
+      return;
+    }
+    if (req.method !== 'GET') {
+      sendJson(res, 405, { error: 'Method not allowed' });
+      return;
+    }
+    sendJson(res, 200, getStorage().buildAnalyticsDashboard(parsedUrl.query.days));
+    return;
+  }
+
+  if (pathname === '/analytics') {
+    if (!requestUser) {
+      sendText(res, 401, 'Войдите в приложение через Telegram, затем откройте аналитику снова.');
+      return;
+    }
+    if (!isAnalyticsAdmin(requestUser)) {
+      sendText(res, 403, 'Доступ запрещён.');
+      return;
+    }
+    const dashboardPath = path.join(ROOT, 'admin', 'analytics.html');
+    if (!fs.existsSync(dashboardPath)) {
+      sendText(res, 404, 'Панель аналитики не найдена.');
+      return;
+    }
+    sendText(res, 200, fs.readFileSync(dashboardPath, 'utf8'), 'text/html; charset=utf-8');
     return;
   }
 

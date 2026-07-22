@@ -1,4 +1,4 @@
-if (typeof registerShiftTrackerRuntimeModule === 'function') registerShiftTrackerRuntimeModule('poekhali-tracker', 'v389');
+if (typeof registerShiftTrackerRuntimeModule === 'function') registerShiftTrackerRuntimeModule('poekhali-tracker', 'v390');
 
 (function() {
   'use strict';
@@ -7521,6 +7521,7 @@ if (typeof registerShiftTrackerRuntimeModule === 'function') registerShiftTracke
 
   function handlePosition(position) {
     if (!position || !position.coords) return;
+    var previousGpsFixState = tracker.gpsFixState;
     tracker.lastLocation = position;
     tracker.speedMps = Number(position.coords.speed) || 0;
     tracker.accuracy = Number(position.coords.accuracy) || 0;
@@ -7528,6 +7529,9 @@ if (typeof registerShiftTrackerRuntimeModule === 'function') registerShiftTracke
     tracker.gpsFixState = 'ok';
     tracker.gpsSatellitesCount = extractSatelliteCount(position.coords);
     tracker.gpsError = '';
+    if (previousGpsFixState !== 'ok' && window.ProductAnalytics) {
+      window.ProductAnalytics.track('gps_permission_result', { permission: 'granted', result: 'fix_received' });
+    }
     tracker.runStartMessage = '';
     setGpsStatus('GPS', 'is-live');
     updateTripMetricsFromPosition(position);
@@ -7582,6 +7586,7 @@ if (typeof registerShiftTrackerRuntimeModule === 'function') registerShiftTracke
   }
 
   function handleGpsError(error) {
+    var previousGpsFixState = tracker.gpsFixState;
     tracker.gpsSatellitesCount = null;
     var code = error && error.code;
     if (code === 1) {
@@ -7599,6 +7604,12 @@ if (typeof registerShiftTrackerRuntimeModule === 'function') registerShiftTracke
       tracker.gpsError = 'GPS недоступен';
       tracker.status = 'gps-error';
       setGpsStatus('GPS', 'is-error');
+    }
+    if (previousGpsFixState !== tracker.gpsFixState && window.ProductAnalytics) {
+      window.ProductAnalytics.track('gps_permission_result', {
+        permission: tracker.gpsFixState === 'denied' ? 'denied' : 'unavailable',
+        errorCode: 'gps_' + tracker.gpsFixState
+      });
     }
     updateAutoPositionState(tracker.status, tracker.nearestProjection, tracker.gpsError || 'GPS недоступен.');
     requestDraw();
@@ -12537,6 +12548,9 @@ if (typeof registerShiftTrackerRuntimeModule === 'function') registerShiftTracke
   function startPoekhaliTrackerMode() {
     var wasActive = tracker.active;
     tracker.active = true;
+    if (!wasActive && window.ProductAnalytics) {
+      window.ProductAnalytics.track('poekhali_started', { source: 'screen', offline: navigator.onLine === false });
+    }
     loadReference();
     loadSpeedDocs();
     loadRegimeMaps();

@@ -4,6 +4,7 @@ const crypto = require('crypto');
 const fs = require('fs');
 const os = require('os');
 const path = require('path');
+const Database = require('better-sqlite3');
 
 const BOT_TOKEN = '123456789:test-server-bot-token';
 const testDataDir = fs.mkdtempSync(path.join(os.tmpdir(), 'bloknot-server-api-'));
@@ -12,6 +13,7 @@ process.env.APP_DATA_DIR = testDataDir;
 process.env.DISABLE_STORAGE_BACKUPS = '1';
 process.env.NODE_ENV = 'production';
 process.env.TELEGRAM_BOT_TOKEN = BOT_TOKEN;
+process.env.TELEGRAM_ADMIN_CHAT_ID = '9001';
 process.env.PUBLIC_APP_URL = 'http://127.0.0.1';
 
 const application = require('../../server');
@@ -80,11 +82,11 @@ test('community links use a versioned app entry URL', async () => {
   assert.equal(result.response.status, 200);
   const appUrl = new URL(result.body.appUrl);
   assert.equal(appUrl.pathname, '/');
-  assert.equal(appUrl.searchParams.get('app'), 'v389');
+  assert.equal(appUrl.searchParams.get('app'), 'v390');
 });
 
 test('shift-card runtime is never HTTP-cached and renders fuel in kilograms', async () => {
-  const response = await fetch(baseUrl + '/scripts/time-utils.js?v=v389');
+  const response = await fetch(baseUrl + '/scripts/time-utils.js?v=v390');
   const source = await response.text();
   assert.equal(response.status, 200);
   assert.match(response.headers.get('cache-control') || '', /no-store/i);
@@ -107,6 +109,104 @@ test('auth rejects unsigned requests and accepts valid Telegram initData', async
   const session = await jsonRequest('/api/auth', { headers: bearer(token) });
   assert.equal(session.response.status, 200);
   assert.equal(session.body.user.id, '1001');
+});
+
+test('analytics requires consent, deduplicates events, and exposes only admin aggregates', async () => {
+  const userToken = await authenticate({ id: 6001, first_name: 'Аналитика' });
+  const adminToken = await authenticate({ id: 9001, first_name: 'Администратор' });
+  const occurredAt = new Date().toISOString();
+  const event = {
+    eventId: 'event:analytics-test-0001',
+    sessionId: 'session:analytics-test-0001',
+    eventName: 'shift_saved',
+    occurredAt,
+    platform: 'android',
+    appVersion: 'v390',
+    properties: {
+      shiftCount: 1,
+      hasRoute: true,
+      source: 'Маршрут Владивосток — Москва',
+      filledFields: ['route', 'note', 'секретное поле'],
+      route_from: 'Не должно попасть в аналитику',
+    },
+  };
+
+  const withoutConsent = await jsonRequest('/api/events', {
+    method: 'POST',
+    headers: { ...bearer(userToken), 'Content-Type': 'application/json' },
+    body: JSON.stringify({ events: [event] }),
+  });
+  assert.equal(withoutConsent.response.status, 403);
+
+  const consent = await jsonRequest('/api/analytics/consent', {
+    method: 'PUT',
+    headers: { ...bearer(userToken), 'Content-Type': 'application/json' },
+    body: JSON.stringify({ status: 'granted' }),
+  });
+  assert.equal(consent.response.status, 200);
+  assert.equal(consent.body.consent.status, 'granted');
+
+  const firstBatch = await jsonRequest('/api/events', {
+    method: 'POST',
+    headers: { ...bearer(userToken), 'Content-Type': 'application/json' },
+    body: JSON.stringify({ events: [event] }),
+  });
+  const duplicateBatch = await jsonRequest('/api/events', {
+    method: 'POST',
+    headers: { ...bearer(userToken), 'Content-Type': 'application/json' },
+    body: JSON.stringify({ events: [event] }),
+  });
+  assert.equal(firstBatch.response.status, 200);
+  assert.equal(firstBatch.body.accepted, 1);
+  assert.equal(duplicateBatch.body.accepted, 0);
+
+  const database = new Database(path.join(testDataDir, 'bloknot.sqlite3'), { readonly: true });
+  const stored = database.prepare('SELECT properties FROM analytics_events WHERE event_id = ?').get(event.eventId);
+  database.close();
+  assert.deepEqual(JSON.parse(stored.properties), { shiftCount: 1, hasRoute: true, filledFields: ['route', 'note'] });
+
+  const forbiddenDashboard = await jsonRequest('/api/admin/analytics?days=30', { headers: bearer(userToken) });
+  assert.equal(forbiddenDashboard.response.status, 403);
+  const dashboard = await jsonRequest('/api/admin/analytics?days=30', { headers: bearer(adminToken) });
+  assert.equal(dashboard.response.status, 200);
+  assert.equal(dashboard.body.metrics.shiftsSaved, 1);
+  assert.equal(dashboard.body.consents.granted, 1);
+  assert.equal(dashboard.body.recentEvents[0].userKey.length, 10);
+
+  const forbiddenPage = await fetch(baseUrl + '/analytics', { headers: bearer(userToken) });
+  assert.equal(forbiddenPage.status, 403);
+  const adminPage = await fetch(baseUrl + '/analytics', { headers: bearer(adminToken) });
+  assert.equal(adminPage.status, 200);
+  assert.match(await adminPage.text(), /Продуктовая аналитика/);
+});
+
+test('analytics denial removes raw events and prevents further collection', async () => {
+  const userToken = await authenticate({ id: 6001, first_name: 'Аналитика' });
+  const denied = await jsonRequest('/api/analytics/consent', {
+    method: 'PUT',
+    headers: { ...bearer(userToken), 'Content-Type': 'application/json' },
+    body: JSON.stringify({ status: 'denied' }),
+  });
+  assert.equal(denied.response.status, 200);
+
+  const rejected = await jsonRequest('/api/events', {
+    method: 'POST',
+    headers: { ...bearer(userToken), 'Content-Type': 'application/json' },
+    body: JSON.stringify({ events: [{
+      eventId: 'event:analytics-test-0002',
+      sessionId: 'session:analytics-test-0001',
+      eventName: 'app_opened',
+      occurredAt: new Date().toISOString(),
+      platform: 'android',
+      properties: {},
+    }] }),
+  });
+  assert.equal(rejected.response.status, 403);
+
+  const database = new Database(path.join(testDataDir, 'bloknot.sqlite3'), { readonly: true });
+  const count = database.prepare('SELECT COUNT(*) AS count FROM analytics_events WHERE sid = ?').get('6001').count;
+  database.close();
+  assert.equal(count, 0);
 });
 
 test('shift sync atomically replaces and reads a user journal', async () => {

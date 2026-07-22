@@ -1,0 +1,117 @@
+<!doctype html>
+<html lang="ru">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="robots" content="noindex,nofollow" />
+  <title>Аналитика · Блокнот машиниста</title>
+  <style>
+    :root { color-scheme: dark; --bg:#07111f; --card:#0e1c2e; --line:#1e334c; --text:#f4f7fb; --muted:#91a3b8; --accent:#5dd5ff; --ok:#64e6a7; --warn:#ffcb6b; }
+    * { box-sizing:border-box; }
+    body { margin:0; background:linear-gradient(145deg,#07111f,#0a1730 55%,#07111f); color:var(--text); font-family:Inter,system-ui,-apple-system,"Segoe UI",sans-serif; min-height:100vh; }
+    main { width:min(1180px,calc(100% - 32px)); margin:0 auto; padding:32px 0 64px; }
+    header { display:flex; align-items:flex-end; justify-content:space-between; gap:20px; margin-bottom:24px; }
+    h1 { margin:0; font-size:clamp(28px,5vw,46px); letter-spacing:-.04em; }
+    .sub { color:var(--muted); margin-top:8px; }
+    .periods { display:flex; gap:8px; }
+    button { border:1px solid var(--line); background:#0b1829; color:var(--text); border-radius:12px; padding:10px 14px; cursor:pointer; font-weight:700; }
+    button.active { border-color:var(--accent); color:var(--accent); }
+    .grid { display:grid; grid-template-columns:repeat(4,minmax(0,1fr)); gap:14px; }
+    .card { border:1px solid var(--line); background:rgba(14,28,46,.92); border-radius:18px; padding:18px; box-shadow:0 16px 45px rgba(0,0,0,.18); }
+    .metric-label { color:var(--muted); font-size:13px; }
+    .metric-value { margin-top:7px; font-size:30px; font-weight:800; letter-spacing:-.04em; }
+    .metric-note { margin-top:6px; color:var(--muted); font-size:12px; }
+    section { margin-top:18px; }
+    h2 { margin:0 0 16px; font-size:19px; }
+    .two { display:grid; grid-template-columns:1.15fr .85fr; gap:18px; }
+    .funnel-row { display:grid; grid-template-columns:minmax(160px,1fr) 3fr 54px; gap:12px; align-items:center; margin:12px 0; }
+    .bar { height:12px; background:#14273d; border-radius:99px; overflow:hidden; }
+    .bar > i { display:block; height:100%; background:linear-gradient(90deg,var(--accent),var(--ok)); border-radius:inherit; }
+    .retention { display:grid; grid-template-columns:repeat(3,1fr); gap:12px; }
+    .retention div { padding:16px; border:1px solid var(--line); border-radius:14px; }
+    .retention strong { display:block; font-size:25px; margin-top:5px; }
+    .daily { height:180px; display:flex; align-items:flex-end; gap:5px; padding-top:12px; overflow-x:auto; }
+    .day { min-width:18px; flex:1; height:100%; display:flex; flex-direction:column; justify-content:flex-end; align-items:center; gap:5px; }
+    .day i { width:100%; min-height:2px; background:linear-gradient(180deg,var(--accent),#3478f6); border-radius:6px 6px 2px 2px; }
+    .day span { color:var(--muted); font-size:9px; transform:rotate(-45deg); height:25px; white-space:nowrap; }
+    table { width:100%; border-collapse:collapse; }
+    th,td { padding:11px 8px; border-bottom:1px solid var(--line); text-align:left; font-size:13px; }
+    th { color:var(--muted); font-weight:600; }
+    .numeric td:nth-child(n+2),.numeric th:nth-child(n+2) { text-align:right; }
+    .scroll { overflow:auto; }
+    .event-props { color:var(--muted); font-family:ui-monospace,SFMono-Regular,Consolas,monospace; font-size:11px; white-space:nowrap; }
+    .status { color:var(--muted); padding:22px 0; }
+    .error { color:#ff8b98; }
+    @media (max-width:850px) { .grid { grid-template-columns:repeat(2,1fr); } .two { grid-template-columns:1fr; } header { align-items:flex-start; flex-direction:column; } }
+    @media (max-width:480px) { main { width:min(100% - 20px,1180px); padding-top:20px; } .grid { grid-template-columns:1fr 1fr; gap:9px; } .card { padding:14px; border-radius:15px; } .metric-value { font-size:24px; } }
+  </style>
+</head>
+<body>
+  <main>
+    <header>
+      <div><h1>Продуктовая аналитика</h1><div class="sub" id="updated">Загрузка данных…</div></div>
+      <div class="periods"><button data-days="7">7 дней</button><button class="active" data-days="30">30 дней</button><button data-days="90">90 дней</button></div>
+    </header>
+    <div id="content" class="status">Собираю показатели…</div>
+  </main>
+  <script>
+    (function() {
+      var activeDays = 30;
+      var content = document.getElementById('content');
+      var updated = document.getElementById('updated');
+      function esc(value) { return String(value == null ? '' : value).replace(/[&<>"']/g, function(ch) { return ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'})[ch]; }); }
+      function num(value) { return new Intl.NumberFormat('ru-RU').format(Number(value) || 0); }
+      function metric(label, value, note) { return '<div class="card"><div class="metric-label">' + esc(label) + '</div><div class="metric-value">' + esc(value) + '</div><div class="metric-note">' + esc(note || '') + '</div></div>'; }
+      function render(data) {
+        var m = data.metrics || {};
+        var maxFunnel = Math.max.apply(Math, (data.funnel || []).map(function(row) { return row.users || 0; }).concat([1]));
+        var maxDaily = Math.max.apply(Math, (data.daily || []).map(function(row) { return row.users || 0; }).concat([1]));
+        var funnel = (data.funnel || []).map(function(row) {
+          return '<div class="funnel-row"><span>' + esc(row.label) + '</span><div class="bar"><i style="width:' + Math.max(2,Math.round((row.users || 0)*100/maxFunnel)) + '%"></i></div><strong>' + num(row.users) + '</strong></div>';
+        }).join('');
+        var daily = (data.daily || []).map(function(row) {
+          return '<div class="day" title="' + esc(row.day + ': ' + row.users + ' польз., ' + row.shifts + ' смен') + '"><i style="height:' + Math.max(2,Math.round((row.users || 0)*135/maxDaily)) + 'px"></i><span>' + esc(row.day.slice(5)) + '</span></div>';
+        }).join('');
+        var events = (data.events || []).map(function(row) {
+          return '<tr><td>' + esc(row.eventName) + '</td><td>' + num(row.users) + '</td><td>' + num(row.events) + '</td></tr>';
+        }).join('');
+        var users = (data.users || []).map(function(row) {
+          var lifecycle = row.lifecycle === 'active' ? 'Активен' : row.lifecycle === 'cooling' ? 'Остывает' : row.lifecycle === 'churned' ? 'Ушёл' : '—';
+          return '<tr><td>' + esc(row.userKey) + '</td><td>' + esc(new Date(row.firstSeenAt).toLocaleDateString('ru-RU')) + '</td><td>' + esc(new Date(row.lastSeenAt).toLocaleString('ru-RU')) + '</td><td>' + esc(lifecycle) + '</td><td>' + num(row.sessions) + '</td><td>' + num(row.activeDays) + '</td><td>' + num(row.shifts) + '</td></tr>';
+        }).join('');
+        var recentEvents = (data.recentEvents || []).map(function(row) {
+          return '<tr><td>' + esc(new Date(row.occurredAt).toLocaleString('ru-RU')) + '</td><td>' + esc(row.userKey) + '</td><td>' + esc(row.eventName) + '</td><td class="event-props">' + esc(JSON.stringify(row.properties || {})) + '</td></tr>';
+        }).join('');
+        content.className = '';
+        content.innerHTML =
+          '<div class="grid">' +
+            metric('Активные за период', num(m.activeUsers), 'Предыдущий период: ' + num(m.previousActiveUsers)) +
+            metric('DAU / WAU / MAU', num(m.dau) + ' / ' + num(m.wau) + ' / ' + num(m.mau), 'Уникальные пользователи') +
+            metric('Сессии', num(m.sessions), 'Средняя длительность: ' + num(m.averageSessionMinutes) + ' мин') +
+            metric('Сохранено смен', num(m.shiftsSaved), 'Первые смены: ' + num(m.firstShifts)) +
+          '</div>' +
+          '<section class="two"><div class="card"><h2>Воронка активации</h2>' + funnel + '</div>' +
+          '<div class="card"><h2>Возврат после первого визита</h2><div class="retention">' +
+            '<div><span class="metric-label">После 1 дня</span><strong>' + num(data.retention && data.retention.d1) + '%</strong></div>' +
+            '<div><span class="metric-label">После 7 дней</span><strong>' + num(data.retention && data.retention.d7) + '%</strong></div>' +
+            '<div><span class="metric-label">После 30 дней</span><strong>' + num(data.retention && data.retention.d30) + '%</strong></div>' +
+          '</div><div class="metric-note">Когорта: ' + num(data.retention && data.retention.cohort) + ' · зрелые D1/D7/D30: ' + num(data.retention && data.retention.eligible && data.retention.eligible.d1) + '/' + num(data.retention && data.retention.eligible && data.retention.eligible.d7) + '/' + num(data.retention && data.retention.eligible && data.retention.eligible.d30) + ' · согласились: ' + num(data.consents && data.consents.granted) + ' · отказались: ' + num(data.consents && data.consents.denied) + '</div></div></section>' +
+          '<section class="card"><h2>Активность по дням</h2><div class="daily">' + (daily || '<div class="status">Событий пока нет</div>') + '</div></section>' +
+          '<section class="card"><h2>Использование функций</h2><table class="numeric"><thead><tr><th>Событие</th><th>Пользователи</th><th>События</th></tr></thead><tbody>' + events + '</tbody></table></section>' +
+          '<section class="card scroll"><h2>Последние безопасные события</h2><table><thead><tr><th>Время</th><th>Псевдо-ID</th><th>Действие</th><th>Параметры</th></tr></thead><tbody>' + recentEvents + '</tbody></table></section>' +
+          '<section class="card scroll"><h2>Жизненный цикл пользователей</h2><table><thead><tr><th>Псевдо-ID</th><th>Первый вход</th><th>Последнее действие</th><th>Статус</th><th>Сессии</th><th>Активные дни</th><th>Смены</th></tr></thead><tbody>' + users + '</tbody></table></section>';
+        updated.textContent = 'Период: ' + activeDays + ' дней · обновлено ' + new Date(data.generatedAt).toLocaleString('ru-RU') + ' · ошибок синхронизации: ' + num(m.syncErrors);
+      }
+      function load() {
+        content.className = 'status'; content.textContent = 'Собираю показатели…';
+        fetch('/api/admin/analytics?days=' + activeDays, { credentials:'same-origin', headers:{Accept:'application/json'} })
+          .then(function(response) { if (!response.ok) throw new Error(response.status === 403 ? 'Нет доступа к аналитике' : 'Ошибка загрузки: ' + response.status); return response.json(); })
+          .then(render)
+          .catch(function(error) { content.className = 'status error'; content.textContent = error.message || 'Не удалось загрузить аналитику'; });
+      }
+      document.querySelectorAll('[data-days]').forEach(function(button) { button.addEventListener('click', function() { activeDays = Number(button.dataset.days) || 30; document.querySelectorAll('[data-days]').forEach(function(item) { item.classList.toggle('active', item === button); }); load(); }); });
+      load();
+    })();
+  </script>
+</body>
+</html>

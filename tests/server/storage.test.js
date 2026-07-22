@@ -99,3 +99,61 @@ test('an empty journal keeps its owner for aggregate user statistics', () => {
     removeTempDir(dataDir, 'storage-empty-owner');
   }
 });
+
+test('analytics migration stores consent, sessions, events, and dashboard aggregates', () => {
+  const dataDir = createTempDir('storage-analytics');
+  try {
+    const storage = createSqliteStorage({ dataDir });
+    const consent = storage.writeAnalyticsConsent('42', 'granted', '2026-07-23');
+    assert.equal(consent.status, 'granted');
+    assert.equal(storage.readAnalyticsConsent('42').policyVersion, '2026-07-23');
+
+    const occurredAt = new Date().toISOString();
+    const result = storage.recordAnalyticsEvents('42', [{
+      eventId: 'event:storage-test-0001',
+      sessionId: 'session:storage-test-0001',
+      eventName: 'app_opened',
+      occurredAt,
+      platform: 'android',
+      appVersion: 'v390',
+      properties: { source: 'test' },
+    }], 180);
+    assert.equal(result.inserted, 1);
+    const heartbeat = storage.recordAnalyticsEvents('42', [{
+      eventId: 'event:storage-heartbeat-0001',
+      sessionId: 'session:storage-test-0001',
+      eventName: 'session_heartbeat',
+      occurredAt: new Date(Date.parse(occurredAt) + 30000).toISOString(),
+      platform: 'android',
+      appVersion: 'v390',
+      properties: {},
+    }], 180);
+    assert.equal(heartbeat.inserted, 0);
+    const sameSessionId = 'session:storage-shared-0001';
+    const oldStart = new Date(Date.now() - 40 * 86400000).toISOString();
+    const oldReturn = new Date(Date.parse(oldStart) + 31 * 86400000).toISOString();
+    storage.recordAnalyticsEvents('older-user', [{
+      eventId: 'event:storage-test-0002', sessionId: sameSessionId, eventName: 'app_opened', occurredAt: oldStart,
+      platform: 'desktop', appVersion: 'v390', properties: {},
+    }, {
+      eventId: 'event:storage-test-0003', sessionId: sameSessionId, eventName: 'session_ended', occurredAt: oldReturn,
+      platform: 'desktop', appVersion: 'v390', properties: {},
+    }], 180);
+    storage.recordAnalyticsEvents('second-user', [{
+      eventId: 'event:storage-test-0004', sessionId: sameSessionId, eventName: 'app_opened', occurredAt,
+      platform: 'ios', appVersion: 'v390', properties: {},
+    }], 180);
+    const dashboard = storage.buildAnalyticsDashboard(90);
+    assert.equal(dashboard.metrics.activeUsers, 3);
+    assert.equal(dashboard.metrics.sessions, 3);
+    assert.equal(dashboard.retention.d30, 100);
+    assert.equal(dashboard.recentEvents.length, 4);
+    assert.equal(dashboard.users.length, 3);
+    assert.ok(dashboard.users.every((row) => /^[a-f0-9]{10}$/.test(row.userKey)));
+    assert.equal(storage.deleteAnalyticsForUser('42', true).removedEvents, 1);
+    assert.equal(storage.readAnalyticsConsent('42').status, 'granted');
+    storage.close();
+  } finally {
+    removeTempDir(dataDir, 'storage-analytics');
+  }
+});

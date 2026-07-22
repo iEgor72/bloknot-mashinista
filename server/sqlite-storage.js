@@ -65,6 +65,80 @@ const MIGRATIONS = [
       SELECT DISTINCT sid, MAX(updated_at) FROM shifts GROUP BY sid;
     `,
   },
+  {
+    version: 3,
+    name: 'privacy-safe product analytics',
+    sql: `
+      CREATE TABLE IF NOT EXISTS analytics_consents (
+        sid TEXT PRIMARY KEY,
+        status TEXT NOT NULL CHECK (status IN ('granted', 'denied')),
+        policy_version TEXT NOT NULL,
+        updated_at TEXT NOT NULL
+      );
+
+      CREATE TABLE IF NOT EXISTS analytics_sessions (
+        session_id TEXT PRIMARY KEY,
+        sid TEXT NOT NULL,
+        started_at TEXT NOT NULL,
+        last_seen_at TEXT NOT NULL,
+        ended_at TEXT,
+        platform TEXT NOT NULL DEFAULT 'unknown',
+        app_version TEXT NOT NULL DEFAULT ''
+      );
+
+      CREATE INDEX IF NOT EXISTS analytics_sessions_sid_last_seen_idx
+        ON analytics_sessions (sid, last_seen_at);
+
+      CREATE TABLE IF NOT EXISTS analytics_events (
+        id INTEGER PRIMARY KEY AUTOINCREMENT,
+        event_id TEXT NOT NULL UNIQUE,
+        sid TEXT NOT NULL,
+        session_id TEXT NOT NULL,
+        event_name TEXT NOT NULL,
+        occurred_at TEXT NOT NULL,
+        received_at TEXT NOT NULL,
+        platform TEXT NOT NULL DEFAULT 'unknown',
+        app_version TEXT NOT NULL DEFAULT '',
+        properties TEXT NOT NULL DEFAULT '{}'
+      );
+
+      CREATE INDEX IF NOT EXISTS analytics_events_occurred_idx
+        ON analytics_events (occurred_at);
+
+      CREATE INDEX IF NOT EXISTS analytics_events_sid_occurred_idx
+        ON analytics_events (sid, occurred_at);
+
+      CREATE INDEX IF NOT EXISTS analytics_events_name_occurred_idx
+        ON analytics_events (event_name, occurred_at);
+    `,
+  },
+  {
+    version: 4,
+    name: 'scope analytics sessions by user',
+    sql: `
+      CREATE TABLE analytics_sessions_v4 (
+        sid TEXT NOT NULL,
+        session_id TEXT NOT NULL,
+        started_at TEXT NOT NULL,
+        last_seen_at TEXT NOT NULL,
+        ended_at TEXT,
+        platform TEXT NOT NULL DEFAULT 'unknown',
+        app_version TEXT NOT NULL DEFAULT '',
+        PRIMARY KEY (sid, session_id)
+      );
+
+      INSERT INTO analytics_sessions_v4
+        (sid, session_id, started_at, last_seen_at, ended_at, platform, app_version)
+      SELECT sid, session_id, started_at, last_seen_at, ended_at, platform, app_version
+      FROM analytics_sessions;
+
+      DROP TABLE analytics_sessions;
+      ALTER TABLE analytics_sessions_v4 RENAME TO analytics_sessions;
+
+      CREATE INDEX analytics_sessions_sid_last_seen_idx
+        ON analytics_sessions (sid, last_seen_at);
+    `,
+  },
 ];
 
 function cloneFallback(value) {
@@ -244,6 +318,43 @@ class SqliteStorage {
         INSERT INTO legacy_imports (source_path, source_sha256, target_kind, target_key, imported_at)
         VALUES (?, ?, ?, ?, ?)
       `),
+      readAnalyticsConsent: this.db.prepare(`
+        SELECT status, policy_version, updated_at FROM analytics_consents WHERE sid = ?
+      `),
+      writeAnalyticsConsent: this.db.prepare(`
+        INSERT INTO analytics_consents (sid, status, policy_version, updated_at)
+        VALUES (?, ?, ?, ?)
+        ON CONFLICT(sid) DO UPDATE SET
+          status = excluded.status,
+          policy_version = excluded.policy_version,
+          updated_at = excluded.updated_at
+      `),
+      insertAnalyticsEvent: this.db.prepare(`
+        INSERT OR IGNORE INTO analytics_events
+          (event_id, sid, session_id, event_name, occurred_at, received_at, platform, app_version, properties)
+        VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)
+      `),
+      upsertAnalyticsSession: this.db.prepare(`
+        INSERT INTO analytics_sessions
+          (session_id, sid, started_at, last_seen_at, ended_at, platform, app_version)
+        VALUES (?, ?, ?, ?, ?, ?, ?)
+        ON CONFLICT(sid, session_id) DO UPDATE SET
+          started_at = CASE
+            WHEN excluded.started_at < analytics_sessions.started_at THEN excluded.started_at
+            ELSE analytics_sessions.started_at
+          END,
+          last_seen_at = CASE
+            WHEN excluded.last_seen_at > analytics_sessions.last_seen_at THEN excluded.last_seen_at
+            ELSE analytics_sessions.last_seen_at
+          END,
+          ended_at = COALESCE(excluded.ended_at, analytics_sessions.ended_at),
+          platform = CASE WHEN excluded.platform != 'unknown' THEN excluded.platform ELSE analytics_sessions.platform END,
+          app_version = CASE WHEN excluded.app_version != '' THEN excluded.app_version ELSE analytics_sessions.app_version END
+      `),
+      deleteExpiredAnalyticsEvents: this.db.prepare('DELETE FROM analytics_events WHERE received_at < ?'),
+      deleteAnalyticsEventsForUser: this.db.prepare('DELETE FROM analytics_events WHERE sid = ?'),
+      deleteAnalyticsSessionsForUser: this.db.prepare('DELETE FROM analytics_sessions WHERE sid = ?'),
+      deleteAnalyticsConsentForUser: this.db.prepare('DELETE FROM analytics_consents WHERE sid = ?'),
     };
     this.replaceShiftsTransaction = this.db.transaction((sid, shifts) => {
       this.statements.deleteShifts.run(sid);
@@ -252,6 +363,35 @@ class SqliteStorage {
       shifts.forEach((shift, position) => {
         this.statements.insertShift.run(sid, String(shift.id), position, JSON.stringify(shift), now);
       });
+    });
+    this.recordAnalyticsEventsTransaction = this.db.transaction((sid, events, receivedAt) => {
+      let inserted = 0;
+      events.forEach((event) => {
+        if (event.eventName !== 'session_heartbeat') {
+          const result = this.statements.insertAnalyticsEvent.run(
+            event.eventId,
+            sid,
+            event.sessionId,
+            event.eventName,
+            event.occurredAt,
+            receivedAt,
+            event.platform,
+            event.appVersion,
+            JSON.stringify(event.properties || {})
+          );
+          inserted += Number(result.changes) || 0;
+        }
+        this.statements.upsertAnalyticsSession.run(
+          event.sessionId,
+          sid,
+          event.occurredAt,
+          event.occurredAt,
+          event.eventName === 'session_ended' ? event.occurredAt : null,
+          event.platform,
+          event.appVersion
+        );
+      });
+      return inserted;
     });
   }
 
@@ -292,6 +432,210 @@ class SqliteStorage {
 
   listShiftUserIds() {
     return this.statements.listShiftUserIds.all().map((row) => String(row.sid));
+  }
+
+  readAnalyticsConsent(sid) {
+    const row = this.statements.readAnalyticsConsent.get(String(sid));
+    return row ? {
+      status: String(row.status),
+      policyVersion: String(row.policy_version),
+      updatedAt: String(row.updated_at),
+    } : null;
+  }
+
+  writeAnalyticsConsent(sid, status, policyVersion) {
+    const updatedAt = new Date().toISOString();
+    this.statements.writeAnalyticsConsent.run(String(sid), String(status), String(policyVersion), updatedAt);
+    return { status: String(status), policyVersion: String(policyVersion), updatedAt };
+  }
+
+  recordAnalyticsEvents(sid, events, retentionDays) {
+    const receivedAt = new Date().toISOString();
+    const inserted = this.recordAnalyticsEventsTransaction(String(sid), events, receivedAt);
+    const days = Math.max(30, Math.min(730, Number(retentionDays) || 180));
+    const cutoff = new Date(Date.now() - days * 86400000).toISOString();
+    this.statements.deleteExpiredAnalyticsEvents.run(cutoff);
+    return { inserted, receivedAt };
+  }
+
+  deleteAnalyticsForUser(sid, preserveConsent) {
+    const userId = String(sid);
+    const removedEvents = Number(this.statements.deleteAnalyticsEventsForUser.run(userId).changes) || 0;
+    const removedSessions = Number(this.statements.deleteAnalyticsSessionsForUser.run(userId).changes) || 0;
+    if (!preserveConsent) this.statements.deleteAnalyticsConsentForUser.run(userId);
+    return { removedEvents, removedSessions };
+  }
+
+  buildAnalyticsDashboard(days) {
+    const periodDays = Math.max(1, Math.min(365, Number(days) || 30));
+    const now = Date.now();
+    const startAt = new Date(now - periodDays * 86400000).toISOString();
+    const previousStartAt = new Date(now - periodDays * 2 * 86400000).toISOString();
+    const db = this.db;
+    const scalar = (sql, params) => {
+      const row = db.prepare(sql).get(...(params || []));
+      return Number(row && row.value) || 0;
+    };
+    const uniqueUsers = (from, to) => scalar(
+      'SELECT COUNT(DISTINCT sid) AS value FROM analytics_events WHERE occurred_at >= ? AND occurred_at < ?',
+      [from, to]
+    );
+    const eventCount = (name) => scalar(
+      'SELECT COUNT(*) AS value FROM analytics_events WHERE event_name = ? AND occurred_at >= ?',
+      [name, startAt]
+    );
+    const activeSince = (daysBack) => scalar(
+      'SELECT COUNT(DISTINCT sid) AS value FROM analytics_events WHERE occurred_at >= ?',
+      [new Date(now - daysBack * 86400000).toISOString()]
+    );
+    const featureRows = db.prepare(`
+      SELECT event_name AS eventName, COUNT(*) AS events, COUNT(DISTINCT sid) AS users
+      FROM analytics_events
+      WHERE occurred_at >= ?
+      GROUP BY event_name
+      ORDER BY users DESC, events DESC, event_name
+    `).all(startAt).map((row) => ({
+      eventName: String(row.eventName),
+      events: Number(row.events) || 0,
+      users: Number(row.users) || 0,
+    }));
+    const daily = db.prepare(`
+      SELECT substr(occurred_at, 1, 10) AS day,
+             COUNT(DISTINCT sid) AS users,
+             SUM(CASE WHEN event_name = 'shift_saved' THEN 1 ELSE 0 END) AS shifts
+      FROM analytics_events
+      WHERE occurred_at >= ?
+      GROUP BY substr(occurred_at, 1, 10)
+      ORDER BY day
+    `).all(startAt).map((row) => ({
+      day: String(row.day),
+      users: Number(row.users) || 0,
+      shifts: Number(row.shifts) || 0,
+    }));
+    const retentionRows = db.prepare(`
+      WITH first_seen AS (
+        SELECT sid, MIN(occurred_at) AS first_at
+        FROM analytics_events
+        GROUP BY sid
+      )
+      SELECT
+        COUNT(*) AS cohort,
+        SUM(CASE WHEN first_at <= ? THEN 1 ELSE 0 END) AS d1_eligible,
+        SUM(CASE WHEN first_at <= ? AND EXISTS (
+          SELECT 1 FROM analytics_events e
+          WHERE e.sid = f.sid AND julianday(e.occurred_at) >= julianday(f.first_at, '+1 day')
+        ) THEN 1 ELSE 0 END) AS d1_returned,
+        SUM(CASE WHEN first_at <= ? THEN 1 ELSE 0 END) AS d7_eligible,
+        SUM(CASE WHEN first_at <= ? AND EXISTS (
+          SELECT 1 FROM analytics_events e
+          WHERE e.sid = f.sid AND julianday(e.occurred_at) >= julianday(f.first_at, '+7 day')
+        ) THEN 1 ELSE 0 END) AS d7_returned,
+        SUM(CASE WHEN first_at <= ? THEN 1 ELSE 0 END) AS d30_eligible,
+        SUM(CASE WHEN first_at <= ? AND EXISTS (
+          SELECT 1 FROM analytics_events e
+          WHERE e.sid = f.sid AND julianday(e.occurred_at) >= julianday(f.first_at, '+30 day')
+        ) THEN 1 ELSE 0 END) AS d30_returned
+      FROM first_seen f
+      WHERE f.first_at >= ?
+    `).get(
+      new Date(now - 86400000).toISOString(),
+      new Date(now - 86400000).toISOString(),
+      new Date(now - 7 * 86400000).toISOString(),
+      new Date(now - 7 * 86400000).toISOString(),
+      new Date(now - 30 * 86400000).toISOString(),
+      new Date(now - 30 * 86400000).toISOString(),
+      startAt
+    ) || {};
+    const cohort = Number(retentionRows.cohort) || 0;
+    const d1Eligible = Number(retentionRows.d1_eligible) || 0;
+    const d7Eligible = Number(retentionRows.d7_eligible) || 0;
+    const d30Eligible = Number(retentionRows.d30_eligible) || 0;
+    const retention = {
+      cohort,
+      eligible: { d1: d1Eligible, d7: d7Eligible, d30: d30Eligible },
+      d1: d1Eligible ? Math.round((Number(retentionRows.d1_returned) || 0) * 1000 / d1Eligible) / 10 : 0,
+      d7: d7Eligible ? Math.round((Number(retentionRows.d7_returned) || 0) * 1000 / d7Eligible) / 10 : 0,
+      d30: d30Eligible ? Math.round((Number(retentionRows.d30_returned) || 0) * 1000 / d30Eligible) / 10 : 0,
+    };
+    const consentRows = db.prepare(`
+      SELECT status, COUNT(*) AS count FROM analytics_consents GROUP BY status
+    `).all();
+    const consents = { granted: 0, denied: 0 };
+    consentRows.forEach((row) => { consents[String(row.status)] = Number(row.count) || 0; });
+    const users = db.prepare(`
+      SELECT sid,
+             MIN(occurred_at) AS firstSeenAt,
+             MAX(occurred_at) AS lastSeenAt,
+             COUNT(*) AS events,
+             COUNT(DISTINCT session_id) AS sessions,
+             COUNT(DISTINCT substr(occurred_at, 1, 10)) AS activeDays,
+             SUM(CASE WHEN event_name = 'shift_saved' THEN 1 ELSE 0 END) AS shifts
+      FROM analytics_events
+      GROUP BY sid
+      ORDER BY lastSeenAt DESC
+      LIMIT 100
+    `).all().map((row) => {
+      const lastSeenMs = Date.parse(row.lastSeenAt || '');
+      const inactiveDays = Number.isFinite(lastSeenMs) ? Math.max(0, Math.floor((now - lastSeenMs) / 86400000)) : null;
+      return {
+        userKey: crypto.createHash('sha256').update(String(row.sid)).digest('hex').slice(0, 10),
+        firstSeenAt: String(row.firstSeenAt || ''),
+        lastSeenAt: String(row.lastSeenAt || ''),
+        inactiveDays,
+        lifecycle: inactiveDays === null ? 'unknown' : inactiveDays <= 7 ? 'active' : inactiveDays <= 30 ? 'cooling' : 'churned',
+        events: Number(row.events) || 0,
+        sessions: Number(row.sessions) || 0,
+        activeDays: Number(row.activeDays) || 0,
+        shifts: Number(row.shifts) || 0,
+      };
+    });
+    const recentEvents = db.prepare(`
+      SELECT sid, event_name AS eventName, occurred_at AS occurredAt, properties
+      FROM analytics_events
+      WHERE occurred_at >= ?
+      ORDER BY occurred_at DESC, id DESC
+      LIMIT 200
+    `).all(startAt).map((row) => ({
+      userKey: crypto.createHash('sha256').update(String(row.sid)).digest('hex').slice(0, 10),
+      eventName: String(row.eventName),
+      occurredAt: String(row.occurredAt),
+      properties: parsePayload(row.properties, {}),
+    }));
+    const averageSessionMinutes = db.prepare(`
+      SELECT AVG(MAX(0, (julianday(COALESCE(ended_at, last_seen_at)) - julianday(started_at)) * 1440)) AS value
+      FROM analytics_sessions
+      WHERE last_seen_at >= ?
+    `).get(startAt);
+    return {
+      generatedAt: new Date().toISOString(),
+      periodDays,
+      periodStart: startAt,
+      metrics: {
+        activeUsers: uniqueUsers(startAt, new Date(now + 1000).toISOString()),
+        previousActiveUsers: uniqueUsers(previousStartAt, startAt),
+        dau: activeSince(1),
+        wau: activeSince(7),
+        mau: activeSince(30),
+        sessions: scalar('SELECT COUNT(*) AS value FROM analytics_sessions WHERE last_seen_at >= ?', [startAt]),
+        averageSessionMinutes: Math.round((Number(averageSessionMinutes && averageSessionMinutes.value) || 0) * 10) / 10,
+        shiftsSaved: eventCount('shift_saved'),
+        firstShifts: eventCount('first_shift_saved'),
+        syncErrors: eventCount('shift_sync_failed'),
+      },
+      funnel: [
+        { eventName: 'app_opened', label: 'Открыли приложение', users: featureRows.find((row) => row.eventName === 'app_opened')?.users || 0 },
+        { eventName: 'shift_form_started', label: 'Начали смену', users: featureRows.find((row) => row.eventName === 'shift_form_started')?.users || 0 },
+        { eventName: 'first_shift_saved', label: 'Сохранили первую смену', users: featureRows.find((row) => row.eventName === 'first_shift_saved')?.users || 0 },
+        { eventName: 'salary_opened', label: 'Открыли расчёт', users: featureRows.find((row) => row.eventName === 'salary_opened')?.users || 0 },
+        { eventName: 'third_shift_saved', label: 'Сохранили третью смену', users: featureRows.find((row) => row.eventName === 'third_shift_saved')?.users || 0 },
+      ],
+      retention,
+      consents,
+      daily,
+      events: featureRows,
+      users,
+      recentEvents,
+    };
   }
 
   importLegacyJson(config) {

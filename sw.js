@@ -1,4 +1,4 @@
-const CACHE_VERSION = 'v389';
+const CACHE_VERSION = 'v390';
 const CACHE_NAME = `shift-tracker-shell-${CACHE_VERSION}`;
 const NAVIGATION_FALLBACK_URL = '/index.html';
 const NETWORK_TIMEOUT_MS = 4500;
@@ -65,6 +65,7 @@ const INSTALL_SHELL_URLS = [
   '/scripts/poekhali-backup.js',
   '/scripts/poekhali-tracker.js',
   '/scripts/auth.js',
+  '/scripts/analytics.js',
   '/scripts/render.js',
   '/scripts/shift-form.js',
   '/scripts/partners.js',
@@ -78,7 +79,7 @@ const INSTALL_SHELL_URLS = [
   '/assets/tracker/sections/dvost-vysokogornaya-oune-via-muli.json',
   '/assets/tracker/sections/dvost-oune-pivan.json',
   '/assets/tracker/sections/dvost-pivan-novyi-mir.json',
-  '/sw-bootstrap-v389.js'
+  '/sw-bootstrap-v390.js'
 ];
 const CRITICAL_INSTALL_URLS = [
   '/',
@@ -129,12 +130,13 @@ const CRITICAL_INSTALL_URLS = [
   '/scripts/poekhali-backup.js',
   '/scripts/poekhali-tracker.js',
   '/scripts/auth.js',
+  '/scripts/analytics.js',
   '/scripts/render.js',
   '/scripts/shift-form.js',
   '/scripts/partners.js',
   '/scripts/app-init.js',
   '/scripts/sw-register.js',
-  '/sw-bootstrap-v389.js'
+  '/sw-bootstrap-v390.js'
 ];
 const EXTENDED_SHELL_URLS = [
   '/assets/fonts/plus-jakarta-sans/plus-jakarta-sans-cyrillic-ext.woff2',

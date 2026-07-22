@@ -227,6 +227,8 @@ async function cleanup(exitCode = 0) {
 }
 
 async function main() {
+  let analyticsConsent = null;
+  const analyticsEvents = [];
   verifyAppShellCacheCoverage();
 
   server = spawn(process.execPath, ['server.js'], {
@@ -376,6 +378,16 @@ async function main() {
       body = { totalUsers: 1, onlineUsers: 1, onlineWindowSeconds: 120, updatedAt: now };
     } else if (url.pathname === '/api/auth') {
       body = { user: { id: '999', first_name: 'Smoke', username: 'smoke-user', display_name: 'Smoke User' }, sessionToken: 'local-smoke-token' };
+    } else if (url.pathname === '/api/analytics/consent') {
+      if (route.request().method() === 'PUT') {
+        const payload = route.request().postDataJSON();
+        analyticsConsent = { status: payload.status, policyVersion: '2026-07-23', updatedAt: now };
+      }
+      body = { ok: true, consent: analyticsConsent, policyVersion: '2026-07-23' };
+    } else if (url.pathname === '/api/events') {
+      const payload = route.request().postDataJSON();
+      analyticsEvents.push(...(Array.isArray(payload.events) ? payload.events : []));
+      body = { ok: true, accepted: Array.isArray(payload.events) ? payload.events.length : 0, receivedAt: now };
     }
     await route.fulfill({
       status: 200,
@@ -409,6 +421,14 @@ async function main() {
     return !!shell && !shell.classList.contains('hidden');
   }, 'app shell visible');
   report.checks.appShellVisible = true;
+
+  await waitForPageCondition(page, () => {
+    const dialog = document.getElementById('analyticsConsentDialog');
+    return !!dialog && !dialog.classList.contains('hidden');
+  }, 'analytics consent dialog');
+  await clickElementCenter(page, '#analyticsConsentDialog .analytics-consent-allow', 'analytics consent allow');
+  await waitForPageCondition(page, () => window.ProductAnalytics && window.ProductAnalytics.getConsentStatus() === 'granted', 'analytics consent persisted');
+  report.checks.analyticsConsent = 'granted';
 
   const userFacingDataTools = await page.evaluate(() => {
     const profile = document.querySelector('.tab-panel[data-tab="profile"]');
@@ -793,6 +813,24 @@ async function main() {
   report.checks.overlayRecovery = overlayRecoveryState;
   if (overlayRecoveryState.bodyLocked || overlayRecoveryState.overlayOpen || !overlayRecoveryState.backdropHidden) {
     throw new Error('Overlay recovery did not release stale click blockers');
+  }
+
+  await page.evaluate(() => window.ProductAnalytics && window.ProductAnalytics.flush());
+  await waitForPageCondition(page, () => {
+    try {
+      const keys = Object.keys(localStorage).filter((key) => key.indexOf('shift_tracker_analytics_queue_v1_') === 0);
+      return keys.length > 0 && keys.every((key) => JSON.parse(localStorage.getItem(key) || '[]').length === 0);
+    } catch {
+      return false;
+    }
+  }, 'analytics queue flush');
+  report.checks.analyticsEvents = analyticsEvents.map((event) => event.eventName);
+  if (!analyticsEvents.some((event) => event.eventName === 'app_opened')) {
+    throw new Error('Analytics app_opened event was not delivered');
+  }
+  const analyticsPayloadText = JSON.stringify(analyticsEvents);
+  if (/route_from|route_to|locomotive_number|train_number|notes|latitude|longitude/i.test(analyticsPayloadText)) {
+    throw new Error('Analytics payload contains a forbidden sensitive field');
   }
 
   await page.screenshot({ path: path.join(artifactsDir, 'smoke-home.png'), fullPage: true });

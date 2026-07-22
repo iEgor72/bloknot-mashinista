@@ -1,4 +1,4 @@
-    if (typeof registerShiftTrackerRuntimeModule === 'function') registerShiftTrackerRuntimeModule('shift-form', 'v389');
+    if (typeof registerShiftTrackerRuntimeModule === 'function') registerShiftTrackerRuntimeModule('shift-form', 'v390');
 
     function findShiftById(id) {
       for (var i = 0; i < allShifts.length; i++) {
@@ -170,6 +170,7 @@
 
       saveShifts(function(err) {
         if (err) {
+          if (window.ProductAnalytics) window.ProductAnalytics.track('shift_sync_failed', { action: 'delete', offline: navigator.onLine === false, errorCode: 'delete_failed' });
           triggerHapticError();
           loadShifts(function() {
             render();
@@ -177,6 +178,7 @@
           return;
         }
         triggerHapticSuccess();
+        if (window.ProductAnalytics) window.ProductAnalytics.track('shift_deleted', { shiftCount: allShifts.length });
         showActionToast('deleted');
         render();
       });
@@ -639,6 +641,7 @@
       }
 
       if (!valid) {
+        if (window.ProductAnalytics) window.ProductAnalytics.track('shift_form_validation_failed', { reason: 'required_time' });
         triggerHapticError();
         return;
       }
@@ -648,6 +651,7 @@
 
       if (!startDate || !endDate) {
         document.getElementById('errStart').textContent = 'Неверный формат даты';
+        if (window.ProductAnalytics) window.ProductAnalytics.track('shift_form_validation_failed', { reason: 'invalid_date' });
         triggerHapticError();
         return;
       }
@@ -656,6 +660,7 @@
         document.getElementById('errEnd').textContent = 'Время окончания не может быть раньше начала';
         inputEndDateEl.classList.add('input-error');
         inputEndTimeEl.classList.add('input-error');
+        if (window.ProductAnalytics) window.ProductAnalytics.track('shift_form_validation_failed', { reason: 'end_before_start' });
         triggerHapticError();
         return;
       }
@@ -739,6 +744,7 @@
 
       saveShifts(function(err) {
         if (err) {
+          if (window.ProductAnalytics) window.ProductAnalytics.track('shift_sync_failed', { action: isEditing ? 'edit' : 'add', offline: navigator.onLine === false, errorCode: 'save_failed' });
           triggerHapticError();
           allShifts = previousShifts;
           btn.disabled = false;
@@ -748,6 +754,9 @@
         }
 
         triggerHapticSuccess();
+        if (window.ProductAnalytics && typeof window.ProductAnalytics.noteShiftSaved === 'function') {
+          window.ProductAnalytics.noteShiftSaved(shift, { isEditing: isEditing, shiftCount: allShifts.length });
+        }
         showActionToast(isEditing ? 'saved' : 'added');
 
         if (!isEditing) {
@@ -944,6 +953,7 @@
       saveSalarySettingsBtn.addEventListener('click', function() {
         triggerHapticSuccess();
         syncSettingsFromInputs();
+        if (window.ProductAnalytics) window.ProductAnalytics.track('salary_params_changed', { source: 'settings' });
         closeOverlay('overlaySalarySettings');
         showActionToast('saved');
       });

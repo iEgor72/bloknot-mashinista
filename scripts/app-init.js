@@ -1,4 +1,4 @@
-if (typeof registerShiftTrackerRuntimeModule === 'function') registerShiftTrackerRuntimeModule('app-init', 'v389');
+if (typeof registerShiftTrackerRuntimeModule === 'function') registerShiftTrackerRuntimeModule('app-init', 'v390');
 
 // ── Init ──
 function startShiftTrackerRuntime() {
@@ -632,7 +632,7 @@ if (window.__SHIFT_TRACKER_RUNTIME_GUARD_PENDING) {
       title: 'Оффлайн режим работает',
       tone: 'success',
       ts: releaseTime('2026-06-21T13:58:00+10:00'),
-      expiresAt: releaseTime('2026-07-21T13:58:00+10:00'),
+      expiresAt: releaseTime('2026-08-21T13:58:00+10:00'),
       text:
         'Блокнот снова открывается без связи после одного запуска с интернетом.\n' +
         'Сохраненные смены и данные останутся доступны оффлайн.'

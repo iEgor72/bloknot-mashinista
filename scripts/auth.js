@@ -1,4 +1,4 @@
-    if (typeof registerShiftTrackerRuntimeModule === 'function') registerShiftTrackerRuntimeModule('auth', 'v389');
+    if (typeof registerShiftTrackerRuntimeModule === 'function') registerShiftTrackerRuntimeModule('auth', 'v390');
 
     var API_BASE_URL = window.SHIFT_API_BASE_URL || '';
     var AUTH_API_URL = API_BASE_URL + '/api/auth';
@@ -547,6 +547,9 @@
       closeLocoSeriesMenu();
       var previousTab = activeTab || 'home';
       activeTab = tab || 'home';
+      if (window.ProductAnalytics && typeof window.ProductAnalytics.trackScreen === 'function') {
+        window.ProductAnalytics.trackScreen(activeTab);
+      }
 
       var panels = document.querySelectorAll('.tab-panel');
       var activePanel = null;

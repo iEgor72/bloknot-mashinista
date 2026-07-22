@@ -352,14 +352,22 @@ async function runOfflineReloadCheck() {
     }));
 
     const currentCacheName = 'shift-tracker-shell-' + version;
-    const currentCache = await caches.open(currentCacheName);
-    await currentCache.put('/scripts/time-utils.js', new Response(liveSource, {
-      status: 200,
-      headers: { 'Content-Type': 'application/javascript; charset=utf-8' },
-    }));
-    const currentKeys = await currentCache.keys();
-    const runtimeKeys = currentKeys.filter((request) => new URL(request.url).pathname === '/scripts/time-utils.js');
-    const deleteResults = await Promise.all(runtimeKeys.map((request) => currentCache.delete(request)));
+    let runtimeKeys = [];
+    let deleteResults = [];
+    for (let attempt = 0; attempt < 20; attempt += 1) {
+      const currentCache = await caches.open(currentCacheName);
+      await currentCache.put('/scripts/time-utils.js', new Response(liveSource, {
+        status: 200,
+        headers: { 'Content-Type': 'application/javascript; charset=utf-8' },
+      }));
+      const currentKeys = await currentCache.keys();
+      runtimeKeys = currentKeys.filter((request) => new URL(request.url).pathname === '/scripts/time-utils.js');
+      if (runtimeKeys.length) {
+        deleteResults = await Promise.all(runtimeKeys.map((request) => currentCache.delete(request)));
+        if (deleteResults.every(Boolean)) break;
+      }
+      await new Promise((resolve) => setTimeout(resolve, 100));
+    }
     return {
       version,
       staleCacheName,
@@ -405,7 +413,7 @@ async function runOfflineReloadCheck() {
   setPhase('offline-reload:mixed-runtime-self-repair');
   const repairSentinelKey = 'shift_tracker_runtime_repair_test_sentinel';
   const repairNavigation = page.waitForURL((url) => (
-    url.searchParams.get('runtime_repair') === 'v389' && Boolean(url.searchParams.get('repair_nonce'))
+    url.searchParams.get('runtime_repair') === 'v390' && Boolean(url.searchParams.get('repair_nonce'))
   ), { timeout: uiTimeoutMs });
   const repairTrigger = await page.evaluate((sentinelKey) => {
     localStorage.setItem(sentinelKey, 'preserved');
