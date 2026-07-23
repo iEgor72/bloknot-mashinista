@@ -2444,12 +2444,8 @@ const server = http.createServer(async (req, res) => {
   }
 
   if (pathname === '/analytics') {
-    if (!requestUser) {
-      sendText(res, 401, 'Войдите в приложение через Telegram, затем откройте аналитику снова.');
-      return;
-    }
-    if (!isAnalyticsAdmin(requestUser)) {
-      sendText(res, 403, 'Доступ запрещён.');
+    if (req.method !== 'GET') {
+      sendText(res, 405, 'Method not allowed');
       return;
     }
     const dashboardPath = path.join(ROOT, 'admin', 'analytics.html');
@@ -2688,7 +2684,10 @@ const server = http.createServer(async (req, res) => {
       // Check existing session (Bearer token)
       const user = getUserFromRequest(req);
       if (!user) { sendJson(res, 401, { error: 'Unauthorized' }); return; }
-      sendJson(res, 200, { user, sessionToken: createSessionToken(user) });
+      const sessionToken = createSessionToken(user);
+      sendJson(res, 200, { user, sessionToken }, {
+        'Set-Cookie': buildSessionCookie(sessionToken),
+      });
       return;
     }
 

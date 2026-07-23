@@ -109,6 +109,7 @@ test('auth rejects unsigned requests and accepts valid Telegram initData', async
   const session = await jsonRequest('/api/auth', { headers: bearer(token) });
   assert.equal(session.response.status, 200);
   assert.equal(session.body.user.id, '1001');
+  assert.match(session.response.headers.get('set-cookie') || '', /bm_session=/);
 });
 
 test('analytics requires consent, deduplicates events, and exposes only admin aggregates', async () => {
@@ -173,8 +174,9 @@ test('analytics requires consent, deduplicates events, and exposes only admin ag
   assert.equal(dashboard.body.consents.granted, 1);
   assert.equal(dashboard.body.recentEvents[0].userKey.length, 10);
 
-  const forbiddenPage = await fetch(baseUrl + '/analytics', { headers: bearer(userToken) });
-  assert.equal(forbiddenPage.status, 403);
+  const publicShell = await fetch(baseUrl + '/analytics');
+  assert.equal(publicShell.status, 200);
+  assert.match(await publicShell.text(), /shift_tracker_session_token/);
   const adminPage = await fetch(baseUrl + '/analytics', { headers: bearer(adminToken) });
   assert.equal(adminPage.status, 200);
   assert.match(await adminPage.text(), /Продуктовая аналитика/);

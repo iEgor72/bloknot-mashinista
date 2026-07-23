@@ -62,6 +62,14 @@
       function esc(value) { return String(value == null ? '' : value).replace(/[&<>"']/g, function(ch) { return ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'})[ch]; }); }
       function num(value) { return new Intl.NumberFormat('ru-RU').format(Number(value) || 0); }
       function metric(label, value, note) { return '<div class="card"><div class="metric-label">' + esc(label) + '</div><div class="metric-value">' + esc(value) + '</div><div class="metric-note">' + esc(note || '') + '</div></div>'; }
+      function authHeaders() {
+        var headers = { Accept:'application/json' };
+        try {
+          var token = localStorage.getItem('shift_tracker_session_token') || '';
+          if (token) headers.Authorization = 'Bearer ' + token;
+        } catch (error) {}
+        return headers;
+      }
       function render(data) {
         var m = data.metrics || {};
         var maxFunnel = Math.max.apply(Math, (data.funnel || []).map(function(row) { return row.users || 0; }).concat([1]));
@@ -104,10 +112,20 @@
       }
       function load() {
         content.className = 'status'; content.textContent = 'Собираю показатели…';
-        fetch('/api/admin/analytics?days=' + activeDays, { credentials:'same-origin', headers:{Accept:'application/json'} })
-          .then(function(response) { if (!response.ok) throw new Error(response.status === 403 ? 'Нет доступа к аналитике' : 'Ошибка загрузки: ' + response.status); return response.json(); })
+        fetch('/api/admin/analytics?days=' + activeDays, { credentials:'same-origin', headers:authHeaders() })
+          .then(function(response) {
+            if (!response.ok) {
+              if (response.status === 401) throw new Error('Сессия не найдена. Откройте приложение и войдите.');
+              if (response.status === 403) throw new Error('Нет доступа к аналитике');
+              throw new Error('Ошибка загрузки: ' + response.status);
+            }
+            return response.json();
+          })
           .then(render)
-          .catch(function(error) { content.className = 'status error'; content.textContent = error.message || 'Не удалось загрузить аналитику'; });
+          .catch(function(error) {
+            content.className = 'status error';
+            content.innerHTML = esc(error.message || 'Не удалось загрузить аналитику') + '<br><br><a href="/" style="color:var(--accent)">Открыть приложение и войти</a>';
+          });
       }
       document.querySelectorAll('[data-days]').forEach(function(button) { button.addEventListener('click', function() { activeDays = Number(button.dataset.days) || 30; document.querySelectorAll('[data-days]').forEach(function(item) { item.classList.toggle('active', item === button); }); load(); }); });
       load();
