@@ -179,7 +179,7 @@ test('analytics requires consent, deduplicates events, and exposes only admin ag
   assert.match(await publicShell.text(), /shift_tracker_session_token/);
   const adminPage = await fetch(baseUrl + '/analytics', { headers: bearer(adminToken) });
   assert.equal(adminPage.status, 200);
-  assert.match(await adminPage.text(), /Продуктовая аналитика/);
+  assert.match(await adminPage.text(), /Статистика приложения/);
 });
 
 test('analytics denial removes raw events and prevents further collection', async () => {
