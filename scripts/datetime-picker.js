@@ -13,12 +13,6 @@
   var minutesEl = document.getElementById('dateTimePickerMinutes');
   var timePreviewEl = document.getElementById('dateTimePickerTimePreview');
   var confirmBtn = document.getElementById('btnConfirmDateTimePicker');
-  var timelineEl = document.getElementById('shiftDayTimeline');
-  var timelineValueEl = document.getElementById('shiftDayTimelineValue');
-  var timelinePrimaryEl = document.getElementById('shiftDayTimelinePrimary');
-  var timelineSecondaryEl = document.getElementById('shiftDayTimelineSecondary');
-  var timelineStartEl = document.getElementById('shiftDayTimelineStart');
-  var timelineEndEl = document.getElementById('shiftDayTimelineEnd');
   var controls = document.querySelectorAll('[data-datetime-target]');
   var inputIds = ['inputStartDate', 'inputStartTime', 'inputEndDate', 'inputEndTime'];
   var activeInput = null;
@@ -29,6 +23,7 @@
   var selectedHour = 0;
   var selectedMinute = 0;
   var lastValues = {};
+  var wheelScrollTimers = new WeakMap();
   var monthFormatter = new Intl.DateTimeFormat('ru-RU', { month: 'long', year: 'numeric' });
   var dateFormatter = new Intl.DateTimeFormat('ru-RU', { day: 'numeric', month: 'long', year: 'numeric' });
 
@@ -82,86 +77,6 @@
     return input.value;
   }
 
-  function parseTimeValue(value) {
-    var match = /^(\d{2}):(\d{2})$/.exec(String(value || ''));
-    if (!match) return null;
-    var hour = Number(match[1]);
-    var minute = Number(match[2]);
-    if (hour > 23 || minute > 59) return null;
-    return hour * 60 + minute;
-  }
-
-  function getCivilDateMinutes(date) {
-    return Date.UTC(date.getFullYear(), date.getMonth(), date.getDate()) / 60000;
-  }
-
-  function setTimelinePosition(element, left, width) {
-    if (!element) return;
-    element.style.left = Math.max(0, Math.min(100, left)) + '%';
-    if (typeof width === 'number') {
-      element.style.width = Math.max(0, Math.min(100, width)) + '%';
-    }
-  }
-
-  function syncShiftTimeline() {
-    if (
-      !timelineEl ||
-      !timelineValueEl ||
-      !timelinePrimaryEl ||
-      !timelineSecondaryEl ||
-      !timelineStartEl ||
-      !timelineEndEl
-    ) return;
-
-    timelineEl.classList.remove('has-range', 'is-overnight', 'is-full-day');
-    setTimelinePosition(timelinePrimaryEl, 0, 0);
-    setTimelinePosition(timelineSecondaryEl, 0, 0);
-
-    var startDateInput = document.getElementById('inputStartDate');
-    var startTimeInput = document.getElementById('inputStartTime');
-    var endDateInput = document.getElementById('inputEndDate');
-    var endTimeInput = document.getElementById('inputEndTime');
-    var startDate = parseDateValue(startDateInput && startDateInput.value);
-    var endDate = parseDateValue(endDateInput && endDateInput.value);
-    var startMinute = parseTimeValue(startTimeInput && startTimeInput.value);
-    var endMinute = parseTimeValue(endTimeInput && endTimeInput.value);
-
-    if (!startDate || !endDate || startMinute === null || endMinute === null) {
-      timelineValueEl.textContent = 'Время не выбрано';
-      return;
-    }
-
-    var startAbsolute = getCivilDateMinutes(startDate) + startMinute;
-    var endAbsolute = getCivilDateMinutes(endDate) + endMinute;
-    var duration = endAbsolute - startAbsolute;
-    var crossesMidnight = formatDateValue(startDate) !== formatDateValue(endDate);
-    var rangeLabel = startTimeInput.value + ' → ' + endTimeInput.value;
-
-    timelineValueEl.textContent = rangeLabel;
-    if (duration <= 0) return;
-
-    timelineEl.classList.add('has-range');
-    setTimelinePosition(timelineStartEl, startMinute / 14.4);
-    setTimelinePosition(timelineEndEl, endMinute / 14.4);
-
-    if (duration >= 24 * 60) {
-      timelineEl.classList.add('is-full-day');
-      setTimelinePosition(timelinePrimaryEl, 0, 100);
-      timelineValueEl.textContent = rangeLabel + ' · более суток';
-      return;
-    }
-
-    if (crossesMidnight) {
-      timelineEl.classList.add('is-overnight');
-      setTimelinePosition(timelinePrimaryEl, startMinute / 14.4, (1440 - startMinute) / 14.4);
-      setTimelinePosition(timelineSecondaryEl, 0, endMinute / 14.4);
-      timelineValueEl.textContent = rangeLabel + ' · +1 день';
-      return;
-    }
-
-    setTimelinePosition(timelinePrimaryEl, startMinute / 14.4, (endMinute - startMinute) / 14.4);
-  }
-
   function syncControl(inputId) {
     var input = document.getElementById(inputId);
     var display = document.querySelector('[data-datetime-display="' + inputId + '"]');
@@ -180,7 +95,6 @@
 
   function syncAllControls() {
     for (var i = 0; i < inputIds.length; i++) syncControl(inputIds[i]);
-    syncShiftTimeline();
   }
 
   window.syncDateTimePickerControls = syncAllControls;
@@ -262,7 +176,7 @@
       var hourSelected = Number(hourOptions[i].dataset.value) === selectedHour;
       hourOptions[i].classList.toggle('is-selected', hourSelected);
       hourOptions[i].setAttribute('aria-selected', hourSelected ? 'true' : 'false');
-      if (scrollSelected && hourSelected) {
+      if (scrollSelected && hourSelected && hourOptions[i].dataset.cycle === '1') {
         hourOptions[i].scrollIntoView({ block: 'center' });
       }
     }
@@ -270,7 +184,7 @@
       var minuteSelected = Number(minuteOptions[j].dataset.value) === selectedMinute;
       minuteOptions[j].classList.toggle('is-selected', minuteSelected);
       minuteOptions[j].setAttribute('aria-selected', minuteSelected ? 'true' : 'false');
-      if (scrollSelected && minuteSelected) {
+      if (scrollSelected && minuteSelected && minuteOptions[j].dataset.cycle === '1') {
         minuteOptions[j].scrollIntoView({ block: 'center' });
       }
     }
@@ -278,16 +192,62 @@
 
   function buildTimeOptions(container, count, unit) {
     if (!container || container.children.length) return;
-    for (var value = 0; value < count; value++) {
-      var button = document.createElement('button');
-      button.type = 'button';
-      button.className = 'datetime-picker-wheel-option';
-      button.textContent = pad(value);
-      button.dataset.value = String(value);
-      button.dataset.unit = unit;
-      button.setAttribute('role', 'option');
-      container.appendChild(button);
+    for (var cycle = 0; cycle < 3; cycle++) {
+      for (var value = 0; value < count; value++) {
+        var button = document.createElement('button');
+        button.type = 'button';
+        button.className = 'datetime-picker-wheel-option';
+        button.textContent = pad(value);
+        button.dataset.value = String(value);
+        button.dataset.unit = unit;
+        button.dataset.cycle = String(cycle);
+        button.setAttribute('role', 'option');
+        if (cycle !== 1) {
+          button.setAttribute('aria-hidden', 'true');
+          button.tabIndex = -1;
+        }
+        container.appendChild(button);
+      }
     }
+  }
+
+  function syncWheelAfterScroll(container, count, unit) {
+    var options = container.querySelectorAll('.datetime-picker-wheel-option');
+    if (!options.length) return;
+
+    var cycleHeight = options[0].offsetHeight * count;
+    if (!cycleHeight) return;
+    if (container.scrollTop < cycleHeight * 0.5) {
+      container.scrollTop += cycleHeight;
+    } else if (container.scrollTop > cycleHeight * 1.5) {
+      container.scrollTop -= cycleHeight;
+    }
+
+    var wheelCenter = container.scrollTop + container.clientHeight / 2;
+    var closestOption = null;
+    var closestDistance = Infinity;
+    for (var i = 0; i < options.length; i++) {
+      var optionCenter = options[i].offsetTop + options[i].offsetHeight / 2;
+      var distance = Math.abs(optionCenter - wheelCenter);
+      if (distance < closestDistance) {
+        closestDistance = distance;
+        closestOption = options[i];
+      }
+    }
+    if (!closestOption) return;
+
+    var value = Number(closestOption.dataset.value);
+    if (unit === 'hour') selectedHour = value;
+    if (unit === 'minute') selectedMinute = value;
+    renderTimeSelection(false);
+  }
+
+  function handleWheelScroll(container, count, unit) {
+    var pendingTimer = wheelScrollTimers.get(container);
+    if (pendingTimer) window.clearTimeout(pendingTimer);
+    wheelScrollTimers.set(container, window.setTimeout(function() {
+      syncWheelAfterScroll(container, count, unit);
+    }, 90));
   }
 
   function openPicker(trigger) {
@@ -389,6 +349,12 @@
 
   hoursEl.addEventListener('click', handleWheelSelection);
   minutesEl.addEventListener('click', handleWheelSelection);
+  hoursEl.addEventListener('scroll', function() {
+    handleWheelScroll(hoursEl, 24, 'hour');
+  }, { passive: true });
+  minutesEl.addEventListener('scroll', function() {
+    handleWheelScroll(minutesEl, 60, 'minute');
+  }, { passive: true });
   confirmBtn.addEventListener('click', commitSelection);
   overlay.addEventListener('click', function(event) {
     if (event.target === overlay) {
