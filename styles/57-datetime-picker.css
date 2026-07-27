@@ -103,6 +103,87 @@
     0 0 0 3px color-mix(in oklch, var(--danger) 12%, transparent);
 }
 
+/* The optional-details disclosure reads as a full interactive card. */
+.details-disclosure-wrap {
+  margin: 14px 0;
+}
+.details-disclosure-btn {
+  position: relative;
+  min-height: 76px;
+  padding: 14px 14px 14px 16px;
+  overflow: hidden;
+  border: 1px solid color-mix(in oklch, var(--accent) 18%, var(--hair));
+  border-radius: 16px;
+  background:
+    radial-gradient(circle at 100% 0, color-mix(in oklch, var(--accent) 10%, transparent), transparent 48%),
+    linear-gradient(180deg, color-mix(in oklch, white 5%, transparent), transparent 72%),
+    color-mix(in oklch, var(--bg-rise-2) 92%, black);
+  box-shadow:
+    inset 0 1px 0 color-mix(in oklch, white 5%, transparent),
+    0 14px 30px -26px color-mix(in oklch, black 92%, transparent);
+  transition:
+    border-color 160ms ease,
+    background 160ms ease,
+    box-shadow 160ms ease,
+    transform 120ms ease;
+}
+.details-disclosure-btn::before {
+  content: '';
+  position: absolute;
+  inset: 14px auto 14px 0;
+  width: 2px;
+  border-radius: 0 999px 999px 0;
+  background: color-mix(in oklch, var(--accent) 72%, transparent);
+  box-shadow: 0 0 12px color-mix(in oklch, var(--accent) 28%, transparent);
+}
+.details-disclosure-btn:hover {
+  border-color: color-mix(in oklch, var(--accent) 30%, var(--hair));
+  background:
+    radial-gradient(circle at 100% 0, color-mix(in oklch, var(--accent) 14%, transparent), transparent 48%),
+    linear-gradient(180deg, color-mix(in oklch, white 7%, transparent), transparent 72%),
+    color-mix(in oklch, var(--bg-rise-2) 94%, black);
+  box-shadow:
+    inset 0 1px 0 color-mix(in oklch, white 7%, transparent),
+    0 16px 34px -26px color-mix(in oklch, black 92%, transparent);
+}
+.details-disclosure-btn:active {
+  transform: scale(0.99);
+}
+.details-disclosure-btn:focus-visible {
+  outline: 2px solid color-mix(in oklch, var(--accent) 78%, transparent);
+  outline-offset: -3px;
+}
+.details-disclosure-copy {
+  display: grid;
+  gap: 5px;
+}
+.details-disclosure-title {
+  color: var(--ink);
+  font-size: 14px;
+  line-height: 1.2;
+  letter-spacing: -0.01em;
+}
+.details-disclosure-note {
+  max-width: 30rem;
+  color: var(--ink-3);
+  font-size: 11px;
+  line-height: 1.4;
+}
+.details-disclosure-icon {
+  width: 36px;
+  height: 36px;
+  border-radius: 12px;
+  background: color-mix(in oklch, var(--accent) 12%, transparent);
+  box-shadow: inset 0 0 0 1px color-mix(in oklch, var(--accent) 24%, transparent);
+}
+.details-disclosure-btn[aria-expanded="true"] {
+  border-color: color-mix(in oklch, var(--accent) 36%, var(--hair));
+  background:
+    radial-gradient(circle at 100% 0, color-mix(in oklch, var(--accent) 15%, transparent), transparent 48%),
+    linear-gradient(180deg, color-mix(in oklch, var(--accent) 6%, transparent), transparent 72%),
+    color-mix(in oklch, var(--bg-rise-2) 94%, black);
+}
+
 .datetime-picker-overlay { z-index: calc(var(--layer-scrim) + 8); }
 .datetime-picker-sheet {
   width: min(100%, 480px);
