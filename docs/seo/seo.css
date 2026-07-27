@@ -502,7 +502,7 @@ img { display: block; max-width: 100%; }
   *, *::before, *::after { animation: none !important; transition: none !important; }
 }
 
-/* Scoped interaction pilot for /zarplata-mashinista. */
+/* Shared interactions for the public landing pages. */
 .salary-interactions-page {
   --salary-interactions-ready: 1;
 }

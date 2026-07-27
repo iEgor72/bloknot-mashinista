@@ -20,13 +20,13 @@
     var currentPhrase = null;
     var incomingPhrase = null;
     var phraseSizer = null;
-    var rotationPhrases = ['Без таблиц.', 'Без Excel.', 'Без блокнота и ручки.'];
+    var rotationPhrases = (page.getAttribute('data-title-phrases') || 'Без таблиц.|Без Excel.|Без блокнота и ручки.').split('|');
     var rotationIndex = 0;
     var statementTimer = 0;
     var statementSlot = null;
     var currentStatementWord = null;
     var incomingStatementWord = null;
-    var statementWords = ['Данные', 'Смены', 'Часы', 'Маршруты'];
+    var statementWords = (page.getAttribute('data-statement-words') || 'Данные|Смены|Часы|Маршруты').split('|');
     var statementIndex = 0;
     var revealObserver = null;
 
@@ -37,7 +37,7 @@
 
     function buildPhraseRotation() {
       var source = document.querySelector('.rotating-phrase-source');
-      if (!source) return;
+      if (!source || rotationPhrases.length < 2) return;
 
       rotationSlot = document.createElement('span');
       rotationSlot.className = 'rotating-phrase-slot';
@@ -53,7 +53,9 @@
 
       phraseSizer = document.createElement('span');
       phraseSizer.className = 'rotating-phrase rotating-phrase-sizer';
-      phraseSizer.textContent = rotationPhrases[2];
+      phraseSizer.textContent = rotationPhrases.reduce(function (longest, phrase) {
+        return phrase.length > longest.length ? phrase : longest;
+      }, rotationPhrases[0]);
       phraseSizer.setAttribute('aria-hidden', 'true');
 
       rotationSlot.appendChild(currentPhrase);
@@ -70,7 +72,7 @@
 
     function buildStatementRotation() {
       var source = document.querySelector('.statement-rotation-source');
-      if (!source) return;
+      if (!source || statementWords.length < 2) return;
 
       statementSlot = document.createElement('span');
       statementSlot.className = 'statement-word-slot';
@@ -86,7 +88,9 @@
 
       var statementSizer = document.createElement('span');
       statementSizer.className = 'statement-word statement-word-sizer';
-      statementSizer.textContent = statementWords[3];
+      statementSizer.textContent = statementWords.reduce(function (longest, word) {
+        return word.length > longest.length ? word : longest;
+      }, statementWords[0]);
       statementSizer.setAttribute('aria-hidden', 'true');
 
       statementSlot.appendChild(currentStatementWord);
@@ -187,6 +191,10 @@
     }
 
     function buildScrollReveals() {
+      Array.prototype.forEach.call(document.querySelectorAll('.section'), function (section) {
+        revealGroup(section, '.feature, .note-card, .faq-item');
+      });
+      revealGroup(document.querySelector('.footer'), '.footer-actions .btn');
       revealGroup(document.querySelector('.feature-strip'), '.strip-item');
       revealGroup(document.querySelector('.statement'));
       revealGroup(document.querySelector('.contact'), '.contact-item');
