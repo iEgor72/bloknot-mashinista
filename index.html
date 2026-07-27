@@ -367,6 +367,10 @@
     rel="stylesheet"
     href="/styles/56-profile.css"
   />
+  <link
+    rel="stylesheet"
+    href="/styles/57-datetime-picker.css"
+  />
   <noscript><link rel="stylesheet" href="/styles/00-base.css" /></noscript>
   <noscript><link rel="stylesheet" href="/styles/10-navigation-and-cards.css" /></noscript>
   <noscript><link rel="stylesheet" href="/styles/15-bottom-nav.css" /></noscript>
@@ -377,6 +381,7 @@
   <noscript><link rel="stylesheet" href="/styles/50-design-refresh.css" /></noscript>
   <noscript><link rel="stylesheet" href="/styles/55-partners.css" /></noscript>
   <noscript><link rel="stylesheet" href="/styles/56-profile.css" /></noscript>
+  <noscript><link rel="stylesheet" href="/styles/57-datetime-picker.css" /></noscript>
   <script>
     window.CURRENT_USER = window.CURRENT_USER || null;
   </script>
@@ -700,18 +705,56 @@
 
             <div class="field">
               <label>Когда началась смена</label>
-              <div class="datetime-row">
-                <input type="date" id="inputStartDate" />
-                <input type="time" id="inputStartTime" />
+              <div class="datetime-row datetime-control-card">
+                <input class="datetime-native-input" type="date" id="inputStartDate" tabindex="-1" aria-hidden="true" />
+                <input class="datetime-native-input" type="time" id="inputStartTime" tabindex="-1" aria-hidden="true" />
+                <button class="datetime-control datetime-control-date" type="button" data-datetime-target="inputStartDate" aria-haspopup="dialog">
+                  <span class="datetime-control-icon" aria-hidden="true">
+                    <svg viewBox="0 0 24 24" fill="none"><path d="M7 3v3m10-3v3M4.5 9h15M6 5h12a2 2 0 0 1 2 2v11.5a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V7a2 2 0 0 1 2-2Z"/><path d="M8 13h3v3H8z"/></svg>
+                  </span>
+                  <span class="datetime-control-copy">
+                    <span class="datetime-control-caption">Дата</span>
+                    <span class="datetime-control-value" data-datetime-display="inputStartDate">—</span>
+                  </span>
+                </button>
+                <span class="datetime-control-divider" aria-hidden="true"></span>
+                <button class="datetime-control datetime-control-time" type="button" data-datetime-target="inputStartTime" aria-haspopup="dialog">
+                  <span class="datetime-control-icon" aria-hidden="true">
+                    <svg viewBox="0 0 24 24" fill="none"><circle cx="12" cy="12" r="8.5"/><path d="M12 7.5V12l3.25 2"/></svg>
+                  </span>
+                  <span class="datetime-control-copy">
+                    <span class="datetime-control-caption">Время</span>
+                    <span class="datetime-control-value datetime-control-value-time" data-datetime-display="inputStartTime">—</span>
+                  </span>
+                </button>
               </div>
               <div class="field-error" id="errStart"></div>
             </div>
 
             <div class="field">
               <label>Когда закончилась смена</label>
-              <div class="datetime-row">
-                <input type="date" id="inputEndDate" />
-                <input type="time" id="inputEndTime" />
+              <div class="datetime-row datetime-control-card">
+                <input class="datetime-native-input" type="date" id="inputEndDate" tabindex="-1" aria-hidden="true" />
+                <input class="datetime-native-input" type="time" id="inputEndTime" tabindex="-1" aria-hidden="true" />
+                <button class="datetime-control datetime-control-date" type="button" data-datetime-target="inputEndDate" aria-haspopup="dialog">
+                  <span class="datetime-control-icon" aria-hidden="true">
+                    <svg viewBox="0 0 24 24" fill="none"><path d="M7 3v3m10-3v3M4.5 9h15M6 5h12a2 2 0 0 1 2 2v11.5a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V7a2 2 0 0 1 2-2Z"/><path d="M8 13h3v3H8z"/></svg>
+                  </span>
+                  <span class="datetime-control-copy">
+                    <span class="datetime-control-caption">Дата</span>
+                    <span class="datetime-control-value" data-datetime-display="inputEndDate">—</span>
+                  </span>
+                </button>
+                <span class="datetime-control-divider" aria-hidden="true"></span>
+                <button class="datetime-control datetime-control-time" type="button" data-datetime-target="inputEndTime" aria-haspopup="dialog">
+                  <span class="datetime-control-icon" aria-hidden="true">
+                    <svg viewBox="0 0 24 24" fill="none"><circle cx="12" cy="12" r="8.5"/><path d="M12 7.5V12l3.25 2"/></svg>
+                  </span>
+                  <span class="datetime-control-copy">
+                    <span class="datetime-control-caption">Время</span>
+                    <span class="datetime-control-value datetime-control-value-time" data-datetime-display="inputEndTime">—</span>
+                  </span>
+                </button>
               </div>
               <div class="field-error" id="errEnd"></div>
             </div>
@@ -1836,6 +1879,54 @@
     </div>
   </div>
 
+  <!-- Custom shift date/time picker -->
+  <div class="overlay datetime-picker-overlay" id="overlayDateTimePicker" aria-hidden="true">
+    <div class="bottom-sheet datetime-picker-sheet" role="dialog" aria-modal="true" aria-labelledby="dateTimePickerTitle" tabindex="-1" style="outline:none">
+      <div class="datetime-picker-handle-wrap" aria-hidden="true">
+        <span class="datetime-picker-handle"></span>
+      </div>
+      <div class="datetime-picker-header">
+        <div class="datetime-picker-heading">
+          <div class="datetime-picker-kicker" id="dateTimePickerKicker">Начало смены</div>
+          <div class="sheet-title" id="dateTimePickerTitle">Выберите дату</div>
+        </div>
+      </div>
+
+      <div class="datetime-picker-date-panel" id="dateTimePickerDatePanel">
+        <div class="datetime-picker-month-nav">
+          <button class="datetime-picker-month-btn" id="btnDateTimePickerPrevMonth" type="button" aria-label="Предыдущий месяц">
+            <svg viewBox="0 0 20 20" fill="none" aria-hidden="true"><path d="m12.5 5-5 5 5 5"/></svg>
+          </button>
+          <div class="datetime-picker-month-title" id="dateTimePickerMonthTitle"></div>
+          <button class="datetime-picker-month-btn" id="btnDateTimePickerNextMonth" type="button" aria-label="Следующий месяц">
+            <svg viewBox="0 0 20 20" fill="none" aria-hidden="true"><path d="m7.5 5 5 5-5 5"/></svg>
+          </button>
+        </div>
+        <div class="datetime-picker-weekdays" aria-hidden="true">
+          <span>Пн</span><span>Вт</span><span>Ср</span><span>Чт</span><span>Пт</span><span>Сб</span><span>Вс</span>
+        </div>
+        <div class="datetime-picker-days" id="dateTimePickerDays"></div>
+      </div>
+
+      <div class="datetime-picker-time-panel hidden" id="dateTimePickerTimePanel">
+        <div class="datetime-picker-time-preview" id="dateTimePickerTimePreview">00:00</div>
+        <div class="datetime-picker-wheels" aria-label="Выбор времени">
+          <div class="datetime-picker-wheel-wrap">
+            <div class="datetime-picker-wheel-label">Часы</div>
+            <div class="datetime-picker-wheel" id="dateTimePickerHours" role="listbox" aria-label="Часы"></div>
+          </div>
+          <span class="datetime-picker-time-separator" aria-hidden="true">:</span>
+          <div class="datetime-picker-wheel-wrap">
+            <div class="datetime-picker-wheel-label">Минуты</div>
+            <div class="datetime-picker-wheel" id="dateTimePickerMinutes" role="listbox" aria-label="Минуты"></div>
+          </div>
+        </div>
+      </div>
+
+      <button class="btn-primary datetime-picker-confirm" id="btnConfirmDateTimePicker" type="button">Выбрать</button>
+    </div>
+  </div>
+
   <!-- Notifications Sheet -->
   <div class="overlay" id="overlayNotifications">
     <div class="bottom-sheet notif-sheet">
@@ -1936,6 +2027,7 @@
   <script src="/scripts/poekhali-tracker.js?v=v391" defer></script>
   <script src="/scripts/render.js?v=v391" defer></script>
   <script src="/scripts/shift-form.js?v=v391" defer></script>
+  <script src="/scripts/datetime-picker.js" defer></script>
   <script src="/scripts/partners.js" defer></script>
   <script src="/scripts/app-init.js?v=v391" defer></script>
   <script src="/scripts/sw-register.js?v=v391" defer></script>
