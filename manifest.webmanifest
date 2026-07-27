@@ -2,7 +2,7 @@
   "name": "Блокнот машиниста",
   "short_name": "Блокнот",
   "description": "Электронный журнал для машинистов. Учёт смен, часов и топлива.",
-  "start_url": "/?app=v390",
+  "start_url": "/?app=v391",
   "display": "standalone",
   "background_color": "#0C0C10",
   "theme_color": "#0C0C10",

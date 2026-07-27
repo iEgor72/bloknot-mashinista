@@ -1,4 +1,4 @@
-const CACHE_VERSION = 'v390';
+const CACHE_VERSION = 'v391';
 const CACHE_NAME = `shift-tracker-shell-${CACHE_VERSION}`;
 const NAVIGATION_FALLBACK_URL = '/index.html';
 const NETWORK_TIMEOUT_MS = 4500;
@@ -84,7 +84,7 @@ const INSTALL_SHELL_URLS = [
   '/assets/tracker/sections/dvost-vysokogornaya-oune-via-muli.json',
   '/assets/tracker/sections/dvost-oune-pivan.json',
   '/assets/tracker/sections/dvost-pivan-novyi-mir.json',
-  '/sw-bootstrap-v390.js'
+  '/sw-bootstrap-v391.js'
 ];
 const CRITICAL_INSTALL_URLS = [
   '/',
@@ -146,7 +146,7 @@ const CRITICAL_INSTALL_URLS = [
   '/scripts/partners.js',
   '/scripts/app-init.js',
   '/scripts/sw-register.js',
-  '/sw-bootstrap-v390.js'
+  '/sw-bootstrap-v391.js'
 ];
 const EXTENDED_SHELL_URLS = [
   '/assets/docs/manifest.json',

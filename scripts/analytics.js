@@ -1,6 +1,6 @@
 (function() {
   'use strict';
-  if (typeof registerShiftTrackerRuntimeModule === 'function') registerShiftTrackerRuntimeModule('analytics', 'v390');
+  if (typeof registerShiftTrackerRuntimeModule === 'function') registerShiftTrackerRuntimeModule('analytics', 'v391');
 
   var POLICY_VERSION = '2026-07-23';
   var API_BASE = window.SHIFT_API_BASE_URL || '';

@@ -6,7 +6,7 @@ import { fileURLToPath } from 'node:url';
 
 const root = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
 const registerSource = await readFile(path.join(root, 'scripts', 'sw-register.js'), 'utf8');
-const bootstrapSource = await readFile(path.join(root, 'sw-bootstrap-v390.js'), 'utf8');
+const bootstrapSource = await readFile(path.join(root, 'sw-bootstrap-v391.js'), 'utf8');
 const workerSource = await readFile(path.join(root, 'sw.js'), 'utf8');
 const indexSource = await readFile(path.join(root, 'index.html'), 'utf8');
 
@@ -36,7 +36,7 @@ function createHarness(source, initialController) {
     }
   };
   const window = {
-    __SHIFT_TRACKER_SW_URL: '/sw.js?v=v390',
+    __SHIFT_TRACKER_SW_URL: '/sw.js?v=v391',
     navigator: {},
     sessionStorage,
     location: {
@@ -70,19 +70,19 @@ function createHarness(source, initialController) {
 
 const firstInstall = createHarness(bootstrapSource, null);
 assert.equal(typeof firstInstall.listeners.controllerchange, 'function');
-firstInstall.serviceWorker.controller = { scriptURL: '/sw.js?v=v390' };
+firstInstall.serviceWorker.controller = { scriptURL: '/sw.js?v=v391' };
 firstInstall.listeners.controllerchange();
 assert.equal(firstInstall.reloads, 0, 'first service-worker takeover must not reload startup');
 
-const upgrade = createHarness(bootstrapSource, { scriptURL: '/sw.js?v=v388' });
+const upgrade = createHarness(bootstrapSource, { scriptURL: '/sw.js?v=v390' });
 assert.equal(typeof upgrade.listeners.controllerchange, 'function');
-upgrade.serviceWorker.controller = { scriptURL: '/sw.js?v=v390' };
+upgrade.serviceWorker.controller = { scriptURL: '/sw.js?v=v391' };
 upgrade.listeners.controllerchange();
 upgrade.listeners.controllerchange();
 assert.equal(upgrade.reloads, 1, 'controller upgrade must reload only once');
 
-const currentRegisterUpgrade = createHarness(registerSource, { scriptURL: '/sw.js?v=v388' });
-currentRegisterUpgrade.serviceWorker.controller = { scriptURL: '/sw.js?v=v390' };
+const currentRegisterUpgrade = createHarness(registerSource, { scriptURL: '/sw.js?v=v390' });
+currentRegisterUpgrade.serviceWorker.controller = { scriptURL: '/sw.js?v=v391' };
 currentRegisterUpgrade.listeners.controllerchange();
 assert.equal(currentRegisterUpgrade.reloads, 1, 'current sw-register runtime must also reload once');
 
@@ -93,6 +93,6 @@ assert.doesNotMatch(workerSource, /client\.navigate\s*\(/);
 assert.match(workerSource, /COHERENT_RUNTIME_URLS/);
 assert.match(workerSource, /currentVersionOnly:\s*true/);
 assert.match(workerSource, /Refusing to activate an incomplete runtime cache/);
-assert.match(indexSource, /<script src="\/sw-bootstrap-v390\.js" defer><\/script>/);
+assert.match(indexSource, /<script src="\/sw-bootstrap-v391\.js" defer><\/script>/);
 
-console.log('Service-worker v389→v390 coherent-runtime upgrade smoke passed.');
+console.log('Service-worker v390→v391 coherent-runtime upgrade smoke passed.');
