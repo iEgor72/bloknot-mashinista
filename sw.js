@@ -1,4 +1,4 @@
-const CACHE_VERSION = 'v391';
+const CACHE_VERSION = 'v392';
 const CACHE_NAME = `shift-tracker-shell-${CACHE_VERSION}`;
 const NAVIGATION_FALLBACK_URL = '/index.html';
 const NETWORK_TIMEOUT_MS = 4500;
@@ -86,7 +86,7 @@ const INSTALL_SHELL_URLS = [
   '/assets/tracker/sections/dvost-vysokogornaya-oune-via-muli.json',
   '/assets/tracker/sections/dvost-oune-pivan.json',
   '/assets/tracker/sections/dvost-pivan-novyi-mir.json',
-  '/sw-bootstrap-v391.js'
+  '/sw-bootstrap-v392.js'
 ];
 const CRITICAL_INSTALL_URLS = [
   '/',
@@ -150,7 +150,7 @@ const CRITICAL_INSTALL_URLS = [
   '/scripts/partners.js',
   '/scripts/app-init.js',
   '/scripts/sw-register.js',
-  '/sw-bootstrap-v391.js'
+  '/sw-bootstrap-v392.js'
 ];
 const EXTENDED_SHELL_URLS = [
   '/assets/docs/manifest.json',
@@ -205,6 +205,24 @@ const NETWORK_RETRY_ATTEMPT_TIMEOUT_MS = 5000; // abort a single hung attempt so
 
 function delay(ms) {
   return new Promise((resolve) => setTimeout(resolve, ms));
+}
+
+function versionedShellFetchUrl(assetUrl) {
+  try {
+    const parsed = new URL(assetUrl, self.location.origin);
+    if (
+      parsed.origin === self.location.origin &&
+      (
+        parsed.pathname.startsWith('/styles/') ||
+        parsed.pathname.startsWith('/scripts/') ||
+        /^\/sw-bootstrap-v\d+\.js$/.test(parsed.pathname)
+      )
+    ) {
+      parsed.searchParams.set('v', CACHE_VERSION);
+      return parsed.pathname + parsed.search;
+    }
+  } catch (error) {}
+  return assetUrl;
 }
 
 async function fetchWithRetry(input, options) {
@@ -339,7 +357,7 @@ async function warmShellCache(options) {
         return;
       }
       try {
-        const response = await fetchWithRetry(assetUrl);
+        const response = await fetchWithRetry(versionedShellFetchUrl(assetUrl));
         if (response && response.ok) {
           await putShellCacheResponse(cache, assetUrl, response.clone());
           cachedCount += 1;
@@ -376,7 +394,7 @@ async function precacheCriticalInstallShell(cache) {
   await Promise.all(
     criticalUrls.map(async (assetUrl) => {
       try {
-        const response = await fetchWithRetry(assetUrl);
+        const response = await fetchWithRetry(versionedShellFetchUrl(assetUrl));
         if (response && response.ok) {
           await putShellCacheResponse(cache, assetUrl, response.clone());
           cachedCount += 1;

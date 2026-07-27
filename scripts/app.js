@@ -1,5 +1,5 @@
 ﻿    // ── Telegram WebApp chrome (не блокировать bootstrap: SDK подключается последним defer в index.html)
-    if (typeof registerShiftTrackerRuntimeModule === 'function') registerShiftTrackerRuntimeModule('app', 'v391');
+    if (typeof registerShiftTrackerRuntimeModule === 'function') registerShiftTrackerRuntimeModule('app', 'v392');
 
     function applyTelegramWebAppChrome() {
       try {

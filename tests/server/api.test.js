@@ -82,11 +82,11 @@ test('community links use a versioned app entry URL', async () => {
   assert.equal(result.response.status, 200);
   const appUrl = new URL(result.body.appUrl);
   assert.equal(appUrl.pathname, '/');
-  assert.equal(appUrl.searchParams.get('app'), 'v391');
+  assert.equal(appUrl.searchParams.get('app'), 'v392');
 });
 
 test('shift-card runtime is never HTTP-cached and renders fuel in kilograms', async () => {
-  const response = await fetch(baseUrl + '/scripts/time-utils.js?v=v391');
+  const response = await fetch(baseUrl + '/scripts/time-utils.js?v=v392');
   const source = await response.text();
   assert.equal(response.status, 200);
   assert.match(response.headers.get('cache-control') || '', /no-store/i);
@@ -122,7 +122,7 @@ test('analytics requires consent, deduplicates events, and exposes only admin ag
     eventName: 'shift_saved',
     occurredAt,
     platform: 'android',
-    appVersion: 'v391',
+    appVersion: 'v392',
     properties: {
       shiftCount: 1,
       hasRoute: true,

@@ -1,4 +1,4 @@
-    if (typeof registerShiftTrackerRuntimeModule === 'function') registerShiftTrackerRuntimeModule('auth', 'v391');
+    if (typeof registerShiftTrackerRuntimeModule === 'function') registerShiftTrackerRuntimeModule('auth', 'v392');
 
     var API_BASE_URL = window.SHIFT_API_BASE_URL || '';
     var AUTH_API_URL = API_BASE_URL + '/api/auth';
