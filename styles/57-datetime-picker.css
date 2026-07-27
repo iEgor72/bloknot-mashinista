@@ -103,6 +103,125 @@
     0 0 0 3px color-mix(in oklch, var(--danger) 12%, transparent);
 }
 
+/* Decorative 24-hour overview. It mirrors form values but never writes to them. */
+.shift-day-timeline {
+  margin: -2px 0 14px;
+  padding: 11px 12px 10px;
+  border: 1px solid color-mix(in oklch, white 5%, transparent);
+  border-radius: 14px;
+  background:
+    linear-gradient(180deg, color-mix(in oklch, white 3%, transparent), transparent),
+    color-mix(in oklch, var(--bg-rise) 78%, transparent);
+}
+.shift-day-timeline-head {
+  min-width: 0;
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 12px;
+}
+.shift-day-timeline-title {
+  flex: 0 0 auto;
+  color: var(--ink-4);
+  font: 650 9px/1 'Golos Text', system-ui, sans-serif;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+}
+.shift-day-timeline-value {
+  min-width: 0;
+  overflow: hidden;
+  color: var(--ink-3);
+  font: 650 10px/1.1 'Golos Text', system-ui, sans-serif;
+  font-variant-numeric: tabular-nums;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.shift-day-timeline.has-range .shift-day-timeline-value {
+  color: var(--accent);
+}
+.shift-day-timeline-track {
+  position: relative;
+  height: 14px;
+  margin-top: 10px;
+  overflow: hidden;
+  border-radius: 999px;
+  background:
+    linear-gradient(
+      90deg,
+      color-mix(in oklch, var(--night) 18%, transparent) 0 25%,
+      color-mix(in oklch, white 4%, transparent) 25% 91.666%,
+      color-mix(in oklch, var(--night) 18%, transparent) 91.666% 100%
+    );
+  box-shadow: inset 0 0 0 1px color-mix(in oklch, white 6%, transparent);
+}
+.shift-day-timeline-track::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background:
+    linear-gradient(90deg, transparent calc(25% - .5px), color-mix(in oklch, white 11%, transparent) 25%, transparent calc(25% + .5px)),
+    linear-gradient(90deg, transparent calc(50% - .5px), color-mix(in oklch, white 8%, transparent) 50%, transparent calc(50% + .5px)),
+    linear-gradient(90deg, transparent calc(75% - .5px), color-mix(in oklch, white 11%, transparent) 75%, transparent calc(75% + .5px));
+  pointer-events: none;
+}
+.shift-day-timeline-selection {
+  position: absolute;
+  top: 4px;
+  z-index: 1;
+  height: 6px;
+  width: 0;
+  opacity: 0;
+  border-radius: 999px;
+  background: linear-gradient(90deg, var(--accent-2), var(--accent));
+  box-shadow: 0 0 10px color-mix(in oklch, var(--accent) 34%, transparent);
+  transition: left 180ms ease, width 180ms ease, opacity 160ms ease;
+}
+.shift-day-timeline.has-range .shift-day-timeline-selection-primary,
+.shift-day-timeline.is-overnight .shift-day-timeline-selection-secondary {
+  opacity: 1;
+}
+.shift-day-timeline-marker {
+  position: absolute;
+  top: 2px;
+  z-index: 2;
+  width: 10px;
+  height: 10px;
+  opacity: 0;
+  border: 2px solid color-mix(in oklch, var(--bg-rise-2) 88%, black);
+  border-radius: 50%;
+  background: var(--accent);
+  box-shadow: 0 0 8px color-mix(in oklch, var(--accent) 48%, transparent);
+  transform: translateX(-50%);
+  transition: left 180ms ease, opacity 160ms ease;
+}
+.shift-day-timeline.has-range:not(.is-full-day) .shift-day-timeline-marker {
+  opacity: 1;
+}
+.shift-day-timeline-labels {
+  display: flex;
+  justify-content: space-between;
+  margin-top: 6px;
+  color: var(--ink-4);
+  font: 600 8px/1 'Golos Text', system-ui, sans-serif;
+  font-variant-numeric: tabular-nums;
+}
+.shift-day-timeline-night {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 5px;
+  margin-top: 7px;
+  color: var(--ink-4);
+  font: 550 9px/1 'Golos Text', system-ui, sans-serif;
+}
+.shift-day-timeline-night-dot {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: var(--night);
+  box-shadow: 0 0 8px color-mix(in oklch, var(--night) 38%, transparent);
+}
+
 /* The optional-details disclosure reads as a full interactive card. */
 .details-disclosure-wrap {
   margin: 14px 0;
