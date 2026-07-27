@@ -207,7 +207,7 @@
       background: transparent;
       border: none;
       color: var(--muted);
-      font-family: 'Manrope', sans-serif;
+      font-family: 'Golos Text', system-ui, sans-serif;
       font-size: 13px;
       font-weight: 700;
       cursor: pointer;
@@ -413,7 +413,7 @@
     }
 
     .home-calendar-legend-arrows {
-      font-family: 'JetBrains Mono', monospace;
+      font-family: 'Golos Text', system-ui, sans-serif;
       font-size: 12px;
       font-weight: 700;
       color: rgba(255, 255, 255, 0.9);
@@ -563,7 +563,7 @@
       border-radius: 14px;
       background: rgba(26, 26, 34, 0.92);
       color: var(--text);
-      font: 800 13px/1 'Plus Jakarta Sans', system-ui, sans-serif;
+      font: 800 13px/1 'Golos Text', system-ui, sans-serif;
       letter-spacing: 0;
       display: inline-flex;
       align-items: center;

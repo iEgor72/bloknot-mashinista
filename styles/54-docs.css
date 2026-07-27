@@ -11,7 +11,7 @@
   padding: 14px;
 }
 .docs-nav-title {
-  font: 700 16px/1.1 'Manrope';
+  font: 700 16px/1.1 'Golos Text', system-ui, sans-serif;
   color: var(--ink);
 }
 .docs-entry-grid {
@@ -147,13 +147,13 @@
   text-overflow: clip;
   overflow-wrap: anywhere;
   margin-bottom: 0;
-  font: 700 14px/1.3 'Manrope';
+  font: 700 14px/1.3 'Golos Text', system-ui, sans-serif;
 }
 .docs-item-subtitle {
   white-space: normal;
   overflow-wrap: anywhere;
   margin-bottom: 0;
-  font: 500 12px/1.35 'Manrope';
+  font: 500 12px/1.35 'Golos Text', system-ui, sans-serif;
   color: var(--ink-3);
 }
 /* File-type + download-state badges, sitting under the name. */
@@ -165,7 +165,7 @@
 }
 /* "обновлено … · размер" — muted footer at the very bottom of the card. */
 .docs-item-footer {
-  font: 600 10.5px/1.3 'Manrope';
+  font: 600 10.5px/1.3 'Golos Text', system-ui, sans-serif;
   letter-spacing: 0.02em;
   color: var(--ink-4);
   font-variant-numeric: tabular-nums;
@@ -210,7 +210,7 @@
 .docs-fav-empty {
   padding: 22px 14px;
   text-align: center;
-  font: 500 13px/1.4 'Manrope';
+  font: 500 13px/1.4 'Golos Text', system-ui, sans-serif;
   color: var(--ink-3);
   background:
     linear-gradient(180deg, color-mix(in oklch, white 3%, transparent), transparent),
@@ -227,18 +227,18 @@
   min-width: 0;
 }
 .docs-entry-eyebrow {
-  font: 600 9px/1 'Manrope';
+  font: 600 9px/1 'Golos Text', system-ui, sans-serif;
   letter-spacing: 0.14em;
   text-transform: uppercase;
   color: var(--ink-3);
 }
 .docs-entry-name {
-  font: 700 14px/1.15 'Manrope';
+  font: 700 14px/1.15 'Golos Text', system-ui, sans-serif;
   letter-spacing: -0.005em;
   color: var(--ink);
 }
 .docs-entry-note {
-  font: 500 11px/1.3 'Manrope';
+  font: 500 11px/1.3 'Golos Text', system-ui, sans-serif;
   color: var(--ink-3);
 }
 .docs-entry-arrow {
@@ -252,7 +252,7 @@
   position: absolute;
   top: 10px;
   right: 12px;
-  font: 700 11px/1 'JetBrains Mono';
+  font: 700 11px/1 'Golos Text', system-ui, sans-serif;
   color: var(--ink-2);
   padding: 4px 8px;
   border-radius: 999px;
@@ -272,7 +272,7 @@
   margin: 0 0 8px;
 }
 .doc-recent-empty {
-  font: 500 11px/1 'Manrope';
+  font: 500 11px/1 'Golos Text', system-ui, sans-serif;
   color: var(--ink-4);
 }
 .doc-recent-row {
@@ -296,18 +296,18 @@
 }
 .doc-recent-ico svg { width: 16px; height: 16px; }
 .doc-recent-name {
-  font: 600 13px/1.2 'Manrope';
+  font: 600 13px/1.2 'Golos Text', system-ui, sans-serif;
   color: var(--ink);
 }
 .doc-recent-meta {
-  font: 500 11px/1 'JetBrains Mono';
+  font: 500 11px/1 'Golos Text', system-ui, sans-serif;
   color: var(--ink-3);
   margin-top: 4px;
 }
 .doc-recent-meta-pill {
   padding: 4px 8px;
   border-radius: 999px;
-  font: 700 10px/1 'JetBrains Mono';
+  font: 700 10px/1 'Golos Text', system-ui, sans-serif;
   background: var(--glass);
   color: var(--ink-2);
   box-shadow: inset 0 0 0 1px var(--hair);
@@ -329,7 +329,7 @@
   color: var(--ink-2);
   border-radius: 12px;
   padding: 6px 10px;
-  font: 600 11px/1 'Manrope';
+  font: 600 11px/1 'Golos Text', system-ui, sans-serif;
   display: inline-flex;
   align-items: center;
   gap: 6px;
@@ -365,7 +365,7 @@
   color: var(--ink-2);
   border-radius: 999px;
   padding: 8px 14px;
-  font: 600 12px/1 'Manrope';
+  font: 600 12px/1 'Golos Text', system-ui, sans-serif;
 }
 .docs-tab-btn.active {
   background: linear-gradient(180deg, var(--accent), var(--accent-2));

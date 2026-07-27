@@ -1,6 +1,6 @@
     .poekhali-conflict-card-fragment span {
       color: var(--sub);
-      font: 800 8px/1 'Plus Jakarta Sans', system-ui, sans-serif;
+      font: 800 8px/1 'Golos Text', system-ui, sans-serif;
       letter-spacing: 0;
       text-transform: uppercase;
     }
@@ -12,7 +12,7 @@
 
     .poekhali-conflict-card-source {
       color: var(--sub);
-      font: 750 10px/1.2 'Plus Jakarta Sans', system-ui, sans-serif;
+      font: 750 10px/1.2 'Golos Text', system-ui, sans-serif;
     }
 
     .poekhali-conflict-card-actions {
@@ -48,7 +48,7 @@
       padding: 9px;
       color: var(--text);
       text-align: left;
-      font-family: 'Plus Jakarta Sans', system-ui, sans-serif;
+      font-family: 'Golos Text', system-ui, sans-serif;
       letter-spacing: 0;
     }
 
@@ -110,7 +110,7 @@
     .poekhali-map-health-more {
       padding: 2px 4px;
       color: var(--sub);
-      font: 800 10px/1.2 'Plus Jakarta Sans', system-ui, sans-serif;
+      font: 800 10px/1.2 'Golos Text', system-ui, sans-serif;
       text-align: center;
     }
 
@@ -123,7 +123,7 @@
       border-radius: 11px;
       background: rgba(19, 19, 24, 0.90);
       color: var(--text);
-      font: 850 13px/1 'Plus Jakarta Sans', system-ui, sans-serif;
+      font: 850 13px/1 'Golos Text', system-ui, sans-serif;
       letter-spacing: 0;
       outline: none;
     }
@@ -161,7 +161,7 @@
       border-radius: 13px;
       min-height: 38px;
       padding: 0 12px;
-      font: 850 12px/1 'Plus Jakarta Sans', system-ui, sans-serif;
+      font: 850 12px/1 'Golos Text', system-ui, sans-serif;
       letter-spacing: 0;
       color: var(--text);
     }
@@ -247,7 +247,7 @@
       align-items: center;
       gap: 8px;
       color: var(--sub);
-      font: 750 10px/1.25 'Plus Jakarta Sans', system-ui, sans-serif;
+      font: 750 10px/1.25 'Golos Text', system-ui, sans-serif;
     }
 
     .poekhali-user-history-row span {
@@ -439,13 +439,13 @@
     }
 
     .poekhali-map-sheet-title {
-      font: 850 15px/1.2 'Plus Jakarta Sans', system-ui, sans-serif;
+      font: 850 15px/1.2 'Golos Text', system-ui, sans-serif;
       color: var(--text);
     }
 
     .poekhali-map-sheet-subtitle {
       margin-top: 3px;
-      font: 750 11px/1.2 'Plus Jakarta Sans', system-ui, sans-serif;
+      font: 750 11px/1.2 'Golos Text', system-ui, sans-serif;
       color: var(--sub);
     }
 
@@ -453,7 +453,7 @@
     .poekhali-map-option {
       appearance: none;
       border: 0;
-      font-family: 'Plus Jakarta Sans', system-ui, sans-serif;
+      font-family: 'Golos Text', system-ui, sans-serif;
       letter-spacing: 0;
     }
 
@@ -537,7 +537,7 @@
     .poekhali-map-sheet-note {
       padding: 8px 4px 2px;
       color: var(--sub);
-      font: 750 11px/1.35 'Plus Jakarta Sans', system-ui, sans-serif;
+      font: 750 11px/1.35 'Golos Text', system-ui, sans-serif;
     }
 
     .poekhali-sector-section {
@@ -559,12 +559,12 @@
     }
 
     .poekhali-sector-title {
-      font: 850 13px/1.2 'Plus Jakarta Sans', system-ui, sans-serif;
+      font: 850 13px/1.2 'Golos Text', system-ui, sans-serif;
       color: var(--text);
     }
 
     .poekhali-sector-subtitle {
-      font: 750 10px/1.2 'Plus Jakarta Sans', system-ui, sans-serif;
+      font: 750 10px/1.2 'Golos Text', system-ui, sans-serif;
       color: var(--sub);
       text-align: right;
     }
@@ -586,7 +586,7 @@
       gap: 7px;
       padding: 10px;
       text-align: left;
-      font-family: 'Plus Jakarta Sans', system-ui, sans-serif;
+      font-family: 'Golos Text', system-ui, sans-serif;
       letter-spacing: 0;
     }
 

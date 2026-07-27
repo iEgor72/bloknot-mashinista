@@ -177,7 +177,7 @@
   <path d="M5 14h10M5 17.5h7"
     stroke="#F87171" stroke-width="1.3" stroke-linecap="round"/>
   <text x="13" y="25.5" font-size="6.5" font-weight="700"
-    fill="#F87171" font-family="Manrope,sans-serif" text-anchor="middle">PDF</text>
+    fill="#F87171" font-family="Golos Text,system-ui,sans-serif" text-anchor="middle">PDF</text>
 </svg>`;
 
     var iconDoc = `
@@ -189,7 +189,7 @@
   <path d="M5 11h11M5 14.5h11M5 18h7"
     stroke="#38BDF8" stroke-width="1.3" stroke-linecap="round"/>
   <text x="13" y="25.5" font-size="6" font-weight="700"
-    fill="#38BDF8" font-family="Manrope,sans-serif" text-anchor="middle">DOC</text>
+    fill="#38BDF8" font-family="Golos Text,system-ui,sans-serif" text-anchor="middle">DOC</text>
 </svg>`;
 
     var iconXls = `
@@ -203,7 +203,7 @@
   <path d="M4.5 13h12M4.5 16.5h12M9.5 9.5v10"
     stroke="rgba(74,222,128,0.38)" stroke-width="0.9"/>
   <text x="13" y="25.5" font-size="6" font-weight="700"
-    fill="#4ADE80" font-family="Manrope,sans-serif" text-anchor="middle">XLS</text>
+    fill="#4ADE80" font-family="Golos Text,system-ui,sans-serif" text-anchor="middle">XLS</text>
 </svg>`;
 
     var iconImg = `
@@ -218,7 +218,7 @@
     stroke="#A78BFA" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round"/>
   <circle cx="8.5" cy="12" r="1.2" fill="rgba(167,139,250,0.5)"/>
   <text x="13" y="25.5" font-size="6" font-weight="700"
-    fill="#A78BFA" font-family="Manrope,sans-serif" text-anchor="middle">IMG</text>
+    fill="#A78BFA" font-family="Golos Text,system-ui,sans-serif" text-anchor="middle">IMG</text>
 </svg>`;
 
     var iconDefault = `

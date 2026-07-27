@@ -350,7 +350,7 @@
       flex-wrap: wrap;
       gap: 8px;
       min-width: 0;
-      font-family: 'JetBrains Mono', monospace;
+      font-family: 'Golos Text', system-ui, sans-serif;
       font-size: clamp(40px, 11.5vw, 56px);
       font-weight: 700;
       line-height: 1;
@@ -366,7 +366,7 @@
     }
 
     .dashboard-total {
-      font-family: 'JetBrains Mono', monospace;
+      font-family: 'Golos Text', system-ui, sans-serif;
       font-size: clamp(18px, 5vw, 22px);
       font-weight: 500;
       color: var(--sub);
@@ -528,7 +528,7 @@
     }
 
     .dashboard-norm-value {
-      font-family: 'JetBrains Mono', monospace;
+      font-family: 'Golos Text', system-ui, sans-serif;
       font-size: 14px;
       line-height: 1.15;
       font-weight: 700;
@@ -554,7 +554,7 @@
     }
 
     .dashboard-month-income-value {
-      font-family: 'JetBrains Mono', monospace;
+      font-family: 'Golos Text', system-ui, sans-serif;
       font-size: clamp(20px, 5.3vw, 25px);
       font-weight: 700;
       line-height: 1.2;

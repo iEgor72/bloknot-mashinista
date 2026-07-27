@@ -53,7 +53,7 @@
   background: var(--accent-soft);
   color: var(--accent);
   box-shadow: inset 0 0 0 1px color-mix(in oklch, var(--accent) 30%, transparent);
-  font: 700 11px/1 'JetBrains Mono';
+  font: 700 11px/1 'Golos Text', system-ui, sans-serif;
 }
 .shift-item.is-night .shift-type-mark,
 .shift-item.is-night .shift-type-badge {
@@ -72,14 +72,14 @@
 .shift-title,
 .shift-direction,
 .shift-card-title {
-  font: 700 13px/1.2 'Manrope';
+  font: 700 13px/1.2 'Golos Text', system-ui, sans-serif;
   letter-spacing: -0.005em;
   color: var(--ink);
 }
 .shift-card-sub,
 .shift-time-range,
 .shift-meta-line {
-  font: 500 11px/1 'JetBrains Mono';
+  font: 500 11px/1 'Golos Text', system-ui, sans-serif;
   color: var(--ink-3);
 }
 
@@ -87,7 +87,7 @@
 .shift-duration-pill,
 .shift-income-amount,
 .shift-income-chip {
-  font: 700 14px/1 'JetBrains Mono';
+  font: 700 14px/1 'Golos Text', system-ui, sans-serif;
   font-variant-numeric: tabular-nums;
 }
 .shift-income-amount,
@@ -125,12 +125,12 @@
   border-top: 1px solid var(--hair);
 }
 .shift-consist-grid .sc-lab {
-  font: 500 11px/1 'Manrope';
+  font: 500 11px/1 'Golos Text', system-ui, sans-serif;
   color: var(--ink-3);
   white-space: nowrap;
 }
 .shift-consist-grid .sc-val {
-  font: 600 12px/1 'JetBrains Mono';
+  font: 600 12px/1 'Golos Text', system-ui, sans-serif;
   color: var(--ink);
   font-variant-numeric: tabular-nums;
   white-space: nowrap;
@@ -166,7 +166,7 @@
   border-radius: 999px;
   background: color-mix(in oklch, var(--good) 12%, transparent);
   color: var(--good);
-  font: 600 10px/1 'Manrope';
+  font: 600 10px/1 'Golos Text', system-ui, sans-serif;
   letter-spacing: 0.04em;
   box-shadow: inset 0 0 0 1px color-mix(in oklch, var(--good) 24%, transparent);
   white-space: nowrap;
@@ -223,7 +223,7 @@
   min-width: 0;
 }
 .shift-card-v2 .shift-card-title {
-  font: 700 13px/1.2 'Manrope';
+  font: 700 13px/1.2 'Golos Text', system-ui, sans-serif;
   letter-spacing: -0.005em;
   color: var(--ink);
   display: flex;
@@ -232,13 +232,13 @@
   min-width: 0;
 }
 .shift-card-v2 .shift-card-sub {
-  font: 500 11px/1 'JetBrains Mono';
+  font: 500 11px/1 'Golos Text', system-ui, sans-serif;
   color: var(--ink-3);
   margin-top: 4px;
   font-variant-numeric: tabular-nums;
 }
 .shift-card-v2 .shift-amount {
-  font: 700 14px/1 'JetBrains Mono';
+  font: 700 14px/1 'Golos Text', system-ui, sans-serif;
   color: var(--good);
   font-variant-numeric: tabular-nums;
   white-space: nowrap;
@@ -263,7 +263,7 @@
   border-radius: 999px;
   background: var(--accent);
   color: #001018;
-  font: 700 12px/1 'Manrope', sans-serif;
+  font: 700 12px/1 'Golos Text', system-ui, sans-serif;
   cursor: pointer;
   -webkit-tap-highlight-color: transparent;
   box-shadow: 0 2px 10px var(--accent-glow, rgba(56, 189, 248, 0.3));
@@ -314,14 +314,14 @@
   min-width: 0;
 }
 .shift-card-v2 .shift-meta-label {
-  font: 600 9px/1 'Manrope';
+  font: 600 9px/1 'Golos Text', system-ui, sans-serif;
   letter-spacing: 0.12em;
   text-transform: uppercase;
   color: var(--ink-3);
   margin-bottom: 4px;
 }
 .shift-card-v2 .shift-meta-value {
-  font: 700 12px/1.1 'JetBrains Mono';
+  font: 700 12px/1.1 'Golos Text', system-ui, sans-serif;
   font-variant-numeric: tabular-nums;
   color: var(--ink);
   overflow: hidden;
@@ -357,7 +357,7 @@
   box-shadow: inset 0 0 0 1px var(--hair);
   border: 0;
   color: var(--ink-2);
-  font: 600 11.5px/1 'Manrope';
+  font: 600 11.5px/1 'Golos Text', system-ui, sans-serif;
   cursor: pointer;
   transition: background .2s, color .2s, box-shadow .2s;
 }
@@ -405,13 +405,13 @@
   border: 0;
 }
 .shifts-overview-label {
-  font: 600 9px/1 'Manrope';
+  font: 600 9px/1 'Golos Text', system-ui, sans-serif;
   letter-spacing: 0.14em;
   text-transform: uppercase;
   color: var(--ink-3);
 }
 .shifts-overview-value {
-  font: 700 14px/1 'JetBrains Mono';
+  font: 700 14px/1 'Golos Text', system-ui, sans-serif;
   color: var(--ink);
   font-variant-numeric: tabular-nums;
 }

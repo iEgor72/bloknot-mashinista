@@ -12,7 +12,7 @@
   padding: 14px 22px 30px;
 }
 .sheet-title {
-  font: 700 18px/1.15 'Manrope';
+  font: 700 18px/1.15 'Golos Text', system-ui, sans-serif;
   letter-spacing: -0.01em;
   color: var(--ink);
 }
@@ -34,7 +34,7 @@
   padding: 0;
 }
 .salary-settings-sheet .settings-section-title {
-  font: 700 10px/1 'Manrope';
+  font: 700 10px/1 'Golos Text', system-ui, sans-serif;
   letter-spacing: 0.14em;
   text-transform: uppercase;
   color: var(--ink-3);
@@ -63,11 +63,11 @@
 .salary-settings-sheet .settings-row:last-child { border-bottom: 0; }
 .salary-settings-sheet .settings-row-stack { flex-direction: row; align-items: center; }
 .salary-settings-sheet .settings-label {
-  font: 600 13px/1.2 'Manrope';
+  font: 600 13px/1.2 'Golos Text', system-ui, sans-serif;
   color: var(--ink);
 }
 .salary-settings-sheet .settings-note {
-  font: 500 11px/1.35 'JetBrains Mono', monospace;
+  font: 500 11px/1.35 'Golos Text', system-ui, sans-serif;
   color: var(--ink-3);
   margin-top: 4px;
 }
@@ -85,7 +85,7 @@
   background: color-mix(in oklch, black 24%, transparent) !important;
   border: 1px solid var(--hair) !important;
   color: var(--ink) !important;
-  font: 700 13px/1 'JetBrains Mono', monospace;
+  font: 700 13px/1 'Golos Text', system-ui, sans-serif;
   font-variant-numeric: tabular-nums;
   text-align: right;
 }
@@ -95,11 +95,11 @@
   box-shadow: 0 0 0 3px color-mix(in oklch, var(--accent) 18%, transparent);
 }
 .salary-settings-sheet .settings-unit {
-  font: 600 11px/1 'Manrope';
+  font: 600 11px/1 'Golos Text', system-ui, sans-serif;
   color: var(--ink-3);
 }
 .salary-settings-sheet .settings-help-block {
-  font: 500 11px/1.45 'Manrope';
+  font: 500 11px/1.45 'Golos Text', system-ui, sans-serif;
   color: var(--ink-4);
   margin: 14px 4px 10px;
 }
@@ -113,7 +113,7 @@
   background: linear-gradient(180deg, var(--accent), var(--accent-2));
   color: var(--accent-ink);
   border: 0;
-  font: 700 14px/1 'Manrope';
+  font: 700 14px/1 'Golos Text', system-ui, sans-serif;
   cursor: pointer;
   box-shadow:
     0 14px 28px -8px var(--accent-glow),
@@ -126,7 +126,7 @@
   background: var(--glass);
   border: 1px solid var(--hair);
   color: var(--ink);
-  font: 600 13px/1 'Manrope';
+  font: 600 13px/1 'Golos Text', system-ui, sans-serif;
   cursor: pointer;
   margin-top: 8px;
 }
@@ -137,7 +137,7 @@
   text-align: center;
 }
 .install-guide-sheet .install-guide-subtitle {
-  font: 500 12px/1.4 'Manrope';
+  font: 500 12px/1.4 'Golos Text', system-ui, sans-serif;
   color: var(--ink-3);
   text-align: center;
   margin: 4px 0 14px;
@@ -157,7 +157,7 @@
   border-radius: 10px !important;
   color: var(--ink-2) !important;
   padding: 8px 14px !important;
-  font: 600 12px/1 'Manrope' !important;
+  font: 600 12px/1 'Golos Text', system-ui, sans-serif !important;
   flex: 1 0 auto;
   cursor: pointer;
 }
@@ -170,7 +170,7 @@
     inset 0 1px 0 color-mix(in oklch, white 40%, transparent) !important;
 }
 .install-guide-sheet .install-guide-note {
-  font: 500 11px/1.4 'Manrope';
+  font: 500 11px/1.4 'Golos Text', system-ui, sans-serif;
   color: var(--warn);
   background: var(--warn-soft);
   padding: 10px 12px;
@@ -185,7 +185,7 @@
   box-shadow: inset 0 0 0 1px var(--hair);
 }
 .install-guide-sheet .install-guide-link-label {
-  font: 600 10px/1 'Manrope';
+  font: 600 10px/1 'Golos Text', system-ui, sans-serif;
   letter-spacing: 0.14em;
   text-transform: uppercase;
   color: var(--ink-3);
@@ -199,7 +199,7 @@
 .install-guide-sheet .install-guide-link-value {
   flex: 1;
   min-width: 0;
-  font: 600 12px/1.3 'JetBrains Mono', monospace;
+  font: 600 12px/1.3 'Golos Text', system-ui, sans-serif;
   color: var(--ink);
   background: color-mix(in oklch, black 24%, transparent);
   padding: 8px 10px;
@@ -216,7 +216,7 @@
   background: var(--accent-soft);
   border: 1px solid color-mix(in oklch, var(--accent) 28%, transparent);
   color: var(--accent);
-  font: 700 11px/1 'Manrope';
+  font: 700 11px/1 'Golos Text', system-ui, sans-serif;
   cursor: pointer;
   flex-shrink: 0;
 }
@@ -239,7 +239,7 @@
   margin: 6px 0 14px;
 }
 .home-calendar-day-sheet .home-calendar-day-sheet-note {
-  font: 500 12px/1.4 'Manrope';
+  font: 500 12px/1.4 'Golos Text', system-ui, sans-serif;
   color: var(--ink-3);
   margin-top: 4px;
 }
@@ -259,7 +259,7 @@
   margin: 8px 0;
 }
 .bottom-sheet .confirm-note {
-  font: 500 12px/1.4 'Manrope';
+  font: 500 12px/1.4 'Golos Text', system-ui, sans-serif;
   color: var(--ink-3);
   text-align: center;
   margin: 8px 0 14px;
@@ -273,7 +273,7 @@
 .btn-confirm-delete {
   height: 46px;
   border-radius: 12px;
-  font: 700 13px/1 'Manrope';
+  font: 700 13px/1 'Golos Text', system-ui, sans-serif;
 }
 
 /* ── Notifications sheet ──────────────────────────────────────── */
@@ -286,7 +286,7 @@
 }
 .notif-list::-webkit-scrollbar { display: none; }
 .notif-empty {
-  font: 500 13px/1.4 'Manrope';
+  font: 500 13px/1.4 'Golos Text', system-ui, sans-serif;
   color: var(--ink-3);
   padding: 18px 6px;
   text-align: center;
@@ -332,11 +332,11 @@
 .notif-tone-danger  .notif-row-dot { background: var(--bad);  box-shadow: 0 0 8px color-mix(in oklch, var(--bad) 40%, transparent); }
 .notif-row.is-read .notif-row-dot { box-shadow: none; opacity: .5; }
 .notif-row-title {
-  font: 700 13px/1.2 'Manrope';
+  font: 700 13px/1.2 'Golos Text', system-ui, sans-serif;
   color: var(--ink);
 }
 .notif-row-text {
-  font: 500 12px/1.4 'Manrope';
+  font: 500 12px/1.4 'Golos Text', system-ui, sans-serif;
   color: var(--ink-2);
   margin-top: 4px;
   white-space: pre-line;
@@ -352,7 +352,7 @@
   overflow: visible;
 }
 .notif-row-time {
-  font: 500 10px/1 'JetBrains Mono';
+  font: 500 10px/1 'Golos Text', system-ui, sans-serif;
   font-variant-numeric: tabular-nums;
   color: var(--ink-4);
   margin-top: 6px;
@@ -374,7 +374,7 @@
   min-width: 16px; height: 16px; padding: 0 4px;
   border-radius: 999px;
   display: grid; place-items: center;
-  font: 700 9px/1 'JetBrains Mono';
+  font: 700 9px/1 'Golos Text', system-ui, sans-serif;
   color: var(--accent-ink);
   background: var(--accent);
   top: 4px; right: 4px;
@@ -391,7 +391,7 @@
   background: color-mix(in oklch, var(--bad) 18%, transparent);
   border: 1px solid color-mix(in oklch, var(--bad) 32%, transparent);
   color: var(--bad);
-  font: 700 11px/1 'JetBrains Mono', monospace;
+  font: 700 11px/1 'Golos Text', system-ui, sans-serif;
   letter-spacing: 0.06em;
   cursor: pointer;
   flex-shrink: 0;
@@ -468,13 +468,13 @@
 }
 .app-top-bar-way.hidden { display: none !important; }
 .app-top-bar-way-label {
-  font: 600 8px/1 'Manrope', sans-serif;
+  font: 600 8px/1 'Golos Text', system-ui, sans-serif;
   letter-spacing: 0.14em;
   text-transform: uppercase;
   color: var(--ink-3);
 }
 .app-top-bar-way-value {
-  font: 700 12px/1 'JetBrains Mono', monospace;
+  font: 700 12px/1 'Golos Text', system-ui, sans-serif;
   font-variant-numeric: tabular-nums;
   color: var(--ink);
   letter-spacing: 0.04em;
@@ -509,7 +509,7 @@
 }
 .sd-hero-title-wrap { flex: 1; min-width: 0; }
 .sd-route {
-  font: 700 18px/1.1 'Manrope';
+  font: 700 18px/1.1 'Golos Text', system-ui, sans-serif;
   letter-spacing: -0.01em;
   color: var(--ink);
   margin-top: 2px;
@@ -523,7 +523,7 @@
   display: flex;
   align-items: center;
   gap: 8px;
-  font: 500 12px/1.2 'JetBrains Mono';
+  font: 500 12px/1.2 'Golos Text', system-ui, sans-serif;
   color: var(--ink-2);
   font-variant-numeric: tabular-nums;
 }
@@ -545,13 +545,13 @@
   border-top: 1px dashed color-mix(in oklch, white 8%, transparent);
 }
 .sd-income .l {
-  font: 600 10px/1 'Manrope';
+  font: 600 10px/1 'Golos Text', system-ui, sans-serif;
   letter-spacing: 0.14em;
   text-transform: uppercase;
   color: var(--ink-3);
 }
 .sd-income .v {
-  font: 700 22px/1 'JetBrains Mono';
+  font: 700 22px/1 'Golos Text', system-ui, sans-serif;
   color: var(--good);
   font-variant-numeric: tabular-nums;
 }
@@ -575,13 +575,13 @@
   gap: 6px;
 }
 .shift-detail-metric-label {
-  font: 600 9px/1 'Manrope';
+  font: 600 9px/1 'Golos Text', system-ui, sans-serif;
   letter-spacing: 0.14em;
   text-transform: uppercase;
   color: var(--ink-3);
 }
 .shift-detail-metric-value {
-  font: 700 16px/1 'JetBrains Mono', monospace;
+  font: 700 16px/1 'Golos Text', system-ui, sans-serif;
   font-variant-numeric: tabular-nums;
   letter-spacing: -0.01em;
   color: var(--ink);
@@ -599,7 +599,7 @@
   box-shadow: inset 0 0 0 1px var(--hair);
 }
 .shift-detail-section-title {
-  font: 700 11px/1 'Manrope';
+  font: 700 11px/1 'Golos Text', system-ui, sans-serif;
   letter-spacing: 0.12em;
   text-transform: uppercase;
   color: var(--ink-3);
@@ -615,12 +615,12 @@
   align-items: baseline;
   padding: 10px 4px;
   border-bottom: 1px solid color-mix(in oklch, white 5%, transparent);
-  font: 600 13px/1.2 'Manrope';
+  font: 600 13px/1.2 'Golos Text', system-ui, sans-serif;
   color: var(--ink-2);
 }
 .shift-detail-row:last-child { border-bottom: 0; }
 .shift-detail-row > :last-child {
-  font-family: 'JetBrains Mono', monospace;
+  font-family: 'Golos Text', system-ui, sans-serif;
   font-variant-numeric: tabular-nums;
   color: var(--ink);
   font-weight: 700;
@@ -639,13 +639,13 @@
   border-radius: 28px 28px 0 0;
 }
 .shift-detail-header-kicker {
-  font: 600 10px/1 'Manrope';
+  font: 600 10px/1 'Golos Text', system-ui, sans-serif;
   letter-spacing: 0.14em;
   text-transform: uppercase;
   color: var(--ink-3);
 }
 .shift-detail-header-title {
-  font: 700 18px/1.15 'Manrope';
+  font: 700 18px/1.15 'Golos Text', system-ui, sans-serif;
   letter-spacing: -0.01em;
   color: var(--ink);
 }
@@ -695,7 +695,7 @@
   color: var(--accent-ink);
   display: grid;
   place-items: center;
-  font: 800 14px/1 'Manrope';
+  font: 800 14px/1 'Golos Text', system-ui, sans-serif;
   letter-spacing: -0.02em;
   box-shadow:
     0 12px 24px -6px var(--accent-glow),
@@ -704,11 +704,11 @@
 }
 .auth-brand-meta { display: flex; flex-direction: column; gap: 3px; min-width: 0; }
 .auth-brand-name {
-  font: 700 14px/1.1 'Manrope';
+  font: 700 14px/1.1 'Golos Text', system-ui, sans-serif;
   color: var(--ink);
 }
 .auth-brand-sub {
-  font: 500 10px/1 'Manrope';
+  font: 500 10px/1 'Golos Text', system-ui, sans-serif;
   color: var(--ink-3);
   letter-spacing: 0.08em;
   text-transform: uppercase;
@@ -726,7 +726,7 @@
   background: var(--accent-soft);
   box-shadow: inset 0 0 0 1px color-mix(in oklch, var(--accent) 28%, transparent);
   color: var(--accent);
-  font: 600 10px/1 'Manrope';
+  font: 600 10px/1 'Golos Text', system-ui, sans-serif;
   letter-spacing: 0.12em;
   text-transform: uppercase;
 }
@@ -741,17 +741,17 @@
 }
 
 .auth-title {
-  font: 700 24px/1.15 'Manrope';
+  font: 700 24px/1.15 'Golos Text', system-ui, sans-serif;
   letter-spacing: -0.02em;
   color: var(--ink);
 }
 .auth-text {
-  font: 500 13px/1.5 'Manrope';
+  font: 500 13px/1.5 'Golos Text', system-ui, sans-serif;
   color: var(--ink-2);
   margin-top: 8px;
 }
 .auth-note {
-  font: 500 11px/1.45 'Manrope';
+  font: 500 11px/1.45 'Golos Text', system-ui, sans-serif;
   color: var(--ink-3);
   margin-top: 12px;
 }
@@ -800,7 +800,7 @@
   border: 0;
   border-radius: 14px;
   min-height: 48px;
-  font: 700 14px/1 'Manrope';
+  font: 700 14px/1 'Golos Text', system-ui, sans-serif;
   cursor: pointer;
   box-shadow:
     0 14px 28px -8px var(--accent-glow),
@@ -810,7 +810,7 @@
 .auth-primary:hover { filter: brightness(1.04); }
 .auth-primary:active { filter: brightness(0.97); }
 .auth-primary-hint {
-  font: 500 11px/1.4 'Manrope';
+  font: 500 11px/1.4 'Golos Text', system-ui, sans-serif;
   color: var(--ink-3);
   text-align: center;
   margin-top: 2px;
@@ -823,7 +823,7 @@
   border-radius: 12px;
   height: 40px;
   margin-top: 8px;
-  font: 600 12px/1 'Manrope';
+  font: 600 12px/1 'Golos Text', system-ui, sans-serif;
   cursor: pointer;
 }
 .auth-retry.visible { display: none !important; }
@@ -833,7 +833,7 @@
   border-radius: 12px;
   background: var(--bad-soft);
   color: var(--bad);
-  font: 600 12px/1.4 'Manrope';
+  font: 600 12px/1.4 'Golos Text', system-ui, sans-serif;
   box-shadow: inset 0 0 0 1px color-mix(in oklch, var(--bad) 28%, transparent);
 }
 .auth-error:empty,
@@ -846,7 +846,7 @@
 }
 .auth-status {
   margin-top: 12px;
-  font: 500 12px/1.4 'JetBrains Mono', monospace;
+  font: 500 12px/1.4 'Golos Text', system-ui, sans-serif;
   color: var(--ink-3);
 }
 .auth-status:empty { display: none; }
@@ -894,13 +894,13 @@
   position: relative;
 }
 .poekhali-speedo .label {
-  font: 600 9px/1 'Manrope';
+  font: 600 9px/1 'Golos Text', system-ui, sans-serif;
   letter-spacing: 0.16em;
   color: var(--ink-3);
   text-transform: uppercase;
 }
 .poekhali-speedo .speed-big {
-  font: 700 56px/1 'JetBrains Mono';
+  font: 700 56px/1 'Golos Text', system-ui, sans-serif;
   letter-spacing: -0.03em;
   font-variant-numeric: tabular-nums;
   color: var(--accent);
@@ -910,12 +910,12 @@
   gap: 6px;
 }
 .poekhali-speedo .speed-big .u {
-  font: 700 14px/1 'Manrope';
+  font: 700 14px/1 'Golos Text', system-ui, sans-serif;
   letter-spacing: 0.04em;
   color: var(--ink-2);
 }
 .poekhali-speedo-clock {
-  font: 700 16px/1 'JetBrains Mono';
+  font: 700 16px/1 'Golos Text', system-ui, sans-serif;
   color: var(--ink-2);
   font-variant-numeric: tabular-nums;
 }
@@ -933,13 +933,13 @@
   box-shadow: inset 0 0 0 1px var(--hair);
 }
 .aux .l {
-  font: 600 9px/1 'Manrope';
+  font: 600 9px/1 'Golos Text', system-ui, sans-serif;
   letter-spacing: 0.14em;
   color: var(--ink-3);
   text-transform: uppercase;
 }
 .aux .v {
-  font: 700 14px/1 'JetBrains Mono';
+  font: 700 14px/1 'Golos Text', system-ui, sans-serif;
   margin-top: 4px;
   font-variant-numeric: tabular-nums;
   color: var(--ink);
@@ -952,7 +952,7 @@
 .usage-stats-note,
 .usage-stats-shell-cache {
   color: var(--ink-4);
-  font: 500 11px/1.4 'Manrope';
+  font: 500 11px/1.4 'Golos Text', system-ui, sans-serif;
 }
 
 /* ── Misc surface overrides ─────────────────────────────────────── */

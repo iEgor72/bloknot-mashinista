@@ -34,7 +34,7 @@
 
 .profile-avatar svg { width: 30px; height: 30px; display: block; }
 .profile-avatar.has-initials {
-  font-family: 'Manrope', sans-serif;
+  font-family: 'Golos Text', system-ui, sans-serif;
   font-weight: 800;
   font-size: 21px;
   letter-spacing: 0.01em;
@@ -51,7 +51,7 @@
 }
 
 .profile-name {
-  font-family: 'Manrope', sans-serif;
+  font-family: 'Golos Text', system-ui, sans-serif;
   font-size: 19px;
   font-weight: 800;
   color: var(--ink, #eef2f8);
@@ -183,7 +183,7 @@
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  font-family: 'Manrope', sans-serif;
+  font-family: 'Golos Text', system-ui, sans-serif;
   font-weight: 800;
   font-size: 11px;
   letter-spacing: 0.01em;
@@ -245,7 +245,7 @@
   color: var(--accent, #38bdf8);
   background: color-mix(in oklch, var(--accent, #38bdf8) 16%, transparent);
   border: 1px solid color-mix(in oklch, var(--accent, #38bdf8) 30%, transparent);
-  font-family: 'Manrope', sans-serif;
+  font-family: 'Golos Text', system-ui, sans-serif;
   font-weight: 800;
   font-size: 23px;
 }

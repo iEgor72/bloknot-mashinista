@@ -1,20 +1,48 @@
     @font-face {
-      font-family: 'Manrope';
-      src: url('/assets/fonts/plus-jakarta-sans/plus-jakarta-sans-cyrillic-ext.woff2') format('woff2');
+      font-family: 'Golos Text';
+      src: url('/assets/fonts/golos-text/GolosText-Regular.woff2') format('woff2');
       font-style: normal;
-      font-weight: 400 800;
+      font-weight: 400;
       font-display: optional;
     }
 
     @font-face {
-      font-family: 'JetBrains Mono';
-      src:
-        local('SF Mono'),
-        local('Menlo'),
-        local('Consolas'),
-        local('Liberation Mono');
+      font-family: 'Golos Text';
+      src: url('/assets/fonts/golos-text/GolosText-Medium.woff2') format('woff2');
       font-style: normal;
-      font-weight: 400 700;
+      font-weight: 500;
+      font-display: optional;
+    }
+
+    @font-face {
+      font-family: 'Golos Text';
+      src: url('/assets/fonts/golos-text/GolosText-SemiBold.woff2') format('woff2');
+      font-style: normal;
+      font-weight: 600;
+      font-display: optional;
+    }
+
+    @font-face {
+      font-family: 'Golos Text';
+      src: url('/assets/fonts/golos-text/GolosText-Bold.woff2') format('woff2');
+      font-style: normal;
+      font-weight: 700;
+      font-display: optional;
+    }
+
+    @font-face {
+      font-family: 'Golos Text';
+      src: url('/assets/fonts/golos-text/GolosText-ExtraBold.woff2') format('woff2');
+      font-style: normal;
+      font-weight: 800;
+      font-display: optional;
+    }
+
+    @font-face {
+      font-family: 'Golos Text';
+      src: url('/assets/fonts/golos-text/GolosText-Black.woff2') format('woff2');
+      font-style: normal;
+      font-weight: 900;
       font-display: optional;
     }
 
@@ -149,7 +177,7 @@
       min-height: var(--app-viewport-height);
       background: var(--bg);
       color: var(--text);
-      font-family: 'Manrope', sans-serif;
+      font-family: 'Golos Text', system-ui, sans-serif;
       font-size: 15px;
       line-height: 1.5;
       overflow: hidden;
@@ -158,6 +186,13 @@
       -webkit-user-select: none;
       user-select: none;
       -webkit-touch-callout: none;
+    }
+
+    button,
+    input,
+    textarea,
+    select {
+      font-family: inherit;
     }
 
     html {
@@ -295,11 +330,11 @@
     }
 
     .mono {
-      font-family: 'JetBrains Mono', monospace;
+      font-family: 'Golos Text', system-ui, sans-serif;
     }
 
     .money {
-      font-family: 'JetBrains Mono', monospace;
+      font-family: 'Golos Text', system-ui, sans-serif;
       color: var(--green);
       font-weight: 700;
     }
@@ -487,7 +522,7 @@
       border-radius: var(--r-inner);
       text-decoration: none;
       cursor: pointer;
-      font-family: 'Manrope', sans-serif;
+      font-family: 'Golos Text', system-ui, sans-serif;
       font-size: 14px;
       font-weight: 800;
       letter-spacing: 0;
@@ -741,7 +776,7 @@
       border-radius: 999px;
       background: transparent;
       color: rgba(238, 242, 248, 0.56);
-      font: 750 18px/1 system-ui, sans-serif;
+      font: 750 18px/1 'Golos Text', system-ui, sans-serif;
       display: inline-flex;
       align-items: center;
       justify-content: center;
@@ -775,7 +810,7 @@
       background: rgba(56, 189, 248, 0.08);
       border: 1px solid rgba(56, 189, 248, 0.18);
       color: var(--accent);
-      font-family: 'Manrope', sans-serif;
+      font-family: 'Golos Text', system-ui, sans-serif;
       font-size: 13px;
       font-weight: 700;
       cursor: pointer;
@@ -810,7 +845,7 @@
       background: transparent;
       border: none;
       color: var(--sub);
-      font-family: 'Manrope', sans-serif;
+      font-family: 'Golos Text', system-ui, sans-serif;
       font-size: 13px;
       font-weight: 600;
       cursor: pointer;
@@ -831,7 +866,7 @@
       border-radius: var(--r-inner);
       background: rgba(245, 158, 11, 0.14);
       color: #fbbf24;
-      font-family: 'Manrope', sans-serif;
+      font-family: 'Golos Text', system-ui, sans-serif;
       font-size: 15px;
       font-weight: 700;
       border: 1px solid rgba(245, 158, 11, 0.3);
@@ -852,7 +887,7 @@
       border-radius: var(--r-inner);
       background: rgba(244, 63, 94, 0.12);
       color: var(--danger);
-      font-family: 'Manrope', sans-serif;
+      font-family: 'Golos Text', system-ui, sans-serif;
       font-size: 15px;
       font-weight: 700;
       border: 1px solid rgba(244, 63, 94, 0.28);
@@ -872,7 +907,7 @@
     .btn-confirm-delete {
       height: 48px;
       border-radius: var(--r-inner);
-      font-family: 'Manrope', sans-serif;
+      font-family: 'Golos Text', system-ui, sans-serif;
       font-size: 15px;
       font-weight: 700;
       cursor: pointer;

@@ -14,7 +14,7 @@
   margin-bottom: 12px;
 }
 .form-title {
-  font: 700 22px/1.05 'Manrope';
+  font: 700 22px/1.05 'Golos Text', system-ui, sans-serif;
   letter-spacing: -0.02em;
   color: var(--ink);
 }
@@ -62,7 +62,7 @@
 #editShiftMount .form-title-leading { min-width: 0; }
 #editShiftMount .edit-badge { order: 0; flex: 0 0 auto; }
 #editShiftMount .form-title {
-  font: 700 22px/1.1 'Manrope';
+  font: 700 22px/1.1 'Golos Text', system-ui, sans-serif;
   letter-spacing: -0.01em;
 }
 #editShiftMount .edit-badge {
@@ -72,7 +72,7 @@
   border-radius: 999px;
   background: var(--warn-soft);
   color: var(--warn);
-  font: 700 10px/1 'Manrope';
+  font: 700 10px/1 'Golos Text', system-ui, sans-serif;
   letter-spacing: 0.08em;
   text-transform: uppercase;
   box-shadow: inset 0 0 0 1px color-mix(in oklch, var(--warn) 28%, transparent);
@@ -87,11 +87,11 @@
   color: var(--ink);
 }
 #editShiftMount .form-edit-banner-title {
-  font: 700 13px/1.2 'Manrope';
+  font: 700 13px/1.2 'Golos Text', system-ui, sans-serif;
   color: var(--ink);
 }
 #editShiftMount .form-edit-banner-text {
-  font: 500 12px/1.4 'Manrope';
+  font: 500 12px/1.4 'Golos Text', system-ui, sans-serif;
   color: var(--ink-2);
   margin-top: 4px;
 }
@@ -116,13 +116,13 @@
   border-radius: 12px;
 }
 .form-stage-kicker {
-  font: 600 10px/1 'Manrope';
+  font: 600 10px/1 'Golos Text', system-ui, sans-serif;
   letter-spacing: 0.14em;
   text-transform: uppercase;
   color: var(--ink-3);
 }
 .form-stage-title {
-  font: 700 14px/1.2 'Manrope';
+  font: 700 14px/1.2 'Golos Text', system-ui, sans-serif;
   color: var(--ink);
   margin-top: 4px;
 }
@@ -138,11 +138,11 @@
   padding: 14px;
 }
 .optional-summary-title {
-  font: 700 14px/1.15 'Manrope';
+  font: 700 14px/1.15 'Golos Text', system-ui, sans-serif;
   color: var(--ink);
 }
 .optional-summary-subtitle {
-  font: 500 11px/1.3 'Manrope';
+  font: 500 11px/1.3 'Golos Text', system-ui, sans-serif;
   color: var(--ink-3);
 }
 .optional-control,
@@ -156,7 +156,7 @@
   box-shadow: inset 0 0 0 1px var(--hair);
   color: var(--ink);
   border-radius: 12px;
-  font-family: 'Manrope', sans-serif;
+  font-family: 'Golos Text', system-ui, sans-serif;
   padding: 10px 14px !important;
   min-height: 44px;
 }
@@ -221,7 +221,7 @@
   color: var(--ink-2) !important;
   padding: 10px 12px !important;
   min-height: 38px;
-  font: 600 13px/1 'Manrope' !important;
+  font: 600 13px/1 'Golos Text', system-ui, sans-serif !important;
   cursor: pointer;
   display: inline-flex;
   align-items: center;
@@ -269,12 +269,12 @@
   min-width: 0;
 }
 .details-disclosure-title {
-  font: 700 13px/1.2 'Manrope';
+  font: 700 13px/1.2 'Golos Text', system-ui, sans-serif;
   color: var(--ink);
   display: block;
 }
 .details-disclosure-note {
-  font: 500 11px/1.4 'Manrope';
+  font: 500 11px/1.4 'Golos Text', system-ui, sans-serif;
   color: var(--ink-3);
   display: block;
   margin-top: 4px;
@@ -307,7 +307,7 @@
 }
 
 .optional-section-title {
-  font: 700 11px/1 'Manrope';
+  font: 700 11px/1 'Golos Text', system-ui, sans-serif;
   letter-spacing: 0.14em;
   text-transform: uppercase;
   color: var(--ink-3);
@@ -346,7 +346,7 @@ details.optional-card[open] .optional-summary-chevron {
   gap: 14px;
 }
 .fuel-column-title {
-  font: 700 11px/1 'Manrope';
+  font: 700 11px/1 'Golos Text', system-ui, sans-serif;
   letter-spacing: 0.12em;
   text-transform: uppercase;
   color: var(--ink-3);
@@ -378,7 +378,7 @@ details.optional-card[open] .optional-summary-chevron {
   border-top: 1px dashed color-mix(in oklch, white 6%, transparent);
 }
 .fuel-section-label {
-  font: 700 14px/1 'JetBrains Mono';
+  font: 700 14px/1 'Golos Text', system-ui, sans-serif;
   color: var(--accent);
   letter-spacing: 0.04em;
   width: 26px;
@@ -406,7 +406,7 @@ details.optional-card[open] .optional-summary-chevron {
   min-width: 26px;
   text-align: center;
   margin: 0;
-  font: 700 13px/1 'JetBrains Mono';
+  font: 700 13px/1 'Golos Text', system-ui, sans-serif;
   color: var(--accent);
   flex-shrink: 0;
 }
@@ -419,7 +419,7 @@ details.optional-card[open] .optional-summary-chevron {
   text-align: center;
   padding: 6px 8px !important;
   min-height: 34px !important;
-  font: 700 13px/1 'JetBrains Mono', monospace !important;
+  font: 700 13px/1 'Golos Text', system-ui, sans-serif !important;
   font-variant-numeric: tabular-nums;
   letter-spacing: 0.04em;
 }
@@ -432,7 +432,7 @@ details.optional-card[open] .optional-summary-chevron {
 }
 .fuel-inline-unit,
 .fuel-inline-prefix {
-  font: 600 11px/1 'Manrope';
+  font: 600 11px/1 'Golos Text', system-ui, sans-serif;
   color: var(--ink-3);
   flex-shrink: 0;
 }
@@ -453,7 +453,7 @@ details.optional-card[open] .optional-summary-chevron {
   margin-bottom: 6px;
 }
 .fuel-consumption-chip {
-  font: 600 11px/1 'JetBrains Mono';
+  font: 600 11px/1 'Golos Text', system-ui, sans-serif;
   color: var(--ink-2);
   background: var(--glass);
   padding: 5px 8px;
@@ -464,13 +464,13 @@ details.optional-card[open] .optional-summary-chevron {
   color: var(--accent);
 }
 .fuel-consumption-total {
-  font: 700 13px/1.2 'JetBrains Mono';
+  font: 700 13px/1.2 'Golos Text', system-ui, sans-serif;
   color: var(--accent);
 }
 
 /* Loco series dropdown — optgroup headings */
 .glass-select-group {
-  font: 600 9px/1 'Manrope', sans-serif;
+  font: 600 9px/1 'Golos Text', system-ui, sans-serif;
   letter-spacing: 0.14em;
   text-transform: uppercase;
   color: var(--ink-3);
@@ -504,11 +504,11 @@ details.optional-card[open] .optional-summary-chevron {
 }
 .fuel-needs-loco-ico svg { width: 18px; height: 18px; }
 .fuel-needs-loco-title {
-  font: 700 13px/1.2 'Manrope';
+  font: 700 13px/1.2 'Golos Text', system-ui, sans-serif;
   color: var(--ink);
 }
 .fuel-needs-loco-text {
-  font: 500 11px/1.4 'Manrope';
+  font: 500 11px/1.4 'Golos Text', system-ui, sans-serif;
   color: var(--ink-3);
   margin-top: 4px;
 }
@@ -549,7 +549,7 @@ details.optional-card[open] .optional-summary-chevron {
   display: revert;
 }
 .draft-stat-value {
-  font: 700 18px/1 'JetBrains Mono';
+  font: 700 18px/1 'Golos Text', system-ui, sans-serif;
   font-variant-numeric: tabular-nums;
 }
 .draft-stat-value.night { color: var(--night); }
@@ -566,7 +566,7 @@ details.optional-card[open] .optional-summary-chevron {
     0 14px 28px -8px var(--accent-glow),
     inset 0 1px 0 color-mix(in oklch, white 50%, transparent),
     inset 0 -1px 0 color-mix(in oklch, black 14%, transparent);
-  font: 700 14px/1 'Manrope';
+  font: 700 14px/1 'Golos Text', system-ui, sans-serif;
   letter-spacing: 0.01em;
 }
 .btn-primary:active,

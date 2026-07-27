@@ -91,7 +91,7 @@
 html, body {
   background: var(--bg);
   color: var(--ink);
-  font-family: 'Manrope', system-ui, sans-serif;
+  font-family: 'Golos Text', system-ui, sans-serif;
   font-feature-settings: 'cv11', 'ss01';
 }
 
@@ -140,10 +140,10 @@ body::after { content: none; }
 .quick-stats-note,
 .fab-label,
 .tab-label {
-  font-family: 'Manrope', sans-serif;
+  font-family: 'Golos Text', system-ui, sans-serif;
 }
 .eyebrow {
-  font: 600 10px/1 'Manrope';
+  font: 600 10px/1 'Golos Text', system-ui, sans-serif;
   letter-spacing: 0.14em;
   text-transform: uppercase;
   color: var(--ink-3);
@@ -151,7 +151,7 @@ body::after { content: none; }
 .num,
 .money,
 .mono {
-  font-family: 'JetBrains Mono', ui-monospace, monospace;
+  font-family: 'Golos Text', system-ui, sans-serif;
   font-variant-numeric: tabular-nums;
   font-feature-settings: 'tnum';
 }
@@ -169,12 +169,12 @@ body::after { content: none; }
 .app-top-bar.hidden { display: none; }
 .app-top-bar-leading { min-width: 0; }
 .app-top-bar-title {
-  font: 700 15px/1.1 'Manrope';
+  font: 700 15px/1.1 'Golos Text', system-ui, sans-serif;
   letter-spacing: -0.01em;
   color: var(--ink);
 }
 .app-top-bar-sub {
-  font: 500 11px/1.2 'Manrope';
+  font: 500 11px/1.2 'Golos Text', system-ui, sans-serif;
   color: var(--ink-3);
   margin-top: 4px;
 }
@@ -313,12 +313,12 @@ body::after { content: none; }
 .month-btn:active { background: var(--glass-strong); }
 .month-header { gap: 2px; align-items: center; }
 .month-title {
-  font: 700 14px/1 'Manrope';
+  font: 700 14px/1 'Golos Text', system-ui, sans-serif;
   color: var(--ink);
   letter-spacing: -0.01em;
 }
 .month-quarter {
-  font: 600 9px/1 'Manrope';
+  font: 600 9px/1 'Golos Text', system-ui, sans-serif;
   letter-spacing: 0.16em;
   text-transform: uppercase;
   color: var(--ink-3);
@@ -333,7 +333,7 @@ body::after { content: none; }
   gap: 4px;
 }
 .month-tab {
-  font: 600 12px/1 'Manrope';
+  font: 600 12px/1 'Golos Text', system-ui, sans-serif;
   color: var(--ink-2);
   padding: 8px 0;
   border-radius: 10px;
@@ -376,20 +376,20 @@ body::after { content: none; }
 }
 
 .dashboard-eyebrow {
-  font: 600 10px/1 'Manrope';
+  font: 600 10px/1 'Golos Text', system-ui, sans-serif;
   letter-spacing: 0.14em;
   text-transform: uppercase;
   color: var(--ink-3);
   margin-bottom: 6px;
 }
 .dashboard-value {
-  font: 700 22px/1 'Manrope';
+  font: 700 22px/1 'Golos Text', system-ui, sans-serif;
   letter-spacing: -0.01em;
   color: var(--ink);
 }
 .dashboard-value .num,
 .dashboard-value [data-num] {
-  font-family: 'JetBrains Mono', monospace;
+  font-family: 'Golos Text', system-ui, sans-serif;
   font-variant-numeric: tabular-nums;
 }
 
@@ -421,7 +421,7 @@ body::after { content: none; }
   z-index: 1;
 }
 .dashboard-gauge-num {
-  font: 700 24px/1 'JetBrains Mono';
+  font: 700 24px/1 'Golos Text', system-ui, sans-serif;
   font-variant-numeric: tabular-nums;
   letter-spacing: -0.02em;
   color: var(--ink);
@@ -432,7 +432,7 @@ body::after { content: none; }
   color: var(--ink-2);
 }
 .dashboard-gauge-unit {
-  font: 600 9px/1 'Manrope';
+  font: 600 9px/1 'Golos Text', system-ui, sans-serif;
   letter-spacing: 0.15em;
   text-transform: uppercase;
   color: var(--ink-3);
@@ -479,13 +479,13 @@ body::after { content: none; }
   color: var(--ink-3) !important;
 }
 .dashboard-norm-label {
-  font: 600 10px/1 'Manrope';
+  font: 600 10px/1 'Golos Text', system-ui, sans-serif;
   letter-spacing: 0.14em;
   text-transform: uppercase;
   color: var(--ink-3);
 }
 .dashboard-norm-value {
-  font: 600 13px/1 'JetBrains Mono';
+  font: 600 13px/1 'Golos Text', system-ui, sans-serif;
   font-variant-numeric: tabular-nums;
   color: var(--ink);
 }
@@ -496,7 +496,7 @@ body::after { content: none; }
 }
 
 .dashboard-sub {
-  font: 600 12px/1.3 'Manrope';
+  font: 600 12px/1.3 'Golos Text', system-ui, sans-serif;
   color: var(--ink-2);
   margin-top: 0;
   display: inline;
@@ -533,13 +533,13 @@ body::after { content: none; }
   gap: 4px;
 }
 .dashboard-month-income-label {
-  font: 600 10px/1 'Manrope';
+  font: 600 10px/1 'Golos Text', system-ui, sans-serif;
   letter-spacing: 0.14em;
   text-transform: uppercase;
   color: var(--ink-3);
 }
 .dashboard-month-income-value {
-  font: 700 22px/1 'Manrope';
+  font: 700 22px/1 'Golos Text', system-ui, sans-serif;
   letter-spacing: -0.01em;
   color: var(--good);
   font-variant-numeric: tabular-nums;
@@ -557,7 +557,7 @@ body::after { content: none; }
   filter: drop-shadow(0 0 6px color-mix(in oklch, var(--good) 32%, transparent));
 }
 .dashboard-spark-empty {
-  font: 600 10px/1 'Manrope', system-ui, sans-serif;
+  font: 600 10px/1 'Golos Text', system-ui, sans-serif;
   letter-spacing: 0.06em;
   color: var(--ink-3);
   opacity: 0.8;
@@ -571,7 +571,7 @@ body::after { content: none; }
   border-radius: 999px;
   background: var(--good-soft);
   color: var(--good);
-  font: 700 11px/1 'JetBrains Mono';
+  font: 700 11px/1 'Golos Text', system-ui, sans-serif;
   font-variant-numeric: tabular-nums;
 }
 
@@ -605,7 +605,7 @@ body::after { content: none; }
   justify-content: flex-start;
 }
 .quick-stat-value {
-  font: 700 18px/1 'JetBrains Mono';
+  font: 700 18px/1 'Golos Text', system-ui, sans-serif;
   font-variant-numeric: tabular-nums;
   letter-spacing: -0.01em;
   color: var(--ink);
@@ -615,7 +615,7 @@ body::after { content: none; }
 .quick-stat-value.holiday  { color: var(--holiday); }
 .stat-label,
 .quick-stat .stat-label {
-  font: 600 10px/1 'Manrope';
+  font: 600 10px/1 'Golos Text', system-ui, sans-serif;
   letter-spacing: 0.12em;
   text-transform: uppercase;
   color: var(--ink-3);
@@ -647,14 +647,14 @@ body::after { content: none; }
   margin-bottom: 10px;
 }
 .home-calendar-card-title {
-  font: 700 13px/1 'Manrope';
+  font: 700 13px/1 'Golos Text', system-ui, sans-serif;
   color: var(--ink);
 }
 .home-calendar-legend {
   display: flex;
   gap: 8px;
   align-items: center;
-  font: 600 9px/1 'Manrope';
+  font: 600 9px/1 'Golos Text', system-ui, sans-serif;
   color: var(--ink-3);
   letter-spacing: 0.05em;
   flex-wrap: wrap;
@@ -676,7 +676,7 @@ body::after { content: none; }
   display: grid;
   grid-template-columns: repeat(7, 1fr);
   gap: 4px;
-  font: 600 9px/1 'Manrope';
+  font: 600 9px/1 'Golos Text', system-ui, sans-serif;
   color: var(--ink-4);
   text-transform: uppercase;
   letter-spacing: 0.12em;
@@ -696,7 +696,7 @@ body::after { content: none; }
   flex-direction: column !important;
   justify-content: flex-start !important;
   align-items: flex-start !important;
-  font-family: 'JetBrains Mono', monospace;
+  font-family: 'Golos Text', system-ui, sans-serif;
   color: var(--ink-2);
   background: color-mix(in oklch, white 2%, transparent) !important;
   box-shadow: inset 0 0 0 1px color-mix(in oklch, white 4%, transparent) !important;
@@ -708,7 +708,7 @@ body::after { content: none; }
   overflow: hidden;
 }
 .home-calendar-day-number {
-  font: 600 12px/1 'JetBrains Mono' !important;
+  font: 600 12px/1 'Golos Text', system-ui, sans-serif !important;
   font-variant-numeric: tabular-nums;
   color: var(--ink-2) !important;
   align-self: flex-start !important;
@@ -814,7 +814,7 @@ body::after { content: none; }
   display: flex;
   align-items: center;
   justify-content: space-between;
-  font: 700 12px/1 'Manrope';
+  font: 700 12px/1 'Golos Text', system-ui, sans-serif;
   letter-spacing: 0.08em;
   text-transform: uppercase;
   color: var(--ink-3);
@@ -822,7 +822,7 @@ body::after { content: none; }
 .section-header-row { padding: 0 4px; }
 .section-link,
 .section-header .a {
-  font: 600 11px/1 'Manrope';
+  font: 600 11px/1 'Golos Text', system-ui, sans-serif;
   color: var(--accent);
   background: var(--accent-soft);
   padding: 6px 10px;

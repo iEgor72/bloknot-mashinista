@@ -14,11 +14,11 @@
   display: flex; flex-direction: column; align-items: center; gap: 2px;
 }
 .trk-chip .label {
-  font: 600 8px/1 'Manrope'; letter-spacing: 0.12em;
+  font: 600 8px/1 'Golos Text', system-ui, sans-serif; letter-spacing: 0.12em;
   color: var(--ink-3); text-transform: uppercase;
 }
 .trk-chip .v {
-  font: 700 12px/1 'JetBrains Mono'; font-variant-numeric: tabular-nums; color: var(--ink);
+  font: 700 12px/1 'Golos Text', system-ui, sans-serif; font-variant-numeric: tabular-nums; color: var(--ink);
 }
 .trk-chip.is-on .v { color: var(--accent); }
 
@@ -72,14 +72,14 @@
 .gauge-allow-mark { stroke: var(--bad); stroke-width: 3.5; stroke-linecap: round; }
 .gauge-ticks line { stroke: var(--ink-3); stroke-width: 1.4; opacity: 0.5; }
 .gauge-ticks text {
-  fill: var(--ink-3); font: 700 9px 'JetBrains Mono'; text-anchor: middle; dominant-baseline: middle;
+  fill: var(--ink-3); font: 700 9px 'Golos Text', system-ui, sans-serif; text-anchor: middle; dominant-baseline: middle;
 }
 .gauge-center {
   position: absolute; inset: 0;
   display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 0;
 }
 .gauge-fact {
-  font: 700 42px/0.9 'JetBrains Mono'; letter-spacing: -0.03em;
+  font: 700 42px/0.9 'Golos Text', system-ui, sans-serif; letter-spacing: -0.03em;
   font-variant-numeric: tabular-nums; color: var(--accent);
   text-shadow: 0 0 18px color-mix(in oklch, var(--accent) 40%, transparent);
 }
@@ -87,11 +87,11 @@
   color: var(--bad); text-shadow: 0 0 18px color-mix(in oklch, var(--bad) 40%, transparent);
 }
 .gauge-unit {
-  font: 700 10px/1 'Manrope'; letter-spacing: 0.14em; text-transform: uppercase;
+  font: 700 10px/1 'Golos Text', system-ui, sans-serif; letter-spacing: 0.14em; text-transform: uppercase;
   color: var(--ink-3); margin-top: 2px;
 }
 .gauge-allow {
-  font: 700 22px/1 'JetBrains Mono'; font-variant-numeric: tabular-nums;
+  font: 700 22px/1 'Golos Text', system-ui, sans-serif; font-variant-numeric: tabular-nums;
   color: var(--bad); margin-top: 6px;
   text-shadow: 0 0 12px color-mix(in oklch, var(--bad) 35%, transparent);
 }
@@ -100,10 +100,10 @@
 .speedo-stat { display: flex; flex-direction: column; gap: 3px; min-width: 0; }
 .speedo-stat.is-clock, .speedo-stat.is-coord { align-items: center; text-align: center; }
 .speedo-stat .l {
-  font: 600 8px/1.15 'Manrope'; letter-spacing: 0.12em; text-transform: uppercase; color: var(--ink-3);
+  font: 600 8px/1.15 'Golos Text', system-ui, sans-serif; letter-spacing: 0.12em; text-transform: uppercase; color: var(--ink-3);
 }
 .speedo-stat .v {
-  font: 700 14px/1.05 'JetBrains Mono'; font-variant-numeric: tabular-nums; color: var(--ink);
+  font: 700 14px/1.05 'Golos Text', system-ui, sans-serif; font-variant-numeric: tabular-nums; color: var(--ink);
   overflow-wrap: anywhere;
 }
 /* Clock is the headline of the cluster — give it a touch more presence. */
@@ -125,11 +125,11 @@
   box-shadow: inset 0 0 0 1px var(--hair);
 }
 .trk-metric-l {
-  font: 600 8.5px/1 'Manrope'; letter-spacing: 0.14em;
+  font: 600 8.5px/1 'Golos Text', system-ui, sans-serif; letter-spacing: 0.14em;
   color: var(--ink-3); text-transform: uppercase;
 }
 .trk-metric-v {
-  font: 700 17px/1 'JetBrains Mono'; margin-top: 6px;
+  font: 700 17px/1 'Golos Text', system-ui, sans-serif; margin-top: 6px;
   font-variant-numeric: tabular-nums; color: var(--ink);
 }
 .trk-metric.is-limit .trk-metric-v { color: var(--bad); }
@@ -150,7 +150,7 @@
   position: relative;
   display: inline-flex; align-items: center; justify-content: center; gap: 7px;
   width: 44px; height: 44px; min-height: 0; padding: 0; border-radius: 16px;
-  font: 800 0/1 'Manrope'; letter-spacing: 0; color: transparent;
+  font: 800 0/1 'Golos Text', system-ui, sans-serif; letter-spacing: 0; color: transparent;
   background:
     linear-gradient(180deg, color-mix(in oklch, var(--accent) 14%, transparent), transparent),
     color-mix(in oklch, var(--bg-rise) 88%, transparent);
@@ -198,10 +198,10 @@
   display: flex; align-items: center; justify-content: space-between; margin-bottom: 6px;
 }
 .profile-head .t {
-  font: 700 11px/1 'Manrope'; letter-spacing: 0.1em;
+  font: 700 11px/1 'Golos Text', system-ui, sans-serif; letter-spacing: 0.1em;
   text-transform: uppercase; color: var(--ink-3);
 }
-.profile-head .r { font: 600 11px/1 'Manrope'; color: var(--ink-2); }
+.profile-head .r { font: 600 11px/1 'Golos Text', system-ui, sans-serif; color: var(--ink-2); }
 .profile svg { width: 100%; height: 220px; display: block; }
 
 #trkTrainMarker {
@@ -237,11 +237,11 @@
 }
 .timer-info { display: flex; flex-direction: column; gap: 2px; flex: 1; min-width: 0; }
 .timer-info .l {
-  font: 600 9px/1 'Manrope'; letter-spacing: 0.14em;
+  font: 600 9px/1 'Golos Text', system-ui, sans-serif; letter-spacing: 0.14em;
   color: var(--ink-3); text-transform: uppercase;
 }
 .timer-info .v {
-  font: 700 18px/1 'JetBrains Mono'; font-variant-numeric: tabular-nums;
+  font: 700 18px/1 'Golos Text', system-ui, sans-serif; font-variant-numeric: tabular-nums;
 }
 .mode-info .v { color: var(--accent); }
 /* Tech-speed tile icon (gauge) — a rounded accent square, matching the design. */
@@ -302,13 +302,13 @@
   margin-bottom: 8px;
 }
 .trk-profile-title {
-  font: 700 11px/1 'Manrope';
+  font: 700 11px/1 'Golos Text', system-ui, sans-serif;
   letter-spacing: 0.1em;
   text-transform: uppercase;
   color: var(--ink-3);
 }
 .trk-profile-sub {
-  font: 600 11px/1 'Manrope';
+  font: 600 11px/1 'Golos Text', system-ui, sans-serif;
   color: var(--ink-2);
 }
 .trk-profile-canvas-wrap {
@@ -350,7 +350,7 @@
   box-shadow:
     inset 0 1px 0 color-mix(in oklch, white 12%, transparent),
     0 6px 16px -8px rgba(0,0,0,0.45);
-  font: 700 13px/1 'JetBrains Mono', monospace;
+  font: 700 13px/1 'Golos Text', system-ui, sans-serif;
   font-variant-numeric: tabular-nums;
   letter-spacing: 0.04em;
   padding: 8px 12px;
@@ -370,7 +370,7 @@
 .poekhali-overlay-btn[data-control-label]:not(.poekhali-back-btn)::before {
   content: attr(data-control-label);
   display: block;
-  font: 600 8px/1 'Manrope', sans-serif;
+  font: 600 8px/1 'Golos Text', system-ui, sans-serif;
   letter-spacing: 0.14em;
   text-transform: uppercase;
   color: var(--ink-3);
@@ -431,13 +431,13 @@
   gap: 2px;
 }
 .poekhali-live-btn .poekhali-live-gps-word {
-  font: 600 8px/1 'Manrope', sans-serif !important;
+  font: 600 8px/1 'Golos Text', system-ui, sans-serif !important;
   letter-spacing: 0.14em;
   text-transform: uppercase;
   color: var(--ink-3);
 }
 .poekhali-live-btn .poekhali-live-gps-meta {
-  font: 700 13px/1 'JetBrains Mono', monospace !important;
+  font: 700 13px/1 'Golos Text', system-ui, sans-serif !important;
   font-variant-numeric: tabular-nums;
   color: var(--ink);
   letter-spacing: 0.04em;
@@ -461,7 +461,7 @@
 
 .poekhali-direction-btn,
 .poekhali-direction-bar {
-  font: 700 12px/1 'JetBrains Mono';
+  font: 700 12px/1 'Golos Text', system-ui, sans-serif;
   letter-spacing: 0.05em;
 }
 
@@ -504,12 +504,12 @@
   flex-shrink: 0;
 }
 .train-plate-loco-num {
-  font: 700 13px/1.1 'JetBrains Mono';
+  font: 700 13px/1.1 'Golos Text', system-ui, sans-serif;
   color: var(--ink);
   font-variant-numeric: tabular-nums;
 }
 .train-plate-loco-sub {
-  font: 500 10px/1 'Manrope';
+  font: 500 10px/1 'Golos Text', system-ui, sans-serif;
   color: var(--ink-3);
   margin-top: 3px;
   letter-spacing: 0.04em;
@@ -523,18 +523,18 @@
 }
 .train-plate-stats > div { display: flex; flex-direction: column; gap: 3px; }
 .train-plate-stats .l {
-  font: 600 8.5px/1 'Manrope';
+  font: 600 8.5px/1 'Golos Text', system-ui, sans-serif;
   letter-spacing: 0.14em;
   text-transform: uppercase;
   color: var(--ink-3);
 }
 .train-plate-stats .v {
-  font: 700 13px/1 'JetBrains Mono';
+  font: 700 13px/1 'Golos Text', system-ui, sans-serif;
   font-variant-numeric: tabular-nums;
   color: var(--ink);
 }
 .train-plate-stats .v .u {
-  font: 500 9px/1 'Manrope';
+  font: 500 9px/1 'Golos Text', system-ui, sans-serif;
   color: var(--ink-3);
   margin-left: 2px;
 }

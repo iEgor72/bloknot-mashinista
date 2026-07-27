@@ -7962,7 +7962,7 @@ if (typeof registerShiftTrackerRuntimeModule === 'function') registerShiftTracke
   function drawText(ctx, text, x, y, options) {
     options = options || {};
     ctx.save();
-    ctx.font = (options.weight || 700) + ' ' + (options.size || 14) + 'px "Plus Jakarta Sans", system-ui, sans-serif';
+    ctx.font = (options.weight || 700) + ' ' + (options.size || 14) + 'px "Golos Text", system-ui, sans-serif';
     ctx.fillStyle = options.color || THEME.text;
     ctx.textAlign = options.align || 'left';
     ctx.textBaseline = options.baseline || 'alphabetic';
@@ -10569,7 +10569,7 @@ if (typeof registerShiftTrackerRuntimeModule === 'function') registerShiftTracke
       var label = '';
       var labelWidth = 0;
       ctx.save();
-      ctx.font = '850 ' + fontSize + 'px "Plus Jakarta Sans", system-ui, sans-serif';
+      ctx.font = '850 ' + fontSize + 'px "Golos Text", system-ui, sans-serif';
       for (var li = 0; li < labels.length; li++) {
         var candidate = labels[li];
         var candidateWidth = ctx.measureText(candidate).width;
@@ -11440,7 +11440,7 @@ if (typeof registerShiftTrackerRuntimeModule === 'function') registerShiftTracke
         var labelColor = isActive ? '#f8fafc' : getSpeedRowTextColor(rule, false);
         if (isActive) {
           ctx.save();
-          ctx.font = '900 11px system-ui, -apple-system, Segoe UI, sans-serif';
+          ctx.font = '900 11px "Golos Text", system-ui, sans-serif';
           var measured = Math.min(labelMaxWidth, Math.ceil(ctx.measureText(label).width) + 18);
           fillRoundRect(ctx, labelX - measured / 2, y - 20, measured, 16, 8, 'rgba(2, 6, 23, 0.84)');
           ctx.lineWidth = 1;
@@ -11709,7 +11709,7 @@ if (typeof registerShiftTrackerRuntimeModule === 'function') registerShiftTracke
     var letterSpacing = 0.15;
     var maxWidth = Math.min(68, span - 10);
     ctx.save();
-    ctx.font = '850 ' + fontSize + 'px "Plus Jakarta Sans", system-ui, sans-serif';
+    ctx.font = '850 ' + fontSize + 'px "Golos Text", system-ui, sans-serif';
     var label = '';
     var glyphWidths = [];
     var labelWidth = 0;
@@ -11736,7 +11736,7 @@ if (typeof registerShiftTrackerRuntimeModule === 'function') registerShiftTracke
       var cursorX = anchorX - labelWidth / 2;
       ctx.save();
       ctx.globalAlpha = isPreview ? 0.78 : 1;
-      ctx.font = '850 ' + fontSize + 'px "Plus Jakarta Sans", system-ui, sans-serif';
+      ctx.font = '850 ' + fontSize + 'px "Golos Text", system-ui, sans-serif';
       ctx.textAlign = 'center';
       ctx.textBaseline = 'middle';
       ctx.lineJoin = 'round';
