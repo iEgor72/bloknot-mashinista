@@ -501,3 +501,270 @@ img { display: block; max-width: 100%; }
   html { scroll-behavior: auto; }
   *, *::before, *::after { animation: none !important; transition: none !important; }
 }
+
+/* Scoped interaction pilot for /zarplata-mashinista. */
+.salary-interactions-page {
+  --salary-interactions-ready: 1;
+}
+.salary-interactions-page .hero {
+  padding-top: 132px;
+}
+.salary-interactions-page .statement {
+  padding: 112px 24px;
+}
+.salary-interactions-page .contact {
+  padding-bottom: 96px;
+}
+.salary-interactions-page .site-footer .kicker {
+  margin-bottom: 0;
+}
+
+.salary-interactions-page .kicker {
+  position: relative;
+}
+.salary-interactions-page .kicker::before {
+  transform: scale(.92);
+  transform-origin: center;
+  animation: salary-kicker-dot 3.8s ease-in-out infinite;
+}
+.salary-interactions-page .kicker::after {
+  content: "";
+  position: absolute;
+  left: 3px;
+  top: 50%;
+  width: 14px;
+  height: 14px;
+  border: 1px solid rgba(63, 203, 250, .58);
+  border-radius: 50%;
+  pointer-events: none;
+  opacity: 0;
+  transform: translate(-50%, -50%) scale(.45);
+  animation: salary-kicker-ring 3.8s ease-out infinite;
+}
+@keyframes salary-kicker-dot {
+  0%, 100% { opacity: .78; transform: scale(.92); }
+  48%, 58% { opacity: 1; transform: scale(1.12); }
+}
+@keyframes salary-kicker-ring {
+  0%, 42% { opacity: 0; transform: translate(-50%, -50%) scale(.45); }
+  52% { opacity: .38; }
+  78%, 100% { opacity: 0; transform: translate(-50%, -50%) scale(1.35); }
+}
+
+.salary-interactions-page .static-title-line {
+  display: block;
+  color: var(--text);
+}
+.salary-interactions-page .rotating-phrase-slot {
+  display: inline-grid;
+  width: 100%;
+  min-height: var(--rotating-phrase-height, 1.04em);
+  overflow: hidden;
+  color: var(--cyan);
+  vertical-align: top;
+}
+.salary-interactions-page .rotating-phrase {
+  grid-area: 1 / 1;
+  display: inline-block;
+  transform: translateY(0);
+  opacity: 1;
+  transition: transform .45s ease, opacity .45s ease;
+}
+.salary-interactions-page .rotating-phrase-incoming {
+  transform: translateY(72%);
+  opacity: 0;
+}
+.salary-interactions-page .rotating-phrase-sizer {
+  visibility: hidden;
+  pointer-events: none;
+}
+.salary-interactions-page .rotating-phrase-slot.is-rotating .rotating-phrase-current {
+  transform: translateY(-72%);
+  opacity: 0;
+}
+.salary-interactions-page .rotating-phrase-slot.is-rotating .rotating-phrase-incoming {
+  transform: translateY(0);
+  opacity: 1;
+}
+.salary-interactions-page .rotating-phrase-slot.is-resetting .rotating-phrase {
+  transition: none;
+}
+
+.salary-interactions-page .statement-word-slot {
+  display: inline-grid;
+  overflow: hidden;
+  vertical-align: baseline;
+}
+.salary-interactions-page .statement-word {
+  grid-area: 1 / 1;
+  display: inline-block;
+  color: var(--cyan);
+  line-height: inherit;
+  text-align: right;
+  transform: translateY(0);
+  opacity: 1;
+  transition: transform .45s ease, opacity .45s ease;
+}
+.salary-interactions-page .statement-word-incoming {
+  transform: translateY(72%);
+  opacity: 0;
+}
+.salary-interactions-page .statement-word-sizer {
+  visibility: hidden;
+  pointer-events: none;
+}
+.salary-interactions-page .statement-word-slot.is-rotating .statement-word-current {
+  transform: translateY(-72%);
+  opacity: 0;
+}
+.salary-interactions-page .statement-word-slot.is-rotating .statement-word-incoming {
+  transform: translateY(0);
+  opacity: 1;
+}
+.salary-interactions-page .statement-word-slot.is-resetting .statement-word {
+  transition: none;
+}
+
+.salary-interactions-page .device {
+  will-change: transform;
+  animation: salary-device-float 3.8s ease-in-out infinite alternate;
+}
+.salary-interactions-page .device::before {
+  animation-duration: 18s;
+}
+@keyframes salary-device-float {
+  from { transform: translateY(-8px); }
+  to { transform: translateY(8px); }
+}
+
+.salary-interactions-page.motion-ready .motion-reveal {
+  opacity: 0;
+  transform: translateY(20px);
+  transition: transform .56s ease, opacity .56s ease;
+}
+.salary-interactions-page.motion-ready .motion-reveal-item {
+  opacity: 0;
+  transform: translateY(20px);
+  transition:
+    transform .56s ease var(--reveal-delay, 0ms),
+    opacity .56s ease var(--reveal-delay, 0ms);
+}
+.salary-interactions-page.motion-ready .motion-reveal.is-visible,
+.salary-interactions-page.motion-ready .motion-reveal-item.is-visible {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+.salary-interactions-page .header-cta,
+.salary-interactions-page .btn {
+  transition:
+    transform .2s ease,
+    box-shadow .2s ease,
+    background-color .2s ease,
+    color .2s ease,
+    border-color .2s ease;
+}
+.salary-interactions-page .header-cta:active,
+.salary-interactions-page .btn:active {
+  transform: scale(.97);
+}
+
+.salary-interactions-page .feature,
+.salary-interactions-page .faq-item,
+.salary-interactions-page .note-card,
+.salary-interactions-page .strip-item {
+  transition:
+    transform .25s ease,
+    box-shadow .25s ease,
+    border-color .25s ease,
+    background-color .25s ease,
+    color .25s ease;
+}
+.salary-interactions-page a.feature,
+.salary-interactions-page a.faq-item,
+.salary-interactions-page a.note-card,
+.salary-interactions-page .strip-item {
+  cursor: pointer;
+}
+
+.salary-interactions-page .site-nav-link::after {
+  right: 0;
+  transform: scaleX(0);
+  transform-origin: left center;
+  transition: transform .2s ease;
+}
+.salary-interactions-page .site-nav-link:hover::after,
+.salary-interactions-page .site-nav-link.active::after {
+  transform: scaleX(1);
+}
+
+.salary-interactions-page .strip-item svg,
+.salary-interactions-page .contact-icon svg,
+.salary-interactions-page .site-brand img {
+  transition: transform .2s ease;
+}
+.salary-interactions-page .strip-item:hover svg,
+.salary-interactions-page .strip-item:focus-visible svg,
+.salary-interactions-page .contact-item:hover .contact-icon svg,
+.salary-interactions-page .contact-item:focus-visible .contact-icon svg,
+.salary-interactions-page .site-brand:hover img,
+.salary-interactions-page .site-brand:focus-visible img {
+  transform: rotate(6deg) scale(1.1);
+}
+
+@media (hover: hover) and (pointer: fine) {
+  .salary-interactions-page .header-cta:hover,
+  .salary-interactions-page .btn:hover {
+    transform: scale(1.04);
+    box-shadow: 0 11px 30px -8px rgba(63, 203, 250, .72);
+  }
+  .salary-interactions-page .feature:hover,
+  .salary-interactions-page .faq-item:hover,
+  .salary-interactions-page .note-card:hover,
+  .salary-interactions-page .strip-item:hover {
+    transform: translateY(-4px);
+    border-color: var(--line-hi);
+    box-shadow: 0 16px 34px -22px rgba(63, 203, 250, .42);
+  }
+}
+
+@media (max-width: 640px) {
+  .salary-interactions-page .hero {
+    padding-top: 112px;
+  }
+  .salary-interactions-page .statement {
+    padding: 82px 16px;
+  }
+  .salary-interactions-page .contact {
+    padding-bottom: 76px;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .salary-interactions-page .kicker::before,
+  .salary-interactions-page .kicker::after {
+    animation: none !important;
+  }
+  .salary-interactions-page .kicker::before {
+    opacity: 1;
+    transform: none;
+  }
+  .salary-interactions-page .kicker::after {
+    opacity: 0;
+  }
+  .salary-interactions-page .device,
+  .salary-interactions-page .device::before {
+    animation: none !important;
+  }
+  .salary-interactions-page .device {
+    will-change: auto;
+    transform: none;
+  }
+  .salary-interactions-page.motion-ready .motion-reveal,
+  .salary-interactions-page.motion-ready .motion-reveal-item,
+  .salary-interactions-page .rotating-phrase,
+  .salary-interactions-page .statement-word {
+    opacity: 1;
+    transform: none;
+  }
+}
