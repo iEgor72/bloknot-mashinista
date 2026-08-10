@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 """
 Run on VPS: python3 scripts/setup-bot-webhook.py
-Registers webhook, sets the menu button, and removes legacy commands.
+Registers webhook, updates bot descriptions and the menu button, and removes legacy commands.
 Reads TELEGRAM_BOT_TOKEN from .env file.
 """
 import urllib.request, urllib.parse, json, os, sys
@@ -57,11 +57,29 @@ def set_menu_button():
 def clear_commands():
     return tg('deleteMyCommands', {})
 
+def set_bot_copy():
+    description = tg('setMyDescription', {
+        'description': (
+            'Рабочий журнал машиниста: смены, часы, календарь, документы '
+            'и режим «Поехали». Примерный заработок — на главной.'
+        ),
+    })
+    short_description = tg('setMyShortDescription', {
+        'short_description': 'Смены, часы, календарь, документы и «Поехали».',
+    })
+    return description, short_description
+
 if '--menu-only' in sys.argv:
-    print(f'Updating Telegram menu button to {APP_RELEASE_VERSION} and clearing commands...')
+    print(f'Updating Telegram bot copy and menu button to {APP_RELEASE_VERSION}, then clearing commands...')
     menu_result = set_menu_button()
     commands_result = clear_commands()
-    sys.exit(0 if menu_result.get('ok') and commands_result.get('ok') else 1)
+    description_result, short_description_result = set_bot_copy()
+    sys.exit(0 if all(result.get('ok') for result in (
+        menu_result,
+        commands_result,
+        description_result,
+        short_description_result,
+    )) else 1)
 
 print('=== Setting up Telegram bot ===\n')
 
@@ -87,5 +105,8 @@ set_menu_button()
 
 print('5. Removing bot commands...')
 clear_commands()
+
+print('6. Updating bot descriptions...')
+set_bot_copy()
 
 print('\nDone.')

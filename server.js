@@ -2108,7 +2108,7 @@ const ALLOWED_CORS_ORIGINS = new Set([
   'http://localhost:8788',
   'http://127.0.0.1:8788',
 ].filter(Boolean));
-const WELCOME_PROMO_URL = `${APP_URL}/assets/welcome-promo.jpg`;
+const WELCOME_PROMO_URL = `${APP_URL}/assets/welcome-promo-v392.png`;
 
 function getAllowedCorsOrigin(req) {
   const origin = req && req.headers ? req.headers.origin : '';
@@ -2166,23 +2166,24 @@ function buildWelcomeMessage(chatId, firstName) {
     photo: WELCOME_PROMO_URL,
     caption:
       `${greeting}\n\n` +
-      'Блокнот Машиниста помогает спокойно вести свою рабочую историю.\n\n' +
-      'В приложении можно:\n' +
-      '📅 записывать смены\n' +
-      '🕒 смотреть часы и историю по месяцам\n' +
-      '💸 видеть примерную сумму за месяц на главной\n' +
-      '📚 быстро открывать документы и инструкции\n' +
-      '📝 сохранять заметки по сменам\n\n' +
-      '🔒 Данные привязаны к твоему Telegram-аккаунту.\n\n' +
-      'Открывай приложение по кнопке ниже.',
+      'Блокнот машиниста — рабочий журнал без лишних обещаний.\n\n' +
+      'Здесь можно:\n' +
+      '📅 вносить и просматривать смены\n' +
+      '🕒 считать рабочие, ночные и праздничные часы\n' +
+      '💸 видеть примерный заработок на главной\n' +
+      '📚 открывать документы и инструкции\n' +
+      '🚆 запускать «Поехали» из последней смены\n\n' +
+      '🔒 Записи привязаны к твоему Telegram-аккаунту.\n\n' +
+      'Открой приложение по кнопке ниже.',
     reply_markup: buildAppKeyboard(),
   };
 }
 
 function buildPlainWelcomeText(firstName) {
   return (firstName ? `👋 Привет, ${firstName}!\n\n` : '👋 Привет!\n\n') +
-    'Блокнот Машиниста помогает вести смены, смотреть часы и хранить рабочую историю в одном месте.\n\n' +
-    'Нажми кнопку ниже, чтобы открыть приложение.';
+    'Блокнот машиниста — смены, часы, календарь, документы и режим «Поехали». ' +
+    'Примерный заработок показывается на главной.\n\n' +
+    'Открой приложение по кнопке ниже.';
 }
 
 function buildBotReply(chatId, text) {
@@ -2407,7 +2408,7 @@ const server = http.createServer(async (req, res) => {
         } else if (isPrivateTelegramChat(message)) {
           callTelegramApi(token, 'sendMessage', buildBotReply(
             chatId,
-            'Используй кнопку «Открыть мини-апп» в сообщении или в меню бота.'
+            'Нажми «Открыть в Telegram» в сообщении или кнопку «Открыть» в меню бота.'
           )).catch((err) => {
             logStructuredRateLimited('error', 'telegram.webhook.send_default_reply_failed', `default:${chatId || 'unknown'}`, {
               chatId: chatId || null,
@@ -2817,4 +2818,6 @@ module.exports = {
   server,
   startServer,
   closeStorage,
+  buildWelcomeMessage,
+  buildPlainWelcomeText,
 };

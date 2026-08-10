@@ -1,9 +1,10 @@
 # Recent Commits
 
-Generated: 2026-08-11 08:01:56 +1000
+Generated: 2026-08-11 08:11:49 +1000
 
 | Hash | Date | Author | Message |
 | --- | --- | --- | --- |
+| `bcce718` | 2026-08-11T08:02:01+10:00 | iEgor72 | chore(memory): record product scope release |
 | `01c6339` | 2026-08-11T08:01:55+10:00 | iEgor72 | refine product scope and restore Poekhali |
 | `b3528bc` | 2026-07-27T14:07:30+10:00 | iEgor72 | refine: remove shift timeline and loop time picker |
 | `dd26426` | 2026-07-27T13:55:50+10:00 | iEgor72 | feat: add decorative shift timeline |
@@ -43,4 +44,3 @@ Generated: 2026-08-11 08:01:56 +1000
 | `201654b` | 2026-06-21T14:07:18+10:00 | iEgor72 | chore(memory): record notification migration fix |
 | `dbd02c8` | 2026-06-21T14:07:06+10:00 | iEgor72 | fix(notifications): migrate legacy bell announcements |
 | `2a84b00` | 2026-06-21T13:53:13+10:00 | iEgor72 | chore(memory): record pwa shell deploy |
-| `c26f784` | 2026-06-21T13:51:52+10:00 | iEgor72 | chore(memory): record post-commit memory update |

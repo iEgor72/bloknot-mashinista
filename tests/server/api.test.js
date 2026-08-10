@@ -84,6 +84,32 @@ test('public contact surface points only to the Telegram bot', async () => {
   assert.match(source, /https:\/\/t\.me\/bloknot_mashinista_bot/);
   assert.doesNotMatch(source, /https:\/\/t\.me\/bloknot_mashinista"/);
   assert.doesNotMatch(source, /https:\/\/t\.me\/\+nbBBi51NbzVhZjVi/);
+
+  const homeResponse = await fetch(baseUrl + '/');
+  const homeSource = await homeResponse.text();
+  assert.equal(homeResponse.status, 200);
+  assert.match(homeSource, /\/assets\/seo\/landing-overview-v392\.png/);
+  assert.doesNotMatch(homeSource, /landing-overview\.jpg|новости|обсуждение|бригада/i);
+
+  const routesResponse = await fetch(baseUrl + '/uchet-marshrutov');
+  const routesSource = await routesResponse.text();
+  assert.equal(routesResponse.status, 200);
+  assert.match(routesSource, /\/assets\/seo\/landing-routes-v392\.png/);
+  assert.doesNotMatch(routesSource, /landing-salary-screen\.jpg|калькулятор зарплаты/i);
+});
+
+test('Telegram welcome message advertises only the current product scope', () => {
+  const welcome = application.buildWelcomeMessage(42, 'Иван');
+  assert.match(welcome.photo, /\/assets\/welcome-promo-v392\.png$/);
+  assert.match(welcome.caption, /вносить и просматривать смены/);
+  assert.match(welcome.caption, /рабочие, ночные и праздничные часы/);
+  assert.match(welcome.caption, /примерный заработок на главной/);
+  assert.match(welcome.caption, /«Поехали» из последней смены/);
+  assert.doesNotMatch(welcome.caption, /таймер|напарник|бригада|канал|отдельн\w* калькулятор/i);
+
+  const fallback = application.buildPlainWelcomeText('Иван');
+  assert.match(fallback, /смены, часы, календарь, документы и режим «Поехали»/i);
+  assert.match(fallback, /Примерный заработок показывается на главной/);
 });
 
 test('shift-card runtime is never HTTP-cached and renders fuel in kilograms', async () => {
