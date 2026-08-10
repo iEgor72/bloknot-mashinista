@@ -7,9 +7,7 @@ const DOCS_ASSET_NETWORK_TIMEOUT_MS = 8000;
 const APP_SHELL_PATHS = new Set(['/', '/index.html']);
 const SEO_PAGE_PATHS = new Set([
   '/uchet-marshrutov',
-  '/zarplata-mashinista',
   '/zhurnal-smen-mashinista',
-  '/kalkulyator-zarplaty-mashinista',
   '/grafik-smen-mashinista',
   '/prilozhenie-dlya-mashinista',
   '/robots.txt',
@@ -37,11 +35,9 @@ const INSTALL_SHELL_URLS = [
   '/styles/50-theme-shell.css',
   '/styles/51-shifts.css',
   '/styles/52-poekhali.css',
-  '/styles/53-salary.css',
   '/styles/54-docs.css',
   '/styles/55-forms.css',
   '/styles/56-overlays.css',
-  '/styles/55-partners.css',
   '/styles/56-profile.css',
   '/styles/57-datetime-picker.css',
   '/manifest.webmanifest',
@@ -71,21 +67,11 @@ const INSTALL_SHELL_URLS = [
   '/scripts/poekhali-backup.js',
   '/scripts/poekhali-tracker.js',
   '/scripts/auth.js',
-  '/scripts/analytics.js',
   '/scripts/render.js',
   '/scripts/shift-form.js',
   '/scripts/datetime-picker.js',
-  '/scripts/partners.js',
   '/scripts/app-init.js',
   '/scripts/sw-register.js',
-  '/assets/tracker/sections/index.json',
-  '/assets/tracker/sections/dvost-volochaevka-ii-dzemgi.json',
-  '/assets/tracker/sections/dvost-postyshevo-komsomolsk.json',
-  '/assets/tracker/sections/dvost-postyshevo-novyi-urgal-odd.json',
-  '/assets/tracker/sections/dvost-vysokogornaya-oune-via-sollu.json',
-  '/assets/tracker/sections/dvost-vysokogornaya-oune-via-muli.json',
-  '/assets/tracker/sections/dvost-oune-pivan.json',
-  '/assets/tracker/sections/dvost-pivan-novyi-mir.json',
   '/sw-bootstrap-v392.js'
 ];
 const CRITICAL_INSTALL_URLS = [
@@ -109,11 +95,9 @@ const CRITICAL_INSTALL_URLS = [
   '/styles/50-theme-shell.css',
   '/styles/51-shifts.css',
   '/styles/52-poekhali.css',
-  '/styles/53-salary.css',
   '/styles/54-docs.css',
   '/styles/55-forms.css',
   '/styles/56-overlays.css',
-  '/styles/55-partners.css',
   '/styles/56-profile.css',
   '/styles/57-datetime-picker.css',
   '/manifest.webmanifest',
@@ -143,11 +127,9 @@ const CRITICAL_INSTALL_URLS = [
   '/scripts/poekhali-backup.js',
   '/scripts/poekhali-tracker.js',
   '/scripts/auth.js',
-  '/scripts/analytics.js',
   '/scripts/render.js',
   '/scripts/shift-form.js',
   '/scripts/datetime-picker.js',
-  '/scripts/partners.js',
   '/scripts/app-init.js',
   '/scripts/sw-register.js',
   '/sw-bootstrap-v392.js'
@@ -157,19 +139,18 @@ const EXTENDED_SHELL_URLS = [
   '/assets/docs/vendor/jszip.min.js',
   '/assets/pdfjs/pdf.min.js',
   '/assets/pdfjs/pdf.worker.min.js',
-  '/assets/tracker/data.xml',
-  '/assets/tracker/profile.xml',
-  '/assets/tracker/maps/komsomol-sk-tche-9/data.xml',
-  '/assets/tracker/maps/komsomol-sk-tche-9/profile.xml',
-  '/assets/tracker/maps/komsomol-sk-tche-9/speed.xml',
-  '/assets/tracker/maps/komsomol-sk-tche-9/1.xml',
-  '/assets/tracker/maps/komsomol-sk-tche-9/1n.xml',
-  '/assets/tracker/maps/komsomol-sk-tche-9/2.xml',
-  '/assets/tracker/maps/komsomol-sk-tche-9/2n.xml',
-  '/assets/tracker/maps-manifest.json',
-  '/assets/tracker/tch9-reference.json',
   '/assets/tracker/speed-docs.json',
-  '/assets/tracker/regime-maps.json'
+  '/assets/tracker/tch9-reference.json',
+  '/assets/tracker/maps-manifest.json',
+  '/assets/tracker/regime-maps.json',
+  '/assets/tracker/sections/index.json',
+  '/assets/tracker/sections/dvost-volochaevka-ii-dzemgi.json',
+  '/assets/tracker/sections/dvost-postyshevo-komsomolsk.json',
+  '/assets/tracker/sections/dvost-postyshevo-novyi-urgal-odd.json',
+  '/assets/tracker/sections/dvost-vysokogornaya-oune-via-sollu.json',
+  '/assets/tracker/sections/dvost-vysokogornaya-oune-via-muli.json',
+  '/assets/tracker/sections/dvost-oune-pivan.json',
+  '/assets/tracker/sections/dvost-pivan-novyi-mir.json'
 ];
 const INSTALL_SHELL_SET = new Set(INSTALL_SHELL_URLS.map((url) => normalizeShellUrl(url)).filter(Boolean));
 const CRITICAL_INSTALL_SET = new Set(CRITICAL_INSTALL_URLS.map((url) => normalizeShellUrl(url)).filter(Boolean));
@@ -205,24 +186,6 @@ const NETWORK_RETRY_ATTEMPT_TIMEOUT_MS = 5000; // abort a single hung attempt so
 
 function delay(ms) {
   return new Promise((resolve) => setTimeout(resolve, ms));
-}
-
-function versionedShellFetchUrl(assetUrl) {
-  try {
-    const parsed = new URL(assetUrl, self.location.origin);
-    if (
-      parsed.origin === self.location.origin &&
-      (
-        parsed.pathname.startsWith('/styles/') ||
-        parsed.pathname.startsWith('/scripts/') ||
-        /^\/sw-bootstrap-v\d+\.js$/.test(parsed.pathname)
-      )
-    ) {
-      parsed.searchParams.set('v', CACHE_VERSION);
-      return parsed.pathname + parsed.search;
-    }
-  } catch (error) {}
-  return assetUrl;
 }
 
 async function fetchWithRetry(input, options) {
@@ -357,7 +320,7 @@ async function warmShellCache(options) {
         return;
       }
       try {
-        const response = await fetchWithRetry(versionedShellFetchUrl(assetUrl));
+        const response = await fetchWithRetry(assetUrl);
         if (response && response.ok) {
           await putShellCacheResponse(cache, assetUrl, response.clone());
           cachedCount += 1;
@@ -394,7 +357,7 @@ async function precacheCriticalInstallShell(cache) {
   await Promise.all(
     criticalUrls.map(async (assetUrl) => {
       try {
-        const response = await fetchWithRetry(versionedShellFetchUrl(assetUrl));
+        const response = await fetchWithRetry(assetUrl);
         if (response && response.ok) {
           await putShellCacheResponse(cache, assetUrl, response.clone());
           cachedCount += 1;

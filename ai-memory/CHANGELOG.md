@@ -7746,3 +7746,600 @@ Append-only журнал действий ИИ-агентов по проект�
 - Branch: `main`
 - Methods: `Регрессия подтверждает degraded-offline при poekhali-utils v000`, `allShifts=1 и видимую карточку`, `full smoke:predeploy`, `mobile Browser QA`, `console и interaction checks прошли`
 - Files: `scripts/app-constants.js`, `scripts/offline-smoke.mjs`, `index.html`, `manifest.webmanifest`, `sw.js`, `sw-bootstrap-v389.js`, `server.js`, `scripts/sw-update-smoke.mjs`
+
+## 2026-07-18 21:24:01 +1000
+
+- Source: `post-commit`
+- Task: fix: restore offline shifts in mixed PWA cache
+- Branch: `main`
+- Methods: `git post-commit hook`, `automatic memory update`
+- Files: `ai-memory/CHANGELOG.md`, `ai-memory/INDEX.md`, `ai-memory/PROJECT_STATE.md`, `ai-memory/RECENT_COMMITS.md`, `ai-memory/WORKTREE_STATUS.md`, `ai-memory/sessions/2026-07-18.md`, `index.html`, `manifest.webmanifest`, `scripts/app-constants.js`, `scripts/app-init.js`, `scripts/app.js`, `scripts/auth.js`, `scripts/offline-smoke.mjs`, `scripts/poekhali-backup.js`, `scripts/poekhali-map-parser.js`, `scripts/poekhali-tracker.js`, `scripts/poekhali-utils.js`, `scripts/poekhali-warnings.js`, `scripts/render.js`, `scripts/setup-bot-webhook.py`, `scripts/shift-form.js`, `scripts/sw-update-smoke.mjs`, `scripts/time-utils.js`, `server.js`, `sw-bootstrap-v389.js`, `sw.js`, `tests/server/api.test.js`
+- Notes: Commit: `6932169e69a90cd0e8560b8f73ab215e44c43183` (`6932169`) | Author: `iEgor72`
+
+## 2026-07-18 21:24:18 +1000
+
+- Source: `manual`
+- Task: Опубликован release-коммит v389
+- Branch: `main`
+- Methods: `Создан commit 6932169 с исправлением холодного офлайн-запуска при смешанном PWA-кэше`, `main отправлен в origin после staged diff-check и проверки на секреты.`
+- Files: `scripts/app-constants.js`, `scripts/offline-smoke.mjs`, `sw.js`, `sw-bootstrap-v389.js`, `server.js`, `index.html`, `manifest.webmanifest`
+
+## 2026-07-18 21:25:56 +1000
+
+- Source: `manual`
+- Task: Production deploy v389: восстановлен офлайн-запуск приложения и смен
+- Branch: `main`
+- Methods: `Release commit 6932169 опубликован в origin/main и fast-forward развернут в /opt/bloknot-mashinista. Выполнены npm ci --omit=dev`, `PM2 reload с update-env`, `storage:check (ok)`, `проверка чистого production SHA`, `внутренние и внешние HTTP 200 для app/sw/app-constants/community`, `маркеры v389`, `smoke:prod-cache. Telegram menu button обновлена на ?app=v389.`
+- Files: `scripts/app-constants.js`, `scripts/offline-smoke.mjs`, `sw.js`, `sw-bootstrap-v389.js`, `server.js`, `index.html`, `manifest.webmanifest`, `scripts/setup-bot-webhook.py`
+
+## 2026-07-21 05:09:21 +1000
+
+- Source: `manual`
+- Task: Read-only анализ обращения: вместо фактического 719 км режим Поехали показывает около 1464 км и не меняет четность
+- Branch: `main`
+- Methods: `Прослежена GPS-проекция на ближайшую известную линию`, `подтвержден показ nearestProjection вне карты`, `проверено отсутствие покрытия 719 км в доступных картах`, `подтверждено автоматическое направление по маршруту`, `номеру поезда и GPS без ручного переключателя`
+- Files: `scripts/poekhali-tracker.js`, `scripts/poekhali-utils.js`, `assets/tracker/sections/index.json`, `assets/tracker/maps/komsomol-sk-tche-9/data.xml`, `assets/tracker/data.xml`
+
+## 2026-07-23 08:55:40 +1000
+
+- Source: `manual`
+- Task: Проведен продуктовый и рыночный анализ проекта для перехода к бизнес-модели
+- Branch: `main`
+- Methods: `Карта функций и сложности по коду`, `агрегаты локальной SQLite без персональных данных`, `оценка телеметрии`, `анализ конкурентов RuStore`, `корпоративного ЛКМ РЖД`, `платежей Telegram и рисков 152-ФЗ`, `сформирован фокус на личном журнале смен и валидации спроса до новых функций`
+- Files: `none`
+
+## 2026-07-23 09:02:46 +1000
+
+- Source: `manual`
+- Task: Определена безопасная схема полноценной продуктовой аналитики
+- Branch: `main`
+- Methods: `Разделены продуктовые события и чувствительное содержимое`, `предложены event log`, `сессии`, `воронки`, `retention`, `feature usage`, `consent`, `сроки хранения и локальное хранение в РФ`, `сырые заметки и постоянный GPS исключены из аналитики`
+- Files: `none`
+
+## 2026-07-23 09:29:01 +1000
+
+- Source: `manual`
+- Task: Implemented consent-aware privacy-safe product analytics MVP and protected admin dashboard
+- Branch: `main`
+- Methods: `Added SQLite migrations`, `authenticated consent/events/admin APIs`, `strict event/property allowlists`, `offline client queue`, `one-minute session heartbeat`, `core funnel instrumentation`, `pseudonymous lifecycle/retention/event timeline dashboard`, `v390 PWA wiring`, `and automated server/browser/offline coverage`, `smoke:predeploy passed and post-heartbeat server/local tests passed`
+- Files: `server.js`, `server/analytics.js`, `server/sqlite-storage.js`, `scripts/analytics.js`, `scripts/auth.js`, `scripts/shift-form.js`, `scripts/partners.js`, `scripts/poekhali-tracker.js`, `admin/analytics.html`, `index.html`, `sw.js`, `sw-bootstrap-v390.js`, `manifest.webmanifest`, `tests/server/api.test.js`, `tests/server/storage.test.js`, `scripts/local-smoke.mjs`, `scripts/offline-smoke.mjs`, `scripts/sw-update-smoke.mjs`
+
+## 2026-07-23 09:46:11 +1000
+
+- Source: `manual`
+- Task: Уточнен минимальный юридический контур для пользовательской аналитики
+- Branch: `main`
+- Methods: `Проверены действующие статьи 3`, `18.1 и 22 закона 152-ФЗ по официальным источникам`, `зафиксировано`, `что Telegram ID`, `профиль`, `смены и связанная история действий уже делают проект оператором персональных данных`, `а отказ только от аналитики не устраняет вопрос`, `рекомендован минимальный публичный документ и уведомление вместо отказа от статистики`
+- Files: `none`
+
+## 2026-07-23 09:52:02 +1000
+
+- Source: `manual`
+- Task: Юридическое оформление отложено владельцем на более поздний этап
+- Branch: `main`
+- Methods: `Зафиксировано осознанное решение не делать политику и уведомление блокером текущей малой пользовательской базы`, `текущий приоритет — продуктовая аналитика`, `проверка спроса и рост`, `технические ограничения на сбор чувствительного содержимого сохраняются`
+- Files: `none`
+
+## 2026-07-23 09:57:18 +1000
+
+- Source: `post-commit`
+- Task: feat: add privacy-safe product analytics
+- Branch: `main`
+- Methods: `git post-commit hook`, `automatic memory update`
+- Files: `admin/analytics.html`, `index.html`, `manifest.webmanifest`, `scripts/analytics.js`, `scripts/app-constants.js`, `scripts/app-init.js`, `scripts/app.js`, `scripts/auth.js`, `scripts/local-smoke.mjs`, `scripts/offline-smoke.mjs`, `scripts/partners.js`, `scripts/poekhali-backup.js`, `scripts/poekhali-map-parser.js`, `scripts/poekhali-tracker.js`, `scripts/poekhali-utils.js`, `scripts/poekhali-warnings.js`, `scripts/render.js`, `scripts/setup-bot-webhook.py`, `scripts/shift-form.js`, `scripts/sw-update-smoke.mjs`, `scripts/time-utils.js`, `server.js`, `server/analytics.js`, `server/sqlite-storage.js`, `sw-bootstrap-v390.js`, `sw.js`, `tests/server/api.test.js`, `tests/server/storage.test.js`
+- Notes: Commit: `a5467943e8b1952c459a309127a54a501345b910` (`a546794`) | Author: `iEgor72`
+
+## 2026-07-23 10:00:33 +1000
+
+- Source: `manual`
+- Task: Production v390: запущена продуктовая аналитика
+- Branch: `main`
+- Methods: `Создан и отправлен commit a546794`, `перед deploy проверены main/upstream и clean production`, `создан ручной SQLite backup`, `выполнены fast-forward`, `npm ci --omit=dev и PM2 reload`, `миграции analytics v3-v4 применены`, `storage integrity ok`, `Telegram webhook/menu обновлены на v390`, `smoke:prod-cache и внешние HTTP-проверки app/sw/analytics/protected routes прошли`
+- Files: `admin/analytics.html`, `index.html`, `manifest.webmanifest`, `scripts/analytics.js`, `scripts/app-constants.js`, `scripts/app-init.js`, `scripts/auth.js`, `scripts/local-smoke.mjs`, `scripts/offline-smoke.mjs`, `scripts/partners.js`, `scripts/poekhali-tracker.js`, `scripts/shift-form.js`, `server.js`, `server/analytics.js`, `server/sqlite-storage.js`, `sw.js`, `sw-bootstrap-v390.js`, `tests/server/api.test.js`, `tests/server/storage.test.js`
+
+## 2026-07-23 10:07:58 +1000
+
+- Source: `manual`
+- Task: Исправлен доступ к панели аналитики после входа в браузере
+- Branch: `main`
+- Methods: `HTML-оболочка /analytics отделена от защищенного API`, `клиент передает сохраненный Bearer-токен`, `обновление сессии выставляет cookie`, `добавлены тесты и браузерная проверка`
+- Files: `server.js`, `admin/analytics.html`, `tests/server/api.test.js`
+
+## 2026-07-23 10:08:19 +1000
+
+- Source: `post-commit`
+- Task: fix: allow analytics dashboard bearer auth
+- Branch: `main`
+- Methods: `git post-commit hook`, `automatic memory update`
+- Files: `admin/analytics.html`, `server.js`, `tests/server/api.test.js`
+- Notes: Commit: `1d07fdc3de0425826bc7d5ddc8e47da1f80a92c6` (`1d07fdc`) | Author: `iEgor72`
+
+## 2026-07-23 10:09:12 +1000
+
+- Source: `manual`
+- Task: Выпущено исправление доступа к аналитике
+- Branch: `main`
+- Methods: `Коммит 1d07fdc отправлен в main`, `production обновлен fast-forward`, `PM2 перезагружен`, `SQLite integrity check пройден`, `публичная оболочка отвечает 200`, `защищенный API без сессии отвечает 401`
+- Files: `server.js`, `admin/analytics.html`, `tests/server/api.test.js`
+
+## 2026-07-23 10:22:59 +1000
+
+- Source: `manual`
+- Task: Переработан экран аналитики в понятный продуктовый дашборд
+- Branch: `main`
+- Methods: `Убрана вложенная прокрутка графика`, `метрики и события переведены на русский пользовательский язык`, `технический журнал свернут`, `добавлены компактные графики`, `статусы и мобильная компоновка`, `Browser QA выполнен на desktop и 390px`
+- Files: `admin/analytics.html`, `tests/server/api.test.js`
+
+## 2026-07-23 10:23:25 +1000
+
+- Source: `post-commit`
+- Task: feat: simplify analytics dashboard
+- Branch: `main`
+- Methods: `git post-commit hook`, `automatic memory update`
+- Files: `admin/analytics.html`, `tests/server/api.test.js`
+- Notes: Commit: `0e65ee470e05a5ec5373577b2f1079a19cc34482` (`0e65ee4`) | Author: `iEgor72`
+
+## 2026-07-23 10:24:27 +1000
+
+- Source: `manual`
+- Task: Выпущен упрощённый экран статистики
+- Branch: `main`
+- Methods: `Коммит 0e65ee4 отправлен в main и развернут на production`, `PM2 online`, `SQLite integrity ok`, `внешний /analytics отвечает 200 и содержит новый интерфейс`, `защищённый API без сессии остаётся 401`
+- Files: `admin/analytics.html`, `tests/server/api.test.js`
+
+## 2026-07-26 11:07:53 +1000
+
+- Source: `manual`
+- Task: Проверена свежая production-статистика продукта за первые дни после запуска аналитики
+- Branch: `main`
+- Methods: `Авторизованный read-only просмотр production dashboard`, `сняты агрегаты за 30 дней`, `воронка`, `retention и feature usage`, `без чтения персональных данных и без изменений production`
+- Files: `none`
+
+## 2026-07-27 12:00:47 +1000
+
+- Source: `manual`
+- Task: Выбран подход для пилотной анимации страницы /zarplata-mashinista без реализации
+- Branch: `main`
+- Methods: `Проверены статический HTML`, `общий seo.css и package.json`, `выбран чистый CSS плюс небольшой deferred vanilla JS без сторонней библиотеки и без изменения контента`
+- Files: `docs/seo/zarplata-mashinista.html`, `docs/seo/seo.css`, `package.json`
+
+## 2026-07-27 12:05:44 +1000
+
+- Source: `manual`
+- Task: Добавлена пилотная интерактивность только для /zarplata-mashinista
+- Branch: `main`
+- Methods: `Scoped CSS и deferred vanilla JS на DOMContentLoaded`, `ротация слов из существующих карточек`, `точечное парение device`, `IntersectionObserver со stagger 100ms`, `hover/tap feedback и CSS+JS reduced-motion`
+- Files: `docs/seo/zarplata-mashinista.html`, `docs/seo/seo.css`, `docs/seo/zarplata-interactions.js`
+
+## 2026-07-27 12:14:06 +1000
+
+- Source: `manual`
+- Task: Изменена логика ротации заголовка /zarplata-mashinista по обратной связи
+- Branch: `main`
+- Methods: `Первая строка сделана статичной: Смены и расчёт.`, `вторая циановая строка ротирует три заданные фразы`, `скрытый sizer и вычисленный min-height фиксируют геометрию`, `динамическая вставка внутри строки удалена для устранения двойного пробела`
+- Files: `docs/seo/zarplata-mashinista.html`, `docs/seo/seo.css`, `docs/seo/zarplata-interactions.js`
+
+## 2026-07-27 12:17:30 +1000
+
+- Source: `manual`
+- Task: Проверена пилотная анимация /zarplata-mashinista после правки заголовка
+- Branch: `main`
+- Methods: `In-app Browser QA на 1280x900 и 390x844`, `все три фразы имеют неизменные размеры h1/slot`, `mobile overflow отсутствует`, `scroll reveal срабатывает один раз`, `console clean`, `CDP reduced-motion подтвердил остановку ротации`, `float/glow и сброс will-change`, `npm run test:server 11/11`, `HTTP page/script 200`
+- Files: `docs/seo/zarplata-mashinista.html`, `docs/seo/seo.css`, `docs/seo/zarplata-interactions-v1.js`
+
+## 2026-07-27 12:20:00 +1000
+
+- Source: `manual`
+- Task: Добавлена ненавязчивая анимация точки в kicker страницы /zarplata-mashinista
+- Branch: `main`
+- Methods: `Только CSS transform/opacity: мягкая пульсация существующей точки и редкий расходящийся ореол через scoped pseudo-element`, `размер и поток элемента не меняются`, `reduced-motion явно отключает обе анимации`
+- Files: `docs/seo/seo.css`
+
+## 2026-07-27 12:22:05 +1000
+
+- Source: `manual`
+- Task: Проверена анимация точки kicker на /zarplata-mashinista
+- Branch: `main`
+- Methods: `In-app Browser QA на 1280x720 и 390x844`, `подтверждены 3.8s dot/ring animations`, `неизменная геометрия 142x21`, `отсутствие horizontal overflow и console warnings/errors`, `reduced-motion дает animation:none и скрывает ring`
+- Files: `docs/seo/seo.css`
+
+## 2026-07-27 12:25:11 +1000
+
+- Source: `manual`
+- Task: Применены четыре замечания к пилоту /zarplata-mashinista
+- Branch: `main`
+- Methods: `Удалены secondary bot-link в hero и нижний дублирующий CTA`, `hero/statement/contact уплотнены scoped CSS`, `в statement добавлена асинхронная ротация существующих слов Данные/Смены/Часы/Маршруты с sizer по самому длинному слову`, `JS переименован в v2 для безопасного обновления`
+- Files: `docs/seo/zarplata-mashinista.html`, `docs/seo/seo.css`, `docs/seo/zarplata-interactions-v2.js`
+
+## 2026-07-27 12:29:37 +1000
+
+- Source: `manual`
+- Task: Исправлено выравнивание ротации statement по browser feedback
+- Branch: `main`
+- Methods: `Фиксированный slot сохранен`, `но слова выровнены вправо по общей baseline`, `меняющееся слово окрашено в cyan`, `поэтому перед статичным 'остаются' остается только нормальный межсловный пробел`
+- Files: `docs/seo/seo.css`
+
+## 2026-07-27 12:31:29 +1000
+
+- Source: `manual`
+- Task: Завершена QA-проверка четырех browser comments для /zarplata-mashinista
+- Branch: `main`
+- Methods: `Desktop 676x912 и mobile 390x844: удаленные CTA отсутствуют`, `hero padding 132/112px`, `page height сокращен`, `statement ротирует 4 слова без изменения 253x65 desktop и 253x62 mobile`, `word right-aligned/baseline/cyan`, `console clean`, `no overflow`, `reduced-motion замораживает обе ротации`
+- Files: `docs/seo/zarplata-mashinista.html`, `docs/seo/seo.css`, `docs/seo/zarplata-interactions-v2.js`
+
+## 2026-07-27 12:34:16 +1000
+
+- Source: `manual`
+- Task: Kicker Блокнот машиниста перенесен из hero в footer страницы /zarplata-mashinista
+- Branch: `main`
+- Methods: `Существующий элемент с анимированной точкой перемещен без дублирования на место copyright`, `в footer сброшен только margin-bottom для выравнивания в текущей сетке`
+- Files: `docs/seo/zarplata-mashinista.html`, `docs/seo/seo.css`
+
+## 2026-07-27 12:38:49 +1000
+
+- Source: `manual`
+- Task: Проверен перенос kicker из hero в footer /zarplata-mashinista
+- Branch: `main`
+- Methods: `Browser QA 676x912 и 390x844: hero kicker=0`, `footer kicker=1`, `H1 top=132px`, `footer kicker/domain совпадают по top/bottom desktop`, `mobile column centered без overflow`, `dot/ring работают`, `reduced-motion отключает их`, `console clean`
+- Files: `docs/seo/zarplata-mashinista.html`, `docs/seo/seo.css`
+
+## 2026-07-27 12:46:21 +1000
+
+- Source: `manual`
+- Task: Validated salary landing interactions before release
+- Branch: `main`
+- Methods: `Ran node syntax check`, `git diff check`, `and full npm smoke:predeploy suite`, `all checks passed`
+- Files: `docs/seo/zarplata-mashinista.html`, `docs/seo/seo.css`, `docs/seo/zarplata-interactions-v2.js`
+
+## 2026-07-27 12:46:26 +1000
+
+- Source: `post-commit`
+- Task: feat: animate salary landing page
+- Branch: `main`
+- Methods: `git post-commit hook`, `automatic memory update`
+- Files: `docs/seo/seo.css`, `docs/seo/zarplata-interactions-v2.js`, `docs/seo/zarplata-mashinista.html`
+- Notes: Commit: `fefe06bc2ed2171b8eb269dd39f0988b5e9b1d33` (`fefe06b`) | Author: `iEgor72`
+
+## 2026-07-27 12:47:31 +1000
+
+- Source: `manual`
+- Task: Released animated salary landing page to production
+- Branch: `main`
+- Methods: `Committed fefe06bc2ed2171b8eb269dd39f0988b5e9b1d33`, `pushed main`, `verified clean production main`, `fast-forwarded`, `installed production dependencies`, `reloaded PM2`, `checked storage`, `localhost and public HTTPS assets`
+- Files: `docs/seo/zarplata-mashinista.html`, `docs/seo/seo.css`, `docs/seo/zarplata-interactions-v2.js`
+
+## 2026-07-27 12:57:16 +1000
+
+- Source: `manual`
+- Task: Распространён утверждённый motion-паттерн на остальные публичные лендинги
+- Branch: `main`
+- Methods: `Подключён тот же deferred vanilla JS и общий seo.css`, `для каждой страницы использованы существующие фразы`, `hero secondary CTA и нижний дублирующий CTA убраны по утверждённому шаблону`, `kicker перенесён в footer`, `существующий IntersectionObserver расширен на текущие секции и карточки`
+- Files: `docs/seo/brigada-mashinista.html`, `docs/seo/dokumenty-mashinista.html`, `docs/seo/grafik-smen-mashinista.html`, `docs/seo/kalkulyator-zarplaty-mashinista.html`, `docs/seo/poekhali-rezhim.html`, `docs/seo/prilozhenie-dlya-mashinista.html`, `docs/seo/uchet-marshrutov.html`, `docs/seo/zhurnal-smen-mashinista.html`, `docs/seo/zarplata-interactions-v2.js`
+
+## 2026-07-27 13:01:09 +1000
+
+- Source: `manual`
+- Task: Проверено распространение motion-паттерна на публичные страницы
+- Branch: `main`
+- Methods: `node syntax и git diff check пройдены`, `10 локальных URL отвечают 200 с общим скриптом`, `server tests 11/11 и полный smoke:predeploy прошли`, `CSS и JS assets имеют no-store`, `visual Browser QA не выполнен из-за недоступной тестовой вкладки встроенного браузера`, `без неразрешённого fallback`
+- Files: `docs/seo/seo.css`, `docs/seo/zarplata-interactions-v2.js`, `docs/seo/brigada-mashinista.html`, `docs/seo/dokumenty-mashinista.html`, `docs/seo/grafik-smen-mashinista.html`, `docs/seo/kalkulyator-zarplaty-mashinista.html`, `docs/seo/poekhali-rezhim.html`, `docs/seo/prilozhenie-dlya-mashinista.html`, `docs/seo/uchet-marshrutov.html`, `docs/seo/zhurnal-smen-mashinista.html`
+
+## 2026-07-27 13:03:43 +1000
+
+- Source: `manual`
+- Task: Закрыты лишние локальные Node dev-проекты перед production release
+- Branch: `main`
+- Methods: `По PID`, `командной строке и listening ports проверены и остановлены локальный bloknot server на 3000 и smart-table Vite на 5173`, `Codex/MCP Node runtimes сохранены`
+- Files: `none`
+
+## 2026-07-27 13:03:58 +1000
+
+- Source: `post-commit`
+- Task: feat: animate public landing pages
+- Branch: `main`
+- Methods: `git post-commit hook`, `automatic memory update`
+- Files: `docs/seo/brigada-mashinista.html`, `docs/seo/dokumenty-mashinista.html`, `docs/seo/grafik-smen-mashinista.html`, `docs/seo/kalkulyator-zarplaty-mashinista.html`, `docs/seo/poekhali-rezhim.html`, `docs/seo/prilozhenie-dlya-mashinista.html`, `docs/seo/seo.css`, `docs/seo/uchet-marshrutov.html`, `docs/seo/zarplata-interactions-v2.js`, `docs/seo/zhurnal-smen-mashinista.html`
+- Notes: Commit: `d08a3fdc3244c0cb00ec7881a52c3d90efcda129` (`d08a3fd`) | Author: `iEgor72`
+
+## 2026-07-27 13:05:30 +1000
+
+- Source: `manual`
+- Task: Выпущены анимации на всех публичных лендингах
+- Branch: `main`
+- Methods: `Коммит d08a3fd отправлен в main`, `production fast-forwarded на точный SHA`, `npm ci без уязвимостей`, `PM2 online`, `storage check ok`, `9 публичных HTTPS-маршрутов отдают 200 с общим motion JS`, `локальные dev-порты 3000 и 5173 закрыты`
+- Files: `docs/seo/brigada-mashinista.html`, `docs/seo/dokumenty-mashinista.html`, `docs/seo/grafik-smen-mashinista.html`, `docs/seo/kalkulyator-zarplaty-mashinista.html`, `docs/seo/poekhali-rezhim.html`, `docs/seo/prilozhenie-dlya-mashinista.html`, `docs/seo/seo.css`, `docs/seo/uchet-marshrutov.html`, `docs/seo/zarplata-interactions-v2.js`, `docs/seo/zhurnal-smen-mashinista.html`
+
+## 2026-07-27 13:07:41 +1000
+
+- Source: `manual`
+- Task: Исправлен регистр вариантов ротации на главном лендинге
+- Branch: `main`
+- Methods: `В data-title-phrases слова бригада и поехали приведены к нижнему регистру`, `затронута одна строка одного HTML-файла`
+- Files: `docs/seo/prilozhenie-dlya-mashinista.html`
+
+## 2026-07-27 13:07:41 +1000
+
+- Source: `post-commit`
+- Task: fix: lowercase homepage rotation phrases
+- Branch: `main`
+- Methods: `git post-commit hook`, `automatic memory update`
+- Files: `docs/seo/prilozhenie-dlya-mashinista.html`
+- Notes: Commit: `b66833b33106c063474c5dfae39ee7248f18b314` (`b66833b`) | Author: `iEgor72`
+
+## 2026-07-27 13:08:11 +1000
+
+- Source: `manual`
+- Task: Выпущено исправление регистра ротации главного заголовка
+- Branch: `main`
+- Methods: `Коммит b66833b отправлен в main и развернут`, `PM2 online`, `storage check ok`, `публичный HTML 200 и содержит поездки/бригада/поехали в нижнем регистре`
+- Files: `docs/seo/prilozhenie-dlya-mashinista.html`
+
+## 2026-07-27 13:16:28 +1000
+
+- Source: `manual`
+- Task: Реализован Шаг 1 визуального обновления экрана Новая смена
+- Branch: `codex/new-shift-time-picker-step1`
+- Methods: `Существующие date/time input и их id сохранены как контракт данных`, `добавлены кастомные карточки-кнопки и тёмный bottom-sheet с календарём и wheel-выбором времени`, `значения остаются YYYY-MM-DD и HH:MM`, `штатные input/change события сохранены`, `добавлен PWA asset`
+- Files: `index.html`, `scripts/datetime-picker.js`, `styles/55-forms.css`, `styles/56-overlays.css`, `sw.js`
+
+## 2026-07-27 13:30:51 +1000
+
+- Source: `manual`
+- Task: Проверен и доработан Шаг 1 кастомного picker экрана Новая смена
+- Branch: `codex/new-shift-time-picker-step1`
+- Methods: `Browser QA на 390x844`, `удалена кнопка Отмена по обратной связи`, `подтверждено закрытие тапом по backdrop без изменения значения`, `проверены точные значения YYYY-MM-DD/HH:MM`, `12-часовая сводка`, `сохранение тестовой смены`, `отсутствие console errors`, `полный smoke:predeploy и повторный poekhali smoke прошли`
+- Files: `index.html`, `scripts/datetime-picker.js`, `styles/55-forms.css`, `styles/56-overlays.css`, `styles/57-datetime-picker.css`, `sw.js`
+
+## 2026-07-27 13:35:42 +1000
+
+- Source: `manual`
+- Task: Синхронизирован визуальный язык календаря выбора даты с календарём главной
+- Branch: `codex/new-shift-time-picker-step1`
+- Methods: `В пикер добавлены те же визуальные признаки выходных`, `праздников и текущего дня`, `рабочие смены и их маркеры намеренно не перенесены`, `формат исходных input не менялся`
+- Files: `scripts/datetime-picker.js`, `styles/56-overlays.css`, `styles/57-datetime-picker.css`
+
+## 2026-07-27 13:35:51 +1000
+
+- Source: `manual`
+- Task: Аудит типографики перед подключением Golos Text
+- Branch: `codex/new-shift-time-picker-step1`
+- Methods: `Проверены font-family и font-weight во всех стилях приложения`, `подтверждены фактически используемые веса 400-900 и выбран официальный комплект WOFF2 Golos Text`
+- Files: `styles/*.css`, `index.html`, `sw.js`
+
+## 2026-07-27 13:39:08 +1000
+
+- Source: `manual`
+- Task: Проверен единый календарный визуал шага 1
+- Branch: `codex/new-shift-time-picker-step1`
+- Methods: `На 390x844 подтверждены красные выходные и 12 июня как праздник`, `отсутствие маркеров смен и горизонтального переполнения`, `выбранная дата сохранилась в YYYY-MM-DD`, `тестовая смена добавилась`, `консоль без warn/error`, `server tests 11/11 и local smoke прошли`
+- Files: `scripts/datetime-picker.js`, `styles/56-overlays.css`, `styles/57-datetime-picker.css`
+
+## 2026-07-27 13:41:40 +1000
+
+- Source: `post-commit`
+- Task: feat: add custom shift date and time picker
+- Branch: `codex/new-shift-time-picker-step1`
+- Methods: `git post-commit hook`, `automatic memory update`
+- Files: `index.html`, `scripts/datetime-picker.js`, `styles/57-datetime-picker.css`, `sw.js`
+- Notes: Commit: `298b8dfc206f5b64b7c295b89b821055f5fe76bf` (`298b8df`) | Author: `iEgor72`
+
+## 2026-07-27 13:42:40 +1000
+
+- Source: `manual`
+- Task: Реализован шаг 2 визуального обновления экрана Новая смена
+- Branch: `codex/new-shift-time-picker-step1`
+- Methods: `Существующий btnToggleAddDetails и его обработчик не менялись`, `плоский disclosure получил выраженный фон`, `рамку`, `акцентную полосу`, `крупную тап-зону и отдельные состояния hover/focus/expanded только через CSS`
+- Files: `styles/57-datetime-picker.css`
+
+## 2026-07-27 13:46:23 +1000
+
+- Source: `manual`
+- Task: Проверен шаг 2 карточки Открыть детали смены
+- Branch: `codex/new-shift-time-picker-step1`
+- Methods: `Browser QA на чистом origin 390x844: карточка без overflow`, `раскрытие/закрытие сохраняет aria-expanded и прежний section`, `расчёт 12ч/3ч44м/0ч не изменился`, `тестовая смена сохранена`, `console warn/error пуст`, `server tests 11/11 и local smoke прошли`
+- Files: `styles/57-datetime-picker.css`
+
+## 2026-07-27 13:47:12 +1000
+
+- Source: `post-commit`
+- Task: style: highlight shift details disclosure
+- Branch: `codex/new-shift-time-picker-step1`
+- Methods: `git post-commit hook`, `automatic memory update`
+- Files: `styles/57-datetime-picker.css`
+- Notes: Commit: `76ff18569b9ccf8fa0c3948300c4e11d303cf549` (`76ff185`) | Author: `iEgor72`
+
+## 2026-07-27 13:47:37 +1000
+
+- Source: `manual`
+- Task: Подключён локальный шрифт Golos Text во всём интерфейсе приложения
+- Branch: `codex/new-shift-time-picker-step1`
+- Methods: `Добавлены официальные WOFF2 400/500/600/700/800/900 с font-display optional`, `preload Regular`, `системный sans-serif fallback`, `precache Service Worker`, `выполнены mobile/desktop`, `Cyrillic`, `cached reopen и offline проверки`
+- Files: `assets/fonts/golos-text`, `styles/*.css`, `index.html`, `sw.js`, `scripts/docs-app.js`, `scripts/poekhali-tracker.js`
+- Notes: Check: Browser 390x844 и 1280x900: все веса loaded, кириллица/цифры check=true, Cache Storage содержит 6 файлов, offline reload успешен, reopen initialStatus=loaded, console errors/warnings отсутствуют
+
+## 2026-07-27 13:50:06 +1000
+
+- Source: `manual`
+- Task: Реализован опциональный шаг 3 декоративной шкалы суток
+- Branch: `codex/new-shift-time-picker-step1`
+- Methods: `Добавлен отдельный aria-hidden визуальный блок 00-24 с ночными зонами 22-06`, `скрипт только читает существующие четыре input и обновляет CSS-позиции`, `не пишет в state/input и не диспатчит события`, `поддержаны обычный интервал`, `переход через полночь и длительность от суток`
+- Files: `index.html`, `scripts/datetime-picker.js`, `styles/57-datetime-picker.css`
+
+## 2026-07-27 13:52:22 +1000
+
+- Source: `manual`
+- Task: Запрошен production-релиз Golos Text
+- Branch: `codex/new-shift-time-picker-step1`
+- Methods: `Перед коммитом и деплоем выполняется разделение font-изменений от параллельного незакоммиченного шага 3`, `проверка local/main/upstream и production runtime`
+- Files: `index.html`, `styles/*.css`, `assets/fonts/golos-text`, `sw.js`, `scripts/docs-app.js`, `scripts/poekhali-tracker.js`
+
+## 2026-07-27 13:55:50 +1000
+
+- Source: `post-commit`
+- Task: feat: add decorative shift timeline
+- Branch: `codex/new-shift-time-picker-step1`
+- Methods: `git post-commit hook`, `automatic memory update`
+- Files: `index.html`, `scripts/datetime-picker.js`, `styles/57-datetime-picker.css`
+- Notes: Commit: `dd264265fd3dec757e2b83a0f8a80f8013d01f08` (`dd26426`) | Author: `iEgor72`
+
+## 2026-07-27 13:55:59 +1000
+
+- Source: `manual`
+- Task: Проверен и зафиксирован шаг 3 шкалы суток
+- Branch: `codex/new-shift-time-picker-step1`
+- Methods: `Browser QA 390x844: дневной 06:51-18:51 отображается одним отрезком`, `ночной 22:00-06:00 двумя отрезками через полночь`, `точные input сохранены`, `существующая сводка не подменялась`, `смена сохранилась и шкала сбросилась`, `console clean`, `полный smoke:predeploy`, `затем sw-update/local/offline прошли`
+- Files: `index.html`, `scripts/datetime-picker.js`, `styles/57-datetime-picker.css`
+
+## 2026-07-27 13:58:44 +1000
+
+- Source: `manual`
+- Task: Удалена декоративная шкала суток по обратной связи
+- Branch: `codex/new-shift-time-picker-step1`
+- Methods: `Полностью убраны разметка`, `CSS и read-only синхронизация шага 3`, `query cache-bust возвращён к состоянию шага 2`, `кастомные дата/время и карточка деталей сохранены`
+- Files: `index.html`, `scripts/datetime-picker.js`, `styles/57-datetime-picker.css`
+
+## 2026-07-27 14:03:29 +1000
+
+- Source: `manual`
+- Task: Добавлена круговая прокрутка времени в picker
+- Branch: `codex/new-shift-time-picker-step1`
+- Methods: `Списки часов и минут построены в трёх циклах`, `после остановки прокрутки wheel незаметно перецентрируется и выбирает ближайшее значение`, `сохраняемый формат HH:MM и расчётная логика не менялись`
+- Files: `scripts/datetime-picker.js`
+
+## 2026-07-27 14:07:26 +1000
+
+- Source: `manual`
+- Task: Проверено удаление шкалы и циклический picker
+- Branch: `codex/new-shift-time-picker-step1`
+- Methods: `Мобильный QA 390x844: шкала отсутствует`, `59→00 и 23→00 видимы в колесах`, `input сохраняет HH:MM`, `форма показывает Добавлено`, `node --check`, `smoke:sw-update`, `smoke:local и smoke:offline прошли`
+- Files: `index.html`, `scripts/datetime-picker.js`, `styles/57-datetime-picker.css`
+
+## 2026-07-27 14:07:30 +1000
+
+- Source: `post-commit`
+- Task: refine: remove shift timeline and loop time picker
+- Branch: `codex/new-shift-time-picker-step1`
+- Methods: `git post-commit hook`, `automatic memory update`
+- Files: `index.html`, `scripts/datetime-picker.js`, `styles/57-datetime-picker.css`
+- Notes: Commit: `b3528bcea4ea0d9ccb49837d21450f0b65e30599` (`b3528bc`) | Author: `iEgor72`
+
+## 2026-07-27 14:10:52 +1000
+
+- Source: `manual`
+- Task: Подготовлен production-релиз экрана Новая смена
+- Branch: `codex/new-shift-time-picker-step1`
+- Methods: `Создан чистый worktree от origin/main 2cbe1f6`, `четыре подтверждённых UI-коммита перенесены без конфликтов`, `шкала отсутствует`, `круговой picker и cache-bust присутствуют`, `полный smoke:predeploy прошёл`
+- Files: `index.html`, `scripts/datetime-picker.js`, `styles/57-datetime-picker.css`, `sw.js`
+
+## 2026-07-27 14:17:04 +1000
+
+- Source: `manual`
+- Task: Выпущен экран Новая смена в production
+- Branch: `codex/new-shift-time-picker-step1`
+- Methods: `UI-коммиты перебазированы поверх PWA v391 и pushed fast-forward в origin/main до 39ae27c`, `VPS /opt/bloknot-mashinista fast-forwarded`, `npm ci --omit=dev`, `PM2 reload`, `storage check ok`, `localhost и public HTTPS 200`, `production picker shift-ui-4 содержит 252 cyclic options`, `шкала отсутствует`, `console warn/error пуст`
+- Files: `index.html`, `scripts/datetime-picker.js`, `styles/57-datetime-picker.css`, `sw.js`
+
+## 2026-07-27 14:24:15 +1000
+
+- Source: `manual`
+- Task: Deployed local Golos Text font and PWA cache refresh to production
+- Branch: `codex/new-shift-time-picker-step1`
+- Methods: `Released font commit 2cbe1f6`, `cache coherence fix f912be5`, `and final cache-busting release 58ad20b on origin/main`, `deployed with ff-only pull`, `npm ci`, `PM2 reload`, `storage check`, `production cache smoke`, `HTTPS asset checks`, `390px browser validation`, `cached reopen and offline reload`
+- Files: `assets/fonts/golos-text/*`, `styles/*.css`, `index.html`, `sw.js`, `sw-bootstrap-v391.js`, `sw-bootstrap-v392.js`, `scripts/*.js`, `server.js`, `manifest.webmanifest`
+
+## 2026-07-29 21:52:25 +1000
+
+- Source: `manual`
+- Task: Проверена свежая production-статистика приложения на 29 июля
+- Branch: `codex/new-shift-time-picker-step1`
+- Methods: `Авторизованный read-only просмотр production dashboard за 30 дней`, `сняты агрегаты пользователей`, `сессий`, `смен`, `воронки`, `retention и feature usage без чтения персональных данных и без изменений production`
+- Files: `none`
+
+## 2026-07-29 22:00:54 +1000
+
+- Source: `manual`
+- Task: Сужен продуктовый scope до реально работающего ядра
+- Branch: `codex/new-shift-time-picker-step1`
+- Methods: `По прямому решению пользователя убираются Напарники`, `Поехали и отдельный расчёт зарплаты из приложения и публичного сайта`, `на главной сохраняются примерные зарплатные показатели`, `корректные часы`, `смены и календарь`
+- Files: `pending-audit`
+
+## 2026-07-29 22:23:52 +1000
+
+- Source: `manual`
+- Task: Удалены условные продуктовые функции из приложения и публичного сайта
+- Branch: `codex/new-shift-time-picker-step1`
+- Methods: `Убраны интерфейсы Напарников`, `Бригады и Поехали`, `удалены отдельные SEO-страницы зарплаты и ложные обещания`, `сохранены смены`, `часы`, `документы`, `доход в карточках и приблизительная сумма на главной`, `настройки тарифа возвращены в профиль`, `обновлены PWA v391 и smoke-тесты`
+- Files: `index.html`, `server.js`, `sw.js`, `manifest.webmanifest`, `sw-bootstrap-v391.js`, `scripts/app-constants.js`, `scripts/app-init.js`, `scripts/app.js`, `scripts/auth.js`, `scripts/analytics.js`, `scripts/render.js`, `scripts/shift-form.js`, `scripts/time-utils.js`, `docs/seo`, `package.json`, `scripts/local-smoke.mjs`, `scripts/offline-smoke.mjs`, `scripts/sw-update-smoke.mjs`, `tests/server/api.test.js`
+
+## 2026-07-29 22:31:58 +1000
+
+- Source: `manual`
+- Task: Scope бота сужен до единственной точки входа в приложение
+- Branch: `codex/new-shift-time-picker-step1`
+- Methods: `По прямому указанию пользователя удаляются все публичные команды бота`, `включая bug`, `idea`, `help и myid`, `сохраняется только скрытая системная обработка start для первого открытия приложения`
+- Files: `server.js`, `scripts/setup-bot-webhook.py`, `tests/server/api.test.js`, `docs/seo/*.html`
+
+## 2026-07-29 22:37:16 +1000
+
+- Source: `manual`
+- Task: Удалены каналы, обсуждение и все публичные команды Telegram-бота
+- Branch: `codex/new-shift-time-picker-step1`
+- Methods: `Из профиля удалены секция связи и overlay`, `из сайта удалены ссылки на канал и обсуждение`, `community API и frontend binding удалены`, `команды news`, `chat`, `bug`, `idea`, `help и myid и обработчики обратной связи удалены`, `setup очищает меню через deleteMyCommands`, `сохранен только скрытый start для открытия приложения`, `выполнены browser QA и smoke-тесты`
+- Files: `index.html`, `scripts/app-init.js`, `styles/56-profile.css`, `server.js`, `scripts/setup-bot-webhook.py`, `docs/seo/*.html`, `tests/server/api.test.js`, `design-qa.md`
+
+## 2026-07-29 22:46:29 +1000
+
+- Source: `manual`
+- Task: audit_remaining_product_surfaces
+- Branch: `codex/new-shift-time-picker-step1`
+- Methods: `browser_and_source_audit_no_deletions`
+- Files: `index.html`, `server.js`, `scripts/app.js`, `scripts/app-init.js`, `scripts/analytics.js`, `scripts/auth.js`, `docs/seo`, `sw.js`, `package.json`, `tests/server/api.test.js`
+
+## 2026-07-29 22:59:42 +1000
+
+- Source: `manual`
+- Task: remove_analytics_ui_and_refresh_site_screenshots
+- Branch: `codex/new-shift-time-picker-step1`
+- Methods: `browser_captured_current_app_states_removed_consent_user_counter_and_bell_then_ran_local_and_offline_smoke`
+- Files: `index.html`, `scripts/analytics.js`, `scripts/app.js`, `scripts/app-constants.js`, `scripts/auth.js`, `scripts/shift-form.js`, `scripts/render.js`, `scripts/local-smoke.mjs`, `sw.js`, `docs/seo/prilozhenie-dlya-mashinista.html`, `assets/seo/screen-home-iphone.jpg`, `assets/seo/screen-shifts-iphone.jpg`, `assets/seo/screen-add-iphone.jpg`, `assets/seo/screen-docs-iphone.jpg`
+
+## 2026-08-07 10:42:08 +1000
+
+- Source: `manual`
+- Task: Continued Codex Security scan 51bb9901 and completed preflight plus repository threat model
+- Branch: `codex/new-shift-time-picker-step1`
+- Methods: `Loaded authoritative scan context`, `ran capability preflight with parent-session fallback`, `resolved SECURITY.md guidance`, `generated revision-bound threat model in the authoritative scan directory`
+- Files: `ai-memory/CHANGELOG.md`, `C:\Users\shkur\AppData\Local\Temp\codex-security-scans-TOBSC4\bloknot-mashinista-tg\threat_model.md`
+
+## 2026-08-11 07:45:46 +1000
+
+- Source: `manual`
+- Task: restore_poekhali_feature_and_summarize_product_cleanup
+- Branch: `codex/new-shift-time-picker-step1`
+- Methods: `Restored a single latest-shift Poekhali entry`, `realtime tracker UI and runtime`, `selected-shift handoff`, `tab header state`, `offline route cache warmup`, `coherent PWA v392 release wiring`, `and updated smoke contracts`, `verified with browser QA`, `local/offline/Poekhali/SW smokes and server API tests.`
+- Files: `index.html`, `scripts/render.js`, `scripts/shift-form.js`, `scripts/app-init.js`, `scripts/auth.js`, `scripts/app-constants.js`, `scripts/app.js`, `scripts/poekhali-utils.js`, `scripts/poekhali-map-parser.js`, `scripts/poekhali-warnings.js`, `scripts/poekhali-backup.js`, `scripts/poekhali-tracker.js`, `scripts/time-utils.js`, `sw.js`, `sw-bootstrap-v392.js`, `server.js`, `manifest.webmanifest`, `scripts/setup-bot-webhook.py`, `scripts/local-smoke.mjs`, `scripts/offline-smoke.mjs`, `scripts/sw-update-smoke.mjs`, `tests/server/api.test.js`
+
+## 2026-08-11 07:55:50 +1000
+
+- Source: `manual`
+- Task: review_production_statistics_2026_08_11
+- Branch: `codex/new-shift-time-picker-step1`
+- Methods: `Read-only aggregate queries against production SQLite over presence`, `shifts`, `and consented analytics`, `no personal data read and no production state changed. Validated totals`, `recent activity`, `shift-writing users`, `concentration`, `and rendered a bounded product report.`
+- Files: `none`
+
+## 2026-08-11 07:58:35 +1000
+
+- Source: `manual`
+- Task: prepare_product_cleanup_v392_release
+- Branch: `codex/new-shift-time-picker-step1`
+- Methods: `Finalized Telegram release setup so menu-only deployment also removes legacy bot commands before the production rollout.`
+- Files: `scripts/setup-bot-webhook.py`
+
+## 2026-08-11 08:01:56 +1000
+
+- Source: `post-commit`
+- Task: refine product scope and restore Poekhali
+- Branch: `codex/new-shift-time-picker-step1`
+- Methods: `git post-commit hook`, `automatic memory update`
+- Files: `ai-memory/CHANGELOG.md`, `ai-memory/INDEX.md`, `ai-memory/PROJECT_STATE.md`, `ai-memory/RECENT_COMMITS.md`, `ai-memory/WORKTREE_STATUS.md`, `ai-memory/sessions/2026-07-18.md`, `ai-memory/sessions/2026-07-21.md`, `ai-memory/sessions/2026-07-23.md`, `ai-memory/sessions/2026-07-26.md`, `ai-memory/sessions/2026-07-27.md`, `ai-memory/sessions/2026-07-29.md`, `ai-memory/sessions/2026-08-07.md`, `ai-memory/sessions/2026-08-11.md`, `assets/fonts/golos-text/GolosText-Black.woff2`, `assets/fonts/golos-text/GolosText-Bold.woff2`, `assets/fonts/golos-text/GolosText-ExtraBold.woff2`, `assets/fonts/golos-text/GolosText-Medium.woff2`, `assets/fonts/golos-text/GolosText-Regular.woff2`, `assets/fonts/golos-text/GolosText-SemiBold.woff2`, `assets/fonts/golos-text/OFL.txt`, `assets/seo/screen-add-iphone.jpg`, `assets/seo/screen-docs-iphone.jpg`, `assets/seo/screen-home-iphone.jpg`, `assets/seo/screen-shifts-iphone.jpg`, `design-qa.md`, `docs/seo/brigada-mashinista.html`, `docs/seo/dokumenty-mashinista.html`, `docs/seo/grafik-smen-mashinista.html`, `docs/seo/kalkulyator-zarplaty-mashinista.html`, `docs/seo/poekhali-rezhim.html`, `docs/seo/prilozhenie-dlya-mashinista.html`, `docs/seo/uchet-marshrutov.html`, `docs/seo/zarplata-mashinista.html`, `docs/seo/zhurnal-smen-mashinista.html`, `index.html`, `manifest.webmanifest`, `package.json`, `scripts/analytics.js`, `scripts/app-constants.js`, `scripts/app-init.js`, `scripts/app.js`, `scripts/auth.js`, `scripts/docs-app.js`, `scripts/local-smoke.mjs`, `scripts/offline-smoke.mjs`, `scripts/poekhali-backup.js`, `scripts/poekhali-map-parser.js`, `scripts/poekhali-tracker.js`, `scripts/poekhali-utils.js`, `scripts/poekhali-warnings.js`, `scripts/render.js`, `scripts/setup-bot-webhook.py`, `scripts/shift-form.js`, `scripts/sw-update-smoke.mjs`, `scripts/time-utils.js`, `server.js`, `styles/00-base.css`, `styles/10-shell-navigation.css`, `styles/11-poekhali-entry.css`, `styles/12-cards.css`, `styles/13-dashboard-cards.css`, `styles/14-stats-and-salary.css`, `styles/15-bottom-nav.css`, `styles/15-settings-and-docs.css`, `styles/16-overlays-and-actions.css`, `styles/20-form-and-stats.css`, `styles/30-shifts-and-overlays.css`, `styles/50-theme-shell.css`, `styles/51-shifts.css`, `styles/52-poekhali.css`, `styles/53-salary.css`, `styles/54-docs.css`, `styles/55-forms.css`, `styles/55-partners.css`, `styles/56-overlays.css`, `styles/56-profile.css`, `sw-bootstrap-v391.js`, `sw-bootstrap-v392.js`, `sw.js`, `tests/server/api.test.js`
+- Notes: Commit: `01c6339abc170ffe950cf4f983f41576b1e7bf6e` (`01c6339`) | Author: `iEgor72`

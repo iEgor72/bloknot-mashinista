@@ -141,9 +141,6 @@
     var SHIFTS_CACHE_STORAGE_KEY = 'shift_tracker_shifts_cache_v1';
     var SHIFTS_PENDING_STORAGE_KEY = 'shift_tracker_shifts_pending_v1';
     var SHIFTS_META_STORAGE_KEY = 'shift_tracker_shifts_meta_v1';
-    var USER_STATS_CACHE_STORAGE_KEY = 'shift_tracker_user_stats_cache_v1';
-    var USER_STATS_SESSION_ID_STORAGE_KEY = 'shift_tracker_device_id_v1';
-    var USER_STATS_PING_INTERVAL_MS = 10 * 60 * 1000;
     var pendingMutationIds = [];
     var offlineUiState = {
       isOffline: false,
@@ -155,16 +152,6 @@
     var offlineBannerHideTimer = null;
     var offlineBannerDismissedKey = '';
     var offlineBannerVisibleKey = '';
-    var userStatsState = {
-      onlineUsers: null,
-      totalUsers: null,
-      lastUpdatedAt: '',
-      isLoading: false
-    };
-    var userStatsInFlight = null;
-    var userStatsPollTimer = null;
-    var userStatsTrackingStarted = false;
-
     function getOfflineStorageUserId() {
       // Prefer CURRENT_USER, then fall back to the persisted cached user so
       // storage keys stay consistent even while auth is in progress or has
@@ -205,231 +192,6 @@
       } catch (e) {
         return false;
       }
-    }
-
-    function normalizeStatsUserId(rawUserId) {
-      if (rawUserId === undefined || rawUserId === null) return '';
-      var id = String(rawUserId).trim();
-      if (!id || id === 'guest') return '';
-      return id;
-    }
-
-    function getStatsPrimaryUserId() {
-      var currentId = normalizeStatsUserId(CURRENT_USER && CURRENT_USER.id);
-      if (currentId) return currentId;
-      var stored = getStoredCachedUser();
-      if (stored && stored.id !== undefined && stored.id !== null) {
-        return normalizeStatsUserId(stored.id);
-      }
-      return '';
-    }
-
-    function isValidUsageSessionId(value) {
-      return typeof value === 'string' && /^[a-z0-9_-]{12,64}$/i.test(value);
-    }
-
-    function createUsageSessionId() {
-      var prefix = 'sess_';
-      var bytes = [];
-      if (window.crypto && window.crypto.getRandomValues) {
-        bytes = new Uint8Array(16);
-        window.crypto.getRandomValues(bytes);
-      } else {
-        for (var i = 0; i < 16; i++) {
-          bytes.push(Math.floor(Math.random() * 256));
-        }
-      }
-
-      var hex = '';
-      for (var j = 0; j < bytes.length; j++) {
-        var part = Number(bytes[j]).toString(16);
-        hex += part.length === 1 ? '0' + part : part;
-      }
-      return prefix + hex;
-    }
-
-    function getUsageSessionId() {
-      try {
-        var stored = localStorage.getItem(USER_STATS_SESSION_ID_STORAGE_KEY);
-        if (isValidUsageSessionId(stored)) {
-          return stored;
-        }
-        var created = createUsageSessionId();
-        localStorage.setItem(USER_STATS_SESSION_ID_STORAGE_KEY, created);
-        return created;
-      } catch (e) {
-        return '';
-      }
-    }
-
-    function coerceNonNegativeInt(value) {
-      var n = Number(value);
-      if (!isFinite(n) || n < 0) return null;
-      return Math.floor(n);
-    }
-
-    function readUserStatsCache() {
-      var cached = readStoredJson(USER_STATS_CACHE_STORAGE_KEY, null);
-      if (!cached || typeof cached !== 'object') return null;
-      var total = coerceNonNegativeInt(cached.totalUsers);
-      if (total === null) return null;
-      return {
-        totalUsers: total,
-        updatedAt: typeof cached.updatedAt === 'string' ? cached.updatedAt : ''
-      };
-    }
-
-    function writeUserStatsCache(totalUsers, updatedAt) {
-      var total = coerceNonNegativeInt(totalUsers);
-      if (total === null) return false;
-      return writeStoredJson(USER_STATS_CACHE_STORAGE_KEY, {
-        totalUsers: total,
-        updatedAt: typeof updatedAt === 'string' && updatedAt ? updatedAt : new Date().toISOString()
-      });
-    }
-
-    function pluralUsers(n) {
-      var abs = Math.abs(n) % 100;
-      var d = abs % 10;
-      if (abs > 10 && abs < 20) return 'пользователей';
-      if (d === 1) return 'пользователь';
-      if (d > 1 && d < 5) return 'пользователя';
-      return 'пользователей';
-    }
-
-    function renderUserStatsFooter() {
-      var el = document.getElementById('userStatsFooter');
-      if (!el) return;
-      // Light social proof: only the total count, only when we actually have a
-      // number — never a bare dash. "Сейчас онлайн" was dropped (vanity metric;
-      // still visible to the dev in the admin panel).
-      var total = userStatsState.totalUsers;
-      if (total !== null && total !== undefined) {
-        var nextText = 'С нами уже ' + total + ' ' + pluralUsers(total);
-        if (el.textContent !== nextText) el.textContent = nextText;
-        el.classList.remove('hidden');
-      } else {
-        el.classList.add('hidden');
-      }
-    }
-
-    function applyUserStatsPayload(payload) {
-      var online = coerceNonNegativeInt(payload && payload.onlineUsers);
-      var total = coerceNonNegativeInt(payload && payload.totalUsers);
-
-      userStatsState.onlineUsers = online;
-      if (total !== null) {
-        userStatsState.totalUsers = total;
-      }
-      if (payload && typeof payload.updatedAt === 'string') {
-        userStatsState.lastUpdatedAt = payload.updatedAt;
-      }
-      if (userStatsState.totalUsers !== null) {
-        writeUserStatsCache(userStatsState.totalUsers, userStatsState.lastUpdatedAt);
-      }
-      renderUserStatsFooter();
-    }
-
-    function applyUserStatsOfflineFallback() {
-      var cached = readUserStatsCache();
-      userStatsState.onlineUsers = null;
-      userStatsState.isLoading = false;
-      if (cached && cached.totalUsers !== null) {
-        userStatsState.totalUsers = cached.totalUsers;
-        if (cached.updatedAt) userStatsState.lastUpdatedAt = cached.updatedAt;
-      }
-      renderUserStatsFooter();
-    }
-
-    function getClientPlatform() {
-      try {
-        var webApp = window.Telegram && Telegram.WebApp ? Telegram.WebApp : null;
-        var tgPlatform = webApp && typeof webApp.platform === 'string' ? webApp.platform.toLowerCase() : '';
-        if (tgPlatform === 'ios') return 'ios';
-        if (tgPlatform === 'android' || tgPlatform === 'android_x') return 'android';
-        if (tgPlatform === 'macos' || tgPlatform === 'tdesktop' ||
-            tgPlatform === 'weba' || tgPlatform === 'webk' || tgPlatform === 'web') {
-          return 'desktop';
-        }
-      } catch (e) {}
-      try {
-        var guess = detectInstallGuidePlatform();
-        if (guess === 'ios' || guess === 'android' || guess === 'desktop') return guess;
-      } catch (e) {}
-      return 'unknown';
-    }
-
-    function refreshUserStats(reason) {
-      if (!navigator.onLine) {
-        applyUserStatsOfflineFallback();
-        return Promise.resolve(null);
-      }
-      if (userStatsInFlight) return userStatsInFlight;
-
-      var userId = getStatsPrimaryUserId();
-      if (!userId) {
-        applyUserStatsOfflineFallback();
-        return Promise.resolve(null);
-      }
-
-      var sessionId = getUsageSessionId();
-      if (!sessionId) {
-        applyUserStatsOfflineFallback();
-        return Promise.resolve(null);
-      }
-
-      userStatsState.isLoading = true;
-      userStatsInFlight = fetchJson(USER_STATS_API_URL, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          'Accept': 'application/json'
-        },
-        body: JSON.stringify({ userId: userId, sessionId: sessionId, platform: getClientPlatform(), reason: reason || 'heartbeat' })
-      }, 4500).then(function(result) {
-        userStatsInFlight = null;
-        userStatsState.isLoading = false;
-        if (result.ok && result.body) {
-          applyUserStatsPayload(result.body);
-          return result.body;
-        }
-        applyUserStatsOfflineFallback();
-        return null;
-      }).catch(function() {
-        userStatsInFlight = null;
-        userStatsState.isLoading = false;
-        applyUserStatsOfflineFallback();
-        return null;
-      });
-
-      return userStatsInFlight;
-    }
-
-    function startUserStatsTracking() {
-      if (userStatsTrackingStarted) return;
-      userStatsTrackingStarted = true;
-
-      getUsageSessionId();
-      applyUserStatsOfflineFallback();
-
-      if (navigator.onLine) {
-        window.setTimeout(function() {
-          if (document.hidden) return;
-          refreshUserStats('startup');
-        }, 700);
-      }
-
-      function scheduleNextUserStatsPing() {
-        if (userStatsPollTimer) window.clearTimeout(userStatsPollTimer);
-        userStatsPollTimer = window.setTimeout(function() {
-          userStatsPollTimer = null;
-          if (!document.hidden && navigator.onLine) {
-            refreshUserStats('interval');
-          }
-          scheduleNextUserStatsPing();
-        }, USER_STATS_PING_INTERVAL_MS);
-      }
-      scheduleNextUserStatsPing();
     }
 
     function readOfflineMeta() {
@@ -1126,8 +888,8 @@
 
     function formatMonthIncomeLabel(month0) {
       var monthName = MONTH_NAMES[month0];
-      if (!monthName) return 'Доход за месяц';
-      return 'Доход за ' + monthName.toLowerCase();
+      if (!monthName) return 'Примерно за месяц';
+      return 'Примерно за ' + monthName.toLowerCase();
     }
 
     function logInstallDebug(message, payload) {

@@ -1929,6 +1929,14 @@ if (typeof registerShiftTrackerRuntimeModule === 'function') registerShiftTracke
 
   function preparePoekhaliModeEntry(options) {
     options = options || {};
+    try {
+      if (navigator.serviceWorker && navigator.serviceWorker.ready) {
+        navigator.serviceWorker.ready.then(function(registration) {
+          var target = registration && (registration.active || registration.waiting || registration.installing);
+          if (target) target.postMessage({ type: 'WARMUP_EXTENDED_CACHE' });
+        }).catch(function() {});
+      }
+    } catch (error) {}
     var pinnedShiftId = options.pinnedShiftId || tracker.entryShiftLockId || '';
     tracker.entryShiftLockId = '';
     var context = getPoekhaliEntryShiftContext(pinnedShiftId);

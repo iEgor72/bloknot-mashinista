@@ -422,13 +422,16 @@ async function main() {
   }, 'app shell visible');
   report.checks.appShellVisible = true;
 
-  await waitForPageCondition(page, () => {
-    const dialog = document.getElementById('analyticsConsentDialog');
-    return !!dialog && !dialog.classList.contains('hidden');
-  }, 'analytics consent dialog');
-  await clickElementCenter(page, '#analyticsConsentDialog .analytics-consent-allow', 'analytics consent allow');
-  await waitForPageCondition(page, () => window.ProductAnalytics && window.ProductAnalytics.getConsentStatus() === 'granted', 'analytics consent persisted');
-  report.checks.analyticsConsent = 'granted';
+  const analyticsUi = await page.evaluate(() => ({
+    dialogPresent: !!document.getElementById('analyticsConsentDialog'),
+    profileRowPresent: !!document.getElementById('analyticsProfileRow'),
+    userCounterPresent: !!document.getElementById('userStatsFooter'),
+    runtimePresent: !!window.ProductAnalytics,
+  }));
+  report.checks.analyticsUiRemoved = analyticsUi;
+  if (analyticsUi.dialogPresent || analyticsUi.profileRowPresent || analyticsUi.userCounterPresent || analyticsUi.runtimePresent) {
+    throw new Error(`Analytics UI remains present: ${JSON.stringify(analyticsUi)}`);
+  }
 
   const userFacingDataTools = await page.evaluate(() => {
     const profile = document.querySelector('.tab-panel[data-tab="profile"]');
@@ -512,9 +515,6 @@ async function main() {
         fuelText: (fuelRow?.querySelector('.sc-val')?.textContent || '').replace(/\s+/g, ' ').trim()
       };
     };
-    const activeTabBefore = window.activeTab;
-    const oldPoekhaliResult = window.openPoekhaliForShift(oldShift.id);
-    const activeTabAfter = window.activeTab;
     renderShiftActionsMenu(oldShift.id);
     const oldMenuPoekhaliActions = document.querySelectorAll('#shiftActionsMenu [data-action="poekhali"]').length;
     renderShiftActionsMenu(latestShift.id);
@@ -523,8 +523,6 @@ async function main() {
       latestId,
       oldCard: inspect(oldShift),
       latestCard: inspect(latestShift),
-      oldPoekhaliResult,
-      oldPoekhaliKeptTab: activeTabBefore === activeTabAfter,
       oldMenuPoekhaliActions,
       latestMenuPoekhaliActions
     };
@@ -536,18 +534,14 @@ async function main() {
     throw new Error(`Latest shift was not determined by start time: ${JSON.stringify(shiftCardContract)}`);
   }
   if (shiftCardContract.oldCard.poekhaliButtons !== 0 || shiftCardContract.latestCard.poekhaliButtons !== 1) {
-    throw new Error(`Poekhali button must exist only on the latest shift: ${JSON.stringify(shiftCardContract)}`);
+    throw new Error(`Poekhali must be available only from the latest shift: ${JSON.stringify(shiftCardContract)}`);
   }
-  if (shiftCardContract.oldMenuPoekhaliActions !== 0 || shiftCardContract.latestMenuPoekhaliActions !== 1) {
-    throw new Error(`Poekhali menu action must exist only on the latest shift: ${JSON.stringify(shiftCardContract)}`);
+  if (shiftCardContract.oldMenuPoekhaliActions !== 0 || shiftCardContract.latestMenuPoekhaliActions !== 0) {
+    throw new Error(`Removed Poekhali menu action is still visible: ${JSON.stringify(shiftCardContract)}`);
   }
   if (shiftCardContract.oldCard.fuelText !== '2 058 кг' || shiftCardContract.latestCard.fuelText !== '2 058 кг') {
     throw new Error(`Shift card fuel consumption must use kilograms: ${JSON.stringify(shiftCardContract)}`);
   }
-  if (shiftCardContract.oldPoekhaliResult !== false || !shiftCardContract.oldPoekhaliKeptTab) {
-    throw new Error(`Historical shift must not open Poekhali mode: ${JSON.stringify(shiftCardContract)}`);
-  }
-
   await waitForPageCondition(page, () => {
     const panel = document.querySelector('.tab-panel[data-tab="home"]');
     if (!panel) return false;
@@ -634,6 +628,9 @@ async function main() {
     throw new Error('Recent unread transient notification was removed unexpectedly');
   }
 
+  const notificationBellPresent = !!(await page.$('#appTopBarBell'));
+  report.checks.notificationBellRemoved = !notificationBellPresent;
+  if (notificationBellPresent) {
   await clickElementCenter(page, '#appTopBarBell', 'notification bell button');
   await waitForPageCondition(page, () => {
     const overlay = document.getElementById('overlayNotifications');
@@ -772,6 +769,7 @@ async function main() {
   if (notificationAfterMarkAllClose.overlayOpen || notificationAfterMarkAllClose.bodyLocked) {
     throw new Error('Notification sheet stayed as a click blocker after mark-all close');
   }
+  }
   const profileClickState = await page.evaluate(() => {
     const button = document.querySelector('.tab-btn[data-tab="profile"]');
     const rect = button ? button.getBoundingClientRect() : null;
@@ -815,22 +813,9 @@ async function main() {
     throw new Error('Overlay recovery did not release stale click blockers');
   }
 
-  await page.evaluate(() => window.ProductAnalytics && window.ProductAnalytics.flush());
-  await waitForPageCondition(page, () => {
-    try {
-      const keys = Object.keys(localStorage).filter((key) => key.indexOf('shift_tracker_analytics_queue_v1_') === 0);
-      return keys.length > 0 && keys.every((key) => JSON.parse(localStorage.getItem(key) || '[]').length === 0);
-    } catch {
-      return false;
-    }
-  }, 'analytics queue flush');
   report.checks.analyticsEvents = analyticsEvents.map((event) => event.eventName);
-  if (!analyticsEvents.some((event) => event.eventName === 'app_opened')) {
-    throw new Error('Analytics app_opened event was not delivered');
-  }
-  const analyticsPayloadText = JSON.stringify(analyticsEvents);
-  if (/route_from|route_to|locomotive_number|train_number|notes|latitude|longitude/i.test(analyticsPayloadText)) {
-    throw new Error('Analytics payload contains a forbidden sensitive field');
+  if (analyticsEvents.length) {
+    throw new Error(`Analytics events were still delivered: ${JSON.stringify(analyticsEvents)}`);
   }
 
   await page.screenshot({ path: path.join(artifactsDir, 'smoke-home.png'), fullPage: true });

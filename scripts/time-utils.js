@@ -1165,27 +1165,13 @@
       var trainLength = getShiftCardTrainLengthText(shift);
       var identityItems = [];
       var compositionItems = [];
-      var poekhaliItems = [];
       if (loco) identityItems.push({ icon: 'locomotive', text: loco.replace('№ ', '№') });
       if (trainNumber) identityItems.push({ icon: 'train', text: '№' + trainNumber });
       if (trainWeight) compositionItems.push({ icon: 'train', text: trainWeight + ' т' });
       if (trainAxles) compositionItems.push({ icon: 'axles', text: trainAxles + ' оси' });
       if (trainLength) compositionItems.push({ icon: 'wagon', text: trainLength });
-      if (hasShiftPoekhaliData(shift)) {
-        var techSpeed = getShiftPoekhaliNumber(shift, 'poekhali_technical_speed_kmh');
-        var averageSpeed = getShiftPoekhaliNumber(shift, 'poekhali_average_speed_kmh');
-        var distance = getShiftPoekhaliNumber(shift, 'poekhali_distance_m');
-        if (techSpeed > 0) {
-          poekhaliItems.push({ icon: 'speed', text: 'Тех ' + formatShiftPoekhaliSpeed(techSpeed) });
-        } else if (averageSpeed > 0) {
-          poekhaliItems.push({ icon: 'speed', text: 'Ср ' + formatShiftPoekhaliSpeed(averageSpeed) });
-        } else if (distance > 0) {
-          poekhaliItems.push({ icon: 'route', text: formatShiftPoekhaliDistance(distance) });
-        }
-      }
       if (identityItems.length) rows.push(identityItems);
       if (compositionItems.length) rows.push(compositionItems);
-      if (poekhaliItems.length) rows.push(poekhaliItems);
       return rows;
     }
 
@@ -1536,7 +1522,7 @@
         ? formatHoursAndMinutes(Math.max(0, Math.round((parsedEnd.getTime() - parsedStart.getTime()) / 60000)))
         : '—';
       var salaryText = incomeVm && incomeVm.hasValue ? incomeVm.amountText : '—';
-      var hasPoekhaliDetails = hasShiftPoekhaliData(shift);
+      var hasPoekhaliDetails = false;
 
       var html = '';
 

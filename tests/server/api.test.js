@@ -77,12 +77,13 @@ test.after(async () => {
   }
 });
 
-test('community links use a versioned app entry URL', async () => {
-  const result = await jsonRequest('/api/community');
-  assert.equal(result.response.status, 200);
-  const appUrl = new URL(result.body.appUrl);
-  assert.equal(appUrl.pathname, '/');
-  assert.equal(appUrl.searchParams.get('app'), 'v392');
+test('public contact surface points only to the Telegram bot', async () => {
+  const response = await fetch(baseUrl + '/prilozhenie-dlya-mashinista');
+  const source = await response.text();
+  assert.equal(response.status, 200);
+  assert.match(source, /https:\/\/t\.me\/bloknot_mashinista_bot/);
+  assert.doesNotMatch(source, /https:\/\/t\.me\/bloknot_mashinista"/);
+  assert.doesNotMatch(source, /https:\/\/t\.me\/\+nbBBi51NbzVhZjVi/);
 });
 
 test('shift-card runtime is never HTTP-cached and renders fuel in kilograms', async () => {
@@ -122,7 +123,7 @@ test('analytics requires consent, deduplicates events, and exposes only admin ag
     eventName: 'shift_saved',
     occurredAt,
     platform: 'android',
-    appVersion: 'v392',
+    appVersion: 'v390',
     properties: {
       shiftCount: 1,
       hasRoute: true,

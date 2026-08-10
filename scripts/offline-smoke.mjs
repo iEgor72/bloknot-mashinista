@@ -143,6 +143,8 @@ async function waitForServer() {
 function seedOfflineStorageScript() {
   return () => {
     const now = new Date().toISOString();
+    const today = new Date();
+    const shiftDay = `${today.getFullYear()}-${String(today.getMonth() + 1).padStart(2, '0')}-${String(today.getDate()).padStart(2, '0')}`;
     const userId = 'offline-smoke';
     localStorage.setItem('shift_tracker_session_token', 'offline-smoke-token');
     localStorage.setItem('shift_tracker_cached_user_v1', JSON.stringify({
@@ -157,8 +159,8 @@ function seedOfflineStorageScript() {
       updatedAt: now,
       shifts: [{
         id: 'offline-smoke-shift',
-        start_msk: '2026-07-17T08:00',
-        end_msk: '2026-07-17T20:00',
+        start_msk: `${shiftDay}T08:00`,
+        end_msk: `${shiftDay}T20:00`,
         created_at: now,
         route: 'OFFLINE',
         notes: 'Offline smoke seed',
@@ -182,14 +184,16 @@ async function mockApiRoutes(page) {
   await page.route('**/api/**', async (route) => {
     const url = new URL(route.request().url());
     const now = new Date().toISOString();
+    const today = new Date();
+    const shiftDay = `${today.getFullYear()}-${String(today.getMonth() + 1).padStart(2, '0')}-${String(today.getDate()).padStart(2, '0')}`;
     let body = { ok: true };
     if (url.pathname === '/api/shifts') {
       body = {
         sid: 'offline-smoke',
         shifts: [{
           id: 'offline-smoke-shift',
-          start_msk: '2026-07-17T08:00',
-          end_msk: '2026-07-17T20:00',
+          start_msk: `${shiftDay}T08:00`,
+          end_msk: `${shiftDay}T20:00`,
           created_at: now,
           route: 'OFFLINE',
           notes: 'Offline smoke seed',
@@ -419,7 +423,7 @@ async function runOfflineReloadCheck() {
     localStorage.setItem(sentinelKey, 'preserved');
     window.__SHIFT_TRACKER_RUNTIME_MODULES['time-utils'] = 'v000';
     window.__SHIFT_TRACKER_RUNTIME_MODULES.render = 'v000';
-    window.__SHIFT_TRACKER_RUNTIME_MODULES['poekhali-tracker'] = 'v000';
+    window.__SHIFT_TRACKER_RUNTIME_MODULES['app-init'] = 'v000';
     return window.__SHIFT_TRACKER_VERIFY_RUNTIME();
   }, repairSentinelKey);
   if (repairTrigger.ok || repairTrigger.mismatches.length < 3) {
@@ -510,13 +514,13 @@ async function runStaleOfflineRuntimeCheck() {
     });
   });
 
-  const liveSource = fs.readFileSync(path.join(repoRoot, 'scripts', 'poekhali-utils.js'), 'utf8');
+  const liveSource = fs.readFileSync(path.join(repoRoot, 'scripts', 'time-utils.js'), 'utf8');
   const staleSource = liveSource.replace(
-    /registerShiftTrackerRuntimeModule\('poekhali-utils',\s*'v\d+'\)/,
-    "registerShiftTrackerRuntimeModule('poekhali-utils', 'v000')"
+    /registerShiftTrackerRuntimeModule\('time-utils',\s*'v\d+'\)/,
+    "registerShiftTrackerRuntimeModule('time-utils', 'v000')"
   );
   if (staleSource === liveSource) throw new Error('Could not create stale offline runtime fixture');
-  await page.route('**/scripts/poekhali-utils.js*', (route) => route.fulfill({
+  await page.route('**/scripts/time-utils.js*', (route) => route.fulfill({
     status: 200,
     contentType: 'application/javascript; charset=utf-8',
     body: staleSource,
@@ -530,7 +534,7 @@ async function runStaleOfflineRuntimeCheck() {
 
   setPhase('stale-offline-runtime:assert-cached-shifts');
   const state = await assertAppShellVisible(page, 'staleOfflineRuntime');
-  if (!state.runtimeModules || state.runtimeModules['poekhali-utils'] !== 'v000') {
+  if (!state.runtimeModules || state.runtimeModules['time-utils'] !== 'v000') {
     throw new Error(`Stale offline runtime fixture was not served: ${JSON.stringify(state)}`);
   }
   if (!state.runtimeIntegrity || state.runtimeIntegrity.status !== 'degraded-offline') {

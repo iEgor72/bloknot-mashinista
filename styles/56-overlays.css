@@ -269,6 +269,249 @@
   grid-template-columns: 1fr 1fr;
   gap: 8px;
 }
+
+/* Shift date/time picker */
+.datetime-picker-overlay {
+  z-index: calc(var(--layer-scrim) + 8);
+}
+.datetime-picker-sheet {
+  width: min(100%, 480px);
+  max-height: min(88dvh, 720px);
+  padding: 10px 16px calc(18px + var(--safe-bottom)) !important;
+  overflow: hidden;
+  background:
+    radial-gradient(circle at 50% 0, color-mix(in oklch, var(--accent) 7%, transparent), transparent 34%),
+    linear-gradient(180deg, color-mix(in oklch, white 6%, transparent), transparent 28%),
+    var(--bg-rise) !important;
+}
+.datetime-picker-sheet:focus { outline: none; }
+.datetime-picker-handle-wrap {
+  height: 18px;
+  display: grid;
+  place-items: center;
+}
+.datetime-picker-handle {
+  width: 38px;
+  height: 4px;
+  border-radius: 999px;
+  background: color-mix(in oklch, white 22%, transparent);
+}
+.datetime-picker-header {
+  min-height: 48px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 12px;
+}
+.datetime-picker-heading {
+  min-width: 0;
+  text-align: center;
+}
+.datetime-picker-kicker {
+  margin-bottom: 3px;
+  color: var(--accent);
+  font: 700 9px/1 'Golos Text', system-ui, sans-serif;
+  letter-spacing: 0.13em;
+  text-transform: uppercase;
+}
+.datetime-picker-month-btn:focus-visible,
+.datetime-picker-day:focus-visible,
+.datetime-picker-wheel-option:focus-visible {
+  outline: 2px solid color-mix(in oklch, var(--accent) 78%, transparent);
+  outline-offset: 2px;
+}
+.datetime-picker-month-nav {
+  display: grid;
+  grid-template-columns: 44px 1fr 44px;
+  align-items: center;
+  gap: 6px;
+  margin-bottom: 10px;
+}
+.datetime-picker-month-title {
+  color: var(--ink);
+  font: 720 16px/1.15 'Golos Text', system-ui, sans-serif;
+  text-align: center;
+  text-transform: capitalize;
+}
+.datetime-picker-month-btn {
+  width: 44px;
+  height: 44px;
+  display: grid;
+  place-items: center;
+  border: 0;
+  border-radius: 13px;
+  background: color-mix(in oklch, white 5%, transparent);
+  color: var(--accent);
+  cursor: pointer;
+  touch-action: manipulation;
+}
+.datetime-picker-month-btn svg {
+  width: 20px;
+  height: 20px;
+  stroke: currentColor;
+  stroke-width: 2;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+.datetime-picker-weekdays,
+.datetime-picker-days {
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  gap: 4px;
+}
+.datetime-picker-weekdays {
+  margin-bottom: 5px;
+}
+.datetime-picker-weekdays span {
+  color: var(--ink-4);
+  font: 600 9px/1 'Golos Text', system-ui, sans-serif;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  text-align: center;
+}
+.datetime-picker-day,
+.datetime-picker-day-spacer {
+  min-width: 0;
+  aspect-ratio: 1;
+}
+.datetime-picker-day {
+  display: flex;
+  align-items: flex-start;
+  justify-content: flex-start;
+  border: 0;
+  border-radius: 10px;
+  padding: 6px 8px;
+  background: color-mix(in oklch, white 2%, transparent);
+  color: var(--ink-2);
+  box-shadow: inset 0 0 0 1px color-mix(in oklch, white 4%, transparent);
+  font: 600 12px/1 'Golos Text', system-ui, sans-serif;
+  font-variant-numeric: tabular-nums;
+  cursor: pointer;
+  touch-action: manipulation;
+  transition: background 140ms ease, color 140ms ease, transform 120ms ease;
+}
+.datetime-picker-day:active {
+  transform: scale(0.92);
+}
+.datetime-picker-day.is-weekend,
+.datetime-picker-day.is-holiday {
+  color: var(--holiday);
+}
+.datetime-picker-day.is-today:not(.is-selected) {
+  outline: 2px solid var(--accent);
+  outline-offset: -1px;
+}
+.datetime-picker-day.is-selected {
+  color: var(--accent-ink);
+  background: linear-gradient(180deg, var(--accent), var(--accent-2));
+  box-shadow:
+    0 8px 22px -10px var(--accent-glow),
+    inset 0 1px 0 color-mix(in oklch, white 42%, transparent);
+}
+.datetime-picker-time-panel {
+  padding: 2px 10px 4px;
+}
+.datetime-picker-time-preview {
+  margin: 0 0 12px;
+  color: var(--accent);
+  font: 760 35px/1 'Golos Text', system-ui, sans-serif;
+  font-variant-numeric: tabular-nums;
+  letter-spacing: -0.055em;
+  text-align: center;
+}
+.datetime-picker-wheels {
+  position: relative;
+  display: grid;
+  grid-template-columns: minmax(96px, 1fr) 24px minmax(96px, 1fr);
+  align-items: center;
+  gap: 8px;
+}
+.datetime-picker-wheel-wrap {
+  min-width: 0;
+}
+.datetime-picker-wheel-label {
+  margin-bottom: 7px;
+  color: var(--ink-3);
+  font: 650 10px/1 'Golos Text', system-ui, sans-serif;
+  letter-spacing: 0.1em;
+  text-align: center;
+  text-transform: uppercase;
+}
+.datetime-picker-wheel {
+  height: 184px;
+  padding: 67px 6px;
+  overflow-y: auto;
+  overscroll-behavior: contain;
+  scroll-snap-type: y mandatory;
+  scrollbar-width: none;
+  border-radius: 18px;
+  background:
+    linear-gradient(180deg, var(--bg-rise), transparent 32%, transparent 68%, var(--bg-rise)),
+    color-mix(in oklch, black 20%, transparent);
+  box-shadow: inset 0 0 0 1px var(--hair);
+}
+.datetime-picker-wheel::-webkit-scrollbar {
+  display: none;
+}
+.datetime-picker-wheel-option {
+  width: 100%;
+  height: 50px;
+  display: grid;
+  place-items: center;
+  scroll-snap-align: center;
+  border: 0;
+  border-radius: 13px;
+  background: transparent;
+  color: var(--ink-3);
+  font: 680 20px/1 'Golos Text', system-ui, sans-serif;
+  font-variant-numeric: tabular-nums;
+  cursor: pointer;
+  touch-action: manipulation;
+}
+.datetime-picker-wheel-option.is-selected {
+  color: var(--accent);
+  background: color-mix(in oklch, var(--accent) 12%, transparent);
+  box-shadow: inset 0 0 0 1px color-mix(in oklch, var(--accent) 24%, transparent);
+}
+.datetime-picker-time-separator {
+  margin-top: 17px;
+  color: var(--accent);
+  font: 760 28px/1 'Golos Text', system-ui, sans-serif;
+  text-align: center;
+}
+.datetime-picker-confirm {
+  width: 100%;
+  min-height: 50px;
+  margin-top: 16px;
+  border-radius: 15px;
+}
+
+@media (max-height: 680px) {
+  .datetime-picker-sheet {
+    max-height: 94dvh;
+  }
+  .datetime-picker-header {
+    margin-bottom: 6px;
+  }
+  .datetime-picker-day,
+  .datetime-picker-day-spacer {
+    aspect-ratio: auto;
+    height: 38px;
+  }
+  .datetime-picker-wheel {
+    height: 170px;
+    padding-block: 60px;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .datetime-control,
+  .datetime-picker-day,
+  .datetime-picker-wheel-option {
+    transition: none;
+    scroll-behavior: auto;
+  }
+}
 .btn-confirm-cancel,
 .btn-confirm-delete {
   height: 46px;

@@ -5,7 +5,6 @@
     var SHIFTS_API_URL = API_BASE_URL + '/api/shifts';
     var SALARY_PARAMS_API_URL = API_BASE_URL + '/api/salary-params';
     var POEKHALI_WARNINGS_API_URL = API_BASE_URL + '/api/poekhali-warnings';
-    var USER_STATS_API_URL = API_BASE_URL + '/api/stats';
     var TELEGRAM_BOT_USERNAME = 'bloknot_mashinista_bot';
     var CURRENT_USER = null;
     var AUTH_GATE = document.getElementById('authGate');
@@ -513,11 +512,6 @@
       updateFooter();
       renderInstallPromptCard();
       renderDocumentationScreen();
-      if (navigator.onLine) {
-        refreshUserStats('auth');
-      } else {
-        applyUserStatsOfflineFallback();
-      }
     }
 
     function handleTabActivated(tab) {
@@ -547,10 +541,6 @@
       closeLocoSeriesMenu();
       var previousTab = activeTab || 'home';
       activeTab = tab || 'home';
-      if (window.ProductAnalytics && typeof window.ProductAnalytics.trackScreen === 'function') {
-        window.ProductAnalytics.trackScreen(activeTab);
-      }
-
       var panels = document.querySelectorAll('.tab-panel');
       var activePanel = null;
       for (var i = 0; i < panels.length; i++) {
@@ -599,6 +589,11 @@
       updateFooter();
       renderInstallPromptCard();
       handleTabActivated(activeTab);
+      try {
+        window.dispatchEvent(new CustomEvent('app:tabchange', {
+          detail: { tab: activeTab, previousTab: previousTab }
+        }));
+      } catch (error) {}
       renderDocumentationScreen();
       if (typeof syncPoekhaliTrackerMode === 'function') {
         var shouldRunPoekhali = activeTab === 'poekhali';
@@ -735,7 +730,7 @@
         var title = overlays[oi].querySelector('.sheet-title');
         if (!title) continue;
         if (overlays[oi].id === 'overlayAddScreen') title.textContent = 'Установить приложение';
-        if (overlays[oi].id === 'overlaySalarySettings') title.textContent = 'Параметры расчёта';
+        if (overlays[oi].id === 'overlaySalarySettings') title.textContent = 'Настройки тарифа';
         if (overlays[oi].id === 'overlayConfirm') title.textContent = 'Удалить запись';
       }
     }

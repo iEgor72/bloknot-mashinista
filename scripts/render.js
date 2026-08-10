@@ -45,7 +45,6 @@
         ? buildShiftConsistHtml(sh, incomeVm && incomeVm.amountText, rangeState.hasValidInterval ? durationText : '') : '';
 
       var pendingDotHtml = shiftIsPending ? '<span class="shift-sync-inline" aria-label="Не синхронизировано" title="Не синхронизировано">' + docOnlineOnlyIcon + '</span>' : '';
-      var shareBadgeHtml = (typeof buildShiftShareBadgeHtml === 'function') ? buildShiftShareBadgeHtml(sh) : '';
       var poekhaliBtnHtml = canOpenPoekhali
         ? '<button class="shift-poekhali-btn" type="button" data-id="' + shiftIdAttr + '" aria-label="Открыть режим Поехали" title="Поехали">' +
             '<svg viewBox="0 0 24 24" aria-hidden="true" focusable="false">' +
@@ -73,7 +72,7 @@
         '<div class="shift-card-top">' +
           markHtml +
           '<div class="shift-title-wrap">' +
-            '<div class="shift-card-title">' + escapeHtml(shiftTitle) + shareBadgeHtml + pendingDotHtml + '</div>' +
+            '<div class="shift-card-title">' + escapeHtml(shiftTitle) + pendingDotHtml + '</div>' +
             '<div class="shift-card-sub">' + escapeHtml(subText) + '</div>' +
           '</div>' +
           poekhaliBtnHtml +
@@ -83,64 +82,6 @@
       '</div>';
 
       return html;
-    }
-
-    // Small marker on a shift card: incoming (received from partner) or outgoing
-    // (shared to the active partner). Outgoing state comes from BrigadePartners.
-    function shareChipInitials(name) {
-      var p = String(name || '').trim().split(/\s+/).filter(Boolean);
-      if (!p.length) return '';
-      if (p.length === 1) return p[0].charAt(0).toUpperCase();
-      return (p[0].charAt(0) + p[1].charAt(0)).toUpperCase();
-    }
-    function shareChipShortName(name) {
-      var p = String(name || '').trim().split(/\s+/).filter(Boolean);
-      if (!p.length) return '';
-      if (p.length === 1) return p[0];
-      return p[0] + ' ' + p[1].charAt(0).toUpperCase() + '.';
-    }
-    function shareChipHue(s) {
-      var h = 0; s = String(s || '');
-      for (var i = 0; i < s.length; i++) h = (h * 31 + s.charCodeAt(i)) >>> 0;
-      return h % 360;
-    }
-    function buildShiftShareChip(dir, label, cls) {
-      var name = shareChipShortName(label);
-      var ini = shareChipInitials(label);
-      var av;
-      if (ini) {
-        var h = shareChipHue(label);
-        av = '<span class="shift-share-chip-av" style="background:hsl(' + h + ' 42% 30%);color:hsl(' + h + ' 65% 85%)">' + escapeHtml(ini) + '</span>';
-      } else {
-        av = '<span class="shift-share-chip-av is-empty"></span>';
-      }
-      var titleTxt = (dir === 'in' ? 'Получено от' : 'Отправлено') + ': ' + (label || 'бригада');
-      return '<span class="shift-share-chip ' + cls + '" title="' + escapeHtml(titleTxt) + '">' +
-        av +
-        '<span class="shift-share-chip-name">' + escapeHtml(name || 'Бригада') + '</span>' +
-      '</span>';
-    }
-    function buildShiftShareBadgeHtml(sh) {
-      if (!sh) return '';
-      if (sh.shared_source_id) {
-        return buildShiftShareChip('in', sh.shared_by_name || '', 'is-in');
-      }
-      try {
-        if (window.BrigadePartners && typeof BrigadePartners.getSharedPairing === 'function') {
-          var pid = BrigadePartners.getSharedPairing(sh.id);
-          if (pid) {
-            var label = '';
-            if (typeof BrigadePartners.getPartners === 'function') {
-              var ps = BrigadePartners.getPartners() || [];
-              for (var i = 0; i < ps.length; i++) {
-                if (ps[i].pairingId === pid) { label = ps[i].label; break; }
-              }
-            }
-            return buildShiftShareChip('out', label, 'is-out');
-          }
-        }
-      } catch (e) {}
-      return '';
     }
 
     function prefersReducedMotion() {
@@ -971,7 +912,6 @@
 
     function render() {
       updateOfflineUiState();
-      renderUserStatsFooter();
 
       // Month title
       renderMonthHeader('monthTitle', 'monthQuarter', 'homeMonthTabs', currentYear, currentMonth, function(targetMonth) {
@@ -1980,21 +1920,7 @@
     function renderShiftActionsMenu(shiftId) {
       if (!SHIFT_ACTIONS_MENU) return;
       var safeShiftId = escapeHtml(String(shiftId || ''));
-      var latestManualShiftId = typeof getLatestManualShiftId === 'function'
-        ? getLatestManualShiftId(allShifts)
-        : '';
-      var poekhaliActionHtml = String(shiftId || '') === latestManualShiftId
-        ? '<button class="shift-actions-item is-poekhali" type="button" data-action="poekhali" data-id="' + safeShiftId + '" role="menuitem">' +
-            '<span class="shift-actions-item-icon" aria-hidden="true">' +
-              '<svg viewBox="0 0 24 24" focusable="false">' +
-                '<path fill="currentColor" d="M12 3a9 9 0 0 1 8.94 8H18.9A7 7 0 1 0 11 18.9V21A9 9 0 0 1 12 3Zm.9 5.15 5.1 7.7a1 1 0 0 1-1.15 1.48l-3.85-1.37-3.85 1.37A1 1 0 0 1 8 15.85l5.1-7.7Zm.1 2.36-2.25 3.4 1.92-.68a1 1 0 0 1 .66 0l1.92.68L13 10.51Z"></path>' +
-              '</svg>' +
-            '</span>' +
-            '<span class="shift-actions-item-label">Поехали</span>' +
-          '</button>'
-        : '';
       SHIFT_ACTIONS_MENU.innerHTML =
-        poekhaliActionHtml +
         '<button class="shift-actions-item is-edit" type="button" data-action="edit" data-id="' + safeShiftId + '" role="menuitem">' +
           '<span class="shift-actions-item-icon" aria-hidden="true">' +
             '<svg viewBox="0 0 24 24" focusable="false">' +
@@ -2089,24 +2015,6 @@
         triggerHapticTapLight();
         enterEditMode(shift, { returnTab: activeTab });
         closeShiftActionsMenu(true);
-        return;
-      }
-
-      if (action === 'poekhali') {
-        var latestManualShiftId = typeof getLatestManualShiftId === 'function'
-          ? getLatestManualShiftId(allShifts)
-          : '';
-        if (!latestManualShiftId || String(id || '') !== latestManualShiftId) {
-          closeShiftActionsMenu(true);
-          return;
-        }
-        triggerHapticSelection();
-        closeShiftActionsMenu(true);
-        if (typeof openPoekhaliForShift === 'function') {
-          openPoekhaliForShift(id);
-          return;
-        }
-        if (typeof setActiveTab === 'function') setActiveTab('poekhali');
         return;
       }
 

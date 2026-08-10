@@ -13,17 +13,17 @@
   <link rel="apple-touch-icon" href="/apple-touch-icon.png" />
   <link rel="preload" href="/assets/fonts/golos-text/GolosText-Regular.woff2" as="font" type="font/woff2" crossorigin />
   <title>Блокнот машиниста — приложение и Telegram-бот</title>
-  <meta name="description" content="Учет смен, часов, документов и поездок для машиниста. Открывайте приложение через Telegram-бота, читайте новости и пишите вопросы в обсуждение." />
+  <meta name="description" content="Учет смен и часов для машиниста: календарь, журнал, документы и приблизительная сумма за месяц." />
   <meta name="robots" content="index,follow,max-image-preview:large" />
   <link rel="canonical" href="https://bloknot-mashinista-bot.ru/" />
   <meta property="og:type" content="website" />
   <meta property="og:title" content="Блокнот машиниста — приложение и Telegram-бот" />
-  <meta property="og:description" content="Смены, документы, бригада, режим Поехали, Telegram-бот, канал новостей и обсуждение рядом с приложением." />
+  <meta property="og:description" content="Смены, часы, календарь, журнал и документы в одном приложении." />
   <meta property="og:url" content="https://bloknot-mashinista-bot.ru/" />
   <meta property="og:image" content="https://bloknot-mashinista-bot.ru/assets/seo/landing-overview.jpg" />
   <meta name="twitter:card" content="summary_large_image" />
   <meta name="twitter:title" content="Блокнот машиниста — приложение и Telegram-бот" />
-  <meta name="twitter:description" content="Учет смен, часов, документов и поездок для машиниста. Бот, новости и обсуждение рядом с приложением." />
+  <meta name="twitter:description" content="Учет смен, часов, календаря и документов для машиниста через Telegram-бота." />
   <script type="application/ld+json">
     {
       "@context": "https://schema.org",
@@ -33,7 +33,7 @@
       "operatingSystem": "Web, iOS, Android",
       "url": "https://bloknot-mashinista-bot.ru/",
       "image": "https://bloknot-mashinista-bot.ru/assets/seo/landing-overview.jpg",
-      "description": "Мобильное приложение для учета смен, часов, документов, бригады и поездок машиниста."
+      "description": "Мобильное приложение для учета смен, часов, календаря и документов машиниста."
     }
   </script>
   <script>
@@ -329,63 +329,58 @@
   </style>
   <link
     rel="stylesheet"
-    href="/styles/00-base.css?v=v392"
+    href="/styles/00-base.css"
   />
   <link
     rel="stylesheet"
-    href="/styles/10-navigation-and-cards.css?v=v392"
+    href="/styles/10-navigation-and-cards.css"
   />
   <link
     rel="stylesheet"
-    href="/styles/15-bottom-nav.css?v=v392"
+    href="/styles/15-bottom-nav.css"
   />
   <link
     rel="stylesheet"
-    href="/styles/16-press-feedback.css?v=v392"
+    href="/styles/16-press-feedback.css"
   />
   <link
     rel="stylesheet"
-    href="/styles/20-form-and-stats.css?v=v392"
+    href="/styles/20-form-and-stats.css"
   />
   <link
     rel="stylesheet"
-    href="/styles/30-shifts-and-overlays.css?v=v392"
+    href="/styles/30-shifts-and-overlays.css"
   />
   <link
     rel="stylesheet"
-    href="/styles/40-premium-refresh.css?v=v392"
+    href="/styles/40-premium-refresh.css"
   />
   <link
     rel="stylesheet"
-    href="/styles/50-design-refresh.css?v=v392"
+    href="/styles/50-design-refresh.css"
   />
   <link
     rel="stylesheet"
-    href="/styles/55-partners.css?v=v392"
+    href="/styles/56-profile.css"
   />
   <link
     rel="stylesheet"
-    href="/styles/56-profile.css?v=v392"
+    href="/styles/57-datetime-picker.css"
   />
-  <link
-    rel="stylesheet"
-    href="/styles/57-datetime-picker.css?v=v392"
-  />
-  <noscript><link rel="stylesheet" href="/styles/00-base.css?v=v392" /></noscript>
-  <noscript><link rel="stylesheet" href="/styles/10-navigation-and-cards.css?v=v392" /></noscript>
-  <noscript><link rel="stylesheet" href="/styles/15-bottom-nav.css?v=v392" /></noscript>
-  <noscript><link rel="stylesheet" href="/styles/16-press-feedback.css?v=v392" /></noscript>
-  <noscript><link rel="stylesheet" href="/styles/20-form-and-stats.css?v=v392" /></noscript>
-  <noscript><link rel="stylesheet" href="/styles/30-shifts-and-overlays.css?v=v392" /></noscript>
-  <noscript><link rel="stylesheet" href="/styles/40-premium-refresh.css?v=v392" /></noscript>
-  <noscript><link rel="stylesheet" href="/styles/50-design-refresh.css?v=v392" /></noscript>
-  <noscript><link rel="stylesheet" href="/styles/55-partners.css?v=v392" /></noscript>
-  <noscript><link rel="stylesheet" href="/styles/56-profile.css?v=v392" /></noscript>
-  <noscript><link rel="stylesheet" href="/styles/57-datetime-picker.css?v=v392" /></noscript>
+  <noscript><link rel="stylesheet" href="/styles/00-base.css" /></noscript>
+  <noscript><link rel="stylesheet" href="/styles/10-navigation-and-cards.css" /></noscript>
+  <noscript><link rel="stylesheet" href="/styles/15-bottom-nav.css" /></noscript>
+  <noscript><link rel="stylesheet" href="/styles/16-press-feedback.css" /></noscript>
+  <noscript><link rel="stylesheet" href="/styles/20-form-and-stats.css" /></noscript>
+  <noscript><link rel="stylesheet" href="/styles/30-shifts-and-overlays.css" /></noscript>
+  <noscript><link rel="stylesheet" href="/styles/40-premium-refresh.css" /></noscript>
+  <noscript><link rel="stylesheet" href="/styles/50-design-refresh.css" /></noscript>
+  <noscript><link rel="stylesheet" href="/styles/56-profile.css" /></noscript>
+  <noscript><link rel="stylesheet" href="/styles/57-datetime-picker.css" /></noscript>
   <script>
     window.CURRENT_USER = window.CURRENT_USER || null;
   </script>
-  <script src="/scripts/safe-area.js?v=v392" defer></script>
+  <script src="/scripts/safe-area.js" defer></script>
 </head>
 <body style="background-color:#0C0C10;color:#EEF2F8;margin:0">
   <div class="boot-fallback" id="bootFallback" role="status" aria-live="polite">
@@ -406,7 +401,7 @@
         <div class="auth-brand-mark">БМ</div>
         <div class="auth-brand-meta">
           <div class="auth-brand-name">Блокнот машиниста</div>
-          <div class="auth-brand-sub">Учёт смен и поездок</div>
+          <div class="auth-brand-sub">Учёт смен и часов</div>
         </div>
       </div>
       <div class="auth-kicker" id="authModeChip"></div>
@@ -438,13 +433,6 @@
           <div class="app-top-bar-title" id="appTopBarTitle">Блокнот машиниста</div>
           <div class="app-top-bar-sub" id="appTopBarSub">—</div>
         </div>
-        <button class="app-top-bar-icon" id="appTopBarBell" type="button" aria-label="Уведомления">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
-            <path d="M6 8a6 6 0 0 1 12 0c0 7 3 9 3 9H3s3-2 3-9z"></path>
-            <path d="M10 21a2 2 0 0 0 4 0"></path>
-          </svg>
-          <span class="app-top-bar-icon-dot" aria-hidden="true"></span>
-        </button>
         <button class="app-top-bar-gps hidden" id="appTopBarGps" type="button" aria-label="GPS статус">
           <span class="app-top-bar-gps-dot" aria-hidden="true"></span>
           <span class="app-top-bar-gps-word">GPS</span>
@@ -526,7 +514,7 @@
           </div>
           <div class="dashboard-meta-grid" aria-live="polite">
             <div class="dashboard-meta-item dashboard-month-income">
-              <span class="dashboard-month-income-label" id="dashboardMonthIncomeLabel">За месяц</span>
+              <span class="dashboard-month-income-label" id="dashboardMonthIncomeLabel">Примерно за месяц</span>
               <span class="dashboard-month-income-value" id="dashboardMonthIncomeValue">—</span>
             </div>
             <div class="dashboard-meta-item dashboard-month-income-spark" id="dashboardMonthIncomeSpark" aria-hidden="true">
@@ -598,9 +586,7 @@
 
       <!-- Poekhali Tab -->
       <section class="tab-panel poekhali-panel" data-tab="poekhali">
-        <!-- Design-style scrollable layout. Original canvas remains below for state continuity. -->
         <div class="trk-design" id="trkDesign">
-          <!-- Train plate -->
           <div class="train-plate" id="trkPlate">
             <div class="train-plate-loco">
               <svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 13V6.5A2.5 2.5 0 0 1 6.5 4h6A2.5 2.5 0 0 1 15 6.5V13"/><path d="M4 11h11"/><path d="M7 8h3"/><circle cx="6.5" cy="14.5" r="1"/><circle cx="12.5" cy="14.5" r="1"/></svg>
@@ -616,8 +602,6 @@
             </div>
           </div>
 
-          <!-- Round speedometer (КЛУБ-style) — seamless instrument cluster:
-               clock on top, metrics flanking the gauge, timer below. -->
           <div class="speedo speedo-round" id="trkSpeedo">
             <div class="speedo-stat is-clock"><span class="l">Время МСК</span><span class="v num" id="trkClock">—</span></div>
             <div class="speedo-mid">
@@ -646,14 +630,12 @@
             <div class="speedo-stat is-coord"><span class="l">Координата</span><span class="v num" id="trkHeadPos">—</span></div>
           </div>
 
-          <!-- Profile container -->
           <div class="trk-profile-card">
             <div class="trk-profile-canvas-wrap">
               <canvas id="poekhaliCanvas" class="poekhali-canvas trk-profile-canvas" aria-label="Профиль пути"></canvas>
             </div>
           </div>
 
-          <!-- Add speed/limit entry — kept at the bottom so it doesn't block driving -->
           <div class="trk-edit-actions">
             <button type="button" class="trk-edit-btn" id="trkAddSpeed" aria-label="Добавить скорость или ограничение" title="Добавить скорость или ограничение">
               <span class="trk-edit-plus" aria-hidden="true">+</span> Скорость / ограничение
@@ -661,7 +643,6 @@
           </div>
         </div>
 
-        <!-- Legacy overlay buttons — hidden but kept so tracker.js can attach handlers (they live inside the canvas wrap above so positioning works) -->
         <div class="poekhali-mode-shell poekhali-mode-shell-hidden" id="poekhaliModeShell" aria-hidden="true">
           <button class="poekhali-overlay-btn poekhali-back-btn" id="btnPoekhaliBack" type="button" aria-label="Назад" title="Назад">
             <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M15 6 9 12l6 6"></path></svg>
@@ -675,7 +656,6 @@
           <button class="poekhali-overlay-btn poekhali-ops-btn is-hidden" id="btnPoekhaliOps" type="button" hidden data-control-label="Панель" aria-hidden="true" tabindex="-1" aria-label="Данные поездки">Поездка</button>
         </div>
       </section>
-
 
       <!-- Add Shift Tab -->
       <section class="tab-panel" data-tab="add">
@@ -820,7 +800,7 @@
                     <input class="optional-control" type="text" id="inputRouteTo" maxlength="64" placeholder="Станция прибытия" />
                   </div>
                 </div>
-                <div class="optional-note">Маршрут автоматически выбирает нужный профиль в режиме «Поехали».</div>
+                <div class="optional-note">Маршрут сохраняется в журнале и помогает выбрать профиль в режиме «Поехали».</div>
               </div>
             </div>
           </details>
@@ -1082,24 +1062,6 @@
 
           </div>
 
-          <div class="optional-card shift-share-card hidden" id="shiftShareRow">
-            <div class="glass-select shift-share-glass" id="shiftShareSelectWrap" data-glass-auto data-option-avatars data-placeholder="Не делиться">
-              <button class="glass-select-trigger optional-summary" type="button" aria-haspopup="listbox" aria-expanded="false">
-                <div class="optional-summary-main">
-                  <div class="optional-summary-title">Поделиться сменой</div>
-                  <div class="optional-summary-subtitle glass-select-value is-placeholder">Не делиться</div>
-                </div>
-                <div class="optional-summary-chevron glass-select-chevron" aria-hidden="true">
-                  <svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 8l5 5 5-5"></path></svg>
-                </div>
-              </button>
-              <div class="glass-select-menu hidden" role="listbox" aria-label="Получатель смены"></div>
-              <select class="hidden" id="shiftShareSelect" tabindex="-1" aria-hidden="true">
-                <option value="">Не делиться</option>
-              </select>
-            </div>
-          </div>
-
           <div class="form-actions">
             <button class="btn-primary" id="btnAdd">Сохранить смену</button>
             <button class="btn-secondary btn-cancel-edit hidden" id="btnCancelEdit" type="button">Отменить редактирование</button>
@@ -1310,60 +1272,6 @@
         </div>
       </section>
 
-      <section class="tab-panel" data-tab="partners">
-        <div class="partners-head">
-          <button class="partners-back" id="partnersBack" type="button" aria-label="Назад">‹</button>
-          <div class="partners-head-title">Бригада</div>
-        </div>
-
-        <div class="partners-intro">
-          Свяжитесь по короткому коду. Получателя можно выбрать у каждой смены — а здесь
-          задаётся участник бригады по умолчанию, который будет подставляться сразу.
-        </div>
-
-        <div class="partners-inbox" id="partnersInbox" hidden aria-live="polite">
-          <div class="partners-card-title">Входящие смены</div>
-          <div class="partners-inbox-list" id="partnersInboxList"></div>
-        </div>
-
-        <div class="partners-active-card" id="partnersActiveCard" aria-live="polite">
-          <div class="partners-active-label">Участник бригады по умолчанию</div>
-          <div class="partners-active-value" id="partnersActiveValue">Не выбран</div>
-          <div class="partners-active-hint" id="partnersActiveHint">Подставляется в выбор получателя при добавлении смены.</div>
-        </div>
-
-        <div class="partners-link-card">
-          <div class="partners-card-title">Связать бригаду</div>
-          <div class="partners-link-actions">
-            <button class="btn-secondary partners-generate-btn" id="partnersGenerateBtn" type="button">Создать код</button>
-          </div>
-          <div class="partners-code-box hidden" id="partnersCodeBox" aria-live="polite">
-            <div class="partners-code-label">Назовите код участнику бригады:</div>
-            <div class="partners-code-value" id="partnersCodeValue">——————</div>
-            <div class="partners-code-expiry" id="partnersCodeExpiry"></div>
-          </div>
-          <div class="partners-redeem">
-            <div class="partners-card-subtitle">Ввести код бригады</div>
-            <div class="partners-code-grid" id="partnersCodeGrid" role="group" aria-label="Код приглашения из 6 цифр">
-              <input class="partners-code-cell" type="text" inputmode="numeric" pattern="[0-9]*" autocomplete="one-time-code" spellcheck="false" maxlength="1" aria-label="Цифра 1 из 6" />
-              <input class="partners-code-cell" type="text" inputmode="numeric" pattern="[0-9]*" autocomplete="off" spellcheck="false" maxlength="1" aria-label="Цифра 2 из 6" />
-              <input class="partners-code-cell" type="text" inputmode="numeric" pattern="[0-9]*" autocomplete="off" spellcheck="false" maxlength="1" aria-label="Цифра 3 из 6" />
-              <input class="partners-code-cell" type="text" inputmode="numeric" pattern="[0-9]*" autocomplete="off" spellcheck="false" maxlength="1" aria-label="Цифра 4 из 6" />
-              <input class="partners-code-cell" type="text" inputmode="numeric" pattern="[0-9]*" autocomplete="off" spellcheck="false" maxlength="1" aria-label="Цифра 5 из 6" />
-              <input class="partners-code-cell" type="text" inputmode="numeric" pattern="[0-9]*" autocomplete="off" spellcheck="false" maxlength="1" aria-label="Цифра 6 из 6" />
-            </div>
-            <button class="btn-primary partners-redeem-btn" id="partnersRedeemBtn" type="button">Связать</button>
-          </div>
-          <div class="partners-feedback hidden" id="partnersFeedback" role="status" aria-live="polite"></div>
-        </div>
-
-        <div class="partners-book">
-          <div class="partners-card-title">Бригада</div>
-          <div class="partners-book-list" id="partnersBookList"></div>
-          <div class="partners-book-empty" id="partnersBookEmpty">Пока никого нет. Создайте код или введите код бригады выше.</div>
-        </div>
-      </section>
-
       <!-- Profile Tab -->
       <section class="tab-panel profile-panel" data-tab="profile">
         <button class="profile-head" id="btnProfileEdit" type="button">
@@ -1380,7 +1288,7 @@
           <span class="profile-edit-chevron" aria-hidden="true">›</span>
         </button>
 
-        <div class="profile-section-title">Расчёт зарплаты</div>
+        <div class="profile-section-title">Сумма на главной</div>
         <div class="profile-card">
           <button class="profile-row" id="btnProfileSalarySettings" type="button">
             <span class="profile-row-icon" aria-hidden="true">
@@ -1390,27 +1298,8 @@
               </svg>
             </span>
             <span class="profile-row-body">
-              <span class="profile-row-title">Параметры расчёта</span>
-              <span class="profile-row-note">Тариф, доплаты и коэффициенты</span>
-            </span>
-            <span class="profile-row-chevron" aria-hidden="true">›</span>
-          </button>
-        </div>
-
-        <div class="profile-section-title">Бригада</div>
-        <div class="profile-card">
-          <button class="profile-row" id="btnProfileCrew" type="button">
-            <span class="profile-row-icon" aria-hidden="true">
-              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round">
-                <circle cx="9" cy="8" r="3.2"></circle>
-                <path d="M3.5 19c0-3 2.5-4.8 5.5-4.8s5.5 1.8 5.5 4.8"></path>
-                <path d="M16 11.2a3 3 0 0 0 0-6"></path>
-                <path d="M15.5 14.4c2.6.2 4.5 1.9 4.5 4.6"></path>
-              </svg>
-            </span>
-            <span class="profile-row-body">
-              <span class="profile-row-title">Бригада</span>
-              <span class="profile-row-note">Связь по коду, список и выбор в смене</span>
+              <span class="profile-row-title">Настройки тарифа</span>
+              <span class="profile-row-note">Чтобы примерная сумма считалась по вашим данным</span>
             </span>
             <span class="profile-row-chevron" aria-hidden="true">›</span>
           </button>
@@ -1436,24 +1325,6 @@
           </div>
         </div>
 
-        <div class="profile-section-title">Связь</div>
-        <div class="profile-card">
-          <button class="profile-row" id="btnProfileCommunity" type="button">
-            <span class="profile-row-icon" aria-hidden="true">
-              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round">
-                <path d="M21 12a8 8 0 0 1-8 8H7l-4 2 1.4-4.1A8 8 0 1 1 21 12z"></path>
-                <path d="M8 11.5h8"></path>
-                <path d="M8 15h5"></path>
-              </svg>
-            </span>
-            <span class="profile-row-body">
-              <span class="profile-row-title">Помощь и связь</span>
-              <span class="profile-row-note">Новости, обсуждение и обратная связь</span>
-            </span>
-            <span class="profile-row-chevron" aria-hidden="true">›</span>
-          </button>
-        </div>
-
         <div class="profile-section-title">О приложении</div>
         <div class="profile-card">
           <div class="profile-row profile-row-static">
@@ -1464,7 +1335,6 @@
           </div>
         </div>
 
-        <div class="profile-footer-stats usage-stats-note hidden" id="userStatsFooter" aria-live="polite"></div>
       </section>
     </div>
 
@@ -1540,12 +1410,12 @@
   <div class="shift-actions-backdrop hidden" id="shiftActionsBackdrop" aria-hidden="true"></div>
   <div class="shift-actions-menu hidden" id="shiftActionsMenu" role="menu" aria-hidden="true"></div>
 
-  <!-- Salary Settings Bottom Sheet -->
+  <!-- Settings for the approximate amount shown on the app home screen -->
   <div class="overlay" id="overlaySalarySettings">
     <div class="bottom-sheet salary-settings-sheet">
       <div class="salary-settings-header">
         <span class="salary-settings-header-spacer" aria-hidden="true"></span>
-        <div class="sheet-title">Параметры расчёта</div>
+        <div class="sheet-title">Настройки тарифа</div>
         <span class="salary-settings-header-spacer" aria-hidden="true"></span>
       </div>
 
@@ -1554,14 +1424,13 @@
         <div class="settings-row settings-row-stack">
           <div>
             <div class="settings-label">Тарифная ставка</div>
-            <div class="settings-note">Строка "Оклад/Тариф" в расчётном листке</div>
+            <div class="settings-note">Строка «Оклад/Тариф» в расчётном листке</div>
           </div>
           <div class="settings-inline-field">
             <input class="settings-input compact" id="settingTariff" type="number" min="0" step="1" />
             <span class="settings-unit">₽/час</span>
           </div>
         </div>
-
       </div>
 
       <div class="settings-section-title">Доплаты (% от тарифа)</div>
@@ -1576,7 +1445,6 @@
             <span class="settings-unit">%</span>
           </div>
         </div>
-
         <div class="settings-row settings-row-stack">
           <div>
             <div class="settings-label">Классная квалификация (%)</div>
@@ -1587,7 +1455,6 @@
             <span class="settings-unit">%</span>
           </div>
         </div>
-
       </div>
 
       <div class="settings-section-title">Коэффициенты</div>
@@ -1602,7 +1469,6 @@
             <span class="settings-unit">%</span>
           </div>
         </div>
-
         <div class="settings-row settings-row-stack">
           <div>
             <div class="settings-label">Северная надбавка (%)</div>
@@ -1613,7 +1479,6 @@
             <span class="settings-unit">%</span>
           </div>
         </div>
-
         <div class="settings-row settings-row-stack">
           <div>
             <div class="settings-label">Местный коэффициент (%)</div>
@@ -1626,7 +1491,7 @@
         </div>
       </div>
 
-      <div class="settings-help-block">Все значения можно найти в вашем расчётном листке (форма ФТУ-69).</div>
+      <div class="settings-help-block">Значения можно найти в расчётном листке (форма ФТУ-69). Итог в приложении остаётся приблизительным.</div>
       <div class="salary-settings-actions">
         <button class="btn-sheet-save" id="btnSaveSalarySettings" type="button">Сохранить</button>
       </div>
@@ -1707,89 +1572,6 @@
 
       <div class="salary-settings-actions">
         <button class="btn-sheet-save" id="btnSaveProfileEdit" type="button">Сохранить</button>
-      </div>
-    </div>
-  </div>
-
-  <!-- Community Bottom Sheet -->
-  <div class="overlay" id="overlayCommunity">
-    <div class="bottom-sheet community-sheet">
-      <div class="install-guide-handle-wrap" aria-hidden="true">
-        <span class="install-guide-handle"></span>
-      </div>
-      <div class="install-guide-header">
-        <div class="sheet-title">Помощь и связь</div>
-      </div>
-
-      <div class="community-links" id="communityLinks">
-        <a class="community-link is-primary" href="https://t.me/bloknot_mashinista_bot" target="_blank" rel="noopener" data-community-link="bot">
-          <span class="community-link-icon" aria-hidden="true">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round">
-              <path d="M21 4 3 11.5l6.7 2.2L12 20l3.3-5 4.7-9.8z"></path>
-              <path d="m9.7 13.7 5.6-5.1"></path>
-            </svg>
-          </span>
-          <span class="community-link-body">
-            <span class="community-link-title">Бот</span>
-            <span class="community-link-note">Открыть приложение и команды поддержки</span>
-          </span>
-          <span class="community-link-chevron" aria-hidden="true">›</span>
-        </a>
-        <a class="community-link hidden" href="#" target="_blank" rel="noopener" data-community-link="news">
-          <span class="community-link-icon" aria-hidden="true">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round">
-              <path d="M4 19V5l14-2v18L4 19z"></path>
-              <path d="M8 8h6"></path>
-              <path d="M8 12h6"></path>
-              <path d="M8 16h4"></path>
-            </svg>
-          </span>
-          <span class="community-link-body">
-            <span class="community-link-title">Новости</span>
-            <span class="community-link-note">Обновления приложения и документов</span>
-          </span>
-          <span class="community-link-chevron" aria-hidden="true">›</span>
-        </a>
-        <a class="community-link hidden" href="#" target="_blank" rel="noopener" data-community-link="discussion">
-          <span class="community-link-icon" aria-hidden="true">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round">
-              <path d="M7 8h10"></path>
-              <path d="M7 12h7"></path>
-              <path d="M12 20H6a3 3 0 0 1-3-3V7a3 3 0 0 1 3-3h12a3 3 0 0 1 3 3v6"></path>
-              <path d="M16 18h5"></path>
-              <path d="M18.5 15.5v5"></path>
-            </svg>
-          </span>
-          <span class="community-link-body">
-            <span class="community-link-title">Обсуждение</span>
-            <span class="community-link-note">Вопросы, ошибки и предложения</span>
-          </span>
-          <span class="community-link-chevron" aria-hidden="true">›</span>
-        </a>
-        <a class="community-link" href="https://bloknot-mashinista-bot.ru" target="_blank" rel="noopener" data-community-link="site">
-          <span class="community-link-icon" aria-hidden="true">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round">
-              <circle cx="12" cy="12" r="9"></circle>
-              <path d="M3 12h18"></path>
-              <path d="M12 3a14 14 0 0 1 0 18"></path>
-              <path d="M12 3a14 14 0 0 0 0 18"></path>
-            </svg>
-          </span>
-          <span class="community-link-body">
-            <span class="community-link-title">Сайт</span>
-            <span class="community-link-note">Открыть в браузере</span>
-          </span>
-          <span class="community-link-chevron" aria-hidden="true">›</span>
-        </a>
-      </div>
-
-      <div class="community-help-card">
-        <div class="community-help-title">Быстрая обратная связь</div>
-        <div class="community-help-text">В боте можно написать: /bug описание проблемы или /idea что добавить.</div>
-      </div>
-
-      <div class="install-guide-actions">
-        <button class="btn-sheet-close install-guide-close-btn" id="btnCloseCommunity" type="button">Закрыть</button>
       </div>
     </div>
   </div>
@@ -2012,13 +1794,12 @@
     }, true);
   </script>
   <script src="/scripts/app-constants.js?v=v392" defer></script>
-  <script src="/scripts/glass-select.js?v=v392" defer></script>
+  <script src="/scripts/glass-select.js" defer></script>
   <script src="/scripts/auth.js?v=v392" defer></script>
-  <script src="/scripts/analytics.js?v=v392" defer></script>
-  <script src="/scripts/viewport.js?v=v392" defer></script>
+  <script src="/scripts/viewport.js" defer></script>
   <script src="/scripts/time-utils.js?v=v392" defer></script>
-  <script src="/scripts/docs-app.js?v=v392" defer></script>
-  <script src="/scripts/telegram-sdk-loader.js?v=v392" defer></script>
+  <script src="/scripts/docs-app.js" defer></script>
+  <script src="/scripts/telegram-sdk-loader.js" defer></script>
   <script src="/scripts/app.js?v=v392" defer></script>
   <script src="/scripts/poekhali-utils.js?v=v392" defer></script>
   <script src="/scripts/poekhali-map-parser.js?v=v392" defer></script>
@@ -2027,13 +1808,12 @@
   <script src="/scripts/poekhali-tracker.js?v=v392" defer></script>
   <script src="/scripts/render.js?v=v392" defer></script>
   <script src="/scripts/shift-form.js?v=v392" defer></script>
-  <script src="/scripts/datetime-picker.js?v=v392" defer></script>
-  <script src="/scripts/partners.js?v=v392" defer></script>
+  <script src="/scripts/datetime-picker.js?v=shift-ui-4" defer></script>
   <script src="/scripts/app-init.js?v=v392" defer></script>
   <script src="/scripts/sw-register.js?v=v392" defer></script>
-  <script src="/sw-bootstrap-v392.js?v=v392" defer></script>
-  <script src="/scripts/utils/haptics.js?v=v392" defer></script>
-  <script src="/scripts/press-feedback.js?v=v392" defer></script>
-  <script src="/scripts/nav-debug.js?v=v392" defer></script>
+  <script src="/sw-bootstrap-v392.js" defer></script>
+  <script src="/scripts/utils/haptics.js" defer></script>
+  <script src="/scripts/press-feedback.js" defer></script>
+  <script src="/scripts/nav-debug.js" defer></script>
 </body>
 </html>

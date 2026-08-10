@@ -170,7 +170,6 @@
 
       saveShifts(function(err) {
         if (err) {
-          if (window.ProductAnalytics) window.ProductAnalytics.track('shift_sync_failed', { action: 'delete', offline: navigator.onLine === false, errorCode: 'delete_failed' });
           triggerHapticError();
           loadShifts(function() {
             render();
@@ -178,7 +177,6 @@
           return;
         }
         triggerHapticSuccess();
-        if (window.ProductAnalytics) window.ProductAnalytics.track('shift_deleted', { shiftCount: allShifts.length });
         showActionToast('deleted');
         render();
       });
@@ -465,11 +463,7 @@
     window.addEventListener('online', function() {
       updateOfflineUiState({ isOffline: false, lastSyncStatus: readPendingSnapshot() ? 'pending' : 'synced' });
       flushPendingSnapshot();
-      refreshUserStats('online');
       schedulePendingSyncRetry(5 * 60 * 1000);
-    });
-    window.addEventListener('offline', function() {
-      applyUserStatsOfflineFallback();
     });
     document.addEventListener('visibilitychange', function() {
       if (!document.hidden) {
@@ -482,10 +476,7 @@
         updateOfflineUiState({ isOffline: !navigator.onLine, hasPending: !!readPendingSnapshot() });
         if (navigator.onLine) {
           flushPendingSnapshot();
-          refreshUserStats('visibility');
           schedulePendingSyncRetry(5 * 60 * 1000);
-        } else {
-          applyUserStatsOfflineFallback();
         }
         renderInstallPromptCard();
         renderDocumentationScreen();
@@ -529,95 +520,6 @@
       });
     }
 
-    // ── Crew sharing (Phase 2): show the toggle only when adding a NEW shift and
-    // an active partner exists; deliver facts to the partner on a successful save. ──
-    function syncShiftShareRow() {
-      var row = document.getElementById('shiftShareRow');
-      var select = document.getElementById('shiftShareSelect');
-      if (!row || !select) return;
-      var bp = window.BrigadePartners;
-      var partners = (bp && typeof bp.getPartners === 'function') ? bp.getPartners() : [];
-      // Per-shift recipient picker — shown whenever at least one partner is linked,
-      // for both new shifts AND edits (so a wrong recipient can be fixed later).
-      if (!partners.length) {
-        row.classList.add('hidden');
-        return;
-      }
-      select.innerHTML = '';
-      var noneOpt = document.createElement('option');
-      noneOpt.value = '';
-      noneOpt.textContent = 'Не делиться';
-      select.appendChild(noneOpt);
-      partners.forEach(function(p) {
-        var opt = document.createElement('option');
-        opt.value = p.pairingId;
-        opt.textContent = p.label || 'Бригада';
-        select.appendChild(opt);
-      });
-      // Editing: pre-select the shift's current recipient. New shift: the default.
-      var preselect;
-      if (editingShiftId) {
-        preselect = (bp && typeof bp.getSharedPairing === 'function') ? bp.getSharedPairing(editingShiftId) : '';
-      } else {
-        preselect = (bp && typeof bp.getDefaultPairingId === 'function') ? bp.getDefaultPairingId() : '';
-      }
-      select.value = preselect || '';
-      // Rebuild the styled dropdown from the freshly populated options.
-      if (window.GlassSelect && typeof GlassSelect.refresh === 'function') {
-        GlassSelect.refresh(document.getElementById('shiftShareSelectWrap'));
-      }
-      row.classList.remove('hidden');
-    }
-
-    function maybeShareSavedShift(shift) {
-      try {
-        var row = document.getElementById('shiftShareRow');
-        var select = document.getElementById('shiftShareSelect');
-        if (!row || row.classList.contains('hidden')) return;
-        if (!select || !select.value) return; // "Не делиться"
-        if (!window.BrigadePartners || typeof BrigadePartners.shareShiftTo !== 'function') return;
-        BrigadePartners.shareShiftTo(shift, select.value).then(function(r) {
-          if (r && r.delivered) {
-            var fs = document.getElementById('formSuccess');
-            if (fs && fs.textContent.indexOf('сохранена') !== -1) {
-              fs.textContent = '✓ Смена сохранена и отправлена в бригаду';
-            }
-          }
-        });
-      } catch (e) {}
-    }
-
-    // On editing: apply the recipient chosen in the picker — re-share to a new/
-    // same partner, or un-share if switched to "Не делиться". Lets a wrong
-    // recipient be fixed after the fact. Falls back to the existing pairing when
-    // the picker isn't shown (no partners linked).
-    function maybeReshareEditedShift(shift) {
-      try {
-        if (!shift || !window.BrigadePartners) return;
-        var row = document.getElementById('shiftShareRow');
-        var select = document.getElementById('shiftShareSelect');
-        var pickerShown = row && !row.classList.contains('hidden') && select;
-        var current = (typeof BrigadePartners.getSharedPairing === 'function') ? BrigadePartners.getSharedPairing(shift.id) : '';
-        var chosen = pickerShown ? (select.value || '') : current;
-        if (chosen) {
-          if (typeof BrigadePartners.shareShiftTo === 'function') BrigadePartners.shareShiftTo(shift, chosen);
-        } else if (current) {
-          if (typeof BrigadePartners.unshareShift === 'function') BrigadePartners.unshareShift(shift.id);
-        }
-      } catch (e) {}
-    }
-
-    // Re-sync the picker only when the Add tab is OPENED via its nav button —
-    // not on every click inside the form (that reset the chosen recipient).
-    document.addEventListener('click', function(e) {
-      if (e.target.closest && e.target.closest('.tab-btn[data-tab="add"]')) {
-        window.setTimeout(syncShiftShareRow, 60);
-      }
-    });
-    if (window.BrigadePartners && typeof BrigadePartners.ensureLoaded === 'function') {
-      BrigadePartners.ensureLoaded().then(syncShiftShareRow).catch(function() {});
-    }
-
     var btnAddEl = document.getElementById('btnAdd');
     if (btnAddEl) btnAddEl.addEventListener('click', function() {
       clearErrors();
@@ -641,7 +543,6 @@
       }
 
       if (!valid) {
-        if (window.ProductAnalytics) window.ProductAnalytics.track('shift_form_validation_failed', { reason: 'required_time' });
         triggerHapticError();
         return;
       }
@@ -651,7 +552,6 @@
 
       if (!startDate || !endDate) {
         document.getElementById('errStart').textContent = 'Неверный формат даты';
-        if (window.ProductAnalytics) window.ProductAnalytics.track('shift_form_validation_failed', { reason: 'invalid_date' });
         triggerHapticError();
         return;
       }
@@ -660,7 +560,6 @@
         document.getElementById('errEnd').textContent = 'Время окончания не может быть раньше начала';
         inputEndDateEl.classList.add('input-error');
         inputEndTimeEl.classList.add('input-error');
-        if (window.ProductAnalytics) window.ProductAnalytics.track('shift_form_validation_failed', { reason: 'end_before_start' });
         triggerHapticError();
         return;
       }
@@ -744,7 +643,6 @@
 
       saveShifts(function(err) {
         if (err) {
-          if (window.ProductAnalytics) window.ProductAnalytics.track('shift_sync_failed', { action: isEditing ? 'edit' : 'add', offline: navigator.onLine === false, errorCode: 'save_failed' });
           triggerHapticError();
           allShifts = previousShifts;
           btn.disabled = false;
@@ -754,16 +652,7 @@
         }
 
         triggerHapticSuccess();
-        if (window.ProductAnalytics && typeof window.ProductAnalytics.noteShiftSaved === 'function') {
-          window.ProductAnalytics.noteShiftSaved(shift, { isEditing: isEditing, shiftCount: allShifts.length });
-        }
         showActionToast(isEditing ? 'saved' : 'added');
-
-        if (!isEditing) {
-          maybeShareSavedShift(shift);
-        } else {
-          maybeReshareEditedShift(shift);
-        }
 
         if (isEditing) {
           exitEditMode();
@@ -936,24 +825,19 @@
       });
     }
 
-    var openSalarySettingsTriggers = [
-      document.getElementById('btnOpenSalarySettings'),
-      document.getElementById('btnProfileSalarySettings')
-    ];
-    openSalarySettingsTriggers.forEach(function(openSalarySettingsBtn) {
-      if (!openSalarySettingsBtn) return;
+    var openSalarySettingsBtn = document.getElementById('btnProfileSalarySettings');
+    if (openSalarySettingsBtn) {
       openSalarySettingsBtn.addEventListener('click', function() {
         triggerHapticSelection();
         updateSettingsControls();
         openOverlay('overlaySalarySettings');
       });
-    });
+    }
     var saveSalarySettingsBtn = document.getElementById('btnSaveSalarySettings');
     if (saveSalarySettingsBtn) {
       saveSalarySettingsBtn.addEventListener('click', function() {
         triggerHapticSuccess();
         syncSettingsFromInputs();
-        if (window.ProductAnalytics) window.ProductAnalytics.track('salary_params_changed', { source: 'settings' });
         closeOverlay('overlaySalarySettings');
         showActionToast('saved');
       });
@@ -1042,22 +926,6 @@
         if (e.target === e.currentTarget) {
           closeShiftDetail();
         }
-      });
-    }
-    if (typeof SHIFT_DETAIL_CONTENT !== 'undefined' && SHIFT_DETAIL_CONTENT) {
-      SHIFT_DETAIL_CONTENT.addEventListener('click', function(e) {
-        var target = e.target && e.target.closest ? e.target.closest('[data-poekhali-shift-id]') : null;
-        if (!target || !SHIFT_DETAIL_CONTENT.contains(target)) return;
-        e.preventDefault();
-        e.stopPropagation();
-        var shiftId = target.getAttribute('data-poekhali-shift-id') || '';
-        if (!shiftId) return;
-        triggerHapticSelection();
-        if (typeof openPoekhaliForShift === 'function') {
-          openPoekhaliForShift(shiftId);
-          return;
-        }
-        if (typeof setActiveTab === 'function') setActiveTab('poekhali');
       });
     }
     var tabButtons = document.querySelectorAll('.tab-btn[data-tab]');
@@ -1223,8 +1091,6 @@
     renderInstallPromptCard();
     updateInstallGuideContent();
     renderDocumentationScreen();
-    startUserStatsTracking();
-
     (function initOptionalCardAnimations() {
       var cards = document.querySelectorAll('.optional-card');
       for (var i = 0; i < cards.length; i++) {

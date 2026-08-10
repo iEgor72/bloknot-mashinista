@@ -74,27 +74,26 @@ firstInstall.serviceWorker.controller = { scriptURL: '/sw.js?v=v392' };
 firstInstall.listeners.controllerchange();
 assert.equal(firstInstall.reloads, 0, 'first service-worker takeover must not reload startup');
 
-const upgrade = createHarness(bootstrapSource, { scriptURL: '/sw.js?v=v391' });
+const upgrade = createHarness(bootstrapSource, { scriptURL: '/sw.js?v=v388' });
 assert.equal(typeof upgrade.listeners.controllerchange, 'function');
 upgrade.serviceWorker.controller = { scriptURL: '/sw.js?v=v392' };
 upgrade.listeners.controllerchange();
 upgrade.listeners.controllerchange();
 assert.equal(upgrade.reloads, 1, 'controller upgrade must reload only once');
 
-const currentRegisterUpgrade = createHarness(registerSource, { scriptURL: '/sw.js?v=v391' });
+const currentRegisterUpgrade = createHarness(registerSource, { scriptURL: '/sw.js?v=v388' });
 currentRegisterUpgrade.serviceWorker.controller = { scriptURL: '/sw.js?v=v392' };
 currentRegisterUpgrade.listeners.controllerchange();
 assert.equal(currentRegisterUpgrade.reloads, 1, 'current sw-register runtime must also reload once');
 
 assert.match(workerSource, /'\/scripts\/poekhali-tracker\.js'/);
 assert.match(workerSource, /'\/scripts\/poekhali-backup\.js'/);
+assert.doesNotMatch(workerSource, /'\/scripts\/partners\.js'/);
 assert.match(workerSource, /'\/scripts\/shift-form\.js'/);
 assert.doesNotMatch(workerSource, /client\.navigate\s*\(/);
 assert.match(workerSource, /COHERENT_RUNTIME_URLS/);
 assert.match(workerSource, /currentVersionOnly:\s*true/);
 assert.match(workerSource, /Refusing to activate an incomplete runtime cache/);
-assert.match(workerSource, /function versionedShellFetchUrl\(assetUrl\)/);
-assert.match(workerSource, /parsed\.searchParams\.set\('v', CACHE_VERSION\)/);
-assert.match(indexSource, /<script src="\/sw-bootstrap-v392\.js\?v=v392" defer><\/script>/);
+assert.match(indexSource, /<script src="\/sw-bootstrap-v392\.js" defer><\/script>/);
 
 console.log('Service-worker v391→v392 coherent-runtime upgrade smoke passed.');

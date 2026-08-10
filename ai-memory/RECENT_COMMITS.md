@@ -1,9 +1,21 @@
 # Recent Commits
 
-Generated: 2026-07-18 21:18:21 +1000
+Generated: 2026-08-11 08:01:56 +1000
 
 | Hash | Date | Author | Message |
 | --- | --- | --- | --- |
+| `01c6339` | 2026-08-11T08:01:55+10:00 | iEgor72 | refine product scope and restore Poekhali |
+| `b3528bc` | 2026-07-27T14:07:30+10:00 | iEgor72 | refine: remove shift timeline and loop time picker |
+| `dd26426` | 2026-07-27T13:55:50+10:00 | iEgor72 | feat: add decorative shift timeline |
+| `76ff185` | 2026-07-27T13:47:11+10:00 | iEgor72 | style: highlight shift details disclosure |
+| `298b8df` | 2026-07-27T13:41:39+10:00 | iEgor72 | feat: add custom shift date and time picker |
+| `b66833b` | 2026-07-27T13:07:41+10:00 | iEgor72 | fix: lowercase homepage rotation phrases |
+| `d08a3fd` | 2026-07-27T13:03:58+10:00 | iEgor72 | feat: animate public landing pages |
+| `fefe06b` | 2026-07-27T12:46:26+10:00 | iEgor72 | feat: animate salary landing page |
+| `0e65ee4` | 2026-07-23T10:23:24+10:00 | iEgor72 | feat: simplify analytics dashboard |
+| `1d07fdc` | 2026-07-23T10:08:19+10:00 | iEgor72 | fix: allow analytics dashboard bearer auth |
+| `a546794` | 2026-07-23T09:57:17+10:00 | iEgor72 | feat: add privacy-safe product analytics |
+| `6932169` | 2026-07-18T21:24:01+10:00 | iEgor72 | fix: restore offline shifts in mixed PWA cache |
 | `a096028` | 2026-07-18T17:50:48+10:00 | iEgor72 | chore(memory): record v388 production deploy |
 | `0291c34` | 2026-07-18T17:47:11+10:00 | iEgor72 | chore(memory): record profile data cleanup |
 | `9c93d25` | 2026-07-18T17:46:59+10:00 | iEgor72 | fix: remove technical data controls from profile |
@@ -32,15 +44,3 @@ Generated: 2026-07-18 21:18:21 +1000
 | `dbd02c8` | 2026-06-21T14:07:06+10:00 | iEgor72 | fix(notifications): migrate legacy bell announcements |
 | `2a84b00` | 2026-06-21T13:53:13+10:00 | iEgor72 | chore(memory): record pwa shell deploy |
 | `c26f784` | 2026-06-21T13:51:52+10:00 | iEgor72 | chore(memory): record post-commit memory update |
-| `17d9913` | 2026-06-21T13:51:27+10:00 | iEgor72 | chore(memory): record memory commit |
-| `695f9b3` | 2026-06-21T13:51:09+10:00 | iEgor72 | chore(memory): record pwa shell update fix |
-| `360170e` | 2026-06-21T13:50:53+10:00 | iEgor72 | fix(pwa): make shell updates self-healing |
-| `72c7625` | 2026-06-21T13:30:30+10:00 | iEgor72 | chore(memory): record nonblocking fallback deploy |
-| `d6dfbea` | 2026-06-21T13:29:32+10:00 | iEgor72 | chore(memory): record nonblocking fallback fix |
-| `47904e2` | 2026-06-21T13:29:18+10:00 | iEgor72 | fix(pwa): make boot fallback nonblocking |
-| `1358823` | 2026-06-21T13:20:17+10:00 | iEgor72 | chore(memory): refresh final project state |
-| `7d6ba99` | 2026-06-21T13:18:22+10:00 | iEgor72 | chore(memory): record bell cleanup deploy |
-| `4ee4eb1` | 2026-06-21T13:17:24+10:00 | iEgor72 | chore(memory): record bell cleanup change |
-| `42f7046` | 2026-06-21T13:17:11+10:00 | iEgor72 | fix(notifications): archive read bell announcements |
-| `01fb72a` | 2026-06-21T12:56:52+10:00 | iEgor72 | chore(memory): record offline fallback deploy |
-| `f8271a4` | 2026-06-21T12:55:37+10:00 | iEgor72 | chore(memory): record offline fallback safeguards |

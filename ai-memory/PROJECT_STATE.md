@@ -1,14 +1,14 @@
 # Project State
 
 <!-- AUTO_STATUS:START -->
-Generated: 2026-07-18 21:18:20 +1000
+Generated: 2026-08-11 08:01:56 +1000
 
 ## Repository Snapshot
 - Local repo path: `D:\work\bloknot-mashinista-tg`
 - Project memory path: `D:\work\bloknot-mashinista-tg\ai-memory`
-- Branch: `main`
-- HEAD: `a096028`
-- Last commit: `a096028 chore(memory): record v388 production deploy`
+- Branch: `codex/new-shift-time-picker-step1`
+- HEAD: `01c6339`
+- Last commit: `01c6339 refine product scope and restore Poekhali`
 
 ## Git Remote
 ```text
@@ -18,41 +18,18 @@ origin	https://github.com/iEgor72/bloknot-mashinista.git (push)
 
 ## Branch Tracking
 ```text
-codex/next-direction b044dd5 offline mvp
-  codex/tabs-ui        117f1fa [origin/codex/tabs-ui] tabs ui
-* main                 a096028 [origin/main] chore(memory): record v388 production deploy
-  poekhali-rework      2d5f0af chore(memory): refresh after main merge
++ codex/new-shift-time-picker-production 39ae27c (C:/Users/shkur/AppData/Local/Temp/bloknot-picker-prod-20260727) [origin/main: behind 1] refine: remove shift timeline and loop time picker
+* codex/new-shift-time-picker-step1      01c6339 refine product scope and restore Poekhali
+  codex/next-direction                   b044dd5 offline mvp
+  codex/tabs-ui                          117f1fa [origin/codex/tabs-ui] tabs ui
+  main                                   b66833b [origin/main: behind 7] fix: lowercase homepage rotation phrases
+  poekhali-rework                        2d5f0af chore(memory): refresh after main merge
 ```
 
 ## Worktree
 ```text
 M ai-memory/CHANGELOG.md
- M ai-memory/INDEX.md
- M ai-memory/PROJECT_STATE.md
- M ai-memory/RECENT_COMMITS.md
- M ai-memory/WORKTREE_STATUS.md
- M ai-memory/sessions/2026-07-18.md
- M index.html
- M manifest.webmanifest
- M scripts/app-constants.js
- M scripts/app-init.js
- M scripts/app.js
- M scripts/auth.js
- M scripts/offline-smoke.mjs
- M scripts/poekhali-backup.js
- M scripts/poekhali-map-parser.js
- M scripts/poekhali-tracker.js
- M scripts/poekhali-utils.js
- M scripts/poekhali-warnings.js
- M scripts/render.js
- M scripts/setup-bot-webhook.py
- M scripts/shift-form.js
- M scripts/sw-update-smoke.mjs
- M scripts/time-utils.js
- M server.js
- M sw.js
- M tests/server/api.test.js
-?? sw-bootstrap-v389.js
+ M ai-memory/sessions/2026-08-11.md
 ```
 <!-- AUTO_STATUS:END -->
 

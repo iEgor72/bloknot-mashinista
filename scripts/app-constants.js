@@ -4,7 +4,6 @@
 
     var SHIFT_TRACKER_REQUIRED_RUNTIME_MODULES = [
       'auth',
-      'analytics',
       'time-utils',
       'app',
       'poekhali-utils',

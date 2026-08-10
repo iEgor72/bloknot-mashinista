@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 """
 Run on VPS: python3 scripts/setup-bot-webhook.py
-Registers webhook, sets menu button, sets commands.
+Registers webhook, sets the menu button, and removes legacy commands.
 Reads TELEGRAM_BOT_TOKEN from .env file.
 """
 import urllib.request, urllib.parse, json, os, sys
@@ -54,10 +54,14 @@ def set_menu_button():
         }
     })
 
+def clear_commands():
+    return tg('deleteMyCommands', {})
+
 if '--menu-only' in sys.argv:
-    print(f'Updating Telegram menu button to {APP_RELEASE_VERSION}...')
-    result = set_menu_button()
-    sys.exit(0 if result.get('ok') else 1)
+    print(f'Updating Telegram menu button to {APP_RELEASE_VERSION} and clearing commands...')
+    menu_result = set_menu_button()
+    commands_result = clear_commands()
+    sys.exit(0 if menu_result.get('ok') and commands_result.get('ok') else 1)
 
 print('=== Setting up Telegram bot ===\n')
 
@@ -81,17 +85,7 @@ tg('getWebhookInfo')
 print('4. Setting menu button (mini-app)...')
 set_menu_button()
 
-print('5. Setting bot commands...')
-tg('setMyCommands', {
-    'commands': [
-        {'command': 'start', 'description': 'Открыть мини-апп'},
-        {'command': 'help',  'description': 'Помощь и ссылки'},
-        {'command': 'news',  'description': 'Новости проекта'},
-        {'command': 'chat',  'description': 'Обсуждение и обратная связь'},
-        {'command': 'bug',   'description': 'Сообщить о проблеме'},
-        {'command': 'idea',  'description': 'Предложить идею'},
-        {'command': 'myid',  'description': 'Показать Telegram ID'},
-    ]
-})
+print('5. Removing bot commands...')
+clear_commands()
 
 print('\nDone.')

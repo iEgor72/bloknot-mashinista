@@ -94,102 +94,6 @@ if (window.__SHIFT_TRACKER_RUNTIME_GUARD_PENDING) {
   apply();
 })();
 
-// Community links — one place that connects the PWA, bot, news channel and discussion group.
-(function bindCommunitySheet() {
-  var btn = document.getElementById('btnProfileCommunity');
-  var closeBtn = document.getElementById('btnCloseCommunity');
-  var overlay = document.getElementById('overlayCommunity');
-  var linksLoaded = false;
-  var fallbackLinks = {
-    appUrl: window.location && window.location.origin ? window.location.origin : 'https://bloknot-mashinista-bot.ru',
-    siteUrl: 'https://bloknot-mashinista-bot.ru',
-    botUrl: 'https://t.me/bloknot_mashinista_bot',
-    newsChannelUrl: '',
-    discussionChatUrl: ''
-  };
-
-  function setLink(kind, url) {
-    var el = document.querySelector('[data-community-link="' + kind + '"]');
-    if (!el) return;
-    if (!url) {
-      el.classList.add('hidden');
-      el.setAttribute('aria-hidden', 'true');
-      el.setAttribute('tabindex', '-1');
-      return;
-    }
-    el.href = url;
-    el.classList.remove('hidden');
-    el.removeAttribute('aria-hidden');
-    el.removeAttribute('tabindex');
-  }
-
-  function applyLinks(data) {
-    var links = data || fallbackLinks;
-    setLink('bot', links.botUrl || fallbackLinks.botUrl);
-    setLink('news', links.newsChannelUrl || '');
-    setLink('discussion', links.discussionChatUrl || '');
-    setLink('site', links.siteUrl || links.appUrl || fallbackLinks.siteUrl);
-  }
-
-  function loadLinks() {
-    if (linksLoaded) return Promise.resolve();
-    linksLoaded = true;
-    applyLinks(fallbackLinks);
-    return fetch('/api/community', { cache: 'no-store', credentials: 'same-origin' })
-      .then(function(res) {
-        if (!res || !res.ok) throw new Error('community links unavailable');
-        return res.json();
-      })
-      .then(function(data) {
-        applyLinks(data);
-      })
-      .catch(function() {
-        applyLinks(fallbackLinks);
-      });
-  }
-
-  function close() {
-    if (typeof closeOverlay === 'function') closeOverlay('overlayCommunity');
-    else if (overlay) {
-      overlay.classList.remove('is-open', 'visible');
-      if (typeof window.__shiftTrackerSyncOverlayUiState === 'function') window.__shiftTrackerSyncOverlayUiState();
-      else if (document.body) document.body.classList.remove('has-open-overlay');
-    }
-  }
-
-  if (btn) {
-    btn.addEventListener('click', function() {
-      loadLinks();
-      if (typeof openOverlay === 'function') openOverlay('overlayCommunity');
-      else if (overlay) {
-        overlay.classList.add('is-open', 'visible');
-        if (typeof window.__shiftTrackerSyncOverlayUiState === 'function') window.__shiftTrackerSyncOverlayUiState();
-        else if (document.body) document.body.classList.add('has-open-overlay');
-      }
-    });
-  }
-  if (closeBtn) closeBtn.addEventListener('click', close);
-  if (overlay) {
-    overlay.addEventListener('click', function(e) {
-      if (e.target === overlay) close();
-    });
-  }
-
-  document.addEventListener('click', function(e) {
-    var link = e.target && e.target.closest ? e.target.closest('[data-community-link]') : null;
-    if (!link || link.classList.contains('hidden')) return;
-    var href = link.getAttribute('href') || '';
-    if (!/^https:\/\/t\.me\//i.test(href)) return;
-    try {
-      var tg = window.Telegram && window.Telegram.WebApp;
-      if (tg && typeof tg.openTelegramLink === 'function') {
-        e.preventDefault();
-        tg.openTelegramLink(href);
-      }
-    } catch (err) {}
-  });
-})();
-
 // Notifications system — backed by localStorage, surfaced via the top-bar bell.
 (function bindNotifications() {
   var STORAGE_KEY = 'shift_tracker_notifications_v1';
@@ -686,10 +590,10 @@ if (window.__SHIFT_TRACKER_RUNTIME_GUARD_PENDING) {
   if (!titleEl || !subEl || !bar) return;
   var BAR_BY_TAB = {
     home:         { title: 'Блокнот машиниста', sub: '' },
-    poekhali:     { title: 'Поехали',           sub: 'Режим реального времени' },
     add:          { title: 'Новая смена',       sub: 'Сначала только время' },
     instructions: { title: 'Документы',         sub: 'Локальная библиотека' },
-    shifts:       { title: 'Смены',             sub: 'Журнал поездок' },
+    shifts:       { title: 'Смены',             sub: 'Журнал и часы' },
+    poekhali:     { title: 'Поехали',            sub: 'Режим реального времени' },
     profile:      { title: 'Профиль',           sub: 'Личный кабинет' }
   };
   function getUserLabel() {
@@ -720,23 +624,17 @@ if (window.__SHIFT_TRACKER_RUNTIME_GUARD_PENDING) {
       subEl.textContent = sub;
       subEl.classList.remove('hidden');
     } else {
-      // No subtitle for this tab (e.g. Поехали) — hide it rather than show a
-      // placeholder dash.
       subEl.textContent = '';
       subEl.classList.add('hidden');
     }
     bar.setAttribute('data-tab', tab);
     bar.classList.remove('hidden');
-    // Swap top-bar trailing icon: show GPS chip on Poekhali, bell elsewhere.
-    var bellEl = document.getElementById('appTopBarBell');
     var gpsEl = document.getElementById('appTopBarGps');
-    if (bellEl) bellEl.classList.toggle('hidden', tab === 'poekhali');
-    if (gpsEl)  gpsEl.classList.toggle('hidden', tab !== 'poekhali');
     var wayEl = document.getElementById('appTopBarWay');
+    if (gpsEl) gpsEl.classList.toggle('hidden', tab !== 'poekhali');
     if (wayEl) wayEl.classList.toggle('hidden', tab !== 'poekhali');
   }
 
-  // Top-bar Путь chip → proxy click to legacy btnPoekhaliWay; mirror its label.
   (function bindWayChip() {
     var wayChip = document.getElementById('appTopBarWay');
     var wayValueEl = document.getElementById('appTopBarWayValue');
@@ -749,16 +647,12 @@ if (window.__SHIFT_TRACKER_RUNTIME_GUARD_PENDING) {
       var legacy = document.getElementById('btnPoekhaliWay');
       if (!legacy || !wayValueEl) return;
       var text = (legacy.textContent || '').trim();
-      if (!text) return;
-      // Normalise "П:1" → "П 1"
-      wayValueEl.textContent = text.replace(':', ' ');
+      if (text) wayValueEl.textContent = text.replace(':', ' ');
     }
     syncWayLabel();
     window.setInterval(syncWayLabel, 1000);
   })();
 
-  // Top-bar GPS chip → re-kick the always-on GPS watch. A route-linked field
-  // capture is automatic and local-only; its state is mirrored by the HUD.
   (function bindGpsChip() {
     var gpsChip = document.getElementById('appTopBarGps');
     if (!gpsChip) return;
@@ -767,6 +661,7 @@ if (window.__SHIFT_TRACKER_RUNTIME_GUARD_PENDING) {
       if (legacy) legacy.click();
     });
   })();
+
   // Profile panel identity — Telegram fallback + editable name, role, depot, avatar.
   (function bindProfileIdentity() {
     var PROFILE_KEY = 'shift_tracker_profile_v1';
@@ -1153,6 +1048,10 @@ if (window.__SHIFT_TRACKER_RUNTIME_GUARD_PENDING) {
   // Initial
   var initial = document.querySelector('.tab-panel.active');
   applyForTab(initial ? initial.getAttribute('data-tab') : 'home');
+  window.addEventListener('app:tabchange', function(e) {
+    var detail = e && e.detail ? e.detail : {};
+    applyForTab(detail.tab || 'home');
+  });
   // Track tab clicks (capture phase so it runs after setActiveTab)
   document.addEventListener('click', function(e) {
     var btn = e.target.closest && e.target.closest('.tab-btn[data-tab]');
@@ -1293,7 +1192,7 @@ if (window.__SHIFT_TRACKER_RUNTIME_GUARD_PENDING) {
     else if (locoNumber) locoStr = '№ ' + locoNumber;
     var set = function(id, val) { var el = document.getElementById(id); if (el) el.textContent = val; };
     set('trkPlateLoco', locoStr || '—');
-    set('trkPlateTrain', s.train_number ? ('поезд №' + s.train_number) : 'нет активной смены');
+    set('trkPlateTrain', s.train_number ? ('поезд №' + s.train_number) : (s.id ? 'смена выбрана' : 'нет активной смены'));
     var weightEl = document.getElementById('trkPlateWeight');
     if (weightEl) weightEl.innerHTML = (s.train_weight ? ruNum(s.train_weight) : '—') + '<span class="u">т</span>';
     set('trkPlateAxles', s.train_axles ? String(s.train_axles) : '—');
