@@ -1,4 +1,4 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="ru" style="background-color:#0C0C10">
 <head>
   <meta charset="UTF-8" />
@@ -1289,14 +1289,23 @@
         </button>
 
         <div class="profile-section-title">Ваш блокнот</div>
-        <div class="profile-summary-grid" aria-label="Сводка по записанным сменам">
-          <div class="profile-summary-item">
-            <span class="profile-summary-value" id="profileShiftCount">0</span>
-            <span class="profile-summary-label">Смен записано</span>
+        <div class="profile-summary-card" id="profileSummaryCard" aria-label="Сводка по записанным сменам">
+          <span class="profile-summary-icon" aria-hidden="true">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M7 3v3m10-3v3M4.5 9h15M6 5h12a2 2 0 0 1 2 2v11.5a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V7a2 2 0 0 1 2-2Z"></path>
+              <path d="M8 13h3v3H8z"></path>
+            </svg>
+          </span>
+          <div class="profile-summary-metric profile-summary-metric-shifts">
+            <div class="profile-summary-line">
+              <span class="profile-summary-value" id="profileShiftCount">0</span>
+              <span class="profile-summary-unit" id="profileShiftCountUnit">смен</span>
+            </div>
           </div>
-          <div class="profile-summary-item">
-            <span class="profile-summary-value" id="profileWorkedTotal">0ч</span>
-            <span class="profile-summary-label">Всего часов</span>
+          <span class="profile-summary-divider" aria-hidden="true"></span>
+          <div class="profile-summary-metric profile-summary-metric-hours">
+            <span class="profile-summary-value" id="profileWorkedTotal">0 ч</span>
+            <span class="profile-summary-caption">за всё время</span>
           </div>
         </div>
 
@@ -1529,7 +1538,7 @@
         <div class="settings-row settings-row-stack">
           <div>
             <div class="settings-label">Профсоюзные взносы (%)</div>
-            <div class="settings-note">В ваших листках — около 1%. Укажите 0, если взноса нет</div>
+            <div class="settings-note">Укажите установленный процент или 0, если взноса нет</div>
           </div>
           <div class="settings-inline-field">
             <input class="settings-input compact" id="settingUnionPercent" type="number" min="0" max="100" step="0.1" inputmode="decimal" />
@@ -1539,7 +1548,7 @@
         <div class="settings-row settings-row-stack">
           <div>
             <div class="settings-label">НПФ «Благосостояние» (%)</div>
-            <div class="settings-note">В ваших листках — около 1,5%. Зависит от схемы, пола и возраста вступления</div>
+            <div class="settings-note">Укажите процент по условиям вашей пенсионной схемы</div>
           </div>
           <div class="settings-inline-field">
             <input class="settings-input compact" id="settingWelfarePercent" type="number" min="0" max="100" step="0.1" inputmode="decimal" />
@@ -1860,25 +1869,25 @@
       } catch (error) {}
     }, true);
   </script>
-  <script src="/scripts/app-constants.js?v=v393" defer></script>
+  <script src="/scripts/app-constants.js?v=v394" defer></script>
   <script src="/scripts/glass-select.js" defer></script>
-  <script src="/scripts/auth.js?v=v393" defer></script>
+  <script src="/scripts/auth.js?v=v394" defer></script>
   <script src="/scripts/viewport.js" defer></script>
-  <script src="/scripts/time-utils.js?v=v393" defer></script>
+  <script src="/scripts/time-utils.js?v=v394" defer></script>
   <script src="/scripts/docs-app.js" defer></script>
   <script src="/scripts/telegram-sdk-loader.js" defer></script>
-  <script src="/scripts/app.js?v=v393" defer></script>
-  <script src="/scripts/poekhali-utils.js?v=v393" defer></script>
-  <script src="/scripts/poekhali-map-parser.js?v=v393" defer></script>
-  <script src="/scripts/poekhali-warnings.js?v=v393" defer></script>
-  <script src="/scripts/poekhali-backup.js?v=v393" defer></script>
-  <script src="/scripts/poekhali-tracker.js?v=v393" defer></script>
-  <script src="/scripts/render.js?v=v393" defer></script>
-  <script src="/scripts/shift-form.js?v=v393" defer></script>
+  <script src="/scripts/app.js?v=v394" defer></script>
+  <script src="/scripts/poekhali-utils.js?v=v394" defer></script>
+  <script src="/scripts/poekhali-map-parser.js?v=v394" defer></script>
+  <script src="/scripts/poekhali-warnings.js?v=v394" defer></script>
+  <script src="/scripts/poekhali-backup.js?v=v394" defer></script>
+  <script src="/scripts/poekhali-tracker.js?v=v394" defer></script>
+  <script src="/scripts/render.js?v=v394" defer></script>
+  <script src="/scripts/shift-form.js?v=v394" defer></script>
   <script src="/scripts/datetime-picker.js?v=shift-ui-4" defer></script>
-  <script src="/scripts/app-init.js?v=v393" defer></script>
-  <script src="/scripts/sw-register.js?v=v393" defer></script>
-  <script src="/sw-bootstrap-v393.js" defer></script>
+  <script src="/scripts/app-init.js?v=v394" defer></script>
+  <script src="/scripts/sw-register.js?v=v394" defer></script>
+  <script src="/sw-bootstrap-v394.js" defer></script>
   <script src="/scripts/utils/haptics.js" defer></script>
   <script src="/scripts/press-feedback.js" defer></script>
   <script src="/scripts/nav-debug.js" defer></script>

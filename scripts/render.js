@@ -1,4 +1,4 @@
-    if (typeof registerShiftTrackerRuntimeModule === 'function') registerShiftTrackerRuntimeModule('render', 'v393');
+    if (typeof registerShiftTrackerRuntimeModule === 'function') registerShiftTrackerRuntimeModule('render', 'v394');
 
     function buildShiftItemHtml(sh, compact, pendingMap, shiftIncomeMap, durationBounds, durationLevelMap, latestManualShiftId) {
       var p = getShiftDisplayParts(sh);
@@ -921,9 +921,23 @@
         totalMinutes += shiftTotalMinutes(shift);
       }
       var countEl = document.getElementById('profileShiftCount');
+      var countUnitEl = document.getElementById('profileShiftCountUnit');
       var totalEl = document.getElementById('profileWorkedTotal');
+      var summaryEl = document.getElementById('profileSummaryCard');
+      var countMod100 = count % 100;
+      var countMod10 = count % 10;
+      var countUnit = 'смен';
+      if (countMod100 < 11 || countMod100 > 14) {
+        if (countMod10 === 1) countUnit = 'смена';
+        else if (countMod10 >= 2 && countMod10 <= 4) countUnit = 'смены';
+      }
+      var workedHours = Math.floor(totalMinutes / 60);
+      var workedMinutes = totalMinutes % 60;
+      var workedText = workedHours + ' ч' + (workedMinutes ? ' ' + workedMinutes + ' мин' : '');
       if (countEl) countEl.textContent = String(count);
-      if (totalEl) totalEl.textContent = fmtMin(totalMinutes);
+      if (countUnitEl) countUnitEl.textContent = countUnit;
+      if (totalEl) totalEl.textContent = workedText;
+      if (summaryEl) summaryEl.setAttribute('aria-label', count + ' ' + countUnit + ', ' + workedText + ' за всё время');
     }
 
     function render() {

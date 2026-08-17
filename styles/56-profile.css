@@ -77,38 +77,109 @@
   margin: 18px 4px 8px;
 }
 
-.profile-summary-grid {
+.profile-summary-card {
   display: grid;
-  grid-template-columns: repeat(2, minmax(0, 1fr));
-  gap: 10px;
+  grid-template-columns: 40px minmax(74px, 0.8fr) 1px minmax(118px, 1.2fr);
+  align-items: center;
+  gap: 14px;
+  min-height: 76px;
+  padding: 14px 16px;
+  border: 1px solid var(--hair, rgba(255, 255, 255, 0.08));
+  border-radius: var(--radius, 18px);
+  background: var(--bg-rise, #16161c);
 }
 
-.profile-summary-item {
+.profile-summary-icon {
+  width: 40px;
+  height: 40px;
+  border-radius: 12px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--accent, #38bdf8);
+  background: color-mix(in oklch, var(--accent, #38bdf8) 12%, transparent);
+}
+
+.profile-summary-icon svg {
+  display: block;
+  width: 22px;
+  height: 22px;
+}
+
+.profile-summary-metric {
   min-width: 0;
-  padding: 15px 16px;
-  border: 1px solid var(--hair, rgba(255, 255, 255, 0.08));
-  border-radius: 16px;
-  background: var(--bg-rise, #16161c);
+}
+
+.profile-summary-metric-hours {
   display: flex;
   flex-direction: column;
+  gap: 3px;
+}
+
+.profile-summary-line {
+  display: flex;
+  align-items: baseline;
   gap: 4px;
+  min-width: 0;
+  white-space: nowrap;
+}
+
+.profile-summary-divider {
+  width: 1px;
+  height: 42px;
+  background: var(--hair, rgba(255, 255, 255, 0.08));
 }
 
 .profile-summary-value {
-  overflow: hidden;
   color: var(--ink, #eef2f8);
   font-family: 'Golos Text', system-ui, sans-serif;
   font-size: 20px;
   font-weight: 800;
   line-height: 1.1;
-  text-overflow: ellipsis;
+  font-variant-numeric: tabular-nums;
   white-space: nowrap;
 }
 
-.profile-summary-label {
+.profile-summary-unit {
+  color: var(--ink, #eef2f8);
+  font-size: 15px;
+  font-weight: 700;
+  line-height: 1.1;
+}
+
+.profile-summary-caption {
   color: var(--ink-3, #8b93a7);
-  font-size: 12.5px;
-  line-height: 1.25;
+  font-size: 12px;
+  line-height: 1.2;
+  white-space: nowrap;
+}
+
+@media (max-width: 359px) {
+  .profile-summary-card {
+    grid-template-columns: 36px minmax(62px, 0.75fr) 1px minmax(104px, 1.25fr);
+    gap: 10px;
+    min-height: 70px;
+    padding: 12px;
+  }
+
+  .profile-summary-icon {
+    width: 36px;
+    height: 36px;
+    border-radius: 11px;
+  }
+
+  .profile-summary-icon svg {
+    width: 20px;
+    height: 20px;
+  }
+
+  .profile-summary-value {
+    font-size: 17px;
+  }
+
+  .profile-summary-unit {
+    font-size: 13px;
+  }
 }
 
 /* Cards group rows */

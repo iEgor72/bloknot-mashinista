@@ -423,6 +423,17 @@ async function main() {
   }, 'app shell visible');
   report.checks.appShellVisible = true;
 
+  const profileSummaryContract = await page.evaluate(() => ({
+    cardPresent: !!document.getElementById('profileSummaryCard'),
+    iconPresent: !!document.querySelector('#profileSummaryCard .profile-summary-icon svg'),
+    dividerPresent: !!document.querySelector('#profileSummaryCard .profile-summary-divider'),
+    shiftValuePresent: !!document.getElementById('profileShiftCount'),
+    shiftUnitPresent: !!document.getElementById('profileShiftCountUnit'),
+    workedTotalPresent: !!document.getElementById('profileWorkedTotal'),
+  }));
+  report.checks.profileSummary = profileSummaryContract;
+  assert(Object.values(profileSummaryContract).every(Boolean), 'profile summary uses the compact grouped layout', profileSummaryContract);
+
   const deductionContract = await page.evaluate(() => {
     const original = {
       unionPercent: appSettings.unionPercent,
