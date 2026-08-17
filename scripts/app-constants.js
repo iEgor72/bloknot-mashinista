@@ -1,6 +1,6 @@
     // ── Constants ──
     // Держите в синхроне с CACHE_VERSION в sw.js — показывается на главной рядом со статистикой пользователей.
-    var SHELL_CACHE_VERSION = 'v395';
+    var SHELL_CACHE_VERSION = 'v396';
 
     var SHIFT_TRACKER_REQUIRED_RUNTIME_MODULES = [
       'auth',
@@ -135,7 +135,7 @@
           var moduleName = SHIFT_TRACKER_REQUIRED_RUNTIME_MODULES[i];
           var actualVersion = String(modules[moduleName] || '');
           if (actualVersion !== SHELL_CACHE_VERSION) {
-            var scriptPath = '/scripts/' + moduleName + '.js';
+            var scriptPath = '/scripts/' + SHELL_CACHE_VERSION + '/' + moduleName + '.js';
             mismatches.push({
               module: moduleName,
               expected: SHELL_CACHE_VERSION,

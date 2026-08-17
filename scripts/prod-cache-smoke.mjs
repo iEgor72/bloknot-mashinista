@@ -97,13 +97,13 @@ async function main() {
   };
 
   for (const scriptPath of [
-    `/scripts/app-constants.js?v=${version}`,
-    `/scripts/auth.js?v=${version}`,
-    `/scripts/time-utils.js?v=${version}`,
-    `/scripts/app.js?v=${version}`,
-    `/scripts/render.js?v=${version}`,
-    `/scripts/app-init.js?v=${version}`,
-    `/scripts/sw-register.js?v=${version}`,
+    `/scripts/${version}/app-constants.js`,
+    `/scripts/${version}/auth.js`,
+    `/scripts/${version}/time-utils.js`,
+    `/scripts/${version}/app.js`,
+    `/scripts/${version}/render.js`,
+    `/scripts/${version}/app-init.js`,
+    `/scripts/${version}/sw-register.js`,
     `/sw-bootstrap-${version}.js`,
   ]) {
     assertIncludes(root.text, scriptPath, 'root HTML');
@@ -115,20 +115,20 @@ async function main() {
   assertIncludes(profileStyle.text, '.profile-summary-card', 'versioned profile stylesheet');
   assertIncludes(profileStyle.text, '.profile-summary-icon svg', 'versioned profile stylesheet');
 
-  const constants = await fetchText(`${baseUrl}/scripts/app-constants.js?v=${version}`);
+  const constants = await fetchText(`${baseUrl}/scripts/${version}/app-constants.js`);
   assertOk(constants, 'versioned app constants');
   assertHeaderIncludes(constants.headers, 'cache-control', 'no-store', 'versioned app constants');
   assertIncludes(constants.text, `SHELL_CACHE_VERSION = '${version}'`, 'versioned app constants');
 
-  const auth = await fetchText(`${baseUrl}/scripts/auth.js?v=${version}`);
+  const auth = await fetchText(`${baseUrl}/scripts/${version}/auth.js`);
   assertOk(auth, 'versioned auth runtime');
   assertHeaderIncludes(auth.headers, 'cache-control', 'no-store', 'versioned auth runtime');
 
-  const app = await fetchText(`${baseUrl}/scripts/app.js?v=${version}`);
+  const app = await fetchText(`${baseUrl}/scripts/${version}/app.js`);
   assertOk(app, 'versioned app runtime');
   assertHeaderIncludes(app.headers, 'cache-control', 'no-store', 'versioned app runtime');
 
-  const timeUtils = await fetchText(`${baseUrl}/scripts/time-utils.js?v=${version}`);
+  const timeUtils = await fetchText(`${baseUrl}/scripts/${version}/time-utils.js`);
   assertOk(timeUtils, 'versioned time utils runtime');
   assertHeaderIncludes(timeUtils.headers, 'cache-control', 'no-store', 'versioned time utils runtime');
   assertIncludes(timeUtils.text, "ruNum(ft.consumptionKg) + ' кг'", 'versioned time utils runtime');
@@ -136,12 +136,12 @@ async function main() {
     throw new Error('Versioned time utils runtime still renders shift-card consumption in liters');
   }
 
-  const render = await fetchText(`${baseUrl}/scripts/render.js?v=${version}`);
+  const render = await fetchText(`${baseUrl}/scripts/${version}/render.js`);
   assertOk(render, 'versioned render runtime');
   assertHeaderIncludes(render.headers, 'cache-control', 'no-store', 'versioned render runtime');
   assertIncludes(render.text, "formatFuelKgSignedValue(totals.consumptionKg) + ' кг'", 'versioned render runtime');
 
-  const appInit = await fetchText(`${baseUrl}/scripts/app-init.js?v=${version}`);
+  const appInit = await fetchText(`${baseUrl}/scripts/${version}/app-init.js`);
   assertOk(appInit, 'versioned app init');
   assertHeaderIncludes(appInit.headers, 'cache-control', 'no-store', 'versioned app init');
   assertIncludes(appInit.text, 'offline_mode_fixed_2026_06_v2', 'versioned app init');
@@ -155,7 +155,7 @@ async function main() {
   assertHeaderIncludes(sw.headers, 'cache-control', 'no-store', 'versioned service worker');
   assertIncludes(sw.text, `CACHE_VERSION = '${version}'`, 'versioned service worker');
 
-  const swRegister = await fetchText(`${baseUrl}/scripts/sw-register.js?v=${version}`);
+  const swRegister = await fetchText(`${baseUrl}/scripts/${version}/sw-register.js`);
   assertOk(swRegister, 'versioned service worker register');
   assertHeaderIncludes(swRegister.headers, 'cache-control', 'no-store', 'versioned service worker register');
   assertIncludes(swRegister.text, 'checkLiveShellVersion', 'versioned service worker register');

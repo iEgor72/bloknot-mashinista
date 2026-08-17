@@ -141,6 +141,7 @@ const PUBLIC_TOP_LEVEL_FILES = new Set([
   'sw-bootstrap-v392.js',
   'sw-bootstrap-v394.js',
   'sw-bootstrap-v395.js',
+  'sw-bootstrap-v396.js',
   'apple-touch-icon.png',
   'icon-192.png',
   'icon-512.png',
@@ -2095,7 +2096,7 @@ function readBodyWithLimit(req, maxBytes) {
   });
 }
 
-const APP_RELEASE_VERSION = 'v395';
+const APP_RELEASE_VERSION = 'v396';
 const APP_URL = PUBLIC_SITE_URL;
 const TELEGRAM_APP_URL = buildVersionedAppUrl('/');
 
@@ -2800,9 +2801,21 @@ const server = http.createServer(async (req, res) => {
     return;
   }
 
-  const versionedStyleMatch = normalized.match(/^\/styles\/v\d+\/([A-Za-z0-9._-]+\.css)$/);
-  if (versionedStyleMatch) {
-    normalized = `/styles/${versionedStyleMatch[1]}`;
+  const versionedShellMatch = normalized.match(/^\/(styles|scripts)\/v\d+\/(.+)$/);
+  if (versionedShellMatch) {
+    const namespace = versionedShellMatch[1];
+    const relativePath = versionedShellMatch[2];
+    const safeSegments = relativePath.split('/').every((segment) =>
+      segment && segment !== '.' && segment !== '..' && /^[A-Za-z0-9._-]+$/.test(segment)
+    );
+    const validExtension = namespace === 'styles'
+      ? relativePath.endsWith('.css')
+      : /\.(?:js|mjs)$/.test(relativePath);
+    if (!safeSegments || !validExtension) {
+      sendText(res, 404, 'Not found');
+      return;
+    }
+    normalized = `/${namespace}/${relativePath}`;
   }
 
   const filePath = path.join(ROOT, normalized);

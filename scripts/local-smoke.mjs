@@ -452,6 +452,15 @@ async function main() {
     profileSummaryContract.iconHeight > 0 && profileSummaryContract.iconHeight <= 48,
   'profile summary stylesheet keeps the card and calendar icon compact', profileSummaryContract);
 
+  const profileAboutContract = await page.evaluate(() => ({
+    userCountUsesSingleLineValue: !!document.querySelector('.profile-row-static > #profileUserCount.profile-row-value'),
+    versionUsesSingleLineValue: !!document.querySelector('.profile-row-static > #profileVersion.profile-row-value'),
+    staticRowsHaveNoSecondaryNotes: !document.querySelector('.profile-row-static .profile-row-note'),
+  }));
+  report.checks.profileAbout = profileAboutContract;
+  assert(Object.values(profileAboutContract).every(Boolean),
+    'profile about rows use compact single-line values without gray subtitles', profileAboutContract);
+
   const deductionContract = await page.evaluate(() => {
     const original = {
       unionPercent: appSettings.unionPercent,
