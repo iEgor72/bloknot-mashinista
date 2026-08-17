@@ -1,4 +1,4 @@
-    if (typeof registerShiftTrackerRuntimeModule === 'function') registerShiftTrackerRuntimeModule('render', 'v396');
+    if (typeof registerShiftTrackerRuntimeModule === 'function') registerShiftTrackerRuntimeModule('render', 'v397');
 
     function buildShiftItemHtml(sh, compact, pendingMap, shiftIncomeMap, durationBounds, durationLevelMap, latestManualShiftId) {
       var p = getShiftDisplayParts(sh);
@@ -607,6 +607,27 @@
       }
     }
 
+    function getShiftOverviewStats(shifts, durationBounds) {
+      var stats = {
+        count: shifts.length,
+        totalMinutes: 0,
+        nightCount: 0,
+        holidayCount: 0
+      };
+      for (var i = 0; i < shifts.length; i++) {
+        var shift = shifts[i];
+        stats.totalMinutes += getShiftMinutesForDisplay(shift, durationBounds);
+        if (typeof inferShiftWorkCodeByLocalTime === 'function' && inferShiftWorkCodeByLocalTime(shift) === 'N') {
+          stats.nightCount += 1;
+        }
+        if (typeof shiftHolidayMinutesInRange === 'function' &&
+            shiftHolidayMinutesInRange(shift, -8640000000000000, 8640000000000000) > 0) {
+          stats.holidayCount += 1;
+        }
+      }
+      return stats;
+    }
+
     function renderShiftList(listEl, headerEl, shifts, compact, emptyText, headerBase, pendingMap, shiftIncomeMap, durationBounds, durationLevelMap) {
       if (!listEl) return;
       setSectionHeaderText(headerEl, headerBase || 'Журнал смен');
@@ -615,12 +636,13 @@
       if (!compact) {
         var overviewCountEl = document.getElementById('shiftsOverviewCount');
         var overviewTotalEl = document.getElementById('shiftsOverviewTotal');
-        if (overviewCountEl) overviewCountEl.textContent = String(shifts.length);
-        if (overviewTotalEl) {
-          var overviewMinutes = 0;
-          for (var om = 0; om < shifts.length; om++) overviewMinutes += getShiftMinutesForDisplay(shifts[om], durationBounds);
-          overviewTotalEl.textContent = fmtMin(overviewMinutes);
-        }
+        var overviewNightCountEl = document.getElementById('shiftsOverviewNightCount');
+        var overviewHolidayCountEl = document.getElementById('shiftsOverviewHolidayCount');
+        var overviewStats = getShiftOverviewStats(shifts, durationBounds);
+        if (overviewCountEl) overviewCountEl.textContent = String(overviewStats.count);
+        if (overviewTotalEl) overviewTotalEl.textContent = fmtMin(overviewStats.totalMinutes);
+        if (overviewNightCountEl) overviewNightCountEl.textContent = String(overviewStats.nightCount);
+        if (overviewHolidayCountEl) overviewHolidayCountEl.textContent = String(overviewStats.holidayCount);
       }
 
       if (!shifts.length) {

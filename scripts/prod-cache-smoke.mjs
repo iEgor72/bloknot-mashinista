@@ -109,6 +109,16 @@ async function main() {
     assertIncludes(root.text, scriptPath, 'root HTML');
   }
   assertIncludes(root.text, `/styles/${version}/56-profile.css`, 'root HTML');
+  assertIncludes(root.text, 'id="shiftsOverviewNightCount"', 'root HTML');
+  assertIncludes(root.text, 'id="shiftsOverviewHolidayCount"', 'root HTML');
+
+  const designStyle = await fetchText(`${baseUrl}/styles/${version}/50-design-refresh.css`);
+  assertOk(designStyle, 'versioned design stylesheet');
+  assertIncludes(designStyle.text, `@import url('/styles/${version}/51-shifts.css')`, 'versioned design stylesheet');
+
+  const shiftsStyle = await fetchText(`${baseUrl}/styles/${version}/51-shifts.css`);
+  assertOk(shiftsStyle, 'versioned shifts stylesheet');
+  assertIncludes(shiftsStyle.text, 'grid-template-columns: repeat(2, minmax(0, 1fr))', 'versioned shifts stylesheet');
 
   const profileStyle = await fetchText(`${baseUrl}/styles/${version}/56-profile.css`);
   assertOk(profileStyle, 'versioned profile stylesheet');
@@ -140,6 +150,9 @@ async function main() {
   assertOk(render, 'versioned render runtime');
   assertHeaderIncludes(render.headers, 'cache-control', 'no-store', 'versioned render runtime');
   assertIncludes(render.text, "formatFuelKgSignedValue(totals.consumptionKg) + ' кг'", 'versioned render runtime');
+  assertIncludes(render.text, 'getShiftOverviewStats', 'versioned render runtime');
+  assertIncludes(render.text, 'shiftsOverviewNightCount', 'versioned render runtime');
+  assertIncludes(render.text, 'shiftsOverviewHolidayCount', 'versioned render runtime');
 
   const appInit = await fetchText(`${baseUrl}/scripts/${version}/app-init.js`);
   assertOk(appInit, 'versioned app init');

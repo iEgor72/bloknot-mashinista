@@ -142,6 +142,7 @@ const PUBLIC_TOP_LEVEL_FILES = new Set([
   'sw-bootstrap-v394.js',
   'sw-bootstrap-v395.js',
   'sw-bootstrap-v396.js',
+  'sw-bootstrap-v397.js',
   'apple-touch-icon.png',
   'icon-192.png',
   'icon-512.png',
@@ -2096,7 +2097,7 @@ function readBodyWithLimit(req, maxBytes) {
   });
 }
 
-const APP_RELEASE_VERSION = 'v396';
+const APP_RELEASE_VERSION = 'v397';
 const APP_URL = PUBLIC_SITE_URL;
 const TELEGRAM_APP_URL = buildVersionedAppUrl('/');
 

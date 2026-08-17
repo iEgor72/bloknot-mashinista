@@ -461,6 +461,30 @@ async function main() {
   assert(Object.values(profileAboutContract).every(Boolean),
     'profile about rows use compact single-line values without gray subtitles', profileAboutContract);
 
+  const shiftsOverviewContract = await page.evaluate(() => {
+    const overview = document.querySelector('.shifts-overview');
+    const stats = getShiftOverviewStats([
+      { id: 'overview-night', start_msk: '2026-02-02T13:00', end_msk: '2026-02-03T01:00' },
+      { id: 'overview-holiday', start_msk: '2026-01-01T08:00', end_msk: '2026-01-01T20:00' },
+      { id: 'overview-day', start_msk: '2026-02-04T08:00', end_msk: '2026-02-04T20:00' },
+    ], null);
+    return {
+      chipCount: overview ? overview.querySelectorAll('.shifts-overview-chip').length : 0,
+      display: overview ? getComputedStyle(overview).display : '',
+      columns: overview ? getComputedStyle(overview).gridTemplateColumns : '',
+      nightValuePresent: !!document.getElementById('shiftsOverviewNightCount'),
+      holidayValuePresent: !!document.getElementById('shiftsOverviewHolidayCount'),
+      stats,
+    };
+  });
+  report.checks.shiftsOverview = shiftsOverviewContract;
+  assert(shiftsOverviewContract.chipCount === 4 && shiftsOverviewContract.display === 'grid' &&
+    /repeat\(2,|^[\d.]+px [\d.]+px$/.test(shiftsOverviewContract.columns) && shiftsOverviewContract.nightValuePresent &&
+    shiftsOverviewContract.holidayValuePresent && shiftsOverviewContract.stats.count === 3 &&
+    shiftsOverviewContract.stats.totalMinutes === 2160 && shiftsOverviewContract.stats.nightCount === 1 &&
+    shiftsOverviewContract.stats.holidayCount === 1,
+  'shifts overview shows correct total, night and holiday shift counts in a two-column grid', shiftsOverviewContract);
+
   const deductionContract = await page.evaluate(() => {
     const original = {
       unionPercent: appSettings.unionPercent,

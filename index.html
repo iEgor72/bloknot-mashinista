@@ -329,58 +329,58 @@
   </style>
   <link
     rel="stylesheet"
-    href="/styles/v396/00-base.css"
+    href="/styles/v397/00-base.css"
   />
   <link
     rel="stylesheet"
-    href="/styles/v396/10-navigation-and-cards.css"
+    href="/styles/v397/10-navigation-and-cards.css"
   />
   <link
     rel="stylesheet"
-    href="/styles/v396/15-bottom-nav.css"
+    href="/styles/v397/15-bottom-nav.css"
   />
   <link
     rel="stylesheet"
-    href="/styles/v396/16-press-feedback.css"
+    href="/styles/v397/16-press-feedback.css"
   />
   <link
     rel="stylesheet"
-    href="/styles/v396/20-form-and-stats.css"
+    href="/styles/v397/20-form-and-stats.css"
   />
   <link
     rel="stylesheet"
-    href="/styles/v396/30-shifts-and-overlays.css"
+    href="/styles/v397/30-shifts-and-overlays.css"
   />
   <link
     rel="stylesheet"
-    href="/styles/v396/40-premium-refresh.css"
+    href="/styles/v397/40-premium-refresh.css"
   />
   <link
     rel="stylesheet"
-    href="/styles/v396/50-design-refresh.css"
+    href="/styles/v397/50-design-refresh.css"
   />
   <link
     rel="stylesheet"
-    href="/styles/v396/56-profile.css"
+    href="/styles/v397/56-profile.css"
   />
   <link
     rel="stylesheet"
-    href="/styles/v396/57-datetime-picker.css"
+    href="/styles/v397/57-datetime-picker.css"
   />
-  <noscript><link rel="stylesheet" href="/styles/v396/00-base.css" /></noscript>
-  <noscript><link rel="stylesheet" href="/styles/v396/10-navigation-and-cards.css" /></noscript>
-  <noscript><link rel="stylesheet" href="/styles/v396/15-bottom-nav.css" /></noscript>
-  <noscript><link rel="stylesheet" href="/styles/v396/16-press-feedback.css" /></noscript>
-  <noscript><link rel="stylesheet" href="/styles/v396/20-form-and-stats.css" /></noscript>
-  <noscript><link rel="stylesheet" href="/styles/v396/30-shifts-and-overlays.css" /></noscript>
-  <noscript><link rel="stylesheet" href="/styles/v396/40-premium-refresh.css" /></noscript>
-  <noscript><link rel="stylesheet" href="/styles/v396/50-design-refresh.css" /></noscript>
-  <noscript><link rel="stylesheet" href="/styles/v396/56-profile.css" /></noscript>
-  <noscript><link rel="stylesheet" href="/styles/v396/57-datetime-picker.css" /></noscript>
+  <noscript><link rel="stylesheet" href="/styles/v397/00-base.css" /></noscript>
+  <noscript><link rel="stylesheet" href="/styles/v397/10-navigation-and-cards.css" /></noscript>
+  <noscript><link rel="stylesheet" href="/styles/v397/15-bottom-nav.css" /></noscript>
+  <noscript><link rel="stylesheet" href="/styles/v397/16-press-feedback.css" /></noscript>
+  <noscript><link rel="stylesheet" href="/styles/v397/20-form-and-stats.css" /></noscript>
+  <noscript><link rel="stylesheet" href="/styles/v397/30-shifts-and-overlays.css" /></noscript>
+  <noscript><link rel="stylesheet" href="/styles/v397/40-premium-refresh.css" /></noscript>
+  <noscript><link rel="stylesheet" href="/styles/v397/50-design-refresh.css" /></noscript>
+  <noscript><link rel="stylesheet" href="/styles/v397/56-profile.css" /></noscript>
+  <noscript><link rel="stylesheet" href="/styles/v397/57-datetime-picker.css" /></noscript>
   <script>
     window.CURRENT_USER = window.CURRENT_USER || null;
   </script>
-  <script src="/scripts/v396/safe-area.js" defer></script>
+  <script src="/scripts/v397/safe-area.js" defer></script>
 </head>
 <body style="background-color:#0C0C10;color:#EEF2F8;margin:0">
   <div class="boot-fallback" id="bootFallback" role="status" aria-live="polite">
@@ -1261,6 +1261,14 @@
               <span class="shifts-overview-label">Отработано</span>
               <span class="shifts-overview-value" id="shiftsOverviewTotal">0 ч</span>
             </div>
+            <div class="shifts-overview-chip shifts-overview-chip-night">
+              <span class="shifts-overview-label">Ночных</span>
+              <span class="shifts-overview-value" id="shiftsOverviewNightCount">0</span>
+            </div>
+            <div class="shifts-overview-chip shifts-overview-chip-holiday">
+              <span class="shifts-overview-label">Праздничных</span>
+              <span class="shifts-overview-value" id="shiftsOverviewHolidayCount">0</span>
+            </div>
           </div>
           <div class="shifts-filters" id="shiftsFilters" role="tablist" aria-label="Фильтр смен">
             <button class="shifts-filter-btn is-on" type="button" data-filter="all" role="tab" aria-selected="true">Все</button>
@@ -1868,27 +1876,27 @@
       } catch (error) {}
     }, true);
   </script>
-  <script src="/scripts/v396/app-constants.js" defer></script>
-  <script src="/scripts/v396/glass-select.js" defer></script>
-  <script src="/scripts/v396/auth.js" defer></script>
-  <script src="/scripts/v396/viewport.js" defer></script>
-  <script src="/scripts/v396/time-utils.js" defer></script>
-  <script src="/scripts/v396/docs-app.js" defer></script>
-  <script src="/scripts/v396/telegram-sdk-loader.js" defer></script>
-  <script src="/scripts/v396/app.js" defer></script>
-  <script src="/scripts/v396/poekhali-utils.js" defer></script>
-  <script src="/scripts/v396/poekhali-map-parser.js" defer></script>
-  <script src="/scripts/v396/poekhali-warnings.js" defer></script>
-  <script src="/scripts/v396/poekhali-backup.js" defer></script>
-  <script src="/scripts/v396/poekhali-tracker.js" defer></script>
-  <script src="/scripts/v396/render.js" defer></script>
-  <script src="/scripts/v396/shift-form.js" defer></script>
-  <script src="/scripts/v396/datetime-picker.js" defer></script>
-  <script src="/scripts/v396/app-init.js" defer></script>
-  <script src="/scripts/v396/sw-register.js" defer></script>
-  <script src="/sw-bootstrap-v396.js" defer></script>
-  <script src="/scripts/v396/utils/haptics.js" defer></script>
-  <script src="/scripts/v396/press-feedback.js" defer></script>
-  <script src="/scripts/v396/nav-debug.js" defer></script>
+  <script src="/scripts/v397/app-constants.js" defer></script>
+  <script src="/scripts/v397/glass-select.js" defer></script>
+  <script src="/scripts/v397/auth.js" defer></script>
+  <script src="/scripts/v397/viewport.js" defer></script>
+  <script src="/scripts/v397/time-utils.js" defer></script>
+  <script src="/scripts/v397/docs-app.js" defer></script>
+  <script src="/scripts/v397/telegram-sdk-loader.js" defer></script>
+  <script src="/scripts/v397/app.js" defer></script>
+  <script src="/scripts/v397/poekhali-utils.js" defer></script>
+  <script src="/scripts/v397/poekhali-map-parser.js" defer></script>
+  <script src="/scripts/v397/poekhali-warnings.js" defer></script>
+  <script src="/scripts/v397/poekhali-backup.js" defer></script>
+  <script src="/scripts/v397/poekhali-tracker.js" defer></script>
+  <script src="/scripts/v397/render.js" defer></script>
+  <script src="/scripts/v397/shift-form.js" defer></script>
+  <script src="/scripts/v397/datetime-picker.js" defer></script>
+  <script src="/scripts/v397/app-init.js" defer></script>
+  <script src="/scripts/v397/sw-register.js" defer></script>
+  <script src="/sw-bootstrap-v397.js" defer></script>
+  <script src="/scripts/v397/utils/haptics.js" defer></script>
+  <script src="/scripts/v397/press-feedback.js" defer></script>
+  <script src="/scripts/v397/nav-debug.js" defer></script>
 </body>
 </html>

@@ -385,14 +385,13 @@
 
 /* ── Shifts overview chips ──────────────────────────────────────── */
 .shifts-overview {
-  display: flex;
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
   gap: 8px;
   padding: 4px 0;
   margin-bottom: 8px;
-  overflow-x: auto;
 }
 .shifts-overview-chip {
-  flex: 0 0 auto;
   padding: 10px 14px;
   border-radius: 14px;
   background:
@@ -403,6 +402,7 @@
   flex-direction: column;
   gap: 4px;
   border: 0;
+  min-width: 0;
 }
 .shifts-overview-label {
   font: 600 9px/1 'Golos Text', system-ui, sans-serif;
