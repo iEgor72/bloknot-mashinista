@@ -98,6 +98,19 @@ test('public contact surface points only to the Telegram bot', async () => {
   assert.doesNotMatch(routesSource, /landing-salary-screen\.jpg|калькулятор зарплаты/i);
 });
 
+test('versioned style namespace serves the current shell stylesheet', async () => {
+  const response = await fetch(baseUrl + '/styles/v395/56-profile.css');
+  const source = await response.text();
+  assert.equal(response.status, 200);
+  assert.match(response.headers.get('content-type') || '', /text\/css/i);
+  assert.match(source, /\.profile-summary-card/);
+  assert.match(source, /\.profile-summary-icon svg/);
+
+  const previousBootstrap = await fetch(baseUrl + '/sw-bootstrap-v394.js');
+  assert.equal(previousBootstrap.status, 200);
+  assert.match(await previousBootstrap.text(), /var version = 'v394'/);
+});
+
 test('Telegram welcome message advertises only the current product scope', () => {
   const welcome = application.buildWelcomeMessage(42, 'Иван');
   assert.match(welcome.photo, /\/assets\/welcome-promo-v392\.png$/);

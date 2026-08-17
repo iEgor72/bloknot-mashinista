@@ -423,16 +423,34 @@ async function main() {
   }, 'app shell visible');
   report.checks.appShellVisible = true;
 
-  const profileSummaryContract = await page.evaluate(() => ({
-    cardPresent: !!document.getElementById('profileSummaryCard'),
-    iconPresent: !!document.querySelector('#profileSummaryCard .profile-summary-icon svg'),
-    dividerPresent: !!document.querySelector('#profileSummaryCard .profile-summary-divider'),
-    shiftValuePresent: !!document.getElementById('profileShiftCount'),
-    shiftUnitPresent: !!document.getElementById('profileShiftCountUnit'),
-    workedTotalPresent: !!document.getElementById('profileWorkedTotal'),
-  }));
+  const profileSummaryContract = await page.evaluate(() => {
+    const card = document.getElementById('profileSummaryCard');
+    const icon = document.querySelector('#profileSummaryCard .profile-summary-icon svg');
+    const cardStyle = card ? getComputedStyle(card) : null;
+    const iconStyle = icon ? getComputedStyle(icon) : null;
+    return {
+      cardPresent: !!card,
+      iconPresent: !!icon,
+      dividerPresent: !!document.querySelector('#profileSummaryCard .profile-summary-divider'),
+      shiftValuePresent: !!document.getElementById('profileShiftCount'),
+      shiftUnitPresent: !!document.getElementById('profileShiftCountUnit'),
+      workedTotalPresent: !!document.getElementById('profileWorkedTotal'),
+      cardDisplay: cardStyle?.display || '',
+      cardMinHeight: Number.parseFloat(cardStyle?.minHeight || '0'),
+      iconWidth: Number.parseFloat(iconStyle?.width || '0'),
+      iconHeight: Number.parseFloat(iconStyle?.height || '0'),
+    };
+  });
   report.checks.profileSummary = profileSummaryContract;
-  assert(Object.values(profileSummaryContract).every(Boolean), 'profile summary uses the compact grouped layout', profileSummaryContract);
+  assert(profileSummaryContract.cardPresent && profileSummaryContract.iconPresent &&
+    profileSummaryContract.dividerPresent && profileSummaryContract.shiftValuePresent &&
+    profileSummaryContract.shiftUnitPresent && profileSummaryContract.workedTotalPresent,
+  'profile summary uses the compact grouped layout', profileSummaryContract);
+  assert(profileSummaryContract.cardDisplay === 'grid' &&
+    profileSummaryContract.cardMinHeight > 0 && profileSummaryContract.cardMinHeight <= 120 &&
+    profileSummaryContract.iconWidth > 0 && profileSummaryContract.iconWidth <= 48 &&
+    profileSummaryContract.iconHeight > 0 && profileSummaryContract.iconHeight <= 48,
+  'profile summary stylesheet keeps the card and calendar icon compact', profileSummaryContract);
 
   const deductionContract = await page.evaluate(() => {
     const original = {

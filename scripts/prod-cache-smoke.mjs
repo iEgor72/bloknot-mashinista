@@ -108,6 +108,12 @@ async function main() {
   ]) {
     assertIncludes(root.text, scriptPath, 'root HTML');
   }
+  assertIncludes(root.text, `/styles/${version}/56-profile.css`, 'root HTML');
+
+  const profileStyle = await fetchText(`${baseUrl}/styles/${version}/56-profile.css`);
+  assertOk(profileStyle, 'versioned profile stylesheet');
+  assertIncludes(profileStyle.text, '.profile-summary-card', 'versioned profile stylesheet');
+  assertIncludes(profileStyle.text, '.profile-summary-icon svg', 'versioned profile stylesheet');
 
   const constants = await fetchText(`${baseUrl}/scripts/app-constants.js?v=${version}`);
   assertOk(constants, 'versioned app constants');
@@ -162,6 +168,11 @@ async function main() {
     status: constants.status,
     cacheControl: constants.headers['cache-control'] || '',
     cfCacheStatus: constants.headers['cf-cache-status'] || '',
+  };
+  report.checks.versionedProfileStylesheet = {
+    status: profileStyle.status,
+    cacheControl: profileStyle.headers['cache-control'] || '',
+    cfCacheStatus: profileStyle.headers['cf-cache-status'] || '',
   };
   report.checks.versionedAuthRuntime = {
     status: auth.status,
