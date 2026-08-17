@@ -1,5 +1,6 @@
 #!/usr/bin/env node
 import { spawn } from 'node:child_process';
+import assert from 'node:assert/strict';
 import fs from 'node:fs';
 import path from 'node:path';
 import process from 'node:process';
@@ -421,6 +422,41 @@ async function main() {
     return !!shell && !shell.classList.contains('hidden');
   }, 'app shell visible');
   report.checks.appShellVisible = true;
+
+  const deductionContract = await page.evaluate(() => {
+    const original = {
+      unionPercent: appSettings.unionPercent,
+      welfarePercent: appSettings.welfarePercent,
+      alimonyPercent: appSettings.alimonyPercent,
+    };
+    appSettings.unionPercent = 0;
+    appSettings.welfarePercent = 0;
+    appSettings.alimonyPercent = 0;
+    const withoutDeductions = calculateSalarySummaryByMinutes(6000, 0, 0, 160, 0);
+    appSettings.unionPercent = 1;
+    appSettings.welfarePercent = 1.5;
+    appSettings.alimonyPercent = 25;
+    const withDeductions = calculateSalarySummaryByMinutes(6000, 0, 0, 160, 0);
+    appSettings.unionPercent = original.unionPercent;
+    appSettings.welfarePercent = original.welfarePercent;
+    appSettings.alimonyPercent = original.alimonyPercent;
+    return {
+      fieldsPresent: !!document.getElementById('settingUnionPercent') &&
+        !!document.getElementById('settingWelfarePercent') &&
+        !!document.getElementById('settingAlimonyPercent'),
+      withoutDeductions,
+      withDeductions,
+    };
+  });
+  report.checks.salaryDeductions = deductionContract;
+  assert(deductionContract.fieldsPresent, 'deduction settings fields present', deductionContract);
+  const baseNet = deductionContract.withoutDeductions.netAmount;
+  const configured = deductionContract.withDeductions;
+  assert(Math.abs(configured.alimonyAmount - baseNet * 0.25) < 0.01, 'alimony deducted after NDFL', deductionContract);
+  assert(Math.abs(configured.unionAmount - configured.contributionBaseAmount * 0.01) < 0.01, 'union contribution uses salary base', deductionContract);
+  assert(Math.abs(configured.welfareAmount - configured.contributionBaseAmount * 0.015) < 0.01, 'welfare contribution uses salary base', deductionContract);
+  assert(Math.abs(configured.netAmount - (baseNet - configured.alimonyAmount - configured.unionAmount - configured.welfareAmount)) < 0.01,
+    'all deductions reduce take-home amount', deductionContract);
 
   const analyticsUi = await page.evaluate(() => ({
     dialogPresent: !!document.getElementById('analyticsConsentDialog'),

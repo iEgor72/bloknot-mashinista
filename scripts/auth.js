@@ -1,4 +1,4 @@
-    if (typeof registerShiftTrackerRuntimeModule === 'function') registerShiftTrackerRuntimeModule('auth', 'v392');
+    if (typeof registerShiftTrackerRuntimeModule === 'function') registerShiftTrackerRuntimeModule('auth', 'v393');
 
     var API_BASE_URL = window.SHIFT_API_BASE_URL || '';
     var AUTH_API_URL = API_BASE_URL + '/api/auth';
@@ -510,6 +510,7 @@
       setActiveTab(activeTab || 'home');
       scheduleBottomNavHeightSync();
       updateFooter();
+      if (typeof refreshProfileUserCount === 'function') refreshProfileUserCount();
       renderInstallPromptCard();
       renderDocumentationScreen();
     }
@@ -518,6 +519,9 @@
       if (typeof renderDocsProGate === 'function') renderDocsProGate();
       if (tab === 'instructions') {
         renderDocumentationScreen();
+      }
+      if (tab === 'profile' && typeof refreshProfileUserCount === 'function') {
+        refreshProfileUserCount();
       }
     }
 

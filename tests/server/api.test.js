@@ -113,7 +113,7 @@ test('Telegram welcome message advertises only the current product scope', () =>
 });
 
 test('shift-card runtime is never HTTP-cached and renders fuel in kilograms', async () => {
-  const response = await fetch(baseUrl + '/scripts/time-utils.js?v=v392');
+  const response = await fetch(baseUrl + '/scripts/time-utils.js?v=v393');
   const source = await response.text();
   assert.equal(response.status, 200);
   assert.match(response.headers.get('cache-control') || '', /no-store/i);
@@ -137,6 +137,33 @@ test('auth rejects unsigned requests and accepts valid Telegram initData', async
   assert.equal(session.response.status, 200);
   assert.equal(session.body.user.id, '1001');
   assert.match(session.response.headers.get('set-cookie') || '', /bm_session=/);
+});
+
+test('salary settings persist deduction percentages and reject values above 100', async () => {
+  const token = await authenticate({ id: 1002, first_name: 'Расчёт' });
+  const saved = await jsonRequest('/api/salary-params', {
+    method: 'PUT',
+    headers: { ...bearer(token), 'Content-Type': 'application/json' },
+    body: JSON.stringify({ salaryParams: { tariffRate: 420, unionPercent: 1, welfarePercent: 1.5, alimonyPercent: 25 } }),
+  });
+  assert.equal(saved.response.status, 200);
+  assert.equal(saved.body.salaryParams.tariffRate, 420);
+  assert.equal(saved.body.salaryParams.unionPercent, 1);
+  assert.equal(saved.body.salaryParams.welfarePercent, 1.5);
+  assert.equal(saved.body.salaryParams.alimonyPercent, 25);
+
+  const loaded = await jsonRequest('/api/salary-params', { headers: bearer(token) });
+  assert.equal(loaded.response.status, 200);
+  assert.equal(loaded.body.salaryParams.unionPercent, 1);
+  assert.equal(loaded.body.salaryParams.welfarePercent, 1.5);
+  assert.equal(loaded.body.salaryParams.alimonyPercent, 25);
+
+  const invalid = await jsonRequest('/api/salary-params', {
+    method: 'PUT',
+    headers: { ...bearer(token), 'Content-Type': 'application/json' },
+    body: JSON.stringify({ salaryParams: { alimonyPercent: 101 } }),
+  });
+  assert.equal(invalid.response.status, 400);
 });
 
 test('analytics requires consent, deduplicates events, and exposes only admin aggregates', async () => {

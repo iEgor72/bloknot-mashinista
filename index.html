@@ -1288,6 +1288,18 @@
           <span class="profile-edit-chevron" aria-hidden="true">›</span>
         </button>
 
+        <div class="profile-section-title">Ваш блокнот</div>
+        <div class="profile-summary-grid" aria-label="Сводка по записанным сменам">
+          <div class="profile-summary-item">
+            <span class="profile-summary-value" id="profileShiftCount">0</span>
+            <span class="profile-summary-label">Смен записано</span>
+          </div>
+          <div class="profile-summary-item">
+            <span class="profile-summary-value" id="profileWorkedTotal">0ч</span>
+            <span class="profile-summary-label">Всего часов</span>
+          </div>
+        </div>
+
         <div class="profile-section-title">Сумма на главной</div>
         <div class="profile-card">
           <button class="profile-row" id="btnProfileSalarySettings" type="button">
@@ -1328,6 +1340,27 @@
         <div class="profile-section-title">О приложении</div>
         <div class="profile-card">
           <div class="profile-row profile-row-static">
+            <span class="profile-row-icon" aria-hidden="true">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M16 19c0-2.2-1.8-4-4-4s-4 1.8-4 4"></path>
+                <circle cx="12" cy="9" r="3"></circle>
+                <path d="M18 11.5c1.8.4 3 1.7 3 3.5"></path>
+                <path d="M6 11.5c-1.8.4-3 1.7-3 3.5"></path>
+              </svg>
+            </span>
+            <span class="profile-row-body">
+              <span class="profile-row-title">Пользователи</span>
+              <span class="profile-row-note" id="profileUserCount" aria-live="polite">Загружаем…</span>
+            </span>
+          </div>
+          <div class="profile-row profile-row-static">
+            <span class="profile-row-icon" aria-hidden="true">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round">
+                <circle cx="12" cy="12" r="9"></circle>
+                <path d="M12 11v5"></path>
+                <path d="M12 8h.01"></path>
+              </svg>
+            </span>
             <span class="profile-row-body">
               <span class="profile-row-title">Версия</span>
               <span class="profile-row-note" id="profileVersion">—</span>
@@ -1486,6 +1519,40 @@
           </div>
           <div class="settings-inline-field">
             <input class="settings-input compact" id="settingLocalPercent" type="number" min="0" step="1" />
+            <span class="settings-unit">%</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="settings-section-title">Удержания</div>
+      <div class="settings-card">
+        <div class="settings-row settings-row-stack">
+          <div>
+            <div class="settings-label">Профсоюзные взносы (%)</div>
+            <div class="settings-note">В ваших листках — около 1%. Укажите 0, если взноса нет</div>
+          </div>
+          <div class="settings-inline-field">
+            <input class="settings-input compact" id="settingUnionPercent" type="number" min="0" max="100" step="0.1" inputmode="decimal" />
+            <span class="settings-unit">%</span>
+          </div>
+        </div>
+        <div class="settings-row settings-row-stack">
+          <div>
+            <div class="settings-label">НПФ «Благосостояние» (%)</div>
+            <div class="settings-note">В ваших листках — около 1,5%. Зависит от схемы, пола и возраста вступления</div>
+          </div>
+          <div class="settings-inline-field">
+            <input class="settings-input compact" id="settingWelfarePercent" type="number" min="0" max="100" step="0.1" inputmode="decimal" />
+            <span class="settings-unit">%</span>
+          </div>
+        </div>
+        <div class="settings-row settings-row-stack">
+          <div>
+            <div class="settings-label">Алименты (%)</div>
+            <div class="settings-note">Удерживаются из суммы после НДФЛ. Укажите 0, если удержания нет</div>
+          </div>
+          <div class="settings-inline-field">
+            <input class="settings-input compact" id="settingAlimonyPercent" type="number" min="0" max="100" step="1" inputmode="decimal" />
             <span class="settings-unit">%</span>
           </div>
         </div>
@@ -1793,25 +1860,25 @@
       } catch (error) {}
     }, true);
   </script>
-  <script src="/scripts/app-constants.js?v=v392" defer></script>
+  <script src="/scripts/app-constants.js?v=v393" defer></script>
   <script src="/scripts/glass-select.js" defer></script>
-  <script src="/scripts/auth.js?v=v392" defer></script>
+  <script src="/scripts/auth.js?v=v393" defer></script>
   <script src="/scripts/viewport.js" defer></script>
-  <script src="/scripts/time-utils.js?v=v392" defer></script>
+  <script src="/scripts/time-utils.js?v=v393" defer></script>
   <script src="/scripts/docs-app.js" defer></script>
   <script src="/scripts/telegram-sdk-loader.js" defer></script>
-  <script src="/scripts/app.js?v=v392" defer></script>
-  <script src="/scripts/poekhali-utils.js?v=v392" defer></script>
-  <script src="/scripts/poekhali-map-parser.js?v=v392" defer></script>
-  <script src="/scripts/poekhali-warnings.js?v=v392" defer></script>
-  <script src="/scripts/poekhali-backup.js?v=v392" defer></script>
-  <script src="/scripts/poekhali-tracker.js?v=v392" defer></script>
-  <script src="/scripts/render.js?v=v392" defer></script>
-  <script src="/scripts/shift-form.js?v=v392" defer></script>
+  <script src="/scripts/app.js?v=v393" defer></script>
+  <script src="/scripts/poekhali-utils.js?v=v393" defer></script>
+  <script src="/scripts/poekhali-map-parser.js?v=v393" defer></script>
+  <script src="/scripts/poekhali-warnings.js?v=v393" defer></script>
+  <script src="/scripts/poekhali-backup.js?v=v393" defer></script>
+  <script src="/scripts/poekhali-tracker.js?v=v393" defer></script>
+  <script src="/scripts/render.js?v=v393" defer></script>
+  <script src="/scripts/shift-form.js?v=v393" defer></script>
   <script src="/scripts/datetime-picker.js?v=shift-ui-4" defer></script>
-  <script src="/scripts/app-init.js?v=v392" defer></script>
-  <script src="/scripts/sw-register.js?v=v392" defer></script>
-  <script src="/sw-bootstrap-v392.js" defer></script>
+  <script src="/scripts/app-init.js?v=v393" defer></script>
+  <script src="/scripts/sw-register.js?v=v393" defer></script>
+  <script src="/sw-bootstrap-v393.js" defer></script>
   <script src="/scripts/utils/haptics.js" defer></script>
   <script src="/scripts/press-feedback.js" defer></script>
   <script src="/scripts/nav-debug.js" defer></script>

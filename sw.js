@@ -1,4 +1,4 @@
-const CACHE_VERSION = 'v392';
+const CACHE_VERSION = 'v393';
 const CACHE_NAME = `shift-tracker-shell-${CACHE_VERSION}`;
 const NAVIGATION_FALLBACK_URL = '/index.html';
 const NETWORK_TIMEOUT_MS = 4500;
@@ -72,7 +72,7 @@ const INSTALL_SHELL_URLS = [
   '/scripts/datetime-picker.js',
   '/scripts/app-init.js',
   '/scripts/sw-register.js',
-  '/sw-bootstrap-v392.js'
+  '/sw-bootstrap-v393.js'
 ];
 const CRITICAL_INSTALL_URLS = [
   '/',
@@ -132,7 +132,7 @@ const CRITICAL_INSTALL_URLS = [
   '/scripts/datetime-picker.js',
   '/scripts/app-init.js',
   '/scripts/sw-register.js',
-  '/sw-bootstrap-v392.js'
+  '/sw-bootstrap-v393.js'
 ];
 const EXTENDED_SHELL_URLS = [
   '/assets/docs/manifest.json',

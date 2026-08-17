@@ -77,6 +77,40 @@
   margin: 18px 4px 8px;
 }
 
+.profile-summary-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 10px;
+}
+
+.profile-summary-item {
+  min-width: 0;
+  padding: 15px 16px;
+  border: 1px solid var(--hair, rgba(255, 255, 255, 0.08));
+  border-radius: 16px;
+  background: var(--bg-rise, #16161c);
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.profile-summary-value {
+  overflow: hidden;
+  color: var(--ink, #eef2f8);
+  font-family: 'Golos Text', system-ui, sans-serif;
+  font-size: 20px;
+  font-weight: 800;
+  line-height: 1.1;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.profile-summary-label {
+  color: var(--ink-3, #8b93a7);
+  font-size: 12.5px;
+  line-height: 1.25;
+}
+
 /* Cards group rows */
 .profile-card {
   border: 1px solid var(--hair, rgba(255, 255, 255, 0.08));

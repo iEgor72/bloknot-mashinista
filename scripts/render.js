@@ -1,4 +1,4 @@
-    if (typeof registerShiftTrackerRuntimeModule === 'function') registerShiftTrackerRuntimeModule('render', 'v392');
+    if (typeof registerShiftTrackerRuntimeModule === 'function') registerShiftTrackerRuntimeModule('render', 'v393');
 
     function buildShiftItemHtml(sh, compact, pendingMap, shiftIncomeMap, durationBounds, durationLevelMap, latestManualShiftId) {
       var p = getShiftDisplayParts(sh);
@@ -910,8 +910,25 @@
       cardEl.innerHTML = buildConfirmShiftCardHtml(findShiftById(pendingDeleteId), shiftIncomeMap);
     }
 
+    function renderProfileSummary() {
+      var count = 0;
+      var totalMinutes = 0;
+      for (var i = 0; i < allShifts.length; i++) {
+        var shift = allShifts[i];
+        if (typeof isLegacyGeneratedShift === 'function' && isLegacyGeneratedShift(shift)) continue;
+        if (typeof isScheduleMaterializedShift === 'function' && isScheduleMaterializedShift(shift)) continue;
+        count += 1;
+        totalMinutes += shiftTotalMinutes(shift);
+      }
+      var countEl = document.getElementById('profileShiftCount');
+      var totalEl = document.getElementById('profileWorkedTotal');
+      if (countEl) countEl.textContent = String(count);
+      if (totalEl) totalEl.textContent = fmtMin(totalMinutes);
+    }
+
     function render() {
       updateOfflineUiState();
+      renderProfileSummary();
 
       // Month title
       renderMonthHeader('monthTitle', 'monthQuarter', 'homeMonthTabs', currentYear, currentMonth, function(targetMonth) {

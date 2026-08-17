@@ -139,6 +139,7 @@ const PUBLIC_TOP_LEVEL_FILES = new Set([
   'sw-bootstrap-v390.js',
   'sw-bootstrap-v391.js',
   'sw-bootstrap-v392.js',
+  'sw-bootstrap-v393.js',
   'apple-touch-icon.png',
   'icon-192.png',
   'icon-512.png',
@@ -172,6 +173,9 @@ const DEFAULT_SALARY_PARAMS = {
   northPercent: 50,
   localPercent: 20,
   komPerTrip: 0,
+  unionPercent: 0,
+  welfarePercent: 0,
+  alimonyPercent: 0,
 };
 const SALARY_PARAM_KEYS = Object.keys(DEFAULT_SALARY_PARAMS);
 const PUBLIC_SITE_URL = process.env.PUBLIC_SITE_URL || 'https://bloknot-mashinista-bot.ru';
@@ -974,6 +978,11 @@ function sanitizeAndValidateSalaryParamsPayload(payload) {
     }
     result[key] = parsed;
   });
+  for (const percentKey of ['unionPercent', 'welfarePercent', 'alimonyPercent']) {
+    if (result[percentKey] > 100) {
+      throw new Error(`Invalid salary param ${percentKey}`);
+    }
+  }
   return result;
 }
 
@@ -2085,7 +2094,7 @@ function readBodyWithLimit(req, maxBytes) {
   });
 }
 
-const APP_RELEASE_VERSION = 'v392';
+const APP_RELEASE_VERSION = 'v393';
 const APP_URL = PUBLIC_SITE_URL;
 const TELEGRAM_APP_URL = buildVersionedAppUrl('/');
 

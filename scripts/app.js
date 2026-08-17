@@ -1,5 +1,5 @@
 ﻿    // ── Telegram WebApp chrome (не блокировать bootstrap: SDK подключается последним defer в index.html)
-    if (typeof registerShiftTrackerRuntimeModule === 'function') registerShiftTrackerRuntimeModule('app', 'v392');
+    if (typeof registerShiftTrackerRuntimeModule === 'function') registerShiftTrackerRuntimeModule('app', 'v393');
 
     function applyTelegramWebAppChrome() {
       try {
@@ -81,6 +81,7 @@
     var INSTALL_PROMPT_STATE_STORAGE_KEY = 'shift_tracker_install_prompt_state_v1';
     var LEGACY_SETTINGS_STORAGE_KEY = 'shift_tracker_settings_v1';
     var SALARY_PARAMS_STORAGE_KEY = 'shift_tracker_salary_params_v1';
+    var PROFILE_USER_COUNT_CACHE_STORAGE_KEY = 'shift_tracker_user_stats_cache_v1';
     var DEFAULT_SALARY_PARAMS = {
       tariffRate: 380,
       monthlyNormHours: 0,
@@ -91,7 +92,10 @@
       districtPercent: 30,
       northPercent: 50,
       localPercent: 20,
-      komPerTrip: 0
+      komPerTrip: 0,
+      unionPercent: 0,
+      welfarePercent: 0,
+      alimonyPercent: 0
     };
     var salaryParamsStore = createSalaryParamsStore();
     var appSettings = salaryParamsStore.values;
@@ -622,6 +626,9 @@
       merged.northPercent = parseFloat(merged.northPercent);
       merged.localPercent = parseFloat(merged.localPercent);
       merged.komPerTrip = parseFloat(merged.komPerTrip);
+      merged.unionPercent = parseFloat(merged.unionPercent);
+      merged.welfarePercent = parseFloat(merged.welfarePercent);
+      merged.alimonyPercent = parseFloat(merged.alimonyPercent);
 
       if (isNaN(merged.tariffRate)) merged.tariffRate = DEFAULT_SALARY_PARAMS.tariffRate;
       if (isNaN(merged.monthlyNormHours)) merged.monthlyNormHours = DEFAULT_SALARY_PARAMS.monthlyNormHours;
@@ -634,6 +641,12 @@
       if (isNaN(merged.northPercent)) merged.northPercent = DEFAULT_SALARY_PARAMS.northPercent;
       if (isNaN(merged.localPercent)) merged.localPercent = DEFAULT_SALARY_PARAMS.localPercent;
       if (isNaN(merged.komPerTrip)) merged.komPerTrip = DEFAULT_SALARY_PARAMS.komPerTrip;
+      if (isNaN(merged.unionPercent)) merged.unionPercent = DEFAULT_SALARY_PARAMS.unionPercent;
+      if (isNaN(merged.welfarePercent)) merged.welfarePercent = DEFAULT_SALARY_PARAMS.welfarePercent;
+      if (isNaN(merged.alimonyPercent)) merged.alimonyPercent = DEFAULT_SALARY_PARAMS.alimonyPercent;
+      merged.unionPercent = Math.max(0, Math.min(100, merged.unionPercent));
+      merged.welfarePercent = Math.max(0, Math.min(100, merged.welfarePercent));
+      merged.alimonyPercent = Math.max(0, Math.min(100, merged.alimonyPercent));
       return merged;
     }
 
@@ -1135,6 +1148,9 @@
       setSettingsInputValue('settingNorthPercent', appSettings.northPercent);
       setSettingsInputValue('settingLocalPercent', appSettings.localPercent);
       setSettingsInputValue('settingKomPerTrip', appSettings.komPerTrip);
+      setSettingsInputValue('settingUnionPercent', appSettings.unionPercent);
+      setSettingsInputValue('settingWelfarePercent', appSettings.welfarePercent);
+      setSettingsInputValue('settingAlimonyPercent', appSettings.alimonyPercent);
 
       var versionValue = document.getElementById('appVersionValue');
       if (versionValue) versionValue.textContent = APP_VERSION;
@@ -1151,6 +1167,9 @@
       var northEl = document.getElementById('settingNorthPercent');
       var localEl = document.getElementById('settingLocalPercent');
       var komEl = document.getElementById('settingKomPerTrip');
+      var unionEl = document.getElementById('settingUnionPercent');
+      var welfareEl = document.getElementById('settingWelfarePercent');
+      var alimonyEl = document.getElementById('settingAlimonyPercent');
 
       var tariff = tariffEl ? parseFloat(tariffEl.value) : NaN;
       var night = nightEl ? parseFloat(nightEl.value) : NaN;
@@ -1161,6 +1180,9 @@
       var north = northEl ? parseFloat(northEl.value) : NaN;
       var local = localEl ? parseFloat(localEl.value) : NaN;
       var kom = komEl ? parseFloat(komEl.value) : NaN;
+      var union = unionEl ? parseFloat(unionEl.value) : NaN;
+      var welfare = welfareEl ? parseFloat(welfareEl.value) : NaN;
+      var alimony = alimonyEl ? parseFloat(alimonyEl.value) : NaN;
 
       appSettings.tariffRate = isNaN(tariff) ? DEFAULT_SALARY_PARAMS.tariffRate : tariff;
       appSettings.monthlyNormHours = 0;
@@ -1172,6 +1194,9 @@
       appSettings.northPercent = isNaN(north) ? DEFAULT_SALARY_PARAMS.northPercent : north;
       appSettings.localPercent = isNaN(local) ? DEFAULT_SALARY_PARAMS.localPercent : local;
       appSettings.komPerTrip = isNaN(kom) ? DEFAULT_SALARY_PARAMS.komPerTrip : kom;
+      appSettings.unionPercent = isNaN(union) ? DEFAULT_SALARY_PARAMS.unionPercent : Math.max(0, Math.min(100, union));
+      appSettings.welfarePercent = isNaN(welfare) ? DEFAULT_SALARY_PARAMS.welfarePercent : Math.max(0, Math.min(100, welfare));
+      appSettings.alimonyPercent = isNaN(alimony) ? DEFAULT_SALARY_PARAMS.alimonyPercent : Math.max(0, Math.min(100, alimony));
 
       salaryParamsStore.update(appSettings);
       appSettings = salaryParamsStore.values;
@@ -1219,7 +1244,7 @@
       var monthlyBaseAmount = workedHours * tariffRate;
       var tariffAmount = regularHours * tariffRate;
       var nightAmount = moneyFromHours(nightHours, tariffRate, appSettings.nightPercent);
-      var monthlyBonusAmount = monthlyBaseAmount * 0.04;
+      var harmfulConditionsAmount = monthlyBaseAmount * 0.04;
       var overtimeAmount = overNormHours * tariffRate;
       var travelOvertimeAmount = travelOvertimeHours * tariffRate * 0.5;
       var extraOvertimeAmount = extraOvertimeHours * tariffRate;
@@ -1228,7 +1253,7 @@
       var zoneAmount = monthlyBaseAmount * (appSettings.zonePercent / 100);
       var bamAmount = monthlyBaseAmount * (appSettings.bamPercent / 100);
       var komAmount = Math.max(0, Number(shiftCount) || 0) * (Number(appSettings.komPerTrip) || 0);
-      var baseAmount = tariffAmount + nightAmount + monthlyBonusAmount + classAmount + holidayAmount +
+      var baseAmount = tariffAmount + nightAmount + harmfulConditionsAmount + classAmount + holidayAmount +
         overtimeAmount + travelOvertimeAmount + extraOvertimeAmount + zoneAmount + bamAmount;
       var districtAmount = baseAmount * (appSettings.districtPercent / 100);
       var northAmount = baseAmount * (appSettings.northPercent / 100);
@@ -1237,7 +1262,12 @@
       var accruedAmount = baseAmount + coeffTotal + komAmount;
       var ndflBase = baseAmount * 0.13;
       var ndflCoeffs = coeffTotal * 0.13;
-      var netAmount = accruedAmount - ndflBase - ndflCoeffs;
+      var netBeforeAlimonyAmount = accruedAmount - ndflBase - ndflCoeffs;
+      var alimonyAmount = netBeforeAlimonyAmount * (appSettings.alimonyPercent / 100);
+      var contributionBaseAmount = baseAmount + coeffTotal;
+      var unionAmount = contributionBaseAmount * (appSettings.unionPercent / 100);
+      var welfareAmount = contributionBaseAmount * (appSettings.welfarePercent / 100);
+      var netAmount = netBeforeAlimonyAmount - alimonyAmount - unionAmount - welfareAmount;
 
       return {
         workedHours: workedHours,
@@ -1250,7 +1280,7 @@
         holidayHours: holidayHours,
         tariffAmount: tariffAmount,
         nightAmount: nightAmount,
-        monthlyBonusAmount: monthlyBonusAmount,
+        harmfulConditionsAmount: harmfulConditionsAmount,
         overtimeAmount: overtimeAmount,
         travelOvertimeAmount: travelOvertimeAmount,
         extraOvertimeAmount: extraOvertimeAmount,
@@ -1267,8 +1297,73 @@
         accruedAmount: accruedAmount,
         ndflBase: ndflBase,
         ndflCoeffs: ndflCoeffs,
+        netBeforeAlimonyAmount: netBeforeAlimonyAmount,
+        alimonyAmount: alimonyAmount,
+        contributionBaseAmount: contributionBaseAmount,
+        unionAmount: unionAmount,
+        welfareAmount: welfareAmount,
         netAmount: netAmount
       };
+    }
+
+    function formatProfileUserCount(totalUsers) {
+      var value = Math.max(0, Math.floor(Number(totalUsers) || 0));
+      try {
+        return 'С нами уже ' + value.toLocaleString('ru-RU');
+      } catch (error) {
+        return 'С нами уже ' + value;
+      }
+    }
+
+    function readProfileUserCountCache() {
+      try {
+        var cached = JSON.parse(localStorage.getItem(PROFILE_USER_COUNT_CACHE_STORAGE_KEY) || 'null');
+        var total = cached && Number(cached.totalUsers);
+        return isFinite(total) && total >= 0 ? Math.floor(total) : null;
+      } catch (error) {
+        return null;
+      }
+    }
+
+    function renderProfileUserCount(totalUsers) {
+      var el = document.getElementById('profileUserCount');
+      if (!el) return;
+      if (totalUsers !== null && totalUsers !== undefined) {
+        el.textContent = formatProfileUserCount(totalUsers);
+        return;
+      }
+      el.textContent = navigator.onLine ? 'Не удалось загрузить' : 'Будет доступно онлайн';
+    }
+
+    function refreshProfileUserCount() {
+      var cachedTotal = readProfileUserCountCache();
+      if (cachedTotal !== null) renderProfileUserCount(cachedTotal);
+      if (!navigator.onLine || typeof fetchJson !== 'function') {
+        if (cachedTotal === null) renderProfileUserCount(null);
+        return Promise.resolve(null);
+      }
+      return fetchJson(API_BASE_URL + '/api/stats', {
+        method: 'GET',
+        headers: { 'Accept': 'application/json' }
+      }, 4500).then(function(result) {
+        var total = result && result.ok && result.body ? Number(result.body.totalUsers) : NaN;
+        if (!isFinite(total) || total < 0) {
+          if (cachedTotal === null) renderProfileUserCount(null);
+          return null;
+        }
+        total = Math.floor(total);
+        try {
+          localStorage.setItem(PROFILE_USER_COUNT_CACHE_STORAGE_KEY, JSON.stringify({
+            totalUsers: total,
+            updatedAt: result.body.updatedAt || new Date().toISOString()
+          }));
+        } catch (error) {}
+        renderProfileUserCount(total);
+        return total;
+      }).catch(function() {
+        if (cachedTotal === null) renderProfileUserCount(null);
+        return null;
+      });
     }
 
     function buildSalarySummary(monthShifts, bounds) {

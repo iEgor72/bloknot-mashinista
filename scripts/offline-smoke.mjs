@@ -417,7 +417,7 @@ async function runOfflineReloadCheck() {
   setPhase('offline-reload:mixed-runtime-self-repair');
   const repairSentinelKey = 'shift_tracker_runtime_repair_test_sentinel';
   const repairNavigation = page.waitForURL((url) => (
-    url.searchParams.get('runtime_repair') === 'v392' && Boolean(url.searchParams.get('repair_nonce'))
+    url.searchParams.get('runtime_repair') === 'v393' && Boolean(url.searchParams.get('repair_nonce'))
   ), { timeout: uiTimeoutMs });
   const repairTrigger = await page.evaluate((sentinelKey) => {
     localStorage.setItem(sentinelKey, 'preserved');
