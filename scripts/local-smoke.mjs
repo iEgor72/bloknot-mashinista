@@ -423,6 +423,17 @@ async function main() {
   }, 'app shell visible');
   report.checks.appShellVisible = true;
 
+  const partialRouteTitles = await page.evaluate(() => ({
+    departureOnly: getShiftTitle({ route_kind: 'trip', route_from: 'Горин', route_to: '' }),
+    arrivalOnly: getShiftTitle({ route_kind: 'trip', route_from: '', route_to: 'Харпичан' }),
+    fullRoute: getShiftTitle({ route_kind: 'trip', route_from: 'Горин', route_to: 'Харпичан' }),
+  }));
+  report.checks.partialRouteTitles = partialRouteTitles;
+  assert(partialRouteTitles.departureOnly === 'Горин' &&
+    partialRouteTitles.arrivalOnly === 'Харпичан' &&
+    partialRouteTitles.fullRoute === 'Горин → Харпичан',
+  'partial routes render as a station name without placeholder points or arrows', partialRouteTitles);
+
   const profileSummaryContract = await page.evaluate(() => {
     const card = document.getElementById('profileSummaryCard');
     const icon = document.querySelector('#profileSummaryCard .profile-summary-icon svg');

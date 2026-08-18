@@ -1,4 +1,4 @@
-    if (typeof registerShiftTrackerRuntimeModule === 'function') registerShiftTrackerRuntimeModule('render', 'v397');
+    if (typeof registerShiftTrackerRuntimeModule === 'function') registerShiftTrackerRuntimeModule('render', 'v398');
 
     function buildShiftItemHtml(sh, compact, pendingMap, shiftIncomeMap, durationBounds, durationLevelMap, latestManualShiftId) {
       var p = getShiftDisplayParts(sh);
@@ -1874,8 +1874,11 @@
     function getShiftTitle(shift) {
       var from = shift.route_from ? shift.route_from : '';
       var to = shift.route_to ? shift.route_to : '';
+      if (shift.route_kind === 'trip' && from && to) {
+        return from + ' → ' + to;
+      }
       if (shift.route_kind === 'trip' && (from || to)) {
-        return (from || 'Пункт A') + ' → ' + (to || 'Пункт B');
+        return from || to;
       }
       if (shift.route_kind === 'trip') {
         return 'Поездка';
