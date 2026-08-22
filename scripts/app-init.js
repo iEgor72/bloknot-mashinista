@@ -1,4 +1,4 @@
-if (typeof registerShiftTrackerRuntimeModule === 'function') registerShiftTrackerRuntimeModule('app-init', 'v399');
+if (typeof registerShiftTrackerRuntimeModule === 'function') registerShiftTrackerRuntimeModule('app-init', 'v400');
 
 // ── Init ──
 function startShiftTrackerRuntime() {
@@ -1233,6 +1233,8 @@ if (window.__SHIFT_TRACKER_RUNTIME_GUARD_PENDING) {
     set('trkHeadPos', hud.headPos || '—');
     set('trkGrade', hud.gradeText || '—');
     set('trkReach', hud.reachText || '—');
+    var browseHud = document.getElementById('trkBrowseHud');
+    if (browseHud) browseHud.hidden = !hud.browseActive;
 
     // В пути (timer)
     var timerMs = isFinite(hud.timerMs) ? hud.timerMs : 0;
@@ -1299,6 +1301,17 @@ if (window.__SHIFT_TRACKER_RUNTIME_GUARD_PENDING) {
     }
     var addSpeed = document.getElementById('trkAddSpeed');
     if (addSpeed) addSpeed.addEventListener('click', openSpeeds);
+    var browseReturn = document.getElementById('trkBrowseReturn');
+    if (browseReturn) {
+      browseReturn.addEventListener('pointerdown', function(event) {
+        event.stopPropagation();
+      });
+      browseReturn.addEventListener('click', function(event) {
+        event.preventDefault();
+        event.stopPropagation();
+        if (typeof window.poekhaliReturnToTrain === 'function') window.poekhaliReturnToTrain();
+      });
+    }
     var profileCard = design.querySelector('.trk-profile-card');
     if (profileCard) profileCard.addEventListener('click', openSpeeds);
     var speedo = design.querySelector('#trkSpeedo');

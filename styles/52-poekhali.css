@@ -325,6 +325,47 @@
   display: block;
   position: relative !important;
   inset: auto !important;
+  touch-action: pan-y pinch-zoom;
+  user-select: none;
+  -webkit-user-select: none;
+  cursor: grab;
+}
+.trk-profile-canvas.is-dragging {
+  cursor: grabbing;
+}
+.trk-browse-hud {
+  position: absolute;
+  z-index: 5;
+  top: 12px;
+  left: 50%;
+  transform: translateX(-50%);
+  pointer-events: none;
+}
+.trk-browse-hud[hidden] {
+  display: none;
+}
+.trk-browse-return {
+  min-width: 92px;
+  min-height: 40px;
+  padding: 0 14px;
+  border: 1px solid var(--hair);
+  border-radius: 13px;
+  color: var(--accent);
+  background: color-mix(in oklch, var(--bg-deeper) 82%, transparent);
+  box-shadow: 0 6px 18px color-mix(in oklch, black 22%, transparent);
+  backdrop-filter: blur(12px) saturate(120%);
+  -webkit-backdrop-filter: blur(12px) saturate(120%);
+  font: 700 11px/1 'Golos Text', system-ui, sans-serif;
+  cursor: pointer;
+  pointer-events: auto;
+  touch-action: manipulation;
+}
+.trk-browse-return:active {
+  background: var(--accent-soft);
+}
+.trk-browse-return:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: -3px;
 }
 
 /* Hide the legacy overlay shell — keep its buttons in DOM so tracker.js can attach handlers, but make them invisible. */

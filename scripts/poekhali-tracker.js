@@ -1,4 +1,4 @@
-if (typeof registerShiftTrackerRuntimeModule === 'function') registerShiftTrackerRuntimeModule('poekhali-tracker', 'v399');
+if (typeof registerShiftTrackerRuntimeModule === 'function') registerShiftTrackerRuntimeModule('poekhali-tracker', 'v400');
 
 (function() {
   'use strict';
@@ -100,6 +100,7 @@ if (typeof registerShiftTrackerRuntimeModule === 'function') registerShiftTracke
   var DRAW_HIDDEN_INTERVAL_MS = 5000;
   var DRAW_ACTIVE_THROTTLE_MS = 900;
   var DRAW_DRAG_THROTTLE_MS = 80;
+  var BROWSE_AUTO_RETURN_DELAY_MS = 8000;
   var GPS_START_POLL_INTERVAL_MS = 5000;
   var GPS_FAST_POLL_INTERVAL_MS = 8000;
   var GPS_ACTIVE_POLL_INTERVAL_MS = 12000;
@@ -341,8 +342,17 @@ if (typeof registerShiftTrackerRuntimeModule === 'function') registerShiftTracke
     effectiveSignalDirectionCache: null,
     previewCoordinate: null,
     previewSector: null,
+    viewDetached: false,
+    viewProjection: null,
+    browseAutoReturnTimer: null,
+    browseAutoReturnAt: 0,
     previewDragActive: false,
+    previewDragPointerId: null,
+    previewDragStartX: 0,
+    previewDragStartY: 0,
     previewDragX: 0,
+    previewDragAxis: '',
+    previewDragSuppressClick: false,
     gpsError: '',
     status: 'idle',
     even: true,
@@ -5036,6 +5046,7 @@ if (typeof registerShiftTrackerRuntimeModule === 'function') registerShiftTracke
   }
 
   function resetMapData() {
+    clearBrowseAutoReturnTimer();
     tracker.assetsLoaded = false;
     tracker.assetsError = '';
     tracker.routePoints = [];
@@ -5052,6 +5063,9 @@ if (typeof registerShiftTrackerRuntimeModule === 'function') registerShiftTracke
     tracker.lastDirectionProbe = null;
     tracker.previewCoordinate = null;
     tracker.previewSector = null;
+    tracker.viewDetached = false;
+    tracker.viewProjection = null;
+    clearCanvasBrowseGesture();
     rebuildLearnedProfiles();
   }
 
@@ -7503,6 +7517,78 @@ if (typeof registerShiftTrackerRuntimeModule === 'function') registerShiftTracke
     });
   }
 
+  function getLiveProjection() {
+    return tracker.projection && tracker.projection.onTrack &&
+      isRealNumber(tracker.projection.lineCoordinate) && isRealNumber(tracker.projection.sector)
+      ? tracker.projection
+      : null;
+  }
+
+  function getDetachedViewProjection() {
+    if (!tracker.viewDetached || !tracker.viewProjection) return null;
+    var projection = tracker.viewProjection;
+    if (!isRealNumber(projection.lineCoordinate) || !isRealNumber(projection.sector)) return null;
+    return projection;
+  }
+
+  function getCanvasDisplayProjection() {
+    return getDetachedViewProjection() || getPreviewProjection();
+  }
+
+  function setDetachedViewProjection(projection) {
+    if ((!getLiveProjection() && !tracker.viewDetached) || !projection) return null;
+    var lineCoordinate = Number(projection.lineCoordinate);
+    var sector = Number(projection.sector);
+    if (!isRealNumber(lineCoordinate) || !isRealNumber(sector)) return null;
+    tracker.viewDetached = true;
+    tracker.viewProjection = {
+      lineCoordinate: clampPreviewCoordinate(lineCoordinate, sector),
+      sector: sector,
+      onTrack: false,
+      preview: true,
+      browse: true
+    };
+    requestDraw();
+    return tracker.viewProjection;
+  }
+
+  function clearBrowseAutoReturnTimer() {
+    if (tracker.browseAutoReturnTimer !== null) {
+      window.clearTimeout(tracker.browseAutoReturnTimer);
+      tracker.browseAutoReturnTimer = null;
+    }
+    tracker.browseAutoReturnAt = 0;
+  }
+
+  function scheduleBrowseAutoReturn() {
+    clearBrowseAutoReturnTimer();
+    if (!tracker.active || !getDetachedViewProjection() || !window.setTimeout) return;
+    tracker.browseAutoReturnAt = Date.now() + BROWSE_AUTO_RETURN_DELAY_MS;
+    tracker.browseAutoReturnTimer = window.setTimeout(function() {
+      tracker.browseAutoReturnTimer = null;
+      tracker.browseAutoReturnAt = 0;
+      if (!tracker.active || tracker.previewDragActive) return;
+      returnViewToTrain();
+    }, BROWSE_AUTO_RETURN_DELAY_MS);
+  }
+
+  function returnViewToTrain(options) {
+    options = options || {};
+    clearBrowseAutoReturnTimer();
+    var changed = !!(tracker.viewDetached || tracker.viewProjection);
+    tracker.viewDetached = false;
+    tracker.viewProjection = null;
+    if (changed && options.draw !== false) requestDraw();
+    return changed;
+  }
+
+  function getDetachedViewOffsetMeters() {
+    var live = getLiveProjection();
+    var view = getDetachedViewProjection();
+    if (!live || !view || getSectorKey(live.sector) !== getSectorKey(view.sector)) return null;
+    return Math.round(getDirectionalDistance(view.lineCoordinate, live.lineCoordinate, tracker.even));
+  }
+
   function getTimerElapsed() {
     var elapsed = tracker.timerElapsedMs;
     if (tracker.timerRunning) {
@@ -8270,13 +8356,20 @@ if (typeof registerShiftTrackerRuntimeModule === 'function') registerShiftTracke
     var seen = {};
     var result = [];
     var points = (tracker.routePoints || []).concat(tracker.userRoutePoints || []);
-    for (var i = 0; i < points.length; i++) {
-      var sector = Number(points[i].sector);
-      if (!isRealNumber(sector)) continue;
+    function includeSector(value) {
+      var sector = Number(value);
+      if (!isRealNumber(sector)) return;
       var key = getSectorKey(sector);
-      if (!key || seen[key]) continue;
+      if (!key || seen[key]) return;
       seen[key] = true;
       result.push(sector);
+    }
+    for (var i = 0; i < points.length; i++) {
+      includeSector(points[i].sector);
+    }
+    var rawDrafts = tracker.rawDrafts || [];
+    for (var j = 0; j < rawDrafts.length; j++) {
+      includeSector(rawDrafts[j] && rawDrafts[j].sector);
     }
     result.sort(function(a, b) {
       return a - b;
@@ -11196,7 +11289,7 @@ if (typeof registerShiftTrackerRuntimeModule === 'function') registerShiftTracke
   // segment bleeds a colour gradient down onto the terrain profile and drops to it
   // with a dashed connector at the steps. The current (factual) speed is a dashed
   // white line rising from the train up to its speed height on the axis.
-  function drawApkSpeedScale(ctx, layout, center, sector, speedRules, activeSpeed, bounds) {
+  function drawApkSpeedScale(ctx, layout, center, sector, speedRules, activeSpeed, bounds, trainProjection) {
     var topY = isFinite(layout.speedScaleTopY) ? layout.speedScaleTopY : (layout.profileTop - 70);
     var baseY = layout.profileTop - 6;          // v = 0 sits just above the terrain
     if (baseY <= topY + 12) return;
@@ -11337,12 +11430,21 @@ if (typeof registerShiftTrackerRuntimeModule === 'function') registerShiftTracke
 
     // Factual speed: built like a limit segment — a SOLID white line on top, the
     // value badge centred above it, and dashed drops on BOTH ends down onto the train.
-    var ext = getApkTrainExtentX(layout, center);
-    var wl = Math.max(ext.left, x0);
-    var wr = Math.min(ext.right, x1);
+    var trainHeadCoordinate = trainProjection &&
+      getSectorKey(trainProjection.sector) === getSectorKey(sector) &&
+      isRealNumber(trainProjection.lineCoordinate)
+      ? Number(trainProjection.lineCoordinate)
+      : NaN;
+    var ext = isFinite(trainHeadCoordinate)
+      ? getApkTrainExtentX(layout, trainHeadCoordinate, center)
+      : null;
+    var wl = ext ? Math.max(ext.left, x0) : 0;
+    var wr = ext ? Math.min(ext.right, x1) : 0;
     var ay = speedToY(curSpeed);
-    var trainY = getProfileYAt(center, center, sector, layout) - 8;
-    if (wr > wl) {
+    var trainY = isFinite(trainHeadCoordinate)
+      ? getProfileYAt(trainHeadCoordinate, center, sector, layout) - 8
+      : NaN;
+    if (ext && wr > wl) {
       ctx.save();
       if (trainY > ay + 2) {
         ctx.strokeStyle = 'rgba(255, 255, 255, 0.55)';
@@ -11496,10 +11598,10 @@ if (typeof registerShiftTrackerRuntimeModule === 'function') registerShiftTracke
     return length > 0 ? weighted / length : 0;
   }
 
-  function collectTrainProfilePath(center, sector, layout, trainMeters) {
+  function collectTrainProfilePath(headCoordinate, viewCenter, sector, layout, trainMeters) {
     var lengthMeters = Math.max(1, Math.round(Number(trainMeters) || getTrainLengthMeters()));
-    var tail = center - getCurrentCoordinateDirection() * lengthMeters;
-    var head = center;
+    var tail = headCoordinate - getCurrentCoordinateDirection() * lengthMeters;
+    var head = headCoordinate;
     var left = Math.min(tail, head);
     var right = Math.max(tail, head);
     var points = {};
@@ -11510,7 +11612,7 @@ if (typeof registerShiftTrackerRuntimeModule === 'function') registerShiftTracke
     }
     add(tail);
     add(head);
-    add(center);
+    add(headCoordinate);
     var step = Math.max(45, Math.min(95, lengthMeters / 10));
     for (var coord = left + step; coord < right; coord += step) add(coord);
     var segments = getVisibleProfileSegmentsForWindow(left, right, sector);
@@ -11522,13 +11624,13 @@ if (typeof registerShiftTrackerRuntimeModule === 'function') registerShiftTracke
       return points[key];
     });
     coords.sort(function(a, b) {
-      return coordinateToApkX(a, center, layout) - coordinateToApkX(b, center, layout);
+      return coordinateToApkX(a, viewCenter, layout) - coordinateToApkX(b, viewCenter, layout);
     });
     return coords.map(function(coordinate) {
       return {
         coordinate: coordinate,
-        x: coordinateToApkX(coordinate, center, layout),
-        y: getProfileYAt(coordinate, center, sector, layout)
+        x: coordinateToApkX(coordinate, viewCenter, layout),
+        y: getProfileYAt(coordinate, viewCenter, sector, layout)
       };
     });
   }
@@ -11552,8 +11654,8 @@ if (typeof registerShiftTrackerRuntimeModule === 'function') registerShiftTracke
     ctx.restore();
   }
 
-  function drawApkTrainProfileBar(ctx, layout, center, sector, trainMeters, isPreview) {
-    var points = collectTrainProfilePath(center, sector, layout, trainMeters);
+  function drawApkTrainProfileBar(ctx, layout, headCoordinate, viewCenter, sector, trainMeters, isPreview) {
+    var points = collectTrainProfilePath(headCoordinate, viewCenter, sector, layout, trainMeters);
     if (!points || points.length < 2) return;
     var height = Math.max(6, Math.min(9, layout.xUnit * 1.15));
     var railLift = Math.max(7, height / 2 + 4);
@@ -11597,12 +11699,12 @@ if (typeof registerShiftTrackerRuntimeModule === 'function') registerShiftTracke
     return angle;
   }
 
-  function getTrainUnitProfilePose(coordinate, center, sector, layout, lift) {
-    var angle = normalizeTrainUnitAngle(getProfileTangentAngle(coordinate, center, sector, layout));
+  function getTrainUnitProfilePose(coordinate, viewCenter, sector, layout, lift) {
+    var angle = normalizeTrainUnitAngle(getProfileTangentAngle(coordinate, viewCenter, sector, layout));
     var offset = Math.max(0, Number(lift) || 0);
     return {
-      x: coordinateToApkX(coordinate, center, layout) + Math.sin(angle) * offset,
-      y: getProfileYAt(coordinate, center, sector, layout) - Math.cos(angle) * offset,
+      x: coordinateToApkX(coordinate, viewCenter, layout) + Math.sin(angle) * offset,
+      y: getProfileYAt(coordinate, viewCenter, sector, layout) - Math.cos(angle) * offset,
       angle: angle
     };
   }
@@ -11620,10 +11722,10 @@ if (typeof registerShiftTrackerRuntimeModule === 'function') registerShiftTracke
     };
   }
 
-  function collectTrainConsistCenterline(center, sector, layout, totalMeters, lift) {
-    var points = collectTrainProfilePath(center, sector, layout, totalMeters);
+  function collectTrainConsistCenterline(headCoordinate, viewCenter, sector, layout, totalMeters, lift) {
+    var points = collectTrainProfilePath(headCoordinate, viewCenter, sector, layout, totalMeters);
     return points.map(function(point) {
-      var pose = getTrainUnitProfilePose(point.coordinate, center, sector, layout, lift);
+      var pose = getTrainUnitProfilePose(point.coordinate, viewCenter, sector, layout, lift);
       return {
         coordinate: point.coordinate,
         x: pose.x,
@@ -11632,14 +11734,14 @@ if (typeof registerShiftTrackerRuntimeModule === 'function') registerShiftTracke
     });
   }
 
-  function drawApkTrainConsist(ctx, layout, center, sector, details, isPreview) {
+  function drawApkTrainConsist(ctx, layout, headCoordinate, viewCenter, sector, details, isPreview) {
     var model = getApkTrainCompositionModel(details);
     var bodyHeight = Math.max(10, Math.min(13, layout.xUnit * 1.65));
     var lift = bodyHeight / 2 + 2.4;
-    var centerline = collectTrainConsistCenterline(center, sector, layout, model.totalMeters, lift);
+    var centerline = collectTrainConsistCenterline(headCoordinate, viewCenter, sector, layout, model.totalMeters, lift);
     if (!centerline || centerline.length < 2) return;
-    var tailCoordinate = center - getCurrentCoordinateDirection() * model.totalMeters;
-    var crossesProfileGap = profileIntervalIntersectsGap(center, tailCoordinate, sector);
+    var tailCoordinate = headCoordinate - getCurrentCoordinateDirection() * model.totalMeters;
+    var crossesProfileGap = profileIntervalIntersectsGap(headCoordinate, tailCoordinate, sector);
 
     ctx.save();
     ctx.beginPath();
@@ -11649,7 +11751,7 @@ if (typeof registerShiftTrackerRuntimeModule === 'function') registerShiftTracke
       strokeTrainProfilePath(ctx, centerline, bodyHeight + 4, 'rgba(3, 7, 18, 0.92)', null, isPreview ? 0.76 : 1);
       strokeTrainProfilePath(ctx, centerline, bodyHeight, 'rgba(91, 210, 255, 0.92)', null, isPreview ? 0.72 : 1);
       strokeTrainProfilePath(ctx, centerline, 1.2, 'rgba(224, 242, 254, 0.76)', null, isPreview ? 0.52 : 0.82);
-      var headPose = getTrainUnitProfilePose(center, center, sector, layout, lift);
+      var headPose = getTrainUnitProfilePose(headCoordinate, viewCenter, sector, layout, lift);
       ctx.save();
       ctx.translate(headPose.x, headPose.y);
       ctx.rotate(headPose.angle);
@@ -11660,8 +11762,8 @@ if (typeof registerShiftTrackerRuntimeModule === 'function') registerShiftTracke
       ctx.fill();
       ctx.restore();
     } else {
-      var headOnlyPose = getTrainUnitProfilePose(center, center, sector, layout, lift);
-      if (!getProfileGapAt(center, sector)) {
+      var headOnlyPose = getTrainUnitProfilePose(headCoordinate, viewCenter, sector, layout, lift);
+      if (!getProfileGapAt(headCoordinate, sector)) {
         ctx.fillStyle = isPreview ? 'rgba(91, 210, 255, 0.72)' : 'rgba(91, 210, 255, 0.94)';
         ctx.beginPath();
         ctx.arc(headOnlyPose.x, headOnlyPose.y, bodyHeight / 2, 0, Math.PI * 2);
@@ -11670,8 +11772,8 @@ if (typeof registerShiftTrackerRuntimeModule === 'function') registerShiftTracke
     }
     ctx.restore();
     if (crossesProfileGap) {
-      var warningX = clamp(coordinateToApkX(center, center, layout), layout.viewportX + 52, layout.viewportRight - 52);
-      var warningY = getProfileYAt(center, center, sector, layout) - bodyHeight - 18;
+      var warningX = clamp(coordinateToApkX(headCoordinate, viewCenter, layout), layout.viewportX + 52, layout.viewportRight - 52);
+      var warningY = getProfileYAt(headCoordinate, viewCenter, sector, layout) - bodyHeight - 18;
       fillRoundRect(ctx, warningX - 48, warningY - 7, 96, 14, 7, 'rgba(124, 45, 18, 0.86)');
       drawText(ctx, 'ПРОФИЛЬ НЕИЗВ.', warningX, warningY, {
         size: 8.5,
@@ -11682,43 +11784,43 @@ if (typeof registerShiftTrackerRuntimeModule === 'function') registerShiftTracke
         maxWidth: 88
       });
     }
-    drawApkTrainLengthLabel(ctx, layout, center, sector, details, bodyHeight, isPreview);
+    drawApkTrainLengthLabel(ctx, layout, headCoordinate, viewCenter, sector, details, bodyHeight, isPreview);
   }
 
-  function drawApkTrain(ctx, layout, center, sector, avgAngle, isPreview) {
+  function drawApkTrain(ctx, layout, headCoordinate, viewCenter, sector, avgAngle, isPreview) {
     var details = getPoekhaliTrainDetails();
     var trainMeters = Math.max(1, Math.round(Number(details && details.lengthMeters) || getTrainLengthMeters()));
-    if (!POEKHALI_HTML_HUD) drawApkTrainProfileBar(ctx, layout, center, sector, trainMeters, isPreview);
-    if (POEKHALI_HTML_HUD) drawApkTrainConsist(ctx, layout, center, sector, details, isPreview);
+    if (!POEKHALI_HTML_HUD) drawApkTrainProfileBar(ctx, layout, headCoordinate, viewCenter, sector, trainMeters, isPreview);
+    if (POEKHALI_HTML_HUD) drawApkTrainConsist(ctx, layout, headCoordinate, viewCenter, sector, details, isPreview);
   }
 
   // Head/tail screen geometry of the train (head at the live coordinate, tail
   // back by the full composition length). Shared by the length band and the
   // factual-speed line so they cover exactly the same span.
-  function getApkTrainExtentX(layout, center, details) {
+  function getApkTrainExtentX(layout, headCoordinate, viewCenter, details) {
     var src = details || getPoekhaliTrainDetails();
     var trainMeters = Math.max(1, Math.round(Number(src && src.lengthMeters) || getTrainLengthMeters()));
     var locoMeters = Math.max(0, Math.round(Number(src && src.locoLengthMeters) || TRAIN_LOCO_LENGTH_M));
     var compositionType = String(src && src.compositionType || '');
     var projMeters = (compositionType === 'train' || compositionType === 'estimated') ? trainMeters + locoMeters : trainMeters;
     var dir = getCurrentCoordinateDirection();
-    var tailCoord = center - dir * projMeters;
-    var headX = coordinateToApkX(center, center, layout);
-    var tailX = coordinateToApkX(tailCoord, center, layout);
+    var tailCoord = headCoordinate - dir * projMeters;
+    var headX = coordinateToApkX(headCoordinate, viewCenter, layout);
+    var tailX = coordinateToApkX(tailCoord, viewCenter, layout);
     return {
       headX: headX,
       tailX: tailX,
       left: Math.min(headX, tailX),
       right: Math.max(headX, tailX),
-      midCoord: (center + tailCoord) / 2
+      midCoord: (headCoordinate + tailCoord) / 2
     };
   }
 
   // Keep the composition length inside the train by laying out each glyph on
   // its own profile pose. A single rotated text run cuts across grade changes.
-  function drawApkTrainLengthLabel(ctx, layout, center, sector, details, bodyHeight, isPreview) {
+  function drawApkTrainLengthLabel(ctx, layout, headCoordinate, viewCenter, sector, details, bodyHeight, isPreview) {
     var labels = getTrainKmScaleLengthLabels(details);
-    var ext = getApkTrainExtentX(layout, center, details);
+    var ext = getApkTrainExtentX(layout, headCoordinate, viewCenter, details);
     var left = Math.max(ext.left, layout.viewportX + 4);
     var right = Math.min(ext.right, layout.viewportRight - 4);
     var span = right - left;
@@ -11750,7 +11852,7 @@ if (typeof registerShiftTrackerRuntimeModule === 'function') registerShiftTracke
     ctx.restore();
     if (label) {
       var lift = (Number(bodyHeight) || 10) / 2 + 2.4;
-      var anchorX = coordinateToApkX(ext.midCoord, center, layout);
+      var anchorX = coordinateToApkX(ext.midCoord, viewCenter, layout);
       var cursorX = anchorX - labelWidth / 2;
       ctx.save();
       ctx.globalAlpha = isPreview ? 0.78 : 1;
@@ -11764,8 +11866,8 @@ if (typeof registerShiftTrackerRuntimeModule === 'function') registerShiftTracke
       for (var k = 0; k < label.length; k++) {
         var width = glyphWidths[k];
         var glyphX = cursorX + width / 2;
-        var coordinate = coordinateAtApkX(glyphX, center, layout);
-        var pose = getTrainUnitProfilePose(coordinate, center, sector, layout, lift);
+        var coordinate = coordinateAtApkX(glyphX, viewCenter, layout);
+        var pose = getTrainUnitProfilePose(coordinate, viewCenter, sector, layout, lift);
         ctx.save();
         ctx.translate(pose.x, pose.y);
         ctx.rotate(pose.angle);
@@ -12127,37 +12229,100 @@ if (typeof registerShiftTrackerRuntimeModule === 'function') registerShiftTracke
     ctx.restore();
   }
 
+  function buildProjectionSceneState(projection, layout) {
+    if (!projection || (!projection.onTrack && !projection.preview) ||
+        !isRealNumber(projection.lineCoordinate) || !isRealNumber(projection.sector)) return null;
+    var center = Number(projection.lineCoordinate);
+    var sector = Number(projection.sector);
+    var bounds = getApkVisibleBounds(center, layout);
+    var visibleObjects = getTrackObjectsInWindow(bounds.left, bounds.right, sector);
+    var speedRules = getSpeedRulesInWindow(bounds.left, bounds.right, sector, visibleObjects);
+    var activeSpeed = findTrainBindingSpeedRule(center, speedRules);
+    return {
+      projection: projection,
+      center: center,
+      sector: sector,
+      bounds: bounds,
+      visibleObjects: visibleObjects,
+      visibleControlMarks: getRegimeControlMarksInWindow(bounds.left, bounds.right, sector),
+      speedRules: speedRules,
+      nextSignal: resolveNextSignalForProjection(projection),
+      nextStation: resolveNextStationForProjection(projection),
+      nextNeutralMark: findNextRegimeControlMarkForDirection(center, sector, 'neutral'),
+      nextWarning: findNextWarningForDirection(center, sector),
+      factualActiveSpeed: isFactualSpeedRuleSource(activeSpeed) ? activeSpeed : null,
+      nextRestriction: resolveNextRestrictionForProjection(projection),
+      routeProgress: resolveRouteProgressForProjection(projection)
+    };
+  }
+
+  function isSameProjectionLocation(a, b) {
+    return !!(a && b && getSectorKey(a.sector) === getSectorKey(b.sector) &&
+      Math.abs(Number(a.lineCoordinate) - Number(b.lineCoordinate)) < 0.5);
+  }
+
   function drawRouteStrip(ctx, w, h, displayProjection) {
-    var projection = displayProjection || tracker.projection;
-    if (!projection || (!projection.onTrack && !projection.preview)) {
+    var viewProjection = displayProjection || tracker.projection;
+    if (!viewProjection || (!viewProjection.onTrack && !viewProjection.preview)) {
       tracker.activeRestriction = null;
       tracker.nextRestriction = null;
       return;
     }
 
-    var center = projection.lineCoordinate;
-    var sector = projection.sector;
-    var isPreview = !!projection.preview;
     var layout = getApkTrackerLayout(w, h);
-    var bounds = getApkVisibleBounds(center, layout);
-    var visibleObjects = getTrackObjectsInWindow(bounds.left, bounds.right, sector);
-    var visibleControlMarks = getRegimeControlMarksInWindow(bounds.left, bounds.right, sector);
-    var speedRules = getSpeedRulesInWindow(bounds.left, bounds.right, sector, visibleObjects);
-    var nextSignal = resolveNextSignalForProjection(projection);
-    var nextStation = resolveNextStationForProjection(projection);
-    var nextNeutralMark = findNextRegimeControlMarkForDirection(center, sector, 'neutral');
-    var nextWarning = findNextWarningForDirection(center, sector);
-    var activeSpeed = findTrainBindingSpeedRule(center, speedRules);
-    var factualActiveSpeed = isFactualSpeedRuleSource(activeSpeed) ? activeSpeed : null;
-    var nextRestriction = resolveNextRestrictionForProjection(projection);
-    var routeProgress = resolveRouteProgressForProjection(projection);
-    tracker.activeRestriction = normalizeActiveRestriction(factualActiveSpeed, projection);
-    tracker.nextRestriction = nextRestriction;
-    var avgAngle = computeAvgProfileAngle(center, sector, layout);
+    var liveProjection = getLiveProjection();
+    var detachedView = getDetachedViewProjection();
+    var operationalProjection = liveProjection || (detachedView ? null : viewProjection);
+    var operationalState = buildProjectionSceneState(operationalProjection, layout);
+    var viewState = operationalState && isSameProjectionLocation(viewProjection, operationalProjection)
+      ? operationalState
+      : buildProjectionSceneState(viewProjection, layout);
+    if (!viewState) {
+      tracker.activeRestriction = null;
+      tracker.nextRestriction = null;
+      return;
+    }
+
+    tracker.activeRestriction = operationalState
+      ? normalizeActiveRestriction(operationalState.factualActiveSpeed, operationalProjection)
+      : null;
+    tracker.nextRestriction = operationalState ? operationalState.nextRestriction : null;
+    if (operationalState) {
+      drawApkLiveSummary(
+        ctx,
+        layout,
+        operationalState.center,
+        operationalState.sector,
+        operationalState.visibleObjects,
+        operationalState.factualActiveSpeed,
+        operationalState.nextSignal,
+        operationalState.nextStation,
+        operationalState.nextWarning,
+        operationalState.nextRestriction,
+        operationalState.routeProgress,
+        !!operationalProjection.preview,
+        operationalProjection
+      );
+    }
+
+    var projection = viewState.projection;
+    var center = viewState.center;
+    var sector = viewState.sector;
+    var bounds = viewState.bounds;
+    var visibleObjects = viewState.visibleObjects;
+    var visibleControlMarks = viewState.visibleControlMarks;
+    var speedRules = viewState.speedRules;
+    var nextSignal = viewState.nextSignal;
+    var nextNeutralMark = viewState.nextNeutralMark;
+    var nextWarning = viewState.nextWarning;
+    var factualActiveSpeed = viewState.factualActiveSpeed;
+    var nextRestriction = viewState.nextRestriction;
+    var routeProgress = viewState.routeProgress;
+    var isPreview = !!projection.preview;
     var labelLayout = makeLabelLayout();
+    var trainProjection = liveProjection || (detachedView ? null : projection);
 
     ctx.save();
-    drawApkLiveSummary(ctx, layout, center, sector, visibleObjects, factualActiveSpeed, nextSignal, nextStation, nextWarning, nextRestriction, routeProgress, isPreview, projection);
     drawApkSceneBackground(ctx, layout);
     drawApkProfileGrid(ctx, layout);
     drawApkTrackerHeader(ctx, layout, center, sector, visibleObjects);
@@ -12168,7 +12333,7 @@ if (typeof registerShiftTrackerRuntimeModule === 'function') registerShiftTracke
     drawApkStations(ctx, layout, center, sector, visibleObjects, isPreview, labelLayout);
     drawApkSignals(ctx, layout, center, sector, visibleObjects, isPreview, labelLayout, nextSignal);
     if (POEKHALI_HTML_HUD) {
-      drawApkSpeedScale(ctx, layout, center, sector, speedRules, factualActiveSpeed, bounds);
+      drawApkSpeedScale(ctx, layout, center, sector, speedRules, factualActiveSpeed, bounds, trainProjection);
     } else {
       drawApkSpeedBands(ctx, layout, center, sector, speedRules, factualActiveSpeed, isPreview, labelLayout);
     }
@@ -12178,10 +12343,10 @@ if (typeof registerShiftTrackerRuntimeModule === 'function') registerShiftTracke
     drawApkRouteTargetCue(ctx, layout, center, sector, routeProgress, isPreview, labelLayout);
     drawApkGradeLabels(ctx, layout, center, sector, bounds, isPreview, labelLayout);
 
-    if (isPreview) {
-      drawApkTrain(ctx, layout, center, sector, avgAngle, true);
-    } else {
-      drawApkTrain(ctx, layout, center, sector, avgAngle, false);
+    if (trainProjection && getSectorKey(trainProjection.sector) === getSectorKey(sector)) {
+      var trainCoordinate = Number(trainProjection.lineCoordinate);
+      var avgAngle = computeAvgProfileAngle(trainCoordinate, sector, layout);
+      drawApkTrain(ctx, layout, trainCoordinate, center, sector, avgAngle, !liveProjection && !!trainProjection.preview);
     }
 
     if (!factualActiveSpeed && !nextWarning && nextNeutralMark && !isPreview) {
@@ -12293,6 +12458,10 @@ if (typeof registerShiftTrackerRuntimeModule === 'function') registerShiftTracke
     if (!headProjection) { try { headProjection = getPreviewProjection(); } catch (e) { headProjection = null; } }
     var headPos = headProjection && isRealNumber(headProjection.lineCoordinate)
       ? formatLineCoordinate(headProjection.lineCoordinate) : '—';
+    var viewProjection = null;
+    try { viewProjection = getCanvasDisplayProjection(); } catch (e) { viewProjection = null; }
+    var browseActive = !!getDetachedViewProjection();
+    var browseOffsetMeters = browseActive ? getDetachedViewOffsetMeters() : null;
     window.poekhaliHud = {
       at: Date.now(),
       shift: getPoekhaliTrainDetails(),
@@ -12303,6 +12472,16 @@ if (typeof registerShiftTrackerRuntimeModule === 'function') registerShiftTracke
       speedMeters: !!tracker.speedMeters,
       limitKmh: limit,
       headPos: headPos,
+      browseActive: browseActive,
+      browseDragging: browseActive && tracker.previewDragActive,
+      browseOffsetMeters: browseActive && isRealNumber(browseOffsetMeters) ? browseOffsetMeters : null,
+      browseAutoReturnAt: browseActive && tracker.browseAutoReturnAt > 0 ? tracker.browseAutoReturnAt : null,
+      browseAutoReturnDelayMs: browseActive ? BROWSE_AUTO_RETURN_DELAY_MS : null,
+      viewDetached: browseActive,
+      viewCoordinate: viewProjection && isRealNumber(viewProjection.lineCoordinate)
+        ? viewProjection.lineCoordinate : null,
+      viewSector: viewProjection && isRealNumber(viewProjection.sector)
+        ? viewProjection.sector : null,
       gradeText: hud.gradeText || '—',
       gradeTone: hud.gradeTone || 'info',
       reachText: hud.reachText || '—',
@@ -12337,7 +12516,7 @@ if (typeof registerShiftTrackerRuntimeModule === 'function') registerShiftTracke
     ctx.fillStyle = bg;
     ctx.fillRect(0, 0, w, h);
 
-    var displayProjection = getPreviewProjection();
+    var displayProjection = getCanvasDisplayProjection();
     tracker.activeRestriction = null;
     tracker.nextRestriction = null;
     drawRouteStrip(ctx, w, h, displayProjection);
@@ -12471,16 +12650,41 @@ if (typeof registerShiftTrackerRuntimeModule === 'function') registerShiftTracke
     schedulePendingPoekhaliSyncs(1800);
   }
 
-  function canBrowsePreview() {
+  function canBrowseCanvas() {
     return ((tracker.assetsLoaded && tracker.routePoints.length > 0) ||
       (tracker.userSections && tracker.userSections.length > 0) ||
       (tracker.rawDrafts && tracker.rawDrafts.length > 0)) &&
-      (!tracker.projection || !tracker.projection.onTrack);
+      (!!getLiveProjection() || !tracker.projection || !tracker.projection.onTrack);
   }
 
-  function browsePreviewByPixels(deltaX) {
-    if (!canBrowsePreview()) return;
-    var projection = getPreviewProjection();
+  function clearCanvasBrowseGesture(options) {
+    options = options || {};
+    var pointerId = tracker.previewDragPointerId;
+    tracker.previewDragActive = false;
+    tracker.previewDragPointerId = null;
+    tracker.previewDragStartX = 0;
+    tracker.previewDragStartY = 0;
+    tracker.previewDragX = 0;
+    tracker.previewDragAxis = '';
+    if (!options.keepSuppressClick) tracker.previewDragSuppressClick = false;
+    if (!tracker.canvas) return;
+    tracker.canvas.classList.remove('is-dragging');
+    try {
+      if (pointerId !== null && typeof tracker.canvas.hasPointerCapture === 'function' &&
+          tracker.canvas.hasPointerCapture(pointerId) && typeof tracker.canvas.releasePointerCapture === 'function') {
+        tracker.canvas.releasePointerCapture(pointerId);
+      }
+    } catch (error) {
+      // Pointer capture is optional.
+    }
+  }
+
+  function browseCanvasByPixels(deltaX) {
+    if (!canBrowseCanvas()) return;
+    var liveProjection = getLiveProjection();
+    var detachedProjection = getDetachedViewProjection();
+    var detachedBrowse = !!(detachedProjection || liveProjection);
+    var projection = detachedProjection || liveProjection || getPreviewProjection();
     if (!projection) return;
     var layout = getApkTrackerLayout(tracker.width || window.innerWidth || 360, tracker.height || window.innerHeight || 760);
     var deltaMeters = -deltaX / (layout.oneMeter * layout.direction);
@@ -12489,16 +12693,37 @@ if (typeof registerShiftTrackerRuntimeModule === 'function') registerShiftTracke
     if (bounds && targetCoordinate < bounds.min - 40) {
       var previousSector = getAdjacentSector(projection.sector, -1);
       if (previousSector !== null) {
-        selectPreviewSector(previousSector, 'end');
+        if (detachedBrowse) {
+          setDetachedViewProjection({
+            lineCoordinate: getPreferredSectorCoordinate(previousSector, 'end'),
+            sector: previousSector
+          });
+        } else {
+          selectPreviewSector(previousSector, 'end');
+        }
         return;
       }
     }
     if (bounds && targetCoordinate > bounds.max + 40) {
       var nextSector = getAdjacentSector(projection.sector, 1);
       if (nextSector !== null) {
-        selectPreviewSector(nextSector, 'start');
+        if (detachedBrowse) {
+          setDetachedViewProjection({
+            lineCoordinate: getPreferredSectorCoordinate(nextSector, 'start'),
+            sector: nextSector
+          });
+        } else {
+          selectPreviewSector(nextSector, 'start');
+        }
         return;
       }
+    }
+    if (detachedBrowse) {
+      setDetachedViewProjection({
+        lineCoordinate: targetCoordinate,
+        sector: projection.sector
+      });
+      return;
     }
     setPreviewProjection({
       lineCoordinate: targetCoordinate,
@@ -12510,33 +12735,68 @@ if (typeof registerShiftTrackerRuntimeModule === 'function') registerShiftTracke
   function bindCanvasBrowse() {
     if (!tracker.canvas) return;
     tracker.canvas.addEventListener('pointerdown', function(event) {
-      if (!canBrowsePreview()) return;
-      tracker.previewDragActive = true;
+      if (!canBrowseCanvas() || event.isPrimary === false || (event.pointerType === 'mouse' && event.button !== 0)) return;
+      if (tracker.previewDragPointerId !== null) return;
+      if (getDetachedViewProjection()) clearBrowseAutoReturnTimer();
+      tracker.previewDragSuppressClick = false;
+      tracker.previewDragPointerId = event.pointerId;
+      tracker.previewDragStartX = event.clientX;
+      tracker.previewDragStartY = event.clientY;
       tracker.previewDragX = event.clientX;
-      try {
-        tracker.canvas.setPointerCapture(event.pointerId);
-      } catch (error) {
-        // Pointer capture is optional.
-      }
+      tracker.previewDragAxis = '';
     });
     tracker.canvas.addEventListener('pointermove', function(event) {
-      if (!tracker.previewDragActive) return;
+      if (event.pointerId !== tracker.previewDragPointerId) return;
+      if (!tracker.previewDragAxis) {
+        var totalX = event.clientX - tracker.previewDragStartX;
+        var totalY = event.clientY - tracker.previewDragStartY;
+        if (Math.max(Math.abs(totalX), Math.abs(totalY)) < 7) return;
+        tracker.previewDragAxis = Math.abs(totalX) > Math.abs(totalY) ? 'horizontal' : 'vertical';
+        if (tracker.previewDragAxis === 'horizontal') {
+          tracker.previewDragActive = true;
+          tracker.previewDragSuppressClick = true;
+          tracker.canvas.classList.add('is-dragging');
+          try {
+            tracker.canvas.setPointerCapture(event.pointerId);
+          } catch (error) {
+            // Pointer capture is optional.
+          }
+        }
+      }
+      if (tracker.previewDragAxis !== 'horizontal') return;
+      event.preventDefault();
       var deltaX = event.clientX - tracker.previewDragX;
       tracker.previewDragX = event.clientX;
-      browsePreviewByPixels(deltaX);
-    });
+      browseCanvasByPixels(deltaX);
+    }, { passive: false });
     function stopBrowseDrag(event) {
-      tracker.previewDragActive = false;
-      try {
-        tracker.canvas.releasePointerCapture(event.pointerId);
-      } catch (error) {
-        // Pointer capture is optional.
+      if (event && event.pointerId !== tracker.previewDragPointerId) return;
+      var wasHorizontal = tracker.previewDragAxis === 'horizontal';
+      var shouldSuppressClick = tracker.previewDragSuppressClick;
+      clearCanvasBrowseGesture({ keepSuppressClick: shouldSuppressClick });
+      if (shouldSuppressClick) {
+        window.setTimeout(function() { tracker.previewDragSuppressClick = false; }, 0);
       }
+      if (getDetachedViewProjection()) scheduleBrowseAutoReturn();
+      if (wasHorizontal) requestDraw();
     }
     tracker.canvas.addEventListener('pointerup', stopBrowseDrag);
     tracker.canvas.addEventListener('pointercancel', stopBrowseDrag);
-    tracker.canvas.addEventListener('pointerleave', function() {
-      tracker.previewDragActive = false;
+    tracker.canvas.addEventListener('lostpointercapture', stopBrowseDrag);
+    tracker.canvas.addEventListener('pointerleave', function(event) {
+      var hasCapture = false;
+      try {
+        hasCapture = typeof tracker.canvas.hasPointerCapture === 'function' && tracker.canvas.hasPointerCapture(event.pointerId);
+      } catch (error) {
+        hasCapture = false;
+      }
+      if (!hasCapture) stopBrowseDrag(event);
+    });
+    tracker.canvas.addEventListener('click', function(event) {
+      if (!tracker.previewDragSuppressClick) return;
+      event.preventDefault();
+      event.stopPropagation();
+      tracker.previewDragSuppressClick = false;
     });
   }
 
@@ -12595,6 +12855,8 @@ if (typeof registerShiftTrackerRuntimeModule === 'function') registerShiftTracke
     resetTripMetrics();
     tracker.runStartPreparing = false;
     tracker.runStartToken = 0;
+    returnViewToTrain({ draw: false });
+    clearCanvasBrowseGesture();
     finalizeRawLearningCaptureSession('interrupted');
     flushLocalLearningSave();
     tracker.active = false;
@@ -12713,6 +12975,7 @@ if (typeof registerShiftTrackerRuntimeModule === 'function') registerShiftTracke
   window.startPoekhaliTrackerMode = startPoekhaliTrackerMode;
   window.stopPoekhaliTrackerMode = stopPoekhaliTrackerMode;
   window.syncPoekhaliTrackerMode = syncPoekhaliTrackerMode;
+  window.poekhaliReturnToTrain = returnViewToTrain;
   window.openPoekhaliForShift = openPoekhaliForShift;
   window.preparePoekhaliModeEntry = preparePoekhaliModeEntry;
   window.getPoekhaliTrainDetails = getPoekhaliTrainDetails;

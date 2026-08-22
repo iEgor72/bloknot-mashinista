@@ -11,6 +11,7 @@ const baseUrl = `http://127.0.0.1:${port}`;
 const artifactDir = path.join(root, 'artifacts', 'poekhali-json-smoke');
 const screenshotPath = path.join(artifactDir, 'postyshevo-novyi-urgal.png');
 const postyshevoKomsomolskScreenshotPath = path.join(artifactDir, 'postyshevo-komsomolsk.png');
+const liveTouchPanScreenshotPath = path.join(artifactDir, 'live-touch-pan.png');
 const reportPath = path.join(artifactDir, 'report.json');
 const progressPath = path.join(artifactDir, 'progress.log');
 const mapId = 'dvost-postyshevo-novyi-urgal-odd';
@@ -690,6 +691,341 @@ async function assertStaleRouteSelectionCannotWin(browser) {
   return result;
 }
 
+async function assertLiveTouchPanSafety(browser) {
+  const context = await browser.newContext({
+    viewport: { width: 390, height: 844 },
+    deviceScaleFactor: 1,
+    hasTouch: true,
+    isMobile: true,
+    serviceWorkers: 'block'
+  });
+  const liveMapId = 'dvost-postyshevo-komsomolsk';
+  const pointWarning = {
+    id: 'poekhali-json-smoke-live-pan-warning',
+    mapId: liveMapId,
+    sector: 18,
+    start: 3717900,
+    end: 3717900,
+    speed: 40,
+    note: 'Проверка live-pan',
+    enabled: true,
+    createdAt: new Date().toISOString(),
+    updatedAt: new Date().toISOString()
+  };
+  await context.addInitScript(({ mapId: storedMapId, warning }) => {
+    localStorage.setItem('poekhali.mapId', storedMapId);
+    localStorage.setItem('poekhali.warnings', JSON.stringify([warning]));
+    localStorage.removeItem('poekhali.previewProjection');
+    localStorage.removeItem('poekhali.lastProjection');
+    const watchers = new Map();
+    let nextWatchId = 1;
+    Object.defineProperty(navigator, 'geolocation', {
+      configurable: true,
+      value: {
+        watchPosition(success, error, options) {
+          const id = nextWatchId++;
+          watchers.set(id, { success, error, options });
+          return id;
+        },
+        clearWatch(id) {
+          watchers.delete(id);
+        },
+        getCurrentPosition() {}
+      }
+    });
+    window.__emitPoekhaliGpsFix = (fix) => {
+      const position = {
+        timestamp: fix.ts,
+        coords: {
+          latitude: fix.lat,
+          longitude: fix.lon,
+          altitude: 40,
+          accuracy: fix.accuracy,
+          speed: 20,
+          heading: 90
+        }
+      };
+      for (const watcher of watchers.values()) watcher.success(position);
+    };
+  }, { mapId: liveMapId, warning: pointWarning });
+
+  const page = await context.newPage();
+  await page.goto(baseUrl, { waitUntil: 'domcontentloaded', timeout: 20_000 });
+  await page.waitForFunction(() => (
+    typeof window.startPoekhaliTrackerMode === 'function' &&
+    typeof window.poekhaliReturnToTrain === 'function'
+  ), null, { timeout: 15_000 });
+  const liveShift = {
+    ...shift,
+    id: 'poekhali-json-smoke-live-touch-pan',
+    route_kind: 'work',
+    route_from: '',
+    route_to: ''
+  };
+  await page.evaluate((testShift) => {
+    window.allShifts = [testShift];
+    window.setSelectedPoekhaliShiftId(testShift.id);
+    window.setActiveTab('poekhali');
+    window.startPoekhaliTrackerMode();
+  }, liveShift);
+  await page.waitForFunction((expectedMapId) => (
+    localStorage.getItem('poekhali.mapId') === expectedMapId &&
+    window.poekhaliHud?.hasProjection
+  ), liveMapId, { timeout: 20_000 });
+
+  const gpsFix = {
+    lat: 51.19096233441612,
+    lon: 136.7194234424976,
+    accuracy: 8,
+    ts: Date.now()
+  };
+  await page.evaluate((fix) => window.__emitPoekhaliGpsFix(fix), gpsFix);
+  await page.waitForFunction(() => (
+    window.poekhaliHud?.live === true &&
+    window.poekhaliHud?.viewDetached === false &&
+    window.poekhaliHud?.limitKmh === 40
+  ), null, { timeout: 10_000 });
+
+  const safetyKeys = ['headPos', 'limitKmh', 'gradeText', 'headline', 'reachText'];
+  const before = await page.evaluate((keys) => {
+    const canvas = document.getElementById('poekhaliCanvas');
+    const stored = JSON.parse(localStorage.getItem('poekhali.lastProjection') || 'null');
+    return {
+      safety: Object.fromEntries(keys.map((key) => [key, window.poekhaliHud?.[key]])),
+      stored,
+      bitmap: canvas?.toDataURL() || '',
+      touchAction: canvas ? getComputedStyle(canvas).touchAction : '',
+      scrollY: window.scrollY,
+      viewCoordinate: window.poekhaliHud?.viewCoordinate
+    };
+  }, safetyKeys);
+  if (!before.stored || !before.touchAction.includes('pan-y') || !before.touchAction.includes('pinch-zoom')) {
+    throw new Error(`Live pan prerequisites failed: ${JSON.stringify(before)}`);
+  }
+
+  const box = await page.locator('#poekhaliCanvas').boundingBox();
+  if (!box) throw new Error('Live pan canvas has no bounding box');
+  const cdp = await context.newCDPSession(page);
+  const y = Math.round(box.y + box.height * 0.55);
+  async function dragProfile(startRatio, endRatio, pointerId) {
+    const startX = Math.round(box.x + box.width * startRatio);
+    const endX = Math.round(box.x + box.width * endRatio);
+    await cdp.send('Input.dispatchTouchEvent', {
+      type: 'touchStart',
+      touchPoints: [{ x: startX, y, id: pointerId, radiusX: 1, radiusY: 1, force: 1 }]
+    });
+    for (let step = 1; step <= 5; step += 1) {
+      const x = Math.round(startX + ((endX - startX) * step / 5));
+      await cdp.send('Input.dispatchTouchEvent', {
+        type: 'touchMove',
+        touchPoints: [{ x, y, id: pointerId, radiusX: 1, radiusY: 1, force: 1 }]
+      });
+    }
+    await cdp.send('Input.dispatchTouchEvent', { type: 'touchEnd', touchPoints: [] });
+  }
+  await dragProfile(0.82, 0.18, 1);
+  await page.waitForFunction(() => (
+    window.poekhaliHud?.viewDetached === true &&
+    window.poekhaliHud?.browseDragging === false &&
+    Math.abs(Number(window.poekhaliHud?.browseOffsetMeters || 0)) >= 1000 &&
+    document.getElementById('trkBrowseHud')?.hidden === false
+  ), null, { timeout: 10_000 });
+
+  const afterPan = await page.evaluate((keys) => {
+    const canvas = document.getElementById('poekhaliCanvas');
+    const browseHud = document.getElementById('trkBrowseHud');
+    const browseReturn = document.getElementById('trkBrowseReturn');
+    const canvasRect = canvas?.getBoundingClientRect();
+    const buttonRect = browseReturn?.getBoundingClientRect();
+    return {
+      safety: Object.fromEntries(keys.map((key) => [key, window.poekhaliHud?.[key]])),
+      stored: JSON.parse(localStorage.getItem('poekhali.lastProjection') || 'null'),
+      bitmap: canvas?.toDataURL() || '',
+      scrollY: window.scrollY,
+      viewCoordinate: window.poekhaliHud?.viewCoordinate,
+      viewSector: window.poekhaliHud?.viewSector,
+      offsetMeters: window.poekhaliHud?.browseOffsetMeters,
+      autoReturnAt: window.poekhaliHud?.browseAutoReturnAt,
+      autoReturnDelayMs: window.poekhaliHud?.browseAutoReturnDelayMs,
+      buttonVisible: browseHud?.hidden === false,
+      buttonText: browseHud?.innerText.trim() || '',
+      buttonCount: browseHud?.querySelectorAll(':scope > button').length || 0,
+      childCount: browseHud?.children.length || 0,
+      statusPresent: Boolean(document.getElementById('trkBrowseStatus')),
+      buttonCenterDelta: canvasRect && buttonRect
+        ? Math.abs((buttonRect.left + buttonRect.width / 2) - (canvasRect.left + canvasRect.width / 2))
+        : null
+    };
+  }, safetyKeys);
+  if (JSON.stringify(afterPan.safety) !== JSON.stringify(before.safety) ||
+      JSON.stringify(afterPan.stored) !== JSON.stringify(before.stored) ||
+      afterPan.bitmap === before.bitmap || afterPan.scrollY !== before.scrollY ||
+      Math.abs(Number(afterPan.viewCoordinate) - Number(before.viewCoordinate)) < 1000 ||
+      !afterPan.buttonVisible || afterPan.buttonText !== 'К поезду' ||
+      afterPan.buttonCount !== 1 || afterPan.childCount !== 1 || afterPan.statusPresent ||
+      typeof afterPan.buttonCenterDelta !== 'number' || !Number.isFinite(afterPan.buttonCenterDelta) ||
+      afterPan.buttonCenterDelta > 1 ||
+      afterPan.autoReturnDelayMs !== 8000 ||
+      !Number.isFinite(Number(afterPan.autoReturnAt))) {
+    throw new Error(`Live touch pan changed operational state: ${JSON.stringify({
+      before: { ...before, bitmap: before.bitmap ? '[bitmap]' : '' },
+      afterPan: { ...afterPan, bitmap: afterPan.bitmap ? '[bitmap]' : '' }
+    })}`);
+  }
+  await page.screenshot({ path: liveTouchPanScreenshotPath });
+
+  await page.waitForTimeout(20);
+  const movedGpsFix = {
+    ...gpsFix,
+    lat: gpsFix.lat - 0.0000951109899,
+    lon: gpsFix.lon + 0.0002429226434,
+    ts: gpsFix.ts + 20_000
+  };
+  await page.evaluate((fix) => window.__emitPoekhaliGpsFix(fix), movedGpsFix);
+  await page.waitForFunction((savedAt) => {
+    const stored = JSON.parse(localStorage.getItem('poekhali.lastProjection') || 'null');
+    return stored?.savedAt > savedAt;
+  }, before.stored.savedAt, { timeout: 10_000 });
+  const afterGps = await page.evaluate((keys) => ({
+    safety: Object.fromEntries(keys.map((key) => [key, window.poekhaliHud?.[key]])),
+    stored: JSON.parse(localStorage.getItem('poekhali.lastProjection') || 'null'),
+    viewDetached: window.poekhaliHud?.viewDetached,
+    viewCoordinate: window.poekhaliHud?.viewCoordinate
+  }), safetyKeys);
+  if (!afterGps.viewDetached ||
+      Math.abs(Number(afterGps.viewCoordinate) - Number(afterPan.viewCoordinate)) > 1 ||
+      Math.abs(Number(afterGps.stored?.lineCoordinate) - Number(before.stored.lineCoordinate)) < 10 ||
+      JSON.stringify(afterGps.safety) !== JSON.stringify(before.safety)) {
+    throw new Error(`Fresh GPS fix snapped the detached view: ${JSON.stringify({
+      before: { ...before, bitmap: before.bitmap ? '[bitmap]' : '' },
+      afterPan: { ...afterPan, bitmap: afterPan.bitmap ? '[bitmap]' : '' },
+      afterGps
+    })}`);
+  }
+
+  await page.locator('#trkBrowseReturn').click();
+  await page.waitForFunction(() => {
+    const stored = JSON.parse(localStorage.getItem('poekhali.lastProjection') || 'null');
+    return window.poekhaliHud?.viewDetached === false &&
+      Math.abs(Number(window.poekhaliHud?.viewCoordinate) - Number(stored?.lineCoordinate)) < 1 &&
+      document.getElementById('trkBrowseHud')?.hidden === true &&
+      document.getElementById('poekhaliOpsSheet')?.classList.contains('hidden') !== false;
+  }, null, { timeout: 10_000 });
+  const result = await page.evaluate(() => ({
+    offsetMeters: window.poekhaliHud?.browseOffsetMeters,
+    returnedCoordinate: window.poekhaliHud?.viewCoordinate,
+    storedCoordinate: JSON.parse(localStorage.getItem('poekhali.lastProjection') || 'null')?.lineCoordinate,
+    touchAction: getComputedStyle(document.getElementById('poekhaliCanvas')).touchAction
+  }));
+
+  await dragProfile(0.78, 0.24, 2);
+  await page.waitForFunction(() => (
+    window.poekhaliHud?.viewDetached === true &&
+    Number(window.poekhaliHud?.browseAutoReturnAt || 0) > Date.now()
+  ), null, { timeout: 2000 });
+  const firstAutoState = await page.evaluate(() => ({
+    now: Date.now(),
+    detached: window.poekhaliHud?.viewDetached,
+    autoReturnAt: Number(window.poekhaliHud?.browseAutoReturnAt || 0)
+  }));
+  if (!firstAutoState.detached || firstAutoState.autoReturnAt <= firstAutoState.now) {
+    throw new Error(`Browse auto-return was not scheduled: ${JSON.stringify(firstAutoState)}`);
+  }
+
+  await page.waitForTimeout(1000);
+  await dragProfile(0.56, 0.48, 3);
+  await page.waitForFunction((previousDeadline) => (
+    window.poekhaliHud?.viewDetached === true &&
+    Number(window.poekhaliHud?.browseAutoReturnAt || 0) > previousDeadline
+  ), firstAutoState.autoReturnAt, { timeout: 2000 });
+  const resetAutoState = await page.evaluate(() => ({
+    now: Date.now(),
+    detached: window.poekhaliHud?.viewDetached,
+    autoReturnAt: Number(window.poekhaliHud?.browseAutoReturnAt || 0)
+  }));
+  const resetDelayMs = resetAutoState.autoReturnAt - resetAutoState.now;
+  if (!resetAutoState.detached || resetAutoState.autoReturnAt <= firstAutoState.autoReturnAt ||
+      resetDelayMs < 7000 || resetDelayMs > 8000) {
+    throw new Error(`New touch did not restart browse auto-return: ${JSON.stringify({ firstAutoState, resetAutoState })}`);
+  }
+
+  await page.waitForTimeout(Math.max(0, firstAutoState.autoReturnAt + 250 - Date.now()));
+  const afterOriginalDeadline = await page.evaluate(() => ({
+    now: Date.now(),
+    detached: window.poekhaliHud?.viewDetached,
+    autoReturnAt: Number(window.poekhaliHud?.browseAutoReturnAt || 0),
+    buttonVisible: document.getElementById('trkBrowseHud')?.hidden === false
+  }));
+  if (!afterOriginalDeadline.detached || !afterOriginalDeadline.buttonVisible ||
+      afterOriginalDeadline.autoReturnAt !== resetAutoState.autoReturnAt) {
+    throw new Error(`Browse returned on the stale idle deadline: ${JSON.stringify({
+      firstAutoState,
+      resetAutoState,
+      afterOriginalDeadline
+    })}`);
+  }
+
+  await page.waitForTimeout(Math.max(0, resetAutoState.autoReturnAt - Date.now() - 300));
+  const beforeAutoReturn = await page.evaluate(() => ({
+    now: Date.now(),
+    detached: window.poekhaliHud?.viewDetached,
+    autoReturnAt: Number(window.poekhaliHud?.browseAutoReturnAt || 0),
+    buttonVisible: document.getElementById('trkBrowseHud')?.hidden === false
+  }));
+  if (!beforeAutoReturn.detached || !beforeAutoReturn.buttonVisible ||
+      beforeAutoReturn.autoReturnAt !== resetAutoState.autoReturnAt ||
+      beforeAutoReturn.now >= resetAutoState.autoReturnAt) {
+    throw new Error(`Browse returned before 8 seconds of inactivity: ${JSON.stringify({
+      resetAutoState,
+      beforeAutoReturn
+    })}`);
+  }
+
+  await page.waitForFunction(() => (
+    window.poekhaliHud?.viewDetached === false &&
+    document.getElementById('trkBrowseHud')?.hidden === true
+  ), null, { timeout: 12_000 });
+  const afterAutoReturn = await page.evaluate((keys) => {
+    const stored = JSON.parse(localStorage.getItem('poekhali.lastProjection') || 'null');
+    return {
+      detached: window.poekhaliHud?.viewDetached,
+      dragging: window.poekhaliHud?.browseDragging,
+      autoReturnAt: window.poekhaliHud?.browseAutoReturnAt,
+      now: Date.now(),
+      buttonHidden: document.getElementById('trkBrowseHud')?.hidden === true,
+      returnedCoordinate: window.poekhaliHud?.viewCoordinate,
+      storedCoordinate: stored?.lineCoordinate,
+      safety: Object.fromEntries(keys.map((key) => [key, window.poekhaliHud?.[key]]))
+    };
+  }, safetyKeys);
+  if (afterAutoReturn.detached || !afterAutoReturn.buttonHidden ||
+      Math.abs(Number(afterAutoReturn.returnedCoordinate) - Number(afterAutoReturn.storedCoordinate)) >= 1 ||
+      JSON.stringify(afterAutoReturn.safety) !== JSON.stringify(afterGps.safety)) {
+    throw new Error(`Browse did not auto-return safely: ${JSON.stringify({
+      firstAutoState,
+      resetAutoState,
+      afterOriginalDeadline,
+      beforeAutoReturn,
+      afterAutoReturn
+    })}`);
+  }
+
+  await page.evaluate(() => window.stopPoekhaliTrackerMode());
+  await context.close();
+  return {
+    detachedOffsetMeters: Math.round(Number(afterPan.offsetMeters)),
+    gpsDidNotSnapView: true,
+    safetyHudStable: true,
+    returnedToTrain: Math.abs(Number(result.returnedCoordinate) - Number(result.storedCoordinate)) < 1,
+    centeredReturnButton: Number(afterPan.buttonCenterDelta) <= 1,
+    autoReturnDelayMs: afterPan.autoReturnDelayMs,
+    autoReturnRestartedByTouch: resetAutoState.autoReturnAt > firstAutoState.autoReturnAt,
+    autoReturnedToTrain: Math.abs(Number(afterAutoReturn.returnedCoordinate) - Number(afterAutoReturn.storedCoordinate)) < 1,
+    touchAction: result.touchAction,
+    screenshot: path.relative(root, liveTouchPanScreenshotPath)
+  };
+}
+
 async function assertLocalGpsCapture(browser) {
   const context = await browser.newContext({ viewport: { width: 390, height: 844 }, deviceScaleFactor: 1 });
   await context.addInitScript(() => {
@@ -1138,6 +1474,9 @@ try {
 
   report.checks.localGpsCapture = await assertLocalGpsCapture(browser);
   await mark('local-only GPS field capture filtered and persisted');
+
+  report.checks.liveTouchPan = await assertLiveTouchPanSafety(browser);
+  await mark('live touch pan keeps GPS safety state and recenters');
 
   const secondMapId = 'dvost-postyshevo-komsomolsk';
   const secondPreview = {

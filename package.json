@@ -1,6 +1,6 @@
 {
   "name": "bloknot-mashinista",
-  "version": "1.2.5",
+  "version": "1.2.6",
   "private": true,
   "description": "Блокнот машиниста — учёт смен для локомотивных бригад",
   "main": "server.js",
@@ -30,7 +30,7 @@
     "smoke:sw-update": "node scripts/sw-update-smoke.mjs",
     "smoke:local": "node scripts/local-smoke.mjs",
     "smoke:offline": "node scripts/offline-smoke.mjs",
-    "smoke:predeploy": "npm run test:server && npm run regime:test && npm run regime:builder:test && npm run sections:validate && npm run sections:test && npm run smoke:sw-update && npm run smoke:local && npm run smoke:offline",
+    "smoke:predeploy": "npm run test:server && npm run regime:test && npm run regime:builder:test && npm run sections:validate && npm run sections:test && npm run smoke:sw-update && npm run smoke:poekhali-json && npm run smoke:local && npm run smoke:offline",
     "smoke:prod-cache": "node scripts/prod-cache-smoke.mjs"
   },
   "devDependencies": {
