@@ -1,6 +1,6 @@
 {
   "name": "bloknot-mashinista",
-  "version": "1.2.6",
+  "version": "1.2.7",
   "private": true,
   "description": "Блокнот машиниста — учёт смен для локомотивных бригад",
   "main": "server.js",
@@ -26,11 +26,12 @@
     "regime:builder:test": "python -m unittest discover -s tests/regime_profile_builder -p \"test_*.py\"",
     "sections:validate": "node scripts/validate-tracker-sections.mjs",
     "sections:test": "node scripts/validate-tracker-sections-smoke.mjs",
+    "station-names:test": "node scripts/poekhali-station-names-smoke.mjs",
     "smoke:poekhali-json": "node scripts/poekhali-json-smoke.mjs",
     "smoke:sw-update": "node scripts/sw-update-smoke.mjs",
     "smoke:local": "node scripts/local-smoke.mjs",
     "smoke:offline": "node scripts/offline-smoke.mjs",
-    "smoke:predeploy": "npm run test:server && npm run regime:test && npm run regime:builder:test && npm run sections:validate && npm run sections:test && npm run smoke:sw-update && npm run smoke:poekhali-json && npm run smoke:local && npm run smoke:offline",
+    "smoke:predeploy": "npm run test:server && npm run regime:test && npm run regime:builder:test && npm run sections:validate && npm run sections:test && npm run station-names:test && npm run smoke:sw-update && npm run smoke:poekhali-json && npm run smoke:local && npm run smoke:offline",
     "smoke:prod-cache": "node scripts/prod-cache-smoke.mjs"
   },
   "devDependencies": {

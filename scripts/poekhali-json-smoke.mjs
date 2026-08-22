@@ -1688,6 +1688,34 @@ try {
   }
   await page.waitForFunction(() => typeof window.startPoekhaliTrackerMode === 'function' && typeof window.setActiveTab === 'function', null, { timeout: 15_000 });
   await mark('tracker API ready');
+  report.checks.stationNames = await page.evaluate(() => {
+    const format = window.formatPoekhaliHumanObjectName;
+    if (typeof format !== 'function') throw new Error('station-name formatter is unavailable');
+    const samples = {
+      eldigan: format('ЭЛЬДИГ', 'station', 64_330),
+      galitsky: format('ГАЛИЦК', 'station', 156_098),
+      novyiKuznetsovsky: format('НОВЫЙ', 'station', 192_520),
+      novyiUrgal: format('НОВЫЙ', 'station', 3_303_732),
+      urgalOne: format('УРГАЛ', 'station', 3_313_510),
+      talidzhak: format('ТАЛИДЖ', 'station', 3_467_706),
+      komsomolskSortirovochny: format('КСМ-Сорт', 'station', 0)
+    };
+    const expected = {
+      eldigan: 'Эльдиган',
+      galitsky: 'Галицкий',
+      novyiKuznetsovsky: 'Новый Кузнецовский',
+      novyiUrgal: 'Новый Ургал',
+      urgalOne: 'Ургал I',
+      talidzhak: 'Талиджак',
+      komsomolskSortirovochny: 'Комсомольск-Сортировочный'
+    };
+    for (const key of Object.keys(expected)) {
+      if (samples[key] !== expected[key]) {
+        throw new Error(`station label ${key}: expected ${expected[key]}, got ${samples[key]}`);
+      }
+    }
+    return samples;
+  });
   await Promise.race([page.evaluate((testShift) => {
     window.allShifts = [testShift];
     window.__poekhaliCanvasRotations = [];

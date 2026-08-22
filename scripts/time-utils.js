@@ -1,4 +1,4 @@
-    if (typeof registerShiftTrackerRuntimeModule === 'function') registerShiftTrackerRuntimeModule('time-utils', 'v400');
+    if (typeof registerShiftTrackerRuntimeModule === 'function') registerShiftTrackerRuntimeModule('time-utils', 'v401');
 
     // ── Time helpers ──
 
@@ -861,45 +861,11 @@
       return String(formatShiftPoekhaliEta(value, true) || '').replace(/^~/, '').trim();
     }
 
-    var POEKHALI_STATION_NAME_OVERRIDES = {
-      'постыш': 'Постышево',
-      'силинк': 'Силинка',
-      'хальга': 'Хальгасо',
-      'хальгас': 'Хальгасо',
-      'лиан': 'Лиан',
-      'холони': 'Холони',
-      'хурму': 'Хурмули',
-      'хурмул': 'Хурмули',
-      'маврин': 'Мавринский',
-      'пиль': 'Пиль',
-      'горин': 'Горин',
-      'харпич': 'Харпичан',
-      'катама': 'Катама',
-      'эворон': 'Эворон',
-      'мони': 'Мони',
-      'апкан': 'Апкан',
-      'болен': 'Болен',
-      'дуки': 'Дуки'
-    };
-
-    function resolvePoekhaliKomsomolskStationName(coordinate) {
-      var numericCoordinate = Math.max(0, Math.round(Number(coordinate) || 0));
-      if (numericCoordinate >= 3810000 && numericCoordinate <= 3816500) return 'Комсомольск-2';
-      if (numericCoordinate >= 350000 && numericCoordinate <= 365000) return 'Комсомольск Грузовой';
-      if ((numericCoordinate >= 320000 && numericCoordinate < 350000) || numericCoordinate <= 5000) return 'Комсомольск-Сортировочный';
-      return 'Комсомольск-Сортировочный';
-    }
-
     function formatPoekhaliHumanObjectName(value, kind, coordinate) {
-      var text = String(value || '').replace(/\s+/g, ' ').trim();
-      if (!text) return '';
-      text = text.replace(/^ст\.?\s+/i, '');
-      var lowerText = text.toLowerCase();
-      if (lowerText === 'комсом' || lowerText === 'комсомольск') text = resolvePoekhaliKomsomolskStationName(coordinate);
-      else if (POEKHALI_STATION_NAME_OVERRIDES[lowerText]) text = POEKHALI_STATION_NAME_OVERRIDES[lowerText];
-      else if (lowerText === 'скоро') text = 'Огр.';
-      text = text.replace(/\s+\(/g, '(').replace(/,\s*/g, ', ').replace(/\s+/g, ' ').trim();
-      return text;
+      if (window.PoekhaliStationNames && typeof window.PoekhaliStationNames.formatHumanObjectName === 'function') {
+        return window.PoekhaliStationNames.formatHumanObjectName(value, kind, coordinate);
+      }
+      return String(value || '').replace(/\s+/g, ' ').trim().replace(/^ст\.?\s+/i, '');
     }
 
     function formatPoekhaliTargetTitle(target) {

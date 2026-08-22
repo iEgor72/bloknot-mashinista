@@ -1,4 +1,4 @@
-if (typeof registerShiftTrackerRuntimeModule === 'function') registerShiftTrackerRuntimeModule('poekhali-tracker', 'v400');
+if (typeof registerShiftTrackerRuntimeModule === 'function') registerShiftTrackerRuntimeModule('poekhali-tracker', 'v401');
 
 (function() {
   'use strict';
@@ -2034,11 +2034,13 @@ if (typeof registerShiftTrackerRuntimeModule === 'function') registerShiftTracke
     if (typeof window !== 'undefined' && typeof window.formatPoekhaliHumanObjectName === 'function') {
       return window.formatPoekhaliHumanObjectName(value, kind, coordinate);
     }
+    if (typeof window !== 'undefined' && window.PoekhaliStationNames && typeof window.PoekhaliStationNames.formatHumanObjectName === 'function') {
+      return window.PoekhaliStationNames.formatHumanObjectName(value, kind, coordinate);
+    }
     var text = String(value || '').replace(/\s+/g, ' ').trim().replace(/^ст\.?\s+/i, '');
     if (!text) return '';
     var lowerText = text.toLowerCase();
     if (lowerText === 'комсом' || lowerText === 'комсомольск') text = resolveKomsomolskTrackStationName(coordinate);
-    else if (POEKHALI_TRACK_STATION_NAME_OVERRIDES[lowerText]) text = POEKHALI_TRACK_STATION_NAME_OVERRIDES[lowerText];
     else if (lowerText === 'скоро') text = 'Огр.';
     text = text.replace(/\s+\(/g, '(').replace(/,\s*/g, ', ').replace(/\s+/g, ' ').trim();
     return text;
