@@ -30,7 +30,7 @@ if not TOKEN:
     sys.exit(1)
 
 WEBHOOK_SECRET = os.environ.get('TELEGRAM_WEBHOOK_SECRET', '').strip()
-APP_RELEASE_VERSION = 'v398'
+APP_RELEASE_VERSION = 'v399'
 APP_URL = 'https://bloknot-mashinista-bot.ru'
 TELEGRAM_APP_URL = f'{APP_URL}/?app={APP_RELEASE_VERSION}'
 WEBHOOK_URL = f'{APP_URL}/api/telegram-webhook'

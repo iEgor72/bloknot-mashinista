@@ -717,21 +717,8 @@ async function main() {
   if (notificationState.keys.includes('offline_mode_restored_2026_06_v1')) {
     throw new Error('Old offline announcement stayed in notification inbox');
   }
-  if (!notificationState.keys.includes('offline_mode_fixed_2026_06_v2')) {
-    throw new Error('Updated offline announcement was not seeded');
-  }
-  const offlineAnnouncement = notificationState.items.find((item) => item.key === 'offline_mode_fixed_2026_06_v2');
-  if (!offlineAnnouncement) {
-    throw new Error('Updated offline announcement payload was not found');
-  }
-  if (offlineAnnouncement.title !== 'Оффлайн режим работает') {
-    throw new Error(`Offline announcement title is not user-facing: ${offlineAnnouncement.title}`);
-  }
-  if (/кэш|cache|v\d+/i.test(offlineAnnouncement.text)) {
-    throw new Error('Offline announcement exposes technical cache copy');
-  }
-  if (!offlineAnnouncement.text.includes('без связи')) {
-    throw new Error('Offline announcement does not explain offline availability');
+  if (notificationState.keys.includes('offline_mode_fixed_2026_06_v2')) {
+    throw new Error('Expired offline announcement stayed in notification inbox');
   }
   if (!notificationState.titles.includes('Свежая служебная заметка')) {
     throw new Error('Recent unread transient notification was removed unexpectedly');

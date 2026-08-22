@@ -1,4 +1,4 @@
-if (typeof registerShiftTrackerRuntimeModule === 'function') registerShiftTrackerRuntimeModule('poekhali-tracker', 'v398');
+if (typeof registerShiftTrackerRuntimeModule === 'function') registerShiftTrackerRuntimeModule('poekhali-tracker', 'v399');
 
 (function() {
   'use strict';
@@ -48,6 +48,7 @@ if (typeof registerShiftTrackerRuntimeModule === 'function') registerShiftTracke
   var APK_ANGLE_MULTIPLIER = 0.22;
   var APK_LABEL_FOCUS_RADIUS_M = 720;
   var APK_LABEL_CONTEXT_RADIUS_M = 1500;
+  var DEFAULT_SECTION_SPEED_KMH = 100;
   var POEKHALI_DIAGNOSTIC_VERSION = 'v216';
   var REMOTE_MAP_SOURCE_ENABLED = false;
   var BACKUP_SCHEMA_VERSION = 1;
@@ -9324,7 +9325,7 @@ if (typeof registerShiftTrackerRuntimeModule === 'function') registerShiftTracke
 
   function isFactualSpeedRuleSource(rule) {
     var source = String(rule && rule.source || '');
-    return source === 'warning' || source === 'admin' || source === 'manual' || source === 'user';
+    return source === 'warning' || source === 'admin' || source === 'manual' || source === 'user' || source === 'default';
   }
 
   function getSpeedRulePrefix(rule) {
@@ -9865,10 +9866,26 @@ if (typeof registerShiftTrackerRuntimeModule === 'function') registerShiftTracke
   }
 
   function getSpeedRulesInWindow(left, right, sector, visibleObjects) {
-    // Speeds are user-managed only now (3 categories: установленная / постоянное /
-    // временное ограничение). The old auto-imported sources (ЭК objects & speeds, РК,
-    // документы, BAM, admin) were removed. Warnings (ПР) remain as a separate concept.
+    // Speeds are user-managed (3 categories: установленная / постоянное / временное
+    // ограничение). A non-persistent 100 км/ч baseline keeps every section readable
+    // until the user enters actual speeds; user rules and ПР always have priority.
+    // The old auto-imported sources (ЭК objects & speeds, РК, documents, BAM, admin)
+    // were removed. Warnings (ПР) remain as a separate concept.
     var rules = [];
+    var sectionBounds = getSectorCoordinateBounds(sector);
+    var defaultStart = sectionBounds ? sectionBounds.min : Number(left);
+    var defaultEnd = sectionBounds ? sectionBounds.max : Number(right);
+    if (isFinite(defaultStart) && isFinite(defaultEnd) && defaultEnd > defaultStart) {
+      rules.push({
+        coordinate: defaultStart,
+        length: defaultEnd - defaultStart,
+        end: defaultEnd,
+        speed: DEFAULT_SECTION_SPEED_KMH,
+        name: String(DEFAULT_SECTION_SPEED_KMH),
+        source: 'default',
+        category: 'set'
+      });
+    }
     var userSpeeds = getUserSpeedRulesForSector(sector, left, right);
     for (var u = 0; u < userSpeeds.length; u++) {
       var userSpeed = userSpeeds[u];
@@ -10167,7 +10184,7 @@ if (typeof registerShiftTrackerRuntimeModule === 'function') registerShiftTracke
     var projectionSector = projection && isRealNumber(projection.sector) ? projection.sector : 0;
     var projectionCoordinate = projection && isRealNumber(projection.lineCoordinate) ? projection.lineCoordinate : 0;
     var active = activeSpeed && isFactualSpeedRuleSource(activeSpeed) ? normalizeActiveRestriction(activeSpeed, projection) : null;
-    if (active && active.distanceToEnd > 0) {
+    if (active && active.source !== 'default' && active.distanceToEnd > 0) {
       candidates.push({
         kind: 'restriction_end',
         label: 'Конец ' + active.label,
@@ -11051,17 +11068,21 @@ if (typeof registerShiftTrackerRuntimeModule === 'function') registerShiftTracke
     return priority;
   }
 
-  function getSpeedRowColor(rule, isDimmed) {
+  function getSpeedColorRgb(rule) {
     var speed = getSpeedRuleValue(rule);
-    var alpha = isDimmed ? 0.46 : 0.92;
     if (isFinite(speed)) {
-      if (speed >= 80) return 'rgba(74, 222, 128, ' + alpha + ')';
-      if (speed >= 70) return 'rgba(56, 189, 248, ' + alpha + ')';
-      if (speed >= 60) return 'rgba(250, 204, 21, ' + alpha + ')';
-      if (speed >= 40) return 'rgba(251, 146, 60, ' + alpha + ')';
-      return 'rgba(251, 113, 133, ' + alpha + ')';
+      if (speed >= 80) return '74, 222, 128';
+      if (speed >= 70) return '56, 189, 248';
+      if (speed >= 60) return '250, 204, 21';
+      if (speed >= 40) return '251, 146, 60';
+      return '251, 113, 133';
     }
-    return 'rgba(136, 146, 164, ' + alpha + ')';
+    return '136, 146, 164';
+  }
+
+  function getSpeedRowColor(rule, isDimmed) {
+    var alpha = isDimmed ? 0.46 : 0.92;
+    return 'rgba(' + getSpeedColorRgb(rule) + ', ' + alpha + ')';
   }
 
   function getSpeedRowTextColor(rule, isActive) {
@@ -11163,17 +11184,15 @@ if (typeof registerShiftTrackerRuntimeModule === 'function') registerShiftTracke
     return result;
   }
 
-  // Speed → colour ramp: 0–39 red, 40–59 yellow, 60+ green.
-  // Speed-scale colour by user category (установленная — зелёный, постоянное —
-  // оранжевый, временное — красный). Warnings (ПР) render as temporary/red.
-  function speedScaleCategoryColor(rule, alpha) {
-    var category = rule && rule.source === 'warning' ? 'temporary' : normalizeUserSpeedCategory(rule && rule.category);
-    return 'rgba(' + getUserSpeedCategoryRgb(category) + ', ' + alpha + ')';
+  // Keep the HUD scale on the same numerical colour ramp as the legacy speed rows:
+  // 80+ green, 70–79 blue, 60–69 yellow, 40–59 orange, below 40 red.
+  function speedScaleValueColor(rule, alpha) {
+    return 'rgba(' + getSpeedColorRgb(rule) + ', ' + alpha + ')';
   }
 
   // HTML-HUD speed scale: a continuous speed axis where each posted-speed segment
   // is a horizontal line whose height is proportional to the speed (higher → up).
-  // Where segments overlap the lower speed wins (sampled with a min reducer). Each
+  // Where segments overlap the normal rule priority selects the effective speed. Each
   // segment bleeds a colour gradient down onto the terrain profile and drops to it
   // with a dashed connector at the steps. The current (factual) speed is a dashed
   // white line rising from the train up to its speed height on the axis.
@@ -11223,18 +11242,9 @@ if (typeof registerShiftTrackerRuntimeModule === 'function') registerShiftTracke
     var samples = [];
     for (var x = x0; x <= x1; x += stepPx) {
       var coord = coordinateAtApkX(x, center, layout);
-      var eff = Infinity;
-      var effRule = null;
-      for (var r2 = 0; r2 < rules.length; r2++) {
-        var rl = rules[r2];
-        var rs = Math.min(Number(rl.coordinate), Number(rl.end));
-        var re = Math.max(Number(rl.coordinate), Number(rl.end));
-        if (coord >= rs && coord <= re) {
-          var sv = getSpeedRuleValue(rl);
-          if (isFinite(sv) && sv < eff) { eff = sv; effRule = rl; }
-        }
-      }
-      // No posted speed at this coordinate → no band (speeds are user-managed only).
+      var effRule = findActiveSpeedRule(coord, rules);
+      var eff = getSpeedRuleValue(effRule);
+      // No usable speed at this coordinate (possible only when section bounds are missing).
       if (!isFinite(eff)) { eff = 0; effRule = null; }
       if (debugSim) {
         var fr = (x - x0) / (x1 - x0);
@@ -11277,8 +11287,8 @@ if (typeof registerShiftTrackerRuntimeModule === 'function') registerShiftTracke
       for (var j = k - 1; j >= runStart; j--) { ctx.lineTo(samples[j].x, samples[j].py); }
       ctx.closePath();
       var grad = ctx.createLinearGradient(0, y, 0, Math.max(y + 6, maxPy));
-      grad.addColorStop(0, speedScaleCategoryColor(runRule, 0.32));
-      grad.addColorStop(1, speedScaleCategoryColor(runRule, 0.0));
+      grad.addColorStop(0, speedScaleValueColor(runRule, 0.32));
+      grad.addColorStop(1, speedScaleValueColor(runRule, 0.0));
       ctx.fillStyle = grad;
       ctx.fill();
 
@@ -11287,13 +11297,13 @@ if (typeof registerShiftTrackerRuntimeModule === 'function') registerShiftTracke
       ctx.strokeStyle = 'rgba(3, 7, 18, 0.7)';
       ctx.lineWidth = 4.4;
       ctx.beginPath(); ctx.moveTo(sx, y); ctx.lineTo(ex, y); ctx.stroke();
-      ctx.strokeStyle = speedScaleCategoryColor(runRule, 0.98);
+      ctx.strokeStyle = speedScaleValueColor(runRule, 0.98);
       ctx.lineWidth = 2.6;
       ctx.beginPath(); ctx.moveTo(sx, y); ctx.lineTo(ex, y); ctx.stroke();
 
       // Dashed drops down to the terrain on BOTH ends of the segment (its own colour).
       ctx.save();
-      ctx.strokeStyle = speedScaleCategoryColor(runRule, 0.75);
+      ctx.strokeStyle = speedScaleValueColor(runRule, 0.75);
       ctx.lineWidth = 1.4;
       ctx.setLineDash([3, 3]);
       ctx.beginPath();
@@ -11319,7 +11329,7 @@ if (typeof registerShiftTrackerRuntimeModule === 'function') registerShiftTracke
         var lbl = String(Math.round(v2));
         var pw = lbl.length * 7 + 12;
         var ph = 15;
-        fillRoundRect(ctx, midX - pw / 2, pillCY - ph / 2, pw, ph, 7, speedScaleCategoryColor(samples[runStart].rule, 0.96));
+        fillRoundRect(ctx, midX - pw / 2, pillCY - ph / 2, pw, ph, 7, speedScaleValueColor(samples[runStart].rule, 0.96));
         drawText(ctx, lbl, midX, pillCY, { size: 10, weight: 850, color: '#04131f', align: 'center', baseline: 'middle' });
       }
       runStart = k2;
@@ -11854,7 +11864,6 @@ if (typeof registerShiftTrackerRuntimeModule === 'function') registerShiftTracke
   }
 
   function drawApkWarningCue(ctx, layout, center, sector, nextWarning, isPreview, labelLayout) {
-    return;
     if (!nextWarning) return;
     var item = nextWarning.item;
     if (!item) return;
@@ -11864,7 +11873,7 @@ if (typeof registerShiftTrackerRuntimeModule === 'function') registerShiftTracke
     var label = nextWarning.status === 'active'
       ? 'ПР действует'
       : 'ПР через ' + formatDistanceLabel(nextWarning.distance);
-    var value = 'до ' + Math.round(item.speed);
+    var value = 'до ' + Math.round(item.speed) + ' км/ч';
     var labelWidth = Math.min(layout.viewportWidth - 34, Math.max(92, label.length * 7 + value.length * 6 + 22));
     var candidates = [
       profileY - 48,
@@ -11881,7 +11890,9 @@ if (typeof registerShiftTrackerRuntimeModule === 'function') registerShiftTracke
         break;
       }
     }
-    if (!reserved) return;
+    if (!reserved) {
+      y = clamp(layout.profileTop + 24, layout.profileTop + 18, layout.trackY - 42);
+    }
 
     ctx.save();
     ctx.strokeStyle = nextWarning.status === 'active'

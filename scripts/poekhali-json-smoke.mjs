@@ -1156,11 +1156,42 @@ try {
     id: 'poekhali-json-smoke-postyshevo-komsomolsk',
     train_number: '2102'
   };
+  const secondPointWarning = {
+    id: 'poekhali-json-smoke-point-warning',
+    mapId: secondMapId,
+    sector: 18,
+    start: 3717900,
+    end: 3717900,
+    speed: 40,
+    note: 'Проверка точечного ПР',
+    enabled: true,
+    createdAt: new Date().toISOString(),
+    updatedAt: new Date().toISOString()
+  };
   const secondContext = await browser.newContext({ viewport: { width: 390, height: 844 }, deviceScaleFactor: 1 });
-  await secondContext.addInitScript(({ storedMapId, storedPreview }) => {
+  await secondContext.addInitScript(({ storedMapId, storedPreview, pointWarning }) => {
     localStorage.setItem('poekhali.mapId', storedMapId);
     localStorage.setItem('poekhali.previewProjection', JSON.stringify(storedPreview));
-  }, { storedMapId: secondMapId, storedPreview: secondPreview });
+    localStorage.setItem('poekhali.warnings', JSON.stringify([pointWarning]));
+    window.__poekhaliCanvasTexts = [];
+    window.__poekhaliCanvasStrokeStyles = [];
+    const originalFillText = CanvasRenderingContext2D.prototype.fillText;
+    CanvasRenderingContext2D.prototype.fillText = function trackedFillText(value, ...args) {
+      if (this.canvas && this.canvas.id === 'poekhaliCanvas') {
+        window.__poekhaliCanvasTexts.push(String(value));
+        if (window.__poekhaliCanvasTexts.length > 2000) window.__poekhaliCanvasTexts.shift();
+      }
+      return originalFillText.call(this, value, ...args);
+    };
+    const originalStroke = CanvasRenderingContext2D.prototype.stroke;
+    CanvasRenderingContext2D.prototype.stroke = function trackedStroke(...args) {
+      if (this.canvas && this.canvas.id === 'poekhaliCanvas') {
+        window.__poekhaliCanvasStrokeStyles.push(String(this.strokeStyle));
+        if (window.__poekhaliCanvasStrokeStyles.length > 4000) window.__poekhaliCanvasStrokeStyles.shift();
+      }
+      return originalStroke.call(this, ...args);
+    };
+  }, { storedMapId: secondMapId, storedPreview: secondPreview, pointWarning: secondPointWarning });
   const secondPage = await secondContext.newPage();
   await secondPage.goto(baseUrl, { waitUntil: 'domcontentloaded', timeout: 20_000 });
   await mark('Postyshevo-Komsomolsk page loaded');
@@ -1183,12 +1214,22 @@ try {
       window.poekhaliHud.shift && window.poekhaliHud.shift.compositionType === 'train' &&
       localStorage.getItem('poekhali.mapId') === expected.mapId;
   }, { mapId: secondMapId }, { timeout: 20_000 });
+  await secondPage.waitForFunction(() => (
+    window.poekhaliHud?.limitKmh === 100 &&
+    (window.__poekhaliCanvasTexts || []).some((value) => value.startsWith('ПР через')) &&
+    (window.__poekhaliCanvasTexts || []).includes('до 40 км/ч') &&
+    (window.__poekhaliCanvasStrokeStyles || []).includes('rgba(251, 146, 60, 0.98)')
+  ), null, { timeout: 5_000 });
   const secondState = await secondPage.evaluate(() => ({
     mapId: localStorage.getItem('poekhali.mapId') || '',
     mapTitle: document.getElementById('btnPoekhaliMap')?.title || '',
     headPos: String(window.poekhaliHud?.headPos || ''),
     gradeText: String(window.poekhaliHud?.gradeText || ''),
-    compositionType: String(window.poekhaliHud?.shift?.compositionType || '')
+    compositionType: String(window.poekhaliHud?.shift?.compositionType || ''),
+    limitKmh: Number(window.poekhaliHud?.limitKmh || 0),
+    headline: String(window.poekhaliHud?.headline || ''),
+    warningCue: (window.__poekhaliCanvasTexts || []).filter((value) => value.startsWith('ПР через') || value === 'до 40 км/ч').slice(-2),
+    warningLineColor: (window.__poekhaliCanvasStrokeStyles || []).includes('rgba(251, 146, 60, 0.98)')
   }));
   if (!secondState.mapTitle.includes('Постышево')) {
     throw new Error(`Unexpected Postyshevo-Komsomolsk map title: ${JSON.stringify(secondState)}`);
@@ -1198,6 +1239,9 @@ try {
   }
   if (!secondState.gradeText.includes('+1.0')) {
     throw new Error(`PDF-corrected +1.0‰ grade is not active: ${JSON.stringify(secondState)}`);
+  }
+  if (secondState.limitKmh !== 100 || !secondState.warningCue.some((value) => value.startsWith('ПР через')) || !secondState.warningCue.includes('до 40 км/ч') || !secondState.warningLineColor) {
+    throw new Error(`Default speed, point warning cue or numerical speed colour is incorrect: ${JSON.stringify(secondState)}`);
   }
   await secondPage.screenshot({ path: postyshevoKomsomolskScreenshotPath });
   secondState.screenshot = path.relative(root, postyshevoKomsomolskScreenshotPath);
