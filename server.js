@@ -2019,6 +2019,7 @@ function getPublicFileCacheControl(filePath, publicPath) {
     normalizedPath.startsWith('/styles/') ||
     normalizedPath.startsWith('/scripts/') ||
     normalizedPath.startsWith('/assets/fonts/') ||
+    normalizedPath.startsWith('/assets/catalog/') ||
     normalizedPath.startsWith('/assets/tracker/') ||
     normalizedPath === '/apple-touch-icon.png' ||
     normalizedPath === '/icon-192.png' ||

@@ -1,0 +1,69 @@
+{
+  "schema_version": "1.0",
+  "depots": [
+    {
+      "id": "rzd:east-siberian:tche-5:irkutsk-sortirovochny",
+      "name": "Иркутск-Сортировочный",
+      "code": "ТЧЭ-5",
+      "railway_id": "east-siberian",
+      "traction_directorate_id": "td-east-siberian",
+      "status": "legacy_unverified",
+      "source_ids": ["legacy-tch9-v43-db"]
+    },
+    {
+      "id": "rzd:east-siberian:tche-14:novaya-chara",
+      "name": "Новая Чара",
+      "code": "ТЧЭ-14",
+      "railway_id": "east-siberian",
+      "traction_directorate_id": "td-east-siberian",
+      "status": "legacy_unverified",
+      "source_ids": ["legacy-tch9-v43-db"]
+    },
+    {
+      "id": "rzd:dvost:tche-4:ruzhino",
+      "name": "Ружино",
+      "code": "ТЧЭ-4",
+      "railway_id": "dvost",
+      "traction_directorate_id": "td-dvost",
+      "status": "legacy_unverified",
+      "source_ids": ["legacy-tch9-v43-db"]
+    },
+    {
+      "id": "rzd:dvost:tche-9:komsomolsk-na-amure",
+      "name": "Комсомольск-на-Амуре",
+      "code": "ТЧЭ-9",
+      "railway_id": "dvost",
+      "traction_directorate_id": "td-dvost",
+      "status": "pack_available",
+      "source_ids": ["legacy-tch9-v43-db", "bloknot-tch9-section-bundle"]
+    },
+    {
+      "id": "rzd:dvost:tche-13:novyi-urgal",
+      "name": "Новый Ургал",
+      "code": "ТЧЭ-13",
+      "railway_id": "dvost",
+      "traction_directorate_id": "td-dvost",
+      "status": "legacy_unverified",
+      "source_ids": ["legacy-tch9-v43-db"]
+    },
+    {
+      "id": "rzd:skav:tche-11:timashevskaya",
+      "name": "Тимашевская",
+      "code": "ТЧЭ-11",
+      "railway_id": "skav",
+      "traction_directorate_id": "td-skav",
+      "status": "legacy_unverified",
+      "source_ids": ["legacy-tch9-v43-db"]
+    },
+    {
+      "id": "rzd:transbaikal:tche-3:chita",
+      "name": "Чита",
+      "code": "ТЧЭ-3",
+      "railway_id": "transbaikal",
+      "traction_directorate_id": "td-transbaikal",
+      "status": "legacy_unverified",
+      "relationship_note": "Дорога восстановлена по географическому названию; в legacy-источнике branch_id=15 не имеет соответствующей записи и требует отдельной проверки.",
+      "source_ids": ["legacy-tch9-v43-db"]
+    }
+  ]
+}

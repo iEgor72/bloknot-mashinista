@@ -1,0 +1,21 @@
+{
+  "schema_version": "1.0",
+  "railways": [
+    { "id": "okt", "name": "Октябрьская железная дорога", "short_name": "Октябрьская", "source_ids": ["rzd-network-railways-2025"] },
+    { "id": "kaliningrad", "name": "Калининградская железная дорога", "short_name": "Калининградская", "source_ids": ["rzd-network-railways-2025"] },
+    { "id": "moscow", "name": "Московская железная дорога", "short_name": "Московская", "source_ids": ["rzd-network-railways-2025"] },
+    { "id": "gorky", "name": "Горьковская железная дорога", "short_name": "Горьковская", "source_ids": ["rzd-network-railways-2025"] },
+    { "id": "north", "name": "Северная железная дорога", "short_name": "Северная", "source_ids": ["rzd-network-railways-2025"] },
+    { "id": "skav", "name": "Северо-Кавказская железная дорога", "short_name": "Северо-Кавказская", "source_ids": ["rzd-network-railways-2025"] },
+    { "id": "southeast", "name": "Юго-Восточная железная дорога", "short_name": "Юго-Восточная", "source_ids": ["rzd-network-railways-2025"] },
+    { "id": "volga", "name": "Приволжская железная дорога", "short_name": "Приволжская", "source_ids": ["rzd-network-railways-2025"] },
+    { "id": "kuibyshev", "name": "Куйбышевская железная дорога", "short_name": "Куйбышевская", "source_ids": ["rzd-network-railways-2025"] },
+    { "id": "sverdlovsk", "name": "Свердловская железная дорога", "short_name": "Свердловская", "source_ids": ["rzd-network-railways-2025"] },
+    { "id": "south-ural", "name": "Южно-Уральская железная дорога", "short_name": "Южно-Уральская", "source_ids": ["rzd-network-railways-2025"] },
+    { "id": "west-siberian", "name": "Западно-Сибирская железная дорога", "short_name": "Западно-Сибирская", "source_ids": ["rzd-network-railways-2025"] },
+    { "id": "krasnoyarsk", "name": "Красноярская железная дорога", "short_name": "Красноярская", "source_ids": ["rzd-network-railways-2025"] },
+    { "id": "east-siberian", "name": "Восточно-Сибирская железная дорога", "short_name": "Восточно-Сибирская", "source_ids": ["rzd-network-railways-2025"] },
+    { "id": "transbaikal", "name": "Забайкальская железная дорога", "short_name": "Забайкальская", "source_ids": ["rzd-network-railways-2025"] },
+    { "id": "dvost", "name": "Дальневосточная железная дорога", "short_name": "Дальневосточная", "source_ids": ["rzd-network-railways-2025"] }
+  ]
+}

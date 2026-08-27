@@ -1,0 +1,49 @@
+{
+  "schema_version": "1.0",
+  "sources": [
+    {
+      "id": "rzd-sustainability-report-2024",
+      "kind": "official_report",
+      "title": "Отчёт об устойчивом развитии ОАО «РЖД» за 2024 год",
+      "url": "https://sr2024.rzd.ru/",
+      "publisher": "ОАО «РЖД»",
+      "published_year": 2025,
+      "supports": [
+        "network_counts"
+      ]
+    },
+    {
+      "id": "rzd-network-railways-2025",
+      "kind": "official_material",
+      "title": "Материалы ОАО «РЖД» о сети из 16 железных дорог",
+      "url": "https://dzdspb.rzd.ru/wp-content/uploads/2025/06/OK_-MAG.pdf",
+      "publisher": "ОАО «РЖД»",
+      "published_year": 2025,
+      "supports": [
+        "railway_skeleton"
+      ]
+    },
+    {
+      "id": "legacy-tch9-v43-db",
+      "kind": "imported_legacy_database",
+      "title": "Резервная копия Android-приложения ТЧЭ-9 v43",
+      "local_path": "assets/tracker/tch9-reference.json",
+      "imported_at": "2026-04-25T04:16:08.911389+00:00",
+      "supports": [
+        "depot_candidates",
+        "legacy_routes"
+      ],
+      "limitations": "Содержит только 3 дороги и 7 депо; у Читы указан отсутствующий branch_id=15. Не является полным или официальным реестром."
+    },
+    {
+      "id": "bloknot-tch9-section-bundle",
+      "kind": "internal_dataset",
+      "title": "Профили и геометрия участков ТЧЭ-9 в Блокноте машиниста",
+      "local_path": "assets/tracker/sections/index.json",
+      "supports": [
+        "tch9_depot_pack"
+      ],
+      "limitations": "Все участки на 2026-08-27 имеют статус draft; пакет нельзя считать эксплуатационно проверенным."
+    }
+  ]
+}

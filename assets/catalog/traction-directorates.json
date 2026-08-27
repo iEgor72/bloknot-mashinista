@@ -1,0 +1,21 @@
+{
+  "schema_version": "1.0",
+  "traction_directorates": [
+    { "id": "td-okt", "name": "Октябрьская дирекция тяги", "railway_id": "okt", "status": "structural_stub", "source_ids": ["rzd-sustainability-report-2024"] },
+    { "id": "td-kaliningrad", "name": "Калининградская дирекция тяги", "railway_id": "kaliningrad", "status": "structural_stub", "source_ids": ["rzd-sustainability-report-2024"] },
+    { "id": "td-moscow", "name": "Московская дирекция тяги", "railway_id": "moscow", "status": "structural_stub", "source_ids": ["rzd-sustainability-report-2024"] },
+    { "id": "td-gorky", "name": "Горьковская дирекция тяги", "railway_id": "gorky", "status": "structural_stub", "source_ids": ["rzd-sustainability-report-2024"] },
+    { "id": "td-north", "name": "Северная дирекция тяги", "railway_id": "north", "status": "structural_stub", "source_ids": ["rzd-sustainability-report-2024"] },
+    { "id": "td-skav", "name": "Северо-Кавказская дирекция тяги", "railway_id": "skav", "status": "structural_stub", "source_ids": ["rzd-sustainability-report-2024"] },
+    { "id": "td-southeast", "name": "Юго-Восточная дирекция тяги", "railway_id": "southeast", "status": "structural_stub", "source_ids": ["rzd-sustainability-report-2024"] },
+    { "id": "td-volga", "name": "Приволжская дирекция тяги", "railway_id": "volga", "status": "structural_stub", "source_ids": ["rzd-sustainability-report-2024"] },
+    { "id": "td-kuibyshev", "name": "Куйбышевская дирекция тяги", "railway_id": "kuibyshev", "status": "structural_stub", "source_ids": ["rzd-sustainability-report-2024"] },
+    { "id": "td-sverdlovsk", "name": "Свердловская дирекция тяги", "railway_id": "sverdlovsk", "status": "structural_stub", "source_ids": ["rzd-sustainability-report-2024"] },
+    { "id": "td-south-ural", "name": "Южно-Уральская дирекция тяги", "railway_id": "south-ural", "status": "structural_stub", "source_ids": ["rzd-sustainability-report-2024"] },
+    { "id": "td-west-siberian", "name": "Западно-Сибирская дирекция тяги", "railway_id": "west-siberian", "status": "structural_stub", "source_ids": ["rzd-sustainability-report-2024"] },
+    { "id": "td-krasnoyarsk", "name": "Красноярская дирекция тяги", "railway_id": "krasnoyarsk", "status": "structural_stub", "source_ids": ["rzd-sustainability-report-2024"] },
+    { "id": "td-east-siberian", "name": "Восточно-Сибирская дирекция тяги", "railway_id": "east-siberian", "status": "structural_stub", "source_ids": ["rzd-sustainability-report-2024"] },
+    { "id": "td-transbaikal", "name": "Забайкальская дирекция тяги", "railway_id": "transbaikal", "status": "structural_stub", "source_ids": ["rzd-sustainability-report-2024"] },
+    { "id": "td-dvost", "name": "Дальневосточная дирекция тяги", "railway_id": "dvost", "status": "structural_stub", "source_ids": ["rzd-sustainability-report-2024"] }
+  ]
+}

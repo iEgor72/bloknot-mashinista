@@ -1,0 +1,33 @@
+{
+  "schema_version": "1.0",
+  "id": "pack:rzd:dvost:tche-9:komsomolsk-na-amure",
+  "depot_id": "rzd:dvost:tche-9:komsomolsk-na-amure",
+  "name": "Комсомольск-на-Амуре ТЧЭ-9",
+  "status": "pilot_draft",
+  "updated_at": "2026-08-27",
+  "source_ids": [
+    "legacy-tch9-v43-db",
+    "bloknot-tch9-section-bundle"
+  ],
+  "route_ids": [
+    "dvost-volochaevka-ii-dzemgi",
+    "dvost-postyshevo-komsomolsk",
+    "dvost-postyshevo-novyi-urgal-odd",
+    "dvost-vysokogornaya-novyi-mir-passenger"
+  ],
+  "section_ids": [
+    "dvost-volochaevka-ii-dzemgi",
+    "dvost-postyshevo-komsomolsk",
+    "dvost-postyshevo-novyi-urgal-odd",
+    "dvost-vysokogornaya-oune-via-sollu",
+    "dvost-vysokogornaya-oune-via-muli",
+    "dvost-oune-pivan",
+    "dvost-pivan-novyi-mir"
+  ],
+  "readiness": {
+    "manual_preview_data": true,
+    "live_gps_data": true,
+    "all_sections_verified": false
+  },
+  "note": "Пакет публикует существующий набор ТЧЭ-9, но не повышает статус входящих участков: все они остаются draft до полевой проверки."
+}
