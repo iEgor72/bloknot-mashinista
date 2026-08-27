@@ -1,4 +1,4 @@
-if (typeof registerShiftTrackerRuntimeModule === 'function') registerShiftTrackerRuntimeModule('app-init', 'v406');
+if (typeof registerShiftTrackerRuntimeModule === 'function') registerShiftTrackerRuntimeModule('app-init', 'v407');
 
 // ── Init ──
 function startShiftTrackerRuntime() {
@@ -788,9 +788,13 @@ if (window.__SHIFT_TRACKER_RUNTIME_GUARD_PENDING) {
         var depot = depots[i] || {};
         var code = normalizeDepotSearch(depot.code);
         var name = normalizeDepotSearch(depot.name);
+        var aliases = Array.isArray(depot.aliases)
+          ? normalizeDepotSearch(depot.aliases.join(' '))
+          : '';
         var score = 0;
         if (code && query.indexOf(code) !== -1) score += 5;
         if (name && (query.indexOf(name) !== -1 || name.indexOf(query) !== -1)) score += 5;
+        if (aliases && (query.indexOf(aliases) !== -1 || aliases.indexOf(query) !== -1)) score += 5;
         var nameParts = name.split(' ').filter(function(part) { return part.length >= 4; });
         for (var p = 0; p < nameParts.length; p++) {
           if (query.indexOf(nameParts[p]) !== -1) score += 1;
@@ -1167,6 +1171,7 @@ if (window.__SHIFT_TRACKER_RUNTIME_GUARD_PENDING) {
     var depotProposalMode = 'demand';
     var depotProposalFiles = [];
     var depotProposalDraft = null;
+    var depotProposalDuplicate = false;
     var depotProposalBusy = false;
 
     function refreshGlassSelect(rootId) {
@@ -1466,6 +1471,7 @@ if (window.__SHIFT_TRACKER_RUNTIME_GUARD_PENDING) {
       };
       depotProposalFiles = [];
       depotProposalDraft = null;
+      depotProposalDuplicate = false;
       var label = document.getElementById('depotProposalDepotLabel');
       var armInput = document.getElementById('inputDepotProposalArm');
       var notesInput = document.getElementById('inputDepotProposalNotes');
@@ -1554,6 +1560,7 @@ if (window.__SHIFT_TRACKER_RUNTIME_GUARD_PENDING) {
           })
         }, 12000).then(function(result) {
           if (!result || !result.ok) throw new Error(result && result.body && result.body.error || 'Не удалось отправить');
+          depotProposalDuplicate = !!(result.body && result.body.duplicate);
           depotProposalDraft = result.body.request;
           var attachments = depotProposalDraft.attachments || [];
           for (var i = 0; i < depotProposalFiles.length; i++) depotProposalFiles[i].attachmentId = attachments[i] && attachments[i].id || '';
@@ -1598,9 +1605,12 @@ if (window.__SHIFT_TRACKER_RUNTIME_GUARD_PENDING) {
       }).then(function() {
         if (typeof closeOverlay === 'function') closeOverlay('overlayDepotProposal');
         if (typeof enqueueAppToast === 'function') {
-          enqueueAppToast(depotProposalMode === 'materials' ? 'Материалы приняты на проверку' : 'Запрос участка отправлен', 'success', 2800);
+          enqueueAppToast(depotProposalMode === 'materials'
+            ? 'Материалы приняты на проверку'
+            : (depotProposalDuplicate ? 'Такой запрос уже есть в очереди' : 'Запрос участка отправлен'), 'success', 2800);
         }
         depotProposalDraft = null;
+        depotProposalDuplicate = false;
         depotProposalFiles = [];
         setDepotProposalProgress('');
       }).catch(function(error) {

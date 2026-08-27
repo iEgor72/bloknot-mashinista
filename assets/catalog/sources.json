@@ -24,6 +24,29 @@
       ]
     },
     {
+      "id": "miit-training-plan-2022",
+      "kind": "official_training_plan",
+      "title": "План дополнительного профессионального образования работников ОАО «РЖД» на 2022 год",
+      "url": "https://miit.ru/content/plan2022_%D0%B3%D0%BE%D1%82%D0%BE%D0%B2.pdf?id_wm=901579",
+      "publisher": "Российский университет транспорта (МИИТ)",
+      "published_year": 2022,
+      "supports": [
+        "dvost_depot_roster"
+      ],
+      "limitations": "Фиксирует перечень заказчиков обучения; организационные изменения после 2022 года проверяются дополнительными источниками."
+    },
+    {
+      "id": "dvost-traction-recruiting-2024",
+      "kind": "official_recruiting_material",
+      "title": "Презентация предприятий Дальневосточной дирекции тяги",
+      "url": "https://bryansk.pgups.ru/wp-content/uploads/2024/01/%D0%9F%D1%80%D0%B5%D0%B7%D0%B5%D0%BD%D1%82%D0%B0%D1%86%D0%B8%D1%8F-%D0%BF%D1%80%D0%B5%D0%B4%D0%BF%D1%80%D0%B8%D1%8F%D1%82%D0%B8%D0%B9-%D0%94%D0%B2%D0%BE%D1%81%D1%82-%D0%94%D0%A2.pdf",
+      "publisher": "Дальневосточная дирекция тяги / ПГУПС",
+      "published_year": 2024,
+      "supports": [
+        "dvost_tche10_current_name"
+      ]
+    },
+    {
       "id": "legacy-tch9-v43-db",
       "kind": "imported_legacy_database",
       "title": "Резервная копия Android-приложения ТЧЭ-9 v43",

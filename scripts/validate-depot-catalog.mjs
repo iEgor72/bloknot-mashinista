@@ -6,7 +6,7 @@ const root = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
 const defaultCatalogDir = path.join(root, 'assets', 'catalog');
 const defaultTrackerIndex = path.join(root, 'assets', 'tracker', 'sections', 'index.json');
 
-const DEPOT_STATUSES = new Set(['legacy_unverified', 'pack_available', 'retired']);
+const DEPOT_STATUSES = new Set(['legacy_unverified', 'verified', 'pack_available', 'retired']);
 const PACK_STATUSES = new Set(['draft', 'pilot_draft', 'published', 'retired']);
 const DIRECTORATE_STATUSES = new Set(['structural_stub', 'verified']);
 const STABLE_ID = /^[a-z0-9][a-z0-9:.-]*$/;
@@ -164,6 +164,9 @@ export function validateDepotCatalog({ catalogDir = defaultCatalogDir, trackerIn
     }
     if (!DEPOT_STATUSES.has(depot.status)) errors.push(`depots.${id}: неизвестный status ${depot.status}`);
     if (typeof depot.code !== 'string' || !depot.code.trim()) errors.push(`depots.${id}: code обязателен`);
+    if (depot.aliases != null && (!Array.isArray(depot.aliases) || depot.aliases.some((alias) => typeof alias !== 'string' || !alias.trim()))) {
+      errors.push(`depots.${id}: aliases должен быть массивом непустых строк`);
+    }
     validateSourceRefs(depot, `depots.${id}`, sources, errors);
   });
 

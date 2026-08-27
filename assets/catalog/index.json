@@ -1,7 +1,7 @@
 {
   "schema_version": "1.0",
   "catalog_status": "partial",
-  "updated_at": "2026-08-27",
+  "updated_at": "2026-08-28",
   "files": {
     "sources": "sources.json",
     "railways": "railways.json",
@@ -21,6 +21,7 @@
   },
   "publication_rules": {
     "selectable_depot_statuses": [
+      "verified",
       "pack_available"
     ],
     "candidate_depot_statuses": [

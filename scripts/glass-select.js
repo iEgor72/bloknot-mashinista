@@ -143,6 +143,13 @@
       if (spaceBelow - bottomGuard < menuH && tr.top > spaceBelow) {
         root.classList.add('is-flip-up');
       }
+      var active = menu.querySelector('.glass-select-option.is-active');
+      if (active) {
+        var activeTop = active.offsetTop;
+        var activeBottom = activeTop + active.offsetHeight;
+        if (activeTop < menu.scrollTop) menu.scrollTop = activeTop;
+        else if (activeBottom > menu.scrollTop + menu.clientHeight) menu.scrollTop = activeBottom - menu.clientHeight;
+      }
     }
   }
 
@@ -211,7 +218,9 @@
   }, true);
   document.addEventListener('keydown', function (e) { if (e.key === 'Escape') close(); });
   window.addEventListener('resize', function () { close(); });
-  document.addEventListener('scroll', function () { close(); }, true);
+  // Do not dismiss on scroll: mobile Safari reports nested momentum scrolling
+  // through different capture targets, which used to close long menus on the
+  // first finger movement. Outside taps, Escape and resize remain dismissers.
 
   window.GlassSelect = { enhance: enhance, enhanceAll: enhanceAll, refresh: buildMenu, sync: sync, close: close };
 

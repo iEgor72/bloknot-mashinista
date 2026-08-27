@@ -99,18 +99,18 @@ test('public contact surface points only to the Telegram bot', async () => {
 });
 
 test('versioned style namespace serves the current shell stylesheet', async () => {
-  const response = await fetch(baseUrl + '/styles/v406/56-profile.css');
+  const response = await fetch(baseUrl + '/styles/v407/56-profile.css');
   const source = await response.text();
   assert.equal(response.status, 200);
   assert.match(response.headers.get('content-type') || '', /text\/css/i);
   assert.match(source, /\.profile-summary-card/);
   assert.match(source, /\.profile-summary-icon svg/);
 
-  const versionedRuntime = await fetch(baseUrl + '/scripts/v406/render.js');
+  const versionedRuntime = await fetch(baseUrl + '/scripts/v407/render.js');
   assert.equal(versionedRuntime.status, 200);
   assert.match(await versionedRuntime.text(), /renderProfileSummary/);
 
-  const traversalAttempt = await fetch(baseUrl + '/scripts/v406/..%2Fserver.js');
+  const traversalAttempt = await fetch(baseUrl + '/scripts/v407/..%2Fserver.js');
   assert.equal(traversalAttempt.status, 404);
 
   const previousBootstrap = await fetch(baseUrl + '/sw-bootstrap-v397.js');
@@ -253,6 +253,21 @@ test('depot pack proposals are authenticated and visible only to an admin', asyn
   assert.equal(submitted.response.status, 201);
   assert.equal(submitted.body.request.status, 'new');
 
+  const duplicate = await jsonRequest('/api/depot-pack-requests', {
+    method: 'POST',
+    headers: { ...bearer(userToken), 'Content-Type': 'application/json' },
+    body: JSON.stringify({
+      railwayId: 'dvost',
+      depotId: 'rzd:dvost:tche-9:komsomolsk-na-amure',
+      depotLabel: 'ТЧЭ-9 · Комсомольск-на-Амуре',
+      armName: '  Комсомольск — Советская Гавань  ',
+      notes: 'Повторное нажатие',
+    }),
+  });
+  assert.equal(duplicate.response.status, 200);
+  assert.equal(duplicate.body.duplicate, true);
+  assert.equal(duplicate.body.request.id, submitted.body.request.id);
+
   const forbidden = await jsonRequest('/api/admin/depot-pack-requests', { headers: bearer(userToken) });
   assert.equal(forbidden.response.status, 403);
   const dashboard = await jsonRequest('/api/admin/depot-pack-requests', { headers: bearer(adminToken) });
@@ -260,6 +275,21 @@ test('depot pack proposals are authenticated and visible only to an admin', asyn
   assert.ok(dashboard.body.total >= 1);
   assert.equal(dashboard.body.requests[0].depotId, 'rzd:dvost:tche-9:komsomolsk-na-amure');
   assert.equal(dashboard.body.requests[0].armName, 'Комсомольск — Советская Гавань');
+
+  const forbiddenReview = await jsonRequest(`/api/admin/depot-pack-requests/${submitted.body.request.id}`, {
+    method: 'PATCH',
+    headers: { ...bearer(userToken), 'Content-Type': 'application/json' },
+    body: JSON.stringify({ status: 'reviewing' }),
+  });
+  assert.equal(forbiddenReview.response.status, 403);
+  const reviewed = await jsonRequest(`/api/admin/depot-pack-requests/${submitted.body.request.id}`, {
+    method: 'PATCH',
+    headers: { ...bearer(adminToken), 'Content-Type': 'application/json' },
+    body: JSON.stringify({ status: 'reviewing', reviewNotes: 'Проверяем наличие исходной ЭК' }),
+  });
+  assert.equal(reviewed.response.status, 200);
+  assert.equal(reviewed.body.request.status, 'reviewing');
+  assert.equal(reviewed.body.request.reviewNotes, 'Проверяем наличие исходной ЭК');
 });
 
 test('depot pack materials accept unknown formats for manual review and stay admin-only', async () => {

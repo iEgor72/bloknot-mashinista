@@ -29,6 +29,7 @@ const report = {
   screenshot: path.relative(repoRoot, path.join(artifactsDir, 'smoke-home.png')),
   profileInstallScreenshot: path.relative(repoRoot, path.join(artifactsDir, 'profile-install.png')),
   profileDepotScreenshot: path.relative(repoRoot, path.join(artifactsDir, 'profile-depot-catalog.png')),
+  profileDepotScrollScreenshot: path.relative(repoRoot, path.join(artifactsDir, 'profile-depot-scroll.png')),
   profileDepotProposalScreenshot: path.relative(repoRoot, path.join(artifactsDir, 'profile-depot-proposal.png')),
 };
 
@@ -1059,6 +1060,7 @@ async function main() {
     throw new Error(`Analytics events were still delivered: ${JSON.stringify(analyticsEvents)}`);
   }
 
+  await page.setViewportSize({ width: 390, height: 844 });
   await clickElementCenter(page, '.tab-btn[data-tab="profile"]', 'profile tab for install screenshot');
   await page.waitForFunction(() => document.querySelector('.tab-btn[data-tab="profile"]')?.classList.contains('active'));
   await delay(2200);
@@ -1073,7 +1075,31 @@ async function main() {
     railway.value = 'dvost';
     railway.dispatchEvent(new Event('change', { bubbles: true }));
   });
-  await page.waitForFunction(() => document.querySelectorAll('#inputProfileDepotId option').length >= 5);
+  await page.waitForFunction(() => document.querySelectorAll('#inputProfileDepotId option').length === 13);
+  await clickElementCenter(page, '#profileDepotSelect .glass-select-trigger', 'depot catalog dropdown');
+  await page.waitForFunction(() => !document.querySelector('#profileDepotSelect .glass-select-menu')?.classList.contains('hidden'));
+  const depotMenuScroll = await page.evaluate(() => {
+    const menu = document.querySelector('#profileDepotSelect .glass-select-menu');
+    const before = menu.scrollTop;
+    menu.scrollTop = menu.scrollHeight;
+    menu.dispatchEvent(new Event('scroll'));
+    const options = Array.from(menu.querySelectorAll('.glass-select-option'));
+    return {
+      before,
+      after: menu.scrollTop,
+      scrollHeight: menu.scrollHeight,
+      clientHeight: menu.clientHeight,
+      stayedOpen: !menu.classList.contains('hidden'),
+      lastLabel: options.at(-1)?.textContent.trim() || '',
+    };
+  });
+  report.checks.depotMenuScroll = depotMenuScroll;
+  if (depotMenuScroll.after <= depotMenuScroll.before || depotMenuScroll.scrollHeight <= depotMenuScroll.clientHeight ||
+      !depotMenuScroll.stayedOpen || depotMenuScroll.lastLabel !== 'Моего депо нет в списке') {
+    throw new Error(`Depot dropdown did not remain scrollable: ${JSON.stringify(depotMenuScroll)}`);
+  }
+  await page.screenshot({ path: path.join(artifactsDir, 'profile-depot-scroll.png'), fullPage: false });
+  await page.evaluate(() => window.GlassSelect?.close());
   await page.evaluate(() => {
     const depot = document.getElementById('inputProfileDepotId');
     depot.value = 'rzd:dvost:tche-9:komsomolsk-na-amure';
@@ -1088,7 +1114,7 @@ async function main() {
     proposalVisible: !document.getElementById('btnProfileProposeArm')?.classList.contains('hidden'),
   }));
   report.checks.profileDepotCatalog = profileDepotCatalog;
-  if (profileDepotCatalog.railways !== 16 || profileDepotCatalog.depotsOnRailway !== 3 ||
+  if (profileDepotCatalog.railways !== 16 || profileDepotCatalog.depotsOnRailway !== 11 ||
       profileDepotCatalog.selectedDepot !== 'rzd:dvost:tche-9:komsomolsk-na-amure' ||
       !profileDepotCatalog.coverage.includes('3 плеча') || !profileDepotCatalog.proposalVisible) {
     throw new Error(`Profile depot catalog contract failed: ${JSON.stringify(profileDepotCatalog)}`);
@@ -1097,7 +1123,6 @@ async function main() {
   await delay(160);
   await page.screenshot({ path: path.join(artifactsDir, 'profile-depot-catalog.png'), fullPage: true });
 
-  await page.setViewportSize({ width: 390, height: 844 });
   await clickElementCenter(page, '#btnProfileProposeArm', 'depot proposal button');
   await page.waitForFunction(() => document.getElementById('overlayDepotProposal')?.classList.contains('is-open'));
   await clickElementCenter(page, '#btnDepotProposalMaterialsMode', 'materials proposal mode');

@@ -151,7 +151,7 @@ const PUBLIC_TOP_LEVEL_FILES = new Set([
   'sw-bootstrap-v402.js',
   'sw-bootstrap-v404.js',
   'sw-bootstrap-v405.js',
-  'sw-bootstrap-v406.js',
+  'sw-bootstrap-v407.js',
   'apple-touch-icon.png',
   'icon-192.png',
   'icon-512.png',
@@ -1066,6 +1066,7 @@ const MAX_DEPOT_PACK_REQUESTS = 5000;
 const MAX_DEPOT_PACK_ATTACHMENTS = 8;
 const MAX_DEPOT_PACK_ATTACHMENT_BYTES = 50 * 1024 * 1024;
 const MAX_DEPOT_PACK_TOTAL_BYTES = 120 * 1024 * 1024;
+const DEPOT_PACK_REVIEW_STATUSES = new Set(['new', 'reviewing', 'needs_info', 'accepted', 'published', 'rejected']);
 const depotPackRequestAttempts = new Map();
 
 function allowDepotPackRequest(sid) {
@@ -1166,12 +1167,25 @@ function sanitizeDepotPackRequest(payload, sid, user) {
 function writeDepotPackRequest(payload, sid, user) {
   const item = sanitizeDepotPackRequest(payload, sid, user);
   const requests = readDepotPackRequests();
+  if (item.requestType === 'demand') {
+    const activeStatuses = new Set(['new', 'reviewing', 'needs_info', 'accepted']);
+    const cutoff = Date.now() - 30 * 24 * 60 * 60 * 1000;
+    const normalizeKey = (value) => String(value || '').toLocaleLowerCase('ru-RU').replace(/ё/g, 'е').replace(/[^a-zа-я0-9]+/gi, ' ').trim();
+    const duplicate = requests.slice().reverse().find((entry) => entry &&
+      entry.sid === item.sid &&
+      entry.requestType === 'demand' &&
+      activeStatuses.has(entry.status) &&
+      Date.parse(entry.createdAt || 0) >= cutoff &&
+      normalizeKey(entry.depotId || entry.depotLabel) === normalizeKey(item.depotId || item.depotLabel) &&
+      normalizeKey(entry.armName) === normalizeKey(item.armName));
+    if (duplicate) return { item: duplicate, duplicate: true };
+  }
   requests.push(item);
   const bounded = requests.length > MAX_DEPOT_PACK_REQUESTS
     ? requests.slice(requests.length - MAX_DEPOT_PACK_REQUESTS)
     : requests;
   getStorage().writeAppState(DEPOT_PACK_REQUESTS_STATE_KEY, bounded);
-  return item;
+  return { item, duplicate: false };
 }
 
 function replaceDepotPackRequest(updatedItem) {
@@ -1181,6 +1195,20 @@ function replaceDepotPackRequest(updatedItem) {
   requests[index] = updatedItem;
   getStorage().writeAppState(DEPOT_PACK_REQUESTS_STATE_KEY, requests);
   return updatedItem;
+}
+
+function updateDepotPackRequestReview(item, payload, reviewer) {
+  if (!payload || typeof payload !== 'object' || Array.isArray(payload)) {
+    throw new Error('Expected JSON object payload');
+  }
+  const status = sanitizeProfileText(payload.status, 40);
+  if (!DEPOT_PACK_REVIEW_STATUSES.has(status)) throw new Error('Invalid review status');
+  item.status = status;
+  item.reviewNotes = sanitizeProfileText(payload.reviewNotes, 800);
+  item.reviewedAt = new Date().toISOString();
+  item.reviewedBy = reviewer && reviewer.id != null ? String(reviewer.id) : '';
+  replaceDepotPackRequest(item);
+  return item;
 }
 
 function classifyDepotPackAttachment(buffer) {
@@ -2326,7 +2354,7 @@ function readBodyWithLimit(req, maxBytes) {
   });
 }
 
-const APP_RELEASE_VERSION = 'v406';
+const APP_RELEASE_VERSION = 'v407';
 const APP_URL = PUBLIC_SITE_URL;
 const TELEGRAM_APP_URL = buildVersionedAppUrl('/');
 
@@ -3048,8 +3076,12 @@ const server = http.createServer(async (req, res) => {
     }
     try {
       const body = await readBody(req);
-      const item = writeDepotPackRequest(body ? JSON.parse(body) : {}, sid, requestUser);
-      sendJson(res, 201, { ok: true, request: publicDepotPackRequest(item) });
+      const result = writeDepotPackRequest(body ? JSON.parse(body) : {}, sid, requestUser);
+      sendJson(res, result.duplicate ? 200 : 201, {
+        ok: true,
+        duplicate: result.duplicate,
+        request: publicDepotPackRequest(result.item),
+      });
     } catch (err) {
       const errorMessage = err && err.message ? err.message : 'Invalid payload';
       const isValidationError = /^(Expected|Missing|Invalid)/.test(errorMessage);
@@ -3096,6 +3128,46 @@ const server = http.createServer(async (req, res) => {
       'Referrer-Policy': 'no-referrer',
     });
     fs.createReadStream(filePath).pipe(res);
+    return;
+  }
+
+  const adminDepotPackRequestMatch = pathname.match(/^\/api\/admin\/depot-pack-requests\/([a-f0-9]{24})$/);
+  if (adminDepotPackRequestMatch) {
+    if (!requestUser) {
+      sendJson(res, 401, { error: 'Unauthorized' });
+      return;
+    }
+    if (!isAnalyticsAdmin(requestUser)) {
+      sendJson(res, 403, { error: 'Forbidden' });
+      return;
+    }
+    if (req.method !== 'PATCH') {
+      sendJson(res, 405, { error: 'Method not allowed' });
+      return;
+    }
+    const item = readDepotPackRequests().find((entry) => entry && entry.id === adminDepotPackRequestMatch[1]);
+    if (!item) {
+      sendJson(res, 404, { error: 'Request not found' });
+      return;
+    }
+    try {
+      const body = await readBody(req);
+      const updated = updateDepotPackRequestReview(item, body ? JSON.parse(body) : {}, requestUser);
+      const { attachments, ...safeItem } = updated;
+      sendJson(res, 200, {
+        ok: true,
+        request: {
+          ...safeItem,
+          attachments: Array.isArray(attachments) ? attachments.map((attachment) => {
+            const { storageName, ...safeAttachment } = attachment;
+            return safeAttachment;
+          }) : [],
+        },
+      });
+    } catch (err) {
+      const errorMessage = err && err.message ? err.message : 'Invalid payload';
+      sendJson(res, /^(Expected|Invalid)/.test(errorMessage) ? 400 : 500, { error: errorMessage });
+    }
     return;
   }
 

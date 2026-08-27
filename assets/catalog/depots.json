@@ -20,13 +20,50 @@
       "source_ids": ["legacy-tch9-v43-db"]
     },
     {
+      "id": "rzd:dvost:tche-1:obluchye",
+      "name": "Облучье",
+      "code": "ТЧЭ-1",
+      "railway_id": "dvost",
+      "traction_directorate_id": "td-dvost",
+      "status": "verified",
+      "source_ids": ["miit-training-plan-2022"]
+    },
+    {
+      "id": "rzd:dvost:tche-2:khabarovsk-ii",
+      "name": "Хабаровск-II",
+      "code": "ТЧЭ-2",
+      "railway_id": "dvost",
+      "traction_directorate_id": "td-dvost",
+      "status": "verified",
+      "aliases": ["Хабаровск-2", "Хабаровск-П"],
+      "source_ids": ["miit-training-plan-2022"]
+    },
+    {
       "id": "rzd:dvost:tche-4:ruzhino",
       "name": "Ружино",
       "code": "ТЧЭ-4",
       "railway_id": "dvost",
       "traction_directorate_id": "td-dvost",
-      "status": "legacy_unverified",
-      "source_ids": ["legacy-tch9-v43-db"]
+      "status": "verified",
+      "source_ids": ["legacy-tch9-v43-db", "miit-training-plan-2022"]
+    },
+    {
+      "id": "rzd:dvost:tche-6:ussuriysk",
+      "name": "Уссурийск",
+      "code": "ТЧЭ-6",
+      "railway_id": "dvost",
+      "traction_directorate_id": "td-dvost",
+      "status": "verified",
+      "source_ids": ["miit-training-plan-2022"]
+    },
+    {
+      "id": "rzd:dvost:tche-8:smolyaninovo",
+      "name": "Смоляниново",
+      "code": "ТЧЭ-8",
+      "railway_id": "dvost",
+      "traction_directorate_id": "td-dvost",
+      "status": "verified",
+      "source_ids": ["miit-training-plan-2022"]
     },
     {
       "id": "rzd:dvost:tche-9:komsomolsk-na-amure",
@@ -39,13 +76,51 @@
       "source_ids": ["legacy-tch9-v43-db", "bloknot-tch9-section-bundle"]
     },
     {
+      "id": "rzd:dvost:tche-10:sovetskaya-gavan",
+      "name": "Советская Гавань",
+      "code": "ТЧЭ-10",
+      "railway_id": "dvost",
+      "traction_directorate_id": "td-dvost",
+      "status": "verified",
+      "aliases": ["Высокогорная", "Высокогорный"],
+      "relationship_note": "Высокогорная хранится как прежнее название/оборотное депо для поиска и совместимости профилей.",
+      "source_ids": ["miit-training-plan-2022", "dvost-traction-recruiting-2024"]
+    },
+    {
+      "id": "rzd:dvost:tche-11:tynda",
+      "name": "Тында",
+      "code": "ТЧЭ-11",
+      "railway_id": "dvost",
+      "traction_directorate_id": "td-dvost",
+      "status": "verified",
+      "source_ids": ["miit-training-plan-2022"]
+    },
+    {
       "id": "rzd:dvost:tche-13:novyi-urgal",
       "name": "Новый Ургал",
       "code": "ТЧЭ-13",
       "railway_id": "dvost",
       "traction_directorate_id": "td-dvost",
-      "status": "legacy_unverified",
-      "source_ids": ["legacy-tch9-v43-db"]
+      "status": "verified",
+      "source_ids": ["legacy-tch9-v43-db", "miit-training-plan-2022"]
+    },
+    {
+      "id": "rzd:dvost:tche-14:partizansk",
+      "name": "Партизанск",
+      "code": "ТЧЭ-14",
+      "railway_id": "dvost",
+      "traction_directorate_id": "td-dvost",
+      "status": "verified",
+      "source_ids": ["miit-training-plan-2022"]
+    },
+    {
+      "id": "rzd:dvost:tche-15:yuzhno-sakhalinsk",
+      "name": "Южно-Сахалинск",
+      "code": "ТЧЭ-15",
+      "railway_id": "dvost",
+      "traction_directorate_id": "td-dvost",
+      "status": "verified",
+      "source_ids": ["miit-training-plan-2022"]
     },
     {
       "id": "rzd:skav:tche-11:timashevskaya",
