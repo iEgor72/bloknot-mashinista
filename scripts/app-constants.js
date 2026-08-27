@@ -1,6 +1,6 @@
     // ── Constants ──
     // Держите в синхроне с CACHE_VERSION в sw.js — показывается на главной рядом со статистикой пользователей.
-    var SHELL_CACHE_VERSION = 'v405';
+    var SHELL_CACHE_VERSION = 'v406';
 
     var SHIFT_TRACKER_REQUIRED_RUNTIME_MODULES = [
       'auth',

@@ -433,12 +433,84 @@
 }
 .profile-depot-moderation { margin: 7px 14px 12px; }
 .profile-legacy-depot-note { margin: 9px 4px 0; }
-.depot-proposal-sheet { max-height: min(82vh, 640px); }
-.depot-proposal-copy {
-  margin: 2px 0 16px;
-  color: var(--ink-2, #c6cbd8);
-  font: 600 13px/1.4 'Golos Text', system-ui, sans-serif;
+.depot-proposal-sheet {
+  width: min(100%, 560px);
+  max-height: min(92vh, 760px);
+  overflow-y: auto;
+  overscroll-behavior: contain;
+  scrollbar-width: none;
 }
+.depot-proposal-sheet::-webkit-scrollbar { display: none; }
+.depot-proposal-header {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 16px;
+  margin-bottom: 16px;
+}
+.depot-proposal-subtitle {
+  margin-top: 4px;
+  color: var(--ink-3, #8b93a7);
+  font: 500 12px/1.35 'Golos Text', system-ui, sans-serif;
+}
+.depot-proposal-close {
+  display: grid;
+  flex: 0 0 34px;
+  width: 34px;
+  height: 34px;
+  place-items: center;
+  border: 0;
+  border-radius: 50%;
+  color: var(--ink-2, #c6cbd8);
+  background: color-mix(in oklch, var(--ink-2, #c6cbd8) 10%, transparent);
+  font: 400 25px/1 system-ui, sans-serif;
+}
+.depot-proposal-depot {
+  display: grid;
+  gap: 3px;
+  margin-bottom: 12px;
+  padding: 11px 13px;
+  border: 1px solid color-mix(in oklch, var(--ink-2, #c6cbd8) 11%, transparent);
+  border-radius: 13px;
+  background: color-mix(in oklch, var(--ink-2, #c6cbd8) 5%, transparent);
+}
+.depot-proposal-depot span {
+  color: var(--ink-3, #8b93a7);
+  font: 550 10px/1.25 'Golos Text', system-ui, sans-serif;
+  letter-spacing: .04em;
+  text-transform: uppercase;
+}
+.depot-proposal-depot strong {
+  color: var(--ink-1, #f7f8fb);
+  font: 650 13px/1.35 'Golos Text', system-ui, sans-serif;
+}
+.depot-proposal-mode {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 8px;
+  margin-bottom: 15px;
+}
+.depot-proposal-mode-btn {
+  display: grid;
+  align-content: start;
+  gap: 4px;
+  min-height: 75px;
+  padding: 11px 12px;
+  border: 1px solid color-mix(in oklch, var(--ink-2, #c6cbd8) 13%, transparent);
+  border-radius: 14px;
+  color: var(--ink-2, #c6cbd8);
+  background: color-mix(in oklch, var(--ink-2, #c6cbd8) 5%, transparent);
+  text-align: left;
+}
+.depot-proposal-mode-btn strong { font: 650 12px/1.25 'Golos Text', system-ui, sans-serif; }
+.depot-proposal-mode-btn span { color: var(--ink-3, #8b93a7); font: 500 10px/1.35 'Golos Text', system-ui, sans-serif; }
+.depot-proposal-mode-btn.is-active {
+  border-color: color-mix(in oklch, var(--accent, #38bdf8) 58%, transparent);
+  color: var(--ink-1, #f7f8fb);
+  background: color-mix(in oklch, var(--accent, #38bdf8) 13%, transparent);
+  box-shadow: inset 0 0 0 1px color-mix(in oklch, var(--accent, #38bdf8) 12%, transparent);
+}
+.depot-proposal-mode-btn.is-active span { color: color-mix(in oklch, var(--accent, #38bdf8) 55%, var(--ink-2, #c6cbd8)); }
 .depot-proposal-field {
   display: grid;
   gap: 7px;
@@ -446,14 +518,133 @@
   color: var(--ink-2, #c6cbd8);
   font: 600 12px/1.3 'Golos Text', system-ui, sans-serif;
 }
+.depot-proposal-field .settings-input {
+  width: 100%;
+  max-width: none;
+  box-sizing: border-box;
+}
+.depot-proposal-field > span {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 10px;
+}
+.depot-proposal-field em {
+  color: var(--ink-3, #8b93a7);
+  font-size: 10px;
+  font-style: normal;
+  font-weight: 500;
+}
 .depot-proposal-notes {
-  min-height: 96px;
+  min-height: 76px;
   resize: vertical;
   padding-top: 12px;
   font-family: inherit;
   line-height: 1.4;
 }
-.depot-proposal-note { margin: 4px 2px 14px; }
+.depot-proposal-info {
+  display: grid;
+  gap: 3px;
+  margin: -2px 0 14px;
+  padding: 10px 12px;
+  border-left: 2px solid color-mix(in oklch, var(--accent, #38bdf8) 55%, transparent);
+  color: var(--ink-2, #c6cbd8);
+  background: color-mix(in oklch, var(--accent, #38bdf8) 7%, transparent);
+  font: 500 11px/1.4 'Golos Text', system-ui, sans-serif;
+}
+.depot-proposal-info strong { color: var(--ink-1, #f7f8fb); font-weight: 650; }
+.depot-proposal-materials-intro {
+  margin: -2px 1px 10px;
+  color: var(--ink-3, #8b93a7);
+  font: 500 11px/1.45 'Golos Text', system-ui, sans-serif;
+}
+.depot-proposal-upload {
+  display: flex;
+  width: 100%;
+  min-height: 62px;
+  align-items: center;
+  gap: 11px;
+  margin-bottom: 8px;
+  padding: 10px 11px;
+  border: 1px solid color-mix(in oklch, var(--ink-2, #c6cbd8) 13%, transparent);
+  border-radius: 14px;
+  color: var(--ink-1, #f7f8fb);
+  background: color-mix(in oklch, var(--ink-2, #c6cbd8) 5%, transparent);
+  text-align: left;
+}
+.depot-proposal-upload-icon {
+  display: grid;
+  flex: 0 0 36px;
+  width: 36px;
+  height: 36px;
+  place-items: center;
+  border-radius: 11px;
+  color: var(--accent, #38bdf8);
+  background: color-mix(in oklch, var(--accent, #38bdf8) 14%, transparent);
+  font: 750 11px/1 'Golos Text', system-ui, sans-serif;
+}
+.depot-proposal-upload-icon.is-regime {
+  color: #a78bfa;
+  background: color-mix(in oklch, #a78bfa 14%, transparent);
+}
+.depot-proposal-upload-copy { display: grid; flex: 1 1 auto; min-width: 0; gap: 3px; }
+.depot-proposal-upload-copy strong { font: 650 12px/1.25 'Golos Text', system-ui, sans-serif; }
+.depot-proposal-upload-copy small { color: var(--ink-3, #8b93a7); font: 500 10px/1.35 'Golos Text', system-ui, sans-serif; }
+.depot-proposal-upload-action { flex: 0 0 auto; color: var(--accent, #38bdf8); font: 650 10px/1.2 'Golos Text', system-ui, sans-serif; }
+.depot-proposal-files {
+  display: grid;
+  gap: 6px;
+  margin: 4px 0 13px;
+}
+.depot-proposal-file {
+  display: flex;
+  min-width: 0;
+  align-items: center;
+  gap: 9px;
+  padding: 8px 10px;
+  border-radius: 11px;
+  background: color-mix(in oklch, var(--ink-2, #c6cbd8) 6%, transparent);
+}
+.depot-proposal-file-kind {
+  flex: 0 0 auto;
+  color: var(--accent, #38bdf8);
+  font: 700 10px/1 'Golos Text', system-ui, sans-serif;
+}
+.depot-proposal-file-copy { display: grid; flex: 1 1 auto; min-width: 0; gap: 2px; }
+.depot-proposal-file-name {
+  overflow: hidden;
+  color: var(--ink-2, #c6cbd8);
+  font: 550 11px/1.25 'Golos Text', system-ui, sans-serif;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.depot-proposal-file-meta { color: var(--ink-3, #8b93a7); font: 500 9px/1.2 'Golos Text', system-ui, sans-serif; }
+.depot-proposal-file-remove {
+  display: grid;
+  flex: 0 0 28px;
+  width: 28px;
+  height: 28px;
+  place-items: center;
+  border: 0;
+  border-radius: 9px;
+  color: var(--ink-3, #8b93a7);
+  background: transparent;
+  font: 400 18px/1 system-ui, sans-serif;
+}
+.depot-proposal-note { margin: 2px 2px 12px; }
+.depot-proposal-progress {
+  margin: -2px 0 12px;
+  color: var(--accent, #38bdf8);
+  font: 600 11px/1.4 'Golos Text', system-ui, sans-serif;
+}
+.depot-proposal-actions { padding-top: 2px; }
+.depot-proposal-actions .btn-sheet-save { width: 100%; }
+
+@media (max-width: 360px) {
+  .depot-proposal-mode { grid-template-columns: 1fr; }
+  .depot-proposal-mode-btn { min-height: 58px; }
+  .depot-proposal-upload-action { display: none; }
+}
 
 /* ── Avatar crop sheet (pan + zoom, circular) ── */
 .avatar-crop-stage {

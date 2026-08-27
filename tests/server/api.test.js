@@ -99,18 +99,18 @@ test('public contact surface points only to the Telegram bot', async () => {
 });
 
 test('versioned style namespace serves the current shell stylesheet', async () => {
-  const response = await fetch(baseUrl + '/styles/v405/56-profile.css');
+  const response = await fetch(baseUrl + '/styles/v406/56-profile.css');
   const source = await response.text();
   assert.equal(response.status, 200);
   assert.match(response.headers.get('content-type') || '', /text\/css/i);
   assert.match(source, /\.profile-summary-card/);
   assert.match(source, /\.profile-summary-icon svg/);
 
-  const versionedRuntime = await fetch(baseUrl + '/scripts/v405/render.js');
+  const versionedRuntime = await fetch(baseUrl + '/scripts/v406/render.js');
   assert.equal(versionedRuntime.status, 200);
   assert.match(await versionedRuntime.text(), /renderProfileSummary/);
 
-  const traversalAttempt = await fetch(baseUrl + '/scripts/v405/..%2Fserver.js');
+  const traversalAttempt = await fetch(baseUrl + '/scripts/v406/..%2Fserver.js');
   assert.equal(traversalAttempt.status, 404);
 
   const previousBootstrap = await fetch(baseUrl + '/sw-bootstrap-v397.js');
@@ -260,6 +260,68 @@ test('depot pack proposals are authenticated and visible only to an admin', asyn
   assert.ok(dashboard.body.total >= 1);
   assert.equal(dashboard.body.requests[0].depotId, 'rzd:dvost:tche-9:komsomolsk-na-amure');
   assert.equal(dashboard.body.requests[0].armName, 'Комсомольск — Советская Гавань');
+});
+
+test('depot pack materials accept unknown formats for manual review and stay admin-only', async () => {
+  const userToken = await authenticate({ id: 6102, first_name: 'Материалы' });
+  const adminToken = await authenticate({ id: 9001, first_name: 'Администратор' });
+  const unknownMaterial = Buffer.from('PROPRIETARY-EMAP\u0000route-data\u0001v1', 'utf8');
+
+  const draft = await jsonRequest('/api/depot-pack-requests', {
+    method: 'POST',
+    headers: { ...bearer(userToken), 'Content-Type': 'application/json' },
+    body: JSON.stringify({
+      requestType: 'materials',
+      depotLabel: 'ТЧЭ-9 · Комсомольск-на-Амуре',
+      armName: 'Комсомольск — Новый участок',
+      notes: 'Формат электронной карты из другого приложения',
+      attachments: [{
+        kind: 'electronic-map',
+        name: 'карта.railmap',
+        mime: 'application/octet-stream',
+        size: unknownMaterial.length,
+      }],
+    }),
+  });
+  assert.equal(draft.response.status, 201);
+  assert.equal(draft.body.request.status, 'uploading');
+  assert.equal(draft.body.request.attachments.length, 1);
+
+  const requestId = draft.body.request.id;
+  const attachmentId = draft.body.request.attachments[0].id;
+  const uploaded = await jsonRequest(`/api/depot-pack-requests/${requestId}/attachments/${attachmentId}`, {
+    method: 'PUT',
+    headers: { ...bearer(userToken), 'Content-Type': 'application/octet-stream' },
+    body: unknownMaterial,
+  });
+  assert.equal(uploaded.response.status, 200);
+  assert.equal(uploaded.body.attachment.detectedFormat, 'unknown');
+  assert.equal(uploaded.body.attachment.automaticCheck, 'manual');
+
+  const completed = await jsonRequest(`/api/depot-pack-requests/${requestId}/complete`, {
+    method: 'POST',
+    headers: bearer(userToken),
+  });
+  assert.equal(completed.response.status, 200);
+  assert.equal(completed.body.request.status, 'new');
+
+  const dashboard = await jsonRequest('/api/admin/depot-pack-requests', { headers: bearer(adminToken) });
+  const stored = dashboard.body.requests.find((item) => item.id === requestId);
+  assert.ok(stored);
+  assert.equal(stored.attachments[0].originalName, 'карта.railmap');
+  assert.equal(stored.attachments[0].detectedFormat, 'unknown');
+  assert.equal(stored.attachments[0].reviewRequired, true);
+  assert.equal(Object.hasOwn(stored.attachments[0], 'storageName'), false);
+
+  const forbiddenDownload = await fetch(baseUrl + `/api/admin/depot-pack-requests/${requestId}/attachments/${attachmentId}`, {
+    headers: bearer(userToken),
+  });
+  assert.equal(forbiddenDownload.status, 403);
+  const downloaded = await fetch(baseUrl + `/api/admin/depot-pack-requests/${requestId}/attachments/${attachmentId}`, {
+    headers: bearer(adminToken),
+  });
+  assert.equal(downloaded.status, 200);
+  assert.deepEqual(Buffer.from(await downloaded.arrayBuffer()), unknownMaterial);
 });
 
 test('analytics requires consent, deduplicates events, and exposes only admin aggregates', async () => {

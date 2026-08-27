@@ -1,4 +1,4 @@
-if (typeof registerShiftTrackerRuntimeModule === 'function') registerShiftTrackerRuntimeModule('app-init', 'v405');
+if (typeof registerShiftTrackerRuntimeModule === 'function') registerShiftTrackerRuntimeModule('app-init', 'v406');
 
 // ── Init ──
 function startShiftTrackerRuntime() {
@@ -1164,6 +1164,10 @@ if (window.__SHIFT_TRACKER_RUNTIME_GUARD_PENDING) {
 
     var profileCatalogRenderToken = 0;
     var depotProposalContext = null;
+    var depotProposalMode = 'demand';
+    var depotProposalFiles = [];
+    var depotProposalDraft = null;
+    var depotProposalBusy = false;
 
     function refreshGlassSelect(rootId) {
       var root = document.getElementById(rootId);
@@ -1317,6 +1321,140 @@ if (window.__SHIFT_TRACKER_RUNTIME_GUARD_PENDING) {
       });
     }
 
+    function formatDepotProposalFileSize(bytes) {
+      var size = Math.max(0, Number(bytes) || 0);
+      if (size < 1024) return size + ' Б';
+      if (size < 1024 * 1024) return Math.round(size / 1024) + ' КБ';
+      return (size / (1024 * 1024)).toFixed(size < 10 * 1024 * 1024 ? 1 : 0) + ' МБ';
+    }
+
+    function renderDepotProposalFiles() {
+      var root = document.getElementById('depotProposalFiles');
+      if (!root) return;
+      while (root.firstChild) root.removeChild(root.firstChild);
+      root.classList.toggle('hidden', depotProposalFiles.length === 0);
+      for (var i = 0; i < depotProposalFiles.length; i++) {
+        var item = depotProposalFiles[i];
+        var row = document.createElement('div');
+        row.className = 'depot-proposal-file';
+
+        var kind = document.createElement('span');
+        kind.className = 'depot-proposal-file-kind';
+        kind.textContent = item.kind === 'electronic-map' ? 'ЭК' : 'РК';
+
+        var copy = document.createElement('span');
+        copy.className = 'depot-proposal-file-copy';
+        var name = document.createElement('span');
+        name.className = 'depot-proposal-file-name';
+        name.textContent = item.file.name || 'Материал без названия';
+        var meta = document.createElement('span');
+        meta.className = 'depot-proposal-file-meta';
+        var statusText = '';
+        if (item.status === 'uploading') statusText = ' · загружается';
+        if (item.status === 'uploaded') statusText = item.automaticCheck === 'manual' ? ' · принял, проверим вручную' : ' · формат распознан';
+        if (item.status === 'error') statusText = ' · не загрузился, можно повторить';
+        meta.textContent = formatDepotProposalFileSize(item.file.size) + statusText;
+        copy.appendChild(name);
+        copy.appendChild(meta);
+
+        var remove = document.createElement('button');
+        remove.className = 'depot-proposal-file-remove';
+        remove.type = 'button';
+        remove.textContent = '×';
+        remove.setAttribute('aria-label', 'Убрать ' + (item.file.name || 'файл'));
+        remove.dataset.fileIndex = String(i);
+        remove.disabled = depotProposalBusy || item.status === 'uploaded';
+
+        row.appendChild(kind);
+        row.appendChild(copy);
+        row.appendChild(remove);
+        root.appendChild(row);
+      }
+    }
+
+    function resetDepotProposalDraft() {
+      depotProposalDraft = null;
+      for (var i = 0; i < depotProposalFiles.length; i++) {
+        depotProposalFiles[i].status = 'queued';
+        depotProposalFiles[i].attachmentId = '';
+        depotProposalFiles[i].automaticCheck = '';
+      }
+    }
+
+    function setDepotProposalMode(mode) {
+      depotProposalMode = mode === 'materials' ? 'materials' : 'demand';
+      var demandPanel = document.getElementById('depotProposalDemandPanel');
+      var materialsPanel = document.getElementById('depotProposalMaterialsPanel');
+      var notes = document.getElementById('inputDepotProposalNotes');
+      var send = document.getElementById('btnDepotProposalSend');
+      var modeButtons = document.querySelectorAll('[data-proposal-mode]');
+      for (var i = 0; i < modeButtons.length; i++) {
+        var isActive = modeButtons[i].dataset.proposalMode === depotProposalMode;
+        modeButtons[i].classList.toggle('is-active', isActive);
+        modeButtons[i].setAttribute('aria-selected', isActive ? 'true' : 'false');
+      }
+      if (demandPanel) demandPanel.classList.toggle('hidden', depotProposalMode !== 'demand');
+      if (materialsPanel) materialsPanel.classList.toggle('hidden', depotProposalMode !== 'materials');
+      if (notes) notes.placeholder = depotProposalMode === 'materials'
+        ? 'Например, особенности участка или приложения, из которого выгружена карта'
+        : 'Например, до какой станции нужен профиль';
+      if (send && !depotProposalBusy) send.textContent = depotProposalMode === 'materials' ? 'Передать материалы' : 'Отправить запрос';
+      resetDepotProposalDraft();
+      renderDepotProposalFiles();
+    }
+
+    function addDepotProposalFiles(fileList, kind) {
+      var incoming = Array.prototype.slice.call(fileList || []);
+      var tooLarge = false;
+      var tooMany = false;
+      var totalBytes = depotProposalFiles.reduce(function(sum, item) { return sum + item.file.size; }, 0);
+      for (var i = 0; i < incoming.length; i++) {
+        var file = incoming[i];
+        if (!file || !file.size) continue;
+        if (file.size > 50 * 1024 * 1024 || totalBytes + file.size > 120 * 1024 * 1024) {
+          tooLarge = true;
+          continue;
+        }
+        if (depotProposalFiles.length >= 8) {
+          tooMany = true;
+          break;
+        }
+        var duplicate = depotProposalFiles.some(function(item) {
+          return item.kind === kind && item.file.name === file.name && item.file.size === file.size && item.file.lastModified === file.lastModified;
+        });
+        if (duplicate) continue;
+        depotProposalFiles.push({ file: file, kind: kind, status: 'queued', attachmentId: '', automaticCheck: '' });
+        totalBytes += file.size;
+      }
+      resetDepotProposalDraft();
+      renderDepotProposalFiles();
+      if (tooLarge && typeof enqueueAppToast === 'function') enqueueAppToast('До 50 МБ на файл и 120 МБ за отправку', 'neutral', 2800);
+      if (tooMany && typeof enqueueAppToast === 'function') enqueueAppToast('За один раз можно передать до 8 файлов', 'neutral', 2600);
+    }
+
+    function setDepotProposalBusy(busy, progressText) {
+      depotProposalBusy = !!busy;
+      var send = document.getElementById('btnDepotProposalSend');
+      var close = document.getElementById('btnDepotProposalCancel');
+      var uploadButtons = [document.getElementById('btnDepotProposalEMap'), document.getElementById('btnDepotProposalRegime')];
+      var modeButtons = document.querySelectorAll('[data-proposal-mode]');
+      if (send) {
+        send.disabled = depotProposalBusy;
+        send.textContent = depotProposalBusy ? (progressText || 'Отправляем…') : (depotProposalMode === 'materials' ? 'Передать материалы' : 'Отправить запрос');
+      }
+      if (close) close.disabled = depotProposalBusy;
+      for (var i = 0; i < uploadButtons.length; i++) if (uploadButtons[i]) uploadButtons[i].disabled = depotProposalBusy;
+      for (var j = 0; j < modeButtons.length; j++) modeButtons[j].disabled = depotProposalBusy;
+      renderDepotProposalFiles();
+    }
+
+    function setDepotProposalProgress(text) {
+      var progress = document.getElementById('depotProposalProgress');
+      if (!progress) return;
+      progress.textContent = text || '';
+      progress.classList.toggle('hidden', !text);
+    }
+
     function openDepotProposal(context) {
       context = context || {};
       var selection = getProfileCatalogSelection();
@@ -1326,12 +1464,20 @@ if (window.__SHIFT_TRACKER_RUNTIME_GUARD_PENDING) {
         depotLabel: context.depotLabel || selection.depot || '',
         source: context.source || 'profile'
       };
+      depotProposalFiles = [];
+      depotProposalDraft = null;
       var label = document.getElementById('depotProposalDepotLabel');
       var armInput = document.getElementById('inputDepotProposalArm');
       var notesInput = document.getElementById('inputDepotProposalNotes');
-      if (label) label.textContent = depotProposalContext.depotLabel || 'Укажите название депо в комментарии';
+      var emapInput = document.getElementById('inputDepotProposalEMap');
+      var regimeInput = document.getElementById('inputDepotProposalRegime');
+      if (label) label.textContent = depotProposalContext.depotLabel || 'Укажите депо в профиле';
       if (armInput) armInput.value = context.armName || '';
       if (notesInput) notesInput.value = '';
+      if (emapInput) emapInput.value = '';
+      if (regimeInput) regimeInput.value = '';
+      setDepotProposalProgress('');
+      setDepotProposalMode(context.mode || 'demand');
       if (typeof openOverlay === 'function') openOverlay('overlayDepotProposal');
     }
     window.openDepotProposal = openDepotProposal;
@@ -1340,40 +1486,128 @@ if (window.__SHIFT_TRACKER_RUNTIME_GUARD_PENDING) {
     if (proposeArmBtn) proposeArmBtn.addEventListener('click', function() { openDepotProposal({ source: 'profile' }); });
     var proposalCancelBtn = document.getElementById('btnDepotProposalCancel');
     if (proposalCancelBtn) proposalCancelBtn.addEventListener('click', function() {
-      if (typeof closeOverlay === 'function') closeOverlay('overlayDepotProposal');
+      if (!depotProposalBusy && typeof closeOverlay === 'function') closeOverlay('overlayDepotProposal');
     });
+    var proposalModeButtons = document.querySelectorAll('[data-proposal-mode]');
+    for (var proposalModeIndex = 0; proposalModeIndex < proposalModeButtons.length; proposalModeIndex++) {
+      proposalModeButtons[proposalModeIndex].addEventListener('click', function() { setDepotProposalMode(this.dataset.proposalMode); });
+    }
+    var proposalEMapBtn = document.getElementById('btnDepotProposalEMap');
+    var proposalRegimeBtn = document.getElementById('btnDepotProposalRegime');
+    var proposalEMapInput = document.getElementById('inputDepotProposalEMap');
+    var proposalRegimeInput = document.getElementById('inputDepotProposalRegime');
+    if (proposalEMapBtn && proposalEMapInput) proposalEMapBtn.addEventListener('click', function() { proposalEMapInput.click(); });
+    if (proposalRegimeBtn && proposalRegimeInput) proposalRegimeBtn.addEventListener('click', function() { proposalRegimeInput.click(); });
+    if (proposalEMapInput) proposalEMapInput.addEventListener('change', function() {
+      addDepotProposalFiles(this.files, 'electronic-map');
+      this.value = '';
+    });
+    if (proposalRegimeInput) proposalRegimeInput.addEventListener('change', function() {
+      addDepotProposalFiles(this.files, 'regime-map');
+      this.value = '';
+    });
+    var proposalFilesRoot = document.getElementById('depotProposalFiles');
+    if (proposalFilesRoot) proposalFilesRoot.addEventListener('click', function(event) {
+      var button = event.target && event.target.closest ? event.target.closest('[data-file-index]') : null;
+      if (!button || depotProposalBusy) return;
+      var index = Number(button.dataset.fileIndex);
+      if (!Number.isInteger(index) || index < 0 || index >= depotProposalFiles.length) return;
+      depotProposalFiles.splice(index, 1);
+      resetDepotProposalDraft();
+      renderDepotProposalFiles();
+    });
+
     var proposalSendBtn = document.getElementById('btnDepotProposalSend');
     if (proposalSendBtn) proposalSendBtn.addEventListener('click', function() {
       var armInput = document.getElementById('inputDepotProposalArm');
       var notesInput = document.getElementById('inputDepotProposalNotes');
       var armName = normalizeProfileText(armInput && armInput.value, 120);
       var notes = normalizeProfileText(notesInput && notesInput.value, 600);
-      if (!armName && !notes) {
-        if (typeof enqueueAppToast === 'function') enqueueAppToast('Укажите плечо или материалы', 'neutral', 2200);
+      if (!armName) {
+        if (typeof enqueueAppToast === 'function') enqueueAppToast('Укажите плечо обслуживания', 'neutral', 2200);
+        if (armInput) armInput.focus();
         return;
       }
-      proposalSendBtn.disabled = true;
-      proposalSendBtn.textContent = 'Отправляем…';
-      fetchJson(DEPOT_PROPOSAL_API_URL, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json', 'Accept': 'application/json' },
-        body: JSON.stringify({
-          railwayId: depotProposalContext && depotProposalContext.railwayId || '',
-          depotId: depotProposalContext && depotProposalContext.depotId || '',
-          depotLabel: depotProposalContext && depotProposalContext.depotLabel || '',
-          armName: armName,
-          notes: notes,
-          source: depotProposalContext && depotProposalContext.source || 'profile'
-        })
-      }, 9000).then(function(result) {
-        if (!result || !result.ok) throw new Error(result && result.body && result.body.error || 'Не удалось отправить');
-        if (typeof closeOverlay === 'function') closeOverlay('overlayDepotProposal');
-        if (typeof enqueueAppToast === 'function') enqueueAppToast('Предложение отправлено на проверку', 'success', 2600);
-      }).catch(function(error) {
-        if (typeof enqueueAppToast === 'function') enqueueAppToast(error && error.message || 'Не удалось отправить', 'danger', 2600);
+      if (depotProposalMode === 'materials' && depotProposalFiles.length === 0) {
+        if (typeof enqueueAppToast === 'function') enqueueAppToast('Выберите электронную или режимную карту', 'neutral', 2400);
+        return;
+      }
+
+      setDepotProposalBusy(true, depotProposalMode === 'materials' ? 'Готовим загрузку…' : 'Отправляем…');
+      setDepotProposalProgress(depotProposalMode === 'materials' ? 'Подготавливаем материалы…' : '');
+      var createDraft = depotProposalDraft
+        ? Promise.resolve(depotProposalDraft)
+        : fetchJson(DEPOT_PROPOSAL_API_URL, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json', 'Accept': 'application/json' },
+          body: JSON.stringify({
+            railwayId: depotProposalContext && depotProposalContext.railwayId || '',
+            depotId: depotProposalContext && depotProposalContext.depotId || '',
+            depotLabel: depotProposalContext && depotProposalContext.depotLabel || '',
+            armName: armName,
+            notes: notes,
+            source: depotProposalContext && depotProposalContext.source || 'profile',
+            requestType: depotProposalMode,
+            attachments: depotProposalFiles.map(function(item) {
+              return { kind: item.kind, name: item.file.name, mime: item.file.type || '', size: item.file.size };
+            })
+          })
+        }, 12000).then(function(result) {
+          if (!result || !result.ok) throw new Error(result && result.body && result.body.error || 'Не удалось отправить');
+          depotProposalDraft = result.body.request;
+          var attachments = depotProposalDraft.attachments || [];
+          for (var i = 0; i < depotProposalFiles.length; i++) depotProposalFiles[i].attachmentId = attachments[i] && attachments[i].id || '';
+          return depotProposalDraft;
+        });
+
+      createDraft.then(function(draft) {
+        if (depotProposalMode !== 'materials') return draft;
+        var chain = Promise.resolve();
+        depotProposalFiles.forEach(function(item, index) {
+          chain = chain.then(function() {
+            if (item.status === 'uploaded') return;
+            item.status = 'uploading';
+            setDepotProposalProgress('Загружаем ' + (index + 1) + ' из ' + depotProposalFiles.length + ': ' + item.file.name);
+            setDepotProposalBusy(true, 'Загружаем ' + (index + 1) + ' из ' + depotProposalFiles.length);
+            return fetchJson(DEPOT_PROPOSAL_API_URL + '/' + draft.id + '/attachments/' + item.attachmentId, {
+              method: 'PUT',
+              headers: { 'Content-Type': item.file.type || 'application/octet-stream', 'Accept': 'application/json' },
+              body: item.file
+            }, 120000).then(function(result) {
+              if (!result || !result.ok) throw new Error(result && result.body && result.body.error || 'Не удалось загрузить ' + item.file.name);
+              item.status = 'uploaded';
+              item.automaticCheck = result.body && result.body.attachment && result.body.attachment.automaticCheck || 'manual';
+              renderDepotProposalFiles();
+            }).catch(function(error) {
+              item.status = 'error';
+              renderDepotProposalFiles();
+              throw error;
+            });
+          });
+        });
+        return chain.then(function() {
+          setDepotProposalProgress('Завершаем отправку…');
+          return fetchJson(DEPOT_PROPOSAL_API_URL + '/' + draft.id + '/complete', {
+            method: 'POST',
+            headers: { 'Accept': 'application/json' }
+          }, 12000).then(function(result) {
+            if (!result || !result.ok) throw new Error(result && result.body && result.body.error || 'Не удалось завершить отправку');
+            return result.body.request;
+          });
+        });
       }).then(function() {
-        proposalSendBtn.disabled = false;
-        proposalSendBtn.textContent = 'Отправить';
+        if (typeof closeOverlay === 'function') closeOverlay('overlayDepotProposal');
+        if (typeof enqueueAppToast === 'function') {
+          enqueueAppToast(depotProposalMode === 'materials' ? 'Материалы приняты на проверку' : 'Запрос участка отправлен', 'success', 2800);
+        }
+        depotProposalDraft = null;
+        depotProposalFiles = [];
+        setDepotProposalProgress('');
+      }).catch(function(error) {
+        setDepotProposalProgress(error && error.message || 'Не удалось отправить');
+        if (typeof enqueueAppToast === 'function') enqueueAppToast(error && error.message || 'Не удалось отправить', 'danger', 3000);
+      }).then(function() {
+        setDepotProposalBusy(false);
       });
     });
 

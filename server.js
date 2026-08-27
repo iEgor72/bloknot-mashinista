@@ -44,6 +44,7 @@ const USERS_DIR = path.join(DATA_DIR, 'local-shifts');
 const SALARY_PARAMS_DIR = path.join(DATA_DIR, 'local-salary-params');
 const PROFILE_DIR = path.join(DATA_DIR, 'local-profiles');
 const POEKHALI_WARNINGS_DIR = path.join(DATA_DIR, 'poekhali-warnings');
+const DEPOT_PACK_MATERIALS_DIR = path.join(DATA_DIR, 'depot-pack-materials');
 const USER_STATS_FILE = path.join(DATA_DIR, 'user-presence.json');
 const LOGIN_REQUESTS_FILE = path.join(DATA_DIR, 'auth-login-requests.json');
 const FEEDBACK_FILE = path.join(DATA_DIR, 'feedback.json');
@@ -150,6 +151,7 @@ const PUBLIC_TOP_LEVEL_FILES = new Set([
   'sw-bootstrap-v402.js',
   'sw-bootstrap-v404.js',
   'sw-bootstrap-v405.js',
+  'sw-bootstrap-v406.js',
   'apple-touch-icon.png',
   'icon-192.png',
   'icon-512.png',
@@ -1061,6 +1063,9 @@ function sanitizeProfilePayload(payload) {
 
 const DEPOT_PACK_REQUESTS_STATE_KEY = 'depot_pack_requests';
 const MAX_DEPOT_PACK_REQUESTS = 5000;
+const MAX_DEPOT_PACK_ATTACHMENTS = 8;
+const MAX_DEPOT_PACK_ATTACHMENT_BYTES = 50 * 1024 * 1024;
+const MAX_DEPOT_PACK_TOTAL_BYTES = 120 * 1024 * 1024;
 const depotPackRequestAttempts = new Map();
 
 function allowDepotPackRequest(sid) {
@@ -1088,6 +1093,44 @@ function readDepotPackRequests() {
   return Array.isArray(value) ? value : [];
 }
 
+function sanitizeDepotPackAttachmentName(value) {
+  const normalized = String(value == null ? '' : value).replace(/\\/g, '/');
+  return sanitizeProfileText(path.posix.basename(normalized), 180) || 'Материал без названия';
+}
+
+function sanitizeDepotPackAttachmentDescriptors(value) {
+  if (value == null) return [];
+  if (!Array.isArray(value)) throw new Error('Invalid attachments');
+  if (value.length > MAX_DEPOT_PACK_ATTACHMENTS) throw new Error('Invalid attachments: too many files');
+  let totalBytes = 0;
+  return value.map((source) => {
+    if (!source || typeof source !== 'object' || Array.isArray(source)) {
+      throw new Error('Invalid attachment');
+    }
+    const size = Math.max(0, Math.floor(Number(source.size) || 0));
+    if (!size || size > MAX_DEPOT_PACK_ATTACHMENT_BYTES) {
+      throw new Error('Invalid attachment size');
+    }
+    totalBytes += size;
+    if (totalBytes > MAX_DEPOT_PACK_TOTAL_BYTES) throw new Error('Invalid attachments: total size too large');
+    const kind = ['electronic-map', 'regime-map', 'other'].includes(source.kind) ? source.kind : 'other';
+    return {
+      id: crypto.randomBytes(10).toString('hex'),
+      kind,
+      originalName: sanitizeDepotPackAttachmentName(source.name),
+      declaredMime: sanitizeProfileText(source.mime, 120),
+      declaredSize: size,
+      uploadedSize: 0,
+      status: 'awaiting_upload',
+      detectedFormat: '',
+      automaticCheck: 'pending',
+      reviewRequired: true,
+      sha256: '',
+      storageName: '',
+    };
+  });
+}
+
 function sanitizeDepotPackRequest(payload, sid, user) {
   if (!payload || typeof payload !== 'object' || Array.isArray(payload)) {
     throw new Error('Expected JSON object payload');
@@ -1098,8 +1141,11 @@ function sanitizeDepotPackRequest(payload, sid, user) {
   const armName = sanitizeProfileText(payload.armName == null ? payload.arm_name : payload.armName, 120);
   const notes = sanitizeProfileText(payload.notes, 600);
   const source = sanitizeProfileText(payload.source, 40) || 'profile';
+  const requestType = payload.requestType === 'materials' ? 'materials' : 'demand';
+  const attachments = sanitizeDepotPackAttachmentDescriptors(payload.attachments);
   if (!depotId && !depotLabel) throw new Error('Missing depot');
   if (!armName && !notes) throw new Error('Missing service arm or materials');
+  if (requestType === 'materials' && attachments.length === 0) throw new Error('Missing attachments');
   return {
     id: crypto.randomBytes(12).toString('hex'),
     sid: normalizeSid(sid),
@@ -1110,7 +1156,9 @@ function sanitizeDepotPackRequest(payload, sid, user) {
     armName,
     notes,
     source,
-    status: 'new',
+    requestType,
+    attachments,
+    status: attachments.length ? 'uploading' : 'new',
     createdAt: new Date().toISOString(),
   };
 }
@@ -1124,6 +1172,95 @@ function writeDepotPackRequest(payload, sid, user) {
     : requests;
   getStorage().writeAppState(DEPOT_PACK_REQUESTS_STATE_KEY, bounded);
   return item;
+}
+
+function replaceDepotPackRequest(updatedItem) {
+  const requests = readDepotPackRequests();
+  const index = requests.findIndex((item) => item && item.id === updatedItem.id);
+  if (index < 0) throw new Error('Request not found');
+  requests[index] = updatedItem;
+  getStorage().writeAppState(DEPOT_PACK_REQUESTS_STATE_KEY, requests);
+  return updatedItem;
+}
+
+function classifyDepotPackAttachment(buffer) {
+  const startsWith = (...bytes) => bytes.every((byte, index) => buffer[index] === byte);
+  if (buffer.length >= 15 && buffer.subarray(0, 15).toString('ascii') === 'ANDROID BACKUP\n') {
+    return { detectedFormat: 'android-backup', automaticCheck: 'recognized' };
+  }
+  if (startsWith(0x50, 0x4b, 0x03, 0x04) || startsWith(0x50, 0x4b, 0x05, 0x06) || startsWith(0x50, 0x4b, 0x07, 0x08)) {
+    const archiveIndex = buffer.toString('latin1').toLowerCase();
+    const isKnownEMap = archiveIndex.includes('data.xml') && archiveIndex.includes('profile.xml');
+    return {
+      detectedFormat: isKnownEMap ? 'emap-zip' : 'zip-archive',
+      automaticCheck: isKnownEMap ? 'recognized' : 'manual',
+    };
+  }
+  if (startsWith(0x25, 0x50, 0x44, 0x46, 0x2d)) return { detectedFormat: 'pdf', automaticCheck: 'recognized' };
+  if (startsWith(0x89, 0x50, 0x4e, 0x47, 0x0d, 0x0a, 0x1a, 0x0a)) return { detectedFormat: 'png', automaticCheck: 'recognized' };
+  if (startsWith(0xff, 0xd8, 0xff)) return { detectedFormat: 'jpeg', automaticCheck: 'recognized' };
+  if (buffer.length >= 12 && buffer.subarray(0, 4).toString('ascii') === 'RIFF' && buffer.subarray(8, 12).toString('ascii') === 'WEBP') {
+    return { detectedFormat: 'webp', automaticCheck: 'recognized' };
+  }
+  if (startsWith(0x37, 0x7a, 0xbc, 0xaf, 0x27, 0x1c)) return { detectedFormat: '7z-archive', automaticCheck: 'manual' };
+  if (buffer.length >= 7 && buffer.subarray(0, 7).toString('latin1') === 'Rar!\x1a\x07') return { detectedFormat: 'rar-archive', automaticCheck: 'manual' };
+  if (startsWith(0x1f, 0x8b)) return { detectedFormat: 'gzip-archive', automaticCheck: 'manual' };
+  return { detectedFormat: 'unknown', automaticCheck: 'manual' };
+}
+
+function depotPackRequestForOwner(requestId, sid) {
+  return readDepotPackRequests().find((item) => item && item.id === requestId && item.sid === normalizeSid(sid)) || null;
+}
+
+async function storeDepotPackAttachment(requestId, attachmentId, sid, buffer) {
+  const item = depotPackRequestForOwner(requestId, sid);
+  if (!item) throw new Error('Request not found');
+  const attachment = Array.isArray(item.attachments)
+    ? item.attachments.find((entry) => entry && entry.id === attachmentId)
+    : null;
+  if (!attachment) throw new Error('Attachment not found');
+  if (attachment.status === 'uploaded') throw new Error('Attachment already uploaded');
+  if (!Buffer.isBuffer(buffer) || !buffer.length || buffer.length > MAX_DEPOT_PACK_ATTACHMENT_BYTES) {
+    throw new Error('Invalid attachment size');
+  }
+  const otherBytes = item.attachments.reduce((sum, entry) => sum + (entry.id === attachmentId ? 0 : Number(entry.uploadedSize || 0)), 0);
+  if (otherBytes + buffer.length > MAX_DEPOT_PACK_TOTAL_BYTES) throw new Error('Invalid attachments: total size too large');
+
+  const classification = classifyDepotPackAttachment(buffer);
+  const requestDir = path.join(DEPOT_PACK_MATERIALS_DIR, item.id);
+  const storageName = `${attachment.id}.upload`;
+  const finalPath = path.join(requestDir, storageName);
+  const tempPath = path.join(requestDir, `${attachment.id}.${crypto.randomBytes(6).toString('hex')}.tmp`);
+  await fs.promises.mkdir(requestDir, { recursive: true });
+  await fs.promises.writeFile(tempPath, buffer, { flag: 'wx' });
+  await fs.promises.rename(tempPath, finalPath);
+
+  attachment.uploadedSize = buffer.length;
+  attachment.status = 'uploaded';
+  attachment.detectedFormat = classification.detectedFormat;
+  attachment.automaticCheck = classification.automaticCheck;
+  attachment.reviewRequired = true;
+  attachment.sha256 = crypto.createHash('sha256').update(buffer).digest('hex');
+  attachment.storageName = storageName;
+  attachment.uploadedAt = new Date().toISOString();
+  replaceDepotPackRequest(item);
+  return attachment;
+}
+
+function publicDepotPackRequest(item) {
+  return {
+    id: item.id,
+    status: item.status,
+    createdAt: item.createdAt,
+    attachments: Array.isArray(item.attachments) ? item.attachments.map((entry) => ({
+      id: entry.id,
+      kind: entry.kind,
+      originalName: entry.originalName,
+      status: entry.status,
+      detectedFormat: entry.detectedFormat,
+      automaticCheck: entry.automaticCheck,
+    })) : [],
+  };
 }
 
 function readProfile(sid) {
@@ -2189,7 +2326,7 @@ function readBodyWithLimit(req, maxBytes) {
   });
 }
 
-const APP_RELEASE_VERSION = 'v405';
+const APP_RELEASE_VERSION = 'v406';
 const APP_URL = PUBLIC_SITE_URL;
 const TELEGRAM_APP_URL = buildVersionedAppUrl('/');
 
@@ -2197,6 +2334,31 @@ function buildVersionedAppUrl(rawPath) {
   const target = new URL(safeRedirectTarget(rawPath || '/'), PUBLIC_SITE_URL);
   target.searchParams.set('app', APP_RELEASE_VERSION);
   return target.toString();
+}
+
+function readBufferWithLimit(req, maxBytes) {
+  const limit = Math.max(1, Number(maxBytes) || (2 * 1024 * 1024));
+  return new Promise((resolve, reject) => {
+    const chunks = [];
+    let total = 0;
+    let rejected = false;
+    req.on('data', (chunk) => {
+      if (rejected) return;
+      total += chunk.length;
+      if (total > limit) {
+        rejected = true;
+        reject(new Error('Payload too large'));
+        return;
+      }
+      chunks.push(chunk);
+    });
+    req.on('end', () => {
+      if (!rejected) resolve(Buffer.concat(chunks, total));
+    });
+    req.on('error', (error) => {
+      if (!rejected) reject(error);
+    });
+  });
 }
 const APP_ORIGIN = (() => {
   try {
@@ -2803,6 +2965,74 @@ const server = http.createServer(async (req, res) => {
     return;
   }
 
+  const depotPackAttachmentMatch = pathname.match(/^\/api\/depot-pack-requests\/([a-f0-9]{24})\/attachments\/([a-f0-9]{20})$/);
+  if (depotPackAttachmentMatch) {
+    if (!sid) {
+      sendJson(res, 401, { error: 'Unauthorized' });
+      return;
+    }
+    if (req.method !== 'PUT') {
+      sendJson(res, 405, { error: 'Method not allowed' });
+      return;
+    }
+    const contentLength = Number(req.headers['content-length'] || 0);
+    if (contentLength > MAX_DEPOT_PACK_ATTACHMENT_BYTES) {
+      sendJson(res, 413, { error: 'Файл больше 50 МБ' });
+      return;
+    }
+    try {
+      const body = await readBufferWithLimit(req, MAX_DEPOT_PACK_ATTACHMENT_BYTES);
+      const attachment = await storeDepotPackAttachment(
+        depotPackAttachmentMatch[1],
+        depotPackAttachmentMatch[2],
+        sid,
+        body
+      );
+      sendJson(res, 200, {
+        ok: true,
+        attachment: {
+          id: attachment.id,
+          status: attachment.status,
+          detectedFormat: attachment.detectedFormat,
+          automaticCheck: attachment.automaticCheck,
+        },
+      });
+    } catch (err) {
+      const errorMessage = err && err.message ? err.message : 'Upload failed';
+      const statusCode = errorMessage === 'Request not found' || errorMessage === 'Attachment not found'
+        ? 404
+        : (errorMessage === 'Attachment already uploaded' ? 409 : (errorMessage === 'Payload too large' ? 413 : (/^Invalid/.test(errorMessage) ? 400 : 500)));
+      sendJson(res, statusCode, { error: errorMessage === 'Payload too large' ? 'Файл больше 50 МБ' : errorMessage });
+    }
+    return;
+  }
+
+  const depotPackCompleteMatch = pathname.match(/^\/api\/depot-pack-requests\/([a-f0-9]{24})\/complete$/);
+  if (depotPackCompleteMatch) {
+    if (!sid) {
+      sendJson(res, 401, { error: 'Unauthorized' });
+      return;
+    }
+    if (req.method !== 'POST') {
+      sendJson(res, 405, { error: 'Method not allowed' });
+      return;
+    }
+    const item = depotPackRequestForOwner(depotPackCompleteMatch[1], sid);
+    if (!item) {
+      sendJson(res, 404, { error: 'Request not found' });
+      return;
+    }
+    if (!Array.isArray(item.attachments) || !item.attachments.length || item.attachments.some((entry) => entry.status !== 'uploaded')) {
+      sendJson(res, 409, { error: 'Сначала загрузите все выбранные файлы' });
+      return;
+    }
+    item.status = 'new';
+    item.submittedAt = item.submittedAt || new Date().toISOString();
+    replaceDepotPackRequest(item);
+    sendJson(res, 200, { ok: true, request: publicDepotPackRequest(item) });
+    return;
+  }
+
   if (pathname === '/api/depot-pack-requests') {
     if (!sid) {
       sendJson(res, 401, { error: 'Unauthorized' });
@@ -2819,7 +3049,7 @@ const server = http.createServer(async (req, res) => {
     try {
       const body = await readBody(req);
       const item = writeDepotPackRequest(body ? JSON.parse(body) : {}, sid, requestUser);
-      sendJson(res, 201, { ok: true, request: { id: item.id, status: item.status, createdAt: item.createdAt } });
+      sendJson(res, 201, { ok: true, request: publicDepotPackRequest(item) });
     } catch (err) {
       const errorMessage = err && err.message ? err.message : 'Invalid payload';
       const isValidationError = /^(Expected|Missing|Invalid)/.test(errorMessage);
@@ -2829,6 +3059,43 @@ const server = http.createServer(async (req, res) => {
       });
       sendJson(res, isValidationError ? 400 : 500, { error: errorMessage });
     }
+    return;
+  }
+
+  const adminDepotPackAttachmentMatch = pathname.match(/^\/api\/admin\/depot-pack-requests\/([a-f0-9]{24})\/attachments\/([a-f0-9]{20})$/);
+  if (adminDepotPackAttachmentMatch) {
+    if (!requestUser) {
+      sendJson(res, 401, { error: 'Unauthorized' });
+      return;
+    }
+    if (!isAnalyticsAdmin(requestUser)) {
+      sendJson(res, 403, { error: 'Forbidden' });
+      return;
+    }
+    if (req.method !== 'GET') {
+      sendJson(res, 405, { error: 'Method not allowed' });
+      return;
+    }
+    const item = readDepotPackRequests().find((entry) => entry && entry.id === adminDepotPackAttachmentMatch[1]);
+    const attachment = item && Array.isArray(item.attachments)
+      ? item.attachments.find((entry) => entry && entry.id === adminDepotPackAttachmentMatch[2])
+      : null;
+    const filePath = attachment && attachment.storageName
+      ? path.join(DEPOT_PACK_MATERIALS_DIR, item.id, attachment.storageName)
+      : '';
+    if (!attachment || !filePath || !fs.existsSync(filePath)) {
+      sendJson(res, 404, { error: 'Attachment not found' });
+      return;
+    }
+    res.writeHead(200, {
+      'Content-Type': 'application/octet-stream',
+      'Content-Disposition': `attachment; filename="material"; filename*=UTF-8''${encodeURIComponent(attachment.originalName)}`,
+      'Content-Length': fs.statSync(filePath).size,
+      'Cache-Control': 'no-store',
+      'X-Content-Type-Options': 'nosniff',
+      'Referrer-Policy': 'no-referrer',
+    });
+    fs.createReadStream(filePath).pipe(res);
     return;
   }
 
@@ -2845,7 +3112,13 @@ const server = http.createServer(async (req, res) => {
       sendJson(res, 405, { error: 'Method not allowed' });
       return;
     }
-    const requests = readDepotPackRequests().slice().reverse();
+    const requests = readDepotPackRequests().slice().reverse().map((item) => ({
+      ...item,
+      attachments: Array.isArray(item.attachments) ? item.attachments.map((attachment) => {
+        const { storageName, ...safeAttachment } = attachment;
+        return safeAttachment;
+      }) : [],
+    }));
     sendJson(res, 200, { requests, total: requests.length });
     return;
   }

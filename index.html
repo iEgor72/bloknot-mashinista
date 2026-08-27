@@ -329,58 +329,58 @@
   </style>
   <link
     rel="stylesheet"
-    href="/styles/v405/00-base.css"
+    href="/styles/v406/00-base.css"
   />
   <link
     rel="stylesheet"
-    href="/styles/v405/10-navigation-and-cards.css"
+    href="/styles/v406/10-navigation-and-cards.css"
   />
   <link
     rel="stylesheet"
-    href="/styles/v405/15-bottom-nav.css"
+    href="/styles/v406/15-bottom-nav.css"
   />
   <link
     rel="stylesheet"
-    href="/styles/v405/16-press-feedback.css"
+    href="/styles/v406/16-press-feedback.css"
   />
   <link
     rel="stylesheet"
-    href="/styles/v405/20-form-and-stats.css"
+    href="/styles/v406/20-form-and-stats.css"
   />
   <link
     rel="stylesheet"
-    href="/styles/v405/30-shifts-and-overlays.css"
+    href="/styles/v406/30-shifts-and-overlays.css"
   />
   <link
     rel="stylesheet"
-    href="/styles/v405/40-premium-refresh.css"
+    href="/styles/v406/40-premium-refresh.css"
   />
   <link
     rel="stylesheet"
-    href="/styles/v405/50-design-refresh.css"
+    href="/styles/v406/50-design-refresh.css"
   />
   <link
     rel="stylesheet"
-    href="/styles/v405/56-profile.css"
+    href="/styles/v406/56-profile.css"
   />
   <link
     rel="stylesheet"
-    href="/styles/v405/57-datetime-picker.css"
+    href="/styles/v406/57-datetime-picker.css"
   />
-  <noscript><link rel="stylesheet" href="/styles/v405/00-base.css" /></noscript>
-  <noscript><link rel="stylesheet" href="/styles/v405/10-navigation-and-cards.css" /></noscript>
-  <noscript><link rel="stylesheet" href="/styles/v405/15-bottom-nav.css" /></noscript>
-  <noscript><link rel="stylesheet" href="/styles/v405/16-press-feedback.css" /></noscript>
-  <noscript><link rel="stylesheet" href="/styles/v405/20-form-and-stats.css" /></noscript>
-  <noscript><link rel="stylesheet" href="/styles/v405/30-shifts-and-overlays.css" /></noscript>
-  <noscript><link rel="stylesheet" href="/styles/v405/40-premium-refresh.css" /></noscript>
-  <noscript><link rel="stylesheet" href="/styles/v405/50-design-refresh.css" /></noscript>
-  <noscript><link rel="stylesheet" href="/styles/v405/56-profile.css" /></noscript>
-  <noscript><link rel="stylesheet" href="/styles/v405/57-datetime-picker.css" /></noscript>
+  <noscript><link rel="stylesheet" href="/styles/v406/00-base.css" /></noscript>
+  <noscript><link rel="stylesheet" href="/styles/v406/10-navigation-and-cards.css" /></noscript>
+  <noscript><link rel="stylesheet" href="/styles/v406/15-bottom-nav.css" /></noscript>
+  <noscript><link rel="stylesheet" href="/styles/v406/16-press-feedback.css" /></noscript>
+  <noscript><link rel="stylesheet" href="/styles/v406/20-form-and-stats.css" /></noscript>
+  <noscript><link rel="stylesheet" href="/styles/v406/30-shifts-and-overlays.css" /></noscript>
+  <noscript><link rel="stylesheet" href="/styles/v406/40-premium-refresh.css" /></noscript>
+  <noscript><link rel="stylesheet" href="/styles/v406/50-design-refresh.css" /></noscript>
+  <noscript><link rel="stylesheet" href="/styles/v406/56-profile.css" /></noscript>
+  <noscript><link rel="stylesheet" href="/styles/v406/57-datetime-picker.css" /></noscript>
   <script>
     window.CURRENT_USER = window.CURRENT_USER || null;
   </script>
-  <script src="/scripts/v405/safe-area.js" defer></script>
+  <script src="/scripts/v406/safe-area.js" defer></script>
 </head>
 <body style="background-color:#0C0C10;color:#EEF2F8;margin:0">
   <div class="boot-fallback" id="bootFallback" role="status" aria-live="polite">
@@ -1702,24 +1702,79 @@
   <!-- Depot / service-arm proposal sheet -->
   <div class="overlay" id="overlayDepotProposal">
     <div class="bottom-sheet depot-proposal-sheet">
-      <div class="salary-settings-header">
-        <span class="salary-settings-header-spacer" aria-hidden="true"></span>
-        <div class="sheet-title">Предложить участок</div>
-        <span class="salary-settings-header-spacer" aria-hidden="true"></span>
+      <div class="depot-proposal-header">
+        <div>
+          <div class="sheet-title">Добавить участок</div>
+          <div class="depot-proposal-subtitle">Запросите его или передайте материалы</div>
+        </div>
+        <button class="depot-proposal-close" id="btnDepotProposalCancel" type="button" aria-label="Закрыть">×</button>
       </div>
-      <div class="depot-proposal-copy" id="depotProposalDepotLabel">Укажите депо и плечо обслуживания</div>
+
+      <div class="depot-proposal-depot">
+        <span>Ваше депо</span>
+        <strong id="depotProposalDepotLabel">Укажите депо в профиле</strong>
+      </div>
+
+      <div class="depot-proposal-mode" role="tablist" aria-label="Что вы хотите сделать">
+        <button class="depot-proposal-mode-btn is-active" id="btnDepotProposalDemandMode" type="button" role="tab" aria-selected="true" data-proposal-mode="demand">
+          <strong>Мне нужен участок</strong>
+          <span>Сообщить, какое плечо добавить</span>
+        </button>
+        <button class="depot-proposal-mode-btn" id="btnDepotProposalMaterialsMode" type="button" role="tab" aria-selected="false" data-proposal-mode="materials">
+          <strong>Есть материалы</strong>
+          <span>Передать электронную или режимную карту</span>
+        </button>
+      </div>
+
       <label class="depot-proposal-field">
         <span>Плечо обслуживания</span>
         <input class="settings-input" id="inputDepotProposalArm" type="text" maxlength="120" placeholder="Например, Комсомольск — Высокогорная" />
       </label>
+
+      <div class="depot-proposal-demand" id="depotProposalDemandPanel">
+        <div class="depot-proposal-info">
+          <strong>Материалы не обязательны</strong>
+          <span>Запрос поможет понять, какой участок подготовить следующим.</span>
+        </div>
+      </div>
+
+      <div class="depot-proposal-materials hidden" id="depotProposalMaterialsPanel">
+        <div class="depot-proposal-materials-intro">
+          Электронная карта — основа участка. Режимная карта поможет проверить профиль и контрольные точки.
+        </div>
+
+        <button class="depot-proposal-upload" id="btnDepotProposalEMap" type="button">
+          <span class="depot-proposal-upload-icon" aria-hidden="true">ЭК</span>
+          <span class="depot-proposal-upload-copy">
+            <strong>Электронная карта</strong>
+            <small>Любой файл или архив — неизвестный формат проверим вручную</small>
+          </span>
+          <span class="depot-proposal-upload-action">Выбрать</span>
+        </button>
+        <input class="hidden" id="inputDepotProposalEMap" type="file" multiple />
+
+        <button class="depot-proposal-upload" id="btnDepotProposalRegime" type="button">
+          <span class="depot-proposal-upload-icon is-regime" aria-hidden="true">РК</span>
+          <span class="depot-proposal-upload-copy">
+            <strong>Режимная карта</strong>
+            <small>PDF, фото или другой исходный файл</small>
+          </span>
+          <span class="depot-proposal-upload-action">Выбрать</span>
+        </button>
+        <input class="hidden" id="inputDepotProposalRegime" type="file" multiple />
+
+        <div class="depot-proposal-files hidden" id="depotProposalFiles" aria-live="polite"></div>
+      </div>
+
       <label class="depot-proposal-field">
-        <span>Что у вас есть</span>
-        <textarea class="settings-input depot-proposal-notes" id="inputDepotProposalNotes" maxlength="600" placeholder="Профиль, режимная карта, скорости, станции или запись GPS"></textarea>
+        <span>Комментарий <em>необязательно</em></span>
+        <textarea class="settings-input depot-proposal-notes" id="inputDepotProposalNotes" maxlength="600" placeholder="Например, особенности участка или приложения, из которого выгружена карта"></textarea>
       </label>
-      <div class="depot-proposal-note">Данные не попадут в общий каталог автоматически: сначала мы сверим их и только потом опубликуем.</div>
-      <div class="avatar-crop-actions">
-        <button class="btn-link" id="btnDepotProposalCancel" type="button">Отмена</button>
-        <button class="btn-sheet-save" id="btnDepotProposalSend" type="button">Отправить</button>
+
+      <div class="depot-proposal-note">Оригиналы хранятся приватно. В общий каталог ничего не попадёт без проверки.</div>
+      <div class="depot-proposal-progress hidden" id="depotProposalProgress" aria-live="polite"></div>
+      <div class="depot-proposal-actions">
+        <button class="btn-sheet-save" id="btnDepotProposalSend" type="button">Отправить запрос</button>
       </div>
     </div>
   </div>
@@ -1941,28 +1996,28 @@
       } catch (error) {}
     }, true);
   </script>
-  <script src="/scripts/v405/app-constants.js" defer></script>
-  <script src="/scripts/v405/glass-select.js" defer></script>
-  <script src="/scripts/v405/auth.js" defer></script>
-  <script src="/scripts/v405/viewport.js" defer></script>
-  <script src="/scripts/v405/poekhali-station-names.js" defer></script>
-  <script src="/scripts/v405/time-utils.js" defer></script>
-  <script src="/scripts/v405/docs-app.js" defer></script>
-  <script src="/scripts/v405/telegram-sdk-loader.js" defer></script>
-  <script src="/scripts/v405/app.js" defer></script>
-  <script src="/scripts/v405/poekhali-utils.js" defer></script>
-  <script src="/scripts/v405/poekhali-map-parser.js" defer></script>
-  <script src="/scripts/v405/poekhali-warnings.js" defer></script>
-  <script src="/scripts/v405/poekhali-backup.js" defer></script>
-  <script src="/scripts/v405/poekhali-tracker.js" defer></script>
-  <script src="/scripts/v405/render.js" defer></script>
-  <script src="/scripts/v405/shift-form.js" defer></script>
-  <script src="/scripts/v405/datetime-picker.js" defer></script>
-  <script src="/scripts/v405/app-init.js" defer></script>
-  <script src="/scripts/v405/sw-register.js" defer></script>
-  <script src="/sw-bootstrap-v405.js" defer></script>
-  <script src="/scripts/v405/utils/haptics.js" defer></script>
-  <script src="/scripts/v405/press-feedback.js" defer></script>
-  <script src="/scripts/v405/nav-debug.js" defer></script>
+  <script src="/scripts/v406/app-constants.js" defer></script>
+  <script src="/scripts/v406/glass-select.js" defer></script>
+  <script src="/scripts/v406/auth.js" defer></script>
+  <script src="/scripts/v406/viewport.js" defer></script>
+  <script src="/scripts/v406/poekhali-station-names.js" defer></script>
+  <script src="/scripts/v406/time-utils.js" defer></script>
+  <script src="/scripts/v406/docs-app.js" defer></script>
+  <script src="/scripts/v406/telegram-sdk-loader.js" defer></script>
+  <script src="/scripts/v406/app.js" defer></script>
+  <script src="/scripts/v406/poekhali-utils.js" defer></script>
+  <script src="/scripts/v406/poekhali-map-parser.js" defer></script>
+  <script src="/scripts/v406/poekhali-warnings.js" defer></script>
+  <script src="/scripts/v406/poekhali-backup.js" defer></script>
+  <script src="/scripts/v406/poekhali-tracker.js" defer></script>
+  <script src="/scripts/v406/render.js" defer></script>
+  <script src="/scripts/v406/shift-form.js" defer></script>
+  <script src="/scripts/v406/datetime-picker.js" defer></script>
+  <script src="/scripts/v406/app-init.js" defer></script>
+  <script src="/scripts/v406/sw-register.js" defer></script>
+  <script src="/sw-bootstrap-v406.js" defer></script>
+  <script src="/scripts/v406/utils/haptics.js" defer></script>
+  <script src="/scripts/v406/press-feedback.js" defer></script>
+  <script src="/scripts/v406/nav-debug.js" defer></script>
 </body>
 </html>

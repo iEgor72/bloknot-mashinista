@@ -29,6 +29,7 @@ const report = {
   screenshot: path.relative(repoRoot, path.join(artifactsDir, 'smoke-home.png')),
   profileInstallScreenshot: path.relative(repoRoot, path.join(artifactsDir, 'profile-install.png')),
   profileDepotScreenshot: path.relative(repoRoot, path.join(artifactsDir, 'profile-depot-catalog.png')),
+  profileDepotProposalScreenshot: path.relative(repoRoot, path.join(artifactsDir, 'profile-depot-proposal.png')),
 };
 
 function normalizeLocalPath(rawUrl) {
@@ -232,6 +233,7 @@ async function cleanup(exitCode = 0) {
 async function main() {
   let analyticsConsent = null;
   const analyticsEvents = [];
+  const depotProposalSmoke = { draft: null, uploads: [], completed: false };
   verifyAppShellCacheCoverage();
 
   server = spawn(process.execPath, ['server.js'], {
@@ -391,6 +393,28 @@ async function main() {
       const payload = route.request().postDataJSON();
       analyticsEvents.push(...(Array.isArray(payload.events) ? payload.events : []));
       body = { ok: true, accepted: Array.isArray(payload.events) ? payload.events.length : 0, receivedAt: now };
+    } else if (url.pathname === '/api/depot-pack-requests' && route.request().method() === 'POST') {
+      const payload = route.request().postDataJSON();
+      depotProposalSmoke.draft = payload;
+      body = {
+        ok: true,
+        request: {
+          id: 'smoke-depot-request',
+          status: 'uploading',
+          attachments: (payload.attachments || []).map((attachment, index) => ({
+            id: `smoke-attachment-${index}`,
+            kind: attachment.kind,
+            originalName: attachment.name,
+            status: 'awaiting_upload',
+          })),
+        },
+      };
+    } else if (/^\/api\/depot-pack-requests\/smoke-depot-request\/attachments\//.test(url.pathname)) {
+      depotProposalSmoke.uploads.push({ path: url.pathname, size: route.request().postDataBuffer()?.length || 0 });
+      body = { ok: true, attachment: { status: 'uploaded', detectedFormat: 'unknown', automaticCheck: 'manual' } };
+    } else if (url.pathname === '/api/depot-pack-requests/smoke-depot-request/complete') {
+      depotProposalSmoke.completed = true;
+      body = { ok: true, request: { id: 'smoke-depot-request', status: 'new' } };
     }
     await route.fulfill({
       status: 200,
@@ -1072,6 +1096,51 @@ async function main() {
   await page.evaluate(() => document.getElementById('profileDepotCoverage')?.scrollIntoView({ block: 'center' }));
   await delay(160);
   await page.screenshot({ path: path.join(artifactsDir, 'profile-depot-catalog.png'), fullPage: true });
+
+  await page.setViewportSize({ width: 390, height: 844 });
+  await clickElementCenter(page, '#btnProfileProposeArm', 'depot proposal button');
+  await page.waitForFunction(() => document.getElementById('overlayDepotProposal')?.classList.contains('is-open'));
+  await clickElementCenter(page, '#btnDepotProposalMaterialsMode', 'materials proposal mode');
+  await page.fill('#inputDepotProposalArm', 'Комсомольск — Новый участок');
+  await page.setInputFiles('#inputDepotProposalEMap', {
+    name: 'карта-другого-приложения.railmap',
+    mimeType: 'application/octet-stream',
+    buffer: Buffer.from('UNKNOWN-EMAP-FORMAT\u0000SMOKE'),
+  });
+  await page.waitForFunction(() => document.querySelectorAll('#depotProposalFiles .depot-proposal-file').length === 1);
+  const depotProposalUi = await page.evaluate(() => {
+    const sheet = document.querySelector('.depot-proposal-sheet');
+    const send = document.getElementById('btnDepotProposalSend');
+    const fileName = document.querySelector('.depot-proposal-file-name');
+    const rect = sheet?.getBoundingClientRect();
+    return {
+      mode: document.getElementById('btnDepotProposalMaterialsMode')?.getAttribute('aria-selected'),
+      sendText: send?.textContent.trim() || '',
+      fileName: fileName?.textContent.trim() || '',
+      sheetInsideViewport: !!rect && rect.top >= 0 && rect.bottom <= window.innerHeight + 1,
+      unknownFormatCopy: document.getElementById('btnDepotProposalEMap')?.textContent.includes('неизвестный формат'),
+    };
+  });
+  report.checks.depotProposalUi = depotProposalUi;
+  if (depotProposalUi.mode !== 'true' || depotProposalUi.sendText !== 'Передать материалы' ||
+      !depotProposalUi.fileName.includes('.railmap') || !depotProposalUi.sheetInsideViewport || !depotProposalUi.unknownFormatCopy) {
+    throw new Error(`Depot proposal UI contract failed: ${JSON.stringify(depotProposalUi)}`);
+  }
+  await page.screenshot({ path: path.join(artifactsDir, 'profile-depot-proposal.png'), fullPage: false });
+  await clickElementCenter(page, '#btnDepotProposalSend', 'submit depot materials');
+  await page.waitForFunction(() => !document.getElementById('overlayDepotProposal')?.classList.contains('is-open'));
+  report.checks.depotProposalSubmit = {
+    requestType: depotProposalSmoke.draft?.requestType,
+    attachmentKind: depotProposalSmoke.draft?.attachments?.[0]?.kind,
+    uploadSize: depotProposalSmoke.uploads[0]?.size || 0,
+    completed: depotProposalSmoke.completed,
+  };
+  if (report.checks.depotProposalSubmit.requestType !== 'materials' ||
+      report.checks.depotProposalSubmit.attachmentKind !== 'electronic-map' ||
+      report.checks.depotProposalSubmit.uploadSize <= 0 || !report.checks.depotProposalSubmit.completed) {
+    throw new Error(`Depot proposal submit contract failed: ${JSON.stringify(report.checks.depotProposalSubmit)}`);
+  }
+  await page.setViewportSize({ width: 1280, height: 720 });
   await page.evaluate(() => closeOverlay('overlayProfileEdit'));
   await clickElementCenter(page, '.tab-btn[data-tab="home"]', 'home tab after install screenshot');
   await page.screenshot({ path: path.join(artifactsDir, 'smoke-home.png'), fullPage: true });
