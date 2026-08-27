@@ -1,4 +1,4 @@
-    if (typeof registerShiftTrackerRuntimeModule === 'function') registerShiftTrackerRuntimeModule('shift-form', 'v402');
+    if (typeof registerShiftTrackerRuntimeModule === 'function') registerShiftTrackerRuntimeModule('shift-form', 'v403');
 
     function findShiftById(id) {
       for (var i = 0; i < allShifts.length; i++) {
@@ -804,6 +804,13 @@
 
     // ── Add to Screen ──
     function handleInstallGuideTrigger() {
+      var telegramResult = requestTelegramHomeScreenInstall();
+      if (telegramResult && telegramResult.handled) {
+        if (telegramResult.outcome === 'already-added') {
+          showSaveToast('Уже на главном экране', 'info');
+        }
+        return;
+      }
       maybeShowNativeInstallPrompt().then(function(result) {
         if (result && result.outcome === 'accepted') {
           return;
@@ -1069,6 +1076,9 @@
       renderInstallPromptCard();
       updateInstallGuideContent();
     });
+
+    window.addEventListener('telegram-webapp-sdk-ready', setupTelegramHomeScreenIntegration);
+    setupTelegramHomeScreenIntegration();
 
     if (window.matchMedia) {
       var standaloneMedia = window.matchMedia('(display-mode: standalone)');

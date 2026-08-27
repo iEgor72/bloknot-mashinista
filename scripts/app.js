@@ -1,5 +1,5 @@
     // ── Telegram WebApp chrome (не блокировать bootstrap: SDK подключается последним defer в index.html)
-    if (typeof registerShiftTrackerRuntimeModule === 'function') registerShiftTrackerRuntimeModule('app', 'v402');
+    if (typeof registerShiftTrackerRuntimeModule === 'function') registerShiftTrackerRuntimeModule('app', 'v403');
 
     function applyTelegramWebAppChrome() {
       try {
@@ -77,7 +77,7 @@
       tapLockUntil: 0
     };
     // ── Viewport / Keyboard / Haptic — see scripts/viewport.js ──
-    var APP_VERSION = '1.2.8';
+    var APP_VERSION = '1.2.9';
     var INSTALL_PROMPT_STATE_STORAGE_KEY = 'shift_tracker_install_prompt_state_v1';
     var LEGACY_SETTINGS_STORAGE_KEY = 'shift_tracker_settings_v1';
     var SALARY_PARAMS_STORAGE_KEY = 'shift_tracker_salary_params_v1';
@@ -104,9 +104,15 @@
     var installPromptInstalled = false;
     var deferredInstallPromptEvent = null;
     var installGuideCopyFeedbackTimer = null;
+    var telegramHomeScreenStatus = 'unchecked';
+    var telegramHomeScreenBoundWebApp = null;
+    var telegramHomeScreenAddedHandler = null;
+    var telegramHomeScreenCheckedHandler = null;
     var INSTALL_GUIDE_COPY = {
       subtitle: 'Добавь приложение на домашний экран для быстрого запуска',
-      warning: 'В Telegram установка может не работать — открой ссылку в браузере',
+      warning: 'Если автоматическая установка недоступна, используй инструкцию ниже',
+      telegramUnsupported: 'Этот Telegram-клиент не поддерживает добавление на главный экран — используй инструкцию ниже',
+      telegramUnknown: 'Telegram не может проверить ярлык. Нажми ещё раз или используй инструкцию ниже',
       buttons: {
         open: 'Открыть в браузере',
         copy: 'Копировать',
@@ -1046,6 +1052,121 @@
       return !!(deferredInstallPromptEvent && typeof deferredInstallPromptEvent.prompt === 'function');
     }
 
+    function getTelegramWebApp() {
+      try {
+        return window.Telegram && window.Telegram.WebApp ? window.Telegram.WebApp : null;
+      } catch (e) {
+        return null;
+      }
+    }
+
+    function normalizeTelegramHomeScreenStatus(value) {
+      var status = value && typeof value === 'object' ? value.status : value;
+      status = String(status || '').toLowerCase();
+      if (status === 'unsupported' || status === 'unknown' || status === 'added' || status === 'missed') {
+        return status;
+      }
+      return 'unchecked';
+    }
+
+    function setTelegramHomeScreenStatus(value) {
+      var status = normalizeTelegramHomeScreenStatus(value);
+      if (status === 'unchecked') return;
+      telegramHomeScreenStatus = status;
+      if (status === 'added') {
+        installPromptInstalled = true;
+        installPromptDismissed = true;
+        deferredInstallPromptEvent = null;
+        saveInstallPromptState();
+      } else if (status === 'missed') {
+        installPromptInstalled = false;
+        saveInstallPromptState();
+      }
+      renderInstallPromptCard();
+      updateInstallGuideContent();
+    }
+
+    function supportsTelegramHomeScreenApi(webApp) {
+      var tg = webApp || getTelegramWebApp();
+      if (!tg || typeof tg.addToHomeScreen !== 'function') return false;
+      try {
+        if (typeof tg.isVersionAtLeast === 'function' && !tg.isVersionAtLeast('8.0')) return false;
+      } catch (e) {
+        return false;
+      }
+      return true;
+    }
+
+    function checkTelegramHomeScreenStatus() {
+      var tg = getTelegramWebApp();
+      if (!supportsTelegramHomeScreenApi(tg) || typeof tg.checkHomeScreenStatus !== 'function') return false;
+      try {
+        tg.checkHomeScreenStatus(function(status) {
+          setTelegramHomeScreenStatus(status);
+        });
+        return true;
+      } catch (error) {
+        console.warn('[Telegram home screen] Status check failed', error);
+        return false;
+      }
+    }
+
+    function setupTelegramHomeScreenIntegration() {
+      var tg = getTelegramWebApp();
+      if (!tg) return false;
+
+      if (telegramHomeScreenBoundWebApp !== tg) {
+        if (telegramHomeScreenBoundWebApp && typeof telegramHomeScreenBoundWebApp.offEvent === 'function') {
+          try {
+            if (telegramHomeScreenAddedHandler) telegramHomeScreenBoundWebApp.offEvent('homeScreenAdded', telegramHomeScreenAddedHandler);
+            if (telegramHomeScreenCheckedHandler) telegramHomeScreenBoundWebApp.offEvent('homeScreenChecked', telegramHomeScreenCheckedHandler);
+          } catch (unbindError) {}
+        }
+
+        telegramHomeScreenAddedHandler = function() {
+          logInstallDebug('Telegram homeScreenAdded event received');
+          setTelegramHomeScreenStatus('added');
+          if (typeof closeOverlay === 'function') closeOverlay('overlayAddScreen');
+          if (typeof showSaveToast === 'function') showSaveToast('Добавлено на главный экран', 'success');
+        };
+        telegramHomeScreenCheckedHandler = function(event) {
+          setTelegramHomeScreenStatus(event);
+        };
+        telegramHomeScreenBoundWebApp = tg;
+
+        if (typeof tg.onEvent === 'function') {
+          try {
+            tg.onEvent('homeScreenAdded', telegramHomeScreenAddedHandler);
+            tg.onEvent('homeScreenChecked', telegramHomeScreenCheckedHandler);
+          } catch (bindError) {
+            console.warn('[Telegram home screen] Event binding failed', bindError);
+          }
+        }
+      }
+
+      checkTelegramHomeScreenStatus();
+      return supportsTelegramHomeScreenApi(tg);
+    }
+
+    function requestTelegramHomeScreenInstall() {
+      var tg = getTelegramWebApp();
+      if (!supportsTelegramHomeScreenApi(tg) || telegramHomeScreenStatus === 'unsupported') {
+        return { handled: false, outcome: 'unavailable' };
+      }
+      if (telegramHomeScreenStatus === 'added') {
+        setTelegramHomeScreenStatus('added');
+        return { handled: true, outcome: 'already-added' };
+      }
+      try {
+        tg.addToHomeScreen();
+        logInstallDebug('Telegram addToHomeScreen requested', telegramHomeScreenStatus);
+        return { handled: true, outcome: 'requested' };
+      } catch (error) {
+        console.warn('[Telegram home screen] Add request failed', error);
+        return { handled: false, outcome: 'error', error: error };
+      }
+    }
+
     function updateInstallGuideContent() {
       var platform = detectInstallGuidePlatform();
       var primaryScenario = getInstallGuideScenarioKey(platform);
@@ -1057,7 +1178,13 @@
 
       var noteEl = document.getElementById('installGuideRuntimeNote');
       if (!noteEl) return;
-      noteEl.textContent = INSTALL_GUIDE_COPY.warning;
+      if (telegramHomeScreenStatus === 'unsupported') {
+        noteEl.textContent = INSTALL_GUIDE_COPY.telegramUnsupported;
+      } else if (telegramHomeScreenStatus === 'unknown') {
+        noteEl.textContent = INSTALL_GUIDE_COPY.telegramUnknown;
+      } else {
+        noteEl.textContent = INSTALL_GUIDE_COPY.warning;
+      }
       noteEl.classList.remove('hidden');
     }
 
@@ -1108,7 +1235,7 @@
       // Profile install entry: a permanent menu item, shown unless the app is
       // already installed (standalone). Unlike the popup, it ignores "dismissed".
       var profileInstall = document.getElementById('profileInstallSection');
-      if (profileInstall) profileInstall.classList.toggle('hidden', isStandalonePwa());
+      if (profileInstall) profileInstall.classList.toggle('hidden', isStandalonePwa() || installPromptInstalled || telegramHomeScreenStatus === 'added');
     }
 
     function dismissInstallPromptCard() {
