@@ -329,58 +329,63 @@
   </style>
   <link
     rel="stylesheet"
-    href="/styles/v409/00-base.css"
+    href="/styles/v410/00-base.css"
   />
   <link
     rel="stylesheet"
-    href="/styles/v409/10-navigation-and-cards.css"
+    href="/styles/v410/10-navigation-and-cards.css"
   />
   <link
     rel="stylesheet"
-    href="/styles/v409/15-bottom-nav.css"
+    href="/styles/v410/15-bottom-nav.css"
   />
   <link
     rel="stylesheet"
-    href="/styles/v409/16-press-feedback.css"
+    href="/styles/v410/16-press-feedback.css"
   />
   <link
     rel="stylesheet"
-    href="/styles/v409/20-form-and-stats.css"
+    href="/styles/v410/20-form-and-stats.css"
   />
   <link
     rel="stylesheet"
-    href="/styles/v409/30-shifts-and-overlays.css"
+    href="/styles/v410/30-shifts-and-overlays.css"
   />
   <link
     rel="stylesheet"
-    href="/styles/v409/40-premium-refresh.css"
+    href="/styles/v410/40-premium-refresh.css"
   />
   <link
     rel="stylesheet"
-    href="/styles/v409/50-design-refresh.css"
+    href="/styles/v410/50-design-refresh.css"
   />
   <link
     rel="stylesheet"
-    href="/styles/v409/56-profile.css"
+    href="/styles/v410/56-profile.css"
   />
   <link
     rel="stylesheet"
-    href="/styles/v409/57-datetime-picker.css"
+    href="/styles/v410/57-datetime-picker.css"
   />
-  <noscript><link rel="stylesheet" href="/styles/v409/00-base.css" /></noscript>
-  <noscript><link rel="stylesheet" href="/styles/v409/10-navigation-and-cards.css" /></noscript>
-  <noscript><link rel="stylesheet" href="/styles/v409/15-bottom-nav.css" /></noscript>
-  <noscript><link rel="stylesheet" href="/styles/v409/16-press-feedback.css" /></noscript>
-  <noscript><link rel="stylesheet" href="/styles/v409/20-form-and-stats.css" /></noscript>
-  <noscript><link rel="stylesheet" href="/styles/v409/30-shifts-and-overlays.css" /></noscript>
-  <noscript><link rel="stylesheet" href="/styles/v409/40-premium-refresh.css" /></noscript>
-  <noscript><link rel="stylesheet" href="/styles/v409/50-design-refresh.css" /></noscript>
-  <noscript><link rel="stylesheet" href="/styles/v409/56-profile.css" /></noscript>
-  <noscript><link rel="stylesheet" href="/styles/v409/57-datetime-picker.css" /></noscript>
+  <link
+    rel="stylesheet"
+    href="/styles/v410/58-vu45.css"
+  />
+  <noscript><link rel="stylesheet" href="/styles/v410/00-base.css" /></noscript>
+  <noscript><link rel="stylesheet" href="/styles/v410/10-navigation-and-cards.css" /></noscript>
+  <noscript><link rel="stylesheet" href="/styles/v410/15-bottom-nav.css" /></noscript>
+  <noscript><link rel="stylesheet" href="/styles/v410/16-press-feedback.css" /></noscript>
+  <noscript><link rel="stylesheet" href="/styles/v410/20-form-and-stats.css" /></noscript>
+  <noscript><link rel="stylesheet" href="/styles/v410/30-shifts-and-overlays.css" /></noscript>
+  <noscript><link rel="stylesheet" href="/styles/v410/40-premium-refresh.css" /></noscript>
+  <noscript><link rel="stylesheet" href="/styles/v410/50-design-refresh.css" /></noscript>
+  <noscript><link rel="stylesheet" href="/styles/v410/56-profile.css" /></noscript>
+  <noscript><link rel="stylesheet" href="/styles/v410/57-datetime-picker.css" /></noscript>
+  <noscript><link rel="stylesheet" href="/styles/v410/58-vu45.css" /></noscript>
   <script>
     window.CURRENT_USER = window.CURRENT_USER || null;
   </script>
-  <script src="/scripts/v409/safe-area.js" defer></script>
+  <script src="/scripts/v410/safe-area.js" defer></script>
 </head>
 <body style="background-color:#0C0C10;color:#EEF2F8;margin:0">
   <div class="boot-fallback" id="bootFallback" role="status" aria-live="polite">
@@ -1183,6 +1188,15 @@
                 <span><strong>Предложить документ</strong><small>Инструкцию, скорости, режимную карту или другой полезный материал</small></span>
                 <span class="docs-contribute-arrow" aria-hidden="true">›</span>
               </button>
+              <button class="vu45-launch" id="btnOpenVu45" type="button">
+                <span class="vu45-launch-mark" aria-hidden="true">45</span>
+                <span class="vu45-launch-copy">
+                  <span class="vu45-launch-kicker">Рабочий расчёт</span>
+                  <strong>Справка ВУ‑45</strong>
+                  <small>Тормозное нажатие и ручные тормозные оси</small>
+                </span>
+                <span class="vu45-launch-arrow" aria-hidden="true">›</span>
+              </button>
             </div>
 
             <div class="doc-favorites-overlay hidden" id="docsFavoritesPanel">
@@ -1827,6 +1841,100 @@
     </div>
   </div>
 
+  <!-- VU-45 freight brake calculation -->
+  <div class="overlay vu45-overlay" id="overlayVu45" aria-hidden="true">
+    <div class="bottom-sheet vu45-sheet" role="dialog" aria-modal="true" aria-labelledby="vu45Title">
+      <header class="vu45-header">
+        <button class="vu45-header-btn" id="btnCloseVu45" type="button" aria-label="Закрыть расчёт">‹</button>
+        <div>
+          <span class="vu45-header-kicker">Расчёт тормозов</span>
+          <h2 id="vu45Title">Справка ВУ‑45</h2>
+        </div>
+        <button class="vu45-header-btn vu45-reset-btn" id="btnResetVu45" type="button">Сброс</button>
+      </header>
+
+      <div class="vu45-scroll">
+        <div class="vu45-intro">
+          <span class="vu45-intro-mark" aria-hidden="true">ВУ</span>
+          <div>
+            <strong>Проверка по введённым данным</strong>
+            <span>Для грузового поезда. Черновик сохраняется на этом устройстве.</span>
+          </div>
+        </div>
+
+        <section class="vu45-card" aria-labelledby="vu45TrainHeading">
+          <div class="vu45-section-heading">
+            <span class="vu45-section-number">1</span>
+            <div><h3 id="vu45TrainHeading">Поезд</h3><p>Выберите норматив и укажите массу состава</p></div>
+          </div>
+
+          <div class="vu45-type-switch" role="radiogroup" aria-label="Тип грузового поезда">
+            <button class="vu45-type-btn is-active" type="button" role="radio" aria-checked="true" data-vu45-type="loaded" data-vu45-norm="33">Гружёный<span>33 тс / 100 т</span></button>
+            <button class="vu45-type-btn" type="button" role="radio" aria-checked="false" data-vu45-type="empty" data-vu45-norm="55">Порожний<span>55 тс / 100 т</span></button>
+            <button class="vu45-type-btn" type="button" role="radio" aria-checked="false" data-vu45-type="manual">Своя норма<span>местная / особая</span></button>
+          </div>
+
+          <div class="vu45-fields-grid">
+            <label class="vu45-field vu45-field-primary">
+              <span>Масса состава <em>без локомотива</em></span>
+              <span class="vu45-input-wrap"><input id="vu45Weight" type="text" inputmode="decimal" autocomplete="off" placeholder="Например, 5200"><b>т</b></span>
+            </label>
+            <label class="vu45-field" id="vu45CustomNormField" hidden>
+              <span>Норма на 100 т</span>
+              <span class="vu45-input-wrap"><input id="vu45CustomNorm" type="text" inputmode="decimal" autocomplete="off" placeholder="33"><b>тс</b></span>
+            </label>
+            <label class="vu45-field">
+              <span>Всего осей <em>необязательно</em></span>
+              <span class="vu45-input-wrap"><input id="vu45TotalAxles" type="text" inputmode="numeric" autocomplete="off" placeholder="Например, 240"><b>ос.</b></span>
+            </label>
+            <label class="vu45-field">
+              <span>Наибольший спуск</span>
+              <span class="vu45-input-wrap"><input id="vu45Gradient" type="text" inputmode="decimal" autocomplete="off" placeholder="Например, 8"><b>‰</b></span>
+            </label>
+          </div>
+        </section>
+
+        <section class="vu45-card" aria-labelledby="vu45GroupsHeading">
+          <div class="vu45-section-heading">
+            <span class="vu45-section-number">2</span>
+            <div><h3 id="vu45GroupsHeading">Тормозные оси</h3><p>Разделите вагоны по типу колодок и загрузке</p></div>
+          </div>
+          <div class="vu45-groups" id="vu45Groups"></div>
+          <button class="vu45-add-group" id="btnVu45AddGroup" type="button"><span aria-hidden="true">+</span> Добавить группу осей</button>
+          <div class="vu45-axle-check" id="vu45AxleCheck" hidden></div>
+        </section>
+
+        <section class="vu45-result" id="vu45Result" aria-live="polite">
+          <div class="vu45-result-head">
+            <div><span>Итог расчёта</span><strong id="vu45ResultStatus">Заполните массу и оси</strong></div>
+            <span class="vu45-result-badge" id="vu45ResultBadge">—</span>
+          </div>
+          <div class="vu45-result-main">
+            <div><span>Требуется</span><strong><b id="vu45RequiredForce">—</b> тс</strong></div>
+            <span class="vu45-result-vs">/</span>
+            <div><span>Фактически</span><strong><b id="vu45ActualForce">0</b> тс</strong></div>
+          </div>
+          <div class="vu45-result-grid">
+            <div><span>На 100 т</span><strong id="vu45ActualPer100">—</strong></div>
+            <div><span>Запас / дефицит</span><strong id="vu45Margin">—</strong></div>
+            <div><span>Ручных осей</span><strong id="vu45ManualAxles">—</strong></div>
+          </div>
+          <div class="vu45-result-note" id="vu45ResultNote">Расчёт не заменяет проверенную и подписанную справку ВУ‑45.</div>
+          <button class="vu45-copy" id="btnCopyVu45" type="button" disabled>Скопировать расчёт</button>
+        </section>
+
+        <details class="vu45-reference">
+          <summary>Как считается и откуда нормы <span>›</span></summary>
+          <div>
+            <p>Потребное нажатие округляется вверх до целой тонно‑силы. Фактическое — сумма произведений числа тормозных осей на нажатие одной оси.</p>
+            <p>Для промежуточного уклона берётся следующая, более строгая строка таблицы. Свыше 12‰ учитывайте местные нормы, свыше 20‰ автоматический расчёт ручных осей не выполняется.</p>
+            <a href="https://www.mintrans.gov.ru/storage/app/media/files/instr-808-2022.pdf" target="_blank" rel="noopener noreferrer">Официальная инструкция · приложения Л и М</a>
+          </div>
+        </details>
+      </div>
+    </div>
+  </div>
+
   <!-- Avatar Crop Bottom Sheet -->
   <div class="overlay" id="overlayAvatarCrop">
     <div class="bottom-sheet avatar-crop-sheet">
@@ -2044,28 +2152,30 @@
       } catch (error) {}
     }, true);
   </script>
-  <script src="/scripts/v409/app-constants.js" defer></script>
-  <script src="/scripts/v409/glass-select.js" defer></script>
-  <script src="/scripts/v409/auth.js" defer></script>
-  <script src="/scripts/v409/viewport.js" defer></script>
-  <script src="/scripts/v409/poekhali-station-names.js" defer></script>
-  <script src="/scripts/v409/time-utils.js" defer></script>
-  <script src="/scripts/v409/docs-app.js" defer></script>
-  <script src="/scripts/v409/telegram-sdk-loader.js" defer></script>
-  <script src="/scripts/v409/app.js" defer></script>
-  <script src="/scripts/v409/poekhali-utils.js" defer></script>
-  <script src="/scripts/v409/poekhali-map-parser.js" defer></script>
-  <script src="/scripts/v409/poekhali-warnings.js" defer></script>
-  <script src="/scripts/v409/poekhali-backup.js" defer></script>
-  <script src="/scripts/v409/poekhali-tracker.js" defer></script>
-  <script src="/scripts/v409/render.js" defer></script>
-  <script src="/scripts/v409/shift-form.js" defer></script>
-  <script src="/scripts/v409/datetime-picker.js" defer></script>
-  <script src="/scripts/v409/app-init.js" defer></script>
-  <script src="/scripts/v409/sw-register.js" defer></script>
-  <script src="/sw-bootstrap-v409.js" defer></script>
-  <script src="/scripts/v409/utils/haptics.js" defer></script>
-  <script src="/scripts/v409/press-feedback.js" defer></script>
-  <script src="/scripts/v409/nav-debug.js" defer></script>
+  <script src="/scripts/v410/app-constants.js" defer></script>
+  <script src="/scripts/v410/glass-select.js" defer></script>
+  <script src="/scripts/v410/auth.js" defer></script>
+  <script src="/scripts/v410/viewport.js" defer></script>
+  <script src="/scripts/v410/poekhali-station-names.js" defer></script>
+  <script src="/scripts/v410/time-utils.js" defer></script>
+  <script src="/scripts/v410/docs-app.js" defer></script>
+  <script src="/scripts/v410/telegram-sdk-loader.js" defer></script>
+  <script src="/scripts/v410/app.js" defer></script>
+  <script src="/scripts/v410/poekhali-utils.js" defer></script>
+  <script src="/scripts/v410/poekhali-map-parser.js" defer></script>
+  <script src="/scripts/v410/poekhali-warnings.js" defer></script>
+  <script src="/scripts/v410/poekhali-backup.js" defer></script>
+  <script src="/scripts/v410/poekhali-tracker.js" defer></script>
+  <script src="/scripts/v410/render.js" defer></script>
+  <script src="/scripts/v410/shift-form.js" defer></script>
+  <script src="/scripts/v410/datetime-picker.js" defer></script>
+  <script src="/scripts/v410/vu45-calculator.js" defer></script>
+  <script src="/scripts/v410/vu45-ui.js" defer></script>
+  <script src="/scripts/v410/app-init.js" defer></script>
+  <script src="/scripts/v410/sw-register.js" defer></script>
+  <script src="/sw-bootstrap-v410.js" defer></script>
+  <script src="/scripts/v410/utils/haptics.js" defer></script>
+  <script src="/scripts/v410/press-feedback.js" defer></script>
+  <script src="/scripts/v410/nav-debug.js" defer></script>
 </body>
 </html>
