@@ -1,4 +1,4 @@
-    if (typeof registerShiftTrackerRuntimeModule === 'function') registerShiftTrackerRuntimeModule('render', 'v403');
+    if (typeof registerShiftTrackerRuntimeModule === 'function') registerShiftTrackerRuntimeModule('render', 'v404');
 
     function buildShiftItemHtml(sh, compact, pendingMap, shiftIncomeMap, durationBounds, durationLevelMap, latestManualShiftId) {
       var p = getShiftDisplayParts(sh);
@@ -53,6 +53,15 @@
             '<span class="shift-poekhali-btn-label">Поехали</span>' +
           '</button>'
         : '';
+      var poekhaliPreviewBtnHtml = canOpenPoekhali
+        ? '<button class="shift-poekhali-preview-btn" type="button" data-id="' + shiftIdAttr + '" aria-label="Посмотреть участок без GPS" title="Подготовка без GPS">' +
+            '<svg viewBox="0 0 24 24" aria-hidden="true" focusable="false">' +
+              '<path d="M4 17.5V7.8l5-2.3 6 2.3 5-2.3v9.7l-5 2.3-6-2.3-5 2.3Z"></path>' +
+              '<path d="M9 5.5v9.7M15 7.8v9.7"></path>' +
+            '</svg>' +
+            '<span class="shift-poekhali-preview-label">Участок</span>' +
+          '</button>'
+        : '';
       var actionsHtml = '<div class="shift-actions-wrap">' +
         '<button class="shift-actions-trigger' + (isActionsOpen ? ' is-open' : '') + '" type="button" data-id="' + shiftIdAttr + '" aria-label="Действия" aria-haspopup="menu" aria-expanded="' + (isActionsOpen ? 'true' : 'false') + '">' +
           '<svg class="shift-actions-trigger-icon" viewBox="0 0 24 24" aria-hidden="true" focusable="false">' +
@@ -76,6 +85,7 @@
             '<div class="shift-card-sub">' + escapeHtml(subText) + '</div>' +
           '</div>' +
           poekhaliBtnHtml +
+          poekhaliPreviewBtnHtml +
           actionsHtml +
         '</div>' +
         consistHtml +
@@ -452,6 +462,15 @@
           if (typeof triggerHapticSelection === 'function') triggerHapticSelection();
           if (typeof openPoekhaliForShift === 'function') openPoekhaliForShift(pkId);
           else if (typeof setActiveTab === 'function') setActiveTab('poekhali');
+          return;
+        }
+        var poekhaliPreviewBtn = eventTarget && eventTarget.closest ? eventTarget.closest('.shift-poekhali-preview-btn') : null;
+        if (poekhaliPreviewBtn && listEl.contains(poekhaliPreviewBtn)) {
+          e.preventDefault();
+          var previewShiftId = poekhaliPreviewBtn.getAttribute('data-id');
+          if (typeof triggerHapticSelection === 'function') triggerHapticSelection();
+          if (typeof openPoekhaliPreparationForShift === 'function') openPoekhaliPreparationForShift(previewShiftId);
+          else if (typeof openPoekhaliForShift === 'function') openPoekhaliForShift(previewShiftId);
           return;
         }
         var trigger = eventTarget && eventTarget.closest ? eventTarget.closest('.shift-actions-trigger') : null;

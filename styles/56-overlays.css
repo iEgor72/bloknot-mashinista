@@ -640,6 +640,28 @@
   flex-shrink: 0;
 }
 .app-top-bar-gps.hidden { display: none !important; }
+.app-top-bar-preview {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 36px;
+  padding: 6px 10px;
+  border-radius: 12px;
+  background: var(--glass);
+  border: 1px solid var(--hair);
+  color: var(--ink-2);
+  font: 700 10px/1 'Golos Text', system-ui, sans-serif;
+  letter-spacing: 0.04em;
+  cursor: pointer;
+  flex-shrink: 0;
+}
+.app-top-bar-preview.hidden { display: none !important; }
+.app-top-bar-preview.is-on,
+.app-top-bar-preview[aria-pressed="true"] {
+  background: var(--accent-soft);
+  border-color: color-mix(in oklch, var(--accent) 34%, transparent);
+  color: var(--accent);
+}
 .app-top-bar-gps-dot {
   width: 8px; height: 8px; border-radius: 999px;
   background: var(--bad);

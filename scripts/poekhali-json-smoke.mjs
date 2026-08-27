@@ -12,6 +12,7 @@ const artifactDir = path.join(root, 'artifacts', 'poekhali-json-smoke');
 const screenshotPath = path.join(artifactDir, 'postyshevo-novyi-urgal.png');
 const postyshevoKomsomolskScreenshotPath = path.join(artifactDir, 'postyshevo-komsomolsk.png');
 const liveTouchPanScreenshotPath = path.join(artifactDir, 'live-touch-pan.png');
+const preparationScreenshotPath = path.join(artifactDir, 'preparation-without-gps.png');
 const reportPath = path.join(artifactDir, 'report.json');
 const progressPath = path.join(artifactDir, 'progress.log');
 const mapId = 'dvost-postyshevo-novyi-urgal-odd';
@@ -686,6 +687,107 @@ async function assertStaleRouteSelectionCannotWin(browser) {
   if (result.shiftId !== currentShift.id || result.mapId !== 'komsomol-sk-tche-9') {
     throw new Error(`Stale route selection won the race: ${JSON.stringify(result)}`);
   }
+  await page.evaluate(() => window.stopPoekhaliTrackerMode());
+  await context.close();
+  return result;
+}
+
+async function assertPreparationModeWithoutGps(browser) {
+  const context = await browser.newContext({
+    viewport: { width: 390, height: 844 },
+    deviceScaleFactor: 1,
+    serviceWorkers: 'block'
+  });
+  await context.addInitScript(() => {
+    localStorage.setItem('poekhali.mapId', 'komsomol-sk-tche-9');
+    localStorage.removeItem('poekhali.previewProjection');
+    window.__poekhaliGpsRequests = { watch: 0, current: 0 };
+    Object.defineProperty(navigator, 'geolocation', {
+      configurable: true,
+      value: {
+        watchPosition() {
+          window.__poekhaliGpsRequests.watch += 1;
+          return 1;
+        },
+        clearWatch() {},
+        getCurrentPosition() {
+          window.__poekhaliGpsRequests.current += 1;
+        }
+      }
+    });
+  });
+
+  const page = await context.newPage();
+  await page.goto(baseUrl, { waitUntil: 'domcontentloaded', timeout: 20_000 });
+  await page.waitForFunction(() => (
+    typeof window.openPoekhaliPreparationForShift === 'function' &&
+    typeof window.setPoekhaliPositioningMode === 'function'
+  ), null, { timeout: 15_000 });
+  const preparationShift = {
+    ...shift,
+    id: 'poekhali-json-smoke-preparation',
+    route_kind: 'trip',
+    route_from: 'Постышево',
+    route_to: 'Комсомольск-Сортировочный'
+  };
+  const opened = await page.evaluate((testShift) => {
+    window.allShifts = [testShift];
+    return window.openPoekhaliPreparationForShift(testShift.id);
+  }, preparationShift);
+  if (!opened) throw new Error('Preparation mode did not open the selected shift');
+
+  await page.waitForFunction(() => (
+    window.poekhaliHud?.positioningMode === 'preview' &&
+    window.poekhaliHud?.hasProjection === true &&
+    localStorage.getItem('poekhali.mapId') === 'dvost-postyshevo-komsomolsk' &&
+    document.getElementById('appTopBarPreview')?.getAttribute('aria-pressed') === 'true'
+  ), null, { timeout: 20_000 });
+
+  const before = await page.evaluate(() => ({
+    requests: { ...window.__poekhaliGpsRequests },
+    coordinate: Number(window.poekhaliHud?.viewCoordinate),
+    gpsMeta: window.poekhaliHud?.gpsMeta,
+    gpsTitle: document.getElementById('btnPoekhaliLive')?.title || ''
+  }));
+  if (before.requests.watch !== 0 || before.requests.current !== 0 || before.gpsMeta !== 'выкл' ||
+      !before.gpsTitle.includes('Начать поездку')) {
+    throw new Error(`Preparation mode requested GPS or exposed the wrong state: ${JSON.stringify(before)}`);
+  }
+
+  const canvas = page.locator('#poekhaliCanvas');
+  const box = await canvas.boundingBox();
+  if (!box) throw new Error('Preparation canvas has no bounding box');
+  const y = box.y + box.height * 0.55;
+  await page.mouse.move(box.x + box.width * 0.78, y);
+  await page.mouse.down();
+  await page.mouse.move(box.x + box.width * 0.25, y, { steps: 6 });
+  await page.mouse.up();
+  await page.waitForFunction((coordinate) => (
+    Math.abs(Number(window.poekhaliHud?.viewCoordinate) - Number(coordinate)) > 500
+  ), before.coordinate, { timeout: 10_000 });
+
+  const afterBrowse = await page.evaluate(() => ({
+    requests: { ...window.__poekhaliGpsRequests },
+    coordinate: Number(window.poekhaliHud?.viewCoordinate),
+    mode: window.poekhaliHud?.positioningMode
+  }));
+  if (afterBrowse.requests.watch !== 0 || afterBrowse.requests.current !== 0 || afterBrowse.mode !== 'preview') {
+    throw new Error(`Manual profile browse activated GPS: ${JSON.stringify(afterBrowse)}`);
+  }
+  await page.screenshot({ path: preparationScreenshotPath });
+
+  await page.locator('#appTopBarGps').click();
+  await page.waitForFunction(() => (
+    window.poekhaliHud?.positioningMode === 'gps' &&
+    window.__poekhaliGpsRequests.watch > 0
+  ), null, { timeout: 10_000 });
+  const result = await page.evaluate((initial) => ({
+    gpsRequestsBeforeStart: initial,
+    browsedMeters: Math.round(Math.abs(Number(window.poekhaliHud?.viewCoordinate) - Number(initial.coordinate))),
+    gpsRequestsAfterStart: { ...window.__poekhaliGpsRequests },
+    previewButtonPressed: document.getElementById('appTopBarPreview')?.getAttribute('aria-pressed'),
+    screenshot: 'artifacts\\poekhali-json-smoke\\preparation-without-gps.png'
+  }), before);
   await page.evaluate(() => window.stopPoekhaliTrackerMode());
   await context.close();
   return result;
@@ -1487,6 +1589,9 @@ try {
     staleSelectionRejected: await assertStaleRouteSelectionCannotWin(browser)
   };
   await mark('pilot JSON map selected from shift route in both directions');
+
+  report.checks.preparationWithoutGps = await assertPreparationModeWithoutGps(browser);
+  await mark('preparation mode browses the route without requesting GPS');
 
   report.checks.localGpsCapture = await assertLocalGpsCapture(browser);
   await mark('local-only GPS field capture filtered and persisted');

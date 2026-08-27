@@ -1,4 +1,4 @@
-if (typeof registerShiftTrackerRuntimeModule === 'function') registerShiftTrackerRuntimeModule('app-init', 'v403');
+if (typeof registerShiftTrackerRuntimeModule === 'function') registerShiftTrackerRuntimeModule('app-init', 'v404');
 
 // ── Init ──
 function startShiftTrackerRuntime() {
@@ -593,7 +593,7 @@ if (window.__SHIFT_TRACKER_RUNTIME_GUARD_PENDING) {
     add:          { title: 'Новая смена',       sub: 'Сначала только время' },
     instructions: { title: 'Документы',         sub: 'Локальная библиотека' },
     shifts:       { title: 'Смены',             sub: 'Журнал и часы' },
-    poekhali:     { title: 'Поехали',            sub: 'Режим реального времени' },
+    poekhali:     { title: 'Поехали',            sub: 'Поездка и подготовка' },
     profile:      { title: 'Профиль',           sub: 'Личный кабинет' }
   };
   function getUserLabel() {
@@ -630,8 +630,10 @@ if (window.__SHIFT_TRACKER_RUNTIME_GUARD_PENDING) {
     bar.setAttribute('data-tab', tab);
     bar.classList.remove('hidden');
     var gpsEl = document.getElementById('appTopBarGps');
+    var previewEl = document.getElementById('appTopBarPreview');
     var wayEl = document.getElementById('appTopBarWay');
     if (gpsEl) gpsEl.classList.toggle('hidden', tab !== 'poekhali');
+    if (previewEl) previewEl.classList.toggle('hidden', tab !== 'poekhali');
     if (wayEl) wayEl.classList.toggle('hidden', tab !== 'poekhali');
   }
 
@@ -659,6 +661,16 @@ if (window.__SHIFT_TRACKER_RUNTIME_GUARD_PENDING) {
     gpsChip.addEventListener('click', function() {
       var legacy = document.getElementById('btnPoekhaliLive');
       if (legacy) legacy.click();
+    });
+  })();
+
+  (function bindPoekhaliPreviewChip() {
+    var previewChip = document.getElementById('appTopBarPreview');
+    if (!previewChip) return;
+    previewChip.addEventListener('click', function() {
+      var legacy = document.getElementById('btnPoekhaliPreview');
+      if (legacy) legacy.click();
+      else if (typeof window.setPoekhaliPositioningMode === 'function') window.setPoekhaliPositioningMode('preview');
     });
   })();
 
@@ -1277,19 +1289,31 @@ if (window.__SHIFT_TRACKER_RUNTIME_GUARD_PENDING) {
       gpsChip.classList.toggle('is-on', Boolean(hud.gpsCaptureActive));
       var gpsWord = gpsChip.querySelector('.app-top-bar-gps-word');
       if (gpsWord) {
-        gpsWord.textContent = hud.gpsCaptureError
+        gpsWord.textContent = hud.positioningMode === 'preview'
+          ? 'GPS · выкл'
+          : hud.gpsCaptureError
           ? 'GPS · ПАМЯТЬ'
           : hud.gpsCaptureActive
           ? ('GPS · REC ' + String(hud.gpsRecordedSamples || 0))
           : (hud.gpsMeta && hud.gpsMeta !== '—' ? ('GPS · ' + hud.gpsMeta) : 'GPS');
       }
-      gpsChip.title = hud.gpsCaptureError
+      gpsChip.title = hud.positioningMode === 'preview'
+        ? 'Начать поездку с GPS'
+        : hud.gpsCaptureError
         ? hud.gpsCaptureError
         : hud.gpsCaptureActive
           ? 'Контрольный проезд записывается локально: ' + String(hud.gpsRecordedSamples || 0) + ' точек. Нажмите, чтобы остановить'
           : hud.gpsCaptureAvailable
             ? 'Нажмите, чтобы начать локальную запись контрольного проезда'
         : 'GPS-позиционирование';
+    }
+    var previewChip = document.getElementById('appTopBarPreview');
+    if (previewChip) {
+      var previewActive = hud.positioningMode === 'preview';
+      previewChip.classList.toggle('is-on', previewActive);
+      previewChip.setAttribute('aria-pressed', previewActive ? 'true' : 'false');
+      previewChip.title = previewActive ? 'Подготовка без GPS включена' : 'Посмотреть участок без GPS';
+      previewChip.setAttribute('aria-label', previewChip.title);
     }
   }
 

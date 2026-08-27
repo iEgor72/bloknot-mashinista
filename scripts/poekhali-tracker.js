@@ -1,4 +1,4 @@
-if (typeof registerShiftTrackerRuntimeModule === 'function') registerShiftTrackerRuntimeModule('poekhali-tracker', 'v403');
+if (typeof registerShiftTrackerRuntimeModule === 'function') registerShiftTrackerRuntimeModule('poekhali-tracker', 'v404');
 
 (function() {
   'use strict';
@@ -362,6 +362,7 @@ if (typeof registerShiftTrackerRuntimeModule === 'function') registerShiftTracke
     previewDragSuppressClick: false,
     gpsError: '',
     status: 'idle',
+    positioningMode: 'gps',
     even: true,
     wayNumber: 1,
     simpleCoordinate: true,
@@ -2003,6 +2004,7 @@ if (typeof registerShiftTrackerRuntimeModule === 'function') registerShiftTracke
   function openPoekhaliForShift(shiftId) {
     var selected = selectPoekhaliShift(shiftId, { skipRoutePreview: true });
     if (!selected) return false;
+    setPoekhaliPositioningMode('gps', { start: false, track: false });
     tracker.entryShiftLockId = String(shiftId || '');
     closeMapPicker();
     closeOpsSheet();
@@ -2015,6 +2017,24 @@ if (typeof registerShiftTrackerRuntimeModule === 'function') registerShiftTracke
     requestDraw();
     preparePoekhaliModeEntry({ pinnedShiftId: shiftId });
 
+    return true;
+  }
+
+  function openPoekhaliPreparationForShift(shiftId) {
+    var selected = selectPoekhaliShift(shiftId, { skipRoutePreview: true });
+    if (!selected) return false;
+    setPoekhaliPositioningMode('preview', { start: false, track: false });
+    tracker.entryShiftLockId = String(shiftId || '');
+    closeMapPicker();
+    closeOpsSheet();
+    if (typeof closeShiftDetail === 'function') {
+      closeShiftDetail({ immediate: true, force: true });
+    }
+    if (typeof setActiveTab === 'function') setActiveTab('poekhali');
+    updateModeButtons();
+    setOpsButton();
+    requestDraw();
+    preparePoekhaliModeEntry({ pinnedShiftId: shiftId });
     return true;
   }
 
@@ -7624,6 +7644,7 @@ if (typeof registerShiftTrackerRuntimeModule === 'function') registerShiftTracke
   }
 
   function handlePosition(position) {
+    if (tracker.positioningMode !== 'gps') return;
     if (!position || !position.coords) return;
     var previousGpsFixState = tracker.gpsFixState;
     tracker.lastLocation = position;
@@ -7689,6 +7710,55 @@ if (typeof registerShiftTrackerRuntimeModule === 'function') registerShiftTracke
     tracker.tripLastFix = null;
   }
 
+  function setPoekhaliPositioningMode(mode, options) {
+    options = options || {};
+    var nextMode = mode === 'preview' ? 'preview' : 'gps';
+    var changed = tracker.positioningMode !== nextMode;
+
+    if (nextMode === 'preview') {
+      var liveProjection = getLiveProjection();
+      if (liveProjection) {
+        setPreviewProjection({
+          lineCoordinate: liveProjection.lineCoordinate,
+          sector: liveProjection.sector
+        }, true);
+      }
+      tracker.positioningMode = 'preview';
+      stopWatchingGps();
+      finalizeRawLearningCaptureSession('interrupted');
+      resetTripMetrics();
+      returnViewToTrain({ draw: false });
+      tracker.lastLocation = null;
+      tracker.projection = null;
+      tracker.nearestProjection = null;
+      tracker.autoPosition = null;
+      tracker.speedMps = 0;
+      tracker.accuracy = 0;
+      tracker.gpsFixState = 'none';
+      tracker.gpsSatellitesCount = null;
+      tracker.gpsError = '';
+      tracker.status = tracker.assetsLoaded ? 'preview' : 'loading';
+      setGpsStatus('ОБЗОР', '');
+    } else {
+      tracker.positioningMode = 'gps';
+      tracker.gpsError = '';
+      tracker.gpsFixState = tracker.lastLocation ? 'ok' : 'none';
+      tracker.status = tracker.assetsLoaded ? 'waiting' : 'loading';
+      setGpsStatus('GPS', '');
+      if (tracker.active && options.start !== false) startWatchingGps();
+    }
+
+    updateModeButtons();
+    requestDraw();
+    if (changed && options.track !== false && window.ProductAnalytics) {
+      window.ProductAnalytics.track('poekhali_positioning_mode_changed', {
+        mode: nextMode,
+        offline: navigator.onLine === false
+      });
+    }
+    return nextMode;
+  }
+
   function handleGpsError(error) {
     var previousGpsFixState = tracker.gpsFixState;
     tracker.gpsSatellitesCount = null;
@@ -7726,7 +7796,7 @@ if (typeof registerShiftTrackerRuntimeModule === 'function') registerShiftTracke
   function shouldKeepGpsWatching() {
     // GPS is now a passive, always-on positioning source while the Poekhali mode
     // is open. It is no longer gated on trip recording.
-    return !!tracker.active;
+    return !!tracker.active && tracker.positioningMode === 'gps';
   }
 
   function getGpsPollOptions() {
@@ -7985,7 +8055,7 @@ if (typeof registerShiftTrackerRuntimeModule === 'function') registerShiftTracke
   }
 
   function requestPassiveGpsFix() {
-    if (!tracker.active || tracker.timerRunning || tracker.runStartPreparing || tracker.passiveGpsInFlight) return;
+    if (tracker.positioningMode !== 'gps' || !tracker.active || tracker.timerRunning || tracker.runStartPreparing || tracker.passiveGpsInFlight) return;
     if (isPageHidden()) return;
     if (!hasAnyGpsProvider()) {
       tracker.gpsFixState = 'unsupported';
@@ -8100,6 +8170,7 @@ if (typeof registerShiftTrackerRuntimeModule === 'function') registerShiftTracke
   function getPoekhaliTopControlsBottom() {
     var ids = [
       'btnPoekhaliBack',
+      'btnPoekhaliPreview',
       'btnPoekhaliLive',
       'btnPoekhaliWay',
       'btnPoekhaliMap'
@@ -8265,6 +8336,7 @@ if (typeof registerShiftTrackerRuntimeModule === 'function') registerShiftTracke
   }
 
   function getPoekhaliGpsMetaLine() {
+    if (tracker.positioningMode === 'preview') return 'выкл';
     var fs = tracker.gpsFixState;
     if (fs === 'denied') return 'нет доступа';
     if (fs === 'unsupported') return 'нет API';
@@ -8285,6 +8357,7 @@ if (typeof registerShiftTrackerRuntimeModule === 'function') registerShiftTracke
   }
 
   function getPoekhaliGpsStackToneClass() {
+    if (tracker.positioningMode === 'preview') return 'is-gps-muted';
     var fs = tracker.gpsFixState;
     if (fs === 'denied' || fs === 'unsupported' || fs === 'timeout' || fs === 'unavailable') return 'is-gps-error';
     if (fs !== 'ok') return 'is-gps-muted';
@@ -8329,7 +8402,9 @@ if (typeof registerShiftTrackerRuntimeModule === 'function') registerShiftTracke
 
     metaEl.textContent = getPoekhaliGpsMetaLine();
 
-    var title = tone === 'is-gps-ok'
+    var title = tracker.positioningMode === 'preview'
+      ? 'Начать поездку с GPS'
+      : tone === 'is-gps-ok'
       ? 'GPS подключён'
       : tone === 'is-gps-warn'
         ? 'GPS: слабый сигнал'
@@ -8342,11 +8417,24 @@ if (typeof registerShiftTrackerRuntimeModule === 'function') registerShiftTracke
     }
     el.title = title;
     el.setAttribute('aria-label', title);
+    el.classList.toggle('is-positioning-active', tracker.positioningMode === 'gps');
+    el.setAttribute('aria-pressed', tracker.positioningMode === 'gps' ? 'true' : 'false');
+  }
+
+  function syncPoekhaliPreviewButton() {
+    var el = byId('btnPoekhaliPreview');
+    if (!el) return;
+    var active = tracker.positioningMode === 'preview';
+    el.classList.toggle('is-on', active);
+    el.setAttribute('aria-pressed', active ? 'true' : 'false');
+    el.title = active ? 'Подготовка без GPS включена' : 'Перейти к подготовке без GPS';
+    el.setAttribute('aria-label', el.title);
   }
 
   function updateModeButtons() {
     setDirectionButton();
     setText('btnPoekhaliWay', 'П:' + normalizeWayNumber(tracker.wayNumber));
+    syncPoekhaliPreviewButton();
     syncPoekhaliLiveButton();
     setMapButton();
     setOpsButton();
@@ -12474,6 +12562,7 @@ if (typeof registerShiftTrackerRuntimeModule === 'function') registerShiftTracke
     var browseOffsetMeters = browseActive ? getDetachedViewOffsetMeters() : null;
     window.poekhaliHud = {
       at: Date.now(),
+      positioningMode: tracker.positioningMode,
       shift: getPoekhaliTrainDetails(),
       hasProjection: !!hasProjection,
       status: tracker.status,
@@ -12545,6 +12634,7 @@ if (typeof registerShiftTrackerRuntimeModule === 'function') registerShiftTracke
     if (tracker.previewDragActive) return;
     setDirectionButton();
     setText('btnPoekhaliWay', 'П:' + normalizeWayNumber(tracker.wayNumber));
+    syncPoekhaliPreviewButton();
     syncPoekhaliLiveButton();
     setMapButton();
     setOpsButton();
@@ -12875,6 +12965,10 @@ if (typeof registerShiftTrackerRuntimeModule === 'function') registerShiftTracke
     resetTripMetrics();
     preparePoekhaliModeEntry();
     if (shouldKeepGpsWatching()) startWatchingGps();
+    else {
+      tracker.status = tracker.assetsLoaded ? 'preview' : 'loading';
+      setGpsStatus('ОБЗОР', '');
+    }
     resizeCanvas();
     drawCanvas();
     if (wasActive) {
@@ -12927,7 +13021,7 @@ if (typeof registerShiftTrackerRuntimeModule === 'function') registerShiftTracke
     if (directionBtn) {
       directionBtn.addEventListener('click', function() {
         applyBestAutoDirection({ force: tracker.directionSource !== 'gps', updateRun: true });
-        if (!tracker.projection || !tracker.projection.onTrack) requestPassiveGpsFix();
+        if (tracker.positioningMode === 'gps' && (!tracker.projection || !tracker.projection.onTrack)) requestPassiveGpsFix();
         closeMapPicker();
         openOpsSheet();
       });
@@ -12955,8 +13049,17 @@ if (typeof registerShiftTrackerRuntimeModule === 'function') registerShiftTracke
     if (liveBtn) {
       liveBtn.addEventListener('click', function() {
         closeMapPicker();
-        restartWatchingGps();
+        if (tracker.positioningMode !== 'gps') setPoekhaliPositioningMode('gps');
+        else restartWatchingGps();
         syncPoekhaliLiveButton();
+      });
+    }
+
+    var previewBtn = byId('btnPoekhaliPreview');
+    if (previewBtn) {
+      previewBtn.addEventListener('click', function() {
+        closeMapPicker();
+        setPoekhaliPositioningMode('preview');
       });
     }
 
@@ -13015,6 +13118,8 @@ if (typeof registerShiftTrackerRuntimeModule === 'function') registerShiftTracke
   window.syncPoekhaliTrackerMode = syncPoekhaliTrackerMode;
   window.poekhaliReturnToTrain = returnViewToTrain;
   window.openPoekhaliForShift = openPoekhaliForShift;
+  window.openPoekhaliPreparationForShift = openPoekhaliPreparationForShift;
+  window.setPoekhaliPositioningMode = setPoekhaliPositioningMode;
   window.preparePoekhaliModeEntry = preparePoekhaliModeEntry;
   window.getPoekhaliTrainDetails = getPoekhaliTrainDetails;
   window.setSelectedPoekhaliShiftId = setSelectedPoekhaliShiftId;

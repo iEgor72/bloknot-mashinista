@@ -622,6 +622,7 @@ async function main() {
       const fuelRow = rows.find((row) => row.querySelector('.sc-lab')?.textContent.trim() === 'Расход');
       return {
         poekhaliButtons: root.querySelectorAll('.shift-poekhali-btn').length,
+        preparationButtons: root.querySelectorAll('.shift-poekhali-preview-btn').length,
         fuelText: (fuelRow?.querySelector('.sc-val')?.textContent || '').replace(/\s+/g, ' ').trim()
       };
     };
@@ -645,6 +646,9 @@ async function main() {
   }
   if (shiftCardContract.oldCard.poekhaliButtons !== 0 || shiftCardContract.latestCard.poekhaliButtons !== 1) {
     throw new Error(`Poekhali must be available only from the latest shift: ${JSON.stringify(shiftCardContract)}`);
+  }
+  if (shiftCardContract.oldCard.preparationButtons !== 0 || shiftCardContract.latestCard.preparationButtons !== 1) {
+    throw new Error(`Preparation mode must be available only from the latest shift: ${JSON.stringify(shiftCardContract)}`);
   }
   if (shiftCardContract.oldMenuPoekhaliActions !== 0 || shiftCardContract.latestMenuPoekhaliActions !== 0) {
     throw new Error(`Removed Poekhali menu action is still visible: ${JSON.stringify(shiftCardContract)}`);
