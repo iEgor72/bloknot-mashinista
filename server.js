@@ -147,6 +147,7 @@ const PUBLIC_TOP_LEVEL_FILES = new Set([
   'sw-bootstrap-v399.js',
   'sw-bootstrap-v400.js',
   'sw-bootstrap-v401.js',
+  'sw-bootstrap-v402.js',
   'apple-touch-icon.png',
   'icon-192.png',
   'icon-512.png',
@@ -158,6 +159,7 @@ const PUBLIC_TOP_LEVEL_FILES = new Set([
 const PUBLIC_TOP_LEVEL_DIRS = new Set(['assets', 'scripts', 'styles', 'docs']);
 const ONLINE_WINDOW_MS = 2 * 60 * 1000;
 const USER_PRESENCE_FLUSH_DELAY_MS = 2500;
+const AUTHENTICATED_PRESENCE_TOUCH_INTERVAL_MS = 5 * 60 * 1000;
 const SHIFT_USER_IDS_CACHE_TTL_MS = 30 * 1000;
 const STRUCTURED_LOG_TTL_MS = 30 * 1000;
 const MAX_SHIFTS_PER_PAYLOAD = 500;
@@ -214,6 +216,7 @@ let userPresenceStoreDirty = false;
 let userPresenceStoreFlushTimer = null;
 let userPresenceStoreWriteInFlight = false;
 let userPresenceStoreFlushQueued = false;
+const authenticatedPresenceLastTouch = new Map();
 
 function normalizePublicUrl(value) {
   const raw = String(value || '').trim();
@@ -1896,6 +1899,19 @@ function touchUserPresence(userId, sessionId, platform) {
   return buildUserPresenceStats(store);
 }
 
+function touchAuthenticatedUserPresence(rawUserId) {
+  const userId = normalizeStatsUserId(rawUserId);
+  if (!userId) return;
+
+  const nowMs = Date.now();
+  const previousTouch = authenticatedPresenceLastTouch.get(userId) || 0;
+  if (nowMs - previousTouch < AUTHENTICATED_PRESENCE_TOUCH_INTERVAL_MS) return;
+
+  const sessionId = `auth_${crypto.createHash('sha256').update(userId).digest('hex').slice(0, 24)}`;
+  touchUserPresence(userId, sessionId, 'unknown');
+  authenticatedPresenceLastTouch.set(userId, nowMs);
+}
+
 process.on('SIGINT', () => {
   flushUserPresenceStoreSyncOnShutdown();
   closeStorage();
@@ -2101,7 +2117,7 @@ function readBodyWithLimit(req, maxBytes) {
   });
 }
 
-const APP_RELEASE_VERSION = 'v401';
+const APP_RELEASE_VERSION = 'v402';
 const APP_URL = PUBLIC_SITE_URL;
 const TELEGRAM_APP_URL = buildVersionedAppUrl('/');
 
@@ -2238,6 +2254,13 @@ const server = http.createServer(async (req, res) => {
     res.writeHead(204);
     res.end();
     return;
+  }
+
+  // The old client heartbeat was removed with the compact profile UI. Keep
+  // presence accurate from real authenticated API activity instead, while
+  // throttling writes so ordinary sync requests do not churn SQLite.
+  if (sid && pathname.startsWith('/api/')) {
+    touchAuthenticatedUserPresence(sid);
   }
 
   if (pathname === '/api/partners' || pathname.startsWith('/api/partners/')) {

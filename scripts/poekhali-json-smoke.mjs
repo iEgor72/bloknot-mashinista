@@ -694,7 +694,7 @@ async function assertStaleRouteSelectionCannotWin(browser) {
 async function assertLiveTouchPanSafety(browser) {
   const context = await browser.newContext({
     viewport: { width: 390, height: 844 },
-    deviceScaleFactor: 1,
+    deviceScaleFactor: 2,
     hasTouch: true,
     isMobile: true,
     serviceWorkers: 'block'
@@ -807,9 +807,10 @@ async function assertLiveTouchPanSafety(browser) {
   if (!box) throw new Error('Live pan canvas has no bounding box');
   const cdp = await context.newCDPSession(page);
   const y = Math.round(box.y + box.height * 0.55);
-  async function dragProfile(startRatio, endRatio, pointerId) {
+  async function dragProfile(startRatio, endRatio, pointerId, paceMs = 0) {
     const startX = Math.round(box.x + box.width * startRatio);
     const endX = Math.round(box.x + box.width * endRatio);
+    const renderSamples = [];
     await cdp.send('Input.dispatchTouchEvent', {
       type: 'touchStart',
       touchPoints: [{ x: startX, y, id: pointerId, radiusX: 1, radiusY: 1, force: 1 }]
@@ -820,16 +821,29 @@ async function assertLiveTouchPanSafety(browser) {
         type: 'touchMove',
         touchPoints: [{ x, y, id: pointerId, radiusX: 1, radiusY: 1, force: 1 }]
       });
+      if (paceMs > 0) {
+        await page.waitForTimeout(paceMs);
+        renderSamples.push(await page.evaluate(() => ({
+          dpr: window.poekhaliHud?.canvasDpr,
+          sequence: window.poekhaliHud?.canvasDrawSequence
+        })));
+      }
     }
     await cdp.send('Input.dispatchTouchEvent', { type: 'touchEnd', touchPoints: [] });
+    return renderSamples;
   }
-  await dragProfile(0.82, 0.18, 1);
+  const dragRenderSamples = await dragProfile(0.82, 0.18, 1, 40);
   await page.waitForFunction(() => (
     window.poekhaliHud?.viewDetached === true &&
     window.poekhaliHud?.browseDragging === false &&
+    Number(window.poekhaliHud?.canvasDpr) >= 1.9 &&
     Math.abs(Number(window.poekhaliHud?.browseOffsetMeters || 0)) >= 1000 &&
     document.getElementById('trkBrowseHud')?.hidden === false
   ), null, { timeout: 10_000 });
+  const dragSequences = [...new Set(dragRenderSamples.map((sample) => Number(sample.sequence)).filter(Number.isFinite))];
+  if (dragSequences.length < 3 || dragRenderSamples.some((sample) => Number(sample.dpr) > 1.25)) {
+    throw new Error(`Live pan render cadence/resolution regression: ${JSON.stringify(dragRenderSamples)}`);
+  }
 
   const afterPan = await page.evaluate((keys) => {
     const canvas = document.getElementById('poekhaliCanvas');
@@ -1021,6 +1035,8 @@ async function assertLiveTouchPanSafety(browser) {
     autoReturnDelayMs: afterPan.autoReturnDelayMs,
     autoReturnRestartedByTouch: resetAutoState.autoReturnAt > firstAutoState.autoReturnAt,
     autoReturnedToTrain: Math.abs(Number(afterAutoReturn.returnedCoordinate) - Number(afterAutoReturn.storedCoordinate)) < 1,
+    responsiveDragFrames: dragSequences.length,
+    dragDprCap: Math.max(...dragRenderSamples.map((sample) => Number(sample.dpr) || 0)),
     touchAction: result.touchAction,
     screenshot: path.relative(root, liveTouchPanScreenshotPath)
   };

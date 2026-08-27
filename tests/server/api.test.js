@@ -99,18 +99,18 @@ test('public contact surface points only to the Telegram bot', async () => {
 });
 
 test('versioned style namespace serves the current shell stylesheet', async () => {
-  const response = await fetch(baseUrl + '/styles/v401/56-profile.css');
+  const response = await fetch(baseUrl + '/styles/v402/56-profile.css');
   const source = await response.text();
   assert.equal(response.status, 200);
   assert.match(response.headers.get('content-type') || '', /text\/css/i);
   assert.match(source, /\.profile-summary-card/);
   assert.match(source, /\.profile-summary-icon svg/);
 
-  const versionedRuntime = await fetch(baseUrl + '/scripts/v401/render.js');
+  const versionedRuntime = await fetch(baseUrl + '/scripts/v402/render.js');
   assert.equal(versionedRuntime.status, 200);
   assert.match(await versionedRuntime.text(), /renderProfileSummary/);
 
-  const traversalAttempt = await fetch(baseUrl + '/scripts/v401/..%2Fserver.js');
+  const traversalAttempt = await fetch(baseUrl + '/scripts/v402/..%2Fserver.js');
   assert.equal(traversalAttempt.status, 404);
 
   const previousBootstrap = await fetch(baseUrl + '/sw-bootstrap-v397.js');
@@ -160,6 +160,17 @@ test('auth rejects unsigned requests and accepts valid Telegram initData', async
   assert.equal(session.response.status, 200);
   assert.equal(session.body.user.id, '1001');
   assert.match(session.response.headers.get('set-cookie') || '', /bm_session=/);
+});
+
+test('authenticated API activity updates user presence without a client heartbeat', async () => {
+  const token = await authenticate({ id: 1010, first_name: 'Активность' });
+  const shifts = await jsonRequest('/api/shifts', { headers: bearer(token) });
+  assert.equal(shifts.response.status, 200);
+
+  const stats = await jsonRequest('/api/stats', { headers: bearer(token) });
+  assert.equal(stats.response.status, 200);
+  assert.ok(stats.body.totalUsers >= 1);
+  assert.ok(stats.body.onlineUsers >= 1);
 });
 
 test('salary settings persist deduction percentages and reject values above 100', async () => {

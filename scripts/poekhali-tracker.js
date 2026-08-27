@@ -1,4 +1,4 @@
-if (typeof registerShiftTrackerRuntimeModule === 'function') registerShiftTrackerRuntimeModule('poekhali-tracker', 'v401');
+if (typeof registerShiftTrackerRuntimeModule === 'function') registerShiftTrackerRuntimeModule('poekhali-tracker', 'v402');
 
 (function() {
   'use strict';
@@ -99,7 +99,12 @@ if (typeof registerShiftTrackerRuntimeModule === 'function') registerShiftTracke
   var DRAW_IDLE_INTERVAL_MS = 0;
   var DRAW_HIDDEN_INTERVAL_MS = 5000;
   var DRAW_ACTIVE_THROTTLE_MS = 900;
-  var DRAW_DRAG_THROTTLE_MS = 80;
+  // Keep profile browsing responsive without making pointermove itself pay for
+  // the full canvas render. During the gesture we draw at roughly 30 fps and
+  // temporarily lower only the backing-store resolution; the CSS size stays
+  // unchanged and the full-resolution frame is restored on pointerup.
+  var DRAW_DRAG_THROTTLE_MS = 32;
+  var DRAW_DRAG_DPR_CAP = 1.25;
   var BROWSE_AUTO_RETURN_DELAY_MS = 8000;
   var GPS_START_POLL_INTERVAL_MS = 5000;
   var GPS_FAST_POLL_INTERVAL_MS = 8000;
@@ -216,7 +221,9 @@ if (typeof registerShiftTrackerRuntimeModule === 'function') registerShiftTracke
     watchId: null,
     frameId: null,
     drawPendingTimer: null,
+    drawPendingFrame: null,
     lastCanvasDrawAt: 0,
+    canvasDrawSequence: 0,
     passiveGpsInFlight: false,
     gpsPollTimer: null,
     gpsPollInFlight: false,
@@ -8044,7 +8051,8 @@ if (typeof registerShiftTrackerRuntimeModule === 'function') registerShiftTracke
     var rect = canvas.getBoundingClientRect();
     var width = Math.max(1, Math.round(rect.width || window.innerWidth || 1));
     var height = Math.max(1, Math.round(rect.height || window.innerHeight || 1));
-    var dpr = Math.min(2, window.devicePixelRatio || 1);
+    var dprCap = tracker.previewDragActive ? DRAW_DRAG_DPR_CAP : 2;
+    var dpr = Math.min(dprCap, window.devicePixelRatio || 1);
     if (canvas.width !== Math.round(width * dpr) || canvas.height !== Math.round(height * dpr)) {
       canvas.width = Math.round(width * dpr);
       canvas.height = Math.round(height * dpr);
@@ -12479,6 +12487,8 @@ if (typeof registerShiftTrackerRuntimeModule === 'function') registerShiftTracke
       browseOffsetMeters: browseActive && isRealNumber(browseOffsetMeters) ? browseOffsetMeters : null,
       browseAutoReturnAt: browseActive && tracker.browseAutoReturnAt > 0 ? tracker.browseAutoReturnAt : null,
       browseAutoReturnDelayMs: browseActive ? BROWSE_AUTO_RETURN_DELAY_MS : null,
+      canvasDpr: tracker.dpr || 1,
+      canvasDrawSequence: tracker.canvasDrawSequence || 0,
       viewDetached: browseActive,
       viewCoordinate: viewProjection && isRealNumber(viewProjection.lineCoordinate)
         ? viewProjection.lineCoordinate : null,
@@ -12506,6 +12516,7 @@ if (typeof registerShiftTrackerRuntimeModule === 'function') registerShiftTracke
   function drawCanvas() {
     if (!resizeCanvas()) return;
     tracker.lastCanvasDrawAt = Date.now();
+    tracker.canvasDrawSequence += 1;
     var ctx = tracker.ctx;
     var w = tracker.width;
     var h = tracker.height;
@@ -12529,6 +12540,9 @@ if (typeof registerShiftTrackerRuntimeModule === 'function') registerShiftTracke
     // ФАКТ/ДОПУСК/КМ/ПК tiles move to HTML cards in the HTML-HUD layout.
     if (!POEKHALI_HTML_HUD) drawBottomBar(ctx, w, h, displayProjection);
     publishPoekhaliHtmlHud(!!displayProjection);
+    // These controls do not change while the finger is moving. Avoid repeated
+    // DOM writes/style invalidation in the hottest interaction path.
+    if (tracker.previewDragActive) return;
     setDirectionButton();
     setText('btnPoekhaliWay', 'П:' + normalizeWayNumber(tracker.wayNumber));
     syncPoekhaliLiveButton();
@@ -12561,7 +12575,21 @@ if (typeof registerShiftTrackerRuntimeModule === 'function') registerShiftTracke
     return !!(tracker.timerRunning || tracker.runStartPreparing || getActiveRun() || tracker.previewDragActive);
   }
 
-  function requestDraw() {
+  function scheduleCanvasDrawFrame() {
+    if (tracker.drawPendingFrame !== null) return;
+    var draw = function() {
+      tracker.drawPendingFrame = null;
+      if (tracker.active) drawCanvas();
+    };
+    if (typeof window.requestAnimationFrame === 'function') {
+      tracker.drawPendingFrame = window.requestAnimationFrame(draw);
+    } else {
+      tracker.drawPendingFrame = window.setTimeout(draw, 0);
+    }
+  }
+
+  function requestDraw(options) {
+    options = options || {};
     if (!tracker.active) {
       drawCanvas();
       return;
@@ -12572,19 +12600,19 @@ if (typeof registerShiftTrackerRuntimeModule === 'function') registerShiftTracke
       return;
     }
     var elapsed = Date.now() - (tracker.lastCanvasDrawAt || 0);
-    var wait = Math.max(0, getDrawThrottleMs() - elapsed);
+    var wait = options.immediate ? 0 : Math.max(0, getDrawThrottleMs() - elapsed);
     if (wait <= 0) {
       if (tracker.drawPendingTimer !== null) {
         window.clearTimeout(tracker.drawPendingTimer);
         tracker.drawPendingTimer = null;
       }
-      drawCanvas();
+      scheduleCanvasDrawFrame();
       return;
     }
-    if (tracker.drawPendingTimer !== null) return;
+    if (tracker.drawPendingTimer !== null || tracker.drawPendingFrame !== null) return;
     tracker.drawPendingTimer = window.setTimeout(function() {
       tracker.drawPendingTimer = null;
-      if (tracker.active) drawCanvas();
+      scheduleCanvasDrawFrame();
     }, wait);
   }
 
@@ -12618,6 +12646,14 @@ if (typeof registerShiftTrackerRuntimeModule === 'function') registerShiftTracke
     if (tracker.drawPendingTimer !== null) {
       window.clearTimeout(tracker.drawPendingTimer);
       tracker.drawPendingTimer = null;
+    }
+    if (tracker.drawPendingFrame !== null) {
+      if (typeof window.cancelAnimationFrame === 'function') {
+        window.cancelAnimationFrame(tracker.drawPendingFrame);
+      } else {
+        window.clearTimeout(tracker.drawPendingFrame);
+      }
+      tracker.drawPendingFrame = null;
     }
   }
 
@@ -12780,7 +12816,7 @@ if (typeof registerShiftTrackerRuntimeModule === 'function') registerShiftTracke
         window.setTimeout(function() { tracker.previewDragSuppressClick = false; }, 0);
       }
       if (getDetachedViewProjection()) scheduleBrowseAutoReturn();
-      if (wasHorizontal) requestDraw();
+      if (wasHorizontal) requestDraw({ immediate: true });
     }
     tracker.canvas.addEventListener('pointerup', stopBrowseDrag);
     tracker.canvas.addEventListener('pointercancel', stopBrowseDrag);
