@@ -750,12 +750,22 @@ async function assertPreparationModeWithoutGps(browser) {
     title: document.getElementById('poekhaliArmSheetTitle')?.textContent.trim() || '',
     arms: Array.from(document.querySelectorAll('#poekhaliServiceArmSheet .poekhali-arm-option-copy strong'))
       .map((element) => element.textContent.trim()),
+    actionLabels: Array.from(document.querySelectorAll('#poekhaliServiceArmSheet .poekhali-arm-option'))
+      .map((element) => element.getAttribute('aria-label') || ''),
+    routeCounts: Array.from(document.querySelectorAll('#poekhaliServiceArmSheet .poekhali-arm-option-route-count'))
+      .map((element) => element.textContent.trim()),
+    textChevrons: Array.from(document.querySelectorAll(
+      '#poekhaliServiceArmSheet .poekhali-arm-option-arrow, #poekhaliServiceArmSheet .poekhali-arm-option-chevron'
+    )).filter((element) => element.textContent.trim()).length,
     gpsRequests: { ...window.__poekhaliGpsRequests }
   }));
   if (armPicker.title !== 'Плечо обслуживания' || armPicker.arms.length !== 3 ||
       !armPicker.arms.some((name) => name.includes('Волочаевка')) ||
       !armPicker.arms.some((name) => name.includes('Высокогорная')) ||
       !armPicker.arms.some((name) => name.includes('Постышево')) ||
+      armPicker.routeCounts.length !== 1 || armPicker.routeCounts[0] !== '2 пути' ||
+      armPicker.textChevrons !== 0 ||
+      !armPicker.actionLabels.some((label) => label.includes('Высокогорная') && label.includes('2 вариантов пути')) ||
       armPicker.gpsRequests.watch !== 0 || armPicker.gpsRequests.current !== 0) {
     throw new Error(`Service-arm picker contract failed: ${JSON.stringify(armPicker)}`);
   }

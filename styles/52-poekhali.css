@@ -736,7 +736,26 @@ body.is-poekhali-mode .trk-edit-btn {
 .poekhali-arm-option-badge {
   flex: 0 0 auto;
   color: var(--accent, #38bdf8);
-  font: 700 22px/1 'Golos Text', system-ui, sans-serif;
+}
+.poekhali-arm-option-arrow,
+.poekhali-arm-option-chevron {
+  position: relative;
+  width: 28px;
+  height: 28px;
+  border-radius: 999px;
+  background: color-mix(in oklch, var(--accent, #38bdf8) 12%, transparent);
+}
+.poekhali-arm-option-arrow::after,
+.poekhali-arm-option-chevron::after {
+  content: '';
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 7px;
+  height: 7px;
+  border-top: 2px solid currentColor;
+  border-right: 2px solid currentColor;
+  transform: translate(-65%, -50%) rotate(45deg);
 }
 .poekhali-arm-option-badge {
   min-width: 28px;
@@ -746,7 +765,12 @@ body.is-poekhali-mode .trk-edit-btn {
   justify-content: center;
   border-radius: 999px;
   background: color-mix(in oklch, var(--accent, #38bdf8) 12%, transparent);
-  font-size: 13px;
+}
+.poekhali-arm-option-route-count {
+  min-width: 52px;
+  padding: 0 9px;
+  white-space: nowrap;
+  font: 700 11px/1 'Golos Text', system-ui, sans-serif;
 }
 .poekhali-arm-loading,
 .poekhali-arm-empty {

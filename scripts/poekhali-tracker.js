@@ -5338,7 +5338,8 @@ if (typeof registerShiftTrackerRuntimeModule === 'function') registerShiftTracke
         copy.appendChild(meta);
         var arrow = document.createElement('span');
         arrow.className = 'poekhali-arm-option-arrow';
-        arrow.textContent = '›';
+        arrow.setAttribute('aria-hidden', 'true');
+        button.setAttribute('aria-label', String(option.name || option.id) + '. Открыть профиль без GPS');
         button.appendChild(copy);
         button.appendChild(arrow);
         button.addEventListener('click', function() { openSelectedServiceArm(depot, pack, arm, option); });
@@ -5378,8 +5379,17 @@ if (typeof registerShiftTrackerRuntimeModule === 'function') registerShiftTracke
         copy.appendChild(title);
         copy.appendChild(meta);
         var badge = document.createElement('span');
-        badge.className = 'poekhali-arm-option-badge';
-        badge.textContent = options.length > 1 ? String(options.length) : '›';
+        badge.className = options.length > 1
+          ? 'poekhali-arm-option-badge poekhali-arm-option-route-count'
+          : 'poekhali-arm-option-badge poekhali-arm-option-chevron';
+        badge.textContent = options.length > 1 ? String(options.length) + ' пути' : '';
+        badge.setAttribute('aria-hidden', 'true');
+        button.setAttribute(
+          'aria-label',
+          String(arm.name || arm.id) + (options.length > 1
+            ? '. Выбрать один из ' + String(options.length) + ' вариантов пути'
+            : '. Открыть профиль без GPS')
+        );
         button.appendChild(copy);
         button.appendChild(badge);
         button.addEventListener('click', function() {
@@ -5420,7 +5430,8 @@ if (typeof registerShiftTrackerRuntimeModule === 'function') registerShiftTracke
         copy.appendChild(meta);
         var arrow = document.createElement('span');
         arrow.className = 'poekhali-arm-option-arrow';
-        arrow.textContent = '›';
+        arrow.setAttribute('aria-hidden', 'true');
+        button.setAttribute('aria-label', 'Открыть плечи депо ' + String(title.textContent || ''));
         button.appendChild(copy);
         button.appendChild(arrow);
         button.addEventListener('click', function() {
