@@ -1076,6 +1076,10 @@ async function main() {
     railway.dispatchEvent(new Event('change', { bubbles: true }));
   });
   await page.waitForFunction(() => document.querySelectorAll('#inputProfileDepotId option').length === 13);
+  const depotPlaceholder = await page.locator('#profileDepotSelect .glass-select-value').textContent();
+  if (depotPlaceholder?.trim() !== 'Выберите депо') {
+    throw new Error(`Depot placeholder did not follow railway selection: ${depotPlaceholder}`);
+  }
   await clickElementCenter(page, '#profileDepotSelect .glass-select-trigger', 'depot catalog dropdown');
   await page.waitForFunction(() => !document.querySelector('#profileDepotSelect .glass-select-menu')?.classList.contains('hidden'));
   const depotMenuScroll = await page.evaluate(() => {

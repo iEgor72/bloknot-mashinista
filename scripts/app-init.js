@@ -1,4 +1,4 @@
-if (typeof registerShiftTrackerRuntimeModule === 'function') registerShiftTrackerRuntimeModule('app-init', 'v407');
+if (typeof registerShiftTrackerRuntimeModule === 'function') registerShiftTrackerRuntimeModule('app-init', 'v408');
 
 // ── Init ──
 function startShiftTrackerRuntime() {
@@ -1256,6 +1256,8 @@ if (window.__SHIFT_TRACKER_RUNTIME_GUARD_PENDING) {
       if (railwayId) options.push({ value: '__custom__', label: 'Моего депо нет в списке' });
       var targetValue = customSelected ? '__custom__' : selectedDepotId;
       replaceSelectOptions(depotSelect, options, targetValue);
+      var depotRoot = document.getElementById('profileDepotSelect');
+      if (depotRoot) depotRoot.setAttribute('data-placeholder', railwayId ? 'Выберите депо' : 'Сначала выберите дорогу');
       setCatalogSelectDisabled('profileDepotSelect', depotSelect, !railwayId);
       if (customInput) customInput.classList.toggle('hidden', !customSelected);
       refreshGlassSelect('profileDepotSelect');
