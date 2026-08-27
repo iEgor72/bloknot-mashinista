@@ -152,6 +152,7 @@ const PUBLIC_TOP_LEVEL_FILES = new Set([
   'sw-bootstrap-v404.js',
   'sw-bootstrap-v405.js',
   'sw-bootstrap-v408.js',
+  'sw-bootstrap-v409.js',
   'apple-touch-icon.png',
   'icon-192.png',
   'icon-512.png',
@@ -1066,8 +1067,19 @@ const MAX_DEPOT_PACK_REQUESTS = 5000;
 const MAX_DEPOT_PACK_ATTACHMENTS = 8;
 const MAX_DEPOT_PACK_ATTACHMENT_BYTES = 50 * 1024 * 1024;
 const MAX_DEPOT_PACK_TOTAL_BYTES = 120 * 1024 * 1024;
+const MAX_DEPOT_PACK_STORED_BYTES_PER_USER = 300 * 1024 * 1024;
+const MAX_DEPOT_PACK_STORED_BYTES_GLOBAL = 5 * 1024 * 1024 * 1024;
+const MAX_DEPOT_PACK_UPLOAD_BYTES_PER_WINDOW = 250 * 1024 * 1024;
+const MAX_DEPOT_PACK_ACTIVE_UPLOADS = 6;
+const MAX_DOCUMENT_ATTACHMENTS = 3;
+const MAX_DOCUMENT_ATTACHMENT_BYTES = 25 * 1024 * 1024;
+const MAX_DOCUMENT_TOTAL_BYTES = 60 * 1024 * 1024;
+const MAX_ACTIVE_DOCUMENT_REQUESTS_PER_USER = 10;
+const DEPOT_PACK_UPLOAD_WINDOW_MS = 30 * 60 * 1000;
 const DEPOT_PACK_REVIEW_STATUSES = new Set(['new', 'reviewing', 'needs_info', 'accepted', 'published', 'rejected']);
 const depotPackRequestAttempts = new Map();
+const depotPackUploadAttempts = new Map();
+const depotPackActiveUploads = new Set();
 
 function allowDepotPackRequest(sid) {
   const key = normalizeSid(sid);
@@ -1099,22 +1111,26 @@ function sanitizeDepotPackAttachmentName(value) {
   return sanitizeProfileText(path.posix.basename(normalized), 180) || 'Материал без названия';
 }
 
-function sanitizeDepotPackAttachmentDescriptors(value) {
+function sanitizeDepotPackAttachmentDescriptors(value, requestType) {
   if (value == null) return [];
   if (!Array.isArray(value)) throw new Error('Invalid attachments');
-  if (value.length > MAX_DEPOT_PACK_ATTACHMENTS) throw new Error('Invalid attachments: too many files');
+  const isDocument = requestType === 'documents';
+  const maxAttachments = isDocument ? MAX_DOCUMENT_ATTACHMENTS : MAX_DEPOT_PACK_ATTACHMENTS;
+  const maxAttachmentBytes = isDocument ? MAX_DOCUMENT_ATTACHMENT_BYTES : MAX_DEPOT_PACK_ATTACHMENT_BYTES;
+  const maxTotalBytes = isDocument ? MAX_DOCUMENT_TOTAL_BYTES : MAX_DEPOT_PACK_TOTAL_BYTES;
+  if (value.length > maxAttachments) throw new Error('Invalid attachments: too many files');
   let totalBytes = 0;
   return value.map((source) => {
     if (!source || typeof source !== 'object' || Array.isArray(source)) {
       throw new Error('Invalid attachment');
     }
     const size = Math.max(0, Math.floor(Number(source.size) || 0));
-    if (!size || size > MAX_DEPOT_PACK_ATTACHMENT_BYTES) {
+    if (!size || size > maxAttachmentBytes) {
       throw new Error('Invalid attachment size');
     }
     totalBytes += size;
-    if (totalBytes > MAX_DEPOT_PACK_TOTAL_BYTES) throw new Error('Invalid attachments: total size too large');
-    const kind = ['electronic-map', 'regime-map', 'other'].includes(source.kind) ? source.kind : 'other';
+    if (totalBytes > maxTotalBytes) throw new Error('Invalid attachments: total size too large');
+    const kind = ['electronic-map', 'regime-map', 'document', 'other'].includes(source.kind) ? source.kind : 'other';
     return {
       id: crypto.randomBytes(10).toString('hex'),
       kind,
@@ -1142,11 +1158,23 @@ function sanitizeDepotPackRequest(payload, sid, user) {
   const armName = sanitizeProfileText(payload.armName == null ? payload.arm_name : payload.armName, 120);
   const notes = sanitizeProfileText(payload.notes, 600);
   const source = sanitizeProfileText(payload.source, 40) || 'profile';
-  const requestType = payload.requestType === 'materials' ? 'materials' : 'demand';
-  const attachments = sanitizeDepotPackAttachmentDescriptors(payload.attachments);
-  if (!depotId && !depotLabel) throw new Error('Missing depot');
-  if (!armName && !notes) throw new Error('Missing service arm or materials');
+  const requestType = ['materials', 'documents'].includes(payload.requestType) ? payload.requestType : 'demand';
+  const attachments = sanitizeDepotPackAttachmentDescriptors(payload.attachments, requestType);
+  const documentCategory = ['instructions', 'speeds', 'memos', 'reminders', 'folders'].includes(payload.documentCategory)
+    ? payload.documentCategory
+    : '';
+  const scopeLevel = ['network', 'railway', 'depot'].includes(payload.scopeLevel) ? payload.scopeLevel : '';
+  if (requestType !== 'documents' && !depotId && !depotLabel) throw new Error('Missing depot');
+  if (requestType !== 'documents' && !armName && !notes) throw new Error('Missing service arm or materials');
   if (requestType === 'materials' && attachments.length === 0) throw new Error('Missing attachments');
+  if (requestType === 'documents') {
+    if (!armName) throw new Error('Missing document title');
+    if (!documentCategory) throw new Error('Invalid document category');
+    if (!scopeLevel) throw new Error('Invalid document scope');
+    if (scopeLevel === 'railway' && !railwayId) throw new Error('Missing railway');
+    if (scopeLevel === 'depot' && !depotId && !depotLabel) throw new Error('Missing depot');
+    if (attachments.length === 0) throw new Error('Missing attachments');
+  }
   return {
     id: crypto.randomBytes(12).toString('hex'),
     sid: normalizeSid(sid),
@@ -1158,6 +1186,14 @@ function sanitizeDepotPackRequest(payload, sid, user) {
     notes,
     source,
     requestType,
+    documentTitle: requestType === 'documents' ? armName : '',
+    documentCategory,
+    scope: requestType === 'documents' ? {
+      level: scopeLevel,
+      railway_id: scopeLevel === 'railway' || scopeLevel === 'depot' ? railwayId : '',
+      depot_id: scopeLevel === 'depot' ? depotId : '',
+      depot_label: scopeLevel === 'depot' ? depotLabel : '',
+    } : null,
     attachments,
     status: attachments.length ? 'uploading' : 'new',
     createdAt: new Date().toISOString(),
@@ -1167,6 +1203,11 @@ function sanitizeDepotPackRequest(payload, sid, user) {
 function writeDepotPackRequest(payload, sid, user) {
   const item = sanitizeDepotPackRequest(payload, sid, user);
   const requests = readDepotPackRequests();
+  if (item.requestType === 'documents') {
+    const activeStatuses = new Set(['uploading', 'new', 'reviewing', 'needs_info']);
+    const activeCount = requests.filter((entry) => entry && entry.sid === item.sid && entry.requestType === 'documents' && activeStatuses.has(entry.status)).length;
+    if (activeCount >= MAX_ACTIVE_DOCUMENT_REQUESTS_PER_USER) throw new Error('Active document limit exceeded');
+  }
   if (item.requestType === 'demand') {
     const activeStatuses = new Set(['new', 'reviewing', 'needs_info', 'accepted']);
     const cutoff = Date.now() - 30 * 24 * 60 * 60 * 1000;
@@ -1181,10 +1222,15 @@ function writeDepotPackRequest(payload, sid, user) {
     if (duplicate) return { item: duplicate, duplicate: true };
   }
   requests.push(item);
-  const bounded = requests.length > MAX_DEPOT_PACK_REQUESTS
-    ? requests.slice(requests.length - MAX_DEPOT_PACK_REQUESTS)
-    : requests;
+  const removed = requests.length > MAX_DEPOT_PACK_REQUESTS
+    ? requests.slice(0, requests.length - MAX_DEPOT_PACK_REQUESTS)
+    : [];
+  const bounded = removed.length ? requests.slice(removed.length) : requests;
   getStorage().writeAppState(DEPOT_PACK_REQUESTS_STATE_KEY, bounded);
+  removed.forEach((entry) => {
+    if (!entry || !/^[a-f0-9]{24}$/.test(String(entry.id || ''))) return;
+    fs.rm(path.join(DEPOT_PACK_MATERIALS_DIR, entry.id), { recursive: true, force: true }, () => {});
+  });
   return { item, duplicate: false };
 }
 
@@ -1213,8 +1259,16 @@ function updateDepotPackRequestReview(item, payload, reviewer) {
 
 function classifyDepotPackAttachment(buffer) {
   const startsWith = (...bytes) => bytes.every((byte, index) => buffer[index] === byte);
+  const textPrefix = buffer.subarray(0, Math.min(buffer.length, 4096)).toString('utf8').replace(/^\uFEFF/, '').trimStart().toLowerCase();
+  if (startsWith(0x4d, 0x5a) || startsWith(0x7f, 0x45, 0x4c, 0x46) ||
+      startsWith(0xcf, 0xfa, 0xed, 0xfe) || startsWith(0xfe, 0xed, 0xfa, 0xcf) || textPrefix.startsWith('#!')) {
+    return { detectedFormat: 'executable-content', automaticCheck: 'blocked', securityFlag: 'executable-content', quarantineStatus: 'blocked' };
+  }
+  if (/^(?:<!doctype\s+html|<html\b|<svg\b|<\?xml[^>]*>\s*<svg\b)/i.test(textPrefix)) {
+    return { detectedFormat: 'active-content', automaticCheck: 'blocked', securityFlag: 'active-content', quarantineStatus: 'blocked' };
+  }
   if (buffer.length >= 15 && buffer.subarray(0, 15).toString('ascii') === 'ANDROID BACKUP\n') {
-    return { detectedFormat: 'android-backup', automaticCheck: 'recognized' };
+    return { detectedFormat: 'android-backup', automaticCheck: 'recognized', securityFlag: '', quarantineStatus: 'pending_review' };
   }
   if (startsWith(0x50, 0x4b, 0x03, 0x04) || startsWith(0x50, 0x4b, 0x05, 0x06) || startsWith(0x50, 0x4b, 0x07, 0x08)) {
     const archiveIndex = buffer.toString('latin1').toLowerCase();
@@ -1222,25 +1276,97 @@ function classifyDepotPackAttachment(buffer) {
     return {
       detectedFormat: isKnownEMap ? 'emap-zip' : 'zip-archive',
       automaticCheck: isKnownEMap ? 'recognized' : 'manual',
+      securityFlag: '',
+      quarantineStatus: 'pending_review',
     };
   }
-  if (startsWith(0x25, 0x50, 0x44, 0x46, 0x2d)) return { detectedFormat: 'pdf', automaticCheck: 'recognized' };
-  if (startsWith(0x89, 0x50, 0x4e, 0x47, 0x0d, 0x0a, 0x1a, 0x0a)) return { detectedFormat: 'png', automaticCheck: 'recognized' };
-  if (startsWith(0xff, 0xd8, 0xff)) return { detectedFormat: 'jpeg', automaticCheck: 'recognized' };
+  if (startsWith(0x25, 0x50, 0x44, 0x46, 0x2d)) return { detectedFormat: 'pdf', automaticCheck: 'recognized', securityFlag: '', quarantineStatus: 'pending_review' };
+  if (startsWith(0x89, 0x50, 0x4e, 0x47, 0x0d, 0x0a, 0x1a, 0x0a)) return { detectedFormat: 'png', automaticCheck: 'recognized', securityFlag: '', quarantineStatus: 'pending_review' };
+  if (startsWith(0xff, 0xd8, 0xff)) return { detectedFormat: 'jpeg', automaticCheck: 'recognized', securityFlag: '', quarantineStatus: 'pending_review' };
   if (buffer.length >= 12 && buffer.subarray(0, 4).toString('ascii') === 'RIFF' && buffer.subarray(8, 12).toString('ascii') === 'WEBP') {
-    return { detectedFormat: 'webp', automaticCheck: 'recognized' };
+    return { detectedFormat: 'webp', automaticCheck: 'recognized', securityFlag: '', quarantineStatus: 'pending_review' };
   }
-  if (startsWith(0x37, 0x7a, 0xbc, 0xaf, 0x27, 0x1c)) return { detectedFormat: '7z-archive', automaticCheck: 'manual' };
-  if (buffer.length >= 7 && buffer.subarray(0, 7).toString('latin1') === 'Rar!\x1a\x07') return { detectedFormat: 'rar-archive', automaticCheck: 'manual' };
-  if (startsWith(0x1f, 0x8b)) return { detectedFormat: 'gzip-archive', automaticCheck: 'manual' };
-  return { detectedFormat: 'unknown', automaticCheck: 'manual' };
+  if (startsWith(0x37, 0x7a, 0xbc, 0xaf, 0x27, 0x1c)) return { detectedFormat: '7z-archive', automaticCheck: 'manual', securityFlag: '', quarantineStatus: 'pending_review' };
+  if (buffer.length >= 7 && buffer.subarray(0, 7).toString('latin1') === 'Rar!\x1a\x07') return { detectedFormat: 'rar-archive', automaticCheck: 'manual', securityFlag: '', quarantineStatus: 'pending_review' };
+  if (startsWith(0x1f, 0x8b)) return { detectedFormat: 'gzip-archive', automaticCheck: 'manual', securityFlag: '', quarantineStatus: 'pending_review' };
+  return { detectedFormat: 'unknown', automaticCheck: 'manual', securityFlag: '', quarantineStatus: 'pending_review' };
 }
 
 function depotPackRequestForOwner(requestId, sid) {
   return readDepotPackRequests().find((item) => item && item.id === requestId && item.sid === normalizeSid(sid)) || null;
 }
 
-async function storeDepotPackAttachment(requestId, attachmentId, sid, buffer) {
+function depotPackStoredBytes(requests, sid) {
+  return (requests || []).reduce((total, item) => {
+    if (!item || (sid && item.sid !== sid)) return total;
+    return total + (Array.isArray(item.attachments) ? item.attachments.reduce((sum, entry) => sum + Number(entry.uploadedSize || 0), 0) : 0);
+  }, 0);
+}
+
+function beginDepotPackUpload(sid, reservedBytes) {
+  const normalizedSid = normalizeSid(sid);
+  const now = Date.now();
+  const recent = (depotPackUploadAttempts.get(normalizedSid) || []).filter((entry) => now - entry.at < DEPOT_PACK_UPLOAD_WINDOW_MS);
+  const recentBytes = recent.reduce((sum, entry) => sum + entry.bytes, 0);
+  if (recentBytes + reservedBytes > MAX_DEPOT_PACK_UPLOAD_BYTES_PER_WINDOW) throw new Error('Upload rate limit exceeded');
+  if (depotPackActiveUploads.size >= MAX_DEPOT_PACK_ACTIVE_UPLOADS || depotPackActiveUploads.has(normalizedSid)) {
+    throw new Error('Upload already in progress');
+  }
+  recent.push({ at: now, bytes: reservedBytes });
+  depotPackUploadAttempts.set(normalizedSid, recent);
+  depotPackActiveUploads.add(normalizedSid);
+  return () => depotPackActiveUploads.delete(normalizedSid);
+}
+
+async function sampleDepotPackAttachment(filePath, size) {
+  const sampleBytes = Math.min(2 * 1024 * 1024, size);
+  const handle = await fs.promises.open(filePath, 'r');
+  try {
+    const head = Buffer.alloc(sampleBytes);
+    await handle.read(head, 0, sampleBytes, 0);
+    if (size <= sampleBytes) return head;
+    const tail = Buffer.alloc(sampleBytes);
+    await handle.read(tail, 0, sampleBytes, Math.max(0, size - sampleBytes));
+    return Buffer.concat([head, tail]);
+  } finally {
+    await handle.close();
+  }
+}
+
+function streamDepotPackAttachment(req, tempPath, maxBytes) {
+  return new Promise((resolve, reject) => {
+    let total = 0;
+    let settled = false;
+    const hash = crypto.createHash('sha256');
+    const output = fs.createWriteStream(tempPath, { flags: 'wx', mode: 0o600 });
+    const fail = (error) => {
+      if (settled) return;
+      settled = true;
+      req.unpipe(output);
+      output.destroy();
+      req.resume();
+      reject(error);
+    };
+    req.on('data', (chunk) => {
+      total += chunk.length;
+      if (total > maxBytes) {
+        fail(new Error('Payload too large'));
+        return;
+      }
+      hash.update(chunk);
+    });
+    req.on('error', fail);
+    output.on('error', fail);
+    output.on('finish', () => {
+      if (settled) return;
+      settled = true;
+      resolve({ size: total, sha256: hash.digest('hex') });
+    });
+    req.pipe(output);
+  });
+}
+
+async function storeDepotPackAttachment(requestId, attachmentId, sid, req, contentLength) {
   const item = depotPackRequestForOwner(requestId, sid);
   if (!item) throw new Error('Request not found');
   const attachment = Array.isArray(item.attachments)
@@ -1248,31 +1374,63 @@ async function storeDepotPackAttachment(requestId, attachmentId, sid, buffer) {
     : null;
   if (!attachment) throw new Error('Attachment not found');
   if (attachment.status === 'uploaded') throw new Error('Attachment already uploaded');
-  if (!Buffer.isBuffer(buffer) || !buffer.length || buffer.length > MAX_DEPOT_PACK_ATTACHMENT_BYTES) {
-    throw new Error('Invalid attachment size');
-  }
+  const requestAttachmentLimit = item.requestType === 'documents' ? MAX_DOCUMENT_ATTACHMENT_BYTES : MAX_DEPOT_PACK_ATTACHMENT_BYTES;
+  if (contentLength > requestAttachmentLimit) throw new Error('Payload too large');
+  const requests = readDepotPackRequests();
   const otherBytes = item.attachments.reduce((sum, entry) => sum + (entry.id === attachmentId ? 0 : Number(entry.uploadedSize || 0)), 0);
-  if (otherBytes + buffer.length > MAX_DEPOT_PACK_TOTAL_BYTES) throw new Error('Invalid attachments: total size too large');
+  const userBytes = depotPackStoredBytes(requests, item.sid);
+  const globalBytes = depotPackStoredBytes(requests);
+  const allowedBytes = Math.min(
+    requestAttachmentLimit,
+    Number(attachment.declaredSize || requestAttachmentLimit),
+    MAX_DEPOT_PACK_TOTAL_BYTES - otherBytes,
+    MAX_DEPOT_PACK_STORED_BYTES_PER_USER - userBytes,
+    MAX_DEPOT_PACK_STORED_BYTES_GLOBAL - globalBytes
+  );
+  if (allowedBytes <= 0 || (contentLength > 0 && contentLength > allowedBytes)) throw new Error('Storage quota exceeded');
+  const releaseUpload = beginDepotPackUpload(item.sid, contentLength > 0 ? contentLength : MAX_DEPOT_PACK_ATTACHMENT_BYTES);
 
-  const classification = classifyDepotPackAttachment(buffer);
   const requestDir = path.join(DEPOT_PACK_MATERIALS_DIR, item.id);
   const storageName = `${attachment.id}.upload`;
   const finalPath = path.join(requestDir, storageName);
   const tempPath = path.join(requestDir, `${attachment.id}.${crypto.randomBytes(6).toString('hex')}.tmp`);
-  await fs.promises.mkdir(requestDir, { recursive: true });
-  await fs.promises.writeFile(tempPath, buffer, { flag: 'wx' });
-  await fs.promises.rename(tempPath, finalPath);
+  const lockPath = path.join(requestDir, `${attachment.id}.lock`);
+  let lockHandle;
+  try {
+    await fs.promises.mkdir(requestDir, { recursive: true, mode: 0o700 });
+    try {
+      lockHandle = await fs.promises.open(lockPath, 'wx', 0o600);
+    } catch (error) {
+      if (error && error.code === 'EEXIST') throw new Error('Upload already in progress');
+      throw error;
+    }
+    const stored = await streamDepotPackAttachment(req, tempPath, allowedBytes);
+    if (!stored.size) throw new Error('Invalid attachment size');
+    if (stored.size !== Number(attachment.declaredSize || 0)) throw new Error('Invalid attachment size');
+    const classification = classifyDepotPackAttachment(await sampleDepotPackAttachment(tempPath, stored.size));
+    await fs.promises.rename(tempPath, finalPath);
 
-  attachment.uploadedSize = buffer.length;
-  attachment.status = 'uploaded';
-  attachment.detectedFormat = classification.detectedFormat;
-  attachment.automaticCheck = classification.automaticCheck;
-  attachment.reviewRequired = true;
-  attachment.sha256 = crypto.createHash('sha256').update(buffer).digest('hex');
-  attachment.storageName = storageName;
-  attachment.uploadedAt = new Date().toISOString();
-  replaceDepotPackRequest(item);
-  return attachment;
+    attachment.uploadedSize = stored.size;
+    attachment.status = 'uploaded';
+    attachment.detectedFormat = classification.detectedFormat;
+    attachment.automaticCheck = classification.automaticCheck;
+    attachment.securityFlag = classification.securityFlag;
+    attachment.quarantineStatus = classification.quarantineStatus;
+    attachment.reviewRequired = true;
+    attachment.sha256 = stored.sha256;
+    attachment.storageName = storageName;
+    attachment.uploadedAt = new Date().toISOString();
+    replaceDepotPackRequest(item);
+    return attachment;
+  } catch (error) {
+    await fs.promises.rm(tempPath, { force: true }).catch(() => {});
+    if (fs.existsSync(finalPath) && attachment.status !== 'uploaded') await fs.promises.rm(finalPath, { force: true }).catch(() => {});
+    throw error;
+  } finally {
+    if (lockHandle) await lockHandle.close().catch(() => {});
+    await fs.promises.rm(lockPath, { force: true }).catch(() => {});
+    releaseUpload();
+  }
 }
 
 function publicDepotPackRequest(item) {
@@ -1280,6 +1438,10 @@ function publicDepotPackRequest(item) {
     id: item.id,
     status: item.status,
     createdAt: item.createdAt,
+    requestType: item.requestType,
+    documentTitle: item.documentTitle || '',
+    documentCategory: item.documentCategory || '',
+    scope: item.scope || null,
     attachments: Array.isArray(item.attachments) ? item.attachments.map((entry) => ({
       id: entry.id,
       kind: entry.kind,
@@ -1287,6 +1449,8 @@ function publicDepotPackRequest(item) {
       status: entry.status,
       detectedFormat: entry.detectedFormat,
       automaticCheck: entry.automaticCheck,
+      securityFlag: entry.securityFlag || '',
+      quarantineStatus: entry.quarantineStatus || 'pending_review',
     })) : [],
   };
 }
@@ -1803,6 +1967,7 @@ function sanitizeDocsManifest(payload) {
         mime_type: String(row.mime_type || '').trim().slice(0, 120),
         size: Math.max(0, Math.round(Number(row.size) || 0)),
         updated_at: String(row.updated_at || '').trim().slice(0, 40),
+        scope: sanitizeDocsScope(row.scope),
       };
     }).filter(item => item.name && (item.path.startsWith('/assets/docs/') || item.path.startsWith('/admin-docs/')));
   });
@@ -2135,6 +2300,27 @@ function touchUserPresence(userId, sessionId, platform) {
   return buildUserPresenceStats(store);
 }
 
+function sanitizeDocsScope(value) {
+  const source = value && typeof value === 'object' && !Array.isArray(value) ? value : {};
+  const level = ['network', 'railway', 'depot', 'service_arm'].includes(source.level) ? source.level : 'network';
+  const scope = { level };
+  if (level === 'railway' || level === 'depot' || level === 'service_arm') {
+    scope.railway_id = sanitizeProfileText(source.railway_id == null ? source.railwayId : source.railway_id, 80);
+  }
+  if (level === 'depot' || level === 'service_arm') {
+    scope.depot_id = sanitizeProfileText(source.depot_id == null ? source.depotId : source.depot_id, 160);
+  }
+  if (level === 'service_arm') {
+    scope.service_arm_id = sanitizeProfileText(source.service_arm_id == null ? source.serviceArmId : source.service_arm_id, 160);
+  }
+  if ((level === 'railway' && !scope.railway_id) ||
+      (level === 'depot' && !scope.depot_id) ||
+      (level === 'service_arm' && (!scope.depot_id || !scope.service_arm_id))) {
+    return { level: 'network' };
+  }
+  return scope;
+}
+
 function touchAuthenticatedUserPresence(rawUserId) {
   const userId = normalizeStatsUserId(rawUserId);
   if (!userId) return;
@@ -2354,7 +2540,7 @@ function readBodyWithLimit(req, maxBytes) {
   });
 }
 
-const APP_RELEASE_VERSION = 'v408';
+const APP_RELEASE_VERSION = 'v409';
 const APP_URL = PUBLIC_SITE_URL;
 const TELEGRAM_APP_URL = buildVersionedAppUrl('/');
 
@@ -3009,12 +3195,12 @@ const server = http.createServer(async (req, res) => {
       return;
     }
     try {
-      const body = await readBufferWithLimit(req, MAX_DEPOT_PACK_ATTACHMENT_BYTES);
       const attachment = await storeDepotPackAttachment(
         depotPackAttachmentMatch[1],
         depotPackAttachmentMatch[2],
         sid,
-        body
+        req,
+        contentLength
       );
       sendJson(res, 200, {
         ok: true,
@@ -3023,14 +3209,21 @@ const server = http.createServer(async (req, res) => {
           status: attachment.status,
           detectedFormat: attachment.detectedFormat,
           automaticCheck: attachment.automaticCheck,
+          securityFlag: attachment.securityFlag || '',
+          quarantineStatus: attachment.quarantineStatus || 'pending_review',
         },
       });
     } catch (err) {
       const errorMessage = err && err.message ? err.message : 'Upload failed';
       const statusCode = errorMessage === 'Request not found' || errorMessage === 'Attachment not found'
         ? 404
-        : (errorMessage === 'Attachment already uploaded' ? 409 : (errorMessage === 'Payload too large' ? 413 : (/^Invalid/.test(errorMessage) ? 400 : 500)));
-      sendJson(res, statusCode, { error: errorMessage === 'Payload too large' ? 'Файл больше 50 МБ' : errorMessage });
+        : (errorMessage === 'Attachment already uploaded' || errorMessage === 'Upload already in progress' ? 409
+          : (errorMessage === 'Payload too large' || errorMessage === 'Storage quota exceeded' ? 413
+            : (errorMessage === 'Upload rate limit exceeded' ? 429 : (/^Invalid/.test(errorMessage) ? 400 : 500))));
+      const publicMessage = errorMessage === 'Payload too large' ? 'Файл больше допустимого размера'
+        : (errorMessage === 'Storage quota exceeded' ? 'Лимит хранилища материалов исчерпан'
+          : (errorMessage === 'Upload rate limit exceeded' ? 'Слишком большой объём загрузок. Попробуйте позже.' : errorMessage));
+      sendJson(res, statusCode, { error: publicMessage });
     }
     return;
   }
@@ -3084,12 +3277,16 @@ const server = http.createServer(async (req, res) => {
       });
     } catch (err) {
       const errorMessage = err && err.message ? err.message : 'Invalid payload';
-      const isValidationError = /^(Expected|Missing|Invalid)/.test(errorMessage);
+      const isValidationError = /^(Expected|Missing|Invalid|Active document limit exceeded)/.test(errorMessage);
       logStructuredRateLimited(isValidationError ? 'warn' : 'error', 'catalog.depot_pack_request_rejected', `${sid}:${errorMessage}`, {
         sid,
         error: toErrorMeta(err),
       });
-      sendJson(res, isValidationError ? 400 : 500, { error: errorMessage });
+      const statusCode = errorMessage === 'Active document limit exceeded' ? 429 : (isValidationError ? 400 : 500);
+      const publicMessage = errorMessage === 'Active document limit exceeded'
+        ? 'У вас уже 10 документов в очереди. Дождитесь проверки существующих заявок.'
+        : errorMessage;
+      sendJson(res, statusCode, { error: publicMessage });
     }
     return;
   }
@@ -3119,13 +3316,20 @@ const server = http.createServer(async (req, res) => {
       sendJson(res, 404, { error: 'Attachment not found' });
       return;
     }
+    if (attachment.quarantineStatus === 'blocked' && parsedUrl.query.acknowledgeRisk !== '1') {
+      sendJson(res, 423, { error: 'Файл заблокирован карантином: обнаружено активное или исполняемое содержимое' });
+      return;
+    }
     res.writeHead(200, {
       'Content-Type': 'application/octet-stream',
       'Content-Disposition': `attachment; filename="material"; filename*=UTF-8''${encodeURIComponent(attachment.originalName)}`,
       'Content-Length': fs.statSync(filePath).size,
       'Cache-Control': 'no-store',
       'X-Content-Type-Options': 'nosniff',
+      'X-Download-Options': 'noopen',
       'Referrer-Policy': 'no-referrer',
+      'Content-Security-Policy': "sandbox; default-src 'none'",
+      'Cross-Origin-Resource-Policy': 'same-origin',
     });
     fs.createReadStream(filePath).pipe(res);
     return;

@@ -7,6 +7,44 @@
     var docsDownloadStateByPath = {};
     var docsDownloadCheckPromises = {};
     var docsDownloadRefreshTick = 0;
+    var docsScopeByPath = {};
+
+    function getDocsProfileScope() {
+      try {
+        var raw = window.localStorage && window.localStorage.getItem('shift_tracker_profile_v1');
+        var profile = raw ? JSON.parse(raw) : {};
+        return {
+          railwayId: String(profile && profile.railwayId || ''),
+          depotId: String(profile && profile.depotId || ''),
+          depotLabel: String(profile && profile.depot || '')
+        };
+      } catch (e) {
+        return { railwayId: '', depotId: '', depotLabel: '' };
+      }
+    }
+
+    function isDocScopeVisible(scope) {
+      if (!scope || !scope.level || scope.level === 'network') return true;
+      var profile = getDocsProfileScope();
+      if (scope.level === 'railway') return !!profile.railwayId && profile.railwayId === String(scope.railway_id || '');
+      if (scope.level === 'depot') return !!profile.depotId && profile.depotId === String(scope.depot_id || '');
+      return false;
+    }
+
+    function filterDocsForProfile(files) {
+      return (Array.isArray(files) ? files : []).filter(function(file) {
+        return isDocScopeVisible(file && file.scope);
+      });
+    }
+
+    function getDocScopeByPath(path) {
+      return docsScopeByPath[getDocPathKey(path)] || null;
+    }
+
+    window.getDocsProfileScope = getDocsProfileScope;
+    window.isDocScopeVisible = isDocScopeVisible;
+    window.filterDocsForProfile = filterDocsForProfile;
+    window.getDocScopeByPath = getDocScopeByPath;
 
     function getDocPathKey(path) {
       return normalizeDocPath(path || '');
@@ -358,6 +396,11 @@
       if (!el) return;
 
       if (!files || files.length === 0) {
+        var profileScope = getDocsProfileScope();
+        var emptyTitle = profileScope.depotId ? 'Для вашего депо материалов пока нет' : 'Сначала выберите депо в профиле';
+        var emptyText = profileScope.depotId
+          ? 'Когда редактор опубликует документы для ' + (profileScope.depotLabel || 'вашего депо') + ', они появятся здесь.'
+          : 'Скорости, режимные карты и местные инструкции показываются по выбранной дороге и депо.';
         el.innerHTML =
           '<div class="docs-empty-state">' +
             '<div class="docs-empty-icon" aria-hidden="true">' +
@@ -369,8 +412,8 @@
                 '<path d="M16 32H24" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"/>' +
               '</svg>' +
             '</div>' +
-            '<div class="docs-empty-title">В этом разделе пока пусто</div>' +
-            '<div class="docs-empty-text">Когда здесь появятся файлы, они сразу отобразятся в списке.</div>' +
+            '<div class="docs-empty-title">' + escapeHtml(emptyTitle) + '</div>' +
+            '<div class="docs-empty-text">' + escapeHtml(emptyText) + '</div>' +
           '</div>';
         return;
       }
@@ -384,6 +427,7 @@
         var size = docsFormatSize(f.size);
         var updatedAt = docsFormatDate(f.updated_at || f.added_at || f.date_added);
         var displayMeta = buildDocDisplayMeta(folder, f);
+        var encodedScope = encodeURIComponent(JSON.stringify(f.scope || { level: 'network' }));
         // The file type is already printed on the icon, so no separate type
         // badge. The download status rides in the corner of the icon, and a
         // muted footer ("обновлено … · размер") sits at the bottom of the card.
@@ -395,7 +439,7 @@
         var docActionLabel = (isDownloaded ? 'Открыть файл' : 'Открыть файл, может понадобиться интернет') + ': ' + actionName;
         if (displayMeta.subtitle) docActionLabel += '. ' + displayMeta.subtitle;
         html +=
-          '<div class="docs-item ' + (isDownloaded ? 'is-downloaded' : 'is-online-only') + '" role="button" tabindex="0" aria-label="' + escapeHtml(docActionLabel) + '" data-file-path="' + encodeURIComponent(f.path || '') + '" data-file-name="' + encodeURIComponent(f.name || '') + '" data-mime-type="' + encodeURIComponent(f.mime_type || '') + '" data-doc-downloaded="' + (isDownloaded ? '1' : '0') + '">' +
+          '<div class="docs-item ' + (isDownloaded ? 'is-downloaded' : 'is-online-only') + '" role="button" tabindex="0" aria-label="' + escapeHtml(docActionLabel) + '" data-file-path="' + encodeURIComponent(f.path || '') + '" data-file-name="' + encodeURIComponent(f.name || '') + '" data-mime-type="' + encodeURIComponent(f.mime_type || '') + '" data-doc-scope="' + encodedScope + '" data-doc-downloaded="' + (isDownloaded ? '1' : '0') + '">' +
             '<div class="docs-item-icon file-icon-wrap ' + classes[type] + '">' +
               icons[type] +
               buildDocDownloadStatusIcon(isDownloaded) +
@@ -441,6 +485,13 @@
           });
         })
         .then(function(manifest) {
+          Object.keys(manifest || {}).forEach(function(folder) {
+            var files = Array.isArray(manifest[folder]) ? manifest[folder] : [];
+            files.forEach(function(file) {
+              var key = getDocPathKey(file && file.path || '');
+              if (key) docsScopeByPath[key] = file && file.scope ? file.scope : { level: 'network' };
+            });
+          });
           _docsManifestCache = manifest;
           return manifest;
         });
@@ -471,7 +522,7 @@
       renderDocLoading(folder);
 
       function renderFromManifest(manifest) {
-        var files = (manifest && Array.isArray(manifest[folder])) ? manifest[folder] : [];
+        var files = filterDocsForProfile((manifest && Array.isArray(manifest[folder])) ? manifest[folder] : []);
         docsFilesCache[folder] = files;
         renderDocFileList(folder, files);
         refreshDocDownloadStateForFolder(folder, files);
@@ -485,6 +536,11 @@
           renderDocListLoadError(folder);
         });
     }
+
+    window.addEventListener('profilecatalogchange', function() {
+      docsFilesCache = {};
+      if (typeof documentationStore !== 'undefined' && documentationStore && documentationStore.activeTab) loadDocFiles(documentationStore.activeTab);
+    });
 
     // ── Viewer ────────────────────────────────────────────────────────────────
 
@@ -2306,7 +2362,7 @@
       // Track recent opens for the Documents bento "Недавно открытые" list.
       try {
         if (window.localStorage) {
-          var raw = window.localStorage.getItem('shift_tracker_docs_recent_v1');
+          var raw = window.localStorage.getItem('shift_tracker_docs_recent_v2');
           var items = raw ? (JSON.parse(raw) || []) : [];
           if (!Array.isArray(items)) items = [];
           items = items.filter(function(it) { return it && it.path !== localPath; });
@@ -2341,10 +2397,11 @@
           items.unshift({
             path: localPath, name: name, meta: meta, ext: ext,
             filePath: filePath || '', fileName: fileName || '', mimeType: mimeType || '',
-            iconHTML: recIconHTML, bodyHTML: recBodyHTML
+            iconHTML: recIconHTML, bodyHTML: recBodyHTML,
+            scope: getDocScopeByPath(localPath) || { level: 'network' }
           });
           items = items.slice(0, 8);
-          window.localStorage.setItem('shift_tracker_docs_recent_v1', JSON.stringify(items));
+          window.localStorage.setItem('shift_tracker_docs_recent_v2', JSON.stringify(items));
           // Same-tab refresh: a synthetic 'storage' event has no `.key`, so the
           // listener can't filter on it — call the renderer directly instead.
           if (typeof window.renderRecentDocs === 'function') window.renderRecentDocs();

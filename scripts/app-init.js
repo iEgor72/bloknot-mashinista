@@ -1,4 +1,4 @@
-if (typeof registerShiftTrackerRuntimeModule === 'function') registerShiftTrackerRuntimeModule('app-init', 'v408');
+if (typeof registerShiftTrackerRuntimeModule === 'function') registerShiftTrackerRuntimeModule('app-init', 'v409');
 
 // ── Init ──
 function startShiftTrackerRuntime() {
@@ -712,6 +712,7 @@ if (window.__SHIFT_TRACKER_RUNTIME_GUARD_PENDING) {
         if (patch && 'depotId' in patch) next.depotId = normalizeProfileText(patch.depotId, 160);
         if (patch && 'avatar' in patch) next.avatar = patch.avatar || '';
         window.localStorage.setItem(PROFILE_KEY, JSON.stringify(next));
+        window.dispatchEvent(new CustomEvent('profilecatalogchange', { detail: { railwayId: next.railwayId, depotId: next.depotId } }));
       } catch (e) {}
     }
     // Exposed so the Home top-bar subtitle can use the user's real depot.
@@ -842,7 +843,7 @@ if (window.__SHIFT_TRACKER_RUNTIME_GUARD_PENDING) {
       var depotId = depotSelect && depotSelect.value && depotSelect.value !== '__custom__'
         ? depotSelect.value
         : (extras.depotId || '');
-      var selectedDepotLabel = depotSelect && depotSelect.selectedIndex >= 0 && depotSelect.value !== '__custom__'
+      var selectedDepotLabel = depotSelect && depotSelect.value && depotSelect.selectedIndex >= 0 && depotSelect.value !== '__custom__'
         ? String(depotSelect.options[depotSelect.selectedIndex].textContent || '')
         : '';
       return {
@@ -1347,7 +1348,7 @@ if (window.__SHIFT_TRACKER_RUNTIME_GUARD_PENDING) {
 
         var kind = document.createElement('span');
         kind.className = 'depot-proposal-file-kind';
-        kind.textContent = item.kind === 'electronic-map' ? 'ЭК' : 'РК';
+        kind.textContent = item.kind === 'electronic-map' ? 'ЭК' : (item.kind === 'regime-map' ? 'РК' : 'ДОК');
 
         var copy = document.createElement('span');
         copy.className = 'depot-proposal-file-copy';
@@ -1389,9 +1390,16 @@ if (window.__SHIFT_TRACKER_RUNTIME_GUARD_PENDING) {
     }
 
     function setDepotProposalMode(mode) {
-      depotProposalMode = mode === 'materials' ? 'materials' : 'demand';
+      var nextMode = mode === 'documents' ? 'documents' : (mode === 'materials' ? 'materials' : 'demand');
+      if (nextMode !== depotProposalMode) depotProposalFiles = [];
+      depotProposalMode = nextMode;
       var demandPanel = document.getElementById('depotProposalDemandPanel');
       var materialsPanel = document.getElementById('depotProposalMaterialsPanel');
+      var documentsPanel = document.getElementById('depotProposalDocumentsPanel');
+      var title = document.getElementById('depotProposalSheetTitle');
+      var subtitle = document.getElementById('depotProposalSheetSubtitle');
+      var titleLabel = document.getElementById('depotProposalTitleLabel');
+      var titleInput = document.getElementById('inputDepotProposalArm');
       var notes = document.getElementById('inputDepotProposalNotes');
       var send = document.getElementById('btnDepotProposalSend');
       var modeButtons = document.querySelectorAll('[data-proposal-mode]');
@@ -1402,10 +1410,21 @@ if (window.__SHIFT_TRACKER_RUNTIME_GUARD_PENDING) {
       }
       if (demandPanel) demandPanel.classList.toggle('hidden', depotProposalMode !== 'demand');
       if (materialsPanel) materialsPanel.classList.toggle('hidden', depotProposalMode !== 'materials');
-      if (notes) notes.placeholder = depotProposalMode === 'materials'
-        ? 'Например, особенности участка или приложения, из которого выгружена карта'
-        : 'Например, до какой станции нужен профиль';
-      if (send && !depotProposalBusy) send.textContent = depotProposalMode === 'materials' ? 'Передать материалы' : 'Отправить запрос';
+      if (documentsPanel) documentsPanel.classList.toggle('hidden', depotProposalMode !== 'documents');
+      if (title) title.textContent = depotProposalMode === 'documents' ? 'Предложить документ' : 'Добавить участок';
+      if (subtitle) subtitle.textContent = depotProposalMode === 'documents'
+        ? 'Материал попадёт в очередь проверки'
+        : 'Запросите его или передайте материалы';
+      if (titleLabel) titleLabel.textContent = depotProposalMode === 'documents' ? 'Название документа' : 'Плечо обслуживания';
+      if (titleInput) titleInput.placeholder = depotProposalMode === 'documents'
+        ? 'Например, Инструкция по охране труда ТЧЭ-9'
+        : 'Например, Комсомольск — Высокогорная';
+      if (notes) notes.placeholder = depotProposalMode === 'documents'
+        ? 'Укажите дату, номер, источник и почему материал ещё актуален'
+        : (depotProposalMode === 'materials'
+          ? 'Например, особенности участка или приложения, из которого выгружена карта'
+          : 'Например, до какой станции нужен профиль');
+      if (send && !depotProposalBusy) send.textContent = depotProposalMode === 'documents' ? 'Отправить на проверку' : (depotProposalMode === 'materials' ? 'Передать материалы' : 'Отправить запрос');
       resetDepotProposalDraft();
       renderDepotProposalFiles();
     }
@@ -1415,14 +1434,17 @@ if (window.__SHIFT_TRACKER_RUNTIME_GUARD_PENDING) {
       var tooLarge = false;
       var tooMany = false;
       var totalBytes = depotProposalFiles.reduce(function(sum, item) { return sum + item.file.size; }, 0);
+      var maxFileBytes = depotProposalMode === 'documents' ? 25 * 1024 * 1024 : 50 * 1024 * 1024;
+      var maxTotalBytes = depotProposalMode === 'documents' ? 60 * 1024 * 1024 : 120 * 1024 * 1024;
+      var maxFiles = depotProposalMode === 'documents' ? 3 : 8;
       for (var i = 0; i < incoming.length; i++) {
         var file = incoming[i];
         if (!file || !file.size) continue;
-        if (file.size > 50 * 1024 * 1024 || totalBytes + file.size > 120 * 1024 * 1024) {
+        if (file.size > maxFileBytes || totalBytes + file.size > maxTotalBytes) {
           tooLarge = true;
           continue;
         }
-        if (depotProposalFiles.length >= 8) {
+        if (depotProposalFiles.length >= maxFiles) {
           tooMany = true;
           break;
         }
@@ -1435,19 +1457,19 @@ if (window.__SHIFT_TRACKER_RUNTIME_GUARD_PENDING) {
       }
       resetDepotProposalDraft();
       renderDepotProposalFiles();
-      if (tooLarge && typeof enqueueAppToast === 'function') enqueueAppToast('До 50 МБ на файл и 120 МБ за отправку', 'neutral', 2800);
-      if (tooMany && typeof enqueueAppToast === 'function') enqueueAppToast('За один раз можно передать до 8 файлов', 'neutral', 2600);
+      if (tooLarge && typeof enqueueAppToast === 'function') enqueueAppToast(depotProposalMode === 'documents' ? 'До 25 МБ на файл и 60 МБ за отправку' : 'До 50 МБ на файл и 120 МБ за отправку', 'neutral', 2800);
+      if (tooMany && typeof enqueueAppToast === 'function') enqueueAppToast(depotProposalMode === 'documents' ? 'К одному документу можно приложить до 3 файлов' : 'За один раз можно передать до 8 файлов', 'neutral', 2600);
     }
 
     function setDepotProposalBusy(busy, progressText) {
       depotProposalBusy = !!busy;
       var send = document.getElementById('btnDepotProposalSend');
       var close = document.getElementById('btnDepotProposalCancel');
-      var uploadButtons = [document.getElementById('btnDepotProposalEMap'), document.getElementById('btnDepotProposalRegime')];
+      var uploadButtons = [document.getElementById('btnDepotProposalEMap'), document.getElementById('btnDepotProposalRegime'), document.getElementById('btnDepotProposalDocument')];
       var modeButtons = document.querySelectorAll('[data-proposal-mode]');
       if (send) {
         send.disabled = depotProposalBusy;
-        send.textContent = depotProposalBusy ? (progressText || 'Отправляем…') : (depotProposalMode === 'materials' ? 'Передать материалы' : 'Отправить запрос');
+        send.textContent = depotProposalBusy ? (progressText || 'Отправляем…') : (depotProposalMode === 'documents' ? 'Отправить на проверку' : (depotProposalMode === 'materials' ? 'Передать материалы' : 'Отправить запрос'));
       }
       if (close) close.disabled = depotProposalBusy;
       for (var i = 0; i < uploadButtons.length; i++) if (uploadButtons[i]) uploadButtons[i].disabled = depotProposalBusy;
@@ -1479,11 +1501,28 @@ if (window.__SHIFT_TRACKER_RUNTIME_GUARD_PENDING) {
       var notesInput = document.getElementById('inputDepotProposalNotes');
       var emapInput = document.getElementById('inputDepotProposalEMap');
       var regimeInput = document.getElementById('inputDepotProposalRegime');
+      var documentInput = document.getElementById('inputDepotProposalDocument');
+      var documentCategory = document.getElementById('inputDepotProposalDocumentCategory');
+      var documentScope = document.getElementById('inputDepotProposalDocumentScope');
+      var modeRoot = document.querySelector('.depot-proposal-mode');
+      var documentsModeButton = document.getElementById('btnDepotProposalDocumentsMode');
       if (label) label.textContent = depotProposalContext.depotLabel || 'Укажите депо в профиле';
       if (armInput) armInput.value = context.armName || '';
       if (notesInput) notesInput.value = '';
       if (emapInput) emapInput.value = '';
       if (regimeInput) regimeInput.value = '';
+      if (documentInput) documentInput.value = '';
+      if (documentCategory) documentCategory.value = context.documentCategory || 'instructions';
+      if (documentScope) {
+        var hasDocumentDepot = !!(depotProposalContext.depotId || depotProposalContext.depotLabel);
+        var hasDocumentRailway = !!depotProposalContext.railwayId;
+        Array.prototype.forEach.call(documentScope.options, function(option) {
+          option.disabled = (option.value === 'depot' && !hasDocumentDepot) || (option.value === 'railway' && !hasDocumentRailway);
+        });
+        documentScope.value = context.scopeLevel || (hasDocumentDepot ? 'depot' : (hasDocumentRailway ? 'railway' : 'network'));
+      }
+      if (modeRoot) modeRoot.classList.toggle('hidden', context.mode === 'documents');
+      if (documentsModeButton) documentsModeButton.classList.toggle('hidden', context.mode !== 'documents');
       setDepotProposalProgress('');
       setDepotProposalMode(context.mode || 'demand');
       if (typeof openOverlay === 'function') openOverlay('overlayDepotProposal');
@@ -1492,6 +1531,8 @@ if (window.__SHIFT_TRACKER_RUNTIME_GUARD_PENDING) {
 
     var proposeArmBtn = document.getElementById('btnProfileProposeArm');
     if (proposeArmBtn) proposeArmBtn.addEventListener('click', function() { openDepotProposal({ source: 'profile' }); });
+    var docsContributeBtn = document.getElementById('btnDocsContribute');
+    if (docsContributeBtn) docsContributeBtn.addEventListener('click', function() { openDepotProposal({ source: 'documents', mode: 'documents' }); });
     var proposalCancelBtn = document.getElementById('btnDepotProposalCancel');
     if (proposalCancelBtn) proposalCancelBtn.addEventListener('click', function() {
       if (!depotProposalBusy && typeof closeOverlay === 'function') closeOverlay('overlayDepotProposal');
@@ -1504,14 +1545,21 @@ if (window.__SHIFT_TRACKER_RUNTIME_GUARD_PENDING) {
     var proposalRegimeBtn = document.getElementById('btnDepotProposalRegime');
     var proposalEMapInput = document.getElementById('inputDepotProposalEMap');
     var proposalRegimeInput = document.getElementById('inputDepotProposalRegime');
+    var proposalDocumentBtn = document.getElementById('btnDepotProposalDocument');
+    var proposalDocumentInput = document.getElementById('inputDepotProposalDocument');
     if (proposalEMapBtn && proposalEMapInput) proposalEMapBtn.addEventListener('click', function() { proposalEMapInput.click(); });
     if (proposalRegimeBtn && proposalRegimeInput) proposalRegimeBtn.addEventListener('click', function() { proposalRegimeInput.click(); });
+    if (proposalDocumentBtn && proposalDocumentInput) proposalDocumentBtn.addEventListener('click', function() { proposalDocumentInput.click(); });
     if (proposalEMapInput) proposalEMapInput.addEventListener('change', function() {
       addDepotProposalFiles(this.files, 'electronic-map');
       this.value = '';
     });
     if (proposalRegimeInput) proposalRegimeInput.addEventListener('change', function() {
       addDepotProposalFiles(this.files, 'regime-map');
+      this.value = '';
+    });
+    if (proposalDocumentInput) proposalDocumentInput.addEventListener('change', function() {
+      addDepotProposalFiles(this.files, 'document');
       this.value = '';
     });
     var proposalFilesRoot = document.getElementById('depotProposalFiles');
@@ -1532,7 +1580,7 @@ if (window.__SHIFT_TRACKER_RUNTIME_GUARD_PENDING) {
       var armName = normalizeProfileText(armInput && armInput.value, 120);
       var notes = normalizeProfileText(notesInput && notesInput.value, 600);
       if (!armName) {
-        if (typeof enqueueAppToast === 'function') enqueueAppToast('Укажите плечо обслуживания', 'neutral', 2200);
+        if (typeof enqueueAppToast === 'function') enqueueAppToast(depotProposalMode === 'documents' ? 'Укажите название документа' : 'Укажите плечо обслуживания', 'neutral', 2200);
         if (armInput) armInput.focus();
         return;
       }
@@ -1540,9 +1588,14 @@ if (window.__SHIFT_TRACKER_RUNTIME_GUARD_PENDING) {
         if (typeof enqueueAppToast === 'function') enqueueAppToast('Выберите электронную или режимную карту', 'neutral', 2400);
         return;
       }
+      if (depotProposalMode === 'documents' && depotProposalFiles.length === 0) {
+        if (typeof enqueueAppToast === 'function') enqueueAppToast('Выберите хотя бы один файл', 'neutral', 2400);
+        return;
+      }
 
-      setDepotProposalBusy(true, depotProposalMode === 'materials' ? 'Готовим загрузку…' : 'Отправляем…');
-      setDepotProposalProgress(depotProposalMode === 'materials' ? 'Подготавливаем материалы…' : '');
+      var hasUploads = depotProposalMode !== 'demand';
+      setDepotProposalBusy(true, hasUploads ? 'Готовим загрузку…' : 'Отправляем…');
+      setDepotProposalProgress(hasUploads ? 'Подготавливаем материалы…' : '');
       var createDraft = depotProposalDraft
         ? Promise.resolve(depotProposalDraft)
         : fetchJson(DEPOT_PROPOSAL_API_URL, {
@@ -1556,6 +1609,8 @@ if (window.__SHIFT_TRACKER_RUNTIME_GUARD_PENDING) {
             notes: notes,
             source: depotProposalContext && depotProposalContext.source || 'profile',
             requestType: depotProposalMode,
+            documentCategory: document.getElementById('inputDepotProposalDocumentCategory') && document.getElementById('inputDepotProposalDocumentCategory').value || '',
+            scopeLevel: document.getElementById('inputDepotProposalDocumentScope') && document.getElementById('inputDepotProposalDocumentScope').value || '',
             attachments: depotProposalFiles.map(function(item) {
               return { kind: item.kind, name: item.file.name, mime: item.file.type || '', size: item.file.size };
             })
@@ -1570,7 +1625,7 @@ if (window.__SHIFT_TRACKER_RUNTIME_GUARD_PENDING) {
         });
 
       createDraft.then(function(draft) {
-        if (depotProposalMode !== 'materials') return draft;
+        if (depotProposalMode === 'demand') return draft;
         var chain = Promise.resolve();
         depotProposalFiles.forEach(function(item, index) {
           chain = chain.then(function() {
@@ -1609,7 +1664,9 @@ if (window.__SHIFT_TRACKER_RUNTIME_GUARD_PENDING) {
         if (typeof enqueueAppToast === 'function') {
           enqueueAppToast(depotProposalMode === 'materials'
             ? 'Материалы приняты на проверку'
-            : (depotProposalDuplicate ? 'Такой запрос уже есть в очереди' : 'Запрос участка отправлен'), 'success', 2800);
+            : (depotProposalMode === 'documents'
+              ? 'Документ принят в очередь проверки'
+              : (depotProposalDuplicate ? 'Такой запрос уже есть в очереди' : 'Запрос участка отправлен')), 'success', 2800);
         }
         depotProposalDraft = null;
         depotProposalDuplicate = false;
@@ -2089,10 +2146,9 @@ if (window.__SHIFT_TRACKER_RUNTIME_GUARD_PENDING) {
 
 // Documents — favorites: star indicator on each document, separate "Избранное" panel.
 (function bindDocsFavorites() {
-  // v2: store the real file attributes (path/name/mime) so favorites can be
-  // opened. v1 entries captured a garbled name and no file path, so they are
-  // intentionally dropped on upgrade.
-  var STORAGE_KEY = 'shift_tracker_docs_favorites_v2';
+  // v3 also stores document scope so changing depot cannot leak local files
+  // through favorites saved for another profile.
+  var STORAGE_KEY = 'shift_tracker_docs_favorites_v3';
   var entryCard = document.getElementById('docsEntryCard');
   var subnavCard = document.getElementById('docsSubnavCard');
   var favoritesPanel = document.getElementById('docsFavoritesPanel');
@@ -2107,6 +2163,11 @@ if (window.__SHIFT_TRACKER_RUNTIME_GUARD_PENDING) {
   }
   function save(items) {
     try { window.localStorage.setItem(STORAGE_KEY, JSON.stringify(items)); } catch (e) {}
+  }
+  function visibleItems() {
+    return load().filter(function(item) {
+      return typeof window.isDocScopeVisible !== 'function' || window.isDocScopeVisible(item && item.scope);
+    });
   }
   function isFav(path) {
     var items = load();
@@ -2123,7 +2184,7 @@ if (window.__SHIFT_TRACKER_RUNTIME_GUARD_PENDING) {
     return idx < 0;
   }
   function updateCount() {
-    var c = load().length;
+    var c = visibleItems().length;
     var el = favoritesTile.querySelector('.docs-entry-count');
     if (el) el.textContent = String(c);
   }
@@ -2134,6 +2195,8 @@ if (window.__SHIFT_TRACKER_RUNTIME_GUARD_PENDING) {
     var filePath = rowEl.getAttribute('data-file-path') || '';
     var fileName = rowEl.getAttribute('data-file-name') || '';
     var mimeType = rowEl.getAttribute('data-mime-type') || '';
+    var scope = { level: 'network' };
+    try { scope = JSON.parse(decodeURIComponent(rowEl.getAttribute('data-doc-scope') || '')) || scope; } catch (e) {}
 
     var titleEl = rowEl.querySelector('.docs-item-title');
     var name = titleEl ? titleEl.textContent : '';
@@ -2168,7 +2231,7 @@ if (window.__SHIFT_TRACKER_RUNTIME_GUARD_PENDING) {
     return {
       path: path, name: name, meta: meta, ext: ext,
       filePath: filePath, fileName: fileName, mimeType: mimeType,
-      iconHTML: iconHTML, bodyHTML: bodyHTML, stateClass: stateClass
+      iconHTML: iconHTML, bodyHTML: bodyHTML, stateClass: stateClass, scope: scope
     };
   }
 
@@ -2216,7 +2279,7 @@ if (window.__SHIFT_TRACKER_RUNTIME_GUARD_PENDING) {
 
   function renderFavoritesList() {
     if (!favoritesList) return;
-    var items = load();
+    var items = visibleItems();
     if (!items.length) {
       favoritesList.innerHTML = '<div class="docs-fav-empty">Здесь пока пусто. Нажми на ⭐ у любого документа, чтобы добавить его сюда.</div>';
       return;
@@ -2234,7 +2297,8 @@ if (window.__SHIFT_TRACKER_RUNTIME_GUARD_PENDING) {
         ? ' role="button" tabindex="0"' +
           ' data-file-path="' + escapeAttr(it.filePath) + '"' +
           ' data-file-name="' + escapeAttr(it.fileName || '') + '"' +
-          ' data-mime-type="' + escapeAttr(it.mimeType || '') + '"'
+          ' data-mime-type="' + escapeAttr(it.mimeType || '') + '"' +
+          ' data-doc-scope="' + escapeAttr(encodeURIComponent(JSON.stringify(it.scope || { level: 'network' }))) + '"'
         : '';
       var safePath = escapeAttr(it.path);
       var star = removeStar.replace('__PATH__', function() { return safePath; });
@@ -2346,6 +2410,10 @@ if (window.__SHIFT_TRACKER_RUNTIME_GUARD_PENDING) {
   // Exposed so docs-app.js can refresh the favorites badges the moment a doc
   // finishes downloading (markDocAsDownloaded), like the section list does.
   window.renderDocsFavorites = renderFavoritesList;
+  window.addEventListener('profilecatalogchange', function() {
+    updateCount();
+    renderFavoritesList();
+  });
 })();
 
 // Documents bento: live counts from manifest.json + Recent opened from localStorage.
@@ -2363,18 +2431,23 @@ if (window.__SHIFT_TRACKER_RUNTIME_GUARD_PENDING) {
     if (!el) return;
     el.textContent = (n > 0 ? String(n) : '0');
   }
-  try {
-    fetch('/assets/docs/manifest.json', { cache: 'no-store' })
+  function loadManifestCounts() {
+    try {
+      fetch('/assets/docs/manifest.json', { cache: 'no-store' })
       .then(function(r) { return r.ok ? r.json() : null; })
       .then(function(manifest) {
         if (!manifest) return;
         Object.keys(manifestMap).forEach(function(k) {
           var arr = manifest[manifestMap[k]];
-          setCount(k, Array.isArray(arr) ? arr.length : 0);
+          if (!Array.isArray(arr)) arr = [];
+          if (typeof window.filterDocsForProfile === 'function') arr = window.filterDocsForProfile(arr);
+          setCount(k, arr.length);
         });
       })
       .catch(function() { /* offline — leave dashes */ });
-  } catch (e) {}
+    } catch (e) {}
+  }
+  loadManifestCounts();
 
   // Recent docs from localStorage (key written by docs-app.js if available)
   function recentEscapeHtml(s){ return String(s||'').replace(/[&<>"']/g, function(c){return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c];}); }
@@ -2412,9 +2485,12 @@ if (window.__SHIFT_TRACKER_RUNTIME_GUARD_PENDING) {
     if (!rowsEl) return;
     var items = [];
     try {
-      var raw = window.localStorage && window.localStorage.getItem('shift_tracker_docs_recent_v1');
+      var raw = window.localStorage && window.localStorage.getItem('shift_tracker_docs_recent_v2');
       if (raw) items = JSON.parse(raw) || [];
     } catch (e) { items = []; }
+    if (Array.isArray(items) && typeof window.isDocScopeVisible === 'function') {
+      items = items.filter(function(item) { return window.isDocScopeVisible(item && item.scope); });
+    }
     if (!Array.isArray(items) || !items.length) {
       rowsEl.innerHTML = '';
       if (emptyEl) emptyEl.hidden = false;
@@ -2430,7 +2506,8 @@ if (window.__SHIFT_TRACKER_RUNTIME_GUARD_PENDING) {
         ? ' role="button" tabindex="0"' +
           ' data-file-path="' + recentEscapeHtml(d.filePath) + '"' +
           ' data-file-name="' + recentEscapeHtml(d.fileName || '') + '"' +
-          ' data-mime-type="' + recentEscapeHtml(d.mimeType || '') + '"'
+          ' data-mime-type="' + recentEscapeHtml(d.mimeType || '') + '"' +
+          ' data-doc-scope="' + recentEscapeHtml(encodeURIComponent(JSON.stringify(d.scope || { level: 'network' }))) + '"'
         : '';
 
       // Preferred: replay the captured section markup verbatim (identical card).
@@ -2455,6 +2532,10 @@ if (window.__SHIFT_TRACKER_RUNTIME_GUARD_PENDING) {
   window.renderRecentDocs = renderRecentDocs;
   renderRecentDocs();
   window.addEventListener('storage', function(e) {
-    if (e && e.key === 'shift_tracker_docs_recent_v1') renderRecentDocs();
+    if (e && e.key === 'shift_tracker_docs_recent_v2') renderRecentDocs();
+  });
+  window.addEventListener('profilecatalogchange', function() {
+    loadManifestCounts();
+    renderRecentDocs();
   });
 })();

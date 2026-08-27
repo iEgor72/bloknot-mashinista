@@ -99,18 +99,18 @@ test('public contact surface points only to the Telegram bot', async () => {
 });
 
 test('versioned style namespace serves the current shell stylesheet', async () => {
-  const response = await fetch(baseUrl + '/styles/v408/56-profile.css');
+  const response = await fetch(baseUrl + '/styles/v409/56-profile.css');
   const source = await response.text();
   assert.equal(response.status, 200);
   assert.match(response.headers.get('content-type') || '', /text\/css/i);
   assert.match(source, /\.profile-summary-card/);
   assert.match(source, /\.profile-summary-icon svg/);
 
-  const versionedRuntime = await fetch(baseUrl + '/scripts/v408/render.js');
+  const versionedRuntime = await fetch(baseUrl + '/scripts/v409/render.js');
   assert.equal(versionedRuntime.status, 200);
   assert.match(await versionedRuntime.text(), /renderProfileSummary/);
 
-  const traversalAttempt = await fetch(baseUrl + '/scripts/v408/..%2Fserver.js');
+  const traversalAttempt = await fetch(baseUrl + '/scripts/v409/..%2Fserver.js');
   assert.equal(traversalAttempt.status, 404);
 
   const previousBootstrap = await fetch(baseUrl + '/sw-bootstrap-v397.js');
@@ -351,7 +351,134 @@ test('depot pack materials accept unknown formats for manual review and stay adm
     headers: bearer(adminToken),
   });
   assert.equal(downloaded.status, 200);
+  assert.equal(downloaded.headers.get('content-type'), 'application/octet-stream');
+  assert.equal(downloaded.headers.get('x-content-type-options'), 'nosniff');
+  assert.match(downloaded.headers.get('content-security-policy') || '', /sandbox/);
   assert.deepEqual(Buffer.from(await downloaded.arrayBuffer()), unknownMaterial);
+});
+
+test('active or executable depot materials stay quarantined and cannot be downloaded accidentally', async () => {
+  const userToken = await authenticate({ id: 6103, first_name: 'Карантин' });
+  const adminToken = await authenticate({ id: 9001, first_name: 'Администратор' });
+  const executableMaterial = Buffer.from([0x4d, 0x5a, 0x90, 0x00, 0x03, 0x00, 0x00, 0x00]);
+  const draft = await jsonRequest('/api/depot-pack-requests', {
+    method: 'POST',
+    headers: { ...bearer(userToken), 'Content-Type': 'application/json' },
+    body: JSON.stringify({
+      requestType: 'materials',
+      depotLabel: 'ТЧЭ-1 · Проверка',
+      notes: 'Проверка карантина',
+      attachments: [{ kind: 'other', name: '../../карта.exe', mime: 'application/octet-stream', size: executableMaterial.length }],
+    }),
+  });
+  assert.equal(draft.response.status, 201);
+  assert.equal(draft.body.request.attachments[0].originalName, 'карта.exe');
+
+  const requestId = draft.body.request.id;
+  const attachmentId = draft.body.request.attachments[0].id;
+  const uploaded = await jsonRequest(`/api/depot-pack-requests/${requestId}/attachments/${attachmentId}`, {
+    method: 'PUT',
+    headers: { ...bearer(userToken), 'Content-Type': 'application/octet-stream' },
+    body: executableMaterial,
+  });
+  assert.equal(uploaded.response.status, 200);
+  assert.equal(uploaded.body.attachment.detectedFormat, 'executable-content');
+  assert.equal(uploaded.body.attachment.securityFlag, 'executable-content');
+  assert.equal(uploaded.body.attachment.quarantineStatus, 'blocked');
+
+  const blocked = await jsonRequest(`/api/admin/depot-pack-requests/${requestId}/attachments/${attachmentId}`, {
+    headers: bearer(adminToken),
+  });
+  assert.equal(blocked.response.status, 423);
+
+  const acknowledged = await fetch(baseUrl + `/api/admin/depot-pack-requests/${requestId}/attachments/${attachmentId}?acknowledgeRisk=1`, {
+    headers: bearer(adminToken),
+  });
+  assert.equal(acknowledged.status, 200);
+  assert.deepEqual(Buffer.from(await acknowledged.arrayBuffer()), executableMaterial);
+});
+
+test('community documents keep their audience scope and enter moderation before publication', async () => {
+  const userToken = await authenticate({ id: 6104, first_name: 'Автор' });
+  const adminToken = await authenticate({ id: 9001, first_name: 'Администратор' });
+  const documentFile = Buffer.from('%PDF-1.7\ncommunity document\n%%EOF', 'utf8');
+
+  const invalidDepotScope = await jsonRequest('/api/depot-pack-requests', {
+    method: 'POST',
+    headers: { ...bearer(userToken), 'Content-Type': 'application/json' },
+    body: JSON.stringify({
+      requestType: 'documents',
+      armName: 'Местная инструкция',
+      documentCategory: 'instructions',
+      scopeLevel: 'depot',
+      attachments: [{ kind: 'document', name: 'instruction.pdf', mime: 'application/pdf', size: documentFile.length }],
+    }),
+  });
+  assert.equal(invalidDepotScope.response.status, 400);
+
+  const oversized = await jsonRequest('/api/depot-pack-requests', {
+    method: 'POST',
+    headers: { ...bearer(userToken), 'Content-Type': 'application/json' },
+    body: JSON.stringify({
+      requestType: 'documents',
+      armName: 'Слишком большой документ',
+      documentCategory: 'instructions',
+      scopeLevel: 'network',
+      attachments: [{ kind: 'document', name: 'large.bin', mime: 'application/octet-stream', size: 25 * 1024 * 1024 + 1 }],
+    }),
+  });
+  assert.equal(oversized.response.status, 400);
+
+  const draft = await jsonRequest('/api/depot-pack-requests', {
+    method: 'POST',
+    headers: { ...bearer(userToken), 'Content-Type': 'application/json' },
+    body: JSON.stringify({
+      requestType: 'documents',
+      railwayId: 'dvost',
+      depotId: 'rzd:dvost:tche-9:komsomolsk-na-amure',
+      depotLabel: 'ТЧЭ-9 · Комсомольск-на-Амуре',
+      armName: 'Инструкция по охране труда ТЧЭ-9',
+      notes: 'Действующая редакция, проверить дату утверждения',
+      documentCategory: 'instructions',
+      scopeLevel: 'depot',
+      source: 'documents',
+      attachments: [{ kind: 'document', name: 'ИОТ-ТЧЭ-9.pdf', mime: 'application/pdf', size: documentFile.length }],
+    }),
+  });
+  assert.equal(draft.response.status, 201);
+  assert.equal(draft.body.request.requestType, 'documents');
+  assert.equal(draft.body.request.documentTitle, 'Инструкция по охране труда ТЧЭ-9');
+  assert.deepEqual(draft.body.request.scope, {
+    level: 'depot',
+    railway_id: 'dvost',
+    depot_id: 'rzd:dvost:tche-9:komsomolsk-na-amure',
+    depot_label: 'ТЧЭ-9 · Комсомольск-на-Амуре',
+  });
+
+  const requestId = draft.body.request.id;
+  const attachmentId = draft.body.request.attachments[0].id;
+  const uploaded = await jsonRequest(`/api/depot-pack-requests/${requestId}/attachments/${attachmentId}`, {
+    method: 'PUT',
+    headers: { ...bearer(userToken), 'Content-Type': 'application/pdf' },
+    body: documentFile,
+  });
+  assert.equal(uploaded.response.status, 200);
+  assert.equal(uploaded.body.attachment.detectedFormat, 'pdf');
+  assert.equal(uploaded.body.attachment.quarantineStatus, 'pending_review');
+
+  const completed = await jsonRequest(`/api/depot-pack-requests/${requestId}/complete`, {
+    method: 'POST',
+    headers: bearer(userToken),
+  });
+  assert.equal(completed.response.status, 200);
+  assert.equal(completed.body.request.status, 'new');
+
+  const dashboard = await jsonRequest('/api/admin/depot-pack-requests', { headers: bearer(adminToken) });
+  const stored = dashboard.body.requests.find((item) => item.id === requestId);
+  assert.ok(stored);
+  assert.equal(stored.documentCategory, 'instructions');
+  assert.equal(stored.scope.level, 'depot');
+  assert.equal(stored.status, 'new');
 });
 
 test('analytics requires consent, deduplicates events, and exposes only admin aggregates', async () => {

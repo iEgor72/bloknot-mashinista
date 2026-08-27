@@ -1070,6 +1070,24 @@ async function main() {
     document.getElementById('overlayProfileEdit')?.classList.contains('is-open') &&
     document.querySelectorAll('#inputProfileRailwayId option').length === 17
   ));
+  const nationwideDepotCounts = await page.evaluate(async () => {
+    const railway = document.getElementById('inputProfileRailwayId');
+    const depot = document.getElementById('inputProfileDepotId');
+    const result = {};
+    const railwayIds = Array.from(railway.options).map((option) => option.value).filter(Boolean);
+    for (const railwayId of railwayIds) {
+      railway.value = railwayId;
+      railway.dispatchEvent(new Event('change', { bubbles: true }));
+      await new Promise((resolve) => setTimeout(resolve, 25));
+      result[railwayId] = Array.from(depot.options).filter((option) => option.value && option.value !== '__custom__').length;
+    }
+    return result;
+  });
+  report.checks.nationwideDepotCounts = nationwideDepotCounts;
+  const emptyRailways = Object.entries(nationwideDepotCounts).filter(([, count]) => count < 1);
+  if (Object.keys(nationwideDepotCounts).length !== 16 || emptyRailways.length) {
+    throw new Error(`Some railway catalogs are empty: ${JSON.stringify(nationwideDepotCounts)}`);
+  }
   await page.evaluate(() => {
     const railway = document.getElementById('inputProfileRailwayId');
     railway.value = 'dvost';
@@ -1171,7 +1189,49 @@ async function main() {
   }
   await page.setViewportSize({ width: 1280, height: 720 });
   await page.evaluate(() => closeOverlay('overlayProfileEdit'));
-  await clickElementCenter(page, '.tab-btn[data-tab="home"]', 'home tab after install screenshot');
+
+  const docsScopeContract = await page.evaluate(async () => {
+    const manifest = await fetch('/assets/docs/manifest.json', { cache: 'no-store' }).then((response) => response.json());
+    function setProfile(profile) {
+      localStorage.setItem('shift_tracker_profile_v1', JSON.stringify(profile));
+      window.dispatchEvent(new CustomEvent('profilecatalogchange', { detail: profile }));
+      return {
+        instructions: window.filterDocsForProfile(manifest.instructions).length,
+        speeds: window.filterDocsForProfile(manifest.speeds).length,
+        memos: window.filterDocsForProfile(manifest.memos).length,
+      };
+    }
+    const tch9 = setProfile({ railwayId: 'dvost', depotId: 'rzd:dvost:tche-9:komsomolsk-na-amure', depot: 'ТЧЭ-9 · Комсомольск-на-Амуре' });
+    const moscow = setProfile({ railwayId: 'moscow', depotId: 'rzd:moscow:tche-23:bekasovo-sortirovochnoe', depot: 'ТЧЭ-23 · Бекасово-Сортировочное' });
+    setProfile({ railwayId: 'dvost', depotId: 'rzd:dvost:tche-9:komsomolsk-na-amure', depot: 'ТЧЭ-9 · Комсомольск-на-Амуре' });
+    return { tch9, moscow };
+  });
+  report.checks.docsScopeContract = docsScopeContract;
+  if (docsScopeContract.tch9.instructions !== 7 || docsScopeContract.tch9.speeds !== 3 || docsScopeContract.tch9.memos !== 3 ||
+      docsScopeContract.moscow.instructions !== 4 || docsScopeContract.moscow.speeds !== 0 || docsScopeContract.moscow.memos !== 0) {
+    throw new Error(`Document audience filtering failed: ${JSON.stringify(docsScopeContract)}`);
+  }
+  await page.evaluate(() => setActiveTab('instructions'));
+  await page.waitForFunction(() => document.querySelector('.tab-btn[data-tab="instructions"]')?.classList.contains('active'));
+  await page.waitForFunction(() => document.getElementById('btnDocsContribute') && !document.getElementById('btnDocsContribute').classList.contains('hidden'));
+  await clickElementCenter(page, '#btnDocsContribute', 'document contribution button');
+  await page.waitForFunction(() => document.getElementById('overlayDepotProposal')?.classList.contains('is-open'));
+  const documentContributionUi = await page.evaluate(() => ({
+    title: document.getElementById('depotProposalSheetTitle')?.textContent.trim() || '',
+    modeSwitchHidden: document.querySelector('.depot-proposal-mode')?.classList.contains('hidden') || false,
+    documentsVisible: !document.getElementById('depotProposalDocumentsPanel')?.classList.contains('hidden'),
+    defaultScope: document.getElementById('inputDepotProposalDocumentScope')?.value || '',
+    submit: document.getElementById('btnDepotProposalSend')?.textContent.trim() || '',
+  }));
+  report.checks.documentContributionUi = documentContributionUi;
+  if (documentContributionUi.title !== 'Предложить документ' || !documentContributionUi.modeSwitchHidden ||
+      !documentContributionUi.documentsVisible || documentContributionUi.defaultScope !== 'depot' ||
+      documentContributionUi.submit !== 'Отправить на проверку') {
+    throw new Error(`Document contribution UI failed: ${JSON.stringify(documentContributionUi)}`);
+  }
+  await page.evaluate(() => closeOverlay('overlayDepotProposal'));
+  await page.evaluate(() => setActiveTab('home'));
+  await page.waitForFunction(() => document.querySelector('.tab-btn[data-tab="home"]')?.classList.contains('active'));
   await page.screenshot({ path: path.join(artifactsDir, 'smoke-home.png'), fullPage: true });
 
   if (report.consoleErrors.length) throw new Error(`Console errors detected (${report.consoleErrors.length})`);

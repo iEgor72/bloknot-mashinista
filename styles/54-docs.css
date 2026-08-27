@@ -261,6 +261,38 @@
   font-variant-numeric: tabular-nums;
 }
 
+.docs-contribute-btn {
+  width: 100%;
+  min-height: 62px;
+  margin-top: 12px;
+  padding: 11px 12px;
+  border: 1px solid color-mix(in oklch, var(--accent) 30%, var(--hair));
+  border-radius: 16px;
+  background: color-mix(in oklch, var(--accent) 9%, var(--bg-rise));
+  color: var(--ink);
+  display: grid;
+  grid-template-columns: 34px minmax(0, 1fr) auto;
+  gap: 10px;
+  align-items: center;
+  text-align: left;
+  cursor: pointer;
+}
+.docs-contribute-btn:active { transform: scale(.99); }
+.docs-contribute-icon {
+  width: 34px;
+  height: 34px;
+  border-radius: 11px;
+  display: grid;
+  place-items: center;
+  background: var(--accent);
+  color: var(--accent-ink);
+  font: 700 22px/1 system-ui, sans-serif;
+}
+.docs-contribute-btn > span:nth-child(2) { display: grid; gap: 3px; min-width: 0; }
+.docs-contribute-btn strong { font: 650 13px/1.25 'Golos Text', system-ui, sans-serif; }
+.docs-contribute-btn small { color: var(--ink-3); font: 500 10px/1.35 'Golos Text', system-ui, sans-serif; }
+.docs-contribute-arrow { color: var(--accent); font: 500 24px/1 system-ui, sans-serif; }
+
 .doc-recent {
   margin-top: 14px;
   padding: 14px;

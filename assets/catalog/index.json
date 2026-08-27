@@ -22,6 +22,7 @@
   "publication_rules": {
     "selectable_depot_statuses": [
       "verified",
+      "source_listed",
       "pack_available"
     ],
     "candidate_depot_statuses": [

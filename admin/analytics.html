@@ -86,6 +86,8 @@
     .queue-files { display:grid; gap:7px; }
     .queue-file { display:flex; align-items:center; justify-content:space-between; gap:12px; padding:9px 11px; border:1px solid var(--line); border-radius:11px; color:var(--text); text-decoration:none; font-size:12px; }
     .queue-file small { color:var(--muted); }
+    .queue-file.is-quarantined { border-color:rgba(255,112,112,.35); background:rgba(255,112,112,.08); color:#ffd2d2; cursor:not-allowed; }
+    .queue-file.is-quarantined small { color:#ff9f9f; }
     .queue-review { display:grid; grid-template-columns:minmax(160px,.55fr) minmax(220px,1fr) auto; gap:8px; }
     .queue-review select,.queue-review input { min-width:0; height:40px; border:1px solid var(--line); border-radius:11px; background:#091625; color:var(--text); padding:0 11px; font:500 12px/1 Inter,system-ui,sans-serif; }
     .queue-review button { color:var(--accent); }
@@ -188,6 +190,17 @@
         if (bytes < 1048576) return Math.round(bytes / 1024) + ' КБ';
         return (bytes / 1048576).toFixed(bytes < 10485760 ? 1 : 0) + ' МБ';
       }
+      function requestTypeLabel(item) {
+        if (item.requestType === 'documents') return 'Документ · ' + (({instructions:'Инструкции',speeds:'Скорости',memos:'Режимные карты',reminders:'Памятки',folders:'Другие материалы'})[item.documentCategory || ''] || 'Другой материал');
+        return item.requestType === 'materials' ? 'Материалы участка' : 'Запрос участка';
+      }
+      function requestScopeLabel(item) {
+        var scope = item.scope || {};
+        if (scope.level === 'network') return 'Для всей сети';
+        if (scope.level === 'railway') return 'Дорога: ' + (item.railwayId || 'не указана');
+        if (scope.level === 'depot') return 'Депо: ' + (item.depotLabel || item.depotId || 'не указано');
+        return '';
+      }
       function renderQueue() {
         var visible = queueItems.filter(queueVisible);
         queueSummary.textContent = queueItems.length
@@ -200,11 +213,15 @@
         queueList.innerHTML = visible.map(function(item) {
           var files = (item.attachments || []).map(function(file) {
             var url = '/api/admin/depot-pack-requests/' + encodeURIComponent(item.id) + '/attachments/' + encodeURIComponent(file.id);
+            if (file.quarantineStatus === 'blocked') {
+              return '<div class="queue-file is-quarantined"><span>' + esc(file.originalName) + '</span><small>Карантин · ' + esc(file.detectedFormat || 'активное содержимое') + '</small></div>';
+            }
             return '<a class="queue-file" href="' + url + '" data-download-name="' + esc(file.originalName) + '"><span>' + esc(file.originalName) + '</span><small>' + esc((file.detectedFormat || 'неизвестный формат') + ' · ' + fileSize(file.uploadedSize || file.declaredSize)) + ' ↓</small></a>';
           }).join('');
+          var isDocument = item.requestType === 'documents';
           return '<article class="queue-item" data-request-id="' + esc(item.id) + '">' +
-            '<div class="queue-item-head"><div><div class="queue-title">' + esc(item.depotLabel || item.depotId || 'Депо не указано') + '</div><div class="queue-arm">' + esc(item.armName || 'Плечо не указано') + '</div></div><span class="badge queue-status ' + esc(item.status || 'new') + '">' + esc(queueStatusLabel(item.status)) + '</span></div>' +
-            '<div class="queue-meta"><span>' + esc(item.requestType === 'materials' ? 'Материалы' : 'Запрос участка') + '</span><span>' + esc(item.submittedBy || ('ID ' + (item.sid || ''))) + '</span><span>' + esc(dateTime(item.submittedAt || item.createdAt)) + '</span></div>' +
+            '<div class="queue-item-head"><div><div class="queue-title">' + esc(isDocument ? (item.documentTitle || item.armName || 'Документ без названия') : (item.depotLabel || item.depotId || 'Депо не указано')) + '</div><div class="queue-arm">' + esc(isDocument ? requestScopeLabel(item) : (item.armName || 'Плечо не указано')) + '</div></div><span class="badge queue-status ' + esc(item.status || 'new') + '">' + esc(queueStatusLabel(item.status)) + '</span></div>' +
+            '<div class="queue-meta"><span>' + esc(requestTypeLabel(item)) + '</span><span>' + esc(item.submittedBy || ('ID ' + (item.sid || ''))) + '</span><span>' + esc(dateTime(item.submittedAt || item.createdAt)) + '</span></div>' +
             (item.notes ? '<div class="queue-note">' + esc(item.notes) + '</div>' : '') +
             (files ? '<div class="queue-files">' + files + '</div>' : '') +
             '<div class="queue-review"><select aria-label="Статус запроса"><option value="new">Новый</option><option value="reviewing">Проверяется</option><option value="needs_info">Нужны данные</option><option value="accepted">Принят</option><option value="published">Опубликован</option><option value="rejected">Отклонён</option></select><input aria-label="Заметка редактора" maxlength="800" placeholder="Заметка редактора" value="' + esc(item.reviewNotes || '') + '"><button type="button" data-save-review>Сохранить</button></div>' +

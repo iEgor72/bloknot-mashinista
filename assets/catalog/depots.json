@@ -2,70 +2,6 @@
   "schema_version": "1.0",
   "depots": [
     {
-      "id": "rzd:east-siberian:tche-5:irkutsk-sortirovochny",
-      "name": "Иркутск-Сортировочный",
-      "code": "ТЧЭ-5",
-      "railway_id": "east-siberian",
-      "traction_directorate_id": "td-east-siberian",
-      "status": "legacy_unverified",
-      "source_ids": ["legacy-tch9-v43-db"]
-    },
-    {
-      "id": "rzd:east-siberian:tche-14:novaya-chara",
-      "name": "Новая Чара",
-      "code": "ТЧЭ-14",
-      "railway_id": "east-siberian",
-      "traction_directorate_id": "td-east-siberian",
-      "status": "legacy_unverified",
-      "source_ids": ["legacy-tch9-v43-db"]
-    },
-    {
-      "id": "rzd:dvost:tche-1:obluchye",
-      "name": "Облучье",
-      "code": "ТЧЭ-1",
-      "railway_id": "dvost",
-      "traction_directorate_id": "td-dvost",
-      "status": "verified",
-      "source_ids": ["miit-training-plan-2022"]
-    },
-    {
-      "id": "rzd:dvost:tche-2:khabarovsk-ii",
-      "name": "Хабаровск-II",
-      "code": "ТЧЭ-2",
-      "railway_id": "dvost",
-      "traction_directorate_id": "td-dvost",
-      "status": "verified",
-      "aliases": ["Хабаровск-2", "Хабаровск-П"],
-      "source_ids": ["miit-training-plan-2022"]
-    },
-    {
-      "id": "rzd:dvost:tche-4:ruzhino",
-      "name": "Ружино",
-      "code": "ТЧЭ-4",
-      "railway_id": "dvost",
-      "traction_directorate_id": "td-dvost",
-      "status": "verified",
-      "source_ids": ["legacy-tch9-v43-db", "miit-training-plan-2022"]
-    },
-    {
-      "id": "rzd:dvost:tche-6:ussuriysk",
-      "name": "Уссурийск",
-      "code": "ТЧЭ-6",
-      "railway_id": "dvost",
-      "traction_directorate_id": "td-dvost",
-      "status": "verified",
-      "source_ids": ["miit-training-plan-2022"]
-    },
-    {
-      "id": "rzd:dvost:tche-8:smolyaninovo",
-      "name": "Смоляниново",
-      "code": "ТЧЭ-8",
-      "railway_id": "dvost",
-      "traction_directorate_id": "td-dvost",
-      "status": "verified",
-      "source_ids": ["miit-training-plan-2022"]
-    },
-    {
       "id": "rzd:dvost:tche-9:komsomolsk-na-amure",
       "name": "Комсомольск-на-Амуре",
       "code": "ТЧЭ-9",
@@ -73,27 +9,11 @@
       "traction_directorate_id": "td-dvost",
       "status": "pack_available",
       "pack_file": "depot-packs/rzd-dvost-tche-9-komsomolsk-na-amure.json",
-      "source_ids": ["legacy-tch9-v43-db", "bloknot-tch9-section-bundle"]
-    },
-    {
-      "id": "rzd:dvost:tche-10:sovetskaya-gavan",
-      "name": "Советская Гавань",
-      "code": "ТЧЭ-10",
-      "railway_id": "dvost",
-      "traction_directorate_id": "td-dvost",
-      "status": "verified",
-      "aliases": ["Высокогорная", "Высокогорный"],
-      "relationship_note": "Высокогорная хранится как прежнее название/оборотное депо для поиска и совместимости профилей.",
-      "source_ids": ["miit-training-plan-2022", "dvost-traction-recruiting-2024"]
-    },
-    {
-      "id": "rzd:dvost:tche-11:tynda",
-      "name": "Тында",
-      "code": "ТЧЭ-11",
-      "railway_id": "dvost",
-      "traction_directorate_id": "td-dvost",
-      "status": "verified",
-      "source_ids": ["miit-training-plan-2022"]
+      "source_ids": [
+        "legacy-tch9-v43-db",
+        "bloknot-tch9-section-bundle",
+        "miit-training-plan-2022"
+      ]
     },
     {
       "id": "rzd:dvost:tche-13:novyi-urgal",
@@ -101,8 +21,22 @@
       "code": "ТЧЭ-13",
       "railway_id": "dvost",
       "traction_directorate_id": "td-dvost",
-      "status": "verified",
-      "source_ids": ["legacy-tch9-v43-db", "miit-training-plan-2022"]
+      "status": "source_listed",
+      "source_ids": [
+        "legacy-tch9-v43-db",
+        "miit-training-plan-2022"
+      ]
+    },
+    {
+      "id": "rzd:dvost:tche-1:obluche",
+      "name": "Облучье",
+      "code": "ТЧЭ-1",
+      "railway_id": "dvost",
+      "traction_directorate_id": "td-dvost",
+      "status": "source_listed",
+      "source_ids": [
+        "miit-training-plan-2022"
+      ]
     },
     {
       "id": "rzd:dvost:tche-14:partizansk",
@@ -110,8 +44,87 @@
       "code": "ТЧЭ-14",
       "railway_id": "dvost",
       "traction_directorate_id": "td-dvost",
-      "status": "verified",
-      "source_ids": ["miit-training-plan-2022"]
+      "status": "source_listed",
+      "source_ids": [
+        "miit-training-plan-2022"
+      ]
+    },
+    {
+      "id": "rzd:dvost:tche-4:ruzhino",
+      "name": "Ружино",
+      "code": "ТЧЭ-4",
+      "railway_id": "dvost",
+      "traction_directorate_id": "td-dvost",
+      "status": "source_listed",
+      "source_ids": [
+        "legacy-tch9-v43-db",
+        "miit-training-plan-2022"
+      ]
+    },
+    {
+      "id": "rzd:dvost:tche-8:smolyaninovo",
+      "name": "Смоляниново",
+      "code": "ТЧЭ-8",
+      "railway_id": "dvost",
+      "traction_directorate_id": "td-dvost",
+      "status": "source_listed",
+      "source_ids": [
+        "miit-training-plan-2022"
+      ]
+    },
+    {
+      "id": "rzd:dvost:tche-10:sovetskaya-gavan",
+      "name": "Советская Гавань",
+      "code": "ТЧЭ-10",
+      "railway_id": "dvost",
+      "traction_directorate_id": "td-dvost",
+      "status": "source_listed",
+      "aliases": [
+        "Высокогорная",
+        "Высокогорный"
+      ],
+      "relationship_note": "Высокогорная хранится как прежнее название/оборотное депо для поиска и совместимости профилей.",
+      "source_ids": [
+        "miit-training-plan-2022",
+        "dvost-traction-recruiting-2024"
+      ]
+    },
+    {
+      "id": "rzd:dvost:tche-11:tynda",
+      "name": "Тында",
+      "code": "ТЧЭ-11",
+      "railway_id": "dvost",
+      "traction_directorate_id": "td-dvost",
+      "status": "source_listed",
+      "source_ids": [
+        "miit-training-plan-2022"
+      ]
+    },
+    {
+      "id": "rzd:dvost:tche-6:ussuriisk",
+      "name": "Уссурийск",
+      "code": "ТЧЭ-6",
+      "railway_id": "dvost",
+      "traction_directorate_id": "td-dvost",
+      "status": "source_listed",
+      "source_ids": [
+        "miit-training-plan-2022"
+      ]
+    },
+    {
+      "id": "rzd:dvost:tche-2:khabarovsk-ii",
+      "name": "Хабаровск-II",
+      "code": "ТЧЭ-2",
+      "railway_id": "dvost",
+      "traction_directorate_id": "td-dvost",
+      "status": "source_listed",
+      "aliases": [
+        "Хабаровск-2",
+        "Хабаровск-П"
+      ],
+      "source_ids": [
+        "miit-training-plan-2022"
+      ]
     },
     {
       "id": "rzd:dvost:tche-15:yuzhno-sakhalinsk",
@@ -119,8 +132,904 @@
       "code": "ТЧЭ-15",
       "railway_id": "dvost",
       "traction_directorate_id": "td-dvost",
-      "status": "verified",
-      "source_ids": ["miit-training-plan-2022"]
+      "status": "source_listed",
+      "source_ids": [
+        "miit-training-plan-2022"
+      ]
+    },
+    {
+      "id": "rzd:east-siberian:tche-9:vikhorevka",
+      "name": "Вихоревка",
+      "code": "ТЧЭ-9",
+      "railway_id": "east-siberian",
+      "traction_directorate_id": "td-east-siberian",
+      "status": "source_listed",
+      "source_ids": [
+        "miit-training-plan-2022"
+      ]
+    },
+    {
+      "id": "rzd:east-siberian:tche-3:zima",
+      "name": "Зима",
+      "code": "ТЧЭ-3",
+      "railway_id": "east-siberian",
+      "traction_directorate_id": "td-east-siberian",
+      "status": "source_listed",
+      "source_ids": [
+        "miit-training-plan-2022"
+      ]
+    },
+    {
+      "id": "rzd:east-siberian:tche-5:irkutsk-sortirovochnyi",
+      "name": "Иркутск-Сортировочный",
+      "code": "ТЧЭ-5",
+      "railway_id": "east-siberian",
+      "traction_directorate_id": "td-east-siberian",
+      "status": "source_listed",
+      "source_ids": [
+        "legacy-tch9-v43-db",
+        "miit-training-plan-2022"
+      ]
+    },
+    {
+      "id": "rzd:east-siberian:tche-10:lena",
+      "name": "Лена",
+      "code": "ТЧЭ-10",
+      "railway_id": "east-siberian",
+      "traction_directorate_id": "td-east-siberian",
+      "status": "source_listed",
+      "source_ids": [
+        "miit-training-plan-2022"
+      ]
+    },
+    {
+      "id": "rzd:east-siberian:tche-2:nizhneudinsk",
+      "name": "Нижнеудинск",
+      "code": "ТЧЭ-2",
+      "railway_id": "east-siberian",
+      "traction_directorate_id": "td-east-siberian",
+      "status": "source_listed",
+      "source_ids": [
+        "miit-training-plan-2022"
+      ]
+    },
+    {
+      "id": "rzd:east-siberian:tche-14:novaya-chara",
+      "name": "Новая Чара",
+      "code": "ТЧЭ-14",
+      "railway_id": "east-siberian",
+      "traction_directorate_id": "td-east-siberian",
+      "status": "source_listed",
+      "source_ids": [
+        "legacy-tch9-v43-db",
+        "miit-training-plan-2022"
+      ]
+    },
+    {
+      "id": "rzd:east-siberian:tche-12:severobaikalsk",
+      "name": "Северобайкальск",
+      "code": "ТЧЭ-12",
+      "railway_id": "east-siberian",
+      "traction_directorate_id": "td-east-siberian",
+      "status": "source_listed",
+      "source_ids": [
+        "miit-training-plan-2022"
+      ]
+    },
+    {
+      "id": "rzd:east-siberian:tche-6:slyudyanka",
+      "name": "Слюдянка",
+      "code": "ТЧЭ-6",
+      "railway_id": "east-siberian",
+      "traction_directorate_id": "td-east-siberian",
+      "status": "source_listed",
+      "source_ids": [
+        "miit-training-plan-2022"
+      ]
+    },
+    {
+      "id": "rzd:east-siberian:tche-1:taishet",
+      "name": "Тайшет",
+      "code": "ТЧЭ-1",
+      "railway_id": "east-siberian",
+      "traction_directorate_id": "td-east-siberian",
+      "status": "source_listed",
+      "source_ids": [
+        "miit-training-plan-2022"
+      ]
+    },
+    {
+      "id": "rzd:east-siberian:tche-7:ulan-ude",
+      "name": "Улан-Удэ",
+      "code": "ТЧЭ-7",
+      "railway_id": "east-siberian",
+      "traction_directorate_id": "td-east-siberian",
+      "status": "source_listed",
+      "source_ids": [
+        "miit-training-plan-2022"
+      ]
+    },
+    {
+      "id": "rzd:gorky:tche-15:agryz",
+      "name": "Агрыз",
+      "code": "ТЧЭ-15",
+      "railway_id": "gorky",
+      "traction_directorate_id": "td-gorky",
+      "status": "source_listed",
+      "source_ids": [
+        "miit-training-plan-2022"
+      ]
+    },
+    {
+      "id": "rzd:gorky:tche-6:gorkii-sortirovochnyi",
+      "name": "Горький-Сортировочный",
+      "code": "ТЧЭ-6",
+      "railway_id": "gorky",
+      "traction_directorate_id": "td-gorky",
+      "status": "source_listed",
+      "source_ids": [
+        "miit-training-plan-2022"
+      ]
+    },
+    {
+      "id": "rzd:gorky:tche-8:kirov",
+      "name": "Киров",
+      "code": "ТЧЭ-8",
+      "railway_id": "gorky",
+      "traction_directorate_id": "td-gorky",
+      "status": "source_listed",
+      "source_ids": [
+        "miit-training-plan-2022"
+      ]
+    },
+    {
+      "id": "rzd:gorky:tche-16:krasnoufimsk",
+      "name": "Красноуфимск",
+      "code": "ТЧЭ-16",
+      "railway_id": "gorky",
+      "traction_directorate_id": "td-gorky",
+      "status": "source_listed",
+      "source_ids": [
+        "miit-training-plan-2022"
+      ]
+    },
+    {
+      "id": "rzd:gorky:tche-9:lyangasovo",
+      "name": "Лянгасово",
+      "code": "ТЧЭ-9",
+      "railway_id": "gorky",
+      "traction_directorate_id": "td-gorky",
+      "status": "source_listed",
+      "source_ids": [
+        "miit-training-plan-2022"
+      ]
+    },
+    {
+      "id": "rzd:gorky:tche-2:murom",
+      "name": "Муром",
+      "code": "ТЧЭ-2",
+      "railway_id": "gorky",
+      "traction_directorate_id": "td-gorky",
+      "status": "source_listed",
+      "source_ids": [
+        "miit-training-plan-2022"
+      ]
+    },
+    {
+      "id": "rzd:gorky:tche-14:yudino",
+      "name": "Юдино",
+      "code": "ТЧЭ-14",
+      "railway_id": "gorky",
+      "traction_directorate_id": "td-gorky",
+      "status": "source_listed",
+      "source_ids": [
+        "miit-training-plan-2022"
+      ]
+    },
+    {
+      "id": "rzd:kaliningrad:depot:kaliningrad",
+      "name": "Калининград",
+      "code": "",
+      "code_unknown": true,
+      "railway_id": "kaliningrad",
+      "traction_directorate_id": "td-kaliningrad",
+      "status": "source_listed",
+      "source_ids": [
+        "miit-training-plan-2022"
+      ]
+    },
+    {
+      "id": "rzd:krasnoyarsk:tche-7:abakan-ii",
+      "name": "Абакан-II",
+      "code": "ТЧЭ-7",
+      "railway_id": "krasnoyarsk",
+      "traction_directorate_id": "td-krasnoyarsk",
+      "status": "source_listed",
+      "source_ids": [
+        "miit-training-plan-2022"
+      ]
+    },
+    {
+      "id": "rzd:krasnoyarsk:tche-5:achinsk-i",
+      "name": "Ачинск-I",
+      "code": "ТЧЭ-5",
+      "railway_id": "krasnoyarsk",
+      "traction_directorate_id": "td-krasnoyarsk",
+      "status": "source_listed",
+      "source_ids": [
+        "miit-training-plan-2022"
+      ]
+    },
+    {
+      "id": "rzd:krasnoyarsk:tche-1:bogotol",
+      "name": "Боготол",
+      "code": "ТЧЭ-1",
+      "railway_id": "krasnoyarsk",
+      "traction_directorate_id": "td-krasnoyarsk",
+      "status": "source_listed",
+      "source_ids": [
+        "miit-training-plan-2022"
+      ]
+    },
+    {
+      "id": "rzd:krasnoyarsk:tche-3:ilanskaya",
+      "name": "Иланская",
+      "code": "ТЧЭ-3",
+      "railway_id": "krasnoyarsk",
+      "traction_directorate_id": "td-krasnoyarsk",
+      "status": "source_listed",
+      "source_ids": [
+        "miit-training-plan-2022"
+      ]
+    },
+    {
+      "id": "rzd:krasnoyarsk:tche-2:krasnoyarsk-glavnyi",
+      "name": "Красноярск-Главный",
+      "code": "ТЧЭ-2",
+      "railway_id": "krasnoyarsk",
+      "traction_directorate_id": "td-krasnoyarsk",
+      "status": "source_listed",
+      "source_ids": [
+        "miit-training-plan-2022"
+      ]
+    },
+    {
+      "id": "rzd:kuibyshev:tche-17:abdulino",
+      "name": "Абдулино",
+      "code": "ТЧЭ-17",
+      "railway_id": "kuibyshev",
+      "traction_directorate_id": "td-kuibyshev",
+      "status": "source_listed",
+      "source_ids": [
+        "miit-training-plan-2022"
+      ]
+    },
+    {
+      "id": "rzd:kuibyshev:tche-16:bugulma",
+      "name": "Бугульма",
+      "code": "ТЧЭ-16",
+      "railway_id": "kuibyshev",
+      "traction_directorate_id": "td-kuibyshev",
+      "status": "source_listed",
+      "source_ids": [
+        "miit-training-plan-2022"
+      ]
+    },
+    {
+      "id": "rzd:kuibyshev:tche-12:kinel",
+      "name": "Кинель",
+      "code": "ТЧЭ-12",
+      "railway_id": "kuibyshev",
+      "traction_directorate_id": "td-kuibyshev",
+      "status": "source_listed",
+      "source_ids": [
+        "miit-training-plan-2022"
+      ]
+    },
+    {
+      "id": "rzd:kuibyshev:tche-9:oktyabrsk",
+      "name": "Октябрьск",
+      "code": "ТЧЭ-9",
+      "railway_id": "kuibyshev",
+      "traction_directorate_id": "td-kuibyshev",
+      "status": "source_listed",
+      "source_ids": [
+        "miit-training-plan-2022"
+      ]
+    },
+    {
+      "id": "rzd:kuibyshev:tche-3:penza",
+      "name": "Пенза",
+      "code": "ТЧЭ-3",
+      "railway_id": "kuibyshev",
+      "traction_directorate_id": "td-kuibyshev",
+      "status": "source_listed",
+      "source_ids": [
+        "miit-training-plan-2022"
+      ]
+    },
+    {
+      "id": "rzd:kuibyshev:tche-5:ruzaevka",
+      "name": "Рузаевка",
+      "code": "ТЧЭ-5",
+      "railway_id": "kuibyshev",
+      "traction_directorate_id": "td-kuibyshev",
+      "status": "source_listed",
+      "source_ids": [
+        "miit-training-plan-2022"
+      ]
+    },
+    {
+      "id": "rzd:kuibyshev:tche-10:samara",
+      "name": "Самара",
+      "code": "ТЧЭ-10",
+      "railway_id": "kuibyshev",
+      "traction_directorate_id": "td-kuibyshev",
+      "status": "source_listed",
+      "source_ids": [
+        "miit-training-plan-2022"
+      ]
+    },
+    {
+      "id": "rzd:kuibyshev:tche-20:sterlitamak",
+      "name": "Стерлитамак",
+      "code": "ТЧЭ-20",
+      "railway_id": "kuibyshev",
+      "traction_directorate_id": "td-kuibyshev",
+      "status": "source_listed",
+      "source_ids": [
+        "miit-training-plan-2022"
+      ]
+    },
+    {
+      "id": "rzd:kuibyshev:tche-14:ulyanovsk",
+      "name": "Ульяновск",
+      "code": "ТЧЭ-14",
+      "railway_id": "kuibyshev",
+      "traction_directorate_id": "td-kuibyshev",
+      "status": "source_listed",
+      "source_ids": [
+        "miit-training-plan-2022"
+      ]
+    },
+    {
+      "id": "rzd:kuibyshev:tche-19:ufa",
+      "name": "Уфа",
+      "code": "ТЧЭ-19",
+      "railway_id": "kuibyshev",
+      "traction_directorate_id": "td-kuibyshev",
+      "status": "source_listed",
+      "source_ids": [
+        "miit-training-plan-2022"
+      ]
+    },
+    {
+      "id": "rzd:moscow:tche-23:bekasovo-sortirovochnoe",
+      "name": "Бекасово-Сортировочное",
+      "code": "ТЧЭ-23",
+      "railway_id": "moscow",
+      "traction_directorate_id": "td-moscow",
+      "status": "source_listed",
+      "source_ids": [
+        "miit-training-plan-2022"
+      ]
+    },
+    {
+      "id": "rzd:moscow:tche-46:bryansk-2",
+      "name": "Брянск-2",
+      "code": "ТЧЭ-46",
+      "railway_id": "moscow",
+      "traction_directorate_id": "td-moscow",
+      "status": "source_listed",
+      "source_ids": [
+        "miit-training-plan-2022"
+      ]
+    },
+    {
+      "id": "rzd:moscow:tche-41:vyazma-sortirovochnaya",
+      "name": "Вязьма-Сортировочная",
+      "code": "ТЧЭ-41",
+      "railway_id": "moscow",
+      "traction_directorate_id": "td-moscow",
+      "status": "source_listed",
+      "source_ids": [
+        "miit-training-plan-2022"
+      ]
+    },
+    {
+      "id": "rzd:moscow:tche-18:imeni-ilicha",
+      "name": "имени Ильича",
+      "code": "ТЧЭ-18",
+      "railway_id": "moscow",
+      "traction_directorate_id": "td-moscow",
+      "status": "source_listed",
+      "source_ids": [
+        "miit-training-plan-2022"
+      ]
+    },
+    {
+      "id": "rzd:moscow:tche-29:kursk-sortirovochnyi",
+      "name": "Курск-Сортировочный",
+      "code": "ТЧЭ-29",
+      "railway_id": "moscow",
+      "traction_directorate_id": "td-moscow",
+      "status": "source_listed",
+      "source_ids": [
+        "miit-training-plan-2022"
+      ]
+    },
+    {
+      "id": "rzd:moscow:tche-2:likhobory-okruzhnye",
+      "name": "Лихоборы-Окружные",
+      "code": "ТЧЭ-2",
+      "railway_id": "moscow",
+      "traction_directorate_id": "td-moscow",
+      "status": "source_listed",
+      "source_ids": [
+        "miit-training-plan-2022"
+      ]
+    },
+    {
+      "id": "rzd:moscow:tche-6:moskva-sortirovochnaya-ryazanskaya",
+      "name": "Москва-Сортировочная-Рязанская",
+      "code": "ТЧЭ-6",
+      "railway_id": "moscow",
+      "traction_directorate_id": "td-moscow",
+      "status": "source_listed",
+      "source_ids": [
+        "miit-training-plan-2022"
+      ]
+    },
+    {
+      "id": "rzd:moscow:tche-36:novomoskovsk",
+      "name": "Новомосковск",
+      "code": "ТЧЭ-36",
+      "railway_id": "moscow",
+      "traction_directorate_id": "td-moscow",
+      "status": "source_listed",
+      "source_ids": [
+        "miit-training-plan-2022"
+      ]
+    },
+    {
+      "id": "rzd:moscow:tche-33:ozherele-sortirovochnoe",
+      "name": "Ожерелье-Сортировочное",
+      "code": "ТЧЭ-33",
+      "railway_id": "moscow",
+      "traction_directorate_id": "td-moscow",
+      "status": "source_listed",
+      "source_ids": [
+        "miit-training-plan-2022"
+      ]
+    },
+    {
+      "id": "rzd:moscow:tche-27:orel-sortirovochnyi",
+      "name": "Орел-Сортировочный",
+      "code": "ТЧЭ-27",
+      "railway_id": "moscow",
+      "traction_directorate_id": "td-moscow",
+      "status": "source_listed",
+      "source_ids": [
+        "miit-training-plan-2022"
+      ]
+    },
+    {
+      "id": "rzd:moscow:tche-5:orekhovo",
+      "name": "Орехово",
+      "code": "ТЧЭ-5",
+      "railway_id": "moscow",
+      "traction_directorate_id": "td-moscow",
+      "status": "source_listed",
+      "source_ids": [
+        "miit-training-plan-2022"
+      ]
+    },
+    {
+      "id": "rzd:moscow:tche-38:rybnoe-sortirovochnoe",
+      "name": "Рыбное-Сортировочное",
+      "code": "ТЧЭ-38",
+      "railway_id": "moscow",
+      "traction_directorate_id": "td-moscow",
+      "status": "source_listed",
+      "source_ids": [
+        "miit-training-plan-2022"
+      ]
+    },
+    {
+      "id": "rzd:moscow:tche-39:ryazan",
+      "name": "Рязань",
+      "code": "ТЧЭ-39",
+      "railway_id": "moscow",
+      "traction_directorate_id": "td-moscow",
+      "status": "source_listed",
+      "source_ids": [
+        "miit-training-plan-2022"
+      ]
+    },
+    {
+      "id": "rzd:moscow:tche-42:smolensk-sortirovochnyi",
+      "name": "Смоленск-Сортировочный",
+      "code": "ТЧЭ-42",
+      "railway_id": "moscow",
+      "traction_directorate_id": "td-moscow",
+      "status": "source_listed",
+      "source_ids": [
+        "miit-training-plan-2022"
+      ]
+    },
+    {
+      "id": "rzd:north:tche-6:bui",
+      "name": "Буй",
+      "code": "ТЧЭ-6",
+      "railway_id": "north",
+      "traction_directorate_id": "td-north",
+      "status": "source_listed",
+      "source_ids": [
+        "miit-training-plan-2022"
+      ]
+    },
+    {
+      "id": "rzd:north:tche-24:vorkuta",
+      "name": "Воркута",
+      "code": "ТЧЭ-24",
+      "railway_id": "north",
+      "traction_directorate_id": "td-north",
+      "status": "source_listed",
+      "source_ids": [
+        "miit-training-plan-2022"
+      ]
+    },
+    {
+      "id": "rzd:north:tche-5:ivanovo",
+      "name": "Иваново",
+      "code": "ТЧЭ-5",
+      "railway_id": "north",
+      "traction_directorate_id": "td-north",
+      "status": "source_listed",
+      "source_ids": [
+        "miit-training-plan-2022"
+      ]
+    },
+    {
+      "id": "rzd:north:tche-15:isakogorka",
+      "name": "Исакогорка",
+      "code": "ТЧЭ-15",
+      "railway_id": "north",
+      "traction_directorate_id": "td-north",
+      "status": "source_listed",
+      "source_ids": [
+        "miit-training-plan-2022"
+      ]
+    },
+    {
+      "id": "rzd:north:tche-19:kotlas",
+      "name": "Котлас",
+      "code": "ТЧЭ-19",
+      "railway_id": "north",
+      "traction_directorate_id": "td-north",
+      "status": "source_listed",
+      "source_ids": [
+        "miit-training-plan-2022"
+      ]
+    },
+    {
+      "id": "rzd:north:tche-11:losta",
+      "name": "Лоста",
+      "code": "ТЧЭ-11",
+      "railway_id": "north",
+      "traction_directorate_id": "td-north",
+      "status": "source_listed",
+      "source_ids": [
+        "miit-training-plan-2022"
+      ]
+    },
+    {
+      "id": "rzd:north:tche-13:nyandoma",
+      "name": "Няндома",
+      "code": "ТЧЭ-13",
+      "railway_id": "north",
+      "traction_directorate_id": "td-north",
+      "status": "source_listed",
+      "source_ids": [
+        "miit-training-plan-2022"
+      ]
+    },
+    {
+      "id": "rzd:north:tche-22:pechora",
+      "name": "Печора",
+      "code": "ТЧЭ-22",
+      "railway_id": "north",
+      "traction_directorate_id": "td-north",
+      "status": "source_listed",
+      "source_ids": [
+        "miit-training-plan-2022"
+      ]
+    },
+    {
+      "id": "rzd:north:tche-21:sosnogorsk",
+      "name": "Сосногорск",
+      "code": "ТЧЭ-21",
+      "railway_id": "north",
+      "traction_directorate_id": "td-north",
+      "status": "source_listed",
+      "source_ids": [
+        "miit-training-plan-2022"
+      ]
+    },
+    {
+      "id": "rzd:north:tche-10:cherepovets",
+      "name": "Череповец",
+      "code": "ТЧЭ-10",
+      "railway_id": "north",
+      "traction_directorate_id": "td-north",
+      "status": "source_listed",
+      "source_ids": [
+        "miit-training-plan-2022"
+      ]
+    },
+    {
+      "id": "rzd:north:tche-1:yaroslavl-glavnyi",
+      "name": "Ярославль-Главный",
+      "code": "ТЧЭ-1",
+      "railway_id": "north",
+      "traction_directorate_id": "td-north",
+      "status": "source_listed",
+      "source_ids": [
+        "miit-training-plan-2022"
+      ]
+    },
+    {
+      "id": "rzd:okt:tche-22:babaevo",
+      "name": "Бабаево",
+      "code": "ТЧЭ-22",
+      "railway_id": "okt",
+      "traction_directorate_id": "td-okt",
+      "status": "source_listed",
+      "source_ids": [
+        "miit-training-plan-2022"
+      ]
+    },
+    {
+      "id": "rzd:okt:tche-4:bologovskoe",
+      "name": "Бологовское",
+      "code": "ТЧЭ-4",
+      "railway_id": "okt",
+      "traction_directorate_id": "td-okt",
+      "status": "source_listed",
+      "source_ids": [
+        "miit-training-plan-2022"
+      ]
+    },
+    {
+      "id": "rzd:okt:tche-31:velikie-luki",
+      "name": "Великие Луки",
+      "code": "ТЧЭ-31",
+      "railway_id": "okt",
+      "traction_directorate_id": "td-okt",
+      "status": "source_listed",
+      "source_ids": [
+        "miit-training-plan-2022"
+      ]
+    },
+    {
+      "id": "rzd:okt:tche-21:volkhovstroi",
+      "name": "Волховстрой",
+      "code": "ТЧЭ-21",
+      "railway_id": "okt",
+      "traction_directorate_id": "td-okt",
+      "status": "source_listed",
+      "source_ids": [
+        "miit-training-plan-2022"
+      ]
+    },
+    {
+      "id": "rzd:okt:tche-11:vyborg",
+      "name": "Выборг",
+      "code": "ТЧЭ-11",
+      "railway_id": "okt",
+      "traction_directorate_id": "td-okt",
+      "status": "source_listed",
+      "source_ids": [
+        "miit-training-plan-2022"
+      ]
+    },
+    {
+      "id": "rzd:okt:tche-18:dno",
+      "name": "Дно",
+      "code": "ТЧЭ-18",
+      "railway_id": "okt",
+      "traction_directorate_id": "td-okt",
+      "status": "source_listed",
+      "source_ids": [
+        "miit-training-plan-2022"
+      ]
+    },
+    {
+      "id": "rzd:okt:tche-5:kandalaksha",
+      "name": "Кандалакша",
+      "code": "ТЧЭ-5",
+      "railway_id": "okt",
+      "traction_directorate_id": "td-okt",
+      "status": "source_listed",
+      "source_ids": [
+        "miit-training-plan-2022"
+      ]
+    },
+    {
+      "id": "rzd:okt:tche-26:kem",
+      "name": "Кемь",
+      "code": "ТЧЭ-26",
+      "railway_id": "okt",
+      "traction_directorate_id": "td-okt",
+      "status": "source_listed",
+      "source_ids": [
+        "miit-training-plan-2022"
+      ]
+    },
+    {
+      "id": "rzd:okt:tche-25:medvezhya-gora",
+      "name": "Медвежья Гора",
+      "code": "ТЧЭ-25",
+      "railway_id": "okt",
+      "traction_directorate_id": "td-okt",
+      "status": "source_listed",
+      "source_ids": [
+        "miit-training-plan-2022"
+      ]
+    },
+    {
+      "id": "rzd:okt:tche-1:moskovskoe",
+      "name": "Московское",
+      "code": "ТЧЭ-1",
+      "railway_id": "okt",
+      "traction_directorate_id": "td-okt",
+      "status": "source_listed",
+      "source_ids": [
+        "miit-training-plan-2022"
+      ]
+    },
+    {
+      "id": "rzd:okt:tche-28:murmansk",
+      "name": "Мурманск",
+      "code": "ТЧЭ-28",
+      "railway_id": "okt",
+      "traction_directorate_id": "td-okt",
+      "status": "source_listed",
+      "source_ids": [
+        "miit-training-plan-2022"
+      ]
+    },
+    {
+      "id": "rzd:okt:tche-32:rzhevskoe",
+      "name": "Ржевское",
+      "code": "ТЧЭ-32",
+      "railway_id": "okt",
+      "traction_directorate_id": "td-okt",
+      "status": "source_listed",
+      "source_ids": [
+        "miit-training-plan-2022"
+      ]
+    },
+    {
+      "id": "rzd:okt:tche-14:sankt-peterburg-varshavskii",
+      "name": "Санкт-Петербург-Варшавский",
+      "code": "ТЧЭ-14",
+      "railway_id": "okt",
+      "traction_directorate_id": "td-okt",
+      "status": "source_listed",
+      "source_ids": [
+        "miit-training-plan-2022"
+      ]
+    },
+    {
+      "id": "rzd:okt:tche-8:sankt-peterburg-passazhirskii-moskovskii",
+      "name": "Санкт-Петербург-Пассажирский-Московский",
+      "code": "ТЧЭ-8",
+      "railway_id": "okt",
+      "traction_directorate_id": "td-okt",
+      "status": "source_listed",
+      "source_ids": [
+        "miit-training-plan-2022"
+      ]
+    },
+    {
+      "id": "rzd:okt:tche-12:sankt-peterburg-finlyandskii",
+      "name": "Санкт-Петербург-Финляндский",
+      "code": "ТЧЭ-12",
+      "railway_id": "okt",
+      "traction_directorate_id": "td-okt",
+      "status": "source_listed",
+      "source_ids": [
+        "miit-training-plan-2022"
+      ]
+    },
+    {
+      "id": "rzd:okt:tche-30:suoyarvi",
+      "name": "Суоярви",
+      "code": "ТЧЭ-30",
+      "railway_id": "okt",
+      "traction_directorate_id": "td-okt",
+      "status": "source_listed",
+      "source_ids": [
+        "miit-training-plan-2022"
+      ]
+    },
+    {
+      "id": "rzd:skav:tche-25:gudermes",
+      "name": "Гудермес",
+      "code": "ТЧЭ-25",
+      "railway_id": "skav",
+      "traction_directorate_id": "td-skav",
+      "status": "source_listed",
+      "source_ids": [
+        "miit-training-plan-2022"
+      ]
+    },
+    {
+      "id": "rzd:skav:tche-27:derbent",
+      "name": "Дербент",
+      "code": "ТЧЭ-27",
+      "railway_id": "skav",
+      "traction_directorate_id": "td-skav",
+      "status": "source_listed",
+      "source_ids": [
+        "miit-training-plan-2022"
+      ]
+    },
+    {
+      "id": "rzd:skav:tche-8:kavkazskaya",
+      "name": "Кавказская",
+      "code": "ТЧЭ-8",
+      "railway_id": "skav",
+      "traction_directorate_id": "td-skav",
+      "status": "source_listed",
+      "source_ids": [
+        "miit-training-plan-2022"
+      ]
+    },
+    {
+      "id": "rzd:skav:tche-12:krasnodar",
+      "name": "Краснодар",
+      "code": "ТЧЭ-12",
+      "railway_id": "skav",
+      "traction_directorate_id": "td-skav",
+      "status": "source_listed",
+      "source_ids": [
+        "miit-training-plan-2022"
+      ]
+    },
+    {
+      "id": "rzd:skav:tche-1:likhaya",
+      "name": "Лихая",
+      "code": "ТЧЭ-1",
+      "railway_id": "skav",
+      "traction_directorate_id": "td-skav",
+      "status": "source_listed",
+      "source_ids": [
+        "miit-training-plan-2022"
+      ]
+    },
+    {
+      "id": "rzd:skav:tche-21:mineralnye-vody",
+      "name": "Минеральные Воды",
+      "code": "ТЧЭ-21",
+      "railway_id": "skav",
+      "traction_directorate_id": "td-skav",
+      "status": "source_listed",
+      "source_ids": [
+        "miit-training-plan-2022"
+      ]
+    },
+    {
+      "id": "rzd:skav:tche-14:salsk",
+      "name": "Сальск",
+      "code": "ТЧЭ-14",
+      "railway_id": "skav",
+      "traction_directorate_id": "td-skav",
+      "status": "source_listed",
+      "source_ids": [
+        "miit-training-plan-2022"
+      ]
     },
     {
       "id": "rzd:skav:tche-11:timashevskaya",
@@ -128,8 +1037,407 @@
       "code": "ТЧЭ-11",
       "railway_id": "skav",
       "traction_directorate_id": "td-skav",
-      "status": "legacy_unverified",
-      "source_ids": ["legacy-tch9-v43-db"]
+      "status": "source_listed",
+      "source_ids": [
+        "legacy-tch9-v43-db",
+        "miit-training-plan-2022"
+      ]
+    },
+    {
+      "id": "rzd:skav:tche-16:tuapse",
+      "name": "Туапсе",
+      "code": "ТЧЭ-16",
+      "railway_id": "skav",
+      "traction_directorate_id": "td-skav",
+      "status": "source_listed",
+      "source_ids": [
+        "miit-training-plan-2022"
+      ]
+    },
+    {
+      "id": "rzd:south-ural:tche-1:zlatoust",
+      "name": "Златоуст",
+      "code": "ТЧЭ-1",
+      "railway_id": "south-ural",
+      "traction_directorate_id": "td-south-ural",
+      "status": "source_listed",
+      "source_ids": [
+        "miit-training-plan-2022"
+      ]
+    },
+    {
+      "id": "rzd:south-ural:tche-5:kartaly",
+      "name": "Карталы",
+      "code": "ТЧЭ-5",
+      "railway_id": "south-ural",
+      "traction_directorate_id": "td-south-ural",
+      "status": "source_listed",
+      "source_ids": [
+        "miit-training-plan-2022"
+      ]
+    },
+    {
+      "id": "rzd:south-ural:tche-3:kurgan",
+      "name": "Курган",
+      "code": "ТЧЭ-3",
+      "railway_id": "south-ural",
+      "traction_directorate_id": "td-south-ural",
+      "status": "source_listed",
+      "source_ids": [
+        "miit-training-plan-2022"
+      ]
+    },
+    {
+      "id": "rzd:south-ural:tche-14:orenburg",
+      "name": "Оренбург",
+      "code": "ТЧЭ-14",
+      "railway_id": "south-ural",
+      "traction_directorate_id": "td-south-ural",
+      "status": "source_listed",
+      "source_ids": [
+        "miit-training-plan-2022"
+      ]
+    },
+    {
+      "id": "rzd:south-ural:tche-16:orsk",
+      "name": "Орск",
+      "code": "ТЧЭ-16",
+      "railway_id": "south-ural",
+      "traction_directorate_id": "td-south-ural",
+      "status": "source_listed",
+      "source_ids": [
+        "miit-training-plan-2022"
+      ]
+    },
+    {
+      "id": "rzd:south-ural:tche-2:chelyabinsk",
+      "name": "Челябинск",
+      "code": "ТЧЭ-2",
+      "railway_id": "south-ural",
+      "traction_directorate_id": "td-south-ural",
+      "status": "source_listed",
+      "source_ids": [
+        "miit-training-plan-2022"
+      ]
+    },
+    {
+      "id": "rzd:southeast:tche-15:balashov",
+      "name": "Балашов",
+      "code": "ТЧЭ-15",
+      "railway_id": "southeast",
+      "traction_directorate_id": "td-southeast",
+      "status": "source_listed",
+      "source_ids": [
+        "miit-training-plan-2022"
+      ]
+    },
+    {
+      "id": "rzd:southeast:tche-31:belgorod-kurskii",
+      "name": "Белгород-Курский",
+      "code": "ТЧЭ-31",
+      "railway_id": "southeast",
+      "traction_directorate_id": "td-southeast",
+      "status": "source_listed",
+      "source_ids": [
+        "miit-training-plan-2022"
+      ]
+    },
+    {
+      "id": "rzd:southeast:tche-6:voronezh-kurskii",
+      "name": "Воронеж-Курский",
+      "code": "ТЧЭ-6",
+      "railway_id": "southeast",
+      "traction_directorate_id": "td-southeast",
+      "status": "source_listed",
+      "source_ids": [
+        "miit-training-plan-2022"
+      ]
+    },
+    {
+      "id": "rzd:southeast:tche-14:elets-severnyi",
+      "name": "Елец-Северный",
+      "code": "ТЧЭ-14",
+      "railway_id": "southeast",
+      "traction_directorate_id": "td-southeast",
+      "status": "source_listed",
+      "source_ids": [
+        "miit-training-plan-2022"
+      ]
+    },
+    {
+      "id": "rzd:southeast:tche-12:kochetovka",
+      "name": "Кочетовка",
+      "code": "ТЧЭ-12",
+      "railway_id": "southeast",
+      "traction_directorate_id": "td-southeast",
+      "status": "source_listed",
+      "source_ids": [
+        "miit-training-plan-2022"
+      ]
+    },
+    {
+      "id": "rzd:southeast:tche-4:liski-uzlovaya",
+      "name": "Лиски-Узловая",
+      "code": "ТЧЭ-4",
+      "railway_id": "southeast",
+      "traction_directorate_id": "td-southeast",
+      "status": "source_listed",
+      "source_ids": [
+        "miit-training-plan-2022"
+      ]
+    },
+    {
+      "id": "rzd:southeast:tche-3:rossosh",
+      "name": "Россошь",
+      "code": "ТЧЭ-3",
+      "railway_id": "southeast",
+      "traction_directorate_id": "td-southeast",
+      "status": "source_listed",
+      "source_ids": [
+        "miit-training-plan-2022"
+      ]
+    },
+    {
+      "id": "rzd:southeast:tche-2:rtishchevo-vostochnoe",
+      "name": "Ртищево-Восточное",
+      "code": "ТЧЭ-2",
+      "railway_id": "southeast",
+      "traction_directorate_id": "td-southeast",
+      "status": "source_listed",
+      "source_ids": [
+        "miit-training-plan-2022"
+      ]
+    },
+    {
+      "id": "rzd:southeast:tche-17:staryi-oskol",
+      "name": "Старый Оскол",
+      "code": "ТЧЭ-17",
+      "railway_id": "southeast",
+      "traction_directorate_id": "td-southeast",
+      "status": "source_listed",
+      "source_ids": [
+        "miit-training-plan-2022"
+      ]
+    },
+    {
+      "id": "rzd:sverdlovsk:tche-9:berezniki",
+      "name": "Березники",
+      "code": "ТЧЭ-9",
+      "railway_id": "sverdlovsk",
+      "traction_directorate_id": "td-sverdlovsk",
+      "status": "source_listed",
+      "source_ids": [
+        "miit-training-plan-2022"
+      ]
+    },
+    {
+      "id": "rzd:sverdlovsk:tche-7:voinovka",
+      "name": "Войновка",
+      "code": "ТЧЭ-7",
+      "railway_id": "sverdlovsk",
+      "traction_directorate_id": "td-sverdlovsk",
+      "status": "source_listed",
+      "source_ids": [
+        "miit-training-plan-2022"
+      ]
+    },
+    {
+      "id": "rzd:sverdlovsk:tche-13:egorshino",
+      "name": "Егоршино",
+      "code": "ТЧЭ-13",
+      "railway_id": "sverdlovsk",
+      "traction_directorate_id": "td-sverdlovsk",
+      "status": "source_listed",
+      "source_ids": [
+        "miit-training-plan-2022"
+      ]
+    },
+    {
+      "id": "rzd:sverdlovsk:tche-8:ishim",
+      "name": "Ишим",
+      "code": "ТЧЭ-8",
+      "railway_id": "sverdlovsk",
+      "traction_directorate_id": "td-sverdlovsk",
+      "status": "source_listed",
+      "source_ids": [
+        "miit-training-plan-2022"
+      ]
+    },
+    {
+      "id": "rzd:sverdlovsk:tche-15:kamensk-uralskii",
+      "name": "Каменск-Уральский",
+      "code": "ТЧЭ-15",
+      "railway_id": "sverdlovsk",
+      "traction_directorate_id": "td-sverdlovsk",
+      "status": "source_listed",
+      "source_ids": [
+        "miit-training-plan-2022"
+      ]
+    },
+    {
+      "id": "rzd:sverdlovsk:tche-19:kamyshlov",
+      "name": "Камышлов",
+      "code": "ТЧЭ-19",
+      "railway_id": "sverdlovsk",
+      "traction_directorate_id": "td-sverdlovsk",
+      "status": "source_listed",
+      "source_ids": [
+        "miit-training-plan-2022"
+      ]
+    },
+    {
+      "id": "rzd:sverdlovsk:tche-17:perm-sortirovochnaya",
+      "name": "Пермь-Сортировочная",
+      "code": "ТЧЭ-17",
+      "railway_id": "sverdlovsk",
+      "traction_directorate_id": "td-sverdlovsk",
+      "status": "source_listed",
+      "source_ids": [
+        "miit-training-plan-2022"
+      ]
+    },
+    {
+      "id": "rzd:sverdlovsk:tche-6:sverdlovsk-passazhirskii",
+      "name": "Свердловск-Пассажирский",
+      "code": "ТЧЭ-6",
+      "railway_id": "sverdlovsk",
+      "traction_directorate_id": "td-sverdlovsk",
+      "status": "source_listed",
+      "source_ids": [
+        "miit-training-plan-2022"
+      ]
+    },
+    {
+      "id": "rzd:sverdlovsk:tche-5:sverdlovsk-sortirovochnyi",
+      "name": "Свердловск-Сортировочный",
+      "code": "ТЧЭ-5",
+      "railway_id": "sverdlovsk",
+      "traction_directorate_id": "td-sverdlovsk",
+      "status": "source_listed",
+      "source_ids": [
+        "miit-training-plan-2022"
+      ]
+    },
+    {
+      "id": "rzd:sverdlovsk:tche-12:serov-sortirovochnyi",
+      "name": "Серов-Сортировочный",
+      "code": "ТЧЭ-12",
+      "railway_id": "sverdlovsk",
+      "traction_directorate_id": "td-sverdlovsk",
+      "status": "source_listed",
+      "source_ids": [
+        "miit-training-plan-2022"
+      ]
+    },
+    {
+      "id": "rzd:sverdlovsk:tche-1:smychka",
+      "name": "Смычка",
+      "code": "ТЧЭ-1",
+      "railway_id": "sverdlovsk",
+      "traction_directorate_id": "td-sverdlovsk",
+      "status": "source_listed",
+      "source_ids": [
+        "miit-training-plan-2022"
+      ]
+    },
+    {
+      "id": "rzd:sverdlovsk:tche-18:surgut",
+      "name": "Сургут",
+      "code": "ТЧЭ-18",
+      "railway_id": "sverdlovsk",
+      "traction_directorate_id": "td-sverdlovsk",
+      "status": "source_listed",
+      "source_ids": [
+        "miit-training-plan-2022"
+      ]
+    },
+    {
+      "id": "rzd:sverdlovsk:tche-10:chusovskoe",
+      "name": "Чусовское",
+      "code": "ТЧЭ-10",
+      "railway_id": "sverdlovsk",
+      "traction_directorate_id": "td-sverdlovsk",
+      "status": "source_listed",
+      "source_ids": [
+        "miit-training-plan-2022"
+      ]
+    },
+    {
+      "id": "rzd:transbaikal:tche-9:amurskoe",
+      "name": "Амурское",
+      "code": "ТЧЭ-9",
+      "railway_id": "transbaikal",
+      "traction_directorate_id": "td-transbaikal",
+      "status": "source_listed",
+      "source_ids": [
+        "miit-training-plan-2022"
+      ]
+    },
+    {
+      "id": "rzd:transbaikal:tche-11:belogorsk",
+      "name": "Белогорск",
+      "code": "ТЧЭ-11",
+      "railway_id": "transbaikal",
+      "traction_directorate_id": "td-transbaikal",
+      "status": "source_listed",
+      "source_ids": [
+        "miit-training-plan-2022"
+      ]
+    },
+    {
+      "id": "rzd:transbaikal:tche-13:borzya",
+      "name": "Борзя",
+      "code": "ТЧЭ-13",
+      "railway_id": "transbaikal",
+      "traction_directorate_id": "td-transbaikal",
+      "status": "source_listed",
+      "source_ids": [
+        "miit-training-plan-2022"
+      ]
+    },
+    {
+      "id": "rzd:transbaikal:tche-14:karymskaya",
+      "name": "Карымская",
+      "code": "ТЧЭ-14",
+      "railway_id": "transbaikal",
+      "traction_directorate_id": "td-transbaikal",
+      "status": "source_listed",
+      "source_ids": [
+        "miit-training-plan-2022"
+      ]
+    },
+    {
+      "id": "rzd:transbaikal:tche-6:mogocha",
+      "name": "Могоча",
+      "code": "ТЧЭ-6",
+      "railway_id": "transbaikal",
+      "traction_directorate_id": "td-transbaikal",
+      "status": "source_listed",
+      "source_ids": [
+        "miit-training-plan-2022"
+      ]
+    },
+    {
+      "id": "rzd:transbaikal:tche-1:khilok",
+      "name": "Хилок",
+      "code": "ТЧЭ-1",
+      "railway_id": "transbaikal",
+      "traction_directorate_id": "td-transbaikal",
+      "status": "source_listed",
+      "source_ids": [
+        "miit-training-plan-2022"
+      ]
+    },
+    {
+      "id": "rzd:transbaikal:tche-5:chernyshevsk-zabaikalskii",
+      "name": "Чернышевск-Забайкальский",
+      "code": "ТЧЭ-5",
+      "railway_id": "transbaikal",
+      "traction_directorate_id": "td-transbaikal",
+      "status": "source_listed",
+      "source_ids": [
+        "miit-training-plan-2022"
+      ]
     },
     {
       "id": "rzd:transbaikal:tche-3:chita",
@@ -137,9 +1445,188 @@
       "code": "ТЧЭ-3",
       "railway_id": "transbaikal",
       "traction_directorate_id": "td-transbaikal",
-      "status": "legacy_unverified",
+      "status": "source_listed",
       "relationship_note": "Дорога восстановлена по географическому названию; в legacy-источнике branch_id=15 не имеет соответствующей записи и требует отдельной проверки.",
-      "source_ids": ["legacy-tch9-v43-db"]
+      "source_ids": [
+        "legacy-tch9-v43-db",
+        "miit-training-plan-2022"
+      ]
+    },
+    {
+      "id": "rzd:volga:tche-1:astrakhan-ii",
+      "name": "Астрахань-II",
+      "code": "ТЧЭ-1",
+      "railway_id": "volga",
+      "traction_directorate_id": "td-volga",
+      "status": "source_listed",
+      "source_ids": [
+        "miit-training-plan-2022"
+      ]
+    },
+    {
+      "id": "rzd:volga:tche-3:volgograd-passazhirskoe",
+      "name": "Волгоград-Пассажирское",
+      "code": "ТЧЭ-3",
+      "railway_id": "volga",
+      "traction_directorate_id": "td-volga",
+      "status": "source_listed",
+      "source_ids": [
+        "miit-training-plan-2022"
+      ]
+    },
+    {
+      "id": "rzd:volga:tche-13:ershov",
+      "name": "Ершов",
+      "code": "ТЧЭ-13",
+      "railway_id": "volga",
+      "traction_directorate_id": "td-volga",
+      "status": "source_listed",
+      "source_ids": [
+        "miit-training-plan-2022"
+      ]
+    },
+    {
+      "id": "rzd:volga:tche-4:imeni-maksima-gorkogo",
+      "name": "имени Максима Горького",
+      "code": "ТЧЭ-4",
+      "railway_id": "volga",
+      "traction_directorate_id": "td-volga",
+      "status": "source_listed",
+      "source_ids": [
+        "miit-training-plan-2022"
+      ]
+    },
+    {
+      "id": "rzd:volga:tche-7:petrov-val",
+      "name": "Петров Вал",
+      "code": "ТЧЭ-7",
+      "railway_id": "volga",
+      "traction_directorate_id": "td-volga",
+      "status": "source_listed",
+      "source_ids": [
+        "miit-training-plan-2022"
+      ]
+    },
+    {
+      "id": "rzd:volga:tche-11:saratov-passazhirskoe",
+      "name": "Саратов-Пассажирское",
+      "code": "ТЧЭ-11",
+      "railway_id": "volga",
+      "traction_directorate_id": "td-volga",
+      "status": "source_listed",
+      "source_ids": [
+        "miit-training-plan-2022"
+      ]
+    },
+    {
+      "id": "rzd:volga:tche-12:sennaya",
+      "name": "Сенная",
+      "code": "ТЧЭ-12",
+      "railway_id": "volga",
+      "traction_directorate_id": "td-volga",
+      "status": "source_listed",
+      "source_ids": [
+        "miit-training-plan-2022"
+      ]
+    },
+    {
+      "id": "rzd:west-siberian:tche-3:barabinsk",
+      "name": "Барабинск",
+      "code": "ТЧЭ-3",
+      "railway_id": "west-siberian",
+      "traction_directorate_id": "td-west-siberian",
+      "status": "source_listed",
+      "source_ids": [
+        "miit-training-plan-2022"
+      ]
+    },
+    {
+      "id": "rzd:west-siberian:tche-7:barnaul",
+      "name": "Барнаул",
+      "code": "ТЧЭ-7",
+      "railway_id": "west-siberian",
+      "traction_directorate_id": "td-west-siberian",
+      "status": "source_listed",
+      "source_ids": [
+        "miit-training-plan-2022"
+      ]
+    },
+    {
+      "id": "rzd:west-siberian:tche-14:belovo",
+      "name": "Белово",
+      "code": "ТЧЭ-14",
+      "railway_id": "west-siberian",
+      "traction_directorate_id": "td-west-siberian",
+      "status": "source_listed",
+      "source_ids": [
+        "miit-training-plan-2022"
+      ]
+    },
+    {
+      "id": "rzd:west-siberian:tche-10:karasuk",
+      "name": "Карасук",
+      "code": "ТЧЭ-10",
+      "railway_id": "west-siberian",
+      "traction_directorate_id": "td-west-siberian",
+      "status": "source_listed",
+      "source_ids": [
+        "miit-training-plan-2022"
+      ]
+    },
+    {
+      "id": "rzd:west-siberian:tche-15:novokuznetsk",
+      "name": "Новокузнецк",
+      "code": "ТЧЭ-15",
+      "railway_id": "west-siberian",
+      "traction_directorate_id": "td-west-siberian",
+      "status": "source_listed",
+      "source_ids": [
+        "miit-training-plan-2022"
+      ]
+    },
+    {
+      "id": "rzd:west-siberian:tche-4:novosibirsk",
+      "name": "Новосибирск",
+      "code": "ТЧЭ-4",
+      "railway_id": "west-siberian",
+      "traction_directorate_id": "td-west-siberian",
+      "status": "source_listed",
+      "source_ids": [
+        "miit-training-plan-2022"
+      ]
+    },
+    {
+      "id": "rzd:west-siberian:tche-2:omsk",
+      "name": "Омск",
+      "code": "ТЧЭ-2",
+      "railway_id": "west-siberian",
+      "traction_directorate_id": "td-west-siberian",
+      "status": "source_listed",
+      "source_ids": [
+        "miit-training-plan-2022"
+      ]
+    },
+    {
+      "id": "rzd:west-siberian:tche-12:taiga",
+      "name": "Тайга",
+      "code": "ТЧЭ-12",
+      "railway_id": "west-siberian",
+      "traction_directorate_id": "td-west-siberian",
+      "status": "source_listed",
+      "source_ids": [
+        "miit-training-plan-2022"
+      ]
+    },
+    {
+      "id": "rzd:west-siberian:tche-19:topki",
+      "name": "Топки",
+      "code": "ТЧЭ-19",
+      "railway_id": "west-siberian",
+      "traction_directorate_id": "td-west-siberian",
+      "status": "source_listed",
+      "source_ids": [
+        "miit-training-plan-2022"
+      ]
     }
   ]
 }

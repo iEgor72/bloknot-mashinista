@@ -587,6 +587,17 @@
   color: #a78bfa;
   background: color-mix(in oklch, #a78bfa 14%, transparent);
 }
+.depot-proposal-upload-icon.is-document {
+  width: 38px;
+  font-size: 8px;
+  background: color-mix(in oklch, var(--good, #34d399) 18%, transparent);
+  color: var(--good, #34d399);
+}
+.depot-proposal-document-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 10px;
+}
 .depot-proposal-upload-copy { display: grid; flex: 1 1 auto; min-width: 0; gap: 3px; }
 .depot-proposal-upload-copy strong { font: 650 12px/1.25 'Golos Text', system-ui, sans-serif; }
 .depot-proposal-upload-copy small { color: var(--ink-3, #8b93a7); font: 500 10px/1.35 'Golos Text', system-ui, sans-serif; }

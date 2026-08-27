@@ -5,21 +5,24 @@
       "path": "/assets/docs/speeds/Скоростя БАМ Парк Д Приказ № 161.pdf",
       "mime_type": "application/pdf",
       "size": 424774,
-      "updated_at": "2026-04-08"
+      "updated_at": "2026-04-08",
+      "scope": { "level": "depot", "railway_id": "dvost", "depot_id": "rzd:dvost:tche-9:komsomolsk-na-amure" }
     },
     {
       "name": "ВСГ",
       "path": "/assets/docs/speeds/Скоростя ВСГ Парк Д Приказ № 161.pdf",
       "mime_type": "application/pdf",
       "size": 490766,
-      "updated_at": "2026-04-08"
+      "updated_at": "2026-04-08",
+      "scope": { "level": "depot", "railway_id": "dvost", "depot_id": "rzd:dvost:tche-9:komsomolsk-na-amure" }
     },
     {
       "name": "ВЛЧ",
       "path": "/assets/docs/speeds/Скоростя ВЛЧ Приказ № 161.pdf",
       "mime_type": "application/pdf",
       "size": 819554,
-      "updated_at": "2026-04-08"
+      "updated_at": "2026-04-08",
+      "scope": { "level": "depot", "railway_id": "dvost", "depot_id": "rzd:dvost:tche-9:komsomolsk-na-amure" }
     }
   ],
   "folders": [
@@ -128,14 +131,16 @@
       "path": "/assets/docs/instructions/ИОТ ТЧЭ-9-002-2023.pdf",
       "mime_type": "application/pdf",
       "size": 1375411,
-      "updated_at": "2026-04-22"
+      "updated_at": "2026-04-22",
+      "scope": { "level": "depot", "railway_id": "dvost", "depot_id": "rzd:dvost:tche-9:komsomolsk-na-amure" }
     },
     {
       "name": "ИОТ ТЧЭ-9-003-2023",
       "path": "/assets/docs/instructions/ИОТ ТЧЭ-9-003-2023.pdf",
       "mime_type": "application/pdf",
       "size": 1386113,
-      "updated_at": "2026-04-22"
+      "updated_at": "2026-04-22",
+      "scope": { "level": "depot", "railway_id": "dvost", "depot_id": "rzd:dvost:tche-9:komsomolsk-na-amure" }
     },
     {
       "name": "ПТЭ приказ 250",
@@ -149,7 +154,8 @@
       "path": "/assets/docs/instructions/Перечень мест где запрещено брать с места.docx",
       "mime_type": "application/vnd.openxmlformats-officedocument.wordprocessingml.document",
       "size": 132391,
-      "updated_at": "2026-04-22"
+      "updated_at": "2026-04-22",
+      "scope": { "level": "depot", "railway_id": "dvost", "depot_id": "rzd:dvost:tche-9:komsomolsk-na-amure" }
     },
     {
       "name": "Распоряжение ЦТ-5р Методика КСОТ-П",
@@ -165,21 +171,24 @@
       "path": "/assets/docs/memos/БАМ кмс-пост-1.pdf",
       "mime_type": "application/pdf",
       "size": 4614339,
-      "updated_at": "2026-04-08"
+      "updated_at": "2026-04-08",
+      "scope": { "level": "depot", "railway_id": "dvost", "depot_id": "rzd:dvost:tche-9:komsomolsk-na-amure" }
     },
     {
       "name": "ВСГ",
       "path": "/assets/docs/memos/ВСКГ- КСМ новый 2 пассажир.pdf",
       "mime_type": "application/pdf",
       "size": 4322875,
-      "updated_at": "2026-04-08"
+      "updated_at": "2026-04-08",
+      "scope": { "level": "depot", "railway_id": "dvost", "depot_id": "rzd:dvost:tche-9:komsomolsk-na-amure" }
     },
     {
       "name": "ВЛЧ",
       "path": "/assets/docs/memos/КСМ-ВЛЧ 2.pdf",
       "mime_type": "application/pdf",
       "size": 6873310,
-      "updated_at": "2026-04-08"
+      "updated_at": "2026-04-08",
+      "scope": { "level": "depot", "railway_id": "dvost", "depot_id": "rzd:dvost:tche-9:komsomolsk-na-amure" }
     }
   ],
   "reminders": [
