@@ -149,6 +149,7 @@ const PUBLIC_TOP_LEVEL_FILES = new Set([
   'sw-bootstrap-v401.js',
   'sw-bootstrap-v402.js',
   'sw-bootstrap-v404.js',
+  'sw-bootstrap-v405.js',
   'apple-touch-icon.png',
   'icon-192.png',
   'icon-512.png',
@@ -1019,7 +1020,7 @@ function writeSalaryParams(sid, salaryParams) {
   );
 }
 
-const DEFAULT_PROFILE = { firstName: '', lastName: '', role: '', depot: '', avatar: '' };
+const DEFAULT_PROFILE = { firstName: '', lastName: '', role: '', depot: '', railwayId: '', depotId: '', avatar: '' };
 // Avatar is stored as a data URL (cropped image) or a remote https URL. Cap the
 // size so a single profile file can't balloon: ~1.5MB of base64 ≈ ~1.1MB image.
 const PROFILE_AVATAR_MAX_LEN = 1500000;
@@ -1042,6 +1043,8 @@ function sanitizeProfilePayload(payload) {
   const lastName = sanitizeProfileText(source.lastName == null ? source.last_name : source.lastName, PROFILE_NAME_MAX_LEN);
   const role = sanitizeProfileText(source.role, PROFILE_TEXT_MAX_LEN);
   const depot = sanitizeProfileText(source.depot, PROFILE_TEXT_MAX_LEN);
+  const railwayId = sanitizeProfileText(source.railwayId == null ? source.railway_id : source.railwayId, 80);
+  const depotId = sanitizeProfileText(source.depotId == null ? source.depot_id : source.depotId, 160);
 
   let avatar = String(source.avatar == null ? '' : source.avatar).trim();
   if (avatar) {
@@ -1053,7 +1056,74 @@ function sanitizeProfilePayload(payload) {
     }
   }
 
-  return { firstName, lastName, role, depot, avatar };
+  return { firstName, lastName, role, depot, railwayId, depotId, avatar };
+}
+
+const DEPOT_PACK_REQUESTS_STATE_KEY = 'depot_pack_requests';
+const MAX_DEPOT_PACK_REQUESTS = 5000;
+const depotPackRequestAttempts = new Map();
+
+function allowDepotPackRequest(sid) {
+  const key = normalizeSid(sid);
+  const now = Date.now();
+  const windowMs = 10 * 60 * 1000;
+  const recent = (depotPackRequestAttempts.get(key) || []).filter((timestamp) => now - timestamp < windowMs);
+  if (recent.length >= 6) {
+    depotPackRequestAttempts.set(key, recent);
+    return false;
+  }
+  recent.push(now);
+  depotPackRequestAttempts.set(key, recent);
+  if (depotPackRequestAttempts.size > 5000) {
+    for (const [attemptKey, timestamps] of depotPackRequestAttempts) {
+      if (!timestamps.some((timestamp) => now - timestamp < windowMs)) depotPackRequestAttempts.delete(attemptKey);
+      if (depotPackRequestAttempts.size <= 4000) break;
+    }
+  }
+  return true;
+}
+
+function readDepotPackRequests() {
+  const value = getStorage().readAppState(DEPOT_PACK_REQUESTS_STATE_KEY, []);
+  return Array.isArray(value) ? value : [];
+}
+
+function sanitizeDepotPackRequest(payload, sid, user) {
+  if (!payload || typeof payload !== 'object' || Array.isArray(payload)) {
+    throw new Error('Expected JSON object payload');
+  }
+  const railwayId = sanitizeProfileText(payload.railwayId == null ? payload.railway_id : payload.railwayId, 80);
+  const depotId = sanitizeProfileText(payload.depotId == null ? payload.depot_id : payload.depotId, 160);
+  const depotLabel = sanitizeProfileText(payload.depotLabel == null ? payload.depot_label : payload.depotLabel, 160);
+  const armName = sanitizeProfileText(payload.armName == null ? payload.arm_name : payload.armName, 120);
+  const notes = sanitizeProfileText(payload.notes, 600);
+  const source = sanitizeProfileText(payload.source, 40) || 'profile';
+  if (!depotId && !depotLabel) throw new Error('Missing depot');
+  if (!armName && !notes) throw new Error('Missing service arm or materials');
+  return {
+    id: crypto.randomBytes(12).toString('hex'),
+    sid: normalizeSid(sid),
+    submittedBy: displayNameForSid(sid, user) || ('ID ' + normalizeSid(sid)),
+    railwayId,
+    depotId,
+    depotLabel,
+    armName,
+    notes,
+    source,
+    status: 'new',
+    createdAt: new Date().toISOString(),
+  };
+}
+
+function writeDepotPackRequest(payload, sid, user) {
+  const item = sanitizeDepotPackRequest(payload, sid, user);
+  const requests = readDepotPackRequests();
+  requests.push(item);
+  const bounded = requests.length > MAX_DEPOT_PACK_REQUESTS
+    ? requests.slice(requests.length - MAX_DEPOT_PACK_REQUESTS)
+    : requests;
+  getStorage().writeAppState(DEPOT_PACK_REQUESTS_STATE_KEY, bounded);
+  return item;
 }
 
 function readProfile(sid) {
@@ -2119,7 +2189,7 @@ function readBodyWithLimit(req, maxBytes) {
   });
 }
 
-const APP_RELEASE_VERSION = 'v404';
+const APP_RELEASE_VERSION = 'v405';
 const APP_URL = PUBLIC_SITE_URL;
 const TELEGRAM_APP_URL = buildVersionedAppUrl('/');
 
@@ -2730,6 +2800,53 @@ const server = http.createServer(async (req, res) => {
     }
 
     sendJson(res, 405, { error: 'Method not allowed' });
+    return;
+  }
+
+  if (pathname === '/api/depot-pack-requests') {
+    if (!sid) {
+      sendJson(res, 401, { error: 'Unauthorized' });
+      return;
+    }
+    if (req.method !== 'POST') {
+      sendJson(res, 405, { error: 'Method not allowed' });
+      return;
+    }
+    if (!allowDepotPackRequest(sid)) {
+      sendJson(res, 429, { error: 'Слишком много предложений. Попробуйте позже.' });
+      return;
+    }
+    try {
+      const body = await readBody(req);
+      const item = writeDepotPackRequest(body ? JSON.parse(body) : {}, sid, requestUser);
+      sendJson(res, 201, { ok: true, request: { id: item.id, status: item.status, createdAt: item.createdAt } });
+    } catch (err) {
+      const errorMessage = err && err.message ? err.message : 'Invalid payload';
+      const isValidationError = /^(Expected|Missing|Invalid)/.test(errorMessage);
+      logStructuredRateLimited(isValidationError ? 'warn' : 'error', 'catalog.depot_pack_request_rejected', `${sid}:${errorMessage}`, {
+        sid,
+        error: toErrorMeta(err),
+      });
+      sendJson(res, isValidationError ? 400 : 500, { error: errorMessage });
+    }
+    return;
+  }
+
+  if (pathname === '/api/admin/depot-pack-requests') {
+    if (!requestUser) {
+      sendJson(res, 401, { error: 'Unauthorized' });
+      return;
+    }
+    if (!isAnalyticsAdmin(requestUser)) {
+      sendJson(res, 403, { error: 'Forbidden' });
+      return;
+    }
+    if (req.method !== 'GET') {
+      sendJson(res, 405, { error: 'Method not allowed' });
+      return;
+    }
+    const requests = readDepotPackRequests().slice().reverse();
+    sendJson(res, 200, { requests, total: requests.length });
     return;
   }
 

@@ -24,6 +24,53 @@
     "dvost-oune-pivan",
     "dvost-pivan-novyi-mir"
   ],
+  "service_arms": [
+    {
+      "id": "komsomolsk-volochaevka",
+      "name": "Комсомольск — Волочаевка II",
+      "description": "Профиль плеча до Волочаевки II",
+      "route_options": [
+        {
+          "id": "main",
+          "name": "Основной ход",
+          "tracker_map_id": "dvost-volochaevka-ii-dzemgi",
+          "entry_station": "Комсомольск-Сортировочный"
+        }
+      ]
+    },
+    {
+      "id": "komsomolsk-vysokogornaya",
+      "name": "Комсомольск — Высокогорная",
+      "description": "Два варианта хода: через Соллу или Мули",
+      "route_options": [
+        {
+          "id": "via-sollu",
+          "name": "Через Соллу",
+          "tracker_map_id": "dvost-vysokogornaya-novyi-mir-passenger--via-sollu",
+          "entry_station": "Новый Мир"
+        },
+        {
+          "id": "via-muli",
+          "name": "Через Мули",
+          "tracker_map_id": "dvost-vysokogornaya-novyi-mir-passenger--via-muli",
+          "entry_station": "Новый Мир"
+        }
+      ]
+    },
+    {
+      "id": "komsomolsk-postyshevo",
+      "name": "Комсомольск — Постышево",
+      "description": "Профиль плеча до Постышево",
+      "route_options": [
+        {
+          "id": "main",
+          "name": "Основной ход",
+          "tracker_map_id": "dvost-postyshevo-komsomolsk",
+          "entry_station": "Комсомольск-Сортировочный"
+        }
+      ]
+    }
+  ],
   "readiness": {
     "manual_preview_data": true,
     "live_gps_data": true,

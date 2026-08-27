@@ -184,6 +184,14 @@ export function validateDepotCatalog({ catalogDir = defaultCatalogDir, trackerIn
 
   const trackerSections = collectById(trackerIndex.sections, 'tracker.sections', errors);
   const trackerRoutes = collectById(trackerIndex.routes, 'tracker.routes', errors);
+  const trackerMapIds = new Set();
+  trackerRoutes.forEach((route, routeId) => {
+    const variants = Array.isArray(route.variants) && route.variants.length ? route.variants : [route];
+    variants.forEach((variant) => {
+      const variantId = String(variant?.id || route.default_variant || 'main');
+      trackerMapIds.add(variants.length > 1 ? `${routeId}--${variantId}` : routeId);
+    });
+  });
   const packPaths = Array.isArray(fileEntries.depot_packs) ? fileEntries.depot_packs : [];
   if (!packPaths.length) errors.push('index.files.depot_packs: нужен хотя бы один пакет');
   const packs = new Map();
@@ -220,6 +228,39 @@ export function validateDepotCatalog({ catalogDir = defaultCatalogDir, trackerIn
         });
       });
     });
+    const serviceArms = Array.isArray(pack.service_arms) ? pack.service_arms : [];
+    if (!serviceArms.length) errors.push(`${scope}.service_arms: нужен хотя бы один элемент`);
+    const armIds = new Set();
+    serviceArms.forEach((arm, armIndex) => {
+      const armScope = `${scope}.service_arms[${armIndex}]`;
+      if (!arm || typeof arm !== 'object') {
+        errors.push(`${armScope}: должна быть записью`);
+        return;
+      }
+      if (!validateId(arm.id, armScope, errors)) return;
+      if (armIds.has(arm.id)) errors.push(`${armScope}: дублируется id ${arm.id}`);
+      armIds.add(arm.id);
+      if (typeof arm.name !== 'string' || !arm.name.trim()) errors.push(`${armScope}: name обязателен`);
+      const options = Array.isArray(arm.route_options) ? arm.route_options : [];
+      if (!options.length) errors.push(`${armScope}.route_options: нужен хотя бы один вариант`);
+      const optionIds = new Set();
+      options.forEach((option, optionIndex) => {
+        const optionScope = `${armScope}.route_options[${optionIndex}]`;
+        if (!option || typeof option !== 'object') {
+          errors.push(`${optionScope}: должна быть записью`);
+          return;
+        }
+        if (!validateId(option.id, optionScope, errors)) return;
+        if (optionIds.has(option.id)) errors.push(`${optionScope}: дублируется id ${option.id}`);
+        optionIds.add(option.id);
+        if (typeof option.name !== 'string' || !option.name.trim()) errors.push(`${optionScope}: name обязателен`);
+        if (typeof option.tracker_map_id !== 'string' || !option.tracker_map_id.trim()) {
+          errors.push(`${optionScope}: tracker_map_id обязателен`);
+        } else if (!trackerMapIds.has(option.tracker_map_id)) {
+          errors.push(`${optionScope}: неизвестный tracker_map_id ${option.tracker_map_id}`);
+        }
+      });
+    });
     const allSectionsVerified = [...sectionIds].every((sectionId) => trackerSections.get(sectionId)?.status === 'verified');
     if (pack.readiness?.all_sections_verified !== allSectionsVerified) {
       errors.push(`${scope}: readiness.all_sections_verified не совпадает со статусами участков`);
@@ -229,6 +270,9 @@ export function validateDepotCatalog({ catalogDir = defaultCatalogDir, trackerIn
   depots.forEach((depot, id) => {
     const hasPack = [...packs.values()].some((pack) => pack.depot_id === id && pack.status !== 'retired');
     if (depot.status === 'pack_available' && !hasPack) errors.push(`depots.${id}: status=pack_available требует пакет`);
+    if (depot.status === 'pack_available' && (typeof depot.pack_file !== 'string' || !depot.pack_file)) {
+      errors.push(`depots.${id}: status=pack_available требует pack_file`);
+    }
   });
 
   return {

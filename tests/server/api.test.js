@@ -99,18 +99,18 @@ test('public contact surface points only to the Telegram bot', async () => {
 });
 
 test('versioned style namespace serves the current shell stylesheet', async () => {
-  const response = await fetch(baseUrl + '/styles/v404/56-profile.css');
+  const response = await fetch(baseUrl + '/styles/v405/56-profile.css');
   const source = await response.text();
   assert.equal(response.status, 200);
   assert.match(response.headers.get('content-type') || '', /text\/css/i);
   assert.match(source, /\.profile-summary-card/);
   assert.match(source, /\.profile-summary-icon svg/);
 
-  const versionedRuntime = await fetch(baseUrl + '/scripts/v404/render.js');
+  const versionedRuntime = await fetch(baseUrl + '/scripts/v405/render.js');
   assert.equal(versionedRuntime.status, 200);
   assert.match(await versionedRuntime.text(), /renderProfileSummary/);
 
-  const traversalAttempt = await fetch(baseUrl + '/scripts/v404/..%2Fserver.js');
+  const traversalAttempt = await fetch(baseUrl + '/scripts/v405/..%2Fserver.js');
   assert.equal(traversalAttempt.status, 404);
 
   const previousBootstrap = await fetch(baseUrl + '/sw-bootstrap-v397.js');
@@ -119,6 +119,10 @@ test('versioned style namespace serves the current shell stylesheet', async () =
   const priorReleaseBootstrap = await fetch(baseUrl + '/sw-bootstrap-v398.js');
   assert.equal(priorReleaseBootstrap.status, 200);
   assert.match(await previousBootstrap.text(), /var version = 'v397'/);
+
+  const immediatelyPreviousBootstrap = await fetch(baseUrl + '/sw-bootstrap-v404.js');
+  assert.equal(immediatelyPreviousBootstrap.status, 200);
+  assert.match(await immediatelyPreviousBootstrap.text(), /var version = 'v404'/);
 });
 
 test('Telegram welcome message advertises only the current product scope', () => {
@@ -198,6 +202,64 @@ test('salary settings persist deduction percentages and reject values above 100'
     body: JSON.stringify({ salaryParams: { alimonyPercent: 101 } }),
   });
   assert.equal(invalid.response.status, 400);
+});
+
+test('profile keeps canonical railway and depot ids alongside the legacy depot label', async () => {
+  const token = await authenticate({ id: 1003, first_name: 'Профиль' });
+  const saved = await jsonRequest('/api/profile', {
+    method: 'PUT',
+    headers: { ...bearer(token), 'Content-Type': 'application/json' },
+    body: JSON.stringify({ profile: {
+      firstName: 'Алексей',
+      role: 'Машинист',
+      depot: 'ТЧЭ-9 Комсомольск-на-Амуре',
+      railwayId: 'dvost',
+      depotId: 'rzd:dvost:tche-9:komsomolsk-na-amure',
+    } }),
+  });
+  assert.equal(saved.response.status, 200);
+  assert.equal(saved.body.profile.railwayId, 'dvost');
+  assert.equal(saved.body.profile.depotId, 'rzd:dvost:tche-9:komsomolsk-na-amure');
+
+  const loaded = await jsonRequest('/api/profile', { headers: bearer(token) });
+  assert.equal(loaded.response.status, 200);
+  assert.equal(loaded.body.profile.depot, 'ТЧЭ-9 Комсомольск-на-Амуре');
+  assert.equal(loaded.body.profile.railwayId, 'dvost');
+  assert.equal(loaded.body.profile.depotId, 'rzd:dvost:tche-9:komsomolsk-na-amure');
+});
+
+test('depot pack proposals are authenticated and visible only to an admin', async () => {
+  const userToken = await authenticate({ id: 6101, first_name: 'Участок' });
+  const adminToken = await authenticate({ id: 9001, first_name: 'Администратор' });
+  const unauthorized = await jsonRequest('/api/depot-pack-requests', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ depotLabel: 'ТЧЭ-9', armName: 'Комсомольск — Волочаевка' }),
+  });
+  assert.equal(unauthorized.response.status, 401);
+
+  const submitted = await jsonRequest('/api/depot-pack-requests', {
+    method: 'POST',
+    headers: { ...bearer(userToken), 'Content-Type': 'application/json' },
+    body: JSON.stringify({
+      railwayId: 'dvost',
+      depotId: 'rzd:dvost:tche-9:komsomolsk-na-amure',
+      depotLabel: 'ТЧЭ-9 · Комсомольск-на-Амуре',
+      armName: 'Комсомольск — Советская Гавань',
+      notes: 'Есть профиль и режимная карта',
+      source: 'poekhali-arm-picker',
+    }),
+  });
+  assert.equal(submitted.response.status, 201);
+  assert.equal(submitted.body.request.status, 'new');
+
+  const forbidden = await jsonRequest('/api/admin/depot-pack-requests', { headers: bearer(userToken) });
+  assert.equal(forbidden.response.status, 403);
+  const dashboard = await jsonRequest('/api/admin/depot-pack-requests', { headers: bearer(adminToken) });
+  assert.equal(dashboard.response.status, 200);
+  assert.ok(dashboard.body.total >= 1);
+  assert.equal(dashboard.body.requests[0].depotId, 'rzd:dvost:tche-9:komsomolsk-na-amure');
+  assert.equal(dashboard.body.requests[0].armName, 'Комсомольск — Советская Гавань');
 });
 
 test('analytics requires consent, deduplicates events, and exposes only admin aggregates', async () => {

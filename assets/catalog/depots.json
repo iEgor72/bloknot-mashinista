@@ -35,6 +35,7 @@
       "railway_id": "dvost",
       "traction_directorate_id": "td-dvost",
       "status": "pack_available",
+      "pack_file": "depot-packs/rzd-dvost-tche-9-komsomolsk-na-amure.json",
       "source_ids": ["legacy-tch9-v43-db", "bloknot-tch9-section-bundle"]
     },
     {

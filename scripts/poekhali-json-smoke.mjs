@@ -13,6 +13,7 @@ const screenshotPath = path.join(artifactDir, 'postyshevo-novyi-urgal.png');
 const postyshevoKomsomolskScreenshotPath = path.join(artifactDir, 'postyshevo-komsomolsk.png');
 const liveTouchPanScreenshotPath = path.join(artifactDir, 'live-touch-pan.png');
 const preparationScreenshotPath = path.join(artifactDir, 'preparation-without-gps.png');
+const serviceArmPickerScreenshotPath = path.join(artifactDir, 'service-arm-picker.png');
 const reportPath = path.join(artifactDir, 'report.json');
 const progressPath = path.join(artifactDir, 'progress.log');
 const mapId = 'dvost-postyshevo-novyi-urgal-odd';
@@ -732,9 +733,49 @@ async function assertPreparationModeWithoutGps(browser) {
   };
   const opened = await page.evaluate((testShift) => {
     window.allShifts = [testShift];
+    localStorage.setItem('shift_tracker_profile_v1', JSON.stringify({
+      depot: 'ТЧЭ-9 Комсомольск-на-Амуре',
+      railwayId: 'dvost',
+      depotId: 'rzd:dvost:tche-9:komsomolsk-na-amure'
+    }));
     return window.openPoekhaliPreparationForShift(testShift.id);
   }, preparationShift);
   if (!opened) throw new Error('Preparation mode did not open the selected shift');
+
+  await page.waitForFunction(() => (
+    !document.getElementById('poekhaliServiceArmSheet')?.classList.contains('hidden') &&
+    document.querySelectorAll('#poekhaliServiceArmSheet .poekhali-arm-option').length === 3
+  ), null, { timeout: 15_000 });
+  const armPicker = await page.evaluate(() => ({
+    title: document.getElementById('poekhaliArmSheetTitle')?.textContent.trim() || '',
+    arms: Array.from(document.querySelectorAll('#poekhaliServiceArmSheet .poekhali-arm-option-copy strong'))
+      .map((element) => element.textContent.trim()),
+    gpsRequests: { ...window.__poekhaliGpsRequests }
+  }));
+  if (armPicker.title !== 'Плечо обслуживания' || armPicker.arms.length !== 3 ||
+      !armPicker.arms.some((name) => name.includes('Волочаевка')) ||
+      !armPicker.arms.some((name) => name.includes('Высокогорная')) ||
+      !armPicker.arms.some((name) => name.includes('Постышево')) ||
+      armPicker.gpsRequests.watch !== 0 || armPicker.gpsRequests.current !== 0) {
+    throw new Error(`Service-arm picker contract failed: ${JSON.stringify(armPicker)}`);
+  }
+  await page.screenshot({ path: serviceArmPickerScreenshotPath });
+  await page.locator('#poekhaliServiceArmSheet .poekhali-arm-option', { hasText: 'Высокогорная' }).click();
+  await page.waitForFunction(() => (
+    document.getElementById('poekhaliArmSheetTitle')?.textContent.includes('Высокогорная') &&
+    document.querySelectorAll('#poekhaliServiceArmSheet .poekhali-arm-option').length === 2
+  ));
+  const vysokogornayaOptions = await page.evaluate(() => (
+    Array.from(document.querySelectorAll('#poekhaliServiceArmSheet .poekhali-arm-option-copy strong'))
+      .map((element) => element.textContent.trim())
+  ));
+  if (!vysokogornayaOptions.some((name) => name.includes('Соллу')) ||
+      !vysokogornayaOptions.some((name) => name.includes('Мули'))) {
+    throw new Error(`Vysokogornaya route variants are incomplete: ${JSON.stringify(vysokogornayaOptions)}`);
+  }
+  await page.locator('#poekhaliServiceArmSheet .poekhali-arm-back').click();
+  await page.waitForFunction(() => document.querySelectorAll('#poekhaliServiceArmSheet .poekhali-arm-option').length === 3);
+  await page.locator('#poekhaliServiceArmSheet .poekhali-arm-option', { hasText: 'Постышево' }).click();
 
   await page.waitForFunction(() => (
     window.poekhaliHud?.positioningMode === 'preview' &&
@@ -786,8 +827,11 @@ async function assertPreparationModeWithoutGps(browser) {
     browsedMeters: Math.round(Math.abs(Number(window.poekhaliHud?.viewCoordinate) - Number(initial.coordinate))),
     gpsRequestsAfterStart: { ...window.__poekhaliGpsRequests },
     previewButtonPressed: document.getElementById('appTopBarPreview')?.getAttribute('aria-pressed'),
+    serviceArms: initial.armPicker.arms,
+    visokogornayaOptions: initial.vysokogornayaOptions,
+    serviceArmPickerScreenshot: 'artifacts\\poekhali-json-smoke\\service-arm-picker.png',
     screenshot: 'artifacts\\poekhali-json-smoke\\preparation-without-gps.png'
-  }), before);
+  }), { ...before, armPicker, vysokogornayaOptions });
   await page.evaluate(() => window.stopPoekhaliTrackerMode());
   await context.close();
   return result;

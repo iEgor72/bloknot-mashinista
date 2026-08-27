@@ -1,4 +1,4 @@
-const CACHE_VERSION = 'v404';
+const CACHE_VERSION = 'v405';
 const CACHE_NAME = `shift-tracker-shell-${CACHE_VERSION}`;
 const NAVIGATION_FALLBACK_URL = '/index.html';
 const NETWORK_TIMEOUT_MS = 4500;
@@ -17,30 +17,30 @@ const INDEX_ASSET_PATTERN = /(?:href|src)=["'](\/(?:styles|scripts|assets)\/[^"'
 const INSTALL_SHELL_URLS = [
   '/',
   '/index.html',
-  '/styles/v404/00-base.css',
-  '/styles/v404/10-navigation-and-cards.css',
-  '/styles/v404/10-shell-navigation.css',
-  '/styles/v404/11-poekhali-entry.css',
-  '/styles/v404/12-cards.css',
-  '/styles/v404/13-dashboard-cards.css',
-  '/styles/v404/14-stats-and-salary.css',
-  '/styles/v404/15-settings-and-docs.css',
-  '/styles/v404/16-overlays-and-actions.css',
-  '/styles/v404/15-bottom-nav.css',
-  '/styles/v404/16-press-feedback.css',
-  '/styles/v404/20-form-and-stats.css',
-  '/styles/v404/30-shifts-and-overlays.css',
-  '/styles/v404/40-premium-refresh.css',
-  '/styles/v404/50-design-refresh.css',
-  '/styles/v404/50-theme-shell.css',
-  '/styles/v404/51-shifts.css',
-  '/styles/v404/52-poekhali.css',
-  '/styles/v404/53-salary.css',
-  '/styles/v404/54-docs.css',
-  '/styles/v404/55-forms.css',
-  '/styles/v404/56-overlays.css',
-  '/styles/v404/56-profile.css',
-  '/styles/v404/57-datetime-picker.css',
+  '/styles/v405/00-base.css',
+  '/styles/v405/10-navigation-and-cards.css',
+  '/styles/v405/10-shell-navigation.css',
+  '/styles/v405/11-poekhali-entry.css',
+  '/styles/v405/12-cards.css',
+  '/styles/v405/13-dashboard-cards.css',
+  '/styles/v405/14-stats-and-salary.css',
+  '/styles/v405/15-settings-and-docs.css',
+  '/styles/v405/16-overlays-and-actions.css',
+  '/styles/v405/15-bottom-nav.css',
+  '/styles/v405/16-press-feedback.css',
+  '/styles/v405/20-form-and-stats.css',
+  '/styles/v405/30-shifts-and-overlays.css',
+  '/styles/v405/40-premium-refresh.css',
+  '/styles/v405/50-design-refresh.css',
+  '/styles/v405/50-theme-shell.css',
+  '/styles/v405/51-shifts.css',
+  '/styles/v405/52-poekhali.css',
+  '/styles/v405/53-salary.css',
+  '/styles/v405/54-docs.css',
+  '/styles/v405/55-forms.css',
+  '/styles/v405/56-overlays.css',
+  '/styles/v405/56-profile.css',
+  '/styles/v405/57-datetime-picker.css',
   '/manifest.webmanifest',
   '/apple-touch-icon.png',
   '/icon-192.png',
@@ -51,58 +51,58 @@ const INSTALL_SHELL_URLS = [
   '/assets/fonts/golos-text/GolosText-Bold.woff2',
   '/assets/fonts/golos-text/GolosText-ExtraBold.woff2',
   '/assets/fonts/golos-text/GolosText-Black.woff2',
-  '/scripts/v404/safe-area.js',
-  '/scripts/v404/nav-debug.js',
-  '/scripts/v404/utils/haptics.js',
-  '/scripts/v404/press-feedback.js',
-  '/scripts/v404/app-constants.js',
-  '/scripts/v404/poekhali-station-names.js',
-  '/scripts/v404/glass-select.js',
-  '/scripts/v404/viewport.js',
-  '/scripts/v404/time-utils.js',
-  '/scripts/v404/docs-app.js',
-  '/scripts/v404/telegram-sdk-loader.js',
-  '/scripts/v404/app.js',
-  '/scripts/v404/poekhali-utils.js',
-  '/scripts/v404/poekhali-map-parser.js',
-  '/scripts/v404/poekhali-warnings.js',
-  '/scripts/v404/poekhali-backup.js',
-  '/scripts/v404/poekhali-tracker.js',
-  '/scripts/v404/auth.js',
-  '/scripts/v404/render.js',
-  '/scripts/v404/shift-form.js',
-  '/scripts/v404/datetime-picker.js',
-  '/scripts/v404/app-init.js',
-  '/scripts/v404/sw-register.js',
-  '/sw-bootstrap-v404.js'
+  '/scripts/v405/safe-area.js',
+  '/scripts/v405/nav-debug.js',
+  '/scripts/v405/utils/haptics.js',
+  '/scripts/v405/press-feedback.js',
+  '/scripts/v405/app-constants.js',
+  '/scripts/v405/poekhali-station-names.js',
+  '/scripts/v405/glass-select.js',
+  '/scripts/v405/viewport.js',
+  '/scripts/v405/time-utils.js',
+  '/scripts/v405/docs-app.js',
+  '/scripts/v405/telegram-sdk-loader.js',
+  '/scripts/v405/app.js',
+  '/scripts/v405/poekhali-utils.js',
+  '/scripts/v405/poekhali-map-parser.js',
+  '/scripts/v405/poekhali-warnings.js',
+  '/scripts/v405/poekhali-backup.js',
+  '/scripts/v405/poekhali-tracker.js',
+  '/scripts/v405/auth.js',
+  '/scripts/v405/render.js',
+  '/scripts/v405/shift-form.js',
+  '/scripts/v405/datetime-picker.js',
+  '/scripts/v405/app-init.js',
+  '/scripts/v405/sw-register.js',
+  '/sw-bootstrap-v405.js'
 ];
 const CRITICAL_INSTALL_URLS = [
   '/',
   '/index.html',
-  '/styles/v404/00-base.css',
-  '/styles/v404/10-navigation-and-cards.css',
-  '/styles/v404/10-shell-navigation.css',
-  '/styles/v404/11-poekhali-entry.css',
-  '/styles/v404/12-cards.css',
-  '/styles/v404/13-dashboard-cards.css',
-  '/styles/v404/14-stats-and-salary.css',
-  '/styles/v404/15-settings-and-docs.css',
-  '/styles/v404/16-overlays-and-actions.css',
-  '/styles/v404/15-bottom-nav.css',
-  '/styles/v404/16-press-feedback.css',
-  '/styles/v404/20-form-and-stats.css',
-  '/styles/v404/30-shifts-and-overlays.css',
-  '/styles/v404/40-premium-refresh.css',
-  '/styles/v404/50-design-refresh.css',
-  '/styles/v404/50-theme-shell.css',
-  '/styles/v404/51-shifts.css',
-  '/styles/v404/52-poekhali.css',
-  '/styles/v404/53-salary.css',
-  '/styles/v404/54-docs.css',
-  '/styles/v404/55-forms.css',
-  '/styles/v404/56-overlays.css',
-  '/styles/v404/56-profile.css',
-  '/styles/v404/57-datetime-picker.css',
+  '/styles/v405/00-base.css',
+  '/styles/v405/10-navigation-and-cards.css',
+  '/styles/v405/10-shell-navigation.css',
+  '/styles/v405/11-poekhali-entry.css',
+  '/styles/v405/12-cards.css',
+  '/styles/v405/13-dashboard-cards.css',
+  '/styles/v405/14-stats-and-salary.css',
+  '/styles/v405/15-settings-and-docs.css',
+  '/styles/v405/16-overlays-and-actions.css',
+  '/styles/v405/15-bottom-nav.css',
+  '/styles/v405/16-press-feedback.css',
+  '/styles/v405/20-form-and-stats.css',
+  '/styles/v405/30-shifts-and-overlays.css',
+  '/styles/v405/40-premium-refresh.css',
+  '/styles/v405/50-design-refresh.css',
+  '/styles/v405/50-theme-shell.css',
+  '/styles/v405/51-shifts.css',
+  '/styles/v405/52-poekhali.css',
+  '/styles/v405/53-salary.css',
+  '/styles/v405/54-docs.css',
+  '/styles/v405/55-forms.css',
+  '/styles/v405/56-overlays.css',
+  '/styles/v405/56-profile.css',
+  '/styles/v405/57-datetime-picker.css',
   '/manifest.webmanifest',
   '/apple-touch-icon.png',
   '/icon-192.png',
@@ -113,32 +113,33 @@ const CRITICAL_INSTALL_URLS = [
   '/assets/fonts/golos-text/GolosText-Bold.woff2',
   '/assets/fonts/golos-text/GolosText-ExtraBold.woff2',
   '/assets/fonts/golos-text/GolosText-Black.woff2',
-  '/scripts/v404/safe-area.js',
-  '/scripts/v404/nav-debug.js',
-  '/scripts/v404/utils/haptics.js',
-  '/scripts/v404/press-feedback.js',
-  '/scripts/v404/app-constants.js',
-  '/scripts/v404/poekhali-station-names.js',
-  '/scripts/v404/glass-select.js',
-  '/scripts/v404/viewport.js',
-  '/scripts/v404/time-utils.js',
-  '/scripts/v404/docs-app.js',
-  '/scripts/v404/telegram-sdk-loader.js',
-  '/scripts/v404/app.js',
-  '/scripts/v404/poekhali-utils.js',
-  '/scripts/v404/poekhali-map-parser.js',
-  '/scripts/v404/poekhali-warnings.js',
-  '/scripts/v404/poekhali-backup.js',
-  '/scripts/v404/poekhali-tracker.js',
-  '/scripts/v404/auth.js',
-  '/scripts/v404/render.js',
-  '/scripts/v404/shift-form.js',
-  '/scripts/v404/datetime-picker.js',
-  '/scripts/v404/app-init.js',
-  '/scripts/v404/sw-register.js',
-  '/sw-bootstrap-v404.js'
+  '/scripts/v405/safe-area.js',
+  '/scripts/v405/nav-debug.js',
+  '/scripts/v405/utils/haptics.js',
+  '/scripts/v405/press-feedback.js',
+  '/scripts/v405/app-constants.js',
+  '/scripts/v405/poekhali-station-names.js',
+  '/scripts/v405/glass-select.js',
+  '/scripts/v405/viewport.js',
+  '/scripts/v405/time-utils.js',
+  '/scripts/v405/docs-app.js',
+  '/scripts/v405/telegram-sdk-loader.js',
+  '/scripts/v405/app.js',
+  '/scripts/v405/poekhali-utils.js',
+  '/scripts/v405/poekhali-map-parser.js',
+  '/scripts/v405/poekhali-warnings.js',
+  '/scripts/v405/poekhali-backup.js',
+  '/scripts/v405/poekhali-tracker.js',
+  '/scripts/v405/auth.js',
+  '/scripts/v405/render.js',
+  '/scripts/v405/shift-form.js',
+  '/scripts/v405/datetime-picker.js',
+  '/scripts/v405/app-init.js',
+  '/scripts/v405/sw-register.js',
+  '/sw-bootstrap-v405.js'
 ];
 const EXTENDED_SHELL_URLS = [
+  '/assets/catalog/index.json',
   '/assets/docs/manifest.json',
   '/assets/docs/vendor/jszip.min.js',
   '/assets/pdfjs/pdf.min.js',
@@ -168,15 +169,15 @@ const COHERENT_RUNTIME_URLS = uniqueShellUrls([
   )),
 ]);
 const UPDATE_CONTROL_PATHS = new Set([
-  '/scripts/v404/app-constants.js',
-  '/scripts/v404/app-init.js',
-  '/scripts/v404/app.js',
-  '/scripts/v404/auth.js',
-  '/scripts/v404/poekhali-backup.js',
-  '/scripts/v404/poekhali-station-names.js',
-  '/scripts/v404/poekhali-tracker.js',
-  '/scripts/v404/shift-form.js',
-  '/scripts/v404/sw-register.js',
+  '/scripts/v405/app-constants.js',
+  '/scripts/v405/app-init.js',
+  '/scripts/v405/app.js',
+  '/scripts/v405/auth.js',
+  '/scripts/v405/poekhali-backup.js',
+  '/scripts/v405/poekhali-station-names.js',
+  '/scripts/v405/poekhali-tracker.js',
+  '/scripts/v405/shift-form.js',
+  '/scripts/v405/sw-register.js',
   '/sw.js'
 ]);
 const UPDATE_CONTROL_FAST_TIMEOUT_MS = 1400;
@@ -432,13 +433,38 @@ async function resolveShellUrls(mode) {
     ]);
   }
 
+  const depotCatalogAssets = await discoverDepotCatalogAssets();
   return uniqueShellUrls([
     NAVIGATION_FALLBACK_URL,
     '/',
     ...INSTALL_SHELL_URLS,
     ...EXTENDED_SHELL_URLS,
+    ...depotCatalogAssets,
     ...discoveredAssets
   ]);
+}
+
+async function discoverDepotCatalogAssets() {
+  const indexUrl = '/assets/catalog/index.json';
+  try {
+    const response = await fetchWithRetry(indexUrl);
+    if (!response || !response.ok) return [indexUrl];
+    const index = await response.json();
+    const files = index && index.files && typeof index.files === 'object' ? index.files : {};
+    const values = [];
+    Object.keys(files).forEach((key) => {
+      const value = files[key];
+      if (Array.isArray(value)) values.push(...value);
+      else values.push(value);
+    });
+    return uniqueShellUrls([indexUrl, ...values.map((value) => {
+      const relative = String(value || '').replace(/\\/g, '/').replace(/^\.\//, '');
+      if (!relative || relative.includes('..') || relative.startsWith('/')) return '';
+      return '/assets/catalog/' + relative;
+    })]);
+  } catch (error) {
+    return [indexUrl];
+  }
 }
 
 async function discoverIndexAssets() {

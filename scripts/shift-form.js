@@ -1,4 +1,4 @@
-    if (typeof registerShiftTrackerRuntimeModule === 'function') registerShiftTrackerRuntimeModule('shift-form', 'v404');
+    if (typeof registerShiftTrackerRuntimeModule === 'function') registerShiftTrackerRuntimeModule('shift-form', 'v405');
 
     function findShiftById(id) {
       for (var i = 0; i < allShifts.length; i++) {

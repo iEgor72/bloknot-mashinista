@@ -28,6 +28,7 @@ const report = {
   serverLog: path.relative(repoRoot, path.join(artifactsDir, 'server.log')),
   screenshot: path.relative(repoRoot, path.join(artifactsDir, 'smoke-home.png')),
   profileInstallScreenshot: path.relative(repoRoot, path.join(artifactsDir, 'profile-install.png')),
+  profileDepotScreenshot: path.relative(repoRoot, path.join(artifactsDir, 'profile-depot-catalog.png')),
 };
 
 function normalizeLocalPath(rawUrl) {
@@ -630,12 +631,24 @@ async function main() {
     const oldMenuPoekhaliActions = document.querySelectorAll('#shiftActionsMenu [data-action="poekhali"]').length;
     renderShiftActionsMenu(latestShift.id);
     const latestMenuPoekhaliActions = document.querySelectorAll('#shiftActionsMenu [data-action="poekhali"]').length;
+    const clickHost = document.createElement('div');
+    clickHost.innerHTML = buildShiftItemHtml(latestShift, false, null, Object.create(null), null, null, latestId);
+    let preparationOpenedFor = '';
+    const originalPreparationOpen = window.openPoekhaliPreparationForShift;
+    window.openPoekhaliPreparationForShift = (id) => {
+      preparationOpenedFor = String(id || '');
+      return true;
+    };
+    bindShiftListDetailHandlers(clickHost);
+    clickHost.querySelector('.shift-poekhali-btn')?.click();
+    window.openPoekhaliPreparationForShift = originalPreparationOpen;
     const result = {
       latestId,
       oldCard: inspect(oldShift),
       latestCard: inspect(latestShift),
       oldMenuPoekhaliActions,
-      latestMenuPoekhaliActions
+      latestMenuPoekhaliActions,
+      preparationOpenedFor
     };
     window.allShifts = originalShifts;
     return result;
@@ -647,8 +660,11 @@ async function main() {
   if (shiftCardContract.oldCard.poekhaliButtons !== 0 || shiftCardContract.latestCard.poekhaliButtons !== 1) {
     throw new Error(`Poekhali must be available only from the latest shift: ${JSON.stringify(shiftCardContract)}`);
   }
-  if (shiftCardContract.oldCard.preparationButtons !== 0 || shiftCardContract.latestCard.preparationButtons !== 1) {
-    throw new Error(`Preparation mode must be available only from the latest shift: ${JSON.stringify(shiftCardContract)}`);
+  if (shiftCardContract.oldCard.preparationButtons !== 0 || shiftCardContract.latestCard.preparationButtons !== 0) {
+    throw new Error(`Separate preparation button must be removed from shift cards: ${JSON.stringify(shiftCardContract)}`);
+  }
+  if (shiftCardContract.preparationOpenedFor !== 'fuel-card-latest') {
+    throw new Error(`Single Poekhali button must open preparation before GPS: ${JSON.stringify(shiftCardContract)}`);
   }
   if (shiftCardContract.oldMenuPoekhaliActions !== 0 || shiftCardContract.latestMenuPoekhaliActions !== 0) {
     throw new Error(`Removed Poekhali menu action is still visible: ${JSON.stringify(shiftCardContract)}`);
@@ -1023,6 +1039,40 @@ async function main() {
   await page.waitForFunction(() => document.querySelector('.tab-btn[data-tab="profile"]')?.classList.contains('active'));
   await delay(2200);
   await page.screenshot({ path: path.join(artifactsDir, 'profile-install.png'), fullPage: true });
+  await clickElementCenter(page, '#btnProfileEdit', 'profile edit');
+  await page.waitForFunction(() => (
+    document.getElementById('overlayProfileEdit')?.classList.contains('is-open') &&
+    document.querySelectorAll('#inputProfileRailwayId option').length === 17
+  ));
+  await page.evaluate(() => {
+    const railway = document.getElementById('inputProfileRailwayId');
+    railway.value = 'dvost';
+    railway.dispatchEvent(new Event('change', { bubbles: true }));
+  });
+  await page.waitForFunction(() => document.querySelectorAll('#inputProfileDepotId option').length >= 5);
+  await page.evaluate(() => {
+    const depot = document.getElementById('inputProfileDepotId');
+    depot.value = 'rzd:dvost:tche-9:komsomolsk-na-amure';
+    depot.dispatchEvent(new Event('change', { bubbles: true }));
+  });
+  await page.waitForFunction(() => document.getElementById('profileDepotCoverageText')?.textContent.includes('3 плеча'));
+  const profileDepotCatalog = await page.evaluate(() => ({
+    railways: document.querySelectorAll('#inputProfileRailwayId option').length - 1,
+    depotsOnRailway: document.querySelectorAll('#inputProfileDepotId option').length - 2,
+    selectedDepot: document.getElementById('inputProfileDepotId')?.value || '',
+    coverage: document.getElementById('profileDepotCoverageText')?.textContent.trim() || '',
+    proposalVisible: !document.getElementById('btnProfileProposeArm')?.classList.contains('hidden'),
+  }));
+  report.checks.profileDepotCatalog = profileDepotCatalog;
+  if (profileDepotCatalog.railways !== 16 || profileDepotCatalog.depotsOnRailway !== 3 ||
+      profileDepotCatalog.selectedDepot !== 'rzd:dvost:tche-9:komsomolsk-na-amure' ||
+      !profileDepotCatalog.coverage.includes('3 плеча') || !profileDepotCatalog.proposalVisible) {
+    throw new Error(`Profile depot catalog contract failed: ${JSON.stringify(profileDepotCatalog)}`);
+  }
+  await page.evaluate(() => document.getElementById('profileDepotCoverage')?.scrollIntoView({ block: 'center' }));
+  await delay(160);
+  await page.screenshot({ path: path.join(artifactsDir, 'profile-depot-catalog.png'), fullPage: true });
+  await page.evaluate(() => closeOverlay('overlayProfileEdit'));
   await clickElementCenter(page, '.tab-btn[data-tab="home"]', 'home tab after install screenshot');
   await page.screenshot({ path: path.join(artifactsDir, 'smoke-home.png'), fullPage: true });
 

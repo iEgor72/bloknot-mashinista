@@ -64,6 +64,12 @@ try {
   invalidPack.section_ids[0] = 'missing-section';
   writeJson(packFile, invalidPack);
   expectFailure('invalid pack section', 'неизвестный section_id missing-section');
+  writeJson(packFile, originalPack);
+
+  const invalidArmMap = structuredClone(originalPack);
+  invalidArmMap.service_arms[0].route_options[0].tracker_map_id = 'missing-map';
+  writeJson(packFile, invalidArmMap);
+  expectFailure('invalid service arm map', 'неизвестный tracker_map_id missing-map');
 
   console.log('Depot catalog validator smoke passed.');
 } finally {

@@ -1,4 +1,4 @@
-if (typeof registerShiftTrackerRuntimeModule === 'function') registerShiftTrackerRuntimeModule('app-init', 'v404');
+if (typeof registerShiftTrackerRuntimeModule === 'function') registerShiftTrackerRuntimeModule('app-init', 'v405');
 
 // ── Init ──
 function startShiftTrackerRuntime() {
@@ -700,12 +700,16 @@ if (window.__SHIFT_TRACKER_RUNTIME_GUARD_PENDING) {
           lastName: normalizeProfileText(cur.lastName, 80),
           role: normalizeProfileText(cur.role),
           depot: normalizeProfileText(cur.depot),
+          railwayId: normalizeProfileText(cur.railwayId, 80),
+          depotId: normalizeProfileText(cur.depotId, 160),
           avatar: cur.avatar || ''
         };
         if (patch && 'firstName' in patch) next.firstName = normalizeProfileText(patch.firstName, 80);
         if (patch && 'lastName' in patch) next.lastName = normalizeProfileText(patch.lastName, 80);
         if (patch && 'role' in patch) next.role = normalizeProfileText(patch.role);
         if (patch && 'depot' in patch) next.depot = normalizeProfileText(patch.depot);
+        if (patch && 'railwayId' in patch) next.railwayId = normalizeProfileText(patch.railwayId, 80);
+        if (patch && 'depotId' in patch) next.depotId = normalizeProfileText(patch.depotId, 160);
         if (patch && 'avatar' in patch) next.avatar = patch.avatar || '';
         window.localStorage.setItem(PROFILE_KEY, JSON.stringify(next));
       } catch (e) {}
@@ -718,8 +722,152 @@ if (window.__SHIFT_TRACKER_RUNTIME_GUARD_PENDING) {
     // separate stores), so role/depot/avatar set in one never showed up in the
     // other. Mirror them to the server keyed by the authenticated user.
     var PROFILE_API_URL = (window.SHIFT_API_BASE_URL || '') + '/api/profile';
+    var DEPOT_PROPOSAL_API_URL = (window.SHIFT_API_BASE_URL || '') + '/api/depot-pack-requests';
+    var DEPOT_CATALOG_BASE_URL = '/assets/catalog/';
     var profileSyncInFlight = false;
     var profileSyncQueued = false;
+    var depotCatalogPromise = null;
+    var depotPackPromises = Object.create(null);
+
+    function safeCatalogUrl(relativePath) {
+      var path = String(relativePath || '').replace(/\\/g, '/').replace(/^\.\//, '');
+      if (!path || path.indexOf('..') !== -1 || path.charAt(0) === '/') return '';
+      return DEPOT_CATALOG_BASE_URL + path;
+    }
+
+    function fetchCatalogDocument(relativePath) {
+      var url = safeCatalogUrl(relativePath);
+      if (!url) return Promise.reject(new Error('Некорректный путь каталога'));
+      return fetch(url, { method: 'GET', headers: { 'Accept': 'application/json' } }).then(function(response) {
+        if (!response.ok) throw new Error('Каталог недоступен: HTTP ' + response.status);
+        return response.json();
+      });
+    }
+
+    function loadDepotCatalog() {
+      if (depotCatalogPromise) return depotCatalogPromise;
+      depotCatalogPromise = fetchCatalogDocument('index.json').then(function(index) {
+        var files = index && index.files ? index.files : {};
+        return Promise.all([
+          fetchCatalogDocument(files.railways || 'railways.json'),
+          fetchCatalogDocument(files.depots || 'depots.json')
+        ]).then(function(documents) {
+          return {
+            index: index || {},
+            railways: Array.isArray(documents[0] && documents[0].railways) ? documents[0].railways : [],
+            depots: Array.isArray(documents[1] && documents[1].depots) ? documents[1].depots : []
+          };
+        });
+      }).catch(function(error) {
+        depotCatalogPromise = null;
+        throw error;
+      });
+      return depotCatalogPromise;
+    }
+
+    function findCatalogDepot(catalog, depotId) {
+      var target = String(depotId || '');
+      var depots = catalog && Array.isArray(catalog.depots) ? catalog.depots : [];
+      for (var i = 0; i < depots.length; i++) {
+        if (String(depots[i] && depots[i].id || '') === target) return depots[i];
+      }
+      return null;
+    }
+
+    function normalizeDepotSearch(value) {
+      return String(value || '').toLocaleLowerCase('ru-RU').replace(/ё/g, 'е').replace(/[^a-zа-я0-9]+/gi, ' ').trim();
+    }
+
+    function inferCatalogDepot(catalog, depotText) {
+      var query = normalizeDepotSearch(depotText);
+      if (!query) return null;
+      var depots = catalog && Array.isArray(catalog.depots) ? catalog.depots : [];
+      var best = null;
+      var bestScore = 0;
+      for (var i = 0; i < depots.length; i++) {
+        var depot = depots[i] || {};
+        var code = normalizeDepotSearch(depot.code);
+        var name = normalizeDepotSearch(depot.name);
+        var score = 0;
+        if (code && query.indexOf(code) !== -1) score += 5;
+        if (name && (query.indexOf(name) !== -1 || name.indexOf(query) !== -1)) score += 5;
+        var nameParts = name.split(' ').filter(function(part) { return part.length >= 4; });
+        for (var p = 0; p < nameParts.length; p++) {
+          if (query.indexOf(nameParts[p]) !== -1) score += 1;
+        }
+        if (score > bestScore) {
+          best = depot;
+          bestScore = score;
+        }
+      }
+      return bestScore >= 5 ? best : null;
+    }
+
+    function getResolvedCatalogDepot(catalog, extras) {
+      extras = extras || loadExtras();
+      return findCatalogDepot(catalog, extras.depotId) || inferCatalogDepot(catalog, extras.depot);
+    }
+
+    function depotDisplayLabel(depot) {
+      if (!depot) return '';
+      return [depot.code || '', depot.name || ''].filter(Boolean).join(' · ');
+    }
+
+    function loadDepotPackById(depotId) {
+      return loadDepotCatalog().then(function(catalog) {
+        var depot = findCatalogDepot(catalog, depotId);
+        if (!depot || !depot.pack_file) return { catalog: catalog, depot: depot, pack: null };
+        var cacheKey = String(depot.id || depotId);
+        if (!depotPackPromises[cacheKey]) {
+          depotPackPromises[cacheKey] = fetchCatalogDocument(depot.pack_file).catch(function(error) {
+            delete depotPackPromises[cacheKey];
+            throw error;
+          });
+        }
+        return depotPackPromises[cacheKey].then(function(pack) {
+          return { catalog: catalog, depot: depot, pack: pack };
+        });
+      });
+    }
+
+    function getProfileCatalogSelection() {
+      var extras = loadExtras();
+      var railwaySelect = document.getElementById('inputProfileRailwayId');
+      var depotSelect = document.getElementById('inputProfileDepotId');
+      var customDepot = document.getElementById('inputProfileDepot');
+      var depotId = depotSelect && depotSelect.value && depotSelect.value !== '__custom__'
+        ? depotSelect.value
+        : (extras.depotId || '');
+      var selectedDepotLabel = depotSelect && depotSelect.selectedIndex >= 0 && depotSelect.value !== '__custom__'
+        ? String(depotSelect.options[depotSelect.selectedIndex].textContent || '')
+        : '';
+      return {
+        railwayId: railwaySelect && railwaySelect.value ? railwaySelect.value : (extras.railwayId || ''),
+        depotId: depotId,
+        depot: customDepot && !customDepot.classList.contains('hidden')
+          ? customDepot.value
+          : (selectedDepotLabel || extras.depot || '')
+      };
+    }
+
+    window.ProfileDepotCatalog = {
+      load: loadDepotCatalog,
+      getSelection: getProfileCatalogSelection,
+      resolveSelectedDepot: function() {
+        return loadDepotCatalog().then(function(catalog) {
+          return { catalog: catalog, depot: getResolvedCatalogDepot(catalog, loadExtras()) };
+        });
+      },
+      loadSelectedPack: function() {
+        return loadDepotCatalog().then(function(catalog) {
+          var depot = getResolvedCatalogDepot(catalog, loadExtras());
+          if (!depot) return { catalog: catalog, depot: null, pack: null };
+          return loadDepotPackById(depot.id);
+        });
+      },
+      loadPackByDepotId: loadDepotPackById,
+      depotLabel: depotDisplayLabel
+    };
 
     function loadProfileFromServer() {
       if (!navigator.onLine || typeof fetchJson !== 'function') return;
@@ -734,6 +882,8 @@ if (window.__SHIFT_TRACKER_RUNTIME_GUARD_PENDING) {
           lastName: p.lastName || p.last_name || '',
           role: p.role || '',
           depot: p.depot || '',
+          railwayId: p.railwayId || p.railway_id || '',
+          depotId: p.depotId || p.depot_id || '',
           avatar: p.avatar || ''
         };
         var cur = loadExtras();
@@ -743,6 +893,8 @@ if (window.__SHIFT_TRACKER_RUNTIME_GUARD_PENDING) {
             serverProfile.lastName === (cur.lastName || '') &&
             serverProfile.role === (cur.role || '') &&
             serverProfile.depot === (cur.depot || '') &&
+            serverProfile.railwayId === (cur.railwayId || '') &&
+            serverProfile.depotId === (cur.depotId || '') &&
             serverProfile.avatar === (cur.avatar || '')) return;
         saveExtras(serverProfile);
         renderHeader();
@@ -775,6 +927,8 @@ if (window.__SHIFT_TRACKER_RUNTIME_GUARD_PENDING) {
             lastName: ex.lastName || '',
             role: ex.role || '',
             depot: ex.depot || '',
+            railwayId: ex.railwayId || '',
+            depotId: ex.depotId || '',
             avatar: ex.avatar || ''
           }
         })
@@ -1008,6 +1162,221 @@ if (window.__SHIFT_TRACKER_RUNTIME_GUARD_PENDING) {
       });
     }
 
+    var profileCatalogRenderToken = 0;
+    var depotProposalContext = null;
+
+    function refreshGlassSelect(rootId) {
+      var root = document.getElementById(rootId);
+      if (!root || !window.GlassSelect) return;
+      if (typeof GlassSelect.refresh === 'function') GlassSelect.refresh(root);
+      if (typeof GlassSelect.sync === 'function') GlassSelect.sync(root);
+    }
+
+    function replaceSelectOptions(select, options, selectedValue) {
+      if (!select) return;
+      while (select.firstChild) select.removeChild(select.firstChild);
+      for (var i = 0; i < options.length; i++) {
+        var item = options[i] || {};
+        var option = document.createElement('option');
+        option.value = String(item.value || '');
+        option.textContent = String(item.label || '');
+        select.appendChild(option);
+      }
+      select.value = String(selectedValue || '');
+      if (select.value !== String(selectedValue || '')) select.value = '';
+    }
+
+    function setCatalogSelectDisabled(rootId, select, disabled) {
+      if (select) select.disabled = !!disabled;
+      var root = document.getElementById(rootId);
+      var trigger = root && root.querySelector('.glass-select-trigger');
+      if (trigger) trigger.disabled = !!disabled;
+      if (root) root.classList.toggle('is-disabled', !!disabled);
+    }
+
+    function renderDepotCoverage(catalog, depotId, isCustom) {
+      var coverage = document.getElementById('profileDepotCoverage');
+      var text = document.getElementById('profileDepotCoverageText');
+      var proposeBtn = document.getElementById('btnProfileProposeArm');
+      var moderation = document.getElementById('profileDepotModerationNote');
+      if (!coverage || !text) return;
+      coverage.classList.remove('is-ready', 'is-missing');
+      var depot = findCatalogDepot(catalog, depotId);
+      if (depot && depot.pack_file) {
+        coverage.classList.add('is-ready');
+        text.textContent = 'Пакет участка доступен. Считаем плечи…';
+        loadDepotPackById(depot.id).then(function(result) {
+          if (!result || !result.pack || !text) return;
+          var arms = Array.isArray(result.pack.service_arms) ? result.pack.service_arms.length : 0;
+          text.textContent = arms
+            ? (arms + ' ' + (arms === 1 ? 'плечо' : arms < 5 ? 'плеча' : 'плеч') + ' · подготовка без GPS')
+            : 'Пакет участка доступен';
+        }).catch(function() {
+          coverage.classList.remove('is-ready');
+          coverage.classList.add('is-missing');
+          text.textContent = 'Не удалось загрузить пакет. Попробуйте ещё раз позже.';
+        });
+      } else if (depot || isCustom) {
+        coverage.classList.add('is-missing');
+        text.textContent = depot
+          ? 'Пакет участка ещё не собран. Можно предложить плечи и материалы.'
+          : 'Этого депо пока нет в каталоге. Его можно предложить.';
+      } else {
+        text.textContent = 'Выберите дорогу и депо, чтобы увидеть доступные участки.';
+      }
+      var canPropose = !!depot || !!isCustom;
+      if (proposeBtn) {
+        proposeBtn.classList.toggle('hidden', !canPropose);
+        proposeBtn.textContent = depot && depot.pack_file ? 'Предложить другое плечо' : 'Предложить депо или плечо';
+      }
+      if (moderation) moderation.classList.toggle('hidden', !canPropose);
+    }
+
+    function populateProfileDepots(catalog, railwayId, selectedDepotId, customSelected) {
+      var depotSelect = document.getElementById('inputProfileDepotId');
+      var customInput = document.getElementById('inputProfileDepot');
+      var options = [{ value: '', label: railwayId ? 'Выберите депо' : 'Сначала выберите дорогу' }];
+      var depots = (catalog.depots || []).filter(function(depot) {
+        return depot && depot.railway_id === railwayId && depot.status !== 'retired';
+      }).sort(function(a, b) {
+        return depotDisplayLabel(a).localeCompare(depotDisplayLabel(b), 'ru');
+      });
+      for (var i = 0; i < depots.length; i++) {
+        options.push({ value: depots[i].id, label: depotDisplayLabel(depots[i]) });
+      }
+      if (railwayId) options.push({ value: '__custom__', label: 'Моего депо нет в списке' });
+      var targetValue = customSelected ? '__custom__' : selectedDepotId;
+      replaceSelectOptions(depotSelect, options, targetValue);
+      setCatalogSelectDisabled('profileDepotSelect', depotSelect, !railwayId);
+      if (customInput) customInput.classList.toggle('hidden', !customSelected);
+      refreshGlassSelect('profileDepotSelect');
+      renderDepotCoverage(catalog, selectedDepotId, customSelected);
+    }
+
+    function syncProfileCatalogUi(extras) {
+      var token = ++profileCatalogRenderToken;
+      var coverageText = document.getElementById('profileDepotCoverageText');
+      if (coverageText) coverageText.textContent = 'Загружаем каталог депо…';
+      return loadDepotCatalog().then(function(catalog) {
+        if (token !== profileCatalogRenderToken) return;
+        extras = extras || loadExtras();
+        var resolvedDepot = getResolvedCatalogDepot(catalog, extras);
+        var railwayId = extras.railwayId || (resolvedDepot && resolvedDepot.railway_id) || '';
+        var selectedDepotId = extras.depotId || (resolvedDepot && resolvedDepot.id) || '';
+        var isLegacyCustom = !!extras.depot && !resolvedDepot;
+        var railwaySelect = document.getElementById('inputProfileRailwayId');
+        var railwayOptions = [{ value: '', label: 'Выберите дорогу' }];
+        for (var i = 0; i < catalog.railways.length; i++) {
+          var railway = catalog.railways[i] || {};
+          railwayOptions.push({ value: railway.id, label: railway.short_name || railway.name || railway.id });
+        }
+        replaceSelectOptions(railwaySelect, railwayOptions, railwayId);
+        refreshGlassSelect('profileRailwaySelect');
+        var legacyNote = document.getElementById('profileLegacyDepotNote');
+        var customInput = document.getElementById('inputProfileDepot');
+        if (customInput) customInput.value = extras.depot || '';
+        if (legacyNote) legacyNote.classList.toggle('hidden', !isLegacyCustom);
+        populateProfileDepots(catalog, railwayId, selectedDepotId, isLegacyCustom && !!railwayId);
+        if (isLegacyCustom && !railwayId) {
+          if (customInput) customInput.classList.remove('hidden');
+          renderDepotCoverage(catalog, '', true);
+        }
+      }).catch(function() {
+        if (token !== profileCatalogRenderToken) return;
+        var customInput = document.getElementById('inputProfileDepot');
+        if (customInput) {
+          customInput.value = extras && extras.depot ? extras.depot : '';
+          customInput.classList.remove('hidden');
+        }
+        if (coverageText) coverageText.textContent = 'Каталог сейчас недоступен. Название депо можно сохранить вручную.';
+        var coverage = document.getElementById('profileDepotCoverage');
+        if (coverage) coverage.classList.add('is-missing');
+      });
+    }
+
+    var railwayCatalogSelect = document.getElementById('inputProfileRailwayId');
+    var depotCatalogSelect = document.getElementById('inputProfileDepotId');
+    if (railwayCatalogSelect) {
+      railwayCatalogSelect.addEventListener('change', function() {
+        loadDepotCatalog().then(function(catalog) {
+          populateProfileDepots(catalog, railwayCatalogSelect.value, '', false);
+        }).catch(function() {});
+      });
+    }
+    if (depotCatalogSelect) {
+      depotCatalogSelect.addEventListener('change', function() {
+        loadDepotCatalog().then(function(catalog) {
+          var custom = depotCatalogSelect.value === '__custom__';
+          var customInput = document.getElementById('inputProfileDepot');
+          if (customInput) {
+            customInput.classList.toggle('hidden', !custom);
+            if (custom) customInput.focus();
+          }
+          renderDepotCoverage(catalog, custom ? '' : depotCatalogSelect.value, custom);
+        }).catch(function() {});
+      });
+    }
+
+    function openDepotProposal(context) {
+      context = context || {};
+      var selection = getProfileCatalogSelection();
+      depotProposalContext = {
+        railwayId: context.railwayId || selection.railwayId || '',
+        depotId: context.depotId || selection.depotId || '',
+        depotLabel: context.depotLabel || selection.depot || '',
+        source: context.source || 'profile'
+      };
+      var label = document.getElementById('depotProposalDepotLabel');
+      var armInput = document.getElementById('inputDepotProposalArm');
+      var notesInput = document.getElementById('inputDepotProposalNotes');
+      if (label) label.textContent = depotProposalContext.depotLabel || 'Укажите название депо в комментарии';
+      if (armInput) armInput.value = context.armName || '';
+      if (notesInput) notesInput.value = '';
+      if (typeof openOverlay === 'function') openOverlay('overlayDepotProposal');
+    }
+    window.openDepotProposal = openDepotProposal;
+
+    var proposeArmBtn = document.getElementById('btnProfileProposeArm');
+    if (proposeArmBtn) proposeArmBtn.addEventListener('click', function() { openDepotProposal({ source: 'profile' }); });
+    var proposalCancelBtn = document.getElementById('btnDepotProposalCancel');
+    if (proposalCancelBtn) proposalCancelBtn.addEventListener('click', function() {
+      if (typeof closeOverlay === 'function') closeOverlay('overlayDepotProposal');
+    });
+    var proposalSendBtn = document.getElementById('btnDepotProposalSend');
+    if (proposalSendBtn) proposalSendBtn.addEventListener('click', function() {
+      var armInput = document.getElementById('inputDepotProposalArm');
+      var notesInput = document.getElementById('inputDepotProposalNotes');
+      var armName = normalizeProfileText(armInput && armInput.value, 120);
+      var notes = normalizeProfileText(notesInput && notesInput.value, 600);
+      if (!armName && !notes) {
+        if (typeof enqueueAppToast === 'function') enqueueAppToast('Укажите плечо или материалы', 'neutral', 2200);
+        return;
+      }
+      proposalSendBtn.disabled = true;
+      proposalSendBtn.textContent = 'Отправляем…';
+      fetchJson(DEPOT_PROPOSAL_API_URL, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json', 'Accept': 'application/json' },
+        body: JSON.stringify({
+          railwayId: depotProposalContext && depotProposalContext.railwayId || '',
+          depotId: depotProposalContext && depotProposalContext.depotId || '',
+          depotLabel: depotProposalContext && depotProposalContext.depotLabel || '',
+          armName: armName,
+          notes: notes,
+          source: depotProposalContext && depotProposalContext.source || 'profile'
+        })
+      }, 9000).then(function(result) {
+        if (!result || !result.ok) throw new Error(result && result.body && result.body.error || 'Не удалось отправить');
+        if (typeof closeOverlay === 'function') closeOverlay('overlayDepotProposal');
+        if (typeof enqueueAppToast === 'function') enqueueAppToast('Предложение отправлено на проверку', 'success', 2600);
+      }).catch(function(error) {
+        if (typeof enqueueAppToast === 'function') enqueueAppToast(error && error.message || 'Не удалось отправить', 'danger', 2600);
+      }).then(function() {
+        proposalSendBtn.disabled = false;
+        proposalSendBtn.textContent = 'Отправить';
+      });
+    });
+
     var editBtn = document.getElementById('btnProfileEdit');
     if (editBtn) {
       editBtn.addEventListener('click', function() {
@@ -1016,14 +1385,13 @@ if (window.__SHIFT_TRACKER_RUNTIME_GUARD_PENDING) {
         var firstNameInp = document.getElementById('inputProfileFirstName');
         var lastNameInp = document.getElementById('inputProfileLastName');
         var roleSel = document.getElementById('inputProfileRole');
-        var depotInp = document.getElementById('inputProfileDepot');
         if (firstNameInp) firstNameInp.value = extras.firstName || normalizeProfileText(u.first_name, 80);
         if (lastNameInp) lastNameInp.value = extras.lastName || normalizeProfileText(u.last_name, 80);
         if (roleSel) roleSel.value = extras.role || '';
-        if (depotInp) depotInp.value = extras.depot || '';
         if (window.GlassSelect && typeof GlassSelect.sync === 'function') {
           GlassSelect.sync(document.getElementById('profileRoleSelect'));
         }
+        syncProfileCatalogUi(extras);
         paintAvatar(document.getElementById('profileEditAvatarPreview'));
         updateClearPhotoBtn();
         if (typeof openOverlay === 'function') openOverlay('overlayProfileEdit');
@@ -1036,15 +1404,26 @@ if (window.__SHIFT_TRACKER_RUNTIME_GUARD_PENDING) {
         var lastNameInp = document.getElementById('inputProfileLastName');
         var roleSel = document.getElementById('inputProfileRole');
         var depotInp = document.getElementById('inputProfileDepot');
-        saveExtras({
-          firstName: firstNameInp ? firstNameInp.value : '',
-          lastName: lastNameInp ? lastNameInp.value : '',
-          role: roleSel ? roleSel.value : '',
-          depot: depotInp ? depotInp.value : ''
+        var railwaySelect = document.getElementById('inputProfileRailwayId');
+        var depotSelect = document.getElementById('inputProfileDepotId');
+        var selectedDepotId = depotSelect && depotSelect.value !== '__custom__' ? depotSelect.value : '';
+        loadDepotCatalog().catch(function() { return null; }).then(function(catalog) {
+          var selectedDepot = catalog ? findCatalogDepot(catalog, selectedDepotId) : null;
+          var depotText = selectedDepot
+            ? [selectedDepot.code || '', selectedDepot.name || ''].filter(Boolean).join(' ')
+            : (depotInp ? depotInp.value : '');
+          saveExtras({
+            firstName: firstNameInp ? firstNameInp.value : '',
+            lastName: lastNameInp ? lastNameInp.value : '',
+            role: roleSel ? roleSel.value : '',
+            depot: depotText,
+            railwayId: railwaySelect ? railwaySelect.value : '',
+            depotId: selectedDepot ? selectedDepot.id : ''
+          });
+          renderHeader();
+          syncProfileToServer();
+          if (typeof closeOverlay === 'function') closeOverlay('overlayProfileEdit');
         });
-        renderHeader();
-        syncProfileToServer();
-        if (typeof closeOverlay === 'function') closeOverlay('overlayProfileEdit');
       });
     }
 

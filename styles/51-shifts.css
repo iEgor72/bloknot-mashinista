@@ -271,34 +271,6 @@
 }
 .shift-card-v2 .shift-poekhali-btn svg { width: 15px; height: 15px; display: block; }
 .shift-card-v2 .shift-poekhali-btn:active { transform: translateY(1px); box-shadow: 0 1px 6px var(--accent-glow, rgba(56, 189, 248, 0.3)); }
-.shift-card-v2 .shift-poekhali-preview-btn {
-  display: inline-flex;
-  align-items: center;
-  gap: 5px;
-  flex-shrink: 0;
-  align-self: flex-start;
-  padding: 5px 8px;
-  border: 1px solid color-mix(in oklch, var(--accent) 28%, var(--hair));
-  border-radius: 999px;
-  background: var(--accent-soft);
-  color: var(--accent);
-  font: 700 11px/1 'Golos Text', system-ui, sans-serif;
-  cursor: pointer;
-  -webkit-tap-highlight-color: transparent;
-}
-.shift-card-v2 .shift-poekhali-preview-btn svg {
-  width: 15px;
-  height: 15px;
-  fill: none;
-  stroke: currentColor;
-  stroke-width: 1.8;
-  stroke-linecap: round;
-  stroke-linejoin: round;
-}
-.shift-card-v2 .shift-poekhali-preview-btn:active { transform: translateY(1px); }
-@media (max-width: 370px) {
-  .shift-card-v2 .shift-poekhali-preview-label { display: none; }
-}
 .shift-card-v2 .shift-actions-trigger {
   background: var(--glass);
   border: 1px solid var(--hair);

@@ -1,4 +1,4 @@
-if (typeof registerShiftTrackerRuntimeModule === 'function') registerShiftTrackerRuntimeModule('poekhali-tracker', 'v404');
+if (typeof registerShiftTrackerRuntimeModule === 'function') registerShiftTrackerRuntimeModule('poekhali-tracker', 'v405');
 
 (function() {
   'use strict';
@@ -266,6 +266,11 @@ if (typeof registerShiftTrackerRuntimeModule === 'function') registerShiftTracke
     ctx: null,
     mapPicker: null,
     mapPickerOpen: false,
+    serviceArmPicker: null,
+    serviceArmPickerOpen: false,
+    serviceArmPickerShiftId: '',
+    serviceArmPickerDepot: null,
+    serviceArmPickerPack: null,
     opsSheet: null,
     opsView: readStringStorage(OPS_VIEW_STORAGE_KEY) || 'drive',
     conflictCard: null,
@@ -1983,7 +1988,9 @@ if (typeof registerShiftTrackerRuntimeModule === 'function') registerShiftTracke
 
     return loadManifest()
       .then(function() {
-        return maybeAutoSelectMapForShiftRoute({ applyPreview: true });
+        return options.skipRouteAutoSelect
+          ? false
+          : maybeAutoSelectMapForShiftRoute({ applyPreview: true });
       })
       .catch(function(error) {
         console.warn('Poekhali entry route preparation failed:', error);
@@ -2030,11 +2037,10 @@ if (typeof registerShiftTrackerRuntimeModule === 'function') registerShiftTracke
     if (typeof closeShiftDetail === 'function') {
       closeShiftDetail({ immediate: true, force: true });
     }
-    if (typeof setActiveTab === 'function') setActiveTab('poekhali');
     updateModeButtons();
     setOpsButton();
     requestDraw();
-    preparePoekhaliModeEntry({ pinnedShiftId: shiftId });
+    openServiceArmPicker(shiftId);
     return true;
   }
 
@@ -5113,6 +5119,360 @@ if (typeof registerShiftTrackerRuntimeModule === 'function') registerShiftTracke
     var loaded = loadAssets();
     requestDraw();
     return loaded;
+  }
+
+  function getServiceArmPicker() {
+    if (tracker.serviceArmPicker && tracker.serviceArmPicker.root && tracker.serviceArmPicker.root.parentNode) {
+      return tracker.serviceArmPicker;
+    }
+    if (!document.body) return null;
+    var root = document.createElement('div');
+    root.id = 'poekhaliServiceArmSheet';
+    root.className = 'poekhali-arm-sheet hidden';
+
+    var backdrop = document.createElement('button');
+    backdrop.type = 'button';
+    backdrop.className = 'poekhali-arm-sheet-backdrop';
+    backdrop.setAttribute('aria-label', 'Закрыть выбор плеча');
+
+    var panel = document.createElement('div');
+    panel.className = 'poekhali-arm-sheet-panel';
+    panel.setAttribute('role', 'dialog');
+    panel.setAttribute('aria-modal', 'true');
+    panel.setAttribute('aria-labelledby', 'poekhaliArmSheetTitle');
+
+    var handle = document.createElement('span');
+    handle.className = 'poekhali-arm-sheet-handle';
+    handle.setAttribute('aria-hidden', 'true');
+
+    var head = document.createElement('div');
+    head.className = 'poekhali-arm-sheet-head';
+    var titleWrap = document.createElement('div');
+    var title = document.createElement('div');
+    title.id = 'poekhaliArmSheetTitle';
+    title.className = 'poekhali-arm-sheet-title';
+    title.textContent = 'Плечо обслуживания';
+    var subtitle = document.createElement('div');
+    subtitle.className = 'poekhali-arm-sheet-subtitle';
+    titleWrap.appendChild(title);
+    titleWrap.appendChild(subtitle);
+    var closeBtn = document.createElement('button');
+    closeBtn.type = 'button';
+    closeBtn.className = 'poekhali-arm-sheet-close';
+    closeBtn.textContent = 'Закрыть';
+    head.appendChild(titleWrap);
+    head.appendChild(closeBtn);
+
+    var content = document.createElement('div');
+    content.className = 'poekhali-arm-sheet-content';
+
+    panel.appendChild(handle);
+    panel.appendChild(head);
+    panel.appendChild(content);
+    root.appendChild(backdrop);
+    root.appendChild(panel);
+    document.body.appendChild(root);
+
+    backdrop.addEventListener('click', closeServiceArmPicker);
+    closeBtn.addEventListener('click', closeServiceArmPicker);
+    panel.addEventListener('click', function(event) { event.stopPropagation(); });
+
+    tracker.serviceArmPicker = {
+      root: root,
+      panel: panel,
+      title: title,
+      subtitle: subtitle,
+      content: content
+    };
+    return tracker.serviceArmPicker;
+  }
+
+  function setServiceArmPickerLoading(text) {
+    var picker = getServiceArmPicker();
+    if (!picker) return;
+    clearElement(picker.content);
+    var loading = document.createElement('div');
+    loading.className = 'poekhali-arm-loading';
+    var spinner = document.createElement('span');
+    spinner.className = 'poekhali-arm-spinner';
+    spinner.setAttribute('aria-hidden', 'true');
+    var label = document.createElement('span');
+    label.textContent = text || 'Загружаем участки…';
+    loading.appendChild(spinner);
+    loading.appendChild(label);
+    picker.content.appendChild(loading);
+  }
+
+  function appendServiceArmProposal(parent, depot, armName) {
+    if (!parent) return;
+    var wrap = document.createElement('div');
+    wrap.className = 'poekhali-arm-proposal';
+    var note = document.createElement('div');
+    note.textContent = 'Нет нужного плеча? Предложите его — после проверки оно появится у всего депо.';
+    var button = document.createElement('button');
+    button.type = 'button';
+    button.className = 'poekhali-arm-proposal-btn';
+    button.textContent = 'Предложить плечо';
+    button.addEventListener('click', function() {
+      closeServiceArmPicker();
+      if (typeof window.openDepotProposal === 'function') {
+        window.openDepotProposal({
+          railwayId: depot && depot.railway_id || '',
+          depotId: depot && depot.id || '',
+          depotLabel: window.ProfileDepotCatalog && typeof window.ProfileDepotCatalog.depotLabel === 'function'
+            ? window.ProfileDepotCatalog.depotLabel(depot)
+            : [depot && depot.code || '', depot && depot.name || ''].filter(Boolean).join(' '),
+          armName: armName || '',
+          source: 'poekhali-arm-picker'
+        });
+      }
+    });
+    wrap.appendChild(note);
+    wrap.appendChild(button);
+    parent.appendChild(wrap);
+  }
+
+  function renderServiceArmUnavailable(depot, message) {
+    var picker = getServiceArmPicker();
+    if (!picker) return;
+    clearElement(picker.content);
+    picker.title.textContent = 'Пакет участка';
+    picker.subtitle.textContent = depot
+      ? [depot.code || '', depot.name || ''].filter(Boolean).join(' · ')
+      : 'Депо не выбрано';
+    var empty = document.createElement('div');
+    empty.className = 'poekhali-arm-empty';
+    var title = document.createElement('strong');
+    title.textContent = 'Плечи пока не добавлены';
+    var text = document.createElement('span');
+    text.textContent = message || 'Выберите депо в профиле или предложите данные своего участка.';
+    empty.appendChild(title);
+    empty.appendChild(text);
+    picker.content.appendChild(empty);
+    appendServiceArmProposal(picker.content, depot, '');
+  }
+
+  function findServiceArmMap(mapId) {
+    var target = String(mapId || '');
+    var maps = Array.isArray(tracker.availableMaps) ? tracker.availableMaps : [];
+    for (var i = 0; i < maps.length; i++) {
+      if (String(maps[i] && maps[i].id || '') === target) return maps[i];
+    }
+    return null;
+  }
+
+  function applyServiceArmEntryStation(stationName) {
+    var stations = getRouteStationsFromCurrentMap();
+    var match = findRouteStationInList(stationName, stations);
+    if (match && match.station) {
+      setPreviewProjection({
+        lineCoordinate: match.station.coordinate,
+        sector: match.station.sector
+      }, true);
+      return true;
+    }
+    var sectors = getAvailableSectors();
+    if (sectors.length) return !!selectPreviewSector(sectors[0], 'start');
+    return false;
+  }
+
+  function openSelectedServiceArm(depot, pack, arm, option) {
+    var picker = getServiceArmPicker();
+    var shiftId = tracker.serviceArmPickerShiftId;
+    if (!picker || !option) return;
+    setServiceArmPickerLoading('Открываем ' + String(arm && arm.name || 'плечо') + '…');
+    loadManifest().then(function() {
+      var map = findServiceArmMap(option.tracker_map_id);
+      if (!map) throw new Error('Профиль этого плеча не найден в каталоге карт');
+      if (isCurrentMap(map)) return loadAssets();
+      return selectMap(map, { keepPicker: true });
+    }).then(function() {
+      if (!tracker.assetsLoaded) throw new Error(tracker.assetsError || 'Профиль участка не загрузился');
+      applyServiceArmEntryStation(option.entry_station || '');
+      try {
+        localStorage.setItem('poekhali.serviceArm.depotId', String(depot && depot.id || ''));
+        localStorage.setItem('poekhali.serviceArm.armId', String(arm && arm.id || ''));
+        localStorage.setItem('poekhali.serviceArm.optionId', String(option.id || ''));
+      } catch (error) {}
+      closeServiceArmPicker();
+      tracker.entryShiftLockId = String(shiftId || '');
+      if (typeof setActiveTab === 'function') setActiveTab('poekhali');
+      updateModeButtons();
+      setOpsButton();
+      requestDraw({ immediate: true });
+      return preparePoekhaliModeEntry({
+        pinnedShiftId: shiftId,
+        skipRouteAutoSelect: true
+      });
+    }).catch(function(error) {
+      if (!tracker.serviceArmPickerOpen) return;
+      renderServiceArmUnavailable(depot, error && error.message ? error.message : 'Не удалось открыть профиль плеча.');
+    });
+  }
+
+  function renderServiceArmOptions(depot, pack, arm) {
+    var picker = getServiceArmPicker();
+    if (!picker) return;
+    clearElement(picker.content);
+    picker.title.textContent = arm && arm.name ? arm.name : 'Вариант плеча';
+    picker.subtitle.textContent = 'Выберите вариант хода';
+    var back = document.createElement('button');
+    back.type = 'button';
+    back.className = 'poekhali-arm-back';
+    back.textContent = '‹ Все плечи';
+    back.addEventListener('click', function() { renderServiceArms(depot, pack); });
+    picker.content.appendChild(back);
+    var options = Array.isArray(arm && arm.route_options) ? arm.route_options : [];
+    for (var i = 0; i < options.length; i++) {
+      (function(option) {
+        var button = document.createElement('button');
+        button.type = 'button';
+        button.className = 'poekhali-arm-option';
+        var copy = document.createElement('span');
+        copy.className = 'poekhali-arm-option-copy';
+        var title = document.createElement('strong');
+        title.textContent = option.name || option.id;
+        var meta = document.createElement('span');
+        meta.textContent = 'Открыть профиль без GPS';
+        copy.appendChild(title);
+        copy.appendChild(meta);
+        var arrow = document.createElement('span');
+        arrow.className = 'poekhali-arm-option-arrow';
+        arrow.textContent = '›';
+        button.appendChild(copy);
+        button.appendChild(arrow);
+        button.addEventListener('click', function() { openSelectedServiceArm(depot, pack, arm, option); });
+        picker.content.appendChild(button);
+      })(options[i]);
+    }
+    appendServiceArmProposal(picker.content, depot, arm && arm.name);
+  }
+
+  function renderServiceArms(depot, pack) {
+    var picker = getServiceArmPicker();
+    if (!picker) return;
+    tracker.serviceArmPickerDepot = depot || null;
+    tracker.serviceArmPickerPack = pack || null;
+    clearElement(picker.content);
+    picker.title.textContent = 'Плечо обслуживания';
+    picker.subtitle.textContent = depot
+      ? [depot.code || '', depot.name || ''].filter(Boolean).join(' · ')
+      : (pack && pack.name || 'Пакет депо');
+    var arms = Array.isArray(pack && pack.service_arms) ? pack.service_arms : [];
+    if (!arms.length) {
+      renderServiceArmUnavailable(depot, 'В пакете депо пока нет плеч обслуживания.');
+      return;
+    }
+    for (var i = 0; i < arms.length; i++) {
+      (function(arm) {
+        var options = Array.isArray(arm.route_options) ? arm.route_options : [];
+        var button = document.createElement('button');
+        button.type = 'button';
+        button.className = 'poekhali-arm-option';
+        var copy = document.createElement('span');
+        copy.className = 'poekhali-arm-option-copy';
+        var title = document.createElement('strong');
+        title.textContent = arm.name || arm.id;
+        var meta = document.createElement('span');
+        meta.textContent = arm.description || (options.length > 1 ? options.length + ' варианта хода' : 'Профиль участка');
+        copy.appendChild(title);
+        copy.appendChild(meta);
+        var badge = document.createElement('span');
+        badge.className = 'poekhali-arm-option-badge';
+        badge.textContent = options.length > 1 ? String(options.length) : '›';
+        button.appendChild(copy);
+        button.appendChild(badge);
+        button.addEventListener('click', function() {
+          if (options.length === 1) openSelectedServiceArm(depot, pack, arm, options[0]);
+          else renderServiceArmOptions(depot, pack, arm);
+        });
+        picker.content.appendChild(button);
+      })(arms[i]);
+    }
+    appendServiceArmProposal(picker.content, depot, '');
+  }
+
+  function renderAvailableDepotPacks(catalog) {
+    var picker = getServiceArmPicker();
+    if (!picker) return;
+    clearElement(picker.content);
+    picker.title.textContent = 'Выберите депо';
+    picker.subtitle.textContent = 'Доступные пакеты участков';
+    var depots = (catalog && Array.isArray(catalog.depots) ? catalog.depots : []).filter(function(depot) {
+      return depot && depot.pack_file && depot.status === 'pack_available';
+    });
+    if (!depots.length) {
+      renderServiceArmUnavailable(null, 'В каталоге пока нет готовых пакетов депо.');
+      return;
+    }
+    for (var i = 0; i < depots.length; i++) {
+      (function(depot) {
+        var button = document.createElement('button');
+        button.type = 'button';
+        button.className = 'poekhali-arm-option';
+        var copy = document.createElement('span');
+        copy.className = 'poekhali-arm-option-copy';
+        var title = document.createElement('strong');
+        title.textContent = [depot.code || '', depot.name || ''].filter(Boolean).join(' · ');
+        var meta = document.createElement('span');
+        meta.textContent = 'Открыть плечи обслуживания';
+        copy.appendChild(title);
+        copy.appendChild(meta);
+        var arrow = document.createElement('span');
+        arrow.className = 'poekhali-arm-option-arrow';
+        arrow.textContent = '›';
+        button.appendChild(copy);
+        button.appendChild(arrow);
+        button.addEventListener('click', function() {
+          setServiceArmPickerLoading('Загружаем пакет депо…');
+          window.ProfileDepotCatalog.loadPackByDepotId(depot.id).then(function(result) {
+            if (!result || !result.pack) throw new Error('Пакет депо не найден');
+            renderServiceArms(result.depot || depot, result.pack);
+          }).catch(function(error) {
+            renderServiceArmUnavailable(depot, error && error.message ? error.message : 'Пакет депо не загрузился.');
+          });
+        });
+        picker.content.appendChild(button);
+      })(depots[i]);
+    }
+  }
+
+  function openServiceArmPicker(shiftId) {
+    var picker = getServiceArmPicker();
+    if (!picker) return false;
+    tracker.serviceArmPickerOpen = true;
+    tracker.serviceArmPickerShiftId = String(shiftId || '');
+    picker.root.classList.remove('hidden');
+    picker.title.textContent = 'Плечо обслуживания';
+    picker.subtitle.textContent = '';
+    setServiceArmPickerLoading();
+    if (!window.ProfileDepotCatalog || typeof window.ProfileDepotCatalog.loadSelectedPack !== 'function') {
+      renderServiceArmUnavailable(null, 'Каталог депо ещё загружается. Закройте окно и попробуйте ещё раз.');
+      return true;
+    }
+    window.ProfileDepotCatalog.loadSelectedPack().then(function(result) {
+      if (!tracker.serviceArmPickerOpen) return;
+      if (result && result.pack) {
+        renderServiceArms(result.depot, result.pack);
+        return;
+      }
+      if (result && result.depot) {
+        renderServiceArmUnavailable(result.depot, 'Для выбранного депо пакет ещё не собран.');
+        return;
+      }
+      renderAvailableDepotPacks(result && result.catalog);
+    }).catch(function(error) {
+      if (!tracker.serviceArmPickerOpen) return;
+      renderServiceArmUnavailable(null, error && error.message ? error.message : 'Каталог депо не загрузился.');
+    });
+    return true;
+  }
+
+  function closeServiceArmPicker() {
+    tracker.serviceArmPickerOpen = false;
+    if (tracker.serviceArmPicker && tracker.serviceArmPicker.root) {
+      tracker.serviceArmPicker.root.classList.add('hidden');
+    }
   }
 
   function getMapPicker() {
