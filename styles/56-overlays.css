@@ -676,7 +676,6 @@
   background: var(--good);
   box-shadow: 0 0 6px color-mix(in oklch, var(--good) 60%, transparent);
 }
-
 /* Passive GPS connection tones (set from poekhaliHud) */
 .app-top-bar-gps.is-gps-ok {
   background: color-mix(in oklch, var(--good) 18%, transparent);
@@ -713,6 +712,15 @@
 .app-top-bar-gps.is-gps-error .app-top-bar-gps-dot {
   background: var(--bad);
   box-shadow: 0 0 6px color-mix(in oklch, var(--bad) 60%, transparent);
+}
+.app-top-bar-gps.is-start-action {
+  background: var(--accent-soft);
+  border-color: color-mix(in oklch, var(--accent) 44%, transparent);
+  color: var(--accent);
+}
+.app-top-bar-gps.is-start-action .app-top-bar-gps-dot {
+  background: var(--accent);
+  box-shadow: 0 0 7px var(--accent-glow);
 }
 
 /* Way chip in top bar (Poekhali only) — Путь · П 1 */

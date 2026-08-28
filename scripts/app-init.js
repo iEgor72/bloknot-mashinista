@@ -1,4 +1,4 @@
-if (typeof registerShiftTrackerRuntimeModule === 'function') registerShiftTrackerRuntimeModule('app-init', 'v410');
+if (typeof registerShiftTrackerRuntimeModule === 'function') registerShiftTrackerRuntimeModule('app-init', 'v411');
 
 // ── Init ──
 function startShiftTrackerRuntime() {
@@ -1972,13 +1972,14 @@ if (window.__SHIFT_TRACKER_RUNTIME_GUARD_PENDING) {
     var gpsChip = document.getElementById('appTopBarGps');
     if (gpsChip) {
       var tone = hud.gpsTone || 'is-gps-muted';
-      gpsChip.classList.remove('is-gps-ok', 'is-gps-warn', 'is-gps-muted', 'is-gps-error', 'is-on');
+      gpsChip.classList.remove('is-gps-ok', 'is-gps-warn', 'is-gps-muted', 'is-gps-error', 'is-on', 'is-start-action');
       gpsChip.classList.add(tone);
       gpsChip.classList.toggle('is-on', Boolean(hud.gpsCaptureActive));
+      gpsChip.classList.toggle('is-start-action', hud.positioningMode === 'preview');
       var gpsWord = gpsChip.querySelector('.app-top-bar-gps-word');
       if (gpsWord) {
         gpsWord.textContent = hud.positioningMode === 'preview'
-          ? 'GPS · выкл'
+          ? 'НАЧАТЬ GPS'
           : hud.gpsCaptureError
           ? 'GPS · ПАМЯТЬ'
           : hud.gpsCaptureActive

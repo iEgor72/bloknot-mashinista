@@ -1,5 +1,5 @@
 (function() {
-  var version = 'v410';
+  var version = 'v411';
   var swUrl = '/sw.js?v=' + encodeURIComponent(version);
   var controllerReloadFlag = 'shift_tracker_sw_controller_reload_v2';
   var initialController = navigator.serviceWorker && navigator.serviceWorker.controller;

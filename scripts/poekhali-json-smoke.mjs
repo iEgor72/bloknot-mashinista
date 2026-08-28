@@ -703,19 +703,39 @@ async function assertPreparationModeWithoutGps(browser) {
     localStorage.setItem('poekhali.mapId', 'komsomol-sk-tche-9');
     localStorage.removeItem('poekhali.previewProjection');
     window.__poekhaliGpsRequests = { watch: 0, current: 0 };
+    const gpsWatchers = new Map();
+    let nextGpsWatchId = 1;
     Object.defineProperty(navigator, 'geolocation', {
       configurable: true,
       value: {
-        watchPosition() {
+        watchPosition(success, error, options) {
           window.__poekhaliGpsRequests.watch += 1;
-          return 1;
+          const id = nextGpsWatchId++;
+          gpsWatchers.set(id, { success, error, options });
+          return id;
         },
-        clearWatch() {},
+        clearWatch(id) {
+          gpsWatchers.delete(id);
+        },
         getCurrentPosition() {
           window.__poekhaliGpsRequests.current += 1;
         }
       }
     });
+    window.__emitPoekhaliPreparationGpsFix = (fix) => {
+      const position = {
+        timestamp: fix.ts,
+        coords: {
+          latitude: fix.lat,
+          longitude: fix.lon,
+          altitude: 40,
+          accuracy: fix.accuracy,
+          speed: 0,
+          heading: null
+        }
+      };
+      for (const watcher of gpsWatchers.values()) watcher.success(position);
+    };
   });
 
   const page = await context.newPage();
@@ -783,7 +803,26 @@ async function assertPreparationModeWithoutGps(browser) {
       !vysokogornayaOptions.some((name) => name.includes('Мули'))) {
     throw new Error(`Vysokogornaya route variants are incomplete: ${JSON.stringify(vysokogornayaOptions)}`);
   }
-  await page.locator('#poekhaliServiceArmSheet .poekhali-arm-back').click();
+  await page.locator('#poekhaliServiceArmSheet .poekhali-arm-option', { hasText: 'Соллу' }).click();
+  await page.waitForFunction(() => (
+    document.getElementById('poekhaliServiceArmSheet')?.classList.contains('hidden') &&
+    localStorage.getItem('poekhali.mapId') === 'dvost-vysokogornaya-novyi-mir-passenger--via-sollu' &&
+    window.poekhaliHud?.hasProjection === true
+  ), null, { timeout: 20_000 });
+  const solluState = await page.evaluate(() => ({
+    mapId: localStorage.getItem('poekhali.mapId') || '',
+    mapLocked: window.poekhaliHud?.serviceArmMapLocked,
+    assetsError: String(window.poekhaliHud?.status || '')
+  }));
+  if (!solluState.mapLocked || solluState.assetsError === 'asset-error') {
+    throw new Error(`Vysokogornaya via Sollu did not open: ${JSON.stringify(solluState)}`);
+  }
+
+  await page.evaluate((shiftId) => window.openPoekhaliPreparationForShift(shiftId), preparationShift.id);
+  await page.waitForFunction(() => (
+    !document.getElementById('poekhaliServiceArmSheet')?.classList.contains('hidden') &&
+    document.querySelectorAll('#poekhaliServiceArmSheet .poekhali-arm-option').length === 3
+  ));
   await page.waitForFunction(() => document.querySelectorAll('#poekhaliServiceArmSheet .poekhali-arm-option').length === 3);
   await page.locator('#poekhaliServiceArmSheet .poekhali-arm-option', { hasText: 'Постышево' }).click();
 
@@ -798,10 +837,11 @@ async function assertPreparationModeWithoutGps(browser) {
     requests: { ...window.__poekhaliGpsRequests },
     coordinate: Number(window.poekhaliHud?.viewCoordinate),
     gpsMeta: window.poekhaliHud?.gpsMeta,
-    gpsTitle: document.getElementById('btnPoekhaliLive')?.title || ''
+    gpsTitle: document.getElementById('btnPoekhaliLive')?.title || '',
+    gpsAction: document.querySelector('#appTopBarGps .app-top-bar-gps-word')?.textContent.trim() || ''
   }));
   if (before.requests.watch !== 0 || before.requests.current !== 0 || before.gpsMeta !== 'выкл' ||
-      !before.gpsTitle.includes('Начать поездку')) {
+      !before.gpsTitle.includes('Начать поездку') || before.gpsAction !== 'НАЧАТЬ GPS') {
     throw new Error(`Preparation mode requested GPS or exposed the wrong state: ${JSON.stringify(before)}`);
   }
 
@@ -832,16 +872,36 @@ async function assertPreparationModeWithoutGps(browser) {
     window.poekhaliHud?.positioningMode === 'gps' &&
     window.__poekhaliGpsRequests.watch > 0
   ), null, { timeout: 10_000 });
+  await page.evaluate((fix) => window.__emitPoekhaliPreparationGpsFix(fix), {
+    lat: 50.32500652792692,
+    lon: 136.80009014182616,
+    accuracy: 8,
+    ts: Date.now()
+  });
+  await page.waitForFunction(() => window.poekhaliHud?.status === 'offtrack', null, { timeout: 10_000 });
+  await page.waitForTimeout(1500);
+  const routeIsolation = await page.evaluate(() => ({
+    mapId: localStorage.getItem('poekhali.mapId') || '',
+    mapLocked: window.poekhaliHud?.serviceArmMapLocked,
+    live: window.poekhaliHud?.live,
+    headPos: window.poekhaliHud?.headPos
+  }));
+  if (routeIsolation.mapId !== 'dvost-postyshevo-komsomolsk' || !routeIsolation.mapLocked ||
+      routeIsolation.live || routeIsolation.headPos !== '—') {
+    throw new Error(`Explicit shoulder leaked into a nearby map: ${JSON.stringify(routeIsolation)}`);
+  }
   const result = await page.evaluate((initial) => ({
     gpsRequestsBeforeStart: initial,
     browsedMeters: Math.round(Math.abs(Number(window.poekhaliHud?.viewCoordinate) - Number(initial.coordinate))),
     gpsRequestsAfterStart: { ...window.__poekhaliGpsRequests },
     previewButtonPressed: document.getElementById('appTopBarPreview')?.getAttribute('aria-pressed'),
     serviceArms: initial.armPicker.arms,
-    visokogornayaOptions: initial.vysokogornayaOptions,
+    vysokogornayaOptions: initial.vysokogornayaOptions,
+    sollu: initial.solluState,
+    routeIsolation: initial.routeIsolation,
     serviceArmPickerScreenshot: 'artifacts\\poekhali-json-smoke\\service-arm-picker.png',
     screenshot: 'artifacts\\poekhali-json-smoke\\preparation-without-gps.png'
-  }), { ...before, armPicker, vysokogornayaOptions });
+  }), { ...before, armPicker, vysokogornayaOptions, solluState, routeIsolation });
   await page.evaluate(() => window.stopPoekhaliTrackerMode());
   await context.close();
   return result;

@@ -1,4 +1,4 @@
-if (typeof registerShiftTrackerRuntimeModule === 'function') registerShiftTrackerRuntimeModule('poekhali-tracker', 'v410');
+if (typeof registerShiftTrackerRuntimeModule === 'function') registerShiftTrackerRuntimeModule('poekhali-tracker', 'v411');
 
 (function() {
   'use strict';
@@ -90,6 +90,7 @@ if (typeof registerShiftTrackerRuntimeModule === 'function') registerShiftTracke
   var SELECTED_SHIFT_STORAGE_KEY = 'poekhali.shiftId';
   var LAST_PROJECTION_STORAGE_KEY = 'poekhali.lastProjection';
   var PREVIEW_PROJECTION_STORAGE_KEY = 'poekhali.previewProjection';
+  var SERVICE_ARM_MAP_LOCK_STORAGE_KEY = 'poekhali.serviceArm.mapId';
   var WARNINGS_STORAGE_KEY = 'poekhali.warnings';
   var WARNINGS_SYNC_STORAGE_KEY = 'poekhali.warnings.sync.v1';
   var WARNINGS_SYNC_DEBOUNCE_MS = 900;
@@ -271,6 +272,7 @@ if (typeof registerShiftTrackerRuntimeModule === 'function') registerShiftTracke
     serviceArmPickerShiftId: '',
     serviceArmPickerDepot: null,
     serviceArmPickerPack: null,
+    serviceArmMapLockId: readStringStorage(SERVICE_ARM_MAP_LOCK_STORAGE_KEY),
     opsSheet: null,
     opsView: readStringStorage(OPS_VIEW_STORAGE_KEY) || 'drive',
     conflictCard: null,
@@ -4858,6 +4860,22 @@ if (typeof registerShiftTrackerRuntimeModule === 'function') registerShiftTracke
     return !!(map && tracker.currentMap && getMapKey(map) === getMapKey(tracker.currentMap));
   }
 
+  function setServiceArmMapLock(mapId) {
+    tracker.serviceArmMapLockId = String(mapId || '');
+    try {
+      if (tracker.serviceArmMapLockId) {
+        localStorage.setItem(SERVICE_ARM_MAP_LOCK_STORAGE_KEY, tracker.serviceArmMapLockId);
+      } else {
+        localStorage.removeItem(SERVICE_ARM_MAP_LOCK_STORAGE_KEY);
+      }
+    } catch (error) {}
+  }
+
+  function isCurrentMapLockedToServiceArm() {
+    return !!(tracker.serviceArmMapLockId && tracker.currentMap &&
+      String(tracker.currentMap.id || '') === tracker.serviceArmMapLockId);
+  }
+
   function getMapDownloadState(map) {
     if (!map) return 'missing';
     if (map.downloaded === false) return 'remote';
@@ -5284,6 +5302,10 @@ if (typeof registerShiftTrackerRuntimeModule === 'function') registerShiftTracke
     loadManifest().then(function() {
       var map = findServiceArmMap(option.tracker_map_id);
       if (!map) throw new Error('Профиль этого плеча не найден в каталоге карт');
+      // A shoulder selected by the driver is an explicit route scope. GPS may
+      // position the train inside it, but must never replace it with a nearby
+      // legacy/all-depot map when the current fix is outside the shoulder.
+      setServiceArmMapLock(map.id);
       if (isCurrentMap(map)) return loadAssets();
       return selectMap(map, { keepPicker: true });
     }).then(function() {
@@ -5449,6 +5471,11 @@ if (typeof registerShiftTrackerRuntimeModule === 'function') registerShiftTracke
   }
 
   function openServiceArmPicker(shiftId) {
+    // Choosing a shoulder is always a preparation action. Stop live positioning
+    // first so selecting a route cannot race with GPS auto-selection.
+    if (tracker.positioningMode !== 'preview') {
+      setPoekhaliPositioningMode('preview');
+    }
     var picker = getServiceArmPicker();
     if (!picker) return false;
     tracker.serviceArmPickerOpen = true;
@@ -7581,6 +7608,7 @@ if (typeof registerShiftTrackerRuntimeModule === 'function') registerShiftTracke
   }
 
   function maybeAutoSelectMapForGps(coords, currentProjection) {
+    if (isCurrentMapLockedToServiceArm()) return Promise.resolve(false);
     if (!coords || !tracker.availableMaps || tracker.availableMaps.length <= 1 || tracker.autoMapSelecting) {
       return Promise.resolve(false);
     }
@@ -12741,7 +12769,9 @@ if (typeof registerShiftTrackerRuntimeModule === 'function') registerShiftTracke
     var layout = getApkTrackerLayout(w, h);
     var liveProjection = getLiveProjection();
     var detachedView = getDetachedViewProjection();
-    var operationalProjection = liveProjection || (detachedView ? null : viewProjection);
+    var allowPreviewFallback = tracker.positioningMode === 'preview' || !tracker.lastLocation;
+    var operationalProjection = liveProjection ||
+      (detachedView || !allowPreviewFallback ? null : viewProjection);
     var operationalState = buildProjectionSceneState(operationalProjection, layout);
     var viewState = operationalState && isSameProjectionLocation(viewProjection, operationalProjection)
       ? operationalState
@@ -12789,7 +12819,8 @@ if (typeof registerShiftTrackerRuntimeModule === 'function') registerShiftTracke
     var routeProgress = viewState.routeProgress;
     var isPreview = !!projection.preview;
     var labelLayout = makeLabelLayout();
-    var trainProjection = liveProjection || (detachedView ? null : projection);
+    var trainProjection = liveProjection ||
+      (detachedView || !allowPreviewFallback ? null : projection);
 
     ctx.save();
     drawApkSceneBackground(ctx, layout);
@@ -12923,8 +12954,10 @@ if (typeof registerShiftTrackerRuntimeModule === 'function') registerShiftTracke
     try { timerMs = getTimerElapsed(); } catch (e) {}
     var techSpeed = getTripTechnicalSpeedKmh();
     var gpsCapture = getRawLearningCaptureState();
-    var headProjection = (tracker.projection && tracker.projection.onTrack) ? tracker.projection : (tracker.nearestProjection || null);
-    if (!headProjection) { try { headProjection = getPreviewProjection(); } catch (e) { headProjection = null; } }
+    var headProjection = getLiveProjection();
+    if (!headProjection && (tracker.positioningMode === 'preview' || !tracker.lastLocation)) {
+      try { headProjection = getPreviewProjection(); } catch (e) { headProjection = null; }
+    }
     var headPos = headProjection && isRealNumber(headProjection.lineCoordinate)
       ? formatLineCoordinate(headProjection.lineCoordinate) : '—';
     var viewProjection = null;
@@ -12938,6 +12971,7 @@ if (typeof registerShiftTrackerRuntimeModule === 'function') registerShiftTracke
       hasProjection: !!hasProjection,
       status: tracker.status,
       live: tracker.status === 'gps-live',
+      serviceArmMapLocked: isCurrentMapLockedToServiceArm(),
       speedKmh: speedKmh,
       speedMeters: !!tracker.speedMeters,
       limitKmh: limit,
