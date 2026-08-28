@@ -114,13 +114,26 @@
       var force = finitePositive(group.forcePerAxle);
       var groupForce = finitePositive(group.axles) * force;
       return '<div class="vu45-group" data-vu45-group="' + group.id + '">' +
-        '<label class="vu45-group-type"><span>Тип и состояние</span><select data-vu45-field="preset" aria-label="Тип колодок группы ' + (index + 1) + '">' + presetOptions(group.presetId) + '</select></label>' +
+        '<div class="vu45-group-type"><span>Тип и состояние</span>' +
+          '<div class="glass-select vu45-preset-select" data-placeholder="Выберите тип">' +
+            '<button class="glass-select-trigger" type="button" aria-haspopup="listbox" aria-expanded="false">' +
+              '<span class="glass-select-value">' + preset.label + '</span>' +
+              '<span class="glass-select-chevron" aria-hidden="true"><svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 8l5 5 5-5"></path></svg></span>' +
+            '</button>' +
+            '<div class="glass-select-menu hidden" role="listbox" aria-label="Тип колодок группы ' + (index + 1) + '"></div>' +
+            '<select class="hidden" tabindex="-1" aria-hidden="true" data-vu45-field="preset" aria-label="Тип колодок группы ' + (index + 1) + '">' + presetOptions(group.presetId) + '</select>' +
+          '</div>' +
+        '</div>' +
         '<label><span>Оси</span><input data-vu45-field="axles" type="text" inputmode="numeric" autocomplete="off" value="' + group.axles + '" placeholder="0" aria-label="Тормозные оси группы ' + (index + 1) + '"></label>' +
         '<button class="vu45-group-remove" data-vu45-remove type="button" aria-label="Удалить группу ' + (index + 1) + '">×</button>' +
         '<div class="vu45-group-force"><span class="vu45-group-force-label">Нажатие: <b>' + formatNumber(groupForce) + ' тс</b> · ' + formatNumber(force) + ' тс/ось</span>' +
         (custom ? '<input class="vu45-group-custom-force" data-vu45-field="force" type="text" inputmode="decimal" autocomplete="off" value="' + (force || '') + '" placeholder="тс/ось" aria-label="Нажатие на одну ось группы ' + (index + 1) + '">' : '') + '</div>' +
       '</div>';
     }).join('');
+    if (window.GlassSelect && typeof window.GlassSelect.enhance === 'function') {
+      var presetSelects = elements.groups.querySelectorAll('.vu45-preset-select');
+      for (var i = 0; i < presetSelects.length; i++) window.GlassSelect.enhance(presetSelects[i]);
+    }
     elements.addGroup.disabled = state.groups.length >= MAX_GROUPS;
     elements.addGroup.textContent = state.groups.length >= MAX_GROUPS ? 'Достигнут максимум: 12 групп' : '+ Добавить группу осей';
   }
