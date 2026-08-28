@@ -4236,7 +4236,7 @@ const server = http.createServer(async (req, res) => {
       depotId: String(context.depot && context.depot.id || ''),
       sectionId,
     }, context)) {
-      sendJson(res, 200, { section: null, community: null, scoped: false });
+      sendJson(res, 403, { error: 'Section is outside your depot scope' });
       return;
     }
     try {
@@ -4245,7 +4245,7 @@ const server = http.createServer(async (req, res) => {
         sendJson(res, 404, { error: 'Section not found' });
         return;
       }
-      sendJson(res, 200, { section, community: section.community, scoped: true });
+      sendJson(res, 200, { section, community: section.community });
     } catch (err) {
       sendJson(res, 500, { error: err && err.message ? err.message : 'Effective section unavailable' });
     }

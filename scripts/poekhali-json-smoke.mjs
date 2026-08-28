@@ -6,7 +6,7 @@ import { fileURLToPath } from 'node:url';
 import { chromium } from '@playwright/test';
 
 const root = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
-const port = Number(process.env.POEKHALI_SMOKE_PORT || (4300 + (process.pid % 1000)));
+const port = Number(process.env.POEKHALI_SMOKE_PORT || 4319);
 const baseUrl = `http://127.0.0.1:${port}`;
 const artifactDir = path.join(root, 'artifacts', 'poekhali-json-smoke');
 const screenshotPath = path.join(artifactDir, 'postyshevo-novyi-urgal.png');
@@ -804,24 +804,11 @@ async function assertPreparationModeWithoutGps(browser) {
     throw new Error(`Vysokogornaya route variants are incomplete: ${JSON.stringify(vysokogornayaOptions)}`);
   }
   await page.locator('#poekhaliServiceArmSheet .poekhali-arm-option', { hasText: 'Соллу' }).click();
-  try {
-    await page.waitForFunction(() => (
-      document.getElementById('poekhaliServiceArmSheet')?.classList.contains('hidden') &&
-      localStorage.getItem('poekhali.mapId') === 'dvost-vysokogornaya-novyi-mir-passenger--via-sollu' &&
-      window.poekhaliHud?.hasProjection === true
-    ), null, { timeout: 20_000 });
-  } catch (error) {
-    const stalledState = await page.evaluate(() => ({
-      mapId: localStorage.getItem('poekhali.mapId') || '',
-      sheetHidden: document.getElementById('poekhaliServiceArmSheet')?.classList.contains('hidden'),
-      sheetTitle: document.getElementById('poekhaliArmSheetTitle')?.textContent || '',
-      hasProjection: window.poekhaliHud?.hasProjection,
-      status: window.poekhaliHud?.status,
-      assetsError: window.poekhaliHud?.assetsError,
-      mapLocked: window.poekhaliHud?.serviceArmMapLocked
-    }));
-    throw new Error(`Vysokogornaya via Sollu stalled: ${JSON.stringify(stalledState)}`, { cause: error });
-  }
+  await page.waitForFunction(() => (
+    document.getElementById('poekhaliServiceArmSheet')?.classList.contains('hidden') &&
+    localStorage.getItem('poekhali.mapId') === 'dvost-vysokogornaya-novyi-mir-passenger--via-sollu' &&
+    window.poekhaliHud?.hasProjection === true
+  ), null, { timeout: 20_000 });
   const solluState = await page.evaluate(() => ({
     mapId: localStorage.getItem('poekhali.mapId') || '',
     mapLocked: window.poekhaliHud?.serviceArmMapLocked,
@@ -867,8 +854,11 @@ async function assertPreparationModeWithoutGps(browser) {
     })
   }));
   if (before.requests.watch !== 0 || before.requests.current !== 0 || before.gpsMeta !== 'выкл' ||
-      before.trainVisible !== false || !before.gpsTitle.includes('Начать поездку') || before.gpsAction !== '' ||
-      before.controls.some((control) => control.width !== 0 || control.height !== 0)) {
+      before.trainVisible !== false || !before.gpsTitle.includes('Начать поездку') || before.gpsAction !== 'НАЧАТЬ' ||
+      new Set(before.controls.map((control) => control.width)).size !== 1 ||
+      new Set(before.controls.map((control) => control.height)).size !== 1 ||
+      new Set(before.controls.map((control) => control.radius)).size !== 1 ||
+      new Set(before.controls.map((control) => control.padding)).size !== 1) {
     throw new Error(`Preparation mode requested GPS or exposed the wrong state: ${JSON.stringify(before)}`);
   }
 
@@ -917,27 +907,13 @@ async function assertPreparationModeWithoutGps(browser) {
     window.poekhaliHud?.live === true &&
     window.poekhaliHud?.trainVisible === true
   ), null, { timeout: 10_000 });
-  await page.locator('#btnOpenNavigationDrawer').click();
-  await page.waitForFunction(() => document.body.classList.contains('is-navigation-drawer-open'));
-  await page.evaluate(() => { document.querySelector('[data-nav-group="poekhali"]').open = true; });
-  await page.locator('[data-nav-action="poekhali-preview"]').click();
-  await page.waitForTimeout(150);
-  if (await page.locator('#poekhaliServiceArmSheet:not(.hidden) .poekhali-arm-option').count()) {
-    await page.locator('#poekhaliServiceArmSheet .poekhali-arm-option', { hasText: 'Постышево' }).click();
-  }
+  await page.locator('#appTopBarPreview').click();
   await page.waitForFunction(() => (
     window.poekhaliHud?.positioningMode === 'preview' &&
     window.poekhaliHud?.trainVisible === false &&
     document.getElementById('trkCoordinateLabel')?.textContent === 'Точка обзора'
   ), null, { timeout: 10_000 });
-  await page.locator('#btnOpenNavigationDrawer').click();
-  await page.waitForFunction(() => document.body.classList.contains('is-navigation-drawer-open'));
-  await page.evaluate(() => { document.querySelector('[data-nav-group="poekhali"]').open = true; });
-  await page.locator('[data-nav-action="poekhali-live"]').click();
-  await page.waitForTimeout(150);
-  if (await page.locator('#poekhaliServiceArmSheet:not(.hidden) .poekhali-arm-option').count()) {
-    await page.locator('#poekhaliServiceArmSheet .poekhali-arm-option', { hasText: 'Постышево' }).click();
-  }
+  await page.locator('#appTopBarGps').click();
   await page.waitForFunction(() => (
     window.poekhaliHud?.positioningMode === 'gps' &&
     window.__poekhaliGpsRequests.watch > 1
@@ -1952,10 +1928,7 @@ try {
     }
   });
   page.on('console', (message) => {
-    if (message.type() === 'error') {
-      const location = message.location();
-      report.consoleErrors.push(`${message.text()}${location?.url ? ` · ${location.url}` : ''}`);
-    }
+    if (message.type() === 'error') report.consoleErrors.push(message.text());
     if (message.type() === 'warning') report.consoleWarnings.push(message.text());
   });
   page.on('pageerror', (error) => report.pageErrors.push(String(error && error.stack || error)));
@@ -2150,14 +2123,7 @@ try {
   throw error;
 } finally {
   if (browser) await browser.close().catch(() => {});
-  if (server.exitCode === null && server.signalCode === null) {
-    const serverExited = new Promise((resolve) => server.once('exit', resolve));
-    server.kill();
-    await Promise.race([
-      serverExited,
-      new Promise((resolve) => setTimeout(resolve, 3000))
-    ]);
-  }
+  server.kill();
   report.finishedAt = new Date().toISOString();
   report.serverLog = serverLog;
   await writeFile(reportPath, JSON.stringify(report, null, 2) + '\n', 'utf8');

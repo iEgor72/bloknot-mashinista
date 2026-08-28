@@ -7412,20 +7412,13 @@ if (typeof registerShiftTrackerRuntimeModule === 'function') registerShiftTracke
     };
     if (typeof transport !== 'function' || (typeof navigator !== 'undefined' && navigator.onLine === false)) return cached();
     var endpoint = (window.SHIFT_API_BASE_URL || '') + '/api/community/sections/' + encodeURIComponent(sectionId) + '/effective';
-    var fallbackPromise = cached();
-    var networkPromise = transport(endpoint, { method: 'GET', headers: { Accept: 'application/json' } }, 6500)
+    return transport(endpoint, { method: 'GET', headers: { Accept: 'application/json' } }, 6500)
       .then(function(result) {
         var section = result && result.ok && result.body && result.body.section;
-        if (!isCompatibleCommunitySection(section, baseSection)) return fallbackPromise;
+        if (!isCompatibleCommunitySection(section, baseSection)) return cached();
         cacheCommunitySection(sectionId, section);
         return section;
-      }).catch(function() { return fallbackPromise; });
-    var loadingBudget = new Promise(function(resolve) {
-      setTimeout(function() {
-        fallbackPromise.then(resolve);
-      }, 1500);
-    });
-    return Promise.race([networkPromise, loadingBudget]);
+      }).catch(cached);
   }
 
   function loadLegacyMapBundle(map) {
@@ -10553,22 +10546,6 @@ if (typeof registerShiftTrackerRuntimeModule === 'function') registerShiftTracke
         category: 'set'
       });
     }
-    var communitySpeeds = tracker.speedLimitsBySector[getSectorKey(sector)] || [];
-    for (var c = 0; c < communitySpeeds.length; c++) {
-      var communitySpeed = communitySpeeds[c];
-      if (!communitySpeed || communitySpeed.end < left || communitySpeed.coordinate > right) continue;
-      if (communitySpeed.wayNumber && communitySpeed.wayNumber !== tracker.wayNumber) continue;
-      rules.push({
-        coordinate: communitySpeed.coordinate,
-        length: communitySpeed.length,
-        end: communitySpeed.end,
-        speed: communitySpeed.speed,
-        name: communitySpeed.name,
-        source: 'community',
-        category: 'permanent',
-        communityVersion: communitySpeed.communityVersion
-      });
-    }
     var userSpeeds = getUserSpeedRulesForSector(sector, left, right);
     for (var u = 0; u < userSpeeds.length; u++) {
       var userSpeed = userSpeeds[u];
@@ -11493,6 +11470,22 @@ if (typeof registerShiftTrackerRuntimeModule === 'function') registerShiftTracke
         color: rawDraftProfile ? '#ddd6fe' : (userDrawProfile || learnedProfile) ? THEME.green : (regimeDrawProfile || regimeProfile) ? '#fde68a' : 'rgba(244, 63, 94, 0.82)',
         align: 'center',
         maxWidth: labelWidth - 10
+      });
+    }
+    var communitySpeeds = tracker.speedLimitsBySector[getSectorKey(sector)] || [];
+    for (var c = 0; c < communitySpeeds.length; c++) {
+      var communitySpeed = communitySpeeds[c];
+      if (!communitySpeed || communitySpeed.end < left || communitySpeed.coordinate > right) continue;
+      if (communitySpeed.wayNumber && communitySpeed.wayNumber !== tracker.wayNumber) continue;
+      rules.push({
+        coordinate: communitySpeed.coordinate,
+        length: communitySpeed.length,
+        end: communitySpeed.end,
+        speed: communitySpeed.speed,
+        name: communitySpeed.name,
+        source: 'community',
+        category: 'permanent',
+        communityVersion: communitySpeed.communityVersion,
       });
     }
     var currentGap = getProfileGapAt(center, sector);

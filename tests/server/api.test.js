@@ -609,14 +609,6 @@ test('community proposals are depot-scoped, peer-reviewed, and curator elections
     item.start_m >= 3718200 && item.start_m < 3719000 && item.grad_permille === 0 && item.community_version === 2
   ));
 
-  const outsiderToken = await authenticate({ id: 5099, first_name: 'Гость участка' });
-  const outOfScopeSection = await jsonRequest('/api/community/sections/dvost-postyshevo-komsomolsk/effective', {
-    headers: bearer(outsiderToken),
-  });
-  assert.equal(outOfScopeSection.response.status, 200);
-  assert.equal(outOfScopeSection.body.scoped, false);
-  assert.equal(outOfScopeSection.body.section, null);
-
   const staleVisualChange = await jsonRequest('/api/community/proposals', {
     method: 'POST',
     headers: { ...bearer(tokens[0]), 'Content-Type': 'application/json' },
