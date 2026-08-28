@@ -21,26 +21,31 @@
   ];
 
   var LOCOMOTIVE_PRESETS = [
-    { id: '3te25k2m', label: '3ТЭ25К2М', axles: 18, weightTf: 441, loadedPerAxleTf: 10, emptyPerAxleTf: 5, forceBasis: 'default-diesel' },
+    { id: '3te25k2m', label: '3ТЭ25 / 3ТЭ28', axles: 18, weightTf: 441, loadedPerAxleTf: 10, emptyPerAxleTf: 5, forceBasis: 'default-diesel' },
     { id: '2te25km', label: '2ТЭ25КМ', axles: 12, weightTf: 288, loadedPerAxleTf: 10, emptyPerAxleTf: 5, forceBasis: 'default-diesel' },
-    { id: '3te28', label: '3ТЭ28', axles: 18, weightTf: 441, loadedPerAxleTf: 10, emptyPerAxleTf: 5, forceBasis: 'default-diesel' },
-    { id: '3es5k', label: '3ЭС5К', axles: 12, weightTf: 288, loadedPerAxleTf: 14, emptyPerAxleTf: 6 },
-    { id: '2es5k', label: '2ЭС5К', axles: 8, weightTf: 192, loadedPerAxleTf: 14, emptyPerAxleTf: 6 },
-    { id: '2te116', label: '2ТЭ116', axles: 12, weightTf: 276, loadedPerAxleTf: 12, emptyPerAxleTf: 5 },
+    { id: '2te116', label: '2ТЭ116 / 2ТЭ10 (кроме 2ТЭ10Л)', axles: 12, weightTf: 276, loadedPerAxleTf: 12, emptyPerAxleTf: 5 },
     { id: '3te10', label: '3ТЭ10М / 3ТЭ10У', axles: 18, weightTf: 414, loadedPerAxleTf: 12, emptyPerAxleTf: 5 },
-    { id: '2te10', label: '2ТЭ10 (кроме 2ТЭ10Л)', axles: 12, weightTf: 276, loadedPerAxleTf: 12, emptyPerAxleTf: 5 },
     { id: '4te10s', label: '4ТЭ10С', axles: 24, weightTf: 552, loadedPerAxleTf: 12, emptyPerAxleTf: 5 },
     { id: '3m62u', label: '3М62У', axles: 18, weightTf: 378, loadedPerAxleTf: 12, emptyPerAxleTf: 5 },
     { id: '2m62u', label: '2М62У', axles: 12, weightTf: 252, loadedPerAxleTf: 12, emptyPerAxleTf: 5 },
     { id: '2m62', label: '2М62', axles: 12, weightTf: 240, loadedPerAxleTf: 12, emptyPerAxleTf: 5 },
     { id: 'm62', label: 'М62', axles: 6, weightTf: 120, loadedPerAxleTf: 12, emptyPerAxleTf: 5 },
-    { id: 'vl85', label: 'ВЛ85', axles: 12, weightTf: 288, loadedPerAxleTf: 14, emptyPerAxleTf: 6 },
-    { id: 'vl80r', label: 'ВЛ80Р', axles: 8, weightTf: 192, loadedPerAxleTf: 14, emptyPerAxleTf: 6 },
-    { id: 'vl80s', label: 'ВЛ80С', axles: 8, weightTf: 192, loadedPerAxleTf: 14, emptyPerAxleTf: 6 },
-    { id: 'vl80t', label: 'ВЛ80Т', axles: 8, weightTf: 192, loadedPerAxleTf: 14, emptyPerAxleTf: 6 },
+    { id: '3es5k', label: '3ЭС5К / ВЛ85', axles: 12, weightTf: 288, loadedPerAxleTf: 14, emptyPerAxleTf: 6 },
+    { id: '2es5k', label: '2ЭС5К / ВЛ80Р / ВЛ80С / ВЛ80Т', axles: 8, weightTf: 192, loadedPerAxleTf: 14, emptyPerAxleTf: 6 },
     { id: 'vl80k', label: 'ВЛ80К', axles: 8, weightTf: 184, loadedPerAxleTf: 14, emptyPerAxleTf: 6 },
-    { id: 'manual', label: 'Другой локомотив', axles: 0, weightTf: 0, loadedPerAxleTf: 0, emptyPerAxleTf: 0 }
+    { id: 'tem2-tem18', label: 'ТЭМ2 / ТЭМ18', axles: 6, weightTf: 126, loadedPerAxleTf: 11, emptyPerAxleTf: 5, forceBasis: 'ptr-explicit' },
+    { id: 'tem7', label: 'ТЭМ7 / ТЭМ7А', axles: 8, weightTf: 182, loadedPerAxleTf: 13, emptyPerAxleTf: 5.5, forceBasis: 'ptr-explicit' },
+    { id: 'manual', label: 'Свои данные', manual: true, manualSeries: '', axles: 0, weightTf: 0, loadedPerAxleTf: 0, emptyPerAxleTf: 0 }
   ];
+
+  var LOCOMOTIVE_PRESET_ALIASES = {
+    '3te28': '3te25k2m',
+    '2te10': '2te116',
+    'vl85': '3es5k',
+    'vl80r': '2es5k',
+    'vl80s': '2es5k',
+    'vl80t': '2es5k'
+  };
 
   var MANUAL_BRAKE_TABLE = [
     { gradient: 0, factor: 0.4 },
@@ -83,11 +88,12 @@
   }
 
   function locomotiveValues(presetId, mode) {
+    presetId = LOCOMOTIVE_PRESET_ALIASES[presetId] || presetId;
     var preset = LOCOMOTIVE_PRESETS[0];
     for (var i = 0; i < LOCOMOTIVE_PRESETS.length; i++) {
       if (LOCOMOTIVE_PRESETS[i].id === presetId) preset = LOCOMOTIVE_PRESETS[i];
     }
-    if (preset.id === 'manual') return { preset: preset, weightTf: 0, brakeForceTf: 0, forcePerAxleTf: 0 };
+    if (preset.manual) return { preset: preset, weightTf: 0, brakeForceTf: 0, forcePerAxleTf: 0 };
     var normalizedMode = ['loaded', 'medium', 'empty'].indexOf(mode) >= 0 ? mode : 'loaded';
     var forcePerAxle = normalizedMode === 'empty'
       ? preset.emptyPerAxleTf
@@ -159,6 +165,7 @@
   return {
     BRAKE_PRESETS: BRAKE_PRESETS,
     LOCOMOTIVE_PRESETS: LOCOMOTIVE_PRESETS,
+    LOCOMOTIVE_PRESET_ALIASES: LOCOMOTIVE_PRESET_ALIASES,
     MANUAL_BRAKE_TABLE: MANUAL_BRAKE_TABLE,
     toNumber: toNumber,
     requiredBrakeForce: requiredBrakeForce,

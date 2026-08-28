@@ -1644,7 +1644,7 @@
       var html = '';
       // Walk top-level children so we preserve <optgroup> headings.
       function emitOption(opt) {
-        if (!opt || !opt.value) return '';
+        if (!opt || !opt.value || opt.hidden) return '';
         return '<button type="button" class="glass-select-option" role="option" aria-selected="false" data-value="' + escapeHtml(opt.value) + '">' + escapeHtml(opt.textContent) + '</button>';
       }
       var children = selectEl.children;
@@ -1653,6 +1653,7 @@
         var node = children[i];
         var tag = (node.tagName || '').toUpperCase();
         if (tag === 'OPTGROUP') {
+          if (node.hidden) continue;
           sawGroup = true;
           html += '<div class="glass-select-group" role="presentation">' + escapeHtml(node.label || '') + '</div>';
           for (var j = 0; j < node.children.length; j++) html += emitOption(node.children[j]);

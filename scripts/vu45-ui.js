@@ -46,10 +46,15 @@
   }
 
   function getLocomotivePreset(id) {
+    id = calculator.LOCOMOTIVE_PRESET_ALIASES[id] || id;
     for (var i = 0; i < calculator.LOCOMOTIVE_PRESETS.length; i++) {
       if (calculator.LOCOMOTIVE_PRESETS[i].id === id) return calculator.LOCOMOTIVE_PRESETS[i];
     }
     return calculator.LOCOMOTIVE_PRESETS[0];
+  }
+
+  function isManualLocomotivePreset(id) {
+    return getLocomotivePreset(id).manual === true;
   }
 
   function locomotivePresetFromLegacy(locomotive) {
@@ -57,6 +62,22 @@
     if (requestedId) return getLocomotivePreset(requestedId).id;
     var legacySeries = sanitizeSeriesInput(locomotive && locomotive.series).trim().toLocaleUpperCase('ru-RU');
     if (!legacySeries) return '3te25k2m';
+    var legacyAliases = {
+      '3ТЭ28': '3te25k2m',
+      '2ТЭ10': '2te116',
+      '2ТЭ10 (КРОМЕ 2ТЭ10Л)': '2te116',
+      'ВЛ85': '3es5k',
+      'ВЛ80Р': '2es5k',
+      'ВЛ80С': '2es5k',
+      'ВЛ80Т': '2es5k',
+      'ТЭМ2': 'tem2-tem18',
+      'ТЭМ18': 'tem2-tem18',
+      'ТЭМ7': 'tem7',
+      'ТЭМ7А': 'tem7',
+      'ТЭМ': 'manual',
+      'ТЭП': 'manual'
+    };
+    if (legacyAliases[legacySeries]) return legacyAliases[legacySeries];
     for (var i = 0; i < calculator.LOCOMOTIVE_PRESETS.length; i++) {
       if (calculator.LOCOMOTIVE_PRESETS[i].label.toLocaleUpperCase('ru-RU') === legacySeries) return calculator.LOCOMOTIVE_PRESETS[i].id;
     }
@@ -64,7 +85,7 @@
   }
 
   function syncLocomotiveValues(locomotive) {
-    if (locomotive.presetId === 'manual') return locomotive;
+    if (isManualLocomotivePreset(locomotive.presetId)) return locomotive;
     var values = calculator.locomotiveValues(locomotive.presetId, locomotive.mode);
     locomotive.weightTf = values.weightTf;
     locomotive.brakeForceTf = values.brakeForceTf;
@@ -72,18 +93,21 @@
   }
 
   function locomotiveLabel() {
-    return state.locomotive.presetId === 'manual'
-      ? state.locomotive.manualSeries || 'Другой локомотив'
+    return isManualLocomotivePreset(state.locomotive.presetId)
+      ? state.locomotive.manualSeries || 'Свои данные'
       : getLocomotivePreset(state.locomotive.presetId).label;
   }
 
   function locomotiveWarningText() {
-    if (state.locomotive.presetId === 'manual') {
+    if (isManualLocomotivePreset(state.locomotive.presetId)) {
       return 'Серии нет в справочнике: введите массу и нажатие из действующей инструкции.';
     }
     var preset = getLocomotivePreset(state.locomotive.presetId);
     if (preset.forceBasis === 'default-diesel') {
       return 'Нажатие рассчитано по нормативной строке «остальные тепловозы»: 10 тс/ось на гружёном и 5 тс/ось на порожнем режиме. Сверьте местную таблицу.';
+    }
+    if (preset.forceBasis === 'ptr-explicit') {
+      return 'Масса и нажатие подставлены из расчётных таблиц для этой группы ТЭМ. Проверьте применимость к своей модификации.';
     }
     return 'Масса и нажатие подставлены из таблиц для выбранной серии и режима. Проверьте их применимость по действующей инструкции.';
   }
@@ -106,13 +130,15 @@
     var locomotive = candidate.locomotive && typeof candidate.locomotive === 'object' ? candidate.locomotive : {};
     var locomotivePresetId = locomotivePresetFromLegacy(locomotive);
     var locomotiveMode = ['loaded', 'medium', 'empty'].indexOf(locomotive.mode) >= 0 ? locomotive.mode : 'loaded';
+    var manualLocomotivePreset = getLocomotivePreset(locomotivePresetId);
+    var manualLocomotive = manualLocomotivePreset.manual === true;
     var normalizedLocomotive = {
       enabled: locomotive.enabled === true,
       presetId: locomotivePresetId,
       mode: locomotiveMode,
-      manualSeries: sanitizeSeriesInput(locomotive.manualSeries || (locomotivePresetId === 'manual' ? locomotive.series : '')),
-      weightTf: locomotivePresetId === 'manual' ? sanitizeDecimalInput(locomotive.weightTf) : '',
-      brakeForceTf: locomotivePresetId === 'manual' ? sanitizeDecimalInput(locomotive.brakeForceTf) : ''
+      manualSeries: sanitizeSeriesInput(locomotive.manualSeries || (manualLocomotive ? locomotive.series || manualLocomotivePreset.manualSeries : '')),
+      weightTf: manualLocomotive ? sanitizeDecimalInput(locomotive.weightTf) : '',
+      brakeForceTf: manualLocomotive ? sanitizeDecimalInput(locomotive.brakeForceTf) : ''
     };
     syncLocomotiveValues(normalizedLocomotive);
     return {
@@ -319,7 +345,7 @@
       window.GlassSelect.sync(elements.locomotivePresetRoot);
       window.GlassSelect.sync(elements.locomotiveModeRoot);
     }
-    var manualLocomotive = state.locomotive.presetId === 'manual';
+    var manualLocomotive = isManualLocomotivePreset(state.locomotive.presetId);
     elements.locomotiveManualSeriesField.hidden = !manualLocomotive;
     elements.locomotiveSeries.value = state.locomotive.manualSeries;
     elements.locomotiveWeight.readOnly = !manualLocomotive;
@@ -555,14 +581,16 @@
     });
     elements.locomotivePreset.addEventListener('change', function() {
       state.locomotive.presetId = getLocomotivePreset(elements.locomotivePreset.value).id;
-      if (state.locomotive.presetId === 'manual') {
+      var selectedLocomotivePreset = getLocomotivePreset(state.locomotive.presetId);
+      if (selectedLocomotivePreset.manual) {
+        state.locomotive.manualSeries = selectedLocomotivePreset.manualSeries || '';
         state.locomotive.weightTf = '';
         state.locomotive.brakeForceTf = '';
       } else {
         syncLocomotiveValues(state.locomotive);
       }
       syncFormFromState();
-      if (state.locomotive.presetId === 'manual') elements.locomotiveSeries.focus();
+      if (selectedLocomotivePreset.manual) elements.locomotiveSeries.focus();
     });
     elements.locomotiveMode.addEventListener('change', function() {
       state.locomotive.mode = ['loaded', 'medium', 'empty'].indexOf(elements.locomotiveMode.value) >= 0 ? elements.locomotiveMode.value : 'loaded';
@@ -576,7 +604,7 @@
     });
     [elements.locomotiveWeight, elements.locomotiveForce].forEach(function(input) {
       input.addEventListener('input', function() {
-        if (state.locomotive.presetId !== 'manual') return;
+        if (!isManualLocomotivePreset(state.locomotive.presetId)) return;
         input.value = sanitizeDecimalInput(input.value);
         if (input === elements.locomotiveWeight) state.locomotive.weightTf = input.value;
         if (input === elements.locomotiveForce) state.locomotive.brakeForceTf = input.value;
