@@ -607,6 +607,35 @@ details.optional-card[open] .optional-summary-chevron {
 }
 .glass-select-group:first-child { padding-top: 6px; }
 
+.loco-custom-fields {
+  margin-top: 12px;
+  padding: 14px;
+  border-radius: 14px;
+  background: color-mix(in oklch, var(--accent) 4%, var(--bg-rise-2));
+  box-shadow: inset 0 0 0 1px var(--hair);
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 14px;
+}
+.loco-custom-fields.hidden { display: none; }
+.loco-custom-heading { display: grid; gap: 4px; }
+.loco-custom-heading strong { color: var(--ink); font: 700 13px/1.2 'Golos Text', system-ui, sans-serif; }
+.loco-custom-heading span { color: var(--ink-3); font: 500 10px/1.35 'Golos Text', system-ui, sans-serif; }
+.loco-custom-fields .field { min-width: 0; }
+.loco-sections-segmented {
+  display: grid !important;
+  grid-template-columns: repeat(3, minmax(0, 1fr)) !important;
+  gap: 4px !important;
+  padding: 4px !important;
+  border-radius: 13px;
+}
+.loco-sections-segmented .segmented-btn {
+  width: 100%;
+  min-width: 0;
+  min-height: 40px;
+  padding: 8px 4px !important;
+}
+
 /* Fuel placeholder when no loco series is selected. */
 .fuel-needs-loco {
   display: flex;

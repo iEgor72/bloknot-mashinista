@@ -909,7 +909,7 @@ function presentPairingForUser(pairing, sid, activePairingId) {
 // and personal poekhali tracking stays private.
 const SHARED_SHIFT_FACT_KEYS = new Set([
   'start_msk', 'end_msk',
-  'locomotive_series', 'locomotive_number',
+  'locomotive_series', 'locomotive_sections', 'locomotive_number',
   'train_number', 'train_weight', 'train_axles', 'train_length',
   'notes', 'route_kind', 'route_from', 'route_to', 'code',
   'fuel_receive_coeff', 'fuel_receive_coeff_a', 'fuel_receive_coeff_b', 'fuel_receive_coeff_v',

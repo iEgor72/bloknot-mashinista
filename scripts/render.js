@@ -1600,6 +1600,38 @@
     }
 
     var LOCO_SERIES_MENU_OPEN = false;
+    var CUSTOM_LOCO_SERIES_VALUE = '__custom__';
+
+    function inferLocoSections(series, fallback) {
+      var value = String(series || '').trim().toUpperCase();
+      if (value.charAt(0) === '3') return '3';
+      if (value.charAt(0) === '2') return '2';
+      return ['1', '2', '3'].indexOf(String(fallback || '')) >= 0 ? String(fallback) : '1';
+    }
+
+    function setCustomLocoSections(value) {
+      value = ['1', '2', '3'].indexOf(String(value || '')) >= 0 ? String(value) : '1';
+      var segmented = document.getElementById('locoSectionsSegmented');
+      if (segmented) segmented.setAttribute('data-selected-sections', value);
+      var buttons = document.querySelectorAll('[data-loco-sections]');
+      for (var i = 0; i < buttons.length; i++) {
+        var active = buttons[i].getAttribute('data-loco-sections') === value;
+        buttons[i].classList.toggle('active', active);
+        buttons[i].setAttribute('aria-pressed', active ? 'true' : 'false');
+      }
+      var form = document.getElementById('shiftFormSection');
+      var select = document.getElementById('inputLocoSeries');
+      if (form && select && select.value === CUSTOM_LOCO_SERIES_VALUE) form.setAttribute('data-loco-sections', value);
+    }
+
+    function syncCustomLocoFields() {
+      var select = document.getElementById('inputLocoSeries');
+      var fields = document.getElementById('locoCustomFields');
+      var manual = !!select && select.value === CUSTOM_LOCO_SERIES_VALUE;
+      if (fields) fields.classList.toggle('hidden', !manual);
+      var segmented = document.getElementById('locoSectionsSegmented');
+      if (manual) setCustomLocoSections(segmented && segmented.getAttribute('data-selected-sections') || '1');
+    }
 
     function getLocoSeriesMenuEls() {
       return {
@@ -1642,23 +1674,52 @@
       var menuEl = els.menuEl;
       if (!selectEl || !menuEl) return;
       var html = '';
+      var usageScope = els.rootEl && els.rootEl.getAttribute('data-usage-scope') || '';
+      var frequentValues = [];
+      var frequentMap = {};
       // Walk top-level children so we preserve <optgroup> headings.
       function emitOption(opt) {
         if (!opt || !opt.value || opt.hidden) return '';
         return '<button type="button" class="glass-select-option" role="option" aria-selected="false" data-value="' + escapeHtml(opt.value) + '">' + escapeHtml(opt.textContent) + '</button>';
       }
+      if (usageScope && window.LocomotiveUsage) {
+        var candidates = [];
+        for (var c = 0; c < selectEl.options.length; c++) {
+          var candidate = selectEl.options[c];
+          var candidateGroup = candidate.parentElement && candidate.parentElement.tagName === 'OPTGROUP' ? candidate.parentElement : null;
+          candidates.push({
+            value: candidate.value,
+            key: candidate.getAttribute('data-usage-key') || candidate.value,
+            exclude: candidate.hidden || candidate.disabled || candidate.hasAttribute('data-usage-exclude') || !!(candidateGroup && candidateGroup.hidden)
+          });
+        }
+        frequentValues = window.LocomotiveUsage.top(usageScope, candidates, 4);
+        if (frequentValues.length) {
+          html += '<div class="glass-select-group" role="presentation">Часто выбираете</div>';
+          for (var f = 0; f < frequentValues.length; f++) {
+            frequentMap[frequentValues[f]] = true;
+            for (var o = 0; o < selectEl.options.length; o++) {
+              if (selectEl.options[o].value === frequentValues[f]) {
+                html += emitOption(selectEl.options[o]);
+                break;
+              }
+            }
+          }
+        }
+      }
       var children = selectEl.children;
-      var sawGroup = false;
       for (var i = 0; i < children.length; i++) {
         var node = children[i];
         var tag = (node.tagName || '').toUpperCase();
         if (tag === 'OPTGROUP') {
           if (node.hidden) continue;
-          sawGroup = true;
-          html += '<div class="glass-select-group" role="presentation">' + escapeHtml(node.label || '') + '</div>';
-          for (var j = 0; j < node.children.length; j++) html += emitOption(node.children[j]);
+          var groupHtml = '';
+          for (var j = 0; j < node.children.length; j++) {
+            if (!frequentMap[node.children[j].value]) groupHtml += emitOption(node.children[j]);
+          }
+          if (groupHtml) html += '<div class="glass-select-group" role="presentation">' + escapeHtml(node.label || '') + '</div>' + groupHtml;
         } else if (tag === 'OPTION') {
-          html += emitOption(node);
+          if (!frequentMap[node.value]) html += emitOption(node);
         }
       }
       if (!html) {
@@ -1706,7 +1767,15 @@
       var selectEl = document.getElementById('inputLocoSeries');
       if (!selectEl) return;
       selectEl.value = String(value || '');
+      var selected = selectEl.options[selectEl.selectedIndex];
+      var root = document.getElementById('locoSeriesSelect');
+      var usageScope = root && root.getAttribute('data-usage-scope') || '';
+      if (selected && usageScope && window.LocomotiveUsage && !selected.hasAttribute('data-usage-exclude')) {
+        window.LocomotiveUsage.record(usageScope, selected.getAttribute('data-usage-key') || selected.value);
+      }
       selectEl.dispatchEvent(new Event('change', { bubbles: true }));
+      syncCustomLocoFields();
+      buildLocoSeriesMenu();
       syncLocoSeriesTrigger();
       closeLocoSeriesMenu();
       renderDraftShiftSummary();
@@ -1767,8 +1836,16 @@
       var handoverCoeffA = normalizeFuelCoeff(getFieldValue('inputFuelHandoverCoeffA'), DEFAULT_FUEL_COEFF);
       var handoverCoeffB = normalizeFuelCoeff(getFieldValue('inputFuelHandoverCoeffB'), handoverCoeffA);
       var handoverCoeffV = normalizeFuelCoeff(getFieldValue('inputFuelHandoverCoeffV'), handoverCoeffA);
+      var selectedLocoSeries = getFieldValue('inputLocoSeries');
+      var manualLocoSeries = selectedLocoSeries === CUSTOM_LOCO_SERIES_VALUE;
+      var locomotiveSeries = manualLocoSeries ? getFieldValue('inputLocoCustomSeries').trim() : selectedLocoSeries;
+      var locoSectionsSegmented = document.getElementById('locoSectionsSegmented');
+      var locomotiveSections = manualLocoSeries
+        ? inferLocoSections('', locoSectionsSegmented && locoSectionsSegmented.getAttribute('data-selected-sections'))
+        : inferLocoSections(locomotiveSeries, '1');
       return {
-        locomotive_series: getFieldValue('inputLocoSeries'),
+        locomotive_series: locomotiveSeries,
+        locomotive_sections: locomotiveSeries ? locomotiveSections : '',
         locomotive_number: cleanDigits(getFieldValue('inputLocoNumber'), 4),
         train_number: cleanDigits(getFieldValue('inputTrainNumber'), 4),
         train_weight: cleanDigits(getFieldValue('inputTrainWeight'), 4),
@@ -1797,7 +1874,21 @@
 
     function applyOptionalShiftData(shift) {
       shift = shift || {};
-      setFieldValue('inputLocoSeries', shift.locomotive_series || '');
+      var savedLocoSeries = String(shift.locomotive_series || '');
+      var locoSelect = document.getElementById('inputLocoSeries');
+      var knownLocoSeries = false;
+      if (locoSelect && savedLocoSeries) {
+        for (var i = 0; i < locoSelect.options.length; i++) {
+          if (locoSelect.options[i].value === savedLocoSeries) {
+            knownLocoSeries = true;
+            break;
+          }
+        }
+      }
+      setFieldValue('inputLocoCustomSeries', savedLocoSeries && !knownLocoSeries ? savedLocoSeries : '');
+      setCustomLocoSections(shift.locomotive_sections || inferLocoSections(savedLocoSeries, '1'));
+      setFieldValue('inputLocoSeries', savedLocoSeries && !knownLocoSeries ? CUSTOM_LOCO_SERIES_VALUE : savedLocoSeries);
+      syncCustomLocoFields();
       setFieldValue('inputLocoNumber', shift.locomotive_number || '');
       setFieldValue('inputTrainNumber', shift.train_number || '');
       setFieldValue('inputTrainWeight', shift.train_weight || '');
@@ -1831,6 +1922,7 @@
     function clearOptionalShiftData() {
       applyOptionalShiftData({
         locomotive_series: '',
+        locomotive_sections: '',
         locomotive_number: '',
         train_number: '',
         train_weight: '',

@@ -372,7 +372,23 @@
       inputLocoSeriesEl.addEventListener('change', function(e) {
         updateSelectPlaceholderState(e.currentTarget);
         syncLocoSeriesTrigger();
+        syncCustomLocoFields();
         renderDraftShiftSummary();
+      });
+    }
+    var inputLocoCustomSeriesEl = document.getElementById('inputLocoCustomSeries');
+    if (inputLocoCustomSeriesEl) {
+      inputLocoCustomSeriesEl.addEventListener('input', function() {
+        inputLocoCustomSeriesEl.value = inputLocoCustomSeriesEl.value.replace(/[<>]/g, '').slice(0, 40);
+        renderDraftShiftSummary();
+      });
+    }
+    var locoSectionsSegmentedEl = document.getElementById('locoSectionsSegmented');
+    if (locoSectionsSegmentedEl) {
+      locoSectionsSegmentedEl.addEventListener('click', function(e) {
+        var button = e.target.closest('[data-loco-sections]');
+        if (!button) return;
+        setCustomLocoSections(button.getAttribute('data-loco-sections'));
       });
     }
     buildLocoSeriesMenu();
@@ -575,6 +591,7 @@
         end_msk: endVal,
         created_at: existingShift && existingShift.created_at ? existingShift.created_at : new Date().toISOString(),
         locomotive_series: optionalData.locomotive_series,
+        locomotive_sections: optionalData.locomotive_sections,
         locomotive_number: optionalData.locomotive_number,
         train_number: optionalData.train_number,
         train_weight: optionalData.train_weight,

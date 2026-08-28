@@ -827,7 +827,7 @@
               <div class="optional-grid optional-grid-two">
                 <div class="field">
                   <label>Серия локомотива</label>
-                  <div class="glass-select loco-series-select" id="locoSeriesSelect">
+                  <div class="glass-select loco-series-select" id="locoSeriesSelect" data-usage-scope="locomotive">
                     <button class="glass-select-trigger" id="locoSeriesTrigger" type="button" aria-haspopup="listbox" aria-expanded="false">
                       <span class="glass-select-value is-placeholder" id="locoSeriesValue">Выберите серию</span>
                       <span class="glass-select-chevron" aria-hidden="true"><svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 8l5 5 5-5"></path></svg></span>
@@ -835,21 +835,31 @@
                     <div class="glass-select-menu hidden" id="locoSeriesMenu" role="listbox" aria-label="Серия локомотива"></div>
                     <select class="hidden" id="inputLocoSeries" tabindex="-1" aria-hidden="true">
                       <option value="" selected disabled hidden>Выберите серию</option>
-                      <optgroup label="Чаще используются">
+                      <optgroup label="Тепловозы · 3–4 секции">
                         <option value="3ТЭ25">3ТЭ25</option>
                         <option value="3ТЭ28">3ТЭ28</option>
-                        <option value="2ТЭ25КМ">2ТЭ25КМ</option>
-                        <option value="2ТЭ116">2ТЭ116</option>
-                        <option value="2ТЭ10">2ТЭ10 (кроме 2ТЭ10Л)</option>
                         <option value="3ТЭ10М">3ТЭ10М</option>
                         <option value="3ТЭ10У">3ТЭ10У</option>
                         <option value="4ТЭ10С">4ТЭ10С</option>
-                      </optgroup>
-                      <optgroup label="Электровозы и редкие серии">
                         <option value="3М62У">3М62У</option>
+                      </optgroup>
+                      <optgroup label="Тепловозы · 2 секции">
+                        <option value="2ТЭ25КМ">2ТЭ25КМ</option>
+                        <option value="2ТЭ116">2ТЭ116</option>
+                        <option value="2ТЭ10">2ТЭ10 (кроме 2ТЭ10Л)</option>
                         <option value="2М62У">2М62У</option>
                         <option value="2М62">2М62</option>
+                      </optgroup>
+                      <optgroup label="Тепловозы · 1 секция и маневровые">
                         <option value="М62">М62</option>
+                        <option value="ТЭМ2">ТЭМ2</option>
+                        <option value="ТЭМ18">ТЭМ18</option>
+                        <option value="ТЭМ18ДМ">ТЭМ18ДМ</option>
+                        <option value="ТЭМ7">ТЭМ7</option>
+                        <option value="ТЭМ7А">ТЭМ7А</option>
+                        <option value="ТЭП">ТЭП</option>
+                      </optgroup>
+                      <optgroup label="Электровозы">
                         <option value="3ЭС5К">3ЭС5К</option>
                         <option value="ВЛ85">ВЛ85</option>
                         <option value="2ЭС5К">2ЭС5К</option>
@@ -858,14 +868,8 @@
                         <option value="ВЛ80Т">ВЛ80Т</option>
                         <option value="ВЛ80К">ВЛ80К</option>
                       </optgroup>
-                      <optgroup label="Другие серии">
-                        <option value="ТЭМ2">ТЭМ2</option>
-                        <option value="ТЭМ18">ТЭМ18</option>
-                        <option value="ТЭМ18ДМ">ТЭМ18ДМ</option>
-                        <option value="ТЭМ7">ТЭМ7</option>
-                        <option value="ТЭМ7А">ТЭМ7А</option>
-                        <option value="ТЭМ">Другой ТЭМ</option>
-                        <option value="ТЭП">ТЭП</option>
+                      <optgroup label="Ручной ввод">
+                        <option value="__custom__" data-usage-exclude>Ввести свои данные</option>
                       </optgroup>
                       <optgroup label="Старые значения" hidden>
                         <option value="3ТЭ10">3ТЭ10</option>
@@ -880,6 +884,24 @@
                 <div class="field">
                   <label>Номер локомотива</label>
                   <input class="optional-control" type="text" id="inputLocoNumber" inputmode="numeric" maxlength="4" placeholder="0101" />
+                </div>
+              </div>
+              <div class="loco-custom-fields hidden" id="locoCustomFields">
+                <div class="loco-custom-heading">
+                  <strong>Свой локомотив</strong>
+                  <span>Укажите серию и секции для учёта топлива</span>
+                </div>
+                <div class="field">
+                  <label>Серия или обозначение</label>
+                  <input class="optional-control" type="text" id="inputLocoCustomSeries" maxlength="40" autocomplete="off" placeholder="Например, ТЭМ14" />
+                </div>
+                <div class="field">
+                  <label>Секции локомотива</label>
+                  <div class="segmented loco-sections-segmented" id="locoSectionsSegmented" role="group" aria-label="Количество секций локомотива">
+                    <button type="button" class="segmented-btn active" data-loco-sections="1" aria-pressed="true">А</button>
+                    <button type="button" class="segmented-btn" data-loco-sections="2" aria-pressed="false">АБ</button>
+                    <button type="button" class="segmented-btn" data-loco-sections="3" aria-pressed="false">АБВ</button>
+                  </div>
                 </div>
               </div>
             </div>
@@ -1923,33 +1945,37 @@
             <div class="vu45-locomotive-fields" id="vu45LocomotiveFields" hidden>
               <div class="vu45-field vu45-field-primary">
                 <span>Серия локомотива</span>
-                <div class="glass-select vu45-preset-select vu45-locomotive-select" id="vu45LocomotivePresetRoot" data-glass-auto data-placeholder="Выберите серию">
+                <div class="glass-select vu45-preset-select vu45-locomotive-select" id="vu45LocomotivePresetRoot" data-glass-auto data-placeholder="Выберите серию" data-usage-scope="locomotive">
                   <button class="glass-select-trigger" type="button" aria-haspopup="listbox" aria-expanded="false">
                     <span class="glass-select-value">3ТЭ25 / 3ТЭ28</span>
                     <span class="glass-select-chevron" aria-hidden="true"><svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 8l5 5 5-5"></path></svg></span>
                   </button>
                   <div class="glass-select-menu hidden" role="listbox" aria-label="Серия локомотива"></div>
                   <select class="hidden" id="vu45LocomotivePreset" tabindex="-1" aria-hidden="true">
-                    <optgroup label="Чаще используются">
-                      <option value="3te25k2m">3ТЭ25 / 3ТЭ28</option>
-                      <option value="2te25km">2ТЭ25КМ</option>
-                      <option value="2te116">2ТЭ116 / 2ТЭ10 (кроме 2ТЭ10Л)</option>
-                      <option value="3te10">3ТЭ10М / 3ТЭ10У</option>
-                      <option value="4te10s">4ТЭ10С</option>
+                    <optgroup label="Тепловозы · 3–4 секции">
+                      <option value="3te25k2m" data-usage-key="3ТЭ25">3ТЭ25 / 3ТЭ28</option>
+                      <option value="3te10" data-usage-key="3ТЭ10М">3ТЭ10М / 3ТЭ10У</option>
+                      <option value="4te10s" data-usage-key="4ТЭ10С">4ТЭ10С</option>
+                      <option value="3m62u" data-usage-key="3М62У">3М62У</option>
                     </optgroup>
-                    <optgroup label="Электровозы и редкие серии">
-                      <option value="3m62u">3М62У</option>
-                      <option value="2m62u">2М62У</option>
-                      <option value="2m62">2М62</option>
-                      <option value="m62">М62</option>
-                      <option value="3es5k">3ЭС5К / ВЛ85</option>
-                      <option value="2es5k">2ЭС5К / ВЛ80Р / ВЛ80С / ВЛ80Т</option>
-                      <option value="vl80k">ВЛ80К</option>
+                    <optgroup label="Тепловозы · 2 секции">
+                      <option value="2te25km" data-usage-key="2ТЭ25КМ">2ТЭ25КМ</option>
+                      <option value="2te116" data-usage-key="2ТЭ116">2ТЭ116 / 2ТЭ10 (кроме 2ТЭ10Л)</option>
+                      <option value="2m62u" data-usage-key="2М62У">2М62У</option>
+                      <option value="2m62" data-usage-key="2М62">2М62</option>
                     </optgroup>
-                    <optgroup label="Маневровые и ручной ввод">
-                      <option value="tem2-tem18">ТЭМ2 / ТЭМ18</option>
-                      <option value="tem7">ТЭМ7 / ТЭМ7А</option>
-                      <option value="manual">Свои данные</option>
+                    <optgroup label="Тепловозы · 1 секция и маневровые">
+                      <option value="m62" data-usage-key="М62">М62</option>
+                      <option value="tem2-tem18" data-usage-key="ТЭМ2">ТЭМ2 / ТЭМ18</option>
+                      <option value="tem7" data-usage-key="ТЭМ7">ТЭМ7 / ТЭМ7А</option>
+                    </optgroup>
+                    <optgroup label="Электровозы">
+                      <option value="3es5k" data-usage-key="3ЭС5К">3ЭС5К / ВЛ85</option>
+                      <option value="2es5k" data-usage-key="2ЭС5К">2ЭС5К / ВЛ80Р / ВЛ80С / ВЛ80Т</option>
+                      <option value="vl80k" data-usage-key="ВЛ80К">ВЛ80К</option>
+                    </optgroup>
+                    <optgroup label="Ручной ввод">
+                      <option value="manual" data-usage-exclude>Ввести свои данные</option>
                     </optgroup>
                   </select>
                 </div>
@@ -2246,6 +2272,7 @@
     }, true);
   </script>
   <script src="/scripts/v410/app-constants.js" defer></script>
+  <script src="/scripts/v410/locomotive-usage.js" defer></script>
   <script src="/scripts/v410/glass-select.js" defer></script>
   <script src="/scripts/v410/auth.js" defer></script>
   <script src="/scripts/v410/viewport.js" defer></script>

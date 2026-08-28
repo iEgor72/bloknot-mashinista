@@ -69,6 +69,7 @@ if (window.__SHIFT_TRACKER_RUNTIME_GUARD_PENDING) {
 // Fuel sections — show A/B/V depending on loco series (3* → A/B/V, 2* → A/B, else → A).
 (function bindLocoSections() {
   var selectEl = document.getElementById('inputLocoSeries');
+  var customSectionsEl = document.getElementById('locoSectionsSegmented');
   // Gate on the form section (not the add panel) — the form moves into the edit
   // sheet when editing, so the panel would no longer contain the fuel section.
   var form = document.getElementById('shiftFormSection');
@@ -76,6 +77,10 @@ if (window.__SHIFT_TRACKER_RUNTIME_GUARD_PENDING) {
   function sectionsFor(value) {
     var v = String(value || '').trim().toUpperCase();
     if (!v) return '';
+    if (v === '__CUSTOM__') {
+      var custom = customSectionsEl ? String(customSectionsEl.getAttribute('data-selected-sections') || '') : '';
+      return ['1', '2', '3'].indexOf(custom) >= 0 ? custom : '1';
+    }
     if (v.charAt(0) === '3') return '3';
     if (v.charAt(0) === '2') return '2';
     return '1';
@@ -91,6 +96,7 @@ if (window.__SHIFT_TRACKER_RUNTIME_GUARD_PENDING) {
   observer.observe(selectEl, { attributes: true, attributeFilter: ['value'] });
   // Custom event from glass-select dispatches 'input' on the native select.
   selectEl.addEventListener('input', apply);
+  if (customSectionsEl) customSectionsEl.addEventListener('click', apply);
   apply();
 })();
 

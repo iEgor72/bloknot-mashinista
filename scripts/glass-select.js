@@ -56,7 +56,7 @@
   function emitOption(opt, withAvatars) {
     if (!opt) return '';
     // Skip the hidden placeholder option (value="" + disabled/hidden).
-    if (!opt.value && (opt.disabled || opt.hidden)) return '';
+    if (opt.hidden || (!opt.value && opt.disabled)) return '';
     var label = opt.textContent;
     var avatar = withAvatars ? avatarHtml(opt.value ? label : '') : '';
     return '<button type="button" class="glass-select-option' + (withAvatars ? ' has-avatar' : '') +
@@ -71,14 +71,46 @@
     var withAvatars = root.hasAttribute('data-option-avatars');
     var html = '';
     var kids = sel.children;
+    var usageScope = root.getAttribute('data-usage-scope') || '';
+    var frequentValues = [];
+    var frequentMap = {};
+    if (usageScope && window.LocomotiveUsage) {
+      var candidates = [];
+      for (var c = 0; c < sel.options.length; c++) {
+        var candidate = sel.options[c];
+        var candidateGroup = candidate.parentElement && candidate.parentElement.tagName === 'OPTGROUP' ? candidate.parentElement : null;
+        candidates.push({
+          value: candidate.value,
+          key: candidate.getAttribute('data-usage-key') || candidate.value,
+          exclude: candidate.hidden || candidate.disabled || candidate.hasAttribute('data-usage-exclude') || !!(candidateGroup && candidateGroup.hidden)
+        });
+      }
+      frequentValues = window.LocomotiveUsage.top(usageScope, candidates, 4);
+      if (frequentValues.length) {
+        html += '<div class="glass-select-group" role="presentation">Часто выбираете</div>';
+        for (var f = 0; f < frequentValues.length; f++) {
+          frequentMap[frequentValues[f]] = true;
+          for (var o = 0; o < sel.options.length; o++) {
+            if (sel.options[o].value === frequentValues[f]) {
+              html += emitOption(sel.options[o], withAvatars);
+              break;
+            }
+          }
+        }
+      }
+    }
     for (var i = 0; i < kids.length; i++) {
       var node = kids[i];
       var tag = (node.tagName || '').toUpperCase();
       if (tag === 'OPTGROUP') {
-        html += '<div class="glass-select-group" role="presentation">' + esc(node.label || '') + '</div>';
-        for (var j = 0; j < node.children.length; j++) html += emitOption(node.children[j], withAvatars);
+        if (node.hidden) continue;
+        var groupHtml = '';
+        for (var j = 0; j < node.children.length; j++) {
+          if (!frequentMap[node.children[j].value]) groupHtml += emitOption(node.children[j], withAvatars);
+        }
+        if (groupHtml) html += '<div class="glass-select-group" role="presentation">' + esc(node.label || '') + '</div>' + groupHtml;
       } else if (tag === 'OPTION') {
-        html += emitOption(node, withAvatars);
+        if (!frequentMap[node.value]) html += emitOption(node, withAvatars);
       }
     }
     menu.innerHTML = html;
@@ -171,8 +203,13 @@
     var sel = q(root, 'select');
     if (!sel) return;
     sel.value = String(value == null ? '' : value);
+    var selected = sel.options[sel.selectedIndex];
+    var usageScope = root.getAttribute('data-usage-scope') || '';
+    if (selected && usageScope && window.LocomotiveUsage && !selected.hasAttribute('data-usage-exclude')) {
+      window.LocomotiveUsage.record(usageScope, selected.getAttribute('data-usage-key') || selected.value);
+    }
     sel.dispatchEvent(new Event('change', { bubbles: true }));
-    sync(root);
+    if (usageScope) buildMenu(root); else sync(root);
     close();
   }
 
