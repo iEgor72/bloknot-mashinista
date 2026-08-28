@@ -624,38 +624,55 @@
   box-shadow: 0 0 6px var(--accent-glow), 0 0 0 2px var(--bg-rise);
 }
 
-/* GPS chip in top bar (Poekhali only) */
-.app-top-bar-gps {
-  display: inline-flex;
-  align-items: center;
+/* One control family for GPS / map / way in the Poekhali top bar. */
+.app-top-bar-poekhali-actions {
+  width: min(224px, 64vw);
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
   gap: 6px;
-  padding: 6px 12px;
-  border-radius: 12px;
-  background: color-mix(in oklch, var(--bad) 18%, transparent);
-  border: 1px solid color-mix(in oklch, var(--bad) 32%, transparent);
-  color: var(--bad);
-  font: 700 11px/1 'Golos Text', system-ui, sans-serif;
-  letter-spacing: 0.06em;
-  cursor: pointer;
-  flex-shrink: 0;
+  flex: 0 0 auto;
 }
-.app-top-bar-gps.hidden { display: none !important; }
-.app-top-bar-preview {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  min-height: 36px;
-  padding: 6px 10px;
-  border-radius: 12px;
+.app-top-bar-poekhali-actions.hidden { display: none !important; }
+.app-top-bar-control {
+  min-width: 0;
+  min-height: 42px;
+  padding: 6px 5px 5px;
+  border-radius: 13px;
   background: var(--glass);
   border: 1px solid var(--hair);
   color: var(--ink-2);
-  font: 700 10px/1 'Golos Text', system-ui, sans-serif;
-  letter-spacing: 0.04em;
   cursor: pointer;
-  flex-shrink: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 4px;
+  box-shadow: inset 0 1px 0 color-mix(in oklch, white 5%, transparent);
+  transition: background 160ms ease, border-color 160ms ease, color 160ms ease;
 }
-.app-top-bar-preview.hidden { display: none !important; }
+.app-top-bar-control.hidden { display: none !important; }
+.app-top-bar-control-label {
+  min-width: 0;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 4px;
+  font: 650 7px/1 'Golos Text', system-ui, sans-serif;
+  letter-spacing: 0.13em;
+  text-transform: uppercase;
+  color: var(--ink-3);
+  white-space: nowrap;
+}
+.app-top-bar-control-value {
+  min-width: 0;
+  max-width: 100%;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  font: 750 10px/1 'Golos Text', system-ui, sans-serif;
+  letter-spacing: 0.035em;
+  color: currentColor;
+  white-space: nowrap;
+}
 .app-top-bar-preview.is-on,
 .app-top-bar-preview[aria-pressed="true"] {
   background: var(--accent-soft);
@@ -663,7 +680,7 @@
   color: var(--accent);
 }
 .app-top-bar-gps-dot {
-  width: 8px; height: 8px; border-radius: 999px;
+  width: 6px; height: 6px; border-radius: 999px;
   background: var(--bad);
   box-shadow: 0 0 6px color-mix(in oklch, var(--bad) 60%, transparent);
 }
@@ -723,34 +740,8 @@
   box-shadow: 0 0 7px var(--accent-glow);
 }
 
-/* Way chip in top bar (Poekhali only) — Путь · П 1 */
-.app-top-bar-way {
-  display: inline-flex;
-  flex-direction: column;
-  align-items: center;
-  gap: 2px;
-  padding: 5px 12px;
-  border-radius: 12px;
-  background: var(--glass);
-  border: 1px solid var(--hair);
-  color: var(--ink);
-  cursor: pointer;
-  flex-shrink: 0;
-  min-height: 36px;
-  justify-content: center;
-}
-.app-top-bar-way.hidden { display: none !important; }
-.app-top-bar-way-label {
-  font: 600 8px/1 'Golos Text', system-ui, sans-serif;
-  letter-spacing: 0.14em;
-  text-transform: uppercase;
-  color: var(--ink-3);
-}
 .app-top-bar-way-value {
-  font: 700 12px/1 'Golos Text', system-ui, sans-serif;
   font-variant-numeric: tabular-nums;
-  color: var(--ink);
-  letter-spacing: 0.04em;
 }
 .app-top-bar-icon-dot::after {
   content: attr(data-count);

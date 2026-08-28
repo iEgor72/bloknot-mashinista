@@ -1,4 +1,4 @@
-if (typeof registerShiftTrackerRuntimeModule === 'function') registerShiftTrackerRuntimeModule('app-init', 'v411');
+if (typeof registerShiftTrackerRuntimeModule === 'function') registerShiftTrackerRuntimeModule('app-init', 'v412');
 
 // ── Init ──
 function startShiftTrackerRuntime() {
@@ -638,6 +638,8 @@ if (window.__SHIFT_TRACKER_RUNTIME_GUARD_PENDING) {
     var gpsEl = document.getElementById('appTopBarGps');
     var previewEl = document.getElementById('appTopBarPreview');
     var wayEl = document.getElementById('appTopBarWay');
+    var poekhaliActionsEl = document.getElementById('appTopBarPoekhaliActions');
+    if (poekhaliActionsEl) poekhaliActionsEl.classList.toggle('hidden', tab !== 'poekhali');
     if (gpsEl) gpsEl.classList.toggle('hidden', tab !== 'poekhali');
     if (previewEl) previewEl.classList.toggle('hidden', tab !== 'poekhali');
     if (wayEl) wayEl.classList.toggle('hidden', tab !== 'poekhali');
@@ -1929,8 +1931,10 @@ if (window.__SHIFT_TRACKER_RUNTIME_GUARD_PENDING) {
       speedo.classList.toggle('is-over', !!over);
     }
 
-    // Голова состава (head position) + Уклон / Далее
+    // Голова состава в GPS-режиме или точка обзора в режиме «Участок».
     set('trkHeadPos', hud.headPos || '—');
+    var coordinateLabel = document.getElementById('trkCoordinateLabel');
+    if (coordinateLabel) coordinateLabel.textContent = hud.positioningMode === 'preview' ? 'Точка обзора' : 'Координата';
     set('trkGrade', hud.gradeText || '—');
     set('trkReach', hud.reachText || '—');
     var browseHud = document.getElementById('trkBrowseHud');
@@ -1979,12 +1983,12 @@ if (window.__SHIFT_TRACKER_RUNTIME_GUARD_PENDING) {
       var gpsWord = gpsChip.querySelector('.app-top-bar-gps-word');
       if (gpsWord) {
         gpsWord.textContent = hud.positioningMode === 'preview'
-          ? 'НАЧАТЬ GPS'
+          ? 'НАЧАТЬ'
           : hud.gpsCaptureError
-          ? 'GPS · ПАМЯТЬ'
+          ? 'ПАМЯТЬ'
           : hud.gpsCaptureActive
-          ? ('GPS · REC ' + String(hud.gpsRecordedSamples || 0))
-          : (hud.gpsMeta && hud.gpsMeta !== '—' ? ('GPS · ' + hud.gpsMeta) : 'GPS');
+          ? ('REC ' + String(hud.gpsRecordedSamples || 0))
+          : (hud.gpsMeta && hud.gpsMeta !== '—' ? String(hud.gpsMeta).toUpperCase() : '—');
       }
       gpsChip.title = hud.positioningMode === 'preview'
         ? 'Начать поездку с GPS'

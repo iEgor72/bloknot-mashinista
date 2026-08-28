@@ -837,11 +837,28 @@ async function assertPreparationModeWithoutGps(browser) {
     requests: { ...window.__poekhaliGpsRequests },
     coordinate: Number(window.poekhaliHud?.viewCoordinate),
     gpsMeta: window.poekhaliHud?.gpsMeta,
+    trainVisible: window.poekhaliHud?.trainVisible,
     gpsTitle: document.getElementById('btnPoekhaliLive')?.title || '',
-    gpsAction: document.querySelector('#appTopBarGps .app-top-bar-gps-word')?.textContent.trim() || ''
+    gpsAction: document.querySelector('#appTopBarGps .app-top-bar-gps-word')?.textContent.trim() || '',
+    controls: ['appTopBarGps', 'appTopBarPreview', 'appTopBarWay'].map((id) => {
+      const element = document.getElementById(id);
+      const rect = element?.getBoundingClientRect();
+      const style = element ? getComputedStyle(element) : null;
+      return {
+        id,
+        width: Math.round(rect?.width || 0),
+        height: Math.round(rect?.height || 0),
+        radius: style?.borderRadius || '',
+        padding: style?.padding || ''
+      };
+    })
   }));
   if (before.requests.watch !== 0 || before.requests.current !== 0 || before.gpsMeta !== 'выкл' ||
-      !before.gpsTitle.includes('Начать поездку') || before.gpsAction !== 'НАЧАТЬ GPS') {
+      before.trainVisible !== false || !before.gpsTitle.includes('Начать поездку') || before.gpsAction !== 'НАЧАТЬ' ||
+      new Set(before.controls.map((control) => control.width)).size !== 1 ||
+      new Set(before.controls.map((control) => control.height)).size !== 1 ||
+      new Set(before.controls.map((control) => control.radius)).size !== 1 ||
+      new Set(before.controls.map((control) => control.padding)).size !== 1) {
     throw new Error(`Preparation mode requested GPS or exposed the wrong state: ${JSON.stringify(before)}`);
   }
 
@@ -860,9 +877,11 @@ async function assertPreparationModeWithoutGps(browser) {
   const afterBrowse = await page.evaluate(() => ({
     requests: { ...window.__poekhaliGpsRequests },
     coordinate: Number(window.poekhaliHud?.viewCoordinate),
-    mode: window.poekhaliHud?.positioningMode
+    mode: window.poekhaliHud?.positioningMode,
+    trainVisible: window.poekhaliHud?.trainVisible
   }));
-  if (afterBrowse.requests.watch !== 0 || afterBrowse.requests.current !== 0 || afterBrowse.mode !== 'preview') {
+  if (afterBrowse.requests.watch !== 0 || afterBrowse.requests.current !== 0 ||
+      afterBrowse.mode !== 'preview' || afterBrowse.trainVisible !== false) {
     throw new Error(`Manual profile browse activated GPS: ${JSON.stringify(afterBrowse)}`);
   }
   await page.screenshot({ path: preparationScreenshotPath });
@@ -871,6 +890,27 @@ async function assertPreparationModeWithoutGps(browser) {
   await page.waitForFunction(() => (
     window.poekhaliHud?.positioningMode === 'gps' &&
     window.__poekhaliGpsRequests.watch > 0
+  ), null, { timeout: 10_000 });
+  await page.evaluate((fix) => window.__emitPoekhaliPreparationGpsFix(fix), {
+    lat: 51.65823519944607,
+    lon: 135.661229380896,
+    accuracy: 8,
+    ts: Date.now()
+  });
+  await page.waitForFunction(() => (
+    window.poekhaliHud?.live === true &&
+    window.poekhaliHud?.trainVisible === true
+  ), null, { timeout: 10_000 });
+  await page.locator('#appTopBarPreview').click();
+  await page.waitForFunction(() => (
+    window.poekhaliHud?.positioningMode === 'preview' &&
+    window.poekhaliHud?.trainVisible === false &&
+    document.getElementById('trkCoordinateLabel')?.textContent === 'Точка обзора'
+  ), null, { timeout: 10_000 });
+  await page.locator('#appTopBarGps').click();
+  await page.waitForFunction(() => (
+    window.poekhaliHud?.positioningMode === 'gps' &&
+    window.__poekhaliGpsRequests.watch > 1
   ), null, { timeout: 10_000 });
   await page.evaluate((fix) => window.__emitPoekhaliPreparationGpsFix(fix), {
     lat: 50.32500652792692,

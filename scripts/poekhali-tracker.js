@@ -1,4 +1,4 @@
-if (typeof registerShiftTrackerRuntimeModule === 'function') registerShiftTrackerRuntimeModule('poekhali-tracker', 'v411');
+if (typeof registerShiftTrackerRuntimeModule === 'function') registerShiftTrackerRuntimeModule('poekhali-tracker', 'v412');
 
 (function() {
   'use strict';
@@ -358,6 +358,7 @@ if (typeof registerShiftTrackerRuntimeModule === 'function') registerShiftTracke
     previewSector: null,
     viewDetached: false,
     viewProjection: null,
+    trainRendered: false,
     browseAutoReturnTimer: null,
     browseAutoReturnAt: 0,
     previewDragActive: false,
@@ -12759,6 +12760,7 @@ if (typeof registerShiftTrackerRuntimeModule === 'function') registerShiftTracke
   }
 
   function drawRouteStrip(ctx, w, h, displayProjection) {
+    tracker.trainRendered = false;
     var viewProjection = displayProjection || tracker.projection;
     if (!viewProjection || (!viewProjection.onTrack && !viewProjection.preview)) {
       tracker.activeRestriction = null;
@@ -12819,7 +12821,7 @@ if (typeof registerShiftTrackerRuntimeModule === 'function') registerShiftTracke
     var routeProgress = viewState.routeProgress;
     var isPreview = !!projection.preview;
     var labelLayout = makeLabelLayout();
-    var trainProjection = liveProjection ||
+    var trainProjection = tracker.positioningMode === 'preview' ? null : liveProjection ||
       (detachedView || !allowPreviewFallback ? null : projection);
 
     ctx.save();
@@ -12844,6 +12846,7 @@ if (typeof registerShiftTrackerRuntimeModule === 'function') registerShiftTracke
     drawApkGradeLabels(ctx, layout, center, sector, bounds, isPreview, labelLayout);
 
     if (trainProjection && getSectorKey(trainProjection.sector) === getSectorKey(sector)) {
+      tracker.trainRendered = true;
       var trainCoordinate = Number(trainProjection.lineCoordinate);
       var avgAngle = computeAvgProfileAngle(trainCoordinate, sector, layout);
       drawApkTrain(ctx, layout, trainCoordinate, center, sector, avgAngle, !liveProjection && !!trainProjection.preview);
@@ -12971,6 +12974,7 @@ if (typeof registerShiftTrackerRuntimeModule === 'function') registerShiftTracke
       hasProjection: !!hasProjection,
       status: tracker.status,
       live: tracker.status === 'gps-live',
+      trainVisible: !!tracker.trainRendered,
       serviceArmMapLocked: isCurrentMapLockedToServiceArm(),
       speedKmh: speedKmh,
       speedMeters: !!tracker.speedMeters,

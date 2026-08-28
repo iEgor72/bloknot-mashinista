@@ -1,5 +1,5 @@
     // ── Telegram WebApp chrome (не блокировать bootstrap: SDK подключается последним defer в index.html)
-    if (typeof registerShiftTrackerRuntimeModule === 'function') registerShiftTrackerRuntimeModule('app', 'v411');
+    if (typeof registerShiftTrackerRuntimeModule === 'function') registerShiftTrackerRuntimeModule('app', 'v412');
 
     function applyTelegramWebAppChrome() {
       try {
@@ -77,7 +77,7 @@
       tapLockUntil: 0
     };
     // ── Viewport / Keyboard / Haptic — see scripts/viewport.js ──
-    var APP_VERSION = '1.2.17';
+    var APP_VERSION = '1.2.18';
     var INSTALL_PROMPT_STATE_STORAGE_KEY = 'shift_tracker_install_prompt_state_v1';
     var LEGACY_SETTINGS_STORAGE_KEY = 'shift_tracker_settings_v1';
     var SALARY_PARAMS_STORAGE_KEY = 'shift_tracker_salary_params_v1';
