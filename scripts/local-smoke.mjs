@@ -597,7 +597,14 @@ async function main() {
     const form = document.getElementById('shiftFormSection');
     const has3te28 = !!select && Array.from(select.options).some((option) => option.value === '3ТЭ28');
     const visibleSeries = Array.from(document.querySelectorAll('#locoSeriesMenu .glass-select-option')).map((option) => option.textContent.trim());
-    const expectedSeries = ['3ТЭ25', '3ТЭ28', '2ТЭ25КМ', '2ТЭ116', '3М62У', '3ЭС5К', 'ВЛ85', 'ТЭМ2', 'ТЭМ18ДМ', 'ТЭМ7А'];
+    const expectedSeries = ['3ТЭ25', '3ТЭ28', '2ТЭ25', '2ТЭ116', '3М62У', '3ЭС5К', 'ВЛ85', 'ТЭМ2', 'ТЭМ18ДМ', 'ТЭМ7А'];
+    const frequentCandidates = expectedSeries.slice(0, 5).map((series) => ({ value: series, key: series }));
+    if (window.LocomotiveUsage) {
+      frequentCandidates.forEach((candidate) => window.LocomotiveUsage.record('smoke-frequent-limit', candidate.key));
+    }
+    const frequentTop = window.LocomotiveUsage
+      ? window.LocomotiveUsage.top('smoke-frequent-limit', frequentCandidates, 4)
+      : [];
     if (select && has3te28) {
       select.value = '3ТЭ28';
       select.dispatchEvent(new Event('input', { bubbles: true }));
@@ -609,12 +616,13 @@ async function main() {
       has3te28,
       sharedSeriesPresent: expectedSeries.every((series) => visibleSeries.includes(series)),
       legacySeriesHidden: !visibleSeries.includes('3ТЭ10') && !visibleSeries.includes('3ЭС5') && !visibleSeries.includes('ВЛ80'),
+      frequentSeriesLimited: frequentTop.length === 4,
       fuelSections: form ? form.getAttribute('data-loco-sections') : '',
       consumptionText
     };
   });
   report.checks.shiftFormContract = shiftFormContract;
-  if (!shiftFormContract.has3te28 || !shiftFormContract.sharedSeriesPresent || !shiftFormContract.legacySeriesHidden || shiftFormContract.fuelSections !== '3') {
+  if (!shiftFormContract.has3te28 || !shiftFormContract.sharedSeriesPresent || !shiftFormContract.legacySeriesHidden || !shiftFormContract.frequentSeriesLimited || shiftFormContract.fuelSections !== '3') {
     throw new Error(`Locomotive series catalog is inconsistent: ${JSON.stringify(shiftFormContract)}`);
   }
   if (shiftFormContract.consumptionText !== '12,34 кг') {

@@ -22,7 +22,7 @@
 
   var LOCOMOTIVE_PRESETS = [
     { id: '3te25k2m', label: '3ТЭ25 / 3ТЭ28', axles: 18, weightTf: 441, loadedPerAxleTf: 10, emptyPerAxleTf: 5, forceBasis: 'default-diesel' },
-    { id: '2te25km', label: '2ТЭ25КМ', axles: 12, weightTf: 288, loadedPerAxleTf: 10, emptyPerAxleTf: 5, forceBasis: 'default-diesel' },
+    { id: '2te25km', label: '2ТЭ25', axles: 12, weightTf: 288, loadedPerAxleTf: 10, emptyPerAxleTf: 5, forceBasis: 'default-diesel' },
     { id: '2te116', label: '2ТЭ116 / 2ТЭ10 (кроме 2ТЭ10Л)', axles: 12, weightTf: 276, loadedPerAxleTf: 12, emptyPerAxleTf: 5 },
     { id: '3te10', label: '3ТЭ10М / 3ТЭ10У', axles: 18, weightTf: 414, loadedPerAxleTf: 12, emptyPerAxleTf: 5 },
     { id: '4te10s', label: '4ТЭ10С', axles: 24, weightTf: 552, loadedPerAxleTf: 12, emptyPerAxleTf: 5 },

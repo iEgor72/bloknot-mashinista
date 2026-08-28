@@ -1676,7 +1676,6 @@
       var html = '';
       var usageScope = els.rootEl && els.rootEl.getAttribute('data-usage-scope') || '';
       var frequentValues = [];
-      var frequentMap = {};
       // Walk top-level children so we preserve <optgroup> headings.
       function emitOption(opt) {
         if (!opt || !opt.value || opt.hidden) return '';
@@ -1697,7 +1696,6 @@
         if (frequentValues.length) {
           html += '<div class="glass-select-group" role="presentation">Часто выбираете</div>';
           for (var f = 0; f < frequentValues.length; f++) {
-            frequentMap[frequentValues[f]] = true;
             for (var o = 0; o < selectEl.options.length; o++) {
               if (selectEl.options[o].value === frequentValues[f]) {
                 html += emitOption(selectEl.options[o]);
@@ -1715,11 +1713,11 @@
           if (node.hidden) continue;
           var groupHtml = '';
           for (var j = 0; j < node.children.length; j++) {
-            if (!frequentMap[node.children[j].value]) groupHtml += emitOption(node.children[j]);
+            groupHtml += emitOption(node.children[j]);
           }
           if (groupHtml) html += '<div class="glass-select-group" role="presentation">' + escapeHtml(node.label || '') + '</div>' + groupHtml;
         } else if (tag === 'OPTION') {
-          if (!frequentMap[node.value]) html += emitOption(node);
+          html += emitOption(node);
         }
       }
       if (!html) {
@@ -1875,6 +1873,7 @@
     function applyOptionalShiftData(shift) {
       shift = shift || {};
       var savedLocoSeries = String(shift.locomotive_series || '');
+      if (savedLocoSeries === '2ТЭ25КМ') savedLocoSeries = '2ТЭ25';
       var locoSelect = document.getElementById('inputLocoSeries');
       var knownLocoSeries = false;
       if (locoSelect && savedLocoSeries) {

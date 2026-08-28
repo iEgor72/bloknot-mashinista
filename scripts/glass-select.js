@@ -73,7 +73,6 @@
     var kids = sel.children;
     var usageScope = root.getAttribute('data-usage-scope') || '';
     var frequentValues = [];
-    var frequentMap = {};
     if (usageScope && window.LocomotiveUsage) {
       var candidates = [];
       for (var c = 0; c < sel.options.length; c++) {
@@ -89,7 +88,6 @@
       if (frequentValues.length) {
         html += '<div class="glass-select-group" role="presentation">Часто выбираете</div>';
         for (var f = 0; f < frequentValues.length; f++) {
-          frequentMap[frequentValues[f]] = true;
           for (var o = 0; o < sel.options.length; o++) {
             if (sel.options[o].value === frequentValues[f]) {
               html += emitOption(sel.options[o], withAvatars);
@@ -106,11 +104,11 @@
         if (node.hidden) continue;
         var groupHtml = '';
         for (var j = 0; j < node.children.length; j++) {
-          if (!frequentMap[node.children[j].value]) groupHtml += emitOption(node.children[j], withAvatars);
+          groupHtml += emitOption(node.children[j], withAvatars);
         }
         if (groupHtml) html += '<div class="glass-select-group" role="presentation">' + esc(node.label || '') + '</div>' + groupHtml;
       } else if (tag === 'OPTION') {
-        if (!frequentMap[node.value]) html += emitOption(node, withAvatars);
+        html += emitOption(node, withAvatars);
       }
     }
     menu.innerHTML = html;
