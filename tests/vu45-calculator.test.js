@@ -49,3 +49,44 @@ test('summary reports margin and local-rule warnings without claiming safety', (
   assert.equal(result.localRuleWarning, true);
   assert.equal(result.manualCalculationRequired, false);
 });
+
+test('enabled locomotive adds its accounting weight and brake force', () => {
+  const result = vu45.calculate({
+    weightTf: 5000,
+    normPer100Tf: 33,
+    gradientPermille: 10,
+    groups: [{ axles: 200, forcePerAxle: 8.5 }],
+    locomotive: { enabled: true, weightTf: 288, brakeForceTf: 168 }
+  });
+  assert.equal(result.compositionWeightTf, 5000);
+  assert.equal(result.weightTf, 5288);
+  assert.equal(result.requiredForceTf, 1746);
+  assert.equal(result.wagonBrakeForceTf, 1700);
+  assert.equal(result.actualForceTf, 1868);
+  assert.equal(result.actualPer100Tf, 35.33);
+  assert.equal(result.requiredManualBrakeAxles, 43);
+});
+
+test('disabled locomotive values do not affect the calculation', () => {
+  const result = vu45.calculate({
+    weightTf: 5000,
+    normPer100Tf: 33,
+    groups: [{ axles: 200, forcePerAxle: 8.5 }],
+    locomotive: { enabled: false, weightTf: 288, brakeForceTf: 140 }
+  });
+  assert.equal(result.weightTf, 5000);
+  assert.equal(result.requiredForceTf, 1650);
+  assert.equal(result.actualForceTf, 1700);
+  assert.equal(result.locomotiveWeightTf, 0);
+  assert.equal(result.locomotiveBrakeForceTf, 0);
+});
+
+test('locomotive catalog calculates total force for each brake mode', () => {
+  assert.deepEqual(
+    { weight: vu45.locomotiveValues('3es5k', 'loaded').weightTf, force: vu45.locomotiveValues('3es5k', 'loaded').brakeForceTf },
+    { weight: 288, force: 168 }
+  );
+  assert.equal(vu45.locomotiveValues('3es5k', 'medium').brakeForceTf, 117.6);
+  assert.equal(vu45.locomotiveValues('3es5k', 'empty').brakeForceTf, 72);
+  assert.equal(vu45.locomotiveValues('2te116', 'loaded').brakeForceTf, 144);
+});

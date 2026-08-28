@@ -1892,6 +1892,72 @@
               <span class="vu45-input-wrap"><input id="vu45Gradient" type="text" inputmode="decimal" autocomplete="off" placeholder="Например, 8"><b>‰</b></span>
             </label>
           </div>
+
+          <div class="vu45-locomotive" id="vu45Locomotive">
+            <button class="vu45-locomotive-toggle" id="btnVu45Locomotive" type="button" aria-expanded="false" aria-controls="vu45LocomotiveFields">
+              <span class="vu45-locomotive-toggle-mark" aria-hidden="true">+</span>
+              <span><strong>Добавить локомотив</strong><small>Если его нужно учитывать по вашей инструкции</small></span>
+              <svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M7 5l5 5-5 5"></path></svg>
+            </button>
+            <div class="vu45-locomotive-fields" id="vu45LocomotiveFields" hidden>
+              <div class="vu45-field vu45-field-primary">
+                <span>Серия локомотива</span>
+                <div class="glass-select vu45-preset-select vu45-locomotive-select" id="vu45LocomotivePresetRoot" data-glass-auto data-placeholder="Выберите серию">
+                  <button class="glass-select-trigger" type="button" aria-haspopup="listbox" aria-expanded="false">
+                    <span class="glass-select-value">3ЭС5К</span>
+                    <span class="glass-select-chevron" aria-hidden="true"><svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 8l5 5 5-5"></path></svg></span>
+                  </button>
+                  <div class="glass-select-menu hidden" role="listbox" aria-label="Серия локомотива"></div>
+                  <select class="hidden" id="vu45LocomotivePreset" tabindex="-1" aria-hidden="true">
+                    <option value="3es5k">3ЭС5К</option>
+                    <option value="2es5k">2ЭС5К</option>
+                    <option value="vl85">ВЛ85</option>
+                    <option value="vl80r">ВЛ80Р</option>
+                    <option value="vl80s">ВЛ80С</option>
+                    <option value="vl80t">ВЛ80Т</option>
+                    <option value="vl80k">ВЛ80К</option>
+                    <option value="3te10">3ТЭ10М / 3ТЭ10У</option>
+                    <option value="2te10">2ТЭ10 (кроме 2ТЭ10Л)</option>
+                    <option value="4te10s">4ТЭ10С</option>
+                    <option value="2te116">2ТЭ116</option>
+                    <option value="3m62u">3М62У</option>
+                    <option value="2m62u">2М62У</option>
+                    <option value="2m62">2М62</option>
+                    <option value="m62">М62</option>
+                    <option value="manual">Другой локомотив</option>
+                  </select>
+                </div>
+              </div>
+              <div class="vu45-field vu45-field-primary">
+                <span>Режим воздухораспределителя</span>
+                <div class="glass-select vu45-preset-select vu45-locomotive-select" id="vu45LocomotiveModeRoot" data-glass-auto data-placeholder="Выберите режим">
+                  <button class="glass-select-trigger" type="button" aria-haspopup="listbox" aria-expanded="false">
+                    <span class="glass-select-value">Гружёный</span>
+                    <span class="glass-select-chevron" aria-hidden="true"><svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 8l5 5 5-5"></path></svg></span>
+                  </button>
+                  <div class="glass-select-menu hidden" role="listbox" aria-label="Режим воздухораспределителя локомотива"></div>
+                  <select class="hidden" id="vu45LocomotiveMode" tabindex="-1" aria-hidden="true">
+                    <option value="loaded">Гружёный</option>
+                    <option value="medium">Средний</option>
+                    <option value="empty">Порожний</option>
+                  </select>
+                </div>
+              </div>
+              <label class="vu45-field vu45-field-primary" id="vu45LocomotiveManualSeriesField" hidden>
+                <span>Серия или номер</span>
+                <span class="vu45-input-wrap"><input id="vu45LocomotiveSeries" type="text" autocomplete="off" maxlength="40" placeholder="Введите серию"></span>
+              </label>
+              <label class="vu45-field">
+                <span>Учётная масса</span>
+                <span class="vu45-input-wrap"><input id="vu45LocomotiveWeight" type="text" inputmode="decimal" autocomplete="off" placeholder="По таблице" readonly><b>т</b></span>
+              </label>
+              <label class="vu45-field">
+                <span>Нажатие локомотива</span>
+                <span class="vu45-input-wrap"><input id="vu45LocomotiveForce" type="text" inputmode="decimal" autocomplete="off" placeholder="По таблице" readonly><b>тс</b></span>
+              </label>
+              <p class="vu45-locomotive-warning" id="vu45LocomotiveWarning">Масса и нажатие подставлены из таблиц для выбранной серии и режима. Проверьте их применимость по действующей инструкции.</p>
+            </div>
+          </div>
         </section>
 
         <section class="vu45-card" aria-labelledby="vu45GroupsHeading">
@@ -1919,6 +1985,7 @@
             <div><span>Запас / дефицит</span><strong id="vu45Margin">—</strong></div>
             <div><span>Ручных осей</span><strong id="vu45ManualAxles">—</strong></div>
           </div>
+          <div class="vu45-result-locomotive" id="vu45ResultLocomotive" hidden></div>
           <div class="vu45-result-note" id="vu45ResultNote">Расчёт не заменяет проверенную и подписанную справку ВУ‑45.</div>
           <button class="vu45-copy" id="btnCopyVu45" type="button" disabled>Скопировать расчёт</button>
         </section>

@@ -157,6 +157,7 @@
 .vu45-type-btn.is-active span { color: color-mix(in oklch, var(--accent) 72%, var(--ink-3)); }
 .vu45-fields-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 11px 8px; margin-top: 14px; }
 .vu45-field { min-width: 0; display: grid; gap: 6px; }
+.vu45-field[hidden] { display: none; }
 .vu45-field > span:first-child { color: var(--ink-3); font: 600 10px/1.25 'Golos Text', system-ui, sans-serif; }
 .vu45-field em { color: var(--ink-4); font-style: normal; font-weight: 500; }
 .vu45-field-primary { grid-column: 1 / -1; }
@@ -175,6 +176,65 @@
 .vu45-input-wrap input { width: 100%; min-width: 0; border: 0; outline: 0; padding: 0; color: var(--ink); background: transparent; font: 700 16px/1 'Golos Text', system-ui, sans-serif; font-variant-numeric: tabular-nums; }
 .vu45-input-wrap input::placeholder { color: var(--ink-4); font-size: 12px; font-weight: 500; }
 .vu45-input-wrap b { color: var(--ink-4); font: 650 11px/1 'Golos Text', system-ui, sans-serif; }
+
+.vu45-locomotive {
+  margin-top: 12px;
+  border-radius: 15px;
+  background: color-mix(in oklch, var(--accent) 4%, var(--bg-rise-2));
+  box-shadow: inset 0 0 0 1px var(--hair);
+  overflow: hidden;
+}
+.vu45-locomotive.is-enabled { box-shadow: inset 0 0 0 1px color-mix(in oklch, var(--accent) 35%, var(--hair)); }
+.vu45-locomotive-toggle {
+  width: 100%;
+  min-height: 58px;
+  padding: 9px 11px;
+  border: 0;
+  display: grid;
+  grid-template-columns: 30px minmax(0, 1fr) 17px;
+  gap: 9px;
+  align-items: center;
+  text-align: left;
+  color: var(--ink);
+  background: transparent;
+}
+.vu45-locomotive-toggle-mark {
+  width: 30px;
+  height: 30px;
+  display: grid;
+  place-items: center;
+  border-radius: 10px;
+  color: var(--accent);
+  background: var(--accent-soft);
+  font: 700 18px/1 system-ui, sans-serif;
+}
+.vu45-locomotive-toggle > span:nth-child(2) { min-width: 0; display: grid; gap: 3px; }
+.vu45-locomotive-toggle strong { font: 680 12px/1.2 'Golos Text', system-ui, sans-serif; }
+.vu45-locomotive-toggle small { color: var(--ink-3); font: 500 9.5px/1.3 'Golos Text', system-ui, sans-serif; }
+.vu45-locomotive-toggle svg { width: 17px; height: 17px; color: var(--ink-4); transition: transform .2s ease; }
+.vu45-locomotive.is-enabled .vu45-locomotive-toggle svg { transform: rotate(90deg); color: var(--accent); }
+.vu45-locomotive-fields {
+  margin: 0 11px;
+  padding: 12px 0 11px;
+  border-top: 1px solid var(--hair);
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 11px 8px;
+}
+.vu45-locomotive-fields[hidden] { display: none; }
+.vu45-locomotive-fields .vu45-locomotive-select .glass-select-trigger { height: 48px; min-height: 48px; padding-inline: 12px; border-radius: 13px; background: var(--bg-rise-2); }
+.vu45-locomotive-fields .vu45-locomotive-select .glass-select-menu { width: 100%; max-height: min(310px, 42vh); }
+.vu45-locomotive-fields input[readonly] { color: var(--ink); cursor: default; }
+.vu45-locomotive-fields input[readonly]::placeholder { color: var(--ink-4); }
+.vu45-locomotive-warning {
+  grid-column: 1 / -1;
+  margin: 0;
+  padding: 9px 10px;
+  border-radius: 10px;
+  color: var(--warn);
+  background: var(--warn-soft);
+  font: 530 9.5px/1.35 'Golos Text', system-ui, sans-serif;
+}
 
 .vu45-groups { display: grid; gap: 8px; margin-top: 14px; }
 .vu45-group {
@@ -294,6 +354,21 @@
 .vu45-result-grid { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 6px; margin-top: 14px; }
 .vu45-result-grid > div { min-width: 0; padding: 10px 8px; border-radius: 12px; display: grid; gap: 5px; background: color-mix(in oklch, white 4%, transparent); box-shadow: inset 0 0 0 1px var(--hair); }
 .vu45-result-grid strong { overflow-wrap: anywhere; font: 700 12px/1.15 'Golos Text', system-ui, sans-serif; font-variant-numeric: tabular-nums; }
+.vu45-result-locomotive {
+  margin-top: 10px;
+  padding: 9px 10px;
+  border-radius: 11px;
+  display: flex;
+  justify-content: space-between;
+  gap: 10px;
+  color: var(--ink-3);
+  background: color-mix(in oklch, var(--accent) 7%, transparent);
+  box-shadow: inset 0 0 0 1px color-mix(in oklch, var(--accent) 18%, var(--hair));
+  font: 550 9.5px/1.3 'Golos Text', system-ui, sans-serif;
+}
+.vu45-result-locomotive[hidden] { display: none; }
+.vu45-result-locomotive span { min-width: 0; overflow-wrap: anywhere; }
+.vu45-result-locomotive strong { flex: 0 0 auto; color: var(--ink); font-weight: 700; font-variant-numeric: tabular-nums; }
 .vu45-result-note { margin-top: 12px; color: var(--ink-3); font: 500 10px/1.4 'Golos Text', system-ui, sans-serif; }
 .vu45-copy { width: 100%; min-height: 46px; margin-top: 12px; border: 0; border-radius: 14px; color: var(--accent-ink); background: var(--accent); font: 700 12px/1 'Golos Text', system-ui, sans-serif; }
 .vu45-copy:disabled { color: var(--ink-4); background: var(--glass); opacity: .7; }

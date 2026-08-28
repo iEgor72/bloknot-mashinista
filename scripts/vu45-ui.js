@@ -16,6 +16,7 @@
       weightTf: '',
       totalAxles: '',
       gradientPermille: '',
+      locomotive: { enabled: false, presetId: '3es5k', mode: 'loaded', manualSeries: '', weightTf: 288, brakeForceTf: 168 },
       groups: [{ id: createId(), presetId: 'composite-loaded', axles: '', forcePerAxle: 8.5 }]
     };
   }
@@ -28,6 +29,10 @@
     return String(value == null ? '' : value).replace(/[^0-9,.]/g, '').replace(/([,.].*)[,.]/g, '$1').slice(0, 10);
   }
 
+  function sanitizeSeriesInput(value) {
+    return String(value == null ? '' : value).replace(/[\u0000-\u001f\u007f]/g, '').slice(0, 40);
+  }
+
   function finitePositive(value) {
     var number = calculator.toNumber(value);
     return number >= 0 && Number.isFinite(number) ? number : 0;
@@ -38,6 +43,38 @@
       if (calculator.BRAKE_PRESETS[i].id === id) return calculator.BRAKE_PRESETS[i];
     }
     return calculator.BRAKE_PRESETS[0];
+  }
+
+  function getLocomotivePreset(id) {
+    for (var i = 0; i < calculator.LOCOMOTIVE_PRESETS.length; i++) {
+      if (calculator.LOCOMOTIVE_PRESETS[i].id === id) return calculator.LOCOMOTIVE_PRESETS[i];
+    }
+    return calculator.LOCOMOTIVE_PRESETS[0];
+  }
+
+  function locomotivePresetFromLegacy(locomotive) {
+    var requestedId = String(locomotive && locomotive.presetId || '');
+    if (requestedId) return getLocomotivePreset(requestedId).id;
+    var legacySeries = sanitizeSeriesInput(locomotive && locomotive.series).trim().toLocaleUpperCase('ru-RU');
+    if (!legacySeries) return '3es5k';
+    for (var i = 0; i < calculator.LOCOMOTIVE_PRESETS.length; i++) {
+      if (calculator.LOCOMOTIVE_PRESETS[i].label.toLocaleUpperCase('ru-RU') === legacySeries) return calculator.LOCOMOTIVE_PRESETS[i].id;
+    }
+    return 'manual';
+  }
+
+  function syncLocomotiveValues(locomotive) {
+    if (locomotive.presetId === 'manual') return locomotive;
+    var values = calculator.locomotiveValues(locomotive.presetId, locomotive.mode);
+    locomotive.weightTf = values.weightTf;
+    locomotive.brakeForceTf = values.brakeForceTf;
+    return locomotive;
+  }
+
+  function locomotiveLabel() {
+    return state.locomotive.presetId === 'manual'
+      ? state.locomotive.manualSeries || 'Другой локомотив'
+      : getLocomotivePreset(state.locomotive.presetId).label;
   }
 
   function normalizeState(candidate) {
@@ -55,12 +92,25 @@
       };
     }) : [];
     if (!groups.length) groups = createDefaultState().groups;
+    var locomotive = candidate.locomotive && typeof candidate.locomotive === 'object' ? candidate.locomotive : {};
+    var locomotivePresetId = locomotivePresetFromLegacy(locomotive);
+    var locomotiveMode = ['loaded', 'medium', 'empty'].indexOf(locomotive.mode) >= 0 ? locomotive.mode : 'loaded';
+    var normalizedLocomotive = {
+      enabled: locomotive.enabled === true,
+      presetId: locomotivePresetId,
+      mode: locomotiveMode,
+      manualSeries: sanitizeSeriesInput(locomotive.manualSeries || (locomotivePresetId === 'manual' ? locomotive.series : '')),
+      weightTf: locomotivePresetId === 'manual' ? sanitizeDecimalInput(locomotive.weightTf) : '',
+      brakeForceTf: locomotivePresetId === 'manual' ? sanitizeDecimalInput(locomotive.brakeForceTf) : ''
+    };
+    syncLocomotiveValues(normalizedLocomotive);
     return {
       type: normalizedType,
       normPer100Tf: normalizedType === 'loaded' ? 33 : normalizedType === 'empty' ? 55 : finitePositive(candidate.normPer100Tf),
       weightTf: sanitizeDecimalInput(candidate.weightTf),
       totalAxles: sanitizeDecimalInput(candidate.totalAxles),
       gradientPermille: sanitizeDecimalInput(candidate.gradientPermille),
+      locomotive: normalizedLocomotive,
       groups: groups
     };
   }
@@ -86,6 +136,12 @@
     return number.toLocaleString('ru-RU', {
       minimumFractionDigits: 0,
       maximumFractionDigits: digits == null ? 2 : digits
+    });
+  }
+
+  function escapeHtml(value) {
+    return String(value == null ? '' : value).replace(/[&<>"']/g, function(character) {
+      return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[character];
     });
   }
 
@@ -171,16 +227,18 @@
       weightTf: state.weightTf,
       normPer100Tf: currentNorm(),
       gradientPermille: state.gradientPermille,
+      locomotive: state.locomotive,
       groups: state.groups
     });
   }
 
   function updateResult() {
     var result = calculate();
-    var hasWeight = result.weightTf > 0;
+    var hasWeight = result.compositionWeightTf > 0;
     var hasNorm = result.normPer100Tf > 0;
     var hasActual = result.actualForceTf > 0;
-    var isComplete = hasWeight && hasNorm && hasActual;
+    var locomotiveComplete = !state.locomotive.enabled || (result.locomotiveWeightTf > 0 && result.locomotiveBrakeForceTf > 0);
+    var isComplete = hasWeight && hasNorm && hasActual && locomotiveComplete;
     elements.result.classList.toggle('is-ok', isComplete && result.meetsEnteredNorm);
     elements.result.classList.toggle('is-short', isComplete && !result.meetsEnteredNorm);
     elements.required.textContent = hasWeight && hasNorm ? formatNumber(result.requiredForceTf) : '—';
@@ -196,6 +254,9 @@
       elements.badge.textContent = 'не заполнено';
     } else if (!hasNorm) {
       elements.status.textContent = 'Укажите свою норму';
+      elements.badge.textContent = 'не заполнено';
+    } else if (state.locomotive.enabled && !locomotiveComplete) {
+      elements.status.textContent = 'Заполните массу и нажатие локомотива';
       elements.badge.textContent = 'не заполнено';
     } else if (!hasActual) {
       elements.status.textContent = 'Добавьте тормозные оси';
@@ -215,6 +276,11 @@
     } else {
       elements.note.textContent = 'Сверьте исходные данные с осмотрщиком. Расчёт не заменяет проверенную и подписанную справку ВУ‑45.';
     }
+    elements.locomotiveResult.hidden = !state.locomotive.enabled;
+    if (state.locomotive.enabled) {
+      var locomotiveName = locomotiveLabel();
+      elements.locomotiveResult.innerHTML = '<span>' + escapeHtml(locomotiveName) + ' · ' + escapeHtml(state.locomotive.mode === 'loaded' ? 'гружёный' : state.locomotive.mode === 'medium' ? 'средний' : 'порожний') + '</span><strong>+' + formatNumber(result.locomotiveWeightTf) + ' т · +' + formatNumber(result.locomotiveBrakeForceTf) + ' тс</strong>';
+    }
     elements.copy.disabled = !isComplete;
     updateAxleCheck();
     saveDraft();
@@ -232,6 +298,26 @@
     elements.weight.value = state.weightTf;
     elements.totalAxles.value = state.totalAxles;
     elements.gradient.value = state.gradientPermille;
+    elements.locomotive.classList.toggle('is-enabled', state.locomotive.enabled);
+    elements.locomotiveToggle.setAttribute('aria-expanded', state.locomotive.enabled ? 'true' : 'false');
+    elements.locomotiveToggleMark.textContent = state.locomotive.enabled ? '−' : '+';
+    elements.locomotiveFields.hidden = !state.locomotive.enabled;
+    elements.locomotivePreset.value = state.locomotive.presetId;
+    elements.locomotiveMode.value = state.locomotive.mode;
+    if (window.GlassSelect) {
+      window.GlassSelect.sync(elements.locomotivePresetRoot);
+      window.GlassSelect.sync(elements.locomotiveModeRoot);
+    }
+    var manualLocomotive = state.locomotive.presetId === 'manual';
+    elements.locomotiveManualSeriesField.hidden = !manualLocomotive;
+    elements.locomotiveSeries.value = state.locomotive.manualSeries;
+    elements.locomotiveWeight.readOnly = !manualLocomotive;
+    elements.locomotiveForce.readOnly = !manualLocomotive;
+    elements.locomotiveWeight.value = String(state.locomotive.weightTf == null ? '' : state.locomotive.weightTf).replace('.', ',');
+    elements.locomotiveForce.value = String(state.locomotive.brakeForceTf == null ? '' : state.locomotive.brakeForceTf).replace('.', ',');
+    elements.locomotiveWarning.textContent = manualLocomotive
+      ? 'Серии нет в справочнике: введите массу и нажатие из действующей инструкции.'
+      : 'Масса и нажатие подставлены из таблиц для выбранной серии и режима. Проверьте их применимость по действующей инструкции.';
     renderGroups();
     updateResult();
   }
@@ -314,13 +400,21 @@
     var lines = [
       'Расчёт ВУ-45',
       'Грузовой поезд: ' + typeLabel,
-      'Масса состава: ' + formatNumber(result.weightTf) + ' т',
+      'Масса состава: ' + formatNumber(result.compositionWeightTf) + ' т',
       'Норма: ' + formatNumber(result.normPer100Tf) + ' тс/100 т',
       'Требуется: ' + formatNumber(result.requiredForceTf) + ' тс',
       'Фактически: ' + formatNumber(result.actualForceTf) + ' тс',
       'Запас/дефицит: ' + (result.marginTf > 0 ? '+' : '') + formatNumber(result.marginTf) + ' тс',
       'Фактически на 100 т: ' + formatNumber(result.actualPer100Tf) + ' тс'
     ];
+    if (state.locomotive.enabled) {
+      lines.splice(3, 0,
+        'Локомотив: ' + locomotiveLabel(),
+        'Учётная масса локомотива: ' + formatNumber(result.locomotiveWeightTf) + ' т',
+        'Нажатие локомотива: ' + formatNumber(result.locomotiveBrakeForceTf) + ' тс',
+        'Расчётная масса с локомотивом: ' + formatNumber(result.weightTf) + ' т'
+      );
+    }
     if (state.gradientPermille !== '') {
       lines.push('Наибольший спуск: ' + formatNumber(finitePositive(state.gradientPermille)) + '‰');
       lines.push('Ручных тормозных осей: ' + (result.manualCalculationRequired ? 'по местной норме' : formatNumber(result.requiredManualBrakeAxles, 0)));
@@ -374,6 +468,19 @@
     elements.weight = document.getElementById('vu45Weight');
     elements.totalAxles = document.getElementById('vu45TotalAxles');
     elements.gradient = document.getElementById('vu45Gradient');
+    elements.locomotive = document.getElementById('vu45Locomotive');
+    elements.locomotiveToggle = document.getElementById('btnVu45Locomotive');
+    elements.locomotiveToggleMark = elements.locomotiveToggle.querySelector('.vu45-locomotive-toggle-mark');
+    elements.locomotiveFields = document.getElementById('vu45LocomotiveFields');
+    elements.locomotivePresetRoot = document.getElementById('vu45LocomotivePresetRoot');
+    elements.locomotivePreset = document.getElementById('vu45LocomotivePreset');
+    elements.locomotiveModeRoot = document.getElementById('vu45LocomotiveModeRoot');
+    elements.locomotiveMode = document.getElementById('vu45LocomotiveMode');
+    elements.locomotiveManualSeriesField = document.getElementById('vu45LocomotiveManualSeriesField');
+    elements.locomotiveSeries = document.getElementById('vu45LocomotiveSeries');
+    elements.locomotiveWeight = document.getElementById('vu45LocomotiveWeight');
+    elements.locomotiveForce = document.getElementById('vu45LocomotiveForce');
+    elements.locomotiveWarning = document.getElementById('vu45LocomotiveWarning');
     elements.customNorm = document.getElementById('vu45CustomNorm');
     elements.customNormField = document.getElementById('vu45CustomNormField');
     elements.addGroup = document.getElementById('btnVu45AddGroup');
@@ -386,6 +493,7 @@
     elements.per100 = document.getElementById('vu45ActualPer100');
     elements.margin = document.getElementById('vu45Margin');
     elements.manual = document.getElementById('vu45ManualAxles');
+    elements.locomotiveResult = document.getElementById('vu45ResultLocomotive');
     elements.note = document.getElementById('vu45ResultNote');
     elements.copy = document.getElementById('btnCopyVu45');
     return true;
@@ -394,6 +502,10 @@
   function init() {
     if (!bindElements()) return;
     loadDraft();
+    if (window.GlassSelect) {
+      window.GlassSelect.enhance(elements.locomotivePresetRoot);
+      window.GlassSelect.enhance(elements.locomotiveModeRoot);
+    }
     syncFormFromState();
 
     document.getElementById('btnOpenVu45').addEventListener('click', openCalculator);
@@ -404,6 +516,11 @@
       showFeedback('Расчёт очищен', 'info');
     });
     elements.copy.addEventListener('click', copyResult);
+    elements.locomotiveToggle.addEventListener('click', function() {
+      state.locomotive.enabled = !state.locomotive.enabled;
+      syncFormFromState();
+      if (state.locomotive.enabled) elements.locomotivePresetRoot.querySelector('.glass-select-trigger').focus();
+    });
     elements.addGroup.addEventListener('click', addGroup);
     elements.groups.addEventListener('input', handleGroupInput);
     elements.groups.addEventListener('change', handleGroupChange);
@@ -424,6 +541,36 @@
         if (input === elements.totalAxles) state.totalAxles = input.value.replace(/[,.].*$/, '');
         if (input === elements.gradient) state.gradientPermille = input.value;
         if (input === elements.customNorm) state.normPer100Tf = input.value;
+        updateResult();
+      });
+    });
+    elements.locomotivePreset.addEventListener('change', function() {
+      state.locomotive.presetId = getLocomotivePreset(elements.locomotivePreset.value).id;
+      if (state.locomotive.presetId === 'manual') {
+        state.locomotive.weightTf = '';
+        state.locomotive.brakeForceTf = '';
+      } else {
+        syncLocomotiveValues(state.locomotive);
+      }
+      syncFormFromState();
+      if (state.locomotive.presetId === 'manual') elements.locomotiveSeries.focus();
+    });
+    elements.locomotiveMode.addEventListener('change', function() {
+      state.locomotive.mode = ['loaded', 'medium', 'empty'].indexOf(elements.locomotiveMode.value) >= 0 ? elements.locomotiveMode.value : 'loaded';
+      syncLocomotiveValues(state.locomotive);
+      syncFormFromState();
+    });
+    elements.locomotiveSeries.addEventListener('input', function() {
+      elements.locomotiveSeries.value = sanitizeSeriesInput(elements.locomotiveSeries.value);
+      state.locomotive.manualSeries = elements.locomotiveSeries.value;
+      updateResult();
+    });
+    [elements.locomotiveWeight, elements.locomotiveForce].forEach(function(input) {
+      input.addEventListener('input', function() {
+        if (state.locomotive.presetId !== 'manual') return;
+        input.value = sanitizeDecimalInput(input.value);
+        if (input === elements.locomotiveWeight) state.locomotive.weightTf = input.value;
+        if (input === elements.locomotiveForce) state.locomotive.brakeForceTf = input.value;
         updateResult();
       });
     });

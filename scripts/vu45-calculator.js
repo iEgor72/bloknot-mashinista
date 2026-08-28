@@ -20,6 +20,25 @@
     { id: 'custom', label: 'Другой тип · ввести вручную', forcePerAxle: null }
   ];
 
+  var LOCOMOTIVE_PRESETS = [
+    { id: '3es5k', label: '3ЭС5К', axles: 12, weightTf: 288, loadedPerAxleTf: 14, emptyPerAxleTf: 6 },
+    { id: '2es5k', label: '2ЭС5К', axles: 8, weightTf: 192, loadedPerAxleTf: 14, emptyPerAxleTf: 6 },
+    { id: 'vl85', label: 'ВЛ85', axles: 12, weightTf: 288, loadedPerAxleTf: 14, emptyPerAxleTf: 6 },
+    { id: 'vl80r', label: 'ВЛ80Р', axles: 8, weightTf: 192, loadedPerAxleTf: 14, emptyPerAxleTf: 6 },
+    { id: 'vl80s', label: 'ВЛ80С', axles: 8, weightTf: 192, loadedPerAxleTf: 14, emptyPerAxleTf: 6 },
+    { id: 'vl80t', label: 'ВЛ80Т', axles: 8, weightTf: 192, loadedPerAxleTf: 14, emptyPerAxleTf: 6 },
+    { id: 'vl80k', label: 'ВЛ80К', axles: 8, weightTf: 184, loadedPerAxleTf: 14, emptyPerAxleTf: 6 },
+    { id: '3te10', label: '3ТЭ10М / 3ТЭ10У', axles: 18, weightTf: 414, loadedPerAxleTf: 12, emptyPerAxleTf: 5 },
+    { id: '2te10', label: '2ТЭ10 (кроме 2ТЭ10Л)', axles: 12, weightTf: 276, loadedPerAxleTf: 12, emptyPerAxleTf: 5 },
+    { id: '4te10s', label: '4ТЭ10С', axles: 24, weightTf: 552, loadedPerAxleTf: 12, emptyPerAxleTf: 5 },
+    { id: '2te116', label: '2ТЭ116', axles: 12, weightTf: 276, loadedPerAxleTf: 12, emptyPerAxleTf: 5 },
+    { id: '3m62u', label: '3М62У', axles: 18, weightTf: 378, loadedPerAxleTf: 12, emptyPerAxleTf: 5 },
+    { id: '2m62u', label: '2М62У', axles: 12, weightTf: 252, loadedPerAxleTf: 12, emptyPerAxleTf: 5 },
+    { id: '2m62', label: '2М62', axles: 12, weightTf: 240, loadedPerAxleTf: 12, emptyPerAxleTf: 5 },
+    { id: 'm62', label: 'М62', axles: 6, weightTf: 120, loadedPerAxleTf: 12, emptyPerAxleTf: 5 },
+    { id: 'manual', label: 'Другой локомотив', axles: 0, weightTf: 0, loadedPerAxleTf: 0, emptyPerAxleTf: 0 }
+  ];
+
   var MANUAL_BRAKE_TABLE = [
     { gradient: 0, factor: 0.4 },
     { gradient: 2, factor: 0.4 },
@@ -60,6 +79,26 @@
     }, 0), 2);
   }
 
+  function locomotiveValues(presetId, mode) {
+    var preset = LOCOMOTIVE_PRESETS[0];
+    for (var i = 0; i < LOCOMOTIVE_PRESETS.length; i++) {
+      if (LOCOMOTIVE_PRESETS[i].id === presetId) preset = LOCOMOTIVE_PRESETS[i];
+    }
+    if (preset.id === 'manual') return { preset: preset, weightTf: 0, brakeForceTf: 0, forcePerAxleTf: 0 };
+    var normalizedMode = ['loaded', 'medium', 'empty'].indexOf(mode) >= 0 ? mode : 'loaded';
+    var forcePerAxle = normalizedMode === 'empty'
+      ? preset.emptyPerAxleTf
+      : normalizedMode === 'medium'
+        ? round(preset.loadedPerAxleTf * 0.7, 2)
+        : preset.loadedPerAxleTf;
+    return {
+      preset: preset,
+      weightTf: preset.weightTf,
+      brakeForceTf: round(preset.axles * forcePerAxle, 2),
+      forcePerAxleTf: forcePerAxle
+    };
+  }
+
   function manualBrakeFactor(gradientPermille) {
     var gradient = Math.max(0, toNumber(gradientPermille));
     if (gradient > 20) return null;
@@ -80,16 +119,27 @@
 
   function calculate(input) {
     input = input || {};
-    var weight = Math.max(0, toNumber(input.weightTf));
+    var compositionWeight = Math.max(0, toNumber(input.weightTf));
     var norm = Math.max(0, toNumber(input.normPer100Tf));
-    var actual = actualBrakeForce(input.groups);
+    var locomotive = input.locomotive || {};
+    var locomotiveEnabled = locomotive.enabled === true;
+    var locomotiveWeight = locomotiveEnabled ? Math.max(0, toNumber(locomotive.weightTf)) : 0;
+    var locomotiveBrakeForce = locomotiveEnabled ? Math.max(0, toNumber(locomotive.brakeForceTf)) : 0;
+    var weight = round(compositionWeight + locomotiveWeight, 2);
+    var wagonBrakeForce = actualBrakeForce(input.groups);
+    var actual = round(wagonBrakeForce + locomotiveBrakeForce, 2);
     var required = requiredBrakeForce(weight, norm);
     var margin = round(actual - required, 2);
     var actualPer100 = weight ? round(actual * 100 / weight, 2) : 0;
     var gradient = Math.max(0, toNumber(input.gradientPermille));
     var manualFactor = manualBrakeFactor(gradient);
     return {
+      compositionWeightTf: compositionWeight,
       weightTf: weight,
+      locomotiveEnabled: locomotiveEnabled,
+      locomotiveWeightTf: locomotiveWeight,
+      locomotiveBrakeForceTf: locomotiveBrakeForce,
+      wagonBrakeForceTf: wagonBrakeForce,
       normPer100Tf: norm,
       requiredForceTf: required,
       actualForceTf: actual,
@@ -105,10 +155,12 @@
 
   return {
     BRAKE_PRESETS: BRAKE_PRESETS,
+    LOCOMOTIVE_PRESETS: LOCOMOTIVE_PRESETS,
     MANUAL_BRAKE_TABLE: MANUAL_BRAKE_TABLE,
     toNumber: toNumber,
     requiredBrakeForce: requiredBrakeForce,
     actualBrakeForce: actualBrakeForce,
+    locomotiveValues: locomotiveValues,
     manualBrakeFactor: manualBrakeFactor,
     requiredManualBrakeAxles: requiredManualBrakeAxles,
     calculate: calculate
