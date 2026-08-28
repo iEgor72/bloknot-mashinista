@@ -1,4 +1,4 @@
-if (typeof registerShiftTrackerRuntimeModule === 'function') registerShiftTrackerRuntimeModule('poekhali-tracker', 'v413');
+if (typeof registerShiftTrackerRuntimeModule === 'function') registerShiftTrackerRuntimeModule('poekhali-tracker', 'v412');
 
 (function() {
   'use strict';
@@ -136,7 +136,6 @@ if (typeof registerShiftTrackerRuntimeModule === 'function') registerShiftTracke
     timeout: 15000
   };
   var LEARNING_STORAGE_KEY = 'poekhali.mapLearning.v1';
-  var COMMUNITY_SECTION_CACHE = 'poekhali-community-sections-v1';
   var LEARNING_MAX_ACCURACY_M = 150;
   var LEARNING_NEAR_TRACK_DISTANCE_M = 1600;
   var RAW_CAPTURE_MAX_ACCURACY_M = 50;
@@ -259,7 +258,6 @@ if (typeof registerShiftTrackerRuntimeModule === 'function') registerShiftTracke
     regimeSpeedRulesBySector: {},
     regimeObjectsBySector: {},
     regimeControlMarksBySector: {},
-    sectionControlMarksBySector: {},
     regimeMapsPromise: null,
     adminMap: null,
     adminMapLoaded: false,
@@ -4588,8 +4586,7 @@ if (typeof registerShiftTrackerRuntimeModule === 'function') registerShiftTracke
 
   function getRegimeControlMarksForSector(sector) {
     var base = tracker.regimeControlMarksBySector[getSectorKey(sector)] || [];
-    var sectionMarks = tracker.sectionControlMarksBySector[getSectorKey(sector)] || [];
-    return base.concat(sectionMarks, getManualBamControlMarksForSector(sector));
+    return base.concat(getManualBamControlMarksForSector(sector));
   }
 
   function getRegimeControlMarksInWindow(left, right, sector) {
@@ -5114,7 +5111,6 @@ if (typeof registerShiftTrackerRuntimeModule === 'function') registerShiftTracke
     tracker.trackObjectsByFile = {};
     tracker.speedLimits = [];
     tracker.speedLimitsBySector = {};
-    tracker.sectionControlMarksBySector = {};
     tracker.projection = null;
     tracker.nearestProjection = null;
     tracker.autoPosition = null;
@@ -7352,73 +7348,13 @@ if (typeof registerShiftTrackerRuntimeModule === 'function') registerShiftTracke
     if (tracker.sectionBundleCache[key]) return tracker.sectionBundleCache[key];
     tracker.sectionBundleCache[key] = Promise.all(normalized.sections.map(function(path, index) {
       return fetchText(path).then(function(text) {
-        return loadEffectiveCommunitySection(text).then(function(section) {
-          return parseSectionPackage(section, 'section-' + (index + 1));
-        });
+        return parseSectionPackage(text, 'section-' + (index + 1));
       });
     })).then(mergeSectionMapBundles).catch(function(error) {
       delete tracker.sectionBundleCache[key];
       throw error;
     });
     return tracker.sectionBundleCache[key];
-  }
-
-  function isCompatibleCommunitySection(section, baseSection) {
-    if (!section || !baseSection || typeof section !== 'object') return false;
-    if (String(section.id || '') !== String(baseSection.id || '')) return false;
-    if (String(section.schema_version || '') !== String(baseSection.schema_version || '')) return false;
-    if (!Array.isArray(section.elements) || !section.elements.length) return false;
-    var baseStatus = String(baseSection.runtime && baseSection.runtime.profile_status || '');
-    var sectionStatus = String(section.runtime && section.runtime.profile_status || '');
-    if (baseStatus !== sectionStatus) return false;
-    return !!(section.community && isFinite(Number(section.community.version)));
-  }
-
-  function communitySectionCacheRequest(sectionId) {
-    return new Request('/.poekhali-community-cache/' + encodeURIComponent(sectionId), { method: 'GET' });
-  }
-
-  function readCachedCommunitySection(sectionId, baseSection) {
-    if (typeof caches === 'undefined') return Promise.resolve(null);
-    return caches.open(COMMUNITY_SECTION_CACHE).then(function(cache) {
-      return cache.match(communitySectionCacheRequest(sectionId));
-    }).then(function(response) {
-      return response ? response.json().catch(function() { return null; }) : null;
-    }).then(function(section) {
-      return isCompatibleCommunitySection(section, baseSection) ? section : null;
-    }).catch(function() { return null; });
-  }
-
-  function cacheCommunitySection(sectionId, section) {
-    if (typeof caches === 'undefined') return Promise.resolve(false);
-    var response = new Response(JSON.stringify(section), { headers: { 'Content-Type': 'application/json; charset=utf-8' } });
-    return caches.open(COMMUNITY_SECTION_CACHE).then(function(cache) {
-      return cache.put(communitySectionCacheRequest(sectionId), response);
-    }).then(function() { return true; }).catch(function() { return false; });
-  }
-
-  function loadEffectiveCommunitySection(baseText) {
-    var baseSection;
-    try {
-      baseSection = typeof baseText === 'string' ? JSON.parse(baseText) : baseText;
-    } catch (error) {
-      return Promise.reject(error);
-    }
-    var sectionId = String(baseSection && baseSection.id || '');
-    if (!sectionId) return Promise.resolve(baseSection);
-    var transport = window.shiftTrackerFetchJson || window.fetchJson;
-    var cached = function() {
-      return readCachedCommunitySection(sectionId, baseSection).then(function(section) { return section || baseSection; });
-    };
-    if (typeof transport !== 'function' || (typeof navigator !== 'undefined' && navigator.onLine === false)) return cached();
-    var endpoint = (window.SHIFT_API_BASE_URL || '') + '/api/community/sections/' + encodeURIComponent(sectionId) + '/effective';
-    return transport(endpoint, { method: 'GET', headers: { Accept: 'application/json' } }, 6500)
-      .then(function(result) {
-        var section = result && result.ok && result.body && result.body.section;
-        if (!isCompatibleCommunitySection(section, baseSection)) return cached();
-        cacheCommunitySection(sectionId, section);
-        return section;
-      }).catch(cached);
   }
 
   function loadLegacyMapBundle(map) {
@@ -7468,7 +7404,6 @@ if (typeof registerShiftTrackerRuntimeModule === 'function') registerShiftTracke
     }
     tracker.speedLimits = bundle.speed.all || [];
     tracker.speedLimitsBySector = bundle.speed.bySector || {};
-    tracker.sectionControlMarksBySector = bundle.controlMarksBySector || {};
   }
 
   function loadAssets() {
@@ -8897,9 +8832,6 @@ if (typeof registerShiftTrackerRuntimeModule === 'function') registerShiftTracke
   }
 
   function updateModeButtons() {
-    if (document.body) {
-      document.body.classList.toggle('is-poekhali-preview', tracker.positioningMode === 'preview');
-    }
     setDirectionButton();
     setText('btnPoekhaliWay', 'П:' + normalizeWayNumber(tracker.wayNumber));
     syncPoekhaliPreviewButton();
@@ -9973,7 +9905,6 @@ if (typeof registerShiftTrackerRuntimeModule === 'function') registerShiftTracke
   function getSpeedRulePriority(rule) {
     if (!rule) return 0;
     if (rule.source === 'warning') return 80;
-    if (rule.source === 'community') return 55;
     if (rule.source === 'user') {
       var category = normalizeUserSpeedCategory(rule.category);
       if (category === 'temporary') return 60;
@@ -9985,7 +9916,7 @@ if (typeof registerShiftTrackerRuntimeModule === 'function') registerShiftTracke
 
   function isFactualSpeedRuleSource(rule) {
     var source = String(rule && rule.source || '');
-    return source === 'warning' || source === 'community' || source === 'admin' || source === 'manual' || source === 'user' || source === 'default';
+    return source === 'warning' || source === 'admin' || source === 'manual' || source === 'user' || source === 'default';
   }
 
   function getSpeedRulePrefix(rule) {
@@ -11470,22 +11401,6 @@ if (typeof registerShiftTrackerRuntimeModule === 'function') registerShiftTracke
         color: rawDraftProfile ? '#ddd6fe' : (userDrawProfile || learnedProfile) ? THEME.green : (regimeDrawProfile || regimeProfile) ? '#fde68a' : 'rgba(244, 63, 94, 0.82)',
         align: 'center',
         maxWidth: labelWidth - 10
-      });
-    }
-    var communitySpeeds = tracker.speedLimitsBySector[getSectorKey(sector)] || [];
-    for (var c = 0; c < communitySpeeds.length; c++) {
-      var communitySpeed = communitySpeeds[c];
-      if (!communitySpeed || communitySpeed.end < left || communitySpeed.coordinate > right) continue;
-      if (communitySpeed.wayNumber && communitySpeed.wayNumber !== tracker.wayNumber) continue;
-      rules.push({
-        coordinate: communitySpeed.coordinate,
-        length: communitySpeed.length,
-        end: communitySpeed.end,
-        speed: communitySpeed.speed,
-        name: communitySpeed.name,
-        source: 'community',
-        category: 'permanent',
-        communityVersion: communitySpeed.communityVersion,
       });
     }
     var currentGap = getProfileGapAt(center, sector);

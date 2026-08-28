@@ -329,73 +329,63 @@
   </style>
   <link
     rel="stylesheet"
-    href="/styles/v413/00-base.css"
+    href="/styles/v412/00-base.css"
   />
   <link
     rel="stylesheet"
-    href="/styles/v413/10-navigation-and-cards.css"
+    href="/styles/v412/10-navigation-and-cards.css"
   />
   <link
     rel="stylesheet"
-    href="/styles/v413/15-bottom-nav.css"
+    href="/styles/v412/15-bottom-nav.css"
   />
   <link
     rel="stylesheet"
-    href="/styles/v413/16-press-feedback.css"
+    href="/styles/v412/16-press-feedback.css"
   />
   <link
     rel="stylesheet"
-    href="/styles/v413/20-form-and-stats.css"
+    href="/styles/v412/20-form-and-stats.css"
   />
   <link
     rel="stylesheet"
-    href="/styles/v413/30-shifts-and-overlays.css"
+    href="/styles/v412/30-shifts-and-overlays.css"
   />
   <link
     rel="stylesheet"
-    href="/styles/v413/40-premium-refresh.css"
+    href="/styles/v412/40-premium-refresh.css"
   />
   <link
     rel="stylesheet"
-    href="/styles/v413/50-design-refresh.css"
+    href="/styles/v412/50-design-refresh.css"
   />
   <link
     rel="stylesheet"
-    href="/styles/v413/56-profile.css"
+    href="/styles/v412/56-profile.css"
   />
   <link
     rel="stylesheet"
-    href="/styles/v413/57-datetime-picker.css"
+    href="/styles/v412/57-datetime-picker.css"
   />
   <link
     rel="stylesheet"
-    href="/styles/v413/58-vu45.css"
+    href="/styles/v412/58-vu45.css"
   />
-  <link
-    rel="stylesheet"
-    href="/styles/v413/59-community-editor.css"
-  />
-  <link
-    rel="stylesheet"
-    href="/styles/v413/60-navigation-drawer.css"
-  />
-  <noscript><link rel="stylesheet" href="/styles/v413/00-base.css" /></noscript>
-  <noscript><link rel="stylesheet" href="/styles/v413/10-navigation-and-cards.css" /></noscript>
-  <noscript><link rel="stylesheet" href="/styles/v413/15-bottom-nav.css" /></noscript>
-  <noscript><link rel="stylesheet" href="/styles/v413/16-press-feedback.css" /></noscript>
-  <noscript><link rel="stylesheet" href="/styles/v413/20-form-and-stats.css" /></noscript>
-  <noscript><link rel="stylesheet" href="/styles/v413/30-shifts-and-overlays.css" /></noscript>
-  <noscript><link rel="stylesheet" href="/styles/v413/40-premium-refresh.css" /></noscript>
-  <noscript><link rel="stylesheet" href="/styles/v413/50-design-refresh.css" /></noscript>
-  <noscript><link rel="stylesheet" href="/styles/v413/56-profile.css" /></noscript>
-  <noscript><link rel="stylesheet" href="/styles/v413/57-datetime-picker.css" /></noscript>
-  <noscript><link rel="stylesheet" href="/styles/v413/58-vu45.css" /></noscript>
-  <noscript><link rel="stylesheet" href="/styles/v413/59-community-editor.css" /></noscript>
-  <noscript><link rel="stylesheet" href="/styles/v413/60-navigation-drawer.css" /></noscript>
+  <noscript><link rel="stylesheet" href="/styles/v412/00-base.css" /></noscript>
+  <noscript><link rel="stylesheet" href="/styles/v412/10-navigation-and-cards.css" /></noscript>
+  <noscript><link rel="stylesheet" href="/styles/v412/15-bottom-nav.css" /></noscript>
+  <noscript><link rel="stylesheet" href="/styles/v412/16-press-feedback.css" /></noscript>
+  <noscript><link rel="stylesheet" href="/styles/v412/20-form-and-stats.css" /></noscript>
+  <noscript><link rel="stylesheet" href="/styles/v412/30-shifts-and-overlays.css" /></noscript>
+  <noscript><link rel="stylesheet" href="/styles/v412/40-premium-refresh.css" /></noscript>
+  <noscript><link rel="stylesheet" href="/styles/v412/50-design-refresh.css" /></noscript>
+  <noscript><link rel="stylesheet" href="/styles/v412/56-profile.css" /></noscript>
+  <noscript><link rel="stylesheet" href="/styles/v412/57-datetime-picker.css" /></noscript>
+  <noscript><link rel="stylesheet" href="/styles/v412/58-vu45.css" /></noscript>
   <script>
     window.CURRENT_USER = window.CURRENT_USER || null;
   </script>
-  <script src="/scripts/v413/safe-area.js" defer></script>
+  <script src="/scripts/v412/safe-area.js" defer></script>
 </head>
 <body style="background-color:#0C0C10;color:#EEF2F8;margin:0">
   <div class="boot-fallback" id="bootFallback" role="status" aria-live="polite">
@@ -448,13 +438,18 @@
           <div class="app-top-bar-title" id="appTopBarTitle">Блокнот машиниста</div>
           <div class="app-top-bar-sub" id="appTopBarSub">—</div>
         </div>
-        <div class="app-top-bar-actions">
-          <button class="app-top-bar-icon" id="appTopBarBell" type="button" aria-label="Уведомления">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M18 8a6 6 0 0 0-12 0c0 7-3 7-3 9h18c0-2-3-2-3-9"></path><path d="M10 21h4"></path></svg>
-            <span class="app-top-bar-icon-dot" data-count="0" aria-hidden="true"></span>
+        <div class="app-top-bar-poekhali-actions hidden" id="appTopBarPoekhaliActions" aria-label="Управление режимом Поехали">
+          <button class="app-top-bar-control app-top-bar-gps" id="appTopBarGps" type="button" aria-label="GPS статус">
+            <span class="app-top-bar-control-label"><span class="app-top-bar-gps-dot" aria-hidden="true"></span>GPS</span>
+            <span class="app-top-bar-control-value app-top-bar-gps-word">НАЧАТЬ</span>
           </button>
-          <button class="app-top-bar-icon app-menu-trigger" id="btnOpenNavigationDrawer" type="button" aria-label="Открыть разделы" aria-controls="navigationDrawer" aria-expanded="false">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" aria-hidden="true"><path d="M5 7h14M5 12h14M5 17h14"></path></svg>
+          <button class="app-top-bar-control app-top-bar-preview" id="appTopBarPreview" type="button" aria-pressed="false" aria-label="Подготовка без GPS">
+            <span class="app-top-bar-control-label">Карта</span>
+            <span class="app-top-bar-control-value">Участок</span>
+          </button>
+          <button class="app-top-bar-control app-top-bar-way" id="appTopBarWay" type="button" aria-label="Путь">
+            <span class="app-top-bar-control-label">Путь</span>
+            <span class="app-top-bar-control-value app-top-bar-way-value" id="appTopBarWayValue">П 1</span>
           </button>
         </div>
       </header>
@@ -529,19 +524,19 @@
             <span class="progress-marker progress-marker-month hidden" id="dashboardProgressMonthMarker" aria-hidden="true"></span>
           </div>
           <div class="dashboard-meta-grid" aria-live="polite">
-            <button class="dashboard-meta-item dashboard-month-income dashboard-income-link" id="dashboardMonthIncomeOpen" type="button" aria-label="Открыть расчёт зарплаты за месяц">
+            <div class="dashboard-meta-item dashboard-month-income">
               <span class="dashboard-month-income-label" id="dashboardMonthIncomeLabel">Примерно за месяц</span>
               <span class="dashboard-month-income-value" id="dashboardMonthIncomeValue">—</span>
-            </button>
+            </div>
             <div class="dashboard-meta-item dashboard-month-income-spark" id="dashboardMonthIncomeSpark" aria-hidden="true">
               <svg id="dashboardSparkSvg" width="84" height="28" viewBox="0 0 84 28" preserveAspectRatio="none">
                 <defs>
-                  <linearGradient id="dashboardSparkAreaGradient" x1="0" x2="0" y1="0" y2="1">
+                  <linearGradient id="dashboardSparkArea" x1="0" x2="0" y1="0" y2="1">
                     <stop offset="0" style="stop-color: var(--good); stop-opacity: 0.5"/>
                     <stop offset="1" style="stop-color: var(--good); stop-opacity: 0"/>
                   </linearGradient>
                 </defs>
-                <path id="dashboardSparkArea" d="" fill="url(#dashboardSparkAreaGradient)"/>
+                <path id="dashboardSparkArea" d="" fill="url(#dashboardSparkArea)"/>
                 <path id="dashboardSparkLine" d="" fill="none" stroke="var(--good)" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/>
                 <circle id="dashboardSparkDot" cx="0" cy="0" r="2" fill="var(--good)"/>
               </svg>
@@ -1235,6 +1230,20 @@
                   <span class="docs-entry-arrow" aria-hidden="true">›</span>
                 </button>
               </div>
+              <button class="docs-contribute-btn" id="btnDocsContribute" type="button">
+                <span class="docs-contribute-icon" aria-hidden="true">+</span>
+                <span><strong>Предложить документ</strong><small>Инструкцию, скорости, режимную карту или другой полезный материал</small></span>
+                <span class="docs-contribute-arrow" aria-hidden="true">›</span>
+              </button>
+              <button class="vu45-launch" id="btnOpenVu45" type="button">
+                <span class="vu45-launch-mark" aria-hidden="true">45</span>
+                <span class="vu45-launch-copy">
+                  <span class="vu45-launch-kicker">Рабочий расчёт</span>
+                  <strong>Справка ВУ‑45</strong>
+                  <small>Тормозное нажатие и ручные тормозные оси</small>
+                </span>
+                <span class="vu45-launch-arrow" aria-hidden="true">›</span>
+              </button>
             </div>
 
             <div class="doc-favorites-overlay hidden" id="docsFavoritesPanel">
@@ -1342,71 +1351,6 @@
         </div>
       </section>
 
-      <!-- Salary Tab -->
-      <section class="tab-panel salary-page" data-tab="salary" aria-label="Зарплата">
-        <div class="salary-page-head">
-          <button class="salary-settings-link" id="btnSalaryPageSettings" type="button" aria-label="Параметры расчёта">
-            <svg viewBox="0 0 24 24" aria-hidden="true"><use href="/assets/seo/site-icons.svg#calculation"></use></svg>
-          </button>
-        </div>
-
-        <div class="month-nav salary-page-month-nav">
-          <div class="month-nav-top">
-            <button class="month-btn" id="btnPrevSalaryMonth" type="button" aria-label="Предыдущий месяц">‹</button>
-            <div class="month-header">
-              <div class="month-title" id="salaryMonthTitle">—</div>
-              <div class="month-quarter" id="salaryMonthQuarter">—</div>
-            </div>
-            <button class="month-btn" id="btnNextSalaryMonth" type="button" aria-label="Следующий месяц">›</button>
-          </div>
-        </div>
-
-        <section class="salary-summary-card salary-page-summary" aria-label="Итоговый расчёт">
-          <div class="salary-total-caption">Ожидается на руки</div>
-          <div class="salary-total-amount" id="salaryPageNet">—</div>
-          <div class="salary-page-summary-meta">
-            <span><strong id="salaryPageWorked">0 ч</strong> отработано</span>
-            <span><strong id="salaryPageShiftCount">0</strong> смен</span>
-          </div>
-          <div class="salary-hero-stack" id="salaryPageStack" aria-hidden="true"></div>
-          <div class="salary-hero-legend" id="salaryPageLegend"></div>
-        </section>
-
-        <section class="salary-card salary-page-breakdown" aria-labelledby="salaryAccruedTitle">
-          <div class="salary-section-head">
-            <div>
-              <span>Начисления</span>
-              <strong id="salaryAccruedTitle">Из чего сложилась сумма</strong>
-            </div>
-            <b id="salaryPageAccrued">—</b>
-          </div>
-          <div class="salary-list" id="salaryPageAccrualRows"></div>
-        </section>
-
-        <section class="salary-card salary-page-breakdown" aria-labelledby="salaryDeductionsTitle">
-          <div class="salary-section-head">
-            <div>
-              <span>Удержания</span>
-              <strong id="salaryDeductionsTitle">Налоги и взносы</strong>
-            </div>
-            <b id="salaryPageDeductions">—</b>
-          </div>
-          <div class="salary-list" id="salaryPageDeductionRows"></div>
-        </section>
-
-        <section class="salary-page-shifts" id="salaryPageShiftsSection" aria-labelledby="salaryByShiftsTitle">
-          <div class="salary-section-head salary-section-head-plain">
-            <div>
-              <span>По сменам</span>
-              <strong id="salaryByShiftsTitle">Вклад каждой смены</strong>
-            </div>
-          </div>
-          <div class="salary-shift-list" id="salaryPageShiftRows"></div>
-        </section>
-
-        <p class="salary-disclaimer">Расчёт приблизительный и зависит от заполненных смен и параметров тарифа.</p>
-      </section>
-
       <!-- Profile Tab -->
       <section class="tab-panel profile-panel" data-tab="profile">
         <button class="profile-head" id="btnProfileEdit" type="button">
@@ -1443,6 +1387,74 @@
           </div>
         </div>
 
+        <div class="profile-section-title">Сумма на главной</div>
+        <div class="profile-card">
+          <button class="profile-row" id="btnProfileSalarySettings" type="button">
+            <span class="profile-row-icon" aria-hidden="true">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round">
+                <circle cx="12" cy="12" r="3"></circle>
+                <path d="M19.4 13a1.7 1.7 0 0 0 .34 1.87l.05.05a2 2 0 1 1-2.83 2.83l-.05-.05a1.7 1.7 0 0 0-2.87 1.2V20a2 2 0 1 1-4 0v-.09A1.7 1.7 0 0 0 7 18.24l-.05.05a2 2 0 1 1-2.83-2.83l.05-.05A1.7 1.7 0 0 0 4 13H3.9a2 2 0 1 1 0-4H4a1.7 1.7 0 0 0 1.2-2.87l-.05-.05a2 2 0 1 1 2.83-2.83l.05.05A1.7 1.7 0 0 0 11 3.9V3.8a2 2 0 1 1 4 0v.1A1.7 1.7 0 0 0 17.94 5.2l.05-.05a2 2 0 1 1 2.83 2.83l-.05.05A1.7 1.7 0 0 0 20.1 11H20a2 2 0 1 1 0 4z"></path>
+              </svg>
+            </span>
+            <span class="profile-row-body">
+              <span class="profile-row-title">Настройки тарифа</span>
+              <span class="profile-row-note">Чтобы примерная сумма считалась по вашим данным</span>
+            </span>
+            <span class="profile-row-chevron" aria-hidden="true">›</span>
+          </button>
+        </div>
+
+        <div id="profileInstallSection">
+          <div class="profile-section-title">Приложение</div>
+          <div class="profile-card">
+            <button class="profile-row" id="btnProfileInstall" type="button">
+              <span class="profile-row-icon" aria-hidden="true">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round">
+                  <path d="M12 4v10"></path>
+                  <path d="M8 11l4 4 4-4"></path>
+                  <path d="M5 19h14"></path>
+                </svg>
+              </span>
+              <span class="profile-row-body">
+                <span class="profile-row-title">Добавить на главный экран</span>
+                <span class="profile-row-note">Быстрый запуск всего Блокнота без поиска чата</span>
+              </span>
+              <span class="profile-row-chevron" aria-hidden="true">›</span>
+            </button>
+          </div>
+        </div>
+
+        <div class="profile-section-title">О приложении</div>
+        <div class="profile-card">
+          <div class="profile-row profile-row-static">
+            <span class="profile-row-icon" aria-hidden="true">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M16 19c0-2.2-1.8-4-4-4s-4 1.8-4 4"></path>
+                <circle cx="12" cy="9" r="3"></circle>
+                <path d="M18 11.5c1.8.4 3 1.7 3 3.5"></path>
+                <path d="M6 11.5c-1.8.4-3 1.7-3 3.5"></path>
+              </svg>
+            </span>
+            <span class="profile-row-body">
+              <span class="profile-row-title">Пользователи</span>
+            </span>
+            <span class="profile-row-value" id="profileUserCount" aria-live="polite">—</span>
+          </div>
+          <div class="profile-row profile-row-static">
+            <span class="profile-row-icon" aria-hidden="true">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round">
+                <circle cx="12" cy="12" r="9"></circle>
+                <path d="M12 11v5"></path>
+                <path d="M12 8h.01"></path>
+              </svg>
+            </span>
+            <span class="profile-row-body">
+              <span class="profile-row-title">Версия</span>
+            </span>
+            <span class="profile-row-value" id="profileVersion">—</span>
+          </div>
+        </div>
+
       </section>
     </div>
 
@@ -1461,131 +1473,57 @@
       </div>
     </div>
 
-    <button class="tab-btn global-shift-fab" type="button" data-tab="add" id="fab-add" aria-label="Добавить смену">
-      <span class="fab-btn" aria-hidden="true">
-        <svg viewBox="0 0 24 24" width="24" height="24" stroke="currentColor" fill="none" stroke-width="2.5" stroke-linecap="round"><path d="M12 5v14M5 12h14"></path></svg>
-      </span>
-    </button>
+    <nav class="bottom-nav" aria-label="Основная навигация">
+      <button class="tab-btn nav-item active" type="button" data-tab="home">
+        <span class="tab-icon" aria-hidden="true">
+          <svg viewBox="0 0 24 24">
+            <path d="M4 11.5 12 4l8 7.5"></path>
+            <path d="M6 10.5V20h5v-5h2v5h5v-9.5"></path>
+          </svg>
+        </span>
+        <span class="tab-label">Главная</span>
+      </button>
+      <button class="tab-btn nav-item" type="button" data-tab="shifts">
+        <span class="tab-icon" aria-hidden="true">
+          <svg viewBox="0 0 24 24">
+            <rect x="5" y="4" width="14" height="16" rx="2"></rect>
+            <path d="M9 9h6"></path>
+            <path d="M9 13h6"></path>
+            <path d="M9 17h4"></path>
+          </svg>
+        </span>
+        <span class="tab-label">Смены</span>
+      </button>
 
-    <div class="navigation-drawer-backdrop" id="navigationDrawerBackdrop" aria-hidden="true"></div>
-    <aside class="navigation-drawer" id="navigationDrawer" role="dialog" aria-modal="true" aria-labelledby="navigationDrawerTitle" aria-hidden="true" tabindex="-1">
-      <header class="navigation-drawer-header">
-        <div class="navigation-drawer-title" id="navigationDrawerTitle">Разделы</div>
-        <button class="navigation-drawer-close" id="btnCloseNavigationDrawer" type="button" aria-label="Закрыть меню">×</button>
-      </header>
-
-      <label class="navigation-drawer-search">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" aria-hidden="true"><circle cx="11" cy="11" r="6"></circle><path d="m16 16 4 4"></path></svg>
-        <span class="sr-only">Найти раздел</span>
-        <input id="navigationDrawerSearch" type="search" placeholder="Найти раздел" autocomplete="off" />
-      </label>
-
-      <nav class="navigation-drawer-list" aria-label="Все разделы">
-        <button class="navigation-drawer-home is-active" type="button" data-nav-action="tab" data-tab="home" data-nav-search="главная">
-          <svg viewBox="0 0 24 24" aria-hidden="true"><use href="/assets/seo/site-icons.svg#home"></use></svg>
-          <span>Главная</span>
-        </button>
-
-        <details class="navigation-drawer-group" data-nav-group="shifts" open>
-          <summary data-nav-search="смены добавить новая все журнал">
-            <svg viewBox="0 0 24 24" aria-hidden="true"><use href="/assets/seo/site-icons.svg#shifts"></use></svg>
-            <span><strong>Смены</strong><small>Добавление и журнал</small></span>
-            <i aria-hidden="true"></i>
-          </summary>
-          <div class="navigation-drawer-children">
-            <button type="button" data-nav-action="add-shift" data-nav-search="добавить новая смена"><strong>Добавить смену</strong></button>
-            <button type="button" data-nav-action="tab" data-tab="shifts" data-nav-search="все смены журнал"><span>Все смены</span></button>
-          </div>
-        </details>
-
-        <details class="navigation-drawer-group" data-nav-group="poekhali">
-          <summary data-nav-search="поехали поездка gps участок карта редактор">
-            <svg viewBox="0 0 24 24" aria-hidden="true"><use href="/assets/seo/site-icons.svg#poekhali"></use></svg>
-            <span><strong>Поехали</strong><small>3 режима</small></span>
-            <i aria-hidden="true"></i>
-          </summary>
-          <div class="navigation-drawer-children">
-            <button type="button" data-nav-action="poekhali-live" data-nav-search="начать поездку gps"><strong>Начать поездку</strong></button>
-            <button type="button" data-nav-action="poekhali-preview" data-nav-search="просмотр участка карта"><span>Просмотр участка</span></button>
-            <button type="button" id="btnCommunityVisualEditor" data-nav-action="section-editor" data-nav-search="редактор участков исправить"><span>Редактор участков</span></button>
-            <button type="button" data-nav-action="add-map" data-nav-search="добавить электронную карту эк"><span>Добавить электронную карту</span></button>
-          </div>
-        </details>
-
-        <details class="navigation-drawer-group" data-nav-group="documents">
-          <summary data-nav-search="документы приказы инструкции скорости режимки памятки папки избранное">
-            <svg viewBox="0 0 24 24" aria-hidden="true"><use href="/assets/seo/site-icons.svg#documents"></use></svg>
-            <span><strong>Документы</strong><small>6 разделов</small></span>
-            <i aria-hidden="true"></i>
-          </summary>
-          <div class="navigation-drawer-children">
-            <button type="button" data-nav-action="docs" data-docs-entry="instructions" data-nav-search="приказы инструкции"><span>Приказы и инструкции</span></button>
-            <button type="button" data-nav-action="docs" data-docs-entry="speeds" data-nav-search="скорости"><span>Скорости</span></button>
-            <button type="button" data-nav-action="docs" data-docs-entry="memos" data-nav-search="режимки карты режимов"><span>Режимки</span></button>
-            <button type="button" data-nav-action="docs" data-docs-entry="reminders" data-nav-search="памятки"><span>Памятки</span></button>
-            <button type="button" data-nav-action="docs" data-docs-entry="folders" data-nav-search="папки"><span>Папки</span></button>
-            <button type="button" data-nav-action="docs" data-docs-entry="favorites" data-nav-search="избранное"><span>Избранное</span></button>
-            <button type="button" id="btnDocsContribute" data-nav-action="add-document" data-nav-search="добавить предложить документ"><strong>Добавить документ</strong></button>
-          </div>
-        </details>
-
-        <details class="navigation-drawer-group" data-nav-group="salary">
-          <summary data-nav-search="зарплата расчет начисления тариф параметры">
-            <svg viewBox="0 0 24 24" aria-hidden="true"><use href="/assets/seo/site-icons.svg#calculation"></use></svg>
-            <span><strong>Зарплата</strong><small>Расчёт и параметры</small></span>
-            <i aria-hidden="true"></i>
-          </summary>
-          <div class="navigation-drawer-children">
-            <button type="button" data-nav-action="salary" data-salary-anchor="top" data-nav-search="расчет за месяц"><strong>Расчёт за месяц</strong></button>
-            <button type="button" data-nav-action="salary" data-salary-anchor="shifts" data-nav-search="по сменам"><span>По сменам</span></button>
-            <button type="button" id="btnProfileSalarySettings" data-nav-action="salary-settings" data-nav-search="параметры расчета настройки тарифа"><span>Параметры расчёта</span></button>
-          </div>
-        </details>
-
-        <button class="navigation-drawer-direct" id="btnOpenVu45" type="button" data-nav-action="vu45" data-nav-search="ву 45 справка тормоза расчет">
-          <span class="navigation-drawer-badge" aria-hidden="true">45</span>
-          <span><strong>ВУ-45</strong><small>Тормозной расчёт</small></span>
-          <i aria-hidden="true">›</i>
-        </button>
-
-        <details class="navigation-drawer-group" data-nav-group="profile">
-          <summary data-nav-search="профиль личные данные депо">
-            <svg viewBox="0 0 24 24" aria-hidden="true"><use href="/assets/seo/site-icons.svg#profile"></use></svg>
-            <span><strong>Профиль</strong><small>Личные данные и депо</small></span>
-            <i aria-hidden="true"></i>
-          </summary>
-          <div class="navigation-drawer-children">
-            <button type="button" data-nav-action="profile-edit" data-nav-search="личные данные"><span>Личные данные</span></button>
-            <button type="button" id="btnProfileCommunity" data-nav-action="depot" data-nav-search="депо участки"><span>Депо</span></button>
-          </div>
-        </details>
-
-        <details class="navigation-drawer-group" data-nav-group="about">
-          <summary data-nav-search="о приложении пользователи версия установка">
-            <svg viewBox="0 0 24 24" aria-hidden="true"><use href="/assets/seo/site-icons.svg#info"></use></svg>
-            <span><strong>О приложении</strong><small>Сведения и установка</small></span>
-            <i aria-hidden="true"></i>
-          </summary>
-          <div class="navigation-drawer-children navigation-drawer-info">
-            <div data-nav-search="пользователи"><span>Пользователи</span><strong id="profileUserCount" aria-live="polite">—</strong></div>
-            <div class="navigation-drawer-install-row" id="profileInstallSection" data-nav-search="установка добавить на экран">
-              <button type="button" id="btnProfileInstall" data-nav-action="install"><span>Добавить на экран</span></button>
-            </div>
-            <div data-nav-search="версия"><span>Версия</span><strong id="profileVersion">—</strong></div>
-          </div>
-        </details>
-
-        <div class="navigation-drawer-empty" id="navigationDrawerEmpty" role="status" aria-live="polite" hidden>
-          <strong>Ничего не найдено</strong>
-          <span>Попробуйте другое название раздела</span>
+      <!-- FAB — inline grid slot, center action -->
+      <button class="tab-btn nav-fab" type="button" data-tab="add" id="fab-add" aria-label="Новая смена">
+        <div class="fab-btn">
+          <svg viewBox="0 0 24 24" width="24" height="24" stroke="currentColor" fill="none" stroke-width="2.5" stroke-linecap="round">
+            <path d="M12 5v14M5 12h14"></path>
+          </svg>
         </div>
-      </nav>
+        <span class="fab-label">Добавить</span>
+      </button>
 
-      <footer class="navigation-drawer-footer">
-        <span class="navigation-drawer-avatar" id="navigationDrawerAvatar" aria-hidden="true">БМ</span>
-        <span><strong id="navigationDrawerUserName">Профиль</strong><small id="navigationDrawerUserMeta">Блокнот машиниста</small></span>
-      </footer>
-    </aside>
+      <button class="tab-btn nav-item" type="button" data-tab="instructions">
+        <span class="tab-icon" aria-hidden="true">
+          <svg viewBox="0 0 24 24">
+            <path d="M3 7a2 2 0 0 1 2-2h4.17a2 2 0 0 1 1.42.59L12 7h7a2 2 0 0 1 2 2v9a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V7z"></path>
+            <path d="M12 7v11"></path>
+          </svg>
+        </span>
+        <span class="tab-label">Документы</span>
+      </button>
+      <button class="tab-btn nav-item" type="button" data-tab="profile">
+        <span class="tab-icon" aria-hidden="true">
+          <svg viewBox="0 0 24 24">
+            <circle cx="12" cy="8" r="3.4"></circle>
+            <path d="M5 20c0-3.6 3.1-5.7 7-5.7s7 2.1 7 5.7"></path>
+          </svg>
+        </span>
+        <span class="tab-label">Профиль</span>
+      </button>
+    </nav>
 
   <!-- Shared Overlay Layer -->
   <div class="ui-overlay-root" id="uiOverlayRoot" aria-hidden="true"></div>
@@ -1710,312 +1648,6 @@
       <div class="settings-help-block">Значения можно найти в расчётном листке (форма ФТУ-69). Итог в приложении остаётся приблизительным.</div>
       <div class="salary-settings-actions">
         <button class="btn-sheet-save" id="btnSaveSalarySettings" type="button">Сохранить</button>
-      </div>
-    </div>
-  </div>
-
-  <!-- Depot community control plane -->
-  <div class="overlay" id="overlayCommunity">
-    <div class="bottom-sheet community-sheet">
-      <div class="salary-settings-header">
-        <span class="salary-settings-header-spacer" aria-hidden="true"></span>
-        <div class="sheet-title">Моё депо</div>
-        <button class="community-close" id="btnCommunityClose" type="button" aria-label="Закрыть">×</button>
-      </div>
-      <div class="community-scope" id="communityScope">Загружаем данные депо…</div>
-      <div class="community-dashboard" id="communityDashboard" aria-live="polite"></div>
-      <div class="community-actions">
-        <button class="btn-secondary" id="btnCommunityGeometryEditor" type="button">Исправить GPS-линию</button>
-        <button class="btn-secondary" id="btnCommunityCorrection" type="button">Описать другое исправление</button>
-      </div>
-    </div>
-  </div>
-
-  <div class="overlay community-editor-overlay community-geometry-overlay" id="overlayCommunityGeometryEditor">
-    <div class="community-editor-sheet community-geometry-sheet" role="dialog" aria-modal="true" aria-labelledby="communityGeometryTitle">
-      <header class="community-editor-header">
-        <button class="community-editor-icon-btn" id="btnCommunityGeometryClose" type="button" aria-label="Закрыть редактор GPS-линии">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="m15 18-6-6 6-6"></path></svg>
-        </button>
-        <div class="community-editor-heading">
-          <strong id="communityGeometryTitle">Линия пути по GPS</strong>
-          <span id="communityGeometrySaveState">Черновик хранится на телефоне</span>
-        </div>
-        <button class="community-editor-icon-btn" id="btnCommunityGeometryReset" type="button" aria-label="Вернуть точки GPS">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4 12a8 8 0 1 0 2.3-5.7L4 8.6"></path><path d="M4 4v4.6h4.6"></path></svg>
-        </button>
-      </header>
-
-      <main class="community-editor-workspace community-geometry-workspace">
-        <div class="community-geometry-source-grid">
-          <label><span>Участок</span><select id="communityGeometrySection"></select></label>
-          <label><span>Записанная поездка</span><select id="communityGeometryCapture"></select></label>
-        </div>
-
-        <div class="community-geometry-local-note" id="communityGeometryLocalNote">GPS-запись остаётся на телефоне. Коллегам уйдёт только выбранный фрагмент линии.</div>
-
-        <section class="community-geometry-map-panel" aria-label="Сравнение опубликованной линии и GPS-записи">
-          <div class="community-geometry-legend" aria-label="Обозначения">
-            <span class="is-published">Опубликовано</span><span class="is-recorded">GPS</span><span class="is-proposed">Предложение</span>
-          </div>
-          <div class="community-geometry-canvas-wrap" id="communityGeometryCanvasWrap">
-            <canvas id="communityGeometryCanvas"></canvas>
-            <div class="community-editor-loading" id="communityGeometryLoading">Ищу записанную поездку…</div>
-          </div>
-          <div class="community-editor-gesture-hint" id="communityGeometryHint">Выберите проблемный фрагмент. Зелёные точки можно перетаскивать пальцем.</div>
-        </section>
-
-        <section class="community-geometry-fragment">
-          <div class="community-geometry-fragment-head">
-            <span id="communityGeometryStartLabel">—</span>
-            <strong id="communityGeometryLengthLabel">Фрагмент не выбран</strong>
-            <span id="communityGeometryEndLabel">—</span>
-          </div>
-          <label><span>Начало</span><input id="communityGeometryStart" type="range" min="0" max="1000" step="100" value="0" /></label>
-          <label><span>Конец</span><input id="communityGeometryEnd" type="range" min="0" max="1000" step="100" value="1000" /></label>
-        </section>
-
-        <section class="community-geometry-inspector">
-          <div class="community-geometry-stats">
-            <div><span>GPS-точек</span><strong id="communityGeometryTrackCount">0</strong></div>
-            <div><span>Точек правки</span><strong id="communityGeometryPointCount">0</strong></div>
-            <div><span>Расхождение</span><strong id="communityGeometryDeviation">—</strong></div>
-          </div>
-          <div class="community-geometry-point-actions">
-            <button id="btnCommunityGeometryDeletePoint" type="button" disabled>Убрать выбранную точку</button>
-            <button id="btnCommunityGeometryUseTrack" type="button">Вернуть точки GPS</button>
-          </div>
-        </section>
-
-        <label class="community-editor-evidence">
-          <span>Основание</span>
-          <input id="communityGeometryEvidence" maxlength="240" placeholder="Заполнится данными GPS-поездки" />
-        </label>
-        <label class="community-editor-comment">
-          <span>Комментарий для коллег</span>
-          <textarea id="communityGeometryComment" maxlength="1000" placeholder="Что именно неверно на опубликованной линии"></textarea>
-        </label>
-      </main>
-
-      <footer class="community-editor-footer">
-        <div class="community-editor-validation" id="communityGeometryValidation" role="status" aria-live="polite">Выберите GPS-поездку</div>
-        <button class="btn-sheet-save" id="btnCommunityGeometrySubmit" type="button">Отправить линию на проверку</button>
-      </footer>
-    </div>
-  </div>
-
-  <div class="overlay community-editor-overlay" id="overlayCommunityEditor">
-    <div class="community-editor-sheet" role="dialog" aria-modal="true" aria-labelledby="communityEditorTitle">
-      <header class="community-editor-header">
-        <button class="community-editor-icon-btn" id="btnCommunityEditorClose" type="button" aria-label="Закрыть редактор">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="m15 18-6-6 6-6"></path></svg>
-        </button>
-        <div class="community-editor-heading">
-          <strong id="communityEditorTitle">Редактор участка</strong>
-          <span id="communityEditorSaveState">Черновик хранится на телефоне</span>
-        </div>
-        <button class="community-editor-icon-btn" id="btnCommunityEditorReset" type="button" aria-label="Сбросить выделение">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4 12a8 8 0 1 0 2.3-5.7L4 8.6"></path><path d="M4 4v4.6h4.6"></path></svg>
-        </button>
-      </header>
-
-      <div class="community-editor-route-row">
-        <label for="communityEditorSection">Участок</label>
-        <select id="communityEditorSection" aria-label="Участок для редактирования"></select>
-      </div>
-
-      <details class="community-editor-history">
-        <summary>
-          <span id="communityEditorVersionLabel">Исходная карта</span>
-          <span id="communityEditorHistoryCount">История пуста</span>
-        </summary>
-        <div class="community-editor-history-list" id="communityEditorHistoryList"></div>
-      </details>
-
-      <div class="community-editor-tools" role="tablist" aria-label="Слой данных">
-        <button class="is-active" type="button" role="tab" aria-selected="true" data-editor-mode="profile">Уклон</button>
-        <button type="button" role="tab" aria-selected="false" data-editor-mode="speed">Скорость</button>
-        <button type="button" role="tab" aria-selected="false" data-editor-mode="object">Объекты</button>
-      </div>
-
-      <main class="community-editor-workspace">
-        <section class="community-editor-canvas-panel" aria-label="Профиль выбранного участка">
-          <div class="community-editor-range-copy">
-            <span id="communityEditorStartLabel">—</span>
-            <strong id="communityEditorLengthLabel">Выберите фрагмент</strong>
-            <span id="communityEditorEndLabel">—</span>
-          </div>
-          <div class="community-editor-canvas-wrap" id="communityEditorCanvasWrap">
-            <canvas id="communityEditorCanvas"></canvas>
-            <div class="community-editor-loading" id="communityEditorLoading">Загружаю профиль…</div>
-          </div>
-          <div class="community-editor-gesture-hint">Перетащите синие границы. Коснитесь профиля, чтобы перенести выделение.</div>
-          <label class="community-editor-position-row">
-            <span>Начало участка</span>
-            <input id="communityEditorPosition" type="range" min="0" max="1000" value="0" aria-label="Положение окна на участке" />
-            <output id="communityEditorWindowLabel">—</output>
-          </label>
-        </section>
-
-        <section class="community-editor-inspector" id="communityEditorProfileInspector">
-          <div class="community-editor-inspector-head">
-            <div><span>Сейчас в профиле</span><strong id="communityEditorCurrentGrade">—</strong></div>
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><path d="M5 12h14"></path><path d="m15 8 4 4-4 4"></path></svg>
-            <div><span>Предлагаете</span><strong id="communityEditorNextGrade">0.0‰</strong></div>
-          </div>
-          <div class="community-editor-grade-control">
-            <button type="button" data-grade-step="-1" aria-label="Уменьшить уклон">−</button>
-            <input id="communityEditorGrade" type="range" min="-40" max="40" step="0.1" value="0" aria-label="Новый уклон в тысячных" />
-            <button type="button" data-grade-step="1" aria-label="Увеличить уклон">+</button>
-          </div>
-          <div class="community-editor-presets" aria-label="Быстрый выбор уклона">
-            <button type="button" data-grade-value="-12">−12‰</button>
-            <button type="button" data-grade-value="0">Площадка</button>
-            <button type="button" data-grade-value="12">+12‰</button>
-          </div>
-        </section>
-
-        <section class="community-editor-inspector hidden" id="communityEditorSpeedInspector">
-          <div class="community-editor-speed-current">
-            <label>Сейчас указано <input id="communityEditorCurrentSpeed" type="number" min="0" max="160" step="5" inputmode="numeric" placeholder="40" /></label>
-            <span>км/ч</span>
-          </div>
-          <div class="community-editor-speed-title">Новая скорость</div>
-          <div class="community-editor-speed-grid" id="communityEditorSpeedGrid">
-            <button type="button" data-speed="25">25</button><button type="button" data-speed="40">40</button>
-            <button type="button" data-speed="50">50</button><button type="button" data-speed="60">60</button>
-            <button type="button" data-speed="70">70</button><button type="button" data-speed="80">80</button>
-            <button type="button" data-speed="90">90</button><button type="button" data-speed="100">100</button>
-          </div>
-          <button class="community-editor-remove-limit" id="btnCommunityEditorRemoveLimit" type="button">Ограничение отменено</button>
-        </section>
-
-        <section class="community-editor-inspector community-editor-object-inspector hidden" id="communityEditorObjectInspector">
-          <div class="community-editor-object-position">
-            <button type="button" data-object-move="-100" aria-label="Сдвинуть объект на 100 метров назад">−100 м</button>
-            <div><span>Место на участке</span><strong id="communityEditorObjectPosition">—</strong></div>
-            <button type="button" data-object-move="100" aria-label="Сдвинуть объект на 100 метров вперёд">+100 м</button>
-          </div>
-
-          <div class="community-editor-object-actions" role="group" aria-label="Действие с объектом">
-            <button class="is-active" type="button" data-object-action="add">Добавить</button>
-            <button type="button" data-object-action="update" disabled>Изменить</button>
-            <button type="button" data-object-action="remove" disabled>Удалить</button>
-          </div>
-
-          <label class="community-editor-object-field">
-            <span>Что находится в этом месте</span>
-            <select id="communityEditorObjectType">
-              <optgroup label="Станции и сигналы">
-                <option value="station">Станция или остановочный пункт</option>
-                <option value="signal_input">Входной светофор</option>
-                <option value="signal_output">Выходной светофор</option>
-                <option value="signal_passage">Проходной светофор</option>
-                <option value="sign_c">Знак «С»</option>
-              </optgroup>
-              <optgroup label="Безопасность">
-                <option value="whistle">Точка подачи свистка</option>
-                <option value="ktsm">КТСМ</option>
-                <option value="brake_start">НТ — начало торможения</option>
-                <option value="brake_end">КТ — конец торможения</option>
-                <option value="neutral">Нейтральная вставка / ОМ</option>
-              </optgroup>
-              <optgroup label="Ведение поезда и пометки">
-                <option value="throttle">Тяговая позиция</option>
-                <option value="connection">Соединение схемы</option>
-                <option value="brake_note">Пометка о торможении</option>
-                <option value="position_note">Пометка о количестве позиций</option>
-                <option value="note">Другая пометка под профилем</option>
-              </optgroup>
-            </select>
-          </label>
-          <div class="community-editor-object-palette" id="communityEditorObjectPalette" role="listbox" aria-label="Виды знаков и объектов"></div>
-
-          <div class="community-editor-object-fields">
-            <label class="community-editor-object-field">
-              <span>Подпись на профиле</span>
-              <input id="communityEditorObjectName" maxlength="80" placeholder="Например, НТ или входной Ч" />
-            </label>
-            <label class="community-editor-object-field">
-              <span>Направление</span>
-              <select id="communityEditorObjectDirection">
-                <option value="both">Для обоих направлений</option>
-                <option value="odd">Нечётное направление</option>
-                <option value="even">Чётное направление</option>
-              </select>
-            </label>
-          </div>
-
-          <div class="community-editor-nearby">
-            <div class="community-editor-nearby-title">Объекты в видимом окне</div>
-            <div class="community-editor-nearby-list" id="communityEditorNearbyObjects"></div>
-          </div>
-        </section>
-
-        <label class="community-editor-evidence">
-          <span>Приказ или источник <small id="communityEditorEvidenceHint">если есть</small></span>
-          <input id="communityEditorEvidence" maxlength="240" placeholder="Например, приказ №123 от 28.08.2026" />
-        </label>
-        <label class="community-editor-comment">
-          <span>Комментарий для коллег</span>
-          <textarea id="communityEditorComment" maxlength="1000" placeholder="Что именно проверить на этом месте"></textarea>
-        </label>
-      </main>
-
-      <footer class="community-editor-footer">
-        <div class="community-editor-validation" id="communityEditorValidation" role="status" aria-live="polite">Выберите фрагмент профиля</div>
-        <button class="btn-sheet-save" id="btnCommunityEditorSubmit" type="button">Отправить на проверку</button>
-      </footer>
-    </div>
-  </div>
-
-  <div class="overlay" id="overlayCommunityCorrection">
-    <div class="bottom-sheet community-sheet community-correction-sheet">
-      <div class="salary-settings-header">
-        <span class="salary-settings-header-spacer" aria-hidden="true"></span>
-        <div class="sheet-title">Исправить участок</div>
-        <button class="community-close" id="btnCommunityCorrectionClose" type="button" aria-label="Закрыть">×</button>
-      </div>
-      <div class="community-form-note">Опишите изменение рабочими словами. Программировать и рисовать данные вручную не нужно.</div>
-      <div class="settings-card community-form-card">
-        <label class="settings-row settings-row-stack">
-          <span class="settings-label">Что исправляем</span>
-          <select class="settings-input" id="communityCorrectionKind">
-            <option value="profile">Профиль пути / уклон</option>
-            <option value="speed">Скорость или ограничение</option>
-            <option value="object">Станция, сигнал или объект</option>
-            <option value="geometry">Линия участка на карте</option>
-          </select>
-        </label>
-        <label class="settings-row settings-row-stack">
-          <span class="settings-label">Участок</span>
-          <select class="settings-input" id="communityCorrectionSection"></select>
-        </label>
-        <label class="settings-row settings-row-stack">
-          <span class="settings-label">Короткий заголовок</span>
-          <input class="settings-input" id="communityCorrectionTitle" maxlength="160" placeholder="Например: здесь уклон 12‰, затем площадка" />
-        </label>
-        <div class="community-value-grid">
-          <label class="settings-row settings-row-stack">
-            <span class="settings-label">Сейчас указано</span>
-            <input class="settings-input" id="communityCorrectionFrom" maxlength="80" placeholder="18‰ или 40 км/ч" />
-          </label>
-          <label class="settings-row settings-row-stack">
-            <span class="settings-label">Должно быть</span>
-            <input class="settings-input" id="communityCorrectionTo" maxlength="80" placeholder="12‰ или 60 км/ч" />
-          </label>
-        </div>
-        <label class="settings-row settings-row-stack">
-          <span class="settings-label">Приказ или источник</span>
-          <input class="settings-input" id="communityCorrectionEvidence" maxlength="240" placeholder="Номер и дата приказа, фото документа" />
-        </label>
-        <label class="settings-row settings-row-stack">
-          <span class="settings-label">Комментарий</span>
-          <textarea class="settings-input community-textarea" id="communityCorrectionSummary" maxlength="1000" placeholder="Где начинается и заканчивается изменение, что видите на местности"></textarea>
-        </label>
-      </div>
-      <div class="community-actions">
-        <button class="btn-sheet-save" id="btnCommunityCorrectionSend" type="button">Отправить коллегам</button>
       </div>
     </div>
   </div>
@@ -2643,35 +2275,31 @@
       } catch (error) {}
     }, true);
   </script>
-  <script src="/scripts/v413/app-constants.js" defer></script>
-  <script src="/scripts/v413/locomotive-usage.js" defer></script>
-  <script src="/scripts/v413/glass-select.js" defer></script>
-  <script src="/scripts/v413/auth.js" defer></script>
-  <script src="/scripts/v413/viewport.js" defer></script>
-  <script src="/scripts/v413/poekhali-station-names.js" defer></script>
-  <script src="/scripts/v413/time-utils.js" defer></script>
-  <script src="/scripts/v413/docs-app.js" defer></script>
-  <script src="/scripts/v413/telegram-sdk-loader.js" defer></script>
-  <script src="/scripts/v413/app.js" defer></script>
-  <script src="/scripts/v413/poekhali-utils.js" defer></script>
-  <script src="/scripts/v413/poekhali-map-parser.js" defer></script>
-  <script src="/scripts/v413/poekhali-warnings.js" defer></script>
-  <script src="/scripts/v413/poekhali-backup.js" defer></script>
-  <script src="/scripts/v413/poekhali-tracker.js" defer></script>
-  <script src="/scripts/v413/render.js" defer></script>
-  <script src="/scripts/v413/shift-form.js" defer></script>
-  <script src="/scripts/v413/datetime-picker.js" defer></script>
-  <script src="/scripts/v413/vu45-calculator.js" defer></script>
-  <script src="/scripts/v413/vu45-ui.js" defer></script>
-  <script src="/scripts/v413/railway-sign-icons.js" defer></script>
-  <script src="/scripts/v413/community-editor.js" defer></script>
-  <script src="/scripts/v413/community-geometry-editor.js" defer></script>
-  <script src="/scripts/v413/app-init.js" defer></script>
-  <script src="/scripts/v413/navigation-drawer.js" defer></script>
-  <script src="/scripts/v413/sw-register.js" defer></script>
-  <script src="/sw-bootstrap-v413.js" defer></script>
-  <script src="/scripts/v413/utils/haptics.js" defer></script>
-  <script src="/scripts/v413/press-feedback.js" defer></script>
-  <script src="/scripts/v413/nav-debug.js" defer></script>
+  <script src="/scripts/v412/app-constants.js" defer></script>
+  <script src="/scripts/v412/locomotive-usage.js" defer></script>
+  <script src="/scripts/v412/glass-select.js" defer></script>
+  <script src="/scripts/v412/auth.js" defer></script>
+  <script src="/scripts/v412/viewport.js" defer></script>
+  <script src="/scripts/v412/poekhali-station-names.js" defer></script>
+  <script src="/scripts/v412/time-utils.js" defer></script>
+  <script src="/scripts/v412/docs-app.js" defer></script>
+  <script src="/scripts/v412/telegram-sdk-loader.js" defer></script>
+  <script src="/scripts/v412/app.js" defer></script>
+  <script src="/scripts/v412/poekhali-utils.js" defer></script>
+  <script src="/scripts/v412/poekhali-map-parser.js" defer></script>
+  <script src="/scripts/v412/poekhali-warnings.js" defer></script>
+  <script src="/scripts/v412/poekhali-backup.js" defer></script>
+  <script src="/scripts/v412/poekhali-tracker.js" defer></script>
+  <script src="/scripts/v412/render.js" defer></script>
+  <script src="/scripts/v412/shift-form.js" defer></script>
+  <script src="/scripts/v412/datetime-picker.js" defer></script>
+  <script src="/scripts/v412/vu45-calculator.js" defer></script>
+  <script src="/scripts/v412/vu45-ui.js" defer></script>
+  <script src="/scripts/v412/app-init.js" defer></script>
+  <script src="/scripts/v412/sw-register.js" defer></script>
+  <script src="/sw-bootstrap-v412.js" defer></script>
+  <script src="/scripts/v412/utils/haptics.js" defer></script>
+  <script src="/scripts/v412/press-feedback.js" defer></script>
+  <script src="/scripts/v412/nav-debug.js" defer></script>
 </body>
 </html>

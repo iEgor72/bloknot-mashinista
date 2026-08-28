@@ -1,4 +1,4 @@
-if (typeof registerShiftTrackerRuntimeModule === 'function') registerShiftTrackerRuntimeModule('poekhali-map-parser', 'v413');
+if (typeof registerShiftTrackerRuntimeModule === 'function') registerShiftTrackerRuntimeModule('poekhali-map-parser', 'v412');
 
 (function(global) {
   'use strict';
@@ -637,126 +637,6 @@ if (typeof registerShiftTrackerRuntimeModule === 'function') registerShiftTracke
       };
     }
 
-    function buildSectionCommunitySpeed(section, mapData) {
-      var changes = section && section.community && Array.isArray(section.community.speedChanges)
-        ? section.community.speedChanges.slice() : [];
-      var offset = getSectionCoordinateOffset(section);
-      var boundaries = [];
-      for (var i = 0; i < changes.length; i++) {
-        var start = Number(changes[i] && changes[i].startM);
-        var end = Number(changes[i] && changes[i].endM);
-        if (!isFinite(start) || !isFinite(end) || end <= start) continue;
-        boundaries.push(start, end);
-      }
-      boundaries.sort(function(a, b) { return a - b; });
-      boundaries = boundaries.filter(function(value, index) { return index === 0 || value !== boundaries[index - 1]; });
-      var officialRules = [];
-      for (var boundaryIndex = 0; boundaryIndex < boundaries.length - 1; boundaryIndex++) {
-        var intervalStart = boundaries[boundaryIndex];
-        var intervalEnd = boundaries[boundaryIndex + 1];
-        var center = (intervalStart + intervalEnd) / 2;
-        var latest = null;
-        for (var changeIndex = 0; changeIndex < changes.length; changeIndex++) {
-          var change = changes[changeIndex] || {};
-          if (center < Number(change.startM) || center >= Number(change.endM)) continue;
-          if (!latest || Number(change.version) >= Number(latest.version)) latest = change;
-        }
-        if (!latest || String(latest.action || 'set') !== 'set' || !isFinite(Number(latest.toSpeed))) continue;
-        var previous = officialRules.length ? officialRules[officialRules.length - 1] : null;
-        if (previous && previous.end === intervalStart && previous.speed === Number(latest.toSpeed) && previous.version === Number(latest.version)) {
-          previous.end = intervalEnd;
-        } else {
-          officialRules.push({ start: intervalStart, end: intervalEnd, speed: Number(latest.toSpeed), version: Number(latest.version) || 0 });
-        }
-      }
-      var all = [];
-      var bySector = {};
-      var ranges = getSectionRouteRanges(mapData);
-      Object.keys(ranges).forEach(function(sectorKey) {
-        var range = ranges[sectorKey];
-        for (var ruleIndex = 0; ruleIndex < officialRules.length; ruleIndex++) {
-          var rule = officialRules[ruleIndex];
-          var start = Math.max(rule.start + offset, range.min);
-          var end = Math.min(rule.end + offset, range.max);
-          if (end <= start) continue;
-          var item = {
-            sector: range.sector,
-            wayNumber: 0,
-            name: String(Math.round(rule.speed)),
-            coordinate: Math.round(start),
-            length: Math.round(end - start),
-            end: Math.round(end),
-            speed: rule.speed,
-            source: 'community',
-            category: 'permanent',
-            communityVersion: rule.version,
-          };
-          all.push(item);
-          var key = deps.getSectorKey(range.sector);
-          if (!bySector[key]) bySector[key] = [];
-          bySector[key].push(item);
-        }
-      });
-      Object.keys(bySector).forEach(function(sectorKey) { bySector[sectorKey].sort(function(a, b) { return a.coordinate - b.coordinate; }); });
-      all.sort(function(a, b) { return a.sector - b.sector || a.coordinate - b.coordinate; });
-      return { all: all, bySector: bySector };
-    }
-
-    function buildSectionControlMarks(section, mapData) {
-      var runtime = section && section.runtime && typeof section.runtime === 'object' ? section.runtime : {};
-      var offset = getSectionCoordinateOffset(section);
-      var sources = [
-        section && Array.isArray(section.whistle_points) ? section.whistle_points : [],
-        section && Array.isArray(section.infrastructure) ? section.infrastructure : [],
-        section && Array.isArray(section.control_marks) ? section.control_marks : (Array.isArray(runtime.control_marks) ? runtime.control_marks : []),
-        section && Array.isArray(section.annotations) ? section.annotations : [],
-      ];
-      var result = {};
-      var seen = {};
-      function inferKind(item) {
-        var raw = String(item && (item.object_kind || item.kind || item.type) || '').toLowerCase();
-        var name = String(item && (item.name || item.note) || '').trim().toUpperCase();
-        if (raw === 'brake_start' || raw === 'brake' || name === 'НТ') return 'brake';
-        if (raw === 'brake_end' || name === 'КТ') return 'brake_end';
-        if (raw === 'neutral' || name === 'ОМ') return 'neutral';
-        if (raw === 'connection') return 'connection';
-        if (raw === 'throttle' || raw === 'position_note') return 'power';
-        if (raw === 'sign_c' || name === 'С') return 'sign_c';
-        if (raw === 'ktsm' || name.indexOf('КТСМ') >= 0) return 'ktsm';
-        return raw || 'note';
-      }
-      for (var sourceIndex = 0; sourceIndex < sources.length; sourceIndex++) {
-        for (var itemIndex = 0; itemIndex < sources[sourceIndex].length; itemIndex++) {
-          var item = sources[sourceIndex][itemIndex] || {};
-          var coordinate = getSectionObjectCoordinate(item, offset);
-          var name = String(item.name || item.note || '').trim();
-          if (!isFinite(coordinate) || !name) continue;
-          var kind = inferKind(item);
-          var sectors = isFinite(Number(item.sector)) ? [Number(item.sector)] : findSectionSectorsForCoordinate(mapData, coordinate);
-          for (var sectorIndex = 0; sectorIndex < sectors.length; sectorIndex++) {
-            var sector = sectors[sectorIndex];
-            var identity = [deps.getSectorKey(sector), Math.round(coordinate), kind, name].join(':');
-            if (!isFinite(sector) || seen[identity]) continue;
-            seen[identity] = true;
-            var key = deps.getSectorKey(sector);
-            if (!result[key]) result[key] = [];
-            result[key].push({
-              sector: sector,
-              coordinate: coordinate,
-              kind: kind,
-              name: name,
-              source: item.community_origin === 'release' ? 'community-control' : 'section-control',
-              sourceName: item.community_origin === 'release' ? 'Подтверждено сообществом' : 'JSON участка',
-              confidence: String(item.confidence || ''),
-              communityVersion: Number(item.community_version) || 0,
-            });
-          }
-        }
-      }
-      Object.keys(result).forEach(function(key) { result[key].sort(function(a, b) { return a.coordinate - b.coordinate; }); });
-      return result;
-    }
-
     function parseSectionPackage(text, fileKey) {
       var section = typeof text === 'string' ? JSON.parse(text) : text;
       if (!section || typeof section !== 'object') throw new Error('Пустой JSON участка');
@@ -771,9 +651,8 @@ if (typeof registerShiftTrackerRuntimeModule === 'function') registerShiftTracke
         section: section,
         mapData: mapData,
         profile: profile,
-        speed: buildSectionCommunitySpeed(section, mapData),
-        objectStores: [store],
-        controlMarksBySector: buildSectionControlMarks(section, mapData)
+        speed: { all: [], bySector: {} },
+        objectStores: [store]
       };
     }
 
@@ -784,7 +663,6 @@ if (typeof registerShiftTrackerRuntimeModule === 'function') registerShiftTracke
       var profileBySector = {};
       var profileGapsBySector = {};
       var objectStores = [];
-      var controlMarksBySector = {};
       var pointSeen = {};
       var segmentSeen = {};
       var profileSeen = {};
@@ -823,10 +701,6 @@ if (typeof registerShiftTrackerRuntimeModule === 'function') registerShiftTracke
           profileGapsBySector[gapSectorKey] = profileGapsBySector[gapSectorKey].concat(partGaps[gapSectorKey] || []);
         });
         objectStores = objectStores.concat(part.objectStores || []);
-        Object.keys(part.controlMarksBySector || {}).forEach(function(controlSectorKey) {
-          if (!controlMarksBySector[controlSectorKey]) controlMarksBySector[controlSectorKey] = [];
-          controlMarksBySector[controlSectorKey] = controlMarksBySector[controlSectorKey].concat(part.controlMarksBySector[controlSectorKey] || []);
-        });
       }
       points.sort(function(a, b) {
         if (a.sector !== b.sector) return a.sector - b.sector;
@@ -910,20 +784,9 @@ if (typeof registerShiftTrackerRuntimeModule === 'function') registerShiftTracke
       return {
         mapData: { points: points, segments: segments },
         profile: { all: profileAll, bySector: profileBySector, gapsBySector: profileGapsBySector },
-        speed: parts.reduce(function(merged, part) {
-          var all = part.speed && Array.isArray(part.speed.all) ? part.speed.all : [];
-          for (var speedIndex = 0; speedIndex < all.length; speedIndex++) {
-            var speed = all[speedIndex];
-            merged.all.push(speed);
-            var key = deps.getSectorKey(speed.sector);
-            if (!merged.bySector[key]) merged.bySector[key] = [];
-            merged.bySector[key].push(speed);
-          }
-          return merged;
-        }, { all: [], bySector: {} }),
+        speed: { all: [], bySector: {} },
         objectStores: [mergedObjectStore],
         objectKeys: ['section-json'],
-        controlMarksBySector: controlMarksBySector,
         sections: parts.map(function(part) { return part.section; })
       };
     }
@@ -945,8 +808,6 @@ if (typeof registerShiftTrackerRuntimeModule === 'function') registerShiftTracke
       buildSectionProfileGaps: buildSectionProfileGaps,
       getSectionObjectCoordinate: getSectionObjectCoordinate,
       buildSectionObjectStore: buildSectionObjectStore,
-      buildSectionCommunitySpeed: buildSectionCommunitySpeed,
-      buildSectionControlMarks: buildSectionControlMarks,
       parseSectionPackage: parseSectionPackage,
       mergeSectionMapBundles: mergeSectionMapBundles
     };
