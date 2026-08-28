@@ -485,6 +485,10 @@
   }
 
   function openCalculator() {
+    // Локомотив — редкая дополнительная часть расчёта. Сохраняем выбранную
+    // серию в черновике, но подключаем её только после явного нажатия каждый раз.
+    state.locomotive.enabled = false;
+    syncFormFromState();
     if (typeof window.openOverlay === 'function') window.openOverlay('overlayVu45');
     else if (typeof openOverlay === 'function') openOverlay('overlayVu45');
     var scroll = elements.overlay.querySelector('.vu45-scroll');
