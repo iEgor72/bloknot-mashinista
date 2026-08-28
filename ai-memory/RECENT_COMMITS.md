@@ -1,46 +1,46 @@
 # Recent Commits
 
-Generated: 2026-08-11 08:11:49 +1000
+Generated: 2026-08-28 15:16:46 +1000
 
 | Hash | Date | Author | Message |
 | --- | --- | --- | --- |
-| `bcce718` | 2026-08-11T08:02:01+10:00 | iEgor72 | chore(memory): record product scope release |
-| `01c6339` | 2026-08-11T08:01:55+10:00 | iEgor72 | refine product scope and restore Poekhali |
-| `b3528bc` | 2026-07-27T14:07:30+10:00 | iEgor72 | refine: remove shift timeline and loop time picker |
-| `dd26426` | 2026-07-27T13:55:50+10:00 | iEgor72 | feat: add decorative shift timeline |
-| `76ff185` | 2026-07-27T13:47:11+10:00 | iEgor72 | style: highlight shift details disclosure |
-| `298b8df` | 2026-07-27T13:41:39+10:00 | iEgor72 | feat: add custom shift date and time picker |
-| `b66833b` | 2026-07-27T13:07:41+10:00 | iEgor72 | fix: lowercase homepage rotation phrases |
-| `d08a3fd` | 2026-07-27T13:03:58+10:00 | iEgor72 | feat: animate public landing pages |
-| `fefe06b` | 2026-07-27T12:46:26+10:00 | iEgor72 | feat: animate salary landing page |
-| `0e65ee4` | 2026-07-23T10:23:24+10:00 | iEgor72 | feat: simplify analytics dashboard |
-| `1d07fdc` | 2026-07-23T10:08:19+10:00 | iEgor72 | fix: allow analytics dashboard bearer auth |
-| `a546794` | 2026-07-23T09:57:17+10:00 | iEgor72 | feat: add privacy-safe product analytics |
-| `6932169` | 2026-07-18T21:24:01+10:00 | iEgor72 | fix: restore offline shifts in mixed PWA cache |
-| `a096028` | 2026-07-18T17:50:48+10:00 | iEgor72 | chore(memory): record v388 production deploy |
-| `0291c34` | 2026-07-18T17:47:11+10:00 | iEgor72 | chore(memory): record profile data cleanup |
-| `9c93d25` | 2026-07-18T17:46:59+10:00 | iEgor72 | fix: remove technical data controls from profile |
-| `dfde317` | 2026-07-18T17:29:39+10:00 | iEgor72 | chore(memory): record PWA runtime self-repair |
-| `d50db9d` | 2026-07-18T17:25:28+10:00 | iEgor72 | fix: self-heal mixed PWA runtimes |
-| `6272cc7` | 2026-07-18T17:01:18+10:00 | iEgor72 | chore(memory): record coherent PWA cache fix |
-| `026561c` | 2026-07-18T16:58:43+10:00 | iEgor72 | fix: prevent mixed-version PWA runtime |
-| `324cd5b` | 2026-07-18T16:46:13+10:00 | iEgor72 | chore(memory): record cached client hotfix |
-| `5c556b0` | 2026-07-18T16:41:16+10:00 | iEgor72 | fix: force fresh app entry for cached clients |
-| `87e4f02` | 2026-07-18T16:30:55+10:00 | iEgor72 | chore(memory): record shift card hotfix |
-| `110c581` | 2026-07-18T16:28:37+10:00 | iEgor72 | fix: correct shift fuel units and Poekhali scope |
-| `5064734` | 2026-07-18T16:10:48+10:00 | iEgor72 | chore(memory): record production release |
-| `8afcaef` | 2026-07-18T16:05:29+10:00 | iEgor72 | feat: harden runtime and migrate storage to SQLite |
-| `28f6838` | 2026-07-11T09:36:28+10:00 | iEgor72 | feat: rebuild regime profiles from PDF maps |
-| `2a24639` | 2026-07-10T17:59:16+10:00 | iEgor72 | chore(memory): record SEO landing redesign |
-| `7f402ec` | 2026-07-10T17:59:04+10:00 | iEgor72 | feat(seo): redesign public landing pages |
-| `d3b0405` | 2026-07-10T14:32:13+10:00 | iEgor72 | chore(memory): record regime profile builder release |
-| `68752d5` | 2026-07-10T14:30:09+10:00 | iEgor72 | feat: add regime PDF profile builder |
-| `360ed3c` | 2026-07-10T10:46:32+10:00 | iEgor72 | feat: add Postyshevo Komsomolsk profile and v380 |
-| `a2897ea` | 2026-07-10T09:51:19+10:00 | iEgor72 | fix: correct PDF profile signs and release gates |
-| `4b28e59` | 2026-07-10T09:25:29+10:00 | iEgor72 | chore(memory): record JSON profile release |
-| `a45b009` | 2026-07-10T09:25:05+10:00 | iEgor72 | feat: ship JSON track profiles and v379 shell |
-| `60b30a5` | 2026-06-21T14:51:07+10:00 | iEgor72 | chore(memory): record notification migration deploy |
-| `608c43b` | 2026-06-21T14:07:51+10:00 | iEgor72 | chore(memory): refresh after notification migration |
-| `201654b` | 2026-06-21T14:07:18+10:00 | iEgor72 | chore(memory): record notification migration fix |
-| `dbd02c8` | 2026-06-21T14:07:06+10:00 | iEgor72 | fix(notifications): migrate legacy bell announcements |
-| `2a84b00` | 2026-06-21T13:53:13+10:00 | iEgor72 | chore(memory): record pwa shell deploy |
+| `abcbedf` | 2026-08-28T15:16:04+10:00 | iEgor72 | chore(memory): record v413 release preparation |
+| `c19f119` | 2026-08-28T15:15:32+10:00 | iEgor72 | fix: stabilize v413 Poekhali integration |
+| `68a8b19` | 2026-08-28T14:55:12+10:00 | iEgor72 | feat: add community editors and thematic navigation |
+| `bd9e1a3` | 2026-08-28T13:12:02+10:00 | iEgor72 | fix: separate Poekhali preview from GPS train |
+| `cbb3100` | 2026-08-28T12:51:21+10:00 | iEgor72 | fix: isolate Poekhali service arms |
+| `9520e04` | 2026-08-28T12:11:57+10:00 | iEgor72 | fix: harden production contribution pipeline |
+| `4d62946` | 2026-08-28T11:46:02+10:00 | iEgor72 | refine: keep frequent locomotives in full catalog |
+| `3f2f313` | 2026-08-28T11:37:58+10:00 | iEgor72 | fix: stabilize VU-45 locomotive dropdown |
+| `bb8f03a` | 2026-08-28T11:32:01+10:00 | iEgor72 | feat: personalize locomotive selection |
+| `d082ddd` | 2026-08-28T11:10:29+10:00 | iEgor72 | fix: collapse VU-45 locomotive section on open |
+| `8b13877` | 2026-08-28T11:06:22+10:00 | iEgor72 | refine: align locomotive series catalogs |
+| `5fe1fd6` | 2026-08-28T10:51:14+10:00 | iEgor72 | feat: expand VU-45 locomotive catalog |
+| `4688146` | 2026-08-28T10:37:32+10:00 | iEgor72 | feat: add locomotive presets to VU-45 |
+| `65e55ab` | 2026-08-28T10:11:16+10:00 | iEgor72 | fix: style VU-45 brake type selector |
+| `a5d245f` | 2026-08-28T01:57:16+10:00 | iEgor72 | feat: add VU-45 brake calculator |
+| `8b69d25` | 2026-08-28T01:31:27+10:00 | iEgor72 | feat: build community depot knowledge catalog |
+| `0385682` | 2026-08-28T00:43:27+10:00 | iEgor72 | fix: clarify depot selection placeholder |
+| `8627cb1` | 2026-08-28T00:36:48+10:00 | iEgor72 | fix: make depot catalog production ready |
+| `5c79107` | 2026-08-27T19:27:32+10:00 | iEgor72 | feat: collect depot map materials |
+| `e6d4514` | 2026-08-27T18:52:21+10:00 | iEgor72 | fix: clarify service arm actions |
+| `4d6a767` | 2026-08-27T18:35:05+10:00 | iEgor72 | feat: add depot service arm selection |
+| `5047c20` | 2026-08-27T18:03:47+10:00 | iEgor72 | feat: add no-GPS route preparation |
+| `06a29c3` | 2026-08-27T17:45:39+10:00 | iEgor72 | feat: add scalable depot catalog |
+| `e73a7e7` | 2026-08-27T17:30:29+10:00 | iEgor72 | feat: add Telegram home screen shortcut |
+| `030e2a6` | 2026-08-27T16:57:17+10:00 | iEgor72 | perf: smooth poekhali profile browsing |
+| `823a20f` | 2026-08-22T12:02:42+10:00 | iEgor72 | fix: expand legacy station names |
+| `47daa41` | 2026-08-22T11:32:56+10:00 | iEgor72 | feat: add live profile browsing and auto return |
+| `e589da9` | 2026-08-22T10:19:36+10:00 | iEgor72 | feat: show point warnings and default section speed |
+| `16e7dd9` | 2026-08-18T20:24:39+10:00 | iEgor72 | fix: simplify partial shift routes |
+| `db11793` | 2026-08-17T15:13:52+10:00 | iEgor72 | feat: add night and holiday shift totals |
+| `bdb2b17` | 2026-08-17T15:01:52+10:00 | iEgor72 | fix: deliver atomic shell and compact profile metadata |
+| `237f0c7` | 2026-08-17T14:52:15+10:00 | iEgor72 | fix: version stylesheet shell assets atomically |
+| `c684054` | 2026-08-17T14:40:06+10:00 | iEgor72 | chore: adopt semantic app version 1.2.0 |
+| `48c9f91` | 2026-08-17T14:38:47+10:00 | iEgor72 | refine: compact profile summary and neutral copy |
+| `a940074` | 2026-08-17T13:23:17+10:00 | iEgor72 | feat: expand profile and salary deductions |
+| `1906433` | 2026-08-11T08:18:40+10:00 | iEgor72 | refresh public bot and site messaging |
+| `c3b5b86` | 2026-08-11T08:03:50+10:00 | iEgor72 | refine product scope and restore Poekhali |
+| `58ad20b` | 2026-07-27T14:16:57+10:00 | iEgor72 | fix(pwa): bypass stale shell assets on update |
+| `39ae27c` | 2026-07-27T14:07:30+10:00 | iEgor72 | refine: remove shift timeline and loop time picker |
+| `a100d64` | 2026-07-27T13:55:50+10:00 | iEgor72 | feat: add decorative shift timeline |

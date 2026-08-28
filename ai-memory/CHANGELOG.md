@@ -8376,3 +8376,45 @@ Append-only журнал действий ИИ-агентов по проект�
 - Branch: `codex/new-shift-time-picker-step1`
 - Methods: `Audited bot`, `site`, `SEO`, `and Telegram link-preview copy for retired claims`, `found and replaced obsolete overview and route OG images that still mentioned news`, `discussion`, `brigade`, `and calculation`, `switched public metadata to cache-busted v392 images and added regression coverage`
 - Files: `index.html`, `docs/seo/dokumenty-mashinista.html`, `docs/seo/grafik-smen-mashinista.html`, `docs/seo/uchet-marshrutov.html`, `docs/seo/zhurnal-smen-mashinista.html`, `assets/seo/landing-overview.jpg`, `assets/seo/landing-overview-v392.png`, `assets/seo/landing-salary-screen.jpg`, `assets/seo/landing-routes-v392.png`, `tests/server/api.test.js`
+
+## 2026-08-28 14:59:18 +1000
+
+- Source: `post-commit`
+- Task: feat: add community editors and thematic navigation
+- Branch: `codex/release-v413`
+- Methods: `git post-commit hook`, `automatic memory update`
+- Files: `admin/analytics.html`, `admin/community.html`, `assets/seo/site-icons.svg`, `design-qa.md`, `docs/2026-08-28-community-control-plane-adr.md`, `docs/2026-08-28-community-control-plane-prd.md`, `docs/2026-08-28-community-effective-section-adr.md`, `docs/2026-08-28-community-visual-editor-spec.md`, `index.html`, `manifest.webmanifest`, `package-lock.json`, `package.json`, `scripts/app-constants.js`, `scripts/app-init.js`, `scripts/app.js`, `scripts/auth.js`, `scripts/community-editor.js`, `scripts/community-geometry-editor.js`, `scripts/local-smoke.mjs`, `scripts/navigation-drawer-visual-smoke.mjs`, `scripts/navigation-drawer.js`, `scripts/offline-smoke.mjs`, `scripts/poekhali-backup.js`, `scripts/poekhali-json-smoke.mjs`, `scripts/poekhali-map-parser.js`, `scripts/poekhali-station-names.js`, `scripts/poekhali-tracker.js`, `scripts/poekhali-utils.js`, `scripts/poekhali-warnings.js`, `scripts/railway-sign-icons.js`, `scripts/render.js`, `scripts/setup-bot-webhook.py`, `scripts/shift-form.js`, `scripts/sw-update-smoke.mjs`, `scripts/time-utils.js`, `server.js`, `server/community-section-resolver.js`, `server/sqlite-storage.js`, `styles/50-design-refresh.css`, `styles/56-profile.css`, `styles/59-community-editor.css`, `styles/60-navigation-drawer.css`, `sw-bootstrap-v413.js`, `sw.js`, `tests/server/api.test.js`, `tests/server/community-section-resolver.test.js`, `tests/server/poekhali-map-parser.test.js`, `tests/server/storage.test.js`
+- Notes: Commit: `68a8b194c9d07a4650c7f8cef3f6503eca6d4a3d` (`68a8b19`) | Author: `iEgor72`
+
+## 2026-08-28 15:00:39 +1000
+
+- Source: `manual`
+- Task: Исправлена интеграция community-скоростей в Поехали для v413
+- Branch: `codex/release-v413`
+- Methods: `Блок community speed rules перенесен из отрисовки профиля`, `где отсутствовали left/right/rules`, `в getSpeedRulesInWindow с корректным окном координат и приоритетом перед пользовательскими скоростями`
+- Files: `scripts/poekhali-tracker.js`
+
+## 2026-08-28 15:15:32 +1000
+
+- Source: `post-commit`
+- Task: fix: stabilize v413 Poekhali integration
+- Branch: `codex/release-v413`
+- Methods: `git post-commit hook`, `automatic memory update`
+- Files: `scripts/poekhali-json-smoke.mjs`, `scripts/poekhali-tracker.js`, `server.js`, `tests/server/api.test.js`
+- Notes: Commit: `c19f119e1caecf2b6503e21c10454fa0374c3e9d` (`c19f119`) | Author: `iEgor72`
+
+## 2026-08-28 15:16:03 +1000
+
+- Source: `manual`
+- Task: Подготовлен и проверен релиз v413
+- Branch: `codex/release-v413`
+- Methods: `Функциональный снимок перенесен на origin/main v412`, `конфликты объединены с сохранением unified Poekhali`, `версия поднята до 1.2.19/v413`, `community speed rules исправлены`, `effective API получил бесшумный out-of-scope fallback`, `Poekhali smoke переведен на drawer и изолированные тестовые порты`, `два последовательных Poekhali smoke и полный smoke:predeploy прошли`
+- Files: `index.html`, `scripts/navigation-drawer.js`, `scripts/poekhali-tracker.js`, `scripts/poekhali-json-smoke.mjs`, `server.js`, `sw.js`
+
+## 2026-08-28 15:16:46 +1000
+
+- Source: `manual`
+- Task: Проверен мобильный drawer v413
+- Branch: `codex/release-v413`
+- Methods: `Отдельный navigation-drawer visual smoke подтвердил отсутствие bottom nav`, `тематические группы`, `поиск ВУ-45 и пустое состояние`, `экран зарплаты с активным подпунктом`, `глобальное добавление смены и точки добавления документа/карты`
+- Files: `scripts/navigation-drawer-visual-smoke.mjs`, `scripts/navigation-drawer.js`, `index.html`
