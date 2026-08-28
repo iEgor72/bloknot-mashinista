@@ -166,6 +166,43 @@ test('auth rejects unsigned requests and accepts valid Telegram initData', async
   assert.match(session.response.headers.get('set-cookie') || '', /bm_session=/);
 });
 
+test('Telegram webhook fails closed without its secret and rejects a wrong secret', async () => {
+  const previousSecret = process.env.TELEGRAM_WEBHOOK_SECRET;
+  delete process.env.TELEGRAM_WEBHOOK_SECRET;
+  try {
+    const unavailable = await jsonRequest('/api/telegram-webhook', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: '{}',
+    });
+    assert.equal(unavailable.response.status, 503);
+
+    process.env.TELEGRAM_WEBHOOK_SECRET = 'test-webhook-secret';
+    const forbidden = await jsonRequest('/api/telegram-webhook', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'X-Telegram-Bot-Api-Secret-Token': 'wrong-secret',
+      },
+      body: '{}',
+    });
+    assert.equal(forbidden.response.status, 403);
+
+    const accepted = await jsonRequest('/api/telegram-webhook', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'X-Telegram-Bot-Api-Secret-Token': 'test-webhook-secret',
+      },
+      body: '{}',
+    });
+    assert.equal(accepted.response.status, 200);
+  } finally {
+    if (previousSecret === undefined) delete process.env.TELEGRAM_WEBHOOK_SECRET;
+    else process.env.TELEGRAM_WEBHOOK_SECRET = previousSecret;
+  }
+});
+
 test('authenticated API activity updates user presence without a client heartbeat', async () => {
   const token = await authenticate({ id: 1010, first_name: 'Активность' });
   const shifts = await jsonRequest('/api/shifts', { headers: bearer(token) });

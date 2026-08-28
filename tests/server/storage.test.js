@@ -157,3 +157,47 @@ test('analytics migration stores consent, sessions, events, and dashboard aggreg
     removeTempDir(dataDir, 'storage-analytics');
   }
 });
+
+test('analytics retention caps events and sessions for one account', () => {
+  const dataDir = createTempDir('storage-analytics-cap');
+  try {
+    const storage = createSqliteStorage({ dataDir });
+    const now = new Date().toISOString();
+    const insertEvent = storage.db.prepare(`
+      INSERT INTO analytics_events
+        (event_id, sid, session_id, event_name, occurred_at, received_at, platform, app_version, properties)
+      VALUES (?, 'bounded-user', ?, 'app_opened', ?, ?, 'unknown', '', '{}')
+    `);
+    const insertSession = storage.db.prepare(`
+      INSERT INTO analytics_sessions
+        (sid, session_id, started_at, last_seen_at, ended_at, platform, app_version)
+      VALUES ('bounded-user', ?, ?, ?, NULL, 'unknown', '')
+    `);
+    storage.db.transaction(() => {
+      for (let index = 0; index < 10020; index += 1) {
+        insertEvent.run(`event:cap-${String(index).padStart(12, '0')}`, `session:cap-${String(index % 220).padStart(12, '0')}`, now, now);
+      }
+      for (let index = 0; index < 220; index += 1) {
+        insertSession.run(`session:cap-${String(index).padStart(12, '0')}`, now, now);
+      }
+    })();
+
+    storage.recordAnalyticsEvents('bounded-user', [{
+      eventId: 'event:cap-trigger-0001',
+      sessionId: 'session:cap-trigger-0001',
+      eventName: 'app_opened',
+      occurredAt: now,
+      platform: 'unknown',
+      appVersion: '',
+      properties: {},
+    }], 180);
+
+    const eventCount = storage.db.prepare('SELECT COUNT(*) AS count FROM analytics_events WHERE sid = ?').get('bounded-user').count;
+    const sessionCount = storage.db.prepare('SELECT COUNT(*) AS count FROM analytics_sessions WHERE sid = ?').get('bounded-user').count;
+    assert.equal(eventCount, 10000);
+    assert.equal(sessionCount, 200);
+    storage.close();
+  } finally {
+    removeTempDir(dataDir, 'storage-analytics-cap');
+  }
+});

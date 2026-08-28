@@ -15,10 +15,45 @@ DEFAULT_MANIFEST = Path("assets/tracker/maps-manifest.json")
 DEFAULT_MAPS_DIR = Path("assets/tracker/maps")
 APP_EMAP_SUFFIX = "/app_emap/"
 REQUIRED_XML = {"data.xml", "profile.xml"}
+MAX_BACKUP_INPUT_BYTES = 512 * 1024 * 1024
+MAX_BACKUP_PAYLOAD_BYTES = 256 * 1024 * 1024
+MAX_COMPRESSION_RATIO = 200
+MAX_TAR_MEMBERS = 5000
+MAX_EMAP_FILE_BYTES = 64 * 1024 * 1024
+MAX_EMAP_GROUP_BYTES = 128 * 1024 * 1024
+
+
+def bounded_zlib_decompress(data):
+    decompressor = zlib.decompressobj()
+    output = bytearray()
+    compressed_size = max(1, len(data))
+    for offset in range(0, len(data), 1024 * 1024):
+        chunk = data[offset:offset + 1024 * 1024]
+        remaining = MAX_BACKUP_PAYLOAD_BYTES - len(output)
+        output.extend(decompressor.decompress(chunk, remaining + 1))
+        if len(output) > MAX_BACKUP_PAYLOAD_BYTES or decompressor.unconsumed_tail:
+            raise ValueError("Android backup payload exceeds the safe size limit")
+        if len(output) > compressed_size * MAX_COMPRESSION_RATIO:
+            raise ValueError("Android backup compression ratio exceeds the safe limit")
+    remaining = MAX_BACKUP_PAYLOAD_BYTES - len(output)
+    output.extend(decompressor.flush(remaining + 1))
+    if len(output) > MAX_BACKUP_PAYLOAD_BYTES:
+        raise ValueError("Android backup payload exceeds the safe size limit")
+    if len(output) > compressed_size * MAX_COMPRESSION_RATIO:
+        raise ValueError("Android backup compression ratio exceeds the safe limit")
+    if not decompressor.eof:
+        raise ValueError("Truncated Android backup payload")
+    return bytes(output)
 
 
 def read_backup_payload(path):
-    data = Path(path).read_bytes()
+    backup_path = Path(path)
+    if backup_path.stat().st_size > MAX_BACKUP_INPUT_BYTES:
+        raise ValueError("Backup exceeds the safe input size limit")
+    with backup_path.open("rb") as source:
+        data = source.read(MAX_BACKUP_INPUT_BYTES + 1)
+    if len(data) > MAX_BACKUP_INPUT_BYTES:
+        raise ValueError("Backup exceeds the safe input size limit")
     if data.startswith(b"ANDROID BACKUP\n"):
       parts = data.split(b"\n", 4)
       if len(parts) < 5:
@@ -28,8 +63,12 @@ def read_backup_payload(path):
       encryption = parts[3].decode("utf-8", "replace")
       if encryption != "none":
           raise ValueError(f"Encrypted backups are not supported: {encryption}")
-      payload = zlib.decompress(parts[4]) if compressed else parts[4]
+      payload = bounded_zlib_decompress(parts[4]) if compressed else parts[4]
+      if len(payload) > MAX_BACKUP_PAYLOAD_BYTES:
+          raise ValueError("Android backup payload exceeds the safe size limit")
       return payload, f"android-backup-v{version}"
+    if len(data) > MAX_BACKUP_PAYLOAD_BYTES:
+        raise ValueError("Raw tar backup exceeds the safe payload size limit")
     return data, "tar"
 
 
@@ -45,23 +84,38 @@ def title_to_slug(title):
     return base[:72] or "phone-backup-emap"
 
 
+def validate_map_id(value):
+    map_id = str(value or "").strip()
+    if not re.fullmatch(r"[a-z0-9][a-z0-9-]{0,71}", map_id):
+        raise ValueError("Map id must contain only lowercase latin letters, digits and hyphens")
+    return map_id
+
+
 def sha256_file(path):
     return hashlib.sha256(Path(path).read_bytes()).hexdigest()
 
 
 def find_emap_groups(tar_path):
     groups = {}
-    with tarfile.open(tar_path, "r:*") as archive:
-        for member in archive.getmembers():
+    member_count = 0
+    with tarfile.open(tar_path, "r:") as archive:
+        for member in archive:
+            member_count += 1
+            if member_count > MAX_TAR_MEMBERS:
+                raise ValueError("Backup contains too many archive members")
             if not member.isfile() or APP_EMAP_SUFFIX not in member.name:
                 continue
             prefix, rel = member.name.split(APP_EMAP_SUFFIX, 1)
             if not rel or "/" in rel or not rel.lower().endswith(".xml"):
                 continue
+            if member.size < 0 or member.size > MAX_EMAP_FILE_BYTES:
+                raise ValueError(f"EMap file exceeds the safe size limit: {member.name}")
             group_key = prefix + APP_EMAP_SUFFIX[:-1]
             groups.setdefault(group_key, []).append(member)
     result = []
     for group_key, members in groups.items():
+        if sum(item.size for item in members) > MAX_EMAP_GROUP_BYTES:
+            raise ValueError(f"EMap group exceeds the safe size limit: {group_key}")
         names = {posixpath.basename(item.name).lower() for item in members}
         result.append({
             "key": group_key,
@@ -88,14 +142,21 @@ def sort_map_files(files):
 def extract_group(tar_path, group, output_dir):
     output_dir.mkdir(parents=True, exist_ok=True)
     written = []
-    with tarfile.open(tar_path, "r:*") as archive:
+    total_written = 0
+    with tarfile.open(tar_path, "r:") as archive:
         for member in group["members"]:
             name = safe_file_name(member.name)
             target = output_dir / name
             with archive.extractfile(member) as source:
                 if not source:
                     continue
-                target.write_bytes(source.read())
+                payload = source.read(MAX_EMAP_FILE_BYTES + 1)
+                if len(payload) > MAX_EMAP_FILE_BYTES or len(payload) != member.size:
+                    raise ValueError(f"EMap file has an unsafe or inconsistent size: {member.name}")
+                total_written += len(payload)
+                if total_written > MAX_EMAP_GROUP_BYTES:
+                    raise ValueError("EMap group exceeds the safe size limit")
+                target.write_bytes(payload)
             written.append(name)
     return sort_map_files(written)
 
@@ -148,7 +209,7 @@ def main():
     backup_path = Path(args.backup)
     manifest_path = Path(args.manifest)
     maps_dir = Path(args.maps_dir)
-    map_id = args.id or title_to_slug(args.title)
+    map_id = validate_map_id(args.id or title_to_slug(args.title))
     source_name = args.source_name or f"phone-backup:{backup_path.name}/app_emap"
 
     payload, payload_type = read_backup_payload(backup_path)

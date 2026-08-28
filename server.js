@@ -39,6 +39,7 @@ function loadDotEnvFile() {
 loadDotEnvFile();
 
 const PORT = process.env.PORT || 3000;
+const LISTEN_HOST = String(process.env.HOST || (process.env.NODE_ENV === 'production' ? '127.0.0.1' : '')).trim();
 const DATA_DIR = path.resolve(process.env.APP_DATA_DIR || path.join(ROOT, 'data'));
 const USERS_DIR = path.join(DATA_DIR, 'local-shifts');
 const SALARY_PARAMS_DIR = path.join(DATA_DIR, 'local-salary-params');
@@ -165,6 +166,9 @@ const PUBLIC_TOP_LEVEL_DIRS = new Set(['assets', 'scripts', 'styles', 'docs']);
 const ONLINE_WINDOW_MS = 2 * 60 * 1000;
 const USER_PRESENCE_FLUSH_DELAY_MS = 2500;
 const AUTHENTICATED_PRESENCE_TOUCH_INTERVAL_MS = 5 * 60 * 1000;
+const USER_PRESENCE_SESSION_RETENTION_MS = 180 * 24 * 60 * 60 * 1000;
+const MAX_USER_PRESENCE_SESSIONS_PER_USER = 20;
+const MAX_USER_PRESENCE_SESSIONS_GLOBAL = 20000;
 const SHIFT_USER_IDS_CACHE_TTL_MS = 30 * 1000;
 const STRUCTURED_LOG_TTL_MS = 30 * 1000;
 const MAX_SHIFTS_PER_PAYLOAD = 500;
@@ -259,11 +263,57 @@ let storageBackupTimer = null;
 
 const SESSION_TTL_SECONDS = 60 * 60 * 24 * 30; // 30 days
 const LOGIN_REQUEST_TTL_MS = 15 * 60 * 1000;
+const MAX_LOGIN_REQUESTS = 1000;
+const LOGIN_REQUEST_RATE_LIMIT_MAX = 20;
+const LOGIN_REQUEST_RATE_LIMIT_WINDOW_MS = 10 * 60 * 1000;
 const PARTNER_INVITE_TTL_MS = 30 * 60 * 1000; // codes are read aloud, kept short-lived
+const MAX_ACTIVE_PARTNER_INVITES_PER_USER = 5;
+const MAX_ACTIVE_PARTNER_INVITES_GLOBAL = 5000;
 const MAX_PARTNERSHIPS_PER_USER = 50;
 const MAX_INBOX_ITEMS_PER_USER = 200;
 const REDEEM_RATE_LIMIT_MAX = 12; // redeem attempts per window, per account
 const REDEEM_RATE_LIMIT_WINDOW_MS = 10 * 60 * 1000;
+const ANALYTICS_RATE_LIMIT_MAX_EVENTS = 500;
+const ANALYTICS_RATE_LIMIT_WINDOW_MS = 10 * 60 * 1000;
+
+const loginRequestAttemptsByClient = new Map();
+const analyticsEventsBySid = new Map();
+
+function requestRateKey(req) {
+  const remote = String((req && req.socket && req.socket.remoteAddress) || '').trim().toLowerCase();
+  const isLoopback = remote === '127.0.0.1' || remote === '::1' || remote === '::ffff:127.0.0.1';
+  if (isLoopback) {
+    const forwarded = String((req && req.headers && req.headers['x-forwarded-for']) || '').split(',')[0].trim();
+    if (forwarded && forwarded.length <= 64 && /^[a-f0-9:.]+$/i.test(forwarded)) return forwarded.toLowerCase();
+  }
+  return remote || 'unknown';
+}
+
+function allowWindowedCount(store, key, amount, limit, windowMs) {
+  const now = Date.now();
+  const normalizedKey = String(key || 'unknown').slice(0, 160);
+  const current = store.get(normalizedKey);
+  const row = current && current.resetAt > now ? current : { count: 0, resetAt: now + windowMs };
+  if (row.count + amount > limit) {
+    store.set(normalizedKey, row);
+    return false;
+  }
+  row.count += amount;
+  store.set(normalizedKey, row);
+  if (store.size > 5000) {
+    for (const [storedKey, storedRow] of store) {
+      if (!storedRow || storedRow.resetAt <= now) store.delete(storedKey);
+      if (store.size <= 4000) break;
+    }
+  }
+  return true;
+}
+
+function secureEqualText(actual, expected) {
+  const actualBuffer = Buffer.from(String(actual || ''), 'utf8');
+  const expectedBuffer = Buffer.from(String(expected || ''), 'utf8');
+  return actualBuffer.length === expectedBuffer.length && crypto.timingSafeEqual(actualBuffer, expectedBuffer);
+}
 
 function sha256Buf(input) {
   return crypto.createHash('sha256').update(input, 'utf8').digest();
@@ -702,6 +752,9 @@ function pruneLoginRequestsStore(store) {
 function createPwaLoginRequest(returnPath) {
   const requestId = crypto.randomBytes(18).toString('hex');
   const store = pruneLoginRequestsStore(readLoginRequestsStore());
+  if (Object.keys(store).length >= MAX_LOGIN_REQUESTS) {
+    throw new Error('Login request capacity reached');
+  }
   const nowIso = new Date().toISOString();
   store[requestId] = {
     id: requestId,
@@ -1652,18 +1705,32 @@ function sanitizeUserPresenceStore(rawStore) {
     };
   });
 
-  Object.keys(sourceSessions).forEach(sessionId => {
+  const now = Date.now();
+  const sessionCandidates = Object.keys(sourceSessions).map(sessionId => {
     if (!isValidSessionId(sessionId)) return;
     const row = sourceSessions[sessionId] || {};
     const userId = normalizeStatsUserId(row.userId);
     const firstSeenAt = typeof row.firstSeenAt === 'string' ? row.firstSeenAt : '';
     const lastSeenAt = typeof row.lastSeenAt === 'string' ? row.lastSeenAt : '';
-    if (!userId || !lastSeenAt) return;
+    const lastSeenAtMs = Date.parse(lastSeenAt);
+    if (!userId || !Number.isFinite(lastSeenAtMs) || now - lastSeenAtMs > USER_PRESENCE_SESSION_RETENTION_MS) return;
+    return { sessionId, userId, firstSeenAt, lastSeenAt, lastSeenAtMs };
+  }).filter(Boolean).sort((a, b) => b.lastSeenAtMs - a.lastSeenAtMs);
+
+  const sessionsPerUser = new Map();
+  let acceptedSessionCount = 0;
+  sessionCandidates.forEach(candidate => {
+    if (acceptedSessionCount >= MAX_USER_PRESENCE_SESSIONS_GLOBAL) return;
+    const count = sessionsPerUser.get(candidate.userId) || 0;
+    if (count >= MAX_USER_PRESENCE_SESSIONS_PER_USER) return;
+    sessionsPerUser.set(candidate.userId, count + 1);
+    const { sessionId, userId, firstSeenAt, lastSeenAt } = candidate;
     sessions[sessionId] = {
       userId,
       firstSeenAt: firstSeenAt || lastSeenAt,
       lastSeenAt,
     };
+    acceptedSessionCount += 1;
     if (!users[userId]) {
       users[userId] = {
         firstSeenAt: firstSeenAt || lastSeenAt,
@@ -1987,6 +2054,12 @@ async function handlePartnersApi(req, res, pathname, sid, user) {
   // POST /api/partners/invite → generate a short code the partner types in.
   if (pathname === '/api/partners/invite' && req.method === 'POST') {
     const store = prunePartnerInvitesStore(readPartnerInvitesStore());
+    const invites = Object.values(store);
+    if (invites.length >= MAX_ACTIVE_PARTNER_INVITES_GLOBAL ||
+        invites.filter((item) => item && item.inviterSid === sid).length >= MAX_ACTIVE_PARTNER_INVITES_PER_USER) {
+      sendJson(res, 429, { error: 'Слишком много активных приглашений. Используйте один из уже созданных кодов.' });
+      return;
+    }
     const code = generatePartnerInviteCode(store);
     const nowIso = new Date().toISOString();
     store[code] = {
@@ -2781,6 +2854,10 @@ const server = http.createServer(async (req, res) => {
     try {
       const body = await readBody(req);
       const events = sanitizeAnalyticsBatch(body ? JSON.parse(body) : {});
+      if (!allowWindowedCount(analyticsEventsBySid, sid, events.length, ANALYTICS_RATE_LIMIT_MAX_EVENTS, ANALYTICS_RATE_LIMIT_WINDOW_MS)) {
+        sendJson(res, 429, { error: 'Too many analytics events' });
+        return;
+      }
       const result = getStorage().recordAnalyticsEvents(sid, events, ANALYTICS_RETENTION_DAYS);
       sendJson(res, 200, { ok: true, accepted: result.inserted, receivedAt: result.receivedAt });
     } catch (err) {
@@ -2836,7 +2913,12 @@ const server = http.createServer(async (req, res) => {
       sendJson(res, 500, { ok: false, error: 'no token' });
       return;
     }
-    if (webhookSecret && requestWebhookSecret !== webhookSecret) {
+    if (!webhookSecret) {
+      logStructuredRateLimited('error', 'telegram.webhook.secret_missing', 'telegram.webhook.secret_missing', {});
+      sendJson(res, 503, { ok: false, error: 'webhook unavailable' });
+      return;
+    }
+    if (!secureEqualText(requestWebhookSecret, webhookSecret)) {
       sendJson(res, 403, { ok: false, error: 'forbidden' });
       return;
     }
@@ -2918,6 +3000,10 @@ const server = http.createServer(async (req, res) => {
     if (!botToken) { sendJson(res, 500, { error: 'TELEGRAM_BOT_TOKEN not configured' }); return; }
 
     if (req.method === 'POST') {
+      if (!allowWindowedCount(loginRequestAttemptsByClient, requestRateKey(req), 1, LOGIN_REQUEST_RATE_LIMIT_MAX, LOGIN_REQUEST_RATE_LIMIT_WINDOW_MS)) {
+        sendJson(res, 429, { error: 'Слишком много запросов на вход. Подождите немного.' });
+        return;
+      }
       try {
         const body = await readBody(req);
         const payload = body ? JSON.parse(body) : {};
@@ -2930,7 +3016,8 @@ const server = http.createServer(async (req, res) => {
           expiresAt: loginRequest.expiresAt,
         });
       } catch (err) {
-        sendJson(res, 400, { error: err.message || 'Invalid payload' });
+        const message = err && err.message ? err.message : 'Invalid payload';
+        sendJson(res, message === 'Login request capacity reached' ? 503 : 400, { error: message });
       }
       return;
     }
@@ -3527,11 +3614,13 @@ const server = http.createServer(async (req, res) => {
 function startServer(port) {
   initializeStorage();
   const listenPort = port === undefined ? PORT : port;
-  return server.listen(listenPort, () => {
+  const onListening = () => {
     const address = server.address();
     const actualPort = address && typeof address === 'object' ? address.port : listenPort;
-    console.log(`Shift tracker server listening on http://localhost:${actualPort}`);
-  });
+    const actualHost = LISTEN_HOST || 'localhost';
+    console.log(`Shift tracker server listening on http://${actualHost}:${actualPort}`);
+  };
+  return LISTEN_HOST ? server.listen(listenPort, LISTEN_HOST, onListening) : server.listen(listenPort, onListening);
 }
 
 if (require.main === module) {

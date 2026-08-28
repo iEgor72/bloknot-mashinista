@@ -5,6 +5,8 @@ const Database = require('better-sqlite3');
 
 const DATABASE_FILE_NAME = 'bloknot.sqlite3';
 const BACKUP_DIR_NAME = 'backups';
+const MAX_ANALYTICS_EVENTS_PER_USER = 10000;
+const MAX_ANALYTICS_SESSIONS_PER_USER = 200;
 
 const MIGRATIONS = [
   {
@@ -352,6 +354,18 @@ class SqliteStorage {
           app_version = CASE WHEN excluded.app_version != '' THEN excluded.app_version ELSE analytics_sessions.app_version END
       `),
       deleteExpiredAnalyticsEvents: this.db.prepare('DELETE FROM analytics_events WHERE received_at < ?'),
+      trimAnalyticsEventsForUser: this.db.prepare(`
+        DELETE FROM analytics_events
+        WHERE sid = ? AND id NOT IN (
+          SELECT id FROM analytics_events WHERE sid = ? ORDER BY id DESC LIMIT ?
+        )
+      `),
+      trimAnalyticsSessionsForUser: this.db.prepare(`
+        DELETE FROM analytics_sessions
+        WHERE sid = ? AND session_id NOT IN (
+          SELECT session_id FROM analytics_sessions WHERE sid = ? ORDER BY last_seen_at DESC LIMIT ?
+        )
+      `),
       deleteAnalyticsEventsForUser: this.db.prepare('DELETE FROM analytics_events WHERE sid = ?'),
       deleteAnalyticsSessionsForUser: this.db.prepare('DELETE FROM analytics_sessions WHERE sid = ?'),
       deleteAnalyticsConsentForUser: this.db.prepare('DELETE FROM analytics_consents WHERE sid = ?'),
@@ -455,6 +469,8 @@ class SqliteStorage {
     const days = Math.max(30, Math.min(730, Number(retentionDays) || 180));
     const cutoff = new Date(Date.now() - days * 86400000).toISOString();
     this.statements.deleteExpiredAnalyticsEvents.run(cutoff);
+    this.statements.trimAnalyticsEventsForUser.run(String(sid), String(sid), MAX_ANALYTICS_EVENTS_PER_USER);
+    this.statements.trimAnalyticsSessionsForUser.run(String(sid), String(sid), MAX_ANALYTICS_SESSIONS_PER_USER);
     return { inserted, receivedAt };
   }
 

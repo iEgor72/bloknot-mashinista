@@ -20,6 +20,7 @@
     "vu45:test": "node --test tests/vu45-calculator.test.js",
     "maps:download": "node scripts/download-poekhali-maps.mjs",
     "maps:import:android-backup": "python scripts/import-poekhali-android-backup.py",
+    "maps:import:test": "python -m unittest discover -s tests/android_backup_import -p \"test_*.py\"",
     "reference:import:tch9": "python scripts/import-tch9-reference.py",
     "speeds:import": "python scripts/import-speed-docs.py",
     "regime:import": "python scripts/import-regime-maps.py",
@@ -35,7 +36,7 @@
     "smoke:sw-update": "node scripts/sw-update-smoke.mjs",
     "smoke:local": "node scripts/local-smoke.mjs",
     "smoke:offline": "node scripts/offline-smoke.mjs",
-    "smoke:predeploy": "npm run test:server && npm run vu45:test && npm run regime:test && npm run regime:builder:test && npm run catalog:validate && npm run catalog:test && npm run sections:validate && npm run sections:test && npm run station-names:test && npm run smoke:sw-update && npm run smoke:poekhali-json && npm run smoke:local && npm run smoke:offline",
+    "smoke:predeploy": "npm run test:server && npm run vu45:test && npm run maps:import:test && npm run regime:test && npm run regime:builder:test && npm run catalog:validate && npm run catalog:test && npm run sections:validate && npm run sections:test && npm run station-names:test && npm run smoke:sw-update && npm run smoke:poekhali-json && npm run smoke:local && npm run smoke:offline",
     "smoke:prod-cache": "node scripts/prod-cache-smoke.mjs"
   },
   "devDependencies": {

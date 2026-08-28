@@ -81,6 +81,10 @@ if '--menu-only' in sys.argv:
         short_description_result,
     )) else 1)
 
+if not WEBHOOK_SECRET:
+    print('ERROR: TELEGRAM_WEBHOOK_SECRET not found in env or .env file')
+    sys.exit(1)
+
 print('=== Setting up Telegram bot ===\n')
 
 print('1. Deleting old webhook...')
@@ -92,8 +96,7 @@ set_webhook_payload = {
     'allowed_updates': ['message'],
     'drop_pending_updates': True,
 }
-if WEBHOOK_SECRET:
-    set_webhook_payload['secret_token'] = WEBHOOK_SECRET
+set_webhook_payload['secret_token'] = WEBHOOK_SECRET
 
 tg('setWebhook', set_webhook_payload)
 
