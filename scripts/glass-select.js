@@ -162,7 +162,7 @@
     if (trigger) { trigger.classList.add('is-open'); trigger.setAttribute('aria-expanded', 'true'); }
     root.classList.add('is-open');
     // Let an enclosing sheet/card grow so the absolute menu is not clipped.
-    var holder = root.closest && root.closest('.bottom-sheet, .settings-card, .shift-share-card');
+    var holder = root.closest && root.closest('.bottom-sheet, .settings-card, .shift-share-card, .vu45-locomotive');
     if (holder) holder.classList.add('has-open-glass-select');
     // Flip the menu upward when there isn't room below (e.g. above the bottom
     // nav), so the last option is never hidden/unreachable.
@@ -172,7 +172,7 @@
       var menuH = menu.offsetHeight || 0;
       var spaceBelow = window.innerHeight - tr.bottom;
       var bottomGuard = 100; // bottom nav + breathing room
-      if (spaceBelow - bottomGuard < menuH && tr.top > spaceBelow) {
+      if (root.getAttribute('data-glass-direction') !== 'down' && spaceBelow - bottomGuard < menuH && tr.top > spaceBelow) {
         root.classList.add('is-flip-up');
       }
       var active = menu.querySelector('.glass-select-option.is-active');

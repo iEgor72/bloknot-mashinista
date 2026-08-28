@@ -185,6 +185,12 @@
   overflow: hidden;
 }
 .vu45-locomotive.is-enabled { box-shadow: inset 0 0 0 1px color-mix(in oklch, var(--accent) 35%, var(--hair)); }
+.vu45-locomotive.has-open-glass-select {
+  position: relative;
+  z-index: var(--layer-overlay);
+  overflow: visible;
+}
+.vu45-locomotive.has-open-glass-select .vu45-locomotive-fields { overflow: visible; }
 .vu45-locomotive-toggle {
   width: 100%;
   min-height: 58px;
