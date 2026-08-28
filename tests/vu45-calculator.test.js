@@ -83,10 +83,24 @@ test('disabled locomotive values do not affect the calculation', () => {
 
 test('locomotive catalog calculates total force for each brake mode', () => {
   assert.deepEqual(
+    vu45.LOCOMOTIVE_PRESETS.slice(0, 3).map((preset) => preset.id),
+    ['3te25k2m', '2te25km', '3te28']
+  );
+  assert.deepEqual(
+    { weight: vu45.locomotiveValues('3te25k2m', 'loaded').weightTf, force: vu45.locomotiveValues('3te25k2m', 'loaded').brakeForceTf },
+    { weight: 441, force: 180 }
+  );
+  assert.deepEqual(
+    { weight: vu45.locomotiveValues('2te25km', 'loaded').weightTf, force: vu45.locomotiveValues('2te25km', 'loaded').brakeForceTf },
+    { weight: 288, force: 120 }
+  );
+  assert.equal(vu45.locomotiveValues('3te28', 'medium').brakeForceTf, 126);
+  assert.deepEqual(
     { weight: vu45.locomotiveValues('3es5k', 'loaded').weightTf, force: vu45.locomotiveValues('3es5k', 'loaded').brakeForceTf },
     { weight: 288, force: 168 }
   );
   assert.equal(vu45.locomotiveValues('3es5k', 'medium').brakeForceTf, 117.6);
   assert.equal(vu45.locomotiveValues('3es5k', 'empty').brakeForceTf, 72);
   assert.equal(vu45.locomotiveValues('2te116', 'loaded').brakeForceTf, 144);
+  assert.ok(vu45.LOCOMOTIVE_PRESETS.findIndex((preset) => preset.id === 'vl85') > vu45.LOCOMOTIVE_PRESETS.findIndex((preset) => preset.id === 'm62'));
 });

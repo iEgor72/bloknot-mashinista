@@ -16,7 +16,7 @@
       weightTf: '',
       totalAxles: '',
       gradientPermille: '',
-      locomotive: { enabled: false, presetId: '3es5k', mode: 'loaded', manualSeries: '', weightTf: 288, brakeForceTf: 168 },
+      locomotive: { enabled: false, presetId: '3te25k2m', mode: 'loaded', manualSeries: '', weightTf: 441, brakeForceTf: 180 },
       groups: [{ id: createId(), presetId: 'composite-loaded', axles: '', forcePerAxle: 8.5 }]
     };
   }
@@ -56,7 +56,7 @@
     var requestedId = String(locomotive && locomotive.presetId || '');
     if (requestedId) return getLocomotivePreset(requestedId).id;
     var legacySeries = sanitizeSeriesInput(locomotive && locomotive.series).trim().toLocaleUpperCase('ru-RU');
-    if (!legacySeries) return '3es5k';
+    if (!legacySeries) return '3te25k2m';
     for (var i = 0; i < calculator.LOCOMOTIVE_PRESETS.length; i++) {
       if (calculator.LOCOMOTIVE_PRESETS[i].label.toLocaleUpperCase('ru-RU') === legacySeries) return calculator.LOCOMOTIVE_PRESETS[i].id;
     }
@@ -75,6 +75,17 @@
     return state.locomotive.presetId === 'manual'
       ? state.locomotive.manualSeries || 'Другой локомотив'
       : getLocomotivePreset(state.locomotive.presetId).label;
+  }
+
+  function locomotiveWarningText() {
+    if (state.locomotive.presetId === 'manual') {
+      return 'Серии нет в справочнике: введите массу и нажатие из действующей инструкции.';
+    }
+    var preset = getLocomotivePreset(state.locomotive.presetId);
+    if (preset.forceBasis === 'default-diesel') {
+      return 'Нажатие рассчитано по нормативной строке «остальные тепловозы»: 10 тс/ось на гружёном и 5 тс/ось на порожнем режиме. Сверьте местную таблицу.';
+    }
+    return 'Масса и нажатие подставлены из таблиц для выбранной серии и режима. Проверьте их применимость по действующей инструкции.';
   }
 
   function normalizeState(candidate) {
@@ -315,9 +326,7 @@
     elements.locomotiveForce.readOnly = !manualLocomotive;
     elements.locomotiveWeight.value = String(state.locomotive.weightTf == null ? '' : state.locomotive.weightTf).replace('.', ',');
     elements.locomotiveForce.value = String(state.locomotive.brakeForceTf == null ? '' : state.locomotive.brakeForceTf).replace('.', ',');
-    elements.locomotiveWarning.textContent = manualLocomotive
-      ? 'Серии нет в справочнике: введите массу и нажатие из действующей инструкции.'
-      : 'Масса и нажатие подставлены из таблиц для выбранной серии и режима. Проверьте их применимость по действующей инструкции.';
+    elements.locomotiveWarning.textContent = locomotiveWarningText();
     renderGroups();
     updateResult();
   }

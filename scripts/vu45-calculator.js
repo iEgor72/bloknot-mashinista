@@ -21,21 +21,24 @@
   ];
 
   var LOCOMOTIVE_PRESETS = [
+    { id: '3te25k2m', label: '3ТЭ25К2М', axles: 18, weightTf: 441, loadedPerAxleTf: 10, emptyPerAxleTf: 5, forceBasis: 'default-diesel' },
+    { id: '2te25km', label: '2ТЭ25КМ', axles: 12, weightTf: 288, loadedPerAxleTf: 10, emptyPerAxleTf: 5, forceBasis: 'default-diesel' },
+    { id: '3te28', label: '3ТЭ28', axles: 18, weightTf: 441, loadedPerAxleTf: 10, emptyPerAxleTf: 5, forceBasis: 'default-diesel' },
     { id: '3es5k', label: '3ЭС5К', axles: 12, weightTf: 288, loadedPerAxleTf: 14, emptyPerAxleTf: 6 },
     { id: '2es5k', label: '2ЭС5К', axles: 8, weightTf: 192, loadedPerAxleTf: 14, emptyPerAxleTf: 6 },
+    { id: '2te116', label: '2ТЭ116', axles: 12, weightTf: 276, loadedPerAxleTf: 12, emptyPerAxleTf: 5 },
+    { id: '3te10', label: '3ТЭ10М / 3ТЭ10У', axles: 18, weightTf: 414, loadedPerAxleTf: 12, emptyPerAxleTf: 5 },
+    { id: '2te10', label: '2ТЭ10 (кроме 2ТЭ10Л)', axles: 12, weightTf: 276, loadedPerAxleTf: 12, emptyPerAxleTf: 5 },
+    { id: '4te10s', label: '4ТЭ10С', axles: 24, weightTf: 552, loadedPerAxleTf: 12, emptyPerAxleTf: 5 },
+    { id: '3m62u', label: '3М62У', axles: 18, weightTf: 378, loadedPerAxleTf: 12, emptyPerAxleTf: 5 },
+    { id: '2m62u', label: '2М62У', axles: 12, weightTf: 252, loadedPerAxleTf: 12, emptyPerAxleTf: 5 },
+    { id: '2m62', label: '2М62', axles: 12, weightTf: 240, loadedPerAxleTf: 12, emptyPerAxleTf: 5 },
+    { id: 'm62', label: 'М62', axles: 6, weightTf: 120, loadedPerAxleTf: 12, emptyPerAxleTf: 5 },
     { id: 'vl85', label: 'ВЛ85', axles: 12, weightTf: 288, loadedPerAxleTf: 14, emptyPerAxleTf: 6 },
     { id: 'vl80r', label: 'ВЛ80Р', axles: 8, weightTf: 192, loadedPerAxleTf: 14, emptyPerAxleTf: 6 },
     { id: 'vl80s', label: 'ВЛ80С', axles: 8, weightTf: 192, loadedPerAxleTf: 14, emptyPerAxleTf: 6 },
     { id: 'vl80t', label: 'ВЛ80Т', axles: 8, weightTf: 192, loadedPerAxleTf: 14, emptyPerAxleTf: 6 },
     { id: 'vl80k', label: 'ВЛ80К', axles: 8, weightTf: 184, loadedPerAxleTf: 14, emptyPerAxleTf: 6 },
-    { id: '3te10', label: '3ТЭ10М / 3ТЭ10У', axles: 18, weightTf: 414, loadedPerAxleTf: 12, emptyPerAxleTf: 5 },
-    { id: '2te10', label: '2ТЭ10 (кроме 2ТЭ10Л)', axles: 12, weightTf: 276, loadedPerAxleTf: 12, emptyPerAxleTf: 5 },
-    { id: '4te10s', label: '4ТЭ10С', axles: 24, weightTf: 552, loadedPerAxleTf: 12, emptyPerAxleTf: 5 },
-    { id: '2te116', label: '2ТЭ116', axles: 12, weightTf: 276, loadedPerAxleTf: 12, emptyPerAxleTf: 5 },
-    { id: '3m62u', label: '3М62У', axles: 18, weightTf: 378, loadedPerAxleTf: 12, emptyPerAxleTf: 5 },
-    { id: '2m62u', label: '2М62У', axles: 12, weightTf: 252, loadedPerAxleTf: 12, emptyPerAxleTf: 5 },
-    { id: '2m62', label: '2М62', axles: 12, weightTf: 240, loadedPerAxleTf: 12, emptyPerAxleTf: 5 },
-    { id: 'm62', label: 'М62', axles: 6, weightTf: 120, loadedPerAxleTf: 12, emptyPerAxleTf: 5 },
     { id: 'manual', label: 'Другой локомотив', axles: 0, weightTf: 0, loadedPerAxleTf: 0, emptyPerAxleTf: 0 }
   ];
 
