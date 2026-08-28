@@ -99,18 +99,26 @@ test('public contact surface points only to the Telegram bot', async () => {
 });
 
 test('versioned style namespace serves the current shell stylesheet', async () => {
-  const response = await fetch(baseUrl + '/styles/v412/56-profile.css');
+  const response = await fetch(baseUrl + '/styles/v413/56-profile.css');
   const source = await response.text();
   assert.equal(response.status, 200);
   assert.match(response.headers.get('content-type') || '', /text\/css/i);
   assert.match(source, /\.profile-summary-card/);
   assert.match(source, /\.profile-summary-icon svg/);
 
-  const versionedRuntime = await fetch(baseUrl + '/scripts/v412/render.js');
+  const editorStyle = await fetch(baseUrl + '/styles/v413/59-community-editor.css');
+  assert.equal(editorStyle.status, 200);
+  assert.match(await editorStyle.text(), /\.community-editor-canvas-wrap/);
+
+  const versionedRuntime = await fetch(baseUrl + '/scripts/v413/render.js');
   assert.equal(versionedRuntime.status, 200);
   assert.match(await versionedRuntime.text(), /renderProfileSummary/);
 
-  const traversalAttempt = await fetch(baseUrl + '/scripts/v412/..%2Fserver.js');
+  const editorRuntime = await fetch(baseUrl + '/scripts/v413/community-editor.js');
+  assert.equal(editorRuntime.status, 200);
+  assert.match(await editorRuntime.text(), /CommunityVisualEditor/);
+
+  const traversalAttempt = await fetch(baseUrl + '/scripts/v413/..%2Fserver.js');
   assert.equal(traversalAttempt.status, 404);
 
   const previousBootstrap = await fetch(baseUrl + '/sw-bootstrap-v397.js');
@@ -263,6 +271,419 @@ test('profile keeps canonical railway and depot ids alongside the legacy depot l
   assert.equal(loaded.body.profile.depot, 'ТЧЭ-9 Комсомольск-на-Амуре');
   assert.equal(loaded.body.profile.railwayId, 'dvost');
   assert.equal(loaded.body.profile.depotId, 'rzd:dvost:tche-9:komsomolsk-na-amure');
+});
+
+test('community proposals are depot-scoped, peer-reviewed, and curator elections require quorum', async () => {
+  const depotId = 'rzd:dvost:tche-9:komsomolsk-na-amure';
+  const unauthorizedDashboard = await jsonRequest('/api/community/dashboard');
+  assert.equal(unauthorizedDashboard.response.status, 401);
+  const adminToken = await authenticate({ id: 9001, first_name: 'Администратор' });
+  const people = [7101, 7102, 7103, 7104, 7105].map((id, index) => ({
+    id,
+    first_name: `Коллега ${index + 1}`,
+  }));
+  const tokens = [];
+  for (const [index, person] of people.entries()) {
+    const token = await authenticate(person);
+    tokens.push(token);
+    const profile = await jsonRequest('/api/profile', {
+      method: 'PUT',
+      headers: { ...bearer(token), 'Content-Type': 'application/json' },
+      body: JSON.stringify({ profile: {
+        firstName: person.first_name,
+        role: 'Машинист',
+        depot: 'ТЧЭ-9 Комсомольск-на-Амуре',
+        railwayId: 'dvost',
+        depotId,
+      } }),
+    });
+    assert.equal(profile.response.status, 200);
+    const dashboard = await jsonRequest('/api/community/dashboard', { headers: bearer(token) });
+    assert.equal(dashboard.response.status, 200);
+    assert.equal(dashboard.body.context.depot.id, depotId);
+    assert.equal(dashboard.body.membership.status, 'selected');
+    const verified = await jsonRequest('/api/admin/community/memberships', {
+      method: 'PATCH',
+      headers: { ...bearer(adminToken), 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        sid: String(person.id),
+        scopeLevel: 'depot',
+        railwayId: 'dvost',
+        depotId,
+        status: 'verified',
+        role: index === 1 ? 'reviewer' : 'member',
+      }),
+    });
+    assert.equal(verified.response.status, 200);
+  }
+
+  const unsafeWithoutOrder = await jsonRequest('/api/community/proposals', {
+    method: 'POST',
+    headers: { ...bearer(tokens[0]), 'Content-Type': 'application/json' },
+    body: JSON.stringify({
+      kind: 'speed',
+      title: 'Снять 40 и установить 60 км/ч',
+      scope: { level: 'section', sectionId: 'dvost-postyshevo-komsomolsk' },
+      change: { fromSpeed: 40, toSpeed: 60 },
+    }),
+  });
+  assert.equal(unsafeWithoutOrder.response.status, 400);
+  assert.match(unsafeWithoutOrder.body.error, /documentary evidence/i);
+
+  const created = await jsonRequest('/api/community/proposals', {
+    method: 'POST',
+    headers: { ...bearer(tokens[0]), 'Content-Type': 'application/json' },
+    body: JSON.stringify({
+      kind: 'speed',
+      title: 'Снять 40 и установить 60 км/ч',
+      summary: 'Ограничение отменено приказом',
+      scope: { level: 'section', sectionId: 'dvost-postyshevo-komsomolsk' },
+      change: { fromSpeed: 40, toSpeed: 60 },
+      evidence: { orderNumber: 'ДВОСТ-123 от 28.08.2026' },
+    }),
+  });
+  assert.equal(created.response.status, 201);
+  assert.equal(created.body.proposal.riskLevel, 'safety_increase');
+  assert.equal(created.body.proposal.status, 'reviewing');
+
+  const invalidVisualBoundaries = await jsonRequest('/api/community/proposals', {
+    method: 'POST',
+    headers: { ...bearer(tokens[0]), 'Content-Type': 'application/json' },
+    body: JSON.stringify({
+      kind: 'profile',
+      title: 'Исправить уклон визуально',
+      scope: { level: 'section', sectionId: 'dvost-postyshevo-komsomolsk' },
+      change: { editor: 'visual-v1', sectionId: 'dvost-postyshevo-komsomolsk', startM: 3718250, endM: 3719000, fromGrade: 1, toGrade: 0 },
+    }),
+  });
+  assert.equal(invalidVisualBoundaries.response.status, 400);
+  assert.match(invalidVisualBoundaries.body.error, /100 meter steps/i);
+
+  const visualProfile = await jsonRequest('/api/community/proposals', {
+    method: 'POST',
+    headers: { ...bearer(tokens[0]), 'Content-Type': 'application/json' },
+    body: JSON.stringify({
+      kind: 'profile',
+      title: 'Исправить уклон визуально',
+      scope: { level: 'section', sectionId: 'dvost-postyshevo-komsomolsk' },
+      change: {
+        editor: 'visual-v1', sectionId: 'dvost-postyshevo-komsomolsk', startM: 3718200, endM: 3719000,
+        fromGrade: 12, toGrade: 0, source: { schemaVersion: 'подмена', profileStatus: 'подмена' },
+      },
+    }),
+  });
+  assert.equal(visualProfile.response.status, 201);
+  assert.equal(visualProfile.body.proposal.change.editor, 'visual-v1');
+  assert.equal(visualProfile.body.proposal.change.startM, 3718200);
+  assert.notEqual(visualProfile.body.proposal.change.fromGrade, 12);
+  assert.match(visualProfile.body.proposal.baseVersion, /^1\.0:/);
+
+  const visualSpeed = await jsonRequest('/api/community/proposals', {
+    method: 'POST',
+    headers: { ...bearer(tokens[0]), 'Content-Type': 'application/json' },
+    body: JSON.stringify({
+      kind: 'speed',
+      title: 'Изменить скорость визуально',
+      scope: { level: 'section', sectionId: 'dvost-postyshevo-komsomolsk' },
+      change: {
+        editor: 'visual-v1', sectionId: 'dvost-postyshevo-komsomolsk', startM: 3718200, endM: 3719000,
+        fromSpeed: 40, toSpeed: 60, action: 'set',
+      },
+      evidence: { sourceReference: 'Приказ ДВОСТ-123 от 28.08.2026' },
+    }),
+  });
+  assert.equal(visualSpeed.response.status, 201);
+  assert.equal(visualSpeed.body.proposal.riskLevel, 'safety_increase');
+  assert.equal(visualSpeed.body.proposal.change.toSpeed, 60);
+
+  const invalidObjectCoordinate = await jsonRequest('/api/community/proposals', {
+    method: 'POST',
+    headers: { ...bearer(tokens[0]), 'Content-Type': 'application/json' },
+    body: JSON.stringify({
+      kind: 'object',
+      title: 'Добавить КТСМ в неправильной точке',
+      scope: { level: 'section', sectionId: 'dvost-postyshevo-komsomolsk' },
+      change: {
+        editor: 'visual-v1', sectionId: 'dvost-postyshevo-komsomolsk', coordinateM: 3718255, action: 'add',
+        object: { kind: 'ktsm', name: 'КТСМ 3718', direction: 'both' },
+      },
+    }),
+  });
+  assert.equal(invalidObjectCoordinate.response.status, 400);
+  assert.match(invalidObjectCoordinate.body.error, /10 meter steps/i);
+
+  const visualObject = await jsonRequest('/api/community/proposals', {
+    method: 'POST',
+    headers: { ...bearer(tokens[0]), 'Content-Type': 'application/json' },
+    body: JSON.stringify({
+      kind: 'object',
+      title: 'Добавить КТСМ 3718 км',
+      scope: { level: 'section', sectionId: 'dvost-postyshevo-komsomolsk' },
+      change: {
+        editor: 'visual-v1', sectionId: 'dvost-postyshevo-komsomolsk', coordinateM: 3718200, action: 'add',
+        object: { kind: 'ktsm', collection: 'подмена', name: 'КТСМ 3718', direction: 'odd' },
+      },
+    }),
+  });
+  assert.equal(visualObject.response.status, 201);
+  assert.equal(visualObject.body.proposal.kind, 'object');
+  assert.equal(visualObject.body.proposal.riskLevel, 'normal');
+  assert.equal(visualObject.body.proposal.change.object.collection, 'infrastructure');
+  assert.equal(visualObject.body.proposal.change.coordinateM, 3718200);
+
+  const geometryWithoutTrackEvidence = await jsonRequest('/api/community/proposals', {
+    method: 'POST',
+    headers: { ...bearer(tokens[0]), 'Content-Type': 'application/json' },
+    body: JSON.stringify({
+      kind: 'geometry',
+      title: 'Исправить линию пути по GPS',
+      scope: { level: 'section', sectionId: 'dvost-postyshevo-komsomolsk' },
+      change: {
+        editor: 'visual-v1', sectionId: 'dvost-postyshevo-komsomolsk', action: 'replace_fragment',
+        pathId: 'postyshevo-komsomolsk-sector-18', startM: 3718000, endM: 3719000,
+        points: [{ chainageM: 3718500, lat: 51.1933023, lon: 136.7139577, accuracyM: 8 }],
+      },
+    }),
+  });
+  assert.equal(geometryWithoutTrackEvidence.response.status, 400);
+  assert.match(geometryWithoutTrackEvidence.body.error, /documentary evidence/i);
+
+  const visualGeometry = await jsonRequest('/api/community/proposals', {
+    method: 'POST',
+    headers: { ...bearer(tokens[0]), 'Content-Type': 'application/json' },
+    body: JSON.stringify({
+      kind: 'geometry',
+      title: 'Исправить линию пути по GPS',
+      scope: { level: 'section', sectionId: 'dvost-postyshevo-komsomolsk' },
+      change: {
+        editor: 'visual-v1', sectionId: 'dvost-postyshevo-komsomolsk', action: 'replace_fragment',
+        pathId: 'postyshevo-komsomolsk-sector-18', startM: 3718000, endM: 3719000,
+        points: [{ chainageM: 3718500, lat: 51.1933023, lon: 136.7139577, accuracyM: 8 }],
+      },
+      evidence: { sourceReference: 'GPS-поездка 28.08.2026, точность 8 м' },
+    }),
+  });
+  assert.equal(visualGeometry.response.status, 201);
+  assert.equal(visualGeometry.body.proposal.kind, 'geometry');
+  assert.equal(visualGeometry.body.proposal.riskLevel, 'safety_increase');
+  assert.equal(visualGeometry.body.proposal.change.points.length, 3);
+  assert.equal(visualGeometry.body.proposal.change.points[0].chainageM, 3718000);
+  assert.equal(visualGeometry.body.proposal.change.points[2].chainageM, 3719000);
+
+  const deleteStationWithoutEvidence = await jsonRequest('/api/community/proposals', {
+    method: 'POST',
+    headers: { ...bearer(tokens[0]), 'Content-Type': 'application/json' },
+    body: JSON.stringify({
+      kind: 'object',
+      title: 'Удалить ошибочную станцию',
+      scope: { level: 'section', sectionId: 'dvost-postyshevo-komsomolsk' },
+      change: {
+        editor: 'visual-v1', sectionId: 'dvost-postyshevo-komsomolsk', action: 'remove',
+        sourceObject: { collection: 'stations', index: 7, name: 'подмена', coordinateM: 1 },
+      },
+    }),
+  });
+  assert.equal(deleteStationWithoutEvidence.response.status, 400);
+  assert.match(deleteStationWithoutEvidence.body.error, /documentary evidence/i);
+
+  const deleteStation = await jsonRequest('/api/community/proposals', {
+    method: 'POST',
+    headers: { ...bearer(tokens[0]), 'Content-Type': 'application/json' },
+    body: JSON.stringify({
+      kind: 'object',
+      title: 'Удалить ошибочную станцию',
+      scope: { level: 'section', sectionId: 'dvost-postyshevo-komsomolsk' },
+      change: {
+        editor: 'visual-v1', sectionId: 'dvost-postyshevo-komsomolsk', action: 'remove',
+        sourceObject: { collection: 'stations', index: 7, name: 'подмена', coordinateM: 1 },
+      },
+      evidence: { sourceReference: 'Схема станции Горин от 28.08.2026' },
+    }),
+  });
+  assert.equal(deleteStation.response.status, 201);
+  assert.equal(deleteStation.body.proposal.riskLevel, 'safety_increase');
+  assert.equal(deleteStation.body.proposal.change.sourceObject.name, 'ГОРИН');
+  assert.equal(deleteStation.body.proposal.change.sourceObject.coordinateM, 3716453);
+
+  const selfReview = await jsonRequest(`/api/community/proposals/${created.body.proposal.id}/reviews`, {
+    method: 'POST',
+    headers: { ...bearer(tokens[0]), 'Content-Type': 'application/json' },
+    body: JSON.stringify({ verdict: 'confirm' }),
+  });
+  assert.equal(selfReview.response.status, 403);
+
+  const peerReview = await jsonRequest(`/api/community/proposals/${created.body.proposal.id}/reviews`, {
+    method: 'POST',
+    headers: { ...bearer(tokens[1]), 'Content-Type': 'application/json' },
+    body: JSON.stringify({ verdict: 'confirm', notes: 'Приказ и участок проверены' }),
+  });
+  assert.equal(peerReview.response.status, 200);
+  assert.equal(peerReview.body.review.weight, 1);
+
+  const electionCreated = await jsonRequest('/api/community/elections', {
+    method: 'POST',
+    headers: { ...bearer(tokens[0]), 'Content-Type': 'application/json' },
+    body: JSON.stringify({ scope: { level: 'depot' }, seats: 3 }),
+  });
+  assert.equal(electionCreated.response.status, 201);
+  assert.equal(electionCreated.body.election.quorum, 5);
+  const electionId = electionCreated.body.election.id;
+
+  const nominated = await jsonRequest(`/api/community/elections/${electionId}/candidates`, {
+    method: 'POST',
+    headers: { ...bearer(tokens[1]), 'Content-Type': 'application/json' },
+    body: JSON.stringify({ statement: 'Готов проверять предложения коллег' }),
+  });
+  assert.equal(nominated.response.status, 200);
+
+  const voting = await jsonRequest(`/api/admin/community/elections/${electionId}`, {
+    method: 'PATCH',
+    headers: { ...bearer(adminToken), 'Content-Type': 'application/json' },
+    body: JSON.stringify({ status: 'voting' }),
+  });
+  assert.equal(voting.response.status, 200);
+  const candidateKey = voting.body.election.candidates[0].key;
+  for (const token of tokens) {
+    const ballot = await jsonRequest(`/api/community/elections/${electionId}/ballot`, {
+      method: 'PUT',
+      headers: { ...bearer(token), 'Content-Type': 'application/json' },
+      body: JSON.stringify({ candidateKeys: [candidateKey] }),
+    });
+    assert.equal(ballot.response.status, 200);
+  }
+
+  const closed = await jsonRequest(`/api/admin/community/elections/${electionId}`, {
+    method: 'PATCH',
+    headers: { ...bearer(adminToken), 'Content-Type': 'application/json' },
+    body: JSON.stringify({ status: 'closed' }),
+  });
+  assert.equal(closed.response.status, 200);
+  assert.equal(closed.body.election.turnout, 5);
+  assert.equal(closed.body.election.quorumMet, true);
+  assert.equal(closed.body.election.candidates[0].status, 'elected');
+
+  const electedDashboard = await jsonRequest('/api/community/dashboard', { headers: bearer(tokens[1]) });
+  assert.equal(electedDashboard.response.status, 200);
+  assert.equal(electedDashboard.body.membership.role, 'curator');
+
+  for (const person of people.slice(2, 4)) {
+    const promoted = await jsonRequest('/api/admin/community/memberships', {
+      method: 'PATCH',
+      headers: { ...bearer(adminToken), 'Content-Type': 'application/json' },
+      body: JSON.stringify({ sid: String(person.id), scopeLevel: 'depot', railwayId: 'dvost', depotId, status: 'verified', role: 'reviewer' }),
+    });
+    assert.equal(promoted.response.status, 200);
+  }
+  for (const token of [tokens[1], tokens[2], tokens[3]]) {
+    const review = await jsonRequest(`/api/community/proposals/${created.body.proposal.id}/reviews`, {
+      method: 'PUT',
+      headers: { ...bearer(token), 'Content-Type': 'application/json' },
+      body: JSON.stringify({ verdict: 'confirm', notes: 'Проверено по приказу и участку' }),
+    });
+    assert.equal(review.response.status, 200);
+  }
+  const releases = await jsonRequest('/api/community/releases', { headers: bearer(tokens[0]) });
+  assert.equal(releases.response.status, 200);
+  assert.equal(releases.body.total, 1);
+  assert.equal(releases.body.releases[0].proposalId, created.body.proposal.id);
+  const publishedDashboard = await jsonRequest('/api/community/dashboard', { headers: bearer(tokens[0]) });
+  assert.equal(publishedDashboard.body.myProposals.find((proposal) => proposal.id === created.body.proposal.id).status, 'published');
+  assert.equal(publishedDashboard.body.releases.length, 1);
+
+  for (const token of [tokens[1], tokens[2]]) {
+    const review = await jsonRequest(`/api/community/proposals/${visualProfile.body.proposal.id}/reviews`, {
+      method: 'PUT',
+      headers: { ...bearer(token), 'Content-Type': 'application/json' },
+      body: JSON.stringify({ verdict: 'confirm', notes: 'Профиль проверен по режимной карте' }),
+    });
+    assert.equal(review.response.status, 200);
+  }
+  const effectiveSection = await jsonRequest('/api/community/sections/dvost-postyshevo-komsomolsk/effective', {
+    headers: bearer(tokens[0]),
+  });
+  assert.equal(effectiveSection.response.status, 200);
+  assert.equal(effectiveSection.body.section.community.version, 2);
+  assert.equal(effectiveSection.body.section.community.releaseCount, 1);
+  assert.equal(effectiveSection.body.section.community.skipped.length, 1);
+  assert.ok(effectiveSection.body.section.elements.some((item) =>
+    item.start_m >= 3718200 && item.start_m < 3719000 && item.grad_permille === 0 && item.community_version === 2
+  ));
+
+  const staleVisualChange = await jsonRequest('/api/community/proposals', {
+    method: 'POST',
+    headers: { ...bearer(tokens[0]), 'Content-Type': 'application/json' },
+    body: JSON.stringify({
+      kind: 'profile',
+      title: 'Устаревшая правка профиля',
+      scope: { level: 'section', sectionId: 'dvost-postyshevo-komsomolsk' },
+      change: {
+        editor: 'visual-v1', sectionId: 'dvost-postyshevo-komsomolsk', startM: 3718200, endM: 3719000,
+        fromGrade: 0, toGrade: 1, source: { communityVersion: 1 },
+      },
+    }),
+  });
+  assert.equal(staleVisualChange.response.status, 400);
+  assert.match(staleVisualChange.body.error, /уже изменился/i);
+
+  const sectionReleases = await jsonRequest('/api/community/releases', { headers: bearer(tokens[0]) });
+  const profileRelease = sectionReleases.body.releases.find((release) => release.proposalId === visualProfile.body.proposal.id);
+  assert.ok(profileRelease);
+  const rollbackProposal = await jsonRequest('/api/community/proposals', {
+    method: 'POST',
+    headers: { ...bearer(tokens[4]), 'Content-Type': 'application/json' },
+    body: JSON.stringify({
+      kind: 'section',
+      title: 'Отменить ошибочную правку профиля',
+      summary: 'После повторной проверки исходный профиль оказался верным',
+      scope: { level: 'section', sectionId: 'dvost-postyshevo-komsomolsk' },
+      change: {
+        editor: 'rollback-v1', action: 'rollback', sectionId: 'dvost-postyshevo-komsomolsk',
+        targetReleaseId: profileRelease.id, source: { communityVersion: 2 },
+      },
+    }),
+  });
+  assert.equal(rollbackProposal.response.status, 201);
+  assert.equal(rollbackProposal.body.proposal.change.targetVersion, 2);
+  for (const token of [tokens[1], tokens[2]]) {
+    const review = await jsonRequest(`/api/community/proposals/${rollbackProposal.body.proposal.id}/reviews`, {
+      method: 'PUT',
+      headers: { ...bearer(token), 'Content-Type': 'application/json' },
+      body: JSON.stringify({ verdict: 'confirm', notes: 'Отмена проверена по исходным данным' }),
+    });
+    assert.equal(review.response.status, 200);
+  }
+  const rolledBackSection = await jsonRequest('/api/community/sections/dvost-postyshevo-komsomolsk/effective', {
+    headers: bearer(tokens[0]),
+  });
+  assert.equal(rolledBackSection.response.status, 200);
+  assert.equal(rolledBackSection.body.section.community.version, 3);
+  assert.equal(rolledBackSection.body.section.community.activeReleaseCount, 0);
+  assert.equal(rolledBackSection.body.section.community.rollbackCount, 1);
+  assert.equal(rolledBackSection.body.section.community.history.find((item) => item.id === profileRelease.id).state, 'rolled_back');
+  assert.equal(rolledBackSection.body.section.elements.some((item) => item.community_version === 2), false);
+
+  const duplicateRollback = await jsonRequest('/api/community/proposals', {
+    method: 'POST',
+    headers: { ...bearer(tokens[4]), 'Content-Type': 'application/json' },
+    body: JSON.stringify({
+      kind: 'section', title: 'Повторная отмена',
+      scope: { level: 'section', sectionId: 'dvost-postyshevo-komsomolsk' },
+      change: {
+        editor: 'rollback-v1', action: 'rollback', sectionId: 'dvost-postyshevo-komsomolsk',
+        targetReleaseId: profileRelease.id, source: { communityVersion: 3 },
+      },
+    }),
+  });
+  assert.equal(duplicateRollback.response.status, 400);
+  assert.match(duplicateRollback.body.error, /уже отменена/i);
+
+  const adminOverview = await jsonRequest('/api/admin/community', { headers: bearer(adminToken) });
+  assert.equal(adminOverview.response.status, 200);
+  assert.ok(adminOverview.body.metrics.verifiedMembers >= 5);
+  assert.ok(adminOverview.body.metrics.proposals >= 1);
+  const adminShell = await fetch(baseUrl + '/community-admin');
+  assert.equal(adminShell.status, 200);
+  assert.match(await adminShell.text(), /Управление сообществом/);
 });
 
 test('depot pack proposals are authenticated and visible only to an admin', async () => {

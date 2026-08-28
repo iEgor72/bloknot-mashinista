@@ -141,6 +141,153 @@ const MIGRATIONS = [
         ON analytics_sessions (sid, last_seen_at);
     `,
   },
+  {
+    version: 5,
+    name: 'community scopes proposals reviews releases and elections',
+    sql: `
+      CREATE TABLE IF NOT EXISTS community_memberships (
+        sid TEXT NOT NULL,
+        scope_level TEXT NOT NULL CHECK (scope_level IN ('railway', 'depot', 'service_arm')),
+        scope_key TEXT NOT NULL,
+        railway_id TEXT NOT NULL DEFAULT '',
+        depot_id TEXT NOT NULL DEFAULT '',
+        service_arm_id TEXT NOT NULL DEFAULT '',
+        status TEXT NOT NULL CHECK (status IN ('selected', 'pending', 'verified', 'suspended')),
+        role TEXT NOT NULL CHECK (role IN ('member', 'reviewer', 'curator')),
+        role_source TEXT NOT NULL DEFAULT 'self' CHECK (role_source IN ('self', 'admin', 'peer', 'election')),
+        primary_scope INTEGER NOT NULL DEFAULT 0 CHECK (primary_scope IN (0, 1)),
+        term_ends_at TEXT,
+        created_at TEXT NOT NULL,
+        updated_at TEXT NOT NULL,
+        PRIMARY KEY (sid, scope_level, scope_key)
+      );
+
+      CREATE INDEX IF NOT EXISTS community_memberships_scope_idx
+        ON community_memberships (scope_level, scope_key, status, role);
+      CREATE INDEX IF NOT EXISTS community_memberships_sid_idx
+        ON community_memberships (sid, primary_scope DESC, updated_at DESC);
+
+      CREATE TABLE IF NOT EXISTS community_proposals (
+        id TEXT PRIMARY KEY,
+        author_sid TEXT NOT NULL,
+        kind TEXT NOT NULL CHECK (kind IN ('document', 'speed', 'profile', 'object', 'geometry', 'section')),
+        risk_level TEXT NOT NULL CHECK (risk_level IN ('normal', 'safety_restriction', 'safety_increase')),
+        scope_level TEXT NOT NULL CHECK (scope_level IN ('network', 'railway', 'depot', 'service_arm', 'section')),
+        scope_key TEXT NOT NULL,
+        railway_id TEXT NOT NULL DEFAULT '',
+        depot_id TEXT NOT NULL DEFAULT '',
+        service_arm_id TEXT NOT NULL DEFAULT '',
+        section_id TEXT NOT NULL DEFAULT '',
+        title TEXT NOT NULL,
+        summary TEXT NOT NULL DEFAULT '',
+        base_version TEXT NOT NULL DEFAULT '',
+        change_payload TEXT NOT NULL DEFAULT '{}',
+        evidence_payload TEXT NOT NULL DEFAULT '{}',
+        status TEXT NOT NULL CHECK (status IN ('draft', 'reviewing', 'needs_info', 'accepted', 'published', 'rejected', 'disputed', 'withdrawn')),
+        created_at TEXT NOT NULL,
+        updated_at TEXT NOT NULL
+      );
+
+      CREATE INDEX IF NOT EXISTS community_proposals_scope_status_idx
+        ON community_proposals (scope_level, scope_key, status, updated_at DESC);
+      CREATE INDEX IF NOT EXISTS community_proposals_author_idx
+        ON community_proposals (author_sid, updated_at DESC);
+
+      CREATE TABLE IF NOT EXISTS community_reviews (
+        proposal_id TEXT NOT NULL REFERENCES community_proposals(id) ON DELETE CASCADE,
+        reviewer_sid TEXT NOT NULL,
+        verdict TEXT NOT NULL CHECK (verdict IN ('confirm', 'needs_fix', 'reject', 'abstain')),
+        notes TEXT NOT NULL DEFAULT '',
+        review_weight INTEGER NOT NULL DEFAULT 1 CHECK (review_weight BETWEEN 0 AND 3),
+        reviewer_role TEXT NOT NULL DEFAULT 'member' CHECK (reviewer_role IN ('member', 'reviewer', 'curator')),
+        created_at TEXT NOT NULL,
+        updated_at TEXT NOT NULL,
+        PRIMARY KEY (proposal_id, reviewer_sid)
+      );
+
+      CREATE INDEX IF NOT EXISTS community_reviews_proposal_idx
+        ON community_reviews (proposal_id, verdict, updated_at DESC);
+
+      CREATE TABLE IF NOT EXISTS community_releases (
+        id TEXT PRIMARY KEY,
+        scope_level TEXT NOT NULL CHECK (scope_level IN ('network', 'railway', 'depot', 'service_arm', 'section')),
+        scope_key TEXT NOT NULL,
+        version INTEGER NOT NULL CHECK (version > 0),
+        status TEXT NOT NULL CHECK (status IN ('published', 'rolled_back')),
+        proposal_id TEXT REFERENCES community_proposals(id),
+        payload TEXT NOT NULL DEFAULT '{}',
+        payload_sha256 TEXT NOT NULL,
+        created_by TEXT NOT NULL,
+        created_at TEXT NOT NULL,
+        UNIQUE (scope_level, scope_key, version)
+      );
+
+      CREATE INDEX IF NOT EXISTS community_releases_scope_idx
+        ON community_releases (scope_level, scope_key, version DESC);
+
+      CREATE TABLE IF NOT EXISTS community_elections (
+        id TEXT PRIMARY KEY,
+        scope_level TEXT NOT NULL CHECK (scope_level IN ('depot', 'service_arm')),
+        scope_key TEXT NOT NULL,
+        railway_id TEXT NOT NULL DEFAULT '',
+        depot_id TEXT NOT NULL DEFAULT '',
+        service_arm_id TEXT NOT NULL DEFAULT '',
+        election_kind TEXT NOT NULL DEFAULT 'curator' CHECK (election_kind IN ('curator', 'recall')),
+        status TEXT NOT NULL CHECK (status IN ('draft', 'nominations', 'voting', 'closed', 'cancelled')),
+        seats INTEGER NOT NULL DEFAULT 3 CHECK (seats BETWEEN 1 AND 7),
+        quorum INTEGER NOT NULL DEFAULT 5 CHECK (quorum BETWEEN 2 AND 10000),
+        starts_at TEXT NOT NULL,
+        ends_at TEXT NOT NULL,
+        term_ends_at TEXT,
+        created_by TEXT NOT NULL,
+        created_at TEXT NOT NULL,
+        updated_at TEXT NOT NULL
+      );
+
+      CREATE INDEX IF NOT EXISTS community_elections_scope_idx
+        ON community_elections (scope_level, scope_key, status, ends_at DESC);
+
+      CREATE TABLE IF NOT EXISTS community_candidates (
+        election_id TEXT NOT NULL REFERENCES community_elections(id) ON DELETE CASCADE,
+        candidate_sid TEXT NOT NULL,
+        nominated_by TEXT NOT NULL,
+        statement TEXT NOT NULL DEFAULT '',
+        status TEXT NOT NULL CHECK (status IN ('nominated', 'accepted', 'withdrawn', 'elected', 'not_elected')),
+        created_at TEXT NOT NULL,
+        updated_at TEXT NOT NULL,
+        PRIMARY KEY (election_id, candidate_sid)
+      );
+
+      CREATE TABLE IF NOT EXISTS community_ballots (
+        election_id TEXT NOT NULL REFERENCES community_elections(id) ON DELETE CASCADE,
+        voter_sid TEXT NOT NULL,
+        candidate_sid TEXT NOT NULL,
+        created_at TEXT NOT NULL,
+        PRIMARY KEY (election_id, voter_sid, candidate_sid),
+        FOREIGN KEY (election_id, candidate_sid)
+          REFERENCES community_candidates(election_id, candidate_sid) ON DELETE CASCADE
+      );
+
+      CREATE INDEX IF NOT EXISTS community_ballots_election_idx
+        ON community_ballots (election_id, candidate_sid);
+
+      CREATE TABLE IF NOT EXISTS community_audit_log (
+        id INTEGER PRIMARY KEY AUTOINCREMENT,
+        actor_sid TEXT NOT NULL,
+        action TEXT NOT NULL,
+        entity_type TEXT NOT NULL,
+        entity_id TEXT NOT NULL,
+        scope_key TEXT NOT NULL DEFAULT '',
+        payload TEXT NOT NULL DEFAULT '{}',
+        created_at TEXT NOT NULL
+      );
+
+      CREATE INDEX IF NOT EXISTS community_audit_created_idx
+        ON community_audit_log (created_at DESC, id DESC);
+      CREATE INDEX IF NOT EXISTS community_audit_entity_idx
+        ON community_audit_log (entity_type, entity_id, id DESC);
+    `,
+  },
 ];
 
 function cloneFallback(value) {
@@ -369,6 +516,126 @@ class SqliteStorage {
       deleteAnalyticsEventsForUser: this.db.prepare('DELETE FROM analytics_events WHERE sid = ?'),
       deleteAnalyticsSessionsForUser: this.db.prepare('DELETE FROM analytics_sessions WHERE sid = ?'),
       deleteAnalyticsConsentForUser: this.db.prepare('DELETE FROM analytics_consents WHERE sid = ?'),
+      upsertCommunityMembership: this.db.prepare(`
+        INSERT INTO community_memberships
+          (sid, scope_level, scope_key, railway_id, depot_id, service_arm_id, status, role,
+           role_source, primary_scope, term_ends_at, created_at, updated_at)
+        VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+        ON CONFLICT(sid, scope_level, scope_key) DO UPDATE SET
+          railway_id = excluded.railway_id,
+          depot_id = excluded.depot_id,
+          service_arm_id = excluded.service_arm_id,
+          status = excluded.status,
+          role = excluded.role,
+          role_source = excluded.role_source,
+          primary_scope = excluded.primary_scope,
+          term_ends_at = excluded.term_ends_at,
+          updated_at = excluded.updated_at
+      `),
+      readCommunityMembership: this.db.prepare(`
+        SELECT * FROM community_memberships WHERE sid = ? AND scope_level = ? AND scope_key = ?
+      `),
+      listCommunityMembershipsForSid: this.db.prepare(`
+        SELECT * FROM community_memberships WHERE sid = ?
+        ORDER BY primary_scope DESC, updated_at DESC, scope_level, scope_key
+      `),
+      listCommunityMemberships: this.db.prepare(`
+        SELECT * FROM community_memberships
+        ORDER BY updated_at DESC, sid, scope_level, scope_key LIMIT ?
+      `),
+      clearCommunityPrimaryMemberships: this.db.prepare(`
+        UPDATE community_memberships SET primary_scope = 0, updated_at = ?
+        WHERE sid = ? AND primary_scope = 1
+      `),
+      insertCommunityProposal: this.db.prepare(`
+        INSERT INTO community_proposals
+          (id, author_sid, kind, risk_level, scope_level, scope_key, railway_id, depot_id,
+           service_arm_id, section_id, title, summary, base_version, change_payload,
+           evidence_payload, status, created_at, updated_at)
+        VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+      `),
+      readCommunityProposal: this.db.prepare('SELECT * FROM community_proposals WHERE id = ?'),
+      listCommunityProposals: this.db.prepare(`
+        SELECT * FROM community_proposals ORDER BY updated_at DESC, id DESC LIMIT ?
+      `),
+      updateCommunityProposalStatus: this.db.prepare(`
+        UPDATE community_proposals SET status = ?, updated_at = ? WHERE id = ?
+      `),
+      upsertCommunityReview: this.db.prepare(`
+        INSERT INTO community_reviews
+          (proposal_id, reviewer_sid, verdict, notes, review_weight, reviewer_role, created_at, updated_at)
+        VALUES (?, ?, ?, ?, ?, ?, ?, ?)
+        ON CONFLICT(proposal_id, reviewer_sid) DO UPDATE SET
+          verdict = excluded.verdict,
+          notes = excluded.notes,
+          review_weight = excluded.review_weight,
+          reviewer_role = excluded.reviewer_role,
+          updated_at = excluded.updated_at
+      `),
+      listCommunityReviews: this.db.prepare(`
+        SELECT * FROM community_reviews WHERE proposal_id = ? ORDER BY updated_at DESC, reviewer_sid
+      `),
+      insertCommunityRelease: this.db.prepare(`
+        INSERT INTO community_releases
+          (id, scope_level, scope_key, version, status, proposal_id, payload, payload_sha256, created_by, created_at)
+        VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+      `),
+      listCommunityReleases: this.db.prepare(`
+        SELECT * FROM community_releases ORDER BY created_at DESC, id DESC LIMIT ?
+      `),
+      insertCommunityElection: this.db.prepare(`
+        INSERT INTO community_elections
+          (id, scope_level, scope_key, railway_id, depot_id, service_arm_id, election_kind,
+           status, seats, quorum, starts_at, ends_at, term_ends_at, created_by, created_at, updated_at)
+        VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+      `),
+      readCommunityElection: this.db.prepare('SELECT * FROM community_elections WHERE id = ?'),
+      listCommunityElections: this.db.prepare(`
+        SELECT * FROM community_elections ORDER BY updated_at DESC, id DESC LIMIT ?
+      `),
+      updateCommunityElectionStatus: this.db.prepare(`
+        UPDATE community_elections SET status = ?, updated_at = ? WHERE id = ?
+      `),
+      upsertCommunityCandidate: this.db.prepare(`
+        INSERT INTO community_candidates
+          (election_id, candidate_sid, nominated_by, statement, status, created_at, updated_at)
+        VALUES (?, ?, ?, ?, ?, ?, ?)
+        ON CONFLICT(election_id, candidate_sid) DO UPDATE SET
+          statement = excluded.statement,
+          status = excluded.status,
+          updated_at = excluded.updated_at
+      `),
+      listCommunityCandidates: this.db.prepare(`
+        SELECT c.*, COUNT(b.voter_sid) AS votes
+        FROM community_candidates c
+        LEFT JOIN community_ballots b
+          ON b.election_id = c.election_id AND b.candidate_sid = c.candidate_sid
+        WHERE c.election_id = ?
+        GROUP BY c.election_id, c.candidate_sid
+        ORDER BY votes DESC, c.created_at, c.candidate_sid
+      `),
+      updateCommunityCandidateStatus: this.db.prepare(`
+        UPDATE community_candidates SET status = ?, updated_at = ?
+        WHERE election_id = ? AND candidate_sid = ?
+      `),
+      countCommunityElectionVoters: this.db.prepare(`
+        SELECT COUNT(DISTINCT voter_sid) AS value FROM community_ballots WHERE election_id = ?
+      `),
+      deleteCommunityBallotsForVoter: this.db.prepare(`
+        DELETE FROM community_ballots WHERE election_id = ? AND voter_sid = ?
+      `),
+      insertCommunityBallot: this.db.prepare(`
+        INSERT INTO community_ballots (election_id, voter_sid, candidate_sid, created_at)
+        VALUES (?, ?, ?, ?)
+      `),
+      insertCommunityAudit: this.db.prepare(`
+        INSERT INTO community_audit_log
+          (actor_sid, action, entity_type, entity_id, scope_key, payload, created_at)
+        VALUES (?, ?, ?, ?, ?, ?, ?)
+      `),
+      listCommunityAudit: this.db.prepare(`
+        SELECT * FROM community_audit_log ORDER BY id DESC LIMIT ?
+      `),
     };
     this.replaceShiftsTransaction = this.db.transaction((sid, shifts) => {
       this.statements.deleteShifts.run(sid);
@@ -406,6 +673,12 @@ class SqliteStorage {
         );
       });
       return inserted;
+    });
+    this.replaceCommunityBallotTransaction = this.db.transaction((electionId, voterSid, candidateSids, createdAt) => {
+      this.statements.deleteCommunityBallotsForVoter.run(electionId, voterSid);
+      candidateSids.forEach((candidateSid) => {
+        this.statements.insertCommunityBallot.run(electionId, voterSid, candidateSid, createdAt);
+      });
     });
   }
 
@@ -480,6 +753,294 @@ class SqliteStorage {
     const removedSessions = Number(this.statements.deleteAnalyticsSessionsForUser.run(userId).changes) || 0;
     if (!preserveConsent) this.statements.deleteAnalyticsConsentForUser.run(userId);
     return { removedEvents, removedSessions };
+  }
+
+  mapCommunityMembership(row) {
+    if (!row) return null;
+    return {
+      sid: String(row.sid),
+      scopeLevel: String(row.scope_level),
+      scopeKey: String(row.scope_key),
+      railwayId: String(row.railway_id || ''),
+      depotId: String(row.depot_id || ''),
+      serviceArmId: String(row.service_arm_id || ''),
+      status: String(row.status),
+      role: String(row.role),
+      roleSource: String(row.role_source || 'self'),
+      primary: Number(row.primary_scope) === 1,
+      termEndsAt: row.term_ends_at ? String(row.term_ends_at) : '',
+      createdAt: String(row.created_at),
+      updatedAt: String(row.updated_at),
+    };
+  }
+
+  upsertCommunityMembership(membership) {
+    const item = membership || {};
+    const existing = this.statements.readCommunityMembership.get(
+      String(item.sid), String(item.scopeLevel), String(item.scopeKey)
+    );
+    const now = String(item.updatedAt || new Date().toISOString());
+    const createdAt = existing ? String(existing.created_at) : String(item.createdAt || now);
+    this.statements.upsertCommunityMembership.run(
+      String(item.sid), String(item.scopeLevel), String(item.scopeKey),
+      String(item.railwayId || ''), String(item.depotId || ''), String(item.serviceArmId || ''),
+      String(item.status || 'selected'), String(item.role || 'member'),
+      String(item.roleSource || 'self'), item.primary ? 1 : 0,
+      item.termEndsAt ? String(item.termEndsAt) : null, createdAt, now
+    );
+    return this.mapCommunityMembership(this.statements.readCommunityMembership.get(
+      String(item.sid), String(item.scopeLevel), String(item.scopeKey)
+    ));
+  }
+
+  listCommunityMembershipsForSid(sid) {
+    return this.statements.listCommunityMembershipsForSid.all(String(sid)).map((row) => this.mapCommunityMembership(row));
+  }
+
+  listCommunityMemberships(limit) {
+    const safeLimit = Math.max(1, Math.min(2000, Number(limit) || 500));
+    return this.statements.listCommunityMemberships.all(safeLimit).map((row) => this.mapCommunityMembership(row));
+  }
+
+  clearCommunityPrimaryMemberships(sid) {
+    this.statements.clearCommunityPrimaryMemberships.run(new Date().toISOString(), String(sid));
+  }
+
+  mapCommunityProposal(row) {
+    if (!row) return null;
+    return {
+      id: String(row.id),
+      authorSid: String(row.author_sid),
+      kind: String(row.kind),
+      riskLevel: String(row.risk_level),
+      scope: {
+        level: String(row.scope_level),
+        key: String(row.scope_key),
+        railwayId: String(row.railway_id || ''),
+        depotId: String(row.depot_id || ''),
+        serviceArmId: String(row.service_arm_id || ''),
+        sectionId: String(row.section_id || ''),
+      },
+      title: String(row.title),
+      summary: String(row.summary || ''),
+      baseVersion: String(row.base_version || ''),
+      change: parsePayload(row.change_payload, {}),
+      evidence: parsePayload(row.evidence_payload, {}),
+      status: String(row.status),
+      createdAt: String(row.created_at),
+      updatedAt: String(row.updated_at),
+    };
+  }
+
+  createCommunityProposal(proposal) {
+    const item = proposal || {};
+    const now = String(item.createdAt || new Date().toISOString());
+    this.statements.insertCommunityProposal.run(
+      String(item.id), String(item.authorSid), String(item.kind), String(item.riskLevel || 'normal'),
+      String(item.scope.level), String(item.scope.key), String(item.scope.railwayId || ''),
+      String(item.scope.depotId || ''), String(item.scope.serviceArmId || ''),
+      String(item.scope.sectionId || ''), String(item.title), String(item.summary || ''),
+      String(item.baseVersion || ''), JSON.stringify(item.change || {}), JSON.stringify(item.evidence || {}),
+      String(item.status || 'reviewing'), now, String(item.updatedAt || now)
+    );
+    return this.mapCommunityProposal(this.statements.readCommunityProposal.get(String(item.id)));
+  }
+
+  readCommunityProposal(id) {
+    return this.mapCommunityProposal(this.statements.readCommunityProposal.get(String(id)));
+  }
+
+  listCommunityProposals(limit) {
+    const safeLimit = Math.max(1, Math.min(2000, Number(limit) || 500));
+    return this.statements.listCommunityProposals.all(safeLimit).map((row) => this.mapCommunityProposal(row));
+  }
+
+  updateCommunityProposalStatus(id, status) {
+    this.statements.updateCommunityProposalStatus.run(String(status), new Date().toISOString(), String(id));
+    return this.readCommunityProposal(id);
+  }
+
+  upsertCommunityReview(review) {
+    const item = review || {};
+    const existing = this.db.prepare(
+      'SELECT created_at FROM community_reviews WHERE proposal_id = ? AND reviewer_sid = ?'
+    ).get(String(item.proposalId), String(item.reviewerSid));
+    const now = String(item.updatedAt || new Date().toISOString());
+    this.statements.upsertCommunityReview.run(
+      String(item.proposalId), String(item.reviewerSid), String(item.verdict), String(item.notes || ''),
+      Math.max(0, Math.min(3, Number(item.weight) || 0)), String(item.reviewerRole || 'member'),
+      existing ? String(existing.created_at) : String(item.createdAt || now), now
+    );
+    return this.listCommunityReviews(item.proposalId).find((row) => row.reviewerSid === String(item.reviewerSid));
+  }
+
+  listCommunityReviews(proposalId) {
+    return this.statements.listCommunityReviews.all(String(proposalId)).map((row) => ({
+      proposalId: String(row.proposal_id),
+      reviewerSid: String(row.reviewer_sid),
+      verdict: String(row.verdict),
+      notes: String(row.notes || ''),
+      weight: Number(row.review_weight) || 0,
+      reviewerRole: String(row.reviewer_role || 'member'),
+      createdAt: String(row.created_at),
+      updatedAt: String(row.updated_at),
+    }));
+  }
+
+  createCommunityRelease(release) {
+    const item = release || {};
+    const payloadText = JSON.stringify(item.payload || {});
+    this.statements.insertCommunityRelease.run(
+      String(item.id), String(item.scopeLevel), String(item.scopeKey), Number(item.version),
+      String(item.status || 'published'), item.proposalId ? String(item.proposalId) : null,
+      payloadText, crypto.createHash('sha256').update(payloadText).digest('hex'),
+      String(item.createdBy), String(item.createdAt || new Date().toISOString())
+    );
+    return this.listCommunityReleases(100).find((row) => row.id === String(item.id));
+  }
+
+  listCommunityReleases(limit) {
+    const safeLimit = Math.max(1, Math.min(1000, Number(limit) || 100));
+    return this.statements.listCommunityReleases.all(safeLimit).map((row) => ({
+      id: String(row.id),
+      scopeLevel: String(row.scope_level),
+      scopeKey: String(row.scope_key),
+      version: Number(row.version),
+      status: String(row.status),
+      proposalId: row.proposal_id ? String(row.proposal_id) : '',
+      payload: parsePayload(row.payload, {}),
+      payloadSha256: String(row.payload_sha256),
+      createdBy: String(row.created_by),
+      createdAt: String(row.created_at),
+    }));
+  }
+
+  createCommunityElection(election) {
+    const item = election || {};
+    const now = String(item.createdAt || new Date().toISOString());
+    this.statements.insertCommunityElection.run(
+      String(item.id), String(item.scopeLevel), String(item.scopeKey), String(item.railwayId || ''),
+      String(item.depotId || ''), String(item.serviceArmId || ''), String(item.kind || 'curator'),
+      String(item.status || 'nominations'), Number(item.seats) || 3, Number(item.quorum) || 5,
+      String(item.startsAt), String(item.endsAt), item.termEndsAt ? String(item.termEndsAt) : null,
+      String(item.createdBy), now, String(item.updatedAt || now)
+    );
+    return this.readCommunityElection(item.id);
+  }
+
+  readCommunityElection(id) {
+    const row = this.statements.readCommunityElection.get(String(id));
+    if (!row) return null;
+    return {
+      id: String(row.id), scopeLevel: String(row.scope_level), scopeKey: String(row.scope_key),
+      railwayId: String(row.railway_id || ''), depotId: String(row.depot_id || ''),
+      serviceArmId: String(row.service_arm_id || ''), kind: String(row.election_kind),
+      status: String(row.status), seats: Number(row.seats), quorum: Number(row.quorum),
+      startsAt: String(row.starts_at), endsAt: String(row.ends_at),
+      termEndsAt: row.term_ends_at ? String(row.term_ends_at) : '', createdBy: String(row.created_by),
+      createdAt: String(row.created_at), updatedAt: String(row.updated_at),
+      candidates: this.listCommunityCandidates(row.id),
+    };
+  }
+
+  listCommunityElections(limit) {
+    const safeLimit = Math.max(1, Math.min(500, Number(limit) || 100));
+    return this.statements.listCommunityElections.all(safeLimit).map((row) => this.readCommunityElection(row.id));
+  }
+
+  updateCommunityElectionStatus(id, status) {
+    this.statements.updateCommunityElectionStatus.run(String(status), new Date().toISOString(), String(id));
+    return this.readCommunityElection(id);
+  }
+
+  upsertCommunityCandidate(candidate) {
+    const item = candidate || {};
+    const now = String(item.updatedAt || new Date().toISOString());
+    this.statements.upsertCommunityCandidate.run(
+      String(item.electionId), String(item.candidateSid), String(item.nominatedBy),
+      String(item.statement || ''), String(item.status || 'nominated'),
+      String(item.createdAt || now), now
+    );
+    return this.listCommunityCandidates(item.electionId).find((row) => row.candidateSid === String(item.candidateSid));
+  }
+
+  listCommunityCandidates(electionId) {
+    return this.statements.listCommunityCandidates.all(String(electionId)).map((row) => ({
+      electionId: String(row.election_id), candidateSid: String(row.candidate_sid),
+      nominatedBy: String(row.nominated_by), statement: String(row.statement || ''),
+      status: String(row.status), votes: Number(row.votes) || 0,
+      createdAt: String(row.created_at), updatedAt: String(row.updated_at),
+    }));
+  }
+
+  updateCommunityCandidateStatus(electionId, candidateSid, status) {
+    this.statements.updateCommunityCandidateStatus.run(
+      String(status), new Date().toISOString(), String(electionId), String(candidateSid)
+    );
+    return this.listCommunityCandidates(electionId)
+      .find((row) => row.candidateSid === String(candidateSid)) || null;
+  }
+
+  countCommunityElectionVoters(electionId) {
+    const row = this.statements.countCommunityElectionVoters.get(String(electionId));
+    return Number(row && row.value) || 0;
+  }
+
+  replaceCommunityBallot(electionId, voterSid, candidateSids) {
+    const choices = Array.from(new Set((Array.isArray(candidateSids) ? candidateSids : []).map(String)));
+    this.replaceCommunityBallotTransaction(String(electionId), String(voterSid), choices, new Date().toISOString());
+    return { electionId: String(electionId), choices: choices.length };
+  }
+
+  recordCommunityAudit(entry) {
+    const item = entry || {};
+    this.statements.insertCommunityAudit.run(
+      String(item.actorSid), String(item.action), String(item.entityType), String(item.entityId),
+      String(item.scopeKey || ''), JSON.stringify(item.payload || {}),
+      String(item.createdAt || new Date().toISOString())
+    );
+  }
+
+  listCommunityAudit(limit) {
+    const safeLimit = Math.max(1, Math.min(1000, Number(limit) || 100));
+    return this.statements.listCommunityAudit.all(safeLimit).map((row) => ({
+      id: Number(row.id), actorSid: String(row.actor_sid), action: String(row.action),
+      entityType: String(row.entity_type), entityId: String(row.entity_id),
+      scopeKey: String(row.scope_key || ''), payload: parsePayload(row.payload, {}),
+      createdAt: String(row.created_at),
+    }));
+  }
+
+  buildCommunityAdminOverview() {
+    const scalar = (sql, params) => {
+      const row = this.db.prepare(sql).get(...(params || []));
+      return Number(row && row.value) || 0;
+    };
+    const grouped = (table, column) => {
+      const result = {};
+      this.db.prepare(`SELECT ${column} AS key, COUNT(*) AS value FROM ${table} GROUP BY ${column}`).all()
+        .forEach((row) => { result[String(row.key)] = Number(row.value) || 0; });
+      return result;
+    };
+    return {
+      generatedAt: new Date().toISOString(),
+      metrics: {
+        memberships: scalar('SELECT COUNT(*) AS value FROM community_memberships'),
+        verifiedMembers: scalar("SELECT COUNT(*) AS value FROM community_memberships WHERE status = 'verified'"),
+        proposals: scalar('SELECT COUNT(*) AS value FROM community_proposals'),
+        openProposals: scalar("SELECT COUNT(*) AS value FROM community_proposals WHERE status IN ('reviewing','needs_info','disputed')"),
+        reviews: scalar('SELECT COUNT(*) AS value FROM community_reviews'),
+        releases: scalar('SELECT COUNT(*) AS value FROM community_releases'),
+        elections: scalar('SELECT COUNT(*) AS value FROM community_elections'),
+      },
+      membershipStatuses: grouped('community_memberships', 'status'),
+      proposalStatuses: grouped('community_proposals', 'status'),
+      memberships: this.listCommunityMemberships(250),
+      proposals: this.listCommunityProposals(250),
+      elections: this.listCommunityElections(100),
+      releases: this.listCommunityReleases(100),
+      audit: this.listCommunityAudit(100),
+    };
   }
 
   buildAnalyticsDashboard(days) {

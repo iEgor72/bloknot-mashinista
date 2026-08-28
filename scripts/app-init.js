@@ -1,4 +1,4 @@
-if (typeof registerShiftTrackerRuntimeModule === 'function') registerShiftTrackerRuntimeModule('app-init', 'v412');
+if (typeof registerShiftTrackerRuntimeModule === 'function') registerShiftTrackerRuntimeModule('app-init', 'v413');
 
 // ── Init ──
 function startShiftTrackerRuntime() {
@@ -600,6 +600,7 @@ if (window.__SHIFT_TRACKER_RUNTIME_GUARD_PENDING) {
     instructions: { title: 'Документы',         sub: 'Локальная библиотека' },
     shifts:       { title: 'Смены',             sub: 'Журнал и часы' },
     poekhali:     { title: 'Поехали',            sub: 'Поездка и подготовка' },
+    salary:       { title: 'Зарплата',           sub: 'Расчёт за месяц' },
     profile:      { title: 'Профиль',           sub: 'Личный кабинет' }
   };
   function getUserLabel() {
@@ -635,52 +636,7 @@ if (window.__SHIFT_TRACKER_RUNTIME_GUARD_PENDING) {
     }
     bar.setAttribute('data-tab', tab);
     bar.classList.remove('hidden');
-    var gpsEl = document.getElementById('appTopBarGps');
-    var previewEl = document.getElementById('appTopBarPreview');
-    var wayEl = document.getElementById('appTopBarWay');
-    var poekhaliActionsEl = document.getElementById('appTopBarPoekhaliActions');
-    if (poekhaliActionsEl) poekhaliActionsEl.classList.toggle('hidden', tab !== 'poekhali');
-    if (gpsEl) gpsEl.classList.toggle('hidden', tab !== 'poekhali');
-    if (previewEl) previewEl.classList.toggle('hidden', tab !== 'poekhali');
-    if (wayEl) wayEl.classList.toggle('hidden', tab !== 'poekhali');
   }
-
-  (function bindWayChip() {
-    var wayChip = document.getElementById('appTopBarWay');
-    var wayValueEl = document.getElementById('appTopBarWayValue');
-    if (!wayChip) return;
-    wayChip.addEventListener('click', function() {
-      var legacy = document.getElementById('btnPoekhaliWay');
-      if (legacy) legacy.click();
-    });
-    function syncWayLabel() {
-      var legacy = document.getElementById('btnPoekhaliWay');
-      if (!legacy || !wayValueEl) return;
-      var text = (legacy.textContent || '').trim();
-      if (text) wayValueEl.textContent = text.replace(':', ' ');
-    }
-    syncWayLabel();
-    window.setInterval(syncWayLabel, 1000);
-  })();
-
-  (function bindGpsChip() {
-    var gpsChip = document.getElementById('appTopBarGps');
-    if (!gpsChip) return;
-    gpsChip.addEventListener('click', function() {
-      var legacy = document.getElementById('btnPoekhaliLive');
-      if (legacy) legacy.click();
-    });
-  })();
-
-  (function bindPoekhaliPreviewChip() {
-    var previewChip = document.getElementById('appTopBarPreview');
-    if (!previewChip) return;
-    previewChip.addEventListener('click', function() {
-      var legacy = document.getElementById('btnPoekhaliPreview');
-      if (legacy) legacy.click();
-      else if (typeof window.setPoekhaliPositioningMode === 'function') window.setPoekhaliPositioningMode('preview');
-    });
-  })();
 
   // Profile panel identity — Telegram fallback + editable name, role, depot, avatar.
   (function bindProfileIdentity() {
@@ -732,11 +688,13 @@ if (window.__SHIFT_TRACKER_RUNTIME_GUARD_PENDING) {
     // other. Mirror them to the server keyed by the authenticated user.
     var PROFILE_API_URL = (window.SHIFT_API_BASE_URL || '') + '/api/profile';
     var DEPOT_PROPOSAL_API_URL = (window.SHIFT_API_BASE_URL || '') + '/api/depot-pack-requests';
+    var COMMUNITY_API_URL = (window.SHIFT_API_BASE_URL || '') + '/api/community';
     var DEPOT_CATALOG_BASE_URL = '/assets/catalog/';
     var profileSyncInFlight = false;
     var profileSyncQueued = false;
     var depotCatalogPromise = null;
     var depotPackPromises = Object.create(null);
+    var communityDashboardState = null;
 
     function safeCatalogUrl(relativePath) {
       var path = String(relativePath || '').replace(/\\/g, '/').replace(/^\.\//, '');
@@ -1688,6 +1646,301 @@ if (window.__SHIFT_TRACKER_RUNTIME_GUARD_PENDING) {
       });
     });
 
+    function communityRequest(path, options, timeoutMs) {
+      var transport = window.shiftTrackerFetchJson || window.fetchJson;
+      if (typeof transport !== 'function') return Promise.reject(new Error('Сначала войдите в приложение'));
+      return transport(COMMUNITY_API_URL + path, options || { method: 'GET' }, timeoutMs || 10000);
+    }
+
+    function communityNode(tag, className, text) {
+      var node = document.createElement(tag);
+      if (className) node.className = className;
+      if (text != null) node.textContent = String(text);
+      return node;
+    }
+
+    function communityStatusLabel(value) {
+      return ({
+        selected: 'депо выбрано', pending: 'ожидает подтверждения', verified: 'подтверждён', suspended: 'приостановлен',
+        member: 'участник', reviewer: 'проверяющий', curator: 'избранный куратор',
+        reviewing: 'проверяют коллеги', needs_info: 'нужно уточнение', disputed: 'есть разногласия',
+        accepted: 'принято сообществом', published: 'опубликовано', rejected: 'отклонено',
+        nominations: 'выдвижение кандидатов', voting: 'идёт голосование', closed: 'завершены', cancelled: 'отменены'
+      })[value] || value || '—';
+    }
+
+    function renderCommunityDashboard(data) {
+      communityDashboardState = data || null;
+      var root = document.getElementById('communityDashboard');
+      var scope = document.getElementById('communityScope');
+      var profileNote = document.getElementById('profileCommunityNote');
+      if (!root) return;
+      root.textContent = '';
+      var context = data && data.context || {};
+      if (!context.configured) {
+        if (scope) scope.textContent = 'Сначала выберите дорогу и депо в личных данных.';
+        if (profileNote) profileNote.textContent = 'Сначала укажите дорогу и депо';
+        root.appendChild(communityNode('div', 'community-empty', 'После выбора депо здесь появятся ваши участки, документы и предложения коллег.'));
+        return;
+      }
+      var depotLabel = [context.depot && context.depot.code, context.depot && context.depot.name].filter(Boolean).join(' · ');
+      if (scope) scope.textContent = (context.railway && context.railway.name ? context.railway.name + ' · ' : '') + depotLabel;
+      if (profileNote) profileNote.textContent = depotLabel + ' · ' + communityStatusLabel(data.membership && data.membership.status);
+
+      var summary = communityNode('div', 'community-summary-grid');
+      [
+        [data.summary && data.summary.serviceArms || 0, 'плеч'],
+        [data.summary && data.summary.myProposals || 0, 'моих правок'],
+        [data.summary && data.summary.reviewable || 0, 'на проверку']
+      ].forEach(function(item) {
+        var card = communityNode('div', 'community-summary-item');
+        card.appendChild(communityNode('span', 'community-summary-value', item[0]));
+        card.appendChild(communityNode('span', 'community-summary-label', item[1]));
+        summary.appendChild(card);
+      });
+      root.appendChild(summary);
+
+      var membership = communityNode('section', 'community-block');
+      membership.appendChild(communityNode('div', 'community-block-title', 'Ваш статус в депо'));
+      var membershipText = communityStatusLabel(data.membership && data.membership.status) + ' · ' + communityStatusLabel(data.membership && data.membership.role);
+      membership.appendChild(communityNode('div', 'community-block-note community-status', membershipText));
+      membership.appendChild(communityNode('div', 'community-block-note', data.membership && data.membership.status === 'verified'
+        ? 'Можно участвовать в выборах. Проверять правки можно после выбора проверяющим или куратором.'
+        : 'Депо уже ограничивает видимые данные. Для голосований и проверок потребуется подтверждение коллег или администратора.'));
+      root.appendChild(membership);
+
+      function appendProposalBlock(title, proposals, reviewMode) {
+        var block = communityNode('section', 'community-block');
+        block.appendChild(communityNode('div', 'community-block-title', title));
+        var list = communityNode('div', 'community-list');
+        if (!proposals || !proposals.length) {
+          list.appendChild(communityNode('div', 'community-block-note', reviewMode ? 'Пока нет правок, которые ждут вашей проверки.' : 'Вы ещё не предлагали исправления.'));
+        } else {
+          proposals.slice(0, 8).forEach(function(proposal) {
+            var item = communityNode('div', 'community-list-item');
+            item.appendChild(communityNode('div', 'community-item-title', proposal.title));
+            item.appendChild(communityNode('div', 'community-item-meta', communityStatusLabel(proposal.status) + ' · подтверждений: ' + (proposal.reviews && proposal.reviews.confirm || 0)));
+            if (reviewMode) {
+              if (proposal.change && proposal.change.editor === 'visual-v1') {
+                var previewLabel = proposal.kind === 'geometry' ? 'Сравнить линии' : proposal.kind === 'object' ? 'Посмотреть на карте' : 'Посмотреть на профиле';
+                var preview = communityNode('button', 'community-mini-button', previewLabel);
+                preview.type = 'button'; preview.dataset.communityAction = 'preview'; preview.dataset.proposalId = proposal.id;
+                item.appendChild(preview);
+              }
+              var confirm = communityNode('button', 'community-mini-button', 'Подтверждаю');
+              confirm.type = 'button'; confirm.dataset.communityAction = 'review'; confirm.dataset.proposalId = proposal.id; confirm.dataset.verdict = 'confirm';
+              item.appendChild(confirm);
+              var fix = communityNode('button', 'community-mini-button', 'Нужно уточнить');
+              fix.type = 'button'; fix.dataset.communityAction = 'review'; fix.dataset.proposalId = proposal.id; fix.dataset.verdict = 'needs_fix';
+              item.appendChild(fix);
+            }
+            list.appendChild(item);
+          });
+        }
+        block.appendChild(list);
+        root.appendChild(block);
+      }
+      appendProposalBlock('Мои предложения', data.myProposals, false);
+      appendProposalBlock('Проверить предложения коллег', data.reviewQueue, true);
+
+      var releaseBlock = communityNode('section', 'community-block');
+      releaseBlock.appendChild(communityNode('div', 'community-block-title', 'Опубликовано сообществом'));
+      var releases = Array.isArray(data.releases) ? data.releases : [];
+      if (!releases.length) {
+        releaseBlock.appendChild(communityNode('div', 'community-block-note', 'Пока нет изменений, набравших необходимый кворум.'));
+      } else {
+        releases.slice(0, 8).forEach(function(release) {
+          var item = communityNode('div', 'community-list-item');
+          item.appendChild(communityNode('div', 'community-item-title', release.payload && release.payload.title || 'Изменение участка'));
+          item.appendChild(communityNode('div', 'community-item-meta', 'Версия ' + release.version + ' · ' + (release.scopeKey || 'участок')));
+          releaseBlock.appendChild(item);
+        });
+      }
+      root.appendChild(releaseBlock);
+
+      var electionBlock = communityNode('section', 'community-block');
+      electionBlock.appendChild(communityNode('div', 'community-block-title', 'Ответственные от депо'));
+      var elections = Array.isArray(data.elections) ? data.elections : [];
+      var activeElections = elections.filter(function(election) { return election.status === 'nominations' || election.status === 'voting'; });
+      if (!activeElections.length) {
+        electionBlock.appendChild(communityNode('div', 'community-block-note', 'Активных выборов сейчас нет. Избираются несколько кураторов с ограниченным сроком полномочий.'));
+        if (data.membership && data.membership.status === 'verified') {
+          var createElection = communityNode('button', 'community-mini-button', 'Предложить выборы кураторов');
+          createElection.type = 'button'; createElection.dataset.communityAction = 'create-election';
+          electionBlock.appendChild(createElection);
+        }
+      } else {
+        activeElections.forEach(function(election) {
+          var electionItem = communityNode('div', 'community-list-item');
+          electionItem.appendChild(communityNode('div', 'community-item-title', communityStatusLabel(election.status)));
+          electionItem.appendChild(communityNode('div', 'community-item-meta', 'Мест: ' + election.seats + ' · кворум: ' + election.quorum));
+          (election.candidates || []).forEach(function(candidate) {
+            var label = communityNode('label', 'community-candidate');
+            if (election.status === 'voting') {
+              var checkbox = document.createElement('input');
+              checkbox.type = 'checkbox'; checkbox.dataset.electionChoice = election.id; checkbox.value = candidate.key;
+              label.appendChild(checkbox);
+            }
+            label.appendChild(communityNode('span', '', candidate.name + (candidate.statement ? ' — ' + candidate.statement : '')));
+            electionItem.appendChild(label);
+          });
+          if (election.status === 'nominations') {
+            var nominate = communityNode('button', 'community-mini-button', 'Выдвинуть свою кандидатуру');
+            nominate.type = 'button'; nominate.dataset.communityAction = 'nominate'; nominate.dataset.electionId = election.id;
+            electionItem.appendChild(nominate);
+          } else {
+            var vote = communityNode('button', 'community-mini-button', 'Проголосовать');
+            vote.type = 'button'; vote.dataset.communityAction = 'vote'; vote.dataset.electionId = election.id;
+            electionItem.appendChild(vote);
+          }
+          electionBlock.appendChild(electionItem);
+        });
+      }
+      root.appendChild(electionBlock);
+    }
+
+    function loadCommunityDashboard() {
+      var root = document.getElementById('communityDashboard');
+      if (root) { root.textContent = ''; root.appendChild(communityNode('div', 'community-empty', 'Загружаем данные депо…')); }
+      return communityRequest('/dashboard', { method: 'GET', headers: { 'Accept': 'application/json' } }, 10000).then(function(result) {
+        if (!result || !result.ok) throw new Error(result && result.body && result.body.error || 'Не удалось загрузить данные депо');
+        renderCommunityDashboard(result.body);
+        return result.body;
+      }).catch(function(error) {
+        if (root) { root.textContent = ''; root.appendChild(communityNode('div', 'community-empty', error && error.message || 'Нет связи с сервером')); }
+        throw error;
+      });
+    }
+
+    function openCommunityCorrection() {
+      var sections = communityDashboardState && communityDashboardState.context && communityDashboardState.context.pack && communityDashboardState.context.pack.sectionIds || [];
+      var select = document.getElementById('communityCorrectionSection');
+      if (select) {
+        select.textContent = '';
+        if (!sections.length) select.appendChild(new Option('Всё депо', ''));
+        sections.forEach(function(sectionId) { select.appendChild(new Option(sectionId, sectionId)); });
+      }
+      ['communityCorrectionTitle', 'communityCorrectionFrom', 'communityCorrectionTo', 'communityCorrectionEvidence', 'communityCorrectionSummary'].forEach(function(id) {
+        var field = document.getElementById(id); if (field) field.value = '';
+      });
+      if (typeof openOverlay === 'function') openOverlay('overlayCommunityCorrection');
+    }
+
+    var communityButton = document.getElementById('btnProfileCommunity');
+    if (communityButton) communityButton.addEventListener('click', function() {
+      if (typeof openOverlay === 'function') openOverlay('overlayCommunity');
+      loadCommunityDashboard().catch(function() {});
+    });
+    window.addEventListener('community:proposal-created', function() {
+      if (typeof openOverlay === 'function') openOverlay('overlayCommunity');
+      loadCommunityDashboard().catch(function() {});
+    });
+    var communityClose = document.getElementById('btnCommunityClose');
+    if (communityClose) communityClose.addEventListener('click', function() { if (typeof closeOverlay === 'function') closeOverlay('overlayCommunity'); });
+    var communityCorrection = document.getElementById('btnCommunityCorrection');
+    if (communityCorrection) communityCorrection.addEventListener('click', openCommunityCorrection);
+    var communityCorrectionClose = document.getElementById('btnCommunityCorrectionClose');
+    if (communityCorrectionClose) communityCorrectionClose.addEventListener('click', function() { if (typeof closeOverlay === 'function') closeOverlay('overlayCommunityCorrection'); });
+    var communityMaterials = document.getElementById('btnCommunityMaterials');
+    if (communityMaterials) communityMaterials.addEventListener('click', function() {
+      if (typeof closeOverlay === 'function') closeOverlay('overlayCommunity');
+      openDepotProposal({ source: 'community', mode: 'documents' });
+    });
+
+    var communityRoot = document.getElementById('communityDashboard');
+    if (communityRoot) communityRoot.addEventListener('click', function(event) {
+      var button = event.target && event.target.closest ? event.target.closest('[data-community-action]') : null;
+      if (!button) return;
+      var action = button.dataset.communityAction;
+      if (action === 'preview') {
+        var proposalId = button.dataset.proposalId;
+        var proposal = communityDashboardState && communityDashboardState.reviewQueue && communityDashboardState.reviewQueue.find(function(item) { return item.id === proposalId; });
+        if (proposal && proposal.kind === 'geometry' && window.CommunityGeometryEditor && typeof window.CommunityGeometryEditor.preview === 'function') {
+          window.CommunityGeometryEditor.preview(proposal);
+        } else if (proposal && window.CommunityVisualEditor && typeof window.CommunityVisualEditor.preview === 'function') {
+          window.CommunityVisualEditor.preview(proposal);
+        }
+        return;
+      }
+      button.disabled = true;
+      var request;
+      if (action === 'review') {
+        request = communityRequest('/proposals/' + button.dataset.proposalId + '/reviews', {
+          method: 'POST', headers: { 'Content-Type': 'application/json', 'Accept': 'application/json' },
+          body: JSON.stringify({ verdict: button.dataset.verdict })
+        });
+      } else if (action === 'create-election') {
+        request = communityRequest('/elections', {
+          method: 'POST', headers: { 'Content-Type': 'application/json', 'Accept': 'application/json' },
+          body: JSON.stringify({ scope: { level: 'depot' }, seats: 3 })
+        });
+      } else if (action === 'nominate') {
+        request = communityRequest('/elections/' + button.dataset.electionId + '/candidates', {
+          method: 'POST', headers: { 'Content-Type': 'application/json', 'Accept': 'application/json' },
+          body: JSON.stringify({ statement: 'Готов помогать коллегам проверять данные участка' })
+        });
+      } else if (action === 'vote') {
+        var choices = [];
+        Array.prototype.forEach.call(communityRoot.querySelectorAll('[data-election-choice]'), function(input) {
+          if (input.dataset.electionChoice === button.dataset.electionId && input.checked) choices.push(input.value);
+        });
+        request = communityRequest('/elections/' + button.dataset.electionId + '/ballot', {
+          method: 'PUT', headers: { 'Content-Type': 'application/json', 'Accept': 'application/json' },
+          body: JSON.stringify({ candidateKeys: choices })
+        });
+      }
+      if (!request) { button.disabled = false; return; }
+      request.then(function(result) {
+        if (!result || !result.ok) throw new Error(result && result.body && result.body.error || 'Действие не выполнено');
+        if (typeof enqueueAppToast === 'function') enqueueAppToast('Готово', 'success', 1800);
+        return loadCommunityDashboard();
+      }).catch(function(error) {
+        button.disabled = false;
+        if (typeof enqueueAppToast === 'function') enqueueAppToast(error && error.message || 'Действие не выполнено', 'danger', 2800);
+      });
+    });
+
+    var correctionSend = document.getElementById('btnCommunityCorrectionSend');
+    if (correctionSend) correctionSend.addEventListener('click', function() {
+      var kind = document.getElementById('communityCorrectionKind').value;
+      var sectionId = document.getElementById('communityCorrectionSection').value;
+      var title = normalizeProfileText(document.getElementById('communityCorrectionTitle').value, 160);
+      var fromValue = normalizeProfileText(document.getElementById('communityCorrectionFrom').value, 80);
+      var toValue = normalizeProfileText(document.getElementById('communityCorrectionTo').value, 80);
+      var evidence = normalizeProfileText(document.getElementById('communityCorrectionEvidence').value, 240);
+      var summaryText = normalizeProfileText(document.getElementById('communityCorrectionSummary').value, 1000);
+      if (!title) {
+        if (typeof enqueueAppToast === 'function') enqueueAppToast('Коротко напишите, что нужно исправить', 'neutral', 2400);
+        return;
+      }
+      var change = { fromValue: fromValue, toValue: toValue };
+      if (kind === 'speed') {
+        var fromSpeed = Number(String(fromValue).replace(',', '.').replace(/[^0-9.-]/g, ''));
+        var toSpeed = Number(String(toValue).replace(',', '.').replace(/[^0-9.-]/g, ''));
+        if (Number.isFinite(fromSpeed)) change.fromSpeed = fromSpeed;
+        if (Number.isFinite(toSpeed)) change.toSpeed = toSpeed;
+      }
+      correctionSend.disabled = true;
+      communityRequest('/proposals', {
+        method: 'POST', headers: { 'Content-Type': 'application/json', 'Accept': 'application/json' },
+        body: JSON.stringify({
+          kind: kind,
+          title: title,
+          summary: summaryText,
+          scope: sectionId ? { level: 'section', sectionId: sectionId } : { level: 'depot' },
+          change: change,
+          evidence: evidence ? { sourceReference: evidence } : {}
+        })
+      }).then(function(result) {
+        if (!result || !result.ok) throw new Error(result && result.body && result.body.error || 'Не удалось отправить исправление');
+        if (typeof closeOverlay === 'function') closeOverlay('overlayCommunityCorrection');
+        if (typeof enqueueAppToast === 'function') enqueueAppToast('Исправление отправлено коллегам', 'success', 2600);
+        return loadCommunityDashboard();
+      }).catch(function(error) {
+        if (typeof enqueueAppToast === 'function') enqueueAppToast(error && error.message || 'Не удалось отправить', 'danger', 3000);
+      }).then(function() { correctionSend.disabled = false; });
+    });
+
     var editBtn = document.getElementById('btnProfileEdit');
     if (editBtn) {
       editBtn.addEventListener('click', function() {
@@ -1971,42 +2224,6 @@ if (window.__SHIFT_TRACKER_RUNTIME_GUARD_PENDING) {
     if (dirBtn && dirChip) {
       var v = dirChip.querySelector('.v');
       if (v) v.textContent = (dirBtn.textContent || '').trim() || 'АВТО';
-    }
-    // GPS status chip (top bar) — connection and local field-capture indicator.
-    var gpsChip = document.getElementById('appTopBarGps');
-    if (gpsChip) {
-      var tone = hud.gpsTone || 'is-gps-muted';
-      gpsChip.classList.remove('is-gps-ok', 'is-gps-warn', 'is-gps-muted', 'is-gps-error', 'is-on', 'is-start-action');
-      gpsChip.classList.add(tone);
-      gpsChip.classList.toggle('is-on', Boolean(hud.gpsCaptureActive));
-      gpsChip.classList.toggle('is-start-action', hud.positioningMode === 'preview');
-      var gpsWord = gpsChip.querySelector('.app-top-bar-gps-word');
-      if (gpsWord) {
-        gpsWord.textContent = hud.positioningMode === 'preview'
-          ? 'НАЧАТЬ'
-          : hud.gpsCaptureError
-          ? 'ПАМЯТЬ'
-          : hud.gpsCaptureActive
-          ? ('REC ' + String(hud.gpsRecordedSamples || 0))
-          : (hud.gpsMeta && hud.gpsMeta !== '—' ? String(hud.gpsMeta).toUpperCase() : '—');
-      }
-      gpsChip.title = hud.positioningMode === 'preview'
-        ? 'Начать поездку с GPS'
-        : hud.gpsCaptureError
-        ? hud.gpsCaptureError
-        : hud.gpsCaptureActive
-          ? 'Контрольный проезд записывается локально: ' + String(hud.gpsRecordedSamples || 0) + ' точек. Нажмите, чтобы остановить'
-          : hud.gpsCaptureAvailable
-            ? 'Нажмите, чтобы начать локальную запись контрольного проезда'
-        : 'GPS-позиционирование';
-    }
-    var previewChip = document.getElementById('appTopBarPreview');
-    if (previewChip) {
-      var previewActive = hud.positioningMode === 'preview';
-      previewChip.classList.toggle('is-on', previewActive);
-      previewChip.setAttribute('aria-pressed', previewActive ? 'true' : 'false');
-      previewChip.title = previewActive ? 'Подготовка без GPS включена' : 'Посмотреть участок без GPS';
-      previewChip.setAttribute('aria-label', previewChip.title);
     }
   }
 

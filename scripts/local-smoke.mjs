@@ -450,6 +450,32 @@ async function main() {
   }, 'app shell visible');
   report.checks.appShellVisible = true;
 
+  const navigationDomContract = await page.evaluate(() => {
+    const idCounts = new Map();
+    document.querySelectorAll('[id]').forEach((element) => idCounts.set(element.id, (idCounts.get(element.id) || 0) + 1));
+    const duplicateIds = [...idCounts.entries()].filter(([, count]) => count > 1).map(([id, count]) => ({ id, count }));
+    const panelTabs = new Set([...document.querySelectorAll('.tab-panel[data-tab]')].map((panel) => panel.dataset.tab));
+    const missingTabTargets = [...document.querySelectorAll('#navigationDrawer [data-nav-action="tab"][data-tab]')]
+      .map((button) => button.dataset.tab)
+      .filter((tab) => !panelTabs.has(tab));
+    const unlabeledActions = [...document.querySelectorAll('#navigationDrawer [data-nav-action]')]
+      .filter((button) => !(button.getAttribute('aria-label') || button.textContent || '').trim())
+      .map((button) => button.dataset.navAction || 'unknown');
+    return {
+      duplicateIds,
+      missingTabTargets,
+      unlabeledActions,
+      bottomNavAbsent: !document.querySelector('.bottom-nav'),
+      actionCount: document.querySelectorAll('#navigationDrawer [data-nav-action]').length,
+    };
+  });
+  report.checks.navigationDomContract = navigationDomContract;
+  if (navigationDomContract.duplicateIds.length || navigationDomContract.missingTabTargets.length ||
+      navigationDomContract.unlabeledActions.length || !navigationDomContract.bottomNavAbsent ||
+      navigationDomContract.actionCount < 20) {
+    throw new Error(`Navigation DOM contract failed: ${JSON.stringify(navigationDomContract)}`);
+  }
+
   const partialRouteTitles = await page.evaluate(() => ({
     departureOnly: getShiftTitle({ route_kind: 'trip', route_from: 'Горин', route_to: '' }),
     arrivalOnly: getShiftTitle({ route_kind: 'trip', route_from: '', route_to: 'Харпичан' }),
@@ -490,14 +516,19 @@ async function main() {
     profileSummaryContract.iconHeight > 0 && profileSummaryContract.iconHeight <= 48,
   'profile summary stylesheet keeps the card and calendar icon compact', profileSummaryContract);
 
-  const profileAboutContract = await page.evaluate(() => ({
-    userCountUsesSingleLineValue: !!document.querySelector('.profile-row-static > #profileUserCount.profile-row-value'),
-    versionUsesSingleLineValue: !!document.querySelector('.profile-row-static > #profileVersion.profile-row-value'),
-    staticRowsHaveNoSecondaryNotes: !document.querySelector('.profile-row-static .profile-row-note'),
+  const navigationSeparationContract = await page.evaluate(() => ({
+    userCountMovedToDrawer: !!document.querySelector('#navigationDrawer #profileUserCount'),
+    versionMovedToDrawer: !!document.querySelector('#navigationDrawer #profileVersion'),
+    depotMovedOutOfProfile: !document.querySelector('.tab-panel[data-tab="profile"] #btnProfileCommunity') &&
+      !!document.querySelector('#navigationDrawer #btnProfileCommunity'),
+    salarySettingsMovedOutOfProfile: !document.querySelector('.tab-panel[data-tab="profile"] #btnProfileSalarySettings') &&
+      !!document.querySelector('#navigationDrawer #btnProfileSalarySettings'),
+    installMovedOutOfProfile: !document.querySelector('.tab-panel[data-tab="profile"] #btnProfileInstall') &&
+      !!document.querySelector('#navigationDrawer #btnProfileInstall'),
   }));
-  report.checks.profileAbout = profileAboutContract;
-  assert(Object.values(profileAboutContract).every(Boolean),
-    'profile about rows use compact single-line values without gray subtitles', profileAboutContract);
+  report.checks.navigationSeparation = navigationSeparationContract;
+  assert(Object.values(navigationSeparationContract).every(Boolean),
+    'drawer owns depot, salary settings, install and about information instead of profile', navigationSeparationContract);
 
   const shiftsOverviewContract = await page.evaluate(() => {
     const overview = document.querySelector('.shifts-overview');
@@ -807,19 +838,19 @@ async function main() {
     };
   });
   report.checks.notificationsAfterOpen = notificationAfterOpen;
-  if (!notificationAfterOpen.rows.some((row) => row.title === 'Оффлайн режим работает')) {
-    throw new Error(`Offline notification row was not rendered after opening bell: ${JSON.stringify(notificationAfterOpen)}`);
+  if (!notificationAfterOpen.rows.some((row) => row.title === 'Свежая служебная заметка')) {
+    throw new Error(`Recent notification row was not rendered after opening bell: ${JSON.stringify(notificationAfterOpen)}`);
   }
-  const offlineRowIndex = notificationAfterOpen.rows.findIndex((row) => row.title === 'Оффлайн режим работает');
-  await clickElementCenter(page, `#notifList .notif-row:nth-child(${offlineRowIndex + 1})`, 'offline notification row');
+  const recentRowIndex = notificationAfterOpen.rows.findIndex((row) => row.title === 'Свежая служебная заметка');
+  await clickElementCenter(page, `#notifList .notif-row:nth-child(${recentRowIndex + 1})`, 'recent notification row');
   const notificationInteraction = await page.evaluate(() => {
     const overlay = document.getElementById('overlayNotifications');
     const rows = Array.from(document.querySelectorAll('#notifList .notif-row'));
-    const row = rows.find((node) => node.textContent.includes('Оффлайн режим работает'));
+    const row = rows.find((node) => node.textContent.includes('Свежая служебная заметка'));
     const text = row ? row.querySelector('.notif-row-text') : null;
     const styles = text ? window.getComputedStyle(text) : null;
     const items = JSON.parse(localStorage.getItem('shift_tracker_notifications_v1') || '[]');
-    const item = items.find((entry) => entry.key === 'offline_mode_fixed_2026_06_v2');
+    const item = items.find((entry) => entry.id === 'recent-unread-transient');
     return {
       overlayOpen: overlay ? (overlay.classList.contains('is-open') || overlay.classList.contains('visible')) : false,
       bodyLocked: document.body.classList.contains('has-open-overlay'),
@@ -851,6 +882,7 @@ async function main() {
       overlayOpen: overlay ? (overlay.classList.contains('is-open') || overlay.classList.contains('visible')) : false,
       bodyLocked: document.body.classList.contains('has-open-overlay'),
       keys: items.map((item) => item.key || ''),
+      ids: items.map((item) => item.id || ''),
       readKeys,
     };
   });
@@ -858,14 +890,17 @@ async function main() {
   if (notificationAfterClose.overlayOpen || notificationAfterClose.bodyLocked) {
     throw new Error('Notification close left an overlay click lock active');
   }
-  if (notificationAfterClose.keys.includes('offline_mode_fixed_2026_06_v2')) {
-    throw new Error('Read offline announcement stayed in notification inbox after close');
+  if (notificationAfterClose.ids.includes('recent-unread-transient')) {
+    throw new Error('Read recent notification stayed in notification inbox after close');
   }
-  if (!notificationAfterClose.readKeys.announcement_offline_mode_fixed_2026_06_v2) {
-    throw new Error('Read key for tapped offline announcement was not persisted');
+  if (!notificationAfterClose.readKeys['id:recent-unread-transient']) {
+    throw new Error('Read key for tapped recent notification was not persisted');
   }
 
   await page.evaluate(() => {
+    const readKeys = JSON.parse(localStorage.getItem('shift_tracker_notifications_read_v1') || '{}');
+    readKeys.announcement_offline_mode_fixed_2026_06_v2 = Date.now();
+    localStorage.setItem('shift_tracker_notifications_read_v1', JSON.stringify(readKeys));
     window.appNotify(
       'Оффлайн режим работает',
       'Блокнот снова открывается без связи после одного запуска с интернетом.',
@@ -925,7 +960,7 @@ async function main() {
   }
   }
   const profileClickState = await page.evaluate(() => {
-    const button = document.querySelector('.tab-btn[data-tab="profile"]');
+    const button = document.getElementById('btnOpenNavigationDrawer');
     const rect = button ? button.getBoundingClientRect() : null;
     const x = rect ? rect.x + Math.min(rect.width - 8, Math.max(8, rect.width / 2)) : 0;
     const y = rect ? rect.y + Math.min(rect.height - 8, Math.max(8, rect.height / 2)) : 0;
@@ -942,9 +977,9 @@ async function main() {
       topClass: top ? String(top.className || '') : '',
     };
   });
-  report.checks.profileTabClickableAfterNotifications = profileClickState;
+  report.checks.navigationDrawerClickableAfterNotifications = profileClickState;
   if (!profileClickState.topMatches || profileClickState.bodyLocked || profileClickState.overlayOpen) {
-    throw new Error(`Profile tab is covered after notification close: ${JSON.stringify(profileClickState)}`);
+    throw new Error(`Navigation drawer trigger is covered after notification close: ${JSON.stringify(profileClickState)}`);
   }
 
   const overlayRecoveryState = await page.evaluate(() => {
@@ -1073,8 +1108,8 @@ async function main() {
   }
 
   await page.setViewportSize({ width: 390, height: 844 });
-  await clickElementCenter(page, '.tab-btn[data-tab="profile"]', 'profile tab for install screenshot');
-  await page.waitForFunction(() => document.querySelector('.tab-btn[data-tab="profile"]')?.classList.contains('active'));
+  await page.evaluate(() => setActiveTab('profile'));
+  await page.waitForFunction(() => document.querySelector('.tab-panel[data-tab="profile"]')?.classList.contains('active'));
   await delay(2200);
   await page.screenshot({ path: path.join(artifactsDir, 'profile-install.png'), fullPage: true });
   await clickElementCenter(page, '#btnProfileEdit', 'profile edit');
@@ -1224,8 +1259,17 @@ async function main() {
     throw new Error(`Document audience filtering failed: ${JSON.stringify(docsScopeContract)}`);
   }
   await page.evaluate(() => setActiveTab('instructions'));
-  await page.waitForFunction(() => document.querySelector('.tab-btn[data-tab="instructions"]')?.classList.contains('active'));
-  await page.waitForFunction(() => document.getElementById('btnDocsContribute') && !document.getElementById('btnDocsContribute').classList.contains('hidden'));
+  await page.waitForFunction(() => document.querySelector('.tab-panel[data-tab="instructions"]')?.classList.contains('active'));
+  await page.evaluate(() => {
+    document.querySelector('[data-nav-group="documents"]').open = true;
+    window.NavigationDrawer.open();
+  });
+  await page.waitForFunction(() => {
+    const drawer = document.getElementById('navigationDrawer');
+    return document.body.classList.contains('is-navigation-drawer-open') &&
+      drawer && Math.abs(drawer.getBoundingClientRect().left) < 1;
+  });
+  await page.evaluate(() => document.getElementById('btnDocsContribute')?.scrollIntoView({ block: 'center' }));
   await clickElementCenter(page, '#btnDocsContribute', 'document contribution button');
   await page.waitForFunction(() => document.getElementById('overlayDepotProposal')?.classList.contains('is-open'));
   const documentContributionUi = await page.evaluate(() => ({
@@ -1243,7 +1287,7 @@ async function main() {
   }
   await page.evaluate(() => closeOverlay('overlayDepotProposal'));
   await page.evaluate(() => setActiveTab('home'));
-  await page.waitForFunction(() => document.querySelector('.tab-btn[data-tab="home"]')?.classList.contains('active'));
+  await page.waitForFunction(() => document.querySelector('.tab-panel[data-tab="home"]')?.classList.contains('active'));
   await page.screenshot({ path: path.join(artifactsDir, 'smoke-home.png'), fullPage: true });
 
   if (report.consoleErrors.length) throw new Error(`Console errors detected (${report.consoleErrors.length})`);

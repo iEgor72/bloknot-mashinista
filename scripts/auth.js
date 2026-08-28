@@ -1,4 +1,4 @@
-    if (typeof registerShiftTrackerRuntimeModule === 'function') registerShiftTrackerRuntimeModule('auth', 'v412');
+    if (typeof registerShiftTrackerRuntimeModule === 'function') registerShiftTrackerRuntimeModule('auth', 'v413');
 
     var API_BASE_URL = window.SHIFT_API_BASE_URL || '';
     var AUTH_API_URL = API_BASE_URL + '/api/auth';
@@ -783,6 +783,11 @@
         throw err;
       });
     }
+    // Shared authenticated transport for feature modules loaded after auth.js.
+    // Keep the legacy global name until the remaining callers move to the
+    // explicit namespaced hook.
+    window.shiftTrackerFetchJson = fetchJson;
+    window.fetchJson = fetchJson;
 
     function getTelegramInitData() {
       try {

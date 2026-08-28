@@ -830,7 +830,7 @@ async function assertPreparationModeWithoutGps(browser) {
     window.poekhaliHud?.positioningMode === 'preview' &&
     window.poekhaliHud?.hasProjection === true &&
     localStorage.getItem('poekhali.mapId') === 'dvost-postyshevo-komsomolsk' &&
-    document.getElementById('appTopBarPreview')?.getAttribute('aria-pressed') === 'true'
+    document.body.classList.contains('is-poekhali-preview')
   ), null, { timeout: 20_000 });
 
   const before = await page.evaluate(() => ({
@@ -886,7 +886,13 @@ async function assertPreparationModeWithoutGps(browser) {
   }
   await page.screenshot({ path: preparationScreenshotPath });
 
-  await page.locator('#appTopBarGps').click();
+  await page.locator('#btnOpenNavigationDrawer').click();
+  await page.waitForFunction(() => (
+    document.body.classList.contains('is-navigation-drawer-open') &&
+    Math.abs(document.getElementById('navigationDrawer')?.getBoundingClientRect().left || 0) < 1
+  ));
+  await page.evaluate(() => { document.querySelector('[data-nav-group="poekhali"]').open = true; });
+  await page.locator('[data-nav-action="poekhali-live"]').click();
   await page.waitForFunction(() => (
     window.poekhaliHud?.positioningMode === 'gps' &&
     window.__poekhaliGpsRequests.watch > 0
@@ -934,7 +940,7 @@ async function assertPreparationModeWithoutGps(browser) {
     gpsRequestsBeforeStart: initial,
     browsedMeters: Math.round(Math.abs(Number(window.poekhaliHud?.viewCoordinate) - Number(initial.coordinate))),
     gpsRequestsAfterStart: { ...window.__poekhaliGpsRequests },
-    previewButtonPressed: document.getElementById('appTopBarPreview')?.getAttribute('aria-pressed'),
+    liveNavigationCurrent: document.querySelector('[data-nav-action="poekhali-live"]')?.getAttribute('aria-current'),
     serviceArms: initial.armPicker.arms,
     vysokogornayaOptions: initial.vysokogornayaOptions,
     sollu: initial.solluState,

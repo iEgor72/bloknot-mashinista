@@ -1,0 +1,635 @@
+/* Scalable mobile navigation, global new-shift action and salary page. */
+:root {
+  --bottom-nav-height: 0px;
+  --bottom-nav-offset: 0px;
+  --bottom-nav-clearance: 0px;
+  --app-shell-bottom-reserve: 0px;
+}
+
+.app-content {
+  padding-bottom: calc(94px + var(--safe-bottom, env(safe-area-inset-bottom, 0px)));
+}
+
+.app-top-bar {
+  gap: 12px;
+}
+
+.app-top-bar-leading {
+  flex: 1 1 auto;
+}
+
+.app-top-bar-actions {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex: 0 0 auto;
+}
+
+.app-top-bar-icon.app-menu-trigger {
+  display: grid;
+}
+
+.dashboard-income-link {
+  width: 100%;
+  border: 0;
+  padding: 0;
+  text-align: left;
+  color: inherit;
+  font: inherit;
+  cursor: pointer;
+}
+
+.dashboard-income-link:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 6px;
+  border-radius: 8px;
+}
+
+/* Entry mode is chosen in the drawer. Inside the trip screen GPS remains a
+   compact status/retry control, while the old mode switch is removed. */
+#btnPoekhaliPreview {
+  display: none !important;
+}
+
+body.is-poekhali-mode:not(.is-poekhali-preview) .trk-edit-actions {
+  display: none;
+}
+
+.global-shift-fab {
+  position: fixed;
+  z-index: 72;
+  right: max(18px, env(safe-area-inset-right, 0px));
+  bottom: max(18px, calc(env(safe-area-inset-bottom, 0px) + 18px));
+  width: 58px;
+  height: 58px;
+  min-width: 58px;
+  min-height: 58px;
+  display: grid;
+  place-items: center;
+  border: 1px solid color-mix(in oklch, var(--accent) 58%, transparent);
+  border-radius: 20px;
+  padding: 0;
+  background: var(--accent);
+  color: #041117;
+  box-shadow: 0 16px 34px color-mix(in oklch, var(--accent) 24%, transparent);
+  transition: transform 180ms ease, opacity 180ms ease;
+}
+
+.global-shift-fab .fab-btn {
+  width: 58px;
+  height: 58px;
+  display: grid;
+  place-items: center;
+  border: 0;
+  border-radius: inherit;
+  background: transparent;
+  color: currentColor;
+  box-shadow: none;
+}
+
+.global-shift-fab:active {
+  transform: scale(.94);
+}
+
+body.is-poekhali-mode .global-shift-fab,
+body.is-keyboard-open .global-shift-fab,
+body.has-open-overlay .global-shift-fab,
+body.is-navigation-drawer-open .global-shift-fab,
+body:has(.tab-panel[data-tab="add"].active) .global-shift-fab,
+body:has(.community-editor-overlay.is-open) .global-shift-fab {
+  opacity: 0;
+  pointer-events: none;
+  transform: translateY(14px) scale(.9);
+}
+
+.navigation-drawer-backdrop {
+  position: fixed;
+  inset: 0;
+  z-index: 180;
+  background: rgba(0, 5, 9, .68);
+  opacity: 0;
+  visibility: hidden;
+  pointer-events: none;
+  transition: opacity 220ms ease, visibility 220ms ease;
+}
+
+.navigation-drawer {
+  position: fixed;
+  inset: 0 auto 0 0;
+  z-index: 181;
+  width: min(82vw, 420px);
+  max-width: calc(100vw - 32px);
+  display: grid;
+  grid-template-rows: auto auto minmax(0, 1fr) auto;
+  box-sizing: border-box;
+  padding: max(18px, env(safe-area-inset-top, 0px)) 14px max(14px, env(safe-area-inset-bottom, 0px));
+  background: rgba(5, 15, 23, .97);
+  border-right: 1px solid rgba(157, 180, 198, .2);
+  box-shadow: 24px 0 52px rgba(0, 0, 0, .5);
+  backdrop-filter: blur(26px) saturate(135%);
+  transform: translateX(-104%);
+  visibility: hidden;
+  transition: transform 260ms cubic-bezier(.22, .72, .22, 1), visibility 260ms ease;
+  outline: none;
+}
+
+body.is-navigation-drawer-open {
+  overflow: hidden;
+}
+
+body.is-navigation-drawer-open .navigation-drawer-backdrop {
+  opacity: 1;
+  visibility: visible;
+  pointer-events: auto;
+}
+
+body.is-navigation-drawer-open .navigation-drawer {
+  transform: translateX(0);
+  visibility: visible;
+}
+
+.navigation-drawer-header {
+  min-height: 58px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 2px 8px 6px;
+}
+
+.navigation-drawer-title {
+  font: 800 22px/1.1 'Golos Text', system-ui, sans-serif;
+  letter-spacing: -.02em;
+  color: var(--ink);
+}
+
+.navigation-drawer-close {
+  width: 46px;
+  height: 46px;
+  display: grid;
+  place-items: center;
+  border: 0;
+  border-radius: 15px;
+  background: transparent;
+  color: var(--ink-3);
+  font: 300 34px/1 system-ui, sans-serif;
+}
+
+.navigation-drawer-search {
+  height: 50px;
+  display: grid;
+  grid-template-columns: 22px 1fr;
+  align-items: center;
+  gap: 10px;
+  margin: 4px 2px 12px;
+  padding: 0 14px;
+  border-radius: 15px;
+  background: rgba(255, 255, 255, .045);
+  box-shadow: inset 0 0 0 1px rgba(193, 210, 224, .12);
+  color: var(--ink-3);
+}
+
+.navigation-drawer-search:focus-within {
+  box-shadow: inset 0 0 0 1px color-mix(in oklch, var(--accent) 72%, transparent), 0 0 0 3px color-mix(in oklch, var(--accent) 10%, transparent);
+}
+
+.navigation-drawer-search svg {
+  width: 22px;
+  height: 22px;
+}
+
+.navigation-drawer-search input {
+  width: 100%;
+  border: 0;
+  outline: 0;
+  background: transparent;
+  color: var(--ink);
+  font: 600 15px/1 'Golos Text', system-ui, sans-serif;
+}
+
+.navigation-drawer-search input::placeholder {
+  color: var(--ink-4);
+}
+
+.navigation-drawer-list {
+  min-height: 0;
+  overflow-y: auto;
+  overscroll-behavior: contain;
+  scrollbar-width: thin;
+  scrollbar-color: rgba(187, 202, 214, .44) transparent;
+  padding: 0 2px 12px;
+}
+
+.navigation-drawer-home,
+.navigation-drawer-direct,
+.navigation-drawer-group > summary {
+  width: 100%;
+  min-height: 62px;
+  box-sizing: border-box;
+  display: grid;
+  grid-template-columns: 28px minmax(0, 1fr) auto;
+  align-items: center;
+  gap: 13px;
+  border: 0;
+  border-bottom: 1px solid rgba(188, 204, 218, .1);
+  padding: 8px 10px;
+  background: transparent;
+  color: var(--ink-2);
+  text-align: left;
+  font: inherit;
+  cursor: pointer;
+  list-style: none;
+}
+
+.navigation-drawer-group > summary::-webkit-details-marker {
+  display: none;
+}
+
+.navigation-drawer-home > svg,
+.navigation-drawer-direct > svg,
+.navigation-drawer-group > summary > svg {
+  width: 27px;
+  height: 27px;
+  color: var(--ink-3);
+}
+
+.navigation-drawer-home > span,
+.navigation-drawer-direct strong,
+.navigation-drawer-group > summary strong {
+  font: 700 16px/1.15 'Golos Text', system-ui, sans-serif;
+  color: var(--ink);
+}
+
+.navigation-drawer-direct > span:not(.navigation-drawer-badge),
+.navigation-drawer-group > summary > span {
+  min-width: 0;
+  display: grid;
+  gap: 3px;
+}
+
+.navigation-drawer-direct small,
+.navigation-drawer-group > summary small {
+  color: var(--ink-4);
+  font: 500 11px/1.2 'Golos Text', system-ui, sans-serif;
+}
+
+.navigation-drawer-home.is-active,
+.navigation-drawer-group[data-active="true"] > summary {
+  color: var(--accent);
+  background: color-mix(in oklch, var(--accent) 8%, transparent);
+}
+
+.navigation-drawer-home.is-active > svg,
+.navigation-drawer-group[data-active="true"] > summary > svg,
+.navigation-drawer-home.is-active > span,
+.navigation-drawer-group[data-active="true"] > summary strong {
+  color: var(--accent);
+}
+
+.navigation-drawer-group[open] > summary {
+  border-bottom-color: transparent;
+}
+
+.navigation-drawer-group > summary > i,
+.navigation-drawer-direct > i {
+  color: var(--ink-4);
+  font: 700 20px/1 system-ui, sans-serif;
+  font-style: normal;
+}
+
+.navigation-drawer-group > summary > i::before {
+  content: '›';
+  display: block;
+  transform: rotate(90deg);
+  transition: transform 160ms ease;
+}
+
+.navigation-drawer-group[open] > summary > i::before {
+  transform: rotate(-90deg);
+  color: var(--accent);
+}
+
+.navigation-drawer-children {
+  position: relative;
+  display: grid;
+  gap: 2px;
+  margin: 0 6px 8px 22px;
+  padding: 1px 0 5px 25px;
+  border-left: 2px solid color-mix(in oklch, var(--accent) 64%, transparent);
+}
+
+.navigation-drawer-children > button,
+.navigation-drawer-children > div {
+  min-height: 46px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  border: 0;
+  border-radius: 11px;
+  padding: 9px 10px;
+  background: transparent;
+  color: var(--ink-3);
+  text-align: left;
+  font: 600 14px/1.25 'Golos Text', system-ui, sans-serif;
+}
+
+.navigation-drawer-children > .navigation-drawer-install-row {
+  min-height: 0;
+  display: block;
+  padding: 0;
+}
+
+.navigation-drawer-install-row > button {
+  width: 100%;
+  min-height: 46px;
+  border: 0;
+  border-radius: 11px;
+  padding: 9px 10px;
+  background: transparent;
+  color: var(--ink-3);
+  text-align: left;
+  font: 600 14px/1.25 'Golos Text', system-ui, sans-serif;
+}
+
+.navigation-drawer-children > button strong {
+  color: var(--accent);
+  font-weight: 700;
+}
+
+.navigation-drawer-children > button:active,
+.navigation-drawer-children > button.is-active {
+  background: color-mix(in oklch, var(--accent) 10%, transparent);
+  color: var(--ink);
+}
+
+.navigation-drawer-children > button.is-active {
+  box-shadow: inset 3px 0 0 var(--accent);
+}
+
+.navigation-drawer-empty {
+  min-height: 150px;
+  display: grid;
+  place-content: center;
+  gap: 7px;
+  padding: 28px 18px;
+  text-align: center;
+  color: var(--ink-4);
+}
+
+.navigation-drawer-empty[hidden] {
+  display: none;
+}
+
+.navigation-drawer-empty strong {
+  color: var(--ink-2);
+  font: 700 14px/1.2 'Golos Text', system-ui, sans-serif;
+}
+
+.navigation-drawer-empty span {
+  font: 500 12px/1.4 'Golos Text', system-ui, sans-serif;
+}
+
+.navigation-drawer-badge {
+  width: 30px;
+  height: 30px;
+  display: grid;
+  place-items: center;
+  border-radius: 10px;
+  color: var(--accent);
+  background: color-mix(in oklch, var(--accent) 12%, transparent);
+  box-shadow: inset 0 0 0 1px color-mix(in oklch, var(--accent) 32%, transparent);
+  font: 800 11px/1 'Golos Text', system-ui, sans-serif;
+}
+
+.navigation-drawer-info > div strong {
+  color: var(--ink);
+  font-variant-numeric: tabular-nums;
+}
+
+.navigation-drawer-footer {
+  min-height: 66px;
+  display: grid;
+  grid-template-columns: 44px minmax(0, 1fr);
+  align-items: center;
+  gap: 12px;
+  padding: 12px 8px 0;
+  border-top: 1px solid rgba(188, 204, 218, .14);
+}
+
+.navigation-drawer-avatar {
+  width: 44px;
+  height: 44px;
+  display: grid;
+  place-items: center;
+  border-radius: 50%;
+  color: var(--accent);
+  background: color-mix(in oklch, var(--accent) 12%, #071019);
+  box-shadow: inset 0 0 0 1px color-mix(in oklch, var(--accent) 48%, transparent);
+  font: 700 15px/1 'Golos Text', system-ui, sans-serif;
+}
+
+.navigation-drawer-footer > span:last-child {
+  min-width: 0;
+  display: grid;
+  gap: 4px;
+}
+
+.navigation-drawer-footer strong {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  color: var(--ink);
+  font: 700 14px/1.1 'Golos Text', system-ui, sans-serif;
+}
+
+.navigation-drawer-footer small {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  color: var(--ink-4);
+  font: 500 11px/1.1 'Golos Text', system-ui, sans-serif;
+}
+
+.navigation-drawer [data-search-hidden="true"] {
+  display: none !important;
+}
+
+/* Salary page */
+.salary-page {
+  display: none;
+  padding: 8px 0 20px;
+}
+
+.salary-page.active {
+  display: block;
+}
+
+.salary-page-head,
+.salary-section-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 14px;
+}
+
+.salary-page-head {
+  justify-content: flex-end;
+  margin: 0 4px 8px;
+}
+
+.salary-section-head span {
+  display: block;
+  color: var(--ink-4);
+  font: 700 9px/1.15 'Golos Text', system-ui, sans-serif;
+  letter-spacing: .14em;
+  text-transform: uppercase;
+}
+
+.salary-settings-link {
+  width: 46px;
+  height: 46px;
+  display: grid;
+  place-items: center;
+  border: 0;
+  border-radius: 15px;
+  color: var(--accent);
+  background: color-mix(in oklch, var(--accent) 10%, var(--bg-rise));
+  box-shadow: inset 0 0 0 1px color-mix(in oklch, var(--accent) 26%, transparent);
+}
+
+.salary-settings-link svg {
+  width: 23px;
+  height: 23px;
+}
+
+.salary-page-month-nav {
+  margin-bottom: 12px;
+}
+
+.salary-page-summary,
+.salary-page-breakdown,
+.salary-page-shifts {
+  margin-bottom: 12px;
+}
+
+.salary-page-summary-meta {
+  display: flex;
+  gap: 18px;
+  margin-top: 14px;
+  color: var(--ink-3);
+  font: 600 11px/1.2 'Golos Text', system-ui, sans-serif;
+}
+
+.salary-page-summary-meta strong {
+  color: var(--ink);
+  font-weight: 800;
+  font-variant-numeric: tabular-nums;
+}
+
+.salary-section-head {
+  padding: 2px 2px 10px;
+  border-bottom: 1px solid rgba(188, 204, 218, .08);
+}
+
+.salary-section-head > div {
+  display: grid;
+  gap: 4px;
+}
+
+.salary-section-head strong {
+  color: var(--ink);
+  font: 700 14px/1.2 'Golos Text', system-ui, sans-serif;
+}
+
+.salary-section-head > b {
+  color: var(--ink);
+  font: 800 15px/1 'Golos Text', system-ui, sans-serif;
+  font-variant-numeric: tabular-nums;
+}
+
+.salary-section-head-plain {
+  padding: 5px 4px 10px;
+  border-bottom: 0;
+}
+
+.salary-page .salary-row {
+  grid-template-columns: minmax(0, 1fr) auto;
+  padding: 11px 2px;
+}
+
+.salary-page .salary-row-label {
+  display: grid;
+  gap: 3px;
+}
+
+.salary-page .salary-row-label small {
+  color: var(--ink-4);
+  font: 500 10px/1.15 'Golos Text', system-ui, sans-serif;
+}
+
+.salary-shift-list {
+  display: grid;
+  gap: 8px;
+}
+
+.salary-shift-item {
+  min-height: 64px;
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  align-items: center;
+  gap: 12px;
+  padding: 12px 14px;
+  border-radius: 16px;
+  background: var(--bg-rise);
+  box-shadow: inset 0 0 0 1px var(--hair);
+}
+
+.salary-shift-item > span:first-child {
+  min-width: 0;
+  display: grid;
+  gap: 4px;
+}
+
+.salary-shift-item strong {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  color: var(--ink);
+  font: 700 13px/1.15 'Golos Text', system-ui, sans-serif;
+}
+
+.salary-shift-item small {
+  color: var(--ink-4);
+  font: 500 10px/1.15 'Golos Text', system-ui, sans-serif;
+}
+
+.salary-shift-item > b {
+  color: var(--good);
+  font: 800 14px/1 'Golos Text', system-ui, sans-serif;
+  font-variant-numeric: tabular-nums;
+}
+
+.salary-empty {
+  padding: 22px 14px;
+  border-radius: 16px;
+  text-align: center;
+  color: var(--ink-4);
+  background: var(--bg-rise);
+  box-shadow: inset 0 0 0 1px var(--hair);
+  font: 600 12px/1.4 'Golos Text', system-ui, sans-serif;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .navigation-drawer,
+  .navigation-drawer-backdrop,
+  .global-shift-fab,
+  .navigation-drawer-group > summary > i::before {
+    transition: none !important;
+  }
+}
+
+@media (min-width: 760px) {
+  .navigation-drawer {
+    width: 410px;
+  }
+}
