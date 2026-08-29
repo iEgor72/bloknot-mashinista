@@ -1,0 +1,44 @@
+{
+  "schema_version": "1.0",
+  "id": "pack:rzd:east-siberian:tche-9:vikhorevka",
+  "depot_id": "rzd:east-siberian:tche-9:vikhorevka",
+  "name": "Вихоревка ТЧЭ-9",
+  "status": "pilot_draft",
+  "updated_at": "2026-08-30",
+  "source_ids": [
+    "legacy-ek-bloknot-069"
+  ],
+  "route_ids": [
+    "ek069-vikhorevka-gyrshelun-sayanskaya"
+  ],
+  "section_ids": [
+    "ek069-vikhorevka-gyrshelun-sayanskaya-s29",
+    "ek069-vikhorevka-gyrshelun-sayanskaya-s18",
+    "ek069-vikhorevka-gyrshelun-sayanskaya-s39",
+    "ek069-vikhorevka-gyrshelun-sayanskaya-s38",
+    "ek069-vikhorevka-gyrshelun-sayanskaya-s2",
+    "ek069-vikhorevka-gyrshelun-sayanskaya-s12",
+    "ek069-vikhorevka-gyrshelun-sayanskaya-s28"
+  ],
+  "service_arms": [
+    {
+      "id": "ek069-vikhorevka-gyrshelun-sayanskaya",
+      "name": "Вихоревка — Гыршелун (+ Саянская)",
+      "description": "Импортированная ЭК 0.6.9 · требуется проверка плеча и данных",
+      "route_options": [
+        {
+          "id": "legacy-ek",
+          "name": "Открыть ЭК",
+          "tracker_map_id": "ek069-vikhorevka-gyrshelun-sayanskaya",
+          "entry_station": "Вихоревка"
+        }
+      ]
+    }
+  ],
+  "readiness": {
+    "manual_preview_data": true,
+    "live_gps_data": true,
+    "all_sections_verified": false
+  },
+  "note": "ЭК показаны в депо по прохождению соответствующего маршрутного коридора. Это помогает найти доступную карту, но не подтверждает организационные границы действующего плеча обслуживания."
+}

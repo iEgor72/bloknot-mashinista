@@ -1,0 +1,71 @@
+{
+  "schema_version": "1.0",
+  "id": "pack:rzd:dvost:tche-11:tynda",
+  "depot_id": "rzd:dvost:tche-11:tynda",
+  "name": "Тында ТЧЭ-11",
+  "status": "pilot_draft",
+  "updated_at": "2026-08-30",
+  "source_ids": [
+    "legacy-ek-bloknot-069"
+  ],
+  "route_ids": [
+    "ek069-taksimo-yuktali-freight",
+    "ek069-tynda-verkhnezeysk",
+    "ek069-tynda-komsomolsk-izvestkovaya"
+  ],
+  "section_ids": [
+    "ek069-taksimo-yuktali-freight-s18",
+    "ek069-taksimo-yuktali-freight-s19",
+    "ek069-tynda-verkhnezeysk-s18",
+    "ek069-tynda-verkhnezeysk-s19",
+    "ek069-tynda-komsomolsk-izvestkovaya-s18",
+    "ek069-tynda-komsomolsk-izvestkovaya-s19"
+  ],
+  "service_arms": [
+    {
+      "id": "ek069-taksimo-yuktali-freight",
+      "name": "Таксимо — Юктали (грузовое движение, EA70)",
+      "description": "Импортированная ЭК 0.6.9 · требуется проверка плеча и данных",
+      "route_options": [
+        {
+          "id": "legacy-ek",
+          "name": "Открыть ЭК",
+          "tracker_map_id": "ek069-taksimo-yuktali-freight",
+          "entry_station": "Тында"
+        }
+      ]
+    },
+    {
+      "id": "ek069-tynda-verkhnezeysk",
+      "name": "Тында — Верхнезейск",
+      "description": "Импортированная ЭК 0.6.9 · требуется проверка плеча и данных",
+      "route_options": [
+        {
+          "id": "legacy-ek",
+          "name": "Открыть ЭК",
+          "tracker_map_id": "ek069-tynda-verkhnezeysk",
+          "entry_station": "Тында"
+        }
+      ]
+    },
+    {
+      "id": "ek069-tynda-komsomolsk-izvestkovaya",
+      "name": "Тында — Комсомольск — Известковая",
+      "description": "Импортированная ЭК 0.6.9 · требуется проверка плеча и данных",
+      "route_options": [
+        {
+          "id": "legacy-ek",
+          "name": "Открыть ЭК",
+          "tracker_map_id": "ek069-tynda-komsomolsk-izvestkovaya",
+          "entry_station": "Тында"
+        }
+      ]
+    }
+  ],
+  "readiness": {
+    "manual_preview_data": true,
+    "live_gps_data": true,
+    "all_sections_verified": false
+  },
+  "note": "ЭК показаны в депо по прохождению соответствующего маршрутного коридора. Это помогает найти доступную карту, но не подтверждает организационные границы действующего плеча обслуживания."
+}

@@ -1,0 +1,62 @@
+{
+  "schema_version": "1.0",
+  "id": "pack:rzd:transbaikal:tche-3:chita",
+  "depot_id": "rzd:transbaikal:tche-3:chita",
+  "name": "Чита ТЧЭ-3",
+  "status": "pilot_draft",
+  "updated_at": "2026-08-30",
+  "source_ids": [
+    "legacy-ek-bloknot-069"
+  ],
+  "route_ids": [
+    "ek069-vikhorevka-gyrshelun-sayanskaya",
+    "ek069-taishet-gyrshelun"
+  ],
+  "section_ids": [
+    "ek069-vikhorevka-gyrshelun-sayanskaya-s29",
+    "ek069-vikhorevka-gyrshelun-sayanskaya-s18",
+    "ek069-vikhorevka-gyrshelun-sayanskaya-s39",
+    "ek069-vikhorevka-gyrshelun-sayanskaya-s38",
+    "ek069-vikhorevka-gyrshelun-sayanskaya-s2",
+    "ek069-vikhorevka-gyrshelun-sayanskaya-s12",
+    "ek069-vikhorevka-gyrshelun-sayanskaya-s28",
+    "ek069-taishet-gyrshelun-s29",
+    "ek069-taishet-gyrshelun-s18",
+    "ek069-taishet-gyrshelun-s39",
+    "ek069-taishet-gyrshelun-s38"
+  ],
+  "service_arms": [
+    {
+      "id": "ek069-vikhorevka-gyrshelun-sayanskaya",
+      "name": "Вихоревка — Гыршелун (+ Саянская)",
+      "description": "Импортированная ЭК 0.6.9 · требуется проверка плеча и данных",
+      "route_options": [
+        {
+          "id": "legacy-ek",
+          "name": "Открыть ЭК",
+          "tracker_map_id": "ek069-vikhorevka-gyrshelun-sayanskaya",
+          "entry_station": "Чита"
+        }
+      ]
+    },
+    {
+      "id": "ek069-taishet-gyrshelun",
+      "name": "Тайшет — Гыршелун (источник не тестировался)",
+      "description": "Импортированная ЭК 0.6.9 · требуется проверка плеча и данных",
+      "route_options": [
+        {
+          "id": "legacy-ek",
+          "name": "Открыть ЭК",
+          "tracker_map_id": "ek069-taishet-gyrshelun",
+          "entry_station": "Чита"
+        }
+      ]
+    }
+  ],
+  "readiness": {
+    "manual_preview_data": true,
+    "live_gps_data": true,
+    "all_sections_verified": false
+  },
+  "note": "ЭК показаны в депо по прохождению соответствующего маршрутного коридора. Это помогает найти доступную карту, но не подтверждает организационные границы действующего плеча обслуживания."
+}

@@ -1,0 +1,50 @@
+{
+  "schema_version": "1.0",
+  "id": "pack:rzd:krasnoyarsk:tche-3:ilanskaya",
+  "depot_id": "rzd:krasnoyarsk:tche-3:ilanskaya",
+  "name": "Иланская ТЧЭ-3",
+  "status": "pilot_draft",
+  "updated_at": "2026-08-30",
+  "source_ids": [
+    "legacy-ek-bloknot-069"
+  ],
+  "route_ids": [
+    "ek069-mariinsk-irkutsk"
+  ],
+  "section_ids": [
+    "ek069-mariinsk-irkutsk-s1",
+    "ek069-mariinsk-irkutsk-s6",
+    "ek069-mariinsk-irkutsk-s7",
+    "ek069-mariinsk-irkutsk-s11",
+    "ek069-mariinsk-irkutsk-s17",
+    "ek069-mariinsk-irkutsk-s84",
+    "ek069-mariinsk-irkutsk-s24",
+    "ek069-mariinsk-irkutsk-s26",
+    "ek069-mariinsk-irkutsk-s27",
+    "ek069-mariinsk-irkutsk-s32",
+    "ek069-mariinsk-irkutsk-s49",
+    "ek069-mariinsk-irkutsk-s70",
+    "ek069-mariinsk-irkutsk-s58"
+  ],
+  "service_arms": [
+    {
+      "id": "ek069-mariinsk-irkutsk",
+      "name": "Мариинск — Иркутск",
+      "description": "Импортированная ЭК 0.6.9 · требуется проверка плеча и данных",
+      "route_options": [
+        {
+          "id": "legacy-ek",
+          "name": "Открыть ЭК",
+          "tracker_map_id": "ek069-mariinsk-irkutsk",
+          "entry_station": "Иланская"
+        }
+      ]
+    }
+  ],
+  "readiness": {
+    "manual_preview_data": true,
+    "live_gps_data": true,
+    "all_sections_verified": false
+  },
+  "note": "ЭК показаны в депо по прохождению соответствующего маршрутного коридора. Это помогает найти доступную карту, но не подтверждает организационные границы действующего плеча обслуживания."
+}

@@ -1,0 +1,89 @@
+{
+  "schema_version": "1.0",
+  "id": "pack:rzd:dvost:tche-4:ruzhino",
+  "depot_id": "rzd:dvost:tche-4:ruzhino",
+  "name": "Ружино ТЧЭ-4",
+  "status": "pilot_draft",
+  "updated_at": "2026-08-30",
+  "source_ids": [
+    "legacy-ek-bloknot-069"
+  ],
+  "route_ids": [
+    "ek069-vladivostok-obluchye",
+    "ek069-ruzhino-freight",
+    "ek069-ruzhino-pass-8170"
+  ],
+  "section_ids": [
+    "ek069-vladivostok-obluchye-s4",
+    "ek069-vladivostok-obluchye-s1",
+    "ek069-vladivostok-obluchye-s13",
+    "ek069-vladivostok-obluchye-s12",
+    "ek069-vladivostok-obluchye-s19",
+    "ek069-vladivostok-obluchye-s20",
+    "ek069-vladivostok-obluchye-s23",
+    "ek069-vladivostok-obluchye-s25",
+    "ek069-vladivostok-obluchye-s26",
+    "ek069-vladivostok-obluchye-s27",
+    "ek069-ruzhino-freight-s13",
+    "ek069-ruzhino-freight-s19",
+    "ek069-ruzhino-freight-s20",
+    "ek069-ruzhino-freight-s23",
+    "ek069-ruzhino-freight-s25",
+    "ek069-ruzhino-freight-s26",
+    "ek069-ruzhino-freight-s27",
+    "ek069-ruzhino-pass-8170-s11",
+    "ek069-ruzhino-pass-8170-s17",
+    "ek069-ruzhino-pass-8170-s18",
+    "ek069-ruzhino-pass-8170-s22",
+    "ek069-ruzhino-pass-8170-s23",
+    "ek069-ruzhino-pass-8170-s24",
+    "ek069-ruzhino-pass-8170-s25"
+  ],
+  "service_arms": [
+    {
+      "id": "ek069-vladivostok-obluchye",
+      "name": "Владивосток — Облучье",
+      "description": "Импортированная ЭК 0.6.9 · требуется проверка плеча и данных",
+      "route_options": [
+        {
+          "id": "legacy-ek",
+          "name": "Открыть ЭК",
+          "tracker_map_id": "ek069-vladivostok-obluchye",
+          "entry_station": "Ружино"
+        }
+      ]
+    },
+    {
+      "id": "ek069-ruzhino-freight",
+      "name": "Ружино (грузовое движение)",
+      "description": "Импортированная ЭК 0.6.9 · требуется проверка плеча и данных",
+      "route_options": [
+        {
+          "id": "legacy-ek",
+          "name": "Открыть ЭК",
+          "tracker_map_id": "ek069-ruzhino-freight",
+          "entry_station": "Ружино"
+        }
+      ]
+    },
+    {
+      "id": "ek069-ruzhino-pass-8170",
+      "name": "Ружино (пассажирское движение, 8170)",
+      "description": "Импортированная ЭК 0.6.9 · требуется проверка плеча и данных",
+      "route_options": [
+        {
+          "id": "legacy-ek",
+          "name": "Открыть ЭК",
+          "tracker_map_id": "ek069-ruzhino-pass-8170",
+          "entry_station": "Ружино"
+        }
+      ]
+    }
+  ],
+  "readiness": {
+    "manual_preview_data": true,
+    "live_gps_data": true,
+    "all_sections_verified": false
+  },
+  "note": "ЭК показаны в депо по прохождению соответствующего маршрутного коридора. Это помогает найти доступную карту, но не подтверждает организационные границы действующего плеча обслуживания."
+}

@@ -12,7 +12,8 @@
       "source_ids": [
         "legacy-tch9-v43-db",
         "bloknot-tch9-section-bundle",
-        "miit-training-plan-2022"
+        "miit-training-plan-2022",
+        "legacy-ek-bloknot-069"
       ]
     },
     {
@@ -21,11 +22,13 @@
       "code": "ТЧЭ-13",
       "railway_id": "dvost",
       "traction_directorate_id": "td-dvost",
-      "status": "source_listed",
+      "status": "pack_available",
       "source_ids": [
         "legacy-tch9-v43-db",
-        "miit-training-plan-2022"
-      ]
+        "miit-training-plan-2022",
+        "legacy-ek-bloknot-069"
+      ],
+      "pack_file": "depot-packs/rzd-dvost-tche-13-novyi-urgal.json"
     },
     {
       "id": "rzd:dvost:tche-1:obluche",
@@ -33,10 +36,12 @@
       "code": "ТЧЭ-1",
       "railway_id": "dvost",
       "traction_directorate_id": "td-dvost",
-      "status": "source_listed",
+      "status": "pack_available",
       "source_ids": [
-        "miit-training-plan-2022"
-      ]
+        "miit-training-plan-2022",
+        "legacy-ek-bloknot-069"
+      ],
+      "pack_file": "depot-packs/rzd-dvost-tche-1-obluche.json"
     },
     {
       "id": "rzd:dvost:tche-14:partizansk",
@@ -55,11 +60,13 @@
       "code": "ТЧЭ-4",
       "railway_id": "dvost",
       "traction_directorate_id": "td-dvost",
-      "status": "source_listed",
+      "status": "pack_available",
       "source_ids": [
         "legacy-tch9-v43-db",
-        "miit-training-plan-2022"
-      ]
+        "miit-training-plan-2022",
+        "legacy-ek-bloknot-069"
+      ],
+      "pack_file": "depot-packs/rzd-dvost-tche-4-ruzhino.json"
     },
     {
       "id": "rzd:dvost:tche-8:smolyaninovo",
@@ -95,10 +102,12 @@
       "code": "ТЧЭ-11",
       "railway_id": "dvost",
       "traction_directorate_id": "td-dvost",
-      "status": "source_listed",
+      "status": "pack_available",
       "source_ids": [
-        "miit-training-plan-2022"
-      ]
+        "miit-training-plan-2022",
+        "legacy-ek-bloknot-069"
+      ],
+      "pack_file": "depot-packs/rzd-dvost-tche-11-tynda.json"
     },
     {
       "id": "rzd:dvost:tche-6:ussuriisk",
@@ -106,10 +115,12 @@
       "code": "ТЧЭ-6",
       "railway_id": "dvost",
       "traction_directorate_id": "td-dvost",
-      "status": "source_listed",
+      "status": "pack_available",
       "source_ids": [
-        "miit-training-plan-2022"
-      ]
+        "miit-training-plan-2022",
+        "legacy-ek-bloknot-069"
+      ],
+      "pack_file": "depot-packs/rzd-dvost-tche-6-ussuriisk.json"
     },
     {
       "id": "rzd:dvost:tche-2:khabarovsk-ii",
@@ -117,14 +128,16 @@
       "code": "ТЧЭ-2",
       "railway_id": "dvost",
       "traction_directorate_id": "td-dvost",
-      "status": "source_listed",
+      "status": "pack_available",
       "aliases": [
         "Хабаровск-2",
         "Хабаровск-П"
       ],
       "source_ids": [
-        "miit-training-plan-2022"
-      ]
+        "miit-training-plan-2022",
+        "legacy-ek-bloknot-069"
+      ],
+      "pack_file": "depot-packs/rzd-dvost-tche-2-khabarovsk-ii.json"
     },
     {
       "id": "rzd:dvost:tche-15:yuzhno-sakhalinsk",
@@ -143,10 +156,12 @@
       "code": "ТЧЭ-9",
       "railway_id": "east-siberian",
       "traction_directorate_id": "td-east-siberian",
-      "status": "source_listed",
+      "status": "pack_available",
       "source_ids": [
-        "miit-training-plan-2022"
-      ]
+        "miit-training-plan-2022",
+        "legacy-ek-bloknot-069"
+      ],
+      "pack_file": "depot-packs/rzd-east-siberian-tche-9-vikhorevka.json"
     },
     {
       "id": "rzd:east-siberian:tche-3:zima",
@@ -154,10 +169,12 @@
       "code": "ТЧЭ-3",
       "railway_id": "east-siberian",
       "traction_directorate_id": "td-east-siberian",
-      "status": "source_listed",
+      "status": "pack_available",
       "source_ids": [
-        "miit-training-plan-2022"
-      ]
+        "miit-training-plan-2022",
+        "legacy-ek-bloknot-069"
+      ],
+      "pack_file": "depot-packs/rzd-east-siberian-tche-3-zima.json"
     },
     {
       "id": "rzd:east-siberian:tche-5:irkutsk-sortirovochnyi",
@@ -165,11 +182,13 @@
       "code": "ТЧЭ-5",
       "railway_id": "east-siberian",
       "traction_directorate_id": "td-east-siberian",
-      "status": "source_listed",
+      "status": "pack_available",
       "source_ids": [
         "legacy-tch9-v43-db",
-        "miit-training-plan-2022"
-      ]
+        "miit-training-plan-2022",
+        "legacy-ek-bloknot-069"
+      ],
+      "pack_file": "depot-packs/rzd-east-siberian-tche-5-irkutsk-sortirovochnyi.json"
     },
     {
       "id": "rzd:east-siberian:tche-10:lena",
@@ -188,10 +207,12 @@
       "code": "ТЧЭ-2",
       "railway_id": "east-siberian",
       "traction_directorate_id": "td-east-siberian",
-      "status": "source_listed",
+      "status": "pack_available",
       "source_ids": [
-        "miit-training-plan-2022"
-      ]
+        "miit-training-plan-2022",
+        "legacy-ek-bloknot-069"
+      ],
+      "pack_file": "depot-packs/rzd-east-siberian-tche-2-nizhneudinsk.json"
     },
     {
       "id": "rzd:east-siberian:tche-14:novaya-chara",
@@ -199,11 +220,13 @@
       "code": "ТЧЭ-14",
       "railway_id": "east-siberian",
       "traction_directorate_id": "td-east-siberian",
-      "status": "source_listed",
+      "status": "pack_available",
       "source_ids": [
         "legacy-tch9-v43-db",
-        "miit-training-plan-2022"
-      ]
+        "miit-training-plan-2022",
+        "legacy-ek-bloknot-069"
+      ],
+      "pack_file": "depot-packs/rzd-east-siberian-tche-14-novaya-chara.json"
     },
     {
       "id": "rzd:east-siberian:tche-12:severobaikalsk",
@@ -211,10 +234,12 @@
       "code": "ТЧЭ-12",
       "railway_id": "east-siberian",
       "traction_directorate_id": "td-east-siberian",
-      "status": "source_listed",
+      "status": "pack_available",
       "source_ids": [
-        "miit-training-plan-2022"
-      ]
+        "miit-training-plan-2022",
+        "legacy-ek-bloknot-069"
+      ],
+      "pack_file": "depot-packs/rzd-east-siberian-tche-12-severobaikalsk.json"
     },
     {
       "id": "rzd:east-siberian:tche-6:slyudyanka",
@@ -222,10 +247,12 @@
       "code": "ТЧЭ-6",
       "railway_id": "east-siberian",
       "traction_directorate_id": "td-east-siberian",
-      "status": "source_listed",
+      "status": "pack_available",
       "source_ids": [
-        "miit-training-plan-2022"
-      ]
+        "miit-training-plan-2022",
+        "legacy-ek-bloknot-069"
+      ],
+      "pack_file": "depot-packs/rzd-east-siberian-tche-6-slyudyanka.json"
     },
     {
       "id": "rzd:east-siberian:tche-1:taishet",
@@ -233,10 +260,12 @@
       "code": "ТЧЭ-1",
       "railway_id": "east-siberian",
       "traction_directorate_id": "td-east-siberian",
-      "status": "source_listed",
+      "status": "pack_available",
       "source_ids": [
-        "miit-training-plan-2022"
-      ]
+        "miit-training-plan-2022",
+        "legacy-ek-bloknot-069"
+      ],
+      "pack_file": "depot-packs/rzd-east-siberian-tche-1-taishet.json"
     },
     {
       "id": "rzd:east-siberian:tche-7:ulan-ude",
@@ -244,10 +273,12 @@
       "code": "ТЧЭ-7",
       "railway_id": "east-siberian",
       "traction_directorate_id": "td-east-siberian",
-      "status": "source_listed",
+      "status": "pack_available",
       "source_ids": [
-        "miit-training-plan-2022"
-      ]
+        "miit-training-plan-2022",
+        "legacy-ek-bloknot-069"
+      ],
+      "pack_file": "depot-packs/rzd-east-siberian-tche-7-ulan-ude.json"
     },
     {
       "id": "rzd:gorky:tche-15:agryz",
@@ -355,10 +386,12 @@
       "code": "ТЧЭ-5",
       "railway_id": "krasnoyarsk",
       "traction_directorate_id": "td-krasnoyarsk",
-      "status": "source_listed",
+      "status": "pack_available",
       "source_ids": [
-        "miit-training-plan-2022"
-      ]
+        "miit-training-plan-2022",
+        "legacy-ek-bloknot-069"
+      ],
+      "pack_file": "depot-packs/rzd-krasnoyarsk-tche-5-achinsk-i.json"
     },
     {
       "id": "rzd:krasnoyarsk:tche-1:bogotol",
@@ -366,10 +399,12 @@
       "code": "ТЧЭ-1",
       "railway_id": "krasnoyarsk",
       "traction_directorate_id": "td-krasnoyarsk",
-      "status": "source_listed",
+      "status": "pack_available",
       "source_ids": [
-        "miit-training-plan-2022"
-      ]
+        "miit-training-plan-2022",
+        "legacy-ek-bloknot-069"
+      ],
+      "pack_file": "depot-packs/rzd-krasnoyarsk-tche-1-bogotol.json"
     },
     {
       "id": "rzd:krasnoyarsk:tche-3:ilanskaya",
@@ -377,10 +412,12 @@
       "code": "ТЧЭ-3",
       "railway_id": "krasnoyarsk",
       "traction_directorate_id": "td-krasnoyarsk",
-      "status": "source_listed",
+      "status": "pack_available",
       "source_ids": [
-        "miit-training-plan-2022"
-      ]
+        "miit-training-plan-2022",
+        "legacy-ek-bloknot-069"
+      ],
+      "pack_file": "depot-packs/rzd-krasnoyarsk-tche-3-ilanskaya.json"
     },
     {
       "id": "rzd:krasnoyarsk:tche-2:krasnoyarsk-glavnyi",
@@ -388,10 +425,12 @@
       "code": "ТЧЭ-2",
       "railway_id": "krasnoyarsk",
       "traction_directorate_id": "td-krasnoyarsk",
-      "status": "source_listed",
+      "status": "pack_available",
       "source_ids": [
-        "miit-training-plan-2022"
-      ]
+        "miit-training-plan-2022",
+        "legacy-ek-bloknot-069"
+      ],
+      "pack_file": "depot-packs/rzd-krasnoyarsk-tche-2-krasnoyarsk-glavnyi.json"
     },
     {
       "id": "rzd:kuibyshev:tche-17:abdulino",
@@ -707,10 +746,12 @@
       "code": "ТЧЭ-19",
       "railway_id": "north",
       "traction_directorate_id": "td-north",
-      "status": "source_listed",
+      "status": "pack_available",
       "source_ids": [
-        "miit-training-plan-2022"
-      ]
+        "miit-training-plan-2022",
+        "legacy-ek-bloknot-069"
+      ],
+      "pack_file": "depot-packs/rzd-north-tche-19-kotlas.json"
     },
     {
       "id": "rzd:north:tche-11:losta",
@@ -729,10 +770,12 @@
       "code": "ТЧЭ-13",
       "railway_id": "north",
       "traction_directorate_id": "td-north",
-      "status": "source_listed",
+      "status": "pack_available",
       "source_ids": [
-        "miit-training-plan-2022"
-      ]
+        "miit-training-plan-2022",
+        "legacy-ek-bloknot-069"
+      ],
+      "pack_file": "depot-packs/rzd-north-tche-13-nyandoma.json"
     },
     {
       "id": "rzd:north:tche-22:pechora",
@@ -751,10 +794,12 @@
       "code": "ТЧЭ-21",
       "railway_id": "north",
       "traction_directorate_id": "td-north",
-      "status": "source_listed",
+      "status": "pack_available",
       "source_ids": [
-        "miit-training-plan-2022"
-      ]
+        "miit-training-plan-2022",
+        "legacy-ek-bloknot-069"
+      ],
+      "pack_file": "depot-packs/rzd-north-tche-21-sosnogorsk.json"
     },
     {
       "id": "rzd:north:tche-10:cherepovets",
@@ -1236,10 +1281,12 @@
       "code": "ТЧЭ-7",
       "railway_id": "sverdlovsk",
       "traction_directorate_id": "td-sverdlovsk",
-      "status": "source_listed",
+      "status": "pack_available",
       "source_ids": [
-        "miit-training-plan-2022"
-      ]
+        "miit-training-plan-2022",
+        "legacy-ek-bloknot-069"
+      ],
+      "pack_file": "depot-packs/rzd-sverdlovsk-tche-7-voinovka.json"
     },
     {
       "id": "rzd:sverdlovsk:tche-13:egorshino",
@@ -1302,10 +1349,12 @@
       "code": "ТЧЭ-6",
       "railway_id": "sverdlovsk",
       "traction_directorate_id": "td-sverdlovsk",
-      "status": "source_listed",
+      "status": "pack_available",
       "source_ids": [
-        "miit-training-plan-2022"
-      ]
+        "miit-training-plan-2022",
+        "legacy-ek-bloknot-069"
+      ],
+      "pack_file": "depot-packs/rzd-sverdlovsk-tche-6-sverdlovsk-passazhirskii.json"
     },
     {
       "id": "rzd:sverdlovsk:tche-5:sverdlovsk-sortirovochnyi",
@@ -1313,10 +1362,12 @@
       "code": "ТЧЭ-5",
       "railway_id": "sverdlovsk",
       "traction_directorate_id": "td-sverdlovsk",
-      "status": "source_listed",
+      "status": "pack_available",
       "source_ids": [
-        "miit-training-plan-2022"
-      ]
+        "miit-training-plan-2022",
+        "legacy-ek-bloknot-069"
+      ],
+      "pack_file": "depot-packs/rzd-sverdlovsk-tche-5-sverdlovsk-sortirovochnyi.json"
     },
     {
       "id": "rzd:sverdlovsk:tche-12:serov-sortirovochnyi",
@@ -1423,10 +1474,12 @@
       "code": "ТЧЭ-1",
       "railway_id": "transbaikal",
       "traction_directorate_id": "td-transbaikal",
-      "status": "source_listed",
+      "status": "pack_available",
       "source_ids": [
-        "miit-training-plan-2022"
-      ]
+        "miit-training-plan-2022",
+        "legacy-ek-bloknot-069"
+      ],
+      "pack_file": "depot-packs/rzd-transbaikal-tche-1-khilok.json"
     },
     {
       "id": "rzd:transbaikal:tche-5:chernyshevsk-zabaikalskii",
@@ -1445,12 +1498,14 @@
       "code": "ТЧЭ-3",
       "railway_id": "transbaikal",
       "traction_directorate_id": "td-transbaikal",
-      "status": "source_listed",
+      "status": "pack_available",
       "relationship_note": "Дорога восстановлена по географическому названию; в legacy-источнике branch_id=15 не имеет соответствующей записи и требует отдельной проверки.",
       "source_ids": [
         "legacy-tch9-v43-db",
-        "miit-training-plan-2022"
-      ]
+        "miit-training-plan-2022",
+        "legacy-ek-bloknot-069"
+      ],
+      "pack_file": "depot-packs/rzd-transbaikal-tche-3-chita.json"
     },
     {
       "id": "rzd:volga:tche-1:astrakhan-ii",
@@ -1612,10 +1667,12 @@
       "code": "ТЧЭ-12",
       "railway_id": "west-siberian",
       "traction_directorate_id": "td-west-siberian",
-      "status": "source_listed",
+      "status": "pack_available",
       "source_ids": [
-        "miit-training-plan-2022"
-      ]
+        "miit-training-plan-2022",
+        "legacy-ek-bloknot-069"
+      ],
+      "pack_file": "depot-packs/rzd-west-siberian-tche-12-taiga.json"
     },
     {
       "id": "rzd:west-siberian:tche-19:topki",

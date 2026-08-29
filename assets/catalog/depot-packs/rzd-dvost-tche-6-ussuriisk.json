@@ -1,0 +1,47 @@
+{
+  "schema_version": "1.0",
+  "id": "pack:rzd:dvost:tche-6:ussuriisk",
+  "depot_id": "rzd:dvost:tche-6:ussuriisk",
+  "name": "Уссурийск ТЧЭ-6",
+  "status": "pilot_draft",
+  "updated_at": "2026-08-30",
+  "source_ids": [
+    "legacy-ek-bloknot-069"
+  ],
+  "route_ids": [
+    "ek069-vladivostok-obluchye"
+  ],
+  "section_ids": [
+    "ek069-vladivostok-obluchye-s4",
+    "ek069-vladivostok-obluchye-s1",
+    "ek069-vladivostok-obluchye-s13",
+    "ek069-vladivostok-obluchye-s12",
+    "ek069-vladivostok-obluchye-s19",
+    "ek069-vladivostok-obluchye-s20",
+    "ek069-vladivostok-obluchye-s23",
+    "ek069-vladivostok-obluchye-s25",
+    "ek069-vladivostok-obluchye-s26",
+    "ek069-vladivostok-obluchye-s27"
+  ],
+  "service_arms": [
+    {
+      "id": "ek069-vladivostok-obluchye",
+      "name": "Владивосток — Облучье",
+      "description": "Импортированная ЭК 0.6.9 · требуется проверка плеча и данных",
+      "route_options": [
+        {
+          "id": "legacy-ek",
+          "name": "Открыть ЭК",
+          "tracker_map_id": "ek069-vladivostok-obluchye",
+          "entry_station": "Уссурийск"
+        }
+      ]
+    }
+  ],
+  "readiness": {
+    "manual_preview_data": true,
+    "live_gps_data": true,
+    "all_sections_verified": false
+  },
+  "note": "ЭК показаны в депо по прохождению соответствующего маршрутного коридора. Это помогает найти доступную карту, но не подтверждает организационные границы действующего плеча обслуживания."
+}

@@ -764,7 +764,7 @@ async function assertPreparationModeWithoutGps(browser) {
 
   await page.waitForFunction(() => (
     !document.getElementById('poekhaliServiceArmSheet')?.classList.contains('hidden') &&
-    document.querySelectorAll('#poekhaliServiceArmSheet .poekhali-arm-option').length === 3
+    document.querySelectorAll('#poekhaliServiceArmSheet .poekhali-arm-option').length === 5
   ), null, { timeout: 15_000 });
   const armPicker = await page.evaluate(() => ({
     title: document.getElementById('poekhaliArmSheetTitle')?.textContent.trim() || '',
@@ -779,7 +779,7 @@ async function assertPreparationModeWithoutGps(browser) {
     )).filter((element) => element.textContent.trim()).length,
     gpsRequests: { ...window.__poekhaliGpsRequests }
   }));
-  if (armPicker.title !== 'Плечо обслуживания' || armPicker.arms.length !== 3 ||
+  if (armPicker.title !== 'Плечо обслуживания' || armPicker.arms.length !== 5 ||
       !armPicker.arms.some((name) => name.includes('Волочаевка')) ||
       !armPicker.arms.some((name) => name.includes('Высокогорная')) ||
       !armPicker.arms.some((name) => name.includes('Постышево')) ||
@@ -821,9 +821,9 @@ async function assertPreparationModeWithoutGps(browser) {
   await page.evaluate((shiftId) => window.openPoekhaliPreparationForShift(shiftId), preparationShift.id);
   await page.waitForFunction(() => (
     !document.getElementById('poekhaliServiceArmSheet')?.classList.contains('hidden') &&
-    document.querySelectorAll('#poekhaliServiceArmSheet .poekhali-arm-option').length === 3
+    document.querySelectorAll('#poekhaliServiceArmSheet .poekhali-arm-option').length === 5
   ));
-  await page.waitForFunction(() => document.querySelectorAll('#poekhaliServiceArmSheet .poekhali-arm-option').length === 3);
+  await page.waitForFunction(() => document.querySelectorAll('#poekhaliServiceArmSheet .poekhali-arm-option').length === 5);
   await page.locator('#poekhaliServiceArmSheet .poekhali-arm-option', { hasText: 'Постышево' }).click();
 
   await page.waitForFunction(() => (

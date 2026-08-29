@@ -68,6 +68,18 @@
         "tch9_depot_pack"
       ],
       "limitations": "Все участки на 2026-08-27 имеют статус draft; пакет нельзя считать эксплуатационно проверенным."
+    },
+    {
+      "id": "legacy-ek-bloknot-069",
+      "kind": "imported_legacy_database",
+      "title": "Каталог ЭК приложения «Блокнот машиниста» 0.6.9",
+      "local_path": "assets/tracker/sections/index.json",
+      "imported_at": "2026-08-30",
+      "supports": [
+        "legacy_ek_routes",
+        "depot_route_discovery"
+      ],
+      "limitations": "Привязка к депо показывает наличие ЭК на коридоре, но не подтверждает действующее плечо обслуживания. Все импортированные участки остаются draft до ручной и полевой проверки."
     }
   ]
 }

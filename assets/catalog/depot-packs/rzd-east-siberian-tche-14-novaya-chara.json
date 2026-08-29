@@ -1,0 +1,39 @@
+{
+  "schema_version": "1.0",
+  "id": "pack:rzd:east-siberian:tche-14:novaya-chara",
+  "depot_id": "rzd:east-siberian:tche-14:novaya-chara",
+  "name": "Новая Чара ТЧЭ-14",
+  "status": "pilot_draft",
+  "updated_at": "2026-08-30",
+  "source_ids": [
+    "legacy-ek-bloknot-069"
+  ],
+  "route_ids": [
+    "ek069-taksimo-yuktali-freight"
+  ],
+  "section_ids": [
+    "ek069-taksimo-yuktali-freight-s18",
+    "ek069-taksimo-yuktali-freight-s19"
+  ],
+  "service_arms": [
+    {
+      "id": "ek069-taksimo-yuktali-freight",
+      "name": "Таксимо — Юктали (грузовое движение, EA70)",
+      "description": "Импортированная ЭК 0.6.9 · требуется проверка плеча и данных",
+      "route_options": [
+        {
+          "id": "legacy-ek",
+          "name": "Открыть ЭК",
+          "tracker_map_id": "ek069-taksimo-yuktali-freight",
+          "entry_station": "Новая Чара"
+        }
+      ]
+    }
+  ],
+  "readiness": {
+    "manual_preview_data": true,
+    "live_gps_data": true,
+    "all_sections_verified": false
+  },
+  "note": "ЭК показаны в депо по прохождению соответствующего маршрутного коридора. Это помогает найти доступную карту, но не подтверждает организационные границы действующего плеча обслуживания."
+}

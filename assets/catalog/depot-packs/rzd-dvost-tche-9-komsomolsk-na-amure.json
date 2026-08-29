@@ -4,16 +4,19 @@
   "depot_id": "rzd:dvost:tche-9:komsomolsk-na-amure",
   "name": "Комсомольск-на-Амуре ТЧЭ-9",
   "status": "pilot_draft",
-  "updated_at": "2026-08-27",
+  "updated_at": "2026-08-30",
   "source_ids": [
     "legacy-tch9-v43-db",
-    "bloknot-tch9-section-bundle"
+    "bloknot-tch9-section-bundle",
+    "legacy-ek-bloknot-069"
   ],
   "route_ids": [
     "dvost-volochaevka-ii-dzemgi",
     "dvost-postyshevo-komsomolsk",
     "dvost-postyshevo-novyi-urgal-odd",
-    "dvost-vysokogornaya-novyi-mir-passenger"
+    "dvost-vysokogornaya-novyi-mir-passenger",
+    "ek069-komsomolsk-tche-9",
+    "ek069-tynda-komsomolsk-izvestkovaya"
   ],
   "section_ids": [
     "dvost-volochaevka-ii-dzemgi",
@@ -22,7 +25,15 @@
     "dvost-vysokogornaya-oune-via-sollu",
     "dvost-vysokogornaya-oune-via-muli",
     "dvost-oune-pivan",
-    "dvost-pivan-novyi-mir"
+    "dvost-pivan-novyi-mir",
+    "ek069-komsomolsk-tche-9-s9",
+    "ek069-komsomolsk-tche-9-s10",
+    "ek069-komsomolsk-tche-9-s18",
+    "ek069-komsomolsk-tche-9-s12",
+    "ek069-komsomolsk-tche-9-s13",
+    "ek069-komsomolsk-tche-9-s14",
+    "ek069-tynda-komsomolsk-izvestkovaya-s18",
+    "ek069-tynda-komsomolsk-izvestkovaya-s19"
   ],
   "service_arms": [
     {
@@ -69,6 +80,32 @@
           "entry_station": "Комсомольск-Сортировочный"
         }
       ]
+    },
+    {
+      "id": "ek069-komsomolsk-tche-9",
+      "name": "Комсомольск, ТЧЭ-9",
+      "description": "Импортированная ЭК 0.6.9 · требуется проверка плеча и данных",
+      "route_options": [
+        {
+          "id": "legacy-ek",
+          "name": "Открыть ЭК",
+          "tracker_map_id": "ek069-komsomolsk-tche-9",
+          "entry_station": "Комсомольск-на-Амуре"
+        }
+      ]
+    },
+    {
+      "id": "ek069-tynda-komsomolsk-izvestkovaya",
+      "name": "Тында — Комсомольск — Известковая",
+      "description": "Импортированная ЭК 0.6.9 · требуется проверка плеча и данных",
+      "route_options": [
+        {
+          "id": "legacy-ek",
+          "name": "Открыть ЭК",
+          "tracker_map_id": "ek069-tynda-komsomolsk-izvestkovaya",
+          "entry_station": "Комсомольск-на-Амуре"
+        }
+      ]
     }
   ],
   "readiness": {
@@ -76,5 +113,5 @@
     "live_gps_data": true,
     "all_sections_verified": false
   },
-  "note": "Пакет публикует существующий набор ТЧЭ-9, но не повышает статус входящих участков: все они остаются draft до полевой проверки."
+  "note": "ЭК показаны в депо по прохождению соответствующего маршрутного коридора. Это помогает найти доступную карту, но не подтверждает организационные границы действующего плеча обслуживания."
 }

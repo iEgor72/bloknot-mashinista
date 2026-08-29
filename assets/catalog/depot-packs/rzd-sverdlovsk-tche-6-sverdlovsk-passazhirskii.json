@@ -1,0 +1,38 @@
+{
+  "schema_version": "1.0",
+  "id": "pack:rzd:sverdlovsk:tche-6:sverdlovsk-passazhirskii",
+  "depot_id": "rzd:sverdlovsk:tche-6:sverdlovsk-passazhirskii",
+  "name": "Свердловск-Пассажирский ТЧЭ-6",
+  "status": "pilot_draft",
+  "updated_at": "2026-08-30",
+  "source_ids": [
+    "legacy-ek-bloknot-069"
+  ],
+  "route_ids": [
+    "ek069-voynovka-yekaterinburg"
+  ],
+  "section_ids": [
+    "ek069-voynovka-yekaterinburg-s1"
+  ],
+  "service_arms": [
+    {
+      "id": "ek069-voynovka-yekaterinburg",
+      "name": "Войновка — Екатеринбург",
+      "description": "Импортированная ЭК 0.6.9 · требуется проверка плеча и данных",
+      "route_options": [
+        {
+          "id": "legacy-ek",
+          "name": "Открыть ЭК",
+          "tracker_map_id": "ek069-voynovka-yekaterinburg",
+          "entry_station": "Свердловск-Пассажирский"
+        }
+      ]
+    }
+  ],
+  "readiness": {
+    "manual_preview_data": true,
+    "live_gps_data": true,
+    "all_sections_verified": false
+  },
+  "note": "ЭК показаны в депо по прохождению соответствующего маршрутного коридора. Это помогает найти доступную карту, но не подтверждает организационные границы действующего плеча обслуживания."
+}
