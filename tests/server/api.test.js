@@ -99,18 +99,18 @@ test('public contact surface points only to the Telegram bot', async () => {
 });
 
 test('versioned style namespace serves the current shell stylesheet', async () => {
-  const response = await fetch(baseUrl + '/styles/v412/56-profile.css');
+  const response = await fetch(baseUrl + '/styles/v416/56-profile.css');
   const source = await response.text();
   assert.equal(response.status, 200);
   assert.match(response.headers.get('content-type') || '', /text\/css/i);
   assert.match(source, /\.profile-summary-card/);
   assert.match(source, /\.profile-summary-icon svg/);
 
-  const versionedRuntime = await fetch(baseUrl + '/scripts/v412/render.js');
+  const versionedRuntime = await fetch(baseUrl + '/scripts/v416/render.js');
   assert.equal(versionedRuntime.status, 200);
   assert.match(await versionedRuntime.text(), /renderProfileSummary/);
 
-  const traversalAttempt = await fetch(baseUrl + '/scripts/v412/..%2Fserver.js');
+  const traversalAttempt = await fetch(baseUrl + '/scripts/v416/..%2Fserver.js');
   assert.equal(traversalAttempt.status, 404);
 
   const previousBootstrap = await fetch(baseUrl + '/sw-bootstrap-v397.js');

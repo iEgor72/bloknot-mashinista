@@ -1138,6 +1138,21 @@ async function main() {
   await page.evaluate(() => window.GlassSelect?.close());
   await page.evaluate(() => {
     const depot = document.getElementById('inputProfileDepotId');
+    depot.value = 'rzd:dvost:tche-13:novyi-urgal';
+    depot.dispatchEvent(new Event('change', { bubbles: true }));
+  });
+  await page.waitForFunction(() => document.getElementById('profileDepotCoverageText')?.textContent.includes('1 плечо'));
+  const novyiUrgalCoverage = await page.evaluate(() => ({
+    selectedDepot: document.getElementById('inputProfileDepotId')?.value || '',
+    coverage: document.getElementById('profileDepotCoverageText')?.textContent.trim() || '',
+  }));
+  report.checks.novyiUrgalEkCoverage = novyiUrgalCoverage;
+  if (novyiUrgalCoverage.selectedDepot !== 'rzd:dvost:tche-13:novyi-urgal' ||
+      !novyiUrgalCoverage.coverage.includes('1 плечо')) {
+    throw new Error(`Novyi Urgal EK coverage failed: ${JSON.stringify(novyiUrgalCoverage)}`);
+  }
+  await page.evaluate(() => {
+    const depot = document.getElementById('inputProfileDepotId');
     depot.value = 'rzd:dvost:tche-9:komsomolsk-na-amure';
     depot.dispatchEvent(new Event('change', { bubbles: true }));
   });

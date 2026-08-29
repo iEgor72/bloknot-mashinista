@@ -1,4 +1,4 @@
-if (typeof registerShiftTrackerRuntimeModule === 'function') registerShiftTrackerRuntimeModule('app-init', 'v412');
+if (typeof registerShiftTrackerRuntimeModule === 'function') registerShiftTrackerRuntimeModule('app-init', 'v416');
 
 // ── Init ──
 function startShiftTrackerRuntime() {
@@ -747,7 +747,11 @@ if (window.__SHIFT_TRACKER_RUNTIME_GUARD_PENDING) {
     function fetchCatalogDocument(relativePath) {
       var url = safeCatalogUrl(relativePath);
       if (!url) return Promise.reject(new Error('Некорректный путь каталога'));
-      return fetch(url, { method: 'GET', headers: { 'Accept': 'application/json' } }).then(function(response) {
+      return fetch(url, {
+        method: 'GET',
+        cache: 'no-store',
+        headers: { 'Accept': 'application/json' }
+      }).then(function(response) {
         if (!response.ok) throw new Error('Каталог недоступен: HTTP ' + response.status);
         return response.json();
       });
