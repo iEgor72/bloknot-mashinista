@@ -1,0 +1,311 @@
+{
+  "schema_version": "1.0",
+  "id": "ek069-mariinsk-irkutsk-s84",
+  "status": "draft",
+  "railway": {
+    "id": "cross-network",
+    "name": "Красноярская / Восточно-Сибирская железные дороги"
+  },
+  "section_name": "Мариинск — Иркутск — сектор 84",
+  "direction": "требует проверки",
+  "km_start": 4,
+  "km_end": 12,
+  "generator_format": "Б",
+  "elements": [
+    {
+      "start_m": 4000,
+      "len_m": 300,
+      "grad_permille": 5.3,
+      "confidence": "legacy_ek_unverified"
+    },
+    {
+      "start_m": 4300,
+      "len_m": 1200,
+      "grad_permille": -6,
+      "confidence": "legacy_ek_unverified"
+    },
+    {
+      "start_m": 5500,
+      "len_m": 3600,
+      "grad_permille": 8,
+      "confidence": "legacy_ek_unverified"
+    }
+  ],
+  "stations": [
+    {
+      "name": "Хмылов",
+      "km": 4.15,
+      "sector": 84,
+      "confidence": "legacy_ek_unverified"
+    },
+    {
+      "name": "Хмылов",
+      "km": 4.175,
+      "sector": 84,
+      "confidence": "legacy_ek_unverified"
+    },
+    {
+      "name": "Хмылов",
+      "km": 7.3,
+      "sector": 84,
+      "confidence": "legacy_ek_unverified"
+    },
+    {
+      "name": "Хмылов",
+      "km": 7.37,
+      "sector": 84,
+      "confidence": "legacy_ek_unverified"
+    },
+    {
+      "name": "Грузов",
+      "km": 9.803,
+      "sector": 84,
+      "confidence": "legacy_ek_unverified"
+    },
+    {
+      "name": "Грузов",
+      "km": 10.803,
+      "sector": 84,
+      "confidence": "legacy_ek_unverified"
+    }
+  ],
+  "signals": [
+    {
+      "name": "1Ч",
+      "chainage_m": 4150,
+      "sector": 84,
+      "confidence": "legacy_ek_unverified",
+      "legacy_source": "1n.xml"
+    },
+    {
+      "name": "2Ч",
+      "chainage_m": 4175,
+      "sector": 84,
+      "confidence": "legacy_ek_unverified",
+      "legacy_source": "2.xml"
+    },
+    {
+      "name": "Н2",
+      "chainage_m": 5060,
+      "sector": 84,
+      "confidence": "legacy_ek_unverified",
+      "legacy_source": "2n.xml"
+    },
+    {
+      "name": "Н1",
+      "chainage_m": 5100,
+      "sector": 84,
+      "confidence": "legacy_ek_unverified",
+      "legacy_source": "1.xml"
+    },
+    {
+      "name": "Ч3",
+      "chainage_m": 6290,
+      "sector": 84,
+      "confidence": "legacy_ek_unverified",
+      "legacy_source": "2.xml"
+    },
+    {
+      "name": "Ч1",
+      "chainage_m": 6309,
+      "sector": 84,
+      "confidence": "legacy_ek_unverified",
+      "legacy_source": "1n.xml"
+    },
+    {
+      "name": "2Н",
+      "chainage_m": 7315,
+      "sector": 84,
+      "confidence": "legacy_ek_unverified",
+      "legacy_source": "2n.xml"
+    },
+    {
+      "name": "3Н",
+      "chainage_m": 7370,
+      "sector": 84,
+      "confidence": "legacy_ek_unverified",
+      "legacy_source": "1.xml"
+    },
+    {
+      "name": "Ч",
+      "chainage_m": 9803,
+      "sector": 84,
+      "confidence": "legacy_ek_unverified",
+      "legacy_source": "2.xml"
+    },
+    {
+      "name": "Ч",
+      "chainage_m": 10803,
+      "sector": 84,
+      "confidence": "legacy_ek_unverified",
+      "legacy_source": "1n.xml"
+    },
+    {
+      "name": "Н1",
+      "chainage_m": 11407,
+      "sector": 84,
+      "confidence": "legacy_ek_unverified",
+      "legacy_source": "1.xml"
+    },
+    {
+      "name": "Н2",
+      "chainage_m": 11407,
+      "sector": 84,
+      "confidence": "legacy_ek_unverified",
+      "legacy_source": "2.xml"
+    }
+  ],
+  "whistle_points": [],
+  "speed": {
+    "established": null,
+    "permanent_restrictions": [],
+    "temporary_warnings": [],
+    "source": "manual_required"
+  },
+  "flags_for_review": [
+    "Импортировано из пользовательской ЭК приложения «Блокнот машиниста» 0.6.9; профиль, объекты и GPS-геометрия не сверены с официальной режимной картой.",
+    "Ограничения скорости из старого XML намеренно не перенесены: их требуется внести вручную по действующим документам.",
+    "Направление движения и принадлежность GPS-сектора требуют ручной проверки.",
+    "При разборе исходника применены безопасные числовые исправления/отбраковка: 4.",
+    "Профиль сопоставлен с GPS-сектором по пересечению километража (17→84); соответствие требует проверки."
+  ],
+  "provenance": [
+    {
+      "kind": "legacy_ek_archive",
+      "file_name": "Мариинск-Иркутск(by SkripTal).zip",
+      "sha256": "500dbd4bd10119c3376fa0c026ac8ef32ab28a1eb67cd85fad57762dbd2d6c06",
+      "source_application": "Блокнот машиниста 0.6.9",
+      "role": "non_authoritative_import_seed"
+    }
+  ],
+  "runtime": {
+    "coordinate_unit": "m",
+    "coordinate_kind": "official_railway_chainage",
+    "coordinate_offset_m": -1000,
+    "movement_order": "ascending",
+    "default_path_id": "ek069-mariinsk-irkutsk-s84-path",
+    "route_legs": [
+      {
+        "path_id": "ek069-mariinsk-irkutsk-s84-path",
+        "sector": 84,
+        "from_chainage_m": 4000,
+        "to_chainage_m": 12000
+      }
+    ],
+    "profile_status": "legacy_ek_unverified",
+    "profile_coverage": [
+      {
+        "start_m": 4000,
+        "end_m": 9100
+      }
+    ],
+    "profile_gaps": [
+      {
+        "start_m": 9100,
+        "end_m": 12000,
+        "reason": "В исходной ЭК отсутствует профиль для этого диапазона."
+      }
+    ],
+    "profile_applies_both_directions": false
+  },
+  "geometry": {
+    "status": "draft_from_legacy_ek",
+    "source": "Мариинск-Иркутск(by SkripTal).zip",
+    "paths": [
+      {
+        "path_id": "ek069-mariinsk-irkutsk-s84-path",
+        "sector": 84,
+        "points": [
+          {
+            "lat": 42.840068,
+            "lon": 133.00661,
+            "sector": 84,
+            "path_id": "ek069-mariinsk-irkutsk-s84-path",
+            "ordinate": 3000,
+            "chainage_m": 4000
+          },
+          {
+            "lat": 42.8348,
+            "lon": 133.016232,
+            "sector": 84,
+            "path_id": "ek069-mariinsk-irkutsk-s84-path",
+            "ordinate": 4000,
+            "chainage_m": 5000
+          },
+          {
+            "lat": 42.833015,
+            "lon": 133.028012,
+            "sector": 84,
+            "path_id": "ek069-mariinsk-irkutsk-s84-path",
+            "ordinate": 5000,
+            "chainage_m": 6000
+          },
+          {
+            "lat": 42.827888,
+            "lon": 133.037223,
+            "sector": 84,
+            "path_id": "ek069-mariinsk-irkutsk-s84-path",
+            "ordinate": 6000,
+            "chainage_m": 7000
+          },
+          {
+            "lat": 42.819601,
+            "lon": 133.04214,
+            "sector": 84,
+            "path_id": "ek069-mariinsk-irkutsk-s84-path",
+            "ordinate": 7000,
+            "chainage_m": 8000
+          },
+          {
+            "lat": 42.816147,
+            "lon": 133.052467,
+            "sector": 84,
+            "path_id": "ek069-mariinsk-irkutsk-s84-path",
+            "ordinate": 8000,
+            "chainage_m": 9000
+          },
+          {
+            "lat": 42.815817,
+            "lon": 133.055974,
+            "sector": 84,
+            "path_id": "ek069-mariinsk-irkutsk-s84-path",
+            "ordinate": 8300,
+            "chainage_m": 9300
+          },
+          {
+            "lat": 42.815154,
+            "lon": 133.058474,
+            "sector": 84,
+            "path_id": "ek069-mariinsk-irkutsk-s84-path",
+            "ordinate": 8500,
+            "chainage_m": 9500
+          },
+          {
+            "lat": 42.813585,
+            "lon": 133.064303,
+            "sector": 84,
+            "path_id": "ek069-mariinsk-irkutsk-s84-path",
+            "ordinate": 9000,
+            "chainage_m": 10000
+          },
+          {
+            "lat": 42.810445,
+            "lon": 133.075799,
+            "sector": 84,
+            "path_id": "ek069-mariinsk-irkutsk-s84-path",
+            "ordinate": 10000,
+            "chainage_m": 11000
+          },
+          {
+            "lat": 42.805872,
+            "lon": 133.083554,
+            "sector": 84,
+            "path_id": "ek069-mariinsk-irkutsk-s84-path",
+            "ordinate": 11000,
+            "chainage_m": 12000
+          }
+        ]
+      }
+    ]
+  }
+}

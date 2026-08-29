@@ -1,0 +1,353 @@
+{
+  "schema_version": "1.0",
+  "id": "ek069-ruzhino-pass-8170-s24",
+  "status": "draft",
+  "railway": {
+    "id": "dvost",
+    "name": "Дальневосточная железная дорога"
+  },
+  "section_name": "Ружино (пассажирское движение, 8170) — сектор 24",
+  "direction": "требует проверки",
+  "km_start": 9109.634,
+  "km_end": 9113.61,
+  "generator_format": "Б",
+  "elements": [
+    {
+      "start_m": 9109732,
+      "len_m": 68,
+      "grad_permille": 0.4,
+      "confidence": "legacy_ek_unverified"
+    },
+    {
+      "start_m": 9109800,
+      "len_m": 100,
+      "grad_permille": -3.2,
+      "confidence": "legacy_ek_unverified"
+    },
+    {
+      "start_m": 9109900,
+      "len_m": 300,
+      "grad_permille": -5.2,
+      "confidence": "legacy_ek_unverified"
+    },
+    {
+      "start_m": 9110200,
+      "len_m": 100,
+      "grad_permille": -3.6,
+      "confidence": "legacy_ek_unverified"
+    },
+    {
+      "start_m": 9110300,
+      "len_m": 100,
+      "grad_permille": -1.4,
+      "confidence": "legacy_ek_unverified"
+    },
+    {
+      "start_m": 9110400,
+      "len_m": 100,
+      "grad_permille": -0.1,
+      "confidence": "legacy_ek_unverified"
+    },
+    {
+      "start_m": 9110500,
+      "len_m": 100,
+      "grad_permille": 1.8,
+      "confidence": "legacy_ek_unverified"
+    },
+    {
+      "start_m": 9110600,
+      "len_m": 100,
+      "grad_permille": 4.7,
+      "confidence": "legacy_ek_unverified"
+    },
+    {
+      "start_m": 9110700,
+      "len_m": 100,
+      "grad_permille": 6.5,
+      "confidence": "legacy_ek_unverified"
+    },
+    {
+      "start_m": 9110800,
+      "len_m": 100,
+      "grad_permille": 2.9,
+      "confidence": "legacy_ek_unverified"
+    },
+    {
+      "start_m": 9110900,
+      "len_m": 100,
+      "grad_permille": -1.1,
+      "confidence": "legacy_ek_unverified"
+    },
+    {
+      "start_m": 9111000,
+      "len_m": 200,
+      "grad_permille": 1.4,
+      "confidence": "legacy_ek_unverified"
+    },
+    {
+      "start_m": 9111200,
+      "len_m": 200,
+      "grad_permille": 0.2,
+      "confidence": "legacy_ek_unverified"
+    },
+    {
+      "start_m": 9111400,
+      "len_m": 100,
+      "grad_permille": 1.8,
+      "confidence": "legacy_ek_unverified"
+    },
+    {
+      "start_m": 9111500,
+      "len_m": 100,
+      "grad_permille": 3.9,
+      "confidence": "legacy_ek_unverified"
+    },
+    {
+      "start_m": 9111600,
+      "len_m": 100,
+      "grad_permille": 6.1,
+      "confidence": "legacy_ek_unverified"
+    },
+    {
+      "start_m": 9111700,
+      "len_m": 100,
+      "grad_permille": 8,
+      "confidence": "legacy_ek_unverified"
+    },
+    {
+      "start_m": 9111800,
+      "len_m": 100,
+      "grad_permille": 6.6,
+      "confidence": "legacy_ek_unverified"
+    },
+    {
+      "start_m": 9111900,
+      "len_m": 100,
+      "grad_permille": 7.7,
+      "confidence": "legacy_ek_unverified"
+    },
+    {
+      "start_m": 9112000,
+      "len_m": 100,
+      "grad_permille": 6.6,
+      "confidence": "legacy_ek_unverified"
+    },
+    {
+      "start_m": 9112100,
+      "len_m": 100,
+      "grad_permille": 3.6,
+      "confidence": "legacy_ek_unverified"
+    },
+    {
+      "start_m": 9112200,
+      "len_m": 100,
+      "grad_permille": 2.3,
+      "confidence": "legacy_ek_unverified"
+    },
+    {
+      "start_m": 9112300,
+      "len_m": 200,
+      "grad_permille": -0.1,
+      "confidence": "legacy_ek_unverified"
+    },
+    {
+      "start_m": 9112500,
+      "len_m": 200,
+      "grad_permille": 0.5,
+      "confidence": "legacy_ek_unverified"
+    },
+    {
+      "start_m": 9112700,
+      "len_m": 300,
+      "grad_permille": -0.4,
+      "confidence": "legacy_ek_unverified"
+    },
+    {
+      "start_m": 9113000,
+      "len_m": 400,
+      "grad_permille": 0.4,
+      "confidence": "legacy_ek_unverified"
+    },
+    {
+      "start_m": 9113400,
+      "len_m": 200,
+      "grad_permille": 1.2,
+      "confidence": "legacy_ek_unverified"
+    },
+    {
+      "start_m": 9113600,
+      "len_m": 7,
+      "grad_permille": 0,
+      "confidence": "legacy_ek_unverified"
+    }
+  ],
+  "stations": [
+    {
+      "name": "СИБИРЦЕВО",
+      "km": 9109.634,
+      "sector": 24,
+      "confidence": "legacy_ek_unverified"
+    },
+    {
+      "name": "СИБИРЦЕВО",
+      "km": 9113.61,
+      "sector": 24,
+      "confidence": "legacy_ek_unverified"
+    }
+  ],
+  "signals": [
+    {
+      "name": "ЧМ64",
+      "chainage_m": 9110997,
+      "sector": 24,
+      "confidence": "legacy_ek_unverified",
+      "legacy_source": "2.xml"
+    },
+    {
+      "name": "ЧМ62",
+      "chainage_m": 9112347,
+      "sector": 24,
+      "confidence": "legacy_ek_unverified",
+      "legacy_source": "2.xml"
+    },
+    {
+      "name": "Ч60",
+      "chainage_m": 9113512,
+      "sector": 24,
+      "confidence": "legacy_ek_unverified",
+      "legacy_source": "2.xml"
+    }
+  ],
+  "whistle_points": [],
+  "speed": {
+    "established": null,
+    "permanent_restrictions": [],
+    "temporary_warnings": [],
+    "source": "manual_required"
+  },
+  "flags_for_review": [
+    "Импортировано из пользовательской ЭК приложения «Блокнот машиниста» 0.6.9; профиль, объекты и GPS-геометрия не сверены с официальной режимной картой.",
+    "Ограничения скорости из старого XML намеренно не перенесены: их требуется внести вручную по действующим документам.",
+    "Направление движения и принадлежность GPS-сектора требуют ручной проверки."
+  ],
+  "provenance": [
+    {
+      "kind": "legacy_ek_archive",
+      "file_name": "Ружино(пасс 8170).zip",
+      "sha256": "c52247a43f43378360facbf6ec8c4a27a59bd0ec43d2f2d57b467b985ca4012b",
+      "source_application": "Блокнот машиниста 0.6.9",
+      "role": "non_authoritative_import_seed"
+    }
+  ],
+  "runtime": {
+    "coordinate_unit": "m",
+    "coordinate_kind": "official_railway_chainage",
+    "coordinate_offset_m": -1000,
+    "movement_order": "ascending",
+    "default_path_id": "ek069-ruzhino-pass-8170-s24-path",
+    "route_legs": [
+      {
+        "path_id": "ek069-ruzhino-pass-8170-s24-path",
+        "sector": 24,
+        "from_chainage_m": 9109634,
+        "to_chainage_m": 9113610
+      }
+    ],
+    "profile_status": "legacy_ek_unverified",
+    "profile_coverage": [
+      {
+        "start_m": 9109732,
+        "end_m": 9113607
+      }
+    ],
+    "profile_gaps": [
+      {
+        "start_m": 9109634,
+        "end_m": 9109732,
+        "reason": "В исходной ЭК отсутствует профиль для этого диапазона."
+      },
+      {
+        "start_m": 9113607,
+        "end_m": 9113610,
+        "reason": "В исходной ЭК отсутствует профиль для этого диапазона."
+      }
+    ],
+    "profile_applies_both_directions": false
+  },
+  "geometry": {
+    "status": "draft_from_legacy_ek",
+    "source": "Ружино(пасс 8170).zip",
+    "paths": [
+      {
+        "path_id": "ek069-ruzhino-pass-8170-s24-path",
+        "sector": 24,
+        "points": [
+          {
+            "lat": 44.203457,
+            "lon": 132.437723,
+            "sector": 24,
+            "path_id": "ek069-ruzhino-pass-8170-s24-path",
+            "ordinate": 9108634,
+            "chainage_m": 9109634
+          },
+          {
+            "lat": 44.201286,
+            "lon": 132.436302,
+            "sector": 24,
+            "path_id": "ek069-ruzhino-pass-8170-s24-path",
+            "ordinate": 9109000,
+            "chainage_m": 9110000
+          },
+          {
+            "lat": 44.197153,
+            "lon": 132.431493,
+            "sector": 24,
+            "path_id": "ek069-ruzhino-pass-8170-s24-path",
+            "ordinate": 9109600,
+            "chainage_m": 9110600
+          },
+          {
+            "lat": 44.19428,
+            "lon": 132.428049,
+            "sector": 24,
+            "path_id": "ek069-ruzhino-pass-8170-s24-path",
+            "ordinate": 9110000,
+            "chainage_m": 9111000
+          },
+          {
+            "lat": 44.187602,
+            "lon": 132.420039,
+            "sector": 24,
+            "path_id": "ek069-ruzhino-pass-8170-s24-path",
+            "ordinate": 9111000,
+            "chainage_m": 9112000
+          },
+          {
+            "lat": 44.184209,
+            "lon": 132.415969,
+            "sector": 24,
+            "path_id": "ek069-ruzhino-pass-8170-s24-path",
+            "ordinate": 9111500,
+            "chainage_m": 9112500
+          },
+          {
+            "lat": 44.180792,
+            "lon": 132.411878,
+            "sector": 24,
+            "path_id": "ek069-ruzhino-pass-8170-s24-path",
+            "ordinate": 9112000,
+            "chainage_m": 9113000
+          },
+          {
+            "lat": 44.176654,
+            "lon": 132.406921,
+            "sector": 24,
+            "path_id": "ek069-ruzhino-pass-8170-s24-path",
+            "ordinate": 9112610,
+            "chainage_m": 9113610
+          }
+        ]
+      }
+    ]
+  }
+}

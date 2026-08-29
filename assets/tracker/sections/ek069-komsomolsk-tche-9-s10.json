@@ -1,0 +1,1156 @@
+{
+  "schema_version": "1.0",
+  "id": "ek069-komsomolsk-tche-9-s10",
+  "status": "draft",
+  "railway": {
+    "id": "dvost",
+    "name": "Дальневосточная железная дорога"
+  },
+  "section_name": "Комсомольск, ТЧЭ-9 — сектор 10",
+  "direction": "требует проверки",
+  "km_start": 332,
+  "km_end": 364,
+  "generator_format": "Б",
+  "elements": [
+    {
+      "start_m": 332000,
+      "len_m": 300,
+      "grad_permille": 0,
+      "confidence": "legacy_ek_unverified"
+    },
+    {
+      "start_m": 332300,
+      "len_m": 400,
+      "grad_permille": -1.2,
+      "confidence": "legacy_ek_unverified"
+    },
+    {
+      "start_m": 332700,
+      "len_m": 600,
+      "grad_permille": 1.3,
+      "confidence": "legacy_ek_unverified"
+    },
+    {
+      "start_m": 333300,
+      "len_m": 700,
+      "grad_permille": -3.5,
+      "confidence": "legacy_ek_unverified"
+    },
+    {
+      "start_m": 334000,
+      "len_m": 800,
+      "grad_permille": 0.2,
+      "confidence": "legacy_ek_unverified"
+    },
+    {
+      "start_m": 334800,
+      "len_m": 1000,
+      "grad_permille": -8.6,
+      "confidence": "legacy_ek_unverified"
+    },
+    {
+      "start_m": 335800,
+      "len_m": 3700,
+      "grad_permille": -3,
+      "confidence": "legacy_ek_unverified"
+    },
+    {
+      "start_m": 339500,
+      "len_m": 1400,
+      "grad_permille": 1.3,
+      "confidence": "legacy_ek_unverified"
+    },
+    {
+      "start_m": 340900,
+      "len_m": 500,
+      "grad_permille": -3,
+      "confidence": "legacy_ek_unverified"
+    },
+    {
+      "start_m": 341400,
+      "len_m": 700,
+      "grad_permille": 4.8,
+      "confidence": "legacy_ek_unverified"
+    },
+    {
+      "start_m": 342100,
+      "len_m": 400,
+      "grad_permille": 1.5,
+      "confidence": "legacy_ek_unverified"
+    },
+    {
+      "start_m": 342500,
+      "len_m": 800,
+      "grad_permille": -3,
+      "confidence": "legacy_ek_unverified"
+    },
+    {
+      "start_m": 343300,
+      "len_m": 1200,
+      "grad_permille": 0,
+      "confidence": "legacy_ek_unverified"
+    },
+    {
+      "start_m": 344500,
+      "len_m": 500,
+      "grad_permille": 1,
+      "confidence": "legacy_ek_unverified"
+    },
+    {
+      "start_m": 345000,
+      "len_m": 400,
+      "grad_permille": 0,
+      "confidence": "legacy_ek_unverified"
+    },
+    {
+      "start_m": 345400,
+      "len_m": 600,
+      "grad_permille": 6.8,
+      "confidence": "legacy_ek_unverified"
+    },
+    {
+      "start_m": 346000,
+      "len_m": 300,
+      "grad_permille": -1.3,
+      "confidence": "legacy_ek_unverified"
+    },
+    {
+      "start_m": 346300,
+      "len_m": 500,
+      "grad_permille": -1.7,
+      "confidence": "legacy_ek_unverified"
+    },
+    {
+      "start_m": 346800,
+      "len_m": 2200,
+      "grad_permille": -0.2,
+      "confidence": "legacy_ek_unverified"
+    },
+    {
+      "start_m": 349000,
+      "len_m": 800,
+      "grad_permille": -6.2,
+      "confidence": "legacy_ek_unverified"
+    },
+    {
+      "start_m": 349800,
+      "len_m": 300,
+      "grad_permille": -2.6,
+      "confidence": "legacy_ek_unverified"
+    },
+    {
+      "start_m": 350100,
+      "len_m": 300,
+      "grad_permille": -3.3,
+      "confidence": "legacy_ek_unverified"
+    },
+    {
+      "start_m": 350400,
+      "len_m": 1000,
+      "grad_permille": 1,
+      "confidence": "legacy_ek_unverified"
+    },
+    {
+      "start_m": 351400,
+      "len_m": 400,
+      "grad_permille": 1.6,
+      "confidence": "legacy_ek_unverified"
+    },
+    {
+      "start_m": 351800,
+      "len_m": 700,
+      "grad_permille": 3.8,
+      "confidence": "legacy_ek_unverified"
+    },
+    {
+      "start_m": 352500,
+      "len_m": 1000,
+      "grad_permille": 0.5,
+      "confidence": "legacy_ek_unverified"
+    },
+    {
+      "start_m": 353500,
+      "len_m": 700,
+      "grad_permille": -1.7,
+      "confidence": "legacy_ek_unverified"
+    },
+    {
+      "start_m": 354200,
+      "len_m": 700,
+      "grad_permille": 1.5,
+      "confidence": "legacy_ek_unverified"
+    },
+    {
+      "start_m": 354900,
+      "len_m": 1000,
+      "grad_permille": -2.2,
+      "confidence": "legacy_ek_unverified"
+    },
+    {
+      "start_m": 355900,
+      "len_m": 2000,
+      "grad_permille": 3.1,
+      "confidence": "legacy_ek_unverified"
+    },
+    {
+      "start_m": 357900,
+      "len_m": 1800,
+      "grad_permille": 6.8,
+      "confidence": "legacy_ek_unverified"
+    },
+    {
+      "start_m": 359700,
+      "len_m": 500,
+      "grad_permille": 5.5,
+      "confidence": "legacy_ek_unverified"
+    },
+    {
+      "start_m": 360200,
+      "len_m": 300,
+      "grad_permille": 0,
+      "confidence": "legacy_ek_unverified"
+    },
+    {
+      "start_m": 360500,
+      "len_m": 700,
+      "grad_permille": 4.9,
+      "confidence": "legacy_ek_unverified"
+    },
+    {
+      "start_m": 361200,
+      "len_m": 2600,
+      "grad_permille": -3.8,
+      "confidence": "legacy_ek_unverified"
+    },
+    {
+      "start_m": 363800,
+      "len_m": 200,
+      "grad_permille": -3,
+      "confidence": "legacy_ek_unverified"
+    }
+  ],
+  "stations": [
+    {
+      "name": "КОМСОМ",
+      "km": 332.171,
+      "sector": 10,
+      "confidence": "legacy_ek_unverified"
+    },
+    {
+      "name": "КОМСОМ",
+      "km": 332.183,
+      "sector": 10,
+      "confidence": "legacy_ek_unverified"
+    },
+    {
+      "name": "КОМСОМ",
+      "km": 333.291,
+      "sector": 10,
+      "confidence": "legacy_ek_unverified"
+    },
+    {
+      "name": "КОМСОМ",
+      "km": 333.294,
+      "sector": 10,
+      "confidence": "legacy_ek_unverified"
+    },
+    {
+      "name": "КОМСОМ",
+      "km": 340.105,
+      "sector": 10,
+      "confidence": "legacy_ek_unverified"
+    },
+    {
+      "name": "КОМСОМ",
+      "km": 341.481,
+      "sector": 10,
+      "confidence": "legacy_ek_unverified"
+    },
+    {
+      "name": "КОМСОМ",
+      "km": 341.484,
+      "sector": 10,
+      "confidence": "legacy_ek_unverified"
+    },
+    {
+      "name": "КОМСОМ",
+      "km": 348.278,
+      "sector": 10,
+      "confidence": "legacy_ek_unverified"
+    },
+    {
+      "name": "349 КМ",
+      "km": 350.165,
+      "sector": 10,
+      "confidence": "legacy_ek_unverified"
+    },
+    {
+      "name": "КОМСОМ",
+      "km": 356.468,
+      "sector": 10,
+      "confidence": "legacy_ek_unverified"
+    },
+    {
+      "name": "КОМСОМ",
+      "km": 359.767,
+      "sector": 10,
+      "confidence": "legacy_ek_unverified"
+    },
+    {
+      "name": "ДЗЕМГИ",
+      "km": 361.712,
+      "sector": 10,
+      "confidence": "legacy_ek_unverified"
+    },
+    {
+      "name": "ДЗЕМГИ",
+      "km": 363.603,
+      "sector": 10,
+      "confidence": "legacy_ek_unverified"
+    },
+    {
+      "name": "ДЗЕМГИ",
+      "km": 363.607,
+      "sector": 10,
+      "confidence": "legacy_ek_unverified"
+    }
+  ],
+  "signals": [
+    {
+      "name": "Н43",
+      "chainage_m": 332171,
+      "sector": 10,
+      "confidence": "legacy_ek_unverified",
+      "legacy_source": "1.xml"
+    },
+    {
+      "name": "Н41",
+      "chainage_m": 332183,
+      "sector": 10,
+      "confidence": "legacy_ek_unverified",
+      "legacy_source": "2n.xml"
+    },
+    {
+      "name": "ЧМ43",
+      "chainage_m": 333120,
+      "sector": 10,
+      "confidence": "legacy_ek_unverified",
+      "legacy_source": "1n.xml"
+    },
+    {
+      "name": "ЧМ41",
+      "chainage_m": 333146,
+      "sector": 10,
+      "confidence": "legacy_ek_unverified",
+      "legacy_source": "2.xml"
+    },
+    {
+      "name": "НМIIД",
+      "chainage_m": 333842,
+      "sector": 10,
+      "confidence": "legacy_ek_unverified",
+      "legacy_source": "2n.xml"
+    },
+    {
+      "name": "НМ1Д",
+      "chainage_m": 333848,
+      "sector": 10,
+      "confidence": "legacy_ek_unverified",
+      "legacy_source": "1.xml"
+    },
+    {
+      "name": "ЧМIIД",
+      "chainage_m": 334705,
+      "sector": 10,
+      "confidence": "legacy_ek_unverified",
+      "legacy_source": "2.xml"
+    },
+    {
+      "name": "ЧМIД",
+      "chainage_m": 334717,
+      "sector": 10,
+      "confidence": "legacy_ek_unverified",
+      "legacy_source": "1n.xml"
+    },
+    {
+      "name": "НМIIА",
+      "chainage_m": 334793,
+      "sector": 10,
+      "confidence": "legacy_ek_unverified",
+      "legacy_source": "2n.xml"
+    },
+    {
+      "name": "НМIIIА",
+      "chainage_m": 335456,
+      "sector": 10,
+      "confidence": "legacy_ek_unverified",
+      "legacy_source": "1.xml"
+    },
+    {
+      "name": "ЧМIIIА",
+      "chainage_m": 336504,
+      "sector": 10,
+      "confidence": "legacy_ek_unverified",
+      "legacy_source": "1n.xml"
+    },
+    {
+      "name": "ЧМIIА",
+      "chainage_m": 336762,
+      "sector": 10,
+      "confidence": "legacy_ek_unverified",
+      "legacy_source": "2.xml"
+    },
+    {
+      "name": "НМIIIБ",
+      "chainage_m": 337338,
+      "sector": 10,
+      "confidence": "legacy_ek_unverified",
+      "legacy_source": "1.xml"
+    },
+    {
+      "name": "НМIIБ",
+      "chainage_m": 337771,
+      "sector": 10,
+      "confidence": "legacy_ek_unverified",
+      "legacy_source": "2n.xml"
+    },
+    {
+      "name": "ЧМIIIБ",
+      "chainage_m": 338525,
+      "sector": 10,
+      "confidence": "legacy_ek_unverified",
+      "legacy_source": "1n.xml"
+    },
+    {
+      "name": "ЧМIIБ",
+      "chainage_m": 338532,
+      "sector": 10,
+      "confidence": "legacy_ek_unverified",
+      "legacy_source": "2.xml"
+    },
+    {
+      "name": "НМIIВ",
+      "chainage_m": 338695,
+      "sector": 10,
+      "confidence": "legacy_ek_unverified",
+      "legacy_source": "2n.xml"
+    },
+    {
+      "name": "НМIIIВ",
+      "chainage_m": 339203,
+      "sector": 10,
+      "confidence": "legacy_ek_unverified",
+      "legacy_source": "1.xml"
+    },
+    {
+      "name": "ЧМIIВ",
+      "chainage_m": 339587,
+      "sector": 10,
+      "confidence": "legacy_ek_unverified",
+      "legacy_source": "2.xml"
+    },
+    {
+      "name": "НМIIГ",
+      "chainage_m": 339707,
+      "sector": 10,
+      "confidence": "legacy_ek_unverified",
+      "legacy_source": "2n.xml"
+    },
+    {
+      "name": "ЧIIIВ",
+      "chainage_m": 340391,
+      "sector": 10,
+      "confidence": "legacy_ek_unverified",
+      "legacy_source": "1n.xml"
+    },
+    {
+      "name": "ЧIIГ",
+      "chainage_m": 340577,
+      "sector": 10,
+      "confidence": "legacy_ek_unverified",
+      "legacy_source": "2.xml"
+    },
+    {
+      "name": "Н",
+      "chainage_m": 341481,
+      "sector": 10,
+      "confidence": "legacy_ek_unverified",
+      "legacy_source": "1.xml"
+    },
+    {
+      "name": "Нд",
+      "chainage_m": 341484,
+      "sector": 10,
+      "confidence": "legacy_ek_unverified",
+      "legacy_source": "2n.xml"
+    },
+    {
+      "name": "1+УКСП",
+      "chainage_m": 343096,
+      "sector": 10,
+      "confidence": "legacy_ek_unverified",
+      "legacy_source": "1.xml"
+    },
+    {
+      "name": "6+УКСП",
+      "chainage_m": 343096,
+      "sector": 10,
+      "confidence": "legacy_ek_unverified",
+      "legacy_source": "1n.xml"
+    },
+    {
+      "name": "6 ///",
+      "chainage_m": 343096,
+      "sector": 10,
+      "confidence": "legacy_ek_unverified",
+      "legacy_source": "2.xml"
+    },
+    {
+      "name": "1",
+      "chainage_m": 343096,
+      "sector": 10,
+      "confidence": "legacy_ek_unverified",
+      "legacy_source": "2n.xml"
+    },
+    {
+      "name": "3+УКСП",
+      "chainage_m": 344750,
+      "sector": 10,
+      "confidence": "legacy_ek_unverified",
+      "legacy_source": "1.xml"
+    },
+    {
+      "name": "4",
+      "chainage_m": 345176,
+      "sector": 10,
+      "confidence": "legacy_ek_unverified",
+      "legacy_source": "1n.xml"
+    },
+    {
+      "name": "2+УКСП",
+      "chainage_m": 346679,
+      "sector": 10,
+      "confidence": "legacy_ek_unverified",
+      "legacy_source": "1n.xml"
+    },
+    {
+      "name": "5",
+      "chainage_m": 346783,
+      "sector": 10,
+      "confidence": "legacy_ek_unverified",
+      "legacy_source": "1.xml"
+    },
+    {
+      "name": "Ч",
+      "chainage_m": 348278,
+      "sector": 10,
+      "confidence": "legacy_ek_unverified",
+      "legacy_source": "1n.xml"
+    },
+    {
+      "name": "Н1А",
+      "chainage_m": 348920,
+      "sector": 10,
+      "confidence": "legacy_ek_unverified",
+      "legacy_source": "1.xml"
+    },
+    {
+      "name": "ЧМ2А",
+      "chainage_m": 350165,
+      "sector": 10,
+      "confidence": "legacy_ek_unverified",
+      "legacy_source": "1n.xml"
+    },
+    {
+      "name": "НМ1Г",
+      "chainage_m": 350355,
+      "sector": 10,
+      "confidence": "legacy_ek_unverified",
+      "legacy_source": "1.xml"
+    },
+    {
+      "name": "ЧМIIГ",
+      "chainage_m": 351720,
+      "sector": 10,
+      "confidence": "legacy_ek_unverified",
+      "legacy_source": "1n.xml"
+    },
+    {
+      "name": "НМ21",
+      "chainage_m": 352627,
+      "sector": 10,
+      "confidence": "legacy_ek_unverified",
+      "legacy_source": "1.xml"
+    },
+    {
+      "name": "НМ22",
+      "chainage_m": 352629,
+      "sector": 10,
+      "confidence": "legacy_ek_unverified",
+      "legacy_source": "2n.xml"
+    },
+    {
+      "name": "ЧМ22",
+      "chainage_m": 353620,
+      "sector": 10,
+      "confidence": "legacy_ek_unverified",
+      "legacy_source": "2.xml"
+    },
+    {
+      "name": "ЧМ21",
+      "chainage_m": 353624,
+      "sector": 10,
+      "confidence": "legacy_ek_unverified",
+      "legacy_source": "1n.xml"
+    },
+    {
+      "name": "НМ3г",
+      "chainage_m": 354422,
+      "sector": 10,
+      "confidence": "legacy_ek_unverified",
+      "legacy_source": "1.xml"
+    },
+    {
+      "name": "ЧМ3г",
+      "chainage_m": 355621,
+      "sector": 10,
+      "confidence": "legacy_ek_unverified",
+      "legacy_source": "1n.xml"
+    },
+    {
+      "name": "НМ3Б",
+      "chainage_m": 355923,
+      "sector": 10,
+      "confidence": "legacy_ek_unverified",
+      "legacy_source": "1.xml"
+    },
+    {
+      "name": "ЧМ3Б",
+      "chainage_m": 357304,
+      "sector": 10,
+      "confidence": "legacy_ek_unverified",
+      "legacy_source": "1n.xml"
+    },
+    {
+      "name": "НМ3а",
+      "chainage_m": 357391,
+      "sector": 10,
+      "confidence": "legacy_ek_unverified",
+      "legacy_source": "1.xml"
+    },
+    {
+      "name": "Ч3а",
+      "chainage_m": 359199,
+      "sector": 10,
+      "confidence": "legacy_ek_unverified",
+      "legacy_source": "1n.xml"
+    },
+    {
+      "name": "Н",
+      "chainage_m": 359767,
+      "sector": 10,
+      "confidence": "legacy_ek_unverified",
+      "legacy_source": "1.xml"
+    },
+    {
+      "name": "Ч",
+      "chainage_m": 361712,
+      "sector": 10,
+      "confidence": "legacy_ek_unverified",
+      "legacy_source": "1n.xml"
+    },
+    {
+      "name": "Н1",
+      "chainage_m": 362898,
+      "sector": 10,
+      "confidence": "legacy_ek_unverified",
+      "legacy_source": "1.xml"
+    },
+    {
+      "name": "Н2",
+      "chainage_m": 362899,
+      "sector": 10,
+      "confidence": "legacy_ek_unverified",
+      "legacy_source": "2n.xml"
+    },
+    {
+      "name": "Ч1",
+      "chainage_m": 363603,
+      "sector": 10,
+      "confidence": "legacy_ek_unverified",
+      "legacy_source": "1n.xml"
+    },
+    {
+      "name": "Ч2",
+      "chainage_m": 363607,
+      "sector": 10,
+      "confidence": "legacy_ek_unverified",
+      "legacy_source": "2.xml"
+    }
+  ],
+  "whistle_points": [],
+  "speed": {
+    "established": null,
+    "permanent_restrictions": [],
+    "temporary_warnings": [],
+    "source": "manual_required"
+  },
+  "flags_for_review": [
+    "Импортировано из пользовательской ЭК приложения «Блокнот машиниста» 0.6.9; профиль, объекты и GPS-геометрия не сверены с официальной режимной картой.",
+    "Ограничения скорости из старого XML намеренно не перенесены: их требуется внести вручную по действующим документам.",
+    "Направление движения и принадлежность GPS-сектора требуют ручной проверки."
+  ],
+  "provenance": [
+    {
+      "kind": "legacy_ek_archive",
+      "file_name": "Комсомольск ТЧЭ-9.zip",
+      "sha256": "417868d71360088429532fce835c3e64de6f95a73190f21d83e555dd8aee7132",
+      "source_application": "Блокнот машиниста 0.6.9",
+      "role": "non_authoritative_import_seed"
+    }
+  ],
+  "runtime": {
+    "coordinate_unit": "m",
+    "coordinate_kind": "official_railway_chainage",
+    "coordinate_offset_m": -1000,
+    "movement_order": "ascending",
+    "default_path_id": "ek069-komsomolsk-tche-9-s10-path",
+    "route_legs": [
+      {
+        "path_id": "ek069-komsomolsk-tche-9-s10-path",
+        "sector": 10,
+        "from_chainage_m": 332000,
+        "to_chainage_m": 364000
+      }
+    ],
+    "profile_status": "legacy_ek_unverified",
+    "profile_coverage": [
+      {
+        "start_m": 332000,
+        "end_m": 364000
+      }
+    ],
+    "profile_gaps": [],
+    "profile_applies_both_directions": false
+  },
+  "geometry": {
+    "status": "draft_from_legacy_ek",
+    "source": "Комсомольск ТЧЭ-9.zip",
+    "paths": [
+      {
+        "path_id": "ek069-komsomolsk-tche-9-s10-path",
+        "sector": 10,
+        "points": [
+          {
+            "lat": 50.403255,
+            "lon": 136.868305,
+            "sector": 10,
+            "path_id": "ek069-komsomolsk-tche-9-s10-path",
+            "ordinate": 331000,
+            "chainage_m": 332000
+          },
+          {
+            "lat": 50.409711,
+            "lon": 136.878075,
+            "sector": 10,
+            "path_id": "ek069-komsomolsk-tche-9-s10-path",
+            "ordinate": 332000,
+            "chainage_m": 333000
+          },
+          {
+            "lat": 50.416129,
+            "lon": 136.887827,
+            "sector": 10,
+            "path_id": "ek069-komsomolsk-tche-9-s10-path",
+            "ordinate": 333000,
+            "chainage_m": 334000
+          },
+          {
+            "lat": 50.423044,
+            "lon": 136.893997,
+            "sector": 10,
+            "path_id": "ek069-komsomolsk-tche-9-s10-path",
+            "ordinate": 333900,
+            "chainage_m": 334900
+          },
+          {
+            "lat": 50.424047,
+            "lon": 136.894056,
+            "sector": 10,
+            "path_id": "ek069-komsomolsk-tche-9-s10-path",
+            "ordinate": 334000,
+            "chainage_m": 335000
+          },
+          {
+            "lat": 50.425742,
+            "lon": 136.894628,
+            "sector": 10,
+            "path_id": "ek069-komsomolsk-tche-9-s10-path",
+            "ordinate": 334100,
+            "chainage_m": 335100
+          },
+          {
+            "lat": 50.4284,
+            "lon": 136.89535,
+            "sector": 10,
+            "path_id": "ek069-komsomolsk-tche-9-s10-path",
+            "ordinate": 334400,
+            "chainage_m": 335400
+          },
+          {
+            "lat": 50.433606,
+            "lon": 136.897528,
+            "sector": 10,
+            "path_id": "ek069-komsomolsk-tche-9-s10-path",
+            "ordinate": 335000,
+            "chainage_m": 336000
+          },
+          {
+            "lat": 50.442311,
+            "lon": 136.901017,
+            "sector": 10,
+            "path_id": "ek069-komsomolsk-tche-9-s10-path",
+            "ordinate": 336000,
+            "chainage_m": 337000
+          },
+          {
+            "lat": 50.445003,
+            "lon": 136.900797,
+            "sector": 10,
+            "path_id": "ek069-komsomolsk-tche-9-s10-path",
+            "ordinate": 336300,
+            "chainage_m": 337300
+          },
+          {
+            "lat": 50.4512,
+            "lon": 136.902503,
+            "sector": 10,
+            "path_id": "ek069-komsomolsk-tche-9-s10-path",
+            "ordinate": 337000,
+            "chainage_m": 338000
+          },
+          {
+            "lat": 50.454708,
+            "lon": 136.903617,
+            "sector": 10,
+            "path_id": "ek069-komsomolsk-tche-9-s10-path",
+            "ordinate": 337400,
+            "chainage_m": 338400
+          },
+          {
+            "lat": 50.456306,
+            "lon": 136.904961,
+            "sector": 10,
+            "path_id": "ek069-komsomolsk-tche-9-s10-path",
+            "ordinate": 337600,
+            "chainage_m": 338600
+          },
+          {
+            "lat": 50.458942,
+            "lon": 136.905847,
+            "sector": 10,
+            "path_id": "ek069-komsomolsk-tche-9-s10-path",
+            "ordinate": 337900,
+            "chainage_m": 338900
+          },
+          {
+            "lat": 50.459436,
+            "lon": 136.906025,
+            "sector": 10,
+            "path_id": "ek069-komsomolsk-tche-9-s10-path",
+            "ordinate": 338000,
+            "chainage_m": 339000
+          },
+          {
+            "lat": 50.463855,
+            "lon": 136.907253,
+            "sector": 10,
+            "path_id": "ek069-komsomolsk-tche-9-s10-path",
+            "ordinate": 338500,
+            "chainage_m": 339500
+          },
+          {
+            "lat": 50.468292,
+            "lon": 136.908414,
+            "sector": 10,
+            "path_id": "ek069-komsomolsk-tche-9-s10-path",
+            "ordinate": 339000,
+            "chainage_m": 340000
+          },
+          {
+            "lat": 50.471786,
+            "lon": 136.909792,
+            "sector": 10,
+            "path_id": "ek069-komsomolsk-tche-9-s10-path",
+            "ordinate": 339400,
+            "chainage_m": 340400
+          },
+          {
+            "lat": 50.473739,
+            "lon": 136.91077,
+            "sector": 10,
+            "path_id": "ek069-komsomolsk-tche-9-s10-path",
+            "ordinate": 339700,
+            "chainage_m": 340700
+          },
+          {
+            "lat": 50.476425,
+            "lon": 136.911317,
+            "sector": 10,
+            "path_id": "ek069-komsomolsk-tche-9-s10-path",
+            "ordinate": 340000,
+            "chainage_m": 341000
+          },
+          {
+            "lat": 50.480881,
+            "lon": 136.911061,
+            "sector": 10,
+            "path_id": "ek069-komsomolsk-tche-9-s10-path",
+            "ordinate": 340500,
+            "chainage_m": 341500
+          },
+          {
+            "lat": 50.485231,
+            "lon": 136.913511,
+            "sector": 10,
+            "path_id": "ek069-komsomolsk-tche-9-s10-path",
+            "ordinate": 341000,
+            "chainage_m": 342000
+          },
+          {
+            "lat": 50.493812,
+            "lon": 136.915508,
+            "sector": 10,
+            "path_id": "ek069-komsomolsk-tche-9-s10-path",
+            "ordinate": 342000,
+            "chainage_m": 343000
+          },
+          {
+            "lat": 50.502719,
+            "lon": 136.91558,
+            "sector": 10,
+            "path_id": "ek069-komsomolsk-tche-9-s10-path",
+            "ordinate": 343000,
+            "chainage_m": 344000
+          },
+          {
+            "lat": 50.50986,
+            "lon": 136.907537,
+            "sector": 10,
+            "path_id": "ek069-komsomolsk-tche-9-s10-path",
+            "ordinate": 344000,
+            "chainage_m": 345000
+          },
+          {
+            "lat": 50.51883,
+            "lon": 136.907817,
+            "sector": 10,
+            "path_id": "ek069-komsomolsk-tche-9-s10-path",
+            "ordinate": 345000,
+            "chainage_m": 346000
+          },
+          {
+            "lat": 50.52769,
+            "lon": 136.90615,
+            "sector": 10,
+            "path_id": "ek069-komsomolsk-tche-9-s10-path",
+            "ordinate": 346000,
+            "chainage_m": 347000
+          },
+          {
+            "lat": 50.536121,
+            "lon": 136.90911,
+            "sector": 10,
+            "path_id": "ek069-komsomolsk-tche-9-s10-path",
+            "ordinate": 347000,
+            "chainage_m": 348000
+          },
+          {
+            "lat": 50.543605,
+            "lon": 136.916829,
+            "sector": 10,
+            "path_id": "ek069-komsomolsk-tche-9-s10-path",
+            "ordinate": 348000,
+            "chainage_m": 349000
+          },
+          {
+            "lat": 50.549662,
+            "lon": 136.927122,
+            "sector": 10,
+            "path_id": "ek069-komsomolsk-tche-9-s10-path",
+            "ordinate": 349000,
+            "chainage_m": 350000
+          },
+          {
+            "lat": 50.551908,
+            "lon": 136.940889,
+            "sector": 10,
+            "path_id": "ek069-komsomolsk-tche-9-s10-path",
+            "ordinate": 350000,
+            "chainage_m": 351000
+          },
+          {
+            "lat": 50.553336,
+            "lon": 136.954858,
+            "sector": 10,
+            "path_id": "ek069-komsomolsk-tche-9-s10-path",
+            "ordinate": 351000,
+            "chainage_m": 352000
+          },
+          {
+            "lat": 50.553833,
+            "lon": 136.961822,
+            "sector": 10,
+            "path_id": "ek069-komsomolsk-tche-9-s10-path",
+            "ordinate": 351500,
+            "chainage_m": 352500
+          },
+          {
+            "lat": 50.554075,
+            "lon": 136.968881,
+            "sector": 10,
+            "path_id": "ek069-komsomolsk-tche-9-s10-path",
+            "ordinate": 352000,
+            "chainage_m": 353000
+          },
+          {
+            "lat": 50.554539,
+            "lon": 136.975883,
+            "sector": 10,
+            "path_id": "ek069-komsomolsk-tche-9-s10-path",
+            "ordinate": 352500,
+            "chainage_m": 353500
+          },
+          {
+            "lat": 50.554811,
+            "lon": 136.980103,
+            "sector": 10,
+            "path_id": "ek069-komsomolsk-tche-9-s10-path",
+            "ordinate": 352800,
+            "chainage_m": 353800
+          },
+          {
+            "lat": 50.554172,
+            "lon": 136.983923,
+            "sector": 10,
+            "path_id": "ek069-komsomolsk-tche-9-s10-path",
+            "ordinate": 353000,
+            "chainage_m": 354000
+          },
+          {
+            "lat": 50.554472,
+            "lon": 136.998128,
+            "sector": 10,
+            "path_id": "ek069-komsomolsk-tche-9-s10-path",
+            "ordinate": 354000,
+            "chainage_m": 355000
+          },
+          {
+            "lat": 50.556322,
+            "lon": 137.011767,
+            "sector": 10,
+            "path_id": "ek069-komsomolsk-tche-9-s10-path",
+            "ordinate": 355000,
+            "chainage_m": 356000
+          },
+          {
+            "lat": 50.55975,
+            "lon": 137.016028,
+            "sector": 10,
+            "path_id": "ek069-komsomolsk-tche-9-s10-path",
+            "ordinate": 355500,
+            "chainage_m": 356500
+          },
+          {
+            "lat": 50.56402,
+            "lon": 137.014889,
+            "sector": 10,
+            "path_id": "ek069-komsomolsk-tche-9-s10-path",
+            "ordinate": 356000,
+            "chainage_m": 357000
+          },
+          {
+            "lat": 50.569167,
+            "lon": 137.003705,
+            "sector": 10,
+            "path_id": "ek069-komsomolsk-tche-9-s10-path",
+            "ordinate": 357000,
+            "chainage_m": 358000
+          },
+          {
+            "lat": 50.575953,
+            "lon": 136.994502,
+            "sector": 10,
+            "path_id": "ek069-komsomolsk-tche-9-s10-path",
+            "ordinate": 358000,
+            "chainage_m": 359000
+          },
+          {
+            "lat": 50.5807,
+            "lon": 136.990878,
+            "sector": 10,
+            "path_id": "ek069-komsomolsk-tche-9-s10-path",
+            "ordinate": 358600,
+            "chainage_m": 359600
+          },
+          {
+            "lat": 50.584217,
+            "lon": 136.992708,
+            "sector": 10,
+            "path_id": "ek069-komsomolsk-tche-9-s10-path",
+            "ordinate": 359000,
+            "chainage_m": 360000
+          },
+          {
+            "lat": 50.59149,
+            "lon": 137.000908,
+            "sector": 10,
+            "path_id": "ek069-komsomolsk-tche-9-s10-path",
+            "ordinate": 360000,
+            "chainage_m": 361000
+          },
+          {
+            "lat": 50.595722,
+            "lon": 137.008314,
+            "sector": 10,
+            "path_id": "ek069-komsomolsk-tche-9-s10-path",
+            "ordinate": 360700,
+            "chainage_m": 361700
+          },
+          {
+            "lat": 50.597219,
+            "lon": 137.011608,
+            "sector": 10,
+            "path_id": "ek069-komsomolsk-tche-9-s10-path",
+            "ordinate": 361000,
+            "chainage_m": 362000
+          },
+          {
+            "lat": 50.599391,
+            "lon": 137.016342,
+            "sector": 10,
+            "path_id": "ek069-komsomolsk-tche-9-s10-path",
+            "ordinate": 361400,
+            "chainage_m": 362400
+          },
+          {
+            "lat": 50.602589,
+            "lon": 137.023225,
+            "sector": 10,
+            "path_id": "ek069-komsomolsk-tche-9-s10-path",
+            "ordinate": 362000,
+            "chainage_m": 363000
+          },
+          {
+            "lat": 50.607786,
+            "lon": 137.034753,
+            "sector": 10,
+            "path_id": "ek069-komsomolsk-tche-9-s10-path",
+            "ordinate": 363000,
+            "chainage_m": 364000
+          }
+        ]
+      }
+    ]
+  }
+}

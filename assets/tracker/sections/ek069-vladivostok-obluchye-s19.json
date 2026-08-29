@@ -1,0 +1,778 @@
+{
+  "schema_version": "1.0",
+  "id": "ek069-vladivostok-obluchye-s19",
+  "status": "draft",
+  "railway": {
+    "id": "dvost",
+    "name": "Дальневосточная железная дорога"
+  },
+  "section_name": "Владивосток — Облучье — сектор 19",
+  "direction": "требует проверки",
+  "km_start": 8598.952,
+  "km_end": 8615.154,
+  "generator_format": "Б",
+  "elements": [
+    {
+      "start_m": 8599000,
+      "len_m": 150,
+      "grad_permille": 2.7,
+      "confidence": "legacy_ek_unverified"
+    },
+    {
+      "start_m": 8599150,
+      "len_m": 200,
+      "grad_permille": 6,
+      "confidence": "legacy_ek_unverified"
+    },
+    {
+      "start_m": 8599350,
+      "len_m": 200,
+      "grad_permille": 2.2,
+      "confidence": "legacy_ek_unverified"
+    },
+    {
+      "start_m": 8599550,
+      "len_m": 700,
+      "grad_permille": 0,
+      "confidence": "legacy_ek_unverified"
+    },
+    {
+      "start_m": 8600250,
+      "len_m": 200,
+      "grad_permille": 1.6,
+      "confidence": "legacy_ek_unverified"
+    },
+    {
+      "start_m": 8600450,
+      "len_m": 500,
+      "grad_permille": 0,
+      "confidence": "legacy_ek_unverified"
+    },
+    {
+      "start_m": 8600950,
+      "len_m": 200,
+      "grad_permille": -5.2,
+      "confidence": "legacy_ek_unverified"
+    },
+    {
+      "start_m": 8601150,
+      "len_m": 500,
+      "grad_permille": -2.8,
+      "confidence": "legacy_ek_unverified"
+    },
+    {
+      "start_m": 8601650,
+      "len_m": 300,
+      "grad_permille": -2.4,
+      "confidence": "legacy_ek_unverified"
+    },
+    {
+      "start_m": 8601950,
+      "len_m": 300,
+      "grad_permille": -3.6,
+      "confidence": "legacy_ek_unverified"
+    },
+    {
+      "start_m": 8602250,
+      "len_m": 200,
+      "grad_permille": -0.7,
+      "confidence": "legacy_ek_unverified"
+    },
+    {
+      "start_m": 8602450,
+      "len_m": 400,
+      "grad_permille": 0,
+      "confidence": "legacy_ek_unverified"
+    },
+    {
+      "start_m": 8602850,
+      "len_m": 300,
+      "grad_permille": 5.3,
+      "confidence": "legacy_ek_unverified"
+    },
+    {
+      "start_m": 8603150,
+      "len_m": 350,
+      "grad_permille": 5.5,
+      "confidence": "legacy_ek_unverified"
+    },
+    {
+      "start_m": 8603500,
+      "len_m": 450,
+      "grad_permille": 0,
+      "confidence": "legacy_ek_unverified"
+    },
+    {
+      "start_m": 8603950,
+      "len_m": 200,
+      "grad_permille": -3.1,
+      "confidence": "legacy_ek_unverified"
+    },
+    {
+      "start_m": 8604150,
+      "len_m": 300,
+      "grad_permille": -5.3,
+      "confidence": "legacy_ek_unverified"
+    },
+    {
+      "start_m": 8604450,
+      "len_m": 300,
+      "grad_permille": -2.4,
+      "confidence": "legacy_ek_unverified"
+    },
+    {
+      "start_m": 8604750,
+      "len_m": 250,
+      "grad_permille": 0,
+      "confidence": "legacy_ek_unverified"
+    },
+    {
+      "start_m": 8605000,
+      "len_m": 200,
+      "grad_permille": -2.4,
+      "confidence": "legacy_ek_unverified"
+    },
+    {
+      "start_m": 8605200,
+      "len_m": 200,
+      "grad_permille": 1,
+      "confidence": "legacy_ek_unverified"
+    },
+    {
+      "start_m": 8605400,
+      "len_m": 200,
+      "grad_permille": -0.6,
+      "confidence": "legacy_ek_unverified"
+    },
+    {
+      "start_m": 8605600,
+      "len_m": 250,
+      "grad_permille": 0.6,
+      "confidence": "legacy_ek_unverified"
+    },
+    {
+      "start_m": 8605850,
+      "len_m": 1000,
+      "grad_permille": 0,
+      "confidence": "legacy_ek_unverified"
+    },
+    {
+      "start_m": 8606850,
+      "len_m": 200,
+      "grad_permille": 1,
+      "confidence": "legacy_ek_unverified"
+    },
+    {
+      "start_m": 8607050,
+      "len_m": 800,
+      "grad_permille": 0,
+      "confidence": "legacy_ek_unverified"
+    },
+    {
+      "start_m": 8607850,
+      "len_m": 200,
+      "grad_permille": -2,
+      "confidence": "legacy_ek_unverified"
+    },
+    {
+      "start_m": 8608050,
+      "len_m": 300,
+      "grad_permille": 0.7,
+      "confidence": "legacy_ek_unverified"
+    },
+    {
+      "start_m": 8608350,
+      "len_m": 300,
+      "grad_permille": -0.9,
+      "confidence": "legacy_ek_unverified"
+    },
+    {
+      "start_m": 8608650,
+      "len_m": 300,
+      "grad_permille": 0.8,
+      "confidence": "legacy_ek_unverified"
+    },
+    {
+      "start_m": 8608955,
+      "len_m": 200,
+      "grad_permille": -0.4,
+      "confidence": "legacy_ek_unverified"
+    },
+    {
+      "start_m": 8609155,
+      "len_m": 495,
+      "grad_permille": 0,
+      "confidence": "legacy_ek_unverified"
+    },
+    {
+      "start_m": 8609650,
+      "len_m": 300,
+      "grad_permille": -1.6,
+      "confidence": "legacy_ek_unverified"
+    },
+    {
+      "start_m": 8609950,
+      "len_m": 200,
+      "grad_permille": -0.2,
+      "confidence": "legacy_ek_unverified"
+    },
+    {
+      "start_m": 8610150,
+      "len_m": 300,
+      "grad_permille": -1.1,
+      "confidence": "legacy_ek_unverified"
+    },
+    {
+      "start_m": 8610450,
+      "len_m": 300,
+      "grad_permille": -1.6,
+      "confidence": "legacy_ek_unverified"
+    },
+    {
+      "start_m": 8610750,
+      "len_m": 300,
+      "grad_permille": -0.9,
+      "confidence": "legacy_ek_unverified"
+    },
+    {
+      "start_m": 8611050,
+      "len_m": 400,
+      "grad_permille": -1.1,
+      "confidence": "legacy_ek_unverified"
+    },
+    {
+      "start_m": 8611450,
+      "len_m": 300,
+      "grad_permille": -0.8,
+      "confidence": "legacy_ek_unverified"
+    },
+    {
+      "start_m": 8611750,
+      "len_m": 700,
+      "grad_permille": 0,
+      "confidence": "legacy_ek_unverified"
+    },
+    {
+      "start_m": 8612450,
+      "len_m": 300,
+      "grad_permille": -1.4,
+      "confidence": "legacy_ek_unverified"
+    },
+    {
+      "start_m": 8612750,
+      "len_m": 200,
+      "grad_permille": -0.6,
+      "confidence": "legacy_ek_unverified"
+    },
+    {
+      "start_m": 8612950,
+      "len_m": 200,
+      "grad_permille": -2.6,
+      "confidence": "legacy_ek_unverified"
+    },
+    {
+      "start_m": 8613150,
+      "len_m": 200,
+      "grad_permille": 0.8,
+      "confidence": "legacy_ek_unverified"
+    },
+    {
+      "start_m": 8613350,
+      "len_m": 200,
+      "grad_permille": -2.1,
+      "confidence": "legacy_ek_unverified"
+    },
+    {
+      "start_m": 8613550,
+      "len_m": 1100,
+      "grad_permille": 0,
+      "confidence": "legacy_ek_unverified"
+    },
+    {
+      "start_m": 8614650,
+      "len_m": 200,
+      "grad_permille": -2.3,
+      "confidence": "legacy_ek_unverified"
+    },
+    {
+      "start_m": 8614850,
+      "len_m": 200,
+      "grad_permille": -5,
+      "confidence": "legacy_ek_unverified"
+    },
+    {
+      "start_m": 8615050,
+      "len_m": 104,
+      "grad_permille": -2.4,
+      "confidence": "legacy_ek_unverified"
+    }
+  ],
+  "stations": [
+    {
+      "name": "ХОР",
+      "km": 8598.952,
+      "sector": 19,
+      "confidence": "legacy_ek_unverified"
+    },
+    {
+      "name": "ХОР",
+      "km": 8599.265,
+      "sector": 19,
+      "confidence": "legacy_ek_unverified"
+    },
+    {
+      "name": "ДОРМИДОНТОВКА",
+      "km": 8614.707,
+      "sector": 19,
+      "confidence": "legacy_ek_unverified"
+    },
+    {
+      "name": "ДОРМИДОНТОВКА",
+      "km": 8615.154,
+      "sector": 19,
+      "confidence": "legacy_ek_unverified"
+    }
+  ],
+  "signals": [
+    {
+      "name": "НА",
+      "chainage_m": 8599265,
+      "sector": 19,
+      "confidence": "legacy_ek_unverified",
+      "legacy_source": "1.xml"
+    },
+    {
+      "name": "1+УКСП",
+      "chainage_m": 8600491,
+      "sector": 19,
+      "confidence": "legacy_ek_unverified",
+      "legacy_source": "1.xml"
+    },
+    {
+      "name": "14+УКС",
+      "chainage_m": 8600494,
+      "sector": 19,
+      "confidence": "legacy_ek_unverified",
+      "legacy_source": "1n.xml"
+    },
+    {
+      "name": "3",
+      "chainage_m": 8602891,
+      "sector": 19,
+      "confidence": "legacy_ek_unverified",
+      "legacy_source": "1.xml"
+    },
+    {
+      "name": "12",
+      "chainage_m": 8602895,
+      "sector": 19,
+      "confidence": "legacy_ek_unverified",
+      "legacy_source": "1n.xml"
+    },
+    {
+      "name": "10",
+      "chainage_m": 8605116,
+      "sector": 19,
+      "confidence": "legacy_ek_unverified",
+      "legacy_source": "1n.xml"
+    },
+    {
+      "name": "5",
+      "chainage_m": 8605117,
+      "sector": 19,
+      "confidence": "legacy_ek_unverified",
+      "legacy_source": "1.xml"
+    },
+    {
+      "name": "8",
+      "chainage_m": 8607302,
+      "sector": 19,
+      "confidence": "legacy_ek_unverified",
+      "legacy_source": "1n.xml"
+    },
+    {
+      "name": "7",
+      "chainage_m": 8607304,
+      "sector": 19,
+      "confidence": "legacy_ek_unverified",
+      "legacy_source": "1.xml"
+    },
+    {
+      "name": "9",
+      "chainage_m": 8609510,
+      "sector": 19,
+      "confidence": "legacy_ek_unverified",
+      "legacy_source": "1.xml"
+    },
+    {
+      "name": "6",
+      "chainage_m": 8609510,
+      "sector": 19,
+      "confidence": "legacy_ek_unverified",
+      "legacy_source": "1n.xml"
+    },
+    {
+      "name": "4+УКСП",
+      "chainage_m": 8611192,
+      "sector": 19,
+      "confidence": "legacy_ek_unverified",
+      "legacy_source": "1n.xml"
+    },
+    {
+      "name": "11+УКС",
+      "chainage_m": 8611196,
+      "sector": 19,
+      "confidence": "legacy_ek_unverified",
+      "legacy_source": "1.xml"
+    },
+    {
+      "name": "2+УКСП",
+      "chainage_m": 8613589,
+      "sector": 19,
+      "confidence": "legacy_ek_unverified",
+      "legacy_source": "1n.xml"
+    },
+    {
+      "name": "13+УКС",
+      "chainage_m": 8613591,
+      "sector": 19,
+      "confidence": "legacy_ek_unverified",
+      "legacy_source": "1.xml"
+    },
+    {
+      "name": "ЧХ",
+      "chainage_m": 8614707,
+      "sector": 19,
+      "confidence": "legacy_ek_unverified",
+      "legacy_source": "1n.xml"
+    }
+  ],
+  "whistle_points": [],
+  "speed": {
+    "established": null,
+    "permanent_restrictions": [],
+    "temporary_warnings": [],
+    "source": "manual_required"
+  },
+  "flags_for_review": [
+    "Импортировано из пользовательской ЭК приложения «Блокнот машиниста» 0.6.9; профиль, объекты и GPS-геометрия не сверены с официальной режимной картой.",
+    "Ограничения скорости из старого XML намеренно не перенесены: их требуется внести вручную по действующим документам.",
+    "Направление движения и принадлежность GPS-сектора требуют ручной проверки."
+  ],
+  "provenance": [
+    {
+      "kind": "legacy_ek_archive",
+      "file_name": "Владивосток-Облучье.zip",
+      "sha256": "631e01d29771b1fd7fbdccdb4b9eca648b8f05b48ab0ec55f38a20eaef67858f",
+      "source_application": "Блокнот машиниста 0.6.9",
+      "role": "non_authoritative_import_seed"
+    }
+  ],
+  "runtime": {
+    "coordinate_unit": "m",
+    "coordinate_kind": "official_railway_chainage",
+    "coordinate_offset_m": -1000,
+    "movement_order": "ascending",
+    "default_path_id": "ek069-vladivostok-obluchye-s19-path",
+    "route_legs": [
+      {
+        "path_id": "ek069-vladivostok-obluchye-s19-path",
+        "sector": 19,
+        "from_chainage_m": 8598952,
+        "to_chainage_m": 8615154
+      }
+    ],
+    "profile_status": "legacy_ek_unverified",
+    "profile_coverage": [
+      {
+        "start_m": 8599000,
+        "end_m": 8608950
+      },
+      {
+        "start_m": 8608955,
+        "end_m": 8615154
+      }
+    ],
+    "profile_gaps": [
+      {
+        "start_m": 8598952,
+        "end_m": 8599000,
+        "reason": "В исходной ЭК отсутствует профиль для этого диапазона."
+      },
+      {
+        "start_m": 8608950,
+        "end_m": 8608955,
+        "reason": "В исходной ЭК отсутствует профиль для этого диапазона."
+      }
+    ],
+    "profile_applies_both_directions": false
+  },
+  "geometry": {
+    "status": "draft_from_legacy_ek",
+    "source": "Владивосток-Облучье.zip",
+    "paths": [
+      {
+        "path_id": "ek069-vladivostok-obluchye-s19-path",
+        "sector": 19,
+        "points": [
+          {
+            "lat": 47.913234,
+            "lon": 135.021766,
+            "sector": 19,
+            "path_id": "ek069-vladivostok-obluchye-s19-path",
+            "ordinate": 8597952,
+            "chainage_m": 8598952
+          },
+          {
+            "lat": 47.912952,
+            "lon": 135.021244,
+            "sector": 19,
+            "path_id": "ek069-vladivostok-obluchye-s19-path",
+            "ordinate": 8598000,
+            "chainage_m": 8599000
+          },
+          {
+            "lat": 47.910061,
+            "lon": 135.018304,
+            "sector": 19,
+            "path_id": "ek069-vladivostok-obluchye-s19-path",
+            "ordinate": 8598400,
+            "chainage_m": 8599400
+          },
+          {
+            "lat": 47.904685,
+            "lon": 135.018863,
+            "sector": 19,
+            "path_id": "ek069-vladivostok-obluchye-s19-path",
+            "ordinate": 8599000,
+            "chainage_m": 8600000
+          },
+          {
+            "lat": 47.902946,
+            "lon": 135.019281,
+            "sector": 19,
+            "path_id": "ek069-vladivostok-obluchye-s19-path",
+            "ordinate": 8599200,
+            "chainage_m": 8600200
+          },
+          {
+            "lat": 47.901158,
+            "lon": 135.019711,
+            "sector": 19,
+            "path_id": "ek069-vladivostok-obluchye-s19-path",
+            "ordinate": 8599400,
+            "chainage_m": 8600400
+          },
+          {
+            "lat": 47.899374,
+            "lon": 135.020142,
+            "sector": 19,
+            "path_id": "ek069-vladivostok-obluchye-s19-path",
+            "ordinate": 8599600,
+            "chainage_m": 8600600
+          },
+          {
+            "lat": 47.897607,
+            "lon": 135.020568,
+            "sector": 19,
+            "path_id": "ek069-vladivostok-obluchye-s19-path",
+            "ordinate": 8599800,
+            "chainage_m": 8600800
+          },
+          {
+            "lat": 47.895806,
+            "lon": 135.020994,
+            "sector": 19,
+            "path_id": "ek069-vladivostok-obluchye-s19-path",
+            "ordinate": 8600000,
+            "chainage_m": 8601000
+          },
+          {
+            "lat": 47.887253,
+            "lon": 135.025049,
+            "sector": 19,
+            "path_id": "ek069-vladivostok-obluchye-s19-path",
+            "ordinate": 8601000,
+            "chainage_m": 8602000
+          },
+          {
+            "lat": 47.88392,
+            "lon": 135.027081,
+            "sector": 19,
+            "path_id": "ek069-vladivostok-obluchye-s19-path",
+            "ordinate": 8601400,
+            "chainage_m": 8602400
+          },
+          {
+            "lat": 47.882274,
+            "lon": 135.02795,
+            "sector": 19,
+            "path_id": "ek069-vladivostok-obluchye-s19-path",
+            "ordinate": 8601600,
+            "chainage_m": 8602600
+          },
+          {
+            "lat": 47.878713,
+            "lon": 135.028899,
+            "sector": 19,
+            "path_id": "ek069-vladivostok-obluchye-s19-path",
+            "ordinate": 8602000,
+            "chainage_m": 8603000
+          },
+          {
+            "lat": 47.873329,
+            "lon": 135.030215,
+            "sector": 19,
+            "path_id": "ek069-vladivostok-obluchye-s19-path",
+            "ordinate": 8602600,
+            "chainage_m": 8603600
+          },
+          {
+            "lat": 47.87155,
+            "lon": 135.03066,
+            "sector": 19,
+            "path_id": "ek069-vladivostok-obluchye-s19-path",
+            "ordinate": 8602800,
+            "chainage_m": 8603800
+          },
+          {
+            "lat": 47.869847,
+            "lon": 135.031086,
+            "sector": 19,
+            "path_id": "ek069-vladivostok-obluchye-s19-path",
+            "ordinate": 8603000,
+            "chainage_m": 8604000
+          },
+          {
+            "lat": 47.860941,
+            "lon": 135.032122,
+            "sector": 19,
+            "path_id": "ek069-vladivostok-obluchye-s19-path",
+            "ordinate": 8604000,
+            "chainage_m": 8605000
+          },
+          {
+            "lat": 47.855753,
+            "lon": 135.02509,
+            "sector": 19,
+            "path_id": "ek069-vladivostok-obluchye-s19-path",
+            "ordinate": 8604800,
+            "chainage_m": 8605800
+          },
+          {
+            "lat": 47.854705,
+            "lon": 135.022934,
+            "sector": 19,
+            "path_id": "ek069-vladivostok-obluchye-s19-path",
+            "ordinate": 8605000,
+            "chainage_m": 8606000
+          },
+          {
+            "lat": 47.853646,
+            "lon": 135.020756,
+            "sector": 19,
+            "path_id": "ek069-vladivostok-obluchye-s19-path",
+            "ordinate": 8605200,
+            "chainage_m": 8606200
+          },
+          {
+            "lat": 47.852592,
+            "lon": 135.018588,
+            "sector": 19,
+            "path_id": "ek069-vladivostok-obluchye-s19-path",
+            "ordinate": 8605400,
+            "chainage_m": 8606400
+          },
+          {
+            "lat": 47.851549,
+            "lon": 135.016424,
+            "sector": 19,
+            "path_id": "ek069-vladivostok-obluchye-s19-path",
+            "ordinate": 8605600,
+            "chainage_m": 8606600
+          },
+          {
+            "lat": 47.84943,
+            "lon": 135.012084,
+            "sector": 19,
+            "path_id": "ek069-vladivostok-obluchye-s19-path",
+            "ordinate": 8606000,
+            "chainage_m": 8607000
+          },
+          {
+            "lat": 47.844154,
+            "lon": 135.001263,
+            "sector": 19,
+            "path_id": "ek069-vladivostok-obluchye-s19-path",
+            "ordinate": 8607000,
+            "chainage_m": 8608000
+          },
+          {
+            "lat": 47.838875,
+            "lon": 134.990435,
+            "sector": 19,
+            "path_id": "ek069-vladivostok-obluchye-s19-path",
+            "ordinate": 8608000,
+            "chainage_m": 8609000
+          },
+          {
+            "lat": 47.833603,
+            "lon": 134.979622,
+            "sector": 19,
+            "path_id": "ek069-vladivostok-obluchye-s19-path",
+            "ordinate": 8609000,
+            "chainage_m": 8610000
+          },
+          {
+            "lat": 47.828325,
+            "lon": 134.968805,
+            "sector": 19,
+            "path_id": "ek069-vladivostok-obluchye-s19-path",
+            "ordinate": 8610000,
+            "chainage_m": 8611000
+          },
+          {
+            "lat": 47.823052,
+            "lon": 134.957991,
+            "sector": 19,
+            "path_id": "ek069-vladivostok-obluchye-s19-path",
+            "ordinate": 8611000,
+            "chainage_m": 8612000
+          },
+          {
+            "lat": 47.817768,
+            "lon": 134.947161,
+            "sector": 19,
+            "path_id": "ek069-vladivostok-obluchye-s19-path",
+            "ordinate": 8612000,
+            "chainage_m": 8613000
+          },
+          {
+            "lat": 47.812495,
+            "lon": 134.936333,
+            "sector": 19,
+            "path_id": "ek069-vladivostok-obluchye-s19-path",
+            "ordinate": 8613000,
+            "chainage_m": 8614000
+          },
+          {
+            "lat": 47.807162,
+            "lon": 134.925679,
+            "sector": 19,
+            "path_id": "ek069-vladivostok-obluchye-s19-path",
+            "ordinate": 8614000,
+            "chainage_m": 8615000
+          },
+          {
+            "lat": 47.806049,
+            "lon": 134.924461,
+            "sector": 19,
+            "path_id": "ek069-vladivostok-obluchye-s19-path",
+            "ordinate": 8614154,
+            "chainage_m": 8615154
+          }
+        ]
+      }
+    ]
+  }
+}

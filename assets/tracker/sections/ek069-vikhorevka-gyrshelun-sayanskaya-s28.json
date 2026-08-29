@@ -1,0 +1,492 @@
+{
+  "schema_version": "1.0",
+  "id": "ek069-vikhorevka-gyrshelun-sayanskaya-s28",
+  "status": "draft",
+  "railway": {
+    "id": "vostsib",
+    "name": "Восточно-Сибирская железная дорога"
+  },
+  "section_name": "Вихоревка — Гыршелун (+ Саянская) — сектор 28",
+  "direction": "требует проверки",
+  "km_start": 5178.56,
+  "km_end": 5198,
+  "generator_format": "Б",
+  "elements": [
+    {
+      "start_m": 5178560,
+      "len_m": 200,
+      "grad_permille": -1.7,
+      "confidence": "legacy_ek_unverified"
+    },
+    {
+      "start_m": 5178760,
+      "len_m": 200,
+      "grad_permille": -9.2,
+      "confidence": "legacy_ek_unverified"
+    },
+    {
+      "start_m": 5178960,
+      "len_m": 449,
+      "grad_permille": -8,
+      "confidence": "legacy_ek_unverified"
+    },
+    {
+      "start_m": 5179409,
+      "len_m": 250,
+      "grad_permille": -9.5,
+      "confidence": "legacy_ek_unverified"
+    },
+    {
+      "start_m": 5179659,
+      "len_m": 250,
+      "grad_permille": 0,
+      "confidence": "legacy_ek_unverified"
+    },
+    {
+      "start_m": 5179909,
+      "len_m": 467,
+      "grad_permille": 6,
+      "confidence": "legacy_ek_unverified"
+    },
+    {
+      "start_m": 5180376,
+      "len_m": 853,
+      "grad_permille": 0,
+      "confidence": "legacy_ek_unverified"
+    },
+    {
+      "start_m": 5181229,
+      "len_m": 630,
+      "grad_permille": 2,
+      "confidence": "legacy_ek_unverified"
+    },
+    {
+      "start_m": 5181859,
+      "len_m": 400,
+      "grad_permille": 0,
+      "confidence": "legacy_ek_unverified"
+    },
+    {
+      "start_m": 5182259,
+      "len_m": 1000,
+      "grad_permille": 1.5,
+      "confidence": "legacy_ek_unverified"
+    },
+    {
+      "start_m": 5183259,
+      "len_m": 744,
+      "grad_permille": 1,
+      "confidence": "legacy_ek_unverified"
+    },
+    {
+      "start_m": 5184003,
+      "len_m": 356,
+      "grad_permille": 3.5,
+      "confidence": "legacy_ek_unverified"
+    },
+    {
+      "start_m": 5184359,
+      "len_m": 617,
+      "grad_permille": 0,
+      "confidence": "legacy_ek_unverified"
+    },
+    {
+      "start_m": 5184976,
+      "len_m": 483,
+      "grad_permille": 0.5,
+      "confidence": "legacy_ek_unverified"
+    },
+    {
+      "start_m": 5185459,
+      "len_m": 1354,
+      "grad_permille": 0,
+      "confidence": "legacy_ek_unverified"
+    },
+    {
+      "start_m": 5186813,
+      "len_m": 446,
+      "grad_permille": 7,
+      "confidence": "legacy_ek_unverified"
+    },
+    {
+      "start_m": 5187259,
+      "len_m": 976,
+      "grad_permille": 8,
+      "confidence": "legacy_ek_unverified"
+    },
+    {
+      "start_m": 5188235,
+      "len_m": 1121,
+      "grad_permille": 7.8,
+      "confidence": "legacy_ek_unverified"
+    },
+    {
+      "start_m": 5189356,
+      "len_m": 300,
+      "grad_permille": 0,
+      "confidence": "legacy_ek_unverified"
+    },
+    {
+      "start_m": 5189656,
+      "len_m": 340,
+      "grad_permille": -2,
+      "confidence": "legacy_ek_unverified"
+    },
+    {
+      "start_m": 5189996,
+      "len_m": 1365,
+      "grad_permille": -1.4,
+      "confidence": "legacy_ek_unverified"
+    },
+    {
+      "start_m": 5191361,
+      "len_m": 595,
+      "grad_permille": -4.8,
+      "confidence": "legacy_ek_unverified"
+    },
+    {
+      "start_m": 5191956,
+      "len_m": 672,
+      "grad_permille": -4,
+      "confidence": "legacy_ek_unverified"
+    },
+    {
+      "start_m": 5192628,
+      "len_m": 600,
+      "grad_permille": -8,
+      "confidence": "legacy_ek_unverified"
+    },
+    {
+      "start_m": 5193228,
+      "len_m": 378,
+      "grad_permille": -2,
+      "confidence": "legacy_ek_unverified"
+    },
+    {
+      "start_m": 5193606,
+      "len_m": 650,
+      "grad_permille": 0,
+      "confidence": "legacy_ek_unverified"
+    },
+    {
+      "start_m": 5194256,
+      "len_m": 470,
+      "grad_permille": 0.3,
+      "confidence": "legacy_ek_unverified"
+    },
+    {
+      "start_m": 5194726,
+      "len_m": 943,
+      "grad_permille": 0,
+      "confidence": "legacy_ek_unverified"
+    },
+    {
+      "start_m": 5195669,
+      "len_m": 360,
+      "grad_permille": 1,
+      "confidence": "legacy_ek_unverified"
+    },
+    {
+      "start_m": 5196029,
+      "len_m": 1100,
+      "grad_permille": 9,
+      "confidence": "legacy_ek_unverified"
+    },
+    {
+      "start_m": 5197129,
+      "len_m": 378,
+      "grad_permille": 6.9,
+      "confidence": "legacy_ek_unverified"
+    },
+    {
+      "start_m": 5197507,
+      "len_m": 493,
+      "grad_permille": -0.7,
+      "confidence": "legacy_ek_unverified"
+    }
+  ],
+  "stations": [],
+  "signals": [],
+  "whistle_points": [],
+  "speed": {
+    "established": null,
+    "permanent_restrictions": [],
+    "temporary_warnings": [],
+    "source": "manual_required"
+  },
+  "flags_for_review": [
+    "Импортировано из пользовательской ЭК приложения «Блокнот машиниста» 0.6.9; профиль, объекты и GPS-геометрия не сверены с официальной режимной картой.",
+    "Ограничения скорости из старого XML намеренно не перенесены: их требуется внести вручную по действующим документам.",
+    "Направление движения и принадлежность GPS-сектора требуют ручной проверки.",
+    "При разборе исходника применены безопасные числовые исправления/отбраковка: 2."
+  ],
+  "provenance": [
+    {
+      "kind": "legacy_ek_archive",
+      "file_name": "Вихоревка - Гыршелун(+ Саянская).zip",
+      "sha256": "1ebaf4e6b591e164a9157efc870187cf2ae196399244a69892bdbccbde92ed19",
+      "source_application": "Блокнот машиниста 0.6.9",
+      "role": "non_authoritative_import_seed"
+    }
+  ],
+  "runtime": {
+    "coordinate_unit": "m",
+    "coordinate_kind": "official_railway_chainage",
+    "coordinate_offset_m": -1000,
+    "movement_order": "ascending",
+    "default_path_id": "ek069-vikhorevka-gyrshelun-sayanskaya-s28-path",
+    "route_legs": [
+      {
+        "path_id": "ek069-vikhorevka-gyrshelun-sayanskaya-s28-path",
+        "sector": 28,
+        "from_chainage_m": 5178560,
+        "to_chainage_m": 5198000
+      }
+    ],
+    "profile_status": "legacy_ek_unverified",
+    "profile_coverage": [
+      {
+        "start_m": 5178560,
+        "end_m": 5198000
+      }
+    ],
+    "profile_gaps": [],
+    "profile_applies_both_directions": false
+  },
+  "geometry": {
+    "status": "draft_from_legacy_ek",
+    "source": "Вихоревка - Гыршелун(+ Саянская).zip",
+    "paths": [
+      {
+        "path_id": "ek069-vikhorevka-gyrshelun-sayanskaya-s28-path",
+        "sector": 28,
+        "points": [
+          {
+            "lat": 52.332815,
+            "lon": 104.219521,
+            "sector": 28,
+            "path_id": "ek069-vikhorevka-gyrshelun-sayanskaya-s28-path",
+            "ordinate": 5177560,
+            "chainage_m": 5178560
+          },
+          {
+            "lat": 52.329809,
+            "lon": 104.22366,
+            "sector": 28,
+            "path_id": "ek069-vikhorevka-gyrshelun-sayanskaya-s28-path",
+            "ordinate": 5178000,
+            "chainage_m": 5179000
+          },
+          {
+            "lat": 52.329063,
+            "lon": 104.224442,
+            "sector": 28,
+            "path_id": "ek069-vikhorevka-gyrshelun-sayanskaya-s28-path",
+            "ordinate": 5178100,
+            "chainage_m": 5179100
+          },
+          {
+            "lat": 52.321578,
+            "lon": 104.228457,
+            "sector": 28,
+            "path_id": "ek069-vikhorevka-gyrshelun-sayanskaya-s28-path",
+            "ordinate": 5179000,
+            "chainage_m": 5180000
+          },
+          {
+            "lat": 52.320594,
+            "lon": 104.228054,
+            "sector": 28,
+            "path_id": "ek069-vikhorevka-gyrshelun-sayanskaya-s28-path",
+            "ordinate": 5179100,
+            "chainage_m": 5180100
+          },
+          {
+            "lat": 52.318923,
+            "lon": 104.227127,
+            "sector": 28,
+            "path_id": "ek069-vikhorevka-gyrshelun-sayanskaya-s28-path",
+            "ordinate": 5179300,
+            "chainage_m": 5180300
+          },
+          {
+            "lat": 52.317629,
+            "lon": 104.225104,
+            "sector": 28,
+            "path_id": "ek069-vikhorevka-gyrshelun-sayanskaya-s28-path",
+            "ordinate": 5179500,
+            "chainage_m": 5180500
+          },
+          {
+            "lat": 52.317429,
+            "lon": 104.217987,
+            "sector": 28,
+            "path_id": "ek069-vikhorevka-gyrshelun-sayanskaya-s28-path",
+            "ordinate": 5180000,
+            "chainage_m": 5181000
+          },
+          {
+            "lat": 52.31581,
+            "lon": 104.20378,
+            "sector": 28,
+            "path_id": "ek069-vikhorevka-gyrshelun-sayanskaya-s28-path",
+            "ordinate": 5181000,
+            "chainage_m": 5182000
+          },
+          {
+            "lat": 52.312712,
+            "lon": 104.19011,
+            "sector": 28,
+            "path_id": "ek069-vikhorevka-gyrshelun-sayanskaya-s28-path",
+            "ordinate": 5182000,
+            "chainage_m": 5183000
+          },
+          {
+            "lat": 52.307392,
+            "lon": 104.178661,
+            "sector": 28,
+            "path_id": "ek069-vikhorevka-gyrshelun-sayanskaya-s28-path",
+            "ordinate": 5183000,
+            "chainage_m": 5184000
+          },
+          {
+            "lat": 52.300699,
+            "lon": 104.169036,
+            "sector": 28,
+            "path_id": "ek069-vikhorevka-gyrshelun-sayanskaya-s28-path",
+            "ordinate": 5184000,
+            "chainage_m": 5185000
+          },
+          {
+            "lat": 52.29396,
+            "lon": 104.159345,
+            "sector": 28,
+            "path_id": "ek069-vikhorevka-gyrshelun-sayanskaya-s28-path",
+            "ordinate": 5185000,
+            "chainage_m": 5186000
+          },
+          {
+            "lat": 52.288095,
+            "lon": 104.148414,
+            "sector": 28,
+            "path_id": "ek069-vikhorevka-gyrshelun-sayanskaya-s28-path",
+            "ordinate": 5186000,
+            "chainage_m": 5187000
+          },
+          {
+            "lat": 52.289145,
+            "lon": 104.134012,
+            "sector": 28,
+            "path_id": "ek069-vikhorevka-gyrshelun-sayanskaya-s28-path",
+            "ordinate": 5187000,
+            "chainage_m": 5188000
+          },
+          {
+            "lat": 52.289668,
+            "lon": 104.126647,
+            "sector": 28,
+            "path_id": "ek069-vikhorevka-gyrshelun-sayanskaya-s28-path",
+            "ordinate": 5187500,
+            "chainage_m": 5188500
+          },
+          {
+            "lat": 52.287637,
+            "lon": 104.120412,
+            "sector": 28,
+            "path_id": "ek069-vikhorevka-gyrshelun-sayanskaya-s28-path",
+            "ordinate": 5188000,
+            "chainage_m": 5189000
+          },
+          {
+            "lat": 52.280759,
+            "lon": 104.110965,
+            "sector": 28,
+            "path_id": "ek069-vikhorevka-gyrshelun-sayanskaya-s28-path",
+            "ordinate": 5189000,
+            "chainage_m": 5190000
+          },
+          {
+            "lat": 52.273886,
+            "lon": 104.10155,
+            "sector": 28,
+            "path_id": "ek069-vikhorevka-gyrshelun-sayanskaya-s28-path",
+            "ordinate": 5190000,
+            "chainage_m": 5191000
+          },
+          {
+            "lat": 52.269737,
+            "lon": 104.095908,
+            "sector": 28,
+            "path_id": "ek069-vikhorevka-gyrshelun-sayanskaya-s28-path",
+            "ordinate": 5190600,
+            "chainage_m": 5191600
+          },
+          {
+            "lat": 52.266398,
+            "lon": 104.095153,
+            "sector": 28,
+            "path_id": "ek069-vikhorevka-gyrshelun-sayanskaya-s28-path",
+            "ordinate": 5191000,
+            "chainage_m": 5192000
+          },
+          {
+            "lat": 52.2587,
+            "lon": 104.101303,
+            "sector": 28,
+            "path_id": "ek069-vikhorevka-gyrshelun-sayanskaya-s28-path",
+            "ordinate": 5192000,
+            "chainage_m": 5193000
+          },
+          {
+            "lat": 52.250361,
+            "lon": 104.108076,
+            "sector": 28,
+            "path_id": "ek069-vikhorevka-gyrshelun-sayanskaya-s28-path",
+            "ordinate": 5193000,
+            "chainage_m": 5194000
+          },
+          {
+            "lat": 52.242611,
+            "lon": 104.114366,
+            "sector": 28,
+            "path_id": "ek069-vikhorevka-gyrshelun-sayanskaya-s28-path",
+            "ordinate": 5194000,
+            "chainage_m": 5195000
+          },
+          {
+            "lat": 52.236071,
+            "lon": 104.119609,
+            "sector": 28,
+            "path_id": "ek069-vikhorevka-gyrshelun-sayanskaya-s28-path",
+            "ordinate": 5194800,
+            "chainage_m": 5195800
+          },
+          {
+            "lat": 52.234301,
+            "lon": 104.119976,
+            "sector": 28,
+            "path_id": "ek069-vikhorevka-gyrshelun-sayanskaya-s28-path",
+            "ordinate": 5195000,
+            "chainage_m": 5196000
+          },
+          {
+            "lat": 52.227405,
+            "lon": 104.1157,
+            "sector": 28,
+            "path_id": "ek069-vikhorevka-gyrshelun-sayanskaya-s28-path",
+            "ordinate": 5196000,
+            "chainage_m": 5197000
+          },
+          {
+            "lat": 52.217933,
+            "lon": 104.109674,
+            "sector": 28,
+            "path_id": "ek069-vikhorevka-gyrshelun-sayanskaya-s28-path",
+            "ordinate": 5197000,
+            "chainage_m": 5198000
+          }
+        ]
+      }
+    ]
+  }
+}

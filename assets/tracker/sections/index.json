@@ -1,6 +1,6 @@
 {
   "schema_version": "1.0",
-  "generated_at": "2026-07-10",
+  "generated_at": "2026-08-30",
   "railway": {
     "id": "dvost",
     "name": "Дальневосточная железная дорога"
@@ -82,6 +82,721 @@
       "km_end": 17,
       "profile_status": "pdf_verified",
       "geometry_status": "draft_from_legacy_centerline"
+    },
+    {
+      "id": "ek069-vikhorevka-gyrshelun-sayanskaya-s29",
+      "file": "ek069-vikhorevka-gyrshelun-sayanskaya-s29.json",
+      "section_name": "Вихоревка — Гыршелун (+ Саянская) — сектор 29",
+      "status": "draft",
+      "direction": "требует проверки",
+      "km_start": 5781,
+      "km_end": 8061.4,
+      "profile_status": "legacy_ek_unverified",
+      "geometry_status": "draft_from_legacy_ek"
+    },
+    {
+      "id": "ek069-vikhorevka-gyrshelun-sayanskaya-s18",
+      "file": "ek069-vikhorevka-gyrshelun-sayanskaya-s18.json",
+      "section_name": "Вихоревка — Гыршелун (+ Саянская) — сектор 18",
+      "status": "draft",
+      "direction": "требует проверки",
+      "km_start": 4515.657,
+      "km_end": 5781,
+      "profile_status": "legacy_ek_unverified",
+      "geometry_status": "draft_from_legacy_ek"
+    },
+    {
+      "id": "ek069-vikhorevka-gyrshelun-sayanskaya-s39",
+      "file": "ek069-vikhorevka-gyrshelun-sayanskaya-s39.json",
+      "section_name": "Вихоревка — Гыршелун (+ Саянская) — сектор 39",
+      "status": "draft",
+      "direction": "требует проверки",
+      "km_start": 8528.8,
+      "km_end": 9289.4,
+      "profile_status": "legacy_ek_unverified",
+      "geometry_status": "draft_from_legacy_ek"
+    },
+    {
+      "id": "ek069-vikhorevka-gyrshelun-sayanskaya-s38",
+      "file": "ek069-vikhorevka-gyrshelun-sayanskaya-s38.json",
+      "section_name": "Вихоревка — Гыршелун (+ Саянская) — сектор 38",
+      "status": "draft",
+      "direction": "требует проверки",
+      "km_start": 8061,
+      "km_end": 8537.6,
+      "profile_status": "legacy_ek_unverified",
+      "geometry_status": "draft_from_legacy_ek"
+    },
+    {
+      "id": "ek069-vikhorevka-gyrshelun-sayanskaya-s2",
+      "file": "ek069-vikhorevka-gyrshelun-sayanskaya-s2.json",
+      "section_name": "Вихоревка — Гыршелун (+ Саянская) — сектор 2",
+      "status": "draft",
+      "direction": "требует проверки",
+      "km_start": 69,
+      "km_end": 1034.048,
+      "profile_status": "legacy_ek_unverified",
+      "geometry_status": "draft_from_legacy_ek"
+    },
+    {
+      "id": "ek069-vikhorevka-gyrshelun-sayanskaya-s12",
+      "file": "ek069-vikhorevka-gyrshelun-sayanskaya-s12.json",
+      "section_name": "Вихоревка — Гыршелун (+ Саянская) — сектор 12",
+      "status": "draft",
+      "direction": "требует проверки",
+      "km_start": 4.2,
+      "km_end": 1354.2,
+      "profile_status": "legacy_ek_unverified",
+      "geometry_status": "draft_from_legacy_ek"
+    },
+    {
+      "id": "ek069-vikhorevka-gyrshelun-sayanskaya-s28",
+      "file": "ek069-vikhorevka-gyrshelun-sayanskaya-s28.json",
+      "section_name": "Вихоревка — Гыршелун (+ Саянская) — сектор 28",
+      "status": "draft",
+      "direction": "требует проверки",
+      "km_start": 5178.56,
+      "km_end": 5198,
+      "profile_status": "legacy_ek_unverified",
+      "geometry_status": "draft_from_legacy_ek"
+    },
+    {
+      "id": "ek069-vladivostok-obluchye-s4",
+      "file": "ek069-vladivostok-obluchye-s4.json",
+      "section_name": "Владивосток — Облучье — сектор 4",
+      "status": "draft",
+      "direction": "требует проверки",
+      "km_start": 5781,
+      "km_end": 8061.4,
+      "profile_status": "legacy_ek_unverified",
+      "geometry_status": "draft_from_legacy_ek"
+    },
+    {
+      "id": "ek069-vladivostok-obluchye-s1",
+      "file": "ek069-vladivostok-obluchye-s1.json",
+      "section_name": "Владивосток — Облучье — сектор 1",
+      "status": "draft",
+      "direction": "требует проверки",
+      "km_start": 4691,
+      "km_end": 5781,
+      "profile_status": "legacy_ek_unverified",
+      "geometry_status": "draft_from_legacy_ek"
+    },
+    {
+      "id": "ek069-vladivostok-obluchye-s13",
+      "file": "ek069-vladivostok-obluchye-s13.json",
+      "section_name": "Владивосток — Облучье — сектор 13",
+      "status": "draft",
+      "direction": "требует проверки",
+      "km_start": 8528.8,
+      "km_end": 9289.4,
+      "profile_status": "legacy_ek_unverified",
+      "geometry_status": "draft_from_legacy_ek"
+    },
+    {
+      "id": "ek069-vladivostok-obluchye-s12",
+      "file": "ek069-vladivostok-obluchye-s12.json",
+      "section_name": "Владивосток — Облучье — сектор 12",
+      "status": "draft",
+      "direction": "требует проверки",
+      "km_start": 8061,
+      "km_end": 8538,
+      "profile_status": "legacy_ek_unverified",
+      "geometry_status": "draft_from_legacy_ek"
+    },
+    {
+      "id": "ek069-vladivostok-obluchye-s19",
+      "file": "ek069-vladivostok-obluchye-s19.json",
+      "section_name": "Владивосток — Облучье — сектор 19",
+      "status": "draft",
+      "direction": "требует проверки",
+      "km_start": 8598.952,
+      "km_end": 8615.154,
+      "profile_status": "legacy_ek_unverified",
+      "geometry_status": "draft_from_legacy_ek"
+    },
+    {
+      "id": "ek069-vladivostok-obluchye-s20",
+      "file": "ek069-vladivostok-obluchye-s20.json",
+      "section_name": "Владивосток — Облучье — сектор 20",
+      "status": "draft",
+      "direction": "требует проверки",
+      "km_start": 8647,
+      "km_end": 8653.9,
+      "profile_status": "legacy_ek_unverified",
+      "geometry_status": "draft_from_legacy_ek"
+    },
+    {
+      "id": "ek069-vladivostok-obluchye-s23",
+      "file": "ek069-vladivostok-obluchye-s23.json",
+      "section_name": "Владивосток — Облучье — сектор 23",
+      "status": "draft",
+      "direction": "требует проверки",
+      "km_start": 1.528,
+      "km_end": 11.356,
+      "profile_status": "legacy_ek_unverified",
+      "geometry_status": "draft_from_legacy_ek"
+    },
+    {
+      "id": "ek069-vladivostok-obluchye-s25",
+      "file": "ek069-vladivostok-obluchye-s25.json",
+      "section_name": "Владивосток — Облучье — сектор 25",
+      "status": "draft",
+      "direction": "требует проверки",
+      "km_start": 1.469,
+      "km_end": 27.798,
+      "profile_status": "legacy_ek_unverified",
+      "geometry_status": "draft_from_legacy_ek"
+    },
+    {
+      "id": "ek069-vladivostok-obluchye-s26",
+      "file": "ek069-vladivostok-obluchye-s26.json",
+      "section_name": "Владивосток — Облучье — сектор 26",
+      "status": "draft",
+      "direction": "требует проверки",
+      "km_start": 9109.634,
+      "km_end": 9113.61,
+      "profile_status": "legacy_ek_unverified",
+      "geometry_status": "draft_from_legacy_ek"
+    },
+    {
+      "id": "ek069-vladivostok-obluchye-s27",
+      "file": "ek069-vladivostok-obluchye-s27.json",
+      "section_name": "Владивосток — Облучье — сектор 27",
+      "status": "draft",
+      "direction": "требует проверки",
+      "km_start": 1.625,
+      "km_end": 190,
+      "profile_status": "legacy_ek_unverified",
+      "geometry_status": "draft_from_legacy_ek"
+    },
+    {
+      "id": "ek069-voynovka-yekaterinburg-s1",
+      "file": "ek069-voynovka-yekaterinburg-s1.json",
+      "section_name": "Войновка — Екатеринбург — сектор 1",
+      "status": "draft",
+      "direction": "требует проверки",
+      "km_start": 1189,
+      "km_end": 2432,
+      "profile_status": "legacy_ek_unverified",
+      "geometry_status": "draft_from_legacy_ek"
+    },
+    {
+      "id": "ek069-irkutsk-slyudyanka-s18",
+      "file": "ek069-irkutsk-slyudyanka-s18.json",
+      "section_name": "Иркутск — Слюдянка — сектор 18",
+      "status": "draft",
+      "direction": "требует проверки",
+      "km_start": 4515.657,
+      "km_end": 5781,
+      "profile_status": "legacy_ek_unverified",
+      "geometry_status": "draft_from_legacy_ek"
+    },
+    {
+      "id": "ek069-irkutsk-slyudyanka-s28",
+      "file": "ek069-irkutsk-slyudyanka-s28.json",
+      "section_name": "Иркутск — Слюдянка — сектор 28",
+      "status": "draft",
+      "direction": "требует проверки",
+      "km_start": 5178.56,
+      "km_end": 5198,
+      "profile_status": "legacy_ek_unverified",
+      "geometry_status": "draft_from_legacy_ek"
+    },
+    {
+      "id": "ek069-komsomolsk-tche-9-s9",
+      "file": "ek069-komsomolsk-tche-9-s9.json",
+      "section_name": "Комсомольск, ТЧЭ-9 — сектор 9",
+      "status": "draft",
+      "direction": "требует проверки",
+      "km_start": 7,
+      "km_end": 354,
+      "profile_status": "legacy_ek_unverified",
+      "geometry_status": "draft_from_legacy_ek"
+    },
+    {
+      "id": "ek069-komsomolsk-tche-9-s10",
+      "file": "ek069-komsomolsk-tche-9-s10.json",
+      "section_name": "Комсомольск, ТЧЭ-9 — сектор 10",
+      "status": "draft",
+      "direction": "требует проверки",
+      "km_start": 332,
+      "km_end": 364,
+      "profile_status": "legacy_ek_unverified",
+      "geometry_status": "draft_from_legacy_ek"
+    },
+    {
+      "id": "ek069-komsomolsk-tche-9-s18",
+      "file": "ek069-komsomolsk-tche-9-s18.json",
+      "section_name": "Комсомольск, ТЧЭ-9 — сектор 18",
+      "status": "draft",
+      "direction": "требует проверки",
+      "km_start": 1862.2,
+      "km_end": 3816.036,
+      "profile_status": "legacy_ek_unverified",
+      "geometry_status": "draft_from_legacy_ek"
+    },
+    {
+      "id": "ek069-komsomolsk-tche-9-s12",
+      "file": "ek069-komsomolsk-tche-9-s12.json",
+      "section_name": "Комсомольск, ТЧЭ-9 — сектор 12",
+      "status": "draft",
+      "direction": "требует проверки",
+      "km_start": 1.001,
+      "km_end": 19,
+      "profile_status": "legacy_ek_unverified",
+      "geometry_status": "draft_from_legacy_ek"
+    },
+    {
+      "id": "ek069-komsomolsk-tche-9-s13",
+      "file": "ek069-komsomolsk-tche-9-s13.json",
+      "section_name": "Комсомольск, ТЧЭ-9 — сектор 13",
+      "status": "draft",
+      "direction": "требует проверки",
+      "km_start": 1,
+      "km_end": 469,
+      "profile_status": "legacy_ek_unverified",
+      "geometry_status": "draft_from_legacy_ek"
+    },
+    {
+      "id": "ek069-komsomolsk-tche-9-s14",
+      "file": "ek069-komsomolsk-tche-9-s14.json",
+      "section_name": "Комсомольск, ТЧЭ-9 — сектор 14",
+      "status": "draft",
+      "direction": "требует проверки",
+      "km_start": 183,
+      "km_end": 208.1,
+      "profile_status": "legacy_ek_unverified",
+      "geometry_status": "draft_from_legacy_ek"
+    },
+    {
+      "id": "ek069-konosha-sosnogorsk-s22",
+      "file": "ek069-konosha-sosnogorsk-s22.json",
+      "section_name": "Коноша — Сосногорск — сектор 22",
+      "status": "draft",
+      "direction": "требует проверки",
+      "km_start": 706.841,
+      "km_end": 824,
+      "profile_status": "legacy_ek_unverified",
+      "geometry_status": "draft_from_legacy_ek"
+    },
+    {
+      "id": "ek069-konosha-sosnogorsk-s24",
+      "file": "ek069-konosha-sosnogorsk-s24.json",
+      "section_name": "Коноша — Сосногорск — сектор 24",
+      "status": "draft",
+      "direction": "требует проверки",
+      "km_start": 823,
+      "km_end": 2268,
+      "profile_status": "legacy_ek_unverified",
+      "geometry_status": "draft_from_legacy_ek"
+    },
+    {
+      "id": "ek069-mariinsk-irkutsk-s1",
+      "file": "ek069-mariinsk-irkutsk-s1.json",
+      "section_name": "Мариинск — Иркутск — сектор 1",
+      "status": "draft",
+      "direction": "требует проверки",
+      "km_start": 63.6,
+      "km_end": 1033.866,
+      "profile_status": "legacy_ek_unverified",
+      "geometry_status": "draft_from_legacy_ek"
+    },
+    {
+      "id": "ek069-mariinsk-irkutsk-s6",
+      "file": "ek069-mariinsk-irkutsk-s6.json",
+      "section_name": "Мариинск — Иркутск — сектор 6",
+      "status": "draft",
+      "direction": "требует проверки",
+      "km_start": 3710,
+      "km_end": 4515.6,
+      "profile_status": "legacy_ek_unverified",
+      "geometry_status": "draft_from_legacy_ek"
+    },
+    {
+      "id": "ek069-mariinsk-irkutsk-s7",
+      "file": "ek069-mariinsk-irkutsk-s7.json",
+      "section_name": "Мариинск — Иркутск — сектор 7",
+      "status": "draft",
+      "direction": "требует проверки",
+      "km_start": 6.772,
+      "km_end": 54.087,
+      "profile_status": "legacy_ek_unverified",
+      "geometry_status": "draft_from_legacy_ek"
+    },
+    {
+      "id": "ek069-mariinsk-irkutsk-s11",
+      "file": "ek069-mariinsk-irkutsk-s11.json",
+      "section_name": "Мариинск — Иркутск — сектор 11",
+      "status": "draft",
+      "direction": "требует проверки",
+      "km_start": 1.551,
+      "km_end": 38.408,
+      "profile_status": "legacy_ek_unverified",
+      "geometry_status": "draft_from_legacy_ek"
+    },
+    {
+      "id": "ek069-mariinsk-irkutsk-s17",
+      "file": "ek069-mariinsk-irkutsk-s17.json",
+      "section_name": "Мариинск — Иркутск — сектор 17",
+      "status": "draft",
+      "direction": "требует проверки",
+      "km_start": 2.204,
+      "km_end": 6.7,
+      "profile_status": "legacy_ek_unverified",
+      "geometry_status": "draft_from_legacy_ek"
+    },
+    {
+      "id": "ek069-mariinsk-irkutsk-s84",
+      "file": "ek069-mariinsk-irkutsk-s84.json",
+      "section_name": "Мариинск — Иркутск — сектор 84",
+      "status": "draft",
+      "direction": "требует проверки",
+      "km_start": 4,
+      "km_end": 12,
+      "profile_status": "legacy_ek_unverified",
+      "geometry_status": "draft_from_legacy_ek"
+    },
+    {
+      "id": "ek069-mariinsk-irkutsk-s24",
+      "file": "ek069-mariinsk-irkutsk-s24.json",
+      "section_name": "Мариинск — Иркутск — сектор 24",
+      "status": "draft",
+      "direction": "требует проверки",
+      "km_start": 1,
+      "km_end": 3.504,
+      "profile_status": "legacy_ek_unverified",
+      "geometry_status": "draft_from_legacy_ek"
+    },
+    {
+      "id": "ek069-mariinsk-irkutsk-s26",
+      "file": "ek069-mariinsk-irkutsk-s26.json",
+      "section_name": "Мариинск — Иркутск — сектор 26",
+      "status": "draft",
+      "direction": "требует проверки",
+      "km_start": 5,
+      "km_end": 1351,
+      "profile_status": "legacy_ek_unverified",
+      "geometry_status": "draft_from_legacy_ek"
+    },
+    {
+      "id": "ek069-mariinsk-irkutsk-s27",
+      "file": "ek069-mariinsk-irkutsk-s27.json",
+      "section_name": "Мариинск — Иркутск — сектор 27",
+      "status": "draft",
+      "direction": "требует проверки",
+      "km_start": 1351,
+      "km_end": 1471,
+      "profile_status": "legacy_ek_unverified",
+      "geometry_status": "draft_from_legacy_ek"
+    },
+    {
+      "id": "ek069-mariinsk-irkutsk-s32",
+      "file": "ek069-mariinsk-irkutsk-s32.json",
+      "section_name": "Мариинск — Иркутск — сектор 32",
+      "status": "draft",
+      "direction": "требует проверки",
+      "km_start": 4515.335,
+      "km_end": 5780,
+      "profile_status": "legacy_ek_unverified",
+      "geometry_status": "draft_from_legacy_ek"
+    },
+    {
+      "id": "ek069-mariinsk-irkutsk-s49",
+      "file": "ek069-mariinsk-irkutsk-s49.json",
+      "section_name": "Мариинск — Иркутск — сектор 49",
+      "status": "draft",
+      "direction": "требует проверки",
+      "km_start": 5781,
+      "km_end": 6447.592,
+      "profile_status": "legacy_ek_unverified",
+      "geometry_status": "draft_from_legacy_ek"
+    },
+    {
+      "id": "ek069-mariinsk-irkutsk-s70",
+      "file": "ek069-mariinsk-irkutsk-s70.json",
+      "section_name": "Мариинск — Иркутск — сектор 70",
+      "status": "draft",
+      "direction": "требует проверки",
+      "km_start": 8528.8,
+      "km_end": 9289.4,
+      "profile_status": "legacy_ek_unverified",
+      "geometry_status": "draft_from_legacy_ek"
+    },
+    {
+      "id": "ek069-mariinsk-irkutsk-s58",
+      "file": "ek069-mariinsk-irkutsk-s58.json",
+      "section_name": "Мариинск — Иркутск — сектор 58",
+      "status": "draft",
+      "direction": "требует проверки",
+      "km_start": 8063.2,
+      "km_end": 8537.6,
+      "profile_status": "legacy_ek_unverified",
+      "geometry_status": "draft_from_legacy_ek"
+    },
+    {
+      "id": "ek069-ruzhino-freight-s13",
+      "file": "ek069-ruzhino-freight-s13.json",
+      "section_name": "Ружино (грузовое движение) — сектор 13",
+      "status": "draft",
+      "direction": "требует проверки",
+      "km_start": 8528.8,
+      "km_end": 9289.4,
+      "profile_status": "legacy_ek_unverified",
+      "geometry_status": "draft_from_legacy_ek"
+    },
+    {
+      "id": "ek069-ruzhino-freight-s19",
+      "file": "ek069-ruzhino-freight-s19.json",
+      "section_name": "Ружино (грузовое движение) — сектор 19",
+      "status": "draft",
+      "direction": "требует проверки",
+      "km_start": 8598.952,
+      "km_end": 8615.154,
+      "profile_status": "legacy_ek_unverified",
+      "geometry_status": "draft_from_legacy_ek"
+    },
+    {
+      "id": "ek069-ruzhino-freight-s20",
+      "file": "ek069-ruzhino-freight-s20.json",
+      "section_name": "Ружино (грузовое движение) — сектор 20",
+      "status": "draft",
+      "direction": "требует проверки",
+      "km_start": 8647,
+      "km_end": 8653.9,
+      "profile_status": "legacy_ek_unverified",
+      "geometry_status": "draft_from_legacy_ek"
+    },
+    {
+      "id": "ek069-ruzhino-freight-s23",
+      "file": "ek069-ruzhino-freight-s23.json",
+      "section_name": "Ружино (грузовое движение) — сектор 23",
+      "status": "draft",
+      "direction": "требует проверки",
+      "km_start": 1.528,
+      "km_end": 11.356,
+      "profile_status": "legacy_ek_unverified",
+      "geometry_status": "draft_from_legacy_ek"
+    },
+    {
+      "id": "ek069-ruzhino-freight-s25",
+      "file": "ek069-ruzhino-freight-s25.json",
+      "section_name": "Ружино (грузовое движение) — сектор 25",
+      "status": "draft",
+      "direction": "требует проверки",
+      "km_start": 1.469,
+      "km_end": 27.798,
+      "profile_status": "legacy_ek_unverified",
+      "geometry_status": "draft_from_legacy_ek"
+    },
+    {
+      "id": "ek069-ruzhino-freight-s26",
+      "file": "ek069-ruzhino-freight-s26.json",
+      "section_name": "Ружино (грузовое движение) — сектор 26",
+      "status": "draft",
+      "direction": "требует проверки",
+      "km_start": 9109.634,
+      "km_end": 9113.61,
+      "profile_status": "legacy_ek_unverified",
+      "geometry_status": "draft_from_legacy_ek"
+    },
+    {
+      "id": "ek069-ruzhino-freight-s27",
+      "file": "ek069-ruzhino-freight-s27.json",
+      "section_name": "Ружино (грузовое движение) — сектор 27",
+      "status": "draft",
+      "direction": "требует проверки",
+      "km_start": 1.625,
+      "km_end": 190,
+      "profile_status": "legacy_ek_unverified",
+      "geometry_status": "draft_from_legacy_ek"
+    },
+    {
+      "id": "ek069-ruzhino-pass-8170-s11",
+      "file": "ek069-ruzhino-pass-8170-s11.json",
+      "section_name": "Ружино (пассажирское движение, 8170) — сектор 11",
+      "status": "draft",
+      "direction": "требует проверки",
+      "km_start": 8528.8,
+      "km_end": 9289.4,
+      "profile_status": "legacy_ek_unverified",
+      "geometry_status": "draft_from_legacy_ek"
+    },
+    {
+      "id": "ek069-ruzhino-pass-8170-s17",
+      "file": "ek069-ruzhino-pass-8170-s17.json",
+      "section_name": "Ружино (пассажирское движение, 8170) — сектор 17",
+      "status": "draft",
+      "direction": "требует проверки",
+      "km_start": 8598.952,
+      "km_end": 8615.154,
+      "profile_status": "legacy_ek_unverified",
+      "geometry_status": "draft_from_legacy_ek"
+    },
+    {
+      "id": "ek069-ruzhino-pass-8170-s18",
+      "file": "ek069-ruzhino-pass-8170-s18.json",
+      "section_name": "Ружино (пассажирское движение, 8170) — сектор 18",
+      "status": "draft",
+      "direction": "требует проверки",
+      "km_start": 8647,
+      "km_end": 8653.9,
+      "profile_status": "legacy_ek_unverified",
+      "geometry_status": "draft_from_legacy_ek"
+    },
+    {
+      "id": "ek069-ruzhino-pass-8170-s22",
+      "file": "ek069-ruzhino-pass-8170-s22.json",
+      "section_name": "Ружино (пассажирское движение, 8170) — сектор 22",
+      "status": "draft",
+      "direction": "требует проверки",
+      "km_start": 1.528,
+      "km_end": 13,
+      "profile_status": "legacy_ek_unverified",
+      "geometry_status": "draft_from_legacy_ek"
+    },
+    {
+      "id": "ek069-ruzhino-pass-8170-s23",
+      "file": "ek069-ruzhino-pass-8170-s23.json",
+      "section_name": "Ружино (пассажирское движение, 8170) — сектор 23",
+      "status": "draft",
+      "direction": "требует проверки",
+      "km_start": 1.469,
+      "km_end": 27.798,
+      "profile_status": "legacy_ek_unverified",
+      "geometry_status": "draft_from_legacy_ek"
+    },
+    {
+      "id": "ek069-ruzhino-pass-8170-s24",
+      "file": "ek069-ruzhino-pass-8170-s24.json",
+      "section_name": "Ружино (пассажирское движение, 8170) — сектор 24",
+      "status": "draft",
+      "direction": "требует проверки",
+      "km_start": 9109.634,
+      "km_end": 9113.61,
+      "profile_status": "legacy_ek_unverified",
+      "geometry_status": "draft_from_legacy_ek"
+    },
+    {
+      "id": "ek069-ruzhino-pass-8170-s25",
+      "file": "ek069-ruzhino-pass-8170-s25.json",
+      "section_name": "Ружино (пассажирское движение, 8170) — сектор 25",
+      "status": "draft",
+      "direction": "требует проверки",
+      "km_start": 1.625,
+      "km_end": 191.267,
+      "profile_status": "legacy_ek_unverified",
+      "geometry_status": "draft_from_legacy_ek"
+    },
+    {
+      "id": "ek069-taishet-gyrshelun-s29",
+      "file": "ek069-taishet-gyrshelun-s29.json",
+      "section_name": "Тайшет — Гыршелун (источник не тестировался) — сектор 29",
+      "status": "draft",
+      "direction": "требует проверки",
+      "km_start": 5781,
+      "km_end": 8061.4,
+      "profile_status": "legacy_ek_unverified",
+      "geometry_status": "draft_from_legacy_ek"
+    },
+    {
+      "id": "ek069-taishet-gyrshelun-s18",
+      "file": "ek069-taishet-gyrshelun-s18.json",
+      "section_name": "Тайшет — Гыршелун (источник не тестировался) — сектор 18",
+      "status": "draft",
+      "direction": "требует проверки",
+      "km_start": 4515.657,
+      "km_end": 5781,
+      "profile_status": "legacy_ek_unverified",
+      "geometry_status": "draft_from_legacy_ek"
+    },
+    {
+      "id": "ek069-taishet-gyrshelun-s39",
+      "file": "ek069-taishet-gyrshelun-s39.json",
+      "section_name": "Тайшет — Гыршелун (источник не тестировался) — сектор 39",
+      "status": "draft",
+      "direction": "требует проверки",
+      "km_start": 8528.8,
+      "km_end": 9289.4,
+      "profile_status": "legacy_ek_unverified",
+      "geometry_status": "draft_from_legacy_ek"
+    },
+    {
+      "id": "ek069-taishet-gyrshelun-s38",
+      "file": "ek069-taishet-gyrshelun-s38.json",
+      "section_name": "Тайшет — Гыршелун (источник не тестировался) — сектор 38",
+      "status": "draft",
+      "direction": "требует проверки",
+      "km_start": 8061,
+      "km_end": 8537.6,
+      "profile_status": "legacy_ek_unverified",
+      "geometry_status": "draft_from_legacy_ek"
+    },
+    {
+      "id": "ek069-taksimo-yuktali-freight-s18",
+      "file": "ek069-taksimo-yuktali-freight-s18.json",
+      "section_name": "Таксимо — Юктали (грузовое движение, EA70) — сектор 18",
+      "status": "draft",
+      "direction": "требует проверки",
+      "km_start": 1468,
+      "km_end": 1863,
+      "profile_status": "legacy_ek_unverified",
+      "geometry_status": "draft_from_legacy_ek"
+    },
+    {
+      "id": "ek069-taksimo-yuktali-freight-s19",
+      "file": "ek069-taksimo-yuktali-freight-s19.json",
+      "section_name": "Таксимо — Юктали (грузовое движение, EA70) — сектор 19",
+      "status": "draft",
+      "direction": "требует проверки",
+      "km_start": 1862,
+      "km_end": 3816.036,
+      "profile_status": "legacy_ek_unverified",
+      "geometry_status": "draft_from_legacy_ek"
+    },
+    {
+      "id": "ek069-tynda-verkhnezeysk-s18",
+      "file": "ek069-tynda-verkhnezeysk-s18.json",
+      "section_name": "Тында — Верхнезейск — сектор 18",
+      "status": "draft",
+      "direction": "требует проверки",
+      "km_start": 1468,
+      "km_end": 1863,
+      "profile_status": "legacy_ek_unverified",
+      "geometry_status": "draft_from_legacy_ek"
+    },
+    {
+      "id": "ek069-tynda-verkhnezeysk-s19",
+      "file": "ek069-tynda-verkhnezeysk-s19.json",
+      "section_name": "Тында — Верхнезейск — сектор 19",
+      "status": "draft",
+      "direction": "требует проверки",
+      "km_start": 1862,
+      "km_end": 3816.036,
+      "profile_status": "legacy_ek_unverified",
+      "geometry_status": "draft_from_legacy_ek"
+    },
+    {
+      "id": "ek069-tynda-komsomolsk-izvestkovaya-s18",
+      "file": "ek069-tynda-komsomolsk-izvestkovaya-s18.json",
+      "section_name": "Тында — Комсомольск — Известковая — сектор 18",
+      "status": "draft",
+      "direction": "требует проверки",
+      "km_start": 1468,
+      "km_end": 1863,
+      "profile_status": "legacy_ek_unverified",
+      "geometry_status": "draft_from_legacy_ek"
+    },
+    {
+      "id": "ek069-tynda-komsomolsk-izvestkovaya-s19",
+      "file": "ek069-tynda-komsomolsk-izvestkovaya-s19.json",
+      "section_name": "Тында — Комсомольск — Известковая — сектор 19",
+      "status": "draft",
+      "direction": "требует проверки",
+      "km_start": 1862,
+      "km_end": 3816.036,
+      "profile_status": "legacy_ek_unverified",
+      "geometry_status": "draft_from_legacy_ek"
     }
   ],
   "routes": [
@@ -163,6 +878,305 @@
       "flags_for_review": [
         "Последняя профильная страница заканчивается станцией Новый Мир, хотя титул файла заявляет КСМ",
         "После Пивани километраж сбрасывается; поэтому маршрут собран из отдельных section JSON"
+      ]
+    },
+    {
+      "id": "ek069-vikhorevka-gyrshelun-sayanskaya",
+      "name": "Вихоревка — Гыршелун (+ Саянская) (ЭК 0.6.9)",
+      "from": "Вихоревка",
+      "to": "Гыршелун",
+      "default_variant": "legacy-ek",
+      "variants": [
+        {
+          "id": "legacy-ek",
+          "name": "Импортированная ЭК (требует проверки)",
+          "section_ids": [
+            "ek069-vikhorevka-gyrshelun-sayanskaya-s29",
+            "ek069-vikhorevka-gyrshelun-sayanskaya-s18",
+            "ek069-vikhorevka-gyrshelun-sayanskaya-s39",
+            "ek069-vikhorevka-gyrshelun-sayanskaya-s38",
+            "ek069-vikhorevka-gyrshelun-sayanskaya-s2",
+            "ek069-vikhorevka-gyrshelun-sayanskaya-s12",
+            "ek069-vikhorevka-gyrshelun-sayanskaya-s28"
+          ]
+        }
+      ],
+      "flags_for_review": [
+        "Маршрут и порядок секторов восстановлены из старой ЭК и требуют ручной проверки."
+      ]
+    },
+    {
+      "id": "ek069-vladivostok-obluchye",
+      "name": "Владивосток — Облучье (ЭК 0.6.9)",
+      "from": "Владивосток",
+      "to": "Облучье",
+      "default_variant": "legacy-ek",
+      "variants": [
+        {
+          "id": "legacy-ek",
+          "name": "Импортированная ЭК (требует проверки)",
+          "section_ids": [
+            "ek069-vladivostok-obluchye-s4",
+            "ek069-vladivostok-obluchye-s1",
+            "ek069-vladivostok-obluchye-s13",
+            "ek069-vladivostok-obluchye-s12",
+            "ek069-vladivostok-obluchye-s19",
+            "ek069-vladivostok-obluchye-s20",
+            "ek069-vladivostok-obluchye-s23",
+            "ek069-vladivostok-obluchye-s25",
+            "ek069-vladivostok-obluchye-s26",
+            "ek069-vladivostok-obluchye-s27"
+          ]
+        }
+      ],
+      "flags_for_review": [
+        "Маршрут и порядок секторов восстановлены из старой ЭК и требуют ручной проверки."
+      ]
+    },
+    {
+      "id": "ek069-voynovka-yekaterinburg",
+      "name": "Войновка — Екатеринбург (ЭК 0.6.9)",
+      "from": "Войновка",
+      "to": "Екатеринбург",
+      "default_variant": "legacy-ek",
+      "variants": [
+        {
+          "id": "legacy-ek",
+          "name": "Импортированная ЭК (требует проверки)",
+          "section_ids": [
+            "ek069-voynovka-yekaterinburg-s1"
+          ]
+        }
+      ],
+      "flags_for_review": [
+        "Маршрут и порядок секторов восстановлены из старой ЭК и требуют ручной проверки."
+      ]
+    },
+    {
+      "id": "ek069-irkutsk-slyudyanka",
+      "name": "Иркутск — Слюдянка (ЭК 0.6.9)",
+      "from": "Иркутск",
+      "to": "Слюдянка",
+      "default_variant": "legacy-ek",
+      "variants": [
+        {
+          "id": "legacy-ek",
+          "name": "Импортированная ЭК (требует проверки)",
+          "section_ids": [
+            "ek069-irkutsk-slyudyanka-s18",
+            "ek069-irkutsk-slyudyanka-s28"
+          ]
+        }
+      ],
+      "flags_for_review": [
+        "Маршрут и порядок секторов восстановлены из старой ЭК и требуют ручной проверки."
+      ]
+    },
+    {
+      "id": "ek069-komsomolsk-tche-9",
+      "name": "Комсомольск, ТЧЭ-9 (ЭК 0.6.9)",
+      "from": "Комсомольск",
+      "to": "Комсомольск",
+      "default_variant": "legacy-ek",
+      "variants": [
+        {
+          "id": "legacy-ek",
+          "name": "Импортированная ЭК (требует проверки)",
+          "section_ids": [
+            "ek069-komsomolsk-tche-9-s9",
+            "ek069-komsomolsk-tche-9-s10",
+            "ek069-komsomolsk-tche-9-s18",
+            "ek069-komsomolsk-tche-9-s12",
+            "ek069-komsomolsk-tche-9-s13",
+            "ek069-komsomolsk-tche-9-s14"
+          ]
+        }
+      ],
+      "flags_for_review": [
+        "Маршрут и порядок секторов восстановлены из старой ЭК и требуют ручной проверки."
+      ]
+    },
+    {
+      "id": "ek069-konosha-sosnogorsk",
+      "name": "Коноша — Сосногорск (ЭК 0.6.9)",
+      "from": "Коноша",
+      "to": "Сосногорск",
+      "default_variant": "legacy-ek",
+      "variants": [
+        {
+          "id": "legacy-ek",
+          "name": "Импортированная ЭК (требует проверки)",
+          "section_ids": [
+            "ek069-konosha-sosnogorsk-s22",
+            "ek069-konosha-sosnogorsk-s24"
+          ]
+        }
+      ],
+      "flags_for_review": [
+        "Маршрут и порядок секторов восстановлены из старой ЭК и требуют ручной проверки."
+      ]
+    },
+    {
+      "id": "ek069-mariinsk-irkutsk",
+      "name": "Мариинск — Иркутск (ЭК 0.6.9)",
+      "from": "Мариинск",
+      "to": "Иркутск",
+      "default_variant": "legacy-ek",
+      "variants": [
+        {
+          "id": "legacy-ek",
+          "name": "Импортированная ЭК (требует проверки)",
+          "section_ids": [
+            "ek069-mariinsk-irkutsk-s1",
+            "ek069-mariinsk-irkutsk-s6",
+            "ek069-mariinsk-irkutsk-s7",
+            "ek069-mariinsk-irkutsk-s11",
+            "ek069-mariinsk-irkutsk-s17",
+            "ek069-mariinsk-irkutsk-s84",
+            "ek069-mariinsk-irkutsk-s24",
+            "ek069-mariinsk-irkutsk-s26",
+            "ek069-mariinsk-irkutsk-s27",
+            "ek069-mariinsk-irkutsk-s32",
+            "ek069-mariinsk-irkutsk-s49",
+            "ek069-mariinsk-irkutsk-s70",
+            "ek069-mariinsk-irkutsk-s58"
+          ]
+        }
+      ],
+      "flags_for_review": [
+        "Маршрут и порядок секторов восстановлены из старой ЭК и требуют ручной проверки."
+      ]
+    },
+    {
+      "id": "ek069-ruzhino-freight",
+      "name": "Ружино (грузовое движение) (ЭК 0.6.9)",
+      "from": "Ружино",
+      "to": "Ружино",
+      "default_variant": "legacy-ek",
+      "variants": [
+        {
+          "id": "legacy-ek",
+          "name": "Импортированная ЭК (требует проверки)",
+          "section_ids": [
+            "ek069-ruzhino-freight-s13",
+            "ek069-ruzhino-freight-s19",
+            "ek069-ruzhino-freight-s20",
+            "ek069-ruzhino-freight-s23",
+            "ek069-ruzhino-freight-s25",
+            "ek069-ruzhino-freight-s26",
+            "ek069-ruzhino-freight-s27"
+          ]
+        }
+      ],
+      "flags_for_review": [
+        "Маршрут и порядок секторов восстановлены из старой ЭК и требуют ручной проверки."
+      ]
+    },
+    {
+      "id": "ek069-ruzhino-pass-8170",
+      "name": "Ружино (пассажирское движение, 8170) (ЭК 0.6.9)",
+      "from": "Ружино",
+      "to": "Ружино",
+      "default_variant": "legacy-ek",
+      "variants": [
+        {
+          "id": "legacy-ek",
+          "name": "Импортированная ЭК (требует проверки)",
+          "section_ids": [
+            "ek069-ruzhino-pass-8170-s11",
+            "ek069-ruzhino-pass-8170-s17",
+            "ek069-ruzhino-pass-8170-s18",
+            "ek069-ruzhino-pass-8170-s22",
+            "ek069-ruzhino-pass-8170-s23",
+            "ek069-ruzhino-pass-8170-s24",
+            "ek069-ruzhino-pass-8170-s25"
+          ]
+        }
+      ],
+      "flags_for_review": [
+        "Маршрут и порядок секторов восстановлены из старой ЭК и требуют ручной проверки."
+      ]
+    },
+    {
+      "id": "ek069-taishet-gyrshelun",
+      "name": "Тайшет — Гыршелун (источник не тестировался) (ЭК 0.6.9)",
+      "from": "Тайшет",
+      "to": "Гыршелун",
+      "default_variant": "legacy-ek",
+      "variants": [
+        {
+          "id": "legacy-ek",
+          "name": "Импортированная ЭК (требует проверки)",
+          "section_ids": [
+            "ek069-taishet-gyrshelun-s29",
+            "ek069-taishet-gyrshelun-s18",
+            "ek069-taishet-gyrshelun-s39",
+            "ek069-taishet-gyrshelun-s38"
+          ]
+        }
+      ],
+      "flags_for_review": [
+        "Маршрут и порядок секторов восстановлены из старой ЭК и требуют ручной проверки."
+      ]
+    },
+    {
+      "id": "ek069-taksimo-yuktali-freight",
+      "name": "Таксимо — Юктали (грузовое движение, EA70) (ЭК 0.6.9)",
+      "from": "Таксимо",
+      "to": "Юктали",
+      "default_variant": "legacy-ek",
+      "variants": [
+        {
+          "id": "legacy-ek",
+          "name": "Импортированная ЭК (требует проверки)",
+          "section_ids": [
+            "ek069-taksimo-yuktali-freight-s18",
+            "ek069-taksimo-yuktali-freight-s19"
+          ]
+        }
+      ],
+      "flags_for_review": [
+        "Маршрут и порядок секторов восстановлены из старой ЭК и требуют ручной проверки."
+      ]
+    },
+    {
+      "id": "ek069-tynda-verkhnezeysk",
+      "name": "Тында — Верхнезейск (ЭК 0.6.9)",
+      "from": "Тында",
+      "to": "Верхнезейск",
+      "default_variant": "legacy-ek",
+      "variants": [
+        {
+          "id": "legacy-ek",
+          "name": "Импортированная ЭК (требует проверки)",
+          "section_ids": [
+            "ek069-tynda-verkhnezeysk-s18",
+            "ek069-tynda-verkhnezeysk-s19"
+          ]
+        }
+      ],
+      "flags_for_review": [
+        "Маршрут и порядок секторов восстановлены из старой ЭК и требуют ручной проверки."
+      ]
+    },
+    {
+      "id": "ek069-tynda-komsomolsk-izvestkovaya",
+      "name": "Тында — Комсомольск — Известковая (ЭК 0.6.9)",
+      "from": "Тында",
+      "to": "Известковая",
+      "default_variant": "legacy-ek",
+      "variants": [
+        {
+          "id": "legacy-ek",
+          "name": "Импортированная ЭК (требует проверки)",
+          "section_ids": [
+            "ek069-tynda-komsomolsk-izvestkovaya-s18",
+            "ek069-tynda-komsomolsk-izvestkovaya-s19"
+          ]
+        }
+      ],
+      "flags_for_review": [
+        "Маршрут и порядок секторов восстановлены из старой ЭК и требуют ручной проверки."
       ]
     }
   ]

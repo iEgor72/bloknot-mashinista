@@ -1,0 +1,309 @@
+{
+  "schema_version": "1.0",
+  "id": "ek069-mariinsk-irkutsk-s17",
+  "status": "draft",
+  "railway": {
+    "id": "cross-network",
+    "name": "Красноярская / Восточно-Сибирская железные дороги"
+  },
+  "section_name": "Мариинск — Иркутск — сектор 17",
+  "direction": "требует проверки",
+  "km_start": 2.204,
+  "km_end": 6.7,
+  "generator_format": "Б",
+  "elements": [
+    {
+      "start_m": 2204,
+      "len_m": 196,
+      "grad_permille": -6,
+      "confidence": "legacy_ek_unverified"
+    },
+    {
+      "start_m": 2400,
+      "len_m": 600,
+      "grad_permille": 4.4,
+      "confidence": "legacy_ek_unverified"
+    },
+    {
+      "start_m": 3000,
+      "len_m": 800,
+      "grad_permille": -8.2,
+      "confidence": "legacy_ek_unverified"
+    },
+    {
+      "start_m": 3800,
+      "len_m": 500,
+      "grad_permille": 5.3,
+      "confidence": "legacy_ek_unverified"
+    },
+    {
+      "start_m": 4300,
+      "len_m": 1200,
+      "grad_permille": -6,
+      "confidence": "legacy_ek_unverified"
+    },
+    {
+      "start_m": 5500,
+      "len_m": 1200,
+      "grad_permille": 8,
+      "confidence": "legacy_ek_unverified"
+    }
+  ],
+  "stations": [
+    {
+      "name": "УЯР",
+      "km": 2.204,
+      "sector": 17,
+      "confidence": "legacy_ek_unverified"
+    },
+    {
+      "name": "УЯР",
+      "km": 2.622,
+      "sector": 17,
+      "confidence": "legacy_ek_unverified"
+    },
+    {
+      "name": "БП 423",
+      "km": 6.415,
+      "sector": 17,
+      "confidence": "legacy_ek_unverified"
+    }
+  ],
+  "signals": [
+    {
+      "name": "НА",
+      "chainage_m": 2622,
+      "sector": 17,
+      "confidence": "legacy_ek_unverified",
+      "legacy_source": "1.xml"
+    },
+    {
+      "name": "6",
+      "chainage_m": 2627,
+      "sector": 17,
+      "confidence": "legacy_ek_unverified",
+      "legacy_source": "1n.xml"
+    },
+    {
+      "name": "4",
+      "chainage_m": 3530,
+      "sector": 17,
+      "confidence": "legacy_ek_unverified",
+      "legacy_source": "1n.xml"
+    },
+    {
+      "name": "1",
+      "chainage_m": 4650,
+      "sector": 17,
+      "confidence": "legacy_ek_unverified",
+      "legacy_source": "1.xml"
+    },
+    {
+      "name": "2",
+      "chainage_m": 4650,
+      "sector": 17,
+      "confidence": "legacy_ek_unverified",
+      "legacy_source": "1n.xml"
+    },
+    {
+      "name": "3",
+      "chainage_m": 5970,
+      "sector": 17,
+      "confidence": "legacy_ek_unverified",
+      "legacy_source": "1.xml"
+    },
+    {
+      "name": "ЧУ",
+      "chainage_m": 6415,
+      "sector": 17,
+      "confidence": "legacy_ek_unverified",
+      "legacy_source": "1n.xml"
+    }
+  ],
+  "whistle_points": [],
+  "speed": {
+    "established": null,
+    "permanent_restrictions": [],
+    "temporary_warnings": [],
+    "source": "manual_required"
+  },
+  "flags_for_review": [
+    "Импортировано из пользовательской ЭК приложения «Блокнот машиниста» 0.6.9; профиль, объекты и GPS-геометрия не сверены с официальной режимной картой.",
+    "Ограничения скорости из старого XML намеренно не перенесены: их требуется внести вручную по действующим документам.",
+    "Направление движения и принадлежность GPS-сектора требуют ручной проверки.",
+    "При разборе исходника применены безопасные числовые исправления/отбраковка: 4."
+  ],
+  "provenance": [
+    {
+      "kind": "legacy_ek_archive",
+      "file_name": "Мариинск-Иркутск(by SkripTal).zip",
+      "sha256": "500dbd4bd10119c3376fa0c026ac8ef32ab28a1eb67cd85fad57762dbd2d6c06",
+      "source_application": "Блокнот машиниста 0.6.9",
+      "role": "non_authoritative_import_seed"
+    }
+  ],
+  "runtime": {
+    "coordinate_unit": "m",
+    "coordinate_kind": "official_railway_chainage",
+    "coordinate_offset_m": -1000,
+    "movement_order": "ascending",
+    "default_path_id": "ek069-mariinsk-irkutsk-s17-path",
+    "route_legs": [
+      {
+        "path_id": "ek069-mariinsk-irkutsk-s17-path",
+        "sector": 17,
+        "from_chainage_m": 2204,
+        "to_chainage_m": 6700
+      }
+    ],
+    "profile_status": "legacy_ek_unverified",
+    "profile_coverage": [
+      {
+        "start_m": 2204,
+        "end_m": 6700
+      }
+    ],
+    "profile_gaps": [],
+    "profile_applies_both_directions": false
+  },
+  "geometry": {
+    "status": "draft_from_legacy_ek",
+    "source": "Мариинск-Иркутск(by SkripTal).zip",
+    "paths": [
+      {
+        "path_id": "ek069-mariinsk-irkutsk-s17-path",
+        "sector": 17,
+        "points": [
+          {
+            "lat": 55.812193,
+            "lon": 94.344651,
+            "sector": 17,
+            "path_id": "ek069-mariinsk-irkutsk-s17-path",
+            "ordinate": 1204,
+            "chainage_m": 2204
+          },
+          {
+            "lat": 55.817081,
+            "lon": 94.34853,
+            "sector": 17,
+            "path_id": "ek069-mariinsk-irkutsk-s17-path",
+            "ordinate": 1800,
+            "chainage_m": 2800
+          },
+          {
+            "lat": 55.81882,
+            "lon": 94.349458,
+            "sector": 17,
+            "path_id": "ek069-mariinsk-irkutsk-s17-path",
+            "ordinate": 2000,
+            "chainage_m": 3000
+          },
+          {
+            "lat": 55.820587,
+            "lon": 94.349609,
+            "sector": 17,
+            "path_id": "ek069-mariinsk-irkutsk-s17-path",
+            "ordinate": 2200,
+            "chainage_m": 3200
+          },
+          {
+            "lat": 55.827671,
+            "lon": 94.347641,
+            "sector": 17,
+            "path_id": "ek069-mariinsk-irkutsk-s17-path",
+            "ordinate": 3000,
+            "chainage_m": 4000
+          },
+          {
+            "lat": 55.833088,
+            "lon": 94.347529,
+            "sector": 17,
+            "path_id": "ek069-mariinsk-irkutsk-s17-path",
+            "ordinate": 3600,
+            "chainage_m": 4600
+          },
+          {
+            "lat": 55.834851,
+            "lon": 94.34791,
+            "sector": 17,
+            "path_id": "ek069-mariinsk-irkutsk-s17-path",
+            "ordinate": 3800,
+            "chainage_m": 4800
+          },
+          {
+            "lat": 55.836321,
+            "lon": 94.34962,
+            "sector": 17,
+            "path_id": "ek069-mariinsk-irkutsk-s17-path",
+            "ordinate": 4000,
+            "chainage_m": 5000
+          },
+          {
+            "lat": 55.836857,
+            "lon": 94.350934,
+            "sector": 17,
+            "path_id": "ek069-mariinsk-irkutsk-s17-path",
+            "ordinate": 4100,
+            "chainage_m": 5100
+          },
+          {
+            "lat": 55.837176,
+            "lon": 94.352368,
+            "sector": 17,
+            "path_id": "ek069-mariinsk-irkutsk-s17-path",
+            "ordinate": 4200,
+            "chainage_m": 5200
+          },
+          {
+            "lat": 55.837353,
+            "lon": 94.353979,
+            "sector": 17,
+            "path_id": "ek069-mariinsk-irkutsk-s17-path",
+            "ordinate": 4300,
+            "chainage_m": 5300
+          },
+          {
+            "lat": 55.837672,
+            "lon": 94.357076,
+            "sector": 17,
+            "path_id": "ek069-mariinsk-irkutsk-s17-path",
+            "ordinate": 4500,
+            "chainage_m": 5500
+          },
+          {
+            "lat": 55.838888,
+            "lon": 94.364698,
+            "sector": 17,
+            "path_id": "ek069-mariinsk-irkutsk-s17-path",
+            "ordinate": 5000,
+            "chainage_m": 6000
+          },
+          {
+            "lat": 55.840661,
+            "lon": 94.368196,
+            "sector": 17,
+            "path_id": "ek069-mariinsk-irkutsk-s17-path",
+            "ordinate": 5300,
+            "chainage_m": 6300
+          },
+          {
+            "lat": 55.841278,
+            "lon": 94.372759,
+            "sector": 17,
+            "path_id": "ek069-mariinsk-irkutsk-s17-path",
+            "ordinate": 5600,
+            "chainage_m": 6600
+          },
+          {
+            "lat": 55.841115,
+            "lon": 94.374377,
+            "sector": 17,
+            "path_id": "ek069-mariinsk-irkutsk-s17-path",
+            "ordinate": 5700,
+            "chainage_m": 6700
+          }
+        ]
+      }
+    ]
+  }
+}

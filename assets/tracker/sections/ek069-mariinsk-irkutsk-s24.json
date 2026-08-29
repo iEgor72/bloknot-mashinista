@@ -1,0 +1,181 @@
+{
+  "schema_version": "1.0",
+  "id": "ek069-mariinsk-irkutsk-s24",
+  "status": "draft",
+  "railway": {
+    "id": "cross-network",
+    "name": "Красноярская / Восточно-Сибирская железные дороги"
+  },
+  "section_name": "Мариинск — Иркутск — сектор 24",
+  "direction": "требует проверки",
+  "km_start": 1,
+  "km_end": 3.504,
+  "generator_format": "Б",
+  "elements": [
+    {
+      "start_m": 1000,
+      "len_m": 700,
+      "grad_permille": 0.5,
+      "confidence": "legacy_ek_unverified"
+    },
+    {
+      "start_m": 1700,
+      "len_m": 700,
+      "grad_permille": -6,
+      "confidence": "legacy_ek_unverified"
+    },
+    {
+      "start_m": 2400,
+      "len_m": 600,
+      "grad_permille": 4.4,
+      "confidence": "legacy_ek_unverified"
+    },
+    {
+      "start_m": 3000,
+      "len_m": 504,
+      "grad_permille": -8.2,
+      "confidence": "legacy_ek_unverified"
+    }
+  ],
+  "stations": [
+    {
+      "name": "ТАИШЕТ",
+      "km": 1.391,
+      "sector": 24,
+      "confidence": "legacy_ek_unverified"
+    },
+    {
+      "name": "ТАИШЕТ",
+      "km": 1.537,
+      "sector": 24,
+      "confidence": "legacy_ek_unverified"
+    },
+    {
+      "name": "ТАИШЕТ",
+      "km": 3.073,
+      "sector": 24,
+      "confidence": "legacy_ek_unverified"
+    },
+    {
+      "name": "ТАИШЕТ",
+      "km": 3.504,
+      "sector": 24,
+      "confidence": "legacy_ek_unverified"
+    }
+  ],
+  "signals": [
+    {
+      "name": "НМ4Г",
+      "chainage_m": 1537,
+      "sector": 24,
+      "confidence": "legacy_ek_unverified",
+      "legacy_source": "2n.xml"
+    },
+    {
+      "name": "ЧЛ4",
+      "chainage_m": 3073,
+      "sector": 24,
+      "confidence": "legacy_ek_unverified",
+      "legacy_source": "2.xml"
+    }
+  ],
+  "whistle_points": [],
+  "speed": {
+    "established": null,
+    "permanent_restrictions": [],
+    "temporary_warnings": [],
+    "source": "manual_required"
+  },
+  "flags_for_review": [
+    "Импортировано из пользовательской ЭК приложения «Блокнот машиниста» 0.6.9; профиль, объекты и GPS-геометрия не сверены с официальной режимной картой.",
+    "Ограничения скорости из старого XML намеренно не перенесены: их требуется внести вручную по действующим документам.",
+    "Направление движения и принадлежность GPS-сектора требуют ручной проверки.",
+    "При разборе исходника применены безопасные числовые исправления/отбраковка: 4.",
+    "Профиль сопоставлен с GPS-сектором по пересечению километража (17→24); соответствие требует проверки."
+  ],
+  "provenance": [
+    {
+      "kind": "legacy_ek_archive",
+      "file_name": "Мариинск-Иркутск(by SkripTal).zip",
+      "sha256": "500dbd4bd10119c3376fa0c026ac8ef32ab28a1eb67cd85fad57762dbd2d6c06",
+      "source_application": "Блокнот машиниста 0.6.9",
+      "role": "non_authoritative_import_seed"
+    }
+  ],
+  "runtime": {
+    "coordinate_unit": "m",
+    "coordinate_kind": "official_railway_chainage",
+    "coordinate_offset_m": -1000,
+    "movement_order": "ascending",
+    "default_path_id": "ek069-mariinsk-irkutsk-s24-path",
+    "route_legs": [
+      {
+        "path_id": "ek069-mariinsk-irkutsk-s24-path",
+        "sector": 24,
+        "from_chainage_m": 1000,
+        "to_chainage_m": 3504
+      }
+    ],
+    "profile_status": "legacy_ek_unverified",
+    "profile_coverage": [
+      {
+        "start_m": 1000,
+        "end_m": 3504
+      }
+    ],
+    "profile_gaps": [],
+    "profile_applies_both_directions": false
+  },
+  "geometry": {
+    "status": "draft_from_legacy_ek",
+    "source": "Мариинск-Иркутск(by SkripTal).zip",
+    "paths": [
+      {
+        "path_id": "ek069-mariinsk-irkutsk-s24-path",
+        "sector": 24,
+        "points": [
+          {
+            "lat": 55.915135,
+            "lon": 98.06374,
+            "sector": 24,
+            "path_id": "ek069-mariinsk-irkutsk-s24-path",
+            "ordinate": 0,
+            "chainage_m": 1000
+          },
+          {
+            "lat": 55.916046,
+            "lon": 98.071357,
+            "sector": 24,
+            "path_id": "ek069-mariinsk-irkutsk-s24-path",
+            "ordinate": 500,
+            "chainage_m": 1500
+          },
+          {
+            "lat": 55.919032,
+            "lon": 98.076497,
+            "sector": 24,
+            "path_id": "ek069-mariinsk-irkutsk-s24-path",
+            "ordinate": 1000,
+            "chainage_m": 2000
+          },
+          {
+            "lat": 55.927734,
+            "lon": 98.073711,
+            "sector": 24,
+            "path_id": "ek069-mariinsk-irkutsk-s24-path",
+            "ordinate": 2000,
+            "chainage_m": 3000
+          },
+          {
+            "lat": 55.931969,
+            "lon": 98.075714,
+            "sector": 24,
+            "path_id": "ek069-mariinsk-irkutsk-s24-path",
+            "ordinate": 2504,
+            "chainage_m": 3504
+          }
+        ]
+      }
+    ]
+  }
+}

@@ -1,0 +1,7277 @@
+{
+  "schema_version": "1.0",
+  "id": "ek069-ruzhino-pass-8170-s25",
+  "status": "draft",
+  "railway": {
+    "id": "dvost",
+    "name": "Дальневосточная железная дорога"
+  },
+  "section_name": "Ружино (пассажирское движение, 8170) — сектор 25",
+  "direction": "требует проверки",
+  "km_start": 1.625,
+  "km_end": 191.267,
+  "generator_format": "Б",
+  "elements": [
+    {
+      "start_m": 1675,
+      "len_m": 85,
+      "grad_permille": 0,
+      "confidence": "legacy_ek_unverified"
+    },
+    {
+      "start_m": 1760,
+      "len_m": 110,
+      "grad_permille": -2.2,
+      "confidence": "legacy_ek_unverified"
+    },
+    {
+      "start_m": 1870,
+      "len_m": 300,
+      "grad_permille": 7.1,
+      "confidence": "legacy_ek_unverified"
+    },
+    {
+      "start_m": 2170,
+      "len_m": 150,
+      "grad_permille": 4.2,
+      "confidence": "legacy_ek_unverified"
+    },
+    {
+      "start_m": 2320,
+      "len_m": 550,
+      "grad_permille": 6.6,
+      "confidence": "legacy_ek_unverified"
+    },
+    {
+      "start_m": 2870,
+      "len_m": 300,
+      "grad_permille": 5.1,
+      "confidence": "legacy_ek_unverified"
+    },
+    {
+      "start_m": 3170,
+      "len_m": 200,
+      "grad_permille": -1.2,
+      "confidence": "legacy_ek_unverified"
+    },
+    {
+      "start_m": 3370,
+      "len_m": 350,
+      "grad_permille": -6.2,
+      "confidence": "legacy_ek_unverified"
+    },
+    {
+      "start_m": 3720,
+      "len_m": 200,
+      "grad_permille": -9.4,
+      "confidence": "legacy_ek_unverified"
+    },
+    {
+      "start_m": 3920,
+      "len_m": 200,
+      "grad_permille": -6.5,
+      "confidence": "legacy_ek_unverified"
+    },
+    {
+      "start_m": 4120,
+      "len_m": 220,
+      "grad_permille": -7.9,
+      "confidence": "legacy_ek_unverified"
+    },
+    {
+      "start_m": 4340,
+      "len_m": 210,
+      "grad_permille": -1.7,
+      "confidence": "legacy_ek_unverified"
+    },
+    {
+      "start_m": 4550,
+      "len_m": 220,
+      "grad_permille": 5.6,
+      "confidence": "legacy_ek_unverified"
+    },
+    {
+      "start_m": 4770,
+      "len_m": 200,
+      "grad_permille": 10,
+      "confidence": "legacy_ek_unverified"
+    },
+    {
+      "start_m": 4970,
+      "len_m": 200,
+      "grad_permille": 7.8,
+      "confidence": "legacy_ek_unverified"
+    },
+    {
+      "start_m": 5170,
+      "len_m": 200,
+      "grad_permille": 9.2,
+      "confidence": "legacy_ek_unverified"
+    },
+    {
+      "start_m": 5370,
+      "len_m": 420,
+      "grad_permille": 7,
+      "confidence": "legacy_ek_unverified"
+    },
+    {
+      "start_m": 5790,
+      "len_m": 280,
+      "grad_permille": 12,
+      "confidence": "legacy_ek_unverified"
+    },
+    {
+      "start_m": 6070,
+      "len_m": 500,
+      "grad_permille": 8.2,
+      "confidence": "legacy_ek_unverified"
+    },
+    {
+      "start_m": 6570,
+      "len_m": 200,
+      "grad_permille": 7.5,
+      "confidence": "legacy_ek_unverified"
+    },
+    {
+      "start_m": 6770,
+      "len_m": 200,
+      "grad_permille": 8,
+      "confidence": "legacy_ek_unverified"
+    },
+    {
+      "start_m": 6970,
+      "len_m": 340,
+      "grad_permille": 9.4,
+      "confidence": "legacy_ek_unverified"
+    },
+    {
+      "start_m": 7310,
+      "len_m": 360,
+      "grad_permille": 6,
+      "confidence": "legacy_ek_unverified"
+    },
+    {
+      "start_m": 7670,
+      "len_m": 200,
+      "grad_permille": 3.5,
+      "confidence": "legacy_ek_unverified"
+    },
+    {
+      "start_m": 7870,
+      "len_m": 500,
+      "grad_permille": 0,
+      "confidence": "legacy_ek_unverified"
+    },
+    {
+      "start_m": 8370,
+      "len_m": 200,
+      "grad_permille": -0.5,
+      "confidence": "legacy_ek_unverified"
+    },
+    {
+      "start_m": 8570,
+      "len_m": 400,
+      "grad_permille": 0,
+      "confidence": "legacy_ek_unverified"
+    },
+    {
+      "start_m": 8970,
+      "len_m": 220,
+      "grad_permille": -3.2,
+      "confidence": "legacy_ek_unverified"
+    },
+    {
+      "start_m": 9190,
+      "len_m": 210,
+      "grad_permille": -7.9,
+      "confidence": "legacy_ek_unverified"
+    },
+    {
+      "start_m": 9400,
+      "len_m": 200,
+      "grad_permille": 0,
+      "confidence": "legacy_ek_unverified"
+    },
+    {
+      "start_m": 9600,
+      "len_m": 200,
+      "grad_permille": 6,
+      "confidence": "legacy_ek_unverified"
+    },
+    {
+      "start_m": 9800,
+      "len_m": 200,
+      "grad_permille": 12.6,
+      "confidence": "legacy_ek_unverified"
+    },
+    {
+      "start_m": 10000,
+      "len_m": 200,
+      "grad_permille": 6,
+      "confidence": "legacy_ek_unverified"
+    },
+    {
+      "start_m": 10200,
+      "len_m": 200,
+      "grad_permille": -3,
+      "confidence": "legacy_ek_unverified"
+    },
+    {
+      "start_m": 10400,
+      "len_m": 270,
+      "grad_permille": -19.8,
+      "confidence": "legacy_ek_unverified"
+    },
+    {
+      "start_m": 10670,
+      "len_m": 200,
+      "grad_permille": -5,
+      "confidence": "legacy_ek_unverified"
+    },
+    {
+      "start_m": 10870,
+      "len_m": 200,
+      "grad_permille": 6,
+      "confidence": "legacy_ek_unverified"
+    },
+    {
+      "start_m": 11070,
+      "len_m": 200,
+      "grad_permille": 24.8,
+      "confidence": "legacy_ek_unverified"
+    },
+    {
+      "start_m": 11270,
+      "len_m": 230,
+      "grad_permille": 18,
+      "confidence": "legacy_ek_unverified"
+    },
+    {
+      "start_m": 11500,
+      "len_m": 200,
+      "grad_permille": -6.9,
+      "confidence": "legacy_ek_unverified"
+    },
+    {
+      "start_m": 11700,
+      "len_m": 200,
+      "grad_permille": -12.5,
+      "confidence": "legacy_ek_unverified"
+    },
+    {
+      "start_m": 11900,
+      "len_m": 360,
+      "grad_permille": 0,
+      "confidence": "legacy_ek_unverified"
+    },
+    {
+      "start_m": 12260,
+      "len_m": 200,
+      "grad_permille": 2,
+      "confidence": "legacy_ek_unverified"
+    },
+    {
+      "start_m": 12460,
+      "len_m": 200,
+      "grad_permille": -3,
+      "confidence": "legacy_ek_unverified"
+    },
+    {
+      "start_m": 12660,
+      "len_m": 450,
+      "grad_permille": -0.7,
+      "confidence": "legacy_ek_unverified"
+    },
+    {
+      "start_m": 13110,
+      "len_m": 200,
+      "grad_permille": 11.6,
+      "confidence": "legacy_ek_unverified"
+    },
+    {
+      "start_m": 13310,
+      "len_m": 200,
+      "grad_permille": 23.6,
+      "confidence": "legacy_ek_unverified"
+    },
+    {
+      "start_m": 13510,
+      "len_m": 220,
+      "grad_permille": 6.8,
+      "confidence": "legacy_ek_unverified"
+    },
+    {
+      "start_m": 13730,
+      "len_m": 330,
+      "grad_permille": -4.6,
+      "confidence": "legacy_ek_unverified"
+    },
+    {
+      "start_m": 14060,
+      "len_m": 200,
+      "grad_permille": -12,
+      "confidence": "legacy_ek_unverified"
+    },
+    {
+      "start_m": 14260,
+      "len_m": 200,
+      "grad_permille": 4.5,
+      "confidence": "legacy_ek_unverified"
+    },
+    {
+      "start_m": 14460,
+      "len_m": 200,
+      "grad_permille": 6.8,
+      "confidence": "legacy_ek_unverified"
+    },
+    {
+      "start_m": 14660,
+      "len_m": 300,
+      "grad_permille": 1.6,
+      "confidence": "legacy_ek_unverified"
+    },
+    {
+      "start_m": 14960,
+      "len_m": 200,
+      "grad_permille": -1.6,
+      "confidence": "legacy_ek_unverified"
+    },
+    {
+      "start_m": 15160,
+      "len_m": 200,
+      "grad_permille": -8.2,
+      "confidence": "legacy_ek_unverified"
+    },
+    {
+      "start_m": 15360,
+      "len_m": 200,
+      "grad_permille": -6.5,
+      "confidence": "legacy_ek_unverified"
+    },
+    {
+      "start_m": 15560,
+      "len_m": 200,
+      "grad_permille": -8.3,
+      "confidence": "legacy_ek_unverified"
+    },
+    {
+      "start_m": 15760,
+      "len_m": 300,
+      "grad_permille": -6.2,
+      "confidence": "legacy_ek_unverified"
+    },
+    {
+      "start_m": 16060,
+      "len_m": 200,
+      "grad_permille": -23,
+      "confidence": "legacy_ek_unverified"
+    },
+    {
+      "start_m": 16660,
+      "len_m": 680,
+      "grad_permille": 7,
+      "confidence": "legacy_ek_unverified"
+    },
+    {
+      "start_m": 17340,
+      "len_m": 320,
+      "grad_permille": 0,
+      "confidence": "legacy_ek_unverified"
+    },
+    {
+      "start_m": 17660,
+      "len_m": 300,
+      "grad_permille": 0.8,
+      "confidence": "legacy_ek_unverified"
+    },
+    {
+      "start_m": 17960,
+      "len_m": 200,
+      "grad_permille": -2.9,
+      "confidence": "legacy_ek_unverified"
+    },
+    {
+      "start_m": 18160,
+      "len_m": 200,
+      "grad_permille": -1.6,
+      "confidence": "legacy_ek_unverified"
+    },
+    {
+      "start_m": 18360,
+      "len_m": 200,
+      "grad_permille": -16.4,
+      "confidence": "legacy_ek_unverified"
+    },
+    {
+      "start_m": 18560,
+      "len_m": 540,
+      "grad_permille": -9.8,
+      "confidence": "legacy_ek_unverified"
+    },
+    {
+      "start_m": 19100,
+      "len_m": 200,
+      "grad_permille": -16.1,
+      "confidence": "legacy_ek_unverified"
+    },
+    {
+      "start_m": 19300,
+      "len_m": 300,
+      "grad_permille": -14.2,
+      "confidence": "legacy_ek_unverified"
+    },
+    {
+      "start_m": 19600,
+      "len_m": 200,
+      "grad_permille": -11.6,
+      "confidence": "legacy_ek_unverified"
+    },
+    {
+      "start_m": 19800,
+      "len_m": 200,
+      "grad_permille": -10,
+      "confidence": "legacy_ek_unverified"
+    },
+    {
+      "start_m": 20000,
+      "len_m": 230,
+      "grad_permille": -12.9,
+      "confidence": "legacy_ek_unverified"
+    },
+    {
+      "start_m": 20230,
+      "len_m": 670,
+      "grad_permille": 0,
+      "confidence": "legacy_ek_unverified"
+    },
+    {
+      "start_m": 20900,
+      "len_m": 300,
+      "grad_permille": 2,
+      "confidence": "legacy_ek_unverified"
+    },
+    {
+      "start_m": 21200,
+      "len_m": 600,
+      "grad_permille": 0,
+      "confidence": "legacy_ek_unverified"
+    },
+    {
+      "start_m": 21800,
+      "len_m": 230,
+      "grad_permille": -2.6,
+      "confidence": "legacy_ek_unverified"
+    },
+    {
+      "start_m": 22030,
+      "len_m": 330,
+      "grad_permille": 10.6,
+      "confidence": "legacy_ek_unverified"
+    },
+    {
+      "start_m": 22360,
+      "len_m": 200,
+      "grad_permille": 0,
+      "confidence": "legacy_ek_unverified"
+    },
+    {
+      "start_m": 22560,
+      "len_m": 200,
+      "grad_permille": -5,
+      "confidence": "legacy_ek_unverified"
+    },
+    {
+      "start_m": 22760,
+      "len_m": 270,
+      "grad_permille": 2.2,
+      "confidence": "legacy_ek_unverified"
+    },
+    {
+      "start_m": 23030,
+      "len_m": 280,
+      "grad_permille": -17.9,
+      "confidence": "legacy_ek_unverified"
+    },
+    {
+      "start_m": 23310,
+      "len_m": 200,
+      "grad_permille": -5.5,
+      "confidence": "legacy_ek_unverified"
+    },
+    {
+      "start_m": 23510,
+      "len_m": 200,
+      "grad_permille": 3.8,
+      "confidence": "legacy_ek_unverified"
+    },
+    {
+      "start_m": 23710,
+      "len_m": 240,
+      "grad_permille": 8,
+      "confidence": "legacy_ek_unverified"
+    },
+    {
+      "start_m": 23950,
+      "len_m": 270,
+      "grad_permille": -1.8,
+      "confidence": "legacy_ek_unverified"
+    },
+    {
+      "start_m": 24220,
+      "len_m": 200,
+      "grad_permille": 6,
+      "confidence": "legacy_ek_unverified"
+    },
+    {
+      "start_m": 24420,
+      "len_m": 240,
+      "grad_permille": 16.2,
+      "confidence": "legacy_ek_unverified"
+    },
+    {
+      "start_m": 24660,
+      "len_m": 240,
+      "grad_permille": -11,
+      "confidence": "legacy_ek_unverified"
+    },
+    {
+      "start_m": 24900,
+      "len_m": 200,
+      "grad_permille": -12,
+      "confidence": "legacy_ek_unverified"
+    },
+    {
+      "start_m": 25100,
+      "len_m": 200,
+      "grad_permille": -4.4,
+      "confidence": "legacy_ek_unverified"
+    },
+    {
+      "start_m": 25300,
+      "len_m": 300,
+      "grad_permille": -1.8,
+      "confidence": "legacy_ek_unverified"
+    },
+    {
+      "start_m": 25600,
+      "len_m": 200,
+      "grad_permille": -3.1,
+      "confidence": "legacy_ek_unverified"
+    },
+    {
+      "start_m": 25800,
+      "len_m": 270,
+      "grad_permille": 0,
+      "confidence": "legacy_ek_unverified"
+    },
+    {
+      "start_m": 26070,
+      "len_m": 250,
+      "grad_permille": -9.8,
+      "confidence": "legacy_ek_unverified"
+    },
+    {
+      "start_m": 26320,
+      "len_m": 280,
+      "grad_permille": 2.4,
+      "confidence": "legacy_ek_unverified"
+    },
+    {
+      "start_m": 26600,
+      "len_m": 200,
+      "grad_permille": 2.8,
+      "confidence": "legacy_ek_unverified"
+    },
+    {
+      "start_m": 26800,
+      "len_m": 500,
+      "grad_permille": 0,
+      "confidence": "legacy_ek_unverified"
+    },
+    {
+      "start_m": 27300,
+      "len_m": 600,
+      "grad_permille": -1.3,
+      "confidence": "legacy_ek_unverified"
+    },
+    {
+      "start_m": 27900,
+      "len_m": 200,
+      "grad_permille": 1.8,
+      "confidence": "legacy_ek_unverified"
+    },
+    {
+      "start_m": 28100,
+      "len_m": 200,
+      "grad_permille": 0,
+      "confidence": "legacy_ek_unverified"
+    },
+    {
+      "start_m": 28300,
+      "len_m": 200,
+      "grad_permille": -1,
+      "confidence": "legacy_ek_unverified"
+    },
+    {
+      "start_m": 28500,
+      "len_m": 400,
+      "grad_permille": 0,
+      "confidence": "legacy_ek_unverified"
+    },
+    {
+      "start_m": 28900,
+      "len_m": 200,
+      "grad_permille": -1.5,
+      "confidence": "legacy_ek_unverified"
+    },
+    {
+      "start_m": 29100,
+      "len_m": 300,
+      "grad_permille": 1,
+      "confidence": "legacy_ek_unverified"
+    },
+    {
+      "start_m": 29400,
+      "len_m": 200,
+      "grad_permille": -2,
+      "confidence": "legacy_ek_unverified"
+    },
+    {
+      "start_m": 29600,
+      "len_m": 200,
+      "grad_permille": 0.5,
+      "confidence": "legacy_ek_unverified"
+    },
+    {
+      "start_m": 29800,
+      "len_m": 300,
+      "grad_permille": -1,
+      "confidence": "legacy_ek_unverified"
+    },
+    {
+      "start_m": 30100,
+      "len_m": 300,
+      "grad_permille": 1,
+      "confidence": "legacy_ek_unverified"
+    },
+    {
+      "start_m": 30400,
+      "len_m": 200,
+      "grad_permille": 2,
+      "confidence": "legacy_ek_unverified"
+    },
+    {
+      "start_m": 30600,
+      "len_m": 300,
+      "grad_permille": 0,
+      "confidence": "legacy_ek_unverified"
+    },
+    {
+      "start_m": 30900,
+      "len_m": 200,
+      "grad_permille": -0.7,
+      "confidence": "legacy_ek_unverified"
+    },
+    {
+      "start_m": 31100,
+      "len_m": 200,
+      "grad_permille": 0,
+      "confidence": "legacy_ek_unverified"
+    },
+    {
+      "start_m": 31300,
+      "len_m": 200,
+      "grad_permille": -1.8,
+      "confidence": "legacy_ek_unverified"
+    },
+    {
+      "start_m": 31500,
+      "len_m": 200,
+      "grad_permille": 1,
+      "confidence": "legacy_ek_unverified"
+    },
+    {
+      "start_m": 31700,
+      "len_m": 200,
+      "grad_permille": -3,
+      "confidence": "legacy_ek_unverified"
+    },
+    {
+      "start_m": 31900,
+      "len_m": 400,
+      "grad_permille": 0,
+      "confidence": "legacy_ek_unverified"
+    },
+    {
+      "start_m": 32300,
+      "len_m": 300,
+      "grad_permille": 0.4,
+      "confidence": "legacy_ek_unverified"
+    },
+    {
+      "start_m": 32600,
+      "len_m": 200,
+      "grad_permille": 0,
+      "confidence": "legacy_ek_unverified"
+    },
+    {
+      "start_m": 32800,
+      "len_m": 200,
+      "grad_permille": -1,
+      "confidence": "legacy_ek_unverified"
+    },
+    {
+      "start_m": 33000,
+      "len_m": 300,
+      "grad_permille": 1.3,
+      "confidence": "legacy_ek_unverified"
+    },
+    {
+      "start_m": 33300,
+      "len_m": 200,
+      "grad_permille": 0.8,
+      "confidence": "legacy_ek_unverified"
+    },
+    {
+      "start_m": 33500,
+      "len_m": 200,
+      "grad_permille": 3.4,
+      "confidence": "legacy_ek_unverified"
+    },
+    {
+      "start_m": 33700,
+      "len_m": 230,
+      "grad_permille": 6.3,
+      "confidence": "legacy_ek_unverified"
+    },
+    {
+      "start_m": 33930,
+      "len_m": 200,
+      "grad_permille": 2.4,
+      "confidence": "legacy_ek_unverified"
+    },
+    {
+      "start_m": 34130,
+      "len_m": 200,
+      "grad_permille": -7.4,
+      "confidence": "legacy_ek_unverified"
+    },
+    {
+      "start_m": 34330,
+      "len_m": 200,
+      "grad_permille": 0,
+      "confidence": "legacy_ek_unverified"
+    },
+    {
+      "start_m": 34530,
+      "len_m": 200,
+      "grad_permille": 2,
+      "confidence": "legacy_ek_unverified"
+    },
+    {
+      "start_m": 34730,
+      "len_m": 270,
+      "grad_permille": -1,
+      "confidence": "legacy_ek_unverified"
+    },
+    {
+      "start_m": 35000,
+      "len_m": 250,
+      "grad_permille": 0,
+      "confidence": "legacy_ek_unverified"
+    },
+    {
+      "start_m": 35250,
+      "len_m": 210,
+      "grad_permille": -3,
+      "confidence": "legacy_ek_unverified"
+    },
+    {
+      "start_m": 35460,
+      "len_m": 200,
+      "grad_permille": 7,
+      "confidence": "legacy_ek_unverified"
+    },
+    {
+      "start_m": 35660,
+      "len_m": 240,
+      "grad_permille": -1,
+      "confidence": "legacy_ek_unverified"
+    },
+    {
+      "start_m": 35900,
+      "len_m": 200,
+      "grad_permille": 2,
+      "confidence": "legacy_ek_unverified"
+    },
+    {
+      "start_m": 36100,
+      "len_m": 200,
+      "grad_permille": 1,
+      "confidence": "legacy_ek_unverified"
+    },
+    {
+      "start_m": 36300,
+      "len_m": 250,
+      "grad_permille": 9,
+      "confidence": "legacy_ek_unverified"
+    },
+    {
+      "start_m": 36550,
+      "len_m": 350,
+      "grad_permille": 3.6,
+      "confidence": "legacy_ek_unverified"
+    },
+    {
+      "start_m": 36900,
+      "len_m": 300,
+      "grad_permille": 1,
+      "confidence": "legacy_ek_unverified"
+    },
+    {
+      "start_m": 37200,
+      "len_m": 200,
+      "grad_permille": -1,
+      "confidence": "legacy_ek_unverified"
+    },
+    {
+      "start_m": 37400,
+      "len_m": 300,
+      "grad_permille": 0,
+      "confidence": "legacy_ek_unverified"
+    },
+    {
+      "start_m": 37700,
+      "len_m": 300,
+      "grad_permille": 2.2,
+      "confidence": "legacy_ek_unverified"
+    },
+    {
+      "start_m": 38000,
+      "len_m": 200,
+      "grad_permille": 4.4,
+      "confidence": "legacy_ek_unverified"
+    },
+    {
+      "start_m": 38200,
+      "len_m": 200,
+      "grad_permille": 2.6,
+      "confidence": "legacy_ek_unverified"
+    },
+    {
+      "start_m": 38400,
+      "len_m": 320,
+      "grad_permille": 4.6,
+      "confidence": "legacy_ek_unverified"
+    },
+    {
+      "start_m": 38720,
+      "len_m": 200,
+      "grad_permille": 8.8,
+      "confidence": "legacy_ek_unverified"
+    },
+    {
+      "start_m": 38920,
+      "len_m": 200,
+      "grad_permille": -0.8,
+      "confidence": "legacy_ek_unverified"
+    },
+    {
+      "start_m": 39120,
+      "len_m": 200,
+      "grad_permille": 0,
+      "confidence": "legacy_ek_unverified"
+    },
+    {
+      "start_m": 39320,
+      "len_m": 480,
+      "grad_permille": 18,
+      "confidence": "legacy_ek_unverified"
+    },
+    {
+      "start_m": 39800,
+      "len_m": 200,
+      "grad_permille": 17.4,
+      "confidence": "legacy_ek_unverified"
+    },
+    {
+      "start_m": 40000,
+      "len_m": 200,
+      "grad_permille": 21,
+      "confidence": "legacy_ek_unverified"
+    },
+    {
+      "start_m": 40200,
+      "len_m": 300,
+      "grad_permille": 18.6,
+      "confidence": "legacy_ek_unverified"
+    },
+    {
+      "start_m": 40500,
+      "len_m": 200,
+      "grad_permille": 19.5,
+      "confidence": "legacy_ek_unverified"
+    },
+    {
+      "start_m": 40700,
+      "len_m": 200,
+      "grad_permille": 17.2,
+      "confidence": "legacy_ek_unverified"
+    },
+    {
+      "start_m": 40900,
+      "len_m": 200,
+      "grad_permille": 20,
+      "confidence": "legacy_ek_unverified"
+    },
+    {
+      "start_m": 41100,
+      "len_m": 200,
+      "grad_permille": 15.8,
+      "confidence": "legacy_ek_unverified"
+    },
+    {
+      "start_m": 41300,
+      "len_m": 200,
+      "grad_permille": 19.8,
+      "confidence": "legacy_ek_unverified"
+    },
+    {
+      "start_m": 41500,
+      "len_m": 200,
+      "grad_permille": 15.8,
+      "confidence": "legacy_ek_unverified"
+    },
+    {
+      "start_m": 41700,
+      "len_m": 200,
+      "grad_permille": 20.6,
+      "confidence": "legacy_ek_unverified"
+    },
+    {
+      "start_m": 41900,
+      "len_m": 300,
+      "grad_permille": 18,
+      "confidence": "legacy_ek_unverified"
+    },
+    {
+      "start_m": 42200,
+      "len_m": 200,
+      "grad_permille": 21.5,
+      "confidence": "legacy_ek_unverified"
+    },
+    {
+      "start_m": 42400,
+      "len_m": 200,
+      "grad_permille": 17.4,
+      "confidence": "legacy_ek_unverified"
+    },
+    {
+      "start_m": 42600,
+      "len_m": 200,
+      "grad_permille": 22,
+      "confidence": "legacy_ek_unverified"
+    },
+    {
+      "start_m": 42800,
+      "len_m": 200,
+      "grad_permille": 15.8,
+      "confidence": "legacy_ek_unverified"
+    },
+    {
+      "start_m": 43000,
+      "len_m": 200,
+      "grad_permille": 19.4,
+      "confidence": "legacy_ek_unverified"
+    },
+    {
+      "start_m": 43200,
+      "len_m": 200,
+      "grad_permille": 3.3,
+      "confidence": "legacy_ek_unverified"
+    },
+    {
+      "start_m": 43400,
+      "len_m": 200,
+      "grad_permille": -20.8,
+      "confidence": "legacy_ek_unverified"
+    },
+    {
+      "start_m": 43600,
+      "len_m": 200,
+      "grad_permille": -18.8,
+      "confidence": "legacy_ek_unverified"
+    },
+    {
+      "start_m": 43800,
+      "len_m": 200,
+      "grad_permille": -18,
+      "confidence": "legacy_ek_unverified"
+    },
+    {
+      "start_m": 44000,
+      "len_m": 200,
+      "grad_permille": -19.2,
+      "confidence": "legacy_ek_unverified"
+    },
+    {
+      "start_m": 44200,
+      "len_m": 200,
+      "grad_permille": -17.3,
+      "confidence": "legacy_ek_unverified"
+    },
+    {
+      "start_m": 44400,
+      "len_m": 200,
+      "grad_permille": -19.2,
+      "confidence": "legacy_ek_unverified"
+    },
+    {
+      "start_m": 44600,
+      "len_m": 300,
+      "grad_permille": -17,
+      "confidence": "legacy_ek_unverified"
+    },
+    {
+      "start_m": 44900,
+      "len_m": 500,
+      "grad_permille": -20.2,
+      "confidence": "legacy_ek_unverified"
+    },
+    {
+      "start_m": 45400,
+      "len_m": 320,
+      "grad_permille": -18.8,
+      "confidence": "legacy_ek_unverified"
+    },
+    {
+      "start_m": 45720,
+      "len_m": 200,
+      "grad_permille": -6,
+      "confidence": "legacy_ek_unverified"
+    },
+    {
+      "start_m": 45920,
+      "len_m": 280,
+      "grad_permille": -1.8,
+      "confidence": "legacy_ek_unverified"
+    },
+    {
+      "start_m": 46200,
+      "len_m": 200,
+      "grad_permille": -3.2,
+      "confidence": "legacy_ek_unverified"
+    },
+    {
+      "start_m": 46400,
+      "len_m": 200,
+      "grad_permille": -1.6,
+      "confidence": "legacy_ek_unverified"
+    },
+    {
+      "start_m": 46600,
+      "len_m": 480,
+      "grad_permille": -4.2,
+      "confidence": "legacy_ek_unverified"
+    },
+    {
+      "start_m": 47080,
+      "len_m": 220,
+      "grad_permille": -15.8,
+      "confidence": "legacy_ek_unverified"
+    },
+    {
+      "start_m": 47300,
+      "len_m": 240,
+      "grad_permille": -14,
+      "confidence": "legacy_ek_unverified"
+    },
+    {
+      "start_m": 47540,
+      "len_m": 440,
+      "grad_permille": 0,
+      "confidence": "legacy_ek_unverified"
+    }
+  ],
+  "stations": [
+    {
+      "name": "АМУРСКИЙ ЗАЛ",
+      "km": 1.625,
+      "sector": 25,
+      "confidence": "legacy_ek_unverified"
+    },
+    {
+      "name": "АМУРСКИЙ ЗАЛ",
+      "km": 2.377,
+      "sector": 25,
+      "confidence": "legacy_ek_unverified"
+    },
+    {
+      "name": "АМУРСКИЙ ЗАЛ",
+      "km": 3.907,
+      "sector": 25,
+      "confidence": "legacy_ek_unverified"
+    },
+    {
+      "name": "АМУРСКИЙ ЗАЛ",
+      "km": 4.128,
+      "sector": 25,
+      "confidence": "legacy_ek_unverified"
+    },
+    {
+      "name": "УГЛОВАЯ",
+      "km": 7.25,
+      "sector": 25,
+      "confidence": "legacy_ek_unverified"
+    },
+    {
+      "name": "УГЛОВАЯ",
+      "km": 7.252,
+      "sector": 25,
+      "confidence": "legacy_ek_unverified"
+    },
+    {
+      "name": "УГЛОВАЯ",
+      "km": 10.559,
+      "sector": 25,
+      "confidence": "legacy_ek_unverified"
+    },
+    {
+      "name": "УГЛОВАЯ",
+      "km": 10.561,
+      "sector": 25,
+      "confidence": "legacy_ek_unverified"
+    },
+    {
+      "name": "ПОСТ 13",
+      "km": 13.926,
+      "sector": 25,
+      "confidence": "legacy_ek_unverified"
+    },
+    {
+      "name": "ПОСТ 13",
+      "km": 13.93,
+      "sector": 25,
+      "confidence": "legacy_ek_unverified"
+    },
+    {
+      "name": "ПОСТ 13",
+      "km": 14.458,
+      "sector": 25,
+      "confidence": "legacy_ek_unverified"
+    },
+    {
+      "name": "ПОСТ 13",
+      "km": 14.463,
+      "sector": 25,
+      "confidence": "legacy_ek_unverified"
+    },
+    {
+      "name": "АРТЕМ-1",
+      "km": 16.401,
+      "sector": 25,
+      "confidence": "legacy_ek_unverified"
+    },
+    {
+      "name": "АРТЕМ-1",
+      "km": 16.412,
+      "sector": 25,
+      "confidence": "legacy_ek_unverified"
+    },
+    {
+      "name": "АРТЕМ-1",
+      "km": 18.77,
+      "sector": 25,
+      "confidence": "legacy_ek_unverified"
+    },
+    {
+      "name": "АРТЕМ-1",
+      "km": 18.772,
+      "sector": 25,
+      "confidence": "legacy_ek_unverified"
+    },
+    {
+      "name": "АРТЕМ-2",
+      "km": 20.178,
+      "sector": 25,
+      "confidence": "legacy_ek_unverified"
+    },
+    {
+      "name": "АРТЕМ-2",
+      "km": 20.188,
+      "sector": 25,
+      "confidence": "legacy_ek_unverified"
+    },
+    {
+      "name": "АРТЕМ-2",
+      "km": 22.743,
+      "sector": 25,
+      "confidence": "legacy_ek_unverified"
+    },
+    {
+      "name": "АРТЕМ-2",
+      "km": 22.744,
+      "sector": 25,
+      "confidence": "legacy_ek_unverified"
+    },
+    {
+      "name": "АРТЕМ-3",
+      "km": 26.28,
+      "sector": 25,
+      "confidence": "legacy_ek_unverified"
+    },
+    {
+      "name": "АРТЕМ-3",
+      "km": 26.29,
+      "sector": 25,
+      "confidence": "legacy_ek_unverified"
+    },
+    {
+      "name": "АРТЕМ-3",
+      "km": 28.567,
+      "sector": 25,
+      "confidence": "legacy_ek_unverified"
+    },
+    {
+      "name": "АРТЕМ-3",
+      "km": 28.568,
+      "sector": 25,
+      "confidence": "legacy_ek_unverified"
+    },
+    {
+      "name": "ШКОТОВО",
+      "km": 33.606,
+      "sector": 25,
+      "confidence": "legacy_ek_unverified"
+    },
+    {
+      "name": "ШКОТОВО",
+      "km": 33.608,
+      "sector": 25,
+      "confidence": "legacy_ek_unverified"
+    },
+    {
+      "name": "ШКОТОВО",
+      "km": 36.34,
+      "sector": 25,
+      "confidence": "legacy_ek_unverified"
+    },
+    {
+      "name": "ШКОТОВО",
+      "km": 36.341,
+      "sector": 25,
+      "confidence": "legacy_ek_unverified"
+    },
+    {
+      "name": "СМОЛЯНИНОВО",
+      "km": 44.765,
+      "sector": 25,
+      "confidence": "legacy_ek_unverified"
+    },
+    {
+      "name": "СМОЛЯНИНОВО",
+      "km": 44.769,
+      "sector": 25,
+      "confidence": "legacy_ek_unverified"
+    },
+    {
+      "name": "СМОЛЯНИНОВО",
+      "km": 48.103,
+      "sector": 25,
+      "confidence": "legacy_ek_unverified"
+    },
+    {
+      "name": "СМОЛЯНИНОВО",
+      "km": 48.115,
+      "sector": 25,
+      "confidence": "legacy_ek_unverified"
+    },
+    {
+      "name": "НОВОНЕЖИНО",
+      "km": 63.029,
+      "sector": 25,
+      "confidence": "legacy_ek_unverified"
+    },
+    {
+      "name": "НОВОНЕЖИНО",
+      "km": 63.035,
+      "sector": 25,
+      "confidence": "legacy_ek_unverified"
+    },
+    {
+      "name": "НОВОНЕЖИНО",
+      "km": 65.555,
+      "sector": 25,
+      "confidence": "legacy_ek_unverified"
+    },
+    {
+      "name": "НОВОНЕЖИНО",
+      "km": 65.57,
+      "sector": 25,
+      "confidence": "legacy_ek_unverified"
+    },
+    {
+      "name": "АНИСИМОВКА",
+      "km": 78.271,
+      "sector": 25,
+      "confidence": "legacy_ek_unverified"
+    },
+    {
+      "name": "АНИСИМОВКА",
+      "km": 78.28,
+      "sector": 25,
+      "confidence": "legacy_ek_unverified"
+    },
+    {
+      "name": "АНИСИМОВКА",
+      "km": 80.989,
+      "sector": 25,
+      "confidence": "legacy_ek_unverified"
+    },
+    {
+      "name": "АНИСИМОВКА",
+      "km": 80.995,
+      "sector": 25,
+      "confidence": "legacy_ek_unverified"
+    },
+    {
+      "name": "ТИГРОВЫЙ",
+      "km": 90.25,
+      "sector": 25,
+      "confidence": "legacy_ek_unverified"
+    },
+    {
+      "name": "ТИГРОВЫЙ",
+      "km": 90.293,
+      "sector": 25,
+      "confidence": "legacy_ek_unverified"
+    },
+    {
+      "name": "ТИГРОВЫЙ",
+      "km": 93.85,
+      "sector": 25,
+      "confidence": "legacy_ek_unverified"
+    },
+    {
+      "name": "ФРИДМАН",
+      "km": 103.432,
+      "sector": 25,
+      "confidence": "legacy_ek_unverified"
+    },
+    {
+      "name": "ФРИДМАН",
+      "km": 103.435,
+      "sector": 25,
+      "confidence": "legacy_ek_unverified"
+    },
+    {
+      "name": "ФРИДМАН",
+      "km": 105.777,
+      "sector": 25,
+      "confidence": "legacy_ek_unverified"
+    },
+    {
+      "name": "ФРИДМАН",
+      "km": 105.8,
+      "sector": 25,
+      "confidence": "legacy_ek_unverified"
+    },
+    {
+      "name": "КРАСНОРЕЧЕНСК",
+      "km": 114.53,
+      "sector": 25,
+      "confidence": "legacy_ek_unverified"
+    },
+    {
+      "name": "КРАСНОРЕЧЕН",
+      "km": 116.62,
+      "sector": 25,
+      "confidence": "legacy_ek_unverified"
+    },
+    {
+      "name": "КРАСНОРЕЧЕНСК",
+      "km": 116.66,
+      "sector": 25,
+      "confidence": "legacy_ek_unverified"
+    },
+    {
+      "name": "ПАРТИЗАНСК",
+      "km": 128.98,
+      "sector": 25,
+      "confidence": "legacy_ek_unverified"
+    },
+    {
+      "name": "ПАРТИЗАНСК",
+      "km": 129,
+      "sector": 25,
+      "confidence": "legacy_ek_unverified"
+    },
+    {
+      "name": "ПАРТИЗАНСК",
+      "km": 132.7,
+      "sector": 25,
+      "confidence": "legacy_ek_unverified"
+    },
+    {
+      "name": "ПАРТИЗАНСК",
+      "km": 132.709,
+      "sector": 25,
+      "confidence": "legacy_ek_unverified"
+    },
+    {
+      "name": "ПОСТ 132",
+      "km": 135.54,
+      "sector": 25,
+      "confidence": "legacy_ek_unverified"
+    },
+    {
+      "name": "ПОСТ 132",
+      "km": 135.545,
+      "sector": 25,
+      "confidence": "legacy_ek_unverified"
+    },
+    {
+      "name": "ПОСТ 132",
+      "km": 136.161,
+      "sector": 25,
+      "confidence": "legacy_ek_unverified"
+    },
+    {
+      "name": "ПОСТ 132",
+      "km": 136.17,
+      "sector": 25,
+      "confidence": "legacy_ek_unverified"
+    },
+    {
+      "name": "ЛОЗОВЫЙ",
+      "km": 140.505,
+      "sector": 25,
+      "confidence": "legacy_ek_unverified"
+    },
+    {
+      "name": "ЛОЗОВЫЙ",
+      "km": 140.51,
+      "sector": 25,
+      "confidence": "legacy_ek_unverified"
+    },
+    {
+      "name": "ЛОЗОВЫЙ",
+      "km": 143.51,
+      "sector": 25,
+      "confidence": "legacy_ek_unverified"
+    },
+    {
+      "name": "КУЗНЕЦОВО",
+      "km": 154.743,
+      "sector": 25,
+      "confidence": "legacy_ek_unverified"
+    },
+    {
+      "name": "КУЗНЕЦОВО",
+      "km": 154.78,
+      "sector": 25,
+      "confidence": "legacy_ek_unverified"
+    },
+    {
+      "name": "КУЗНЕЦОВО",
+      "km": 157.36,
+      "sector": 25,
+      "confidence": "legacy_ek_unverified"
+    },
+    {
+      "name": "КУЗНЕЦОВО",
+      "km": 157.37,
+      "sector": 25,
+      "confidence": "legacy_ek_unverified"
+    },
+    {
+      "name": "НАХОДКА",
+      "km": 167.22,
+      "sector": 25,
+      "confidence": "legacy_ek_unverified"
+    },
+    {
+      "name": "НАХОДКА",
+      "km": 167.26,
+      "sector": 25,
+      "confidence": "legacy_ek_unverified"
+    },
+    {
+      "name": "НАХОДКА",
+      "km": 168.9,
+      "sector": 25,
+      "confidence": "legacy_ek_unverified"
+    },
+    {
+      "name": "НАХОДКА",
+      "km": 171.172,
+      "sector": 25,
+      "confidence": "legacy_ek_unverified"
+    },
+    {
+      "name": "НАХОДКА",
+      "km": 171.59,
+      "sector": 25,
+      "confidence": "legacy_ek_unverified"
+    },
+    {
+      "name": "НАХОДКА",
+      "km": 174.473,
+      "sector": 25,
+      "confidence": "legacy_ek_unverified"
+    },
+    {
+      "name": "БАРХАТНАЯ",
+      "km": 176.238,
+      "sector": 25,
+      "confidence": "legacy_ek_unverified"
+    },
+    {
+      "name": "БАРХАТНАЯ",
+      "km": 176.755,
+      "sector": 25,
+      "confidence": "legacy_ek_unverified"
+    },
+    {
+      "name": "БАРХАТНАЯ",
+      "km": 177.461,
+      "sector": 25,
+      "confidence": "legacy_ek_unverified"
+    },
+    {
+      "name": "БАРХАТНАЯ",
+      "km": 178.234,
+      "sector": 25,
+      "confidence": "legacy_ek_unverified"
+    },
+    {
+      "name": "ТИХООКЕАНСКАЯ",
+      "km": 179.869,
+      "sector": 25,
+      "confidence": "legacy_ek_unverified"
+    },
+    {
+      "name": "ТИХООКЕАНСКАЯ",
+      "km": 180.72,
+      "sector": 25,
+      "confidence": "legacy_ek_unverified"
+    },
+    {
+      "name": "ТИХООКЕАНСКАЯ",
+      "km": 181.112,
+      "sector": 25,
+      "confidence": "legacy_ek_unverified"
+    },
+    {
+      "name": "ТИХООКЕАНСКАЯ",
+      "km": 181.83,
+      "sector": 25,
+      "confidence": "legacy_ek_unverified"
+    },
+    {
+      "name": "РЫБНИКИ",
+      "km": 183.95,
+      "sector": 25,
+      "confidence": "legacy_ek_unverified"
+    },
+    {
+      "name": "РЫБНИКИ",
+      "km": 184.569,
+      "sector": 25,
+      "confidence": "legacy_ek_unverified"
+    },
+    {
+      "name": "РЫБНИКИ",
+      "km": 185.32,
+      "sector": 25,
+      "confidence": "legacy_ek_unverified"
+    },
+    {
+      "name": "РЫБНИКИ",
+      "km": 186.04,
+      "sector": 25,
+      "confidence": "legacy_ek_unverified"
+    },
+    {
+      "name": "КРАБОВАЯ",
+      "km": 186.68,
+      "sector": 25,
+      "confidence": "legacy_ek_unverified"
+    },
+    {
+      "name": "КРАБОВАЯ",
+      "km": 187.96,
+      "sector": 25,
+      "confidence": "legacy_ek_unverified"
+    },
+    {
+      "name": "КРАБОВАЯ",
+      "km": 189.04,
+      "sector": 25,
+      "confidence": "legacy_ek_unverified"
+    },
+    {
+      "name": "КРАБОВАЯ",
+      "km": 189.427,
+      "sector": 25,
+      "confidence": "legacy_ek_unverified"
+    },
+    {
+      "name": "МЫС АСТАФЬЕВА",
+      "km": 189.7,
+      "sector": 25,
+      "confidence": "legacy_ek_unverified"
+    },
+    {
+      "name": "МЫС АСТАФЬЕВА",
+      "km": 190.1,
+      "sector": 25,
+      "confidence": "legacy_ek_unverified"
+    },
+    {
+      "name": "МЫС АС",
+      "km": 190.16,
+      "sector": 25,
+      "confidence": "legacy_ek_unverified"
+    }
+  ],
+  "signals": [
+    {
+      "name": "НЧ",
+      "chainage_m": 2377,
+      "sector": 25,
+      "confidence": "legacy_ek_unverified",
+      "legacy_source": "2n.xml"
+    },
+    {
+      "name": "6",
+      "chainage_m": 2597,
+      "sector": 25,
+      "confidence": "legacy_ek_unverified",
+      "legacy_source": "2.xml"
+    },
+    {
+      "name": "1(н)+УКСПС",
+      "chainage_m": 3646,
+      "sector": 25,
+      "confidence": "legacy_ek_unverified",
+      "legacy_source": "2n.xml"
+    },
+    {
+      "name": "НУ",
+      "chainage_m": 4128,
+      "sector": 25,
+      "confidence": "legacy_ek_unverified",
+      "legacy_source": "1.xml"
+    },
+    {
+      "name": "4",
+      "chainage_m": 4236,
+      "sector": 25,
+      "confidence": "legacy_ek_unverified",
+      "legacy_source": "2.xml"
+    },
+    {
+      "name": "4(Н)",
+      "chainage_m": 4945,
+      "sector": 25,
+      "confidence": "legacy_ek_unverified",
+      "legacy_source": "1n.xml"
+    },
+    {
+      "name": "1+УКСПС",
+      "chainage_m": 5716,
+      "sector": 25,
+      "confidence": "legacy_ek_unverified",
+      "legacy_source": "1.xml"
+    },
+    {
+      "name": "3(н)",
+      "chainage_m": 5800,
+      "sector": 25,
+      "confidence": "legacy_ek_unverified",
+      "legacy_source": "2n.xml"
+    },
+    {
+      "name": "2+УКСПС",
+      "chainage_m": 6223,
+      "sector": 25,
+      "confidence": "legacy_ek_unverified",
+      "legacy_source": "2.xml"
+    },
+    {
+      "name": "2(н)+УКСПС",
+      "chainage_m": 6228,
+      "sector": 25,
+      "confidence": "legacy_ek_unverified",
+      "legacy_source": "1n.xml"
+    },
+    {
+      "name": "5(н)",
+      "chainage_m": 6923,
+      "sector": 25,
+      "confidence": "legacy_ek_unverified",
+      "legacy_source": "2n.xml"
+    },
+    {
+      "name": "3",
+      "chainage_m": 6927,
+      "sector": 25,
+      "confidence": "legacy_ek_unverified",
+      "legacy_source": "1.xml"
+    },
+    {
+      "name": "ЧН",
+      "chainage_m": 7250,
+      "sector": 25,
+      "confidence": "legacy_ek_unverified",
+      "legacy_source": "1n.xml"
+    },
+    {
+      "name": "Ч",
+      "chainage_m": 7252,
+      "sector": 25,
+      "confidence": "legacy_ek_unverified",
+      "legacy_source": "2.xml"
+    },
+    {
+      "name": "Н2",
+      "chainage_m": 8207,
+      "sector": 25,
+      "confidence": "legacy_ek_unverified",
+      "legacy_source": "2n.xml"
+    },
+    {
+      "name": "Н1",
+      "chainage_m": 8345,
+      "sector": 25,
+      "confidence": "legacy_ek_unverified",
+      "legacy_source": "1.xml"
+    },
+    {
+      "name": "Ч2",
+      "chainage_m": 9279,
+      "sector": 25,
+      "confidence": "legacy_ek_unverified",
+      "legacy_source": "2.xml"
+    },
+    {
+      "name": "Ч1",
+      "chainage_m": 9486,
+      "sector": 25,
+      "confidence": "legacy_ek_unverified",
+      "legacy_source": "1n.xml"
+    },
+    {
+      "name": "Н",
+      "chainage_m": 10559,
+      "sector": 25,
+      "confidence": "legacy_ek_unverified",
+      "legacy_source": "1.xml"
+    },
+    {
+      "name": "НЧ",
+      "chainage_m": 10561,
+      "sector": 25,
+      "confidence": "legacy_ek_unverified",
+      "legacy_source": "2n.xml"
+    },
+    {
+      "name": "4-I",
+      "chainage_m": 11438,
+      "sector": 25,
+      "confidence": "legacy_ek_unverified",
+      "legacy_source": "1n.xml"
+    },
+    {
+      "name": "4-II",
+      "chainage_m": 11444,
+      "sector": 25,
+      "confidence": "legacy_ek_unverified",
+      "legacy_source": "2.xml"
+    },
+    {
+      "name": "1+УКСПС",
+      "chainage_m": 11807,
+      "sector": 25,
+      "confidence": "legacy_ek_unverified",
+      "legacy_source": "1.xml"
+    },
+    {
+      "name": "1-II+УКСПС",
+      "chainage_m": 11807,
+      "sector": 25,
+      "confidence": "legacy_ek_unverified",
+      "legacy_source": "2n.xml"
+    },
+    {
+      "name": "2-II+УКСПС",
+      "chainage_m": 12691,
+      "sector": 25,
+      "confidence": "legacy_ek_unverified",
+      "legacy_source": "2.xml"
+    },
+    {
+      "name": "2-I+УКСПС",
+      "chainage_m": 12693,
+      "sector": 25,
+      "confidence": "legacy_ek_unverified",
+      "legacy_source": "1n.xml"
+    },
+    {
+      "name": "3-II",
+      "chainage_m": 13396,
+      "sector": 25,
+      "confidence": "legacy_ek_unverified",
+      "legacy_source": "2n.xml"
+    },
+    {
+      "name": "3-I",
+      "chainage_m": 13408,
+      "sector": 25,
+      "confidence": "legacy_ek_unverified",
+      "legacy_source": "1.xml"
+    },
+    {
+      "name": "2Ч укс",
+      "chainage_m": 13926,
+      "sector": 25,
+      "confidence": "legacy_ek_unverified",
+      "legacy_source": "2.xml"
+    },
+    {
+      "name": "1Ч",
+      "chainage_m": 13930,
+      "sector": 25,
+      "confidence": "legacy_ek_unverified",
+      "legacy_source": "1n.xml"
+    },
+    {
+      "name": "1Н",
+      "chainage_m": 14458,
+      "sector": 25,
+      "confidence": "legacy_ek_unverified",
+      "legacy_source": "1.xml"
+    },
+    {
+      "name": "2Н",
+      "chainage_m": 14463,
+      "sector": 25,
+      "confidence": "legacy_ek_unverified",
+      "legacy_source": "2n.xml"
+    },
+    {
+      "name": "2-I+УКСПС",
+      "chainage_m": 15012,
+      "sector": 25,
+      "confidence": "legacy_ek_unverified",
+      "legacy_source": "1n.xml"
+    },
+    {
+      "name": "2-II+УКСПС",
+      "chainage_m": 15014,
+      "sector": 25,
+      "confidence": "legacy_ek_unverified",
+      "legacy_source": "2.xml"
+    },
+    {
+      "name": "1-I+УКСПС",
+      "chainage_m": 15655,
+      "sector": 25,
+      "confidence": "legacy_ek_unverified",
+      "legacy_source": "1.xml"
+    },
+    {
+      "name": "1-II+УКСПС",
+      "chainage_m": 15657,
+      "sector": 25,
+      "confidence": "legacy_ek_unverified",
+      "legacy_source": "2n.xml"
+    },
+    {
+      "name": "2Ч",
+      "chainage_m": 16401,
+      "sector": 25,
+      "confidence": "legacy_ek_unverified",
+      "legacy_source": "2.xml"
+    },
+    {
+      "name": "1Ч",
+      "chainage_m": 16412,
+      "sector": 25,
+      "confidence": "legacy_ek_unverified",
+      "legacy_source": "1n.xml"
+    },
+    {
+      "name": "Н2",
+      "chainage_m": 17226,
+      "sector": 25,
+      "confidence": "legacy_ek_unverified",
+      "legacy_source": "2n.xml"
+    },
+    {
+      "name": "Н1",
+      "chainage_m": 17242,
+      "sector": 25,
+      "confidence": "legacy_ek_unverified",
+      "legacy_source": "1.xml"
+    },
+    {
+      "name": "Ч2",
+      "chainage_m": 18105,
+      "sector": 25,
+      "confidence": "legacy_ek_unverified",
+      "legacy_source": "2.xml"
+    },
+    {
+      "name": "Ч1",
+      "chainage_m": 18118,
+      "sector": 25,
+      "confidence": "legacy_ek_unverified",
+      "legacy_source": "1n.xml"
+    },
+    {
+      "name": "Н",
+      "chainage_m": 18770,
+      "sector": 25,
+      "confidence": "legacy_ek_unverified",
+      "legacy_source": "1.xml"
+    },
+    {
+      "name": "НЧ",
+      "chainage_m": 18772,
+      "sector": 25,
+      "confidence": "legacy_ek_unverified",
+      "legacy_source": "2n.xml"
+    },
+    {
+      "name": "Ч",
+      "chainage_m": 20178,
+      "sector": 25,
+      "confidence": "legacy_ek_unverified",
+      "legacy_source": "2.xml"
+    },
+    {
+      "name": "ЧН",
+      "chainage_m": 20188,
+      "sector": 25,
+      "confidence": "legacy_ek_unverified",
+      "legacy_source": "1n.xml"
+    },
+    {
+      "name": "Н2",
+      "chainage_m": 20937,
+      "sector": 25,
+      "confidence": "legacy_ek_unverified",
+      "legacy_source": "2n.xml"
+    },
+    {
+      "name": "Н1",
+      "chainage_m": 21039,
+      "sector": 25,
+      "confidence": "legacy_ek_unverified",
+      "legacy_source": "1.xml"
+    },
+    {
+      "name": "Ч1",
+      "chainage_m": 21876,
+      "sector": 25,
+      "confidence": "legacy_ek_unverified",
+      "legacy_source": "1n.xml"
+    },
+    {
+      "name": "Ч2",
+      "chainage_m": 21930,
+      "sector": 25,
+      "confidence": "legacy_ek_unverified",
+      "legacy_source": "2.xml"
+    },
+    {
+      "name": "НЧ",
+      "chainage_m": 22743,
+      "sector": 25,
+      "confidence": "legacy_ek_unverified",
+      "legacy_source": "2n.xml"
+    },
+    {
+      "name": "Н",
+      "chainage_m": 22744,
+      "sector": 25,
+      "confidence": "legacy_ek_unverified",
+      "legacy_source": "1.xml"
+    },
+    {
+      "name": "4",
+      "chainage_m": 23394,
+      "sector": 25,
+      "confidence": "legacy_ek_unverified",
+      "legacy_source": "2.xml"
+    },
+    {
+      "name": "4(н)",
+      "chainage_m": 23398,
+      "sector": 25,
+      "confidence": "legacy_ek_unverified",
+      "legacy_source": "1n.xml"
+    },
+    {
+      "name": "1+УКСПС",
+      "chainage_m": 23956,
+      "sector": 25,
+      "confidence": "legacy_ek_unverified",
+      "legacy_source": "1.xml"
+    },
+    {
+      "name": "1(н)+УКСПС",
+      "chainage_m": 23956,
+      "sector": 25,
+      "confidence": "legacy_ek_unverified",
+      "legacy_source": "2n.xml"
+    },
+    {
+      "name": "2(н)+УКСПС",
+      "chainage_m": 24944,
+      "sector": 25,
+      "confidence": "legacy_ek_unverified",
+      "legacy_source": "1n.xml"
+    },
+    {
+      "name": "2+УКСПС",
+      "chainage_m": 24963,
+      "sector": 25,
+      "confidence": "legacy_ek_unverified",
+      "legacy_source": "2.xml"
+    },
+    {
+      "name": "3(н)",
+      "chainage_m": 25187,
+      "sector": 25,
+      "confidence": "legacy_ek_unverified",
+      "legacy_source": "2n.xml"
+    },
+    {
+      "name": "3",
+      "chainage_m": 25203,
+      "sector": 25,
+      "confidence": "legacy_ek_unverified",
+      "legacy_source": "1.xml"
+    },
+    {
+      "name": "ЧН",
+      "chainage_m": 26280,
+      "sector": 25,
+      "confidence": "legacy_ek_unverified",
+      "legacy_source": "1n.xml"
+    },
+    {
+      "name": "Ч",
+      "chainage_m": 26290,
+      "sector": 25,
+      "confidence": "legacy_ek_unverified",
+      "legacy_source": "2.xml"
+    },
+    {
+      "name": "Н2",
+      "chainage_m": 26854,
+      "sector": 25,
+      "confidence": "legacy_ek_unverified",
+      "legacy_source": "2n.xml"
+    },
+    {
+      "name": "Н1",
+      "chainage_m": 26921,
+      "sector": 25,
+      "confidence": "legacy_ek_unverified",
+      "legacy_source": "1.xml"
+    },
+    {
+      "name": "Ч1",
+      "chainage_m": 27823,
+      "sector": 25,
+      "confidence": "legacy_ek_unverified",
+      "legacy_source": "1n.xml"
+    },
+    {
+      "name": "Ч2",
+      "chainage_m": 27850,
+      "sector": 25,
+      "confidence": "legacy_ek_unverified",
+      "legacy_source": "2.xml"
+    },
+    {
+      "name": "НЧ",
+      "chainage_m": 28567,
+      "sector": 25,
+      "confidence": "legacy_ek_unverified",
+      "legacy_source": "2n.xml"
+    },
+    {
+      "name": "Н",
+      "chainage_m": 28568,
+      "sector": 25,
+      "confidence": "legacy_ek_unverified",
+      "legacy_source": "1.xml"
+    },
+    {
+      "name": "6(н)+УКСПС",
+      "chainage_m": 29618,
+      "sector": 25,
+      "confidence": "legacy_ek_unverified",
+      "legacy_source": "1n.xml"
+    },
+    {
+      "name": "1(н)+УКСПС",
+      "chainage_m": 29618,
+      "sector": 25,
+      "confidence": "legacy_ek_unverified",
+      "legacy_source": "2n.xml"
+    },
+    {
+      "name": "1+УКСПС",
+      "chainage_m": 29621,
+      "sector": 25,
+      "confidence": "legacy_ek_unverified",
+      "legacy_source": "1.xml"
+    },
+    {
+      "name": "6+УКСПС",
+      "chainage_m": 29622,
+      "sector": 25,
+      "confidence": "legacy_ek_unverified",
+      "legacy_source": "2.xml"
+    },
+    {
+      "name": "4(н)+УКСПС",
+      "chainage_m": 31148,
+      "sector": 25,
+      "confidence": "legacy_ek_unverified",
+      "legacy_source": "1n.xml"
+    },
+    {
+      "name": "4+УКСПС",
+      "chainage_m": 31151,
+      "sector": 25,
+      "confidence": "legacy_ek_unverified",
+      "legacy_source": "2.xml"
+    },
+    {
+      "name": "3(н)",
+      "chainage_m": 31396,
+      "sector": 25,
+      "confidence": "legacy_ek_unverified",
+      "legacy_source": "2n.xml"
+    },
+    {
+      "name": "3",
+      "chainage_m": 31399,
+      "sector": 25,
+      "confidence": "legacy_ek_unverified",
+      "legacy_source": "1.xml"
+    },
+    {
+      "name": "2+УКСПС",
+      "chainage_m": 32588,
+      "sector": 25,
+      "confidence": "legacy_ek_unverified",
+      "legacy_source": "2.xml"
+    },
+    {
+      "name": "2(н)+УКСПС",
+      "chainage_m": 32590,
+      "sector": 25,
+      "confidence": "legacy_ek_unverified",
+      "legacy_source": "1n.xml"
+    },
+    {
+      "name": "5(н)+",
+      "chainage_m": 32590,
+      "sector": 25,
+      "confidence": "legacy_ek_unverified",
+      "legacy_source": "2n.xml"
+    },
+    {
+      "name": "5+УКСПС",
+      "chainage_m": 32591,
+      "sector": 25,
+      "confidence": "legacy_ek_unverified",
+      "legacy_source": "1.xml"
+    },
+    {
+      "name": "Ч",
+      "chainage_m": 33606,
+      "sector": 25,
+      "confidence": "legacy_ek_unverified",
+      "legacy_source": "2.xml"
+    },
+    {
+      "name": "ЧН",
+      "chainage_m": 33608,
+      "sector": 25,
+      "confidence": "legacy_ek_unverified",
+      "legacy_source": "1n.xml"
+    },
+    {
+      "name": "Н1",
+      "chainage_m": 34258,
+      "sector": 25,
+      "confidence": "legacy_ek_unverified",
+      "legacy_source": "1.xml"
+    },
+    {
+      "name": "Н2",
+      "chainage_m": 34279,
+      "sector": 25,
+      "confidence": "legacy_ek_unverified",
+      "legacy_source": "2n.xml"
+    },
+    {
+      "name": "Ч2",
+      "chainage_m": 35498,
+      "sector": 25,
+      "confidence": "legacy_ek_unverified",
+      "legacy_source": "2.xml"
+    },
+    {
+      "name": "Ч1",
+      "chainage_m": 35615,
+      "sector": 25,
+      "confidence": "legacy_ek_unverified",
+      "legacy_source": "1n.xml"
+    },
+    {
+      "name": "НЧ",
+      "chainage_m": 36340,
+      "sector": 25,
+      "confidence": "legacy_ek_unverified",
+      "legacy_source": "2n.xml"
+    },
+    {
+      "name": "Н",
+      "chainage_m": 36341,
+      "sector": 25,
+      "confidence": "legacy_ek_unverified",
+      "legacy_source": "1.xml"
+    },
+    {
+      "name": "12+УКСПС",
+      "chainage_m": 37358,
+      "sector": 25,
+      "confidence": "legacy_ek_unverified",
+      "legacy_source": "2.xml"
+    },
+    {
+      "name": "1(н)+",
+      "chainage_m": 37361,
+      "sector": 25,
+      "confidence": "legacy_ek_unverified",
+      "legacy_source": "2n.xml"
+    },
+    {
+      "name": "12(н)",
+      "chainage_m": 37363,
+      "sector": 25,
+      "confidence": "legacy_ek_unverified",
+      "legacy_source": "1n.xml"
+    },
+    {
+      "name": "1+УКСПС",
+      "chainage_m": 37364,
+      "sector": 25,
+      "confidence": "legacy_ek_unverified",
+      "legacy_source": "1.xml"
+    },
+    {
+      "name": "10+УКСПС",
+      "chainage_m": 38571,
+      "sector": 25,
+      "confidence": "legacy_ek_unverified",
+      "legacy_source": "2.xml"
+    },
+    {
+      "name": "10(н)",
+      "chainage_m": 38573,
+      "sector": 25,
+      "confidence": "legacy_ek_unverified",
+      "legacy_source": "1n.xml"
+    },
+    {
+      "name": "3(н)+",
+      "chainage_m": 38881,
+      "sector": 25,
+      "confidence": "legacy_ek_unverified",
+      "legacy_source": "2n.xml"
+    },
+    {
+      "name": "3+УКСП",
+      "chainage_m": 38901,
+      "sector": 25,
+      "confidence": "legacy_ek_unverified",
+      "legacy_source": "1.xml"
+    },
+    {
+      "name": "8+УКСПС",
+      "chainage_m": 40097,
+      "sector": 25,
+      "confidence": "legacy_ek_unverified",
+      "legacy_source": "2.xml"
+    },
+    {
+      "name": "8(н)+УКСПС",
+      "chainage_m": 40101,
+      "sector": 25,
+      "confidence": "legacy_ek_unverified",
+      "legacy_source": "1n.xml"
+    },
+    {
+      "name": "5+УКСПС",
+      "chainage_m": 40102,
+      "sector": 25,
+      "confidence": "legacy_ek_unverified",
+      "legacy_source": "1.xml"
+    },
+    {
+      "name": "5(н)+",
+      "chainage_m": 40103,
+      "sector": 25,
+      "confidence": "legacy_ek_unverified",
+      "legacy_source": "2n.xml"
+    },
+    {
+      "name": "6т",
+      "chainage_m": 41320,
+      "sector": 25,
+      "confidence": "legacy_ek_unverified",
+      "legacy_source": "2.xml"
+    },
+    {
+      "name": "6(н)",
+      "chainage_m": 41326,
+      "sector": 25,
+      "confidence": "legacy_ek_unverified",
+      "legacy_source": "1n.xml"
+    },
+    {
+      "name": "7",
+      "chainage_m": 41568,
+      "sector": 25,
+      "confidence": "legacy_ek_unverified",
+      "legacy_source": "1.xml"
+    },
+    {
+      "name": "7(н)",
+      "chainage_m": 41577,
+      "sector": 25,
+      "confidence": "legacy_ek_unverified",
+      "legacy_source": "2n.xml"
+    },
+    {
+      "name": "4т",
+      "chainage_m": 42452,
+      "sector": 25,
+      "confidence": "legacy_ek_unverified",
+      "legacy_source": "2.xml"
+    },
+    {
+      "name": "4(н)",
+      "chainage_m": 42467,
+      "sector": 25,
+      "confidence": "legacy_ek_unverified",
+      "legacy_source": "1n.xml"
+    },
+    {
+      "name": "2(н)+УКСПС",
+      "chainage_m": 43575,
+      "sector": 25,
+      "confidence": "legacy_ek_unverified",
+      "legacy_source": "1n.xml"
+    },
+    {
+      "name": "9+УКСПС",
+      "chainage_m": 43576,
+      "sector": 25,
+      "confidence": "legacy_ek_unverified",
+      "legacy_source": "1.xml"
+    },
+    {
+      "name": "2+УКСПС",
+      "chainage_m": 43581,
+      "sector": 25,
+      "confidence": "legacy_ek_unverified",
+      "legacy_source": "2.xml"
+    },
+    {
+      "name": "9(н)+",
+      "chainage_m": 43584,
+      "sector": 25,
+      "confidence": "legacy_ek_unverified",
+      "legacy_source": "2n.xml"
+    },
+    {
+      "name": "2Ч",
+      "chainage_m": 44765,
+      "sector": 25,
+      "confidence": "legacy_ek_unverified",
+      "legacy_source": "2.xml"
+    },
+    {
+      "name": "1Ч",
+      "chainage_m": 44769,
+      "sector": 25,
+      "confidence": "legacy_ek_unverified",
+      "legacy_source": "1n.xml"
+    },
+    {
+      "name": "11",
+      "chainage_m": 44770,
+      "sector": 25,
+      "confidence": "legacy_ek_unverified",
+      "legacy_source": "1.xml"
+    },
+    {
+      "name": "11(н)",
+      "chainage_m": 44770,
+      "sector": 25,
+      "confidence": "legacy_ek_unverified",
+      "legacy_source": "2n.xml"
+    },
+    {
+      "name": "Н2",
+      "chainage_m": 45920,
+      "sector": 25,
+      "confidence": "legacy_ek_unverified",
+      "legacy_source": "2n.xml"
+    },
+    {
+      "name": "Н1",
+      "chainage_m": 46024,
+      "sector": 25,
+      "confidence": "legacy_ek_unverified",
+      "legacy_source": "1.xml"
+    },
+    {
+      "name": "Ч2",
+      "chainage_m": 47001,
+      "sector": 25,
+      "confidence": "legacy_ek_unverified",
+      "legacy_source": "2.xml"
+    },
+    {
+      "name": "Ч1",
+      "chainage_m": 47330,
+      "sector": 25,
+      "confidence": "legacy_ek_unverified",
+      "legacy_source": "1n.xml"
+    },
+    {
+      "name": "1Н",
+      "chainage_m": 48103,
+      "sector": 25,
+      "confidence": "legacy_ek_unverified",
+      "legacy_source": "1.xml"
+    },
+    {
+      "name": "2Н",
+      "chainage_m": 48115,
+      "sector": 25,
+      "confidence": "legacy_ek_unverified",
+      "legacy_source": "2n.xml"
+    },
+    {
+      "name": "16-I+УКСПС",
+      "chainage_m": 49452,
+      "sector": 25,
+      "confidence": "legacy_ek_unverified",
+      "legacy_source": "1n.xml"
+    },
+    {
+      "name": "1+УКСПС",
+      "chainage_m": 49453,
+      "sector": 25,
+      "confidence": "legacy_ek_unverified",
+      "legacy_source": "1.xml"
+    },
+    {
+      "name": "16+УКСПС",
+      "chainage_m": 49470,
+      "sector": 25,
+      "confidence": "legacy_ek_unverified",
+      "legacy_source": "2.xml"
+    },
+    {
+      "name": "1+УКСПС",
+      "chainage_m": 49470,
+      "sector": 25,
+      "confidence": "legacy_ek_unverified",
+      "legacy_source": "2n.xml"
+    },
+    {
+      "name": "14",
+      "chainage_m": 50869,
+      "sector": 25,
+      "confidence": "legacy_ek_unverified",
+      "legacy_source": "2.xml"
+    },
+    {
+      "name": "3",
+      "chainage_m": 50871,
+      "sector": 25,
+      "confidence": "legacy_ek_unverified",
+      "legacy_source": "1.xml"
+    },
+    {
+      "name": "14-I",
+      "chainage_m": 50871,
+      "sector": 25,
+      "confidence": "legacy_ek_unverified",
+      "legacy_source": "1n.xml"
+    },
+    {
+      "name": "12-I",
+      "chainage_m": 52015,
+      "sector": 25,
+      "confidence": "legacy_ek_unverified",
+      "legacy_source": "1n.xml"
+    },
+    {
+      "name": "12",
+      "chainage_m": 52019,
+      "sector": 25,
+      "confidence": "legacy_ek_unverified",
+      "legacy_source": "2.xml"
+    },
+    {
+      "name": "5",
+      "chainage_m": 52373,
+      "sector": 25,
+      "confidence": "legacy_ek_unverified",
+      "legacy_source": "2n.xml"
+    },
+    {
+      "name": "5",
+      "chainage_m": 52409,
+      "sector": 25,
+      "confidence": "legacy_ek_unverified",
+      "legacy_source": "1.xml"
+    },
+    {
+      "name": "10-I",
+      "chainage_m": 53930,
+      "sector": 25,
+      "confidence": "legacy_ek_unverified",
+      "legacy_source": "1n.xml"
+    },
+    {
+      "name": "10",
+      "chainage_m": 53939,
+      "sector": 25,
+      "confidence": "legacy_ek_unverified",
+      "legacy_source": "2.xml"
+    },
+    {
+      "name": "7",
+      "chainage_m": 54330,
+      "sector": 25,
+      "confidence": "legacy_ek_unverified",
+      "legacy_source": "1.xml"
+    },
+    {
+      "name": "7-II",
+      "chainage_m": 54345,
+      "sector": 25,
+      "confidence": "legacy_ek_unverified",
+      "legacy_source": "2n.xml"
+    },
+    {
+      "name": "8-I",
+      "chainage_m": 56120,
+      "sector": 25,
+      "confidence": "legacy_ek_unverified",
+      "legacy_source": "1n.xml"
+    },
+    {
+      "name": "8",
+      "chainage_m": 56132,
+      "sector": 25,
+      "confidence": "legacy_ek_unverified",
+      "legacy_source": "2.xml"
+    },
+    {
+      "name": "9-II",
+      "chainage_m": 56220,
+      "sector": 25,
+      "confidence": "legacy_ek_unverified",
+      "legacy_source": "2n.xml"
+    },
+    {
+      "name": "9",
+      "chainage_m": 56224,
+      "sector": 25,
+      "confidence": "legacy_ek_unverified",
+      "legacy_source": "1.xml"
+    },
+    {
+      "name": "6-I",
+      "chainage_m": 57880,
+      "sector": 25,
+      "confidence": "legacy_ek_unverified",
+      "legacy_source": "1n.xml"
+    },
+    {
+      "name": "6",
+      "chainage_m": 58000,
+      "sector": 25,
+      "confidence": "legacy_ek_unverified",
+      "legacy_source": "2.xml"
+    },
+    {
+      "name": "11",
+      "chainage_m": 58081,
+      "sector": 25,
+      "confidence": "legacy_ek_unverified",
+      "legacy_source": "1.xml"
+    },
+    {
+      "name": "11-II",
+      "chainage_m": 58090,
+      "sector": 25,
+      "confidence": "legacy_ek_unverified",
+      "legacy_source": "2n.xml"
+    },
+    {
+      "name": "4+УКСПС",
+      "chainage_m": 60068,
+      "sector": 25,
+      "confidence": "legacy_ek_unverified",
+      "legacy_source": "2.xml"
+    },
+    {
+      "name": "4-I",
+      "chainage_m": 60080,
+      "sector": 25,
+      "confidence": "legacy_ek_unverified",
+      "legacy_source": "1n.xml"
+    },
+    {
+      "name": "13-II+",
+      "chainage_m": 60200,
+      "sector": 25,
+      "confidence": "legacy_ek_unverified",
+      "legacy_source": "2n.xml"
+    },
+    {
+      "name": "13",
+      "chainage_m": 60260,
+      "sector": 25,
+      "confidence": "legacy_ek_unverified",
+      "legacy_source": "1.xml"
+    },
+    {
+      "name": "2-I+УКСПС",
+      "chainage_m": 62010,
+      "sector": 25,
+      "confidence": "legacy_ek_unverified",
+      "legacy_source": "1n.xml"
+    },
+    {
+      "name": "2+УКСПС",
+      "chainage_m": 62017,
+      "sector": 25,
+      "confidence": "legacy_ek_unverified",
+      "legacy_source": "2.xml"
+    },
+    {
+      "name": "15-II+УКСПС",
+      "chainage_m": 62100,
+      "sector": 25,
+      "confidence": "legacy_ek_unverified",
+      "legacy_source": "2n.xml"
+    },
+    {
+      "name": "15+УКСПС",
+      "chainage_m": 62103,
+      "sector": 25,
+      "confidence": "legacy_ek_unverified",
+      "legacy_source": "1.xml"
+    },
+    {
+      "name": "Ч",
+      "chainage_m": 63029,
+      "sector": 25,
+      "confidence": "legacy_ek_unverified",
+      "legacy_source": "2.xml"
+    },
+    {
+      "name": "ЧН",
+      "chainage_m": 63035,
+      "sector": 25,
+      "confidence": "legacy_ek_unverified",
+      "legacy_source": "1n.xml"
+    },
+    {
+      "name": "Н1",
+      "chainage_m": 64034,
+      "sector": 25,
+      "confidence": "legacy_ek_unverified",
+      "legacy_source": "1.xml"
+    },
+    {
+      "name": "Н2",
+      "chainage_m": 64100,
+      "sector": 25,
+      "confidence": "legacy_ek_unverified",
+      "legacy_source": "2n.xml"
+    },
+    {
+      "name": "Ч1",
+      "chainage_m": 64970,
+      "sector": 25,
+      "confidence": "legacy_ek_unverified",
+      "legacy_source": "1n.xml"
+    },
+    {
+      "name": "Ч2",
+      "chainage_m": 64984,
+      "sector": 25,
+      "confidence": "legacy_ek_unverified",
+      "legacy_source": "2.xml"
+    },
+    {
+      "name": "Н",
+      "chainage_m": 65555,
+      "sector": 25,
+      "confidence": "legacy_ek_unverified",
+      "legacy_source": "1.xml"
+    },
+    {
+      "name": "НЧ",
+      "chainage_m": 65570,
+      "sector": 25,
+      "confidence": "legacy_ek_unverified",
+      "legacy_source": "2n.xml"
+    },
+    {
+      "name": "12-I",
+      "chainage_m": 66400,
+      "sector": 25,
+      "confidence": "legacy_ek_unverified",
+      "legacy_source": "1n.xml"
+    },
+    {
+      "name": "12",
+      "chainage_m": 66411,
+      "sector": 25,
+      "confidence": "legacy_ek_unverified",
+      "legacy_source": "2.xml"
+    },
+    {
+      "name": "1-II+УКСПС",
+      "chainage_m": 66850,
+      "sector": 25,
+      "confidence": "legacy_ek_unverified",
+      "legacy_source": "2n.xml"
+    },
+    {
+      "name": "1+УКСПС",
+      "chainage_m": 66853,
+      "sector": 25,
+      "confidence": "legacy_ek_unverified",
+      "legacy_source": "1.xml"
+    },
+    {
+      "name": "10-I",
+      "chainage_m": 68530,
+      "sector": 25,
+      "confidence": "legacy_ek_unverified",
+      "legacy_source": "1n.xml"
+    },
+    {
+      "name": "10",
+      "chainage_m": 68530,
+      "sector": 25,
+      "confidence": "legacy_ek_unverified",
+      "legacy_source": "2.xml"
+    },
+    {
+      "name": "3",
+      "chainage_m": 68627,
+      "sector": 25,
+      "confidence": "legacy_ek_unverified",
+      "legacy_source": "1.xml"
+    },
+    {
+      "name": "3-II",
+      "chainage_m": 68630,
+      "sector": 25,
+      "confidence": "legacy_ek_unverified",
+      "legacy_source": "2n.xml"
+    },
+    {
+      "name": "8-I",
+      "chainage_m": 70658,
+      "sector": 25,
+      "confidence": "legacy_ek_unverified",
+      "legacy_source": "1n.xml"
+    },
+    {
+      "name": "8",
+      "chainage_m": 70658,
+      "sector": 25,
+      "confidence": "legacy_ek_unverified",
+      "legacy_source": "2.xml"
+    },
+    {
+      "name": "5",
+      "chainage_m": 70790,
+      "sector": 25,
+      "confidence": "legacy_ek_unverified",
+      "legacy_source": "1.xml"
+    },
+    {
+      "name": "5-II",
+      "chainage_m": 70790,
+      "sector": 25,
+      "confidence": "legacy_ek_unverified",
+      "legacy_source": "2n.xml"
+    },
+    {
+      "name": "6+УКСПС",
+      "chainage_m": 72771,
+      "sector": 25,
+      "confidence": "legacy_ek_unverified",
+      "legacy_source": "2.xml"
+    },
+    {
+      "name": "6-I+УКПС",
+      "chainage_m": 72780,
+      "sector": 25,
+      "confidence": "legacy_ek_unverified",
+      "legacy_source": "1n.xml"
+    },
+    {
+      "name": "7",
+      "chainage_m": 73080,
+      "sector": 25,
+      "confidence": "legacy_ek_unverified",
+      "legacy_source": "1.xml"
+    },
+    {
+      "name": "7-II",
+      "chainage_m": 73105,
+      "sector": 25,
+      "confidence": "legacy_ek_unverified",
+      "legacy_source": "2n.xml"
+    },
+    {
+      "name": "4-I+УКСПС",
+      "chainage_m": 74894,
+      "sector": 25,
+      "confidence": "legacy_ek_unverified",
+      "legacy_source": "1n.xml"
+    },
+    {
+      "name": "4+УКСПС",
+      "chainage_m": 74894,
+      "sector": 25,
+      "confidence": "legacy_ek_unverified",
+      "legacy_source": "2.xml"
+    },
+    {
+      "name": "9+УКСПС",
+      "chainage_m": 74972,
+      "sector": 25,
+      "confidence": "legacy_ek_unverified",
+      "legacy_source": "1.xml"
+    },
+    {
+      "name": "9-II",
+      "chainage_m": 74991,
+      "sector": 25,
+      "confidence": "legacy_ek_unverified",
+      "legacy_source": "2n.xml"
+    },
+    {
+      "name": "2-I+УКСПС",
+      "chainage_m": 77070,
+      "sector": 25,
+      "confidence": "legacy_ek_unverified",
+      "legacy_source": "1n.xml"
+    },
+    {
+      "name": "2+УКСПС",
+      "chainage_m": 77102,
+      "sector": 25,
+      "confidence": "legacy_ek_unverified",
+      "legacy_source": "2.xml"
+    },
+    {
+      "name": "11+УКСПС",
+      "chainage_m": 77160,
+      "sector": 25,
+      "confidence": "legacy_ek_unverified",
+      "legacy_source": "1.xml"
+    },
+    {
+      "name": "11-II+УКСПС",
+      "chainage_m": 77170,
+      "sector": 25,
+      "confidence": "legacy_ek_unverified",
+      "legacy_source": "2n.xml"
+    },
+    {
+      "name": "Ч",
+      "chainage_m": 78271,
+      "sector": 25,
+      "confidence": "legacy_ek_unverified",
+      "legacy_source": "2.xml"
+    },
+    {
+      "name": "ЧН",
+      "chainage_m": 78280,
+      "sector": 25,
+      "confidence": "legacy_ek_unverified",
+      "legacy_source": "1n.xml"
+    },
+    {
+      "name": "Н2",
+      "chainage_m": 79040,
+      "sector": 25,
+      "confidence": "legacy_ek_unverified",
+      "legacy_source": "2n.xml"
+    },
+    {
+      "name": "Н1",
+      "chainage_m": 79135,
+      "sector": 25,
+      "confidence": "legacy_ek_unverified",
+      "legacy_source": "1.xml"
+    },
+    {
+      "name": "Ч2",
+      "chainage_m": 80052,
+      "sector": 25,
+      "confidence": "legacy_ek_unverified",
+      "legacy_source": "2.xml"
+    },
+    {
+      "name": "Ч1",
+      "chainage_m": 80126,
+      "sector": 25,
+      "confidence": "legacy_ek_unverified",
+      "legacy_source": "1n.xml"
+    },
+    {
+      "name": "Н",
+      "chainage_m": 80989,
+      "sector": 25,
+      "confidence": "legacy_ek_unverified",
+      "legacy_source": "1.xml"
+    },
+    {
+      "name": "НЧ",
+      "chainage_m": 80995,
+      "sector": 25,
+      "confidence": "legacy_ek_unverified",
+      "legacy_source": "2n.xml"
+    },
+    {
+      "name": "14",
+      "chainage_m": 81404,
+      "sector": 25,
+      "confidence": "legacy_ek_unverified",
+      "legacy_source": "2.xml"
+    },
+    {
+      "name": "14-I",
+      "chainage_m": 81440,
+      "sector": 25,
+      "confidence": "legacy_ek_unverified",
+      "legacy_source": "1n.xml"
+    },
+    {
+      "name": "1+УКСПС",
+      "chainage_m": 82159,
+      "sector": 25,
+      "confidence": "legacy_ek_unverified",
+      "legacy_source": "1.xml"
+    },
+    {
+      "name": "1-II+УКСПС",
+      "chainage_m": 82180,
+      "sector": 25,
+      "confidence": "legacy_ek_unverified",
+      "legacy_source": "2n.xml"
+    },
+    {
+      "name": "12-I",
+      "chainage_m": 82700,
+      "sector": 25,
+      "confidence": "legacy_ek_unverified",
+      "legacy_source": "1n.xml"
+    },
+    {
+      "name": "12",
+      "chainage_m": 82711,
+      "sector": 25,
+      "confidence": "legacy_ek_unverified",
+      "legacy_source": "2.xml"
+    },
+    {
+      "name": "3-II+УКСПС",
+      "chainage_m": 83600,
+      "sector": 25,
+      "confidence": "legacy_ek_unverified",
+      "legacy_source": "2n.xml"
+    },
+    {
+      "name": "3+УКСПС",
+      "chainage_m": 83630,
+      "sector": 25,
+      "confidence": "legacy_ek_unverified",
+      "legacy_source": "1.xml"
+    },
+    {
+      "name": "10-I",
+      "chainage_m": 84020,
+      "sector": 25,
+      "confidence": "legacy_ek_unverified",
+      "legacy_source": "1n.xml"
+    },
+    {
+      "name": "10",
+      "chainage_m": 84040,
+      "sector": 25,
+      "confidence": "legacy_ek_unverified",
+      "legacy_source": "2.xml"
+    },
+    {
+      "name": "8-I+УКСПС",
+      "chainage_m": 85100,
+      "sector": 25,
+      "confidence": "legacy_ek_unverified",
+      "legacy_source": "1n.xml"
+    },
+    {
+      "name": "8Т+УКСПС",
+      "chainage_m": 85135,
+      "sector": 25,
+      "confidence": "legacy_ek_unverified",
+      "legacy_source": "2.xml"
+    },
+    {
+      "name": "5-II",
+      "chainage_m": 85850,
+      "sector": 25,
+      "confidence": "legacy_ek_unverified",
+      "legacy_source": "2n.xml"
+    },
+    {
+      "name": "5",
+      "chainage_m": 85910,
+      "sector": 25,
+      "confidence": "legacy_ek_unverified",
+      "legacy_source": "1.xml"
+    },
+    {
+      "name": "6-I",
+      "chainage_m": 86168,
+      "sector": 25,
+      "confidence": "legacy_ek_unverified",
+      "legacy_source": "1n.xml"
+    },
+    {
+      "name": "6Т",
+      "chainage_m": 86188,
+      "sector": 25,
+      "confidence": "legacy_ek_unverified",
+      "legacy_source": "2.xml"
+    },
+    {
+      "name": "7",
+      "chainage_m": 87098,
+      "sector": 25,
+      "confidence": "legacy_ek_unverified",
+      "legacy_source": "1.xml"
+    },
+    {
+      "name": "7-II",
+      "chainage_m": 87200,
+      "sector": 25,
+      "confidence": "legacy_ek_unverified",
+      "legacy_source": "2n.xml"
+    },
+    {
+      "name": "4",
+      "chainage_m": 87474,
+      "sector": 25,
+      "confidence": "legacy_ek_unverified",
+      "legacy_source": "2.xml"
+    },
+    {
+      "name": "4-I+УКСПС",
+      "chainage_m": 87570,
+      "sector": 25,
+      "confidence": "legacy_ek_unverified",
+      "legacy_source": "1n.xml"
+    },
+    {
+      "name": "9",
+      "chainage_m": 88767,
+      "sector": 25,
+      "confidence": "legacy_ek_unverified",
+      "legacy_source": "1.xml"
+    },
+    {
+      "name": "9-II",
+      "chainage_m": 88785,
+      "sector": 25,
+      "confidence": "legacy_ek_unverified",
+      "legacy_source": "2n.xml"
+    },
+    {
+      "name": "2-I+УКСПС",
+      "chainage_m": 89075,
+      "sector": 25,
+      "confidence": "legacy_ek_unverified",
+      "legacy_source": "1n.xml"
+    },
+    {
+      "name": "2+УКСПС",
+      "chainage_m": 89088,
+      "sector": 25,
+      "confidence": "legacy_ek_unverified",
+      "legacy_source": "2.xml"
+    },
+    {
+      "name": "11",
+      "chainage_m": 89818,
+      "sector": 25,
+      "confidence": "legacy_ek_unverified",
+      "legacy_source": "1.xml"
+    },
+    {
+      "name": "11-II",
+      "chainage_m": 89830,
+      "sector": 25,
+      "confidence": "legacy_ek_unverified",
+      "legacy_source": "2n.xml"
+    },
+    {
+      "name": "ЧН",
+      "chainage_m": 90250,
+      "sector": 25,
+      "confidence": "legacy_ek_unverified",
+      "legacy_source": "1n.xml"
+    },
+    {
+      "name": "Ч",
+      "chainage_m": 90293,
+      "sector": 25,
+      "confidence": "legacy_ek_unverified",
+      "legacy_source": "2.xml"
+    },
+    {
+      "name": "Н1",
+      "chainage_m": 91349,
+      "sector": 25,
+      "confidence": "legacy_ek_unverified",
+      "legacy_source": "1.xml"
+    },
+    {
+      "name": "Н2",
+      "chainage_m": 91360,
+      "sector": 25,
+      "confidence": "legacy_ek_unverified",
+      "legacy_source": "2n.xml"
+    },
+    {
+      "name": "Ч2",
+      "chainage_m": 92173,
+      "sector": 25,
+      "confidence": "legacy_ek_unverified",
+      "legacy_source": "2.xml"
+    },
+    {
+      "name": "Ч1",
+      "chainage_m": 92200,
+      "sector": 25,
+      "confidence": "legacy_ek_unverified",
+      "legacy_source": "1n.xml"
+    },
+    {
+      "name": "Н",
+      "chainage_m": 93850,
+      "sector": 25,
+      "confidence": "legacy_ek_unverified",
+      "legacy_source": "1.xml"
+    },
+    {
+      "name": "НЧ",
+      "chainage_m": 93850,
+      "sector": 25,
+      "confidence": "legacy_ek_unverified",
+      "legacy_source": "2n.xml"
+    },
+    {
+      "name": "10-I+УКСПС",
+      "chainage_m": 95310,
+      "sector": 25,
+      "confidence": "legacy_ek_unverified",
+      "legacy_source": "1n.xml"
+    },
+    {
+      "name": "10+УКСПС",
+      "chainage_m": 95310,
+      "sector": 25,
+      "confidence": "legacy_ek_unverified",
+      "legacy_source": "2.xml"
+    },
+    {
+      "name": "1+УКСПС",
+      "chainage_m": 95400,
+      "sector": 25,
+      "confidence": "legacy_ek_unverified",
+      "legacy_source": "1.xml"
+    },
+    {
+      "name": "1-II+УКСПС",
+      "chainage_m": 95400,
+      "sector": 25,
+      "confidence": "legacy_ek_unverified",
+      "legacy_source": "2n.xml"
+    },
+    {
+      "name": "8",
+      "chainage_m": 97064,
+      "sector": 25,
+      "confidence": "legacy_ek_unverified",
+      "legacy_source": "2.xml"
+    },
+    {
+      "name": "8-I",
+      "chainage_m": 97066,
+      "sector": 25,
+      "confidence": "legacy_ek_unverified",
+      "legacy_source": "1n.xml"
+    },
+    {
+      "name": "3-II",
+      "chainage_m": 97069,
+      "sector": 25,
+      "confidence": "legacy_ek_unverified",
+      "legacy_source": "2n.xml"
+    },
+    {
+      "name": "3",
+      "chainage_m": 97130,
+      "sector": 25,
+      "confidence": "legacy_ek_unverified",
+      "legacy_source": "1.xml"
+    },
+    {
+      "name": "6",
+      "chainage_m": 98951,
+      "sector": 25,
+      "confidence": "legacy_ek_unverified",
+      "legacy_source": "2.xml"
+    },
+    {
+      "name": "6-I",
+      "chainage_m": 98979,
+      "sector": 25,
+      "confidence": "legacy_ek_unverified",
+      "legacy_source": "1n.xml"
+    },
+    {
+      "name": "5-II",
+      "chainage_m": 99154,
+      "sector": 25,
+      "confidence": "legacy_ek_unverified",
+      "legacy_source": "2n.xml"
+    },
+    {
+      "name": "5-I",
+      "chainage_m": 99230,
+      "sector": 25,
+      "confidence": "legacy_ek_unverified",
+      "legacy_source": "1.xml"
+    },
+    {
+      "name": "4+УКСПС",
+      "chainage_m": 100525,
+      "sector": 25,
+      "confidence": "legacy_ek_unverified",
+      "legacy_source": "2.xml"
+    },
+    {
+      "name": "4-I+УКСПС",
+      "chainage_m": 100530,
+      "sector": 25,
+      "confidence": "legacy_ek_unverified",
+      "legacy_source": "1n.xml"
+    },
+    {
+      "name": "7-II",
+      "chainage_m": 100790,
+      "sector": 25,
+      "confidence": "legacy_ek_unverified",
+      "legacy_source": "2n.xml"
+    },
+    {
+      "name": "7",
+      "chainage_m": 100801,
+      "sector": 25,
+      "confidence": "legacy_ek_unverified",
+      "legacy_source": "1.xml"
+    },
+    {
+      "name": "2+УКСП",
+      "chainage_m": 102010,
+      "sector": 25,
+      "confidence": "legacy_ek_unverified",
+      "legacy_source": "2.xml"
+    },
+    {
+      "name": "2-I+УКСПС",
+      "chainage_m": 102080,
+      "sector": 25,
+      "confidence": "legacy_ek_unverified",
+      "legacy_source": "1n.xml"
+    },
+    {
+      "name": "9",
+      "chainage_m": 102360,
+      "sector": 25,
+      "confidence": "legacy_ek_unverified",
+      "legacy_source": "1.xml"
+    },
+    {
+      "name": "9-II",
+      "chainage_m": 102370,
+      "sector": 25,
+      "confidence": "legacy_ek_unverified",
+      "legacy_source": "2n.xml"
+    },
+    {
+      "name": "Ч",
+      "chainage_m": 103432,
+      "sector": 25,
+      "confidence": "legacy_ek_unverified",
+      "legacy_source": "2.xml"
+    },
+    {
+      "name": "IЧ",
+      "chainage_m": 103435,
+      "sector": 25,
+      "confidence": "legacy_ek_unverified",
+      "legacy_source": "1n.xml"
+    },
+    {
+      "name": "Н1",
+      "chainage_m": 104314,
+      "sector": 25,
+      "confidence": "legacy_ek_unverified",
+      "legacy_source": "1.xml"
+    },
+    {
+      "name": "Н2",
+      "chainage_m": 104320,
+      "sector": 25,
+      "confidence": "legacy_ek_unverified",
+      "legacy_source": "2n.xml"
+    },
+    {
+      "name": "Ч1",
+      "chainage_m": 105140,
+      "sector": 25,
+      "confidence": "legacy_ek_unverified",
+      "legacy_source": "1n.xml"
+    },
+    {
+      "name": "Ч2",
+      "chainage_m": 105199,
+      "sector": 25,
+      "confidence": "legacy_ek_unverified",
+      "legacy_source": "2.xml"
+    },
+    {
+      "name": "Н",
+      "chainage_m": 105777,
+      "sector": 25,
+      "confidence": "legacy_ek_unverified",
+      "legacy_source": "1.xml"
+    },
+    {
+      "name": "Н",
+      "chainage_m": 105800,
+      "sector": 25,
+      "confidence": "legacy_ek_unverified",
+      "legacy_source": "2n.xml"
+    },
+    {
+      "name": "10+УКСПС",
+      "chainage_m": 106513,
+      "sector": 25,
+      "confidence": "legacy_ek_unverified",
+      "legacy_source": "2.xml"
+    },
+    {
+      "name": "10-I+УКСПС",
+      "chainage_m": 106516,
+      "sector": 25,
+      "confidence": "legacy_ek_unverified",
+      "legacy_source": "1n.xml"
+    },
+    {
+      "name": "1-II",
+      "chainage_m": 106945,
+      "sector": 25,
+      "confidence": "legacy_ek_unverified",
+      "legacy_source": "2n.xml"
+    },
+    {
+      "name": "1",
+      "chainage_m": 107023,
+      "sector": 25,
+      "confidence": "legacy_ek_unverified",
+      "legacy_source": "1.xml"
+    },
+    {
+      "name": "8-I+УКСПС",
+      "chainage_m": 108070,
+      "sector": 25,
+      "confidence": "legacy_ek_unverified",
+      "legacy_source": "1n.xml"
+    },
+    {
+      "name": "8+УКСПС",
+      "chainage_m": 108080,
+      "sector": 25,
+      "confidence": "legacy_ek_unverified",
+      "legacy_source": "2.xml"
+    },
+    {
+      "name": "3-II+УКСПС",
+      "chainage_m": 108130,
+      "sector": 25,
+      "confidence": "legacy_ek_unverified",
+      "legacy_source": "2n.xml"
+    },
+    {
+      "name": "3+УКСПС",
+      "chainage_m": 108150,
+      "sector": 25,
+      "confidence": "legacy_ek_unverified",
+      "legacy_source": "1.xml"
+    },
+    {
+      "name": "6Т",
+      "chainage_m": 109340,
+      "sector": 25,
+      "confidence": "legacy_ek_unverified",
+      "legacy_source": "2.xml"
+    },
+    {
+      "name": "5-II",
+      "chainage_m": 109420,
+      "sector": 25,
+      "confidence": "legacy_ek_unverified",
+      "legacy_source": "2n.xml"
+    },
+    {
+      "name": "6-I",
+      "chainage_m": 110025,
+      "sector": 25,
+      "confidence": "legacy_ek_unverified",
+      "legacy_source": "1n.xml"
+    },
+    {
+      "name": "5",
+      "chainage_m": 110077,
+      "sector": 25,
+      "confidence": "legacy_ek_unverified",
+      "legacy_source": "1.xml"
+    },
+    {
+      "name": "4Т+УКСПС",
+      "chainage_m": 111397,
+      "sector": 25,
+      "confidence": "legacy_ek_unverified",
+      "legacy_source": "2.xml"
+    },
+    {
+      "name": "4-I+УКСПС",
+      "chainage_m": 111410,
+      "sector": 25,
+      "confidence": "legacy_ek_unverified",
+      "legacy_source": "1n.xml"
+    },
+    {
+      "name": "7+УКСПС",
+      "chainage_m": 111470,
+      "sector": 25,
+      "confidence": "legacy_ek_unverified",
+      "legacy_source": "1.xml"
+    },
+    {
+      "name": "7-II+УКСПС",
+      "chainage_m": 111480,
+      "sector": 25,
+      "confidence": "legacy_ek_unverified",
+      "legacy_source": "2n.xml"
+    },
+    {
+      "name": "2-I+УКСПС",
+      "chainage_m": 112720,
+      "sector": 25,
+      "confidence": "legacy_ek_unverified",
+      "legacy_source": "1n.xml"
+    },
+    {
+      "name": "2+УКСПС",
+      "chainage_m": 112720,
+      "sector": 25,
+      "confidence": "legacy_ek_unverified",
+      "legacy_source": "2.xml"
+    },
+    {
+      "name": "9-II+УКСПС",
+      "chainage_m": 112810,
+      "sector": 25,
+      "confidence": "legacy_ek_unverified",
+      "legacy_source": "2n.xml"
+    },
+    {
+      "name": "9+УКСПС",
+      "chainage_m": 112838,
+      "sector": 25,
+      "confidence": "legacy_ek_unverified",
+      "legacy_source": "1.xml"
+    },
+    {
+      "name": "11-II",
+      "chainage_m": 113780,
+      "sector": 25,
+      "confidence": "legacy_ek_unverified",
+      "legacy_source": "2n.xml"
+    },
+    {
+      "name": "11",
+      "chainage_m": 113831,
+      "sector": 25,
+      "confidence": "legacy_ek_unverified",
+      "legacy_source": "1.xml"
+    },
+    {
+      "name": "ЧН",
+      "chainage_m": 114530,
+      "sector": 25,
+      "confidence": "legacy_ek_unverified",
+      "legacy_source": "1n.xml"
+    },
+    {
+      "name": "Ч",
+      "chainage_m": 114530,
+      "sector": 25,
+      "confidence": "legacy_ek_unverified",
+      "legacy_source": "2.xml"
+    },
+    {
+      "name": "Н2",
+      "chainage_m": 115257,
+      "sector": 25,
+      "confidence": "legacy_ek_unverified",
+      "legacy_source": "2n.xml"
+    },
+    {
+      "name": "Н1",
+      "chainage_m": 115330,
+      "sector": 25,
+      "confidence": "legacy_ek_unverified",
+      "legacy_source": "1.xml"
+    },
+    {
+      "name": "Ч1",
+      "chainage_m": 116170,
+      "sector": 25,
+      "confidence": "legacy_ek_unverified",
+      "legacy_source": "1n.xml"
+    },
+    {
+      "name": "Ч2",
+      "chainage_m": 116220,
+      "sector": 25,
+      "confidence": "legacy_ek_unverified",
+      "legacy_source": "2.xml"
+    },
+    {
+      "name": "НЧ",
+      "chainage_m": 116620,
+      "sector": 25,
+      "confidence": "legacy_ek_unverified",
+      "legacy_source": "2n.xml"
+    },
+    {
+      "name": "Н",
+      "chainage_m": 116660,
+      "sector": 25,
+      "confidence": "legacy_ek_unverified",
+      "legacy_source": "1.xml"
+    },
+    {
+      "name": "14",
+      "chainage_m": 117850,
+      "sector": 25,
+      "confidence": "legacy_ek_unverified",
+      "legacy_source": "2.xml"
+    },
+    {
+      "name": "1-II",
+      "chainage_m": 117870,
+      "sector": 25,
+      "confidence": "legacy_ek_unverified",
+      "legacy_source": "2n.xml"
+    },
+    {
+      "name": "1",
+      "chainage_m": 117880,
+      "sector": 25,
+      "confidence": "legacy_ek_unverified",
+      "legacy_source": "1.xml"
+    },
+    {
+      "name": "3",
+      "chainage_m": 118770,
+      "sector": 25,
+      "confidence": "legacy_ek_unverified",
+      "legacy_source": "1.xml"
+    },
+    {
+      "name": "3-II+УКСПС",
+      "chainage_m": 119300,
+      "sector": 25,
+      "confidence": "legacy_ek_unverified",
+      "legacy_source": "2n.xml"
+    },
+    {
+      "name": "12",
+      "chainage_m": 119466,
+      "sector": 25,
+      "confidence": "legacy_ek_unverified",
+      "legacy_source": "2.xml"
+    },
+    {
+      "name": "12-I+УКСПС",
+      "chainage_m": 119510,
+      "sector": 25,
+      "confidence": "legacy_ek_unverified",
+      "legacy_source": "1n.xml"
+    },
+    {
+      "name": "5",
+      "chainage_m": 120150,
+      "sector": 25,
+      "confidence": "legacy_ek_unverified",
+      "legacy_source": "1.xml"
+    },
+    {
+      "name": "10",
+      "chainage_m": 121055,
+      "sector": 25,
+      "confidence": "legacy_ek_unverified",
+      "legacy_source": "2.xml"
+    },
+    {
+      "name": "5-II",
+      "chainage_m": 121120,
+      "sector": 25,
+      "confidence": "legacy_ek_unverified",
+      "legacy_source": "2n.xml"
+    },
+    {
+      "name": "10-I",
+      "chainage_m": 121430,
+      "sector": 25,
+      "confidence": "legacy_ek_unverified",
+      "legacy_source": "1n.xml"
+    },
+    {
+      "name": "7",
+      "chainage_m": 121499,
+      "sector": 25,
+      "confidence": "legacy_ek_unverified",
+      "legacy_source": "1.xml"
+    },
+    {
+      "name": "8",
+      "chainage_m": 123046,
+      "sector": 25,
+      "confidence": "legacy_ek_unverified",
+      "legacy_source": "2.xml"
+    },
+    {
+      "name": "8-I",
+      "chainage_m": 123060,
+      "sector": 25,
+      "confidence": "legacy_ek_unverified",
+      "legacy_source": "1n.xml"
+    },
+    {
+      "name": "9",
+      "chainage_m": 123334,
+      "sector": 25,
+      "confidence": "legacy_ek_unverified",
+      "legacy_source": "1.xml"
+    },
+    {
+      "name": "7-II",
+      "chainage_m": 123340,
+      "sector": 25,
+      "confidence": "legacy_ek_unverified",
+      "legacy_source": "2n.xml"
+    },
+    {
+      "name": "6-I",
+      "chainage_m": 124859,
+      "sector": 25,
+      "confidence": "legacy_ek_unverified",
+      "legacy_source": "1n.xml"
+    },
+    {
+      "name": "6",
+      "chainage_m": 124877,
+      "sector": 25,
+      "confidence": "legacy_ek_unverified",
+      "legacy_source": "2.xml"
+    },
+    {
+      "name": "11+УКСПС",
+      "chainage_m": 125243,
+      "sector": 25,
+      "confidence": "legacy_ek_unverified",
+      "legacy_source": "1.xml"
+    },
+    {
+      "name": "9-II+УКСПС",
+      "chainage_m": 125260,
+      "sector": 25,
+      "confidence": "legacy_ek_unverified",
+      "legacy_source": "2n.xml"
+    },
+    {
+      "name": "4-I+УКСПС",
+      "chainage_m": 126050,
+      "sector": 25,
+      "confidence": "legacy_ek_unverified",
+      "legacy_source": "1n.xml"
+    },
+    {
+      "name": "4+УКСПС",
+      "chainage_m": 126611,
+      "sector": 25,
+      "confidence": "legacy_ek_unverified",
+      "legacy_source": "2.xml"
+    },
+    {
+      "name": "11-II",
+      "chainage_m": 127210,
+      "sector": 25,
+      "confidence": "legacy_ek_unverified",
+      "legacy_source": "2n.xml"
+    },
+    {
+      "name": "2+УКСПС",
+      "chainage_m": 127824,
+      "sector": 25,
+      "confidence": "legacy_ek_unverified",
+      "legacy_source": "2.xml"
+    },
+    {
+      "name": "2-I+УКСПС",
+      "chainage_m": 127850,
+      "sector": 25,
+      "confidence": "legacy_ek_unverified",
+      "legacy_source": "1n.xml"
+    },
+    {
+      "name": "13-II",
+      "chainage_m": 128630,
+      "sector": 25,
+      "confidence": "legacy_ek_unverified",
+      "legacy_source": "2n.xml"
+    },
+    {
+      "name": "13",
+      "chainage_m": 128835,
+      "sector": 25,
+      "confidence": "legacy_ek_unverified",
+      "legacy_source": "1.xml"
+    },
+    {
+      "name": "Ч",
+      "chainage_m": 128980,
+      "sector": 25,
+      "confidence": "legacy_ek_unverified",
+      "legacy_source": "2.xml"
+    },
+    {
+      "name": "ЧН",
+      "chainage_m": 129000,
+      "sector": 25,
+      "confidence": "legacy_ek_unverified",
+      "legacy_source": "1n.xml"
+    },
+    {
+      "name": "Н2",
+      "chainage_m": 130260,
+      "sector": 25,
+      "confidence": "legacy_ek_unverified",
+      "legacy_source": "2n.xml"
+    },
+    {
+      "name": "Н1",
+      "chainage_m": 130270,
+      "sector": 25,
+      "confidence": "legacy_ek_unverified",
+      "legacy_source": "1.xml"
+    },
+    {
+      "name": "Ч1",
+      "chainage_m": 131167,
+      "sector": 25,
+      "confidence": "legacy_ek_unverified",
+      "legacy_source": "1n.xml"
+    },
+    {
+      "name": "Ч2",
+      "chainage_m": 131300,
+      "sector": 25,
+      "confidence": "legacy_ek_unverified",
+      "legacy_source": "2.xml"
+    },
+    {
+      "name": "НЧ",
+      "chainage_m": 132700,
+      "sector": 25,
+      "confidence": "legacy_ek_unverified",
+      "legacy_source": "2n.xml"
+    },
+    {
+      "name": "Н",
+      "chainage_m": 132709,
+      "sector": 25,
+      "confidence": "legacy_ek_unverified",
+      "legacy_source": "1.xml"
+    },
+    {
+      "name": "4-I",
+      "chainage_m": 133020,
+      "sector": 25,
+      "confidence": "legacy_ek_unverified",
+      "legacy_source": "1n.xml"
+    },
+    {
+      "name": "4",
+      "chainage_m": 133050,
+      "sector": 25,
+      "confidence": "legacy_ek_unverified",
+      "legacy_source": "2.xml"
+    },
+    {
+      "name": "2-I+УКСПС",
+      "chainage_m": 134100,
+      "sector": 25,
+      "confidence": "legacy_ek_unverified",
+      "legacy_source": "1n.xml"
+    },
+    {
+      "name": "2+УКСПС",
+      "chainage_m": 134128,
+      "sector": 25,
+      "confidence": "legacy_ek_unverified",
+      "legacy_source": "2.xml"
+    },
+    {
+      "name": "1-II+УКСПС",
+      "chainage_m": 134200,
+      "sector": 25,
+      "confidence": "legacy_ek_unverified",
+      "legacy_source": "2n.xml"
+    },
+    {
+      "name": "1+УКСПС",
+      "chainage_m": 134206,
+      "sector": 25,
+      "confidence": "legacy_ek_unverified",
+      "legacy_source": "1.xml"
+    },
+    {
+      "name": "Ч",
+      "chainage_m": 135540,
+      "sector": 25,
+      "confidence": "legacy_ek_unverified",
+      "legacy_source": "2.xml"
+    },
+    {
+      "name": "ЧН",
+      "chainage_m": 135545,
+      "sector": 25,
+      "confidence": "legacy_ek_unverified",
+      "legacy_source": "1n.xml"
+    },
+    {
+      "name": "Н",
+      "chainage_m": 136161,
+      "sector": 25,
+      "confidence": "legacy_ek_unverified",
+      "legacy_source": "1.xml"
+    },
+    {
+      "name": "НЧ",
+      "chainage_m": 136170,
+      "sector": 25,
+      "confidence": "legacy_ek_unverified",
+      "legacy_source": "2n.xml"
+    },
+    {
+      "name": "4-II+УКСПС",
+      "chainage_m": 137261,
+      "sector": 25,
+      "confidence": "legacy_ek_unverified",
+      "legacy_source": "2.xml"
+    },
+    {
+      "name": "4-I+УКСПС",
+      "chainage_m": 137278,
+      "sector": 25,
+      "confidence": "legacy_ek_unverified",
+      "legacy_source": "1n.xml"
+    },
+    {
+      "name": "1-II+УКСПС",
+      "chainage_m": 137350,
+      "sector": 25,
+      "confidence": "legacy_ek_unverified",
+      "legacy_source": "2n.xml"
+    },
+    {
+      "name": "1-I+УКСПС",
+      "chainage_m": 137355,
+      "sector": 25,
+      "confidence": "legacy_ek_unverified",
+      "legacy_source": "1.xml"
+    },
+    {
+      "name": "2-I+УКСПС",
+      "chainage_m": 139180,
+      "sector": 25,
+      "confidence": "legacy_ek_unverified",
+      "legacy_source": "1n.xml"
+    },
+    {
+      "name": "2-II+УКСПС",
+      "chainage_m": 139184,
+      "sector": 25,
+      "confidence": "legacy_ek_unverified",
+      "legacy_source": "2.xml"
+    },
+    {
+      "name": "3-I+УКСПС",
+      "chainage_m": 139260,
+      "sector": 25,
+      "confidence": "legacy_ek_unverified",
+      "legacy_source": "1.xml"
+    },
+    {
+      "name": "3-II+УКСПС",
+      "chainage_m": 139268,
+      "sector": 25,
+      "confidence": "legacy_ek_unverified",
+      "legacy_source": "2n.xml"
+    },
+    {
+      "name": "ЧН",
+      "chainage_m": 140505,
+      "sector": 25,
+      "confidence": "legacy_ek_unverified",
+      "legacy_source": "1n.xml"
+    },
+    {
+      "name": "Ч",
+      "chainage_m": 140510,
+      "sector": 25,
+      "confidence": "legacy_ek_unverified",
+      "legacy_source": "2.xml"
+    },
+    {
+      "name": "Н2",
+      "chainage_m": 141420,
+      "sector": 25,
+      "confidence": "legacy_ek_unverified",
+      "legacy_source": "2n.xml"
+    },
+    {
+      "name": "Н1",
+      "chainage_m": 141490,
+      "sector": 25,
+      "confidence": "legacy_ek_unverified",
+      "legacy_source": "1.xml"
+    },
+    {
+      "name": "Ч1",
+      "chainage_m": 142265,
+      "sector": 25,
+      "confidence": "legacy_ek_unverified",
+      "legacy_source": "1n.xml"
+    },
+    {
+      "name": "Ч2",
+      "chainage_m": 142300,
+      "sector": 25,
+      "confidence": "legacy_ek_unverified",
+      "legacy_source": "2.xml"
+    },
+    {
+      "name": "Н",
+      "chainage_m": 143510,
+      "sector": 25,
+      "confidence": "legacy_ek_unverified",
+      "legacy_source": "1.xml"
+    },
+    {
+      "name": "НЧ",
+      "chainage_m": 143510,
+      "sector": 25,
+      "confidence": "legacy_ek_unverified",
+      "legacy_source": "2n.xml"
+    },
+    {
+      "name": "12-I+УКСПС",
+      "chainage_m": 145048,
+      "sector": 25,
+      "confidence": "legacy_ek_unverified",
+      "legacy_source": "1n.xml"
+    },
+    {
+      "name": "1-I+УКСПС",
+      "chainage_m": 145164,
+      "sector": 25,
+      "confidence": "legacy_ek_unverified",
+      "legacy_source": "1.xml"
+    },
+    {
+      "name": "12-II+УКСПС",
+      "chainage_m": 145198,
+      "sector": 25,
+      "confidence": "legacy_ek_unverified",
+      "legacy_source": "2.xml"
+    },
+    {
+      "name": "1-II+УКСПС",
+      "chainage_m": 145270,
+      "sector": 25,
+      "confidence": "legacy_ek_unverified",
+      "legacy_source": "2n.xml"
+    },
+    {
+      "name": "10-II+УКСПС",
+      "chainage_m": 146600,
+      "sector": 25,
+      "confidence": "legacy_ek_unverified",
+      "legacy_source": "2.xml"
+    },
+    {
+      "name": "3-II+УКСПС",
+      "chainage_m": 146695,
+      "sector": 25,
+      "confidence": "legacy_ek_unverified",
+      "legacy_source": "2n.xml"
+    },
+    {
+      "name": "10-I+УКСПС",
+      "chainage_m": 146800,
+      "sector": 25,
+      "confidence": "legacy_ek_unverified",
+      "legacy_source": "1n.xml"
+    },
+    {
+      "name": "3-I+УКСПС",
+      "chainage_m": 146880,
+      "sector": 25,
+      "confidence": "legacy_ek_unverified",
+      "legacy_source": "1.xml"
+    },
+    {
+      "name": "8-II",
+      "chainage_m": 148431,
+      "sector": 25,
+      "confidence": "legacy_ek_unverified",
+      "legacy_source": "2.xml"
+    },
+    {
+      "name": "8-I",
+      "chainage_m": 148434,
+      "sector": 25,
+      "confidence": "legacy_ek_unverified",
+      "legacy_source": "1n.xml"
+    },
+    {
+      "name": "5-I",
+      "chainage_m": 148520,
+      "sector": 25,
+      "confidence": "legacy_ek_unverified",
+      "legacy_source": "1.xml"
+    },
+    {
+      "name": "5-II",
+      "chainage_m": 148520,
+      "sector": 25,
+      "confidence": "legacy_ek_unverified",
+      "legacy_source": "2n.xml"
+    },
+    {
+      "name": "6-II",
+      "chainage_m": 150144,
+      "sector": 25,
+      "confidence": "legacy_ek_unverified",
+      "legacy_source": "2.xml"
+    },
+    {
+      "name": "6-I",
+      "chainage_m": 150164,
+      "sector": 25,
+      "confidence": "legacy_ek_unverified",
+      "legacy_source": "1n.xml"
+    },
+    {
+      "name": "7-II",
+      "chainage_m": 150259,
+      "sector": 25,
+      "confidence": "legacy_ek_unverified",
+      "legacy_source": "2n.xml"
+    },
+    {
+      "name": "7-I",
+      "chainage_m": 150270,
+      "sector": 25,
+      "confidence": "legacy_ek_unverified",
+      "legacy_source": "1.xml"
+    },
+    {
+      "name": "4-II+УКСПС",
+      "chainage_m": 151692,
+      "sector": 25,
+      "confidence": "legacy_ek_unverified",
+      "legacy_source": "2.xml"
+    },
+    {
+      "name": "9-II",
+      "chainage_m": 151810,
+      "sector": 25,
+      "confidence": "legacy_ek_unverified",
+      "legacy_source": "2n.xml"
+    },
+    {
+      "name": "4-I+УКСПС",
+      "chainage_m": 151980,
+      "sector": 25,
+      "confidence": "legacy_ek_unverified",
+      "legacy_source": "1n.xml"
+    },
+    {
+      "name": "9-I+УКСПС",
+      "chainage_m": 152089,
+      "sector": 25,
+      "confidence": "legacy_ek_unverified",
+      "legacy_source": "1.xml"
+    },
+    {
+      "name": "2-II+УКСПС",
+      "chainage_m": 153320,
+      "sector": 25,
+      "confidence": "legacy_ek_unverified",
+      "legacy_source": "2.xml"
+    },
+    {
+      "name": "11-II",
+      "chainage_m": 153420,
+      "sector": 25,
+      "confidence": "legacy_ek_unverified",
+      "legacy_source": "2n.xml"
+    },
+    {
+      "name": "2-I+УКСПС",
+      "chainage_m": 153790,
+      "sector": 25,
+      "confidence": "legacy_ek_unverified",
+      "legacy_source": "1n.xml"
+    },
+    {
+      "name": "11-I+УКСПС",
+      "chainage_m": 153890,
+      "sector": 25,
+      "confidence": "legacy_ek_unverified",
+      "legacy_source": "1.xml"
+    },
+    {
+      "name": "Ч",
+      "chainage_m": 154743,
+      "sector": 25,
+      "confidence": "legacy_ek_unverified",
+      "legacy_source": "2.xml"
+    },
+    {
+      "name": "ЧН",
+      "chainage_m": 154780,
+      "sector": 25,
+      "confidence": "legacy_ek_unverified",
+      "legacy_source": "1n.xml"
+    },
+    {
+      "name": "Н2",
+      "chainage_m": 155341,
+      "sector": 25,
+      "confidence": "legacy_ek_unverified",
+      "legacy_source": "2n.xml"
+    },
+    {
+      "name": "Н1",
+      "chainage_m": 155401,
+      "sector": 25,
+      "confidence": "legacy_ek_unverified",
+      "legacy_source": "1.xml"
+    },
+    {
+      "name": "Ч1",
+      "chainage_m": 156253,
+      "sector": 25,
+      "confidence": "legacy_ek_unverified",
+      "legacy_source": "1n.xml"
+    },
+    {
+      "name": "Ч2",
+      "chainage_m": 156310,
+      "sector": 25,
+      "confidence": "legacy_ek_unverified",
+      "legacy_source": "2.xml"
+    },
+    {
+      "name": "Н",
+      "chainage_m": 157360,
+      "sector": 25,
+      "confidence": "legacy_ek_unverified",
+      "legacy_source": "1.xml"
+    },
+    {
+      "name": "НЧ",
+      "chainage_m": 157370,
+      "sector": 25,
+      "confidence": "legacy_ek_unverified",
+      "legacy_source": "2n.xml"
+    },
+    {
+      "name": "12-II+УКСПС",
+      "chainage_m": 158420,
+      "sector": 25,
+      "confidence": "legacy_ek_unverified",
+      "legacy_source": "2.xml"
+    },
+    {
+      "name": "1-II+УКСПС",
+      "chainage_m": 158497,
+      "sector": 25,
+      "confidence": "legacy_ek_unverified",
+      "legacy_source": "2n.xml"
+    },
+    {
+      "name": "1-I+УКСПС",
+      "chainage_m": 158498,
+      "sector": 25,
+      "confidence": "legacy_ek_unverified",
+      "legacy_source": "1.xml"
+    },
+    {
+      "name": "12-I+УКСПС",
+      "chainage_m": 158498,
+      "sector": 25,
+      "confidence": "legacy_ek_unverified",
+      "legacy_source": "1n.xml"
+    },
+    {
+      "name": "10-I+УКСПС",
+      "chainage_m": 159720,
+      "sector": 25,
+      "confidence": "legacy_ek_unverified",
+      "legacy_source": "1n.xml"
+    },
+    {
+      "name": "10-II+УКСПС",
+      "chainage_m": 159745,
+      "sector": 25,
+      "confidence": "legacy_ek_unverified",
+      "legacy_source": "2.xml"
+    },
+    {
+      "name": "3-II+УКСПС",
+      "chainage_m": 159815,
+      "sector": 25,
+      "confidence": "legacy_ek_unverified",
+      "legacy_source": "2n.xml"
+    },
+    {
+      "name": "3-I+УКСПС",
+      "chainage_m": 159826,
+      "sector": 25,
+      "confidence": "legacy_ek_unverified",
+      "legacy_source": "1.xml"
+    },
+    {
+      "name": "8-II",
+      "chainage_m": 161231,
+      "sector": 25,
+      "confidence": "legacy_ek_unverified",
+      "legacy_source": "2.xml"
+    },
+    {
+      "name": "5-II",
+      "chainage_m": 161330,
+      "sector": 25,
+      "confidence": "legacy_ek_unverified",
+      "legacy_source": "2n.xml"
+    },
+    {
+      "name": "8-I",
+      "chainage_m": 161340,
+      "sector": 25,
+      "confidence": "legacy_ek_unverified",
+      "legacy_source": "1n.xml"
+    },
+    {
+      "name": "5-I",
+      "chainage_m": 161435,
+      "sector": 25,
+      "confidence": "legacy_ek_unverified",
+      "legacy_source": "1.xml"
+    },
+    {
+      "name": "6-II",
+      "chainage_m": 162560,
+      "sector": 25,
+      "confidence": "legacy_ek_unverified",
+      "legacy_source": "2.xml"
+    },
+    {
+      "name": "7-II",
+      "chainage_m": 162660,
+      "sector": 25,
+      "confidence": "legacy_ek_unverified",
+      "legacy_source": "2n.xml"
+    },
+    {
+      "name": "6-I",
+      "chainage_m": 162782,
+      "sector": 25,
+      "confidence": "legacy_ek_unverified",
+      "legacy_source": "1n.xml"
+    },
+    {
+      "name": "7-I",
+      "chainage_m": 162890,
+      "sector": 25,
+      "confidence": "legacy_ek_unverified",
+      "legacy_source": "1.xml"
+    },
+    {
+      "name": "4-I+УКСПС",
+      "chainage_m": 164116,
+      "sector": 25,
+      "confidence": "legacy_ek_unverified",
+      "legacy_source": "1n.xml"
+    },
+    {
+      "name": "4-II+УКСПС",
+      "chainage_m": 164128,
+      "sector": 25,
+      "confidence": "legacy_ek_unverified",
+      "legacy_source": "2.xml"
+    },
+    {
+      "name": "9-II+УКСПС",
+      "chainage_m": 164220,
+      "sector": 25,
+      "confidence": "legacy_ek_unverified",
+      "legacy_source": "2n.xml"
+    },
+    {
+      "name": "9-I+УКСПС",
+      "chainage_m": 164230,
+      "sector": 25,
+      "confidence": "legacy_ek_unverified",
+      "legacy_source": "1.xml"
+    },
+    {
+      "name": "2-II+УКСПС",
+      "chainage_m": 165636,
+      "sector": 25,
+      "confidence": "legacy_ek_unverified",
+      "legacy_source": "2.xml"
+    },
+    {
+      "name": "2-I+УКСПС",
+      "chainage_m": 165640,
+      "sector": 25,
+      "confidence": "legacy_ek_unverified",
+      "legacy_source": "1n.xml"
+    },
+    {
+      "name": "11-I",
+      "chainage_m": 165730,
+      "sector": 25,
+      "confidence": "legacy_ek_unverified",
+      "legacy_source": "1.xml"
+    },
+    {
+      "name": "ЧН",
+      "chainage_m": 167220,
+      "sector": 25,
+      "confidence": "legacy_ek_unverified",
+      "legacy_source": "1n.xml"
+    },
+    {
+      "name": "Ч",
+      "chainage_m": 167260,
+      "sector": 25,
+      "confidence": "legacy_ek_unverified",
+      "legacy_source": "2.xml"
+    },
+    {
+      "name": "Н1Д",
+      "chainage_m": 167730,
+      "sector": 25,
+      "confidence": "legacy_ek_unverified",
+      "legacy_source": "1.xml"
+    },
+    {
+      "name": "Н2Д",
+      "chainage_m": 167830,
+      "sector": 25,
+      "confidence": "legacy_ek_unverified",
+      "legacy_source": "2n.xml"
+    },
+    {
+      "name": "ЧМ1Д",
+      "chainage_m": 168900,
+      "sector": 25,
+      "confidence": "legacy_ek_unverified",
+      "legacy_source": "1n.xml"
+    },
+    {
+      "name": "ЧМ2Д",
+      "chainage_m": 168900,
+      "sector": 25,
+      "confidence": "legacy_ek_unverified",
+      "legacy_source": "2.xml"
+    },
+    {
+      "name": "НМЕ1",
+      "chainage_m": 169520,
+      "sector": 25,
+      "confidence": "legacy_ek_unverified",
+      "legacy_source": "1.xml"
+    },
+    {
+      "name": "НМЕ2",
+      "chainage_m": 169520,
+      "sector": 25,
+      "confidence": "legacy_ek_unverified",
+      "legacy_source": "2n.xml"
+    },
+    {
+      "name": "ЧМ",
+      "chainage_m": 170033,
+      "sector": 25,
+      "confidence": "legacy_ek_unverified",
+      "legacy_source": "2.xml"
+    },
+    {
+      "name": "НМ3Г",
+      "chainage_m": 170170,
+      "sector": 25,
+      "confidence": "legacy_ek_unverified",
+      "legacy_source": "2n.xml"
+    },
+    {
+      "name": "ЧМ3Г",
+      "chainage_m": 171172,
+      "sector": 25,
+      "confidence": "legacy_ek_unverified",
+      "legacy_source": "2.xml"
+    },
+    {
+      "name": "НМ2",
+      "chainage_m": 171590,
+      "sector": 25,
+      "confidence": "legacy_ek_unverified",
+      "legacy_source": "2n.xml"
+    },
+    {
+      "name": "Ч2",
+      "chainage_m": 172490,
+      "sector": 25,
+      "confidence": "legacy_ek_unverified",
+      "legacy_source": "2.xml"
+    },
+    {
+      "name": "НМ",
+      "chainage_m": 174473,
+      "sector": 25,
+      "confidence": "legacy_ek_unverified",
+      "legacy_source": "1.xml"
+    },
+    {
+      "name": "Ч",
+      "chainage_m": 176238,
+      "sector": 25,
+      "confidence": "legacy_ek_unverified",
+      "legacy_source": "1n.xml"
+    },
+    {
+      "name": "НII",
+      "chainage_m": 176755,
+      "sector": 25,
+      "confidence": "legacy_ek_unverified",
+      "legacy_source": "2n.xml"
+    },
+    {
+      "name": "Н1",
+      "chainage_m": 176800,
+      "sector": 25,
+      "confidence": "legacy_ek_unverified",
+      "legacy_source": "1.xml"
+    },
+    {
+      "name": "Ч2",
+      "chainage_m": 177461,
+      "sector": 25,
+      "confidence": "legacy_ek_unverified",
+      "legacy_source": "2.xml"
+    },
+    {
+      "name": "Ч1",
+      "chainage_m": 177500,
+      "sector": 25,
+      "confidence": "legacy_ek_unverified",
+      "legacy_source": "1n.xml"
+    },
+    {
+      "name": "Н",
+      "chainage_m": 178234,
+      "sector": 25,
+      "confidence": "legacy_ek_unverified",
+      "legacy_source": "1.xml"
+    },
+    {
+      "name": "Ч",
+      "chainage_m": 179869,
+      "sector": 25,
+      "confidence": "legacy_ek_unverified",
+      "legacy_source": "1n.xml"
+    },
+    {
+      "name": "Н2",
+      "chainage_m": 180690,
+      "sector": 25,
+      "confidence": "legacy_ek_unverified",
+      "legacy_source": "2n.xml"
+    },
+    {
+      "name": "Н1",
+      "chainage_m": 180720,
+      "sector": 25,
+      "confidence": "legacy_ek_unverified",
+      "legacy_source": "1.xml"
+    },
+    {
+      "name": "Ч2",
+      "chainage_m": 181085,
+      "sector": 25,
+      "confidence": "legacy_ek_unverified",
+      "legacy_source": "2.xml"
+    },
+    {
+      "name": "Ч1",
+      "chainage_m": 181112,
+      "sector": 25,
+      "confidence": "legacy_ek_unverified",
+      "legacy_source": "1n.xml"
+    },
+    {
+      "name": "Н",
+      "chainage_m": 181830,
+      "sector": 25,
+      "confidence": "legacy_ek_unverified",
+      "legacy_source": "1.xml"
+    },
+    {
+      "name": "Ч",
+      "chainage_m": 183950,
+      "sector": 25,
+      "confidence": "legacy_ek_unverified",
+      "legacy_source": "1n.xml"
+    },
+    {
+      "name": "Н1",
+      "chainage_m": 184491,
+      "sector": 25,
+      "confidence": "legacy_ek_unverified",
+      "legacy_source": "1.xml"
+    },
+    {
+      "name": "Н2",
+      "chainage_m": 184569,
+      "sector": 25,
+      "confidence": "legacy_ek_unverified",
+      "legacy_source": "2n.xml"
+    },
+    {
+      "name": "Ч1",
+      "chainage_m": 185300,
+      "sector": 25,
+      "confidence": "legacy_ek_unverified",
+      "legacy_source": "1n.xml"
+    },
+    {
+      "name": "Ч2",
+      "chainage_m": 185320,
+      "sector": 25,
+      "confidence": "legacy_ek_unverified",
+      "legacy_source": "2.xml"
+    },
+    {
+      "name": "Н",
+      "chainage_m": 186040,
+      "sector": 25,
+      "confidence": "legacy_ek_unverified",
+      "legacy_source": "1.xml"
+    },
+    {
+      "name": "Ч",
+      "chainage_m": 186680,
+      "sector": 25,
+      "confidence": "legacy_ek_unverified",
+      "legacy_source": "1n.xml"
+    },
+    {
+      "name": "Н2",
+      "chainage_m": 187890,
+      "sector": 25,
+      "confidence": "legacy_ek_unverified",
+      "legacy_source": "2n.xml"
+    },
+    {
+      "name": "Н1",
+      "chainage_m": 187960,
+      "sector": 25,
+      "confidence": "legacy_ek_unverified",
+      "legacy_source": "1.xml"
+    },
+    {
+      "name": "Ч2",
+      "chainage_m": 189010,
+      "sector": 25,
+      "confidence": "legacy_ek_unverified",
+      "legacy_source": "2.xml"
+    },
+    {
+      "name": "Ч1",
+      "chainage_m": 189040,
+      "sector": 25,
+      "confidence": "legacy_ek_unverified",
+      "legacy_source": "1n.xml"
+    },
+    {
+      "name": "Н",
+      "chainage_m": 189427,
+      "sector": 25,
+      "confidence": "legacy_ek_unverified",
+      "legacy_source": "1.xml"
+    },
+    {
+      "name": "Ч",
+      "chainage_m": 189700,
+      "sector": 25,
+      "confidence": "legacy_ek_unverified",
+      "legacy_source": "1n.xml"
+    },
+    {
+      "name": "Н1",
+      "chainage_m": 190100,
+      "sector": 25,
+      "confidence": "legacy_ek_unverified",
+      "legacy_source": "1.xml"
+    },
+    {
+      "name": "Н2",
+      "chainage_m": 190160,
+      "sector": 25,
+      "confidence": "legacy_ek_unverified",
+      "legacy_source": "2n.xml"
+    }
+  ],
+  "whistle_points": [],
+  "speed": {
+    "established": null,
+    "permanent_restrictions": [],
+    "temporary_warnings": [],
+    "source": "manual_required"
+  },
+  "flags_for_review": [
+    "Импортировано из пользовательской ЭК приложения «Блокнот машиниста» 0.6.9; профиль, объекты и GPS-геометрия не сверены с официальной режимной картой.",
+    "Ограничения скорости из старого XML намеренно не перенесены: их требуется внести вручную по действующим документам.",
+    "Направление движения и принадлежность GPS-сектора требуют ручной проверки."
+  ],
+  "provenance": [
+    {
+      "kind": "legacy_ek_archive",
+      "file_name": "Ружино(пасс 8170).zip",
+      "sha256": "c52247a43f43378360facbf6ec8c4a27a59bd0ec43d2f2d57b467b985ca4012b",
+      "source_application": "Блокнот машиниста 0.6.9",
+      "role": "non_authoritative_import_seed"
+    }
+  ],
+  "runtime": {
+    "coordinate_unit": "m",
+    "coordinate_kind": "official_railway_chainage",
+    "coordinate_offset_m": -1000,
+    "movement_order": "ascending",
+    "default_path_id": "ek069-ruzhino-pass-8170-s25-path",
+    "route_legs": [
+      {
+        "path_id": "ek069-ruzhino-pass-8170-s25-path",
+        "sector": 25,
+        "from_chainage_m": 1625,
+        "to_chainage_m": 191267
+      }
+    ],
+    "profile_status": "legacy_ek_unverified",
+    "profile_coverage": [
+      {
+        "start_m": 1675,
+        "end_m": 16260
+      },
+      {
+        "start_m": 16660,
+        "end_m": 47980
+      }
+    ],
+    "profile_gaps": [
+      {
+        "start_m": 1625,
+        "end_m": 1675,
+        "reason": "В исходной ЭК отсутствует профиль для этого диапазона."
+      },
+      {
+        "start_m": 16260,
+        "end_m": 16660,
+        "reason": "В исходной ЭК отсутствует профиль для этого диапазона."
+      },
+      {
+        "start_m": 47980,
+        "end_m": 191267,
+        "reason": "В исходной ЭК отсутствует профиль для этого диапазона."
+      }
+    ],
+    "profile_applies_both_directions": false
+  },
+  "geometry": {
+    "status": "draft_from_legacy_ek",
+    "source": "Ружино(пасс 8170).zip",
+    "paths": [
+      {
+        "path_id": "ek069-ruzhino-pass-8170-s25-path",
+        "sector": 25,
+        "points": [
+          {
+            "lat": 43.330515,
+            "lon": 132.062941,
+            "sector": 25,
+            "path_id": "ek069-ruzhino-pass-8170-s25-path",
+            "ordinate": 625,
+            "chainage_m": 1625
+          },
+          {
+            "lat": 43.328218,
+            "lon": 132.06626,
+            "sector": 25,
+            "path_id": "ek069-ruzhino-pass-8170-s25-path",
+            "ordinate": 1000,
+            "chainage_m": 2000
+          },
+          {
+            "lat": 43.326568,
+            "lon": 132.067148,
+            "sector": 25,
+            "path_id": "ek069-ruzhino-pass-8170-s25-path",
+            "ordinate": 1200,
+            "chainage_m": 2200
+          },
+          {
+            "lat": 43.323986,
+            "lon": 132.066159,
+            "sector": 25,
+            "path_id": "ek069-ruzhino-pass-8170-s25-path",
+            "ordinate": 1500,
+            "chainage_m": 2500
+          },
+          {
+            "lat": 43.322247,
+            "lon": 132.066483,
+            "sector": 25,
+            "path_id": "ek069-ruzhino-pass-8170-s25-path",
+            "ordinate": 1700,
+            "chainage_m": 2700
+          },
+          {
+            "lat": 43.320766,
+            "lon": 132.069376,
+            "sector": 25,
+            "path_id": "ek069-ruzhino-pass-8170-s25-path",
+            "ordinate": 2000,
+            "chainage_m": 3000
+          },
+          {
+            "lat": 43.32115,
+            "lon": 132.071743,
+            "sector": 25,
+            "path_id": "ek069-ruzhino-pass-8170-s25-path",
+            "ordinate": 2200,
+            "chainage_m": 3200
+          },
+          {
+            "lat": 43.322995,
+            "lon": 132.07444,
+            "sector": 25,
+            "path_id": "ek069-ruzhino-pass-8170-s25-path",
+            "ordinate": 2500,
+            "chainage_m": 3500
+          },
+          {
+            "lat": 43.324599,
+            "lon": 132.075411,
+            "sector": 25,
+            "path_id": "ek069-ruzhino-pass-8170-s25-path",
+            "ordinate": 2700,
+            "chainage_m": 3700
+          },
+          {
+            "lat": 43.326969,
+            "lon": 132.073996,
+            "sector": 25,
+            "path_id": "ek069-ruzhino-pass-8170-s25-path",
+            "ordinate": 3000,
+            "chainage_m": 4000
+          },
+          {
+            "lat": 43.329191,
+            "lon": 132.071491,
+            "sector": 25,
+            "path_id": "ek069-ruzhino-pass-8170-s25-path",
+            "ordinate": 3300,
+            "chainage_m": 4300
+          },
+          {
+            "lat": 43.331674,
+            "lon": 132.070632,
+            "sector": 25,
+            "path_id": "ek069-ruzhino-pass-8170-s25-path",
+            "ordinate": 3600,
+            "chainage_m": 4600
+          },
+          {
+            "lat": 43.335211,
+            "lon": 132.071801,
+            "sector": 25,
+            "path_id": "ek069-ruzhino-pass-8170-s25-path",
+            "ordinate": 4000,
+            "chainage_m": 5000
+          },
+          {
+            "lat": 43.336904,
+            "lon": 132.072596,
+            "sector": 25,
+            "path_id": "ek069-ruzhino-pass-8170-s25-path",
+            "ordinate": 4200,
+            "chainage_m": 5200
+          },
+          {
+            "lat": 43.338594,
+            "lon": 132.073434,
+            "sector": 25,
+            "path_id": "ek069-ruzhino-pass-8170-s25-path",
+            "ordinate": 4400,
+            "chainage_m": 5400
+          },
+          {
+            "lat": 43.339971,
+            "lon": 132.074901,
+            "sector": 25,
+            "path_id": "ek069-ruzhino-pass-8170-s25-path",
+            "ordinate": 4600,
+            "chainage_m": 5600
+          },
+          {
+            "lat": 43.340674,
+            "lon": 132.077119,
+            "sector": 25,
+            "path_id": "ek069-ruzhino-pass-8170-s25-path",
+            "ordinate": 4800,
+            "chainage_m": 5800
+          },
+          {
+            "lat": 43.341017,
+            "lon": 132.079533,
+            "sector": 25,
+            "path_id": "ek069-ruzhino-pass-8170-s25-path",
+            "ordinate": 5000,
+            "chainage_m": 6000
+          },
+          {
+            "lat": 43.342054,
+            "lon": 132.086863,
+            "sector": 25,
+            "path_id": "ek069-ruzhino-pass-8170-s25-path",
+            "ordinate": 5600,
+            "chainage_m": 6600
+          },
+          {
+            "lat": 43.341693,
+            "lon": 132.091614,
+            "sector": 25,
+            "path_id": "ek069-ruzhino-pass-8170-s25-path",
+            "ordinate": 6000,
+            "chainage_m": 7000
+          },
+          {
+            "lat": 43.336463,
+            "lon": 132.09806,
+            "sector": 25,
+            "path_id": "ek069-ruzhino-pass-8170-s25-path",
+            "ordinate": 6800,
+            "chainage_m": 7800
+          },
+          {
+            "lat": 43.33625,
+            "lon": 132.100467,
+            "sector": 25,
+            "path_id": "ek069-ruzhino-pass-8170-s25-path",
+            "ordinate": 7000,
+            "chainage_m": 8000
+          },
+          {
+            "lat": 43.336712,
+            "lon": 132.105419,
+            "sector": 25,
+            "path_id": "ek069-ruzhino-pass-8170-s25-path",
+            "ordinate": 7400,
+            "chainage_m": 8400
+          },
+          {
+            "lat": 43.337725,
+            "lon": 132.112791,
+            "sector": 25,
+            "path_id": "ek069-ruzhino-pass-8170-s25-path",
+            "ordinate": 8000,
+            "chainage_m": 9000
+          },
+          {
+            "lat": 43.339417,
+            "lon": 132.124897,
+            "sector": 25,
+            "path_id": "ek069-ruzhino-pass-8170-s25-path",
+            "ordinate": 9000,
+            "chainage_m": 10000
+          },
+          {
+            "lat": 43.344915,
+            "lon": 132.134402,
+            "sector": 25,
+            "path_id": "ek069-ruzhino-pass-8170-s25-path",
+            "ordinate": 10000,
+            "chainage_m": 11000
+          },
+          {
+            "lat": 43.345759,
+            "lon": 132.136543,
+            "sector": 25,
+            "path_id": "ek069-ruzhino-pass-8170-s25-path",
+            "ordinate": 10200,
+            "chainage_m": 11200
+          },
+          {
+            "lat": 43.348495,
+            "lon": 132.145684,
+            "sector": 25,
+            "path_id": "ek069-ruzhino-pass-8170-s25-path",
+            "ordinate": 11000,
+            "chainage_m": 12000
+          },
+          {
+            "lat": 43.349146,
+            "lon": 132.147861,
+            "sector": 25,
+            "path_id": "ek069-ruzhino-pass-8170-s25-path",
+            "ordinate": 11200,
+            "chainage_m": 12200
+          },
+          {
+            "lat": 43.351956,
+            "lon": 132.156985,
+            "sector": 25,
+            "path_id": "ek069-ruzhino-pass-8170-s25-path",
+            "ordinate": 12000,
+            "chainage_m": 13000
+          },
+          {
+            "lat": 43.360423,
+            "lon": 132.15909,
+            "sector": 25,
+            "path_id": "ek069-ruzhino-pass-8170-s25-path",
+            "ordinate": 13000,
+            "chainage_m": 14000
+          },
+          {
+            "lat": 43.364014,
+            "lon": 132.159092,
+            "sector": 25,
+            "path_id": "ek069-ruzhino-pass-8170-s25-path",
+            "ordinate": 13400,
+            "chainage_m": 14400
+          },
+          {
+            "lat": 43.369113,
+            "lon": 132.161143,
+            "sector": 25,
+            "path_id": "ek069-ruzhino-pass-8170-s25-path",
+            "ordinate": 14000,
+            "chainage_m": 15000
+          },
+          {
+            "lat": 43.371576,
+            "lon": 132.169978,
+            "sector": 25,
+            "path_id": "ek069-ruzhino-pass-8170-s25-path",
+            "ordinate": 14800,
+            "chainage_m": 15800
+          },
+          {
+            "lat": 43.371987,
+            "lon": 132.172377,
+            "sector": 25,
+            "path_id": "ek069-ruzhino-pass-8170-s25-path",
+            "ordinate": 15000,
+            "chainage_m": 16000
+          },
+          {
+            "lat": 43.375831,
+            "lon": 132.183668,
+            "sector": 25,
+            "path_id": "ek069-ruzhino-pass-8170-s25-path",
+            "ordinate": 16000,
+            "chainage_m": 17000
+          },
+          {
+            "lat": 43.376864,
+            "lon": 132.185712,
+            "sector": 25,
+            "path_id": "ek069-ruzhino-pass-8170-s25-path",
+            "ordinate": 16200,
+            "chainage_m": 17200
+          },
+          {
+            "lat": 43.381011,
+            "lon": 132.193831,
+            "sector": 25,
+            "path_id": "ek069-ruzhino-pass-8170-s25-path",
+            "ordinate": 17000,
+            "chainage_m": 18000
+          },
+          {
+            "lat": 43.384045,
+            "lon": 132.199904,
+            "sector": 25,
+            "path_id": "ek069-ruzhino-pass-8170-s25-path",
+            "ordinate": 17600,
+            "chainage_m": 18600
+          },
+          {
+            "lat": 43.384414,
+            "lon": 132.204714,
+            "sector": 25,
+            "path_id": "ek069-ruzhino-pass-8170-s25-path",
+            "ordinate": 18000,
+            "chainage_m": 19000
+          },
+          {
+            "lat": 43.381426,
+            "lon": 132.210803,
+            "sector": 25,
+            "path_id": "ek069-ruzhino-pass-8170-s25-path",
+            "ordinate": 18600,
+            "chainage_m": 19600
+          },
+          {
+            "lat": 43.379161,
+            "lon": 132.214656,
+            "sector": 25,
+            "path_id": "ek069-ruzhino-pass-8170-s25-path",
+            "ordinate": 19000,
+            "chainage_m": 20000
+          },
+          {
+            "lat": 43.378608,
+            "lon": 132.217045,
+            "sector": 25,
+            "path_id": "ek069-ruzhino-pass-8170-s25-path",
+            "ordinate": 19200,
+            "chainage_m": 20200
+          },
+          {
+            "lat": 43.378565,
+            "lon": 132.223259,
+            "sector": 25,
+            "path_id": "ek069-ruzhino-pass-8170-s25-path",
+            "ordinate": 19700,
+            "chainage_m": 20700
+          },
+          {
+            "lat": 43.379211,
+            "lon": 132.227092,
+            "sector": 25,
+            "path_id": "ek069-ruzhino-pass-8170-s25-path",
+            "ordinate": 20000,
+            "chainage_m": 21000
+          },
+          {
+            "lat": 43.37962,
+            "lon": 132.229489,
+            "sector": 25,
+            "path_id": "ek069-ruzhino-pass-8170-s25-path",
+            "ordinate": 20200,
+            "chainage_m": 21200
+          },
+          {
+            "lat": 43.380449,
+            "lon": 132.236787,
+            "sector": 25,
+            "path_id": "ek069-ruzhino-pass-8170-s25-path",
+            "ordinate": 20800,
+            "chainage_m": 21800
+          },
+          {
+            "lat": 43.380477,
+            "lon": 132.238888,
+            "sector": 25,
+            "path_id": "ek069-ruzhino-pass-8170-s25-path",
+            "ordinate": 21000,
+            "chainage_m": 22000
+          },
+          {
+            "lat": 43.379541,
+            "lon": 132.248329,
+            "sector": 25,
+            "path_id": "ek069-ruzhino-pass-8170-s25-path",
+            "ordinate": 21800,
+            "chainage_m": 22800
+          },
+          {
+            "lat": 43.378839,
+            "lon": 132.250711,
+            "sector": 25,
+            "path_id": "ek069-ruzhino-pass-8170-s25-path",
+            "ordinate": 22000,
+            "chainage_m": 23000
+          },
+          {
+            "lat": 43.376263,
+            "lon": 132.262486,
+            "sector": 25,
+            "path_id": "ek069-ruzhino-pass-8170-s25-path",
+            "ordinate": 23000,
+            "chainage_m": 24000
+          },
+          {
+            "lat": 43.373836,
+            "lon": 132.269212,
+            "sector": 25,
+            "path_id": "ek069-ruzhino-pass-8170-s25-path",
+            "ordinate": 23600,
+            "chainage_m": 24600
+          },
+          {
+            "lat": 43.371501,
+            "lon": 132.272959,
+            "sector": 25,
+            "path_id": "ek069-ruzhino-pass-8170-s25-path",
+            "ordinate": 24000,
+            "chainage_m": 25000
+          },
+          {
+            "lat": 43.372559,
+            "lon": 132.281641,
+            "sector": 25,
+            "path_id": "ek069-ruzhino-pass-8170-s25-path",
+            "ordinate": 24800,
+            "chainage_m": 25800
+          },
+          {
+            "lat": 43.374253,
+            "lon": 132.282618,
+            "sector": 25,
+            "path_id": "ek069-ruzhino-pass-8170-s25-path",
+            "ordinate": 25000,
+            "chainage_m": 26000
+          },
+          {
+            "lat": 43.377147,
+            "lon": 132.285266,
+            "sector": 25,
+            "path_id": "ek069-ruzhino-pass-8170-s25-path",
+            "ordinate": 25400,
+            "chainage_m": 26400
+          },
+          {
+            "lat": 43.37564,
+            "lon": 132.292167,
+            "sector": 25,
+            "path_id": "ek069-ruzhino-pass-8170-s25-path",
+            "ordinate": 26000,
+            "chainage_m": 27000
+          },
+          {
+            "lat": 43.374207,
+            "lon": 132.296679,
+            "sector": 25,
+            "path_id": "ek069-ruzhino-pass-8170-s25-path",
+            "ordinate": 26400,
+            "chainage_m": 27400
+          },
+          {
+            "lat": 43.371334,
+            "lon": 132.303076,
+            "sector": 25,
+            "path_id": "ek069-ruzhino-pass-8170-s25-path",
+            "ordinate": 27000,
+            "chainage_m": 28000
+          },
+          {
+            "lat": 43.366309,
+            "lon": 132.310182,
+            "sector": 25,
+            "path_id": "ek069-ruzhino-pass-8170-s25-path",
+            "ordinate": 27800,
+            "chainage_m": 28800
+          },
+          {
+            "lat": 43.365299,
+            "lon": 132.31194,
+            "sector": 25,
+            "path_id": "ek069-ruzhino-pass-8170-s25-path",
+            "ordinate": 28000,
+            "chainage_m": 29000
+          },
+          {
+            "lat": 43.362638,
+            "lon": 132.315562,
+            "sector": 25,
+            "path_id": "ek069-ruzhino-pass-8170-s25-path",
+            "ordinate": 28400,
+            "chainage_m": 29400
+          },
+          {
+            "lat": 43.359727,
+            "lon": 132.321239,
+            "sector": 25,
+            "path_id": "ek069-ruzhino-pass-8170-s25-path",
+            "ordinate": 29000,
+            "chainage_m": 30000
+          },
+          {
+            "lat": 43.357859,
+            "lon": 132.321369,
+            "sector": 25,
+            "path_id": "ek069-ruzhino-pass-8170-s25-path",
+            "ordinate": 29200,
+            "chainage_m": 30200
+          },
+          {
+            "lat": 43.351377,
+            "lon": 132.324405,
+            "sector": 25,
+            "path_id": "ek069-ruzhino-pass-8170-s25-path",
+            "ordinate": 30000,
+            "chainage_m": 31000
+          },
+          {
+            "lat": 43.348549,
+            "lon": 132.327474,
+            "sector": 25,
+            "path_id": "ek069-ruzhino-pass-8170-s25-path",
+            "ordinate": 30400,
+            "chainage_m": 31400
+          },
+          {
+            "lat": 43.344192,
+            "lon": 132.331645,
+            "sector": 25,
+            "path_id": "ek069-ruzhino-pass-8170-s25-path",
+            "ordinate": 31000,
+            "chainage_m": 32000
+          },
+          {
+            "lat": 43.339538,
+            "lon": 132.335592,
+            "sector": 25,
+            "path_id": "ek069-ruzhino-pass-8170-s25-path",
+            "ordinate": 31600,
+            "chainage_m": 32600
+          },
+          {
+            "lat": 43.336459,
+            "lon": 132.338207,
+            "sector": 25,
+            "path_id": "ek069-ruzhino-pass-8170-s25-path",
+            "ordinate": 32000,
+            "chainage_m": 33000
+          },
+          {
+            "lat": 43.328804,
+            "lon": 132.344689,
+            "sector": 25,
+            "path_id": "ek069-ruzhino-pass-8170-s25-path",
+            "ordinate": 33000,
+            "chainage_m": 34000
+          },
+          {
+            "lat": 43.32244,
+            "lon": 132.35313,
+            "sector": 25,
+            "path_id": "ek069-ruzhino-pass-8170-s25-path",
+            "ordinate": 34000,
+            "chainage_m": 35000
+          },
+          {
+            "lat": 43.320185,
+            "lon": 132.356752,
+            "sector": 25,
+            "path_id": "ek069-ruzhino-pass-8170-s25-path",
+            "ordinate": 34400,
+            "chainage_m": 35400
+          },
+          {
+            "lat": 43.317031,
+            "lon": 132.363008,
+            "sector": 25,
+            "path_id": "ek069-ruzhino-pass-8170-s25-path",
+            "ordinate": 35000,
+            "chainage_m": 36000
+          },
+          {
+            "lat": 43.318194,
+            "lon": 132.372111,
+            "sector": 25,
+            "path_id": "ek069-ruzhino-pass-8170-s25-path",
+            "ordinate": 35800,
+            "chainage_m": 36800
+          },
+          {
+            "lat": 43.31948,
+            "lon": 132.373832,
+            "sector": 25,
+            "path_id": "ek069-ruzhino-pass-8170-s25-path",
+            "ordinate": 36000,
+            "chainage_m": 37000
+          },
+          {
+            "lat": 43.320767,
+            "lon": 132.375546,
+            "sector": 25,
+            "path_id": "ek069-ruzhino-pass-8170-s25-path",
+            "ordinate": 36200,
+            "chainage_m": 37200
+          },
+          {
+            "lat": 43.3217,
+            "lon": 132.377698,
+            "sector": 25,
+            "path_id": "ek069-ruzhino-pass-8170-s25-path",
+            "ordinate": 36400,
+            "chainage_m": 37400
+          },
+          {
+            "lat": 43.320883,
+            "lon": 132.38487,
+            "sector": 25,
+            "path_id": "ek069-ruzhino-pass-8170-s25-path",
+            "ordinate": 37000,
+            "chainage_m": 38000
+          },
+          {
+            "lat": 43.320968,
+            "lon": 132.389809,
+            "sector": 25,
+            "path_id": "ek069-ruzhino-pass-8170-s25-path",
+            "ordinate": 37400,
+            "chainage_m": 38400
+          },
+          {
+            "lat": 43.321158,
+            "lon": 132.392321,
+            "sector": 25,
+            "path_id": "ek069-ruzhino-pass-8170-s25-path",
+            "ordinate": 37600,
+            "chainage_m": 38600
+          },
+          {
+            "lat": 43.320439,
+            "lon": 132.394387,
+            "sector": 25,
+            "path_id": "ek069-ruzhino-pass-8170-s25-path",
+            "ordinate": 37800,
+            "chainage_m": 38800
+          },
+          {
+            "lat": 43.318935,
+            "lon": 132.395808,
+            "sector": 25,
+            "path_id": "ek069-ruzhino-pass-8170-s25-path",
+            "ordinate": 38000,
+            "chainage_m": 39000
+          },
+          {
+            "lat": 43.315633,
+            "lon": 132.397669,
+            "sector": 25,
+            "path_id": "ek069-ruzhino-pass-8170-s25-path",
+            "ordinate": 38400,
+            "chainage_m": 39400
+          },
+          {
+            "lat": 43.313072,
+            "lon": 132.403877,
+            "sector": 25,
+            "path_id": "ek069-ruzhino-pass-8170-s25-path",
+            "ordinate": 39000,
+            "chainage_m": 40000
+          },
+          {
+            "lat": 43.3119,
+            "lon": 132.411019,
+            "sector": 25,
+            "path_id": "ek069-ruzhino-pass-8170-s25-path",
+            "ordinate": 39600,
+            "chainage_m": 40600
+          },
+          {
+            "lat": 43.313324,
+            "lon": 132.415441,
+            "sector": 25,
+            "path_id": "ek069-ruzhino-pass-8170-s25-path",
+            "ordinate": 40000,
+            "chainage_m": 41000
+          },
+          {
+            "lat": 43.313682,
+            "lon": 132.417825,
+            "sector": 25,
+            "path_id": "ek069-ruzhino-pass-8170-s25-path",
+            "ordinate": 40200,
+            "chainage_m": 41200
+          },
+          {
+            "lat": 43.314868,
+            "lon": 132.422424,
+            "sector": 25,
+            "path_id": "ek069-ruzhino-pass-8170-s25-path",
+            "ordinate": 40600,
+            "chainage_m": 41600
+          },
+          {
+            "lat": 43.315399,
+            "lon": 132.427203,
+            "sector": 25,
+            "path_id": "ek069-ruzhino-pass-8170-s25-path",
+            "ordinate": 41000,
+            "chainage_m": 42000
+          },
+          {
+            "lat": 43.315286,
+            "lon": 132.429634,
+            "sector": 25,
+            "path_id": "ek069-ruzhino-pass-8170-s25-path",
+            "ordinate": 41200,
+            "chainage_m": 42200
+          },
+          {
+            "lat": 43.314594,
+            "lon": 132.439268,
+            "sector": 25,
+            "path_id": "ek069-ruzhino-pass-8170-s25-path",
+            "ordinate": 42000,
+            "chainage_m": 43000
+          },
+          {
+            "lat": 43.313586,
+            "lon": 132.441515,
+            "sector": 25,
+            "path_id": "ek069-ruzhino-pass-8170-s25-path",
+            "ordinate": 42200,
+            "chainage_m": 43200
+          },
+          {
+            "lat": 43.310508,
+            "lon": 132.443898,
+            "sector": 25,
+            "path_id": "ek069-ruzhino-pass-8170-s25-path",
+            "ordinate": 42600,
+            "chainage_m": 43600
+          },
+          {
+            "lat": 43.307026,
+            "lon": 132.444886,
+            "sector": 25,
+            "path_id": "ek069-ruzhino-pass-8170-s25-path",
+            "ordinate": 43000,
+            "chainage_m": 44000
+          },
+          {
+            "lat": 43.303946,
+            "lon": 132.446973,
+            "sector": 25,
+            "path_id": "ek069-ruzhino-pass-8170-s25-path",
+            "ordinate": 43400,
+            "chainage_m": 44400
+          },
+          {
+            "lat": 43.301215,
+            "lon": 132.453164,
+            "sector": 25,
+            "path_id": "ek069-ruzhino-pass-8170-s25-path",
+            "ordinate": 44000,
+            "chainage_m": 45000
+          },
+          {
+            "lat": 43.295372,
+            "lon": 132.456472,
+            "sector": 25,
+            "path_id": "ek069-ruzhino-pass-8170-s25-path",
+            "ordinate": 44700,
+            "chainage_m": 45700
+          },
+          {
+            "lat": 43.294936,
+            "lon": 132.45667,
+            "sector": 25,
+            "path_id": "ek069-ruzhino-pass-8170-s25-path",
+            "ordinate": 44800,
+            "chainage_m": 45800
+          },
+          {
+            "lat": 43.293197,
+            "lon": 132.457295,
+            "sector": 25,
+            "path_id": "ek069-ruzhino-pass-8170-s25-path",
+            "ordinate": 45000,
+            "chainage_m": 46000
+          },
+          {
+            "lat": 43.290519,
+            "lon": 132.457561,
+            "sector": 25,
+            "path_id": "ek069-ruzhino-pass-8170-s25-path",
+            "ordinate": 45300,
+            "chainage_m": 46300
+          },
+          {
+            "lat": 43.287817,
+            "lon": 132.457439,
+            "sector": 25,
+            "path_id": "ek069-ruzhino-pass-8170-s25-path",
+            "ordinate": 45600,
+            "chainage_m": 46600
+          },
+          {
+            "lat": 43.284272,
+            "lon": 132.456561,
+            "sector": 25,
+            "path_id": "ek069-ruzhino-pass-8170-s25-path",
+            "ordinate": 46000,
+            "chainage_m": 47000
+          },
+          {
+            "lat": 43.275287,
+            "lon": 132.455632,
+            "sector": 25,
+            "path_id": "ek069-ruzhino-pass-8170-s25-path",
+            "ordinate": 47000,
+            "chainage_m": 48000
+          },
+          {
+            "lat": 43.271541,
+            "lon": 132.455466,
+            "sector": 25,
+            "path_id": "ek069-ruzhino-pass-8170-s25-path",
+            "ordinate": 47400,
+            "chainage_m": 48400
+          },
+          {
+            "lat": 43.266503,
+            "lon": 132.457385,
+            "sector": 25,
+            "path_id": "ek069-ruzhino-pass-8170-s25-path",
+            "ordinate": 48000,
+            "chainage_m": 49000
+          },
+          {
+            "lat": 43.261499,
+            "lon": 132.46015,
+            "sector": 25,
+            "path_id": "ek069-ruzhino-pass-8170-s25-path",
+            "ordinate": 48600,
+            "chainage_m": 49600
+          },
+          {
+            "lat": 43.259997,
+            "lon": 132.461469,
+            "sector": 25,
+            "path_id": "ek069-ruzhino-pass-8170-s25-path",
+            "ordinate": 48800,
+            "chainage_m": 49800
+          },
+          {
+            "lat": 43.258617,
+            "lon": 132.463036,
+            "sector": 25,
+            "path_id": "ek069-ruzhino-pass-8170-s25-path",
+            "ordinate": 49000,
+            "chainage_m": 50000
+          },
+          {
+            "lat": 43.250056,
+            "lon": 132.466253,
+            "sector": 25,
+            "path_id": "ek069-ruzhino-pass-8170-s25-path",
+            "ordinate": 50000,
+            "chainage_m": 51000
+          },
+          {
+            "lat": 43.248278,
+            "lon": 132.466697,
+            "sector": 25,
+            "path_id": "ek069-ruzhino-pass-8170-s25-path",
+            "ordinate": 50200,
+            "chainage_m": 51200
+          },
+          {
+            "lat": 43.241201,
+            "lon": 132.468475,
+            "sector": 25,
+            "path_id": "ek069-ruzhino-pass-8170-s25-path",
+            "ordinate": 51000,
+            "chainage_m": 52000
+          },
+          {
+            "lat": 43.235155,
+            "lon": 132.477305,
+            "sector": 25,
+            "path_id": "ek069-ruzhino-pass-8170-s25-path",
+            "ordinate": 52000,
+            "chainage_m": 53000
+          },
+          {
+            "lat": 43.235147,
+            "lon": 132.489458,
+            "sector": 25,
+            "path_id": "ek069-ruzhino-pass-8170-s25-path",
+            "ordinate": 53000,
+            "chainage_m": 54000
+          },
+          {
+            "lat": 43.236577,
+            "lon": 132.501082,
+            "sector": 25,
+            "path_id": "ek069-ruzhino-pass-8170-s25-path",
+            "ordinate": 54000,
+            "chainage_m": 55000
+          },
+          {
+            "lat": 43.23395,
+            "lon": 132.512922,
+            "sector": 25,
+            "path_id": "ek069-ruzhino-pass-8170-s25-path",
+            "ordinate": 55000,
+            "chainage_m": 56000
+          },
+          {
+            "lat": 43.231871,
+            "lon": 132.524886,
+            "sector": 25,
+            "path_id": "ek069-ruzhino-pass-8170-s25-path",
+            "ordinate": 56000,
+            "chainage_m": 57000
+          },
+          {
+            "lat": 43.228941,
+            "lon": 132.53644,
+            "sector": 25,
+            "path_id": "ek069-ruzhino-pass-8170-s25-path",
+            "ordinate": 57000,
+            "chainage_m": 58000
+          },
+          {
+            "lat": 43.228099,
+            "lon": 132.54828,
+            "sector": 25,
+            "path_id": "ek069-ruzhino-pass-8170-s25-path",
+            "ordinate": 58000,
+            "chainage_m": 59000
+          },
+          {
+            "lat": 43.229698,
+            "lon": 132.559436,
+            "sector": 25,
+            "path_id": "ek069-ruzhino-pass-8170-s25-path",
+            "ordinate": 59000,
+            "chainage_m": 60000
+          },
+          {
+            "lat": 43.226875,
+            "lon": 132.570973,
+            "sector": 25,
+            "path_id": "ek069-ruzhino-pass-8170-s25-path",
+            "ordinate": 60000,
+            "chainage_m": 61000
+          },
+          {
+            "lat": 43.225327,
+            "lon": 132.583016,
+            "sector": 25,
+            "path_id": "ek069-ruzhino-pass-8170-s25-path",
+            "ordinate": 61000,
+            "chainage_m": 62000
+          },
+          {
+            "lat": 43.223373,
+            "lon": 132.594989,
+            "sector": 25,
+            "path_id": "ek069-ruzhino-pass-8170-s25-path",
+            "ordinate": 62000,
+            "chainage_m": 63000
+          },
+          {
+            "lat": 43.219137,
+            "lon": 132.60558,
+            "sector": 25,
+            "path_id": "ek069-ruzhino-pass-8170-s25-path",
+            "ordinate": 63000,
+            "chainage_m": 64000
+          },
+          {
+            "lat": 43.213521,
+            "lon": 132.614879,
+            "sector": 25,
+            "path_id": "ek069-ruzhino-pass-8170-s25-path",
+            "ordinate": 64000,
+            "chainage_m": 65000
+          },
+          {
+            "lat": 43.210039,
+            "lon": 132.626272,
+            "sector": 25,
+            "path_id": "ek069-ruzhino-pass-8170-s25-path",
+            "ordinate": 65000,
+            "chainage_m": 66000
+          },
+          {
+            "lat": 43.205884,
+            "lon": 132.636756,
+            "sector": 25,
+            "path_id": "ek069-ruzhino-pass-8170-s25-path",
+            "ordinate": 66000,
+            "chainage_m": 67000
+          },
+          {
+            "lat": 43.202066,
+            "lon": 132.647821,
+            "sector": 25,
+            "path_id": "ek069-ruzhino-pass-8170-s25-path",
+            "ordinate": 67000,
+            "chainage_m": 68000
+          },
+          {
+            "lat": 43.196637,
+            "lon": 132.657504,
+            "sector": 25,
+            "path_id": "ek069-ruzhino-pass-8170-s25-path",
+            "ordinate": 68000,
+            "chainage_m": 69000
+          },
+          {
+            "lat": 43.193189,
+            "lon": 132.668851,
+            "sector": 25,
+            "path_id": "ek069-ruzhino-pass-8170-s25-path",
+            "ordinate": 69000,
+            "chainage_m": 70000
+          },
+          {
+            "lat": 43.189426,
+            "lon": 132.680025,
+            "sector": 25,
+            "path_id": "ek069-ruzhino-pass-8170-s25-path",
+            "ordinate": 70000,
+            "chainage_m": 71000
+          },
+          {
+            "lat": 43.185647,
+            "lon": 132.691213,
+            "sector": 25,
+            "path_id": "ek069-ruzhino-pass-8170-s25-path",
+            "ordinate": 71000,
+            "chainage_m": 72000
+          },
+          {
+            "lat": 43.18146,
+            "lon": 132.702043,
+            "sector": 25,
+            "path_id": "ek069-ruzhino-pass-8170-s25-path",
+            "ordinate": 72000,
+            "chainage_m": 73000
+          },
+          {
+            "lat": 43.180708,
+            "lon": 132.706833,
+            "sector": 25,
+            "path_id": "ek069-ruzhino-pass-8170-s25-path",
+            "ordinate": 72400,
+            "chainage_m": 73400
+          },
+          {
+            "lat": 43.176754,
+            "lon": 132.711581,
+            "sector": 25,
+            "path_id": "ek069-ruzhino-pass-8170-s25-path",
+            "ordinate": 73000,
+            "chainage_m": 74000
+          },
+          {
+            "lat": 43.176284,
+            "lon": 132.723565,
+            "sector": 25,
+            "path_id": "ek069-ruzhino-pass-8170-s25-path",
+            "ordinate": 74000,
+            "chainage_m": 75000
+          },
+          {
+            "lat": 43.176227,
+            "lon": 132.735871,
+            "sector": 25,
+            "path_id": "ek069-ruzhino-pass-8170-s25-path",
+            "ordinate": 75000,
+            "chainage_m": 76000
+          },
+          {
+            "lat": 43.175094,
+            "lon": 132.747705,
+            "sector": 25,
+            "path_id": "ek069-ruzhino-pass-8170-s25-path",
+            "ordinate": 76000,
+            "chainage_m": 77000
+          },
+          {
+            "lat": 43.17551,
+            "lon": 132.754912,
+            "sector": 25,
+            "path_id": "ek069-ruzhino-pass-8170-s25-path",
+            "ordinate": 76600,
+            "chainage_m": 77600
+          },
+          {
+            "lat": 43.172812,
+            "lon": 132.75808,
+            "sector": 25,
+            "path_id": "ek069-ruzhino-pass-8170-s25-path",
+            "ordinate": 77000,
+            "chainage_m": 78000
+          },
+          {
+            "lat": 43.172498,
+            "lon": 132.769805,
+            "sector": 25,
+            "path_id": "ek069-ruzhino-pass-8170-s25-path",
+            "ordinate": 78000,
+            "chainage_m": 79000
+          },
+          {
+            "lat": 43.170107,
+            "lon": 132.781839,
+            "sector": 25,
+            "path_id": "ek069-ruzhino-pass-8170-s25-path",
+            "ordinate": 79000,
+            "chainage_m": 80000
+          },
+          {
+            "lat": 43.168882,
+            "lon": 132.786347,
+            "sector": 25,
+            "path_id": "ek069-ruzhino-pass-8170-s25-path",
+            "ordinate": 79400,
+            "chainage_m": 80400
+          },
+          {
+            "lat": 43.171479,
+            "lon": 132.792692,
+            "sector": 25,
+            "path_id": "ek069-ruzhino-pass-8170-s25-path",
+            "ordinate": 80000,
+            "chainage_m": 81000
+          },
+          {
+            "lat": 43.17798,
+            "lon": 132.800917,
+            "sector": 25,
+            "path_id": "ek069-ruzhino-pass-8170-s25-path",
+            "ordinate": 81000,
+            "chainage_m": 82000
+          },
+          {
+            "lat": 43.186654,
+            "lon": 132.80303,
+            "sector": 25,
+            "path_id": "ek069-ruzhino-pass-8170-s25-path",
+            "ordinate": 82000,
+            "chainage_m": 83000
+          },
+          {
+            "lat": 43.18831,
+            "lon": 132.802191,
+            "sector": 25,
+            "path_id": "ek069-ruzhino-pass-8170-s25-path",
+            "ordinate": 82200,
+            "chainage_m": 83200
+          },
+          {
+            "lat": 43.189941,
+            "lon": 132.804662,
+            "sector": 25,
+            "path_id": "ek069-ruzhino-pass-8170-s25-path",
+            "ordinate": 82500,
+            "chainage_m": 83500
+          },
+          {
+            "lat": 43.189148,
+            "lon": 132.810597,
+            "sector": 25,
+            "path_id": "ek069-ruzhino-pass-8170-s25-path",
+            "ordinate": 83000,
+            "chainage_m": 84000
+          },
+          {
+            "lat": 43.191426,
+            "lon": 132.815505,
+            "sector": 25,
+            "path_id": "ek069-ruzhino-pass-8170-s25-path",
+            "ordinate": 83500,
+            "chainage_m": 84500
+          },
+          {
+            "lat": 43.188824,
+            "lon": 132.820001,
+            "sector": 25,
+            "path_id": "ek069-ruzhino-pass-8170-s25-path",
+            "ordinate": 84000,
+            "chainage_m": 85000
+          },
+          {
+            "lat": 43.187963,
+            "lon": 132.82481,
+            "sector": 25,
+            "path_id": "ek069-ruzhino-pass-8170-s25-path",
+            "ordinate": 84500,
+            "chainage_m": 85500
+          },
+          {
+            "lat": 43.191002,
+            "lon": 132.828713,
+            "sector": 25,
+            "path_id": "ek069-ruzhino-pass-8170-s25-path",
+            "ordinate": 85000,
+            "chainage_m": 86000
+          },
+          {
+            "lat": 43.189362,
+            "lon": 132.840508,
+            "sector": 25,
+            "path_id": "ek069-ruzhino-pass-8170-s25-path",
+            "ordinate": 86000,
+            "chainage_m": 87000
+          },
+          {
+            "lat": 43.184865,
+            "lon": 132.846214,
+            "sector": 25,
+            "path_id": "ek069-ruzhino-pass-8170-s25-path",
+            "ordinate": 87000,
+            "chainage_m": 88000
+          },
+          {
+            "lat": 43.17871,
+            "lon": 132.855088,
+            "sector": 25,
+            "path_id": "ek069-ruzhino-pass-8170-s25-path",
+            "ordinate": 88000,
+            "chainage_m": 89000
+          },
+          {
+            "lat": 43.17869,
+            "lon": 132.862206,
+            "sector": 25,
+            "path_id": "ek069-ruzhino-pass-8170-s25-path",
+            "ordinate": 88600,
+            "chainage_m": 89600
+          },
+          {
+            "lat": 43.181045,
+            "lon": 132.865684,
+            "sector": 25,
+            "path_id": "ek069-ruzhino-pass-8170-s25-path",
+            "ordinate": 89000,
+            "chainage_m": 90000
+          },
+          {
+            "lat": 43.181137,
+            "lon": 132.870395,
+            "sector": 25,
+            "path_id": "ek069-ruzhino-pass-8170-s25-path",
+            "ordinate": 89400,
+            "chainage_m": 90400
+          },
+          {
+            "lat": 43.178391,
+            "lon": 132.876676,
+            "sector": 25,
+            "path_id": "ek069-ruzhino-pass-8170-s25-path",
+            "ordinate": 90000,
+            "chainage_m": 91000
+          },
+          {
+            "lat": 43.179554,
+            "lon": 132.888718,
+            "sector": 25,
+            "path_id": "ek069-ruzhino-pass-8170-s25-path",
+            "ordinate": 91000,
+            "chainage_m": 92000
+          },
+          {
+            "lat": 43.185028,
+            "lon": 132.897238,
+            "sector": 25,
+            "path_id": "ek069-ruzhino-pass-8170-s25-path",
+            "ordinate": 92000,
+            "chainage_m": 93000
+          },
+          {
+            "lat": 43.190178,
+            "lon": 132.898625,
+            "sector": 25,
+            "path_id": "ek069-ruzhino-pass-8170-s25-path",
+            "ordinate": 92600,
+            "chainage_m": 93600
+          },
+          {
+            "lat": 43.191875,
+            "lon": 132.902927,
+            "sector": 25,
+            "path_id": "ek069-ruzhino-pass-8170-s25-path",
+            "ordinate": 93000,
+            "chainage_m": 94000
+          },
+          {
+            "lat": 43.193372,
+            "lon": 132.909827,
+            "sector": 25,
+            "path_id": "ek069-ruzhino-pass-8170-s25-path",
+            "ordinate": 93600,
+            "chainage_m": 94600
+          },
+          {
+            "lat": 43.191253,
+            "lon": 132.913774,
+            "sector": 25,
+            "path_id": "ek069-ruzhino-pass-8170-s25-path",
+            "ordinate": 94000,
+            "chainage_m": 95000
+          },
+          {
+            "lat": 43.185348,
+            "lon": 132.923073,
+            "sector": 25,
+            "path_id": "ek069-ruzhino-pass-8170-s25-path",
+            "ordinate": 95000,
+            "chainage_m": 96000
+          },
+          {
+            "lat": 43.18097,
+            "lon": 132.93368,
+            "sector": 25,
+            "path_id": "ek069-ruzhino-pass-8170-s25-path",
+            "ordinate": 96000,
+            "chainage_m": 97000
+          },
+          {
+            "lat": 43.179163,
+            "lon": 132.939266,
+            "sector": 25,
+            "path_id": "ek069-ruzhino-pass-8170-s25-path",
+            "ordinate": 96500,
+            "chainage_m": 97500
+          },
+          {
+            "lat": 43.176577,
+            "lon": 132.944142,
+            "sector": 25,
+            "path_id": "ek069-ruzhino-pass-8170-s25-path",
+            "ordinate": 97000,
+            "chainage_m": 98000
+          },
+          {
+            "lat": 43.177074,
+            "lon": 132.947419,
+            "sector": 25,
+            "path_id": "ek069-ruzhino-pass-8170-s25-path",
+            "ordinate": 97300,
+            "chainage_m": 98300
+          },
+          {
+            "lat": 43.178782,
+            "lon": 132.9477,
+            "sector": 25,
+            "path_id": "ek069-ruzhino-pass-8170-s25-path",
+            "ordinate": 97500,
+            "chainage_m": 98500
+          },
+          {
+            "lat": 43.182354,
+            "lon": 132.943859,
+            "sector": 25,
+            "path_id": "ek069-ruzhino-pass-8170-s25-path",
+            "ordinate": 98000,
+            "chainage_m": 99000
+          },
+          {
+            "lat": 43.191147,
+            "lon": 132.943742,
+            "sector": 25,
+            "path_id": "ek069-ruzhino-pass-8170-s25-path",
+            "ordinate": 99000,
+            "chainage_m": 100000
+          },
+          {
+            "lat": 43.199886,
+            "lon": 132.945303,
+            "sector": 25,
+            "path_id": "ek069-ruzhino-pass-8170-s25-path",
+            "ordinate": 100000,
+            "chainage_m": 101000
+          },
+          {
+            "lat": 43.20532,
+            "lon": 132.954268,
+            "sector": 25,
+            "path_id": "ek069-ruzhino-pass-8170-s25-path",
+            "ordinate": 101000,
+            "chainage_m": 102000
+          },
+          {
+            "lat": 43.210345,
+            "lon": 132.963779,
+            "sector": 25,
+            "path_id": "ek069-ruzhino-pass-8170-s25-path",
+            "ordinate": 102000,
+            "chainage_m": 103000
+          },
+          {
+            "lat": 43.215637,
+            "lon": 132.973437,
+            "sector": 25,
+            "path_id": "ek069-ruzhino-pass-8170-s25-path",
+            "ordinate": 103000,
+            "chainage_m": 104000
+          },
+          {
+            "lat": 43.222477,
+            "lon": 132.98142,
+            "sector": 25,
+            "path_id": "ek069-ruzhino-pass-8170-s25-path",
+            "ordinate": 104000,
+            "chainage_m": 105000
+          },
+          {
+            "lat": 43.22941,
+            "lon": 132.989264,
+            "sector": 25,
+            "path_id": "ek069-ruzhino-pass-8170-s25-path",
+            "ordinate": 105000,
+            "chainage_m": 106000
+          },
+          {
+            "lat": 43.235363,
+            "lon": 132.997974,
+            "sector": 25,
+            "path_id": "ek069-ruzhino-pass-8170-s25-path",
+            "ordinate": 106000,
+            "chainage_m": 107000
+          },
+          {
+            "lat": 43.236236,
+            "lon": 133.003808,
+            "sector": 25,
+            "path_id": "ek069-ruzhino-pass-8170-s25-path",
+            "ordinate": 106500,
+            "chainage_m": 107500
+          },
+          {
+            "lat": 43.240415,
+            "lon": 133.005809,
+            "sector": 25,
+            "path_id": "ek069-ruzhino-pass-8170-s25-path",
+            "ordinate": 107000,
+            "chainage_m": 108000
+          },
+          {
+            "lat": 43.244155,
+            "lon": 133.008346,
+            "sector": 25,
+            "path_id": "ek069-ruzhino-pass-8170-s25-path",
+            "ordinate": 107500,
+            "chainage_m": 108500
+          },
+          {
+            "lat": 43.241619,
+            "lon": 133.01293,
+            "sector": 25,
+            "path_id": "ek069-ruzhino-pass-8170-s25-path",
+            "ordinate": 108000,
+            "chainage_m": 109000
+          },
+          {
+            "lat": 43.235521,
+            "lon": 133.021679,
+            "sector": 25,
+            "path_id": "ek069-ruzhino-pass-8170-s25-path",
+            "ordinate": 109000,
+            "chainage_m": 110000
+          },
+          {
+            "lat": 43.227066,
+            "lon": 133.024803,
+            "sector": 25,
+            "path_id": "ek069-ruzhino-pass-8170-s25-path",
+            "ordinate": 110000,
+            "chainage_m": 111000
+          },
+          {
+            "lat": 43.218,
+            "lon": 133.023926,
+            "sector": 25,
+            "path_id": "ek069-ruzhino-pass-8170-s25-path",
+            "ordinate": 111000,
+            "chainage_m": 112000
+          },
+          {
+            "lat": 43.212821,
+            "lon": 133.023523,
+            "sector": 25,
+            "path_id": "ek069-ruzhino-pass-8170-s25-path",
+            "ordinate": 111600,
+            "chainage_m": 112600
+          },
+          {
+            "lat": 43.209742,
+            "lon": 133.021279,
+            "sector": 25,
+            "path_id": "ek069-ruzhino-pass-8170-s25-path",
+            "ordinate": 112000,
+            "chainage_m": 113000
+          },
+          {
+            "lat": 43.201138,
+            "lon": 133.019055,
+            "sector": 25,
+            "path_id": "ek069-ruzhino-pass-8170-s25-path",
+            "ordinate": 113000,
+            "chainage_m": 114000
+          },
+          {
+            "lat": 43.199567,
+            "lon": 133.01955,
+            "sector": 25,
+            "path_id": "ek069-ruzhino-pass-8170-s25-path",
+            "ordinate": 113200,
+            "chainage_m": 114200
+          },
+          {
+            "lat": 43.198574,
+            "lon": 133.024092,
+            "sector": 25,
+            "path_id": "ek069-ruzhino-pass-8170-s25-path",
+            "ordinate": 113600,
+            "chainage_m": 114600
+          },
+          {
+            "lat": 43.195261,
+            "lon": 133.026401,
+            "sector": 25,
+            "path_id": "ek069-ruzhino-pass-8170-s25-path",
+            "ordinate": 114000,
+            "chainage_m": 115000
+          },
+          {
+            "lat": 43.191686,
+            "lon": 133.026666,
+            "sector": 25,
+            "path_id": "ek069-ruzhino-pass-8170-s25-path",
+            "ordinate": 114400,
+            "chainage_m": 115400
+          },
+          {
+            "lat": 43.189934,
+            "lon": 133.027184,
+            "sector": 25,
+            "path_id": "ek069-ruzhino-pass-8170-s25-path",
+            "ordinate": 114600,
+            "chainage_m": 115600
+          },
+          {
+            "lat": 43.186431,
+            "lon": 133.026898,
+            "sector": 25,
+            "path_id": "ek069-ruzhino-pass-8170-s25-path",
+            "ordinate": 115000,
+            "chainage_m": 116000
+          },
+          {
+            "lat": 43.184872,
+            "lon": 133.025539,
+            "sector": 25,
+            "path_id": "ek069-ruzhino-pass-8170-s25-path",
+            "ordinate": 115200,
+            "chainage_m": 116200
+          },
+          {
+            "lat": 43.18339,
+            "lon": 133.023594,
+            "sector": 25,
+            "path_id": "ek069-ruzhino-pass-8170-s25-path",
+            "ordinate": 115500,
+            "chainage_m": 116500
+          },
+          {
+            "lat": 43.182545,
+            "lon": 133.023233,
+            "sector": 25,
+            "path_id": "ek069-ruzhino-pass-8170-s25-path",
+            "ordinate": 115600,
+            "chainage_m": 116600
+          },
+          {
+            "lat": 43.180975,
+            "lon": 133.024291,
+            "sector": 25,
+            "path_id": "ek069-ruzhino-pass-8170-s25-path",
+            "ordinate": 115800,
+            "chainage_m": 116800
+          },
+          {
+            "lat": 43.180799,
+            "lon": 133.026618,
+            "sector": 25,
+            "path_id": "ek069-ruzhino-pass-8170-s25-path",
+            "ordinate": 116000,
+            "chainage_m": 117000
+          },
+          {
+            "lat": 43.18134,
+            "lon": 133.02759,
+            "sector": 25,
+            "path_id": "ek069-ruzhino-pass-8170-s25-path",
+            "ordinate": 116100,
+            "chainage_m": 117100
+          },
+          {
+            "lat": 43.183049,
+            "lon": 133.028182,
+            "sector": 25,
+            "path_id": "ek069-ruzhino-pass-8170-s25-path",
+            "ordinate": 116300,
+            "chainage_m": 117300
+          },
+          {
+            "lat": 43.184688,
+            "lon": 133.02911,
+            "sector": 25,
+            "path_id": "ek069-ruzhino-pass-8170-s25-path",
+            "ordinate": 116500,
+            "chainage_m": 117500
+          },
+          {
+            "lat": 43.188196,
+            "lon": 133.032837,
+            "sector": 25,
+            "path_id": "ek069-ruzhino-pass-8170-s25-path",
+            "ordinate": 117000,
+            "chainage_m": 118000
+          },
+          {
+            "lat": 43.189701,
+            "lon": 133.034006,
+            "sector": 25,
+            "path_id": "ek069-ruzhino-pass-8170-s25-path",
+            "ordinate": 117200,
+            "chainage_m": 118200
+          },
+          {
+            "lat": 43.191471,
+            "lon": 133.033742,
+            "sector": 25,
+            "path_id": "ek069-ruzhino-pass-8170-s25-path",
+            "ordinate": 117400,
+            "chainage_m": 118400
+          },
+          {
+            "lat": 43.196605,
+            "lon": 133.032037,
+            "sector": 25,
+            "path_id": "ek069-ruzhino-pass-8170-s25-path",
+            "ordinate": 118000,
+            "chainage_m": 119000
+          },
+          {
+            "lat": 43.197637,
+            "lon": 133.033903,
+            "sector": 25,
+            "path_id": "ek069-ruzhino-pass-8170-s25-path",
+            "ordinate": 118200,
+            "chainage_m": 119200
+          },
+          {
+            "lat": 43.197236,
+            "lon": 133.041144,
+            "sector": 25,
+            "path_id": "ek069-ruzhino-pass-8170-s25-path",
+            "ordinate": 118800,
+            "chainage_m": 119800
+          },
+          {
+            "lat": 43.198142,
+            "lon": 133.043228,
+            "sector": 25,
+            "path_id": "ek069-ruzhino-pass-8170-s25-path",
+            "ordinate": 119000,
+            "chainage_m": 120000
+          },
+          {
+            "lat": 43.200552,
+            "lon": 133.046802,
+            "sector": 25,
+            "path_id": "ek069-ruzhino-pass-8170-s25-path",
+            "ordinate": 119400,
+            "chainage_m": 120400
+          },
+          {
+            "lat": 43.199341,
+            "lon": 133.053901,
+            "sector": 25,
+            "path_id": "ek069-ruzhino-pass-8170-s25-path",
+            "ordinate": 120000,
+            "chainage_m": 121000
+          },
+          {
+            "lat": 43.197849,
+            "lon": 133.066025,
+            "sector": 25,
+            "path_id": "ek069-ruzhino-pass-8170-s25-path",
+            "ordinate": 121000,
+            "chainage_m": 122000
+          },
+          {
+            "lat": 43.197696,
+            "lon": 133.077917,
+            "sector": 25,
+            "path_id": "ek069-ruzhino-pass-8170-s25-path",
+            "ordinate": 122000,
+            "chainage_m": 123000
+          },
+          {
+            "lat": 43.190818,
+            "lon": 133.085054,
+            "sector": 25,
+            "path_id": "ek069-ruzhino-pass-8170-s25-path",
+            "ordinate": 123000,
+            "chainage_m": 124000
+          },
+          {
+            "lat": 43.18564,
+            "lon": 133.094981,
+            "sector": 25,
+            "path_id": "ek069-ruzhino-pass-8170-s25-path",
+            "ordinate": 124000,
+            "chainage_m": 125000
+          },
+          {
+            "lat": 43.182996,
+            "lon": 133.101381,
+            "sector": 25,
+            "path_id": "ek069-ruzhino-pass-8170-s25-path",
+            "ordinate": 124600,
+            "chainage_m": 125600
+          },
+          {
+            "lat": 43.179951,
+            "lon": 133.102997,
+            "sector": 25,
+            "path_id": "ek069-ruzhino-pass-8170-s25-path",
+            "ordinate": 125000,
+            "chainage_m": 126000
+          },
+          {
+            "lat": 43.174785,
+            "lon": 133.112183,
+            "sector": 25,
+            "path_id": "ek069-ruzhino-pass-8170-s25-path",
+            "ordinate": 126000,
+            "chainage_m": 127000
+          },
+          {
+            "lat": 43.168416,
+            "lon": 133.120925,
+            "sector": 25,
+            "path_id": "ek069-ruzhino-pass-8170-s25-path",
+            "ordinate": 127000,
+            "chainage_m": 128000
+          },
+          {
+            "lat": 43.160927,
+            "lon": 133.127604,
+            "sector": 25,
+            "path_id": "ek069-ruzhino-pass-8170-s25-path",
+            "ordinate": 128000,
+            "chainage_m": 129000
+          },
+          {
+            "lat": 43.156072,
+            "lon": 133.137216,
+            "sector": 25,
+            "path_id": "ek069-ruzhino-pass-8170-s25-path",
+            "ordinate": 129000,
+            "chainage_m": 130000
+          },
+          {
+            "lat": 43.147533,
+            "lon": 133.140439,
+            "sector": 25,
+            "path_id": "ek069-ruzhino-pass-8170-s25-path",
+            "ordinate": 130000,
+            "chainage_m": 131000
+          },
+          {
+            "lat": 43.140471,
+            "lon": 133.146525,
+            "sector": 25,
+            "path_id": "ek069-ruzhino-pass-8170-s25-path",
+            "ordinate": 131000,
+            "chainage_m": 132000
+          },
+          {
+            "lat": 43.133645,
+            "lon": 133.153489,
+            "sector": 25,
+            "path_id": "ek069-ruzhino-pass-8170-s25-path",
+            "ordinate": 132000,
+            "chainage_m": 133000
+          },
+          {
+            "lat": 43.126046,
+            "lon": 133.159307,
+            "sector": 25,
+            "path_id": "ek069-ruzhino-pass-8170-s25-path",
+            "ordinate": 133000,
+            "chainage_m": 134000
+          },
+          {
+            "lat": 43.117601,
+            "lon": 133.161892,
+            "sector": 25,
+            "path_id": "ek069-ruzhino-pass-8170-s25-path",
+            "ordinate": 134000,
+            "chainage_m": 135000
+          },
+          {
+            "lat": 43.112304,
+            "lon": 133.160768,
+            "sector": 25,
+            "path_id": "ek069-ruzhino-pass-8170-s25-path",
+            "ordinate": 134600,
+            "chainage_m": 135600
+          },
+          {
+            "lat": 43.109039,
+            "lon": 133.162984,
+            "sector": 25,
+            "path_id": "ek069-ruzhino-pass-8170-s25-path",
+            "ordinate": 135000,
+            "chainage_m": 136000
+          },
+          {
+            "lat": 43.100133,
+            "lon": 133.162054,
+            "sector": 25,
+            "path_id": "ek069-ruzhino-pass-8170-s25-path",
+            "ordinate": 136000,
+            "chainage_m": 137000
+          },
+          {
+            "lat": 43.091158,
+            "lon": 133.161691,
+            "sector": 25,
+            "path_id": "ek069-ruzhino-pass-8170-s25-path",
+            "ordinate": 137000,
+            "chainage_m": 138000
+          },
+          {
+            "lat": 43.082572,
+            "lon": 133.158583,
+            "sector": 25,
+            "path_id": "ek069-ruzhino-pass-8170-s25-path",
+            "ordinate": 138000,
+            "chainage_m": 139000
+          },
+          {
+            "lat": 43.077146,
+            "lon": 133.15844,
+            "sector": 25,
+            "path_id": "ek069-ruzhino-pass-8170-s25-path",
+            "ordinate": 138600,
+            "chainage_m": 139600
+          },
+          {
+            "lat": 43.074485,
+            "lon": 133.155474,
+            "sector": 25,
+            "path_id": "ek069-ruzhino-pass-8170-s25-path",
+            "ordinate": 139000,
+            "chainage_m": 140000
+          },
+          {
+            "lat": 43.069774,
+            "lon": 133.145328,
+            "sector": 25,
+            "path_id": "ek069-ruzhino-pass-8170-s25-path",
+            "ordinate": 140000,
+            "chainage_m": 141000
+          },
+          {
+            "lat": 43.060853,
+            "lon": 133.144454,
+            "sector": 25,
+            "path_id": "ek069-ruzhino-pass-8170-s25-path",
+            "ordinate": 141000,
+            "chainage_m": 142000
+          },
+          {
+            "lat": 43.052376,
+            "lon": 133.140958,
+            "sector": 25,
+            "path_id": "ek069-ruzhino-pass-8170-s25-path",
+            "ordinate": 142000,
+            "chainage_m": 143000
+          },
+          {
+            "lat": 43.047996,
+            "lon": 133.140319,
+            "sector": 25,
+            "path_id": "ek069-ruzhino-pass-8170-s25-path",
+            "ordinate": 142500,
+            "chainage_m": 143500
+          },
+          {
+            "lat": 43.047112,
+            "lon": 133.140443,
+            "sector": 25,
+            "path_id": "ek069-ruzhino-pass-8170-s25-path",
+            "ordinate": 142600,
+            "chainage_m": 143600
+          },
+          {
+            "lat": 43.046323,
+            "lon": 133.140499,
+            "sector": 25,
+            "path_id": "ek069-ruzhino-pass-8170-s25-path",
+            "ordinate": 143000,
+            "chainage_m": 144000
+          },
+          {
+            "lat": 43.040816,
+            "lon": 133.141262,
+            "sector": 25,
+            "path_id": "ek069-ruzhino-pass-8170-s25-path",
+            "ordinate": 143600,
+            "chainage_m": 144600
+          },
+          {
+            "lat": 43.037678,
+            "lon": 133.13991,
+            "sector": 25,
+            "path_id": "ek069-ruzhino-pass-8170-s25-path",
+            "ordinate": 144000,
+            "chainage_m": 145000
+          },
+          {
+            "lat": 43.032461,
+            "lon": 133.130639,
+            "sector": 25,
+            "path_id": "ek069-ruzhino-pass-8170-s25-path",
+            "ordinate": 145000,
+            "chainage_m": 146000
+          },
+          {
+            "lat": 43.025831,
+            "lon": 133.122508,
+            "sector": 25,
+            "path_id": "ek069-ruzhino-pass-8170-s25-path",
+            "ordinate": 146000,
+            "chainage_m": 147000
+          },
+          {
+            "lat": 43.019276,
+            "lon": 133.114218,
+            "sector": 25,
+            "path_id": "ek069-ruzhino-pass-8170-s25-path",
+            "ordinate": 147000,
+            "chainage_m": 148000
+          },
+          {
+            "lat": 43.012499,
+            "lon": 133.106122,
+            "sector": 25,
+            "path_id": "ek069-ruzhino-pass-8170-s25-path",
+            "ordinate": 148000,
+            "chainage_m": 149000
+          },
+          {
+            "lat": 43.0048,
+            "lon": 133.099793,
+            "sector": 25,
+            "path_id": "ek069-ruzhino-pass-8170-s25-path",
+            "ordinate": 149000,
+            "chainage_m": 150000
+          },
+          {
+            "lat": 42.997,
+            "lon": 133.093702,
+            "sector": 25,
+            "path_id": "ek069-ruzhino-pass-8170-s25-path",
+            "ordinate": 150000,
+            "chainage_m": 151000
+          },
+          {
+            "lat": 42.989118,
+            "lon": 133.087759,
+            "sector": 25,
+            "path_id": "ek069-ruzhino-pass-8170-s25-path",
+            "ordinate": 151000,
+            "chainage_m": 152000
+          },
+          {
+            "lat": 42.980648,
+            "lon": 133.083665,
+            "sector": 25,
+            "path_id": "ek069-ruzhino-pass-8170-s25-path",
+            "ordinate": 152000,
+            "chainage_m": 153000
+          },
+          {
+            "lat": 42.972628,
+            "lon": 133.07829,
+            "sector": 25,
+            "path_id": "ek069-ruzhino-pass-8170-s25-path",
+            "ordinate": 153000,
+            "chainage_m": 154000
+          },
+          {
+            "lat": 42.965085,
+            "lon": 133.071898,
+            "sector": 25,
+            "path_id": "ek069-ruzhino-pass-8170-s25-path",
+            "ordinate": 154000,
+            "chainage_m": 155000
+          },
+          {
+            "lat": 42.95609,
+            "lon": 133.07124,
+            "sector": 25,
+            "path_id": "ek069-ruzhino-pass-8170-s25-path",
+            "ordinate": 155000,
+            "chainage_m": 156000
+          },
+          {
+            "lat": 42.950664,
+            "lon": 133.071185,
+            "sector": 25,
+            "path_id": "ek069-ruzhino-pass-8170-s25-path",
+            "ordinate": 155600,
+            "chainage_m": 156600
+          },
+          {
+            "lat": 42.947415,
+            "lon": 133.073109,
+            "sector": 25,
+            "path_id": "ek069-ruzhino-pass-8170-s25-path",
+            "ordinate": 156000,
+            "chainage_m": 157000
+          },
+          {
+            "lat": 42.943992,
+            "lon": 133.074025,
+            "sector": 25,
+            "path_id": "ek069-ruzhino-pass-8170-s25-path",
+            "ordinate": 156400,
+            "chainage_m": 157400
+          },
+          {
+            "lat": 42.939072,
+            "lon": 133.071037,
+            "sector": 25,
+            "path_id": "ek069-ruzhino-pass-8170-s25-path",
+            "ordinate": 157000,
+            "chainage_m": 158000
+          },
+          {
+            "lat": 42.930623,
+            "lon": 133.067237,
+            "sector": 25,
+            "path_id": "ek069-ruzhino-pass-8170-s25-path",
+            "ordinate": 158000,
+            "chainage_m": 159000
+          },
+          {
+            "lat": 42.922436,
+            "lon": 133.062194,
+            "sector": 25,
+            "path_id": "ek069-ruzhino-pass-8170-s25-path",
+            "ordinate": 159000,
+            "chainage_m": 160000
+          },
+          {
+            "lat": 42.91566,
+            "lon": 133.054782,
+            "sector": 25,
+            "path_id": "ek069-ruzhino-pass-8170-s25-path",
+            "ordinate": 160000,
+            "chainage_m": 161000
+          },
+          {
+            "lat": 42.910481,
+            "lon": 133.04455,
+            "sector": 25,
+            "path_id": "ek069-ruzhino-pass-8170-s25-path",
+            "ordinate": 161000,
+            "chainage_m": 162000
+          },
+          {
+            "lat": 42.904677,
+            "lon": 133.035179,
+            "sector": 25,
+            "path_id": "ek069-ruzhino-pass-8170-s25-path",
+            "ordinate": 162000,
+            "chainage_m": 163000
+          },
+          {
+            "lat": 42.898913,
+            "lon": 133.025951,
+            "sector": 25,
+            "path_id": "ek069-ruzhino-pass-8170-s25-path",
+            "ordinate": 163000,
+            "chainage_m": 164000
+          },
+          {
+            "lat": 42.892195,
+            "lon": 133.018018,
+            "sector": 25,
+            "path_id": "ek069-ruzhino-pass-8170-s25-path",
+            "ordinate": 164000,
+            "chainage_m": 165000
+          },
+          {
+            "lat": 42.884261,
+            "lon": 133.012272,
+            "sector": 25,
+            "path_id": "ek069-ruzhino-pass-8170-s25-path",
+            "ordinate": 165000,
+            "chainage_m": 166000
+          },
+          {
+            "lat": 42.878193,
+            "lon": 133.003578,
+            "sector": 25,
+            "path_id": "ek069-ruzhino-pass-8170-s25-path",
+            "ordinate": 166000,
+            "chainage_m": 167000
+          },
+          {
+            "lat": 42.870675,
+            "lon": 132.996756,
+            "sector": 25,
+            "path_id": "ek069-ruzhino-pass-8170-s25-path",
+            "ordinate": 167000,
+            "chainage_m": 168000
+          },
+          {
+            "lat": 42.863221,
+            "lon": 132.989972,
+            "sector": 25,
+            "path_id": "ek069-ruzhino-pass-8170-s25-path",
+            "ordinate": 168000,
+            "chainage_m": 169000
+          },
+          {
+            "lat": 42.856466,
+            "lon": 132.982115,
+            "sector": 25,
+            "path_id": "ek069-ruzhino-pass-8170-s25-path",
+            "ordinate": 169000,
+            "chainage_m": 170000
+          },
+          {
+            "lat": 42.851151,
+            "lon": 132.972236,
+            "sector": 25,
+            "path_id": "ek069-ruzhino-pass-8170-s25-path",
+            "ordinate": 170000,
+            "chainage_m": 171000
+          },
+          {
+            "lat": 42.847071,
+            "lon": 132.961335,
+            "sector": 25,
+            "path_id": "ek069-ruzhino-pass-8170-s25-path",
+            "ordinate": 171000,
+            "chainage_m": 172000
+          },
+          {
+            "lat": 42.843368,
+            "lon": 132.950213,
+            "sector": 25,
+            "path_id": "ek069-ruzhino-pass-8170-s25-path",
+            "ordinate": 172000,
+            "chainage_m": 173000
+          },
+          {
+            "lat": 42.841247,
+            "lon": 132.938364,
+            "sector": 25,
+            "path_id": "ek069-ruzhino-pass-8170-s25-path",
+            "ordinate": 173000,
+            "chainage_m": 174000
+          },
+          {
+            "lat": 42.839499,
+            "lon": 132.926392,
+            "sector": 25,
+            "path_id": "ek069-ruzhino-pass-8170-s25-path",
+            "ordinate": 174000,
+            "chainage_m": 175000
+          },
+          {
+            "lat": 42.837449,
+            "lon": 132.914491,
+            "sector": 25,
+            "path_id": "ek069-ruzhino-pass-8170-s25-path",
+            "ordinate": 175000,
+            "chainage_m": 176000
+          },
+          {
+            "lat": 42.833421,
+            "lon": 132.903841,
+            "sector": 25,
+            "path_id": "ek069-ruzhino-pass-8170-s25-path",
+            "ordinate": 176000,
+            "chainage_m": 177000
+          },
+          {
+            "lat": 42.82675,
+            "lon": 132.895853,
+            "sector": 25,
+            "path_id": "ek069-ruzhino-pass-8170-s25-path",
+            "ordinate": 177000,
+            "chainage_m": 178000
+          },
+          {
+            "lat": 42.818508,
+            "lon": 132.891196,
+            "sector": 25,
+            "path_id": "ek069-ruzhino-pass-8170-s25-path",
+            "ordinate": 178000,
+            "chainage_m": 179000
+          },
+          {
+            "lat": 42.810214,
+            "lon": 132.88627,
+            "sector": 25,
+            "path_id": "ek069-ruzhino-pass-8170-s25-path",
+            "ordinate": 179000,
+            "chainage_m": 180000
+          },
+          {
+            "lat": 42.807475,
+            "lon": 132.883555,
+            "sector": 25,
+            "path_id": "ek069-ruzhino-pass-8170-s25-path",
+            "ordinate": 179400,
+            "chainage_m": 180400
+          },
+          {
+            "lat": 42.808037,
+            "lon": 132.881302,
+            "sector": 25,
+            "path_id": "ek069-ruzhino-pass-8170-s25-path",
+            "ordinate": 179600,
+            "chainage_m": 180600
+          },
+          {
+            "lat": 42.810425,
+            "lon": 132.877549,
+            "sector": 25,
+            "path_id": "ek069-ruzhino-pass-8170-s25-path",
+            "ordinate": 180000,
+            "chainage_m": 181000
+          },
+          {
+            "lat": 42.811118,
+            "lon": 132.875465,
+            "sector": 25,
+            "path_id": "ek069-ruzhino-pass-8170-s25-path",
+            "ordinate": 180200,
+            "chainage_m": 181200
+          },
+          {
+            "lat": 42.810021,
+            "lon": 132.872492,
+            "sector": 25,
+            "path_id": "ek069-ruzhino-pass-8170-s25-path",
+            "ordinate": 180500,
+            "chainage_m": 181500
+          },
+          {
+            "lat": 42.807748,
+            "lon": 132.873786,
+            "sector": 25,
+            "path_id": "ek069-ruzhino-pass-8170-s25-path",
+            "ordinate": 180800,
+            "chainage_m": 181800
+          },
+          {
+            "lat": 42.806718,
+            "lon": 132.876154,
+            "sector": 25,
+            "path_id": "ek069-ruzhino-pass-8170-s25-path",
+            "ordinate": 181000,
+            "chainage_m": 182000
+          },
+          {
+            "lat": 42.80541,
+            "lon": 132.877749,
+            "sector": 25,
+            "path_id": "ek069-ruzhino-pass-8170-s25-path",
+            "ordinate": 181200,
+            "chainage_m": 182200
+          },
+          {
+            "lat": 42.803721,
+            "lon": 132.87712,
+            "sector": 25,
+            "path_id": "ek069-ruzhino-pass-8170-s25-path",
+            "ordinate": 181400,
+            "chainage_m": 182400
+          },
+          {
+            "lat": 42.80268,
+            "lon": 132.875218,
+            "sector": 25,
+            "path_id": "ek069-ruzhino-pass-8170-s25-path",
+            "ordinate": 181600,
+            "chainage_m": 182600
+          },
+          {
+            "lat": 42.799031,
+            "lon": 132.874998,
+            "sector": 25,
+            "path_id": "ek069-ruzhino-pass-8170-s25-path",
+            "ordinate": 182000,
+            "chainage_m": 183000
+          },
+          {
+            "lat": 42.797532,
+            "lon": 132.874425,
+            "sector": 25,
+            "path_id": "ek069-ruzhino-pass-8170-s25-path",
+            "ordinate": 182200,
+            "chainage_m": 183200
+          },
+          {
+            "lat": 42.795365,
+            "lon": 132.870524,
+            "sector": 25,
+            "path_id": "ek069-ruzhino-pass-8170-s25-path",
+            "ordinate": 182600,
+            "chainage_m": 183600
+          },
+          {
+            "lat": 42.791744,
+            "lon": 132.869431,
+            "sector": 25,
+            "path_id": "ek069-ruzhino-pass-8170-s25-path",
+            "ordinate": 183000,
+            "chainage_m": 184000
+          },
+          {
+            "lat": 42.786125,
+            "lon": 132.860715,
+            "sector": 25,
+            "path_id": "ek069-ruzhino-pass-8170-s25-path",
+            "ordinate": 184000,
+            "chainage_m": 185000
+          },
+          {
+            "lat": 42.783168,
+            "lon": 132.855637,
+            "sector": 25,
+            "path_id": "ek069-ruzhino-pass-8170-s25-path",
+            "ordinate": 184500,
+            "chainage_m": 185500
+          },
+          {
+            "lat": 42.780837,
+            "lon": 132.854525,
+            "sector": 25,
+            "path_id": "ek069-ruzhino-pass-8170-s25-path",
+            "ordinate": 184800,
+            "chainage_m": 185800
+          },
+          {
+            "lat": 42.779759,
+            "lon": 132.856349,
+            "sector": 25,
+            "path_id": "ek069-ruzhino-pass-8170-s25-path",
+            "ordinate": 185000,
+            "chainage_m": 186000
+          },
+          {
+            "lat": 42.782241,
+            "lon": 132.861023,
+            "sector": 25,
+            "path_id": "ek069-ruzhino-pass-8170-s25-path",
+            "ordinate": 185500,
+            "chainage_m": 186500
+          },
+          {
+            "lat": 42.783315,
+            "lon": 132.864366,
+            "sector": 25,
+            "path_id": "ek069-ruzhino-pass-8170-s25-path",
+            "ordinate": 185800,
+            "chainage_m": 186800
+          },
+          {
+            "lat": 42.782474,
+            "lon": 132.866484,
+            "sector": 25,
+            "path_id": "ek069-ruzhino-pass-8170-s25-path",
+            "ordinate": 186000,
+            "chainage_m": 187000
+          },
+          {
+            "lat": 42.779544,
+            "lon": 132.868871,
+            "sector": 25,
+            "path_id": "ek069-ruzhino-pass-8170-s25-path",
+            "ordinate": 186400,
+            "chainage_m": 187400
+          },
+          {
+            "lat": 42.779788,
+            "lon": 132.871222,
+            "sector": 25,
+            "path_id": "ek069-ruzhino-pass-8170-s25-path",
+            "ordinate": 186600,
+            "chainage_m": 187600
+          },
+          {
+            "lat": 42.783141,
+            "lon": 132.872728,
+            "sector": 25,
+            "path_id": "ek069-ruzhino-pass-8170-s25-path",
+            "ordinate": 187000,
+            "chainage_m": 188000
+          },
+          {
+            "lat": 42.78775,
+            "lon": 132.876267,
+            "sector": 25,
+            "path_id": "ek069-ruzhino-pass-8170-s25-path",
+            "ordinate": 187600,
+            "chainage_m": 188600
+          },
+          {
+            "lat": 42.788135,
+            "lon": 132.880631,
+            "sector": 25,
+            "path_id": "ek069-ruzhino-pass-8170-s25-path",
+            "ordinate": 188000,
+            "chainage_m": 189000
+          },
+          {
+            "lat": 42.788704,
+            "lon": 132.885252,
+            "sector": 25,
+            "path_id": "ek069-ruzhino-pass-8170-s25-path",
+            "ordinate": 188400,
+            "chainage_m": 189400
+          },
+          {
+            "lat": 42.7936,
+            "lon": 132.888255,
+            "sector": 25,
+            "path_id": "ek069-ruzhino-pass-8170-s25-path",
+            "ordinate": 189000,
+            "chainage_m": 190000
+          },
+          {
+            "lat": 42.798152,
+            "lon": 132.898486,
+            "sector": 25,
+            "path_id": "ek069-ruzhino-pass-8170-s25-path",
+            "ordinate": 190000,
+            "chainage_m": 191000
+          },
+          {
+            "lat": 42.798152,
+            "lon": 132.898486,
+            "sector": 25,
+            "path_id": "ek069-ruzhino-pass-8170-s25-path",
+            "ordinate": 190267,
+            "chainage_m": 191267
+          }
+        ]
+      }
+    ]
+  }
+}

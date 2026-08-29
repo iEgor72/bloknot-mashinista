@@ -1,0 +1,1151 @@
+{
+  "schema_version": "1.0",
+  "id": "ek069-mariinsk-irkutsk-s7",
+  "status": "draft",
+  "railway": {
+    "id": "cross-network",
+    "name": "Красноярская / Восточно-Сибирская железные дороги"
+  },
+  "section_name": "Мариинск — Иркутск — сектор 7",
+  "direction": "требует проверки",
+  "km_start": 6.772,
+  "km_end": 54.087,
+  "generator_format": "Б",
+  "elements": [
+    {
+      "start_m": 6772,
+      "len_m": 2328,
+      "grad_permille": 8,
+      "confidence": "legacy_ek_unverified"
+    },
+    {
+      "start_m": 9100,
+      "len_m": 4700,
+      "grad_permille": -5,
+      "confidence": "legacy_ek_unverified"
+    },
+    {
+      "start_m": 13800,
+      "len_m": 1100,
+      "grad_permille": 2.4,
+      "confidence": "legacy_ek_unverified"
+    },
+    {
+      "start_m": 14900,
+      "len_m": 2600,
+      "grad_permille": -3.3,
+      "confidence": "legacy_ek_unverified"
+    },
+    {
+      "start_m": 17500,
+      "len_m": 1500,
+      "grad_permille": 6.4,
+      "confidence": "legacy_ek_unverified"
+    },
+    {
+      "start_m": 19000,
+      "len_m": 800,
+      "grad_permille": -5.3,
+      "confidence": "legacy_ek_unverified"
+    },
+    {
+      "start_m": 19800,
+      "len_m": 3500,
+      "grad_permille": 7,
+      "confidence": "legacy_ek_unverified"
+    },
+    {
+      "start_m": 23300,
+      "len_m": 700,
+      "grad_permille": -4.8,
+      "confidence": "legacy_ek_unverified"
+    },
+    {
+      "start_m": 24000,
+      "len_m": 1600,
+      "grad_permille": 1.8,
+      "confidence": "legacy_ek_unverified"
+    },
+    {
+      "start_m": 25600,
+      "len_m": 1500,
+      "grad_permille": -7,
+      "confidence": "legacy_ek_unverified"
+    },
+    {
+      "start_m": 27100,
+      "len_m": 1200,
+      "grad_permille": 2.8,
+      "confidence": "legacy_ek_unverified"
+    },
+    {
+      "start_m": 28300,
+      "len_m": 300,
+      "grad_permille": -1,
+      "confidence": "legacy_ek_unverified"
+    },
+    {
+      "start_m": 28600,
+      "len_m": 800,
+      "grad_permille": 2.3,
+      "confidence": "legacy_ek_unverified"
+    },
+    {
+      "start_m": 29400,
+      "len_m": 4000,
+      "grad_permille": -3.8,
+      "confidence": "legacy_ek_unverified"
+    },
+    {
+      "start_m": 33400,
+      "len_m": 1800,
+      "grad_permille": 6,
+      "confidence": "legacy_ek_unverified"
+    },
+    {
+      "start_m": 35200,
+      "len_m": 700,
+      "grad_permille": -2,
+      "confidence": "legacy_ek_unverified"
+    },
+    {
+      "start_m": 35900,
+      "len_m": 2100,
+      "grad_permille": 0,
+      "confidence": "legacy_ek_unverified"
+    },
+    {
+      "start_m": 38000,
+      "len_m": 600,
+      "grad_permille": -9,
+      "confidence": "legacy_ek_unverified"
+    },
+    {
+      "start_m": 38600,
+      "len_m": 400,
+      "grad_permille": 0,
+      "confidence": "legacy_ek_unverified"
+    },
+    {
+      "start_m": 39000,
+      "len_m": 3600,
+      "grad_permille": 5.5,
+      "confidence": "legacy_ek_unverified"
+    },
+    {
+      "start_m": 42600,
+      "len_m": 300,
+      "grad_permille": 0,
+      "confidence": "legacy_ek_unverified"
+    },
+    {
+      "start_m": 42900,
+      "len_m": 1500,
+      "grad_permille": -2.7,
+      "confidence": "legacy_ek_unverified"
+    },
+    {
+      "start_m": 44400,
+      "len_m": 300,
+      "grad_permille": 0,
+      "confidence": "legacy_ek_unverified"
+    },
+    {
+      "start_m": 44700,
+      "len_m": 1100,
+      "grad_permille": 5.7,
+      "confidence": "legacy_ek_unverified"
+    },
+    {
+      "start_m": 45800,
+      "len_m": 800,
+      "grad_permille": -5.4,
+      "confidence": "legacy_ek_unverified"
+    },
+    {
+      "start_m": 46700,
+      "len_m": 600,
+      "grad_permille": 0.4,
+      "confidence": "legacy_ek_unverified"
+    },
+    {
+      "start_m": 47300,
+      "len_m": 900,
+      "grad_permille": -2,
+      "confidence": "legacy_ek_unverified"
+    },
+    {
+      "start_m": 48200,
+      "len_m": 1700,
+      "grad_permille": 0,
+      "confidence": "legacy_ek_unverified"
+    },
+    {
+      "start_m": 49900,
+      "len_m": 3700,
+      "grad_permille": -1.1,
+      "confidence": "legacy_ek_unverified"
+    }
+  ],
+  "stations": [
+    {
+      "name": "БП 423",
+      "km": 6.772,
+      "sector": 7,
+      "confidence": "legacy_ek_unverified"
+    },
+    {
+      "name": "БП 423",
+      "km": 6.927,
+      "sector": 7,
+      "confidence": "legacy_ek_unverified"
+    },
+    {
+      "name": "АВДА",
+      "km": 28.864,
+      "sector": 7,
+      "confidence": "legacy_ek_unverified"
+    },
+    {
+      "name": "АВДА",
+      "km": 29.167,
+      "sector": 7,
+      "confidence": "legacy_ek_unverified"
+    },
+    {
+      "name": "АВДА",
+      "km": 29.222,
+      "sector": 7,
+      "confidence": "legacy_ek_unverified"
+    },
+    {
+      "name": "АВДА",
+      "km": 31.687,
+      "sector": 7,
+      "confidence": "legacy_ek_unverified"
+    },
+    {
+      "name": "КИЛЬЧУ",
+      "km": 41.01,
+      "sector": 7,
+      "confidence": "legacy_ek_unverified"
+    },
+    {
+      "name": "КИЛЬЧУ",
+      "km": 43.455,
+      "sector": 7,
+      "confidence": "legacy_ek_unverified"
+    },
+    {
+      "name": "САЯНСК",
+      "km": 53.449,
+      "sector": 7,
+      "confidence": "legacy_ek_unverified"
+    },
+    {
+      "name": "САЯНСК",
+      "km": 54.087,
+      "sector": 7,
+      "confidence": "legacy_ek_unverified"
+    }
+  ],
+  "signals": [
+    {
+      "name": "ЧА+УКС",
+      "chainage_m": 6927,
+      "sector": 7,
+      "confidence": "legacy_ek_unverified",
+      "legacy_source": "1n.xml"
+    },
+    {
+      "name": "17",
+      "chainage_m": 9050,
+      "sector": 7,
+      "confidence": "legacy_ek_unverified",
+      "legacy_source": "1.xml"
+    },
+    {
+      "name": "2",
+      "chainage_m": 9050,
+      "sector": 7,
+      "confidence": "legacy_ek_unverified",
+      "legacy_source": "1n.xml"
+    },
+    {
+      "name": "4",
+      "chainage_m": 11048,
+      "sector": 7,
+      "confidence": "legacy_ek_unverified",
+      "legacy_source": "1n.xml"
+    },
+    {
+      "name": "15",
+      "chainage_m": 11050,
+      "sector": 7,
+      "confidence": "legacy_ek_unverified",
+      "legacy_source": "1.xml"
+    },
+    {
+      "name": "13",
+      "chainage_m": 13400,
+      "sector": 7,
+      "confidence": "legacy_ek_unverified",
+      "legacy_source": "1.xml"
+    },
+    {
+      "name": "6",
+      "chainage_m": 13400,
+      "sector": 7,
+      "confidence": "legacy_ek_unverified",
+      "legacy_source": "1n.xml"
+    },
+    {
+      "name": "11",
+      "chainage_m": 15754,
+      "sector": 7,
+      "confidence": "legacy_ek_unverified",
+      "legacy_source": "1.xml"
+    },
+    {
+      "name": "8",
+      "chainage_m": 15755,
+      "sector": 7,
+      "confidence": "legacy_ek_unverified",
+      "legacy_source": "1n.xml"
+    },
+    {
+      "name": "9",
+      "chainage_m": 18150,
+      "sector": 7,
+      "confidence": "legacy_ek_unverified",
+      "legacy_source": "1.xml"
+    },
+    {
+      "name": "10",
+      "chainage_m": 18150,
+      "sector": 7,
+      "confidence": "legacy_ek_unverified",
+      "legacy_source": "1n.xml"
+    },
+    {
+      "name": "12",
+      "chainage_m": 20548,
+      "sector": 7,
+      "confidence": "legacy_ek_unverified",
+      "legacy_source": "1n.xml"
+    },
+    {
+      "name": "7",
+      "chainage_m": 20549,
+      "sector": 7,
+      "confidence": "legacy_ek_unverified",
+      "legacy_source": "1.xml"
+    },
+    {
+      "name": "5",
+      "chainage_m": 23050,
+      "sector": 7,
+      "confidence": "legacy_ek_unverified",
+      "legacy_source": "1.xml"
+    },
+    {
+      "name": "14",
+      "chainage_m": 23050,
+      "sector": 7,
+      "confidence": "legacy_ek_unverified",
+      "legacy_source": "1n.xml"
+    },
+    {
+      "name": "3+УКСП",
+      "chainage_m": 25000,
+      "sector": 7,
+      "confidence": "legacy_ek_unverified",
+      "legacy_source": "1.xml"
+    },
+    {
+      "name": "16+УКС",
+      "chainage_m": 25000,
+      "sector": 7,
+      "confidence": "legacy_ek_unverified",
+      "legacy_source": "1n.xml"
+    },
+    {
+      "name": "18+УКС",
+      "chainage_m": 27364,
+      "sector": 7,
+      "confidence": "legacy_ek_unverified",
+      "legacy_source": "1n.xml"
+    },
+    {
+      "name": "1+УКСП",
+      "chainage_m": 27369,
+      "sector": 7,
+      "confidence": "legacy_ek_unverified",
+      "legacy_source": "1.xml"
+    },
+    {
+      "name": "Н",
+      "chainage_m": 28864,
+      "sector": 7,
+      "confidence": "legacy_ek_unverified",
+      "legacy_source": "1.xml"
+    },
+    {
+      "name": "Ч3А",
+      "chainage_m": 29222,
+      "sector": 7,
+      "confidence": "legacy_ek_unverified",
+      "legacy_source": "1n.xml"
+    },
+    {
+      "name": "НМ3А",
+      "chainage_m": 30345,
+      "sector": 7,
+      "confidence": "legacy_ek_unverified",
+      "legacy_source": "1.xml"
+    },
+    {
+      "name": "ЧМ2",
+      "chainage_m": 30483,
+      "sector": 7,
+      "confidence": "legacy_ek_unverified",
+      "legacy_source": "2.xml"
+    },
+    {
+      "name": "ЧМ3",
+      "chainage_m": 30559,
+      "sector": 7,
+      "confidence": "legacy_ek_unverified",
+      "legacy_source": "1n.xml"
+    },
+    {
+      "name": "Н2",
+      "chainage_m": 31504,
+      "sector": 7,
+      "confidence": "legacy_ek_unverified",
+      "legacy_source": "2n.xml"
+    },
+    {
+      "name": "Н3",
+      "chainage_m": 31519,
+      "sector": 7,
+      "confidence": "legacy_ek_unverified",
+      "legacy_source": "1.xml"
+    },
+    {
+      "name": "Ч",
+      "chainage_m": 31687,
+      "sector": 7,
+      "confidence": "legacy_ek_unverified",
+      "legacy_source": "1n.xml"
+    },
+    {
+      "name": "2+УКСП",
+      "chainage_m": 33125,
+      "sector": 7,
+      "confidence": "legacy_ek_unverified",
+      "legacy_source": "1n.xml"
+    },
+    {
+      "name": "7",
+      "chainage_m": 33705,
+      "sector": 7,
+      "confidence": "legacy_ek_unverified",
+      "legacy_source": "1.xml"
+    },
+    {
+      "name": "4+УКСП",
+      "chainage_m": 35496,
+      "sector": 7,
+      "confidence": "legacy_ek_unverified",
+      "legacy_source": "1n.xml"
+    },
+    {
+      "name": "5+УКСП",
+      "chainage_m": 35503,
+      "sector": 7,
+      "confidence": "legacy_ek_unverified",
+      "legacy_source": "1.xml"
+    },
+    {
+      "name": "3+УКСП",
+      "chainage_m": 37425,
+      "sector": 7,
+      "confidence": "legacy_ek_unverified",
+      "legacy_source": "1.xml"
+    },
+    {
+      "name": "6+УКСП",
+      "chainage_m": 37430,
+      "sector": 7,
+      "confidence": "legacy_ek_unverified",
+      "legacy_source": "1n.xml"
+    },
+    {
+      "name": "8",
+      "chainage_m": 39314,
+      "sector": 7,
+      "confidence": "legacy_ek_unverified",
+      "legacy_source": "1n.xml"
+    },
+    {
+      "name": "1+УКСП",
+      "chainage_m": 39539,
+      "sector": 7,
+      "confidence": "legacy_ek_unverified",
+      "legacy_source": "1.xml"
+    },
+    {
+      "name": "Н",
+      "chainage_m": 41010,
+      "sector": 7,
+      "confidence": "legacy_ek_unverified",
+      "legacy_source": "1.xml"
+    },
+    {
+      "name": "Ч2",
+      "chainage_m": 41548,
+      "sector": 7,
+      "confidence": "legacy_ek_unverified",
+      "legacy_source": "2.xml"
+    },
+    {
+      "name": "Ч1",
+      "chainage_m": 41614,
+      "sector": 7,
+      "confidence": "legacy_ek_unverified",
+      "legacy_source": "1n.xml"
+    },
+    {
+      "name": "Н1",
+      "chainage_m": 43037,
+      "sector": 7,
+      "confidence": "legacy_ek_unverified",
+      "legacy_source": "1.xml"
+    },
+    {
+      "name": "Н2",
+      "chainage_m": 43098,
+      "sector": 7,
+      "confidence": "legacy_ek_unverified",
+      "legacy_source": "2n.xml"
+    },
+    {
+      "name": "Ч",
+      "chainage_m": 43455,
+      "sector": 7,
+      "confidence": "legacy_ek_unverified",
+      "legacy_source": "1n.xml"
+    },
+    {
+      "name": "5+УКСП",
+      "chainage_m": 44954,
+      "sector": 7,
+      "confidence": "legacy_ek_unverified",
+      "legacy_source": "1.xml"
+    },
+    {
+      "name": "2+УКСП",
+      "chainage_m": 44960,
+      "sector": 7,
+      "confidence": "legacy_ek_unverified",
+      "legacy_source": "1n.xml"
+    },
+    {
+      "name": "3+УКСП",
+      "chainage_m": 47503,
+      "sector": 7,
+      "confidence": "legacy_ek_unverified",
+      "legacy_source": "1.xml"
+    },
+    {
+      "name": "4+УКСП",
+      "chainage_m": 47510,
+      "sector": 7,
+      "confidence": "legacy_ek_unverified",
+      "legacy_source": "1n.xml"
+    },
+    {
+      "name": "1+УКСП",
+      "chainage_m": 50052,
+      "sector": 7,
+      "confidence": "legacy_ek_unverified",
+      "legacy_source": "1.xml"
+    },
+    {
+      "name": "6+УКСП",
+      "chainage_m": 50052,
+      "sector": 7,
+      "confidence": "legacy_ek_unverified",
+      "legacy_source": "1n.xml"
+    },
+    {
+      "name": "НУ",
+      "chainage_m": 53449,
+      "sector": 7,
+      "confidence": "legacy_ek_unverified",
+      "legacy_source": "1.xml"
+    }
+  ],
+  "whistle_points": [],
+  "speed": {
+    "established": null,
+    "permanent_restrictions": [],
+    "temporary_warnings": [],
+    "source": "manual_required"
+  },
+  "flags_for_review": [
+    "Импортировано из пользовательской ЭК приложения «Блокнот машиниста» 0.6.9; профиль, объекты и GPS-геометрия не сверены с официальной режимной картой.",
+    "Ограничения скорости из старого XML намеренно не перенесены: их требуется внести вручную по действующим документам.",
+    "Направление движения и принадлежность GPS-сектора требуют ручной проверки.",
+    "При разборе исходника применены безопасные числовые исправления/отбраковка: 4."
+  ],
+  "provenance": [
+    {
+      "kind": "legacy_ek_archive",
+      "file_name": "Мариинск-Иркутск(by SkripTal).zip",
+      "sha256": "500dbd4bd10119c3376fa0c026ac8ef32ab28a1eb67cd85fad57762dbd2d6c06",
+      "source_application": "Блокнот машиниста 0.6.9",
+      "role": "non_authoritative_import_seed"
+    }
+  ],
+  "runtime": {
+    "coordinate_unit": "m",
+    "coordinate_kind": "official_railway_chainage",
+    "coordinate_offset_m": -1000,
+    "movement_order": "ascending",
+    "default_path_id": "ek069-mariinsk-irkutsk-s7-path",
+    "route_legs": [
+      {
+        "path_id": "ek069-mariinsk-irkutsk-s7-path",
+        "sector": 7,
+        "from_chainage_m": 6772,
+        "to_chainage_m": 54087
+      }
+    ],
+    "profile_status": "legacy_ek_unverified",
+    "profile_coverage": [
+      {
+        "start_m": 6772,
+        "end_m": 46600
+      },
+      {
+        "start_m": 46700,
+        "end_m": 53600
+      }
+    ],
+    "profile_gaps": [
+      {
+        "start_m": 46600,
+        "end_m": 46700,
+        "reason": "В исходной ЭК отсутствует профиль для этого диапазона."
+      },
+      {
+        "start_m": 53600,
+        "end_m": 54087,
+        "reason": "В исходной ЭК отсутствует профиль для этого диапазона."
+      }
+    ],
+    "profile_applies_both_directions": false
+  },
+  "geometry": {
+    "status": "draft_from_legacy_ek",
+    "source": "Мариинск-Иркутск(by SkripTal).zip",
+    "paths": [
+      {
+        "path_id": "ek069-mariinsk-irkutsk-s7-path",
+        "sector": 7,
+        "points": [
+          {
+            "lat": 55.841073,
+            "lon": 94.374782,
+            "sector": 7,
+            "path_id": "ek069-mariinsk-irkutsk-s7-path",
+            "ordinate": 5772,
+            "chainage_m": 6772
+          },
+          {
+            "lat": 55.840937,
+            "lon": 94.375948,
+            "sector": 7,
+            "path_id": "ek069-mariinsk-irkutsk-s7-path",
+            "ordinate": 5800,
+            "chainage_m": 6800
+          },
+          {
+            "lat": 55.840589,
+            "lon": 94.379007,
+            "sector": 7,
+            "path_id": "ek069-mariinsk-irkutsk-s7-path",
+            "ordinate": 6000,
+            "chainage_m": 7000
+          },
+          {
+            "lat": 55.838804,
+            "lon": 94.394729,
+            "sector": 7,
+            "path_id": "ek069-mariinsk-irkutsk-s7-path",
+            "ordinate": 7000,
+            "chainage_m": 8000
+          },
+          {
+            "lat": 55.838481,
+            "lon": 94.397861,
+            "sector": 7,
+            "path_id": "ek069-mariinsk-irkutsk-s7-path",
+            "ordinate": 7200,
+            "chainage_m": 8200
+          },
+          {
+            "lat": 55.838758,
+            "lon": 94.400972,
+            "sector": 7,
+            "path_id": "ek069-mariinsk-irkutsk-s7-path",
+            "ordinate": 7400,
+            "chainage_m": 8400
+          },
+          {
+            "lat": 55.842623,
+            "lon": 94.40747,
+            "sector": 7,
+            "path_id": "ek069-mariinsk-irkutsk-s7-path",
+            "ordinate": 8000,
+            "chainage_m": 9000
+          },
+          {
+            "lat": 55.84516,
+            "lon": 94.413942,
+            "sector": 7,
+            "path_id": "ek069-mariinsk-irkutsk-s7-path",
+            "ordinate": 8500,
+            "chainage_m": 9500
+          },
+          {
+            "lat": 55.846551,
+            "lon": 94.421544,
+            "sector": 7,
+            "path_id": "ek069-mariinsk-irkutsk-s7-path",
+            "ordinate": 9000,
+            "chainage_m": 10000
+          },
+          {
+            "lat": 55.849318,
+            "lon": 94.4367,
+            "sector": 7,
+            "path_id": "ek069-mariinsk-irkutsk-s7-path",
+            "ordinate": 10000,
+            "chainage_m": 11000
+          },
+          {
+            "lat": 55.850153,
+            "lon": 94.444616,
+            "sector": 7,
+            "path_id": "ek069-mariinsk-irkutsk-s7-path",
+            "ordinate": 10500,
+            "chainage_m": 11500
+          },
+          {
+            "lat": 55.849026,
+            "lon": 94.452397,
+            "sector": 7,
+            "path_id": "ek069-mariinsk-irkutsk-s7-path",
+            "ordinate": 11000,
+            "chainage_m": 12000
+          },
+          {
+            "lat": 55.846691,
+            "lon": 94.467838,
+            "sector": 7,
+            "path_id": "ek069-mariinsk-irkutsk-s7-path",
+            "ordinate": 12000,
+            "chainage_m": 13000
+          },
+          {
+            "lat": 55.844355,
+            "lon": 94.4833,
+            "sector": 7,
+            "path_id": "ek069-mariinsk-irkutsk-s7-path",
+            "ordinate": 13000,
+            "chainage_m": 14000
+          },
+          {
+            "lat": 55.841123,
+            "lon": 94.497976,
+            "sector": 7,
+            "path_id": "ek069-mariinsk-irkutsk-s7-path",
+            "ordinate": 14000,
+            "chainage_m": 15000
+          },
+          {
+            "lat": 55.834316,
+            "lon": 94.508389,
+            "sector": 7,
+            "path_id": "ek069-mariinsk-irkutsk-s7-path",
+            "ordinate": 15000,
+            "chainage_m": 16000
+          },
+          {
+            "lat": 55.827394,
+            "lon": 94.51849,
+            "sector": 7,
+            "path_id": "ek069-mariinsk-irkutsk-s7-path",
+            "ordinate": 16000,
+            "chainage_m": 17000
+          },
+          {
+            "lat": 55.822759,
+            "lon": 94.526034,
+            "sector": 7,
+            "path_id": "ek069-mariinsk-irkutsk-s7-path",
+            "ordinate": 16700,
+            "chainage_m": 17700
+          },
+          {
+            "lat": 55.821577,
+            "lon": 94.530145,
+            "sector": 7,
+            "path_id": "ek069-mariinsk-irkutsk-s7-path",
+            "ordinate": 17000,
+            "chainage_m": 18000
+          },
+          {
+            "lat": 55.820831,
+            "lon": 94.533181,
+            "sector": 7,
+            "path_id": "ek069-mariinsk-irkutsk-s7-path",
+            "ordinate": 17200,
+            "chainage_m": 18200
+          },
+          {
+            "lat": 55.815674,
+            "lon": 94.541634,
+            "sector": 7,
+            "path_id": "ek069-mariinsk-irkutsk-s7-path",
+            "ordinate": 18000,
+            "chainage_m": 19000
+          },
+          {
+            "lat": 55.814149,
+            "lon": 94.545657,
+            "sector": 7,
+            "path_id": "ek069-mariinsk-irkutsk-s7-path",
+            "ordinate": 18300,
+            "chainage_m": 19300
+          },
+          {
+            "lat": 55.813978,
+            "lon": 94.556598,
+            "sector": 7,
+            "path_id": "ek069-mariinsk-irkutsk-s7-path",
+            "ordinate": 19000,
+            "chainage_m": 20000
+          },
+          {
+            "lat": 55.81187,
+            "lon": 94.572007,
+            "sector": 7,
+            "path_id": "ek069-mariinsk-irkutsk-s7-path",
+            "ordinate": 20000,
+            "chainage_m": 21000
+          },
+          {
+            "lat": 55.809028,
+            "lon": 94.587146,
+            "sector": 7,
+            "path_id": "ek069-mariinsk-irkutsk-s7-path",
+            "ordinate": 21000,
+            "chainage_m": 22000
+          },
+          {
+            "lat": 55.802597,
+            "lon": 94.597943,
+            "sector": 7,
+            "path_id": "ek069-mariinsk-irkutsk-s7-path",
+            "ordinate": 22000,
+            "chainage_m": 23000
+          },
+          {
+            "lat": 55.795212,
+            "lon": 94.607012,
+            "sector": 7,
+            "path_id": "ek069-mariinsk-irkutsk-s7-path",
+            "ordinate": 23000,
+            "chainage_m": 24000
+          },
+          {
+            "lat": 55.789232,
+            "lon": 94.618551,
+            "sector": 7,
+            "path_id": "ek069-mariinsk-irkutsk-s7-path",
+            "ordinate": 24000,
+            "chainage_m": 25000
+          },
+          {
+            "lat": 55.784438,
+            "lon": 94.632083,
+            "sector": 7,
+            "path_id": "ek069-mariinsk-irkutsk-s7-path",
+            "ordinate": 25000,
+            "chainage_m": 26000
+          },
+          {
+            "lat": 55.779656,
+            "lon": 94.645557,
+            "sector": 7,
+            "path_id": "ek069-mariinsk-irkutsk-s7-path",
+            "ordinate": 26000,
+            "chainage_m": 27000
+          },
+          {
+            "lat": 55.774021,
+            "lon": 94.65779,
+            "sector": 7,
+            "path_id": "ek069-mariinsk-irkutsk-s7-path",
+            "ordinate": 27000,
+            "chainage_m": 28000
+          },
+          {
+            "lat": 55.766146,
+            "lon": 94.665325,
+            "sector": 7,
+            "path_id": "ek069-mariinsk-irkutsk-s7-path",
+            "ordinate": 28000,
+            "chainage_m": 29000
+          },
+          {
+            "lat": 55.757553,
+            "lon": 94.673527,
+            "sector": 7,
+            "path_id": "ek069-mariinsk-irkutsk-s7-path",
+            "ordinate": 29000,
+            "chainage_m": 30000
+          },
+          {
+            "lat": 55.749653,
+            "lon": 94.68106,
+            "sector": 7,
+            "path_id": "ek069-mariinsk-irkutsk-s7-path",
+            "ordinate": 30000,
+            "chainage_m": 31000
+          },
+          {
+            "lat": 55.741742,
+            "lon": 94.688591,
+            "sector": 7,
+            "path_id": "ek069-mariinsk-irkutsk-s7-path",
+            "ordinate": 31000,
+            "chainage_m": 32000
+          },
+          {
+            "lat": 55.733791,
+            "lon": 94.696173,
+            "sector": 7,
+            "path_id": "ek069-mariinsk-irkutsk-s7-path",
+            "ordinate": 32000,
+            "chainage_m": 33000
+          },
+          {
+            "lat": 55.725735,
+            "lon": 94.70311,
+            "sector": 7,
+            "path_id": "ek069-mariinsk-irkutsk-s7-path",
+            "ordinate": 33000,
+            "chainage_m": 34000
+          },
+          {
+            "lat": 55.717017,
+            "lon": 94.707077,
+            "sector": 7,
+            "path_id": "ek069-mariinsk-irkutsk-s7-path",
+            "ordinate": 34000,
+            "chainage_m": 35000
+          },
+          {
+            "lat": 55.708305,
+            "lon": 94.710865,
+            "sector": 7,
+            "path_id": "ek069-mariinsk-irkutsk-s7-path",
+            "ordinate": 35000,
+            "chainage_m": 36000
+          },
+          {
+            "lat": 55.699579,
+            "lon": 94.71465,
+            "sector": 7,
+            "path_id": "ek069-mariinsk-irkutsk-s7-path",
+            "ordinate": 36000,
+            "chainage_m": 37000
+          },
+          {
+            "lat": 55.69081,
+            "lon": 94.71844,
+            "sector": 7,
+            "path_id": "ek069-mariinsk-irkutsk-s7-path",
+            "ordinate": 37000,
+            "chainage_m": 38000
+          },
+          {
+            "lat": 55.682112,
+            "lon": 94.722207,
+            "sector": 7,
+            "path_id": "ek069-mariinsk-irkutsk-s7-path",
+            "ordinate": 38000,
+            "chainage_m": 39000
+          },
+          {
+            "lat": 55.673341,
+            "lon": 94.72562,
+            "sector": 7,
+            "path_id": "ek069-mariinsk-irkutsk-s7-path",
+            "ordinate": 39000,
+            "chainage_m": 40000
+          },
+          {
+            "lat": 55.664511,
+            "lon": 94.728034,
+            "sector": 7,
+            "path_id": "ek069-mariinsk-irkutsk-s7-path",
+            "ordinate": 40000,
+            "chainage_m": 41000
+          },
+          {
+            "lat": 55.655613,
+            "lon": 94.730474,
+            "sector": 7,
+            "path_id": "ek069-mariinsk-irkutsk-s7-path",
+            "ordinate": 41000,
+            "chainage_m": 42000
+          },
+          {
+            "lat": 55.646808,
+            "lon": 94.732886,
+            "sector": 7,
+            "path_id": "ek069-mariinsk-irkutsk-s7-path",
+            "ordinate": 42000,
+            "chainage_m": 43000
+          },
+          {
+            "lat": 55.637458,
+            "lon": 94.735419,
+            "sector": 7,
+            "path_id": "ek069-mariinsk-irkutsk-s7-path",
+            "ordinate": 43000,
+            "chainage_m": 44000
+          },
+          {
+            "lat": 55.628601,
+            "lon": 94.737832,
+            "sector": 7,
+            "path_id": "ek069-mariinsk-irkutsk-s7-path",
+            "ordinate": 44000,
+            "chainage_m": 45000
+          },
+          {
+            "lat": 55.619706,
+            "lon": 94.740255,
+            "sector": 7,
+            "path_id": "ek069-mariinsk-irkutsk-s7-path",
+            "ordinate": 45000,
+            "chainage_m": 46000
+          },
+          {
+            "lat": 55.610801,
+            "lon": 94.742677,
+            "sector": 7,
+            "path_id": "ek069-mariinsk-irkutsk-s7-path",
+            "ordinate": 46000,
+            "chainage_m": 47000
+          },
+          {
+            "lat": 55.601917,
+            "lon": 94.745095,
+            "sector": 7,
+            "path_id": "ek069-mariinsk-irkutsk-s7-path",
+            "ordinate": 47000,
+            "chainage_m": 48000
+          },
+          {
+            "lat": 55.593074,
+            "lon": 94.747513,
+            "sector": 7,
+            "path_id": "ek069-mariinsk-irkutsk-s7-path",
+            "ordinate": 48000,
+            "chainage_m": 49000
+          },
+          {
+            "lat": 55.584158,
+            "lon": 94.74994,
+            "sector": 7,
+            "path_id": "ek069-mariinsk-irkutsk-s7-path",
+            "ordinate": 49000,
+            "chainage_m": 50000
+          },
+          {
+            "lat": 55.575284,
+            "lon": 94.75235,
+            "sector": 7,
+            "path_id": "ek069-mariinsk-irkutsk-s7-path",
+            "ordinate": 50000,
+            "chainage_m": 51000
+          },
+          {
+            "lat": 55.566472,
+            "lon": 94.754748,
+            "sector": 7,
+            "path_id": "ek069-mariinsk-irkutsk-s7-path",
+            "ordinate": 51000,
+            "chainage_m": 52000
+          },
+          {
+            "lat": 55.56115,
+            "lon": 94.756047,
+            "sector": 7,
+            "path_id": "ek069-mariinsk-irkutsk-s7-path",
+            "ordinate": 51600,
+            "chainage_m": 52600
+          },
+          {
+            "lat": 55.557636,
+            "lon": 94.754926,
+            "sector": 7,
+            "path_id": "ek069-mariinsk-irkutsk-s7-path",
+            "ordinate": 52000,
+            "chainage_m": 53000
+          },
+          {
+            "lat": 55.554654,
+            "lon": 94.751517,
+            "sector": 7,
+            "path_id": "ek069-mariinsk-irkutsk-s7-path",
+            "ordinate": 52400,
+            "chainage_m": 53400
+          },
+          {
+            "lat": 55.55351,
+            "lon": 94.749051,
+            "sector": 7,
+            "path_id": "ek069-mariinsk-irkutsk-s7-path",
+            "ordinate": 52600,
+            "chainage_m": 53600
+          },
+          {
+            "lat": 55.552197,
+            "lon": 94.74346,
+            "sector": 7,
+            "path_id": "ek069-mariinsk-irkutsk-s7-path",
+            "ordinate": 53000,
+            "chainage_m": 54000
+          },
+          {
+            "lat": 55.551669,
+            "lon": 94.740365,
+            "sector": 7,
+            "path_id": "ek069-mariinsk-irkutsk-s7-path",
+            "ordinate": 53087,
+            "chainage_m": 54087
+          }
+        ]
+      }
+    ]
+  }
+}

@@ -1,0 +1,3341 @@
+{
+  "schema_version": "1.0",
+  "id": "ek069-konosha-sosnogorsk-s22",
+  "status": "draft",
+  "railway": {
+    "id": "sevn",
+    "name": "Северная железная дорога"
+  },
+  "section_name": "Коноша — Сосногорск — сектор 22",
+  "direction": "требует проверки",
+  "km_start": 706.841,
+  "km_end": 824,
+  "generator_format": "Б",
+  "elements": [
+    {
+      "start_m": 706841,
+      "len_m": 759,
+      "grad_permille": 8.7,
+      "confidence": "legacy_ek_unverified"
+    },
+    {
+      "start_m": 707600,
+      "len_m": 1200,
+      "grad_permille": -8,
+      "confidence": "legacy_ek_unverified"
+    },
+    {
+      "start_m": 708800,
+      "len_m": 400,
+      "grad_permille": 0,
+      "confidence": "legacy_ek_unverified"
+    },
+    {
+      "start_m": 709200,
+      "len_m": 800,
+      "grad_permille": 9.5,
+      "confidence": "legacy_ek_unverified"
+    },
+    {
+      "start_m": 710000,
+      "len_m": 1000,
+      "grad_permille": -7,
+      "confidence": "legacy_ek_unverified"
+    },
+    {
+      "start_m": 711000,
+      "len_m": 1000,
+      "grad_permille": -0.8,
+      "confidence": "legacy_ek_unverified"
+    },
+    {
+      "start_m": 712000,
+      "len_m": 1000,
+      "grad_permille": 0.2,
+      "confidence": "legacy_ek_unverified"
+    },
+    {
+      "start_m": 713000,
+      "len_m": 1400,
+      "grad_permille": -7.8,
+      "confidence": "legacy_ek_unverified"
+    },
+    {
+      "start_m": 714400,
+      "len_m": 600,
+      "grad_permille": -9,
+      "confidence": "legacy_ek_unverified"
+    },
+    {
+      "start_m": 715000,
+      "len_m": 1000,
+      "grad_permille": -8.2,
+      "confidence": "legacy_ek_unverified"
+    },
+    {
+      "start_m": 716000,
+      "len_m": 600,
+      "grad_permille": 1.2,
+      "confidence": "legacy_ek_unverified"
+    },
+    {
+      "start_m": 716600,
+      "len_m": 900,
+      "grad_permille": -11.5,
+      "confidence": "legacy_ek_unverified"
+    },
+    {
+      "start_m": 717500,
+      "len_m": 900,
+      "grad_permille": 6,
+      "confidence": "legacy_ek_unverified"
+    },
+    {
+      "start_m": 718400,
+      "len_m": 900,
+      "grad_permille": 0,
+      "confidence": "legacy_ek_unverified"
+    },
+    {
+      "start_m": 719300,
+      "len_m": 1100,
+      "grad_permille": -4.6,
+      "confidence": "legacy_ek_unverified"
+    },
+    {
+      "start_m": 720400,
+      "len_m": 1800,
+      "grad_permille": -6.8,
+      "confidence": "legacy_ek_unverified"
+    },
+    {
+      "start_m": 722200,
+      "len_m": 1600,
+      "grad_permille": -9,
+      "confidence": "legacy_ek_unverified"
+    },
+    {
+      "start_m": 723800,
+      "len_m": 2000,
+      "grad_permille": 11,
+      "confidence": "legacy_ek_unverified"
+    },
+    {
+      "start_m": 725800,
+      "len_m": 600,
+      "grad_permille": -6.9,
+      "confidence": "legacy_ek_unverified"
+    },
+    {
+      "start_m": 726400,
+      "len_m": 600,
+      "grad_permille": 1.1,
+      "confidence": "legacy_ek_unverified"
+    },
+    {
+      "start_m": 727000,
+      "len_m": 300,
+      "grad_permille": 0,
+      "confidence": "legacy_ek_unverified"
+    },
+    {
+      "start_m": 727300,
+      "len_m": 950,
+      "grad_permille": -6,
+      "confidence": "legacy_ek_unverified"
+    },
+    {
+      "start_m": 728250,
+      "len_m": 550,
+      "grad_permille": 8.5,
+      "confidence": "legacy_ek_unverified"
+    },
+    {
+      "start_m": 728800,
+      "len_m": 700,
+      "grad_permille": -3.7,
+      "confidence": "legacy_ek_unverified"
+    },
+    {
+      "start_m": 729500,
+      "len_m": 500,
+      "grad_permille": 8,
+      "confidence": "legacy_ek_unverified"
+    },
+    {
+      "start_m": 730000,
+      "len_m": 1000,
+      "grad_permille": -2,
+      "confidence": "legacy_ek_unverified"
+    },
+    {
+      "start_m": 731000,
+      "len_m": 300,
+      "grad_permille": 0,
+      "confidence": "legacy_ek_unverified"
+    },
+    {
+      "start_m": 731300,
+      "len_m": 1500,
+      "grad_permille": 7.5,
+      "confidence": "legacy_ek_unverified"
+    },
+    {
+      "start_m": 732800,
+      "len_m": 2200,
+      "grad_permille": 8.5,
+      "confidence": "legacy_ek_unverified"
+    },
+    {
+      "start_m": 735000,
+      "len_m": 550,
+      "grad_permille": -9,
+      "confidence": "legacy_ek_unverified"
+    },
+    {
+      "start_m": 735550,
+      "len_m": 450,
+      "grad_permille": 2,
+      "confidence": "legacy_ek_unverified"
+    },
+    {
+      "start_m": 736000,
+      "len_m": 4000,
+      "grad_permille": -7.6,
+      "confidence": "legacy_ek_unverified"
+    },
+    {
+      "start_m": 740000,
+      "len_m": 400,
+      "grad_permille": 6,
+      "confidence": "legacy_ek_unverified"
+    },
+    {
+      "start_m": 740400,
+      "len_m": 1600,
+      "grad_permille": -5.1,
+      "confidence": "legacy_ek_unverified"
+    },
+    {
+      "start_m": 742000,
+      "len_m": 1000,
+      "grad_permille": -5.9,
+      "confidence": "legacy_ek_unverified"
+    },
+    {
+      "start_m": 743000,
+      "len_m": 400,
+      "grad_permille": 4,
+      "confidence": "legacy_ek_unverified"
+    },
+    {
+      "start_m": 743400,
+      "len_m": 1600,
+      "grad_permille": -11,
+      "confidence": "legacy_ek_unverified"
+    },
+    {
+      "start_m": 745000,
+      "len_m": 400,
+      "grad_permille": 0,
+      "confidence": "legacy_ek_unverified"
+    },
+    {
+      "start_m": 745400,
+      "len_m": 4000,
+      "grad_permille": 9.4,
+      "confidence": "legacy_ek_unverified"
+    },
+    {
+      "start_m": 749400,
+      "len_m": 600,
+      "grad_permille": -7,
+      "confidence": "legacy_ek_unverified"
+    },
+    {
+      "start_m": 750000,
+      "len_m": 1800,
+      "grad_permille": 3.5,
+      "confidence": "legacy_ek_unverified"
+    },
+    {
+      "start_m": 751800,
+      "len_m": 400,
+      "grad_permille": -4,
+      "confidence": "legacy_ek_unverified"
+    },
+    {
+      "start_m": 752200,
+      "len_m": 600,
+      "grad_permille": 7.5,
+      "confidence": "legacy_ek_unverified"
+    },
+    {
+      "start_m": 752800,
+      "len_m": 1000,
+      "grad_permille": -7,
+      "confidence": "legacy_ek_unverified"
+    },
+    {
+      "start_m": 753800,
+      "len_m": 400,
+      "grad_permille": 4,
+      "confidence": "legacy_ek_unverified"
+    },
+    {
+      "start_m": 754200,
+      "len_m": 1000,
+      "grad_permille": -7.2,
+      "confidence": "legacy_ek_unverified"
+    },
+    {
+      "start_m": 755200,
+      "len_m": 1200,
+      "grad_permille": 10.5,
+      "confidence": "legacy_ek_unverified"
+    },
+    {
+      "start_m": 756400,
+      "len_m": 1800,
+      "grad_permille": -8.2,
+      "confidence": "legacy_ek_unverified"
+    },
+    {
+      "start_m": 758200,
+      "len_m": 2200,
+      "grad_permille": 6.2,
+      "confidence": "legacy_ek_unverified"
+    },
+    {
+      "start_m": 760400,
+      "len_m": 1800,
+      "grad_permille": -6.2,
+      "confidence": "legacy_ek_unverified"
+    },
+    {
+      "start_m": 762200,
+      "len_m": 800,
+      "grad_permille": 6,
+      "confidence": "legacy_ek_unverified"
+    },
+    {
+      "start_m": 763000,
+      "len_m": 450,
+      "grad_permille": -3,
+      "confidence": "legacy_ek_unverified"
+    },
+    {
+      "start_m": 763450,
+      "len_m": 1150,
+      "grad_permille": 7.2,
+      "confidence": "legacy_ek_unverified"
+    },
+    {
+      "start_m": 764600,
+      "len_m": 2000,
+      "grad_permille": -9.5,
+      "confidence": "legacy_ek_unverified"
+    },
+    {
+      "start_m": 766600,
+      "len_m": 1800,
+      "grad_permille": -7.5,
+      "confidence": "legacy_ek_unverified"
+    },
+    {
+      "start_m": 768400,
+      "len_m": 600,
+      "grad_permille": -9.9,
+      "confidence": "legacy_ek_unverified"
+    },
+    {
+      "start_m": 769000,
+      "len_m": 1200,
+      "grad_permille": -8,
+      "confidence": "legacy_ek_unverified"
+    },
+    {
+      "start_m": 770200,
+      "len_m": 2000,
+      "grad_permille": -8.2,
+      "confidence": "legacy_ek_unverified"
+    },
+    {
+      "start_m": 772200,
+      "len_m": 800,
+      "grad_permille": 6.9,
+      "confidence": "legacy_ek_unverified"
+    },
+    {
+      "start_m": 773000,
+      "len_m": 800,
+      "grad_permille": -3.7,
+      "confidence": "legacy_ek_unverified"
+    },
+    {
+      "start_m": 773800,
+      "len_m": 400,
+      "grad_permille": 0,
+      "confidence": "legacy_ek_unverified"
+    },
+    {
+      "start_m": 774200,
+      "len_m": 800,
+      "grad_permille": 3.9,
+      "confidence": "legacy_ek_unverified"
+    },
+    {
+      "start_m": 775000,
+      "len_m": 400,
+      "grad_permille": 0,
+      "confidence": "legacy_ek_unverified"
+    },
+    {
+      "start_m": 775400,
+      "len_m": 1400,
+      "grad_permille": -5.5,
+      "confidence": "legacy_ek_unverified"
+    },
+    {
+      "start_m": 776800,
+      "len_m": 1000,
+      "grad_permille": 2.3,
+      "confidence": "legacy_ek_unverified"
+    },
+    {
+      "start_m": 777800,
+      "len_m": 1600,
+      "grad_permille": 12.7,
+      "confidence": "legacy_ek_unverified"
+    },
+    {
+      "start_m": 779400,
+      "len_m": 2200,
+      "grad_permille": 10.7,
+      "confidence": "legacy_ek_unverified"
+    },
+    {
+      "start_m": 781600,
+      "len_m": 1100,
+      "grad_permille": -9.2,
+      "confidence": "legacy_ek_unverified"
+    },
+    {
+      "start_m": 782700,
+      "len_m": 1300,
+      "grad_permille": 2,
+      "confidence": "legacy_ek_unverified"
+    },
+    {
+      "start_m": 784000,
+      "len_m": 1400,
+      "grad_permille": -7,
+      "confidence": "legacy_ek_unverified"
+    },
+    {
+      "start_m": 785400,
+      "len_m": 2200,
+      "grad_permille": 4.8,
+      "confidence": "legacy_ek_unverified"
+    },
+    {
+      "start_m": 787600,
+      "len_m": 1050,
+      "grad_permille": -5,
+      "confidence": "legacy_ek_unverified"
+    },
+    {
+      "start_m": 788650,
+      "len_m": 1050,
+      "grad_permille": 3.6,
+      "confidence": "legacy_ek_unverified"
+    },
+    {
+      "start_m": 789700,
+      "len_m": 400,
+      "grad_permille": 0,
+      "confidence": "legacy_ek_unverified"
+    },
+    {
+      "start_m": 790100,
+      "len_m": 1900,
+      "grad_permille": -5.4,
+      "confidence": "legacy_ek_unverified"
+    },
+    {
+      "start_m": 792000,
+      "len_m": 2000,
+      "grad_permille": 1.5,
+      "confidence": "legacy_ek_unverified"
+    },
+    {
+      "start_m": 794000,
+      "len_m": 1200,
+      "grad_permille": 1.2,
+      "confidence": "legacy_ek_unverified"
+    },
+    {
+      "start_m": 795200,
+      "len_m": 1200,
+      "grad_permille": -0.5,
+      "confidence": "legacy_ek_unverified"
+    },
+    {
+      "start_m": 796400,
+      "len_m": 1000,
+      "grad_permille": 0,
+      "confidence": "legacy_ek_unverified"
+    },
+    {
+      "start_m": 797400,
+      "len_m": 1600,
+      "grad_permille": -5.5,
+      "confidence": "legacy_ek_unverified"
+    },
+    {
+      "start_m": 799000,
+      "len_m": 1600,
+      "grad_permille": 10.3,
+      "confidence": "legacy_ek_unverified"
+    },
+    {
+      "start_m": 800600,
+      "len_m": 900,
+      "grad_permille": 1,
+      "confidence": "legacy_ek_unverified"
+    },
+    {
+      "start_m": 801500,
+      "len_m": 500,
+      "grad_permille": -3,
+      "confidence": "legacy_ek_unverified"
+    },
+    {
+      "start_m": 802000,
+      "len_m": 1500,
+      "grad_permille": 3.9,
+      "confidence": "legacy_ek_unverified"
+    },
+    {
+      "start_m": 803500,
+      "len_m": 1600,
+      "grad_permille": -8.4,
+      "confidence": "legacy_ek_unverified"
+    },
+    {
+      "start_m": 805100,
+      "len_m": 1700,
+      "grad_permille": -1.4,
+      "confidence": "legacy_ek_unverified"
+    },
+    {
+      "start_m": 806800,
+      "len_m": 800,
+      "grad_permille": -3,
+      "confidence": "legacy_ek_unverified"
+    },
+    {
+      "start_m": 807600,
+      "len_m": 600,
+      "grad_permille": 3.7,
+      "confidence": "legacy_ek_unverified"
+    },
+    {
+      "start_m": 808200,
+      "len_m": 1600,
+      "grad_permille": -7.8,
+      "confidence": "legacy_ek_unverified"
+    },
+    {
+      "start_m": 809800,
+      "len_m": 2200,
+      "grad_permille": -4.8,
+      "confidence": "legacy_ek_unverified"
+    },
+    {
+      "start_m": 812000,
+      "len_m": 5400,
+      "grad_permille": -8.5,
+      "confidence": "legacy_ek_unverified"
+    },
+    {
+      "start_m": 817400,
+      "len_m": 1800,
+      "grad_permille": 5.7,
+      "confidence": "legacy_ek_unverified"
+    },
+    {
+      "start_m": 819200,
+      "len_m": 400,
+      "grad_permille": 0,
+      "confidence": "legacy_ek_unverified"
+    },
+    {
+      "start_m": 819600,
+      "len_m": 1200,
+      "grad_permille": -5.8,
+      "confidence": "legacy_ek_unverified"
+    },
+    {
+      "start_m": 820800,
+      "len_m": 1200,
+      "grad_permille": 4.5,
+      "confidence": "legacy_ek_unverified"
+    },
+    {
+      "start_m": 822000,
+      "len_m": 1200,
+      "grad_permille": 0,
+      "confidence": "legacy_ek_unverified"
+    },
+    {
+      "start_m": 823200,
+      "len_m": 800,
+      "grad_permille": 1.6,
+      "confidence": "legacy_ek_unverified"
+    }
+  ],
+  "stations": [
+    {
+      "name": "КОНОША",
+      "km": 706.841,
+      "sector": 22,
+      "confidence": "legacy_ek_unverified"
+    },
+    {
+      "name": "КОНОША",
+      "km": 707.523,
+      "sector": 22,
+      "confidence": "legacy_ek_unverified"
+    },
+    {
+      "name": "КОНОША",
+      "km": 710.499,
+      "sector": 22,
+      "confidence": "legacy_ek_unverified"
+    },
+    {
+      "name": "КОНОША",
+      "km": 712.642,
+      "sector": 22,
+      "confidence": "legacy_ek_unverified"
+    },
+    {
+      "name": "ВЕРЕСО",
+      "km": 715.629,
+      "sector": 22,
+      "confidence": "legacy_ek_unverified"
+    },
+    {
+      "name": "ВЕРЕСО",
+      "km": 716.022,
+      "sector": 22,
+      "confidence": "legacy_ek_unverified"
+    },
+    {
+      "name": "ВЕРЕСО",
+      "km": 717.076,
+      "sector": 22,
+      "confidence": "legacy_ek_unverified"
+    },
+    {
+      "name": "ВАЛДЕЕ",
+      "km": 726.163,
+      "sector": 22,
+      "confidence": "legacy_ek_unverified"
+    },
+    {
+      "name": "ВАЛДЕЕ",
+      "km": 727.392,
+      "sector": 22,
+      "confidence": "legacy_ek_unverified"
+    },
+    {
+      "name": "ПОДЮГА",
+      "km": 741.291,
+      "sector": 22,
+      "confidence": "legacy_ek_unverified"
+    },
+    {
+      "name": "ПОДЮГА",
+      "km": 741.631,
+      "sector": 22,
+      "confidence": "legacy_ek_unverified"
+    },
+    {
+      "name": "ПОДЮГА",
+      "km": 742.442,
+      "sector": 22,
+      "confidence": "legacy_ek_unverified"
+    },
+    {
+      "name": "ПОДЮГА",
+      "km": 744.149,
+      "sector": 22,
+      "confidence": "legacy_ek_unverified"
+    },
+    {
+      "name": "ЮРА",
+      "km": 763.049,
+      "sector": 22,
+      "confidence": "legacy_ek_unverified"
+    },
+    {
+      "name": "ЮРА",
+      "km": 763.791,
+      "sector": 22,
+      "confidence": "legacy_ek_unverified"
+    },
+    {
+      "name": "ЮРА",
+      "km": 764.525,
+      "sector": 22,
+      "confidence": "legacy_ek_unverified"
+    },
+    {
+      "name": "ЮРА",
+      "km": 765.361,
+      "sector": 22,
+      "confidence": "legacy_ek_unverified"
+    },
+    {
+      "name": "УСТЬ-Ш",
+      "km": 774.372,
+      "sector": 22,
+      "confidence": "legacy_ek_unverified"
+    },
+    {
+      "name": "УСТЬ-Ш",
+      "km": 774.776,
+      "sector": 22,
+      "confidence": "legacy_ek_unverified"
+    },
+    {
+      "name": "УСТЬ-Ш",
+      "km": 775.648,
+      "sector": 22,
+      "confidence": "legacy_ek_unverified"
+    },
+    {
+      "name": "УСТЬ-Ш",
+      "km": 775.87,
+      "sector": 22,
+      "confidence": "legacy_ek_unverified"
+    },
+    {
+      "name": "ВЕРХНЯ",
+      "km": 802.041,
+      "sector": 22,
+      "confidence": "legacy_ek_unverified"
+    },
+    {
+      "name": "ВЕРХНЯ",
+      "km": 803.394,
+      "sector": 22,
+      "confidence": "legacy_ek_unverified"
+    },
+    {
+      "name": "ВЕЛЬСК",
+      "km": 822.502,
+      "sector": 22,
+      "confidence": "legacy_ek_unverified"
+    },
+    {
+      "name": "ВЕЛЬСК",
+      "km": 823.054,
+      "sector": 22,
+      "confidence": "legacy_ek_unverified"
+    },
+    {
+      "name": "ВЕЛЬСК",
+      "km": 823.433,
+      "sector": 22,
+      "confidence": "legacy_ek_unverified"
+    },
+    {
+      "name": "ВЕЛЬСК",
+      "km": 823.973,
+      "sector": 22,
+      "confidence": "legacy_ek_unverified"
+    }
+  ],
+  "signals": [
+    {
+      "name": "НДК",
+      "chainage_m": 707523,
+      "sector": 22,
+      "confidence": "legacy_ek_unverified",
+      "legacy_source": "1.xml"
+    },
+    {
+      "name": "2+УКСП",
+      "chainage_m": 709207,
+      "sector": 22,
+      "confidence": "legacy_ek_unverified",
+      "legacy_source": "1.xml"
+    },
+    {
+      "name": "Ч",
+      "chainage_m": 710499,
+      "sector": 22,
+      "confidence": "legacy_ek_unverified",
+      "legacy_source": "1n.xml"
+    },
+    {
+      "name": "Н2",
+      "chainage_m": 711220,
+      "sector": 22,
+      "confidence": "legacy_ek_unverified",
+      "legacy_source": "1.xml"
+    },
+    {
+      "name": "Ч2",
+      "chainage_m": 712288,
+      "sector": 22,
+      "confidence": "legacy_ek_unverified",
+      "legacy_source": "1n.xml"
+    },
+    {
+      "name": "НД",
+      "chainage_m": 712642,
+      "sector": 22,
+      "confidence": "legacy_ek_unverified",
+      "legacy_source": "1.xml"
+    },
+    {
+      "name": "2+УКСП",
+      "chainage_m": 714386,
+      "sector": 22,
+      "confidence": "legacy_ek_unverified",
+      "legacy_source": "1.xml"
+    },
+    {
+      "name": "Ч",
+      "chainage_m": 715629,
+      "sector": 22,
+      "confidence": "legacy_ek_unverified",
+      "legacy_source": "1n.xml"
+    },
+    {
+      "name": "Н2",
+      "chainage_m": 716022,
+      "sector": 22,
+      "confidence": "legacy_ek_unverified",
+      "legacy_source": "1.xml"
+    },
+    {
+      "name": "Ч2",
+      "chainage_m": 716530,
+      "sector": 22,
+      "confidence": "legacy_ek_unverified",
+      "legacy_source": "1n.xml"
+    },
+    {
+      "name": "НД",
+      "chainage_m": 717076,
+      "sector": 22,
+      "confidence": "legacy_ek_unverified",
+      "legacy_source": "1.xml"
+    },
+    {
+      "name": "8",
+      "chainage_m": 718723,
+      "sector": 22,
+      "confidence": "legacy_ek_unverified",
+      "legacy_source": "1.xml"
+    },
+    {
+      "name": "6",
+      "chainage_m": 720446,
+      "sector": 22,
+      "confidence": "legacy_ek_unverified",
+      "legacy_source": "1.xml"
+    },
+    {
+      "name": "4+УКСП",
+      "chainage_m": 722490,
+      "sector": 22,
+      "confidence": "legacy_ek_unverified",
+      "legacy_source": "1.xml"
+    },
+    {
+      "name": "2+УКСП",
+      "chainage_m": 724957,
+      "sector": 22,
+      "confidence": "legacy_ek_unverified",
+      "legacy_source": "1.xml"
+    },
+    {
+      "name": "Ч",
+      "chainage_m": 726163,
+      "sector": 22,
+      "confidence": "legacy_ek_unverified",
+      "legacy_source": "1n.xml"
+    },
+    {
+      "name": "Н2",
+      "chainage_m": 726497,
+      "sector": 22,
+      "confidence": "legacy_ek_unverified",
+      "legacy_source": "1.xml"
+    },
+    {
+      "name": "Ч2",
+      "chainage_m": 727081,
+      "sector": 22,
+      "confidence": "legacy_ek_unverified",
+      "legacy_source": "1n.xml"
+    },
+    {
+      "name": "НН",
+      "chainage_m": 727392,
+      "sector": 22,
+      "confidence": "legacy_ek_unverified",
+      "legacy_source": "1.xml"
+    },
+    {
+      "name": "1+УКСП",
+      "chainage_m": 728750,
+      "sector": 22,
+      "confidence": "legacy_ek_unverified",
+      "legacy_source": "1.xml"
+    },
+    {
+      "name": "14+УКС",
+      "chainage_m": 728750,
+      "sector": 22,
+      "confidence": "legacy_ek_unverified",
+      "legacy_source": "1n.xml"
+    },
+    {
+      "name": "3+УКСП",
+      "chainage_m": 730703,
+      "sector": 22,
+      "confidence": "legacy_ek_unverified",
+      "legacy_source": "1.xml"
+    },
+    {
+      "name": "12+УКС",
+      "chainage_m": 730703,
+      "sector": 22,
+      "confidence": "legacy_ek_unverified",
+      "legacy_source": "1n.xml"
+    },
+    {
+      "name": "5",
+      "chainage_m": 732655,
+      "sector": 22,
+      "confidence": "legacy_ek_unverified",
+      "legacy_source": "1.xml"
+    },
+    {
+      "name": "10",
+      "chainage_m": 732655,
+      "sector": 22,
+      "confidence": "legacy_ek_unverified",
+      "legacy_source": "1n.xml"
+    },
+    {
+      "name": "7",
+      "chainage_m": 735187,
+      "sector": 22,
+      "confidence": "legacy_ek_unverified",
+      "legacy_source": "1.xml"
+    },
+    {
+      "name": "8",
+      "chainage_m": 735187,
+      "sector": 22,
+      "confidence": "legacy_ek_unverified",
+      "legacy_source": "1n.xml"
+    },
+    {
+      "name": "9",
+      "chainage_m": 736685,
+      "sector": 22,
+      "confidence": "legacy_ek_unverified",
+      "legacy_source": "1.xml"
+    },
+    {
+      "name": "6",
+      "chainage_m": 736688,
+      "sector": 22,
+      "confidence": "legacy_ek_unverified",
+      "legacy_source": "1n.xml"
+    },
+    {
+      "name": "4",
+      "chainage_m": 738509,
+      "sector": 22,
+      "confidence": "legacy_ek_unverified",
+      "legacy_source": "1n.xml"
+    },
+    {
+      "name": "11",
+      "chainage_m": 738511,
+      "sector": 22,
+      "confidence": "legacy_ek_unverified",
+      "legacy_source": "1.xml"
+    },
+    {
+      "name": "13+УКС",
+      "chainage_m": 740262,
+      "sector": 22,
+      "confidence": "legacy_ek_unverified",
+      "legacy_source": "1.xml"
+    },
+    {
+      "name": "2+УКСП",
+      "chainage_m": 740262,
+      "sector": 22,
+      "confidence": "legacy_ek_unverified",
+      "legacy_source": "1n.xml"
+    },
+    {
+      "name": "Ч",
+      "chainage_m": 741291,
+      "sector": 22,
+      "confidence": "legacy_ek_unverified",
+      "legacy_source": "1n.xml"
+    },
+    {
+      "name": "Н1",
+      "chainage_m": 741459,
+      "sector": 22,
+      "confidence": "legacy_ek_unverified",
+      "legacy_source": "1.xml"
+    },
+    {
+      "name": "Н2",
+      "chainage_m": 741531,
+      "sector": 22,
+      "confidence": "legacy_ek_unverified",
+      "legacy_source": "2n.xml"
+    },
+    {
+      "name": "Ч1",
+      "chainage_m": 742379,
+      "sector": 22,
+      "confidence": "legacy_ek_unverified",
+      "legacy_source": "1n.xml"
+    },
+    {
+      "name": "Ч2",
+      "chainage_m": 742442,
+      "sector": 22,
+      "confidence": "legacy_ek_unverified",
+      "legacy_source": "2.xml"
+    },
+    {
+      "name": "Н",
+      "chainage_m": 744149,
+      "sector": 22,
+      "confidence": "legacy_ek_unverified",
+      "legacy_source": "1.xml"
+    },
+    {
+      "name": "18+УКС",
+      "chainage_m": 745572,
+      "sector": 22,
+      "confidence": "legacy_ek_unverified",
+      "legacy_source": "1n.xml"
+    },
+    {
+      "name": "1+УКСП",
+      "chainage_m": 745573,
+      "sector": 22,
+      "confidence": "legacy_ek_unverified",
+      "legacy_source": "1.xml"
+    },
+    {
+      "name": "3+УКСП",
+      "chainage_m": 747603,
+      "sector": 22,
+      "confidence": "legacy_ek_unverified",
+      "legacy_source": "1.xml"
+    },
+    {
+      "name": "16+УКС",
+      "chainage_m": 747604,
+      "sector": 22,
+      "confidence": "legacy_ek_unverified",
+      "legacy_source": "1n.xml"
+    },
+    {
+      "name": "5",
+      "chainage_m": 749803,
+      "sector": 22,
+      "confidence": "legacy_ek_unverified",
+      "legacy_source": "1.xml"
+    },
+    {
+      "name": "14",
+      "chainage_m": 749803,
+      "sector": 22,
+      "confidence": "legacy_ek_unverified",
+      "legacy_source": "1n.xml"
+    },
+    {
+      "name": "7",
+      "chainage_m": 751978,
+      "sector": 22,
+      "confidence": "legacy_ek_unverified",
+      "legacy_source": "1.xml"
+    },
+    {
+      "name": "12",
+      "chainage_m": 751979,
+      "sector": 22,
+      "confidence": "legacy_ek_unverified",
+      "legacy_source": "1n.xml"
+    },
+    {
+      "name": "9",
+      "chainage_m": 753951,
+      "sector": 22,
+      "confidence": "legacy_ek_unverified",
+      "legacy_source": "1.xml"
+    },
+    {
+      "name": "10",
+      "chainage_m": 753952,
+      "sector": 22,
+      "confidence": "legacy_ek_unverified",
+      "legacy_source": "1n.xml"
+    },
+    {
+      "name": "11",
+      "chainage_m": 755704,
+      "sector": 22,
+      "confidence": "legacy_ek_unverified",
+      "legacy_source": "1.xml"
+    },
+    {
+      "name": "8",
+      "chainage_m": 755704,
+      "sector": 22,
+      "confidence": "legacy_ek_unverified",
+      "legacy_source": "1n.xml"
+    },
+    {
+      "name": "13",
+      "chainage_m": 757593,
+      "sector": 22,
+      "confidence": "legacy_ek_unverified",
+      "legacy_source": "1.xml"
+    },
+    {
+      "name": "6",
+      "chainage_m": 757593,
+      "sector": 22,
+      "confidence": "legacy_ek_unverified",
+      "legacy_source": "1n.xml"
+    },
+    {
+      "name": "4+УКСП",
+      "chainage_m": 759648,
+      "sector": 22,
+      "confidence": "legacy_ek_unverified",
+      "legacy_source": "1n.xml"
+    },
+    {
+      "name": "15+УКС",
+      "chainage_m": 759655,
+      "sector": 22,
+      "confidence": "legacy_ek_unverified",
+      "legacy_source": "1.xml"
+    },
+    {
+      "name": "2+УКСП",
+      "chainage_m": 761621,
+      "sector": 22,
+      "confidence": "legacy_ek_unverified",
+      "legacy_source": "1n.xml"
+    },
+    {
+      "name": "17+УКС",
+      "chainage_m": 761628,
+      "sector": 22,
+      "confidence": "legacy_ek_unverified",
+      "legacy_source": "1.xml"
+    },
+    {
+      "name": "Ч",
+      "chainage_m": 763049,
+      "sector": 22,
+      "confidence": "legacy_ek_unverified",
+      "legacy_source": "1n.xml"
+    },
+    {
+      "name": "Н2",
+      "chainage_m": 763691,
+      "sector": 22,
+      "confidence": "legacy_ek_unverified",
+      "legacy_source": "2n.xml"
+    },
+    {
+      "name": "Н1",
+      "chainage_m": 763697,
+      "sector": 22,
+      "confidence": "legacy_ek_unverified",
+      "legacy_source": "1.xml"
+    },
+    {
+      "name": "Ч2",
+      "chainage_m": 764525,
+      "sector": 22,
+      "confidence": "legacy_ek_unverified",
+      "legacy_source": "2.xml"
+    },
+    {
+      "name": "Ч1",
+      "chainage_m": 764528,
+      "sector": 22,
+      "confidence": "legacy_ek_unverified",
+      "legacy_source": "1n.xml"
+    },
+    {
+      "name": "Н",
+      "chainage_m": 765361,
+      "sector": 22,
+      "confidence": "legacy_ek_unverified",
+      "legacy_source": "1.xml"
+    },
+    {
+      "name": "1",
+      "chainage_m": 766542,
+      "sector": 22,
+      "confidence": "legacy_ek_unverified",
+      "legacy_source": "1.xml"
+    },
+    {
+      "name": "10",
+      "chainage_m": 766542,
+      "sector": 22,
+      "confidence": "legacy_ek_unverified",
+      "legacy_source": "1n.xml"
+    },
+    {
+      "name": "8+УКСП",
+      "chainage_m": 768013,
+      "sector": 22,
+      "confidence": "legacy_ek_unverified",
+      "legacy_source": "1n.xml"
+    },
+    {
+      "name": "3+УКСП",
+      "chainage_m": 768023,
+      "sector": 22,
+      "confidence": "legacy_ek_unverified",
+      "legacy_source": "1.xml"
+    },
+    {
+      "name": "5",
+      "chainage_m": 769607,
+      "sector": 22,
+      "confidence": "legacy_ek_unverified",
+      "legacy_source": "1.xml"
+    },
+    {
+      "name": "6",
+      "chainage_m": 769607,
+      "sector": 22,
+      "confidence": "legacy_ek_unverified",
+      "legacy_source": "1n.xml"
+    },
+    {
+      "name": "4+УКСП",
+      "chainage_m": 771207,
+      "sector": 22,
+      "confidence": "legacy_ek_unverified",
+      "legacy_source": "1n.xml"
+    },
+    {
+      "name": "7",
+      "chainage_m": 771596,
+      "sector": 22,
+      "confidence": "legacy_ek_unverified",
+      "legacy_source": "1.xml"
+    },
+    {
+      "name": "2+УКСП",
+      "chainage_m": 772965,
+      "sector": 22,
+      "confidence": "legacy_ek_unverified",
+      "legacy_source": "1n.xml"
+    },
+    {
+      "name": "9+УКСП",
+      "chainage_m": 772972,
+      "sector": 22,
+      "confidence": "legacy_ek_unverified",
+      "legacy_source": "1.xml"
+    },
+    {
+      "name": "Ч",
+      "chainage_m": 774372,
+      "sector": 22,
+      "confidence": "legacy_ek_unverified",
+      "legacy_source": "1n.xml"
+    },
+    {
+      "name": "Н2",
+      "chainage_m": 774676,
+      "sector": 22,
+      "confidence": "legacy_ek_unverified",
+      "legacy_source": "2n.xml"
+    },
+    {
+      "name": "Н1",
+      "chainage_m": 774741,
+      "sector": 22,
+      "confidence": "legacy_ek_unverified",
+      "legacy_source": "1.xml"
+    },
+    {
+      "name": "Ч1",
+      "chainage_m": 775572,
+      "sector": 22,
+      "confidence": "legacy_ek_unverified",
+      "legacy_source": "1n.xml"
+    },
+    {
+      "name": "Ч2",
+      "chainage_m": 775648,
+      "sector": 22,
+      "confidence": "legacy_ek_unverified",
+      "legacy_source": "2.xml"
+    },
+    {
+      "name": "Н",
+      "chainage_m": 775870,
+      "sector": 22,
+      "confidence": "legacy_ek_unverified",
+      "legacy_source": "1.xml"
+    },
+    {
+      "name": "1+УКСП",
+      "chainage_m": 777202,
+      "sector": 22,
+      "confidence": "legacy_ek_unverified",
+      "legacy_source": "1.xml"
+    },
+    {
+      "name": "28+УКС",
+      "chainage_m": 777202,
+      "sector": 22,
+      "confidence": "legacy_ek_unverified",
+      "legacy_source": "1n.xml"
+    },
+    {
+      "name": "26",
+      "chainage_m": 778584,
+      "sector": 22,
+      "confidence": "legacy_ek_unverified",
+      "legacy_source": "1n.xml"
+    },
+    {
+      "name": "3",
+      "chainage_m": 779550,
+      "sector": 22,
+      "confidence": "legacy_ek_unverified",
+      "legacy_source": "1.xml"
+    },
+    {
+      "name": "24",
+      "chainage_m": 780196,
+      "sector": 22,
+      "confidence": "legacy_ek_unverified",
+      "legacy_source": "1n.xml"
+    },
+    {
+      "name": "5",
+      "chainage_m": 781949,
+      "sector": 22,
+      "confidence": "legacy_ek_unverified",
+      "legacy_source": "1.xml"
+    },
+    {
+      "name": "22",
+      "chainage_m": 781949,
+      "sector": 22,
+      "confidence": "legacy_ek_unverified",
+      "legacy_source": "1n.xml"
+    },
+    {
+      "name": "7",
+      "chainage_m": 784215,
+      "sector": 22,
+      "confidence": "legacy_ek_unverified",
+      "legacy_source": "1.xml"
+    },
+    {
+      "name": "20",
+      "chainage_m": 784215,
+      "sector": 22,
+      "confidence": "legacy_ek_unverified",
+      "legacy_source": "1n.xml"
+    },
+    {
+      "name": "9",
+      "chainage_m": 785707,
+      "sector": 22,
+      "confidence": "legacy_ek_unverified",
+      "legacy_source": "1.xml"
+    },
+    {
+      "name": "18",
+      "chainage_m": 785707,
+      "sector": 22,
+      "confidence": "legacy_ek_unverified",
+      "legacy_source": "1n.xml"
+    },
+    {
+      "name": "16",
+      "chainage_m": 787631,
+      "sector": 22,
+      "confidence": "legacy_ek_unverified",
+      "legacy_source": "1n.xml"
+    },
+    {
+      "name": "11",
+      "chainage_m": 787633,
+      "sector": 22,
+      "confidence": "legacy_ek_unverified",
+      "legacy_source": "1.xml"
+    },
+    {
+      "name": "14",
+      "chainage_m": 789584,
+      "sector": 22,
+      "confidence": "legacy_ek_unverified",
+      "legacy_source": "1n.xml"
+    },
+    {
+      "name": "13",
+      "chainage_m": 789586,
+      "sector": 22,
+      "confidence": "legacy_ek_unverified",
+      "legacy_source": "1.xml"
+    },
+    {
+      "name": "12",
+      "chainage_m": 791483,
+      "sector": 22,
+      "confidence": "legacy_ek_unverified",
+      "legacy_source": "1n.xml"
+    },
+    {
+      "name": "15",
+      "chainage_m": 791487,
+      "sector": 22,
+      "confidence": "legacy_ek_unverified",
+      "legacy_source": "1.xml"
+    },
+    {
+      "name": "17",
+      "chainage_m": 793203,
+      "sector": 22,
+      "confidence": "legacy_ek_unverified",
+      "legacy_source": "1.xml"
+    },
+    {
+      "name": "10",
+      "chainage_m": 793203,
+      "sector": 22,
+      "confidence": "legacy_ek_unverified",
+      "legacy_source": "1n.xml"
+    },
+    {
+      "name": "19",
+      "chainage_m": 795004,
+      "sector": 22,
+      "confidence": "legacy_ek_unverified",
+      "legacy_source": "1.xml"
+    },
+    {
+      "name": "8",
+      "chainage_m": 795004,
+      "sector": 22,
+      "confidence": "legacy_ek_unverified",
+      "legacy_source": "1n.xml"
+    },
+    {
+      "name": "21",
+      "chainage_m": 796894,
+      "sector": 22,
+      "confidence": "legacy_ek_unverified",
+      "legacy_source": "1.xml"
+    },
+    {
+      "name": "6",
+      "chainage_m": 796894,
+      "sector": 22,
+      "confidence": "legacy_ek_unverified",
+      "legacy_source": "1n.xml"
+    },
+    {
+      "name": "23+УКС",
+      "chainage_m": 798652,
+      "sector": 22,
+      "confidence": "legacy_ek_unverified",
+      "legacy_source": "1.xml"
+    },
+    {
+      "name": "4+УКСП",
+      "chainage_m": 798652,
+      "sector": 22,
+      "confidence": "legacy_ek_unverified",
+      "legacy_source": "1n.xml"
+    },
+    {
+      "name": "25+УКС",
+      "chainage_m": 800602,
+      "sector": 22,
+      "confidence": "legacy_ek_unverified",
+      "legacy_source": "1.xml"
+    },
+    {
+      "name": "2+УКСП",
+      "chainage_m": 800602,
+      "sector": 22,
+      "confidence": "legacy_ek_unverified",
+      "legacy_source": "1n.xml"
+    },
+    {
+      "name": "Ч",
+      "chainage_m": 802041,
+      "sector": 22,
+      "confidence": "legacy_ek_unverified",
+      "legacy_source": "1n.xml"
+    },
+    {
+      "name": "Н2",
+      "chainage_m": 802235,
+      "sector": 22,
+      "confidence": "legacy_ek_unverified",
+      "legacy_source": "2n.xml"
+    },
+    {
+      "name": "Н1",
+      "chainage_m": 802274,
+      "sector": 22,
+      "confidence": "legacy_ek_unverified",
+      "legacy_source": "1.xml"
+    },
+    {
+      "name": "Ч1",
+      "chainage_m": 803113,
+      "sector": 22,
+      "confidence": "legacy_ek_unverified",
+      "legacy_source": "1n.xml"
+    },
+    {
+      "name": "Ч2",
+      "chainage_m": 803114,
+      "sector": 22,
+      "confidence": "legacy_ek_unverified",
+      "legacy_source": "2.xml"
+    },
+    {
+      "name": "Н",
+      "chainage_m": 803394,
+      "sector": 22,
+      "confidence": "legacy_ek_unverified",
+      "legacy_source": "1.xml"
+    },
+    {
+      "name": "1",
+      "chainage_m": 804693,
+      "sector": 22,
+      "confidence": "legacy_ek_unverified",
+      "legacy_source": "1.xml"
+    },
+    {
+      "name": "20",
+      "chainage_m": 804693,
+      "sector": 22,
+      "confidence": "legacy_ek_unverified",
+      "legacy_source": "1n.xml"
+    },
+    {
+      "name": "3+УКСП",
+      "chainage_m": 806709,
+      "sector": 22,
+      "confidence": "legacy_ek_unverified",
+      "legacy_source": "1.xml"
+    },
+    {
+      "name": "18+УКС",
+      "chainage_m": 806709,
+      "sector": 22,
+      "confidence": "legacy_ek_unverified",
+      "legacy_source": "1n.xml"
+    },
+    {
+      "name": "5",
+      "chainage_m": 808702,
+      "sector": 22,
+      "confidence": "legacy_ek_unverified",
+      "legacy_source": "1.xml"
+    },
+    {
+      "name": "16",
+      "chainage_m": 808702,
+      "sector": 22,
+      "confidence": "legacy_ek_unverified",
+      "legacy_source": "1n.xml"
+    },
+    {
+      "name": "7",
+      "chainage_m": 810580,
+      "sector": 22,
+      "confidence": "legacy_ek_unverified",
+      "legacy_source": "1.xml"
+    },
+    {
+      "name": "14",
+      "chainage_m": 810580,
+      "sector": 22,
+      "confidence": "legacy_ek_unverified",
+      "legacy_source": "1n.xml"
+    },
+    {
+      "name": "9",
+      "chainage_m": 812614,
+      "sector": 22,
+      "confidence": "legacy_ek_unverified",
+      "legacy_source": "1.xml"
+    },
+    {
+      "name": "12",
+      "chainage_m": 812614,
+      "sector": 22,
+      "confidence": "legacy_ek_unverified",
+      "legacy_source": "1n.xml"
+    },
+    {
+      "name": "11",
+      "chainage_m": 814500,
+      "sector": 22,
+      "confidence": "legacy_ek_unverified",
+      "legacy_source": "1.xml"
+    },
+    {
+      "name": "10",
+      "chainage_m": 814500,
+      "sector": 22,
+      "confidence": "legacy_ek_unverified",
+      "legacy_source": "1n.xml"
+    },
+    {
+      "name": "13",
+      "chainage_m": 816387,
+      "sector": 22,
+      "confidence": "legacy_ek_unverified",
+      "legacy_source": "1.xml"
+    },
+    {
+      "name": "8",
+      "chainage_m": 816387,
+      "sector": 22,
+      "confidence": "legacy_ek_unverified",
+      "legacy_source": "1n.xml"
+    },
+    {
+      "name": "15",
+      "chainage_m": 818386,
+      "sector": 22,
+      "confidence": "legacy_ek_unverified",
+      "legacy_source": "1.xml"
+    },
+    {
+      "name": "6",
+      "chainage_m": 818386,
+      "sector": 22,
+      "confidence": "legacy_ek_unverified",
+      "legacy_source": "1n.xml"
+    },
+    {
+      "name": "17+УКС",
+      "chainage_m": 819888,
+      "sector": 22,
+      "confidence": "legacy_ek_unverified",
+      "legacy_source": "1.xml"
+    },
+    {
+      "name": "4+УКСП",
+      "chainage_m": 819888,
+      "sector": 22,
+      "confidence": "legacy_ek_unverified",
+      "legacy_source": "1n.xml"
+    },
+    {
+      "name": "19+УКС",
+      "chainage_m": 821288,
+      "sector": 22,
+      "confidence": "legacy_ek_unverified",
+      "legacy_source": "1.xml"
+    },
+    {
+      "name": "2+УКСП",
+      "chainage_m": 821288,
+      "sector": 22,
+      "confidence": "legacy_ek_unverified",
+      "legacy_source": "1n.xml"
+    },
+    {
+      "name": "ЧС",
+      "chainage_m": 822502,
+      "sector": 22,
+      "confidence": "legacy_ek_unverified",
+      "legacy_source": "1n.xml"
+    },
+    {
+      "name": "Н1",
+      "chainage_m": 822866,
+      "sector": 22,
+      "confidence": "legacy_ek_unverified",
+      "legacy_source": "1.xml"
+    },
+    {
+      "name": "Н2",
+      "chainage_m": 822954,
+      "sector": 22,
+      "confidence": "legacy_ek_unverified",
+      "legacy_source": "2n.xml"
+    },
+    {
+      "name": "Ч1",
+      "chainage_m": 823973,
+      "sector": 22,
+      "confidence": "legacy_ek_unverified",
+      "legacy_source": "1n.xml"
+    }
+  ],
+  "whistle_points": [],
+  "speed": {
+    "established": null,
+    "permanent_restrictions": [],
+    "temporary_warnings": [],
+    "source": "manual_required"
+  },
+  "flags_for_review": [
+    "Импортировано из пользовательской ЭК приложения «Блокнот машиниста» 0.6.9; профиль, объекты и GPS-геометрия не сверены с официальной режимной картой.",
+    "Ограничения скорости из старого XML намеренно не перенесены: их требуется внести вручную по действующим документам.",
+    "Направление движения и принадлежность GPS-сектора требуют ручной проверки."
+  ],
+  "provenance": [
+    {
+      "kind": "legacy_ek_archive",
+      "file_name": "Коноша-Сосногорск.zip",
+      "sha256": "3e6d445599878a04e4b7fd37eabee2cc95d1491d40802e1d39ee2ca3bdadf49f",
+      "source_application": "Блокнот машиниста 0.6.9",
+      "role": "non_authoritative_import_seed"
+    }
+  ],
+  "runtime": {
+    "coordinate_unit": "m",
+    "coordinate_kind": "official_railway_chainage",
+    "coordinate_offset_m": -1000,
+    "movement_order": "ascending",
+    "default_path_id": "ek069-konosha-sosnogorsk-s22-path",
+    "route_legs": [
+      {
+        "path_id": "ek069-konosha-sosnogorsk-s22-path",
+        "sector": 22,
+        "from_chainage_m": 706841,
+        "to_chainage_m": 824000
+      }
+    ],
+    "profile_status": "legacy_ek_unverified",
+    "profile_coverage": [
+      {
+        "start_m": 706841,
+        "end_m": 824000
+      }
+    ],
+    "profile_gaps": [],
+    "profile_applies_both_directions": false
+  },
+  "geometry": {
+    "status": "draft_from_legacy_ek",
+    "source": "Коноша-Сосногорск.zip",
+    "paths": [
+      {
+        "path_id": "ek069-konosha-sosnogorsk-s22-path",
+        "sector": 22,
+        "points": [
+          {
+            "lat": 60.978957,
+            "lon": 40.252434,
+            "sector": 22,
+            "path_id": "ek069-konosha-sosnogorsk-s22-path",
+            "ordinate": 705841,
+            "chainage_m": 706841
+          },
+          {
+            "lat": 60.9799,
+            "lon": 40.254727,
+            "sector": 22,
+            "path_id": "ek069-konosha-sosnogorsk-s22-path",
+            "ordinate": 706000,
+            "chainage_m": 707000
+          },
+          {
+            "lat": 60.984948,
+            "lon": 40.270262,
+            "sector": 22,
+            "path_id": "ek069-konosha-sosnogorsk-s22-path",
+            "ordinate": 707000,
+            "chainage_m": 708000
+          },
+          {
+            "lat": 60.986736,
+            "lon": 40.2883,
+            "sector": 22,
+            "path_id": "ek069-konosha-sosnogorsk-s22-path",
+            "ordinate": 708000,
+            "chainage_m": 709000
+          },
+          {
+            "lat": 60.98809,
+            "lon": 40.306485,
+            "sector": 22,
+            "path_id": "ek069-konosha-sosnogorsk-s22-path",
+            "ordinate": 709000,
+            "chainage_m": 710000
+          },
+          {
+            "lat": 60.98926,
+            "lon": 40.324861,
+            "sector": 22,
+            "path_id": "ek069-konosha-sosnogorsk-s22-path",
+            "ordinate": 710000,
+            "chainage_m": 711000
+          },
+          {
+            "lat": 60.990527,
+            "lon": 40.343269,
+            "sector": 22,
+            "path_id": "ek069-konosha-sosnogorsk-s22-path",
+            "ordinate": 711000,
+            "chainage_m": 712000
+          },
+          {
+            "lat": 60.991777,
+            "lon": 40.361488,
+            "sector": 22,
+            "path_id": "ek069-konosha-sosnogorsk-s22-path",
+            "ordinate": 712000,
+            "chainage_m": 713000
+          },
+          {
+            "lat": 60.993027,
+            "lon": 40.37965,
+            "sector": 22,
+            "path_id": "ek069-konosha-sosnogorsk-s22-path",
+            "ordinate": 713000,
+            "chainage_m": 714000
+          },
+          {
+            "lat": 60.994319,
+            "lon": 40.398075,
+            "sector": 22,
+            "path_id": "ek069-konosha-sosnogorsk-s22-path",
+            "ordinate": 714000,
+            "chainage_m": 715000
+          },
+          {
+            "lat": 60.996081,
+            "lon": 40.416075,
+            "sector": 22,
+            "path_id": "ek069-konosha-sosnogorsk-s22-path",
+            "ordinate": 715000,
+            "chainage_m": 716000
+          },
+          {
+            "lat": 61.000988,
+            "lon": 40.431452,
+            "sector": 22,
+            "path_id": "ek069-konosha-sosnogorsk-s22-path",
+            "ordinate": 716000,
+            "chainage_m": 717000
+          },
+          {
+            "lat": 61.004274,
+            "lon": 40.448574,
+            "sector": 22,
+            "path_id": "ek069-konosha-sosnogorsk-s22-path",
+            "ordinate": 717000,
+            "chainage_m": 718000
+          },
+          {
+            "lat": 61.007915,
+            "lon": 40.465426,
+            "sector": 22,
+            "path_id": "ek069-konosha-sosnogorsk-s22-path",
+            "ordinate": 718000,
+            "chainage_m": 719000
+          },
+          {
+            "lat": 61.01031,
+            "lon": 40.483237,
+            "sector": 22,
+            "path_id": "ek069-konosha-sosnogorsk-s22-path",
+            "ordinate": 719000,
+            "chainage_m": 720000
+          },
+          {
+            "lat": 61.012715,
+            "lon": 40.501066,
+            "sector": 22,
+            "path_id": "ek069-konosha-sosnogorsk-s22-path",
+            "ordinate": 720000,
+            "chainage_m": 721000
+          },
+          {
+            "lat": 61.014651,
+            "lon": 40.519095,
+            "sector": 22,
+            "path_id": "ek069-konosha-sosnogorsk-s22-path",
+            "ordinate": 721000,
+            "chainage_m": 722000
+          },
+          {
+            "lat": 61.01438,
+            "lon": 40.537427,
+            "sector": 22,
+            "path_id": "ek069-konosha-sosnogorsk-s22-path",
+            "ordinate": 722000,
+            "chainage_m": 723000
+          },
+          {
+            "lat": 61.012611,
+            "lon": 40.555462,
+            "sector": 22,
+            "path_id": "ek069-konosha-sosnogorsk-s22-path",
+            "ordinate": 723000,
+            "chainage_m": 724000
+          },
+          {
+            "lat": 61.013327,
+            "lon": 40.560435,
+            "sector": 22,
+            "path_id": "ek069-konosha-sosnogorsk-s22-path",
+            "ordinate": 723300,
+            "chainage_m": 724300
+          },
+          {
+            "lat": 61.015255,
+            "lon": 40.564301,
+            "sector": 22,
+            "path_id": "ek069-konosha-sosnogorsk-s22-path",
+            "ordinate": 723600,
+            "chainage_m": 724600
+          },
+          {
+            "lat": 61.017619,
+            "lon": 40.569882,
+            "sector": 22,
+            "path_id": "ek069-konosha-sosnogorsk-s22-path",
+            "ordinate": 724000,
+            "chainage_m": 725000
+          },
+          {
+            "lat": 61.021936,
+            "lon": 40.586309,
+            "sector": 22,
+            "path_id": "ek069-konosha-sosnogorsk-s22-path",
+            "ordinate": 725000,
+            "chainage_m": 726000
+          },
+          {
+            "lat": 61.026209,
+            "lon": 40.60264,
+            "sector": 22,
+            "path_id": "ek069-konosha-sosnogorsk-s22-path",
+            "ordinate": 726000,
+            "chainage_m": 727000
+          },
+          {
+            "lat": 61.029956,
+            "lon": 40.619372,
+            "sector": 22,
+            "path_id": "ek069-konosha-sosnogorsk-s22-path",
+            "ordinate": 727000,
+            "chainage_m": 728000
+          },
+          {
+            "lat": 61.034076,
+            "lon": 40.63586,
+            "sector": 22,
+            "path_id": "ek069-konosha-sosnogorsk-s22-path",
+            "ordinate": 728000,
+            "chainage_m": 729000
+          },
+          {
+            "lat": 61.038184,
+            "lon": 40.652256,
+            "sector": 22,
+            "path_id": "ek069-konosha-sosnogorsk-s22-path",
+            "ordinate": 729000,
+            "chainage_m": 730000
+          },
+          {
+            "lat": 61.042313,
+            "lon": 40.668716,
+            "sector": 22,
+            "path_id": "ek069-konosha-sosnogorsk-s22-path",
+            "ordinate": 730000,
+            "chainage_m": 731000
+          },
+          {
+            "lat": 61.046778,
+            "lon": 40.684795,
+            "sector": 22,
+            "path_id": "ek069-konosha-sosnogorsk-s22-path",
+            "ordinate": 731000,
+            "chainage_m": 732000
+          },
+          {
+            "lat": 61.048564,
+            "lon": 40.702824,
+            "sector": 22,
+            "path_id": "ek069-konosha-sosnogorsk-s22-path",
+            "ordinate": 732000,
+            "chainage_m": 733000
+          },
+          {
+            "lat": 61.049633,
+            "lon": 40.721216,
+            "sector": 22,
+            "path_id": "ek069-konosha-sosnogorsk-s22-path",
+            "ordinate": 733000,
+            "chainage_m": 734000
+          },
+          {
+            "lat": 61.049996,
+            "lon": 40.7264,
+            "sector": 22,
+            "path_id": "ek069-konosha-sosnogorsk-s22-path",
+            "ordinate": 733300,
+            "chainage_m": 734300
+          },
+          {
+            "lat": 61.051164,
+            "lon": 40.731384,
+            "sector": 22,
+            "path_id": "ek069-konosha-sosnogorsk-s22-path",
+            "ordinate": 733600,
+            "chainage_m": 734600
+          },
+          {
+            "lat": 61.053975,
+            "lon": 40.736287,
+            "sector": 22,
+            "path_id": "ek069-konosha-sosnogorsk-s22-path",
+            "ordinate": 734000,
+            "chainage_m": 735000
+          },
+          {
+            "lat": 61.060292,
+            "lon": 40.749048,
+            "sector": 22,
+            "path_id": "ek069-konosha-sosnogorsk-s22-path",
+            "ordinate": 735000,
+            "chainage_m": 736000
+          },
+          {
+            "lat": 61.063091,
+            "lon": 40.760161,
+            "sector": 22,
+            "path_id": "ek069-konosha-sosnogorsk-s22-path",
+            "ordinate": 735700,
+            "chainage_m": 736700
+          },
+          {
+            "lat": 61.065338,
+            "lon": 40.763827,
+            "sector": 22,
+            "path_id": "ek069-konosha-sosnogorsk-s22-path",
+            "ordinate": 736000,
+            "chainage_m": 737000
+          },
+          {
+            "lat": 61.067473,
+            "lon": 40.766563,
+            "sector": 22,
+            "path_id": "ek069-konosha-sosnogorsk-s22-path",
+            "ordinate": 736300,
+            "chainage_m": 737300
+          },
+          {
+            "lat": 61.068674,
+            "lon": 40.771381,
+            "sector": 22,
+            "path_id": "ek069-konosha-sosnogorsk-s22-path",
+            "ordinate": 736600,
+            "chainage_m": 737600
+          },
+          {
+            "lat": 61.069358,
+            "lon": 40.778882,
+            "sector": 22,
+            "path_id": "ek069-konosha-sosnogorsk-s22-path",
+            "ordinate": 737000,
+            "chainage_m": 738000
+          },
+          {
+            "lat": 61.075113,
+            "lon": 40.792877,
+            "sector": 22,
+            "path_id": "ek069-konosha-sosnogorsk-s22-path",
+            "ordinate": 738000,
+            "chainage_m": 739000
+          },
+          {
+            "lat": 61.078331,
+            "lon": 40.809949,
+            "sector": 22,
+            "path_id": "ek069-konosha-sosnogorsk-s22-path",
+            "ordinate": 739000,
+            "chainage_m": 740000
+          },
+          {
+            "lat": 61.078047,
+            "lon": 40.81877,
+            "sector": 22,
+            "path_id": "ek069-konosha-sosnogorsk-s22-path",
+            "ordinate": 739500,
+            "chainage_m": 740500
+          },
+          {
+            "lat": 61.07839,
+            "lon": 40.822434,
+            "sector": 22,
+            "path_id": "ek069-konosha-sosnogorsk-s22-path",
+            "ordinate": 739700,
+            "chainage_m": 740700
+          },
+          {
+            "lat": 61.079647,
+            "lon": 40.827677,
+            "sector": 22,
+            "path_id": "ek069-konosha-sosnogorsk-s22-path",
+            "ordinate": 740000,
+            "chainage_m": 741000
+          },
+          {
+            "lat": 61.084537,
+            "lon": 40.843084,
+            "sector": 22,
+            "path_id": "ek069-konosha-sosnogorsk-s22-path",
+            "ordinate": 741000,
+            "chainage_m": 742000
+          },
+          {
+            "lat": 61.088408,
+            "lon": 40.859885,
+            "sector": 22,
+            "path_id": "ek069-konosha-sosnogorsk-s22-path",
+            "ordinate": 742000,
+            "chainage_m": 743000
+          },
+          {
+            "lat": 61.08999,
+            "lon": 40.864185,
+            "sector": 22,
+            "path_id": "ek069-konosha-sosnogorsk-s22-path",
+            "ordinate": 742300,
+            "chainage_m": 743300
+          },
+          {
+            "lat": 61.09213,
+            "lon": 40.867394,
+            "sector": 22,
+            "path_id": "ek069-konosha-sosnogorsk-s22-path",
+            "ordinate": 742600,
+            "chainage_m": 743600
+          },
+          {
+            "lat": 61.095443,
+            "lon": 40.870069,
+            "sector": 22,
+            "path_id": "ek069-konosha-sosnogorsk-s22-path",
+            "ordinate": 743000,
+            "chainage_m": 744000
+          },
+          {
+            "lat": 61.096741,
+            "lon": 40.872369,
+            "sector": 22,
+            "path_id": "ek069-konosha-sosnogorsk-s22-path",
+            "ordinate": 743200,
+            "chainage_m": 744200
+          },
+          {
+            "lat": 61.097738,
+            "lon": 40.877313,
+            "sector": 22,
+            "path_id": "ek069-konosha-sosnogorsk-s22-path",
+            "ordinate": 743500,
+            "chainage_m": 744500
+          },
+          {
+            "lat": 61.097539,
+            "lon": 40.880962,
+            "sector": 22,
+            "path_id": "ek069-konosha-sosnogorsk-s22-path",
+            "ordinate": 743700,
+            "chainage_m": 744700
+          },
+          {
+            "lat": 61.097036,
+            "lon": 40.886698,
+            "sector": 22,
+            "path_id": "ek069-konosha-sosnogorsk-s22-path",
+            "ordinate": 744000,
+            "chainage_m": 745000
+          },
+          {
+            "lat": 61.09822,
+            "lon": 40.905106,
+            "sector": 22,
+            "path_id": "ek069-konosha-sosnogorsk-s22-path",
+            "ordinate": 745000,
+            "chainage_m": 746000
+          },
+          {
+            "lat": 61.098975,
+            "lon": 40.923364,
+            "sector": 22,
+            "path_id": "ek069-konosha-sosnogorsk-s22-path",
+            "ordinate": 746000,
+            "chainage_m": 747000
+          },
+          {
+            "lat": 61.104899,
+            "lon": 40.937009,
+            "sector": 22,
+            "path_id": "ek069-konosha-sosnogorsk-s22-path",
+            "ordinate": 747000,
+            "chainage_m": 748000
+          },
+          {
+            "lat": 61.113073,
+            "lon": 40.944067,
+            "sector": 22,
+            "path_id": "ek069-konosha-sosnogorsk-s22-path",
+            "ordinate": 748000,
+            "chainage_m": 749000
+          },
+          {
+            "lat": 61.120657,
+            "lon": 40.953976,
+            "sector": 22,
+            "path_id": "ek069-konosha-sosnogorsk-s22-path",
+            "ordinate": 749000,
+            "chainage_m": 750000
+          },
+          {
+            "lat": 61.128248,
+            "lon": 40.963909,
+            "sector": 22,
+            "path_id": "ek069-konosha-sosnogorsk-s22-path",
+            "ordinate": 750000,
+            "chainage_m": 751000
+          },
+          {
+            "lat": 61.130125,
+            "lon": 40.967525,
+            "sector": 22,
+            "path_id": "ek069-konosha-sosnogorsk-s22-path",
+            "ordinate": 750300,
+            "chainage_m": 751300
+          },
+          {
+            "lat": 61.131874,
+            "lon": 40.971743,
+            "sector": 22,
+            "path_id": "ek069-konosha-sosnogorsk-s22-path",
+            "ordinate": 750600,
+            "chainage_m": 751600
+          },
+          {
+            "lat": 61.133288,
+            "lon": 40.973935,
+            "sector": 22,
+            "path_id": "ek069-konosha-sosnogorsk-s22-path",
+            "ordinate": 750800,
+            "chainage_m": 751800
+          },
+          {
+            "lat": 61.135069,
+            "lon": 40.975466,
+            "sector": 22,
+            "path_id": "ek069-konosha-sosnogorsk-s22-path",
+            "ordinate": 751000,
+            "chainage_m": 752000
+          },
+          {
+            "lat": 61.140993,
+            "lon": 40.978566,
+            "sector": 22,
+            "path_id": "ek069-konosha-sosnogorsk-s22-path",
+            "ordinate": 751700,
+            "chainage_m": 752700
+          },
+          {
+            "lat": 61.14374,
+            "lon": 40.977422,
+            "sector": 22,
+            "path_id": "ek069-konosha-sosnogorsk-s22-path",
+            "ordinate": 752000,
+            "chainage_m": 753000
+          },
+          {
+            "lat": 61.148656,
+            "lon": 40.973629,
+            "sector": 22,
+            "path_id": "ek069-konosha-sosnogorsk-s22-path",
+            "ordinate": 752600,
+            "chainage_m": 753600
+          },
+          {
+            "lat": 61.152217,
+            "lon": 40.975258,
+            "sector": 22,
+            "path_id": "ek069-konosha-sosnogorsk-s22-path",
+            "ordinate": 753000,
+            "chainage_m": 754000
+          },
+          {
+            "lat": 61.155075,
+            "lon": 40.979226,
+            "sector": 22,
+            "path_id": "ek069-konosha-sosnogorsk-s22-path",
+            "ordinate": 753400,
+            "chainage_m": 754400
+          },
+          {
+            "lat": 61.156053,
+            "lon": 40.984337,
+            "sector": 22,
+            "path_id": "ek069-konosha-sosnogorsk-s22-path",
+            "ordinate": 753700,
+            "chainage_m": 754700
+          },
+          {
+            "lat": 61.155716,
+            "lon": 40.99007,
+            "sector": 22,
+            "path_id": "ek069-konosha-sosnogorsk-s22-path",
+            "ordinate": 754000,
+            "chainage_m": 755000
+          },
+          {
+            "lat": 61.156272,
+            "lon": 41.008391,
+            "sector": 22,
+            "path_id": "ek069-konosha-sosnogorsk-s22-path",
+            "ordinate": 755000,
+            "chainage_m": 756000
+          },
+          {
+            "lat": 61.157718,
+            "lon": 41.02669,
+            "sector": 22,
+            "path_id": "ek069-konosha-sosnogorsk-s22-path",
+            "ordinate": 756000,
+            "chainage_m": 757000
+          },
+          {
+            "lat": 61.156989,
+            "lon": 41.045027,
+            "sector": 22,
+            "path_id": "ek069-konosha-sosnogorsk-s22-path",
+            "ordinate": 757000,
+            "chainage_m": 758000
+          },
+          {
+            "lat": 61.156211,
+            "lon": 41.063706,
+            "sector": 22,
+            "path_id": "ek069-konosha-sosnogorsk-s22-path",
+            "ordinate": 758000,
+            "chainage_m": 759000
+          },
+          {
+            "lat": 61.157401,
+            "lon": 41.082013,
+            "sector": 22,
+            "path_id": "ek069-konosha-sosnogorsk-s22-path",
+            "ordinate": 759000,
+            "chainage_m": 760000
+          },
+          {
+            "lat": 61.157877,
+            "lon": 41.09096,
+            "sector": 22,
+            "path_id": "ek069-konosha-sosnogorsk-s22-path",
+            "ordinate": 759500,
+            "chainage_m": 760500
+          },
+          {
+            "lat": 61.156763,
+            "lon": 41.100139,
+            "sector": 22,
+            "path_id": "ek069-konosha-sosnogorsk-s22-path",
+            "ordinate": 760000,
+            "chainage_m": 761000
+          },
+          {
+            "lat": 61.154349,
+            "lon": 41.118006,
+            "sector": 22,
+            "path_id": "ek069-konosha-sosnogorsk-s22-path",
+            "ordinate": 761000,
+            "chainage_m": 762000
+          },
+          {
+            "lat": 61.15185,
+            "lon": 41.135842,
+            "sector": 22,
+            "path_id": "ek069-konosha-sosnogorsk-s22-path",
+            "ordinate": 762000,
+            "chainage_m": 763000
+          },
+          {
+            "lat": 61.146966,
+            "lon": 41.151465,
+            "sector": 22,
+            "path_id": "ek069-konosha-sosnogorsk-s22-path",
+            "ordinate": 763000,
+            "chainage_m": 764000
+          },
+          {
+            "lat": 61.144856,
+            "lon": 41.16914,
+            "sector": 22,
+            "path_id": "ek069-konosha-sosnogorsk-s22-path",
+            "ordinate": 764000,
+            "chainage_m": 765000
+          },
+          {
+            "lat": 61.138298,
+            "lon": 41.181569,
+            "sector": 22,
+            "path_id": "ek069-konosha-sosnogorsk-s22-path",
+            "ordinate": 765000,
+            "chainage_m": 766000
+          },
+          {
+            "lat": 61.134206,
+            "lon": 41.188267,
+            "sector": 22,
+            "path_id": "ek069-konosha-sosnogorsk-s22-path",
+            "ordinate": 765600,
+            "chainage_m": 766600
+          },
+          {
+            "lat": 61.133447,
+            "lon": 41.191562,
+            "sector": 22,
+            "path_id": "ek069-konosha-sosnogorsk-s22-path",
+            "ordinate": 765800,
+            "chainage_m": 766800
+          },
+          {
+            "lat": 61.133378,
+            "lon": 41.195472,
+            "sector": 22,
+            "path_id": "ek069-konosha-sosnogorsk-s22-path",
+            "ordinate": 766000,
+            "chainage_m": 767000
+          },
+          {
+            "lat": 61.133973,
+            "lon": 41.198707,
+            "sector": 22,
+            "path_id": "ek069-konosha-sosnogorsk-s22-path",
+            "ordinate": 766200,
+            "chainage_m": 767200
+          },
+          {
+            "lat": 61.135199,
+            "lon": 41.201393,
+            "sector": 22,
+            "path_id": "ek069-konosha-sosnogorsk-s22-path",
+            "ordinate": 766400,
+            "chainage_m": 767400
+          },
+          {
+            "lat": 61.137621,
+            "lon": 41.203781,
+            "sector": 22,
+            "path_id": "ek069-konosha-sosnogorsk-s22-path",
+            "ordinate": 766700,
+            "chainage_m": 767700
+          },
+          {
+            "lat": 61.140439,
+            "lon": 41.205305,
+            "sector": 22,
+            "path_id": "ek069-konosha-sosnogorsk-s22-path",
+            "ordinate": 767000,
+            "chainage_m": 768000
+          },
+          {
+            "lat": 61.141776,
+            "lon": 41.206918,
+            "sector": 22,
+            "path_id": "ek069-konosha-sosnogorsk-s22-path",
+            "ordinate": 767200,
+            "chainage_m": 768200
+          },
+          {
+            "lat": 61.142871,
+            "lon": 41.209798,
+            "sector": 22,
+            "path_id": "ek069-konosha-sosnogorsk-s22-path",
+            "ordinate": 767400,
+            "chainage_m": 768400
+          },
+          {
+            "lat": 61.143559,
+            "lon": 41.215163,
+            "sector": 22,
+            "path_id": "ek069-konosha-sosnogorsk-s22-path",
+            "ordinate": 767700,
+            "chainage_m": 768700
+          },
+          {
+            "lat": 61.144648,
+            "lon": 41.220838,
+            "sector": 22,
+            "path_id": "ek069-konosha-sosnogorsk-s22-path",
+            "ordinate": 768000,
+            "chainage_m": 769000
+          },
+          {
+            "lat": 61.144966,
+            "lon": 41.225729,
+            "sector": 22,
+            "path_id": "ek069-konosha-sosnogorsk-s22-path",
+            "ordinate": 768300,
+            "chainage_m": 769300
+          },
+          {
+            "lat": 61.144674,
+            "lon": 41.233053,
+            "sector": 22,
+            "path_id": "ek069-konosha-sosnogorsk-s22-path",
+            "ordinate": 768700,
+            "chainage_m": 769700
+          },
+          {
+            "lat": 61.146246,
+            "lon": 41.238127,
+            "sector": 22,
+            "path_id": "ek069-konosha-sosnogorsk-s22-path",
+            "ordinate": 769000,
+            "chainage_m": 770000
+          },
+          {
+            "lat": 61.147796,
+            "lon": 41.241873,
+            "sector": 22,
+            "path_id": "ek069-konosha-sosnogorsk-s22-path",
+            "ordinate": 769300,
+            "chainage_m": 770300
+          },
+          {
+            "lat": 61.148191,
+            "lon": 41.247297,
+            "sector": 22,
+            "path_id": "ek069-konosha-sosnogorsk-s22-path",
+            "ordinate": 769600,
+            "chainage_m": 770600
+          },
+          {
+            "lat": 61.146341,
+            "lon": 41.254097,
+            "sector": 22,
+            "path_id": "ek069-konosha-sosnogorsk-s22-path",
+            "ordinate": 770000,
+            "chainage_m": 771000
+          },
+          {
+            "lat": 61.142547,
+            "lon": 41.264081,
+            "sector": 22,
+            "path_id": "ek069-konosha-sosnogorsk-s22-path",
+            "ordinate": 770700,
+            "chainage_m": 771700
+          },
+          {
+            "lat": 61.141847,
+            "lon": 41.269736,
+            "sector": 22,
+            "path_id": "ek069-konosha-sosnogorsk-s22-path",
+            "ordinate": 771000,
+            "chainage_m": 772000
+          },
+          {
+            "lat": 61.142455,
+            "lon": 41.276795,
+            "sector": 22,
+            "path_id": "ek069-konosha-sosnogorsk-s22-path",
+            "ordinate": 771400,
+            "chainage_m": 772400
+          },
+          {
+            "lat": 61.143684,
+            "lon": 41.281681,
+            "sector": 22,
+            "path_id": "ek069-konosha-sosnogorsk-s22-path",
+            "ordinate": 771700,
+            "chainage_m": 772700
+          },
+          {
+            "lat": 61.145796,
+            "lon": 41.285295,
+            "sector": 22,
+            "path_id": "ek069-konosha-sosnogorsk-s22-path",
+            "ordinate": 772000,
+            "chainage_m": 773000
+          },
+          {
+            "lat": 61.147011,
+            "lon": 41.287825,
+            "sector": 22,
+            "path_id": "ek069-konosha-sosnogorsk-s22-path",
+            "ordinate": 772200,
+            "chainage_m": 773200
+          },
+          {
+            "lat": 61.148564,
+            "lon": 41.294589,
+            "sector": 22,
+            "path_id": "ek069-konosha-sosnogorsk-s22-path",
+            "ordinate": 772600,
+            "chainage_m": 773600
+          },
+          {
+            "lat": 61.149015,
+            "lon": 41.301978,
+            "sector": 22,
+            "path_id": "ek069-konosha-sosnogorsk-s22-path",
+            "ordinate": 773000,
+            "chainage_m": 774000
+          },
+          {
+            "lat": 61.148004,
+            "lon": 41.310856,
+            "sector": 22,
+            "path_id": "ek069-konosha-sosnogorsk-s22-path",
+            "ordinate": 773500,
+            "chainage_m": 774500
+          },
+          {
+            "lat": 61.148097,
+            "lon": 41.316717,
+            "sector": 22,
+            "path_id": "ek069-konosha-sosnogorsk-s22-path",
+            "ordinate": 773800,
+            "chainage_m": 774800
+          },
+          {
+            "lat": 61.148592,
+            "lon": 41.320638,
+            "sector": 22,
+            "path_id": "ek069-konosha-sosnogorsk-s22-path",
+            "ordinate": 774000,
+            "chainage_m": 775000
+          },
+          {
+            "lat": 61.150862,
+            "lon": 41.338346,
+            "sector": 22,
+            "path_id": "ek069-konosha-sosnogorsk-s22-path",
+            "ordinate": 775000,
+            "chainage_m": 776000
+          },
+          {
+            "lat": 61.151169,
+            "lon": 41.343683,
+            "sector": 22,
+            "path_id": "ek069-konosha-sosnogorsk-s22-path",
+            "ordinate": 775300,
+            "chainage_m": 776300
+          },
+          {
+            "lat": 61.150254,
+            "lon": 41.348844,
+            "sector": 22,
+            "path_id": "ek069-konosha-sosnogorsk-s22-path",
+            "ordinate": 775600,
+            "chainage_m": 776600
+          },
+          {
+            "lat": 61.148286,
+            "lon": 41.35509,
+            "sector": 22,
+            "path_id": "ek069-konosha-sosnogorsk-s22-path",
+            "ordinate": 776000,
+            "chainage_m": 777000
+          },
+          {
+            "lat": 61.142879,
+            "lon": 41.369825,
+            "sector": 22,
+            "path_id": "ek069-konosha-sosnogorsk-s22-path",
+            "ordinate": 777000,
+            "chainage_m": 778000
+          },
+          {
+            "lat": 61.141694,
+            "lon": 41.37217,
+            "sector": 22,
+            "path_id": "ek069-konosha-sosnogorsk-s22-path",
+            "ordinate": 777200,
+            "chainage_m": 778200
+          },
+          {
+            "lat": 61.139122,
+            "lon": 41.373657,
+            "sector": 22,
+            "path_id": "ek069-konosha-sosnogorsk-s22-path",
+            "ordinate": 777500,
+            "chainage_m": 778500
+          },
+          {
+            "lat": 61.136479,
+            "lon": 41.372782,
+            "sector": 22,
+            "path_id": "ek069-konosha-sosnogorsk-s22-path",
+            "ordinate": 777800,
+            "chainage_m": 778800
+          },
+          {
+            "lat": 61.134566,
+            "lon": 41.373466,
+            "sector": 22,
+            "path_id": "ek069-konosha-sosnogorsk-s22-path",
+            "ordinate": 778000,
+            "chainage_m": 779000
+          },
+          {
+            "lat": 61.132569,
+            "lon": 41.376581,
+            "sector": 22,
+            "path_id": "ek069-konosha-sosnogorsk-s22-path",
+            "ordinate": 778300,
+            "chainage_m": 779300
+          },
+          {
+            "lat": 61.131088,
+            "lon": 41.378588,
+            "sector": 22,
+            "path_id": "ek069-konosha-sosnogorsk-s22-path",
+            "ordinate": 778500,
+            "chainage_m": 779500
+          },
+          {
+            "lat": 61.129345,
+            "lon": 41.379249,
+            "sector": 22,
+            "path_id": "ek069-konosha-sosnogorsk-s22-path",
+            "ordinate": 778700,
+            "chainage_m": 779700
+          },
+          {
+            "lat": 61.126422,
+            "lon": 41.37874,
+            "sector": 22,
+            "path_id": "ek069-konosha-sosnogorsk-s22-path",
+            "ordinate": 779000,
+            "chainage_m": 780000
+          },
+          {
+            "lat": 61.117511,
+            "lon": 41.379868,
+            "sector": 22,
+            "path_id": "ek069-konosha-sosnogorsk-s22-path",
+            "ordinate": 780000,
+            "chainage_m": 781000
+          },
+          {
+            "lat": 61.113444,
+            "lon": 41.382496,
+            "sector": 22,
+            "path_id": "ek069-konosha-sosnogorsk-s22-path",
+            "ordinate": 780500,
+            "chainage_m": 781500
+          },
+          {
+            "lat": 61.111763,
+            "lon": 41.386824,
+            "sector": 22,
+            "path_id": "ek069-konosha-sosnogorsk-s22-path",
+            "ordinate": 780800,
+            "chainage_m": 781800
+          },
+          {
+            "lat": 61.111482,
+            "lon": 41.390734,
+            "sector": 22,
+            "path_id": "ek069-konosha-sosnogorsk-s22-path",
+            "ordinate": 781000,
+            "chainage_m": 782000
+          },
+          {
+            "lat": 61.10872,
+            "lon": 41.408158,
+            "sector": 22,
+            "path_id": "ek069-konosha-sosnogorsk-s22-path",
+            "ordinate": 782000,
+            "chainage_m": 783000
+          },
+          {
+            "lat": 61.106151,
+            "lon": 41.425907,
+            "sector": 22,
+            "path_id": "ek069-konosha-sosnogorsk-s22-path",
+            "ordinate": 783000,
+            "chainage_m": 784000
+          },
+          {
+            "lat": 61.103584,
+            "lon": 41.44363,
+            "sector": 22,
+            "path_id": "ek069-konosha-sosnogorsk-s22-path",
+            "ordinate": 784000,
+            "chainage_m": 785000
+          },
+          {
+            "lat": 61.101001,
+            "lon": 41.461408,
+            "sector": 22,
+            "path_id": "ek069-konosha-sosnogorsk-s22-path",
+            "ordinate": 785000,
+            "chainage_m": 786000
+          },
+          {
+            "lat": 61.098412,
+            "lon": 41.479177,
+            "sector": 22,
+            "path_id": "ek069-konosha-sosnogorsk-s22-path",
+            "ordinate": 786000,
+            "chainage_m": 787000
+          },
+          {
+            "lat": 61.095827,
+            "lon": 41.496948,
+            "sector": 22,
+            "path_id": "ek069-konosha-sosnogorsk-s22-path",
+            "ordinate": 787000,
+            "chainage_m": 788000
+          },
+          {
+            "lat": 61.09464,
+            "lon": 41.515427,
+            "sector": 22,
+            "path_id": "ek069-konosha-sosnogorsk-s22-path",
+            "ordinate": 788000,
+            "chainage_m": 789000
+          },
+          {
+            "lat": 61.092312,
+            "lon": 41.533291,
+            "sector": 22,
+            "path_id": "ek069-konosha-sosnogorsk-s22-path",
+            "ordinate": 789000,
+            "chainage_m": 790000
+          },
+          {
+            "lat": 61.089716,
+            "lon": 41.551069,
+            "sector": 22,
+            "path_id": "ek069-konosha-sosnogorsk-s22-path",
+            "ordinate": 790000,
+            "chainage_m": 791000
+          },
+          {
+            "lat": 61.087169,
+            "lon": 41.568836,
+            "sector": 22,
+            "path_id": "ek069-konosha-sosnogorsk-s22-path",
+            "ordinate": 791000,
+            "chainage_m": 792000
+          },
+          {
+            "lat": 61.086108,
+            "lon": 41.587178,
+            "sector": 22,
+            "path_id": "ek069-konosha-sosnogorsk-s22-path",
+            "ordinate": 792000,
+            "chainage_m": 793000
+          },
+          {
+            "lat": 61.085075,
+            "lon": 41.605689,
+            "sector": 22,
+            "path_id": "ek069-konosha-sosnogorsk-s22-path",
+            "ordinate": 793000,
+            "chainage_m": 794000
+          },
+          {
+            "lat": 61.084051,
+            "lon": 41.623855,
+            "sector": 22,
+            "path_id": "ek069-konosha-sosnogorsk-s22-path",
+            "ordinate": 794000,
+            "chainage_m": 795000
+          },
+          {
+            "lat": 61.083022,
+            "lon": 41.642223,
+            "sector": 22,
+            "path_id": "ek069-konosha-sosnogorsk-s22-path",
+            "ordinate": 795000,
+            "chainage_m": 796000
+          },
+          {
+            "lat": 61.081969,
+            "lon": 41.660892,
+            "sector": 22,
+            "path_id": "ek069-konosha-sosnogorsk-s22-path",
+            "ordinate": 796000,
+            "chainage_m": 797000
+          },
+          {
+            "lat": 61.081406,
+            "lon": 41.666071,
+            "sector": 22,
+            "path_id": "ek069-konosha-sosnogorsk-s22-path",
+            "ordinate": 796300,
+            "chainage_m": 797300
+          },
+          {
+            "lat": 61.080534,
+            "lon": 41.671292,
+            "sector": 22,
+            "path_id": "ek069-konosha-sosnogorsk-s22-path",
+            "ordinate": 796600,
+            "chainage_m": 797600
+          },
+          {
+            "lat": 61.08063,
+            "lon": 41.674991,
+            "sector": 22,
+            "path_id": "ek069-konosha-sosnogorsk-s22-path",
+            "ordinate": 796800,
+            "chainage_m": 797800
+          },
+          {
+            "lat": 61.081162,
+            "lon": 41.678501,
+            "sector": 22,
+            "path_id": "ek069-konosha-sosnogorsk-s22-path",
+            "ordinate": 797000,
+            "chainage_m": 798000
+          },
+          {
+            "lat": 61.084085,
+            "lon": 41.695929,
+            "sector": 22,
+            "path_id": "ek069-konosha-sosnogorsk-s22-path",
+            "ordinate": 798000,
+            "chainage_m": 799000
+          },
+          {
+            "lat": 61.086021,
+            "lon": 41.713926,
+            "sector": 22,
+            "path_id": "ek069-konosha-sosnogorsk-s22-path",
+            "ordinate": 799000,
+            "chainage_m": 800000
+          },
+          {
+            "lat": 61.086498,
+            "lon": 41.72286,
+            "sector": 22,
+            "path_id": "ek069-konosha-sosnogorsk-s22-path",
+            "ordinate": 799500,
+            "chainage_m": 800500
+          },
+          {
+            "lat": 61.086424,
+            "lon": 41.72653,
+            "sector": 22,
+            "path_id": "ek069-konosha-sosnogorsk-s22-path",
+            "ordinate": 799700,
+            "chainage_m": 800700
+          },
+          {
+            "lat": 61.085186,
+            "lon": 41.731678,
+            "sector": 22,
+            "path_id": "ek069-konosha-sosnogorsk-s22-path",
+            "ordinate": 800000,
+            "chainage_m": 801000
+          },
+          {
+            "lat": 61.080058,
+            "lon": 41.746824,
+            "sector": 22,
+            "path_id": "ek069-konosha-sosnogorsk-s22-path",
+            "ordinate": 801000,
+            "chainage_m": 802000
+          },
+          {
+            "lat": 61.078888,
+            "lon": 41.765017,
+            "sector": 22,
+            "path_id": "ek069-konosha-sosnogorsk-s22-path",
+            "ordinate": 802000,
+            "chainage_m": 803000
+          },
+          {
+            "lat": 61.077805,
+            "lon": 41.783689,
+            "sector": 22,
+            "path_id": "ek069-konosha-sosnogorsk-s22-path",
+            "ordinate": 803000,
+            "chainage_m": 804000
+          },
+          {
+            "lat": 61.077346,
+            "lon": 41.792633,
+            "sector": 22,
+            "path_id": "ek069-konosha-sosnogorsk-s22-path",
+            "ordinate": 803500,
+            "chainage_m": 804500
+          },
+          {
+            "lat": 61.078204,
+            "lon": 41.80194,
+            "sector": 22,
+            "path_id": "ek069-konosha-sosnogorsk-s22-path",
+            "ordinate": 804000,
+            "chainage_m": 805000
+          },
+          {
+            "lat": 61.080242,
+            "lon": 41.81996,
+            "sector": 22,
+            "path_id": "ek069-konosha-sosnogorsk-s22-path",
+            "ordinate": 805000,
+            "chainage_m": 806000
+          },
+          {
+            "lat": 61.08083,
+            "lon": 41.838264,
+            "sector": 22,
+            "path_id": "ek069-konosha-sosnogorsk-s22-path",
+            "ordinate": 806000,
+            "chainage_m": 807000
+          },
+          {
+            "lat": 61.080972,
+            "lon": 41.841751,
+            "sector": 22,
+            "path_id": "ek069-konosha-sosnogorsk-s22-path",
+            "ordinate": 806200,
+            "chainage_m": 807200
+          },
+          {
+            "lat": 61.082469,
+            "lon": 41.84841,
+            "sector": 22,
+            "path_id": "ek069-konosha-sosnogorsk-s22-path",
+            "ordinate": 806600,
+            "chainage_m": 807600
+          },
+          {
+            "lat": 61.084958,
+            "lon": 41.853977,
+            "sector": 22,
+            "path_id": "ek069-konosha-sosnogorsk-s22-path",
+            "ordinate": 807000,
+            "chainage_m": 808000
+          },
+          {
+            "lat": 61.086022,
+            "lon": 41.856733,
+            "sector": 22,
+            "path_id": "ek069-konosha-sosnogorsk-s22-path",
+            "ordinate": 807200,
+            "chainage_m": 808200
+          },
+          {
+            "lat": 61.086778,
+            "lon": 41.862018,
+            "sector": 22,
+            "path_id": "ek069-konosha-sosnogorsk-s22-path",
+            "ordinate": 807500,
+            "chainage_m": 808500
+          },
+          {
+            "lat": 61.087025,
+            "lon": 41.871395,
+            "sector": 22,
+            "path_id": "ek069-konosha-sosnogorsk-s22-path",
+            "ordinate": 808000,
+            "chainage_m": 809000
+          },
+          {
+            "lat": 61.087504,
+            "lon": 41.890012,
+            "sector": 22,
+            "path_id": "ek069-konosha-sosnogorsk-s22-path",
+            "ordinate": 809000,
+            "chainage_m": 810000
+          },
+          {
+            "lat": 61.087972,
+            "lon": 41.908525,
+            "sector": 22,
+            "path_id": "ek069-konosha-sosnogorsk-s22-path",
+            "ordinate": 810000,
+            "chainage_m": 811000
+          },
+          {
+            "lat": 61.088311,
+            "lon": 41.917536,
+            "sector": 22,
+            "path_id": "ek069-konosha-sosnogorsk-s22-path",
+            "ordinate": 810500,
+            "chainage_m": 811500
+          },
+          {
+            "lat": 61.088912,
+            "lon": 41.920994,
+            "sector": 22,
+            "path_id": "ek069-konosha-sosnogorsk-s22-path",
+            "ordinate": 810700,
+            "chainage_m": 811700
+          },
+          {
+            "lat": 61.090645,
+            "lon": 41.925521,
+            "sector": 22,
+            "path_id": "ek069-konosha-sosnogorsk-s22-path",
+            "ordinate": 811000,
+            "chainage_m": 812000
+          },
+          {
+            "lat": 61.098447,
+            "lon": 41.934317,
+            "sector": 22,
+            "path_id": "ek069-konosha-sosnogorsk-s22-path",
+            "ordinate": 812000,
+            "chainage_m": 813000
+          },
+          {
+            "lat": 61.099306,
+            "lon": 41.937241,
+            "sector": 22,
+            "path_id": "ek069-konosha-sosnogorsk-s22-path",
+            "ordinate": 812200,
+            "chainage_m": 813200
+          },
+          {
+            "lat": 61.099643,
+            "lon": 41.942733,
+            "sector": 22,
+            "path_id": "ek069-konosha-sosnogorsk-s22-path",
+            "ordinate": 812500,
+            "chainage_m": 813500
+          },
+          {
+            "lat": 61.099179,
+            "lon": 41.946276,
+            "sector": 22,
+            "path_id": "ek069-konosha-sosnogorsk-s22-path",
+            "ordinate": 812700,
+            "chainage_m": 813700
+          },
+          {
+            "lat": 61.097747,
+            "lon": 41.951216,
+            "sector": 22,
+            "path_id": "ek069-konosha-sosnogorsk-s22-path",
+            "ordinate": 813000,
+            "chainage_m": 814000
+          },
+          {
+            "lat": 61.095884,
+            "lon": 41.954794,
+            "sector": 22,
+            "path_id": "ek069-konosha-sosnogorsk-s22-path",
+            "ordinate": 813300,
+            "chainage_m": 814300
+          },
+          {
+            "lat": 61.093375,
+            "lon": 41.956769,
+            "sector": 22,
+            "path_id": "ek069-konosha-sosnogorsk-s22-path",
+            "ordinate": 813600,
+            "chainage_m": 814600
+          },
+          {
+            "lat": 61.089698,
+            "lon": 41.956007,
+            "sector": 22,
+            "path_id": "ek069-konosha-sosnogorsk-s22-path",
+            "ordinate": 814000,
+            "chainage_m": 815000
+          },
+          {
+            "lat": 61.088045,
+            "lon": 41.955735,
+            "sector": 22,
+            "path_id": "ek069-konosha-sosnogorsk-s22-path",
+            "ordinate": 814200,
+            "chainage_m": 815200
+          },
+          {
+            "lat": 61.086297,
+            "lon": 41.956519,
+            "sector": 22,
+            "path_id": "ek069-konosha-sosnogorsk-s22-path",
+            "ordinate": 814400,
+            "chainage_m": 815400
+          },
+          {
+            "lat": 61.084785,
+            "lon": 41.958447,
+            "sector": 22,
+            "path_id": "ek069-konosha-sosnogorsk-s22-path",
+            "ordinate": 814600,
+            "chainage_m": 815600
+          },
+          {
+            "lat": 61.083411,
+            "lon": 41.960816,
+            "sector": 22,
+            "path_id": "ek069-konosha-sosnogorsk-s22-path",
+            "ordinate": 814800,
+            "chainage_m": 815800
+          },
+          {
+            "lat": 61.081638,
+            "lon": 41.962317,
+            "sector": 22,
+            "path_id": "ek069-konosha-sosnogorsk-s22-path",
+            "ordinate": 815000,
+            "chainage_m": 816000
+          },
+          {
+            "lat": 61.079132,
+            "lon": 41.963463,
+            "sector": 22,
+            "path_id": "ek069-konosha-sosnogorsk-s22-path",
+            "ordinate": 815300,
+            "chainage_m": 816300
+          },
+          {
+            "lat": 61.076452,
+            "lon": 41.963786,
+            "sector": 22,
+            "path_id": "ek069-konosha-sosnogorsk-s22-path",
+            "ordinate": 815600,
+            "chainage_m": 816600
+          },
+          {
+            "lat": 61.074781,
+            "lon": 41.964996,
+            "sector": 22,
+            "path_id": "ek069-konosha-sosnogorsk-s22-path",
+            "ordinate": 815800,
+            "chainage_m": 816800
+          },
+          {
+            "lat": 61.073334,
+            "lon": 41.967544,
+            "sector": 22,
+            "path_id": "ek069-konosha-sosnogorsk-s22-path",
+            "ordinate": 816000,
+            "chainage_m": 817000
+          },
+          {
+            "lat": 61.068978,
+            "lon": 41.983658,
+            "sector": 22,
+            "path_id": "ek069-konosha-sosnogorsk-s22-path",
+            "ordinate": 817000,
+            "chainage_m": 818000
+          },
+          {
+            "lat": 61.069645,
+            "lon": 42.001873,
+            "sector": 22,
+            "path_id": "ek069-konosha-sosnogorsk-s22-path",
+            "ordinate": 818000,
+            "chainage_m": 819000
+          },
+          {
+            "lat": 61.06696,
+            "lon": 42.019452,
+            "sector": 22,
+            "path_id": "ek069-konosha-sosnogorsk-s22-path",
+            "ordinate": 819000,
+            "chainage_m": 820000
+          },
+          {
+            "lat": 61.063995,
+            "lon": 42.036978,
+            "sector": 22,
+            "path_id": "ek069-konosha-sosnogorsk-s22-path",
+            "ordinate": 820000,
+            "chainage_m": 821000
+          },
+          {
+            "lat": 61.062872,
+            "lon": 42.043739,
+            "sector": 22,
+            "path_id": "ek069-konosha-sosnogorsk-s22-path",
+            "ordinate": 820400,
+            "chainage_m": 821400
+          },
+          {
+            "lat": 61.062893,
+            "lon": 42.049212,
+            "sector": 22,
+            "path_id": "ek069-konosha-sosnogorsk-s22-path",
+            "ordinate": 820700,
+            "chainage_m": 821700
+          },
+          {
+            "lat": 61.063734,
+            "lon": 42.054782,
+            "sector": 22,
+            "path_id": "ek069-konosha-sosnogorsk-s22-path",
+            "ordinate": 821000,
+            "chainage_m": 822000
+          },
+          {
+            "lat": 61.062882,
+            "lon": 42.072618,
+            "sector": 22,
+            "path_id": "ek069-konosha-sosnogorsk-s22-path",
+            "ordinate": 822000,
+            "chainage_m": 823000
+          },
+          {
+            "lat": 61.063208,
+            "lon": 42.092006,
+            "sector": 22,
+            "path_id": "ek069-konosha-sosnogorsk-s22-path",
+            "ordinate": 823000,
+            "chainage_m": 824000
+          }
+        ]
+      }
+    ]
+  }
+}
