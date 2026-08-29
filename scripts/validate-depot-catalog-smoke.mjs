@@ -43,6 +43,7 @@ try {
   fs.cpSync(sourceDir, fixtureDir, { recursive: true });
   const originalRailways = readJson('railways.json');
   const originalDepots = readJson('depots.json');
+  const catalogIndex = readJson('index.json');
   const packFile = path.join('depot-packs', 'rzd-dvost-tche-9-komsomolsk-na-amure.json');
   const originalPack = readJson(packFile);
 
@@ -70,6 +71,17 @@ try {
   invalidArmMap.service_arms[0].route_options[0].tracker_map_id = 'missing-map';
   writeJson(packFile, invalidArmMap);
   expectFailure('invalid service arm map', 'неизвестный tracker_map_id missing-map');
+  writeJson(packFile, originalPack);
+
+  const unboundRouteId = 'ek069-vladivostok-obluchye';
+  for (const relativePackFile of catalogIndex.files.depot_packs) {
+    const pack = readJson(relativePackFile);
+    if (!pack.route_ids.includes(unboundRouteId)) continue;
+    pack.route_ids = pack.route_ids.filter((routeId) => routeId !== unboundRouteId);
+    pack.service_arms = pack.service_arms.filter((arm) => arm.id !== unboundRouteId);
+    writeJson(relativePackFile, pack);
+  }
+  expectFailure('unbound imported EK', `tracker.routes.${unboundRouteId}: импортированная ЭК не привязана ни к одному депо`);
 
   console.log('Depot catalog validator smoke passed.');
 } finally {

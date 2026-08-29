@@ -193,6 +193,8 @@ async function verifyPwaControlHeaders() {
     '/scripts/app.js',
     '/scripts/app-init.js',
     '/scripts/sw-register.js',
+    '/assets/catalog/index.json',
+    '/assets/catalog/depots.json',
   ]) {
     const cacheControl = await fetchCacheControl(pathname);
     checks[pathname] = cacheControl;

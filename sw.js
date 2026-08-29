@@ -566,7 +566,8 @@ function isUpdateControlRequest(url) {
 }
 
 function isTrackerDataRequest(url) {
-  return url.pathname.startsWith('/assets/tracker/sections/') ||
+  return url.pathname.startsWith('/assets/catalog/') ||
+    url.pathname.startsWith('/assets/tracker/sections/') ||
     url.pathname === '/assets/tracker/maps-manifest.json' ||
     url.pathname === '/assets/tracker/tch9-reference.json' ||
     url.pathname === '/assets/tracker/speed-docs.json' ||

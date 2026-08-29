@@ -96,6 +96,7 @@ assert.match(workerSource, /'\/scripts\/v412\/vu45-ui\.js'/);
 assert.doesNotMatch(workerSource, /client\.navigate\s*\(/);
 assert.match(workerSource, /COHERENT_RUNTIME_URLS/);
 assert.match(workerSource, /currentVersionOnly:\s*true/);
+assert.match(workerSource, /url\.pathname\.startsWith\('\/assets\/catalog\/'\)/);
 assert.match(workerSource, /Refusing to activate an incomplete runtime cache/);
 assert.match(indexSource, /<script src="\/sw-bootstrap-v412\.js" defer><\/script>/);
 

@@ -204,6 +204,7 @@ export function validateDepotCatalog({ catalogDir = defaultCatalogDir, trackerIn
   const packPaths = Array.isArray(fileEntries.depot_packs) ? fileEntries.depot_packs : [];
   if (!packPaths.length) errors.push('index.files.depot_packs: нужен хотя бы один пакет');
   const packs = new Map();
+  const routeIdsInPacks = new Set();
 
   packPaths.forEach((relativePath, indexPosition) => {
     const scope = `depot_packs[${indexPosition}]`;
@@ -226,6 +227,7 @@ export function validateDepotCatalog({ catalogDir = defaultCatalogDir, trackerIn
       if (!trackerSections.has(sectionId)) errors.push(`${scope}: неизвестный section_id ${sectionId}`);
     });
     routeIds.forEach((routeId) => {
+      routeIdsInPacks.add(routeId);
       const route = trackerRoutes.get(routeId);
       if (!route) {
         errors.push(`${scope}: неизвестный route_id ${routeId}`);
@@ -276,6 +278,12 @@ export function validateDepotCatalog({ catalogDir = defaultCatalogDir, trackerIn
     }
   });
 
+  const importedEkRouteIds = [...trackerRoutes.keys()].filter((routeId) => routeId.startsWith('ek069-'));
+  const unboundEkRouteIds = importedEkRouteIds.filter((routeId) => !routeIdsInPacks.has(routeId));
+  unboundEkRouteIds.forEach((routeId) => {
+    errors.push(`tracker.routes.${routeId}: импортированная ЭК не привязана ни к одному депо`);
+  });
+
   depots.forEach((depot, id) => {
     const hasPack = [...packs.values()].some((pack) => pack.depot_id === id && pack.status !== 'retired');
     if (depot.status === 'pack_available' && !hasPack) errors.push(`depots.${id}: status=pack_available требует пакет`);
@@ -292,6 +300,8 @@ export function validateDepotCatalog({ catalogDir = defaultCatalogDir, trackerIn
       tractionDirectorates: directorates.size,
       depots: depots.size,
       depotPacks: packs.size,
+      importedEkRoutes: importedEkRouteIds.length,
+      unboundEkRoutes: unboundEkRouteIds.length,
     },
   };
 }
@@ -309,7 +319,8 @@ function runCli() {
   const summary = result.summary;
   console.log(
     `Validated depot catalog: ${summary.railways} railways, ${summary.tractionDirectorates} traction directorates, `
-    + `${summary.depots} depot records and ${summary.depotPacks} depot pack.`,
+    + `${summary.depots} depot records, ${summary.depotPacks} depot pack and `
+    + `${summary.importedEkRoutes} imported EK routes (${summary.unboundEkRoutes} unbound).`,
   );
 }
 

@@ -2509,11 +2509,16 @@ function getPublicFileCacheControl(filePath, publicPath) {
   }
 
   if (
+    normalizedPath.startsWith('/assets/catalog/')
+  ) {
+    return 'no-store';
+  }
+
+  if (
     normalizedPath === '/manifest.webmanifest' ||
     normalizedPath.startsWith('/styles/') ||
     normalizedPath.startsWith('/scripts/') ||
     normalizedPath.startsWith('/assets/fonts/') ||
-    normalizedPath.startsWith('/assets/catalog/') ||
     normalizedPath.startsWith('/assets/tracker/') ||
     normalizedPath === '/apple-touch-icon.png' ||
     normalizedPath === '/icon-192.png' ||
