@@ -1156,7 +1156,7 @@ async function main() {
     depot.value = 'rzd:dvost:tche-9:komsomolsk-na-amure';
     depot.dispatchEvent(new Event('change', { bubbles: true }));
   });
-  await page.waitForFunction(() => document.getElementById('profileDepotCoverageText')?.textContent.includes('5 плеч'));
+  await page.waitForFunction(() => document.getElementById('profileDepotCoverageText')?.textContent.includes('3 плеча'));
   const profileDepotCatalog = await page.evaluate(() => ({
     railways: document.querySelectorAll('#inputProfileRailwayId option').length - 1,
     depotsOnRailway: document.querySelectorAll('#inputProfileDepotId option').length - 2,
@@ -1167,7 +1167,7 @@ async function main() {
   report.checks.profileDepotCatalog = profileDepotCatalog;
   if (profileDepotCatalog.railways !== 16 || profileDepotCatalog.depotsOnRailway !== 11 ||
       profileDepotCatalog.selectedDepot !== 'rzd:dvost:tche-9:komsomolsk-na-amure' ||
-      !profileDepotCatalog.coverage.includes('5 плеч') || !profileDepotCatalog.proposalVisible) {
+      !profileDepotCatalog.coverage.includes('3 плеча') || !profileDepotCatalog.proposalVisible) {
     throw new Error(`Profile depot catalog contract failed: ${JSON.stringify(profileDepotCatalog)}`);
   }
   await page.evaluate(() => document.getElementById('profileDepotCoverage')?.scrollIntoView({ block: 'center' }));

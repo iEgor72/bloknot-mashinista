@@ -46,8 +46,26 @@ try {
   const catalogIndex = readJson('index.json');
   const packFile = path.join('depot-packs', 'rzd-dvost-tche-9-komsomolsk-na-amure.json');
   const originalPack = readJson(packFile);
+  const novyiUrgalPack = readJson(path.join('depot-packs', 'rzd-dvost-tche-13-novyi-urgal.json'));
 
   expectSuccess('baseline catalog');
+
+  const tch9ArmNames = originalPack.service_arms.map((arm) => arm.name);
+  if (
+    originalPack.service_arms.length !== 3 ||
+    originalPack.service_arms.some((arm) => String(arm.id || '').startsWith('ek069-')) ||
+    !tch9ArmNames.some((name) => name.includes('Волочаевка')) ||
+    !tch9ArmNames.some((name) => name.includes('Высокогорная')) ||
+    !tch9ArmNames.some((name) => name.includes('Постышево'))
+  ) {
+    throw new Error(`ТЧЭ-9 должен сохранять три проверенных плеча: ${JSON.stringify(tch9ArmNames)}`);
+  }
+  if (
+    novyiUrgalPack.service_arms.length !== 1 ||
+    novyiUrgalPack.service_arms[0].id !== 'ek069-tynda-komsomolsk-izvestkovaya'
+  ) {
+    throw new Error('Пакет Нового Ургала должен сохранять одно импортированное плечо ЭК');
+  }
 
   const duplicateRailways = structuredClone(originalRailways);
   duplicateRailways.railways.push(structuredClone(duplicateRailways.railways[0]));

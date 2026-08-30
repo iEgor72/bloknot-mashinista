@@ -85,6 +85,8 @@ const ROUTE_DEPOTS = {
   ],
 };
 
+const importedArmIds = new Set(Object.keys(ROUTE_DEPOTS));
+
 function readJson(filePath) {
   return JSON.parse(fs.readFileSync(filePath, 'utf8'));
 }
@@ -158,8 +160,11 @@ for (const [depotId, ekRouteIds] of routesByDepot) {
     ...routeIds.flatMap((routeId) => routeSectionIds(trackerRoutes.get(routeId))),
   ]);
   const existingArms = existing?.service_arms || [];
-  const existingArmIds = new Set(existingArms.map((arm) => arm.id));
-  const ekArms = ekRouteIds
+  const curatedArms = existingArms.filter((arm) => !importedArmIds.has(arm.id));
+  const hasCuratedArms = curatedArms.length > 0;
+  const retainedArms = hasCuratedArms ? curatedArms : existingArms;
+  const existingArmIds = new Set(retainedArms.map((arm) => arm.id));
+  const ekArms = (hasCuratedArms ? [] : ekRouteIds)
     .filter((routeId) => !existingArmIds.has(routeId))
     .map((routeId) => {
       const route = trackerRoutes.get(routeId);
@@ -186,13 +191,15 @@ for (const [depotId, ekRouteIds] of routesByDepot) {
     source_ids: unique([...(existing?.source_ids || []), sourceId]),
     route_ids: routeIds,
     section_ids: sectionIds,
-    service_arms: [...existingArms, ...ekArms],
+    service_arms: [...retainedArms, ...ekArms],
     readiness: {
       manual_preview_data: true,
       live_gps_data: true,
       all_sections_verified: allSectionsVerified,
     },
-    note: 'ЭК показаны в депо по прохождению соответствующего маршрутного коридора. Это помогает найти доступную карту, но не подтверждает организационные границы действующего плеча обслуживания.',
+    note: hasCuratedArms
+      ? 'Плечи обслуживания заданы вручную. Импортированные ЭК доступны в каталоге маршрутов, но не создают дополнительные плечи без проверки.'
+      : 'ЭК показаны в депо по прохождению соответствующего маршрутного коридора. Это помогает найти доступную карту, но не подтверждает организационные границы действующего плеча обслуживания.',
   };
   writeJson(packPath, pack);
   packFiles.add(relativePackFile.replaceAll('\\', '/'));
