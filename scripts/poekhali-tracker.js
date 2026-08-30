@@ -1,4 +1,4 @@
-if (typeof registerShiftTrackerRuntimeModule === 'function') registerShiftTrackerRuntimeModule('poekhali-tracker', 'v416');
+if (typeof registerShiftTrackerRuntimeModule === 'function') registerShiftTrackerRuntimeModule('poekhali-tracker', 'v417');
 
 (function() {
   'use strict';
@@ -349,10 +349,11 @@ if (typeof registerShiftTrackerRuntimeModule === 'function') registerShiftTracke
     nearestProjection: null,
     autoPosition: null,
     lastDirectionProbe: null,
-    directionVoteEven: null,
+    directionVoteCoordinate: 0,
     directionVoteMeters: 0,
     directionVoteSamples: 0,
     directionSource: '',
+    paritySource: '',
     effectiveSignalDirectionCache: null,
     previewCoordinate: null,
     previewSector: null,
@@ -372,6 +373,7 @@ if (typeof registerShiftTrackerRuntimeModule === 'function') registerShiftTracke
     status: 'idle',
     positioningMode: 'gps',
     even: true,
+    coordinateDirection: 1,
     wayNumber: 1,
     simpleCoordinate: true,
     speedMeters: false,
@@ -1042,20 +1044,58 @@ if (typeof registerShiftTrackerRuntimeModule === 'function') registerShiftTracke
     return getEvenFromObjectFileKey(item && item.fileKey);
   }
 
-  function getCoordinateDirectionForEven(even) {
-    // На этой карте: Чётное = рост координаты (Постышево → Комсомольск),
-    // нечётное = уменьшение координаты (Комсомольск → Постышево).
-    return even ? 1 : -1;
+  function normalizeCoordinateDirection(value, fallback) {
+    var number = Number(value);
+    if (isFinite(number) && Math.abs(number) >= 1) return number > 0 ? 1 : -1;
+    var fallbackNumber = Number(fallback);
+    if (isFinite(fallbackNumber) && Math.abs(fallbackNumber) >= 1) return fallbackNumber > 0 ? 1 : -1;
+    return 1;
+  }
+
+  function getDeclaredEvenCoordinateDirection(map) {
+    var source = map || tracker.currentMap || DEFAULT_MAP || {};
+    var explicit = Number(source.evenCoordinateDirection);
+    if (isFinite(explicit) && Math.abs(explicit) >= 1) return explicit > 0 ? 1 : -1;
+    // Legacy EK 0.6.9 archives do not declare how railway parity maps to their
+    // ordinate axis. Treating coordinate growth as "even" was a Komsomolsk-only
+    // assumption and silently inverted foreign routes. Those maps deliberately
+    // keep parity and movement independent until a train number is available.
+    if (/^ek069-/i.test(String(source.id || ''))) return null;
+    return 1;
+  }
+
+  function getCoordinateDirectionForParity(even, map) {
+    var evenDirection = getDeclaredEvenCoordinateDirection(map);
+    if (evenDirection === null) return null;
+    return even ? evenDirection : -evenDirection;
+  }
+
+  function getParityForCoordinateDirection(direction, map) {
+    var evenDirection = getDeclaredEvenCoordinateDirection(map);
+    if (evenDirection === null) return null;
+    return normalizeCoordinateDirection(direction) === evenDirection;
   }
 
   function getCurrentCoordinateDirection() {
-    return getCoordinateDirectionForEven(tracker.even);
+    return normalizeCoordinateDirection(
+      tracker.coordinateDirection,
+      getCoordinateDirectionForParity(tracker.even) || 1
+    );
+  }
+
+  function getCoordinateDirectionForEven(even) {
+    var current = getCurrentCoordinateDirection();
+    if (!!even === !!tracker.even) return current;
+    var declared = getCoordinateDirectionForParity(!!even);
+    if (declared !== null) return declared;
+    return -current;
   }
 
   function getEvenFromCoordinateDelta(delta) {
     var value = Number(delta);
     if (!isFinite(value) || Math.abs(value) < 1) return !!tracker.even;
-    return value > 0;
+    var inferred = getParityForCoordinateDirection(value > 0 ? 1 : -1);
+    return inferred === null ? !!tracker.even : inferred;
   }
 
   function getEvenFromTrainNumber(value) {
@@ -1077,6 +1117,7 @@ if (typeof registerShiftTrackerRuntimeModule === 'function') registerShiftTracke
     return [
       tracker.assetsLoaded ? '1' : '0',
       tracker.even ? '1' : '0',
+      String(getCurrentCoordinateDirection()),
       tracker.directionSource || '',
       normalizeWayNumber(tracker.wayNumber),
       getMapKey(map),
@@ -1096,7 +1137,7 @@ if (typeof registerShiftTrackerRuntimeModule === 'function') registerShiftTracke
 
     var result = !!tracker.even;
     var suggestion = getShiftRouteSuggestion();
-    if (suggestion && suggestion.status === 'ready') {
+    if (suggestion && suggestion.status === 'ready' && suggestion.parityKnown) {
       result = !!suggestion.even;
     } else {
       var shift = details && details.shift ? details.shift : null;
@@ -1132,19 +1173,35 @@ if (typeof registerShiftTrackerRuntimeModule === 'function') registerShiftTracke
   }
 
   function resetGpsDirectionVote() {
-    tracker.directionVoteEven = null;
+    tracker.directionVoteCoordinate = 0;
     tracker.directionVoteMeters = 0;
     tracker.directionVoteSamples = 0;
   }
 
   function applyDetectedDirection(even, source, options) {
     options = options || {};
-    var nextEven = !!even;
+    var hasParity = even !== null && even !== undefined;
+    var nextEven = hasParity ? !!even : !!tracker.even;
     var nextSource = source || 'auto';
+    if (!options.force && tracker.directionSource === 'manual' && nextSource !== 'manual') return false;
     if (!options.force && tracker.directionSource === 'gps' && nextSource !== 'gps') return false;
-    var changed = tracker.even !== nextEven || tracker.directionSource !== nextSource;
+    var nextCoordinateDirection = Number(options.coordinateDirection);
+    if (!isFinite(nextCoordinateDirection) || Math.abs(nextCoordinateDirection) < 1) {
+      nextCoordinateDirection = hasParity ? getCoordinateDirectionForParity(nextEven) : null;
+    }
+    if (nextCoordinateDirection !== null) {
+      nextCoordinateDirection = normalizeCoordinateDirection(nextCoordinateDirection);
+    }
+    var nextDirectionSource = nextCoordinateDirection === null ? tracker.directionSource : nextSource;
+    var changed = tracker.even !== nextEven ||
+      (nextCoordinateDirection !== null && getCurrentCoordinateDirection() !== nextCoordinateDirection) ||
+      tracker.directionSource !== nextDirectionSource;
     tracker.even = nextEven;
-    tracker.directionSource = nextSource;
+    if (hasParity) tracker.paritySource = options.paritySource || nextSource;
+    if (nextCoordinateDirection !== null) {
+      tracker.coordinateDirection = nextCoordinateDirection;
+      tracker.directionSource = nextDirectionSource;
+    }
     if (changed || options.updateRun) {
       updateActiveRunNavigationState();
       updateModeButtons();
@@ -1157,7 +1214,8 @@ if (typeof registerShiftTrackerRuntimeModule === 'function') registerShiftTracke
     var routeSuggestion = getShiftRouteSuggestion();
     if (routeSuggestion && routeSuggestion.status === 'ready') {
       return {
-        even: !!routeSuggestion.even,
+        even: routeSuggestion.parityKnown ? !!routeSuggestion.even : getEvenFromTrainNumber(getPoekhaliTrainDetails().trainNumber),
+        coordinateDirection: routeSuggestion.coordinateDirection,
         source: 'route',
         wayNumber: routeSuggestion.wayNumber || 0
       };
@@ -1167,6 +1225,7 @@ if (typeof registerShiftTrackerRuntimeModule === 'function') registerShiftTracke
     if (trainEven !== null) {
       return {
         even: trainEven,
+        coordinateDirection: getCoordinateDirectionForParity(trainEven),
         source: 'train',
         wayNumber: 0
       };
@@ -1179,6 +1238,7 @@ if (typeof registerShiftTrackerRuntimeModule === 'function') registerShiftTracke
     var candidate = getAutoDirectionCandidate();
     if (!candidate) return false;
     if (candidate.wayNumber) tracker.wayNumber = normalizeWayNumber(candidate.wayNumber);
+    options.coordinateDirection = candidate.coordinateDirection;
     return applyDetectedDirection(candidate.even, candidate.source, options);
   }
 
@@ -1224,6 +1284,9 @@ if (typeof registerShiftTrackerRuntimeModule === 'function') registerShiftTracke
   function applyProjectionNavigationState(projection) {
     if (!projection) return;
     if (projection.even !== undefined) tracker.even = !!projection.even;
+    if (projection.coordinateDirection !== undefined) {
+      tracker.coordinateDirection = normalizeCoordinateDirection(projection.coordinateDirection);
+    }
     if (projection.wayNumber !== undefined) tracker.wayNumber = normalizeWayNumber(projection.wayNumber);
   }
 
@@ -1346,9 +1409,13 @@ if (typeof registerShiftTrackerRuntimeModule === 'function') registerShiftTracke
     if (!fromMatch || !toMatch || fromMatch.score < ROUTE_MAP_MIN_SCORE || toMatch.score < ROUTE_MAP_MIN_SCORE) return null;
     var fromStation = fromMatch.station;
     var toStation = toMatch.station;
-    var even = getEvenFromCoordinateDelta(toStation.coordinate - fromStation.coordinate);
+    var coordinateDirection = normalizeCoordinateDirection(toStation.coordinate - fromStation.coordinate);
+    var trainEven = getEvenFromTrainNumber(details && details.trainNumber);
+    var coordinateEven = getParityForCoordinateDirection(coordinateDirection, map);
+    var parityKnown = trainEven !== null || coordinateEven !== null;
+    var even = trainEven !== null ? trainEven : (coordinateEven !== null ? coordinateEven : !!tracker.even);
     var distance = Math.abs(toStation.coordinate - fromStation.coordinate);
-    var coordinate = getDirectionStartCoordinate(fromStation.coordinate, fromStation.end, even);
+    var coordinate = coordinateDirection > 0 ? fromStation.coordinate : fromStation.end;
     var fromWay = getWayNumberFromObjectFileKey(fromStation.fileKey);
     var toWay = getWayNumberFromObjectFileKey(toStation.fileKey);
     var wayNumber = fromWay && toWay && fromWay === toWay ? fromWay : (fromWay || toWay || 0);
@@ -1366,7 +1433,9 @@ if (typeof registerShiftTrackerRuntimeModule === 'function') registerShiftTracke
       sector: fromStation.sector,
       coordinate: coordinate,
       even: even,
-      directionLabel: even ? 'ЧЕТ' : 'НЕЧЕТ',
+      parityKnown: parityKnown,
+      coordinateDirection: coordinateDirection,
+      directionLabel: (coordinateDirection > 0 ? '+КМ' : '−КМ') + (parityKnown ? ' · ' + (even ? 'ЧЕТ' : 'НЕЧЕТ') : ''),
       wayNumber: wayNumber,
       trackLabel: wayNumber ? 'П ' + wayNumber : '',
       trackSourceLabel: fromTrackLabel && toTrackLabel && fromTrackLabel === toTrackLabel
@@ -1388,8 +1457,8 @@ if (typeof registerShiftTrackerRuntimeModule === 'function') registerShiftTracke
     // the station pair on the same sector before using parity/file heuristics.
     return suggestion.confidence * 1000000 +
       (sameSector ? 250000 : 0) +
-      getRouteObjectFileScore(suggestion.fromStation, suggestion.even) * 1000 +
-      getRouteObjectFileScore(suggestion.toStation, suggestion.even) * 1000 +
+      (suggestion.parityKnown ? getRouteObjectFileScore(suggestion.fromStation, suggestion.even) * 1000 : 0) +
+      (suggestion.parityKnown ? getRouteObjectFileScore(suggestion.toStation, suggestion.even) * 1000 : 0) +
       (sameWay ? 5000 : 0) +
       Math.min(suggestion.distance, 99999);
   }
@@ -1667,14 +1736,19 @@ if (typeof registerShiftTrackerRuntimeModule === 'function') registerShiftTracke
     if (!item || item.status !== 'ready') return false;
     if (item.wayNumber) tracker.wayNumber = normalizeWayNumber(item.wayNumber);
     var trainEven = getEvenFromTrainNumber(getPoekhaliTrainDetails().trainNumber);
-    // Route geometry can be ambiguous on BAM maps where station names repeat across
-    // sectors. Never let it switch signal parity when the train number already
-    // tells us ЧЕТ/НЕЧЕТ; object/signal files must follow the actual train.
-    if (trainEven === null) {
-      applyDetectedDirection(item.even, 'route', { force: tracker.directionSource !== 'gps', updateRun: true });
-    } else if (tracker.even !== trainEven || tracker.directionSource === 'route') {
-      applyDetectedDirection(trainEven, 'train', { force: true, updateRun: true });
-    }
+    // Movement comes from station order. Train parity is a separate signal and
+    // must never reverse an imported map whose parity-to-coordinate binding is
+    // unknown.
+    applyDetectedDirection(
+      trainEven !== null ? trainEven : (item.parityKnown ? item.even : null),
+      'route',
+      {
+        force: tracker.directionSource !== 'gps' && tracker.directionSource !== 'manual',
+        updateRun: true,
+        coordinateDirection: item.coordinateDirection,
+        paritySource: trainEven !== null ? 'train' : 'route'
+      }
+    );
     setPreviewProjection({
       lineCoordinate: item.coordinate,
       sector: item.sector
@@ -1689,7 +1763,72 @@ if (typeof registerShiftTrackerRuntimeModule === 'function') registerShiftTracke
     if (tracker.directionSource === 'gps') return 'GPS';
     if (tracker.directionSource === 'route') return 'маршрут';
     if (tracker.directionSource === 'train') return 'номер поезда';
+    if (tracker.directionSource === 'manual') return 'вручную';
     return 'авто';
+  }
+
+  function getDeclaredRouteCoordinateDirection(map) {
+    var source = map || tracker.currentMap || DEFAULT_MAP || {};
+    if (!tracker.assetsLoaded || !source.routeFrom || !source.routeTo) return null;
+    var stations = getRouteStationsFromCurrentMap();
+    var fromMatch = findRouteStationInList(source.routeFrom, stations);
+    var toMatch = findRouteStationInList(source.routeTo, stations);
+    if (!fromMatch || !toMatch || !fromMatch.station || !toMatch.station) return null;
+    var delta = Number(toMatch.station.coordinate) - Number(fromMatch.station.coordinate);
+    if (!isFinite(delta) || Math.abs(delta) < 1) return null;
+    return normalizeCoordinateDirection(delta);
+  }
+
+  function getCoordinateDirectionChoiceLabel(direction) {
+    var normalized = normalizeCoordinateDirection(direction);
+    var map = tracker.currentMap || DEFAULT_MAP || {};
+    var direct = getDeclaredRouteCoordinateDirection(map);
+    var from = String(map.routeFrom || '').trim();
+    var to = String(map.routeTo || '').trim();
+    if (direct !== null && from && to && normalizeRouteName(from) !== normalizeRouteName(to)) {
+      return normalized === direct ? from + ' → ' + to : to + ' → ' + from;
+    }
+    return normalized > 0 ? 'По возрастанию километража' : 'По убыванию километража';
+  }
+
+  function getPoekhaliDirectionState() {
+    var trainEven = getEvenFromTrainNumber(getPoekhaliTrainDetails().trainNumber);
+    return {
+      mapId: tracker.currentMap && tracker.currentMap.id ? tracker.currentMap.id : '',
+      coordinateDirection: getCurrentCoordinateDirection(),
+      coordinateLabel: getCoordinateDirectionChoiceLabel(getCurrentCoordinateDirection()),
+      directionSource: tracker.directionSource || 'auto',
+      parityEven: !!tracker.even,
+      parityKnown: trainEven !== null || getDeclaredEvenCoordinateDirection() !== null,
+      paritySource: tracker.paritySource || (trainEven !== null ? 'train' : ''),
+      parityBindingKnown: getDeclaredEvenCoordinateDirection() !== null
+    };
+  }
+
+  function setPoekhaliCoordinateDirection(direction, options) {
+    options = options || {};
+    var normalized = normalizeCoordinateDirection(direction);
+    applyDetectedDirection(
+      getParityForCoordinateDirection(normalized),
+      options.source || 'manual',
+      {
+        force: true,
+        updateRun: true,
+        coordinateDirection: normalized,
+        paritySource: options.source || 'manual'
+      }
+    );
+    resetGpsDirectionVote();
+    return getPoekhaliDirectionState();
+  }
+
+  function resetPoekhaliDirectionToAuto() {
+    tracker.directionSource = '';
+    resetGpsDirectionVote();
+    applyBestAutoDirection({ force: true, updateRun: true });
+    updateModeButtons();
+    requestDraw();
+    return getPoekhaliDirectionState();
   }
 
   function updateAutoPositionState(status, projection, message) {
@@ -1726,9 +1865,9 @@ if (typeof registerShiftTrackerRuntimeModule === 'function') registerShiftTracke
     if (dt < GPS_DIRECTION_MIN_TIME_MS || Math.abs(delta) < GPS_DIRECTION_MIN_DELTA_M) return;
     if (isFinite(speed) && speed > 0 && speed < 0.6) return;
     if (isFinite(accuracy) && accuracy > GPS_DIRECTION_MAX_ACCURACY_M) return;
-    var nextEven = getEvenFromCoordinateDelta(delta);
-    if (tracker.directionVoteEven !== nextEven) {
-      tracker.directionVoteEven = nextEven;
+    var nextCoordinateDirection = normalizeCoordinateDirection(delta);
+    if (tracker.directionVoteCoordinate !== nextCoordinateDirection) {
+      tracker.directionVoteCoordinate = nextCoordinateDirection;
       tracker.directionVoteMeters = Math.abs(delta);
       tracker.directionVoteSamples = 1;
     } else {
@@ -1737,7 +1876,16 @@ if (typeof registerShiftTrackerRuntimeModule === 'function') registerShiftTracke
     }
     if (tracker.directionVoteSamples >= GPS_DIRECTION_CONFIRM_SAMPLES ||
       tracker.directionVoteMeters >= GPS_DIRECTION_CONFIRM_DELTA_M) {
-      applyDetectedDirection(nextEven, 'gps', { force: true, updateRun: true });
+      applyDetectedDirection(
+        getParityForCoordinateDirection(nextCoordinateDirection),
+        'gps',
+        {
+          force: tracker.directionSource !== 'manual',
+          updateRun: true,
+          coordinateDirection: nextCoordinateDirection,
+          paritySource: 'gps'
+        }
+      );
       resetGpsDirectionVote();
     }
   }
@@ -4718,6 +4866,9 @@ if (typeof registerShiftTrackerRuntimeModule === 'function') registerShiftTracke
       fromAliases: Array.isArray(item.fromAliases) ? item.fromAliases.map(String) : [],
       toAliases: Array.isArray(item.toAliases) ? item.toAliases.map(String) : [],
       direction: item.direction ? String(item.direction) : '',
+      evenCoordinateDirection: Math.abs(Number(item.evenCoordinateDirection || item.even_coordinate_direction)) === 1
+        ? (Number(item.evenCoordinateDirection || item.even_coordinate_direction) > 0 ? 1 : -1)
+        : null,
       railway: item.railway ? String(item.railway) : '',
       bbox: Array.isArray(item.bbox) ? item.bbox.map(Number) : [],
       objects: item.objects && typeof item.objects === 'object' ? item.objects : null,
@@ -4799,6 +4950,7 @@ if (typeof registerShiftTrackerRuntimeModule === 'function') registerShiftTracke
           fromAliases: route.fromAliases || route.from_aliases,
           toAliases: route.toAliases || route.to_aliases,
           direction: variant.direction || route.direction,
+          evenCoordinateDirection: variant.even_coordinate_direction || route.even_coordinate_direction,
           railway: route.railway || (index.railway && (index.railway.name || index.railway.id)),
           bbox: variant.bbox || route.bbox,
           releaseStatus: releaseStatus,
@@ -4821,7 +4973,16 @@ if (typeof registerShiftTrackerRuntimeModule === 'function') registerShiftTracke
   }
 
   function setCurrentMap(map) {
-    tracker.currentMap = map || DEFAULT_MAP;
+    var nextMap = map || DEFAULT_MAP;
+    var previousId = String(tracker.currentMap && tracker.currentMap.id || '');
+    var nextId = String(nextMap && nextMap.id || '');
+    tracker.currentMap = nextMap;
+    if (previousId && previousId !== nextId) {
+      tracker.directionSource = '';
+      tracker.paritySource = '';
+      tracker.coordinateDirection = getCoordinateDirectionForParity(tracker.even, nextMap) || 1;
+      resetGpsDirectionVote();
+    }
     rebuildLearnedProfiles();
     setMapButton();
   }
@@ -5512,6 +5673,77 @@ if (typeof registerShiftTrackerRuntimeModule === 'function') registerShiftTracke
     if (tracker.serviceArmPicker && tracker.serviceArmPicker.root) {
       tracker.serviceArmPicker.root.classList.add('hidden');
     }
+  }
+
+  function appendDirectionPickerOption(parent, titleText, detailText, badgeText, onClick) {
+    var button = document.createElement('button');
+    button.type = 'button';
+    button.className = 'poekhali-arm-option poekhali-direction-option';
+    var copy = document.createElement('span');
+    copy.className = 'poekhali-arm-option-copy';
+    var title = document.createElement('strong');
+    title.textContent = titleText;
+    var detail = document.createElement('span');
+    detail.textContent = detailText;
+    copy.appendChild(title);
+    copy.appendChild(detail);
+    var badge = document.createElement('span');
+    badge.className = badgeText
+      ? 'poekhali-arm-option-badge poekhali-direction-option-badge'
+      : 'poekhali-arm-option-badge poekhali-arm-option-chevron';
+    badge.textContent = badgeText || '';
+    badge.setAttribute('aria-hidden', 'true');
+    button.setAttribute('aria-label', titleText + '. ' + detailText + (badgeText ? '. Выбрано' : ''));
+    button.appendChild(copy);
+    button.appendChild(badge);
+    button.addEventListener('click', onClick);
+    parent.appendChild(button);
+  }
+
+  function renderDirectionPicker() {
+    var picker = getServiceArmPicker();
+    if (!picker) return false;
+    var state = getPoekhaliDirectionState();
+    clearElement(picker.content);
+    picker.title.textContent = 'Направление движения';
+    picker.subtitle.textContent = tracker.currentMap && tracker.currentMap.title
+      ? tracker.currentMap.title
+      : 'Текущая ЭК';
+    appendDirectionPickerOption(
+      picker.content,
+      'Определять автоматически',
+      'Маршрут задаёт сторону движения, GPS подтверждает её; номер поезда задаёт только ЧЁТ/НЕЧЁТ.',
+      state.directionSource !== 'manual' ? 'выбрано' : '',
+      function() {
+        resetPoekhaliDirectionToAuto();
+        closeServiceArmPicker();
+      }
+    );
+    [1, -1].forEach(function(direction) {
+      var label = getCoordinateDirectionChoiceLabel(direction);
+      appendDirectionPickerOption(
+        picker.content,
+        label,
+        direction > 0 ? 'Движение в сторону увеличения км/пк.' : 'Движение в сторону уменьшения км/пк.',
+        state.directionSource === 'manual' && state.coordinateDirection === direction ? 'выбрано' : '',
+        function() {
+          setPoekhaliCoordinateDirection(direction, { source: 'manual' });
+          closeServiceArmPicker();
+        }
+      );
+    });
+    return true;
+  }
+
+  function openDirectionPicker() {
+    closeMapPicker();
+    closeOpsSheet();
+    var picker = getServiceArmPicker();
+    if (!picker) return false;
+    tracker.serviceArmPickerOpen = true;
+    picker.root.classList.remove('hidden');
+    renderDirectionPicker();
+    return true;
   }
 
   function getMapPicker() {
@@ -7713,6 +7945,7 @@ if (typeof registerShiftTrackerRuntimeModule === 'function') registerShiftTracke
         lineCoordinate: projection.lineCoordinate,
         sector: projection.sector,
         even: !!tracker.even,
+        coordinateDirection: getCurrentCoordinateDirection(),
         wayNumber: normalizeWayNumber(tracker.wayNumber),
         savedAt: Date.now()
       }));
@@ -7735,6 +7968,7 @@ if (typeof registerShiftTrackerRuntimeModule === 'function') registerShiftTracke
         lineCoordinate: lineCoordinate,
         sector: sector,
         even: parsed.even,
+        coordinateDirection: parsed.coordinateDirection,
         wayNumber: parsed.wayNumber,
         onTrack: false,
         preview: true
@@ -7752,6 +7986,7 @@ if (typeof registerShiftTrackerRuntimeModule === 'function') registerShiftTracke
         lineCoordinate: projection.lineCoordinate,
         sector: projection.sector,
         even: !!tracker.even,
+        coordinateDirection: getCurrentCoordinateDirection(),
         wayNumber: normalizeWayNumber(tracker.wayNumber),
         savedAt: Date.now()
       }));
@@ -7774,6 +8009,7 @@ if (typeof registerShiftTrackerRuntimeModule === 'function') registerShiftTracke
         lineCoordinate: lineCoordinate,
         sector: sector,
         even: parsed.even,
+        coordinateDirection: parsed.coordinateDirection,
         wayNumber: parsed.wayNumber,
         onTrack: false,
         preview: true
@@ -7901,8 +8137,15 @@ if (typeof registerShiftTrackerRuntimeModule === 'function') registerShiftTracke
 
     var routeSuggestion = getShiftRouteSuggestion();
     if (hasMapPreview && routeSuggestion && routeSuggestion.status === 'ready') {
-      tracker.even = !!routeSuggestion.even;
-      if (!tracker.directionSource) tracker.directionSource = 'route';
+      applyDetectedDirection(
+        routeSuggestion.parityKnown ? routeSuggestion.even : null,
+        'route',
+        {
+          force: tracker.directionSource !== 'manual' && tracker.directionSource !== 'gps',
+          coordinateDirection: routeSuggestion.coordinateDirection,
+          paritySource: 'route'
+        }
+      );
       return setPreviewProjection({
         lineCoordinate: routeSuggestion.coordinate,
         sector: routeSuggestion.sector
@@ -8713,11 +8956,13 @@ if (typeof registerShiftTrackerRuntimeModule === 'function') registerShiftTracke
   function setDirectionButton() {
     var el = byId('btnPoekhaliDirection');
     if (!el) return;
+    var coordinateDirection = getCurrentCoordinateDirection();
     var value = getDirectionValueLabel(tracker.even);
     var source = getDirectionSourceLabel();
     el.dataset.controlLabel = 'Напр.';
-    el.textContent = 'АВТО';
-    var title = 'Направление определяется автоматически: ' + value + ' · ' + source;
+    el.textContent = coordinateDirection > 0 ? '+КМ' : '−КМ';
+    var title = 'Направление движения: ' + getCoordinateDirectionChoiceLabel(coordinateDirection) +
+      ' · ' + source + ' · ' + value + '. Нажмите, чтобы выбрать направление.';
     el.title = title;
     el.setAttribute('aria-label', title);
     el.classList.toggle('is-auto', tracker.directionSource !== 'manual');
@@ -10242,11 +10487,11 @@ if (typeof registerShiftTrackerRuntimeModule === 'function') registerShiftTracke
     );
   }
 
-  function getRouteProgressAnchor(station, even, role) {
+  function getRouteProgressAnchor(station, coordinateDirection, role) {
     if (!station || !isFinite(station.coordinate)) return null;
     var start = Math.max(0, Math.round(Number(station.coordinate) || 0));
     var end = Math.max(start, Math.round(Number(station.end) || start));
-    return getDirectionStartCoordinate(start, end, even);
+    return normalizeCoordinateDirection(coordinateDirection) > 0 ? start : end;
   }
 
   function resolveRouteProgressForProjection(projection, suggestion) {
@@ -10254,12 +10499,13 @@ if (typeof registerShiftTrackerRuntimeModule === 'function') registerShiftTracke
     if (!item || item.status !== 'ready' || !projection || !isRealNumber(projection.lineCoordinate)) return null;
     if (isRealNumber(item.sector) && isRealNumber(projection.sector) && getSectorKey(item.sector) !== getSectorKey(projection.sector)) return null;
     var even = !!item.even;
-    var start = getRouteProgressAnchor(item.fromStation, even, 'from');
-    var finish = getRouteProgressAnchor(item.toStation, even, 'to');
+    var coordinateDirection = normalizeCoordinateDirection(item.coordinateDirection);
+    var start = getRouteProgressAnchor(item.fromStation, coordinateDirection, 'from');
+    var finish = getRouteProgressAnchor(item.toStation, coordinateDirection, 'to');
     if (!isFinite(start) || !isFinite(finish) || Math.abs(finish - start) < 1) return null;
     var total = Math.abs(finish - start);
     var current = Math.max(0, Math.round(Number(projection.lineCoordinate) || 0));
-    var rawPassed = getDirectionalDistance(current, start, even);
+    var rawPassed = (current - start) * coordinateDirection;
     var passed = rawPassed;
     var status = 'route';
     var outside = 0;
@@ -10282,6 +10528,7 @@ if (typeof registerShiftTrackerRuntimeModule === 'function') registerShiftTracke
       toCoordinate: Math.round(finish),
       currentCoordinate: Math.round(current),
       directionEven: even,
+      coordinateDirection: coordinateDirection,
       distanceMeters: Math.round(total),
       passedMeters: Math.round(passed),
       remainingMeters: Math.round(remaining),
@@ -13007,7 +13254,8 @@ if (typeof registerShiftTrackerRuntimeModule === 'function') registerShiftTracke
       gpsCaptureActive: gpsCapture.active,
       gpsCaptureAvailable: gpsCapture.available,
       gpsCaptureError: gpsCapture.error || '',
-      gpsRecordedSamples: gpsCapture.samples || 0
+      gpsRecordedSamples: gpsCapture.samples || 0,
+      direction: getPoekhaliDirectionState()
     };
   }
 
@@ -13429,10 +13677,7 @@ if (typeof registerShiftTrackerRuntimeModule === 'function') registerShiftTracke
     var directionBtn = byId('btnPoekhaliDirection');
     if (directionBtn) {
       directionBtn.addEventListener('click', function() {
-        applyBestAutoDirection({ force: tracker.directionSource !== 'gps', updateRun: true });
-        if (tracker.positioningMode === 'gps' && (!tracker.projection || !tracker.projection.onTrack)) requestPassiveGpsFix();
-        closeMapPicker();
-        openOpsSheet();
+        openDirectionPicker();
       });
     }
 
@@ -13533,6 +13778,9 @@ if (typeof registerShiftTrackerRuntimeModule === 'function') registerShiftTracke
   window.getPoekhaliTrainDetails = getPoekhaliTrainDetails;
   window.setSelectedPoekhaliShiftId = setSelectedPoekhaliShiftId;
   window.getPoekhaliGpsCaptureState = getRawLearningCaptureState;
+  window.getPoekhaliDirectionState = getPoekhaliDirectionState;
+  window.setPoekhaliCoordinateDirection = setPoekhaliCoordinateDirection;
+  window.resetPoekhaliDirectionToAuto = resetPoekhaliDirectionToAuto;
   window.startPoekhaliGpsCapture = function() { return !!startRawLearningCaptureSession(); };
   window.stopPoekhaliGpsCapture = function() { return finalizeRawLearningCaptureSession('completed'); };
   window.togglePoekhaliGpsCapture = toggleRawLearningCapture;

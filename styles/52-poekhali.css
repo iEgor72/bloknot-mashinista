@@ -772,6 +772,13 @@ body.is-poekhali-mode .trk-edit-btn {
   white-space: nowrap;
   font: 700 11px/1 'Golos Text', system-ui, sans-serif;
 }
+
+.poekhali-direction-option-badge {
+  min-width: 72px;
+  color: var(--accent-strong, #d8ff66);
+  border-color: color-mix(in srgb, var(--accent, #b8ff3d) 38%, transparent);
+  background: color-mix(in srgb, var(--accent, #b8ff3d) 12%, transparent);
+}
 .poekhali-arm-loading,
 .poekhali-arm-empty {
   min-height: 92px;
