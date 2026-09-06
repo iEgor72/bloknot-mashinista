@@ -110,3 +110,6 @@ assert.doesNotMatch(indexSource, /src="\/scripts\/(?!v418\/)/);
 assert.match(workerSource, /'\/scripts\/v418\/render\.js'/);
 
 console.log('Service-worker v405→v418 coherent-runtime and versioned shell namespace smoke passed.');
+
+const designSource = await readFile(path.join(root, 'styles', '50-design-refresh.css'), 'utf8');
+assert.doesNotMatch(designSource, /\/styles\/(?!v418\/)/, 'CSS imports must use the current shell version');
