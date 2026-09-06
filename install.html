@@ -1,0 +1,35 @@
+<!doctype html>
+<html lang="ru">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <meta name="theme-color" content="#10151f">
+  <meta name="referrer" content="no-referrer">
+  <meta name="robots" content="noindex, nofollow">
+  <title>Установить Блокнот машиниста</title>
+  <link rel="manifest" href="/manifest.webmanifest">
+  <link rel="apple-touch-icon" href="/apple-touch-icon.png">
+  <link rel="stylesheet" href="/styles/pwa-install.css">
+  <script src="/scripts/pwa-install.js" defer></script>
+</head>
+<body>
+  <main>
+    <img class="app-icon" src="/icon-192.png" width="80" height="80" alt="">
+    <p class="eyebrow">БЛОКНОТ МАШИНИСТА</p>
+    <h1>Ваш Блокнот.<br>Прямо на телефоне.</h1>
+    <p class="intro">Смены, часы и документы — открывайте с главного экрана.</p>
+    <section class="card" aria-labelledby="statusTitle">
+      <p class="status" id="statusTitle" role="status" aria-live="polite">Проверяем вход…</p>
+      <p id="detail">Это займёт несколько секунд.</p>
+      <button id="installButton" type="button" hidden>Установить на телефон</button>
+      <ol id="instructions" hidden></ol>
+      <button id="retryButton" class="secondary" type="button" hidden>Повторить</button>
+      <button id="loginButton" type="button" hidden>Подтвердить вход в Telegram</button>
+      <p id="loginHint" hidden>После подтверждения вернитесь на этот экран.</p>
+    </section>
+    <a id="openApp" href="/?app=v418" hidden>Продолжить в Блокноте →</a>
+    <p class="footnote">После установки открывайте Блокнот с иконки на главном экране.</p>
+    <noscript>Для установки включите JavaScript в настройках браузера.</noscript>
+  </main>
+</body>
+</html>

@@ -1,4 +1,4 @@
-    if (typeof registerShiftTrackerRuntimeModule === 'function') registerShiftTrackerRuntimeModule('auth', 'v417');
+    if (typeof registerShiftTrackerRuntimeModule === 'function') registerShiftTrackerRuntimeModule('auth', 'v418');
 
     var API_BASE_URL = window.SHIFT_API_BASE_URL || '';
     var AUTH_API_URL = API_BASE_URL + '/api/auth';
@@ -25,6 +25,45 @@
     var UI_OVERLAY_ROOT = document.getElementById('uiOverlayRoot');
     var SHIFT_ACTIONS_MENU = document.getElementById('shiftActionsMenu');
     var authBootstrapPromise = null;
+    var authNetworkUnavailable = false;
+    var preparedInstallHandoff = null;
+    var installHandoffPromise = null;
+
+    function isTelegramAuthContext() {
+      if (isStandalonePwaAuthEnvironment()) return false;
+      return !!getTelegramInitData() || /(?:tgWebAppPlatform|tgWebAppData)=/.test(window.location.hash + window.location.search) || /Telegram/i.test(navigator.userAgent || '');
+    }
+
+    function prepareInstallHandoff() {
+      if (!isTelegramAuthContext() || !CURRENT_USER || !navigator.onLine) return Promise.resolve(null);
+      if (preparedInstallHandoff && preparedInstallHandoff.expiresAt > Date.now() + 15000) return Promise.resolve(preparedInstallHandoff);
+      if (installHandoffPromise) return installHandoffPromise;
+      installHandoffPromise = fetchJson(AUTH_API_URL + '/install-handoff', {
+        method: 'POST', headers: { 'Content-Type': 'application/json' }, body: '{}'
+      }, 5000).then(function(result) {
+        if (!result.ok || !result.body || !result.body.url) throw new Error('Не удалось подготовить установку');
+        preparedInstallHandoff = result.body;
+        return preparedInstallHandoff;
+      }).finally(function() { installHandoffPromise = null; });
+      return installHandoffPromise;
+    }
+
+    function openPwaInstallation() {
+      if (!isTelegramAuthContext()) { window.location.assign('/install'); return; }
+      var tg = window.Telegram && window.Telegram.WebApp;
+      if (preparedInstallHandoff && preparedInstallHandoff.expiresAt > Date.now() + 5000 && tg && typeof tg.openLink === 'function') {
+        // Keep openLink in the click: Telegram requires user activation.
+        try {
+          tg.openLink(preparedInstallHandoff.url, { try_instant_view: false });
+          preparedInstallHandoff = null;
+        } catch (error) { showSaveToast('Не удалось открыть браузер. Повторите установку.', 'error'); }
+        return;
+      }
+      prepareInstallHandoff().then(function(link) {
+        if (!link) throw new Error('Вход недоступен');
+        showSaveToast('Всё готово. Нажмите «Установить на телефон» ещё раз.', 'info');
+      }).catch(function() { showSaveToast('Не удалось подготовить установку. Проверьте связь и повторите.', 'error'); });
+    }
     var SESSION_STORAGE_KEY = 'shift_tracker_session_token';
     var PWA_LOGIN_REQUEST_STORAGE_KEY = 'shift_tracker_pwa_login_request_v1';
     var AUTH_ENV_STATE = isLocalAuthEnvironment() ? 'dev' : (isStandalonePwaAuthEnvironment() ? 'standalone' : 'prod');
@@ -513,6 +552,7 @@
       if (typeof refreshProfileUserCount === 'function') refreshProfileUserCount();
       renderInstallPromptCard();
       renderDocumentationScreen();
+      prepareInstallHandoff().catch(function() {});
     }
 
     function handleTabActivated(tab) {
@@ -727,7 +767,7 @@
       if (profileVersionValue) profileVersionValue.textContent = APP_VERSION;
 
       var addScreenBtn = document.getElementById('btnShowInstallGuide');
-      if (addScreenBtn) addScreenBtn.textContent = 'Как установить';
+      if (addScreenBtn) addScreenBtn.textContent = 'Установить на телефон';
 
       var overlays = document.querySelectorAll('.overlay');
       for (var oi = 0; oi < overlays.length; oi++) {
@@ -839,7 +879,9 @@
             setStoredCachedUser(result.body.user);
             return result.body.user;
           }
-          throw new Error((result.body && result.body.error) || 'Не удалось войти через Telegram');
+          var error = new Error((result.body && result.body.error) || 'Не удалось войти через Telegram');
+          error.authRejected = result.status === 401 || result.status === 400;
+          throw error;
         });
       });
     }
@@ -855,6 +897,9 @@
           setStoredCachedUser(result.body.user);
           return result.body.user;
         }
+        if (result.status !== 401) throw new Error('Не удалось проверить сессию');
+        CURRENT_SESSION_TOKEN = '';
+        setStoredSessionToken('');
         return null;
       });
     }
@@ -872,6 +917,7 @@
       }
 
       if (!authBootstrapPromise) {
+        authNetworkUnavailable = false;
         if (!silent) showAuthGate('prod', 'pending');
         var initDataWaitMs = silent ? 2600 : 1600;
         try {
@@ -880,17 +926,17 @@
           }
         } catch (e) {}
         var hasPendingPwaRequest = !!getStoredPwaLoginRequestId();
-        var pwaPollPromise = hasPendingPwaRequest
-          ? pollPwaLoginRequest('', timeoutMs)
-          : Promise.resolve(null);
-        authBootstrapPromise = pwaPollPromise
+        var telegramContext = isTelegramAuthContext();
+        authBootstrapPromise = (telegramContext
+          ? authenticateWithTelegramWebApp(timeoutMs, { waitBudgetMs: initDataWaitMs })
+          : restoreSession(timeoutMs))
           .then(function(user) {
             if (user) return user;
-            return authenticateWithTelegramWebApp(timeoutMs, { waitBudgetMs: initDataWaitMs });
+            return telegramContext ? restoreSession(timeoutMs) : null;
           })
           .then(function(user) {
             if (user) return user;
-            return restoreSession(timeoutMs);
+            return hasPendingPwaRequest ? pollPwaLoginRequest('', timeoutMs) : null;
           })
           .then(function(user) {
             if (user) {
@@ -906,9 +952,17 @@
             return null;
           })
           .catch(function(err) {
-            CURRENT_USER = null;
+            authNetworkUnavailable = !err.authRejected;
+            if (!silent) CURRENT_USER = null;
             if (!silent) {
               showAuthGate('prod', 'error');
+              if (authNetworkUnavailable) {
+                if (AUTH_MESSAGE) AUTH_MESSAGE.textContent = 'Не удалось связаться с сервером. Повторите проверку входа.';
+                if (AUTH_PRIMARY_ACTION) {
+                  AUTH_PRIMARY_ACTION.textContent = 'Повторить';
+                  AUTH_PRIMARY_ACTION.dataset.authAction = 'retry';
+                }
+              }
               if (err && err.name === 'AbortError') {
                 setAuthInlineError('Связь отвечает слишком медленно. Попробуйте ещё раз или откройте бота, если так надёжнее.');
               } else if (navigator.onLine === false) {
@@ -916,6 +970,9 @@
               }
             }
             return null;
+          }).then(function(user) {
+            if (!user) authBootstrapPromise = null;
+            return user;
           });
       }
 
@@ -973,6 +1030,7 @@
     }
 
     window.addEventListener('focus', function() {
+      prepareInstallHandoff().catch(function() {});
       if (AUTH_STATE === 'authenticated' || !navigator.onLine) return;
       tryRestoreSessionAfterExternalAuth(3600);
     });
@@ -980,6 +1038,17 @@
     document.addEventListener('visibilitychange', function() {
       if (document.hidden || AUTH_STATE === 'authenticated' || !navigator.onLine) return;
       tryRestoreSessionAfterExternalAuth(3600);
+    });
+
+    window.setInterval(function() {
+      if (!document.hidden && AUTH_STATE === 'authenticated') prepareInstallHandoff().catch(function() {});
+    }, 90000);
+
+    window.addEventListener('online', function() {
+      if (AUTH_STATE !== 'authenticated' || authNetworkUnavailable) {
+        authBootstrapPromise = null;
+        startBackgroundBootstrap();
+      }
     });
 
     function bootstrapAppStartup() {
@@ -1004,10 +1073,10 @@
           return;
         }
 
+        if (authNetworkUnavailable) return;
         var hasKnownIdentity = hasKnownUserIdentity(CURRENT_USER) || hasKnownUserIdentity(getStoredCachedUser());
         if (!hasKnownIdentity || (!readShiftsCache() && !readAnyShiftsCache())) {
           showAuthGate(AUTH_ENV_STATE, 'guest');
         }
       });
     }
-

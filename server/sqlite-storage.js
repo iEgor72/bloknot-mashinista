@@ -141,6 +141,17 @@ const MIGRATIONS = [
         ON analytics_sessions (sid, last_seen_at);
     `,
   },
+  {
+    version: 5,
+    name: 'one-time PWA installation handoffs',
+    sql: `CREATE TABLE auth_install_handoffs (
+      code_hash TEXT PRIMARY KEY,
+      user_id TEXT NOT NULL,
+      payload TEXT NOT NULL,
+      expires_at INTEGER NOT NULL
+    );
+    CREATE INDEX auth_install_handoffs_expiry ON auth_install_handoffs(expires_at);`,
+  },
 ];
 
 function cloneFallback(value) {
@@ -412,6 +423,21 @@ class SqliteStorage {
   readAppState(key, fallback) {
     const row = this.statements.readAppState.get(String(key));
     return row ? parsePayload(row.payload, fallback) : cloneFallback(fallback);
+  }
+
+  createInstallHandoff(codeHash, user, expiresAt, now = Date.now()) {
+    this.db.transaction(() => {
+      this.db.prepare('DELETE FROM auth_install_handoffs WHERE expires_at <= ?').run(now);
+      const count = this.db.prepare('SELECT COUNT(*) AS n FROM auth_install_handoffs').get().n;
+      if (count >= 5000) throw new Error('Install handoff capacity reached');
+      this.db.prepare('INSERT INTO auth_install_handoffs VALUES (?, ?, ?, ?)')
+        .run(codeHash, String(user.id), JSON.stringify(user), expiresAt);
+    }).immediate();
+  }
+
+  consumeInstallHandoff(codeHash, now = Date.now()) {
+    const row = this.db.prepare('DELETE FROM auth_install_handoffs WHERE code_hash = ? RETURNING payload, expires_at').get(codeHash);
+    return row && row.expires_at > now ? JSON.parse(row.payload) : null;
   }
 
   hasAppState(key) {

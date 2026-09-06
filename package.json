@@ -5,6 +5,7 @@
   "description": "Блокнот машиниста — учёт смен для локомотивных бригад",
   "main": "server.js",
   "scripts": {
+    "smoke:pwa-install": "node scripts/pwa-install-smoke.mjs",
     "catalog:build": "node scripts/build-depot-catalog.mjs",
     "start": "node server.js",
     "memory:init": "python tools/agent_memory.py init",

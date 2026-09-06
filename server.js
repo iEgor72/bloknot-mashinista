@@ -154,6 +154,7 @@ const PUBLIC_TOP_LEVEL_FILES = new Set([
   'sw-bootstrap-v405.js',
   'sw-bootstrap-v408.js',
   'sw-bootstrap-v412.js',
+  'sw-bootstrap-v418.js',
   'sw-bootstrap-v417.js',
   'apple-touch-icon.png',
   'icon-192.png',
@@ -433,7 +434,8 @@ function getUserFromRequest(req) {
   if (!botToken) return null;
   const authHeader = req.headers['authorization'] || '';
   if (authHeader.toLowerCase().startsWith('bearer ')) {
-    return decodeSessionToken(authHeader.slice(7).trim(), botToken);
+    const bearerUser = decodeSessionToken(authHeader.slice(7).trim(), botToken);
+    if (bearerUser) return bearerUser;
   }
   const cookies = parseCookies(req);
   if (!cookies || !cookies.bm_session) return null;
@@ -776,6 +778,7 @@ function approvePwaLoginRequest(requestId, user) {
   const store = pruneLoginRequestsStore(readLoginRequestsStore());
   const item = store[requestId];
   if (!item) return null;
+  if (item.status !== 'pending') return null;
   const expiresAtMs = Date.parse(item.expiresAt || '');
   if (Number.isFinite(expiresAtMs) && expiresAtMs < Date.now()) {
     delete store[requestId];
@@ -2619,7 +2622,7 @@ function readBodyWithLimit(req, maxBytes) {
   });
 }
 
-const APP_RELEASE_VERSION = 'v417';
+const APP_RELEASE_VERSION = 'v418';
 const APP_URL = PUBLIC_SITE_URL;
 const TELEGRAM_APP_URL = buildVersionedAppUrl('/');
 
@@ -2950,14 +2953,8 @@ const server = http.createServer(async (req, res) => {
           callTelegramApi(token, 'sendMessage', {
             chat_id: chatId,
             text: approved
-              ? '✅ Вход для PWA подтверждён. Вернись в приложение «Блокнот» на главном экране — оно само подхватит сессию.'
-              : '⚠️ Этот запрос на вход уже устарел или не найден. Открой PWA снова и запроси вход ещё раз.',
-            reply_markup: approved ? {
-              inline_keyboard: [
-                [{ text: '🌐 Открыть Блокнот', url: buildVersionedAppUrl(approved.returnPath) }],
-                [{ text: '✈️ Открыть в Telegram', web_app: { url: TELEGRAM_APP_URL } }],
-              ],
-            } : undefined,
+              ? '✅ Вход подтверждён. Вернитесь на тот экран, где нажали «Подтвердить вход»: в браузер или в Блокнот с иконки. Он завершит вход автоматически.'
+              : '⚠️ Запрос уже использован или устарел. Вернитесь на экран входа и при необходимости повторите запрос.',
           }).catch((err) => {
             logStructuredRateLimited('error', 'telegram.webhook.send_login_confirm_failed', `login:${chatId || 'unknown'}`, {
               chatId: chatId || null,
@@ -2998,6 +2995,57 @@ const server = http.createServer(async (req, res) => {
       });
     }
     sendJson(res, 200, { ok: true });
+    return;
+  }
+
+  if (pathname === '/api/auth/install-handoff' || pathname === '/api/auth/install-exchange') {
+    if (req.method !== 'POST') { sendJson(res, 405, { error: 'Method not allowed' }); return; }
+    const origin = req.headers.origin;
+    if ((origin && origin !== new URL(APP_URL).origin) || req.headers['sec-fetch-site'] === 'cross-site' ||
+        !/^application\/json(?:;|$)/i.test(req.headers['content-type'] || '')) {
+      sendJson(res, 403, { error: 'Недопустимый источник запроса' }); return;
+    }
+    if (!process.env.TELEGRAM_BOT_TOKEN) { sendJson(res, 503, { error: 'Вход временно недоступен' }); return; }
+    const issuing = pathname === '/api/auth/install-handoff';
+    const installUser = issuing ? getUserFromRequest(req) : null;
+    if (issuing && !installUser) { sendJson(res, 401, { error: 'Сначала войдите в Блокнот' }); return; }
+    const limitKey = issuing ? 'install-user:' + installUser.id : 'install-exchange:' + requestRateKey(req);
+    if (!allowWindowedCount(loginRequestAttemptsByClient, limitKey, 1, issuing ? 10 : 120, 60000)) {
+      sendJson(res, 429, { error: 'Подождите минуту и попробуйте снова' }); return;
+    }
+    try {
+      if (pathname === '/api/auth/install-handoff') {
+        const user = installUser;
+        const code = crypto.randomBytes(32).toString('hex');
+        const expiresAt = Date.now() + 120000;
+        getStorage().createInstallHandoff(crypto.createHash('sha256').update(code).digest('hex'), user, expiresAt);
+        sendJson(res, 200, { url: new URL('/install', APP_URL).href + '#code=' + code, expiresAt });
+      } else {
+        const payload = JSON.parse(await readBodyWithLimit(req, 2048));
+        const code = payload && payload.code;
+        if (typeof code !== 'string' || !/^[a-f0-9]{64}$/.test(code)) {
+          sendJson(res, 400, { error: 'Некорректная ссылка установки' }); return;
+        }
+        const user = getStorage().consumeInstallHandoff(crypto.createHash('sha256').update(code).digest('hex'));
+        if (!user) { sendJson(res, 410, { error: 'Ссылка уже использована или устарела. Откройте установку из Telegram ещё раз.' }); return; }
+        sendJson(res, 200, { user }, { 'Set-Cookie': buildSessionCookie(createSessionToken(user)) });
+      }
+    } catch (_) {
+      sendJson(res, 400, { error: 'Не удалось подготовить установку. Попробуйте ещё раз.' });
+    }
+    return;
+  }
+
+  if (pathname === '/install' || pathname === '/install.html') {
+    if (req.method !== 'GET' && req.method !== 'HEAD') { sendText(res, 405, 'Method not allowed'); return; }
+    const body = fs.readFileSync(path.join(ROOT, 'install.html'));
+    res.writeHead(200, {
+      'Content-Type': 'text/html; charset=utf-8', 'Cache-Control': 'no-store',
+      'Referrer-Policy': 'no-referrer', 'X-Content-Type-Options': 'nosniff',
+      'X-Frame-Options': 'DENY', 'X-Robots-Tag': 'noindex, nofollow',
+      'Content-Security-Policy': "default-src 'self'; script-src 'self'; style-src 'self'; img-src 'self'; connect-src 'self'; frame-ancestors 'none'; base-uri 'none'; form-action 'self'",
+    });
+    res.end(req.method === 'HEAD' ? undefined : body);
     return;
   }
 

@@ -1,5 +1,5 @@
     // ── Telegram WebApp chrome (не блокировать bootstrap: SDK подключается последним defer в index.html)
-    if (typeof registerShiftTrackerRuntimeModule === 'function') registerShiftTrackerRuntimeModule('app', 'v417');
+    if (typeof registerShiftTrackerRuntimeModule === 'function') registerShiftTrackerRuntimeModule('app', 'v418');
 
     function applyTelegramWebAppChrome() {
       try {
@@ -1235,7 +1235,7 @@
       // Profile install entry: a permanent menu item, shown unless the app is
       // already installed (standalone). Unlike the popup, it ignores "dismissed".
       var profileInstall = document.getElementById('profileInstallSection');
-      if (profileInstall) profileInstall.classList.toggle('hidden', isStandalonePwa() || installPromptInstalled || telegramHomeScreenStatus === 'added');
+      if (profileInstall) profileInstall.classList.toggle('hidden', isStandalonePwa());
     }
 
     function dismissInstallPromptCard() {

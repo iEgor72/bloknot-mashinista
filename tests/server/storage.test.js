@@ -21,6 +21,25 @@ function removeTempDir(directory, label) {
   }
 }
 
+test('installation handoffs survive reopening, expire and cannot be consumed twice', () => {
+  const dataDir = createTempDir('install-handoffs');
+  let storage;
+  try {
+    storage = createSqliteStorage({ dataDir });
+    storage.createInstallHandoff('hash-a', { id: '1' }, 2000, 1000);
+    storage.createInstallHandoff('hash-b', { id: '1' }, 2000, 1000);
+    storage.close();
+    storage = createSqliteStorage({ dataDir });
+    assert.equal(storage.consumeInstallHandoff('hash-a', 1500).id, '1');
+    assert.equal(storage.consumeInstallHandoff('hash-a', 1500), null);
+    assert.equal(storage.consumeInstallHandoff('hash-b', 2000), null);
+    assert.equal(storage.consumeInstallHandoff('missing', 1500), null);
+  } finally {
+    if (storage) storage.close();
+    removeTempDir(dataDir, 'install-handoffs');
+  }
+});
+
 test('legacy JSON import is idempotent and leaves source files untouched', () => {
   const dataDir = createTempDir('storage-import');
   try {

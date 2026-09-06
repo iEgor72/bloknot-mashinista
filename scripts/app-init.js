@@ -1,4 +1,4 @@
-if (typeof registerShiftTrackerRuntimeModule === 'function') registerShiftTrackerRuntimeModule('app-init', 'v417');
+if (typeof registerShiftTrackerRuntimeModule === 'function') registerShiftTrackerRuntimeModule('app-init', 'v418');
 
 // ── Init ──
 function startShiftTrackerRuntime() {

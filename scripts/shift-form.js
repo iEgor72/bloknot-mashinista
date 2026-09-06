@@ -1,4 +1,4 @@
-    if (typeof registerShiftTrackerRuntimeModule === 'function') registerShiftTrackerRuntimeModule('shift-form', 'v417');
+    if (typeof registerShiftTrackerRuntimeModule === 'function') registerShiftTrackerRuntimeModule('shift-form', 'v418');
 
     function findShiftById(id) {
       for (var i = 0; i < allShifts.length; i++) {
@@ -821,19 +821,7 @@
 
     // ── Add to Screen ──
     function handleInstallGuideTrigger() {
-      var telegramResult = requestTelegramHomeScreenInstall();
-      if (telegramResult && telegramResult.handled) {
-        if (telegramResult.outcome === 'already-added') {
-          showSaveToast('Уже на главном экране', 'info');
-        }
-        return;
-      }
-      maybeShowNativeInstallPrompt().then(function(result) {
-        if (result && result.outcome === 'accepted') {
-          return;
-        }
-        openInstallGuideSheet();
-      });
+      openPwaInstallation();
     }
     [
       document.getElementById('btnShowInstallGuide'),
@@ -1048,15 +1036,7 @@
     if (openInstallUrlBtn) {
       openInstallUrlBtn.textContent = INSTALL_GUIDE_COPY.buttons.open;
       openInstallUrlBtn.addEventListener('click', function() {
-        var appUrlEl = document.getElementById('appUrl');
-        var url = (appUrlEl && appUrlEl.dataset && appUrlEl.dataset.fullUrl) ? appUrlEl.dataset.fullUrl : getAppUrl();
-        var openedWindow = null;
-        try {
-          openedWindow = window.open(url, '_blank', 'noopener');
-        } catch (e) {}
-        if (!openedWindow) {
-          window.location.href = url;
-        }
+        openPwaInstallation();
       });
     }
 

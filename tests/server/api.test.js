@@ -58,6 +58,54 @@ function bearer(token) {
   return { Authorization: `Bearer ${token}` };
 }
 
+test('installation handoff requires auth and exchanges once into a persistent cookie', async () => {
+  const headers = { 'Content-Type': 'application/json' };
+  assert.equal((await jsonRequest('/api/auth/install-handoff', { method: 'POST', headers, body: '{}' })).response.status, 401);
+  const token = await authenticate({ id: 80101, first_name: 'Установка' });
+  const issued = await jsonRequest('/api/auth/install-handoff', { method: 'POST', headers: { ...headers, ...bearer(token) }, body: '{}' });
+  assert.equal(issued.response.status, 200);
+  const link = new URL(issued.body.url);
+  assert.equal(link.pathname, '/install');
+  assert.equal(link.search, '');
+  const code = new URLSearchParams(link.hash.slice(1)).get('code');
+  assert.match(code, /^[a-f0-9]{64}$/);
+  const exchange = () => jsonRequest('/api/auth/install-exchange', { method: 'POST', headers, body: JSON.stringify({ code }) });
+  const attempts = await Promise.all([exchange(), exchange()]);
+  assert.deepEqual(attempts.map(x => x.response.status).sort(), [200, 410]);
+  const accepted = attempts.find(x => x.response.status === 200);
+  assert.equal(accepted.body.user.id, '80101');
+  assert.equal(accepted.body.sessionToken, undefined);
+  const cookie = accepted.response.headers.get('set-cookie');
+  assert.match(cookie, /HttpOnly/);
+  assert.match(cookie, /SameSite=Lax/);
+  assert.match(cookie, /Max-Age=2592000/);
+  const restored = await jsonRequest('/api/auth', { headers: { Cookie: cookie.split(';')[0], Authorization: 'Bearer expired.token' } });
+  assert.equal(restored.response.status, 200);
+  assert.equal(restored.body.user.id, '80101');
+  assert.equal(accepted.response.headers.get('cache-control'), 'no-store');
+  assert.equal((await exchange()).response.status, 410);
+});
+
+test('install endpoints reject cross-site requests, invalid codes and unsafe methods', async () => {
+  const token = await authenticate({ id: 80102, first_name: 'Тест' });
+  const headers = { 'Content-Type': 'application/json', ...bearer(token) };
+  const blocked = await jsonRequest('/api/auth/install-handoff', { method: 'POST', headers: { ...headers, Origin: 'https://other.example' }, body: '{}' });
+  assert.equal(blocked.response.status, 403);
+  const blockedExchange = await jsonRequest('/api/auth/install-exchange', { method: 'POST', headers: { ...headers, 'Sec-Fetch-Site': 'cross-site' }, body: '{"code":"x"}' });
+  assert.equal(blockedExchange.response.status, 403);
+  const invalid = await jsonRequest('/api/auth/install-exchange', { method: 'POST', headers, body: '{"code":"x"}' });
+  assert.equal(invalid.response.status, 400);
+  assert.equal((await jsonRequest('/api/auth/install-exchange')).response.status, 405);
+  const page = await fetch(baseUrl + '/install');
+  assert.equal(page.status, 200);
+  assert.equal(page.headers.get('cache-control'), 'no-store');
+  assert.equal(page.headers.get('referrer-policy'), 'no-referrer');
+  assert.match(page.headers.get('content-security-policy'), /frame-ancestors 'none'/);
+  const html = await page.text();
+  assert.match(html, /pwa-install.js/);
+  assert.doesNotMatch(html, /telegram-web-app.js|analytics.js/);
+});
+
 test.before(async () => {
   const server = application.startServer(0);
   await new Promise((resolve, reject) => {
@@ -99,18 +147,18 @@ test('public contact surface points only to the Telegram bot', async () => {
 });
 
 test('versioned style namespace serves the current shell stylesheet', async () => {
-  const response = await fetch(baseUrl + '/styles/v417/56-profile.css');
+  const response = await fetch(baseUrl + '/styles/v418/56-profile.css');
   const source = await response.text();
   assert.equal(response.status, 200);
   assert.match(response.headers.get('content-type') || '', /text\/css/i);
   assert.match(source, /\.profile-summary-card/);
   assert.match(source, /\.profile-summary-icon svg/);
 
-  const versionedRuntime = await fetch(baseUrl + '/scripts/v417/render.js');
+  const versionedRuntime = await fetch(baseUrl + '/scripts/v418/render.js');
   assert.equal(versionedRuntime.status, 200);
   assert.match(await versionedRuntime.text(), /renderProfileSummary/);
 
-  const traversalAttempt = await fetch(baseUrl + '/scripts/v417/..%2Fserver.js');
+  const traversalAttempt = await fetch(baseUrl + '/scripts/v418/..%2Fserver.js');
   assert.equal(traversalAttempt.status, 404);
 
   const previousBootstrap = await fetch(baseUrl + '/sw-bootstrap-v397.js');

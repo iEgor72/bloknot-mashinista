@@ -970,104 +970,26 @@ async function main() {
   }
 
   const telegramInstallRequested = await page.evaluate(() => {
-    const handlers = Object.create(null);
-    const state = { addCalls: 0, checkCalls: 0 };
-    const webApp = {
-      version: '8.0',
-      platform: 'android',
+    const state = { links: [], shortcuts: 0 };
+    window.Telegram = { WebApp: {
       initData: 'install-smoke',
-      ready() {},
-      expand() {},
-      isVersionAtLeast() { return true; },
-      addToHomeScreen() { state.addCalls += 1; },
-      checkHomeScreenStatus(callback) {
-        state.checkCalls += 1;
-        callback('missed');
-      },
-      onEvent(type, handler) {
-        if (!handlers[type]) handlers[type] = [];
-        handlers[type].push(handler);
-      },
-      offEvent(type, handler) {
-        handlers[type] = (handlers[type] || []).filter((candidate) => candidate !== handler);
-      },
-    };
-    window.Telegram = { WebApp: webApp };
-    window.__telegramInstallSmoke = { handlers, state };
-    window.dispatchEvent(new Event('telegram-webapp-sdk-ready'));
+      openLink(url) { state.links.push(url); },
+      addToHomeScreen() { state.shortcuts += 1; },
+    } };
+    window.preparedInstallHandoff = { url: location.origin + '/install#code=smoke', expiresAt: Date.now() + 120000 };
     document.getElementById('btnProfileInstall').click();
-    return {
-      addCalls: state.addCalls,
-      checkCalls: state.checkCalls,
-      status: window.telegramHomeScreenStatus,
-      guideOpen: document.getElementById('overlayAddScreen').classList.contains('is-open'),
-    };
+    window.telegramHomeScreenStatus = 'added';
+    window.installPromptInstalled = true;
+    renderInstallPromptCard();
+    return { links: state.links, shortcuts: state.shortcuts,
+      profileVisible: !document.getElementById('profileInstallSection').classList.contains('hidden') };
   });
-  report.checks.telegramHomeScreenRequested = telegramInstallRequested;
-  if (telegramInstallRequested.addCalls !== 1 || telegramInstallRequested.checkCalls < 1 || telegramInstallRequested.status !== 'missed' || telegramInstallRequested.guideOpen) {
-    throw new Error(`Telegram home-screen request did not use native API: ${JSON.stringify(telegramInstallRequested)}`);
-  }
-
-  const telegramInstallAdded = await page.evaluate(() => {
-    const smoke = window.__telegramInstallSmoke;
-    for (const handler of smoke.handlers.homeScreenAdded || []) handler();
-    const stored = JSON.parse(localStorage.getItem('shift_tracker_install_prompt_state_v1') || '{}');
-    return {
-      status: window.telegramHomeScreenStatus,
-      profileInstallHidden: document.getElementById('profileInstallSection').classList.contains('hidden'),
-      storedInstalled: stored.installed === true,
-    };
-  });
-  report.checks.telegramHomeScreenAdded = telegramInstallAdded;
-  if (telegramInstallAdded.status !== 'added' || !telegramInstallAdded.profileInstallHidden || !telegramInstallAdded.storedInstalled) {
-    throw new Error(`Telegram home-screen success was not persisted: ${JSON.stringify(telegramInstallAdded)}`);
-  }
-
-  await page.evaluate(() => {
-    const handlers = Object.create(null);
-    const state = { addCalls: 0, checkCalls: 0 };
-    const webApp = {
-      version: '8.0',
-      platform: 'tdesktop',
-      initData: 'install-smoke',
-      ready() {},
-      expand() {},
-      isVersionAtLeast() { return true; },
-      addToHomeScreen() { state.addCalls += 1; },
-      checkHomeScreenStatus(callback) {
-        state.checkCalls += 1;
-        callback('unsupported');
-      },
-      onEvent(type, handler) {
-        if (!handlers[type]) handlers[type] = [];
-        handlers[type].push(handler);
-      },
-      offEvent(type, handler) {
-        handlers[type] = (handlers[type] || []).filter((candidate) => candidate !== handler);
-      },
-    };
-    window.installPromptInstalled = false;
-    window.installPromptDismissed = false;
-    window.deferredInstallPromptEvent = null;
-    localStorage.removeItem('shift_tracker_install_prompt_state_v1');
-    window.Telegram = { WebApp: webApp };
-    window.__telegramInstallSmoke = { handlers, state };
-    window.dispatchEvent(new Event('telegram-webapp-sdk-ready'));
-    document.getElementById('btnProfileInstall').click();
-  });
-  await page.waitForFunction(() => document.getElementById('overlayAddScreen').classList.contains('is-open'));
-  const telegramInstallUnsupported = await page.evaluate(() => ({
-    addCalls: window.__telegramInstallSmoke.state.addCalls,
-    checkCalls: window.__telegramInstallSmoke.state.checkCalls,
-    status: window.telegramHomeScreenStatus,
-    guideOpen: document.getElementById('overlayAddScreen').classList.contains('is-open'),
-    note: document.getElementById('installGuideRuntimeNote').textContent.trim(),
-  }));
-  report.checks.telegramHomeScreenUnsupported = telegramInstallUnsupported;
-  if (telegramInstallUnsupported.addCalls !== 0 || telegramInstallUnsupported.checkCalls < 1 || telegramInstallUnsupported.status !== 'unsupported' || !telegramInstallUnsupported.guideOpen || !telegramInstallUnsupported.note.includes('не поддерживает')) {
-    throw new Error(`Unsupported Telegram client did not fall back to guide: ${JSON.stringify(telegramInstallUnsupported)}`);
-  }
-  await page.evaluate(() => closeOverlay('overlayAddScreen'));
+  report.checks.telegramPwaHandoff = telegramInstallRequested;
+  assert.equal(telegramInstallRequested.shortcuts, 0);
+  assert.equal(telegramInstallRequested.links.length, 1);
+  assert.match(telegramInstallRequested.links[0], /\/install#code=/);
+  assert.equal(telegramInstallRequested.profileVisible, true, 'Telegram shortcut must not hide PWA installation');
+  await page.evaluate(() => { window.Telegram = undefined; });
 
   report.checks.analyticsEvents = analyticsEvents.map((event) => event.eventName);
   if (analyticsEvents.length) {
