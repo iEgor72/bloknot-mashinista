@@ -19,11 +19,61 @@
   var openApp = document.getElementById('openApp');
   var ios = /iPhone|iPad|iPod/.test(navigator.userAgent) || (navigator.platform === 'MacIntel' && navigator.maxTouchPoints > 1);
   function standalone() { return navigator.standalone === true || window.matchMedia('(display-mode: standalone)').matches; }
+  var ua = navigator.userAgent;
+  var guideSelect = document.getElementById('guideSelect');
+  guideSelect.value = ios ? (/CriOS/.test(ua) ? 'ios-chrome' : /Version\/.*Safari/.test(ua) ? 'ios-safari' : 'ios-other') : /Android/.test(ua) ? (/SamsungBrowser/.test(ua) ? 'android-samsung' : /Chrome/.test(ua) ? 'android-chrome' : 'android-other') : 'desktop';
+  var icons = {
+    more: '<circle cx="5" cy="12" r="1"/><circle cx="12" cy="12" r="1"/><circle cx="19" cy="12" r="1"/>',
+    menu: '<circle cx="12" cy="5" r="1"/><circle cx="12" cy="12" r="1"/><circle cx="12" cy="19" r="1"/>',
+    bars: '<path d="M4 6h16M4 12h16M4 18h16"/>',
+    share: '<path d="M8 9H5v12h14V9h-3M12 15V2m-4 4 4-4 4 4"/>',
+    home: '<rect x="3" y="3" width="18" height="18" rx="4"/><path d="M12 7v10M7 12h10"/>',
+    check: '<path d="m5 12 4 4L19 6"/>'
+  };
   function showSteps(steps) {
     instructions.replaceChildren();
-    steps.forEach(function(text) { var li = document.createElement('li'); li.textContent = text; instructions.appendChild(li); });
+    steps.forEach(function(step, index) {
+      var li = document.createElement('li');
+      var art = document.createElement('div');
+      art.className = 'step-art';
+      art.setAttribute('aria-hidden', 'true');
+      // Icons and guide copy are local constants, never external HTML.
+      art.innerHTML = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round">' + icons[step[0]] + '</svg>';
+      var copy = document.createElement('div');
+      var title = document.createElement('strong');
+      title.textContent = (index + 1) + '. ' + step[1];
+      var hint = document.createElement('p');
+      hint.textContent = step[2];
+      copy.append(title, hint); li.append(art, copy); instructions.appendChild(li);
+    });
     instructions.hidden = false;
   }
+  function renderGuide() {
+    var kind = guideSelect.value;
+    var home = ['home', 'На экран «Домой»', 'Прокрутите список действий вниз. Если пункта нет, нажмите «Ещё» или «Изменить действия».'];
+    var confirm = ['check', 'Нажмите «Добавить»', 'Если есть «Открывать как веб-приложение», оставьте включённым.'];
+    if (kind === 'ios-safari') showSteps([
+      ['more', 'Нажмите «…» в браузере', 'В компактной панели — справа внизу, рядом с адресом сайта. Если уже виден значок «Поделиться», переходите к нему.'],
+      ['share', 'Выберите «Поделиться»', 'Квадрат со стрелкой вверх — как на значке слева.'], home, confirm
+    ]);
+    else if (kind === 'ios-chrome') showSteps([
+      ['share', 'Нажмите «Поделиться»', 'Справа от адресной строки — квадрат со стрелкой вверх.'], home, confirm
+    ]);
+    else if (kind === 'ios-other') showSteps([
+      ['more', 'Откройте меню браузера', 'Найдите «…», затем «Поделиться». Во встроенном браузере может потребоваться «Открыть в Safari».'],
+      ['share', 'Откройте «Поделиться»', 'Ищите квадрат со стрелкой вверх.'], home, confirm
+    ]);
+    else if (kind === 'desktop') showSteps([
+      ['menu', 'Откройте меню браузера', 'В Chrome или Edge найдите «Установить Блокнот» либо раздел приложений. В Safari на Mac: «Файл» → «Добавить в Dock».'],
+      ['check', 'Подтвердите добавление', 'Если установки в меню нет, откройте эту страницу в Chrome или Edge.']
+    ]);
+    else showSteps([
+      [kind === 'android-samsung' ? 'bars' : 'menu', 'Откройте меню браузера', kind === 'android-samsung' ? 'Три полоски в нижней панели Samsung Internet.' : kind === 'android-chrome' ? 'Три точки справа вверху в Chrome.' : 'Найдите три точки или три полоски рядом с адресной строкой.'],
+      ['home', 'Добавьте на главный экран', kind === 'android-samsung' ? '«Добавить страницу в» → «Главный экран».' : 'Выберите «Установить приложение» или «Добавить на главный экран».'],
+      ['check', 'Подтвердите установку', 'Нажмите «Установить» или «Добавить». Иконка появится среди приложений или на главном экране.']
+    ]);
+  }
+  guideSelect.addEventListener('change', renderGuide);
   function renderReady() {
     authenticated = true;
     retry.hidden = login.hidden = true;
@@ -33,12 +83,13 @@
     detail.textContent = installed || standalone() ? 'Открывайте приложение с иконки на главном экране.' : 'Осталось добавить приложение на главный экран.';
     install.hidden = installed || standalone() || !promptEvent || ios;
     instructions.hidden = true;
+    document.getElementById('guideOptions').hidden = true;
+    document.getElementById('guideNote').hidden = true;
     if (installed || standalone()) return;
-    if (ios) {
-      showSteps(['Откройте меню «Поделиться» в браузере.', 'Выберите «На экран “Домой”». Если пункт скрыт, прокрутите список действий.', 'Оставьте «Открывать как веб-приложение» включённым, если такой переключатель есть, и нажмите «Добавить».']);
-    } else if (!promptEvent) {
-      showSteps(['Откройте меню браузера.', 'Выберите «Установить приложение» или «Добавить на главный экран» и подтвердите.']);
-      detail.textContent = 'Если Блокнот уже установлен, откройте его с иконки. Иначе добавьте через меню браузера.';
+    if (ios || !promptEvent) {
+      document.getElementById('guideOptions').hidden = false;
+      document.getElementById('guideNote').hidden = false;
+      renderGuide();
     }
   }
   function request(url, options) {

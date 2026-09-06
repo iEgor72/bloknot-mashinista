@@ -16,3 +16,17 @@ button+button,#loginHint{margin-top:12px}button:focus-visible,a:focus-visible{ou
 ol{padding-left:24px;margin:18px 0 0;color:#ebf2ff;font-size:15px;line-height:1.6}li{padding-left:4px;margin:12px 0}li::marker{color:#a9d4ff;font-weight:bold}
 a{display:block;text-align:center;color:#b9dcff;text-decoration:none;padding:20px 0;min-height:48px}
 .footnote{font-size:12px;line-height:1.6;color:#92a5bf;text-align:center;margin:24px 12px 0}
+main{padding-top:max(24px,env(safe-area-inset-top))}
+.app-icon{width:56px;height:56px;border-radius:16px}
+.eyebrow{margin:16px 0 12px}h1{font-size:30px}.intro{margin:12px 0 20px}
+.card{padding:20px}
+#guideOptions label{display:block;font-size:12px;color:#a9bbd2;margin-bottom:8px}
+select{font:inherit;font-size:14px;color:#edf5ff;background:#1e2b3d;border:1px solid #ffffff26;border-radius:10px;width:100%;min-height:44px;padding:8px;white-space:normal}
+select:focus-visible{outline:3px solid #a9d4ff;outline-offset:3px}
+#instructions{list-style:none;padding:0;margin:20px 0 0}
+#instructions li{display:flex;gap:14px;padding:16px 0;margin:0;border-top:1px solid #ffffff12}
+#instructions strong{font-size:15px;line-height:1.4;display:block}
+#instructions p{font-size:13px;line-height:1.5;color:#b7c4d6;margin:6px 0 0}
+.step-art{flex:0 0 46px;height:46px;border:1px solid #a9d4ff44;border-radius:13px;background:#a9d4ff10;color:#b9dcff;display:grid;place-items:center}
+.step-art svg{width:26px;height:26px}
+.guide-note{font-size:11px;color:#a9bbd2;line-height:1.5;margin:8px 0 0}

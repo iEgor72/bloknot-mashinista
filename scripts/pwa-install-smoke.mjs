@@ -70,6 +70,26 @@ try {
   assert.match(await iphone.locator('#instructions').innerText(), /Поделиться/);
   assert.equal(await iphone.locator('#installButton').isVisible(), false);
   await iphone.screenshot({ path: path.join(artifacts, 'iphone-install.png'), fullPage: true });
+  assert.equal(await iphone.locator('#guideSelect').inputValue(), 'ios-safari');
+  assert.match(await iphone.locator('#instructions').innerText(), /справа внизу/);
+  await iphone.locator('#guideSelect').selectOption('ios-chrome');
+  assert.match(await iphone.locator('#instructions').innerText(), /Справа от адресной строки/);
+  for (const [agent, expected, copy] of [
+    ['Mozilla/5.0 (Linux; Android 14) AppleWebKit/537.36 Chrome/130.0.0.0 Mobile Safari/537.36', 'android-chrome', /справа вверху/],
+    ['Mozilla/5.0 (Linux; Android 14) AppleWebKit/537.36 SamsungBrowser/26.0 Chrome/130.0.0.0 Mobile Safari/537.36', 'android-samsung', /Три полоски/],
+    ['Mozilla/5.0 (iPhone; CPU iPhone OS 18_0 like Mac OS X) AppleWebKit/605.1.15 CriOS/130.0.0.0 Mobile/15E148 Safari/604.1', 'ios-chrome', /Справа от адресной строки/],
+    ['UnknownBrowser', 'desktop', /Компьютер|Chrome или Edge/]
+  ]) {
+    const context = await browser.newContext({ userAgent: agent, viewport: { width: 320, height: 700 } });
+    await context.addCookies(cookies);
+    const guide = await context.newPage();
+    await guide.goto(baseUrl + '/install');
+    await guide.getByText('Вход выполнен', { exact: true }).waitFor();
+    assert.equal(await guide.locator('#guideSelect').inputValue(), expected);
+    assert.match(await guide.locator('#instructions').innerText(), copy);
+    assert.equal(await guide.evaluate(() => document.documentElement.scrollWidth <= innerWidth), true);
+    await context.close();
+  }
 
   // No Telegram SDK wait in the installed/browser runtime, even with legacy bad bearer.
   await page.route('https://telegram.org/**', route => route.abort());

@@ -16,13 +16,26 @@
   <main>
     <img class="app-icon" src="/icon-192.png" width="80" height="80" alt="">
     <p class="eyebrow">БЛОКНОТ МАШИНИСТА</p>
-    <h1>Ваш Блокнот.<br>Прямо на телефоне.</h1>
-    <p class="intro">Смены, часы и документы — открывайте с главного экрана.</p>
+    <h1>Блокнот на<br>главном экране</h1>
+    <p class="intro">Ваша иконка. Все смены под рукой.</p>
     <section class="card" aria-labelledby="statusTitle">
       <p class="status" id="statusTitle" role="status" aria-live="polite">Проверяем вход…</p>
       <p id="detail">Это займёт несколько секунд.</p>
       <button id="installButton" type="button" hidden>Установить на телефон</button>
+      <div id="guideOptions" hidden>
+        <label for="guideSelect">Инструкция для вашего браузера</label>
+        <select id="guideSelect">
+          <option value="ios-safari">iPhone / iPad · Safari</option>
+          <option value="ios-chrome">iPhone / iPad · Chrome</option>
+          <option value="ios-other">iPhone / iPad · другой браузер</option>
+          <option value="android-chrome">Android · Chrome</option>
+          <option value="android-samsung">Android · Samsung Internet</option>
+          <option value="android-other">Android · другой браузер</option>
+          <option value="desktop">Компьютер</option>
+        </select>
+      </div>
       <ol id="instructions" hidden></ol>
+      <p id="guideNote" class="guide-note" hidden>Это подсказки: нажимайте такие же значки в самом браузере.</p>
       <button id="retryButton" class="secondary" type="button" hidden>Повторить</button>
       <button id="loginButton" type="button" hidden>Подтвердить вход в Telegram</button>
       <p id="loginHint" hidden>После подтверждения вернитесь на этот экран.</p>
