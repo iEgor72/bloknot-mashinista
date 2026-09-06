@@ -142,7 +142,8 @@ const MIGRATIONS = [
     `,
   },
   {
-    version: 5,
+    // Production retained migration 5 after the community feature was reverted.
+    version: 6,
     name: 'one-time PWA installation handoffs',
     sql: `CREATE TABLE auth_install_handoffs (
       code_hash TEXT PRIMARY KEY,

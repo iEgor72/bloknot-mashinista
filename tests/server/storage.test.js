@@ -40,6 +40,27 @@ test('installation handoffs survive reopening, expire and cannot be consumed twi
   }
 });
 
+test('handoff migration works when reverted community migration 5 remains in production', () => {
+  const dataDir = createTempDir('install-legacy-migration');
+  let storage;
+  try {
+    const Database = require('better-sqlite3');
+    const database = new Database(path.join(dataDir, DATABASE_FILE_NAME));
+    database.exec(`CREATE TABLE schema_migrations (version INTEGER PRIMARY KEY, name TEXT NOT NULL, applied_at TEXT NOT NULL);
+      INSERT INTO schema_migrations VALUES (5, 'community scopes proposals reviews releases and elections', '2026-08-28');`);
+    database.close();
+    storage = createSqliteStorage({ dataDir });
+    storage.createInstallHandoff('legacy-db-code', { id: '1' }, 2000, 1000);
+    assert.equal(storage.consumeInstallHandoff('legacy-db-code', 1500).id, '1');
+    const report = inspectSqliteDatabase(path.join(dataDir, DATABASE_FILE_NAME));
+    assert.equal(report.migrations.find(item => item.version === 5).name, 'community scopes proposals reviews releases and elections');
+    assert.equal(report.migrations.find(item => item.version === 6).name, 'one-time PWA installation handoffs');
+  } finally {
+    if (storage) storage.close();
+    removeTempDir(dataDir, 'install-legacy-migration');
+  }
+});
+
 test('legacy JSON import is idempotent and leaves source files untouched', () => {
   const dataDir = createTempDir('storage-import');
   try {
