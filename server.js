@@ -1688,6 +1688,22 @@ function normalizePlatform(value) {
   return KNOWN_PLATFORMS.has(v) ? v : 'unknown';
 }
 
+function platformFromRequest(req) {
+  const headers = req && req.headers ? req.headers : {};
+  const hint = String(headers['sec-ch-ua-platform'] || '').replace(/"/g, '').trim().toLowerCase();
+  if (hint === 'android') return 'android';
+  if (hint === 'ios' || hint === 'ipados') return 'ios';
+  if (['windows', 'macos', 'linux', 'chrome os', 'chromium os'].includes(hint)) return 'desktop';
+
+  const userAgent = String(headers['user-agent'] || '').slice(0, 2048);
+  if (/iPhone|iPad|iPod/i.test(userAgent)) return 'ios';
+  if (/Android/i.test(userAgent)) return 'android';
+  // iPadOS can use a Macintosh UA; its Mobile token distinguishes it from macOS.
+  if (/Macintosh/i.test(userAgent) && /Mobile\//i.test(userAgent)) return 'ios';
+  if (/Windows NT|Macintosh|X11|CrOS/i.test(userAgent)) return 'desktop';
+  return 'unknown';
+}
+
 function sanitizeUserPresenceStore(rawStore) {
   const source = rawStore && typeof rawStore === 'object' ? rawStore : {};
   const sourceUsers = source.users && typeof source.users === 'object' ? source.users : {};
@@ -2398,16 +2414,19 @@ function sanitizeDocsScope(value) {
   return scope;
 }
 
-function touchAuthenticatedUserPresence(rawUserId) {
+function touchAuthenticatedUserPresence(rawUserId, req) {
   const userId = normalizeStatsUserId(rawUserId);
   if (!userId) return;
 
   const nowMs = Date.now();
   const previousTouch = authenticatedPresenceLastTouch.get(userId) || 0;
-  if (nowMs - previousTouch < AUTHENTICATED_PRESENCE_TOUCH_INTERVAL_MS) return;
+  const platform = platformFromRequest(req);
+  const known = readUserPresenceStore().users[userId];
+  const improvesPlatform = platform !== 'unknown' && normalizePlatform(known && known.platform) === 'unknown';
+  if (nowMs - previousTouch < AUTHENTICATED_PRESENCE_TOUCH_INTERVAL_MS && !improvesPlatform) return;
 
   const sessionId = `auth_${crypto.createHash('sha256').update(userId).digest('hex').slice(0, 24)}`;
-  touchUserPresence(userId, sessionId, 'unknown');
+  touchUserPresence(userId, sessionId, platform);
   authenticatedPresenceLastTouch.set(userId, nowMs);
 }
 
@@ -2790,7 +2809,7 @@ const server = http.createServer(async (req, res) => {
   // presence accurate from real authenticated API activity instead, while
   // throttling writes so ordinary sync requests do not churn SQLite.
   if (sid && pathname.startsWith('/api/')) {
-    touchAuthenticatedUserPresence(sid);
+    touchAuthenticatedUserPresence(sid, req);
   }
 
   if (pathname === '/api/partners' || pathname.startsWith('/api/partners/')) {

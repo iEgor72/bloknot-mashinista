@@ -289,6 +289,41 @@ test('salary settings persist deduction percentages and reject values above 100'
   assert.equal(invalid.response.status, 400);
 });
 
+test('authenticated sync infers platforms from request headers without a heartbeat', async () => {
+  const observer = await authenticate({ id: 81100, first_name: 'Наблюдатель' });
+  const stats = async () => (await jsonRequest('/api/stats', { headers: bearer(observer) })).body;
+  const cases = [
+    ['ios', { 'User-Agent': 'Mozilla/5.0 (iPhone; CPU iPhone OS 18_0 like Mac OS X) AppleWebKit/605.1.15 Mobile/15E148' }],
+    ['ios', { 'User-Agent': 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15) AppleWebKit/605.1.15 Mobile/15E148 Safari/604.1' }],
+    ['android', { 'User-Agent': 'Mozilla/5.0 (Linux; Android 14; Pixel 8) AppleWebKit/537.36 Chrome/128.0 Mobile Safari/537.36' }],
+    ['desktop', { 'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36' }],
+    ['desktop', { 'User-Agent': 'Mozilla/5.0 (Macintosh; Intel Mac OS X 14_0) AppleWebKit/605.1.15 Safari/605.1.15' }],
+    ['android', { 'Sec-CH-UA-Platform': '"Android"', 'User-Agent': 'reduced' }],
+    ['desktop', { 'Sec-CH-UA-Platform': '"Linux"', 'User-Agent': 'reduced' }],
+    ['unknown', { 'User-Agent': 'custom-client' }],
+  ];
+  for (const [index, [platform, headers]] of cases.entries()) {
+    const before = await stats();
+    const token = await authenticate({ id: 81110 + index, first_name: 'Платформа' });
+    const result = await jsonRequest('/api/shifts', { headers: { ...bearer(token), ...headers } });
+    assert.equal(result.response.status, 200);
+    assert.equal((await stats()).platforms[platform], before.platforms[platform] + 1, JSON.stringify(headers));
+  }
+});
+
+test('known platform enriches a throttled unknown visit and survives a later unknown request', async () => {
+  const token = await authenticate({ id: 81130, first_name: 'Уточнение' });
+  const headers = bearer(token);
+  await jsonRequest('/api/shifts', { headers: { ...headers, 'User-Agent': 'custom-client' } });
+  const before = (await jsonRequest('/api/stats', { headers })).body.platforms;
+  await jsonRequest('/api/shifts', { headers: { ...headers, 'Sec-CH-UA-Platform': '"Android"' } });
+  const after = (await jsonRequest('/api/stats', { headers })).body.platforms;
+  assert.equal(after.android, before.android + 1);
+  assert.equal(after.unknown, before.unknown - 1);
+  await jsonRequest('/api/shifts', { headers: { ...headers, 'User-Agent': 'custom-client' } });
+  assert.deepEqual((await jsonRequest('/api/stats', { headers })).body.platforms, after);
+});
+
 test('profile keeps canonical railway and depot ids alongside the legacy depot label', async () => {
   const token = await authenticate({ id: 1003, first_name: 'Профиль' });
   const saved = await jsonRequest('/api/profile', {
