@@ -1,4 +1,5 @@
-const CACHE_VERSION = 'v418';
+const TRACKER_CACHE_NAME = 'poekhali-data-v1';
+const CACHE_VERSION = 'v419';
 const CACHE_NAME = `shift-tracker-shell-${CACHE_VERSION}`;
 const NAVIGATION_FALLBACK_URL = '/index.html';
 const NETWORK_TIMEOUT_MS = 4500;
@@ -17,31 +18,31 @@ const INDEX_ASSET_PATTERN = /(?:href|src)=["'](\/(?:styles|scripts|assets)\/[^"'
 const INSTALL_SHELL_URLS = [
   '/',
   '/index.html',
-  '/styles/v418/00-base.css',
-  '/styles/v418/10-navigation-and-cards.css',
-  '/styles/v418/10-shell-navigation.css',
-  '/styles/v418/11-poekhali-entry.css',
-  '/styles/v418/12-cards.css',
-  '/styles/v418/13-dashboard-cards.css',
-  '/styles/v418/14-stats-and-salary.css',
-  '/styles/v418/15-settings-and-docs.css',
-  '/styles/v418/16-overlays-and-actions.css',
-  '/styles/v418/15-bottom-nav.css',
-  '/styles/v418/16-press-feedback.css',
-  '/styles/v418/20-form-and-stats.css',
-  '/styles/v418/30-shifts-and-overlays.css',
-  '/styles/v418/40-premium-refresh.css',
-  '/styles/v418/50-design-refresh.css',
-  '/styles/v418/50-theme-shell.css',
-  '/styles/v418/51-shifts.css',
-  '/styles/v418/52-poekhali.css',
-  '/styles/v418/53-salary.css',
-  '/styles/v418/54-docs.css',
-  '/styles/v418/55-forms.css',
-  '/styles/v418/56-overlays.css',
-  '/styles/v418/56-profile.css',
-  '/styles/v418/57-datetime-picker.css',
-  '/styles/v418/58-vu45.css',
+  '/styles/v419/00-base.css',
+  '/styles/v419/10-navigation-and-cards.css',
+  '/styles/v419/10-shell-navigation.css',
+  '/styles/v419/11-poekhali-entry.css',
+  '/styles/v419/12-cards.css',
+  '/styles/v419/13-dashboard-cards.css',
+  '/styles/v419/14-stats-and-salary.css',
+  '/styles/v419/15-settings-and-docs.css',
+  '/styles/v419/16-overlays-and-actions.css',
+  '/styles/v419/15-bottom-nav.css',
+  '/styles/v419/16-press-feedback.css',
+  '/styles/v419/20-form-and-stats.css',
+  '/styles/v419/30-shifts-and-overlays.css',
+  '/styles/v419/40-premium-refresh.css',
+  '/styles/v419/50-design-refresh.css',
+  '/styles/v419/50-theme-shell.css',
+  '/styles/v419/51-shifts.css',
+  '/styles/v419/52-poekhali.css',
+  '/styles/v419/53-salary.css',
+  '/styles/v419/54-docs.css',
+  '/styles/v419/55-forms.css',
+  '/styles/v419/56-overlays.css',
+  '/styles/v419/56-profile.css',
+  '/styles/v419/57-datetime-picker.css',
+  '/styles/v419/58-vu45.css',
   '/manifest.webmanifest',
   '/apple-touch-icon.png',
   '/icon-192.png',
@@ -52,62 +53,62 @@ const INSTALL_SHELL_URLS = [
   '/assets/fonts/golos-text/GolosText-Bold.woff2',
   '/assets/fonts/golos-text/GolosText-ExtraBold.woff2',
   '/assets/fonts/golos-text/GolosText-Black.woff2',
-  '/scripts/v418/safe-area.js',
-  '/scripts/v418/nav-debug.js',
-  '/scripts/v418/utils/haptics.js',
-  '/scripts/v418/press-feedback.js',
-  '/scripts/v418/app-constants.js',
-  '/scripts/v418/locomotive-usage.js',
-  '/scripts/v418/poekhali-station-names.js',
-  '/scripts/v418/glass-select.js',
-  '/scripts/v418/viewport.js',
-  '/scripts/v418/time-utils.js',
-  '/scripts/v418/docs-app.js',
-  '/scripts/v418/telegram-sdk-loader.js',
-  '/scripts/v418/app.js',
-  '/scripts/v418/poekhali-utils.js',
-  '/scripts/v418/poekhali-map-parser.js',
-  '/scripts/v418/poekhali-warnings.js',
-  '/scripts/v418/poekhali-backup.js',
-  '/scripts/v418/poekhali-tracker.js',
-  '/scripts/v418/auth.js',
-  '/scripts/v418/render.js',
-  '/scripts/v418/shift-form.js',
-  '/scripts/v418/datetime-picker.js',
-  '/scripts/v418/vu45-calculator.js',
-  '/scripts/v418/vu45-ui.js',
-  '/scripts/v418/app-init.js',
-  '/scripts/v418/sw-register.js',
-  '/sw-bootstrap-v418.js'
+  '/scripts/v419/safe-area.js',
+  '/scripts/v419/nav-debug.js',
+  '/scripts/v419/utils/haptics.js',
+  '/scripts/v419/press-feedback.js',
+  '/scripts/v419/app-constants.js',
+  '/scripts/v419/locomotive-usage.js',
+  '/scripts/v419/poekhali-station-names.js',
+  '/scripts/v419/glass-select.js',
+  '/scripts/v419/viewport.js',
+  '/scripts/v419/time-utils.js',
+  '/scripts/v419/docs-app.js',
+  '/scripts/v419/telegram-sdk-loader.js',
+  '/scripts/v419/app.js',
+  '/scripts/v419/poekhali-utils.js',
+  '/scripts/v419/poekhali-map-parser.js',
+  '/scripts/v419/poekhali-warnings.js',
+  '/scripts/v419/poekhali-backup.js',
+  '/scripts/v419/poekhali-tracker.js',
+  '/scripts/v419/auth.js',
+  '/scripts/v419/render.js',
+  '/scripts/v419/shift-form.js',
+  '/scripts/v419/datetime-picker.js',
+  '/scripts/v419/vu45-calculator.js',
+  '/scripts/v419/vu45-ui.js',
+  '/scripts/v419/app-init.js',
+  '/scripts/v419/sw-register.js',
+  '/sw-bootstrap-v419.js'
 ];
 const CRITICAL_INSTALL_URLS = [
   '/',
   '/index.html',
-  '/styles/v418/00-base.css',
-  '/styles/v418/10-navigation-and-cards.css',
-  '/styles/v418/10-shell-navigation.css',
-  '/styles/v418/11-poekhali-entry.css',
-  '/styles/v418/12-cards.css',
-  '/styles/v418/13-dashboard-cards.css',
-  '/styles/v418/14-stats-and-salary.css',
-  '/styles/v418/15-settings-and-docs.css',
-  '/styles/v418/16-overlays-and-actions.css',
-  '/styles/v418/15-bottom-nav.css',
-  '/styles/v418/16-press-feedback.css',
-  '/styles/v418/20-form-and-stats.css',
-  '/styles/v418/30-shifts-and-overlays.css',
-  '/styles/v418/40-premium-refresh.css',
-  '/styles/v418/50-design-refresh.css',
-  '/styles/v418/50-theme-shell.css',
-  '/styles/v418/51-shifts.css',
-  '/styles/v418/52-poekhali.css',
-  '/styles/v418/53-salary.css',
-  '/styles/v418/54-docs.css',
-  '/styles/v418/55-forms.css',
-  '/styles/v418/56-overlays.css',
-  '/styles/v418/56-profile.css',
-  '/styles/v418/57-datetime-picker.css',
-  '/styles/v418/58-vu45.css',
+  '/styles/v419/00-base.css',
+  '/styles/v419/10-navigation-and-cards.css',
+  '/styles/v419/10-shell-navigation.css',
+  '/styles/v419/11-poekhali-entry.css',
+  '/styles/v419/12-cards.css',
+  '/styles/v419/13-dashboard-cards.css',
+  '/styles/v419/14-stats-and-salary.css',
+  '/styles/v419/15-settings-and-docs.css',
+  '/styles/v419/16-overlays-and-actions.css',
+  '/styles/v419/15-bottom-nav.css',
+  '/styles/v419/16-press-feedback.css',
+  '/styles/v419/20-form-and-stats.css',
+  '/styles/v419/30-shifts-and-overlays.css',
+  '/styles/v419/40-premium-refresh.css',
+  '/styles/v419/50-design-refresh.css',
+  '/styles/v419/50-theme-shell.css',
+  '/styles/v419/51-shifts.css',
+  '/styles/v419/52-poekhali.css',
+  '/styles/v419/53-salary.css',
+  '/styles/v419/54-docs.css',
+  '/styles/v419/55-forms.css',
+  '/styles/v419/56-overlays.css',
+  '/styles/v419/56-profile.css',
+  '/styles/v419/57-datetime-picker.css',
+  '/styles/v419/58-vu45.css',
   '/manifest.webmanifest',
   '/apple-touch-icon.png',
   '/icon-192.png',
@@ -118,33 +119,33 @@ const CRITICAL_INSTALL_URLS = [
   '/assets/fonts/golos-text/GolosText-Bold.woff2',
   '/assets/fonts/golos-text/GolosText-ExtraBold.woff2',
   '/assets/fonts/golos-text/GolosText-Black.woff2',
-  '/scripts/v418/safe-area.js',
-  '/scripts/v418/nav-debug.js',
-  '/scripts/v418/utils/haptics.js',
-  '/scripts/v418/press-feedback.js',
-  '/scripts/v418/app-constants.js',
-  '/scripts/v418/locomotive-usage.js',
-  '/scripts/v418/poekhali-station-names.js',
-  '/scripts/v418/glass-select.js',
-  '/scripts/v418/viewport.js',
-  '/scripts/v418/time-utils.js',
-  '/scripts/v418/docs-app.js',
-  '/scripts/v418/telegram-sdk-loader.js',
-  '/scripts/v418/app.js',
-  '/scripts/v418/poekhali-utils.js',
-  '/scripts/v418/poekhali-map-parser.js',
-  '/scripts/v418/poekhali-warnings.js',
-  '/scripts/v418/poekhali-backup.js',
-  '/scripts/v418/poekhali-tracker.js',
-  '/scripts/v418/auth.js',
-  '/scripts/v418/render.js',
-  '/scripts/v418/shift-form.js',
-  '/scripts/v418/datetime-picker.js',
-  '/scripts/v418/vu45-calculator.js',
-  '/scripts/v418/vu45-ui.js',
-  '/scripts/v418/app-init.js',
-  '/scripts/v418/sw-register.js',
-  '/sw-bootstrap-v418.js'
+  '/scripts/v419/safe-area.js',
+  '/scripts/v419/nav-debug.js',
+  '/scripts/v419/utils/haptics.js',
+  '/scripts/v419/press-feedback.js',
+  '/scripts/v419/app-constants.js',
+  '/scripts/v419/locomotive-usage.js',
+  '/scripts/v419/poekhali-station-names.js',
+  '/scripts/v419/glass-select.js',
+  '/scripts/v419/viewport.js',
+  '/scripts/v419/time-utils.js',
+  '/scripts/v419/docs-app.js',
+  '/scripts/v419/telegram-sdk-loader.js',
+  '/scripts/v419/app.js',
+  '/scripts/v419/poekhali-utils.js',
+  '/scripts/v419/poekhali-map-parser.js',
+  '/scripts/v419/poekhali-warnings.js',
+  '/scripts/v419/poekhali-backup.js',
+  '/scripts/v419/poekhali-tracker.js',
+  '/scripts/v419/auth.js',
+  '/scripts/v419/render.js',
+  '/scripts/v419/shift-form.js',
+  '/scripts/v419/datetime-picker.js',
+  '/scripts/v419/vu45-calculator.js',
+  '/scripts/v419/vu45-ui.js',
+  '/scripts/v419/app-init.js',
+  '/scripts/v419/sw-register.js',
+  '/sw-bootstrap-v419.js'
 ];
 const EXTENDED_SHELL_URLS = [
   '/assets/catalog/index.json',
@@ -177,15 +178,15 @@ const COHERENT_RUNTIME_URLS = uniqueShellUrls([
   )),
 ]);
 const UPDATE_CONTROL_PATHS = new Set([
-  '/scripts/v418/app-constants.js',
-  '/scripts/v418/app-init.js',
-  '/scripts/v418/app.js',
-  '/scripts/v418/auth.js',
-  '/scripts/v418/poekhali-backup.js',
-  '/scripts/v418/poekhali-station-names.js',
-  '/scripts/v418/poekhali-tracker.js',
-  '/scripts/v418/shift-form.js',
-  '/scripts/v418/sw-register.js',
+  '/scripts/v419/app-constants.js',
+  '/scripts/v419/app-init.js',
+  '/scripts/v419/app.js',
+  '/scripts/v419/auth.js',
+  '/scripts/v419/poekhali-backup.js',
+  '/scripts/v419/poekhali-station-names.js',
+  '/scripts/v419/poekhali-tracker.js',
+  '/scripts/v419/shift-form.js',
+  '/scripts/v419/sw-register.js',
   '/sw.js'
 ]);
 const UPDATE_CONTROL_FAST_TIMEOUT_MS = 1400;
@@ -250,6 +251,7 @@ self.addEventListener('activate', (event) => {
     const audit = await auditCachedShellUrls(cache, COHERENT_RUNTIME_URLS);
     const staleShellCaches = cacheNames.filter((name) => name.startsWith('shift-tracker-shell-') && name !== CACHE_NAME);
     if (audit.ok) {
+      await preserveTrackerData();
       await Promise.all(staleShellCaches.map((name) => caches.delete(name)));
     } else if (staleShellCaches.length) {
       console.warn('[SW] Current shell cache is partial; keeping previous shell caches as fallback:', audit.missing.join(', '));
@@ -311,7 +313,7 @@ self.addEventListener('fetch', (event) => {
       return;
     }
     if (isTrackerDataRequest(url)) {
-      event.respondWith(networkFirstFastFallbackStatic(request, event));
+      event.respondWith(trackerDataCacheFirst(request, event));
       return;
     }
     if (isShellCodeRequest(request, url)) {
@@ -418,6 +420,7 @@ async function cleanupStaleShellCachesIfSafe() {
       console.warn('[SW] Current shell cache is still partial; stale shell caches retained:', audit.missing.join(', '));
       return;
     }
+    await preserveTrackerData();
     const cacheNames = await caches.keys();
     await Promise.all(
       cacheNames
@@ -757,6 +760,51 @@ async function cacheFirst(request) {
     return response;
   } catch (error) {
     return matchShellCache(request, { ignoreSearch: true });
+  }
+}
+
+// Route data outlives shell versions and never waits for an unreliable network.
+async function trackerDataCacheFirst(request, event) {
+  let cache = null;
+  let cached = null;
+  const key = new URL(request.url).pathname;
+  try {
+    cache = await caches.open(TRACKER_CACHE_NAME);
+    cached = await cache.match(key) || await matchShellCache(request, { ignoreSearch: true });
+    if (cached && cached.ok) {
+      await cached.clone().json();
+      try { await cache.put(key, cached.clone()); } catch (error) {}
+    } else cached = null;
+  } catch (error) { cached = null; }
+  const refresh = fetchWithRetry(request).then(async (response) => {
+    if (!response || !response.ok) throw new Error('Данные участка не загрузились');
+    await response.clone().json();
+    if (cache) {
+      try { await cache.put(key, response.clone()); } catch (error) {}
+    }
+    return response;
+  });
+  if (cached) {
+    event.waitUntil(refresh.catch(() => undefined));
+    return cached;
+  }
+  return refresh;
+}
+
+async function preserveTrackerData() {
+  const target = await caches.open(TRACKER_CACHE_NAME);
+  for (const name of await caches.keys()) {
+    if (!name.startsWith('shift-tracker-shell-')) continue;
+    const source = await caches.open(name);
+    for (const request of await source.keys()) {
+      if (!isTrackerDataRequest(new URL(request.url))) continue;
+      const key = new URL(request.url).pathname;
+      if (await target.match(key)) continue;
+      const response = await source.match(request);
+      if (!response || !response.ok) continue;
+      try { await response.clone().json(); } catch (error) { continue; }
+      await target.put(key, response);
+    }
   }
 }
 

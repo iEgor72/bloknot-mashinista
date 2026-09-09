@@ -1,4 +1,4 @@
-if (typeof registerShiftTrackerRuntimeModule === 'function') registerShiftTrackerRuntimeModule('poekhali-warnings', 'v418');
+if (typeof registerShiftTrackerRuntimeModule === 'function') registerShiftTrackerRuntimeModule('poekhali-warnings', 'v419');
 
 (function(global) {
   'use strict';

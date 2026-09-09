@@ -94,7 +94,7 @@ try {
   // No Telegram SDK wait in the installed/browser runtime, even with legacy bad bearer.
   await page.route('https://telegram.org/**', route => route.abort());
   await page.addInitScript(() => localStorage.setItem('shift_tracker_session_token', 'invalid.token'));
-  await page.goto(baseUrl + '/?app=v418');
+  await page.goto(baseUrl + '/?app=v419');
   await page.waitForFunction(() => typeof window.ensureAuthenticated === 'function');
   const runtimeResult = await page.evaluate(async () => {
     AUTH_ENV_STATE = 'prod';

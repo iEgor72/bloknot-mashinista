@@ -1,4 +1,4 @@
-if (typeof registerShiftTrackerRuntimeModule === 'function') registerShiftTrackerRuntimeModule('app-init', 'v418');
+if (typeof registerShiftTrackerRuntimeModule === 'function') registerShiftTrackerRuntimeModule('app-init', 'v419');
 
 // ── Init ──
 function startShiftTrackerRuntime() {
@@ -747,6 +747,9 @@ if (window.__SHIFT_TRACKER_RUNTIME_GUARD_PENDING) {
     function fetchCatalogDocument(relativePath) {
       var url = safeCatalogUrl(relativePath);
       if (!url) return Promise.reject(new Error('Некорректный путь каталога'));
+      if (window.PoekhaliUtils && window.PoekhaliUtils.fetchText) {
+        return window.PoekhaliUtils.fetchText(url).then(JSON.parse);
+      }
       return fetch(url, {
         method: 'GET',
         cache: 'no-store',

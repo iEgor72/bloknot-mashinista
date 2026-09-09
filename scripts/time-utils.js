@@ -1,4 +1,4 @@
-    if (typeof registerShiftTrackerRuntimeModule === 'function') registerShiftTrackerRuntimeModule('time-utils', 'v418');
+    if (typeof registerShiftTrackerRuntimeModule === 'function') registerShiftTrackerRuntimeModule('time-utils', 'v419');
 
     // ── Time helpers ──
 

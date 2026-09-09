@@ -1,4 +1,4 @@
-if (typeof registerShiftTrackerRuntimeModule === 'function') registerShiftTrackerRuntimeModule('poekhali-utils', 'v418');
+if (typeof registerShiftTrackerRuntimeModule === 'function') registerShiftTrackerRuntimeModule('poekhali-utils', 'v419');
 
 (function(global) {
   'use strict';
@@ -38,12 +38,43 @@ if (typeof registerShiftTrackerRuntimeModule === 'function') registerShiftTracke
   }
 
   function fetchText(path) {
-    return fetch(path, { cache: 'no-store' }).then(function(response) {
-      if (!response || !response.ok) {
-        throw new Error('Не удалось загрузить ' + path);
-      }
-      return response.text();
-    });
+    var url = new URL(path, window.location.href);
+    var persistent = url.origin === window.location.origin &&
+      /^\/assets\/(tracker|catalog)\//.test(url.pathname) && /\.json$/.test(url.pathname);
+    if (!persistent || !window.caches) return loadText();
+    // Also works on the first visit, before a service worker controls the page.
+    return window.caches.open('poekhali-data-v1').then(function(cache) {
+      return cache.match(url.pathname).then(function(cached) {
+        if (!cached || !cached.ok) return null;
+        return cached.text().then(function(text) {
+          try { JSON.parse(text); return text; } catch (error) { return null; }
+        });
+      }).then(function(text) {
+        if (text !== null) {
+          loadText().then(function(fresh) {
+            return cache.put(url.pathname, new Response(fresh, {
+              headers: { 'Content-Type': 'application/json' }
+            }));
+          }).catch(function() {});
+          return text;
+        }
+        return loadText().then(function(fresh) {
+          return cache.put(url.pathname, new Response(fresh, {
+            headers: { 'Content-Type': 'application/json' }
+          })).catch(function() {}).then(function() { return fresh; });
+        });
+      });
+    }).catch(function() { return loadText(); });
+
+    function loadText() {
+      return fetch(path, { cache: 'no-store' }).then(function(response) {
+        if (!response || !response.ok) throw new Error('Не удалось загрузить данные участка. Проверьте связь и повторите.');
+        return response.text();
+      }).then(function(text) {
+        if (persistent) JSON.parse(text);
+        return text;
+      });
+    }
   }
 
   function getFileName(path) {

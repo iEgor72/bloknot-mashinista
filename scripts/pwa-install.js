@@ -171,6 +171,6 @@
   document.addEventListener('visibilitychange', function() { if (!document.hidden && !authenticated) check(); });
   // A visible browser tab can remain open while Telegram approves the request.
   window.setInterval(function() { if (pendingRequest && !document.hidden && !authenticated) check(); }, 3000);
-  if ('serviceWorker' in navigator) navigator.serviceWorker.register('/sw.js?v=v418', { scope: '/', updateViaCache: 'none' }).catch(function() {});
+  if ('serviceWorker' in navigator) navigator.serviceWorker.register('/sw.js?v=v419', { scope: '/', updateViaCache: 'none' }).catch(function() {});
   check();
 })();

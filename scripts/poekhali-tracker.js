@@ -1,4 +1,4 @@
-if (typeof registerShiftTrackerRuntimeModule === 'function') registerShiftTrackerRuntimeModule('poekhali-tracker', 'v418');
+if (typeof registerShiftTrackerRuntimeModule === 'function') registerShiftTrackerRuntimeModule('poekhali-tracker', 'v419');
 
 (function() {
   'use strict';
@@ -5224,6 +5224,7 @@ if (typeof registerShiftTrackerRuntimeModule === 'function') registerShiftTracke
         }
         var legacyMaps = Array.isArray(manifest.maps) ? manifest.maps.map(normalizeMapConfig).filter(Boolean) : [];
         var sectionMaps = buildSectionMapConfigs(sectionIndex);
+        if (!texts[0] || !sectionIndex) tracker.manifestPromise = null;
         var maps = sectionMaps.concat(legacyMaps);
         if (!maps.length) throw new Error('Каталог участков пуст');
         tracker.mapManifestGeneratedAt = sectionIndex && (sectionIndex.generated_at || sectionIndex.generatedAt)
@@ -5250,6 +5251,7 @@ if (typeof registerShiftTrackerRuntimeModule === 'function') registerShiftTracke
         return selected;
       })
       .catch(function() {
+        tracker.manifestPromise = null;
         tracker.mapManifestGeneratedAt = '';
         tracker.availableMaps = [DEFAULT_MAP];
         tracker.remoteMaps = [];
@@ -5412,7 +5414,7 @@ if (typeof registerShiftTrackerRuntimeModule === 'function') registerShiftTracke
     parent.appendChild(wrap);
   }
 
-  function renderServiceArmUnavailable(depot, message) {
+  function renderServiceArmUnavailable(depot, message, retry) {
     var picker = getServiceArmPicker();
     if (!picker) return;
     clearElement(picker.content);
@@ -5423,13 +5425,20 @@ if (typeof registerShiftTrackerRuntimeModule === 'function') registerShiftTracke
     var empty = document.createElement('div');
     empty.className = 'poekhali-arm-empty';
     var title = document.createElement('strong');
-    title.textContent = 'Плечи пока не добавлены';
+    title.textContent = retry ? 'Не удалось загрузить плечо' : 'Плечи пока не добавлены';
     var text = document.createElement('span');
     text.textContent = message || 'Выберите депо в профиле или предложите данные своего участка.';
     empty.appendChild(title);
     empty.appendChild(text);
     picker.content.appendChild(empty);
-    appendServiceArmProposal(picker.content, depot, '');
+    if (retry) {
+      var button = document.createElement('button');
+      button.type = 'button';
+      button.className = 'poekhali-arm-option';
+      button.textContent = 'Повторить';
+      button.addEventListener('click', retry);
+      picker.content.appendChild(button);
+    } else appendServiceArmProposal(picker.content, depot, '');
   }
 
   function findServiceArmMap(mapId) {
@@ -5490,7 +5499,7 @@ if (typeof registerShiftTrackerRuntimeModule === 'function') registerShiftTracke
       });
     }).catch(function(error) {
       if (!tracker.serviceArmPickerOpen) return;
-      renderServiceArmUnavailable(depot, error && error.message ? error.message : 'Не удалось открыть профиль плеча.');
+      renderServiceArmUnavailable(depot, 'Не удалось прочитать данные плеча. Если оно ещё не сохранено, потребуется интернет.', function() { openSelectedServiceArm(depot, pack, arm, option); });
     });
   }
 
@@ -5624,7 +5633,7 @@ if (typeof registerShiftTrackerRuntimeModule === 'function') registerShiftTracke
             if (!result || !result.pack) throw new Error('Пакет депо не найден');
             renderServiceArms(result.depot || depot, result.pack);
           }).catch(function(error) {
-            renderServiceArmUnavailable(depot, error && error.message ? error.message : 'Пакет депо не загрузился.');
+            renderServiceArmUnavailable(depot, 'Пакет депо не загрузился. Проверьте связь и повторите.', function() { button.click(); });
           });
         });
         picker.content.appendChild(button);
@@ -5663,7 +5672,7 @@ if (typeof registerShiftTrackerRuntimeModule === 'function') registerShiftTracke
       renderAvailableDepotPacks(result && result.catalog);
     }).catch(function(error) {
       if (!tracker.serviceArmPickerOpen) return;
-      renderServiceArmUnavailable(null, error && error.message ? error.message : 'Каталог депо не загрузился.');
+      renderServiceArmUnavailable(null, 'Каталог депо не загрузился. Проверьте связь и повторите.', function() { openServiceArmPicker(shiftId); });
     });
     return true;
   }
