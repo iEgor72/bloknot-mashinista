@@ -1,17 +1,16 @@
+    var SYNC_PENDING_ICON = '<svg viewBox="0 0 16 16" fill="none" aria-hidden="true"><path d="M4.3 10.7a2.3 2.3 0 0 1 .2-4.6 3.6 3.6 0 0 1 6.8 1.2 2.1 2.1 0 0 1 .2 4.2H4.3z" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/><path d="M8 5.2v3.4M8 8.6l1.4-1.4M8 8.6L6.6 7.2" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg>';
     // ── Constants ──
     // Держите в синхроне с CACHE_VERSION в sw.js — показывается на главной рядом со статистикой пользователей.
-    var SHELL_CACHE_VERSION = 'v420';
+    var SHELL_CACHE_VERSION = 'v421';
 
     var SHIFT_TRACKER_REQUIRED_RUNTIME_MODULES = [
       'auth',
+      'docs-scope',
+      'feature-bridge',
+      'journal-bridge',
       'poekhali-station-names',
       'time-utils',
       'app',
-      'poekhali-utils',
-      'poekhali-map-parser',
-      'poekhali-warnings',
-      'poekhali-backup',
-      'poekhali-tracker',
       'render',
       'shift-form',
       'app-init'

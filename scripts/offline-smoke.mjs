@@ -190,6 +190,7 @@ async function mockApiRoutes(page) {
     if (url.pathname === '/api/shifts') {
       body = {
         sid: 'offline-smoke',
+        revision: 1,
         shifts: [{
           id: 'offline-smoke-shift',
           start_msk: `${shiftDay}T08:00`,
@@ -285,7 +286,9 @@ async function assertAppShellVisible(page, label) {
     const shell = document.getElementById('appShell');
     if (!shell) return false;
     const styles = getComputedStyle(shell);
-    return styles.display !== 'none' && styles.visibility !== 'hidden';
+    return styles.display !== 'none' && styles.visibility !== 'hidden' &&
+      document.documentElement.classList.contains('boot-complete') &&
+      document.getElementById('monthTitle').textContent.trim();
   }, null, { timeout: uiTimeoutMs });
 
   const state = await page.evaluate(() => {
@@ -340,7 +343,7 @@ async function runOfflineReloadCheck() {
   setPhase('offline-reload:mixed-cache-regression');
   const mixedCacheSeed = await page.evaluate(async () => {
     const version = typeof SHELL_CACHE_VERSION === 'string' ? SHELL_CACHE_VERSION : '';
-    const liveResponse = await fetch('/scripts/v420/time-utils.js?mixed-cache-source=' + Date.now(), { cache: 'no-store' });
+    const liveResponse = await fetch('/scripts/v421/time-utils.js?mixed-cache-source=' + Date.now(), { cache: 'no-store' });
     const liveSource = await liveResponse.text();
     const staleSource = liveSource.replace(
       /if \(ft && ft\.consumptionKg > 0\) \{\s+pushRow\('Расход', ruNum\(ft\.consumptionKg\) \+ ' кг'\);/,
@@ -350,7 +353,7 @@ async function runOfflineReloadCheck() {
 
     const staleCacheName = 'shift-tracker-shell-v000-mixed-regression';
     const staleCache = await caches.open(staleCacheName);
-    await staleCache.put('/scripts/v396/time-utils.js', new Response(staleSource, {
+    await staleCache.put('/scripts/v421/time-utils.js', new Response(staleSource, {
       status: 200,
       headers: { 'Content-Type': 'application/javascript; charset=utf-8' },
     }));
@@ -360,12 +363,12 @@ async function runOfflineReloadCheck() {
     let deleteResults = [];
     for (let attempt = 0; attempt < 20; attempt += 1) {
       const currentCache = await caches.open(currentCacheName);
-      await currentCache.put('/scripts/v420/time-utils.js', new Response(liveSource, {
+      await currentCache.put('/scripts/v421/time-utils.js', new Response(liveSource, {
         status: 200,
         headers: { 'Content-Type': 'application/javascript; charset=utf-8' },
       }));
       const currentKeys = await currentCache.keys();
-      runtimeKeys = currentKeys.filter((request) => new URL(request.url).pathname === '/scripts/v420/time-utils.js');
+      runtimeKeys = currentKeys.filter((request) => new URL(request.url).pathname === '/scripts/v421/time-utils.js');
       if (runtimeKeys.length) {
         deleteResults = await Promise.all(runtimeKeys.map((request) => currentCache.delete(request)));
         if (deleteResults.every(Boolean)) break;
@@ -417,7 +420,7 @@ async function runOfflineReloadCheck() {
   setPhase('offline-reload:mixed-runtime-self-repair');
   const repairSentinelKey = 'shift_tracker_runtime_repair_test_sentinel';
   const repairNavigation = page.waitForURL((url) => (
-    url.searchParams.get('runtime_repair') === 'v420' && Boolean(url.searchParams.get('repair_nonce'))
+    url.searchParams.get('runtime_repair') === 'v421' && Boolean(url.searchParams.get('repair_nonce'))
   ), { timeout: uiTimeoutMs });
   const repairTrigger = await page.evaluate((sentinelKey) => {
     localStorage.setItem(sentinelKey, 'preserved');
@@ -479,7 +482,7 @@ async function runOfflineReloadCheck() {
   setPhase('offline-reload:empty-cache-repair');
   await page.evaluate(async () => {
     const cache = await caches.open('shift-tracker-shell-' + SHELL_CACHE_VERSION);
-    for (const path of ['/scripts/v420/app-init.js', '/styles/v420/50-theme-shell.css']) {
+    for (const path of ['/scripts/v421/app-init.js', '/styles/v421/50-theme-shell.css']) {
       await cache.put(path, new Response('', { headers: { 'Content-Type': path.endsWith('.js') ? 'text/javascript' : 'text/css' } }));
     }
   });
@@ -487,7 +490,7 @@ async function runOfflineReloadCheck() {
   await assertAppShellVisible(page, 'emptyCacheRepair');
   const emptyCacheRepaired = await page.evaluate(async () => {
     const cache = await caches.open('shift-tracker-shell-' + SHELL_CACHE_VERSION);
-    return (await Promise.all(['/scripts/v420/app-init.js', '/styles/v420/50-theme-shell.css'].map(async path => {
+    return (await Promise.all(['/scripts/v421/app-init.js', '/styles/v421/50-theme-shell.css'].map(async path => {
       const response = await cache.match(path);
       return !!response && !!(await response.text()).trim();
     }))).every(Boolean);
@@ -539,7 +542,7 @@ async function runStaleOfflineRuntimeCheck() {
     "registerShiftTrackerRuntimeModule('time-utils', 'v000')"
   );
   if (staleSource === liveSource) throw new Error('Could not create stale offline runtime fixture');
-  await page.route('**/scripts/v420/time-utils.js*', (route) => route.fulfill({
+  await page.route('**/scripts/v421/time-utils.js*', (route) => route.fulfill({
     status: 200,
     contentType: 'application/javascript; charset=utf-8',
     body: staleSource,
@@ -571,8 +574,8 @@ async function runBootFallbackCheck() {
   context = await browser.newContext({ serviceWorkers: 'block' });
   const page = await context.newPage();
   watchPage(page, 'boot-fallback');
-  await page.route('**/scripts/v420/auth.js*', (route) => route.abort());
-  await page.route('**/scripts/v420/app.js*', (route) => route.abort());
+  await page.route('**/scripts/v421/auth.js*', (route) => route.abort());
+  await page.route('**/scripts/v421/app.js*', (route) => route.abort());
 
   const response = await page.goto(baseUrl, { waitUntil: 'domcontentloaded', timeout: startupTimeoutMs });
   if (!response || !response.ok()) throw new Error(`GET ${baseUrl} for fallback failed with status ${response ? response.status() : 'none'}`);
@@ -702,7 +705,7 @@ async function main() {
   });
   const unexpectedPageErrors = report.pageErrors.filter((line) => !/^\[boot-fallback\]/.test(line));
   const unexpectedRequestFailures = report.requestFailures.filter((failure) => {
-    if (failure.label === 'boot-fallback' && /\/scripts\/v420\/(auth|app)\.js/.test(failure.url)) return false;
+    if (failure.label === 'boot-fallback' && /\/scripts\/v421\/(auth|app)\.js/.test(failure.url)) return false;
     if (failure.label === 'offline-reload' && failure.url === `${baseUrl}/` && failure.errorText === 'net::ERR_ABORTED') return false;
     return true;
   });

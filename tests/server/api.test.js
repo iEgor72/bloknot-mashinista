@@ -721,7 +721,7 @@ test('shift sync atomically replaces and reads a user journal', async () => {
   const put = await jsonRequest('/api/shifts', {
     method: 'PUT',
     headers: { ...bearer(token), 'Content-Type': 'application/json' },
-    body: JSON.stringify({ shifts: [first, second] }),
+    body: JSON.stringify({ shifts: [first, second], baseRevision: 0 }),
   });
   assert.equal(put.response.status, 200);
   assert.deepEqual(put.body.shifts, [first, second]);
@@ -733,11 +733,30 @@ test('shift sync atomically replaces and reads a user journal', async () => {
   const replace = await jsonRequest('/api/shifts', {
     method: 'PUT',
     headers: { ...bearer(token), 'Content-Type': 'application/json' },
-    body: JSON.stringify({ shifts: [second] }),
+    body: JSON.stringify({ shifts: [second], baseRevision: put.body.revision }),
   });
   assert.equal(replace.response.status, 200);
   const afterReplace = await jsonRequest('/api/shifts', { headers: bearer(token) });
   assert.deepEqual(afterReplace.body.shifts, [second]);
+});
+
+test('journal revisions reject stale devices, obsolete clients and switched accounts', async () => {
+  const token = await authenticate({ id: 2091, first_name: 'CAS' });
+  const headers = { ...bearer(token), 'Content-Type': 'application/json' };
+  const first = { id:'a', start_msk:'2026-10-16T08:00', end_msk:'2026-10-16T20:00', created_at:'2026-10-16T07:00Z' };
+  const put = payload => jsonRequest('/api/shifts', { method:'PUT', headers, body:JSON.stringify(payload) });
+  assert.equal((await put({ shifts:[first] })).response.status, 428);
+  const saved = await put({ shifts:[first], baseRevision:0 });
+  assert.equal(saved.response.status,200);assert.equal(saved.body.revision,1);
+  const stale = await put({ shifts:[], baseRevision:0 });
+  assert.equal(stale.response.status,409);assert.deepEqual(stale.body.shifts,[first]);
+  const switched = await jsonRequest('/api/shifts',{method:'PUT',headers:{...headers,'X-Journal-User':'another'},body:JSON.stringify({shifts:[],baseRevision:1})});
+  assert.equal(switched.body.code,'ACCOUNT_CHANGED');
+  for (const shifts of [[first,first],[{...first,start_msk:'not-a-date'}],[{...first,end_msk:first.start_msk}]]) {
+    assert.equal((await put({shifts,baseRevision:1})).response.status,400);
+  }
+  assert.deepEqual((await jsonRequest('/api/shifts',{headers})).body.shifts,[first]);
+  const removed=await put({shifts:[],baseRevision:1});assert.equal(removed.response.status,200);assert.equal(removed.body.revision,2);
 });
 
 test('crew pairing and shared-shift inbox survive the SQLite flow', async () => {

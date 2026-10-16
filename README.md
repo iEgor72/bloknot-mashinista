@@ -15,10 +15,14 @@ Telegram Mini App / PWA для учета смен локомотивных бр
 Текущий production path - VPS Node runtime:
 
 - [`server.js`](/D:/work/bloknot-mashinista-tg/server.js) - активный HTTP/API/static server.
-- [`ecosystem.config.js`](/D:/work/bloknot-mashinista-tg/ecosystem.config.js) - PM2 app `bloknot-mashinista`, `PORT=3000`.
+- systemd `bloknot-mashinista.service`, Node 22, архивы релизов и симлинк `/opt/bloknot-mashinista/current` на RU-сервере `klyuchik-ru1`.
 - nginx на VPS проксирует `bloknot-mashinista-bot.ru` в `127.0.0.1:3000`.
 
 Cloudflare Pages/D1 runtime больше не является активным production path и удален из репозитория, чтобы не было второго расходящегося backend.
+
+Актуальный порядок проверки, установки и отката: [docs/DEPLOYMENT.md](docs/DEPLOYMENT.md).
+Локальный журнал и очередь синхронизации хранятся транзакционно в IndexedDB;
+серверная синхронизация проверяет версию журнала и объединяет независимые правки.
 
 ## Основные файлы
 

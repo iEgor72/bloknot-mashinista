@@ -549,6 +549,7 @@
     }
     syncFormFromState();
 
+    window.openVu45Calculator = openCalculator;
     document.getElementById('btnOpenVu45').addEventListener('click', openCalculator);
     document.getElementById('btnCloseVu45').addEventListener('click', closeCalculator);
     document.getElementById('btnResetVu45').addEventListener('click', function() {

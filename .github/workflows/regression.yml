@@ -1,0 +1,27 @@
+name: Journal and PWA regression
+on: [push, pull_request]
+jobs:
+  regression:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+          cache: npm
+      - run: npm ci
+      - run: npx playwright install --with-deps chromium webkit
+      - run: npm run build:check && npm run typecheck
+      - run: npm run test:ui-preservation && npm run test:journal && npm run test:server && npm run test:pwa && npm run vu45:test
+      - run: npm run test:audit-ui
+        env:
+          AUDIT_ARTIFACTS_DIR: artifacts/audit-ui
+      - run: npm run smoke:offline
+        env:
+          OFFLINE_SMOKE_ARTIFACTS_DIR: artifacts/offline-smoke
+      - uses: actions/upload-artifact@v4
+        if: failure()
+        with:
+          name: regression-artifacts
+          path: artifacts/

@@ -9,7 +9,7 @@ import { fileURLToPath } from 'node:url';
 import { chromium } from '@playwright/test';
 
 const repoRoot = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
-const artifactsDir = path.join(repoRoot, 'artifacts', 'local-smoke');
+const artifactsDir = process.env.SMOKE_ARTIFACTS_DIR || path.join(repoRoot, 'artifacts', 'local-smoke');
 const port = Number(process.env.SMOKE_PORT || process.env.PORT || 4317);
 const baseUrl = `http://127.0.0.1:${port}`;
 const startupTimeoutMs = Number(process.env.SMOKE_START_TIMEOUT_MS || 15000);
@@ -379,7 +379,7 @@ async function main() {
     const now = new Date().toISOString();
     let body = { ok: true };
     if (url.pathname === '/api/shifts') {
-      body = { sid: '999', shifts: [] };
+      body = { sid: '999', revision: 1, shifts: [] };
     } else if (url.pathname === '/api/salary-params') {
       body = { sid: '999', salaryParams: { tariffRate: 380, nightPercent: 40, classPercent: 5, districtPercent: 30, northPercent: 50, localPercent: 20 } };
     } else if (url.pathname === '/api/stats') {

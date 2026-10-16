@@ -1,4 +1,4 @@
-    if (typeof registerShiftTrackerRuntimeModule === 'function') registerShiftTrackerRuntimeModule('shift-form', 'v420');
+    if (typeof registerShiftTrackerRuntimeModule === 'function') registerShiftTrackerRuntimeModule('shift-form', 'v421');
 
     function findShiftById(id) {
       for (var i = 0; i < allShifts.length; i++) {
@@ -918,7 +918,7 @@
     // Docs viewer: close
     var docsViewerCloseBtn = document.getElementById('docsViewerClose');
     if (docsViewerCloseBtn) {
-      docsViewerCloseBtn.addEventListener('click', closeDocsViewerUI);
+      docsViewerCloseBtn.addEventListener('click', function() { closeDocsViewerUI(); });
     }
     var docsViewerOverlay = document.getElementById('docsViewerOverlay');
     if (docsViewerOverlay) {

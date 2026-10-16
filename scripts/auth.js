@@ -1,4 +1,4 @@
-    if (typeof registerShiftTrackerRuntimeModule === 'function') registerShiftTrackerRuntimeModule('auth', 'v420');
+    if (typeof registerShiftTrackerRuntimeModule === 'function') registerShiftTrackerRuntimeModule('auth', 'v421');
 
     var API_BASE_URL = window.SHIFT_API_BASE_URL || '';
     var AUTH_API_URL = API_BASE_URL + '/api/auth';
@@ -247,6 +247,11 @@
     }
 
     function setStoredCachedUser(user) {
+      var before = getStoredCachedUser();
+      if (String(before && before.id) !== String(user && user.id)) {
+        allShifts = [];
+        if (window.JournalBridge && user && user.id) JournalBridge.prepare(user.id).catch(JournalBridge.storageError);
+      }
       try {
         if (user && typeof user === 'object') {
           localStorage.setItem(CACHED_USER_STORAGE_KEY, JSON.stringify({
@@ -814,8 +819,8 @@
       var timeout = typeof timeoutMs === 'number' && timeoutMs > 0 ? timeoutMs : 8000;
       var timeoutId = controller ? setTimeout(function() { controller.abort(); }, timeout) : null;
       return fetch(url, reqOptions).then(function(res) {
-        if (timeoutId) clearTimeout(timeoutId);
         return res.json().catch(function() { return {}; }).then(function(body) {
+          if (timeoutId) clearTimeout(timeoutId);
           return { ok: res.ok, status: res.status, body: body };
         });
       }).catch(function(err) {
@@ -981,8 +986,8 @@
 
     function hasCachedBootstrapData() {
       var storedUser = getStoredCachedUser();
-      var cachedShifts = readShiftsCache() || readAnyShiftsCache();
-      var cachedMeta = readOfflineMeta() || readAnyOfflineMeta();
+      var cachedShifts = readShiftsCache();
+      var cachedMeta = readOfflineMeta();
       var pendingSnapshot = readPendingSnapshot();
       var hasAnyCache =
         !!storedUser ||
@@ -1001,8 +1006,8 @@
 
     function bootstrapCachedShellFromStorage() {
       var cachedUser = getStoredCachedUser();
-      var cachedShifts = readShiftsCache() || readAnyShiftsCache();
-      var cachedMeta = readOfflineMeta() || readAnyOfflineMeta();
+      var cachedShifts = readShiftsCache();
+      var cachedMeta = readOfflineMeta();
       if (cachedUser && cachedUser.id !== undefined && cachedUser.id !== null) {
         CURRENT_USER = cachedUser;
       } else if (cachedShifts && cachedShifts.userId !== undefined && cachedShifts.userId !== null) {
@@ -1075,7 +1080,7 @@
 
         if (authNetworkUnavailable) return;
         var hasKnownIdentity = hasKnownUserIdentity(CURRENT_USER) || hasKnownUserIdentity(getStoredCachedUser());
-        if (!hasKnownIdentity || (!readShiftsCache() && !readAnyShiftsCache())) {
+        if (!hasKnownIdentity || !readShiftsCache()) {
           showAuthGate(AUTH_ENV_STATE, 'guest');
         }
       });

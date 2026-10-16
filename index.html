@@ -350,63 +350,63 @@
   </style>
   <link
     rel="stylesheet"
-    href="/styles/v420/00-base.css"
+    href="/styles/v421/00-base.css"
   />
   <link
     rel="stylesheet"
-    href="/styles/v420/10-navigation-and-cards.css"
+    href="/styles/v421/10-navigation-and-cards.css"
   />
   <link
     rel="stylesheet"
-    href="/styles/v420/15-bottom-nav.css"
+    href="/styles/v421/15-bottom-nav.css"
   />
   <link
     rel="stylesheet"
-    href="/styles/v420/16-press-feedback.css"
+    href="/styles/v421/16-press-feedback.css"
   />
   <link
     rel="stylesheet"
-    href="/styles/v420/20-form-and-stats.css"
+    href="/styles/v421/20-form-and-stats.css"
   />
   <link
     rel="stylesheet"
-    href="/styles/v420/30-shifts-and-overlays.css"
+    href="/styles/v421/30-shifts-and-overlays.css"
   />
   <link
     rel="stylesheet"
-    href="/styles/v420/40-premium-refresh.css"
+    href="/styles/v421/40-premium-refresh.css"
   />
   <link
     rel="stylesheet"
-    href="/styles/v420/50-design-refresh.css"
+    href="/styles/v421/50-design-refresh.css"
   />
   <link
     rel="stylesheet"
-    href="/styles/v420/56-profile.css"
+    href="/styles/v421/56-profile.css"
   />
   <link
     rel="stylesheet"
-    href="/styles/v420/57-datetime-picker.css"
+    href="/styles/v421/57-datetime-picker.css"
   />
   <link
     rel="stylesheet"
-    href="/styles/v420/58-vu45.css"
+    href="/styles/v421/58-vu45.css"
   />
-  <noscript><link rel="stylesheet" href="/styles/v420/00-base.css" /></noscript>
-  <noscript><link rel="stylesheet" href="/styles/v420/10-navigation-and-cards.css" /></noscript>
-  <noscript><link rel="stylesheet" href="/styles/v420/15-bottom-nav.css" /></noscript>
-  <noscript><link rel="stylesheet" href="/styles/v420/16-press-feedback.css" /></noscript>
-  <noscript><link rel="stylesheet" href="/styles/v420/20-form-and-stats.css" /></noscript>
-  <noscript><link rel="stylesheet" href="/styles/v420/30-shifts-and-overlays.css" /></noscript>
-  <noscript><link rel="stylesheet" href="/styles/v420/40-premium-refresh.css" /></noscript>
-  <noscript><link rel="stylesheet" href="/styles/v420/50-design-refresh.css" /></noscript>
-  <noscript><link rel="stylesheet" href="/styles/v420/56-profile.css" /></noscript>
-  <noscript><link rel="stylesheet" href="/styles/v420/57-datetime-picker.css" /></noscript>
-  <noscript><link rel="stylesheet" href="/styles/v420/58-vu45.css" /></noscript>
+  <noscript><link rel="stylesheet" href="/styles/v421/00-base.css" /></noscript>
+  <noscript><link rel="stylesheet" href="/styles/v421/10-navigation-and-cards.css" /></noscript>
+  <noscript><link rel="stylesheet" href="/styles/v421/15-bottom-nav.css" /></noscript>
+  <noscript><link rel="stylesheet" href="/styles/v421/16-press-feedback.css" /></noscript>
+  <noscript><link rel="stylesheet" href="/styles/v421/20-form-and-stats.css" /></noscript>
+  <noscript><link rel="stylesheet" href="/styles/v421/30-shifts-and-overlays.css" /></noscript>
+  <noscript><link rel="stylesheet" href="/styles/v421/40-premium-refresh.css" /></noscript>
+  <noscript><link rel="stylesheet" href="/styles/v421/50-design-refresh.css" /></noscript>
+  <noscript><link rel="stylesheet" href="/styles/v421/56-profile.css" /></noscript>
+  <noscript><link rel="stylesheet" href="/styles/v421/57-datetime-picker.css" /></noscript>
+  <noscript><link rel="stylesheet" href="/styles/v421/58-vu45.css" /></noscript>
   <script>
     window.CURRENT_USER = window.CURRENT_USER || null;
   </script>
-  <script src="/scripts/v420/safe-area.js" defer></script>
+  <script src="/scripts/v421/safe-area.js" defer></script>
 </head>
 <body style="background-color:#0C0C10;color:#EEF2F8;margin:0">
   <div class="boot-fallback" id="bootFallback" role="status" aria-live="polite">
@@ -2286,6 +2286,19 @@
   </div>
 
   <!-- Runtime Scripts -->
+
+  <div class="overlay" id="journalConflictOverlay">
+    <div class="bottom-sheet">
+      <div class="sheet-title">Сверить записи</div>
+      <div class="confirm-note" id="journalConflictText"></div>
+      <div class="confirm-btns">
+        <button class="btn-confirm-cancel" id="journalUseRemote" type="button">С сервера</button>
+        <button class="btn-confirm-delete" id="journalUseLocal" type="button">Мои записи</button>
+      </div>
+      <button class="btn-secondary" id="journalConflictClose" type="button">Решить позже</button>
+    </div>
+  </div>
+
   <script>
     window.__SHIFT_TRACKER_RUNTIME_LOAD_FAILURES = window.__SHIFT_TRACKER_RUNTIME_LOAD_FAILURES || {};
     window.addEventListener('error', function(event) {
@@ -2296,31 +2309,27 @@
       } catch (error) {}
     }, true);
   </script>
-  <script src="/scripts/v420/app-constants.js" defer></script>
-  <script src="/scripts/v420/locomotive-usage.js" defer></script>
-  <script src="/scripts/v420/glass-select.js" defer></script>
-  <script src="/scripts/v420/auth.js" defer></script>
-  <script src="/scripts/v420/viewport.js" defer></script>
-  <script src="/scripts/v420/poekhali-station-names.js" defer></script>
-  <script src="/scripts/v420/time-utils.js" defer></script>
-  <script src="/scripts/v420/docs-app.js" defer></script>
-  <script src="/scripts/v420/telegram-sdk-loader.js" defer></script>
-  <script src="/scripts/v420/app.js" defer></script>
-  <script src="/scripts/v420/poekhali-utils.js" defer></script>
-  <script src="/scripts/v420/poekhali-map-parser.js" defer></script>
-  <script src="/scripts/v420/poekhali-warnings.js" defer></script>
-  <script src="/scripts/v420/poekhali-backup.js" defer></script>
-  <script src="/scripts/v420/poekhali-tracker.js" defer></script>
-  <script src="/scripts/v420/render.js" defer></script>
-  <script src="/scripts/v420/shift-form.js" defer></script>
-  <script src="/scripts/v420/datetime-picker.js" defer></script>
-  <script src="/scripts/v420/vu45-calculator.js" defer></script>
-  <script src="/scripts/v420/vu45-ui.js" defer></script>
-  <script src="/scripts/v420/app-init.js" defer></script>
-  <script src="/scripts/v420/sw-register.js" defer></script>
-  <script src="/sw-bootstrap-v420.js" defer></script>
-  <script src="/scripts/v420/utils/haptics.js" defer></script>
-  <script src="/scripts/v420/press-feedback.js" defer></script>
-  <script src="/scripts/v420/nav-debug.js" defer></script>
+  <script src="/scripts/v421/release.js" defer></script>
+  <script src="/scripts/v421/app-constants.js" defer></script>
+  <script src="/scripts/v421/locomotive-usage.js" defer></script>
+  <script src="/scripts/v421/glass-select.js" defer></script>
+  <script src="/scripts/v421/auth.js" defer></script>
+  <script src="/scripts/v421/viewport.js" defer></script>
+  <script src="/scripts/v421/poekhali-station-names.js" defer></script>
+  <script src="/scripts/v421/time-utils.js" defer></script>
+  <script src="/scripts/v421/telegram-sdk-loader.js" defer></script>
+  <script src="/scripts/v421/docs-scope.js" defer></script>
+  <script src="/scripts/v421/feature-bridge.js" defer></script>
+  <script src="/scripts/v421/app.js" defer></script>
+  <script src="/scripts/v421/render.js" defer></script>
+  <script src="/scripts/v421/shift-form.js" defer></script>
+  <script src="/scripts/v421/datetime-picker.js" defer></script>
+  <script src="/scripts/v421/journal-bridge.js" defer></script>
+  <script src="/scripts/v421/app-init.js" defer></script>
+  <script src="/scripts/v421/sw-register.js" defer></script>
+  <script src="/sw-bootstrap-v421.js" defer></script>
+  <script src="/scripts/v421/utils/haptics.js" defer></script>
+  <script src="/scripts/v421/press-feedback.js" defer></script>
+  <script src="/scripts/v421/nav-debug.js" defer></script>
 </body>
 </html>

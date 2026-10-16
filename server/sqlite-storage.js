@@ -153,6 +153,15 @@ const MIGRATIONS = [
     );
     CREATE INDEX auth_install_handoffs_expiry ON auth_install_handoffs(expires_at);`,
   },
+  {
+    version: 7,
+    name: 'optimistic journal revisions',
+    sql: `CREATE TABLE shift_journal_revisions (
+      sid TEXT PRIMARY KEY,
+      revision INTEGER NOT NULL DEFAULT 0 CHECK (revision >= 0)
+    );
+    INSERT INTO shift_journal_revisions (sid, revision) SELECT sid, 1 FROM shift_owners;`,
+  },
 ];
 
 function cloneFallback(value) {
@@ -279,7 +288,8 @@ class SqliteStorage {
     const targetVersion = MIGRATIONS[MIGRATIONS.length - 1].version;
     if (currentVersion >= targetVersion) return;
     const destination = path.join(this.backupDir, `pre-migration-v${currentVersion}-${safeIsoForFileName(new Date())}.sqlite3`);
-    fs.copyFileSync(this.databasePath, destination);
+    const snapshot = new Database(this.databasePath, { readonly: true });
+    try { fs.writeFileSync(destination, snapshot.serialize()); } finally { snapshot.close(); }
     this.log('storage.pre_migration_backup_created', { destination, currentVersion, targetVersion });
   }
 
@@ -318,6 +328,8 @@ class SqliteStorage {
         INSERT INTO user_state (kind, sid, payload, updated_at) VALUES (?, ?, ?, ?)
         ON CONFLICT(kind, sid) DO UPDATE SET payload = excluded.payload, updated_at = excluded.updated_at
       `),
+      readJournalRevision: this.db.prepare('SELECT revision FROM shift_journal_revisions WHERE sid = ?'),
+      writeJournalRevision: this.db.prepare('INSERT INTO shift_journal_revisions (sid, revision) VALUES (?, ?) ON CONFLICT(sid) DO UPDATE SET revision = excluded.revision'),
       deleteShifts: this.db.prepare('DELETE FROM shifts WHERE sid = ?'),
       insertShift: this.db.prepare('INSERT INTO shifts (sid, shift_id, position, payload, updated_at) VALUES (?, ?, ?, ?, ?)'),
       readShifts: this.db.prepare('SELECT payload FROM shifts WHERE sid = ? ORDER BY position, shift_id'),
@@ -382,13 +394,22 @@ class SqliteStorage {
       deleteAnalyticsSessionsForUser: this.db.prepare('DELETE FROM analytics_sessions WHERE sid = ?'),
       deleteAnalyticsConsentForUser: this.db.prepare('DELETE FROM analytics_consents WHERE sid = ?'),
     };
-    this.replaceShiftsTransaction = this.db.transaction((sid, shifts) => {
+    this.replaceShiftsTransaction = this.db.transaction((sid, shifts, expectedRevision) => {
+      const revision = this.readJournalRevision(sid);
+      if (expectedRevision !== undefined && revision !== expectedRevision) {
+        const error = new Error('Journal revision conflict');
+        error.code = 'JOURNAL_CONFLICT';
+        error.journal = this.readJournal(sid);
+        throw error;
+      }
       this.statements.deleteShifts.run(sid);
       const now = new Date().toISOString();
       this.statements.upsertShiftOwner.run(sid, now);
       shifts.forEach((shift, position) => {
         this.statements.insertShift.run(sid, String(shift.id), position, JSON.stringify(shift), now);
       });
+      this.statements.writeJournalRevision.run(sid, revision + 1);
+      return { revision: revision + 1, shifts };
     });
     this.recordAnalyticsEventsTransaction = this.db.transaction((sid, events, receivedAt) => {
       let inserted = 0;
@@ -464,6 +485,19 @@ class SqliteStorage {
 
   readShifts(sid) {
     return this.statements.readShifts.all(String(sid)).map((row) => parsePayload(row.payload, null)).filter(Boolean);
+  }
+
+  readJournalRevision(sid) {
+    const row = this.statements.readJournalRevision.get(String(sid));
+    return row ? Number(row.revision) : 0;
+  }
+
+  readJournal(sid) {
+    return { revision: this.readJournalRevision(sid), shifts: this.readShifts(sid) };
+  }
+
+  compareAndReplaceJournal(sid, shifts, revision) {
+    return this.replaceShiftsTransaction(String(sid), shifts, revision);
   }
 
   replaceShifts(sid, shifts) {

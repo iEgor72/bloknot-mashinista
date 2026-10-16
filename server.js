@@ -1,3 +1,4 @@
+const { validateShiftDates } = require('./server/shift-validation');
 const http = require('http');
 const https = require('https');
 const fs = require('fs');
@@ -156,6 +157,7 @@ const PUBLIC_TOP_LEVEL_FILES = new Set([
   'sw-bootstrap-v412.js',
   'sw-bootstrap-v419.js',
   'sw-bootstrap-v420.js',
+  'sw-bootstrap-v421.js',
   'sw-bootstrap-v417.js',
   'apple-touch-icon.png',
   'icon-192.png',
@@ -165,6 +167,7 @@ const PUBLIC_TOP_LEVEL_FILES = new Set([
   'googled7576eb3c69566bc.html',
   'yandex_de378ce11c15bc59.html',
 ]);
+PUBLIC_TOP_LEVEL_FILES.add('sw-bootstrap-' + require('./release.json').shell + '.js');
 const PUBLIC_TOP_LEVEL_DIRS = new Set(['assets', 'scripts', 'styles', 'docs']);
 const ONLINE_WINDOW_MS = 2 * 60 * 1000;
 const USER_PRESENCE_FLUSH_DELAY_MS = 2500;
@@ -675,6 +678,7 @@ function sanitizeAndValidateShift(shift, index) {
     throw new Error(`Missing required shift fields at index ${index}`);
   }
 
+  validateShiftDates(sanitized);
   return sanitized;
 }
 
@@ -688,7 +692,13 @@ function sanitizeAndValidateShiftsPayload(payload) {
   if (payload.shifts.length > MAX_SHIFTS_PER_PAYLOAD) {
     throw new Error('Too many shifts in one request');
   }
-  return payload.shifts.map((shift, index) => sanitizeAndValidateShift(shift, index));
+  const ids = new Set();
+  return payload.shifts.map((shift, index) => {
+    const clean = sanitizeAndValidateShift(shift, index);
+    if (ids.has(clean.id)) throw new Error('Invalid duplicate shift id');
+    ids.add(clean.id);
+    return clean;
+  });
 }
 
 function ensureDirs() {
@@ -2571,6 +2581,7 @@ function serveFile(res, filePath, publicPath) {
   const types = {
     '.html': 'text/html; charset=utf-8',
     '.js': 'application/javascript; charset=utf-8',
+    '.mjs': 'application/javascript; charset=utf-8',
     '.json': 'application/json; charset=utf-8',
     '.css': 'text/css; charset=utf-8',
     '.webmanifest': 'application/manifest+json; charset=utf-8',
@@ -3210,8 +3221,14 @@ const server = http.createServer(async (req, res) => {
       return;
     }
 
+    if (req.headers['x-journal-user'] && String(req.headers['x-journal-user']) !== String(sid)) {
+      sendJson(res, 409, { code: 'ACCOUNT_CHANGED', error: 'Аккаунт изменился. Повторите вход.' });
+      return;
+    }
+
     if (req.method === 'GET') {
-      sendJson(res, 200, { sid, shifts: readShifts(sid) });
+      const journal = getStorage().readJournal(sid);
+      sendJson(res, 200, { sid, ...journal });
       return;
     }
 
@@ -3220,9 +3237,17 @@ const server = http.createServer(async (req, res) => {
         const body = await readBody(req);
         const payload = body ? JSON.parse(body) : {};
         const shifts = sanitizeAndValidateShiftsPayload(payload);
-        writeShifts(sid, shifts);
-        sendJson(res, 200, { ok: true, sid, shifts });
+        if (!Number.isSafeInteger(payload.baseRevision) || payload.baseRevision < 0) {
+          sendJson(res, 428, { code: 'REVISION_REQUIRED', error: 'Обновите Блокнот перед синхронизацией. Записи остаются на устройстве.', sid, ...getStorage().readJournal(sid) });
+          return;
+        }
+        const journal = getStorage().compareAndReplaceJournal(sid, shifts, payload.baseRevision);
+        sendJson(res, 200, { ok: true, sid, ...journal });
       } catch (err) {
+        if (err && err.code === 'JOURNAL_CONFLICT') {
+          sendJson(res, 409, { code: 'JOURNAL_CONFLICT', error: 'Журнал изменён на другом устройстве.', sid, ...err.journal });
+          return;
+        }
         const errorMessage = err && err.message ? err.message : 'Invalid payload';
         const isValidationError = /^(Expected|Too many|Invalid|Missing)/.test(errorMessage);
         logStructuredRateLimited(isValidationError ? 'warn' : 'error', 'storage.shifts.write_rejected', `${sid}:${errorMessage}`, {

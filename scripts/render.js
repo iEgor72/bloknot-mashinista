@@ -1,4 +1,4 @@
-    if (typeof registerShiftTrackerRuntimeModule === 'function') registerShiftTrackerRuntimeModule('render', 'v420');
+    if (typeof registerShiftTrackerRuntimeModule === 'function') registerShiftTrackerRuntimeModule('render', 'v421');
 
     function buildShiftItemHtml(sh, compact, pendingMap, shiftIncomeMap, durationBounds, durationLevelMap, latestManualShiftId) {
       var p = getShiftDisplayParts(sh);
@@ -44,7 +44,7 @@
       var consistHtml = (typeof buildShiftConsistHtml === 'function')
         ? buildShiftConsistHtml(sh, incomeVm && incomeVm.amountText, rangeState.hasValidInterval ? durationText : '') : '';
 
-      var pendingDotHtml = shiftIsPending ? '<span class="shift-sync-inline" aria-label="Не синхронизировано" title="Не синхронизировано">' + docOnlineOnlyIcon + '</span>' : '';
+      var pendingDotHtml = shiftIsPending ? '<span class="shift-sync-inline" aria-label="Не синхронизировано" title="Не синхронизировано">' + SYNC_PENDING_ICON + '</span>' : '';
       var poekhaliBtnHtml = canOpenPoekhali
         ? '<button class="shift-poekhali-btn" type="button" data-id="' + shiftIdAttr + '" aria-label="Выбрать плечо и открыть Поехали" title="Поехали">' +
             '<svg viewBox="0 0 24 24" aria-hidden="true" focusable="false">' +

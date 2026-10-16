@@ -28,19 +28,15 @@ Generated: 2026-04-17 23:20 +10:00
 - If tests are skipped or unavailable, record that explicitly in the final answer and memory when material.
 
 ## VPS / Deploy Access Method
-- This OpenClaw session is already on the project server.
-- Production repo path: `/opt/bloknot-mashinista`
-- Production branch/upstream: `main...origin/main`.
-- Production runtime: PM2 process `bloknot-mashinista`; PM2 is supervised by `pm2-root.service`.
-- Project-specific systemd service: not found. Do not invent one and do not run a `systemctl restart <project>` command for this app unless a real service is later found.
-- Before deploy, verify local branch/upstream, production worktree status, and that the intended commit is in the current branch.
-- Deploy/restart from this environment should be done locally, not by SSHing back into the same VPS.
-- Do not ask the user for an SSH key for this project from this environment unless local access actually fails.
-- Reference PM2 deploy command only; do not run without explicit user request:
-
-```bash
-cd /opt/bloknot-mashinista && git pull --ff-only origin main && npm ci --omit=dev && pm2 reload bloknot-mashinista --update-env && npm run storage:check && pm2 status bloknot-mashinista && git rev-parse --short HEAD
-```
+- Verified 2026-09-06: production moved to RU server `201.51.30.200`, SSH alias `klyuchik-ru1`, user `root`. Use strict host-key checking with the existing known_hosts entry for this IP.
+- `bloknot-vps` / `72.56.109.219` is the old Amsterdam host; it is not the current production origin. Do not use it for deployment.
+- Runtime: systemd `bloknot-mashinista.service`, user `bloknot`, Node `/usr/bin/node server.js`, WorkingDirectory `/opt/bloknot-mashinista/current`.
+- Releases are archive directories `/opt/bloknot-mashinista/releases/<full-git-commit>` with no `.git`; `current` is an atomically switched symlink. PM2 is not installed here.
+- Persistent data: `/var/lib/bloknot-mashinista`; EnvironmentFile `/etc/bloknot-mashinista.env` (never print/read its contents into chat).
+- Current release (verified 2026-10-17): `6e14ab51e8010384ad9745ec84c14fb31e5267ac`, shell v420, published on GitHub `origin/main`. Bounded/deduplicated warmup, validated cache-first versioned code and inline boot recovery; previous release `f4f371fa836aea8dee0f7cf97c7a5d9be21c495e` retained for rollback. User confirmed the iPhone works after cache recovery. Static JS/CSS gzip enabled separately in nginx, with verified identical decompressed contents and 76-85% transfer reduction on sampled assets.
+- Before deployment: verify GitHub main commit, archive checksums, current release target, backup the persistent SQLite database. Install dependencies in a new release directory, verify, atomically switch `current`, restart only `bloknot-mashinista.service`.
+- Health check: `/usr/local/sbin/verify-bloknot-ru`; public regression: `npm run smoke:prod-cache`.
+- Production schema retains community migration 5 after its code was reverted. PWA installation handoffs use migration 6; never reuse migration numbers from reverted releases.
 
 ## Existing Project Methods
 - Telegram WebApp auth uses `initData` verification.
@@ -54,5 +50,12 @@ cd /opt/bloknot-mashinista && git pull --ff-only origin main && npm ci --omit=de
 ## SQLite Storage Method
 - Mutable backend state is stored in `data/bloknot.sqlite3`; use `APP_DATA_DIR` for isolated tests.
 - Never delete legacy JSON during migration. `legacy_imports` makes import idempotent and records source SHA-256.
-- Before restore, stop the PM2 application. Run `npm run storage:check -- <backup>` first, then `npm run storage:restore -- <backup> --confirm`.
+- Before restore, stop systemd bloknot-mashinista.service. Run `npm run storage:check -- <backup>` first, then `npm run storage:restore -- <backup> --confirm`.
 - Restore preserves the displaced database and WAL/SHM sidecars with a `before-restore` timestamp.
+
+
+## Audit remediation release candidate v421
+- Current user authorization: repair all audit findings; latest correction explicitly forbids design changes.
+- Original UI/CSS restored and protected by baseline hash test. Work remains technical only.
+- New journal/outbox uses account-scoped IndexedDB, CAS revisions (migration 7), three-way merge and legacy queue backups. Core no longer waits for Poekhali/documents/VU45.
+- Authoritative deployment runbook: docs/DEPLOYMENT.md. Production installation result will be logged after verification.

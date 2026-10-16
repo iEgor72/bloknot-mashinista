@@ -1,5 +1,5 @@
     // ── Telegram WebApp chrome (не блокировать bootstrap: SDK подключается последним defer в index.html)
-    if (typeof registerShiftTrackerRuntimeModule === 'function') registerShiftTrackerRuntimeModule('app', 'v420');
+    if (typeof registerShiftTrackerRuntimeModule === 'function') registerShiftTrackerRuntimeModule('app', 'v421');
 
     function applyTelegramWebAppChrome() {
       try {
@@ -77,7 +77,7 @@
       tapLockUntil: 0
     };
     // ── Viewport / Keyboard / Haptic — see scripts/viewport.js ──
-    var APP_VERSION = '1.2.18';
+    var APP_VERSION = window.APP_RELEASE.version;
     var INSTALL_PROMPT_STATE_STORAGE_KEY = 'shift_tracker_install_prompt_state_v1';
     var LEGACY_SETTINGS_STORAGE_KEY = 'shift_tracker_settings_v1';
     var SALARY_PARAMS_STORAGE_KEY = 'shift_tracker_salary_params_v1';
@@ -341,82 +341,15 @@
     }
 
     function readShiftsCache() {
-      return readStoredJson(getOfflineStorageKey(SHIFTS_CACHE_STORAGE_KEY), null);
-    }
-
-    function writeShiftsCache(shifts, metaPatch) {
-      var payload = {
-        version: 1,
-        userId: getOfflineStorageUserId(),
-        updatedAt: new Date().toISOString(),
-        shifts: cloneShiftsForCache(shifts)
-      };
-      writeStoredJson(getOfflineStorageKey(SHIFTS_CACHE_STORAGE_KEY), payload);
-      writeOfflineMeta({
-        isOffline: metaPatch && metaPatch.isOffline !== undefined ? !!metaPatch.isOffline : !navigator.onLine,
-        isSyncing: metaPatch && metaPatch.isSyncing !== undefined ? !!metaPatch.isSyncing : false,
-        hasPending: metaPatch && metaPatch.hasPending !== undefined ? !!metaPatch.hasPending : !!readPendingSnapshot(),
-        lastSyncStatus: metaPatch && metaPatch.lastSyncStatus !== undefined ? metaPatch.lastSyncStatus : 'synced',
-        lastError: metaPatch && metaPatch.lastError !== undefined ? metaPatch.lastError : '',
-        lastSyncAt: metaPatch && metaPatch.lastSyncAt !== undefined ? metaPatch.lastSyncAt : payload.updatedAt
-      });
-      return payload;
+      var state = window.JournalBridge && JournalBridge.current();
+      return state ? { userId: state.userId, shifts: state.shifts } : readStoredJson(getOfflineStorageKey(SHIFTS_CACHE_STORAGE_KEY), null);
     }
 
     function readPendingSnapshot() {
+      var state = window.JournalBridge && JournalBridge.current();
+      if (state) return state.pending ? { userId: state.userId, shifts: state.shifts,
+        pendingIds: JournalBridge.pendingIds() } : null;
       return readStoredJson(getOfflineStorageKey(SHIFTS_PENDING_STORAGE_KEY), null);
-    }
-
-    function writePendingSnapshot(shifts, pendingIds) {
-      // Collect IDs from both the explicit list and any shift already flagged pending=true
-      // (pending=true flags come from previous offline sessions loaded via cache)
-      var fromParam = pendingIds || pendingMutationIds || [];
-      var fromShifts = [];
-      for (var psi = 0; psi < (shifts || []).length; psi++) {
-        if (shifts[psi] && shifts[psi].pending) fromShifts.push(String(shifts[psi].id));
-      }
-      var normalizedIds = normalizePendingIds(fromParam.concat(fromShifts));
-      var payload = {
-        version: 1,
-        userId: getOfflineStorageUserId(),
-        savedAt: new Date().toISOString(),
-        reason: 'offline-save',
-        pendingIds: normalizedIds,
-        shifts: applyPendingFlags(shifts, normalizedIds)
-      };
-      writeStoredJson(getOfflineStorageKey(SHIFTS_PENDING_STORAGE_KEY), payload);
-      writeOfflineMeta({
-        isOffline: !navigator.onLine,
-        isSyncing: false,
-        hasPending: true,
-        lastSyncStatus: 'pending',
-        lastError: ''
-      });
-      return payload;
-    }
-
-    function clearPendingSnapshot() {
-      // Remove ALL keys matching the pending pattern (any userId suffix),
-      // so stale keys written under a different userId never linger.
-      try {
-        var toRemove = [];
-        for (var ki = 0; ki < localStorage.length; ki++) {
-          var k = localStorage.key(ki);
-          if (k && k.indexOf(SHIFTS_PENDING_STORAGE_KEY) === 0) toRemove.push(k);
-        }
-        for (var ri = 0; ri < toRemove.length; ri++) localStorage.removeItem(toRemove[ri]);
-      } catch (e) {}
-      writeOfflineMeta({
-        isOffline: !navigator.onLine,
-        isSyncing: false,
-        hasPending: false,
-        lastSyncStatus: 'synced',
-        lastError: ''
-      });
-      pendingMutationIds = [];
-      if (Array.isArray(allShifts)) {
-        allShifts = clearPendingFlags(allShifts);
-      }
     }
 
     function clearOfflineBannerHideTimer() {
@@ -535,63 +468,10 @@
       }
     }
 
-    function flushPendingSnapshot(source, callback, shouldRender) {
-      if (typeof source === 'function') {
-        callback = source;
-        source = 'save';
-      }
-      if (shouldRender === undefined) shouldRender = true;
-      var pending = readPendingSnapshot();
-      if (!pending || !pending.shifts) {
-        updateOfflineUiState({ isSyncing: false, hasPending: false, lastSyncStatus: 'synced', lastError: '' });
-        if (callback) callback(null);
-        return;
-      }
-
-      if (!navigator.onLine) {
-        updateOfflineUiState({ isOffline: true, isSyncing: false, hasPending: true, lastSyncStatus: 'pending', lastError: '' });
-        if (callback) callback(null);
-        return;
-      }
-
-      updateOfflineUiState({ isSyncing: true, lastSyncStatus: 'syncing', lastError: '' });
-
-      fetchJson(SHIFTS_API_URL, {
-        method: 'PUT',
-        headers: { 'Content-Type': 'application/json', 'Accept': 'application/json' },
-        body: JSON.stringify({ shifts: cloneShiftsForServer(pending.shifts) })
-      }).then(function(result) {
-        if (result.ok) {
-          var committedShifts = clearPendingFlags(pending.shifts);
-          clearPendingSnapshot();
-          allShifts = committedShifts;
-          writeShiftsCache(committedShifts, {
-            isOffline: false,
-            isSyncing: false,
-            hasPending: false,
-            lastSyncStatus: 'synced',
-            lastError: '',
-            lastSyncAt: new Date().toISOString()
-          });
-          updateOfflineUiState({ isOffline: false, isSyncing: false, hasPending: false, lastSyncStatus: 'synced', lastError: '' });
-          if (callback) callback(null);
-          if (shouldRender) render();
-          return;
-        }
-
-        if (result.status === 401) {
-          updateOfflineUiState({ isSyncing: false, lastSyncStatus: 'error', lastError: 'Unauthorized' });
-          handleAuthUnauthorized(source === 'load' ? 'load' : 'save');
-          if (callback) callback(new Error('Unauthorized'));
-          return;
-        }
-
-        updateOfflineUiState({ isOffline: !navigator.onLine, isSyncing: false, hasPending: true, lastSyncStatus: 'error', lastError: (result.body && result.body.error) || 'API save failed' });
-        if (callback) callback(new Error((result.body && result.body.error) || 'API save failed'));
-      }).catch(function(err) {
-        updateOfflineUiState({ isOffline: true, isSyncing: false, hasPending: true, lastSyncStatus: 'error', lastError: err && err.message ? err.message : 'Network error' });
-        if (callback) callback(err || new Error('Network error'));
-      });
+    function flushPendingSnapshot(source, callback) {
+      if (typeof source === 'function') callback = source;
+      JournalBridge.sync().then(function() { if (callback) callback(null); })
+        .catch(function(error) { JournalBridge.storageError(error); if (callback) callback(error); });
     }
 
     function createSalaryParamsStore() {
@@ -1875,131 +1755,26 @@
     // ── Auth / Session — see scripts/auth.js ──
     // ── Load / Save shifts ──
     function loadShifts(callback) {
-      var cached = readShiftsCache();
-      var servedFromCache = false;
-      if (cached && Array.isArray(cached.shifts)) {
-        allShifts = normalizeShiftsForDisplay(cached.shifts);
-        updateOfflineUiState({ isOffline: !navigator.onLine, hasPending: !!readPendingSnapshot() });
-        servedFromCache = true;
+      var userId = getOfflineStorageUserId();
+      JournalBridge.prepare(userId).then(function() {
+        if (String(userId) !== String(getOfflineStorageUserId())) return;
         if (callback) callback();
-      }
-
-      if (!navigator.onLine) {
-        if (!cached) allShifts = [];
-        updateOfflineUiState({ isOffline: true, isSyncing: false, hasPending: !!readPendingSnapshot(), lastSyncStatus: cached ? 'cached' : 'offline', lastError: '' });
-        if (!cached && callback) callback();
-        return;
-      }
-
-      var pending = readPendingSnapshot();
-      var startLoad = function() {
-        fetchJson(SHIFTS_API_URL, {
-          method: 'GET',
-          headers: { 'Accept': 'application/json' }
-        }).then(function(result) {
-          if (result.ok) {
-            allShifts = clearPendingFlags(Array.isArray(result.body && result.body.shifts) ? result.body.shifts : []);
-            writeShiftsCache(allShifts, {
-              isOffline: false,
-              isSyncing: false,
-              hasPending: !!readPendingSnapshot(),
-              lastSyncStatus: 'synced',
-              lastError: '',
-              lastSyncAt: new Date().toISOString()
-            });
-            updateOfflineUiState({ isOffline: false, isSyncing: false, hasPending: !!readPendingSnapshot(), lastSyncStatus: 'synced', lastError: '' });
-            if (!servedFromCache && callback) callback();
-            else render();
-            return;
-          }
-
-          if (result.status === 401) {
-            updateOfflineUiState({
-              isOffline: !navigator.onLine,
-              isSyncing: false,
-              hasPending: !!readPendingSnapshot(),
-              lastSyncStatus: servedFromCache || STARTED_FROM_CACHED_STATE ? 'cached' : 'error',
-              lastError: 'Unauthorized'
-            });
-            if (!servedFromCache && callback) callback();
-            handleAuthUnauthorized('load');
-            return;
-          }
-
-          updateOfflineUiState({ isOffline: true, isSyncing: false, hasPending: !!readPendingSnapshot(), lastSyncStatus: cached ? 'cached' : 'error', lastError: (result.body && result.body.error) || 'API load failed' });
-          if (!cached) allShifts = [];
-          if (!cached && callback) callback();
-        }).catch(function() {
-          updateOfflineUiState({ isOffline: true, isSyncing: false, hasPending: !!readPendingSnapshot(), lastSyncStatus: cached ? 'cached' : 'error', lastError: 'Network error' });
-          if (!cached) allShifts = [];
-          if (!cached && callback) callback();
-        });
-      };
-
-      if (pending && pending.shifts && pending.shifts.length) {
-        flushPendingSnapshot('load', function(err) {
-          if (!err) {
-            startLoad();
-          }
-        }, false);
-        return;
-      }
-
-      startLoad();
+        return JournalBridge.sync();
+      }).catch(function(error) { JournalBridge.storageError(error); if (callback) callback(); });
     }
 
-      function saveShifts(callback) {
-        var snapshot = cloneShiftsForCache(allShifts);
-        var pendingSnapshot = applyPendingFlags(snapshot, pendingMutationIds);
-
-        // Always persist locally first — synchronous, instant, never fails
-        allShifts = writePendingSnapshot(pendingSnapshot, pendingMutationIds).shifts;
-        writeShiftsCache(allShifts, {
-          isOffline: !navigator.onLine,
-          isSyncing: false,
-          hasPending: true,
-          lastSyncStatus: 'pending',
-          lastError: ''
-        });
-        updateOfflineUiState({ isOffline: !navigator.onLine, isSyncing: false, hasPending: true, lastSyncStatus: 'pending', lastError: '' });
-
-        // Unblock UI immediately — background sync handles the rest
-        if (callback) callback(null);
-
-        if (!navigator.onLine) return;
-
-        // Background sync — does not block the UI
-        updateOfflineUiState({ isSyncing: true, lastSyncStatus: 'syncing', lastError: '' });
-        fetchJson(SHIFTS_API_URL, {
-          method: 'PUT',
-          headers: { 'Content-Type': 'application/json', 'Accept': 'application/json' },
-          body: JSON.stringify({ shifts: cloneShiftsForServer(snapshot) })
-        }, 4000).then(function(result) {
-          if (result.ok) {
-            allShifts = clearPendingFlags(snapshot);
-            clearPendingSnapshot();
-            writeShiftsCache(allShifts, {
-              isOffline: false,
-              isSyncing: false,
-              hasPending: false,
-              lastSyncStatus: 'synced',
-              lastError: '',
-              lastSyncAt: new Date().toISOString()
-            });
-            updateOfflineUiState({ isOffline: false, isSyncing: false, hasPending: false, lastSyncStatus: 'synced', lastError: '' });
-            render();
-            return;
-          }
-          if (result.status === 401) {
-            updateOfflineUiState({ isOffline: !navigator.onLine, isSyncing: false, hasPending: true, lastSyncStatus: 'error', lastError: 'Unauthorized' });
-            handleAuthUnauthorized('save');
-            return;
-          }
-          updateOfflineUiState({ isOffline: !navigator.onLine, isSyncing: false, hasPending: true, lastSyncStatus: 'error', lastError: (result.body && result.body.error) || 'API save failed' });
-        }).catch(function(err) {
-          updateOfflineUiState({ isOffline: true, isSyncing: false, hasPending: true, lastSyncStatus: 'error', lastError: err && err.message ? err.message : 'Network error' });
-        });
+    function saveShifts(callback) {
+      var userId = getOfflineStorageUserId();
+      var snapshot = cloneShiftsForCache(allShifts);
+      function complete(error) {
+        if (String(userId) !== String(getOfflineStorageUserId())) {
+          var button = document.getElementById('btnAdd'); if (button) button.disabled = false;
+          return;
+        }
+        if (callback) callback(error);
       }
+      JournalBridge.save(snapshot).then(function() { complete(null); }).catch(complete);
+    }
 
     // ── Time helpers — see scripts/time-utils.js ──
     // ── Render ──

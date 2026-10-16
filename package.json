@@ -1,6 +1,6 @@
 {
   "name": "bloknot-mashinista",
-  "version": "1.2.19",
+  "version": "1.3.0",
   "private": true,
   "description": "Блокнот машиниста — учёт смен для локомотивных бригад",
   "main": "server.js",
@@ -40,7 +40,13 @@
     "smoke:local": "node scripts/local-smoke.mjs",
     "smoke:offline": "node scripts/offline-smoke.mjs",
     "smoke:predeploy": "npm run test:pwa && npm run test:server && npm run vu45:test && npm run maps:import:test && npm run regime:test && npm run regime:builder:test && npm run catalog:validate && npm run catalog:test && npm run sections:validate && npm run sections:test && npm run station-names:test && npm run smoke:sw-update && npm run smoke:poekhali-json && npm run smoke:poekhali-ek-direction && npm run smoke:local && npm run smoke:offline",
-    "smoke:prod-cache": "node scripts/prod-cache-smoke.mjs"
+    "smoke:prod-cache": "node scripts/prod-cache-smoke.mjs",
+    "build": "node tools/build-release.mjs",
+    "build:check": "node tools/build-release.mjs --check",
+    "test:journal": "node --test tests/journal/*.test.mjs",
+    "test:audit-ui": "node tests/audit-ui.mjs",
+    "typecheck": "npm exec --yes --package typescript@5.9.3 -- tsc -p tsconfig.journal.json",
+    "test:ui-preservation": "node --test tests/ui-preservation.test.js"
   },
   "devDependencies": {
     "@playwright/test": "^1.54.2"

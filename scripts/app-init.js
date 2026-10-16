@@ -1,9 +1,11 @@
-if (typeof registerShiftTrackerRuntimeModule === 'function') registerShiftTrackerRuntimeModule('app-init', 'v420');
+if (typeof registerShiftTrackerRuntimeModule === 'function') registerShiftTrackerRuntimeModule('app-init', 'v421');
 
 // ── Init ──
 function startShiftTrackerRuntime() {
   if (startShiftTrackerRuntime.started) return;
   startShiftTrackerRuntime.started = true;
+  var cached = getStoredCachedUser();
+  JournalBridge.prepare(cached && cached.id || getOfflineStorageUserId()).catch(JournalBridge.storageError).then(function() {
   if (typeof bootstrapAppStartup === 'function') {
     bootstrapAppStartup();
   } else {
@@ -16,6 +18,7 @@ function startShiftTrackerRuntime() {
       });
     }
   }
+  });
 }
 
 if (window.__SHIFT_TRACKER_RUNTIME_GUARD_PENDING) {

@@ -1,51 +1,3 @@
-    // ── Documentation Section ────────────────────────────────────────────────
-    // Renders the active docs sub-tab. Called whenever the instructions/docs
-    // tab is activated or a sub-tab button is pressed.
-
-    // Cache loaded files per folder so switching tabs doesn't re-fetch every time
-    var docsFilesCache = {};
-    var docsDownloadStateByPath = {};
-    var docsDownloadCheckPromises = {};
-    var docsDownloadRefreshTick = 0;
-    var docsScopeByPath = {};
-
-    function getDocsProfileScope() {
-      try {
-        var raw = window.localStorage && window.localStorage.getItem('shift_tracker_profile_v1');
-        var profile = raw ? JSON.parse(raw) : {};
-        return {
-          railwayId: String(profile && profile.railwayId || ''),
-          depotId: String(profile && profile.depotId || ''),
-          depotLabel: String(profile && profile.depot || '')
-        };
-      } catch (e) {
-        return { railwayId: '', depotId: '', depotLabel: '' };
-      }
-    }
-
-    function isDocScopeVisible(scope) {
-      if (!scope || !scope.level || scope.level === 'network') return true;
-      var profile = getDocsProfileScope();
-      if (scope.level === 'railway') return !!profile.railwayId && profile.railwayId === String(scope.railway_id || '');
-      if (scope.level === 'depot') return !!profile.depotId && profile.depotId === String(scope.depot_id || '');
-      return false;
-    }
-
-    function filterDocsForProfile(files) {
-      return (Array.isArray(files) ? files : []).filter(function(file) {
-        return isDocScopeVisible(file && file.scope);
-      });
-    }
-
-    function getDocScopeByPath(path) {
-      return docsScopeByPath[getDocPathKey(path)] || null;
-    }
-
-    window.getDocsProfileScope = getDocsProfileScope;
-    window.isDocScopeVisible = isDocScopeVisible;
-    window.filterDocsForProfile = filterDocsForProfile;
-    window.getDocScopeByPath = getDocScopeByPath;
-
     function getDocPathKey(path) {
       return normalizeDocPath(path || '');
     }
@@ -273,7 +225,7 @@
     var classes = { pdf: 'icon-pdf', doc: 'icon-doc', xls: 'icon-xls', img: 'icon-img', default: 'icon-default' };
     var badges = { pdf: 'badge-pdf', doc: 'badge-doc', xls: 'badge-xls', img: 'badge-img', default: 'badge-default' };
     var docDownloadedIcon = '<svg viewBox="0 0 16 16" fill="none" aria-hidden="true"><circle cx="8" cy="8" r="6.5" stroke="currentColor" stroke-width="1.4"/><path d="M5 8.2l2 2.1L11.2 6" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"/></svg>';
-    var docOnlineOnlyIcon = '<svg viewBox="0 0 16 16" fill="none" aria-hidden="true"><path d="M4.3 10.7a2.3 2.3 0 0 1 .2-4.6 3.6 3.6 0 0 1 6.8 1.2 2.1 2.1 0 0 1 .2 4.2H4.3z" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/><path d="M8 5.2v3.4M8 8.6l1.4-1.4M8 8.6L6.6 7.2" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg>';
+    var docOnlineOnlyIcon = SYNC_PENDING_ICON;
 
     function buildDocDownloadStatusIcon(isDownloaded) {
       var label = isDownloaded ? 'Файл скачан и доступен оффлайн' : 'Файл не скачан, нужен интернет';
