@@ -8376,3 +8376,11 @@ Append-only журнал действий ИИ-агентов по проект�
 - Branch: `codex/new-shift-time-picker-step1`
 - Methods: `Audited bot`, `site`, `SEO`, `and Telegram link-preview copy for retired claims`, `found and replaced obsolete overview and route OG images that still mentioned news`, `discussion`, `brigade`, `and calculation`, `switched public metadata to cache-busted v392 images and added regression coverage`
 - Files: `index.html`, `docs/seo/dokumenty-mashinista.html`, `docs/seo/grafik-smen-mashinista.html`, `docs/seo/uchet-marshrutov.html`, `docs/seo/zhurnal-smen-mashinista.html`, `assets/seo/landing-overview.jpg`, `assets/seo/landing-overview-v392.png`, `assets/seo/landing-salary-screen.jpg`, `assets/seo/landing-routes-v392.png`, `tests/server/api.test.js`
+
+## 2026-10-17 00:33:57 +1000
+
+- Source: `manual`
+- Task: Prepare v420 startup repair after nginx fix did not restore affected iPhone
+- Branch: `codex/fix-startup-cache`
+- Methods: `User authorized repair`, `isolated origin/main worktree`, `bounded and deduplicated warmup`, `cache-first versioned code`, `reject empty cache`, `inline watchdog`, `four PWA and 28 server tests pass`, `interrupted CSS recovered in 8.6s`, `pending local data preserved`
+- Files: `sw.js`, `index.html`, `styles/10-navigation-and-cards.css`, `tests/pwa/startup-cache.test.js`, `docs/2026-10-17-startup-repair.md`

@@ -155,5 +155,5 @@
 });
 
 if (typeof registerShiftTrackerRuntimeModule === 'function') {
-  registerShiftTrackerRuntimeModule('poekhali-station-names', 'v419');
+  registerShiftTrackerRuntimeModule('poekhali-station-names', 'v420');
 }

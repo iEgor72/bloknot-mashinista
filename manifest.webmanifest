@@ -4,7 +4,7 @@
   "description": "Электронный журнал для машинистов. Учёт смен, часов и топлива.",
   "id": "/?app=v417",
   "scope": "/",
-  "start_url": "/?app=v419",
+  "start_url": "/?app=v420",
   "display": "standalone",
   "background_color": "#0C0C10",
   "theme_color": "#0C0C10",

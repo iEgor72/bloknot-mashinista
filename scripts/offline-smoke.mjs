@@ -8,7 +8,7 @@ import { fileURLToPath } from 'node:url';
 import { chromium } from '@playwright/test';
 
 const repoRoot = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
-const artifactsDir = path.join(repoRoot, 'artifacts', 'offline-smoke');
+const artifactsDir = process.env.OFFLINE_SMOKE_ARTIFACTS_DIR || path.join(repoRoot, 'artifacts', 'offline-smoke');
 const port = Number(process.env.OFFLINE_SMOKE_PORT || process.env.PORT || 4318);
 const baseUrl = `http://127.0.0.1:${port}`;
 const startupTimeoutMs = Number(process.env.OFFLINE_SMOKE_START_TIMEOUT_MS || 15000);
@@ -340,7 +340,7 @@ async function runOfflineReloadCheck() {
   setPhase('offline-reload:mixed-cache-regression');
   const mixedCacheSeed = await page.evaluate(async () => {
     const version = typeof SHELL_CACHE_VERSION === 'string' ? SHELL_CACHE_VERSION : '';
-    const liveResponse = await fetch('/scripts/v419/time-utils.js?mixed-cache-source=' + Date.now(), { cache: 'no-store' });
+    const liveResponse = await fetch('/scripts/v420/time-utils.js?mixed-cache-source=' + Date.now(), { cache: 'no-store' });
     const liveSource = await liveResponse.text();
     const staleSource = liveSource.replace(
       /if \(ft && ft\.consumptionKg > 0\) \{\s+pushRow\('Расход', ruNum\(ft\.consumptionKg\) \+ ' кг'\);/,
@@ -360,12 +360,12 @@ async function runOfflineReloadCheck() {
     let deleteResults = [];
     for (let attempt = 0; attempt < 20; attempt += 1) {
       const currentCache = await caches.open(currentCacheName);
-      await currentCache.put('/scripts/v419/time-utils.js', new Response(liveSource, {
+      await currentCache.put('/scripts/v420/time-utils.js', new Response(liveSource, {
         status: 200,
         headers: { 'Content-Type': 'application/javascript; charset=utf-8' },
       }));
       const currentKeys = await currentCache.keys();
-      runtimeKeys = currentKeys.filter((request) => new URL(request.url).pathname === '/scripts/v419/time-utils.js');
+      runtimeKeys = currentKeys.filter((request) => new URL(request.url).pathname === '/scripts/v420/time-utils.js');
       if (runtimeKeys.length) {
         deleteResults = await Promise.all(runtimeKeys.map((request) => currentCache.delete(request)));
         if (deleteResults.every(Boolean)) break;
@@ -417,7 +417,7 @@ async function runOfflineReloadCheck() {
   setPhase('offline-reload:mixed-runtime-self-repair');
   const repairSentinelKey = 'shift_tracker_runtime_repair_test_sentinel';
   const repairNavigation = page.waitForURL((url) => (
-    url.searchParams.get('runtime_repair') === 'v419' && Boolean(url.searchParams.get('repair_nonce'))
+    url.searchParams.get('runtime_repair') === 'v420' && Boolean(url.searchParams.get('repair_nonce'))
   ), { timeout: uiTimeoutMs });
   const repairTrigger = await page.evaluate((sentinelKey) => {
     localStorage.setItem(sentinelKey, 'preserved');
@@ -476,6 +476,25 @@ async function runOfflineReloadCheck() {
     await assertAppShellVisible(page, 'mixedRuntimeRepairControlledReload');
   }
 
+  setPhase('offline-reload:empty-cache-repair');
+  await page.evaluate(async () => {
+    const cache = await caches.open('shift-tracker-shell-' + SHELL_CACHE_VERSION);
+    for (const path of ['/scripts/v420/app-init.js', '/styles/v420/50-theme-shell.css']) {
+      await cache.put(path, new Response('', { headers: { 'Content-Type': path.endsWith('.js') ? 'text/javascript' : 'text/css' } }));
+    }
+  });
+  await reloadAndKeepPage(page, 'emptyCacheRepair');
+  await assertAppShellVisible(page, 'emptyCacheRepair');
+  const emptyCacheRepaired = await page.evaluate(async () => {
+    const cache = await caches.open('shift-tracker-shell-' + SHELL_CACHE_VERSION);
+    return (await Promise.all(['/scripts/v420/app-init.js', '/styles/v420/50-theme-shell.css'].map(async path => {
+      const response = await cache.match(path);
+      return !!response && !!(await response.text()).trim();
+    }))).every(Boolean);
+  });
+  if (!emptyCacheRepaired) throw new Error('Empty shell cache did not repair before offline reload');
+  report.checks.emptyCacheRepaired = emptyCacheRepaired;
+
   setPhase('offline-reload:cdp-offline');
   const client = await context.newCDPSession(page);
   await client.send('Network.enable');
@@ -520,7 +539,7 @@ async function runStaleOfflineRuntimeCheck() {
     "registerShiftTrackerRuntimeModule('time-utils', 'v000')"
   );
   if (staleSource === liveSource) throw new Error('Could not create stale offline runtime fixture');
-  await page.route('**/scripts/v419/time-utils.js*', (route) => route.fulfill({
+  await page.route('**/scripts/v420/time-utils.js*', (route) => route.fulfill({
     status: 200,
     contentType: 'application/javascript; charset=utf-8',
     body: staleSource,
@@ -552,8 +571,8 @@ async function runBootFallbackCheck() {
   context = await browser.newContext({ serviceWorkers: 'block' });
   const page = await context.newPage();
   watchPage(page, 'boot-fallback');
-  await page.route('**/scripts/v419/auth.js*', (route) => route.abort());
-  await page.route('**/scripts/v419/app.js*', (route) => route.abort());
+  await page.route('**/scripts/v420/auth.js*', (route) => route.abort());
+  await page.route('**/scripts/v420/app.js*', (route) => route.abort());
 
   const response = await page.goto(baseUrl, { waitUntil: 'domcontentloaded', timeout: startupTimeoutMs });
   if (!response || !response.ok()) throw new Error(`GET ${baseUrl} for fallback failed with status ${response ? response.status() : 'none'}`);
@@ -683,7 +702,7 @@ async function main() {
   });
   const unexpectedPageErrors = report.pageErrors.filter((line) => !/^\[boot-fallback\]/.test(line));
   const unexpectedRequestFailures = report.requestFailures.filter((failure) => {
-    if (failure.label === 'boot-fallback' && /\/scripts\/v419\/(auth|app)\.js/.test(failure.url)) return false;
+    if (failure.label === 'boot-fallback' && /\/scripts\/v420\/(auth|app)\.js/.test(failure.url)) return false;
     if (failure.label === 'offline-reload' && failure.url === `${baseUrl}/` && failure.errorText === 'net::ERR_ABORTED') return false;
     return true;
   });
