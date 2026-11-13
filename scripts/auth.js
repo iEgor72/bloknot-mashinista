@@ -1,4 +1,4 @@
-    if (typeof registerShiftTrackerRuntimeModule === 'function') registerShiftTrackerRuntimeModule('auth', 'v422');
+    if (typeof registerShiftTrackerRuntimeModule === 'function') registerShiftTrackerRuntimeModule('auth', 'v423');
 
     var API_BASE_URL = window.SHIFT_API_BASE_URL || '';
     var AUTH_API_URL = API_BASE_URL + '/api/auth';
@@ -32,6 +32,21 @@
     function isTelegramAuthContext() {
       if (isStandalonePwaAuthEnvironment()) return false;
       return !!getTelegramInitData() || /(?:tgWebAppPlatform|tgWebAppData)=/.test(window.location.hash + window.location.search) || /Telegram/i.test(navigator.userAgent || '');
+    }
+
+    var profileKlyuchikLink = document.getElementById('profileKlyuchikLink');
+    if (profileKlyuchikLink) {
+      profileKlyuchikLink.addEventListener('click', function(event) {
+        if (event.defaultPrevented || event.ctrlKey || event.metaKey || event.shiftKey || event.altKey) return;
+        var tg = window.Telegram && window.Telegram.WebApp;
+        if (!tg || typeof tg.openLink !== 'function' || !isTelegramAuthContext()) return;
+        try {
+          tg.openLink(this.href, { try_instant_view: false });
+          event.preventDefault();
+        } catch (_) {
+          // Let the normal link open if the Telegram client rejects the request.
+        }
+      });
     }
 
     function prepareInstallHandoff() {

@@ -1,4 +1,4 @@
-if (typeof registerShiftTrackerRuntimeModule === 'function') registerShiftTrackerRuntimeModule('docs-scope', 'v422');
+if (typeof registerShiftTrackerRuntimeModule === 'function') registerShiftTrackerRuntimeModule('docs-scope', 'v423');
     // ── Documentation Section ────────────────────────────────────────────────
     // Renders the active docs sub-tab. Called whenever the instructions/docs
     // tab is activated or a sub-tab button is pressed.
