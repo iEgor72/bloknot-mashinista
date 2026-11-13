@@ -1,4 +1,4 @@
-    if (typeof registerShiftTrackerRuntimeModule === 'function') registerShiftTrackerRuntimeModule('render', 'v423');
+    if (typeof registerShiftTrackerRuntimeModule === 'function') registerShiftTrackerRuntimeModule('render', 'v424');
 
     function buildShiftItemHtml(sh, compact, pendingMap, shiftIncomeMap, durationBounds, durationLevelMap, latestManualShiftId) {
       var p = getShiftDisplayParts(sh);

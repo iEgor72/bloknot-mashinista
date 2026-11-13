@@ -1,6 +1,6 @@
 {
   "name": "bloknot-mashinista",
-  "version": "1.3.2",
+  "version": "1.3.3",
   "private": true,
   "description": "Блокнот машиниста — учёт смен для локомотивных бригад",
   "main": "server.js",
