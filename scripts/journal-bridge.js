@@ -1,4 +1,4 @@
-if (typeof registerShiftTrackerRuntimeModule === 'function') registerShiftTrackerRuntimeModule('journal-bridge', 'v421');
+if (typeof registerShiftTrackerRuntimeModule === 'function') registerShiftTrackerRuntimeModule('journal-bridge', 'v422');
 // Compatibility boundary: the journal itself is an isolated ES module.
 (function () {
   'use strict';

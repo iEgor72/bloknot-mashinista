@@ -5,19 +5,20 @@ import assert from 'node:assert/strict';
 import { createRequire } from 'node:module';
 import { chromium, webkit } from '@playwright/test';
 const require=createRequire(import.meta.url);
+const {shell}=require('../release.json');
 process.env.APP_DATA_DIR=fs.mkdtempSync(path.join(os.tmpdir(),'bloknot-audit-ui-'));
 process.env.DISABLE_STORAGE_BACKUPS='1';
 const app=require('../server.js');
 const server=app.startServer(0);await new Promise(r=>server.once('listening',r));
 const base='http://127.0.0.1:'+server.address().port;
-const out=process.env.AUDIT_ARTIFACTS_DIR || path.join(os.tmpdir(),'bloknot-audit-v421');fs.mkdirSync(out,{recursive:true});
+const out=process.env.AUDIT_ARTIFACTS_DIR || path.join(os.tmpdir(),'bloknot-audit-'+shell);fs.mkdirSync(out,{recursive:true});
 const date=new Date().toISOString().slice(0,10);
 const row=id=>({id,start_msk:date+'T08:00',end_msk:date+'T20:00',created_at:date+'T07:00:00Z'});
 let journal={sid:'audit-A',revision:1,shifts:[row('original')]};
 let browser;
 const report={checks:[],errors:[],screenshots:[]};
 async function fixture(context){
- await context.route('**/scripts/v421/auth.js',route=>route.fulfill({contentType:'application/javascript',body:fs.readFileSync(new URL('../scripts/auth.js',import.meta.url),'utf8')+"\nAUTH_ENV_STATE='prod';"}));
+ await context.route('**/scripts/'+shell+'/auth.js',route=>route.fulfill({contentType:'application/javascript',body:fs.readFileSync(new URL('../scripts/auth.js',import.meta.url),'utf8')+"\nAUTH_ENV_STATE='prod';"}));
  await context.addInitScript(data=>{if(!localStorage.getItem('audit-seeded')){
   localStorage.setItem('audit-seeded','1');localStorage.setItem('shift_tracker_cached_user_v1',JSON.stringify({id:'audit-A',display_name:'Проверка'}));
   localStorage.setItem('shift_tracker_shifts_cache_v1_audit-A',JSON.stringify({userId:'audit-A',shifts:[data]}));
@@ -61,8 +62,8 @@ try{
   await page.evaluate(()=>setActiveTab('poekhali'));await page.waitForFunction(()=>typeof window.startPoekhaliTrackerMode==='function');await page.evaluate(()=>setActiveTab('home'));
   report.checks.push(name+': lazy documents/calculator/tracker open');
   // Real IndexedDB transaction, quota abort, account isolation and migration.
-  const durable=await page.evaluate(async data=>{
-   const {JournalStore}=await import('/scripts/v421/journal/store.mjs');const store=new JournalStore();
+  const durable=await page.evaluate(async ({data,storePath})=>{
+   const {JournalStore}=await import(storePath);const store=new JournalStore();
    localStorage.setItem('shift_tracker_shifts_pending_v1_migrate',JSON.stringify({userId:'migrate',shifts:[]}));
    localStorage.setItem('shift_tracker_shifts_pending_v1_B',JSON.stringify({userId:'B',shifts:[data]}));
    const migrated=await store.initialize('migrate');const backup=!!migrated.legacyBackup.shift_tracker_shifts_pending_v1_migrate;
@@ -72,7 +73,7 @@ try{
    try{await JournalBridge.save([data]);}catch(_){error=true;}finally{IDBObjectStore.prototype.put=original;}
    const after=await store.get('audit-A');
    return{backup,other,empty:migrated.shifts.length===0&&migrated.pending,removed:!localStorage.getItem('shift_tracker_shifts_pending_v1_migrate'),error,unchanged:JSON.stringify(before.shifts)===JSON.stringify(after.shifts)};
-  },row('must-not-save'));
+  },{data:row('must-not-save'),storePath:'/scripts/'+shell+'/journal/store.mjs'});
   assert(Object.values(durable).every(Boolean),JSON.stringify(durable));report.checks.push(name+': atomic IDB failure and scoped v1 migration');
   // Delete the final row offline, restart the actual app, then reconnect.
   await page.addInitScript(()=>Object.defineProperty(navigator,'onLine',{configurable:true,get:()=>sessionStorage.getItem('audit-offline')!=='1'}));

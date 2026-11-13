@@ -258,6 +258,22 @@
   line-height: 1;
 }
 
+.profile-card-external { margin-top: 14px; }
+.profile-row-external { text-decoration: none; }
+.profile-row-external:focus-visible {
+  outline: 2px solid var(--accent, #38bdf8);
+  outline-offset: -3px;
+  border-radius: inherit;
+}
+.profile-row-icon-klyuchik { background: transparent; }
+.profile-row-icon-klyuchik img { display: block; }
+.profile-row-external-icon {
+  flex: 0 0 auto;
+  width: 16px;
+  height: 16px;
+  color: var(--ink-3, #8b93a7);
+}
+
 /* Rows for features not migrated yet */
 .profile-soon { opacity: 0.62; }
 

@@ -5,8 +5,10 @@ import vm from 'node:vm';
 import { fileURLToPath } from 'node:url';
 
 const root = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
+const { shell } = JSON.parse(await readFile(path.join(root, 'release.json'), 'utf8'));
+const currentWorkerUrl = '/sw.js?v=' + shell;
 const registerSource = await readFile(path.join(root, 'scripts', 'sw-register.js'), 'utf8');
-const bootstrapSource = await readFile(path.join(root, 'sw-bootstrap-v421.js'), 'utf8');
+const bootstrapSource = await readFile(path.join(root, 'sw-bootstrap-' + shell + '.js'), 'utf8');
 const workerSource = await readFile(path.join(root, 'sw.js'), 'utf8');
 const indexSource = await readFile(path.join(root, 'index.html'), 'utf8');
 
@@ -36,7 +38,7 @@ function createHarness(source, initialController) {
     }
   };
   const window = {
-    __SHIFT_TRACKER_SW_URL: '/sw.js?v=v421',
+    __SHIFT_TRACKER_SW_URL: currentWorkerUrl,
     navigator: {},
     sessionStorage,
     location: {
@@ -70,46 +72,41 @@ function createHarness(source, initialController) {
 
 const firstInstall = createHarness(bootstrapSource, null);
 assert.equal(typeof firstInstall.listeners.controllerchange, 'function');
-firstInstall.serviceWorker.controller = { scriptURL: '/sw.js?v=v421' };
+firstInstall.serviceWorker.controller = { scriptURL: currentWorkerUrl };
 firstInstall.listeners.controllerchange();
 assert.equal(firstInstall.reloads, 0, 'first service-worker takeover must not reload startup');
 
 const upgrade = createHarness(bootstrapSource, { scriptURL: '/sw.js?v=v404' });
 assert.equal(typeof upgrade.listeners.controllerchange, 'function');
-upgrade.serviceWorker.controller = { scriptURL: '/sw.js?v=v421' };
+upgrade.serviceWorker.controller = { scriptURL: currentWorkerUrl };
 upgrade.listeners.controllerchange();
 upgrade.listeners.controllerchange();
 assert.equal(upgrade.reloads, 1, 'controller upgrade must reload only once');
 
 const currentRegisterUpgrade = createHarness(registerSource, { scriptURL: '/sw.js?v=v404' });
-currentRegisterUpgrade.serviceWorker.controller = { scriptURL: '/sw.js?v=v421' };
+currentRegisterUpgrade.serviceWorker.controller = { scriptURL: currentWorkerUrl };
 currentRegisterUpgrade.listeners.controllerchange();
 assert.equal(currentRegisterUpgrade.reloads, 1, 'current sw-register runtime must also reload once');
 
-assert.match(workerSource, /'\/scripts\/v421\/poekhali-tracker\.js'/);
-assert.match(workerSource, /'\/scripts\/v421\/poekhali-station-names\.js'/);
-assert.match(workerSource, /'\/scripts\/v421\/poekhali-backup\.js'/);
-assert.doesNotMatch(workerSource, /'\/scripts\/v421\/partners\.js'/);
-assert.match(workerSource, /'\/scripts\/v421\/shift-form\.js'/);
-assert.match(workerSource, /'\/scripts\/v421\/vu45-calculator\.js'/);
-assert.match(workerSource, /'\/scripts\/v421\/vu45-ui\.js'/);
+for (const file of ['poekhali-tracker', 'poekhali-station-names', 'poekhali-backup', 'shift-form', 'vu45-calculator', 'vu45-ui', 'render']) {
+  assert.ok(workerSource.includes(`'/scripts/${shell}/${file}.js'`));
+}
+assert.ok(!workerSource.includes(`'/scripts/${shell}/partners.js'`));
 assert.doesNotMatch(workerSource, /client\.navigate\s*\(/);
 assert.match(workerSource, /COHERENT_RUNTIME_URLS/);
 assert.match(workerSource, /currentVersionOnly:\s*true/);
 assert.match(workerSource, /url\.pathname\.startsWith\('\/assets\/catalog\/'\)/);
 assert.match(workerSource, /Refusing to activate an incomplete runtime cache/);
-assert.match(indexSource, /<script src="\/sw-bootstrap-v421\.js" defer><\/script>/);
+assert.ok(indexSource.includes(`<script src="/sw-bootstrap-${shell}.js" defer></script>`));
 
-assert.match(indexSource, /href="\/styles\/v421\/56-profile\.css"/);
-assert.match(indexSource, /href="\/styles\/v421\/58-vu45\.css"/);
-assert.doesNotMatch(indexSource, /href="\/styles\/(?!v421\/)/);
-assert.match(workerSource, /'\/styles\/v421\/56-profile\.css'/);
-assert.match(indexSource, /src="\/scripts\/v421\/render\.js"/);
-assert.match(indexSource, /src="\/scripts\/v421\/poekhali-station-names\.js"/);
-assert.doesNotMatch(indexSource, /src="\/scripts\/(?!v421\/)/);
-assert.match(workerSource, /'\/scripts\/v421\/render\.js'/);
-
-console.log('Service-worker v405→v421 coherent-runtime and versioned shell namespace smoke passed.');
+assert.ok(indexSource.includes(`href="/styles/${shell}/56-profile.css"`));
+assert.ok(indexSource.includes(`href="/styles/${shell}/58-vu45.css"`));
+assert.doesNotMatch(indexSource, new RegExp(`href="/styles/(?!${shell}/)`));
+assert.ok(workerSource.includes(`'/styles/${shell}/56-profile.css'`));
+assert.ok(indexSource.includes(`src="/scripts/${shell}/render.js"`));
+assert.ok(indexSource.includes(`src="/scripts/${shell}/poekhali-station-names.js"`));
+assert.doesNotMatch(indexSource, new RegExp(`src="/scripts/(?!${shell}/)`));
 
 const designSource = await readFile(path.join(root, 'styles', '50-design-refresh.css'), 'utf8');
-assert.doesNotMatch(designSource, /\/styles\/(?!v421\/)/, 'CSS imports must use the current shell version');
+assert.doesNotMatch(designSource, new RegExp(`/styles/(?!${shell}/)`), 'CSS imports must use the current shell version');
+console.log(`Service-worker v404→${shell} coherent runtime and versioned shell checks passed.`);
